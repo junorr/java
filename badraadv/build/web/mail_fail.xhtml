@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+  
+  <h:head>
+    
+  </h:head>
+  
+  <h:body>
+    
+    <ui:composition template="index.xhtml">
+      <ui:define name="body">
+        
+        <p:spacer width="800" height="10"/>
+        <p:panel>
+          <f:facet name="header">
+            <h:graphicImage library="images" name="email-black-20.png"/>
+            <p:spacer width="10" height="2"/>
+            <h:outputText value="Fale conosco" style="position: relative; top: -3px;"/>
+          </f:facet>
+          
+          <h4><h:outputText value="#{user.fullName},"/></h4>
+          <h4>
+            <h:outputText value="Este serviço está temporariamente indisponível."/><br/>
+            <h:outputText value="Por favor entre em contato pelo E-mail:&nbsp;&nbsp;&nbsp;"/>
+            <a style="font-family: monospace;" href="mailto:&#116;&#97;&#108;&#105;&#116;&#97;&#104;&#109;&#101;&#108;&#111;&#98;&#97;&#100;&#114;&#97;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">
+              <h:outputText value="&#116;&#97;&#108;&#105;&#116;&#97;&#104;&#109;&#101;&#108;&#111;&#98;&#97;&#100;&#114;&#97;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;"/><br/>
+            </a>
+            <h:outputText value="Ou, se preferir, pelo telefone:&nbsp;&nbsp;&nbsp;"/>
+            <h:outputText style="font-family: monospace;" value="&#40;&#54;&#49;&#41;&#32;&#56;&#49;&#49;&#56;&#45;&#56;&#57;&#49;&#54;"/><br/>
+            <h:outputText value="Teremos prazer em atendê-lo."/><br/><br/>
+            <h:outputText value="Badra Advocacia."/>
+          </h4>
+        </p:panel>
+        
+      </ui:define>
+    </ui:composition>
+  
+  </h:body>
+</html>
+

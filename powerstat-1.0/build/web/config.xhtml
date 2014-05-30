@@ -1,0 +1,244 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - Configuration
+    </ui:define>
+    
+    <ui:define name="script">
+      <h:outputScript library="javascript" name="aes.js"/>
+      <h:outputScript library="javascript" name="cryptoHelpers.js"/>
+      <h:outputScript library="javascript" name="hexcode.js"/>
+      
+      <script type="text/javascript">
+        $(document).ready(function() {
+          tab("page").north("sysconfig", 55)
+                  .after("envpanel").setHorizontal("sysconfig", 80);
+        });
+        
+        
+        var pass = "";
+        
+        function encrypt() {
+          pass = $("#ipass").val();
+          $("#ipass").val("password");
+          
+          var hexKey = "#{security.uid}";
+          
+          $("#loading1").show();
+          var bpass = cryptoHelpers.convertStringToByteArray(pass);
+          var key = hex.fromHexString(hexKey);
+          var iv = hex.get16BytesLength(key);
+          
+          var encpass = slowAES.encrypt(bpass, slowAES.modeOfOperation.CBC, key, iv);
+          $("#hpass").val(hex.toHexString(encpass));
+        }
+        
+        function reload() {
+          setTimeout(function() {
+            window.location="config.xhtml";
+          }, 5000);
+        }
+        
+        function ischecked(chk) {
+          if(chk) sudovar.show();
+        }
+        
+        function checkEnter(evt) {
+          if(evt.keyCode == 13)
+            $("#sudobutton").click();
+        }
+      </script>
+    </ui:define>
+    
+
+    <ui:define name="style">
+      <h:outputStylesheet library="style" name="config.css"/>
+    </ui:define>
+    
+    
+    <ui:define name="category-icon">
+      <h:graphicImage library="images" name="wrench-black-20.png"/>
+    </ui:define>
+    <ui:define name="category-name">Powerstat Configuration</ui:define>
+    
+    <ui:define name="category-links">
+      <p:graphicImage id="loading" library="images" name="ajax-loader.gif"
+                      style="display: none;"/>
+    </ui:define>
+    
+    
+    <ui:define name="category-content">
+      
+      <p:panelGrid columns="2" id="envpanel">
+        <f:facet name='header'>
+          Environment Info
+        </f:facet>
+        
+        <h:outputText value="OS Name"/>
+        <h:outputText value="#{webConfig.osName}"/>
+                      
+        <h:outputText value="OS Arch"/>
+        <h:outputText value="#{webConfig.osArch}"/>
+                      
+        <h:outputText value="OS Version"/>
+        <h:outputText value="#{webConfig.osVersion}"/>
+                      
+        <h:outputText value="Java Home"/>
+        <h:outputText value="#{webConfig.javaHome}"/>
+                      
+        <h:outputText value="Java Vendor"/>
+        <h:outputText value="#{webConfig.javaVendor}"/>
+                      
+        <h:outputText value="Java Version"/>
+        <h:outputText value="#{webConfig.javaVersion}"/>
+      </p:panelGrid>
+      
+      
+      <p:panel id="sysconfig" header="Syscheck Module Config">
+        
+        <h:panelGrid columns="3" cellspacing="5">
+          <p:outputLabel for="idir" value="Install Directory"/>
+          <p:inputText id="idir" value="#{webConfig.syscheckDir}" 
+                       required="true" styleClass="input-size"/>
+          <p:spacer width="1"/>
+        
+          <p:outputLabel for="idbsize" value="DB Max Size"/>
+          <p:inputText id="idbsize" value="#{webConfig.dbMaxSize}" 
+                       required="true" styleClass="input-size"/>
+          <h:outputText value="MB"/>
+        
+          <p:outputLabel for="isint" value="Syscheck Interval"/>
+          <p:inputText id="isint" value="#{webConfig.syscheckInterval}" 
+                       required="true" styleClass="input-size"/>
+          <h:outputText value="Seconds"/>
+        
+          <p:outputLabel for="iint" value="Interface Update Interval"/>
+          <p:inputText id="iint" value="#{webConfig.interfaceInterval}" 
+                       required="true" styleClass="input-size"/>
+          <h:outputText value="Seconds"/>
+        </h:panelGrid>
+        
+        <p:spacer width="1" height="30"/>
+        <p:commandButton icon='ui-icon-disk' value="Save Changes" 
+                         action="#{webConfig.save()}"
+                         update="conf-status"
+                         onclick="$('#loading1').show();" 
+                         oncomplete="$('#loading1').hide();"
+                         style="width: 150px;"/>
+        
+        <p:spacer width="20" height="1"/>
+        <p:graphicImage id="loading1" library="images" name="ajax-loader.gif"
+                        style="display: none;"/>
+      </p:panel>
+      
+      
+      <p:panel id="conf-status" header="Syscheck Service Status">
+        <h:panelGrid columns="2" cellspacing="5"
+                     style="background-color: #{webConfig.syscheckRunning ? 'white' : 'transparent' };
+                     border: #{webConfig.syscheckRunning ? 'thin solid #6967AA' : 'none' };">
+          <h:graphicImage library="images"
+                          name="#{webConfig.syscheckRunning ? 'ps-logo' : 'ps-off'}_48.png"/>
+          
+          <h:outputText value="Syscheck is #{webConfig.syscheckRunning ? '' : 'NOT'} Running"
+                        style="font-size: 20px; position: relative; top: -4px;
+                        font-weight: #{webConfig.syscheckRunning ? 'bold' : 'normal'};
+                        color: #{webConfig.syscheckRunning ? '#6967AA' : 'black'};"/>
+        </h:panelGrid>
+        
+        <br/>
+        <div style="border: solid thin darkgray; width: 350px; height: 30px;">
+          <p:selectBooleanCheckbox value="#{webConfig.asSudo}"
+                                   style="position: relative; top: 5px;"
+                                   onchange="ischecked(this.checked);"/>
+          <p:spacer width="10"/>
+          <h:outputText value="Run As Sudo (Recommended)"
+                        style="position: relative; top: 2px;"/>
+        </div>
+        
+        <br/><p:spacer height="10"/>
+        
+        <p:commandButton icon="ui-icon-power" 
+                         onclick="$('#loading2').show();" 
+                         oncomplete="reload();"
+                         actionListener="#{webConfig.restartSyscheck()}"
+                         value="#{webConfig.syscheckRunning 
+                                  ? 'Stop' : 'Start'} Syscheck"
+                         disabled="#{!webConfig.serviceInstalled}"/>
+        
+        <p:spacer width="30" height="5"/>
+        
+        <p:commandButton icon='ui-icon-wrench' value="Install Module" 
+                         action="#{webConfig.installSyscheck()}"
+                         onclick="$('#loading2').show();" 
+                         oncomplete="$('#loading2').hide(); installvar.show();"
+                         style="width: 150px;" 
+                         update="installdlg,conf-status"
+                         disabled="#{webConfig.serviceInstalled}"/>
+        
+        <p:spacer width="20" height="1"/>
+        <p:graphicImage id="loading2" library="images" name="ajax-loader.gif"
+                        style="display: none; position: relative; top: 5px;"/>
+      </p:panel>
+      
+      <p:spacer height="120"/>
+      
+
+      <h:inputHidden id="hpass" value="#{webConfig.sudoPassword}"/>
+      
+      <p:dialog id="sudodlg" header="Sudo*" widgetVar="sudovar" height="85"
+                showEffect="fold" hideEffect="explode" resizable="false">
+        
+        <p:spacer width="10" height="20"/>
+        <h:outputText value="Please, inform sudo's password:"/><br/>
+        
+        <p:spacer width="1" height="40"/>
+        <p:password id="ipass" onkeypress="checkEnter(event);" style="width: 150px;"/>
+        <p:spacer width='20'/>
+        <p:commandButton id='sudobutton' value="Send" onclick="encrypt();"
+                         oncomplete="$('#loading1').hide(); sudovar.hide();"/>
+      </p:dialog>
+                
+      
+      <p:dialog id="admindlg" header="Warning" widgetVar="adminvar"
+                position="top"
+                showEffect="highlight" hideEffect="drop" resizable="false"
+                visible='#{webConfig.syscheckRunning and webConfig.defaultAdminUser}'>
+        
+        <p style="font-size: 18px; color: #E41721; text-align: center">
+          You are logged as 'Administrator' default user.<br/>
+          Once PowerStat is configured and running, the default user will no longer works.<br/>
+          Please register a new admin user!
+        </p>
+        
+        <p:commandButton icon="ui-icon-check" value="OK" 
+                         actionListener="#{loginController.removeDefaultUser()}"
+                         action="user-admin.xhtml?faces-redirect=true"/>
+      </p:dialog>
+
+
+      <p:dialog id="installdlg" header="Install Output" widgetVar="installvar"
+                dynamic="true"
+                showEffect="clip" hideEffect="drop" resizable="false">
+        
+        <p style="font-family: monospace; font-size: 14px; 
+           text-align: left;
+           border: solid thin black; background-color: white;">
+          
+          <h:outputText escape="false" value="#{webConfig.installOut}"/>
+          
+        </p>
+      </p:dialog>
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

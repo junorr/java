@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="icons.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="332.28616"
+     inkscape:cy="224.83481"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="721"
+     inkscape:window-height="425"
+     inkscape:window-x="150"
+     inkscape:window-y="150"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;stroke:#6c5353;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect3755"
+       width="50"
+       height="50"
+       x="314.28571"
+       y="82.362183"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/rect-draw-icon-18.png"
+       inkscape:export-xdpi="29.450001"
+       inkscape:export-ydpi="29.450001" />
+    <rect
+       style="fill:#ff0000;fill-opacity:1;stroke:#000000;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect3755-9"
+       width="50"
+       height="50"
+       x="400.71429"
+       y="82.362183"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/rect-fill-icon-18.png"
+       inkscape:export-xdpi="29.454546"
+       inkscape:export-ydpi="29.454546" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#6c5353;stroke-width:8.85439491;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3775"
+       sodipodi:cx="372.85715"
+       sodipodi:cy="224.50504"
+       sodipodi:rx="42.857143"
+       sodipodi:ry="40.714287"
+       d="m 415.71429,224.50504 a 42.857143,40.714287 0 1 1 -85.71429,0 42.857143,40.714287 0 1 1 85.71429,0 z"
+       transform="matrix(0.5801767,0,0,0.61071231,120.07146,64.260298)"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/oval-draw-icon-18.png"
+       inkscape:export-xdpi="29.518356"
+       inkscape:export-ydpi="29.518356" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#ffff00;stroke:#000000;stroke-width:8.85439490999999990;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1"
+       id="path3775-1"
+       sodipodi:cx="372.85715"
+       sodipodi:cy="224.50504"
+       sodipodi:rx="42.857143"
+       sodipodi:ry="40.714287"
+       d="m 415.71429,224.50504 a 42.857143,40.714287 0 1 1 -85.71429,0 42.857143,40.714287 0 1 1 85.71429,0 z"
+       transform="matrix(0.5801767,0,0,0.61071231,207.59422,63.916238)"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/oval-fill-icon-18.png"
+       inkscape:export-xdpi="29.518356"
+       inkscape:export-ydpi="29.518356" />
+    <text
+       xml:space="preserve"
+       style="font-size:47.96974945px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.92982459;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Sans"
+       x="352.65836"
+       y="267.58975"
+       id="text3795"
+       sodipodi:linespacing="125%"
+       transform="scale(0.87211529,1.1466374)"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/text-icon-18.png"
+       inkscape:export-xdpi="29.454546"
+       inkscape:export-ydpi="29.454546"><tspan
+         sodipodi:role="line"
+         id="tspan3797"
+         x="352.65836"
+         y="267.58975"
+         style="font-weight:bold;fill:#6c5353;stroke:#000000;stroke-width:1.92982459;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;-inkscape-font-specification:Sans Bold">A_</tspan></text>
+    <path
+       style="fill:none;stroke:#6c5353;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 98.135587,256.90877 c 88.353673,-32.691 -34.650589,83.40018 74.935183,16.20321 l -28.82449,37.05526 c 74.98005,5.60486 -14.33856,9.81834 48.89926,35.81467"
+       id="path3753-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/free-draw-icon-18.png"
+       inkscape:export-xdpi="16.66"
+       inkscape:export-ydpi="16.66" />
+    <path
+       style="fill:none;stroke:#6c5353;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 406.10596,260.17698 c 45.96088,45.96088 45.96088,45.96088 45.96088,45.96088"
+       id="path3817"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/line-icon-18.png"
+       inkscape:export-xdpi="32.727272"
+       inkscape:export-ydpi="32.727272" />
+    <path
+       style="fill:none;stroke:#6c5353;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 321.47842,351.57708 -23.24987,45.00073 45.00072,-0.006 z"
+       id="path3819"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/tri-draw-icon-18.png"
+       inkscape:export-xdpi="31.200001"
+       inkscape:export-ydpi="31.200001" />
+    <path
+       style="fill:#000080;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;fill-opacity:1"
+       d="m 424.30648,349.62509 -23.24987,45.00073 45.00072,-0.006 z"
+       id="path3819-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/tri-fill-icon-18.png"
+       inkscape:export-xdpi="30.512066"
+       inkscape:export-ydpi="30.512066" />
+    <path
+       style="fill:none;stroke:#6c5353;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 270.8132,533.17934 -22.26073,-23.02466 61.17946,7.67059 5.69091,62.08615 -22.26073,-23.02465 -41.77075,39.61681 -22.26072,-23.02465 z"
+       id="path3763"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccc"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/arrow-draw-icon-18.png"
+       inkscape:export-xdpi="17.425211"
+       inkscape:export-ydpi="17.425211" />
+    <path
+       style="fill:#6c5353;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;fill-opacity:1"
+       d="m 399.466,539.35898 -22.26073,-23.02466 61.17946,7.67059 5.69091,62.08615 -22.26073,-23.02465 -41.77075,39.61681 -22.26072,-23.02465 z"
+       id="path3763-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccc"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/arrow-fill-icon-18.png"
+       inkscape:export-xdpi="17.425211"
+       inkscape:export-ydpi="17.425211" />
+    <rect
+       style="opacity:0.3;fill:#000000;fill-opacity:1;stroke:none"
+       id="rect3755-7"
+       width="50"
+       height="50"
+       x="322.18942"
+       y="690.0722"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/paper-icon-18.png"
+       inkscape:export-xdpi="32.400002"
+       inkscape:export-ydpi="32.400002" />
+    <text
+       xml:space="preserve"
+       style="font-size:40.97367477000000235px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#916f6f;fill-opacity:1;stroke:#000000;stroke-width:3.00000006;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Sans;-inkscape-font-specification:Sans Bold"
+       x="147.32671"
+       y="921.16895"
+       id="text3801"
+       sodipodi:linespacing="125%"
+       transform="scale(1.1021836,0.90728982)"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/bold-icon-18.png"
+       inkscape:export-xdpi="53.82"
+       inkscape:export-ydpi="53.82"><tspan
+         sodipodi:role="line"
+         id="tspan3803"
+         x="147.32671"
+         y="921.16895"
+         style="fill:#916f6f;stroke-width:3.00000006;stroke-miterlimit:4;stroke-dasharray:none">B</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:48.33279037px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#916f6f;fill-opacity:1;stroke:#000000;stroke-width:3.05681467;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Serif;-inkscape-font-specification:Serif Italic"
+       x="176.77408"
+       y="1092.8561"
+       id="text3805"
+       sodipodi:linespacing="125%"
+       transform="scale(1.3077442,0.76467555)"
+       inkscape:export-filename="/media/juno/CRUZER/java/lcdpaper/italic-icon-18.png"
+       inkscape:export-xdpi="53.82"
+       inkscape:export-ydpi="53.82"><tspan
+         sodipodi:role="line"
+         id="tspan3807"
+         x="176.77408"
+         y="1092.8561"
+         style="stroke-width:3.05681467;stroke-miterlimit:4;stroke-dasharray:none">I</tspan></text>
+    <g
+       id="g3816"
+       transform="matrix(0.72595419,0,0,0.90514984,83.291623,79.752544)"
+       inkscape:export-filename="F:\java\lcdpaper\font-icon-18.png"
+       inkscape:export-xdpi="54"
+       inkscape:export-ydpi="54">
+      <text
+         transform="scale(1.0699497,0.93462338)"
+         sodipodi:linespacing="125%"
+         id="text3809"
+         y="890.552"
+         x="288.80728"
+         style="font-size:36.69218063px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+         xml:space="preserve"><tspan
+           style="font-weight:bold;fill:#916f6f;stroke:#000000;stroke-width:2.75191355;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;-inkscape-font-specification:Sans Bold"
+           y="890.552"
+           x="288.80728"
+           id="tspan3811"
+           sodipodi:role="line">A</tspan></text>
+      <path
+         inkscape:connector-curvature="0"
+         id="path3813"
+         d="m 306.29855,838.81593 36.06244,0 0,0 0,0"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:4.71308851px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+  </g>
+</svg>

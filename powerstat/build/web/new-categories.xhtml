@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="new-base.xhtml">
+    
+    <ui:define name="header">
+      <h:outputStylesheet library="style" name="categories.css"/>
+      <script type="text/javascript">
+        function ext() {
+          this.cfg.highlighter = {
+            useAxesFormatter: false,
+            tooltipAxes: 'y'
+          };
+        }
+      </script>
+      
+      <ui:insert name="script"/>
+      <ui:insert name="style"/>
+    </ui:define>
+    
+    
+    <ui:define name="page">
+      
+      <div id="category-header" style="width: 900px;">
+        <p align="justify" style="font-weight: bold;">
+          <span id="category-icon">
+            <ui:insert name="category-icon" id="category-icon"/>
+          </span>
+          <p:spacer width="15" height="1"/>
+          <ui:insert name="category-name"/>
+          <p:spacer width="50" height="1"/>
+          <ui:insert name="category-links"/>
+          <hr/>
+        </p>
+      </div>
+      
+      <div id="category-content" style="width: 900px;">
+        <ui:insert name="category-content"/>
+      </div>
+      
+    </ui:define>
+    
+    <ui:define name="footer">
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

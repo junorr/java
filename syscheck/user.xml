@@ -1,0 +1,24 @@
+<com.jpower.sys.security.User>
+  <name>Juno Roesler</name>
+  <email>juno@pserver.us</email>
+  <admin>true</admin>
+  <pass>
+    <hash>b20cfcc2e5908c19eb62b9960121dcb8f10b872b309843f6f80a6a89d343261a</hash>
+  </pass>
+  <access>
+    <com.jpower.sys.security.Access>
+      <type>USER</type>
+      <time>
+        <time>1379079483549</time>
+        <timezone>America/Sao_Paulo</timezone>
+      </time>
+    </com.jpower.sys.security.Access>
+    <com.jpower.sys.security.Access>
+      <type>ALL</type>
+      <time>
+        <time>1379079483704</time>
+        <timezone>America/Sao_Paulo</timezone>
+      </time>
+    </com.jpower.sys.security.Access>
+  </access>
+</com.jpower.sys.security.User>

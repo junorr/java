@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="new-categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - Memory
+    </ui:define>
+    
+    <ui:define name="style">
+      <style type="text/css">
+        #customdiskchart {
+          position: relative; 
+          top: 20px;
+          width: 840px;
+          height: 400px;
+          box-shadow: 3px 3px 5px 2px #888888;
+        }
+      </style>
+    </ui:define>
+    
+    <ui:define name="category-icon">
+      <h:graphicImage library="images" name="disk-icon-[24x20].png"/>
+    </ui:define>
+    
+    <ui:define name="category-name">
+      Disk Custom Chart
+    </ui:define>
+    
+    <ui:define name="category-links">
+      <h:commandLink styleClass="menuLink" action="new-disk.xhtml">
+        <h:graphicImage library="images" name="back-18.png" 
+                        style="height: 14px; width: 16px;"/>
+        <p:spacer width="5"/>
+        <h:outputText value="Back" 
+                      style="position: relative; top: -2px;"/>
+      </h:commandLink>
+    </ui:define>
+    
+    <ui:define name="category-content">
+      <center>
+        <h:outputText value="#{diskCharts.selectedDisk.toString()}" 
+                      style="font-weight: bold;"/>
+        <p:spacer height="10"/>
+              
+        <p:lineChart id="customdiskchart" value="#{customDiskChart.model}"
+                     title="Disk Historical Usage (#{customDiskChart.intervalString})"
+                     animate="true" xaxisLabel="Hour of Day"
+                     yaxisLabel="Mb" extender="ext"
+                     showDatatip="true" showMarkers="true"
+                     legendPosition="#{customDiskChart.position}" 
+                     fill="#{customDiskChart.filled}"/>
+        
+        <p:spacer height="50"/>
+        
+        <p:dataTable value="#{customDiskChart.averages}"
+                     var="pair" style="width: 250px;">
+          <f:facet name="header">
+            Disk Averages in Period
+          </f:facet>
+          
+          <p:column headerText="Item">
+            #{pair.key}
+          </p:column>
+          
+          <p:column headerText="Mb">
+            <center>
+              #{pair.value.toString()}
+            </center>
+          </p:column>
+        </p:dataTable>
+      </center>
+        
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="new-categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - CPU
+    </ui:define>
+    
+    <ui:define name="style">
+      <h:outputStylesheet library="style" name="cpu.css"/>
+    </ui:define>
+
+    <ui:define name="category-icon">
+      <h:graphicImage id="cpu-icon" library="images" name="cpu-icon.png"/>
+    </ui:define>
+    <ui:define name="category-name">CPU</ui:define>
+    <ui:define name="category-links">
+      <p:commandLink value="CPU Info" styleClass="menuLink"
+                     onclick="cpuivar.show();"/>
+      <p:spacer width="20" height="1"/>
+      
+      <p:commandLink value="Custom Chart" styleClass="menuLink"
+                     onclick="customchartvar.show();"/>
+    </ui:define>
+    
+    
+    <ui:define name="category-content">
+      <p:poll listener="#{cpuCharts.update()}"
+              update="cpuoverall,usedcpu,cpudetailed,cpulinechart" 
+              autoStart="true" interval="15"/>
+      
+      <p:meterGaugeChart id="cpuoverall" value="#{cpuCharts.gaugeModel}"
+                         styleClass="graphics" label="CPU (%)"
+                         title="Overall CPU Consumption"/>
+      <h:outputText id="usedcpu" value="Used: #{cpuCharts.usedCpu}%"/>
+      
+      <p:barChart id="cpudetailed" value="#{cpuCharts.detailedModel}" 
+                  legendPosition="ne" yaxisLabel="Percent"
+                  showDatatip="false" extender="ext"
+                  title="Detailed CPU Consumption" animate="true"
+                  styleClass="graphics"/>
+        
+      <br/>
+      <p:spacer height="20"/>
+        
+      <p:lineChart id="cpulinechart" value="#{cpuCharts.lineModel}"
+                   title="Recent History CPU Consumption"
+                   animate="true" xaxisLabel="Time" extender="ext"
+                   yaxisLabel="Percent" legendPosition="nw"
+                   styleClass="graphics"/>
+      
+      <ui:include src="new-cpu-dlgs.xhtml"/>
+      
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

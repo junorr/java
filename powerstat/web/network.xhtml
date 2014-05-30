@@ -1,0 +1,268 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  
+  <ui:composition template="categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - Network
+    </ui:define>
+    
+    <ui:define name="script">
+      <script type="text/javascript">
+        $(document).ready(function () {
+          tab("tabnet").north("custom-chart-btn", 120).west("custom-chart-btn", 30);
+        });
+        
+        function ext() {
+          this.cfg.highlighter = {
+            useAxesFormatter: false,
+            tooltipAxes: 'y'
+          };
+        }
+      </script>
+    </ui:define>
+
+    <ui:define name="style">
+      <style type="text/css">
+        .bodyHeight {
+          height: #{((iFNetCharts.IFNetwork.traffic.size() * 33) 
+                    lt 1430 ? 1430 
+                    : ((iFNetCharts.IFNetwork.traffic.size() * 33) + 460))}px;
+        }
+      </style>
+    </ui:define>
+    
+    
+    <ui:define name="category">Network</ui:define>
+    
+    <ui:define name="content">
+      
+        <p:tabView id="tabnet" dynamic="true" 
+                   cache="false" effect="fade">
+        
+          <p:tab id="ifloadtab" title="Interface Load">
+            
+            <p:commandButton id="custom-chart-btn" 
+                             icon="ui-icon-image"
+                             type="button"
+                             value="Create Custom Chart"
+                             onclick="customchartdlg.show()"/>
+            <p:tooltip for="custom-chart-btn" value="Create Custom Network Chart"/>
+            
+            <center>
+              
+              <p:poll listener="#{iFNetCharts.update()}"
+                      autoStart="true" interval="15"
+                      update="netbarchart,maxtext,netlinechart"/>
+              
+              <h:outputText value="Interface: " style="position: relative; top: -10px;"/>
+              
+              <p:selectOneMenu value="#{iFNetCharts.ifname}" effect="fade"
+                               style="width: 150px;">
+                <f:selectItems value="#{iFNetCharts.last.interfaces}" var="i"
+                               itemValue="#{i.name}" itemLabel="#{i.name}"/>
+                <p:ajax update="ifinfo,netbarchart,maxtext,netlinechart,customchartdlg"/>
+              </p:selectOneMenu>
+              
+              <br/>
+              <p:spacer height="20"/>
+              
+              <p:panelGrid columns="2" id="ifinfo">
+                <f:facet name="header">
+                  #{iFNetCharts.ifname}
+                </f:facet>
+                
+                <h:outputText value="Address:"/>
+                <h:outputText value="#{iFNetCharts.IFNetwork.address}"/>
+                
+                <h:outputText value="Mask:"/>
+                <h:outputText value="#{iFNetCharts.IFNetwork.mask}"/>
+                
+                <h:outputText value="MTU:"/>
+                <h:outputText value="#{iFNetCharts.IFNetwork.mtu}"/>
+                
+                <h:outputText value="HW Address:"/>
+                <h:outputText value="#{iFNetCharts.IFNetwork.hw}"/>
+              </p:panelGrid>
+              
+              <br/>
+              <p:spacer height="10"/>
+              
+              <p:barChart id="netbarchart" value="#{iFNetCharts.loadModel}" 
+                          legendPosition="n" yaxisLabel="Kb/s"
+                          extender="ext" animate="true"
+                          title="Network Load Average" 
+                          style="position: relative; 
+                          top: 20px; width: 500px; height: 350px;"/>
+        
+              <br/>
+              <p:spacer height="10"/>
+              
+              <h:outputText id="maxtext" value="(Max Input: 
+                            #{iFNetCharts.IFNetwork.load.maxInput} Kb/s; 
+                            Max Output: 
+                            #{iFNetCharts.IFNetwork.load.maxOutput} Kb/s)"/>
+        
+               <br/>
+               <p:spacer height="20"/>
+        
+               <p:lineChart id="netlinechart" value="#{iFNetCharts.lineModel}"
+                            title="Recent History Network Load"
+                            animate="true" xaxisLabel="Time"
+                            minY="0" extender="ext"
+                            yaxisLabel="Kb/s"
+                            legendPosition="nw"
+                            style="position: relative; top: 20px;
+                            width: 500px; height: 350px;"/>
+               
+               <br/>
+               <p:spacer height="10"/>
+               
+            </center>
+            
+                             
+            <p:dialog id="customchartdlg" header="Custom Load Network Chart"
+                      widgetVar="customchartdlg"
+                      showEffect="fold" hideEffect="explode" 
+                      resizable="false">
+        
+              <p:spacer height="10"/>
+              
+              <p:panelGrid columns="2">
+                <f:facet name="header">
+                  Time Interval
+                </f:facet>
+          
+                <h:outputText value="Start Date:"/>
+                <p:calendar value="#{customNetLoadChart.startDate}"
+                            pattern="dd/MM/yyyy HH:mm" mode="popup"
+                            showOn="button" navigator="true"
+                            mindate="#{customNetLoadChart.startDate}"
+                            maxdate="#{customNetLoadChart.stopDate}"/>
+          
+                <h:outputText value="End Date:"/>
+                <p:calendar value="#{customNetLoadChart.stopDate}"
+                            pattern="dd/MM/yyyy HH:mm" mode="popup"
+                            showOn="button" navigator="true"
+                            mindate="#{customNetLoadChart.startDate}"
+                            maxdate="#{customNetLoadChart.stopDate}"/>
+              </p:panelGrid> 
+        
+              <center>
+              <p:spacer height="20"/>
+              <p:panelGrid columns="2">
+          
+                <f:facet name="header">
+                  Values of Network Load to Show (Kb/s)
+                </f:facet>
+          
+                <p:selectBooleanCheckbox value="#{customNetLoadChart.inputAvrg}"/>
+                <h:outputText value="Input Average"/>
+          
+                <p:selectBooleanCheckbox value="#{customNetLoadChart.outputAvrg}"/>
+                <h:outputText value="Output Average"/>
+          
+                <p:selectBooleanCheckbox value="#{customNetLoadChart.totalAvrg}"/>
+                <h:outputText value="Total Average"/>
+          
+                <p:selectBooleanCheckbox value="#{customNetLoadChart.maxInput}"/>
+                <h:outputText value="Max Input"/>
+          
+                <p:selectBooleanCheckbox value="#{customNetLoadChart.maxOutput}"/>
+                <h:outputText value="Max Output"/>
+              </p:panelGrid>
+        
+        
+              <p:spacer height="20"/>
+              <p:panelGrid columns="2">
+          
+                <f:facet name="header">
+                  Chart Style
+                </f:facet>
+          
+                <h:outputText value="Filled Areas Chart"/>
+                <p:selectBooleanCheckbox value="#{customNetLoadChart.filled}"/>
+          
+                <h:outputText value="Subtitles Position:"/>
+                <p:selectOneMenu value="#{customNetLoadChart.position}" effect="fade"
+                                 id="subtselect">
+                  <f:selectItems value="#{customNetLoadChart.subtitlePositions}"
+                                 var="pos" itemLabel="#{pos}" itemValue="#{pos}"/>
+                </p:selectOneMenu>
+              </p:panelGrid>
+        
+              <p:spacer height="40" width="20"/>
+              <p:commandButton value="Create Custom Chart" 
+                               icon="ui-icon-gear"
+                               action="custom-net-chart.xhtml"/>
+              </center>
+        
+            </p:dialog>
+            
+          </p:tab>
+          
+          
+          <p:tab title="Traffic">
+            <center>
+              
+              Interface: <h:outputText value="#{iFNetCharts.ifname}" 
+                                       style="font-weight: bold;"/>
+              <br/>
+              <p:spacer height="20"/>
+              
+              <p:dataTable id="traftable" 
+                           value="#{iFNetCharts.IFNetwork.traffic}"
+                           var="trf">
+                
+                <p:column headerText="Source" filterBy="#{trf.source}"
+                          sortBy="#{trf.source}">
+                  #{trf.source}
+                </p:column>
+                
+                <p:column headerText="Dest." filterBy="#{trf.dest}"
+                          sortBy="#{trf.dest}">
+                  #{trf.dest}
+                </p:column>
+                
+                <p:column headerText="Src Port" filterBy="#{trf.srcPort}"
+                          sortBy="#{trf.srcPort}">
+                  <center>#{trf.srcPort}</center>
+                </p:column>
+                
+                <p:column headerText="Dst Port" filterBy="#{trf.dstPort}"
+                          sortBy="#{trf.dstPort}">
+                  <center>#{trf.dstPort}</center>
+                </p:column>
+                
+                <p:column headerText="Protocol" filterBy="#{trf.proto}"
+                          sortBy="#{trf.proto}">
+                  <center>#{trf.proto}</center>
+                </p:column>
+                
+                <p:column headerText="Total Bytes" filterBy="#{trf.totalBytes}"
+                          sortBy="#{trf.totalBytes}">
+                  <center>#{trf.totalBytes}</center>
+                </p:column>
+                
+                <f:facet name="footer">
+                  Size: #{iFNetCharts.IFNetwork.traffic.size()}
+                </f:facet>
+              </p:dataTable>
+              
+            </center>
+            
+          </p:tab>
+          
+        </p:tabView>
+        
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="base.xhtml">
+    
+    <ui:define name="header">
+        <h:outputStylesheet library="style" name="index.css"/>
+        <script type="text/javascript">
+          $(document).ready(function() {
+            tab("page").after("infodiv-left")
+                    .setHorizontal("infodiv-right", 10)
+                    .north("infodiv-right", 388);
+          });
+        </script>
+    </ui:define>
+    
+    <ui:define name="page">
+      <h2>Welcome to PowerStat - Monitor and Diagnostic System</h2>
+      
+      <div id="galleria" class="gsize">
+        <p:poll autoStart="true" interval="5" listener="#{indexController.nextImage()}" 
+                update="imageLink,imagegal,infoText" widgetVar="imagePoll"/>
+        
+        <h:commandLink id="imageLink" action="#{indexController.currentImageInfo.getLink}" 
+                       onclick="setLink('link-apps');">
+          <h:graphicImage id="imagegal" library="#{indexController.currentImageInfo.path}"
+                          name="#{indexController.currentImageInfo.name}" styleClass="gsize"/>
+          <div id="imageInfo"></div>
+          <h3><h:outputText id="infoText"
+                            value="#{indexController.currentImageInfo.comment}"/>
+          </h3>
+        </h:commandLink>
+        
+        <p:commandLink id="prevarrow" actionListener="#{indexController.prevImage()}"
+                       update="imageLink,imagegal,infoText"
+                       oncomplete="imagePoll.stop(); imagePoll.start();">
+          <p:graphicImage library="images" name="prev-arrow.png" styleClass="arrow"/>
+        </p:commandLink>
+        
+        <p:commandLink id="nextarrow" actionListener="#{indexController.nextImage()}"
+                       update="imageLink,imagegal,infoText"
+                       oncomplete="imagePoll.stop(); imagePoll.start();">
+          <p:graphicImage library="images" name="next-arrow.png" styleClass="arrow"/>
+        </p:commandLink>
+      </div>
+      
+      
+      <div id="infodiv-left">
+        
+        <div id="cpudiv" class="textdiv">
+          <p:spacer height="50"/><br/>
+          <p:commandLink onclick="setLink('link-apps');"
+                         styleClass="text-link"
+                         action="new-cpu.xhtml?faces-redirect=true">
+            <p:graphicImage styleClass="text-icon"
+                            library="images" 
+                            name="cpu-icon.png"/>
+            <p:spacer width="10" height="2"/>
+            <h:outputText value="CPU Status and Monitoring"
+                          style="font-weight: bold;"/>
+          </p:commandLink>
+          <p:separator style="width: 300px;"/>
+          <p align="justify" style="width: 280px;">
+            &nbsp;&nbsp;&nbsp;&nbsp; With the CPU Application,
+            is possible to monitor de CPU consumption with I/O wait,
+            user and system load, besides allows to viewing 
+            processor information and generates custom 
+            historical charts.
+          </p>
+        </div>
+        
+        <div id="diskdiv" class="textdiv" style="position: relative; top: -11px;">
+          <p:spacer height="50"/><br/>
+          <p:commandLink onclick="setLink('link-apps');"
+                         styleClass="text-link"
+                         action="new-disk.xhtml?faces-redirect=true">
+            <p:graphicImage styleClass="text-icon"
+                            library="images" 
+                            name="disk-icon-[24x20].png"/>
+            <p:spacer width="10" height="2"/>
+            <h:outputText value="Disk Usage"
+                          style="font-weight: bold;"/>
+          </p:commandLink>
+          <p:separator style="width: 300px;"/>
+          <p align="justify" style="width: 280px;">
+            &nbsp;&nbsp;&nbsp;&nbsp; The storage devices
+            can be monitored by the Disk Application, which
+            allow to generate consumption charts and display
+            information about the mounting point and file system.
+          </p>
+        </div>
+        
+        <div id="procdiv" class="textdiv" style="position: relative; top: -13px;">
+          <p:spacer height="50"/><br/>
+          <p:commandLink onclick="setLink('link-apps');"
+                         styleClass="text-link"
+                         action="new-processes.xhtml?faces-redirect=true">
+            <p:graphicImage styleClass="text-icon"
+                            library="images" 
+                            name="gear-black-20.png"/>
+            <p:spacer width="10" height="2"/>
+            <h:outputText value="Processes Watch and Control"
+                          style="font-weight: bold;"/>
+          </p:commandLink>
+          <p:separator style="width: 300px;"/>
+          <p align="justify" style="width: 280px;">
+            &nbsp;&nbsp;&nbsp;&nbsp; The running processes
+            are valueable information for the system administrator,
+            and can be real-time monitored by the Processes 
+            Application, allowing to apply filters and sort order,
+            with the power to kill processes.
+          </p>
+        </div>
+      </div>
+      
+      
+      
+      <div id="infodiv-right">
+        
+        <div id="memdiv" class="textdiv">
+          <p:spacer height="50"/><br/>
+          <p:commandLink onclick="setLink('link-apps');"
+                         styleClass="text-link"
+                         action="new-memory.xhtml?faces-redirect=true">
+            <p:graphicImage styleClass="text-icon"
+                            library="images" 
+                            name="memory-icon-22.png"/>
+            <p:spacer width="10" height="2"/>
+            <h:outputText value="Memory Consumption"
+                          style="font-weight: bold;"/>
+          </p:commandLink>
+          <p:separator style="width: 300px;"/>
+          <p align="justify" style="width: 280px;">
+            &nbsp;&nbsp;&nbsp;&nbsp; The main memory
+            is one of most critical components in servers
+            and the Memory Application allows to monitor
+            current and historical consumption,
+            and the possibility to clear memory cache, 
+            allowing to retrieve around 25% of the consumed memory.
+          </p>
+        </div>
+        
+        <div id="netdiv" class="textdiv" 
+             style="position: relative; top: -30px;">
+          <p:spacer height="50"/><br/>
+          <p:commandLink onclick="setLink('link-apps');"
+                         styleClass="text-link"
+                         action="new-network.xhtml?faces-redirect=true">
+            <p:graphicImage styleClass="text-icon"
+                            library="images" 
+                            name="net-icon-22.png"/>
+            <p:spacer width="10" height="2"/>
+            <h:outputText value="Network Load and Traffic"
+                          style="font-weight: bold;"/>
+          </p:commandLink>
+          <p:separator style="width: 300px;"/>
+          <p align="justify" style="width: 280px;">
+            &nbsp;&nbsp;&nbsp;&nbsp; The Network Application
+            allow real-time monitoring to the network interfaces
+            and can generate custom historical charts, besides
+            can display all traffic for the connected ip 
+            addresses, with protocol names and port number.
+          </p>
+        </div>
+        
+        <div id="termdiv" class="textdiv"
+             style="position: relative; top: -70px;">
+          <p:spacer height="50"/><br/>
+          <p:commandLink onclick="setLink('link-apps');"
+                         styleClass="text-link"
+                         action="new-terminal.xhtml?faces-redirect=true">
+            <p:graphicImage styleClass="text-icon"
+                            library="images" 
+                            name="term-icon_[28x20].png"/>
+            <p:spacer width="10" height="2"/>
+            <h:outputText value="Full Control with Terminal Access"
+                          style="font-weight: bold;"/>
+          </p:commandLink>
+          <p:separator style="width: 300px;"/>
+          <p align="justify" style="width: 280px;">
+            &nbsp;&nbsp;&nbsp;&nbsp; The most powerfull tool
+            for a system administrator is the terminal, which
+            can be accessed by the web interface, allowing 
+            full control of the system with easy access.
+          </p>
+        </div>
+      </div>
+      
+      <p:spacer height="50"/>
+      
+    </ui:define>
+    
+    <ui:define name="footer">
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

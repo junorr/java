@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/config.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/simcron.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/exception.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/simdate.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/worker.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/simlog.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+  
+  
+  <ui:composition template="index.xhtml">
+    
+    <ui:define name="body">
+      
+      <style type="text/css">
+        .icon-save {
+          width: 20px;
+          height: 20px;
+          background-image: url('resources/images/save-black-18.png') !important;
+        }
+        .icon-left {
+          width: 20px;
+          height: 20px;
+          background-image: url('resources/images/arrow-left-21.png') !important;
+        }
+        .panel-title {
+          position: relative;
+          top: -2px;
+        }
+        .bp {
+          height: 810px;
+        }
+      </style>
+      
+      <p:panel>
+        <f:facet name="header">
+          <h:graphicImage library="images" name="gear-black-20.png"/>
+          <p:spacer width="15" height="5"/>
+          <h:outputText value="Editar Usuário" 
+                        styleClass="panel-title"/>
+        </f:facet>
+          
+        <h:form prependId="false">
+          <h:panelGrid columns="4">
+            <h4><i>Dados Pessoais:</i></h4>
+            <h:outputText value=" "/>
+            <h:outputText value=" "/>
+            <h:outputText value=" "/>
+            
+            <p:spacer width="50" height="5"/>
+            <h:outputText value="Nome:"/>
+            <p:inputText id="iname" value="#{editUsers.editing.name}" required="true" requiredMessage="Informe seu nome"/>
+            <p:message for="iname" showDetail="false" showSummary="true"/>
+              
+            <p:spacer width="50" height="5"/>
+            <h:outputText value="Sobrenome:"/>
+            <p:inputText id="isurname" value="#{editUsers.editing.surname}" required="true" requiredMessage="sobrenome"/>
+            <p:message for="isurname" showDetail="false" showSummary="true"/>
+              
+            <p:spacer width="50" height="5"/>
+            <h:outputText value="Data de nascimento:"/>
+            <p:calendar mode="popup" showOn="both" navigator="true" locale="pt_BR" pattern="dd/MM/yyyy" yearRange="1940:2010" id="ibirth" value="#{editUsers.editing.birthday}" required="true" requiredMessage="data de nascimento"/>
+            <p:message for="ibirth" showDetail="false" showSummary="true"/>
+            
+            <p:spacer width="50" height="5"/>
+            <h:outputText value="Gênero:"/>
+            <p:selectOneRadio id="igen" value="#{editUsers.editing.gender}" layout="lineDirection" required="true" requiredMessage="gênero">
+              <f:selectItem itemLabel="Masculino" itemValue="M"/>
+              <f:selectItem itemLabel="Feminino" itemValue="F"/>
+            </p:selectOneRadio>
+            <p:message for="igen" showDetail="false" showSummary="true"/>
+            
+            <h4><i>Contato:</i></h4>
+            <h:outputText value=" "/>
+            <h:outputText value=" "/>
+            <h:outputText value=" "/>
+            
+            <p:spacer width="50" height="5"/>
+            <h:outputText value="E-mail:"/>
+            <p:inputText id="iemail" value="#{editUsers.editing.email}" required="true" requiredMessage="Informe um E-mail válido"/>
+            <p:message for="iemail" showDetail="false" showSummary="true"/>
+              
+            <p:spacer width="50" height="5"/>
+            <h:outputText value="Telefone principal:"/>
+            <p:inputMask mask="(99) 9999-9999" maxlength="14" id="ifone1" value="#{editUsers.editing.phone}" required="true" requiredMessage="telefone de contato"/>
+            <p:message for="ifone1" showDetail="false" showSummary="true"/>
+              
+            <p:spacer width="50" height="5"/>
+            <h:outputText value="Telefone (opcional):"/>
+            <p:inputMask mask="(99) 9999-9999" maxlength="14" id="ifone2" value="#{editUsers.editing.phone2}"/>
+            <h:outputText value=" "/>
+            
+            
+            <h4><i>Acessos:</i></h4>
+            <h:outputText value=" "/>
+            <h:outputText value=" "/>
+            <h:outputText value=" "/>
+            
+            <p:spacer width="50" height="5"/>
+            <p:selectBooleanCheckbox itemLabel="Administrador" value="#{editUsers.editing.admin}" />
+            <p:selectBooleanCheckbox itemLabel="Advogado" value="#{editUsers.editing.adv}"/>
+            <h:outputText value=" "/>
+            
+            
+            <h4><i>Senha:</i></h4>
+            <h:outputText value=" "/>
+            <h:outputText value=" "/>
+            <h:outputText value=" "/>
+            
+            <p:spacer width="50" height="5"/>
+            <h:outputText value="Senha:"/>
+            <p:password id="ipass" match="ipass2" feedback="true" value="#{editUsers.editing.password}" promptLabel="Informe uma senha" weakLabel="Fraca" goodLabel="Boa" strongLabel="Forte"/>
+            <p:message for="ipass" showDetail="false" showSummary="true"/>
+              
+            <p:spacer width="50" height="5"/>
+            <h:outputText value=" "/>
+            <p:password id="ipass2" feedback="false" value="#{editUsers.editing.password}"/>
+            <p:message for="ipass2" showDetail="false" showSummary="true"/>
+          </h:panelGrid>
+        
+          <br></br>
+          <center>
+            <p:button icon="icon-left" value="Voltar" outcome="adm-users.xhtml"/>
+            <p:spacer width="20" height="5"/>
+            <p:commandButton action="#{editUsers.saveEditing()}" ajax="false" value="Salvar" icon="icon-save"/>
+          </center>
+          
+        </h:form>
+      </p:panel>
+      
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

@@ -1,0 +1,15 @@
+int n1 = 500
+int n2 = 33
+
+func schedPrint()
+  pstr("executing schedule...")
+  string cmd = "cmd /c dir d:"
+  dialog(DIALOG_INFO, cmd, syscommand(cmd))
+endfunc
+
+object date = NOW
+date.addSecond(5);
+
+schedule(date, "schedPrint")
+pstr(concat("print scheduled at ", date))
+

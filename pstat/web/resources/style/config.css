@@ -1,0 +1,21 @@
+.input-size {
+  width: 150px;
+}
+        
+#envpanel {
+  position: relative; 
+  left: -230px; 
+  height: 242px;
+}
+        
+#sysconfig {
+  width: 420px;
+  height: 238px;
+}
+        
+#conf-status {
+  position: relative; 
+  top: 30px; 
+  left: 22px; 
+  width: 745px;
+}

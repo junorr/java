@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - Network
+    </ui:define>
+    
+    <ui:define name="style">
+      <h:outputStylesheet library="style" name="network.css"/>
+    </ui:define>
+
+    <ui:define name="category-icon">
+      <h:graphicImage library="images" name="net-icon-22.png"/>
+    </ui:define>
+    <ui:define name="category-name">Network</ui:define>
+    <ui:define name="category-links">
+      <h:commandLink value="Network Load" styleClass="menuLink"
+                     action="network.xhtml?faces-redirect=true"/>
+    </ui:define>
+    
+    
+    <ui:define name="category-content">
+
+      Interface: <h:outputText value="#{iFNetCharts.ifname}" 
+                                       style="font-weight: bold;"/>
+      <br/>
+      <p:spacer height="20"/>
+              
+      <p:dataTable id="traftable" 
+                   value="#{iFNetCharts.IFNetwork.traffic}"
+                   var="trf">
+                
+        <p:column headerText="Source" filterBy="#{trf.source}"
+                  sortBy="#{trf.source}">
+          #{trf.source}
+        </p:column>
+                
+        <p:column headerText="Dest." filterBy="#{trf.dest}"
+                  sortBy="#{trf.dest}">
+          #{trf.dest}
+        </p:column>
+                
+        <p:column headerText="Src Port" filterBy="#{trf.srcPort}"
+                  sortBy="#{trf.srcPort}">
+          <center>#{trf.srcPort}</center>
+        </p:column>
+                
+        <p:column headerText="Dst Port" filterBy="#{trf.dstPort}"
+                  sortBy="#{trf.dstPort}">
+          <center>#{trf.dstPort}</center>
+        </p:column>
+        
+        <p:column headerText="Protocol" filterBy="#{trf.proto}"
+                  sortBy="#{trf.proto}">
+          <center>#{trf.proto}</center>
+        </p:column>
+        
+        <p:column headerText="Total Bytes" filterBy="#{trf.totalBytes}"
+                  sortBy="#{trf.totalBytes}">
+          <center>#{trf.totalBytes}</center>
+        </p:column>
+        
+        <f:facet name="footer">
+          Size: #{iFNetCharts.IFNetwork.traffic.size()}
+        </f:facet>
+      </p:dataTable>
+      
+      <p:spacer height="100"/>
+      
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

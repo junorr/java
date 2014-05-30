@@ -1,0 +1,67 @@
+* (17/05/2013 13:32:21) [INFO]: Starting client...
+* (17/05/2013 13:32:21) [INFO]: Client started.
+* (17/05/2013 13:32:21) [INFO]: Connecting...
+* (17/05/2013 13:32:21) [INFO]: Client connected to  intranet.bb.com.br:80
+* (17/05/2013 13:32:21) [INFO]: Waiting for controll word...
+* (17/05/2013 13:32:47) [INFO]: Starting client...
+* (17/05/2013 13:32:47) [INFO]: Setting proxy: localhost:7000
+* (17/05/2013 13:32:47) [INFO]: Client started.
+* (17/05/2013 13:32:47) [INFO]: Connecting...
+* (17/05/2013 13:33:53) [FATAL]: java.net.SocketException: Connection reset
+* (17/05/2013 13:33:53) [ERROR]: java.net.SocketException: Connection reset
+	at java.net.SocketInputStream.read(SocketInputStream.java:189)
+	at java.net.SocksSocketImpl.readSocksReply(SocksSocketImpl.java:123)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:459)
+	at java.net.Socket.connect(Socket.java:579)
+	at java.net.Socket.connect(Socket.java:528)
+	at com.jpower.sockets.Client.start(Client.java:81)
+	at com.jpower.sockets.Main.main(Main.java:71)
+
+* (17/05/2013 13:34:57) [INFO]: Starting client...
+* (17/05/2013 13:34:57) [INFO]: Setting proxy: localhost:7000
+* (17/05/2013 13:34:57) [INFO]: Client started.
+* (17/05/2013 13:34:57) [INFO]: Connecting...
+* (17/05/2013 13:36:01) [FATAL]: java.net.SocketException: Connection reset
+* (17/05/2013 13:36:01) [ERROR]: java.net.SocketException: Connection reset
+	at java.net.SocketInputStream.read(SocketInputStream.java:189)
+	at java.net.SocksSocketImpl.readSocksReply(SocksSocketImpl.java:123)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:459)
+	at java.net.Socket.connect(Socket.java:579)
+	at java.net.Socket.connect(Socket.java:528)
+	at com.jpower.sockets.Client.start(Client.java:81)
+	at com.jpower.sockets.Main.main(Main.java:71)
+
+* (17/05/2013 13:36:21) [INFO]: Starting client...
+* (17/05/2013 13:36:21) [INFO]: Setting proxy: localhost:7000
+* (17/05/2013 13:36:21) [INFO]: Client started.
+* (17/05/2013 13:36:21) [INFO]: Connecting...
+* (17/05/2013 13:37:25) [FATAL]: java.net.SocketException: Connection reset
+* (17/05/2013 13:37:25) [ERROR]: java.net.SocketException: Connection reset
+	at java.net.SocketInputStream.read(SocketInputStream.java:189)
+	at java.net.SocksSocketImpl.readSocksReply(SocksSocketImpl.java:123)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:459)
+	at java.net.Socket.connect(Socket.java:579)
+	at java.net.Socket.connect(Socket.java:528)
+	at com.jpower.sockets.Client.start(Client.java:81)
+	at com.jpower.sockets.Main.main(Main.java:71)
+
+* (17/05/2013 15:49:18) [INFO]: Starting client...
+* (17/05/2013 15:49:18) [INFO]: Setting proxy: localhost:1080
+* (17/05/2013 15:49:18) [INFO]: Client started.
+* (17/05/2013 15:49:18) [INFO]: Connecting...
+* (17/05/2013 15:49:19) [INFO]: Client connected to  localhost:3000
+* (17/05/2013 15:49:19) [INFO]: Waiting for controll word...
+* (17/05/2013 15:49:19) [INFO]: Content received: socks
+* (17/05/2013 15:49:19) [INFO]: Exiting...
+* (17/05/2013 15:49:41) [INFO]: Starting client...
+* (17/05/2013 15:49:41) [INFO]: Setting proxy: localhost:1080
+* (17/05/2013 15:49:41) [INFO]: Client started.
+* (17/05/2013 15:49:41) [INFO]: Connecting...
+* (17/05/2013 15:49:44) [INFO]: Client connected to  www.google.com:80
+* (17/05/2013 15:49:44) [INFO]: Waiting for controll word...
+* (17/05/2013 15:58:05) [INFO]: Starting client...
+* (17/05/2013 15:58:05) [INFO]: Setting proxy: localhost:1080
+* (17/05/2013 15:58:05) [INFO]: Client started.
+* (17/05/2013 15:58:05) [INFO]: Connecting...
+* (17/05/2013 15:58:08) [INFO]: Client connected to  www.google.com:80
+* (17/05/2013 15:58:08) [INFO]: Waiting for controll word...

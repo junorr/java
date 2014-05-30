@@ -1,0 +1,2 @@
+Meu arquivo para codificar
+em Base64

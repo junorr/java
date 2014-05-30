@@ -1,0 +1,308 @@
+<com.power.utils.CalcMemory_-1>
+  <memory class="linked-list">
+    <com.power.utils.Expression>
+      <exp1>
+        <exp1 class="com.power.utils.VarExpression">
+          <var>Ia</var>
+          <value>19.561817146153395</value>
+          <valdef>true</valdef>
+        </exp1>
+      </exp1>
+      <exp2>
+        <exp1>
+          <exp1>
+            <exp1>
+              <exp1>
+                <exp1 class="com.power.utils.NumberExpression">
+                  <value>1.0</value>
+                  <buf></buf>
+                </exp1>
+              </exp1>
+              <exp2>
+                <exp1 class="com.power.utils.VarExpression">
+                  <var>Im</var>
+                  <value>1.5</value>
+                  <valdef>true</valdef>
+                </exp1>
+                <op>
+                  <priority>2</priority>
+                  <operator>%</operator>
+                </op>
+              </exp2>
+              <op>
+                <priority>2</priority>
+                <operator>+</operator>
+              </op>
+            </exp1>
+            <exp2>
+              <exp1 class="com.power.utils.VarExpression">
+                <var>n</var>
+                <value>12.0</value>
+                <valdef>true</valdef>
+              </exp1>
+            </exp2>
+            <op>
+              <priority>1</priority>
+              <operator>^</operator>
+            </op>
+          </exp1>
+          <exp2>
+            <exp1 class="com.power.utils.NumberExpression">
+              <value>1.0</value>
+              <buf></buf>
+            </exp1>
+          </exp2>
+          <op>
+            <priority>1</priority>
+            <operator>-</operator>
+          </op>
+        </exp1>
+        <exp2>
+          <exp1 class="com.power.utils.NumberExpression">
+            <value>100.0</value>
+            <buf></buf>
+          </exp1>
+        </exp2>
+        <op>
+          <priority>0</priority>
+          <operator>*</operator>
+        </op>
+      </exp2>
+      <op>
+        <priority>0</priority>
+        <operator>=</operator>
+      </op>
+      <description>Taxa Equivalente Anual</description>
+    </com.power.utils.Expression>
+    <com.power.utils.Expression>
+      <exp1>
+        <exp1>
+          <exp1>
+            <exp1>
+              <exp1>
+                <exp1 class="com.power.utils.VarExpression">
+                  <var>Ia</var>
+                  <value>20.0</value>
+                  <valdef>true</valdef>
+                </exp1>
+                <op>
+                  <priority>2</priority>
+                  <operator>%</operator>
+                </op>
+              </exp1>
+              <exp2>
+                <exp1 class="com.power.utils.NumberExpression">
+                  <value>1.0</value>
+                  <buf></buf>
+                </exp1>
+              </exp2>
+              <op>
+                <priority>2</priority>
+                <operator>+</operator>
+              </op>
+            </exp1>
+            <exp2>
+              <exp1 class="com.power.utils.NumberExpression">
+                <value>1.0</value>
+                <buf></buf>
+              </exp1>
+              <exp2 class="com.power.utils.VarExpression">
+                <var>n</var>
+                <value>12.0</value>
+                <valdef>true</valdef>
+              </exp2>
+              <op>
+                <priority>2</priority>
+                <operator>/</operator>
+              </op>
+            </exp2>
+            <op>
+              <priority>1</priority>
+              <operator>^</operator>
+            </op>
+          </exp1>
+          <exp2>
+            <exp1 class="com.power.utils.NumberExpression">
+              <value>1.0</value>
+              <buf></buf>
+            </exp1>
+          </exp2>
+          <op>
+            <priority>1</priority>
+            <operator>-</operator>
+          </op>
+        </exp1>
+        <exp2>
+          <exp1 class="com.power.utils.NumberExpression">
+            <value>100.0</value>
+            <buf></buf>
+          </exp1>
+        </exp2>
+        <op>
+          <priority>0</priority>
+          <operator>*</operator>
+        </op>
+      </exp1>
+      <exp2>
+        <exp1 class="com.power.utils.VarExpression">
+          <var>Im</var>
+          <value>1.5309470499731193</value>
+          <valdef>true</valdef>
+        </exp1>
+      </exp2>
+      <op>
+        <priority>0</priority>
+        <operator>=</operator>
+      </op>
+      <description>Taxa Equivalente Mensal</description>
+    </com.power.utils.Expression>
+    <com.power.utils.Expression>
+      <exp1>
+        <exp1 class="com.power.utils.VarExpression">
+          <var>x</var>
+          <value>6.666666666666667</value>
+          <valdef>true</valdef>
+        </exp1>
+      </exp1>
+      <exp2>
+        <exp1>
+          <exp1 class="com.power.utils.VarExpression">
+            <var>c</var>
+            <value>40.0</value>
+            <valdef>true</valdef>
+          </exp1>
+          <exp2 class="com.power.utils.VarExpression">
+            <var>b</var>
+            <value>5.0</value>
+            <valdef>true</valdef>
+          </exp2>
+          <op>
+            <priority>1</priority>
+            <operator>*</operator>
+          </op>
+        </exp1>
+        <exp2>
+          <exp1 class="com.power.utils.VarExpression">
+            <var>a</var>
+            <value>30.0</value>
+            <valdef>true</valdef>
+          </exp1>
+        </exp2>
+        <op>
+          <priority>0</priority>
+          <operator>/</operator>
+        </op>
+      </exp2>
+      <op>
+        <priority>0</priority>
+        <operator>=</operator>
+      </op>
+      <description>Regra de 3.  a _ b | c _ x</description>
+    </com.power.utils.Expression>
+    <com.power.utils.Expression>
+      <exp1>
+        <exp1 class="com.power.utils.VarExpression">
+          <var>inv</var>
+          <value>1.8181818181818181</value>
+          <valdef>true</valdef>
+        </exp1>
+      </exp1>
+      <exp2>
+        <exp1>
+          <exp1>
+            <exp1 class="com.power.utils.NumberExpression">
+              <value>100.0</value>
+              <buf></buf>
+            </exp1>
+            <exp2 class="com.power.utils.NumberExpression">
+              <value>100.0</value>
+              <buf></buf>
+            </exp2>
+            <op>
+              <priority>1</priority>
+              <operator>*</operator>
+            </op>
+          </exp1>
+          <exp2>
+            <exp1 class="com.power.utils.VarExpression">
+              <var>p</var>
+              <value>55.0</value>
+              <valdef>true</valdef>
+            </exp1>
+          </exp2>
+          <op>
+            <priority>1</priority>
+            <operator>/</operator>
+          </op>
+        </exp1>
+        <exp2>
+          <exp1 class="com.power.utils.NumberExpression">
+            <value>100.0</value>
+            <buf></buf>
+          </exp1>
+        </exp2>
+        <op>
+          <priority>0</priority>
+          <operator>/</operator>
+        </op>
+      </exp2>
+      <op>
+        <priority>0</priority>
+        <operator>=</operator>
+      </op>
+      <description>Calcula o inverso de um valor pecentual [e.g. 0.8 &gt;&gt; 1.25]</description>
+    </com.power.utils.Expression>
+  </memory>
+  <vars class="linked-list">
+    <com.power.utils.VarExpression>
+      <var>Im</var>
+      <value>1.5309470499731193</value>
+      <valdef>true</valdef>
+    </com.power.utils.VarExpression>
+    <com.power.utils.VarExpression>
+      <var>Ia</var>
+      <value>20.0</value>
+      <valdef>true</valdef>
+    </com.power.utils.VarExpression>
+    <com.power.utils.VarExpression>
+      <var>iM</var>
+      <value>1.55</value>
+      <valdef>true</valdef>
+    </com.power.utils.VarExpression>
+    <com.power.utils.VarExpression>
+      <var>p</var>
+      <value>55.0</value>
+      <valdef>true</valdef>
+    </com.power.utils.VarExpression>
+    <com.power.utils.VarExpression>
+      <var>inv</var>
+      <value>1.8181818181818181</value>
+      <valdef>true</valdef>
+    </com.power.utils.VarExpression>
+    <com.power.utils.VarExpression>
+      <var>n</var>
+      <value>12.0</value>
+      <valdef>true</valdef>
+    </com.power.utils.VarExpression>
+    <com.power.utils.VarExpression>
+      <var>a</var>
+      <value>30.0</value>
+      <valdef>true</valdef>
+    </com.power.utils.VarExpression>
+    <com.power.utils.VarExpression>
+      <var>b</var>
+      <value>5.0</value>
+      <valdef>true</valdef>
+    </com.power.utils.VarExpression>
+    <com.power.utils.VarExpression>
+      <var>c</var>
+      <value>40.0</value>
+      <valdef>true</valdef>
+    </com.power.utils.VarExpression>
+    <com.power.utils.VarExpression>
+      <var>x</var>
+      <value>6.666666666666667</value>
+      <valdef>true</valdef>
+    </com.power.utils.VarExpression>
+  </vars>
+</com.power.utils.CalcMemory_-1>

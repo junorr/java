@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="blog.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="220.35714"
+     inkscape:cy="805.71429"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="962"
+     inkscape:window-height="768"
+     inkscape:window-x="6"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:5.72517776;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect3753"
+       width="160.26787"
+       height="70.719559"
+       x="99.283081"
+       y="90.21669"
+       ry="8.2756929"
+       inkscape:export-filename="E:\java\badraadv\web\resources\images\blog-128.png"
+       inkscape:export-xdpi="68.57"
+       inkscape:export-ydpi="68.57" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:2.62339067;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 238.41358,178.45454 -1.15817,-45.02427 39.41066,32.70976 -16.00011,1.45245 25.05262,35.10746 -19.86642,0.009 -13.78359,-32.16843 z"
+       id="path3755"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccc"
+       inkscape:export-filename="E:\java\badraadv\web\resources\images\blog-128.png"
+       inkscape:export-xdpi="68.57"
+       inkscape:export-ydpi="68.57" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3757"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Comic Sans MS;-inkscape-font-specification:Comic Sans MS"
+       inkscape:export-filename="E:\java\badraadv\web\resources\images\blog-128.png"
+       inkscape:export-xdpi="68.57"
+       inkscape:export-ydpi="68.57"
+       transform="translate(0,-1.4285686)"><flowRegion
+         id="flowRegion3759"><rect
+           id="rect3761"
+           width="167.14285"
+           height="61.42857"
+           x="112.14286"
+           y="95.219322"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;font-family:Comic Sans MS;-inkscape-font-specification:Comic Sans MS" /></flowRegion><flowPara
+         id="flowPara3763"
+         style="font-size:48px;font-weight:bold;fill:#000000;fill-opacity:1;-inkscape-font-specification:Comic Sans MS Bold">blog.</flowPara></flowRoot>  </g>
+</svg>

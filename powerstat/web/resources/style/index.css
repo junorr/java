@@ -1,0 +1,60 @@
+/* 
+    Document   : index
+    Created on : 25/09/2012, 20:08:06
+    Author     : juno
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#body {
+  width: 1000px;
+}
+
+#title {
+  position: relative;
+  width: 400px;
+  height: 110px;
+  left: 150px;
+}
+
+#logo {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  right: 150px;
+}
+
+#navmenu {
+  position: absolute;
+  width: 991px;
+  height: 35px;
+  top: 136px;
+  left: 4px;
+}
+
+.navbutton {
+  position: relative;
+  top: -8px;
+}
+
+.ui-button-text {
+  font-size: 14px;
+}
+
+#categories {
+  position: relative;
+  top: 60px;
+}
+
+#category {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+body {
+  height: 1450px;
+  background: -webkit-linear-gradient(#56A1D1, #C0DCEE);
+  background: -moz-linear-gradient(#56A1D1, #C0DCEE);
+  background: -o-linear-gradient(#56A1D1, #C0DCEE);
+}
+

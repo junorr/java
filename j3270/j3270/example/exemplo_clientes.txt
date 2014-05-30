@@ -1,0 +1,56 @@
+import("d:/login.txt")
+
+settext(15, 14, "clientes")
+setpassword(16, 14, "")
+enter()
+
+waitfor(1, 2, "SBBP")
+settext(21, 20, "01")
+enter()
+
+waitfor(4, 3, "Consulta")
+settext(19, 18, "01")
+enter()
+
+string arqmci = "d:/MCI.txt"
+string arqcpf = "d:/CPF.txt"
+string cpf = " "
+string mci = " "
+string input = " "
+
+fwrite(arqcpf, "MCI")
+fwrite(arqcpf, CSV)
+fwrite(arqcpf, "CPF_CNPJ")
+fwrite(arqcpf, LN)
+
+## enquanto
+while !eq(mci, EOF)
+	input = waitelse(20, 27, "codigo do cliente", 23, 24, "Input")
+	if eq(input, "Input")
+		settext(10, 7, "____________________")
+		settext(21, 41, "01")
+		f3()
+		waitfor(20, 27, "codigo do cliente")
+	endif
+
+	mci = fread(arqmci)
+	settext(20, 57, mci)
+	enter()
+	waitfor(3, 15, "Consulta de Cadastro")
+
+	# compara cnpj
+	cpf = gettext(5, 3, 3)
+	if eq(cpf, "CPF")
+		cpf = gettext(5, 18, 14)
+	else
+		cpf = gettext(5, 12, 18)
+	endif
+
+	fwrite(arqcpf, mci)
+	fwrite(arqcpf, CSV)
+	fwrite(arqcpf, cpf)
+	fwrite(arqcpf, LN)
+
+	settext(21, 41, "01")
+	f3()
+endwhile

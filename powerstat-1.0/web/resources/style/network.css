@@ -1,0 +1,41 @@
+.graphics {
+  box-shadow: 3px 3px 5px 2px #888888;
+}
+
+#iflabel {
+  position: relative;
+  left: -225px;
+  top: 20px;
+}
+
+#ifselect {
+  position: relative;
+  left: -215px;
+  top: 30px;
+}
+
+#ifinfo {
+  position: relative;
+  top: 50px;
+  left: -205px;
+}
+
+#netbarchart {
+  position: relative; 
+  width: 420px; 
+  height: 300px;
+}
+
+#maxtext {
+  font-size: 14px;
+  font-weight: bold;
+  position: relative;
+  top: 155px;
+  left: 215px;
+}
+
+#netlinechart {
+  position: relative; 
+  top: 180px;
+  width: 860px;
+}

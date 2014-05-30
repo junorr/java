@@ -1,0 +1,8 @@
+pstr("screen.width="+ SCREEN_WIDTH+ ", screen.height="+ SCREEN_HEIGHT)
+object image = screencapture(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+#fwriteImage("screen.jpg", image)
+pstr("screen saved!")
+pstr("btn1="+BTN1)
+mclick(1, 1600, 540)
+pstr(syscommand("cmd /c dir d:"))
+

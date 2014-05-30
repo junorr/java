@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="new-base.xhtml">
+    
+    <ui:define name="header">
+      <h:outputScript library="javascript" name="aes.js"/>
+      <h:outputScript library="javascript" name="cryptoHelpers.js"/>
+      <h:outputScript library="javascript" name="hexcode.js"/>
+      
+      <script type="text/javascript">
+        function encrypt() {
+          var email = $("#iemail").val();
+          var pass = $("#ipass").val();
+          var hexKey = "#{loginController.uid}";
+          
+          $("#loading").show();
+          var bemail = cryptoHelpers.convertStringToByteArray(email);
+          var bpass = cryptoHelpers.convertStringToByteArray(pass);
+          var key = hex.fromHexString(hexKey);
+          var iv = hex.get16BytesLength(key);
+          
+          var encemail = slowAES.encrypt(bemail, slowAES.modeOfOperation.CBC, key, iv);
+          var encpass = slowAES.encrypt(bpass, slowAES.modeOfOperation.CBC, key, iv);
+          
+          $("#hemail").val(hex.toHexString(encemail));
+          $("#hpass").val(hex.toHexString(encpass));
+          setLink('link-home');
+        }
+        
+        function redirect() {
+          var logged = $("#hlogged").html();
+          $("#loading").hide();
+          if(logged == "true") {
+            window.location = "new-index.xhtml";
+          }
+        }
+      </script>
+    </ui:define>
+    
+    <ui:define name="page">
+      
+      <div id="login-panel" style="width: 700px;">
+        <p align="justify">
+          <h:graphicImage library="images" name="lock-black-18.png"/>
+          <p:spacer width="20" height="1"/>
+          <h:outputText style="font-weight: bold;" value="LOGIN"/>
+        <hr/>
+        </p>
+      </div>
+        
+      <p:messages id="msgs" autoUpdate="true" showDetail="false" showSummary="true"/>
+      <h:panelGrid columns="3">
+        
+        <p:outputLabel for="iemail" value="E-mail:"/>
+        <p:spacer height="40" width="1"/>
+        <p:inputText id="iemail" required="true" 
+                     requiredMessage="Informe a valid e-mail address."/>
+            
+        <p:outputLabel for="ipass" value="Password:"/>
+        <p:spacer height="40" width="1"/>
+        <p:password id="ipass" required="true" 
+                    requiredMessage="Informe a valid e-mail address."/>
+          
+        <p:spacer width="1"/>
+        <p:spacer height="40" width="1"/>
+          
+        <p:commandButton value="Login" onclick="encrypt();"
+                         actionListener="#{loginController.login()}"
+                         update="msgs,hlogged" oncomplete="redirect();"/>
+      </h:panelGrid>
+        
+      <h:inputHidden id="hemail" value="#{loginController.email}"/>
+      <h:inputHidden id="hpass" value="#{loginController.passwd}"/>
+      
+      <h:outputText id="hlogged" style="visibility: hidden;" 
+                    value="#{loginController.logged}"/>
+          
+      <h:graphicImage id="loading" library="images" 
+                      name="loading.gif" style="display: none;"/>
+    </ui:define>
+    
+    <ui:define name="footer">
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

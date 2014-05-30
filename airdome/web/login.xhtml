@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+			xmlns:f="http://java.sun.com/jsf/core"
+			xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<f:view locale="en">
+	
+	<h:outputStylesheet library="css" name="styles.css"/>
+	<h:outputScript library="javascript" name="jquery.js"/>
+	<h:outputScript library="javascript" name="tabulator.js"/>
+	<h:outputScript library="javascript" name="scripts.js"/>
+  <script type="text/javascript">
+    function obterForm(button) {
+      var form = $("#sendbutton").parents("form:first");
+      alert($(form).attr("id"));
+      return false;
+    }
+  </script>
+		
+	<h:head>
+		<title>Facelet Title</title>
+	</h:head>
+
+	<h:body>
+		
+		<f:loadBundle basename="com.jpower.airdome.Messages"
+									var="msgs"/>
+		
+		<h:form id="f1" prependId="false">
+
+			<div id="panel" class="panel">
+				
+				<h:panelGrid id="inside" columns="3" cellspacing="5px" styleClass="inside">
+					<f:facet name="header">
+						<h:outputText value="#{msgs.header}"/>
+					</f:facet>
+				
+					<h:outputText value="#{msgs.name}"/>
+					<h:inputText id="iname" value="#{user.name}" 
+											 required="true" label="Name">
+						<f:validateLength for="iname" minimum="2"/>
+					</h:inputText>
+					
+					<h:panelGroup>
+						<h:outputText id="errorname" value="" styleClass="error"/>
+						<h:message for="iname" styleClass="error" id="msgname"/>
+					</h:panelGroup>
+			
+					<h:outputText value="#{msgs.pass}"/>
+					<h:inputSecret id="ipass" value="#{user.passwd}" 
+												 required="true" label="Password">
+						<f:validateLength for="ipass" minimum="4"/>
+					</h:inputSecret>
+					
+					<h:panelGroup>
+						<h:outputText id="errorpass" value="" styleClass="error"/>
+						<h:message id="msgpass" for="ipass" styleClass="error"/>
+					</h:panelGroup>
+				
+				</h:panelGrid>
+			
+				<h:commandButton id="sendbutton" value="#{msgs.send}" 
+												 styleClass="sendbutton" action="welcome"
+												 onclick="return obterForm(this);"/>
+			</div>
+			
+			<h:messages styleClass="allerrors"/>
+			
+		</h:form>
+	</h:body>
+		
+	</f:view>
+		
+</html>
+

@@ -1,0 +1,34 @@
+.graphics {
+  box-shadow: 3px 3px 5px 2px #888888;
+}
+
+#cpu-icon {
+  width: 22px;
+  height: 22px;
+}
+        
+#cpuoverall {
+  width: 420px; 
+  height: 300px; 
+  position: relative; 
+  left: -188px;
+}
+
+#cpudetailed {
+  width: 420px; 
+  height: 300px;
+}
+
+#usedcpu {
+  font-size: 15px;
+  font-weight: bold;
+  position: relative;
+  left: -190px;
+  top: -20px;
+}
+
+#cpulinechart {
+  position: relative;
+  top: 10px;
+  width: 870px;
+}

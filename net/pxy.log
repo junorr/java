@@ -1,0 +1,777 @@
+* (20/07/2013 10:19:07) [INFO]: Connect: Request:
+* (20/07/2013 10:19:07) [INFO]: com.jpower.net.http.HttpRequest@7e0cf590
+* (20/07/2013 10:19:08) [INFO]: Connecting to: www.google.com/189.6.76.173:80
+* (20/07/2013 10:19:08) [INFO]: Socket open and connected
+* (20/07/2013 10:19:08) [INFO]: Handler: Connected
+* (20/07/2013 10:19:08) [INFO]: client running...
+* (20/07/2013 10:19:08) [INFO]: Handler: Sending...
+* (20/07/2013 10:19:08) [INFO]: Handler: Sent: 40
+* (20/07/2013 10:20:51) [INFO]: Connect: Request:
+* (20/07/2013 10:20:51) [INFO]: GET http://www.google.com HTTP/1.1
+Host: www.google.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1
+Accept: text/html,application/xhtml+xml,application/xml
+Accept-Language: pt-br, pt, en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+* (20/07/2013 10:20:51) [INFO]: Connecting to: www.google.com/189.6.76.162:80
+* (20/07/2013 10:20:51) [INFO]: Socket open and connected
+* (20/07/2013 10:20:51) [INFO]: Handler: Connected
+* (20/07/2013 10:20:51) [INFO]: client running...
+* (20/07/2013 10:20:51) [INFO]: Handler: Sending...
+* (20/07/2013 10:20:51) [INFO]: Handler: Sent: 287
+* (20/07/2013 10:23:29) [INFO]: Connect: Request:
+* (20/07/2013 10:23:29) [INFO]: GET http://www.google.com HTTP/1.1
+Host: www.google.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1
+Accept: text/html,application/xhtml+xml,application/xml
+Accept-Language: pt-br, pt, en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+* (20/07/2013 10:23:29) [INFO]: Connecting to: www.google.com/189.6.76.147:80
+* (20/07/2013 10:23:29) [INFO]: Socket open and connected
+* (20/07/2013 10:23:29) [INFO]: Handler: Connected
+* (20/07/2013 10:23:29) [INFO]: client running...
+* (20/07/2013 10:23:29) [INFO]: Handler: Sending...
+* (20/07/2013 10:23:29) [INFO]: Handler: Sent: 287
+* (20/07/2013 10:28:25) [INFO]: Connect: Request:
+* (20/07/2013 10:28:25) [INFO]: GET http://www.google.com HTTP/1.1
+Host: www.google.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1
+Accept: text/html,application/xhtml+xml,application/xml
+Accept-Language: pt-br, pt, en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+1001CS1001Cg0KDQoN9009CE9009
+
+* (20/07/2013 10:28:25) [INFO]: Connecting to: www.google.com/189.6.76.147:80
+* (20/07/2013 10:28:25) [INFO]: Socket open and connected
+* (20/07/2013 10:28:25) [INFO]: Handler: Connected
+* (20/07/2013 10:28:25) [INFO]: client running...
+* (20/07/2013 10:28:25) [INFO]: Handler: Sending...
+* (20/07/2013 10:28:25) [INFO]: Handler: Sent: 316
+* (20/07/2013 10:29:40) [INFO]: Connect: Request:
+* (20/07/2013 10:29:40) [INFO]: GET http://www.google.com HTTP/1.1
+Host: www.google.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1
+Accept: text/html,application/xhtml+xml,application/xml
+Accept-Language: pt-br, pt, en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+
+
+
+* (20/07/2013 10:29:40) [INFO]: Connecting to: www.google.com/189.6.76.170:80
+* (20/07/2013 10:29:40) [INFO]: Socket open and connected
+* (20/07/2013 10:29:40) [INFO]: Handler: Connected
+* (20/07/2013 10:29:40) [INFO]: client running...
+* (20/07/2013 10:29:40) [INFO]: Handler: Sending...
+* (20/07/2013 10:29:40) [INFO]: Handler: Sent: 293
+* (20/07/2013 10:29:40) [INFO]: Handler: Content received:
+* (20/07/2013 10:29:40) [INFO]: *********************************
+* (20/07/2013 10:29:40) [INFO]: HTTP/1.1 302 Found
+Location: http://www.google.com.br/?gws_rd=cr
+Cache-Control: private
+Content-Type: text/html; charset=UTF-8
+Set-Cookie: PREF=ID=f41449eef37ae302:FF=0:TM=1374326980:LM=1374326980:S=HtB22BTZGZugJLvV; expires=Mon, 20-Jul-2015 13:29:40 GMT; path=/; domain=.google.com
+Set-Cookie: NID=67=XhTNebZ6AROfr4xYj2dp2g07BDR3DmsNDGtkOEnLUZozQFgrJSyY79mHsOTe82wAoV3DlHTyREE1pcRFfrZNSBHEwI8JBQxIi4S7d6fxnQTFVVHgug6cvchBEko57bbm; expires=Sun, 19-Jan-2014 13:29:40 GMT; path=/; domain=.google.com; HttpOnly
+P3P: CP="This is not a P3P policy! See http://www.google.com/support/accounts/bin/answer.py?hl=en&answer=151657 for more info."
+Date: Sat, 20 Jul 2013 13:29:40 GMT
+Server: gws
+Content-Length: 232
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="http://www.google.com.br/?gws_rd=cr">here</A>.
+</BODY></HTML>
+
+* (20/07/2013 10:29:40) [INFO]: *********************************
+* (20/07/2013 10:34:59) [INFO]: Connect: Request:
+* (20/07/2013 10:34:59) [INFO]: GET http://www.google.com HTTP/1.1
+Host: www.google.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1
+Accept: text/html,application/xhtml+xml,application/xml
+Accept-Language: pt-br, pt, en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+
+
+* (20/07/2013 10:34:59) [INFO]: Connecting to: www.google.com/189.6.76.155:80
+* (20/07/2013 10:34:59) [INFO]: Socket open and connected
+* (20/07/2013 10:34:59) [INFO]: Handler: Connected
+* (20/07/2013 10:34:59) [INFO]: client running...
+* (20/07/2013 10:34:59) [INFO]: Handler: Sending...
+* (20/07/2013 10:34:59) [INFO]: Handler: Sent: 291
+* (20/07/2013 10:34:59) [INFO]: Handler: Content received:
+* (20/07/2013 10:34:59) [INFO]: *********************************
+* (20/07/2013 10:34:59) [INFO]: HTTP/1.1 302 Found
+Location: http://www.google.com.br/?gws_rd=cr
+Cache-Control: private
+Content-Type: text/html; charset=UTF-8
+Set-Cookie: PREF=ID=f23ad62643de38b7:FF=0:TM=1374327299:LM=1374327299:S=WLAY4dtaqaf1g-K0; expires=Mon, 20-Jul-2015 13:34:59 GMT; path=/; domain=.google.com
+Set-Cookie: NID=67=Wa-91FdKGTz-UoaE4qY8SNBTuS3jdcn_YdLQeJihXL__IBjwPbkViiKlQtbEr6K0yKS-SCaRMtHuFPI_hcnXsAf6Of2ddTqI-lXrUW-Qe4og4oMTeTbPFOA_CD3_dcU_; expires=Sun, 19-Jan-2014 13:34:59 GMT; path=/; domain=.google.com; HttpOnly
+P3P: CP="This is not a P3P policy! See http://www.google.com/support/accounts/bin/answer.py?hl=en&answer=151657 for more info."
+Date: Sat, 20 Jul 2013 13:34:59 GMT
+Server: gws
+Content-Length: 232
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="http://www.google.com.br/?gws_rd=cr">here</A>.
+</BODY></HTML>
+
+* (20/07/2013 10:34:59) [INFO]: *********************************
+* (20/07/2013 10:34:59) [INFO]: Handler: closing...
+* (20/07/2013 10:34:59) [INFO]: Socket closed. Exiting...
+* (20/07/2013 12:32:59) [INFO]: Connect: Request:
+* (20/07/2013 12:32:59) [INFO]: GET http://www.google.com HTTP/1.1
+Host: www.google.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1
+Accept: text/html,application/xhtml+xml,application/xml
+Accept-Language: pt-br, pt, en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+
+
+* (20/07/2013 12:32:59) [INFO]: Connecting to: www.google.com/189.6.76.181:80
+* (20/07/2013 12:32:59) [INFO]: Socket open and connected
+* (20/07/2013 12:32:59) [INFO]: Handler: Connected
+* (20/07/2013 12:32:59) [INFO]: client running...
+* (20/07/2013 12:32:59) [INFO]: Handler: Sending...
+* (20/07/2013 12:32:59) [INFO]: Handler: Sent: 291
+* (20/07/2013 12:40:13) [INFO]: Connect: Request:
+* (20/07/2013 12:40:13) [INFO]: GET http://www.google.com HTTP/1.1
+Host: www.google.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1
+Accept: text/html,application/xhtml+xml,application/xml
+Accept-Language: pt-br, pt, en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+* (20/07/2013 12:40:13) [INFO]: Connecting to: www.google.com/189.6.76.170:80
+* (20/07/2013 12:40:13) [INFO]: Socket open and connected
+* (20/07/2013 12:40:13) [INFO]: Handler: Connected
+* (20/07/2013 12:40:13) [INFO]: client running...
+* (20/07/2013 12:40:13) [INFO]: Handler: Sending...
+* (20/07/2013 12:40:13) [INFO]: Handler: Sent: 287
+* (20/07/2013 12:40:57) [INFO]: Connect: Request:
+* (20/07/2013 12:40:57) [INFO]: GET http://www.google.com HTTP/1.1
+Host: www.google.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1
+Accept: text/html,application/xhtml+xml,application/xml
+Accept-Language: pt-br, pt, en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+
+
+* (20/07/2013 12:40:57) [INFO]: Connecting to: www.google.com/189.6.76.173:80
+* (20/07/2013 12:40:57) [INFO]: Socket open and connected
+* (20/07/2013 12:40:57) [INFO]: Handler: Connected
+* (20/07/2013 12:40:57) [INFO]: client running...
+* (20/07/2013 12:40:57) [INFO]: Handler: Sending...
+* (20/07/2013 12:40:57) [INFO]: Handler: Sent: 291
+* (20/07/2013 12:42:01) [INFO]: Connect: Request:
+* (20/07/2013 12:42:01) [INFO]: GET http://www.google.com HTTP/1.1
+Host: www.google.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1
+Accept: text/html,application/xhtml+xml,application/xml
+Accept-Language: pt-br, pt, en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+
+
+* (20/07/2013 12:42:01) [INFO]: Connecting to: www.google.com/189.6.76.143:80
+* (20/07/2013 12:42:01) [INFO]: Socket open and connected
+* (20/07/2013 12:42:01) [INFO]: Handler: Connected
+* (20/07/2013 12:42:01) [INFO]: client running...
+* (20/07/2013 12:42:01) [INFO]: Handler: Sending...
+* (20/07/2013 12:42:01) [INFO]: Handler: Sent: 291
+* (20/07/2013 12:43:45) [INFO]: Connect: Request:
+* (20/07/2013 12:43:45) [INFO]: GET http://www.google.com HTTP/1.1
+Host: www.google.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1
+Accept: text/html,application/xhtml+xml,application/xml
+Accept-Language: pt-br, pt, en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+
+
+* (20/07/2013 12:43:45) [INFO]: Connecting to: www.google.com/189.6.76.187:80
+* (20/07/2013 12:43:45) [INFO]: Socket open and connected
+* (20/07/2013 12:43:45) [INFO]: Handler: Connected
+* (20/07/2013 12:43:45) [INFO]: client running...
+* (20/07/2013 12:43:45) [INFO]: Handler: Sending...
+* (20/07/2013 12:43:45) [INFO]: Handler: Sent: 291
+* (20/07/2013 12:43:45) [INFO]: Handler: Content received:
+* (20/07/2013 12:43:45) [INFO]: *********************************
+* (20/07/2013 12:43:45) [INFO]: HTTP/1.1 302 Found
+Location: http://www.google.com.br/?gws_rd=cr
+Cache-Control: private
+Content-Type: text/html; charset=UTF-8
+Set-Cookie: PREF=ID=19e015e7a4907541:FF=0:TM=1374335025:LM=1374335025:S=B1M8pSpPjMHJT5qp; expires=Mon, 20-Jul-2015 15:43:45 GMT; path=/; domain=.google.com
+Set-Cookie: NID=67=FxarBi8mM5NrBsxlaqJ8gdSVC2Fhnwc-8y30WCqCtK8qslcyYRMHym78GcbkMngBBOCsy-Bklf3VZ8gseJeNSYUIlgRwbKrPcYDhHaGM2QnX8iv1NZooHtY9vsOt5QoE; expires=Sun, 19-Jan-2014 15:43:45 GMT; path=/; domain=.google.com; HttpOnly
+P3P: CP="This is not a P3P policy! See http://www.google.com/support/accounts/bin/answer.py?hl=en&answer=151657 for more info."
+Date: Sat, 20 Jul 2013 15:43:45 GMT
+Server: gws
+Content-Length: 232
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="http://www.google.com.br/?gws_rd=cr">here</A>.
+</BODY></HTML>
+
+* (20/07/2013 12:43:45) [INFO]: *********************************
+* (20/07/2013 12:43:45) [INFO]: Handler: closing...
+* (20/07/2013 12:43:45) [INFO]: Socket closed. Exiting...
+* (20/07/2013 12:47:09) [INFO]: Connect: Request:
+* (20/07/2013 12:47:09) [INFO]: GET http://www.google.com HTTP/1.1
+Host: www.google.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1
+Accept: text/html,application/xhtml+xml,application/xml
+Accept-Language: pt-br, pt, en-us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+
+
+
+* (20/07/2013 12:47:09) [INFO]: Connecting to: www.google.com/189.6.76.181:80
+* (20/07/2013 12:47:09) [INFO]: Handler: Connected
+* (20/07/2013 12:47:09) [INFO]: Handler: Sending...
+* (20/07/2013 12:47:09) [INFO]: Handler: Sent: 291
+* (20/07/2013 12:47:09) [INFO]: Handler: Content received:
+* (20/07/2013 12:47:09) [INFO]: *********************************
+* (20/07/2013 12:47:09) [INFO]: HTTP/1.1 302 Found
+Location: http://www.google.com.br/?gws_rd=cr
+Cache-Control: private
+Content-Type: text/html; charset=UTF-8
+Set-Cookie: PREF=ID=b7023a2cc526a022:FF=0:TM=1374335229:LM=1374335229:S=zPei0alhdha6dawj; expires=Mon, 20-Jul-2015 15:47:09 GMT; path=/; domain=.google.com
+Set-Cookie: NID=67=tn3144gD-gwMgF3f3VKiLeBszSVDCG50eHm_of2nTgJli6R4-bfSA6jieipO00EMkENXQuPpMC5z9Sk7g33ixRYRApwetZT32hJiFcNM-yZuvZ5WSD4Ene9SnqwzzDoZ; expires=Sun, 19-Jan-2014 15:47:09 GMT; path=/; domain=.google.com; HttpOnly
+P3P: CP="This is not a P3P policy! See http://www.google.com/support/accounts/bin/answer.py?hl=en&answer=151657 for more info."
+Date: Sat, 20 Jul 2013 15:47:09 GMT
+Server: gws
+Content-Length: 232
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="http://www.google.com.br/?gws_rd=cr">here</A>.
+</BODY></HTML>
+
+* (20/07/2013 12:47:09) [INFO]: *********************************
+* (20/07/2013 12:47:09) [INFO]: Handler: closing...
+* (20/07/2013 12:47:09) [INFO]: Socket closed. Exiting...
+* (20/07/2013 13:07:45) [INFO]: Connecting to: www.google.com/189.6.76.157:80
+* (20/07/2013 13:07:45) [INFO]: Handler: Connected
+* (20/07/2013 13:07:45) [INFO]: Handler: Sending...
+* (20/07/2013 13:07:45) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:07:45) [INFO]: Handler: Content received:
+* (20/07/2013 13:07:45) [INFO]: *********************************
+* (20/07/2013 13:07:45) [INFO]: HTTP/1.1 302 Found
+Location: http://www.google.com.br/?gws_rd=cr
+Cache-Control: private
+Content-Type: text/html; charset=UTF-8
+Set-Cookie: PREF=ID=f24b64bc290eba6f:FF=0:TM=1374336465:LM=1374336465:S=th77oDoQdi5c46Rg; expires=Mon, 20-Jul-2015 16:07:45 GMT; path=/; domain=.google.com
+Set-Cookie: NID=67=G8Mw-9sPaZG_QHoy3X5tJi9XEb3baTO06ybMHZQjQlLVdovYfBppUyxECkq8_MBgaCbT4kcNth9dHyHIqIYfu8NdQrsCWRUOvxtR6xDnCizn1z-0ePw4IPlgE7Mj3LOu; expires=Sun, 19-Jan-2014 16:07:45 GMT; path=/; domain=.google.com; HttpOnly
+P3P: CP="This is not a P3P policy! See http://www.google.com/support/accounts/bin/answer.py?hl=en&answer=151657 for more info."
+Date: Sat, 20 Jul 2013 16:07:45 GMT
+Server: gws
+Content-Length: 232
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="http://www.google.com.br/?gws_rd=cr">here</A>.
+</BODY></HTML>
+
+* (20/07/2013 13:07:45) [INFO]: *********************************
+* (20/07/2013 13:07:45) [INFO]: Handler: closing...
+* (20/07/2013 13:07:45) [INFO]: Socket closed. Exiting...
+* (20/07/2013 13:08:52) [INFO]: Connecting to: www.google.com/189.6.76.162:80
+* (20/07/2013 13:08:52) [INFO]: Handler: Connected
+* (20/07/2013 13:08:52) [INFO]: Handler: Sending...
+* (20/07/2013 13:08:52) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:08:53) [INFO]: Handler: Content received:
+* (20/07/2013 13:08:53) [INFO]: *********************************
+* (20/07/2013 13:08:53) [INFO]: HTTP/1.1 302 Found
+Location: http://www.google.com.br/?gws_rd=cr
+Cache-Control: private
+Content-Type: text/html; charset=UTF-8
+Set-Cookie: PREF=ID=aac10c27cd36246c:FF=0:TM=1374336532:LM=1374336532:S=UZKU5BhRtEQFwHY8; expires=Mon, 20-Jul-2015 16:08:52 GMT; path=/; domain=.google.com
+Set-Cookie: NID=67=H9qpgoKxCD_GEVxvFSfz6qE0dBSfr8yXnXbFd5H_fPQJxG4PGKeNvp3Fj0kcbN-uP7YeQGPt2A5WBXB6Fep0GG3FDttFfmM1mCxLWmNbAl94_jiTHNSGg5iEZdGD1w3C; expires=Sun, 19-Jan-2014 16:08:52 GMT; path=/; domain=.google.com; HttpOnly
+P3P: CP="This is not a P3P policy! See http://www.google.com/support/accounts/bin/answer.py?hl=en&answer=151657 for more info."
+Date: Sat, 20 Jul 2013 16:08:52 GMT
+Server: gws
+Content-Length: 232
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="http://www.google.com.br/?gws_rd=cr">here</A>.
+</BODY></HTML>
+
+* (20/07/2013 13:08:53) [INFO]: *********************************
+* (20/07/2013 13:08:53) [INFO]: Handler: closing...
+* (20/07/2013 13:08:53) [INFO]: Socket closed. Exiting...
+* (20/07/2013 13:08:53) [INFO]: Location: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 13:08:53) [INFO]: Cache-Control: private
+* (20/07/2013 13:08:53) [INFO]: Content-Type: text/html; charset=UTF-8
+* (20/07/2013 13:08:53) [INFO]: Set-Cookie: PREF=ID=aac10c27cd36246c:FF=0:TM=1374336532:LM=1374336532:S=UZKU5BhRtEQFwHY8; expires=Mon, 20-Jul-2015 16:08:52 GMT; path=/; domain=.google.com
+* (20/07/2013 13:08:53) [INFO]: Set-Cookie: NID=67=H9qpgoKxCD_GEVxvFSfz6qE0dBSfr8yXnXbFd5H_fPQJxG4PGKeNvp3Fj0kcbN-uP7YeQGPt2A5WBXB6Fep0GG3FDttFfmM1mCxLWmNbAl94_jiTHNSGg5iEZdGD1w3C; expires=Sun, 19-Jan-2014 16:08:52 GMT; path=/; domain=.google.com; HttpOnly
+* (20/07/2013 13:08:53) [INFO]: P3P: CP="This is not a P3P policy! See http://www.google.com/support/accounts/bin/answer.py?hl=en&answer=151657 for more info."
+* (20/07/2013 13:08:53) [INFO]: Date: Sat, 20 Jul 2013 16:08:52 GMT
+* (20/07/2013 13:08:53) [INFO]: Server: gws
+* (20/07/2013 13:08:53) [INFO]: Content-Length: 232
+* (20/07/2013 13:08:53) [INFO]: X-XSS-Protection: 1; mode=block
+* (20/07/2013 13:08:53) [INFO]: X-Frame-Options: SAMEORIGIN
+* (20/07/2013 13:08:53) [INFO]: <HTML><HEAD><meta http-equiv="content-type" content="texthtml;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<AHREF="http:www.google.com.br?gws_rd=cr">here</A>.
+</BODY></HTML>
+
+* (20/07/2013 13:10:07) [INFO]: Connecting to: www.google.com/189.6.76.187:80
+* (20/07/2013 13:10:07) [INFO]: Handler: Connected
+* (20/07/2013 13:10:07) [INFO]: Handler: Sending...
+* (20/07/2013 13:10:07) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:10:07) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:10:44) [INFO]: Connecting to: www.google.com/189.6.76.181:80
+* (20/07/2013 13:10:44) [INFO]: Handler: Connected
+* (20/07/2013 13:10:44) [INFO]: Handler: Sending...
+* (20/07/2013 13:10:44) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:10:44) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:11:39) [INFO]: Connecting to: www.google.com/189.6.76.172:80
+* (20/07/2013 13:11:40) [INFO]: Handler: Connected
+* (20/07/2013 13:11:40) [INFO]: Handler: Sending...
+* (20/07/2013 13:11:40) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:11:40) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:12:36) [INFO]: Connecting to: www.google.com/189.6.76.143:80
+* (20/07/2013 13:12:36) [INFO]: Handler: Connected
+* (20/07/2013 13:12:36) [INFO]: Handler: Sending...
+* (20/07/2013 13:12:36) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:12:36) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:13:47) [INFO]: Connecting to: www.google.com/189.6.76.172:80
+* (20/07/2013 13:13:47) [INFO]: Handler: Connected
+* (20/07/2013 13:13:47) [INFO]: Handler: Sending...
+* (20/07/2013 13:13:47) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:13:47) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:15:14) [INFO]: Connecting to: www.google.com/189.6.76.177:80
+* (20/07/2013 13:15:14) [INFO]: Handler: Connected
+* (20/07/2013 13:15:14) [INFO]: Handler: Sending...
+* (20/07/2013 13:15:14) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:15:15) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:16:57) [INFO]: Connecting to: www.google.com/189.6.76.143:80
+* (20/07/2013 13:16:57) [INFO]: Handler: Connected
+* (20/07/2013 13:16:57) [INFO]: Handler: Sending...
+* (20/07/2013 13:16:57) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:16:57) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:16:57) [INFO]: Socket closed. Exiting...
+* (20/07/2013 13:17:44) [INFO]: Connecting to: www.google.com/189.6.76.143:80
+* (20/07/2013 13:17:44) [INFO]: Handler: Connected
+* (20/07/2013 13:17:44) [INFO]: Handler: Sending...
+* (20/07/2013 13:17:44) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:17:45) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:17:45) [INFO]: Socket closed. Exiting...
+* (20/07/2013 13:18:35) [INFO]: Connecting to: www.google.com/189.6.76.177:80
+* (20/07/2013 13:18:35) [INFO]: Handler: Connected
+* (20/07/2013 13:18:35) [INFO]: Handler: Sending...
+* (20/07/2013 13:18:35) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:18:35) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:18:35) [INFO]: Socket closed. Exiting...
+* (20/07/2013 13:41:05) [INFO]: Connecting to: www.google.com/189.6.76.157:80
+* (20/07/2013 13:41:05) [INFO]: Handler: Connected
+* (20/07/2013 13:41:05) [INFO]: Handler: Sending...
+* (20/07/2013 13:41:05) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:41:05) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:41:05) [INFO]: Socket closed. Exiting...
+* (20/07/2013 13:41:51) [INFO]: Connecting to: www.google.com/189.6.76.181:80
+* (20/07/2013 13:41:51) [INFO]: Handler: Connected
+* (20/07/2013 13:41:51) [INFO]: Handler: Sending...
+* (20/07/2013 13:41:51) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:41:51) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:41:51) [INFO]: Socket closed. Exiting...
+* (20/07/2013 13:42:20) [INFO]: Connecting to: www.google.com/189.6.76.143:80
+* (20/07/2013 13:42:20) [INFO]: Handler: Connected
+* (20/07/2013 13:42:20) [INFO]: Handler: Sending...
+* (20/07/2013 13:42:20) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:42:20) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:42:20) [INFO]: Socket closed. Exiting...
+* (20/07/2013 13:47:32) [INFO]: Connecting to: www.google.com/189.6.76.187:80
+* (20/07/2013 13:47:32) [INFO]: Handler: Connected
+* (20/07/2013 13:47:32) [INFO]: Handler: Sending...
+* (20/07/2013 13:47:32) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:47:33) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:47:33) [INFO]: Socket closed. Exiting...
+* (20/07/2013 13:51:22) [INFO]: Connecting to: www.google.com/189.6.76.181:80
+* (20/07/2013 13:51:22) [INFO]: Handler: Connected
+* (20/07/2013 13:51:22) [INFO]: Handler: Sending...
+* (20/07/2013 13:51:22) [INFO]: Handler: Sent: 274
+* (20/07/2013 13:51:22) [INFO]: Handler: Content received: 1010
+* (20/07/2013 13:51:22) [INFO]: Socket closed. Exiting...
+* (20/07/2013 13:51:22) [INFO]: Connecting to: www.google.com/189.6.76.181:80
+* (20/07/2013 13:51:22) [INFO]: Handler: Connected
+* (20/07/2013 14:00:58) [INFO]: Connecting to: www.google.com/189.6.76.172:80
+* (20/07/2013 14:00:58) [INFO]: Handler: Connected
+* (20/07/2013 14:00:58) [INFO]: Handler: Sending...
+* (20/07/2013 14:00:58) [INFO]: Handler: Sent: 274
+* (20/07/2013 14:01:00) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:01:00) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:01:00) [INFO]: Connecting to: www.google.com/189.6.76.172:80
+* (20/07/2013 14:01:00) [INFO]: Handler: Connected
+* (20/07/2013 14:02:00) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:03:14) [INFO]: Connecting to: www.google.com/189.6.76.143:80
+* (20/07/2013 14:03:14) [INFO]: Handler: Connected
+* (20/07/2013 14:03:14) [INFO]: Handler: Sending...
+* (20/07/2013 14:03:14) [INFO]: Handler: Sent: 274
+* (20/07/2013 14:03:14) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:03:14) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:03:14) [INFO]: Connecting to: www.google.com/189.6.76.143:80
+* (20/07/2013 14:03:14) [INFO]: Handler: Connected
+* (20/07/2013 14:03:31) [INFO]: Connecting to: www.google.com/189.6.76.181:80
+* (20/07/2013 14:03:32) [INFO]: Handler: Connected
+* (20/07/2013 14:03:32) [INFO]: Handler: Sending...
+* (20/07/2013 14:03:32) [INFO]: Handler: Sent: 274
+* (20/07/2013 14:03:36) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:03:36) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:04:37) [INFO]: Connecting to: www.google.com/189.6.76.172:80
+* (20/07/2013 14:04:37) [INFO]: Handler: Connected
+* (20/07/2013 14:04:37) [INFO]: Handler: Sending...
+* (20/07/2013 14:04:37) [INFO]: Handler: Sent: 274
+* (20/07/2013 14:04:37) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:04:37) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:04:37) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:05:32) [INFO]: Connecting to: www.google.com/189.6.76.173:80
+* (20/07/2013 14:05:32) [INFO]: Handler: Connected
+* (20/07/2013 14:05:32) [INFO]: Handler: Sending...
+* (20/07/2013 14:05:32) [INFO]: Handler: Sent: 274
+* (20/07/2013 14:05:34) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:05:34) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:05:34) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:05:34) [INFO]: Reconnecting...
+* (20/07/2013 14:05:34) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:05:34) [INFO]: Connecting to: www.google.com/189.6.76.173:80
+* (20/07/2013 14:05:34) [INFO]: Handler: Connected
+* (20/07/2013 14:05:34) [INFO]: Handler: Sending...
+* (20/07/2013 14:05:34) [INFO]: Handler: Sent: 321
+* (20/07/2013 14:05:34) [INFO]: Handler: Content received: 2722
+* (20/07/2013 14:05:34) [INFO]: HTTP/1.1 200 OK
+* (20/07/2013 14:26:23) [INFO]: Connecting to: www.google.com/189.6.76.155:80
+* (20/07/2013 14:26:23) [INFO]: Handler: Connected
+* (20/07/2013 14:26:23) [INFO]: Handler: Sending...
+* (20/07/2013 14:26:23) [INFO]: Handler: Sent: 236
+* (20/07/2013 14:26:23) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:26:23) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:26:23) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:26:23) [INFO]: Reconnecting...
+* (20/07/2013 14:26:23) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:29:04) [INFO]: Connecting to: www.google.com/189.6.76.172:80
+* (20/07/2013 14:29:04) [INFO]: Handler: Connected
+* (20/07/2013 14:29:04) [INFO]: Handler: Sending...
+* (20/07/2013 14:29:04) [INFO]: Handler: Sent: 236
+* (20/07/2013 14:29:04) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:29:04) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:29:04) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:29:04) [INFO]: Reconnecting...
+* (20/07/2013 14:29:04) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:33:05) [INFO]: Connecting to: www.google.com/189.6.76.185:80
+* (20/07/2013 14:33:05) [INFO]: Handler: Connected
+* (20/07/2013 14:33:05) [INFO]: Handler: Sending...
+* (20/07/2013 14:33:05) [INFO]: Handler: Sent: 236
+* (20/07/2013 14:33:05) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:33:05) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:33:05) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:33:05) [INFO]: Reconnecting...
+* (20/07/2013 14:33:05) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:33:46) [INFO]: Connecting to: www.google.com/189.6.76.151:80
+* (20/07/2013 14:33:46) [INFO]: Handler: Connected
+* (20/07/2013 14:33:46) [INFO]: Handler: Sending...
+* (20/07/2013 14:33:46) [INFO]: Handler: Sent: 236
+* (20/07/2013 14:33:46) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:33:46) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:33:46) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:33:46) [INFO]: Reconnecting...
+* (20/07/2013 14:33:46) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:34:50) [INFO]: Connecting to: www.google.com/189.6.76.158:80
+* (20/07/2013 14:34:50) [INFO]: Handler: Connected
+* (20/07/2013 14:34:50) [INFO]: Handler: Sending...
+* (20/07/2013 14:34:50) [INFO]: Handler: Sent: 236
+* (20/07/2013 14:34:50) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:34:50) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:34:50) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:34:50) [INFO]: Reconnecting...
+* (20/07/2013 14:34:50) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:37:04) [INFO]: Connecting to: www.google.com/189.6.76.158:80
+* (20/07/2013 14:37:05) [INFO]: Handler: Connected
+* (20/07/2013 14:37:05) [INFO]: Handler: Sending...
+* (20/07/2013 14:37:05) [INFO]: Handler: Sent: 236
+* (20/07/2013 14:37:05) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:37:05) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:37:05) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:37:05) [INFO]: Reconnecting...
+* (20/07/2013 14:37:05) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:37:41) [INFO]: Connecting to: www.google.com/189.6.76.177:80
+* (20/07/2013 14:37:41) [INFO]: Handler: Connected
+* (20/07/2013 14:37:41) [INFO]: Handler: Sending...
+* (20/07/2013 14:37:41) [INFO]: Handler: Sent: 236
+* (20/07/2013 14:37:42) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:37:42) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:37:42) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:37:42) [INFO]: Reconnecting...
+* (20/07/2013 14:37:42) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:38:25) [INFO]: Connecting to: www.google.com/189.6.76.187:80
+* (20/07/2013 14:38:25) [INFO]: Handler: Connected
+* (20/07/2013 14:38:25) [INFO]: Handler: Sending...
+* (20/07/2013 14:38:25) [INFO]: Handler: Sent: 236
+* (20/07/2013 14:38:25) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:38:25) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:38:25) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:38:25) [INFO]: Reconnecting...
+* (20/07/2013 14:38:25) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:39:05) [INFO]: Connecting to: www.google.com/189.6.76.157:80
+* (20/07/2013 14:39:05) [INFO]: Handler: Connected
+* (20/07/2013 14:39:05) [INFO]: Handler: Sending...
+* (20/07/2013 14:39:05) [INFO]: Handler: Sent: 236
+* (20/07/2013 14:39:06) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:39:06) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:39:06) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:39:06) [INFO]: Reconnecting...
+* (20/07/2013 14:39:06) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:39:53) [INFO]: Connecting to: www.google.com/189.6.76.181:80
+* (20/07/2013 14:39:53) [INFO]: Handler: Connected
+* (20/07/2013 14:39:53) [INFO]: Handler: Sending...
+* (20/07/2013 14:39:53) [INFO]: Handler: Sent: 236
+* (20/07/2013 14:39:54) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:39:54) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:39:54) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:39:54) [INFO]: Reconnecting...
+* (20/07/2013 14:39:54) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:43:33) [INFO]: Connecting to: www.google.com/189.6.76.157:80
+* (20/07/2013 14:43:33) [INFO]: Handler: Connected
+* (20/07/2013 14:43:33) [INFO]: Handler: Sending...
+* (20/07/2013 14:43:33) [INFO]: Handler: Sent: 236
+* (20/07/2013 14:43:33) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:43:33) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:43:33) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:43:33) [INFO]: Reconnecting...
+* (20/07/2013 14:43:33) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:47:03) [INFO]: Connecting to: www.google.com/189.6.76.157:80
+* (20/07/2013 14:47:03) [INFO]: Handler: Connected
+* (20/07/2013 14:47:03) [INFO]: Handler: Sending...
+* (20/07/2013 14:47:03) [INFO]: Handler: Sent: 236
+* (20/07/2013 14:47:03) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:47:03) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:47:03) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:47:03) [INFO]: Reconnecting...
+* (20/07/2013 14:47:03) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:49:00) [INFO]: Connecting to: www.google.com/189.6.76.181:80
+* (20/07/2013 14:49:00) [INFO]: Handler: Connected
+* (20/07/2013 14:49:00) [INFO]: Handler: Sending...
+* (20/07/2013 14:49:00) [INFO]: Handler: Sent: 270
+* (20/07/2013 14:49:01) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:49:01) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:49:01) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:49:01) [INFO]: Reconnecting...
+* (20/07/2013 14:49:01) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:49:54) [INFO]: Connecting to: www.google.com/189.6.76.173:80
+* (20/07/2013 14:49:54) [INFO]: Handler: Connected
+* (20/07/2013 14:49:54) [INFO]: Handler: Sending...
+* (20/07/2013 14:49:54) [INFO]: Handler: Sent: 268
+* (20/07/2013 14:49:54) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:49:54) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:49:54) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:49:54) [INFO]: Reconnecting...
+* (20/07/2013 14:49:54) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:51:00) [INFO]: Connecting to: www.google.com/189.6.76.151:80
+* (20/07/2013 14:51:00) [INFO]: Handler: Connected
+* (20/07/2013 14:51:00) [INFO]: Handler: Sending...
+* (20/07/2013 14:51:00) [INFO]: Handler: Sent: 268
+* (20/07/2013 14:51:00) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:51:00) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:51:00) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:51:00) [INFO]: Reconnecting...
+* (20/07/2013 14:51:00) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:51:00) [INFO]: Connecting to: www.google.com/189.6.76.151:80
+* (20/07/2013 14:51:00) [INFO]: Handler: Connected
+* (20/07/2013 14:51:00) [INFO]: Handler: Sending...
+* (20/07/2013 14:51:00) [INFO]: Handler: Sent: 524
+* (20/07/2013 14:51:01) [INFO]: Handler: Content received: 4096
+* (20/07/2013 14:51:01) [INFO]: HTTP/1.1 200 OK
+* (20/07/2013 14:52:31) [INFO]: Connecting to: www.google.com/189.6.76.143:80
+* (20/07/2013 14:52:31) [INFO]: Handler: Connected
+* (20/07/2013 14:52:31) [INFO]: Handler: Sending...
+* (20/07/2013 14:52:31) [INFO]: Handler: Sent: 268
+* (20/07/2013 14:52:31) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:52:31) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:52:31) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:52:31) [INFO]: Reconnecting...
+* (20/07/2013 14:52:31) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:52:31) [INFO]: Connecting to: www.google.com/189.6.76.143:80
+* (20/07/2013 14:52:31) [INFO]: Handler: Connected
+* (20/07/2013 14:52:31) [INFO]: Handler: Sending...
+* (20/07/2013 14:52:31) [INFO]: Handler: Sent: 524
+* (20/07/2013 14:52:31) [INFO]: Handler: Content received: 2920
+* (20/07/2013 14:52:31) [INFO]: HTTP/1.1 200 OK
+* (20/07/2013 14:53:23) [INFO]: Connecting to: www.google.com/189.6.76.177:80
+* (20/07/2013 14:53:23) [INFO]: Handler: Connected
+* (20/07/2013 14:53:23) [INFO]: Handler: Sending...
+* (20/07/2013 14:53:23) [INFO]: Handler: Sent: 268
+* (20/07/2013 14:53:24) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:53:24) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:53:24) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:53:24) [INFO]: Reconnecting...
+* (20/07/2013 14:53:24) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:53:24) [INFO]: Connecting to: www.google.com/189.6.76.177:80
+* (20/07/2013 14:53:24) [INFO]: Handler: Connected
+* (20/07/2013 14:53:24) [INFO]: Handler: Sending...
+* (20/07/2013 14:53:24) [INFO]: Handler: Sent: 524
+* (20/07/2013 14:53:24) [INFO]: Handler: Content received: 4096
+* (20/07/2013 14:53:24) [INFO]: HTTP/1.1 200 OK
+* (20/07/2013 14:59:02) [INFO]: Connecting to: www.google.com/189.6.76.181:80
+* (20/07/2013 14:59:02) [INFO]: Handler: Connected
+* (20/07/2013 14:59:02) [INFO]: Handler: Sending...
+* (20/07/2013 14:59:02) [INFO]: Handler: Sent: 268
+* (20/07/2013 14:59:02) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:59:02) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:59:02) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:59:02) [INFO]: Reconnecting...
+* (20/07/2013 14:59:02) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:59:02) [INFO]: Connecting to: www.google.com/189.6.76.181:80
+* (20/07/2013 14:59:02) [INFO]: Handler: Connected
+* (20/07/2013 14:59:02) [INFO]: Handler: Sending...
+* (20/07/2013 14:59:02) [INFO]: Handler: Sent: 524
+* (20/07/2013 14:59:03) [INFO]: Handler: Content received: 1979
+* (20/07/2013 14:59:03) [INFO]: HTTP/1.1 200 OK
+* (20/07/2013 14:59:36) [INFO]: Connecting to: www.google.com/189.6.76.158:80
+* (20/07/2013 14:59:36) [INFO]: Handler: Connected
+* (20/07/2013 14:59:36) [INFO]: Handler: Sending...
+* (20/07/2013 14:59:36) [INFO]: Handler: Sent: 268
+* (20/07/2013 14:59:36) [INFO]: Handler: Content received: 1010
+* (20/07/2013 14:59:36) [INFO]: Socket closed. Exiting...
+* (20/07/2013 14:59:36) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 14:59:36) [INFO]: Reconnecting...
+* (20/07/2013 14:59:36) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 14:59:36) [INFO]: Connecting to: www.google.com/189.6.76.158:80
+* (20/07/2013 14:59:36) [INFO]: Handler: Connected
+* (20/07/2013 14:59:36) [INFO]: Handler: Sending...
+* (20/07/2013 14:59:36) [INFO]: Handler: Sent: 524
+* (20/07/2013 14:59:36) [INFO]: Handler: Content received: 2920
+* (20/07/2013 14:59:36) [INFO]: HTTP/1.1 200 OK
+* (20/07/2013 15:01:43) [INFO]: Connecting to: www.google.com/189.6.76.143:80
+* (20/07/2013 15:01:43) [INFO]: Handler: Connected
+* (20/07/2013 15:01:43) [INFO]: Handler: Sending...
+* (20/07/2013 15:01:43) [INFO]: Handler: Sent: 268
+* (20/07/2013 15:01:44) [INFO]: Handler: Content received: 1010
+* (20/07/2013 15:01:44) [INFO]: Socket closed. Exiting...
+* (20/07/2013 15:01:44) [INFO]: HTTP/1.1 302 Found
+* (20/07/2013 15:01:44) [INFO]: Reconnecting...
+* (20/07/2013 15:01:44) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (20/07/2013 15:01:44) [INFO]: Connecting to: www.google.com/189.6.76.143:80
+* (20/07/2013 15:01:44) [INFO]: Handler: Connected
+* (20/07/2013 15:01:44) [INFO]: Handler: Sending...
+* (20/07/2013 15:01:44) [INFO]: Handler: Sent: 524
+* (20/07/2013 15:01:44) [INFO]: Handler: Content received: 2920
+* (20/07/2013 15:01:44) [INFO]: HTTP/1.1 200 OK
+* (21/07/2013 13:40:40) [INFO]: Connecting to: www.google.com/189.6.76.162:80
+* (21/07/2013 13:40:40) [INFO]: Handler: Connected
+* (21/07/2013 13:40:40) [INFO]: Handler: Sending...
+* (21/07/2013 13:40:40) [INFO]: Handler: Sent: 268
+* (21/07/2013 13:40:41) [INFO]: Handler: Content received: 1010
+* (21/07/2013 13:40:41) [INFO]: HTTP/1.1 302 Found
+* (21/07/2013 13:40:41) [INFO]: Socket closed. Exiting...
+* (21/07/2013 13:40:41) [INFO]: Reconnecting...
+* (21/07/2013 13:40:41) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (21/07/2013 13:40:41) [INFO]: Connecting to: www.google.com/189.6.76.162:80
+* (21/07/2013 13:40:41) [INFO]: Handler: Connected
+* (21/07/2013 13:40:41) [INFO]: Handler: Sending...
+* (21/07/2013 13:40:41) [INFO]: Handler: Sent: 524
+* (21/07/2013 13:40:41) [INFO]: Handler: Content received: 1460
+* (21/07/2013 13:40:41) [INFO]: HTTP/1.1 200 OK
+* (21/07/2013 13:44:32) [INFO]: Connecting to: www.google.com/189.6.76.166:80
+* (21/07/2013 13:44:32) [INFO]: Handler: Connected
+* (21/07/2013 13:44:32) [INFO]: Handler: Sending...
+* (21/07/2013 13:44:32) [INFO]: Handler: Sent: 268
+* (21/07/2013 13:44:33) [INFO]: Handler: Content received: 1010
+* (21/07/2013 13:44:33) [INFO]: HTTP/1.1 302 Found
+* (21/07/2013 13:44:33) [INFO]: Socket closed. Exiting...
+* (21/07/2013 13:44:33) [INFO]: Reconnecting...
+* (21/07/2013 13:44:33) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (21/07/2013 13:44:33) [INFO]: Connecting to: www.google.com/189.6.76.166:80
+* (21/07/2013 13:44:33) [INFO]: Handler: Connected
+* (21/07/2013 13:44:33) [INFO]: Handler: Sending...
+* (21/07/2013 13:44:33) [INFO]: Handler: Sent: 524
+* (21/07/2013 13:44:34) [INFO]: Handler: Content received: 1460
+* (21/07/2013 13:44:34) [INFO]: HTTP/1.1 200 OK
+* (21/07/2013 13:47:04) [INFO]: Connecting to: www.google.com/189.6.76.170:80
+* (21/07/2013 13:47:04) [INFO]: Handler: Connected
+* (21/07/2013 13:47:04) [INFO]: Handler: Sending...
+* (21/07/2013 13:47:04) [INFO]: Handler: Sent: 268
+* (21/07/2013 13:47:05) [INFO]: Handler: Content received: 1010
+* (21/07/2013 13:47:05) [INFO]: HTTP/1.1 302 Found
+* (21/07/2013 13:47:05) [INFO]: Socket closed. Exiting...
+* (21/07/2013 13:47:05) [INFO]: Reconnecting...
+* (21/07/2013 13:47:05) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (21/07/2013 13:47:05) [INFO]: Connecting to: www.google.com/189.6.76.170:80
+* (21/07/2013 13:47:05) [INFO]: Handler: Connected
+* (21/07/2013 13:47:05) [INFO]: Handler: Sending...
+* (21/07/2013 13:47:05) [INFO]: Handler: Sent: 524
+* (21/07/2013 13:47:05) [INFO]: Handler: Content received: 6783
+* (21/07/2013 13:47:05) [INFO]: HTTP/1.1 200 OK
+* (21/07/2013 13:54:40) [INFO]: Connecting to: www.google.com/189.6.76.151:80
+* (21/07/2013 13:54:40) [INFO]: Handler: Connected
+* (21/07/2013 13:54:40) [INFO]: Handler: Sending...
+* (21/07/2013 13:54:40) [INFO]: Handler: Sent: 278
+* (21/07/2013 13:54:41) [INFO]: Handler: Content received: 1010
+* (21/07/2013 13:54:41) [INFO]: HTTP/1.1 302 Found
+* (21/07/2013 13:54:41) [INFO]: Socket closed. Exiting...
+* (21/07/2013 13:54:41) [INFO]: Reconnecting...
+* (21/07/2013 13:54:41) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (21/07/2013 13:54:41) [INFO]: Connecting to: www.google.com/189.6.76.151:80
+* (21/07/2013 13:54:41) [INFO]: Handler: Connected
+* (21/07/2013 13:54:41) [INFO]: Handler: Sending...
+* (21/07/2013 13:54:41) [INFO]: Handler: Sent: 524
+* (21/07/2013 13:54:41) [INFO]: Handler: Content received: 1460
+* (21/07/2013 13:54:41) [INFO]: HTTP/1.1 200 OK
+* (21/07/2013 14:00:33) [INFO]: Connecting to: www.google.com/189.6.76.177:80
+* (21/07/2013 14:00:33) [INFO]: Handler: Connected
+* (21/07/2013 14:00:33) [INFO]: Handler: Sending...
+* (21/07/2013 14:00:33) [INFO]: Handler: Sent: 278
+* (21/07/2013 14:00:33) [INFO]: Handler: Content received: 1010
+* (21/07/2013 14:00:33) [INFO]: HTTP/1.1 302 Found
+* (21/07/2013 14:00:33) [INFO]: Socket closed. Exiting...
+* (21/07/2013 14:00:33) [INFO]: Reconnecting...
+* (21/07/2013 14:00:33) [INFO]: http://www.google.com.br/?gws_rd=cr
+* (21/07/2013 14:00:33) [INFO]: Connecting to: www.google.com/189.6.76.177:80
+* (21/07/2013 14:00:33) [INFO]: Handler: Connected
+* (21/07/2013 14:00:33) [INFO]: Handler: Sending...
+* (21/07/2013 14:00:33) [INFO]: Handler: Sent: 524
+* (21/07/2013 14:00:33) [INFO]: Handler: Content received: 1460
+* (21/07/2013 14:00:33) [INFO]: HTTP/1.1 200 OK

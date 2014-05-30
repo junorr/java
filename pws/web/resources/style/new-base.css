@@ -1,0 +1,82 @@
+#headerbar {
+  background-color: #1C1C1C;
+  height: 100px;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.red {
+  color: #E41721;
+}
+
+.gray {
+  color: #A7B6B6;
+}
+
+body {
+  background-color: #E2E2E0;
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+a {
+  color: #A7B6B6;
+  text-decoration: none;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+a:hover {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+#page {
+  position: relative;
+  top: 110px;
+}
+
+.logo {
+  position: absolute;
+  top: 12px;
+  left: 50px;
+  width: 80px;
+  height: 75px;
+}
+
+.title {
+  position: absolute;
+  top: 30px;
+  left: 180px;
+  width: 350px;
+  height: 40px;
+}
+
+#linksbar {
+  position: relative;
+  top: 43px;
+  left: 680px;
+  width: 490px;
+}
+
+#appsMenu {
+  border: 1px darkslategray solid; 
+  background-color: #1C1C1C; 
+  box-shadow: 3px 3px 5px 2px #787878;
+  position: relative;
+  z-index: 7;
+  top: 1px;
+  width: 145px;
+  height: 160px;
+  left: 63px;
+  display: none;
+}
+
+.sublink {
+  line-height: 23px;
+  position: relative;
+  left: 15px;
+  top: 10px;
+}

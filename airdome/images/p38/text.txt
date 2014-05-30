@@ -1,0 +1,127 @@
+Lockheed P-38 Lightning
+
+  [P-38_1.jpg]
+
+Um dos melhores e mais inconfundíveis aviões da Segunda Guerra Mundial foi, sem duvida alguma, o P-38 Lightning, 
+graças ao seu desenho totalmente atípico aos caças da época.
+Apelidado pelos alemães como "Der Gabelshwanz Teuful" (O Garfo do Diabo), sua silhueta de duas caudas era 
+facilmente identificada e ajudou a criar sua reputação como um dos caças mais letais da segunda guerra.
+
+O caça pesado P-38A tinha sua empenagem carregada por duas caudas geminadas, que suportavam as unidades 
+principais do trem de pouso triciclo, bem como os dois motores turbocompressor V-12 
+Allison V-1710-111/113 de 1.725 hp cada. O piloto sentava-se na nacela central, atrás de um canhão de 
+20mm Hispano M2(C) e 4 metralhadoras Browning MG53-2 .50 (12,7mm). 
+O protótipo XP-38 fez seu primeiro voo em janeiro de 1939, e o desenvolvimento considerável fundamentou 
+as bases para a variante operacional inicial P-38D (36 aeronaves), que entrou em serviço em agosto de 
+1941.A produção total foi de 9.393 aeronaves, incluindo as conversões para padrões de fotoreconhecimento 
+F-4 e F-5.
+
+
+Teatro Europeu
+
+  [P-38_2.jpg]
+  P-38 sobrevoando a Europa.
+
+Depois da Batalha de Midway, a Força Aérea Americana (USAAF), começou a redistribuir grupos de caças na 
+Grã-Bretanha, como parte da Operação Bolero e os Lightnings foram o primeiro grupo de caças a voar pelo 
+Atlântico sobre a Islândia. Em 14 de agosto, o Segundo Tenente Elza Shahan do 27º Esquadrão de Caça, 
+e o Segundo Tenente Joseph Shaffer do 33º Esquadrão, operavam sobre a Islândia quando derrubaram um 
+Focke-Wulf Fw 200 Condor no Atlântico. Shahan em seu P-38F derrubou o Condor; Shaffer, voando em seu P-39 
+Airacobra, já tinha deixado o motor em chamas. Este foi o primeiro avião da Luftwaffe destruído pelos 
+Estados Unidos na Segunda Guerra.
+
+
+Teatro do Pacífico
+
+  [P-38_3.jpg]
+  P-38 sobrevoando o Pacífico.
+
+O Lightning foi usado mais extensivamente e com sucesso no teatro do pacífico, onde provou ser adequado à 
+escolta de bombardeiros em altitudes de 18-25.000 ft (5.500-7.600 m), combinando excelente performance com 
+longa autonomia. Também foi o avião americano que mais derrubou aviões japoneses na guerra. Enquanto sua
+manobrabilidade não podia ser comparada à de um A6M Zero e outros aviões japoneses, sua velocidade
+superior e boa taxa de subida, aliado ao pesado poder fogo, o colocavam em posição de superioridade
+frente à seus oponentes. 
+Essas características fizeram de Richard Ira "Dick" Bong - 9º Esquadrão de caça (Flying Knights) de 
+Darwin na Austrália - o piloto da USAAF com mais vitórias em combates aéreos (40 pelo menos). 
+Ironicamente, Dick Bong voava diretamente contra seus alvos para ter certeza de que iria acerta-los, 
+pois possuia uma péssima mira, em alguns casos voando sobre os detritos do alvo. Em uma ocasião, colidiu 
+com um avião inimigo, fato que chamou de "provável vitória".
+
+Richard Bong e Thomas McGuire
+
+  [P-38_4.jpg]
+  Pintura do P-38 e Corsair em batalha.
+
+A competição pelo Ás dos Ases Americano foi acirrada entre os Majores condecorados com a Medalha de Honra, 
+Richard Ira "Dick" Bong e Thomas J. "Tommy" McGuire da USAAF, ambos pilotando Lightnings, com 40 e 38 
+vitórias apuradas respectivamente.
+McGuire foi morto em combate em janeiro de 1945 sobre as Filipinas, depois de 38 mortes confirmadas, colocando-o
+em segundo lugar no ranking de Ás Americano. Bong foi enviado devolta aos Estados Unidos com o status de Ás dos
+Ases, com 40 mortes confirmadas. Nos Estados Unidos tornou-se piloto de testes e morreu em 6 de agosto de 1945,
+o dia em que a bomba atômica foi largada no Japão, quando seu jato P-80 Shooting Star pegou fogo durante a 
+decolagem.
+
+
+Curiosidades
+Pouco antes da Segunda Guerra Mundial, Harley Earl, Vice Presidente de Design da General Motors, conseguiu que 
+seu time de designers visse o protótipo YP-38, que inspirou o Cadillac de 1948-1949.
+
+  [Cadillac-1948.jpg]
+  Cadillac 1948-1949 de Harley Earl.
+
+O P-38 também inspirou Raymond Loewy, designer industrial, que criou o modelo de 1950-1951 do Studebaker.
+
+  [Studebaker-1950.jpg]
+  Studebaker 1950-1951 de Raymond Loewy.
+
+
+Ficha Técnica:
+(Dados retirados do Manual do Piloto do Lockheed P-38 Lightning)
+
+  [P-38_Spec-1.jpg]
+
+ - Tripulação: 1;
+ - Comprimento: 11,53 m;
+ - Envergadura: 15,85 m;
+ - Altura: 3,91 m;
+ - Área da asa: 30,43 m²;
+ - Aerofólio: NACA 23016 / NACA 4412;
+ - Peso vazio: 5.800 Kg;
+ - Peso Carregado: 7.940 Kg;
+ - Peso máximo para decolagem: 9.798 Kg;
+ - Motor: 2 x V-12 Allison V-1710-111/113 de 1.725 HP (1.194 kW) cada;
+ - Coeficiente de arrasto do profundor: 0,0268;
+ - Área de arrasto: 0,82 m²;
+ - Taxa de Aspecto*: 8,26;
+
+* Em Aerodinâmica, a taxa de aspecto de um asa é essencialmente a proporção de seu comprimento 
+  pela sua largura. Uma alta taxa de aspecto indica uma asa longa e estreita, enquanto uma baixa
+  taxa indica uma asa curta e larga.
+
+
+  [P-38_Spec-2.jpg]
+
+Performance:
+ - Velocidade Máxima: 712 km/h (443 mph) a 8.530 m (28.000 ft) de altura;
+ - Velocidade de Stall: 170 km/h (105 mph);
+ - Autonomia: 1.170 km / 3.640 km (1.300 mi);
+ - Teto de Operação: 13.400 m (44.000 ft);
+ - Carga da Asa: 260,9 kg/m² (53,4 lb/ft²);
+ - Peso/Potência: 0,16 hp/lb (0,27 kW/kg);
+
+Armamento:
+ - 1x Canhão 20mm Hispano M2(C) com 150 tiros e cadência de 600 tiros por minuto.
+ - 4x Metralhadoras .50 (12,7mm) Browning MG53-2 com cadência de 500 tiros por minuto.
+ - 4x Lançadores de foguetes M10 de 112mm de três tubos, ou:
+   2x Bombas de queda livre de 907 kg cada;
+   2x Bombas de queda livre de 454 kg cada, mais 4x Bombas de 227 kg ou 113 kg;
+   6x Bombas de queda livre 227 kg ou 113 kg;
+   10x HVARs (Foguete de Aeronave de Alta Velocidade); 
+
+
+Referências:
+http://en.wikipedia.org/wiki/Lockheed_P-38_Lightning
+http://avioesdofront.blogspot.com/2011/05/lockheed-p-38-lightning.html
+http://science.howstuffworks.com/lockheed-p-38-lightning.htm
+Illustrated Anatomy of the World's Fighters de Mike Spick, William Green e Gordon Swanborough

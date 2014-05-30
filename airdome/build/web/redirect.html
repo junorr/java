@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <h3>Redirecionando...</h3>
+    <script type="text/javascript">
+      var uri = window.location.toString();
+      var bar = uri.indexOf("/", 8);
+      if(bar > 0) {
+        uri = uri.substring(0, bar);
+      }
+      uri += "/airdome/faces/index.xhtml";
+      window.location = uri;
+    </script>
+  </body>
+</html>

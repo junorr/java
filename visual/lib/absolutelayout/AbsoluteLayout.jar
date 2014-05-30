@@ -1,0 +1,32 @@
+ escuro
+ na parte de baixo.
+<DT><A HREF="../com/power/visual/BlackButton.html" title="class in com.power.visual"><B>BlackButton</B></A> - Class in <A HREF="../com/power/visual/package-summary.html">com.power.visual</A><DD>BlackButton eh um botao <code>JButton</code>
+ customizado em duas cores com gradiente vertical.<DT><A HREF="../com/power/visual/BlackButton.html#BlackButton()"><B>BlackButton()</B></A> - 
+Constructor for class com.power.visual.<A HREF="../com/power/visual/BlackButton.html" title="class in com.power.visual">BlackButton</A>
+<DD>Construtor sem argumentos, instancia um objeto
+ <code>BlackButton</code> com o estilo
+ <code>GRADIENT_BLACK</code>.
+<DT><A HREF="../com/power/visual/BlackButton.html#BlackButton(java.lang.String)"><B>BlackButton(String)</B></A> - 
+Constructor for class com.power.visual.<A HREF="../com/power/visual/BlackButton.html" title="class in com.power.visual">BlackButton</A>
+<DD>Construtor que recebe o texto que
+ serah exibido no botao.
+<DT><A HREF="../com/power/visual/BlackButton.html#BlackButton(com.power.visual.PaintStyle, java.lang.String)"><B>BlackButton(PaintStyle, String)</B></A> - 
+Constructor for class com.power.visual.<A HREF="../com/power/visual/BlackButton.html" title="class in com.power.visual">BlackButton</A>
+<DD>Construtor com dois argumentos que recebe um objeto
+ <code>PaintStyle</code>, configurando o estilo de
+ pintura do botao, e uma String com o texto que
+ serah exibido no botao.
+<DT><A HREF="../com/power/visual/BlackButton.html#BlackButton(com.power.visual.PaintStyle, com.power.utils.PowerImage, java.lang.String)"><B>BlackButton(PaintStyle, PowerImage, String)</B></A> - 
+Constructor for class com.power.visual.<A HREF="../com/power/visual/BlackButton.html" title="class in com.power.visual">BlackButton</A>
+<DD>Construtor com dois argumentos que recebe um objeto
+ <code>PaintStyle</code>, configurando o estilo de
+ pintura do botão, e uma String com o texto que
+ serah exibido.
+<DT><A HREF="../com/power/visual/BlackLabel.html" title="class in com.power.visual"><B>BlackLabel</B></A> - Class in <A HREF="../com/power/visual/package-summary.html">com.power.visual</A><DD>BlackLabel eh um Rótulo <code>JLabel</code>
+ customizado em duas cores com gradiente vertical.<DT><A HREF="../com/power/visual/BlackLabel.html#BlackLabel()"><B>BlackLabel()</B></A> - 
+Constructor for class com.power.visual.<A HREF="../com/power/visual/BlackLabel.html" title="class in com.power.visual">BlackLabel</A>
+<DD>Construtor sem argumentos, instancia um objeto
+ <code>BlackLabel</code> com o estilo
+ <code>PaintStyle.GRADIENT_BLACK</code>.
+<DT><A HREF="../com/power/visual/BlackLabel.html#BlackLabel(java.lang.String)"><B>BlackLabel(String)</B></A> - 
+Constructor for class com.power.visual.<A HREF="../com/power/visual/BlackLabel.html" title="class in com.power.visual">Black

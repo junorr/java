@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+  
+  <h:head>
+    
+    <title>
+      <ui:insert name="title">
+        Badra Advocacia
+      </ui:insert>
+    </title>
+    
+    <link rel="shortcut icon" href="balanca.gif"/>
+    
+    <style type="text/css">
+      .bodypanel {
+        width: 98%;
+        height: 450px;
+        position: relative;
+        top: 5px;
+        font-family: calibri, cursive, 'DejaVu Sans', sans-serif;
+        font-size: 17px;
+      }
+      body {
+        background-color: #004046;
+      }
+    </style>
+    
+    
+    <style type="text/css">
+      .ui-panel-titlebar {
+        background-color: #68838B;
+      }
+      .ui-toolbar {
+        background-color: #68838B;
+      }
+      .ui-panel-content {
+        background-color: #EEE9E9;
+      }
+      .ui-panel {
+        background-color: #EEE9E9;
+      }
+    </style>
+    
+    <h:outputScript library="javascript" name="tabulator.js"/>
+    
+    <script type="text/javascript">
+      $(document).ready(function() {
+        tab("document").centerHorizontal("page");
+        tab("footer").east("pw", 0).north("pw", 18);
+      });
+    </script>
+    
+  </h:head>
+  
+  <h:body>
+  
+    <div id="page" style="width: 1020px; height: 1000px;">
+      
+      <ui:insert name="header">
+        <ui:include src="header.xhtml"/>
+      </ui:insert>
+    
+      <p:panel id="body" styleClass="bodypanel bp">
+        <ui:insert name="body">
+          <ui:include src="main.xhtml"/>
+        </ui:insert>
+      </p:panel>
+      
+      <p:panel id="footer" style="width: 98%; 
+               position: relative; top: 10px;">
+        
+        <span style="font-size: 11px; font-weight: bold; color: gray">
+          <a href="index.xhtml">Badra Advocacia</a> <br></br>
+          Copyright (c) 2012
+        </span>
+        <span id="pw" style="font-size: 10px; font-weight: bold; 
+              font-style: italic; color: gray">
+          Powered by: <a href="#">JPower</a>
+        </span>
+      </p:panel>
+    
+      <br></br>
+      <p:tagCloud model="#{tagCloudBean.model}" 
+                  style="color: #FDFDFD; width: 910px; 
+                  visibility: hidden;"/>
+    
+    </div>
+    
+    
+  </h:body>
+</html>
+

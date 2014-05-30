@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+  
+  
+  <ui:composition template="base.xhtml">
+    
+    <ui:define name="title">PStat - About</ui:define>
+    
+    
+    <ui:define name="header">
+      <script type="text/javascript">
+        $(document).ready(function () {
+          tab("about-panel").north("br-btn", 13).east("br-btn", 5);
+          tab("about-panel").north("en-btn", 13).east("en-btn", 70);
+        });
+      </script>
+    </ui:define>
+    
+    
+    <ui:define name="page">
+      
+      <p:panel id="about-panel" style="position: relative; top: 50px;">
+        <f:facet name="header">
+          <h:graphicImage library="images" name="flag-16.png"/>
+          <p:spacer width="20"/>
+          <h:outputText id="about-title" value="#{about.title}"/>
+        </f:facet>
+        
+        <p style="text-align: justify; line-height: 200%;">
+          <h:outputText id="about-msg" escape="false" 
+                        value="#{about.message}" 
+                        style="text-align: justify;"/>
+        </p>
+        
+        <p:commandLink id="br-btn" action="#{about.setBR()}" 
+                       update="about-msg,about-title">
+          <h:graphicImage library="images" name="br-flag-icon.png"/>
+        </p:commandLink>
+        <p:commandLink id="en-btn" action="#{about.setEN()}" 
+                       update="about-msg,about-title">
+          <h:graphicImage library="images" name="en-flag-icon.png"/>
+        </p:commandLink>
+      
+      </p:panel>
+      
+    </ui:define>
+    
+    
+    <ui:define name="footer">
+      <p:spacer height="60"/>
+    </ui:define>
+    
+  </ui:composition>
+  
+  
+</html>

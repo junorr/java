@@ -1,0 +1,37 @@
+.graphics {
+  box-shadow: 3px 3px 5px 2px #888888;
+}
+        
+#diskoverall {
+  width: 420px; 
+  height: 300px; 
+  position: relative; 
+  left: -188px;
+  top: 20px;
+}
+
+#useddisk {
+  font-size: 14px;
+  font-weight: bold;
+  position: relative;
+  left: -138px;
+  top: 0px;
+}
+
+#diskdetailed {
+  width: 420px; 
+  height: 300px;
+}
+
+#valueslabel {
+  position: relative;
+  left: 60px;
+  top: 0px;
+  font-size: 14px;
+}
+
+#disklinechart {
+  position: relative; 
+  top: 30px;
+  width: 870px;
+}

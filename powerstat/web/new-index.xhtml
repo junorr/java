@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="new-base.xhtml">
+    
+    <ui:define name="header">
+        <h:outputStylesheet library="style" name="new-index.css"/>
+    </ui:define>
+    
+    <ui:define name="page">
+      <h2>Welcome to PowerStat Monitor and Diagnostic System</h2>
+      
+      <div id="galleria">
+        <p:poll autoStart="true" interval="5" listener="#{imageController.nextImage()}" 
+                update="imageLink,image,infoText" widgetVar="imagePoll"/>
+        
+        <h:commandLink id="imageLink" action="#{imageController.current.getLink}" 
+                       onclick="setLink('link-apps');">
+          <h:graphicImage id="image" library="#{imageController.current.path}"
+                          name="#{imageController.current.name}" styleClass="gsize"/>
+          <div id="imageInfo"></div>
+          <h3><h:outputText id="infoText"
+                            value="#{imageController.current.comment}"/>
+          </h3>
+        </h:commandLink>
+        
+        <p:commandLink id="prevarrow" actionListener="#{imageController.prevImage()}"
+                       update="imageLink,image,infoText"
+                       oncomplete="imagePoll.stop(); imagePoll.start();">
+          <p:graphicImage library="images" name="prev-arrow.png" styleClass="arrow"/>
+        </p:commandLink>
+        
+        <p:commandLink id="nextarrow" actionListener="#{imageController.nextImage()}"
+                       update="imageLink,image,infoText" 
+                       oncomplete="imagePoll.stop(); imagePoll.start();">
+          <p:graphicImage library="images" name="next-arrow.png" styleClass="arrow"/>
+        </p:commandLink>
+      </div>
+      
+    </ui:define>
+    
+    <ui:define name="footer">
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

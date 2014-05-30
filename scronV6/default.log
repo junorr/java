@@ -1,0 +1,10 @@
+[DEBUG] (30/04/2014 20:53:34): Job inserted: us.pserver.scronv6.JobFactory$RunnableJob@1c20c684 @ 30/04/2014 20:53:34.760 [Repeat: 5 SECOND]
+[INFO ] (30/04/2014 20:53:34): SimpleCron Started!
+[DEBUG] (30/04/2014 20:55:06): Job inserted: us.pserver.scronv6.JobFactory$RunnableJob@1c20c684 @ 30/04/2014 20:55:06.048 [Repeat: 5 SECOND]
+[INFO ] (30/04/2014 20:55:06): SimpleCron Started!
+[DEBUG] (30/04/2014 20:56:57): Job inserted: us.pserver.scronv6.JobFactory$RunnableJob@1c20c684 @ 30/04/2014 20:56:57.547 [Repeat: 5 SECOND]
+[INFO ] (30/04/2014 20:56:57): SimpleCron Started!
+[DEBUG] (30/04/2014 20:58:23): Job inserted: us.pserver.scronv6.JobFactory$RunnableJob@1c20c684 @ 30/04/2014 20:58:23.118 [Repeat: 5 SECOND]
+[INFO ] (30/04/2014 20:58:23): SimpleCron Started!
+[DEBUG] (30/04/2014 20:59:47): Job inserted: us.pserver.scronv6.JobFactory$RunnableJob@1c20c684 @ 30/04/2014 20:59:47.080 [Repeat: 5 SECOND]
+[INFO ] (30/04/2014 20:59:47): SimpleCron Started!

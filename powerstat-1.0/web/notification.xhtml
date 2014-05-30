@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - Notification
+    </ui:define>
+    
+    <ui:define name="script">
+      <h:outputScript library="javascript" name="aes.js"/>
+      <h:outputScript library="javascript" name="cryptoHelpers.js"/>
+      <h:outputScript library="javascript" name="hexcode.js"/>
+      
+      <script type="text/javascript">
+        function encrypt() {
+          var pass = $("#pass").val();
+          var hexKey = "#{security.uid}";
+          
+          var bpass = cryptoHelpers.convertStringToByteArray(pass);
+          var key = hex.fromHexString(hexKey);
+          var iv = hex.get16BytesLength(key);
+          
+          var encpass = slowAES.encrypt(bpass, slowAES.modeOfOperation.CBC, key, iv);
+          
+          $("#hpass").val(hex.toHexString(encpass));
+        }
+      </script>
+    </ui:define>
+
+    <ui:define name="category-icon">
+      <h:graphicImage library="images" name="email-icon-[28x20].png"/>
+    </ui:define>
+    <ui:define name="category-name">Monitor and Notification System</ui:define>
+    
+    
+    <ui:define name="category-content">
+      
+      <p style="text-align: justify;">
+        The Monitor and Notification System is a service running 
+        on the server, which continuously monitors the machine's
+        resources. When these resources reach the pre configured 
+        critical limits, the service triggers a message to the system 
+        administrator e-mail, warning about the level of resource 
+        utilization, possibiliting take proactive actions.
+      </p>
+      
+      <p:messages id="upd-msg"/>
+      <p:spacer height="10"/>
+      
+      <p:panelGrid columns="2">
+        <f:facet name="header">
+          Critical Limits Configuration
+        </f:facet>
+      
+        <p:outputLabel for="cpul" value="CPU Limit"/>
+        <p:column>
+          <p:inputText id="cpul" value="#{notification.cpuLimit}" 
+                       style="width: 180px;"
+                       converterMessage="Invalid CPU Limit (Valid Range: 0-100)"/>
+           % 
+        </p:column>
+        
+        <p:outputLabel for="meml" value="Memory Limit"/>
+        <p:column>
+          <p:inputText id="meml" value="#{notification.memLimit}" 
+                       style="width: 180px;"
+                       converterMessage="Invalid Memory Limit (Valid Range: 0-100)"/>
+           %
+        </p:column>
+        
+        <p:outputLabel for="diska" value="Disk Device"/>
+        <p:selectOneMenu id="diska" value="#{notification.diskDevice}"
+                         style="width: 188px;">
+          <f:selectItem itemLabel="Select a Disk" itemValue=""/>
+          <f:selectItems value="#{diskCharts.disks}" var="disk"
+                         itemLabel="#{disk.device}" itemValue="#{disk.device}"/>
+        </p:selectOneMenu>
+        
+        <p:outputLabel for="diskl" value="Disk Limit"/>
+        <p:column>
+          <p:inputText id="diskl" value="#{notification.diskLimit}" 
+                       style="width: 180px;"
+                       converterMessage="Invalid Disk Limit (Valid Range: 0-100)"/>
+           %
+        </p:column>
+      
+        <p:outputLabel for="ifnets" value="Network Interface"/>
+        <p:selectOneMenu id="ifnets" value="#{notification.ifNetworkName}"
+                         style="width: 188px;">
+          <f:selectItem itemLabel="Select an Interface" itemValue=""/>
+        <f:selectItems value="#{iFNetCharts.last.interfaces}" var="i"
+                       itemValue="#{i.name}" itemLabel="#{i.name} (#{i.address})"/>
+        </p:selectOneMenu>
+        
+        <p:outputLabel for="netl" value="Network Traffic Limit"/>
+        <p:column>
+          <p:inputText id="netl" value="#{notification.ifNetworkLimit}" 
+                       style="width: 180px;"
+                       converterMessage="Invalid Network Limit. Values in Kb/s"/>
+           Kb/s
+        </p:column>
+      
+        <p:outputLabel for="mname" value="Machine Name"/>
+        <p:inputText id="mname" value="#{notification.machineName}" 
+                     style="width: 180px;" required="true"
+                     requiredMessage="Inform the machine name"/>
+      </p:panelGrid>
+      <br/><br/>
+
+      
+      <p:panelGrid columns="2">
+        <f:facet name="header">
+          E-mail Configurations
+        </f:facet>
+        
+        <p:outputLabel for="admin-email" value="Administrator E-mail"/>
+        <p:inputText id="admin-email" value="#{notification.adminEmail}"
+                     style=" width: 180px;"/>
+        
+        <p:outputLabel for="email" value="Sender E-mail Account"/>
+        <p:inputText id="email" value="#{notification.emailAccount}"
+                     style=" width: 180px;"/>
+        
+        <p:outputLabel for="pass" value="Sender E-mail Password"/>
+        <p:password id="pass" style=" width: 180px;"/>
+        
+        <p:outputLabel for="server" value="E-mail Server"/>
+        <p:inputText id="server" value="#{notification.emailServer}"
+                     style=" width: 180px;"/>
+        
+        <p:outputLabel for="proto" value="Server Protocol"/>
+        <p:inputText id="proto" value="#{notification.emailProtocol}"
+                     style=" width: 180px;"/>
+        
+        <p:outputLabel for="port" value="Server Port"/>
+        <p:inputText id="port" value="#{notification.emailPort}"
+                     style=" width: 180px;"
+                     converterMessage="Invalid Server Port (Valid Range: 1-65535)"/>
+      </p:panelGrid>
+      <br/>
+      
+      <h:inputHidden id="hpass" value="#{notification.emailPasswd}"/>
+      
+      
+      <p:commandButton value="Save" icon="ui-icon-disk"
+                       onclick="encrypt();"
+                       style="width: 90px;"
+                       actionListener="#{notification.save}"
+                       update="@(label,#upd-msg)"/>
+      
+      <p:spacer width="20"/>
+      <p:ajaxStatus>
+        <f:facet name="start">
+          <h:graphicImage library="images" 
+                          name="ajax-loader.gif"
+                          style="position: relative; top: -30px; left: 100px;"/>
+        </f:facet>
+        <f:facet name="complete">
+          <h:outputText value="Done!"
+                        style="position: relative; top: -28px; left: 100px;"/>
+        </f:facet>
+      </p:ajaxStatus>
+      
+      <p:spacer height="100"/>
+      
+    </ui:define>
+  </ui:composition>
+  
+</html>
+

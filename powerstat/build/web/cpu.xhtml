@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  
+  <ui:composition template="categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - CPU
+    </ui:define>
+    
+    <ui:define name="script">
+      <script type="text/javascript">
+        $(document).ready(function () {
+          tab("categories").north("cpui-btn", 70).west("cpui-btn", 20);
+          tab("categories").north("custom-chart-btn", 130).west("custom-chart-btn", 20);
+        });
+        
+        function ext() {
+          this.cfg.highlighter = {
+            useAxesFormatter: false,
+            tooltipAxes: 'y'
+          };
+        }
+      </script>
+    </ui:define>
+
+    <ui:define name="style">
+      <style type="text/css">
+        .bodyHeight {
+          height: 1400px;
+        }
+      </style>
+    </ui:define>
+    
+    
+    <ui:define name="category">CPU</ui:define>
+    
+    
+    <ui:define name="content">
+      
+      <p:commandButton id="cpui-btn" type="button" value="CPU Info"
+                       onclick="javascript: cpuidlg.show();" 
+                       icon="ui-icon-tag"/>
+      <p:tooltip for="cpui-btn" value="CPU Information"/>
+      
+      <p:commandButton id="custom-chart-btn" type="button" 
+                       value="Custom Chart"
+                       onclick="javascript: customchartdlg.show();" 
+                       icon="ui-icon-image"/>
+      <p:tooltip for="custom-chart-btn" value="Create Custom CPU Chart"/>
+
+      <p:poll listener="#{cpuCharts.update()}"
+              update="cpuoverall,usedcpu,cpudetailed,cpulinechart" 
+              autoStart="true" interval="15"/>
+      
+      <center>
+        <p:meterGaugeChart id="cpuoverall" value="#{cpuCharts.gaugeModel}"
+                             style="width: 500px; height: 350px;"
+                             title="Overall CPU Consumption" 
+                             label="CPU (%)"/>
+        
+        <h:outputText id="usedcpu"
+                      value="Used: #{cpuCharts.usedCpu}%"
+                        style="font-size: 16px;
+                        font-weight: bold;
+                        position: relative;
+                        top: -20px;"/>
+        
+        <p:barChart id="cpudetailed" value="#{cpuCharts.detailedModel}" 
+                    legendPosition="ne" yaxisLabel="Percent"
+                    showDatatip="false" extender="ext"
+                    title="Detailed CPU Consumption" animate="true"
+                    style="position: relative; 
+                    top: 20px; width: 500px; height: 320px;"/>
+        
+        <br/>
+        <p:spacer height="20"/>
+        
+        <p:lineChart id="cpulinechart" value="#{cpuCharts.lineModel}"
+                     title="Recent History CPU Consumption"
+                     animate="true" xaxisLabel="Time" extender="ext"
+                     yaxisLabel="Percent" legendPosition="nw"
+                     style="position: relative; top: 20px;
+                     width: 500px; height: 320px;"/>
+      </center>
+      <p:spacer height="60"/>
+      
+      
+      <p:dialog id="cpuidlg" header="CPU" widgetVar="cpuidlg"
+                showEffect="fold" hideEffect="explode" 
+                resizable="false">
+        
+        <p:panelGrid columns="2">
+          <f:facet name="header">
+            General Information
+          </f:facet>
+          
+          <h:outputText value="Identification:"/>
+          <h:outputText value="#{cpuCharts.cpu.id}" style="font-weight: bold;"/>
+          
+          <h:outputText value="Architecture:"/>
+          <h:outputText value="#{cpuCharts.cpu.architecture}" style="font-weight: bold;"/>
+          
+          <h:outputText value="Operation Mode:"/>
+          <h:outputText value="#{cpuCharts.cpu.mode}" style="font-weight: bold;"/>
+          
+          <h:outputText value="Number of Cores:"/>
+          <h:outputText value="#{cpuCharts.cpu.cores}" style="font-weight: bold;"/>
+          
+          <h:outputText value="Threads per Core:"/>
+          <h:outputText value="#{cpuCharts.cpu.threadsPerCore}" style="font-weight: bold;"/>
+          
+          <h:outputText value="Mhz:"/>
+          <h:outputText value="#{cpuCharts.cpu.mhz}" style="font-weight: bold;"/>
+          
+        </p:panelGrid>
+      </p:dialog>
+      
+      
+      <p:dialog id="customchartdlg" header="Custom CPU Chart"
+                widgetVar="customchartdlg"
+                showEffect="fold" hideEffect="explode" 
+                resizable="false">
+        
+        <p:panelGrid columns="2">
+          <f:facet name="header">
+            Time Interval
+          </f:facet>
+          
+          <h:outputText value="Start Date:"/>
+          <p:calendar value="#{customCpuChart.startDate}"
+                      pattern="dd/MM/yyyy HH:mm" mode="popup"
+                      showOn="button" navigator="true"
+                      mindate="#{customCpuChart.startDate}"
+                      maxdate="#{customCpuChart.stopDate}"/>
+          
+          <h:outputText value="End Date:"/>
+          <p:calendar value="#{customCpuChart.stopDate}"
+                      pattern="dd/MM/yyyy HH:mm" mode="popup"
+                      showOn="button" navigator="true"
+                      mindate="#{customCpuChart.startDate}"
+                      maxdate="#{customCpuChart.stopDate}"/>
+        </p:panelGrid> 
+        
+        <center>
+        <p:spacer height="20"/>
+        
+        <p:panelGrid columns="2">
+          <f:facet name="header">
+            CPU Usage Values to Show (%)
+          </f:facet>
+          
+          <p:selectBooleanCheckbox value="#{customCpuChart.totalCpu}"/>
+          <h:outputText value="Total Consumption"/>
+          
+          <p:selectBooleanCheckbox value="#{customCpuChart.userCpu}"/>
+          <h:outputText value="User Consumption"/>
+          
+          <p:selectBooleanCheckbox value="#{customCpuChart.sysCpu}"/>
+          <h:outputText value="System Consumption"/>
+          
+          <p:selectBooleanCheckbox value="#{customCpuChart.iowCpu}"/>
+          <h:outputText value="I/O Wait Consumption"/>
+          
+          <p:selectBooleanCheckbox value="#{customCpuChart.siCpu}"/>
+          <h:outputText value="Software Interrupt"/>
+          
+          <p:selectBooleanCheckbox value="#{customCpuChart.hiCpu}"/>
+          <h:outputText value="Hardware Interrupt"/>
+        </p:panelGrid>
+        
+        <p:spacer height="20"/>
+        
+        <p:panelGrid columns="2">
+          <f:facet name="header">
+            Chart Style
+          </f:facet>
+          
+          <h:outputText value="Filled Areas Chart"/>
+          <p:selectBooleanCheckbox value="#{customCpuChart.filled}"/>
+          
+          <h:outputText value="Subtitles Position:"/>
+          <p:selectOneMenu value="#{customCpuChart.position}" effect="fade"
+                           id="subtselect">
+            <f:selectItems value="#{customCpuChart.subtitlePositions}"
+                           var="pos" itemLabel="#{pos}" itemValue="#{pos}"/>
+          </p:selectOneMenu>
+        </p:panelGrid>
+        
+        <p:spacer height="40" width="20"/>
+        <p:commandButton value="Create Custom Chart" 
+                         icon="ui-icon-gear"
+                         action="custom-cpu-chart.xhtml"/>
+        </center>
+        
+      </p:dialog>
+    </ui:define>
+    
+    
+  </ui:composition>
+  
+</html>
+

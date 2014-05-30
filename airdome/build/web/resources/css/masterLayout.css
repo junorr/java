@@ -1,0 +1,44 @@
+#header {
+	width: 1000px;
+	height: 150px;
+}
+
+#sidebar {
+  width: 250px;
+  height: 500px;
+}
+
+#content {
+  width: 745px;
+  height: 500px;
+}
+
+#content-bg {
+  width: 745px;
+  height: 500px;
+  z-index: 0;
+}
+
+#content-text {
+  font-family: Arial;
+  text-align: justify;
+  width: 727px;
+  height: 435px;
+  overflow: auto;
+  z-index: 1;
+}
+
+#sidebar-bg {
+  width: 250px;
+  height: 500px;
+  z-index: 0;
+}
+
+#madeby {
+  font-size: smaller;
+  font-family: Arial;
+}
+
+.panelCol {
+  width: 200px;
+}

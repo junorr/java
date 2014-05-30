@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  
+  <ui:composition template="categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat
+    </ui:define>
+    
+    <ui:define name="script">
+      <script type="text/javascript">
+        $(document).ready(function () {
+          tab("categories").north("back-btn", 70).west("back-btn", 20);
+        });
+        
+        function ext() {
+          this.cfg.highlighter = {
+            useAxesFormatter: false,
+            tooltipAxes: 'y'
+          };
+        }
+      </script>
+    </ui:define>
+
+    <ui:define name="style">
+      <style type="text/css">
+        .bodyHeight {
+          height: 1100px;
+        }
+      </style>
+    </ui:define>
+    
+    
+    <ui:define name="category">Memory Custom Chart</ui:define>
+    
+    
+    <ui:define name="content">
+      
+      <p:button value="Back" outcome="memory.xhtml" id="back-btn"
+                icon="ui-icon-arrowthick-1-w"/>
+      
+      <center>
+        <p:lineChart id="customcpuchart" value="#{customMemoryChart.model}"
+                     title="Memory Historical Consumption (#{customMemoryChart.intervalString})"
+                     animate="true" xaxisLabel="Hour of Day"
+                     yaxisLabel="Percent" extender="ext"
+                     showDatatip="true" showMarkers="true"
+                     legendPosition="#{customMemoryChart.position}" 
+                     fill="#{customMemoryChart.filled}"
+                     style="position: relative; top: 20px;
+                     width: 650px; height: 450px;"/>
+        
+        <p:spacer height="50"/>
+        
+        <p:dataTable value="#{customMemoryChart.averages}"
+                     var="pair" style="width: 450px;">
+        
+          <f:facet name="header">
+            Memory Averages in Period
+          </f:facet>
+          
+          <p:column headerText="Item">
+            #{pair.key}
+          </p:column>
+          
+          <p:column headerText="Mb">
+            <center>
+              #{pair.value.toString()}
+            </center>
+          </p:column>
+        
+        </p:dataTable>
+        
+        <p:spacer height="20"/>
+        
+        <hr width="70%"/>
+        <p:spacer height="10"/>
+        
+        <p:panelGrid columns="2">
+          
+          <f:facet name="header">
+            View Processes
+          </f:facet>
+          
+          <h:outputText value="Snapshot of Processes Running in:"/>
+          <p:selectOneMenu value="#{customMemoryChart.snapDate}"
+                           effect="fade" id="dateselect">
+            <f:selectItems value="#{customMemoryChart.snaps}" var="s"
+                           itemLabel="#{s.time.toString()}"
+                           itemValue="#{s.time}"/>
+            <p:ajax update="prcdlg,prcsize"/>
+          </p:selectOneMenu>
+          
+          <f:facet name="footer">
+            <center>
+              <p:commandButton value="Show" update="prcdlg,prcsize"
+                               icon="ui-icon-search"
+                               oncomplete="prcdlg.show()"/>
+            </center>
+          </f:facet>
+          
+        </p:panelGrid>
+        
+        <p:spacer height="15"/>
+        
+      </center>
+      
+      
+      <p:dialog id="prcdlg" widgetVar="prcdlg" 
+                header="Processes Snapshot in:  
+                #{customMemoryChart.snap.time.toString()}"
+                showEffect="fold"
+                dynamic="true"
+                hideEffect="fade">
+      
+        <h:outputText id="prcsize" value="Processes: #{customMemoryChart.snap.processes.size()}"/>
+        
+        <p:scrollPanel style="width: 640px; height: 500px;">
+        <p:dataTable id="prctable" var="prc" 
+                     value="#{customMemoryChart.snap.processes}">
+          
+          <p:column headerText="PID" sortBy="#{prc.pid}"
+                    filterBy="#{prc.pid}" filterMatchMode="startsWith">
+            <h:outputText value="#{prc.pid}"/>
+        </p:column>
+          
+          <p:column headerText="Name" sortBy="#{prc.name}"
+                    filterBy="#{prc.name}" filterMatchMode="startsWith">
+            <h:outputText value="#{prc.name}"/>
+          </p:column>
+          
+          <p:column headerText="Memory %" sortBy="#{prc.mem}">
+            <h:outputText value="#{prc.mem}"/>
+          </p:column>
+          
+          <p:column headerText="CPU %" sortBy="#{prc.cpu}">
+            <h:outputText value="#{prc.cpu}"/>
+          </p:column>
+          
+          <p:column headerText="User" sortBy="#{prc.user}"
+                    filterBy="#{prc.user}" filterMatchMode="startsWith">
+            <h:outputText value="#{prc.user}"/>
+          </p:column>
+          
+          <p:column headerText="Uptime" sortBy="#{prc.uptime}">
+            <h:outputText value="#{prc.uptime}"/>
+          </p:column>
+        </p:dataTable>
+        </p:scrollPanel>
+      
+      </p:dialog>
+    </ui:define>
+    
+    
+  </ui:composition>
+  
+</html>
+

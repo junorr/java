@@ -1,0 +1,4 @@
+[INFO ] (23/05/2014 13:09:02): Checking e-mail...
+[INFO ] (23/05/2014 13:09:02): GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+[INFO ] (23/05/2014 13:09:02): HTTP/1.1 200 OK
+[INFO ] (23/05/2014 13:09:02): No important e-mail found

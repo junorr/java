@@ -1,0 +1,2910 @@
+* (04/04/2014 15:56:35) [INFO]: GET https://correioweb.bb.com.br/oamredirect.nsf/OAMAutoLogin HTTP/1.1
+* (04/04/2014 15:56:36) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:36) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:36) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:36) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:36) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:36) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:36) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:36) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:36) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:36) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:37) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:37) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:37) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:37) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:37) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:37) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:37) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:37) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:37) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:37) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:37) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:37) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:37) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:37) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:37) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:37) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:38) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:38) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:38) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:38) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:38) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:38) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:38) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:38) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:38) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:38) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:38) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:38) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:38) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:38) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:38) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:38) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 15:56:38) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 15:56:38) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:22) [INFO]: GET https://correioweb.bb.com.br/oamredirect.nsf/OAMAutoLogin HTTP/1.1
+* (04/04/2014 16:08:22) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:22) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:22) [INFO]: 
+
+* (04/04/2014 16:08:22) [INFO]: **** Response ****
+* (04/04/2014 16:08:22) [INFO]: Date: Fri, 04 Apr 2014 19:08:19 GMT
+* (04/04/2014 16:08:22) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:22) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:22) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:22) [INFO]: Content-Length: 3724
+* (04/04/2014 16:08:22) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:22) [INFO]: Keep-Alive: timeout=15, max=35
+* (04/04/2014 16:08:22) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:22) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="00000000232DF1C0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+<br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="0" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:22) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:22) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:22) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:22) [INFO]: 
+
+* (04/04/2014 16:08:22) [INFO]: **** Response ****
+* (04/04/2014 16:08:22) [INFO]: Date: Fri, 04 Apr 2014 19:08:19 GMT
+* (04/04/2014 16:08:22) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:22) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:22) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:22) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:22) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:22) [INFO]: Keep-Alive: timeout=15, max=34
+* (04/04/2014 16:08:22) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:22) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A13131F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09003]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:17 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:22) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:22) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:22) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:22) [INFO]: 
+
+* (04/04/2014 16:08:22) [INFO]: **** Response ****
+* (04/04/2014 16:08:22) [INFO]: Date: Fri, 04 Apr 2014 19:08:19 GMT
+* (04/04/2014 16:08:22) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:22) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:22) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:22) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:22) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:22) [INFO]: Keep-Alive: timeout=15, max=33
+* (04/04/2014 16:08:22) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:22) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A13131F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09003]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:17 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:22) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:22) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:22) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:22) [INFO]: 
+
+* (04/04/2014 16:08:22) [INFO]: **** Response ****
+* (04/04/2014 16:08:22) [INFO]: Date: Fri, 04 Apr 2014 19:08:19 GMT
+* (04/04/2014 16:08:22) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:22) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:22) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:22) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:22) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:22) [INFO]: Keep-Alive: timeout=15, max=32
+* (04/04/2014 16:08:22) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:22) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A13131F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09003]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:17 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:22) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:23) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:23) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:23) [INFO]: 
+
+* (04/04/2014 16:08:23) [INFO]: **** Response ****
+* (04/04/2014 16:08:23) [INFO]: Date: Fri, 04 Apr 2014 19:08:19 GMT
+* (04/04/2014 16:08:23) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:23) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:23) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:23) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:23) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:23) [INFO]: Keep-Alive: timeout=15, max=31
+* (04/04/2014 16:08:23) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:23) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A13131F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09003]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:17 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:23) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:23) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:23) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:23) [INFO]: 
+
+* (04/04/2014 16:08:23) [INFO]: **** Response ****
+* (04/04/2014 16:08:23) [INFO]: Date: Fri, 04 Apr 2014 19:08:19 GMT
+* (04/04/2014 16:08:23) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:23) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:23) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:23) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:23) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:23) [INFO]: Keep-Alive: timeout=15, max=30
+* (04/04/2014 16:08:23) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:23) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A13131F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09003]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:17 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:23) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:23) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:23) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:23) [INFO]: 
+
+* (04/04/2014 16:08:23) [INFO]: **** Response ****
+* (04/04/2014 16:08:23) [INFO]: Date: Fri, 04 Apr 2014 19:08:20 GMT
+* (04/04/2014 16:08:23) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:23) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:23) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:23) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:23) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:23) [INFO]: Keep-Alive: timeout=15, max=29
+* (04/04/2014 16:08:23) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:23) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A05BF1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09010]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:18 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:23) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:23) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:23) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:23) [INFO]: 
+
+* (04/04/2014 16:08:23) [INFO]: **** Response ****
+* (04/04/2014 16:08:23) [INFO]: Date: Fri, 04 Apr 2014 19:08:20 GMT
+* (04/04/2014 16:08:23) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:23) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:23) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:23) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:23) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:23) [INFO]: Keep-Alive: timeout=15, max=28
+* (04/04/2014 16:08:23) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:23) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A05BF1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09010]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:18 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:23) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:23) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:23) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:23) [INFO]: 
+
+* (04/04/2014 16:08:23) [INFO]: **** Response ****
+* (04/04/2014 16:08:23) [INFO]: Date: Fri, 04 Apr 2014 19:08:20 GMT
+* (04/04/2014 16:08:23) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:23) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:23) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:23) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:23) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:23) [INFO]: Keep-Alive: timeout=15, max=27
+* (04/04/2014 16:08:23) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:23) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A05BF1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09010]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:19 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:23) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:23) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:23) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:23) [INFO]: 
+
+* (04/04/2014 16:08:23) [INFO]: **** Response ****
+* (04/04/2014 16:08:23) [INFO]: Date: Fri, 04 Apr 2014 19:08:21 GMT
+* (04/04/2014 16:08:23) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:23) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:23) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:23) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:23) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:23) [INFO]: Keep-Alive: timeout=15, max=26
+* (04/04/2014 16:08:23) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:23) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A05BF1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09010]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:19 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:23) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:24) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:24) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:24) [INFO]: 
+
+* (04/04/2014 16:08:24) [INFO]: **** Response ****
+* (04/04/2014 16:08:24) [INFO]: Date: Fri, 04 Apr 2014 19:08:21 GMT
+* (04/04/2014 16:08:24) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:24) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:24) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:24) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:24) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:24) [INFO]: Keep-Alive: timeout=15, max=25
+* (04/04/2014 16:08:24) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:24) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A05BF1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09010]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:19 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:24) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:24) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:24) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:24) [INFO]: 
+
+* (04/04/2014 16:08:24) [INFO]: **** Response ****
+* (04/04/2014 16:08:24) [INFO]: Date: Fri, 04 Apr 2014 19:08:21 GMT
+* (04/04/2014 16:08:24) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:24) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:24) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:24) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:24) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:24) [INFO]: Keep-Alive: timeout=15, max=24
+* (04/04/2014 16:08:24) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:24) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A062C1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09021]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:19 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:24) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:24) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:24) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:24) [INFO]: 
+
+* (04/04/2014 16:08:24) [INFO]: **** Response ****
+* (04/04/2014 16:08:24) [INFO]: Date: Fri, 04 Apr 2014 19:08:21 GMT
+* (04/04/2014 16:08:24) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:24) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:24) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:24) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:24) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:24) [INFO]: Keep-Alive: timeout=15, max=23
+* (04/04/2014 16:08:24) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:24) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A062C1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09021]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:19 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:24) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:24) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:24) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:24) [INFO]: 
+
+* (04/04/2014 16:08:24) [INFO]: **** Response ****
+* (04/04/2014 16:08:24) [INFO]: Date: Fri, 04 Apr 2014 19:08:21 GMT
+* (04/04/2014 16:08:24) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:24) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:24) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:24) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:24) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:24) [INFO]: Keep-Alive: timeout=15, max=22
+* (04/04/2014 16:08:24) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:24) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A062C1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09021]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:19 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:24) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:24) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:24) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:24) [INFO]: 
+
+* (04/04/2014 16:08:24) [INFO]: **** Response ****
+* (04/04/2014 16:08:24) [INFO]: Date: Fri, 04 Apr 2014 19:08:21 GMT
+* (04/04/2014 16:08:24) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:24) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:24) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:24) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:24) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:24) [INFO]: Keep-Alive: timeout=15, max=21
+* (04/04/2014 16:08:24) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:24) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A062C1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09021]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:19 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:24) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:24) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:24) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:24) [INFO]: 
+
+* (04/04/2014 16:08:24) [INFO]: **** Response ****
+* (04/04/2014 16:08:24) [INFO]: Date: Fri, 04 Apr 2014 19:08:22 GMT
+* (04/04/2014 16:08:24) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:24) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:24) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:24) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:24) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:24) [INFO]: Keep-Alive: timeout=15, max=20
+* (04/04/2014 16:08:24) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:24) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A05BF1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09011]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:20 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:24) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:25) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:25) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:25) [INFO]: 
+
+* (04/04/2014 16:08:25) [INFO]: **** Response ****
+* (04/04/2014 16:08:25) [INFO]: Date: Fri, 04 Apr 2014 19:08:22 GMT
+* (04/04/2014 16:08:25) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:25) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:25) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:25) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:25) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:25) [INFO]: Keep-Alive: timeout=15, max=19
+* (04/04/2014 16:08:25) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:25) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A05BF1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09012]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:20 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:25) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:25) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:25) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:25) [INFO]: 
+
+* (04/04/2014 16:08:25) [INFO]: **** Response ****
+* (04/04/2014 16:08:25) [INFO]: Date: Fri, 04 Apr 2014 19:08:22 GMT
+* (04/04/2014 16:08:25) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:25) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:25) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:25) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:25) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:25) [INFO]: Keep-Alive: timeout=15, max=18
+* (04/04/2014 16:08:25) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:25) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A05BF1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09012]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:20 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:25) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:25) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:25) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:25) [INFO]: 
+
+* (04/04/2014 16:08:25) [INFO]: **** Response ****
+* (04/04/2014 16:08:25) [INFO]: Date: Fri, 04 Apr 2014 19:08:22 GMT
+* (04/04/2014 16:08:25) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:25) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:25) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:25) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:25) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:25) [INFO]: Keep-Alive: timeout=15, max=17
+* (04/04/2014 16:08:25) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:25) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A05BF1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09012]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:20 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:25) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:25) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:25) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:25) [INFO]: 
+
+* (04/04/2014 16:08:25) [INFO]: **** Response ****
+* (04/04/2014 16:08:25) [INFO]: Date: Fri, 04 Apr 2014 19:08:22 GMT
+* (04/04/2014 16:08:25) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:25) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:25) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:25) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:25) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:25) [INFO]: Keep-Alive: timeout=15, max=16
+* (04/04/2014 16:08:25) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:25) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A13361F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa01014]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:20 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:25) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:26) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:26) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:26) [INFO]: 
+
+* (04/04/2014 16:08:26) [INFO]: **** Response ****
+* (04/04/2014 16:08:26) [INFO]: Date: Fri, 04 Apr 2014 19:08:22 GMT
+* (04/04/2014 16:08:26) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:26) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:26) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:26) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:26) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:26) [INFO]: Keep-Alive: timeout=15, max=15
+* (04/04/2014 16:08:26) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:26) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A13361F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa01014]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:20 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:26) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:26) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:26) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:26) [INFO]: 
+
+* (04/04/2014 16:08:26) [INFO]: **** Response ****
+* (04/04/2014 16:08:26) [INFO]: Date: Fri, 04 Apr 2014 19:08:22 GMT
+* (04/04/2014 16:08:26) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:26) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:26) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:26) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:26) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:26) [INFO]: Keep-Alive: timeout=15, max=14
+* (04/04/2014 16:08:26) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:26) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A13361F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa01014]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:21 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:26) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:26) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:26) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:26) [INFO]: 
+
+* (04/04/2014 16:08:26) [INFO]: **** Response ****
+* (04/04/2014 16:08:26) [INFO]: Date: Fri, 04 Apr 2014 19:08:23 GMT
+* (04/04/2014 16:08:26) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:26) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:26) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:26) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:26) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:26) [INFO]: Keep-Alive: timeout=15, max=13
+* (04/04/2014 16:08:26) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:26) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A13361F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa01014]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:21 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:26) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:26) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:26) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:26) [INFO]: 
+
+* (04/04/2014 16:08:26) [INFO]: **** Response ****
+* (04/04/2014 16:08:26) [INFO]: Date: Fri, 04 Apr 2014 19:08:23 GMT
+* (04/04/2014 16:08:26) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:26) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:26) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:26) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:26) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:26) [INFO]: Keep-Alive: timeout=15, max=12
+* (04/04/2014 16:08:26) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:26) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A13361F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa01014]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:21 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:26) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:26) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:26) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:26) [INFO]: 
+
+* (04/04/2014 16:08:26) [INFO]: **** Response ****
+* (04/04/2014 16:08:26) [INFO]: Date: Fri, 04 Apr 2014 19:08:23 GMT
+* (04/04/2014 16:08:26) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:26) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:26) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:26) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:26) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:26) [INFO]: Keep-Alive: timeout=15, max=11
+* (04/04/2014 16:08:26) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:26) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A0CDE1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09029]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:22 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:26) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:26) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:26) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:26) [INFO]: 
+
+* (04/04/2014 16:08:26) [INFO]: **** Response ****
+* (04/04/2014 16:08:26) [INFO]: Date: Fri, 04 Apr 2014 19:08:23 GMT
+* (04/04/2014 16:08:26) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:26) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:26) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:26) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:26) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:26) [INFO]: Keep-Alive: timeout=15, max=10
+* (04/04/2014 16:08:26) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:26) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A0CDE1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09029]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:22 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:26) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:26) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:26) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:26) [INFO]: 
+
+* (04/04/2014 16:08:26) [INFO]: **** Response ****
+* (04/04/2014 16:08:26) [INFO]: Date: Fri, 04 Apr 2014 19:08:24 GMT
+* (04/04/2014 16:08:26) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:26) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:26) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:26) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:26) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:26) [INFO]: Keep-Alive: timeout=15, max=9
+* (04/04/2014 16:08:26) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:26) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A0CDE1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09029]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:22 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:26) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:26) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:27) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:27) [INFO]: 
+
+* (04/04/2014 16:08:27) [INFO]: **** Response ****
+* (04/04/2014 16:08:27) [INFO]: Date: Fri, 04 Apr 2014 19:08:24 GMT
+* (04/04/2014 16:08:27) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:27) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:27) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:27) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:27) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:27) [INFO]: Keep-Alive: timeout=15, max=8
+* (04/04/2014 16:08:27) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:27) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A0CDE1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09029]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:22 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:27) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:08:27) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:08:27) [INFO]: HTTP_FORM
+* (04/04/2014 16:08:27) [INFO]: 
+
+* (04/04/2014 16:08:27) [INFO]: **** Response ****
+* (04/04/2014 16:08:27) [INFO]: Date: Fri, 04 Apr 2014 19:08:24 GMT
+* (04/04/2014 16:08:27) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:08:27) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:08:27) [INFO]: Content-Type: text/html; charset=UTF-8
+* (04/04/2014 16:08:27) [INFO]: Content-Length: 4152
+* (04/04/2014 16:08:27) [INFO]: Cache-control: no-cache
+* (04/04/2014 16:08:27) [INFO]: Keep-Alive: timeout=15, max=7
+* (04/04/2014 16:08:27) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:08:27) [INFO]: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Intranet BB (iNotes LoginForm)</title>
+
+  <link rel="shortcut icon" href="/oamredirect.nsf/favicon.ico" />
+
+  <META HTTP-EQUIV="cache-control" CONTENT="no-cache" />
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+  <script language="JavaScript" type="text/javascript">
+
+
+    var xNotMigratedServer = '1';
+    var xURL = '';
+  </script>
+
+  <style type="text/css">
+     body{background:#ccddee url("/oamredirect.nsf/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+     #logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("/oamredirect.nsf/login_sprite.png");} 
+     h1{font-size: 25px;margin: 16px 0;}
+     label{display: block;}
+     input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:156px;height:16px;}
+     #entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+     .termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("/oamredirect.nsf/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+     a{color: #004078;}
+     .error {
+         color: #D8000C;
+         background-color: #FFBABA;
+          border: 1px solid;
+             margin: 10px  30px;
+             padding:15px 10px 15px 50px;
+     }
+     #noticias{width:500px;}
+  </style>
+
+<script language="JavaScript" type="text/javascript">
+<!-- 
+//SPR# KMOA6YUDZ3: ignore any focus errors in case the focus can't be set (form invisible, etc)//window.onerror = new Function("return true;");function setFormFocus() {	if (xNotMigratedServer == '1') {		document.forms[0].username.focus(); 		document.forms[0].username.select();	}}function redirectToURL() { 	//alert('windowURL:'+window.location.href+'\n window.topURL: '+window.top.location.href+'\n topURL: '+top.location.href+'\n documentURL: '+document.location.href+'\n parentURL: '+parent.location.href);	if (xURL!='') {		//if (top.location.href != document.location.href) {			if (top.location.href != xURL) {					top.location.href =  xURL;   				}	}}							function onLoad() {	//redirectToURL();	setFormFocus()}
+// -->
+</script>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" onload="onLoad();">
+
+<form method="post" action="/names.nsf?Login" name="_OAMLoginForm">
+<input type="hidden" name="%%ModDate" value="0A000100A0CDE1F0"><div id="logo">
+</div> <!--div-logo-->
+<h1 title="BEM-VINDO &Agrave; INTRANET">BEM-VINDO &Agrave; INTRANET - CORREIO</h1>
+<div class="bl2">
+<div id="errMsg" class="error">Usuário ou Senha inválidos.
+
+Realize o login novamente:      </div> <!--div-errMsg-->
+
+   <label for="IDToken1"> Chave </label>
+   	<input name="username" value=""  >
+   <br />
+   <label for="IDToken2"> Senha </label>
+   	<input name="password" value="" type="password"  autocomplete='off'>
+   	<input type="submit" id="entrar" value="ENTRAR" >
+</div> <!--div-bl2-->
+<span class="termo">Ao acessar a Intranet, voc&ecirc; est&aacute; concordando com o <a title="Termo de Responsabilidade" href="javascript:popup('http://intranet.bb.com.br/portal/APPS/login/termoDeResponsabilidade.jsp','_blank',606,500);">Termo de Responsabilidade</a></span>
+<!-- Dummy button to prevent Domino from generating an extra "submit" button 
+<input type="submit" value=""> -->
+</br></br></br></br></br></br><h3>Informar detalhes para o suporte:</h3></br>&nbsp;Erro: [2]</br>&nbsp;Servidor: [srcbsa09029]</br>&nbsp;Username: [anonymous]</br>&nbsp;Data/Hora: [04/04/2014 04:08:22 PM]</br>&nbsp;Navegador: [Mozilla/5.0 (Windows NT 6.1; WOW64; rv:22.0) Gecko/20100101 Firefox/22.0]</br></br><br>
+
+<input name="$PublicAccess" value="1" type=hidden>
+<input name="ReasonType" value="2" id="reasonType" type=hidden>
+<input name="ReasonText" value="" id="reasonText" type=hidden>
+<input name="RedirectTo" value="/oamredirect.nsf/OAMAutoLogin" type=hidden>
+<input name="REMOTE_USER" value="" type=hidden><font size="2" face="Arial"></font></form>
+</body>
+</html>
+
+* (04/04/2014 16:08:27) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:45:30) [INFO]: GET https://correioweb.bb.com.br/oamredirect.nsf/OAMAutoLogin HTTP/1.1
+* (04/04/2014 16:45:31) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:45:31) [INFO]: HTTP_FORM
+* (04/04/2014 16:45:31) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (04/04/2014 16:45:31) [INFO]: HTTP/1.1 302 Found
+* (04/04/2014 16:45:31) [INFO]: 302-Redirect: https://correioweb.bb.com.br//oamredirect.nsf/OAMAutoLogin
+* (04/04/2014 16:45:31) [INFO]: POST https://correioweb.bb.com.br//oamredirect.nsf/OAMAutoLogin HTTP/1.1
+* (04/04/2014 16:45:31) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:45:31) [INFO]: Meta-refresh: https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf
+* (04/04/2014 16:45:31) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf HTTP/1.1
+* (04/04/2014 16:45:31) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:45:31) [INFO]: HTTP_JS_REDIRECT
+* (04/04/2014 16:45:31) [INFO]: https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1
+* (04/04/2014 16:45:31) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (04/04/2014 16:45:31) [INFO]: HTTP/1.1 200 OK
+* (04/04/2014 16:45:31) [INFO]: 
+
+* (04/04/2014 16:45:31) [INFO]: **** Response ****
+* (04/04/2014 16:45:31) [INFO]: Date: Fri, 04 Apr 2014 19:45:29 GMT
+* (04/04/2014 16:45:31) [INFO]: Server: Lotus-Domino
+* (04/04/2014 16:45:31) [INFO]: Last-Modified: Fri, 04 Apr 2014 19:45:27 GMT
+* (04/04/2014 16:45:31) [INFO]: Expires: Tue, 01 Jan 1980 06:00:00 GMT
+* (04/04/2014 16:45:31) [INFO]: Content-Type: text/xml; charset=UTF-8
+* (04/04/2014 16:45:31) [INFO]: Content-Length: 14919
+* (04/04/2014 16:45:31) [INFO]: Cache-Control: no-store
+* (04/04/2014 16:45:31) [INFO]: Content-Language: pt-br
+* (04/04/2014 16:45:31) [INFO]: Set-Cookie: COOKIE_CLDOMINO0901=R761397569; path=/; expires=Fri, 04-Apr-2014 20:23:02 GMT
+* (04/04/2014 16:45:31) [INFO]: Keep-Alive: timeout=15, max=31
+* (04/04/2014 16:45:31) [INFO]: Connection: Keep-Alive
+* (04/04/2014 16:45:31) [INFO]: <readviewentries> <viewentries timestamp="20140404T194527,22Z" toplevelentries="17">
+<viewentry position="1" unid="973220524A22046283257CB0006C67F0" noteid="158AE" siblings="17" unread="true">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F4680827 Jean Ribeiro Zacarias</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Re: Enc: Re: Consulta COP</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T194405,98Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>4350</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>184</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="2" unid="1CEE1BE121BE078B83257CB0006C3D9C" noteid="158AA" siblings="17" unread="true">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F3735078 Getulio Melo de Siqueira Vieira</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Re: Enc: Re: Enc: Re: Enc: Re: Consulta COP</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T194217,19Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>5167</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>186</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="3" unid="98DA0AC98D89A4B683257CB000691C98" noteid="158A2" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F4680827 Jean Ribeiro Zacarias</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Re: Enc: Re: Consulta COP</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T190805,71Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>4130</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>184</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>178</number></entrydata>
+</viewentry>
+<viewentry position="4" unid="06727E86B30B5C0883257CB00067658C" noteid="1589E" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F7655526 Odair Ferreira de Sousa</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Enc: Re: Enc: Re: Enc: Re: Consulta COP</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T184922,75Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>4860</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>186</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="5" unid="0A97FEBE5573931883257CB00065004F" noteid="15896" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F3735078 Getulio Melo de Siqueira Vieira</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Re: Enc: Re: Enc: Re: Consulta COP</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T182311,88Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>3999</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>185</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>179</number></entrydata>
+</viewentry>
+<viewentry position="6" unid="4561C01BA19A5A9383257CB0005D6B04" noteid="15886" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F6844685 Maria de Fatima Gois</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Enc: Re: Enc: Transferências protocolos</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T170022,70Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>4678</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>184</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="7" unid="D2C06E8C0AE02AE883257CB0005848DF" noteid="1587E" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F4680827 Jean Ribeiro Zacarias</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Re: Enc: Re: Consulta COP</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T160419,15Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>3761</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>184</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>178</number></entrydata>
+</viewentry>
+<viewentry position="8" unid="19560D7369ADE44183257CB000575DB5" noteid="1587A" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F4680827 Jean Ribeiro Zacarias</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Re: Enc: Re: Consulta COP</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T155416,50Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>3722</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>184</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="9" unid="DB5F9F9BD177DC2C83257CB000536414" noteid="15876" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F2594199 Edelsio Celio Korell Junior</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Re: Transferencia de protocolo entre Cenop</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T151051,25Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>5728</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>186</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="10" unid="3B839627822E777983257CB000514380" noteid="15872" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F7655526 Odair Ferreira de Sousa</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Re: Transferencia de protocolo entre Cenop</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T144737,22Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>5444</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>186</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="11" unid="FF342C1E9D9CBB9B83257CB00050A88B" noteid="1586E" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F2594199 Edelsio Celio Korell Junior</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Re: Transferencia de protocolo entre Cenop</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T144100,70Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>4994</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>186</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="12" unid="AFF2400DC7857CD083257CB0004ED0F7" noteid="1586A" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>DINOP-NEG OPERACOES - ECOA</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Senha acesso Portais Externos - UniBB</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T143501,47Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>56807</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<text></text></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="13" unid="A0F247E9C4198B5083257CB0004FD464" noteid="15866" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F3207081 Fernanda Mendes Zanis</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Transferencia de protocolo entre Cenop</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140404T143158,21Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>3775</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>186</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="14" unid="06DC6F6EF7BE6E2883257CAF006157D2" noteid="1585A" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F7655526 Odair Ferreira de Sousa</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Enc: Re: Enc: Areas Especializadas - Produtividade</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140403T174351,32Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>28717</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>186</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="15" unid="238FECA0A8EE6B1E83257CAF0061145D" noteid="15856" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F9342466 Tiago Peliciari de Paula</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Re: Enc: Areas Especializadas - Produtividade</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140403T174022,30Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>29008</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>186</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="16" unid="D472B747EFEAF2BE83257CAF0060872A" noteid="15852" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F7655526 Odair Ferreira de Sousa</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Enc: Areas Especializadas - Produtividade</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140403T173451,97Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>28531</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>186</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+<viewentry position="17" unid="8863B305E8FE810783257CAF005822E2" noteid="1584E" siblings="17">
+<entrydata columnnumber="0" name="$86">
+<number>211</number></entrydata>
+<entrydata columnnumber="1" name="$Importance">
+<number>0</number></entrydata>
+<entrydata columnnumber="2" name="$93">
+<text>F9342466 Tiago Peliciari de Paula</text></entrydata>
+<entrydata columnnumber="3" name="$73">
+<text>Re: Enc: Areas Especializadas - Produtividade</text></entrydata>
+<entrydata columnnumber="4" name="$70">
+<datetime>20140403T160241,27Z</datetime></entrydata>
+<entrydata columnnumber="5" name="$106">
+<number>28775</number></entrydata>
+<entrydata columnnumber="6" name="$ToStuff">
+<number>185</number></entrydata>
+<entrydata columnnumber="7" name="$97">
+<number>9999</number></entrydata>
+<entrydata columnnumber="8" name="$109">
+<number>0</number></entrydata>
+</viewentry>
+</viewentries>
+ <dbquotasize> <dbsize>70400</dbsize><sizelimit>204800</sizelimit><warning>184320</warning><ignorequota>1</ignorequota><currentusage>70400</currentusage> </dbquotasize>  <unreadinfo> <foldername>($Inbox)</foldername><unreadcount>2</unreadcount> </unreadinfo>  </readviewentries> 

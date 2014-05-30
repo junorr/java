@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<h:head>
+		<title><ui:insert name="title"/></title>
+    <link rel="shortcut icon" href="plane.gif" type="image/gif" />
+    
+ 		<h:outputScript library="javascript" name="jquery.js"/>
+   	<h:outputScript library="javascript" name="tabulator.js"/>
+    <h:outputScript library="javascript" name="scripts.js"/>
+    <h:outputStylesheet library="css" name="masterLayout.css"/>
+    <ui:insert name="imports"/>
+	</h:head>
+	
+	<h:body>
+		
+		<div id="header">
+			<ui:insert name="header">
+				<ui:include src="/layout/default/header.xhtml"/>
+			</ui:insert>
+		</div>
+    
+		<div id="sidebar">
+      <h:graphicImage id="sidebar-bg" library="images" name="sidebar-gray.png"/>
+      <ui:insert name="sidebar">
+        <ui:include src="/layout/default/sidebar.xhtml"/>
+      </ui:insert>
+		</div>
+    
+		<div id="content">
+      <h:graphicImage id="content-bg" library="images" name="content-gray.png"/>
+      <h:outputText id="madeby" 
+                    value="Juno Roesler - Copyright (C) 2011 - juno.rr@gmail.com"/>
+                    
+      <div id="content-text">
+  			<ui:insert name="content"/>
+      </div>
+      
+      
+      <!-- Botao do Firefox -->
+      <h:outputLink id="firefoxbtn" value="http://www.getfirefox.com"
+                    style="position: absolute; width: 96px; height: 28px; z-index: 2;" target="_blank">
+        <h:graphicImage url="http://www.mozilla.org/contribute/buttons/110x32bubble_o_pt.png"
+                        style="border: none; width: 96px; height: 28px;"/>
+      </h:outputLink>
+    
+		</div>
+    
+    
+    <h:graphicImage id="mask" library="images" name="mask.png" 
+                    style="position: absolute; top: 0px; left: 0px; 
+                    z-index: 3; visibility: hidden;"/>
+		
+	</h:body>
+	
+</html>
+

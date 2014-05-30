@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+			xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<ui:composition>
+		<!-- Attributes: COMMONS { id, value }                      -->
+    <!--             STYLES  { class,                           -->
+    <!--                       buttonType[ round | rect ]       -->
+    <!--                       color[ gray | green |            -->
+    <!--                              yellow | blue |           -->
+    <!--                              light-blue | red ] }      -->
+    
+		<h:outputLink id="#{(id != null ? id : 'jpButton')}" styleClass="#{class}" 
+									style='font-size: medium; 
+                  font-family: Arial;
+									font-weight: bold; 
+									text-decoration: none; color: black;'>
+			
+      <h:graphicImage library="images/buttons" 
+                      name='#{(buttonType != null ? buttonType : "round")}Button-#{(color != null ? color : "gray")}.png'
+                      style="border: 0;"/>
+			
+			<h:graphicImage library="images/buttons" 
+                      name='#{(buttonType != null ? buttonType : "round")}Button-#{(color != null ? color : "gray")}_over.png'
+                      style="border: 0;"/>
+			
+      <span>#{value}</span>
+				
+		</h:outputLink>
+    
+    <h:outputScript library="javascript" name="jquery.js"/>
+    <h:outputScript library="javascript" name="tabulator.js"/>
+    <h:outputScript library="javascript" name="ajax.js"/>
+    <h:outputScript library="javascript" name="Button.js"/>
+    <script type="text/javascript" rel="javascript">
+      var id = "#{id}";
+      if(!id) {
+        id = "jpButton_" + Math.round(Math.random() * 1000000);
+        $("#jpButton").attr("id", id);
+      }
+      
+      Button(id);
+    </script>
+		
+	</ui:composition>
+  
+</html>
+

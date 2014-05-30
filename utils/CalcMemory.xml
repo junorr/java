@@ -1,0 +1,41 @@
+<com.jpower.utils.CalcMemory_-1>
+  <expressions class="linked-list">
+    <com.jpower.utils.Expression>
+      <exp1>
+        <exp1 class="com.jpower.utils.VarExpression">
+          <var>V</var>
+          <value>30.0</value>
+          <valdef>true</valdef>
+        </exp1>
+      </exp1>
+      <exp2>
+        <exp1 class="com.jpower.utils.VarExpression">
+          <var>d</var>
+          <value>60.0</value>
+          <valdef>true</valdef>
+        </exp1>
+        <exp2 class="com.jpower.utils.VarExpression">
+          <var>t</var>
+          <value>2.0</value>
+          <valdef>true</valdef>
+        </exp2>
+        <op>
+          <priority>0</priority>
+          <operator>/</operator>
+        </op>
+      </exp2>
+      <op>
+        <priority>0</priority>
+        <operator>=</operator>
+      </op>
+      <name>Velocidade</name>
+    </com.jpower.utils.Expression>
+    <com.jpower.utils.Expression reference="../com.jpower.utils.Expression"/>
+  </expressions>
+  <memory class="linked-list"/>
+  <vars class="linked-list">
+    <com.jpower.utils.VarExpression reference="../../expressions/com.jpower.utils.Expression/exp2/exp1"/>
+    <com.jpower.utils.VarExpression reference="../../expressions/com.jpower.utils.Expression/exp2/exp2"/>
+    <com.jpower.utils.VarExpression reference="../../expressions/com.jpower.utils.Expression/exp1/exp1"/>
+  </vars>
+</com.jpower.utils.CalcMemory_-1>

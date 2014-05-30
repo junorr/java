@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - User Admin
+    </ui:define>
+    
+    <ui:define name="script">
+      <h:outputScript library="javascript" name="aes.js"/>
+      <h:outputScript library="javascript" name="cryptoHelpers.js"/>
+      <h:outputScript library="javascript" name="hexcode.js"/>
+      
+      <script type="text/javascript">
+        #{userController.updateList()}
+          
+        function encrypt() {
+          var pass = $("#ipass").val();
+          
+          $("#ipass").val("password");
+          $("#imatch").val("password");
+          var hexKey = "#{security.uid}";
+          
+          var bpass = cryptoHelpers.convertStringToByteArray(pass);
+          var key = hex.fromHexString(hexKey);
+          var iv = hex.get16BytesLength(key);
+          
+          var encpass = slowAES.encrypt(bpass, slowAES.modeOfOperation.CBC, key, iv);
+          
+          $("#hpass").val(hex.toHexString(encpass));
+        }
+      </script>
+    </ui:define>
+
+    
+    <ui:define name="category-icon">
+      <h:graphicImage id="user-icon" library="images" name="person-black-18.png"/>
+    </ui:define>
+    
+    <ui:define name="category-name">User Admin</ui:define>
+    
+    <ui:define name="category-links">
+      <p:commandLink id="create-user" actionListener="#{userCreator.newUser()}"
+                     update="createdlg"
+                     onclick="$('#loading').show();" 
+                     oncomplete="$('#loading').hide(); createvar.show();"
+                     disabled="#{!loginController.user.admin}"
+                     styleClass="menuLink">
+        <p:graphicImage library="images" name="add-black-18.png" 
+                        style="width: 12px; height: 12px; position: relative; top: 1px;"/>
+        Create New User
+      </p:commandLink>
+      
+      <p:spacer width="10" height="2"/>
+      <h:graphicImage id='loading' library="images" name="ajax-loader.gif" style="display: none;"/>
+    </ui:define>
+    
+    
+    <ui:define name="category-content">
+      
+      <p:dataTable id="user-table" value="#{userController.users}" var="u"
+                   rowKey="#{u.email}" selectionMode="single" 
+                   selection="#{userController.selected}">
+          
+        <p:ajax event="rowSelect" onstart="$('#loading').show();"
+                oncomplete="$('#loading').hide();"/>
+          
+        <f:facet name="header">
+          Registered Users (#{userController.users.size()})
+        </f:facet>
+          
+        <p:column headerText="Name" filterBy="#{u.name}" sortBy="#{u.name}" filterMatchMode="startsWith">
+          <h:outputText value="#{u.name}"/>
+        </p:column>
+          
+        <p:column headerText="E-mail" filterBy="#{u.email}" sortBy="#{u.email}" filterMatchMode="startsWith">
+          <h:outputText value="#{u.email}"/>
+        </p:column>
+          
+        <p:column headerText="Admin" filterBy="#{u.admin}" sortBy="#{u.admin}" filterMatchMode="startsWith">
+          <h:outputText value="#{u.admin}"/>
+        </p:column>
+          
+        <f:facet name="footer">
+          <center>
+            <p:commandButton icon="ui-icon-pencil" value="Edit User"
+                             partialSubmit="true" process="user-table"
+                             disabled="#{!loginController.user.admin}"
+                             onclick="$('#loading').show();"
+                             action="user-edit.xhtml?faces-redirect=true"/>
+            
+            <p:spacer width="20" height="2"/>
+            
+            <p:commandButton icon="ui-icon-trash" value="Delete User"
+                             disabled="#{!loginController.user.admin}"
+                             type="button" onclick="delvar.show();"/>
+          </center>
+        </f:facet>
+        
+      </p:dataTable>
+      
+      <p:spacer height="100"/>
+      
+      
+      <p:dialog id="deldlg" widgetVar="delvar"
+                showEffect="fold" hideEffect="explode"
+                resizable="false">
+        <f:facet name="header">
+          <span class="ui-icon-closethick"></span>
+          <h:outputText value="Delete User"/>
+        </f:facet>
+        
+        <center>
+          <p:spacer width="10"/>
+          <h:outputText value="Do you want to Delete the selected user?"/>
+          <p:spacer height="40" width="30"/>
+          <p:commandButton value="Delete" id="delbtn" icon="ui-icon-check"
+                           onclick="$('#loading').show();"
+                           actionListener="#{userController.deleteUser()}"
+                           action="#{userController.updateList()}"
+                           update="user-table" partialSubmit="true" 
+                           process="user-table,delbtn"
+                           oncomplete="delvar.hide(); $('#loading').hide();"/>
+          <p:spacer width="25"/>
+          <p:commandButton value="Cancel" icon="ui-icon-cancel"
+                           type="button" onclick="delvar.hide();"/>
+          <p:spacer width="10"/>
+          <br/><p:spacer height="10"/>
+        </center>
+      </p:dialog>
+      
+      
+      <p:dialog id="createdlg" widgetVar="createvar" header="Create User"
+                showEffect="fold" hideEffect="explode" resizable="false">
+
+        <h:panelGrid columns="3">
+          <p:outputLabel for="iname" value="Name:"/>
+          <p:spacer width="10" height="30"/>
+          <p:inputText id="iname" value="#{userCreator.user.name}" required="true"/>
+          
+          <p:outputLabel for="iemail" value="E-mail:"/>
+          <p:spacer width="10" height="30"/>
+          <p:inputText id="iemail" value="#{userCreator.user.email}" required="true"/>
+          
+          <p:outputLabel for="ipass" value="Password:"/>
+          <p:spacer width="10" height="30"/>
+          <p:password id="ipass" match="imatch" 
+                      required="true" feedback="true" inline="false"/>
+          
+          <p:outputLabel for="imatch" value="Confirm:"/>
+          <p:spacer width="10" height="30"/>
+          <p:password id="imatch"/>
+          
+          <p:spacer width="1"/>
+          <p:spacer width="10" height="30"/>
+          <p:commandButton icon="ui-icon-disk" value="Save"
+                           onclick="encrypt(); $('#loading').show();"
+                           action="#{userCreator.saveUser()}"
+                           oncomplete="$('#loading').hide();"/>
+        </h:panelGrid>
+        
+        <h:inputHidden id="hpass" value="#{userCreator.password}"/>
+      </p:dialog>
+      
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

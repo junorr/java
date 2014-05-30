@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - CPU
+    </ui:define>
+    
+    <ui:define name="style">
+      <style type="text/css">
+        #customcpuchart {
+          position: relative; 
+          top: 20px;
+          width: 860px;
+          height: 400px;
+          box-shadow: 3px 3px 5px 2px #888888;
+        }
+
+        #cpu-icon {
+          width: 22px;
+          height: 22px;
+        }
+      </style>
+    </ui:define>
+    
+    <ui:define name="category-icon">
+      <h:graphicImage id="cpu-icon" library="images" name="cpu-icon.png"/>
+    </ui:define>
+    
+    <ui:define name="category-name">
+      CPU Custom Chart
+    </ui:define>
+    
+    <ui:define name="category-links">
+      <h:commandLink styleClass="menuLink" action="cpu.xhtml?faces-redirect=true">
+        <h:graphicImage library="images" name="back-18.png" 
+                        style="height: 14px; width: 16px;"/>
+        <p:spacer width="5"/>
+        <h:outputText value="Back" 
+                      style="position: relative; top: -2px;"/>
+      </h:commandLink>
+    </ui:define>
+    
+    <ui:define name="category-content">
+      <center>
+        <p:lineChart id="customcpuchart" value="#{customCpuChart.model}"
+                     title="CPU Historical Consumption (#{customCpuChart.intervalString})"
+                     animate="true" xaxisLabel="Hour of Day"
+                     yaxisLabel="Percent" extender="ext"
+                     showDatatip="true" showMarkers="true"
+                     legendPosition="#{customCpuChart.position}" 
+                     fill="#{customCpuChart.filled}"/>
+        
+        <p:spacer height="50"/>
+        
+        <p:dataTable value="#{customCpuChart.averages}"
+                     var="pair" style="width: 300px;">
+          <f:facet name="header">
+            CPU Averages in Period
+          </f:facet>
+          
+          <p:column headerText="Item">
+            #{pair.key}
+          </p:column>
+          
+          <p:column headerText="%">
+            <center>
+              #{pair.value.toString()}
+            </center>
+          </p:column>
+        
+        </p:dataTable>
+        
+        <p:spacer height="30"/>
+        
+        <p:panelGrid columns="2">
+          <f:facet name="header">
+            View Processes
+          </f:facet>
+          
+          <h:outputText value="Snapshot of Processes Running in:"/>
+          <p:selectOneMenu value="#{customCpuChart.snapDate}"
+                           effect="fade" id="dateselect">
+            <f:selectItems value="#{customCpuChart.snaps}" var="s"
+                           itemLabel="#{s.time.toString()}"
+                           itemValue="#{s.time}"/>
+            <p:ajax update="prcdlg,prcsize"/>
+          </p:selectOneMenu>
+          
+          <f:facet name="footer">
+            <center>
+              <p:commandButton value="Show" update="prcdlg,prcsize"
+                               icon="ui-icon-search"
+                               oncomplete="prcvar.show()"/>
+            </center>
+          </f:facet>
+          
+        </p:panelGrid>
+      </center>
+      
+      
+      <p:dialog id="prcdlg" widgetVar="prcvar" 
+                header="Processes Snapshot in:  
+                #{customCpuChart.snap.time.toString()}"
+                showEffect="fold"
+                dynamic="true"
+                hideEffect="fade">
+      
+        <h:outputText id="prcsize" value="Processes: #{customCpuChart.snap.processes.size()}"/>
+        
+        <p:scrollPanel style="width: 640px; height: 500px;">
+        <p:dataTable id="prctable" var="prc" 
+                     value="#{customCpuChart.snap.processes}">
+          
+          <p:column headerText="PID" sortBy="#{prc.pid}"
+                    filterBy="#{prc.pid}" filterMatchMode="startsWith">
+            <h:outputText value="#{prc.pid}"/>
+        </p:column>
+          
+          <p:column headerText="Name" sortBy="#{prc.name}"
+                    filterBy="#{prc.name}" filterMatchMode="startsWith">
+            <h:outputText value="#{prc.name}"/>
+          </p:column>
+          
+          <p:column headerText="CPU %" sortBy="#{prc.cpu}">
+            <h:outputText value="#{prc.cpu}"/>
+          </p:column>
+          
+          <p:column headerText="Memory %" sortBy="#{prc.mem}">
+            <h:outputText value="#{prc.mem}"/>
+          </p:column>
+          
+          <p:column headerText="User" sortBy="#{prc.user}"
+                    filterBy="#{prc.user}" filterMatchMode="startsWith">
+            <h:outputText value="#{prc.user}"/>
+          </p:column>
+          
+          <p:column headerText="Uptime" sortBy="#{prc.uptime}">
+            <h:outputText value="#{prc.uptime}"/>
+          </p:column>
+        </p:dataTable>
+        </p:scrollPanel>
+      
+      </p:dialog>
+      <p:spacer height="100"/>
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

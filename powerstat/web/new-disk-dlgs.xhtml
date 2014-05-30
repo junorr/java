@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition>
+  
+      <p:dialog id="customchartdlg" header="Disk Custom Chart"
+                widgetVar="customchartvar"
+                showEffect="fold" hideEffect="explode" 
+                resizable="false">
+        
+        <p:panelGrid columns="2">
+          <f:facet name="header">
+            Time Interval
+          </f:facet>
+          
+          <h:outputText value="Start Date:"/>
+          <p:calendar value="#{customDiskChart.startDate}"
+                      pattern="dd/MM/yyyy HH:mm" mode="popup"
+                      showOn="button" navigator="true"
+                      mindate="#{customDiskChart.startDate}"
+                      maxdate="#{customDiskChart.stopDate}"/>
+          
+          <h:outputText value="End Date:"/>
+          <p:calendar value="#{customDiskChart.stopDate}"
+                      pattern="dd/MM/yyyy HH:mm" mode="popup"
+                      showOn="button" navigator="true"
+                      mindate="#{customDiskChart.startDate}"
+                      maxdate="#{customDiskChart.stopDate}"/>
+        </p:panelGrid> 
+        
+        <center>
+        <p:spacer height="20"/>
+        
+        <p:panelGrid columns="2">
+          <f:facet name="header">
+            CPU Usage Values to Show (%)
+          </f:facet>
+          
+          <p:selectBooleanCheckbox value="#{customDiskChart.usedDisk}"/>
+          <h:outputText value="Used Disk Space"/>
+          
+          <p:selectBooleanCheckbox value="#{customDiskChart.freeDisk}"/>
+          <h:outputText value="Free Disk Space"/>
+        </p:panelGrid>
+        
+        <p:spacer height="20"/>
+        
+        <p:panelGrid columns="2">
+          <f:facet name="header">
+            Chart Style
+          </f:facet>
+          
+          <h:outputText value="Filled Areas Chart"/>
+          <p:selectBooleanCheckbox value="#{customDiskChart.filled}"/>
+          
+          <h:outputText value="Subtitles Position:"/>
+          <p:selectOneMenu value="#{customDiskChart.position}" effect="fade"
+                           id="subtselect">
+            <f:selectItems value="#{customDiskChart.subtitlePositions}"
+                           var="pos" itemLabel="#{pos}" itemValue="#{pos}"/>
+          </p:selectOneMenu>
+        </p:panelGrid>
+        
+        <p:spacer height="40" width="20"/>
+        <p:commandButton value="Create Custom Chart" 
+                         icon="ui-icon-gear"
+                         action="new-custom-disk-chart.xhtml"
+                         onclick="javascript: $('#loading').show();"/>
+        
+        <p:spacer height="20"/><br/>
+        <h:graphicImage id="loading" library="images" 
+                        name="loading.gif"
+                        style="display: none;"/>
+        </center>
+      </p:dialog>
+      
+  </ui:composition>
+  
+</html>
+

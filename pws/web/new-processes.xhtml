@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="new-categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - CPU
+    </ui:define>
+    
+    <ui:define name="script">
+      <script type="text/javascript">
+        function ext() {
+          this.cfg.highlighter = {
+            useAxesFormatter: false,
+            tooltipAxes: 'y'
+          };
+        }
+      </script>
+    </ui:define>
+    
+    <ui:define name="style">
+      <style type="text/css">
+        .reload-icon {
+          background-image: url("resources/images/view_refresh-16.png") !important;
+        }
+      </style>
+    </ui:define>
+
+    <ui:define name="category-icon">
+      <h:graphicImage library="images" name="gear-black-20.png"/>
+    </ui:define>
+    <ui:define name="category-name">Running Processes</ui:define>
+    
+    
+    <ui:define name="category-content">
+      <p:contextMenu for="prcs">
+        <p:menuitem value="Kill Process" icon="ui-icon-closethick"
+                    onclick="killvar.show()"/>
+      </p:contextMenu>
+      
+      <p:dataTable id="prcs" value="#{processes.prcs}" var="p"
+                   rowKey="#{p.pid}" selectionMode="single" 
+                   selection="#{processes.selected}">
+          
+        <p:ajax event="rowSelect"/>
+          
+        <f:facet name="header">
+          Running Processes (#{processes.prcs.size()})
+          <p:spacer width="30"/>
+          <p:tooltip for="rldbtn" value="Reload Processes"/>
+          <p:commandButton id="rldbtn" icon="reload-icon"
+                           ajax="false" action="#{processes.update()}"
+                           style="position: relative; top: -4px;"/>
+        </f:facet>
+          
+        <p:column headerText="PID" filterBy="#{p.pid}" sortBy="#{p.pid}" filterMatchMode="contains">
+          <h:outputText value="#{p.pid}"/>
+        </p:column>
+          
+        <p:column headerText="Name" filterBy="#{p.name}" sortBy="#{p.name}" filterMatchMode="startsWith">
+          <h:outputText value="#{p.name}"/>
+        </p:column>
+          
+        <p:column headerText="User" filterBy="#{p.user}" sortBy="#{p.user}" filterMatchMode="startsWith">
+          <h:outputText value="#{p.user}"/>
+        </p:column>
+          
+        <p:column headerText="Cpu (%)" filterBy="#{p.cpu}" sortBy="#{p.cpu}">
+          <h:outputText value="#{p.cpu}"/>
+        </p:column>
+          
+        <p:column headerText="Mem (%)" filterBy="#{p.mem}" sortBy="#{p.mem}">
+          <h:outputText value="#{p.mem}"/>
+        </p:column>
+          
+        <p:column headerText="Uptime" filterBy="#{p.uptime}" sortBy="#{p.uptime}">
+          <h:outputText value="#{p.uptime}"/>
+        </p:column>
+          
+      </p:dataTable>
+      
+      <p:spacer height="20"/>
+      
+      <p:dialog id="killdlg" widgetVar="killvar"
+                showEffect="fold" hideEffect="explode"
+                resizable="false">
+        <f:facet name="header">
+          <span class="ui-icon-closethick"></span>
+          <h:outputText value="Kill Process"/>
+        </f:facet>
+        
+        <center>
+          <h:outputText value="Do you want to kill the selected process?"/>
+          <br/>
+          <br/>
+          <p:commandButton value="Kill" icon="ui-icon-check"
+                           action="#{processes.kill()}"
+                           ajax="false" onclick="killdlg.hide()"/>
+          <p:spacer width="20"/>
+          <p:commandButton value="Cancel" icon="ui-icon-cancel"
+                           type="button" onclick="killdlg.hide()"/>
+        </center>
+        
+      </p:dialog>
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

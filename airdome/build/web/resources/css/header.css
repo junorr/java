@@ -1,0 +1,38 @@
+#header-bg {
+	width: 1000px;
+	height: 150px;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	z-index: 1;
+}
+
+#header-img {
+	width: 180px;
+	height: 120px;
+	position: absolute;
+	top: 15px;
+	left: 80px;
+	z-index: 2;
+  border: 0;
+}
+
+#header-text {
+	font-weight: bold;
+	font-family: arial,sans,sans-serif;
+	font-size: x-large;
+	z-index: 2;
+}
+
+#header-phrase {
+	font-family: arial,sans,sans-serif;
+	font-style: italic;
+	font-size: medium;
+	z-index: 0;
+}
+
+#loginButton {
+  position: absolute;
+  z-index: 4;
+}
+

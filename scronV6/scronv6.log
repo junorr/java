@@ -1,0 +1,26 @@
+* (14/04/2014 14:45:15) [DEBUG]: Job inserted: us.pserver.scronV6.test.UsageExample$1@1c20c684 @ 14/04/2014 14:45:15.364 [Repeat: 10 SECOND]
+* (14/04/2014 14:45:15) [INFO]: SCronV6 Started!
+* (14/04/2014 14:45:15) [DEBUG]: Job inserted: us.pserver.scronV6.test.UsageExample$2@1fb3ebeb @ 14/04/2014 14:45:15.468 [Repeat: 10 SECOND]
+* (14/04/2014 14:48:50) [DEBUG]: Job inserted: us.pserver.scronV6.test.UsageExample$1@1c20c684 @ 14/04/2014 14:48:50.581 [Repeat: 10 SECOND]
+* (14/04/2014 14:48:50) [INFO]: SCronV6 Started!
+* (14/04/2014 14:48:50) [DEBUG]: Job inserted: us.pserver.scronV6.test.UsageExample$2@1fb3ebeb @ 14/04/2014 14:48:50.684 [Repeat: 10 SECOND]
+* (14/04/2014 14:49:58) [DEBUG]: Job inserted: us.pserver.scronV6.test.UsageExample$1@1c20c684 @ 14/04/2014 14:49:58.774 [Repeat: 10 SECOND]
+* (14/04/2014 14:49:58) [INFO]: SCronV6 Started!
+* (14/04/2014 14:49:58) [DEBUG]: Job inserted: us.pserver.scronV6.test.UsageExample$2@1fb3ebeb @ 14/04/2014 14:49:58.876 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:03) [DEBUG]: Job inserted: us.pserver.scronV6.test.UsageExample$1@1c20c684 @ 14/04/2014 14:51:03.333 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:03) [INFO]: SCronV6 Started!
+* (14/04/2014 14:51:03) [DEBUG]: Job inserted: us.pserver.scronV6.test.UsageExample$2@1fb3ebeb @ 14/04/2014 14:51:03.435 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:03) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$1@1c20c684 @ 14/04/2014 14:51:03.333 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:03) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$2@1fb3ebeb @ 14/04/2014 14:51:03.435 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:13) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$1@1c20c684 @ 14/04/2014 14:51:13.333 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:13) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$2@1fb3ebeb @ 14/04/2014 14:51:13.435 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:23) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$1@1c20c684 @ 14/04/2014 14:51:23.333 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:23) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$2@1fb3ebeb @ 14/04/2014 14:51:23.435 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:33) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$1@1c20c684 @ 14/04/2014 14:51:33.333 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:33) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$2@1fb3ebeb @ 14/04/2014 14:51:33.435 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:43) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$1@1c20c684 @ 14/04/2014 14:51:43.333 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:43) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$2@1fb3ebeb @ 14/04/2014 14:51:43.435 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:53) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$1@1c20c684 @ 14/04/2014 14:51:53.333 [Repeat: 10 SECOND]
+* (14/04/2014 14:51:53) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$2@1fb3ebeb @ 14/04/2014 14:51:53.435 [Repeat: 10 SECOND]
+* (14/04/2014 14:52:03) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$1@1c20c684 @ 14/04/2014 14:52:03.333 [Repeat: 10 SECOND]
+* (14/04/2014 14:52:03) [DEBUG]: Execute: us.pserver.scronV6.test.UsageExample$2@1fb3ebeb @ 14/04/2014 14:52:03.435 [Repeat: 10 SECOND]

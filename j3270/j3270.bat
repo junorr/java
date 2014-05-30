@@ -1,0 +1,1 @@
+@java -splash:bin/icon64.png -jar bin/j3270.jar

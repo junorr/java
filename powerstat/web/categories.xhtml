@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="base.xhtml">
+    
+    <ui:define name="header">
+      <script type="text/javascript">
+        $(document).ready(function () {
+          tab("categories").west("categ-buttons", 244).north("categ-buttons", 5);
+        });
+      </script>
+      
+      <ui:insert name="script"/>
+      <ui:insert name="style"/>
+    </ui:define>
+    
+    
+    <ui:define name="page">
+      
+      <p:panel id="categories">
+        
+        <f:facet name="header">
+          <p:spacer width="5"/>
+          &bull;
+          <ui:insert name="category">
+            CPU
+          </ui:insert>
+        </f:facet>
+        
+        <span id="categ-buttons">
+          <p:button outcome="cpu.xhtml" value="CPU"/>
+          <p:spacer width="20"/>
+          <p:button outcome="process.xhtml" value="Process"/>
+          <p:spacer width="20"/>
+          <p:button outcome="memory.xhtml" value="Memory"/>
+          <p:spacer width="20"/>
+          <p:button outcome="disk.xhtml" value="Disk"/>
+          <p:spacer width="20"/>
+          <p:button outcome="network.xhtml" value="Network"/>
+        </span>
+        
+        <ui:insert name="content"/>
+        
+      </p:panel>
+      
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

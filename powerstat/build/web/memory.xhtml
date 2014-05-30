@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  
+  <ui:composition template="categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - Memory
+    </ui:define>
+    
+    <ui:define name="style">
+      <style type="text/css">
+        .bodyHeight {
+          height: 1440px;
+        }
+      </style>
+    </ui:define>
+    
+    <ui:define name="script">
+      <script type="text/javascript">
+        $(document).ready(function () {
+          tab("categories").north("clrmem-btn", 70).west("cpui-btn", 20);
+          tab("categories").north("custom-chart-btn", 130).west("custom-chart-btn", 20);
+        });
+        
+        function ext() {
+          this.cfg.highlighter = {
+            useAxesFormatter: false,
+            tooltipAxes: 'y'
+          };
+        }
+      </script>
+    </ui:define>
+    
+    
+    <ui:define name="category">Memory</ui:define>
+    
+    
+    <ui:define name="content">
+      
+      <p:poll update="memoverall,memdetailed,linechart" 
+              listener="#{memoryCharts.update()}"
+              autoStart="true" interval="15"/>
+      
+      <p:commandButton actionListener="#{memoryCharts.clearMemory()}"
+                       id="clrmem-btn" value="Clear Memory Cache"
+                       icon="ui-icon-wrench" oncomplete="cmddlg.show()"
+                       update="memoverall,memdetailed,linechart"/>
+      
+      <p:commandButton id="custom-chart-btn" type="button" 
+                       value="Custom Chart"
+                       onclick="javascript: customchartdlg.show();" 
+                       icon="ui-icon-image"/>
+      <p:tooltip for="custom-chart-btn" value="Create Custom Memory Chart"/>
+
+      <center>
+        <p:spacer height="10"/>
+        <p:donutChart id="memoverall" value="#{memoryCharts.totalModel}" 
+                      legendPosition="w" 
+                      style="height: 350px; width: 500px;"
+                      title="Overall Memory Consumption" sliceMargin="5" 
+                      showDataLabels="true"/>
+        
+        <br/>
+        
+        <p:barChart id="memdetailed" value="#{memoryCharts.detailedModel}" 
+                    legendPosition="nw" extender="ext"
+                    title="Detailed Memory Consumption" animate="true"
+                    style="height: 350px; width: 500px;
+                    position: relative; top: 20px;"/>
+        
+        <br/>
+        <p:spacer height="20"/>
+        
+        <p:lineChart id="linechart" value="#{memoryCharts.lineModel}"
+                     yaxisLabel="Percent" xaxisLabel="Time"
+                     extender="ext"
+                     legendPosition="w" title="Recent History 
+                     Memory Consumption" style="height: 350px; width: 500px;
+                     position: relative; top: 20px;"/>
+      </center>
+      <p:spacer height="50"/>
+      
+      
+      <p:dialog id="cmddlg" widgetVar="cmddlg"
+                showEffect="fold" hideEffect="explode">
+        <f:facet name="header">
+          
+          <p:commandButton icon="ui-icon-info" type="button"
+                           onclick="cmddlg.hide()"/>
+          Clear Memory Cache
+        </f:facet>
+        
+        The command to clear memory cache was sent to the machine.<br/>
+        Please wait about <b>30 seconds</b> to take effect on charts.<br/><br/>
+        Note that subsequent calls will not take effect, once the<br/>
+        memory cache is already cleared.
+      </p:dialog>
+      
+      
+      <p:dialog id="customchartdlg" header="Custom Memory Chart"
+                widgetVar="customchartdlg"
+                showEffect="fold" hideEffect="explode" 
+                resizable="false">
+        
+        <p:panelGrid columns="2">
+          <f:facet name="header">
+            Time Interval
+          </f:facet>
+          
+          <h:outputText value="Start Date:"/>
+          <p:calendar value="#{customMemoryChart.startDate}"
+                      pattern="dd/MM/yyyy HH:mm" mode="popup"
+                      showOn="button" navigator="true"
+                      mindate="#{customMemoryChart.startDate}"
+                      maxdate="#{customMemoryChart.stopDate}"/>
+          
+          <h:outputText value="End Date:"/>
+          <p:calendar value="#{customMemoryChart.stopDate}"
+                      pattern="dd/MM/yyyy HH:mm" mode="popup"
+                      showOn="button" navigator="true"
+                      mindate="#{customMemoryChart.startDate}"
+                      maxdate="#{customMemoryChart.stopDate}"/>
+        </p:panelGrid> 
+        
+        <center>
+        <p:spacer height="20"/>
+        <p:panelGrid columns="2">
+          
+          <f:facet name="header">
+            Memory Values to Show (MB)
+          </f:facet>
+          
+          <p:selectBooleanCheckbox value="#{customMemoryChart.usedMem}"/>
+          <h:outputText value="Used Memory"/>
+          
+          <p:selectBooleanCheckbox value="#{customMemoryChart.freeMem}"/>
+          <h:outputText value="Free Memory"/>
+          
+          <p:selectBooleanCheckbox value="#{customMemoryChart.cachedMem}"/>
+          <h:outputText value="Cached Memory"/>
+          
+          <p:selectBooleanCheckbox value="#{customMemoryChart.totalMem}"/>
+          <h:outputText value="Total Memory"/>
+        </p:panelGrid>
+        
+        
+        <p:spacer height="20"/>
+        <p:panelGrid columns="2">
+          
+          <f:facet name="header">
+            Chart Style
+          </f:facet>
+          
+          <h:outputText value="Filled Areas Chart"/>
+          <p:selectBooleanCheckbox value="#{customMemoryChart.filled}"/>
+          
+          <h:outputText value="Subtitles Position:"/>
+          <p:selectOneMenu value="#{customMemoryChart.position}" effect="fade"
+                           id="subtselect">
+            <f:selectItems value="#{customMemoryChart.subtitlePositions}"
+                           var="pos" itemLabel="#{pos}" itemValue="#{pos}"/>
+          </p:selectOneMenu>
+        </p:panelGrid>
+        
+        <p:spacer height="40" width="20"/>
+        <p:commandButton value="Create Custom Chart" 
+                         icon="ui-icon-gear"
+                         action="custom-mem-chart.xhtml"/>
+        </center>
+        
+      </p:dialog>
+      
+    </ui:define>
+    
+    
+  </ui:composition>
+  
+</html>
+

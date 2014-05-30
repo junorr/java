@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+  
+  <h:body>
+
+    <ui:composition>
+      <style type="text/css">
+        .header {
+          width: 98%;
+          height: 252px;
+        }
+        .title {
+          font-size: 24px;
+          position: relative;
+          top: -14px;
+          left: 20px;
+          font-size: 22px;
+        }
+        #himg {
+          z-index: 7;
+          position: relative;
+          top: -4px;
+          left: -17px;
+        }
+        #toolbar {
+          height: 28px;
+          width: 97%;
+          font-size: 14px;
+        }
+        .jusimg {
+          width: 50px;
+          height: 50px;
+          position: relative;
+          left: 0px;
+          top: 2px;
+        }
+        .links {
+          position: relative;
+          top: 4px;
+        }
+        .icon-unlock {
+          width: 20px;
+          height: 20px;
+          background-image: url('resources/images/unlock-black-20.png') !important;
+        }
+      </style>
+      
+      <script type="text/javascript">
+        $(document).ready(function() {
+          tab("header").north("toolbar", 218).centerHorizontal("toolbar");
+        })
+      </script>
+      
+      <p:panel id="header" styleClass="header">
+        <f:facet name="header">
+          <h:link outcome="index.xhtml" style="text-decoration: none;">
+            <h:graphicImage library="images" name="justice.png" styleClass="jusimg"/>
+          </h:link>
+          <h:link outcome="index.xhtml" style="text-decoration: none;">
+            <h:outputText value="Badra Pinho e Gehrke Advogados em Colaboração" 
+                          styleClass="title"/>
+          </h:link>
+        </f:facet>
+          
+        <h:graphicImage library="images" name="books.png" id="himg"/>
+          
+        <p:toolbar id="toolbar">
+            
+          <p:toolbarGroup align="left">
+              
+            <p:spacer width="20" height="5"/>
+            <h:link outcome="index.xhtml" styleClass="links" value="Home"/>
+            <p:spacer width="40px" height="2px"/>
+                
+            <h:link outcome="atuacao.xhtml" styleClass="links" value="Atuação"/>
+            <p:spacer width="40px" height="2px"/>
+               
+            <h:link outcome="curriculum.xhtml" styleClass="links" value="Curriculum"/>
+            <p:spacer width="40px" height="2px"/>
+               
+            <h:link outcome="contact.xhtml" styleClass="links" value="Contato"/>
+            <p:spacer width="40px" height="2px"/>
+                
+            <h:link outcome="news.xhtml" styleClass="links" value="Notícias"/>
+            <p:spacer width="40px" height="2px"/>
+            
+            <h:link outcome="blog.xhtml" styleClass="links" value="Blog"/>
+            <p:spacer width="40px" height="2px"/>
+            
+          </p:toolbarGroup>
+            
+          <p:toolbarGroup align="right">
+              
+            <h:form prependId="false" id="logout-form">
+                
+              <h:link outcome="login.xhtml" styleClass="" rendered="#{!sessionControl.logged}">
+                <h:graphicImage library="images" name="lock-black-18.png" styleClass="links"/>
+                <p:spacer width="7" height="2"/>
+                <h:outputText value="Login"/>
+              </h:link>
+              
+              <h:link outcome="admin.xhtml" rendered="#{sessionControl.logged and user.admin}">
+                <h:graphicImage library="images" name="gear-black-20.png" styleClass="links"/>
+                <p:spacer width="7" height="2"/>
+                <h:outputText value="Admin"/>
+              </h:link>
+
+              <p:spacer width="20" height="5" rendered="#{sessionControl.logged and user.admin}"/>
+              <h:link outcome="user.xhtml" rendered="#{sessionControl.logged}">
+                <h:graphicImage library="images" name="person-black-18.png" styleClass="links"/>
+                <p:spacer width="7" height="2"/>
+                <h:outputText value="Usuário"/>
+              </h:link>
+                
+              <p:spacer width="20" height="5" rendered="#{sessionControl.logged}"/>
+              <p:commandLink ajax="false" action="#{login.doLogout()}" rendered="#{sessionControl.logged}">
+                <h:graphicImage library="images" name="unlock-black-20.png" styleClass="links"/>
+                <p:spacer width="7" height="2"/>
+                <h:outputText value="Logout"/>
+              </p:commandLink>
+                
+              <p:spacer width="20" height="5"/>
+                
+            </h:form>
+          </p:toolbarGroup>
+        </p:toolbar>
+      </p:panel>
+        
+    </ui:composition>
+    
+  </h:body>
+</html>
+

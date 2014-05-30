@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+  
+  <h:head>
+    
+  </h:head>
+  
+  <h:body>
+    
+    <ui:composition template="index.xhtml">
+      <ui:define name="body">
+        
+        <style type="text/css">
+          .icon-user {
+            width: 20px;
+            height: 20px;
+            background-image: url('resources/images/person-black-18.png') !important;
+          }
+         .icon-edit {
+           width: 20px;
+           height: 20px;
+           background-image: url('resources/images/edit-black-18.png') !important;
+          }
+         .icon-add {
+           width: 20px;
+           height: 20px;
+           background-image: url('resources/images/add-black-18.png') !important;
+          }
+         .icon-del {
+           width: 20px;
+           height: 20px;
+           background-image: url('resources/images/trash-black-18.png') !important;
+          }
+        </style>
+        
+        <script type="text/javascript">
+          function askDelete() {
+            prompt
+          }
+        </script>
+        
+        <h:form prependId="false">
+        <p:spacer width="800" height="10"/>
+        <p:panel rendered="#{sessionControl.logged and user.admin}">
+          <f:facet name="header">
+            <h:graphicImage library="images" name="gear-black-20.png"/>
+            <p:spacer width="10" height="2"/>
+            <h:outputText value="Usuários" style="position: relative; top: -3px;"/>
+          </f:facet>
+          
+          <p:spacer width="800" height="10"/>
+          
+          <p:dataTable var="usr" value="#{editUsers.users}" selectionMode="single" selection="#{editUsers.editing}" paginator="true" rows="10" paginatorPosition="bottom" rowKey="#{usr.email}">
+            
+            <f:facet name="header">
+              <h:graphicImage library="images" name="person-black-18.png"/>
+              <p:spacer width="20" height="2"/>
+              <h:outputText value="Usuários Cadastrados"/>
+            </f:facet>
+            
+            <p:column headerText="Nome do Usuário" sortBy="#{usr.fullName}">
+              <h:outputText value="#{usr.fullName}"/>
+            </p:column>
+            
+            <p:column headerText="E-mail" sortBy="#{usr.email}">
+              <h:outputText value="#{usr.email}"/>
+            </p:column>
+            
+            <p:column headerText="Data de nascimento">
+              <h:outputText value="#{usr.formattedBirthday()}"/>
+            </p:column>
+            
+          </p:dataTable>
+          
+          <center>
+            <p:spacer width="800" height="20"/>
+            <p:commandButton icon="icon-add" action="#{editUsers.add()}" ajax="false" value="Adicionar"/>
+            <p:spacer width="20" height="2"/>
+            <p:commandButton icon="icon-edit" action="#{editUsers.edit()}" ajax="false" value="Editar"/>
+            <p:spacer width="20" height="2"/>
+            <p:commandButton icon="icon-del" action="#{editUsers.delete()}" onclick="javascript: return confirm('Deseja realmente excluir este usuário?');" ajax="true" value="Excluir"/>
+          </center>
+          
+        </p:panel>
+        </h:form>
+        
+      </ui:define>
+    </ui:composition>
+  
+  </h:body>
+</html>
+

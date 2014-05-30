@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+			xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<title>Facelet Title</title>
+	</h:head>
+  
+	<h:body>
+    
+		<ui:composition template="/layout/master.xhtml">
+      
+      <ui:define name="title">AirDome</ui:define>
+      
+      <ui:define name="content">
+        <h:outputScript library="javascript" name="index.js"/>
+        <h:outputStylesheet library="css" name="index.css"/>
+        
+        <p id="index-text">
+          <h:outputLink value="index.xhtml" style="font-style: italic;">AirDome</h:outputLink> 
+          reune informaçoes e fotos dos principais aviões de caça e 
+          bombardeiros utilizados na Segunda Guerra Mundial. Eles foram 
+          parte importante da doutrina militar da época, permitindo ataques precisos à longas 
+          distâncias, além de imprescindível suporte à tropas terrestres.
+        </p>
+        
+        <h:graphicImage id="b17-gizo" library="images" name="b17-gizo.jpg" styleClass="image"/>
+        <h:outputText id="b17-gizo-label" styleClass="label" 
+                      value="B-17 bombardeando a ilha de Gizo no Mar de Salomão - 11.900Km dos Estados Unidos"/>
+        
+        <h:graphicImage id="new-georgia-islands" styleClass="image" 
+                        library="images" name="new-georgia-islands.jpg"/>
+        <h:outputText id="new-georgia-islands-label" styleClass="label"
+                      value="Mapa militar do Mar de Salomão - 1943"/>
+        
+      </ui:define>
+      
+    </ui:composition>
+    
+	</h:body>
+</html>
+

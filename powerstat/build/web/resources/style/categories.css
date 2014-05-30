@@ -1,0 +1,20 @@
+#category-icon {
+  position: relative;
+  top: 4px;
+}
+
+.menuLink {
+  color: darkslategray;
+  text-decoration: underline;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 23px;
+  position: relative;
+  top: 0px;
+}
+
+.menuLink:hover {
+  color: #E41721;
+  text-decoration: underline;
+  font-weight: bold;
+}

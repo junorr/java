@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:f="http://java.sun.com/jsf/core">
+
+  <h:body>
+  
+  <ui:composition template="/layout/master.xhtml">
+    
+    <ui:define name="scripts">
+      <script type="text/javascript">
+        $(document).ready(positionDialog);
+        
+        function redirect() {
+          var suf = $(window.document.location).attr("href");
+          var end = suf.lastIndexOf("/");
+          var start = suf.indexOf("/", 8);
+          suf = suf.substr(start, end - start);
+          $(window.document.location).attr("href", suf + "#{navigation.user}");
+        }
+        
+        function positionDialog() {
+          tab("body-panel").centerHorizontal("dlg")
+              .north("dlg", -20);
+        }
+      </script>
+    </ui:define>
+    
+    
+    <ui:define name="body">
+      
+      <center><h3>Registro de usuário</h3></center>
+      
+      <p:wizard nextLabel="Próximo" backLabel="Anterior" step="pessoais">
+        
+        <p:tab id="pessoais" title="Informações Pessoais">
+          <p:panel id="pessoal-panel" header="Informações Pessoais">
+            
+            <center>
+            <h:panelGrid columns="3">
+              <h:outputText value="Nome:"/>
+              <p:inputText id="name" value="#{user.name}" required="true" requiredMessage="Informe seu nome."/>
+              <p:message for="name" showDetail="false" showSummary="true"/>
+              
+              <h:outputText value="Sobrenome:"/>
+              <p:inputText id="surname" value="#{user.surname}" required="true" requiredMessage="Informe seu sobrenome."/>
+              <p:message for="surname" showDetail="false" showSummary="true"/>
+
+              <h:outputText value="Data de Nascimento:"/>
+              <p:calendar id="birthday" value="#{user.birthday}" mode="popup" showOn="button" navigator="true" pattern="dd/MM/yyyy" yearRange="1920:2000" required="true" requiredMessage="Informe sua data de nascimento."/>
+              <p:message for="birthday" showDetail="false" showSummary="true"/>
+              
+              <h:outputText value="Gênero:"/>
+              <p:selectOneRadio id="genero" value="#{user.gender}">
+                <f:selectItem itemLabel="Masculino" itemValue="Masculino"/>
+                <f:selectItem itemLabel="Feminino" itemValue="Feminino"/>
+              </p:selectOneRadio>
+              <p:message for="genero" showDetail="false" showSummary="true"/>
+              
+              <p:spacer/><p:spacer/><p:spacer/>
+              
+              <h:outputText value="Senha:"/>
+              <p:password value="#{user.password}" id="pwd1" match="pwd2" inline="false" required="true" requiredMessage="Crie uma senha."/>
+              <p:message for="pwd1" showDetail="false" showSummary="true"/>
+              
+              <h:outputText value="Repita a senha:"/>
+              <p:password value="#{user.password}" id="pwd2" feedback="false" required="true" requiredMessage="Repita a senha para confirmar."/>
+              <p:message for="pwd2" showDetail="false" showSummary="true"/>
+            </h:panelGrid>
+            </center>
+            
+          </p:panel>
+        </p:tab>
+        
+        
+        <p:tab id="contato" title="Dados para Contato">
+          <p:panel header="Dados para Contato">
+            
+            <center>
+            <h:panelGrid columns="3">
+              <h:outputText value="E-mail"/>
+              <p:inputText id="email" value="#{user.email}" required="true" requiredMessage="Informe um email válido."/>
+              <p:message for="email" showDetail="false" showSummary="true"/>
+              
+              <h:outputText value="Telefone principal:"/>
+              <p:inputMask mask="(99) 9999-9999" id="phone" value="#{user.phone}" required="true" requiredMessage="Informe seu telefone de contato."/>
+              <p:message for="phone" showDetail="false" showSummary="true"/>
+              
+              <h:outputText value="Telefone (opcional):"/>
+              <p:inputMask mask="(99) 9999-9999" id="celphone" value="#{user.phone2}" required="false"/>
+            </h:panelGrid>
+            </center>
+            
+          </p:panel>
+        </p:tab>
+        
+        
+        <p:tab id="confirmar" title="Confirmar Dados">
+          <p:panel header="Confirmar Dados">
+            
+            <center>
+            <h:panelGrid columns="2">
+              
+              <h3>Informações Pessoais</h3><h:outputText/>
+              
+              <h:outputText value="Nome:"/>
+              <h:outputText value="#{user.name} #{user.surname}"/>
+              
+              <h:outputText value="Data de nascimento:"/>
+              <h:outputFormat value="{0,date}">
+                <f:param value="#{user.birthday}"/>
+              </h:outputFormat>
+              
+              <h:outputText value="Gênero:"/>
+              <h:outputText value="#{user.gender}"/>
+              
+              
+              <p:spacer/><p:spacer/>
+              
+              <h3>Dados para Contato</h3><h:outputText/>
+
+              <h:outputText value="E-mail:"/>
+              <h:outputText value="#{user.email}"/>
+              
+              <h:outputText value="Telefone principal:"/>
+              <h:outputText value="#{user.phone}"/>
+              
+              <h:outputText value="Telefone (opcional):"/>
+              <h:outputText value="#{user.phone2}"/>
+              
+              <p:spacer/>
+            </h:panelGrid>
+              
+            <p:commandButton value="Salvar" update="dlg captcha captcha-msg"
+                             icon="ui-icon-disk"
+                             actionListener="#{registerController.save(user)}"/>
+            </center>
+            
+          </p:panel>
+        </p:tab>
+        
+      </p:wizard>
+      
+      <p:dialog id="dlg" widgetVar="dlg" resizable="false" 
+                closable="true" draggable="true"
+                onHide="redirect();" style="width: 355px; height: 245px;"
+                visible="#{registerController.registerOK}"
+                header="Sucesso!"
+                showEffect="slide" hideEffect="explode">
+        
+        <h:panelGrid columns="1">
+          <p:spacer width="10" height="20"/>
+          <h:outputText value="Seu registro foi concluído com sucesso."/>
+          <p:spacer width="10" height="20"/>
+        </h:panelGrid>
+          
+      </p:dialog>
+      
+      
+      <center>
+        <h:panelGrid columns="1">
+        
+          <h:outputText value="Você é um processo automatizado?" 
+                        style="font-size: small"/>
+
+          <p:message id="captcha-msg" for="captcha"
+                     showDetail="false" showSummary="true"/>
+          
+          <p:captcha id="captcha" language="pt"
+                     required="true" theme="white" 
+                     requiredMessage="Preencha a confirmação de segurança."/>
+
+        </h:panelGrid>
+      </center>
+              
+      
+    </ui:define>
+    
+    
+  </ui:composition>
+    
+  </h:body>
+  
+</html>

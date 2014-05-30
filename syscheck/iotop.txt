@@ -1,0 +1,15 @@
+root@lub-vbox:/home/juno# iotop -b -k -n 1 -o -k -P
+Total DISK READ:       0.00 B/s | Total DISK WRITE:     798.16 K/s
+  PID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN      IO    COMMAND
+ 1606 be/4 root        0.00 K/s  199.54 K/s  0.00 %  0.00 % java -jar syscheck.jar
+  195 be/3 root        0.00 K/s  250.12 K/s  0.00 % 99.99 % [jbd2/sda1-8]
+
+
+Total DISK READ:       0.00 K/s | Total DISK WRITE:    1401.16 K/s
+  TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN      IO    COMMAND
+ 1622 be/4 root        0.00 K/s    0.00 K/s  0.00 % 52.57 % java -jar syscheck.jar
+
+
+Total DISK READ:       0.00 K/s | Total DISK WRITE:       0.00 K/s
+  PID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN      IO    COMMAND
+ 5247 be/4 juno        0.00 K/s  219.85 K/s  0.00 %  0.00 % bash ./dump.sh

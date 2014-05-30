@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  
+  <h:head>
+    <title>
+      <ui:insert name="title">
+        Badra Advocacia
+      </ui:insert>
+    </title>
+    <link rel="shortcut icon" href="balanca.gif" type="image/gif" />
+    
+    <ui:insert name="scripts"/>
+    
+    <h:outputScript library="javascript" name="tabulator.js"/>
+    
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#header-panel_header > span").attr("id", "header-panel_title");
+        
+        tab("document").centerHorizontal("header-panel")
+            .centerHorizontal("body-panel")
+            .after("header-panel").setVertical("body-panel", 15);
+        
+      });
+    </script>
+    <style type="text/css">
+      .ui-widget {
+        font-size: 12pt;
+      }
+    </style>
+    
+  </h:head>
+
+  
+  <h:body style="background-color: white;">
+    
+    <h:form prependId="false">
+    
+      <p:panel id="header-panel" header="Badra Advocacia"
+               style="width: 900px; height: 290px;"
+               closable="false">
+        
+        <ui:insert name="header">
+          <ui:include src="/layout/default_header.xhtml"/>
+        </ui:insert>
+        
+      </p:panel>
+    
+      <p:panel id="body-panel" style="width: 900px;">
+        <ui:insert name="body"/>
+      </p:panel>
+    
+    </h:form>
+    
+  </h:body>
+  
+</html>

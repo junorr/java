@@ -1,0 +1,164 @@
+* (21/08/2013 12:45:05) [INFO]: Starting EmailChecker (PID=6468)...
+* (21/08/2013 12:45:06) [INFO]: GET https://correioweb.bb.com.br/oamredirect.nsf/OAMAutoLogin HTTP/1.1
+* (21/08/2013 12:45:07) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:45:07) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (21/08/2013 12:45:07) [INFO]: HTTP/1.1 302 Found
+* (21/08/2013 12:45:07) [INFO]: 302-Redirect: https://correioweb.bb.com.br//oamredirect.nsf/OAMAutoLogin
+* (21/08/2013 12:45:07) [INFO]: POST https://correioweb.bb.com.br//oamredirect.nsf/OAMAutoLogin HTTP/1.1
+* (21/08/2013 12:45:08) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:45:08) [INFO]: Meta-refresh: https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf
+* (21/08/2013 12:45:08) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf HTTP/1.1
+* (21/08/2013 12:45:08) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:45:08) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:45:08) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:45:08) [INFO]: Checking e-mail...
+* (21/08/2013 12:45:08) [INFO]: No important e-mail found
+* (21/08/2013 12:46:08) [INFO]: Checking e-mail...
+* (21/08/2013 12:46:08) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:46:08) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:46:08) [INFO]: No important e-mail found
+* (21/08/2013 12:47:08) [INFO]: Checking e-mail...
+* (21/08/2013 12:47:08) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:47:08) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:47:08) [INFO]: No important e-mail found
+* (21/08/2013 12:48:08) [INFO]: Checking e-mail...
+* (21/08/2013 12:48:08) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:48:08) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:48:08) [INFO]: No important e-mail found
+* (21/08/2013 12:49:08) [INFO]: Checking e-mail...
+* (21/08/2013 12:49:08) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:49:08) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:49:08) [INFO]: No important e-mail found
+* (21/08/2013 12:50:08) [INFO]: Checking e-mail...
+* (21/08/2013 12:50:08) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:50:08) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:50:08) [INFO]: !!! Inportant e-mail received: :Lembrete:
+* (21/08/2013 12:50:08) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/($Inbox)/D948FF2A6F90AD3A83257BCE0056D3E3/?OpenDocument&Form=l_JSVars&PresetFields=s_HandleAttachmentNames;1,s_HandleMime;1,s_OpenUI;1 HTTP/1.1
+* (21/08/2013 12:50:08) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:50:08) [INFO]: Deleting e-mail: :Lembrete:
+* (21/08/2013 12:50:08) [INFO]: POST https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?EditDocument&Form=s_GetFormListJSON HTTP/1.1
+* (21/08/2013 12:50:08) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:50:09) [INFO]: POST https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Mail/?EditDocument&Form=l_HaikuErrorStatusJSON&ui=dwa_form HTTP/1.1
+* (21/08/2013 12:50:09) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:50:09) [INFO]: Getting content tag: :Lembrete:
+* (21/08/2013 12:50:09) [INFO]: <font face="Default Sans Serif,Verdana,Arial,Helvetica,sans-serif" size="2"\> <span\>enviar relatorio id: ###c2FtcGxlLmJjZQ==###<br\><font face="Default Sans Serif,Verdana,Arial,Helvetica,sans-serif" size="2"\><div\><br\>Att.<br\><br\>Juno Roesler<br\><font size="1"\>Assessor - DINOP/DINEG - <font size="1"\>DF</font\><br\><font size="1"\>dinop.dineg@bb.com.br</font\><br\>----------------------------------<br\>Ramal 81261<br\>(61) 3108-1261<br\>juno.roesler@bb.com.br</font\><br\></div\></font\></span\></font\>
+* (21/08/2013 12:50:09) [INFO]: Code found: <sample.bce>
+* (21/08/2013 12:50:09) [INFO]: Executing script: .\temp\sample.bce5446613626016378819.tmp
+* (21/08/2013 12:50:15) [INFO]: log saved in: .\temp\sample.bce5446613626016378819.tmp4069697046683773448.log
+* (21/08/2013 12:50:15) [INFO]: log encrypted to: .\temp\sample.bce5446613626016378819.tmp4069697046683773448.log9129129134952828553.bce
+* (21/08/2013 12:50:15) [INFO]: POST https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/($Inbox)/$new/?EditDocument&Form=h_PageUI&PresetFields=h_EditAction;h_ShimmerEdit,s_ViewName;($Inbox),s_NotesForm;Memo&ui=dwa_form HTTP/1.1
+* (21/08/2013 12:50:15) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:50:15) [INFO]: Response e-mail sent to: F6036477 Juno Dani da Rold Roesler/BancodoBrasil
+* (21/08/2013 12:51:09) [INFO]: Checking e-mail...
+* (21/08/2013 12:51:09) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:51:09) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:51:09) [INFO]: No important e-mail found
+* (21/08/2013 12:52:09) [INFO]: Checking e-mail...
+* (21/08/2013 12:52:09) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:52:09) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:52:09) [INFO]: No important e-mail found
+* (21/08/2013 12:53:09) [INFO]: Checking e-mail...
+* (21/08/2013 12:53:09) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:53:09) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:53:09) [INFO]: No important e-mail found
+* (21/08/2013 12:54:09) [INFO]: Checking e-mail...
+* (21/08/2013 12:54:09) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:54:09) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:54:09) [INFO]: No important e-mail found
+* (21/08/2013 12:55:09) [INFO]: Checking e-mail...
+* (21/08/2013 12:55:09) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:55:09) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:55:09) [INFO]: No important e-mail found
+* (21/08/2013 12:56:15) [INFO]: Starting EmailChecker (PID=5988)...
+* (21/08/2013 12:56:15) [INFO]: GET https://correioweb.bb.com.br/oamredirect.nsf/OAMAutoLogin HTTP/1.1
+* (21/08/2013 12:56:16) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:56:16) [INFO]: POST https://correioweb.bb.com.br/names.nsf?Login HTTP/1.1
+* (21/08/2013 12:56:17) [INFO]: HTTP/1.1 302 Found
+* (21/08/2013 12:56:17) [INFO]: 302-Redirect: https://correioweb.bb.com.br//oamredirect.nsf/OAMAutoLogin
+* (21/08/2013 12:56:17) [INFO]: POST https://correioweb.bb.com.br//oamredirect.nsf/OAMAutoLogin HTTP/1.1
+* (21/08/2013 12:56:17) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:56:17) [INFO]: Meta-refresh: https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf
+* (21/08/2013 12:56:17) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf HTTP/1.1
+* (21/08/2013 12:56:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:56:18) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:56:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:56:18) [INFO]: Checking e-mail...
+* (21/08/2013 12:56:18) [INFO]: No important e-mail found
+* (21/08/2013 12:57:18) [INFO]: Checking e-mail...
+* (21/08/2013 12:57:18) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:57:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:57:18) [INFO]: No important e-mail found
+* (21/08/2013 12:58:18) [INFO]: Checking e-mail...
+* (21/08/2013 12:58:18) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:58:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:58:18) [INFO]: No important e-mail found
+* (21/08/2013 12:59:18) [INFO]: Checking e-mail...
+* (21/08/2013 12:59:18) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 12:59:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 12:59:18) [INFO]: No important e-mail found
+* (21/08/2013 13:00:18) [INFO]: Checking e-mail...
+* (21/08/2013 13:00:18) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 13:00:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:00:18) [INFO]: !!! Inportant e-mail received: :Atualizar:
+* (21/08/2013 13:00:18) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/($Inbox)/96A60389833144D283257BCE0057BF6D/?OpenDocument&Form=l_JSVars&PresetFields=s_HandleAttachmentNames;1,s_HandleMime;1,s_OpenUI;1 HTTP/1.1
+* (21/08/2013 13:00:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:00:18) [INFO]: Deleting e-mail: :Atualizar:
+* (21/08/2013 13:00:18) [INFO]: POST https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?EditDocument&Form=s_GetFormListJSON HTTP/1.1
+* (21/08/2013 13:00:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:00:18) [INFO]: POST https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Mail/?EditDocument&Form=l_HaikuErrorStatusJSON&ui=dwa_form HTTP/1.1
+* (21/08/2013 13:00:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:00:18) [INFO]: Getting content tag: :Atualizar:
+* (21/08/2013 13:00:18) [INFO]: <font face="Default Sans Serif,Verdana,Arial,Helvetica,sans-serif" size="2"\> <span\>atualizar relatório id: ###Q01EOmRpciBkOg==### @@@MjEvMDgvMjAxMyAxMzowMDowNQ==@@@<br\><font face="Default Sans Serif,Verdana,Arial,Helvetica,sans-serif" size="2"\><div\><br\>Att.<br\><br\>Juno Roesler<br\><font size="1"\>Assessor - DINOP/DINEG - <font size="1"\>DF</font\><br\><font size="1"\>dinop.dineg@bb.com.br</font\><br\>----------------------------------<br\>Ramal 81261<br\>(61) 3108-1261<br\>juno.roesler@bb.com.br</font\><br\></div\></font\></span\></font\>
+* (21/08/2013 13:00:18) [INFO]: Code found: <CMD:dir d:>
+* (21/08/2013 13:00:18) [INFO]: Scheduled to 21/08/2013 13:00:05
+* (21/08/2013 13:01:18) [INFO]: Checking e-mail...
+* (21/08/2013 13:01:18) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 13:01:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:01:18) [INFO]: No important e-mail found
+* (21/08/2013 13:02:18) [INFO]: Checking e-mail...
+* (21/08/2013 13:02:18) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 13:02:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:02:18) [INFO]: No important e-mail found
+* (21/08/2013 13:03:18) [INFO]: Checking e-mail...
+* (21/08/2013 13:03:18) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 13:03:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:03:18) [INFO]: !!! Inportant e-mail received: :Atualizar:
+* (21/08/2013 13:03:18) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/($Inbox)/0C602D19A70D9BC883257BCE005811E3/?OpenDocument&Form=l_JSVars&PresetFields=s_HandleAttachmentNames;1,s_HandleMime;1,s_OpenUI;1 HTTP/1.1
+* (21/08/2013 13:03:18) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:03:19) [INFO]: Deleting e-mail: :Atualizar:
+* (21/08/2013 13:03:19) [INFO]: POST https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?EditDocument&Form=s_GetFormListJSON HTTP/1.1
+* (21/08/2013 13:03:19) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:03:19) [INFO]: POST https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Mail/?EditDocument&Form=l_HaikuErrorStatusJSON&ui=dwa_form HTTP/1.1
+* (21/08/2013 13:03:19) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:03:19) [INFO]: Getting content tag: :Atualizar:
+* (21/08/2013 13:03:19) [INFO]: <font face="Default Sans Serif,Verdana,Arial,Helvetica,sans-serif" size="2"\> <span\>atualizar relatório id: ###Q01EOmRpciBkOg==### @@@MjEvMDgvMjAxMyAxMzowNDozNQ==@@@<br\><font face="Default Sans Serif,Verdana,Arial,Helvetica,sans-serif" size="2"\><div\><br\>Att.<br\><br\>Juno Roesler<br\><font size="1"\>Assessor - DINOP/DINEG - <font size="1"\>DF</font\><br\><font size="1"\>dinop.dineg@bb.com.br</font\><br\>----------------------------------<br\>Ramal 81261<br\>(61) 3108-1261<br\>juno.roesler@bb.com.br</font\><br\></div\></font\></span\></font\>
+* (21/08/2013 13:03:19) [INFO]: Code found: <CMD:dir d:>
+* (21/08/2013 13:03:19) [INFO]: Scheduled to 21/08/2013 13:04:35
+* (21/08/2013 13:04:19) [INFO]: Checking e-mail...
+* (21/08/2013 13:04:19) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 13:04:19) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:04:19) [INFO]: No important e-mail found
+* (21/08/2013 13:04:35) [INFO]: Executing command: CMD:dir d:
+* (21/08/2013 13:04:35) [INFO]:  O volume na unidade D � Storage
+ O N�mero de S�rie do Volume � 2078-DB5F
+
+ Pasta de D:\
+
+03/07/2013  09:49    <DIR>          access
+16/07/2013  08:53    <DIR>          baixa
+               0 arquivo(s)              0 bytes
+               2 pasta(s)   45.054.779.392 bytes dispon�veis
+
+* (21/08/2013 13:04:35) [INFO]: POST https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/($Inbox)/$new/?EditDocument&Form=h_PageUI&PresetFields=h_EditAction;h_ShimmerEdit,s_ViewName;($Inbox),s_NotesForm;Memo&ui=dwa_form HTTP/1.1
+* (21/08/2013 13:04:35) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:04:35) [INFO]: Response e-mail sent to: F6036477 Juno Dani da Rold Roesler/BancodoBrasil
+* (21/08/2013 13:05:19) [INFO]: Checking e-mail...
+* (21/08/2013 13:05:19) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 13:05:19) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:05:19) [INFO]: No important e-mail found
+* (21/08/2013 13:06:19) [INFO]: Checking e-mail...
+* (21/08/2013 13:06:19) [INFO]: GET https://correioweb.bb.com.br/mail/dom919005/f6036477.nsf/iNotes/Proxy/?OpenDocument&Form=s_ReadViewEntries&PresetFields=DBQuotaInfo%3B1%2CFolderName%3B%28%24Inbox%29%2Cs_UsingHttps%3B1%2CnoPI%3B1%2Chc%3B%252498%257CSametimeInfo%2CUnreadCountInfo%3B1&TZType=UTC&Start=1&Count=20&resortdescending=1 HTTP/1.1
+* (21/08/2013 13:06:19) [INFO]: HTTP/1.1 200 OK
+* (21/08/2013 13:06:19) [INFO]: No important e-mail found
+* (21/08/2013 13:06:56) [ERROR]: Error getting PID
+* (21/08/2013 13:06:56) [INFO]: PID not found. EXITING...

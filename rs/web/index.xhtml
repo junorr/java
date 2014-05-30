@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+  
+  <h:head>
+    <title>RS - Remote Sys</title>
+  </h:head>
+  
+  <h:body>
+    <h:form prependId="false">
+      <center>
+        
+        <p:spacer height="20"/>
+        <p:panel id="panel" style="width: 600px;">
+          
+          <f:facet name="header">
+            RS - Remote Sys
+          </f:facet>
+          
+          <h:panelGrid columns="2" cellspacing="5">
+            
+            <p:outputLabel for="itype" value="Type:"/>
+            <p:selectOneMenu id="itype" value="#{ctr.type}">
+              <p:ajax update="panel"/>
+              <f:selectItem itemLabel="Connect" itemValue="Connect"/>
+              <f:selectItem itemLabel="Script" itemValue="Script"/>
+              <f:selectItem itemLabel="Action" itemValue="Action"/>
+            </p:selectOneMenu>
+            
+            <p:outputLabel for="iaction" value="Action:"
+                           rendered="#{ctr.type eq 'Action'}"/>
+            <p:selectOneMenu id="iaction" value="#{ctr.action}"
+                             rendered="#{ctr.type eq 'Action'}">
+              <p:ajax update="panel"/>
+              <f:selectItem itemLabel="Select" itemValue=""/>
+              <f:selectItems value="#{ctr.actions}" var="act"
+                             itemLabel="#{act}" itemValue="#{act}"/>
+            </p:selectOneMenu>
+            
+            <p:outputLabel for="icommand" value="Command:"
+                           rendered="#{ctr.action eq 'Custom Command (CMD)'}"/>
+            <p:inputText id="icommand" value="#{ctr.command}"
+                         rendered="#{ctr.action eq 'Custom Command (CMD)'}"/>
+            
+            <p:outputLabel for="iscript" value="Script:"
+                           rendered="#{ctr.type eq 'Script'}"/>
+            <p:selectOneMenu id="iscript" value="#{ctr.script}"
+                             rendered="#{ctr.type eq 'Script'}">
+              <f:selectItem itemLabel="Sample" itemValue="sample.bce"/>
+              <f:selectItem itemLabel="SE" itemValue="se.bce"/>
+              <f:selectItem itemLabel="SS" itemValue="ss.bce"/>
+            </p:selectOneMenu>
+            
+            <p:outputLabel for="idate" value="Schedule:"
+                           rendered="#{ctr.type ne 'Connect'}"/>
+            <p:calendar id="idate" locale="br" effect="fold"
+                        rendered="#{ctr.type ne 'Connect'}"
+                        minHour="7" maxHour="19"
+                        value="#{ctr.sched}"
+                        yearRange="2013-2020"
+                        pattern="dd/MM/yyyy HH:mm"/>
+            
+            <p:outputLabel for="iuser" value="User:"/>
+            <p:inputText id="iuser" value="#{ctr.user}"/>
+            
+            <p:outputLabel for="ipass" value="Password:"/>
+            <p:password id="ipass" value="#{ctr.pass}"/>
+          </h:panelGrid>
+          
+          <p:commandButton value="Send" action="#{ctr.sendMail()}"
+                           onclick="$('#loading').show();"
+                           update="sentdlg"
+                           rendered="#{ctr.type ne 'Connect'}"
+                           oncomplete="$('#loading').hide(); sentvar.show();"/>
+          
+          <p:commandButton value="Connect" action="#{ctr.connect()}"
+                           onclick="$('#loading').show();"
+                           update="mails-table"
+                           rendered="#{ctr.type eq 'Connect'}"
+                           oncomplete="$('#loading').hide();"/>
+          
+          <p:graphicImage id="loading" library="imgs" 
+                          name="ajax-loader.gif"
+                          style="display: none;"/>
+        </p:panel>
+        
+        <p:spacer height="30"/>
+        #{ctr.refreshInbox()}
+        <p:dataTable id="mails-table" value="#{ctr.inbox}"
+                     var="mail" selectionMode="single"
+                     style="width: 850px; max-width: 850px;"
+                     selection="#{ctr.header}" rowKey="#{mail.uid}">
+          <p:ajax event="rowSelect" update="@(.ui-panel)"/>
+          <f:facet name="header">
+            Inbox mails
+          </f:facet>
+          <p:column headerText="Subject" width="350" style="width: 350px; max-width: 350px;">
+            #{mail.subject}
+          </p:column>
+          <p:column headerText="From" width="250" style="width: 250px; max-width: 250px;">
+            #{mail.from}
+          </p:column>
+          <p:column headerText="Date" width="150" style="width: 150px; max-width: 150px;">
+            #{mail.date.toLocaleString()}
+          </p:column>
+          <f:facet name="footer">
+            <p:commandButton icon="ui-icon-search" value="View E-mail"
+                             type="button" onclick="viewvar.show();"/>
+            <p:spacer width="30" height="5"/>
+            <p:commandButton icon="ui-icon-trash" value="Remove E-mail"
+                             onclick="$('#loading').show();"
+                             action="#{ctr.removeEmail()}"
+                             oncomplete="$('#loading').hide();"
+                             partialSubmit="true"
+                             process="mails-table"
+                             update="mails-table"/>
+          </f:facet>
+        </p:dataTable>
+        
+        <p:dialog id="viewdlg" widgetVar="viewvar"
+                  showEffect="fold"
+                  hideEffect="fold" dynamic="true"
+                  width="800" style="max-height: 600px;">
+          
+          <f:facet name="header">
+            <h:graphicImage library="imgs" name="mail_22x16.png"
+                            style="position: relative; top: 2px;"/>
+            <p:spacer width="20" height="5"/>
+            E-mail View
+          </f:facet>
+          
+          <p:outputPanel autoUpdate="true">
+          <p:scrollPanel style="width: 750px; height: 520px;">
+            <p:panelGrid columns="2">
+              <h:outputText value="Subject:"/>
+              <h:outputText value="#{ctr.email.subject}"/>
+              
+              <h:outputText value="From:"/>
+              <h:outputText value="#{ctr.email.from}"/>
+              
+              <h:outputText value="To:"/>
+              <h:outputText value="#{ctr.listEmailTos()}"/>
+              
+              <h:outputText value="Cc:"/>
+              <h:outputText value="#{ctr.listEmailCCs()}"/>
+              
+              <h:outputText value="Date:"/>
+              <h:outputText value="#{ctr.email.date.toLocaleString()}"/>
+              
+              <h:outputText value="Attachment:" 
+                            rendered="#{ctr.email.attachmentsSize() gt 0}"/>
+              <h:outputLink value="#{ctr.attachmentPath}"
+                      onclick="javascript: window.open('#{ctr.attachmentPath}', '_blank'); return false;"
+                      rendered="#{ctr.email.attachmentsSize() gt 0}">
+                <h:graphicImage library="imgs" name="attach_18x22.png"
+                                style="position: relative; top: 4px;"/>
+                #{ctr.email.attachment(0).name}
+              </h:outputLink>
+              
+              <h:outputText value="Content:"/>
+              <h:outputText value="#{ctr.email.content}" escape="false"/>
+            </p:panelGrid>
+          </p:scrollPanel>
+          </p:outputPanel>
+        </p:dialog>
+        
+        
+        <p:dialog id="sentdlg" widgetVar="sentvar"
+                  width="300" height="30"
+                  header="Mail Sent" resizable="false"
+                  showEffect="fold" hideEffect="explode">
+          <h:outputText value="* Message Sent Succesfuly!"
+                        rendered="#{ctr.successSent}"/>
+          <h:outputText value="# Error Sending Message!"
+                        rendered="#{!ctr.successSent}"/>
+        </p:dialog>
+      </center>
+    </h:form>
+  </h:body>
+</html>
+

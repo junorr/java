@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="base.xhtml">
+    
+    <ui:define name="header">
+      <style type="text/css" rel="stylesheet">
+        .normal-link {
+          color: black;
+          font-weight: bold;
+          text-decoration: underline;
+        }
+        .normal-link:hover {
+          color: #E41721;
+          text-decoration: underline;
+        }
+      </style>
+    </ui:define>
+    
+    <ui:define name="title">
+      Powerstat - Download
+    </ui:define>
+    
+    <ui:define name="page">
+      <div id="download-panel" style="width: 700px; text-align: justify;">
+        <p align="justify">
+          <h:graphicImage style="position: relative; top: 4px;" library="images" name="download-icon_22.png"/>
+          <p:spacer width="20" height="1"/>
+          <h:outputText style="font-weight: bold;" value="DOWNLOADS"/>
+        <hr/>
+        </p>
+      </div>
+      
+      <div style="width: 670px;">
+        <p align="justify">
+          PowerStat is released under the <h:outputLink styleClass="normal-link" value="http://www.gnu.org/licenses/lgpl.html" onclick="javascript: window.open('http://www.gnu.org/licenses/lgpl.html', '_blank'); return false;">GNU/LGPL</h:outputLink> license.<br/>
+        </p>
+        
+        <p align="justify">
+          For installation guide, please refer to <h:commandLink action="quick-start.xhtml?faces-redirect=true" styleClass="normal-link">Quick Start page</h:commandLink>.<br/>
+        </p>
+        
+        <p align="justify">
+          This program is distributed in the hope that it will be useful,
+          but WITHOUT ANY WARRANTY; without even the implied warranty of
+          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+          GNU Lesser General Public License for more details.
+        </p>
+        
+        <h4>Downloads</h4>
+        <p:panelGrid style="position: relative; top: -15px;">
+          <f:facet name="header">
+            <p:row>
+              <p:column>Type</p:column>
+              <p:column>File</p:column>
+              <p:column>Date</p:column>
+              <p:column>MD5Sum</p:column>
+            </p:row>
+          </f:facet>
+          
+          <p:row>
+            <p:column>
+              <h:outputText value="Binary"/>
+            </p:column>
+            <p:column>
+              <h:outputLink value="http://powerstat.us/files/pstat.war" onclick="javascript: window.open('http://powerstat.us/files/pstat.war', '_blank'); return false;">powerstat-1.0.war</h:outputLink>
+            </p:column>
+            <p:column>
+              <h:outputText value="2013/11/07"/>
+            </p:column>
+            <p:column>
+              <h:outputText value="cf6e69f67f2beb64f72d7828ebcdd34d"/>
+            </p:column>
+          </p:row>
+          
+          <p:row>
+            <p:column>
+              <h:outputText value="Source"/>
+            </p:column>
+            <p:column>
+              <h:outputLink value="http://powerstat.us/files/powerstat-src.tar.gz" onclick="javascript: window.open('http://powerstat.us/files/powerstat-src.tar.gz', '_blank'); return false;">powerstat-src.tar.gz</h:outputLink>
+            </p:column>
+            <p:column>
+              <h:outputText value="2013/11/07"/>
+            </p:column>
+            <p:column>
+              <h:outputText value="0ac61fa89cedebb5aa677d671f12706c"/>
+            </p:column>
+          </p:row>
+          
+          <p:row>
+            <p:column>
+              <h:outputText value="Bundle"/>
+            </p:column>
+            <p:column>
+              <h:outputLink value="http://powerstat.us/files/powerstat-1.0.tar.gz" onclick="javascript: window.open('http://powerstat.us/files/powerstat-1.0.tar.gz', '_blank'); return false;">powerstat-1.0.tar.gz</h:outputLink>
+            </p:column>
+            <p:column>
+              <h:outputText value="2013/11/07"/>
+            </p:column>
+            <p:column>
+              <h:outputText value="eb009b90c20768a15cef1fd0467fecfe"/>
+            </p:column>
+          </p:row>
+        </p:panelGrid>
+        
+      </div>
+      
+      
+    </ui:define>
+    
+    <ui:define name="footer">
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

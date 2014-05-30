@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  
+  <h:head>
+    <title>
+      <ui:insert name="title">
+        PowerStat
+      </ui:insert>
+    </title>
+    
+    <link rel="shortcut icon" href="ray.gif"/>
+    
+    <!--h:outputScript library="javascript" name="jquery-1.7.2.js"/-->
+    <h:outputScript library="javascript" name="tabulator.js"/>
+    <h:outputStylesheet library="style" name="new-base.css"/>
+    
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("a").removeClass("red");
+        var id = "#" + $("#activelink-header").val();
+        $(id).addClass("red");
+      });
+      
+      function setLink(link) {
+        if(typeof link == "string") {
+          $("#activelink-header").val(link);
+          $("#activelink-page").val(link);
+          $("#activelink-footer").val(link);
+        } else {
+          $("#activelink-header").val($(link).attr("id"));
+          $("#activelink-page").val($(link).attr("id"));
+          $("#activelink-footer").val($(link).attr("id"));
+        }
+      }
+      
+      function toggleMenu() {
+        var menu = "#appsMenu";
+        $("#appsMenu").slideToggle();
+      }
+    </script>
+    
+    <ui:insert name="header"/>
+    
+  </h:head>
+  
+  <h:body>
+    
+    <div id="headerbar">
+      <h:form id="form-header" prependId="false">
+        
+        <h:commandLink action="new-index.xhtml" onclick="setLink('link-home');">
+          <h:graphicImage library="images" name="ps-blue3.png" styleClass="logo"/>
+        </h:commandLink>
+        
+        <h:commandLink action="new-index.xhtml" onclick="setLink('link-home');">
+          <h:graphicImage library="images" name="title.png" styleClass="title"/>
+        </h:commandLink>
+      
+        <div id="linksbar">
+          <h:commandLink id="link-home" value="HOME" 
+                         action="new-index.xhtml" 
+                         onclick="setLink(this);"/>
+          
+          <p:spacer width="20" height="1"/>
+          <p:commandLink id="link-apps" value="APPLICATIONS" 
+                         style="font-size: 14px;"
+                         onmouseover="toggleMenu()"
+                         onclick="toggleMenu();"/>
+          
+          <p:spacer width="20" height="1"/>
+          <h:commandLink id="link-2" value="LINK2" 
+                         action="new-index.xhtml"
+                         onclick="setLink(this);"/>
+          
+          <p:spacer width="20" height="1"/>
+          <h:commandLink id="link-login" value="LOGIN" 
+                         action="new-login.xhtml"
+                         onclick="setLink(this)"
+                         rendered="#{!loginController.logged}"/>
+          
+          <h:commandLink id="link-logout" value="LOGOUT" 
+                         action="#{loginController.logout()}"
+                         onclick="setLink(this);"
+                         rendered="#{loginController.logged}"/>
+          
+          <h:inputHidden id="activelink-header" value="#{linkController.selectedLink}"/>
+          
+          <div id="appsMenu">
+            <h:commandLink value="CPU" styleClass="sublink" action="new-cpu.xhtml"
+                           onclick="setLink('link-apps'); toggleMenu();"/><br/>
+            <h:commandLink value="PROCESSES" styleClass="sublink" action="new-processes.xhtml"
+                           onclick="setLink('link-apps'); toggleMenu();"/><br/>
+            <h:commandLink value="MEMORY" styleClass="sublink" action="new-memory.xhtml"
+                           onclick="setLink('link-apps'); toggleMenu();"/><br/>
+            <h:commandLink value="DISKS" styleClass="sublink" action="new-disk.xhtml"
+                           onclick="setLink('link-apps'); toggleMenu();"/><br/>
+            <h:commandLink value="NETWORK" styleClass="sublink" action="new-network.xhtml"
+                           onclick="setLink('link-apps'); toggleMenu();"/><br/>
+            <h:commandLink value="NOTIFICATION" styleClass="sublink" action="new-notification.xhtml"
+                           onclick="setLink('link-apps'); toggleMenu();"/><br/>
+          </div>
+          
+          <ui:insert name="linksbar"/>
+        </div>
+      
+        
+        <ui:insert name="headerbar"/>
+        
+      </h:form>
+    </div>
+    
+    <h:form id="form-page" prependId="false">
+      <center>
+        <div id="page">
+          <ui:insert name="page"/>
+          <h:inputHidden id="activelink-page" value="#{linkController.selectedLink}"/>
+        </div>
+      </center>
+    </h:form>
+      
+      
+    <h:form id="form-footer" prependId="false">
+      <div id="footer">
+        <ui:insert name="footer"/>
+        <h:inputHidden id="activelink-footer" value="#{linkController.selectedLink}"/>
+      </div>
+    </h:form>
+    
+  </h:body>
+</html>
+

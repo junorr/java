@@ -1,0 +1,18 @@
+pstr("Insira o nome do arquivo a ser copiado: ")
+string file = iread()
+pstr("Insira o nome do arquivo de copia: ")
+string fto = iread()
+
+int len = 1024
+int total = 0
+object bytes = freadBytes(file, len)
+
+while !eq(bytes, EOF)
+  fwriteBytes(fto, bytes)
+  total = total + length(bytes)
+  bytes = freadBytes(file, len)
+endwhile
+
+pstr(total+ " bytes copiados.")
+
+return 0

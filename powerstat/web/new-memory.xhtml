@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="new-categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - Memory
+    </ui:define>
+    
+    <ui:define name="style">
+      <h:outputStylesheet library="style" name="memory.css"/>
+    </ui:define>
+
+    <ui:define name="category-icon">
+      <h:graphicImage library="images" name="memory-icon-22.png"/>
+    </ui:define>
+    <ui:define name="category-name">Memory</ui:define>
+    
+    <ui:define name="category-links">
+      <p:commandLink value="Clear Cache" styleClass="menuLink"
+                     actionListener="#{memoryCharts.clearMemory()}"
+                     oncomplete="cmdvar.show()"
+                     update="memoverall,memdetailed,linechart"/>
+      
+      <p:spacer width="20" height="1"/>
+      
+      <p:commandLink value="Custom Chart" styleClass="menuLink"
+                     onclick="customchartvar.show();"/>
+    </ui:define>
+    
+    
+    <ui:define name="category-content">
+      <p:poll update="memoverall,memdetailed,linechart" 
+              listener="#{memoryCharts.update()}"
+              autoStart="true" interval="15"/>
+      
+      <p:donutChart id="memoverall" value="#{memoryCharts.totalModel}" 
+                    legendPosition="w" sliceMargin="5" 
+                    title="Overall Memory Consumption"
+                    showDataLabels="true" styleClass="graphics"/>
+      
+        <p:barChart id="memdetailed" value="#{memoryCharts.detailedModel}" 
+                    legendPosition="nw" extender="ext" styleClass="graphics"
+                    title="Detailed Memory Consumption" animate="true"/>
+        
+      <br/>
+      <p:spacer height="20"/>
+        
+        <p:lineChart id="linechart" value="#{memoryCharts.lineModel}"
+                     yaxisLabel="Percent" xaxisLabel="Time"
+                     extender="ext" styleClass="graphics"
+                     legendPosition="w" title="Recent History 
+                     Memory Consumption"/>
+      
+      <ui:include src="new-mem-dlgs.xhtml"/>
+      
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

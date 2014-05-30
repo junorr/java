@@ -1,0 +1,159 @@
+[INFO ] (02/05/2014 22:03:30): SCronV6 Started!
+[INFO ] (02/05/2014 22:03:30): Timeouts Started!
+[DEBUG] (02/05/2014 22:03:54): Job inserted: script.txt @ 02/05/2014 22:04:00 [Repeat: 30 SECOND]
+[INFO ] (02/05/2014 22:03:54): Schedule Added
+[INFO ] (02/05/2014 22:03:54): SCronV6 Stopped!
+[INFO ] (02/05/2014 22:03:54): SCronV6 Started!
+[INFO ] (02/05/2014 22:03:54): Timeouts Saved!
+[INFO ] (02/05/2014 22:33:28): Timeouts Loaded!
+[INFO ] (02/05/2014 22:33:28): SCronV6 Started!
+[INFO ] (02/05/2014 22:33:28): Timeouts Started!
+[INFO ] (02/05/2014 22:49:44): Timeouts Loaded!
+[INFO ] (02/05/2014 22:49:44): SCronV6 Started!
+[INFO ] (02/05/2014 22:49:44): Timeouts Started!
+[DEBUG] (02/05/2014 22:50:24): Job inserted: script.txt @ 02/05/2014 23:49:00 [Repeat: 30 SECOND]
+[INFO ] (02/05/2014 22:50:24): Schedule Added
+[INFO ] (02/05/2014 22:50:24): SCronV6 Stopped!
+[INFO ] (02/05/2014 22:50:24): SCronV6 Started!
+[INFO ] (02/05/2014 22:50:24): Timeouts Saved!
+[INFO ] (02/05/2014 22:50:36): SCronV6 Stopped!
+[INFO ] (02/05/2014 22:50:52): Timeouts Loaded!
+[INFO ] (02/05/2014 22:50:52): SCronV6 Started!
+[INFO ] (02/05/2014 22:50:52): Timeouts Started!
+[ERROR] (02/05/2014 22:51:05): Invalid Schedule
+[INFO ] (02/05/2014 22:51:13): Timeouts Loaded!
+[INFO ] (02/05/2014 22:51:13): SCronV6 Started!
+[INFO ] (02/05/2014 22:51:13): Timeouts Started!
+[INFO ] (02/05/2014 22:52:52): Timeouts Loaded!
+[INFO ] (02/05/2014 22:52:52): SCronV6 Started!
+[INFO ] (02/05/2014 22:52:52): Timeouts Started!
+[INFO ] (02/05/2014 22:54:16): Timeouts Loaded!
+[INFO ] (02/05/2014 22:54:16): SCronV6 Started!
+[INFO ] (02/05/2014 22:54:16): Timeouts Started!
+[INFO ] (02/05/2014 22:54:34): SCronV6 Stopped!
+[INFO ] (02/05/2014 22:59:27): Timeouts Loaded!
+[INFO ] (02/05/2014 22:59:27): SCronV6 Started!
+[INFO ] (02/05/2014 22:59:27): Timeouts Started!
+[INFO ] (02/05/2014 23:15:45): Timeouts Loaded!
+[INFO ] (02/05/2014 23:15:45): SCronV6 Started!
+[INFO ] (02/05/2014 23:15:45): Timeouts Started!
+[INFO ] (02/05/2014 23:15:49): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:15:49): Schedule Removed
+[INFO ] (02/05/2014 23:15:49): SCronV6 Started!
+[INFO ] (02/05/2014 23:17:37): Timeouts Loaded!
+[INFO ] (02/05/2014 23:17:37): SCronV6 Started!
+[INFO ] (02/05/2014 23:17:37): Timeouts Started!
+[INFO ] (02/05/2014 23:17:53): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:17:53): SCronV6 Started!
+[INFO ] (02/05/2014 23:17:53): Schedule Removed
+[INFO ] (02/05/2014 23:20:53): Timeouts Loaded!
+[INFO ] (02/05/2014 23:20:53): SCronV6 Started!
+[INFO ] (02/05/2014 23:20:53): Timeouts Started!
+[INFO ] (02/05/2014 23:21:58): Timeouts Loaded!
+[INFO ] (02/05/2014 23:21:58): SCronV6 Started!
+[INFO ] (02/05/2014 23:21:58): Timeouts Started!
+[INFO ] (02/05/2014 23:22:01): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:22:02): SCronV6 Started!
+[INFO ] (02/05/2014 23:22:02): Timeouts Saved!
+[INFO ] (02/05/2014 23:22:02): SCronV6 Started!
+[INFO ] (02/05/2014 23:22:02): Schedule Removed
+[DEBUG] (02/05/2014 23:22:39): Timeouts Loaded!
+[INFO ] (02/05/2014 23:22:39): SCronV6 Started!
+[INFO ] (02/05/2014 23:22:39): Timeouts Started!
+[INFO ] (02/05/2014 23:22:47): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:23:09): SCronV6 Started!
+[DEBUG] (02/05/2014 23:23:09): Timeouts Saved!
+[INFO ] (02/05/2014 23:23:09): SCronV6 Started!
+[INFO ] (02/05/2014 23:23:09): Schedule Edited
+[DEBUG] (02/05/2014 23:24:30): Timeouts Loaded!
+[INFO ] (02/05/2014 23:24:30): SCronV6 Started!
+[INFO ] (02/05/2014 23:24:30): Timeouts Started!
+[INFO ] (02/05/2014 23:24:34): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:24:37): SCronV6 Started!
+[DEBUG] (02/05/2014 23:24:37): Timeouts Saved!
+[INFO ] (02/05/2014 23:24:37): SCronV6 Started!
+[INFO ] (02/05/2014 23:24:37): Schedule Edited
+[DEBUG] (02/05/2014 23:25:58): Timeouts Loaded!
+[INFO ] (02/05/2014 23:25:58): SCronV6 Started!
+[INFO ] (02/05/2014 23:25:58): Timeouts Started!
+[INFO ] (02/05/2014 23:26:09): SCronV6 Stopped!
+[DEBUG] (02/05/2014 23:26:11): Timeouts Saved!
+[INFO ] (02/05/2014 23:26:11): SCronV6 Started!
+[INFO ] (02/05/2014 23:26:11): Schedule Edited
+[DEBUG] (02/05/2014 23:32:25): Timeouts Loaded!
+[INFO ] (02/05/2014 23:32:25): SCronV6 Started!
+[INFO ] (02/05/2014 23:32:25): Timeouts Started!
+[INFO ] (02/05/2014 23:32:28): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:32:28): SCronV6 Started!
+[INFO ] (02/05/2014 23:32:28): Execution Finished
+[INFO ] (02/05/2014 23:32:41): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:32:41): SCronV6 Started!
+[INFO ] (02/05/2014 23:32:41): Execution Finished
+[DEBUG] (02/05/2014 23:33:41): Timeouts Loaded!
+[INFO ] (02/05/2014 23:33:42): SCronV6 Started!
+[INFO ] (02/05/2014 23:33:42): Timeouts Started!
+[INFO ] (02/05/2014 23:34:12): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:34:12): SCronV6 Started!
+[INFO ] (02/05/2014 23:34:12): Execution Finished
+[DEBUG] (02/05/2014 23:35:14): Timeouts Loaded!
+[INFO ] (02/05/2014 23:35:14): SCronV6 Started!
+[INFO ] (02/05/2014 23:35:14): Timeouts Started!
+[INFO ] (02/05/2014 23:35:19): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:35:19): Running Script...
+[INFO ] (02/05/2014 23:35:19): SCronV6 Started!
+[INFO ] (02/05/2014 23:35:19): Execution Finished
+[DEBUG] (02/05/2014 23:35:46): Timeouts Loaded!
+[INFO ] (02/05/2014 23:35:46): SCronV6 Started!
+[INFO ] (02/05/2014 23:35:46): Timeouts Started!
+[INFO ] (02/05/2014 23:35:52): Running Script...
+[INFO ] (02/05/2014 23:35:52): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:35:52): SCronV6 Started!
+[INFO ] (02/05/2014 23:35:52): Execution Finished
+[DEBUG] (02/05/2014 23:45:06): Timeouts Loaded!
+[INFO ] (02/05/2014 23:45:06): SCronV6 Started!
+[INFO ] (02/05/2014 23:45:06): Timeouts Started!
+[INFO ] (02/05/2014 23:45:23): Running Script...
+[INFO ] (02/05/2014 23:45:23): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:45:23): SCronV6 Started!
+[INFO ] (02/05/2014 23:45:23): Execution Finished
+[INFO ] (02/05/2014 23:46:30): Running Script...
+[INFO ] (02/05/2014 23:46:31): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:46:31): SCronV6 Started!
+[INFO ] (02/05/2014 23:46:31): Execution Finished
+[INFO ] (02/05/2014 23:46:46): SCronV6 Stopped!
+[ERROR] (02/05/2014 23:47:17): Invalid Schedule
+[DEBUG] (02/05/2014 23:47:59): Timeouts Loaded!
+[INFO ] (02/05/2014 23:47:59): SCronV6 Started!
+[INFO ] (02/05/2014 23:47:59): Timeouts Started!
+[INFO ] (02/05/2014 23:48:06): SCronV6 Stopped!
+[ERROR] (02/05/2014 23:48:07): Edit Canceled
+[DEBUG] (02/05/2014 23:49:10): Timeouts Loaded!
+[INFO ] (02/05/2014 23:49:10): SCronV6 Started!
+[INFO ] (02/05/2014 23:49:10): Timeouts Started!
+[INFO ] (02/05/2014 23:49:17): Running Script...
+[INFO ] (02/05/2014 23:49:17): SCronV6 Stopped!
+[INFO ] (02/05/2014 23:49:17): SCronV6 Started!
+[INFO ] (02/05/2014 23:49:17): Execution Finished
+[INFO ] (02/05/2014 23:49:19): SCronV6 Stopped!
+[ERROR] (02/05/2014 23:49:20): Edit Canceled
+[INFO ] (02/05/2014 23:49:20): SCronV6 Started!
+[DEBUG] (02/05/2014 23:50:50): Timeouts Loaded!
+[INFO ] (02/05/2014 23:50:50): SCronV6 Started!
+[INFO ] (02/05/2014 23:50:50): Timeouts Started!
+[DEBUG] (03/05/2014 14:57:43): Timeouts Loaded!
+[INFO ] (03/05/2014 14:57:43): SCronV6 Started!
+[INFO ] (03/05/2014 14:57:43): Timeouts Started!
+[INFO ] (03/05/2014 14:58:19): SCronV6 Stopped!
+[INFO ] (03/05/2014 14:58:19): SCronV6 Started!
+[INFO ] (03/05/2014 14:58:19): Schedule Removed
+[DEBUG] (03/05/2014 19:23:17): Timeouts Loaded!
+[INFO ] (03/05/2014 19:23:17): SCronV6 Started!
+[INFO ] (03/05/2014 19:23:17): Timeouts Started!
+[DEBUG] (05/05/2014 15:06:29): Timeouts Loaded!
+[INFO ] (05/05/2014 15:06:29): SCronV6 Started!
+[INFO ] (05/05/2014 15:06:29): Timeouts Started!
+[DEBUG] (05/05/2014 15:07:06): Job inserted: script.txt @ 05/05/2014 16:07:00 [Repeat: 1 HOUR]
+[INFO ] (05/05/2014 15:07:07): SCronV6 Stopped!
+[INFO ] (05/05/2014 15:07:07): SCronV6 Started!
+[DEBUG] (05/05/2014 15:07:07): Timeouts Saved!
+[INFO ] (05/05/2014 15:07:07): Schedule Added

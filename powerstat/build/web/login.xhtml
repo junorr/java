@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+  
+  
+  <ui:composition template="base.xhtml">
+    
+    <ui:define name="title">PowerStat</ui:define>
+    
+    <ui:define name="header">
+      <h:outputScript library="javascript" name="hexcode.js"/>
+      <h:outputScript library="javascript" name="aes.js"/>
+      <h:outputScript library="javascript" name="cryptoHelpers.js"/>
+      
+      <script type="text/javascript">
+        $(document).ready(function () {
+          var h = $(document).height();
+          if(h > 500) {
+            $(document.body).height(h);
+          }
+        });
+        
+        function hideLoading() {
+          $("#loading").css("visibility", "hidden");
+        }
+        
+        function redirLogged() {
+          var logged = $("#hlogged").val();
+          if(logged == "true") {
+            alert("Login succesful!");
+          } else {
+            alert("Login failed!");
+          }
+        }
+        
+        function encrypt() {
+          $("#loading").css("visibility", "visible");
+          
+          var pass = $("#ipass").val();
+          var user = $("#iemail").val();
+          
+          var uid = "#{loginController.uid}";
+          alert(uid);
+          var key = hex.fromHexString(uid);
+          var iv = hex.get16BytesLength(key);
+          
+          var data = cryptoHelpers.convertStringToByteArray(pass);
+          var encpass = slowAES.encrypt(data, 
+              slowAES.modeOfOperation.CBC, key, iv);
+              
+          data = cryptoHelpers.convertStringToByteArray(user);
+          var encuser = slowAES.encrypt(data, 
+              slowAES.modeOfOperation.CBC, key, iv);
+          
+          $("#hemail").val(hex.toHexString(encuser));
+          $("#hpass").val(hex.toHexString(encpass));
+        }
+      </script>
+      
+      <style type="text/css">
+        .bodyHeight {
+          height: 500px;
+        }
+        body {
+          height: 1px;
+        }
+      </style>
+    </ui:define>
+
+    
+    <ui:define name="page">
+      
+      <p:spacer height="40"/>
+      <h3>Welcome to PowerStat Monitor and Diagnostic System!</h3>
+      
+      <p:panel id="loginpanel">
+        
+        <f:facet name="header">
+          <h:graphicImage library="images" name="lock-black-18.png"/>
+          <p:spacer width="10"/>
+          Login
+        </f:facet>
+        
+        <center>
+        <p:messages id="msgs" autoUpdate="true" showDetail="false" showSummary="true"/>
+        <h:panelGrid columns="3">
+        
+          <p:outputLabel for="iemail" value="E-mail:"/>
+          <p:spacer height="40" width="1"/>
+          <p:inputText id="iemail" required="true" 
+                       requiredMessage="Inform a valid e-mail address."/>
+            
+          <p:outputLabel for="ipass" value="Password:"/>
+          <p:spacer height="40" width="1"/>
+          <p:password id="ipass" required="true" 
+                      requiredMessage="Inform a valid e-mail address."/>
+          
+          <p:spacer width="1"/>
+          <p:spacer height="40" width="1"/>
+          
+          <p:commandButton value="Login" onclick="encrypt();"
+                           actionListener="#{loginController.login()}"
+                           update="hlogged,msgs" oncomplete="redirLogged();"/>
+        </h:panelGrid>
+        
+        <h:inputHidden id="hemail" value="#{loginController.email}"/>
+        <h:inputHidden id="hpass" value="#{loginController.passwd}"/>
+        <h:inputHidden id="hlogged" value="#{loginController.logged}"/>
+        
+        <h:graphicImage id="loading" library="images" 
+                        name="loading.gif"
+                        style="visibility: hidden;"/>
+        </center>
+        
+      </p:panel>
+    </ui:define>
+  </ui:composition>
+  
+  
+</html>

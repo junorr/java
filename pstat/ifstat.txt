@@ -1,0 +1,11 @@
+      eth0:0
+ KB/s in  KB/s out
+     n/a       n/a
+     n/a       n/a
+     n/a       n/a
+     n/a       n/a
+     n/a       n/a
+     n/a       n/a
+     n/a       n/a
+     n/a       n/a
+

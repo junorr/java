@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - User Admin
+    </ui:define>
+    
+    <ui:define name="script">
+      <h:outputScript library="javascript" name="aes.js"/>
+      <h:outputScript library="javascript" name="cryptoHelpers.js"/>
+      <h:outputScript library="javascript" name="hexcode.js"/>
+      
+      <script type="text/javascript">
+        function encrypt() {
+          var pass = $("#pass1").val();
+          
+          $("#pass1").val("password");
+          $("#pass2").val("password");
+          var hexKey = "#{security.uid}";
+          
+          var bpass = cryptoHelpers.convertStringToByteArray(pass);
+          var key = hex.fromHexString(hexKey);
+          var iv = hex.get16BytesLength(key);
+          
+          var encpass = slowAES.encrypt(bpass, slowAES.modeOfOperation.CBC, key, iv);
+          
+          $("#hpass").val(hex.toHexString(encpass));
+        }
+      </script>
+    </ui:define>
+
+    <ui:define name="category-icon">
+      <h:graphicImage id="user-icon" library="images" name="person-black-18.png"/>
+    </ui:define>
+    
+    <ui:define name="category-name">User Edit</ui:define>
+    
+    <ui:define name="category-links">
+      <p:commandLink styleClass="menuLink" onclick="encrypt(); $('#loading').show();"
+                     action="#{userController.saveUser()}"
+                     disabled="#{!loginController.user.admin and 
+                                 userController.selected != loginController.user}"
+                     update="user-info,user-perm" oncomplete="$('#loading').hide();">
+        <h:graphicImage library="images" name="save-black-18.png" 
+                        style="height: 14px; width: 16px;"/>
+        <p:spacer width="5"/>
+        <h:outputText value="Save Modifications" 
+                      style="position: relative; top: -2px;"/>
+      </p:commandLink>
+      
+      <p:spacer width="10" height="2"/>
+      <h:graphicImage id="loading" library="images" name="ajax-loader.gif"
+                      style="position: relative; top: 2px; display: none;"/>
+      
+    </ui:define>
+    
+    
+    <ui:define name="category-content">
+      
+      <p:panel id="user-info" header="User Info" 
+               style="width: 550px; background-color: #E2E2E0;">
+        
+        <h:panelGrid columns="3">
+          <p:outputLabel for="inname" value="Name:"/>
+          <p:spacer width="10" height="30"/>
+          <p:inputText id="inname" value="#{userController.selected.name}" required="true"
+                       disabled="#{!loginController.user.admin and 
+                                   userController.selected != loginController.user}"/>
+        
+          <h:outputText value="E-mail:"/>
+          <p:spacer width="10" height="30"/>
+          <h:outputText value="#{userController.selected.email}"/>
+        
+          <h:outputText value="Password:"/>
+          <p:spacer width="10" height="30"/>
+          <p:commandButton type="button" value="Change" icon="ui-icon-pencil"
+                           disabled="#{!loginController.user.admin and 
+                                       userController.selected != loginController.user}"
+                           onclick="passvar.show();"/>
+        
+          <h:outputText value="Admin:"/>
+          <p:spacer width="10" height="30"/>
+          <p:selectBooleanCheckbox value="#{userController.selected.admin}" 
+                                   disabled="#{!loginController.user.admin}"/>
+        </h:panelGrid>
+      </p:panel>
+
+      <p:spacer height="20"/>
+      
+      <p:panel id="user-perm" rendered="#{loginController.user.admin}" 
+               style="width: 550px; background-color: #E2E2E0;">
+        
+        <f:facet name="header">
+          User Permissions
+        </f:facet>
+        
+        <h:panelGrid columns="3">
+          <h:outputText value="Add Permission: "/>
+          <p:selectOneMenu id="select-access" editable="false" effect="fold" 
+                           value="#{userController.selectedType}"
+                           style="position: relative; top: 3px;">
+            <p:ajax event="change" onstart="javascript: $('#loading').show();"
+                    oncomplete="javascript: $('#loading').hide();"/>
+            <f:selectItem itemLabel="Select" itemValue=""/>
+            <f:selectItems value="#{userController.accessTypes}" var="type"
+                           itemLabel="#{type}" itemValue="#{type}"/>
+          </p:selectOneMenu>
+        
+          <h:panelGroup>
+            <p:spacer width="15"/>
+            <p:commandButton icon="ui-icon-plusthick" value="Add" update="access-table"
+                             action="#{userController.addAccess()}"
+                             onclick="javascript: $('#loading').show();"
+                             oncomplete="javascript: $('#loading').hide();"/>
+          </h:panelGroup>
+        </h:panelGrid>
+        
+        <p:spacer height="15"/>
+      
+        <p:dataTable id="access-table" value="#{userController.selected.access}" var="ac"
+                     style="width: 480px;" rowKey="#{ac.type}" 
+                     selection="#{userController.access}" selectionMode="single">
+          
+          <p:ajax event="rowSelect"/>
+          
+          <p:column headerText="Type">
+            <h:outputText value="#{ac.type}"/>
+          </p:column>
+          
+          <p:column headerText="Time">
+            <h:outputText value="#{ac.time.toString()}"/>
+          </p:column>
+          
+          <f:facet name='footer'>
+            <center>
+              <p:commandButton action="#{userController.removeAccess()}"
+                               icon="ui-icon-trash" value="Remove" update="access-table" 
+                               onclick="javascript: $('#loading').show();"
+                               oncomplete="javascript: $('#loading').hide();"/>
+            </center>
+          </f:facet>
+        </p:dataTable>
+      </p:panel>
+      
+      <p:spacer height="100"/>
+      
+      <p:dialog id="passdlg" widgetVar="passvar" showEffect="fold"
+                header="Change Password"
+                hideEffect="explode" modal="true">
+        
+        <p:panelGrid columns="2">
+          <h:outputText value="Password:"/>
+          <p:password id="pass1" match="pass2" feedback="true" inline="false"/>
+          
+          <h:outputText value="Confirm:"/>
+          <p:password id="pass2"/>
+          
+          <p:spacer width="1"/>
+          <p:commandButton icon="ui-icon-disk" value="Save"
+                           onclick="encrypt(); $('#loading').show();"
+                           action="#{userController.saveUser()}"
+                           oncomplete="passvar.hide(); $('#loading').hide();"/>
+        </p:panelGrid>
+        
+        <h:inputHidden id="hpass" value="#{userController.newPassword}"/>
+      </p:dialog>
+                
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

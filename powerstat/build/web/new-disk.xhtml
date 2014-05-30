@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="new-categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat - Disk
+    </ui:define>
+    
+    <ui:define name="style">
+      <h:outputStylesheet library="style" name="disk.css"/>
+    </ui:define>
+
+    <ui:define name="category-icon">
+      <h:graphicImage library="images" name="disk-icon-[24x20].png"/>
+    </ui:define>
+    <ui:define name="category-name">Disk</ui:define>
+    
+    <ui:define name="category-links">
+      <p:commandLink value="Custom Chart" styleClass="menuLink"
+                     onclick="customchartvar.show();"/>
+    </ui:define>
+    
+    
+    <ui:define name="category-content">
+      <p:poll update="diskdetailed,diskoverall,disklinechart" 
+              listener="#{diskCharts.update()}"
+              autoStart="true" interval="15"/>
+      
+        <h:outputText value="Disk: " style="font-weight: bold; 
+                      position: relative; top: -10px;"/>
+        
+        <p:selectOneMenu value="#{diskCharts.device}" style="width: 200px;" 
+                         onchange="javascript: $('#form-page').submit();"
+                         effect="fold">
+          <f:selectItems value="#{diskCharts.disks}" var="disk" 
+                         itemLabel="#{disk.device}" itemValue="#{disk.device}"/>
+        </p:selectOneMenu>
+      
+        <p:pieChart id="diskoverall" value="#{diskCharts.usageModel}" 
+                    showDataLabels="true"
+                    fill="false" legendPosition="w" sliceMargin="5"
+                    title="Overall Disk Consumption"
+                    styleClass="graphics"/>
+        
+        <h:outputText id="useddisk" 
+                      value="#{diskCharts.selectedDisk.toString()}"/>
+      
+        
+        <p:pieChart id="diskdetailed" value="#{diskCharts.usageModel}" 
+                    showDataLabels="true" dataFormat="value" 
+                    legendPosition="w" sliceMargin="5"
+                    title="Detailed Disk Consumption" 
+                    styleClass="graphics"/>
+        
+        <h:outputText id="valueslabel"
+                      value="(Values in 'Mb')"/>
+        
+      <br/>
+      <p:spacer height="20"/>
+        
+        <p:lineChart id="disklinechart" value="#{diskCharts.lineModel}"
+                     title="Recent History Disk Consumption"
+                     animate="true" xaxisLabel="Time"
+                     yaxisLabel="Values in Mb" showDatatip="true" 
+                     showMarkers="true" extender="ext"
+                     legendPosition="ne"
+                     styleClass="graphics"/>
+      
+      <ui:include src="new-disk-dlgs.xhtml"/>
+      
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

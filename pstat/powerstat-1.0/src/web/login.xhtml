@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="base.xhtml">
+    
+    <ui:define name="header">
+      <h:outputScript library="javascript" name="aes.js"/>
+      <h:outputScript library="javascript" name="cryptoHelpers.js"/>
+      <h:outputScript library="javascript" name="hexcode.js"/>
+      
+      <script type="text/javascript">
+        var email = "";
+        var pass = "";
+        
+        function encrypt() {
+          email = $("#iemail").val();
+          pass = $("#ipass").val();
+          $("#iemail").val("e-mail");
+          $("#ipass").val("password");
+          
+          var hexKey = "#{security.uid}";
+          
+          $("#loading").show();
+          var bemail = cryptoHelpers.convertStringToByteArray(email);
+          var bpass = cryptoHelpers.convertStringToByteArray(pass);
+          var key = hex.fromHexString(hexKey);
+          var iv = hex.get16BytesLength(key);
+          
+          var encemail = slowAES.encrypt(bemail, slowAES.modeOfOperation.CBC, key, iv);
+          var encpass = slowAES.encrypt(bpass, slowAES.modeOfOperation.CBC, key, iv);
+          
+          $("#hemail").val(hex.toHexString(encemail));
+          $("#hpass").val(hex.toHexString(encpass));
+          setLink('link-home');
+        }
+        
+        function redirect() {
+          var logged = $("#hlogged").html();
+          if(logged == "true") {
+            if(!#{loginController.DBAvaliable}) {
+              confvar.show();
+            }
+            else {
+              window.location = "index.xhtml";
+            }
+          } else {
+            $("#loading").hide();
+            $("#iemail").val(email);
+            $("#ipass").val(pass);
+          }
+        }
+        
+        function closeConfDlg() {
+          confvar.hide();
+          window.location = "index.xhtml";
+        }
+      </script>
+    </ui:define>
+    
+    <ui:define name="page">
+      
+      <div id="login-panel" style="width: 700px;">
+        <p align="justify">
+          <h:graphicImage library="images" name="lock-black-18.png"/>
+          <p:spacer width="20" height="1"/>
+          <h:outputText style="font-weight: bold;" value="LOGIN"/>
+        <hr/>
+        </p>
+      </div>
+        
+      <p:messages id="msgs" autoUpdate="true" showDetail="false" showSummary="true"/>
+      <h:panelGrid columns="3">
+        
+        <p:outputLabel for="iemail" value="E-mail:"/>
+        <p:spacer height="40" width="1"/>
+        <p:inputText id="iemail" required="true" 
+                     requiredMessage="Informe a valid e-mail address."/>
+            
+        <p:outputLabel for="ipass" value="Password:"/>
+        <p:spacer height="40" width="1"/>
+        <p:password id="ipass" required="true" 
+                    requiredMessage="Informe a valid e-mail address."/>
+          
+        <p:spacer width="1"/>
+        <p:spacer height="40" width="1"/>
+        
+        <h:panelGroup>
+          <p:commandButton value="Login" onclick="encrypt();"
+                           action="#{loginController.login()}"
+                           update="msgs,hlogged" oncomplete="redirect();"/>
+          <p:spacer width="10"/>
+          <h:graphicImage id="loading" library="images" 
+                          name="ajax-loader.gif" style="display: none;"/>
+        </h:panelGroup>
+      
+      </h:panelGrid>
+        
+      <h:inputHidden id="hemail" value="#{loginController.email}"/>
+      <h:inputHidden id="hpass" value="#{loginController.passwd}"/>
+      
+      <h:outputText id="hlogged" style="visibility: hidden;" 
+                    value="#{loginController.logged}"/>
+      
+      
+      <p:dialog id="confdlg" widgetVar="confvar"
+                onHide="closeConfDlg();" resizable="false"
+                showEffect="fold" hideEffect="explode"
+                rendered="#{!loginController.DBAvaliable}">
+        
+        <f:facet name="header">
+          <p:commandButton icon="ui-icon-alert" onclick="closeConfDlg();"/>
+          <p:spacer width="20" height="2"/>
+          Configure Powerstat
+        </f:facet>
+        
+        <center>
+          <p:spacer height="5"/><br/>
+          <p:spacer width="15"/>
+          Powerstat Syscheck Module seams to be not configured yet.
+          <p:spacer width="15"/><br/>
+          <p:spacer height="30" width="2"/>
+          Would you like to do it now?<br/>
+          <p:spacer height="40" width="2"/>
+          <p:commandButton value="Yes" action="config.xhtml?faces-redirect=true"
+                           icon="ui-icon-check"/>
+          <p:spacer width="30" height="2"/>
+          <p:commandButton value="No" onclick="closeConfDlg();"
+                           icon="ui-icon-closethick"/>
+          <br/><p:spacer height="5"/>
+        </center>
+      </p:dialog>
+                
+      
+    </ui:define>
+    
+    <ui:define name="footer">
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

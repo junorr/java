@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  
+  <ui:composition template="categories.xhtml">
+    
+    <ui:define name="title">
+      PowerStat
+    </ui:define>
+    
+    <ui:define name="script">
+      <script type="text/javascript">
+        $(document).ready(function () {
+          tab("categories").north("back-btn", 70).west("back-btn", 20);
+        });
+        
+        function ext() {
+          this.cfg.highlighter = {
+            useAxesFormatter: false,
+            tooltipAxes: 'y'
+          };
+        }
+      </script>
+    </ui:define>
+
+    <ui:define name="style">
+      <style type="text/css">
+        .bodyHeight {
+          height: 1110px;
+        }
+      </style>
+    </ui:define>
+    
+    
+    <ui:define name="category">Network Custom Chart</ui:define>
+    
+    
+    <ui:define name="content">
+      
+      <p:button value="Back" outcome="network.xhtml" id="back-btn"
+                icon="ui-icon-arrowthick-1-w"/>
+      
+      <center>
+        <p:spacer height="30"/>
+        Interface: <h:outputText value="#{iFNetCharts.ifname}" 
+                                 style="font-weight: bold;"/>
+        <p:spacer height="10"/>
+              
+        <p:lineChart id="customloadchart" value="#{customNetLoadChart.model}"
+                     title="Network Historical Load (#{customNetLoadChart.intervalString})"
+                     animate="true" xaxisLabel="Hour of Day"
+                     yaxisLabel="Kb/s" extender="ext"
+                     showDatatip="true" showMarkers="true"
+                     legendPosition="#{customNetLoadChart.position}" 
+                     fill="#{customNetLoadChart.filled}"
+                     style="position: relative; top: 20px;
+                     width: 650px; height: 450px;"/>
+        
+        <p:spacer height="50"/>
+        
+        <p:dataTable value="#{customNetLoadChart.averages}"
+                     var="pair" style="width: 250px;">
+        
+          <f:facet name="header">
+            Network Load Averages in Period
+          </f:facet>
+          
+          <p:column headerText="Item">
+            #{pair.key}
+          </p:column>
+          
+          <p:column headerText="Kb/s">
+            <center>
+              #{pair.value.toString()}
+            </center>
+          </p:column>
+        
+        </p:dataTable>
+        
+        <p:spacer height="20"/>
+        
+        <hr width="70%"/>
+        <p:spacer height="10"/>
+        
+        <p:panelGrid columns="2">
+          
+          <f:facet name="header">
+            View Network Traffic
+          </f:facet>
+          
+          <h:outputText value="Snapshot of Network Traffic in:"/>
+          <p:selectOneMenu value="#{customNetLoadChart.snapDate}"
+                           effect="fade" id="dateselect">
+            <f:selectItems value="#{customNetLoadChart.snaps}" var="s"
+                           itemLabel="#{s.time.toString()}"
+                           itemValue="#{s.time}"/>
+            <p:ajax update="traftable,trfdlg"/>
+          </p:selectOneMenu>
+          
+          <f:facet name="footer">
+            <center>
+              <p:commandButton value="Show" update="traftable,trfdlg"
+                               icon="ui-icon-search"
+                               oncomplete="trfdlg.show()"/>
+            </center>
+          </f:facet>
+          
+        </p:panelGrid>
+        
+        <p:spacer height="15"/>
+        
+      </center>
+      
+      
+      <p:dialog id="trfdlg" widgetVar="trfdlg" 
+                header="Network Traffic Snapshot in:  
+                #{customNetLoadChart.snap.time.toString()}"
+                showEffect="fold"
+                dynamic="true"
+                hideEffect="fade">
+        
+        <p:scrollPanel style="width: 640px; height: 500px;">
+        <center>
+          Interface: <h:outputText value="#{iFNetCharts.ifname}" 
+                                   style="font-weight: bold;"/>
+          <br/>
+          <p:spacer height="20"/>
+          
+          <p:dataTable id="traftable" 
+                       value="#{customNetLoadChart.snapshotTraffic}"
+                       var="trf">
+            
+            <p:column headerText="Source" filterBy="#{trf.source}"
+                      sortBy="#{trf.source}">
+              #{trf.source}
+            </p:column>
+            
+            <p:column headerText="Dest." filterBy="#{trf.dest}"
+                      sortBy="#{trf.dest}">
+              #{trf.dest}
+            </p:column>
+            
+            <p:column headerText="Src Port" filterBy="#{trf.srcPort}"
+                      sortBy="#{trf.srcPort}">
+              <center>#{trf.srcPort}</center>
+            </p:column>
+            
+            <p:column headerText="Dst Port" filterBy="#{trf.dstPort}"
+                      sortBy="#{trf.dstPort}">
+              <center>#{trf.dstPort}</center>
+            </p:column>
+            
+            <p:column headerText="Protocol" filterBy="#{trf.proto}"
+                      sortBy="#{trf.proto}">
+              <center>#{trf.proto}</center>
+            </p:column>
+            
+            <p:column headerText="Total Bytes" filterBy="#{trf.totalBytes}"
+                      sortBy="#{trf.totalBytes}">
+              <center>#{trf.totalBytes}</center>
+            </p:column>
+            
+            <f:facet name="footer">
+              Size: #{customNetLoadChart.snapshotTraffic.size()}
+            </f:facet>
+          </p:dataTable>
+        </center>
+        </p:scrollPanel>
+      </p:dialog>
+    </ui:define>
+    
+    
+  </ui:composition>
+  
+</html>
+

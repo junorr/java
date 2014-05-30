@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+  
+  <ui:composition template="base.xhtml">
+    
+    
+    <ui:define name="title">
+      PStat - Notification
+    </ui:define>
+    
+    
+    <ui:define name="header">
+      <style type="text/css">
+        #notif-panel {
+          position: relative;
+          top: 60px;
+        }
+      </style>
+    </ui:define>
+    
+    
+    <ui:define name="page">
+      
+      <p:panel id="notif-panel">
+        <f:facet name="header">
+          <h:graphicImage library="images" name="sys-email-20.png"/>
+          <p:spacer width="20"/>
+          <h:outputText value="Monitor and Notification System"/>
+        </f:facet>
+        
+        <p style="text-align: justify;">
+          The Monitor and Notification System is a service running on the server, 
+          wich continuously monitors the machine's resources. 
+          When these resources reach critical pre configured limits, the service
+          triggers a message to the e-mail system administrator, warning about
+          the level of resource utilization.
+          <br/><hr/>
+        </p>
+        
+        <center>
+          <p:messages id="upd-msg"/>
+          <p:spacer height="10"/>
+          
+          <p:panelGrid columns="2">
+            <f:facet name="header">
+              Critical Limits Configuration
+            </f:facet>
+          
+            <p:outputLabel for="cpul" value="CPU Usage"/>
+            <p:column>
+              <p:inputText id="cpul" value="#{notification.cpuLimit}" 
+                           style="width: 180px;"
+                           converterMessage="Invalid CPU Usage (Valid Range: 0-100)"/>
+               % 
+            </p:column>
+            
+            <p:outputLabel for="meml" value="Memory Usage"/>
+            <p:column>
+              <p:inputText id="meml" value="#{notification.memLimit}" 
+                           style="width: 180px;"
+                           converterMessage="Invalid Memory Usage (Valid Range: 0-100)"/>
+               %
+            </p:column>
+            
+            <p:outputLabel for="diska" value="Disk Alias"/>
+            <p:selectOneMenu id="diska" value="#{notification.diskAlias}"
+                             style="width: 188px;">
+              <f:selectItem itemLabel="Select a Disk" itemValue=""/>
+              <f:selectItems value="#{charts.disks}" var="disk"
+                             itemLabel="#{disk.alias}" itemValue="#{disk.alias}"/>
+            </p:selectOneMenu>
+            
+            <p:outputLabel for="diskl" value="Disk Usage"/>
+            <p:column>
+              <p:inputText id="diskl" value="#{notification.diskLimit}" 
+                           style="width: 180px;"
+                           converterMessage="Invalid Disk Usage (Valid Range: 0-100)"/>
+               %
+            </p:column>
+          
+            <p:outputLabel for="mname" value="Machine Name"/>
+            <p:inputText id="mname" value="#{notification.machineName}" 
+                         style="width: 180px;" required="true"
+                         requiredMessage="Inform the machine name"/>
+          
+          </p:panelGrid>
+          
+          <br/><br/>
+          
+          <p:panelGrid columns="2">
+            
+            <f:facet name="header">
+              E-mail Configurations
+            </f:facet>
+            
+            <p:outputLabel for="admin-email" value="Administrator Email"/>
+            <p:inputText id="admin-email" value="#{notification.adminEmail}"
+                         style=" width: 180px;"/>
+            
+            <p:outputLabel for="email" value="Sender Email Account"/>
+            <p:inputText id="email" value="#{notification.emailAccount}"
+                         style=" width: 180px;"/>
+            
+            <p:outputLabel for="pass" value="Sender Email Password"/>
+            <p:password id="pass" value="#{notification.emailPasswd}"
+                        style=" width: 180px;"/>
+            
+            <p:outputLabel for="server" value="Email Server"/>
+            <p:inputText id="server" value="#{notification.emailServer}"
+                         style=" width: 180px;"/>
+            
+            <p:outputLabel for="proto" value="Server Protocol"/>
+            <p:inputText id="proto" value="#{notification.emailProtocol}"
+                         style=" width: 180px;"/>
+            
+            <p:outputLabel for="port" value="Server Port"/>
+            <p:inputText id="port" value="#{notification.emailPort}"
+                         style=" width: 180px;"
+                         converterMessage="Invalid Server Port (Valid Range: 1-65535)"/>
+            
+          </p:panelGrid>
+          
+          <br/>
+          
+          <p:commandButton value="Save" icon="ui-icon-disk"
+                           style="width: 90px;"
+                           actionListener="#{notification.save}"
+                           update="@(label,#upd-msg)"/>
+          
+          <p:spacer width="20"/>
+          <p:ajaxStatus>
+            <f:facet name="start">
+              <h:graphicImage library="images" 
+                              name="loading.gif"
+                              style="position: relative; top: -50px; left: 100px;"/>
+            </f:facet>
+            <f:facet name="complete">
+              <h:outputText value="Done!"
+                            style="position: relative; top: -28px; left: 100px;"/>
+            </f:facet>
+          </p:ajaxStatus>
+        </center>
+        
+      </p:panel>
+      
+    </ui:define>
+    
+    <ui:define name="footer">
+      <p:spacer height="70"/>
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>

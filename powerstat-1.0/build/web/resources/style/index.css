@@ -1,0 +1,85 @@
+
+.gsize {
+  width: 700px;
+  height: 350px;
+}
+
+#imageInfo {
+  width: 700px;
+  height: 60px;
+  background-color: black;
+  opacity: 0.4;
+  position: relative;
+  top: -64px;
+}
+
+#imageLink {
+  width: 700px;
+  height: 60px;
+}
+
+#infoText {
+  color: white;
+  position: relative;
+  top: -120px;
+  width: 700px;
+  height: 60px;
+}
+
+.arrow {
+  opacity: 0.45;
+  width: 50px;
+  height: 50px;
+  position: relative;
+  top: -325px;
+}
+
+.arrow:hover {
+  opacity: 0.99;
+}
+
+#prevarrow {
+  position: relative;
+  left: -300px;
+}
+
+#nextarrow {
+  position: relative;
+  left: 300px;
+}
+
+#infodiv-left {
+  width: 350px;
+  z-index: 7;
+  position: relative;
+  left: -180px;
+  top: -10px;
+}
+
+#infodiv-right {
+  width: 350px;
+  z-index: 7;
+}
+
+.text-icon {
+  position: relative;
+  top: 5px;
+  width: 22px;
+  height: 22px;
+}
+
+
+.textdiv {
+  width: 300px;
+  position: relative;
+  top: 10px;
+}
+
+.text-link {
+  color: black;
+}
+
+.text-link:hover {
+  color: #E41721;
+}
+

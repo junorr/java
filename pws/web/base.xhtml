@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+  
+  <h:head>
+    <title>
+      <ui:insert name="title">
+        PowerStat
+      </ui:insert>
+    </title>
+    
+    <link rel="shortcut icon" href="ray.gif"/>
+    
+    <h:outputScript library="javascript" name="tabulator.js"/>
+    <h:outputStylesheet library="style" name="index.css"/>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        tab("document").centerHorizontal("body").north("body", 10)
+        .on("navmenu").east("logoutButton", 1).north("logoutButton", 4);
+      });
+    </script>
+    
+    <ui:insert name="header"/>
+    
+  </h:head>
+  
+  <h:body>
+    
+    <h:form id="form" prependId="false">
+      
+      <p:panel id="body" styleClass="bodyHeight">
+        <f:facet name="header">
+          <h:link outcome="index.xhtml">
+            <h:graphicImage id="title" library="images" name="title-[800x240].png"/>
+            <h:graphicImage id="logo" library="images" name="logo.png"/>
+          </h:link>
+        </f:facet>
+
+      
+        <p:panel id="navmenu">
+          <p:button styleClass="navbutton" outcome="index.xhtml" icon="ui-icon-home" value="Start"/>
+          <p:spacer width="20"/>
+          <p:button styleClass="navbutton" outcome="notif.xhtml" icon="ui-icon-mail-closed" value="Notification"/>
+          <p:spacer width="20"/>
+          <p:button styleClass="navbutton" outcome="about.xhtml" icon="ui-icon-flag" value="About"/>
+          
+          <p:commandButton id="logoutButton" icon="ui-icon-unlocked"
+                           value="Logout" ajax="false"
+                           action="login.xhtml" rendered="#{loginController.logged}"
+                           actionListener="#{loginController.logout()}"/>
+        </p:panel>
+
+        <ui:insert name="page"/>
+      
+        <ui:insert name="footer"/>
+      
+      </p:panel>
+      
+    </h:form>
+    
+  </h:body>
+</html>
+

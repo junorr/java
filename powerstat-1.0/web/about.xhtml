@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="base.xhtml">
+    
+    <ui:define name="header">
+      <ui:define name="title">
+        Impress.js
+      </ui:define>
+      
+      <link rel="shortcut icon" href="ray.gif"/>
+    
+      <style type="text/css">
+        .shadow {
+          box-shadow: 3px 3px 5px 2px #888888;
+        }
+        
+        .text {
+          font-size: 40px; 
+          width: 700px;
+        }
+      </style>
+      
+      <script type="text/javascript">
+        $(document).ready(function() {
+          var pageH = $(document).height();
+          alert(pageH);
+        });
+      </script>
+    </ui:define>
+    
+    <ui:define name="page">
+      
+      <body>
+        <p:spacer height="400"/>
+        
+        <div id="impress" style="width: 700px;">
+          
+          <div id="start" class="step shadow">
+            <p class="text">
+              Creating Stunning Presentations!
+            </p>
+            <p>Impress.js</p>
+          </div>
+        
+          <div id="slide2" data-x="1500" data-y="0" data-rotate-z="0" class="step shadow">
+            <p class="text">
+              First Slide Moves from left to right
+            </p>
+            <p>Impress.js</p>
+          </div>
+        
+        </div>
+    
+        <script type="text/javascript" src="resources/javascript/impress.js">
+        </script>
+        <script type="text/javascript">
+          impress().init();
+        </script>
+        
+      </body>
+    </ui:define>
+    
+    <ui:define name="footer">
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

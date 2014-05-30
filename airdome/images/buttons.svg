@@ -1,0 +1,1882 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.1 "
+   sodipodi:docname="buttons.svg">
+  <defs
+     id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4283">
+      <stop
+         style="stop-color:#cccccc;stop-opacity:1;"
+         offset="0"
+         id="stop4285" />
+      <stop
+         style="stop-color:#cccccc;stop-opacity:0;"
+         offset="1"
+         id="stop4287" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4233">
+      <stop
+         style="stop-color:#cccccc;stop-opacity:1;"
+         offset="0"
+         id="stop4235" />
+      <stop
+         style="stop-color:#cccccc;stop-opacity:0;"
+         offset="1"
+         id="stop4237" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4131">
+      <stop
+         style="stop-color:#9696fa;stop-opacity:1"
+         offset="0"
+         id="stop4133" />
+      <stop
+         style="stop-color:#b7d4f4;stop-opacity:0"
+         offset="1"
+         id="stop4135" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4125">
+      <stop
+         style="stop-color:#9696fa;stop-opacity:1"
+         offset="0"
+         id="stop4127" />
+      <stop
+         style="stop-color:#b7d4f4;stop-opacity:0"
+         offset="1"
+         id="stop4129" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4119">
+      <stop
+         style="stop-color:#c81414;stop-opacity:1"
+         offset="0"
+         id="stop4121" />
+      <stop
+         style="stop-color:#fa1414;stop-opacity:0"
+         offset="1"
+         id="stop4123" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4101">
+      <stop
+         style="stop-color:#c81414;stop-opacity:1"
+         offset="0"
+         id="stop4103" />
+      <stop
+         style="stop-color:#fa1414;stop-opacity:0"
+         offset="1"
+         id="stop4105" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4071">
+      <stop
+         style="stop-color:#c2c2c2;stop-opacity:1"
+         offset="0"
+         id="stop4073" />
+      <stop
+         style="stop-color:#c2c2c2;stop-opacity:0"
+         offset="1"
+         id="stop4075" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4065">
+      <stop
+         style="stop-color:#c2c2c2;stop-opacity:0.92941177"
+         offset="0"
+         id="stop4067" />
+      <stop
+         style="stop-color:#c2c2c2;stop-opacity:0"
+         offset="1"
+         id="stop4069" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4059">
+      <stop
+         style="stop-color:#a1ff3c;stop-opacity:1"
+         offset="0"
+         id="stop4061" />
+      <stop
+         style="stop-color:#a1ff3c;stop-opacity:0"
+         offset="1"
+         id="stop4063" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4053">
+      <stop
+         style="stop-color:#a0ff3c;stop-opacity:1"
+         offset="0"
+         id="stop4055" />
+      <stop
+         style="stop-color:#a0ff3c;stop-opacity:0"
+         offset="1"
+         id="stop4057" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4011">
+      <stop
+         style="stop-color:#ffff14;stop-opacity:1"
+         offset="0"
+         id="stop4013" />
+      <stop
+         style="stop-color:#ffff14;stop-opacity:0"
+         offset="1"
+         id="stop4015" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4005">
+      <stop
+         style="stop-color:#ffff14;stop-opacity:1"
+         offset="0"
+         id="stop4007" />
+      <stop
+         style="stop-color:#ffff14;stop-opacity:0"
+         offset="1"
+         id="stop4009" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3973"
+       inkscape:collect="always">
+      <stop
+         id="stop3975"
+         offset="0"
+         style="stop-color:#b7d4f4;stop-opacity:1;" />
+      <stop
+         id="stop3977"
+         offset="1"
+         style="stop-color:#b7d4f4;stop-opacity:0" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3951"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop3953" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient4010"
+       inkscape:collect="always">
+      <stop
+         id="stop4012"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0.12" />
+      <stop
+         id="stop4014"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:0" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3994"
+       inkscape:collect="always">
+      <stop
+         id="stop3996"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0.051" />
+      <stop
+         id="stop3998"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:0" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3972"
+       inkscape:collect="always">
+      <stop
+         id="stop3974"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0.051" />
+      <stop
+         id="stop3976"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:0" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3966">
+      <stop
+         style="stop-color:#000000;stop-opacity:0.051"
+         offset="0"
+         id="stop3968" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0"
+         offset="1"
+         id="stop3970" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3960">
+      <stop
+         style="stop-color:#000000;stop-opacity:0.051"
+         offset="0"
+         id="stop3962" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0"
+         offset="1"
+         id="stop3964" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3908">
+      <stop
+         style="stop-color:#000000;stop-opacity:0.149"
+         offset="0"
+         id="stop3910" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0"
+         offset="1"
+         id="stop3912" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3902"
+       inkscape:collect="always">
+      <stop
+         id="stop3904"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0.149" />
+      <stop
+         id="stop3906"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:0" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3896"
+       inkscape:collect="always">
+      <stop
+         id="stop3898"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0.149" />
+      <stop
+         id="stop3900"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:0" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3890">
+      <stop
+         style="stop-color:#000000;stop-opacity:0.149"
+         offset="0"
+         id="stop3892" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0"
+         offset="1"
+         id="stop3894" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3844">
+      <stop
+         style="stop-color:#000000;stop-opacity:0.2"
+         offset="0"
+         id="stop3846" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0"
+         offset="1"
+         id="stop3848" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3812">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0.8"
+         offset="0"
+         id="stop3814" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="1"
+         id="stop3816" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient5344"
+       inkscape:collect="always">
+      <stop
+         id="stop5346"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0.2" />
+      <stop
+         id="stop5348"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:0" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient5277">
+      <stop
+         style="stop-color:#000000;stop-opacity:0.251"
+         offset="0"
+         id="stop5279" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0"
+         offset="1"
+         id="stop5281" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient5255"
+       inkscape:collect="always">
+      <stop
+         id="stop5257"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0.302" />
+      <stop
+         id="stop5259"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:0" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient5239">
+      <stop
+         style="stop-color:#000000;stop-opacity:0.251"
+         offset="0"
+         id="stop5241" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0"
+         offset="1"
+         id="stop5243" />
+    </linearGradient>
+    <filter
+       inkscape:collect="always"
+       id="filter5219">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="1.2"
+         id="feGaussianBlur5221" />
+    </filter>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5239"
+       id="radialGradient5247"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001"
+       gradientTransform="matrix(4.9252241,1.7498606e-8,0,0.26840515,-1603.4978,59.07813)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5255"
+       id="radialGradient5253"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1449.2348,191.99025)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5255"
+       id="radialGradient5265"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1448.4977,259.82452)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5277"
+       id="radialGradient5275"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1603.4978,259.13311)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5277"
+       id="radialGradient5293"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1758.4978,259.13311)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5255"
+       id="radialGradient5326"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1448.4977,121.82451)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5255"
+       id="radialGradient5328"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1448.4977,194.82451)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <filter
+       inkscape:collect="always"
+       id="filter5330">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.8"
+         id="feGaussianBlur5332" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter5334">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.8"
+         id="feGaussianBlur5336" />
+    </filter>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5344"
+       id="radialGradient5342"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.7498606e-8,0,0.26840515,-1758.4977,179.07813)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3812"
+       id="linearGradient3818"
+       x1="590.91437"
+       y1="93.0765"
+       x2="591.96069"
+       y2="118.79079"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-10.405867,-56.880022)" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3844"
+       id="radialGradient3836"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1448.4977,66.275964)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <filter
+       inkscape:collect="always"
+       id="filter3850">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="1.2"
+         id="feGaussianBlur3852" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3854">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.8"
+         id="feGaussianBlur3856" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3858">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.8"
+         id="feGaussianBlur3860" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3862">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.8"
+         id="feGaussianBlur3864" />
+    </filter>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3908"
+       id="radialGradient3870"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1448.4977,-0.17549)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3890"
+       id="radialGradient3876"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1448.4977,199.82452)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3896"
+       id="radialGradient3882"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1603.4978,199.82452)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3902"
+       id="radialGradient3888"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1758.4978,199.82452)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3812"
+       id="linearGradient3916"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-10.405867,143.11996)"
+       x1="590.91437"
+       y1="93.0765"
+       x2="591.96069"
+       y2="118.79079" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3812"
+       id="linearGradient3920"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-165.40587,143.11996)"
+       x1="590.91437"
+       y1="93.0765"
+       x2="591.96069"
+       y2="118.79079" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3812"
+       id="linearGradient3924"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-320.40587,143.11996)"
+       x1="590.91437"
+       y1="93.0765"
+       x2="591.96069"
+       y2="118.79079" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3812"
+       id="linearGradient3928"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-165.40587,18.11996)"
+       x1="590.91437"
+       y1="93.0765"
+       x2="591.96069"
+       y2="118.79079" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3972"
+       id="radialGradient3948"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1448.4977,138.82452)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3966"
+       id="radialGradient3950"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1603.4978,138.82452)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3960"
+       id="radialGradient3952"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1758.4978,138.82452)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3812"
+       id="linearGradient3954"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-10.405867,82.11996)"
+       x1="590.91437"
+       y1="93.0765"
+       x2="591.96069"
+       y2="118.79079" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3812"
+       id="linearGradient3956"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-165.40587,82.11996)"
+       x1="590.91437"
+       y1="93.0765"
+       x2="591.96069"
+       y2="118.79079" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3812"
+       id="linearGradient3958"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-320.40587,82.11996)"
+       x1="590.91437"
+       y1="93.0765"
+       x2="591.96069"
+       y2="118.79079" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3994"
+       id="radialGradient3990"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1448.4977,73.82451)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3812"
+       id="linearGradient3992"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-10.405867,17.11998)"
+       x1="590.91437"
+       y1="93.0765"
+       x2="591.96069"
+       y2="118.79079" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4010"
+       id="radialGradient4006"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.7498606e-8,0,0.26840515,-1757.4978,59.07813)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3812"
+       id="linearGradient4008"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-319.40587,18.11996)"
+       x1="590.91437"
+       y1="93.0765"
+       x2="591.96069"
+       y2="118.79079" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3908"
+       id="radialGradient3893"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1758.3548,265.11022)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3812"
+       id="linearGradient3895"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-320.26301,208.40569)"
+       x1="590.91437"
+       y1="93.0765"
+       x2="591.96069"
+       y2="118.79079" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3994"
+       id="radialGradient3897"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(4.9252241,1.3844428e-8,0,0.21235496,-1758.3548,339.11022)"
+       cx="411.42856"
+       cy="280.93362"
+       fx="411.42856"
+       fy="280.93362"
+       r="63.380001" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3812"
+       id="linearGradient3899"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-320.26301,282.40569)"
+       x1="590.91437"
+       y1="93.0765"
+       x2="591.96069"
+       y2="118.79079" />
+    <filter
+       inkscape:collect="always"
+       id="filter3965">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.4"
+         id="feGaussianBlur3967" />
+    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3973"
+       id="linearGradient3981"
+       gradientUnits="userSpaceOnUse"
+       x1="578.63007"
+       y1="464.05359"
+       x2="579.13007"
+       y2="436.91074"
+       gradientTransform="translate(-0.77720456,-118.86576)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3973"
+       id="linearGradient3987"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-0.7772046,68.634206)"
+       x1="578.63007"
+       y1="464.05359"
+       x2="579.13007"
+       y2="439.05359" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4005"
+       id="linearGradient4001"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-152.7772,-118.86576)"
+       x1="578.63007"
+       y1="464.05359"
+       x2="577.70148"
+       y2="436.91074" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4011"
+       id="linearGradient4003"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-0.7772046,68.634206)"
+       x1="578.63007"
+       y1="464.05359"
+       x2="579.13007"
+       y2="439.05359" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4053"
+       id="linearGradient4025"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-0.77720456,19.13424)"
+       x1="578.63007"
+       y1="464.05359"
+       x2="579.13007"
+       y2="436.91074" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4059"
+       id="linearGradient4027"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-0.7772046,68.634206)"
+       x1="578.63007"
+       y1="464.05359"
+       x2="579.13007"
+       y2="439.05359" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4065"
+       id="linearGradient4037"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-152.7772,19.13424)"
+       x1="578.63007"
+       y1="464.05359"
+       x2="579.13007"
+       y2="436.91074" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4071"
+       id="linearGradient4039"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-0.7772046,68.634206)"
+       x1="578.63007"
+       y1="464.05359"
+       x2="579.13007"
+       y2="439.05359" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4131"
+       id="linearGradient4049"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-308.7772,19.13424)"
+       x1="578.63007"
+       y1="464.05359"
+       x2="579.13007"
+       y2="436.91074" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4125"
+       id="linearGradient4051"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-0.7772046,68.634206)"
+       x1="578.63007"
+       y1="464.05359"
+       x2="579.13007"
+       y2="439.05359" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4101"
+       id="linearGradient4085"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-308.7772,157.13424)"
+       x1="578.63007"
+       y1="464.05359"
+       x2="579.13007"
+       y2="436.91074" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4119"
+       id="linearGradient4117"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-0.7772046,68.634206)"
+       x1="578.63007"
+       y1="464.05359"
+       x2="579.13007"
+       y2="439.05359" />
+    <filter
+       inkscape:collect="always"
+       id="filter4141">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.79798705"
+         id="feGaussianBlur4143" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter4145">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.79798705"
+         id="feGaussianBlur4147" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter4149">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.79798777"
+         id="feGaussianBlur4151" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter4153">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.79798705"
+         id="feGaussianBlur4155" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter4161">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.79798705"
+         id="feGaussianBlur4163" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter4165">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.79798705"
+         id="feGaussianBlur4167" />
+    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4233"
+       id="linearGradient4239"
+       x1="586.89862"
+       y1="855.68958"
+       x2="599.90466"
+       y2="855.68958"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(13.101379,16.672607)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4233"
+       id="linearGradient4259"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-1026.8986,-1728.0518)"
+       x1="586.89862"
+       y1="855.68958"
+       x2="599.90466"
+       y2="855.68958" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4233"
+       id="linearGradient4263"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-1379.2608,-335.68956)"
+       x1="586.89862"
+       y1="855.68958"
+       x2="599.90466"
+       y2="855.68958" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4233"
+       id="linearGradient4267"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(365.46355,-1375.6896)"
+       x1="586.89862"
+       y1="855.68958"
+       x2="599.90466"
+       y2="855.68958" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4233"
+       id="linearGradient4271"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1,0,0,0.125,-1379.2608,503.03883)"
+       x1="579.255"
+       y1="797.9892"
+       x2="622.88867"
+       y2="926.44086" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4283"
+       id="linearGradient4289"
+       x1="536.69403"
+       y1="756.08447"
+       x2="573.46362"
+       y2="713.65802"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.14363107,0,0,0.16414978,523.42187,667.78679)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4283"
+       id="linearGradient4293"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.14363107,0,0,0.16414978,-868.94029,315.4246)"
+       x1="536.69403"
+       y1="756.08447"
+       x2="573.46362"
+       y2="713.65802" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4283"
+       id="linearGradient4297"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.14363107,0,0,0.16414978,-516.57813,-1076.9376)"
+       x1="536.69403"
+       y1="756.08447"
+       x2="573.46362"
+       y2="713.65802" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4283"
+       id="linearGradient4301"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.14363107,0,0,0.16414978,875.78405,-724.5754)"
+       x1="536.69403"
+       y1="756.08447"
+       x2="573.46362"
+       y2="713.65802" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="479.50292"
+     inkscape:cy="186.47579"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1280"
+     inkscape:window-height="738"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       ry="10"
+       rx="10"
+       y="114.48218"
+       x="363.5943"
+       height="40"
+       width="120"
+       id="rect5233"
+       style="opacity:0.9;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter5334)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-gray.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="fill:url(#radialGradient5247);fill-opacity:1;stroke:none;filter:url(#filter5219)"
+       id="rect5237"
+       width="120"
+       height="40"
+       x="362.88"
+       y="114.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-gray.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="39.482178"
+       x="518.5943"
+       height="40"
+       width="120"
+       id="rect3866"
+       style="opacity:0.85100002;fill:#9696fa;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter5330)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-blue.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="fill:url(#radialGradient3870);fill-opacity:1;stroke:none;filter:url(#filter5219)"
+       id="rect3868"
+       width="120"
+       height="40"
+       x="517.88"
+       y="39.482178"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-blue.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="opacity:0.85;fill:#a0ff3c;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter3854)"
+       id="rect3872"
+       width="120"
+       height="40"
+       x="517.88"
+       y="239.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-green.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="239.48218"
+       x="517.88"
+       height="40"
+       width="120"
+       id="rect3874"
+       style="fill:url(#radialGradient3876);fill-opacity:1;stroke:none;filter:url(#filter5219)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-green.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="239.48218"
+       x="362.88"
+       height="40"
+       width="120"
+       id="rect3878"
+       style="opacity:0.85;fill:#ffff14;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter3858)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-yellow.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="fill:url(#radialGradient3882);fill-opacity:1;stroke:none;filter:url(#filter5219)"
+       id="rect3880"
+       width="120"
+       height="40"
+       x="362.88"
+       y="239.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-yellow.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="opacity:0.85;fill:#fa1414;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter3862)"
+       id="rect3884"
+       width="120"
+       height="40"
+       x="208.59428"
+       y="239.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-red.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="239.48218"
+       x="207.88"
+       height="40"
+       width="120"
+       id="rect3886"
+       style="fill:url(#radialGradient3888);fill-opacity:1;stroke:none;filter:url(#filter5219)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-red.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="40.482178"
+       x="518.88"
+       height="40"
+       width="120"
+       id="rect3036"
+       style="fill:url(#linearGradient3818);fill-opacity:1;stroke:none;filter:url(#filter3850)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-blue.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="fill:url(#linearGradient3916);fill-opacity:1;stroke:none;filter:url(#filter3850)"
+       id="rect3914"
+       width="120"
+       height="40"
+       x="518.88"
+       y="240.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-green.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="240.48218"
+       x="363.88"
+       height="40"
+       width="120"
+       id="rect3918"
+       style="fill:url(#linearGradient3920);fill-opacity:1;stroke:none;filter:url(#filter3850)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-yellow.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="fill:url(#linearGradient3924);fill-opacity:1;stroke:none;filter:url(#filter3850)"
+       id="rect3922"
+       width="120"
+       height="40"
+       x="208.88"
+       y="240.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-red.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="115.48218"
+       x="363.88"
+       height="40"
+       width="120"
+       id="rect3926"
+       style="fill:url(#linearGradient3928);fill-opacity:1;stroke:none;filter:url(#filter3850)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-gray.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="178.48218"
+       x="517.88"
+       height="40"
+       width="120"
+       id="rect3930"
+       style="opacity:0.85;fill:#a0ff3c;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter3854)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-green_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="fill:url(#radialGradient3948);fill-opacity:1;stroke:none;filter:url(#filter5219)"
+       id="rect3932"
+       width="120"
+       height="40"
+       x="517.88"
+       y="178.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-green_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="opacity:0.85;fill:#ffff14;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter3858)"
+       id="rect3934"
+       width="120"
+       height="40"
+       x="362.88"
+       y="178.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-yellow_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="178.48218"
+       x="362.88"
+       height="40"
+       width="120"
+       id="rect3936"
+       style="fill:url(#radialGradient3950);fill-opacity:1;stroke:none;filter:url(#filter5219)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-yellow_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="178.48218"
+       x="208.59428"
+       height="40"
+       width="120"
+       id="rect3938"
+       style="opacity:0.85;fill:#fa1414;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter3862)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-red_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="fill:url(#radialGradient3952);fill-opacity:1;stroke:none;filter:url(#filter5219)"
+       id="rect3940"
+       width="120"
+       height="40"
+       x="207.88"
+       y="178.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-red_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="179.48218"
+       x="518.88"
+       height="40"
+       width="120"
+       id="rect3942"
+       style="fill:url(#linearGradient3954);fill-opacity:1;stroke:none;filter:url(#filter3850)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-green_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="fill:url(#linearGradient3956);fill-opacity:1;stroke:none;filter:url(#filter3850)"
+       id="rect3944"
+       width="120"
+       height="40"
+       x="363.88"
+       y="179.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-yellow_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="179.48218"
+       x="208.88"
+       height="40"
+       width="120"
+       id="rect3946"
+       style="fill:url(#linearGradient3958);fill-opacity:1;stroke:none;filter:url(#filter3850)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-red_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="opacity:0.85100002;fill:#9696fa;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter5330)"
+       id="rect3984"
+       width="120"
+       height="40"
+       x="518.5943"
+       y="113.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-blue_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       ry="10"
+       rx="10"
+       y="113.48218"
+       x="517.88"
+       height="40"
+       width="120"
+       id="rect3986"
+       style="fill:url(#radialGradient3990);fill-opacity:1;stroke:none;filter:url(#filter5219)"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-blue_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       style="fill:url(#linearGradient3992);fill-opacity:1;stroke:none;filter:url(#filter3850)"
+       id="rect3988"
+       width="120"
+       height="40"
+       x="518.88"
+       y="114.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-blue_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       inkscape:export-ydpi="99.400436"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-gray_over.png"
+       style="opacity:0.9;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter5334)"
+       id="rect4000"
+       width="120"
+       height="40"
+       x="209.5943"
+       y="114.48218"
+       rx="10"
+       ry="10" />
+    <rect
+       inkscape:export-ydpi="99.400436"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-gray_over.png"
+       ry="10"
+       rx="10"
+       y="114.48218"
+       x="208.88"
+       height="40"
+       width="120"
+       id="rect4002"
+       style="fill:url(#radialGradient4006);fill-opacity:1;stroke:none;filter:url(#filter5219)" />
+    <rect
+       style="fill:url(#linearGradient4008);fill-opacity:1;stroke:none;filter:url(#filter3850)"
+       id="rect4004"
+       width="120"
+       height="40"
+       x="209.88"
+       y="115.48218"
+       rx="10"
+       ry="10"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-gray_over.png"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-ydpi="99.400436" />
+    <rect
+       inkscape:export-ydpi="99.400436"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-light-blue.png"
+       style="opacity:0.85100002;fill:#c4ddfc;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter5330)"
+       id="rect3881"
+       width="120"
+       height="40"
+       x="208.73715"
+       y="304.76788"
+       rx="10"
+       ry="10" />
+    <rect
+       inkscape:export-ydpi="99.400436"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-light-blue.png"
+       ry="10"
+       rx="10"
+       y="304.76788"
+       x="208.02286"
+       height="40"
+       width="120"
+       id="rect3883"
+       style="fill:url(#radialGradient3893);fill-opacity:1;stroke:none;filter:url(#filter5219)" />
+    <rect
+       inkscape:export-ydpi="99.400436"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-light-blue.png"
+       style="fill:url(#linearGradient3895);fill-opacity:1;stroke:none;filter:url(#filter3850)"
+       id="rect3885"
+       width="120"
+       height="40"
+       x="209.02286"
+       y="305.76788"
+       rx="10"
+       ry="10" />
+    <rect
+       inkscape:export-ydpi="99.400436"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-light-blue_over.png"
+       ry="10"
+       rx="10"
+       y="378.76788"
+       x="208.73715"
+       height="40"
+       width="120"
+       id="rect3887"
+       style="opacity:0.85100002;fill:#c4ddfc;fill-opacity:1;stroke:#000000;stroke-opacity:1;filter:url(#filter5330)" />
+    <rect
+       inkscape:export-ydpi="99.400436"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-light-blue_over.png"
+       style="fill:url(#radialGradient3897);fill-opacity:1;stroke:none;filter:url(#filter5219)"
+       id="rect3889"
+       width="120"
+       height="40"
+       x="208.02286"
+       y="378.76788"
+       rx="10"
+       ry="10" />
+    <rect
+       inkscape:export-ydpi="99.400436"
+       inkscape:export-xdpi="99.400436"
+       inkscape:export-filename="D:\java\projects\airdome\images\buttonmask-light-blue_over.png"
+       ry="10"
+       rx="10"
+       y="379.76788"
+       x="209.02286"
+       height="40"
+       width="120"
+       id="rect3891"
+       style="fill:url(#linearGradient3899);fill-opacity:1;stroke:none;filter:url(#filter3850)" />
+    <rect
+       ry="0"
+       rx="0"
+       y="306.15219"
+       x="516.21002"
+       height="40"
+       width="120"
+       id="rect3941"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3965)"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-light-blue.png"
+       inkscape:export-xdpi="103.94473"
+       inkscape:export-ydpi="103.94473" />
+    <rect
+       inkscape:export-ydpi="103.94473"
+       inkscape:export-xdpi="103.94473"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-light-blue.png"
+       style="fill:url(#linearGradient3981);fill-opacity:1;stroke:none;filter:url(#filter3965)"
+       id="rect3979"
+       width="120"
+       height="40"
+       x="515.96002"
+       y="305.90219"
+       rx="0"
+       ry="0" />
+    <rect
+       inkscape:export-ydpi="99.365074"
+       inkscape:export-xdpi="99.365074"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-light-blue_over.png"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.97921725;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4161)"
+       id="rect3983"
+       width="120"
+       height="40"
+       x="516.21002"
+       y="374.15219"
+       rx="0"
+       ry="0"
+       transform="matrix(1.0160716,0,0,1.0264022,-8.2341153,-11.02648)" />
+    <rect
+       ry="0"
+       rx="0"
+       y="493.40219"
+       x="515.96002"
+       height="40"
+       width="120"
+       id="rect3985"
+       style="fill:url(#linearGradient3987);fill-opacity:1;stroke:none;filter:url(#filter3965)"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-light-blue_over.png"
+       inkscape:export-xdpi="99.365074"
+       inkscape:export-ydpi="99.365074"
+       transform="matrix(0.99427493,0,0,1.0264022,4.4803672,-134.70796)" />
+    <rect
+       inkscape:export-ydpi="104.38728"
+       inkscape:export-xdpi="104.38728"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-yellow.png"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3965)"
+       id="rect3993"
+       width="120"
+       height="40"
+       x="364.21002"
+       y="306.15219"
+       rx="0"
+       ry="0" />
+    <rect
+       ry="0"
+       rx="0"
+       y="305.90219"
+       x="363.96002"
+       height="40"
+       width="120"
+       id="rect3995"
+       style="fill:url(#linearGradient4001);fill-opacity:1;stroke:none;filter:url(#filter3965)"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-yellow.png"
+       inkscape:export-xdpi="104.38728"
+       inkscape:export-ydpi="104.38728" />
+    <rect
+       ry="0"
+       rx="0"
+       y="374.15219"
+       x="364.21002"
+       height="40"
+       width="120"
+       id="rect3997"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.97921725000000004;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4165)"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-yellow_over.png"
+       inkscape:export-xdpi="99.365074"
+       inkscape:export-ydpi="99.365074"
+       transform="matrix(1.0160716,0,0,1.0264022,-5.7912326,-11.02648)" />
+    <rect
+       transform="matrix(0.99345472,0,0,1.0264022,-147.09722,-134.70796)"
+       inkscape:export-ydpi="99.365074"
+       inkscape:export-xdpi="99.365074"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-yellow_over.png"
+       style="fill:url(#linearGradient4003);fill-opacity:1;stroke:none;filter:url(#filter3965)"
+       id="rect3999"
+       width="120"
+       height="40"
+       x="515.96002"
+       y="493.40219"
+       rx="0"
+       ry="0" />
+    <rect
+       inkscape:export-ydpi="103.94473"
+       inkscape:export-xdpi="103.94473"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-green.png"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3965)"
+       id="rect4017"
+       width="120"
+       height="40"
+       x="516.21002"
+       y="444.15222"
+       rx="0"
+       ry="0" />
+    <rect
+       ry="0"
+       rx="0"
+       y="443.90222"
+       x="515.96002"
+       height="40"
+       width="120"
+       id="rect4019"
+       style="fill:url(#linearGradient4025);fill-opacity:1;stroke:none;filter:url(#filter3965)"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-green.png"
+       inkscape:export-xdpi="103.94473"
+       inkscape:export-ydpi="103.94473" />
+    <rect
+       ry="0"
+       rx="0"
+       y="512.15222"
+       x="516.21002"
+       height="40"
+       width="120"
+       id="rect4021"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.97921725000000004;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4141)"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-green_over.png"
+       inkscape:export-xdpi="99.365074"
+       inkscape:export-ydpi="99.365074"
+       transform="matrix(1.0160716,0,0,1.0264022,-8.2341153,-14.669982)" />
+    <rect
+       transform="matrix(0.98606948,0,0,1.0257634,9.405928,3.6334183)"
+       inkscape:export-ydpi="99.365074"
+       inkscape:export-xdpi="99.365074"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-green_over.png"
+       style="fill:url(#linearGradient4027);fill-opacity:1;stroke:none;filter:url(#filter3965)"
+       id="rect4023"
+       width="120"
+       height="40"
+       x="515.96002"
+       y="493.40219"
+       rx="0"
+       ry="0" />
+    <rect
+       ry="0"
+       rx="0"
+       y="444.15222"
+       x="364.21002"
+       height="40"
+       width="120"
+       id="rect4029"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3965)"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-gray.png"
+       inkscape:export-xdpi="103.94473"
+       inkscape:export-ydpi="103.94473" />
+    <rect
+       inkscape:export-ydpi="103.94473"
+       inkscape:export-xdpi="103.94473"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-gray.png"
+       style="fill:url(#linearGradient4037);fill-opacity:1;stroke:none;filter:url(#filter3965)"
+       id="rect4031"
+       width="120"
+       height="40"
+       x="363.96002"
+       y="443.90222"
+       rx="0"
+       ry="0" />
+    <rect
+       inkscape:export-ydpi="99.365074"
+       inkscape:export-xdpi="99.365074"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-gray_over.png"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.97921725000000004;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4145)"
+       id="rect4033"
+       width="120"
+       height="40"
+       x="364.21002"
+       y="512.15222"
+       rx="0"
+       ry="0"
+       transform="matrix(1.0160716,0,0,1.0264022,-5.7912326,-14.669968)" />
+    <rect
+       ry="0"
+       rx="0"
+       y="493.40219"
+       x="515.96002"
+       height="40"
+       width="120"
+       id="rect4035"
+       style="fill:url(#linearGradient4039);fill-opacity:1;stroke:none;filter:url(#filter3965)"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-gray_over.png"
+       inkscape:export-xdpi="99.365074"
+       inkscape:export-ydpi="99.365074"
+       transform="matrix(1.0096915,0,0,1.0257634,-156.19943,3.6190046)" />
+    <rect
+       inkscape:export-ydpi="103.94473"
+       inkscape:export-xdpi="103.94473"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-blue.png"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3965)"
+       id="rect4041"
+       width="120"
+       height="40"
+       x="208.21002"
+       y="444.15222"
+       rx="0"
+       ry="0" />
+    <rect
+       ry="0"
+       rx="0"
+       y="443.90222"
+       x="207.96002"
+       height="40"
+       width="120"
+       id="rect4043"
+       style="fill:url(#linearGradient4049);fill-opacity:1;stroke:none;filter:url(#filter3965)"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-blue.png"
+       inkscape:export-xdpi="103.94473"
+       inkscape:export-ydpi="103.94473" />
+    <rect
+       ry="0"
+       rx="0"
+       y="453.58078"
+       x="208.21002"
+       height="40"
+       width="120"
+       id="rect4045"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.97921557000000004;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4149)"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-blue_over.png"
+       inkscape:export-xdpi="99.364632"
+       inkscape:export-ydpi="99.364632"
+       transform="matrix(1.0160752,0,0,1.0264021,-5.3939992,46.22452)" />
+    <rect
+       transform="matrix(0.99427493,0,0,1.0264021,-305.72862,4.3687074)"
+       inkscape:export-ydpi="99.364632"
+       inkscape:export-xdpi="99.364632"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-blue_over.png"
+       style="fill:url(#linearGradient4051);fill-opacity:1;stroke:none;filter:url(#filter3965)"
+       id="rect4047"
+       width="120"
+       height="40"
+       x="515.96002"
+       y="493.40219"
+       rx="0"
+       ry="0" />
+    <rect
+       ry="0"
+       rx="0"
+       y="582.15222"
+       x="208.21002"
+       height="40"
+       width="120"
+       id="rect4077"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3965)"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-red.png"
+       inkscape:export-xdpi="103.94466"
+       inkscape:export-ydpi="103.94466" />
+    <rect
+       inkscape:export-ydpi="103.94466"
+       inkscape:export-xdpi="103.94466"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-red.png"
+       style="fill:url(#linearGradient4085);fill-opacity:1;stroke:none;filter:url(#filter3965)"
+       id="rect4079"
+       width="120"
+       height="40"
+       x="207.96002"
+       y="581.90222"
+       rx="0"
+       ry="0" />
+    <rect
+       inkscape:export-ydpi="99.365074"
+       inkscape:export-xdpi="99.365074"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-red_over.png"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.97921725000000004;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter4153)"
+       id="rect4113"
+       width="120"
+       height="40"
+       x="208.21002"
+       y="648.15222"
+       rx="0"
+       ry="0"
+       transform="matrix(1.0160716,0,0,1.0264022,-3.2840634,-18.26068)" />
+    <rect
+       ry="0"
+       rx="0"
+       y="493.40219"
+       x="515.96002"
+       height="40"
+       width="120"
+       id="rect4115"
+       style="fill:url(#linearGradient4117);fill-opacity:1;stroke:none;filter:url(#filter3965)"
+       inkscape:export-filename="D:\java\projects\airdome\images\rectButton-red_over.png"
+       inkscape:export-xdpi="99.365074"
+       inkscape:export-ydpi="99.365074"
+       transform="matrix(0.99427493,0,0,1.0264022,-303.61963,139.29204)" />
+    <rect
+       style="fill:url(#linearGradient4239);fill-opacity:1;stroke:none;"
+       id="rect4223"
+       width="20"
+       height="160"
+       x="600"
+       y="792.36218"
+       inkscape:export-filename="D:\java\projects\airdome\images\frame.png"
+       inkscape:export-xdpi="97"
+       inkscape:export-ydpi="97" />
+    <rect
+       y="-952.36218"
+       x="-440"
+       height="160"
+       width="20"
+       id="rect4257"
+       style="fill:url(#linearGradient4259);fill-opacity:1;stroke:none;"
+       transform="scale(-1,-1)"
+       inkscape:export-filename="D:\java\projects\airdome\images\frame.png"
+       inkscape:export-xdpi="97"
+       inkscape:export-ydpi="97" />
+    <rect
+       transform="matrix(0,-1,1,0,0,0)"
+       style="fill:url(#linearGradient4263);fill-opacity:1;stroke:none;"
+       id="rect4261"
+       width="20"
+       height="160"
+       x="-792.36218"
+       y="440"
+       inkscape:export-filename="D:\java\projects\airdome\images\frame.png"
+       inkscape:export-xdpi="97"
+       inkscape:export-ydpi="97" />
+    <rect
+       y="-600"
+       x="952.36218"
+       height="160"
+       width="20"
+       id="rect4265"
+       style="fill:url(#linearGradient4267);fill-opacity:1;stroke:none;"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="D:\java\projects\airdome\images\frame.png"
+       inkscape:export-xdpi="97"
+       inkscape:export-ydpi="97" />
+    <rect
+       style="fill:url(#linearGradient4289);fill-opacity:1;stroke:none;"
+       id="rect4273"
+       width="13"
+       height="13"
+       x="600"
+       y="779.36218"
+       inkscape:export-filename="D:\java\projects\airdome\images\frame.png"
+       inkscape:export-xdpi="97"
+       inkscape:export-ydpi="97" />
+    <rect
+       y="427"
+       x="-792.36218"
+       height="13"
+       width="13"
+       id="rect4291"
+       style="fill:url(#linearGradient4293);fill-opacity:1;stroke:none;"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:export-filename="D:\java\projects\airdome\images\frame.png"
+       inkscape:export-xdpi="97"
+       inkscape:export-ydpi="97" />
+    <rect
+       transform="scale(-1,-1)"
+       style="fill:url(#linearGradient4297);fill-opacity:1;stroke:none;"
+       id="rect4295"
+       width="13"
+       height="13"
+       x="-440"
+       y="-965.36218"
+       inkscape:export-filename="D:\java\projects\airdome\images\frame.png"
+       inkscape:export-xdpi="97"
+       inkscape:export-ydpi="97" />
+    <rect
+       y="-613"
+       x="952.36218"
+       height="13"
+       width="13"
+       id="rect4299"
+       style="fill:url(#linearGradient4301);fill-opacity:1;stroke:none;"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="D:\java\projects\airdome\images\frame.png"
+       inkscape:export-xdpi="97"
+       inkscape:export-ydpi="97" />
+  </g>
+</svg>

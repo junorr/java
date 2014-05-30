@@ -1,0 +1,22 @@
+<linked-list>
+  <us.pserver.mapshare.NetShare>
+    <drive>G:</drive>
+    <path>\\172.18.51.197\NOPGEEX3D3$</path>
+  </us.pserver.mapshare.NetShare>
+  <us.pserver.mapshare.NetShare>
+    <drive>H:</drive>
+    <path>\\172.18.51.6\APLIC</path>
+  </us.pserver.mapshare.NetShare>
+  <us.pserver.mapshare.NetShare>
+    <drive>P:</drive>
+    <path>\\172.18.51.57\APLICBB</path>
+  </us.pserver.mapshare.NetShare>
+  <us.pserver.mapshare.NetShare>
+    <drive>R:</drive>
+    <path>\\172.18.51.92\MULTIMIDIA</path>
+  </us.pserver.mapshare.NetShare>
+  <us.pserver.mapshare.NetShare>
+    <drive>M:</drive>
+    <path>\\172.18.51.197\noppnop$</path>
+  </us.pserver.mapshare.NetShare>
+</linked-list>

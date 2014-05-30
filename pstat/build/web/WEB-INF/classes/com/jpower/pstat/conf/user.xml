@@ -1,0 +1,24 @@
+<com.jpower.sys.security.User>
+  <name>Administrator</name>
+  <email>admin@localhost</email>
+  <admin>true</admin>
+  <pass>
+    <hash>8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918</hash>
+  </pass>
+  <access>
+    <com.jpower.sys.security.Access>
+      <type>USER</type>
+      <time>
+        <time>1396536102918</time>
+        <timezone>America/Sao_Paulo</timezone>
+      </time>
+    </com.jpower.sys.security.Access>
+    <com.jpower.sys.security.Access>
+      <type>ALL</type>
+      <time>
+        <time>1396536103118</time>
+        <timezone>America/Sao_Paulo</timezone>
+      </time>
+    </com.jpower.sys.security.Access>
+  </access>
+</com.jpower.sys.security.User>

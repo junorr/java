@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+			xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<ui:composition>
+		<!-- Attributes: COMMONS { id, label }             -->
+    <!--             STYLES  { image, image2, class }  -->
+    
+			<h:outputLink id="#{(id != null ? id : 'jpActionImage')}" styleClass="#{class}">			
+        
+        <h:graphicImage library="images" name="#{image}" style="border: 0;"/>
+				
+        <h:graphicImage library="images" name="#{image2}" style="border: 0;" 
+                        rendered="#{image2 != null ? true : false}"/>
+				
+        <span>#{label}</span>
+				
+			</h:outputLink>
+    
+    <h:outputScript library="javascript" name="jquery.js"/>
+    <h:outputScript library="javascript" name="tabulator.js"/>
+    <h:outputScript library="javascript" name="ajax.js"/>
+    <h:outputScript library="javascript" name="Button.js"/>
+    <script type="text/javascript" rel="javascript">
+      var id = "#{id}";
+      if(!id) {
+        id = "jpActionImage_" + Math.round(Math.random() * 1000000);
+        $("#jpActionImage").attr("id", id);
+      }
+      
+      Link(id);
+    </script>
+		
+	</ui:composition>
+  
+</html>
+

@@ -1,0 +1,241 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+  <ui:composition template="base.xhtml">
+    
+    <ui:define name="header">
+      <link rel="shortcut icon" href="ray.gif"/>
+    
+      <style type="text/css">
+        .shadow {
+          box-shadow: 3px 3px 5px 2px #888888;
+        }
+        
+        .text {
+          font-size: 40px; 
+          width: 700px;
+        }
+        
+        .tlink {
+          color: black;
+          font-weight: normal;
+          text-decoration: underline;
+        }
+        
+        .tlink:hover {
+          color: #888888;
+          font-weight: normal;
+          text-decoration: underline;
+        }
+        
+        .smooth {
+          color: #888888;
+        }
+      </style>
+      
+      <script type="text/javascript">
+        $(document).ready(function() {
+        });
+      </script>
+    </ui:define>
+    <ui:define name="title">
+      PowerStat - Quick Start
+    </ui:define>
+    
+    <ui:define name="page">
+      <body>
+        <p class="smooth">Use the keyboard keys (left) 
+          <h:graphicImage library="images" name="key-left-icon_20.png" 
+                          title="key-left" alt="key-left"
+                          style="position: relative; top: 4px;"/> 
+          and (right) 
+          <h:graphicImage library="images" name="key-right-icon_20.png" 
+                          title="key-right" alt="key-right"
+                          style="position: relative; top: 4px;"/> 
+          to navigate between pages.
+        </p>
+        
+        <p:spacer height="400"/><br/>
+        
+        <div id="impress" style="width: 700px;">
+          
+          <div id="start" class="step shadow" data-y="0" 
+               style="width: 700px;">
+            <p class="text" align="justify" style="width: 680px;">
+              <p:spacer width="15"/>
+              To install and use PowerStat, you must have a Linux server running with Java Environment and Apache Tomcat properly configured and accessible from the web.
+            </p>
+            <p>PowerStat</p>
+          </div>
+        
+          <div id="slide2" data-x="1500" data-y="200" 
+               data-rotate-z="0" class="step shadow"
+               style="width: 700px;">
+            <p class="text" align="justify" style="width: 680px;">
+              <p:spacer width="15"/>
+              <h:outputLink class="text tlink" value="download.xhtml">Download</h:outputLink> 
+              PowerStat binary and point your browser to Apache Admin Page
+              <h:graphicImage library="images" name="addr-bar.jpg"/>.
+            </p>
+            <p>PowerStat</p>
+          </div>
+        
+          <div id="slide3" data-x="3000" data-y="400" 
+               data-rotate-z="0" class="step shadow"
+               style="width: 700px;">
+            <p class="text" align="left" style="width: 680px;">
+              <p:spacer width="15"/>
+              On Tomcat Admin page, Click on "Manager App" button.
+              <h:graphicImage library="images" name="tomcat-start-page.jpg"
+                              style="width: 680px; height: 196px;"/>
+            </p>
+            <p>PowerStat</p>
+          </div>
+        
+          <div id="slide4" data-x="4500" data-y="600" 
+               data-rotate-z="0" class="step shadow"
+               style="width: 700px;">
+            <p class="text" align="left" style="width: 680px;">
+              <p:spacer width="15"/>
+              In "Deploy" session, click on "Select File" button.
+              <h:graphicImage library="images" name="tomcat-deploy.jpg"
+                              style="width: 680px; height: 182px;"/>
+            </p>
+            <p>PowerStat</p>
+          </div>
+        
+          <div id="slide5" data-x="4500" data-y="1000" 
+               data-rotate-z="0" class="step shadow"
+               style="width: 700px;">
+            <p class="text" align="left" style="width: 680px;">
+              <p:spacer width="15"/>
+              Select PowerStat binary file (.war) and then click on 
+              "Deploy" button.
+              <h:graphicImage library="images" name="tomcat-deploy2.jpg"
+                              style="width: 680px; height: 77px;"/>
+            </p>
+            <p>PowerStat</p>
+          </div>
+        
+          <div id="slide6" data-x="3000" data-y="1200" 
+               data-rotate-z="0" class="step shadow"
+               style="width: 700px;">
+            <p class="text" align="left" style="width: 680px;">
+              <p:spacer width="15"/>
+              Point your browser to the address: 
+              <code style="font-size: 22px;">http://localhost:8080/pstat/faces/index.xhtml</code>.
+              <center><h:graphicImage library="images" name="addr-bar2.jpg"/></center>
+            </p>
+            <p>PowerStat</p>
+          </div>
+        
+          <div id="slide7" data-x="1500" data-y="1400" 
+               data-rotate-z="0" class="step shadow"
+               style="width: 700px;">
+            <p class="text" align="left" style="width: 680px;">
+              <p:spacer width="15"/>
+              The PowerStat initial page must be displayed. Click on "LOGIN" link.
+              <center><h:graphicImage library="images" name="pstat-header.jpg"
+                                      style="width: 680px; height: 64px;"/></center>
+            </p>
+            <p>PowerStat</p>
+          </div>
+        
+          <div id="slide8" data-x="0" data-y="1600" 
+               data-rotate-z="0" class="step shadow"
+               style="width: 700px;">
+            <p class="text" align="justify" style="width: 680px;">
+              <p:spacer width="15"/>
+              The default login is <code style="font-size: 22px;">admin@localhost</code> and password is <code style="font-size: 22px;">"admin"</code>.
+              <center><h:graphicImage library="images" name="login-page.jpg"
+                              style="width: 500px; height: 147px;"/></center>
+            </p>
+            <p>PowerStat</p>
+          </div>
+        
+          <div id="slide9" data-x="0" data-y="2000" 
+               data-rotate-z="0" class="step shadow"
+               style="width: 700px;">
+            <p class="text" align="justify" style="width: 680px;">
+              <p:spacer width="15"/>
+              In "Configure PowerStat" dialog, click on "Yes" button.
+              <center><h:graphicImage library="images" name="config-dialog.jpg"/></center>
+            </p>
+            <p>PowerStat</p>
+          </div>
+        
+          <div id="slide10" data-x="1500" data-y="2200" 
+               data-rotate-z="0" class="step shadow"
+               style="width: 700px;">
+            <p class="text" align="justify" style="width: 680px;">
+              <p:spacer width="15"/>
+              The Configuration page is displayed. Configure the options of the 
+              Syscheck module and save changes.
+              <center><h:graphicImage library="images" name="config-options.jpg"
+                              style="width: 295px; height: 170px;"/></center>
+            </p>
+            <p>PowerStat</p>
+          </div>
+        
+          <div id="slide11" data-x="3000" data-y="2400" 
+               data-rotate-z="0" class="step shadow"
+               style="width: 700px;">
+            <p class="text" align="justify" style="width: 680px;">
+              <p:spacer width="15"/>
+              Check the "Run As Sudo" box, input the password and click on 
+              "Install Syscheck" button.
+              <center><h:graphicImage library="images" name="service-status.jpg"
+                              style="width: 515px; height: 150px;"/></center>
+            </p>
+            <p>PowerStat</p>
+          </div>
+        
+          <div id="slide12" data-x="4500" data-y="2600" 
+               data-rotate-z="0" class="step shadow"
+               style="width: 700px;">
+            <p class="text" align="justify" style="width: 680px;">
+              <p:spacer width="15"/>
+              Now the Syscheck module is installed. 
+              Click on "Start Syscheck" button and wait for "Running" status apear.
+              <center><h:graphicImage library="images" name="service-status2.jpg"
+                              style="width: 515px; height: 150px;"/></center>
+            </p>
+            <p style="font-style: italic;">PowerStat</p>
+          </div>
+        
+          <div id="slide12" data-x="4500" data-y="3000" 
+               data-rotate-z="0" class="step shadow"
+               style="width: 700px;">
+            <p class="text" align="justify" style="width: 680px;">
+              <p:spacer width="15"/>
+              Now the Syscheck module is installed. 
+              Click on "Start Syscheck" button and wait for "Running" status apear.
+              <center><h:graphicImage library="images" name="service-status2.jpg"
+                              style="width: 515px; height: 150px;"/></center>
+            </p>
+            <p style="font-style: italic;">PowerStat</p>
+          </div>
+        
+        </div>
+    
+        <script type="text/javascript" src="resources/javascript/impress.js">
+        </script>
+        <script type="text/javascript">
+          impress().init();
+        </script>
+        
+      </body>
+    </ui:define>
+    
+    <ui:define name="footer">
+    </ui:define>
+    
+  </ui:composition>
+  
+</html>
+

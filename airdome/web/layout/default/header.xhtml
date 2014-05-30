@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+			xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:jp="http://jpower.com/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+  <ui:composition>
+  
+    <h:outputStylesheet library="css" name="header.css"/>
+    <h:outputScript library="javascript" name="Button.js"/>
+    <h:outputScript library="javascript" name="header.js"/>
+    
+    <f:loadBundle var="msg" basename="com.jpower.airdome.HeaderMessages"/>
+	
+    <h:graphicImage id="header-bg" library="images" name="header-gray.png"/>
+    
+    <h:outputLink value="/airdome/faces/index.xhtml">
+      <h:graphicImage alt="Home" id="header-img" 
+										library="images/p38" name="P-38.png"/>
+    </h:outputLink>
+    <h:outputText id="header-text" value="#{msg.header}"/>
+    <h:outputText id="header-phrase" value="#{msg.phrase}"/>
+    
+    <jp:button id="loginButton" value="Login"/>
+    
+  </ui:composition>
+	
+</html>
+

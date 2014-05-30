@@ -1,0 +1,63 @@
+%%Excelsior JET v7.2 project file
+
+-compilewithfixedheap-
+-genstackalloc+
+-genstacktrace-
+-global+
+-gui-
+-ignoreclassduplication+
+-ignorememberabsence+
+-inline+
+-multiapp-
+-splashgetfrommanifest-
+
+-apptype=Plain
+-classabsence=HANDLE
+-compilerheap=0
+-cryptseed=DURcImzQIj0nbrTW6I2VvFATji7uHffjTdqoja3KnhvMMaMnVERA2sXnYvmDReAx
+-inlinelimit=100
+-inlinetolimit=500
+-javacommandline:=java -jar App\pscalc.jar
+-jetcplastpage:=PageCompile
+-jetrt=Desktop
+-jetvmprop=-Djet.jit.fast -Djet.jit.disable.resolution -Djet.gc.heaplimit:0
+-main=com/power/pscalc/PSCalc
+-outputdir=.
+-outputname=pscalc
+-saprofmode=JETCPONLY
+-saproftimeout=20
+-stacklimit=900000
+-startupprofile=./pscalc.startup
+-versioninfocompanyname=Powernet
+-versioninfofiledescription=Pscalc - Command Line Calculator
+-versioninfolegalcopyright=Copyright \x00a9 2010 Juno Roesler - juno.rr@gmail.com
+-versioninfoproductname=Pscalc
+-versioninfoproductversion=0.1.7.0
+
+
+
+
+!classpathentry ./App/pscalc.jar
+  -pack=noncompiled
+  -protect=all
+  -optimize=all
+!end
+!classpathentry ./App/lib/utils.jar
+  -pack=noncompiled
+  -protect=all
+  -optimize=all
+!end
+!classpathentry ./App/lib/xpp3_min-1.1.4c.jar
+  -pack=noncompiled
+  -protect=nomatter
+  -optimize=autodetect
+!end
+!classpathentry ./App/lib/xstream-1.3.1.jar
+  -pack=noncompiled
+  -protect=nomatter
+  -optimize=autodetect
+!end
+
+!module ./App/AppInfo/appicon.ico
+!module ./pscalc.usg
+

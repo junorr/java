@@ -1,0 +1,1 @@
+howto.compare.NaiveSimilarityFinder
