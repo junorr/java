@@ -42,8 +42,12 @@ public class TestCharPanel {
     CharPanel cp = new CharPanel(new JChar());
     cp.setBorder(new LineBorder(Color.GRAY, 1));
     cp.setOriginalSize(300, 200);
+    /*
     cp.setBackground(Color.WHITE);
     cp.setForeground(Color.BLACK);
+    cp.setUnderColor(Color.RED)
+        .setInsertColor(Color.BLUE);
+    */
     f.add(cp);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     f.setVisible(true);

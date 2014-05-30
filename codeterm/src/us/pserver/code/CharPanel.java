@@ -50,9 +50,15 @@ public class CharPanel extends JPanel
   public static final char LN = '\n';
   
   public static final Color 
-      DEFAULT_SELECT_COLOR = new Color(190, 220, 240),
+      DEFAULT_SELECT_COLOR = Color.GRAY,
+      
       DEFAULT_UNDER_COLOR = Color.WHITE,
-      INSERT_UNDER_COLOR = Color.GRAY;
+      
+      INSERT_UNDER_COLOR = Color.GREEN,
+      
+      DEFAULT_BACKGROUND = new Color(61, 61, 61),
+      
+      DEFAULT_FOREGROUND = new Color(102, 255, 51);
   
   
   private ArrayList<JChar> chars;
@@ -73,11 +79,9 @@ public class CharPanel extends JPanel
   
   private String selection;
   
-  private int ifind;
-  
-  private String sfind;
-  
   private Color selColor, underColor, insertColor;
+  
+  private Finder finder;
   
   
   public CharPanel(JChar ch) {
@@ -88,6 +92,8 @@ public class CharPanel extends JPanel
     }
     this.setLayout(null);
     this.setFont(ch.getFont());
+    this.setBackground(DEFAULT_BACKGROUND);
+    this.setForeground(DEFAULT_FOREGROUND);
     
     selColor = DEFAULT_SELECT_COLOR;
     underColor = DEFAULT_UNDER_COLOR;
@@ -96,8 +102,6 @@ public class CharPanel extends JPanel
     startSelIndex = endSelIndex = -1;
     select = false;
     selection = null;
-    ifind = -1;
-    sfind = null;
     insert = false;
     
     copy = new TextCopy();
@@ -109,6 +113,12 @@ public class CharPanel extends JPanel
     this.addKeyListener(this);
     this.addMouseListener(this);
     this.addMouseMotionListener(this);
+    finder = new Finder(this);
+  }
+  
+  
+  public Finder getFinder() {
+    return finder;
   }
   
   
@@ -130,8 +140,13 @@ public class CharPanel extends JPanel
   
   
   public CharPanel setUnderColor(Color c) {
-    if(c != null)
+    if(c != null) {
       underColor = c;
+      if(chars != null && !chars.isEmpty()) {
+        chars.forEach(j->j.setUnderColor(underColor));
+        current.repaint();
+      }
+    }
     return this;
   }
   
@@ -260,7 +275,7 @@ public class CharPanel extends JPanel
       if(current != null)
         current.borderNone();
       current = ch.borderUnder();
-      
+      System.out.println("* select: "+ select);
       if(select) {
         endSelIndex = i;
         doSelection();
@@ -270,6 +285,16 @@ public class CharPanel extends JPanel
       this.repaint();
     }
     return this;
+  }
+  
+  
+  public JChar current() {
+    return current;
+  }
+  
+  
+  public int currentIndex() {
+    return find(current);
   }
   
   
@@ -296,6 +321,18 @@ public class CharPanel extends JPanel
     if(chars.isEmpty() || idx < 0 || idx >= chars.size())
       return 0;
     return chars.get(idx).getchar();
+  }
+  
+  
+  public CharPanel select(int start, int end) {
+    if(start >= 0 && end > start && end < chars.size()) {
+      startSelIndex = start;
+      endSelIndex = end;
+      select = true;
+      doSelection();
+      select = false;
+    }
+    return this;
   }
   
   
@@ -454,7 +491,7 @@ public class CharPanel extends JPanel
   public JChar next() {
     if(current == null || chars.isEmpty())
       return null;
-    int ic = find(current);
+    int ic = currentIndex();
     if(ic < 0 || ic+1 >= chars.size()) 
       return null;
     return chars.get(ic+1);
@@ -464,7 +501,7 @@ public class CharPanel extends JPanel
   public JChar prev() {
     if(current == null || chars.isEmpty())
       return null;
-    int ic = find(current);
+    int ic = currentIndex();
     if(ic < 0 || ic-1 < 0) 
       return null;
     return chars.get(ic-1);
@@ -553,7 +590,7 @@ public class CharPanel extends JPanel
   
   
   public CharPanel home() {
-    int ic = find(current);
+    int ic = currentIndex();
     if(ic > 0) {
       for(int i = ic; i >= 0; i--) {
         JChar c = chars.get(i);
@@ -582,29 +619,39 @@ public class CharPanel extends JPanel
   
   
   public CharPanel type(char c) {
-    if(JChar.isPrintableChar(c)) {
-      select = false;
-      if(current.getchar() == LN || isSelected() || insert) {
-        if(isSelected()) delSelected();
-        int ic = find(current);
-        JChar ch = new JChar(c);
-        add(ch)
-            .changePosition(chars.size()-1, ic)
-            .updateChars()
-            .current(chars.get(ic+1));
-      }
-      else {
-        current.setchar(c);
-        JChar next = next();
-        if(next == null) {
-          next = new JChar();
-          add(next);
-          updateChars();
-        }
-        current(next);
-      }
+    select = false;
+    if(current.getchar() == LN || isSelected() || insert) {
+      typeInsert(c);
+    } else {
+      typeOver(c);
     }
     return this;
+  }
+  
+  
+  private void typeInsert(char c) {
+    if(JChar.isPrintableChar(c)) {
+      if(isSelected()) delSelected();
+      int ic = find(current);
+      JChar ch = new JChar(c);
+      add(ch)
+          .changePosition(chars.size()-1, ic)
+          .updateChars()
+          .current(chars.get(ic+1));
+    }
+  }
+  
+  
+  private void typeOver(char c) {
+    if(JChar.isPrintableChar(c)) {
+      current.setchar(c);
+      JChar next = next();
+      if(next == null) {
+        next = new JChar();
+        add(next).updateChars();
+      }
+      current(next);
+    }
   }
   
   
@@ -620,31 +667,30 @@ public class CharPanel extends JPanel
     for(int i = start; i <= end; i++) {
       chars.remove(start);
     }
+    
     if(chars.isEmpty())
       add(new JChar());
+    
     if(start >= chars.size())
       start = chars.size()-1;
-    current(chars.get(start));
-    unselect();
-    this.updateChars();
+    
+    current(chars.get(start))
+        .unselect().updateChars();
   }
   
   
   public CharPanel delete() {
     if(current != null && !chars.isEmpty()) {
       
-      if(isSelected()) {
-        delSelected();
+      if(isSelected()) delSelected();
+      
+      else if(find(current) == chars.size()-1) {
+        current.delete();
       }
       else {
-        if(find(current) == chars.size()-1) {
-          current.delete();
-        }
-        else {
-          JChar next = next();
-          remove(current);
-          current(next);
-        }
+        JChar next = next();
+        remove(current);
+        current(next);
       }
     }
     return this;
@@ -662,9 +708,8 @@ public class CharPanel extends JPanel
   
   
   public CharPanel enter() {
-    if(isSelected()) {
-      delSelected();
-    }
+    if(isSelected()) delSelected();
+    
     int ic = find(current);
     if(ic >= 0) {
       JChar ch = new JChar(LN);
@@ -677,30 +722,6 @@ public class CharPanel extends JPanel
   }
   
   
-  public CharPanel find() {
-    String str = JOptionPane.showInputDialog("Input search text", sfind);
-    if(ifind < 0) {
-      ifind = find(current);
-      sfind = str;
-    }
-    System.out.println("* ifind="+ifind);
-    int idx = find(sfind, ifind);
-    System.out.println("* idx="+ idx);
-    if(idx >= 0) {
-      ifind = idx + sfind.length();
-      startSelIndex = idx;
-      endSelIndex = idx + sfind.length() -1;
-      select = true;
-      doSelection();
-      select = false;
-    } else {
-      System.out.println("* unselect()");
-      unselect();
-    }
-    return this;
-  }
-
-
   public boolean remove(JChar ch) {
     int id = find(ch);
     if(ch == null || id < 0) return false;
@@ -854,6 +875,7 @@ public class CharPanel extends JPanel
   
   
   public CharPanel doSelection() {
+    System.out.println("* selected: "+ select);
     if(isSelected()) {
       int start = startSelIndex;
       int end = endSelIndex;
@@ -902,7 +924,7 @@ public class CharPanel extends JPanel
   public void keyPressed(KeyEvent e) {
     if(e.getKeyCode() 
         == KeyEvent.VK_SHIFT && !select) {
-      startSelIndex = find(current);
+      startSelIndex = currentIndex();
       select = true;
     }
     
@@ -926,10 +948,12 @@ public class CharPanel extends JPanel
         backspace();
         break;
       case KeyEvent.VK_HOME:
-        home();
+        if(e.isControlDown()) current(first());
+        else home();
         break;
       case KeyEvent.VK_END:
-        end();
+        if(e.isControlDown()) current(last());
+        else end();
         break;
       case KeyEvent.VK_ENTER:
         enter();
@@ -953,18 +977,9 @@ public class CharPanel extends JPanel
           cut();
         }
         break;
-      case KeyEvent.VK_F:
-        if(e.isControlDown()) {
-          find();
-        }
-        break;
       case KeyEvent.VK_A:
-        if(e.isControlDown() && !chars.isEmpty()) {
-          startSelIndex = 0;
-          endSelIndex = chars.size()-1;
-          select = true;
-          doSelection();
-          select = false;
+        if(e.isControlDown()) {
+          select(0, chars.size()-1);
         }
         break;
       default:

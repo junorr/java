@@ -79,7 +79,7 @@ public class JChar extends JLabel {
       Border b = new MatteBorder(0, 0, 2, 0, c);
       if(getBorder() == under) {
         setBorder(b);
-        this.paint(this.getGraphics());
+        this.repaint();
       }
       under = b;
     }
