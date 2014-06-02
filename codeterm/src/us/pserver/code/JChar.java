@@ -138,5 +138,11 @@ public class JChar extends JLabel {
     }
     return true;
   }
+
+
+  @Override
+  public String toString() {
+    return "JChar{" + "ch=" + ch + '}';
+  }
   
 }

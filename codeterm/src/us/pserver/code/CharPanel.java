@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -275,7 +274,7 @@ public class CharPanel extends JPanel
       if(current != null)
         current.borderNone();
       current = ch.borderUnder();
-      System.out.println("* select: "+ select);
+
       if(select) {
         endSelIndex = i;
         doSelection();
@@ -479,7 +478,7 @@ public class CharPanel extends JPanel
   
   public int reverseFind(String str, JChar pos) {
     int ip = find(pos);
-    return reverseFind(str, pos);
+    return reverseFind(str, ip);
   }
   
   
@@ -619,39 +618,37 @@ public class CharPanel extends JPanel
   
   
   public CharPanel type(char c) {
-    select = false;
-    if(current.getchar() == LN || isSelected() || insert) {
-      typeInsert(c);
-    } else {
-      typeOver(c);
+    if(JChar.isPrintableChar(c)) {
+      select = false;
+      if(current.getchar() == LN || isSelected() || insert) {
+        typeInsert(c);
+      } else {
+        typeOver(c);
+      }
     }
     return this;
   }
   
   
   private void typeInsert(char c) {
-    if(JChar.isPrintableChar(c)) {
-      if(isSelected()) delSelected();
-      int ic = find(current);
-      JChar ch = new JChar(c);
-      add(ch)
-          .changePosition(chars.size()-1, ic)
-          .updateChars()
-          .current(chars.get(ic+1));
-    }
+    if(isSelected()) delSelected();
+    int ic = find(current);
+    JChar ch = new JChar(c);
+    add(ch)
+        .changePosition(chars.size()-1, ic)
+        .updateChars()
+        .current(chars.get(ic+1));
   }
   
   
   private void typeOver(char c) {
-    if(JChar.isPrintableChar(c)) {
-      current.setchar(c);
-      JChar next = next();
-      if(next == null) {
-        next = new JChar();
-        add(next).updateChars();
-      }
-      current(next);
+    current.setchar(c);
+    JChar next = next();
+    if(next == null) {
+      next = new JChar();
+      add(next).updateChars();
     }
+    current(next);
   }
   
   
@@ -870,12 +867,13 @@ public class CharPanel extends JPanel
       start = endSelIndex;
     }
     return start >= 0 && end >= 0
-        && start < end;
+        && start < end
+        && start < chars.size()
+        && end < chars.size();
   }
   
   
   public CharPanel doSelection() {
-    System.out.println("* selected: "+ select);
     if(isSelected()) {
       int start = startSelIndex;
       int end = endSelIndex;
