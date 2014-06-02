@@ -42,6 +42,8 @@ public class TestCharPanel {
     CharPanel cp = new CharPanel(new JChar());
     cp.setBorder(new LineBorder(Color.GRAY, 1));
     cp.setOriginalSize(300, 200);
+    
+    //cp.getHighlighter().add("public", Color.red);
     /*
     cp.setBackground(Color.WHITE);
     cp.setForeground(Color.BLACK);
