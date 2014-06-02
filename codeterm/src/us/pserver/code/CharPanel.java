@@ -82,6 +82,10 @@ public class CharPanel extends JPanel
   
   private Finder finder;
   
+  private List<ViewUpdateListener> listeners;
+  
+  private Highlighter highlighter;
+  
   
   public CharPanel(JChar ch) {
     super();
@@ -89,6 +93,10 @@ public class CharPanel extends JPanel
       throw new IllegalArgumentException(
           "Invalid JChar: "+ ch);
     }
+    listeners = new LinkedList<>();
+    highlighter = new Highlighter();
+    addViewUpdateListener(highlighter);
+    
     this.setLayout(null);
     this.setFont(ch.getFont());
     this.setBackground(DEFAULT_BACKGROUND);
@@ -113,6 +121,48 @@ public class CharPanel extends JPanel
     this.addMouseListener(this);
     this.addMouseMotionListener(this);
     finder = new Finder(this);
+  }
+  
+  
+  public CharPanel addViewUpdateListener(ViewUpdateListener vul) {
+    if(vul != null) listeners.add(vul);
+    return this;
+  }
+  
+  
+  public List<ViewUpdateListener> listeners() {
+    return listeners;
+  }
+  
+  
+  public CharPanel clearListeners() {
+    listeners.clear();
+    return this;
+  }
+  
+  
+  public void updateListeners() {
+    listeners.forEach(l->l.update(this));
+  }
+  
+  
+  public Highlighter getHighlighter() {
+    return highlighter;
+  }
+  
+  
+  public CharPanel setHighlighter(Highlighter hl) {
+    if(hl != null) {
+      listeners.remove(listeners.indexOf(highlighter));
+      listeners.add(hl);
+      highlighter = hl;
+    }
+    return this;
+  }
+  
+  
+  public List<JChar> chars() {
+    return chars;
   }
   
   
@@ -760,6 +810,7 @@ public class CharPanel extends JPanel
     this.removeAll();
     Point p = new Point(1, 1);
     for(JChar c : chars) {
+      c.setForeground(getForeground());
       c.setBounds(p.x, p.y, unit.width, unit.height);
       super.add(c);
       if(c.getchar() == LN) {
@@ -772,6 +823,7 @@ public class CharPanel extends JPanel
     this.setSize(dm);
     this.setPreferredSize(dm);
     this.repaint();
+    this.updateListeners();
     return this;
   }
   
@@ -964,21 +1016,29 @@ public class CharPanel extends JPanel
           if(e.isShiftDown()) append();
           else copy();
         }
+        else 
+          type(e.getKeyChar());
         break;
       case KeyEvent.VK_V:
         if(e.isControlDown()) {
           paste();
         }
+        else 
+          type(e.getKeyChar());
         break;
       case KeyEvent.VK_X:
         if(e.isControlDown()) {
           cut();
         }
+        else 
+          type(e.getKeyChar());
         break;
       case KeyEvent.VK_A:
         if(e.isControlDown()) {
           select(0, chars.size()-1);
         }
+        else 
+          type(e.getKeyChar());
         break;
       default:
         type(e.getKeyChar());
