@@ -23,7 +23,6 @@ package us.pserver.code;
 
 import com.thoughtworks.xstream.XStream;
 import java.awt.Color;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +31,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import ru.lanwen.verbalregex.VerbalExpression;
 
 /**
  *
@@ -43,7 +43,7 @@ public class Highlighter implements ViewUpdateListener {
   public static final String FILE = "./highlights.xml";
   
 
-  private Map<String, Color> words;
+  private Map<Object, Color> words;
   
   private XStream xstream;
   
@@ -101,33 +101,67 @@ public class Highlighter implements ViewUpdateListener {
   }
   
   
+  public Highlighter add(VerbalExpression exp, Color clr) {
+    if(exp != null && clr != null) {
+      words.put(exp, clr);
+      save();
+    }
+    return this;
+  }
+  
+  
   public Highlighter clear() {
     words.clear();
     return this;
   }
   
   
-  public Map<String, Color> words() {
+  public Map<Object, Color> words() {
     return words;
   }
 
 
   @Override
   public void update(CharPanel cp) {
-    Iterator<String> it = words.keySet().iterator();
+    Iterator<Object> it = words.keySet().iterator();
     while(it.hasNext()) {
-      String str = it.next();
-      Color clr = words.get(str);
-      findWordAndChange(cp, str, clr, 0);
+      Object obj = it.next();
+      Color clr = words.get(obj);
+      findAndChangeColor(cp, obj, clr, 0);
     }//while
   }
   
   
-  private void findWordAndChange(CharPanel cp, String str, Color c, int idx) {
+  private void findAndChangeColor(CharPanel cp, Object obj, Color c, int idx) {
+    if(obj instanceof String)
+      findStringAndChange(cp, obj.toString(), c, idx);
+    else if(obj instanceof VerbalExpression)
+      findExpressionAndChange(cp, (VerbalExpression)obj, c, idx);
+  }
+  
+  
+  private void findStringAndChange(CharPanel cp, 
+      String str, Color c, int idx) {
     idx = cp.find(str, idx);
     if(idx < 0) return;
     changeColor(cp, idx, str.length(), c);
-    findWordAndChange(cp, str, c, idx + str.length());
+    findStringAndChange(cp, str, c, idx + str.length());
+  }
+  
+  
+  public void findExpressionAndChange(CharPanel cp, 
+      VerbalExpression exp, Color c, int idx) {
+    int idx2 = cp.find(" ", idx);
+    System.out.println("* findExp: "+ idx+ ", "+ idx2);
+    if(idx2 < 0 && idx >= 0)
+      idx2 = cp.chars().size();
+    if(idx2 < 0 || idx < 0 
+        || idx > cp.chars().size()) return;
+    String str = cp.getString(idx, idx2-idx-1);
+    System.out.println("* findExp.testStr='"+ str+ "'");
+    if(exp.testExact(str))
+      changeColor(cp, idx, idx2-idx, c);
+    findExpressionAndChange(cp, exp, c, idx2 +1);
   }
   
   

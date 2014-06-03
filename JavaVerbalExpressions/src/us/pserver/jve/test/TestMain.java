@@ -19,49 +19,51 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.code;
+package us.pserver.jve.test;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
-import javax.swing.JFrame;
-import javax.swing.border.LineBorder;
 import ru.lanwen.verbalregex.VerbalExpression;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/05/2014
+ * @version 1.0 - 03/06/2014
  */
-public class TestCharPanel {
+public class TestMain {
 
   
   public static void main(String[] args) {
-    JFrame f = new JFrame("TestCharPanel");
-    f.setSize(400, 350);
-    f.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    f.setLocationRelativeTo(null);
-    CharPanel cp = new CharPanel(new JChar());
-    cp.setBorder(new LineBorder(Color.GRAY, 1));
-    cp.setOriginalSize(300, 200);
+    VerbalExpression exp = VerbalExpression.regex()
+        .startOfLine()
+        .then("\"")
+        .anything()
+        .then("\"").build();
+    System.out.println("* exp="+ exp);
+    String str = "\"hello\"";
+    System.out.println("* str="+ str);
+    System.out.println("* exp.text="+ exp.testExact(str));
     
-    cp.getHighlighter().clear();
-    cp.getHighlighter().add("public", Color.red);
-    cp.getHighlighter().add(
-        VerbalExpression.regex()
-            .startOfLine().then("\"")
-            .anything().then("\"")
-            .build(), Color.LIGHT_GRAY);
-    /*
-    cp.setBackground(Color.WHITE);
-    cp.setForeground(Color.BLACK);
-    cp.setUnderColor(Color.RED)
-        .setInsertColor(Color.BLUE);
-    */
-    f.add(cp);
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.setVisible(true);
-    cp.requestFocus();
-    cp.requestFocusInWindow();
+    str = "\"\"";
+    System.out.println("* str="+ str);
+    System.out.println("* exp.text="+ exp.testExact(str));
+    
+    str = "\"hello";
+    System.out.println("* str="+ str);
+    System.out.println("* exp.text="+ exp.testExact(str));
+    
+    exp = VerbalExpression.regex()
+        .startOfLine()
+        .then("#")
+        .anything().build();
+    
+    System.out.println("* exp="+ exp);
+    str = "# hello";
+    System.out.println("* str="+ str);
+    System.out.println("* exp.text="+ exp.testExact(str));
+    
+    str = "#hello";
+    System.out.println("* str="+ str);
+    System.out.println("* exp.text="+ exp.testExact(str));
+    
   }
   
 }

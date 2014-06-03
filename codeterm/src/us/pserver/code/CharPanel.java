@@ -347,6 +347,19 @@ public class CharPanel extends JPanel
   }
   
   
+  public String getString(int idx, int len) {
+    if(chars.isEmpty() || idx < 0 
+        || idx+len > chars.size()) 
+      return null;
+    
+    StringBuilder sb = new StringBuilder();
+    for(int i = idx; i < (idx+len); i++) {
+      sb.append(this.getChar(i));
+    }
+    return sb.toString();
+  }
+  
+  
   public JChar first() {
     if(chars.isEmpty()) return null;
     return chars.get(0);

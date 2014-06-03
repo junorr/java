@@ -4,10 +4,12 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/D:/java/codeterm/src/us/pserver/code/CharPanel.java</file>
+            <file>file:/D:/java/codeterm/src/us/pserver/code/Highlighter.java</file>
             <file>file:/D:/java/codeterm/src/us/pserver/code/JChar.java</file>
             <file>file:/D:/java/codeterm/src/us/pserver/code/TestCharPanel.java</file>
             <file>file:/D:/java/codeterm/src/us/pserver/code/TextCopy.java</file>
             <file>file:/D:/java/codeterm/src/us/pserver/code/Finder.java</file>
+            <file>file:/D:/java/codeterm/src/us/pserver/code/ViewUpdateListener.java</file>
         </group>
     </open-files>
 </project-private>
