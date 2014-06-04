@@ -28,8 +28,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import ru.lanwen.verbalregex.VerbalExpression;
 
@@ -43,13 +44,13 @@ public class Highlighter implements ViewUpdateListener {
   public static final String FILE = "./highlights.xml";
   
 
-  private Map<Object, Color> words;
+  private List<Match> words;
   
   private XStream xstream;
   
   
   public Highlighter() {
-    words = new HashMap<>();
+    words = new ArrayList<>();
     xstream = new XStream();
     init();
   }
@@ -65,9 +66,9 @@ public class Highlighter implements ViewUpdateListener {
     Path p = Paths.get(FILE);
     if(Files.exists(p)) {
       try {
-        Map<String, Color> map = (Map<String, Color>) 
+        List<Match> lst = (List<Match>) 
             xstream.fromXML(p.toFile());
-        words.putAll(map);
+        words.addAll(lst);
       } catch(Exception e) {
         e.printStackTrace();
       }
@@ -92,18 +93,9 @@ public class Highlighter implements ViewUpdateListener {
   }
   
   
-  public Highlighter add(String str, Color clr) {
-    if(str != null && clr != null) {
-      words.put(str, clr);
-      save();
-    }
-    return this;
-  }
-  
-  
   public Highlighter add(VerbalExpression exp, Color clr) {
     if(exp != null && clr != null) {
-      words.put(exp, clr);
+      words.add(new Match(exp.toString(), clr));
       save();
     }
     return this;
@@ -116,58 +108,49 @@ public class Highlighter implements ViewUpdateListener {
   }
   
   
-  public Map<Object, Color> words() {
+  public List<Match> words() {
     return words;
   }
 
 
   @Override
   public void update(CharPanel cp) {
-    Iterator<Object> it = words.keySet().iterator();
-    while(it.hasNext()) {
-      Object obj = it.next();
-      Color clr = words.get(obj);
-      findAndChangeColor(cp, obj, clr, 0);
-    }//while
+    for(Match mtc : words) {
+      findAndChangeColor(cp, mtc, 0);
+    }
   }
   
   
-  private void findAndChangeColor(CharPanel cp, Object obj, Color c, int idx) {
-    if(obj instanceof String)
-      findStringAndChange(cp, obj.toString(), c, idx);
-    else if(obj instanceof VerbalExpression)
-      findExpressionAndChange(cp, (VerbalExpression)obj, c, idx);
+  private void findAndChangeColor(CharPanel chp, Match mtc, int idx) {
+    if(idx < 0 || idx > chp.chars().size() -1)
+      return;
+    
+    int isp = chp.find(' ', idx);
+    int iln = chp.find('\n', idx);
+    int idx2 = minValid(isp, iln);
+    if(idx2 < 0) idx2 = chp.chars().size() -1;
+    
+    String str = chp.getString(idx, idx2-idx);
+    if(mtc.getExpression().testExact(str)) {
+      changeColor(chp, idx, idx2-idx, mtc.getColor());
+    }
+    findAndChangeColor(chp, mtc, idx2 +1);
   }
   
   
-  private void findStringAndChange(CharPanel cp, 
-      String str, Color c, int idx) {
-    idx = cp.find(str, idx);
-    if(idx < 0) return;
-    changeColor(cp, idx, str.length(), c);
-    findStringAndChange(cp, str, c, idx + str.length());
+  private int minValid(int v1, int v2) {
+    if(v1 >= 0 && (v1 < v2 || v2 < 0))
+      return v1;
+    else if(v2 >= 0 && (v2 < v1 || v1 < 0))
+      return v2;
+    else 
+      return -1;
   }
   
   
-  public void findExpressionAndChange(CharPanel cp, 
-      VerbalExpression exp, Color c, int idx) {
-    int idx2 = cp.find(" ", idx);
-    System.out.println("* findExp: "+ idx+ ", "+ idx2);
-    if(idx2 < 0 && idx >= 0)
-      idx2 = cp.chars().size();
-    if(idx2 < 0 || idx < 0 
-        || idx > cp.chars().size()) return;
-    String str = cp.getString(idx, idx2-idx-1);
-    System.out.println("* findExp.testStr='"+ str+ "'");
-    if(exp.testExact(str))
-      changeColor(cp, idx, idx2-idx, c);
-    findExpressionAndChange(cp, exp, c, idx2 +1);
-  }
-  
-  
-  private void changeColor(CharPanel cp, int idx, int len, Color c) {
+  private void changeColor(CharPanel chp, int idx, int len, Color c) {
     for(int i = idx; i < (idx + len); i++) {
-      JChar jc = cp.chars().get(i);
+      JChar jc = chp.chars().get(i);
       jc.setForeground(c);
       jc.repaint();
     }//for

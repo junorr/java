@@ -1,98 +1,20 @@
-<map>
-  <entry>
-    <string>public</string>
-    <awt-color>
-      <red>255</red>
-      <green>0</green>
-      <blue>0</blue>
-      <alpha>255</alpha>
-    </awt-color>
-  </entry>
-  <entry>
-    <ru.lanwen.verbalregex.VerbalExpression>
-      <pattern>
-        <pattern>^(?:\&quot;)(?:.*)(?:\&quot;)</pattern>
-        <flags>8</flags>
-      </pattern>
-    </ru.lanwen.verbalregex.VerbalExpression>
-    <awt-color>
+<list>
+  <us.pserver.code.Match>
+    <regex>^(?:.*)(?:\&quot;)(?:.*)(?:\&quot;)(?:.*)</regex>
+    <color>
       <red>192</red>
       <green>192</green>
       <blue>192</blue>
       <alpha>255</alpha>
-    </awt-color>
-  </entry>
-</map>.lanwen.verbalregex.VerbalExpression>
-    <awt-color>
-      <red>128</red>
-      <green>128</green>
-      <blue>128</blue>
-      <alpha>255</alpha>
-    </awt-color>
-  </entry>
-  <entry>
-    <ru.lanwen.verbalregex.VerbalExpression>
-      <pattern>
-        <pattern>^(?:\&quot;)(?:.*)(?:\&quot;)</pattern>
-        <flags>8</flags>
-      </pattern>
-    </ru.lanwen.verbalregex.VerbalExpression>
-    <awt-color>
-      <red>128</red>
-      <green>128</green>
-      <blue>128</blue>
-      <alpha>255</alpha>
-    </awt-color>
-  </entry>
-  <entry>
-    <ru.lanwen.verbalregex.VerbalExpression>
-      <pattern>
-        <pattern>^(?:\&quot;)(?:.*)(?:\&quot;)</pattern>
-        <flags>8</flags>
-      </pattern>
-    </ru.lanwen.verbalregex.VerbalExpression>
-    <awt-color>
-      <red>128</red>
-      <green>128</green>
-      <blue>128</blue>
-      <alpha>255</alpha>
-    </awt-color>
-  </entry>
-  <entry>
-    <string>public</string>
-    <awt-color>
+    </color>
+  </us.pserver.code.Match>
+  <us.pserver.code.Match>
+    <regex>^(?:public)</regex>
+    <color>
       <red>255</red>
-      <green>0</green>
-      <blue>0</blue>
+      <green>255</green>
+      <blue>255</blue>
       <alpha>255</alpha>
-    </awt-color>
-  </entry>
-  <entry>
-    <ru.lanwen.verbalregex.VerbalExpression>
-      <pattern>
-        <pattern>^(?:\&quot;)(?:.*)(?:\&quot;)</pattern>
-        <flags>8</flags>
-      </pattern>
-    </ru.lanwen.verbalregex.VerbalExpression>
-    <awt-color>
-      <red>128</red>
-      <green>128</green>
-      <blue>128</blue>
-      <alpha>255</alpha>
-    </awt-color>
-  </entry>
-  <entry>
-    <ru.lanwen.verbalregex.VerbalExpression>
-      <pattern>
-        <pattern>^(?:\&quot;)(?:.*)(?:\&quot;)</pattern>
-        <flags>8</flags>
-      </pattern>
-    </ru.lanwen.verbalregex.VerbalExpression>
-    <awt-color>
-      <red>128</red>
-      <green>128</green>
-      <blue>128</blue>
-      <alpha>255</alpha>
-    </awt-color>
-  </entry>
-</map>
+    </color>
+  </us.pserver.code.Match>
+</list>
