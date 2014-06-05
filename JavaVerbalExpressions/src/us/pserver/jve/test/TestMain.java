@@ -21,6 +21,9 @@
 
 package us.pserver.jve.test;
 
+import java.awt.Color;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import ru.lanwen.verbalregex.VerbalExpression;
 
 /**
@@ -33,37 +36,27 @@ public class TestMain {
   
   public static void main(String[] args) {
     VerbalExpression exp = VerbalExpression.regex()
-        .startOfLine()
-        .then("\"")
-        .anything()
-        .then("\"").build();
-    System.out.println("* exp="+ exp);
-    String str = "\"hello\"";
-    System.out.println("* str="+ str);
-    System.out.println("* exp.text="+ exp.testExact(str));
+        .then("public").build();
     
-    str = "\"\"";
-    System.out.println("* str="+ str);
-    System.out.println("* exp.text="+ exp.testExact(str));
+    Class c = Color.class;
+    System.out.println("c.equals(Color.class): "+c.equals(Color.class));
+    System.out.println("c.equals(String.class): "+c.equals(String.class));
     
-    str = "\"hello";
-    System.out.println("* str="+ str);
-    System.out.println("* exp.text="+ exp.testExact(str));
+    int white = 255;
+    System.out.println("white.toHex: "+ Integer.toHexString(white));
     
-    exp = VerbalExpression.regex()
-        .startOfLine()
-        .then("#")
-        .anything().build();
+    System.out.println("pattern: "+ exp.toString());
+    String str = "public, public, public";
+    System.out.println("string: "+ str);
     
-    System.out.println("* exp="+ exp);
-    str = "# hello";
-    System.out.println("* str="+ str);
-    System.out.println("* exp.text="+ exp.testExact(str));
+    Pattern p = Pattern.compile(exp.toString());
+    Matcher m = p.matcher(str);
     
-    str = "#hello";
-    System.out.println("* str="+ str);
-    System.out.println("* exp.text="+ exp.testExact(str));
-    
+    int count = 0;
+    while(m.find()) {
+      count++;
+      System.out.println("found "+ count+ ": "+ m.start()+ ", "+ m.end());
+    }
   }
   
 }

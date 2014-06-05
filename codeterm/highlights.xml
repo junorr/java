@@ -1,20 +1,14 @@
 <list>
-  <us.pserver.code.Match>
-    <regex>^(?:.*)(?:\&quot;)(?:.*)(?:\&quot;)(?:.*)</regex>
-    <color>
-      <red>192</red>
-      <green>192</green>
-      <blue>192</blue>
-      <alpha>255</alpha>
-    </color>
-  </us.pserver.code.Match>
-  <us.pserver.code.Match>
+  <match>
+    <regex>(?:\&quot;)(?:.*)(?:\&quot;)</regex>
+    <color rgb="192,192,192"/>
+  </match>
+  <match>
+    <regex>(?:\W)(?:public)</regex>
+    <color rgb="255,255,255"/>
+  </match>
+  <match>
     <regex>^(?:public)</regex>
-    <color>
-      <red>255</red>
-      <green>255</green>
-      <blue>255</blue>
-      <alpha>255</alpha>
-    </color>
-  </us.pserver.code.Match>
+    <color reference="../../match[2]/color"/>
+  </match>
 </list>

@@ -29,9 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
 import ru.lanwen.verbalregex.VerbalExpression;
 
 /**
@@ -41,17 +40,26 @@ import ru.lanwen.verbalregex.VerbalExpression;
  */
 public class Highlighter implements ViewUpdateListener {
   
-  public static final String FILE = "./highlights.xml";
+  public static final String 
+      FILE = "./highlights.xml",
+      COLOR = "color",
+      MATCH = "match";
   
 
   private List<Match> words;
   
   private XStream xstream;
   
+  private ColorConverter conv;
+  
   
   public Highlighter() {
     words = new ArrayList<>();
+    conv = new ColorConverter();
     xstream = new XStream();
+    xstream.alias(MATCH, Match.class);
+    xstream.alias(COLOR, Color.class);
+    xstream.registerConverter(conv);
     init();
   }
   
@@ -69,9 +77,7 @@ public class Highlighter implements ViewUpdateListener {
         List<Match> lst = (List<Match>) 
             xstream.fromXML(p.toFile());
         words.addAll(lst);
-      } catch(Exception e) {
-        e.printStackTrace();
-      }
+      } catch(Exception e) {}
     }
     return this;
   }
@@ -85,9 +91,7 @@ public class Highlighter implements ViewUpdateListener {
           StandardOpenOption.WRITE)) {
         xstream.toXML(words, os);
         os.flush();
-      } catch(Exception e) {
-        e.printStackTrace();
-      }
+      } catch(Exception e) {}
     }
     return this;
   }
@@ -95,8 +99,11 @@ public class Highlighter implements ViewUpdateListener {
   
   public Highlighter add(VerbalExpression exp, Color clr) {
     if(exp != null && clr != null) {
-      words.add(new Match(exp.toString(), clr));
-      save();
+      Match m = new Match(exp.toString(), clr);
+      if(!words.contains(m)) {
+        words.add(m);
+        save();
+      }
     }
     return this;
   }
@@ -115,41 +122,18 @@ public class Highlighter implements ViewUpdateListener {
 
   @Override
   public void update(CharPanel cp) {
+    String text = cp.getText();
     for(Match mtc : words) {
-      findAndChangeColor(cp, mtc, 0);
+      Matcher m = mtc.matcherFor(text);
+      while(m.find()) {
+        changeColor(cp, m.start(), m.end(), mtc.getColor());
+      }
     }
   }
   
   
-  private void findAndChangeColor(CharPanel chp, Match mtc, int idx) {
-    if(idx < 0 || idx > chp.chars().size() -1)
-      return;
-    
-    int isp = chp.find(' ', idx);
-    int iln = chp.find('\n', idx);
-    int idx2 = minValid(isp, iln);
-    if(idx2 < 0) idx2 = chp.chars().size() -1;
-    
-    String str = chp.getString(idx, idx2-idx);
-    if(mtc.getExpression().testExact(str)) {
-      changeColor(chp, idx, idx2-idx, mtc.getColor());
-    }
-    findAndChangeColor(chp, mtc, idx2 +1);
-  }
-  
-  
-  private int minValid(int v1, int v2) {
-    if(v1 >= 0 && (v1 < v2 || v2 < 0))
-      return v1;
-    else if(v2 >= 0 && (v2 < v1 || v1 < 0))
-      return v2;
-    else 
-      return -1;
-  }
-  
-  
-  private void changeColor(CharPanel chp, int idx, int len, Color c) {
-    for(int i = idx; i < (idx + len); i++) {
+  private void changeColor(CharPanel chp, int start, int end, Color c) {
+    for(int i = start; i < end; i++) {
       JChar jc = chp.chars().get(i);
       jc.setForeground(c);
       jc.repaint();

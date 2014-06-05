@@ -23,6 +23,7 @@ package us.pserver.code;
 
 import java.awt.Color;
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import ru.lanwen.verbalregex.VerbalExpression;
 
@@ -92,6 +93,12 @@ public class Match {
   public VerbalExpression getExpression() {
     return VerbalExpression
         .regex().add(regex).build();
+  }
+  
+  
+  public Matcher matcherFor(String str) {
+    if(regex == null) return null;
+    return Pattern.compile(regex).matcher(str);
   }
 
 

@@ -502,6 +502,18 @@ public class VerbalExpression {
         }
         return ret;
     }
+    
+    
+    public Pattern getPattern() {
+      return pattern;
+    }
+    
+    
+    public Matcher matcherFor(String str) {
+      if(pattern == null) return null;
+      return pattern.matcher(str);
+    }
+    
 
     /**
      * Extract full string that matches regex

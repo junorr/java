@@ -45,21 +45,17 @@ public class TestCharPanel {
     cp.setOriginalSize(300, 200);
     
     cp.getHighlighter().clear();
-    cp.getHighlighter().add(
-        VerbalExpression.regex()
-            .startOfLine().anything().then("\"")
-            .anything().then("\"").anything()
-            .build(), Color.LIGHT_GRAY);
-    cp.getHighlighter().add(
-        VerbalExpression.regex()
+    cp.getHighlighter()
+        .add(VerbalExpression.regex()
+            .find("\"").anything().then("\"")
+            .build(), Color.LIGHT_GRAY)
+        .add(VerbalExpression.regex()
+            .nonWordChar().then("public")
+            .build(), Color.WHITE)
+        .add(VerbalExpression.regex()
             .startOfLine().then("public")
             .build(), Color.WHITE);
-    /*
-    cp.setBackground(Color.WHITE);
-    cp.setForeground(Color.BLACK);
-    cp.setUnderColor(Color.RED)
-        .setInsertColor(Color.BLUE);
-    */
+    
     f.add(cp);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     f.setVisible(true);
