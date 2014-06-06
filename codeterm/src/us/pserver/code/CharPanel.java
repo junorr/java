@@ -193,7 +193,7 @@ public class CharPanel extends JPanel
       underColor = c;
       if(chars != null && !chars.isEmpty()) {
         chars.forEach(j->j.setUnderColor(underColor));
-        current.repaint();
+        current.paint();
       }
     }
     return this;
@@ -307,8 +307,8 @@ public class CharPanel extends JPanel
   @Override
   public void repaint() {
     Graphics g = this.getGraphics();
-    if(g == null) return;
-    this.paint(g);
+    if(g != null)
+      this.paint(g);
   }
   
   
@@ -321,17 +321,15 @@ public class CharPanel extends JPanel
   public CharPanel current(JChar ch) {
     int i = find(ch);
     if(i >= 0) {
-      if(current != null)
-        current.borderNone();
-      current = ch.borderUnder();
+      if(current != null) 
+        current.borderNone().paint();
+      current = ch.borderUnder().paint();
 
       if(select) {
         endSelIndex = i;
         doSelection();
       }
       else unselect();
-      
-      this.repaint();
     }
     return this;
   }
@@ -706,7 +704,6 @@ public class CharPanel extends JPanel
     JChar ch = new JChar(c);
     add(ch)
         .changePosition(chars.size()-1, ic)
-        .updateChars()
         .current(chars.get(ic+1));
   }
   
@@ -716,7 +713,7 @@ public class CharPanel extends JPanel
     JChar next = next();
     if(next == null) {
       next = new JChar();
-      add(next).updateChars();
+      add(next);
     }
     current(next);
   }
@@ -782,7 +779,6 @@ public class CharPanel extends JPanel
       JChar ch = new JChar(LN);
       add(ch)
           .changePosition(chars.size()-1, ic)
-          .updateChars()
           .current(chars.get(ic+1));
     }
     return this;
@@ -842,8 +838,8 @@ public class CharPanel extends JPanel
     Dimension dm = bestSize();
     this.setSize(dm);
     this.setPreferredSize(dm);
-    this.repaint();
     this.updateListeners();
+    this.repaint();
     return this;
   }
   
@@ -870,7 +866,7 @@ public class CharPanel extends JPanel
         }
       }
     }
-    return this;
+    return this.updateChars();
   }
   
   
@@ -960,16 +956,17 @@ public class CharPanel extends JPanel
         sb.append(ch.getchar());
         ch.setOpaque(true);
         ch.setBackground(selColor);
-        ch.repaint();
+        ch.paint();
       }
       selection = sb.toString();
-      repaint();
+      this.repaint();
     }
     return this;
   }
   
   
   public CharPanel unselect() {
+    if(!isSelected()) return this;
     startSelIndex = endSelIndex = -1;
     select = false;
     selection = null;

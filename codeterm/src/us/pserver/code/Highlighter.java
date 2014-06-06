@@ -136,7 +136,7 @@ public class Highlighter implements ViewUpdateListener {
     for(int i = start; i < end; i++) {
       JChar jc = chp.chars().get(i);
       jc.setForeground(c);
-      jc.repaint();
+      jc.paint();
     }//for
   }
   

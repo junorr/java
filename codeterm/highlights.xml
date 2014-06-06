@@ -11,4 +11,5 @@
     <regex>^(?:public)</regex>
     <color reference="../../match[2]/color"/>
   </match>
+</list>tch>
 </list>

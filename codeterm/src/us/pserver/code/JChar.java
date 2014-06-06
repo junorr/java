@@ -23,6 +23,7 @@ package us.pserver.code;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -116,6 +117,14 @@ public class JChar extends JLabel {
   }
 
 
+  public JChar paint() {
+    Graphics g = this.getGraphics();
+    if(g != null)
+      this.paint(g);
+    return this;
+  }
+  
+  
   @Override
   public int hashCode() {
     int hash = 5;
