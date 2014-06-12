@@ -31,6 +31,7 @@ import us.pserver.remote.http.HttpBuilder;
 import us.pserver.remote.http.HttpHexObject;
 import us.pserver.remote.http.HttpConst;
 import static us.pserver.remote.StreamUtils.bytes;
+import us.pserver.remote.http.HttpInputStream;
 
 
 /**
@@ -95,13 +96,13 @@ public class HttpRequestChannel implements Channel, HttpConst {
    */
   private void setHeaders() {
     conn.setRequestProperty(
-        HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART);
-    conn.setRequestProperty(
         HD_USER_AGENT, VALUE_USER_AGENT);
     conn.setRequestProperty(
         HD_ACCEPT_ENCODING, VALUE_ENCODING);
     conn.setRequestProperty(
         HD_ACCEPT, VALUE_ACCEPT);
+    conn.setRequestProperty(
+        HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART + HD_BOUNDARY + BOUNDARY);
   }
   
   
@@ -114,22 +115,11 @@ public class HttpRequestChannel implements Channel, HttpConst {
     OutputStream out = conn.getOutputStream();
     
     HttpBuilder build = new HttpBuilder()
-        .openXmlBoundary()
         .add(new HttpHexObject(trp.getWriteVersion()));
+    if(input != null)
+      build.add(new HttpInputStream(input));
     build.writeTo(out);
     
-    if(input != null) {
-      out.write(bytes(BOUNDARY_CONTENT_START));
-      StreamUtils.transfer(input, out);
-      out.write(StreamUtils.BYTES_EOF);
-      out.write(bytes(BOUNDARY_CONTENT_END));
-    }
-    else out.write(StreamUtils.BYTES_EOF);
-    
-    out.write(bytes(BOUNDARY_XML_END));
-    out.write(StreamUtils.LNR);
-    out.write(StreamUtils.LNR);
-    out.flush();
     isvalid = false;
     
     if(conn.getResponseCode() != 200)
@@ -139,19 +129,18 @@ public class HttpRequestChannel implements Channel, HttpConst {
   }
   
   
-  /*
+  /**
    * Imprime todo o conteúdo recebido do canal
    * na saída padrão.
    * @throws IOException Caso ocorra erro na leitura
    * da transmissão.
    *
-  /*
+  */
   public void dump() throws IOException {
     System.out.println("Response: "+ conn.getResponseCode()
         + " "+ conn.getResponseMessage());
     StreamUtils.transfer(conn.getInputStream(), System.out);
   }
-  */
   
   
   @Override

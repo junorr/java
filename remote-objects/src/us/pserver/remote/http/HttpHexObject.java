@@ -22,7 +22,14 @@
 package us.pserver.remote.http;
 
 import com.thoughtworks.xstream.XStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import us.pserver.cdr.hex.HexStringCoder;
+import us.pserver.remote.StreamUtils;
+import static us.pserver.remote.http.Header.BOUNDARY;
+import static us.pserver.remote.http.HttpConst.CRLF;
+import static us.pserver.remote.http.HttpConst.HYFENS;
 
 
 /**
@@ -33,6 +40,13 @@ import us.pserver.cdr.hex.HexStringCoder;
  * @version 1.0 - 21/01/2014
  */
 public class HttpHexObject extends Header {
+  
+  public static final Header HD_CONTENT_XML = 
+      new Header(HD_CONTENT_TYPE, VALUE_CONTENT_XML);
+  
+  
+  public static final int STATIC_SIZE = 72;
+  
   
   private HexStringCoder coder;
   
@@ -78,8 +92,9 @@ public class HttpHexObject extends Header {
    * Retorna o tamanho em bytes do conteúdo HTTP.
    * @return <code>int</code>
    */
-  public int getLength() {
-    return (getEncoded() != null 
+  @Override
+  public long getLength() {
+    return STATIC_SIZE + (getEncoded() != null 
         ? getEncoded().length() : 0);
   }
   
@@ -99,6 +114,31 @@ public class HttpHexObject extends Header {
   }
   
   
+  @Override
+  public boolean isContentHeader() {
+    return true;
+  }
+  
+  
+  @Override
+  public void writeTo(OutputStream out) {
+    if(out == null) return;
+    StringBuilder start = new StringBuilder();
+    start.append(CRLF).append(HYFENS).append(BOUNDARY);
+    start.append(CRLF).append(HD_CONTENT_XML.toString())
+        .append(CRLF).append(CRLF).append(BOUNDARY_XML_START);
+    
+    try {
+      StreamUtils.write(start.toString(), out);
+      StreamUtils.write(getEncoded(), out);
+      StreamUtils.write(BOUNDARY_XML_END, out);
+      out.flush();
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  
   /**
    * @see us.pserver.remote.http.HttpHexObject#getEncoded()
    * @return <code>String</code>
@@ -106,6 +146,19 @@ public class HttpHexObject extends Header {
   @Override
   public String toString() {
     return getEncoded();
+  }
+  
+  
+  public static void main(String[] args) throws IOException {
+    StringBuilder start = new StringBuilder();
+    start.append(CRLF).append(HYFENS).append(BOUNDARY);
+    start.append(CRLF).append(HD_CONTENT_XML.toString())
+        .append(CRLF).append(CRLF).append(BOUNDARY_XML_START)
+        .append(BOUNDARY_XML_END);
+    
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    StreamUtils.write(start.toString(), bos);
+    System.out.println("* size="+ bos.size());
   }
   
 }

@@ -21,7 +21,10 @@
 
 package us.pserver.remote.http;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Objects;
+import us.pserver.remote.StreamUtils;
 
 
 /**
@@ -31,8 +34,6 @@ import java.util.Objects;
  * @version 1.0 - 21/01/2014
  */
 public class Header implements HttpConst {
-  
-  public static final String BOUNDARY = "Boundary";
   
   private String name;
   
@@ -96,6 +97,16 @@ public class Header implements HttpConst {
   }
   
   
+  public long getLength() {
+    return 0;
+  }
+  
+  
+  public boolean isContentHeader() {
+    return false;
+  }
+  
+  
   /**
    * Cria um cabeçalho de delimitação de conteúdo.
    * @param value <code>String</code> delimitadora.
@@ -106,6 +117,16 @@ public class Header implements HttpConst {
   }
 
 
+  public void writeTo(OutputStream out) {
+    if(out == null) return;
+    try {
+      StreamUtils.write(toString(), out);
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  
   @Override
   public int hashCode() {
     int hash = 3;

@@ -1,0 +1,20 @@
+receiveJsonpData({
+"cols": [
+{"label": "method", "type": "string"},
+{"label": "Average time [s]", "type": "number"},
+{"label": "StdDev", "type": "number"},
+{"label": "GC time [s]", "type": "number"},
+{"label": "GC average [s]", "type": "number"},
+{"label": "StdDev", "type": "number"},
+{"label": "GC calls", "type": "number"},
+{"label": "benchmark rounds", "type": "number"},
+{"label": "warmup rounds", "type": "number"},
+{"label": "Total benchmark time", "type": "number"},
+{"label": "Total warmup time", "type": "number"}
+],
+"rows": [
+{"c": [{"v": "testXmlNetOwn"}, {"v": 0.01}, {"v": 0.0}, {"v": 0.0}, {"v": 0.0}, {"v": 0.0}, {"v": 0}, {"v": 40}, {"v": 10}, {"v": 0.44}, {"v": 0.38}]},
+{"c": [{"v": "testHttpNetClient"}, {"v": 0.02}, {"v": 0.01}, {"v": 0.01}, {"v": 0.0}, {"v": 0.0}, {"v": 1}, {"v": 40}, {"v": 10}, {"v": 0.74}, {"v": 0.22}]},
+{"c": [{"v": "testXmlNetCommon"}, {"v": 0.01}, {"v": 0.0}, {"v": 0.0}, {"v": 0.0}, {"v": 0.0}, {"v": 1}, {"v": 40}, {"v": 10}, {"v": 0.35}, {"v": 0.09}]},
+{"c": [{"v": "testHttpNetWithProxy"}, {"v": 0.02}, {"v": 0.0}, {"v": 0.01}, {"v": 0.0}, {"v": 0.0}, {"v": 1}, {"v": 40}, {"v": 10}, {"v": 0.86}, {"v": 0.21}]}
+]});

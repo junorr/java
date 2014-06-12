@@ -68,6 +68,14 @@ public interface HttpConst {
   /**
    * Cabeçalho 
    * <br/><code>
+   *  HD_CONTENT_DISPOSITION = "Content-Disposition"
+   * </code>
+   */
+  public static final String HD_CONTENT_DISPOSITION = "Content-Disposition";
+
+  /**
+   * Cabeçalho 
+   * <br/><code>
    *  HD_USER_AGENT = "User-Agent"
    * </code>
    */
@@ -80,6 +88,14 @@ public interface HttpConst {
    * </code>
    */
   public static final String HD_ACCEPT_ENCODING = "Accept-Encoding";
+
+  /**
+   * Cabeçalho 
+   * <br/><code>
+   *  HD_HOST = "Host"
+   * </code>
+   */
+  public static final String HD_HOST = "Host";
 
   /**
    * Cabeçalho 
@@ -132,10 +148,34 @@ public interface HttpConst {
   /**
    * Cabeçalho 
    * <br/><code>
+   *  HD_DATE = "Date"
+   * </code>
+   */
+  public static final String HD_BOUNDARY = "; boundary=";
+
+  /**
+   * Cabeçalho 
+   * <br/><code>
    *  HD_PROXY_AUTHORIZATION = "Proxy-Authorization"
    * </code>
    */
   public static final String HD_PROXY_AUTHORIZATION = "Proxy-Authorization";
+
+  /**
+   * Content disposition value
+   * <br/><code>
+   *  VALUE_DISPOSITION_FORM_DATA = "form-data"
+   * </code>
+   */
+  public static final String VALUE_DISPOSITION_FORM_DATA = "form-data";
+
+  /**
+   * Content type value
+   * <br/><code>
+   *  VALUE_APP_OCTETSTREAM = "application/octet-stream"
+   * </code>
+   */
+  public static final String VALUE_APP_OCTETSTREAM = "application/octet-stream";
 
   /**
    * Valor de cabeçalho  
@@ -175,7 +215,7 @@ public interface HttpConst {
    *  VALUE_ACCEPT = "text/html, text/xml, application/xml"
    * </code>
    */
-  public static final String VALUE_ACCEPT = "text/html, text/xml, application/xml";
+  public static final String VALUE_ACCEPT = "text/html, text/xml, application/xml, application/octet-stream";
 
   /**
    * Valor de cabeçalho  
@@ -215,7 +255,23 @@ public interface HttpConst {
    *  LRN = "\r\n"
    * </code>
    */
-  public static final String LRN = "\r\n";
+  public static final String CRLF = "\r\n";
+
+  /**
+   * Two hyfens
+   * <br/><code>
+   *  HYFENS = "--"
+   * </code>
+   */
+  public static final String HYFENS = "--";
+
+  /**
+   * Multipard boundary
+   * <br/><code>
+   *  BOUNDARY = "9051914041544843365972754266"
+   * </code>
+   */
+  public static final String BOUNDARY = "9051914041544843365972754266";
 
   /**
    * Cabeçalho delimitador de abertura XML 

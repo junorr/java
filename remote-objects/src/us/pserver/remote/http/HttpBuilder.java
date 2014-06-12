@@ -21,12 +21,19 @@
 
 package us.pserver.remote.http;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import us.pserver.remote.StreamUtils;
+import static us.pserver.remote.http.HttpConst.BOUNDARY;
+import static us.pserver.remote.http.HttpConst.BOUNDARY_XML_END;
+import static us.pserver.remote.http.HttpConst.BOUNDARY_XML_START;
+import static us.pserver.remote.http.HttpConst.CRLF;
+import static us.pserver.remote.http.HttpConst.HYFENS;
+import static us.pserver.remote.http.HttpHexObject.HD_CONTENT_XML;
 
 
 /**
@@ -36,6 +43,9 @@ import us.pserver.remote.StreamUtils;
  * @version 1.0 - 21/01/2014
  */
 public class HttpBuilder implements HttpConst {
+  
+  public static final int STATIC_SIZE = 40;
+  
   
   private final List<Header> hds;
   
@@ -71,6 +81,11 @@ public class HttpBuilder implements HttpConst {
   }
   
   
+  public HttpBuilder addContentLength() {
+    return this.add(HD_CONTENT_LENGTH, String.valueOf(getLength()));
+  }
+  
+  
   /**
    * Adiciona uma <code>String</code> delimitadora.
    * @param boundary <code>String</code> delimitadora.
@@ -84,29 +99,11 @@ public class HttpBuilder implements HttpConst {
   
   
   /**
-   * Insere um cabeçalho delimitador de abertura de conteúdo.
-   * @return Esta instância modificada de <code>HttpBuilder</code>.
-   */
-  public HttpBuilder openContentBoundary() {
-    return this.add(Header.boundary(BOUNDARY_CONTENT_START));
-  }
-  
-  
-  /**
-   * Insere um cabeçalho delimitador de encerramento de conteúdo.
-   * @return Esta instância modificada de <code>HttpBuilder</code>.
-   */
-  public HttpBuilder closeContentBoundary() {
-    return this.add(Header.boundary(BOUNDARY_CONTENT_END));
-  }
-  
-  
-  /**
    * Insere um cabeçalho delimitador de abertura de conteúdo XML.
    * @return Esta instância modificada de <code>HttpBuilder</code>.
    */
   public HttpBuilder openXmlBoundary() {
-    return this.add(Header.boundary(LRN+LRN+BOUNDARY_XML_START));
+    return this.add(Header.boundary(CRLF+CRLF+BOUNDARY_XML_START));
   }
   
   
@@ -128,6 +125,22 @@ public class HttpBuilder implements HttpConst {
   }
   
   
+  public long getLength() {
+    long len = 0;
+    for(Header hd : hds) {
+      len += hd.getLength();
+    }
+    return len + STATIC_SIZE;
+  }
+  
+  
+  private void writeHeader(Header hd, OutputStream out) throws IOException {
+    hd.writeTo(out);
+    if(!hd.isContentHeader())
+      StreamUtils.write(CRLF, out);
+  }
+  
+  
   /**
    * Escreve o conteúdo de todos os cabeçalho no 
    * stream de saída fornecido.
@@ -140,13 +153,33 @@ public class HttpBuilder implements HttpConst {
           "Invalid OutputStream ["+ out+ "]");
     if(hds.isEmpty()) return;
     
-    StringBuilder resp = new StringBuilder();
-    Iterator<Header> it = hds.iterator();
-    while(it.hasNext()) {
-      resp.append(it.next().toString()).append(LRN);
+    for(int i = 0; i < hds.size(); i++) {
+      Header hd = hds.get(i);
+      if(hd.isContentHeader())
+        writeHeader(new Header(HD_CONTENT_LENGTH, 
+            String.valueOf(getLength())), out);
+      
+      writeHeader(hd, out);
     }
-    out.write(StreamUtils.bytes(resp.toString()));
+    
+    StringBuilder end = new StringBuilder();
+    end.append(CRLF).append(HYFENS)
+        .append(BOUNDARY).append(HYFENS)
+        .append(CRLF).append(CRLF);
+    StreamUtils.write(end.toString(), out);
     out.flush();
+  }
+  
+  
+  public static void main(String[] args) throws IOException {
+    StringBuilder start = new StringBuilder();
+    start.append(CRLF).append(HYFENS)
+        .append(BOUNDARY).append(HYFENS)
+        .append(CRLF).append(CRLF);
+    
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    StreamUtils.write(start.toString(), bos);
+    System.out.println("* size="+ bos.size());
   }
   
 }

@@ -1,0 +1,910 @@
+* (22/01/2014 17:35:28) [INFO]: Starting NetowrkServer...
+* (22/01/2014 17:35:28) [INFO]: Channel: us.pserver.remote.XmlNetChannel
+* (22/01/2014 17:35:28) [INFO]: Listening on: NetConnector{ *:9099 }
+* (22/01/2014 17:35:28) [INFO]: Server started!
+
+* (22/01/2014 17:35:28) [INFO]: Starting NetowrkServer...
+* (22/01/2014 17:35:28) [INFO]: Channel: us.pserver.remote.HttpResponseChannel
+* (22/01/2014 17:35:28) [INFO]: Listening on: NetConnector{ *:10099 }
+* (22/01/2014 17:35:28) [INFO]: Server started!
+
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49618,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49619,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49620,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49621,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49622,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49623,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49624,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49625,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49626,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49627,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49628,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49629,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49630,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49631,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49632,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49633,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49634,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49635,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49636,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49637,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49638,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49639,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49640,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49641,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49642,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49643,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49644,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49645,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49646,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49647,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49648,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49649,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49650,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49651,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49652,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49653,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49654,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49655,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49656,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49657,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49658,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49659,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49660,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49661,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49662,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49663,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49664,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49665,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49666,localport=9099]
+* (22/01/2014 17:35:38) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:38) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:38) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:38) [INFO]: ------------------------------
+* (22/01/2014 17:35:38) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49667,localport=9099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:39) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49668,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49669,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49670,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49671,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49672,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49673,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49674,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49675,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49676,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49677,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49678,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49679,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49680,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49681,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49682,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49683,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49684,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49685,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49686,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49687,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49688,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49689,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49690,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49691,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49692,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49693,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49694,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49695,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49696,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49697,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49698,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49699,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49700,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49701,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49702,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49703,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49704,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49705,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49706,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49707,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49708,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49709,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49710,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49711,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49712,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49713,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49714,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49715,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49716,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:39) [INFO]: ------------------------------
+* (22/01/2014 17:35:39) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49717,localport=10099]
+* (22/01/2014 17:35:39) [INFO]: Remote request: UpperEcho.toLowerCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:39) [INFO]: Response sent: OpResult{ success = true, return = a string to be echoed in upper case }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49718,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49719,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49720,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49721,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49722,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49723,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49724,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49725,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49726,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49727,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49728,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49729,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49730,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49731,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49732,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49733,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49734,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49735,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49736,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49737,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49738,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49739,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49740,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49741,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49742,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49743,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49744,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49745,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49746,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49747,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49748,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49749,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49750,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49751,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49752,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49753,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49754,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49755,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49756,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49757,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49758,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49759,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49760,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49761,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49762,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49763,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49764,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49765,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49766,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/127.0.0.1,port=49767,localport=9099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.reverse( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = esac reppu ni deohce eb ot gnirts a }
+* (22/01/2014 17:35:40) [INFO]: Connection closed by client.
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42952,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42953,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42954,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42955,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42956,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42957,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42958,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42959,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42960,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42961,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42962,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42963,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42964,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42965,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42966,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42967,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42968,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42969,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42970,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42971,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42972,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42973,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42974,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42975,localport=10099]
+* (22/01/2014 17:35:40) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:40) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:40) [INFO]: ------------------------------
+* (22/01/2014 17:35:40) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42976,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42977,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42978,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42979,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42980,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42981,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42982,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42983,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42984,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42985,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42986,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42987,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42988,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42989,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42990,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42991,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42992,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42993,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42994,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42995,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42996,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42997,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42998,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=42999,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=43000,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+* (22/01/2014 17:35:41) [INFO]: ------------------------------
+* (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=43001,localport=10099]
+* (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
+* (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }

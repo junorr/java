@@ -106,7 +106,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
     HttpHexObject hob = new HttpHexObject(
         trp.getWriteVersion());
     
-    int length = FIXED_LENGTH
+    long length = FIXED_LENGTH
         + hob.getLength()
         + FIXED_OBJ_LENGTH;
     

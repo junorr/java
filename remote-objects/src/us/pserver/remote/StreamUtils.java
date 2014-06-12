@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import us.pserver.cdr.hex.HexByteCoder;
 
 
 /**
@@ -84,6 +85,37 @@ public abstract class StreamUtils {
     while((read = in.read(buf)) > 0) {
       total += read;
       out.write(buf, 0, read);
+      int len = (read < 30 ? read : 30);
+      String str = new String(buf, read -len, len);
+      if(read < buf.length && str.contains(EOF))
+        break;
+    }
+    return total;
+  }
+  
+  
+  public static long transferHexEncoding(InputStream in, OutputStream out) throws IOException {
+    return transferHexCoder(in, out, true);
+  }
+  
+  
+  public static long transferHexDecoding(InputStream in, OutputStream out) throws IOException {
+    return transferHexCoder(in, out, false);
+  }
+  
+  
+  public static long transferHexCoder(InputStream in, OutputStream out, boolean encode) throws IOException {
+    long total = -1;
+    if(in == null || out == null) return total;
+
+    HexByteCoder cdr = new HexByteCoder();
+    int read = 0;
+    total = read;
+    byte[] buf = new byte[BUFFER_SIZE];
+    
+    while((read = in.read(buf)) > 0) {
+      total += read;
+      out.write(cdr.apply(buf, encode), 0, read);
       int len = (read < 30 ? read : 30);
       String str = new String(buf, read -len, len);
       if(read < buf.length && str.contains(EOF))

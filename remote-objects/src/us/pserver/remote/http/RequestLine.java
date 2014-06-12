@@ -100,7 +100,7 @@ public class RequestLine extends Header implements HttpConst {
     if(getValue() == null) setValue("/");
     if(meth == null) meth = Method.GET;
     return meth.name() + BLANK 
-        + getValue() + BLANK
+        + getValue() + "/" + BLANK
         + HTTP_VERSION;
   }
   
