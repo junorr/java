@@ -42,10 +42,18 @@ public class FileWalker implements FileVisitor<Path> {
   
   private Path dir;
   
+  private Path mainJar;
+  
   
   public FileWalker(String dir) {
-    this.dir = Paths.get(dir);
+    this.dir = Paths.get(dir).toAbsolutePath();
     paths = new LinkedList<>();
+    mainJar = null;
+  }
+  
+  
+  public Path getMainJar() {
+    return mainJar;
   }
   
   
@@ -65,8 +73,14 @@ public class FileWalker implements FileVisitor<Path> {
 
   @Override
   public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-    if(file.toString().endsWith(".jar"))
-      paths.add(file);
+    if(file.toString().endsWith(".jar")
+        && !paths.contains(file)) {
+      Path p = dir.resolve(file.getFileName());
+      if(Files.exists(p) && file.equals(p))
+        mainJar = p;
+      else
+        paths.add(file);
+    }
     return FileVisitResult.CONTINUE;
   }
 
@@ -84,12 +98,13 @@ public class FileWalker implements FileVisitor<Path> {
   
   
   public static void main(String[] args) {
-    FileWalker fw = new FileWalker("f:/java/map_share_win/lib");
+    FileWalker fw = new FileWalker("d:/java/bigjar/dist");
     List l = fw.walk();
     System.out.println("------------------------");
     for(Object o : l) {
       System.out.println(o);
     }
+    System.out.println("--> main jar: "+ fw.getMainJar());
   }
   
 }

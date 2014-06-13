@@ -28,14 +28,12 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Date;
 import us.pserver.cdr.hex.HexStringCoder;
-import static us.pserver.remote.StreamUtils.bytes;
-import us.pserver.remote.http.HttpBuilder;
-import us.pserver.remote.http.HttpHexObject;
-import us.pserver.remote.http.ResponseLine;
-import us.pserver.remote.http.HttpConst;
-import static us.pserver.remote.http.HttpConst.BOUNDARY_CONTENT_END;
-import static us.pserver.remote.http.HttpConst.BOUNDARY_CONTENT_START;
-import static us.pserver.remote.http.HttpConst.BOUNDARY_XML_END;
+import us.pserver.http.HttpBuilder;
+import us.pserver.http.HttpConst;
+import us.pserver.http.HttpHexObject;
+import us.pserver.http.ResponseLine;
+import us.pserver.http.StreamUtils;
+import static us.pserver.http.StreamUtils.bytes;
 
 
 /**
@@ -106,16 +104,12 @@ public class HttpResponseChannel implements Channel, HttpConst {
     HttpHexObject hob = new HttpHexObject(
         trp.getWriteVersion());
     
-    long length = FIXED_LENGTH
-        + hob.getLength()
-        + FIXED_OBJ_LENGTH;
+    long length = hob.getLength();
     
     if(trp.getInputStream() != null)
-      length += FIXED_CONT_LENGTH 
-          + trp.getInputStream().available();
+      length += trp.getInputStream().available();
     
     build.add(HD_CONTENT_LENGTH, String.valueOf(length));
-    build.openXmlBoundary().add(hob);
     return build;
   }
   
@@ -138,8 +132,8 @@ public class HttpResponseChannel implements Channel, HttpConst {
     else out.write(StreamUtils.BYTES_EOF);
     
     out.write(bytes(BOUNDARY_XML_END));
-    out.write(StreamUtils.LNR);
-    out.write(StreamUtils.LNR);
+    out.write(StreamUtils.BYTES_CRLF);
+    out.write(StreamUtils.BYTES_CRLF);
     out.flush();
     isvalid = false;
     sock.shutdownOutput();
@@ -159,8 +153,8 @@ public class HttpResponseChannel implements Channel, HttpConst {
       return null;
     
     Transport trp = (Transport) obj;
-    if(StreamUtils.readUntil(in, 
-        BOUNDARY_CONTENT_START, StreamUtils.EOF)) {
+    if(StreamUtils.readUntil(in, BOUNDARY_CONTENT_START, 
+        StreamUtils.EOF) == BOUNDARY_CONTENT_START) {
       trp.setInputStream(in);
     }
     return trp;

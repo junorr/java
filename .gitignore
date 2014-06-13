@@ -4,3 +4,6 @@
 /codeterm/dist/
 /remote-objects2/nbproject/private/
 /http-multipart/nbproject/private/
+/http-utils/nbproject/private/
+/http-utils/build/
+/http-utils/dist/

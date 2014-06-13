@@ -38,4 +38,15 @@ public class StringByteConverter implements Converter<String, byte[]> {
     }
   }
   
+  
+  public String reverse(byte[] b, int offset, int length) {
+    if(b == null || b.length == 0)
+      return null;
+    try {
+      return new String(b, offset, length, "UTF-8");
+    } catch(UnsupportedEncodingException e) {
+      return null;
+    }
+  }
+  
 }

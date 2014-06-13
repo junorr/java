@@ -29,7 +29,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 import us.pserver.cdr.b64.Base64StringCoder;
-import us.pserver.remote.http.HttpConst;
+import us.pserver.http.HttpConst;
 
 
 /**
@@ -46,8 +46,10 @@ import us.pserver.remote.http.HttpConst;
 public class NetConnector {
   
   /**
-   * Porta de comunicação padrão
-   * <br/><code>DEFAULT_PORT = 9099</code>.
+   * <code>
+   *  DEFAULT_PORT = 9099
+   * </code><br>
+   * Porta de comunicação padrão.
    */
   public static final int DEFAULT_PORT = 9099;
   

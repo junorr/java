@@ -27,7 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import us.pserver.log.SLogV2;
+import us.pserver.log.SimpleLog;
 
 /**
  *
@@ -58,6 +58,10 @@ public class BigJar {
   
   public static final String DOT = " .";
   
+  public static final String SPACE = " ";
+  
+  public static final String SLASH = "/";
+  
   public static final String CMD_C = "cmd /c ";
   
   public static final String LOGFILE = "./bigjar.log";
@@ -67,7 +71,9 @@ public class BigJar {
   
   private Path jarFile;
   
-  private SLogV2 log;
+  private Path tempDir;
+  
+  private SimpleLog log;
   
   
   public BigJar(String dir) {
@@ -78,7 +84,8 @@ public class BigJar {
           "Invalid directory ["+ p.toString()+ "]");
     this.dir = p.toString();
     jarFile = null;
-    log = new SLogV2(LOGFILE);
+    tempDir = Paths.get(dir, BIGJAR).toAbsolutePath();
+    log = new SimpleLog(LOGFILE);
   }
   
   
@@ -87,67 +94,87 @@ public class BigJar {
   }
   
   
-  public SLogV2 getSLogV2() {
+  public SimpleLog getSimpleLog() {
     return log;
   }
   
   
   private void createDir() throws IOException {
-    Files.createDirectories(Paths.get(dir, BIGJAR));
+    Files.createDirectories(tempDir);
+    if(!Files.exists(tempDir))
+      throw new IOException(
+          "Error creating directory ["+ tempDir+ "]");
   }
   
   
   private void deleteDir() throws IOException {
-    new DirRemover(Paths.get(dir, BIGJAR))
-        .remove();
-  }
-  
-  
-  private void unpackLib() {
-    List<Path> list = new FileWalker(
-        Paths.get(dir, LIB_DIR).toString())
-        .walk();
-    for(Path p : list) {
-      runCommand(CD+ Paths.get(dir, BIGJAR).toString()
-          + AND+ JAR_XF+ p.toString());
-    }
+    new DirRemover(tempDir).remove();
   }
   
   
   private void deleteMetaInf() {
-    new DirRemover(Paths.get(dir, BIGJAR, META_INF))
-        .remove();
+    new DirRemover(tempDir
+        .resolve(META_INF)).remove();
   }
   
   
-  private void unpackJar() {
-    List<Path> list = new FileWalker(dir)
-        .walk();
-    for(Path p : list) {
-      jarFile = p;
-      runCommand(CD+ Paths.get(dir, BIGJAR).toString()
-          + AND+ JAR_XF+ p.toString());
-    }
+  private void checkJars(List<Path> jars) {
+    if(jars == null || jars.isEmpty()
+        || jarFile == null)
+      throw new IllegalStateException(
+          "Unnable to find jar files in directory ["+ dir+ "]");
+  }
+  
+  
+  private void unpackJars() {
+    FileWalker fw = new FileWalker(dir);
+    List<Path> list = fw.walk();
+    jarFile = fw.getMainJar();
+    this.checkJars(list);
+    
+    list.forEach(this::unpackJar);
+    unpackJar(jarFile);
+  }
+  
+  
+  public void unpackJar(Path p) {
+    StringBuilder cmd = new StringBuilder()
+        .append(CD)
+        .append(tempDir.toString())
+        .append(AND)
+        .append(JAR_XF)
+        .append(p.toString());
+    runCommand(cmd.toString());
   }
   
   
   private void makeBigJar() throws IOException {
     Files.delete(jarFile);
-    runCommand(CD+ dir+ AND+ JAR_CFM
-        + jarFile + " "
-        + Paths.get(dir, BIGJAR, 
-            META_INF, MANIFEST).toString()
-        + JAR_C_OPT+ BIGJAR+ DOT);
+    if(Files.exists(jarFile))
+      throw new IOException(
+          "Unnable to delete jar file ["+ jarFile.toString()+ "]");
+    StringBuilder cmd = new StringBuilder()
+        .append(CD)
+        .append(dir)
+        .append(AND)
+        .append(JAR_CFM)
+        .append(jarFile.getFileName().toString())
+        .append(SPACE)
+        .append(BIGJAR).append(SLASH)
+        .append(META_INF).append(SLASH)
+        .append(MANIFEST)
+        .append(JAR_C_OPT)
+        .append(BIGJAR)
+        .append(DOT);
+    runCommand(cmd.toString());
   }
   
   
   public void make() throws IOException {
     log.info("Creating temp dir ["+ BIGJAR+ "]");
     createDir();
-    log.info("Unpacking libs...");
-    unpackLib();
-    log.info("Unpacking Jar File...");
-    unpackJar();
+    log.info("Unpacking Jar Files...");
+    unpackJars();
     log.info("Creating BigJar ["+ jarFile.toString()+ "]...");
     makeBigJar();
     log.info("Cleaning up...");
@@ -174,14 +201,14 @@ public class BigJar {
       System.out.write(bs, 0, read);
     }
   }
-
-
-  public String getDir() {
+  
+  
+  public String getBaseDirectory() {
     return dir;
   }
 
 
-  public void setDir(String dir) {
+  public void setBaseDirectory(String dir) {
     this.dir = dir;
   }
 
@@ -194,14 +221,15 @@ public class BigJar {
       bigjar = new BigJar();
     
     System.out.println();
-    System.out.println(" BIGJAR: Jar Files Unifier");
-    System.out.println("---------------------------");
+    System.out.println("    BIGJAR: Jar Files Unifier");
+    System.out.println("---------------------------------");
+    System.out.println(" Copyright (C) 2014 Juno Roesler");
+    System.out.println();
     try {
       bigjar.make();
-      bigjar.getSLogV2().stop();
     } catch(IOException e) {
-      bigjar.getSLogV2().fatal("Error creating BigJar: "+ e.toString());
-      bigjar.getSLogV2().fatal(e.toString());
+      bigjar.getSimpleLog().fatal("Error creating BigJar: "+ e.toString());
+      bigjar.getSimpleLog().fatal(e.toString());
     }
   }
   

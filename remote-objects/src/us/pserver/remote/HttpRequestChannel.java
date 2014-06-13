@@ -27,11 +27,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import us.pserver.cdr.hex.HexStringCoder;
-import us.pserver.remote.http.HttpBuilder;
-import us.pserver.remote.http.HttpHexObject;
-import us.pserver.remote.http.HttpConst;
-import static us.pserver.remote.StreamUtils.bytes;
-import us.pserver.remote.http.HttpInputStream;
+import us.pserver.http.HttpBuilder;
+import us.pserver.http.HttpConst;
+import us.pserver.http.HttpHexObject;
+import us.pserver.http.HttpInputStream;
+import us.pserver.http.StreamUtils;
 
 
 /**
@@ -154,8 +154,8 @@ public class HttpRequestChannel implements Channel, HttpConst {
         .isAssignableFrom(obj.getClass())) 
       return null;
     Transport trp = (Transport) obj;
-    if(StreamUtils.readUntil(in, 
-        BOUNDARY_CONTENT_START, StreamUtils.EOF)) {
+    if(StreamUtils.readUntil(in, BOUNDARY_CONTENT_START, 
+        StreamUtils.EOF) == BOUNDARY_CONTENT_START) {
       trp.setInputStream(in);
     }
     return trp;

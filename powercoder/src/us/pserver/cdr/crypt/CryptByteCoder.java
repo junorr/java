@@ -119,6 +119,34 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
   }
   
   
+  public byte[] encode(byte[] bs, int offset, int length) {
+    if(bs == null || bs.length == 0)
+      return bs;
+    try {
+      return encoder.doFinal(bs, offset, length);
+    } catch(BadPaddingException | IllegalBlockSizeException ex) {
+      throw new RuntimeException("Error encrypting: "+ ex, ex);
+    }
+  }
+  
+  
+  public byte[] decode(byte[] bs, int offset, int length) {
+    if(bs == null || bs.length == 0)
+      return bs;
+    try {
+      return decoder.doFinal(bs, offset, length);
+    } catch(BadPaddingException | IllegalBlockSizeException ex) {
+      throw new RuntimeException("Error decrypting: "+ ex, ex);
+    }
+  }
+  
+  
+  public byte[] apply(byte[] bs, int offset, int length, boolean encode) {
+    return (encode ? encode(bs, offset, length) 
+        : decode(bs, offset, length));
+  }
+  
+  
   public static void main(String[] args) throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
     CryptKey key = new CryptKey("mySecretPassword", 
         CryptAlgorithm.DES_CBC_PKCS5);
