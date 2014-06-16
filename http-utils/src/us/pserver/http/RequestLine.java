@@ -28,7 +28,7 @@ package us.pserver.http;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
  */
-public class RequestLine extends Header implements HttpConst {
+public class RequestLine extends HeaderLine {
   
   private Method meth;
   
@@ -39,6 +39,15 @@ public class RequestLine extends Header implements HttpConst {
   private String proto;
   
   
+  public RequestLine() {
+    super();
+    meth = null;
+    address = null;
+    path = SLASH;
+    proto = "http://";
+  }
+  
+  
   /**
    * Construtor que recebe o método da requisição
    * e o endereço do servidor.
@@ -46,6 +55,7 @@ public class RequestLine extends Header implements HttpConst {
    * @param address Endereço do servidor.
    */
   public RequestLine(Method meth, String address) {
+    super();
     if(meth == null)
       throw new IllegalArgumentException(
           "Invalid Method ["+ meth+ "]");
@@ -54,6 +64,7 @@ public class RequestLine extends Header implements HttpConst {
           "Invalid address ["+ address+ "]");
     
     proto = "http://";
+    httpVersion = HTTP_VERSION;
     this.setAddress(address);
     this.meth = meth;
   }
@@ -67,6 +78,7 @@ public class RequestLine extends Header implements HttpConst {
    * @param port Porta do servidor.
    */
   public RequestLine(Method meth, String address, int port) {
+    super();
     if(meth == null)
       throw new IllegalArgumentException(
           "Invalid Method ["+ meth+ "]");
@@ -74,6 +86,7 @@ public class RequestLine extends Header implements HttpConst {
       throw new IllegalArgumentException(
           "Invalid address ["+ address+ "]");
     
+    httpVersion = HTTP_VERSION;
     proto = "http://";
     this.setAddress(address, port);
     this.meth = meth;
@@ -85,7 +98,7 @@ public class RequestLine extends Header implements HttpConst {
    * <code>(Ex: Host: www.google.com)</code>.
    * @return cabeçalho HOST.
    */
-  public Header getHost() {
+  public Header getHostHeader() {
     return new Header(HD_HOST, address);
   }
   
@@ -105,6 +118,40 @@ public class RequestLine extends Header implements HttpConst {
    */
   public String getPath() {
     return path;
+  }
+  
+  
+  public Method getMethod() {
+    return meth;
+  }
+  
+  
+  public String getFullAddress() {
+    if(address == null || address.trim().isEmpty()
+        && path != null) 
+      return path;
+    else 
+      return proto + address + path;
+  }
+  
+  
+  public void setMethod(String method) {
+    String error = "Unknown Method ["+ method+ "]";
+    if(method == null || method.isEmpty())
+      throw new IllegalArgumentException(error);
+    
+    if(Method.CONNECT.name().equals(method))
+      meth = Method.CONNECT;
+    else if(Method.DELETE.name().equals(method))
+      meth = Method.DELETE;
+    else if(Method.GET.name().equals(method))
+      meth = Method.GET;
+    else if(Method.POST.name().equals(method))
+      meth = Method.POST;
+    else if(Method.PUT.name().equals(method))
+      meth = Method.PUT;
+    else 
+      throw new IllegalArgumentException(error);
   }
   
   
@@ -164,8 +211,8 @@ public class RequestLine extends Header implements HttpConst {
     if(path == null) path = "/";
     if(meth == null) meth = Method.GET;
     return meth.name() + BLANK 
-        + proto + address + path + BLANK
-        + HTTP_VERSION + CRLF;
+        + getFullAddress() + BLANK
+        + httpVersion + CRLF;
   }
   
 }

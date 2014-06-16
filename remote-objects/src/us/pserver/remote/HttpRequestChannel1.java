@@ -22,20 +22,19 @@
 package us.pserver.remote;
 
 import com.thoughtworks.xstream.XStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import us.pserver.cdr.hex.HexStringCoder;
-import us.pserver.http.Header;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
 import us.pserver.http.HttpHexObject;
 import us.pserver.http.HttpInputStream;
 import us.pserver.http.RequestLine;
+import us.pserver.http.ResponseLine;
+import us.pserver.http.ResponseParser;
 import us.pserver.http.StreamUtils;
-import static us.pserver.http.StreamUtils.UTF8;
 
 
 /**
@@ -58,15 +57,20 @@ import static us.pserver.http.StreamUtils.UTF8;
  */
 public class HttpRequestChannel1 implements Channel, HttpConst {
 
+  public static final String SUCCESS_RESPONSE = "200 OK";
+  
+  
   private final XStream xst;
   
   private final NetConnector netconn;
   
   private final HexStringCoder coder;
   
-  private final HttpBuilder builder;
+  private HttpBuilder builder;
   
   private Socket sock;
+  
+  private ResponseParser parser;
   
   
   /**
@@ -80,9 +84,9 @@ public class HttpRequestChannel1 implements Channel, HttpConst {
           "Invalid NetConnector ["+ conn+ "]");
     
     netconn = conn;
-    builder = new HttpBuilder();
     coder = new HexStringCoder();
     xst = new XStream();
+    parser = new ResponseParser();
     sock = null;
   }
   
@@ -102,7 +106,14 @@ public class HttpRequestChannel1 implements Channel, HttpConst {
   
   
   public HttpBuilder getHttpBuilder() {
+    if(builder == null)
+      builder = HttpBuilder.requestBuilder();
     return builder;
+  }
+  
+  
+  public ResponseParser getResponseParser() {
+    return parser;
   }
   
   
@@ -111,74 +122,58 @@ public class HttpRequestChannel1 implements Channel, HttpConst {
    * como tipo de conteúdo, codificação, conteúdo
    * aceito e agente da requisição.
    */
-  private void setHeaders() {
+  private void setHeaders(Transport trp) {
+    if(trp == null || trp.getObject() == null) 
+      throw new IllegalArgumentException(
+          "Invalid Transport [trp="+ trp+ "]");
+    
     RequestLine req = new RequestLine(Method.POST, 
         netconn.getAddress(), netconn.getPort());
-    builder.add(req).add(req.getHost());
-    builder.add(
-        HD_USER_AGENT, VALUE_USER_AGENT);
-    builder.add(
-        HD_ACCEPT_ENCODING, VALUE_ENCODING);
-    builder.add(
-        HD_ACCEPT, VALUE_ACCEPT);
+    builder = HttpBuilder.requestBuilder(req);
     if(netconn.getProxyAuthorization() != null)
-      builder.add(HD_PROXY_AUTHORIZATION, 
+      builder.put(HD_PROXY_AUTHORIZATION, 
           netconn.getProxyAuthorization());
-    builder.add(HD_CONTENT_TYPE, 
-        VALUE_CONTENT_MULTIPART + HD_BOUNDARY + BOUNDARY);
+    
+    builder.put(new HttpHexObject(trp.getWriteVersion()));
+    
+    if(trp.getInputStream() != null)
+      builder.put(new HttpInputStream(
+          trp.getInputStream()));
+    
   }
   
   
   @Override
   public void write(Transport trp) throws IOException {
-    if(trp == null) return;
-    builder.headers().clear();
-    this.setHeaders();
+    this.setHeaders(trp);
     
     if(sock == null)
       sock = netconn.connectSocket();
     
-    InputStream input = trp.getInputStream();
     OutputStream out = sock.getOutputStream();
-    
-    builder.add(new HttpHexObject(trp.getWriteVersion()));
-    if(input != null)
-      builder.add(new HttpInputStream(input));
-    
     builder.writeTo(out);
-    
-    String line = readLine(sock.getInputStream());
-    if(line == null || !line.contains("200"))
-      throw new IOException("Invalid response ["+ line+ "]");
+    if(trp.hasContentEmbedded())
+      trp.getInputStream().close();
+    this.verifyResponse();
   }
   
   
-  public Header readHeader(InputStream in) {
-    if(in == null) return null;
-    String str = readLine(in);
-    if(str.contains(":")) {
-      int id = str.indexOf(":");
-      return new Header(str.substring(0, id), str.substring(id+1));
+  private void verifyResponse() throws IOException {
+    readHeaders();
+    if(parser.getResponseLine() == null
+        || parser.getResponseLine().getCode() != 200) {
+      parser.headers().forEach(System.out::print);
+      throw new IOException(
+          "Invalid response from server: "
+          + parser.getResponseLine());
     }
-    return new Header(null, str);
   }
   
   
-  public String readLine(InputStream in) {
-    if(in == null) return null;
-    try {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      int read;
-      while((read = in.read()) != -1) {
-        bos.write(read);
-        if(bos.toString(UTF8).contains(CRLF))
-          break;
-      }
-      return bos.toString(UTF8);
-    } 
-    catch(IOException e) {
-      return null;
-    }
+  public void readHeaders() throws IOException {
+    if(sock == null || sock.isClosed())
+      return;
+    parser.reset().readFrom(sock.getInputStream());
   }
   
   
@@ -200,7 +195,6 @@ public class HttpRequestChannel1 implements Channel, HttpConst {
     InputStream in = sock.getInputStream();
     String strp = StreamUtils.readBetween(in, 
         BOUNDARY_OBJECT_START, BOUNDARY_OBJECT_END);
-    
     if(strp == null) return null;
     
     Object obj = xst.fromXML(coder.decode(strp));
@@ -210,8 +204,8 @@ public class HttpRequestChannel1 implements Channel, HttpConst {
       return null;
     
     Transport trp = (Transport) obj;
-    if(StreamUtils.readUntil(in, BOUNDARY_CONTENT_START,
-        StreamUtils.EOF) == BOUNDARY_CONTENT_START) {
+    if(StreamUtils.readUntil(in, VALUE_APP_OCTETSTREAM,
+        StreamUtils.EOF) == VALUE_APP_OCTETSTREAM) {
       trp.setInputStream(in);
     }
     return trp;

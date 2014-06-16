@@ -21,63 +21,40 @@
 
 package us.pserver.http;
 
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Linha com código de retorno do servidor para a mensagem HTTP.
- * 
+ *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 21/01/2014
+ * @version 1.0 - 15/06/2014
  */
-public class ResponseLine extends HeaderLine {
-  
-  private int code;
-  
-  
-  public ResponseLine() {
-    super();
-    code = 0;
-  }
-  
-  
-  /**
-   * Construtor padrão que recebe o código de 
-   * resposta e a mensagem de status.
-   * @param code Código de resposta.
-   * @param status Mensagem de status.
-   */
-  public ResponseLine(int code, String status) {
-    super();
-    this.code = code;
-    this.setValue(status);
-  }
-  
-  
-  public int getCode() {
-    return code;
-  }
-  
-  
-  public void setCode(int code) {
-    this.code = code;
-  }
-  
-  
-  public String getStatus() {
-    return getValue();
-  }
-  
-  
-  public void setStatus(String sts) {
-    if(sts != null)
-      setValue(sts);
-  }
-  
+public class RequestParser extends HttpParser {
+
+  private RequestLine request;
   
   @Override
-  public String toString() {
-    return httpVersion + BLANK
-        + String.valueOf(code) + BLANK
-        + this.getValue() + CRLF;
+  public RequestParser readFrom(InputStream in) throws IOException {
+    super.readFrom(in);
+    Header hd = headers().get(0);
+    
+    if(hd == null) throw new IOException(
+        "Error parsing request: No header identified");
+    String[] ss = hd.getValue().split(BLANK);
+    if(ss == null || ss.length < 3) throw new IOException(
+        "Error parsing request: Invalid request line");
+    
+    request = new RequestLine();
+    request.setMethod(ss[0]);
+    request.setAddress(ss[1]);
+    request.setHttpVersion(ss[2]);
+    headers().set(0, request);
+    return this;
+  }
+  
+  
+  public RequestLine getRequestLine() {
+    return request;
   }
   
 }

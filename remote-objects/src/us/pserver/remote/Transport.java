@@ -21,7 +21,11 @@
 
 package us.pserver.remote;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import us.pserver.http.HttpConst;
+import us.pserver.http.StreamUtils;
 
 
 /**
@@ -38,9 +42,11 @@ public class Transport {
   
   private Object object;
   
-  private InputStream inputStream;
+  private InputStream input;
   
   private boolean hasContentEmbedded;
+  
+  private boolean encodeStream;
   
   
   /**
@@ -48,8 +54,9 @@ public class Transport {
    */
   public Transport() {
     object = null;
-    inputStream = null;
+    input = null;
     hasContentEmbedded = false;
+    encodeStream = false;
   }
   
   
@@ -59,8 +66,9 @@ public class Transport {
    */
   public Transport(Object obj) {
     object = obj;
-    inputStream = null;
+    input = null;
     hasContentEmbedded = false;
+    encodeStream = false;
   }
   
   
@@ -73,8 +81,7 @@ public class Transport {
    */
   public Transport(Object obj, InputStream input) {
     object = obj;
-    inputStream = input;
-    hasContentEmbedded = true;
+    setInputStream(input);
   }
   
   
@@ -119,7 +126,7 @@ public class Transport {
    * @return <code>InputStream</code>.
    */
   public InputStream getInputStream() {
-    return inputStream;
+    return input;
   }
   
   
@@ -138,13 +145,53 @@ public class Transport {
   /**
    * Define o <code>InputStream</code> de
    * dados a serem transmitidos via stream.
-   * @param inputStream <code>InputStream</code>.
+   * @param in <code>InputStream</code>.
    * @return Esta instância modificada de <code>InputStream</code>.
    */
-  public Transport setInputStream(InputStream inputStream) {
-    this.inputStream = inputStream;
-    hasContentEmbedded = inputStream != null;
+  public Transport setInputStream(InputStream in, boolean encodeStream) {
+    this.input = in;
+    hasContentEmbedded = in != null;
+    this.encodeStream = encodeStream;
     return this;
+  }
+  
+  
+  /**
+   * Define o <code>InputStream</code> de
+   * dados a serem transmitidos via stream.
+   * @param in <code>InputStream</code>.
+   * @return Esta instância modificada de <code>InputStream</code>.
+   */
+  public Transport setInputStream(InputStream in) {
+    this.input = in;
+    hasContentEmbedded = in != null;
+    return this;
+  }
+  
+  
+  public Transport setHexEncodedEnabled(boolean enabled) {
+    encodeStream = enabled;
+    return this;
+  }
+  
+  
+  public boolean isHexEncodedEnabled() {
+    return encodeStream;
+  }
+  
+  
+  public void writeHtmlStreamTo(OutputStream out) throws IOException {
+    if(input == null)
+      throw new IllegalStateException(
+          "Invalid InputStream [input="+ input+ "]");
+    if(out == null)
+      throw new IllegalArgumentException(
+          "Invalid OutputStream [out="+ out+ "]");
+    
+    StreamUtils.transferBetween(input, out, 
+        HttpConst.BOUNDARY_CONTENT_START, 
+        HttpConst.BOUNDARY_CONTENT_END);
+    out.flush();
   }
   
   
@@ -177,6 +224,12 @@ public class Transport {
     } catch(Exception e) {
       return null;
     }
+  }
+
+
+  @Override
+  public String toString() {
+    return "Transport{" + "object=" + object + ", hasContentEmbedded=" + hasContentEmbedded + '}';
   }
   
 }

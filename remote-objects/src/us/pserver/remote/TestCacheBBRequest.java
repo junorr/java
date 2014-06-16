@@ -22,25 +22,21 @@
 package us.pserver.remote;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 13/06/2014
  */
-public class TestHttpRequest {
+public class TestCacheBBRequest {
 
   
   public static void main(String[] args) throws IOException {
-    NetConnector nc = new NetConnector("172.24.75.2", 9011);
+    NetConnector nc = new NetConnector("pserver.us", 9011);
     /* set proxy */
-    nc.setProxyAddress("172.24.75.19")
-        .setProxyPort(6060)
-        .setProxyAuthorization("f6036477:00000000");
+    nc.setProxyAddress("cache.bb.com.br")
+        .setProxyPort(80)
+        .setProxyAuthorization("f6036477:65465488");
     /**/
     HttpRequestChannel1 channel = new HttpRequestChannel1(nc);
     

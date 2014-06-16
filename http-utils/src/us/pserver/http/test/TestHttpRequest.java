@@ -23,15 +23,11 @@ package us.pserver.http.test;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
 import us.pserver.http.HttpHexObject;
-import us.pserver.http.HttpInputStream;
 import us.pserver.http.RequestLine;
+import us.pserver.http.ResponseParser;
 import us.pserver.http.StreamUtils;
 
 /**
@@ -44,24 +40,26 @@ public class TestHttpRequest implements HttpConst {
   
   
   public static void main(String[] args) throws IOException {
-    HttpBuilder build = new HttpBuilder();
     Object obj = "A plain text content object.";
-    Path p = Paths.get("d:/file.exe");
+    //Path p = Paths.get("d:/file.exe");
     RequestLine req = new RequestLine(Method.POST, "172.24.75.2", 8000);
-    build.add(req)
-        .add(req.getHost())
-        .add(HD_USER_AGENT, VALUE_USER_AGENT)
-        .add(HD_ACCEPT, VALUE_ACCEPT)
-        .add(HD_ACCEPT_ENCODING, VALUE_ENCODING)
-        .add(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART + HD_BOUNDARY + BOUNDARY)
-        .add(new HttpHexObject(obj))
-        .add(new HttpInputStream(Files.newInputStream(p, StandardOpenOption.READ)));
+    //RequestLine req = new RequestLine(Method.POST, "10.100.0.104", 8000);
+    HttpBuilder build = HttpBuilder.requestBuilder(req)
+        .put(new HttpHexObject(obj));
+        //.add(new HttpInputStream(Files.newInputStream(p, StandardOpenOption.READ)));
     
     Socket sock = new Socket("172.24.75.19", 6060);
     //Socket sock = new Socket("172.24.75.2", 8000);
+    //Socket sock = new Socket("10.100.0.105", 6060);
     build.writeTo(sock.getOutputStream());
     
+    ResponseParser rp = new ResponseParser();
+    rp.readFrom(sock.getInputStream());
+    rp.headers().forEach(System.out::print);
+    
+    System.out.println("-------------------------");
     StreamUtils.transfer(sock.getInputStream(), System.out);
+    
     sock.close();
   }
   

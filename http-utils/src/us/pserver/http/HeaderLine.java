@@ -21,63 +21,29 @@
 
 package us.pserver.http;
 
-
 /**
- * Linha com código de retorno do servidor para a mensagem HTTP.
- * 
+ *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 21/01/2014
+ * @version 1.0 - 15/06/2014
  */
-public class ResponseLine extends HeaderLine {
+public class HeaderLine extends Header {
+
+  String httpVersion;
   
-  private int code;
   
-  
-  public ResponseLine() {
-    super();
-    code = 0;
+  public HeaderLine() {
+    httpVersion = HTTP_VERSION;
   }
   
   
-  /**
-   * Construtor padrão que recebe o código de 
-   * resposta e a mensagem de status.
-   * @param code Código de resposta.
-   * @param status Mensagem de status.
-   */
-  public ResponseLine(int code, String status) {
-    super();
-    this.code = code;
-    this.setValue(status);
+  public String getHttpVersion() {
+    return httpVersion;
   }
   
   
-  public int getCode() {
-    return code;
-  }
-  
-  
-  public void setCode(int code) {
-    this.code = code;
-  }
-  
-  
-  public String getStatus() {
-    return getValue();
-  }
-  
-  
-  public void setStatus(String sts) {
-    if(sts != null)
-      setValue(sts);
-  }
-  
-  
-  @Override
-  public String toString() {
-    return httpVersion + BLANK
-        + String.valueOf(code) + BLANK
-        + this.getValue() + CRLF;
+  public void setHttpVersion(String version) {
+    if(version != null)
+      httpVersion = version;
   }
   
 }

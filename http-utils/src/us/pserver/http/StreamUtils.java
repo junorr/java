@@ -21,10 +21,12 @@
 
 package us.pserver.http;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.hex.HexByteCoder;
 
 
@@ -88,11 +90,13 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na transferência.
    */
   public static long transfer(InputStream in, OutputStream out) throws IOException {
-    long total = -1;
-    if(in == null || out == null) return total;
+    if(in == null) 
+      throw new IOException("Invalid InputStream [in="+ in+ "]");
+    if(out == null) 
+      throw new IOException("Invalid OutputStream [out="+ out+ "]");
     
+    long total = 0;
     int read = 0;
-    total = read;
     byte[] buf = new byte[BUFFER_SIZE];
     
     while((read = in.read(buf)) > 0) {
@@ -148,17 +152,19 @@ public abstract class StreamUtils {
    * transferência/codificação/decodificação dos dados.
    */
   public static long transferHexCoder(InputStream in, OutputStream out, boolean encode) throws IOException {
-    long total = -1;
-    if(in == null || out == null) return total;
-
+    if(in == null) 
+      throw new IOException("Invalid InputStream [in="+ in+ "]");
+    if(out == null) 
+      throw new IOException("Invalid OutputStream [out="+ out+ "]");
+    
     HexByteCoder cdr = new HexByteCoder();
     int read = 0;
-    total = read;
+    long total = 0;
     byte[] buf = new byte[BUFFER_SIZE];
     
     while((read = in.read(buf)) > 0) {
       total += read;
-      out.write(cdr.apply(buf, encode), 0, read);
+      out.write(cdr.apply(buf, 0, read, encode));
       int len = (read < 30 ? read : 30);
       String str = new String(buf, read -len, len);
       if(read < buf.length && str.contains(EOF))
@@ -180,28 +186,70 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na transferência.
    */
   public static long transferUntil(InputStream in, OutputStream out, String until) throws IOException {
-    long total = -1;
-    if(in == null || out == null 
-        || until == null 
-        || until.isEmpty()) return total;
+    if(in == null) 
+      throw new IOException("Invalid InputStream [in="+ in+ "]");
+    if(out == null) 
+      throw new IOException("Invalid OutputStream [out="+ out+ "]");
+    if(until == null || until.isEmpty()) 
+      throw new IOException("Invalid string token [until="+ until+ "]");
     
-    int read = 0;
-    total = read;
-    byte[] buf = new byte[BUFFER_SIZE];
-    
-    while((read = in.read(buf)) > 0) {
-      total += read;
-      int len = (read < until.length() ? read : until.length());
-      String str = new String(buf, read -len, len);
-      
-      if(read < buf.length && str.contains(until)) {
-        int ieof = str.indexOf(until);
-        out.write(buf, 0, read - (len-ieof));
-        break;
-      } 
-      else out.write(buf, 0, read);
+    LimitedBuffer lbuf = new LimitedBuffer(until.length());
+    long total = 0;
+    int read = -1;
+    while((read = in.read()) != -1) {
+      total++;
+      lbuf.put(read);
+      if(lbuf.size() == until.length()) {
+        if(until.equals(lbuf.toUTF8()))
+          break;
+        else if(total % until.length() == 0)
+          lbuf.writeTo(out);
+      }
     }
     return total;
+  }
+  
+  
+  public static long transferUntil(InputStream in, OutputStream out, String until, String orfalse) throws IOException {
+    if(in == null) 
+      throw new IOException("Invalid InputStream [in="+ in+ "]");
+    if(out == null) 
+      throw new IOException("Invalid OutputStream [out="+ out+ "]");
+    if(until == null || until.isEmpty()) 
+      throw new IOException("Invalid string token [until="+ until+ "]");
+    if(orfalse == null || orfalse.isEmpty()) 
+      throw new IOException("Invalid string token [orfalse="+ orfalse+ "]");
+    
+    LimitedBuffer lbuf = new LimitedBuffer(until.length());
+    long total = 0;
+    int read = -1;
+    while((read = in.read()) != -1) {
+      total++;
+      lbuf.put(read);
+      if(lbuf.size() == until.length()) {
+        if(until.equals(lbuf.toUTF8()))
+          break;
+        else if(total % until.length() == 0)
+          lbuf.writeTo(out);
+      }
+    }
+    return total;
+  }
+  
+  
+  public static long transferBetween(InputStream in, OutputStream out, 
+      String start, String end) throws IOException {
+    if(in == null) 
+      throw new IOException("Invalid InputStream [in="+ in+ "]");
+    if(out == null) 
+      throw new IOException("Invalid OutputStream [out="+ out+ "]");
+    if(start == null || start.isEmpty()) 
+      throw new IOException("Invalid start token [start="+ start+ "]");
+    if(end == null || end.isEmpty()) 
+      throw new IOException("Invalid end token [end="+ end+ "]");
+    
+    readUntil(in, start);
+    return transferUntil(in, out, end);
   }
   
   
@@ -213,8 +261,10 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na escrita.
    */
   public static void write(String str, OutputStream out) throws IOException {
-    if(str == null || out == null)
-      return;
+    if(out == null) 
+      throw new IOException("Invalid OutputStream [out="+ out+ "]");
+    if(str == null || str.isEmpty()) 
+      throw new IOException("Invalid string token [str="+ str+ "]");
     
     out.write(bytes(str));
     out.flush();
@@ -250,19 +300,19 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na leitura.
    */
   public static String readBetween(InputStream in, String start, String end) throws IOException {
-    int read = 1;
-    int ic = -1;
-    int ie = -1;
-    StringBuilder sb = new StringBuilder();
-    while((read = in.read()) != -1) {
-      sb.append((char) read);
-      ic = sb.indexOf(start);
-      ie = sb.indexOf(end, ic);
-      if(ic > 0 && ie > ic) break;
-    }
-    if(ic < 0 || ie <= ic) return null;
-    ic += start.length();
-    return sb.substring(ic, ie);
+    if(in == null)
+      throw new IllegalArgumentException(
+          "Invalid InputStream [in="+ in+ "]");
+    if(start == null || start.isEmpty())
+      throw new IllegalArgumentException(
+          "Invalid String [start="+ start+ "]");
+    if(end == null || end.isEmpty())
+      throw new IllegalArgumentException(
+          "Invalid String [end="+ end+ "]");
+    
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    transferBetween(in, bos, start, end);
+    return bos.toString(UTF8);
   }
 
 
@@ -277,13 +327,20 @@ public abstract class StreamUtils {
    * @throws IOException Caso ocorra erro na leitura do stream.
    */
   public static boolean readUntil(InputStream in, String str) throws IOException {
-    int read = 1;
-    int ic = -1;
-    StringBuilder sb = new StringBuilder();
+    if(in == null)
+      throw new IllegalArgumentException(
+          "Invalid InputStream [in="+ in+ "]");
+    if(str == null || str.isEmpty())
+      throw new IllegalArgumentException(
+          "Invalid String [str="+ str+ "]");
+    
+    int read = -1;
+    LimitedBuffer lbuf = new LimitedBuffer(str.length());
     while((read = in.read()) != -1) {
-      sb.append((char) read);
-      ic = sb.indexOf(str);
-      if(ic > 0) return true;
+      lbuf.put(read);
+      if(lbuf.size() == str.length() 
+          && str.equals(lbuf.toUTF8()))
+        return true;
     }
     return false;
   }
@@ -304,15 +361,27 @@ public abstract class StreamUtils {
    * @throws IOException Caso ocorra erro na leitura do stream.
    */
   public static String readUntil(InputStream in, String str, String orFalse) throws IOException {
-    int read = 1;
-    int ic = -1;
-    StringBuilder sb = new StringBuilder();
+    if(in == null)
+      throw new IllegalArgumentException(
+          "Invalid InputStream [in="+ in+ "]");
+    if(str == null || str.isEmpty())
+      throw new IllegalArgumentException(
+          "Invalid String [str="+ str+ "]");
+    if(orFalse == null || orFalse.isEmpty())
+      throw new IllegalArgumentException(
+          "Invalid String [orFalse="+ orFalse+ "]");
+    
+    int read = -1;
+    int maxlen = Math.max(str.length(), orFalse.length());
+    LimitedBuffer lbuf = new LimitedBuffer(maxlen);
     while((read = in.read()) != -1) {
-      sb.append((char) read);
-      ic = sb.indexOf(str);
-      if(ic > 0) return str;
-      ic = sb.indexOf(orFalse);
-      if(ic > 0) return orFalse;
+      lbuf.put(read);
+      if(lbuf.size() == maxlen) {
+        if(lbuf.toUTF8().contains(str))
+          return str;
+        if(lbuf.toUTF8().contains(orFalse))
+          return orFalse;
+      }
     }
     return null;
   }

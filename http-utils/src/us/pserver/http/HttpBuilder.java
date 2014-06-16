@@ -21,9 +21,9 @@
 
 package us.pserver.http;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import us.pserver.cdr.b64.Base64StringCoder;
@@ -45,7 +45,7 @@ public class HttpBuilder implements HttpConst {
    * Tamanho estático da saída gerada por <code>HttpBuilder</code>, sem
    * considrar o tamanho dos cabeçalhos adicionados.
    */
-  public static final int STATIC_SIZE = 40;
+  public static final int STATIC_SIZE = 42;
   
   
   private final List<Header> hds;
@@ -60,12 +60,142 @@ public class HttpBuilder implements HttpConst {
   
   
   /**
+   * Cria e retorna um <code>HttpBuilder</code> pré configurado 
+   * para requisições HTTP.<br>
+   * Cabeçalhos pré configurados:<br>
+   * <code>
+   *  &bull; User-Agent: Mozilla/5.0<br>
+   *  &bull; Accept: text/html, text/xml, application/octet-stream<br>
+   *  &bull; Accept-Encoding: deflate<br>
+   *  &bull; Content-Type: multipart/form-data; boundary=9051914041544843365972754266<br>
+   * </code>
+   * @return <code>HttpBuilder</code> pré configurado 
+   * para requisições HTTP.
+   */
+  public static HttpBuilder requestBuilder() {
+    return new HttpBuilder()
+      .put(HD_USER_AGENT, VALUE_USER_AGENT)
+      .put(HD_ACCEPT, VALUE_ACCEPT)
+      .put(HD_ACCEPT_ENCODING, VALUE_ENCODING)
+      .put(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART 
+          + HD_BOUNDARY + BOUNDARY);
+  }
+  
+  
+  /**
+   * Cria e retorna um <code>HttpBuilder</code> com a linha de 
+   * requisição <code>RequestLine</code> pré configurado
+   * para requisições HTTP.<br>
+   * Cabeçalhos pré configurados:<br>
+   * <code>
+   *  &bull; User-Agent: Mozilla/5.0<br>
+   *  &bull; Accept: text/html, text/xml, application/octet-stream<br>
+   *  &bull; Accept-Encoding: deflate<br>
+   *  &bull; Content-Type: multipart/form-data; boundary=9051914041544843365972754266<br>
+   * </code>
+   * @return <code>HttpBuilder</code> pré configurado 
+   * para requisições HTTP.
+   */
+  public static HttpBuilder requestBuilder(RequestLine req) {
+    return requestBuilder().put(req);
+  }
+  
+  
+  /**
+   * Cria e retorna um <code>HttpBuilder</code> pré configurado 
+   * para respostas HTTP.<br>
+   * Cabeçalhos pré configurados:<br>
+   * <code>
+   *  &bull; Server: HttpUtils/0.1<br>
+   *  &bull; Accept: text/html, text/xml, application/octet-stream<br>
+   *  &bull; Accept-Encoding: deflate<br>
+   *  &bull; Date: new Date().toString()<br>
+   *  &bull; Content-Type: multipart/form-data; boundary=9051914041544843365972754266<br>
+   * </code>
+   * @return <code>HttpBuilder</code> pré configurado 
+   * para requisições HTTP.
+   */
+  public static HttpBuilder responseBuilder() {
+    return new HttpBuilder()
+      .put(HD_SERVER, VALUE_SERVER)
+      .put(HD_ACCEPT, VALUE_ACCEPT)
+      .put(HD_ACCEPT_ENCODING, VALUE_ENCODING)
+      .putDateHeader()
+      .put(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART 
+          + HD_BOUNDARY + BOUNDARY);
+  }
+  
+  
+  /**
+   * Cria e retorna um <code>HttpBuilder</code> com a linha de 
+   * resposta <code>ResponseLine</code> pré configurado
+   * para respostas HTTP.<br>
+   * Cabeçalhos pré configurados:<br>
+   * <code>
+   *  &bull; User-Agent: Mozilla/5.0<br>
+   *  &bull; Accept: text/html, text/xml, application/octet-stream<br>
+   *  &bull; Accept-Encoding: deflate<br>
+   *  &bull; Content-Type: multipart/form-data; boundary=9051914041544843365972754266<br>
+   * </code>
+   * @return <code>HttpBuilder</code> pré configurado 
+   * para requisições HTTP.
+   */
+  public static HttpBuilder responseBuilder(ResponseLine rsp) {
+    return responseBuilder().put(rsp);
+  }
+  
+  
+  /**
    * Adiciona um cabeçalho HTTP.
    * @param hd <code>Header</code>.
    * @return Esta instância modificada de <code>HttpBuilder</code>.
    */
-  public HttpBuilder add(Header hd) {
+  public HttpBuilder put(Header hd) {
     if(hd != null) hds.add(hd);
+    return this;
+  }
+  
+  
+  /**
+   * Adiciona o cabeçalho de requisição HTTP.
+   * @param req cabeçalho de requisição <code>RequestLine</code>.
+   * @return Esta instância modificada de <code>HttpBuilder</code>.
+   */
+  public HttpBuilder put(RequestLine req) {
+    if(req != null) {
+      putFirst(req).put(req.getHostHeader());
+    }
+    return this;
+  }
+  
+  
+  /**
+   * Adiciona o cabeçalho de resposta HTTP.
+   * @param rsp cabeçalho de resposta <code>ResponseLine</code>.
+   * @return Esta instância modificada de <code>HttpBuilder</code>.
+   */
+  public HttpBuilder put(ResponseLine rsp) {
+    if(rsp != null) {
+      putFirst(rsp);
+    }
+    return this;
+  }
+  
+  
+  /**
+   * Adiciona o cabeçalho na primeira posição da lista de cabeçalhos.
+   * @param hd cabeçalho a ser adicionado na primeira posição.
+   * @return Esta instância modificada de <code>HttpBuilder</code>.
+   */
+  public HttpBuilder putFirst(Header hd) {
+    if(hd != null) {
+      hds.add(hd);
+      for(int i = hds.size()-1; i > 0; i--) {
+        Header h = hds.get(i-1);
+        hds.set(i-1, hds.get(i));
+        hds.set(i, h);
+      }
+    }
     return this;
   }
   
@@ -76,9 +206,55 @@ public class HttpBuilder implements HttpConst {
    * @param value Valor do cabeçalho.
    * @return Esta instância modificada de <code>HttpBuilder</code>.
    */
-  public HttpBuilder add(String name, String value) {
+  public HttpBuilder put(String name, String value) {
     if(name != null) hds.add(new Header(name, value));
     return this;
+  }
+  
+  /**
+   * Adiciona cabeçalho de data na mensagem HTTP.
+   * @return Esta instância modificada de <code>HttpBuilder</code>.
+   */
+  public HttpBuilder putDateHeader() {
+    return this.put(HD_DATE, new Date().toString());
+  }
+  
+  
+  /**
+   * Remove e retorna uma cabeçalho HTTP com o nome fornecido 
+   * (<code>headerName</code>).
+   * @param headerName Nome do cabeçalho a ser removido.
+   * @return O cabeçalho removido ou <code>null</code> caso
+   * não seja encontrado.
+   */
+  public Header remove(String headerName) {
+    if(headerName == null) return null;
+    int idx = -1;
+    for(int i = 0; i < hds.size(); i++) {
+      if(hds.get(i).getName()
+          .equals(headerName)) {
+        idx = i;
+        break;
+      }
+    }
+    if(idx >= 0 && idx < hds.size()) 
+      return hds.remove(idx);
+    
+    return null;
+  }
+  
+  
+  /**
+   * Verifica se existe um cabeçalho HTTP com o nome fornecido 
+   * (<code>headerName</code>).
+   * @param headerName Nome do cabeçalho a ser verificado.
+   * @return <code>true</code> se o cabeçalho existir na
+   * lista de cabeçalhos, <code>false</code> caso contrário.
+   */
+  public boolean contains(String headerName) {
+    if(headerName == null) return false;
+    return hds.stream().anyMatch(
+        hd->hd.getName().equals(headerName));
   }
   
   
@@ -122,9 +298,9 @@ public class HttpBuilder implements HttpConst {
     for(int i = 0; i < hds.size(); i++) {
       Header hd = hds.get(i);
       idx = i;
-      if(!hd.isContentHeader()) {
+      if(!hd.isContentHeader())
         hd.writeTo(out);
-      } else break;
+      else break;
     }
     new Header(HD_CONTENT_LENGTH, 
             String.valueOf(getLength())).writeTo(out);
@@ -134,8 +310,9 @@ public class HttpBuilder implements HttpConst {
     
     StringBuilder end = new StringBuilder();
     end.append(CRLF).append(HYFENS)
-        .append(BOUNDARY).append(HYFENS).append(EOF)
-        .append(CRLF).append(CRLF);
+        .append(BOUNDARY).append(HYFENS)
+        .append(CRLF).append(EOF)
+            .append(CRLF).append(CRLF);
     StreamUtils.write(end.toString(), out);
     out.flush();
   }
@@ -145,13 +322,13 @@ public class HttpBuilder implements HttpConst {
     HttpBuilder hb = new HttpBuilder();
     Base64StringCoder cdr = new Base64StringCoder();
     RequestLine req = new RequestLine(Method.POST, "172.24.75.2", 8000);
-    hb.add(req).add(req.getHost())
-        .add(HD_USER_AGENT, VALUE_USER_AGENT)
-        .add(HD_ACCEPT_ENCODING, VALUE_ENCODING)
-        .add(HD_ACCEPT, VALUE_ACCEPT)
-        .add(HD_PROXY_AUTHORIZATION, "Basic "+ cdr.encode("f6036477:00000000"))
-        .add(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART + HD_BOUNDARY + BOUNDARY)
-        .add(new HttpHexObject("hello world!!"));
+    hb.put(req).put(req.getHostHeader())
+        .put(HD_USER_AGENT, VALUE_USER_AGENT)
+        .put(HD_ACCEPT_ENCODING, VALUE_ENCODING)
+        .put(HD_ACCEPT, VALUE_ACCEPT)
+        .put(HD_PROXY_AUTHORIZATION, "Basic "+ cdr.encode("f6036477:00000000"))
+        .put(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART + HD_BOUNDARY + BOUNDARY)
+        .put(new HttpHexObject("hello world!!"));
     hb.writeTo(System.out);
   }
   

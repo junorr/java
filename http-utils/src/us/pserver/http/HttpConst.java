@@ -137,6 +137,22 @@ public interface HttpConst {
 
   /**
    * <code>
+   *  HD_X_HTTP_HEXAUTH = "X-Http-HexAuth"
+   * </code><br>
+   * Cabeçalho especial de autenticação (se suportado pelo servidor).
+   */
+  public static final String HD_X_HTTP_HEXAUTH = "X-Http-HexAuth";
+
+  /**
+   * <code>
+   *  HD_X_CRYPT_HEXKEY = "X-Crypt-HexKey"
+   * </code><br>
+   * Cabeçalho especial para chave de criptografia (se suportado pelo servidor).
+   */
+  public static final String HD_X_CRYPT_HEXKEY = "X-Crypt-HexKey";
+
+  /**
+   * <code>
    *  HD_PROXY_AUTHORIZATION = "Proxy-Authorization"
    * </code><br>
    * Cabeçalho HTTP.
@@ -205,7 +221,7 @@ public interface HttpConst {
    * </code><br>
    * Valor do cabeçalho HTTP.
    */
-  public static final String VALUE_SERVER = "Java/HttpResponseChannel";
+  public static final String VALUE_SERVER = "HttpUtils/0.1";
 
   /**
    * <code>
@@ -222,6 +238,13 @@ public interface HttpConst {
    * Versão do protocolo HTTP.
    */
   public static final String HTTP_VERSION = "HTTP/1.1";
+
+  /**
+   * <code>
+   *  HTTP = "HTTP"
+   * </code><br>
+   */
+  public static final String HTTP = "HTTP";
 
   /**
    * <code>
@@ -281,35 +304,35 @@ public interface HttpConst {
 
   /**
    * <code>
-   *  BOUNDARY_CONTENT_START = "&lt;conttt enc='octet-stream'&gt;"
+   *  BOUNDARY_CONTENT_START = "&lt;cont enc='octet-stream'&gt;"
    * </code><br>
    * Cabeçalho delimitador de abertura de conteúdo stream.
    */
-  public static final String BOUNDARY_CONTENT_START = "<conttt enc='octet-stream'>";
+  public static final String BOUNDARY_CONTENT_START = "<cont enc='octet-stream'>";
 
   /**
    * <code>
-   *  BOUNDARY_CONTENT_END = "&lt;/conttt&gt;"
+   *  BOUNDARY_CONTENT_END = "&lt;/cont&gt;"
    * </code><br>
    * Cabeçalho delimitador de encerramento de conteúdo stream.
    */
-  public static final String BOUNDARY_CONTENT_END = "</conttt>";
+  public static final String BOUNDARY_CONTENT_END = "</cont>";
 
   /**
    * <code>
-   *  BOUNDARY_OBJECT_START = "&lt;robbb enc='hex'&gt;"
+   *  BOUNDARY_OBJECT_START = "&lt;rob enc='hex'&gt;"
    * </code><br>
    * Cabeçalho delimitador de abertura de objeto.
    */
-  public static final String BOUNDARY_OBJECT_START = "<robbb enc='hex'>";
+  public static final String BOUNDARY_OBJECT_START = "<rob enc='hex'>";
 
   /**
    * <code>
-   *  BOUNDARY_OBJECT_END = "&lt;/robbb&gt;"
+   *  BOUNDARY_OBJECT_END = "&lt;/rob&gt;"
    * </code><br>
    * Cabeçalho delimitador de encerramento de objeto.
    */
-  public static final String BOUNDARY_OBJECT_END = "</robbb>";
+  public static final String BOUNDARY_OBJECT_END = "</rob>";
   
   
   /**

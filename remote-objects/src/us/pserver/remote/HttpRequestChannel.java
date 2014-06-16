@@ -115,9 +115,9 @@ public class HttpRequestChannel implements Channel, HttpConst {
     OutputStream out = conn.getOutputStream();
     
     HttpBuilder build = new HttpBuilder()
-        .add(new HttpHexObject(trp.getWriteVersion()));
+        .put(new HttpHexObject(trp.getWriteVersion()));
     if(input != null)
-      build.add(new HttpInputStream(input));
+      build.put(new HttpInputStream(input));
     build.writeTo(out);
     
     isvalid = false;

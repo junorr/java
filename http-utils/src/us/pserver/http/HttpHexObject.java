@@ -25,9 +25,6 @@ import com.thoughtworks.xstream.XStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import us.pserver.cdr.hex.HexStringCoder;
-import static us.pserver.http.Header.BOUNDARY;
-import static us.pserver.http.HttpConst.CRLF;
-import static us.pserver.http.HttpConst.HYFENS;
 
 
 /**

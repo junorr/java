@@ -68,12 +68,15 @@ public class HttpInputStream extends Header {
 
   private InputStream input;
   
+  private boolean encoded;
+  
   
   /**
    * Construtor padrão sem argumentos.
    */
   public HttpInputStream() {
     input = null;
+    encoded = false;
   }
   
   
@@ -85,6 +88,7 @@ public class HttpInputStream extends Header {
    */
   public HttpInputStream(InputStream is) {
     input = is;
+    encoded = false;
   }
   
   
@@ -97,6 +101,17 @@ public class HttpInputStream extends Header {
       try { return input.available(); }
       catch(IOException e) { return -1; }
     return -1;
+  }
+  
+  
+  public boolean isHexEncodedEnabled() {
+    return encoded;
+  }
+  
+  
+  public HttpInputStream setHenEncodedEnabled(boolean enabled) {
+    encoded = enabled;
+    return this;
   }
   
   
@@ -160,7 +175,12 @@ public class HttpInputStream extends Header {
     
     try {
       StreamUtils.write(start.toString(), out);
-      StreamUtils.transferHexEncoding(input, out);
+      
+      if(encoded)
+        StreamUtils.transferHexEncoding(input, out);
+      else
+        StreamUtils.transfer(input, out);
+      
       StreamUtils.write(BOUNDARY_CONTENT_END, out);
       out.flush();
     } catch(IOException e) {

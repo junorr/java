@@ -95,11 +95,11 @@ public class HttpResponseChannel implements Channel, HttpConst {
    */
   private HttpBuilder setHeaders(Transport trp) throws IOException {
     HttpBuilder build = new HttpBuilder();
-    build.add(new ResponseLine(200, VALUE_OK))
-        .add(HD_CONTENT_TYPE, VALUE_CONTENT_XML)
-        .add(HD_CONTENT_ENCODING, VALUE_ENCODING)
-        .add(HD_SERVER, VALUE_SERVER)
-        .add(HD_DATE, new Date().toString());
+    build.put(new ResponseLine(200, VALUE_OK))
+        .put(HD_CONTENT_TYPE, VALUE_CONTENT_XML)
+        .put(HD_CONTENT_ENCODING, VALUE_ENCODING)
+        .put(HD_SERVER, VALUE_SERVER)
+        .put(HD_DATE, new Date().toString());
     
     HttpHexObject hob = new HttpHexObject(
         trp.getWriteVersion());
@@ -109,7 +109,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
     if(trp.getInputStream() != null)
       length += trp.getInputStream().available();
     
-    build.add(HD_CONTENT_LENGTH, String.valueOf(length));
+    build.put(HD_CONTENT_LENGTH, String.valueOf(length));
     return build;
   }
   

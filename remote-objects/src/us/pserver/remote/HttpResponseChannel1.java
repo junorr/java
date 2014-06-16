@@ -26,11 +26,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Date;
 import us.pserver.cdr.hex.HexStringCoder;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
 import us.pserver.http.HttpHexObject;
+import us.pserver.http.HttpInputStream;
+import us.pserver.http.RequestParser;
 import us.pserver.http.ResponseLine;
 import us.pserver.http.StreamUtils;
 import static us.pserver.http.StreamUtils.bytes;
@@ -61,7 +62,9 @@ public class HttpResponseChannel1 implements Channel, HttpConst {
   
   private final HexStringCoder coder;
   
-  private boolean isvalid;
+  private HttpBuilder builder;
+  
+  private RequestParser parser;
   
   
   /**
@@ -78,7 +81,23 @@ public class HttpResponseChannel1 implements Channel, HttpConst {
     sock = sc;
     coder = new HexStringCoder();
     xst = new XStream();
-    isvalid = false;
+    parser = new RequestParser();
+    builder = new HttpBuilder();
+  }
+  
+  
+  public Socket getSocket() {
+    return sock;
+  }
+  
+  
+  public HttpBuilder getHttpBuilder() {
+    return builder;
+  }
+  
+  
+  public RequestParser getRequestParser() {
+    return parser;
   }
   
   
@@ -93,49 +112,29 @@ public class HttpResponseChannel1 implements Channel, HttpConst {
    * @see us.pserver.remote.Transport
    * @see us.pserver.remote.http.HttpBuilder
    */
-  private HttpBuilder setHeaders(Transport trp) throws IOException {
-    HttpBuilder build = new HttpBuilder();
-    build.add(new ResponseLine(200, VALUE_OK))
-        .add(HD_CONTENT_TYPE, VALUE_CONTENT_XML)
-        .add(HD_CONTENT_ENCODING, VALUE_ENCODING)
-        .add(HD_SERVER, VALUE_SERVER)
-        .add(HD_DATE, new Date().toString());
+  private void setHeaders(Transport trp) throws IOException {
+    if(trp == null || trp.getObject() == null) 
+      throw new IllegalArgumentException(
+          "Invalid Transport [trp="+ trp+ "]");
     
-    HttpHexObject hob = new HttpHexObject(
-        trp.getWriteVersion());
-    
-    long length = hob.getLength();
+    builder = HttpBuilder.responseBuilder(
+        new ResponseLine(200, VALUE_OK))
+        .put(new HttpHexObject(trp.getWriteVersion()));
     
     if(trp.getInputStream() != null)
-      length += trp.getInputStream().available();
-    
-    build.add(HD_CONTENT_LENGTH, String.valueOf(length));
-    return build;
+      builder.put(new HttpInputStream(
+          trp.getInputStream()));
   }
   
   
   @Override
   public void write(Transport trp) throws IOException {
-    if(trp == null) return;
+    this.setHeaders(trp);
     
-    InputStream input = trp.getInputStream();
     OutputStream out = sock.getOutputStream();
-    HttpBuilder build = this.setHeaders(trp);
-    build.writeTo(out);
-    
-    if(input != null) {
-      out.write(bytes(BOUNDARY_CONTENT_START));
-      StreamUtils.transfer(input, out);
-      out.write(StreamUtils.BYTES_EOF);
-      out.write(bytes(BOUNDARY_CONTENT_END));
-    }
-    else out.write(StreamUtils.BYTES_EOF);
-    
-    out.write(bytes(BOUNDARY_XML_END));
-    out.write(StreamUtils.BYTES_CRLF);
-    out.write(StreamUtils.BYTES_CRLF);
-    out.flush();
-    isvalid = false;
+    builder.writeTo(out);
+    if(trp.hasContentEmbedded())
+      trp.getInputStream().close();
     sock.shutdownOutput();
   }
   
@@ -153,8 +152,8 @@ public class HttpResponseChannel1 implements Channel, HttpConst {
       return null;
     
     Transport trp = (Transport) obj;
-    if(StreamUtils.readUntil(in, BOUNDARY_CONTENT_START, 
-        StreamUtils.EOF) == BOUNDARY_CONTENT_START) {
+    if(StreamUtils.readUntil(in, VALUE_APP_OCTETSTREAM,
+        StreamUtils.EOF) == VALUE_APP_OCTETSTREAM) {
       trp.setInputStream(in);
     }
     return trp;
@@ -172,7 +171,8 @@ public class HttpResponseChannel1 implements Channel, HttpConst {
    */
   @Override
   public boolean isValid() {
-    return isvalid;
+    return sock != null && sock.isConnected() 
+        && !sock.isClosed();
   }
   
   
@@ -182,7 +182,6 @@ public class HttpResponseChannel1 implements Channel, HttpConst {
       sock.shutdownInput();
       sock.shutdownOutput();
       sock.close();
-      isvalid = false;
     } catch(IOException e) {}
   }
   
