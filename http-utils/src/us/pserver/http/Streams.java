@@ -42,7 +42,7 @@ import us.pserver.cdr.hex.HexByteCoder;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
  */
-public abstract class StreamUtils {
+public class Streams {
   
   /**
    * <code>
@@ -85,6 +85,20 @@ public abstract class StreamUtils {
   public static int BUFFER_SIZE = 20;
   
   
+  private ByteBuffer buffer, last;
+  
+  private HexByteCoder hexbyte;
+  
+  private HexBufferCoder hexbuf;
+  
+  
+  public Streams() {
+    buffer = last = null;
+    hexbyte = new HexByteCoder();
+    hexbuf = new HexBufferCoder();
+  }
+  
+  
   /**
    * Transfere o conteúdo entre dois streams até final
    * ou até encontrar os bytes relativos ao fim de transmissão 
@@ -94,7 +108,7 @@ public abstract class StreamUtils {
    * @return Número total de bytes transferidos.
    * @throws IOException caso ocorra erro na transferência.
    */
-  public static long transfer(InputStream in, OutputStream out) throws IOException {
+  public long transfer(InputStream in, OutputStream out) throws IOException {
     if(in == null) 
       throw new IOException("Invalid InputStream [in="+ in+ "]");
     if(out == null) 
@@ -128,20 +142,19 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na 
    * transferência/codificação/decodificação dos dados.
    */
-  public static long transferHexCoder(InputStream in, OutputStream out, boolean encode) throws IOException {
+  public long transferHexCoder(InputStream in, OutputStream out, boolean encode) throws IOException {
     if(in == null) 
       throw new IOException("Invalid InputStream [in="+ in+ "]");
     if(out == null) 
       throw new IOException("Invalid OutputStream [out="+ out+ "]");
     
-    HexByteCoder cdr = new HexByteCoder();
     int read = 0;
     long total = 0;
     byte[] buf = new byte[BUFFER_SIZE];
     
     while((read = in.read(buf)) > 0) {
       total += read;
-      out.write(cdr.apply(buf, 0, read, encode));
+      out.write(hexbyte.apply(buf, 0, read, encode));
       int len = (read < 30 ? read : 30);
       String str = new String(buf, read -len, len);
       if(read < buf.length && str.contains(EOF))
@@ -151,7 +164,7 @@ public abstract class StreamUtils {
   }
   
   
-  public static long readToBuffer(ByteBuffer buf, InputStream in) throws IOException {
+  public long readToBuffer(ByteBuffer buf, InputStream in) throws IOException {
     if(buf == null)
       throw new IllegalArgumentException(
           "Invalid ByteBuffer [buf="+ buf+ "]");
@@ -170,7 +183,7 @@ public abstract class StreamUtils {
   }
   
   
-  public static ByteBuffer applyHexCoder(ByteBuffer buf, boolean encode) {
+  public ByteBuffer applyHexCoder(ByteBuffer buf, boolean encode) {
     if(buf == null)
       throw new IllegalArgumentException(
           "Invalid ByteBuffer [buf="+ buf+ "]");
@@ -180,7 +193,7 @@ public abstract class StreamUtils {
   }
   
   
-  public static ByteBuffer applyCryptCoder(ByteBuffer buf, CryptKey key, boolean encode) {
+  public ByteBuffer applyCryptCoder(ByteBuffer buf, CryptKey key, boolean encode) {
     if(buf == null)
       throw new IllegalArgumentException(
           "Invalid ByteBuffer [buf="+ buf+ "]");
@@ -205,7 +218,7 @@ public abstract class StreamUtils {
    * @return Número total de bytes transferidos.
    * @throws IOException caso ocorra erro na transferência.
    */
-  public static long transferUntil(InputStream in, OutputStream out, String until) throws IOException {
+  public st long transferUntil(InputStream in, OutputStream out, String until) throws IOException {
     if(in == null) 
       throw new IOException("Invalid InputStream [in="+ in+ "]");
     if(out == null) 
@@ -262,15 +275,6 @@ public abstract class StreamUtils {
       }
     }
     return total;
-  }
-  
-  
-  public static int rewindPos(ByteBuffer buf, int length) {
-    if(buf == null || length < 1) return -1;
-    if(buf.position() < length)
-      length = buf.position();
-    buf.position(buf.position() - length);
-    return length;
   }
   
   
