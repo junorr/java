@@ -177,7 +177,7 @@ public class HttpInputStream extends Header {
       StreamUtils.write(start.toString(), out);
       
       if(encoded)
-        StreamUtils.transferHexEncoding(input, out);
+        StreamUtils.transferHexCoder(input, out, true);
       else
         StreamUtils.transfer(input, out);
       
