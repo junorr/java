@@ -199,11 +199,11 @@ public class Base64FileCoder implements FileCoder {
   public static void main(String[] args) {
     Base64FileCoder fc = new Base64FileCoder();
     fc.encode(
-        fc.path("file.txt"), 
-        fc.path("file.bce"));
+        fc.path("d:/picture_low.jpg"), 
+        fc.path("d:/picture_low.bce"));
     fc.decode(
-        fc.path("file.bce"), 
-        fc.path("file2.txt"));
+        fc.path("d:/picture_low.bce"), 
+        fc.path("d:/picture_low3.jpg"));
   }
   
 }

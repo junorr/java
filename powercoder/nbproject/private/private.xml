@@ -3,19 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/FileCoder.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/gzip/GZipByteCoder.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/gzip/GZipStringCoder.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/gzip/GZipBufferCoder.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/gzip/GZipFileCoder.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lzma/LzmaBufferCoder.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lzma/LzmaFileCoder.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptBufferCoder.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lzma/LzmaStringCoder.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptKey.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptCoder.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/Digester.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lzma/LzmaByteCoder.java</file>
+            <file>file:/D:/java/powercoder/src/test/CoderByteTests.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/GZipByteCoder.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/hex/HexInputStream.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/GZipStringCoder.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/GZipBufferCoder.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/GZipFileCoder.java</file>
+            <file>file:/D:/java/powercoder/src/test/HexStreamTest.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/hex/HexOutputStream.java</file>
         </group>
     </open-files>
 </project-private>

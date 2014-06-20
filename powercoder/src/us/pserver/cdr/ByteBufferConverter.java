@@ -5,6 +5,7 @@
 package us.pserver.cdr;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 
 
@@ -29,6 +30,18 @@ public class ByteBufferConverter implements Converter<ByteBuffer, byte[]> {
   public ByteBuffer reverse(byte[] b) {
     if(b == null || b.length == 0)
       return null;
+    ByteBuffer buf = ByteBuffer.allocateDirect(b.length);
+    buf.put(b);
+    buf.flip();
+    return buf;
+  }
+  
+
+  public ByteBuffer reverse(byte[] b, int offset, int length) {
+    if(b == null || b.length == 0 || offset < 0 
+        || length < 1 || offset + length > b.length)
+      return null;
+    b = Arrays.copyOfRange(b, offset, offset+length);
     ByteBuffer buf = ByteBuffer.allocateDirect(b.length);
     buf.put(b);
     buf.flip();

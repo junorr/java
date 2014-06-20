@@ -229,12 +229,20 @@ public class CryptFileCoder implements FileCoder {
       CryptAlgorithm.DESede_CBC_PKCS5);
     
     CryptFileCoder fc = new CryptFileCoder(KEY);
+    /*
     fc.encode(
         fc.path("f:/java/incheck/scp/ss.txt"),
         fc.path("f:/java/incheck/scp/ss.bce"));
     fc.decode(
         fc.path("f:/java/incheck/scp/ss.bce"), 
         fc.path("f:/java/incheck/scp/ss2.txt"));
+    */
+    fc.encode(
+        fc.path("d:/picture_low.jpg"),
+        fc.path("d:/picture_low.des"));
+    fc.decode(
+        fc.path("d:/picture_low.des"), 
+        fc.path("d:/picture_low2.jpg"));
   }
   
 }
