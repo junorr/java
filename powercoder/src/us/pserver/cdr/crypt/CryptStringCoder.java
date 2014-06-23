@@ -4,6 +4,7 @@
  */
 package us.pserver.cdr.crypt;
 
+import static us.pserver.cdr.Checker.nullstr;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
 
@@ -45,6 +46,7 @@ public class CryptStringCoder implements CryptCoder<String> {
   
   @Override
   public String apply(String  str, boolean encode) {
+    nullstr(str);
     byte[] bs = scv.convert(str);
     if(encode) {
       bs = coder.encode(bs);

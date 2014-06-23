@@ -31,20 +31,20 @@ import java.nio.ByteBuffer;
 public class Checker {
 
   
-  private static void throwArg(Class typ, Object arg) {
+  public static void throwarg(Class typ, Object arg) {
     throw new IllegalArgumentException(
         "Invalid "+ typ.getName()+" ["+ arg+ "]");
   }
   
   
   public static void nullarg(Class typ, Object arg) {
-    if(arg == null) throwArg(typ, arg);
+    if(arg == null) throwarg(typ, arg);
   }
   
   
   public static void nullstr(String arg) {
     if(arg == null || arg.isEmpty())
-      throwArg(String.class, arg);
+      throwarg(String.class, arg);
   }
   
   
@@ -81,6 +81,14 @@ public class Checker {
   public static void range(Number num, Number min, Number max) {
     if(num.doubleValue() < min.doubleValue() 
         || num.doubleValue() > max.doubleValue())
+      throw new IllegalArgumentException(
+          "Number out of range ["+ min
+          + " > " + num+ " < "+ max+ "]");
+  }
+  
+  
+  public static void range(int num, int min, int max) {
+    if(num < min || num > max)
       throw new IllegalArgumentException(
           "Number out of range ["+ min
           + " > " + num+ " < "+ max+ "]");

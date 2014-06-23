@@ -4,8 +4,10 @@
  */
 package us.pserver.cdr.crypt;
 
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import static us.pserver.cdr.Checker.nullarg;
+import static us.pserver.cdr.Checker.nullarray;
+import static us.pserver.cdr.Checker.range;
 
 
 
@@ -17,18 +19,21 @@ public class KeySpecFactory {
   
   
   public static SecretKeySpec createKey(byte[] bs, CryptAlgorithm algo) {
+    nullarray(bs);
+    nullarg(CryptAlgorithm.class, algo);
     return new SecretKeySpec(bs, getKeyAlgorithm(algo));
   }
   
   
   public SecretKeySpec genetareKey(CryptAlgorithm algo) {
+    nullarg(CryptAlgorithm.class, algo);
     return new SecretKeySpec(randomBytes(
         algo.getBytesSize()), getKeyAlgorithm(algo));
   }
   
   
   public static String getKeyAlgorithm(CryptAlgorithm algo) {
-    if(algo == null) return null;
+    nullarg(CryptAlgorithm.class, algo);
     int idx = algo.toString().indexOf("/");
     if(idx < 0) return null;
     return algo.toString().substring(0, idx);
@@ -36,7 +41,7 @@ public class KeySpecFactory {
   
   
   private static byte[] randomBytes(int size) {
-    if(size <= 0) return null;
+    range(size, 1, Integer.MAX_VALUE);
     byte[] bs = new byte[size];
     for(int i = 0; i < size; i++) {
       bs[i] = (byte) Math.random();

@@ -30,6 +30,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import us.pserver.cdr.ByteBufferConverter;
+import static us.pserver.cdr.Checker.nullarg;
+import static us.pserver.cdr.Checker.nullbuffer;
+import static us.pserver.cdr.Checker.nullstr;
+import static us.pserver.cdr.Checker.throwarg;
 import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64BufferCoder;
@@ -68,10 +72,7 @@ public class CryptFileCoder implements FileCoder {
   
   
   public Path path(String strPath) {
-    if(strPath == null 
-        || strPath.trim().isEmpty())
-      return null;
-    
+    nullstr(strPath);
     Path p = Paths.get(strPath);
     this.createIfNotExists(p, true);
     return p;
@@ -79,7 +80,7 @@ public class CryptFileCoder implements FileCoder {
   
   
   public boolean createIfNotExists(Path p, boolean isFile) {
-    if(p == null) return false;
+    nullarg(Path.class, p);
     try {
       if(Files.exists(p)) return true;
       if(isFile)
@@ -97,7 +98,8 @@ public class CryptFileCoder implements FileCoder {
   public boolean apply(Path src, Path dst, boolean encode) {
     if(src == null || dst == null
         || !Files.exists(src))
-      return false;
+      throwarg(Path.class, src);
+    nullarg(Path.class, dst);
 
     try {
       if(!Files.exists(dst))
@@ -136,7 +138,8 @@ public class CryptFileCoder implements FileCoder {
   public boolean applyTo(Path src, PrintStream ps, boolean encode) {
     if(src == null || !Files.exists(src)
         || ps == null)
-      return false;
+      throwarg(Path.class, src);
+    nullarg(PrintStream.class, ps);
     
     try {
       FileChannel rc = FileChannel.open(
@@ -174,8 +177,8 @@ public class CryptFileCoder implements FileCoder {
   
   @Override
   public boolean applyFrom(ByteBuffer buf, Path path, boolean encode) {
-    if(buf == null || buf.limit() < 1
-        || path == null) return false;
+    nullbuffer(buf);
+    nullarg(Path.class, path);
     
     if(!this.createIfNotExists(path, true))
       return false;

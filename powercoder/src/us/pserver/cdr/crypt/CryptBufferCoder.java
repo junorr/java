@@ -6,6 +6,7 @@ package us.pserver.cdr.crypt;
 
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
+import static us.pserver.cdr.Checker.nullbuffer;
 
 
 
@@ -42,6 +43,7 @@ public class CryptBufferCoder implements CryptCoder<ByteBuffer> {
   
   @Override
   public ByteBuffer apply(ByteBuffer buf, boolean encode) {
+    nullbuffer(buf);
     byte[] bs = bcv.convert(buf);
     if(bs == null) return buf;
     bs = coder.apply(bs, encode);

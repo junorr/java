@@ -5,6 +5,8 @@
 package us.pserver.cdr.crypt;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -13,9 +15,14 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
+import static us.pserver.cdr.Checker.nullarg;
+import static us.pserver.cdr.Checker.nullarray;
+import static us.pserver.cdr.Checker.range;
 
 
 
@@ -38,41 +45,12 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
       throw new IllegalArgumentException("Invalid key: "+ key);
     
     this.key = key;
-    initCoders();
+    Cipher[] cps = CryptUtils.createEncryptDecryptCiphers(key);
+    encoder = cps[0];
+    decoder = cps[1];
   }
   
   
-  private void initCoders() {
-    try {
-      int size = 8;
-      if(key.getAlgorithm() == CryptAlgorithm.AES_CBC
-          || key.getAlgorithm() == CryptAlgorithm.AES_CBC_PKCS5)
-        size = 16;
-      
-      IvParameterSpec iv = new IvParameterSpec(key.truncate(key.getHash(), size));
-      encoder = Cipher.getInstance(key.getAlgorithm().toString());
-      decoder = Cipher.getInstance(key.getAlgorithm().toString());
-      
-      if(key.getAlgorithm() == CryptAlgorithm.AES_ECB
-          || key.getAlgorithm() == CryptAlgorithm.AES_ECB_PKCS5
-          || key.getAlgorithm() == CryptAlgorithm.DES_ECB
-          || key.getAlgorithm() == CryptAlgorithm.DES_ECB_PKCS5
-          || key.getAlgorithm() == CryptAlgorithm.DESede_ECB
-          || key.getAlgorithm() == CryptAlgorithm.DESede_ECB_PKCS5) {
-        encoder.init(Cipher.ENCRYPT_MODE, key.getSpec());
-        decoder.init(Cipher.DECRYPT_MODE, key.getSpec());
-      }
-      else {
-        encoder.init(Cipher.ENCRYPT_MODE, key.getSpec(), iv);
-        decoder.init(Cipher.DECRYPT_MODE, key.getSpec(), iv);
-      }
-    } catch(InvalidKeyException | NoSuchAlgorithmException
-        | NoSuchPaddingException | InvalidAlgorithmParameterException  ex) {
-      throw new IllegalStateException("Error creating Cipher: "+ ex, ex);
-    }
-  }
-
-
   @Override
   public CryptKey getKey() {
     return key;
@@ -91,8 +69,7 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
   
   @Override
   public byte[] encode(byte[] bs) {
-    if(bs == null || bs.length == 0)
-      return bs;
+    nullarray(bs);
     try {
       return encoder.doFinal(bs);
     } catch(BadPaddingException | IllegalBlockSizeException ex) {
@@ -103,8 +80,7 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
   
   @Override
   public byte[] decode(byte[] bs) {
-    if(bs == null || bs.length == 0)
-      return bs;
+    nullarray(bs);
     try {
       return decoder.doFinal(bs);
     } catch(BadPaddingException | IllegalBlockSizeException ex) {
@@ -120,8 +96,9 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
   
   
   public byte[] encode(byte[] bs, int offset, int length) {
-    if(bs == null || bs.length == 0)
-      return bs;
+    nullarray(bs);
+    range(offset, 0, bs.length -1);
+    range(length, 1, bs.length);
     try {
       return encoder.doFinal(bs, offset, length);
     } catch(BadPaddingException | IllegalBlockSizeException ex) {
@@ -131,8 +108,9 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
   
   
   public byte[] decode(byte[] bs, int offset, int length) {
-    if(bs == null || bs.length == 0)
-      return bs;
+    nullarray(bs);
+    range(offset, 0, bs.length -1);
+    range(length, 1, bs.length);
     try {
       return decoder.doFinal(bs, offset, length);
     } catch(BadPaddingException | IllegalBlockSizeException ex) {
