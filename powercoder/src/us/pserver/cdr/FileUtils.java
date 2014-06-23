@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package test;
+package us.pserver.cdr;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,48 +28,68 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import us.pserver.cdr.hex.HexInputStream;
-import us.pserver.cdr.hex.HexOutputStream;
+import static us.pserver.cdr.Checker.nullarg;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 20/06/2014
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 20/06/2014
  */
-public class HexStreamTest {
+public class FileUtils {
+  
+  public static final int BUFFER = 4096;
 
   
+  public static Path path(String str) {
+    return Paths.get(str);
+  }
+  
+  
+  public static StandardOpenOption[] optionsRead() {
+    StandardOpenOption[] opts = new StandardOpenOption[1];
+    opts[0] = StandardOpenOption.READ;
+    return opts;
+  }
+  
+  
+  public static StandardOpenOption[] optionsWrite() {
+    StandardOpenOption[] opts = new StandardOpenOption[1];
+    opts[0] = StandardOpenOption.WRITE;
+    return opts;
+  }
+  
+  
+  public static StandardOpenOption[] optionsWriteCreate() {
+    StandardOpenOption[] opts = new StandardOpenOption[2];
+    opts[0] = StandardOpenOption.WRITE;
+    opts[1] = StandardOpenOption.CREATE;
+    return opts;
+  }
+  
+  
+  public static InputStream inputStream(Path path) throws IOException {
+    return Files.newInputStream(path, optionsRead());
+  }
+  
+  
+  public static OutputStream outputStream(Path path) throws IOException {
+    return Files.newOutputStream(path, optionsWriteCreate());
+  }
+  
+  
   public static long transfer(InputStream in, OutputStream out) throws IOException {
-    long total = 0;
-    int read = 0;
-    byte[] buf = new byte[1024];
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
     
+    long total = 0;
+    byte[] buf = new byte[BUFFER];
+    int read = 0;
     while((read = in.read(buf)) > 0) {
       total += read;
       out.write(buf, 0, read);
     }
+    out.flush();
     return total;
-  }
-  
-  
-  public static void main(String[] args) throws IOException {
-    Path pi = Paths.get("d:/pic.jpg");
-    Path po = Paths.get("d:/pic.hex");
-    Path po2 = Paths.get("d:/pic2.jpg");
-    
-    InputStream in = Files.newInputStream(pi, StandardOpenOption.READ);
-    OutputStream out = Files.newOutputStream(po, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
-    HexOutputStream hout = new HexOutputStream(out);
-    System.out.println("* transferred="+transfer(in, hout));
-    hout.close();
-    in.close();
-    
-    in = Files.newInputStream(po, StandardOpenOption.READ);
-    out = Files.newOutputStream(po2, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
-    HexInputStream hin = new HexInputStream(in);
-    System.out.println("* transferred="+transfer(hin, out));
-    out.close();
-    in.close();
   }
   
 }

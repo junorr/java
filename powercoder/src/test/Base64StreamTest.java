@@ -28,15 +28,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import us.pserver.cdr.hex.HexInputStream;
-import us.pserver.cdr.hex.HexOutputStream;
+import org.apache.commons.codec.binary.Base64InputStream;
+import org.apache.commons.codec.binary.Base64OutputStream;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 20/06/2014
  */
-public class HexStreamTest {
+public class Base64StreamTest {
 
   
   public static long transfer(InputStream in, OutputStream out) throws IOException {
@@ -54,19 +54,19 @@ public class HexStreamTest {
   
   public static void main(String[] args) throws IOException {
     Path pi = Paths.get("d:/pic.jpg");
-    Path po = Paths.get("d:/pic.hex");
-    Path po2 = Paths.get("d:/pic2.jpg");
-    
+    Path po = Paths.get("d:/pic.b64");
+    Path po2 = Paths.get("d:/pic3.jpg");
+
     InputStream in = Files.newInputStream(pi, StandardOpenOption.READ);
     OutputStream out = Files.newOutputStream(po, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
-    HexOutputStream hout = new HexOutputStream(out);
+    Base64OutputStream hout = new Base64OutputStream(out);
     System.out.println("* transferred="+transfer(in, hout));
     hout.close();
     in.close();
     
     in = Files.newInputStream(po, StandardOpenOption.READ);
     out = Files.newOutputStream(po2, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
-    HexInputStream hin = new HexInputStream(in);
+    Base64InputStream hin = new Base64InputStream(in);
     System.out.println("* transferred="+transfer(hin, out));
     out.close();
     in.close();

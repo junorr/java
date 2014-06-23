@@ -7,6 +7,7 @@ package us.pserver.cdr.b64;
 import java.awt.Frame;
 import java.nio.file.Path;
 import javax.swing.JFileChooser;
+import us.pserver.cdr.FileUtils;
 
 
 /**
@@ -284,7 +285,7 @@ public class Base64Gui extends javax.swing.JFrame {
       return null;
     }
     String path = chooser.getSelectedFile().getAbsolutePath();
-    def = fc.path(path);
+    def = FileUtils.path(path);
     return path;
   }
   
@@ -303,8 +304,8 @@ public class Base64Gui extends javax.swing.JFrame {
   public void applyFile(boolean encode) {
     String src = origField.getText();
     String dst = destField.getText();
-    Path psrc = fc.path(src);
-    Path pdst = fc.path(dst);
+    Path psrc = FileUtils.path(src);
+    Path pdst = FileUtils.path(dst);
     if(psrc == null) {
       outLabel.setText("# Arquivo de origem inválido");
       origField.requestFocus();

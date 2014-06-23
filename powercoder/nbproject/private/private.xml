@@ -3,14 +3,21 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/DynamicBuffer.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/Checker.java</file>
             <file>file:/D:/java/powercoder/src/test/CoderByteTests.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/GZipByteCoder.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/BufferInputStream.java</file>
+            <file>file:/D:/java/powercoder/src/test/HexStreamTest.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/FileUtils.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/hex/HexInputStream.java</file>
+            <file>file:/D:/java/powercoder/src/test/Base64StreamTest.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/GZipStringCoder.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/b64/Base64FileCoder.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/GZipBufferCoder.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/GZipFileCoder.java</file>
-            <file>file:/D:/java/powercoder/src/test/HexStreamTest.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/hex/HexOutputStream.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/hex/HexFileCoder.java</file>
         </group>
     </open-files>
 </project-private>

@@ -22,15 +22,21 @@
 package us.pserver.cdr.b64;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import org.apache.commons.codec.binary.Base64InputStream;
+import org.apache.commons.codec.binary.Base64OutputStream;
+import us.pserver.cdr.BufferInputStream;
 import us.pserver.cdr.ByteBufferConverter;
+import static us.pserver.cdr.Checker.nullarg;
+import static us.pserver.cdr.Checker.nullbuffer;
 import us.pserver.cdr.FileCoder;
+import us.pserver.cdr.FileUtils;
 
 /**
  *
@@ -39,171 +45,141 @@ import us.pserver.cdr.FileCoder;
  */
 public class Base64FileCoder implements FileCoder {
 
-  public static final int BUFFER_SIZE = 8192;
+  public static final int BUFFER_SIZE = 4096;
   
-  
-  private Base64BufferCoder bc;
   
   private ByteBufferConverter conv;
-  
+
   
   public Base64FileCoder() {
-    bc = new Base64BufferCoder();
     conv = new ByteBufferConverter();
-  }
-  
-  
-  public Path path(String strPath) {
-    if(strPath == null 
-        || strPath.trim().isEmpty())
-      return null;
-    
-    Path p = Paths.get(strPath);
-    this.createIfNotExists(p, true);
-    return p;
-  }
-  
-  
-  public boolean createIfNotExists(Path p, boolean isFile) {
-    if(p == null) return false;
-    try {
-      if(Files.exists(p)) return true;
-      if(isFile)
-        Files.createFile(p);
-      else
-        Files.createDirectory(p);
-      return true;
-    } catch(IOException e) {
-      return false;
-    }
   }
   
   
   @Override
   public boolean apply(Path src, Path dst, boolean encode) {
-    if(src == null || dst == null
-        || !Files.exists(src))
-      return false;
-
-    try {
-      if(!Files.exists(dst))
-        Files.createFile(dst);
-      
-      FileChannel rc = FileChannel.open(
-          src, StandardOpenOption.READ);
-      FileChannel wc = FileChannel.open(
-          dst, StandardOpenOption.WRITE);
-      
-      ByteBuffer buf = ByteBuffer
-          .allocateDirect(BUFFER_SIZE);
-      
-      while(rc.read(buf) > 0) {
-        buf.flip();
-        wc.write(bc.apply(buf, encode));
-        buf = ByteBuffer
-            .allocateDirect(BUFFER_SIZE);
-      }
-      
-      rc.close();
-      wc.close();
-      return true;
-      
-    } catch(IOException ex) {
-      return false;
-    }
+    return (encode ? encode(src, dst) 
+        : decode(src, dst));
   }
   
   
   @Override
   public boolean applyTo(Path src, PrintStream ps, boolean encode) {
-    if(src == null || !Files.exists(src)
-        || ps == null)
-      return false;
-    
-    try {
-      FileChannel rc = FileChannel.open(
-          src, StandardOpenOption.READ);
-      
-      ByteBuffer buf = ByteBuffer
-          .allocateDirect(BUFFER_SIZE);
-      byte[] bs;
-      
-      while(rc.read(buf) > 0) {
-        buf.flip();
-        buf = bc.apply(buf, encode);
-        bs = conv.convert(buf);
-        ps.println(new String(bs));
-        buf = ByteBuffer
-            .allocateDirect(BUFFER_SIZE);
-      }
-      
-      rc.close();
-      return true;
-      
-    } catch(IOException ex) {
-      return false;
-    }
+    return (encode ? encodeTo(src, ps) 
+        : decodeTo(src, ps));
   }
   
   
   @Override
   public boolean applyFrom(ByteBuffer buf, Path path, boolean encode) {
-    if(buf == null || buf.limit() < 1
-        || path == null) return false;
-    
-    if(!this.createIfNotExists(path, true))
-      return false;
-    
-    buf = bc.apply(buf, encode);
-    try (FileChannel fc = FileChannel.open(path, StandardOpenOption.WRITE)) {
-      fc.write(buf);
-      return true;
-    } catch(IOException e) {
-      return false;
-    }
+    return (encode 
+        ? encodeFrom(buf, path) 
+        : decodeFrom(buf, path));
   }
   
   
   @Override
   public boolean encode(Path src, Path dst) {
-    return this.apply(src, dst, true);
+    nullarg(Path.class, src);
+    nullarg(Path.class, dst);
+    
+    try(InputStream in = FileUtils.inputStream(src);
+        OutputStream out = new Base64OutputStream(
+            FileUtils.outputStream(dst))) {
+      FileUtils.transfer(in, out);
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+    return true;
   }
   
   
   @Override
   public boolean decode(Path src, Path dst) {
-    return this.apply(src, dst, false);
+    nullarg(Path.class, src);
+    nullarg(Path.class, dst);
+    
+    try(InputStream in = new Base64InputStream(
+            FileUtils.inputStream(src));
+        OutputStream out = FileUtils.outputStream(dst)) {
+      FileUtils.transfer(in, out);
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+    return true;
   }
   
   
   public boolean encodeTo(Path src, PrintStream ps) {
-    return this.applyTo(src, ps, true);
+    nullarg(Path.class, src);
+    nullarg(PrintStream.class, ps);
+    
+    try(InputStream in = FileUtils.inputStream(src);
+        OutputStream out = new Base64OutputStream(ps)) {
+      FileUtils.transfer(in, out);
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+    return true;
   }
   
   
   public boolean decodeTo(Path src, PrintStream ps) {
-    return this.applyTo(src, ps, false);
+    nullarg(Path.class, src);
+    nullarg(PrintStream.class, ps);
+    
+    try(InputStream in = new Base64InputStream(
+        FileUtils.inputStream(src))) {
+      FileUtils.transfer(in, ps);
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+    return true;
   }
   
   
   public boolean encodeFrom(ByteBuffer buf, Path dst) {
-    return this.applyFrom(buf, dst, true);
+    nullbuffer(buf);
+    nullarg(Path.class, dst);
+    
+    try(Base64OutputStream out = new Base64OutputStream(
+        FileUtils.outputStream(dst));) {
+      out.write(conv.convert(buf));
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+    return true;
   }
   
   
   public boolean decodeFrom(ByteBuffer buf, Path dst) {
-    return this.applyFrom(buf, dst, false);
+    nullbuffer(buf);
+    nullarg(Path.class, dst);
+    
+    BufferInputStream bin = 
+        new BufferInputStream().put(buf);
+    
+    try(OutputStream out = FileUtils.outputStream(dst);
+        Base64InputStream in = new Base64InputStream(bin)) {
+      while(bin.buffer().hasNext()) {
+        out.write(in.read());
+      }
+      out.flush();
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+    return true;
   }
   
   
   public static void main(String[] args) {
     Base64FileCoder fc = new Base64FileCoder();
     fc.encode(
-        fc.path("d:/picture_low.jpg"), 
-        fc.path("d:/picture_low.bce"));
+        FileUtils.path("d:/pic.jpg"), 
+        FileUtils.path("d:/pic.bce"));
     fc.decode(
-        fc.path("d:/picture_low.bce"), 
-        fc.path("d:/picture_low3.jpg"));
+        FileUtils.path("d:/pic.bce"), 
+        FileUtils.path("d:/pic2.jpg"));
   }
   
 }

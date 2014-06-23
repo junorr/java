@@ -25,6 +25,7 @@ import com.jpower.spj.Option;
 import com.jpower.spj.ShellParser;
 import java.io.IOException;
 import us.pserver.cdr.ByteBufferConverter;
+import us.pserver.cdr.FileUtils;
 import us.pserver.cdr.StringByteConverter;
 
 /**
@@ -134,8 +135,8 @@ public class Main {
     if(sp.getOption("-f").isPresent() 
         && sp.getOption("-o").isPresent()) {
       boolean success = filecoder.apply(
-          filecoder.path(sp.getOption("-i").getArg(0)), 
-          filecoder.path(sp.getOption("-o").getArg(0)), encd);
+          FileUtils.path(sp.getOption("-i").getArg(0)), 
+          FileUtils.path(sp.getOption("-o").getArg(0)), encd);
       
       if(success) {
         System.out.println("* Execution OK");
@@ -152,7 +153,7 @@ public class Main {
       
       byte[] bs = bytecoder.apply(strconv.convert(ins), encd);
       boolean success = filecoder.applyFrom(
-          bufconv.reverse(bs), filecoder.path(dst), encd);
+          bufconv.reverse(bs), FileUtils.path(dst), encd);
       
       if(success) {
         System.out.println("* Execution OK");
@@ -164,7 +165,7 @@ public class Main {
     else if(sp.getOption("-f").isPresent()
         && !sp.getOption("-o").isPresent()) {
       filecoder.applyTo(
-          filecoder.path(sp.getOption("-i").getArg(0)), 
+          FileUtils.path(sp.getOption("-i").getArg(0)), 
           System.out, encd);
     }
     

@@ -23,7 +23,6 @@ package us.pserver.cdr.hex;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 /**
  *
@@ -57,11 +56,10 @@ public class HexInputStream extends InputStream {
     total = 0;
     end = false;
     try {
-      available = in.available() / 2;
+      available = in.available();
     } catch(IOException e) {
       available = -1;
     }
-    System.out.println("* available="+ available);
   }
 
 
@@ -69,10 +67,13 @@ public class HexInputStream extends InputStream {
   public int read() throws IOException {
     for(int i = 0; i < 2; i++) {
       int read = in.read();
-      end = (read == -1 && available-- <= 0);
-      if(end) return read;
+      if(read == -1 && available <= 0) {
+        end = true;
+        return -1;
+      }
       buf[i] = (byte) read;
     }
+    available -= buf.length;
     total += buf.length;
     return hex.decode(buf)[0];
   }
@@ -91,7 +92,9 @@ public class HexInputStream extends InputStream {
           "Invalid byte array [ba="
           + (ba == null ? ba : ba.length)+ "]");
     if(off < 0 || length < 1 || off+length > ba.length)
-      throw new IllegalArgumentException("Invalid indexes [off="+ off+ ", length="+ length+ "]");
+      throw new IllegalArgumentException(
+          "Invalid indexes [off="+ off
+          + ", length="+ length+ "]");
     
     if(end) return -1;
     
