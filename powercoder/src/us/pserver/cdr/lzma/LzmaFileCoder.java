@@ -164,8 +164,8 @@ public class LzmaFileCoder implements FileCoder {
   
   public static void main(String[] args) {
     LzmaFileCoder cdr = new LzmaFileCoder();
-    cdr.encode(path("d:/picture.jpg"), path("d:/picture.lzma"));
-    cdr.decode(path("d:/picture.lzma"), path("d:/picture2.jpg"));
+    cdr.encode(path("d:/pic.jpg"), path("d:/pic.lzma"));
+    cdr.decode(path("d:/pic.lzma"), path("d:/pic2.jpg"));
   }
   
 }

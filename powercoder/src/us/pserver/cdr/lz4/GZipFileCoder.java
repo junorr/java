@@ -57,7 +57,7 @@ public class GZipFileCoder implements FileCoder {
           + (buf == null ? buf : buf.remaining())+ "]");
     checkPath(p);
     
-    GZipByteCoder cdr = new GZipByteCoder();
+    LZ4ByteCoder cdr = new GLZ4ByteCoder);
     ByteBufferConverter conv = new ByteBufferConverter();
     byte[] bs = conv.convert(buf);
     
@@ -86,14 +86,14 @@ public class GZipFileCoder implements FileCoder {
       
       if(encode) {
         GZIPOutputStream gout = new GZIPOutputStream(ps);
-        GZipByteCoder.transfer(in, gout);
+        GZLZ4ByteCoderransfer(in, gout);
         gout.finish();
         gout.flush();
         gout.close();
       }
       else {
         GZIPInputStream gin = new GZIPInputStream(in);
-        GZipByteCoder.transfer(gin, ps);
+        GZiLZ4ByteCoderansfer(gin, ps);
         gin.close();
       }
       return true;
@@ -122,7 +122,7 @@ public class GZipFileCoder implements FileCoder {
             StandardOpenOption.CREATE);
         GZIPOutputStream gout = new GZIPOutputStream(out)) {
       
-      GZipByteCoder.transfer(in, gout);
+      GZipLZ4ByteCodernsfer(in, gout);
       gout.finish();
       gout.flush();
       return true;
@@ -143,7 +143,7 @@ public class GZipFileCoder implements FileCoder {
             StandardOpenOption.CREATE);
         GZIPInputStream gin = new GZIPInputStream(in)) {
       
-      GZipByteCoder.transfer(gin, out);
+      GZipBLZ4ByteCodersfer(gin, out);
       out.flush();
       return true;
     } catch(IOException e) {

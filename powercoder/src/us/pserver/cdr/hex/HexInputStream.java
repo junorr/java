@@ -75,7 +75,10 @@ public class HexInputStream extends InputStream {
     }
     available -= buf.length;
     total += buf.length;
-    return hex.decode(buf)[0];
+    byte[] bs = hex.decode(buf);
+    //if(bs == null || bs.length == 0)
+      //return read();
+    return bs[0];
   }
   
   

@@ -3,28 +3,31 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/Checker.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptAlgorithm.java</file>
-            <file>file:/D:/java/powercoder/src/test/CoderByteTests.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/GZipByteCoder.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/LZ4ByteCoder.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lzma/LzmaFileCoder.java</file>
             <file>file:/D:/java/powercoder/src/test/CryptStreamTest.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptUtils.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptBufferCoder.java</file>
-            <file>file:/D:/java/powercoder/src/test/HexStreamTest.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptStringCoder.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptFileCoder.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptKey.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptCoder.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/Digester.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/hex/HexInputStream.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/KeySpecFactory.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptByteCoder.java</file>
             <file>file:/D:/java/powercoder/src/test/Base64StreamTest.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lzma/LzmaByteCoder.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/GZipStringCoder.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/b64/Base64FileCoder.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/GZipBufferCoder.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/GZipFileCoder.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/hex/HexOutputStream.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/Checker.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptAlgorithm.java</file>
+            <file>file:/D:/java/powercoder/src/test/CoderByteTests.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lz4/Test.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptBufferCoder.java</file>
+            <file>file:/D:/java/powercoder/src/test/HexStreamTest.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/hex/HexInputStream.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/KeySpecFactory.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptByteCoder.java</file>
         </group>
     </open-files>
 </project-private>

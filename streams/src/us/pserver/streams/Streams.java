@@ -60,6 +60,8 @@ public class Streams {
   
   private ByteBuffer buffer, last;
   
+  private GZIPOutputStream gzo;
+  
   private boolean useHex, useCrypt, 
       useGZip, useB64;
   
@@ -68,6 +70,7 @@ public class Streams {
     conv = new ByteBufferConverter();
     buffer = null;
     last = null;
+    gzo = null;
     useHex = useCrypt = 
         useGZip = useB64 = false;
   }
@@ -135,14 +138,16 @@ public class Streams {
   public OutputStream configureOutput(OutputStream os) throws IOException {
     nullarg(OutputStream.class, os);
     OutputStream output = os;
-    if(useCrypt)
-      output = CryptUtils.createCipherOutputStream(output, key);
+    if(useGZip) {
+      gzo = new GZIPOutputStream(output);
+      output = gzo;
+    }
     if(useHex)
       output = new HexOutputStream(output);
-    if(useGZip)
-      output = new GZIPOutputStream(output);
     if(useB64)
       output = new Base64OutputStream(output);
+    if(useCrypt)
+      output = CryptUtils.createCipherOutputStream(output, key);
     return output;
   }
   
@@ -150,15 +155,31 @@ public class Streams {
   public InputStream configureInput(InputStream is) throws IOException {
     nullarg(InputStream.class, is);
     InputStream input = is;
-    if(useB64)
-      input = new Base64InputStream(input);
     if(useGZip)
       input = new GZIPInputStream(input);
     if(useHex)
       input = new HexInputStream(input);
+    if(useB64)
+      input = new Base64InputStream(input);
     if(useCrypt)
       input = CryptUtils.createCipherInputStream(input, key);
     return input;
+  }
+  
+  
+  public void finishGZOutput() throws IOException {
+    if(useGZip && gzo != null) {
+      gzo.finish();
+      gzo.flush();
+      gzo = null;
+    }
+  }
+  
+  
+  public void finishStreams(InputStream is, OutputStream os) throws IOException {
+    is.close();
+    os.flush();
+    os.close();
   }
   
   
@@ -188,6 +209,7 @@ public class Streams {
         if(str.contains(EOF)) break;
       }
     }
+    if(encode) finishGZOutput();
     return total;
   }
   
@@ -264,6 +286,7 @@ public class Streams {
         buffer.put((byte) read);
       }
     }
+    if(encode) finishGZOutput();
     return total;
   }
   
@@ -375,6 +398,7 @@ public class Streams {
         buffer.put((byte) read);
       }
     }
+    if(encode) finishGZOutput();
     return total;
   }
   
@@ -492,7 +516,9 @@ public class Streams {
     }
     
     readUntil(input, start);
-    return transferUntil(input, output, end);
+    long t = transferUntil(input, output, end);
+    if(encode) finishGZOutput();
+    return t;
   }
   
   
@@ -507,13 +533,13 @@ public class Streams {
   }
   
   
-  public String readBetween(InputStream is, String start, String end, boolean decode) throws IOException {
+  public String readDecodingBetween(InputStream is, String start, String end) throws IOException {
     nullarg(InputStream.class, is);
     nullstr(start);
     nullstr(end);
     
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    transferBetween(is, bos, start, end, !decode);
+    transferBetween(is, bos, start, end, false);
     return bos.toString(UTF8);
   }
 
@@ -563,15 +589,11 @@ public class Streams {
   }
   
 
-  public boolean readUntil(InputStream is, String str, boolean decode) throws IOException {
+  public boolean readDecodingUntil(InputStream is, String str) throws IOException {
     nullarg(InputStream.class, is);
     nullstr(str);
     
-    InputStream input = is;
-    
-    if(decode) {
-      input = configureInput(input);
-    }
+    InputStream input = configureInput(is);
     
     int read = -1;
     LimitedBuffer lbuf = new LimitedBuffer(str.length());
@@ -584,16 +606,12 @@ public class Streams {
   }
 
 
-  public String readUntilOr(InputStream is, String str, String orFalse, boolean decode) throws IOException {
+  public String readDecodingUntilOr(InputStream is, String str, String orFalse) throws IOException {
     nullarg(InputStream.class, is);
     nullstr(str);
     nullstr(orFalse);
     
-    InputStream input = is;
-    
-    if(decode) {
-      input = configureInput(input);
-    }
+    InputStream input = configureInput(is);
     
     int read = -1;
     int maxlen = Math.max(str.length(), orFalse.length());

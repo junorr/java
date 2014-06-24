@@ -36,7 +36,7 @@ import us.pserver.cdr.Coder;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 18/06/2014
  */
-public class GZipByteCoder implements Coder<byte[]> {
+public class LZ4ByteCoder implements Coder<byte[]> {
   
   
   private void checkBuffer(byte[] buf) {
@@ -47,7 +47,7 @@ public class GZipByteCoder implements Coder<byte[]> {
   }
   
   
-  private GZIPInputStream createGZipInput(byte[] buf) {
+  private GZIPInputStream createLZ4Input(byte[] buf) {
     checkBuffer(buf);
     try {
       return new GZIPInputStream(new ByteArrayInputStream(buf));
@@ -81,7 +81,7 @@ public class GZipByteCoder implements Coder<byte[]> {
   @Override
   public byte[] decode(byte[] buf) {
     checkBuffer(buf);
-    try(GZIPInputStream gin = createGZipInput(buf)) {
+    try(GZIPInputStream gin = createLZ4Input(buf)) {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       transfer(gin, bos);
       return bos.toByteArray();
@@ -115,7 +115,7 @@ public class GZipByteCoder implements Coder<byte[]> {
   public byte[] decode(byte[] buf, int offset, int length) {
     checkBuffer(buf);
     buf = Arrays.copyOfRange(buf, offset, offset + length);
-    try(GZIPInputStream gin = createGZipInput(buf)) {
+    try(GZIPInputStream gin = createLZ4Input(buf)) {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       transfer(gin, bos);
       return bos.toByteArray();

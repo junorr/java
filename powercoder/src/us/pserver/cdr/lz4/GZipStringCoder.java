@@ -33,7 +33,7 @@ import us.pserver.cdr.b64.Base64ByteCoder;
  */
 public class GZipStringCoder implements Coder<String> {
 
-  private final GZipByteCoder gzip;
+  private final LZ4ByteCoder gzip;
   
   private final Base64ByteCoder b64;
   
@@ -41,7 +41,7 @@ public class GZipStringCoder implements Coder<String> {
   
   
   public GZipStringCoder() {
-    gzip = new GZipByteCoder();
+    gzip = new GLZ4ByteCoder);
     b64 = new Base64ByteCoder();
     conv = new StringByteConverter();
   }

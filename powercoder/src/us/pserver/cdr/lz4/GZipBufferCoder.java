@@ -33,13 +33,13 @@ import us.pserver.cdr.Coder;
  */
 public class GZipBufferCoder implements Coder<ByteBuffer> {
   
-  private final GZipByteCoder cdr;
+  private final LZ4ByteCoder cdr;
   
   private final ByteBufferConverter conv;
   
   
   public GZipBufferCoder() {
-    cdr = new GZipByteCoder();
+    cdr = new GLZ4ByteCoder);
     conv = new ByteBufferConverter();
   }
   
