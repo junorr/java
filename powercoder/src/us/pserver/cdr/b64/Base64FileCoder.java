@@ -21,6 +21,7 @@
 
 package us.pserver.cdr.b64;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,7 +30,6 @@ import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
-import us.pserver.cdr.BufferInputStream;
 import us.pserver.cdr.ByteBufferConverter;
 import static us.pserver.cdr.Checker.nullarg;
 import static us.pserver.cdr.Checker.nullbuffer;
@@ -37,15 +37,13 @@ import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 0.0 - 21/08/2013
+ * Codificador/Decodificador de arquivos no formato Base64.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.0 - 21/08/2013
  */
 public class Base64FileCoder implements FileCoder {
 
-  public static final int BUFFER_SIZE = 4096;
-  
-  
   private ByteBufferConverter conv;
 
   
@@ -154,14 +152,12 @@ public class Base64FileCoder implements FileCoder {
     nullbuffer(buf);
     nullarg(Path.class, dst);
     
-    BufferInputStream bin = 
-        new BufferInputStream().put(buf);
+    ByteArrayInputStream bin = 
+        new ByteArrayInputStream(conv.convert(buf));
     
     try(OutputStream out = FileUtils.outputStream(dst);
         Base64InputStream in = new Base64InputStream(bin)) {
-      while(bin.buffer().hasNext()) {
-        out.write(in.read());
-      }
+      FileUtils.transfer(in, out);
       out.flush();
     } catch(IOException e) {
       throw new RuntimeException(e);

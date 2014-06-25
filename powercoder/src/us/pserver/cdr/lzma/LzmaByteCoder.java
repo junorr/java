@@ -30,6 +30,8 @@ import java.util.Arrays;
 import lzma.sdk.lzma.Decoder;
 import lzma.streams.LzmaInputStream;
 import lzma.streams.LzmaOutputStream;
+import static us.pserver.cdr.Checker.nullarg;
+import static us.pserver.cdr.Checker.nullarray;
 import us.pserver.cdr.Coder;
 
 /**
@@ -40,16 +42,8 @@ import us.pserver.cdr.Coder;
 public class LzmaByteCoder implements Coder<byte[]> {
   
   
-  private void checkBuffer(byte[] buf) {
-    if(buf == null || buf.length < 1)
-      throw new IllegalArgumentException(
-          "Invalid byte array [buf="
-          + (buf == null ? buf : buf.length)+ "]");
-  }
-  
-  
   private LzmaInputStream createLzmaInput(byte[] buf) {
-    checkBuffer(buf);
+    nullarray(buf);
     try {
       return new LzmaInputStream(new ByteArrayInputStream(buf), new Decoder());
     } catch(IOException e) {
@@ -59,9 +53,7 @@ public class LzmaByteCoder implements Coder<byte[]> {
   
   
   private LzmaOutputStream createLzmaOutput(OutputStream out) {
-    if(out == null)
-      throw new IllegalArgumentException(
-          "Invalid OutputStream [out="+ out+ "]");
+    nullarg(OutputStream.class, out);
     try {
       return new LzmaOutputStream.Builder(out).build();
     } catch(IOException e) {
@@ -78,11 +70,13 @@ public class LzmaByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] encode(byte[] buf) {
-    checkBuffer(buf);
+    nullarray(buf);
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    try(LzmaOutputStream lzout = createLzmaOutput(bos)) {
+    try {
+      LzmaOutputStream lzout = createLzmaOutput(bos);
       lzout.write(buf);
       lzout.flush();
+      lzout.close();
       return bos.toByteArray();
     } catch(IOException e) {
       throw new RuntimeException(e);
@@ -92,7 +86,7 @@ public class LzmaByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] decode(byte[] buf) {
-    checkBuffer(buf);
+    nullarray(buf);
     try(LzmaInputStream lzin = createLzmaInput(buf)) {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       transfer(lzin, bos);
@@ -111,27 +105,22 @@ public class LzmaByteCoder implements Coder<byte[]> {
 
 
   public byte[] encode(byte[] buf, int offset, int length) {
-    checkBuffer(buf);
+    nullarray(buf);
     buf = Arrays.copyOfRange(buf, offset, offset + length);
     return encode(buf);
   }
 
 
   public byte[] decode(byte[] buf, int offset, int length) {
-    checkBuffer(buf);
+    nullarray(buf);
     buf = Arrays.copyOfRange(buf, offset, offset + length);
     return decode(buf);
   }
   
   
   public static long transfer(InputStream in, OutputStream out) throws IOException {
-    if(in == null)
-      throw new IllegalArgumentException(
-          "Invalid InputStream [in="+ in+ "]");
-    if(out == null)
-      throw new IllegalArgumentException(
-          "Invalid OutputStream [out="+ out+ "]");
-    
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
     int read = -1;
     int total = 0;
     while((read = in.read()) != -1) {
@@ -140,6 +129,30 @@ public class LzmaByteCoder implements Coder<byte[]> {
     }
     out.flush();
     return total;
+  }
+  
+  
+  public static void main(String[] args) {
+    LzmaByteCoder lzc = new LzmaByteCoder();
+    String str = "Implements an input stream filter for compressing";
+    System.out.println("* str='"+ str+ "'");
+    System.out.println("* str.length="+ str.length());
+    byte[] bs = str.getBytes();
+    System.out.println("* str.bytes="+ bs.length);
+    
+    System.out.println("* compressing...");
+    bs = lzc.encode(bs);
+    str = new String(bs);
+    System.out.println("* str.bytes="+ bs.length);
+    System.out.println("* str.length="+ str.length());
+    System.out.println("* str='"+ str+ "'");
+    
+    System.out.println("* decompressing...");
+    bs = lzc.decode(bs);
+    str = new String(bs);
+    System.out.println("* str.bytes="+ bs.length);
+    System.out.println("* str.length="+ str.length());
+    System.out.println("* str='"+ str+ "'");
   }
   
 }

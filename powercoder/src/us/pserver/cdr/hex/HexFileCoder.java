@@ -21,13 +21,13 @@
 
 package us.pserver.cdr.hex;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
-import us.pserver.cdr.BufferInputStream;
 import us.pserver.cdr.ByteBufferConverter;
 import static us.pserver.cdr.Checker.nullarg;
 import static us.pserver.cdr.Checker.nullbuffer;
@@ -41,9 +41,6 @@ import us.pserver.cdr.FileUtils;
  */
 public class HexFileCoder implements FileCoder {
 
-  public static final int BUFFER_SIZE = 4096;
-  
-  
   private ByteBufferConverter conv;
 
   
@@ -152,15 +149,12 @@ public class HexFileCoder implements FileCoder {
     nullbuffer(buf);
     nullarg(Path.class, dst);
     
-    BufferInputStream bin = 
-        new BufferInputStream().put(buf);
+    ByteArrayInputStream bin = 
+        new ByteArrayInputStream(conv.convert(buf));
     
     try(OutputStream out = FileUtils.outputStream(dst);
         HexInputStream in = new HexInputStream(bin)) {
-      while(bin.buffer().hasNext()) {
-        out.write(in.read());
-      }
-      out.flush();
+      FileUtils.transfer(in, out);
     } catch(IOException e) {
       throw new RuntimeException(e);
     }

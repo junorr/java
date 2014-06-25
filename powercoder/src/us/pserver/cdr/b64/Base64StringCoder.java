@@ -25,9 +25,10 @@ import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 0.0 - 21/08/2013
+ * Codificador/Decodificador de <code>String</code> no formato Base64.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.0 - 21/08/2013
  */
 public class Base64StringCoder implements Coder<String> {
   

@@ -4,6 +4,9 @@
  */
 package us.pserver.cdr.hex;
 
+import static us.pserver.cdr.Checker.nullarray;
+import static us.pserver.cdr.Checker.nullstr;
+
 
 /**
  *
@@ -12,8 +15,7 @@ package us.pserver.cdr.hex;
 public class HexCoder {
   
   public static String toHexString(byte[] array) {
-    if(array == null || array.length == 0)
-      return null;
+    nullarray(array);
     StringBuilder sb = new StringBuilder();
     for(int i = 0; i < array.length; i++) {
       int high = ((array[i] >> 4) & 0xf) << 4;
@@ -26,7 +28,7 @@ public class HexCoder {
   
   
   public static byte[] fromHexString(String hex) {
-    if(hex == null || hex.isEmpty()) return null;
+    nullstr(hex);
     int len = hex.length();
     byte[] bytes = new byte[len / 2];
     for(int i = 0; i < len; i += 2) {

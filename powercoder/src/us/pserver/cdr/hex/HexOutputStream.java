@@ -23,6 +23,7 @@ package us.pserver.cdr.hex;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import static us.pserver.cdr.Checker.nullarg;
 
 /**
  *
@@ -39,9 +40,7 @@ public class HexOutputStream extends OutputStream {
   
   
   public HexOutputStream(OutputStream out) {
-    if(out == null)
-      throw new IllegalArgumentException(
-          "Invalid OutputStream [out="+ out+ "]");
+    nullarg(OutputStream.class, out);
     this.out = out;
     hex = new HexByteCoder();
     bin = new byte[1];

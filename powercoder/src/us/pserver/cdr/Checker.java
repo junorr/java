@@ -23,31 +23,59 @@ package us.pserver.cdr;
 
 import java.nio.ByteBuffer;
 
+
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * Classe utilitária para verificação de argumentos.
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 20/06/2014
  */
 public class Checker {
 
   
+  /**
+   * Lança uma exceção do tipo <code>IllegalArgumentException</code>
+   * com a mensagem <code>"Invalid "+ typ.getName()+" ["+ arg+ "]"</code>.
+   * @param typ Tipo do argumento informado.
+   * @param arg Argumento inválido.
+   */
   public static void throwarg(Class typ, Object arg) {
     throw new IllegalArgumentException(
         "Invalid "+ typ.getName()+" ["+ arg+ "]");
   }
   
   
+  /**
+   * Verifica se o objeto <code>arg</code> é nulo 
+   * <code>(arg == null)</code>, lançando uma exceção 
+   * <code>IllegalArgumentException</code> em caso positivo.
+   * @param typ Tipo do argumento testado.
+   * @param arg Objeto a ser testado contra <code>null</code>.
+   */
   public static void nullarg(Class typ, Object arg) {
     if(arg == null) throwarg(typ, arg);
   }
   
   
+  /**
+   * Verifica se a <code>String arg</code> é nula ou vazia
+   * <code>(arg == null || arg.isEmpty())</code>, lançando uma exceção 
+   * <code>IllegalArgumentException</code> em caso positivo.
+   * @param arg String a ser testada.
+   */
   public static void nullstr(String arg) {
     if(arg == null || arg.isEmpty())
       throwarg(String.class, arg);
   }
   
   
+  /**
+   * Verifica se a <code>ByteBuffer buf</code> é nulo ou 
+   * possui zero elementos restantes 
+   * <code>(buf == null || buf.remaining() == 0)</code>, 
+   * lançando uma exceção <code>IllegalArgumentException</code> 
+   * em caso positivo.
+   * @param buf <code>ByteBuffer</code> a ser testado.
+   */
   public static void nullbuffer(ByteBuffer buf) {
     if(buf == null || buf.remaining() == 0)
       throw new IllegalArgumentException(
@@ -56,6 +84,13 @@ public class Checker {
   }
   
   
+  /**
+   * Verifica se o byte array <code>buf</code> é nulo ou 
+   * possui tamanho zero <code>(buf == null || buf.length == 0)</code>,
+   * lançando uma exceção <code>IllegalArgumentException</code> 
+   * em caso positivo.
+   * @param buf <code>byte[]</code> a ser testado.
+   */
   public static void nullarray(byte[] buf) {
     if(buf == null || buf.length == 0)
       throw new IllegalArgumentException(
@@ -64,6 +99,12 @@ public class Checker {
   }
   
   
+  /**
+   * Verifica se o número <code>num</code> é negativo,
+   * lançando uma exceção <code>IllegalArgumentException</code>
+   * em caso positivo.
+   * @param num Número a ser testado.
+   */
   public static void negative(Number num) {
     if(num.intValue() < 0)
       throw new IllegalArgumentException(
@@ -71,6 +112,12 @@ public class Checker {
   }
   
   
+  /**
+   * Verifica se o número <code>num</code> é igual a zero,
+   * lançando uma exceção <code>IllegalArgumentException</code>
+   * em caso positivo.
+   * @param num Número a ser testado.
+   */
   public static void zero(Number num) {
     if(num.intValue() <= 0)
       throw new IllegalArgumentException(
@@ -78,6 +125,17 @@ public class Checker {
   }
   
   
+  /**
+   * Verifica o número <code>num</code> está entre (exclusivo) 
+   * os argumentos <code>(min e max)</code> informados.
+   * Ex: se <code>min=0</code> e <code>max=10</code>,
+   * o argumento deve ser <code>num &gt; 0 &amp;&amp; num &lt; 10</code>.
+   * Este método utiliza <code>doubleValue() : double</code> 
+   * para testar os argumentos.
+   * @param num Número a ser testado.
+   * @param min Valor mínimo (exclusivo).
+   * @param max Valor máximo (exclusivo).
+   */
   public static void range(Number num, Number min, Number max) {
     if(num.doubleValue() < min.doubleValue() 
         || num.doubleValue() > max.doubleValue())
@@ -87,6 +145,15 @@ public class Checker {
   }
   
   
+  /**
+   * Verifica o número <code>num</code> está entre (exclusivo) 
+   * os argumentos <code>(min e max)</code> informados.
+   * Ex: se <code>min=0</code> e <code>max=10</code>,
+   * o argumento deve ser <code>num &gt; 0 &amp;&amp; num &lt; 10</code>.
+   * @param num Número a ser testado.
+   * @param min Valor mínimo (exclusivo).
+   * @param max Valor máximo (exclusivo).
+   */
   public static void range(int num, int min, int max) {
     if(num < min || num > max)
       throw new IllegalArgumentException(

@@ -27,32 +27,45 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import us.pserver.cdr.ByteBufferConverter;
 import static us.pserver.cdr.Checker.nullarg;
 import static us.pserver.cdr.Checker.nullbuffer;
 import static us.pserver.cdr.Checker.nullstr;
-import static us.pserver.cdr.Checker.throwarg;
 import us.pserver.cdr.FileCoder;
+import us.pserver.cdr.FileUtils;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64BufferCoder;
 
+
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 0.0 - 21/08/2013
+ * Codificador/Decodificador de criptografia para arquivos.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.0 - 21/08/2013
  */
 public class CryptFileCoder implements FileCoder {
 
+  /**
+   * <code>DECODE_BUFFER_SIZE = 8192</code><br>
+   * Tamanho do buffer para decodificação.
+   */
   public static final int DECODE_BUFFER_SIZE = 8192;
   
+  /**
+   * <code>ENCODE_BUFFER_SIZE = 8190</code><br>
+   * Tamanho do buffer para codificação.
+   */
   public static final int ENCODE_BUFFER_SIZE = 8190;
   
   
   private CryptBufferCoder cryptCoder;
   
   
+  /**
+   * Construtor padrão que recebe a chave de criptografia.
+   * @param key chave de criptografia <code>CryptKey</code>.
+   */
   public CryptFileCoder(CryptKey key) {
     if(key == null || key.getSpec() == null)
       throw new IllegalArgumentException(
@@ -61,24 +74,51 @@ public class CryptFileCoder implements FileCoder {
   }
   
   
+  /**
+   * Retorna a chave de criptografia <code>CryptKey</code>.
+   * @return chave de criptografia <code>CryptKey</code>.
+   */
   public CryptKey getKey() {
     return cryptCoder.getKey();
   }
   
   
+  /**
+   * Retorna o codificador de criptografia para ByteBuffer.
+   * @return codificador de criptografia para ByteBuffer.
+   */
   public CryptBufferCoder getCoder() {
     return cryptCoder;
   }
   
   
+  /**
+   * Cria um caminho <code>Path</code> a partir 
+   * da String informada, criando um novo arquivo 
+   * no caminho caso não exista.
+   * @param strPath <code>String</code> a partir da qual
+   * será criado o caminho <code>Path</code>.
+   * @return Caminho de arquivo <code>Path</code>.
+   */
   public Path path(String strPath) {
     nullstr(strPath);
-    Path p = Paths.get(strPath);
+    Path p = FileUtils.path(strPath);
     this.createIfNotExists(p, true);
     return p;
   }
   
   
+  /**
+   * Cria o arquivo/diretório representado pelo argumento 
+   * <code>Path p</code>, caso não exista.
+   * @param p Caminho do arquivo/diretório a ser criado.
+   * @param isFile <code>true</code> se o caminho
+   * representa um arquivo, <code>false</code> caso
+   * represente um diretório.
+   * @return <code>true</code> se o arquivo/diretório
+   * foi criado com sucesso, <code>false</code>
+   * caso contrário.
+   */
   public boolean createIfNotExists(Path p, boolean isFile) {
     nullarg(Path.class, p);
     try {
@@ -96,9 +136,7 @@ public class CryptFileCoder implements FileCoder {
   
   @Override
   public boolean apply(Path src, Path dst, boolean encode) {
-    if(src == null || dst == null
-        || !Files.exists(src))
-      throwarg(Path.class, src);
+    nullarg(Path.class, src);
     nullarg(Path.class, dst);
 
     try {
@@ -136,9 +174,7 @@ public class CryptFileCoder implements FileCoder {
   
   @Override
   public boolean applyTo(Path src, PrintStream ps, boolean encode) {
-    if(src == null || !Files.exists(src)
-        || ps == null)
-      throwarg(Path.class, src);
+    nullarg(Path.class, src);
     nullarg(PrintStream.class, ps);
     
     try {
@@ -206,26 +242,6 @@ public class CryptFileCoder implements FileCoder {
   }
   
   
-  public boolean encodeTo(Path src, PrintStream ps) {
-    return this.applyTo(src, ps, true);
-  }
-  
-  
-  public boolean decodeTo(Path src, PrintStream ps) {
-    return this.applyTo(src, ps, false);
-  }
-  
-  
-  public boolean encodeFrom(ByteBuffer buf, Path dst) {
-    return this.applyFrom(buf, dst, true);
-  }
-  
-  
-  public boolean decodeFrom(ByteBuffer buf, Path dst) {
-    return this.applyFrom(buf, dst, false);
-  }
-  
-  
   public static void main(String[] args) {
     CryptKey KEY = 
       new CryptKey("4c036dad7048d8d7d9fa1c42964c54ba5c676a2f53ba9ee9e18d909a997849f1",
@@ -241,11 +257,11 @@ public class CryptFileCoder implements FileCoder {
         fc.path("f:/java/incheck/scp/ss2.txt"));
     */
     fc.encode(
-        fc.path("d:/picture_low.jpg"),
-        fc.path("d:/picture_low.des"));
+        FileUtils.path("d:/picture_low.jpg"),
+        FileUtils.path("d:/picture_low.des"));
     fc.decode(
-        fc.path("d:/picture_low.des"), 
-        fc.path("d:/picture_low2.jpg"));
+        FileUtils.path("d:/picture_low.des"), 
+        FileUtils.path("d:/picture_low2.jpg"));
   }
   
 }

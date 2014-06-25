@@ -22,14 +22,14 @@
 package us.pserver.cdr.b64;
 
 import java.nio.ByteBuffer;
-import org.apache.commons.codec.binary.Base64;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.Coder;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 0.0 - 21/08/2013
+ * Codificador/Decodificador Base64 para <code>ByteBuffer</code>.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.0 - 21/08/2013
  */
 public class Base64BufferCoder implements Coder<ByteBuffer> {
   

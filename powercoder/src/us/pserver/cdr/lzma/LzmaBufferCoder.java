@@ -23,6 +23,7 @@ package us.pserver.cdr.lzma;
 
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
+import static us.pserver.cdr.Checker.nullbuffer;
 import us.pserver.cdr.Coder;
 
 /**
@@ -43,14 +44,6 @@ public class LzmaBufferCoder implements Coder<ByteBuffer> {
   }
   
   
-  private void checkBuffer(ByteBuffer buf) {
-    if(buf == null || buf.remaining() == 0)
-      throw new IllegalArgumentException(
-          "Invalid ByteBuffer [buf="
-          + (buf == null ? buf : buf.remaining()));
-  }
-
-
   @Override
   public ByteBuffer apply(ByteBuffer buf, boolean encode) {
     return (encode ? encode(buf) : decode(buf));
@@ -59,7 +52,7 @@ public class LzmaBufferCoder implements Coder<ByteBuffer> {
 
   @Override
   public ByteBuffer encode(ByteBuffer buf) {
-    checkBuffer(buf);
+    nullbuffer(buf);
     byte[] bs = conv.convert(buf);
     return conv.reverse(cdr.encode(bs));
   }
@@ -67,7 +60,7 @@ public class LzmaBufferCoder implements Coder<ByteBuffer> {
 
   @Override
   public ByteBuffer decode(ByteBuffer buf) {
-    checkBuffer(buf);
+    nullbuffer(buf);
     byte[] bs = conv.convert(buf);
     return conv.reverse(cdr.decode(bs));
   }

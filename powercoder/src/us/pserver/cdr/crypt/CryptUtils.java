@@ -33,13 +33,22 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import static us.pserver.cdr.Checker.nullarg;
 
+
 /**
- *
+ * Classe utilitária para criação de 
+ * cifradores de criptografia.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 23/06/2014
  */
 public class CryptUtils {
 
+  /**
+   * Cria um cifrador para criptografia a partir 
+   * da chave informada.
+   * @param key Chave <code>CryptKey</code>.
+   * @return <code>Cipher</code>.
+   */
   public static Cipher createEncryptCipher(CryptKey key) {
     nullarg(CryptKey.class, key);
     try {
@@ -71,6 +80,12 @@ public class CryptUtils {
   }
   
 
+  /**
+   * Cria um cifrador para descriptografia a partir 
+   * da chave informada.
+   * @param key Chave <code>CryptKey</code>.
+   * @return <code>Cipher</code>.
+   */
   public static Cipher createDecryptCipher(CryptKey key) {
     nullarg(CryptKey.class, key);
     try {
@@ -102,6 +117,12 @@ public class CryptUtils {
   }
   
   
+  /**
+   * Cria um par de cifradores para criptografia e descriptografia 
+   * respectivamente, a partir da chave informada.
+   * @param key Chave <code>CryptKey</code>.
+   * @return <code>Cipher</code>.
+   */
   public static Cipher[] createEncryptDecryptCiphers(CryptKey key) {
     nullarg(CryptKey.class, key);
     try {
@@ -137,6 +158,13 @@ public class CryptUtils {
   }
   
   
+  /**
+   * Cria um stream de saída para criptografia de dados.
+   * @param out <code>OutputStream</code> para escrita 
+   * dos dados criptografados.
+   * @param key Chave <code>CryptKey</code>.
+   * @return <code>OutputStream</code> para criptografia de dados.
+   */
   public static CipherOutputStream createCipherOutputStream(OutputStream out, CryptKey key) {
     nullarg(CryptKey.class, key);
     nullarg(OutputStream.class, out);
@@ -145,6 +173,13 @@ public class CryptUtils {
   }
   
   
+  /**
+   * Cria um stream de entrada para descriptografia de dados.
+   * @param out <code>InputStream</code> de onde serão lidos
+   * os dados criptografados.
+   * @param key Chave <code>CryptKey</code>.
+   * @return <code>InputStream</code> para descriptografia de dados.
+   */
   public static CipherInputStream createCipherInputStream(InputStream in, CryptKey key) {
     nullarg(CryptKey.class, key);
     nullarg(OutputStream.class, in);

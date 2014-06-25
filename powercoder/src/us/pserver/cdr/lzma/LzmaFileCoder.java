@@ -34,8 +34,10 @@ import lzma.sdk.lzma.Decoder;
 import lzma.streams.LzmaInputStream;
 import lzma.streams.LzmaOutputStream;
 import us.pserver.cdr.ByteBufferConverter;
+import static us.pserver.cdr.Checker.nullarg;
+import static us.pserver.cdr.Checker.nullbuffer;
 import us.pserver.cdr.FileCoder;
-import us.pserver.cdr.gzip.*;
+import us.pserver.cdr.FileUtils;
 
 /**
  *
@@ -53,19 +55,14 @@ public class LzmaFileCoder implements FileCoder {
 
   @Override
   public boolean applyFrom(ByteBuffer buf, Path p, boolean encode) {
-    if(buf == null || buf.remaining() == 0)
-      throw new IllegalArgumentException(
-          "Invalid ByteBuffer [buf="
-          + (buf == null ? buf : buf.remaining())+ "]");
-    checkPath(p);
+    nullbuffer(buf);
+    nullarg(Path.class, p);
     
     LzmaByteCoder cdr = new LzmaByteCoder();
     ByteBufferConverter conv = new ByteBufferConverter();
     byte[] bs = conv.convert(buf);
     
-    try(OutputStream out = Files.newOutputStream(p, 
-        StandardOpenOption.WRITE, StandardOpenOption.CREATE)) {
-      
+    try(OutputStream out = FileUtils.outputStream(p)) {
       out.write(cdr.apply(bs, encode));
       out.flush();
       return true;
@@ -78,24 +75,20 @@ public class LzmaFileCoder implements FileCoder {
 
   @Override
   public boolean applyTo(Path p, PrintStream ps, boolean encode) {
-    checkPath(p);
-    if(ps == null)
-      throw new IllegalArgumentException(
-          "Invalid PrintStream [ps="+ ps+ "]");
+    nullarg(Path.class, p);
+    nullarg(PrintStream.class, ps);
     
-    try(InputStream in = Files.newInputStream(p, 
-        StandardOpenOption.READ)) {
-      
+    try(InputStream in = FileUtils.inputStream(p)) {
       if(encode) {
         LzmaOutputStream lzout = new LzmaOutputStream
             .Builder(ps).build();
-        GZipByteCoder.transfer(in, lzout);
+        FileUtils.transfer(in, lzout);
         lzout.flush();
         lzout.close();
       }
       else {
         LzmaInputStream lzin = new LzmaInputStream(in, new Decoder());
-        GZipByteCoder.transfer(lzin, ps);
+        FileUtils.transfer(lzin, ps);
         lzin.close();
       }
       return true;
@@ -106,26 +99,16 @@ public class LzmaFileCoder implements FileCoder {
   }
   
   
-  private void checkPath(Path p) {
-    if(p == null)
-      throw new IllegalArgumentException(
-          "Invalid Path [p="+ p+ "]");
-  }
-
-
   @Override
   public boolean encode(Path p1, Path p2) {
-    checkPath(p1);
-    checkPath(p2);
-    try(InputStream in = Files.newInputStream(
-        p1, StandardOpenOption.READ);
-        OutputStream out = Files.newOutputStream(
-            p2, StandardOpenOption.WRITE, 
-            StandardOpenOption.CREATE);
+    nullarg(Path.class, p1);
+    nullarg(Path.class, p2);
+    try(InputStream in = FileUtils.inputStream(p1);
+        OutputStream out = FileUtils.outputStream(p2);
         LzmaOutputStream lzout = new LzmaOutputStream
             .Builder(out).build()) {
       
-      GZipByteCoder.transfer(in, lzout);
+      FileUtils.transfer(in, lzout);
       lzout.flush();
       return true;
     } catch(IOException e) {
@@ -136,16 +119,14 @@ public class LzmaFileCoder implements FileCoder {
 
   @Override
   public boolean decode(Path p1, Path p2) {
-    checkPath(p1);
-    checkPath(p2);
-    try(InputStream in = Files.newInputStream(
-        p1, StandardOpenOption.READ);
-        OutputStream out = Files.newOutputStream(
-            p2, StandardOpenOption.WRITE, 
-            StandardOpenOption.CREATE);
-        LzmaInputStream lzin = new LzmaInputStream(in, new Decoder())) {
+    nullarg(Path.class, p1);
+    nullarg(Path.class, p2);
+    try(InputStream in = FileUtils.inputStream(p1);
+        OutputStream out = FileUtils.outputStream(p2);
+        LzmaInputStream lzin = new LzmaInputStream(
+            in, new Decoder())) {
       
-      GZipByteCoder.transfer(lzin, out);
+      FileUtils.transfer(lzin, out);
       out.flush();
       return true;
     } catch(IOException e) {
@@ -154,18 +135,29 @@ public class LzmaFileCoder implements FileCoder {
   }
   
   
-  public static Path path(String str) {
-    if(str == null || str.isEmpty())
-      throw new IllegalArgumentException(
-          "Invalid String [str="+ str+ "]");
-    return Paths.get(str);
+  public static long transfer(InputStream in, OutputStream out) throws IOException {
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
+    
+    int read = -1;
+    int total = 0;
+    while((read = in.read()) != -1) {
+      total++;
+      out.write(read);
+    }
+    out.flush();
+    return total;
   }
 
   
   public static void main(String[] args) {
     LzmaFileCoder cdr = new LzmaFileCoder();
-    cdr.encode(path("d:/pic.jpg"), path("d:/pic.lzma"));
-    cdr.decode(path("d:/pic.lzma"), path("d:/pic2.jpg"));
+    cdr.encode(
+        FileUtils.path("d:/base.csv"), 
+        FileUtils.path("d:/base.lzma"));
+    cdr.decode(
+        FileUtils.path("d:/base.lzma"), 
+        FileUtils.path("d:/base2.csv"));
   }
   
 }

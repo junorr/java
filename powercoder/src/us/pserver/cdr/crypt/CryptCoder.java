@@ -25,14 +25,19 @@ package us.pserver.cdr.crypt;
 import us.pserver.cdr.Coder;
 
 
-
 /**
- *
- * @author juno
- * @param <T> Tipo do codificador.
+ * Codificador/Decodificador de criptografia.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.0 - 21/08/2013
+ * @param <T> Tipo de objetos a serem (des)criptografados.
  */
 public interface CryptCoder<T> extends Coder<T> {
   
+  /**
+   * Retorna a chave de criptografia <code>CryptKey</code>.
+   * @return chave de criptografia <code>CryptKey</code>.
+   */
   public CryptKey getKey();
   
 }

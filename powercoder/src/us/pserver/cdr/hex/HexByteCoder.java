@@ -4,7 +4,9 @@
  */
 package us.pserver.cdr.hex;
 
-import static us.pserver.cdr.ArrayUtil.copyOf;
+import java.util.Arrays;
+import static us.pserver.cdr.Checker.nullarray;
+import static us.pserver.cdr.Checker.range;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
 
@@ -35,16 +37,14 @@ public class HexByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] encode(byte[] t) {
-    if(t == null || t.length == 0)
-      return t;
+    nullarray(t);
     return scv.convert(HexCoder.toHexString(t));
   }
 
 
   @Override
   public byte[] decode(byte[] t) {
-    if(t == null || t.length == 0)
-      return t;
+    nullarray(t);
     return HexCoder.fromHexString(scv.reverse(t));
   }
   
@@ -56,18 +56,19 @@ public class HexByteCoder implements Coder<byte[]> {
 
 
   public byte[] encode(byte[] t, int offset, int length) {
-    if(t == null || t.length == 0)
-      return t;
+    nullarray(t);
+    range(offset, 0, t.length-2);
+    range(length, 1, t.length-offset);
     return scv.convert(HexCoder.toHexString(
-        copyOf(t, offset, length)));
+        Arrays.copyOfRange(t, offset, offset+length)));
   }
 
 
   public byte[] decode(byte[] t, int offset, int length) {
-    if(t == null || t.length == 0)
-      return t;
+    nullarray(t);
     return HexCoder.fromHexString(
-        scv.reverse(copyOf(t, offset, length)));
+        scv.reverse(Arrays.copyOfRange(
+            t, offset, offset+length)));
   }
   
 }

@@ -22,8 +22,8 @@
 package us.pserver.cdr.hex;
 
 import java.nio.ByteBuffer;
-import org.apache.commons.codec.binary.Base64;
 import us.pserver.cdr.ByteBufferConverter;
+import static us.pserver.cdr.Checker.nullbuffer;
 import us.pserver.cdr.Coder;
 
 /**
@@ -46,9 +46,7 @@ public class HexBufferCoder implements Coder<ByteBuffer> {
   
   @Override
   public ByteBuffer apply(ByteBuffer buffer, boolean encode) {
-    if(buffer == null || buffer.limit() == 0)
-      return buffer;
-    
+    nullbuffer(buffer);
     byte[] bs = bcv.convert(buffer);
     if(bs == null || bs.length == 0)
       return null;

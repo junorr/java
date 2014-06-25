@@ -21,6 +21,7 @@
 
 package us.pserver.cdr.gzip;
 
+import static us.pserver.cdr.Checker.nullstr;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
@@ -48,20 +49,15 @@ public class GZipStringCoder implements Coder<String> {
 
   @Override
   public String apply(String t, boolean encode) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return (encode ? encode(t) : decode(t));
   }
 
 
   @Override
   public String encode(String str) {
-    if(str == null || str.isEmpty())
-      throw new IllegalArgumentException(
-          "Invalid String [str="+ str+ "]");
-    
+    nullstr(str);
     byte[] bs = conv.convert(str);
-    System.out.println("  length DEcoded="+ bs.length);
     bs = gzip.encode(bs);
-    System.out.println("  length ENcoded="+ bs.length);
     bs = b64.encode(bs);
     return conv.reverse(bs);
   }
@@ -69,9 +65,7 @@ public class GZipStringCoder implements Coder<String> {
 
   @Override
   public String decode(String str) {
-    if(str == null || str.isEmpty())
-      throw new IllegalArgumentException(
-          "Invalid String [str="+ str+ "]");
+    nullstr(str);
     
     byte[] bs = conv.convert(str);
     bs = b64.decode(bs);

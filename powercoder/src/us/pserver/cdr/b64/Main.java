@@ -29,9 +29,10 @@ import us.pserver.cdr.FileUtils;
 import us.pserver.cdr.StringByteConverter;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 0.0 - 13/08/2013
+ * Classe principal que processa os argumentos da aplicação.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.0 - 13/08/2013
  */
 public class Main {
 

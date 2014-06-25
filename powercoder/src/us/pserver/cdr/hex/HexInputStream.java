@@ -23,6 +23,8 @@ package us.pserver.cdr.hex;
 
 import java.io.IOException;
 import java.io.InputStream;
+import static us.pserver.cdr.Checker.nullarray;
+import static us.pserver.cdr.Checker.range;
 
 /**
  *
@@ -75,10 +77,7 @@ public class HexInputStream extends InputStream {
     }
     available -= buf.length;
     total += buf.length;
-    byte[] bs = hex.decode(buf);
-    //if(bs == null || bs.length == 0)
-      //return read();
-    return bs[0];
+    return hex.decode(buf)[0];
   }
   
   
@@ -90,15 +89,9 @@ public class HexInputStream extends InputStream {
   
   @Override
   public int read(byte[] ba, int off, int length) throws IOException {
-    if(ba == null || ba.length == 0)
-      throw new IllegalArgumentException(
-          "Invalid byte array [ba="
-          + (ba == null ? ba : ba.length)+ "]");
-    if(off < 0 || length < 1 || off+length > ba.length)
-      throw new IllegalArgumentException(
-          "Invalid indexes [off="+ off
-          + ", length="+ length+ "]");
-    
+    nullarray(ba);
+    range(off, 0, ba.length-2);
+    range(length, 1, ba.length-off);
     if(end) return -1;
     
     int len = 0;

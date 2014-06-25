@@ -21,7 +21,7 @@
 
 package us.pserver.cdr.lzma;
 
-import us.pserver.cdr.gzip.*;
+import static us.pserver.cdr.Checker.nullstr;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
@@ -49,16 +49,13 @@ public class LzmaStringCoder implements Coder<String> {
 
   @Override
   public String apply(String t, boolean encode) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return (encode ? encode(t) : decode(t));
   }
 
 
   @Override
   public String encode(String str) {
-    if(str == null || str.isEmpty())
-      throw new IllegalArgumentException(
-          "Invalid String [str="+ str+ "]");
-    
+    nullstr(str);
     byte[] bs = conv.convert(str);
     System.out.println("  length DEcoded="+ bs.length);
     bs = lzma.encode(bs);
@@ -70,10 +67,7 @@ public class LzmaStringCoder implements Coder<String> {
 
   @Override
   public String decode(String str) {
-    if(str == null || str.isEmpty())
-      throw new IllegalArgumentException(
-          "Invalid String [str="+ str+ "]");
-    
+    nullstr(str);
     byte[] bs = conv.convert(str);
     bs = b64.decode(bs);
     bs = lzma.decode(bs);

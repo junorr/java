@@ -31,20 +31,37 @@ import java.nio.file.StandardOpenOption;
 import static us.pserver.cdr.Checker.nullarg;
 
 /**
- *
+ * Classe utilitária com funções para manipulação de
+ * arquivos e streams.
+ * 
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/06/2014
  */
 public class FileUtils {
   
+  /**
+   * <code>BUFFER = 4096</code><br>
+   * Tamanho padrão do buffer de dados processados.
+   */
   public static final int BUFFER = 4096;
 
   
+  /**
+   * Cria um caminho <code>java.nio.file.Path</code>
+   * a partir da <code>String str</code> informada.
+   * @param str com o caminho a ser criado.
+   * @return Caminho <code>Path</code>.
+   */
   public static Path path(String str) {
     return Paths.get(str);
   }
   
   
+  /**
+   * Retorna um array de objetos <code>StandardOpenOption</code>
+   * para leitura de arquivos.
+   * @return array de objetos <code>StandardOpenOption</code>.
+   */
   public static StandardOpenOption[] optionsRead() {
     StandardOpenOption[] opts = new StandardOpenOption[1];
     opts[0] = StandardOpenOption.READ;
@@ -52,6 +69,11 @@ public class FileUtils {
   }
   
   
+  /**
+   * Retorna um array de objetos <code>StandardOpenOption</code>
+   * para escrita de arquivos.
+   * @return array de objetos <code>StandardOpenOption</code>.
+   */
   public static StandardOpenOption[] optionsWrite() {
     StandardOpenOption[] opts = new StandardOpenOption[1];
     opts[0] = StandardOpenOption.WRITE;
@@ -59,6 +81,11 @@ public class FileUtils {
   }
   
   
+  /**
+   * Retorna um array de objetos <code>StandardOpenOption</code>
+   * para escrita e criação (caso não exista) de arquivos.
+   * @return array de objetos <code>StandardOpenOption</code>.
+   */
   public static StandardOpenOption[] optionsWriteCreate() {
     StandardOpenOption[] opts = new StandardOpenOption[2];
     opts[0] = StandardOpenOption.WRITE;
@@ -67,16 +94,40 @@ public class FileUtils {
   }
   
   
+  /**
+   * Cria um stream de entrada para leitura do arquivo 
+   * informado.
+   * @param path Caminho do arquivo a ser lido.
+   * @return <code>InputStream</code>.
+   * @throws IOException Caso ocorra erro na criação 
+   * do <code>InputStream</code>.
+   */
   public static InputStream inputStream(Path path) throws IOException {
     return Files.newInputStream(path, optionsRead());
   }
   
   
+  /**
+   * Cria um stream de saída para escrita no arquivo 
+   * informado, criando o arquivo se necessário.
+   * @param path Caminho do arquivo a ser escrito.
+   * @return <code>OutputStream</code>.
+   * @throws IOException Caso ocorra erro na criação 
+   * do <code>OutputStream</code>.
+   */
   public static OutputStream outputStream(Path path) throws IOException {
     return Files.newOutputStream(path, optionsWriteCreate());
   }
   
   
+  /**
+   * Transfere todos os dados do stream de entrada 
+   * para o stream de saída.
+   * @param in Stream de entrada <code>InputStream</code>.
+   * @param out Stream de saída <code>OutputStream</code>.
+   * @return Número de bytes transferidos.
+   * @throws IOException Caso ocorra erro na transferência dos dados.
+   */
   public static long transfer(InputStream in, OutputStream out) throws IOException {
     nullarg(InputStream.class, in);
     nullarg(OutputStream.class, out);

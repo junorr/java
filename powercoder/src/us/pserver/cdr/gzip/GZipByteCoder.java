@@ -29,7 +29,9 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import static us.pserver.cdr.Checker.nullarray;
 import us.pserver.cdr.Coder;
+import us.pserver.cdr.FileUtils;
 
 /**
  *
@@ -39,16 +41,8 @@ import us.pserver.cdr.Coder;
 public class GZipByteCoder implements Coder<byte[]> {
   
   
-  private void checkBuffer(byte[] buf) {
-    if(buf == null || buf.length < 1)
-      throw new IllegalArgumentException(
-          "Invalid byte array [buf="
-          + (buf == null ? buf : buf.length)+ "]");
-  }
-  
-  
   private GZIPInputStream createGZipInput(byte[] buf) {
-    checkBuffer(buf);
+    nullarray(buf);
     try {
       return new GZIPInputStream(new ByteArrayInputStream(buf));
     } catch(IOException e) {
@@ -65,7 +59,7 @@ public class GZipByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] encode(byte[] buf) {
-    checkBuffer(buf);
+    nullarray(buf);
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try(GZIPOutputStream gout = new GZIPOutputStream(bos)) {
       gout.write(buf);
@@ -80,10 +74,10 @@ public class GZipByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] decode(byte[] buf) {
-    checkBuffer(buf);
+    nullarray(buf);
     try(GZIPInputStream gin = createGZipInput(buf)) {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      transfer(gin, bos);
+      FileUtils.transfer(gin, bos);
       return bos.toByteArray();
     } catch(IOException e) {
       throw new RuntimeException(e);
@@ -99,7 +93,7 @@ public class GZipByteCoder implements Coder<byte[]> {
 
 
   public byte[] encode(byte[] buf, int offset, int length) {
-    checkBuffer(buf);
+    nullarray(buf);
     buf = Arrays.copyOfRange(buf, offset, offset + length);
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try(GZIPOutputStream gout = new GZIPOutputStream(bos)) {
@@ -113,34 +107,15 @@ public class GZipByteCoder implements Coder<byte[]> {
 
 
   public byte[] decode(byte[] buf, int offset, int length) {
-    checkBuffer(buf);
+    nullarray(buf);
     buf = Arrays.copyOfRange(buf, offset, offset + length);
     try(GZIPInputStream gin = createGZipInput(buf)) {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      transfer(gin, bos);
+      FileUtils.transfer(gin, bos);
       return bos.toByteArray();
     } catch(IOException e) {
       throw new RuntimeException(e);
     }
-  }
-  
-  
-  public static long transfer(InputStream in, OutputStream out) throws IOException {
-    if(in == null)
-      throw new IllegalArgumentException(
-          "Invalid InputStream [in="+ in+ "]");
-    if(out == null)
-      throw new IllegalArgumentException(
-          "Invalid OutputStream [out="+ out+ "]");
-    
-    int read = -1;
-    int total = 0;
-    while((read = in.read()) != -1) {
-      total++;
-      out.write(read);
-    }
-    out.flush();
-    return total;
   }
   
 }

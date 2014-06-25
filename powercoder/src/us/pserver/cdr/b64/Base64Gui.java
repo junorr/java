@@ -11,8 +11,12 @@ import us.pserver.cdr.FileUtils;
 
 
 /**
- *
- * @author juno
+ * Interface gráfica utilitária para
+ * Codificação/Decodificação de texto e arquivos no
+ * formato Base64.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.0 - 21/08/2013
  */
 public class Base64Gui extends javax.swing.JFrame {
 
@@ -35,6 +39,9 @@ public class Base64Gui extends javax.swing.JFrame {
   }
   
   
+  /**
+   * Creates new form Gui with parent <code>Frame</code>.
+   */
   public Base64Gui(Frame parent) {
     this();
     this.setLocationRelativeTo(parent);
@@ -290,6 +297,11 @@ public class Base64Gui extends javax.swing.JFrame {
   }
   
   
+  /**
+   * Aplica (de)codificação no conteúdo do campo de texto.
+   * @param encode <code>true</code> para codificar,
+   * <code>false</code> para decodificar.
+   */
   public void applyString(boolean encode) {
     String pass = new String(passField.getPassword());
     if(pass == null || pass.isEmpty()) {
@@ -301,6 +313,11 @@ public class Base64Gui extends javax.swing.JFrame {
   }
   
   
+  /**
+   * Aplica (de)codificação no arquivo informado no campo.
+   * @param encode <code>true</code> para codificar,
+   * <code>false</code> para decodificar.
+   */
   public void applyFile(boolean encode) {
     String src = origField.getText();
     String dst = destField.getText();

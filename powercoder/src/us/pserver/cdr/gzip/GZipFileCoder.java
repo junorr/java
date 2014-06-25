@@ -33,7 +33,10 @@ import java.nio.file.StandardOpenOption;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import us.pserver.cdr.ByteBufferConverter;
+import static us.pserver.cdr.Checker.nullarg;
+import static us.pserver.cdr.Checker.nullbuffer;
 import us.pserver.cdr.FileCoder;
+import us.pserver.cdr.FileUtils;
 
 /**
  *
@@ -51,19 +54,14 @@ public class GZipFileCoder implements FileCoder {
 
   @Override
   public boolean applyFrom(ByteBuffer buf, Path p, boolean encode) {
-    if(buf == null || buf.remaining() == 0)
-      throw new IllegalArgumentException(
-          "Invalid ByteBuffer [buf="
-          + (buf == null ? buf : buf.remaining())+ "]");
-    checkPath(p);
+    nullbuffer(buf);
+    nullarg(Path.class, p);
     
     GZipByteCoder cdr = new GZipByteCoder();
     ByteBufferConverter conv = new ByteBufferConverter();
     byte[] bs = conv.convert(buf);
     
-    try(OutputStream out = Files.newOutputStream(p, 
-        StandardOpenOption.WRITE, StandardOpenOption.CREATE)) {
-      
+    try(OutputStream out = FileUtils.outputStream(p)) {
       out.write(cdr.apply(bs, encode));
       out.flush();
       return true;
@@ -76,24 +74,20 @@ public class GZipFileCoder implements FileCoder {
 
   @Override
   public boolean applyTo(Path p, PrintStream ps, boolean encode) {
-    checkPath(p);
-    if(ps == null)
-      throw new IllegalArgumentException(
-          "Invalid PrintStream [ps="+ ps+ "]");
+    nullarg(Path.class, p);
+    nullarg(PrintStream.class, ps);
     
-    try(InputStream in = Files.newInputStream(p, 
-        StandardOpenOption.READ)) {
-      
+    try(InputStream in = FileUtils.inputStream(p)) {
       if(encode) {
         GZIPOutputStream gout = new GZIPOutputStream(ps);
-        GZipByteCoder.transfer(in, gout);
+        FileUtils.transfer(in, gout);
         gout.finish();
         gout.flush();
         gout.close();
       }
       else {
         GZIPInputStream gin = new GZIPInputStream(in);
-        GZipByteCoder.transfer(gin, ps);
+        FileUtils.transfer(gin, ps);
         gin.close();
       }
       return true;
@@ -104,25 +98,15 @@ public class GZipFileCoder implements FileCoder {
   }
   
   
-  private void checkPath(Path p) {
-    if(p == null)
-      throw new IllegalArgumentException(
-          "Invalid Path [p="+ p+ "]");
-  }
-
-
   @Override
   public boolean encode(Path p1, Path p2) {
-    checkPath(p1);
-    checkPath(p2);
-    try(InputStream in = Files.newInputStream(
-        p1, StandardOpenOption.READ);
-        OutputStream out = Files.newOutputStream(
-            p2, StandardOpenOption.WRITE, 
-            StandardOpenOption.CREATE);
+    nullarg(Path.class, p1);
+    nullarg(Path.class, p2);
+    try(InputStream in = FileUtils.inputStream(p1);
+        OutputStream out = FileUtils.outputStream(p2);
         GZIPOutputStream gout = new GZIPOutputStream(out)) {
       
-      GZipByteCoder.transfer(in, gout);
+      FileUtils.transfer(in, gout);
       gout.finish();
       gout.flush();
       return true;
@@ -134,16 +118,13 @@ public class GZipFileCoder implements FileCoder {
 
   @Override
   public boolean decode(Path p1, Path p2) {
-    checkPath(p1);
-    checkPath(p2);
-    try(InputStream in = Files.newInputStream(
-        p1, StandardOpenOption.READ);
-        OutputStream out = Files.newOutputStream(
-            p2, StandardOpenOption.WRITE, 
-            StandardOpenOption.CREATE);
+    nullarg(Path.class, p1);
+    nullarg(Path.class, p2);
+    try(InputStream in = FileUtils.inputStream(p1);
+        OutputStream out = FileUtils.outputStream(p2);
         GZIPInputStream gin = new GZIPInputStream(in)) {
       
-      GZipByteCoder.transfer(gin, out);
+      FileUtils.transfer(gin, out);
       out.flush();
       return true;
     } catch(IOException e) {
@@ -152,18 +133,14 @@ public class GZipFileCoder implements FileCoder {
   }
   
   
-  public static Path path(String str) {
-    if(str == null || str.isEmpty())
-      throw new IllegalArgumentException(
-          "Invalid String [str="+ str+ "]");
-    return Paths.get(str);
-  }
-
-  
   public static void main(String[] args) {
     GZipFileCoder cdr = new GZipFileCoder();
-    cdr.encode(path("d:/picture.jpg"), path("d:/picture.gzip"));
-    cdr.decode(path("d:/picture.gzip"), path("d:/picture.jpg"));
+    cdr.encode(
+        FileUtils.path("d:/picture.jpg"), 
+        FileUtils.path("d:/picture.gzip"));
+    cdr.decode(
+        FileUtils.path("d:/picture.gzip"), 
+        FileUtils.path("d:/picture.jpg"));
   }
   
 }
