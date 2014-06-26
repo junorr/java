@@ -35,15 +35,20 @@ import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 0.0 - 21/08/2013
+ * Codificador/Decodificador de arquivos no 
+ * formato hexadecimal.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.0 - 21/08/2013
  */
 public class HexFileCoder implements FileCoder {
 
   private ByteBufferConverter conv;
 
   
+  /**
+   * Construtor padrão sem argumentos.
+   */
   public HexFileCoder() {
     conv = new ByteBufferConverter();
   }
@@ -103,7 +108,7 @@ public class HexFileCoder implements FileCoder {
   }
   
   
-  public boolean encodeTo(Path src, PrintStream ps) {
+  private boolean encodeTo(Path src, PrintStream ps) {
     nullarg(Path.class, src);
     nullarg(PrintStream.class, ps);
     
@@ -117,7 +122,7 @@ public class HexFileCoder implements FileCoder {
   }
   
   
-  public boolean decodeTo(Path src, PrintStream ps) {
+  private boolean decodeTo(Path src, PrintStream ps) {
     nullarg(Path.class, src);
     nullarg(PrintStream.class, ps);
     
@@ -131,7 +136,7 @@ public class HexFileCoder implements FileCoder {
   }
   
   
-  public boolean encodeFrom(ByteBuffer buf, Path dst) {
+  private boolean encodeFrom(ByteBuffer buf, Path dst) {
     nullbuffer(buf);
     nullarg(Path.class, dst);
     
@@ -145,7 +150,7 @@ public class HexFileCoder implements FileCoder {
   }
   
   
-  public boolean decodeFrom(ByteBuffer buf, Path dst) {
+  private boolean decodeFrom(ByteBuffer buf, Path dst) {
     nullbuffer(buf);
     nullarg(Path.class, dst);
     

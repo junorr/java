@@ -23,12 +23,14 @@ package us.pserver.cdr.gzip;
 
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
+import static us.pserver.cdr.Checker.nullbuffer;
 import us.pserver.cdr.Coder;
 
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * Codificador/Decodificador GZIP para <code>ByteBuffer</code>.
+ * 
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 18/06/2014
  */
 public class GZipBufferCoder implements Coder<ByteBuffer> {
@@ -38,20 +40,15 @@ public class GZipBufferCoder implements Coder<ByteBuffer> {
   private final ByteBufferConverter conv;
   
   
+  /**
+   * Construtor padrão sem argumentos.
+   */
   public GZipBufferCoder() {
     cdr = new GZipByteCoder();
     conv = new ByteBufferConverter();
   }
   
   
-  private void checkBuffer(ByteBuffer buf) {
-    if(buf == null || buf.remaining() == 0)
-      throw new IllegalArgumentException(
-          "Invalid ByteBuffer [buf="
-          + (buf == null ? buf : buf.remaining()));
-  }
-
-
   @Override
   public ByteBuffer apply(ByteBuffer buf, boolean encode) {
     return (encode ? encode(buf) : decode(buf));
@@ -60,7 +57,7 @@ public class GZipBufferCoder implements Coder<ByteBuffer> {
 
   @Override
   public ByteBuffer encode(ByteBuffer buf) {
-    checkBuffer(buf);
+    nullbuffer(buf);
     byte[] bs = conv.convert(buf);
     return conv.reverse(cdr.encode(bs));
   }
@@ -68,7 +65,7 @@ public class GZipBufferCoder implements Coder<ByteBuffer> {
 
   @Override
   public ByteBuffer decode(ByteBuffer buf) {
-    checkBuffer(buf);
+    nullbuffer(buf);
     byte[] bs = conv.convert(buf);
     return conv.reverse(cdr.decode(bs));
   }

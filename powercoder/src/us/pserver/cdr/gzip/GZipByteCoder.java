@@ -24,8 +24,6 @@ package us.pserver.cdr.gzip;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -34,8 +32,9 @@ import us.pserver.cdr.Coder;
 import us.pserver.cdr.FileUtils;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * Codificador/Decodificador GZIP para byte array<code>byte[]</code>.
+ * 
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 18/06/2014
  */
 public class GZipByteCoder implements Coder<byte[]> {
@@ -85,6 +84,17 @@ public class GZipByteCoder implements Coder<byte[]> {
   }
   
   
+  /**
+   * Aplica (de)codificação (de acordo com o argumento 
+   * <code>encode</code>) GZIP em parte do byte 
+   * array informado.
+   * @param t Byte array cuja parte será (de)codificada.
+   * @param offset Índice inicial da parte do byte array.
+   * @param length Tamanho da parte do byte array.
+   * @param encode <code>true</code> para codificar no formato
+   * Base64, <code>false</code> para decodificar do formato Base64.
+   * @return Byte array contendo os dados (de)codificados.
+   */
   public byte[] apply(byte[] buf, int offset, int length, boolean encode) {
     return (encode 
         ? encode(buf, offset, length) 
@@ -92,6 +102,13 @@ public class GZipByteCoder implements Coder<byte[]> {
   }
 
 
+  /**
+   * Codifica parte do byte array informado no formato GZIP.
+   * @param t Byte array cuja parte será (de)codificada.
+   * @param offset Índice inicial da parte do byte array.
+   * @param length Tamanho da parte do byte array.
+   * @return Byte array contendo os dados codificados.
+   */
   public byte[] encode(byte[] buf, int offset, int length) {
     nullarray(buf);
     buf = Arrays.copyOfRange(buf, offset, offset + length);
@@ -106,6 +123,13 @@ public class GZipByteCoder implements Coder<byte[]> {
   }
 
 
+  /**
+   * Decodifica parte do byte array informado no formato GZIP.
+   * @param t Byte array cuja parte será (de)codificada.
+   * @param offset Índice inicial da parte do byte array.
+   * @param length Tamanho da parte do byte array.
+   * @return Byte array contendo os dados decodificados.
+   */
   public byte[] decode(byte[] buf, int offset, int length) {
     nullarray(buf);
     buf = Arrays.copyOfRange(buf, offset, offset + length);

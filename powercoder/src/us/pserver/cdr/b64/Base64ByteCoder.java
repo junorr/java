@@ -30,13 +30,15 @@ import us.pserver.cdr.Coder;
 
 
 /**
- * Codificador/Decodificador Base64 para byte array<code>byte[]</code>.
+ * Codificador/Decodificador Base64 para byte 
+ * array <code>byte[]</code>.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 21/08/2013
  */
 public class Base64ByteCoder implements Coder<byte[]> {
 
+  
   @Override
   public byte[] apply(byte[] t, boolean encode) {
     nullarray(t);
@@ -61,8 +63,7 @@ public class Base64ByteCoder implements Coder<byte[]> {
   
 
   /**
-   * Aplica (de)codificação (de acordo com o argumento 
-   * <code>encode</code>) Base64 em parte do byte 
+   * Aplica (de)codificação Base64 na porção do byte 
    * array informado.
    * @param t Byte array cuja parte será (de)codificada.
    * @param offset Índice inicial da parte do byte array.

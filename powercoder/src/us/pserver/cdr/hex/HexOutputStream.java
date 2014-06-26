@@ -26,8 +26,10 @@ import java.io.OutputStream;
 import static us.pserver.cdr.Checker.nullarg;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * OutputStream para codificação de dados
+ * no formato hexadecimal.
+ * 
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 20/06/2014
  */
 public class HexOutputStream extends OutputStream {
@@ -39,6 +41,12 @@ public class HexOutputStream extends OutputStream {
   private byte[] bin;
   
   
+  /**
+   * Construtor padrão que recebe o <code>OutputStream</code>
+   * para onde serão escritos os dados codificados.
+   * @param out <code>OutputStream</code> para onde serão 
+   * escritos os dados codificados.
+   */
   public HexOutputStream(OutputStream out) {
     nullarg(OutputStream.class, out);
     this.out = out;

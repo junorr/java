@@ -35,32 +35,14 @@ import static us.pserver.cdr.Checker.nullarray;
 import us.pserver.cdr.Coder;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * Codificador/Decodificador LZMA para byte 
+ * array <code>byte[]</code>.
+ * 
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 18/06/2014
  */
 public class LzmaByteCoder implements Coder<byte[]> {
   
-  
-  private LzmaInputStream createLzmaInput(byte[] buf) {
-    nullarray(buf);
-    try {
-      return new LzmaInputStream(new ByteArrayInputStream(buf), new Decoder());
-    } catch(IOException e) {
-      throw new IllegalStateException(e);
-    }
-  }
-  
-  
-  private LzmaOutputStream createLzmaOutput(OutputStream out) {
-    nullarg(OutputStream.class, out);
-    try {
-      return new LzmaOutputStream.Builder(out).build();
-    } catch(IOException e) {
-      throw new IllegalStateException(e);
-    }
-  }
-
 
   @Override
   public byte[] apply(byte[] buf, boolean encode) {

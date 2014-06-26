@@ -27,8 +27,9 @@ import static us.pserver.cdr.Checker.nullbuffer;
 import us.pserver.cdr.Coder;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * Codificador/Decodificador GZIP para <code>ByteBuffer</code>.
+ * 
+ * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 21/08/2013
  */
 public class HexBufferCoder implements Coder<ByteBuffer> {
@@ -38,6 +39,9 @@ public class HexBufferCoder implements Coder<ByteBuffer> {
   private ByteBufferConverter bcv;
   
   
+  /**
+   * Construtor padrão sem argumentos.
+   */
   public HexBufferCoder() {
     hcd = new HexByteCoder();
     bcv = new ByteBufferConverter();

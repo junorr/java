@@ -27,14 +27,14 @@ import static us.pserver.cdr.Checker.nullarray;
 import static us.pserver.cdr.Checker.range;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * InputStream para decodificação de dados
+ * no formato hexadecimal.
+ * 
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 20/06/2014
  */
 public class HexInputStream extends InputStream {
   
-  public static int MIN_BYTES = 10;
-
   private InputStream in;
   
   private byte[] buf;
@@ -48,6 +48,12 @@ public class HexInputStream extends InputStream {
   private boolean end;
   
   
+  /**
+   * Construtor padrão que recebe o <code>InputStream</code>
+   * de onde serão lidos os dados a serem decodificados.
+   * @param in <code>InputStream</code> de onde serão 
+   * lidos os dados a serem decodificados.
+   */
   public HexInputStream(InputStream in) {
     if(in == null)
       throw new IllegalArgumentException(
@@ -105,6 +111,10 @@ public class HexInputStream extends InputStream {
   }
   
   
+  /**
+   * Retorna a quantidade total de bytes lidos.
+   * @return quantidade total de bytes lidos.
+   */
   public long getTotalReaded() {
     return total;
   }

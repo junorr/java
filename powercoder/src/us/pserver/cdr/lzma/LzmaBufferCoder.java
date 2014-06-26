@@ -27,8 +27,9 @@ import static us.pserver.cdr.Checker.nullbuffer;
 import us.pserver.cdr.Coder;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * Codificador/Decodificador LZMA para <code>ByteBuffer</code>.
+ * 
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 18/06/2014
  */
 public class LzmaBufferCoder implements Coder<ByteBuffer> {
@@ -38,6 +39,9 @@ public class LzmaBufferCoder implements Coder<ByteBuffer> {
   private final ByteBufferConverter conv;
   
   
+  /**
+   * Construtor padrão sem argumentos.
+   */
   public LzmaBufferCoder() {
     cdr = new LzmaByteCoder();
     conv = new ByteBufferConverter();

@@ -26,10 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import us.pserver.cdr.ByteBufferConverter;
@@ -39,8 +36,9 @@ import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * Codificador/Decodificador de arquivos no formato GZIP.
+ * 
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 18/06/2014
  */
 public class GZipFileCoder implements FileCoder {
