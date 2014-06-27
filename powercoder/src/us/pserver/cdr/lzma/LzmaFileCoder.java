@@ -26,10 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import lzma.sdk.lzma.Decoder;
 import lzma.streams.LzmaInputStream;
 import lzma.streams.LzmaOutputStream;
@@ -40,8 +37,9 @@ import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * Compactador/Descompactador de arquivos no formato LZMA.
+ * 
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 18/06/2014
  */
 public class LzmaFileCoder implements FileCoder {
@@ -105,8 +103,8 @@ public class LzmaFileCoder implements FileCoder {
     nullarg(Path.class, p2);
     try(InputStream in = FileUtils.inputStream(p1);
         OutputStream out = FileUtils.outputStream(p2);
-        LzmaOutputStream lzout = new LzmaOutputStream
-            .Builder(out).build()) {
+        LzmaOutputStream lzout = LzmaStreamFactory
+            .createLzmaOutput(out)) {
       
       FileUtils.transfer(in, lzout);
       lzout.flush();
@@ -123,8 +121,8 @@ public class LzmaFileCoder implements FileCoder {
     nullarg(Path.class, p2);
     try(InputStream in = FileUtils.inputStream(p1);
         OutputStream out = FileUtils.outputStream(p2);
-        LzmaInputStream lzin = new LzmaInputStream(
-            in, new Decoder())) {
+        LzmaInputStream lzin = LzmaStreamFactory
+            .createLzmaInput(in)) {
       
       FileUtils.transfer(lzin, out);
       out.flush();
@@ -135,29 +133,22 @@ public class LzmaFileCoder implements FileCoder {
   }
   
   
-  public static long transfer(InputStream in, OutputStream out) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
-    
-    int read = -1;
-    int total = 0;
-    while((read = in.read()) != -1) {
-      total++;
-      out.write(read);
-    }
-    out.flush();
-    return total;
-  }
-
-  
   public static void main(String[] args) {
     LzmaFileCoder cdr = new LzmaFileCoder();
+    /*
     cdr.encode(
         FileUtils.path("d:/base.csv"), 
-        FileUtils.path("d:/base.lzma"));
+        FileUtils.path("d:/base.csv.lzm"));
     cdr.decode(
-        FileUtils.path("d:/base.lzma"), 
-        FileUtils.path("d:/base2.csv"));
+        FileUtils.path("d:/base.csv.lzm"), 
+        FileUtils.path("d:/base.lzm.csv"));
+    */
+    cdr.encode(
+        FileUtils.path("d:/pic.jpg"), 
+        FileUtils.path("d:/pic.jpg.lzm"));
+    cdr.decode(
+        FileUtils.path("d:/pic.jpg.lzm"), 
+        FileUtils.path("d:/pic.lzm.jpg"));
   }
   
 }

@@ -32,7 +32,8 @@ import us.pserver.cdr.Coder;
 import us.pserver.cdr.FileUtils;
 
 /**
- * Codificador/Decodificador GZIP para byte array<code>byte[]</code>.
+ * Compactador/Descompactador GZIP para byte array 
+ * <code>(byte[])</code>.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 18/06/2014
@@ -85,14 +86,13 @@ public class GZipByteCoder implements Coder<byte[]> {
   
   
   /**
-   * Aplica (de)codificação (de acordo com o argumento 
-   * <code>encode</code>) GZIP em parte do byte 
+   * Aplica (des)compactação GZIP na porção do byte 
    * array informado.
-   * @param t Byte array cuja parte será (de)codificada.
+   * @param buf Byte array cuja parte será (de)codificada.
    * @param offset Índice inicial da parte do byte array.
    * @param length Tamanho da parte do byte array.
-   * @param encode <code>true</code> para codificar no formato
-   * Base64, <code>false</code> para decodificar do formato Base64.
+   * @param encode <code>true</code> para compactar em 
+   * GZIP, <code>false</code> para descompactar.
    * @return Byte array contendo os dados (de)codificados.
    */
   public byte[] apply(byte[] buf, int offset, int length, boolean encode) {
@@ -103,8 +103,8 @@ public class GZipByteCoder implements Coder<byte[]> {
 
 
   /**
-   * Codifica parte do byte array informado no formato GZIP.
-   * @param t Byte array cuja parte será (de)codificada.
+   * Compacta em GZIP parte do byte array informado.
+   * @param buf Byte array cuja parte será (de)codificada.
    * @param offset Índice inicial da parte do byte array.
    * @param length Tamanho da parte do byte array.
    * @return Byte array contendo os dados codificados.
@@ -124,8 +124,8 @@ public class GZipByteCoder implements Coder<byte[]> {
 
 
   /**
-   * Decodifica parte do byte array informado no formato GZIP.
-   * @param t Byte array cuja parte será (de)codificada.
+   * Descompacta de GZIP parte do byte array informado.
+   * @param buf Byte array cuja parte será (de)codificada.
    * @param offset Índice inicial da parte do byte array.
    * @param length Tamanho da parte do byte array.
    * @return Byte array contendo os dados decodificados.

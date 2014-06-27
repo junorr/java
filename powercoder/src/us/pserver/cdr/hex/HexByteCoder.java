@@ -31,7 +31,7 @@ import us.pserver.cdr.StringByteConverter;
 
 /**
  * Codificador/Decodificador Hexadecimal para byte 
- * array <code>byte[]</code>.
+ * array <code>(byte[])</code>.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 21/08/2013
@@ -79,7 +79,7 @@ public class HexByteCoder implements Coder<byte[]> {
    * @param offset Índice inicial da parte do byte array.
    * @param length Tamanho da parte do byte array.
    * @param encode <code>true</code> para codificar no formato
-   * Base64, <code>false</code> para decodificar do formato Base64.
+   * hexadecimal, <code>false</code> para decodificar.
    * @return Byte array contendo os dados (de)codificados.
    */
   public byte[] apply(byte[] t, int offset, int length, boolean encode) {

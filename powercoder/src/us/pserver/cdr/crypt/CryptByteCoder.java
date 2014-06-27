@@ -39,7 +39,7 @@ import static us.pserver.cdr.Checker.range;
 
 /**
  * Codificador/Decodificador de criptografia para 
- * byte array <code>byte[]</code>.
+ * byte array <code>(byte[])</code>.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 21/08/2013
@@ -123,7 +123,7 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
   
   /**
    * Criptografa parte do byte array informado.
-   * @param t Byte array cuja parte será (de)codificada.
+   * @param bs Byte array cuja parte será (de)codificada.
    * @param offset Índice inicial da parte do byte array.
    * @param length Tamanho da parte do byte array.
    * @return Byte array contendo os dados codificados.
@@ -142,7 +142,7 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
   
   /**
    * Descriptografa parte do byte array informado.
-   * @param t Byte array cuja parte será (de)codificada.
+   * @param bs Byte array cuja parte será (de)codificada.
    * @param offset Índice inicial da parte do byte array.
    * @param length Tamanho da parte do byte array.
    * @return Byte array contendo os dados decodificados.
@@ -160,13 +160,12 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
   
   
   /**
-   * Aplica (des)criptografia (de acordo com o argumento 
-   * <code>encode</code>) em parte do byte array informado.
-   * @param t Byte array cuja parte será (de)codificada.
+   * Aplica (des)criptografia em parte do byte array informado.
+   * @param bs Byte array cuja parte será (de)codificada.
    * @param offset Índice inicial da parte do byte array.
    * @param length Tamanho da parte do byte array.
-   * @param encode <code>true</code> para codificar no formato
-   * Base64, <code>false</code> para decodificar do formato Base64.
+   * @param encode <code>true</code> para criptografar, 
+   * <code>false</code> para descriptografar.
    * @return Byte array contendo os dados (de)codificados.
    */
   public byte[] apply(byte[] bs, int offset, int length, boolean encode) {

@@ -30,7 +30,7 @@ import us.pserver.cdr.crypt.Digester;
 
 
 /**
- * Codificador/Decodificador de <code>String</code> no 
+ * Codificador/Decodificador de <code>String's</code> no 
  * formato hexadecimal.
  * 
  * @author Juno Roesler - juno@pserver.us

@@ -27,7 +27,7 @@ import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
 
 /**
- * Codificador/Decodificador de <code>String</code> no formato GZIP.
+ * Compactador/Descompactador de <code>String's</code> no formato GZIP.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 18/06/2014

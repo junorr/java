@@ -36,7 +36,7 @@ import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
 
 /**
- * Codificador/Decodificador de arquivos no formato GZIP.
+ * Compactador/Descompactador de arquivos no formato GZIP.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 18/06/2014
@@ -134,11 +134,11 @@ public class GZipFileCoder implements FileCoder {
   public static void main(String[] args) {
     GZipFileCoder cdr = new GZipFileCoder();
     cdr.encode(
-        FileUtils.path("d:/picture.jpg"), 
-        FileUtils.path("d:/picture.gzip"));
+        FileUtils.path("d:/base.csv"), 
+        FileUtils.path("d:/base.csv.gz"));
     cdr.decode(
-        FileUtils.path("d:/picture.gzip"), 
-        FileUtils.path("d:/picture.jpg"));
+        FileUtils.path("d:/base.csv.gz"), 
+        FileUtils.path("d:/base.gz.csv"));
   }
   
 }

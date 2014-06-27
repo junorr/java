@@ -28,7 +28,8 @@ import us.pserver.cdr.b64.Base64ByteCoder;
 
 
 /**
- * Codificador/Decodificador de criptografia para <code>String</code>.
+ * Codificador/Decodificador de criptografia 
+ * para <code>String's</code>.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 21/08/2013

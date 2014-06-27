@@ -48,20 +48,25 @@ public class TestStreams {
     Path po2 = Paths.get("d:/pic2.jpg");
     
     Streams str = new Streams()
-        .setUseBase64Coder(true)
-        .setUseCryptCoder(true, new CryptKey(
+        .setCryptCoderEnabled(true, new CryptKey(
             "12345678", CryptAlgorithm.DESede_CBC))
-        .setUseGZipCoder(true)
-        .setUseHexCoder(true);
+        
+        .setBase64CoderEnabled(false)
+        .setHexCoderEnabled(false)
+        .setGZipCoderEnabled(true)
+        .setLzmaCoderEnabled(true);
     
     InputStream in = Files.newInputStream(pi, StandardOpenOption.READ);
     OutputStream out = Files.newOutputStream(po, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+    System.out.println("* transfering ["+ pi+ "] >> ["+ po+ "]");
     str.transfer(in, out, true);
     str.finishStreams(in, out);
     
     in = Files.newInputStream(po, StandardOpenOption.READ);
     out = Files.newOutputStream(po2, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+    System.out.println("* transfering ["+ po+ "] >> ["+ po2+ "]");
     str.transfer(in, out, false);
+    System.out.println("* Done!");
     str.finishStreams(in, out);
   }
   

@@ -21,22 +21,18 @@
 
 package us.pserver.cdr.lzma;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
-import lzma.sdk.lzma.Decoder;
 import lzma.streams.LzmaInputStream;
 import lzma.streams.LzmaOutputStream;
-import static us.pserver.cdr.Checker.nullarg;
 import static us.pserver.cdr.Checker.nullarray;
 import us.pserver.cdr.Coder;
+import us.pserver.cdr.FileUtils;
 
 /**
- * Codificador/Decodificador LZMA para byte 
- * array <code>byte[]</code>.
+ * Compactador/Descompactador LZMA para byte 
+ * array <code>(byte[])</code>.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 18/06/2014
@@ -55,7 +51,7 @@ public class LzmaByteCoder implements Coder<byte[]> {
     nullarray(buf);
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try {
-      LzmaOutputStream lzout = createLzmaOutput(bos);
+      LzmaOutputStream lzout = LzmaStreamFactory.createLzmaOutput(bos);
       lzout.write(buf);
       lzout.flush();
       lzout.close();
@@ -69,9 +65,9 @@ public class LzmaByteCoder implements Coder<byte[]> {
   @Override
   public byte[] decode(byte[] buf) {
     nullarray(buf);
-    try(LzmaInputStream lzin = createLzmaInput(buf)) {
+    try(LzmaInputStream lzin = LzmaStreamFactory.createLzmaInput(buf)) {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      transfer(lzin, bos);
+      FileUtils.transfer(lzin, bos);
       return bos.toByteArray();
     } catch(IOException e) {
       throw new RuntimeException(e);
@@ -79,6 +75,16 @@ public class LzmaByteCoder implements Coder<byte[]> {
   }
   
   
+  /**
+   * Aplica (des)compactação LZMA na porção do byte 
+   * array informado.
+   * @param buf Byte array cuja parte será (de)codificada.
+   * @param offset Índice inicial da parte do byte array.
+   * @param length Tamanho da parte do byte array.
+   * @param encode <code>true</code> para compactar em 
+   * LZMA, <code>false</code> para descompactar.
+   * @return Byte array contendo os dados (de)codificados.
+   */
   public byte[] apply(byte[] buf, int offset, int length, boolean encode) {
     return (encode 
         ? encode(buf, offset, length) 
@@ -86,6 +92,13 @@ public class LzmaByteCoder implements Coder<byte[]> {
   }
 
 
+  /**
+   * Compacta parte do byte array informado no formato LZMA.
+   * @param buf Byte array cuja parte será (de)codificada.
+   * @param offset Índice inicial da parte do byte array.
+   * @param length Tamanho da parte do byte array.
+   * @return Byte array contendo os dados codificados.
+   */
   public byte[] encode(byte[] buf, int offset, int length) {
     nullarray(buf);
     buf = Arrays.copyOfRange(buf, offset, offset + length);
@@ -93,24 +106,17 @@ public class LzmaByteCoder implements Coder<byte[]> {
   }
 
 
+  /**
+   * Descompacta parte do byte array informado no formato LZMA.
+   * @param buf Byte array cuja parte será (de)codificada.
+   * @param offset Índice inicial da parte do byte array.
+   * @param length Tamanho da parte do byte array.
+   * @return Byte array contendo os dados decodificados.
+   */
   public byte[] decode(byte[] buf, int offset, int length) {
     nullarray(buf);
     buf = Arrays.copyOfRange(buf, offset, offset + length);
     return decode(buf);
-  }
-  
-  
-  public static long transfer(InputStream in, OutputStream out) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
-    int read = -1;
-    int total = 0;
-    while((read = in.read()) != -1) {
-      total++;
-      out.write(read);
-    }
-    out.flush();
-    return total;
   }
   
   

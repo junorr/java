@@ -3,9 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lzma/LzmaStreamFactory.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/b64/Base64ByteCoder.java</file>
-            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lzma/LzmaByteCoder.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/FileUtils.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/lzma/LzmaFileCoder.java</file>
         </group>
     </open-files>
 </project-private>

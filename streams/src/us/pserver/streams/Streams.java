@@ -28,17 +28,19 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import lzma.streams.LzmaOutputStream;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import us.pserver.cdr.ByteBufferConverter;
-import us.pserver.cdr.crypt.CryptBufferCoder;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.crypt.CryptUtils;
 import us.pserver.cdr.hex.HexInputStream;
 import us.pserver.cdr.hex.HexOutputStream;
+import us.pserver.cdr.lzma.LzmaStreamFactory;
 import static us.pserver.streams.Checker.nullarg;
 import static us.pserver.streams.Checker.nullbuffer;
 import static us.pserver.streams.Checker.nullstr;
+import static us.pserver.streams.Checker.range;
 import static us.pserver.streams.Checker.zero;
 import static us.pserver.streams.LimitedBuffer.UTF8;
 
@@ -49,9 +51,16 @@ import static us.pserver.streams.LimitedBuffer.UTF8;
  */
 public class Streams {
   
-  public static final int BUFFER_SIZE = 1024;
+  public static final int BUFFER_SIZE = 4096;
   
   public static final String EOF = "EOF";
+  
+  public static final int
+      ORDER_0 = 0,
+      ORDER_1 = 1,
+      ORDER_2 = 2,
+      ORDER_3 = 3,
+      ORDER_4 = 4;
   
   
   private ByteBufferConverter conv;
@@ -62,8 +71,9 @@ public class Streams {
   
   private GZIPOutputStream gzo;
   
-  private boolean useHex, useCrypt, 
-      useGZip, useB64;
+  private LzmaOutputStream lzo;
+  
+  private CoderType[] order;
   
   
   public Streams() {
@@ -71,57 +81,96 @@ public class Streams {
     buffer = null;
     last = null;
     gzo = null;
-    useHex = useCrypt = 
-        useGZip = useB64 = false;
+    order = new CoderType[5];
+    setDefaultCoderOrder();
   }
   
   
-  public Streams setUseHexCoder(boolean use) {
-    useHex = use;
+  public Streams setDefaultCoderOrder() {
+    order[0] = CoderType.CRYPT;
+    order[1] = CoderType.BASE64;
+    order[2] = CoderType.HEX;
+    order[3] = CoderType.GZIP;
+    order[4] = CoderType.LZMA;
     return this;
   }
   
   
-  public Streams setUseCryptCoder(boolean use, CryptKey key) {
-    if(use) {
-      nullarg(CryptKey.class, key);
-      CryptBufferCoder crypt = new CryptBufferCoder(key);
-    }
-    useCrypt = use;
+  public Streams setHexCoderEnabled(boolean enabled) {
+    CoderType.HEX.setEnabled(enabled);
+    return this;
+  }
+  
+  
+  public Streams setBase64CoderEnabled(boolean enabled) {
+    CoderType.BASE64.setEnabled(enabled);
+    return this;
+  }
+  
+  
+  public Streams setGZipCoderEnabled(boolean enabled) {
+    CoderType.GZIP.setEnabled(enabled);
+    return this;
+  }
+  
+  
+  public Streams setLzmaCoderEnabled(boolean enabled) {
+    CoderType.LZMA.setEnabled(enabled);
+    return this;
+  }
+  
+  
+  public Streams setCryptCoderEnabled(boolean enabled, CryptKey key) {
+    if(enabled) nullarg(CryptKey.class, key);
     this.key = key;
+    CoderType.CRYPT.setEnabled(enabled);
     return this;
   }
   
   
-  public Streams setUseGZipCoder(boolean use) {
-    useGZip = use;
+  public boolean isHexCoderEnabled() {
+    return CoderType.HEX.isEnabled();
+  }
+  
+  
+  public boolean isBase64CoderEnabled() {
+    return CoderType.BASE64.isEnabled();
+  }
+  
+  
+  public boolean isGZipCoderEnabled() {
+    return CoderType.GZIP.isEnabled();
+  }
+  
+  
+  public boolean isLzmaCoderEnabled() {
+    return CoderType.LZMA.isEnabled();
+  }
+  
+  
+  public boolean isCryptCoderEnabled() {
+    return CoderType.CRYPT.isEnabled() && key != null;
+  }
+  
+  
+  public Streams setCoderOrder(int index, CoderType coder) {
+    nullarg(CoderType.class, coder);
+    range(index, -1, 5);
+    int iold = getCoderOrder(coder);
+    if(index != iold) {
+      order[iold] = order[index];
+      order[index] = coder;
+    }
     return this;
   }
   
   
-  public Streams setUseBase64Coder(boolean use) {
-    useB64 = use;
-    return this;
-  }
-  
-  
-  public boolean isUsingHexCoder() {
-    return useHex;
-  }
-  
-  
-  public boolean isUsingCryptCoder() {
-    return useCrypt;
-  }
-  
-  
-  public boolean isUsingGZipCoder() {
-    return useGZip;
-  }
-  
-  
-  public boolean isUsingBase64Coder() {
-    return useB64;
+  public int getCoderOrder(CoderType coder) {
+    for(int i = 0; i < 5; i++) {
+      if(order[i] == coder)
+        return i;
+    }
+    return -1;
   }
   
   
@@ -138,48 +187,88 @@ public class Streams {
   public OutputStream configureOutput(OutputStream os) throws IOException {
     nullarg(OutputStream.class, os);
     OutputStream output = os;
-    if(useGZip) {
-      gzo = new GZIPOutputStream(output);
-      output = gzo;
+    for(int i = 4; i >= 0; i--) {
+      if(order[i].isEnabled())
+        output = parseOutput(order[i], output);
     }
-    if(useHex)
-      output = new HexOutputStream(output);
-    if(useB64)
-      output = new Base64OutputStream(output);
-    if(useCrypt)
-      output = CryptUtils.createCipherOutputStream(output, key);
     return output;
+  }
+  
+  
+  private OutputStream parseOutput(CoderType coder, OutputStream os) throws IOException {
+    nullarg(CoderType.class, coder);
+    nullarg(OutputStream.class, os);
+    System.out.println("* Encoder enabled: ["+ coder.name()+ "]");
+    switch(coder) {
+      case BASE64:
+        return new Base64OutputStream(os);
+      case HEX:
+        return new HexOutputStream(os);
+      case GZIP:
+        gzo = new GZIPOutputStream(os);
+        return gzo;
+      case LZMA:
+        lzo = LzmaStreamFactory.createLzmaOutput(os);
+        return lzo;
+      case CRYPT:
+        return CryptUtils.createCipherOutputStream(os, key);
+      default:
+        return null;
+    }
+  }
+  
+  
+  private InputStream parseInput(CoderType coder, InputStream is) throws IOException {
+    nullarg(CoderType.class, coder);
+    nullarg(InputStream.class, is);
+    System.out.println("* Decoder enabled: ["+ coder.name()+ "]");
+    switch(coder) {
+      case BASE64:
+        return new Base64InputStream(is);
+      case HEX:
+        return new HexInputStream(is);
+      case GZIP:
+        return new GZIPInputStream(is);
+      case LZMA:
+        return LzmaStreamFactory.createLzmaInput(is);
+      case CRYPT:
+        return CryptUtils.createCipherInputStream(is, key);
+      default:
+        return null;
+    }
   }
   
   
   public InputStream configureInput(InputStream is) throws IOException {
     nullarg(InputStream.class, is);
     InputStream input = is;
-    if(useGZip)
-      input = new GZIPInputStream(input);
-    if(useHex)
-      input = new HexInputStream(input);
-    if(useB64)
-      input = new Base64InputStream(input);
-    if(useCrypt)
-      input = CryptUtils.createCipherInputStream(input, key);
+    for(int i = 4; i >= 0; i--) {
+      if(order[i].isEnabled())
+        input = parseInput(order[i], input);
+    }
     return input;
   }
   
   
-  public void finishGZOutput() throws IOException {
-    if(useGZip && gzo != null) {
+  public void finishCompressorsOutput() throws IOException {
+    if(CoderType.GZIP.isEnabled() && gzo != null) {
       gzo.finish();
       gzo.flush();
+      gzo.close();
       gzo = null;
+    }
+    if(CoderType.LZMA.isEnabled() && lzo != null) {
+      lzo.flush();
+      lzo.close();
+      lzo = null;
     }
   }
   
   
   public void finishStreams(InputStream is, OutputStream os) throws IOException {
-    is.close();
     os.flush();
     os.close();
+    is.close();
   }
   
   
@@ -197,19 +286,28 @@ public class Streams {
     }
     
     long total = 0;
-    int read = 0;
     byte[] buf = new byte[BUFFER_SIZE];
+    int read = input.read(buf);
+    System.out.println("* first read="+ read);
     
-    while((read = input.read(buf)) > 0) {
+    while(read > 0) {
       total += read;
       output.write(buf, 0, read);
       if(read < buf.length) {
         int len = (read < 50 ? read : 50);
         String str = new String(buf, read -len, len);
-        if(str.contains(EOF)) break;
+        System.out.println("* str='"+ str+ "'");
+        System.out.println("* total="+total);
+        if(str.contains(EOF)) {
+          System.out.println("* breaking EOF...");
+          break;
+        }
       }
+      read = input.read(buf);
     }
-    if(encode) finishGZOutput();
+    output.flush();
+    System.out.println("* total="+total);
+    if(encode) finishCompressorsOutput();
     return total;
   }
   
@@ -286,7 +384,7 @@ public class Streams {
         buffer.put((byte) read);
       }
     }
-    if(encode) finishGZOutput();
+    if(encode) finishCompressorsOutput();
     return total;
   }
   
@@ -398,7 +496,7 @@ public class Streams {
         buffer.put((byte) read);
       }
     }
-    if(encode) finishGZOutput();
+    if(encode) finishCompressorsOutput();
     return total;
   }
   
@@ -517,7 +615,7 @@ public class Streams {
     
     readUntil(input, start);
     long t = transferUntil(input, output, end);
-    if(encode) finishGZOutput();
+    if(encode) finishCompressorsOutput();
     return t;
   }
   

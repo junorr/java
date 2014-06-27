@@ -79,4 +79,11 @@ public class Checker {
   }
   
   
+  public static void range(int num, int min, int max) {
+    if(num < min || num > max)
+      throw new IllegalArgumentException(
+          "Number out of range ["+ min
+          + " > " + num+ " < "+ max+ "]");
+  }
+  
 }

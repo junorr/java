@@ -106,7 +106,7 @@ public class Base64FileCoder implements FileCoder {
   }
   
   
-  public boolean encodeTo(Path src, PrintStream ps) {
+  private boolean encodeTo(Path src, PrintStream ps) {
     nullarg(Path.class, src);
     nullarg(PrintStream.class, ps);
     
@@ -120,7 +120,7 @@ public class Base64FileCoder implements FileCoder {
   }
   
   
-  public boolean decodeTo(Path src, PrintStream ps) {
+  private boolean decodeTo(Path src, PrintStream ps) {
     nullarg(Path.class, src);
     nullarg(PrintStream.class, ps);
     
@@ -134,7 +134,7 @@ public class Base64FileCoder implements FileCoder {
   }
   
   
-  public boolean encodeFrom(ByteBuffer buf, Path dst) {
+  private boolean encodeFrom(ByteBuffer buf, Path dst) {
     nullbuffer(buf);
     nullarg(Path.class, dst);
     
@@ -148,7 +148,7 @@ public class Base64FileCoder implements FileCoder {
   }
   
   
-  public boolean decodeFrom(ByteBuffer buf, Path dst) {
+  private boolean decodeFrom(ByteBuffer buf, Path dst) {
     nullbuffer(buf);
     nullarg(Path.class, dst);
     

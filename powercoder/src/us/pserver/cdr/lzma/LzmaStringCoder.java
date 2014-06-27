@@ -27,8 +27,9 @@ import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * Compactador/Descompactador de <code>String's</code> no formato LZMA.
+ * 
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 18/06/2014
  */
 public class LzmaStringCoder implements Coder<String> {

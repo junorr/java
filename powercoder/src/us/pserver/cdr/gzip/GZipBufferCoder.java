@@ -28,7 +28,7 @@ import us.pserver.cdr.Coder;
 
 
 /**
- * Codificador/Decodificador GZIP para <code>ByteBuffer</code>.
+ * Compactador/Descompactador GZIP para <code>ByteBuffer</code>.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 18/06/2014

@@ -175,7 +175,7 @@ public class CryptUtils {
   
   /**
    * Cria um stream de entrada para descriptografia de dados.
-   * @param out <code>InputStream</code> de onde serão lidos
+   * @param in <code>InputStream</code> de onde serão lidos
    * os dados criptografados.
    * @param key Chave <code>CryptKey</code>.
    * @return <code>InputStream</code> para descriptografia de dados.

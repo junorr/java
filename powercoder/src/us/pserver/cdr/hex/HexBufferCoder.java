@@ -27,7 +27,7 @@ import static us.pserver.cdr.Checker.nullbuffer;
 import us.pserver.cdr.Coder;
 
 /**
- * Codificador/Decodificador GZIP para <code>ByteBuffer</code>.
+ * Codificador/Decodificador hexadecimal para <code>ByteBuffer</code>.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 21/08/2013

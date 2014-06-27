@@ -27,9 +27,8 @@ import static us.pserver.cdr.Checker.nullstr;
 
 
 /**
- * Classe utilitária para codificação e decodificação
- * no formato Hexadecimal, utilizada pelas demais
- * implementações.
+ * Classe utilitária para codificação/decodificação
+ * hexadecimal utilizada pelas demais implementações.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 21/08/2013
@@ -94,7 +93,7 @@ public class HexCoder {
   
   /**
    * Atalho para {@link #toHexString(byte[]) }
-   * @param str byte array.
+   * @param bs byte array.
    * @return <code>String</code> hexadecimal.
    * @see us.pserver.cdr.hex.HexCoder#toHexString(byte[]) 
    */

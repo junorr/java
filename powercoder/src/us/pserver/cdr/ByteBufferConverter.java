@@ -27,7 +27,8 @@ import java.util.Arrays;
 
 
 /**
- * Conversor de objetos <code>ByteBuffer</code> para <code>byte[]</code>.
+ * Conversor de objetos <code>ByteBuffer</code> para 
+ * byte array <code>(byte[])</code>.
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 25/06/2014
  */

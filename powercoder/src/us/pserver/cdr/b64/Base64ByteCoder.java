@@ -69,7 +69,7 @@ public class Base64ByteCoder implements Coder<byte[]> {
    * @param offset Índice inicial da parte do byte array.
    * @param length Tamanho da parte do byte array.
    * @param encode <code>true</code> para codificar no formato
-   * Base64, <code>false</code> para decodificar do formato Base64.
+   * Base64, <code>false</code> para decodificar.
    * @return Byte array contendo os dados (de)codificados.
    */
   public byte[] apply(byte[] t, int offset, int length, boolean encode) {

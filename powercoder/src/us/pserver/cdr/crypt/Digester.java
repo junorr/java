@@ -125,7 +125,6 @@ public class Digester {
    * Gera um hash a partir dos bytes informados, 
    * com o algorítmo MD5.
    * @param bs byte array a partir do qual será gerado o hash.
-   * @param algo Algorítmo de criptografia.
    * @return hash.
    */
   public static byte[] toMD5(byte[] bs) {

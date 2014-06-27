@@ -41,6 +41,7 @@ public class Base64Gui extends javax.swing.JFrame {
   
   /**
    * Creates new form Gui with parent <code>Frame</code>.
+   * @param parent <code>Frame</code>.
    */
   public Base64Gui(Frame parent) {
     this();
