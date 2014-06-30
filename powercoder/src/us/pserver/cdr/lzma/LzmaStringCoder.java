@@ -21,10 +21,10 @@
 
 package us.pserver.cdr.lzma;
 
-import static us.pserver.cdr.Checker.nullstr;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
+import static us.pserver.chk.Checker.nullstr;
 
 /**
  * Compactador/Descompactador de <code>String's</code> no formato LZMA.

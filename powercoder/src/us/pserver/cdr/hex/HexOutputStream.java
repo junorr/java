@@ -23,7 +23,8 @@ package us.pserver.cdr.hex;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import static us.pserver.cdr.Checker.nullarg;
+import static us.pserver.chk.Checker.nullarg;
+
 
 /**
  * OutputStream para codificação de dados

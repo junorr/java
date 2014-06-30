@@ -37,11 +37,11 @@ import us.pserver.cdr.crypt.CryptUtils;
 import us.pserver.cdr.hex.HexInputStream;
 import us.pserver.cdr.hex.HexOutputStream;
 import us.pserver.cdr.lzma.LzmaStreamFactory;
-import static us.pserver.streams.Checker.nullarg;
-import static us.pserver.streams.Checker.nullbuffer;
-import static us.pserver.streams.Checker.nullstr;
-import static us.pserver.streams.Checker.range;
-import static us.pserver.streams.Checker.zero;
+import static us.pserver.chk.Checker.nullarg;
+import static us.pserver.chk.Checker.nullbuffer;
+import static us.pserver.chk.Checker.nullstr;
+import static us.pserver.chk.Checker.range;
+import static us.pserver.chk.Checker.zero;
 import static us.pserver.streams.LimitedBuffer.UTF8;
 
 /**
@@ -287,26 +287,19 @@ public class Streams {
     
     long total = 0;
     byte[] buf = new byte[BUFFER_SIZE];
-    int read = input.read(buf);
-    System.out.println("* first read="+ read);
+    int read = 0;
     
-    while(read > 0) {
+    while((read = input.read(buf)) > 0) {
       total += read;
       output.write(buf, 0, read);
       if(read < buf.length) {
         int len = (read < 50 ? read : 50);
         String str = new String(buf, read -len, len);
-        System.out.println("* str='"+ str+ "'");
-        System.out.println("* total="+total);
-        if(str.contains(EOF)) {
-          System.out.println("* breaking EOF...");
-          break;
-        }
+        if(str.contains(EOF)) break;
       }
-      read = input.read(buf);
     }
+    
     output.flush();
-    System.out.println("* total="+total);
     if(encode) finishCompressorsOutput();
     return total;
   }

@@ -31,10 +31,10 @@ import java.nio.file.Path;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import us.pserver.cdr.ByteBufferConverter;
-import static us.pserver.cdr.Checker.nullarg;
-import static us.pserver.cdr.Checker.nullbuffer;
 import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
+import static us.pserver.chk.Checker.nullarg;
+import static us.pserver.chk.Checker.nullbuffer;
 
 /**
  * Codificador/Decodificador de arquivos no formato Base64.

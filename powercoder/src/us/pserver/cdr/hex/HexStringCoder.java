@@ -22,11 +22,11 @@
 
 package us.pserver.cdr.hex;
 
-import static us.pserver.cdr.Checker.nullstr;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.crypt.DigestAlgorithm;
 import us.pserver.cdr.crypt.Digester;
+import static us.pserver.chk.Checker.nullstr;
 
 
 /**

@@ -23,10 +23,10 @@
 package us.pserver.cdr.hex;
 
 import java.util.Arrays;
-import static us.pserver.cdr.Checker.nullarray;
-import static us.pserver.cdr.Checker.range;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
+import static us.pserver.chk.Checker.nullarray;
+import static us.pserver.chk.Checker.range;
 
 
 /**

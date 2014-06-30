@@ -22,8 +22,8 @@
 
 package us.pserver.cdr.hex;
 
-import static us.pserver.cdr.Checker.nullarray;
-import static us.pserver.cdr.Checker.nullstr;
+import static us.pserver.chk.Checker.nullarray;
+import static us.pserver.chk.Checker.nullstr;
 
 
 /**

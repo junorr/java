@@ -16,3 +16,6 @@
 /lz4/dist/
 /streams/build/
 /streams/dist/
+/checker/nbproject/private/
+/checker/build/
+/checker/dist/

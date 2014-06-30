@@ -28,8 +28,8 @@ import java.io.OutputStream;
 import lzma.sdk.lzma.Decoder;
 import lzma.streams.LzmaInputStream;
 import lzma.streams.LzmaOutputStream;
-import static us.pserver.cdr.Checker.nullarg;
-import static us.pserver.cdr.Checker.nullarray;
+import static us.pserver.chk.Checker.nullarg;
+import static us.pserver.chk.Checker.nullarray;
 
 /**
  * Classe utilitária para criação de streams

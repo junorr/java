@@ -31,7 +31,7 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
-import static us.pserver.cdr.Checker.nullarg;
+import static us.pserver.chk.Checker.nullarg;
 
 
 /**

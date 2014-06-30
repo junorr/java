@@ -19,13 +19,14 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.cdr;
+package us.pserver.chk;
 
 import java.nio.ByteBuffer;
 
 
 /**
  * Classe utilitária para verificação de argumentos.
+ * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 20/06/2014
  */
@@ -130,7 +131,7 @@ public class Checker {
    * os argumentos <code>(min e max)</code> informados.
    * Ex: se <code>min=0</code> e <code>max=10</code>,
    * o argumento deve ser <code>num &gt; 0 &amp;&amp; num &lt; 10</code>.
-   * Este método utiliza <code>doubleValue() : double</code> 
+   * Este método utiliza <code>Number.doubleValue() : double</code> 
    * para testar os argumentos.
    * @param num Número a ser testado.
    * @param min Valor mínimo (exclusivo).

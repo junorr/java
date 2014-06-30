@@ -23,8 +23,8 @@ package us.pserver.cdr.gzip;
 
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
-import static us.pserver.cdr.Checker.nullbuffer;
 import us.pserver.cdr.Coder;
+import static us.pserver.chk.Checker.nullbuffer;
 
 
 /**

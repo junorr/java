@@ -22,13 +22,38 @@
 package us.pserver.streams;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * Representa um tipo de codificador 
+ * disponível para uso pela classe <code>Streams</code>.
+ * 
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 27/06/2014
  */
 public enum CoderType {
 
-  BASE64, LZMA, GZIP, HEX, CRYPT;
+  /**
+   * Representa codificador no formato Base64.
+   */
+  BASE64, 
+  
+  /**
+   * Representa codificador no formato Lzma.
+   */
+  LZMA, 
+  
+  /**
+   * Representa codificador no formato GZip.
+   */
+  GZIP, 
+  
+  /**
+   * Representa codificador no formato Hexadecimal.
+   */
+  HEX, 
+  
+  /**
+   * Representa codificador de criptografia.
+   */
+  CRYPT;
   
   
   private CoderType() {

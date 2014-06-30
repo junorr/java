@@ -53,7 +53,8 @@ public class TestStreams {
         
         .setBase64CoderEnabled(false)
         .setHexCoderEnabled(false)
-        .setGZipCoderEnabled(true)
+        
+        .setGZipCoderEnabled(false)
         .setLzmaCoderEnabled(true);
     
     InputStream in = Files.newInputStream(pi, StandardOpenOption.READ);

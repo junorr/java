@@ -23,9 +23,9 @@
 package us.pserver.cdr.crypt;
 
 import javax.crypto.spec.SecretKeySpec;
-import static us.pserver.cdr.Checker.nullarg;
-import static us.pserver.cdr.Checker.nullarray;
-import static us.pserver.cdr.Checker.range;
+import static us.pserver.chk.Checker.nullarg;
+import static us.pserver.chk.Checker.nullarray;
+import static us.pserver.chk.Checker.range;
 
 
 /**

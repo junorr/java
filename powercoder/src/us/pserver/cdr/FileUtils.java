@@ -28,7 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import static us.pserver.cdr.Checker.nullarg;
+import static us.pserver.chk.Checker.nullarg;
 
 /**
  * Classe utilitária com funções para manipulação de

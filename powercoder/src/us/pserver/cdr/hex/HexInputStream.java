@@ -23,8 +23,9 @@ package us.pserver.cdr.hex;
 
 import java.io.IOException;
 import java.io.InputStream;
-import static us.pserver.cdr.Checker.nullarray;
-import static us.pserver.cdr.Checker.range;
+import static us.pserver.chk.Checker.nullarray;
+import static us.pserver.chk.Checker.range;
+
 
 /**
  * InputStream para decodificação de dados

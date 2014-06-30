@@ -24,9 +24,9 @@ package us.pserver.cdr.b64;
 
 import java.util.Arrays;
 import org.apache.commons.codec.binary.Base64;
-import static us.pserver.cdr.Checker.nullarray;
-import static us.pserver.cdr.Checker.range;
 import us.pserver.cdr.Coder;
+import static us.pserver.chk.Checker.nullarray;
+import static us.pserver.chk.Checker.range;
 
 
 /**

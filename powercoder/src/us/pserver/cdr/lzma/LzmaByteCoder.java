@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import lzma.streams.LzmaInputStream;
 import lzma.streams.LzmaOutputStream;
-import static us.pserver.cdr.Checker.nullarray;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.FileUtils;
+import static us.pserver.chk.Checker.nullarray;
 
 /**
  * Compactador/Descompactador LZMA para byte 

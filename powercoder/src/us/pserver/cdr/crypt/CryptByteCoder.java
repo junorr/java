@@ -33,8 +33,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import static us.pserver.cdr.Checker.nullarray;
-import static us.pserver.cdr.Checker.range;
+import static us.pserver.chk.Checker.nullarray;
+import static us.pserver.chk.Checker.range;
 
 
 /**

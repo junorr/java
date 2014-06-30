@@ -31,10 +31,10 @@ import lzma.sdk.lzma.Decoder;
 import lzma.streams.LzmaInputStream;
 import lzma.streams.LzmaOutputStream;
 import us.pserver.cdr.ByteBufferConverter;
-import static us.pserver.cdr.Checker.nullarg;
-import static us.pserver.cdr.Checker.nullbuffer;
 import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
+import static us.pserver.chk.Checker.nullarg;
+import static us.pserver.chk.Checker.nullbuffer;
 
 /**
  * Compactador/Descompactador de arquivos no formato LZMA.

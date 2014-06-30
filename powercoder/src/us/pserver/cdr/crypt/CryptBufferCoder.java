@@ -24,7 +24,7 @@ package us.pserver.cdr.crypt;
 
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
-import static us.pserver.cdr.Checker.nullbuffer;
+import static us.pserver.chk.Checker.nullbuffer;
 
 
 /**

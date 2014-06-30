@@ -25,9 +25,9 @@ package us.pserver.cdr.crypt;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import static us.pserver.cdr.Checker.nullarg;
-import static us.pserver.cdr.Checker.nullarray;
-import static us.pserver.cdr.Checker.nullstr;
+import static us.pserver.chk.Checker.nullarg;
+import static us.pserver.chk.Checker.nullarray;
+import static us.pserver.chk.Checker.nullstr;
 
 
 /**

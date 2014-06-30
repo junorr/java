@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import static us.pserver.cdr.Checker.nullarray;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.FileUtils;
+import static us.pserver.chk.Checker.nullarray;
 
 /**
  * Compactador/Descompactador GZIP para byte array 
