@@ -38,6 +38,7 @@ import us.pserver.cdr.hex.HexInputStream;
 import us.pserver.cdr.hex.HexOutputStream;
 import us.pserver.cdr.lzma.LzmaStreamFactory;
 import static us.pserver.chk.Checker.nullarg;
+import static us.pserver.chk.Checker.nullarray;
 import static us.pserver.chk.Checker.nullbuffer;
 import static us.pserver.chk.Checker.nullstr;
 import static us.pserver.chk.Checker.range;
@@ -45,16 +46,33 @@ import static us.pserver.chk.Checker.zero;
 import static us.pserver.streams.LimitedBuffer.UTF8;
 
 /**
- *
+ * Classe para manipular streams de entrada e saída
+ * de dados, combinando capacidade de busca, codificação
+ * e compactação de dados durante o processamento.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 18/06/2014
  */
 public class Streams {
   
+  /**
+   * <code>BUFFER_SIZE = 4096</code><br>
+   * Tamanho padrão do buffer interno.
+   */
   public static final int BUFFER_SIZE = 4096;
   
+  /**
+   * <code>EOF = "EOF"</code><br>
+   * <code>String</code> de representação 
+   * de final de arquivo.
+   */
   public static final String EOF = "EOF";
   
+  /**
+   * <code>ORDER_N = {0, 1, 2, 3, 4}</code><br>
+   * Índice de ordenação dos tipos
+   * de codificadores.
+   */
   public static final int
       ORDER_0 = 0,
       ORDER_1 = 1,
@@ -75,17 +93,87 @@ public class Streams {
   
   private CoderType[] order;
   
+  private InputStream input;
   
+  private OutputStream output;
+  
+  private InputStream rawin;
+  
+  private OutputStream rawout;
+  
+  
+  /**
+   * Construtor padrão e sem argumentos.
+   */
   public Streams() {
     conv = new ByteBufferConverter();
     buffer = null;
     last = null;
     gzo = null;
     order = new CoderType[5];
+    input = null;
+    output = null;
     setDefaultCoderOrder();
   }
   
   
+  public Streams(InputStream is, OutputStream os, boolean encode) throws IOException {
+    this();
+    setInputStream(is, !encode);
+    setOutputStream(os, encode);
+  }
+  
+  
+  public Streams setInputStream(InputStream is, boolean decode) throws IOException {
+    nullarg(InputStream.class, is);
+    rawin = is;
+    if(decode) input = configureInput(is);
+    else input = is;
+    return this;
+  }
+  
+  
+  public Streams setOutputStream(OutputStream os, boolean encode) throws IOException {
+    nullarg(OutputStream.class, os);
+    rawout = os;
+    if(encode) output = configureOutput(os);
+    else output = os;
+    return this;
+  }
+  
+  
+  public InputStream getConfiguredInputStream() {
+    return input;
+  }
+  
+  
+  public OutputStream getConfiguredOutputStream() {
+    return output;
+  }
+  
+  
+  public InputStream getRawInputStream() {
+    return rawin;
+  }
+  
+  
+  public OutputStream getRawOutputStream() {
+    return rawout;
+  }
+  
+  
+  /**
+   * Define a ordem padrão de processamento
+   * dos codificadores:<br>
+   * <pre>
+   * order[0] = CoderType.CRYPT;
+   * order[1] = CoderType.BASE64;
+   * order[2] = CoderType.HEX;
+   * order[3] = CoderType.GZIP;
+   * order[4] = CoderType.LZMA;
+   * </pre>
+   * @return Esta instância modificada de <code>Streams</code>.
+   */
   public Streams setDefaultCoderOrder() {
     order[0] = CoderType.CRYPT;
     order[1] = CoderType.BASE64;
@@ -96,30 +184,66 @@ public class Streams {
   }
   
   
+  /**
+   * Habilita/Desabilita o codificador hexadecimal.
+   * @param enabled <code>true</code> para
+   * habilitar o codificador, <code>false</code>
+   * para desabilitar.
+   * @return Esta instância modificada de <code>Streams</code>.
+   */
   public Streams setHexCoderEnabled(boolean enabled) {
     CoderType.HEX.setEnabled(enabled);
     return this;
   }
   
   
+  /**
+   * Habilita/Desabilita o codificador Base64.
+   * @param enabled <code>true</code> para
+   * habilitar o codificador, <code>false</code>
+   * para desabilitar.
+   * @return Esta instância modificada de <code>Streams</code>.
+   */
   public Streams setBase64CoderEnabled(boolean enabled) {
     CoderType.BASE64.setEnabled(enabled);
     return this;
   }
   
   
+  /**
+   * Habilita/Desabilita o codificador GZip.
+   * @param enabled <code>true</code> para
+   * habilitar o codificador, <code>false</code>
+   * para desabilitar.
+   * @return Esta instância modificada de <code>Streams</code>.
+   */
   public Streams setGZipCoderEnabled(boolean enabled) {
     CoderType.GZIP.setEnabled(enabled);
     return this;
   }
   
   
+  /**
+   * Habilita/Desabilita o codificador Lzma.
+   * @param enabled <code>true</code> para
+   * habilitar o codificador, <code>false</code>
+   * para desabilitar.
+   * @return Esta instância modificada de <code>Streams</code>.
+   */
   public Streams setLzmaCoderEnabled(boolean enabled) {
     CoderType.LZMA.setEnabled(enabled);
     return this;
   }
   
   
+  /**
+   * Habilita/Desabilita o codificador de criptografia.
+   * @param enabled <code>true</code> para
+   * habilitar o codificador, <code>false</code>
+   * para desabilitar.
+   * @param key Chave de criptografia.
+   * @return Esta instância modificada de <code>Streams</code>.
+   */
   public Streams setCryptCoderEnabled(boolean enabled, CryptKey key) {
     if(enabled) nullarg(CryptKey.class, key);
     this.key = key;
@@ -128,31 +252,72 @@ public class Streams {
   }
   
   
+  /**
+   * Verifica se o codificador hexadecimal está habilitado.
+   * @return <code>true</code> se o codificador estiver
+   * habilitado, <code>false</code> caso contrário.
+   */
   public boolean isHexCoderEnabled() {
     return CoderType.HEX.isEnabled();
   }
   
   
+  /**
+   * Verifica se o codificador Base64 está habilitado.
+   * @return <code>true</code> se o codificador estiver
+   * habilitado, <code>false</code> caso contrário.
+   */
   public boolean isBase64CoderEnabled() {
     return CoderType.BASE64.isEnabled();
   }
   
   
+  /**
+   * Verifica se o codificador GZip está habilitado.
+   * @return <code>true</code> se o codificador estiver
+   * habilitado, <code>false</code> caso contrário.
+   */
   public boolean isGZipCoderEnabled() {
     return CoderType.GZIP.isEnabled();
   }
   
   
+  /**
+   * Verifica se o codificador Lzma está habilitado.
+   * @return <code>true</code> se o codificador estiver
+   * habilitado, <code>false</code> caso contrário.
+   */
   public boolean isLzmaCoderEnabled() {
     return CoderType.LZMA.isEnabled();
   }
   
   
+  /**
+   * Verifica se o codificador de criptografia está habilitado.
+   * @return <code>true</code> se o codificador estiver
+   * habilitado, <code>false</code> caso contrário.
+   */
   public boolean isCryptCoderEnabled() {
     return CoderType.CRYPT.isEnabled() && key != null;
   }
   
   
+  /**
+   * Retorna a chave de criptografia.
+   * @return chave de criptografia.
+   */
+  public CryptKey getCryptKey() {
+    return key;
+  }
+  
+  
+  /**
+   * Define a ordem de processamento do tipo de 
+   * codificador especificado.
+   * @param index Índice de classificação.
+   * @param coder Tipo de codificador a ser ordenado.
+   * @return Esta instância modificada de <code>Streams</code>.
+   */
   public Streams setCoderOrder(int index, CoderType coder) {
     nullarg(CoderType.class, coder);
     range(index, -1, 5);
@@ -165,6 +330,13 @@ public class Streams {
   }
   
   
+  /**
+   * Retorna o índice de classificação de 
+   * processamento do tipo de codificador 
+   * especificado.
+   * @param coder Tipo de codificador.
+   * @return índice de classificação.
+   */
   public int getCoderOrder(CoderType coder) {
     for(int i = 0; i < 5; i++) {
       if(order[i] == coder)
@@ -184,6 +356,14 @@ public class Streams {
   }
   
   
+  /**
+   * Encapsula o stream de saída especificado nos 
+   * streams de codificação habilitados de acordo 
+   * com a ordem de processamento pré definida.
+   * @param os Stream de saída a ser encapsulado.
+   * @return Stream de saída de codificação.
+   * @throws IOException caso ocorra erro na operação.
+   */
   public OutputStream configureOutput(OutputStream os) throws IOException {
     nullarg(OutputStream.class, os);
     OutputStream output = os;
@@ -239,6 +419,14 @@ public class Streams {
   }
   
   
+  /**
+   * Encapsula o stream de entrada especificado nos 
+   * streams de codificação habilitados de acordo 
+   * com a ordem de processamento pré definida.
+   * @param is Stream de entrada a ser encapsulado.
+   * @return Stream de entrada para codificação.
+   * @throws IOException caso ocorra erro na operação.
+   */
   public InputStream configureInput(InputStream is) throws IOException {
     nullarg(InputStream.class, is);
     InputStream input = is;
@@ -250,41 +438,51 @@ public class Streams {
   }
   
   
-  public void finishCompressorsOutput() throws IOException {
-    if(CoderType.GZIP.isEnabled() && gzo != null) {
-      gzo.finish();
-      gzo.flush();
-      gzo.close();
-      gzo = null;
-    }
-    if(CoderType.LZMA.isEnabled() && lzo != null) {
-      lzo.flush();
-      lzo.close();
-      lzo = null;
-    }
+  /**
+   * Finaliza os streams de compactação de dados,
+   * caso estejam habilitados.
+   * @throws IOException Caso ocorra erro na operação.
+   */
+  public void finishCompressorsOutput() {
+    try {
+      if(CoderType.GZIP.isEnabled() && gzo != null) {
+        gzo.finish();
+        gzo.flush();
+        gzo.close();
+        gzo = null;
+      }
+      if(CoderType.LZMA.isEnabled() && lzo != null) {
+        lzo.flush();
+        lzo.close();
+        lzo = null;
+      }
+    } catch(IOException e) {}
   }
   
   
-  public void finishStreams(InputStream is, OutputStream os) throws IOException {
-    os.flush();
-    os.close();
-    is.close();
+  /**
+   * Finaliza os streams especificados.
+   * @throws IOException Caso ocorra erro na operação.
+   */
+  public void finishStreams() throws IOException {
+    output.flush();
+    output.close();
+    input.close();
+    finishCompressorsOutput();
   }
   
   
-  public long transfer(InputStream is, OutputStream os, boolean encode) throws IOException {
-    nullarg(InputStream.class, is);
-    nullarg(OutputStream.class, os);
-    
-    InputStream input = is;
-    OutputStream output = os;
-    
-    if(!encode) {
-      input = configureInput(input);
-    } else {
-      output = configureOutput(output);
-    }
-    
+  /**
+   * Transfere os dados do stream de entrada para o 
+   * stream de saída, (de)codificando os dados no 
+   * processo, de acordo com os codificadores habilitados.
+   * @param encode <code>true</code> para 
+   * codificar os dados durante a transferência,
+   * <code>false</code> para decodificar.
+   * @return a quantidade de bytes processados.
+   * @throws IOException Caso ocorra erro na operação.
+   */
+  public long transfer() throws IOException {
     long total = 0;
     byte[] buf = new byte[BUFFER_SIZE];
     int read = 0;
@@ -300,46 +498,26 @@ public class Streams {
     }
     
     output.flush();
-    if(encode) finishCompressorsOutput();
     return total;
   }
   
   
-  public long transfer(InputStream is, OutputStream os) throws IOException {
-    nullarg(InputStream.class, is);
-    nullarg(OutputStream.class, os);
-    
-    long total = 0;
-    int read = 0;
-    byte[] buf = new byte[BUFFER_SIZE];
-    
-    while((read = is.read(buf)) > 0) {
-      total += read;
-      os.write(buf, 0, read);
-      if(read < buf.length) {
-        int len = (read < 50 ? read : 50);
-        String str = new String(buf, read -len, len);
-        if(str.contains(EOF)) break;
-      }
-    }
-    return total;
-  }
-  
-  
-  public long transferUntil(InputStream is, OutputStream os, String until, boolean encode) throws IOException {
-    nullarg(InputStream.class, is);
-    nullarg(OutputStream.class, os);
+  /**
+   * Transfere os dados do stream de entrada para o 
+   * stream de saída, (de)codificando os dados no 
+   * processo, até encontrar a <code>String until</code>
+   * nos dados processados, ou até o final do stream.
+   * @param until token de parada do processamento, a ser
+   * procurada nos dados transferidos.
+   * @param encode <code>true</code> para 
+   * codificar os dados durante a transferência,
+   * <code>false</code> para decodificar.
+   * @return a quantidade de bytes processados.
+   * @throws IOException Caso ocorra erro na operação.
+   */
+  public long transferUntil(String until) throws IOException {
     nullstr(until);
-    
     resetBuffers();
-    InputStream input = is;
-    OutputStream output = os;
-    
-    if(!encode) {
-      input = configureInput(input);
-    } else {
-      output = configureOutput(output);
-    }
     
     LimitedBuffer lbuf = new LimitedBuffer(until.length());
     long total = 0;
@@ -377,73 +555,29 @@ public class Streams {
         buffer.put((byte) read);
       }
     }
-    if(encode) finishCompressorsOutput();
     return total;
   }
   
   
-  public long transferUntil(InputStream is, OutputStream os, String until) throws IOException {
-    nullarg(InputStream.class, is);
-    nullarg(OutputStream.class, os);
-    nullstr(until);
-    
-    resetBuffers();
-    
-    LimitedBuffer lbuf = new LimitedBuffer(until.length());
-    long total = 0;
-    int read = -1;
-    
-    while((read = is.read()) != -1) {
-      total++;
-      lbuf.put(read);
-      
-      if(until.equals(lbuf.toUTF8())) {
-        rewindBuffers(buffer, last, until.length());
-        buffer.flip();
-        if(last.remaining() > 0) {
-          writeBufferTo(buffer, last);
-        }
-        if(last.position() > 0) {
-          last.flip();
-          writeBufferTo(last, os);
-        }
-        if(buffer.remaining() > 0) {
-          writeBufferTo(buffer, os);
-        }
-      }
-      else {
-        if(buffer.remaining() == 0) {
-          if(last.remaining() == 0) {
-            last.flip();
-            writeBufferTo(last, os);
-            last.clear();
-          }
-          buffer.flip();
-          writeBufferTo(buffer, last);
-          buffer.clear();
-        }
-        buffer.put((byte) read);
-      }
-    }
-    return total;
-  }
-  
-  
-  public long transferUntilOr(InputStream is, OutputStream os, String until, String orfalse, boolean encode) throws IOException {
-    nullarg(InputStream.class, is);
-    nullarg(OutputStream.class, os);
+  /**
+   * Transfere os dados do stream de entrada para o 
+   * stream de saída até encontrar a <code>String until</code>
+   * ou a <code>String orfalse</code>
+   * nos dados processados, ou até o final do stream.
+   * @param is Stream de entrada.
+   * @param os Stream de saída.
+   * @param until primeiro token de parada do processamento, a ser
+   * procurada nos dados transferidos.
+   * @param orfalse segundo token de parada do processamento, a ser
+   * procurada nos dados transferidos.
+   * @return a quantidade de bytes processados.
+   * @throws IOException Caso ocorra erro na operação.
+   */
+  public long transferUntilOr(String until, String orfalse) throws IOException {
     nullstr(until);
     nullstr(orfalse);
     
     resetBuffers();
-    InputStream input = is;
-    OutputStream output = os;
-    
-    if(!encode) {
-      input = configureInput(input);
-    } else {
-      output = configureOutput(output);
-    }
     
     LimitedBuffer luntil = new LimitedBuffer(until.length());
     LimitedBuffer lor = new LimitedBuffer(orfalse.length());
@@ -489,67 +623,14 @@ public class Streams {
         buffer.put((byte) read);
       }
     }
-    if(encode) finishCompressorsOutput();
     return total;
   }
   
   
-  public long transferUntilOr(InputStream is, OutputStream os, String until, String orfalse) throws IOException {
-    nullarg(InputStream.class, is);
-    nullarg(OutputStream.class, os);
-    nullstr(until);
-    nullstr(orfalse);
-    
-    resetBuffers();
-    
-    LimitedBuffer luntil = new LimitedBuffer(until.length());
-    LimitedBuffer lor = new LimitedBuffer(orfalse.length());
-    long total = 0;
-    int read = -1;
-    
-    while((read = is.read()) != -1) {
-      total++;
-      luntil.put(read);
-      lor.put(read);
-      
-      int len = 0;
-      if(until.equals(luntil.toUTF8()))
-        len = until.length();
-      else if(orfalse.equals(lor.toUTF8()))
-        len = orfalse.length();
-      
-      if(len > 0) {
-        rewindBuffers(buffer, last, len);
-        buffer.flip();
-        if(last.remaining() > 0) {
-          writeBufferTo(buffer, last);
-        }
-        if(last.position() > 0) {
-          last.flip();
-          writeBufferTo(last, os);
-        }
-        if(buffer.remaining() > 0) {
-          writeBufferTo(buffer, os);
-        }
-      }
-      else {
-        if(buffer.remaining() == 0) {
-          if(last.remaining() == 0) {
-            last.flip();
-            writeBufferTo(last, os);
-            last.clear();
-          }
-          buffer.flip();
-          writeBufferTo(buffer, last);
-          buffer.clear();
-        }
-        buffer.put((byte) read);
-      }
-    }
-    return total;
-  }
-  
-  
+  /**
+   * Retrocede a posição dos buffers na quantidade 
+   * indicada por <code>length</code>.
+   */
   private void rewindBuffers(ByteBuffer buf, ByteBuffer last, int length) {
     nullbuffer(buf);
     nullbuffer(last);
@@ -567,6 +648,12 @@ public class Streams {
   }
   
   
+  /**
+   * Escreve o conteúdo do primeiro buffer para o segundo.
+   * @param buf Buffer cujo conteúdo será transferido.
+   * @param out Buffer que irá receber o conteúdo transferido.
+   * @throws IOException Caso ocorra erro na operação.
+   */
   public void writeBufferTo(ByteBuffer buf, ByteBuffer out) throws IOException {
     nullbuffer(buf);
     nullbuffer(out);
@@ -578,6 +665,14 @@ public class Streams {
   }
   
   
+  /**
+   * Escreve o conteúdo do buffer para o stream de
+   * saída especificado.
+   * @param buf Buffer cujo conteúdo será transferido.
+   * @param os Stream de saída onde serão escritos
+   * os dados do buffer.
+   * @throws IOException Caso ocorra erro na operação. 
+   */
   public void writeBufferTo(ByteBuffer buf, OutputStream os) throws IOException {
     nullbuffer(buf);
     nullarg(OutputStream.class, os);
@@ -590,101 +685,76 @@ public class Streams {
   }
   
   
-  public long transferBetween(InputStream is, OutputStream os, 
-      String start, String end, boolean encode) throws IOException {
-    nullarg(InputStream.class, is);
-    nullarg(OutputStream.class, os);
+  /**
+   * Transfere do stream de entrada para o 
+   * stream de saída os dados que estiverem entre os
+   * tokens <code>String start</code> e <code>end</code> 
+   * contidos nos dados processados, descartando o restante.
+   * O processamento só começa após encontrar a 
+   * <code>String start</code> e termina ao encontrar 
+   * a <code>String end</code> nos dados processados,
+   * antes disso os dados são descartados.
+   * @param start token de início do processamento, a ser
+   * procurada nos dados transferidos.
+   * @param end token de parada do processamento, a ser
+   * procurada nos dados transferidos.
+   * @return a quantidade de bytes processados.
+   * @throws IOException Caso ocorra erro na operação.
+   */
+  public long transferBetween(String start, String end) throws IOException {
     nullstr(start);
     nullstr(end);
     
-    InputStream input = is;
-    OutputStream output = os;
-    
-    if(!encode) {
-      input = configureInput(input);
-    } else {
-      output = configureOutput(output);
-    }
-    
-    readUntil(input, start);
-    long t = transferUntil(input, output, end);
-    if(encode) finishCompressorsOutput();
-    return t;
+    readUntil(start);
+    return transferUntil(end);
   }
   
   
-  public long transferBetween(InputStream is, OutputStream os, String start, String end) throws IOException {
-    nullarg(InputStream.class, is);
-    nullarg(OutputStream.class, os);
-    nullstr(start);
-    nullstr(end);
-    
-    readUntil(is, start);
-    return transferUntil(is, os, end);
-  }
-  
-  
-  public String readDecodingBetween(InputStream is, String start, String end) throws IOException {
-    nullarg(InputStream.class, is);
+  /**
+   * Lê e decodifica do stream de entrada os dados 
+   * que estiverem entre os tokens <code>String start</code>
+   * e <code>end</code> contidos nos dados processados,
+   * descartando o restante.
+   * O processamento só começa após encontrar a 
+   * <code>String start</code> e termina ao encontrar 
+   * a <code>String end</code> nos dados processados,
+   * antes disso os dados são descartados.
+   * @param is Stream de entrada.
+   * @param start token de início do processamento, a ser
+   * procurada nos dados transferidos.
+   * @param end token de parada do processamento, a ser
+   * procurada nos dados transferidos.
+   * @return <code>String</code> contendo os dados
+   * lidos e processados.
+   * @throws IOException Caso ocorra erro na operação.
+   */
+  public String readBetween(String start, String end) throws IOException {
     nullstr(start);
     nullstr(end);
     
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    transferBetween(is, bos, start, end, false);
+    OutputStream oldOut = output;
+    setOutputStream(bos, false);
+    transferBetween(start, end);
+    output = oldOut;
     return bos.toString(UTF8);
   }
 
 
-  public String readBetween(InputStream is, String start, String end) throws IOException {
-    nullarg(InputStream.class, is);
-    nullstr(start);
-    nullstr(end);
-    
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    transferBetween(is, bos, start, end);
-    return bos.toString(UTF8);
-  }
-
-
-  public boolean readUntil(InputStream is, String str) throws IOException {
-    nullarg(InputStream.class, is);
+  /**
+   * Lê e descarta os dados do stream de entrada
+   * até encontrar o token <code>String str</code>
+   * contido nos dados lidos.
+   * @param is Stream de entrada.
+   * @param str token de parada de leitura, a ser
+   * procurada nos dados transferidos.
+   * @return <code>true</code> indicando que o token
+   * <code>String str</code> foi encontrado nos dados
+   * lidos, <code>false</code> caso contrário.
+   * @throws IOException Caso ocorra erro na operação.
+   */
+  public boolean readUntil(String str) throws IOException {
     nullstr(str);
-    
-    int read = -1;
-    LimitedBuffer lbuf = new LimitedBuffer(str.length());
-    while((read = is.read()) != -1) {
-      lbuf.put(read);
-      if(str.equals(lbuf.toUTF8()))
-        return true;
-    }
-    return false;
-  }
-
-
-  public String readUntilOr(InputStream in, String str, String orFalse) throws IOException {
-    nullarg(InputStream.class, in);
-    nullstr(str);
-    nullstr(orFalse);
-    
-    int read = -1;
-    int maxlen = Math.max(str.length(), orFalse.length());
-    LimitedBuffer lbuf = new LimitedBuffer(maxlen);
-    while((read = in.read()) != -1) {
-      lbuf.put(read);
-      if(lbuf.toUTF8().contains(str))
-        return str;
-      if(lbuf.toUTF8().contains(orFalse))
-        return orFalse;
-    }
-    return null;
-  }
-  
-
-  public boolean readDecodingUntil(InputStream is, String str) throws IOException {
-    nullarg(InputStream.class, is);
-    nullstr(str);
-    
-    InputStream input = configureInput(is);
     
     int read = -1;
     LimitedBuffer lbuf = new LimitedBuffer(str.length());
@@ -697,24 +767,75 @@ public class Streams {
   }
 
 
-  public String readDecodingUntilOr(InputStream is, String str, String orFalse) throws IOException {
-    nullarg(InputStream.class, is);
+  /**
+   * Lê e descarta os dados do stream de entrada
+   * até encontrar o token <code>String str</code>
+   * ou o segundo token <code>orfalse</code>,
+   * contidos nos dados lidos.
+   * @param in Stream de entrada.
+   * @param str primeiro token de parada de leitura, a ser
+   * procurada nos dados transferidos.
+   * @param orfalse segundo token de parada de leitura, a ser
+   * procurada nos dados transferidos.
+   * @return o token encontrado nos dados lidos 
+   * ou <code>null</code>, caso nenhum dos tokens
+   * seja encontrado.
+   * @throws IOException Caso ocorra erro na operação.
+   */
+  public String readUntilOr(String str, String orfalse) throws IOException {
     nullstr(str);
-    nullstr(orFalse);
-    
-    InputStream input = configureInput(is);
+    nullstr(orfalse);
     
     int read = -1;
-    int maxlen = Math.max(str.length(), orFalse.length());
+    int maxlen = Math.max(str.length(), orfalse.length());
     LimitedBuffer lbuf = new LimitedBuffer(maxlen);
     while((read = input.read()) != -1) {
       lbuf.put(read);
       if(lbuf.toUTF8().contains(str))
         return str;
-      if(lbuf.toUTF8().contains(orFalse))
-        return orFalse;
+      if(lbuf.toUTF8().contains(orfalse))
+        return orfalse;
     }
     return null;
   }
+  
+
+  /**
+   * Escreve os dados do buffer para o 
+   * stream de saída, codificando os dados no 
+   * processo, de acordo com os codificadores habilitados.
+   * @param buf conteúdo a ser escrito no stream de saída.
+   * @param os Stream de saída.
+   * @param encode <code>true</code> para 
+   * codificar os dados na transferência,
+   * <code>false</code> para que não haja codificação.
+   * @throws IOException Caso ocorra erro na operação.
+   */
+  public void write(byte[] buf) throws IOException {
+    nullarray(buf);
+    output.write(buf);
+    output.flush();
+  }
+  
+  
+  /**
+   * Escreve os dados do buffer para o 
+   * stream de saída, codificando os dados no 
+   * processo, de acordo com os codificadores habilitados.
+   * @param buf conteúdo a ser escrito no stream de saída.
+   * @param os Stream de saída.
+   * @param encode <code>true</code> para 
+   * codificar os dados na transferência,
+   * <code>false</code> para que não haja codificação.
+   * @throws IOException Caso ocorra erro na operação.
+   */
+  public void write(byte[] buf, int offset, int length) throws IOException {
+    nullarray(buf);
+    range(offset, -1, buf.length -2);
+    range(length, 1, buf.length - offset);
+    output.write(buf, offset, length);
+    output.flush();
+  }
+  
   
 }

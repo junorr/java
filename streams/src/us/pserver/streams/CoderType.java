@@ -61,11 +61,24 @@ public enum CoderType {
   }
   
   
+  /**
+   * Verifica se o tipo de codificador está
+   * marcado como habilitado ou desabilitado.
+   * @return <code>true</code> se o tipo de
+   * codificador está habilitado, <code>false</code>
+   * caso contrário.
+   */
   public boolean isEnabled() {
     return enabled;
   }
   
   
+  /**
+   * Marca o tipo de codificador como habilitado ou desabilitado.
+   * @param bool <code>true</code> para marcar o tipo
+   * de codificador como habilitado, <code>false</code> 
+   * para marcar como desbilitado.
+   */
   public void setEnabled(boolean bool) {
     enabled = bool;
   }

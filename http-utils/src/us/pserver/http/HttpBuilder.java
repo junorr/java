@@ -26,8 +26,11 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64StringCoder;
+import static us.pserver.chk.Checker.nullarg;
 import static us.pserver.http.StreamUtils.EOF;
+import us.pserver.streams.Streams;
 
 
 /**
@@ -39,9 +42,7 @@ import static us.pserver.http.StreamUtils.EOF;
 public class HttpBuilder implements HttpConst {
   
   /**
-   * <code>
-   *   STATIC_SIZE = 40
-   * </code><br>
+   * <code>STATIC_SIZE = 40</code><br>
    * Tamanho estático da saída gerada por <code>HttpBuilder</code>, sem
    * considrar o tamanho dos cabeçalhos adicionados.
    */
@@ -285,13 +286,11 @@ public class HttpBuilder implements HttpConst {
   /**
    * Escreve o conteúdo de todos os cabeçalhos no 
    * stream de saída fornecido.
-   * @param out <code>OutputStream</code>.
+   * @param str
    * @throws IOException Caso ocorra erro na escrita.
    */
-  public void writeTo(OutputStream out) throws IOException {
-    if(out == null) 
-      throw new IllegalArgumentException(
-          "Invalid OutputStream ["+ out+ "]");
+  public void writeContent(Streams str) throws IOException {
+    nullarg(Streams.class, str);
     if(hds.isEmpty()) return;
     
     int idx = 0;
@@ -299,13 +298,14 @@ public class HttpBuilder implements HttpConst {
       Header hd = hds.get(i);
       idx = i;
       if(!hd.isContentHeader())
-        hd.writeTo(out);
+        hd.writeContent(str);
       else break;
     }
-    new Header(HD_CONTENT_LENGTH, 
-            String.valueOf(getLength())).writeTo(out);
+    new Header(HD_CONTENT_LENGTH, String.valueOf(getLength()))
+        .writeContent(str);
+    
     for(int i = idx; i < hds.size(); i++) {
-      hds.get(i).writeTo(out);
+      hds.get(i).writeContent(str);
     }
     
     StringBuilder end = new StringBuilder();
@@ -313,8 +313,10 @@ public class HttpBuilder implements HttpConst {
         .append(BOUNDARY).append(HYFENS)
         .append(CRLF).append(EOF)
             .append(CRLF).append(CRLF);
-    StreamUtils.write(end.toString(), out);
-    out.flush();
+    
+    StringByteConverter cv = new StringByteConverter();
+    str.getRawOutputStream()
+        .write(cv.convert(end.toString()));
   }
   
   

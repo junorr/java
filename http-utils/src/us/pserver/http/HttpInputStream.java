@@ -25,6 +25,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import us.pserver.cdr.StringByteConverter;
+import static us.pserver.chk.Checker.nullarg;
+import us.pserver.streams.Streams;
 
 /**
  * Cabeçalho HTTP POST Multipart para envio de conteúdo stream.
@@ -164,25 +167,24 @@ public class HttpInputStream extends Header {
   
   
   @Override
-  public void writeTo(OutputStream out) {
+  public void writeContent(Streams str) {
+    nullarg(Streams.class, str);
     StringBuilder start = new StringBuilder();
     start.append(CRLF).append(HYFENS).append(BOUNDARY);
     start.append(CRLF).append(HD_CONTENT_DISPOSITION)
         .append(": ").append(VALUE_DISPOSITION_FORM_DATA)
         .append("; ").append(NAME_INPUTSTREAM);
     start.append(CRLF).append(HD_CONTENT_TYPE_OCTETSTREAM.toString())
-        .append(CRLF).append(BOUNDARY_CONTENT_START);
+        .append(CRLF);
     
     try {
-      StreamUtils.write(start.toString(), out);
-      
-      if(encoded)
-        StreamUtils.transferHexCoder(input, out, true);
-      else
-        StreamUtils.transfer(input, out);
-      
-      StreamUtils.write(BOUNDARY_CONTENT_END, out);
-      out.flush();
+      StringByteConverter cv = new StringByteConverter();
+      str.getRawOutputStream()
+          .write(cv.convert(start.toString()));
+      str.write(cv.convert(BOUNDARY_CONTENT_START));
+      str.setInputStream(input, false)
+          .transfer();
+      str.write(cv.convert(BOUNDARY_CONTENT_END));
     } catch(IOException e) {
       throw new RuntimeException(e);
     }

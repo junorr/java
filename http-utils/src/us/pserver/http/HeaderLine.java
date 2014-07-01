@@ -22,25 +22,44 @@
 package us.pserver.http;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
+ * Primeiro cabeçalho http, representa 
+ * a linha de requisição ou resposta http.
+ * 
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 15/06/2014
  */
 public class HeaderLine extends Header {
 
+  /**
+   * Versão do protocolo http<br>
+   * <code>Padrão: HTTP/1.1</code>.
+   */
   String httpVersion;
   
   
+  /**
+   * Construtor padrão e sem argumentos.
+   */
   public HeaderLine() {
     httpVersion = HTTP_VERSION;
   }
   
   
+  /**
+   * Retorna a versão do protocolo http<br>
+   * <code>Padrão: HTTP/1.1</code>.
+   * @return versão do protocolo http.
+   */
   public String getHttpVersion() {
     return httpVersion;
   }
   
   
+  /**
+   * Define a versão do protocolo http<br>
+   * <code>Padrão: HTTP/1.1</code>.
+   * @param version versão do protocolo http.
+   */
   public void setHttpVersion(String version) {
     if(version != null)
       httpVersion = version;

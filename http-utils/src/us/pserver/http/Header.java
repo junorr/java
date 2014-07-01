@@ -24,12 +24,15 @@ package us.pserver.http;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
+import us.pserver.cdr.StringByteConverter;
+import static us.pserver.chk.Checker.nullarg;
+import us.pserver.streams.Streams;
 
 
 /**
  * Representa um cabeçalho do protocolo HTTP.
  * 
- * @author Juno Roesler - juno.rr@gmail.com
+ * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 13/06/2014
  */
 public class Header implements HttpConst {
@@ -58,8 +61,8 @@ public class Header implements HttpConst {
     this.name = name;
     this.value = value;
   }
-
-
+  
+  
   /**
    * Retorna o nome do cabeçalho.
    * @return <code>String</code>.
@@ -122,14 +125,20 @@ public class Header implements HttpConst {
   
   
   /**
-   * Escreve o conteúdo do cabeçalho no stream de saída informado.
+   * Escreve o conteúdo do cabeçalho no stream de saída informado,
+   * levando em consideração a configuração de codificação 
+   * de conteúdo do cabeçalho e do objeto <code>Streams</code>
+   * interno utilizado na transferência.
    * @param out OutputStream onde será escrito o 
    * conteúdo do cabeçalho.
+   * @see #setStreams(us.pserver.streams.Streams) 
+   * @see #setEncodingHeaderEnabled(boolean) 
    */
-  public void writeTo(OutputStream out) {
-    if(out == null) return;
+  public void writeContent(Streams str) {
+    nullarg(Streams.class, str);
     try {
-      StreamUtils.write(toString(), out);
+      StringByteConverter cv = new StringByteConverter();
+      str.write(cv.convert(toString()));
     } catch(IOException e) {
       throw new RuntimeException(e);
     }

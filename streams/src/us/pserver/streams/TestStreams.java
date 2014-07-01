@@ -60,15 +60,19 @@ public class TestStreams {
     InputStream in = Files.newInputStream(pi, StandardOpenOption.READ);
     OutputStream out = Files.newOutputStream(po, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
     System.out.println("* transfering ["+ pi+ "] >> ["+ po+ "]");
-    str.transfer(in, out, true);
-    str.finishStreams(in, out);
+    str.setInputStream(in, false)
+        .setOutputStream(out, true)
+        .transfer();
+    str.finishStreams();
     
     in = Files.newInputStream(po, StandardOpenOption.READ);
     out = Files.newOutputStream(po2, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
     System.out.println("* transfering ["+ po+ "] >> ["+ po2+ "]");
-    str.transfer(in, out, false);
+    str.setInputStream(in, true)
+        .setOutputStream(out, false)
+        .transfer();
     System.out.println("* Done!");
-    str.finishStreams(in, out);
+    str.finishStreams();
   }
   
 }

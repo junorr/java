@@ -24,7 +24,10 @@ package us.pserver.http;
 import com.thoughtworks.xstream.XStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.hex.HexStringCoder;
+import static us.pserver.chk.Checker.nullarg;
+import us.pserver.streams.Streams;
 
 
 /**
@@ -132,18 +135,20 @@ public class HttpHexObject extends Header {
   
   
   @Override
-  public void writeTo(OutputStream out) {
-    if(out == null) return;
+  public void writeContent(Streams str) {
+    nullarg(Streams.class, str);
     StringBuilder start = new StringBuilder();
-    start.append(CRLF).append(HYFENS).append(BOUNDARY);
-    start.append(CRLF).append(HD_CONTENT_XML.toString())
+    start.append(CRLF).append(HYFENS).append(BOUNDARY)
+        .append(CRLF).append(HD_CONTENT_XML.toString())
         .append(CRLF).append(BOUNDARY_XML_START);
     
     try {
-      StreamUtils.write(start.toString(), out);
-      StreamUtils.write(getEncoded(), out);
-      StreamUtils.write(BOUNDARY_XML_END, out);
-      out.flush();
+      StringByteConverter cv = new StringByteConverter();
+      str.getRawOutputStream()
+          .write(cv.convert(start.toString()));
+      str.write(cv.convert(getEncoded()));
+      str.getRawOutputStream()
+          .write(cv.convert(BOUNDARY_XML_END));
     } catch(IOException e) {
       throw new RuntimeException(e);
     }
