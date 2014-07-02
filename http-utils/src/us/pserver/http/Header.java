@@ -138,7 +138,7 @@ public class Header implements HttpConst {
     nullarg(Streams.class, str);
     try {
       StringByteConverter cv = new StringByteConverter();
-      str.write(cv.convert(toString()));
+      str.getRawOutputStream().write(cv.convert(toString()));
     } catch(IOException e) {
       throw new RuntimeException(e);
     }

@@ -465,9 +465,11 @@ public class Streams {
    * @throws IOException Caso ocorra erro na operação.
    */
   public void finishStreams() throws IOException {
-    output.flush();
-    output.close();
-    input.close();
+    if(output != null) {
+      output.flush();
+      output.close();
+    }
+    if(input != null) input.close();
     finishCompressorsOutput();
   }
   

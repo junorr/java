@@ -22,12 +22,13 @@
 package us.pserver.http;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64StringCoder;
+import us.pserver.cdr.crypt.CryptAlgorithm;
+import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
 import static us.pserver.http.StreamUtils.EOF;
 import us.pserver.streams.Streams;
@@ -317,6 +318,7 @@ public class HttpBuilder implements HttpConst {
     StringByteConverter cv = new StringByteConverter();
     str.getRawOutputStream()
         .write(cv.convert(end.toString()));
+    str.getRawOutputStream().flush();
   }
   
   
@@ -324,14 +326,20 @@ public class HttpBuilder implements HttpConst {
     HttpBuilder hb = new HttpBuilder();
     Base64StringCoder cdr = new Base64StringCoder();
     RequestLine req = new RequestLine(Method.POST, "172.24.75.2", 8000);
-    hb.put(req).put(req.getHostHeader())
+    hb.put(req)
         .put(HD_USER_AGENT, VALUE_USER_AGENT)
         .put(HD_ACCEPT_ENCODING, VALUE_ENCODING)
         .put(HD_ACCEPT, VALUE_ACCEPT)
         .put(HD_PROXY_AUTHORIZATION, "Basic "+ cdr.encode("f6036477:00000000"))
         .put(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART + HD_BOUNDARY + BOUNDARY)
         .put(new HttpHexObject("hello world!!"));
-    hb.writeTo(System.out);
+    Streams str = new Streams();
+    str.setCryptCoderEnabled(true, new CryptKey("123456", CryptAlgorithm.AES_CBC))
+        .setBase64CoderEnabled(true);
+    //str.setGZipCoderEnabled(true);
+    str.setOutputStream(System.out, true);
+    hb.writeContent(str);
+    str.finishStreams();
   }
   
 }
