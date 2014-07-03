@@ -21,7 +21,10 @@
 
 package us.pserver.http;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +34,6 @@ import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
 import static us.pserver.http.StreamUtils.EOF;
-import us.pserver.streams.Streams;
 
 
 /**
@@ -153,7 +155,12 @@ public class HttpBuilder implements HttpConst {
    * @return Esta instância modificada de <code>HttpBuilder</code>.
    */
   public HttpBuilder put(Header hd) {
-    if(hd != null) hds.add(hd);
+    if(hd != null) {
+      hds.add(hd);
+      if(hd instanceof HttpInputStream)
+        try { ((HttpInputStream)hd).setup(); }
+        catch(IOException e) {}
+    }
     return this;
   }
   
@@ -290,8 +297,8 @@ public class HttpBuilder implements HttpConst {
    * @param str
    * @throws IOException Caso ocorra erro na escrita.
    */
-  public void writeContent(Streams str) throws IOException {
-    nullarg(Streams.class, str);
+  public void writeContent(OutputStream out) throws IOException {
+    nullarg(OutputStream.class, out);
     if(hds.isEmpty()) return;
     
     int idx = 0;
@@ -299,14 +306,14 @@ public class HttpBuilder implements HttpConst {
       Header hd = hds.get(i);
       idx = i;
       if(!hd.isContentHeader())
-        hd.writeContent(str);
-      else break;
+        hd.writeContent(out);
     }
     new Header(HD_CONTENT_LENGTH, String.valueOf(getLength()))
-        .writeContent(str);
+        .writeContent(out);
     
-    for(int i = idx; i < hds.size(); i++) {
-      hds.get(i).writeContent(str);
+    for(int i = 0; i < hds.size(); i++) {
+      if(hds.get(i).isContentHeader())
+        hds.get(i).writeContent(out);
     }
     
     StringBuilder end = new StringBuilder();
@@ -316,9 +323,8 @@ public class HttpBuilder implements HttpConst {
             .append(CRLF).append(CRLF);
     
     StringByteConverter cv = new StringByteConverter();
-    str.getRawOutputStream()
-        .write(cv.convert(end.toString()));
-    str.getRawOutputStream().flush();
+    out.write(cv.convert(end.toString()));
+    out.flush();
   }
   
   
@@ -331,15 +337,25 @@ public class HttpBuilder implements HttpConst {
         .put(HD_ACCEPT_ENCODING, VALUE_ENCODING)
         .put(HD_ACCEPT, VALUE_ACCEPT)
         .put(HD_PROXY_AUTHORIZATION, "Basic "+ cdr.encode("f6036477:00000000"))
-        .put(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART + HD_BOUNDARY + BOUNDARY)
-        .put(new HttpHexObject("hello world!!"));
-    Streams str = new Streams();
-    str.setCryptCoderEnabled(true, new CryptKey("123456", CryptAlgorithm.AES_CBC))
-        .setBase64CoderEnabled(true);
-    //str.setGZipCoderEnabled(true);
-    str.setOutputStream(System.out, true);
-    hb.writeContent(str);
-    str.finishStreams();
+        .put(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART + HD_BOUNDARY + BOUNDARY);
+    
+    CryptKey key = new CryptKey("123456", 
+        CryptAlgorithm.AES_CBC_PKCS5);
+    
+    HttpEncodedObject hob = new HttpEncodedObject();
+    hob.setCryptEnabled(true, key)
+        .setObject("Hello World!!");
+    hb.put(hob);
+    
+    HttpInputStream hin = new HttpInputStream();
+    ByteArrayInputStream bin = new ByteArrayInputStream("Hello!".getBytes());
+    hin.setInputStream(bin);
+    hin.setCryptCoderEnabled(true, key);
+    hin.setGZipCoderEnabled(true);
+    
+    hb.put(hin);
+    OutputStream out = new FileOutputStream("d:/http-builder.txt");
+    hb.writeContent(System.out);
   }
   
 }

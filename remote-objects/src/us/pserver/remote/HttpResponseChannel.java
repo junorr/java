@@ -30,7 +30,7 @@ import java.util.Date;
 import us.pserver.cdr.hex.HexStringCoder;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
-import us.pserver.http.HttpHexObject;
+import us.pserver.http.HttpEncodedObject;
 import us.pserver.http.ResponseLine;
 import us.pserver.http.StreamUtils;
 import static us.pserver.http.StreamUtils.bytes;
@@ -101,7 +101,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
         .put(HD_SERVER, VALUE_SERVER)
         .put(HD_DATE, new Date().toString());
     
-    HttpHexObject hob = new HttpHexObject(
+    HttpEncodedObject hob = new HttpEncodedObject(
         trp.getWriteVersion());
     
     long length = hob.getLength();

@@ -27,7 +27,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
-import us.pserver.http.HttpHexObject;
+import us.pserver.http.HttpEncodedObject;
 import us.pserver.http.RequestParser;
 import us.pserver.http.ResponseLine;
 import us.pserver.http.StreamUtils;
@@ -56,7 +56,7 @@ public class TestServer implements HttpConst {
     StreamUtils.transfer(sock.getInputStream(), System.out);
     
     HttpBuilder.responseBuilder(new ResponseLine(200, "OK"))
-        .put(new HttpHexObject("hello world!!"))
+        .put(new HttpEncodedObject("hello world!!"))
         .writeTo(sock.getOutputStream());
     
     sock.close();

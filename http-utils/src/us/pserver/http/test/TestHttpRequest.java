@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.net.Socket;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
-import us.pserver.http.HttpHexObject;
+import us.pserver.http.HttpEncodedObject;
 import us.pserver.http.RequestLine;
 import us.pserver.http.ResponseParser;
 import us.pserver.http.StreamUtils;
@@ -45,7 +45,7 @@ public class TestHttpRequest implements HttpConst {
     RequestLine req = new RequestLine(Method.POST, "172.24.75.2", 8000);
     //RequestLine req = new RequestLine(Method.POST, "10.100.0.104", 8000);
     HttpBuilder build = HttpBuilder.requestBuilder(req)
-        .put(new HttpHexObject(obj));
+        .put(HttpEncodedObjectject(obj));
         //.add(new HttpInputStream(Files.newInputStream(p, StandardOpenOption.READ)));
     
     Socket sock = new Socket("172.24.75.19", 6060);

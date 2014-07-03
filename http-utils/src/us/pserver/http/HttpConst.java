@@ -324,7 +324,7 @@ public interface HttpConst {
    * </code><br>
    * Cabeçalho delimitador de abertura de objeto.
    */
-  public static final String BOUNDARY_OBJECT_START = "<rob enc='hex'>";
+  public static final String BOUNDARY_OBJECT_START = "<rob enc='basic'>";
 
   /**
    * <code>
@@ -333,6 +333,22 @@ public interface HttpConst {
    * Cabeçalho delimitador de encerramento de objeto.
    */
   public static final String BOUNDARY_OBJECT_END = "</rob>";
+  
+  /**
+   * <code>
+   *  BOUNDARY_OBJECT_START = "&lt;rob enc='hex'&gt;"
+   * </code><br>
+   * Cabeçalho delimitador de abertura de objeto.
+   */
+  public static final String BOUNDARY_CRYPT_KEY_START = "<ckey enc='basic'>";
+
+  /**
+   * <code>
+   *  BOUNDARY_OBJECT_END = "&lt;/rob&gt;"
+   * </code><br>
+   * Cabeçalho delimitador de encerramento de objeto.
+   */
+  public static final String BOUNDARY_CRYPT_KEY_END = "</ckey>";
   
   
   /**

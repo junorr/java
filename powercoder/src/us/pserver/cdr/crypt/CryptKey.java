@@ -22,7 +22,10 @@
 
 package us.pserver.cdr.crypt;
 
+import java.util.Arrays;
 import javax.crypto.spec.SecretKeySpec;
+import us.pserver.cdr.StringByteConverter;
+import us.pserver.cdr.b64.Base64ByteCoder;
 
 
 /**
@@ -34,7 +37,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class CryptKey {
   
-  private SecretKeySpec spec;
+  private transient SecretKeySpec spec;
   
   private byte[] hash;
   
@@ -101,6 +104,9 @@ public class CryptKey {
    * @return especificação da chave <code>SecretKeySpec</code>.
    */
   public SecretKeySpec getSpec() {
+    if(spec == null && hash != null && algorithm != null)
+      spec = KeySpecFactory.createKey(
+          truncate(hash, algorithm.getBytesSize()), algorithm);
     return spec;
   }
 
@@ -162,6 +168,41 @@ public class CryptKey {
     hash = bs;
     algorithm = algo;
     spec = KeySpecFactory.createKey(truncate(hash, algo.getBytesSize()), algo);
+  }
+  
+  
+  @Override
+  public String toString() {
+    if(hash == null || algorithm == null)
+      return null;
+    Base64ByteCoder cd = new Base64ByteCoder();
+    StringByteConverter cv = new StringByteConverter();
+    byte[] bs = cd.encode(hash);
+    return algorithm.getAlgorithm() + "||" + cv.reverse(bs);
+  }
+  
+  
+  public static CryptKey fromString(String str) {
+    if(str == null || str.isEmpty() || !str.contains("||"))
+      return null;
+    Base64ByteCoder cd = new Base64ByteCoder();
+    StringByteConverter cv = new StringByteConverter();
+    String[] ss = str.split("\\|\\|");
+    CryptKey k = new CryptKey();
+    k.setKey(
+        cd.decode(cv.convert(ss[1])), 
+        CryptAlgorithm.fromString(ss[0]));
+    return k;
+  }
+  
+  
+  public static void main(String[] args) {
+    CryptKey key = new CryptKey("123456", CryptAlgorithm.AES_CBC_PKCS5);
+    System.out.println("* key.hash = "+ Arrays.toString(key.getHash()));
+    System.out.println("* key = "+ key.toString());
+    key = CryptKey.fromString(key.toString());
+    System.out.println("* key.hash = "+ Arrays.toString(key.getHash()));
+    System.out.println("* key = "+ key.toString());
   }
   
 }

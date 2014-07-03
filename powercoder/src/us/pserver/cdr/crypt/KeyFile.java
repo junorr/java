@@ -115,7 +115,7 @@ public class KeyFile {
           Paths.get(file), Charset.forName("UTF-8"));
       String algo = br.readLine();
       String hex = br.readLine();
-      CryptAlgorithm ca = this.fromString(algo);
+      CryptAlgorithm ca = CryptAlgorithm.fromString(algo);
       byte[] hash = HexCoder.fromHexString(hex);
       if(ca != null && hash != null) {
         key = new CryptKey();
@@ -143,43 +143,6 @@ public class KeyFile {
    */
   public String getFile() {
     return file;
-  }
-  
-  
-  /**
-   * Transforma a string fornecida em um objeto 
-   * <code>CryptAlgorithm</code>.
-   * @param str <code>String</code>.
-   * @return <code>CryptAlgorithm</code>.
-   */
-  private CryptAlgorithm fromString(String str) {
-    if(str == null) return null;
-    if(str.equals(CryptAlgorithm.AES_CBC.getAlgorithm()))
-      return CryptAlgorithm.AES_CBC;
-    else if(str.equals(CryptAlgorithm.AES_CBC_PKCS5.getAlgorithm()))
-      return CryptAlgorithm.AES_CBC_PKCS5;
-    else if(str.equals(CryptAlgorithm.AES_ECB.getAlgorithm()))
-      return CryptAlgorithm.AES_ECB;
-    else if(str.equals(CryptAlgorithm.AES_ECB_PKCS5.getAlgorithm()))
-      return CryptAlgorithm.AES_ECB_PKCS5;
-    else if(str.equals(CryptAlgorithm.DES_CBC.getAlgorithm()))
-      return CryptAlgorithm.DES_CBC;
-    else if(str.equals(CryptAlgorithm.DES_CBC_PKCS5.getAlgorithm()))
-      return CryptAlgorithm.DES_CBC_PKCS5;
-    else if(str.equals(CryptAlgorithm.DES_ECB.getAlgorithm()))
-      return CryptAlgorithm.DES_ECB;
-    else if(str.equals(CryptAlgorithm.DES_ECB_PKCS5.getAlgorithm()))
-      return CryptAlgorithm.DES_ECB_PKCS5;
-    else if(str.equals(CryptAlgorithm.DESede_CBC.getAlgorithm()))
-      return CryptAlgorithm.DESede_CBC;
-    else if(str.equals(CryptAlgorithm.DESede_CBC_PKCS5.getAlgorithm()))
-      return CryptAlgorithm.DESede_CBC_PKCS5;
-    else if(str.equals(CryptAlgorithm.DESede_ECB.getAlgorithm()))
-      return CryptAlgorithm.DESede_ECB;
-    else if(str.equals(CryptAlgorithm.DESede_ECB_PKCS5.getAlgorithm()))
-      return CryptAlgorithm.DESede_ECB_PKCS5;
-    else 
-      return null;
   }
   
 }

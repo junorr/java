@@ -51,7 +51,7 @@ public class TestStreams {
         .setCryptCoderEnabled(true, new CryptKey(
             "12345678", CryptAlgorithm.DESede_CBC))
         
-        .setBase64CoderEnabled(false)
+        .setBase64CoderEnabled(true)
         .setHexCoderEnabled(false)
         
         .setGZipCoderEnabled(false)

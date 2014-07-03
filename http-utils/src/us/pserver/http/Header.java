@@ -125,20 +125,16 @@ public class Header implements HttpConst {
   
   
   /**
-   * Escreve o conteúdo do cabeçalho no stream de saída informado,
-   * levando em consideração a configuração de codificação 
-   * de conteúdo do cabeçalho e do objeto <code>Streams</code>
-   * interno utilizado na transferência.
+   * Escreve o conteúdo do cabeçalho no stream de saída informado.
    * @param out OutputStream onde será escrito o 
    * conteúdo do cabeçalho.
-   * @see #setStreams(us.pserver.streams.Streams) 
-   * @see #setEncodingHeaderEnabled(boolean) 
    */
-  public void writeContent(Streams str) {
-    nullarg(Streams.class, str);
+  public void writeContent(OutputStream out) {
+    nullarg(OutputStream.class, out);
     try {
       StringByteConverter cv = new StringByteConverter();
-      str.getRawOutputStream().write(cv.convert(toString()));
+      out.write(cv.convert(toString()));
+      out.flush();
     } catch(IOException e) {
       throw new RuntimeException(e);
     }

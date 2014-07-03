@@ -29,7 +29,7 @@ import java.net.Socket;
 import us.pserver.cdr.hex.HexStringCoder;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
-import us.pserver.http.HttpHexObject;
+import us.pserver.http.HttpEncodedObject;
 import us.pserver.http.HttpInputStream;
 import us.pserver.http.RequestLine;
 import us.pserver.http.ResponseLine;
@@ -134,7 +134,7 @@ public class HttpRequestChannel1 implements Channel, HttpConst {
       builder.put(HD_PROXY_AUTHORIZATION, 
           netconn.getProxyAuthorization());
     
-    builder.put(new HttpHexObject(trp.getWriteVersion()));
+    builder.put(new HttpEncodedObject(trp.getWriteVersion()));
     
     if(trp.getInputStream() != null)
       builder.put(new HttpInputStream(

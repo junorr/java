@@ -99,7 +99,7 @@ public class Streams {
   
   private InputStream rawin;
   
-  private OutputStream rawout;
+  private BufferOutputStream bout;
   
   
   /**
@@ -113,6 +113,7 @@ public class Streams {
     order = new CoderType[5];
     input = null;
     output = null;
+    bout = new BufferOutputStream();
     setDefaultCoderOrder();
   }
   
@@ -135,19 +136,27 @@ public class Streams {
   
   public Streams setOutputStream(OutputStream os, boolean encode) throws IOException {
     nullarg(OutputStream.class, os);
-    rawout = os;
-    if(encode) output = configureOutput(os);
-    else output = os;
+    bout.setOutputStream(os);
+    if(encode) output = configureOutput(bout);
+    else output = bout;
     return this;
   }
   
   
-  public InputStream getConfiguredInputStream() {
+  public Streams resetEnclosedOutput() throws IOException {
+    output.flush();
+    output.close();
+    output = configureOutput(bout);
+    return this;
+  }
+  
+  
+  public InputStream getEnclosedInputStream() {
     return input;
   }
   
   
-  public OutputStream getConfiguredOutputStream() {
+  public OutputStream getEnclosedOutputStream() {
     return output;
   }
   
@@ -157,8 +166,8 @@ public class Streams {
   }
   
   
-  public OutputStream getRawOutputStream() {
-    return rawout;
+  public BufferOutputStream getRawOutputStream() {
+    return bout;
   }
   
   
@@ -471,6 +480,7 @@ public class Streams {
     }
     if(input != null) input.close();
     finishCompressorsOutput();
+    bout.finish();
   }
   
   
