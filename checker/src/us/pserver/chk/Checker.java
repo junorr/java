@@ -162,5 +162,4 @@ public class Checker {
           + " > " + num+ " < "+ max+ "]");
   }
   
-  
 }

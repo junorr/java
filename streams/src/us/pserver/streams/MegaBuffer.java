@@ -370,6 +370,13 @@ public class MegaBuffer {
   }
   
   
+  public MegaBuffer rewind() throws IOException {
+    if(!readmode)
+      this.flip().flip();
+    return this;
+  }
+  
+  
   /**
    * Encapsula o stream de saída especificado nos 
    * streams de codificação habilitados de acordo 

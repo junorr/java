@@ -41,7 +41,7 @@ import static us.pserver.chk.Checker.nullarg;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
  */
-public class HttpEncodedObject extends Header {
+public class HttpCryptKey extends Header {
   
   /**
    * <code>Content-Type: text/xml</code><br>
@@ -60,11 +60,7 @@ public class HttpEncodedObject extends Header {
   
   private Base64StringCoder coder;
   
-  private CryptStringCoder crypt;
-  
-  private Object obj;
-  
-  private XStream xst;
+  private CryptKey key;
   
   private int size;
   
@@ -72,13 +68,11 @@ public class HttpEncodedObject extends Header {
   /**
    * Construtor padrão sem argumentos.
    */
-  public HttpEncodedObject() {
+  public HttpCryptKey() {
     super();
     coder = new Base64StringCoder();
-    crypt = null;
+    key = null;
     size = 0;
-    obj = null;
-    xst = new XStream();
   }
   
   
@@ -87,58 +81,29 @@ public class HttpEncodedObject extends Header {
    * encapsulado pelo cabeçalho HTTP.
    * @param obj <code>Object</code>
    */
-  public HttpEncodedObject(Object obj) {
+  public HttpCryptKey(CryptKey k) {
     this();
-    setObject(obj);
-  }
-  
-  
-  public HttpEncodedObject setCryptEnabled(boolean enabled, CryptKey key) {
-    if(enabled) {
-      nullarg(CryptKey.class, key);
-      crypt = new CryptStringCoder(key);
-    }
-    else crypt = null;
-    return this;
-  }
-  
-  
-  public boolean isCryptEnabled() {
-    return crypt != null;
+    setCryptKey(k);
   }
   
   
   public CryptKey getCryptKey() {
-    if(crypt == null || crypt.getKey() == null)
-      return null;
-    return crypt.getKey();
-  }
-  
-  
-  public Object getObject() {
-    return obj;
+    return key;
   }
   
   
   /**
    * Define o objeto a ser encapsulado no cabeçalho HTTP.
-   * @param o <code>Object</code>
+   * @param k <code>Object</code>
    * @return Esta instância modificada de <code>HttpHexObject</code>.
    */
-  public HttpEncodedObject setObject(Object o) {
-    nullarg(Object.class, o);
-    this.obj = o;
+  public HttpCryptKey setCryptKey(CryptKey k) {
+    nullarg(CryptKey.class, k);
+    key = k;
     StringBuilder sb = new StringBuilder();
-    String sob = xst.toXML(obj);
-    if(crypt != null) {
-      sob = crypt.encode(sob);
-    }
-    else {
-      sob = coder.encode(sob);
-    }
-    sb.append(BOUNDARY_OBJECT_START)
-        .append(sob)
-        .append(BOUNDARY_OBJECT_END);
+    sb.append(BOUNDARY_CRYPT_KEY_START)
+        .append(coder.encode(key.toString()))
+        .append(BOUNDARY_CRYPT_KEY_END);
     size = sb.length();
     setValue(sb.toString());
     return this;
@@ -203,12 +168,9 @@ public class HttpEncodedObject extends Header {
     
     System.out.println();
     System.out.println("* HttpEncodedObject example:");
-    HttpEncodedObject hob = new HttpEncodedObject();
-    Object obj = "The Object";
+    HttpCryptKey hob = new HttpCryptKey();
     OutputStream out = new FileOutputStream("d:/http-rob.txt");
-    hob.setCryptEnabled(true, 
-            new CryptKey("123456", CryptAlgorithm.AES_CBC_PKCS5))
-        .setObject(obj);
+    hob.setCryptKey(new CryptKey("123456", CryptAlgorithm.AES_CBC_PKCS5));
     System.out.println("* size = "+ hob.getLength());
     hob.writeContent(System.out);
   }

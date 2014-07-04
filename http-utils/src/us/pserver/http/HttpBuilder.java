@@ -33,7 +33,7 @@ import us.pserver.cdr.b64.Base64StringCoder;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
-import static us.pserver.http.StreamUtils.EOF;
+import static us.pserver.streams.StreamUtils.EOF;
 
 
 /**

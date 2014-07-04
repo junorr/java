@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import static us.pserver.http.StreamUtils.UTF8;
+import static us.pserver.cdr.StringByteConverter.UTF8;
 
 /**
  *

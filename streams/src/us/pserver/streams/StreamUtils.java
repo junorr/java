@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.http;
+package us.pserver.streams;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,6 +33,9 @@ import us.pserver.cdr.crypt.CryptBufferCoder;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.hex.HexBufferCoder;
 import us.pserver.cdr.hex.HexByteCoder;
+import static us.pserver.chk.Checker.nullarg;
+import static us.pserver.chk.Checker.nullstr;
+import static us.pserver.chk.Checker.range;
 
 
 /**
@@ -82,7 +85,7 @@ public abstract class StreamUtils {
    * </code><br>
    * Tamanho do buffer em bytes.
    */
-  public static int BUFFER_SIZE = 20;
+  public static int BUFFER_SIZE = 1024;
   
   
   /**
@@ -95,8 +98,8 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na transferência.
    */
   public static long transfer(InputStream in, OutputStream out) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(OutputStream.class, "out", out);
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
     
     long total = 0;
     int read = 0;
@@ -127,8 +130,8 @@ public abstract class StreamUtils {
    * transferência/codificação/decodificação dos dados.
    */
   public static long transferHexCoder(InputStream in, OutputStream out, boolean encode) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(OutputStream.class, "out", out);
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
     
     HexByteCoder cdr = new HexByteCoder();
     int read = 0;
@@ -147,48 +150,6 @@ public abstract class StreamUtils {
   }
   
   
-  public static long readToBuffer(ByteBuffer buf, InputStream in) throws IOException {
-    testNull(ByteBuffer.class, "buf", buf);
-    testNull(InputStream.class, "in", in);
-    if(buf.remaining() == 0) return -1;
-    
-    int read = -1;
-    long total = 0;
-    while((read = in.read()) != -1 && buf.remaining() > 0) {
-      buf.put((byte) read);
-      total++;
-    }
-    return total;
-  }
-  
-  
-  public static ByteBuffer applyHexCoder(ByteBuffer buf, boolean encode) {
-    testNull(ByteBuffer.class, "buf", buf);
-    if(buf.remaining() < 1) return buf;
-    
-    HexBufferCoder cdr = new HexBufferCoder();
-    return cdr.apply(buf, encode);
-  }
-  
-  
-  public static ByteBuffer applyCryptCoder(ByteBuffer buf, CryptKey key, boolean encode) {
-    testNull(ByteBuffer.class, "buf", buf);
-    testNull(CryptKey.class, "key", key);
-    if(buf.remaining() < 1) return buf;
-    
-    CryptBufferCoder cdr = new CryptBufferCoder(key);
-    return cdr.apply(buf, encode);
-  }
-  
-  
-  public static void testNull(Class type, String name, Object value) {
-    if(value == null)
-      throw new IllegalArgumentException(
-          "Invalid "+ type.getSimpleName()
-          + " ["+ name+ "="+ value+ "]");
-  }
-  
-  
   /**
    * Transfere o conteúdo entre dois streams até que seja
    * encontrada a <code>String</code> fornecida no conteúdo da 
@@ -201,9 +162,9 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na transferência.
    */
   public static long transferUntil(InputStream in, OutputStream out, String until) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(OutputStream.class, "out", out);
-    testNull(String.class, "until", until);
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
+    nullstr(until);
     
     LimitedBuffer lbuf = new LimitedBuffer(until.length());
     ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -248,9 +209,9 @@ public abstract class StreamUtils {
   
   
   public static long transferUntilHexCoder(InputStream in, OutputStream out, String until, boolean encode) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(OutputStream.class, "out", out);
-    testNull(String.class, "until", until);
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
+    nullstr(until);
     
     LimitedBuffer lbuf = new LimitedBuffer(until.length());
     ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -295,10 +256,10 @@ public abstract class StreamUtils {
   
   
   public static long transferUntilCryptCoder(InputStream in, OutputStream out, CryptKey key, String until, boolean encode) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(OutputStream.class, "out", out);
-    testNull(CryptKey.class, "key", key);
-    testNull(String.class, "until", until);
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
+    nullarg(CryptKey.class, key);
+    nullstr(until);
     
     LimitedBuffer lbuf = new LimitedBuffer(until.length());
     ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -343,10 +304,10 @@ public abstract class StreamUtils {
   
   
   public static long transferUntilCryptHexCoder(InputStream in, OutputStream out, CryptKey key, String until, boolean encode) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(OutputStream.class, "out", out);
-    testNull(CryptKey.class, "key", key);
-    testNull(String.class, "until", until);
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
+    nullarg(CryptKey.class, key);
+    nullstr(until);
     
     LimitedBuffer lbuf = new LimitedBuffer(until.length());
     ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -391,9 +352,9 @@ public abstract class StreamUtils {
   
   
   private static void rewindBuffers(ByteBuffer buf, ByteBuffer last, int length) {
-    testNull(ByteBuffer.class, "buf", buf);
-    testNull(ByteBuffer.class, "last", last);
-    testNull(int.class, "length", length);
+    nullarg(ByteBuffer.class, buf);
+    nullarg(ByteBuffer.class, last);
+    range(length, 1, Integer.MAX_VALUE);
     
     if(buf.position() >= length) {
       buf.position(buf.position() - (length-1));
@@ -425,8 +386,8 @@ public abstract class StreamUtils {
   
   
   public static void writeBufferTo(ByteBuffer buf, OutputStream out) throws IOException {
-    testNull(ByteBuffer.class, "buf", buf);
-    testNull(OutputStream.class, "out", out);
+    nullarg(ByteBuffer.class, buf);
+    nullarg(OutputStream.class, out);
     if(buf.remaining() < 1) return;
     
     byte[] bs = new byte[buf.remaining()];
@@ -437,8 +398,8 @@ public abstract class StreamUtils {
   
   
   public static void writeBufferHexCoder(ByteBuffer buf, OutputStream out, boolean encode) throws IOException {
-    testNull(ByteBuffer.class, "buf", buf);
-    testNull(OutputStream.class, "out", out);
+    nullarg(ByteBuffer.class, buf);
+    nullarg(OutputStream.class, out);
     if(buf.remaining() < 1) return;
     
     HexBufferCoder cdr = new HexBufferCoder();
@@ -451,9 +412,9 @@ public abstract class StreamUtils {
   
   
   public static void writeBufferCryptCoder(ByteBuffer buf, OutputStream out, CryptKey key, boolean encode) throws IOException {
-    testNull(ByteBuffer.class, "buf", buf);
-    testNull(OutputStream.class, "out", out);
-    testNull(CryptKey.class, "key", key);
+    nullarg(ByteBuffer.class, buf);
+    nullarg(OutputStream.class, out);
+    nullarg(CryptKey.class, key);
     if(buf.remaining() < 1) return;
     
     CryptBufferCoder cdr = new CryptBufferCoder(key);
@@ -466,9 +427,9 @@ public abstract class StreamUtils {
   
   
   public static void writeBufferCryptHexCoder(ByteBuffer buf, OutputStream out, CryptKey key, boolean encode) throws IOException {
-    testNull(ByteBuffer.class, "buf", buf);
-    testNull(OutputStream.class, "out", out);
-    testNull(CryptKey.class, "key", key);
+    nullarg(ByteBuffer.class, buf);
+    nullarg(OutputStream.class, out);
+    nullarg(CryptKey.class, key);
     if(buf.remaining() < 1) return;
     
     CryptBufferCoder cbc = new CryptBufferCoder(key);
@@ -490,8 +451,8 @@ public abstract class StreamUtils {
   
   
   public static void writeBufferTo(ByteBuffer buf, ByteBuffer out) throws IOException {
-    testNull(ByteBuffer.class, "buf", buf);
-    testNull(OutputStream.class, "out", out);
+    nullarg(ByteBuffer.class, buf);
+    nullarg(OutputStream.class, out);
     
     int minsize = Math.min(buf.remaining(), out.remaining());
     byte[] bs = new byte[minsize];
@@ -501,10 +462,10 @@ public abstract class StreamUtils {
   
   
   public static long transferUntilOr(InputStream in, OutputStream out, String until, String orfalse) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(OutputStream.class, "out", out);
-    testNull(String.class, "until", until);
-    testNull(String.class, "orfalse", orfalse);
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
+    nullstr(until);
+    nullstr(orfalse);
     
     LimitedBuffer luntil = new LimitedBuffer(until.length());
     LimitedBuffer lor = new LimitedBuffer(orfalse.length());
@@ -557,10 +518,10 @@ public abstract class StreamUtils {
   
   
   public static long transferUntilOrHexCoder(InputStream in, OutputStream out, String until, String orfalse, boolean encode) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(OutputStream.class, "out", out);
-    testNull(String.class, "until", until);
-    testNull(String.class, "orfalse", orfalse);
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
+    nullstr(until);
+    nullstr(orfalse);
     
     LimitedBuffer luntil = new LimitedBuffer(until.length());
     LimitedBuffer lor = new LimitedBuffer(orfalse.length());
@@ -613,11 +574,11 @@ public abstract class StreamUtils {
   
   
   public static long transferUntilOrCryptCoder(InputStream in, OutputStream out, CryptKey key, String until, String orfalse, boolean encode) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(OutputStream.class, "out", out);
-    testNull(CryptKey.class, "key", key);
-    testNull(String.class, "until", until);
-    testNull(String.class, "orfalse", orfalse);
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
+    nullarg(CryptKey.class, key);
+    nullstr(until);
+    nullstr(orfalse);
     
     LimitedBuffer luntil = new LimitedBuffer(until.length());
     LimitedBuffer lor = new LimitedBuffer(orfalse.length());
@@ -670,11 +631,11 @@ public abstract class StreamUtils {
   
   
   public static long transferUntilOrCryptHexCoder(InputStream in, OutputStream out, CryptKey key, String until, String orfalse, boolean encode) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(OutputStream.class, "out", out);
-    testNull(CryptKey.class, "key", key);
-    testNull(String.class, "until", until);
-    testNull(String.class, "orfalse", orfalse);
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
+    nullarg(CryptKey.class, key);
+    nullstr(until);
+    nullstr(orfalse);
     
     LimitedBuffer luntil = new LimitedBuffer(until.length());
     LimitedBuffer lor = new LimitedBuffer(orfalse.length());
@@ -728,10 +689,10 @@ public abstract class StreamUtils {
   
   public static long transferBetween(InputStream in, OutputStream out, 
       String start, String end) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(OutputStream.class, "out", out);
-    testNull(String.class, "start", start);
-    testNull(String.class, "end", end);
+    nullarg(InputStream.class, in);
+    nullarg(OutputStream.class, out);
+    nullstr(start);
+    nullstr(end);
     
     readUntil(in, start);
     return transferUntil(in, out, end);
@@ -746,8 +707,8 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na escrita.
    */
   public static void write(String str, OutputStream out) throws IOException {
-    testNull(OutputStream.class, "out", out);
-    testNull(String.class, "str", str);
+    nullarg(OutputStream.class, out);
+    nullarg(String.class, str);
     
     out.write(bytes(str));
     out.flush();
@@ -783,9 +744,9 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na leitura.
    */
   public static String readBetween(InputStream in, String start, String end) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(String.class, "start", start);
-    testNull(String.class, "end", end);
+    nullarg(InputStream.class, in);
+    nullstr(start);
+    nullstr(end);
     
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     transferBetween(in, bos, start, end);
@@ -804,8 +765,8 @@ public abstract class StreamUtils {
    * @throws IOException Caso ocorra erro na leitura do stream.
    */
   public static boolean readUntil(InputStream in, String str) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(String.class, "str", str);
+    nullarg(InputStream.class, in);
+    nullstr(str);
     
     int read = -1;
     LimitedBuffer lbuf = new LimitedBuffer(str.length());
@@ -833,9 +794,9 @@ public abstract class StreamUtils {
    * @throws IOException Caso ocorra erro na leitura do stream.
    */
   public static String readUntilOr(InputStream in, String str, String orFalse) throws IOException {
-    testNull(InputStream.class, "in", in);
-    testNull(String.class, "str", str);
-    testNull(String.class, "orFalse", orFalse);
+    nullarg(InputStream.class, in);
+    nullstr(str);
+    nullstr(orFalse);
     
     int read = -1;
     int maxlen = Math.max(str.length(), orFalse.length());
@@ -850,6 +811,25 @@ public abstract class StreamUtils {
       }
     }
     return null;
+  }
+  
+  
+  public static String readString(InputStream is, int length) throws IOException {
+    nullarg(InputStream.class, is);
+    range(length, 1, Integer.MAX_VALUE);
+    byte[] bs = new byte[length];
+    int read = is.read(bs);
+    if(read <= 0) return null;
+    return new String(bs, 0, read, UTF8);
+  }
+  
+  
+  public static String readStringUntil(InputStream is, String until) throws IOException {
+    nullarg(InputStream.class, is);
+    nullstr(until);
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    transferUntil(is, bos, until);
+    return bos.toString(UTF8);
   }
   
 }

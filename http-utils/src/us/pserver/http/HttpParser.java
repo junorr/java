@@ -24,10 +24,15 @@ package us.pserver.http;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import static us.pserver.http.StreamUtils.UTF8;
+import static us.pserver.cdr.StringByteConverter.UTF8;
+import us.pserver.cdr.b64.Base64StringCoder;
+import us.pserver.cdr.crypt.CryptKey;
+import static us.pserver.chk.Checker.nullarg;
+import us.pserver.chk.Invoke;
+import us.pserver.streams.MegaBuffer;
+import us.pserver.streams.StreamUtils;
 
 /**
  *
@@ -45,11 +50,14 @@ public class HttpParser implements HttpConst {
   
   private final List<String> lines;
   
+  private MegaBuffer buffer;
+  
   
   public HttpParser() {
     headers = new LinkedList<>();
     lines = new LinkedList<>();
     message = null;
+    buffer = new MegaBuffer();
   }
   
   
@@ -57,7 +65,13 @@ public class HttpParser implements HttpConst {
     headers.clear();
     lines.clear();
     message = null;
+    Invoke.unchecked(buffer::reset);
     return this;
+  }
+  
+  
+  public MegaBuffer getBuffer() {
+    return buffer;
   }
   
   
@@ -103,14 +117,39 @@ public class HttpParser implements HttpConst {
   
   
   public HttpParser readFrom(InputStream in) throws IOException {
-    if(in == null) 
-      throw new IOException(
-          "Invalid InputStream ["+ in+ "]");
+    reset();
+    nullarg(InputStream.class, in);
     String boundary = HYFENS + BOUNDARY;
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     StreamUtils.transferUntil(in, bos, boundary);
     message = bos.toString(UTF8);
-    return parse();
+    parse();
+    
+    buffer.read(in);
+    buffer.flip();
+    InputStream mis = buffer.getInputStream();
+    if(!StreamUtils.readUntil(mis, BOUNDARY_XML_START))
+      return this;
+    
+    String str = StreamUtils.readString(mis, 5);
+    if(BOUNDARY_CRYPT_KEY_START.contains(str)) {
+      StreamUtils.readUntil(mis, "'>");
+      String skey = StreamUtils.readStringUntil(mis, 
+          BOUNDARY_CRYPT_KEY_END);
+      Base64StringCoder bsc = new Base64StringCoder();
+      addHeader(new HttpCryptKey(
+          CryptKey.fromString(bsc.decode(skey))));
+    }
+    else if(BOUNDARY_OBJECT_START.contains(str)) {
+      StreamUtils.readUntil(mis, "'>");
+      String skey = StreamUtils.readStringUntil(mis, 
+          BOUNDARY_OBJECT_END);
+      Base64StringCoder bsc = new Base64StringCoder();
+      addHeader(new HttpCryptKey(
+          CryptKey.fromString(bsc.decode(skey))));
+    }
+    
+    return this;
   }
   
   
@@ -129,6 +168,7 @@ public class HttpParser implements HttpConst {
     if(message == null)
       throw new IllegalStateException(
           "Http message is empty ["+ message+ "]");
+    
     String[] lns = message.split(CRLF);
     for(String s : lns) {
       if(s != null && s.length() >= MIN_HEADER_LENGTH) {

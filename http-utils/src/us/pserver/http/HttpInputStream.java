@@ -21,18 +21,18 @@
 
 package us.pserver.http;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64StringCoder;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
+import us.pserver.chk.Invoke;
+import us.pserver.chk.Return;
 import us.pserver.streams.MegaBuffer;
 
 /**
@@ -73,16 +73,6 @@ public class HttpInputStream extends Header {
    * o tamanho do stream de dados.
    */
   public static final int STATIC_SIZE = 172;
-  
-
-  /**
-   * <code>
-   *  STATIC_CRYPT = 25
-   * </code><br>
-   * Tamanho estático do cabeçalho sem considerar 
-   * o tamanho do stream de dados.
-   */
-  public static final int STATIC_CRYPT = 25;
   
 
   private InputStream input;
@@ -195,18 +185,6 @@ public class HttpInputStream extends Header {
   
   
   /**
-   * Retorna o tamanho dos dados do stream de entrada em bytes.
-   * @return tamanho dos dados do stream de entrada em bytes.
-   */
-  public long available() {
-    if(input != null)
-      try { return input.available(); }
-      catch(IOException e) { return -1; }
-    return -1;
-  }
-  
-  
-  /**
    * Define o stream de entrada a ser transmitido 
    * no cabeçalho HTTP.
    * @param is stream de entrada a ser transmitido 
@@ -240,16 +218,8 @@ public class HttpInputStream extends Header {
    */
   @Override
   public long getLength() {
-    try {
-      long size = STATIC_SIZE + buffer.size();
-      if(isCryptCoderEnabled()) {
-        size += STATIC_CRYPT + scd.encode(
-            key.toString()).length();
-      }
-      return size;
-    } catch(IOException e) {
-      throw new RuntimeException(e);
-    }
+    return ((long) Invoke.unchecked(
+        buffer::size)) + STATIC_SIZE;
   }
   
   
@@ -281,13 +251,6 @@ public class HttpInputStream extends Header {
       StringByteConverter cv = new StringByteConverter();
       out.write(cv.convert(start.toString()));
       out.write(cv.convert(BOUNDARY_XML_START));
-      
-      if(isCryptCoderEnabled()) {
-        out.write(cv.convert(BOUNDARY_CRYPT_KEY_START));
-        out.write(cv.convert(scd.encode(key.toString())));
-        out.write(cv.convert(BOUNDARY_CRYPT_KEY_END));
-      }
-      
       out.write(cv.convert(BOUNDARY_CONTENT_START));
       out.flush();
       buffer.write(out);
@@ -303,15 +266,15 @@ public class HttpInputStream extends Header {
   
   public static void main(String[] args) throws IOException {
     HttpInputStream hin = new HttpInputStream();
-    /*
+    
     ByteArrayInputStream bin = new ByteArrayInputStream("Hello!".getBytes());
     hin.setInputStream(bin);
-    */
+    /*
     InputStream in = Files.newInputStream(
         Paths.get("d:/pic.jpg"), 
         StandardOpenOption.READ);
     hin.setInputStream(in);
-    
+    */
     hin.setCryptCoderEnabled(true, new CryptKey("123456", 
         CryptAlgorithm.DESede_ECB_PKCS5));
     hin.setGZipCoderEnabled(true);
@@ -319,7 +282,7 @@ public class HttpInputStream extends Header {
     
     System.out.println("* size = "+ hin.getLength());
     OutputStream out = new FileOutputStream("d:/http-inputstream.txt");
-    hin.writeContent(out);
+    hin.writeContent(System.out);
   }
   
 }

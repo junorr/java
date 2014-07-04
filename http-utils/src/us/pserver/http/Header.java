@@ -26,7 +26,6 @@ import java.io.OutputStream;
 import java.util.Objects;
 import us.pserver.cdr.StringByteConverter;
 import static us.pserver.chk.Checker.nullarg;
-import us.pserver.streams.Streams;
 
 
 /**

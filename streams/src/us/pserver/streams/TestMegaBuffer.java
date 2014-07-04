@@ -33,7 +33,7 @@ import us.pserver.cdr.crypt.CryptKey;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 02/07/2014
  */
-public class TestMixedBuffer {
+public class TestMegaBuffer {
 
   public static Path path(String str) {
     return Paths.get(str);
