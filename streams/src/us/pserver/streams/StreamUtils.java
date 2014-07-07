@@ -161,528 +161,90 @@ public abstract class StreamUtils {
    * @return Número total de bytes transferidos.
    * @throws IOException caso ocorra erro na transferência.
    */
-  public static long transferUntil(InputStream in, OutputStream out, String until) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
+  public static long transferUntil(InputStream is, OutputStream os, String until) throws IOException {
+    nullarg(InputStream.class, is);
+    nullarg(OutputStream.class, os);
     nullstr(until);
     
-    LimitedBuffer lbuf = new LimitedBuffer(until.length());
-    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-    ByteBuffer last = ByteBuffer.allocate(BUFFER_SIZE);
+    LimitedBuffer lim = new LimitedBuffer(until.length());
+    ByteBuffer buf = ByteBuffer.allocate(until.length() * 2);
+    ByteBufferConverter cv = new ByteBufferConverter();
+    
     long total = 0;
+    byte[] bs = new byte[1];
     int read = -1;
     
-    while((read = in.read()) != -1) {
+    while((read = is.read(bs)) > 0) {
       total++;
-      lbuf.put(read);
-      
-      if(until.equals(lbuf.toUTF8())) {
-        rewindBuffers(buffer, last, until.length());
-        buffer.flip();
-        if(last.remaining() > 0) {
-          writeBufferTo(buffer, last);
-        }
-        if(last.position() > 0) {
-          last.flip();
-          writeBufferTo(last, out);
-        }
-        if(buffer.remaining() > 0) {
-          writeBufferTo(buffer, out);
-        }
+      lim.put(bs[0]);
+      if(buf.remaining() < 1) {
+        buf.flip();
+        byte[] b = new byte[lim.length()];
+        buf.get(b);
+        os.write(b);
+        buf.compact();
       }
-      else {
-        if(buffer.remaining() == 0) {
-          if(last.remaining() == 0) {
-            last.flip();
-            writeBufferTo(last, out);
-            last.clear();
-          }
-          buffer.flip();
-          writeBufferTo(buffer, last);
-          buffer.clear();
+      buf.put(bs[0]);
+      
+      if(until.equals(lim.toUTF8())) {
+        if(buf.position() > lim.length()) {
+          buf.position(buf.position() - lim.length());
+          buf.flip();
+          os.write(cv.convert(buf));
         }
-        buffer.put((byte) read);
+        break;
       }
     }
+    os.flush();
     return total;
   }
   
   
-  public static long transferUntilHexCoder(InputStream in, OutputStream out, String until, boolean encode) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
+  public static long transferUntilOr(InputStream is, OutputStream os, String until, String or) throws IOException {
+    nullarg(InputStream.class, is);
+    nullarg(OutputStream.class, os);
     nullstr(until);
+    nullstr(or);
     
-    LimitedBuffer lbuf = new LimitedBuffer(until.length());
-    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-    ByteBuffer last = ByteBuffer.allocate(BUFFER_SIZE);
+    int maxlen = Math.max(until.length(), or.length());
+    LimitedBuffer lim = new LimitedBuffer(maxlen);
+    ByteBuffer buf = ByteBuffer.allocate(maxlen * 2);
+    ByteBufferConverter cv = new ByteBufferConverter();
+    
     long total = 0;
+    byte[] bs = new byte[1];
     int read = -1;
     
-    while((read = in.read()) != -1) {
+    while((read = is.read(bs)) > 0) {
       total++;
-      lbuf.put(read);
-      
-      if(until.equals(lbuf.toUTF8())) {
-        rewindBuffers(buffer, last, until.length());
-        buffer.flip();
-        if(last.remaining() > 0) {
-          writeBufferTo(buffer, last);
-        }
-        if(last.position() > 0) {
-          last.flip();
-          writeBufferHexCoder(last, out, encode);
-        }
-        if(buffer.remaining() > 0) {
-          writeBufferHexCoder(buffer, out, encode);
-        }
+      lim.put(bs[0]);
+      if(buf.remaining() < 1) {
+        buf.flip();
+        byte[] b = new byte[maxlen];
+        buf.get(b);
+        os.write(b);
+        buf.compact();
       }
-      else {
-        if(buffer.remaining() == 0) {
-          if(last.remaining() == 0) {
-            last.flip();
-            writeBufferHexCoder(last, out, encode);
-            last.clear();
-          }
-          buffer.flip();
-          writeBufferTo(buffer, last);
-          buffer.clear();
+      buf.put(bs[0]);
+      
+      if(lim.toUTF8().contains(until)) {
+        if(buf.position() > until.length()) {
+          buf.position(buf.position() - lim.length());
+          buf.flip();
+          os.write(cv.convert(buf));
         }
-        buffer.put((byte) read);
+        break;
+      }
+      else if(or.equals(lim.toUTF8())) {
+        if(buf.position() > lim.length()) {
+          buf.position(buf.position() - lim.length());
+          buf.flip();
+          os.write(cv.convert(buf));
+        }
+        break;
       }
     }
-    return total;
-  }
-  
-  
-  public static long transferUntilCryptCoder(InputStream in, OutputStream out, CryptKey key, String until, boolean encode) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
-    nullarg(CryptKey.class, key);
-    nullstr(until);
-    
-    LimitedBuffer lbuf = new LimitedBuffer(until.length());
-    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-    ByteBuffer last = ByteBuffer.allocate(BUFFER_SIZE);
-    long total = 0;
-    int read = -1;
-    
-    while((read = in.read()) != -1) {
-      total++;
-      lbuf.put(read);
-      
-      if(until.equals(lbuf.toUTF8())) {
-        rewindBuffers(buffer, last, until.length());
-        buffer.flip();
-        if(last.remaining() > 0) {
-          writeBufferTo(buffer, last);
-        }
-        if(last.position() > 0) {
-          last.flip();
-          writeBufferCryptCoder(last, out, key, encode);
-        }
-        if(buffer.remaining() > 0) {
-          writeBufferCryptCoder(buffer, out, key, encode);
-        }
-      }
-      else {
-        if(buffer.remaining() == 0) {
-          if(last.remaining() == 0) {
-            last.flip();
-            writeBufferCryptCoder(last, out, key, encode);
-            last.clear();
-          }
-          buffer.flip();
-          writeBufferTo(buffer, last);
-          buffer.clear();
-        }
-        buffer.put((byte) read);
-      }
-    }
-    return total;
-  }
-  
-  
-  public static long transferUntilCryptHexCoder(InputStream in, OutputStream out, CryptKey key, String until, boolean encode) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
-    nullarg(CryptKey.class, key);
-    nullstr(until);
-    
-    LimitedBuffer lbuf = new LimitedBuffer(until.length());
-    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-    ByteBuffer last = ByteBuffer.allocate(BUFFER_SIZE);
-    long total = 0;
-    int read = -1;
-    
-    while((read = in.read()) != -1) {
-      total++;
-      lbuf.put(read);
-      
-      if(until.equals(lbuf.toUTF8())) {
-        rewindBuffers(buffer, last, until.length());
-        buffer.flip();
-        if(last.remaining() > 0) {
-          writeBufferTo(buffer, last);
-        }
-        if(last.position() > 0) {
-          last.flip();
-          writeBufferCryptHexCoder(last, out, key, encode);
-        }
-        if(buffer.remaining() > 0) {
-          writeBufferCryptHexCoder(buffer, out, key, encode);
-        }
-      }
-      else {
-        if(buffer.remaining() == 0) {
-          if(last.remaining() == 0) {
-            last.flip();
-            writeBufferCryptHexCoder(last, out, key, encode);
-            last.clear();
-          }
-          buffer.flip();
-          writeBufferTo(buffer, last);
-          buffer.clear();
-        }
-        buffer.put((byte) read);
-      }
-    }
-    return total;
-  }
-  
-  
-  private static void rewindBuffers(ByteBuffer buf, ByteBuffer last, int length) {
-    nullarg(ByteBuffer.class, buf);
-    nullarg(ByteBuffer.class, last);
-    range(length, 1, Integer.MAX_VALUE);
-    
-    if(buf.position() >= length) {
-      buf.position(buf.position() - (length-1));
-    } else {
-      int back1 = buf.position();
-      int back2 = length - back1;
-      back2 = Math.min(back2-1, last.position());
-      last.position(last.position() - back2);
-      buf.position(buf.position() - back1);
-    }
-  }
-  
-  
-  public static void main(String[] args) throws IOException {
-    String until = "</xml>";
-    String str = "A direct byte buffer may be created "
-        + "by invoking the allocateDirect factory "
-        + "metho" + until;
-    System.out.println("* str='"+ str+ "'");
-    ByteArrayInputStream bis = 
-        new ByteArrayInputStream(str.getBytes(UTF8));
-    ByteArrayOutputStream bos = 
-        new ByteArrayOutputStream();
-    System.out.println("* transferUntil(bis, bos, until);");
-    transferUntil(bis, bos, until);
-    //transfer(bis, bos);
-    System.out.println("* bos='"+ bos.toString(UTF8)+ "'");
-  }
-  
-  
-  public static void writeBufferTo(ByteBuffer buf, OutputStream out) throws IOException {
-    nullarg(ByteBuffer.class, buf);
-    nullarg(OutputStream.class, out);
-    if(buf.remaining() < 1) return;
-    
-    byte[] bs = new byte[buf.remaining()];
-    buf.get(bs);
-    out.write(bs);
-    out.flush();
-  }
-  
-  
-  public static void writeBufferHexCoder(ByteBuffer buf, OutputStream out, boolean encode) throws IOException {
-    nullarg(ByteBuffer.class, buf);
-    nullarg(OutputStream.class, out);
-    if(buf.remaining() < 1) return;
-    
-    HexBufferCoder cdr = new HexBufferCoder();
-    ByteBufferConverter conv = new ByteBufferConverter();
-    
-    cdr.apply(buf, encode);
-    out.write(conv.convert(buf));
-    out.flush();
-  }
-  
-  
-  public static void writeBufferCryptCoder(ByteBuffer buf, OutputStream out, CryptKey key, boolean encode) throws IOException {
-    nullarg(ByteBuffer.class, buf);
-    nullarg(OutputStream.class, out);
-    nullarg(CryptKey.class, key);
-    if(buf.remaining() < 1) return;
-    
-    CryptBufferCoder cdr = new CryptBufferCoder(key);
-    ByteBufferConverter conv = new ByteBufferConverter();
-    
-    cdr.apply(buf, encode);
-    out.write(conv.convert(buf));
-    out.flush();
-  }
-  
-  
-  public static void writeBufferCryptHexCoder(ByteBuffer buf, OutputStream out, CryptKey key, boolean encode) throws IOException {
-    nullarg(ByteBuffer.class, buf);
-    nullarg(OutputStream.class, out);
-    nullarg(CryptKey.class, key);
-    if(buf.remaining() < 1) return;
-    
-    CryptBufferCoder cbc = new CryptBufferCoder(key);
-    HexBufferCoder hbc = new HexBufferCoder();
-    ByteBufferConverter conv = new ByteBufferConverter();
-    
-    if(encode) {
-      cbc.encode(buf);
-      hbc.encode(buf);
-    }
-    else {
-      hbc.decode(buf);
-      cbc.decode(buf);
-    }
-    
-    out.write(conv.convert(buf));
-    out.flush();
-  }
-  
-  
-  public static void writeBufferTo(ByteBuffer buf, ByteBuffer out) throws IOException {
-    nullarg(ByteBuffer.class, buf);
-    nullarg(OutputStream.class, out);
-    
-    int minsize = Math.min(buf.remaining(), out.remaining());
-    byte[] bs = new byte[minsize];
-    buf.get(bs);
-    out.put(bs);
-  }
-  
-  
-  public static long transferUntilOr(InputStream in, OutputStream out, String until, String orfalse) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
-    nullstr(until);
-    nullstr(orfalse);
-    
-    LimitedBuffer luntil = new LimitedBuffer(until.length());
-    LimitedBuffer lor = new LimitedBuffer(orfalse.length());
-    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-    ByteBuffer last = ByteBuffer.allocate(BUFFER_SIZE);
-    long total = 0;
-    int read = -1;
-    
-    while((read = in.read()) != -1) {
-      total++;
-      luntil.put(read);
-      lor.put(read);
-      
-      int len = 0;
-      if(until.equals(luntil.toUTF8()))
-        len = until.length();
-      else if(orfalse.equals(lor.toUTF8()))
-        len = orfalse.length();
-      
-      if(len > 0) {
-        rewindBuffers(buffer, last, len);
-        buffer.flip();
-        if(last.remaining() > 0) {
-          writeBufferTo(buffer, last);
-        }
-        if(last.position() > 0) {
-          last.flip();
-          writeBufferTo(last, out);
-        }
-        if(buffer.remaining() > 0) {
-          writeBufferTo(buffer, out);
-        }
-      }
-      else {
-        if(buffer.remaining() == 0) {
-          if(last.remaining() == 0) {
-            last.flip();
-            writeBufferTo(last, out);
-            last.clear();
-          }
-          buffer.flip();
-          writeBufferTo(buffer, last);
-          buffer.clear();
-        }
-        buffer.put((byte) read);
-      }
-    }
-    return total;
-  }
-  
-  
-  public static long transferUntilOrHexCoder(InputStream in, OutputStream out, String until, String orfalse, boolean encode) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
-    nullstr(until);
-    nullstr(orfalse);
-    
-    LimitedBuffer luntil = new LimitedBuffer(until.length());
-    LimitedBuffer lor = new LimitedBuffer(orfalse.length());
-    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-    ByteBuffer last = ByteBuffer.allocate(BUFFER_SIZE);
-    long total = 0;
-    int read = -1;
-    
-    while((read = in.read()) != -1) {
-      total++;
-      luntil.put(read);
-      lor.put(read);
-      
-      int len = 0;
-      if(until.equals(luntil.toUTF8()))
-        len = until.length();
-      else if(orfalse.equals(lor.toUTF8()))
-        len = orfalse.length();
-      
-      if(len > 0) {
-        rewindBuffers(buffer, last, until.length());
-        buffer.flip();
-        if(last.remaining() > 0) {
-          writeBufferTo(buffer, last);
-        }
-        if(last.position() > 0) {
-          last.flip();
-          writeBufferHexCoder(last, out, encode);
-        }
-        if(buffer.remaining() > 0) {
-          writeBufferHexCoder(buffer, out, encode);
-        }
-      }
-      else {
-        if(buffer.remaining() == 0) {
-          if(last.remaining() == 0) {
-            last.flip();
-            writeBufferHexCoder(last, out, encode);
-            last.clear();
-          }
-          buffer.flip();
-          writeBufferTo(buffer, last);
-          buffer.clear();
-        }
-        buffer.put((byte) read);
-      }
-    }
-    return total;
-  }
-  
-  
-  public static long transferUntilOrCryptCoder(InputStream in, OutputStream out, CryptKey key, String until, String orfalse, boolean encode) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
-    nullarg(CryptKey.class, key);
-    nullstr(until);
-    nullstr(orfalse);
-    
-    LimitedBuffer luntil = new LimitedBuffer(until.length());
-    LimitedBuffer lor = new LimitedBuffer(orfalse.length());
-    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-    ByteBuffer last = ByteBuffer.allocate(BUFFER_SIZE);
-    long total = 0;
-    int read = -1;
-    
-    while((read = in.read()) != -1) {
-      total++;
-      luntil.put(read);
-      lor.put(read);
-      
-      int len = 0;
-      if(until.equals(luntil.toUTF8()))
-        len = until.length();
-      else if(orfalse.equals(lor.toUTF8()))
-        len = orfalse.length();
-      
-      if(len > 0) {
-        rewindBuffers(buffer, last, until.length());
-        buffer.flip();
-        if(last.remaining() > 0) {
-          writeBufferTo(buffer, last);
-        }
-        if(last.position() > 0) {
-          last.flip();
-          writeBufferCryptCoder(last, out, key, encode);
-        }
-        if(buffer.remaining() > 0) {
-          writeBufferCryptCoder(buffer, out, key, encode);
-        }
-      }
-      else {
-        if(buffer.remaining() == 0) {
-          if(last.remaining() == 0) {
-            last.flip();
-            writeBufferCryptCoder(last, out, key, encode);
-            last.clear();
-          }
-          buffer.flip();
-          writeBufferTo(buffer, last);
-          buffer.clear();
-        }
-        buffer.put((byte) read);
-      }
-    }
-    return total;
-  }
-  
-  
-  public static long transferUntilOrCryptHexCoder(InputStream in, OutputStream out, CryptKey key, String until, String orfalse, boolean encode) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
-    nullarg(CryptKey.class, key);
-    nullstr(until);
-    nullstr(orfalse);
-    
-    LimitedBuffer luntil = new LimitedBuffer(until.length());
-    LimitedBuffer lor = new LimitedBuffer(orfalse.length());
-    ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-    ByteBuffer last = ByteBuffer.allocate(BUFFER_SIZE);
-    long total = 0;
-    int read = -1;
-    
-    while((read = in.read()) != -1) {
-      total++;
-      luntil.put(read);
-      lor.put(read);
-      
-      int len = 0;
-      if(until.equals(luntil.toUTF8()))
-        len = until.length();
-      else if(orfalse.equals(lor.toUTF8()))
-        len = orfalse.length();
-      
-      if(len > 0) {
-        rewindBuffers(buffer, last, until.length());
-        buffer.flip();
-        if(last.remaining() > 0) {
-          writeBufferTo(buffer, last);
-        }
-        if(last.position() > 0) {
-          last.flip();
-          writeBufferCryptHexCoder(last, out, key, encode);
-        }
-        if(buffer.remaining() > 0) {
-          writeBufferCryptHexCoder(buffer, out, key, encode);
-        }
-      }
-      else {
-        if(buffer.remaining() == 0) {
-          if(last.remaining() == 0) {
-            last.flip();
-            writeBufferCryptHexCoder(last, out, key, encode);
-            last.clear();
-          }
-          buffer.flip();
-          writeBufferTo(buffer, last);
-          buffer.clear();
-        }
-        buffer.put((byte) read);
-      }
-    }
+    os.flush();
     return total;
   }
   
@@ -828,7 +390,7 @@ public abstract class StreamUtils {
     nullarg(InputStream.class, is);
     nullstr(until);
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    transferUntil(is, bos, until);
+    System.out.println("* total="+ transferUntil(is, bos, until));
     return bos.toString(UTF8);
   }
   

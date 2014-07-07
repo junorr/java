@@ -32,7 +32,6 @@ import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.chk.Invoke;
-import us.pserver.chk.Return;
 import us.pserver.streams.MegaBuffer;
 
 /**

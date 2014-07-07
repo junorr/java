@@ -307,11 +307,12 @@ public class HttpBuilder implements HttpConst {
       idx = i;
       if(!hd.isContentHeader())
         hd.writeContent(out);
+      else break;
     }
     new Header(HD_CONTENT_LENGTH, String.valueOf(getLength()))
         .writeContent(out);
     
-    for(int i = 0; i < hds.size(); i++) {
+    for(int i = idx; i < hds.size(); i++) {
       if(hds.get(i).isContentHeader())
         hds.get(i).writeContent(out);
     }
@@ -341,6 +342,7 @@ public class HttpBuilder implements HttpConst {
     
     CryptKey key = new CryptKey("123456", 
         CryptAlgorithm.AES_CBC_PKCS5);
+    hb.put(new HttpCryptKey(key));
     
     HttpEncodedObject hob = new HttpEncodedObject();
     hob.setCryptEnabled(true, key)

@@ -120,6 +120,23 @@ public class HttpEncodedObject extends Header {
   }
   
   
+  public static HttpEncodedObject decodeObject(String str) {
+    HttpEncodedObject heo = new HttpEncodedObject();
+    String dec = heo.coder.decode(str);
+    Object obj = heo.xst.fromXML(dec);
+    return heo.setObject(obj);
+  }
+  
+  
+  public static HttpEncodedObject decodeObject(String str, CryptKey key) {
+    HttpEncodedObject heo = new HttpEncodedObject()
+        .setCryptEnabled(true, key);
+    String dec = heo.crypt.decode(str);
+    Object obj = heo.xst.fromXML(dec);
+    return heo.setObject(obj);
+  }
+  
+  
   /**
    * Define o objeto a ser encapsulado no cabeçalho HTTP.
    * @param o <code>Object</code>

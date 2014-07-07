@@ -65,6 +65,8 @@ public class MegaBuffer {
   
   private CryptKey key;
   
+  private long bmark, chmark;
+  
   
   public MegaBuffer() {
     this(LARGE_BUFFER);
@@ -76,6 +78,7 @@ public class MegaBuffer {
     buffer = ByteBuffer.allocateDirect(bufferSize);
     readmode = false;
     key = null;
+    bmark = chmark = 0;
     order = new CoderType[5];
     order[0] = CoderType.CRYPT;
     order[1] = CoderType.BASE64;
@@ -237,7 +240,7 @@ public class MegaBuffer {
   }
   
   
-  public int getBufferSize() {
+  public int getMemBufferCapacity() {
     return buffer.capacity();
   }
   
@@ -265,6 +268,22 @@ public class MegaBuffer {
     temp = null;
     readmode = false;
     return clearCoders();
+  }
+  
+  
+  public MegaBuffer mark() throws IOException {
+    bmark = buffer.position();
+    if(channel != null)
+      chmark = channel.position();
+    return this;
+  }
+  
+  
+  public MegaBuffer setMark() throws IOException {
+    buffer.position((int) bmark);
+    if(channel != null)
+      channel.position(chmark);
+    return this;
   }
   
   

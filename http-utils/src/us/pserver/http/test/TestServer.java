@@ -30,7 +30,7 @@ import us.pserver.http.HttpConst;
 import us.pserver.http.HttpEncodedObject;
 import us.pserver.http.RequestParser;
 import us.pserver.http.ResponseLine;
-import us.pserver.http.StreamUtils;
+import us.pserver.streams.StreamUtils;
 
 /**
  *
@@ -51,13 +51,14 @@ public class TestServer implements HttpConst {
     
     RequestParser rp = new RequestParser();
     rp.readFrom(sock.getInputStream());
+    System.out.println("-----------------------");
+    System.out.println("* headers: "+ rp.headers().size());
     rp.headers().forEach(System.out::print);
     System.out.println("-----------------------");
-    StreamUtils.transfer(sock.getInputStream(), System.out);
     
     HttpBuilder.responseBuilder(new ResponseLine(200, "OK"))
         .put(new HttpEncodedObject("hello world!!"))
-        .writeTo(sock.getOutputStream());
+        .writeContent(sock.getOutputStream());
     
     sock.close();
     server.close();

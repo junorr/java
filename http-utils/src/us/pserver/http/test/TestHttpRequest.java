@@ -28,7 +28,7 @@ import us.pserver.http.HttpConst;
 import us.pserver.http.HttpEncodedObject;
 import us.pserver.http.RequestLine;
 import us.pserver.http.ResponseParser;
-import us.pserver.http.StreamUtils;
+import us.pserver.streams.StreamUtils;
 
 /**
  *
@@ -45,13 +45,14 @@ public class TestHttpRequest implements HttpConst {
     RequestLine req = new RequestLine(Method.POST, "172.24.75.2", 8000);
     //RequestLine req = new RequestLine(Method.POST, "10.100.0.104", 8000);
     HttpBuilder build = HttpBuilder.requestBuilder(req)
-        .put(HttpEncodedObjectject(obj));
+        .put(new HttpEncodedObject(obj));
         //.add(new HttpInputStream(Files.newInputStream(p, StandardOpenOption.READ)));
     
-    Socket sock = new Socket("172.24.75.19", 6060);
-    //Socket sock = new Socket("172.24.75.2", 8000);
+    //Socket sock = new Socket("172.24.75.19", 6060);
+    Socket sock = new Socket("172.24.75.2", 8000);
     //Socket sock = new Socket("10.100.0.105", 6060);
-    build.writeTo(sock.getOutputStream());
+    build.writeContent(System.out);
+    build.writeContent(sock.getOutputStream());
     
     ResponseParser rp = new ResponseParser();
     rp.readFrom(sock.getInputStream());

@@ -33,6 +33,7 @@ import static us.pserver.chk.Checker.nullarg;
 import us.pserver.chk.Invoke;
 import us.pserver.streams.MegaBuffer;
 import us.pserver.streams.StreamUtils;
+import static us.pserver.streams.StreamUtils.EOF;
 
 /**
  *
@@ -52,11 +53,14 @@ public class HttpParser implements HttpConst {
   
   private MegaBuffer buffer;
   
+  private CryptKey key;
+  
   
   public HttpParser() {
     headers = new LinkedList<>();
     lines = new LinkedList<>();
     message = null;
+    key = null;
     buffer = new MegaBuffer();
   }
   
@@ -72,6 +76,11 @@ public class HttpParser implements HttpConst {
   
   public MegaBuffer getBuffer() {
     return buffer;
+  }
+  
+  
+  public CryptKey getCryptKey() {
+    return key;
   }
   
   
@@ -119,34 +128,44 @@ public class HttpParser implements HttpConst {
   public HttpParser readFrom(InputStream in) throws IOException {
     reset();
     nullarg(InputStream.class, in);
+    
+    //StreamUtils.transfer(in, buffer.getOutputStream());
+    System.out.println("* HttpParser.buffer.size = "+ buffer.size());
+    //buffer.flip();
+    //in = buffer.getInputStream();
+    
     String boundary = HYFENS + BOUNDARY;
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    StreamUtils.transferUntil(in, bos, boundary);
-    message = bos.toString(UTF8);
+    message = StreamUtils.readStringUntil(in, boundary);
+    //System.out.println("* message="+ message);
     parse();
     
-    buffer.read(in);
-    buffer.flip();
-    InputStream mis = buffer.getInputStream();
-    if(!StreamUtils.readUntil(mis, BOUNDARY_XML_START))
+    if(!StreamUtils.readUntil(in, BOUNDARY_XML_START))
       return this;
+        
+    String str = StreamUtils.readString(in, 5);
+    StreamUtils.readUntil(in, "'>");
     
-    String str = StreamUtils.readString(mis, 5);
     if(BOUNDARY_CRYPT_KEY_START.contains(str)) {
-      StreamUtils.readUntil(mis, "'>");
-      String skey = StreamUtils.readStringUntil(mis, 
+      String skey = StreamUtils.readStringUntil(in, 
           BOUNDARY_CRYPT_KEY_END);
       Base64StringCoder bsc = new Base64StringCoder();
-      addHeader(new HttpCryptKey(
-          CryptKey.fromString(bsc.decode(skey))));
+      key = CryptKey.fromString(bsc.decode(skey));
+      addHeader(new HttpCryptKey(key));
     }
     else if(BOUNDARY_OBJECT_START.contains(str)) {
-      StreamUtils.readUntil(mis, "'>");
-      String skey = StreamUtils.readStringUntil(mis, 
+      String sobj = StreamUtils.readStringUntil(in, 
           BOUNDARY_OBJECT_END);
-      Base64StringCoder bsc = new Base64StringCoder();
-      addHeader(new HttpCryptKey(
-          CryptKey.fromString(bsc.decode(skey))));
+      if(key != null)
+        addHeader(HttpEncodedObject.decodeObject(sobj, key));
+      else
+        addHeader(HttpEncodedObject.decodeObject(sobj));
+    }
+    else if(BOUNDARY_CONTENT_START.contains(str)) {
+      if(key != null)
+        addHeader(new HttpInputStream(in)
+            .setCryptCoderEnabled(true, key));
+      else
+        addHeader(new HttpInputStream(in));
     }
     
     return this;

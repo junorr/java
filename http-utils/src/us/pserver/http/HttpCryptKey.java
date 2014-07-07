@@ -21,7 +21,6 @@
 
 package us.pserver.http;
 
-import com.thoughtworks.xstream.XStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,7 +29,6 @@ import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64StringCoder;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
-import us.pserver.cdr.crypt.CryptStringCoder;
 import static us.pserver.chk.Checker.nullarg;
 
 
