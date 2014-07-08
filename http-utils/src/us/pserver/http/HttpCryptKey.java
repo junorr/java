@@ -68,6 +68,7 @@ public class HttpCryptKey extends Header {
    */
   public HttpCryptKey() {
     super();
+    setName(getClass().getSimpleName());
     coder = new Base64StringCoder();
     key = null;
     size = 0;

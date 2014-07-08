@@ -55,13 +55,27 @@ public class HttpParser implements HttpConst {
   
   private CryptKey key;
   
+  private boolean buffered;
+  
   
   public HttpParser() {
     headers = new LinkedList<>();
     lines = new LinkedList<>();
     message = null;
     key = null;
+    buffered = false;
     buffer = new MegaBuffer();
+  }
+  
+  
+  public HttpParser setBufferedParseEnabled(boolean enabled) {
+    buffered = enabled;
+    return this;
+  }
+  
+  
+  public boolean isBufferedParseEnabled() {
+    return true;
   }
   
   
@@ -100,7 +114,7 @@ public class HttpParser implements HttpConst {
   public boolean containsHeader(String headerName) {
     if(headerName == null) return false;
     return headers.stream().anyMatch(
-        hd->hd.getName().equals(headerName));
+        hd->hd.getName() != null && hd.getName().equals(headerName));
   }
   
   
@@ -108,7 +122,7 @@ public class HttpParser implements HttpConst {
     if(name == null || name.isEmpty())
       return null;
     for(Header h : headers) {
-      if(h.getName().equals(name))
+      if(h.getName() != null && h.getName().equals(name))
         return h;
     }
     return null;
@@ -129,19 +143,19 @@ public class HttpParser implements HttpConst {
     reset();
     nullarg(InputStream.class, in);
     
-    //StreamUtils.transfer(in, buffer.getOutputStream());
-    System.out.println("* HttpParser.buffer.size = "+ buffer.size());
-    //buffer.flip();
-    //in = buffer.getInputStream();
+    if(buffered) {
+      buffer.read(in);
+      buffer.flip();
+      in = buffer.getInputStream();
+    }
     
     String boundary = HYFENS + BOUNDARY;
     message = StreamUtils.readStringUntil(in, boundary);
-    //System.out.println("* message="+ message);
     parse();
     
     if(!StreamUtils.readUntil(in, BOUNDARY_XML_START))
       return this;
-        
+
     String str = StreamUtils.readString(in, 5);
     StreamUtils.readUntil(in, "'>");
     
@@ -153,8 +167,10 @@ public class HttpParser implements HttpConst {
       addHeader(new HttpCryptKey(key));
     }
     else if(BOUNDARY_OBJECT_START.contains(str)) {
+      System.out.println("* is a HttpEncodedObject!!");
       String sobj = StreamUtils.readStringUntil(in, 
           BOUNDARY_OBJECT_END);
+      System.out.println("* sobj='"+ sobj+ "'");
       if(key != null)
         addHeader(HttpEncodedObject.decodeObject(sobj, key));
       else
@@ -205,14 +221,14 @@ public class HttpParser implements HttpConst {
       return null;
     
     Header hd = new Header();
-    if(str.contains(":")) {
+    if(str.contains(":") && !str.contains(HTTP)) {
       int id = str.indexOf(":");
       hd.setName(str.substring(0, id));
       hd.setValue(str.substring(id + 2));
     }
     else {
-      hd.setName("header"+ String.valueOf(Math.random() * 1_000_000));
       hd.setValue(str);
+      System.out.println("parseHeader( "+ hd+ " )");
     }
     return hd;
   }

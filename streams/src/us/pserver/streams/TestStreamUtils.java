@@ -41,7 +41,9 @@ public class TestStreamUtils {
           "<xml><rob enc='basic'>hULofWh0RwY26BNk6oGTJ1cTN2pOxzOoN+m8bfpD9gI=</rob></xml>\nEOF").getBytes());
     System.out.println("* content = "+ bis.available());
     
-    long total = StreamUtils.transferUntil2(bis, System.out, "<rob");
+    System.out.println("_");
+    long total = StreamUtils.transferBetween(bis, System.out, "<rob enc='basic'>", "</rob>");
+    System.out.println("_");
     //long total = StreamUtils.transfer(bis, System.out);
     
     System.out.println("* total = "+ total);

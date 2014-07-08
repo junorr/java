@@ -74,6 +74,7 @@ public class HttpEncodedObject extends Header {
    */
   public HttpEncodedObject() {
     super();
+    setName(getClass().getSimpleName());
     coder = new Base64StringCoder();
     crypt = null;
     size = 0;

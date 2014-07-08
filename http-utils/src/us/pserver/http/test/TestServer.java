@@ -53,8 +53,14 @@ public class TestServer implements HttpConst {
     rp.readFrom(sock.getInputStream());
     System.out.println("-----------------------");
     System.out.println("* headers: "+ rp.headers().size());
-    rp.headers().forEach(System.out::print);
+    rp.headers().forEach(h->System.out.println(h.getName()+ ": "+ h));
     System.out.println("-----------------------");
+    
+    String hob = "HttpEncodedObject";
+    if(rp.containsHeader(hob)) {
+      System.out.println("* HttpEncodedObject: "+ rp.getHeader(hob));
+      System.out.println("  - obj: "+ ((HttpEncodedObject)rp.getHeader(hob)).getObject());
+    }
     
     HttpBuilder.responseBuilder(new ResponseLine(200, "OK"))
         .put(new HttpEncodedObject("hello world!!"))

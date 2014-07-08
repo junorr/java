@@ -487,7 +487,7 @@ public class MegaBuffer {
   
   public void write(byte[] bs, int offset, int length) throws IOException {
     nullarray(bs);
-    range(offset, 0, bs.length -2);
+    range(offset, -1, bs.length);
     range(length, 1, bs.length - offset);
     if(readmode) flip();
     for(int i = offset; i < length; i++) {
@@ -514,9 +514,7 @@ public class MegaBuffer {
     nullarg(InputStream.class, in);
     if(readmode) flip();
     OutputStream out = getOutputStream();
-    long total = transfer(in, out);
-    out.close();
-    in.close();
+    long total = StreamUtils.transfer(in, out);
     return total;
   }
   
@@ -526,7 +524,7 @@ public class MegaBuffer {
     if(readmode) flip();
     OutputStream out = getOutputStream();
     in = configureInput(in);
-    long total = transfer(in, out);
+    long total = StreamUtils.transfer(in, out);
     out.close();
     in.close();
     return total;
@@ -537,7 +535,7 @@ public class MegaBuffer {
     nullarg(InputStream.class, in);
     if(readmode) flip();
     OutputStream out = configureOutput(getOutputStream());
-    long total = transfer(in, out);
+    long total = StreamUtils.transfer(in, out);
     out.close();
     in.close();
     return total;
@@ -586,7 +584,7 @@ public class MegaBuffer {
   
   public int read(byte[] bs, int offset, int length) throws IOException {
     nullarray(bs);
-    range(offset, 0, bs.length -2);
+    range(offset, -1, bs.length);
     range(length, 1, bs.length - offset);
     
     if(!readmode) flip();
@@ -629,8 +627,7 @@ public class MegaBuffer {
     nullarg(OutputStream.class, out);
     if(!readmode) flip();
     InputStream in = getInputStream();
-    long total = transfer(in, out);
-    in.close();
+    long total = StreamUtils.transfer(in, out);
     return total;
   }
   
@@ -640,7 +637,7 @@ public class MegaBuffer {
     if(!readmode) flip();
     InputStream in = getInputStream();
     out = configureOutput(out);
-    long total = transfer(in, out);
+    long total = StreamUtils.transfer(in, out);
     in.close();
     out.close();
     return total;
@@ -651,7 +648,7 @@ public class MegaBuffer {
     nullarg(OutputStream.class, out);
     if(!readmode) flip();
     InputStream in = configureInput(getInputStream());
-    long total = transfer(in, out);
+    long total = StreamUtils.transfer(in, out);
     in.close();
     return total;
   }
@@ -687,21 +684,6 @@ public class MegaBuffer {
     long t = writeDecoding(out);
     out.close();
     return t;
-  }
-  
-  
-  public static long transfer(InputStream is, OutputStream os) throws IOException {
-    nullarg(InputStream.class, is);
-    nullarg(OutputStream.class, os);
-    long total = 0;
-    byte[] bs = new byte[8192];
-    int read = 0;
-    while((read = is.read(bs)) > 0) {
-      total += read;
-      os.write(bs, 0, read);
-    }
-    os.flush();
-    return total;
   }
   
 }

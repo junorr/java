@@ -87,6 +87,8 @@ public class HttpInputStream extends Header {
    * Construtor padrão sem argumentos.
    */
   public HttpInputStream() {
+    super();
+    setName(getClass().getSimpleName());
     input = null;
     key = null;
     scd = new Base64StringCoder();

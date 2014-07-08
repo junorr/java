@@ -21,7 +21,6 @@
 
 package us.pserver.streams;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,10 +28,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
-import us.pserver.cdr.crypt.CryptBufferCoder;
-import us.pserver.cdr.crypt.CryptKey;
-import us.pserver.cdr.hex.HexBufferCoder;
-import us.pserver.cdr.hex.HexByteCoder;
 import static us.pserver.chk.Checker.nullarg;
 import static us.pserver.chk.Checker.nullstr;
 import static us.pserver.chk.Checker.range;
@@ -81,11 +76,11 @@ public abstract class StreamUtils {
   
   /**
    * <code>
-   *  BUFFER_SIZE = 1024
+   *  BUFFER_SIZE = 4096
    * </code><br>
    * Tamanho do buffer em bytes.
    */
-  public static int BUFFER_SIZE = 1024;
+  public static int BUFFER_SIZE = 4096;
   
   
   /**
@@ -118,44 +113,11 @@ public abstract class StreamUtils {
   
   
   /**
-   * Transfere o conteúdo do stream de entrada para o 
-   * stream de saída, codificando/decodificando 
-   * <code>(encode boolean)</code> os dados em Hexadecimal.
-   * @param in stream de entrada a ser codificado/decodificado e transferido.
-   * @param out stream de saída.
-   * @param encode <code>true</code> para codificar os dados em hexadecimal,
-   * <code>false</code> para decodificar.
-   * @return quantidade de bytes transmitidos.
-   * @throws IOException caso ocorra erro na 
-   * transferência/codificação/decodificação dos dados.
-   */
-  public static long transferHexCoder(InputStream in, OutputStream out, boolean encode) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
-    
-    HexByteCoder cdr = new HexByteCoder();
-    int read = 0;
-    long total = 0;
-    byte[] buf = new byte[BUFFER_SIZE];
-    
-    while((read = in.read(buf)) > 0) {
-      total += read;
-      out.write(cdr.apply(buf, 0, read, encode));
-      int len = (read < 30 ? read : 30);
-      String str = new String(buf, read -len, len);
-      if(read < buf.length && str.contains(EOF))
-        break;
-    }
-    return total;
-  }
-  
-  
-  /**
    * Transfere o conteúdo entre dois streams até que seja
    * encontrada a <code>String</code> fornecida no conteúdo da 
    * transmissão, ou até o final da transmissão.
-   * @param in <code>InputStream</code>
-   * @param out <code>OutputStream</code>
+   * @param is <code>InputStream</code>
+   * @param os <code>OutputStream</code>
    * @param until <code>String</code> de condição de 
    * parada de transferência de conteúdo.
    * @return Número total de bytes transferidos.
@@ -227,17 +189,19 @@ public abstract class StreamUtils {
       }
       buf.put(bs[0]);
       
-      if(lim.toUTF8().contains(until)) {
+      if(until.equals(lim.toUTF8()) 
+          || lim.toUTF8().contains(until)) {
         if(buf.position() > until.length()) {
-          buf.position(buf.position() - lim.length());
+          buf.position(buf.position() - until.length());
           buf.flip();
           os.write(cv.convert(buf));
         }
         break;
       }
-      else if(or.equals(lim.toUTF8())) {
-        if(buf.position() > lim.length()) {
-          buf.position(buf.position() - lim.length());
+      else if(or.equals(lim.toUTF8())
+          || lim.toUTF8().contains(or)) {
+        if(buf.position() > or.length()) {
+          buf.position(buf.position() - or.length());
           buf.flip();
           os.write(cv.convert(buf));
         }
@@ -390,7 +354,7 @@ public abstract class StreamUtils {
     nullarg(InputStream.class, is);
     nullstr(until);
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    System.out.println("* total="+ transferUntil(is, bos, until));
+    transferUntil(is, bos, until);
     return bos.toString(UTF8);
   }
   

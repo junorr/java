@@ -51,8 +51,8 @@ public class TestHttpRequest implements HttpConst {
     //Socket sock = new Socket("172.24.75.19", 6060);
     Socket sock = new Socket("172.24.75.2", 8000);
     //Socket sock = new Socket("10.100.0.105", 6060);
-    build.writeContent(System.out);
     build.writeContent(sock.getOutputStream());
+    build.writeContent(System.out);
     
     ResponseParser rp = new ResponseParser();
     rp.readFrom(sock.getInputStream());

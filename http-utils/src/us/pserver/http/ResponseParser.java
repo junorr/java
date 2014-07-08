@@ -37,10 +37,11 @@ public class ResponseParser extends HttpParser {
   @Override
   public ResponseParser readFrom(InputStream in) throws IOException {
     super.readFrom(in);
-    Header hd = headers().get(0);
+    if(headers().isEmpty() || headers().get(0) == null) 
+      throw new IOException(
+          "Error parsing request (No header identified)");
     
-    if(hd == null) throw new IOException(
-        "Error parsing request: No header identified");
+    Header hd = headers().get(0);
     String[] ss = hd.getValue().split(BLANK);
     if(ss == null || ss.length < 3) throw new IOException(
         "Error parsing request: Invalid request line");

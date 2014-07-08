@@ -36,13 +36,15 @@ public class RequestParser extends HttpParser {
   @Override
   public RequestParser readFrom(InputStream in) throws IOException {
     super.readFrom(in);
-    Header hd = headers().get(0);
+    if(headers().isEmpty() || headers().get(0) == null) 
+      throw new IOException(
+          "Error parsing request (No header identified)");
     
-    if(hd == null) throw new IOException(
-        "Error parsing request: No header identified");
+    Header hd = headers().get(0);
+    System.out.println("* hd0 = '"+ hd+ "'");
     String[] ss = hd.getValue().split(BLANK);
     if(ss == null || ss.length < 3) throw new IOException(
-        "Error parsing request: Invalid request line");
+        "Error parsing request (Invalid request line: <"+ hd+ ">)");
     
     request = new RequestLine();
     request.setMethod(ss[0]);

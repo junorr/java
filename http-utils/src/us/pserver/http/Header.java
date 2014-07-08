@@ -46,7 +46,7 @@ public class Header implements HttpConst {
    * constrói um cabeçalho vazio.
    */
   public Header() {
-    name = null;
+    name = "header"+ String.valueOf(Math.random() * 1_000_000);
     value = null;
   }
   
@@ -176,9 +176,6 @@ public class Header implements HttpConst {
   @Override
   public String toString() {
     if(name == null) return null;
-    if(BOUNDARY.equalsIgnoreCase(name))
-      return value;
-    
     return name + ": " + (value == null ? "" : value) + CRLF;
   }
   
