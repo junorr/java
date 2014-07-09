@@ -358,4 +358,22 @@ public abstract class StreamUtils {
     return bos.toString(UTF8);
   }
   
+  
+  public static String readStringUntilOr(InputStream is, String until, String or) throws IOException {
+    nullarg(InputStream.class, is);
+    nullstr(until);
+    nullstr(or);
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    transferUntilOr(is, bos, until, or);
+    return bos.toString(UTF8);
+  }
+  
+  
+  public static void writeEOF(OutputStream os) throws IOException {
+    nullarg(OutputStream.class, os);
+    os.write(BYTES_EOF);
+    os.write(new byte[0]);
+    os.flush();
+  }
+  
 }

@@ -33,6 +33,8 @@ import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.chk.Invoke;
 import us.pserver.streams.MegaBuffer;
+import us.pserver.streams.StreamUtils;
+import static us.pserver.streams.StreamUtils.EOF;
 
 /**
  * Cabeçalho HTTP POST Multipart para envio de conteúdo stream.
@@ -66,12 +68,12 @@ public class HttpInputStream extends Header {
   
   /**
    * <code>
-   *  STATIC_SIZE = 172
+   *  STATIC_SIZE = 160
    * </code><br>
    * Tamanho estático do cabeçalho sem considerar 
    * o tamanho do stream de dados.
    */
-  public static final int STATIC_SIZE = 172;
+  public static final int STATIC_SIZE = 160;
   
 
   private InputStream input;
@@ -177,10 +179,19 @@ public class HttpInputStream extends Header {
   }
   
   
-  public HttpInputStream setup() throws IOException {
+  public HttpInputStream setupOutbound() throws IOException {
     if(input == null)
       throw new IllegalStateException("InputStream not setted");
-    buffer.readEncoding(input);
+    buffer.writeEncoding(input);
+    return this;
+  }
+  
+  
+  public HttpInputStream setupInbound() throws IOException {
+    if(input == null)
+      throw new IllegalStateException("InputStream not setted");
+    OutputStream os = buffer.getOutputStream();
+    StreamUtils.transferUntilOr(input, os, BOUNDARY_CONTENT_END, EOF);
     return this;
   }
   
@@ -219,8 +230,28 @@ public class HttpInputStream extends Header {
    */
   @Override
   public long getLength() {
-    return ((long) Invoke.unchecked(
-        buffer::size)) + STATIC_SIZE;
+    if(input != null && bufferSize() == 0) {
+      Invoke.unchecked(this::setupOutbound);
+    }
+    else if(input == null) {
+      return 0;
+    }
+    
+    return STATIC_SIZE + bufferSize();
+  }
+  
+  
+  public long bufferSize() {
+    return (long) Invoke.unchecked(buffer::size);
+  }
+  
+  
+  public void checkSetup() {
+    if(input == null && bufferSize() == 0)
+      throw new IllegalStateException(
+          "HttpInputStream content not configured");
+    if(bufferSize() == 0)
+      Invoke.unchecked(this::setupOutbound);
   }
   
   
@@ -235,37 +266,50 @@ public class HttpInputStream extends Header {
   
   
   @Override
-  public void writeContent(OutputStream out) {
+  public void writeContent(OutputStream out) throws IOException {
     nullarg(OutputStream.class, out);
-    StringBuilder start = new StringBuilder();
-    start.append(CRLF).append(HYFENS).append(BOUNDARY);
-    start.append(CRLF).append(HD_CONTENT_DISPOSITION)
+    checkSetup();
+    
+    StringBuffer start = new StringBuffer();
+    start.append(CRLF).append(HYFENS).append(BOUNDARY)
+        .append(CRLF).append(HD_CONTENT_DISPOSITION)
         .append(": ").append(VALUE_DISPOSITION_FORM_DATA)
-        .append("; ").append(NAME_INPUTSTREAM);
-    start.append(CRLF).append(HD_CONTENT_TYPE_OCTETSTREAM.toString())
+        .append("; ").append(NAME_INPUTSTREAM)
+        .append(CRLF).append(HD_CONTENT_TYPE_OCTETSTREAM)
         .append(CRLF);
     
-    try {
-      if(buffer.size() == 0) 
-        setup();
-      
-      StringByteConverter cv = new StringByteConverter();
-      out.write(cv.convert(start.toString()));
-      out.write(cv.convert(BOUNDARY_XML_START));
-      out.write(cv.convert(BOUNDARY_CONTENT_START));
-      out.flush();
-      buffer.write(out);
-      out.write(cv.convert(BOUNDARY_CONTENT_END));
-      out.write(cv.convert(BOUNDARY_XML_END));
-      out.flush();
-      
-    } catch(IOException e) {
-      throw new RuntimeException(e);
-    }
+    StringByteConverter cv = new StringByteConverter();
+    out.write(cv.convert(start.toString()));
+    out.write(cv.convert(BOUNDARY_XML_START));
+    out.write(cv.convert(BOUNDARY_CONTENT_START));
+    buffer.read(out);
+    out.write(cv.convert(BOUNDARY_CONTENT_END));
+    out.write(cv.convert(BOUNDARY_XML_END));
+    out.flush();
   }
   
   
   public static void main(String[] args) throws IOException {
+    StringBuffer start = new StringBuffer();
+    start.append(CRLF).append(HYFENS).append(BOUNDARY)
+        .append(CRLF).append(HD_CONTENT_DISPOSITION)
+        .append(": ").append(VALUE_DISPOSITION_FORM_DATA)
+        .append("; ").append(NAME_INPUTSTREAM)
+        .append(CRLF).append(HD_CONTENT_TYPE_OCTETSTREAM)
+        .append(CRLF);
+    
+    start.append(BOUNDARY_XML_START)
+        .append(BOUNDARY_CONTENT_START)
+        //content goes here
+        .append(BOUNDARY_CONTENT_END)
+        .append(BOUNDARY_XML_END);
+    
+    System.out.println("* static content:");
+    System.out.println(start);
+    System.out.println("* STATIC_SIZE = "+ start.length());
+    System.out.println();
+    
+    
     HttpInputStream hin = new HttpInputStream();
     
     ByteArrayInputStream bin = new ByteArrayInputStream("Hello!".getBytes());
@@ -279,7 +323,7 @@ public class HttpInputStream extends Header {
     hin.setCryptCoderEnabled(true, new CryptKey("123456", 
         CryptAlgorithm.DESede_ECB_PKCS5));
     hin.setGZipCoderEnabled(true);
-    hin.setup();
+    hin.setupOutbound();
     
     System.out.println("* size = "+ hin.getLength());
     OutputStream out = new FileOutputStream("d:/http-inputstream.txt");

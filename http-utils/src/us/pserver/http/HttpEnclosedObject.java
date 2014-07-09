@@ -41,7 +41,7 @@ import static us.pserver.chk.Checker.nullarg;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
  */
-public class HttpEncodedObject extends Header {
+public class HttpEnclosedObject extends Header {
   
   /**
    * <code>Content-Type: text/xml</code><br>
@@ -51,11 +51,11 @@ public class HttpEncodedObject extends Header {
       new Header(HD_CONTENT_TYPE, VALUE_CONTENT_XML);
   
   /**
-   * <code>STATIC_SIZE = 71</code><br>
+   * <code>STATIC_SIZE = 60</code><br>
    * Tamanho estático do cabeçalho, sem 
    * considrar o tamanho do objeto encapsulado.
    */
-  public static final int STATIC_SIZE = 71;
+  public static final int STATIC_SIZE = 60;
   
   
   private Base64StringCoder coder;
@@ -72,7 +72,7 @@ public class HttpEncodedObject extends Header {
   /**
    * Construtor padrão sem argumentos.
    */
-  public HttpEncodedObject() {
+  public HttpEnclosedObject() {
     super();
     setName(getClass().getSimpleName());
     coder = new Base64StringCoder();
@@ -88,16 +88,17 @@ public class HttpEncodedObject extends Header {
    * encapsulado pelo cabeçalho HTTP.
    * @param obj <code>Object</code>
    */
-  public HttpEncodedObject(Object obj) {
+  public HttpEnclosedObject(Object obj) {
     this();
     setObject(obj);
   }
   
   
-  public HttpEncodedObject setCryptEnabled(boolean enabled, CryptKey key) {
+  public HttpEnclosedObject setCryptEnabled(boolean enabled, CryptKey key) {
     if(enabled) {
       nullarg(CryptKey.class, key);
       crypt = new CryptStringCoder(key);
+      if(obj != null) setObject(obj);
     }
     else crypt = null;
     return this;
@@ -121,16 +122,16 @@ public class HttpEncodedObject extends Header {
   }
   
   
-  public static HttpEncodedObject decodeObject(String str) {
-    HttpEncodedObject heo = new HttpEncodedObject();
+  public static HttpEnclosedObject decodeObject(String str) {
+    HttpEnclosedObject heo = new HttpEnclosedObject();
     String dec = heo.coder.decode(str);
     Object obj = heo.xst.fromXML(dec);
     return heo.setObject(obj);
   }
   
   
-  public static HttpEncodedObject decodeObject(String str, CryptKey key) {
-    HttpEncodedObject heo = new HttpEncodedObject()
+  public static HttpEnclosedObject decodeObject(String str, CryptKey key) {
+    HttpEnclosedObject heo = new HttpEnclosedObject()
         .setCryptEnabled(true, key);
     String dec = heo.crypt.decode(str);
     Object obj = heo.xst.fromXML(dec);
@@ -143,7 +144,7 @@ public class HttpEncodedObject extends Header {
    * @param o <code>Object</code>
    * @return Esta instância modificada de <code>HttpHexObject</code>.
    */
-  public HttpEncodedObject setObject(Object o) {
+  public HttpEnclosedObject setObject(Object o) {
     nullarg(Object.class, o);
     this.obj = o;
     StringBuilder sb = new StringBuilder();
@@ -184,35 +185,25 @@ public class HttpEncodedObject extends Header {
   
   
   @Override
-  public void writeContent(OutputStream out) {
+  public void writeContent(OutputStream out) throws IOException {
     nullarg(OutputStream.class, out);
-    StringBuilder start = new StringBuilder()
+    StringBuffer start = new StringBuffer()
         .append(CRLF).append(HYFENS).append(BOUNDARY)
-        .append(CRLF).append(HD_CONTENT_XML.toString())
+        .append(CRLF).append(HD_CONTENT_XML)
         .append(CRLF).append(BOUNDARY_XML_START);
     
-    try {
-      StringByteConverter cv = new StringByteConverter();
-      out.write(cv.convert(start.toString()));
-      out.write(cv.convert(getValue()));
-      out.write(cv.convert(BOUNDARY_XML_END));
-      out.flush();
-    } catch(IOException e) {
-      throw new RuntimeException(e);
-    }
+    StringByteConverter cv = new StringByteConverter();
+    out.write(cv.convert(start.toString()));
+    out.write(cv.convert(getValue()));
+    out.write(cv.convert(BOUNDARY_XML_END));
+    out.flush();
   }
   
   
-  @Override
-  public String toString() {
-    return getValue();
-  }
-  
-  
-  public static void main(String[] args) throws FileNotFoundException {
-    StringBuilder start = new StringBuilder()
+  public static void main(String[] args) throws IOException {
+    StringBuffer start = new StringBuffer()
         .append(CRLF).append(HYFENS).append(BOUNDARY)
-        .append(CRLF).append(HD_CONTENT_XML.toString())
+        .append(CRLF).append(HD_CONTENT_XML)
         .append(CRLF).append(BOUNDARY_XML_START)
         .append(BOUNDARY_XML_END);
     System.out.println("* static content:");
@@ -221,7 +212,7 @@ public class HttpEncodedObject extends Header {
     
     System.out.println();
     System.out.println("* HttpEncodedObject example:");
-    HttpEncodedObject hob = new HttpEncodedObject();
+    HttpEnclosedObject hob = new HttpEnclosedObject();
     Object obj = "The Object";
     OutputStream out = new FileOutputStream("d:/http-rob.txt");
     hob.setCryptEnabled(true, 

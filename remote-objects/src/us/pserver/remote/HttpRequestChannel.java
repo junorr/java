@@ -29,7 +29,7 @@ import java.net.HttpURLConnection;
 import us.pserver.cdr.hex.HexStringCoder;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
-import us.pserver.http.HttpEncodedObject;
+import us.pserver.http.HttpEnclosedObject;
 import us.pserver.http.HttpInputStream;
 import us.pserver.http.StreamUtils;
 
@@ -115,7 +115,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
     OutputStream out = conn.getOutputStream();
     
     HttpBuilder build = new HttpBuilder()
-        .put(new HttpEncodedObject(trp.getWriteVersion()));
+        .put(new HttpEnclosedObject(trp.getWriteVersion()));
     if(input != null)
       build.put(new HttpInputStream(input));
     build.writeTo(out);

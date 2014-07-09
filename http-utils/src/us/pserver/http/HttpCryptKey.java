@@ -49,11 +49,11 @@ public class HttpCryptKey extends Header {
       new Header(HD_CONTENT_TYPE, VALUE_CONTENT_XML);
   
   /**
-   * <code>STATIC_SIZE = 71</code><br>
+   * <code>STATIC_SIZE = 60</code><br>
    * Tamanho estático do cabeçalho, sem 
    * considrar o tamanho do objeto encapsulado.
    */
-  public static final int STATIC_SIZE = 71;
+  public static final int STATIC_SIZE = 60;
   
   
   private Base64StringCoder coder;
@@ -146,12 +146,6 @@ public class HttpCryptKey extends Header {
     } catch(IOException e) {
       throw new RuntimeException(e);
     }
-  }
-  
-  
-  @Override
-  public String toString() {
-    return getValue();
   }
   
   

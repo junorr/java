@@ -301,7 +301,7 @@ public class MegaBuffer {
   }
   
   
-  private InputStream createInputStream() throws IOException {
+  private InputStream createInputStream() {
     return new InputStream() {
       @Override
       public int read() throws IOException {
@@ -319,7 +319,7 @@ public class MegaBuffer {
   }
   
   
-  private OutputStream createOutputStream() throws IOException {
+  private OutputStream createOutputStream() {
     return new OutputStream() {
       @Override
       public void write(int b) throws IOException {
@@ -348,13 +348,23 @@ public class MegaBuffer {
   }
   
   
-  public InputStream getInputStream() throws IOException {
+  public InputStream getInputStream() {
     return createInputStream();
   }
   
   
-  public OutputStream getOutputStream() throws IOException {
+  public OutputStream getOutputStream() {
     return createOutputStream();
+  }
+  
+  
+  public InputStream getDecodingInputStream() throws IOException {
+    return configureInput(getInputStream());
+  }
+  
+  
+  public OutputStream getEncodingOutputStream() throws IOException {
+    return configureOutput(getOutputStream());
   }
   
   
@@ -510,59 +520,61 @@ public class MegaBuffer {
   }
   
   
-  public long read(InputStream in) throws IOException {
+  public long write(InputStream in) throws IOException {
     nullarg(InputStream.class, in);
     if(readmode) flip();
     OutputStream out = getOutputStream();
-    long total = StreamUtils.transfer(in, out);
-    return total;
+    return StreamUtils.transfer(in, out);
   }
   
   
-  public long readDecoding(InputStream in) throws IOException {
+  public long writeDecoding(InputStream in) throws IOException {
     nullarg(InputStream.class, in);
     if(readmode) flip();
     OutputStream out = getOutputStream();
     in = configureInput(in);
     long total = StreamUtils.transfer(in, out);
-    out.close();
-    in.close();
     return total;
   }
   
   
-  public long readEncoding(InputStream in) throws IOException {
+  public long writeEncoding(InputStream in) throws IOException {
     nullarg(InputStream.class, in);
     if(readmode) flip();
     OutputStream out = configureOutput(getOutputStream());
     long total = StreamUtils.transfer(in, out);
     out.close();
+    return total;
+  }
+  
+  
+  public long write(Path p) throws IOException {
+    nullarg(Path.class, p);
+    InputStream in = Files.newInputStream(p,
+        StandardOpenOption.READ);
+    long total = write(in);
     in.close();
     return total;
   }
   
   
-  public long read(Path p) throws IOException {
+  public long writeEncoding(Path p) throws IOException {
     nullarg(Path.class, p);
     InputStream in = Files.newInputStream(p,
         StandardOpenOption.READ);
-    return read(in);
+    long total = writeEncoding(in);
+    in.close();
+    return total;
   }
   
   
-  public long readEncoding(Path p) throws IOException {
+  public long writeDecoding(Path p) throws IOException {
     nullarg(Path.class, p);
     InputStream in = Files.newInputStream(p,
         StandardOpenOption.READ);
-    return readEncoding(in);
-  }
-  
-  
-  public long readDecoding(Path p) throws IOException {
-    nullarg(Path.class, p);
-    InputStream in = Files.newInputStream(p,
-        StandardOpenOption.READ);
-    return readDecoding(in);
+    long total = writeDecoding(in);
+    in.close();
+    return total;
   }
   
   
@@ -623,65 +635,59 @@ public class MegaBuffer {
   }
   
   
-  public long write(OutputStream out) throws IOException {
+  public long read(OutputStream out) throws IOException {
     nullarg(OutputStream.class, out);
     if(!readmode) flip();
     InputStream in = getInputStream();
-    long total = StreamUtils.transfer(in, out);
-    return total;
+    return StreamUtils.transfer(in, out);
   }
   
   
-  public long writeEncoding(OutputStream out) throws IOException {
+  public long readEncoding(OutputStream out) throws IOException {
     nullarg(OutputStream.class, out);
     if(!readmode) flip();
     InputStream in = getInputStream();
     out = configureOutput(out);
     long total = StreamUtils.transfer(in, out);
-    in.close();
     out.close();
     return total;
   }
   
   
-  public long writeDecoding(OutputStream out) throws IOException {
+  public long readDecoding(OutputStream out) throws IOException {
     nullarg(OutputStream.class, out);
     if(!readmode) flip();
     InputStream in = configureInput(getInputStream());
-    long total = StreamUtils.transfer(in, out);
-    in.close();
-    return total;
+    return StreamUtils.transfer(in, out);
   }
   
   
-  public long write(Path p) throws IOException {
+  public long read(Path p) throws IOException {
     nullarg(Path.class, p);
     OutputStream out = Files.newOutputStream(p,
         StandardOpenOption.WRITE,
         StandardOpenOption.CREATE);
-    long t = write(out);
+    long t = read(out);
     out.close();
     return t;
   }
   
   
-  public long writeEncoding(Path p) throws IOException {
+  public long readEncoding(Path p) throws IOException {
     nullarg(Path.class, p);
     OutputStream out = Files.newOutputStream(p,
         StandardOpenOption.WRITE,
         StandardOpenOption.CREATE);
-    long t = writeEncoding(out);
-    out.close();
-    return t;
+    return readEncoding(out);
   }
   
   
-  public long writeDecoding(Path p) throws IOException {
+  public long readDecoding(Path p) throws IOException {
     nullarg(Path.class, p);
     OutputStream out = Files.newOutputStream(p,
         StandardOpenOption.WRITE,
         StandardOpenOption.CREATE);
-    long t = writeDecoding(out);
+    long t = readDecoding(out);
     out.close();
     return t;
   }

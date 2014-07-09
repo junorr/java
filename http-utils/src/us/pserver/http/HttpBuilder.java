@@ -22,6 +22,7 @@
 package us.pserver.http;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,7 +34,7 @@ import us.pserver.cdr.b64.Base64StringCoder;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
-import static us.pserver.streams.StreamUtils.EOF;
+import us.pserver.streams.StreamUtils;
 
 
 /**
@@ -45,11 +46,11 @@ import static us.pserver.streams.StreamUtils.EOF;
 public class HttpBuilder implements HttpConst {
   
   /**
-   * <code>STATIC_SIZE = 40</code><br>
+   * <code>STATIC_SIZE = 28</code><br>
    * Tamanho estático da saída gerada por <code>HttpBuilder</code>, sem
    * considrar o tamanho dos cabeçalhos adicionados.
    */
-  public static final int STATIC_SIZE = 42;
+  public static final int STATIC_SIZE = 28;
   
   
   private final List<Header> hds;
@@ -81,6 +82,7 @@ public class HttpBuilder implements HttpConst {
       .put(HD_USER_AGENT, VALUE_USER_AGENT)
       .put(HD_ACCEPT, VALUE_ACCEPT)
       .put(HD_ACCEPT_ENCODING, VALUE_ENCODING)
+      //.put(HD_CONNECTION, VALUE_CONN_KEEP_ALIVE)
       .put(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART 
           + HD_BOUNDARY + BOUNDARY);
   }
@@ -158,7 +160,7 @@ public class HttpBuilder implements HttpConst {
     if(hd != null) {
       hds.add(hd);
       if(hd instanceof HttpInputStream)
-        try { ((HttpInputStream)hd).setup(); }
+        try { ((HttpInputStream)hd).setupOutbound(); }
         catch(IOException e) {}
     }
     return this;
@@ -320,16 +322,27 @@ public class HttpBuilder implements HttpConst {
     StringBuilder end = new StringBuilder();
     end.append(CRLF).append(HYFENS)
         .append(BOUNDARY).append(HYFENS)
-        .append(CRLF).append(EOF)
-            .append(CRLF).append(CRLF);
+        .append(CRLF).append(CRLF);
     
     StringByteConverter cv = new StringByteConverter();
     out.write(cv.convert(end.toString()));
-    out.flush();
+    StreamUtils.writeEOF(out);
   }
   
   
   public static void main(String[] args) throws IOException {
+    StringBuilder end = new StringBuilder();
+    end.append(CRLF).append(HYFENS)
+        .append(BOUNDARY).append(HYFENS)
+        .append(CRLF).append(CRLF);
+    StringByteConverter cv = new StringByteConverter();
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    System.out.println("* bos.size = "+ bos.size());
+    bos.write(cv.convert(end.toString()));
+    StreamUtils.writeEOF(bos);
+    System.out.println("* STATIC_SIZE = "+ bos.size());
+    System.out.println();
+    
     HttpBuilder hb = new HttpBuilder();
     Base64StringCoder cdr = new Base64StringCoder();
     RequestLine req = new RequestLine(Method.POST, "172.24.75.2", 8000);
@@ -344,7 +357,7 @@ public class HttpBuilder implements HttpConst {
         CryptAlgorithm.AES_CBC_PKCS5);
     hb.put(new HttpCryptKey(key));
     
-    HttpEncodedObject hob = new HttpEncodedObject();
+    HttpEnclosedObject hob = new HttpEnclosedObject();
     hob.setCryptEnabled(true, key)
         .setObject("Hello World!!");
     hb.put(hob);

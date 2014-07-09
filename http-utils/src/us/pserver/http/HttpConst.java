@@ -41,6 +41,14 @@ public interface HttpConst {
 
   /**
    * <code>
+   *  HD_CONNECTION = "Connection"
+   * </code>
+   * Cabeçalho HTTP.
+   */
+  public static final String HD_CONNECTION = "Connection";
+
+  /**
+   * <code>
    *  HD_CONTENT_TYPE = "Content-Type"
    * </code><br>
    * Cabeçalho HTTP.
@@ -137,19 +145,19 @@ public interface HttpConst {
 
   /**
    * <code>
-   *  HD_X_HTTP_HEXAUTH = "X-Http-HexAuth"
+   *  HD_X_HTTP_AUTH = "X-Http-Auth"
    * </code><br>
    * Cabeçalho especial de autenticação (se suportado pelo servidor).
    */
-  public static final String HD_X_HTTP_HEXAUTH = "X-Http-HexAuth";
+  public static final String HD_X_HTTP_AUTH = "X-Http-Auth";
 
   /**
    * <code>
-   *  HD_X_CRYPT_HEXKEY = "X-Crypt-HexKey"
+   *  HD_X_CRYPT_KEY = "X-Crypt-Key"
    * </code><br>
    * Cabeçalho especial para chave de criptografia (se suportado pelo servidor).
    */
-  public static final String HD_X_CRYPT_HEXKEY = "X-Crypt-HexKey";
+  public static final String HD_X_CRYPT_KEY = "X-Crypt-Key";
 
   /**
    * <code>
@@ -166,6 +174,14 @@ public interface HttpConst {
    * Valor do cabeçalho HTTP.
    */
   public static final String VALUE_DISPOSITION_FORM_DATA = "form-data";
+
+  /**
+   * <code>
+   *  VALUE_CONN_KEEP_ALIVE = "keep-alive"
+   * </code><br>
+   * Valor do cabeçalho HTTP.
+   */
+  public static final String VALUE_CONN_KEEP_ALIVE = "keep-alive";
 
   /**
    * <code>
@@ -233,6 +249,14 @@ public interface HttpConst {
 
   /**
    * <code>
+   *  VALUE_CONN_STABLISHED = "Connection stablished"
+   * </code><br>
+   * Texto de resposta de requisição HTTP.
+   */
+  public static final String VALUE_CONN_STABLISHED = "Connection stablished";
+
+  /**
+   * <code>
    *  HTTP_VERSION = "HTTP/1.1"
    * </code><br>
    * Versão do protocolo HTTP.
@@ -284,7 +308,7 @@ public interface HttpConst {
    * </code><br>
    * Multipard boundary
    */
-  public static final String BOUNDARY = "9051914041544843365972754266";
+  public static final String BOUNDARY = "90519140415448433";//65972754266";
 
   /**
    * <code>

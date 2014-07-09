@@ -45,12 +45,12 @@ public class TestMegaBuffer {
     
     System.out.println("* buf.readEncoding()");
     buf.setCryptCoderEnabled(true, key)
-        .readEncoding(path("d:/pic.jpg"));
+        .writeEncoding(path("d:/pic.jpg"));
     System.out.println("* buf.isAnyCoderEnabled(): "+ buf.isAnyCoderEnabled());
     System.out.println("* buf.size() = "+ buf.size());
     
     System.out.println("* buf.write()");
-    buf.write(path("d:/pic.cry"));
+    buf.read(path("d:/pic.cry"));
     
     System.out.println("* buf.reset()");
     buf.reset();
@@ -58,11 +58,11 @@ public class TestMegaBuffer {
     
     System.out.println("* buf.readDecoding()");
     buf.setCryptCoderEnabled(true, key);
-    buf.readDecoding(path("d:/pic.cry"));
+    buf.writeDecoding(path("d:/pic.cry"));
     System.out.println("* buf.size() = "+ buf.size());
     
     System.out.println("* buf.write()");
-    buf.write(path("d:/pic-mb.jpg"));
+    buf.read(path("d:/pic-mb.jpg"));
     buf.close();
   }
   

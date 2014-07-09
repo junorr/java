@@ -21,12 +21,10 @@
 
 package us.pserver.http;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-import static us.pserver.cdr.StringByteConverter.UTF8;
 import us.pserver.cdr.b64.Base64StringCoder;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
@@ -49,8 +47,6 @@ public class HttpParser implements HttpConst {
   
   private final List<Header> headers;
   
-  private final List<String> lines;
-  
   private MegaBuffer buffer;
   
   private CryptKey key;
@@ -60,7 +56,6 @@ public class HttpParser implements HttpConst {
   
   public HttpParser() {
     headers = new LinkedList<>();
-    lines = new LinkedList<>();
     message = null;
     key = null;
     buffered = false;
@@ -81,7 +76,6 @@ public class HttpParser implements HttpConst {
   
   public HttpParser reset() {
     headers.clear();
-    lines.clear();
     message = null;
     Invoke.unchecked(buffer::reset);
     return this;
@@ -134,54 +128,64 @@ public class HttpParser implements HttpConst {
   }
   
   
-  public List<String> lines() {
-    return lines;
-  }
-  
-  
   public HttpParser readFrom(InputStream in) throws IOException {
     reset();
     nullarg(InputStream.class, in);
     
     if(buffered) {
-      buffer.read(in);
+      buffer.write(in);
       buffer.flip();
       in = buffer.getInputStream();
     }
     
     String boundary = HYFENS + BOUNDARY;
-    message = StreamUtils.readStringUntil(in, boundary);
-    parse();
+    message = StreamUtils.readStringUntilOr(in, boundary, EOF);
     
-    if(!StreamUtils.readUntil(in, BOUNDARY_XML_START))
+    parse();
+    return parseContent(in);
+  }
+  
+  
+  public HttpParser parseContent(InputStream is) throws IOException {
+    nullarg(InputStream.class, is);
+    String bound = BOUNDARY + HYFENS;
+    String read = StreamUtils.readUntilOr(is, 
+        BOUNDARY_XML_START, EOF);
+    if(read == null || read.equals(EOF))
       return this;
 
-    String str = StreamUtils.readString(in, 5);
-    StreamUtils.readUntil(in, "'>");
+    String str = StreamUtils.readString(is, 5);
+    StreamUtils.readUntil(is, "'>");
     
     if(BOUNDARY_CRYPT_KEY_START.contains(str)) {
-      String skey = StreamUtils.readStringUntil(in, 
+      String skey = StreamUtils.readStringUntil(is, 
           BOUNDARY_CRYPT_KEY_END);
       Base64StringCoder bsc = new Base64StringCoder();
       key = CryptKey.fromString(bsc.decode(skey));
       addHeader(new HttpCryptKey(key));
+      
+      return parseContent(is);
     }
+    
     else if(BOUNDARY_OBJECT_START.contains(str)) {
       System.out.println("* is a HttpEncodedObject!!");
-      String sobj = StreamUtils.readStringUntil(in, 
+      String sobj = StreamUtils.readStringUntil(is, 
           BOUNDARY_OBJECT_END);
       System.out.println("* sobj='"+ sobj+ "'");
       if(key != null)
-        addHeader(HttpEncodedObject.decodeObject(sobj, key));
+        addHeader(HttpEnclosedObject.decodeObject(sobj, key));
       else
-        addHeader(HttpEncodedObject.decodeObject(sobj));
+        addHeader(HttpEnclosedObject.decodeObject(sobj));
+      
+      return parseContent(is);
     }
+    
     else if(BOUNDARY_CONTENT_START.contains(str)) {
       if(key != null)
-        addHeader(new HttpInputStream(in)
+        addHeader(new HttpInputStream(is)
             .setCryptCoderEnabled(true, key));
       else
-        addHeader(new HttpInputStream(in));
+        addHeader(new HttpInputStream(is));
     }
     
     return this;
@@ -207,11 +211,19 @@ public class HttpParser implements HttpConst {
     String[] lns = message.split(CRLF);
     for(String s : lns) {
       if(s != null && s.length() >= MIN_HEADER_LENGTH) {
-        lines.add(s);
-        addHeader(parseHeader(s));
+        addHeader(checkXCryptKey(
+            parseHeader(s)));
       }
     }
     return this;
+  }
+  
+  
+  private Header checkXCryptKey(Header hd) {
+    if(hd == null || hd.getName() == null
+        || !hd.getName().equals(HD_X_CRYPT_KEY))
+      return hd;
+    return HeaderXCryptKey.from(hd);
   }
   
   
@@ -228,7 +240,6 @@ public class HttpParser implements HttpConst {
     }
     else {
       hd.setValue(str);
-      System.out.println("parseHeader( "+ hd+ " )");
     }
     return hd;
   }

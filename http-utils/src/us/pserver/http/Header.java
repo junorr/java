@@ -127,16 +127,13 @@ public class Header implements HttpConst {
    * Escreve o conteúdo do cabeçalho no stream de saída informado.
    * @param out OutputStream onde será escrito o 
    * conteúdo do cabeçalho.
+   * @throws java.io.IOException
    */
-  public void writeContent(OutputStream out) {
+  public void writeContent(OutputStream out) throws IOException {
     nullarg(OutputStream.class, out);
-    try {
-      StringByteConverter cv = new StringByteConverter();
-      out.write(cv.convert(toString()));
-      out.flush();
-    } catch(IOException e) {
-      throw new RuntimeException(e);
-    }
+    StringByteConverter cv = new StringByteConverter();
+    out.write(cv.convert(toString()));
+    out.flush();
   }
   
   
