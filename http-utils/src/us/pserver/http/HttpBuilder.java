@@ -82,7 +82,6 @@ public class HttpBuilder implements HttpConst {
       .put(HD_USER_AGENT, VALUE_USER_AGENT)
       .put(HD_ACCEPT, VALUE_ACCEPT)
       .put(HD_ACCEPT_ENCODING, VALUE_ENCODING)
-      //.put(HD_CONNECTION, VALUE_CONN_KEEP_ALIVE)
       .put(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART 
           + HD_BOUNDARY + BOUNDARY);
   }
@@ -278,6 +277,15 @@ public class HttpBuilder implements HttpConst {
   }
   
   
+  public boolean hasContentHeaders() {
+    for(Header hd : hds) {
+      if(hd.isContentHeader())
+        return true;
+    }
+    return false;
+  }
+  
+  
   /**
    * Retorna o tamanho total em bytes do 
    * conteúdo da mensagem HTTP.
@@ -303,26 +311,36 @@ public class HttpBuilder implements HttpConst {
     nullarg(OutputStream.class, out);
     if(hds.isEmpty()) return;
     
+    boolean content = false;
     int idx = 0;
     for(int i = 0; i < hds.size(); i++) {
       Header hd = hds.get(i);
       idx = i;
       if(!hd.isContentHeader())
         hd.writeContent(out);
-      else break;
-    }
-    new Header(HD_CONTENT_LENGTH, String.valueOf(getLength()))
-        .writeContent(out);
-    
-    for(int i = idx; i < hds.size(); i++) {
-      if(hds.get(i).isContentHeader())
-        hds.get(i).writeContent(out);
+      else {
+        content = true;
+        break;
+      }
     }
     
-    StringBuilder end = new StringBuilder();
-    end.append(CRLF).append(HYFENS)
-        .append(BOUNDARY).append(HYFENS)
-        .append(CRLF).append(CRLF);
+    if(content) {
+      new Header(HD_CONTENT_LENGTH, String.valueOf(getLength()))
+          .writeContent(out);
+    
+      for(int i = idx; i < hds.size(); i++) {
+        if(hds.get(i).isContentHeader()) {
+          hds.get(i).writeContent(out);
+        }
+      }
+    }
+    
+    StringBuffer end = new StringBuffer();
+    if(content)
+      end.append(CRLF).append(HYFENS)
+          .append(BOUNDARY).append(HYFENS);
+    
+    end.append(CRLF).append(CRLF);
     
     StringByteConverter cv = new StringByteConverter();
     out.write(cv.convert(end.toString()));

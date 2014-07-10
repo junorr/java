@@ -47,6 +47,11 @@ public class HeaderXCryptKey extends Header {
   }
   
   
+  public CryptKey getCryptKey() {
+    return key;
+  }
+  
+  
   public HeaderXCryptKey setCryptKey(CryptKey k) {
     nullarg(CryptKey.class, k);
     key = k;

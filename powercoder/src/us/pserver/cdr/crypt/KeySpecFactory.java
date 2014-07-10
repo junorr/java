@@ -81,7 +81,7 @@ public class KeySpecFactory {
    * @param size tamanho do byte array a ser gerado.
    * @return byte array com dados aleatórios.
    */
-  private static byte[] randomBytes(int size) {
+  public static byte[] randomBytes(int size) {
     range(size, 1, Integer.MAX_VALUE);
     byte[] bs = new byte[size];
     for(int i = 0; i < size; i++) {

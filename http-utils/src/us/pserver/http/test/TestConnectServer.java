@@ -22,12 +22,15 @@
 package us.pserver.http.test;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
+import us.pserver.cdr.crypt.CryptUtils;
 import us.pserver.http.HeaderXCryptKey;
+import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
 import us.pserver.http.HttpParser;
 import us.pserver.http.ResponseLine;
@@ -48,25 +51,28 @@ public class TestConnectServer {
     server.bind(addr);
     System.out.println("* Server listening on: "+ addr.toString());
     
-    while(true) {
+    //while(true) {
       Socket sock = server.accept();
       System.out.println("* Connected: "+ sock.getRemoteSocketAddress());
-      /*
+      
       HttpParser hps = new HttpParser();
       hps.readFrom(sock.getInputStream());
       hps.headers().forEach(System.out::print);
       System.out.println("--------------------");
-      */
-      StreamUtils.transfer(sock.getInputStream(), System.out);
       
       ResponseLine rl = new ResponseLine(200, 
           HttpConst.VALUE_CONN_STABLISHED);
-      CryptKey key = new CryptKey("123456", CryptAlgorithm.AES_CBC_PKCS5);
+      
+      CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
       HeaderXCryptKey hx = new HeaderXCryptKey(key);
-      rl.writeContent(sock.getOutputStream());
-      hx.writeContent(sock.getOutputStream());
-      StreamUtils.writeEOF(sock.getOutputStream());
-    }
+      HttpBuilder hb = new HttpBuilder()
+          .put(rl).put(hx);
+      hb.writeContent(sock.getOutputStream());
+      
+      System.out.println("* reading from secure channel...");
+      InputStream secin = CryptUtils.createCipherInputStream(sock.getInputStream(), key);
+      StreamUtils.transfer(secin, System.out);
+    //}
     
   }
   

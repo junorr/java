@@ -31,7 +31,7 @@ import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
 import us.pserver.http.HttpEnclosedObject;
 import us.pserver.http.HttpInputStream;
-import us.pserver.http.StreamUtils;
+import us.pserver.streams.StreamUtils;
 
 
 /**

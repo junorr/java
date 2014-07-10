@@ -155,6 +155,12 @@ public class RequestLine extends HeaderLine {
   }
   
   
+  public RequestLine setMethod(Method m) {
+    meth = m;
+    return this;
+  }
+  
+  
   /**
    * Retorna o endereço sem o protocolo e sem o caminho 
    * adicional (Ex: https://<b>localhost:8080</b>/post/).
@@ -210,9 +216,14 @@ public class RequestLine extends HeaderLine {
   public String toString() {
     if(path == null) path = "/";
     if(meth == null) meth = Method.GET;
-    return meth.name() + BLANK 
-        + getFullAddress() + BLANK
-        + httpVersion + CRLF;
+    if(meth != Method.CONNECT)
+      return meth.name() + BLANK 
+          + getFullAddress() + BLANK
+          + httpVersion + CRLF;
+    else
+      return meth.name() + BLANK 
+          + getAddress() + BLANK
+          + httpVersion + CRLF;
   }
   
 }

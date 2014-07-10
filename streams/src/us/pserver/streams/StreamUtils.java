@@ -162,7 +162,7 @@ public abstract class StreamUtils {
   }
   
   
-  public static long transferUntilOr(InputStream is, OutputStream os, String until, String or) throws IOException {
+  public static String transferUntilOr(InputStream is, OutputStream os, String until, String or) throws IOException {
     nullarg(InputStream.class, is);
     nullarg(OutputStream.class, os);
     nullstr(until);
@@ -172,6 +172,7 @@ public abstract class StreamUtils {
     LimitedBuffer lim = new LimitedBuffer(maxlen);
     ByteBuffer buf = ByteBuffer.allocate(maxlen * 2);
     ByteBufferConverter cv = new ByteBufferConverter();
+    String found = null;
     
     long total = 0;
     byte[] bs = new byte[1];
@@ -196,6 +197,7 @@ public abstract class StreamUtils {
           buf.flip();
           os.write(cv.convert(buf));
         }
+        found = until;
         break;
       }
       else if(or.equals(lim.toUTF8())
@@ -205,11 +207,12 @@ public abstract class StreamUtils {
           buf.flip();
           os.write(cv.convert(buf));
         }
+        found = or;
         break;
       }
     }
     os.flush();
-    return total;
+    return found;
   }
   
   
@@ -359,13 +362,15 @@ public abstract class StreamUtils {
   }
   
   
-  public static String readStringUntilOr(InputStream is, String until, String or) throws IOException {
+  public static String[] readStringUntilOr(InputStream is, String until, String or) throws IOException {
     nullarg(InputStream.class, is);
     nullstr(until);
     nullstr(or);
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    transferUntilOr(is, bos, until, or);
-    return bos.toString(UTF8);
+    String[] ret = new String[2];
+    ret[0] = transferUntilOr(is, bos, until, or);
+    ret[1] = bos.toString(UTF8);
+    return ret;
   }
   
   

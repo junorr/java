@@ -26,6 +26,7 @@ import java.util.Arrays;
 import javax.crypto.spec.SecretKeySpec;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
+import static us.pserver.chk.Checker.nullarg;
 
 
 /**
@@ -182,6 +183,16 @@ public class CryptKey {
   }
   
   
+  /**
+   * Decodifica a <code>String</code> informada
+   * no objeto <code>CryptKey</code> retornado, 
+   * ou <code>null</code> caso a <code>String</code> 
+   * não esteja no formato adequado.
+   * @param str <code>CryptKey String</code>
+   * @return <code>CryptKey</code> interpretada
+   * a partir da <code>String</code> informada,
+   * ou <code>null</code> em caso de erro.
+   */
   public static CryptKey fromString(String str) {
     if(str == null || str.isEmpty() || !str.contains("||"))
       return null;
@@ -193,6 +204,22 @@ public class CryptKey {
         cd.decode(cv.convert(ss[1])), 
         CryptAlgorithm.fromString(ss[0]));
     return k;
+  }
+  
+  
+  /**
+   * Cria um objeto <code>CryptKey</code> com o 
+   * algorítmo informado, utilizando uma senha
+   * gerada aleatoriamente.
+   * @param algo Algorítmo de criptografia.
+   * @return <code>CryptKey</code>.
+   */
+  public static CryptKey createRandomKey(CryptAlgorithm algo) {
+    nullarg(CryptAlgorithm.class, algo);
+    CryptKey key = new CryptKey();
+    key.setKey(KeySpecFactory.randomBytes(
+        algo.getBytesSize()), algo);
+    return key;
   }
   
   

@@ -24,8 +24,13 @@ package us.pserver.http.test;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import us.pserver.cdr.crypt.CryptKey;
+import us.pserver.cdr.crypt.CryptUtils;
+import us.pserver.chk.Invoke;
 import us.pserver.http.HeaderProxyAuth;
-import static us.pserver.http.HttpConst.CRLF;
+import us.pserver.http.HeaderXCryptKey;
+import us.pserver.http.HttpBuilder;
+import us.pserver.http.HttpConst;
 import us.pserver.http.HttpConst.Method;
 import us.pserver.http.HttpParser;
 import us.pserver.http.RequestLine;
@@ -48,19 +53,28 @@ public class TestConnectRequest {
     HeaderProxyAuth hp = new HeaderProxyAuth("f6036477:12345678");
     OutputStream os = sock.getOutputStream();
     
-    rl.writeContent(os);
-    rl.getHostHeader().writeContent(os);
-    hp.writeContent(os);
-    StreamUtils.write(CRLF, os);
-    //StreamUtils.write(CRLF, os);
-    StreamUtils.writeEOF(os);
-    /*
+    HttpBuilder hb = new HttpBuilder();
+    hb.put(rl).put(hp);
+    hb.writeContent(os);
+    
+    
     HttpParser hps = new HttpParser();
     hps.readFrom(sock.getInputStream());
     hps.headers().forEach(System.out::print);
     System.out.println("--------------------");
-    */
-    StreamUtils.transfer(sock.getInputStream(), System.out);
+    
+    HeaderXCryptKey hx = (HeaderXCryptKey) hps.getHeader(HttpConst.HD_X_CRYPT_KEY);
+    CryptKey key = hx.getCryptKey();
+    OutputStream secout = CryptUtils.createCipherOutputStream(sock.getOutputStream(), key);
+    int count = 0;
+    
+    System.out.println("* writing to secure channel...");
+    while(true) {
+      String s = "Secured Channel ["+ count++ +"]\n";
+      System.out.print("* write: "+ s);
+      StreamUtils.write(s, secout);
+      Invoke.unchecked(()->Thread.sleep(3000));
+    }
   }
   
 }

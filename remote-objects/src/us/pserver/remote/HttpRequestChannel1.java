@@ -26,15 +26,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import us.pserver.cdr.crypt.CryptAlgorithm;
+import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.hex.HexStringCoder;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
+import us.pserver.http.HttpCryptKey;
 import us.pserver.http.HttpEnclosedObject;
 import us.pserver.http.HttpInputStream;
 import us.pserver.http.RequestLine;
-import us.pserver.http.ResponseLine;
 import us.pserver.http.ResponseParser;
-import us.pserver.http.StreamUtils;
+import us.pserver.streams.StreamUtils;
 
 
 /**
@@ -57,7 +59,18 @@ import us.pserver.http.StreamUtils;
  */
 public class HttpRequestChannel1 implements Channel, HttpConst {
 
-  public static final String SUCCESS_RESPONSE = "200 OK";
+  public static final String 
+      
+      HTTP_ENCLOSED_OBJECT = 
+        HttpEnclosedObject.class.getSimpleName(),
+      
+      HTTP_CRYPT_KEY = 
+        HttpCryptKey.class.getSimpleName(),
+      
+      HTTP_INPUTSTREAM = 
+        HttpInputStream.class.getSimpleName();
+  
+  
   
   
   private final XStream xst;
@@ -130,16 +143,24 @@ public class HttpRequestChannel1 implements Channel, HttpConst {
     RequestLine req = new RequestLine(Method.POST, 
         netconn.getAddress(), netconn.getPort());
     builder = HttpBuilder.requestBuilder(req);
+    
     if(netconn.getProxyAuthorization() != null)
       builder.put(HD_PROXY_AUTHORIZATION, 
           netconn.getProxyAuthorization());
     
-    builder.put(new HttpEnclosedObject(trp.getWriteVersion()));
+    CryptKey key = CryptKey.createRandomKey(
+        CryptAlgorithm.AES_CBC_PKCS5);
+    
+    builder.put(new HttpCryptKey(key));
+    builder.put(new HttpEnclosedObject(
+        trp.getWriteVersion())
+        .setCryptEnabled(true, key));
     
     if(trp.getInputStream() != null)
       builder.put(new HttpInputStream(
-          trp.getInputStream()));
-    
+          trp.getInputStream())
+          .setGZipCoderEnabled(true)
+          .setCryptCoderEnabled(true, key));
   }
   
   
@@ -151,9 +172,7 @@ public class HttpRequestChannel1 implements Channel, HttpConst {
       sock = netconn.connectSocket();
     
     OutputStream out = sock.getOutputStream();
-    builder.writeTo(out);
-    if(trp.hasContentEmbedded())
-      trp.getInputStream().close();
+    builder.writeContent(out);
     this.verifyResponse();
   }
   
@@ -192,23 +211,21 @@ public class HttpRequestChannel1 implements Channel, HttpConst {
   
   @Override
   public Transport read() throws IOException {
-    InputStream in = sock.getInputStream();
-    String strp = StreamUtils.readBetween(in, 
-        BOUNDARY_OBJECT_START, BOUNDARY_OBJECT_END);
-    if(strp == null) return null;
-    
-    Object obj = xst.fromXML(coder.decode(strp));
-    
-    if(obj == null || !Transport.class
-        .isAssignableFrom(obj.getClass())) 
+    if(!parser.containsHeader(HTTP_ENCLOSED_OBJECT))
       return null;
     
-    Transport trp = (Transport) obj;
-    if(StreamUtils.readUntil(in, VALUE_APP_OCTETSTREAM,
-        StreamUtils.EOF) == VALUE_APP_OCTETSTREAM) {
-      trp.setInputStream(in);
+    HttpEnclosedObject hob = (HttpEnclosedObject) 
+        parser.getHeader(HTTP_ENCLOSED_OBJECT);
+    
+    Transport tp = (Transport) hob.getObject();
+    
+    if(parser.containsHeader(HTTP_INPUTSTREAM)) {
+      HttpInputStream his = (HttpInputStream) 
+          parser.getHeader(HTTP_INPUTSTREAM);
+      tp.setInputStream(his.setupInbound()
+          .getInputStream());
     }
-    return trp;
+    return tp;
   }
   
   

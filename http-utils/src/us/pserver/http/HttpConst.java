@@ -157,7 +157,7 @@ public interface HttpConst {
    * </code><br>
    * Cabeçalho especial para chave de criptografia (se suportado pelo servidor).
    */
-  public static final String HD_X_CRYPT_KEY = "X-Crypt-Key";
+  public static final String HD_X_CRYPT_KEY = "X-CKey";
 
   /**
    * <code>
@@ -253,7 +253,7 @@ public interface HttpConst {
    * </code><br>
    * Texto de resposta de requisição HTTP.
    */
-  public static final String VALUE_CONN_STABLISHED = "Connection stablished";
+  public static final String VALUE_CONN_STABLISHED = "Connection established";
 
   /**
    * <code>
@@ -261,7 +261,7 @@ public interface HttpConst {
    * </code><br>
    * Versão do protocolo HTTP.
    */
-  public static final String HTTP_VERSION = "HTTP/1.1";
+  public static final String HTTP_VERSION = "HTTP/1.0";
 
   /**
    * <code>

@@ -139,19 +139,21 @@ public class HttpParser implements HttpConst {
     }
     
     String boundary = HYFENS + BOUNDARY;
-    message = StreamUtils.readStringUntilOr(in, boundary, EOF);
+    String[] ret = StreamUtils.readStringUntilOr(in, boundary, EOF);
+    message = ret[1];
     
     parse();
-    return parseContent(in);
+    if(ret[0].equals(boundary))
+      parseContent(in);
+    
+    return this;
   }
   
   
   public HttpParser parseContent(InputStream is) throws IOException {
     nullarg(InputStream.class, is);
-    String bound = BOUNDARY + HYFENS;
-    String read = StreamUtils.readUntilOr(is, 
-        BOUNDARY_XML_START, EOF);
-    if(read == null || read.equals(EOF))
+
+    if(!StreamUtils.readUntil(is, BOUNDARY_XML_START))
       return this;
 
     String str = StreamUtils.readString(is, 5);
@@ -168,10 +170,8 @@ public class HttpParser implements HttpConst {
     }
     
     else if(BOUNDARY_OBJECT_START.contains(str)) {
-      System.out.println("* is a HttpEncodedObject!!");
       String sobj = StreamUtils.readStringUntil(is, 
           BOUNDARY_OBJECT_END);
-      System.out.println("* sobj='"+ sobj+ "'");
       if(key != null)
         addHeader(HttpEnclosedObject.decodeObject(sobj, key));
       else

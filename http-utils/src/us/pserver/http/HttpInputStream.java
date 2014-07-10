@@ -192,6 +192,7 @@ public class HttpInputStream extends Header {
       throw new IllegalStateException("InputStream not setted");
     OutputStream os = buffer.getOutputStream();
     StreamUtils.transferUntilOr(input, os, BOUNDARY_CONTENT_END, EOF);
+    input = buffer.getDecodingInputStream();
     return this;
   }
   
