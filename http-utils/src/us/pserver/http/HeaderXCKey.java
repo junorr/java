@@ -30,29 +30,24 @@ import static us.pserver.chk.Checker.nullarg;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 09/07/2014
  */
-public class HeaderXCryptKey extends Header {
+public class HeaderXCKey extends HeaderKeyHolder {
 
-  private CryptKey key;
   
-  
-  public HeaderXCryptKey() {
+  public HeaderXCKey() {
     super();
     setName(HD_X_CRYPT_KEY);
   }
   
   
-  public HeaderXCryptKey(CryptKey k) {
+  public HeaderXCKey(CryptKey k) {
     this();
     setCryptKey(k);
   }
   
   
-  public CryptKey getCryptKey() {
-    return key;
-  }
-  
-  
-  public HeaderXCryptKey setCryptKey(CryptKey k) {
+  @Override
+  public HeaderXCKey setCryptKey(CryptKey k) {
+    super.setCryptKey(k);
     nullarg(CryptKey.class, k);
     key = k;
     Base64StringCoder cdr = new Base64StringCoder();
@@ -61,12 +56,12 @@ public class HeaderXCryptKey extends Header {
   }
   
   
-  public static HeaderXCryptKey from(Header hd) {
+  public static HeaderXCKey from(Header hd) {
     nullarg(Header.class, hd);
-    if(hd instanceof HeaderXCryptKey)
-      return (HeaderXCryptKey) hd;
+    if(hd instanceof HeaderXCKey)
+      return (HeaderXCKey) hd;
     Base64StringCoder cdr = new Base64StringCoder();
-    HeaderXCryptKey hx = new HeaderXCryptKey();
+    HeaderXCKey hx = new HeaderXCKey();
     hx.setValue(hd.getValue());
     hx.key = CryptKey.fromString(cdr.decode(hd.getValue()));
     return hx;

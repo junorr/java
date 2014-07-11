@@ -28,7 +28,7 @@ import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.crypt.CryptUtils;
 import us.pserver.chk.Invoke;
 import us.pserver.http.HeaderProxyAuth;
-import us.pserver.http.HeaderXCryptKey;
+import us.pserver.http.HeaderXCKey;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
 import us.pserver.http.HttpConst.Method;
@@ -63,7 +63,7 @@ public class TestConnectRequest {
     hps.headers().forEach(System.out::print);
     System.out.println("--------------------");
     
-    HeaderXCryptKey hx = (HeaderXCryptKey) hps.getHeader(HttpConst.HD_X_CRYPT_KEY);
+    HeaderXCKey hx = (HeaderXCKey) hps.getHeader(HttpConst.HD_X_CRYPT_KEY);
     CryptKey key = hx.getCryptKey();
     OutputStream secout = CryptUtils.createCipherOutputStream(sock.getOutputStream(), key);
     int count = 0;

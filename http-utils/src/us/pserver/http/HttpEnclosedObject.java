@@ -41,7 +41,7 @@ import static us.pserver.chk.Checker.nullarg;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
  */
-public class HttpEnclosedObject extends Header {
+public class HttpEnclosedObject extends HeaderEncryptable {
   
   /**
    * <code>Content-Type: text/xml</code><br>
@@ -94,26 +94,15 @@ public class HttpEnclosedObject extends Header {
   }
   
   
-  public HttpEnclosedObject setCryptEnabled(boolean enabled, CryptKey key) {
-    if(enabled) {
-      nullarg(CryptKey.class, key);
+  @Override
+  public HttpEnclosedObject setCryptKey(CryptKey key) {
+    super.setCryptKey(key);
+    if(key != null) {
       crypt = new CryptStringCoder(key);
       if(obj != null) setObject(obj);
     }
     else crypt = null;
     return this;
-  }
-  
-  
-  public boolean isCryptEnabled() {
-    return crypt != null;
-  }
-  
-  
-  public CryptKey getCryptKey() {
-    if(crypt == null || crypt.getKey() == null)
-      return null;
-    return crypt.getKey();
   }
   
   
@@ -132,7 +121,7 @@ public class HttpEnclosedObject extends Header {
   
   public static HttpEnclosedObject decodeObject(String str, CryptKey key) {
     HttpEnclosedObject heo = new HttpEnclosedObject()
-        .setCryptEnabled(true, key);
+        .setCryptKey(key);
     String dec = heo.crypt.decode(str);
     Object obj = heo.xst.fromXML(dec);
     return heo.setObject(obj);
@@ -215,8 +204,8 @@ public class HttpEnclosedObject extends Header {
     HttpEnclosedObject hob = new HttpEnclosedObject();
     Object obj = "The Object";
     OutputStream out = new FileOutputStream("d:/http-rob.txt");
-    hob.setCryptEnabled(true, 
-            new CryptKey("123456", CryptAlgorithm.AES_CBC_PKCS5))
+    hob.setCryptKey(new CryptKey(
+        "123456", CryptAlgorithm.AES_CBC_PKCS5))
         .setObject(obj);
     System.out.println("* size = "+ hob.getLength());
     hob.writeContent(System.out);

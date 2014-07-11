@@ -38,15 +38,19 @@ import us.pserver.http.ResponseParser;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 12/06/2014
  */
-public class TestHttpRequest implements HttpConst {
+public class TestSimpleRequest implements HttpConst {
 
+  
   
   public static void main(String[] args) throws IOException {
     RequestLine req = new RequestLine(Method.POST, "172.24.75.2", 8000);
     HttpBuilder build = HttpBuilder.requestBuilder(req);
     
     Object obj = "A plain text content object.";
-    build.put(new HttpEnclosedObject(obj));
+    HttpEnclosedObject hob = new HttpEnclosedObject(obj);
+    hob.setCryptKey(CryptKey.createRandomKey(
+        CryptAlgorithm.AES_CBC_PKCS5));
+    build.put(hob);
     
     Socket sock = new Socket("172.24.75.19", 6060);
     //Socket sock = new Socket("172.24.75.2", 8000);
@@ -57,24 +61,8 @@ public class TestHttpRequest implements HttpConst {
     ResponseParser rp = new ResponseParser();
     rp.readFrom(sock.getInputStream());
     rp.headers().forEach(System.out::print);
-    
     System.out.println("-------------------------");
-    //StreamUtils.transfer(sock.getInputStream(), System.out);
-    
-    int count = 0;
-    CryptKey key = new CryptKey("123456", CryptAlgorithm.AES_CBC_PKCS5);
-    
-    while(true) {
-      String so = "The Object ("+ count++ + ")";
-      HttpBuilder hb = HttpBuilder.requestBuilder(req);
-      System.out.println("* writing ( "+ so+ " )...");
-      hb.put(new HttpCryptKey(key));
-      hb.put(new HttpEnclosedObject(so).setCryptKey(key));
-      hb.writeContent(sock.getOutputStream());
-      System.out.println();
-      //StreamUtils.transfer(sock.getInputStream(), System.out);
-      Invoke.unchecked(()->Thread.sleep(2500));
-    }
   }
+  
   
 }

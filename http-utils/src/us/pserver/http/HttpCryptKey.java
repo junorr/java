@@ -39,7 +39,7 @@ import static us.pserver.chk.Checker.nullarg;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
  */
-public class HttpCryptKey extends Header {
+public class HttpCryptKey extends HeaderKeyHolder {
   
   /**
    * <code>Content-Type: text/xml</code><br>
@@ -57,8 +57,6 @@ public class HttpCryptKey extends Header {
   
   
   private Base64StringCoder coder;
-  
-  private CryptKey key;
   
   private int size;
   
@@ -86,17 +84,14 @@ public class HttpCryptKey extends Header {
   }
   
   
-  public CryptKey getCryptKey() {
-    return key;
-  }
-  
-  
   /**
    * Define o objeto a ser encapsulado no cabeçalho HTTP.
    * @param k <code>Object</code>
    * @return Esta instância modificada de <code>HttpHexObject</code>.
    */
+  @Override
   public HttpCryptKey setCryptKey(CryptKey k) {
+    super.setCryptKey(k);
     nullarg(CryptKey.class, k);
     key = k;
     StringBuilder sb = new StringBuilder();

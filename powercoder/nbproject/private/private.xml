@@ -5,6 +5,7 @@
         <group>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptKey.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptAlgorithm.java</file>
+            <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/KeyGenerator.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/KeySpecFactory.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptByteCoder.java</file>
             <file>file:/D:/java/powercoder/src/us/pserver/cdr/crypt/CryptStringCoder.java</file>

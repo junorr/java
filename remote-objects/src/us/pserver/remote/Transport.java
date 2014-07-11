@@ -21,11 +21,7 @@
 
 package us.pserver.remote;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import us.pserver.http.HttpConst;
-import us.pserver.http.StreamUtils;
 
 
 /**
@@ -46,8 +42,6 @@ public class Transport {
   
   private boolean hasContentEmbedded;
   
-  private boolean encodeStream;
-  
   
   /**
    * Construtor padrão sem argumentos.
@@ -56,7 +50,6 @@ public class Transport {
     object = null;
     input = null;
     hasContentEmbedded = false;
-    encodeStream = false;
   }
   
   
@@ -68,7 +61,6 @@ public class Transport {
     object = obj;
     input = null;
     hasContentEmbedded = false;
-    encodeStream = false;
   }
   
   
@@ -148,50 +140,10 @@ public class Transport {
    * @param in <code>InputStream</code>.
    * @return Esta instância modificada de <code>InputStream</code>.
    */
-  public Transport setInputStream(InputStream in, boolean encodeStream) {
-    this.input = in;
-    hasContentEmbedded = in != null;
-    this.encodeStream = encodeStream;
-    return this;
-  }
-  
-  
-  /**
-   * Define o <code>InputStream</code> de
-   * dados a serem transmitidos via stream.
-   * @param in <code>InputStream</code>.
-   * @return Esta instância modificada de <code>InputStream</code>.
-   */
   public Transport setInputStream(InputStream in) {
     this.input = in;
     hasContentEmbedded = in != null;
     return this;
-  }
-  
-  
-  public Transport setHexEncodedEnabled(boolean enabled) {
-    encodeStream = enabled;
-    return this;
-  }
-  
-  
-  public boolean isHexEncodedEnabled() {
-    return encodeStream;
-  }
-  
-  
-  public void writeHtmlStreamTo(OutputStream out) throws IOException {
-    if(input == null)
-      throw new IllegalStateException(
-          "Invalid InputStream [input="+ input+ "]");
-    if(out == null)
-      throw new IllegalArgumentException(
-          "Invalid OutputStream [out="+ out+ "]");
-    
-    StreamUtils.transferBetween(input, out, 
-        HttpConst.BOUNDARY_CONTENT_START, 
-        HttpConst.BOUNDARY_CONTENT_END);
-    out.flush();
   }
   
   

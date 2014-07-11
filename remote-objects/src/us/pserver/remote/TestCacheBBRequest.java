@@ -38,7 +38,7 @@ public class TestCacheBBRequest {
         .setProxyPort(80)
         .setProxyAuthorization("f6036477:65465488");
     /**/
-    HttpRequestChannel1 channel = new HttpRequestChannel1(nc);
+    HttpRequestChannel channel = new HttpRequestChannel(nc);
     
     Transport trp = new Transport();
     trp.setObject("Hello HttpUtils!!");

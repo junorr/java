@@ -23,17 +23,16 @@ package us.pserver.remote;
 
 import com.thoughtworks.xstream.XStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Date;
-import us.pserver.cdr.hex.HexStringCoder;
+import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
 import us.pserver.http.HttpEnclosedObject;
+import us.pserver.http.HttpInputStream;
+import us.pserver.http.RequestParser;
 import us.pserver.http.ResponseLine;
-import us.pserver.http.StreamUtils;
-import static us.pserver.http.StreamUtils.bytes;
+import static us.pserver.remote.HttpRequestChannel.HTTP_ENCLOSED_OBJECT;
+import static us.pserver.remote.HttpRequestChannel.HTTP_INPUTSTREAM;
 
 
 /**
@@ -55,13 +54,13 @@ import static us.pserver.http.StreamUtils.bytes;
  */
 public class HttpResponseChannel implements Channel, HttpConst {
   
-  private final XStream xst;
-  
   private final Socket sock;
   
-  private final HexStringCoder coder;
+  private HttpBuilder builder;
   
-  private boolean isvalid;
+  private RequestParser parser;
+  
+  private CryptKey key;
   
   
   /**
@@ -76,9 +75,29 @@ public class HttpResponseChannel implements Channel, HttpConst {
           "Invalid Socket ["+ sc+ "]");
     
     sock = sc;
-    coder = new HexStringCoder();
-    xst = new XStream();
-    isvalid = false;
+    key = null;
+    parser = new RequestParser();
+    builder = new HttpBuilder();
+  }
+  
+  
+  public Socket getSocket() {
+    return sock;
+  }
+  
+  
+  public HttpBuilder getHttpBuilder() {
+    return builder;
+  }
+  
+  
+  public RequestParser getRequestParser() {
+    return parser;
+  }
+  
+  
+  public CryptKey getCryptKey() {
+    return key;
   }
   
   
@@ -93,71 +112,57 @@ public class HttpResponseChannel implements Channel, HttpConst {
    * @see us.pserver.remote.Transport
    * @see us.pserver.remote.http.HttpBuilder
    */
-  private HttpBuilder setHeaders(Transport trp) throws IOException {
-    HttpBuilder build = new HttpBuilder();
-    build.put(new ResponseLine(200, VALUE_OK))
-        .put(HD_CONTENT_TYPE, VALUE_CONTENT_XML)
-        .put(HD_CONTENT_ENCODING, VALUE_ENCODING)
-        .put(HD_SERVER, VALUE_SERVER)
-        .put(HD_DATE, new Date().toString());
+  private void setHeaders(Transport trp) throws IOException {
+    if(trp == null || trp.getObject() == null) 
+      throw new IllegalArgumentException(
+          "Invalid Transport [trp="+ trp+ "]");
+    
+    builder = HttpBuilder.responseBuilder(
+        new ResponseLine(200, "OK"));
     
     HttpEnclosedObject hob = new HttpEnclosedObject(
         trp.getWriteVersion());
     
-    long length = hob.getLength();
+    HttpInputStream his = (trp.getInputStream() != null 
+        ? new HttpInputStream(trp.getInputStream())
+            .setGZipCoderEnabled(true) : null);
     
-    if(trp.getInputStream() != null)
-      length += trp.getInputStream().available();
+    if(key != null) {
+      hob.setCryptKey(key);
+      if(his != null) 
+        his.setCryptCoderEnabled(true, key);
+    }
     
-    build.put(HD_CONTENT_LENGTH, String.valueOf(length));
-    return build;
+    builder.put(hob).put(his);
   }
   
   
   @Override
   public void write(Transport trp) throws IOException {
-    if(trp == null) return;
-    
-    InputStream input = trp.getInputStream();
-    OutputStream out = sock.getOutputStream();
-    HttpBuilder build = this.setHeaders(trp);
-    build.writeTo(out);
-    
-    if(input != null) {
-      out.write(bytes(BOUNDARY_CONTENT_START));
-      StreamUtils.transfer(input, out);
-      out.write(StreamUtils.BYTES_EOF);
-      out.write(bytes(BOUNDARY_CONTENT_END));
-    }
-    else out.write(StreamUtils.BYTES_EOF);
-    
-    out.write(bytes(BOUNDARY_XML_END));
-    out.write(StreamUtils.BYTES_CRLF);
-    out.write(StreamUtils.BYTES_CRLF);
-    out.flush();
-    isvalid = false;
-    sock.shutdownOutput();
+    this.setHeaders(trp);
+    builder.writeContent(sock.getOutputStream());
   }
   
   
   @Override
   public Transport read() throws IOException {
-    InputStream in = sock.getInputStream();
-    String strp = StreamUtils.readBetween(in, 
-        BOUNDARY_OBJECT_START, BOUNDARY_OBJECT_END);
-    
-    if(strp == null) return null;
-    Object obj = xst.fromXML(coder.decode(strp));
-    if(obj == null || !Transport.class
-        .isAssignableFrom(obj.getClass())) 
+    parser.reset().readFrom(sock.getInputStream());
+    key = parser.getCryptKey();
+    if(!parser.containsHeader(HTTP_ENCLOSED_OBJECT))
       return null;
     
-    Transport trp = (Transport) obj;
-    if(StreamUtils.readUntil(in, BOUNDARY_CONTENT_START, 
-        StreamUtils.EOF) == BOUNDARY_CONTENT_START) {
-      trp.setInputStream(in);
+    HttpEnclosedObject hob = (HttpEnclosedObject)
+        parser.getHeader(HTTP_ENCLOSED_OBJECT);
+    
+    Transport tp = (Transport) hob.getObject();
+    
+    if(parser.containsHeader(HTTP_INPUTSTREAM)) {
+      HttpInputStream his = (HttpInputStream)
+          parser.getHeader(HTTP_INPUTSTREAM);
+      tp.setInputStream(his.setupInbound()
+          .getInputStream());
     }
-    return trp;
+    return tp;
   }
   
   
@@ -172,7 +177,8 @@ public class HttpResponseChannel implements Channel, HttpConst {
    */
   @Override
   public boolean isValid() {
-    return isvalid;
+    return sock != null && sock.isConnected() 
+        && !sock.isClosed();
   }
   
   
@@ -182,7 +188,6 @@ public class HttpResponseChannel implements Channel, HttpConst {
       sock.shutdownInput();
       sock.shutdownOutput();
       sock.close();
-      isvalid = false;
     } catch(IOException e) {}
   }
   

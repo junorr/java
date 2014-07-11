@@ -42,22 +42,22 @@ public class TestHttpRequest {
         .setProxyPort(6060)
         .setProxyAuthorization("f6036477:00000000");
     /**/
-    HttpRequestChannel1 channel = new HttpRequestChannel1(nc);
+    HttpRequestChannel channel = new HttpRequestChannel(nc);
     
     Transport trp = new Transport();
     trp.setObject("Hello HttpUtils!!");
 
-    /*
+    
     InputStream input = Files.newInputStream(
-        Paths.get("d:/picture_low.jpg"), 
+        Paths.get("d:/pic.jpg"), 
         StandardOpenOption.READ);
     trp.setInputStream(input);
-    */
     
     channel.write(trp);
     
     System.out.println("* request sent!");
-    System.out.println(channel.getResponseParser().getResponseLine());
+    System.out.print("* "+ channel
+        .getResponseParser().getResponseLine());
     trp = channel.read();
     
     System.out.println("* received: "+ trp);

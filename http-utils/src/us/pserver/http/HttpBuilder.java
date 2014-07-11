@@ -29,11 +29,14 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64StringCoder;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
+import us.pserver.chk.Invoke;
 import us.pserver.streams.StreamUtils;
 
 
@@ -46,11 +49,11 @@ import us.pserver.streams.StreamUtils;
 public class HttpBuilder implements HttpConst {
   
   /**
-   * <code>STATIC_SIZE = 28</code><br>
+   * <code>STATIC_SIZE = 30</code><br>
    * Tamanho estático da saída gerada por <code>HttpBuilder</code>, sem
    * considrar o tamanho dos cabeçalhos adicionados.
    */
-  public static final int STATIC_SIZE = 28;
+  public static final int STATIC_SIZE = 30;
   
   
   private final List<Header> hds;
@@ -150,6 +153,22 @@ public class HttpBuilder implements HttpConst {
   }
   
   
+  public boolean containsCryptKey() {
+    Optional<Header> oh = hds.stream().filter(
+        h->(h instanceof HeaderEncryptable) 
+            && ((HeaderEncryptable)h).isCryptEnabled())
+        .findFirst();
+    return oh.isPresent();
+  }
+  
+  
+  public <T extends Header> T getHeader(Predicate<Header> p) {
+    Optional<Header> oh = hds.stream().filter(p).findFirst();
+    if(!oh.isPresent()) return null;
+    return (T) oh.get();
+  }
+  
+  
   /**
    * Adiciona um cabeçalho HTTP.
    * @param hd <code>Header</code>.
@@ -157,10 +176,17 @@ public class HttpBuilder implements HttpConst {
    */
   public HttpBuilder put(Header hd) {
     if(hd != null) {
+      if(hd instanceof HeaderEncryptable
+          && !containsCryptKey()
+          && ((HeaderEncryptable)hd).isCryptEnabled())
+        this.put(new HttpCryptKey(
+            ((HeaderEncryptable)hd).getCryptKey()));
+      
       hds.add(hd);
-      if(hd instanceof HttpInputStream)
-        try { ((HttpInputStream)hd).setupOutbound(); }
-        catch(IOException e) {}
+      if(hd instanceof HttpInputStream) {
+        HttpInputStream his = (HttpInputStream) hd;
+        Invoke.unchecked(his::setupOutbound);
+      }
     }
     return this;
   }
@@ -351,14 +377,15 @@ public class HttpBuilder implements HttpConst {
   public static void main(String[] args) throws IOException {
     StringBuilder end = new StringBuilder();
     end.append(CRLF).append(HYFENS)
-        .append(BOUNDARY).append(HYFENS)
-        .append(CRLF).append(CRLF);
+        .append(BOUNDARY).append(HYFENS);
+        //.append(CRLF).append(CRLF);
     StringByteConverter cv = new StringByteConverter();
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    System.out.println("* bos.size = "+ bos.size());
     bos.write(cv.convert(end.toString()));
     StreamUtils.writeEOF(bos);
     System.out.println("* STATIC_SIZE = "+ bos.size());
+    end.append("EOF");
+    System.out.println(" str.length="+ end.length());
     System.out.println();
     
     HttpBuilder hb = new HttpBuilder();
@@ -373,11 +400,10 @@ public class HttpBuilder implements HttpConst {
     
     CryptKey key = new CryptKey("123456", 
         CryptAlgorithm.AES_CBC_PKCS5);
-    hb.put(new HttpCryptKey(key));
+    //hb.put(new HttpCryptKey(key));
     
     HttpEnclosedObject hob = new HttpEnclosedObject();
-    hob.setCryptEnabled(true, key)
-        .setObject("Hello World!!");
+    hob.setCryptKey(key).setObject("Hello World!!");
     hb.put(hob);
     
     HttpInputStream hin = new HttpInputStream();

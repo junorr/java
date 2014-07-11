@@ -217,8 +217,8 @@ public class CryptKey {
   public static CryptKey createRandomKey(CryptAlgorithm algo) {
     nullarg(CryptAlgorithm.class, algo);
     CryptKey key = new CryptKey();
-    key.setKey(KeySpecFactory.randomBytes(
-        algo.getBytesSize()), algo);
+    key.setKey(KeyGenerator.instance()
+        .genAsBytes(algo.getBytesSize()), algo);
     return key;
   }
   

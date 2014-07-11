@@ -21,41 +21,15 @@
 
 package us.pserver.http;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 15/06/2014
+ * @version 1.0 - 11/07/2014
  */
-public class RequestParser extends HttpParser {
+public class HeaderEncryptable extends HeaderKeyHolder {
 
-  private RequestLine request;
-  
-  @Override
-  public RequestParser readFrom(InputStream in) throws IOException {
-    super.readFrom(in);
-    if(headers().isEmpty() || headers().get(0) == null) 
-      throw new IOException(
-          "Error parsing request (No header identified)");
-    
-    Header hd = headers().get(0);
-    String[] ss = hd.getValue().split(BLANK);
-    if(ss == null || ss.length < 3) throw new IOException(
-        "Error parsing request (Invalid request line: <"+ hd+ ">)");
-    
-    request = new RequestLine();
-    request.setMethod(ss[0]);
-    request.setAddress(ss[1]);
-    request.setHttpVersion(ss[2]);
-    headers().set(0, request);
-    return this;
-  }
-  
-  
-  public RequestLine getRequestLine() {
-    return request;
+  public boolean isCryptEnabled() {
+    return key != null;
   }
   
 }

@@ -29,7 +29,7 @@ import java.net.Socket;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.crypt.CryptUtils;
-import us.pserver.http.HeaderXCryptKey;
+import us.pserver.http.HeaderXCKey;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
 import us.pserver.http.HttpParser;
@@ -64,7 +64,7 @@ public class TestConnectServer {
           HttpConst.VALUE_CONN_STABLISHED);
       
       CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
-      HeaderXCryptKey hx = new HeaderXCryptKey(key);
+      HeaderXCKey hx = new HeaderXCKey(key);
       HttpBuilder hb = new HttpBuilder()
           .put(rl).put(hx);
       hb.writeContent(sock.getOutputStream());

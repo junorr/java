@@ -145,16 +145,15 @@ public class HttpParser implements HttpConst {
     parse();
     if(ret[0].equals(boundary))
       parseContent(in);
-    
     return this;
   }
   
   
   public HttpParser parseContent(InputStream is) throws IOException {
     nullarg(InputStream.class, is);
+    String ret = StreamUtils.readUntilOr(is, BOUNDARY_XML_START, EOF);
 
-    if(!StreamUtils.readUntil(is, BOUNDARY_XML_START))
-      return this;
+    if(ret.equals(EOF)) return this;
 
     String str = StreamUtils.readString(is, 5);
     StreamUtils.readUntil(is, "'>");
@@ -223,7 +222,9 @@ public class HttpParser implements HttpConst {
     if(hd == null || hd.getName() == null
         || !hd.getName().equals(HD_X_CRYPT_KEY))
       return hd;
-    return HeaderXCryptKey.from(hd);
+    HeaderXCKey hx = HeaderXCKey.from(hd);
+    key = hx.getCryptKey();
+    return hx;
   }
   
   

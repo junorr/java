@@ -42,7 +42,7 @@ import static us.pserver.streams.StreamUtils.EOF;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 12/06/2014
  */
-public class HttpInputStream extends Header {
+public class HttpInputStream extends HeaderEncryptable {
   
   /**
    * <code>
@@ -78,10 +78,6 @@ public class HttpInputStream extends Header {
 
   private InputStream input;
   
-  private CryptKey key;
-  
-  private Base64StringCoder scd;
-  
   private MegaBuffer buffer;
   
   
@@ -92,8 +88,6 @@ public class HttpInputStream extends Header {
     super();
     setName(getClass().getSimpleName());
     input = null;
-    key = null;
-    scd = new Base64StringCoder();
     buffer = new MegaBuffer();
   }
   
@@ -144,6 +138,13 @@ public class HttpInputStream extends Header {
   }
   
   
+  @Override
+  public HttpInputStream setCryptKey(CryptKey k) {
+    super.setCryptKey(k);
+    return this.setCryptCoderEnabled(true, k);
+  }
+  
+  
   public boolean isGZipCoderEnabled() {
     return buffer.isGZipCoderEnabled();
   }
@@ -171,11 +172,6 @@ public class HttpInputStream extends Header {
   
   public boolean isAnyCoderEnabled() {
     return buffer.isAnyCoderEnabled();
-  }
-  
-  
-  public CryptKey getCryptKey() {
-    return key;
   }
   
   

@@ -21,16 +21,18 @@
 
 package us.pserver.remote;
 
-import com.thoughtworks.xstream.XStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import us.pserver.cdr.hex.HexStringCoder;
+import java.net.Socket;
+import us.pserver.cdr.crypt.CryptAlgorithm;
+import us.pserver.cdr.crypt.CryptKey;
+import static us.pserver.chk.Checker.nullarg;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
+import us.pserver.http.HttpCryptKey;
 import us.pserver.http.HttpEnclosedObject;
 import us.pserver.http.HttpInputStream;
+import us.pserver.http.RequestLine;
+import us.pserver.http.ResponseParser;
 import us.pserver.streams.StreamUtils;
 
 
@@ -54,38 +56,107 @@ import us.pserver.streams.StreamUtils;
  */
 public class HttpRequestChannel implements Channel, HttpConst {
 
-  private final XStream xst;
+  public static final String 
+      
+      HTTP_ENCLOSED_OBJECT = 
+        HttpEnclosedObject.class.getSimpleName(),
+      
+      HTTP_CRYPT_KEY = 
+        HttpCryptKey.class.getSimpleName(),
+      
+      HTTP_INPUTSTREAM = 
+        HttpInputStream.class.getSimpleName();
   
-  private final HttpURLConnection conn;
   
-  private final HexStringCoder coder;
+  private NetConnector netconn;
   
-  private boolean isvalid;
+  private HttpBuilder builder;
+  
+  private Socket sock;
+  
+  private ResponseParser parser;
+  
+  private boolean crypt, gzip;
+  
+  private CryptAlgorithm algo;
   
   
   /**
-   * Construtor padrão que recebe <code>HttpURLConnection</code>
+   * Construtor padrão que recebe <code>NetConnector</code>
    * para comunicação com o servidor.
-   * @param huc <code>HttpURLConnection</code>.
+   * @param conn <code>NetConnector</code>.
    */
-  public HttpRequestChannel(HttpURLConnection huc) {
-    if(huc == null)
+  public HttpRequestChannel(NetConnector conn) {
+    if(conn == null)
       throw new IllegalArgumentException(
-          "Invalid HttpURLConnection ["+ huc+ "]");
+          "Invalid NetConnector ["+ conn+ "]");
     
-    conn = huc;
-    coder = new HexStringCoder();
-    xst = new XStream();
-    isvalid = true;
+    netconn = conn;
+    crypt = true;
+    gzip = true;
+    algo = CryptAlgorithm.AES_CBC_PKCS5;
+    parser = new ResponseParser();
+    sock = null;
   }
   
   
   /**
-   * Retorna o objeto <code>HttpURLConnection</code>.
-   * @return <code>HttpURLConnection</code>.
+   * Retorna o objeto <code>NetConnector</code>.
+   * @return <code>NetConnector</code>.
    */
-  public HttpURLConnection getHttpConnection() {
-    return conn;
+  public NetConnector getNetConnector() {
+    return netconn;
+  }
+  
+  
+  public HttpRequestChannel setEncryptionEnabled(boolean enabled) {
+    crypt = enabled;
+    return this;
+  }
+  
+  
+  public boolean isEncryptionEnabled() {
+    return crypt;
+  }
+  
+  
+  public HttpRequestChannel setGZipCompressionEnabled(boolean enabled) {
+    gzip = enabled;
+    return this;
+  }
+  
+  
+  public boolean isGZipCompressionEnabled() {
+    return gzip;
+  }
+  
+  
+  public HttpRequestChannel setCryptAlgorithm(CryptAlgorithm ca) {
+    nullarg(CryptAlgorithm.class, ca);
+    algo = ca;
+    return this;
+  }
+  
+  
+  public CryptAlgorithm getCryptAlgorithm() {
+    return algo;
+  }
+  
+  
+  public Socket getSocket() {
+    return sock;
+  }
+  
+  
+  public HttpBuilder getHttpBuilder() {
+    if(builder == null)
+      builder = HttpBuilder.requestBuilder();
+    return builder;
+  }
+  
+  
+  public ResponseParser getResponseParser() {
+    return parser;
   }
   
   
@@ -94,38 +165,61 @@ public class HttpRequestChannel implements Channel, HttpConst {
    * como tipo de conteúdo, codificação, conteúdo
    * aceito e agente da requisição.
    */
-  private void setHeaders() {
-    conn.setRequestProperty(
-        HD_USER_AGENT, VALUE_USER_AGENT);
-    conn.setRequestProperty(
-        HD_ACCEPT_ENCODING, VALUE_ENCODING);
-    conn.setRequestProperty(
-        HD_ACCEPT, VALUE_ACCEPT);
-    conn.setRequestProperty(
-        HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART + HD_BOUNDARY + BOUNDARY);
+  private void setHeaders(Transport trp) {
+    if(trp == null || trp.getObject() == null) 
+      throw new IllegalArgumentException(
+          "Invalid Transport [trp="+ trp+ "]");
+    
+    RequestLine req = new RequestLine(Method.POST, 
+        netconn.getAddress(), netconn.getPort());
+    builder = HttpBuilder.requestBuilder(req);
+    
+    if(netconn.getProxyAuthorization() != null)
+      builder.put(HD_PROXY_AUTHORIZATION, 
+          netconn.getProxyAuthorization());
+    
+    CryptKey key = CryptKey.createRandomKey(algo);
+    
+    builder.put(new HttpCryptKey(key));
+    builder.put(new HttpEnclosedObject(
+        trp.getWriteVersion())
+        .setCryptKey(key));
+    
+    if(trp.getInputStream() != null)
+      builder.put(new HttpInputStream(
+          trp.getInputStream())
+          .setGZipCoderEnabled(true)
+          .setCryptCoderEnabled(true, key));
   }
   
   
   @Override
   public void write(Transport trp) throws IOException {
-    if(trp == null) return;
+    this.setHeaders(trp);
+    if(sock == null)
+      sock = netconn.connectSocket();
     
-    this.setHeaders();
-    InputStream input = trp.getInputStream();
-    OutputStream out = conn.getOutputStream();
-    
-    HttpBuilder build = new HttpBuilder()
-        .put(new HttpEnclosedObject(trp.getWriteVersion()));
-    if(input != null)
-      build.put(new HttpInputStream(input));
-    build.writeTo(out);
-    
-    isvalid = false;
-    
-    if(conn.getResponseCode() != 200)
-      throw new IOException("Invalid response code ["
-          + conn.getResponseCode()+ "] "
-          + conn.getResponseMessage());
+    builder.writeContent(sock.getOutputStream());
+    this.verifyResponse();
+  }
+  
+  
+  private void verifyResponse() throws IOException {
+    readHeaders();
+    if(parser.getResponseLine() == null
+        || parser.getResponseLine().getCode() != 200) {
+      parser.headers().forEach(System.out::print);
+      throw new IOException(
+          "Invalid response from server: "
+          + parser.getResponseLine());
+    }
+  }
+  
+  
+  public void readHeaders() throws IOException {
+    if(sock == null || sock.isClosed())
+      return;
+    parser.reset().readFrom(sock.getInputStream());
   }
   
   
@@ -137,28 +231,28 @@ public class HttpRequestChannel implements Channel, HttpConst {
    *
   */
   public void dump() throws IOException {
-    System.out.println("Response: "+ conn.getResponseCode()
-        + " "+ conn.getResponseMessage());
-    StreamUtils.transfer(conn.getInputStream(), System.out);
+    System.out.println("--- Response ---");
+    StreamUtils.transfer(sock.getInputStream(), System.out);
   }
   
   
   @Override
   public Transport read() throws IOException {
-    InputStream in = conn.getInputStream();
-    String strp = StreamUtils.readBetween(in, 
-        BOUNDARY_OBJECT_START, BOUNDARY_OBJECT_END);
-    if(strp == null) return null;
-    Object obj = xst.fromXML(coder.decode(strp));
-    if(obj == null || !Transport.class
-        .isAssignableFrom(obj.getClass())) 
+    if(!parser.containsHeader(HTTP_ENCLOSED_OBJECT))
       return null;
-    Transport trp = (Transport) obj;
-    if(StreamUtils.readUntil(in, BOUNDARY_CONTENT_START, 
-        StreamUtils.EOF) == BOUNDARY_CONTENT_START) {
-      trp.setInputStream(in);
+    
+    HttpEnclosedObject hob = (HttpEnclosedObject) 
+        parser.getHeader(HTTP_ENCLOSED_OBJECT);
+    
+    Transport tp = (Transport) hob.getObject();
+    
+    if(parser.containsHeader(HTTP_INPUTSTREAM)) {
+      HttpInputStream his = (HttpInputStream) 
+          parser.getHeader(HTTP_INPUTSTREAM);
+      tp.setInputStream(his.setGZipCoderEnabled(true)
+          .setupInbound().getInputStream());
     }
-    return trp;
+    return tp;
   }
   
   
@@ -173,14 +267,15 @@ public class HttpRequestChannel implements Channel, HttpConst {
    */
   @Override
   public boolean isValid() {
-    return isvalid;
+    return sock != null && sock.isConnected() 
+        && !sock.isClosed();
   }
   
   
   @Override
   public void close() {
-    conn.disconnect();
-    isvalid = false;
+    try { sock.close(); }
+    catch(IOException e) {}
   }
   
 }

@@ -19,55 +19,50 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.remote;
+package us.pserver.http.test;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import us.pserver.streams.StreamUtils;
+import us.pserver.http.HttpBuilder;
+import us.pserver.http.HttpConst;
+import us.pserver.http.HttpEnclosedObject;
+import us.pserver.http.RequestParser;
+import us.pserver.http.ResponseLine;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 16/06/2014
+ * @version 1.0 - 13/06/2014
  */
-public class TestHttpResponse {
+public class TestSimpleServer implements HttpConst {
 
   
   public static void main(String[] args) throws IOException {
-    //InetSocketAddress addr = new InetSocketAddress("172.24.75.2", 9011);
-    //InetSocketAddress addr = new InetSocketAddress("10.100.0.104", 9011);
-    InetSocketAddress addr = new InetSocketAddress("0.0.0.0", 9011);
-    
+    InetSocketAddress addr = new InetSocketAddress("0.0.0.0", 8000);
     ServerSocket server = new ServerSocket();
     server.bind(addr);
     System.out.println("* Server listening on: "+ addr.toString());
     Socket sock = server.accept();
     System.out.println("* Connected: "+ sock.getRemoteSocketAddress());
     
-    HttpResponseChannel channel = new HttpResponseChannel(sock);
-    Transport trp = channel.read();
-    System.out.println("* received: "+ trp);
-    if(trp.hasContentEmbedded()) {
-      System.out.println("* content embedded received!");
-      Path to = Paths.get("d:/inputstream.jpg");
-      System.out.println("* writing to: "+ to.toString());
-      OutputStream out = Files.newOutputStream(to,
-          StandardOpenOption.WRITE, 
-          StandardOpenOption.CREATE);
-      StreamUtils.transfer(trp.getInputStream(), out);
-      out.close();
+    RequestParser rp = new RequestParser();
+    rp.readFrom(sock.getInputStream());
+    System.out.println("-----------------------");
+    System.out.println("* headers: "+ rp.headers().size());
+    rp.headers().forEach(System.out::print);
+    System.out.println("-----------------------");
+    
+    String hob = "HttpEnclosedObject";
+    if(rp.containsHeader(hob)) {
+      System.out.println("  - obj: "+ ((HttpEnclosedObject)rp.getHeader(hob)).getObject());
     }
-    channel.write(trp.setInputStream(null));
-    System.out.println("* echo response writed!");
-    sock.close();
-    server.close();
+    
+    ResponseLine rl = new ResponseLine(200, "OK");
+    HttpBuilder hb = HttpBuilder.responseBuilder(rl);
+    hb.put(rp.getHeader(hob));
+    hb.writeContent(sock.getOutputStream());
   }
   
 }
