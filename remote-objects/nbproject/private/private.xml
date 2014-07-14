@@ -5,7 +5,9 @@
         <group>
             <file>file:/D:/java/remote-objects/src/us/pserver/remote/HttpResponseChannel.java</file>
             <file>file:/D:/java/remote-objects/src/us/pserver/remote/Transport.java</file>
+            <file>file:/D:/java/remote-objects/src/us/pserver/remote/XmlNetChannel.java</file>
             <file>file:/D:/java/remote-objects/src/us/pserver/remote/HttpRequestChannel.java</file>
+            <file>file:/D:/java/remote-objects/src/us/pserver/remote/DefaultFactoryProvider.java</file>
             <file>file:/D:/java/remote-objects/src/us/pserver/remote/TestHttpRequest.java</file>
             <file>file:/D:/java/remote-objects/src/us/pserver/remote/TestHttpResponse.java</file>
         </group>

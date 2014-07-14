@@ -159,6 +159,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
     if(parser.containsHeader(HTTP_INPUTSTREAM)) {
       HttpInputStream his = (HttpInputStream)
           parser.getHeader(HTTP_INPUTSTREAM);
+      his.setGZipCoderEnabled(true);
       tp.setInputStream(his.setupInbound()
           .getInputStream());
     }

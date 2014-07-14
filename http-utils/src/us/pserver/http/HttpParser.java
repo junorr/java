@@ -143,7 +143,7 @@ public class HttpParser implements HttpConst {
     message = ret[1];
     
     parse();
-    if(ret[0].equals(boundary))
+    if(ret[0] != null && ret[0].equals(boundary))
       parseContent(in);
     return this;
   }

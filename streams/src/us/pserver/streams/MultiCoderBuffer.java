@@ -29,6 +29,9 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import org.apache.commons.codec.binary.Base64InputStream;
@@ -48,9 +51,9 @@ import static us.pserver.chk.Checker.range;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 02/07/2014
  */
-public class MegaBuffer {
+public class MultiCoderBuffer {
 
-  public static final int LARGE_BUFFER = 1_048_576;
+  public static final int LARGE_BUFFER = 524_288; // 500KB
   
   
   private ByteBuffer buffer;
@@ -61,30 +64,25 @@ public class MegaBuffer {
   
   private boolean readmode;
   
-  private CoderType[] order;
+  private Map<CoderType, MultiCoderBuffer> coders;
   
   private CryptKey key;
   
   private long bmark, chmark;
   
   
-  public MegaBuffer() {
+  public MultiCoderBuffer() {
     this(LARGE_BUFFER);
   }
   
   
-  public MegaBuffer(int bufferSize) {
+  public MultiCoderBuffer(int bufferSize) {
     range(bufferSize, 1, Integer.MAX_VALUE);
     buffer = ByteBuffer.allocateDirect(bufferSize);
     readmode = false;
     key = null;
     bmark = chmark = 0;
-    order = new CoderType[5];
-    order[0] = CoderType.CRYPT;
-    order[1] = CoderType.BASE64;
-    order[2] = CoderType.HEX;
-    order[3] = CoderType.GZIP;
-    order[4] = CoderType.LZMA;
+    coders = new LinkedHashMap<>();
   }
   
   
@@ -95,8 +93,13 @@ public class MegaBuffer {
    * para desabilitar.
    * @return Esta instância modificada de <code>MixedBuffer</code>.
    */
-  public MegaBuffer setHexCoderEnabled(boolean enabled) {
-    CoderType.HEX.setEnabled(enabled);
+  public MultiCoderBuffer setHexCoderEnabled(boolean enabled) {
+    CoderType cdr = CoderType.HEX;
+    cdr.setEnabled(enabled);
+    if(enabled)
+      coders.put(cdr, new MultiCoderBuffer());
+    else
+      coders.remove(cdr);
     return this;
   }
   
@@ -108,8 +111,13 @@ public class MegaBuffer {
    * para desabilitar.
    * @return Esta instância modificada de <code>MixedBuffer</code>.
    */
-  public MegaBuffer setBase64CoderEnabled(boolean enabled) {
-    CoderType.BASE64.setEnabled(enabled);
+  public MultiCoderBuffer setBase64CoderEnabled(boolean enabled) {
+    CoderType cdr = CoderType.BASE64;
+    cdr.setEnabled(enabled);
+    if(enabled)
+      coders.put(cdr, new MultiCoderBuffer());
+    else
+      coders.remove(cdr);
     return this;
   }
   
@@ -121,8 +129,13 @@ public class MegaBuffer {
    * para desabilitar.
    * @return Esta instância modificada de <code>MixedBuffer</code>.
    */
-  public MegaBuffer setGZipCoderEnabled(boolean enabled) {
-    CoderType.GZIP.setEnabled(enabled);
+  public MultiCoderBuffer setGZipCoderEnabled(boolean enabled) {
+    CoderType cdr = CoderType.GZIP;
+    cdr.setEnabled(enabled);
+    if(enabled)
+      coders.put(cdr, new MultiCoderBuffer());
+    else
+      coders.remove(cdr);
     return this;
   }
   
@@ -134,8 +147,13 @@ public class MegaBuffer {
    * para desabilitar.
    * @return Esta instância modificada de <code>MixedBuffer</code>.
    */
-  public MegaBuffer setLzmaCoderEnabled(boolean enabled) {
-    CoderType.LZMA.setEnabled(enabled);
+  public MultiCoderBuffer setLzmaCoderEnabled(boolean enabled) {
+    CoderType cdr = CoderType.LZMA;
+    cdr.setEnabled(enabled);
+    if(enabled)
+      coders.put(cdr, new MultiCoderBuffer());
+    else
+      coders.remove(cdr);
     return this;
   }
   
@@ -148,10 +166,17 @@ public class MegaBuffer {
    * @param key Chave de criptografia.
    * @return Esta instância modificada de <code>MixedBuffer</code>.
    */
-  public MegaBuffer setCryptCoderEnabled(boolean enabled, CryptKey key) {
-    if(enabled) nullarg(CryptKey.class, key);
+  public MultiCoderBuffer setCryptCoderEnabled(boolean enabled, CryptKey key) {
+    CoderType cdr = CoderType.CRYPT;
+    cdr.setEnabled(enabled);
     this.key = key;
-    CoderType.CRYPT.setEnabled(enabled);
+    if(enabled) {
+      nullarg(CryptKey.class, key);
+      coders.put(cdr, new MultiCoderBuffer()
+          .setCryptCoderEnabled(enabled, key));
+    }
+    else
+      coders.remove(cdr);
     return this;
   }
   
@@ -207,11 +232,7 @@ public class MegaBuffer {
   
   
   public boolean isAnyCoderEnabled() {
-    boolean b = false;
-    for(int i = 0; i < order.length; i++) {
-      b = (b || order[i].isEnabled());
-    }
-    return b;
+    return !coders.isEmpty();
   }
   
   
@@ -232,11 +253,27 @@ public class MegaBuffer {
    * @return índice de classificação.
    */
   public int getCoderOrder(CoderType coder) {
-    for(int i = 0; i < 5; i++) {
-      if(order[i] == coder)
-        return i;
+    if(coders.isEmpty() || coder == null) return -1;
+    Iterator<CoderType> set = coders.keySet().iterator();
+    int count = 0;
+    while(set.hasNext()) {
+      if(coder == set.next())
+        return count;
+      count++;
     }
     return -1;
+  }
+  
+  
+  public MultiCoderBuffer getBufferFor(CoderType cdr) {
+    if(coders.isEmpty() || cdr == null)
+      return null;
+    return coders.get(cdr);
+  }
+  
+  
+  public boolean containsCoder(CoderType ct) {
+    return coders.containsKey(ct);
   }
   
   
@@ -254,15 +291,18 @@ public class MegaBuffer {
   }
   
   
-  public MegaBuffer clearCoders() {
-    for(int i = 0; i < order.length; i++) {
-      order[i].setEnabled(false);
+  public MultiCoderBuffer clearCoders() {
+    if(coders.isEmpty()) return this;
+    Iterator<CoderType> set = coders.keySet().iterator();
+    while(set.hasNext()) {
+      set.next().setEnabled(false);
     }
+    coders.clear();
     return this;
   }
   
   
-  public MegaBuffer reset() throws IOException {
+  public MultiCoderBuffer reset() throws IOException {
     close();
     channel = null;
     temp = null;
@@ -271,7 +311,7 @@ public class MegaBuffer {
   }
   
   
-  public MegaBuffer mark() throws IOException {
+  public MultiCoderBuffer mark() throws IOException {
     bmark = buffer.position();
     if(channel != null)
       chmark = channel.position();
@@ -279,7 +319,7 @@ public class MegaBuffer {
   }
   
   
-  public MegaBuffer setMark() throws IOException {
+  public MultiCoderBuffer setMark() throws IOException {
     buffer.position((int) bmark);
     if(channel != null)
       channel.position(chmark);
@@ -305,15 +345,15 @@ public class MegaBuffer {
     return new InputStream() {
       @Override
       public int read() throws IOException {
-        return MegaBuffer.this.read();
+        return MultiCoderBuffer.this.read();
       }
       @Override
       public int read(byte[] bs) throws IOException {
-        return MegaBuffer.this.read(bs);
+        return MultiCoderBuffer.this.read(bs);
       }
       @Override
       public int read(byte[] bs, int o, int l) throws IOException {
-        return MegaBuffer.this.read(bs, o, l);
+        return MultiCoderBuffer.this.read(bs, o, l);
       }
     };//input
   }
@@ -323,15 +363,15 @@ public class MegaBuffer {
     return new OutputStream() {
       @Override
       public void write(int b) throws IOException {
-        MegaBuffer.this.write(b);
+        MultiCoderBuffer.this.write(b);
       }
       @Override
       public void write(byte[] bs) throws IOException {
-        MegaBuffer.this.write(bs);
+        MultiCoderBuffer.this.write(bs);
       }
       @Override
       public void write(byte[] bs, int o, int l) throws IOException {
-        MegaBuffer.this.write(bs, o, l);
+        MultiCoderBuffer.this.write(bs, o, l);
       }
     };//output
   }
@@ -358,17 +398,7 @@ public class MegaBuffer {
   }
   
   
-  public InputStream getDecodingInputStream() throws IOException {
-    return configureInput(getInputStream());
-  }
-  
-  
-  public OutputStream getEncodingOutputStream() throws IOException {
-    return configureOutput(getOutputStream());
-  }
-  
-  
-  public MegaBuffer flip() throws IOException {
+  public MultiCoderBuffer flip() throws IOException {
     if(!readmode) {
       if(channel != null) {
         flush();
@@ -401,29 +431,10 @@ public class MegaBuffer {
   }
   
   
-  public MegaBuffer rewind() throws IOException {
+  public MultiCoderBuffer rewind() throws IOException {
     if(!readmode) flip();
     else flip().flip();
     return this;
-  }
-  
-  
-  /**
-   * Encapsula o stream de saída especificado nos 
-   * streams de codificação habilitados de acordo 
-   * com a ordem de processamento pré definida.
-   * @param os Stream de saída a ser encapsulado.
-   * @return Stream de saída de codificação.
-   * @throws IOException caso ocorra erro na operação.
-   */
-  private OutputStream configureOutput(OutputStream os) throws IOException {
-    nullarg(OutputStream.class, os);
-    OutputStream output = os;
-    for(int i = 4; i >= 0; i--) {
-      if(order[i].isEnabled())
-        output = parseOutput(order[i], output);
-    }
-    return output;
   }
   
   
@@ -471,24 +482,39 @@ public class MegaBuffer {
   }
   
   
-  /**
-   * Encapsula o stream de entrada especificado nos 
-   * streams de codificação habilitados de acordo 
-   * com a ordem de processamento pré definida.
-   * @param is Stream de entrada a ser encapsulado.
-   * @return Stream de entrada para codificação.
-   * @throws IOException caso ocorra erro na operação.
-   */
-  private InputStream configureInput(InputStream is) throws IOException {
-    nullarg(InputStream.class, is);
-    InputStream input = is;
-    for(int i = order.length-1; i >= 0; i--) {
-      System.out.println("  order["+ i+ "]: "+ order[i]+ " isEnabled? "+ order[i].isEnabled());
-      if(order[i].isEnabled()) {
-        input = parseInput(order[i], input);
-      }
+  public MultiCoderBuffer encode() throws IOException {
+    if(coders.isEmpty() || size() == 0) return this;
+    Iterator<CoderType> it = coders.keySet().iterator();
+    while(it.hasNext()) {
+      CoderType cd = it.next();
+      MultiCoderBuffer buf = coders.get(cd);
+      OutputStream os = buf.getOutputStream();
+      os = parseOutput(cd, os);
+      InputStream is = this.getInputStream();
+      StreamUtils.transfer(is, os);
+      os.close();
+      buffer = buf.buffer;
+      temp = buf.temp;
     }
-    return input;
+    return this;
+  }
+  
+  
+  public MultiCoderBuffer decode() throws IOException {
+    if(coders.isEmpty() || size() == 0) return this;
+    Iterator<CoderType> it = coders.keySet().iterator();
+    while(it.hasNext()) {
+      CoderType cd = it.next();
+      MultiCoderBuffer buf = coders.get(cd);
+      OutputStream os = buf.getOutputStream();
+      os = parseOutput(cd, os);
+      InputStream is = this.getInputStream();
+      StreamUtils.transfer(is, os);
+      os.close();
+      buffer = buf.buffer;
+      temp = buf.temp;
+    }
+    return this;
   }
   
   
@@ -524,64 +550,6 @@ public class MegaBuffer {
   }
   
   
-  public long write(InputStream in) throws IOException {
-    nullarg(InputStream.class, in);
-    if(readmode) flip();
-    OutputStream out = getOutputStream();
-    return StreamUtils.transfer(in, out);
-  }
-  
-  
-  public long writeDecoding(InputStream in) throws IOException {
-    nullarg(InputStream.class, in);
-    if(readmode) flip();
-    OutputStream out = getOutputStream();
-    in = configureInput(in);
-    long total = StreamUtils.transfer(in, out);
-    return total;
-  }
-  
-  
-  public long writeEncoding(InputStream in) throws IOException {
-    nullarg(InputStream.class, in);
-    if(readmode) flip();
-    OutputStream out = configureOutput(getOutputStream());
-    long total = StreamUtils.transfer(in, out);
-    out.close();
-    return total;
-  }
-  
-  
-  public long write(Path p) throws IOException {
-    nullarg(Path.class, p);
-    InputStream in = Files.newInputStream(p,
-        StandardOpenOption.READ);
-    long total = write(in);
-    in.close();
-    return total;
-  }
-  
-  
-  public long writeEncoding(Path p) throws IOException {
-    nullarg(Path.class, p);
-    InputStream in = Files.newInputStream(p,
-        StandardOpenOption.READ);
-    long total = writeEncoding(in);
-    in.close();
-    return total;
-  }
-  
-  
-  public long writeDecoding(Path p) throws IOException {
-    nullarg(Path.class, p);
-    InputStream in = Files.newInputStream(p,
-        StandardOpenOption.READ);
-    long total = writeDecoding(in);
-    in.close();
-    return total;
-  }
-  
-  
   public int read() throws IOException {
     if(!readmode) flip();
     if(channel != null) {
@@ -592,7 +560,7 @@ public class MegaBuffer {
       return b.get();
     }
     else {
-      if(buffer.remaining()== 0) return -1;
+      if(buffer.remaining() == 0) return -1;
       return buffer.get();
     }
   }
@@ -636,64 +604,6 @@ public class MegaBuffer {
     if(read <= 0) return read;
     buf.put(bs, 0, read);
     return read;
-  }
-  
-  
-  public long read(OutputStream out) throws IOException {
-    nullarg(OutputStream.class, out);
-    if(!readmode) flip();
-    InputStream in = getInputStream();
-    return StreamUtils.transfer(in, out);
-  }
-  
-  
-  public long readEncoding(OutputStream out) throws IOException {
-    nullarg(OutputStream.class, out);
-    if(!readmode) flip();
-    InputStream in = getInputStream();
-    out = configureOutput(out);
-    long total = StreamUtils.transfer(in, out);
-    out.close();
-    return total;
-  }
-  
-  
-  public long readDecoding(OutputStream out) throws IOException {
-    nullarg(OutputStream.class, out);
-    if(!readmode) flip();
-    InputStream in = configureInput(getInputStream());
-    return StreamUtils.transfer(in, out);
-  }
-  
-  
-  public long read(Path p) throws IOException {
-    nullarg(Path.class, p);
-    OutputStream out = Files.newOutputStream(p,
-        StandardOpenOption.WRITE,
-        StandardOpenOption.CREATE);
-    long t = read(out);
-    out.close();
-    return t;
-  }
-  
-  
-  public long readEncoding(Path p) throws IOException {
-    nullarg(Path.class, p);
-    OutputStream out = Files.newOutputStream(p,
-        StandardOpenOption.WRITE,
-        StandardOpenOption.CREATE);
-    return readEncoding(out);
-  }
-  
-  
-  public long readDecoding(Path p) throws IOException {
-    nullarg(Path.class, p);
-    OutputStream out = Files.newOutputStream(p,
-        StandardOpenOption.WRITE,
-        StandardOpenOption.CREATE);
-    long t = readDecoding(out);
-    out.close();
-    return t;
   }
   
 }

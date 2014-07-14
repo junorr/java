@@ -129,6 +129,7 @@ public class HttpInputStream extends HeaderEncryptable {
   
   
   public HttpInputStream setCryptCoderEnabled(boolean enabled, CryptKey k) {
+    System.out.println("* setCryptCoderEnabled( "+ enabled+ ", "+ k+ " )");
     if(enabled) {
       nullarg(CryptKey.class, k);
       key = k;
@@ -141,7 +142,9 @@ public class HttpInputStream extends HeaderEncryptable {
   @Override
   public HttpInputStream setCryptKey(CryptKey k) {
     super.setCryptKey(k);
-    return this.setCryptCoderEnabled(true, k);
+    if(k != null)
+      this.setCryptCoderEnabled(true, k);
+    return this;
   }
   
   
@@ -178,6 +181,7 @@ public class HttpInputStream extends HeaderEncryptable {
   public HttpInputStream setupOutbound() throws IOException {
     if(input == null)
       throw new IllegalStateException("InputStream not setted");
+    System.out.println("* setupOutbound()");
     buffer.writeEncoding(input);
     return this;
   }
@@ -186,6 +190,8 @@ public class HttpInputStream extends HeaderEncryptable {
   public HttpInputStream setupInbound() throws IOException {
     if(input == null)
       throw new IllegalStateException("InputStream not setted");
+    System.out.println("* setupInbound()");
+    System.out.println("* buffer.isCryptCoderEnabled(): "+ buffer.isCryptCoderEnabled());
     OutputStream os = buffer.getOutputStream();
     StreamUtils.transferUntilOr(input, os, BOUNDARY_CONTENT_END, EOF);
     input = buffer.getDecodingInputStream();

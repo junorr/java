@@ -41,29 +41,25 @@ public class TestMegaBuffer {
   
   public static void main(String[] args) throws IOException {
     MegaBuffer buf = new MegaBuffer();
-    CryptKey key = new CryptKey("123456", CryptAlgorithm.DESede_ECB_PKCS5);
+    CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.DESede_ECB_PKCS5);
     
-    System.out.println("* buf.readEncoding()");
+    System.out.println("* buf.writeEncoding()");
     buf.setCryptCoderEnabled(true, key)
-        .writeEncoding(path("d:/pic.jpg"));
+        .setGZipCoderEnabled(true)
+        .writeEncoding(path("d:/base.csv"));
     System.out.println("* buf.isAnyCoderEnabled(): "+ buf.isAnyCoderEnabled());
     System.out.println("* buf.size() = "+ buf.size());
     
-    System.out.println("* buf.write()");
-    buf.read(path("d:/pic.cry"));
+    System.out.println("* buf.read()");
+    buf.flip().readDecoding(path("d:/base.gz.jpg"));
     
-    System.out.println("* buf.reset()");
-    buf.reset();
-    System.out.println("* buf.isAnyCoderEnabled(): "+ buf.isAnyCoderEnabled());
-    
-    System.out.println("* buf.readDecoding()");
-    buf.setCryptCoderEnabled(true, key);
-    buf.writeDecoding(path("d:/pic.cry"));
-    System.out.println("* buf.size() = "+ buf.size());
-    
-    System.out.println("* buf.write()");
-    buf.read(path("d:/pic-mb.jpg"));
-    buf.close();
+    /*
+    //buf.rewind().readDecoding(path("d:/pic.gz.jpg"));
+    buf.reset().setGZipCoderEnabled(true)
+        .setCryptCoderEnabled(true, key)
+        .writeDecoding(path("d:/pic.jpg.gz"));
+    buf.flip().read(path("d:/pic.gz.jpg"));
+        */
   }
   
 }

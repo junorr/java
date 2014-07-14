@@ -47,11 +47,7 @@ public abstract class DefaultFactoryProvider {
           throw new IllegalArgumentException(
               "Invalid NetConnector ["+ conn
                   + "]. Cannot create Channel.");
-        try {
-          return new HttpRequestChannel(conn.connectHttp());
-        } catch(IOException e) {
-          throw new RuntimeException(e.getMessage(), e);
-        }
+        return new HttpRequestChannel(conn);
       }
     };
   }
