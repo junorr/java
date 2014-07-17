@@ -21,17 +21,19 @@
 
 package us.pserver.streams;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import org.apache.commons.codec.binary.Base64InputStream;
@@ -56,19 +58,21 @@ public class MultiCoderBuffer {
   public static final int LARGE_BUFFER = 524_288; // 500KB
   
   
-  private ByteBuffer buffer;
-  
   private Path temp;
   
-  private FileChannel channel;
+  private ByteArrayOutputStream outbuffer;
+  
+  private ByteArrayInputStream inbuffer;
+  
+  private RandomAccessFile channel;
   
   private boolean readmode;
   
-  private Map<CoderType, MultiCoderBuffer> coders;
+  private List<CoderType> coders;
   
   private CryptKey key;
   
-  private long bmark, chmark;
+  private int index, limit;
   
   
   public MultiCoderBuffer() {
@@ -78,11 +82,17 @@ public class MultiCoderBuffer {
   
   public MultiCoderBuffer(int bufferSize) {
     range(bufferSize, 1, Integer.MAX_VALUE);
-    buffer = ByteBuffer.allocateDirect(bufferSize);
     readmode = false;
     key = null;
-    bmark = chmark = 0;
-    coders = new LinkedHashMap<>();
+    index = 0;
+    limit = bufferSize;
+    coders = new LinkedList<>();
+    outbuffer = new ByteArrayOutputStream(bufferSize);
+  }
+  
+  
+  private long remaining() {
+    return limit - outbuffer.size();
   }
   
   
@@ -97,7 +107,7 @@ public class MultiCoderBuffer {
     CoderType cdr = CoderType.HEX;
     cdr.setEnabled(enabled);
     if(enabled)
-      coders.put(cdr, new MultiCoderBuffer());
+      coders.add(cdr);
     else
       coders.remove(cdr);
     return this;
@@ -115,7 +125,7 @@ public class MultiCoderBuffer {
     CoderType cdr = CoderType.BASE64;
     cdr.setEnabled(enabled);
     if(enabled)
-      coders.put(cdr, new MultiCoderBuffer());
+      coders.add(cdr);
     else
       coders.remove(cdr);
     return this;
@@ -133,7 +143,7 @@ public class MultiCoderBuffer {
     CoderType cdr = CoderType.GZIP;
     cdr.setEnabled(enabled);
     if(enabled)
-      coders.put(cdr, new MultiCoderBuffer());
+      coders.add(cdr);
     else
       coders.remove(cdr);
     return this;
@@ -151,7 +161,7 @@ public class MultiCoderBuffer {
     CoderType cdr = CoderType.LZMA;
     cdr.setEnabled(enabled);
     if(enabled)
-      coders.put(cdr, new MultiCoderBuffer());
+      coders.add(cdr);
     else
       coders.remove(cdr);
     return this;
@@ -172,8 +182,7 @@ public class MultiCoderBuffer {
     this.key = key;
     if(enabled) {
       nullarg(CryptKey.class, key);
-      coders.put(cdr, new MultiCoderBuffer()
-          .setCryptCoderEnabled(enabled, key));
+      coders.add(cdr);
     }
     else
       coders.remove(cdr);
@@ -254,7 +263,7 @@ public class MultiCoderBuffer {
    */
   public int getCoderOrder(CoderType coder) {
     if(coders.isEmpty() || coder == null) return -1;
-    Iterator<CoderType> set = coders.keySet().iterator();
+    Iterator<CoderType> set = coders.iterator();
     int count = 0;
     while(set.hasNext()) {
       if(coder == set.next())
@@ -263,37 +272,29 @@ public class MultiCoderBuffer {
     }
     return -1;
   }
-  
-  
-  public MultiCoderBuffer getBufferFor(CoderType cdr) {
-    if(coders.isEmpty() || cdr == null)
-      return null;
-    return coders.get(cdr);
-  }
-  
+
   
   public boolean containsCoder(CoderType ct) {
-    return coders.containsKey(ct);
+    return coders.contains(ct);
   }
   
   
   public int getMemBufferCapacity() {
-    return buffer.capacity();
+    return limit;
   }
   
   
   public long size() throws IOException {
-    long len = buffer.position();
-    if(channel != null) {
-      len += channel.size();
-    }
+    long len = outbuffer.size();
+    if(channel != null)
+      len += channel.getFilePointer();
     return len;
   }
   
   
   public MultiCoderBuffer clearCoders() {
     if(coders.isEmpty()) return this;
-    Iterator<CoderType> set = coders.keySet().iterator();
+    Iterator<CoderType> set = coders.iterator();
     while(set.hasNext()) {
       set.next().setEnabled(false);
     }
@@ -304,26 +305,11 @@ public class MultiCoderBuffer {
   
   public MultiCoderBuffer reset() throws IOException {
     close();
+    outbuffer = new ByteArrayOutputStream(limit);
     channel = null;
     temp = null;
     readmode = false;
     return clearCoders();
-  }
-  
-  
-  public MultiCoderBuffer mark() throws IOException {
-    bmark = buffer.position();
-    if(channel != null)
-      chmark = channel.position();
-    return this;
-  }
-  
-  
-  public MultiCoderBuffer setMark() throws IOException {
-    buffer.position((int) bmark);
-    if(channel != null)
-      channel.position(chmark);
-    return this;
   }
   
   
@@ -334,10 +320,7 @@ public class MultiCoderBuffer {
   
   private void initChannel() throws IOException {
     temp = Files.createTempFile(null, null);
-    channel = FileChannel.open(temp,
-        StandardOpenOption.READ, 
-        StandardOpenOption.DELETE_ON_CLOSE, 
-        StandardOpenOption.WRITE);
+    channel = new RandomAccessFile(temp.toFile(), "rw");
   }
   
   
@@ -378,12 +361,11 @@ public class MultiCoderBuffer {
   
   
   public void flush() throws IOException {
-    if(buffer.position() > 0) {
+    if(outbuffer.size() > 0) {
       if(channel == null)
         initChannel();
-      buffer.flip();
-      channel.write(buffer);
-      buffer.clear();
+      channel.write(outbuffer.toByteArray());
+      outbuffer.reset();
     }
   }
   
@@ -402,21 +384,24 @@ public class MultiCoderBuffer {
     if(!readmode) {
       if(channel != null) {
         flush();
-        channel.position(0);
-      } else {
-        buffer.flip();
-        System.out.println("  buf.position="+ buffer.position());
-        System.out.println("  buf.limit   ="+ buffer.limit());
+        channel.seek(0);
+        outbuffer.reset();
+      } else if(outbuffer.size() > 0) {
+        inbuffer = new ByteArrayInputStream(outbuffer.toByteArray());
+        outbuffer = null;
       }
       readmode = true;
     }
     else {
       if(channel != null) {
-        channel.position(channel.size());
+        channel.seek(channel.length());
+        outbuffer.reset();
       } else {
-        buffer.position(buffer.limit());
-        buffer.limit(buffer.capacity());
+        inbuffer.reset();
+        outbuffer = new ByteArrayOutputStream(limit);
+        StreamUtils.transfer(inbuffer, outbuffer);
       }
+      inbuffer = null;
       readmode = false;
     }
     return this;
@@ -426,14 +411,21 @@ public class MultiCoderBuffer {
   public void close() throws IOException {
     if(channel != null) {
       channel.close();
+      System.out.println("* temp="+ temp);
+      Files.deleteIfExists(temp);
     }
-    buffer.clear();
+    outbuffer = null;
+    inbuffer = null;
   }
   
   
   public MultiCoderBuffer rewind() throws IOException {
-    if(!readmode) flip();
-    else flip().flip();
+    if(readmode) {
+      if(channel != null)
+        channel.seek(0);
+      else
+        inbuffer.reset();
+    }
     return this;
   }
   
@@ -484,17 +476,21 @@ public class MultiCoderBuffer {
   
   public MultiCoderBuffer encode() throws IOException {
     if(coders.isEmpty() || size() == 0) return this;
-    Iterator<CoderType> it = coders.keySet().iterator();
+    Iterator<CoderType> it = coders.iterator();
     while(it.hasNext()) {
+      if(!readmode) flip();
       CoderType cd = it.next();
-      MultiCoderBuffer buf = coders.get(cd);
+      MultiCoderBuffer buf = new MultiCoderBuffer();
       OutputStream os = buf.getOutputStream();
       os = parseOutput(cd, os);
       InputStream is = this.getInputStream();
       StreamUtils.transfer(is, os);
       os.close();
-      buffer = buf.buffer;
+      outbuffer = buf.outbuffer;
+      channel = buf.channel;
+      inbuffer = buf.inbuffer;
       temp = buf.temp;
+      readmode = false;
     }
     return this;
   }
@@ -502,17 +498,20 @@ public class MultiCoderBuffer {
   
   public MultiCoderBuffer decode() throws IOException {
     if(coders.isEmpty() || size() == 0) return this;
-    Iterator<CoderType> it = coders.keySet().iterator();
+    Iterator<CoderType> it = coders.iterator();
     while(it.hasNext()) {
+      flip();
       CoderType cd = it.next();
-      MultiCoderBuffer buf = coders.get(cd);
+      MultiCoderBuffer buf = new MultiCoderBuffer();
       OutputStream os = buf.getOutputStream();
-      os = parseOutput(cd, os);
-      InputStream is = this.getInputStream();
+      InputStream is = parseInput(cd, this.getInputStream());
       StreamUtils.transfer(is, os);
       os.close();
-      buffer = buf.buffer;
+      outbuffer = buf.outbuffer;
+      channel = buf.channel;
+      inbuffer = buf.inbuffer;
       temp = buf.temp;
+      readmode = false;
     }
     return this;
   }
@@ -520,8 +519,8 @@ public class MultiCoderBuffer {
   
   public void write(int b) throws IOException {
     if(readmode) flip();
-    if(buffer.remaining() == 0) flush();
-    buffer.put((byte) b);
+    if(remaining() == 0) flush();
+    outbuffer.write(b);
   }
   
   
@@ -551,17 +550,14 @@ public class MultiCoderBuffer {
   
   
   public int read() throws IOException {
+    //System.out.println("* remining() = "+ remaining());
     if(!readmode) flip();
     if(channel != null) {
       flush();
-      ByteBuffer b = ByteBuffer.allocate(1);
-      channel.read(b);
-      b.flip();
-      return b.get();
+      return channel.read();
     }
     else {
-      if(buffer.remaining() == 0) return -1;
-      return buffer.get();
+      return inbuffer.read();
     }
   }
   
@@ -570,22 +566,14 @@ public class MultiCoderBuffer {
     nullarray(bs);
     range(offset, -1, bs.length);
     range(length, 1, bs.length - offset);
-    
+    //System.out.println("* remining() = "+ remaining());
     if(!readmode) flip();
     if(channel != null) {
-      ByteBuffer b = ByteBuffer.allocate(length);
-      int read = channel.read(b);
-      if(read <= 0) return read;
-      b.flip();
-      b.get(bs, offset, read);
-      return read;
+      flush();
+      return channel.read(bs, offset, length);
     }
     else {
-      if(buffer.remaining() == 0) return -1;
-      if(length > buffer.remaining())
-        length = buffer.remaining();
-      buffer.get(bs, offset, length);
-      return length;
+      return inbuffer.read(bs, offset, length);
     }
   }
   
@@ -604,6 +592,35 @@ public class MultiCoderBuffer {
     if(read <= 0) return read;
     buf.put(bs, 0, read);
     return read;
+  }
+  
+  
+  public MultiCoderBuffer save(Path p) throws IOException {
+    nullarg(Path.class, p);
+    if(!readmode) flip();
+    OutputStream os = Files.newOutputStream(p, 
+        StandardOpenOption.CREATE, 
+        StandardOpenOption.WRITE);
+    InputStream is = this.getInputStream();
+    StreamUtils.transfer(is, os);
+    os.flush();
+    os.close();
+    is.close();
+    return this;
+  }
+  
+  
+  public MultiCoderBuffer load(Path p) throws IOException {
+    nullarg(Path.class, p);
+    reset();
+    InputStream is = Files.newInputStream(p, 
+        StandardOpenOption.READ);
+    OutputStream os = this.getOutputStream();
+    StreamUtils.transfer(is, os);
+    os.flush();
+    os.close();
+    is.close();
+    return this;
   }
   
 }

@@ -49,11 +49,11 @@ import us.pserver.streams.StreamUtils;
 public class HttpBuilder implements HttpConst {
   
   /**
-   * <code>STATIC_SIZE = 30</code><br>
+   * <code>STATIC_SIZE = 28</code><br>
    * Tamanho estático da saída gerada por <code>HttpBuilder</code>, sem
    * considrar o tamanho dos cabeçalhos adicionados.
    */
-  public static final int STATIC_SIZE = 30;
+  public static final int STATIC_SIZE = 28;
   
   
   private final List<Header> hds;
@@ -85,6 +85,7 @@ public class HttpBuilder implements HttpConst {
       .put(HD_USER_AGENT, VALUE_USER_AGENT)
       .put(HD_ACCEPT, VALUE_ACCEPT)
       .put(HD_ACCEPT_ENCODING, VALUE_ENCODING)
+      .put(HD_CONNECTION, VALUE_CONN_KEEP_ALIVE)
       .put(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART 
           + HD_BOUNDARY + BOUNDARY);
   }
@@ -126,8 +127,6 @@ public class HttpBuilder implements HttpConst {
   public static HttpBuilder responseBuilder() {
     return new HttpBuilder()
       .put(HD_SERVER, VALUE_SERVER)
-      .put(HD_ACCEPT, VALUE_ACCEPT)
-      .put(HD_ACCEPT_ENCODING, VALUE_ENCODING)
       .putDateHeader()
       .put(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART 
           + HD_BOUNDARY + BOUNDARY);

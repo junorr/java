@@ -27,12 +27,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import us.pserver.cdr.StringByteConverter;
-import us.pserver.cdr.b64.Base64StringCoder;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.chk.Invoke;
-import us.pserver.streams.MegaBuffer;
+import us.pserver.streams.MultiCoderBuffer;
 import us.pserver.streams.StreamUtils;
 import static us.pserver.streams.StreamUtils.EOF;
 
@@ -78,7 +77,7 @@ public class HttpInputStream extends HeaderEncryptable {
 
   private InputStream input;
   
-  private MegaBuffer buffer;
+  private MultiCoderBuffer buffer;
   
   
   /**
@@ -88,7 +87,7 @@ public class HttpInputStream extends HeaderEncryptable {
     super();
     setName(getClass().getSimpleName());
     input = null;
-    buffer = new MegaBuffer();
+    buffer = new MultiCoderBuffer();
   }
   
   
@@ -129,7 +128,6 @@ public class HttpInputStream extends HeaderEncryptable {
   
   
   public HttpInputStream setCryptCoderEnabled(boolean enabled, CryptKey k) {
-    System.out.println("* setCryptCoderEnabled( "+ enabled+ ", "+ k+ " )");
     if(enabled) {
       nullarg(CryptKey.class, k);
       key = k;
@@ -182,7 +180,8 @@ public class HttpInputStream extends HeaderEncryptable {
     if(input == null)
       throw new IllegalStateException("InputStream not setted");
     System.out.println("* setupOutbound()");
-    buffer.writeEncoding(input);
+    StreamUtils.transfer(input, buffer.getOutputStream());
+    buffer.encode();
     return this;
   }
   
@@ -191,10 +190,10 @@ public class HttpInputStream extends HeaderEncryptable {
     if(input == null)
       throw new IllegalStateException("InputStream not setted");
     System.out.println("* setupInbound()");
-    System.out.println("* buffer.isCryptCoderEnabled(): "+ buffer.isCryptCoderEnabled());
     OutputStream os = buffer.getOutputStream();
-    StreamUtils.transferUntilOr(input, os, BOUNDARY_CONTENT_END, EOF);
-    input = buffer.getDecodingInputStream();
+    System.out.println("* until: "+ StreamUtils.transferUntilOr(input, os, BOUNDARY_CONTENT_END, EOF));
+    buffer.decode();
+    input = buffer.getInputStream();
     return this;
   }
   
@@ -285,7 +284,7 @@ public class HttpInputStream extends HeaderEncryptable {
     out.write(cv.convert(start.toString()));
     out.write(cv.convert(BOUNDARY_XML_START));
     out.write(cv.convert(BOUNDARY_CONTENT_START));
-    buffer.read(out);
+    StreamUtils.transfer(buffer.getInputStream(), out);
     out.write(cv.convert(BOUNDARY_CONTENT_END));
     out.write(cv.convert(BOUNDARY_XML_END));
     out.flush();

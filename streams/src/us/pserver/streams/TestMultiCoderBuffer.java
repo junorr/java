@@ -24,42 +24,45 @@ package us.pserver.streams;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.apache.commons.codec.digest.Crypt;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 02/07/2014
+ * @version 1.0 - 16/07/2014
  */
-public class TestMegaBuffer {
+public class TestMultiCoderBuffer {
 
-  public static Path path(String str) {
-    return Paths.get(str);
-  }
   
   public static void main(String[] args) throws IOException {
-    MegaBuffer buf = new MegaBuffer();
-    CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.DESede_ECB_PKCS5);
-    
-    System.out.println("* buf.writeEncoding()");
-    buf.setCryptCoderEnabled(true, key)
-        .setGZipCoderEnabled(true)
-        .writeEncoding(path("d:/base.csv"));
-    System.out.println("* buf.isAnyCoderEnabled(): "+ buf.isAnyCoderEnabled());
-    System.out.println("* buf.size() = "+ buf.size());
-    
-    System.out.println("* buf.read()");
-    buf.flip().readDecoding(path("d:/base.gz.jpg"));
+    MultiCoderBuffer mb = new MultiCoderBuffer();
     
     /*
-    //buf.rewind().readDecoding(path("d:/pic.gz.jpg"));
-    buf.reset().setGZipCoderEnabled(true)
+    Path p1 = Paths.get("d:/base.csv");
+    Path p2 = Paths.get("d:/base2.csv.gz");
+    Path p3 = Paths.get("d:/base2.gz.csv");
+    */
+    
+    Path p1 = Paths.get("d:/pic_large.jpg");
+    Path p2 = Paths.get("d:/pic_large.jpg.gz");
+    Path p3 = Paths.get("d:/pic_large.gz.jpg");
+    
+    CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
+    
+    mb.load(p1)
+        .setGZipCoderEnabled(true)
         .setCryptCoderEnabled(true, key)
-        .writeDecoding(path("d:/pic.jpg.gz"));
-    buf.flip().read(path("d:/pic.gz.jpg"));
-        */
+        .setBase64CoderEnabled(true)
+        .setLzmaCoderEnabled(true)
+        .encode().save(p2);
+    
+    mb.reset().load(p2)
+        .setLzmaCoderEnabled(true)
+        .setBase64CoderEnabled(true)
+        .setCryptCoderEnabled(true, key)
+        .setGZipCoderEnabled(true)
+        .decode().save(p3);
   }
   
 }

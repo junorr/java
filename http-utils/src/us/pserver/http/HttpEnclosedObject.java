@@ -106,8 +106,20 @@ public class HttpEnclosedObject extends HeaderEncryptable {
   }
   
   
+  public HttpEnclosedObject setCryptEnabled(boolean enabled, CryptKey key) {
+    if(enabled) nullarg(CryptKey.class, key);
+    return setCryptKey(key);
+  }
+  
+  
   public Object getObject() {
     return obj;
+  }
+  
+  
+  public <T> T getObjectAs() {
+    if(obj == null) return null;
+    return (T) obj;
   }
   
   

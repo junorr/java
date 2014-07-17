@@ -21,7 +21,6 @@
 
 package us.pserver.remote;
 
-import com.thoughtworks.xstream.XStream;
 import java.io.IOException;
 import java.net.Socket;
 import us.pserver.cdr.crypt.CryptKey;
@@ -154,11 +153,14 @@ public class HttpResponseChannel implements Channel, HttpConst {
     HttpEnclosedObject hob = (HttpEnclosedObject)
         parser.getHeader(HTTP_ENCLOSED_OBJECT);
     
-    Transport tp = (Transport) hob.getObject();
+    Transport tp = hob.getObjectAs();
     
     if(parser.containsHeader(HTTP_INPUTSTREAM)) {
       HttpInputStream his = (HttpInputStream)
           parser.getHeader(HTTP_INPUTSTREAM);
+      System.out.println("* his.isCryptCoderEnabled()? "+ his.isCryptCoderEnabled());
+      //if(key != null)
+        //his.setCryptCoderEnabled(true, key);
       his.setGZipCoderEnabled(true);
       tp.setInputStream(his.setupInbound()
           .getInputStream());

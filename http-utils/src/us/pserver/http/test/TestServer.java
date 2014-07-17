@@ -30,6 +30,7 @@ import us.pserver.http.HttpConst;
 import us.pserver.http.HttpEnclosedObject;
 import us.pserver.http.RequestParser;
 import us.pserver.http.ResponseLine;
+import us.pserver.streams.StreamUtils;
 
 /**
  *
@@ -40,39 +41,44 @@ public class TestServer implements HttpConst {
 
   
   public static void main(String[] args) throws IOException {
-    InetSocketAddress addr = new InetSocketAddress("172.24.75.2", 8000);
-    //InetSocketAddress addr = new InetSocketAddress("10.100.0.104", 8000);
+    InetSocketAddress addr = new InetSocketAddress("0.0.0.0", 8000);
     ServerSocket server = new ServerSocket();
     server.bind(addr);
     System.out.println("* Server listening on: "+ addr.toString());
     
+    boolean sameconn = false;
+    Socket sock = null;
+    
     while(true) {
-      System.out.println("* while again...");
-    Socket sock = server.accept();
-    System.out.println("* Connected: "+ sock.getRemoteSocketAddress());
+      System.out.println("* sameconn="+ sameconn);
+      if(!sameconn) {
+        System.out.println("* while again...");
+        sock = server.accept();
+        System.out.println("* Connected: "+ sock.getRemoteSocketAddress());
+      }
     
-    RequestParser rp = new RequestParser();
+      RequestParser rp = new RequestParser();
     
+      rp.readFrom(sock.getInputStream());
+      System.out.println("-----------------------");
+      System.out.println("* headers: "+ rp.headers().size());
+      rp.headers().forEach(System.out::print);
+      System.out.println("-----------------------");
     
-    rp.readFrom(sock.getInputStream());
-    System.out.println("-----------------------");
-    System.out.println("* headers: "+ rp.headers().size());
-    rp.headers().forEach(System.out::println);
-    System.out.println("-----------------------");
+      String hob = "HttpEnclosedObject";
+      if(rp.containsHeader(hob)) {
+        System.out.println("  - obj: "+ ((HttpEnclosedObject)rp.getHeader(hob)).getObject());
+      }
+      
+      sameconn = !rp.containsHeader("Via");
     
-    String hob = "HttpEnclosedObject";
-    if(rp.containsHeader(hob)) {
-      System.out.println("  - obj: "+ ((HttpEnclosedObject)rp.getHeader(hob)).getObject());
-    }
+      HttpBuilder.responseBuilder(new ResponseLine(200, "OK"))
+          .put(HD_CONNECTION, (sameconn ? VALUE_CONN_KEEP_ALIVE : "Close"))
+          .put(new HttpEnclosedObject("hello world!!"))
+          .writeContent(sock.getOutputStream());
     
-    //StreamUtils.transfer(sock.getInputStream(), System.out);
-    
-    HttpBuilder.responseBuilder(new ResponseLine(200, "OK"))
-        .put(new HttpEnclosedObject("hello world!!"))
-        .writeContent(sock.getOutputStream());
-    
-    System.out.println();
-    System.out.println();
+      System.out.println("\n");
+      if(!sameconn) sock.close();
     }
     
   }

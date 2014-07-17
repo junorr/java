@@ -29,7 +29,7 @@ import us.pserver.cdr.b64.Base64StringCoder;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.chk.Invoke;
-import us.pserver.streams.MegaBuffer;
+import us.pserver.streams.MultiCoderBuffer;
 import us.pserver.streams.StreamUtils;
 import static us.pserver.streams.StreamUtils.EOF;
 
@@ -47,7 +47,7 @@ public class HttpParser implements HttpConst {
   
   private final List<Header> headers;
   
-  private MegaBuffer buffer;
+  private MultiCoderBuffer buffer;
   
   private CryptKey key;
   
@@ -59,7 +59,7 @@ public class HttpParser implements HttpConst {
     message = null;
     key = null;
     buffered = false;
-    buffer = new MegaBuffer();
+    buffer = new MultiCoderBuffer();
   }
   
   
@@ -82,7 +82,7 @@ public class HttpParser implements HttpConst {
   }
   
   
-  public MegaBuffer getBuffer() {
+  public MultiCoderBuffer getBuffer() {
     return buffer;
   }
   
@@ -133,7 +133,7 @@ public class HttpParser implements HttpConst {
     nullarg(InputStream.class, in);
     
     if(buffered) {
-      buffer.write(in);
+      StreamUtils.transfer(in, buffer.getOutputStream());
       buffer.flip();
       in = buffer.getInputStream();
     }

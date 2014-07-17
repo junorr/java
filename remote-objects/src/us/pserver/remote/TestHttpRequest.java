@@ -37,7 +37,7 @@ public class TestHttpRequest {
   
   public static void main(String[] args) throws IOException {
     NetConnector nc = new NetConnector("172.24.75.2", 9011);
-    /* set proxy */
+    /* set proxy 
     nc.setProxyAddress("172.24.75.19")
         .setProxyPort(6060)
         .setProxyAuthorization("f6036477:00000000");
@@ -49,7 +49,7 @@ public class TestHttpRequest {
 
     
     InputStream input = Files.newInputStream(
-        Paths.get("d:/pic.jpg"), 
+        Paths.get("d:/grub-bg.jpg"), 
         StandardOpenOption.READ);
     trp.setInputStream(input);
     
