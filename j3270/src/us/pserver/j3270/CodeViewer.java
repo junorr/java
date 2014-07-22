@@ -74,8 +74,8 @@ implements CodeListener, ParserListener {
     System.setOut(ps);
     j3270.scriptProc().setStdOut(ps);
     
-    undo = new LinkedList<>();
-    redo = new LinkedList<>();
+    undo = new LinkedList<String>();
+    redo = new LinkedList<String>();
     uidx = ridx = 0;
     codeArea.addKeyListener(new KeyListener() {
       @Override
@@ -221,9 +221,11 @@ implements CodeListener, ParserListener {
       f = this.selectFile("Save Code", "txt", false);
     if(f == null) return;
     String code = getCode().replaceAll("\n", LN);
-    try(FileWriter fw = new FileWriter(f, false);) {
+    try {
+      FileWriter fw = new FileWriter(f, false);
       fw.write(code);
       this.setTitle("Script: "+ f.toString());
+      fw.close();
     } catch(IOException ex) {}
   }
   
@@ -232,10 +234,12 @@ implements CodeListener, ParserListener {
     File f = this.selectFile("Save Code", "txt", false);
     if(f == null) return;
     String code = getCode().replaceAll("\n", LN);
-    try(FileWriter fw = new FileWriter(f, false);) {
+    try {
+      FileWriter fw = new FileWriter(f, false);
       fw.write(code);
       this.f = f;
       this.setTitle("Script: "+ f.toString());
+      fw.close();
     } catch(IOException ex) {}
   }
   
@@ -261,13 +265,15 @@ implements CodeListener, ParserListener {
     
     this.f = f;
     StringBuffer sb = new StringBuffer();
-    try(FileReader fr = new FileReader(f);) {
+    try {
+      FileReader fr = new FileReader(f);
       int ch = -1;
       while((ch = fr.read()) != -1) {
         if(((char)ch) == '\r') continue;
         sb.append((char) ch);
       }
       codeArea.setText(sb.toString());
+      fr.close();
     } catch(IOException ex) {}
   }
   

@@ -21,12 +21,22 @@
 
 package us.pserver.bigjar;
 
+import com.jpower.spj.Option;
+import com.jpower.spj.ShellParser;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.jar.Attributes;
+import java.util.jar.JarInputStream;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
 import us.pserver.log.SimpleLog;
 
 /**
@@ -42,27 +52,11 @@ public class BigJar {
   
   public static final String BIGJAR = "bigjar";
   
-  public static final String META_INF = "META-INF";
+  public static final String SPLASH = "SplashScreen-Image";
   
-  public static final String MANIFEST = "MANIFEST.MF";
+  public static final String COMMENT_KEY = "Packaged-By";
   
-  public static final String JAR_CFM = "jar cfm ";
-  
-  public static final String JAR_XF = "jar xf ";
-  
-  public static final String JAR_C_OPT = " -C ";
-  
-  public static final String AND = " & ";
-  
-  public static final String CD = "cd ";
-  
-  public static final String DOT = " .";
-  
-  public static final String SPACE = " ";
-  
-  public static final String SLASH = "/";
-  
-  public static final String CMD_C = "cmd /c ";
+  public static final String COMMENT_VALUE = "BigJar - Jar Files Unifier";
   
   public static final String LOGFILE = "./bigjar.log";
   
@@ -75,6 +69,12 @@ public class BigJar {
   
   private SimpleLog log;
   
+  private Attributes attr;
+  
+  private String splash;
+  
+  private String custom;
+  
   
   public BigJar(String dir) {
     Path p = Paths.get(dir).toAbsolutePath();
@@ -84,6 +84,8 @@ public class BigJar {
           "Invalid directory ["+ p.toString()+ "]");
     this.dir = p.toString();
     jarFile = null;
+    attr = null;
+    custom = null;
     tempDir = Paths.get(dir, BIGJAR).toAbsolutePath();
     log = new SimpleLog(LOGFILE);
   }
@@ -91,6 +93,53 @@ public class BigJar {
   
   public BigJar() {
     this(DEFAULT_DIR);
+  }
+  
+  
+  public String getSplashScreen() {
+    return splash;
+  }
+  
+  
+  public BigJar setSplashScreen(String str) {
+    if(str == null || str.trim().isEmpty())
+      throw new IllegalArgumentException("Invalid splash screen ["+ str+ "]");
+    splash = str;
+    return this;
+  }
+  
+  
+  public String getMFCustomAttributes() {
+    return custom;
+  }
+  
+  
+  public BigJar setMFCustomAttributes(String str) {
+    if(str == null || str.isEmpty() 
+        || !str.contains(":"))
+      throw new IllegalArgumentException(
+          "Invalid attributes ["+ str+ "]");
+    custom = str;
+    return this;
+  }
+  
+  
+  private void putCustomAttributes(Manifest mf) {
+    if(mf == null || custom == null)
+      return;
+    
+    log.info("Setting Custom Manifest Attributes...");
+    if(custom.contains(",")) {
+      String[] ats = custom.split(",");
+      for(String s : ats) {
+        String[] at = s.split(":");
+        mf.getMainAttributes().putValue(at[0], at[1]);
+      }
+    }
+    else {
+      String[] at = custom.split(":");
+      mf.getMainAttributes().putValue(at[0], at[1]);
+    }
   }
   
   
@@ -112,12 +161,6 @@ public class BigJar {
   }
   
   
-  private void deleteMetaInf() {
-    new DirRemover(tempDir
-        .resolve(META_INF)).remove();
-  }
-  
-  
   private void checkJars(List<Path> jars) {
     if(jars == null || jars.isEmpty()
         || jarFile == null)
@@ -127,46 +170,107 @@ public class BigJar {
   
   
   private void unpackJars() {
-    FileWalker fw = new FileWalker(dir);
+    JarWalker fw = new JarWalker(dir);
     List<Path> list = fw.walk();
     jarFile = fw.getMainJar();
     this.checkJars(list);
     
-    list.forEach(this::unpackJar);
+    for(Path p : list) 
+      unpackJar(p);
+    
     unpackJar(jarFile);
   }
   
   
   public void unpackJar(Path p) {
-    StringBuilder cmd = new StringBuilder()
-        .append(CD)
-        .append(tempDir.toString())
-        .append(AND)
-        .append(JAR_XF)
-        .append(p.toString());
-    runCommand(cmd.toString());
+    if(p == null || !Files.exists(p))
+      throw new IllegalArgumentException("Invalid jar path ["+ p+ "]");
+    
+    try {
+      JarInputStream jis = new JarInputStream(
+          Files.newInputStream(p, 
+              StandardOpenOption.READ));
+      
+      if(p == jarFile) {
+        attr = jis.getManifest().getMainAttributes();
+      }
+      
+      ZipEntry ze = jis.getNextEntry();
+      while(ze != null) {
+        Path dst = tempDir.resolve(ze.getName());
+        if(ze.isDirectory()) {
+          Files.createDirectories(dst);
+        }
+        else {
+          OutputStream os = Files.newOutputStream(dst, 
+              StandardOpenOption.CREATE, 
+              StandardOpenOption.WRITE);
+          transfer(jis, os);
+          os.flush();
+          os.close();
+        }
+        jis.closeEntry();
+        ze = jis.getNextEntry();
+      }
+      
+    } catch(NoSuchFileException e) {
+      log.error("Error extracting file: "+ e.toString());
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  
+  void transfer(InputStream is, OutputStream os) throws IOException {
+    byte[] bs = new byte[512];
+    int r = 0;
+    while((r = is.read(bs)) > 0) {
+      os.write(bs, 0, r);
+    }
   }
   
   
   private void makeBigJar() throws IOException {
-    Files.delete(jarFile);
-    if(Files.exists(jarFile))
-      throw new IOException(
-          "Unnable to delete jar file ["+ jarFile.toString()+ "]");
-    StringBuilder cmd = new StringBuilder()
-        .append(CD)
-        .append(dir)
-        .append(AND)
-        .append(JAR_CFM)
-        .append(jarFile.getFileName().toString())
-        .append(SPACE)
-        .append(BIGJAR).append(SLASH)
-        .append(META_INF).append(SLASH)
-        .append(MANIFEST)
-        .append(JAR_C_OPT)
-        .append(BIGJAR)
-        .append(DOT);
-    runCommand(cmd.toString());
+    FileWalker fw = new FileWalker(tempDir);
+    List<ZipEntry> ents = fw.walk();
+    
+    try {
+      Manifest mf = new Manifest();
+      mf.getMainAttributes().putAll(attr);
+      mf.getMainAttributes().putValue(COMMENT_KEY, COMMENT_VALUE);
+      if(splash != null) {
+        log.info("SplashScreen-Image setted: "+ splash);
+        mf.getMainAttributes().putValue(SPLASH, splash);
+      }
+      if(custom != null) {
+        putCustomAttributes(mf);
+      }
+      
+      JarOutputStream jos = new JarOutputStream(
+          Files.newOutputStream(jarFile, 
+              StandardOpenOption.CREATE, 
+              StandardOpenOption.WRITE), mf);
+      jos.setMethod(JarOutputStream.DEFLATED);
+      jos.setLevel(8);
+      
+      for(ZipEntry e : ents) {
+        jos.putNextEntry(e);
+        if(!e.isDirectory()) {
+          InputStream is = Files.newInputStream(
+              tempDir.resolve(e.getName()), 
+              StandardOpenOption.READ);
+          transfer(is, jos);
+          is.close();
+        }
+        jos.closeEntry();
+      }
+      
+      jos.flush();
+      jos.close();
+      
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   
@@ -183,26 +287,6 @@ public class BigJar {
   }
   
   
-  private void runCommand(String cmd) {
-    try {
-      Process p = Runtime.getRuntime().exec(CMD_C+ cmd);
-      dump(p.getInputStream());
-      p.waitFor();
-    } catch(IOException | InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
-  
-  
-  private void dump(InputStream in) throws IOException {
-    byte[] bs = new byte[128];
-    int read = 1;
-    while((read = in.read(bs)) > 0) {
-      System.out.write(bs, 0, read);
-    }
-  }
-  
-  
   public String getBaseDirectory() {
     return dir;
   }
@@ -214,22 +298,90 @@ public class BigJar {
 
   
   public static void main(String[] args) {
-    BigJar bigjar;
-    if(args != null && args.length > 0)
-      bigjar = new BigJar(args[0]);
-    else
-      bigjar = new BigJar();
+    //args = new String[] { "c:/.local/java/bigjar/dist" };
+    ShellParser sp = new ShellParser();
+    sp.setAppName("BIGJAR")
+        .setAuthor("Juno Roesler")
+        .setContact("juno@pserver.us")
+        .setDescription("Jar Files Unifier")
+        .setLicense("GNU/LGPL v3")
+        .setYear("2014");
     
-    System.out.println();
-    System.out.println("    BIGJAR: Jar Files Unifier");
-    System.out.println("---------------------------------");
-    System.out.println(" Copyright (C) 2014 Juno Roesler");
-    System.out.println();
+    Option opt = new Option()
+        .setName("-h")
+        .setAcceptArgs(false)
+        .setExclusive(true)
+        .setMandatory(false)
+        .setLongName("--help")
+        .setDescription("Show this help text");
+    sp.addOption(opt);
+    
+    opt = new Option()
+        .setName("-s")
+        .setAcceptArgs(true)
+        .setArgsSeparator(" ")
+        .setExclusive(false)
+        .setMandatory(false)
+        .setLongName("--splash")
+        .setDescription("Specify splash screen image (path inside jar)");
+    sp.addOption(opt);
+    
+    opt = new Option()
+        .setName("-a")
+        .setAcceptArgs(true)
+        .setArgsSeparator(" ")
+        .setExclusive(false)
+        .setMandatory(false)
+        .setLongName("--attributes")
+        .setDescription("Custom attributes for Manifest (key1:val1,key2:val2,...)");
+    sp.addOption(opt);
+    
+    opt = Option.EMPTY_OPTION
+        .setAcceptArgs(true)
+        .setExclusive(false)
+        .setMandatory(false)
+        .setDescription("Directory with jars and libs to be unified");
+    sp.addOption(opt);
+    
+    System.out.println(sp.createHeader(35));
+    String usage = sp.createUsage();
+    sp.parseArgs(args);
+    if(!sp.parseErrors()) {
+      System.out.println(usage);
+      sp.printAllMessages(System.err);
+      System.exit(1);
+    }
+    
+    if(sp.isOptionPresent("-h")) {
+      System.out.println(usage);
+      System.exit(0);
+    }
+    
+    BigJar bg;
+    
+    if(sp.isOptionPresent(Option.EMPTY)) {
+      bg = new BigJar(sp.getOption(
+          Option.EMPTY).getFirstArg());
+    }
+    else {
+      bg = new BigJar();
+    }
+    
+    if(sp.isOptionPresent("-s")) {
+      bg.setSplashScreen(
+          sp.getOption("-s").getFirstArg());
+    }
+    
+    if(sp.isOptionPresent("-a")) {
+      bg.setMFCustomAttributes(
+          sp.getOption("-a").getFirstArg());
+    }
+    
     try {
-      bigjar.make();
+      bg.make();
     } catch(IOException e) {
-      bigjar.getSimpleLog().fatal("Error creating BigJar: "+ e.toString());
-      bigjar.getSimpleLog().fatal(e.toString());
+      bg.getSimpleLog().fatal("Error creating BigJar: "+ e.toString());
+      bg.getSimpleLog().fatal(e.toString());
     }
   }
   

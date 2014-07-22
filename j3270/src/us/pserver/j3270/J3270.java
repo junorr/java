@@ -9,6 +9,7 @@ package us.pserver.j3270;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
+import java.awt.SplashScreen;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
@@ -87,7 +88,7 @@ public class J3270 extends javax.swing.JFrame {
     driver = new JDriver(this, grid);
     this.setLookAndFeel();
     
-    lst = new LinkedList<>();
+    lst = new LinkedList<WindowListener>();
     proc = new ScriptProcessor(driver);
     cview = new CodeViewer(this, false);
     gen = new ScriptGenerator(cview);
@@ -938,12 +939,14 @@ public class J3270 extends javax.swing.JFrame {
       return;
     }
     
-    try (BufferedWriter bw = new BufferedWriter(
-        new FileWriter(f, append))) {
+    try {
+      BufferedWriter bw = new BufferedWriter(
+        new FileWriter(f, append));
       if(append) bw.newLine();
       bw.write(text);
       bw.flush();
       status("Text saved ["+ f+ "]");
+      bw.close();
     }
     catch(IOException e) {
       error("Error saving text ["+ e.getMessage()+ "]");
@@ -1032,6 +1035,15 @@ public class J3270 extends javax.swing.JFrame {
     }
         //</editor-fold>
 
+    final SplashScreen splash = SplashScreen.getSplashScreen();
+    new Thread(new Runnable() {
+      public void run() {
+        try { Thread.sleep(3000); }
+        catch(InterruptedException e) {}
+        if(splash != null) splash.close();
+      }
+    }).start();
+    
     J3270 j3270 = new J3270();
     j3270.setVisible(true);
   }

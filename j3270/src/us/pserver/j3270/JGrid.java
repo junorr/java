@@ -112,7 +112,7 @@ public class JGrid extends JPanel implements
     lastPos = null;
     locked = true;
     selected = null;
-    lst = new LinkedList<>();
+    lst = new LinkedList<DisplayListener>();
     cdr = new Base64StringCoder();
     this.setBackground(ColorTable.DEF_BGCOLOR);
   }

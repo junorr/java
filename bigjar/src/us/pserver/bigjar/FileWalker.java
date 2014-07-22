@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.zip.ZipEntry;
 
 /**
  *
@@ -38,49 +39,49 @@ import java.util.List;
  */
 public class FileWalker implements FileVisitor<Path> {
 
-  private LinkedList<Path> paths;
+  private LinkedList<ZipEntry> entries;
   
   private Path dir;
   
-  private Path mainJar;
-  
   
   public FileWalker(String dir) {
-    this.dir = Paths.get(dir).toAbsolutePath();
-    paths = new LinkedList<>();
-    mainJar = null;
+    this(Paths.get(dir).toAbsolutePath());
   }
   
   
-  public Path getMainJar() {
-    return mainJar;
+  public FileWalker(Path d) {
+    if(d == null || !Files.exists(d))
+      throw new IllegalArgumentException("Invalid dir to walk ["+ d+ "]");
+    this.dir = d;
+    entries = new LinkedList<>();
   }
   
   
-  public List<Path> walk() {
+  public List<ZipEntry> walk() {
     try {
       Files.walkFileTree(dir, this);
     } catch(IOException e) {}
-    return paths;
+    return entries;
   }
   
   
   @Override
-  public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+  public FileVisitResult preVisitDirectory(Path pd, BasicFileAttributes attrs) throws IOException {
+    String str = dir.relativize(pd).toString();
+    str = str.replace("\\", "/");
+    if(!str.endsWith("/")) str += "/";
+    if(!str.equals("/")) {
+      entries.add(new ZipEntry(str));
+    }
     return FileVisitResult.CONTINUE;
   }
 
 
   @Override
   public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-    if(file.toString().endsWith(".jar")
-        && !paths.contains(file)) {
-      Path p = dir.resolve(file.getFileName());
-      if(Files.exists(p) && file.equals(p))
-        mainJar = p;
-      else
-        paths.add(file);
-    }
+    String str = dir.relativize(file).toString();
+    str = str.replace("\\", "/");
+    entries.add(new ZipEntry(str));
     return FileVisitResult.CONTINUE;
   }
 
@@ -98,13 +99,12 @@ public class FileWalker implements FileVisitor<Path> {
   
   
   public static void main(String[] args) {
-    FileWalker fw = new FileWalker("d:/java/bigjar/dist");
+    FileWalker fw = new FileWalker("c:/.local/java/bigjar/dist/bigjar");
     List l = fw.walk();
     System.out.println("------------------------");
     for(Object o : l) {
       System.out.println(o);
     }
-    System.out.println("--> main jar: "+ fw.getMainJar());
   }
   
 }
