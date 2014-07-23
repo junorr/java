@@ -53,11 +53,14 @@ public class Main {
     w.setSize(img.getWidth(), img.getHeight());
     w.setVisible(true);
     
+    final J3270 term = new J3270();
+    
     new Thread(new Runnable() {
       @Override
       public void run() {
-        try { Thread.sleep(4000); }
+        try { Thread.sleep(3200); }
         catch(InterruptedException e) {}
+        term.setVisible(true);
         w.dispose();
       }
     }).start();
@@ -68,9 +71,6 @@ public class Main {
         break;
       }
     }
-    
-    J3270 term = new J3270();
-    term.setVisible(true);
   }
   
 }

@@ -310,8 +310,10 @@ public class JGrid extends JPanel implements
     Dimension dm = calcCellSize();
     celw = dm.width;
     celh = dm.height-1;
-    this.removeAll();
-    this.loadScreen();
+    if(j3270.session().isConnected()) {
+      this.removeAll();
+      this.loadScreen();
+    }
   }
   
   
@@ -372,7 +374,7 @@ public class JGrid extends JPanel implements
   
   
   public boolean waitFor(Cursor cs, String str) {
-    return waitFor(cs, str, 6);
+    return waitFor(cs, str, 8);
   }
 
 
@@ -406,7 +408,7 @@ public class JGrid extends JPanel implements
   
   
   public String waitElse(Cursor cs, String cond, Cursor cs2, String cond2) {
-    return waitElse(cs, cond, cs2, cond2, 6);
+    return waitElse(cs, cond, cs2, cond2, 8);
   }
 
 

@@ -305,21 +305,7 @@ implements CodeListener, ParserListener {
           || getCode().isEmpty()))
         this.open();
       
-      console.setText("");
-      if(getCode() == null || getCode().isEmpty()) {
-        println("### No code for execution");
-        return;
-      }
-      playButton.setText("Stop");
-      println("Executing script...");
-      
-      Thread th = new Thread() {
-        public void run() { 
-          processCode(); 
-        }
-      };
-      th.setPriority(Thread.MAX_PRIORITY);
-      th.start();
+      this.exec();
     }
     
     else {
@@ -337,6 +323,25 @@ implements CodeListener, ParserListener {
       playButton.setText("Play");
       println("Execution stopped!");
     }
+  }
+  
+  
+  public void exec() {
+    console.setText("");
+    if(getCode() == null || getCode().isEmpty()) {
+      println("### No code for execution");
+      return;
+    }
+    playButton.setText("Stop");
+    println("Executing script...");
+    
+    Thread th = new Thread() {
+      public void run() { 
+        processCode(); 
+      }
+    };
+    th.setPriority(Thread.MAX_PRIORITY);
+    th.start();
   }
   
   

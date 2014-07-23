@@ -1,1 +1,1 @@
-@java -jar j3270.jar
+@java -jar bin\j3270.jar

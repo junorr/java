@@ -21,7 +21,6 @@
 
 package com.jpower.conf;
 
-import biz.source_code.base64Coder.Base64Coder;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,6 +42,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import us.pserver.cdr.StringByteConverter;
+import us.pserver.cdr.b64.Base64ByteCoder;
+import us.pserver.date.SimpleDate;
 
 /**
  *
@@ -60,10 +62,16 @@ public class Config implements Serializable {
   
   private File file;
   
+  private final Base64ByteCoder cdr;
+  
+  private final StringByteConverter cv;
+  
   
   public Config() {
     map = new TreeMap<>();
     file = null;
+    cdr = new Base64ByteCoder();
+    cv = new StringByteConverter();
   }
   
   
@@ -78,6 +86,11 @@ public class Config implements Serializable {
     this();
     this.setFile(f);
     this.load();
+  }
+  
+  
+  public Base64ByteCoder getBase64Coder() {
+    return cdr;
   }
   
   
@@ -246,11 +259,15 @@ public class Config implements Serializable {
         || !this.contains(key))
       return null;
     
+    String val = String.valueOf(map.get(key));
+    if(!val.contains(",")) return null;
+    val = val.replace("[", "");
+    val = val.replace("]", "");
+    
     List l = new LinkedList();
-    String[] keys = this.keysArray();
-    for(int i = 0; i < keys.length; i++) {
-      if(keys[i].startsWith(key))
-        l.add(this.getObject(keys[i]));
+    String[] array = val.split(", ");
+    for(String s : array) {
+      l.add(s);
     }
     return l;
   }
@@ -286,6 +303,13 @@ public class Config implements Serializable {
   }
   
   
+  public Date getDate(String key) {
+    if(!map.containsKey(key)) return null;
+    String val = String.valueOf(map.get(key));
+    return SimpleDate.parseDate(val);
+  }
+  
+  
   public InetSocketAddress getSocketAddress(String keyAddress, String keyPort) {
     if(map.isEmpty() || !map.containsKey(keyAddress) 
         || !map.containsKey(keyPort))
@@ -300,7 +324,7 @@ public class Config implements Serializable {
   public byte[] getBytes(String key) {
     String s = this.get(key);
     if(s != null && !s.isEmpty())
-      return Base64Coder.decode(s);
+      return cdr.decode(cv.convert(s));
     return null;
   }
   
@@ -338,10 +362,13 @@ public class Config implements Serializable {
   private Config putList(String key, List l) {
     if(l != null && !l.isEmpty()
         && key != null && !key.isEmpty()) {
+      String val = "[";
       for(int i = 0; i < l.size(); i++) {
-        this.put(key.concat(".#[").concat(
-            String.valueOf(i)).concat("]"), l.get(i));
+        val += String.valueOf(l.get(i));
+        if(i < l.size()-1) val += ", ";
       }
+      val += "]";
+      map.put(key, val);
     }
     return this;
   }
@@ -350,15 +377,26 @@ public class Config implements Serializable {
   public Config put(String key, byte[] array, int off, int len) {
     if(key != null && !key.isEmpty()
         && array != null && array.length > 0) {
-      this.put(key, String.valueOf(
-          Base64Coder.encode(array, off, len)));
+      this.put(key, cv.reverse(cdr.encode(array, off, len)));
     }
     return this;
   }
   
   
   public Config put(String key, byte[] array) {
-    return put(key, array, 0, array.length);
+    if(key != null && !key.isEmpty()
+        && array != null && array.length > 0) {
+      this.put(key, cv.reverse(cdr.encode(array)));
+    }
+    return this;
+  }
+  
+  
+  public Config put(String key, Date date) {
+    if(key != null && date != null) {
+      map.put(key, SimpleDate.from(date).toString());
+    }
+    return this;
   }
   
   
@@ -377,18 +415,7 @@ public class Config implements Serializable {
   
   
   public boolean contains(String key) {
-    boolean b = false;
-    String[] keys = this.keysArray();
-    if(keys == null) return false;
-    
-    for(String k : keys) {
-      if(k.contains(".#["))
-        b = k.contains(key);
-      else
-        b = k.equals(key);
-      if(b) return b;
-    }
-    return b;
+    return map.containsKey(key);
   }
   
   
@@ -432,6 +459,7 @@ public class Config implements Serializable {
     
     c.putSerializable("B", b);
     c.putSerializable("A", a);
+    c.put("date", new Date());
     c.put("a.bs", Arrays.asList(a.bs));
     System.out.println("c.contains( 'a.bs' ): "+ c.contains("a.bs"));
     c.save();
@@ -439,6 +467,7 @@ public class Config implements Serializable {
     c = new Config("./test.conf");
     c.load();
     b = (B) c.getSerializable("B");
+    System.out.println("* b="+ b);
     
     List<String> lb = c.getList("a.bs");
     Byte[] bs = new Byte[lb.size()];
@@ -452,6 +481,7 @@ public class Config implements Serializable {
     System.out.println("a.i : "+ b.a.i);
     System.out.println("a.s : "+ b.a.s);
     System.out.println("a.bs: "+ b.a.bs.length);
+    System.out.println("date: "+ c.getDate("date"));
     System.out.println("bs[0]: "+ b.a.bs[0]);
     System.out.println("bs[1]: "+ b.a.bs[1]);
     System.out.println("bs[2]: "+ b.a.bs[2]);

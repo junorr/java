@@ -6,8 +6,10 @@
 
 package us.pserver.j3270;
 
+import com.jpower.conf.Config;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.awt.SplashScreen;
 import java.awt.event.ComponentEvent;
@@ -51,10 +53,27 @@ public class J3270 extends javax.swing.JFrame {
 
   public static final String MIME_TEXT = "text/plain";
   
+  public static final String FILE_CONF = "./settings.conf";
+  
+  public static final String FONT_NAME = "font.name";
+  
+  public static final String FONT_SIZE = "font.size";
+  
+  public static final String FONT_STYLE = "font.style";
+  
+  public static final String CONN_HOST = "connection.host";
+  
+  public static final String CONN_PORT = "connection.port";
+  
+  public static final String STARTUP_SCRIPT = "startup_script";
+  
+  public static final String COMMENT = "J3270 - Java 3270 Terminal Emulator";
+  
   public static final Color STATUS_DEF_COLOR = new Color(45, 90, 180);
 
   public static final Color STATUS_ERROR_COLOR = new Color(170, 0, 0);
 
+  
   private Session sess;
   
   private String address;
@@ -72,6 +91,12 @@ public class J3270 extends javax.swing.JFrame {
   private ScriptProcessor proc;
   
   private CodeViewer cview;
+  
+  private Config config;
+  
+  private String script;
+  
+  private File prevDir;
 
   
   /**
@@ -87,6 +112,8 @@ public class J3270 extends javax.swing.JFrame {
     copy = new TextCopy();
     driver = new JDriver(this, grid);
     this.setLookAndFeel();
+    script = null;
+    prevDir = null;
     
     lst = new LinkedList<WindowListener>();
     proc = new ScriptProcessor(driver);
@@ -138,12 +165,23 @@ public class J3270 extends javax.swing.JFrame {
       @Override
       public void componentShown(ComponentEvent e) {
         cview.setVisible(scriptButton.isSelected());
+        if(script != null && !script.trim().isEmpty()) {
+          status("Executing Startup Script: "+ script);
+          cview.open(new File(script));
+          cview.exec();
+        }
       }
       @Override
       public void componentHidden(ComponentEvent e) {
         cview.setVisible(false);
       }
     });
+    
+    config = new Config(FILE_CONF);
+    if(config.isEmpty())
+      setDefaultConfig();
+    else
+      readConfig();
   }
   
   
@@ -166,6 +204,63 @@ public class J3270 extends javax.swing.JFrame {
   
   public ScriptProcessor scriptProc() {
     return proc;
+  }
+  
+  
+  private void setDefaultConfig() {
+    config.setComment(COMMENT);
+    putGridFont(grid.getViewFont());
+    putConnection(address, port);
+    putStartupScript(" ");
+  }
+  
+  
+  private void readConfig() {
+    grid.setViewFont(readGridFont());
+    readConnection();
+    script = readStartupScript();
+  }
+  
+  
+  private void putGridFont(Font f) {
+    if(f == null) return;
+    config.put(FONT_NAME, f.getFamily())
+        .put(FONT_SIZE, f.getSize())
+        .put(FONT_STYLE, f.getStyle())
+        .save();
+  }
+  
+  
+  private Font readGridFont() {
+    return new Font(
+        config.get(FONT_NAME),
+        config.getInt(FONT_STYLE),
+        config.getInt(FONT_SIZE));
+  }
+  
+  
+  private void readConnection() {
+    address = config.get(CONN_HOST);
+    port = config.getInt(CONN_PORT);
+  }
+  
+  
+  private void putConnection(String host, int port) {
+    if(host == null || port <= 0) return;
+    config.put(CONN_HOST, host)
+        .put(CONN_PORT, port)
+        .save();
+  }
+  
+  
+  private void putStartupScript(String path) {
+    if(path == null) return;
+    config.put(STARTUP_SCRIPT, path).save();
+  }
+  
+  
+  private String readStartupScript() {
+    return config.get(STARTUP_SCRIPT);
   }
   
   
@@ -262,8 +357,6 @@ public class J3270 extends javax.swing.JFrame {
     saveImgMenu = new javax.swing.JMenuItem();
     saveTxtMenu = new javax.swing.JMenuItem();
     appendImgMenu = new javax.swing.JMenuItem();
-    saveSelMenu = new javax.swing.JMenuItem();
-    appendSelTextMenu = new javax.swing.JMenuItem();
     quitMenu = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JMenu();
     copyMenu = new javax.swing.JMenuItem();
@@ -276,6 +369,7 @@ public class J3270 extends javax.swing.JFrame {
     insertgetMenu = new javax.swing.JMenuItem();
     jMenu1 = new javax.swing.JMenu();
     networkMenu = new javax.swing.JMenuItem();
+    startupScriptMenu = new javax.swing.JMenuItem();
     fontMenu = new javax.swing.JMenuItem();
     jSeparator1 = new javax.swing.JPopupMenu.Separator();
     b64Menu = new javax.swing.JMenuItem();
@@ -419,28 +513,10 @@ public class J3270 extends javax.swing.JFrame {
     appendImgMenu.setText("Append Text");
     appendImgMenu.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-        appendImgMenuActionPerformed(evt);
+        appendTextMenuActionPerformed(evt);
       }
     });
     fileMenu.add(appendImgMenu);
-
-    saveSelMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-    saveSelMenu.setText("Save Selected Text");
-    saveSelMenu.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        saveSelMenuActionPerformed(evt);
-      }
-    });
-    fileMenu.add(saveSelMenu);
-
-    appendSelTextMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-    appendSelTextMenu.setText("Append Selected Text");
-    appendSelTextMenu.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        appendSelTextMenuActionPerformed(evt);
-      }
-    });
-    fileMenu.add(appendSelTextMenu);
 
     quitMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
     quitMenu.setText("Quit");
@@ -531,6 +607,15 @@ public class J3270 extends javax.swing.JFrame {
       }
     });
     jMenu1.add(networkMenu);
+
+    startupScriptMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK));
+    startupScriptMenu.setText("Startup Script");
+    startupScriptMenu.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        startupScriptMenuActionPerformed(evt);
+      }
+    });
+    jMenu1.add(startupScriptMenu);
 
     fontMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.ALT_MASK));
     fontMenu.setText("Font Select");
@@ -664,40 +749,20 @@ public class J3270 extends javax.swing.JFrame {
   
   private void saveTxtMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTxtMenuActionPerformed
     if(checkLockedScreen()) return;
+    String text = grid.getSelected();
+    if(text == null) text = getScreenln();
     File f = selectFile("Save Screen Text", "txt", false);
-    if(f != null) this.saveText(f, false);
+    if(f != null) this.saveText(f, text, false);
   }//GEN-LAST:event_saveTxtMenuActionPerformed
 
   
-  private void appendImgMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_appendImgMenuActionPerformed
+  private void appendTextMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_appendTextMenuActionPerformed
     if(checkLockedScreen()) return;
+    String text = grid.getSelected();
+    if(text == null) text = getScreenln();
     File f = selectFile("Append Screen Text", "txt", false);
-    if(f != null) this.saveText(f, true);
-  }//GEN-LAST:event_appendImgMenuActionPerformed
-
-  
-  private void appendSelTextMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_appendSelTextMenuActionPerformed
-    if(checkLockedScreen()) return;
-    String sel = grid.getSelected();
-    if(sel == null) {
-      error("No text selected");
-      return;
-    }
-    File f = selectFile("Save Selected Text", "txt", false);
-    if(f != null) this.saveText(f, sel, true);
-  }//GEN-LAST:event_appendSelTextMenuActionPerformed
-
-  
-  private void saveSelMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveSelMenuActionPerformed
-    if(checkLockedScreen()) return;
-    String sel = grid.getSelected();
-    if(sel == null) {
-      error("No text selected");
-      return;
-    }
-    File f = selectFile("Save Selected Text", "txt", false);
-    if(f != null) this.saveText(f, sel, false);
-  }//GEN-LAST:event_saveSelMenuActionPerformed
+    if(f != null) this.saveText(f, text, true);
+  }//GEN-LAST:event_appendTextMenuActionPerformed
 
   
   private void quitMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitMenuActionPerformed
@@ -707,13 +772,17 @@ public class J3270 extends javax.swing.JFrame {
   
   private void copyAppendMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyAppendMenuActionPerformed
     if(checkLockedScreen()) return;
-    this.copyAppend(grid.getSelected());
+    String sel = grid.getSelected();
+    if(sel == null) sel = getScreenln();
+    this.copyAppend(sel);
   }//GEN-LAST:event_copyAppendMenuActionPerformed
 
   
   private void copyMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyMenuActionPerformed
     if(checkLockedScreen()) return;
-    this.copy(grid.getSelected());
+    String sel = grid.getSelected();
+    if(sel == null) sel = getScreenln();
+    this.copy(sel);
   }//GEN-LAST:event_copyMenuActionPerformed
 
   
@@ -734,6 +803,7 @@ public class J3270 extends javax.swing.JFrame {
     this.paste();
   }//GEN-LAST:event_pasteMenuActionPerformed
 
+  
   private void findMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findMenuActionPerformed
     if(checkLockedScreen()) return;
     String str = JOptionPane.showInputDialog(this, "Inform the text to search:", "Find", JOptionPane.PLAIN_MESSAGE);
@@ -757,6 +827,7 @@ public class J3270 extends javax.swing.JFrame {
     FontSelector fs = new FontSelector(this, true, grid.getViewFont());
     fs.setVisible(true);
     grid.setViewFont(fs.getSelectedFont());
+    putGridFont(fs.getSelectedFont());
   }//GEN-LAST:event_fontMenuActionPerformed
 
   
@@ -767,7 +838,7 @@ public class J3270 extends javax.swing.JFrame {
 
   
   private void appendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_appendButtonActionPerformed
-    appendSelTextMenuActionPerformed(evt);
+    copyAppendMenuActionPerformed(evt);
     grid.requestFocus();
   }//GEN-LAST:event_appendButtonActionPerformed
 
@@ -786,6 +857,8 @@ public class J3270 extends javax.swing.JFrame {
   
   private void networkMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_networkMenuActionPerformed
     NetworkDialog dlg = new NetworkDialog(this, true);
+    dlg.setAddress(address);
+    dlg.setPort(port);
     dlg.setVisible(true);
     address = dlg.getAddress();
     port = dlg.getPort();
@@ -797,6 +870,7 @@ public class J3270 extends javax.swing.JFrame {
           + ":"+ port+ "]");
     }
     else {
+      putConnection(address, port);
       status("Server Address [ "+ address+ ":"
           + String.valueOf(port)+ " ]");
     }
@@ -823,21 +897,38 @@ public class J3270 extends javax.swing.JFrame {
     cview.setVisible(scriptButton.isSelected());
   }//GEN-LAST:event_scriptButtonActionPerformed
 
+  
   private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutButtonActionPerformed
     new AboutDialog(this, true).setVisible(true);
   }//GEN-LAST:event_aboutButtonActionPerformed
 
+  
   private void aboutMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutMenuMouseClicked
     new AboutDialog(this, true).setVisible(true);
   }//GEN-LAST:event_aboutMenuMouseClicked
 
+  
   private void insertwaitMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertwaitMenuActionPerformed
     cview.insertWaitFor();
   }//GEN-LAST:event_insertwaitMenuActionPerformed
 
+  
   private void insertgetMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertgetMenuActionPerformed
     cview.insertGetText();
   }//GEN-LAST:event_insertgetMenuActionPerformed
+
+  
+  private void startupScriptMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startupScriptMenuActionPerformed
+    if(script != null && !script.isEmpty())
+      prevDir = new File(script).getParentFile();
+    File f = selectFile("Select Startup Script", "txt", false);
+    if(f != null) {
+      status("Startup Script defined: "+ f.toString());
+      script = f.toString();
+    }
+    else script = " ";
+    putStartupScript(script);
+  }//GEN-LAST:event_startupScriptMenuActionPerformed
 
   
   
@@ -877,7 +968,7 @@ public class J3270 extends javax.swing.JFrame {
   public File selectFile(String title, String extension, boolean directories) {
     if(title == null || extension == null)
       return null;
-    JFileChooser chooser = new JFileChooser();
+    JFileChooser chooser = new JFileChooser(prevDir);
     chooser.setDialogTitle(title);
     if(directories)
       chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -892,7 +983,11 @@ public class J3270 extends javax.swing.JFrame {
       error("Invalid File Selected");
       return null;
     }
-    return chooser.getSelectedFile();
+    File f = chooser.getSelectedFile();
+    if(f.isFile())
+      prevDir = f.getParentFile();
+    else prevDir = f;
+    return f;
   }
   
   
@@ -911,21 +1006,31 @@ public class J3270 extends javax.swing.JFrame {
   }
   
   
-  public void saveText(File f, boolean append) {
+  public String getScreenln() {
+    return getScreen(true);
+  }  
+  
+  
+  public String getScreen() {
+    return getScreen(false);
+  }
+  
+  
+  private String getScreen(boolean doln) {
     StringBuilder sb = new StringBuilder();
     String ln = (File.separatorChar == '/' ? "\n" : "\r\n");
     Component[] cs = grid.getComponents();
     if(cs == null || cs.length == 0) {
       error("There is no text in screen");
-      return;
+      return null;
     }
     
     for(int i = 0; i < cs.length; i++) {
       JChar jc = (JChar) cs[i];
       sb.append(jc.getText());
-      if(i % 80 == 0) sb.append(ln);
+      if(i % 80 == 0 && doln) sb.append(ln);
     }
-    this.saveText(f, sb.toString(), append);
+    return sb.toString();
   }  
   
   
@@ -1053,7 +1158,6 @@ public class J3270 extends javax.swing.JFrame {
   private javax.swing.JMenu aboutMenu;
   private javax.swing.JButton appendButton;
   private javax.swing.JMenuItem appendImgMenu;
-  private javax.swing.JMenuItem appendSelTextMenu;
   private javax.swing.JMenuItem b64Menu;
   private javax.swing.JButton connButton;
   private javax.swing.JMenuItem connectMenu;
@@ -1083,9 +1187,9 @@ public class J3270 extends javax.swing.JFrame {
   private javax.swing.JMenuItem pasteMenu;
   private javax.swing.JMenuItem quitMenu;
   private javax.swing.JMenuItem saveImgMenu;
-  private javax.swing.JMenuItem saveSelMenu;
   private javax.swing.JMenuItem saveTxtMenu;
   private javax.swing.JToggleButton scriptButton;
+  private javax.swing.JMenuItem startupScriptMenu;
   private javax.swing.JLabel status;
   // End of variables declaration//GEN-END:variables
 }

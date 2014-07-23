@@ -73,6 +73,16 @@ public class NetworkDialog extends javax.swing.JDialog {
       return -1;
     }
   }
+  
+  
+  public void setAddress(String address) {
+    addrField.setText(address);
+  }
+  
+  
+  public void setPort(int port) {
+    portField.setText(String.valueOf(port));
+  }
 
 
   /**

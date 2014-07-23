@@ -333,7 +333,7 @@ public class JDriver implements SessionConstants {
     testLocked();
     if(cs == null)
       throwArgumentError("Invalid Cursor ["+ cs+ "]");
-    if(length < 1 || cs.column()+length > COLS)
+    if(length < 1 || cs.column()+length > COLS+1)
       throwArgumentError("Invalid length ["+ length+ "]");
     return grid.getTextAt(cs, length);
   }
@@ -341,7 +341,13 @@ public class JDriver implements SessionConstants {
   
   public String getScreen() {
     testLocked();
-    return j3270.session().getScreen();
+    return j3270.getScreen();
+  }
+  
+  
+  public String getScreenln() {
+    testLocked();
+    return j3270.getScreenln();
   }
   
   
