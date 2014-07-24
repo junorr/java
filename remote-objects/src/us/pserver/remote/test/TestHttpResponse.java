@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.remote;
+package us.pserver.remote.test;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,6 +30,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import us.pserver.remote.HttpResponseChannel;
+import us.pserver.remote.Transport;
 import us.pserver.streams.StreamUtils;
 
 /**
@@ -56,7 +58,7 @@ public class TestHttpResponse {
     System.out.println("* received: "+ trp);
     if(trp.hasContentEmbedded()) {
       System.out.println("* content embedded received!");
-      Path to = Paths.get("d:/inputstream.jpg");
+      Path to = Paths.get("c:/.local/inputstream.png");
       System.out.println("* writing to: "+ to.toString());
       OutputStream out = Files.newOutputStream(to,
           StandardOpenOption.WRITE, 

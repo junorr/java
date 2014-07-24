@@ -32,6 +32,7 @@ import us.pserver.http.HttpCryptKey;
 import us.pserver.http.HttpEnclosedObject;
 import us.pserver.http.HttpInputStream;
 import us.pserver.http.RequestLine;
+import us.pserver.http.ResponseLine;
 import us.pserver.http.ResponseParser;
 import us.pserver.streams.StreamUtils;
 
@@ -79,6 +80,8 @@ public class HttpRequestChannel implements Channel, HttpConst {
   private boolean crypt, gzip;
   
   private CryptAlgorithm algo;
+  
+  private ResponseLine resp;
   
   
   /**
@@ -160,6 +163,11 @@ public class HttpRequestChannel implements Channel, HttpConst {
   }
   
   
+  public ResponseLine getResponseLine() {
+    return resp;
+  }
+  
+  
   /**
    * Define alguns cabeçalhos da requisição HTTP,
    * como tipo de conteúdo, codificação, conteúdo
@@ -201,17 +209,17 @@ public class HttpRequestChannel implements Channel, HttpConst {
     
     builder.writeContent(sock.getOutputStream());
     this.verifyResponse();
+    //dump();
   }
   
   
   private void verifyResponse() throws IOException {
     readHeaders();
-    if(parser.getResponseLine() == null
-        || parser.getResponseLine().getCode() != 200) {
-      parser.headers().forEach(System.out::print);
+    resp = parser.getResponseLine();
+    if(resp == null || resp.getCode() != 200) {
+      //parser.headers().forEach(System.out::print);
       throw new IOException(
-          "Invalid response from server: "
-          + parser.getResponseLine());
+          "Invalid response from server: "+ resp);
     }
   }
   
@@ -244,7 +252,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
     HttpEnclosedObject hob = (HttpEnclosedObject) 
         parser.getHeader(HTTP_ENCLOSED_OBJECT);
     
-    Transport tp = (Transport) hob.getObject();
+    Transport tp = hob.getObjectAs();
     
     if(parser.containsHeader(HTTP_INPUTSTREAM)) {
       HttpInputStream his = (HttpInputStream) 

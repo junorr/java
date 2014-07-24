@@ -908,3 +908,236 @@
 * (22/01/2014 17:35:41) [INFO]: Handling socket: Socket[addr=/172.24.75.19,port=43001,localport=10099]
 * (22/01/2014 17:35:41) [INFO]: Remote request: UpperEcho.toUpperCase( a string to be echoed in upper case )
 * (22/01/2014 17:35:41) [INFO]: Response sent: OpResult{ success = true, return = A STRING TO BE ECHOED IN UPPER CASE }
+[INFO ] (24/07/2014 15:06:33): Starting NetworkServer...
+[INFO ] (24/07/2014 15:06:34): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 15:06:34): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 15:06:34): Server started!
+
+[INFO ] (24/07/2014 15:06:51): ------------------------------
+[INFO ] (24/07/2014 15:06:51): Handling socket: Socket[addr=/172.24.77.6,port=58883,localport=9099]
+[INFO ] (24/07/2014 15:06:51): Remote request: NetworkServer.getAvailableThreads(  ) : int
+[INFO ] (24/07/2014 15:08:45): Starting NetworkServer...
+[INFO ] (24/07/2014 15:08:45): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 15:08:45): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 15:08:45): Server started!
+
+[INFO ] (24/07/2014 15:08:49): ------------------------------
+[INFO ] (24/07/2014 15:08:49): Handling socket: Socket[addr=/172.24.77.6,port=58894,localport=9099]
+[INFO ] (24/07/2014 15:08:49): Remote request: NetworkServer.getAvailableThreads(  ) : int
+[WARN ] (24/07/2014 15:08:49): Error invoking method [NetworkServer.getAvailableThreads(  ) : int]: us.pserver.remote.MethodInvocationException: Method not found: NetworkServer.getAvailableThreads(  ) : int
+[INFO ] (24/07/2014 15:08:49): Response sent: OpResult{ success = false, return = null }
+[INFO ] (24/07/2014 15:13:56): Starting NetworkServer...
+[FATAL] (24/07/2014 15:13:56): Error running
+[FATAL] (24/07/2014 15:13:56): java.net.BindException: Address already in use: JVM_Bind
+[INFO ] (24/07/2014 15:14:03): Starting NetworkServer...
+[INFO ] (24/07/2014 15:14:03): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 15:14:03): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 15:14:03): Server started!
+
+[INFO ] (24/07/2014 15:14:06): ------------------------------
+[INFO ] (24/07/2014 15:14:06): Handling socket: Socket[addr=/172.24.77.6,port=58904,localport=9099]
+[INFO ] (24/07/2014 15:14:07): Remote request: NetworkServer.toString(  ) : java.lang.String
+[WARN ] (24/07/2014 15:14:07): Error invoking method [NetworkServer.toString(  ) : java.lang.String]: us.pserver.remote.MethodInvocationException: Method not found: NetworkServer.toString(  ) : java.lang.String
+[INFO ] (24/07/2014 15:14:07): Response sent: OpResult{ success = false, return = null }
+[INFO ] (24/07/2014 15:24:13): ------------------------------
+[INFO ] (24/07/2014 15:24:13): Handling socket: Socket[addr=/172.24.77.6,port=58940,localport=9099]
+[INFO ] (24/07/2014 15:24:13): Remote request: NetworkServer.toString(  )
+[WARN ] (24/07/2014 15:24:13): Error invoking method [NetworkServer.toString(  )]: us.pserver.remote.MethodInvocationException: Method not found: NetworkServer.toString(  )
+[INFO ] (24/07/2014 15:24:13): Response sent: OpResult{ success = false, return = null }
+[INFO ] (24/07/2014 15:26:49): ------------------------------
+[INFO ] (24/07/2014 15:26:49): Handling socket: Socket[addr=/172.24.77.6,port=58947,localport=9099]
+[INFO ] (24/07/2014 15:26:49): Remote request: AbstractServer.toString(  )
+[WARN ] (24/07/2014 15:26:49): Error invoking method [AbstractServer.toString(  )]: us.pserver.remote.MethodInvocationException: Method not found: AbstractServer.toString(  )
+[INFO ] (24/07/2014 15:26:49): Response sent: OpResult{ success = false, return = null }
+[INFO ] (24/07/2014 15:27:07): ------------------------------
+[INFO ] (24/07/2014 15:27:07): Handling socket: Socket[addr=/172.24.77.6,port=58950,localport=9099]
+[INFO ] (24/07/2014 15:27:07): Remote request: AbstractServer.getAvailableThreads(  )
+[WARN ] (24/07/2014 15:27:07): Error invoking method [AbstractServer.getAvailableThreads(  )]: us.pserver.remote.MethodInvocationException: Method not found: AbstractServer.getAvailableThreads(  )
+[INFO ] (24/07/2014 15:27:07): Response sent: OpResult{ success = false, return = null }
+[INFO ] (24/07/2014 16:09:49): Starting NetworkServer...
+[INFO ] (24/07/2014 16:09:49): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 16:09:49): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 16:09:49): Server started!
+
+[INFO ] (24/07/2014 16:10:44): ------------------------------
+[INFO ] (24/07/2014 16:10:44): Handling socket: Socket[addr=/172.24.77.6,port=59116,localport=9099]
+[INFO ] (24/07/2014 16:10:44): Remote request: NetworkServer.getAvailableThreads(  ) : int
+[INFO ] (24/07/2014 16:10:44): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (24/07/2014 16:37:28): Starting NetworkServer...
+[INFO ] (24/07/2014 16:37:28): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 16:37:28): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 16:37:28): Server started!
+
+[INFO ] (24/07/2014 16:37:32): ------------------------------
+[INFO ] (24/07/2014 16:37:32): Handling socket: Socket[addr=/172.24.77.6,port=59243,localport=9099]
+[INFO ] (24/07/2014 16:37:33): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@60faa05e, c:/.local/remote.png ) : boolean
+[WARN ] (24/07/2014 16:37:33): Error invoking method [StreamHandler.save( us.pserver.streams.MultiCoderBuffer$1@bee4061, c:/.local/remote.png ) : boolean]: us.pserver.remote.MethodInvocationException: Method not found: StreamHandler.save( us.pserver.streams.MultiCoderBuffer$1@bee4061, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 16:37:33): Response sent: OpResult{ success = false, return = null }
+[INFO ] (24/07/2014 16:55:53): Starting NetworkServer...
+[INFO ] (24/07/2014 16:55:53): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 16:55:53): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 16:55:53): Server started!
+
+[INFO ] (24/07/2014 16:55:56): ------------------------------
+[INFO ] (24/07/2014 16:55:56): Handling socket: Socket[addr=/172.24.77.6,port=59380,localport=9099]
+[INFO ] (24/07/2014 16:55:57): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@60faa05e, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 16:55:57): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@60faa05e, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 16:55:57): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:06:18): Starting NetworkServer...
+[INFO ] (24/07/2014 17:06:18): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 17:06:18): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 17:06:18): Server started!
+
+[INFO ] (24/07/2014 17:06:22): ------------------------------
+[INFO ] (24/07/2014 17:06:22): Handling socket: Socket[addr=/172.24.77.6,port=63461,localport=9099]
+[INFO ] (24/07/2014 17:06:23): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@552c4225, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:06:23): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@552c4225, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:06:23): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:23:58): Starting NetworkServer...
+[INFO ] (24/07/2014 17:23:58): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 17:23:58): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 17:23:58): Server started!
+
+[INFO ] (24/07/2014 17:24:01): ------------------------------
+[INFO ] (24/07/2014 17:24:01): Handling socket: Socket[addr=/172.24.77.6,port=63513,localport=9099]
+[INFO ] (24/07/2014 17:24:02): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@62839e81, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:24:02): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@62839e81, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:24:02): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:24:56): ------------------------------
+[INFO ] (24/07/2014 17:24:56): Handling socket: Socket[addr=/172.24.77.6,port=63514,localport=9099]
+[INFO ] (24/07/2014 17:24:56): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@7eac0b66, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:24:56): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7eac0b66, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:24:56): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:25:19): ------------------------------
+[INFO ] (24/07/2014 17:25:19): Handling socket: Socket[addr=/172.24.77.6,port=63519,localport=9099]
+[INFO ] (24/07/2014 17:25:19): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@1c5b4f33, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:25:19): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@1c5b4f33, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:25:19): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:29:40): ------------------------------
+[INFO ] (24/07/2014 17:29:40): Handling socket: Socket[addr=/172.24.77.6,port=63533,localport=9099]
+[INFO ] (24/07/2014 17:29:41): read: Transport{object=StreamHandler.save( c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:29:41): Remote request: StreamHandler.save( c:/.local/remote.png ) : boolean
+[WARN ] (24/07/2014 17:29:41): Error invoking method [StreamHandler.save( us.pserver.streams.MultiCoderBuffer$1@1361e1c3 ) : boolean]: us.pserver.remote.MethodInvocationException: Invocation error [java.lang.IllegalArgumentException: wrong number of arguments]
+[INFO ] (24/07/2014 17:29:41): Response sent: OpResult{ success = false, return = null }
+[INFO ] (24/07/2014 17:30:33): ------------------------------
+[INFO ] (24/07/2014 17:30:33): Handling socket: Socket[addr=/172.24.77.6,port=63536,localport=9099]
+[INFO ] (24/07/2014 17:30:33): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@78f5b015, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:30:33): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@78f5b015, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:30:33): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:32:07): ------------------------------
+[INFO ] (24/07/2014 17:32:07): Handling socket: Socket[addr=/172.24.77.6,port=63549,localport=9099]
+[INFO ] (24/07/2014 17:32:07): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@7675a6e5, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:32:07): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7675a6e5, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:32:07): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:33:29): ------------------------------
+[INFO ] (24/07/2014 17:33:29): Handling socket: Socket[addr=/172.24.77.6,port=63552,localport=9099]
+[INFO ] (24/07/2014 17:33:29): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@6aa79a87, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:33:29): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@6aa79a87, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:33:29): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:34:42): ------------------------------
+[INFO ] (24/07/2014 17:34:42): Handling socket: Socket[addr=/172.24.77.6,port=63553,localport=9099]
+[INFO ] (24/07/2014 17:34:42): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@5251b01d, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:34:42): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@5251b01d, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:34:42): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:35:24): ------------------------------
+[INFO ] (24/07/2014 17:35:24): Handling socket: Socket[addr=/172.24.77.6,port=63554,localport=9099]
+[INFO ] (24/07/2014 17:35:24): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@4361df7d, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:35:25): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@4361df7d, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:35:25): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:39:42): ------------------------------
+[INFO ] (24/07/2014 17:39:42): Handling socket: Socket[addr=/172.24.77.6,port=63571,localport=9099]
+[INFO ] (24/07/2014 17:39:42): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@49bf2be2, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:39:42): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@49bf2be2, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:39:42): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:42:10): ------------------------------
+[INFO ] (24/07/2014 17:42:10): Handling socket: Socket[addr=/172.24.77.6,port=63586,localport=9099]
+[INFO ] (24/07/2014 17:42:10): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@59906c9f, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:42:10): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@59906c9f, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:42:10): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:42:56): ------------------------------
+[INFO ] (24/07/2014 17:42:56): Handling socket: Socket[addr=/172.24.77.6,port=63589,localport=9099]
+[INFO ] (24/07/2014 17:42:56): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@782a34c0, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:42:56): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@782a34c0, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:42:56): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:46:56): ------------------------------
+[INFO ] (24/07/2014 17:46:56): Handling socket: Socket[addr=/172.24.77.6,port=63595,localport=9099]
+[INFO ] (24/07/2014 17:46:56): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@608dbc42, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:46:56): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@608dbc42, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:46:56): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:50:47): ------------------------------
+[INFO ] (24/07/2014 17:50:47): Handling socket: Socket[addr=/172.24.77.6,port=63608,localport=9099]
+[INFO ] (24/07/2014 17:50:48): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@7ddfb13d, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:50:48): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7ddfb13d, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:50:48): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:52:03): Starting NetworkServer...
+[INFO ] (24/07/2014 17:52:03): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 17:52:03): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 17:52:03): Server started!
+
+[INFO ] (24/07/2014 17:52:06): ------------------------------
+[INFO ] (24/07/2014 17:52:06): Handling socket: Socket[addr=/172.24.77.6,port=63618,localport=9099]
+[INFO ] (24/07/2014 17:52:07): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@668ba558, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:52:07): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@668ba558, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:52:07): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:54:03): Starting NetworkServer...
+[INFO ] (24/07/2014 17:54:03): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 17:54:03): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 17:54:03): Server started!
+
+[INFO ] (24/07/2014 17:54:08): ------------------------------
+[INFO ] (24/07/2014 17:54:08): Handling socket: Socket[addr=/172.24.77.6,port=63626,localport=9099]
+[INFO ] (24/07/2014 17:54:09): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@7aa951d7, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:54:09): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7aa951d7, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:54:09): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:54:09): read: null
+[INFO ] (24/07/2014 17:54:09): Connection closed by client.
+[INFO ] (24/07/2014 17:56:02): Starting NetworkServer...
+[INFO ] (24/07/2014 17:56:02): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 17:56:02): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 17:56:02): Server started!
+
+[INFO ] (24/07/2014 17:56:06): ------------------------------
+[INFO ] (24/07/2014 17:56:06): Handling socket: Socket[addr=/172.24.77.6,port=63631,localport=9099]
+[INFO ] (24/07/2014 17:56:07): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@7a18ffa4, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:56:07): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7a18ffa4, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:56:07): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:56:23): Starting NetworkServer...
+[INFO ] (24/07/2014 17:56:24): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 17:56:24): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 17:56:24): Server started!
+
+[INFO ] (24/07/2014 17:56:26): ------------------------------
+[INFO ] (24/07/2014 17:56:26): Handling socket: Socket[addr=/172.24.77.6,port=63634,localport=9099]
+[INFO ] (24/07/2014 17:56:27): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@4bd382cd, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:56:27): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@4bd382cd, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:56:27): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 17:56:44): Starting NetworkServer...
+[INFO ] (24/07/2014 17:56:44): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 17:56:44): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 17:56:44): Server started!
+
+[INFO ] (24/07/2014 17:56:47): ------------------------------
+[INFO ] (24/07/2014 17:56:47): Handling socket: Socket[addr=/172.24.77.6,port=63636,localport=9099]
+[INFO ] (24/07/2014 17:56:48): read: Transport{object=StreamHandler.save( sun.nio.ch.ChannelInputStream@60faa05e, c:/.local/remote.png ) : boolean, hasContentEmbedded=true}
+[INFO ] (24/07/2014 17:56:48): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@60faa05e, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 17:56:48): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 18:00:35): Starting NetworkServer...
+[INFO ] (24/07/2014 18:00:35): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 18:00:35): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 18:00:35): Server started!
+
+[INFO ] (24/07/2014 18:00:39): ------------------------------
+[INFO ] (24/07/2014 18:00:39): Handling socket: Socket[addr=/172.24.77.6,port=63716,localport=9099]
+[INFO ] (24/07/2014 18:00:40): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@62839e81, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 18:00:40): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 18:00:40): Connection closed by client.
+[INFO ] (24/07/2014 18:01:16): Starting NetworkServer...
+[INFO ] (24/07/2014 18:01:16): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (24/07/2014 18:01:16): Listening on: NetConnector{ *:9099 }
+[INFO ] (24/07/2014 18:01:16): Server started!
+
+[INFO ] (24/07/2014 18:01:21): ------------------------------
+[INFO ] (24/07/2014 18:01:21): Handling socket: Socket[addr=/172.24.77.6,port=63722,localport=9099]
+[INFO ] (24/07/2014 18:01:22): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2d4d74d8, c:/.local/remote.png ) : boolean
+[INFO ] (24/07/2014 18:01:22): Response sent: OpResult{ success = true, return = true }
+[INFO ] (24/07/2014 18:01:22): Connection closed by client.

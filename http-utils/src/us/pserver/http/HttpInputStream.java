@@ -179,7 +179,6 @@ public class HttpInputStream extends HeaderEncryptable {
   public HttpInputStream setupOutbound() throws IOException {
     if(input == null)
       throw new IllegalStateException("InputStream not setted");
-    System.out.println("* setupOutbound()");
     StreamUtils.transfer(input, buffer.getOutputStream());
     buffer.encode();
     return this;
@@ -189,9 +188,8 @@ public class HttpInputStream extends HeaderEncryptable {
   public HttpInputStream setupInbound() throws IOException {
     if(input == null)
       throw new IllegalStateException("InputStream not setted");
-    System.out.println("* setupInbound()");
     OutputStream os = buffer.getOutputStream();
-    System.out.println("* until: "+ StreamUtils.transferUntilOr(input, os, BOUNDARY_CONTENT_END, EOF));
+    StreamUtils.transferUntilOr(input, os, BOUNDARY_CONTENT_END, EOF);
     buffer.decode();
     input = buffer.getInputStream();
     return this;

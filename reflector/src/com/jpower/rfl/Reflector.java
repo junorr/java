@@ -3,6 +3,7 @@ package com.jpower.rfl;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.LinkedList;
 
 /**
  * Reflection utils
@@ -79,6 +80,7 @@ public class Reflector {
     	if(cls != null) {
       	try {
         	cct = cls.getDeclaredConstructor(args);
+          if(cct == null) cct = cls.getConstructor(args);
   			} catch(Exception ex) {
     			exc = ex;
           cct = null;
@@ -195,6 +197,7 @@ public class Reflector {
       if(cls != null && method != null) {
         try {
           mth = cls.getDeclaredMethod(method, args);
+          if(mth == null) mth = cls.getMethod(method, args);
   			} catch(NoSuchMethodException ex) {
     			exc = ex;
           mth = null;
@@ -218,7 +221,7 @@ public class Reflector {
   		clearExc();
     	if(cls != null && method != null) {
         mth = null;
-        Method[] meths = cls.getDeclaredMethods();
+        Method[] meths = getAllMethods(cls);
         for(Method m : meths) {
           if(m.getName().equals(method)
               && m.getParameterTypes().length == 0)
@@ -233,6 +236,39 @@ public class Reflector {
     }
 		return this;
 	}
+  
+  
+  public static Method[] getAllMethods(Class c) {
+    if(c == null) return null;
+    Method[] dec = c.getDeclaredMethods();
+    Method[] pub = c.getMethods();
+    Method[] all = new Method[dec.length + pub.length];
+    System.arraycopy(dec, 0, all, 0, dec.length);
+    System.arraycopy(pub, 0, all, dec.length, pub.length);
+    return all;
+  }
+	
+	
+  public static Field[] getAllFields(Class c) {
+    if(c == null) return null;
+    Field[] dec = c.getDeclaredFields();
+    Field[] pub = c.getFields();
+    Field[] all = new Field[dec.length + pub.length];
+    System.arraycopy(dec, 0, all, 0, dec.length);
+    System.arraycopy(pub, 0, all, dec.length, pub.length);
+    return all;
+  }
+	
+	
+  public static Constructor[] getAllConstructors(Class c) {
+    if(c == null) return null;
+    Constructor[] dec = c.getDeclaredConstructors();
+    Constructor[] pub = c.getConstructors();
+    Constructor[] all = new Constructor[dec.length + pub.length];
+    System.arraycopy(dec, 0, all, 0, dec.length);
+    System.arraycopy(pub, 0, all, dec.length, pub.length);
+    return all;
+  }
 	
 	
 	/**
@@ -248,6 +284,7 @@ public class Reflector {
   		if(field != null)
       	try {
         	fld = cls.getDeclaredField(field);
+          if(fld == null) cls.getField(field);
   			} catch(Exception ex) {
     			exc = ex;
           fld = null;
@@ -266,7 +303,7 @@ public class Reflector {
   		clearExc();
     	if(cls != null)
       	try {
-        	Field[] fields = cls.getDeclaredFields();
+        	Field[] fields = getAllFields(cls);
           String[] names = new String[fields.length];
           for(int i = 0; i < fields.length; i++) {
             names[i] = fields[i].getName();
@@ -289,7 +326,7 @@ public class Reflector {
   		clearExc();
     	if(cls != null)
       	try {
-        	return cls.getDeclaredFields();
+        	return getAllFields(cls);
   			} catch(Exception ex) {
     			exc = ex;
       	}
@@ -307,7 +344,7 @@ public class Reflector {
   		clearExc();
     	if(cls != null)
       	try {
-        	return cls.getDeclaredMethods();
+        	return getAllMethods(cls);
   			} catch(Exception ex) {
     			exc = ex;
       	}
@@ -325,7 +362,7 @@ public class Reflector {
   		clearExc();
     	if(cls != null)
       	try {
-        	return cls.getDeclaredConstructors();
+        	return getAllConstructors(cls);
   			} catch(Exception ex) {
     			exc = ex;
       	}
@@ -398,7 +435,7 @@ public class Reflector {
       if(cls == null || fld == null) 
         return false;
     
-      Field[] fs = cls.getDeclaredFields();
+      Field[] fs = getAllFields(cls);
       for(int i = 0; i < fs.length; i++) {
         if(fs[i].equals(fld))
           return true;
@@ -413,7 +450,7 @@ public class Reflector {
       if(cls == null || mth == null) 
         return false;
     
-      Method[] ms = cls.getDeclaredMethods();
+      Method[] ms = getAllMethods(cls);
       for(int i = 0; i < ms.length; i++) {
         if(ms[i].equals(mth))
           return true;
@@ -428,7 +465,7 @@ public class Reflector {
       if(cls == null || cct == null) 
         return false;
     
-      Constructor[] cs = cls.getDeclaredConstructors();
+      Constructor[] cs = getAllConstructors(cls);
       for(int i = 0; i < cs.length; i++) {
         if(cs[i].equals(cct))
           return true;
@@ -479,6 +516,7 @@ public class Reflector {
 			private void m(int v) {
 				f = v;
 			}
+      
 			@Override
 			public String toString() {
 				return "A: "+f;
@@ -492,6 +530,7 @@ public class Reflector {
 		if(rfl.hasError())
 			rfl.getError().printStackTrace();
 		
+    System.out.println("isMethodPresent(toString)? "+ rfl.on(a).method("toString").isMethodPresent());
 		System.out.println(rfl.on(a).method("toString", null).invoke(null));
 		if(rfl.hasError())
 			rfl.getError().printStackTrace();

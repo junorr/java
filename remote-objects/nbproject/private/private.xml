@@ -3,13 +3,26 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/java/remote-objects/src/us/pserver/remote/HttpResponseChannel.java</file>
-            <file>file:/D:/java/remote-objects/src/us/pserver/remote/Transport.java</file>
-            <file>file:/D:/java/remote-objects/src/us/pserver/remote/XmlNetChannel.java</file>
-            <file>file:/D:/java/remote-objects/src/us/pserver/remote/HttpRequestChannel.java</file>
-            <file>file:/D:/java/remote-objects/src/us/pserver/remote/DefaultFactoryProvider.java</file>
-            <file>file:/D:/java/remote-objects/src/us/pserver/remote/TestHttpRequest.java</file>
-            <file>file:/D:/java/remote-objects/src/us/pserver/remote/TestHttpResponse.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/DefaultFactoryProvider.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/ObjectContainer.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/SocketChannelFactory.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/HttpResponseChannel.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/test/TestRClient.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/ConnectorChannelFactory.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/NetworkServer.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/AbstractServer.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/NetConnector.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/Server.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/test/TestRServer.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/test/TestReflector.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/HttpRequestChannel.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/test/TestHttpResponse.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/test/TestHttpRequest.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/Invoker.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/OpResult.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/RemoteObject.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/RemoteMethod.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/XmlNetChannel.java</file>
         </group>
     </open-files>
 </project-private>

@@ -140,6 +140,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
   public void write(Transport trp) throws IOException {
     this.setHeaders(trp);
     builder.writeContent(sock.getOutputStream());
+    sock.getOutputStream().flush();
   }
   
   
@@ -158,9 +159,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
     if(parser.containsHeader(HTTP_INPUTSTREAM)) {
       HttpInputStream his = (HttpInputStream)
           parser.getHeader(HTTP_INPUTSTREAM);
-      System.out.println("* his.isCryptCoderEnabled()? "+ his.isCryptCoderEnabled());
-      //if(key != null)
-        //his.setCryptCoderEnabled(true, key);
+      //crypt coder already enabled by HttpParser
       his.setGZipCoderEnabled(true);
       tp.setInputStream(his.setupInbound()
           .getInputStream());

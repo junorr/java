@@ -19,9 +19,12 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.remote;
+package us.pserver.remote.test;
 
 import java.io.IOException;
+import us.pserver.remote.HttpRequestChannel;
+import us.pserver.remote.NetConnector;
+import us.pserver.remote.Transport;
 
 /**
  *

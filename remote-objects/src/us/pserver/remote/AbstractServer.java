@@ -32,6 +32,9 @@ package us.pserver.remote;
  */
 public abstract class AbstractServer implements Server {
   
+  public static final String ABSTRACT_SERVER = "AbstractServer";
+  
+  
   int availableThreads;
   
   boolean running;
@@ -57,6 +60,7 @@ public abstract class AbstractServer implements Server {
     if(container == null)
       throw new IllegalArgumentException(
           "Invalid ObjectContainer ["+ container+ "]");
+    container.put(ABSTRACT_SERVER, this);
     availableThreads = DEFAULT_AVAILABLE_THREADS;
     running = false;
     this.container = container;
@@ -66,6 +70,8 @@ public abstract class AbstractServer implements Server {
   @Override
   public void setContainer(ObjectContainer cont) {
     this.container = cont;
+    if(cont != null)
+      container.put(ABSTRACT_SERVER, this);
   }
 
 

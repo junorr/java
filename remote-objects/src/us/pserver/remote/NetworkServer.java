@@ -1,4 +1,4 @@
-/*
+ /*
  * Direitos Autorais Reservados (c) 2011 Juno Roesler
  * Contato: juno.rr@gmail.com
  * 
@@ -39,6 +39,9 @@ import us.pserver.log.LogProvider;
  */
 public class NetworkServer extends AbstractServer {
   
+  public static final String SERVER_KEY = "NetworkServer";
+  
+  
   private transient Reflector ref;
   
   private transient NetConnector con;
@@ -60,6 +63,7 @@ public class NetworkServer extends AbstractServer {
    */
   public NetworkServer(ObjectContainer cont) {
     super(cont);
+    cont.put(SERVER_KEY, this);
     ref = new Reflector();
     con = new NetConnector();
     factory = DefaultFactoryProvider
@@ -80,6 +84,7 @@ public class NetworkServer extends AbstractServer {
    */
   public NetworkServer(ObjectContainer cont, NetConnector netCon) {
     this(cont);
+    cont.put(SERVER_KEY, this);
     if(con == null) throw new
         IllegalArgumentException(
         "Invalid NetConnector: "+ con);
@@ -101,6 +106,7 @@ public class NetworkServer extends AbstractServer {
    */
   public NetworkServer(ObjectContainer cont, NetConnector netCon, SocketChannelFactory fact) {
     this(cont, netCon);
+    cont.put(SERVER_KEY, this);
     if(fact == null)
       throw new IllegalArgumentException(
           "Invalid ChannelFactory ["+ fact+ "]");
@@ -165,7 +171,7 @@ public class NetworkServer extends AbstractServer {
       throw new IllegalArgumentException(
           "Invalid ObjectContainer ["+ container+ "]");
     
-    LogProvider.getSimpleLog().info("Starting NetowrkServer...");
+    LogProvider.getSimpleLog().info("Starting NetworkServer...");
     running = true;
     exec = Executors.newFixedThreadPool(availableThreads);
   }
@@ -332,7 +338,7 @@ public class NetworkServer extends AbstractServer {
     private Transport handleInvoke(Transport trp) {
       if(trp == null) return null;
       
-      RemoteMethod rmt = trp.<RemoteMethod>castObject();
+      RemoteMethod rmt = trp.castObject();
       if(rmt == null) return null;
       OpResult result = new OpResult();
       Transport rtp = new Transport();
@@ -392,11 +398,6 @@ public class NetworkServer extends AbstractServer {
       }
       
       this.write(handleInvoke(trp));
-      
-      if(HttpResponseChannel.class.isAssignableFrom(channel.getClass())) {
-        channel.close();
-        return;
-      }
       this.run();
     }
     
@@ -410,7 +411,7 @@ public class NetworkServer extends AbstractServer {
      * contendo os dados da invocação remota.
      */
     public void checkInputStreamReference(RemoteMethod rmt, Transport trp) {
-      if(trp == null || rmt == null)
+      if(trp == null || rmt == null || rmt.argTypes() == null)
         return;
       
       Class[] types = rmt.argTypes();

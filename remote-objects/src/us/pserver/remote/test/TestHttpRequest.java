@@ -19,13 +19,16 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.remote;
+package us.pserver.remote.test;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import us.pserver.remote.HttpRequestChannel;
+import us.pserver.remote.NetConnector;
+import us.pserver.remote.Transport;
 
 /**
  *
@@ -36,7 +39,7 @@ public class TestHttpRequest {
 
   
   public static void main(String[] args) throws IOException {
-    NetConnector nc = new NetConnector("172.24.75.2", 9011);
+    NetConnector nc = new NetConnector("172.24.77.6", 9011);
     /* set proxy 
     nc.setProxyAddress("172.24.75.19")
         .setProxyPort(6060)
@@ -49,15 +52,14 @@ public class TestHttpRequest {
 
     
     InputStream input = Files.newInputStream(
-        Paths.get("d:/grub-bg.jpg"), 
+        Paths.get("c:/.local/splash.png"), 
         StandardOpenOption.READ);
     trp.setInputStream(input);
     
     channel.write(trp);
     
     System.out.println("* request sent!");
-    System.out.print("* "+ channel
-        .getResponseParser().getResponseLine());
+    System.out.println("* "+ channel.getResponseLine());
     trp = channel.read();
     
     System.out.println("* received: "+ trp);

@@ -177,7 +177,6 @@ public class BigJar {
     
     for(Path p : list) 
       unpackJar(p);
-    
     unpackJar(jarFile);
   }
   
@@ -202,6 +201,8 @@ public class BigJar {
           Files.createDirectories(dst);
         }
         else {
+          if(!Files.exists(dst.getParent()))
+            Files.createDirectories(dst.getParent());
           OutputStream os = Files.newOutputStream(dst, 
               StandardOpenOption.CREATE, 
               StandardOpenOption.WRITE);
@@ -279,7 +280,11 @@ public class BigJar {
     createDir();
     log.info("Unpacking Jar Files...");
     unpackJars();
-    log.info("Creating BigJar ["+ jarFile.toString()+ "]...");
+    log.info("Creating BigJar ["
+        + (jarFile.getParent() != null 
+            ? jarFile.getParent()
+                .getFileName().toString()+ "/" : "")
+        + jarFile.getFileName().toString()+ "]...");
     makeBigJar();
     log.info("Cleaning up...");
     deleteDir();
@@ -298,7 +303,7 @@ public class BigJar {
 
   
   public static void main(String[] args) {
-    //args = new String[] { "c:/.local/java/bigjar/dist" };
+    //args = new String[] { "c:/.local/java/j3270/dist" };
     ShellParser sp = new ShellParser();
     sp.setAppName("BIGJAR")
         .setAuthor("Juno Roesler")

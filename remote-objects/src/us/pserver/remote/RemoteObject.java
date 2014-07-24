@@ -22,6 +22,7 @@
 package us.pserver.remote;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Representa um objeto remoto para invocação de
@@ -197,15 +198,17 @@ public class RemoteObject {
     
     try {
       Transport trp = new Transport(rmt);
+      this.checkInputStreamRef(trp);
       trp = this.sendTransport(trp).read();
-      if(trp == null || trp
-          .<OpResult>castObject() == null) {
+      if(trp == null || trp.castObject() == null) {
         res.setSuccessOperation(false);
         res.setError(new IllegalStateException(
             "Cannot read object from channel."));
       }
       else {
         res = trp.castObject();
+        if(trp.hasContentEmbedded())
+          res.setReturn(trp.getInputStream());
       }
     } 
     catch(IOException ex) {
@@ -217,6 +220,25 @@ public class RemoteObject {
         channel.close();
     
     return res;
+  }
+  
+  
+  private void checkInputStreamRef(Transport t) {
+    if(t == null) return;
+    RemoteMethod m = t.castObject();
+    if(m == null) return;
+    Class[] args = m.argTypes();
+    if(args == null) args = m.extractTypesFromArgs();
+    if(args == null) return;
+    for(int i = 0; i < args.length; i++) {
+      Class c = args[i];
+      if(InputStream.class.isAssignableFrom(c)) {
+        Object o = m.getArgs().get(i);
+        if(o != null && InputStream.class
+            .isAssignableFrom(o.getClass()))
+          t.setInputStream((InputStream) o);
+      }
+    }
   }
   
   

@@ -110,7 +110,7 @@ public class Invoker {
   
   
   /**
-   * Invoca o método até em modo de recursão
+   * Invoca o método em modo de recursão
    * até o número máximo de tentativas definidas.
    * @param currTry Número da tentativa atual.
    * @return Objeto de retorno do método ou
@@ -124,7 +124,7 @@ public class Invoker {
         || mth.method() == null 
         || tries < 1 || ref == null) 
       throw new IllegalStateException(
-          "ObjectInvoker not properly configured");
+          "Invoker not properly configured");
     
     ref.on(obj).method(mth.method(), mth.argTypes());
     
