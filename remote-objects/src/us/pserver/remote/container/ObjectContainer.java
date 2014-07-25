@@ -19,11 +19,13 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.remote;
+package us.pserver.remote.container;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import us.pserver.remote.AuthenticationException;
+import static us.pserver.chk.Checker.nullarg;
 
 
 /**
@@ -39,12 +41,37 @@ public class ObjectContainer {
   
   private final Map<String, Object> objs;
   
+  private Authenticator auth;
+  
   
   /**
    * Construtor padrão sem argumentos.
    */
   public ObjectContainer() {
     objs = new ConcurrentHashMap<>();
+  }
+  
+  
+  public ObjectContainer(Authenticator a) {
+    this();
+    nullarg(Authenticator.class, a);
+    auth = a;
+  }
+  
+  
+  public ObjectContainer setAuthenticator(Authenticator a) {
+    auth = a;
+    return this;
+  }
+  
+  
+  public Authenticator getAuthenticator() {
+    return auth;
+  }
+  
+  
+  public boolean isAuthEnabled() {
+    return auth != null;
   }
   
   
@@ -69,7 +96,17 @@ public class ObjectContainer {
    * @param name Chave <code>String</code>.
    * @return O objeto removido do container.
    */
-  public Object remove(String name) {
+  public Object remove(String name) throws AuthenticationException {
+    if(isAuthEnabled())
+      throw new AuthenticationException("Authentication needed");
+    return objs.remove(name);
+  }
+  
+  
+  public Object remove(Credentials c, String name) throws AuthenticationException {
+    if(isAuthEnabled()) {
+      auth.authenticate(c);
+    }
     return objs.remove(name);
   }
   
@@ -94,20 +131,18 @@ public class ObjectContainer {
    * @return O Objeto armazenado ou <code>null</code>
    * caso a chave de identificação não exista no container.
    */
-  public Object get(String name) {
+  public Object get(String name) throws AuthenticationException {
+    if(isAuthEnabled())
+      throw new AuthenticationException("Authentication needed");
     return objs.get(name);
   }
   
   
-  /**
-   * Retorna uma instância de 
-   * <code>java.util.concurrent.ConcurrentHashMap</code> 
-   * que suporta as funcionalidades de 
-   * <code>ObjectContainer</code>.
-   * @return <code>java.util.concurrent.ConcurrentHashMap</code>.
-   */
-  public Map<String, Object> objectMap() {
-    return objs;
+  public Object get(Credentials c, String name) throws AuthenticationException {
+    if(isAuthEnabled()) {
+      auth.authenticate(c);
+    }
+    return objs.get(name);
   }
   
   
@@ -127,16 +162,6 @@ public class ObjectContainer {
    */
   public Iterator<String> names() {
     return objs.keySet().iterator();
-  }
-  
-  
-  /**
-   * Retorna um <code>Iterator</code> com todos
-   * os objetos armazenadas.
-   * @return <code>Iterator</code>.
-   */
-  public Iterator objects() {
-    return objs.values().iterator();
   }
   
 }

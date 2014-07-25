@@ -126,7 +126,7 @@ public class Invoker {
       throw new IllegalStateException(
           "Invoker not properly configured");
     
-    ref.on(obj).method(mth.method(), mth.argTypes());
+    ref.on(obj).method(mth.method(), mth.getArgTypes());
     
     if(!ref.isMethodPresent()) {
       if(currTry < tries)
@@ -135,7 +135,7 @@ public class Invoker {
       throw new MethodInvocationException("Method not found: "+ mth);
     }
       
-    Object ret = ref.invoke(mth.args());
+    Object ret = ref.invoke(mth.arguments());
       
     if(ref.hasError()) {
       if(currTry < tries) 

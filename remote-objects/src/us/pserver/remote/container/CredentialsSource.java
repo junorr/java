@@ -19,25 +19,17 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.remote;
+package us.pserver.remote.container;
 
+import java.util.List;
 
 /**
- * Interface que define uma fábrica de canais
- * de transmissão de objetos.
- * 
+ *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 2014-01-21
- * @param <T> Tipo de argumento para criação 
- * de <code>Channel</code>.
+ * @version 1.0 - 25/07/2014
  */
-public interface ChannelFactory<T> {
-  
-  /**
-   * Cria um canal de transmissão de objetos.
-   * @param arg Argumento para a criação do canal.
-   * @return <code>Channel</code>.
-   */
-  Channel createChannel(T arg);
+public interface CredentialsSource {
+
+  public List<Credentials> getCredentials();
   
 }

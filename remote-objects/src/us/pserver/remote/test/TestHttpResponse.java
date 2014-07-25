@@ -30,7 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import us.pserver.remote.HttpResponseChannel;
+import us.pserver.remote.channel.HttpResponseChannel;
 import us.pserver.remote.Transport;
 import us.pserver.streams.StreamUtils;
 

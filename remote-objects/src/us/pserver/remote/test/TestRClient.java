@@ -23,16 +23,16 @@ package us.pserver.remote.test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import us.pserver.remote.DefaultFactoryProvider;
-import us.pserver.remote.HttpRequestChannel;
 import us.pserver.remote.MethodInvocationException;
 import us.pserver.remote.NetConnector;
 import us.pserver.remote.RemoteMethod;
 import us.pserver.remote.RemoteObject;
-import us.pserver.remote.Transport;
+import us.pserver.remote.container.Credentials;
 import us.pserver.streams.StreamUtils;
 
 /**
@@ -49,28 +49,44 @@ public class TestRClient {
         DefaultFactoryProvider
             .getHttpRequestChannelFactory());
     
-    InputStream is = Files.newInputStream(
+    InputStream is = null;
+    Files.newInputStream(
         Paths.get("c:/.local/splash.png"), 
         StandardOpenOption.READ);
     
     RemoteMethod mth = new RemoteMethod()
+        //.setCredentials(new Credentials("juno", 
+          //  new StringBuffer("32132155")))
         .forObject("StreamHandler")
         .method("save")
-        .args(is, "c:/.local/remote.png")
-        .argTypes(InputStream.class, String.class)
+        .setArgTypes(InputStream.class, String.class)
         .setReturnType(boolean.class);
-    System.out.println("* invoking remote...");
-    System.out.println(mth+ " = "+ rem.invoke(mth));
     
-    mth = new RemoteMethod()
-        .forObject("StreamHandler")
-        .method("read")
-        .args("c:/.local/remote.png")
-        .argTypes(String.class)
-        .setReturnType(boolean.class);
+    is = Files.newInputStream(
+      Paths.get("c:/.local/splash.png"), 
+      StandardOpenOption.READ);
+    mth.arguments(is, "c:/.local/remote.png");
     System.out.println("* invoking remote...");
-    System.out.println(mth+ " = "+ rem.invoke(mth));
+    System.out.println("* "+ mth+ " = "+ rem.invoke(mth));
+
+    mth.method("read")
+        .arguments("c:/.local/remote.png")
+        .setArgTypes(String.class)
+        .setReturnType(InputStream.class);
+    System.out.println("* invoking remote...");
+    System.out.println("* "+ mth);
     
+    is = (InputStream) rem.invoke(mth);
+    OutputStream os = Files.newOutputStream(
+        Paths.get("c:/.local/client.png"), 
+        StandardOpenOption.CREATE, 
+        StandardOpenOption.WRITE);
+    StreamUtils.transfer(is, os);
+    os.flush();
+    os.close();
+    is.close();
+    rem.getChannel().close();
+    System.out.println("* success!");
   }
   
 }

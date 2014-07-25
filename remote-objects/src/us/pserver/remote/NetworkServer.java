@@ -21,6 +21,9 @@
 
 package us.pserver.remote;
 
+import us.pserver.remote.container.ObjectContainer;
+import us.pserver.remote.channel.SocketChannelFactory;
+import us.pserver.remote.channel.Channel;
 import com.jpower.rfl.Reflector;
 import java.io.IOException;
 import java.io.InputStream;
@@ -355,10 +358,17 @@ public class NetworkServer extends AbstractServer {
       }
       
       Object ret = null;
-      Invoker inv = new Invoker(
-          container.get(rmt.objectName()), rmt);
-
+      
       try {
+        Object obj = null;
+        try {
+          if(container.isAuthEnabled())
+            LogProvider.getSimpleLog().info("Authentication Enabled");
+          obj = container.get(rmt.getCredentials(), rmt.objectName());
+        } catch(AuthenticationException e) {
+          throw new MethodInvocationException(e.getMessage(), e);
+        }
+        Invoker inv = new Invoker(obj, rmt);
         ret = inv.invoke();
         result.setSuccessOperation(true);
       } 
@@ -387,7 +397,9 @@ public class NetworkServer extends AbstractServer {
      */
     @Override
     public void run() {
-      if(sock == null || sock.isClosed())
+      if(sock == null || sock.isClosed()
+          || !sock.isConnected() 
+          || sock.isInputShutdown())
         return;
     
       Transport trp = this.read();
@@ -411,15 +423,15 @@ public class NetworkServer extends AbstractServer {
      * contendo os dados da invocação remota.
      */
     public void checkInputStreamReference(RemoteMethod rmt, Transport trp) {
-      if(trp == null || rmt == null || rmt.argTypes() == null)
+      if(trp == null || rmt == null || rmt.getArgTypes() == null)
         return;
       
-      Class[] types = rmt.argTypes();
+      Class[] types = rmt.getArgTypes();
       for(int i = 0; i < types.length; i++) {
         if(InputStream.class.isAssignableFrom(types[i])
             && trp.hasContentEmbedded())
-          try { rmt.getArgs().set(i, trp.getInputStream()); }
-          catch(Exception e) { rmt.addArg(trp.getInputStream()); }
+          try { rmt.getArgsList().set(i, trp.getInputStream()); }
+          catch(Exception e) { rmt.addArgument(trp.getInputStream()); }
       }
     }
     

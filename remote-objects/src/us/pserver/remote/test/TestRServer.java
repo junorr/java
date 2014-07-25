@@ -30,7 +30,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import us.pserver.remote.DefaultFactoryProvider;
 import us.pserver.remote.NetworkServer;
-import us.pserver.remote.ObjectContainer;
+import us.pserver.remote.container.Authenticator;
+import us.pserver.remote.container.Credentials;
+import us.pserver.remote.container.ObjectContainer;
+import us.pserver.remote.container.SingleCredentialsSource;
 import us.pserver.streams.StreamUtils;
 
 /**
@@ -51,7 +54,6 @@ public class TestRServer {
       os.flush();
       os.close();
       return true;
-      //is.close();
     }
     public InputStream read(String path) throws IOException {
       if(path == null) return null;
@@ -68,6 +70,10 @@ public class TestRServer {
         .getHttpResponseChannelFactory());
     
     sv.container().put("StreamHandler", new StreamHandler());
+    SingleCredentialsSource src = new SingleCredentialsSource(
+        new Credentials("juno", new StringBuffer("32132155")));
+    //sv.container().setAuthenticator(
+      //  new Authenticator(src));
     sv.start();
   }
   

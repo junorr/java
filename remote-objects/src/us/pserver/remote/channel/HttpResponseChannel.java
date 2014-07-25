@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.remote;
+package us.pserver.remote.channel;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -30,8 +30,9 @@ import us.pserver.http.HttpEnclosedObject;
 import us.pserver.http.HttpInputStream;
 import us.pserver.http.RequestParser;
 import us.pserver.http.ResponseLine;
-import static us.pserver.remote.HttpRequestChannel.HTTP_ENCLOSED_OBJECT;
-import static us.pserver.remote.HttpRequestChannel.HTTP_INPUTSTREAM;
+import us.pserver.remote.Transport;
+import static us.pserver.remote.channel.HttpRequestChannel.HTTP_ENCLOSED_OBJECT;
+import static us.pserver.remote.channel.HttpRequestChannel.HTTP_INPUTSTREAM;
 
 
 /**
@@ -61,6 +62,8 @@ public class HttpResponseChannel implements Channel, HttpConst {
   
   private CryptKey key;
   
+  private boolean valid;
+  
   
   /**
    * Construtor padrão, recebe um <code>Socket</code>
@@ -75,6 +78,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
     
     sock = sc;
     key = null;
+    valid = true;
     parser = new RequestParser();
     builder = new HttpBuilder();
   }
@@ -141,6 +145,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
     this.setHeaders(trp);
     builder.writeContent(sock.getOutputStream());
     sock.getOutputStream().flush();
+    valid = false;
   }
   
   
@@ -179,8 +184,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
    */
   @Override
   public boolean isValid() {
-    return sock != null && sock.isConnected() 
-        && !sock.isClosed();
+    return valid;
   }
   
   

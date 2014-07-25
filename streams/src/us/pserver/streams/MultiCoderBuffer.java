@@ -434,7 +434,7 @@ public class MultiCoderBuffer {
     nullarg(CoderType.class, coder);
     nullarg(OutputStream.class, os);
     
-    System.out.println("* Encoder enabled: ["+ coder.name()+ "]");
+    //System.out.println("* Encoder enabled: ["+ coder.name()+ "]");
     switch(coder) {
       case BASE64:
         return new Base64OutputStream(os);
@@ -456,7 +456,7 @@ public class MultiCoderBuffer {
     nullarg(CoderType.class, coder);
     nullarg(InputStream.class, is);
     
-    System.out.println("* Decoder enabled: ["+ coder.name()+ "]");
+    //System.out.println("* Decoder enabled: ["+ coder.name()+ "]");
     switch(coder) {
       case BASE64:
         return new Base64InputStream(is);
@@ -556,8 +556,11 @@ public class MultiCoderBuffer {
       flush();
       return channel.read();
     }
-    else {
+    else if(inbuffer != null) {
       return inbuffer.read();
+    }
+    else {
+      return -1;
     }
   }
   
@@ -572,8 +575,11 @@ public class MultiCoderBuffer {
       flush();
       return channel.read(bs, offset, length);
     }
-    else {
+    else if(inbuffer != null) {
       return inbuffer.read(bs, offset, length);
+    } 
+    else {
+      return -1;
     }
   }
   

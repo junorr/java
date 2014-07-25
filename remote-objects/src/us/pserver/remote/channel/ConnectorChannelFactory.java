@@ -19,38 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.remote.test;
+package us.pserver.remote.channel;
 
-import com.jpower.rfl.Reflector;
-import us.pserver.remote.NetworkServer;
-import us.pserver.remote.container.ObjectContainer;
+import us.pserver.remote.NetConnector;
+
 
 /**
- *
+ * Fábrica de canais de transmissão de rede que 
+ * recebem como parâmetro um objeto 
+ * <code>NetConnector</code> para criar novas 
+ * conexões de rede.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 24/07/2014
+ * @version 1.0 - 21/01/2014
  */
-public class TestReflector {
-
-  
-  public static void main(String[] args) {
-    Reflector ref = new Reflector();
-    String str = "Hello!";
-    System.out.println("* str="+ str);
-    str = (String) ref.on(str)
-        .method("replace", 
-            CharSequence.class, 
-            CharSequence.class)
-        .invoke("ll", "-");
-    System.out.println("* str="+ str);
-    
-    System.out.println("* ref.method(\"toString\").isMethodPresent()="
-        +ref.method("toString", null).isMethodPresent());
-    
-    NetworkServer sv = new NetworkServer(new ObjectContainer());
-    ref.on(sv).method("toString").isMethodPresent();
-    System.out.println("* ref.on(sv).method(\"toString\").isMethodPresent()="
-        +ref.on(sv).method("toString").isMethodPresent());
-  }
-  
-}
+public interface ConnectorChannelFactory
+    extends ChannelFactory<NetConnector>{}

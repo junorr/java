@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import us.pserver.remote.HttpRequestChannel;
+import us.pserver.remote.channel.HttpRequestChannel;
 import us.pserver.remote.NetConnector;
 import us.pserver.remote.Transport;
 

@@ -21,6 +21,8 @@
 
 package us.pserver.remote;
 
+import us.pserver.remote.container.ObjectContainer;
+
 
 /**
  * Classe abstrata que implementa funcionalidades

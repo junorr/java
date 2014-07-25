@@ -21,6 +21,8 @@
 
 package us.pserver.remote;
 
+import us.pserver.remote.channel.ConnectorChannelFactory;
+import us.pserver.remote.channel.Channel;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -195,7 +197,6 @@ public class RemoteObject {
    */
   public OpResult invokeSafe(RemoteMethod rmt) {
     OpResult res = new OpResult();
-    
     try {
       Transport trp = new Transport(rmt);
       this.checkInputStreamRef(trp);
@@ -227,13 +228,13 @@ public class RemoteObject {
     if(t == null) return;
     RemoteMethod m = t.castObject();
     if(m == null) return;
-    Class[] args = m.argTypes();
+    Class[] args = m.getArgTypes();
     if(args == null) args = m.extractTypesFromArgs();
     if(args == null) return;
     for(int i = 0; i < args.length; i++) {
       Class c = args[i];
       if(InputStream.class.isAssignableFrom(c)) {
-        Object o = m.getArgs().get(i);
+        Object o = m.getArgsList().get(i);
         if(o != null && InputStream.class
             .isAssignableFrom(o.getClass()))
           t.setInputStream((InputStream) o);

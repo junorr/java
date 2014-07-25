@@ -21,6 +21,11 @@
 
 package us.pserver.remote;
 
+import us.pserver.remote.channel.HttpRequestChannel;
+import us.pserver.remote.channel.HttpResponseChannel;
+import us.pserver.remote.channel.SocketChannelFactory;
+import us.pserver.remote.channel.ConnectorChannelFactory;
+import us.pserver.remote.channel.XmlNetChannel;
 import java.io.IOException;
 import java.net.Socket;
 

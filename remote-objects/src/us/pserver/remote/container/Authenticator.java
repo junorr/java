@@ -19,16 +19,42 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.remote;
+package us.pserver.remote.container;
+
+import java.util.List;
+import us.pserver.remote.AuthenticationException;
+import static us.pserver.chk.Checker.nullarg;
 
 /**
- * Fábrica de canais de transmissão de rede que 
- * recebem como parâmetro um objeto 
- * <code>NetConnector</code> para criar novas 
- * conexões de rede.
- * 
+ *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 21/01/2014
+ * @version 1.0 - 25/07/2014
  */
-public interface ConnectorChannelFactory
-    extends ChannelFactory<NetConnector>{}
+public class Authenticator {
+
+  private CredentialsSource source;
+  
+  
+  public Authenticator(CredentialsSource cs) {
+    nullarg(CredentialsSource.class, cs);
+    source = cs;
+  }
+  
+  
+  public boolean authenticate(Credentials cred) throws AuthenticationException {
+    if(cred == null || cred.getUser() == null)
+      throw new AuthenticationException(
+          "Invalid Credentials ["+ cred+ "]");
+    
+    List<Credentials> cs = source.getCredentials();
+    if(cs.isEmpty())
+      throw new AuthenticationException("Empty CredentialsSource");
+    
+    for(Credentials c : cs) {
+      if(c != null && c.authenticate(cred))
+        return true;
+    }
+    throw new AuthenticationException("Authentication Failed");
+  }
+  
+}

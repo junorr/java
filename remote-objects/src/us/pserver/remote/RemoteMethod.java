@@ -21,6 +21,7 @@
 
 package us.pserver.remote;
 
+import us.pserver.remote.container.Credentials;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,6 +49,8 @@ public class RemoteMethod {
   
   private Class retType;
   
+  private Credentials cred;
+  
   
   /**
    * Construtor padrão sem argumentos, constrói
@@ -58,6 +61,7 @@ public class RemoteMethod {
     mthName = null;
     args = new LinkedList();
     argTypes = null;
+    cred = null;
     retType = null;
   }
 
@@ -75,12 +79,23 @@ public class RemoteMethod {
   }
   
   
+  public RemoteMethod setCredentials(Credentials c) {
+    cred = c;
+    return this;
+  }
+  
+  
+  public Credentials getCredentials() {
+    return cred;
+  }
+  
+  
   /**
    * Adiciona um argumento ao método remoto.
    * @param obj Argumento de invocação do método.
    * @return Esta instância modificada de RemoteMethod.
    */
-  public RemoteMethod addArg(Object obj) {
+  public RemoteMethod addArgument(Object obj) {
     args.add(obj);
     return this;
   }
@@ -90,7 +105,7 @@ public class RemoteMethod {
    * Limpa a lista de argumentos do método.
    * @return Esta instância modificada de RemoteMethod.
    */
-  public RemoteMethod clearArgs() {
+  public RemoteMethod clearArguments() {
     args.clear();
     return this;
   }
@@ -101,7 +116,7 @@ public class RemoteMethod {
    * @param cls Classes dos tipos de argumentos.
    * @return Esta instância modificada de RemoteMethod.
    */
-  public RemoteMethod argTypes(Class ... cls) {
+  public RemoteMethod setArgTypes(Class ... cls) {
     argTypes = cls;
     return this;
   }
@@ -128,7 +143,7 @@ public class RemoteMethod {
    * @return array com as classes dos tipos
    * de argumentos do método.
    */
-  public Class[] argTypes() {
+  public Class[] getArgTypes() {
     return argTypes;
   }
   
@@ -157,7 +172,7 @@ public class RemoteMethod {
    * Retorna a lista de argumentos do método.
    * @return Lista de argumentos do método.
    */
-  public List getArgs() {
+  public List getArgsList() {
     return args;
   }
   
@@ -166,7 +181,7 @@ public class RemoteMethod {
    * Retorna um array com os argumentos do método.
    * @return Array com os argumentos do método.
    */
-  public Object[] args() {
+  public Object[] arguments() {
     return args.toArray();
   }
 
@@ -176,7 +191,7 @@ public class RemoteMethod {
    * @param args Lista de argumentos do método.
    * @return Esta instância modificada de RemoteMethod.
    */
-  public RemoteMethod setArgs(List args) {
+  public RemoteMethod setArgsList(List args) {
     this.args = args;
     return this;
   }
@@ -187,7 +202,7 @@ public class RemoteMethod {
    * @param objs Argumentos do método.
    * @return Esta instância modificada de RemoteMethod.
    */
-  public RemoteMethod args(Object ... objs) {
+  public RemoteMethod arguments(Object ... objs) {
     if(objs != null && objs.length > 0) {
       args.clear();
       args.addAll(Arrays.asList(objs));
@@ -200,7 +215,7 @@ public class RemoteMethod {
    * Retorna a classe do tipo de retorno do método.
    * @return classe de tipo de retorno do método.
    */
-  public Class returnType() {
+  public Class getReturnType() {
     return retType;
   }
 

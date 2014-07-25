@@ -1141,3 +1141,613 @@
 [INFO ] (24/07/2014 18:01:22): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2d4d74d8, c:/.local/remote.png ) : boolean
 [INFO ] (24/07/2014 18:01:22): Response sent: OpResult{ success = true, return = true }
 [INFO ] (24/07/2014 18:01:22): Connection closed by client.
+[INFO ] (25/07/2014 09:44:58): Starting NetworkServer...
+[INFO ] (25/07/2014 09:44:58): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (25/07/2014 09:44:58): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 09:44:58): Server started!
+
+[INFO ] (25/07/2014 09:45:03): ------------------------------
+[INFO ] (25/07/2014 09:45:03): Handling socket: Socket[addr=/172.24.77.6,port=53436,localport=9099]
+[INFO ] (25/07/2014 09:45:04): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2214dbfc, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 09:45:04): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 09:45:33): Starting NetworkServer...
+[INFO ] (25/07/2014 09:45:33): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (25/07/2014 09:45:33): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 09:45:33): Server started!
+
+[INFO ] (25/07/2014 09:45:36): ------------------------------
+[INFO ] (25/07/2014 09:45:36): Handling socket: Socket[addr=/172.24.77.6,port=53438,localport=9099]
+[INFO ] (25/07/2014 09:45:37): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@62839e81, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 09:45:37): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 09:46:07): Starting NetworkServer...
+[INFO ] (25/07/2014 09:46:07): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (25/07/2014 09:46:07): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 09:46:07): Server started!
+
+[INFO ] (25/07/2014 09:46:10): ------------------------------
+[INFO ] (25/07/2014 09:46:11): Handling socket: Socket[addr=/172.24.77.6,port=53439,localport=9099]
+[INFO ] (25/07/2014 09:46:11): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@49413370, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 09:46:11): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 09:46:29): Starting NetworkServer...
+[INFO ] (25/07/2014 09:46:29): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (25/07/2014 09:46:29): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 09:46:29): Server started!
+
+[INFO ] (25/07/2014 09:46:32): ------------------------------
+[INFO ] (25/07/2014 09:46:32): Handling socket: Socket[addr=/172.24.77.6,port=53441,localport=9099]
+[INFO ] (25/07/2014 09:46:33): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2214dbfc, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 09:46:33): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 09:47:26): Starting NetworkServer...
+[FATAL] (25/07/2014 09:47:26): Error running
+[FATAL] (25/07/2014 09:47:26): java.net.BindException: Address already in use: JVM_Bind
+[INFO ] (25/07/2014 09:47:34): Starting NetworkServer...
+[INFO ] (25/07/2014 09:47:34): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (25/07/2014 09:47:34): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 09:47:34): Server started!
+
+[INFO ] (25/07/2014 09:47:36): ------------------------------
+[INFO ] (25/07/2014 09:47:36): Handling socket: Socket[addr=/172.24.77.6,port=53443,localport=9099]
+[INFO ] (25/07/2014 09:47:37): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@35b0d515, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 09:47:37): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 09:48:40): Starting NetworkServer...
+[FATAL] (25/07/2014 09:48:40): Error running
+[FATAL] (25/07/2014 09:48:40): java.net.BindException: Address already in use: JVM_Bind
+[INFO ] (25/07/2014 09:48:48): Starting NetworkServer...
+[INFO ] (25/07/2014 09:48:48): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (25/07/2014 09:48:48): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 09:48:48): Server started!
+
+[INFO ] (25/07/2014 09:48:51): ------------------------------
+[INFO ] (25/07/2014 09:48:51): Handling socket: Socket[addr=/172.24.77.6,port=53444,localport=9099]
+[INFO ] (25/07/2014 09:48:52): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@d73c1ff, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 09:48:52): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 09:49:02): ------------------------------
+[INFO ] (25/07/2014 09:49:02): Handling socket: Socket[addr=/172.24.77.6,port=53445,localport=9099]
+[INFO ] (25/07/2014 09:49:02): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@93bf575, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 09:49:02): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 09:49:06): ------------------------------
+[INFO ] (25/07/2014 09:49:06): Handling socket: Socket[addr=/172.24.77.6,port=53446,localport=9099]
+[INFO ] (25/07/2014 09:49:06): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@57f9305c, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 09:49:06): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 09:49:11): ------------------------------
+[INFO ] (25/07/2014 09:49:11): Handling socket: Socket[addr=/172.24.77.6,port=53447,localport=9099]
+[INFO ] (25/07/2014 09:49:11): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@3325248, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 09:49:11): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 09:49:23): ------------------------------
+[INFO ] (25/07/2014 09:49:23): Handling socket: Socket[addr=/172.24.77.6,port=53448,localport=9099]
+[INFO ] (25/07/2014 09:49:23): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@4697763c, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 09:49:23): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 09:49:55): ------------------------------
+[INFO ] (25/07/2014 09:49:55): Handling socket: Socket[addr=/172.24.77.6,port=53450,localport=9099]
+[INFO ] (25/07/2014 09:49:55): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@5c261b04, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 09:49:55): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:02:01): ------------------------------
+[INFO ] (25/07/2014 10:02:01): Handling socket: Socket[addr=/172.24.77.6,port=53482,localport=9099]
+[INFO ] (25/07/2014 10:02:01): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@1c8c543b, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:02:01): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:04:53): Starting NetworkServer...
+[INFO ] (25/07/2014 10:04:53): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (25/07/2014 10:04:53): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 10:04:53): Server started!
+
+[INFO ] (25/07/2014 10:04:57): ------------------------------
+[INFO ] (25/07/2014 10:04:57): Handling socket: Socket[addr=/172.24.77.6,port=53503,localport=9099]
+[INFO ] (25/07/2014 10:04:57): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@62839e81, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:04:58): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:25:36): Starting NetworkServer...
+[INFO ] (25/07/2014 10:25:36): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (25/07/2014 10:25:36): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 10:25:36): Server started!
+
+[INFO ] (25/07/2014 10:25:42): ------------------------------
+[INFO ] (25/07/2014 10:25:42): Handling socket: Socket[addr=/172.24.77.6,port=53783,localport=9099]
+[INFO ] (25/07/2014 10:25:43): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@552c4225, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:25:43): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:25:43): Connection closed by client.
+[INFO ] (25/07/2014 10:25:43): ------------------------------
+[INFO ] (25/07/2014 10:25:43): Handling socket: Socket[addr=/172.24.77.6,port=53784,localport=9099]
+[INFO ] (25/07/2014 10:25:43): Connection closed by client.
+[INFO ] (25/07/2014 10:36:27): Starting NetworkServer...
+[INFO ] (25/07/2014 10:36:27): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (25/07/2014 10:36:27): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 10:36:27): Server started!
+
+[INFO ] (25/07/2014 10:36:31): ------------------------------
+[INFO ] (25/07/2014 10:36:31): Handling socket: Socket[addr=/172.24.77.6,port=53810,localport=9099]
+[INFO ] (25/07/2014 10:36:32): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2214dbfc, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:32): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:32): Connection closed by client.
+[INFO ] (25/07/2014 10:36:32): ------------------------------
+[INFO ] (25/07/2014 10:36:32): Handling socket: Socket[addr=/172.24.77.6,port=53811,localport=9099]
+[INFO ] (25/07/2014 10:36:32): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@288f586, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:32): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:32): Connection closed by client.
+[INFO ] (25/07/2014 10:36:33): ------------------------------
+[INFO ] (25/07/2014 10:36:33): Handling socket: Socket[addr=/172.24.77.6,port=53812,localport=9099]
+[INFO ] (25/07/2014 10:36:33): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@70bea77f, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:33): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:33): Connection closed by client.
+[INFO ] (25/07/2014 10:36:33): ------------------------------
+[INFO ] (25/07/2014 10:36:33): Handling socket: Socket[addr=/172.24.77.6,port=53813,localport=9099]
+[INFO ] (25/07/2014 10:36:33): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@be685e0, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:33): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:33): Connection closed by client.
+[INFO ] (25/07/2014 10:36:33): ------------------------------
+[INFO ] (25/07/2014 10:36:33): Handling socket: Socket[addr=/172.24.77.6,port=53814,localport=9099]
+[INFO ] (25/07/2014 10:36:34): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@3a2d6ec6, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:34): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:34): Connection closed by client.
+[INFO ] (25/07/2014 10:36:34): ------------------------------
+[INFO ] (25/07/2014 10:36:34): Handling socket: Socket[addr=/172.24.77.6,port=53815,localport=9099]
+[INFO ] (25/07/2014 10:36:34): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2f70f4df, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:34): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:34): Connection closed by client.
+[INFO ] (25/07/2014 10:36:34): ------------------------------
+[INFO ] (25/07/2014 10:36:34): Handling socket: Socket[addr=/172.24.77.6,port=53816,localport=9099]
+[INFO ] (25/07/2014 10:36:34): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2f51eec9, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:34): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:34): Connection closed by client.
+[INFO ] (25/07/2014 10:36:34): ------------------------------
+[INFO ] (25/07/2014 10:36:34): Handling socket: Socket[addr=/172.24.77.6,port=53817,localport=9099]
+[INFO ] (25/07/2014 10:36:35): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@4b4fbf70, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:35): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:35): Connection closed by client.
+[INFO ] (25/07/2014 10:36:35): ------------------------------
+[INFO ] (25/07/2014 10:36:35): Handling socket: Socket[addr=/172.24.77.6,port=53818,localport=9099]
+[INFO ] (25/07/2014 10:36:35): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@30279655, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:35): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:35): Connection closed by client.
+[INFO ] (25/07/2014 10:36:35): ------------------------------
+[INFO ] (25/07/2014 10:36:35): Handling socket: Socket[addr=/172.24.77.6,port=53819,localport=9099]
+[INFO ] (25/07/2014 10:36:35): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@6da8dc81, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:35): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:35): Connection closed by client.
+[INFO ] (25/07/2014 10:36:35): ------------------------------
+[INFO ] (25/07/2014 10:36:35): Handling socket: Socket[addr=/172.24.77.6,port=53820,localport=9099]
+[INFO ] (25/07/2014 10:36:35): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@36b4b9c2, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:36): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:36): Connection closed by client.
+[INFO ] (25/07/2014 10:36:36): ------------------------------
+[INFO ] (25/07/2014 10:36:36): Handling socket: Socket[addr=/172.24.77.6,port=53821,localport=9099]
+[INFO ] (25/07/2014 10:36:36): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@4aca0bf6, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:36): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:36): Connection closed by client.
+[INFO ] (25/07/2014 10:36:36): ------------------------------
+[INFO ] (25/07/2014 10:36:36): Handling socket: Socket[addr=/172.24.77.6,port=53822,localport=9099]
+[INFO ] (25/07/2014 10:36:36): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@4e6882e1, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:36): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:36): Connection closed by client.
+[INFO ] (25/07/2014 10:36:36): ------------------------------
+[INFO ] (25/07/2014 10:36:36): Handling socket: Socket[addr=/172.24.77.6,port=53823,localport=9099]
+[INFO ] (25/07/2014 10:36:36): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@5b102151, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:36): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:36): Connection closed by client.
+[INFO ] (25/07/2014 10:36:36): ------------------------------
+[INFO ] (25/07/2014 10:36:36): Handling socket: Socket[addr=/172.24.77.6,port=53824,localport=9099]
+[INFO ] (25/07/2014 10:36:37): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@486d83b, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:37): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:37): Connection closed by client.
+[INFO ] (25/07/2014 10:36:37): ------------------------------
+[INFO ] (25/07/2014 10:36:37): Handling socket: Socket[addr=/172.24.77.6,port=53825,localport=9099]
+[INFO ] (25/07/2014 10:36:37): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7345fa17, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:37): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:37): Connection closed by client.
+[INFO ] (25/07/2014 10:36:37): ------------------------------
+[INFO ] (25/07/2014 10:36:37): Handling socket: Socket[addr=/172.24.77.6,port=53826,localport=9099]
+[INFO ] (25/07/2014 10:36:37): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@3d897d3e, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:37): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:37): Connection closed by client.
+[INFO ] (25/07/2014 10:36:37): ------------------------------
+[INFO ] (25/07/2014 10:36:37): Handling socket: Socket[addr=/172.24.77.6,port=53827,localport=9099]
+[INFO ] (25/07/2014 10:36:38): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@1acac59e, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:38): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:38): Connection closed by client.
+[INFO ] (25/07/2014 10:36:38): ------------------------------
+[INFO ] (25/07/2014 10:36:38): Handling socket: Socket[addr=/172.24.77.6,port=53828,localport=9099]
+[INFO ] (25/07/2014 10:36:38): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2ff2b5c3, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:38): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:38): Connection closed by client.
+[INFO ] (25/07/2014 10:36:38): ------------------------------
+[INFO ] (25/07/2014 10:36:38): Handling socket: Socket[addr=/172.24.77.6,port=53829,localport=9099]
+[INFO ] (25/07/2014 10:36:39): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@3858975f, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:39): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:39): Connection closed by client.
+[INFO ] (25/07/2014 10:36:39): ------------------------------
+[INFO ] (25/07/2014 10:36:39): Handling socket: Socket[addr=/172.24.77.6,port=53830,localport=9099]
+[INFO ] (25/07/2014 10:36:39): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@a8c5e5d, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:39): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:39): Connection closed by client.
+[INFO ] (25/07/2014 10:36:39): ------------------------------
+[INFO ] (25/07/2014 10:36:39): Handling socket: Socket[addr=/172.24.77.6,port=53831,localport=9099]
+[INFO ] (25/07/2014 10:36:39): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@3c1e0a93, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:39): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:39): Connection closed by client.
+[INFO ] (25/07/2014 10:36:39): ------------------------------
+[INFO ] (25/07/2014 10:36:39): Handling socket: Socket[addr=/172.24.77.6,port=53832,localport=9099]
+[INFO ] (25/07/2014 10:36:40): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7612f43e, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:40): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:40): Connection closed by client.
+[INFO ] (25/07/2014 10:36:40): ------------------------------
+[INFO ] (25/07/2014 10:36:40): Handling socket: Socket[addr=/172.24.77.6,port=53833,localport=9099]
+[INFO ] (25/07/2014 10:36:40): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@17401a40, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:40): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:40): Connection closed by client.
+[INFO ] (25/07/2014 10:36:40): ------------------------------
+[INFO ] (25/07/2014 10:36:40): Handling socket: Socket[addr=/172.24.77.6,port=53834,localport=9099]
+[INFO ] (25/07/2014 10:36:40): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@3f508175, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:40): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:40): Connection closed by client.
+[INFO ] (25/07/2014 10:36:40): ------------------------------
+[INFO ] (25/07/2014 10:36:40): Handling socket: Socket[addr=/172.24.77.6,port=53835,localport=9099]
+[INFO ] (25/07/2014 10:36:40): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7abdc6dd, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:40): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:40): Connection closed by client.
+[INFO ] (25/07/2014 10:36:40): ------------------------------
+[INFO ] (25/07/2014 10:36:40): Handling socket: Socket[addr=/172.24.77.6,port=53836,localport=9099]
+[INFO ] (25/07/2014 10:36:41): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7a8011e6, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:41): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:41): Connection closed by client.
+[INFO ] (25/07/2014 10:36:41): ------------------------------
+[INFO ] (25/07/2014 10:36:41): Handling socket: Socket[addr=/172.24.77.6,port=53837,localport=9099]
+[INFO ] (25/07/2014 10:36:41): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@30f6e138, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:41): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:41): ------------------------------
+[INFO ] (25/07/2014 10:36:41): Handling socket: Socket[addr=/172.24.77.6,port=53838,localport=9099]
+[INFO ] (25/07/2014 10:36:41): Connection closed by client.
+[INFO ] (25/07/2014 10:36:41): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@4af7fd77, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:41): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:41): Connection closed by client.
+[INFO ] (25/07/2014 10:36:41): ------------------------------
+[INFO ] (25/07/2014 10:36:41): Handling socket: Socket[addr=/172.24.77.6,port=53839,localport=9099]
+[INFO ] (25/07/2014 10:36:42): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@9adc40d, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:42): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:42): Connection closed by client.
+[INFO ] (25/07/2014 10:36:42): ------------------------------
+[INFO ] (25/07/2014 10:36:42): Handling socket: Socket[addr=/172.24.77.6,port=53840,localport=9099]
+[INFO ] (25/07/2014 10:36:42): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@174f4c53, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:42): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:42): Connection closed by client.
+[INFO ] (25/07/2014 10:36:42): ------------------------------
+[INFO ] (25/07/2014 10:36:42): Handling socket: Socket[addr=/172.24.77.6,port=53841,localport=9099]
+[INFO ] (25/07/2014 10:36:42): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@180fe6b5, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:42): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:42): Connection closed by client.
+[INFO ] (25/07/2014 10:36:42): ------------------------------
+[INFO ] (25/07/2014 10:36:42): Handling socket: Socket[addr=/172.24.77.6,port=53842,localport=9099]
+[INFO ] (25/07/2014 10:36:43): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@602ead12, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:43): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:43): Connection closed by client.
+[INFO ] (25/07/2014 10:36:43): ------------------------------
+[INFO ] (25/07/2014 10:36:43): Handling socket: Socket[addr=/172.24.77.6,port=53843,localport=9099]
+[INFO ] (25/07/2014 10:36:43): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@6ad70ed6, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:43): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:43): ------------------------------
+[INFO ] (25/07/2014 10:36:43): Connection closed by client.
+[INFO ] (25/07/2014 10:36:43): Handling socket: Socket[addr=/172.24.77.6,port=53844,localport=9099]
+[INFO ] (25/07/2014 10:36:43): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2e33f0a7, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:43): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:43): Connection closed by client.
+[INFO ] (25/07/2014 10:36:43): ------------------------------
+[INFO ] (25/07/2014 10:36:43): Handling socket: Socket[addr=/172.24.77.6,port=53845,localport=9099]
+[INFO ] (25/07/2014 10:36:44): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@6f3ee0a9, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:44): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:44): Connection closed by client.
+[INFO ] (25/07/2014 10:36:44): ------------------------------
+[INFO ] (25/07/2014 10:36:44): Handling socket: Socket[addr=/172.24.77.6,port=53846,localport=9099]
+[INFO ] (25/07/2014 10:36:44): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@4d4723a3, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:44): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:44): Connection closed by client.
+[INFO ] (25/07/2014 10:36:44): ------------------------------
+[INFO ] (25/07/2014 10:36:44): Handling socket: Socket[addr=/172.24.77.6,port=53847,localport=9099]
+[INFO ] (25/07/2014 10:36:44): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@13401dfb, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:44): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:44): Connection closed by client.
+[INFO ] (25/07/2014 10:36:44): ------------------------------
+[INFO ] (25/07/2014 10:36:44): Handling socket: Socket[addr=/172.24.77.6,port=53848,localport=9099]
+[INFO ] (25/07/2014 10:36:44): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@73efe900, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:44): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:45): Connection closed by client.
+[INFO ] (25/07/2014 10:36:45): ------------------------------
+[INFO ] (25/07/2014 10:36:45): Handling socket: Socket[addr=/172.24.77.6,port=53849,localport=9099]
+[INFO ] (25/07/2014 10:36:45): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@4453c20f, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:45): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:45): Connection closed by client.
+[INFO ] (25/07/2014 10:36:45): ------------------------------
+[INFO ] (25/07/2014 10:36:45): Handling socket: Socket[addr=/172.24.77.6,port=53850,localport=9099]
+[INFO ] (25/07/2014 10:36:45): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7d872432, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:45): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:45): Connection closed by client.
+[INFO ] (25/07/2014 10:36:45): ------------------------------
+[INFO ] (25/07/2014 10:36:45): Handling socket: Socket[addr=/172.24.77.6,port=53851,localport=9099]
+[INFO ] (25/07/2014 10:36:45): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@b907886, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:45): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:45): Connection closed by client.
+[INFO ] (25/07/2014 10:36:45): ------------------------------
+[INFO ] (25/07/2014 10:36:45): Handling socket: Socket[addr=/172.24.77.6,port=53852,localport=9099]
+[INFO ] (25/07/2014 10:36:46): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@52f5274d, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:46): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:46): Connection closed by client.
+[INFO ] (25/07/2014 10:36:46): ------------------------------
+[INFO ] (25/07/2014 10:36:46): Handling socket: Socket[addr=/172.24.77.6,port=53853,localport=9099]
+[INFO ] (25/07/2014 10:36:46): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@5fff1985, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:46): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:46): Connection closed by client.
+[INFO ] (25/07/2014 10:36:46): ------------------------------
+[INFO ] (25/07/2014 10:36:46): Handling socket: Socket[addr=/172.24.77.6,port=53854,localport=9099]
+[INFO ] (25/07/2014 10:36:46): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@715b0cac, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:46): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:46): Connection closed by client.
+[INFO ] (25/07/2014 10:36:46): ------------------------------
+[INFO ] (25/07/2014 10:36:46): Handling socket: Socket[addr=/172.24.77.6,port=53855,localport=9099]
+[INFO ] (25/07/2014 10:36:47): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@9082ce, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:47): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:47): Connection closed by client.
+[INFO ] (25/07/2014 10:36:47): ------------------------------
+[INFO ] (25/07/2014 10:36:47): Handling socket: Socket[addr=/172.24.77.6,port=53856,localport=9099]
+[INFO ] (25/07/2014 10:36:47): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@1c7463e6, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:47): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:47): Connection closed by client.
+[INFO ] (25/07/2014 10:36:47): ------------------------------
+[INFO ] (25/07/2014 10:36:47): Handling socket: Socket[addr=/172.24.77.6,port=53857,localport=9099]
+[INFO ] (25/07/2014 10:36:47): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7c973e24, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:47): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:47): Connection closed by client.
+[INFO ] (25/07/2014 10:36:47): ------------------------------
+[INFO ] (25/07/2014 10:36:47): Handling socket: Socket[addr=/172.24.77.6,port=53858,localport=9099]
+[INFO ] (25/07/2014 10:36:48): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@1a549dd9, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:48): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:48): Connection closed by client.
+[INFO ] (25/07/2014 10:36:48): ------------------------------
+[INFO ] (25/07/2014 10:36:48): Handling socket: Socket[addr=/172.24.77.6,port=53859,localport=9099]
+[INFO ] (25/07/2014 10:36:48): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2bb16800, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:48): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:48): Connection closed by client.
+[INFO ] (25/07/2014 10:36:48): ------------------------------
+[INFO ] (25/07/2014 10:36:48): Handling socket: Socket[addr=/172.24.77.6,port=53860,localport=9099]
+[INFO ] (25/07/2014 10:36:48): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2ba2a703, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:48): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:48): Connection closed by client.
+[INFO ] (25/07/2014 10:36:48): ------------------------------
+[INFO ] (25/07/2014 10:36:48): Handling socket: Socket[addr=/172.24.77.6,port=53861,localport=9099]
+[INFO ] (25/07/2014 10:36:48): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@718c9885, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:48): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:48): ------------------------------
+[INFO ] (25/07/2014 10:36:48): Handling socket: Socket[addr=/172.24.77.6,port=53862,localport=9099]
+[INFO ] (25/07/2014 10:36:48): Connection closed by client.
+[INFO ] (25/07/2014 10:36:49): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@1829d5f5, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:49): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:49): Connection closed by client.
+[INFO ] (25/07/2014 10:36:49): ------------------------------
+[INFO ] (25/07/2014 10:36:49): Handling socket: Socket[addr=/172.24.77.6,port=53863,localport=9099]
+[INFO ] (25/07/2014 10:36:49): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2b9131eb, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:49): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:49): Connection closed by client.
+[INFO ] (25/07/2014 10:36:49): ------------------------------
+[INFO ] (25/07/2014 10:36:49): Handling socket: Socket[addr=/172.24.77.6,port=53864,localport=9099]
+[INFO ] (25/07/2014 10:36:49): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@77603a8, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:49): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:49): Connection closed by client.
+[INFO ] (25/07/2014 10:36:49): ------------------------------
+[INFO ] (25/07/2014 10:36:49): Handling socket: Socket[addr=/172.24.77.6,port=53865,localport=9099]
+[INFO ] (25/07/2014 10:36:50): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@6fb2fe24, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:50): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:50): Connection closed by client.
+[INFO ] (25/07/2014 10:36:50): ------------------------------
+[INFO ] (25/07/2014 10:36:50): Handling socket: Socket[addr=/172.24.77.6,port=53866,localport=9099]
+[INFO ] (25/07/2014 10:36:50): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@5b863f47, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:50): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:50): Connection closed by client.
+[INFO ] (25/07/2014 10:36:50): ------------------------------
+[INFO ] (25/07/2014 10:36:50): Handling socket: Socket[addr=/172.24.77.6,port=53867,localport=9099]
+[INFO ] (25/07/2014 10:36:50): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@597bd6ac, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:50): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:50): Connection closed by client.
+[INFO ] (25/07/2014 10:36:50): ------------------------------
+[INFO ] (25/07/2014 10:36:50): Handling socket: Socket[addr=/172.24.77.6,port=53868,localport=9099]
+[INFO ] (25/07/2014 10:36:51): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@276eb721, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:51): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:51): Connection closed by client.
+[INFO ] (25/07/2014 10:36:51): ------------------------------
+[INFO ] (25/07/2014 10:36:51): Handling socket: Socket[addr=/172.24.77.6,port=53869,localport=9099]
+[INFO ] (25/07/2014 10:36:51): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@3573aa2d, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:51): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:51): Connection closed by client.
+[INFO ] (25/07/2014 10:36:51): ------------------------------
+[INFO ] (25/07/2014 10:36:51): Handling socket: Socket[addr=/172.24.77.6,port=53870,localport=9099]
+[INFO ] (25/07/2014 10:36:51): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@3e484485, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:51): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:51): Connection closed by client.
+[INFO ] (25/07/2014 10:36:51): ------------------------------
+[INFO ] (25/07/2014 10:36:51): Handling socket: Socket[addr=/172.24.77.6,port=53871,localport=9099]
+[INFO ] (25/07/2014 10:36:51): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@66606256, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:51): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:51): Connection closed by client.
+[INFO ] (25/07/2014 10:36:51): ------------------------------
+[INFO ] (25/07/2014 10:36:51): Handling socket: Socket[addr=/172.24.77.6,port=53872,localport=9099]
+[INFO ] (25/07/2014 10:36:52): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@3fe13e10, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:52): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:52): Connection closed by client.
+[INFO ] (25/07/2014 10:36:52): ------------------------------
+[INFO ] (25/07/2014 10:36:52): Handling socket: Socket[addr=/172.24.77.6,port=53873,localport=9099]
+[INFO ] (25/07/2014 10:36:52): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@9ab1ce, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:52): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:52): Connection closed by client.
+[INFO ] (25/07/2014 10:36:52): ------------------------------
+[INFO ] (25/07/2014 10:36:52): Handling socket: Socket[addr=/172.24.77.6,port=53874,localport=9099]
+[INFO ] (25/07/2014 10:36:52): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@61a4fd5, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:52): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:52): Connection closed by client.
+[INFO ] (25/07/2014 10:36:52): ------------------------------
+[INFO ] (25/07/2014 10:36:52): Handling socket: Socket[addr=/172.24.77.6,port=53875,localport=9099]
+[INFO ] (25/07/2014 10:36:53): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@6f89d44d, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:53): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:53): Connection closed by client.
+[INFO ] (25/07/2014 10:36:53): ------------------------------
+[INFO ] (25/07/2014 10:36:53): Handling socket: Socket[addr=/172.24.77.6,port=53876,localport=9099]
+[INFO ] (25/07/2014 10:36:53): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@6ddc6d79, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:53): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:53): Connection closed by client.
+[INFO ] (25/07/2014 10:36:53): ------------------------------
+[INFO ] (25/07/2014 10:36:53): Handling socket: Socket[addr=/172.24.77.6,port=53877,localport=9099]
+[INFO ] (25/07/2014 10:36:53): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@5001cf61, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:53): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:53): Connection closed by client.
+[INFO ] (25/07/2014 10:36:53): ------------------------------
+[INFO ] (25/07/2014 10:36:53): Handling socket: Socket[addr=/172.24.77.6,port=53878,localport=9099]
+[INFO ] (25/07/2014 10:36:54): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@194ed310, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:54): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:54): Connection closed by client.
+[INFO ] (25/07/2014 10:36:54): ------------------------------
+[INFO ] (25/07/2014 10:36:54): Handling socket: Socket[addr=/172.24.77.6,port=53879,localport=9099]
+[INFO ] (25/07/2014 10:36:54): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@630acbac, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:54): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:54): Connection closed by client.
+[INFO ] (25/07/2014 10:36:54): ------------------------------
+[INFO ] (25/07/2014 10:36:54): Handling socket: Socket[addr=/172.24.77.6,port=53880,localport=9099]
+[INFO ] (25/07/2014 10:36:54): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@580e4a7e, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:54): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:54): Connection closed by client.
+[INFO ] (25/07/2014 10:36:54): ------------------------------
+[INFO ] (25/07/2014 10:36:54): Handling socket: Socket[addr=/172.24.77.6,port=53881,localport=9099]
+[INFO ] (25/07/2014 10:36:54): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2950c567, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:54): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:54): Connection closed by client.
+[INFO ] (25/07/2014 10:36:54): ------------------------------
+[INFO ] (25/07/2014 10:36:54): Handling socket: Socket[addr=/172.24.77.6,port=53882,localport=9099]
+[INFO ] (25/07/2014 10:36:55): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@406b3b7d, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:55): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:55): Connection closed by client.
+[INFO ] (25/07/2014 10:36:55): ------------------------------
+[INFO ] (25/07/2014 10:36:55): Handling socket: Socket[addr=/172.24.77.6,port=53883,localport=9099]
+[INFO ] (25/07/2014 10:36:55): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@29817d67, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:55): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:55): Connection closed by client.
+[INFO ] (25/07/2014 10:36:55): ------------------------------
+[INFO ] (25/07/2014 10:36:55): Handling socket: Socket[addr=/172.24.77.6,port=53884,localport=9099]
+[INFO ] (25/07/2014 10:36:55): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@750a3f97, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:55): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:55): Connection closed by client.
+[INFO ] (25/07/2014 10:36:55): ------------------------------
+[INFO ] (25/07/2014 10:36:55): Handling socket: Socket[addr=/172.24.77.6,port=53885,localport=9099]
+[INFO ] (25/07/2014 10:36:56): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@3d02e984, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:56): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:56): Connection closed by client.
+[INFO ] (25/07/2014 10:36:56): ------------------------------
+[INFO ] (25/07/2014 10:36:56): Handling socket: Socket[addr=/172.24.77.6,port=53886,localport=9099]
+[INFO ] (25/07/2014 10:36:56): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7d06f07b, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:56): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:56): Connection closed by client.
+[INFO ] (25/07/2014 10:36:56): ------------------------------
+[INFO ] (25/07/2014 10:36:56): Handling socket: Socket[addr=/172.24.77.6,port=53887,localport=9099]
+[INFO ] (25/07/2014 10:36:56): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@35d42a04, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:56): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:56): Connection closed by client.
+[INFO ] (25/07/2014 10:36:56): ------------------------------
+[INFO ] (25/07/2014 10:36:56): Handling socket: Socket[addr=/172.24.77.6,port=53888,localport=9099]
+[INFO ] (25/07/2014 10:36:57): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@259a902a, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:36:57): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:36:57): Connection closed by client.
+[INFO ] (25/07/2014 10:36:57): ------------------------------
+[INFO ] (25/07/2014 10:36:57): Handling socket: Socket[addr=/172.24.77.6,port=53889,localport=9099]
+[INFO ] (25/07/2014 10:36:57): Connection closed by client.
+[INFO ] (25/07/2014 10:53:26): Starting NetworkServer...
+[INFO ] (25/07/2014 10:53:26): Channel: us.pserver.remote.HttpResponseChannel
+[INFO ] (25/07/2014 10:53:26): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 10:53:26): Server started!
+
+[INFO ] (25/07/2014 10:53:30): ------------------------------
+[INFO ] (25/07/2014 10:53:30): Handling socket: Socket[addr=/172.24.77.6,port=53936,localport=9099]
+[INFO ] (25/07/2014 10:53:31): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@332198e0, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 10:53:31): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 10:53:31): Connection closed by client.
+[INFO ] (25/07/2014 10:53:31): ------------------------------
+[INFO ] (25/07/2014 10:53:31): Handling socket: Socket[addr=/172.24.77.6,port=53937,localport=9099]
+[INFO ] (25/07/2014 10:53:31): Remote request: StreamHandler.read( c:/.local/remote.png ) : java.io.InputStream
+[INFO ] (25/07/2014 10:53:32): Response sent: OpResult{ success = true, return = null }
+[INFO ] (25/07/2014 10:53:32): Connection closed by client.
+[INFO ] (25/07/2014 12:55:32): Starting NetworkServer...
+[INFO ] (25/07/2014 13:25:08): Starting NetworkServer...
+[INFO ] (25/07/2014 13:25:08): Channel: us.pserver.remote.channel.HttpResponseChannel
+[INFO ] (25/07/2014 13:25:08): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 13:25:08): Server started!
+
+[INFO ] (25/07/2014 13:25:19): ------------------------------
+[INFO ] (25/07/2014 13:25:19): Handling socket: Socket[addr=/172.24.77.6,port=54842,localport=9099]
+[INFO ] (25/07/2014 13:25:20): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@4cedbec4, c:/.local/remote.png ) : boolean
+[WARN ] (25/07/2014 13:25:20): Error invoking method [StreamHandler.save( us.pserver.streams.MultiCoderBuffer$1@2146eff0, c:/.local/remote.png ) : boolean]: us.pserver.remote.MethodInvocationException: Invalid Credentials [null]
+[INFO ] (25/07/2014 13:25:20): Response sent: OpResult{ success = false, return = null }
+[INFO ] (25/07/2014 13:25:20): Connection closed by client.
+[INFO ] (25/07/2014 14:12:52): Starting NetworkServer...
+[INFO ] (25/07/2014 14:12:52): Channel: us.pserver.remote.channel.HttpResponseChannel
+[INFO ] (25/07/2014 14:12:52): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 14:12:52): Server started!
+
+[INFO ] (25/07/2014 14:12:57): ------------------------------
+[INFO ] (25/07/2014 14:12:57): Handling socket: Socket[addr=/172.24.77.6,port=55621,localport=9099]
+[INFO ] (25/07/2014 14:12:58): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2ae99b95, c:/.local/remote.png ) : boolean
+[WARN ] (25/07/2014 14:12:58): Error invoking method [StreamHandler.save( us.pserver.streams.MultiCoderBuffer$1@577ded21, c:/.local/remote.png ) : boolean]: us.pserver.remote.MethodInvocationException: Invalid Credentials [null]
+[INFO ] (25/07/2014 14:12:58): Response sent: OpResult{ success = false, return = null }
+[INFO ] (25/07/2014 14:12:58): Connection closed by client.
+[INFO ] (25/07/2014 14:13:49): ------------------------------
+[INFO ] (25/07/2014 14:13:49): Handling socket: Socket[addr=/172.24.77.6,port=55622,localport=9099]
+[INFO ] (25/07/2014 14:13:49): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@67d0fffa, c:/.local/remote.png ) : boolean
+[WARN ] (25/07/2014 14:13:49): Error invoking method [StreamHandler.save( us.pserver.streams.MultiCoderBuffer$1@7d9d9dc2, c:/.local/remote.png ) : boolean]: us.pserver.remote.MethodInvocationException: Invalid Credentials [null]
+[INFO ] (25/07/2014 14:13:49): Response sent: OpResult{ success = false, return = null }
+[INFO ] (25/07/2014 14:13:49): Connection closed by client.
+[INFO ] (25/07/2014 14:15:02): Starting NetworkServer...
+[INFO ] (25/07/2014 14:15:02): Channel: us.pserver.remote.channel.HttpResponseChannel
+[INFO ] (25/07/2014 14:15:02): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 14:15:02): Server started!
+
+[INFO ] (25/07/2014 14:15:05): ------------------------------
+[INFO ] (25/07/2014 14:15:05): Handling socket: Socket[addr=/172.24.77.6,port=55626,localport=9099]
+[INFO ] (25/07/2014 14:15:06): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@c7a5e71, c:/.local/remote.png ) : boolean
+[WARN ] (25/07/2014 14:15:06): Error invoking method [StreamHandler.save( us.pserver.streams.MultiCoderBuffer$1@6b7bdab0, c:/.local/remote.png ) : boolean]: us.pserver.remote.MethodInvocationException: Invalid Credentials [null]
+[INFO ] (25/07/2014 14:15:06): Response sent: OpResult{ success = false, return = null }
+[INFO ] (25/07/2014 14:15:06): Connection closed by client.
+[INFO ] (25/07/2014 14:17:13): ------------------------------
+[INFO ] (25/07/2014 14:17:13): Handling socket: Socket[addr=/172.24.77.6,port=55629,localport=9099]
+[INFO ] (25/07/2014 14:17:14): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@6bb5e157, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 14:17:14): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 14:17:14): Connection closed by client.
+[INFO ] (25/07/2014 14:17:14): ------------------------------
+[INFO ] (25/07/2014 14:17:14): Handling socket: Socket[addr=/172.24.77.6,port=55630,localport=9099]
+[INFO ] (25/07/2014 14:17:14): Remote request: StreamHandler.read( c:/.local/remote.png ) : java.io.InputStream
+[WARN ] (25/07/2014 14:17:14): Error invoking method [StreamHandler.read( c:/.local/remote.png ) : java.io.InputStream]: us.pserver.remote.MethodInvocationException: Invalid Credentials [null]
+[INFO ] (25/07/2014 14:17:14): Response sent: OpResult{ success = false, return = null }
+[INFO ] (25/07/2014 14:17:14): Connection closed by client.
+[INFO ] (25/07/2014 14:17:59): ------------------------------
+[INFO ] (25/07/2014 14:17:59): Handling socket: Socket[addr=/172.24.77.6,port=55632,localport=9099]
+[INFO ] (25/07/2014 14:17:59): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@d244f1b, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 14:17:59): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 14:17:59): Connection closed by client.
+[INFO ] (25/07/2014 14:17:59): ------------------------------
+[INFO ] (25/07/2014 14:17:59): Handling socket: Socket[addr=/172.24.77.6,port=55633,localport=9099]
+[INFO ] (25/07/2014 14:17:59): Remote request: StreamHandler.read( c:/.local/remote.png ) : java.io.InputStream
+[INFO ] (25/07/2014 14:18:00): Response sent: OpResult{ success = true, return = null }
+[INFO ] (25/07/2014 14:18:00): Connection closed by client.
+[INFO ] (25/07/2014 14:19:36): Starting NetworkServer...
+[INFO ] (25/07/2014 14:19:36): Channel: us.pserver.remote.channel.HttpResponseChannel
+[INFO ] (25/07/2014 14:19:36): Listening on: NetConnector{ *:9099 }
+[INFO ] (25/07/2014 14:19:36): Server started!
+
+[INFO ] (25/07/2014 14:19:39): ------------------------------
+[INFO ] (25/07/2014 14:19:39): Handling socket: Socket[addr=/172.24.77.6,port=55718,localport=9099]
+[INFO ] (25/07/2014 14:19:40): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@1f94eb57, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 14:19:40): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 14:19:40): Connection closed by client.
+[INFO ] (25/07/2014 14:19:40): ------------------------------
+[INFO ] (25/07/2014 14:19:40): Handling socket: Socket[addr=/172.24.77.6,port=55719,localport=9099]
+[INFO ] (25/07/2014 14:19:40): Remote request: StreamHandler.read( c:/.local/remote.png ) : java.io.InputStream
+[INFO ] (25/07/2014 14:19:41): Response sent: OpResult{ success = true, return = null }
+[INFO ] (25/07/2014 14:19:41): Connection closed by client.
+[INFO ] (25/07/2014 14:19:51): ------------------------------
+[INFO ] (25/07/2014 14:19:51): Handling socket: Socket[addr=/172.24.77.6,port=55720,localport=9099]
+[INFO ] (25/07/2014 14:19:51): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@7de3f780, c:/.local/remote.png ) : boolean
+[INFO ] (25/07/2014 14:19:51): Response sent: OpResult{ success = true, return = true }
+[INFO ] (25/07/2014 14:19:51): Connection closed by client.
+[INFO ] (25/07/2014 14:19:51): ------------------------------
+[INFO ] (25/07/2014 14:19:51): Handling socket: Socket[addr=/172.24.77.6,port=55721,localport=9099]
+[INFO ] (25/07/2014 14:19:51): Remote request: StreamHandler.read( c:/.local/remote.png ) : java.io.InputStream
+[INFO ] (25/07/2014 14:19:52): Response sent: OpResult{ success = true, return = null }
+[INFO ] (25/07/2014 14:19:52): Connection closed by client.

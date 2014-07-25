@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.remote;
+package us.pserver.remote.channel;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -34,6 +34,8 @@ import us.pserver.http.HttpInputStream;
 import us.pserver.http.RequestLine;
 import us.pserver.http.ResponseLine;
 import us.pserver.http.ResponseParser;
+import us.pserver.remote.NetConnector;
+import us.pserver.remote.Transport;
 import us.pserver.streams.StreamUtils;
 
 
@@ -276,7 +278,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
   @Override
   public boolean isValid() {
     return sock != null && sock.isConnected() 
-        && !sock.isClosed();
+        && !sock.isClosed() && sock.isOutputShutdown();
   }
   
   

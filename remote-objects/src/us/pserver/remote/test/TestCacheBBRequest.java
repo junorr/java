@@ -22,7 +22,7 @@
 package us.pserver.remote.test;
 
 import java.io.IOException;
-import us.pserver.remote.HttpRequestChannel;
+import us.pserver.remote.channel.HttpRequestChannel;
 import us.pserver.remote.NetConnector;
 import us.pserver.remote.Transport;
 

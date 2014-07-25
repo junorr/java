@@ -19,16 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.remote;
+package us.pserver.remote.channel;
 
-import java.net.Socket;
 
 /**
- * Fábrica de canais de transmissão de rede que 
- * recebem como parâmetro um <code>Socket</code>.
+ * Interface que define uma fábrica de canais
+ * de transmissão de objetos.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 21/01/2014
+ * @version 1.0 - 2014-01-21
+ * @param <T> Tipo de argumento para criação 
+ * de <code>Channel</code>.
  */
-public interface SocketChannelFactory 
-    extends ChannelFactory<Socket> {}
+public interface ChannelFactory<T> {
+  
+  /**
+   * Cria um canal de transmissão de objetos.
+   * @param arg Argumento para a criação do canal.
+   * @return <code>Channel</code>.
+   */
+  Channel createChannel(T arg);
+  
+}
