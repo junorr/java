@@ -55,12 +55,12 @@ public class TestRClient {
         StandardOpenOption.READ);
     
     RemoteMethod mth = new RemoteMethod()
-        //.setCredentials(new Credentials("juno", 
-          //  new StringBuffer("32132155")))
+        .setCredentials(new Credentials("juno", 
+            new StringBuffer("32132155")))
         .forObject("StreamHandler")
         .method("save")
-        .setArgTypes(InputStream.class, String.class)
-        .setReturnType(boolean.class);
+        .setArgTypes(InputStream.class, String.class);
+        //.setReturnType(boolean.class);
     
     is = Files.newInputStream(
       Paths.get("c:/.local/splash.png"), 
@@ -71,8 +71,8 @@ public class TestRClient {
 
     mth.method("read")
         .arguments("c:/.local/remote.png")
-        .setArgTypes(String.class)
-        .setReturnType(InputStream.class);
+        .setArgTypes(String.class);
+        //.setReturnType(InputStream.class);
     System.out.println("* invoking remote...");
     System.out.println("* "+ mth);
     

@@ -309,6 +309,7 @@ public class NetworkServer extends AbstractServer {
       try {
         return channel.read();
       } catch(Exception e) {
+        e.printStackTrace();
         return null;
       }
     }
@@ -364,8 +365,10 @@ public class NetworkServer extends AbstractServer {
         try {
           if(container.isAuthEnabled())
             LogProvider.getSimpleLog().info("Authentication Enabled");
+          
           obj = container.get(rmt.getCredentials(), rmt.objectName());
-        } catch(AuthenticationException e) {
+        } 
+        catch(AuthenticationException e) {
           throw new MethodInvocationException(e.getMessage(), e);
         }
         Invoker inv = new Invoker(obj, rmt);

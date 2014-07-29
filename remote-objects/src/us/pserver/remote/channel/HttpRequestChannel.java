@@ -216,20 +216,13 @@ public class HttpRequestChannel implements Channel, HttpConst {
   
   
   private void verifyResponse() throws IOException {
-    readHeaders();
+    parser.reset().readFrom(sock.getInputStream());
     resp = parser.getResponseLine();
     if(resp == null || resp.getCode() != 200) {
       //parser.headers().forEach(System.out::print);
       throw new IOException(
           "Invalid response from server: "+ resp);
     }
-  }
-  
-  
-  public void readHeaders() throws IOException {
-    if(sock == null || sock.isClosed())
-      return;
-    parser.reset().readFrom(sock.getInputStream());
   }
   
   
@@ -278,7 +271,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
   @Override
   public boolean isValid() {
     return sock != null && sock.isConnected() 
-        && !sock.isClosed() && sock.isOutputShutdown();
+        && !sock.isClosed() && !sock.isOutputShutdown();
   }
   
   

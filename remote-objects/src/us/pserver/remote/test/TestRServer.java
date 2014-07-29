@@ -72,8 +72,8 @@ public class TestRServer {
     sv.container().put("StreamHandler", new StreamHandler());
     SingleCredentialsSource src = new SingleCredentialsSource(
         new Credentials("juno", new StringBuffer("32132155")));
-    //sv.container().setAuthenticator(
-      //  new Authenticator(src));
+    sv.container().setAuthenticator(
+        new Authenticator(src));
     sv.start();
   }
   

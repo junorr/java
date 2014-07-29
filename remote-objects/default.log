@@ -1751,3 +1751,47 @@
 [INFO ] (25/07/2014 14:19:51): Remote request: StreamHandler.read( c:/.local/remote.png ) : java.io.InputStream
 [INFO ] (25/07/2014 14:19:52): Response sent: OpResult{ success = true, return = null }
 [INFO ] (25/07/2014 14:19:52): Connection closed by client.
+[INFO ] (29/07/2014 11:21:00): Starting NetworkServer...
+[INFO ] (29/07/2014 11:21:00): Channel: us.pserver.remote.channel.HttpResponseChannel
+[INFO ] (29/07/2014 11:21:00): Listening on: NetConnector{ *:9099 }
+[INFO ] (29/07/2014 11:21:01): Server started!
+
+[INFO ] (29/07/2014 11:21:12): ------------------------------
+[INFO ] (29/07/2014 11:21:12): Handling socket: Socket[addr=/172.24.77.6,port=65197,localport=9099]
+[INFO ] (29/07/2014 11:21:13): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@1f94eb57, c:/.local/remote.png )
+[INFO ] (29/07/2014 11:21:13): Authentication Enabled
+[INFO ] (29/07/2014 11:21:13): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/07/2014 11:21:13): Connection closed by client.
+[INFO ] (29/07/2014 11:24:01): Starting NetworkServer...
+[INFO ] (29/07/2014 11:24:01): Channel: us.pserver.remote.channel.HttpResponseChannel
+[INFO ] (29/07/2014 11:24:01): Listening on: NetConnector{ *:9099 }
+[INFO ] (29/07/2014 11:24:01): Server started!
+
+[INFO ] (29/07/2014 11:24:09): ------------------------------
+[INFO ] (29/07/2014 11:24:09): Handling socket: Socket[addr=/172.24.77.6,port=65198,localport=9099]
+[INFO ] (29/07/2014 11:24:10): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2dd08a1, c:/.local/remote.png )
+[INFO ] (29/07/2014 11:24:10): Authentication Enabled
+[INFO ] (29/07/2014 11:24:10): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/07/2014 11:24:10): Connection closed by client.
+[INFO ] (29/07/2014 11:25:52): Starting NetworkServer...
+[INFO ] (29/07/2014 11:25:52): Channel: us.pserver.remote.channel.HttpResponseChannel
+[INFO ] (29/07/2014 11:25:52): Listening on: NetConnector{ *:9099 }
+[INFO ] (29/07/2014 11:25:52): Server started!
+
+[INFO ] (29/07/2014 11:25:58): ------------------------------
+[INFO ] (29/07/2014 11:25:58): Handling socket: Socket[addr=/172.24.77.6,port=65203,localport=9099]
+[INFO ] (29/07/2014 11:25:59): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@42e044e8, c:/.local/remote.png )
+[INFO ] (29/07/2014 11:25:59): Authentication Enabled
+[INFO ] (29/07/2014 11:25:59): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/07/2014 11:25:59): Connection closed by client.
+[INFO ] (29/07/2014 11:28:39): Starting NetworkServer...
+[INFO ] (29/07/2014 11:28:39): Channel: us.pserver.remote.channel.HttpResponseChannel
+[INFO ] (29/07/2014 11:28:39): Listening on: NetConnector{ *:9099 }
+[INFO ] (29/07/2014 11:28:39): Server started!
+
+[INFO ] (29/07/2014 11:28:44): ------------------------------
+[INFO ] (29/07/2014 11:28:44): Handling socket: Socket[addr=/172.24.77.6,port=65207,localport=9099]
+[INFO ] (29/07/2014 11:28:45): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@3d779d71, c:/.local/remote.png )
+[INFO ] (29/07/2014 11:28:45): Authentication Enabled
+[INFO ] (29/07/2014 11:28:45): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/07/2014 11:28:45): Connection closed by client.

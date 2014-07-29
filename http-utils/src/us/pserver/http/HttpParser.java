@@ -141,8 +141,10 @@ public class HttpParser implements HttpConst {
     String boundary = HYFENS + BOUNDARY;
     String[] ret = StreamUtils.readStringUntilOr(in, boundary, EOF);
     message = ret[1];
-    
+    System.out.println("* HttpParser: ret[0]="+ ret[0]);
+    System.out.println("* HttpParser: message="+ ret[1]);
     parse();
+    
     if(ret[0] != null && ret[0].equals(boundary))
       parseContent(in);
     return this;
