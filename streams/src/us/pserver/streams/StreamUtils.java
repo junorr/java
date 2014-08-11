@@ -108,7 +108,13 @@ public abstract class StreamUtils {
       if(read < buf.length && str.contains(EOF))
         break;
     }
+    out.flush();
     return total;
+  }
+  
+  
+  public static long consume(InputStream is) throws IOException {
+    return transfer(is, NullOutput.out);
   }
   
   
@@ -123,21 +129,27 @@ public abstract class StreamUtils {
    * @return Número total de bytes transferidos.
    * @throws IOException caso ocorra erro na transferência.
    */
-  public static long transferUntil(InputStream is, OutputStream os, String until) throws IOException {
+  public static StreamResult transferUntil(InputStream is, OutputStream os, String until) throws IOException {
     nullarg(InputStream.class, is);
     nullarg(OutputStream.class, os);
     nullstr(until);
     
+    StreamResult res = new StreamResult();
     LimitedBuffer lim = new LimitedBuffer(until.length());
     ByteBuffer buf = ByteBuffer.allocate(until.length() * 2);
     ByteBufferConverter cv = new ByteBufferConverter();
     
-    long total = 0;
     byte[] bs = new byte[1];
     int read = -1;
     
-    while((read = is.read(bs)) > 0) {
-      total++;
+    while(true) {
+      read = is.read(bs);
+      if(read <= 0) {
+        res.eofOn();
+        break;
+      }
+      
+      res.increment(read);
       lim.put(bs[0]);
       if(buf.remaining() < 1) {
         buf.flip();
@@ -154,32 +166,38 @@ public abstract class StreamUtils {
           buf.flip();
           os.write(cv.convert(buf));
         }
+        res.setToken(until);
         break;
       }
     }
     os.flush();
-    return total;
+    return res;
   }
   
   
-  public static String transferUntilOr(InputStream is, OutputStream os, String until, String or) throws IOException {
+  public static StreamResult transferUntilOr(InputStream is, OutputStream os, String until, String or) throws IOException {
     nullarg(InputStream.class, is);
     nullarg(OutputStream.class, os);
     nullstr(until);
     nullstr(or);
     
+    StreamResult res = new StreamResult();
     int maxlen = Math.max(until.length(), or.length());
     LimitedBuffer lim = new LimitedBuffer(maxlen);
     ByteBuffer buf = ByteBuffer.allocate(maxlen * 2);
     ByteBufferConverter cv = new ByteBufferConverter();
-    String found = null;
     
-    long total = 0;
     byte[] bs = new byte[1];
     int read = -1;
     
-    while((read = is.read(bs)) > 0) {
-      total++;
+    while(true) {
+      read = is.read(bs);
+      if(read <= 0) {
+        res.eofOn();
+        break;
+      }
+      
+      res.increment(read);
       lim.put(bs[0]);
       if(buf.remaining() < 1) {
         buf.flip();
@@ -197,7 +215,7 @@ public abstract class StreamUtils {
           buf.flip();
           os.write(cv.convert(buf));
         }
-        found = until;
+        res.setToken(until);
         break;
       }
       else if(or.equals(lim.toUTF8())
@@ -207,16 +225,16 @@ public abstract class StreamUtils {
           buf.flip();
           os.write(cv.convert(buf));
         }
-        found = or;
+        res.setToken(or);
         break;
       }
     }
     os.flush();
-    return found;
+    return res;
   }
   
   
-  public static long transferBetween(InputStream in, OutputStream out, 
+  public static StreamResult transferBetween(InputStream in, OutputStream out, 
       String start, String end) throws IOException {
     nullarg(InputStream.class, in);
     nullarg(OutputStream.class, out);
@@ -272,14 +290,14 @@ public abstract class StreamUtils {
    * @return O conteúdo <code>String</code> lido.
    * @throws IOException caso ocorra erro na leitura.
    */
-  public static String readBetween(InputStream in, String start, String end) throws IOException {
+  public static StreamResult readBetween(InputStream in, String start, String end) throws IOException {
     nullarg(InputStream.class, in);
     nullstr(start);
     nullstr(end);
     
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    transferBetween(in, bos, start, end);
-    return bos.toString(UTF8);
+    StreamResult res = transferBetween(in, bos, start, end);
+    return res.setContent(bos.toString(UTF8));
   }
 
 
@@ -293,18 +311,29 @@ public abstract class StreamUtils {
    * caso contrário.
    * @throws IOException Caso ocorra erro na leitura do stream.
    */
-  public static boolean readUntil(InputStream in, String str) throws IOException {
+  public static StreamResult readUntil(InputStream in, String str) throws IOException {
     nullarg(InputStream.class, in);
     nullstr(str);
     
+    StreamResult res = new StreamResult();
     int read = -1;
     LimitedBuffer lbuf = new LimitedBuffer(str.length());
-    while((read = in.read()) != -1) {
+    
+    while(true) {
+      read = in.read();
+      if(read == -1) {
+        res.eofOn();
+        break;
+      }
+      
+      res.increment();
       lbuf.put(read);
-      if(str.equals(lbuf.toUTF8()))
-        return true;
+      if(str.equals(lbuf.toUTF8())) {
+        res.setToken(str);
+        break;
+      }
     }
-    return false;
+    return res;
   }
 
 
@@ -322,24 +351,37 @@ public abstract class StreamUtils {
    * <code>null</code> no caso de nenhum argumento encontrado.
    * @throws IOException Caso ocorra erro na leitura do stream.
    */
-  public static String readUntilOr(InputStream in, String str, String orFalse) throws IOException {
+  public static StreamResult readUntilOr(InputStream in, String str, String orFalse) throws IOException {
     nullarg(InputStream.class, in);
     nullstr(str);
     nullstr(orFalse);
     
+    StreamResult res = new StreamResult();
     int read = -1;
     int maxlen = Math.max(str.length(), orFalse.length());
     LimitedBuffer lbuf = new LimitedBuffer(maxlen);
-    while((read = in.read()) != -1) {
+    
+    while(true) {
+      read = in.read();
+      if(read == -1) {
+        res.eofOn();
+        break;
+      }
+      
+      res.increment();
       lbuf.put(read);
       if(lbuf.size() == maxlen) {
-        if(lbuf.toUTF8().contains(str))
-          return str;
-        if(lbuf.toUTF8().contains(orFalse))
-          return orFalse;
+        if(lbuf.toUTF8().contains(str)) {
+          res.setToken(str);
+          break;
+        }
+        else if(lbuf.toUTF8().contains(orFalse)) {
+          res.setToken(orFalse);
+          break;
+        }
       }
     }
-    return null;
+    return res;
   }
   
   
@@ -353,24 +395,25 @@ public abstract class StreamUtils {
   }
   
   
-  public static String readStringUntil(InputStream is, String until) throws IOException {
+  public static StreamResult readStringUntil(InputStream is, String until) throws IOException {
     nullarg(InputStream.class, is);
     nullstr(until);
+    
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    transferUntil(is, bos, until);
-    return bos.toString(UTF8);
+    StreamResult res = transferUntil(is, bos, until);
+    return res.setContent(bos.toString(UTF8));
   }
   
   
-  public static String[] readStringUntilOr(InputStream is, String until, String or) throws IOException {
+  public static StreamResult readStringUntilOr(InputStream is, String until, String or) throws IOException {
     nullarg(InputStream.class, is);
     nullstr(until);
     nullstr(or);
+    
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    String[] ret = new String[2];
-    ret[0] = transferUntilOr(is, bos, until, or);
-    ret[1] = bos.toString(UTF8);
-    return ret;
+    
+    StreamResult res = transferUntilOr(is, bos, until, or);
+    return res.setContent(bos.toString(UTF8));
   }
   
   

@@ -30,6 +30,7 @@ import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.chk.Invoke;
 import us.pserver.streams.MultiCoderBuffer;
+import us.pserver.streams.StreamResult;
 import us.pserver.streams.StreamUtils;
 import static us.pserver.streams.StreamUtils.EOF;
 
@@ -139,13 +140,13 @@ public class HttpParser implements HttpConst {
     }
     
     String boundary = HYFENS + BOUNDARY;
-    String[] ret = StreamUtils.readStringUntilOr(in, boundary, EOF);
-    message = ret[1];
-    System.out.println("* HttpParser: ret[0]="+ ret[0]);
-    System.out.println("* HttpParser: message="+ ret[1]);
+    StreamResult sr = StreamUtils.readStringUntilOr(in, boundary, EOF);
+    message = sr.content();
+    System.out.println("* HttpParser: ret[0]="+ sr.token());
+    System.out.println("* HttpParser: message="+ sr.content());
     parse();
     
-    if(ret[0] != null && ret[0].equals(boundary))
+    if(sr.token() != null && sr.token().equals(boundary))
       parseContent(in);
     return this;
   }
@@ -153,30 +154,30 @@ public class HttpParser implements HttpConst {
   
   public HttpParser parseContent(InputStream is) throws IOException {
     nullarg(InputStream.class, is);
-    String ret = StreamUtils.readUntilOr(is, BOUNDARY_XML_START, EOF);
+    StreamResult sr = StreamUtils.readUntilOr(is, BOUNDARY_XML_START, EOF);
 
-    if(ret.equals(EOF)) return this;
+    if(sr.token().equals(EOF)) return this;
 
     String str = StreamUtils.readString(is, 5);
     StreamUtils.readUntil(is, "'>");
     
     if(BOUNDARY_CRYPT_KEY_START.contains(str)) {
-      String skey = StreamUtils.readStringUntil(is, 
+      sr = StreamUtils.readStringUntil(is, 
           BOUNDARY_CRYPT_KEY_END);
       Base64StringCoder bsc = new Base64StringCoder();
-      key = CryptKey.fromString(bsc.decode(skey));
+      key = CryptKey.fromString(bsc.decode(sr.content()));
       addHeader(new HttpCryptKey(key));
       
       return parseContent(is);
     }
     
     else if(BOUNDARY_OBJECT_START.contains(str)) {
-      String sobj = StreamUtils.readStringUntil(is, 
+      sr = StreamUtils.readStringUntil(is, 
           BOUNDARY_OBJECT_END);
       if(key != null)
-        addHeader(HttpEnclosedObject.decodeObject(sobj, key));
+        addHeader(HttpEnclosedObject.decodeObject(sr.content(), key));
       else
-        addHeader(HttpEnclosedObject.decodeObject(sobj));
+        addHeader(HttpEnclosedObject.decodeObject(sr.content()));
       
       return parseContent(is);
     }

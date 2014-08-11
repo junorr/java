@@ -1795,3 +1795,17 @@
 [INFO ] (29/07/2014 11:28:45): Authentication Enabled
 [INFO ] (29/07/2014 11:28:45): Response sent: OpResult{ success = true, return = true }
 [INFO ] (29/07/2014 11:28:45): Connection closed by client.
+[INFO ] (11/08/2014 17:02:06): Starting NetworkServer...
+[INFO ] (11/08/2014 17:02:06): Channel: us.pserver.remote.channel.XmlNetChannel
+[INFO ] (11/08/2014 17:02:06): Listening on: NetConnector{ *:9099 }
+[INFO ] (11/08/2014 17:02:06): Server started!
+
+[INFO ] (11/08/2014 17:02:11): ------------------------------
+[INFO ] (11/08/2014 17:02:11): Handling socket: Socket[addr=/172.24.77.60,port=50531,localport=9099]
+[INFO ] (11/08/2014 17:02:12): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@25485be5, c:/.local/remote.png )
+[INFO ] (11/08/2014 17:02:12): Authentication Enabled
+[INFO ] (11/08/2014 17:02:12): Response sent: OpResult{ success = true, return = true }
+[INFO ] (11/08/2014 17:02:13): Remote request: StreamHandler.read( c:/.local/remote.png )
+[INFO ] (11/08/2014 17:02:13): Authentication Enabled
+[INFO ] (11/08/2014 17:02:14): Response sent: OpResult{ success = true, return = null }
+[INFO ] (11/08/2014 17:02:14): Connection closed by client.

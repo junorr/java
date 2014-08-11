@@ -21,32 +21,51 @@
 
 package us.pserver.streams;
 
-import java.io.ByteArrayInputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import static us.pserver.chk.Checker.nullarg;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 07/07/2014
+ * @version 1.0 - 11/08/2014
  */
-public class TestStreamUtils {
+public class ProtectedOutputStream extends FilterOutputStream {
 
+  private OutputStream output;
   
-  public static void main(String[] args) throws IOException {
-    ByteArrayInputStream bis = 
-        new ByteArrayInputStream((
-          "--9051914041544843365972754266\n" +
-          "Content-Type: text/xml\n" +
-          "\n" +
-          "<xml><rob enc='basic'>hULofWh0RwY26BNk6oGTJ1cTN2pOxzOoN+m8bfpD9gI=</rob></xml>\nEOF").getBytes());
-    System.out.println("* content = "+ bis.available());
-    
-    System.out.println("_");
-    StreamResult sr = StreamUtils.transferBetween(bis, System.out, "<rob enc='basic'>", "</rob>");
-    System.out.println("_");
-    //long total = StreamUtils.transfer(bis, System.out);
-    
-    System.out.println("* total = "+ sr.getSize());
+  
+  public ProtectedOutputStream(OutputStream os) {
+    super(os);
+    setOutputStream(os);
+  }
+  
+  
+  public ProtectedOutputStream setOutputStream(OutputStream os) {
+    nullarg(OutputStream.class, os);
+    output = os;
+    return this;
+  }
+  
+  
+  public OutputStream getOutputStream() {
+    return output;
+  }
+  
+  
+  @Override
+  public void close() throws IOException {
+    output.flush();
+  }
+  
+  
+  public ProtectedOutputStream forceClose() throws IOException {
+    super.flush();
+    super.close();
+    output.flush();
+    output.close();
+    return this;
   }
   
 }

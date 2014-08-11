@@ -142,7 +142,7 @@ public class Transport {
    */
   public Transport setInputStream(InputStream in) {
     this.input = in;
-    hasContentEmbedded = in != null;
+    hasContentEmbedded = (in != null);
     return this;
   }
   

@@ -8,15 +8,19 @@
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/container/Credentials.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/channel/Channel.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/AuthenticationException.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/Transport.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/NetworkServer.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/container/SingleCredentialsSource.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/channel/XmlNetChannel.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/test/TestXmlDump.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/container/Authenticator.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/test/TestXmlClient.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/test/TestHttpRequest.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/Invoker.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/channel/ConnectorChannelFactory.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/channel/HttpRequestChannel.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/container/ObjectContainer.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/test/TestXmlServer.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/test/TestRClient.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/AbstractServer.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/remote/channel/HttpResponseChannel.java</file>

@@ -21,32 +21,52 @@
 
 package us.pserver.streams;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import us.pserver.cdr.crypt.CryptAlgorithm;
+import us.pserver.cdr.crypt.CryptKey;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 07/07/2014
+ * @version 1.0 - 01/08/2014
  */
-public class TestStreamUtils {
+public class TestStreamCoderFactory {
 
   
   public static void main(String[] args) throws IOException {
-    ByteArrayInputStream bis = 
-        new ByteArrayInputStream((
-          "--9051914041544843365972754266\n" +
-          "Content-Type: text/xml\n" +
-          "\n" +
-          "<xml><rob enc='basic'>hULofWh0RwY26BNk6oGTJ1cTN2pOxzOoN+m8bfpD9gI=</rob></xml>\nEOF").getBytes());
-    System.out.println("* content = "+ bis.available());
+    // --ENCODE --
+    Path pi = IO.p("c:/.local/splash.png");
+    Path po = IO.p("c:/.local/splash.enc");
     
-    System.out.println("_");
-    StreamResult sr = StreamUtils.transferBetween(bis, System.out, "<rob enc='basic'>", "</rob>");
-    System.out.println("_");
-    //long total = StreamUtils.transfer(bis, System.out);
+    InputStream is = IO.is(pi);
+    OutputStream os = IO.os(po);
     
-    System.out.println("* total = "+ sr.getSize());
+    CryptKey k = CryptKey.createRandomKey(CryptAlgorithm.DESede_CBC_PKCS5);
+    
+    os = StreamCoderFactory.getNew()
+        .setGZipCoderEnabled(true)
+        .setCryptCoderEnabled(true, k)
+        .setBase64CoderEnabled(true)
+        .create(os);
+    
+    IO.tc(is, os);
+    os.close();
+    System.out.println("* Done!");
+    
+    // --DECODE --
+    pi = IO.p("c:/.local/splash.enc");
+    po = IO.p("c:/.local/splash-d.png");
+    
+    is = IO.is(pi);
+    os = IO.os(po);
+    
+    is = StreamCoderFactory.get().create(is);
+    
+    IO.tc(is, os);
+    System.out.println("* Done!");
   }
   
 }

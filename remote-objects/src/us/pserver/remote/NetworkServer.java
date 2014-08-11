@@ -31,6 +31,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import static us.pserver.chk.Checker.nullarg;
 import us.pserver.log.LogProvider;
 
 /**
@@ -309,7 +310,6 @@ public class NetworkServer extends AbstractServer {
       try {
         return channel.read();
       } catch(Exception e) {
-        e.printStackTrace();
         return null;
       }
     }
@@ -328,6 +328,14 @@ public class NetworkServer extends AbstractServer {
       } catch(IOException e) {
         LogProvider.getSimpleLog().warning(
             "Error writing response: "+ e.toString());
+      }
+    }
+    
+    
+    private Object getObject(RemoteMethod rm) {
+      nullarg(RemoteMethod.class, rm);
+      if(!container.contains(rm.objectName())) {
+        
       }
     }
     

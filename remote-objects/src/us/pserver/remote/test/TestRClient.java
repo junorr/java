@@ -33,6 +33,7 @@ import us.pserver.remote.NetConnector;
 import us.pserver.remote.RemoteMethod;
 import us.pserver.remote.RemoteObject;
 import us.pserver.remote.container.Credentials;
+import us.pserver.streams.IO;
 import us.pserver.streams.StreamUtils;
 
 /**
@@ -44,15 +45,13 @@ public class TestRClient {
 
   public static void main(String[] args) throws MethodInvocationException, IOException {
     RemoteObject rem = new RemoteObject(
-        new NetConnector("172.24.77.6", 
+        new NetConnector("172.24.77.60", 
             NetConnector.DEFAULT_PORT), 
         DefaultFactoryProvider
-            .getHttpRequestChannelFactory());
+            .getConnectorXmlChannelFactory());
+            //.getHttpRequestChannelFactory());
     
-    InputStream is = null;
-    Files.newInputStream(
-        Paths.get("c:/.local/splash.png"), 
-        StandardOpenOption.READ);
+    InputStream is = IO.is(IO.p("c:/.local/splash.png"));
     
     RemoteMethod mth = new RemoteMethod()
         .setCredentials(new Credentials("juno", 
@@ -60,31 +59,20 @@ public class TestRClient {
         .forObject("StreamHandler")
         .method("save")
         .setArgTypes(InputStream.class, String.class);
-        //.setReturnType(boolean.class);
     
-    is = Files.newInputStream(
-      Paths.get("c:/.local/splash.png"), 
-      StandardOpenOption.READ);
     mth.arguments(is, "c:/.local/remote.png");
     System.out.println("* invoking remote...");
     System.out.println("* "+ mth+ " = "+ rem.invoke(mth));
 
     mth.method("read")
-        .arguments("c:/.local/remote.png")
-        .setArgTypes(String.class);
-        //.setReturnType(InputStream.class);
+        .setArgTypes(String.class)
+        .arguments("c:/.local/remote.png");
     System.out.println("* invoking remote...");
     System.out.println("* "+ mth);
     
     is = (InputStream) rem.invoke(mth);
-    OutputStream os = Files.newOutputStream(
-        Paths.get("c:/.local/client.png"), 
-        StandardOpenOption.CREATE, 
-        StandardOpenOption.WRITE);
-    StreamUtils.transfer(is, os);
-    os.flush();
-    os.close();
-    is.close();
+    OutputStream os = IO.os(IO.p("c:/.local/client.png"));
+    IO.tc(is, os);
     rem.getChannel().close();
     System.out.println("* success!");
   }

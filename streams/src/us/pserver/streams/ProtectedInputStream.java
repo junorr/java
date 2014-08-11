@@ -21,32 +21,48 @@
 
 package us.pserver.streams;
 
-import java.io.ByteArrayInputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import static us.pserver.chk.Checker.nullarg;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 07/07/2014
+ * @version 1.0 - 11/08/2014
  */
-public class TestStreamUtils {
+public class ProtectedInputStream extends FilterInputStream {
 
+  private InputStream input;
   
-  public static void main(String[] args) throws IOException {
-    ByteArrayInputStream bis = 
-        new ByteArrayInputStream((
-          "--9051914041544843365972754266\n" +
-          "Content-Type: text/xml\n" +
-          "\n" +
-          "<xml><rob enc='basic'>hULofWh0RwY26BNk6oGTJ1cTN2pOxzOoN+m8bfpD9gI=</rob></xml>\nEOF").getBytes());
-    System.out.println("* content = "+ bis.available());
-    
-    System.out.println("_");
-    StreamResult sr = StreamUtils.transferBetween(bis, System.out, "<rob enc='basic'>", "</rob>");
-    System.out.println("_");
-    //long total = StreamUtils.transfer(bis, System.out);
-    
-    System.out.println("* total = "+ sr.getSize());
+  
+  public ProtectedInputStream(InputStream is) {
+    super(is);
+    setInputStream(is);
+  }
+  
+  
+  public ProtectedInputStream setInputStream(InputStream is) {
+    nullarg(InputStream.class, is);
+    input = is;
+    return this;
+  }
+  
+  
+  public InputStream getInputStream() {
+    return input;
+  }
+  
+  
+  @Override
+  public void close() throws IOException {}
+  
+  
+  public ProtectedInputStream forceClose() throws IOException {
+    super.close();
+    input.close();
+    return this;
   }
   
 }

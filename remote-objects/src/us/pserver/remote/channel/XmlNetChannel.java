@@ -26,7 +26,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import javax.swing.JOptionPane;
+import us.pserver.cdr.StringByteConverter;
+import us.pserver.cdr.b64.Base64StringCoder;
+import us.pserver.cdr.crypt.CryptAlgorithm;
+import us.pserver.cdr.crypt.CryptKey;
+import static us.pserver.chk.Checker.nullarg;
+import us.pserver.http.HttpConst;
 import us.pserver.remote.Transport;
+import us.pserver.streams.IO;
+import us.pserver.streams.MultiCoderBuffer;
+import us.pserver.streams.NullOutput;
+import us.pserver.streams.ProtectedInputStream;
+import us.pserver.streams.ProtectedOutputStream;
+import us.pserver.streams.StreamCoderFactory;
+import us.pserver.streams.StreamResult;
 import us.pserver.streams.StreamUtils;
 
 
@@ -45,6 +59,12 @@ public class XmlNetChannel implements Channel {
   
   private boolean isvalid;
   
+  private CryptKey key;
+  
+  private Base64StringCoder bcd;
+  
+  private StringByteConverter scv;
+  
   
   /**
    * Construtor padrão que recebe um 
@@ -56,8 +76,11 @@ public class XmlNetChannel implements Channel {
       throw new IllegalArgumentException(
           "Invalid Socket ["+ sc+ "]");
     sock = sc;
-    xst = new XStream();
     isvalid = true;
+    xst = new XStream();
+    scv = new StringByteConverter();
+    bcd = new Base64StringCoder();
+    key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
   }
   
   
@@ -70,42 +93,126 @@ public class XmlNetChannel implements Channel {
   }
   
   
-  @Override
-  public void write(Transport trp) throws IOException {
-    if(trp == null) return;
-    OutputStream out = sock.getOutputStream();
+  private void writeKey(OutputStream os) throws IOException {
+    nullarg(OutputStream.class, os);
+    
+    StringBuffer sb = new StringBuffer();
+    sb.append(HttpConst.BOUNDARY_XML_START)
+        .append(HttpConst.BOUNDARY_CRYPT_KEY_START)
+        .append(bcd.encode(key.toString()))
+        .append(HttpConst.BOUNDARY_CRYPT_KEY_END);
+    os.write(scv.convert(sb.toString()));
+    os.flush();
+  }
+  
+  
+  private void writeTransport(Transport t, OutputStream os) throws IOException {
+    nullarg(Transport.class, t);
+    nullarg(OutputStream.class, os);
+    
     try {
-      xst.toXML(trp.getWriteVersion(), out);
-      if(trp.getInputStream() != null) {
-        StreamUtils.transfer(trp.getInputStream(), out);
-        out.write(StreamUtils.BYTES_EOF);
+      os.write(scv.convert(HttpConst.BOUNDARY_OBJECT_START));
+      xst.toXML(t.getWriteVersion(), os);
+      os.write(scv.convert(HttpConst.BOUNDARY_OBJECT_END));
+      
+      if(t.hasContentEmbedded()) {
+        os.write(scv.convert(HttpConst.BOUNDARY_CONTENT_START));
+        IO.tr(t.getInputStream(), os);
+        os.write(scv.convert(HttpConst.BOUNDARY_CONTENT_END));
       }
-      out.flush();
+      os.flush();
     } 
     catch(IOException e) {
       throw e;
-    } catch(Exception e) {
+    } 
+    catch(Exception e) {
       throw new IOException(e.toString(), e);
     }
   }
   
   
   @Override
-  public Transport read() throws IOException {
-    InputStream in = sock.getInputStream();
+  public void write(Transport trp) throws IOException {
+    if(trp == null) return;
+    ProtectedOutputStream pos = new ProtectedOutputStream(
+        sock.getOutputStream());
+    
+    writeKey(pos);
+      
+    OutputStream sout = StreamCoderFactory.getNew()
+        .setGZipCoderEnabled(true)
+        .setCryptCoderEnabled(true, key)
+        .create(pos);
+    writeTransport(trp, sout);
+    sout.write(scv.convert(HttpConst.BOUNDARY_XML_END));
+    sout.flush();
+    sout.close();
+      
+    StreamUtils.writeEOF(pos);
+    pos.flush();
+  }
+  
+  
+  private CryptKey readKey(InputStream is) throws IOException {
+    nullarg(InputStream.class, is);
+    StreamResult sr = StreamUtils.readBetween(is, 
+          HttpConst.BOUNDARY_CRYPT_KEY_START, 
+          HttpConst.BOUNDARY_CRYPT_KEY_END);
+    return CryptKey.fromString(bcd.decode(sr.content()));
+  }
+  
+  
+  private InputStream readContent(InputStream is) throws IOException {
+    nullarg(InputStream.class, is);
+    MultiCoderBuffer buf = new MultiCoderBuffer();
+    StreamUtils.transferBetween(is, buf.getOutputStream(), 
+        HttpConst.BOUNDARY_CONTENT_START, 
+        HttpConst.BOUNDARY_CONTENT_END);
+    return buf.flip().getInputStream();
+  }
+  
+  
+  private Transport readTransport(InputStream is) throws IOException {
+    nullarg(InputStream.class, is);
+    
     try {
-      Object obj = xst.fromXML(in);
-      if(obj == null || !Transport.class
-          .isAssignableFrom(obj.getClass()))
-        return null;
-      Transport t = (Transport) obj;
+      StreamResult sr = StreamUtils.readBetween(is, 
+          HttpConst.BOUNDARY_OBJECT_START, 
+          HttpConst.BOUNDARY_OBJECT_END);
+      
+      Transport t = (Transport) xst.fromXML(sr.content());
+      if(t == null)
+        throw new IOException("Can not read Transport ["+ t+ "]");
       if(t.hasContentEmbedded())
-        t.setInputStream(in);
+        t.setInputStream(readContent(is));
+      
       return t;
+    }
+    catch(IOException e) {
+      throw e;
     } 
     catch(Exception e) {
       throw new IOException(e.toString(), e);
     }
+  }
+  
+  
+  
+  @Override
+  public Transport read() throws IOException {
+    ProtectedInputStream pin = new ProtectedInputStream(
+        sock.getInputStream());
+    key = readKey(pin);
+    
+    InputStream sin = StreamCoderFactory.getNew()
+        .setGZipCoderEnabled(true)
+        .setCryptCoderEnabled(true, key)
+        .create(pin);
+      
+    Transport t = readTransport(sin);
+    sin.close();
+    IO.utc(pin, NullOutput.out);
+    return t;
   }
   
   

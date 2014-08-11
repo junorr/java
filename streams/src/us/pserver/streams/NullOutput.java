@@ -21,32 +21,38 @@
 
 package us.pserver.streams;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 07/07/2014
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 30/07/2014
  */
-public class TestStreamUtils {
-
+public abstract class NullOutput extends OutputStream {
   
-  public static void main(String[] args) throws IOException {
-    ByteArrayInputStream bis = 
-        new ByteArrayInputStream((
-          "--9051914041544843365972754266\n" +
-          "Content-Type: text/xml\n" +
-          "\n" +
-          "<xml><rob enc='basic'>hULofWh0RwY26BNk6oGTJ1cTN2pOxzOoN+m8bfpD9gI=</rob></xml>\nEOF").getBytes());
-    System.out.println("* content = "+ bis.available());
-    
-    System.out.println("_");
-    StreamResult sr = StreamUtils.transferBetween(bis, System.out, "<rob enc='basic'>", "</rob>");
-    System.out.println("_");
-    //long total = StreamUtils.transfer(bis, System.out);
-    
-    System.out.println("* total = "+ sr.getSize());
+  public static final NullOutput out = new NullOutput(){};
+  
+  public static final NullOutput pout = new NullOutput(true){};
+  
+  
+  private boolean print;
+  
+  
+  private NullOutput() {
+    this(false);
+  }
+  
+  
+  private NullOutput(boolean printout) {
+    print = printout;
+  }
+  
+
+  @Override
+  public void write(int b) throws IOException {
+    if(print) System.out.write(b);
+    b = 0;
   }
   
 }

@@ -19,34 +19,39 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.streams;
+package us.pserver.remote.test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import us.pserver.remote.NetConnector;
+import us.pserver.remote.Transport;
+import us.pserver.remote.channel.XmlNetChannel;
+import us.pserver.streams.IO;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 07/07/2014
+ * @version 1.0 - 01/08/2014
  */
-public class TestStreamUtils {
+public class TestXmlClient {
 
   
   public static void main(String[] args) throws IOException {
-    ByteArrayInputStream bis = 
-        new ByteArrayInputStream((
-          "--9051914041544843365972754266\n" +
-          "Content-Type: text/xml\n" +
-          "\n" +
-          "<xml><rob enc='basic'>hULofWh0RwY26BNk6oGTJ1cTN2pOxzOoN+m8bfpD9gI=</rob></xml>\nEOF").getBytes());
-    System.out.println("* content = "+ bis.available());
-    
-    System.out.println("_");
-    StreamResult sr = StreamUtils.transferBetween(bis, System.out, "<rob enc='basic'>", "</rob>");
-    System.out.println("_");
-    //long total = StreamUtils.transfer(bis, System.out);
-    
-    System.out.println("* total = "+ sr.getSize());
+    Transport t = new Transport();
+    t.setObject("Hello encrypted xml channel");
+    InputStream is = IO.is(IO.p("c:/.local/splash.png"));
+    t.setInputStream(is);
+    NetConnector nc = new NetConnector()
+        .setAddress("172.24.77.60")
+        .setPort(NetConnector.DEFAULT_PORT);
+    XmlNetChannel ch = new XmlNetChannel(nc.connectSocket());
+    ch.write(t);
+    is.close();
+    /*
+    while(true)
+      try { Thread.sleep(10); }
+      catch(InterruptedException e) {}*/
+    ch.close();
   }
   
 }

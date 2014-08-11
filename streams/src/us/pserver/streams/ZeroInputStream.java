@@ -21,32 +21,60 @@
 
 package us.pserver.streams;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 07/07/2014
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 30/07/2014
  */
-public class TestStreamUtils {
+public class ZeroInputStream extends InputStream {
 
+  private long size;
   
-  public static void main(String[] args) throws IOException {
-    ByteArrayInputStream bis = 
-        new ByteArrayInputStream((
-          "--9051914041544843365972754266\n" +
-          "Content-Type: text/xml\n" +
-          "\n" +
-          "<xml><rob enc='basic'>hULofWh0RwY26BNk6oGTJ1cTN2pOxzOoN+m8bfpD9gI=</rob></xml>\nEOF").getBytes());
-    System.out.println("* content = "+ bis.available());
-    
-    System.out.println("_");
-    StreamResult sr = StreamUtils.transferBetween(bis, System.out, "<rob enc='basic'>", "</rob>");
-    System.out.println("_");
-    //long total = StreamUtils.transfer(bis, System.out);
-    
-    System.out.println("* total = "+ sr.getSize());
+  private long count;
+  
+  
+  public ZeroInputStream() {
+    this(-1);
+  }
+  
+  
+  public ZeroInputStream(int size) {
+    this.size = size;
+    count = 0;
+  }
+  
+  
+  @Override
+  public int available() throws IOException {
+    return (int) (size > 0 ? size : Integer.MAX_VALUE);
+  }
+  
+  
+  @Override
+  public boolean markSupported() { return false; }
+  
+  
+  @Override
+  public long skip(long n) throws IOException {
+    size -= n;
+    return 0;
+  }
+  
+  
+  public long getCount() {
+    return count;
+  }
+
+
+  @Override
+  public int read() throws IOException {
+    if(size > 0 && count >= size)
+      return -1;
+    count++;
+    return 0;
   }
   
 }
