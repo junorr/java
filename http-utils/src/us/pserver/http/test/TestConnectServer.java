@@ -56,7 +56,7 @@ public class TestConnectServer {
       System.out.println("* Connected: "+ sock.getRemoteSocketAddress());
       
       HttpParser hps = new HttpParser();
-      hps.readFrom(sock.getInputStream());
+      hps.parseInput(sock.getInputStream());
       hps.headers().forEach(System.out::print);
       System.out.println("--------------------");
       

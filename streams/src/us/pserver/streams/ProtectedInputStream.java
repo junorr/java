@@ -24,11 +24,12 @@ package us.pserver.streams;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import static us.pserver.chk.Checker.nullarg;
 
 /**
- *
+ * <code>FilterInputStream</code> que sobrescreve o método
+ * {@link java.io.InputStream#close() } para que não
+ * faça nada, impedindo que o stream encapsulado seja fechado.
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 11/08/2014
  */
@@ -37,12 +38,22 @@ public class ProtectedInputStream extends FilterInputStream {
   private InputStream input;
   
   
+  /**
+   * Construtor padrão que recebe o <code>InputStream</code>
+   * encapsulado.
+   * @param is <code>InputStream</code> encapsulado.
+   */
   public ProtectedInputStream(InputStream is) {
     super(is);
     setInputStream(is);
   }
   
-  
+
+  /**
+   * Define o <code>InputStream</code> encapsulado.
+   * @param is <code>InputStream</code> encapsulado.
+   * @return Esta instância modificada de <code>ProtectedInputStream</code>.
+   */
   public ProtectedInputStream setInputStream(InputStream is) {
     nullarg(InputStream.class, is);
     input = is;
@@ -50,15 +61,29 @@ public class ProtectedInputStream extends FilterInputStream {
   }
   
   
+  /**
+   * Retorna o <code>InputStream</code> encapsulado.
+   * @return <code>InputStream</code> encapsulado.
+   */
   public InputStream getInputStream() {
     return input;
   }
   
   
+  /**
+   * Não faz nada.
+   * @throws IOException Nunca é lançado.
+   */
   @Override
   public void close() throws IOException {}
   
   
+  /**
+   * Fecha o <code>InputStream</code> encapsulado,
+   * invocando {@link java.io.InputStream#close() }.
+   * @return Esta instância modificada de <code>ProtectedInputStream</code>.
+   * @throws IOException Caso ocorra erro ao fechar.
+   */
   public ProtectedInputStream forceClose() throws IOException {
     super.close();
     input.close();

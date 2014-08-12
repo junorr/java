@@ -27,7 +27,10 @@ import java.io.OutputStream;
 import static us.pserver.chk.Checker.nullarg;
 
 /**
- *
+ * <code>FilterOutputStream</code> que sobrescreve o método
+ * {@link java.io.OutputStream#close() } para que não
+ * faça nada, impedindo que o stream encapsulado seja fechado.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 11/08/2014
  */
@@ -36,12 +39,22 @@ public class ProtectedOutputStream extends FilterOutputStream {
   private OutputStream output;
   
   
+  /**
+   * Construtor padrão que recebe o <code>OutputStream</code>
+   * encapsulado.
+   * @param os <code>OutputStream</code> encapsulado.
+   */
   public ProtectedOutputStream(OutputStream os) {
     super(os);
     setOutputStream(os);
   }
   
   
+  /**
+   * Define o <code>OutputStream</code> encapsulado.
+   * @param os <code>OutputStream</code> encapsulado.
+   * @return Esta instância modificada de <code>ProtectedInputStream</code>.
+   */
   public ProtectedOutputStream setOutputStream(OutputStream os) {
     nullarg(OutputStream.class, os);
     output = os;
@@ -49,17 +62,31 @@ public class ProtectedOutputStream extends FilterOutputStream {
   }
   
   
+  /**
+   * Retorna o <code>OutputStream</code> encapsulado.
+   * @return <code>OutputStream</code> encapsulado.
+   */
   public OutputStream getOutputStream() {
     return output;
   }
   
   
+  /**
+   * Não faz nada.
+   * @throws IOException Nunca é lançado.
+   */
   @Override
   public void close() throws IOException {
     output.flush();
   }
   
   
+  /**
+   * Fecha o <code>OutputStream</code> encapsulado,
+   * invocando {@link java.io.OutputStream#close() }.
+   * @return Esta instância modificada de <code>ProtectedOutputStream</code>.
+   * @throws IOException Caso ocorra erro ao fechar.
+   */
   public ProtectedOutputStream forceClose() throws IOException {
     super.flush();
     super.close();

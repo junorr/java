@@ -25,14 +25,17 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import javax.crypto.CipherOutputStream;
 import us.pserver.cdr.StringByteConverter;
+import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
-import us.pserver.cdr.crypt.CryptUtils;
 import static us.pserver.chk.Checker.nullarg;
 import static us.pserver.http.HttpInputStream.HD_CONTENT_TYPE_OCTETSTREAM;
 import static us.pserver.http.HttpInputStream.NAME_INPUTSTREAM;
 import static us.pserver.http.HttpInputStream.STATIC_SIZE;
+import us.pserver.streams.IO;
+import us.pserver.streams.NullOutput;
+import us.pserver.streams.ProtectedOutputStream;
+import us.pserver.streams.StreamCoderFactory;
 import us.pserver.streams.StreamUtils;
 
 /**
@@ -42,21 +45,19 @@ import us.pserver.streams.StreamUtils;
  */
 public class HttpLiveStream extends HeaderEncryptable {
 
-  private BufferedInputStream input;
+  private final BufferedInputStream input;
   
-  private CipherOutputStream secout;
-  
-  private boolean ensec;
+  private final StreamCoderFactory fact;
   
   private long streamsize;
   
   
   public HttpLiveStream(InputStream is) {
     nullarg(InputStream.class, is);
-    input = new BufferedInputStream(is);
-    ensec = false;
+    input = IO.bf(is);
+    fact = StreamCoderFactory.getNew();
     try {
-      streamsize = input.available();
+      streamsize = IO.sz(input);
     } catch(IOException e) {
       throw new IllegalStateException(e.toString(), e);
     }
@@ -64,21 +65,43 @@ public class HttpLiveStream extends HeaderEncryptable {
   
   
   public boolean isCryptStreamEnabled() {
-    return ensec;
+    return fact.isCryptCoderEnabled();
+  }
+  
+  
+  public boolean isGZipStreamEnabled() {
+    return fact.isGZipCoderEnabled();
+  }
+  
+  
+  public boolean isBase64StreamEnabled() {
+    return fact.isBase64CoderEnabled();
   }
   
   
   public HttpLiveStream setCryptStreamEnabled(boolean enabled, CryptKey key) {
     if(enabled) nullarg(CryptKey.class, key);
-    ensec = enabled;
-    setCryptKey(key);
+    super.setCryptKey(key);
+    fact.setCryptCoderEnabled(enabled, key);
+    return this;
+  }
+  
+  
+  public HttpLiveStream setBase64StreamEnabled(boolean enabled) {
+    fact.setBase64CoderEnabled(enabled);
+    return this;
+  }
+  
+  
+  public HttpLiveStream setGZipStreamEnabled(boolean enabled) {
+    fact.setGZipCoderEnabled(enabled);
     return this;
   }
   
   
   @Override
   public HttpLiveStream setCryptKey(CryptKey k) {
-    return setCryptStreamEnabled(k != null, k);
+    return setCryptStreamEnabled((k != null), k);
   }
   
   
@@ -93,6 +116,7 @@ public class HttpLiveStream extends HeaderEncryptable {
   public void writeContent(OutputStream out) throws IOException {
     nullarg(OutputStream.class, out);
     nullarg(InputStream.class, input);
+    
     StringBuffer start = new StringBuffer();
     start.append(CRLF).append(HYFENS).append(BOUNDARY)
         .append(CRLF).append(HD_CONTENT_DISPOSITION)
@@ -101,22 +125,36 @@ public class HttpLiveStream extends HeaderEncryptable {
         .append(CRLF).append(HD_CONTENT_TYPE_OCTETSTREAM)
         .append(CRLF);
     
-    OutputStream output = out;
-    if(ensec && secout == null) {
-      secout = CryptUtils.createCipherOutputStream(
-          out, getCryptKey());
-      output = secout;
+    OutputStream output = new ProtectedOutputStream(out);
+    if(fact.isAnyCoderEnabled()) {
+      output = fact.create(output);
     }
     
     StringByteConverter cv = new StringByteConverter();
     out.write(cv.convert(start.toString()));
     out.write(cv.convert(BOUNDARY_XML_START));
     out.write(cv.convert(BOUNDARY_CONTENT_START));
+    out.flush();
+    
     StreamUtils.transfer(input, output);
+    output.close();
+    
     out.write(cv.convert(BOUNDARY_CONTENT_END));
     out.write(cv.convert(BOUNDARY_XML_END));
     out.flush();
   }
   
+  
+  public static void main(String[] args) throws IOException {
+    CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
+    HttpLiveStream hl = new HttpLiveStream(
+        IO.is(IO.p("c:/.local/file.txt")));
+    hl.setGZipStreamEnabled(true)
+        .setCryptStreamEnabled(true, key)
+        .setBase64StreamEnabled(true);
+    HttpBuilder hb = HttpBuilder.requestBuilder(new RequestLine(Method.POST, "172.24.77.60"));
+    hb.put(hl);
+    hb.writeContent(NullOutput.pout);
+  }
   
 }

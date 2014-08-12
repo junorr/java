@@ -57,7 +57,7 @@ public class TestSimpleRequest implements HttpConst {
     //build.writeContent(System.out);
     
     ResponseParser rp = new ResponseParser();
-    rp.readFrom(sock.getInputStream());
+    rp.parseInput(sock.getInputStream());
     rp.headers().forEach(System.out::print);
     System.out.println("-------------------------");
   }

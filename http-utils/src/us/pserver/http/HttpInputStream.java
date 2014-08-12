@@ -32,6 +32,7 @@ import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.chk.Invoke;
 import us.pserver.streams.MultiCoderBuffer;
+import us.pserver.streams.StreamResult;
 import us.pserver.streams.StreamUtils;
 import static us.pserver.streams.StreamUtils.EOF;
 
@@ -188,8 +189,12 @@ public class HttpInputStream extends HeaderEncryptable {
   public HttpInputStream setupInbound() throws IOException {
     if(input == null)
       throw new IllegalStateException("InputStream not setted");
-    OutputStream os = buffer.getOutputStream();
-    StreamUtils.transferUntilOr(input, os, BOUNDARY_CONTENT_END, EOF);
+    StreamResult sr = StreamUtils.transferUntilOr(
+        input, buffer.getOutputStream(), 
+        BOUNDARY_CONTENT_END, EOF);
+    if(!sr.isEOFReached()) {
+      StreamUtils.consume(input);
+    }
     buffer.decode();
     input = buffer.getInputStream();
     return this;

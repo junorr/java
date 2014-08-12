@@ -35,8 +35,8 @@ public class ResponseParser extends HttpParser {
   
   
   @Override
-  public ResponseParser readFrom(InputStream in) throws IOException {
-    super.readFrom(in);
+  public ResponseParser parseInput(InputStream in) throws IOException {
+    super.parseInput(in);
     if(headers().isEmpty() || headers().get(0) == null) 
       throw new IOException(
           "Error parsing request (No header identified)");

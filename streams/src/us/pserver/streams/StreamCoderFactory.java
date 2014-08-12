@@ -83,6 +83,7 @@ public class StreamCoderFactory {
   
   
   public StreamCoderFactory setCryptCoderEnabled(boolean enabled, CryptKey k) {
+    CoderType.CRYPT.setEnabled(enabled);
     if(enabled) {
       nullarg(CryptKey.class, k);
       checkIndex();
@@ -99,10 +100,12 @@ public class StreamCoderFactory {
   
   
   public StreamCoderFactory setBase64CoderEnabled(boolean enabled) {
+    CoderType.BASE64.setEnabled(enabled);
     if(enabled) {
       checkIndex();
-      if(!isBase64CoderEnabled())
+      if(!isBase64CoderEnabled()) {
         types[index++] = CoderType.BASE64;
+      }
     }
     else {
       arrangeTypes(getCoderIndex(CoderType.BASE64));
@@ -113,6 +116,7 @@ public class StreamCoderFactory {
   
   
   public StreamCoderFactory setGZipCoderEnabled(boolean enabled) {
+    CoderType.GZIP.setEnabled(enabled);
     if(enabled) {
       checkIndex();
       if(!isGZipCoderEnabled())
@@ -141,6 +145,16 @@ public class StreamCoderFactory {
   }
   
   
+  public boolean isAnyCoderEnabled() {
+    boolean en = false;
+    for(int i = 0; i < types.length; i++) {
+      en = en || (types[i] != null 
+          && types[i].isEnabled());
+    }
+    return en;
+  }
+  
+  
   private void arrangeTypes(int ix) {
     if(ix >= 0 && ix < types.length -1) {
       for(int i = ix; i < types.length -1; i--) {
@@ -165,20 +179,19 @@ public class StreamCoderFactory {
   
   
   public OutputStream create(OutputStream os) throws IOException {
-    if(index == 0) throw new IOException(
+    if(!isAnyCoderEnabled()) throw new IOException(
         "No coder configured");
     int min = Math.min(index, types.length -1);
-    //os = new ProtectedOutputStream(os);
-    String scd = "";
+    //String scd = "";
     for(int i = min; i >= 0; i--) {
       if(types[i] != null) {
-        scd = types[i].name() + scd;
-        scd = " >> " + scd;
+        //scd = types[i].name() + scd;
+        //scd = " >> " + scd;
         os = IO.bf(create(os, types[i]));
       }
     }
-    scd = "* StreamCoderFactory.Encoder" + scd;
-    System.out.println(scd);
+    //scd = "* StreamCoderFactory.Encoder" + scd;
+    //System.out.println(scd);
     return os;
   }
   
@@ -201,18 +214,18 @@ public class StreamCoderFactory {
   
   
   public InputStream create(InputStream is) throws IOException {
-    if(index == 0) throw new IOException(
+    if(!isAnyCoderEnabled()) throw new IOException(
         "No coder configured");
     int min = Math.min(index, types.length -1);
-    String scd = "* StreamCoderFactory.Decoder";
+    //String scd = "* StreamCoderFactory.Decoder";
     for(int i = min; i >= 0; i--) {
       if(types[i] != null) {
-        scd += " >> ";
-        scd += types[i].name();
+        //scd += " >> ";
+        //scd += types[i].name();
         is = IO.bf(create(is, types[i]));
       }
     }
-    System.out.println(scd);
+    //System.out.println(scd);
     return is;
   }
   

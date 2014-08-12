@@ -34,14 +34,12 @@ public class RequestParser extends HttpParser {
   private RequestLine request;
   
   @Override
-  public RequestParser readFrom(InputStream in) throws IOException {
-    System.out.println("* RequestParser: reading from input...");
-    super.readFrom(in);
+  public RequestParser parseInput(InputStream in) throws IOException {
+    super.parseInput(in);
     if(headers().isEmpty() || headers().get(0) == null) 
       throw new IOException(
           "Error parsing request (No header identified)");
     
-    System.out.println("* RequestParser: readed successful!");
     Header hd = headers().get(0);
     String[] ss = hd.getValue().split(BLANK);
     if(ss == null || ss.length < 3) throw new IOException(

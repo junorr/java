@@ -59,7 +59,7 @@ public class TestConnectRequest {
     
     
     HttpParser hps = new HttpParser();
-    hps.readFrom(sock.getInputStream());
+    hps.parseInput(sock.getInputStream());
     hps.headers().forEach(System.out::print);
     System.out.println("--------------------");
     

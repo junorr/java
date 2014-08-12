@@ -29,7 +29,9 @@ import us.pserver.cdr.b64.Base64StringCoder;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.chk.Invoke;
+import us.pserver.streams.IO;
 import us.pserver.streams.MultiCoderBuffer;
+import us.pserver.streams.NullOutput;
 import us.pserver.streams.StreamResult;
 import us.pserver.streams.StreamUtils;
 import static us.pserver.streams.StreamUtils.EOF;
@@ -129,7 +131,7 @@ public class HttpParser implements HttpConst {
   }
   
   
-  public HttpParser readFrom(InputStream in) throws IOException {
+  public HttpParser parseInput(InputStream in) throws IOException {
     reset();
     nullarg(InputStream.class, in);
     
@@ -140,13 +142,14 @@ public class HttpParser implements HttpConst {
     }
     
     String boundary = HYFENS + BOUNDARY;
-    StreamResult sr = StreamUtils.readStringUntilOr(in, boundary, EOF);
-    message = sr.content();
-    System.out.println("* HttpParser: ret[0]="+ sr.token());
-    System.out.println("* HttpParser: message="+ sr.content());
-    parse();
+    StreamResult res = StreamUtils.readStringUntilOr(in, boundary, EOF);
+    message = res.content();
+    if(res.isEOFReached() || res.size() <= MIN_HEADER_LENGTH)
+      throw new IOException("Invalid length readed ["+ res.size()+ "]");
     
-    if(sr.token() != null && sr.token().equals(boundary))
+    this.parse();
+    if(!res.isEOFReached() 
+        && boundary.equals(res.token())) 
       parseContent(in);
     return this;
   }
@@ -154,30 +157,31 @@ public class HttpParser implements HttpConst {
   
   public HttpParser parseContent(InputStream is) throws IOException {
     nullarg(InputStream.class, is);
-    StreamResult sr = StreamUtils.readUntilOr(is, BOUNDARY_XML_START, EOF);
-
-    if(sr.token().equals(EOF)) return this;
+    StreamResult res = StreamUtils.readUntilOr(is, BOUNDARY_XML_START, EOF);
+    if(res.isEOFReached()) return this;
 
     String str = StreamUtils.readString(is, 5);
     StreamUtils.readUntil(is, "'>");
     
     if(BOUNDARY_CRYPT_KEY_START.contains(str)) {
-      sr = StreamUtils.readStringUntil(is, 
+      res = StreamUtils.readStringUntil(is, 
           BOUNDARY_CRYPT_KEY_END);
       Base64StringCoder bsc = new Base64StringCoder();
-      key = CryptKey.fromString(bsc.decode(sr.content()));
+      key = CryptKey.fromString(bsc.decode(res.content()));
       addHeader(new HttpCryptKey(key));
       
       return parseContent(is);
     }
     
     else if(BOUNDARY_OBJECT_START.contains(str)) {
-      sr = StreamUtils.readStringUntil(is, 
+      res = StreamUtils.readStringUntil(is, 
           BOUNDARY_OBJECT_END);
       if(key != null)
-        addHeader(HttpEnclosedObject.decodeObject(sr.content(), key));
+        addHeader(HttpEnclosedObject
+            .decodeObject(res.content(), key));
       else
-        addHeader(HttpEnclosedObject.decodeObject(sr.content()));
+        addHeader(HttpEnclosedObject
+            .decodeObject(res.content()));
       
       return parseContent(is);
     }
@@ -213,21 +217,10 @@ public class HttpParser implements HttpConst {
     String[] lns = message.split(CRLF);
     for(String s : lns) {
       if(s != null && s.length() >= MIN_HEADER_LENGTH) {
-        addHeader(checkXCryptKey(
-            parseHeader(s)));
+        addHeader(parseHeader(s));
       }
     }
     return this;
-  }
-  
-  
-  private Header checkXCryptKey(Header hd) {
-    if(hd == null || hd.getName() == null
-        || !hd.getName().equals(HD_X_CRYPT_KEY))
-      return hd;
-    HeaderXCKey hx = HeaderXCKey.from(hd);
-    key = hx.getCryptKey();
-    return hx;
   }
   
   

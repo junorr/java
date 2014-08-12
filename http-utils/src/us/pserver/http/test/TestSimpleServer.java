@@ -48,7 +48,7 @@ public class TestSimpleServer implements HttpConst {
     System.out.println("* Connected: "+ sock.getRemoteSocketAddress());
     
     RequestParser rp = new RequestParser();
-    rp.readFrom(sock.getInputStream());
+    rp.parseInput(sock.getInputStream());
     System.out.println("-----------------------");
     System.out.println("* headers: "+ rp.headers().size());
     rp.headers().forEach(System.out::print);

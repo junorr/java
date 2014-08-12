@@ -40,7 +40,7 @@ public class SimpleHttpRequest {
   
   public static void main(String[] args) throws IOException {
     HttpBuilder build = HttpBuilder.requestBuilder(
-        new RequestLine(Method.GET, "pserver.us", 8080));
+        new RequestLine(Method.POST, "pserver.us", 9099));
     build.put(new HeaderProxyAuth("f6036477:65465411"));
     build.put(new HttpEnclosedObject("Some String object"));
     build.writeContent(System.out);

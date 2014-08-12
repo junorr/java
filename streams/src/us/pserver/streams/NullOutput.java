@@ -25,30 +25,74 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- *
+ * <code>OutputStream</code> de descarte de dados.
+ * Os dados escritos neste OutputStream são descartados.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 30/07/2014
  */
 public abstract class NullOutput extends OutputStream {
   
+  /**
+   * Instância padrão e imutável de <code>NullOutput</code>.
+   */
   public static final NullOutput out = new NullOutput(){};
   
+  /**
+   * Instância padrão e imutável de <code>NullOutput</code> que
+   * imprime o conteúdo descartado na saída padrão do sistema.
+   */
   public static final NullOutput pout = new NullOutput(true){};
   
   
   private boolean print;
   
   
+  /**
+   * Construtor padrão sem argumentos.
+   */
   private NullOutput() {
     this(false);
   }
   
   
+  /**
+   * Construtor que recebe um <code>boolean</code>
+   * indicando se o conteúdo descartado deve ser 
+   * impresso na saída padrão do sistema ou não.
+   * @param printout <code>true</code> para que o conteúdo
+   * descartado seja impresso na saída padrão do sistema, 
+   * <code>false</code> caso contrário.
+   */
   private NullOutput(boolean printout) {
     print = printout;
   }
   
+  
+  /**
+   * Não faz nada.
+   * @throws IOException Nunca é lançado.
+   */
+  @Override
+  public void close() throws IOException {}
+  
+  
+  /**
+   * Invoca <code>System.out.flush()</code>, 
+   * caso a impressão na saída padrão esteja 
+   * habilitada.
+   * @throws IOException Caso ocorra erro.
+   */
+  @Override
+  public void flush() throws IOException {
+    if(print) System.out.flush();
+  }
+  
 
+  /**
+   * Descarta o byte informado.
+   * @param b byte a ser descartado.
+   * @throws IOException Caso ocorra erro na escrita.
+   */
   @Override
   public void write(int b) throws IOException {
     if(print) System.out.write(b);

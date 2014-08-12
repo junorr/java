@@ -133,6 +133,34 @@ public abstract class IO {
   
   
   /**
+   * Return {@link java.io.InputStream#available() }
+   * @param is <code>InputStream</code>.
+   * @return {@link java.io.InputStream#available() }
+   * @throws IOException {@link java.io.InputStream#available() }
+   * @see java.io.InputStream#available() 
+   */
+  public static int sz(InputStream is) throws IOException {
+    nullarg(InputStream.class, is);
+    return is.available();
+  }
+  
+  
+  /**
+   * Unchecked (Exception free) version of
+   * {@link us.pserver.streams.IO#sz(java.io.InputStream) }
+   * @param is <code>InputStream</code>.
+   * @return {@link java.io.InputStream#available() }
+   * @see us.pserver.streams.IO#sz(java.io.InputStream) 
+   */
+  public static int usz(InputStream is) {
+    try { return sz(is); }
+    catch(IOException e) {
+      return -1;
+    }
+  }
+  
+  
+  /**
    * Close the Streams whitout throwing any IOException.
    * <code>OutputStream</code> is closed first.
    * @param is <code>InputStream</code> to close.

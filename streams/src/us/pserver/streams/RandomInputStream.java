@@ -26,11 +26,19 @@ import java.io.InputStream;
 import java.util.Random;
 
 /**
- *
+ * <code>InputStream</code> que retorna números inteiros 
+ * aleatórios entre 0 e 255 gerados sob demanda.
+ * 
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 30/07/2014
  */
 public class RandomInputStream extends InputStream {
+  
+  /**
+   * <code>MAX_VALUE = 255</code><br/>
+   * Limite máximo do número aleatório a ser gerado.
+   */
+  public static final int MAX_VALUE = 255;
 
   private long size;
   
@@ -39,11 +47,25 @@ public class RandomInputStream extends InputStream {
   private Random rnd;
   
   
+  /**
+   * Construtor padrão sem argumentos,
+   * gera números aleatórios infinitamente.
+   */
   public RandomInputStream() {
     this(-1);
   }
   
   
+  /**
+   * Construtor que recebe a quantidade 
+   * de números aleatórios gerados antes
+   * de retornar o sinal de final de arquivo 
+   * <code>(EOF = -1)</code>.
+   * @param size Quantidade máxima de números
+   * aleatórios gerados antes do sinal de fim
+   * de arquivo. Número negativo indica um
+   * tamanho infinito.
+   */
   public RandomInputStream(int size) {
     this.size = size;
     count = 0;
@@ -51,27 +73,56 @@ public class RandomInputStream extends InputStream {
   }
   
   
+  /**
+   * Retorna a quantidade máxima de números aleatórios 
+   * gerados antes de retornar o sinal de final 
+   * de arquivo ou <code>Integer.MAX_VALUE</code> 
+   * para quantidade infinita. 
+   * @return quantidade máxima de números aleatórios 
+   * gerados antes de retornar o sinal de final 
+   * de arquivo ou <code>Integer.MAX_VALUE</code> 
+   * para quantidade infinita. 
+   * @throws IOException Nunca é lançado.
+   */
   @Override
   public int available() throws IOException {
     return (int) (size > 0 ? size : Integer.MAX_VALUE);
   }
   
   
+  /**
+   * Retorna <code>false</code>.
+   * @return <code>false</code>.
+   */
   @Override
   public boolean markSupported() { return false; }
   
   
+  /**
+   * Retorna a quantidade de números aleatórios
+   * já gerados.
+   * @return quantidade de números aleatórios
+   * já gerados.
+   */
   public long getCount() {
     return count;
   }
   
   
+  /**
+   * Gera um número inteiro aleatório entre 0 e 255.
+   */
   private int next() {
-    int i = rnd.nextInt();
+    int i = rnd.nextInt(256);
     return (i >= 0 ? i : next());
   }
 
 
+  /**
+   * Gera um número inteiro aleatório entre 0 e 255.
+   * @return um número inteiro aleatório entre 0 e 255.
+   * @throws IOException Nunca é lançado.
+   */
   @Override
   public int read() throws IOException {
     if(size > 0 && count >= size)

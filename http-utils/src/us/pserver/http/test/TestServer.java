@@ -41,25 +41,20 @@ public class TestServer implements HttpConst {
 
   
   public static void main(String[] args) throws IOException {
-    InetSocketAddress addr = new InetSocketAddress("0.0.0.0", 8000);
+    InetSocketAddress addr = new InetSocketAddress("0.0.0.0", 9099);
     ServerSocket server = new ServerSocket();
     server.bind(addr);
     System.out.println("* Server listening on: "+ addr.toString());
     
-    boolean sameconn = false;
     Socket sock = null;
     
     while(true) {
-      System.out.println("* sameconn="+ sameconn);
-      if(!sameconn) {
-        System.out.println("* while again...");
-        sock = server.accept();
-        System.out.println("* Connected: "+ sock.getRemoteSocketAddress());
-      }
+      sock = server.accept();
+      System.out.println("* Connected: "+ sock.getRemoteSocketAddress());
     
       RequestParser rp = new RequestParser();
     
-      rp.readFrom(sock.getInputStream());
+      rp.parseInput(sock.getInputStream());
       System.out.println("-----------------------");
       System.out.println("* headers: "+ rp.headers().size());
       rp.headers().forEach(System.out::print);
@@ -70,15 +65,12 @@ public class TestServer implements HttpConst {
         System.out.println("  - obj: "+ ((HttpEnclosedObject)rp.getHeader(hob)).getObject());
       }
       
-      sameconn = !rp.containsHeader("Via");
-    
       HttpBuilder.responseBuilder(new ResponseLine(200, "OK"))
-          .put(HD_CONNECTION, (sameconn ? VALUE_CONN_KEEP_ALIVE : "Close"))
+          .put(HD_CONNECTION, VALUE_CONN_KEEP_ALIVE)
           .put(new HttpEnclosedObject("hello world!!"))
           .writeContent(sock.getOutputStream());
     
-      System.out.println("\n");
-      if(!sameconn) sock.close();
+      System.out.println("\n***");
     }
     
   }

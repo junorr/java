@@ -49,12 +49,19 @@ import static us.pserver.chk.Checker.nullbuffer;
 import static us.pserver.chk.Checker.range;
 
 /**
- *
+ * Buffer misto memória(500KB)/disco
+ * com codificadores de conteúdo disponíveis.
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 02/07/2014
  */
 public class MultiCoderBuffer {
 
+  /**
+   * <code>
+   *  LARGE_BUFFER = 524_288; // 500KB
+   * </code><br/>
+   * Tamanho padrão do buffer em memória.
+   */
   public static final int LARGE_BUFFER = 524_288; // 500KB
   
   
@@ -75,11 +82,18 @@ public class MultiCoderBuffer {
   private int index, limit;
   
   
+  /**
+   * Construtor padrão sem argumentos.
+   */
   public MultiCoderBuffer() {
     this(LARGE_BUFFER);
   }
   
   
+  /**
+   * Construtor que recebe o tamanho do buffer de memória.
+   * @param bufferSize Tamanho do buffer de memória.
+   */
   public MultiCoderBuffer(int bufferSize) {
     range(bufferSize, 1, Integer.MAX_VALUE);
     readmode = false;
@@ -91,6 +105,9 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Tamanho disponível em memória.
+   */
   private long remaining() {
     return limit - outbuffer.size();
   }
@@ -240,6 +257,13 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Verifica se algum codificador de conteúdo 
+   * encontra-se habilitado.
+   * @return <code>true</code> se algum codificador
+   * de conteúdo estiver habilitado, <code>false</code>
+   * caso contrário.
+   */
   public boolean isAnyCoderEnabled() {
     return !coders.isEmpty();
   }
@@ -274,16 +298,36 @@ public class MultiCoderBuffer {
   }
 
   
+  /**
+   * Verifica se o tipo de codificador está
+   * habilitado.
+   * @param ct Tipo de codificador.
+   * @return <code>true</code> se o tipo de
+   * codificador informado estiver habilitado,
+   * <code>false</code> caso contrário.
+   */
   public boolean containsCoder(CoderType ct) {
     return coders.contains(ct);
   }
   
   
+  /**
+   * Retorna a capacidade máxima do buffer de memória em bytes.
+   * @return capacidade máxima do buffer de memória em bytes.
+   */
   public int getMemBufferCapacity() {
     return limit;
   }
   
   
+  /**
+   * Retorna o tamanho total utilizado do buffer 
+   * (memória + disco) em bytes.
+   * @return tamanho total utilizado do buffer 
+   * (memória + disco) em bytes.
+   * @throws IOException Caso ocorra erro ao recuperar
+   * o tamanho total.
+   */
   public long size() throws IOException {
     long len = outbuffer.size();
     if(channel != null)
@@ -292,6 +336,10 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Desabilita todos os codificadores de conteúdo.
+   * @return Esta instância modificada de <code>MultiCoderBuffer</code>.
+   */
   public MultiCoderBuffer clearCoders() {
     if(coders.isEmpty()) return this;
     Iterator<CoderType> set = coders.iterator();
@@ -303,6 +351,11 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Descarta o conteúdo e reinicia o buffer.
+   * @return Esta instância modificada de <code>MultiCoderBuffer</code>.
+   * @throws IOException Caso ocorra erro.
+   */
   public MultiCoderBuffer reset() throws IOException {
     close();
     outbuffer = new ByteArrayOutputStream(limit);
@@ -313,17 +366,28 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Retorna o caminho de arquivo temporário
+   * alocado para o buffer, se existir.
+   * @return <code>Path</code>.
+   */
   public Path getTemp() {
     return temp;
   }
   
   
+  /**
+   * Inicia o canal de arquivo temporário.
+   */
   private void initChannel() throws IOException {
     temp = Files.createTempFile(null, null);
     channel = new RandomAccessFile(temp.toFile(), "rw");
   }
   
   
+  /**
+   * Cria um <code>InputStream</code> com o coteúdo do buffer.
+   */
   private InputStream createInputStream() {
     return new InputStream() {
       @Override
@@ -342,6 +406,9 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Cria um <code>OutputStream</code> para escrever no buffer.
+   */
   private OutputStream createOutputStream() {
     return new OutputStream() {
       @Override
@@ -359,7 +426,12 @@ public class MultiCoderBuffer {
     };//output
   }
   
-  
+
+  /**
+   * Força escrita do conteúdo da memória para um 
+   * arquivo temporário.
+   * @throws IOException Caso ocorra erro.
+   */
   public void flush() throws IOException {
     if(outbuffer.size() > 0) {
       if(channel == null)
@@ -370,16 +442,29 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Retorna um <code>InputStream</code> com o coteúdo do buffer.
+   * @return <code>InputStream</code> com o coteúdo do buffer.
+   */
   public InputStream getInputStream() {
     return createInputStream();
   }
   
   
+  /**
+   * Retorna um <code>OutputStream</code> para escrever no buffer.
+   * @return <code>OutputStream</code> para escrever no buffer.
+   */
   public OutputStream getOutputStream() {
     return createOutputStream();
   }
   
   
+  /**
+   * Alterna o modo do buffer entre escrita (default) e leitura.
+   * @return Esta instância modificada de <code>MultiCoderBuffer</code>.
+   * @throws IOException Caso ocorra erro.
+   */
   public MultiCoderBuffer flip() throws IOException {
     if(!readmode) {
       if(channel != null) {
@@ -408,6 +493,10 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Fecha o buffer e descarta todo o conteúdo.
+   * @throws IOException Caso ocorra erro.
+   */
   public void close() throws IOException {
     if(channel != null) {
       channel.close();
@@ -419,6 +508,11 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Redefine a posição de leitura do buffer para o início do conteúdo.
+   * @return Esta instância modificada de <code>MultiCoderBuffer</code>.
+   * @throws IOException Caso ocorra erro.
+   */
   public MultiCoderBuffer rewind() throws IOException {
     if(readmode) {
       if(channel != null)
@@ -430,7 +524,11 @@ public class MultiCoderBuffer {
   }
   
   
-  private OutputStream parseOutput(CoderType coder, OutputStream os) throws IOException {
+  /**
+   * Cria up <code>OutputStream</code> apropriado 
+   * para o tipo de codificador informado.
+   */
+  private OutputStream createOutput(CoderType coder, OutputStream os) throws IOException {
     nullarg(CoderType.class, coder);
     nullarg(OutputStream.class, os);
     
@@ -452,7 +550,11 @@ public class MultiCoderBuffer {
   }
   
   
-  private InputStream parseInput(CoderType coder, InputStream is) throws IOException {
+  /**
+   * Cria up <code>InputStream</code> apropriado 
+   * para o tipo de codificador informado.
+   */
+  private InputStream createInput(CoderType coder, InputStream is) throws IOException {
     nullarg(CoderType.class, coder);
     nullarg(InputStream.class, is);
     
@@ -474,6 +576,12 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Codifica o conteúdo do buffer de acordo 
+   * com os codificadores habilitados.
+   * @return Esta instância modificada de <code>MultiCoderBuffer</code>.
+   * @throws IOException Caso ocorra erro.
+   */
   public MultiCoderBuffer encode() throws IOException {
     if(coders.isEmpty() || size() == 0) return this;
     Iterator<CoderType> it = coders.iterator();
@@ -482,7 +590,7 @@ public class MultiCoderBuffer {
       CoderType cd = it.next();
       MultiCoderBuffer buf = new MultiCoderBuffer();
       OutputStream os = buf.getOutputStream();
-      os = parseOutput(cd, os);
+      os = createOutput(cd, os);
       InputStream is = this.getInputStream();
       StreamUtils.transfer(is, os);
       os.close();
@@ -496,6 +604,12 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Decodifica o conteúdo do buffer de acordo 
+   * com os codificadores habilitados.
+   * @return Esta instância modificada de <code>MultiCoderBuffer</code>.
+   * @throws IOException Caso ocorra erro.
+   */
   public MultiCoderBuffer decode() throws IOException {
     if(coders.isEmpty() || size() == 0) return this;
     Iterator<CoderType> it = coders.iterator();
@@ -504,7 +618,7 @@ public class MultiCoderBuffer {
       CoderType cd = it.next();
       MultiCoderBuffer buf = new MultiCoderBuffer();
       OutputStream os = buf.getOutputStream();
-      InputStream is = parseInput(cd, this.getInputStream());
+      InputStream is = createInput(cd, this.getInputStream());
       StreamUtils.transfer(is, os);
       os.close();
       outbuffer = buf.outbuffer;
@@ -517,6 +631,11 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Escreve um byte no buffer.
+   * @param b byte.
+   * @throws IOException Caso ocorra erro na escrita.
+   */
   public void write(int b) throws IOException {
     if(readmode) flip();
     if(remaining() == 0) flush();
@@ -524,6 +643,13 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Escreve o conteúdo do byte array no buffer.
+   * @param bs byte array.
+   * @param offset Índice de início no byte array.
+   * @param length Tamanho do conteúdo no byte array.
+   * @throws IOException Caso ocorra erro na escrita.
+   */
   public void write(byte[] bs, int offset, int length) throws IOException {
     nullarray(bs);
     range(offset, -1, bs.length);
@@ -535,11 +661,21 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Escreve o conteúdo do byte array no buffer.
+   * @param bs byte array.
+   * @throws IOException Caso ocorra erro na escrita.
+   */
   public void write(byte[] bs) throws IOException {
     write(bs, 0, bs.length);
   }
   
   
+  /**
+   * Escreve o conteúdo do <code>ByteBuffer</code> no buffer.
+   * @param buf <code>ByteBuffer</code>.
+   * @throws IOException Caso ocorra erro na escrita.
+   */
   public void write(ByteBuffer buf) throws IOException {
     nullbuffer(buf);
     if(readmode) flip();
@@ -549,6 +685,11 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Lê um byte do buffer.
+   * @return byte lido.
+   * @throws IOException Caso ocorra erro na leitura.
+   */
   public int read() throws IOException {
     //System.out.println("* remining() = "+ remaining());
     if(!readmode) flip();
@@ -565,6 +706,14 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Le o conteúdo do buffer no byte array informado.
+   * @param bs byte array.
+   * @param offset Índice de início no byte array.
+   * @param length Tamanho do conteúdo no byte array.
+   * @return O número de bytes lidos.
+   * @throws IOException Caso ocorra erro na leitura.
+   */
   public int read(byte[] bs, int offset, int length) throws IOException {
     nullarray(bs);
     range(offset, -1, bs.length);
@@ -584,12 +733,24 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Le o conteúdo do buffer no byte array informado.
+   * @param bs byte array.
+   * @return O número de bytes lidos.
+   * @throws IOException Caso ocorra erro na leitura.
+   */
   public int read(byte[] bs) throws IOException {
     nullarray(bs);
     return read(bs, 0, bs.length);
   }
   
   
+  /**
+   * Le o conteúdo do buffer no <code>ByteBuffer</code> informado.
+   * @param buf <code>ByteBuffer</code>.
+   * @return O número de bytes lidos.
+   * @throws IOException Caso ocorra erro na leitura.
+   */
   public int read(ByteBuffer buf) throws IOException {
     nullbuffer(buf);
     if(!readmode) flip();
@@ -601,6 +762,14 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Salva (escreve) o conteúdo do buffer no arquivo 
+   * especificado pelo caminho informado.
+   * @param p Caminho do arquivo onde será salvo o 
+   * conteúdo do buffer.
+   * @return Esta instância modificada de <code>MultiCoderBuffer</code>.
+   * @throws IOException Caso ocorra erro.
+   */
   public MultiCoderBuffer save(Path p) throws IOException {
     nullarg(Path.class, p);
     if(!readmode) flip();
@@ -616,6 +785,13 @@ public class MultiCoderBuffer {
   }
   
   
+  /**
+   * Carrega o conteúdo do arquivo especificado
+   * para o buffer.
+   * @param p Caminho do arquivo do qual será carregado o conteúdo.
+   * @return Esta instância modificada de <code>MultiCoderBuffer</code>.
+   * @throws IOException Caso ocorra erro.
+   */
   public MultiCoderBuffer load(Path p) throws IOException {
     nullarg(Path.class, p);
     reset();

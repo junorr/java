@@ -434,7 +434,15 @@ public class JGrid extends JPanel implements
   
   @Override
   public void keyPressed(KeyEvent e) {
-    if(locked) return;
+    if(e.getKeyCode() == KeyEvent.VK_ENTER 
+        && !j3270.session().isConnected()) {
+      j3270.disconnect();
+      j3270.connect();
+      return;
+    }
+    if(locked) {
+      return;
+    } 
         
     switch(e.getKeyCode()) {
       case KeyEvent.VK_SHIFT:
@@ -497,6 +505,16 @@ public class JGrid extends JPanel implements
         this.clearField(f);
         break;
         
+      case KeyEvent.VK_D:
+        if(e.isControlDown()) {
+          if(e.isShiftDown())
+            j3270.session().close();
+          else
+            status(RWTnAction.DISCONNECTED_BY_REMOTE_HOST);
+        }
+        else putAndMove(e.getKeyChar());
+        break;
+      
       case KeyEvent.VK_P:
         if(e.isControlDown()) {
           System.out.println("* field  : "+ current.getChar().getField());
@@ -743,10 +761,9 @@ public class JGrid extends JPanel implements
   public void status(int msg) {
     switch(msg) {
       case RWTnAction.CONNECTION_ERROR:
-        j3270.error("Connection Error");
-        
       case RWTnAction.DISCONNECTED_BY_REMOTE_HOST:
-        j3270.error("Disconnected");
+        j3270.disconnect();
+        locked = true;
         break;
         
       case RWTnAction.READY:

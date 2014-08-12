@@ -32,4 +32,8 @@ public class HeaderEncryptable extends HeaderKeyHolder {
     return key != null;
   }
   
+  public boolean isContentHeader() {
+    return true;
+  }
+  
 }

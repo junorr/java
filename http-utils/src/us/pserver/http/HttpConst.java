@@ -304,7 +304,7 @@ public interface HttpConst {
 
   /**
    * <code>
-   *  BOUNDARY = "9051914041544843365972754266"
+   *  BOUNDARY = "90519140415448433"
    * </code><br>
    * Multipard boundary
    */

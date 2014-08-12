@@ -28,11 +28,11 @@ import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.chk.Invoke;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
-import us.pserver.http.HttpCryptKey;
 import us.pserver.http.HttpEnclosedObject;
+import us.pserver.http.HttpInputStream;
 import us.pserver.http.RequestLine;
 import us.pserver.http.ResponseParser;
-import us.pserver.streams.StreamUtils;
+import us.pserver.streams.IO;
 
 /**
  *
@@ -43,7 +43,7 @@ public class TestHttpRequest implements HttpConst {
 
   
   public static void main(String[] args) throws IOException {
-    RequestLine req = new RequestLine(Method.POST, "172.24.75.2", 8000);
+    RequestLine req = new RequestLine(Method.POST, "172.24.77.60", 9099);
     HttpBuilder build = HttpBuilder.requestBuilder(req);
     
     Object obj = "A plain text content object.";
@@ -51,14 +51,16 @@ public class TestHttpRequest implements HttpConst {
     build.put(new HttpEnclosedObject(obj)
         .setCryptKey(key));
     
+    build.put(new HttpInputStream(IO.is(IO.p("c:/.local/file.txt"))));
+    
     //Socket sock = new Socket("172.24.75.19", 6060);
-    Socket sock = new Socket("172.24.75.2", 8000);
+    Socket sock = new Socket("172.24.77.60", 9099);
     //Socket sock = new Socket("10.100.0.105", 6060);
     build.writeContent(sock.getOutputStream());
     //build.writeContent(System.out);
     
     ResponseParser rp = new ResponseParser();
-    rp.readFrom(sock.getInputStream());
+    rp.parseInput(sock.getInputStream());
     rp.headers().forEach(System.out::print);
     
     System.out.println("-------------------------");
