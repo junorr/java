@@ -2136,3 +2136,522 @@
 [INFO ] (12/08/2014 16:36:41): Authentication Enabled: Credentials{ user=juno }
 [INFO ] (12/08/2014 16:36:41): Response sent: OpResult{ success = true, return = null }
 [INFO ] (12/08/2014 16:36:41): Connection closed by client.
+[INFO ] (13/08/2014 09:27:50): Starting NetworkServer...
+[INFO ] (13/08/2014 09:27:50): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 09:27:50): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 09:27:50): Server started!
+
+[INFO ] (13/08/2014 09:27:55): ------------------------------
+[INFO ] (13/08/2014 09:27:55): Handling socket: Socket[addr=/172.24.75.19,port=37440,localport=9099]
+[INFO ] (13/08/2014 09:27:56): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@2729887b, /mnt/remote.txt )
+[INFO ] (13/08/2014 09:27:56): Authentication Enabled: Credentials{ user=juno }
+[WARN ] (13/08/2014 09:27:56): Error invoking method: MethodInvocationException: Invocation error [java.lang.reflect.InvocationTargetException]
+[INFO ] (13/08/2014 09:27:56): Response sent: OpResult{ success = false, return = null }
+[INFO ] (13/08/2014 09:27:56): Connection closed by client.
+[INFO ] (13/08/2014 09:29:47): Starting NetworkServer...
+[INFO ] (13/08/2014 09:29:47): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 09:29:47): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 09:29:47): Server started!
+
+[INFO ] (13/08/2014 09:29:50): ------------------------------
+[INFO ] (13/08/2014 09:29:50): Handling socket: Socket[addr=/172.24.75.19,port=37441,localport=9099]
+[INFO ] (13/08/2014 09:29:51): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@1c2306c8, c:/.local/remote.png )
+[INFO ] (13/08/2014 09:29:51): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 09:29:51): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 09:29:51): Connection closed by client.
+[INFO ] (13/08/2014 09:29:51): ------------------------------
+[INFO ] (13/08/2014 09:29:51): Handling socket: Socket[addr=/172.24.75.19,port=37442,localport=9099]
+[INFO ] (13/08/2014 09:29:51): Remote request: StreamHandler.read( c:/.local/remote.png )
+[INFO ] (13/08/2014 09:29:51): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 09:29:51): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 09:29:51): Connection closed by client.
+[INFO ] (13/08/2014 09:31:50): ------------------------------
+[INFO ] (13/08/2014 09:31:50): Handling socket: Socket[addr=/172.24.75.19,port=37443,localport=9099]
+[INFO ] (13/08/2014 09:31:50): Remote request: NetworkServer.getAvailableThreads(  )
+[INFO ] (13/08/2014 09:31:50): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 09:31:50): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (13/08/2014 09:31:50): Connection closed by client.
+[INFO ] (13/08/2014 09:53:47): Starting NetworkServer...
+[INFO ] (13/08/2014 09:53:47): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 09:53:47): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 09:53:47): Server started!
+
+[INFO ] (13/08/2014 09:54:16): ------------------------------
+[INFO ] (13/08/2014 09:54:16): Handling socket: Socket[addr=/172.24.75.19,port=37448,localport=9099]
+[INFO ] (13/08/2014 09:54:17): Remote request: StreamHandler.save( sun.nio.ch.ChannelInputStream@1f42c265, c:/.local/remote.txt )
+[INFO ] (13/08/2014 09:54:17): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 09:54:17): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 09:54:17): Connection closed by client.
+[INFO ] (13/08/2014 09:54:17): ------------------------------
+[INFO ] (13/08/2014 09:54:17): Handling socket: Socket[addr=/172.24.75.19,port=37449,localport=9099]
+[INFO ] (13/08/2014 09:54:17): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 09:54:17): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 09:54:17): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 09:54:17): Connection closed by client.
+[INFO ] (13/08/2014 11:14:32): Starting NetworkServer...
+[INFO ] (13/08/2014 11:14:33): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 11:14:33): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 11:14:33): Server started!
+
+[INFO ] (13/08/2014 11:14:38): ------------------------------
+[INFO ] (13/08/2014 11:14:38): Handling socket: Socket[addr=/172.24.75.19,port=37462,localport=9099]
+[INFO ] (13/08/2014 11:14:39): Remote request: StreamHandler.save( us.pserver.rob.server.FakeInputStreamRef@6b564eef, c:/.local/remote.txt )
+[INFO ] (13/08/2014 11:14:39): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 11:14:39): Response sent: OpResult{ success = true, return = true }
+[ERROR] (13/08/2014 11:14:39): IOException: Invalid length readed [0] >> null
+[INFO ] (13/08/2014 11:14:39): Connection closed by client.
+[INFO ] (13/08/2014 11:14:39): ------------------------------
+[INFO ] (13/08/2014 11:14:39): Handling socket: Socket[addr=/172.24.75.19,port=37463,localport=9099]
+[INFO ] (13/08/2014 11:14:39): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 11:14:39): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 11:14:39): Response sent: OpResult{ success = true, return = null }
+[ERROR] (13/08/2014 11:14:39): IOException: Invalid length readed [0] >> null
+[INFO ] (13/08/2014 11:14:39): Connection closed by client.
+[INFO ] (13/08/2014 13:18:30): Starting NetworkServer...
+[INFO ] (13/08/2014 13:18:30): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 13:18:30): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 13:18:30): Server started!
+
+[INFO ] (13/08/2014 13:19:04): ------------------------------
+[INFO ] (13/08/2014 13:19:04): Handling socket: Socket[addr=/172.24.75.19,port=37484,localport=9099]
+[INFO ] (13/08/2014 13:19:05): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 13:19:05): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 13:19:05): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 13:19:05): Connection closed by client.
+[INFO ] (13/08/2014 13:19:05): ------------------------------
+[INFO ] (13/08/2014 13:19:05): Handling socket: Socket[addr=/172.24.75.19,port=37485,localport=9099]
+[INFO ] (13/08/2014 13:19:05): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 13:19:05): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 13:19:05): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 13:19:05): Connection closed by client.
+[INFO ] (13/08/2014 13:20:24): Starting NetworkServer...
+[INFO ] (13/08/2014 13:20:24): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 13:20:24): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 13:20:24): Server started!
+
+[INFO ] (13/08/2014 13:20:28): ------------------------------
+[INFO ] (13/08/2014 13:20:28): Handling socket: Socket[addr=/172.24.75.19,port=37486,localport=9099]
+[INFO ] (13/08/2014 13:20:29): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 13:20:29): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 13:20:29): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 13:20:29): Connection closed by client.
+[INFO ] (13/08/2014 13:20:29): ------------------------------
+[INFO ] (13/08/2014 13:20:29): Handling socket: Socket[addr=/172.24.75.19,port=37487,localport=9099]
+[INFO ] (13/08/2014 13:20:29): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 13:20:29): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 13:20:29): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 13:20:29): Connection closed by client.
+[INFO ] (13/08/2014 13:23:01): Starting NetworkServer...
+[INFO ] (13/08/2014 13:23:01): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 13:23:01): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 13:23:01): Server started!
+
+[INFO ] (13/08/2014 13:23:04): ------------------------------
+[INFO ] (13/08/2014 13:23:04): Handling socket: Socket[addr=/172.24.75.19,port=37488,localport=9099]
+[INFO ] (13/08/2014 13:23:05): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 13:23:05): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 13:23:05): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 13:23:05): Connection closed by client.
+[INFO ] (13/08/2014 13:23:05): ------------------------------
+[INFO ] (13/08/2014 13:23:05): Handling socket: Socket[addr=/172.24.75.19,port=37489,localport=9099]
+[INFO ] (13/08/2014 13:23:05): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 13:23:05): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 13:23:05): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 13:23:05): Connection closed by client.
+[INFO ] (13/08/2014 13:25:03): Starting NetworkServer...
+[INFO ] (13/08/2014 13:25:03): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 13:25:03): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 13:25:03): Server started!
+
+[INFO ] (13/08/2014 13:25:07): ------------------------------
+[INFO ] (13/08/2014 13:25:07): Handling socket: Socket[addr=/172.24.75.19,port=37490,localport=9099]
+[INFO ] (13/08/2014 13:25:07): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 13:25:07): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 13:25:07): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 13:25:07): Connection closed by client.
+[INFO ] (13/08/2014 13:25:07): ------------------------------
+[INFO ] (13/08/2014 13:25:07): Handling socket: Socket[addr=/172.24.75.19,port=37491,localport=9099]
+[INFO ] (13/08/2014 13:25:07): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 13:25:07): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 13:25:08): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 13:25:08): Connection closed by client.
+[INFO ] (13/08/2014 14:12:50): Starting NetworkServer...
+[INFO ] (13/08/2014 14:12:50): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 14:12:50): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 14:12:50): Server started!
+
+[INFO ] (13/08/2014 14:12:56): ------------------------------
+[INFO ] (13/08/2014 14:12:56): Handling socket: Socket[addr=/172.24.75.19,port=37500,localport=9099]
+[INFO ] (13/08/2014 14:12:57): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 14:12:57): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 14:12:57): Response sent: OpResult{ success = true, return = true }
+[ERROR] (13/08/2014 14:12:57): RuntimeException: Invalid length readed [0]
+[ERROR] (13/08/2014 14:12:57):   Caused by: IOException: Invalid length readed [0]
+[INFO ] (13/08/2014 14:12:57): Connection closed by client.
+[INFO ] (13/08/2014 14:12:57): ------------------------------
+[INFO ] (13/08/2014 14:12:57): Handling socket: Socket[addr=/172.24.75.19,port=37501,localport=9099]
+[INFO ] (13/08/2014 14:12:57): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 14:12:57): Authentication Enabled: Credentials{ user=juno }
+[INFO ] (13/08/2014 14:12:57): Response sent: OpResult{ success = true, return = null }
+[ERROR] (13/08/2014 14:12:57): RuntimeException: Invalid length readed [0]
+[ERROR] (13/08/2014 14:12:57):   Caused by: IOException: Invalid length readed [0]
+[INFO ] (13/08/2014 14:12:57): Connection closed by client.
+[INFO ] (13/08/2014 14:22:03): Starting NetworkServer...
+[INFO ] (13/08/2014 14:22:03): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 14:22:03): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 14:22:03): Server started!
+
+[INFO ] (13/08/2014 14:22:07): ------------------------------
+[INFO ] (13/08/2014 14:22:07): Handling socket: Socket[addr=/172.24.75.19,port=37504,localport=9099]
+[INFO ] (13/08/2014 14:22:07): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 14:22:08): Authentication Enabled: Credentials{user: juno}
+[INFO ] (13/08/2014 14:22:08): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 14:22:08): Connection closed by client.
+[INFO ] (13/08/2014 14:22:08): ------------------------------
+[INFO ] (13/08/2014 14:22:08): Handling socket: Socket[addr=/172.24.75.19,port=37505,localport=9099]
+[INFO ] (13/08/2014 14:22:08): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 14:22:08): Authentication Enabled: Credentials{user: juno}
+[INFO ] (13/08/2014 14:22:08): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 14:22:08): Connection closed by client.
+[INFO ] (13/08/2014 14:22:38): Starting NetworkServer...
+[INFO ] (13/08/2014 14:22:38): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 14:22:38): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 14:22:38): Server started!
+
+[INFO ] (13/08/2014 14:22:41): ------------------------------
+[INFO ] (13/08/2014 14:22:41): Handling socket: Socket[addr=/172.24.75.19,port=37506,localport=9099]
+[INFO ] (13/08/2014 14:22:42): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 14:22:42): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 14:22:42): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 14:22:42): Connection closed by client.
+[INFO ] (13/08/2014 14:22:42): ------------------------------
+[INFO ] (13/08/2014 14:22:42): Handling socket: Socket[addr=/172.24.75.19,port=37507,localport=9099]
+[INFO ] (13/08/2014 14:22:42): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 14:22:42): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 14:22:42): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 14:22:42): Connection closed by client.
+[INFO ] (13/08/2014 14:32:25): Starting NetworkServer...
+[INFO ] (13/08/2014 14:32:25): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (13/08/2014 14:32:25): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 14:32:25): Server started!
+
+[INFO ] (13/08/2014 14:32:32): ------------------------------
+[INFO ] (13/08/2014 14:32:32): Handling socket: Socket[addr=/172.24.77.60,port=55688,localport=9099]
+[INFO ] (13/08/2014 14:32:33): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 14:32:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 14:32:33): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 14:32:33): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 14:32:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 14:32:33): Response sent: OpResult{ success = true, return = null }
+[ERROR] (13/08/2014 14:32:33): IllegalArgumentException: Invalid us.pserver.cdr.crypt.CryptKey [null]
+[ERROR] (13/08/2014 14:32:33):   us.pserver.chk.Checker.throwarg(Checker.java:44)
+[ERROR] (13/08/2014 14:32:33):   us.pserver.chk.Checker.nullarg(Checker.java:56)
+[ERROR] (13/08/2014 14:32:33):   us.pserver.streams.StreamCoderFactory.setCryptCoderEnabled(StreamCoderFactory.java:88)
+[ERROR] (13/08/2014 14:32:33):   us.pserver.rob.channel.XmlNetChannel.read(XmlNetChannel.java:208)
+[ERROR] (13/08/2014 14:32:33):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:320)
+[ERROR] (13/08/2014 14:32:33):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:429)
+[ERROR] (13/08/2014 14:32:33):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:437)
+[ERROR] (13/08/2014 14:32:33):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:437)
+[ERROR] (13/08/2014 14:32:33):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (13/08/2014 14:32:33):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (13/08/2014 14:32:33):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (13/08/2014 14:32:33): Connection closed by client.
+[INFO ] (13/08/2014 14:58:39): Starting NetworkServer...
+[INFO ] (13/08/2014 14:58:39): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (13/08/2014 14:58:39): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 14:58:39): Server started!
+
+[INFO ] (13/08/2014 14:58:42): ------------------------------
+[INFO ] (13/08/2014 14:58:42): Handling socket: Socket[addr=/172.24.77.60,port=55752,localport=9099]
+[INFO ] (13/08/2014 14:58:43): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 14:58:43): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 14:58:43): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 14:58:43): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 14:58:43): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 14:58:43): Response sent: OpResult{ success = true, return = null }
+[ERROR] (13/08/2014 14:58:43): SocketException: Connection reset
+[ERROR] (13/08/2014 14:58:43):   java.net.SocketInputStream.read(SocketInputStream.java:189)
+[ERROR] (13/08/2014 14:58:43):   java.net.SocketInputStream.read(SocketInputStream.java:121)
+[ERROR] (13/08/2014 14:58:43):   java.net.SocketInputStream.read(SocketInputStream.java:203)
+[ERROR] (13/08/2014 14:58:43):   java.io.FilterInputStream.read(FilterInputStream.java:83)
+[ERROR] (13/08/2014 14:58:43):   us.pserver.streams.StreamUtils.readUntilOr(StreamUtils.java:365)
+[ERROR] (13/08/2014 14:58:43):   us.pserver.rob.channel.XmlNetChannel.readKey(XmlNetChannel.java:157)
+[ERROR] (13/08/2014 14:58:43):   us.pserver.rob.channel.XmlNetChannel.read(XmlNetChannel.java:206)
+[ERROR] (13/08/2014 14:58:43):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:320)
+[ERROR] (13/08/2014 14:58:43):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:429)
+[ERROR] (13/08/2014 14:58:43):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:437)
+[ERROR] (13/08/2014 14:58:43):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:437)
+[ERROR] (13/08/2014 14:58:43):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (13/08/2014 14:58:43):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (13/08/2014 14:58:43):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (13/08/2014 14:58:43): Connection closed by client.
+[INFO ] (13/08/2014 15:00:46): ------------------------------
+[INFO ] (13/08/2014 15:00:46): Handling socket: Socket[addr=/172.24.77.60,port=55758,localport=9099]
+[INFO ] (13/08/2014 15:00:47): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:00:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:00:47): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:00:47): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:00:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:00:47): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:00:47): Connection closed by client.
+[INFO ] (13/08/2014 15:00:51): ------------------------------
+[INFO ] (13/08/2014 15:00:51): Handling socket: Socket[addr=/172.24.77.60,port=55759,localport=9099]
+[INFO ] (13/08/2014 15:00:51): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:00:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:00:51): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:00:51): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:00:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:00:51): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:00:51): Connection closed by client.
+[INFO ] (13/08/2014 15:00:55): ------------------------------
+[INFO ] (13/08/2014 15:00:55): Handling socket: Socket[addr=/172.24.77.60,port=55760,localport=9099]
+[INFO ] (13/08/2014 15:00:55): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:00:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:00:55): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:00:55): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:00:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:00:55): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:00:55): Connection closed by client.
+[INFO ] (13/08/2014 15:01:09): Starting NetworkServer...
+[INFO ] (13/08/2014 15:01:09): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (13/08/2014 15:01:09): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 15:01:09): Server started!
+
+[INFO ] (13/08/2014 15:01:11): ------------------------------
+[INFO ] (13/08/2014 15:01:11): Handling socket: Socket[addr=/172.24.77.60,port=55761,localport=9099]
+[INFO ] (13/08/2014 15:01:12): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:01:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:01:12): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:01:12): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:01:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:01:12): Response sent: OpResult{ success = true, return = null }
+[ERROR] (13/08/2014 15:01:12): SocketException: Connection reset
+[ERROR] (13/08/2014 15:01:12):   java.net.SocketInputStream.read(SocketInputStream.java:189)
+[ERROR] (13/08/2014 15:01:12):   java.net.SocketInputStream.read(SocketInputStream.java:121)
+[ERROR] (13/08/2014 15:01:12):   java.net.SocketInputStream.read(SocketInputStream.java:203)
+[ERROR] (13/08/2014 15:01:12):   java.io.FilterInputStream.read(FilterInputStream.java:83)
+[ERROR] (13/08/2014 15:01:12):   us.pserver.streams.StreamUtils.readUntilOr(StreamUtils.java:365)
+[ERROR] (13/08/2014 15:01:12):   us.pserver.rob.channel.XmlNetChannel.readKey(XmlNetChannel.java:157)
+[ERROR] (13/08/2014 15:01:12):   us.pserver.rob.channel.XmlNetChannel.read(XmlNetChannel.java:206)
+[ERROR] (13/08/2014 15:01:12):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:320)
+[ERROR] (13/08/2014 15:01:12):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:429)
+[ERROR] (13/08/2014 15:01:12):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:437)
+[ERROR] (13/08/2014 15:01:12):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:437)
+[ERROR] (13/08/2014 15:01:12):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (13/08/2014 15:01:12):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (13/08/2014 15:01:12):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (13/08/2014 15:01:12): Connection closed by client.
+[INFO ] (13/08/2014 15:01:22): ------------------------------
+[INFO ] (13/08/2014 15:01:22): Handling socket: Socket[addr=/172.24.77.60,port=55763,localport=9099]
+[INFO ] (13/08/2014 15:01:23): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:01:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:01:23): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:01:23): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:01:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:01:23): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:01:23): Connection closed by client.
+[INFO ] (13/08/2014 15:01:43): ------------------------------
+[INFO ] (13/08/2014 15:01:43): Handling socket: Socket[addr=/172.24.77.60,port=55765,localport=9099]
+[INFO ] (13/08/2014 15:01:44): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:01:44): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:01:44): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:01:44): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:01:44): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:01:44): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:01:44): Connection closed by client.
+[INFO ] (13/08/2014 15:02:12): Starting NetworkServer...
+[INFO ] (13/08/2014 15:02:12): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (13/08/2014 15:02:12): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 15:02:12): Server started!
+
+[INFO ] (13/08/2014 15:02:15): ------------------------------
+[INFO ] (13/08/2014 15:02:15): Handling socket: Socket[addr=/172.24.77.60,port=55774,localport=9099]
+[INFO ] (13/08/2014 15:02:16): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:02:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:02:16): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:02:16): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:02:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:02:16): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:02:16): Connection closed by client.
+[INFO ] (13/08/2014 15:02:29): ------------------------------
+[INFO ] (13/08/2014 15:02:29): Handling socket: Socket[addr=/172.24.77.60,port=55775,localport=9099]
+[INFO ] (13/08/2014 15:02:30): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:02:30): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:02:30): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:02:30): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:02:30): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:02:30): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:02:30): Connection closed by client.
+[INFO ] (13/08/2014 15:03:24): Starting NetworkServer...
+[INFO ] (13/08/2014 15:03:24): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (13/08/2014 15:03:24): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 15:03:24): Server started!
+
+[INFO ] (13/08/2014 15:03:51): Starting NetworkServer...
+[INFO ] (13/08/2014 15:03:51): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (13/08/2014 15:03:51): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 15:03:51): Server started!
+
+[INFO ] (13/08/2014 15:03:54): ------------------------------
+[INFO ] (13/08/2014 15:03:54): Handling socket: Socket[addr=/172.24.77.60,port=55780,localport=9099]
+[INFO ] (13/08/2014 15:03:54): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:03:54): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:03:54): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:03:54): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:03:54): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:03:54): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:03:54): Connection closed by client.
+[INFO ] (13/08/2014 15:04:07): Starting NetworkServer...
+[INFO ] (13/08/2014 15:04:07): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (13/08/2014 15:04:07): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 15:04:07): Server started!
+
+[INFO ] (13/08/2014 15:04:09): ------------------------------
+[INFO ] (13/08/2014 15:04:09): Handling socket: Socket[addr=/172.24.77.60,port=55782,localport=9099]
+[INFO ] (13/08/2014 15:04:10): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:04:10): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:04:10): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:04:10): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:04:10): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:04:10): Response sent: OpResult{ success = true, return = null }
+[ERROR] (13/08/2014 15:04:10): SocketException: Connection reset
+[ERROR] (13/08/2014 15:04:10):   java.net.SocketInputStream.read(SocketInputStream.java:189)
+[ERROR] (13/08/2014 15:04:10):   java.net.SocketInputStream.read(SocketInputStream.java:121)
+[ERROR] (13/08/2014 15:04:10):   java.net.SocketInputStream.read(SocketInputStream.java:203)
+[ERROR] (13/08/2014 15:04:10):   java.io.FilterInputStream.read(FilterInputStream.java:83)
+[ERROR] (13/08/2014 15:04:10):   us.pserver.streams.StreamUtils.readUntilOr(StreamUtils.java:365)
+[ERROR] (13/08/2014 15:04:10):   us.pserver.rob.channel.XmlNetChannel.readKey(XmlNetChannel.java:157)
+[ERROR] (13/08/2014 15:04:10):   us.pserver.rob.channel.XmlNetChannel.read(XmlNetChannel.java:206)
+[ERROR] (13/08/2014 15:04:10):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:322)
+[ERROR] (13/08/2014 15:04:10):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:431)
+[ERROR] (13/08/2014 15:04:10):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:439)
+[ERROR] (13/08/2014 15:04:10):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:439)
+[ERROR] (13/08/2014 15:04:10):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (13/08/2014 15:04:10):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (13/08/2014 15:04:10):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (13/08/2014 15:04:10): Connection closed by client.
+[INFO ] (13/08/2014 15:05:03): Starting NetworkServer...
+[INFO ] (13/08/2014 15:05:03): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (13/08/2014 15:05:03): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 15:05:03): Server started!
+
+[INFO ] (13/08/2014 15:05:05): ------------------------------
+[INFO ] (13/08/2014 15:05:05): Handling socket: Socket[addr=/172.24.77.60,port=55785,localport=9099]
+[INFO ] (13/08/2014 15:05:06): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:05:06): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:05:06): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:05:06): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:05:06): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:05:06): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:05:06): Connection closed by client.
+[INFO ] (13/08/2014 15:05:12): Starting NetworkServer...
+[INFO ] (13/08/2014 15:05:12): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (13/08/2014 15:05:12): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 15:05:12): Server started!
+
+[INFO ] (13/08/2014 15:05:14): ------------------------------
+[INFO ] (13/08/2014 15:05:14): Handling socket: Socket[addr=/172.24.77.60,port=55786,localport=9099]
+[INFO ] (13/08/2014 15:05:15): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:05:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:05:15): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:05:15): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:05:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:05:15): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:05:15): Connection closed by client.
+[INFO ] (13/08/2014 15:05:22): Starting NetworkServer...
+[INFO ] (13/08/2014 15:05:22): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (13/08/2014 15:05:22): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 15:05:22): Server started!
+
+[INFO ] (13/08/2014 15:05:23): ------------------------------
+[INFO ] (13/08/2014 15:05:23): Handling socket: Socket[addr=/172.24.77.60,port=55788,localport=9099]
+[INFO ] (13/08/2014 15:05:24): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:05:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:05:24): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:05:24): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:05:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:05:25): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:05:25): Connection closed by client.
+[INFO ] (13/08/2014 15:31:48): Starting NetworkServer...
+[INFO ] (13/08/2014 15:31:48): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (13/08/2014 15:31:48): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 15:31:48): Server started!
+
+[INFO ] (13/08/2014 15:31:51): ------------------------------
+[INFO ] (13/08/2014 15:31:51): Handling socket: Socket[addr=/172.24.77.60,port=55954,localport=9099]
+[INFO ] (13/08/2014 15:31:52): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:31:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:31:52): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:31:52): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:31:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:31:52): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:31:52): Connection closed by client.
+[INFO ] (13/08/2014 15:32:54): Starting NetworkServer...
+[INFO ] (13/08/2014 15:32:54): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (13/08/2014 15:32:54): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 15:32:54): Server started!
+
+[INFO ] (13/08/2014 15:32:59): ------------------------------
+[INFO ] (13/08/2014 15:32:59): Handling socket: Socket[addr=/172.24.77.60,port=55957,localport=9099]
+[INFO ] (13/08/2014 15:33:00): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:33:00): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:33:00): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:33:00): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:33:00): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:33:00): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:33:00): Connection closed by client.
+[INFO ] (13/08/2014 15:33:50): ------------------------------
+[INFO ] (13/08/2014 15:33:50): Handling socket: Socket[addr=/172.24.77.60,port=55960,localport=9099]
+[INFO ] (13/08/2014 15:33:50): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:33:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:33:50): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:33:50): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:33:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:33:50): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:33:50): Connection closed by client.
+[INFO ] (13/08/2014 15:34:03): ------------------------------
+[INFO ] (13/08/2014 15:34:03): Handling socket: Socket[addr=/172.24.77.60,port=55961,localport=9099]
+[INFO ] (13/08/2014 15:34:04): Remote request: StreamHandler.save( java.io.InputStream, c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:34:04): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:34:04): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 15:34:04): Remote request: StreamHandler.read( c:/.local/remote.txt )
+[INFO ] (13/08/2014 15:34:04): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 15:34:04): Response sent: OpResult{ success = true, return = null }
+[INFO ] (13/08/2014 15:34:04): Connection closed by client.
+[INFO ] (13/08/2014 17:18:23): Starting NetworkServer...
+[INFO ] (13/08/2014 17:18:23): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 17:18:23): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 17:18:23): Server started!
+
+[INFO ] (13/08/2014 17:18:30): ------------------------------
+[INFO ] (13/08/2014 17:18:30): Handling socket: Socket[addr=/172.24.75.19,port=37534,localport=9099]
+[INFO ] (13/08/2014 17:18:31): Remote request: MethodChain{ methods = 2 }
+[INFO ] (13/08/2014 17:18:31): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 17:18:31): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 17:18:31): Connection closed by client.
+[INFO ] (13/08/2014 17:33:03): Starting NetworkServer...
+[INFO ] (13/08/2014 17:33:03): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 17:33:03): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 17:33:03): Server started!
+
+[INFO ] (13/08/2014 17:33:08): ------------------------------
+[INFO ] (13/08/2014 17:33:08): Handling socket: Socket[addr=/172.24.75.19,port=37537,localport=9099]
+[INFO ] (13/08/2014 17:33:08): Remote request: MethodChain{ methods = 2 }
+[INFO ] (13/08/2014 17:33:08): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 17:33:08):   invoking: NetworkServer.container(  )
+[INFO ] (13/08/2014 17:33:08):   invoking: ObjectContainer.contains( StreamHandler )
+[INFO ] (13/08/2014 17:33:08): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 17:33:08): Connection closed by client.
+[INFO ] (13/08/2014 17:34:39): Starting NetworkServer...
+[INFO ] (13/08/2014 17:34:39): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (13/08/2014 17:34:39): Listening on: NetConnector{ *:9099 }
+[INFO ] (13/08/2014 17:34:39): Server started!
+
+[INFO ] (13/08/2014 17:35:10): ------------------------------
+[INFO ] (13/08/2014 17:35:10): Handling socket: Socket[addr=/172.24.75.19,port=37540,localport=9099]
+[INFO ] (13/08/2014 17:35:11): Remote request: MethodChain{ methods = 2 }
+[INFO ] (13/08/2014 17:35:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (13/08/2014 17:35:11): Invoking: NetworkServer.container(  )
+[INFO ] (13/08/2014 17:35:11): Invoking: ObjectContainer.contains( StreamHandler )
+[INFO ] (13/08/2014 17:35:11): Response sent: OpResult{ success = true, return = true }
+[INFO ] (13/08/2014 17:35:11): Connection closed by client.

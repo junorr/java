@@ -22,7 +22,6 @@
 package us.pserver.http;
 
 import com.thoughtworks.xstream.XStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -126,8 +125,8 @@ public class HttpEnclosedObject extends HeaderEncryptable {
   public static HttpEnclosedObject decodeObject(String str) {
     HttpEnclosedObject heo = new HttpEnclosedObject();
     String dec = heo.coder.decode(str);
-    Object obj = heo.xst.fromXML(dec);
-    return heo.setObject(obj);
+    heo.obj = heo.xst.fromXML(dec);
+    return heo;
   }
   
   
@@ -135,8 +134,8 @@ public class HttpEnclosedObject extends HeaderEncryptable {
     HttpEnclosedObject heo = new HttpEnclosedObject()
         .setCryptKey(key);
     String dec = heo.crypt.decode(str);
-    Object obj = heo.xst.fromXML(dec);
-    return heo.setObject(obj);
+    heo.obj = heo.xst.fromXML(dec);
+    return heo;
   }
   
   

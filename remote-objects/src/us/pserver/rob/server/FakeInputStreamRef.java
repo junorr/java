@@ -19,52 +19,29 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.http;
+package us.pserver.rob.server;
 
-import us.pserver.cdr.b64.Base64StringCoder;
-import us.pserver.cdr.crypt.CryptKey;
-import static us.pserver.chk.Checker.nullarg;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 09/07/2014
+ * @version 1.0 - 13/08/2014
  */
-public class HeaderXCKey extends HeaderKeyHolder {
+public class FakeInputStreamRef extends InputStream {
 
-  
-  public HeaderXCKey() {
-    super();
-    setName(HD_X_CRYPT_KEY);
-  }
-  
-  
-  public HeaderXCKey(CryptKey k) {
-    this();
-    setCryptKey(k);
-  }
-  
-  
+  public FakeInputStreamRef() {}
+
   @Override
-  public HeaderXCKey setCryptKey(CryptKey k) {
-    super.setCryptKey(k);
-    nullarg(CryptKey.class, k);
-    key = k;
-    Base64StringCoder cdr = new Base64StringCoder();
-    setValue(cdr.encode(key.toString()));
-    return this;
+  public int read() throws IOException {
+    return -1;
   }
-  
-  
-  public static HeaderXCKey from(Header hd) {
-    nullarg(Header.class, hd);
-    if(hd instanceof HeaderXCKey)
-      return (HeaderXCKey) hd;
-    Base64StringCoder cdr = new Base64StringCoder();
-    HeaderXCKey hx = new HeaderXCKey();
-    hx.setValue(hd.getValue());
-    hx.key = CryptKey.fromString(cdr.decode(hd.getValue()));
-    return hx;
+
+
+  @Override
+  public String toString() {
+    return "java.io.InputStream";
   }
   
 }

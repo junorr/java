@@ -47,8 +47,6 @@ public class RemoteMethod {
   
   private Class[] argTypes;
   
-  private Class retType;
-  
   private Credentials cred;
   
   
@@ -62,7 +60,6 @@ public class RemoteMethod {
     args = new LinkedList();
     argTypes = null;
     cred = null;
-    retType = null;
   }
 
   
@@ -212,26 +209,6 @@ public class RemoteMethod {
 
 
   /**
-   * Retorna a classe do tipo de retorno do método.
-   * @return classe de tipo de retorno do método.
-   */
-  public Class getReturnType() {
-    return retType;
-  }
-
-
-  /**
-   * Define a classe do tipo de retorno do método.
-   * @param retType classe de tipo de retorno do método.
-   * @return Esta instância modificada de RemoteMethod.
-   */
-  public RemoteMethod setReturnType(Class retType) {
-    this.retType = retType;
-    return this;
-  }
-
-
-  /**
    * Retorna o nome do objeto proprietário do método.
    * @return nome do objeto proprietário do método.
    */
@@ -281,8 +258,10 @@ public class RemoteMethod {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append(objName).append(".")
-        .append(mthName).append("( ");
+    if(objName != null) {
+      sb.append(objName);
+    }
+    sb.append(".").append(mthName).append("( ");
     if(!args.isEmpty()) {
       for(int i = 0; i < args.size(); i++) {
         sb.append(args.get(i));
@@ -297,11 +276,7 @@ public class RemoteMethod {
           sb.append(", ");
       }
     }
-    sb.append(" )");
-    if(retType != null)
-      sb.append(" : ").append(retType.getCanonicalName());
-    
-    return sb.toString();
+    return sb.append(" )").toString();
   }
   
 }

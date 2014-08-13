@@ -31,10 +31,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.log.LogProvider;
+import us.pserver.rob.MethodChain;
 import us.pserver.rob.MethodInvocationException;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.OpResult;
@@ -227,8 +229,8 @@ public class NetworkServer extends AbstractServer {
             factory.createChannel(sock), sock));
       }
     } catch(IOException e) {
-      LogProvider.getSimpleLog().fatal("Error running");
-      LogProvider.getSimpleLog().fatal(e.toString());
+      LogProvider.getSimpleLog().fatal(
+          new IOException("Error running NetworkServer", e), true);
     }
     exec.shutdown();
   }
@@ -245,6 +247,10 @@ public class NetworkServer extends AbstractServer {
    * SocketHandler trata as conexões recebidas pelo servidor.
    */
   public class SocketHandler implements Runnable {
+    
+    public static final String 
+        READ_ERROR = "Invalid length readed",
+        CONN_RESET = "Connection reset";
     
     private Channel channel;
     
@@ -263,8 +269,9 @@ public class NetworkServer extends AbstractServer {
             "Invalid Null Arguments!");
       sock = sc;
       channel = ch;
-      LogProvider.getSimpleLog().info("------------------------------");
-      LogProvider.getSimpleLog().info("Handling socket: "+ sock.toString());
+      LogProvider.getSimpleLog()
+          .info("------------------------------")
+          .info("Handling socket: "+ sock.toString());
     }
 
 
@@ -317,6 +324,14 @@ public class NetworkServer extends AbstractServer {
       try {
         return channel.read();
       } catch(Exception e) {
+        String msg = e.getMessage();
+        if(msg != null 
+            && !msg.contains(READ_ERROR)
+            && !msg.contains(CONN_RESET)) {
+          LogProvider.getSimpleLog()
+              .error("Error reading from channel")
+              .error(e, true);
+        }
         return null;
       }
     }
@@ -334,7 +349,7 @@ public class NetworkServer extends AbstractServer {
         LogProvider.getSimpleLog().info("Response sent: "+ trp.getObject());
       } catch(IOException e) {
         LogProvider.getSimpleLog().warning(
-            "Error writing response: "+ e.toString());
+            new IOException("Error writing response", e), false);
       }
     }
     
@@ -348,7 +363,8 @@ public class NetworkServer extends AbstractServer {
       }
       Object o = null;
       if(container.isAuthEnabled()) {
-        LogProvider.getSimpleLog().info("Authentication Enabled: "+ rm.getCredentials());
+        LogProvider.getSimpleLog().info(
+            "Authentication Enabled: "+ rm.getCredentials());
         o = container.get(rm.getCredentials(), rm.objectName());
       }
       else {
@@ -362,17 +378,70 @@ public class NetworkServer extends AbstractServer {
       nullarg(RemoteMethod.class, rm);
       OpResult op = new OpResult();
       try {
-        Invoker iv = new Invoker(getObject(rm), rm);
-        op.setReturn(iv.invoke());
+        op.setReturn(
+            this.invoke(
+                this.getObject(rm), rm));
         op.setSuccessOperation(true);
       }
       catch(AuthenticationException | MethodInvocationException e) {
         op.setSuccessOperation(false);
         op.setError(e);
-        LogProvider.getSimpleLog().warning(
-            "Error invoking method: "+ e.toString());
+        LogProvider.getSimpleLog()
+            .warning("Error invoking method ["+ rm.method()+ "]")
+            .warning(e, false);
       }
       return op;
+    }
+    
+    
+    private OpResult invoke(MethodChain chain) {
+      nullarg(MethodChain.class, chain);
+      OpResult op = new OpResult();
+      try {
+        if(chain.current() == null)
+          throw new MethodInvocationException(
+              "Empty MethodChain. No method to invoke");
+        
+        Object obj = getObject(chain.current());
+        do {
+          this.logChain(obj, chain);
+          obj = invoke(obj, chain.current());
+        } while(chain.next() != null);
+        op.setSuccessOperation(true);
+        op.setReturn(obj);
+      } 
+      catch(AuthenticationException | MethodInvocationException e) {
+        op.setSuccessOperation(false);
+        op.setError(e);
+        LogProvider.getSimpleLog()
+            .warning("Error invoking method ["+ chain.current()+ "]")
+            .warning(e, false);
+      }
+      return op;
+    }
+    
+    
+    private void logChain(Object obj, MethodChain chain) {
+      if(obj == null || chain == null 
+          || chain.current() == null) return;
+      String msg = "";
+      if(chain.current().objectName() == null)
+        msg = obj.getClass().getSimpleName();
+      msg += chain.current().toString();
+      LogProvider.getSimpleLog().info("Invoking: "+ msg);
+    }
+    
+    
+    private Object invoke(Object obj, RemoteMethod rm) 
+        throws AuthenticationException, MethodInvocationException {
+      if(obj == null)
+        throw new MethodInvocationException(
+            "Invalid invocation object ["+ obj+ "]");
+      if(rm == null || rm.method() == null)
+        throw new MethodInvocationException(
+            "Invalid RemoteMethod ["+ rm+ "]");
+      Invoker iv = new Invoker(obj, rm);
+      return iv.invoke();
     }
     
     
@@ -398,14 +467,30 @@ public class NetworkServer extends AbstractServer {
      * com o resultado da invocação.
      */
     private Transport handleInvoke(Transport trp) {
-      if(trp == null) return null;
-      RemoteMethod rm = trp.castObject();
-      if(rm == null) return null;
-      
-      LogProvider.getSimpleLog().info("Remote request: "+ rm);
-      this.checkInputStreamReference(rm, trp);
-      
-      return pack(invoke(rm));
+      if(trp == null || trp.getObject() == null) 
+        return null;
+      LogProvider.getSimpleLog().info("Remote request: "+ trp.getObject());
+      if(trp.isObjectFromType(RemoteMethod.class)) {
+        RemoteMethod rm = trp.castObject();
+        this.checkInputStreamReference(rm, trp);
+        return pack(invoke(rm));
+      }
+      else if(trp.isObjectFromType(MethodChain.class)) {
+        MethodChain chain = trp.castObject();
+        this.checkInputStreamReference(chain.current(), trp);
+        return pack(invoke(chain));
+      }
+      else return invalidType(trp);
+    }
+    
+    
+    private Transport invalidType(Transport t) {
+      OpResult op = new OpResult();
+      op.setSuccessOperation(false);
+      op.setError(new MethodInvocationException(
+          "Server can not handle this object type: "
+              + t.getObject().getClass()));
+      return pack(op);
     }
     
     
@@ -440,16 +525,20 @@ public class NetworkServer extends AbstractServer {
      * contendo os dados da invocação remota.
      */
     public void checkInputStreamReference(RemoteMethod rmt, Transport trp) {
-      if(trp == null || rmt == null || rmt.getArgTypes() == null)
+      if(trp == null 
+          || !trp.hasContentEmbedded() 
+          || rmt == null 
+          || rmt.getArgsList() == null
+          || rmt.getArgsList().isEmpty())
         return;
       
-      Class[] types = rmt.getArgTypes();
-      for(int i = 0; i < types.length; i++) {
-        if(InputStream.class.isAssignableFrom(types[i])
-            && trp.hasContentEmbedded())
-          try { rmt.getArgsList().set(i, trp.getInputStream()); }
-          catch(Exception e) { rmt.addArgument(trp.getInputStream()); }
-      }
+      for(int i = 0; i < rmt.getArgsList().size(); i++) {
+        Object o = rmt.getArgsList().get(i);
+        if(o != null && FakeInputStreamRef.class
+            .isAssignableFrom(o.getClass())) {
+          rmt.getArgsList().set(i, trp.getInputStream());
+        }
+      }//for
     }
     
   }

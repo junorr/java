@@ -26,6 +26,7 @@ import java.net.Socket;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
+import us.pserver.http.HttpCryptKey;
 import us.pserver.http.HttpEnclosedObject;
 import us.pserver.http.HttpInputStream;
 import us.pserver.http.RequestParser;
@@ -130,6 +131,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
             .setGZipCoderEnabled(true) : null);
     
     if(key != null) {
+      builder.put(new HttpCryptKey(key));
       hob.setCryptKey(key);
       if(his != null) 
         his.setCryptCoderEnabled(true, key);

@@ -21,16 +21,17 @@
 
 package us.pserver.http;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.chk.Invoke;
+import us.pserver.streams.IO;
 import us.pserver.streams.MultiCoderBuffer;
 import us.pserver.streams.StreamResult;
 import us.pserver.streams.StreamUtils;
@@ -274,6 +275,7 @@ public class HttpInputStream extends HeaderEncryptable {
   public void writeContent(OutputStream out) throws IOException {
     nullarg(OutputStream.class, out);
     checkSetup();
+    BufferedOutputStream bos = IO.bf(out);
     
     StringBuffer start = new StringBuffer();
     start.append(CRLF).append(HYFENS).append(BOUNDARY)
@@ -281,15 +283,14 @@ public class HttpInputStream extends HeaderEncryptable {
         .append(": ").append(VALUE_DISPOSITION_FORM_DATA)
         .append("; ").append(NAME_INPUTSTREAM)
         .append(CRLF).append(HD_CONTENT_TYPE_OCTETSTREAM)
-        .append(CRLF);
+        .append(CRLF)
+        .append(BOUNDARY_XML_START)
+        .append(BOUNDARY_CONTENT_START);
     
-    StringByteConverter cv = new StringByteConverter();
-    out.write(cv.convert(start.toString()));
-    out.write(cv.convert(BOUNDARY_XML_START));
-    out.write(cv.convert(BOUNDARY_CONTENT_START));
-    StreamUtils.transfer(buffer.getInputStream(), out);
-    out.write(cv.convert(BOUNDARY_CONTENT_END));
-    out.write(cv.convert(BOUNDARY_XML_END));
+    StreamUtils.write(start.toString(), bos);
+    StreamUtils.transfer(buffer.getInputStream(), bos);
+    StreamUtils.write(BOUNDARY_CONTENT_END, bos);
+    StreamUtils.write(BOUNDARY_XML_END, bos);
     out.flush();
   }
   

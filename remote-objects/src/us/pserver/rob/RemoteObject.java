@@ -27,6 +27,7 @@ import us.pserver.rob.factory.ConnectorChannelFactory;
 import us.pserver.rob.channel.Channel;
 import java.io.IOException;
 import java.io.InputStream;
+import us.pserver.rob.server.FakeInputStreamRef;
 
 /**
  * Representa um objeto remoto para invocação de
@@ -68,7 +69,7 @@ public class RemoteObject {
       throw new IllegalArgumentException(
           "Invalid NetConnector ["+ con+ "]");
     net = con;
-    factory =DefaultFactoryProvider
+    factory = DefaultFactoryProvider
         .getConnectorXmlChannelFactory();
   }
   
@@ -160,7 +161,7 @@ public class RemoteObject {
   /**
    * Invoca o método remoto informado.
    * @param rmt método remoto a ser invocado.
-   * @return Retorno do objeto remoto ou <code>null</code>
+   * @return Retorno do método remoto ou <code>null</code>
    * se não houver.
    * @throws MethodInvocationException Caso ocorra erro na invocação do
    * método.
@@ -201,13 +202,14 @@ public class RemoteObject {
   public OpResult invokeSafe(RemoteMethod rmt) {
     OpResult res = new OpResult();
     try {
-      Transport trp = new Transport(rmt);
-      this.checkInputStreamRef(trp);
+      Transport trp = new Transport();
+      this.checkInputStreamRef(trp, rmt);
+      trp.setObject(rmt);
       trp = this.sendTransport(trp).read();
       if(trp == null || trp.castObject() == null) {
         res.setSuccessOperation(false);
         res.setError(new IllegalStateException(
-            "Cannot read object from channel."));
+            "Cannot read object from channel"));
       }
       else {
         res = trp.castObject();
@@ -227,20 +229,96 @@ public class RemoteObject {
   }
   
   
-  private void checkInputStreamRef(Transport t) {
-    if(t == null) return;
-    RemoteMethod m = t.castObject();
-    if(m == null) return;
-    Class[] args = m.getArgTypes();
-    if(args == null) args = m.extractTypesFromArgs();
+  /**
+   * Invoca o a cadeia de métodos informada.
+   * @param chain cadeia de métodos a ser invocada.
+   * @return Retorno do método remoto ou <code>null</code>
+   * se não houver.
+   * @throws MethodInvocationException Caso ocorra erro na invocação do
+   * método.
+   */
+  public Object invoke(MethodChain chain) throws MethodInvocationException {
+    this.validateChain(chain);
+    OpResult res = this.invokeSafe(chain);
+    if(res != null && res.isSuccessOperation()) {
+      return res.getReturn();
+    }
+    else if(res != null && res.hasError()) {
+      throw res.getError();
+    }
+    else return null;
+  }
+  
+  
+  private void validateChain(MethodChain chain) throws IllegalArgumentException {
+    if(chain == null || chain.methods().isEmpty()) 
+      throw new IllegalArgumentException(
+        "Invalid MethodChain ["+ chain+ "]");
+  }
+  
+  
+  /**
+   * Invoca o a cadeia de métodos informada.
+   * @param chain cadeia de métodos a ser invocada.
+   * @throws MethodInvocationException Caso ocorra erro na invocação do
+   * método.
+   */
+  public void invokeVoid(MethodChain chain) throws MethodInvocationException {
+    this.invoke(chain);
+  }
+  
+  
+  /**
+   * Invoca o a cadeia de métodos informada.
+   * @param chain cadeia de métodos a ser invocada.
+   * @return Objeto OpResult com informações do 
+   * resultado da invocação do método remoto.
+   */
+  public OpResult invokeSafe(MethodChain chain) {
+    this.validateChain(chain);
+    OpResult res = new OpResult();
+    try {
+      Transport trp = new Transport();
+      this.checkInputStreamRef(trp, chain.current());
+      trp.setObject(chain.rewind());
+      trp = this.sendTransport(trp).read();
+      if(trp == null || trp.castObject() == null) {
+        res.setSuccessOperation(false);
+        res.setError(new IllegalStateException(
+            "Cannot read object from channel"));
+      }
+      else {
+        res = trp.castObject();
+        if(trp.hasContentEmbedded())
+          res.setReturn(trp.getInputStream());
+      }
+    } 
+    catch(IOException ex) {
+      res.setError(ex);
+      res.setSuccessOperation(false);
+    }
+    
+    if(!channel.isValid())
+        channel.close();
+    
+    return res;
+  }
+  
+  
+  private void checkInputStreamRef(Transport t, RemoteMethod r) {
+    if(t == null || r == null) return;
+    Class[] args = r.getArgTypes();
+    if(args == null) args = r.extractTypesFromArgs();
     if(args == null) return;
     for(int i = 0; i < args.length; i++) {
       Class c = args[i];
       if(InputStream.class.isAssignableFrom(c)) {
-        Object o = m.getArgsList().get(i);
+        Object o = r.getArgsList().get(i);
         if(o != null && InputStream.class
-            .isAssignableFrom(o.getClass()))
+            .isAssignableFrom(o.getClass())) {
           t.setInputStream((InputStream) o);
+          r.getArgsList().set(i, new FakeInputStreamRef());
+        }
       }
     }
   }

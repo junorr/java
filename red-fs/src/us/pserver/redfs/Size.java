@@ -75,22 +75,22 @@ public class Size {
   }
   
   
-  public double getKBD() {
+  public double getKBd() {
     return size / UNIT;
   }
   
   
-  public double getMBD() {
+  public double getMBd() {
     return size / Math.pow(UNIT, 2);
   }
   
   
-  public double getGBD() {
+  public double getGBd() {
     return size / Math.pow(UNIT, 3);
   }
   
   
-  public double getTBD() {
+  public double getTBd() {
     return size / Math.pow(UNIT, 4);
   }
   
@@ -126,14 +126,14 @@ public class Size {
   public double getReadableDouble() {
     if(size <= UNIT)
       return (double) size;
-    else if(getKBD() <= UNIT)
-      return getKBD();
-    else if(getMBD() <= UNIT)
-      return getMBD();
-    else if(getGBD() <= UNIT)
-      return getGBD();
+    else if(getKBd() <= UNIT)
+      return getKBd();
+    else if(getMBd() <= UNIT)
+      return getMBd();
+    else if(getGBd() <= UNIT)
+      return getGBd();
     else
-      return getTBD();
+      return getTBd();
   }
   
   

@@ -24,9 +24,6 @@ package us.pserver.rob.test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import us.pserver.rob.factory.DefaultFactoryProvider;
 import us.pserver.rob.MethodInvocationException;
 import us.pserver.rob.NetConnector;
@@ -34,7 +31,6 @@ import us.pserver.rob.RemoteMethod;
 import us.pserver.rob.RemoteObject;
 import us.pserver.rob.container.Credentials;
 import us.pserver.streams.IO;
-import us.pserver.streams.StreamUtils;
 
 /**
  *
@@ -51,7 +47,7 @@ public class TestRClient2 {
             //.setProxyPort(6060)
             .setProxyAddress("cache.bb.com.br")
             .setProxyPort(80)
-            .setProxyAuthorization("f6036477:65465411"),
+            .setProxyAuthorization("f6036477:32132155"),
         
         DefaultFactoryProvider
             //.getConnectorXmlChannelFactory());

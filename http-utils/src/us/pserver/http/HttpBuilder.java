@@ -175,19 +175,22 @@ public class HttpBuilder implements HttpConst {
    */
   public HttpBuilder put(Header hd) {
     if(hd != null) {
-      if(hd instanceof HeaderEncryptable
-          && !containsCryptKey()
-          && ((HeaderEncryptable)hd).isCryptEnabled())
-        this.put(new HttpCryptKey(
-            ((HeaderEncryptable)hd).getCryptKey()));
-      
       hds.add(hd);
       if(hd instanceof HttpInputStream) {
-        HttpInputStream his = (HttpInputStream) hd;
-        Invoke.unchecked(his::setupOutbound);
+        setupOutbound((HttpInputStream) hd);
       }
     }
     return this;
+  }
+  
+  
+  private void setupOutbound(HttpInputStream his) {
+    nullarg(HttpInputStream.class, his);
+    try {
+      his.setupOutbound();
+    } catch(IOException e) {
+      throw new IllegalStateException(e.getMessage(), e);
+    }
   }
   
   

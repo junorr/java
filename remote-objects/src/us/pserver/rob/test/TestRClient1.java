@@ -28,6 +28,7 @@ import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.http.HeaderProxyAuth;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst.Method;
+import us.pserver.http.HttpCryptKey;
 import us.pserver.http.HttpEnclosedObject;
 import us.pserver.http.RequestLine;
 import us.pserver.rob.MethodInvocationException;
@@ -45,8 +46,9 @@ public class TestRClient1 {
 
   public static void main(String[] args) throws MethodInvocationException, IOException {
     HttpBuilder hb = HttpBuilder.requestBuilder(
-        new RequestLine(Method.POST, "pserver.us", 9099));
-    hb.put(new HeaderProxyAuth("f6036477:65465411"));
+        //new RequestLine(Method.POST, "pserver.us", 9099));
+        new RequestLine(Method.POST, "172.24.77.60", 9099));
+    hb.put(new HeaderProxyAuth("f6036477:32132155"));
     
     CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
     HttpEnclosedObject hob = new HttpEnclosedObject();
@@ -57,11 +59,12 @@ public class TestRClient1 {
         .setCredentials(new Credentials("juno", new StringBuffer("32132155")));
     Transport t = new Transport(rm);
     hob.setObject(t);
-    hb.put(hob);
+    hb.put(new HttpCryptKey(key)).put(hob);
     
     hb.writeContent(System.out);
     
-    Socket s = new Socket("cache.bb.com.br", 80);
+    //Socket s = new Socket("cache.bb.com.br", 80);
+    Socket s = new Socket("172.24.75.19", 6060);
     hb.writeContent(s.getOutputStream());
     
     System.out.println();

@@ -21,7 +21,6 @@
 
 package us.pserver.redfs;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -32,17 +31,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import us.pserver.remote_objects.DefaultProtocolFactoryProvider;
-import us.pserver.remote_objects.Host;
-import us.pserver.remote_objects.ProtocolConnection;
-import us.pserver.remote_objects.RemoteMethod;
-import us.pserver.remote_objects.RemoteObject;
+import static us.pserver.chk.Checker.nullarg;
 import us.pserver.rob.NetConnector;
-import us.pserver.rob.RemoteException;
+import us.pserver.rob.RemoteMethod;
+import us.pserver.rob.RemoteObject;
+import us.pserver.rob.factory.DefaultFactoryProvider;
 
 /**
  *
@@ -54,16 +52,19 @@ public class RemoteFileSystem {
   private RemoteObject rob;
   
   
-  public RemoteFileSystem(Host host) {
-    rob = new RemoteObject(host, DefaultProtocolFactoryProvider.getHttpRequestConnectionFactory());
+  public RemoteFileSystem(NetConnector nc) {
+    nullarg(NetConnector.class, nc);
+    rob = new RemoteObject(nc, 
+        DefaultFactoryProvider
+            .getHttpRequestChannelFactory());
     if(!this.checkConn())
       throw new IllegalArgumentException(
-          "Server do not respond properly: "+ host);
+          "Server do not respond properly: "+ nc);
   }
   
   
   public RemoteFileSystem(String host, int port) {
-    this(new Host(host, port));
+    this(new NetConnector(host, port));
   }
   
   
@@ -71,7 +72,7 @@ public class RemoteFileSystem {
     RemoteMethod rm = new RemoteMethod()
         .forObject(Tokens.ObjectServer.name())
         .method(Tokens.containsObject.name())
-        .args(Tokens.LocalFileSystem.name());
+        .arguments(Tokens.LocalFileSystem.name());
     try { rob.invoke(rm); }
     catch(Exception e) { 
       return false; 

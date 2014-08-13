@@ -404,6 +404,66 @@ public class SLogV2 implements Log {
   
   
   /**
+   * Direciona o erro <code>Throwable</code> para log nível debug.
+   * @param th Exceção.
+   * @param printStackTrace Define se a pilha de rastreamento do
+   * erro será impressa em log ou não.
+   * @return Esta instância modificada de <code>SLogV2</code>.
+   */
+  public SLogV2 debug(Throwable th, boolean printStackTrace) {
+    return this.log(th, LogLevel.DEBUG, printStackTrace);
+  }
+  
+  
+  /**
+   * Direciona o erro <code>Throwable</code> para log nível info.
+   * @param th Exceção.
+   * @param printStackTrace Define se a pilha de rastreamento do
+   * erro será impressa em log ou não.
+   * @return Esta instância modificada de <code>SLogV2</code>.
+   */
+  public SLogV2 info(Throwable th, boolean printStackTrace) {
+    return this.log(th, LogLevel.INFO, printStackTrace);
+  }
+  
+  
+  /**
+   * Direciona o erro <code>Throwable</code> para log nível warning.
+   * @param th Exceção.
+   * @param printStackTrace Define se a pilha de rastreamento do
+   * erro será impressa em log ou não.
+   * @return Esta instância modificada de <code>SLogV2</code>.
+   */
+  public SLogV2 warning(Throwable th, boolean printStackTrace) {
+    return this.log(th, LogLevel.WARN, printStackTrace);
+  }
+  
+  
+  /**
+   * Direciona o erro <code>Throwable</code> para log nível error.
+   * @param th Exceção.
+   * @param printStackTrace Define se a pilha de rastreamento do
+   * erro será impressa em log ou não.
+   * @return Esta instância modificada de <code>SLogV2</code>.
+   */
+  public SLogV2 error(Throwable th, boolean printStackTrace) {
+    return this.log(th, LogLevel.ERROR, printStackTrace);
+  }
+  
+  
+  /**
+   * Direciona o erro <code>Throwable</code> para log nível fatal.
+   * @param th Exceção.
+   * @param printStackTrace Define se a pilha de rastreamento do
+   * erro será impressa em log ou não.
+   * @return Esta instância modificada de <code>SLogV2</code>.
+   */
+  public SLogV2 fatal(Throwable th, boolean printStackTrace) {
+    return this.log(th, LogLevel.FATAL, printStackTrace);
+  }
+  
+  
+  /**
    * Direciona a mensagem de log com o nível informado
    * para todas as saídas configuradas.
    * @param msg Mensagem de log.
@@ -413,6 +473,44 @@ public class SLogV2 implements Log {
   @Override
   public SLogV2 log(String msg, LogLevel level) {
     outs.forEach(o->submit(o, msg, level));
+    return this;
+  }
+  
+  
+  /**
+   * Direciona a mensagem, referente ao erro 
+   * <code>Throwable</code> informado para todas as 
+   * saídas de log configuradas.
+   * @param th Exceção.
+   * @param level Nível da mensagem de log.
+   * @param stackTrace Define se a pilha de rastreamento 
+   * do erro será direcionada ao log ou não.
+   * @return Esta intância modificada de <code>SLogV2</code>.
+   */
+  public SLogV2 log(Throwable th, LogLevel level, boolean stackTrace) {
+    if(th == null) return this;
+    StringBuffer msg = new StringBuffer();
+    msg.append(th.getClass().getSimpleName())
+        .append(": ")
+        .append(th.getMessage());
+    outs.forEach(o->submit(o, msg.toString(), level));
+    
+    Throwable cause = th.getCause();
+    if(cause != null) {
+      msg.delete(0, msg.length());
+      msg.append("  Caused by: ")
+          .append(cause.getClass().getSimpleName())
+          .append(": ")
+          .append(cause.getMessage());
+      outs.forEach(o->submit(o, msg.toString(), level));
+    }
+    
+    if(stackTrace) {
+      StackTraceElement[] stack = th.getStackTrace();
+      for(StackTraceElement se : stack) {
+        outs.forEach(o->submit(o, "  "+ se.toString(), level));
+      }
+    }
     return this;
   }
   

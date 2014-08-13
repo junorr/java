@@ -9,9 +9,14 @@
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/channel/HttpRequestChannel.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/container/Credentials.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/test/TestRClient2.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/container/ObjectContainer.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/container/ListCredentialsSource.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/server/FakeInputStreamRef.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/server/AbstractServer.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/OpResult.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/test/TestXmlDump.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/test/TestXmlClient.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/test/TestMethodChain.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/test/TestRClient1.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/test/TestRClient.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/channel/HttpResponseChannel.java</file>
@@ -20,6 +25,8 @@
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/container/SingleCredentialsSource.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/test/TestRServer.java</file>
             <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/channel/XmlNetChannel.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/NetConnector.java</file>
+            <file>file:/C:/.local/java/remote-objects/src/us/pserver/rob/MethodChain.java</file>
         </group>
     </open-files>
 </project-private>

@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import javax.swing.JOptionPane;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64StringCoder;
 import us.pserver.cdr.crypt.CryptAlgorithm;
@@ -35,12 +34,12 @@ import static us.pserver.chk.Checker.nullarg;
 import us.pserver.http.HttpConst;
 import us.pserver.streams.IO;
 import us.pserver.streams.MultiCoderBuffer;
-import us.pserver.streams.NullOutput;
 import us.pserver.streams.ProtectedInputStream;
 import us.pserver.streams.ProtectedOutputStream;
 import us.pserver.streams.StreamCoderFactory;
 import us.pserver.streams.StreamResult;
 import us.pserver.streams.StreamUtils;
+import static us.pserver.streams.StreamUtils.EOF;
 
 
 /**
@@ -154,9 +153,12 @@ public class XmlNetChannel implements Channel {
   
   private CryptKey readKey(InputStream is) throws IOException {
     nullarg(InputStream.class, is);
-    StreamResult sr = StreamUtils.readBetween(is, 
-          HttpConst.BOUNDARY_CRYPT_KEY_START, 
-          HttpConst.BOUNDARY_CRYPT_KEY_END);
+    String startkey = HttpConst.BOUNDARY_CRYPT_KEY_START;
+    StreamResult sr = StreamUtils.readUntilOr(is, startkey, EOF);
+    if(sr.isEOFReached() || sr.token() != startkey) 
+      return null;
+    sr = StreamUtils.readStringUntilOr(is, 
+        HttpConst.BOUNDARY_CRYPT_KEY_END, EOF);
     return CryptKey.fromString(bcd.decode(sr.content()));
   }
   
@@ -202,6 +204,7 @@ public class XmlNetChannel implements Channel {
     ProtectedInputStream pin = new ProtectedInputStream(
         sock.getInputStream());
     key = readKey(pin);
+    if(key == null) return null;
     
     InputStream sin = StreamCoderFactory.getNew()
         .setGZipCoderEnabled(true)

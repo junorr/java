@@ -41,17 +41,18 @@ public class TestRClient {
 
   public static void main(String[] args) throws MethodInvocationException, IOException {
     RemoteObject rem = new RemoteObject(
-        new NetConnector("pserver.us", 
+        //new NetConnector("pserver.us", 
+        new NetConnector("172.24.77.60", 
             NetConnector.DEFAULT_PORT)
             //.setProxyAddress("172.24.75.19")
             //.setProxyPort(6060)
-            .setProxyAddress("cache.bb.com.br")
-            .setProxyPort(80)
-            .setProxyAuthorization("f6036477:65465411"),
+            //.setProxyAddress("cache.bb.com.br")
+            //.setProxyPort(80)
+            .setProxyAuthorization("f6036477:32132155"),
         
         DefaultFactoryProvider
-            //.getConnectorXmlChannelFactory());
-            .getHttpRequestChannelFactory());
+            .getConnectorXmlChannelFactory());
+            //.getHttpRequestChannelFactory());
     
     InputStream is = IO.is(IO.p("c:/.local/file.txt"));
     
@@ -60,16 +61,16 @@ public class TestRClient {
         .forObject("StreamHandler")
         .method("save")
         .setArgTypes(InputStream.class, String.class)
-        //.arguments(is, "c:/.local/remote.png");
-        .arguments(is, "/mnt/remote.txt");
+        .arguments(is, "c:/.local/remote.txt");
+        //.arguments(is, "/mnt/remote.txt");
     
     System.out.println("* invoking remote...");
     System.out.println("* "+ mth+ " = "+ rem.invoke(mth));
 
     mth.method("read")
         .setArgTypes(String.class)
-        //.arguments("c:/.local/remote.png");
-        .arguments("/mnt/remote.txt");
+        .arguments("c:/.local/remote.txt");
+        //.arguments("/mnt/remote.txt");
     System.out.println("* invoking remote...");
     System.out.println("* "+ mth);
     
