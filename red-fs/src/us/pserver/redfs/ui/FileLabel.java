@@ -92,6 +92,11 @@ public class FileLabel extends JLabel implements MouseListener {
     }
     this.repaint();
   }
+  
+  
+  public boolean isSelected() {
+    return selected;
+  }
 
 
   @Override

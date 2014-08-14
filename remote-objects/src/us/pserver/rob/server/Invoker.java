@@ -128,7 +128,8 @@ public class Invoker {
       throw new IllegalStateException(
           "Invoker not properly configured");
     
-    ref.on(obj).method(mth.method(), mth.getArgTypes());
+    Class[] cls = (mth.types().isEmpty() ? null : mth.typesArray());
+    ref.on(obj).method(mth.method(), cls);
     
     if(!ref.isMethodPresent()) {
       if(currTry < tries)
@@ -137,7 +138,8 @@ public class Invoker {
       throw new MethodInvocationException("Method not found: "+ mth);
     }
       
-    Object ret = ref.invoke(mth.arguments());
+    Object ret = ref.invoke((mth.params().isEmpty() 
+        ? null : mth.params().toArray()));
       
     if(ref.hasError()) {
       if(currTry < tries) 

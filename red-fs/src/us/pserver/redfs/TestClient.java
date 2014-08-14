@@ -21,9 +21,9 @@
 
 package us.pserver.redfs;
 
-import java.nio.file.Paths;
 import java.util.List;
 import us.pserver.rob.NetConnector;
+import us.pserver.rob.container.Credentials;
 
 /**
  *
@@ -34,20 +34,24 @@ public class TestClient {
 
   
   public static void main(String[] args) throws Exception {
+    Credentials cr = new Credentials("juno", new StringBuffer("32132155"));
     RemoteFileSystem rfs = new RemoteFileSystem(
         //new NetConnector().setAutoCloseConnetcion(false));
-        new NetConnector("172.24.75.19", 11011).setAutoCloseConnetcion(false));
+        new NetConnector()
+            //.setProxyAddress("172.24.75.19")
+            //.setProxyPort(6060)
+            .setAddress("172.24.77.60"), cr);
     
-    System.out.println("* current = "+ rfs.getCurrent());
+    System.out.println("* current = "+ rfs.current());
     System.out.println("* remote.ls");
     List<RemoteFile> ls = rfs.ls();
     for(RemoteFile rf : ls) {
       System.out.println("  - "+ rf);
     }
     
-    RemoteFile rf = rfs.getFile("/home/juno/client.html");
+    RemoteFile rf = rfs.getFile("c:/.local/splash.png");
     System.out.println(rf);
-    System.out.println(rf.getIcon());
+    System.out.print(rf.getIcon()+ " ");
     System.out.println(rf.getIcon().getIconWidth()+ "x"+ rf.getIcon().getIconHeight());
   }
   

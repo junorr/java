@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import javax.swing.Icon;
+import us.pserver.streams.IO;
 
 
 /**
@@ -87,6 +88,11 @@ public class RemoteFile {
   public RemoteFile setPath(String path) {
     this.path = path;
     return this;
+  }
+  
+  
+  public Path toPath() {
+    return IO.p(getPath());
   }
 
 

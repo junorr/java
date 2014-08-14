@@ -122,7 +122,8 @@ public class MethodChain {
 
   @Override
   public String toString() {
-    return "MethodChain{ methods = " + meths.size() + " }";
+    return stringChain();
+    //return "MethodChain{ methods = " + meths.size() + " }";
   }
   
   

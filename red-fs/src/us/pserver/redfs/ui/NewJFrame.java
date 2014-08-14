@@ -6,8 +6,9 @@ package us.pserver.redfs.ui;
 
 import us.pserver.redfs.RemoteFile;
 import us.pserver.redfs.RemoteFileSystem;
+import us.pserver.rob.MethodInvocationException;
 import us.pserver.rob.NetConnector;
-import us.pserver.rob.RemoteException;
+import us.pserver.rob.container.Credentials;
 
 
 /**
@@ -68,7 +69,7 @@ public class NewJFrame extends javax.swing.JFrame {
   /**
    * @param args the command line arguments
    */
-  public static void main(String args[]) throws RemoteException {
+  public static void main(String args[]) throws MethodInvocationException {
     /* Set the Nimbus look and feel */
     //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -92,13 +93,16 @@ public class NewJFrame extends javax.swing.JFrame {
     }
     //</editor-fold>
 
-    RemoteFileSystem rs = new RemoteFileSystem(
-        //new NetConnector("172.24.75.19", 11011)
-        //new NetConnector("10.100.0.105", 11011)
+    Credentials cr = new Credentials("juno", new StringBuffer("32132155"));
+    RemoteFileSystem rfs = new RemoteFileSystem(
+        //new NetConnector().setAutoCloseConnetcion(false));
         new NetConnector()
-        .setAutoCloseConnetcion(false));
+            //.setProxyAddress("172.24.75.19")
+            //.setProxyPort(6060)
+            .setAddress("172.24.77.60"), cr);
+    
     //RemoteFile rf = rs.getFile("c:/users/juno/downloads/red-fs.jar");
-    RemoteFile rf = rs.getFile("d:/ubuntu.zip");
+    RemoteFile rf = rfs.getFile("d:/ubuntu.zip");
     
     NewJFrame nf = new NewJFrame(rf);
     nf.setVisible(true);

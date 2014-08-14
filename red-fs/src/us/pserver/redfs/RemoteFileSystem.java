@@ -21,26 +21,22 @@
 
 package us.pserver.redfs;
 
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
-import java.nio.channels.FileChannel;
-import java.nio.channels.SocketChannel;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.rmi.RemoteException;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import static us.pserver.chk.Checker.nullarg;
+import us.pserver.rob.MethodChain;
+import us.pserver.rob.MethodInvocationException;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.RemoteMethod;
 import us.pserver.rob.RemoteObject;
+import us.pserver.rob.container.Credentials;
 import us.pserver.rob.factory.DefaultFactoryProvider;
+import us.pserver.streams.IO;
 
 /**
  *
@@ -51,30 +47,38 @@ public class RemoteFileSystem {
   
   private RemoteObject rob;
   
+  private Credentials cred;
   
-  public RemoteFileSystem(NetConnector nc) {
+  
+  public RemoteFileSystem(NetConnector nc, Credentials cr) {
     nullarg(NetConnector.class, nc);
     rob = new RemoteObject(nc, 
         DefaultFactoryProvider
             .getHttpRequestChannelFactory());
+    cred = cr;
     if(!this.checkConn())
       throw new IllegalArgumentException(
           "Server do not respond properly: "+ nc);
   }
   
   
-  public RemoteFileSystem(String host, int port) {
-    this(new NetConnector(host, port));
+  public RemoteFileSystem(String host, int port, Credentials cr) {
+    this(new NetConnector(host, port), cr);
   }
   
   
   private boolean checkConn() {
-    RemoteMethod rm = new RemoteMethod()
-        .forObject(Tokens.ObjectServer.name())
-        .method(Tokens.containsObject.name())
-        .arguments(Tokens.LocalFileSystem.name());
-    try { rob.invoke(rm); }
+    MethodChain chain = new MethodChain();
+    chain.add(Tokens.NetworkServer.name(), 
+        Tokens.container.name())
+        .credentials(cred);
+    chain.add(Tokens.contains.name())
+        .types(String.class)
+        .params(Tokens.LocalFileSystem.name());
+    
+    try { rob.invoke(chain); }
     catch(Exception e) { 
+      e.printStackTrace();
       return false; 
     }
     return true;
@@ -82,378 +86,311 @@ public class RemoteFileSystem {
   
   
   public void closeConnection() {
-    rob.closeConnection();
+    rob.close();
   }
   
   
-  public HostInfo getHostInfo() throws RemoteException {
+  public HostInfo getHostInfo() throws MethodInvocationException {
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.getHostInfo.name());
     return (HostInfo) rob.invoke(rm);
   }
   
   
-  public RemoteFile getFile(RemoteFile rf) throws RemoteException {
+  public RemoteFile getFile(RemoteFile rf) throws MethodInvocationException {
     if(rf == null || rf.getPath() == null)
       return rf;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.getFile.name())
-        .argTypes(RemoteFile.class)
-        .args(rf);
+        .types(RemoteFile.class)
+        .params(rf);
     return (RemoteFile) rob.invoke(rm);
   }
   
   
-  public RemoteFile getFile(String path) throws RemoteException {
+  public RemoteFile getFile(String path) throws MethodInvocationException {
     if(path == null) return null;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.getFile.name())
-        .argTypes(String.class)
-        .args(path);
+        .types(String.class)
+        .params(path);
     return (RemoteFile) rob.invoke(rm);
   }
   
   
-  public RemoteFile getCurrent() throws RemoteException {
+  public RemoteFile current() throws MethodInvocationException {
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
-        .method(Tokens.getCurrent.name());
+        .method(Tokens.current.name());
     return (RemoteFile) rob.invoke(rm);
   }
   
   
-  public List<RemoteFile> ls() throws RemoteException {
+  public List<RemoteFile> ls() throws MethodInvocationException {
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.ls.name());
     return (List<RemoteFile>) rob.invoke(rm);
   }
   
   
-  public List<RemoteFile> ls(RemoteFile rf) throws RemoteException {
+  public List<RemoteFile> ls(RemoteFile rf) throws MethodInvocationException {
     if(rf == null) return null;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.ls.name())
-        .argTypes(RemoteFile.class)
-        .args(rf);
+        .types(RemoteFile.class)
+        .params(rf);
     return (List<RemoteFile>) rob.invoke(rm);
   }
   
   
-  public List<RemoteFile> ls(String str) throws RemoteException {
+  public List<RemoteFile> ls(String str) throws MethodInvocationException {
     if(str == null) return null;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.ls.name())
-        .argTypes(String.class)
-        .args(str);
+        .types(String.class)
+        .params(str);
     return (List<RemoteFile>) rob.invoke(rm);
   }
   
   
-  public boolean cd(RemoteFile rf) throws RemoteException {
+  public boolean cd(RemoteFile rf) throws MethodInvocationException {
     if(rf == null) return false;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.cd.name())
-        .argTypes(RemoteFile.class)
-        .args(rf);
+        .types(RemoteFile.class)
+        .params(rf);
     return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean cd(String str) throws RemoteException {
+  public boolean cd(String str) throws MethodInvocationException {
     if(str == null) return false;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.cd.name())
-        .argTypes(String.class)
-        .args(str);
+        .types(String.class)
+        .params(str);
     return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean rm(RemoteFile rf) throws RemoteException {
+  public boolean rm(RemoteFile rf) throws MethodInvocationException {
     if(rf == null) return false;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.rm.name())
-        .argTypes(RemoteFile.class)
-        .addArg(rf);
+        .types(RemoteFile.class)
+        .params(rf);
     return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean rmDir(RemoteFile rf) throws RemoteException {
+  public boolean rmDir(RemoteFile rf) throws MethodInvocationException {
     if(rf == null) return false;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.rmDir.name())
-        .argTypes(RemoteFile.class)
-        .addArg(rf);
+        .types(RemoteFile.class)
+        .params(rf);
     return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean rm(String str) throws RemoteException {
+  public boolean rm(String str) throws MethodInvocationException {
     if(str == null) return false;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.rm.name())
-        .argTypes(String.class)
-        .addArg(str);
+        .types(String.class)
+        .params(str);
     return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean rmDir(String str) throws RemoteException {
+  public boolean rmDir(String str) throws MethodInvocationException {
     if(str == null) return false;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.rmDir.name())
-        .argTypes(String.class)
-        .addArg(str);
+        .types(String.class)
+        .params(str);
     return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean mkDir(RemoteFile rf) throws RemoteException {
+  public boolean mkDir(RemoteFile rf) throws MethodInvocationException {
     if(rf == null) return false;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.mkDir.name())
-        .argTypes(RemoteFile.class)
-        .addArg(rf);
+        .types(RemoteFile.class)
+        .params(rf);
     return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean mkDir(String str) throws RemoteException {
+  public boolean mkDir(String str) throws MethodInvocationException {
     if(str == null) return false;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.mkDir.name())
-        .argTypes(String.class)
-        .addArg(str);
+        .types(String.class)
+        .params(str);
     return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean zip(RemoteFile out, RemoteFile ... srcs) throws RemoteException {
+  public boolean zip(RemoteFile out, RemoteFile ... srcs) throws MethodInvocationException {
     if(out == null || srcs == null || srcs.length < 1) 
       return false;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.zip.name())
-        .argTypes(RemoteFile.class, RemoteFile[].class)
-        .addArg(out).addArg(srcs);
+        .types(RemoteFile.class, RemoteFile[].class)
+        .params(out, srcs);
     return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean unzip(RemoteFile src, RemoteFile out) throws RemoteException {
+  public boolean unzip(RemoteFile src, RemoteFile out) throws MethodInvocationException {
     if(out == null || src == null) 
       return false;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.unzip.name())
-        .argTypes(RemoteFile.class, RemoteFile.class)
-        .addArg(out).addArg(out);
+        .types(RemoteFile.class, RemoteFile.class)
+        .params(src, out);
     return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean zip(String out, String ... srcs) throws RemoteException {
+  public boolean zip(String out, String ... srcs) throws MethodInvocationException {
     if(out == null || srcs == null || srcs.length < 1) 
       return false;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.zip.name())
-        .argTypes(String.class, String[].class)
-        .addArg(out).addArg(srcs);
+        .types(String.class, String[].class)
+        .params(out, srcs);
     return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean unzip(String src, String out) throws RemoteException {
+  public boolean unzip(String src, String out) throws MethodInvocationException {
     if(out == null || src == null) 
       return false;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.unzip.name())
-        .argTypes(String.class, String.class)
-        .addArg(src).addArg(out);
+        .types(String.class, String.class)
+        .params(src, out);
     return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean readFile(IOData data) throws RemoteException {
-    if(data == null || data.getRemoteFile() == null
-        || data.getPath() == null) return false;
+  public boolean readFile(IOData data) throws IOException, MethodInvocationException {
+    nullarg(IOData.class, data);
+    nullarg(RemoteFile.class, data.getRemoteFile());
+    nullarg(Path.class, data.getPath());
+    
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.readFile.name())
-        .argTypes(RemoteFile.class, SocketChannel.class)
-        .addArg(data.getRemoteFile()).addArg(null);
+        .types(IOData.class)
+        .params(data.getWriteVersion());
     
-    if(data.getRemoteFile().getSize() == null)
+    RemoteFile rf = data.getRemoteFile();
+    if(rf.getSize() == null)
       data.setRemoteFile(this.getFile(
           data.getRemoteFile()));
-    if(data.getRemoteFile() == null) return false;
+    if(data.getRemoteFile() == null) 
+      throw new FileNotFoundException("No such RemoteFile ["+ rf+ "]");
+    
+    long crc = this.getCRC32(data.getRemoteFile());
     data.setMax(data.getRemoteFile()
-        .getSize().getSize());
-    
-    try {
-      Path path = Paths.get(data.getPath().toString() 
-          + "/" + data.getRemoteFile().getName());
-      if(path.getParent() != null
-          && !Files.exists(path.getParent()))
-        Files.createDirectories(path.getParent());
-      if(!Files.exists(path))
-        Files.createFile(path);
-      data.update(path);
-      
-      ProtocolConnection conn = rob.invokeRaw(rm);
-      FileChannel fch = FileChannel.open(
-          path, StandardOpenOption.WRITE);
-      
-      this.copyChannels(conn, fch, data);
-      fch.close();
-      conn.close();
-      return true;
-    } 
-    catch(IOException e) {
-      throw new RemoteException(e);
-    }
+        .getSize().size());
+    InputStream is = (InputStream) rob.invoke(rm);
+    OutputStream os = IO.os(data.getPath());
+    data.update(data.getRemoteFile().toPath());
+    FSConst.transfer(is, os, data);
+    IO.cl(is, os);
+    long crc2 = FSConst.getCRC32(data.getPath());
+    if(crc != crc2)
+      throw new IOException("Currupted data readed [CRC32: "+ crc+ " != "+ crc2+ "]");
+    return true;
   }
   
   
-  private void copyChannels(ByteChannel src, ByteChannel dst, IOData data) throws IOException {
-    if(src == null || dst == null || data == null)
-      return;
+  public boolean write(InputStream is, IOData data) throws IOException, MethodInvocationException {
+    nullarg(InputStream.class, is);
+    nullarg(IOData.class, data);
+    nullarg(RemoteFile.class, data.getRemoteFile());
     
-    System.out.println("* copying channels...");
-    ByteBuffer buf = ByteBuffer.allocateDirect(
-        FSConstants.BUFFER_SIZE);
-    int read = 1;
-    while(read > 0) {
-      read = src.read(buf);
-      data.update(read);
-      buf.flip();
-      dst.write(buf);
-      buf.clear();
-    }
+    ProgressInputStream pis = new ProgressInputStream(is, data);
+    RemoteMethod rm = new RemoteMethod(
+        Tokens.LocalFileSystem.name(),
+        Tokens.write.name())
+        .credentials(cred)
+        .types(InputStream.class, IOData.class)
+        .params(pis, data.getWriteVersion());
+    return (boolean) rob.invoke(rm);
   }
   
   
-  public boolean write(IOData data) throws RemoteException {
-    if(data == null || data.getRemoteFile() == null 
-        || data.getPath() == null 
-        || data.getStartPos() < 0
-        || !Files.exists(data.getPath())) return false;
+  public boolean writeFile(IOData data) throws IOException, MethodInvocationException {
+    nullarg(IOData.class, data);
+    nullarg(RemoteFile.class, data.getRemoteFile());
+    nullarg(Path.class, data.getPath());
     
-    RemoteMethod rm = new RemoteMethod()
-        .forObject(Tokens.LocalFileSystem.name())
-        .method(Tokens.write.name())
-        .argTypes(SocketChannel.class, RemoteFile.class, long.class)
-        .args(null, data.getRemoteFile(), 
-            data.getStartPos());
-    
-    try {
-      if(data.getStartPos() >= Files.size(data.getPath()))
-        return false;
-      
-      data.update(data.getPath());
-      data.setMax(Files.size(data.getPath()));
-      
-      FileInputStream fis = new FileInputStream(
-          data.getPath().toFile());
-      if(data.getStartPos() != 0) 
-        fis.skip(data.getStartPos());
-      rob.invokeAndSend(rm, fis);
-      rob.closeConnection();
-      return true;
-    }
-    catch(IOException e) {
-      throw new RemoteException(e);
-    }
+    long crc = FSConst.getCRC32(data.getPath());
+    data.update(data.getPath());
+    data.setMax(Files.size(data.getPath()));
+    if(!write(IO.is(data.getPath()), data))
+      return false;
+    long crc2 = this.getCRC32(data.getRemoteFile());
+    if(crc != crc2)
+      throw new IOException("Currupted data writed [CRC32: "+ crc+ " != "+ crc2+ "]");
+    return true;
   }
   
   
-  public long getCRC32(RemoteFile rf) throws RemoteException {
+  public long getCRC32(RemoteFile rf) throws MethodInvocationException {
     if(rf == null || rf.getPath() == null) 
       return -1;
     RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.getCRC32.name())
-        .argTypes(RemoteFile.class)
-        .args(rf);
+        .types(RemoteFile.class)
+        .params(rf);
     return (long) rob.invoke(rm);
-  }
-  
-  
-  private boolean checkLocalPath(IOData io) {
-    if(io == null || io.getPath() == null 
-        || io.getRemoteFile() == null)
-      return false;
-    if(Files.isDirectory(io.getPath()))
-      io.setPath(Paths.get(io.getPath().toString(), 
-          io.getRemoteFile().getName()));
-    
-    try {
-      if(Files.exists(io.getPath()))
-        Files.delete(io.getPath());
-      
-      if(io.getPath().getParent() != null
-          && !Files.exists(io.getPath().getParent()))
-        Files.createDirectories(io.getPath().getParent());
-      Files.createFile(io.getPath());
-    } catch(IOException e) {
-      return false;
-    }
-    return true;
-  }
-  
-  
-  public boolean asyncCopyFile(IOData data, int connections) throws RemoteException {
-    if(connections < 1) connections = 1;
-    if(data == null || !this.checkLocalPath(data))
-      return false;
-    
-    data.setRemoteFile(
-        this.getFile(data.getRemoteFile()));
-    if(data.getRemoteFile() == null 
-        || data.getRemoteFile().getSize() == null)
-      return false;
-    
-    long size = data.getRemoteFile().getSize().getSize();
-    long part = (size / connections) + (size % connections);
-    data.update(data.getPath());
-    data.setMax(size);
-    
-    ExecutorService exec = Executors.newCachedThreadPool();
-    CountDownLatch cdown = new CountDownLatch(connections);
-    
-    for(int i = 0; i < connections; i++) {
-      IOData io = data.clone()
-          .setLength(part)
-          .setStartPos(part * i);
-      NetConnector nc = new NetConnector(
-          rob.getNetConnector().getAddress(),
-          rob.getNetConnector().getPort());
-      exec.submit(new AsyncFileReader(nc, io, cdown));
-      //new Thread(new AsyncFileReader(nc, io, cdown)).start();
-    }
-    
-    try { cdown.await(); }
-    catch(InterruptedException e) {}
-    
-    exec.shutdown();
-    return true;
   }
   
 }

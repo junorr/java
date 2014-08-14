@@ -152,9 +152,15 @@ public class RemoteObject {
         "Cannot create Channel. Invalid NetConnector ["+ net+ "]");
     if(factory == null) throw new IllegalStateException(
         "Invalid ChannelFactory ["+ factory+ "]");
-    System.out.println("* creating new channel...");
     channel = factory.createChannel(net);
     return channel;
+  }
+  
+  
+  public RemoteObject close() {
+    if(channel != null)
+      channel.close();
+    return this;
   }
   
   
@@ -206,7 +212,7 @@ public class RemoteObject {
       this.checkInputStreamRef(trp, rmt);
       trp.setObject(rmt);
       trp = this.sendTransport(trp).read();
-      if(trp == null || trp.castObject() == null) {
+      if(trp == null || trp.getObject() == null) {
         res.setSuccessOperation(false);
         res.setError(new IllegalStateException(
             "Cannot read object from channel"));
@@ -307,17 +313,16 @@ public class RemoteObject {
   
   private void checkInputStreamRef(Transport t, RemoteMethod r) {
     if(t == null || r == null) return;
-    Class[] args = r.getArgTypes();
-    if(args == null) args = r.extractTypesFromArgs();
-    if(args == null) return;
-    for(int i = 0; i < args.length; i++) {
-      Class c = args[i];
+    if(r.types().isEmpty()) r.extTypesParams();
+    if(r.types().isEmpty()) return;
+    for(int i = 0; i < r.types().size(); i++) {
+      Class c = r.types().get(i);
       if(InputStream.class.isAssignableFrom(c)) {
-        Object o = r.getArgsList().get(i);
+        Object o = r.params().get(i);
         if(o != null && InputStream.class
             .isAssignableFrom(o.getClass())) {
           t.setInputStream((InputStream) o);
-          r.getArgsList().set(i, new FakeInputStreamRef());
+          r.params().set(i, new FakeInputStreamRef());
         }
       }
     }

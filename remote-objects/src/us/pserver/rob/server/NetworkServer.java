@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static us.pserver.chk.Checker.nullarg;
@@ -364,8 +363,8 @@ public class NetworkServer extends AbstractServer {
       Object o = null;
       if(container.isAuthEnabled()) {
         LogProvider.getSimpleLog().info(
-            "Authentication Enabled: "+ rm.getCredentials());
-        o = container.get(rm.getCredentials(), rm.objectName());
+            "Authentication Enabled: "+ rm.credentials());
+        o = container.get(rm.credentials(), rm.objectName());
       }
       else {
         o = container.get(rm.objectName());
@@ -528,15 +527,15 @@ public class NetworkServer extends AbstractServer {
       if(trp == null 
           || !trp.hasContentEmbedded() 
           || rmt == null 
-          || rmt.getArgsList() == null
-          || rmt.getArgsList().isEmpty())
+          || rmt.params() == null
+          || rmt.params().isEmpty())
         return;
       
-      for(int i = 0; i < rmt.getArgsList().size(); i++) {
-        Object o = rmt.getArgsList().get(i);
+      for(int i = 0; i < rmt.params().size(); i++) {
+        Object o = rmt.params().get(i);
         if(o != null && FakeInputStreamRef.class
             .isAssignableFrom(o.getClass())) {
-          rmt.getArgsList().set(i, trp.getInputStream());
+          rmt.params().set(i, trp.getInputStream());
         }
       }//for
     }

@@ -23,10 +23,8 @@ package us.pserver.redfs;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
-import java.nio.channels.FileChannel;
-import java.nio.channels.SocketChannel;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -34,13 +32,14 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.zip.CRC32;
+import static us.pserver.chk.Checker.nullarg;
+import static us.pserver.chk.Checker.range;
+import us.pserver.streams.IO;
 import us.pserver.zip.Zipper;
 
 /**
@@ -68,7 +67,7 @@ public class LocalFileSystem {
   }
   
   
-  public RemoteFile getCurrent() {
+  public RemoteFile current() {
     return LocalFileFactory.create(current);
   }
   
@@ -82,10 +81,15 @@ public class LocalFileSystem {
     path = getPath(path);
     if(path == null) return null;
     try {
-      DirectoryStream<Path> ds = Files.newDirectoryStream(path);
       List<RemoteFile> list = new LinkedList<>();
+      if(!Files.isDirectory(path)) {
+        list.add(getFile(path));
+        return list;
+      }
+      DirectoryStream<Path> ds = Files.newDirectoryStream(path);
       for(Path p : ds) {
-        list.add(LocalFileFactory.create(p));
+        RemoteFile rf = LocalFileFactory.create(p);
+        if(rf != null) list.add(rf);
       }
       return list;
     } catch(IOException ex) {
@@ -143,9 +147,7 @@ public class LocalFileSystem {
       path = Paths.get(current.toString(), "/", 
           path.toString()).toAbsolutePath().normalize();
     }
-    if(Files.exists(path)) return path;
-    
-    return null;
+    return path;
   }
   
   
@@ -188,7 +190,7 @@ public class LocalFileSystem {
     if(path == null || current == null)
       return false;
     Path p = getPath(path);
-    if(p == null) return false;
+    if(p == null || !Files.exists(p)) return false;
     current = p;
     return true;
   }
@@ -390,146 +392,39 @@ public class LocalFileSystem {
   }
   
   
-  public void readFile(Path path, SocketChannel channel) throws IOException {
-    path = getPath(path);
-    if(path == null) return;
-    readPart(path, 0, Files.size(path), channel);
-  }
-  
-  
-  public void readFile(String path, SocketChannel channel) throws IOException {
-    readFile(getPath(path), channel);
-  }
-  
-  
-  public void readFile(RemoteFile rf, SocketChannel channel) throws IOException {
-    if(rf == null) return;
-    readFile(getPath(rf), channel);
-  }
-  
-  
-  public void readPart(Path path, long from, long len, 
-      SocketChannel channel) throws IOException {
+  public InputStream readFile(IOData data) throws IOException {
+    nullarg(IOData.class, data);
+    nullarg(RemoteFile.class, data.getRemoteFile());
     
-    path = getPath(path);
-    if(path == null || channel == null
-        || !channel.isConnected()
-        || from < 0 || len < 1) 
-      return;
+    RemoteFile rf = data.getRemoteFile();
+    if(rf.getSize() == null || rf.getSize().size() == 0)
+      rf = this.getFile(rf);
     
-    ByteBuffer buf = ByteBuffer.allocateDirect(
-        FSConstants.BUFFER_SIZE);
-    FileChannel fch = FileChannel.open(
-        path, StandardOpenOption.READ);
-    if(from >= fch.size()) {
-      fch.close();
-      channel.close();
-      return;
-    }
-    fch.position(from);
+    nullarg(RemoteFile.class, rf);
+    nullarg(Size.class, rf.getSize());
+    range(data.getStartPos(), 0, rf.getSize().size()-1);
     
-    int read = 1;
-    long total = 0;
-    while(read > 0 && total < len) {
-      read = fch.read(buf);
-      buf.flip();
-      if((len - total) < read) {
-        buf.limit((int) (len - total));
-        total += (len - total);
-      } 
-      else total += read;
-      channel.write(buf);
-      buf.clear();
-    }
-    fch.close();
-    channel.shutdownInput();
-    channel.shutdownOutput();
-    channel.close();
+    Path p = getPath(rf);
+    return new ProgressInputStream(IO.is(p), data);
   }
   
   
-  public void readPart(String path, long from, long len,
-      SocketChannel channel) throws IOException {
-    readPart(getPath(path), from, len, channel);
-  }
-  
-  
-  public void readPart(RemoteFile rf, long from, long len,
-      SocketChannel channel) throws IOException {
-    if(rf == null) return;
-    readPart(getPath(rf), from, len, channel);
-  }
-  
-  
-  public boolean write(SocketChannel channel, Path path, long pos) throws IOException {
-    if(path == null || channel == null || pos < 0
-        || !channel.isConnected()) return false;
+  public boolean write(InputStream is, IOData data) throws IOException {
+    nullarg(InputStream.class, is);
+    nullarg(IOData.class, data);
     
-    if(path.getRoot() == null)
-      path = Paths.get(current.toString(), 
-          "/", path.toString());
-    
-    if(path.getParent() != null
-        && !path.getParent().equals(path.getRoot()))
-      Files.createDirectories(path.getParent());
-    if(!Files.exists(path))
-      Files.createFile(path);
-      
-    FileChannel fch = FileChannel.open(path, 
-        StandardOpenOption.WRITE);
-    if(pos != 0) fch.position(pos);
-    this.copyChannels(channel, fch);
-    fch.close();
-    channel.shutdownInput();
-    channel.shutdownOutput();
-    channel.close();
+    data.setStartPos(0);
+    ProgressInputStream pis = new ProgressInputStream(is, data);
+    Path p = getPath(data.getRemoteFile());
+    OutputStream os = IO.os(p);
+    FSConst.transfer(pis, os);
+    IO.cl(is, os);
     return true;
   }
   
   
-  public boolean write(SocketChannel channel, String path, long pos) throws IOException {
-    return this.write(channel, getPath(path), pos);
-  }
-  
-  
-  public boolean write(SocketChannel channel, RemoteFile rf, long pos) throws IOException {
-    return this.write(channel, getPath(rf), pos);
-  }
-  
-  
-  private void copyChannels(ByteChannel src, ByteChannel dst) throws IOException {
-    if(src == null || dst == null) return;
-    ByteBuffer buf = ByteBuffer.allocateDirect(
-        FSConstants.BUFFER_SIZE);
-    int read = 1;
-    while(read > 0) {
-      read = src.read(buf);
-      buf.flip();
-      dst.write(buf);
-      buf.clear();
-    }
-  }
-  
-  
   public long getCRC32(Path pth) throws IOException {
-    Path path = this.getPath(pth);
-    if(path == null) return -1;
-    CRC32 crc = new CRC32();
-    FileChannel fc = FileChannel.open(path, 
-        StandardOpenOption.READ);
-    ByteBuffer buf = ByteBuffer.allocateDirect(
-        FSConstants.BUFFER_SIZE);
-    int read = 1;
-    while(read > 0) {
-      read = fc.read(buf);
-      if(read <= 0) break;
-      buf.flip();
-      byte[] bs = new byte[read];
-      buf.get(bs);
-      crc.update(bs);
-      buf.clear();
-    }
-    return crc.getValue();
+    return FSConst.getCRC32(this.getPath(pth));
   }
   
   

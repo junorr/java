@@ -44,8 +44,8 @@ public class TestRClient {
         //new NetConnector("pserver.us", 
         new NetConnector("172.24.77.60", 
             NetConnector.DEFAULT_PORT)
-            //.setProxyAddress("172.24.75.19")
-            //.setProxyPort(6060)
+            .setProxyAddress("172.24.75.19")
+            .setProxyPort(6060)
             //.setProxyAddress("cache.bb.com.br")
             //.setProxyPort(80)
             .setProxyAuthorization("f6036477:32132155"),
@@ -57,20 +57,20 @@ public class TestRClient {
     InputStream is = IO.is(IO.p("c:/.local/file.txt"));
     
     RemoteMethod mth = new RemoteMethod()
-        .setCredentials(new Credentials("juno", new StringBuffer("32132155")))
+        .credentials(new Credentials("juno", new StringBuffer("32132155")))
         .forObject("StreamHandler")
         .method("save")
-        .setArgTypes(InputStream.class, String.class)
-        .arguments(is, "c:/.local/remote.txt");
-        //.arguments(is, "/mnt/remote.txt");
+        .types(InputStream.class, String.class)
+        .params(is, "c:/.local/remote.txt");
+        //.params(is, "/mnt/remote.txt");
     
     System.out.println("* invoking remote...");
     System.out.println("* "+ mth+ " = "+ rem.invoke(mth));
 
     mth.method("read")
-        .setArgTypes(String.class)
-        .arguments("c:/.local/remote.txt");
-        //.arguments("/mnt/remote.txt");
+        .types(String.class)
+        .params("c:/.local/remote.txt");
+        //.params("/mnt/remote.txt");
     System.out.println("* invoking remote...");
     System.out.println("* "+ mth);
     

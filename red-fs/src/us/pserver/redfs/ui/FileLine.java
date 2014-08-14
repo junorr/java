@@ -86,6 +86,11 @@ public class FileLine extends JPanel implements ListCellRenderer<RemoteFile> {
     size.setSelected(sel);
     return this;
   }
+  
+  
+  public boolean isSelected() {
+    return name.isSelected();
+  }
 
 
   @Override

@@ -2655,3 +2655,95 @@
 [INFO ] (13/08/2014 17:35:11): Invoking: ObjectContainer.contains( StreamHandler )
 [INFO ] (13/08/2014 17:35:11): Response sent: OpResult{ success = true, return = true }
 [INFO ] (13/08/2014 17:35:11): Connection closed by client.
+[INFO ] (14/08/2014 13:33:42): Starting NetworkServer...
+[INFO ] (14/08/2014 13:33:42): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (14/08/2014 13:33:42): Listening on: NetConnector{ *:9099 }
+[INFO ] (14/08/2014 13:33:42): Server started!
+
+[INFO ] (14/08/2014 13:33:47): ------------------------------
+[INFO ] (14/08/2014 13:33:47): Handling socket: Socket[addr=/172.24.75.19,port=37728,localport=9099]
+[INFO ] (14/08/2014 13:33:47): Remote request: MethodChain{ methods = 2 }
+[INFO ] (14/08/2014 13:33:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (14/08/2014 13:33:47): Invoking: NetworkServer.container(  )
+[WARN ] (14/08/2014 13:33:47): Error invoking method [NetworkServer.container(  )]
+[WARN ] (14/08/2014 13:33:47): MethodInvocationException: Method not found: NetworkServer.container(  )
+[INFO ] (14/08/2014 13:33:47): Response sent: OpResult{ success = false, return = null }
+[INFO ] (14/08/2014 13:33:47): Connection closed by client.
+[INFO ] (14/08/2014 13:37:57): Starting NetworkServer...
+[INFO ] (14/08/2014 13:37:57): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (14/08/2014 13:37:57): Listening on: NetConnector{ *:9099 }
+[INFO ] (14/08/2014 13:37:57): Server started!
+
+[INFO ] (14/08/2014 13:38:00): ------------------------------
+[INFO ] (14/08/2014 13:38:00): Handling socket: Socket[addr=/172.24.75.19,port=37729,localport=9099]
+[INFO ] (14/08/2014 13:38:01): Remote request: MethodChain{ methods = 2 }
+[INFO ] (14/08/2014 13:38:01): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (14/08/2014 13:38:01): Invoking: NetworkServerNetworkServer.container(  )
+[WARN ] (14/08/2014 13:38:01): Error invoking method [NetworkServer.container(  )]
+[WARN ] (14/08/2014 13:38:01): MethodInvocationException: Method not found: NetworkServer.container(  )
+[INFO ] (14/08/2014 13:38:01): Response sent: OpResult{ success = false, return = null }
+[INFO ] (14/08/2014 13:38:01): Connection closed by client.
+[INFO ] (14/08/2014 13:38:49): Starting NetworkServer...
+[INFO ] (14/08/2014 13:38:50): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (14/08/2014 13:38:50): Listening on: NetConnector{ *:9099 }
+[INFO ] (14/08/2014 13:38:50): Server started!
+
+[INFO ] (14/08/2014 13:38:54): ------------------------------
+[INFO ] (14/08/2014 13:38:54): Handling socket: Socket[addr=/172.24.75.19,port=37730,localport=9099]
+[INFO ] (14/08/2014 13:38:55): Remote request: MethodChain{ methods = 2 }
+[INFO ] (14/08/2014 13:38:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (14/08/2014 13:38:55): Invoking: NetworkServer.container()
+[WARN ] (14/08/2014 13:38:55): Error invoking method [NetworkServer.container(  )]
+[WARN ] (14/08/2014 13:38:55): MethodInvocationException: Method not found: NetworkServer.container(  )
+[INFO ] (14/08/2014 13:38:55): Response sent: OpResult{ success = false, return = null }
+[INFO ] (14/08/2014 13:38:55): Connection closed by client.
+[INFO ] (14/08/2014 13:41:22): Starting NetworkServer...
+[INFO ] (14/08/2014 13:41:22): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (14/08/2014 13:41:22): Listening on: NetConnector{ *:9099 }
+[INFO ] (14/08/2014 13:41:23): Server started!
+
+[INFO ] (14/08/2014 13:41:25): ------------------------------
+[INFO ] (14/08/2014 13:41:25): Handling socket: Socket[addr=/172.24.75.19,port=37731,localport=9099]
+[INFO ] (14/08/2014 13:41:26): Remote request: MethodChain{ methods = 2 }
+[INFO ] (14/08/2014 13:41:26): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (14/08/2014 13:41:26): Invoking: NetworkServer.container()
+[WARN ] (14/08/2014 13:41:26): Error invoking method [NetworkServer.container(  )]
+[WARN ] (14/08/2014 13:41:26): MethodInvocationException: Invocation error [java.lang.IllegalArgumentException: wrong number of arguments]
+[WARN ] (14/08/2014 13:41:26):   Caused by: IllegalArgumentException: wrong number of arguments
+[INFO ] (14/08/2014 13:41:26): Response sent: OpResult{ success = false, return = null }
+[INFO ] (14/08/2014 13:41:26): Connection closed by client.
+[INFO ] (14/08/2014 13:43:58): Starting NetworkServer...
+[INFO ] (14/08/2014 13:43:58): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (14/08/2014 13:43:58): Listening on: NetConnector{ *:9099 }
+[INFO ] (14/08/2014 13:43:58): Server started!
+
+[INFO ] (14/08/2014 13:44:02): ------------------------------
+[INFO ] (14/08/2014 13:44:02): Handling socket: Socket[addr=/172.24.75.19,port=37732,localport=9099]
+[INFO ] (14/08/2014 13:44:03): Remote request: MethodChain{ methods = 2 }
+[INFO ] (14/08/2014 13:44:03): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (14/08/2014 13:44:03): Invoking: NetworkServer.container()
+[INFO ] (14/08/2014 13:44:03): Invoking: ObjectContainer.contains()
+[INFO ] (14/08/2014 13:44:03): Response sent: OpResult{ success = true, return = true }
+[INFO ] (14/08/2014 13:44:03): Connection closed by client.
+[INFO ] (14/08/2014 14:02:35): Starting NetworkServer...
+[INFO ] (14/08/2014 14:02:35): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (14/08/2014 14:02:35): Listening on: NetConnector{ *:9099 }
+[INFO ] (14/08/2014 14:02:35): Server started!
+
+[INFO ] (14/08/2014 14:58:49): Starting NetworkServer...
+[INFO ] (14/08/2014 14:58:49): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (14/08/2014 14:58:49): Listening on: NetConnector{ *:9099 }
+[INFO ] (14/08/2014 14:58:49): Server started!
+
+[INFO ] (14/08/2014 14:59:10): ------------------------------
+[INFO ] (14/08/2014 14:59:10): Handling socket: Socket[addr=/172.24.77.60,port=50497,localport=9099]
+[INFO ] (14/08/2014 14:59:12): Connection closed by client.
+[INFO ] (14/08/2014 15:00:02): ------------------------------
+[INFO ] (14/08/2014 15:00:02): Handling socket: Socket[addr=/172.24.77.60,port=50503,localport=9099]
+[INFO ] (14/08/2014 15:00:04): Connection closed by client.
+[INFO ] (14/08/2014 15:00:56): ------------------------------
+[INFO ] (14/08/2014 15:00:56): Handling socket: Socket[addr=/172.24.77.60,port=50505,localport=9099]
+[INFO ] (14/08/2014 15:00:57): Remote request: StreamHandler.save( java.io.InputStream, c:/users/juno/Downloads/splash.png )
+[INFO ] (14/08/2014 15:00:57): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (14/08/2014 15:00:57): Response sent: OpResult{ success = true, return = true }
+[INFO ] (14/08/2014 15:00:57): Connection closed by client.

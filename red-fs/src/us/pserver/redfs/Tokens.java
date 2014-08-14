@@ -11,13 +11,13 @@ package us.pserver.redfs;
  */
 public enum Tokens {
   
-  ObjectServer,
-  containsObject,
+  NetworkServer,
+  container,
+  contains,
   
   LocalFileSystem,
-  getCurrent,
+  current,
   ls,
-  contains,
   getFile,
   cd,
   rm,
@@ -26,7 +26,6 @@ public enum Tokens {
   zip,
   unzip,
   readFile,
-  readPart,
   write,
   createFileServer,
   createFileServers,

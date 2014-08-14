@@ -31,6 +31,7 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import us.pserver.rob.NetConnector;
+import us.pserver.rob.container.Credentials;
 
 /**
  *
@@ -39,9 +40,9 @@ import us.pserver.rob.NetConnector;
  */
 public class ServerSearch {
 
-  public static final int DEFAULT_PORT = 11011;
+  public static final int DEFAULT_PORT = 9099;
   
-  public static final int DEFAULT_SEARCH_TIMEOUT = 100;
+  public static final int DEFAULT_SEARCH_TIMEOUT = 120;
   
   private String baseAddress;
   
@@ -107,10 +108,10 @@ public class ServerSearch {
   }
   
   
-  public List<HostInfo> search(ProgressListener p) {
+  public List<HostInfo> search(ProgressListener p, Credentials cred) {
     if(baseAddress == null) return null;
     List<HostInfo> lh = new LinkedList<>();
-    if(p != null) p.setMax(255);
+    if(p != null) p.setMax(254);
     for(int i = 1; i < 255; i++) {
       String addr = baseAddress + String.valueOf(i);
       if(p != null) {
@@ -121,7 +122,7 @@ public class ServerSearch {
         sock.connect(new InetSocketAddress(addr, port), timeout);
         if(!sock.isConnected()) continue;
         NetConnector net = new NetConnector(addr, port);
-        RemoteFileSystem rf = new RemoteFileSystem(net);
+        RemoteFileSystem rf = new RemoteFileSystem(net, cred);
         lh.add(rf.getHostInfo());
         rf.closeConnection();
       } catch(Exception e) {}
@@ -133,7 +134,8 @@ public class ServerSearch {
   public static void main(String[] args) throws UnknownHostException, SocketException {
     SimpleDate start = new SimpleDate();
     System.out.println(start.format(SimpleDate.HHMMSSNNN));
-    List<HostInfo> list = new ServerSearch().search(new SimpleListener());
+    Credentials cred = new Credentials("juno", new StringBuffer("32132155"));
+    List<HostInfo> list = new ServerSearch().search(new SimpleListener(), cred);
     SimpleDate end = new SimpleDate();
     System.out.println(end.format(SimpleDate.HHMMSSNNN));
     System.out.println(new DateDiff(start, end));

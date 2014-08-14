@@ -71,6 +71,14 @@ public class IOData {
         .setRemoteFile(rfile)
         .setStartPos(startPosition);
   }
+  
+  
+  public IOData getWriteVersion() {
+    return new IOData()
+        .setLength(length)
+        .setStartPos(startPosition)
+        .setRemoteFile(rfile);
+  }
 
 
   public RemoteFile getRemoteFile() {

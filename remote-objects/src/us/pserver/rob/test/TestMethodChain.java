@@ -49,10 +49,10 @@ public class TestMethodChain {
     
     MethodChain chain = new MethodChain();
     chain.add("NetworkServer", "container")
-        .setCredentials(new Credentials("juno", new StringBuffer("32132155")));
+        .credentials(new Credentials("juno", new StringBuffer("32132155")));
     chain.add("contains")
-        .setArgTypes(String.class)
-        .arguments("StreamHandler");
+        .types(String.class)
+        .params("StreamHandler");
     
     System.out.println("* invoking...");
     System.out.println(chain.stringChain());

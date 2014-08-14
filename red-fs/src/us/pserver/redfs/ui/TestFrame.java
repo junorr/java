@@ -24,8 +24,9 @@ package us.pserver.redfs.ui;
 import java.awt.FlowLayout;
 import javax.swing.JFrame;
 import us.pserver.redfs.RemoteFileSystem;
+import us.pserver.rob.MethodInvocationException;
 import us.pserver.rob.NetConnector;
-import us.pserver.rob.RemoteException;
+import us.pserver.rob.container.Credentials;
 
 /**
  *
@@ -44,12 +45,16 @@ public class TestFrame extends JFrame {
   }
   
   
-  public static void main(String[] args) throws RemoteException {
-    RemoteFileSystem rf = new RemoteFileSystem(
+  public static void main(String[] args) throws MethodInvocationException {
+    Credentials cr = new Credentials("juno", new StringBuffer("32132155"));
+    RemoteFileSystem rfs = new RemoteFileSystem(
+        //new NetConnector().setAutoCloseConnetcion(false));
         new NetConnector()
-        .setAutoCloseConnetcion(false));
+            //.setProxyAddress("172.24.75.19")
+            //.setProxyPort(6060)
+            .setAddress("172.24.77.60"), cr);
     
-    FileListPanel fl = new FileListPanel().setList(rf.ls());
+    FileListPanel fl = new FileListPanel().setList(rfs.ls());
     TestFrame tf = new TestFrame(fl);
     tf.setVisible(true);
   }

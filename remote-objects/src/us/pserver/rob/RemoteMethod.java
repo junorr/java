@@ -39,13 +39,13 @@ import java.util.Objects;
  */
 public class RemoteMethod {
   
-  private String objName;
+  private String objname;
   
-  private String mthName;
+  private String method;
   
-  private List args;
+  private List params;
   
-  private Class[] argTypes;
+  private List<Class> types;
   
   private Credentials cred;
   
@@ -55,10 +55,10 @@ public class RemoteMethod {
    * um objeto vazio.
    */
   public RemoteMethod() {
-    objName = null;
-    mthName = null;
-    args = new LinkedList();
-    argTypes = null;
+    objname = null;
+    method = null;
+    params = new LinkedList();
+    types = new LinkedList<>();
     cred = null;
   }
 
@@ -70,19 +70,21 @@ public class RemoteMethod {
    * @param name Nome do método.
    */
   public RemoteMethod(String ownerObject, String name) {
-    this.mthName = name;
-    this.objName = ownerObject;
-    args = new LinkedList();
+    method = name;
+    objname = ownerObject;
+    params = new LinkedList();
+    types = new LinkedList<>();
+    cred = null;
   }
   
   
-  public RemoteMethod setCredentials(Credentials c) {
+  public RemoteMethod credentials(Credentials c) {
     cred = c;
     return this;
   }
   
   
-  public Credentials getCredentials() {
+  public Credentials credentials() {
     return cred;
   }
   
@@ -92,8 +94,15 @@ public class RemoteMethod {
    * @param obj Argumento de invocação do método.
    * @return Esta instância modificada de RemoteMethod.
    */
-  public RemoteMethod addArgument(Object obj) {
-    args.add(obj);
+  public RemoteMethod addParam(Object obj) {
+    params.add(obj);
+    return this;
+  }
+  
+  
+  public RemoteMethod addType(Class cls) {
+    if(cls != null)
+      types.add(cls);
     return this;
   }
   
@@ -102,9 +111,32 @@ public class RemoteMethod {
    * Limpa a lista de argumentos do método.
    * @return Esta instância modificada de RemoteMethod.
    */
-  public RemoteMethod clearArguments() {
-    args.clear();
+  public RemoteMethod clearParams() {
+    params.clear();
     return this;
+  }
+  
+  
+  public RemoteMethod clearTypes() {
+    types.clear();
+    return this;
+  }
+  
+  
+  public List<Class> types() {
+    return types;
+  }
+  
+  
+  public List params() {
+    return params;
+  }
+  
+  
+  public Class[] typesArray() {
+    Class[] cls = new Class[types.size()];
+    if(types.isEmpty()) return cls;
+    return types.toArray(cls);
   }
   
   
@@ -113,8 +145,8 @@ public class RemoteMethod {
    * @param cls Classes dos tipos de argumentos.
    * @return Esta instância modificada de RemoteMethod.
    */
-  public RemoteMethod setArgTypes(Class ... cls) {
-    argTypes = cls;
+  public RemoteMethod types(Class ... cls) {
+    types.addAll(Arrays.asList(cls));
     return this;
   }
   
@@ -124,24 +156,13 @@ public class RemoteMethod {
    * informados para o método.
    * @return Array de classes de tipos de argumentos.
    */
-  public Class[] extractTypesFromArgs() {
-    if(args.isEmpty()) return null;
-    argTypes = new Class[args.size()];
-    for(int i = 0; i < args.size(); i++) {
-      argTypes[i] = args.get(i).getClass();
+  public RemoteMethod extTypesParams() {
+    if(params.isEmpty()) return null;
+    types.clear();
+    for(int i = 0; i < params.size(); i++) {
+      types.add(params.get(i).getClass());
     }
-    return argTypes;
-  }
-  
-  
-  /**
-   * Retorna um array com as classes dos tipos
-   * de argumentos do método.
-   * @return array com as classes dos tipos
-   * de argumentos do método.
-   */
-  public Class[] getArgTypes() {
-    return argTypes;
+    return this;
   }
   
   
@@ -150,7 +171,7 @@ public class RemoteMethod {
    * @return nome do método.
    */
   public String method() {
-    return mthName;
+    return method;
   }
 
 
@@ -160,49 +181,20 @@ public class RemoteMethod {
    * @return Esta instância modificada de RemoteMethod.
    */
   public RemoteMethod method(String name) {
-    this.mthName = name;
+    this.method = name;
     return this;
   }
 
 
-  /**
-   * Retorna a lista de argumentos do método.
-   * @return Lista de argumentos do método.
-   */
-  public List getArgsList() {
-    return args;
-  }
-  
-  
-  /**
-   * Retorna um array com os argumentos do método.
-   * @return Array com os argumentos do método.
-   */
-  public Object[] arguments() {
-    return args.toArray();
-  }
-
-
-  /**
-   * Define a lista de argumentos do método.
-   * @param args Lista de argumentos do método.
-   * @return Esta instância modificada de RemoteMethod.
-   */
-  public RemoteMethod setArgsList(List args) {
-    this.args = args;
-    return this;
-  }
-  
-  
   /**
    * Define os argumentos do método.
    * @param objs Argumentos do método.
    * @return Esta instância modificada de RemoteMethod.
    */
-  public RemoteMethod arguments(Object ... objs) {
+  public RemoteMethod params(Object ... objs) {
     if(objs != null && objs.length > 0) {
-      args.clear();
-      args.addAll(Arrays.asList(objs));
+      params.clear();
+      params.addAll(Arrays.asList(objs));
     }
     return this;
   }
@@ -213,7 +205,7 @@ public class RemoteMethod {
    * @return nome do objeto proprietário do método.
    */
   public String objectName() {
-    return objName;
+    return objname;
   }
 
 
@@ -223,7 +215,7 @@ public class RemoteMethod {
    * @return Esta instância modificada de RemoteMethod.
    */
   public RemoteMethod forObject(String objName) {
-    this.objName = objName;
+    this.objname = objName;
     return this;
   }
 
@@ -231,9 +223,12 @@ public class RemoteMethod {
   @Override
   public int hashCode() {
     int hash = 5;
-    hash = 47 * hash + Objects.hashCode(this.mthName);
-    hash = 47 * hash + Objects.hashCode(this.objName);
-    hash = 47 * hash + Arrays.deepHashCode(this.argTypes);
+    hash = 47 * hash + Objects.hashCode(this.method);
+    hash = 47 * hash + Objects.hashCode(this.objname);
+    if(this.types != null)
+      hash = 47 * hash + Arrays.deepHashCode(this.types.toArray());
+    else
+      hash = 47 * hash + Objects.hashCode(this.types);
     return hash;
   }
 
@@ -245,11 +240,13 @@ public class RemoteMethod {
     if (getClass() != obj.getClass())
       return false;
     final RemoteMethod other = (RemoteMethod) obj;
-    if (!Objects.equals(this.objName, other.objName))
+    if (!Objects.equals(this.objname, other.objname))
       return false;
-    if (!Objects.equals(this.mthName, other.mthName))
+    if (!Objects.equals(this.method, other.method))
       return false;
-    if (!Arrays.deepEquals(this.argTypes, other.argTypes))
+    if (this.types == null || other.types == null
+        || !Arrays.deepEquals(this.types.toArray(), 
+            other.types.toArray()))
       return false;
     return true;
   }
@@ -258,21 +255,21 @@ public class RemoteMethod {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    if(objName != null) {
-      sb.append(objName);
+    if(objname != null) {
+      sb.append(objname);
     }
-    sb.append(".").append(mthName).append("( ");
-    if(!args.isEmpty()) {
-      for(int i = 0; i < args.size(); i++) {
-        sb.append(args.get(i));
-        if(i < args.size() -1)
+    sb.append(".").append(method).append("( ");
+    if(!params.isEmpty()) {
+      for(int i = 0; i < params.size(); i++) {
+        sb.append(params.get(i));
+        if(i < params.size() -1)
           sb.append(", ");
       }
     }
-    else if(argTypes != null) {
-      for(int i = 0; i < argTypes.length; i++) {
-        sb.append(argTypes[i].getSimpleName());
-        if(i < argTypes.length -1)
+    else if(types != null) {
+      for(int i = 0; i < types.size(); i++) {
+        sb.append(types.get(i).getSimpleName());
+        if(i < types.size() -1)
           sb.append(", ");
       }
     }

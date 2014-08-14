@@ -22,7 +22,12 @@
 package us.pserver.redfs;
 
 import us.pserver.rob.NetConnector;
-import us.pserver.rob.ObjectServer;
+import us.pserver.rob.container.Authenticator;
+import us.pserver.rob.container.Credentials;
+import us.pserver.rob.container.ObjectContainer;
+import us.pserver.rob.container.SingleCredentialsSource;
+import us.pserver.rob.factory.DefaultFactoryProvider;
+import us.pserver.rob.server.NetworkServer;
 
 /**
  *
@@ -33,9 +38,14 @@ public class TestServer {
 
   
   public static void main(String[] args) {
-    ObjectServer os = new ObjectServer(new NetConnector());
+    NetworkServer os = new NetworkServer(new ObjectContainer(), new NetConnector(), 
+        DefaultFactoryProvider.getHttpResponseChannelFactory());
     LocalFileSystem fs = new LocalFileSystem();
-    os.addObject(Tokens.LocalFileSystem.name(), fs);
+    Credentials cred = new Credentials("juno", new StringBuffer("32132155"));
+    os.container().put(Tokens.LocalFileSystem.name(), fs);
+    os.container().setAuthenticator(
+        new Authenticator(
+            new SingleCredentialsSource(cred)));
     os.start();
   }
   

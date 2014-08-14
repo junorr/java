@@ -17,17 +17,19 @@ public class TestLocalFS {
   
   public static void main(String[] args) throws IOException {
     LocalFileSystem fs = new LocalFileSystem();
-    System.out.println("* current = "+ fs.getCurrent());
-    System.out.println("* cd [home/juno] = "+ fs.cd("home/juno"));
-    System.out.println("* current = "+ fs.getCurrent());
-    System.out.println("* cd [../../media] = "+ fs.cd("../../media"));
-    System.out.println("* current = "+ fs.getCurrent());
+    System.out.println("* current = "+ fs.current());
+    System.out.println("* cd [users/juno] = "+ fs.cd("users/juno"));
+    System.out.println("* current = "+ fs.current());
+    System.out.println("* cd [Downloads] = "+ fs.cd("Downloads"));
+    System.out.println("* current = "+ fs.current());
     System.out.println("* cd [..] = "+ fs.cd(".."));
-    System.out.println("* current = "+ fs.getCurrent());
-    System.out.println("* cd [home/juno] = "+ fs.cd("home/juno"));
-    System.out.println("* current = "+ fs.getCurrent());
-    System.out.println("* unzip [syscheck.zip] = "
-        + fs.unzip("syscheck.zip", "unzip"));
+    System.out.println("* current = "+ fs.current());
+    System.out.println("* cd [Downloads] = "+ fs.cd("Downloads"));
+    System.out.println("* current = "+ fs.current());
+    System.out.println("* cd [../Downloads] = "+ fs.cd("../Downloads"));
+    System.out.println("* current = "+ fs.current());
+    System.out.println("* zip [cp_resid.zip] = "
+        + fs.zip("cp_resid.zip", "cp_resid.pdf"));
   }
   
 }

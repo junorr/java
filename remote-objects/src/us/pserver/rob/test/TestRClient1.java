@@ -56,7 +56,7 @@ public class TestRClient1 {
     RemoteMethod rm = new RemoteMethod()
         .forObject("NetworkServer")
         .method("getAvailableThreads")
-        .setCredentials(new Credentials("juno", new StringBuffer("32132155")));
+        .credentials(new Credentials("juno", new StringBuffer("32132155")));
     Transport t = new Transport(rm);
     hob.setObject(t);
     hb.put(new HttpCryptKey(key)).put(hob);

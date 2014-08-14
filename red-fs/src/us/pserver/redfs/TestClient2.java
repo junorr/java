@@ -21,13 +21,12 @@
 
 package us.pserver.redfs;
 
-import com.jpower.date.DateDiff;
-import com.jpower.date.SimpleDate;
-import com.jpower.log.LogProvider;
-import com.jpower.log.Logger;
-import java.nio.file.Paths;
 import java.util.List;
+import us.pserver.log.LogProvider;
+import us.pserver.log.SimpleLog;
 import us.pserver.rob.NetConnector;
+import us.pserver.rob.container.Credentials;
+import us.pserver.streams.IO;
 
 /**
  *
@@ -38,47 +37,40 @@ public class TestClient2 {
 
   
   public static void main(String[] args) throws Exception {
+    Credentials cr = new Credentials("juno", new StringBuffer("32132155"));
     RemoteFileSystem rfs = new RemoteFileSystem(
-        //new NetConnector("172.24.75.19", 11011)
-        //new NetConnector("10.100.0.102", 11011)
+        //new NetConnector().setAutoCloseConnetcion(false));
         new NetConnector()
-        .setAutoCloseConnetcion(false));
+            //.setProxyAddress("172.24.75.19")
+            //.setProxyPort(6060)
+            .setAddress("172.24.77.60"), cr);
     
-    Logger log = LogProvider.getLogger();
-    log.info("* current = "+ rfs.getCurrent());
-    log.info("* cd [/home/juno]="+ rfs.cd("/home/juno"));
+    SimpleLog log = LogProvider.getSimpleLog();
+    log.info("current = "+ rfs.current());
+    log.info("cd [users/juno]="+ rfs.cd("users/juno"));
+    log.info("cd [Downloads]="+ rfs.cd("Downloads"));
+    log.info("current="+ rfs.current());
+    log.info("ls");
+    List<RemoteFile> ls = rfs.ls();
+    ls.forEach(System.out::println);
+    //log.info("* cd [/home/juno]="+ rfs.cd("/home/juno"));
     //log.info("* cd [Downloads]="+ rfs.cd("Downloads"));
     //log.info("* cd [Talitah Badra]="+ rfs.cd("Talitah Badra"));
     //log.info("* cd [d:/]="+ rfs.cd("d:/"));
     
-    log.info("* remote.ls");
-    List<RemoteFile> ls = rfs.ls();
-    for(RemoteFile rf : ls) {
-      log.info("  - "+ rf);
-    }
-    
     System.out.println();
-    //RemoteFile r = rfs.getFile("ubuntu.zip");
-    //RemoteFile r = rfs.getFile("C:/Users/Talitah Badra/Downloads/S0mbras.da.Noite.omelhordatelona.biz.rmvb");
-    //RemoteFile r = new RemoteFile("apps/bitkinex323.exe");
-    RemoteFile r = new RemoteFile("/media/warehouse/iso/SYSRESTORE.zip");
-    log.info("r = "+ r);
-    SimpleDate sd = new SimpleDate();
-    int CON = 1;
+    
     IOData data = new IOData()
-        .setRemoteFile(r)
         .addListener(new SimpleListener())
-        .setPath(Paths.get("/home/juno/copy"));
-    System.out.println("* start = "+ sd.format(SimpleDate.HHMMSSNNN));
-    //System.out.println("copyAsync( "+ r+ ", /home/juno, "+ CON+ " ): "+
-      //  rfs.copyAsync(r, "/home/juno", CON, null));
-    System.out.println("copyAsync( "+ r+ ", d:/, "+ CON+ " ): "+
-        rfs.asyncCopyFile(data, CON));
-    //System.out.println("readFile( "+ r+ ", d:/ ): "+
-      //  rfs.readFile(r, "/home/juno"));
-    SimpleDate ed = new SimpleDate();
-    System.out.println("* end = "+ ed.format(SimpleDate.HHMMSSNNN));
-    System.out.println("* elapsed = "+ new DateDiff(sd, ed));
+        .setRemoteFile(new RemoteFile("cp_resid.zip"))
+        .setPath(IO.p("c:/.local/cp_resid.zip"));
+    log.info("readFile [cp_resid.zip]="+ rfs.readFile(data));
+    
+    data = new IOData()
+        .setRemoteFile(new RemoteFile("pic.png"))
+        .setPath(IO.p("c:/.local/splash.png"))
+        .addListener(new SimpleListener());
+    log.info("writeFile ["+ data.getPath()+ "]="+ rfs.writeFile(data));
   }
   
 }

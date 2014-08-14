@@ -45,12 +45,12 @@ public class Size {
   }
 
 
-  public long getSize() {
+  public long size() {
     return size;
   }
 
 
-  public void setSize(long size) {
+  public void size(long size) {
     this.size = size;
   }
   
