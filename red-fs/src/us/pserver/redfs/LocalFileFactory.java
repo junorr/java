@@ -45,21 +45,21 @@ public class LocalFileFactory {
       LAST_MODIFIED_TIME = "lastModifiedTime";
       
 
-  public static RemoteFile create(String path) {
+  public static RFile create(String path) {
     return create(Paths.get(path));
   }
   
   
-  public static RemoteFile create(Path path) {
+  public static RFile create(Path path) {
     if(path == null || !Files.exists(path))
       return null;
-    RemoteFile rf = new RemoteFile();
+    RFile rf = new RFile();
     define(rf, path);
     return rf;
   }
   
   
-  public static boolean define(RemoteFile rf, Path path) {
+  public static boolean define(RFile rf, Path path) {
     if(path == null || !Files.exists(path) || rf == null)
       return false;
     try {
@@ -106,7 +106,7 @@ public class LocalFileFactory {
   
   
   public static void main(String[] args) {
-    RemoteFile rf = create("f:/Monografia.docx");
+    RFile rf = create("f:/Monografia.docx");
     System.out.println("* "+ rf);
     System.out.println("* host addr    : "+ rf.getHostAddress());
     System.out.println("* host name    : "+ rf.getHostName());

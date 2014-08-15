@@ -28,16 +28,16 @@ import java.awt.FlowLayout;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-import us.pserver.redfs.RemoteFile;
+import us.pserver.redfs.RFile;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 17/12/2013
  */
-public class FileLine extends JPanel implements ListCellRenderer<RemoteFile> {
+public class FileLine extends JPanel implements ListCellRenderer<RFile> {
 
-  private RemoteFile file;
+  private RFile file;
   
   private FileLabel name, date, size;
   
@@ -53,18 +53,18 @@ public class FileLine extends JPanel implements ListCellRenderer<RemoteFile> {
   }
   
   
-  public FileLine(RemoteFile rf) {
+  public FileLine(RFile rf) {
     this();
     this.setFile(rf);
   }
   
   
-  public RemoteFile getFile() {
+  public RFile getFile() {
     return file;
   }
   
   
-  public FileLine setFile(RemoteFile rf) {
+  public FileLine setFile(RFile rf) {
     if(rf != null && rf.getLastModifiedDate() != null
         && rf.getSize() != null) {
       file = rf;
@@ -95,8 +95,8 @@ public class FileLine extends JPanel implements ListCellRenderer<RemoteFile> {
 
   @Override
   public Component getListCellRendererComponent(
-      JList<? extends RemoteFile> list, 
-      RemoteFile value, 
+      JList<? extends RFile> list, 
+      RFile value, 
       int index, 
       boolean isSelected, 
       boolean cellHasFocus) {

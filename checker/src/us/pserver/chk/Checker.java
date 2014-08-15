@@ -22,6 +22,8 @@
 package us.pserver.chk;
 
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 
 /**
@@ -54,6 +56,12 @@ public class Checker {
    */
   public static void nullarg(Class typ, Object arg) {
     if(arg == null) throwarg(typ, arg);
+  }
+  
+  
+  public static void nullpath(Path p) {
+    if(p == null || !Files.exists(p))
+      throwarg(Path.class, p);
   }
   
   

@@ -22,6 +22,7 @@
 package us.pserver.redfs;
 
 import java.util.List;
+import us.pserver.listener.SimpleListener;
 import us.pserver.log.LogProvider;
 import us.pserver.log.SimpleLog;
 import us.pserver.rob.NetConnector;
@@ -51,7 +52,7 @@ public class TestClient2 {
     log.info("cd [Downloads]="+ rfs.cd("Downloads"));
     log.info("current="+ rfs.current());
     log.info("ls");
-    List<RemoteFile> ls = rfs.ls();
+    List<RFile> ls = rfs.ls();
     ls.forEach(System.out::println);
     //log.info("* cd [/home/juno]="+ rfs.cd("/home/juno"));
     //log.info("* cd [Downloads]="+ rfs.cd("Downloads"));
@@ -62,12 +63,12 @@ public class TestClient2 {
     
     IOData data = new IOData()
         .addListener(new SimpleListener())
-        .setRemoteFile(new RemoteFile("cp_resid.zip"))
+        .setRFile(new RFile("cp_resid.zip"))
         .setPath(IO.p("c:/.local/cp_resid.zip"));
     log.info("readFile [cp_resid.zip]="+ rfs.readFile(data));
     
     data = new IOData()
-        .setRemoteFile(new RemoteFile("pic.png"))
+        .setRFile(new RFile("pic.png"))
         .setPath(IO.p("c:/.local/splash.png"))
         .addListener(new SimpleListener());
     log.info("writeFile ["+ data.getPath()+ "]="+ rfs.writeFile(data));

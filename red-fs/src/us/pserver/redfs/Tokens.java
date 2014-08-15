@@ -21,14 +21,12 @@ public enum Tokens {
   getFile,
   cd,
   rm,
-  rmDir,
-  mkDir,
+  rmdir,
+  mkdir,
   zip,
   unzip,
   readFile,
   write,
-  createFileServer,
-  createFileServers,
   getCRC32,
   getHostInfo;
   

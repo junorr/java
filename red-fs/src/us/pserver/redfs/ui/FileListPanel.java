@@ -27,7 +27,7 @@ import java.util.List;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import us.pserver.redfs.RemoteFile;
+import us.pserver.redfs.RFile;
 
 /**
  *
@@ -36,9 +36,9 @@ import us.pserver.redfs.RemoteFile;
  */
 public class FileListPanel extends JPanel {
 
-  private JList<RemoteFile> list;
+  private JList<RFile> list;
   
-  private List<RemoteFile> lines;
+  private List<RFile> lines;
   
   
   public FileListPanel() {
@@ -50,10 +50,10 @@ public class FileListPanel extends JPanel {
   }
   
   
-  public FileListPanel add(RemoteFile rf) {
+  public FileListPanel add(RFile rf) {
     if(rf != null) {
       lines.add(rf);
-      RemoteFile[] fs = new RemoteFile[lines.size()];
+      RFile[] fs = new RFile[lines.size()];
       fs = lines.toArray(fs);
       list.setListData(fs);
       this.repaint();
@@ -62,8 +62,8 @@ public class FileListPanel extends JPanel {
   }
   
   
-  public FileListPanel setList(List<RemoteFile> ls) {
-    for(RemoteFile rf : ls) {
+  public FileListPanel setList(List<RFile> ls) {
+    for(RFile rf : ls) {
       this.add(rf);
     }
     return this;

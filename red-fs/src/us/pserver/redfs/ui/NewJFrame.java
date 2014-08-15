@@ -4,7 +4,7 @@
  */
 package us.pserver.redfs.ui;
 
-import us.pserver.redfs.RemoteFile;
+import us.pserver.redfs.RFile;
 import us.pserver.redfs.RemoteFileSystem;
 import us.pserver.rob.MethodInvocationException;
 import us.pserver.rob.NetConnector;
@@ -17,12 +17,12 @@ import us.pserver.rob.container.Credentials;
  */
 public class NewJFrame extends javax.swing.JFrame {
 
-  private RemoteFile r;
+  private RFile r;
   
   /**
    * Creates new form NewJFrame
    */
-  public NewJFrame(RemoteFile rf) {
+  public NewJFrame(RFile rf) {
     r = rf;
     initComponents();
   }
@@ -101,8 +101,8 @@ public class NewJFrame extends javax.swing.JFrame {
             //.setProxyPort(6060)
             .setAddress("172.24.77.60"), cr);
     
-    //RemoteFile rf = rs.getFile("c:/users/juno/downloads/red-fs.jar");
-    RemoteFile rf = rfs.getFile("d:/ubuntu.zip");
+    //RFile rf = rs.getFile("c:/users/juno/downloads/red-fs.jar");
+    RFile rf = rfs.getFile("d:/ubuntu.zip");
     
     NewJFrame nf = new NewJFrame(rf);
     nf.setVisible(true);

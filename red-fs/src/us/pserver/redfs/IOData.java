@@ -21,20 +21,18 @@
 
 package us.pserver.redfs;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import us.pserver.listener.ProgressContainer;
+import us.pserver.listener.ProgressListener;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 13/12/2013
  */
-public class IOData {
+public class IOData extends ProgressContainer {
 
-  private RemoteFile rfile;
+  private RFile rfile;
   
   private Path path;
   
@@ -42,12 +40,8 @@ public class IOData {
   
   private long length;
   
-  private List<ProgressListener> listeners;
-  
   
   public IOData() {
-    listeners = Collections.synchronizedList(
-        new LinkedList<ProgressListener>());
     length = 0;
     startPosition = 0;
     path = null;
@@ -55,20 +49,19 @@ public class IOData {
   }
   
   
-  private IOData(List<ProgressListener> list) {
-    listeners = list;
-    length = 0;
-    startPosition = 0;
-    path = null;
-    rfile = null;
+  @Override
+  public IOData addListener(ProgressListener pl) {
+    super.add(pl);
+    return this;
   }
   
   
+  @Override
   public IOData clone() {
-    return new IOData(listeners)
+    return new IOData()
         .setLength(length)
         .setPath(path)
-        .setRemoteFile(rfile)
+        .setRFile(rfile)
         .setStartPos(startPosition);
   }
   
@@ -77,16 +70,16 @@ public class IOData {
     return new IOData()
         .setLength(length)
         .setStartPos(startPosition)
-        .setRemoteFile(rfile);
+        .setRFile(rfile);
   }
 
 
-  public RemoteFile getRemoteFile() {
+  public RFile getRFile() {
     return rfile;
   }
 
 
-  public IOData setRemoteFile(RemoteFile rfile) {
+  public IOData setRFile(RFile rfile) {
     this.rfile = rfile;
     return this;
   }
@@ -124,47 +117,4 @@ public class IOData {
     return this;
   }
 
-
-  public List<ProgressListener> getListeners() {
-    return listeners;
-  }
-
-
-  public IOData setListeners(List<ProgressListener> listeners) {
-    this.listeners = listeners;
-    return this;
-  }
-  
-  
-  public IOData addListener(ProgressListener p) {
-    if(p != null) listeners.add(p);
-    return this;
-  }
-  
-  
-  protected synchronized void error(IOException e) {
-    if(e != null)
-      for(ProgressListener p : listeners)
-        p.error(e);
-  }
-  
-  
-  protected synchronized void setMax(long max) {
-    for(ProgressListener p : listeners)
-      p.setMax(max);
-  }
-  
-  
-  protected synchronized void update(Path path) {
-    if(path != null)
-      for(ProgressListener p : listeners)
-        p.update(path);
-  }
-  
-  
-  protected synchronized void update(long current) {
-    for(ProgressListener p : listeners)
-      p.update(current);
-  }
-  
 }

@@ -40,7 +40,8 @@ import java.util.Objects;
 import static us.pserver.chk.Checker.nullarg;
 import static us.pserver.chk.Checker.range;
 import us.pserver.streams.IO;
-import us.pserver.zip.Zipper;
+import us.pserver.zip.Unzip;
+import us.pserver.zip.Zip;
 
 /**
  *
@@ -67,28 +68,28 @@ public class LocalFileSystem {
   }
   
   
-  public RemoteFile current() {
+  public RFile current() {
     return LocalFileFactory.create(current);
   }
   
   
-  public List<RemoteFile> ls() {
+  public List<RFile> ls() {
     return ls(current);
   }
   
   
-  public List<RemoteFile> ls(Path path) {
+  public List<RFile> ls(Path path) {
     path = getPath(path);
     if(path == null) return null;
     try {
-      List<RemoteFile> list = new LinkedList<>();
+      List<RFile> list = new LinkedList<>();
       if(!Files.isDirectory(path)) {
         list.add(getFile(path));
         return list;
       }
       DirectoryStream<Path> ds = Files.newDirectoryStream(path);
       for(Path p : ds) {
-        RemoteFile rf = LocalFileFactory.create(p);
+        RFile rf = LocalFileFactory.create(p);
         if(rf != null) list.add(rf);
       }
       return list;
@@ -98,12 +99,12 @@ public class LocalFileSystem {
   }
   
   
-  public List<RemoteFile> ls(String path) {
+  public List<RFile> ls(String path) {
     return ls(getPath(path));
   }
   
   
-  public List<RemoteFile> ls(RemoteFile rf) {
+  public List<RFile> ls(RFile rf) {
     return ls(getPath(rf));
   }
   
@@ -125,7 +126,7 @@ public class LocalFileSystem {
   }
   
   
-  public boolean contains(RemoteFile rf) {
+  public boolean contains(RFile rf) {
     if(rf == null || current == null)
       return false;
     return contains(getPath(rf));
@@ -151,7 +152,7 @@ public class LocalFileSystem {
   }
   
   
-  private Path getPath(RemoteFile rf) {
+  private Path getPath(RFile rf) {
     if(rf == null || current == null)
       return null;
     return getPath(Paths.get(rf.getPath()));
@@ -165,21 +166,21 @@ public class LocalFileSystem {
   }
   
   
-  public RemoteFile getFile(RemoteFile rf) {
+  public RFile getFile(RFile rf) {
     Path p = this.getPath(rf);
     if(p == null) return null;
     return LocalFileFactory.create(p);
   }
   
   
-  public RemoteFile getFile(String path) {
+  public RFile getFile(String path) {
     Path p = this.getPath(path);
     if(p == null) return null;
     return LocalFileFactory.create(p);
   }
   
   
-  public RemoteFile getFile(Path path) {
+  public RFile getFile(Path path) {
     Path p = this.getPath(path);
     if(p == null) return null;
     return LocalFileFactory.create(p);
@@ -196,7 +197,7 @@ public class LocalFileSystem {
   }
   
   
-  public boolean cd(RemoteFile rf) {
+  public boolean cd(RFile rf) {
     if(rf == null || rf.getName() == null 
         || current == null)
       return false;
@@ -209,7 +210,7 @@ public class LocalFileSystem {
   }
   
   
-  public boolean rm(RemoteFile rf) throws IOException {
+  public boolean rm(RFile rf) throws IOException {
     if(rf == null || rf.getPath() == null)
       throw new FileNotFoundException(Objects.toString(rf));
     return rm(getPath(rf));
@@ -233,29 +234,34 @@ public class LocalFileSystem {
       throw new IOException(
           "Path is a Directory: "+ path.toString());
     }
-    
-    Files.delete(path);
+    try {
+      System.out.println("* Files.delete("+ path+ ")");
+      Files.delete(path);
+    } catch(IOException e) {
+      e.printStackTrace();
+      throw e;
+    }
     return true;
   }
   
   
-  public boolean rmDir(RemoteFile rf, boolean ignoreErrors) throws IOException {
+  public boolean rmdir(RFile rf, boolean ignoreErrors) throws IOException {
     if(rf == null || rf.getPath() == null) {
       throw new FileNotFoundException(Objects.toString(rf));
     }
-    return rmDir(getPath(rf), ignoreErrors);
+    return rmdir(getPath(rf), ignoreErrors);
   }
   
   
-  public boolean rmDir(String str, boolean ignoreErrors) throws IOException {
+  public boolean rmdir(String str, boolean ignoreErrors) throws IOException {
     if(str == null || str.isEmpty()) {
       throw new FileNotFoundException(Objects.toString(str));
     }
-    return rmDir(getPath(str), ignoreErrors);
+    return rmdir(getPath(str), ignoreErrors);
   }
   
   
-  public boolean rmDir(Path path, final boolean ignoreErrors) throws IOException {
+  public boolean rmdir(Path path, final boolean ignoreErrors) throws IOException {
     path = getPath(path);
     if(path == null || !Files.exists(path)) {
       throw new FileNotFoundException(Objects.toString(path));
@@ -296,21 +302,21 @@ public class LocalFileSystem {
   }
   
   
-  public boolean mkDir(String path) throws IOException {
+  public boolean mkdir(String path) throws IOException {
     if(path == null || path.isEmpty())
       return false;
-    return mkDir(getPath(path));
+    return mkdir(getPath(path));
   }
   
   
-  public boolean mkDir(RemoteFile path) throws IOException {
+  public boolean mkdir(RFile path) throws IOException {
     if(path == null || path.getPath() == null)
       return false;
-    return mkDir(getPath(path));
+    return mkdir(getPath(path));
   }
   
   
-  public boolean mkDir(Path path) throws IOException {
+  public boolean mkdir(Path path) throws IOException {
     if(path == null) return false;
     if(path.getRoot() == null)
       path = Paths.get(current.toString(), "/", path.toString());
@@ -326,15 +332,14 @@ public class LocalFileSystem {
     if(out == null || srcs == null || srcs.length < 1)
       return false;
     
-    Zipper zip = new Zipper();
+    Zip zip = new Zip().output(out);
     for(Path p : srcs) {
       if(p.getRoot() == null)
         p = Paths.get(current.toString(), 
             "/", p.toString());
       zip.add(getPath(p));
     }
-    zip.setOutput(out);
-    zip.doZip();
+    zip.run();
     return true;
   }
   
@@ -343,15 +348,17 @@ public class LocalFileSystem {
     if(out == null || srcs == null || srcs.length < 1)
       return false;
     Path pt = getPath(out);
+    System.out.println("* zip.out="+ pt);
     Path[] pts = new Path[srcs.length];
     for(int i = 0; i < srcs.length; i++) {
       pts[i] = getPath(srcs[i]);
+      System.out.println("* zip.in="+ pts[i]);
     }
     return zip(pt, pts);
   }
   
   
-  public boolean zip(RemoteFile out, RemoteFile ... srcs) throws IOException {
+  public boolean zip(RFile out, RFile ... srcs) throws IOException {
     if(out == null || srcs == null || srcs.length < 1)
       return false;
     String[] ss = new String[srcs.length];
@@ -371,9 +378,10 @@ public class LocalFileSystem {
     if(out != null && out.getRoot() == null)
       out = Paths.get(current.toString(), 
           "/", out.toString());
-    Zipper zip = new Zipper();
-    if(out != null) zip.setOutput(out);
-    zip.add(src).doUnzip();
+    
+    Unzip uz = new Unzip().input(src);
+    if(out != null) uz.output(out);
+    uz.run();
     return true;
   }
   
@@ -385,7 +393,7 @@ public class LocalFileSystem {
   }
   
   
-  public boolean unzip(RemoteFile src, RemoteFile out) throws IOException {
+  public boolean unzip(RFile src, RFile out) throws IOException {
     if(src == null || src.getPath() == null)
       return false;
     return unzip(getPath(src), getPath(out));
@@ -394,13 +402,13 @@ public class LocalFileSystem {
   
   public InputStream readFile(IOData data) throws IOException {
     nullarg(IOData.class, data);
-    nullarg(RemoteFile.class, data.getRemoteFile());
+    nullarg(RFile.class, data.getRFile());
     
-    RemoteFile rf = data.getRemoteFile();
+    RFile rf = data.getRFile();
     if(rf.getSize() == null || rf.getSize().size() == 0)
       rf = this.getFile(rf);
     
-    nullarg(RemoteFile.class, rf);
+    nullarg(RFile.class, rf);
     nullarg(Size.class, rf.getSize());
     range(data.getStartPos(), 0, rf.getSize().size()-1);
     
@@ -415,7 +423,7 @@ public class LocalFileSystem {
     
     data.setStartPos(0);
     ProgressInputStream pis = new ProgressInputStream(is, data);
-    Path p = getPath(data.getRemoteFile());
+    Path p = getPath(data.getRFile());
     OutputStream os = IO.os(p);
     FSConst.transfer(pis, os);
     IO.cl(is, os);
@@ -428,7 +436,7 @@ public class LocalFileSystem {
   }
   
   
-  public long getCRC32(RemoteFile rf) throws IOException {
+  public long getCRC32(RFile rf) throws IOException {
     return getCRC32(this.getPath(rf));
   }
   

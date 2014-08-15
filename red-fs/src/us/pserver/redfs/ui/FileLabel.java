@@ -26,7 +26,7 @@ import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JLabel;
-import us.pserver.redfs.RemoteFile;
+import us.pserver.redfs.RFile;
 
 /**
  *
@@ -35,7 +35,7 @@ import us.pserver.redfs.RemoteFile;
  */
 public class FileLabel extends JLabel implements MouseListener {
 
-  private RemoteFile file;
+  private RFile file;
   
   private boolean selected;
   
@@ -57,18 +57,18 @@ public class FileLabel extends JLabel implements MouseListener {
   }
   
   
-  public FileLabel(RemoteFile rf) {
+  public FileLabel(RFile rf) {
     this();
     this.setFile(file);
   }
 
 
-  public RemoteFile getFile() {
+  public RFile getFile() {
     return file;
   }
 
 
-  public FileLabel setFile(RemoteFile file) {
+  public FileLabel setFile(RFile file) {
     this.file = file;
     if(file != null && file.getName() != null) {
       this.setText(file.getName());

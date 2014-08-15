@@ -51,7 +51,7 @@ public class TestClient3 {
     log.info("cd [Downloads]="+ rfs.cd("Downloads"));
     log.info("current="+ rfs.current());
     log.info("ls");
-    List<RemoteFile> ls = rfs.ls();
+    List<RFile> ls = rfs.ls();
     ls.forEach(System.out::println);
     //log.info("* cd [/home/juno]="+ rfs.cd("/home/juno"));
     //log.info("* cd [Downloads]="+ rfs.cd("Downloads"));

@@ -330,7 +330,6 @@ public class Zipper {
   
   
   private void doUnzip(ZipFile zf, Path out) throws IOException {
-    
     for(ZipInfo z : entries) {
       Path dst;
       if(out != null)
@@ -350,6 +349,7 @@ public class Zipper {
         OutputStream os = Files.newOutputStream(dst, StandardOpenOption.WRITE);
         InputStream is = zf.getInputStream(z.getEntry());
         this.transfer(is, os);
+        os.close();
       }
     }
   }

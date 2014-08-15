@@ -21,7 +21,7 @@ import us.pserver.streams.IO;
  *
  * @author juno
  */
-public class RemoteFile {
+public class RFile {
   
   private String name;
   
@@ -52,10 +52,10 @@ public class RemoteFile {
   private String hostName;
   
   
-  public RemoteFile() {}
+  public RFile() {}
   
   
-  public RemoteFile(String fullPath) {
+  public RFile(String fullPath) {
     if(fullPath != null && !fullPath.trim().isEmpty()) {
       Path p = Paths.get(fullPath);
       if(!Files.exists(p)) {
@@ -74,7 +74,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setName(String name) {
+  public RFile setName(String name) {
     this.name = name;
     return this;
   }
@@ -85,7 +85,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setPath(String path) {
+  public RFile setPath(String path) {
     this.path = path;
     return this;
   }
@@ -101,7 +101,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setIcon(Icon icon) {
+  public RFile setIcon(Icon icon) {
     this.icon = icon;
     return this;
   }
@@ -112,7 +112,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setSize(Size size) {
+  public RFile setSize(Size size) {
     this.size = size;
     return this;
   }
@@ -123,7 +123,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setLastModifiedTime(long lastModifiedTime) {
+  public RFile setLastModifiedTime(long lastModifiedTime) {
     this.lastModifiedTime = lastModifiedTime;
     return this;
   }
@@ -139,7 +139,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setCreationTime(long creationTime) {
+  public RFile setCreationTime(long creationTime) {
     this.creationTime = creationTime;
     return this;
   }
@@ -155,7 +155,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setDirectory(boolean directory) {
+  public RFile setDirectory(boolean directory) {
     this.directory = directory;
     return this;
   }
@@ -166,7 +166,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setHidden(boolean hidden) {
+  public RFile setHidden(boolean hidden) {
     this.hidden = hidden;
     return this;
   }
@@ -177,7 +177,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setWritable(boolean writable) {
+  public RFile setWritable(boolean writable) {
     this.writable = writable;
     return this;
   }
@@ -188,7 +188,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setReadable(boolean readable) {
+  public RFile setReadable(boolean readable) {
     this.readable = readable;
     return this;
   }
@@ -199,7 +199,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setPermissions(Set<PosixFilePermission> permissions) {
+  public RFile setPermissions(Set<PosixFilePermission> permissions) {
     this.permissions = permissions;
     return this;
   }
@@ -210,7 +210,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setOwner(String owner) {
+  public RFile setOwner(String owner) {
     this.owner = owner;
     return this;
   }
@@ -221,7 +221,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setHostAddress(String host) {
+  public RFile setHostAddress(String host) {
     this.hostAddr = host;
     return this;
   }
@@ -232,7 +232,7 @@ public class RemoteFile {
   }
 
 
-  public RemoteFile setHostName(String hostName) {
+  public RFile setHostName(String hostName) {
     this.hostName = hostName;
     return this;
   }
@@ -257,7 +257,7 @@ public class RemoteFile {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final RemoteFile other = (RemoteFile) obj;
+    final RFile other = (RFile) obj;
     if (!Objects.equals(this.name, other.name)) {
       return false;
     }
@@ -271,7 +271,7 @@ public class RemoteFile {
       return false;
     }
     return true;
-  }
+  } 
 
 
   @Override

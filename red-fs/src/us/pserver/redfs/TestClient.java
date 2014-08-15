@@ -44,12 +44,12 @@ public class TestClient {
     
     System.out.println("* current = "+ rfs.current());
     System.out.println("* remote.ls");
-    List<RemoteFile> ls = rfs.ls();
-    for(RemoteFile rf : ls) {
+    List<RFile> ls = rfs.ls();
+    for(RFile rf : ls) {
       System.out.println("  - "+ rf);
     }
     
-    RemoteFile rf = rfs.getFile("c:/.local/splash.png");
+    RFile rf = rfs.getFile("c:/.local/splash.png");
     System.out.println(rf);
     System.out.print(rf.getIcon()+ " ");
     System.out.println(rf.getIcon().getIconWidth()+ "x"+ rf.getIcon().getIconHeight());

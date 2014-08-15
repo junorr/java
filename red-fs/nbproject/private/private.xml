@@ -4,7 +4,6 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/LocalFileFactory.java</file>
-            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/RemoteFile.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/Size.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/Tokens.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ui/FileLabel.java</file>
@@ -19,8 +18,10 @@
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/TestLocalFS.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ServerSearch.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/TestClient2.java</file>
+            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/RFile.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/TestClient3.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ui/FileListPanel.java</file>
+            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ui/NewJFrame.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/FSConst.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ui/FileLine.java</file>
         </group>
