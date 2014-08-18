@@ -3,27 +3,28 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/test/TestServer.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/LocalFileFactory.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/Size.java</file>
+            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/test/TestClient3.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/Tokens.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ui/FileLabel.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/LocalFileSystem.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/IOData.java</file>
+            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/test/TestClient.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ui/CLIFileSystem.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/HostInfo.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/RemoteFileSystem.java</file>
-            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/TestClient.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ProgressInputStream.java</file>
-            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/TestServer.java</file>
-            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/TestLocalFS.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ServerSearch.java</file>
-            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/TestClient2.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/RFile.java</file>
-            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/TestClient3.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ui/FileListPanel.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ui/NewJFrame.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/FSConst.java</file>
             <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ui/FileLine.java</file>
+            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/test/TestClient2.java</file>
+            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/test/TestLocalFS.java</file>
+            <file>file:/C:/.local/java/red-fs/src/us/pserver/redfs/ui/InteractiveFS.java</file>
         </group>
     </open-files>
 </project-private>

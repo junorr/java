@@ -26,6 +26,7 @@ public enum Tokens {
   zip,
   unzip,
   readFile,
+  writeFile,
   write,
   getCRC32,
   getHostInfo;

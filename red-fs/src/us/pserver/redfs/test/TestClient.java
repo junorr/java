@@ -19,22 +19,20 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.redfs;
+package us.pserver.redfs.test;
 
 import java.util.List;
-import us.pserver.listener.SimpleListener;
-import us.pserver.log.LogProvider;
-import us.pserver.log.SimpleLog;
+import us.pserver.redfs.RFile;
+import us.pserver.redfs.RemoteFileSystem;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.container.Credentials;
-import us.pserver.streams.IO;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 28/11/2013
  */
-public class TestClient2 {
+public class TestClient {
 
   
   public static void main(String[] args) throws Exception {
@@ -46,32 +44,17 @@ public class TestClient2 {
             //.setProxyPort(6060)
             .setAddress("172.24.77.60"), cr);
     
-    SimpleLog log = LogProvider.getSimpleLog();
-    log.info("current = "+ rfs.current());
-    log.info("cd [users/juno]="+ rfs.cd("users/juno"));
-    log.info("cd [Downloads]="+ rfs.cd("Downloads"));
-    log.info("current="+ rfs.current());
-    log.info("ls");
+    System.out.println("* current = "+ rfs.current());
+    System.out.println("* remote.ls");
     List<RFile> ls = rfs.ls();
-    ls.forEach(System.out::println);
-    //log.info("* cd [/home/juno]="+ rfs.cd("/home/juno"));
-    //log.info("* cd [Downloads]="+ rfs.cd("Downloads"));
-    //log.info("* cd [Talitah Badra]="+ rfs.cd("Talitah Badra"));
-    //log.info("* cd [d:/]="+ rfs.cd("d:/"));
+    for(RFile rf : ls) {
+      System.out.println("  - "+ rf);
+    }
     
-    System.out.println();
-    
-    IOData data = new IOData()
-        .addListener(new SimpleListener())
-        .setRFile(new RFile("cp_resid.zip"))
-        .setPath(IO.p("c:/.local/cp_resid.zip"));
-    log.info("readFile [cp_resid.zip]="+ rfs.readFile(data));
-    
-    data = new IOData()
-        .setRFile(new RFile("pic.png"))
-        .setPath(IO.p("c:/.local/splash.png"))
-        .addListener(new SimpleListener());
-    log.info("writeFile ["+ data.getPath()+ "]="+ rfs.writeFile(data));
+    RFile rf = rfs.getFile("c:/.local/splash.png");
+    System.out.println(rf);
+    System.out.print(rf.getIcon()+ " ");
+    System.out.println(rf.getIcon().getIconWidth()+ "x"+ rf.getIcon().getIconHeight());
   }
   
 }

@@ -19,40 +19,36 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.redfs;
+package us.pserver.redfs.test;
 
-import java.util.List;
+import us.pserver.redfs.LocalFileSystem;
+import us.pserver.redfs.Tokens;
 import us.pserver.rob.NetConnector;
+import us.pserver.rob.container.Authenticator;
 import us.pserver.rob.container.Credentials;
+import us.pserver.rob.container.ObjectContainer;
+import us.pserver.rob.container.SingleCredentialsSource;
+import us.pserver.rob.factory.DefaultFactoryProvider;
+import us.pserver.rob.server.NetworkServer;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 28/11/2013
  */
-public class TestClient {
+public class TestServer {
 
   
-  public static void main(String[] args) throws Exception {
-    Credentials cr = new Credentials("juno", new StringBuffer("32132155"));
-    RemoteFileSystem rfs = new RemoteFileSystem(
-        //new NetConnector().setAutoCloseConnetcion(false));
-        new NetConnector()
-            //.setProxyAddress("172.24.75.19")
-            //.setProxyPort(6060)
-            .setAddress("172.24.77.60"), cr);
-    
-    System.out.println("* current = "+ rfs.current());
-    System.out.println("* remote.ls");
-    List<RFile> ls = rfs.ls();
-    for(RFile rf : ls) {
-      System.out.println("  - "+ rf);
-    }
-    
-    RFile rf = rfs.getFile("c:/.local/splash.png");
-    System.out.println(rf);
-    System.out.print(rf.getIcon()+ " ");
-    System.out.println(rf.getIcon().getIconWidth()+ "x"+ rf.getIcon().getIconHeight());
+  public static void main(String[] args) {
+    NetworkServer os = new NetworkServer(new ObjectContainer(), new NetConnector(), 
+        DefaultFactoryProvider.getHttpResponseChannelFactory());
+    LocalFileSystem fs = new LocalFileSystem();
+    Credentials cred = new Credentials("juno", new StringBuffer("32132155"));
+    os.container().put(Tokens.LocalFileSystem.name(), fs);
+    os.container().setAuthenticator(
+        new Authenticator(
+            new SingleCredentialsSource(cred)));
+    os.start();
   }
   
 }

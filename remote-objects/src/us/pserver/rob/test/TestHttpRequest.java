@@ -39,8 +39,8 @@ public class TestHttpRequest {
 
   
   public static void main(String[] args) throws IOException {
-    NetConnector nc = new NetConnector("172.24.77.6", 9011);
-    /* set proxy 
+    NetConnector nc = new NetConnector("172.24.77.6", 9099);
+    /* set proxy */
     nc.setProxyAddress("172.24.75.19")
         .setProxyPort(6060)
         .setProxyAuthorization("f6036477:00000000");
@@ -54,7 +54,7 @@ public class TestHttpRequest {
     InputStream input = Files.newInputStream(
         Paths.get("c:/.local/splash.png"), 
         StandardOpenOption.READ);
-    trp.setInputStream(input);
+    //trp.setInputStream(input);
     
     channel.write(trp);
     

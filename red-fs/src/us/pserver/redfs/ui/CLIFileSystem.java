@@ -155,7 +155,7 @@ public class CLIFileSystem {
   
   public String current() {
     try {
-      return format(rem.current());
+      return rem.current().getPath();
     } catch(MethodInvocationException e) {
       log.error(e, true);
       return null;
@@ -361,15 +361,16 @@ public class CLIFileSystem {
   public static void main(String[] args) {
     Credentials cr = new Credentials("juno", new StringBuffer("32132155"));
     RemoteFileSystem rfs = new RemoteFileSystem(
-        //new NetConnector().setAutoCloseConnetcion(false));
         new NetConnector()
-            //.setProxyAddress("172.24.75.19")
-            //.setProxyPort(6060)
-            .setAddress("172.24.77.60"), cr);
+            .setProxyAddress("172.24.75.19")
+            .setProxyPort(6060)
+            .setAddress("172.24.77.60"), 
+        cr);
     
     CLIFileSystem cfs = new CLIFileSystem(rfs);
     System.out.println("* getHostInfo:");
     System.out.println("  "+ cfs.getHostInfo());
+    /*
     String f = "c:/users/juno/Downloads/pic.png";
     System.out.println("* getFile ["+ f+ "]");
     System.out.println(cfs.getFile(f));
@@ -387,7 +388,16 @@ public class CLIFileSystem {
     System.out.println(cfs.ls());
     System.out.println("* zip [cp_resid.zip, cp_resid.pdf]="+ cfs.zip("cp_resid.zip", "cp_resid.pdf"));
     System.out.println(cfs.ls());
-    System.out.println("* ");
+    String f1 = "c:/.local/cp_resid.zip";
+    String f2 = "c:/.local/remote/cp_resid.zip";
+    System.out.println("* writeFile ["+ f1+ " >> "+ f2+ "]="+ cfs.writeFile(f1, f2));
+    System.out.println("* rm [cp_resid.zip]="+ cfs.rm("cp_resid.zip"));
+    System.out.println(cfs.ls());
+        */
+    String f1 = "c:/.local/cp_resid.zip";
+    String f2 = "c:/.local/remote/cp_resid.zip";
+    System.out.println("* readFile ["+ f2+ " >> "+ f1+ "]="+ cfs.readFile(f2, f1));
+    System.out.println(cfs.ls());
     rfs.closeConnection();
   }
   

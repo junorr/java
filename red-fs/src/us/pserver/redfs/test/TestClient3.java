@@ -19,11 +19,13 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.redfs;
+package us.pserver.redfs.test;
 
 import java.util.List;
 import us.pserver.log.LogProvider;
 import us.pserver.log.SimpleLog;
+import us.pserver.redfs.RFile;
+import us.pserver.redfs.RemoteFileSystem;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.container.Credentials;
 import us.pserver.streams.IO;

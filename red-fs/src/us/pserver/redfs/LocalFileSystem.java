@@ -230,17 +230,11 @@ public class LocalFileSystem {
     if(path == null || !Files.exists(path)) {
       throw new FileNotFoundException(Objects.toString(path));
     }
-    if(Files.isDirectory(path)) {
+    if(path.toFile().isDirectory()) {
       throw new IOException(
           "Path is a Directory: "+ path.toString());
     }
-    try {
-      System.out.println("* Files.delete("+ path+ ")");
-      Files.delete(path);
-    } catch(IOException e) {
-      e.printStackTrace();
-      throw e;
-    }
+    System.out.println("* delete( "+ path+ " ): "+ path.toFile().delete());
     return true;
   }
   
@@ -421,6 +415,7 @@ public class LocalFileSystem {
     nullarg(InputStream.class, is);
     nullarg(IOData.class, data);
     
+    try {
     data.setStartPos(0);
     ProgressInputStream pis = new ProgressInputStream(is, data);
     Path p = getPath(data.getRFile());
@@ -428,6 +423,10 @@ public class LocalFileSystem {
     FSConst.transfer(pis, os);
     IO.cl(is, os);
     return true;
+    } catch(IOException e) {
+      e.printStackTrace();
+      throw e;
+    }
   }
   
   
