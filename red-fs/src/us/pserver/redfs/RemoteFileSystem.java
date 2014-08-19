@@ -226,6 +226,43 @@ public class RemoteFileSystem {
   }
   
   
+  public boolean exec(String ... cmds) throws MethodInvocationException {
+    if(cmds == null || cmds.length == 0)
+      throw new MethodInvocationException("Invalid command array ["+ cmds+ "]");
+    RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
+        .forObject(Tokens.LocalFileSystem.name())
+        .method(Tokens.exec.name())
+        .types(String[].class)
+        .params(cmds);
+    return (boolean) rob.invoke(rm);
+  }
+  
+  
+  public boolean osrm(String str) throws MethodInvocationException {
+    if(str == null) return false;
+    RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
+        .forObject(Tokens.LocalFileSystem.name())
+        .method(Tokens.osrm.name())
+        .types(String.class)
+        .params(str);
+    return (boolean) rob.invoke(rm);
+  }
+  
+  
+  public boolean osrm(RFile rf) throws MethodInvocationException {
+    if(rf == null) return false;
+    RemoteMethod rm = new RemoteMethod()
+        .credentials(cred)
+        .forObject(Tokens.LocalFileSystem.name())
+        .method(Tokens.osrm.name())
+        .types(RFile.class)
+        .params(rf);
+    return (boolean) rob.invoke(rm);
+  }
+  
+  
   public boolean rmdir(String str) throws MethodInvocationException {
     if(str == null) return false;
     RemoteMethod rm = new RemoteMethod()

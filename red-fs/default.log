@@ -24809,3 +24809,198 @@
 [INFO ] (18/08/2014 17:11:12): Authentication Enabled: Credentials{ user = juno }
 [INFO ] (18/08/2014 17:11:12): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
 [INFO ] (18/08/2014 17:11:12): Connection closed by client.
+[INFO ] (19/08/2014 17:35:48): Starting NetworkServer...
+[INFO ] (19/08/2014 17:35:48): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (19/08/2014 17:35:48): Listening on: NetConnector{ *:9099 }
+[INFO ] (19/08/2014 17:35:48): Server started!
+
+[INFO ] (19/08/2014 17:36:10): ------------------------------
+[INFO ] (19/08/2014 17:36:10): Handling socket: Socket[addr=/172.24.75.19,port=39145,localport=9099]
+[INFO ] (19/08/2014 17:36:11): Remote request: NetworkServer.container(  ).contains( LocalFileSystem )
+[INFO ] (19/08/2014 17:36:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:36:11): Invoking: NetworkServer.container(  )
+[INFO ] (19/08/2014 17:36:11): Invoking: ObjectContainer.contains( LocalFileSystem )
+[INFO ] (19/08/2014 17:36:11): Response sent: OpResult{ success = true, return = true }
+[INFO ] (19/08/2014 17:36:11): Connection closed by client.
+[INFO ] (19/08/2014 17:36:11): ------------------------------
+[INFO ] (19/08/2014 17:36:11): Handling socket: Socket[addr=/172.24.75.19,port=39146,localport=9099]
+[INFO ] (19/08/2014 17:36:11): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:36:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:36:11): Response sent: OpResult{ success = true, return = RemoteFile{ name=C:\, path=C:\, size=8,00 KB } }
+[INFO ] (19/08/2014 17:36:11): Connection closed by client.
+[INFO ] (19/08/2014 17:36:21): ------------------------------
+[INFO ] (19/08/2014 17:36:21): Handling socket: Socket[addr=/172.24.75.19,port=39147,localport=9099]
+[INFO ] (19/08/2014 17:36:21): Remote request: LocalFileSystem.cd( .local )
+[INFO ] (19/08/2014 17:36:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:36:21): Response sent: OpResult{ success = true, return = true }
+[INFO ] (19/08/2014 17:36:21): Connection closed by client.
+[INFO ] (19/08/2014 17:36:21): ------------------------------
+[INFO ] (19/08/2014 17:36:21): Handling socket: Socket[addr=/172.24.75.19,port=39148,localport=9099]
+[INFO ] (19/08/2014 17:36:21): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:36:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:36:21): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:36:21): Connection closed by client.
+[INFO ] (19/08/2014 17:36:21): ------------------------------
+[INFO ] (19/08/2014 17:36:21): Handling socket: Socket[addr=/172.24.75.19,port=39149,localport=9099]
+[INFO ] (19/08/2014 17:36:21): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:36:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:36:21): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:36:21): Connection closed by client.
+[INFO ] (19/08/2014 17:36:23): ------------------------------
+[INFO ] (19/08/2014 17:36:23): Handling socket: Socket[addr=/172.24.75.19,port=39150,localport=9099]
+[INFO ] (19/08/2014 17:36:23): Remote request: LocalFileSystem.ls(  )
+[INFO ] (19/08/2014 17:36:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:36:24): Response sent: OpResult{ success = true, return = [RemoteFile{ name=3d, path=C:\.local\3d, size=4,00 KB }, RemoteFile{ name=access, path=C:\.local\access, size=4,00 KB }, RemoteFile{ name=bbm, path=C:\.local\bbm, size=4,00 KB }, RemoteFile{ name=books, path=C:\.local\books, size=4,00 KB }, RemoteFile{ name=client, path=C:\.local\client, size=0,00 bytes }, RemoteFile{ name=cmdd.bat, path=C:\.local\cmdd.bat, size=9,00 bytes }, RemoteFile{ name=docs, path=C:\.local\docs, size=4,00 KB }, RemoteFile{ name=fotos, path=C:\.local\fotos, size=4,00 KB }, RemoteFile{ name=iso, path=C:\.local\iso, size=4,00 KB }, RemoteFile{ name=java, path=C:\.local\java, size=40,00 KB }, RemoteFile{ name=jdk-8-doc, path=C:\.local\jdk-8-doc, size=0,00 bytes }, RemoteFile{ name=php.7z, path=C:\.local\php.7z, size=545,42 KB }, RemoteFile{ name=remote-objects-1.0.jar, path=C:\.local\remote-objects-1.0.jar, size=1,05 MB }, RemoteFile{ name=splash.png, path=C:\.local\splash.png, size=146,01 KB }] }
+[INFO ] (19/08/2014 17:36:24): Connection closed by client.
+[INFO ] (19/08/2014 17:36:24): ------------------------------
+[INFO ] (19/08/2014 17:36:24): Handling socket: Socket[addr=/172.24.75.19,port=39151,localport=9099]
+[INFO ] (19/08/2014 17:36:24): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:36:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:36:24): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:36:24): Connection closed by client.
+[INFO ] (19/08/2014 17:36:24): ------------------------------
+[INFO ] (19/08/2014 17:36:24): Handling socket: Socket[addr=/172.24.75.19,port=39152,localport=9099]
+[INFO ] (19/08/2014 17:36:24): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:36:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:36:24): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:36:24): Connection closed by client.
+[INFO ] (19/08/2014 17:36:55): ------------------------------
+[INFO ] (19/08/2014 17:36:55): Handling socket: Socket[addr=/172.24.75.19,port=39153,localport=9099]
+[INFO ] (19/08/2014 17:36:56): Remote request: LocalFileSystem.write( java.io.InputStream, us.pserver.redfs.IOData@654e5b09 )
+[INFO ] (19/08/2014 17:36:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:36:56): Response sent: OpResult{ success = true, return = true }
+[INFO ] (19/08/2014 17:36:56): Connection closed by client.
+[INFO ] (19/08/2014 17:36:56): ------------------------------
+[INFO ] (19/08/2014 17:36:56): Handling socket: Socket[addr=/172.24.75.19,port=39154,localport=9099]
+[INFO ] (19/08/2014 17:36:56): Remote request: LocalFileSystem.getCRC32( RemoteFile{ name=cpresid.zip, path=cpresid.zip, size=null } )
+[INFO ] (19/08/2014 17:36:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:36:56): Response sent: OpResult{ success = true, return = 207508442 }
+[INFO ] (19/08/2014 17:36:56): Connection closed by client.
+[INFO ] (19/08/2014 17:36:56): ------------------------------
+[INFO ] (19/08/2014 17:36:56): Handling socket: Socket[addr=/172.24.75.19,port=39155,localport=9099]
+[INFO ] (19/08/2014 17:36:56): Remote request: LocalFileSystem.getFile( cpresid.zip )
+[INFO ] (19/08/2014 17:36:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:36:56): Response sent: OpResult{ success = true, return = RemoteFile{ name=cpresid.zip, path=C:\.local\cpresid.zip, size=134,45 KB } }
+[INFO ] (19/08/2014 17:36:56): ------------------------------
+[INFO ] (19/08/2014 17:36:56): Handling socket: Socket[addr=/172.24.75.19,port=39156,localport=9099]
+[INFO ] (19/08/2014 17:36:56): Connection closed by client.
+[INFO ] (19/08/2014 17:36:56): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:36:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:36:56): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:36:56): Connection closed by client.
+[INFO ] (19/08/2014 17:37:01): ------------------------------
+[INFO ] (19/08/2014 17:37:01): Handling socket: Socket[addr=/172.24.75.19,port=39157,localport=9099]
+[INFO ] (19/08/2014 17:37:01): Remote request: LocalFileSystem.ls(  )
+[INFO ] (19/08/2014 17:37:01): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:37:01): Response sent: OpResult{ success = true, return = [RemoteFile{ name=3d, path=C:\.local\3d, size=4,00 KB }, RemoteFile{ name=access, path=C:\.local\access, size=4,00 KB }, RemoteFile{ name=bbm, path=C:\.local\bbm, size=4,00 KB }, RemoteFile{ name=books, path=C:\.local\books, size=4,00 KB }, RemoteFile{ name=client, path=C:\.local\client, size=0,00 bytes }, RemoteFile{ name=cmdd.bat, path=C:\.local\cmdd.bat, size=9,00 bytes }, RemoteFile{ name=cpresid.zip, path=C:\.local\cpresid.zip, size=134,45 KB }, RemoteFile{ name=docs, path=C:\.local\docs, size=4,00 KB }, RemoteFile{ name=fotos, path=C:\.local\fotos, size=4,00 KB }, RemoteFile{ name=iso, path=C:\.local\iso, size=4,00 KB }, RemoteFile{ name=java, path=C:\.local\java, size=40,00 KB }, RemoteFile{ name=jdk-8-doc, path=C:\.local\jdk-8-doc, size=0,00 bytes }, RemoteFile{ name=php.7z, path=C:\.local\php.7z, size=545,42 KB }, RemoteFile{ name=remote-objects-1.0.jar, path=C:\.local\remote-objects-1.0.jar, size=1,05 MB }, RemoteFile{ name=splash.png, path=C:\.local\splash.png, size=146,01 KB }] }
+[INFO ] (19/08/2014 17:37:01): Connection closed by client.
+[INFO ] (19/08/2014 17:37:02): ------------------------------
+[INFO ] (19/08/2014 17:37:02): Handling socket: Socket[addr=/172.24.75.19,port=39158,localport=9099]
+[INFO ] (19/08/2014 17:37:02): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:37:02): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:37:02): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:37:02): Connection closed by client.
+[INFO ] (19/08/2014 17:37:02): ------------------------------
+[INFO ] (19/08/2014 17:37:02): Handling socket: Socket[addr=/172.24.75.19,port=39159,localport=9099]
+[INFO ] (19/08/2014 17:37:02): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:37:02): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:37:02): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:37:02): Connection closed by client.
+[INFO ] (19/08/2014 17:37:26): ------------------------------
+[INFO ] (19/08/2014 17:37:26): Handling socket: Socket[addr=/172.24.75.19,port=39160,localport=9099]
+[INFO ] (19/08/2014 17:37:26): Remote request: LocalFileSystem.osrm( cpresid.zip )
+[INFO ] (19/08/2014 17:37:26): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:37:26): Response sent: OpResult{ success = true, return = true }
+[INFO ] (19/08/2014 17:37:26): Connection closed by client.
+[INFO ] (19/08/2014 17:37:26): ------------------------------
+[INFO ] (19/08/2014 17:37:26): Handling socket: Socket[addr=/172.24.75.19,port=39161,localport=9099]
+[INFO ] (19/08/2014 17:37:26): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:37:26): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:37:26): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:37:26): Connection closed by client.
+[INFO ] (19/08/2014 17:48:26): Starting NetworkServer...
+[INFO ] (19/08/2014 17:48:26): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (19/08/2014 17:48:26): Listening on: NetConnector{ *:9099 }
+[INFO ] (19/08/2014 17:48:26): Server started!
+
+[INFO ] (19/08/2014 17:48:36): ------------------------------
+[INFO ] (19/08/2014 17:48:36): Handling socket: Socket[addr=/172.24.75.19,port=39164,localport=9099]
+[INFO ] (19/08/2014 17:48:37): Remote request: NetworkServer.container(  ).contains( LocalFileSystem )
+[INFO ] (19/08/2014 17:48:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:48:37): Invoking: NetworkServer.container(  )
+[INFO ] (19/08/2014 17:48:37): Invoking: ObjectContainer.contains( LocalFileSystem )
+[INFO ] (19/08/2014 17:48:37): Response sent: OpResult{ success = true, return = true }
+[INFO ] (19/08/2014 17:48:37): Connection closed by client.
+[INFO ] (19/08/2014 17:48:37): ------------------------------
+[INFO ] (19/08/2014 17:48:37): Handling socket: Socket[addr=/172.24.75.19,port=39165,localport=9099]
+[INFO ] (19/08/2014 17:48:37): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:48:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:48:37): Response sent: OpResult{ success = true, return = RemoteFile{ name=C:\, path=C:\, size=8,00 KB } }
+[INFO ] (19/08/2014 17:48:37): Connection closed by client.
+[INFO ] (19/08/2014 17:48:42): ------------------------------
+[INFO ] (19/08/2014 17:48:42): Handling socket: Socket[addr=/172.24.75.19,port=39166,localport=9099]
+[INFO ] (19/08/2014 17:48:42): Remote request: LocalFileSystem.cd( .local )
+[INFO ] (19/08/2014 17:48:42): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:48:42): Response sent: OpResult{ success = true, return = true }
+[INFO ] (19/08/2014 17:48:42): Connection closed by client.
+[INFO ] (19/08/2014 17:48:42): ------------------------------
+[INFO ] (19/08/2014 17:48:42): Handling socket: Socket[addr=/172.24.75.19,port=39167,localport=9099]
+[INFO ] (19/08/2014 17:48:42): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:48:42): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:48:42): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:48:42): Connection closed by client.
+[INFO ] (19/08/2014 17:48:42): ------------------------------
+[INFO ] (19/08/2014 17:48:42): Handling socket: Socket[addr=/172.24.75.19,port=39168,localport=9099]
+[INFO ] (19/08/2014 17:48:42): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:48:42): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:48:42): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:48:42): Connection closed by client.
+[INFO ] (19/08/2014 17:48:44): ------------------------------
+[INFO ] (19/08/2014 17:48:44): Handling socket: Socket[addr=/172.24.75.19,port=39169,localport=9099]
+[INFO ] (19/08/2014 17:48:44): Remote request: LocalFileSystem.ls(  )
+[INFO ] (19/08/2014 17:48:44): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:48:44): Response sent: OpResult{ success = true, return = [RemoteFile{ name=3d, path=C:\.local\3d, size=4,00 KB }, RemoteFile{ name=access, path=C:\.local\access, size=4,00 KB }, RemoteFile{ name=bbm, path=C:\.local\bbm, size=4,00 KB }, RemoteFile{ name=books, path=C:\.local\books, size=4,00 KB }, RemoteFile{ name=client, path=C:\.local\client, size=0,00 bytes }, RemoteFile{ name=cmdd.bat, path=C:\.local\cmdd.bat, size=9,00 bytes }, RemoteFile{ name=cpresid.zip, path=C:\.local\cpresid.zip, size=134,45 KB }, RemoteFile{ name=docs, path=C:\.local\docs, size=4,00 KB }, RemoteFile{ name=fotos, path=C:\.local\fotos, size=4,00 KB }, RemoteFile{ name=iso, path=C:\.local\iso, size=4,00 KB }, RemoteFile{ name=java, path=C:\.local\java, size=40,00 KB }, RemoteFile{ name=jdk-8-doc, path=C:\.local\jdk-8-doc, size=0,00 bytes }, RemoteFile{ name=php.7z, path=C:\.local\php.7z, size=545,42 KB }, RemoteFile{ name=remote-objects-1.0.jar, path=C:\.local\remote-objects-1.0.jar, size=1,05 MB }, RemoteFile{ name=splash.png, path=C:\.local\splash.png, size=146,01 KB }] }
+[INFO ] (19/08/2014 17:48:44): Connection closed by client.
+[INFO ] (19/08/2014 17:48:45): ------------------------------
+[INFO ] (19/08/2014 17:48:45): Handling socket: Socket[addr=/172.24.75.19,port=39170,localport=9099]
+[INFO ] (19/08/2014 17:48:45): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:48:45): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:48:45): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:48:45): Connection closed by client.
+[INFO ] (19/08/2014 17:48:45): ------------------------------
+[INFO ] (19/08/2014 17:48:45): Handling socket: Socket[addr=/172.24.75.19,port=39171,localport=9099]
+[INFO ] (19/08/2014 17:48:45): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:48:45): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:48:45): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:48:45): Connection closed by client.
+[INFO ] (19/08/2014 17:48:58): ------------------------------
+[INFO ] (19/08/2014 17:48:58): Handling socket: Socket[addr=/172.24.75.19,port=39172,localport=9099]
+[INFO ] (19/08/2014 17:48:58): Remote request: LocalFileSystem.osrm( cpresid.zip )
+[INFO ] (19/08/2014 17:48:58): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (19/08/2014 17:48:58): Error invoking method [osrm]
+[WARN ] (19/08/2014 17:48:58): MethodInvocationException: Invocation error [java.lang.reflect.InvocationTargetException]
+[WARN ] (19/08/2014 17:48:58):   Caused by: InvocationTargetException: null
+[INFO ] (19/08/2014 17:48:58): Response sent: OpResult{ success = false, return = null }
+[INFO ] (19/08/2014 17:48:58): Connection closed by client.
+[ERROR] (19/08/2014 17:48:58): MethodInvocationException: Invocation error [java.lang.reflect.InvocationTargetException]
+[ERROR] (19/08/2014 17:48:58):   Caused by: InvocationTargetException: null
+[ERROR] (19/08/2014 17:48:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:151)
+[ERROR] (19/08/2014 17:48:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[ERROR] (19/08/2014 17:48:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[ERROR] (19/08/2014 17:48:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[ERROR] (19/08/2014 17:48:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[ERROR] (19/08/2014 17:48:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[ERROR] (19/08/2014 17:48:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:110)
+[ERROR] (19/08/2014 17:48:58):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:443)
+[ERROR] (19/08/2014 17:48:58):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:381)
+[ERROR] (19/08/2014 17:48:58):   us.pserver.rob.server.NetworkServer$SocketHandler.handleInvoke(NetworkServer.java:475)
+[ERROR] (19/08/2014 17:48:58):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:513)
+[ERROR] (19/08/2014 17:48:58):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (19/08/2014 17:48:58):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (19/08/2014 17:48:58):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (19/08/2014 17:48:58): ------------------------------
+[INFO ] (19/08/2014 17:48:58): Handling socket: Socket[addr=/172.24.75.19,port=39173,localport=9099]
+[INFO ] (19/08/2014 17:48:58): Remote request: LocalFileSystem.current(  )
+[INFO ] (19/08/2014 17:48:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (19/08/2014 17:48:58): Response sent: OpResult{ success = true, return = RemoteFile{ name=.local, path=C:\.local, size=4,00 KB } }
+[INFO ] (19/08/2014 17:48:58): Connection closed by client.

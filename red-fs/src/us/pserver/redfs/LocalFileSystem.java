@@ -21,6 +21,8 @@
 
 package us.pserver.redfs;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -234,8 +236,69 @@ public class LocalFileSystem {
       throw new IOException(
           "Path is a Directory: "+ path.toString());
     }
-    System.out.println("* delete( "+ path+ " ): "+ path.toFile().delete());
+    Files.deleteIfExists(path);
+    Files.deleteIfExists(path);
     return true;
+  }
+  
+  
+  public String osrm(RFile rf) throws IOException {
+    if(rf == null || rf.getPath() == null)
+      throw new FileNotFoundException(Objects.toString(rf));
+    return osrm(getPath(rf));
+  }
+  
+  
+  public String osrm(String str) throws IOException {
+    if(str == null || str.isEmpty()) {
+      throw new FileNotFoundException(Objects.toString(str));
+    }
+     return osrm(getPath(str));
+  }
+  
+  
+  public String osrm(Path path) throws IOException {
+    path = getPath(path);
+    if(path == null || !Files.exists(path)) {
+      throw new FileNotFoundException(Objects.toString(path));
+    }
+    if(path.toFile().isDirectory()) {
+      throw new IOException(
+          "Path is a Directory: "+ path.toString());
+    }
+    String[] cmd = null;
+    if(File.separatorChar == '\\') {
+      cmd = new String[]{"cmd", "/c", "del /F /Q", path.toString()};
+    } else {
+      cmd = new String[]{"rm", "-rf", path.toString()};
+    }
+    return exec(cmd);
+  }
+  
+  
+  public String exec(String ... cmds) throws IOException {
+    if(cmds == null || cmds.length == 0)
+      throw new IOException("Invalid command array ["+ cmds+ "]");
+    
+    ProcessBuilder pb = new ProcessBuilder(cmds);
+    Process p = pb.redirectErrorStream(true).start();
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    IO.tr(p.getInputStream(), bos);
+    int r = -1;
+    try {
+      r = p.waitFor();
+    } catch(InterruptedException e) {
+      throw new IOException(e.getMessage(), e);
+    }
+    return bos.toString() + "\n"+ String.valueOf(r);
+  }
+  
+  
+  private void print(String[] str) {
+    if(str == null) return;
+    for(String s : str) {
+      System.out.print(s+ " ");
+    }
   }
   
   
@@ -342,11 +405,9 @@ public class LocalFileSystem {
     if(out == null || srcs == null || srcs.length < 1)
       return false;
     Path pt = getPath(out);
-    System.out.println("* zip.out="+ pt);
     Path[] pts = new Path[srcs.length];
     for(int i = 0; i < srcs.length; i++) {
       pts[i] = getPath(srcs[i]);
-      System.out.println("* zip.in="+ pts[i]);
     }
     return zip(pt, pts);
   }
@@ -415,7 +476,6 @@ public class LocalFileSystem {
     nullarg(InputStream.class, is);
     nullarg(IOData.class, data);
     
-    try {
     data.setStartPos(0);
     ProgressInputStream pis = new ProgressInputStream(is, data);
     Path p = getPath(data.getRFile());
@@ -423,10 +483,6 @@ public class LocalFileSystem {
     FSConst.transfer(pis, os);
     IO.cl(is, os);
     return true;
-    } catch(IOException e) {
-      e.printStackTrace();
-      throw e;
-    }
   }
   
   

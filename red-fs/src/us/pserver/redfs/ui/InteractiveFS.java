@@ -47,6 +47,7 @@ public class InteractiveFS {
       MKDIR = "mkdir",
       READ = "read",
       RM = "rm",
+      OSRM = "osrm",
       RMDIR = "rmdir",
       UNZIP = "unzip",
       WRITE = "write",
@@ -138,6 +139,9 @@ public class InteractiveFS {
       case RM: 
         checkArgs(cmd, 2);
         return cli.rm(cmd[1]);
+      case OSRM: 
+        checkArgs(cmd, 2);
+        return cli.osrm(cmd[1]);
       case RMDIR:
         checkArgs(cmd, 2);
         return cli.rmdir(cmd[1]);

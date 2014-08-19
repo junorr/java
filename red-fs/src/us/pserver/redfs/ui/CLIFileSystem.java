@@ -231,6 +231,19 @@ public class CLIFileSystem {
   }
   
   
+  public String osrm(String fl) {
+    if(fl == null || fl.isEmpty())
+      return "# No such file ["+ fl+ "]";
+    try {
+      rem.osrm(fl);
+      return fl;
+    } catch(MethodInvocationException e) {
+      log.error(e, true);
+      return null;
+    }
+  }
+  
+  
   public String rmdir(String dir) {
     if(dir == null || dir.isEmpty())
       return "# No such directory ["+ dir+ "]";
