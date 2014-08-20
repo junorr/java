@@ -434,6 +434,7 @@ public class JGrid extends JPanel implements
   
   @Override
   public void keyPressed(KeyEvent e) {
+    j3270.notifyAction();
     if(e.getKeyCode() == KeyEvent.VK_ENTER 
         && !j3270.session().isConnected()) {
       j3270.disconnect();

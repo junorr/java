@@ -63,6 +63,8 @@ public class XmlNetChannel implements Channel {
   
   private StringByteConverter scv;
   
+  private MultiCoderBuffer buffer;
+  
   
   /**
    * Construtor padrão que recebe um 
@@ -75,6 +77,7 @@ public class XmlNetChannel implements Channel {
           "Invalid Socket ["+ sc+ "]");
     sock = sc;
     isvalid = true;
+    buffer = null;
     xst = new XStream();
     scv = new StringByteConverter();
     bcd = new Base64StringCoder();
@@ -132,6 +135,7 @@ public class XmlNetChannel implements Channel {
   @Override
   public void write(Transport trp) throws IOException {
     if(trp == null) return;
+    if(buffer != null) buffer.close();
     ProtectedOutputStream pos = new ProtectedOutputStream(
         sock.getOutputStream());
     
@@ -165,11 +169,12 @@ public class XmlNetChannel implements Channel {
   
   private InputStream readContent(InputStream is) throws IOException {
     nullarg(InputStream.class, is);
-    MultiCoderBuffer buf = new MultiCoderBuffer();
-    StreamUtils.transferBetween(is, buf.getOutputStream(), 
+    if(buffer != null) buffer.close();
+    buffer = new MultiCoderBuffer();
+    StreamUtils.transferBetween(is, buffer.getOutputStream(), 
         HttpConst.BOUNDARY_CONTENT_START, 
         HttpConst.BOUNDARY_CONTENT_END);
-    return buf.flip().getInputStream();
+    return buffer.flip().getInputStream();
   }
   
   
@@ -201,6 +206,7 @@ public class XmlNetChannel implements Channel {
   
   @Override
   public Transport read() throws IOException {
+    if(buffer != null) buffer.close();
     ProtectedInputStream pin = new ProtectedInputStream(
         sock.getInputStream());
     key = readKey(pin);
@@ -235,9 +241,12 @@ public class XmlNetChannel implements Channel {
   @Override
   public void close() {
     try {
-      sock.shutdownInput();
-      sock.shutdownOutput();
-      sock.close();
+      if(sock != null) {
+        sock.shutdownInput();
+        sock.shutdownOutput();
+        sock.close();
+      }
+      if(buffer != null) buffer.close();
       isvalid = false;
     } catch(IOException e) {}
   }

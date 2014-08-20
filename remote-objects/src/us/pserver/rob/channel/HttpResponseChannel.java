@@ -64,6 +64,8 @@ public class HttpResponseChannel implements Channel, HttpConst {
   
   private boolean valid;
   
+  private HttpInputStream his;
+  
   
   /**
    * Construtor padrão, recebe um <code>Socket</code>
@@ -81,6 +83,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
     valid = true;
     parser = new RequestParser();
     builder = new HttpBuilder();
+    his = null;
   }
   
   
@@ -126,7 +129,8 @@ public class HttpResponseChannel implements Channel, HttpConst {
     HttpEnclosedObject hob = new HttpEnclosedObject(
         trp.getWriteVersion());
     
-    HttpInputStream his = (trp.getInputStream() != null 
+    if(his != null) his.closeBuffer();
+    his = (trp.getInputStream() != null 
         ? new HttpInputStream(trp.getInputStream())
             .setGZipCoderEnabled(true) : null);
     
@@ -143,6 +147,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
   
   @Override
   public void write(Transport trp) throws IOException {
+    if(his != null) his.closeBuffer();
     this.setHeaders(trp);
     builder.writeContent(sock.getOutputStream());
     sock.getOutputStream().flush();
@@ -152,6 +157,7 @@ public class HttpResponseChannel implements Channel, HttpConst {
   
   @Override
   public Transport read() throws IOException {
+    if(his != null) his.closeBuffer();
     parser.reset().parseInput(sock.getInputStream());
     key = parser.getCryptKey();
     if(!parser.containsHeader(HTTP_ENCLOSED_OBJECT))
@@ -163,7 +169,8 @@ public class HttpResponseChannel implements Channel, HttpConst {
     Transport tp = hob.getObjectAs();
     
     if(parser.containsHeader(HTTP_INPUTSTREAM)) {
-      HttpInputStream his = (HttpInputStream)
+      if(his != null) his.closeBuffer();
+      his = (HttpInputStream)
           parser.getHeader(HTTP_INPUTSTREAM);
       //crypt coder already enabled by HttpParser
       his.setGZipCoderEnabled(true);
@@ -192,9 +199,12 @@ public class HttpResponseChannel implements Channel, HttpConst {
   @Override
   public void close() {
     try {
-      sock.shutdownInput();
-      sock.shutdownOutput();
-      sock.close();
+      if(sock != null) {
+        sock.shutdownInput();
+        sock.shutdownOutput();
+        sock.close();
+      }
+      if(his != null) his.closeBuffer();
     } catch(IOException e) {}
   }
   

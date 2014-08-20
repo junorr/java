@@ -144,7 +144,7 @@ public class RemoteObject {
    * Cria um canal de comunicação de objetos na rede.
    * @return <code>Channel</code>.
    */
-  private Channel createChannel() {
+  private Channel channel() {
     if(channel != null && channel.isValid())
       return channel;
     
@@ -154,6 +154,13 @@ public class RemoteObject {
         "Invalid ChannelFactory ["+ factory+ "]");
     channel = factory.createChannel(net);
     return channel;
+  }
+  
+  
+  private Channel newChannel() {
+    channel.close();
+    channel = null;
+    return channel();
   }
   
   
@@ -344,8 +351,12 @@ public class RemoteObject {
         IllegalStateException(
         "Invalid Null NetConnector");
     
-    this.createChannel();
-    channel.write(trp);
+    this.channel();
+    try {
+      channel.write(trp);
+    } catch(IOException e) {
+      newChannel().write(trp);
+    }
     return channel;
   }
   

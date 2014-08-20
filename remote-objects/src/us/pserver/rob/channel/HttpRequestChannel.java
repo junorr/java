@@ -86,6 +86,8 @@ public class HttpRequestChannel implements Channel, HttpConst {
   
   private ResponseLine resp;
   
+  private HttpInputStream his;
+  
   
   /**
    * Construtor padrão que recebe <code>NetConnector</code>
@@ -103,6 +105,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
     algo = CryptAlgorithm.AES_CBC_PKCS5;
     parser = new ResponseParser();
     sock = null;
+    his = null;
   }
   
   
@@ -176,7 +179,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
    * como tipo de conteúdo, codificação, conteúdo
    * aceito e agente da requisição.
    */
-  private void setHeaders(Transport trp) {
+  private void setHeaders(Transport trp) throws IOException {
     if(trp == null || trp.getObject() == null) 
       throw new IllegalArgumentException(
           "Invalid Transport [trp="+ trp+ "]");
@@ -196,16 +199,19 @@ public class HttpRequestChannel implements Channel, HttpConst {
         trp.getWriteVersion())
         .setCryptKey(key));
     
-    if(trp.getInputStream() != null)
-      builder.put(new HttpInputStream(
+    if(trp.getInputStream() != null) {
+      his = new HttpInputStream(
           trp.getInputStream())
           .setGZipCoderEnabled(true)
-          .setCryptCoderEnabled(true, key));
+          .setCryptCoderEnabled(true, key);
+      builder.put(his);
+    }
   }
   
   
   @Override
   public void write(Transport trp) throws IOException {
+    if(his != null) his.closeBuffer();
     this.setHeaders(trp);
     if(sock == null)
       sock = netconn.connectSocket();
@@ -242,6 +248,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
   
   @Override
   public Transport read() throws IOException {
+    if(his != null) his.closeBuffer();
     if(!parser.containsHeader(HTTP_ENCLOSED_OBJECT))
       return null;
     
@@ -251,7 +258,8 @@ public class HttpRequestChannel implements Channel, HttpConst {
     Transport tp = hob.getObjectAs();
     
     if(parser.containsHeader(HTTP_INPUTSTREAM)) {
-      HttpInputStream his = (HttpInputStream) 
+      if(his != null) his.closeBuffer();
+      his = (HttpInputStream) 
           parser.getHeader(HTTP_INPUTSTREAM);
       tp.setInputStream(his.setGZipCoderEnabled(true)
           .setupInbound().getInputStream());
@@ -278,7 +286,12 @@ public class HttpRequestChannel implements Channel, HttpConst {
   
   @Override
   public void close() {
-    try { sock.close(); }
+    try {
+      if(sock != null)
+        sock.close(); 
+      if(his != null)
+        his.closeBuffer();
+    }
     catch(IOException e) {}
   }
   

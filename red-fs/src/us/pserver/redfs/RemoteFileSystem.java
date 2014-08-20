@@ -22,12 +22,14 @@
 package us.pserver.redfs;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.rob.MethodChain;
 import us.pserver.rob.MethodInvocationException;
@@ -239,27 +241,27 @@ public class RemoteFileSystem {
   }
   
   
-  public boolean osrm(String str) throws MethodInvocationException {
-    if(str == null) return false;
+  public String osrm(String str) throws MethodInvocationException {
+    if(str == null) return null;
     RemoteMethod rm = new RemoteMethod()
         .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.osrm.name())
         .types(String.class)
         .params(str);
-    return (boolean) rob.invoke(rm);
+    return Objects.toString(rob.invoke(rm));
   }
   
   
-  public boolean osrm(RFile rf) throws MethodInvocationException {
-    if(rf == null) return false;
+  public String osrm(RFile rf) throws MethodInvocationException {
+    if(rf == null) return null;
     RemoteMethod rm = new RemoteMethod()
         .credentials(cred)
         .forObject(Tokens.LocalFileSystem.name())
         .method(Tokens.osrm.name())
         .types(RFile.class)
         .params(rf);
-    return (boolean) rob.invoke(rm);
+    return Objects.toString(rob.invoke(rm));
   }
   
   
@@ -377,7 +379,8 @@ public class RemoteFileSystem {
     OutputStream os = IO.os(data.getPath());
     data.update(data.getRFile().toPath());
     FSConst.transfer(is, os, data);
-    IO.cl(is, os);
+    os.close();
+    is.close();
     long crc2 = FSConst.getCRC32(data.getPath());
     if(crc != crc2)
       throw new IOException("Currupted data readed [CRC32: "+ crc+ " != "+ crc2+ "]");

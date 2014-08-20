@@ -235,8 +235,7 @@ public class CLIFileSystem {
     if(fl == null || fl.isEmpty())
       return "# No such file ["+ fl+ "]";
     try {
-      rem.osrm(fl);
-      return fl;
+      return rem.osrm(fl);
     } catch(MethodInvocationException e) {
       log.error(e, true);
       return null;

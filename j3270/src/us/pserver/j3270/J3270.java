@@ -12,6 +12,8 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.awt.SplashScreen;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
@@ -28,6 +30,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -48,6 +51,8 @@ public class J3270 extends javax.swing.JFrame {
   public static final String SERVER_ADDR = "3270.df.bb";
   
   public static final int SERVER_PORT = 8023;
+  
+  public static final int TEN_MIN = 1000 * 60 * 10;
   
   public static final String MIME_TEXT_CHARSET = "text/plain; charset=UTF-8";
 
@@ -97,6 +102,8 @@ public class J3270 extends javax.swing.JFrame {
   private String script;
   
   private File prevDir;
+  
+  private Timer discTimer;
 
   
   /**
@@ -114,6 +121,15 @@ public class J3270 extends javax.swing.JFrame {
     this.setLookAndFeel();
     script = null;
     prevDir = null;
+    
+    discTimer = new Timer(TEN_MIN, 
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            J3270.this.disconnect();
+          }
+        }
+    );
     
     lst = new LinkedList<WindowListener>();
     proc = new ScriptProcessor(driver);
@@ -291,6 +307,9 @@ public class J3270 extends javax.swing.JFrame {
     status("OK. Connected to ["+ host+ ":"+ port+ "]");
     for(WindowListener wl : lst)
       wl.connected(host, port);
+    
+    if(!discTimer.isRunning())
+      discTimer.start();
   }
   
   
@@ -301,6 +320,16 @@ public class J3270 extends javax.swing.JFrame {
     status("Disconnected");
     for(WindowListener wl : lst)
       wl.disconnected();
+    grid.requestFocus();
+    
+    if(discTimer.isRunning())
+      discTimer.stop();
+  }
+  
+  
+  public void notifyAction() {
+    if(discTimer.isRunning())
+      discTimer.restart();
   }
   
   

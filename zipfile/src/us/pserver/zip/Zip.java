@@ -160,7 +160,6 @@ public class Zip {
     if(includeDir && base != null) {
       se = base.getFileName().toString() + "/" + se;
     }
-    System.out.println("* se="+ se);
     ZipEntry ze = new ZipEntry(se);
       
     ze.setCrc(ZipConst.getCRC32(p));
@@ -171,7 +170,6 @@ public class Zip {
       ze.setLastModifiedTime((FileTime) att);
     }
     ze.setSize(Files.size(p));
-    System.out.println("* ZipEntry="+ ze);
     return ze;
   }
     
@@ -185,7 +183,6 @@ public class Zip {
     ZipOutputStream zos = new ZipOutputStream(IO.os(out));
     cont.setMax(ZipConst.totalSize(srcs));
     Path base = findCommonBase(srcs.get(0).getParent());
-    System.out.println("* base="+ base);
     Iterator<Path> it = srcs.iterator();
     
     while(it.hasNext()) {

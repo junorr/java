@@ -36,6 +36,8 @@ public class TestLocalFS {
         */
     System.out.println("* cd [.local] = "+ fs.cd(".local"));
     System.out.println("* osrm [cpresid.zip] = "+ fs.osrm("cpresid.zip"));
+    System.out.println("* rm [cpresid2.zip] = "+ fs.rm("cpresid2.zip"));
+    while(true){}
   }
   
 }

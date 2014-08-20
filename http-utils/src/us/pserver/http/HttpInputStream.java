@@ -229,6 +229,12 @@ public class HttpInputStream extends HeaderEncryptable {
   }
   
   
+  public void closeBuffer() throws IOException {
+    if(buffer != null)
+      buffer.close();
+  }
+  
+  
   /**
    * Retorna o tamanho total do cabeçalho em bytes.
    * @return Tamanho total do cabeçalho em bytes

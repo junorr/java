@@ -381,7 +381,7 @@ public class MultiCoderBuffer {
    */
   private void initChannel() throws IOException {
     temp = Files.createTempFile(null, null);
-    channel = new RandomAccessFile(temp.toFile(), "rw");
+    channel = new RandomAccessFile(temp.toFile(), "rwd");
   }
   
   
@@ -500,7 +500,6 @@ public class MultiCoderBuffer {
   public void close() throws IOException {
     if(channel != null) {
       channel.close();
-      System.out.println("* temp="+ temp);
       Files.deleteIfExists(temp);
     }
     outbuffer = null;
@@ -594,6 +593,10 @@ public class MultiCoderBuffer {
       InputStream is = this.getInputStream();
       StreamUtils.transfer(is, os);
       os.close();
+      if(this.channel != null) {
+        channel.close();
+        Files.deleteIfExists(temp);
+      }
       outbuffer = buf.outbuffer;
       channel = buf.channel;
       inbuffer = buf.inbuffer;
@@ -621,6 +624,10 @@ public class MultiCoderBuffer {
       InputStream is = createInput(cd, this.getInputStream());
       StreamUtils.transfer(is, os);
       os.close();
+      if(this.channel != null) {
+        channel.close();
+        Files.deleteIfExists(temp);
+      }
       outbuffer = buf.outbuffer;
       channel = buf.channel;
       inbuffer = buf.inbuffer;

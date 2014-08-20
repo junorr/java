@@ -24,6 +24,7 @@ package us.pserver.redfs;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -236,8 +237,13 @@ public class LocalFileSystem {
       throw new IOException(
           "Path is a Directory: "+ path.toString());
     }
+    try {
     Files.deleteIfExists(path);
     Files.deleteIfExists(path);
+    } catch(IOException e) {
+      e.printStackTrace();
+      throw e;
+    }
     return true;
   }
   
@@ -279,18 +285,22 @@ public class LocalFileSystem {
   public String exec(String ... cmds) throws IOException {
     if(cmds == null || cmds.length == 0)
       throw new IOException("Invalid command array ["+ cmds+ "]");
-    
+    try {
     ProcessBuilder pb = new ProcessBuilder(cmds);
     Process p = pb.redirectErrorStream(true).start();
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     IO.tr(p.getInputStream(), bos);
     int r = -1;
-    try {
+    //try {
       r = p.waitFor();
-    } catch(InterruptedException e) {
-      throw new IOException(e.getMessage(), e);
-    }
     return bos.toString() + "\n"+ String.valueOf(r);
+    } catch(InterruptedException e) {
+      e.printStackTrace();
+      throw new IOException(e.getMessage(), e);
+    } catch(IOException e) {
+      e.printStackTrace();
+      throw e;
+    }
   }
   
   
@@ -481,7 +491,8 @@ public class LocalFileSystem {
     Path p = getPath(data.getRFile());
     OutputStream os = IO.os(p);
     FSConst.transfer(pis, os);
-    IO.cl(is, os);
+    os.close();
+    pis.close();
     return true;
   }
   

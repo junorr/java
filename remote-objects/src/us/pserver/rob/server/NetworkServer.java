@@ -33,6 +33,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.log.LogProvider;
 import us.pserver.rob.MethodChain;
@@ -224,7 +225,7 @@ public class NetworkServer extends AbstractServer {
       
       while(running) {
         Socket sock = server.accept();
-        exec.execute(new SocketHandler(
+        exec.submit(new SocketHandler(
             factory.createChannel(sock), sock));
       }
     } catch(IOException e) {
@@ -387,7 +388,7 @@ public class NetworkServer extends AbstractServer {
         op.setError(e);
         LogProvider.getSimpleLog()
             .warning("Error invoking method ["+ rm.method()+ "]")
-            .warning(e, false);
+            .warning(e, true);
       }
       return op;
     }
@@ -414,7 +415,7 @@ public class NetworkServer extends AbstractServer {
         op.setError(e);
         LogProvider.getSimpleLog()
             .warning("Error invoking method ["+ chain.current()+ "]")
-            .warning(e, false);
+            .warning(e, true);
       }
       return op;
     }
@@ -498,20 +499,29 @@ public class NetworkServer extends AbstractServer {
      */
     @Override
     public void run() {
-      if(sock == null || sock.isClosed()
-          || !sock.isConnected() 
-          || sock.isInputShutdown())
+      if(isClosed()) {
+        close();
         return;
+      }
     
       Transport trp = this.read();
       if(trp == null) {
         LogProvider.getSimpleLog().info("Connection closed by client.");
-        channel.close();
+        close();
         return;
       }
       
       this.write(handleInvoke(trp));
       this.run();
+    }
+    
+    
+    public boolean isClosed() {
+      return sock == null
+          || sock.isClosed()
+          || !sock.isConnected()
+          || sock.isInputShutdown()
+          || sock.isOutputShutdown();
     }
     
     
@@ -538,6 +548,17 @@ public class NetworkServer extends AbstractServer {
           rmt.params().set(i, trp.getInputStream());
         }
       }//for
+    }
+    
+    
+    public void close() {
+      try { channel.close(); }
+      catch(Exception e) {}
+      try { 
+        sock.shutdownInput();
+        sock.shutdownOutput();
+        sock.close();
+      } catch(Exception e) {}
     }
     
   }
