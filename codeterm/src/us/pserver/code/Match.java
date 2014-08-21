@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 import ru.lanwen.verbalregex.VerbalExpression;
 
 /**
- *
+ * 
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 03/06/2014
  */

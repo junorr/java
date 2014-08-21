@@ -21,32 +21,16 @@
 
 package us.pserver.code;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
-import javax.swing.JFrame;
-import javax.swing.border.LineBorder;
-import ru.lanwen.verbalregex.VerbalExpression;
-
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/05/2014
+ * @version 1.0 - 21/08/2014
  */
-public class TestCharPanel {
+public class Testtt {
 
   
   public static void main(String[] args) {
-    CharPanel panel = new CharPanel(80, 20);
-    JFrame f = new JFrame("TestCharPanel");
-    f.setSize(panel.getPanelSize().width+20, panel.getPanelSize().height+50);
-    f.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    f.setLocationRelativeTo(null);
-    f.add(panel);
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.setVisible(true);
-    panel.requestFocus();
-    panel.requestFocusInWindow();
-    panel.requestFocus();
+    System.out.println("* 0 % 80 = "+ (0%80));
   }
   
 }

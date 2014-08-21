@@ -21,32 +21,70 @@
 
 package us.pserver.code;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
-import javax.swing.JFrame;
-import javax.swing.border.LineBorder;
-import ru.lanwen.verbalregex.VerbalExpression;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/05/2014
+ * @version 1.0 - 21/08/2014
  */
-public class TestCharPanel {
+public class Text {
 
+  private List<StringBuffer> lines;
   
-  public static void main(String[] args) {
-    CharPanel panel = new CharPanel(80, 20);
-    JFrame f = new JFrame("TestCharPanel");
-    f.setSize(panel.getPanelSize().width+20, panel.getPanelSize().height+50);
-    f.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    f.setLocationRelativeTo(null);
-    f.add(panel);
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.setVisible(true);
-    panel.requestFocus();
-    panel.requestFocusInWindow();
-    panel.requestFocus();
+  private int curline;
+  
+  
+  public Text() {
+    lines = new LinkedList<>();
+    lines.add(new StringBuffer());
+    curline = 0;
+  }
+  
+  
+  public StringBuffer currentLine() {
+    return lines.get(curline);
+  }
+  
+  
+  public StringBuffer currentLine(int ln) {
+    this.setLine(ln);
+    return currentLine();
+  }
+  
+  
+  public int getLine() {
+    return curline;
+  }
+  
+  
+  public Text setLine(int ln) {
+    if(ln >= 0 && ln < lines.size()) 
+      curline = ln;
+    return this;
+  }
+  
+  
+  public Text addLine() {
+    lines.add(new StringBuffer());
+    return this;
+  }
+  
+  
+  public Text setNewLine() {
+    return addLine().setLine(
+        lines.size()-1);
+  }
+  
+  
+  public List<StringBuffer> lines() {
+    return lines;
+  }
+  
+  
+  public int size() {
+    return lines.size();
   }
   
 }

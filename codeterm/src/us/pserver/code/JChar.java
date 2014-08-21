@@ -22,7 +22,6 @@
 package us.pserver.code;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
@@ -36,22 +35,17 @@ import javax.swing.border.MatteBorder;
  */
 public class JChar extends JLabel {
 
-  public static final Border
-      BORDER_NONE = new EmptyBorder(0, 0, 2, 0),
-      BORDER_UNDER = new MatteBorder(0, 0, 2, 0, Color.WHITE);
-  
-  
   private char ch;
   
-  private Border under;
+  private Color under;
  
   
   public JChar() {
     super(" ");
-    under = BORDER_UNDER;
+    under = Color.WHITE;
     this.setHorizontalAlignment(JLabel.CENTER);
     this.setHorizontalTextPosition(JLabel.CENTER);
-    this.setBorder(BORDER_NONE);
+    this.setBorder(new EmptyBorder(0, 0, 2, 0));
     ch = 0;
   }
   
@@ -77,19 +71,14 @@ public class JChar extends JLabel {
   
   public JChar setUnderColor(Color c) {
     if(c != null) {
-      Border b = new MatteBorder(0, 0, 2, 0, c);
-      if(getBorder() == under) {
-        setBorder(b);
-        this.repaint();
-      }
-      under = b;
+      under = c;
     }
     return this;
   }
   
   
   public Color getUnderColor() {
-    return ((MatteBorder)under).getMatteColor();
+    return under;
   }
   
   
@@ -106,14 +95,14 @@ public class JChar extends JLabel {
   
   
   public JChar borderNone() {
-    this.setBorder(BORDER_NONE);
-    return this;
+    this.setBorder(new EmptyBorder(0, 0, 2, 0));
+    return this.paint();
   }
   
   
   public JChar borderUnder() {
-    this.setBorder(under);
-    return this;
+    this.setBorder(new MatteBorder(0, 0, 2, 0, under));
+    return this.paint();
   }
 
 

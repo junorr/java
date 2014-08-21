@@ -21,32 +21,66 @@
 
 package us.pserver.code;
 
-import java.awt.Color;
-import java.awt.FlowLayout;
-import javax.swing.JFrame;
-import javax.swing.border.LineBorder;
-import ru.lanwen.verbalregex.VerbalExpression;
+import java.awt.Point;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/05/2014
+ * @version 1.0 - 21/08/2014
  */
-public class TestCharPanel {
-
+public class Cursor {
   
-  public static void main(String[] args) {
-    CharPanel panel = new CharPanel(80, 20);
-    JFrame f = new JFrame("TestCharPanel");
-    f.setSize(panel.getPanelSize().width+20, panel.getPanelSize().height+50);
-    f.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    f.setLocationRelativeTo(null);
-    f.add(panel);
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.setVisible(true);
-    panel.requestFocus();
-    panel.requestFocusInWindow();
-    panel.requestFocus();
+  private int cur;
+  
+  private int cols;
+  
+  
+  public Cursor(int cols) {
+    if(cols < 1) throw new IllegalArgumentException(
+        "Must have at least one column");
+    this.cols = cols;
+    cur = 0;
+  }
+  
+  
+  public int columns() {
+    return cols;
+  }
+  
+  
+  public int position() {
+    return cur;
+  }
+  
+  
+  public Cursor position(int pos) {
+    if(pos >= 0)
+      cur = pos;
+    return this;
+  }
+  
+  
+  public Cursor position(int col, int row) {
+    if(col >= 0 && col < cols
+        && row >= 0) {
+      cur = row * cols + col;
+    }
+    return this;
+  }
+  
+  
+  public int col() {
+    return cur % cols;
+  }
+  
+  
+  public int row() {
+    return cur / cols;
+  }
+  
+  
+  public Point point() {
+    return new Point(col(), row());
   }
   
 }

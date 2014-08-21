@@ -130,6 +130,7 @@ public class J3270 extends javax.swing.JFrame {
           }
         }
     );
+    discTimer.setRepeats(true);
     
     lst = new LinkedList<WindowListener>();
     proc = new ScriptProcessor(driver);
@@ -304,12 +305,15 @@ public class J3270 extends javax.swing.JFrame {
     this.address = host;
     this.port = port;
     sess.connect(host, port, grid);
+    grid.requestFocus();
+    
     status("OK. Connected to ["+ host+ ":"+ port+ "]");
     for(WindowListener wl : lst)
       wl.connected(host, port);
     
-    if(!discTimer.isRunning())
+    if(!discTimer.isRunning()) {
       discTimer.start();
+    }
   }
   
   
@@ -755,12 +759,7 @@ public class J3270 extends javax.swing.JFrame {
           ? "null" : address)
           + ":"+ port+ "]");
     }
-    
-    sess.connect(address, port, grid);
-    status("OK");
-    for(WindowListener wl : lst)
-      wl.connected(address, port);
-    grid.requestFocus();
+    this.connect(address, port);
   }//GEN-LAST:event_connButtonActionPerformed
 
   
@@ -835,7 +834,9 @@ public class J3270 extends javax.swing.JFrame {
   
   private void findMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findMenuActionPerformed
     if(checkLockedScreen()) return;
-    String str = JOptionPane.showInputDialog(this, "Inform the text to search:", "Find", JOptionPane.PLAIN_MESSAGE);
+    String str = JOptionPane.showInputDialog(this, 
+        "Inform the text to search:", 
+        "Find", JOptionPane.PLAIN_MESSAGE);
     if(str == null) {
       error("No text informed");
       return;

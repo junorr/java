@@ -109,6 +109,16 @@ public class Highlighter implements ViewUpdateListener {
   }
   
   
+  public Highlighter add(Match m) {
+    if(m != null && m.getRegex() != null
+        && m.getColor() != null
+        && !words.contains(m)) {
+      words.add(m);
+    }
+    return this;
+  }
+  
+  
   public Highlighter clear() {
     words.clear();
     return this;
