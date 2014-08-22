@@ -487,13 +487,13 @@ public class J3270 extends javax.swing.JFrame {
         .addComponent(pasteButton)
         .addGap(18, 18, 18)
         .addComponent(scriptButton)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         .addComponent(connButton)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(discButton)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(networkButton)
-        .addContainerGap())
+        .addGap(12, 12, 12))
     );
     jPanel1Layout.setVerticalGroup(
       jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

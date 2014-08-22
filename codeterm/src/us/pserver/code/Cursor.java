@@ -32,13 +32,16 @@ public class Cursor {
   
   private int cur;
   
-  private int cols;
+  private int cols, rows;
   
   
-  public Cursor(int cols) {
+  public Cursor(int cols, int rows) {
     if(cols < 1) throw new IllegalArgumentException(
         "Must have at least one column");
+    if(rows < 1) throw new IllegalArgumentException(
+        "Must have at least one row");
     this.cols = cols;
+    this.rows = rows;
     cur = 0;
   }
   
@@ -53,18 +56,26 @@ public class Cursor {
   }
   
   
+  public Cursor incpos() {
+    return position(cur+1);
+  }
+  
+  
   public Cursor position(int pos) {
-    if(pos >= 0)
-      cur = pos;
+    if(pos >= 0) {
+      if(pos > cols*rows)
+        cur = pos - cols*rows;
+      else
+        cur = pos;
+    }
     return this;
   }
   
   
   public Cursor position(int col, int row) {
-    if(col >= 0 && col < cols
-        && row >= 0) {
-      cur = row * cols + col;
-    }
+    cur = row * cols + col;
+    if(cur >= rows*cols)
+      cur -= rows*col;
     return this;
   }
   

@@ -38,7 +38,7 @@ public class TestCharPanel {
   public static void main(String[] args) {
     CharPanel panel = new CharPanel(80, 20);
     JFrame f = new JFrame("TestCharPanel");
-    f.setSize(panel.getPanelSize().width+20, panel.getPanelSize().height+50);
+    f.setSize(panel.getPanelSize().width+25, panel.getPanelSize().height+50);
     f.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
     f.setLocationRelativeTo(null);
     f.add(panel);

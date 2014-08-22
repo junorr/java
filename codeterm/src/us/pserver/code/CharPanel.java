@@ -76,21 +76,21 @@ public class CharPanel extends JPanel
   
   private Text text;
   
-  private int cols, rows;
+  private int cols, rows, vcol, vrow;
   
   
   public CharPanel(int cols, int rows) {
     super();
     this.setLayout(null);
     setCharsSize(cols, rows);
-    text = new Text();
+    text = new Text(rows);
     selColor = DEFAULT_SELECT_COLOR;
     underColor = DEFAULT_UNDER_COLOR;
     insertColor = INSERT_UNDER_COLOR;
     super.setBackground(DEFAULT_BACKGROUND);
     super.setForeground(DEFAULT_FOREGROUND);
-    System.out.println("* cols="+ cols);
-    cursor = new Cursor(cols);
+    cursor = new Cursor(cols, rows);
+    vcol = vrow = 0;
     createView();
     this.addKeyListener(this);
     this.addMouseListener(this);
@@ -121,13 +121,14 @@ public class CharPanel extends JPanel
   public CharPanel createView() {
     chars = new JChar[cols * rows];
     this.removeAll();
-    Cursor c = new Cursor(cols);
+    Cursor c = new Cursor(cols, rows);
     defineUnitSize(getFont());
     this.setPanelSize(cols * unit.width, rows * unit.height);
     for(int i = 0; i < chars.length; i++) {
       chars[i] = new JChar();
       chars[i].setUnderColor(underColor);
-      chars[i].setForeground(DEFAULT_FOREGROUND);
+      chars[i].setForeground(getForeground());
+      chars[i].setBackground(getBackground());
       chars[i].setFont(getFont());
       c.position(i);
       chars[i].setBounds(
@@ -145,12 +146,13 @@ public class CharPanel extends JPanel
   public CharPanel updateView() {
     if(chars == null) return this;
     defineUnitSize(getFont());
-    Cursor c = new Cursor(cols);
+    Cursor c = new Cursor(cols, rows);
     this.setPanelSize(cols * unit.width, rows * unit.height);
     for(int i = 0; i < chars.length; i++) {
       chars[i] = new JChar();
       chars[i].setUnderColor(underColor);
-      chars[i].setForeground(DEFAULT_FOREGROUND);
+      chars[i].setForeground(getForeground());
+      chars[i].setBackground(getBackground());
       chars[i].setFont(getFont());
       c.position(i);
       chars[i].setBounds(
@@ -181,7 +183,7 @@ public class CharPanel extends JPanel
   
   
   public Cursor cursor() {
-    return new Cursor(cols)
+    return new Cursor(cols, rows)
         .position(cursor.position());
   }
   
@@ -303,14 +305,67 @@ public class CharPanel extends JPanel
   }
   
   
-  public void right() {
-    if(cursor.position() >= chars.length -1)
+  public void setPanelString(int col, int row, String str) {
+    if(col < 0 || row < 0) return;
+    if(str == null || str.isEmpty())
       return;
-    chars[cursor.position()].borderNone().paint();
-    cursor.position(cursor.position() + 1);
-    if(cursor.row() > rows)
-      cursor.position((rows-1) * cols);
-    chars[cursor.position()].borderUnder().paint();
+    Cursor cs = new Cursor(cols, rows);
+    cs.position(col, row);
+    for(int i = 0; i < str.length(); i++) {
+      chars[cs.position()].setchar(str.charAt(i));
+      cs.incpos();
+    }
+  }
+  
+  
+  private void adjustTextWidth() {
+    int ln = text.currentLine().length();
+    int ci = 0;
+    int plen = ln;
+    if(vcol >= cols) {
+      ci = vcol - cols + 1;
+      plen = Math.min(cols, ln - ci);
+    }
+    String s = text.currentLine().substring(ci, plen);
+    setPanelString(0, cursor.row(), s);
+  }
+  
+  
+  private void adjustTextHeight() {
+    
+  }
+  
+  
+  private void carriageReturn() {
+    vcol = 0;
+    adjustTextWidth();
+    vrow++;
+    chars[cursor.position()].borderNone();
+    cursor.position(vcol, (vrow < rows ? vrow : rows-1));
+    chars[cursor.position()].borderUnder();
+    adjustTextHeight();
+  }
+  
+  
+  public void right() {
+    int lns = text.currentLine().length();
+    char c = 0;
+    if(lns > vcol)
+      c = text.currentLine().charAt(vcol);
+    if(vcol >= cols-1) {
+      if(vcol >= lns || c == LN) {
+        carriageReturn();
+      } else {
+        vcol++;
+        adjustTextWidth();
+      }
+    }
+    else {
+      vcol++;
+      chars[cursor.position()].borderNone();
+      cursor.incpos();
+      chars[cursor.position()].borderUnder();
+    }
   }
   
   
@@ -334,9 +389,23 @@ public class CharPanel extends JPanel
   
   public void down() {
     if(cursor.row() == rows-1) return;
-    chars[cursor.position()].borderNone().paint();
+    chars[cursor.position()].borderNone();
     cursor.position(cursor.position() + cols);
-    chars[cursor.position()].borderUnder().paint();
+    chars[cursor.position()].borderUnder();
+  }
+  
+  
+  public void home() {
+    chars[cursor.position()].borderNone();
+    cursor.position(0, cursor.row());
+    chars[cursor.position()].borderUnder();
+  }
+  
+  
+  public void end() {
+    chars[cursor.position()].borderNone();
+    cursor.position(cols -1, cursor.row());
+    chars[cursor.position()].borderUnder();
   }
   
   
@@ -345,9 +414,16 @@ public class CharPanel extends JPanel
   }
   
   
+  public void backspace() {
+    left();
+    chars[cursor.position()].delete();
+  }
+  
+  
   public void type(char c) {
     if(JChar.isPrintableChar(c)) {
       chars[cursor.position()].setchar(c);
+      text.setChar(vcol, cursor.row(), c);
       right();
     }
   }
@@ -381,10 +457,13 @@ public class CharPanel extends JPanel
         delete();
         break;
       case KeyEvent.VK_BACK_SPACE:
+        backspace();
         break;
       case KeyEvent.VK_HOME:
+        home();
         break;
       case KeyEvent.VK_END:
+        end();
         break;
       case KeyEvent.VK_ENTER:
         break;

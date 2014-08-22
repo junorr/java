@@ -24,7 +24,6 @@ package us.pserver.code;
 import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JLabel;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 
@@ -43,6 +42,7 @@ public class JChar extends JLabel {
   public JChar() {
     super(" ");
     under = Color.WHITE;
+    this.setOpaque(true);
     this.setHorizontalAlignment(JLabel.CENTER);
     this.setHorizontalTextPosition(JLabel.CENTER);
     this.setBorder(new EmptyBorder(0, 0, 2, 0));
@@ -63,8 +63,10 @@ public class JChar extends JLabel {
   
   public JChar setchar(char c) {
     ch = c;
-    if(isPrintableChar(c))
+    if(isPrintableChar(c)) {
       this.setText(Character.toString(c));
+      paint();
+    }
     return this;
   }
   
@@ -83,7 +85,7 @@ public class JChar extends JLabel {
   
   
   public JChar delete() {
-    return setchar(' ');
+    return setchar(' ').paint();
   }
   
   

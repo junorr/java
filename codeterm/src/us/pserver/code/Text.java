@@ -36,9 +36,14 @@ public class Text {
   private int curline;
   
   
-  public Text() {
+  public Text(int lns) {
+    if(lns < 1)
+      throw new IllegalArgumentException(
+          "Must have at least one line");
     lines = new LinkedList<>();
-    lines.add(new StringBuffer());
+    for(int i = 0; i < 50; i++) {
+      addLine();
+    }
     curline = 0;
   }
   
@@ -51,6 +56,37 @@ public class Text {
   public StringBuffer currentLine(int ln) {
     this.setLine(ln);
     return currentLine();
+  }
+  
+  
+  public Text setChar(int col, int line, char ch) {
+    if(JChar.isPrintableChar(ch)) {
+      setString(col, line, String.valueOf(ch));
+    }
+    return this;
+  }
+  
+  
+  public Text setString(int col, int line, String str) {
+    if(col >= 0 && line >= 0 
+        && str != null && !str.isEmpty()) {
+      if(line > lines.size()) {
+        int max = line - lines.size();
+        for(int i = 0; i < max; i++) {
+          addLine();
+        }
+      }
+      StringBuffer sb = currentLine(line);
+      if(sb.length() < col) {
+        int max = col - sb.length();
+        for(int i = 0; i < max; i++) {
+          sb.append(' ');
+        }
+      }
+      sb.append(str);
+      //System.out.println("* '"+ sb.toString()+ "'");
+    }
+    return this;
   }
   
   
