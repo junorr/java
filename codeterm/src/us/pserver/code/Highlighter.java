@@ -23,6 +23,7 @@ package us.pserver.code;
 
 import com.thoughtworks.xstream.XStream;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,6 +32,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
+import javax.swing.JEditorPane;
 import ru.lanwen.verbalregex.VerbalExpression;
 
 /**
@@ -38,28 +40,33 @@ import ru.lanwen.verbalregex.VerbalExpression;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 02/06/2014
  */
-public class Highlighter implements ViewUpdateListener {
+public class Highlighter {
   
   public static final String 
       FILE = "./highlights.xml",
       COLOR = "color",
-      MATCH = "match";
+      FONT = "font",
+      MATCH = "match",
+      BGCOLOR = "bg-color",
+      FGCOLOR = "fg-color",
+      FG = "fg", BG = "bg";
   
 
   private List<Match> words;
   
   private XStream xstream;
   
-  private ColorConverter conv;
-  
   
   public Highlighter() {
     words = new ArrayList<>();
-    conv = new ColorConverter();
     xstream = new XStream();
     xstream.alias(MATCH, Match.class);
     xstream.alias(COLOR, Color.class);
-    xstream.registerConverter(conv);
+    xstream.alias(FONT, FontAttr.class);
+    xstream.aliasField(BGCOLOR, TextStyle.class, BG);
+    xstream.aliasField(FGCOLOR, TextStyle.class, FG);
+    xstream.registerConverter(new ColorConverter());
+    xstream.registerConverter(new FontAttrConverter());
     init();
   }
   
@@ -97,12 +104,12 @@ public class Highlighter implements ViewUpdateListener {
   }
   
   
-  public Highlighter add(VerbalExpression exp, Color clr) {
-    if(exp != null && clr != null) {
-      Match m = new Match(exp.toString(), clr);
+  public Highlighter add(VerbalExpression exp, TextStyle ts) {
+    if(exp != null && ts != null) {
+      Match m = new Match(exp.toString(), ts);
       if(!words.contains(m)) {
         words.add(m);
-        save();
+        //save();
       }
     }
     return this;
@@ -111,7 +118,7 @@ public class Highlighter implements ViewUpdateListener {
   
   public Highlighter add(Match m) {
     if(m != null && m.getRegex() != null
-        && m.getColor() != null
+        && m.getTextStyle() != null
         && !words.contains(m)) {
       words.add(m);
     }
@@ -128,26 +135,32 @@ public class Highlighter implements ViewUpdateListener {
   public List<Match> words() {
     return words;
   }
+  
+  
+  public static boolean shouldUpdate(KeyEvent e) {
+    char c = e.getKeyChar();
+    return (c == 10 || c == 13 
+        || (c >= 32 && c < 127) 
+        || (c >= 128 && c < 255))
+        || e.getKeyCode() == KeyEvent.VK_DELETE
+        || e.getKeyCode() == KeyEvent.VK_BACK_SPACE
+        || e.getKeyCode() == KeyEvent.VK_ENTER;
+  }
 
 
-  @Override
-  public void update(CharPanel cp) {
-    String text = cp.getText();
+  public void update(JEditorPane jep) {
+    if(jep == null) return;
+    String text = jep.getText();
+    text = text.replace("\r", "");
+    TextStyle.clearStyles(jep);
     for(Match mtc : words) {
       Matcher m = mtc.matcherFor(text);
       while(m.find()) {
-        changeColor(cp, m.start(), m.end(), mtc.getColor());
+        System.out.println("* found on: "+ m.start()+ ", until="+ m.end()+ ", txt="+ m.group());
+        mtc.getTextStyle()
+            .apply(m.start(), m.end() - m.start(), jep);
       }
     }
-  }
-  
-  
-  private void changeColor(CharPanel chp, int start, int end, Color c) {
-    for(int i = start; i < end; i++) {
-      JChar jc = chp.chars().get(i);
-      jc.setForeground(c);
-      jc.paint();
-    }//for
   }
   
 }

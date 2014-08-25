@@ -21,7 +21,6 @@
 
 package us.pserver.code;
 
-import java.awt.Color;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,23 +35,23 @@ public class Match {
 
   private String regex;
   
-  private Color color;
+  private TextStyle style;
   
   
   public Match() {
     regex = null;
-    color = null;
+    style = null;
   }
   
   
-  public Match(String rgx, Color clr) {
+  public Match(String rgx, TextStyle ts) {
     if(rgx == null) throw new IllegalArgumentException(
         "Invalid Regex ("+ rgx+ ")");
-    if(clr == null) throw new IllegalArgumentException(
-        "Invalid Color ("+ clr+ ")");
+    if(ts == null) throw new IllegalArgumentException(
+        "Invalid TextStyle ("+ ts+ ")");
     Pattern ptn = Pattern.compile(rgx);
     regex = rgx;
-    color = clr;
+    style = ts;
   }
   
   
@@ -61,8 +60,8 @@ public class Match {
   }
   
   
-  public Color getColor() {
-    return color;
+  public TextStyle getTextStyle() {
+    return style;
   }
   
   
@@ -75,10 +74,10 @@ public class Match {
   }
   
   
-  public Match setColor(Color clr) {
-    if(clr == null) throw new IllegalArgumentException(
-        "Invalid Color ("+ clr+ ")");
-    color = clr;
+  public Match setTextStyle(TextStyle ts) {
+    if(ts == null) throw new IllegalArgumentException(
+        "Invalid TextStyle ("+ ts+ ")");
+    style = ts;
     return this;
   }
   
@@ -106,7 +105,7 @@ public class Match {
   public int hashCode() {
     int hash = 7;
     hash = 11 * hash + Objects.hashCode(this.regex);
-    hash = 11 * hash + Objects.hashCode(this.color);
+    hash = 11 * hash + Objects.hashCode(this.style);
     return hash;
   }
 
@@ -123,7 +122,7 @@ public class Match {
     if (!Objects.equals(this.regex, other.regex)) {
       return false;
     }
-    if (!Objects.equals(this.color, other.color)) {
+    if (!Objects.equals(this.style, other.style)) {
       return false;
     }
     return true;

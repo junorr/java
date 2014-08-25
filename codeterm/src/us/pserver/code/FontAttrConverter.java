@@ -33,88 +33,58 @@ import java.awt.Color;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 04/06/2014
  */
-public class ColorConverter implements Converter {
+public class FontAttrConverter implements Converter {
   
   public static final String 
-      CM = ",",
-      RGB = "rgb",
-      HEX = "hex",
-      COLOR = "color";
+      FAMILY = "family",
+      SIZE = "size",
+      ITALIC = "italic",
+      BOLD = "bold",
+      UNDERLINE = "underline";
 
 
   @Override
   public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
     if(o == null || !canConvert(o.getClass()))
       return;
-    Color c = (Color) o;
-    writer.addAttribute(RGB, toRGB(c));
-    //writer.addAttribute(HEX, toHEX(c));
+    FontAttr fa = (FontAttr) o;
+    if(fa.getFontFamily() != null)
+      writer.addAttribute(FAMILY, fa.getFontFamily());
+    if(fa.getSize() > 0)
+      writer.addAttribute(SIZE, String.valueOf(fa.getSize()));
+    if(fa.isBold())
+      writer.addAttribute(BOLD, Boolean.TRUE.toString());
+    if(fa.isItalic())
+      writer.addAttribute(ITALIC, Boolean.TRUE.toString());
+    if(fa.isUnderline())
+      writer.addAttribute(UNDERLINE, Boolean.TRUE.toString());
   }
 
 
   @Override
   public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
-    //if(!reader.getNodeName().equals(COLOR)) return null;
-    if(reader.getAttributeName(0).equals(RGB)) {
-      return fromRGB(reader.getAttribute(0));
+    FontAttr fa = new FontAttr();
+    for(int i = 0; i < reader.getAttributeCount(); i++) {
+      String name = reader.getAttributeName(i);
+      String attr = reader.getAttribute(i);
+      if(name.equals(FAMILY))
+        fa.setFontFamily(attr);
+      else if(name.equals(SIZE))
+        fa.setSize(Integer.parseInt(attr));
+      else if(name.equals(ITALIC))
+        fa.setItalic(Boolean.parseBoolean(attr));
+      else if(name.equals(BOLD))
+        fa.setBold(Boolean.parseBoolean(attr));
+      else if(name.equals(UNDERLINE))
+        fa.setUnderline(Boolean.parseBoolean(attr));
     }
-    else if(reader.getAttributeName(0).equals(HEX)) {
-      return fromHEX(reader.getAttribute(0));
-    }
-    else return null;
+    return fa;
   }
 
 
   @Override
   public boolean canConvert(Class type) {
-    return Color.class.equals(type);
+    return FontAttr.class.equals(type);
   }
   
-  
-  public String toRGB(Color c) {
-    if(c == null) return null;
-    return new StringBuilder()
-        .append(c.getRed())
-        .append(CM)
-        .append(c.getGreen())
-        .append(CM)
-        .append(c.getBlue())
-        .toString();
-  }
-  
-  
-  public Color fromRGB(String str) {
-    if(str == null || str.length() < 5 || !str.contains(CM))
-      return null;
-    String[] vals = str.split(CM);
-    if(vals.length < 3) return null;
-    try {
-      return new Color(
-          Integer.parseInt(vals[0]),
-          Integer.parseInt(vals[1]),
-          Integer.parseInt(vals[2]));
-    } catch(NumberFormatException e) {
-      return null;
-    }
-  }
-  
-  
-  public Color fromHEX(String str) {
-    if(str == null || str.isEmpty())
-      return null;
-    try {
-      return new Color(
-          Integer.parseInt(str, 16));
-    } catch(NumberFormatException e) {
-      return null;
-    }
-  }
-  
-  
-  public String toHEX(Color c) {
-    if(c == null) return null;
-    String str = Integer.toHexString(c.getRGB());
-    return str.substring(2);
-  }
-
 }
