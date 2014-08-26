@@ -30,7 +30,6 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyledEditorKit;
-import ru.lanwen.verbalregex.VerbalExpression;
 
 /**
  *
@@ -48,36 +47,9 @@ public class TestEditorPane {
     
     Highlighter hl = new Highlighter();
     
-    /*public-hello
-public0988
-public-hello world 0988 publichello
-hello public hello
-public
-hello*/
-    
-    hl.add(new Match("^public[^0-9a-zA-Z_]", 
+    hl.add(new Match("\\bpublic\\b", 
         new TextStyle().setForeground(Color.red)
             .setFontBold(true)));
-    
-    hl.add(new Match("[^0-9a-zA-Z_]public[^0-9a-zA-Z_]", 
-        new TextStyle().setForeground(Color.red)
-            .setFontBold(true)));
-    
-    hl.add(new Match("(\\s|\n)?public[^0-9a-zA-Z_]", 
-        new TextStyle().setForeground(Color.red)
-            .setFontBold(true)));
-    
-    hl.add(new Match("[^0-9a-zA-Z_]public$", 
-        new TextStyle().setForeground(Color.red)
-            .setFontBold(true)));
-    
-    System.out.println(VerbalExpression.regex()
-        .startOfLine().then("public").build());
-    /*
-    hl.add(VerbalExpression.regex()
-        .startOfLine().then("public").build(), 
-        new TextStyle().setForeground(Color.red)
-            .setFontBold(true));*/
     
     final JEditorPane edit = new JEditorPane();
     edit.setEditorKit(new StyledEditorKit());

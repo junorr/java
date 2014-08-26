@@ -46,10 +46,7 @@ public class Highlighter {
       FILE = "./highlights.xml",
       COLOR = "color",
       FONT = "font",
-      MATCH = "match",
-      BGCOLOR = "bg-color",
-      FGCOLOR = "fg-color",
-      FG = "fg", BG = "bg";
+      MATCH = "match";
   
 
   private List<Match> words;
@@ -63,8 +60,6 @@ public class Highlighter {
     xstream.alias(MATCH, Match.class);
     xstream.alias(COLOR, Color.class);
     xstream.alias(FONT, FontAttr.class);
-    xstream.aliasField(BGCOLOR, TextStyle.class, BG);
-    xstream.aliasField(FGCOLOR, TextStyle.class, FG);
     xstream.registerConverter(new ColorConverter());
     xstream.registerConverter(new FontAttrConverter());
     init();
@@ -109,8 +104,17 @@ public class Highlighter {
       Match m = new Match(exp.toString(), ts);
       if(!words.contains(m)) {
         words.add(m);
-        //save();
+        save();
       }
+    }
+    return this;
+  }
+  
+  
+  public Highlighter add(String regex, TextStyle style) {
+    if(regex != null && !regex.isEmpty()
+        && style != null) {
+      this.add(new Match(regex, style));
     }
     return this;
   }
@@ -121,6 +125,7 @@ public class Highlighter {
         && m.getTextStyle() != null
         && !words.contains(m)) {
       words.add(m);
+      this.save();
     }
     return this;
   }

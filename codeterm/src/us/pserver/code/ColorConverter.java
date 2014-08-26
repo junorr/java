@@ -37,9 +37,8 @@ public class ColorConverter implements Converter {
   
   public static final String 
       CM = ",",
-      RGB = "rgb",
-      HEX = "hex",
-      COLOR = "color";
+      COLOR_RGB = "color-rgb",
+      COLOR_HEX = "color-hex";
 
 
   @Override
@@ -47,18 +46,16 @@ public class ColorConverter implements Converter {
     if(o == null || !canConvert(o.getClass()))
       return;
     Color c = (Color) o;
-    writer.addAttribute(RGB, toRGB(c));
-    //writer.addAttribute(HEX, toHEX(c));
+    writer.addAttribute(COLOR_RGB, toRGB(c));
   }
 
 
   @Override
   public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
-    //if(!reader.getNodeName().equals(COLOR)) return null;
-    if(reader.getAttributeName(0).equals(RGB)) {
+    if(reader.getAttributeName(0).equals(COLOR_RGB)) {
       return fromRGB(reader.getAttribute(0));
     }
-    else if(reader.getAttributeName(0).equals(HEX)) {
+    else if(reader.getAttributeName(0).equals(COLOR_HEX)) {
       return fromHEX(reader.getAttribute(0));
     }
     else return null;
