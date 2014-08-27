@@ -21,14 +21,34 @@
 
 package us.pserver.code;
 
+import java.awt.Dimension;
+import java.io.IOException;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 02/06/2014
+ * @version 1.0 - 27/08/2014
  */
-@FunctionalInterface
-public interface ViewUpdateListener {
+public class TestURLShow {
 
-  public void update(CharPanel cp);
+  
+  public static void main(String[] args) throws IOException {
+    JFrame f = new JFrame("Test URL Show");
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    f.setLocationRelativeTo(null);
+    f.setSize(450, 300);
+    
+    final JEditorPane edit = new JEditorPane();
+    edit.setEditable(false);
+    Dimension d = new Dimension(420, 240);
+    edit.setSize(d);
+    edit.setPreferredSize(d);
+    edit.setPage("file:///c:/.local/jdk-8-doc/docs/api/javax/swing/text/Keymap.html");
+    f.add(new JScrollPane(edit));
+    f.setVisible(true);
+  }
   
 }
