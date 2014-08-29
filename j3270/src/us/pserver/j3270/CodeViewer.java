@@ -803,6 +803,7 @@ implements CodeListener, ParserListener {
   private void autowaitMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autowaitMenuActionPerformed
     j3270.scriptGen().setAutoWaitFor(autowaitMenu.isSelected());
     autoselectMenu.setSelected(autowaitMenu.isSelected());
+    j3270.scriptGen().setAutoGenSelect(autowaitMenu.isSelected());
   }//GEN-LAST:event_autowaitMenuActionPerformed
 
   private void autoselectMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoselectMenuActionPerformed

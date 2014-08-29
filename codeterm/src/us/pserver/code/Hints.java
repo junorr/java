@@ -30,14 +30,13 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import static us.pserver.code.Highlighter.FILE;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 09/06/2014
  */
-public class Hint {
+public class Hints {
   
   public static final String HINTS_FILE = "./hints.xml";
   
@@ -47,7 +46,7 @@ public class Hint {
   private XStream xstream;
   
   
-  public Hint() {
+  public Hints() {
     hints = new ArrayList<>();
     xstream = new XStream();
     Path p = Paths.get(HINTS_FILE);
@@ -56,7 +55,7 @@ public class Hint {
   }
   
   
-  public Hint add(String word) {
+  public Hints add(String word) {
     if(word != null && !hints.contains(word)) {
       hints.add(word);
       sort().save();
@@ -108,7 +107,7 @@ public class Hint {
   }
   
   
-  public Hint clear() {
+  public Hints clear() {
     hints.clear();
     return this;
   }
@@ -119,26 +118,27 @@ public class Hint {
   }
   
   
-  private Hint sort() {
+  private Hints sort() {
     Collections.sort(hints);
     return this;
   }
   
   
-  public Hint load() {
-    Path p = Paths.get(FILE);
+  public Hints load() {
+    Path p = Paths.get(HINTS_FILE);
     if(Files.exists(p)) {
       try {
-        List<String> lst = (List<String>) 
-            xstream.fromXML(p.toFile());
+        List<String> lst = (List) xstream.fromXML(p.toFile());
         hints.addAll(lst);
-      } catch(Exception e) {}
+      } catch(Exception e) {
+        e.printStackTrace();
+      }
     }
     return this;
   }
   
   
-  public Hint save() {
+  public Hints save() {
     if(!hints.isEmpty()) {
       Path p = Paths.get(HINTS_FILE);
       try (OutputStream os = Files.newOutputStream(p, 

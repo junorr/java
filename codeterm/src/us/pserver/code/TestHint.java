@@ -21,42 +21,21 @@
 
 package us.pserver.code;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.StyledEditorKit;
-
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 25/08/2014
+ * @version 1.0 - 28/08/2014
  */
-public class TestEditorPane {
+public class TestHint {
 
   
   public static void main(String[] args) {
-    JFrame f = new JFrame("Editor Pane Test");
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.setLocationRelativeTo(null);
-    f.setSize(450, 300);
-    
-    Highlighter hl = new Highlighter();
-    
-    hl.add(new Match("\\bpublic\\b", 
-        new TextStyle().setForeground(Color.red)
-            .setFontBold(true)));
-    
-    final Editor edit = new Editor(f);
-    Dimension d = new Dimension(420, 240);
-    edit.setSize(d);
-    edit.setPreferredSize(d);
-    f.add(edit);
-    f.setVisible(true);
+    Hints hn = new Hints();
+    hn.add("public")
+        .add("hello")
+        .add("world");
+    hn = new Hints();
+    System.out.println("* hints="+ hn.hints().size());
   }
   
 }

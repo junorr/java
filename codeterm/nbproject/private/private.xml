@@ -3,16 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/Match.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/TestURLShow.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/Testtt.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/FontAttr.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/TestEditorPane.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/TextStyle.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/Hint.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/ColorConverter.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/FontAttrConverter.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/Highlighter.java</file>
+            <file>file:/media/warehouse/java/codeterm/src/us/pserver/code/Editor.java</file>
+            <file>file:/media/warehouse/java/codeterm/src/us/pserver/code/TestEditorPane.java</file>
+            <file>file:/media/warehouse/java/codeterm/src/us/pserver/code/HintList.java</file>
+            <file>file:/media/warehouse/java/codeterm/src/us/pserver/code/Highlighter.java</file>
+            <file>file:/media/warehouse/java/codeterm/src/us/pserver/code/HintWindow.java</file>
+            <file>file:/media/warehouse/java/codeterm/src/us/pserver/code/StringUtils.java</file>
         </group>
     </open-files>
 </project-private>

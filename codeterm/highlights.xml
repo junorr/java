@@ -2,7 +2,7 @@
   <match>
     <regex>\bpublic\b</regex>
     <style>
-      <fg-color rgb="255,0,0"/>
+      <fg color-rgb="255,0,0"/>
       <font bold="true"/>
     </style>
   </match>

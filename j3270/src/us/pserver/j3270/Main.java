@@ -58,9 +58,8 @@ public class Main {
     new Thread(new Runnable() {
       @Override
       public void run() {
-        try { Thread.sleep(1500); }
+        try { Thread.sleep(1000); }
         catch(InterruptedException e) {}
-        //term.setVisible(true);
         w.dispose();
       }
     }).start();

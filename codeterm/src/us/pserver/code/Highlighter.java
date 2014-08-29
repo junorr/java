@@ -161,7 +161,7 @@ public class Highlighter {
     for(Match mtc : words) {
       Matcher m = mtc.matcherFor(text);
       while(m.find()) {
-        System.out.println("* found on: "+ m.start()+ ", until="+ m.end()+ ", txt="+ m.group());
+        //System.out.println("* found on: "+ m.start()+ ", until="+ m.end()+ ", txt="+ m.group());
         mtc.getTextStyle()
             .apply(m.start(), m.end() - m.start(), jep);
       }
