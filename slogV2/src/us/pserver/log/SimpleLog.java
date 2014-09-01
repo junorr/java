@@ -55,7 +55,7 @@ public class SimpleLog implements Log {
    * Construtor que recebe o nome do arquivo de log,
    * cria uma instância de <code>SimpleLog</code> com configurações
    * padrão, pronto para ser utilizado.
-   * @param logFile nome do arquivo de log.
+   * @param logfile nome do arquivo de log.
    */
   public SimpleLog(String logfile) {
     if(logfile == null)

@@ -23,13 +23,7 @@ package us.pserver.code;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.StyledEditorKit;
 
 /**
  *
@@ -51,7 +45,7 @@ public class TestEditorPane {
         new TextStyle().setForeground(Color.red)
             .setFontBold(true)));
     
-    final Editor edit = new Editor(f);
+    final Editor edit = new Editor();
     Dimension d = new Dimension(420, 240);
     edit.setSize(d);
     edit.setPreferredSize(d);

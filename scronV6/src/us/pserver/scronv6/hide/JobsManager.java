@@ -34,7 +34,7 @@ import us.pserver.conc.ExclusiveList;
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 10/04/2014
- * @see us.pserver.scronV6.Pair
+ * @see us.pserver.scronv6.hide.Pair
  */
 public class JobsManager {
 

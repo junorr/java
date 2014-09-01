@@ -45,8 +45,8 @@ public class ExecutionContext {
    * dados <code>DataMap</code>.
    * @param s Schedule.
    * @param dm DataMap.
-   * @see us.pserver.scronV6.Schedule
-   * @see us.pserver.scronV6.DataMap
+   * @see us.pserver.scron.Schedule
+   * @see us.pserver.scron.DataMap
    */
   public ExecutionContext(Schedule s, DataMap dm) {
     if(dm == null)

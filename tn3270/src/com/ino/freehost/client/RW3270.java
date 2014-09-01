@@ -425,8 +425,7 @@ public class RW3270
    	
    /**
     * Sets the encryption setting for the 3270 session... 
-    * @param true will turn encryption on, false will turn encryption off
-    * @deprec
+    * @param encryption true will turn encryption on, false will turn encryption off
     */
    public void setEncryption(boolean encryption)
    {
@@ -437,7 +436,7 @@ public class RW3270
    /**
     * Presses the specified PF Key, as specified in the constants for this class.  For example
     * to press PF1, call rw.PF(RW3270.PF1);
-    * @param int - the key to be pressed, as specified in the constants for this class.
+    * @param key int - the key to be pressed, as specified in the constants for this class.
     */
    public void PF(int key)
    {
@@ -451,7 +450,7 @@ public class RW3270
    /**
     * Presses the specified PA Key, as specified in the constants for this class.  For example
     * to press PA1, call rw.PA(RW3270.PA1);
-    * @param int - the key to be pressed, as specified in the constants for this class.
+    * @param key int - the key to be pressed, as specified in the constants for this class.
     */   
    public void PA(int key)
    {
@@ -469,7 +468,7 @@ public class RW3270
     * that don't require character-by-character input, use RW3270Field.setData(String data)
     * instead.
     * @see RW3270Field
-    * @param - the keyboard/ASCII number corresponding to the key pressed.
+    * @param key - the keyboard/ASCII number corresponding to the key pressed.
     * @throws IsProtectedException if the current field is protected.
     */
    public void type(int key)
@@ -734,8 +733,7 @@ public class RW3270
 	 * when the host may be sending several screens in response to your request, and
 	 * you want to block until you reach the response you're waiting for.
 	 * For example:<BR><BR>
-	 * <UL>
-	 * <code>
+   * <code>
 	 * ...<BR>
 	 * //Create a RW3270 object<BR><BR>
 	 *	RW3270 rw = new RW3270(this);<BR><BR>
@@ -749,20 +747,15 @@ public class RW3270
 	 * //on whether our string was found:<BR><BR>
 	 * if(t)<BR>
 	 * {<BR>
-	 * <UL>
 	 * 	out.print("Got it:");<BR>
 	 *		out.print(new String(rw.getDisplay()));<BR>
-	 * </UL>
 	 * }<BR>
 	 * else<BR>
 	 *	{<BR>
-	 * <UL>
-	 *	 out.print("Didn't get it:>");<BR>
+	 *	 out.print("Didn't get it:");<BR>
 	 *	 out.print(new String(rw.getDisplay()));<BR>
-	 * </UL>
 	 *	}<BR>
- 	 * </code>
-	 * </UL>
+   * </code>
 	 * @param search The string to wait for
 	 * @param timeout Number of seconds to wait for the search string.
 	 * @return true if the string was found, false if the timeout was reached
@@ -851,7 +844,7 @@ public class RW3270
    * until reach the defined 'timeout';
    * @param row Cursor row position
    * @param col Cursor column position
-   * @param search string to search
+   * @param field search string to search
    * @param timeout in seconds
    * @return <code>true</code> if the 'search' string
    * has been founded on the screen, <code>false</code>

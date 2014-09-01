@@ -82,7 +82,7 @@ public class Hints {
   }
   
   
-  public int startsWithIndex(String str) {
+  public int indexStartsWith(String str) {
     int idx = -1;
     if(str == null) return idx;
     for(int i = 0; i < hints.size(); i++) {
@@ -96,9 +96,9 @@ public class Hints {
   
   
   public List<String> hintList(String part) {
-    int idx = startsWithIndex(part);
+    int idx = indexStartsWith(part);
     if(idx < 0) return hints;
-    return hints.subList(idx, hints.size()-1);
+    return hints.subList(idx, hints.size());
   }
   
   

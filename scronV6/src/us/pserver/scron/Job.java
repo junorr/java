@@ -32,8 +32,8 @@ public interface Job {
   /**
    * Executa o trabalho.
    * @param context Contexto de execução <code>ExecutionContext</code>.
-   * @throws java.lang.Exception
-   * @see us.pserver.scronV6.ExecutionContext
+   * @throws java.lang.Exception Caso ocorra na execução.
+   * @see us.pserver.scron.ExecutionContext
    */
   public void execute(ExecutionContext context) throws Exception;
   

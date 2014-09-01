@@ -171,7 +171,7 @@ public abstract class AbstractCron implements SCron {
    * Retorna <code>JobsManager</code>
    * utilizado para organizar os agendamentos.
    * @return <code>JobsManager</code>.
-   * @see us.pserver.scronV6.JobsManager
+   * @see us.pserver.scronv6.hide.JobsManager
    */
   @Override
   public JobsManager manager() {
@@ -194,7 +194,7 @@ public abstract class AbstractCron implements SCron {
    * Retorna o mapa de dados <code>DataMap</code>
    * utilizado por <code>SCron</code>.
    * @return <code>DataMap</code>.
-   * @see us.pserver.scronV6.DataMap
+   * @see us.pserver.scron.DataMap
    */
   @Override
   public DataMap dataMap() {

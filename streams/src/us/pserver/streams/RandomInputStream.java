@@ -35,7 +35,7 @@ import java.util.Random;
 public class RandomInputStream extends InputStream {
   
   /**
-   * <code>MAX_VALUE = 255</code><br/>
+   * <code>MAX_VALUE = 255</code><br>
    * Limite máximo do número aleatório a ser gerado.
    */
   public static final int MAX_VALUE = 255;

@@ -21,19 +21,11 @@
 
 package us.pserver.code;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Window;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
 
 /**
  *
@@ -50,12 +42,12 @@ public class HintWindow extends Window {
   private Editor editor;
   
   
-  public HintWindow(Window parent, Editor ed) {
-    super(parent);
+  public HintWindow(Editor ed) {
+    super(null);
     editor = ed;
     setSize(DEFAULT_SIZE);
     setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
-    lst = new HintList(null);
+    lst = new HintList(editor);
     JScrollPane js = new JScrollPane(lst);
     Dimension d = new Dimension(
         DEFAULT_SIZE.width -2, 

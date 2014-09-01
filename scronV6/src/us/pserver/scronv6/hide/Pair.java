@@ -33,8 +33,8 @@ import us.pserver.scron.Schedule;
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 10/04/2014
- * @see us.pserver.scronV6.Job
- * @see us.pserver.scronV6.Schedule
+ * @see us.pserver.scron.Job
+ * @see us.pserver.scron.Schedule
  */
 public class Pair {
 

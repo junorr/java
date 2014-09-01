@@ -99,10 +99,13 @@ public class HintList extends JList<String>
   
   
   public void setHintsFor(String str) {
-    if(str == null || str.isEmpty())
-      setList(hints.hints());
-    else
-      setList(hints.hintList(str));
+    System.out.println("* hints for: '"+ str+ "'");
+    List<String> ls = hints.hintList(str);
+    if(ls == null || ls.isEmpty())
+      ls = hints.hints();
+    System.out.println("  hints.size: "+ ls.size()+ ", first: '"+ 
+        (ls.isEmpty() ? "'" : ls.get(0) + "'"));
+    setList(ls);
   }
   
   
@@ -155,7 +158,6 @@ public class HintList extends JList<String>
     if(e.getButton() == MouseEvent.BUTTON1) {
       this.setSelectedIndex(isel);
       if(e.getClickCount() > 1) {
-        System.out.println("* selected="+ this.getSelectedValue());
         if(listener != null)
           listener.hintSelected(this.getSelectedValue());
       }

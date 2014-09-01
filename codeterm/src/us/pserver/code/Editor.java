@@ -51,8 +51,8 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   private int start, length;
   
   
-  public Editor(Window owner) {
-    hw = new HintWindow(owner, this);
+  public Editor() {
+    hw = new HintWindow(this);
     hl = new Highlighter();
     this.setEditorKit(new StyledEditorKit());
     this.setDocument(new DefaultStyledDocument());
@@ -64,11 +64,10 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   
   
   public void setHint(String hint) {
-    if(hint == null || hint.isEmpty()
-        || start < 0
-        || length < 1)
+    if(hint == null || hint.isEmpty())
       return;
     replace(start, length, hint);
+    hl.update(this);
   }
   
   
@@ -82,18 +81,17 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   
   
   public void replace(int start, int length, String repl) {
-    if(start < 0 || length < 1 
-        || length + start 
-        > hw.getHintList().listSize())
-      
-    if(repl == null) return;
-    try {
-      this.getDocument().remove(start, length);
-    } catch(BadLocationException e) {}
+    if(start < 0 || repl == null)
+      return;
+    
+    if(length > 0)
+      try {
+        this.getDocument().remove(start, length);
+      } catch(BadLocationException e) {}
     try {
       this.getDocument().insertString(start, repl, null);
     } catch(BadLocationException e) {}
-    this.setCaretPosition(start);
+    this.setCaretPosition(start + repl.length());
   }
   
   
@@ -118,44 +116,56 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
     return StringUtils.reverseFind(
         this.getText(), str, fromPos);
   }
+  
+  
+  private void showHintWindow() {
+    int crt = this.getCaretPosition();
+    int is = this.reverseFind(SP, crt);
+    int il = this.reverseFind(LN, crt);
+    int ip = this.reverseFind(PT, crt);
+    start = Math.max(is, il);
+    start = Math.max(start, ip);
+    if(start < 0) start = 0;
+    else start += 1;
+    length = crt - start;
+    hw.show(hintLocation(), getString(start, length));
+  }
+  
+  
+  private Point hintLocation() {
+    Point pc = this.getCaret().getMagicCaretPosition();
+    if(pc == null) pc = new Point(0,0);
+    pc = new Point(pc.x, pc.y);
+    Point pl = this.getLocationOnScreen();
+    pc.x += pl.x;
+    pc.y += pl.y + 25;
+    return pc;
+  }
 
 
   @Override public void keyTyped(KeyEvent e) {}
-  @Override public void keyPressed(KeyEvent e) {}
-
-
-  @Override
-  public void keyReleased(KeyEvent e) {
-    hl.update(this);
+  @Override public void keyPressed(KeyEvent e) {
     if(e.getKeyCode() == KeyEvent.VK_SPACE
         && e.isControlDown()) {
-      int crt = this.getCaretPosition();
-      int is = this.reverseFind(SP, crt);
-      int il = this.reverseFind(LN, crt);
-      int ip = this.reverseFind(PT, crt);
-      start = Math.max(is, il);
-      start = Math.max(start, ip);
-      if(start < 0) start = 0;
-      else start += 1;
-      length = crt - start;
-      Point pc = this.getCaret().getMagicCaretPosition();
-      if(pc == null) pc = new Point(0,0);
-      Point pl = this.getLocationOnScreen();
-      pc.x += pl.x;
-      pc.y += pl.y + 25;
-      hw.show(pc, this.getString(start, crt));
-      this.requestFocus();
+      this.showHintWindow();
+      e.consume();
     }
     else if(e.getKeyCode() == KeyEvent.VK_DOWN && hw.isVisible()) {
       hw.selectDown();
+      e.consume();
     }
     else if(e.getKeyCode() == KeyEvent.VK_UP && hw.isVisible()) {
       hw.selectUp();
+      e.consume();
     }
     else if(e.getKeyCode() == KeyEvent.VK_ENTER && hw.isVisible()) {
-      System.out.println("* enter()");
       setHint(hw.selected());
       hw.setVisible(false);
+      e.consume();
+    }
+    else if(e.getKeyCode() == KeyEvent.VK_ESCAPE && hw.isVisible()) {
+      hw.setVisible(false);
+      e.consume();
     }
     this.requestFocus();
     this.requestFocusInWindow();
@@ -163,8 +173,16 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
 
 
   @Override
+  public void keyReleased(KeyEvent e) {
+    hl.update(this);
+    if(hw.isVisible()) {
+      this.showHintWindow();
+    }
+  }
+
+
+  @Override
   public void hintSelected(String hint) {
-    System.out.println("* hintSelected()");
     setHint(hint);
     hw.setVisible(false);
   }

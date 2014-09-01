@@ -35,7 +35,7 @@ import java.util.List;
  * the data from the RWTelnet class (through the incomingData method
  * of the RWTnAction interface.) and makes sense of it.  It also implements
  * all of the commands and orders outlined in the <i>3270 Data Stream
- * Programmer's Reference</i> in chapters 3 & 4.
+ * Programmer's Reference</i> in chapters 3 and 4.
  */
 public class RWTn3270StreamParser
 {

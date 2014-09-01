@@ -59,6 +59,9 @@ public class SCronV6 extends AbstractCron {
   private Log log;
   
   
+  /**
+   * Construtor padrão sem argumentos.
+   */
   public SCronV6() {
     super();
     threads = DEFAULT_THREADS;
@@ -67,7 +70,10 @@ public class SCronV6 extends AbstractCron {
   
   
   /**
-   * Construtor padrão sem argumentos.
+   * Construtor que recebe um objeto <code>Log</code>
+   * para realização do log de execução de 
+   * <code>SCronV6</code>.
+   * @param l objeto <code>Log</code> para realização do log.
    */
   public SCronV6(Log l) {
     super(l);

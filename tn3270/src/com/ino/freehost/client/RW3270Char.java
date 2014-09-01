@@ -54,7 +54,7 @@ public class RW3270Char
    /**
     * Creates a pointer to the RW3270Field object that 'contains'
     * this character.
-    * @param the field in which this character is contained
+    * @param field the field in which this character is contained
     */
    protected void setField(RW3270Field field)
    {
@@ -63,7 +63,7 @@ public class RW3270Char
    /**
     * Sets the actual ASCII char stored in this object.
     *
-    * @param the character stored in this buffer location
+    * @param c the character stored in this buffer location
     */
    protected void setChar(char c)
    {

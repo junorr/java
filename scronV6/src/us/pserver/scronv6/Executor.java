@@ -50,8 +50,8 @@ public class Executor implements Runnable {
    * contexto de execução <code>ExecutionContext</code>.
    * @param p <code>Pair</code>.
    * @param c <code>ExecutionContext</code>.
-   * @see us.pserver.scronV6.Pair
-   * @see us.pserver.scronV6.ExecutionContext
+   * @see us.pserver.scronv6.hide.Pair
+   * @see us.pserver.scron.ExecutionContext
    */
   public Executor(Pair p, ExecutionContext c) {
     if(p == null)

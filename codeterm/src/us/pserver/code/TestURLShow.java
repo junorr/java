@@ -39,14 +39,14 @@ public class TestURLShow {
     JFrame f = new JFrame("Test URL Show");
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     f.setLocationRelativeTo(null);
-    f.setSize(450, 300);
+    f.setSize(500, 300);
     
     final JEditorPane edit = new JEditorPane();
     edit.setEditable(false);
-    Dimension d = new Dimension(420, 240);
+    Dimension d = new Dimension(480, 240);
     edit.setSize(d);
     edit.setPreferredSize(d);
-    edit.setPage("file:///c:/.local/jdk-8-doc/docs/api/javax/swing/text/Keymap.html");
+    edit.setPage("file:///c:/.local/info.html");
     f.add(new JScrollPane(edit));
     f.setVisible(true);
   }

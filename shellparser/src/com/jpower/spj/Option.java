@@ -114,7 +114,7 @@ public class Option {
   
   /**
    * Retorna a lista de argumentos da opção.
-   * @return List<String>
+   * @return List&lt;String&gt;
    */
   public List<String> arguments() {
     return arguments;

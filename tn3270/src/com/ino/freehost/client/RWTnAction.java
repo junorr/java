@@ -42,14 +42,14 @@ public interface RWTnAction
 	  * @param msg The status message:
 	  *		<UL>
 	  *			<LI>RWtnAction.DISCONNECTED_BY_REMOTE_HOST: This status message indicates
-	  *					that the connection to the host was lost.
+	  *					that the connection to the host was lost.</li>
 	  *			<LI>RWTnAction.CONNECTION_ERROR:  This status message that there was a
 	  *					problem connecting to the SessionServer or that the SessionServer had
-	  *					trouble connecting to the 3270 host.
+	  *					trouble connecting to the 3270 host.</li>
 	  *			<LI>RWTnAction.X_WAIT: This status message means the 3270 engine is
-	  *					waiting for a response from the 3270 host.
+	  *					waiting for a response from the 3270 host.</li>
 	  *			<LI>RWTnAction.READY:  This status message means the 3270 engine is
-	  *					ready for input from the client implementation.
+	  *					ready for input from the client implementation.</li></ul>
 	  */
    public abstract void status(int msg);
    /**

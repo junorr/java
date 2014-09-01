@@ -106,7 +106,7 @@ public class Schedule {
    * Retorna o objeto responsável por ajustar
    * a repetição na data de agendamento.
    * @return <code>Repeater</code>.
-   * @see us.pserver.scronV6.hide.Repeater
+   * @see us.pserver.scronv6.hide.Repeater
    */
   public Repeater getRepeater() {
     return rept;
@@ -327,7 +327,7 @@ public class Schedule {
    * @return <code>true</code> se o tempo restante
    * estiver entre os dois valores informados,
    * <code>false</code> caso contrário.
-   * @see us.pserver.scronV6.Schedule#getCountdown() 
+   * @see us.pserver.scron.Schedule#getCountdown() 
    */
   public boolean isCountdownBeteewn(int min, int max) {
     long cd = this.getCountdown();

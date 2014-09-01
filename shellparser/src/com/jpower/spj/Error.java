@@ -133,8 +133,8 @@ public class Error {
   
   
   /**
-   * <code>* [<Level>]: <text>;</code>
-   * @return String <code>* [<Level>]: <text>;</code>
+   * <code>* [Level]: text;</code>
+   * @return String <code>* [Level]: text;</code>
    */
   @Override
   public String toString() {

@@ -36,22 +36,22 @@ import java.util.List;
  * as opções como objetos <code>Option</code> através
  * do método <code>ShellParser.addOption(Option)</code>.
  * </p>
- * <h4>Exemplo de uso:</h4>
+ * <span style='font-size: 16px; font-weight: bold;'>Exemplo de uso:</span>
  * <p style="font-size: 15px;">
  * Como exemplo de uso da biblioteca, vamos imaginar
  * um programa simples de linha de comando, similar ao
- * <i>echo</i>, que simplesmente repete o argumento informado.<br/>
+ * <i>echo</i>, que simplesmente repete o argumento informado.<br>
  * Nosso programa chama-se <b><code>sayit</code></b> e possui
- * 2 opções além do argumento padrão, <code>'-n'</code> e <code>'-h'</code>.<br/>
+ * 2 opções além do argumento padrão, <code>'-n'</code> e <code>'-h'</code>.<br>
  * O programa receberá como argumento obrigatório o texto a ser
- * repetido.<br/>
+ * repetido.<br>
  * <b><code>'-n'</code></b> É opcional e terá como argumento o 
  * número de vezes que o texto será repetido. Deverá 
  * ser informada no formato <i><code>'-n=x'</code></i>, onde
- * <code>'x'</code> é o número de repetiçoes.<br/>
+ * <code>'x'</code> é o número de repetiçoes.<br>
  * <b><code>'-h'</code></b> Irá mostrar a ajuda de uso do programa
  * e é uma opção exclusiva, ou seja, não pode haver outras opções 
- * no mesmo comando.<br/>
+ * no mesmo comando.<br>
  * Primeiro construiremos os objetos <code>ShellParser e Option</code>,
  * para então adicionar-mos as opções pelo método 
  * <code>ShellParser.addOption(Option)</code>:
@@ -133,7 +133,7 @@ import java.util.List;
  *          shell.getOption(Option.EMPTY).getFirstArg());
  *    }
  *  }
- * </pre></p>
+ * </pre>
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 06/11/2012
@@ -250,7 +250,7 @@ public class ShellParser {
   /**
    * Retorna a lista de erros encontrados 
    * na análise das opções e argumentos.
-   * @return List<Error>
+   * @return List&lt;Error&gt;
    */
   public List<Error> errors() {
     return errors;
@@ -259,7 +259,7 @@ public class ShellParser {
   
   /**
    * Retorna a lista de opções adicionadas.
-   * @return List<Option>
+   * @return List&lt;Option&gt;
    */
   public List<Option> options() {
     return options;
@@ -432,7 +432,7 @@ public class ShellParser {
   /**
    * Configura um e-mail de contato com o autor
    * do programa, a ser exibido no cabeçalho.
-   * @param contact
+   * @param contact e-mail de contato.
    * @return Esta instância modificada de 
    * <code>ShellParser</code>.
    */

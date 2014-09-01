@@ -59,7 +59,7 @@ public class MultiCoderBuffer {
   /**
    * <code>
    *  LARGE_BUFFER = 524_288; // 500KB
-   * </code><br/>
+   * </code><br>
    * Tamanho padrão do buffer em memória.
    */
   public static final int LARGE_BUFFER = 524_288; // 500KB
