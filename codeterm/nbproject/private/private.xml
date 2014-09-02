@@ -3,12 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/HintWindow.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/TestURLShow.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/Hints.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/Editor.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/TestEditorPane.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/code/HintList.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/HintList.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/HintWindow.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/Hints.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/Editor.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/TestEditorPane.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/TestURLShow.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/DocViewer.java</file>
         </group>
     </open-files>
 </project-private>
