@@ -40,10 +40,18 @@ public class Hints {
   
   public static final String HINTS_FILE = "./hints.xml";
   
+  public static final String DOC_PATH = "./hint-docs/";
+  
+  public static final String HTML = ".html";
+  
+  public static final String FILE = "file:///";
+  
 
   private List<String> hints;
   
   private XStream xstream;
+  
+  private String docpath;
   
   
   public Hints() {
@@ -52,6 +60,16 @@ public class Hints {
     Path p = Paths.get(HINTS_FILE);
     if(Files.exists(p))
       load();
+    this.setDocsPath(DOC_PATH);
+  }
+  
+  
+  public Hints(String docpath) {
+    this();
+    if(docpath == null || docpath.isEmpty())
+      throw new IllegalArgumentException(
+          "Invalid docs path ["+ docpath+ "]");
+    this.setDocsPath(docpath);
   }
   
   
@@ -77,6 +95,33 @@ public class Hints {
     for(String str : hints) {
       if(str.startsWith(part))
         return str;
+    }
+    return null;
+  }
+  
+  
+  public Hints setDocsPath(String docpath) {
+    if(docpath != null) {
+      Path p = Paths.get(docpath);
+      if(Files.exists(p))
+        this.docpath = docpath;
+    }
+    return this;
+  }
+  
+  
+  public String getDocsPath() {
+    return docpath;
+  }
+  
+  
+  public String getDocURLFor(String str) {
+    if(str == null || str.isEmpty() 
+        || docpath == null)
+      return null;
+    Path p = Paths.get(docpath, str + HTML);
+    if(Files.exists(p)) {
+      return p.toAbsolutePath().toString();
     }
     return null;
   }

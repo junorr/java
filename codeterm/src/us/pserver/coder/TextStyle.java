@@ -181,7 +181,8 @@ public class TextStyle {
     if(off < 0 || len < 1 || jep == null)
       throw new IllegalArgumentException(
           "Invalid parameters [off="+ off
-              + ", len="+ len+ ", jep="+ jep+ "]");
+              + ", len="+ len
+              + (jep == null ? ", jep=null]" : "]"));
     
     AttributeSet attr = new SimpleAttributeSet();
     attr = setColorAttributes(attr);

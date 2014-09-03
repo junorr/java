@@ -49,8 +49,6 @@ public class HintList extends JList<String>
   
   private int isel;
   
-  private Hints hints;
-  
   private DefaultListModel<String> model;
   
   private HintListener listener;
@@ -63,9 +61,7 @@ public class HintList extends JList<String>
     this.setCellRenderer(this);
     this.addMouseListener(this);
     model = new DefaultListModel();
-    hints = new Hints();
     System.out.println();
-    this.setList(hints.hints());
   }
   
   
@@ -95,17 +91,6 @@ public class HintList extends JList<String>
   
   public int listSize() {
     return model.size();
-  }
-  
-  
-  public void setHintsFor(String str) {
-    System.out.println("* hints for: '"+ str+ "'");
-    List<String> ls = hints.hintList(str);
-    if(ls == null || ls.isEmpty())
-      ls = hints.hints();
-    System.out.println("  hints.size: "+ ls.size()+ ", first: '"+ 
-        (ls.isEmpty() ? "'" : ls.get(0) + "'"));
-    setList(ls);
   }
   
   

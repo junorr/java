@@ -24,13 +24,17 @@ package us.pserver.coder;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.Point;
-import java.awt.Window;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -48,7 +52,7 @@ import javax.swing.JScrollPane;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 02/09/2014
  */
-public class DocViewer extends Window {
+public class DocViewer extends Frame {
 
   public static final Dimension 
       DEF_SIZE = new Dimension(480, 240);
@@ -60,6 +64,9 @@ public class DocViewer extends Window {
   
   public static final String
       FILE = "file:///";
+  
+  public static final int PIX_ROTATION = 18;
+  
   
   private JEditorPane view;
   
@@ -73,7 +80,9 @@ public class DocViewer extends Window {
   
   
   public DocViewer() {
-    super(null);
+    super();
+    this.setUndecorated(true);
+    this.setAlwaysOnTop(true);
     view = new JEditorPane();
     view.setEditable(false);
     docpath = null;
@@ -81,37 +90,16 @@ public class DocViewer extends Window {
     this.setLayout(null);
     lastE = null;
     
-    view.addMouseListener(new MouseListener() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    MouseWheelListener mwl = new MouseWheelListener() {
+      @Override public void mouseWheelMoved(MouseWheelEvent e) {
+        int rot = e.getWheelRotation();
+        Rectangle rv = view.getVisibleRect();
+        rv = new Rectangle(rv.x, 
+            (rv.y + rot * PIX_ROTATION), 
+            rv.width, rv.height);
+        view.scrollRectToVisible(rv);
       }
-
-
-      @Override
-      public void mousePressed(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-      }
-
-
-      @Override
-      public void mouseReleased(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-      }
-
-
-      @Override
-      public void mouseEntered(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-      }
-
-
-      @Override
-      public void mouseExited(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-      }
-      
-    });
+    };
     
     LabelButton lb = new LabelButton();
     lb.setIcon(ICON_CLOSE);
@@ -133,13 +121,14 @@ public class DocViewer extends Window {
     title = new JLabel();
     title.setForeground(Color.WHITE);
     mover.add(title);
+    mover.addMouseListener(new MouseAdapter() {
+      @Override public void mousePressed(MouseEvent e) {
+        lastE = e.getLocationOnScreen();
+      }
+    });
     mover.addMouseMotionListener(new MouseMotionAdapter() {
       @Override
       public void mouseDragged(MouseEvent e) {
-        if(lastE == null) {
-          lastE = e.getLocationOnScreen();
-          return;
-        }
         Point lc = DocViewer.this.getLocationOnScreen();
         Point pe = e.getLocationOnScreen();
         int mx = pe.x - lastE.x;
@@ -154,6 +143,10 @@ public class DocViewer extends Window {
     scroll.setSize(DEF_SIZE.width -2, DEF_SIZE.height -18);
     scroll.setLocation(1, 18);
     this.add(scroll);
+    
+    view.addMouseWheelListener(mwl);
+    this.addMouseWheelListener(mwl);
+    scroll.addMouseWheelListener(mwl);
   }
   
   
@@ -163,6 +156,24 @@ public class DocViewer extends Window {
     this.docpath = docpath;
     setTitle();
     view.setPage(docpath);
+  }
+  
+  
+  public void scrollDown() {
+    Rectangle rv = view.getVisibleRect();
+    rv = new Rectangle(rv.x, 
+        (rv.y + PIX_ROTATION), 
+        rv.width, rv.height);
+    view.scrollRectToVisible(rv);
+  }
+  
+  
+  public void scrollUp() {
+    Rectangle rv = view.getVisibleRect();
+    rv = new Rectangle(rv.x, 
+        (rv.y - PIX_ROTATION), 
+        rv.width, rv.height);
+    view.scrollRectToVisible(rv);
   }
   
   
@@ -192,10 +203,8 @@ public class DocViewer extends Window {
     Point loc = null;
     if(p != null) {
       loc = new Point(p.x, p.y);
-    //} else if(this.getLocation() != null) {
-      //loc = this.getLocation();
     } else {
-      loc = new Point(55, 55);
+      loc = this.getLocation();
     }
     if(!docpath.startsWith(FILE)) {
       this.docpath = FILE + docpath;
@@ -219,7 +228,8 @@ public class DocViewer extends Window {
   
   public static void main(String[] args) throws IOException {
     DocViewer dv = new DocViewer();
-    dv.show(null, "c:/.local/info.html");
+    dv.show(new Point(60, 60), "c:/.local/info.html");
+    //dv.show(new Point(60, 60), "/media/warehouse/java/info.html");
   }
   
   
@@ -232,10 +242,6 @@ public class DocViewer extends Window {
     public static final Color 
         OVER = new Color(130, 130, 130),
         NORMAL = new Color(80, 80, 80);
-        //OVER = new Color(66, 77, 159),
-        //NORMAL = new Color(26, 37, 119);
-        //OVER = new Color(85, 138, 192),
-        //NORMAL = new Color(35, 88, 142);
     
     private ActionListener acl;
     

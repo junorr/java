@@ -25,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Window;
+import java.util.List;
 import javax.swing.JScrollPane;
 
 /**
@@ -57,6 +58,7 @@ public class HintWindow extends Window {
     this.add(js);
     this.setFocusable(false);
     lst.setFocusable(false);
+    this.setAlwaysOnTop(true);
   }
   
   
@@ -70,8 +72,8 @@ public class HintWindow extends Window {
   }
   
   
-  public void show(Point p, String str) {
-    lst.setHintsFor(str);
+  public void show(Point p, List<String> hints) {
+    lst.setList(hints);
     this.setLocation(p);
     this.setVisible(true);
   }

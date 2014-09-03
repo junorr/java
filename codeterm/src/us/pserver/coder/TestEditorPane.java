@@ -44,6 +44,9 @@ public class TestEditorPane {
     hl.add(new Match("\\bpublic\\b", 
         new TextStyle().setForeground(Color.red)
             .setFontBold(true)));
+    hl.add(new Match("#.*",
+        new TextStyle().setForeground(Color.BLUE)
+            .setFontItalic(true)));
     
     final Editor edit = new Editor();
     Dimension d = new Dimension(420, 240);

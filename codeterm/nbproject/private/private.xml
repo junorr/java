@@ -5,6 +5,7 @@
         <group>
             <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/HintList.java</file>
             <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/HintWindow.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/Highlighter.java</file>
             <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/Hints.java</file>
             <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/Editor.java</file>
             <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/TestEditorPane.java</file>

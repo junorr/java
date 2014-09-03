@@ -6,4 +6,11 @@
       <font bold="true"/>
     </style>
   </match>
+  <match>
+    <regex>#.*</regex>
+    <style>
+      <fg color-rgb="0,0,255"/>
+      <font italic="true"/>
+    </style>
+  </match>
 </list>

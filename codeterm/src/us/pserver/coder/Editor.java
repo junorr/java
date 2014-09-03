@@ -23,10 +23,14 @@ package us.pserver.coder;
 
 import java.awt.Font;
 import java.awt.Point;
-import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.JEditorPane;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyledEditorKit;
@@ -38,6 +42,8 @@ import javax.swing.text.StyledEditorKit;
  */
 public class Editor extends JEditorPane implements KeyListener, HintListener {
 
+  public static final int MAX_UNDOS = 50;
+  
   public static final String
       SP = " ",
       LN = "\n",
@@ -46,7 +52,15 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   
   private Highlighter hl;
   
+  private Hints hints;
+  
   private HintWindow hw;
+  
+  private DocViewer docv;
+  
+  private List<String> undos;
+  
+  private List<String> redos;
   
   private int start, length;
   
@@ -54,12 +68,91 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   public Editor() {
     hw = new HintWindow(this);
     hl = new Highlighter();
+    hints = new Hints();
+    docv = new DocViewer();
+    undos = new LinkedList();
+    redos = new LinkedList();
     this.setEditorKit(new StyledEditorKit());
     this.setDocument(new DefaultStyledDocument());
     this.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
     this.setFont(new Font("Monospaced", Font.PLAIN, 16));
     this.setEditable(true);
     this.addKeyListener(this);
+  }
+  
+  
+  public void redo(String str) {
+    if(str != null) {
+      if(redos.size() >= MAX_UNDOS) {
+        redos.remove(0);
+        redos.remove(1);
+      }
+      redos.add(str);
+    }
+  }
+  
+  
+  public void undo(String str) {
+    if(str != null) {
+      if(undos.size() >= MAX_UNDOS) {
+        undos.remove(0);
+        undos.remove(1);
+      }
+      undos.add(str);
+    }
+  }
+  
+  
+  public void undo() {
+    if(undos.isEmpty()) return;
+    if(hw.isVisible() || docv.isVisible()) {
+      hw.setVisible(false);
+      docv.setVisible(false);
+    }
+    redo(getText());
+    setText(popUndo());
+    hl.update(this);
+  }
+  
+  
+  public void redo() {
+    if(redos.isEmpty()) return;
+    if(hw.isVisible() || docv.isVisible()) {
+      hw.setVisible(false);
+      docv.setVisible(false);
+    }
+    undo(getText());
+    setText(popRedo());
+    hl.update(this);
+  }
+  
+  
+  public int docLength() {
+    return this.getDocument().getLength();
+  }
+  
+  
+  public String lastUndo() {
+    if(undos.isEmpty()) return null;
+    return undos.get(undos.size()-1);
+  }
+  
+  
+  public String popUndo() {
+    if(undos.isEmpty()) return null;
+    return undos.remove(undos.size()-1);
+  }
+  
+  
+  public String lastRedo() {
+    if(redos.isEmpty()) return null;
+    return redos.get(redos.size()-1);
+  }
+  
+  
+  public String popRedo() {
+    if(redos.isEmpty()) return null;
+    return redos.remove(redos.size()-1);
   }
   
   
@@ -123,12 +216,17 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
     int is = this.reverseFind(SP, crt);
     int il = this.reverseFind(LN, crt);
     int ip = this.reverseFind(PT, crt);
-    start = Math.max(is, il);
-    start = Math.max(start, ip);
-    if(start < 0) start = 0;
-    else start += 1;
-    length = crt - start;
-    hw.show(hintLocation(), getString(start, length));
+    int st = Math.max(is, il);
+    st = Math.max(st, ip);
+    if(st < 0) st = 0;
+    else st += 1;
+    int len = crt - start;
+    if(start != st || len != length || !hw.isVisible()) {
+      start = st;
+      length = len;
+      hw.show(hintLocation(), hints.hintList(
+          getString(start, length)));
+    }
   }
   
   
@@ -141,30 +239,76 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
     pc.y += pl.y + 25;
     return pc;
   }
+  
+  
+  private void showDoc(String word) {
+    if(word == null) return;
+    if(!hw.isVisible()) return;
+    String doc = hints.getDocURLFor(word);
+    if(doc == null) return;
+    Point hp = hw.getLocationOnScreen();
+    Point p = new Point(hp.x + hw.getWidth() + 1, hp.y);
+    try {
+      docv.show(p, doc);
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+  }
 
 
   @Override public void keyTyped(KeyEvent e) {}
   @Override public void keyPressed(KeyEvent e) {
+    if(Highlighter.shouldUpdate(e) 
+        && (lastUndo() == null 
+        || !lastUndo().equals(getText()))) {
+      undo(getText());
+    }
     if(e.getKeyCode() == KeyEvent.VK_SPACE
         && e.isControlDown()) {
       this.showHintWindow();
       e.consume();
     }
+    else if(e.getKeyCode() == KeyEvent.VK_Z && e.isControlDown()) {
+      undo();
+      e.consume();
+    }
+    else if(e.getKeyCode() == KeyEvent.VK_Y && e.isControlDown()) {
+      redo();
+      e.consume();
+    }
+    else if(e.getKeyCode() == KeyEvent.VK_RIGHT && hw.isVisible()) {
+      showDoc(hw.selected());
+      e.consume();
+    }
+    else if(e.getKeyCode() == KeyEvent.VK_LEFT && docv.isVisible()) {
+      docv.setVisible(false);
+      e.consume();
+    }
     else if(e.getKeyCode() == KeyEvent.VK_DOWN && hw.isVisible()) {
-      hw.selectDown();
+      if(docv.isVisible()) {
+        docv.scrollDown();
+      } else {
+        hw.selectDown();
+      }
       e.consume();
     }
     else if(e.getKeyCode() == KeyEvent.VK_UP && hw.isVisible()) {
-      hw.selectUp();
+      if(docv.isVisible()) {
+        docv.scrollUp();
+      } else {
+        hw.selectUp();
+      }
       e.consume();
     }
     else if(e.getKeyCode() == KeyEvent.VK_ENTER && hw.isVisible()) {
       setHint(hw.selected());
       hw.setVisible(false);
+      docv.setVisible(false);
       e.consume();
     }
     else if(e.getKeyCode() == KeyEvent.VK_ESCAPE && hw.isVisible()) {
       hw.setVisible(false);
+      docv.setVisible(false);
       e.consume();
     }
     this.requestFocus();

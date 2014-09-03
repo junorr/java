@@ -162,8 +162,10 @@ public class Highlighter {
       Matcher m = mtc.matcherFor(text);
       while(m.find()) {
         //System.out.println("* found on: "+ m.start()+ ", until="+ m.end()+ ", txt="+ m.group());
-        mtc.getTextStyle()
-            .apply(m.start(), m.end() - m.start(), jep);
+        int len = m.end() - m.start();
+        if(len > 0)
+          mtc.getTextStyle()
+              .apply(m.start(), len, jep);
       }
     }
   }
