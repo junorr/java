@@ -64,12 +64,15 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   
   private int start, length;
   
+  private LineNumberPanel lnp;
+  
   
   public Editor() {
     hw = new HintWindow(this);
     hl = new Highlighter();
     hints = new Hints();
     docv = new DocViewer();
+    lnp = null;
     undos = new LinkedList();
     redos = new LinkedList();
     this.setEditorKit(new StyledEditorKit());
@@ -211,6 +214,31 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   }
   
   
+  public int getLinesNumber() {
+    String text = getText();
+    if(text.indexOf(LN) < 0)
+      return 1;
+    String[] ss = text.split(LN);
+    if(ss.length == 1) return 2;
+    return ss.length + 1;
+  }
+  
+  
+  public void setLineNumberPanel(LineNumberPanel lnp) {
+    this.lnp = lnp;
+  }
+  
+  
+  @Override
+  public void setFont(Font f) {
+    if(f != null) {
+      super.setFont(f);
+      if(lnp != null)
+        lnp.setFont(f);
+    }
+  }
+  
+  
   private void showHintWindow() {
     int crt = this.getCaretPosition();
     int is = this.reverseFind(SP, crt);
@@ -318,7 +346,11 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
 
   @Override
   public void keyReleased(KeyEvent e) {
-    hl.update(this);
+    if(Highlighter.shouldUpdate(e)) {
+      hl.update(this);
+      if(lnp != null)
+        lnp.setLinesNumber(getLinesNumber());
+    }
     if(hw.isVisible()) {
       this.showHintWindow();
     }

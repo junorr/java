@@ -37,6 +37,7 @@ import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import us.pserver.log.SimpleLog;
 
 /**
@@ -198,6 +199,10 @@ public class BigJar {
       while(ze != null) {
         Path dst = tempDir.resolve(ze.getName());
         if(ze.isDirectory()) {
+          if(Files.exists(dst) && !Files.isDirectory(dst)) {
+            log.warning("Deleting duplicate file: "+ dst.getFileName()+ "...");
+            Files.delete(dst);
+          }
           Files.createDirectories(dst);
         }
         else {
@@ -233,7 +238,7 @@ public class BigJar {
   
   private void makeBigJar() throws IOException {
     FileWalker fw = new FileWalker(tempDir);
-    List<ZipEntry> ents = fw.walk();
+    List<String> ents = fw.walk();
     
     try {
       Manifest mf = new Manifest();
@@ -254,8 +259,14 @@ public class BigJar {
       jos.setMethod(JarOutputStream.DEFLATED);
       jos.setLevel(8);
       
-      for(ZipEntry e : ents) {
-        jos.putNextEntry(e);
+      for(String se : ents) {
+        ZipEntry e = new ZipEntry(se);
+        try {
+          jos.putNextEntry(e);
+        } catch(ZipException ze) {
+          log.warning("Skiping existing entry: "+ se+ "...");
+          continue;
+        }
         if(!e.isDirectory()) {
           InputStream is = Files.newInputStream(
               tempDir.resolve(e.getName()), 

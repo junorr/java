@@ -39,7 +39,7 @@ import java.util.zip.ZipEntry;
  */
 public class FileWalker implements FileVisitor<Path> {
 
-  private LinkedList<ZipEntry> entries;
+  private LinkedList<String> entries;
   
   private Path dir;
   
@@ -57,7 +57,7 @@ public class FileWalker implements FileVisitor<Path> {
   }
   
   
-  public List<ZipEntry> walk() {
+  public List<String> walk() {
     try {
       Files.walkFileTree(dir, this);
     } catch(IOException e) {}
@@ -70,8 +70,8 @@ public class FileWalker implements FileVisitor<Path> {
     String str = dir.relativize(pd).toString();
     str = str.replace("\\", "/");
     if(!str.endsWith("/")) str += "/";
-    if(!str.equals("/")) {
-      entries.add(new ZipEntry(str));
+    if(!str.equals("/") && !entries.contains(str)) {
+      entries.add(str);
     }
     return FileVisitResult.CONTINUE;
   }
@@ -81,7 +81,8 @@ public class FileWalker implements FileVisitor<Path> {
   public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
     String str = dir.relativize(file).toString();
     str = str.replace("\\", "/");
-    entries.add(new ZipEntry(str));
+    if(!entries.contains(str))
+      entries.add(str);
     return FileVisitResult.CONTINUE;
   }
 
