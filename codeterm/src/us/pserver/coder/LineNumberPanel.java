@@ -23,13 +23,14 @@ package us.pserver.coder;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
-import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -38,82 +39,86 @@ import javax.swing.JPanel;
  */
 public class LineNumberPanel extends JPanel {
 
-  public static final int DEF_LN_WIDTH = 30;
+  public static final int WIDTH_CONST = 5;
   
-  private JPanel lnpanel;
+  private JTextArea lnpane;
   
   private Editor editor;
   
   
   public LineNumberPanel(Editor ed) {
-    super(new BorderLayout(1, 0));
+    super(new BorderLayout(0, 0));
     editor = ed;
-    lnpanel = new JPanel();
-    BoxLayout bl = new BoxLayout(lnpanel, BoxLayout.Y_AXIS);
-    lnpanel.setLayout(bl);
-    this.add(lnpanel, BorderLayout.WEST);
+    lnpane = new JTextArea();
+    lnpane.setBorder(BorderFactory.createEmptyBorder());
+    lnpane.setEditable(false);
+    lnpane.setFont(editor.getFont());
+    this.add(lnpane, BorderLayout.WEST);
     this.add(editor, BorderLayout.CENTER);
     editor.setLineNumberPanel(this);
     setLinesNumber(editor.getLinesNumber());
+    lnpane.setBackground(new Color(240, 240, 240));
   }
   
   
   public LineNumberPanel addLineNumber(int num) {
-    JLabel lb = new JLabel(String.valueOf(num));
-    lb.setAlignmentX(JLabel.RIGHT_ALIGNMENT);
-    lb.setHorizontalAlignment(JLabel.RIGHT);
-    lb.setHorizontalTextPosition(JLabel.RIGHT);
-    lb.setFont(editor.getFont());
-    System.out.println("* "+ num+ ": "+ lb.getPreferredSize());
-    Dimension d = lb.getPreferredSize();
-    if(d.width < DEF_LN_WIDTH) {
-      d.width = DEF_LN_WIDTH;
-      lb.setSize(d);
-      lb.setPreferredSize(d);
-    }
-    lnpanel.add(lb);
+    String sn = String.valueOf(num);
+    lnpane.setText(lnpane.getText() + sn + Editor.LN);
     return this;
+  }
+  
+  
+  public void setLinesWidth(int width) {
+    Dimension d = new Dimension(width, lnpane.getHeight());
+    lnpane.setSize(d);
+    lnpane.setPreferredSize(d);
+    this.revalidate();
+  }
+  
+  
+  private int getWidthFor(String str) {
+    JLabel lb = new JLabel();
+    lb.setFont(editor.getFont());
+    lb.setText(str);
+    Dimension ld = lb.getPreferredSize();
+    return ld.width + WIDTH_CONST;
   }
   
   
   public LineNumberPanel setLinesNumber(int num) {
     if(num < 1) num = 1;
-    lnpanel.removeAll();
+    lnpane.setText("");
     for(int i = 1; i <= num; i++) {
       addLineNumber(i);
     }
-    lnpanel.repaint();
+    setLinesWidth(getWidthFor(String.valueOf(num)));
     return this;
   }
   
   
   @Override
   public void setFont(Font f) {
-    if(f != null && lnpanel != null) {
-      lnpanel.setFont(f);
-      for(Component c : lnpanel.getComponents())
-        c.setFont(f);
-      lnpanel.repaint();
-    }
-  }
-  
-  
-  @Override
-  public void setBackground(Color c) {
-    if(c != null && lnpanel != null) {
-      lnpanel.setBackground(c);
-      lnpanel.repaint();
+    if(f != null && lnpane != null) {
+      lnpane.setFont(f);
+      lnpane.repaint();
     }
   }
   
   
   @Override
   public void setForeground(Color c) {
-    if(c != null && lnpanel != null) {
-      lnpanel.setForeground(c);
-      for(Component cm : lnpanel.getComponents())
-        cm.setForeground(c);
-      lnpanel.repaint();
+    if(c != null && lnpane != null) {
+      lnpane.setForeground(c);
+      lnpane.repaint();
+    }
+  }
+  
+  
+  @Override
+  public void setBackground(Color c) {
+    if(c != null && lnpane != null) {
+      lnpane.setBackground(c);
+      lnpane.repaint();
     }
   }
   

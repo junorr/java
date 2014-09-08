@@ -6,11 +6,22 @@
 
 package us.pserver.coder;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.Timer;
 
 
 /**
@@ -19,27 +30,77 @@ import java.awt.event.KeyEvent;
  */
 public class FrameEditor extends javax.swing.JFrame {
 
+  public static final Color
+      DEF_STATUS_COLOR = new Color(100, 100, 200),
+      STATUS_ERROR_COLOR = new Color(255, 70, 70);
+  
+  public static final int 
+      STATUS_HEIGHT = 18,
+      STATUS_DELAY = 3500;
+      
+  
   private Editor editor;
   
   private int buttonBarHeight;
+  
+  private ReplaceDialog replace;
+  
+  private TextCopy copy;
+  
+  private Timer hideStatus;
+  
+  private File lastFile;
+  
+  private LineNumberPanel lnp;
+  
   
   /**
    * Creates new form FrameEditor
    */
   public FrameEditor() {
     editor = new Editor();
-    LineNumberPanel lnp = new LineNumberPanel(editor);
+    editor.setText("codeterm\ncodeterm\ncodeterm\ncodeterm\ncodeterm\ncodeterm\n");
+    editor.setBackground(Color.GRAY);
+    editor.setForeground(Color.YELLOW);
+    lnp = new LineNumberPanel(editor);
+    replace = new ReplaceDialog(this, editor);
+    copy = new TextCopy();
+    lastFile = null;
     initComponents();
     buttonBarHeight = buttonBar.getPreferredSize().height;
     scroll.setViewportView(lnp);
     scroll.repaint();
     editor.addKeyListener(new KeyAdapter() {
-      public void keyReleased(KeyEvent e) {
+      public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_H && e.isControlDown()) {
           toggleButtonBar();
+          e.consume();
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_F && e.isControlDown()) {
+          find();
+          e.consume();
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
+          copy();
+          e.consume();
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_V && e.isControlDown()) {
+          paste();
+          e.consume();
         }
       }
     });
+    this.setLocation(ScreenPositioner
+        .getCenterScreenPoint(this));
+    statusbar.setForeground(DEF_STATUS_COLOR);
+    hideStatus = new Timer(STATUS_DELAY, new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        statusbar.setPreferredSize(
+            new Dimension(statusbar.getWidth(), 1));
+        content.revalidate();
+      }
+    });
+    hideStatus.setRepeats(false);
   }
   
   
@@ -54,6 +115,170 @@ public class FrameEditor extends javax.swing.JFrame {
     buttonBar.repaint();
     content.revalidate();
   }
+  
+  
+  public void find() {
+    replace.setLocation(ScreenPositioner
+        .getCenterWindowPoint(this, replace));
+    replace.setVisible(true);
+  }
+  
+  
+  public void copy() {
+    int ss = editor.getSelectionStart();
+    int se = editor.getSelectionEnd();
+    if(ss < 0 || se < 0 || (se - ss) <= 0) {
+      status("No text selected", true);
+      return;
+    }
+    copy.setText(editor.getString(ss, se - ss));
+    copy.putInClipboard();
+    status("Copied ("+ copy.getText()+ ")", false);
+  }
+  
+  
+  public void paste() {
+    copy.setFromClipboard();
+    if(copy.getText() == null 
+        || copy.getText().isEmpty()) {
+      status("Nothing to paste", true);
+      return;
+    }
+    int ss = editor.getSelectionStart();
+    int len = editor.getSelectionEnd() - ss;
+    if(ss < 0 || len <= 0) {
+      ss = editor.getCaretPosition();
+      len = 0;
+    }
+    editor.undo(editor.getText());
+    editor.replace(ss, len, copy.getText());
+    editor.update();
+    status("Paste ("+ copy.getText()+ ")", false);
+  }
+  
+  
+  public void selectFont() {
+    Font f = editor.getFont();
+    FontSelector fs = new FontSelector(this, true, f);
+    fs.setLocation(ScreenPositioner
+        .getCenterWindowPoint(this, fs));
+    fs.setVisible(true);
+    f = fs.getSelectedFont();
+    editor.setFont(f);
+    lnp.setFont(f);
+    lnp.setLinesNumber(editor.getLinesNumber());
+  }
+  
+  
+  public void open() {
+    JFileChooser ch = new JFileChooser(lastFile);
+    ch.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    int opt = ch.showOpenDialog(this);
+    if(opt != JFileChooser.APPROVE_OPTION) {
+      status("No file selected", true);
+      return;
+    }
+    lastFile = ch.getSelectedFile();
+    if(read(lastFile)) {
+      status("File Opened ("+ lastFile+ ")", false);
+    }
+  }
+  
+  
+  public void save() {
+    if(lastFile == null)
+      saveAs();
+    else if(write(lastFile))
+      status("File Saved ("+ lastFile+ ")", false);
+  }
+  
+  
+  public void saveAs() {
+    JFileChooser ch = new JFileChooser(lastFile);
+    ch.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    int opt = ch.showSaveDialog(this);
+    if(opt != JFileChooser.APPROVE_OPTION) {
+      status("No file selected", true);
+      return;
+    }
+    lastFile = ch.getSelectedFile();
+    if(write(lastFile)) {
+      status("File Saved ("+ lastFile+ ")", false);
+    }
+  }
+  
+  
+  public boolean write(File f) {
+    if(f == null) return false;
+    try (
+        BufferedWriter bw = new BufferedWriter(
+            new FileWriter(f));
+        ) {
+      String text = editor.getText();
+      String[] ls = text.split(Editor.LN);
+      for(String l : ls) {
+        bw.write(l);
+        bw.newLine();
+      }
+      bw.flush();
+      return true;
+    } 
+    catch(IOException e) {
+      status("Error writing file:"+ e.getMessage(), true);
+      return false;
+    } 
+  }
+  
+  
+  public boolean read(File f) {
+    if(f == null || !f.exists()) {
+      status("File dont exists ("+ f+ ")", true);
+      return false;
+    }
+    try (
+        BufferedReader br = new BufferedReader(
+            new FileReader(f));
+        ) {
+      StringBuffer sb = new StringBuffer();
+      while(true) {
+        String ln = br.readLine();
+        if(ln == null) break;
+        sb.append(ln).append(Editor.LN);
+      }
+      editor.setText(sb.toString());
+      editor.setCaretPosition(0);
+      editor.update();
+      lnp.revalidate();
+      return true;
+    }
+    catch(IOException e) {
+      status("Error reading file: "+ e.getMessage(), true);
+      return false;
+    }
+  }
+  
+  
+  public void status(String text, boolean error) {
+    if(error) {
+      statusbar.setForeground(STATUS_ERROR_COLOR);
+    } else {
+      statusbar.setForeground(DEF_STATUS_COLOR);
+    }
+    statusbar.setText("  "+ text);
+    statusbar.setPreferredSize(
+        new Dimension(statusbar.getWidth(), 
+            STATUS_HEIGHT));
+    statusbar.repaint();
+    content.revalidate();
+    hideStatus.restart();
+  }
+  
+  
+  @Override
+  public void setVisible(boolean b) {
+    super.setVisible(b);
+    editor.requestFocus();
+  }
 
 
   /**
@@ -67,17 +292,17 @@ public class FrameEditor extends javax.swing.JFrame {
 
     content = new javax.swing.JPanel();
     buttonBar = new javax.swing.JPanel();
-    actionLabel1 = new us.pserver.coder.ActionLabel();
-    actionLabel2 = new us.pserver.coder.ActionLabel();
-    actionLabel3 = new us.pserver.coder.ActionLabel();
-    actionLabel4 = new us.pserver.coder.ActionLabel();
-    actionLabel5 = new us.pserver.coder.ActionLabel();
-    replButton = new us.pserver.coder.ActionLabel();
-    actionLabel7 = new us.pserver.coder.ActionLabel();
-    actionLabel8 = new us.pserver.coder.ActionLabel();
-    actionLabel9 = new us.pserver.coder.ActionLabel();
-    actionLabel10 = new us.pserver.coder.ActionLabel();
+    saveAction = new us.pserver.coder.ActionLabel();
+    openAction = new us.pserver.coder.ActionLabel();
+    copyAction = new us.pserver.coder.ActionLabel();
+    pasteAction = new us.pserver.coder.ActionLabel();
+    findAction = new us.pserver.coder.ActionLabel();
+    undoAction = new us.pserver.coder.ActionLabel();
+    redoAction = new us.pserver.coder.ActionLabel();
+    fontAction = new us.pserver.coder.ActionLabel();
+    colorsAction = new us.pserver.coder.ActionLabel();
     scroll = new javax.swing.JScrollPane();
+    statusbar = new javax.swing.JLabel();
     jMenuBar1 = new javax.swing.JMenuBar();
     jMenu1 = new javax.swing.JMenu();
     jMenu2 = new javax.swing.JMenu();
@@ -88,45 +313,86 @@ public class FrameEditor extends javax.swing.JFrame {
 
     buttonBar.setBackground(new java.awt.Color(80, 80, 80));
 
-    actionLabel1.setForeground(new java.awt.Color(255, 255, 255));
-    actionLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/circle-save-24.png"))); // NOI18N
-    actionLabel1.setText("Save");
+    saveAction.setForeground(new java.awt.Color(255, 255, 255));
+    saveAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/circle-save-24.png"))); // NOI18N
+    saveAction.setText("Save");
+    saveAction.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        saveActionMouseClicked(evt);
+      }
+    });
 
-    actionLabel2.setForeground(new java.awt.Color(255, 255, 255));
-    actionLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/circle-open-24.png"))); // NOI18N
-    actionLabel2.setText("Open");
+    openAction.setForeground(new java.awt.Color(255, 255, 255));
+    openAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/circle-open-24.png"))); // NOI18N
+    openAction.setText("Open");
+    openAction.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        openActionMouseClicked(evt);
+      }
+    });
 
-    actionLabel3.setForeground(new java.awt.Color(255, 255, 255));
-    actionLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/copy-plus-24.png"))); // NOI18N
-    actionLabel3.setText("Copy");
+    copyAction.setForeground(new java.awt.Color(255, 255, 255));
+    copyAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/circle-copy-24.png"))); // NOI18N
+    copyAction.setText("Copy");
+    copyAction.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        copyActionMouseClicked(evt);
+      }
+    });
 
-    actionLabel4.setForeground(new java.awt.Color(255, 255, 255));
-    actionLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/paste-24.png"))); // NOI18N
-    actionLabel4.setText("Paste");
+    pasteAction.setForeground(new java.awt.Color(255, 255, 255));
+    pasteAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/paste-24.png"))); // NOI18N
+    pasteAction.setText("Paste");
+    pasteAction.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        pasteActionMouseClicked(evt);
+      }
+    });
 
-    actionLabel5.setForeground(new java.awt.Color(255, 255, 255));
-    actionLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/search-24.png"))); // NOI18N
-    actionLabel5.setText("Find");
+    findAction.setForeground(new java.awt.Color(255, 255, 255));
+    findAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/find-24.png"))); // NOI18N
+    findAction.setText("Find");
+    findAction.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        findActionMouseClicked(evt);
+      }
+    });
 
-    replButton.setForeground(new java.awt.Color(255, 255, 255));
-    replButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/circle-copy-24.png"))); // NOI18N
-    replButton.setText("Replace");
+    undoAction.setForeground(new java.awt.Color(255, 255, 255));
+    undoAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/undo-24.png"))); // NOI18N
+    undoAction.setText("Undo");
+    undoAction.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        undoActionMouseClicked(evt);
+      }
+    });
 
-    actionLabel7.setForeground(new java.awt.Color(255, 255, 255));
-    actionLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/circle-back-24.png"))); // NOI18N
-    actionLabel7.setText("Undo");
+    redoAction.setForeground(new java.awt.Color(255, 255, 255));
+    redoAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/redo-24.png"))); // NOI18N
+    redoAction.setText("Redo");
+    redoAction.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        redoActionMouseClicked(evt);
+      }
+    });
 
-    actionLabel8.setForeground(new java.awt.Color(255, 255, 255));
-    actionLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/circle-forward-24.png"))); // NOI18N
-    actionLabel8.setText("Redo");
+    fontAction.setForeground(new java.awt.Color(255, 255, 255));
+    fontAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/font-24.png"))); // NOI18N
+    fontAction.setText("Font");
+    fontAction.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        fontActionMouseClicked(evt);
+      }
+    });
 
-    actionLabel9.setForeground(new java.awt.Color(255, 255, 255));
-    actionLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/font-24.png"))); // NOI18N
-    actionLabel9.setText("Font");
-
-    actionLabel10.setForeground(new java.awt.Color(255, 255, 255));
-    actionLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/colors-24.png"))); // NOI18N
-    actionLabel10.setText("Colors");
+    colorsAction.setForeground(new java.awt.Color(255, 255, 255));
+    colorsAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/colors-24.png"))); // NOI18N
+    colorsAction.setText("Colors");
+    colorsAction.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        colorsActionMouseClicked(evt);
+      }
+    });
 
     javax.swing.GroupLayout buttonBarLayout = new javax.swing.GroupLayout(buttonBar);
     buttonBar.setLayout(buttonBarLayout);
@@ -136,57 +402,51 @@ public class FrameEditor extends javax.swing.JFrame {
         .addContainerGap()
         .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(buttonBarLayout.createSequentialGroup()
-            .addComponent(actionLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGap(18, 18, 18)
-            .addComponent(actionLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(saveAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(copyAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
           .addGroup(buttonBarLayout.createSequentialGroup()
-            .addComponent(actionLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGap(18, 18, 18)
-            .addComponent(actionLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        .addGap(18, 18, 18)
+            .addComponent(openAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(pasteAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        .addGap(12, 12, 12)
         .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(actionLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(actionLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addGap(18, 18, 18)
-        .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(actionLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(replButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addGap(18, 18, 18)
-        .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(actionLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(actionLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+          .addGroup(buttonBarLayout.createSequentialGroup()
+            .addComponent(redoAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(fontAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addGroup(buttonBarLayout.createSequentialGroup()
+            .addComponent(undoAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(findAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(colorsAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        .addContainerGap(35, Short.MAX_VALUE))
     );
     buttonBarLayout.setVerticalGroup(
       buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(buttonBarLayout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(buttonBarLayout.createSequentialGroup()
-            .addComponent(actionLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(actionLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-          .addGroup(buttonBarLayout.createSequentialGroup()
-            .addComponent(actionLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(actionLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-          .addGroup(buttonBarLayout.createSequentialGroup()
-            .addComponent(actionLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(replButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-          .addGroup(buttonBarLayout.createSequentialGroup()
-            .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-              .addComponent(actionLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-              .addComponent(actionLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-              .addComponent(actionLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-              .addComponent(actionLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+        .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(saveAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(copyAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(undoAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(findAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(colorsAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(openAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(pasteAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(redoAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(fontAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
 
     content.add(buttonBar, java.awt.BorderLayout.NORTH);
     content.add(scroll, java.awt.BorderLayout.CENTER);
+
+    statusbar.setPreferredSize(new java.awt.Dimension(40, 1));
+    content.add(statusbar, java.awt.BorderLayout.SOUTH);
 
     jMenu1.setText("File");
     jMenuBar1.add(jMenu1);
@@ -210,6 +470,43 @@ public class FrameEditor extends javax.swing.JFrame {
     pack();
   }// </editor-fold>//GEN-END:initComponents
 
+  
+  private void findActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_findActionMouseClicked
+    find();
+  }//GEN-LAST:event_findActionMouseClicked
+
+  private void copyActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_copyActionMouseClicked
+    copy();
+  }//GEN-LAST:event_copyActionMouseClicked
+
+  private void pasteActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pasteActionMouseClicked
+    paste();
+  }//GEN-LAST:event_pasteActionMouseClicked
+
+  private void undoActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_undoActionMouseClicked
+    editor.undo();
+  }//GEN-LAST:event_undoActionMouseClicked
+
+  private void redoActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_redoActionMouseClicked
+    editor.redo();
+  }//GEN-LAST:event_redoActionMouseClicked
+
+  private void openActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openActionMouseClicked
+    open();
+  }//GEN-LAST:event_openActionMouseClicked
+
+  private void saveActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveActionMouseClicked
+    save();
+  }//GEN-LAST:event_saveActionMouseClicked
+
+  private void fontActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fontActionMouseClicked
+    selectFont();
+  }//GEN-LAST:event_fontActionMouseClicked
+
+  private void colorsActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_colorsActionMouseClicked
+    
+  }//GEN-LAST:event_colorsActionMouseClicked
+
 
   /**
    * @param args the command line arguments
@@ -219,7 +516,7 @@ public class FrameEditor extends javax.swing.JFrame {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
      * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-     */
+     *
     try {
       for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
         if ("Nimbus".equals(info.getName())) {
@@ -247,21 +544,21 @@ public class FrameEditor extends javax.swing.JFrame {
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private us.pserver.coder.ActionLabel actionLabel1;
-  private us.pserver.coder.ActionLabel actionLabel10;
-  private us.pserver.coder.ActionLabel actionLabel2;
-  private us.pserver.coder.ActionLabel actionLabel3;
-  private us.pserver.coder.ActionLabel actionLabel4;
-  private us.pserver.coder.ActionLabel actionLabel5;
-  private us.pserver.coder.ActionLabel actionLabel7;
-  private us.pserver.coder.ActionLabel actionLabel8;
-  private us.pserver.coder.ActionLabel actionLabel9;
   private javax.swing.JPanel buttonBar;
+  private us.pserver.coder.ActionLabel colorsAction;
   private javax.swing.JPanel content;
+  private us.pserver.coder.ActionLabel copyAction;
+  private us.pserver.coder.ActionLabel findAction;
+  private us.pserver.coder.ActionLabel fontAction;
   private javax.swing.JMenu jMenu1;
   private javax.swing.JMenu jMenu2;
   private javax.swing.JMenuBar jMenuBar1;
-  private us.pserver.coder.ActionLabel replButton;
+  private us.pserver.coder.ActionLabel openAction;
+  private us.pserver.coder.ActionLabel pasteAction;
+  private us.pserver.coder.ActionLabel redoAction;
+  private us.pserver.coder.ActionLabel saveAction;
   private javax.swing.JScrollPane scroll;
+  private javax.swing.JLabel statusbar;
+  private us.pserver.coder.ActionLabel undoAction;
   // End of variables declaration//GEN-END:variables
 }

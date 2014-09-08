@@ -9,6 +9,7 @@ package us.pserver.coder;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.ImageIcon;
 
 
 /**
@@ -25,36 +26,65 @@ public class ReplaceDialog extends javax.swing.JDialog {
    * Creates new form ReplaceDialog
    */
   public ReplaceDialog(java.awt.Frame parent, Editor edit) {
-    super(parent, true);
-    pos = 0;
+    super(parent, false);
+    pos = -1;
     editor = edit;
     KeyListener kl = new KeyAdapter() {
       @Override public void keyReleased(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_F && e.isControlDown()) {
+        if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+          if(e.getSource() == findInput 
+              || e.getSource() == findButton)
+            find();
+          else if(e.getSource() == replaceInput
+              || e.getSource() == replaceButton) {
+            replace();
+            find();
+          }
+          else if(e.getSource() == repAllButton)
+            replaceAll();
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_F && e.isControlDown()) {
           find();
         }
-        if(e.getKeyCode() == KeyEvent.VK_R && e.isControlDown()) {
+        else if(e.getKeyCode() == KeyEvent.VK_R && e.isControlDown()) {
           replace();
           find();
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_R 
+            && e.isControlDown() && e.isShiftDown()) {
+          replaceAll();
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+          ReplaceDialog.this.setVisible(false);
+          editor.requestFocus();
         }
       }
     };
     initComponents();
     findInput.addKeyListener(kl);
     replaceInput.addKeyListener(kl);
+    findButton.addKeyListener(kl);
+    replaceButton.addKeyListener(kl);
+    repAllButton.addKeyListener(kl);
   }
   
   
   public void find() {
     String sf = findInput.getText();
-    if(pos >= sf.length()) pos = 0;
+    if(sf == null || sf.isEmpty()) return;
+    int len = editor.getDocument().getLength();
+    if(pos >= len || pos < 0) pos = editor.getCaretPosition();
     pos = editor.find(sf, pos);
+    System.out.println("find="+ pos);
     if(pos < 0) {
       editor.setSelectionStart(0);
       editor.setSelectionEnd(0);
     }
-    editor.setSelectionStart(pos);
-    editor.setSelectionEnd(pos + sf.length());
+    else {
+      editor.setSelectionStart(pos);
+      pos += sf.length();
+      editor.setSelectionEnd(pos);
+    }
   }
   
   
@@ -69,7 +99,11 @@ public class ReplaceDialog extends javax.swing.JDialog {
   
   
   public void replaceAll() {
-    
+    while(pos >= 0) {
+      replace();
+      find();
+    }
+    System.out.println("* finish replaceAll");
   }
 
 
@@ -93,16 +127,32 @@ public class ReplaceDialog extends javax.swing.JDialog {
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     setTitle("Find/Replace");
+    setIconImage(new ImageIcon(getClass().getResource("/us/pserver/coder/images/find-gray-24.png")).getImage());
 
     findLabel.setText("Find");
 
     replaceLabel.setText("Replace");
 
     findButton.setText("Find");
+    findButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        findButtonActionPerformed(evt);
+      }
+    });
 
     replaceButton.setText("Replace");
+    replaceButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        replaceButtonActionPerformed(evt);
+      }
+    });
 
     repAllButton.setText("Replace All");
+    repAllButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        repAllButtonActionPerformed(evt);
+      }
+    });
 
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
@@ -162,6 +212,19 @@ public class ReplaceDialog extends javax.swing.JDialog {
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
+
+  private void findButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findButtonActionPerformed
+    find();
+  }//GEN-LAST:event_findButtonActionPerformed
+
+  private void replaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceButtonActionPerformed
+    replace();
+    find();
+  }//GEN-LAST:event_replaceButtonActionPerformed
+
+  private void repAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_repAllButtonActionPerformed
+    replaceAll();
+  }//GEN-LAST:event_repAllButtonActionPerformed
 
 
   /**

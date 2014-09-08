@@ -29,10 +29,10 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JEditorPane;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Element;
+import javax.swing.text.StyledDocument;
 import javax.swing.text.StyledEditorKit;
 
 /**
@@ -114,7 +114,7 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
     }
     redo(getText());
     setText(popUndo());
-    hl.update(this);
+    update();
   }
   
   
@@ -126,7 +126,7 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
     }
     undo(getText());
     setText(popRedo());
-    hl.update(this);
+    update();
   }
   
   
@@ -192,6 +192,7 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   
   
   public int find(String str, int fromPos) {
+    System.out.println("* editor.find( '"+ str+ "', "+ fromPos+ " )");
     if(str == null 
         || str.isEmpty()
         || fromPos < 0 
@@ -216,11 +217,15 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   
   public int getLinesNumber() {
     String text = getText();
-    if(text.indexOf(LN) < 0)
-      return 1;
-    String[] ss = text.split(LN);
-    if(ss.length == 1) return 2;
-    return ss.length + 1;
+    int pos = 0;
+    int ln = 0;
+    while(true) {
+      pos = text.indexOf(LN, pos);
+      if(pos < 0) break;
+      ln++;
+      pos++;
+    }
+    return ln + 1;
   }
   
   
@@ -347,13 +352,18 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   @Override
   public void keyReleased(KeyEvent e) {
     if(Highlighter.shouldUpdate(e)) {
-      hl.update(this);
-      if(lnp != null)
-        lnp.setLinesNumber(getLinesNumber());
+      update();
     }
     if(hw.isVisible()) {
       this.showHintWindow();
     }
+  }
+  
+  
+  public void update() {
+    hl.update(this);
+    if(lnp != null)
+      lnp.setLinesNumber(getLinesNumber());
   }
 
 
