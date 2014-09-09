@@ -7,8 +7,10 @@
 package us.pserver.coder;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -19,6 +21,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.Timer;
@@ -31,12 +34,20 @@ import javax.swing.Timer;
 public class FrameEditor extends javax.swing.JFrame {
 
   public static final Color
-      DEF_STATUS_COLOR = new Color(100, 100, 200),
-      STATUS_ERROR_COLOR = new Color(255, 70, 70);
+      DEF_STATUS_COLOR = Color.WHITE,
+      STATUS_ERROR_COLOR = Color.YELLOW,
+      DEF_EDITOR_BG = new Color(100, 100, 100),
+      DEF_EDITOR_FG = new Color(200, 255, 210),
+      DEF_SELECT_COLOR = new Color(170, 170, 170);
   
   public static final int 
       STATUS_HEIGHT = 18,
       STATUS_DELAY = 3500;
+  
+  public static final String
+      ICON_OPEN = "/us/pserver/coder/images/open-gray-24.png",
+      ICON_SAVE = "/us/pserver/coder/images/save-gray-24.png",
+      ICON_TERM = "/us/pserver/coder/images/codeterm-24.png";
       
   
   private Editor editor;
@@ -51,7 +62,11 @@ public class FrameEditor extends javax.swing.JFrame {
   
   private File lastFile;
   
+  private Color statusColor, statusWarnColor;
+  
   private LineNumberPanel lnp;
+  
+  private CodetermConfig conf;
   
   
   /**
@@ -59,14 +74,22 @@ public class FrameEditor extends javax.swing.JFrame {
    */
   public FrameEditor() {
     editor = new Editor();
-    editor.setText("codeterm\ncodeterm\ncodeterm\ncodeterm\ncodeterm\ncodeterm\n");
-    editor.setBackground(Color.GRAY);
-    editor.setForeground(Color.YELLOW);
     lnp = new LineNumberPanel(editor);
+    editor.setText("codeterm\ncodeterm\ncodeterm\ncodeterm\ncodeterm\ncodeterm\n");
     replace = new ReplaceDialog(this, editor);
     copy = new TextCopy();
     lastFile = null;
+    conf = new CodetermConfig();
+    
     initComponents();
+
+    this.setLocation(ScreenPositioner
+        .getCenterScreenPoint(this));
+    
+    initConfig();
+    
+    this.setIconImage(new ImageIcon(
+        getClass().getResource(ICON_TERM)).getImage());
     buttonBarHeight = buttonBar.getPreferredSize().height;
     scroll.setViewportView(lnp);
     scroll.repaint();
@@ -90,9 +113,6 @@ public class FrameEditor extends javax.swing.JFrame {
         }
       }
     });
-    this.setLocation(ScreenPositioner
-        .getCenterScreenPoint(this));
-    statusbar.setForeground(DEF_STATUS_COLOR);
     hideStatus = new Timer(STATUS_DELAY, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         statusbar.setPreferredSize(
@@ -101,6 +121,63 @@ public class FrameEditor extends javax.swing.JFrame {
       }
     });
     hideStatus.setRepeats(false);
+  }
+  
+  
+  private void initConfig() {
+    if(conf.fileExists()) {
+      Exception e = conf.load();
+      if(e != null)
+        throw new IllegalStateException(e.getMessage(), e);
+      editor.setBackground(conf.getTextBgColor());
+      Color c = conf.getTextColor();
+      System.out.println("* text color="+ c);
+      editor.setForeground(conf.getTextColor());
+      System.out.println("* editor color="+ editor.getForeground());
+      editor.setFont(conf.getTextFont());
+      editor.setSelectionColor(conf.getTextSelectionColor());
+      lnp.setFont(conf.getTextFont());
+      lnp.setBackground(conf.getLinesBgColor());
+      lnp.setForeground(conf.getLinesColor());
+      statusColor = conf.getStatusColor();
+      statusWarnColor = conf.getStatusWarnColor();
+      c = conf.getStatusBgColor();
+      System.out.println("* statusBG color="+ c);
+      statusbar.setBackground(conf.getStatusBgColor());
+      System.out.println("* statusbar color="+ statusbar.getBackground());
+      statusbar.setFont(conf.getStatusFont());
+      Rectangle r = conf.getPosition();
+      if(r != null) {
+        this.setLocation(r.x, r.y);
+        this.setSize(r.width, r.height);
+      }
+    }
+    else {
+      editor.setBackground(DEF_EDITOR_BG);
+      editor.setForeground(DEF_EDITOR_FG);
+      editor.setSelectionColor(DEF_SELECT_COLOR);
+      statusColor = DEF_STATUS_COLOR;
+      statusWarnColor = STATUS_ERROR_COLOR;
+      statusbar.setBackground(DEF_EDITOR_BG);
+      defineConfig();
+      Exception e = conf.save();
+      if(e != null)
+        throw new IllegalStateException(e.getMessage(), e);
+    }
+  }
+  
+  
+  public void defineConfig() {
+    conf.setLinesBgColor(lnp.getBackground());
+    conf.setLinesColor(lnp.getForeground());
+    conf.setStatusBgColor(statusbar.getBackground());
+    conf.setStatusColor(statusColor);
+    conf.setStatusFont(statusbar.getFont());
+    conf.setStatusWarnColor(statusWarnColor);
+    conf.setTextBgColor(editor.getBackground());
+    conf.setTextColor(editor.getForeground());
+    conf.setTextFont(editor.getFont());
+    conf.setTextSelectionColor(editor.getSelectionColor());
   }
   
   
@@ -124,14 +201,43 @@ public class FrameEditor extends javax.swing.JFrame {
   }
   
   
+  public void colors() {
+    ColorsDialog cd = new ColorsDialog(this, true);
+    cd.setTextColor(editor.getForeground());
+    cd.setTextBgColor(editor.getBackground());
+    cd.setTextSelectionColor(editor.getSelectionColor());
+    cd.setLinesColor(lnp.getForeground());
+    cd.setLinesBgColor(lnp.getBackground());
+    cd.setStatusColor(statusColor);
+    cd.setStatusBgColor(statusbar.getBackground());
+    cd.setStatusWarnColor(statusWarnColor);
+    cd.setVisible(true);
+    
+    editor.setForeground(cd.getTextColor());
+    editor.setBackground(cd.getTextBgColor());
+    editor.setSelectionColor(cd.getTextSelectionColor());
+    lnp.setBackground(cd.getLinesBgColor());
+    lnp.setForeground(cd.getLinesColor());
+    statusColor = cd.getStatusColor();
+    statusWarnColor = cd.getStatusWarnColor();
+    statusbar.setBackground(cd.getStatusBgColor());
+    defineConfig();
+    Exception e = conf.save();
+    if(e != null)
+      status("Error saving config: "+ e.getMessage(), true);
+    else
+      status("Configurations saved", false);
+  }
+  
+  
   public void copy() {
     int ss = editor.getSelectionStart();
-    int se = editor.getSelectionEnd();
-    if(ss < 0 || se < 0 || (se - ss) <= 0) {
+    int len = editor.getSelectionEnd() - ss;
+    if(ss < 0 || len <= 0) {
       status("No text selected", true);
       return;
     }
-    copy.setText(editor.getString(ss, se - ss));
+    copy.setText(editor.getString(ss, len));
     copy.putInClipboard();
     status("Copied ("+ copy.getText()+ ")", false);
   }
@@ -171,17 +277,37 @@ public class FrameEditor extends javax.swing.JFrame {
   
   
   public void open() {
-    JFileChooser ch = new JFileChooser(lastFile);
-    ch.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    int opt = ch.showOpenDialog(this);
-    if(opt != JFileChooser.APPROVE_OPTION) {
+    lastFile = showFileChooser(ICON_OPEN, false);
+    if(lastFile == null) {
       status("No file selected", true);
       return;
     }
-    lastFile = ch.getSelectedFile();
     if(read(lastFile)) {
       status("File Opened ("+ lastFile+ ")", false);
     }
+  }
+  
+  
+  public File showFileChooser(String iconpath, boolean save) {
+    JFileChooser ch = new JFileChooser(lastFile) {
+      protected JDialog createDialog(Component parent) {
+        JDialog dlg = super.createDialog(parent);
+        if(iconpath != null && !iconpath.isEmpty())
+          dlg.setIconImage(new ImageIcon(
+              Editor.class.getClass().getResource(
+              iconpath)).getImage());
+        return dlg;
+      }
+    };
+    ch.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    int opt = 0;
+    if(save)
+      opt = ch.showSaveDialog(this);
+    else
+      opt = ch.showOpenDialog(this);
+    if(opt != JFileChooser.APPROVE_OPTION)
+      return null;
+    return ch.getSelectedFile();
   }
   
   
@@ -194,14 +320,11 @@ public class FrameEditor extends javax.swing.JFrame {
   
   
   public void saveAs() {
-    JFileChooser ch = new JFileChooser(lastFile);
-    ch.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    int opt = ch.showSaveDialog(this);
-    if(opt != JFileChooser.APPROVE_OPTION) {
+    lastFile = showFileChooser(ICON_SAVE, true);
+    if(lastFile == null) {
       status("No file selected", true);
       return;
     }
-    lastFile = ch.getSelectedFile();
     if(write(lastFile)) {
       status("File Saved ("+ lastFile+ ")", false);
     }
@@ -264,7 +387,7 @@ public class FrameEditor extends javax.swing.JFrame {
     } else {
       statusbar.setForeground(DEF_STATUS_COLOR);
     }
-    statusbar.setText("  "+ text);
+    statusbar.setText(" "+ text);
     statusbar.setPreferredSize(
         new Dimension(statusbar.getWidth(), 
             STATUS_HEIGHT));
@@ -445,6 +568,7 @@ public class FrameEditor extends javax.swing.JFrame {
     content.add(buttonBar, java.awt.BorderLayout.NORTH);
     content.add(scroll, java.awt.BorderLayout.CENTER);
 
+    statusbar.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
     statusbar.setPreferredSize(new java.awt.Dimension(40, 1));
     content.add(statusbar, java.awt.BorderLayout.SOUTH);
 
@@ -504,7 +628,7 @@ public class FrameEditor extends javax.swing.JFrame {
   }//GEN-LAST:event_fontActionMouseClicked
 
   private void colorsActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_colorsActionMouseClicked
-    
+    colors();
   }//GEN-LAST:event_colorsActionMouseClicked
 
 
@@ -516,7 +640,7 @@ public class FrameEditor extends javax.swing.JFrame {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
      * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-     *
+     */
     try {
       for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
         if ("Nimbus".equals(info.getName())) {

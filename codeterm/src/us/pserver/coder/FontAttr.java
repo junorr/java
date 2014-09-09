@@ -21,6 +21,7 @@
 
 package us.pserver.coder;
 
+import java.awt.Font;
 import java.util.Objects;
 
 /**
@@ -95,6 +96,30 @@ public class FontAttr {
 
   public FontAttr setUnderline(boolean underline) {
     this.underline = underline;
+    return this;
+  }
+  
+  
+  public Font getFont() {
+    if(family == null)
+      return null;
+    int style = Font.PLAIN;
+    if(bold && italic)
+      style = Font.BOLD + Font.ITALIC;
+    else if(bold)
+      style = Font.BOLD;
+    else if(italic)
+      style = Font.ITALIC;
+    return new Font(family, style, size);
+  }
+  
+  
+  public FontAttr setFont(Font f) {
+    if(f == null) return this;
+    family = f.getFamily();
+    size = f.getSize();
+    bold = f.isBold();
+    italic = f.isItalic();
     return this;
   }
 

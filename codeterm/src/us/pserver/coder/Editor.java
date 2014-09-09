@@ -21,18 +21,25 @@
 
 package us.pserver.coder;
 
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.UIDefaults;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Element;
-import javax.swing.text.StyledDocument;
 import javax.swing.text.StyledEditorKit;
 
 /**
@@ -42,7 +49,9 @@ import javax.swing.text.StyledEditorKit;
  */
 public class Editor extends JEditorPane implements KeyListener, HintListener {
 
-  public static final int MAX_UNDOS = 50;
+  public static final int 
+      MAX_UNDOS = 50,
+      WHEEL_SCROLL = 20;
   
   public static final String
       SP = " ",
@@ -81,6 +90,32 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
     this.setFont(new Font("Monospaced", Font.PLAIN, 16));
     this.setEditable(true);
     this.addKeyListener(this);
+    this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+    this.addMouseWheelListener(new MouseWheelListener() {
+      public void mouseWheelMoved(MouseWheelEvent e) {
+        JScrollPane jc = getScrollParent();
+        if(jc != null) {
+          JViewport view = jc.getViewport();
+          Point pv = view.getViewPosition();
+          int y = pv.y + e.getWheelRotation() 
+                  * WHEEL_SCROLL;
+          if(y < 0) y = 0;
+          view.setViewPosition(new Point(pv.x, y));
+          view.repaint();
+        }
+      }
+    });
+  }
+  
+  
+  private JScrollPane getScrollParent() {
+    Container c = this;
+    while(c != null) {
+      c = c.getParent();
+      if(c instanceof JScrollPane)
+        return (JScrollPane) c;
+    }
+    return null;
   }
   
   
@@ -241,6 +276,35 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
       if(lnp != null)
         lnp.setFont(f);
     }
+  }
+  
+  
+  @Override
+  public void setBackground(Color c) {
+    if(c != null) {
+      UIDefaults defaults = new UIDefaults();
+      defaults.put("EditorPane[Enabled].backgroundPainter", c);
+      this.putClientProperty("Nimbus.Overrides", defaults);
+      this.putClientProperty("Nimbus.Overrides.InheritDefaults", true);
+      super.setBackground(c);
+      this.repaint();
+    }
+  }
+  
+  
+  @Override
+  public Color getBackground() {
+    Color c = super.getBackground();
+    if(c == null) return c;
+    return new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+  }
+  
+  
+  @Override
+  public Color getForeground() {
+    Color c = super.getForeground();
+    if(c == null) return c;
+    return new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
   }
   
   

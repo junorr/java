@@ -48,12 +48,15 @@ public class ActionLabel extends JLabel {
   private ActionListener acl;
   
   private Color over, normal;
+  
+  private Border overBorder;
     
     
   public ActionLabel() {
     super();
     over = OVER;
     normal = NORMAL;
+    overBorder = OVER_BORDER;
     this.setOpaque(true);
     this.setBackground(normal);
     this.setBorder(NORMAL_BORDER);
@@ -77,12 +80,10 @@ public class ActionLabel extends JLabel {
         ActionLabel.this.repaint();
       }
       @Override public void mouseEntered(MouseEvent e) {
-        //ActionLabel.this.setBackground(over);
-        ActionLabel.this.setBorder(OVER_BORDER);
+        ActionLabel.this.setBorder(overBorder);
         ActionLabel.this.repaint();
       }
       @Override public void mouseExited(MouseEvent e) {
-        //ActionLabel.this.setBackground(normal);
         ActionLabel.this.setBorder(NORMAL_BORDER);
         ActionLabel.this.repaint();
       }
@@ -90,12 +91,12 @@ public class ActionLabel extends JLabel {
   }
     
     
-  public Color getOverColor() {
+  public Color getClickColor() {
     return over;
   }
   
   
-  public void setOverColor(Color c) {
+  public void setClickColor(Color c) {
     if(c != null) {
       over = c;
     }
@@ -111,6 +112,13 @@ public class ActionLabel extends JLabel {
     if(c != null) {
       normal = c;
     }
+  }
+  
+  
+  public void setOverBorderColor(Color c) {
+    if(c != null)
+      overBorder = BorderFactory
+          .createLineBorder(c, 2, true);
   }
   
   

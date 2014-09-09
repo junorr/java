@@ -24,13 +24,13 @@ package us.pserver.coder;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.BorderFactory;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.UIDefaults;
 
 /**
  *
@@ -38,26 +38,29 @@ import javax.swing.JTextArea;
  * @version 1.0 - 05/09/2014
  */
 public class LineNumberPanel extends JPanel {
+  
+  public static final Color DEF_LINES_BG = new Color(220, 220, 220);
 
   public static final int WIDTH_CONST = 5;
   
-  private JTextArea lnpane;
+  private JEditorPane lnpane;
   
   private Editor editor;
   
   
   public LineNumberPanel(Editor ed) {
-    super(new BorderLayout(0, 0));
+    super(new BorderLayout(2, 0));
     editor = ed;
-    lnpane = new JTextArea();
+    lnpane = new JEditorPane();
     lnpane.setBorder(BorderFactory.createEmptyBorder());
     lnpane.setEditable(false);
+    lnpane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
     lnpane.setFont(editor.getFont());
     this.add(lnpane, BorderLayout.WEST);
     this.add(editor, BorderLayout.CENTER);
     editor.setLineNumberPanel(this);
     setLinesNumber(editor.getLinesNumber());
-    lnpane.setBackground(new Color(240, 240, 240));
+    this.setBackground(DEF_LINES_BG);
   }
   
   
@@ -106,6 +109,15 @@ public class LineNumberPanel extends JPanel {
   
   
   @Override
+  public Font getFont() {
+    if(lnpane != null)
+      return lnpane.getFont();
+    else 
+      return super.getFont();
+  }
+  
+  
+  @Override
   public void setForeground(Color c) {
     if(c != null && lnpane != null) {
       lnpane.setForeground(c);
@@ -117,9 +129,35 @@ public class LineNumberPanel extends JPanel {
   @Override
   public void setBackground(Color c) {
     if(c != null && lnpane != null) {
+      UIDefaults defaults = new UIDefaults();
+      defaults.put("EditorPane[Enabled].backgroundPainter", c);
+      lnpane.putClientProperty("Nimbus.Overrides", defaults);
+      lnpane.putClientProperty("Nimbus.Overrides.InheritDefaults", true);
       lnpane.setBackground(c);
       lnpane.repaint();
     }
+  }
+  
+  
+  @Override
+  public Color getBackground() {
+    if(lnpane != null) {
+      Color c = lnpane.getBackground();
+      return new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+    }
+    else 
+      return super.getBackground();
+  }
+  
+  
+  @Override
+  public Color getForeground() {
+    if(lnpane != null) {
+      Color c = lnpane.getForeground();
+      return new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+    }
+    else 
+      return super.getForeground();
   }
   
   
