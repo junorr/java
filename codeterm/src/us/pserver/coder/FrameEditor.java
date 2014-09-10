@@ -82,6 +82,7 @@ public class FrameEditor extends javax.swing.JFrame {
     conf = new CodetermConfig();
     
     initComponents();
+    statusbar.setOpaque(true);
 
     this.setLocation(ScreenPositioner
         .getCenterScreenPoint(this));
@@ -124,6 +125,11 @@ public class FrameEditor extends javax.swing.JFrame {
   }
   
   
+  public CodetermConfig getConfig() {
+    return conf;
+  }
+  
+  
   private void initConfig() {
     if(conf.fileExists()) {
       Exception e = conf.load();
@@ -131,9 +137,7 @@ public class FrameEditor extends javax.swing.JFrame {
         throw new IllegalStateException(e.getMessage(), e);
       editor.setBackground(conf.getTextBgColor());
       Color c = conf.getTextColor();
-      System.out.println("* text color="+ c);
       editor.setForeground(conf.getTextColor());
-      System.out.println("* editor color="+ editor.getForeground());
       editor.setFont(conf.getTextFont());
       editor.setSelectionColor(conf.getTextSelectionColor());
       lnp.setFont(conf.getTextFont());
@@ -142,9 +146,7 @@ public class FrameEditor extends javax.swing.JFrame {
       statusColor = conf.getStatusColor();
       statusWarnColor = conf.getStatusWarnColor();
       c = conf.getStatusBgColor();
-      System.out.println("* statusBG color="+ c);
       statusbar.setBackground(conf.getStatusBgColor());
-      System.out.println("* statusbar color="+ statusbar.getBackground());
       statusbar.setFont(conf.getStatusFont());
       Rectangle r = conf.getPosition();
       if(r != null) {
@@ -178,6 +180,104 @@ public class FrameEditor extends javax.swing.JFrame {
     conf.setTextColor(editor.getForeground());
     conf.setTextFont(editor.getFont());
     conf.setTextSelectionColor(editor.getSelectionColor());
+  }
+  
+  
+  public void saveConfig() {
+    Exception e = conf.save();
+    if(e != null) {
+      status("Error saving configurations: "+ e.getMessage(), true);
+    } else {
+      status("Configurations saved", false);
+    }
+  }
+  
+  
+  public void setTextColor(Color c) {
+    if(c != null) {
+      conf.setTextColor(c);
+      editor.setForeground(c);
+      editor.repaint();
+      saveConfig();
+    }
+  }
+  
+  
+  public void setTextBGColor(Color c) {
+    if(c != null) {
+      conf.setTextBgColor(c);
+      editor.setBackground(c);
+      editor.repaint();
+      saveConfig();
+    }
+  }
+  
+  
+  public void setTextSelectionColor(Color c) {
+    if(c != null) {
+      conf.setTextSelectionColor(c);
+      editor.setSelectionColor(c);
+      editor.repaint();
+      saveConfig();
+    }
+  }
+  
+  
+  public void setStatusColor(Color c) {
+    if(c != null) {
+      conf.setStatusColor(c);
+      statusColor = c;
+      saveConfig();
+    }
+  }
+  
+  
+  public void setStatusWarnColor(Color c) {
+    if(c != null) {
+      conf.setStatusWarnColor(c);
+      statusWarnColor = c;
+      saveConfig();
+    }
+  }
+  
+  
+  public void setStatusBGColor(Color c) {
+    if(c != null) {
+      conf.setStatusBgColor(c);
+      statusbar.setBackground(c);
+      saveConfig();
+    }
+  }
+  
+  
+  public void setLinesColor(Color c) {
+    if(c != null) {
+      conf.setLinesColor(c);
+      lnp.setForeground(c);
+      lnp.repaint();
+      saveConfig();
+    }
+  }
+  
+  
+  public void setTextFont(Font f) {
+    if(f != null) {
+      conf.setTextFont(f);
+      editor.setFont(f);
+      lnp.setFont(f);
+      content.repaint();
+      content.revalidate();
+      saveConfig();
+    }
+  }
+  
+  
+  public void setStatusFont(Font f) {
+    if(f != null) {
+      conf.setStatusFont(f);
+      statusbar.setFont(f);
+      saveConfig();
+    }
   }
   
   
@@ -568,6 +668,7 @@ public class FrameEditor extends javax.swing.JFrame {
     content.add(buttonBar, java.awt.BorderLayout.NORTH);
     content.add(scroll, java.awt.BorderLayout.CENTER);
 
+    statusbar.setBackground(new java.awt.Color(80, 80, 80));
     statusbar.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
     statusbar.setPreferredSize(new java.awt.Dimension(40, 1));
     content.add(statusbar, java.awt.BorderLayout.SOUTH);

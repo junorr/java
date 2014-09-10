@@ -23,6 +23,8 @@ package us.pserver.bigjar;
 
 import com.jpower.spj.Option;
 import com.jpower.spj.ShellParser;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -70,7 +72,7 @@ public class BigJar {
   
   private SimpleLog log;
   
-  private Attributes attr;
+  private Attributes attr, fattr;
   
   private String splash;
   
@@ -86,6 +88,7 @@ public class BigJar {
     this.dir = p.toString();
     jarFile = null;
     attr = null;
+    fattr = null;
     custom = null;
     tempDir = Paths.get(dir, BIGJAR).toAbsolutePath();
     log = new SimpleLog(LOGFILE);
@@ -113,6 +116,31 @@ public class BigJar {
   public String getMFCustomAttributes() {
     return custom;
   }
+  
+  
+  public BigJar setMFAttributesFile(String file) {
+    if(file == null || file.isEmpty())
+      return this;
+    try (
+        BufferedReader br = new BufferedReader(
+            new FileReader(file));
+        ) {
+      fattr = new Attributes();
+      while(true) {
+        String line = br.readLine();
+        if(line == null) break;
+        if(line.contains(": ")) {
+          String[] pair = line.split(": ");
+          log.info("Setting MF Attribute {"+ pair[0]+ "="+ pair[1]+ "}");
+          fattr.putValue(pair[0], pair[1]);
+        }
+      }
+    }
+    catch(IOException e) {
+      log.error("Error setting file attributes: "+ e.getMessage());
+    }
+    return this;
+  }  
   
   
   public BigJar setMFCustomAttributes(String str) {
@@ -243,6 +271,8 @@ public class BigJar {
     try {
       Manifest mf = new Manifest();
       mf.getMainAttributes().putAll(attr);
+      if(fattr != null)
+        mf.getMainAttributes().putAll(fattr);
       mf.getMainAttributes().putValue(COMMENT_KEY, COMMENT_VALUE);
       if(splash != null) {
         log.info("SplashScreen-Image setted: "+ splash);
@@ -352,6 +382,16 @@ public class BigJar {
         .setDescription("Custom attributes for Manifest (key1:val1,key2:val2,...)");
     sp.addOption(opt);
     
+    opt = new Option()
+        .setName("-m")
+        .setAcceptArgs(true)
+        .setArgsSeparator(" ")
+        .setExclusive(false)
+        .setMandatory(false)
+        .setLongName("--manifest-adds")
+        .setDescription("Copy custom attributes from <file> to Manifest");
+    sp.addOption(opt);
+    
     opt = Option.EMPTY_OPTION
         .setAcceptArgs(true)
         .setExclusive(false)
@@ -391,6 +431,12 @@ public class BigJar {
     if(sp.isOptionPresent("-a")) {
       bg.setMFCustomAttributes(
           sp.getOption("-a").getFirstArg());
+    }
+    
+    if(sp.isOptionPresent("-m")) {
+      bg.getSimpleLog().info("File Attributes Detected");
+      bg.setMFAttributesFile(
+          sp.getOption("-m").getFirstArg());
     }
     
     try {

@@ -3,26 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/StringUtils.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/ScreenPositioner.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/HintList.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/HintWindow.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/TextStyle.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/ReplaceDialog.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/FormAttribute.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/PanelConfig.java</file>
             <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/FrameEditor.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/Editor.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/TestEditorPane.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/TestURLShow.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/DocViewer.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/ColorsDialog.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/CodetermConfig.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/LineNumberPanel.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/Highlighter.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/ColorConverter.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/FontAttr.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/Hints.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/ActionLabel.java</file>
-            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/FontSelector.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/ListSeparator.java</file>
         </group>
     </open-files>
 </project-private>
