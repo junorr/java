@@ -59,7 +59,7 @@ public class Highlighter {
     xstream = new XStream();
     xstream.alias(MATCH, Match.class);
     xstream.alias(COLOR, Color.class);
-    xstream.alias(FONT, FontAttr.class);
+    xstream.alias(FONT, FontXml.class);
     xstream.registerConverter(new ColorConverter());
     xstream.registerConverter(new FontAttrConverter());
     init();

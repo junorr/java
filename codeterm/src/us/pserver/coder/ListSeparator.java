@@ -19,6 +19,12 @@ public class ListSeparator extends javax.swing.JPanel {
   public ListSeparator() {
     initComponents();
   }
+  
+  
+  public ListSeparator(String name) {
+    this();
+    label.setText(name);
+  }
 
 
   /**
@@ -36,6 +42,8 @@ public class ListSeparator extends javax.swing.JPanel {
 
     setBackground(new java.awt.Color(255, 255, 255));
 
+    label.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
+    label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     label.setText(" ");
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -44,11 +52,11 @@ public class ListSeparator extends javax.swing.JPanel {
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(label, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+        .addComponent(label, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addContainerGap())
     );
     layout.setVerticalGroup(

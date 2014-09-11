@@ -49,9 +49,9 @@ public class CodetermConfig {
       textSelect, lines, linesBG, 
       status, statusBG, statusWarn;
   
-  private FontAttr textFont;
+  private FontXml textFont;
   
-  private FontAttr statusFont;
+  private FontXml statusFont;
   
   private Rectangle position;
   
@@ -62,7 +62,7 @@ public class CodetermConfig {
     xstream = new XStream();
     xstream.alias(MATCH, Match.class);
     xstream.alias(COLOR, Color.class);
-    xstream.alias(FONT, FontAttr.class);
+    xstream.alias(FONT, FontXml.class);
     xstream.registerConverter(new ColorConverter());
     xstream.registerConverter(new FontAttrConverter());
   }
@@ -150,7 +150,7 @@ public class CodetermConfig {
 
 
   public void setTextFont(Font f) {
-    textFont = new FontAttr().setFont(f);
+    textFont = new FontXml().setFont(f);
   }
 
 
@@ -192,7 +192,7 @@ public class CodetermConfig {
 
 
   public void setStatusFont(Font f) {
-    statusFont = new FontAttr().setFont(f);
+    statusFont = new FontXml().setFont(f);
   }
 
 

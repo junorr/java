@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,9 +46,11 @@ public class FrameEditor extends javax.swing.JFrame {
       STATUS_DELAY = 3500;
   
   public static final String
-      ICON_OPEN = "/us/pserver/coder/images/open-gray-24.png",
-      ICON_SAVE = "/us/pserver/coder/images/save-gray-24.png",
-      ICON_TERM = "/us/pserver/coder/images/codeterm-24.png";
+      IMAGES_PATH = "/us/pserver/coder/images/",
+      ICON_OPEN = "open-gray-24.png",
+      ICON_SAVE = "save-gray-24.png",
+      ICON_COLORS = "colors-gray-24.png",
+      ICON_TERM = "codeterm-24.png";
       
   
   private Editor editor;
@@ -89,8 +92,7 @@ public class FrameEditor extends javax.swing.JFrame {
     
     initConfig();
     
-    this.setIconImage(new ImageIcon(
-        getClass().getResource(ICON_TERM)).getImage());
+    this.setIconImage(getIcon(ICON_TERM));
     buttonBarHeight = buttonBar.getPreferredSize().height;
     scroll.setViewportView(lnp);
     scroll.repaint();
@@ -127,6 +129,13 @@ public class FrameEditor extends javax.swing.JFrame {
   
   public CodetermConfig getConfig() {
     return conf;
+  }
+  
+  
+  public Image getIcon(String name) {
+    return new ImageIcon(getClass()
+        .getResource(IMAGES_PATH 
+            + name)).getImage();
   }
   
   
@@ -302,31 +311,13 @@ public class FrameEditor extends javax.swing.JFrame {
   
   
   public void colors() {
-    ColorsDialog cd = new ColorsDialog(this, true);
-    cd.setTextColor(editor.getForeground());
-    cd.setTextBgColor(editor.getBackground());
-    cd.setTextSelectionColor(editor.getSelectionColor());
-    cd.setLinesColor(lnp.getForeground());
-    cd.setLinesBgColor(lnp.getBackground());
-    cd.setStatusColor(statusColor);
-    cd.setStatusBgColor(statusbar.getBackground());
-    cd.setStatusWarnColor(statusWarnColor);
-    cd.setVisible(true);
-    
-    editor.setForeground(cd.getTextColor());
-    editor.setBackground(cd.getTextBgColor());
-    editor.setSelectionColor(cd.getTextSelectionColor());
-    lnp.setBackground(cd.getLinesBgColor());
-    lnp.setForeground(cd.getLinesColor());
-    statusColor = cd.getStatusColor();
-    statusWarnColor = cd.getStatusWarnColor();
-    statusbar.setBackground(cd.getStatusBgColor());
-    defineConfig();
-    Exception e = conf.save();
-    if(e != null)
-      status("Error saving config: "+ e.getMessage(), true);
-    else
-      status("Configurations saved", false);
+    JDialog dlg = new JDialog(this, "Configurations");
+    dlg.setIconImage(getIcon(ICON_COLORS));
+    dlg.setLocation(ScreenPositioner
+        .getCenterWindowPoint(this, dlg));
+    dlg.add(new PanelConfig(this));
+    dlg.pack();
+    dlg.setVisible(true);
   }
   
   
@@ -388,14 +379,13 @@ public class FrameEditor extends javax.swing.JFrame {
   }
   
   
-  public File showFileChooser(String iconpath, boolean save) {
+  public File showFileChooser(String icon, boolean save) {
     JFileChooser ch = new JFileChooser(lastFile) {
       protected JDialog createDialog(Component parent) {
         JDialog dlg = super.createDialog(parent);
-        if(iconpath != null && !iconpath.isEmpty())
-          dlg.setIconImage(new ImageIcon(
-              Editor.class.getClass().getResource(
-              iconpath)).getImage());
+        if(icon != null && !icon.isEmpty())
+          dlg.setIconImage(
+              FrameEditor.this.getIcon(icon));
         return dlg;
       }
     };
@@ -609,8 +599,8 @@ public class FrameEditor extends javax.swing.JFrame {
     });
 
     colorsAction.setForeground(new java.awt.Color(255, 255, 255));
-    colorsAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/colors-24.png"))); // NOI18N
-    colorsAction.setText("Colors");
+    colorsAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/gear-white-24.png"))); // NOI18N
+    colorsAction.setText("Config");
     colorsAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
         colorsActionMouseClicked(evt);

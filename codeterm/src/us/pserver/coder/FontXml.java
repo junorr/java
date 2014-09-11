@@ -29,7 +29,7 @@ import java.util.Objects;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 25/08/2014
  */
-public class FontAttr {
+public class FontXml {
 
   private String family;
   
@@ -38,7 +38,7 @@ public class FontAttr {
   private boolean italic, bold, underline;
   
   
-  public FontAttr() {
+  public FontXml() {
     family = null;
     size = 0;
     italic = bold = underline = false;
@@ -50,7 +50,7 @@ public class FontAttr {
   }
 
 
-  public FontAttr setFontFamily(String family) {
+  public FontXml setFontFamily(String family) {
     this.family = family;
     return this;
   }
@@ -61,7 +61,7 @@ public class FontAttr {
   }
 
 
-  public FontAttr setSize(int size) {
+  public FontXml setSize(int size) {
     this.size = size;
     return this;
   }
@@ -72,7 +72,7 @@ public class FontAttr {
   }
 
 
-  public FontAttr setItalic(boolean italic) {
+  public FontXml setItalic(boolean italic) {
     this.italic = italic;
     return this;
   }
@@ -83,7 +83,7 @@ public class FontAttr {
   }
 
 
-  public FontAttr setBold(boolean bold) {
+  public FontXml setBold(boolean bold) {
     this.bold = bold;
     return this;
   }
@@ -94,7 +94,7 @@ public class FontAttr {
   }
 
 
-  public FontAttr setUnderline(boolean underline) {
+  public FontXml setUnderline(boolean underline) {
     this.underline = underline;
     return this;
   }
@@ -114,7 +114,7 @@ public class FontAttr {
   }
   
   
-  public FontAttr setFont(Font f) {
+  public FontXml setFont(Font f) {
     if(f == null) return this;
     family = f.getFamily();
     size = f.getSize();
@@ -144,7 +144,7 @@ public class FontAttr {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final FontAttr other = (FontAttr) obj;
+    final FontXml other = (FontXml) obj;
     if (!Objects.equals(this.family, other.family)) {
       return false;
     }

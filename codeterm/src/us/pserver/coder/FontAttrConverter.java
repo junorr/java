@@ -47,7 +47,7 @@ public class FontAttrConverter implements Converter {
   public void marshal(Object o, HierarchicalStreamWriter writer, MarshallingContext mc) {
     if(o == null || !canConvert(o.getClass()))
       return;
-    FontAttr fa = (FontAttr) o;
+    FontXml fa = (FontXml) o;
     if(fa.getFontFamily() != null)
       writer.addAttribute(FAMILY, fa.getFontFamily());
     if(fa.getSize() > 0)
@@ -63,7 +63,7 @@ public class FontAttrConverter implements Converter {
 
   @Override
   public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext uc) {
-    FontAttr fa = new FontAttr();
+    FontXml fa = new FontXml();
     for(int i = 0; i < reader.getAttributeCount(); i++) {
       String name = reader.getAttributeName(i);
       String attr = reader.getAttribute(i);
@@ -84,7 +84,7 @@ public class FontAttrConverter implements Converter {
 
   @Override
   public boolean canConvert(Class type) {
-    return FontAttr.class.equals(type);
+    return FontXml.class.equals(type);
   }
   
 }

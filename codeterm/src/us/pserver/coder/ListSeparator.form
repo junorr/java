@@ -23,11 +23,11 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jSeparator1" min="-2" pref="30" max="-2" attributes="0"/>
+              <Component id="jSeparator1" pref="55" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="label" pref="166" max="32767" attributes="0"/>
+              <Component id="label" min="-2" pref="116" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jSeparator2" min="-2" pref="30" max="-2" attributes="0"/>
+              <Component id="jSeparator2" min="-2" pref="55" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -51,6 +51,10 @@
     </Component>
     <Component class="javax.swing.JLabel" name="label">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="sansserif" size="12" style="1"/>
+        </Property>
+        <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="text" type="java.lang.String" value=" "/>
       </Properties>
       <AuxValues>

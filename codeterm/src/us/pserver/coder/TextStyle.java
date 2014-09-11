@@ -40,7 +40,7 @@ public class TextStyle {
 
   private Color fg, bg;
   
-  private FontAttr font;
+  private FontXml font;
   
   
   public TextStyle() {
@@ -62,7 +62,7 @@ public class TextStyle {
   }
   
   
-  public TextStyle setFontAttr(FontAttr f) {
+  public TextStyle setFontAttr(FontXml f) {
     font = f;
     return this;
   }
@@ -78,14 +78,14 @@ public class TextStyle {
   }
   
   
-  public FontAttr getFontAttr() {
+  public FontXml getFontAttr() {
     return font;
   }
   
   
   public TextStyle setFontSize(int size) {
     if(font == null)
-      font = new FontAttr();
+      font = new FontXml();
     font.setSize(size);
     return this;
   }
@@ -93,7 +93,7 @@ public class TextStyle {
   
   public TextStyle setFontBold(boolean bool) {
     if(font == null)
-      font = new FontAttr();
+      font = new FontXml();
     font.setBold(bool);
     return this;
   }
@@ -101,7 +101,7 @@ public class TextStyle {
   
   public TextStyle setFontItalic(boolean bool) {
     if(font == null)
-      font = new FontAttr();
+      font = new FontXml();
     font.setItalic(bool);
     return this;
   }
@@ -109,7 +109,7 @@ public class TextStyle {
   
   public TextStyle setFontUnderline(boolean bool) {
     if(font == null)
-      font = new FontAttr();
+      font = new FontXml();
     font.setUnderline(bool);
     return this;
   }
@@ -117,7 +117,7 @@ public class TextStyle {
   
   public TextStyle setFontFamily(String family) {
     if(font == null)
-      font = new FontAttr();
+      font = new FontXml();
     font.setFontFamily(family);
     return this;
   }

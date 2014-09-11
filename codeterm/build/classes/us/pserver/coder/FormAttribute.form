@@ -37,7 +37,7 @@
     <Component class="javax.swing.JButton" name="button">
       <Properties>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[80, 28]"/>
+          <Dimension value="[115, 28]"/>
         </Property>
       </Properties>
       <AuxValues>

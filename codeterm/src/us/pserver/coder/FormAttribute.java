@@ -67,7 +67,7 @@ public class FormAttribute extends javax.swing.JPanel {
     setLayout(new java.awt.BorderLayout());
     add(label, java.awt.BorderLayout.CENTER);
 
-    button.setPreferredSize(new java.awt.Dimension(80, 28));
+    button.setPreferredSize(new java.awt.Dimension(115, 28));
     add(button, java.awt.BorderLayout.EAST);
   }// </editor-fold>//GEN-END:initComponents
 

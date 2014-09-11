@@ -7,11 +7,12 @@
 package us.pserver.coder;
 
 import java.awt.Color;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.DefaultListModel;
 import javax.swing.JColorChooser;
-import javax.swing.JComponent;
 
 
 /**
@@ -20,25 +21,45 @@ import javax.swing.JComponent;
  */
 public class PanelConfig extends javax.swing.JPanel {
 
-  private DefaultListModel<JComponent> model;
-  
   private FrameEditor frame;
   
   
   /**
    * Creates new form PanelConfig
    */
-  public PanelConfig() {
+  public PanelConfig(FrameEditor fe) {
+    super();
+    if(fe == null)
+      throw new IllegalArgumentException(
+          "Invalid FrameEditor (fe="+ fe+ ")");
+    frame = fe;
     initComponents();
-    model = new DefaultListModel();
     
-    ListSeparator sep = new ListSeparator();
-    sep.label.setText("Text Area");
-    model.addElement(sep);
-    FormAttribute attr = new FormAttribute();
-    attr.label.setText("Background Color:");
-    attr.button.setOpaque(true);
-    attr.button.setBackground(Color.red);
+    content.add(new ListSeparator("Text Area"));
+    content.add(createColorForm("Text Color", 
+        frame.getConfig().getTextColor()));
+    content.add(createColorForm("Selection Color", 
+        frame.getConfig().getTextSelectionColor()));
+    content.add(createColorForm("Background Color", 
+        frame.getConfig().getTextBgColor()));
+    content.add(createFontForm("Text Font", 
+        frame.getConfig().getTextFont()));
+    
+    content.add(new ListSeparator("Line Numbers"));
+    content.add(createColorForm("Numbers Color", 
+        frame.getConfig().getLinesColor()));
+    content.add(createColorForm("Background Color", 
+        frame.getConfig().getLinesBgColor()));
+    
+    content.add(new ListSeparator("Status Bar"));
+    content.add(createColorForm("Status Color", 
+        frame.getConfig().getStatusColor()));
+    content.add(createColorForm("Warning Color", 
+        frame.getConfig().getStatusWarnColor()));
+    content.add(createColorForm("Background Color", 
+        frame.getConfig().getStatusBgColor()));
+    content.add(createFontForm("Status Font", 
+        frame.getConfig().getStatusFont()));
   }
   
   
@@ -57,8 +78,41 @@ public class PanelConfig extends javax.swing.JPanel {
     });
     return attr;
   }
-
-
+  
+  
+  private FormAttribute createFontForm(String label, Font f) {
+    FormAttribute attr = new FormAttribute();
+    attr.label.setText(label);
+    attr.button.setFont(f);
+    attr.button.setText(f.getFamily());
+    attr.button.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        FontSelector fs = new FontSelector(getParentFrame(), true, f);
+        fs.setVisible(true);
+        Font f = fs.getSelectedFont();
+        if(f != null) {
+          attr.setValue(f);
+          attr.button.setFont(f);
+          attr.button.setText(f.getFamily());
+          attr.button.repaint();
+        }
+      }
+    });
+    return attr;
+  }
+  
+  
+  private Frame getParentFrame() {
+    Container c = this;
+    while(c != null) {
+      if(c instanceof Frame)
+        return (Frame) c;
+      c = c.getParent();
+    }
+    return null;
+  }
+  
+  
   /**
    * This method is called from within the constructor to initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is always
@@ -69,63 +123,56 @@ public class PanelConfig extends javax.swing.JPanel {
   private void initComponents() {
 
     pnlButtons = new javax.swing.JPanel();
-    btnApply = new javax.swing.JButton();
-    btnCancel = new javax.swing.JButton();
+    actionLabel1 = new us.pserver.coder.ActionLabel();
     scroll = new javax.swing.JScrollPane();
+    content = new javax.swing.JPanel();
 
-    pnlButtons.setBackground(new java.awt.Color(255, 255, 255));
+    pnlButtons.setBackground(new java.awt.Color(80, 80, 80));
 
-    btnApply.setText("Apply");
-    btnApply.setPreferredSize(new java.awt.Dimension(90, 30));
-
-    btnCancel.setText("Cancel");
-    btnCancel.setPreferredSize(new java.awt.Dimension(90, 30));
+    actionLabel1.setForeground(new java.awt.Color(255, 255, 255));
+    actionLabel1.setText("Apply");
 
     javax.swing.GroupLayout pnlButtonsLayout = new javax.swing.GroupLayout(pnlButtons);
     pnlButtons.setLayout(pnlButtonsLayout);
     pnlButtonsLayout.setHorizontalGroup(
       pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlButtonsLayout.createSequentialGroup()
-        .addContainerGap(131, Short.MAX_VALUE)
-        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        .addGap(18, 18, 18)
-        .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addContainerGap(251, Short.MAX_VALUE)
+        .addComponent(actionLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addContainerGap())
     );
     pnlButtonsLayout.setVerticalGroup(
       pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlButtonsLayout.createSequentialGroup()
-        .addGap(15, 15, 15)
-        .addGroup(pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addContainerGap(15, Short.MAX_VALUE))
+      .addGroup(pnlButtonsLayout.createSequentialGroup()
+        .addGap(19, 19, 19)
+        .addComponent(actionLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addContainerGap(21, Short.MAX_VALUE))
     );
+
+    content.setBackground(new java.awt.Color(255, 255, 255));
+    content.setLayout(new javax.swing.BoxLayout(content, javax.swing.BoxLayout.Y_AXIS));
+    scroll.setViewportView(content);
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addComponent(pnlButtons, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-      .addGroup(layout.createSequentialGroup()
-        .addContainerGap()
-        .addComponent(scroll)
-        .addContainerGap())
+      .addComponent(scroll, javax.swing.GroupLayout.Alignment.TRAILING)
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-        .addContainerGap()
-        .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+        .addGap(3, 3, 3)
         .addComponent(pnlButtons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
     );
   }// </editor-fold>//GEN-END:initComponents
 
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  private javax.swing.JButton btnApply;
-  private javax.swing.JButton btnCancel;
+  private us.pserver.coder.ActionLabel actionLabel1;
+  private javax.swing.JPanel content;
   private javax.swing.JPanel pnlButtons;
   private javax.swing.JScrollPane scroll;
   // End of variables declaration//GEN-END:variables
