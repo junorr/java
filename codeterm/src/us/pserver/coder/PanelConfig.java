@@ -124,20 +124,28 @@ public class PanelConfig extends javax.swing.JPanel {
 
     pnlButtons = new javax.swing.JPanel();
     actionLabel1 = new us.pserver.coder.ActionLabel();
+    actionLabel2 = new us.pserver.coder.ActionLabel();
     scroll = new javax.swing.JScrollPane();
     content = new javax.swing.JPanel();
 
     pnlButtons.setBackground(new java.awt.Color(80, 80, 80));
 
     actionLabel1.setForeground(new java.awt.Color(255, 255, 255));
+    actionLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/check-white-24.png"))); // NOI18N
     actionLabel1.setText("Apply");
+
+    actionLabel2.setForeground(new java.awt.Color(255, 255, 255));
+    actionLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/cancel-white-24.png"))); // NOI18N
+    actionLabel2.setText("Cancel");
 
     javax.swing.GroupLayout pnlButtonsLayout = new javax.swing.GroupLayout(pnlButtons);
     pnlButtons.setLayout(pnlButtonsLayout);
     pnlButtonsLayout.setHorizontalGroup(
       pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlButtonsLayout.createSequentialGroup()
-        .addContainerGap(251, Short.MAX_VALUE)
+        .addContainerGap(134, Short.MAX_VALUE)
+        .addComponent(actionLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addGap(18, 18, 18)
         .addComponent(actionLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addContainerGap())
     );
@@ -145,7 +153,9 @@ public class PanelConfig extends javax.swing.JPanel {
       pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(pnlButtonsLayout.createSequentialGroup()
         .addGap(19, 19, 19)
-        .addComponent(actionLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addGroup(pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(actionLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(actionLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addContainerGap(21, Short.MAX_VALUE))
     );
 
@@ -163,7 +173,7 @@ public class PanelConfig extends javax.swing.JPanel {
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-        .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+        .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
         .addGap(3, 3, 3)
         .addComponent(pnlButtons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
     );
@@ -172,6 +182,7 @@ public class PanelConfig extends javax.swing.JPanel {
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private us.pserver.coder.ActionLabel actionLabel1;
+  private us.pserver.coder.ActionLabel actionLabel2;
   private javax.swing.JPanel content;
   private javax.swing.JPanel pnlButtons;
   private javax.swing.JScrollPane scroll;
