@@ -1,11 +1,11 @@
 <us.pserver.coder.CodetermConfig>
   <text color-rgb="200,255,210"/>
-  <textBG color-rgb="80,80,80"/>
+  <textBG color-rgb="100,100,100"/>
   <textSelect color-rgb="170,170,170"/>
   <lines color-rgb="0,0,0"/>
   <linesBG color-rgb="220,220,220"/>
   <status color-rgb="255,255,255"/>
-  <statusBG color-rgb="80,80,80"/>
+  <statusBG color-rgb="100,100,100"/>
   <statusWarn color-rgb="255,255,0"/>
   <textFont family="Monospaced" size="16"/>
   <statusFont family="Monospaced" size="12"/>

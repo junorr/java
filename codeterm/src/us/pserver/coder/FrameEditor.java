@@ -10,7 +10,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,7 +21,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.Timer;
@@ -45,13 +43,6 @@ public class FrameEditor extends javax.swing.JFrame {
       STATUS_HEIGHT = 18,
       STATUS_DELAY = 3500;
   
-  public static final String
-      IMAGES_PATH = "/us/pserver/coder/images/",
-      ICON_OPEN = "open-gray-24.png",
-      ICON_SAVE = "save-gray-24.png",
-      ICON_COLORS = "colors-gray-24.png",
-      ICON_TERM = "codeterm-24.png";
-      
   
   private Editor editor;
   
@@ -77,6 +68,9 @@ public class FrameEditor extends javax.swing.JFrame {
    */
   public FrameEditor() {
     editor = new Editor();
+    editor.setBackground(DEF_EDITOR_BG);
+    editor.setForeground(DEF_EDITOR_FG);
+    editor.setSelectionColor(DEF_SELECT_COLOR);
     lnp = new LineNumberPanel(editor);
     editor.setText("codeterm\ncodeterm\ncodeterm\ncodeterm\ncodeterm\ncodeterm\n");
     replace = new ReplaceDialog(this, editor);
@@ -92,7 +86,6 @@ public class FrameEditor extends javax.swing.JFrame {
     
     initConfig();
     
-    this.setIconImage(getIcon(ICON_TERM));
     buttonBarHeight = buttonBar.getPreferredSize().height;
     scroll.setViewportView(lnp);
     scroll.repaint();
@@ -132,13 +125,6 @@ public class FrameEditor extends javax.swing.JFrame {
   }
   
   
-  public Image getIcon(String name) {
-    return new ImageIcon(getClass()
-        .getResource(IMAGES_PATH 
-            + name)).getImage();
-  }
-  
-  
   private void initConfig() {
     if(conf.fileExists()) {
       Exception e = conf.load();
@@ -148,6 +134,7 @@ public class FrameEditor extends javax.swing.JFrame {
       Color c = conf.getTextColor();
       editor.setForeground(conf.getTextColor());
       editor.setFont(conf.getTextFont());
+      System.out.println("* selectionColor: "+ conf.getTextSelectionColor());
       editor.setSelectionColor(conf.getTextSelectionColor());
       lnp.setFont(conf.getTextFont());
       lnp.setBackground(conf.getLinesBgColor());
@@ -310,9 +297,9 @@ public class FrameEditor extends javax.swing.JFrame {
   }
   
   
-  public void colors() {
+  public void configDialog() {
     JDialog dlg = new JDialog(this, "Configurations");
-    dlg.setIconImage(getIcon(ICON_COLORS));
+    dlg.setIconImage(IconGetter.getIconGearGray());
     dlg.setLocation(ScreenPositioner
         .getCenterWindowPoint(this, dlg));
     dlg.add(new PanelConfig(this));
@@ -368,7 +355,7 @@ public class FrameEditor extends javax.swing.JFrame {
   
   
   public void open() {
-    lastFile = showFileChooser(ICON_OPEN, false);
+    lastFile = showFileChooser(false);
     if(lastFile == null) {
       status("No file selected", true);
       return;
@@ -379,13 +366,15 @@ public class FrameEditor extends javax.swing.JFrame {
   }
   
   
-  public File showFileChooser(String icon, boolean save) {
+  public File showFileChooser(boolean save) {
     JFileChooser ch = new JFileChooser(lastFile) {
       protected JDialog createDialog(Component parent) {
         JDialog dlg = super.createDialog(parent);
-        if(icon != null && !icon.isEmpty())
-          dlg.setIconImage(
-              FrameEditor.this.getIcon(icon));
+        if(save) {
+          dlg.setIconImage(IconGetter.getIconSaveGray());
+        } else {
+          dlg.setIconImage(IconGetter.getIconOpenGray());
+        }
         return dlg;
       }
     };
@@ -410,7 +399,7 @@ public class FrameEditor extends javax.swing.JFrame {
   
   
   public void saveAs() {
-    lastFile = showFileChooser(ICON_SAVE, true);
+    lastFile = showFileChooser(true);
     if(lastFile == null) {
       status("No file selected", true);
       return;
@@ -521,13 +510,14 @@ public class FrameEditor extends javax.swing.JFrame {
     jMenu2 = new javax.swing.JMenu();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    setIconImage(IconGetter.getIconCodeterm());
 
     content.setLayout(new java.awt.BorderLayout());
 
     buttonBar.setBackground(new java.awt.Color(80, 80, 80));
 
     saveAction.setForeground(new java.awt.Color(255, 255, 255));
-    saveAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/circle-save-24.png"))); // NOI18N
+    saveAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/save-white-20.png"))); // NOI18N
     saveAction.setText("Save");
     saveAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -536,7 +526,7 @@ public class FrameEditor extends javax.swing.JFrame {
     });
 
     openAction.setForeground(new java.awt.Color(255, 255, 255));
-    openAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/circle-open-24.png"))); // NOI18N
+    openAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/open-white-20.png"))); // NOI18N
     openAction.setText("Open");
     openAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -545,7 +535,7 @@ public class FrameEditor extends javax.swing.JFrame {
     });
 
     copyAction.setForeground(new java.awt.Color(255, 255, 255));
-    copyAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/circle-copy-24.png"))); // NOI18N
+    copyAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/copy-white-20.png"))); // NOI18N
     copyAction.setText("Copy");
     copyAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -554,7 +544,7 @@ public class FrameEditor extends javax.swing.JFrame {
     });
 
     pasteAction.setForeground(new java.awt.Color(255, 255, 255));
-    pasteAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/paste-24.png"))); // NOI18N
+    pasteAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/paste-white-20.png"))); // NOI18N
     pasteAction.setText("Paste");
     pasteAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -563,7 +553,7 @@ public class FrameEditor extends javax.swing.JFrame {
     });
 
     findAction.setForeground(new java.awt.Color(255, 255, 255));
-    findAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/find-24.png"))); // NOI18N
+    findAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/search-white-20.png"))); // NOI18N
     findAction.setText("Find");
     findAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -572,7 +562,7 @@ public class FrameEditor extends javax.swing.JFrame {
     });
 
     undoAction.setForeground(new java.awt.Color(255, 255, 255));
-    undoAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/undo-24.png"))); // NOI18N
+    undoAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/undo-white-20.png"))); // NOI18N
     undoAction.setText("Undo");
     undoAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -581,7 +571,7 @@ public class FrameEditor extends javax.swing.JFrame {
     });
 
     redoAction.setForeground(new java.awt.Color(255, 255, 255));
-    redoAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/redo-24.png"))); // NOI18N
+    redoAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/redo-white-20.png"))); // NOI18N
     redoAction.setText("Redo");
     redoAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -590,7 +580,7 @@ public class FrameEditor extends javax.swing.JFrame {
     });
 
     fontAction.setForeground(new java.awt.Color(255, 255, 255));
-    fontAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/font-24.png"))); // NOI18N
+    fontAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/font-white-20.png"))); // NOI18N
     fontAction.setText("Font");
     fontAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -599,7 +589,7 @@ public class FrameEditor extends javax.swing.JFrame {
     });
 
     colorsAction.setForeground(new java.awt.Color(255, 255, 255));
-    colorsAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/gear-white-24.png"))); // NOI18N
+    colorsAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/gear-white-20.png"))); // NOI18N
     colorsAction.setText("Config");
     colorsAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -719,7 +709,7 @@ public class FrameEditor extends javax.swing.JFrame {
   }//GEN-LAST:event_fontActionMouseClicked
 
   private void colorsActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_colorsActionMouseClicked
-    colors();
+    configDialog();
   }//GEN-LAST:event_colorsActionMouseClicked
 
 

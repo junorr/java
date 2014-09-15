@@ -6,6 +6,8 @@
 
 package us.pserver.coder;
 
+import java.awt.Color;
+
 
 /**
  *
@@ -48,6 +50,34 @@ public class FormAttribute extends javax.swing.JPanel {
     if(value == null) return false;
     return c.isAssignableFrom(value.getClass());
   }
+  
+  
+  public void setLabelBackground(Color c) {
+    if(c == null) return;
+    int r, g, b;
+    r = c.getRed() + 150;
+    r = (r > 255 ? r - 255 : r);
+    g = c.getGreen() + 150;
+    g = (g > 255 ? g - 255 : g);
+    b = c.getBlue() + 150;
+    b = (b > 255 ? b - 255 : b);
+    label.setForeground(new Color(r, g, b));
+    label.setBackground(c);
+  }
+
+
+  public void setLabelForeground(Color c) {
+    if(c == null) return;
+    int r, g, b;
+    r = c.getRed() + 150;
+    r = (r > 255 ? r - 255 : r);
+    g = c.getGreen() + 150;
+    g = (g > 255 ? g - 255 : g);
+    b = c.getBlue() + 150;
+    b = (b > 255 ? b - 255 : b);
+    label.setBackground(new Color(r, g, b));
+    label.setForeground(c);
+  }
 
 
   /**
@@ -60,20 +90,20 @@ public class FormAttribute extends javax.swing.JPanel {
   private void initComponents() {
 
     label = new javax.swing.JLabel();
-    button = new javax.swing.JButton();
 
     setBackground(new java.awt.Color(255, 255, 255));
     setPreferredSize(new java.awt.Dimension(250, 30));
-    setLayout(new java.awt.BorderLayout());
-    add(label, java.awt.BorderLayout.CENTER);
+    setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 4));
 
-    button.setPreferredSize(new java.awt.Dimension(115, 28));
-    add(button, java.awt.BorderLayout.EAST);
+    label.setBackground(new java.awt.Color(255, 255, 255));
+    label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    label.setOpaque(true);
+    label.setPreferredSize(new java.awt.Dimension(150, 20));
+    add(label);
   }// </editor-fold>//GEN-END:initComponents
 
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
-  public javax.swing.JButton button;
   public javax.swing.JLabel label;
   // End of variables declaration//GEN-END:variables
 }

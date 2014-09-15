@@ -104,6 +104,7 @@ public class CodetermConfig {
       textFont = cc.textFont;
       this.setTextBgColor(cc.getTextBgColor());
       this.setTextColor(cc.getTextColor());
+      this.setTextSelectionColor(cc.getTextSelectionColor());
     } 
     catch(IOException e) {
       return e;

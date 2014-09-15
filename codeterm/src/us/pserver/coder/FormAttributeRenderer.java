@@ -23,10 +23,6 @@ package us.pserver.coder;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JColorChooser;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
@@ -57,10 +53,10 @@ public class FormAttributeRenderer implements ListCellRenderer<ConfigAttribute> 
       boolean isSelected, boolean cellHasFocus) {
     Component c = null;
     if(value instanceof ColorAttribute) {
-      c = createColorForm(value.name(), (Color) value.get());
+      c = createColorForm((ColorAttribute) value);
     }
     else if(value instanceof FontAttribute) {
-      c = createFontForm(value.name(), (Font) value.get());
+      c = createFontForm((FontAttribute) value);
     }
     else {
       c = new ListSeparator(value.name());
@@ -70,44 +66,20 @@ public class FormAttributeRenderer implements ListCellRenderer<ConfigAttribute> 
     return c;
   }
   
+  
+  private FormAttribute createColorForm(ColorAttribute ca) {
+    FormAttribute fa = new FormAttribute();
+    fa.setLabelBackground(ca.get());
+    fa.label.setText(ca.name());
+    return fa;
+  }
+  
 
-  private FormAttribute createColorForm(String label, Color c) {
-    FormAttribute attr = new FormAttribute();
-    attr.label.setText(label);
-    attr.button.setOpaque(true);
-    attr.button.setBackground(c);
-    attr.button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        attr.setValue(JColorChooser
-            .showDialog(frame, "Choose "+ label, c));
-        attr.button.setBackground(attr.castValue());
-        attr.button.repaint();
-      }
-    });
-    return attr;
+  private FormAttribute createFontForm(FontAttribute at) {
+    FormAttribute fa = new FormAttribute();
+    fa.label.setFont(at.get());
+    fa.label.setText(at.name());
+    return fa;
   }
-  
-  
-  private FormAttribute createFontForm(String label, Font f) {
-    FormAttribute attr = new FormAttribute();
-    attr.label.setText(label);
-    attr.button.setFont(f);
-    attr.button.setText(f.getFamily());
-    attr.button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        FontSelector fs = new FontSelector(frame, true, f);
-        fs.setVisible(true);
-        Font f = fs.getSelectedFont();
-        if(f != null) {
-          attr.setValue(f);
-          attr.button.setFont(f);
-          attr.button.setText(f.getFamily());
-          attr.button.repaint();
-        }
-      }
-    });
-    return attr;
-  }
-  
   
 }

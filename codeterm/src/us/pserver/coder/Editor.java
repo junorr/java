@@ -280,6 +280,13 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   
   
   @Override
+  public void setText(String text) {
+    super.setText(text);
+    this.update();
+  }
+  
+  
+  @Override
   public void setBackground(Color c) {
     if(c != null) {
       UIDefaults defaults = new UIDefaults();

@@ -53,4 +53,9 @@ public abstract class ConfigAttribute<T> {
     attr = t;
   }
   
+  
+  public void set(T t) {
+    attr = t;
+  }
+  
 }
