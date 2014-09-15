@@ -22,6 +22,7 @@
 package us.pserver.coder;
 
 import java.awt.Font;
+import java.util.function.Consumer;
 
 /**
  *
@@ -32,6 +33,12 @@ public class FontAttribute extends ConfigAttribute<Font> {
 
   public FontAttribute(String name, Font f) {
     super();
+    set(name, f);
+  }
+  
+
+  public FontAttribute(String name, Font f, Consumer<Font> cs) {
+    super(cs);
     set(name, f);
   }
   

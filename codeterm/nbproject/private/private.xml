@@ -3,18 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/java/codeterm/src/us/pserver/coder/Editor.java</file>
-            <file>file:/D:/java/codeterm/src/us/pserver/coder/FontSelector.java</file>
-            <file>file:/D:/java/codeterm/src/us/pserver/coder/FrameEditor.java</file>
-            <file>file:/D:/java/codeterm/src/us/pserver/coder/ConfigAttribute.java</file>
-            <file>file:/D:/java/codeterm/src/us/pserver/coder/CodetermConfig.java</file>
-            <file>file:/D:/java/codeterm/src/us/pserver/coder/PanelConfig.java</file>
-            <file>file:/D:/java/codeterm/src/us/pserver/coder/ReplaceDialog.java</file>
-            <file>file:/D:/java/codeterm/src/us/pserver/coder/LineNumberPanel.java</file>
-            <file>file:/D:/java/codeterm/src/us/pserver/coder/FormAttribute.java</file>
-            <file>file:/D:/java/codeterm/src/us/pserver/coder/FormAttributeRenderer.java</file>
-            <file>file:/D:/java/codeterm/src/us/pserver/coder/IconGetter.java</file>
-            <file>file:/D:/java/codeterm/src/us/pserver/coder/ListSeparator.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/FormAttribute.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/FontAttribute.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/PanelConfig.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/ColorAttribute.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/FrameEditor.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/FontSelector.java</file>
+            <file>file:/C:/.local/java/codeterm/src/us/pserver/coder/ConfigAttribute.java</file>
         </group>
     </open-files>
 </project-private>

@@ -9,12 +9,12 @@ package us.pserver.coder;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
+import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 
@@ -34,8 +34,10 @@ public class FontSelector extends javax.swing.JDialog {
   /**
    * Creates new form FontSelector
    */
-  public FontSelector(Frame parent, boolean modal) {
-    super(parent, modal);
+  public FontSelector(Window parent, boolean modal) {
+    super(parent, (modal 
+        ? ModalityType.APPLICATION_MODAL 
+        : ModalityType.MODELESS));
     retnull = false;
     fonts = GraphicsEnvironment
         .getLocalGraphicsEnvironment()
@@ -68,7 +70,7 @@ public class FontSelector extends javax.swing.JDialog {
   }
   
   
-  public FontSelector(Frame parent, boolean modal, Font f) {
+  public FontSelector(Window parent, boolean modal, Font f) {
     this(parent, modal);
     if(f != null) {
       int size = f.getSize();

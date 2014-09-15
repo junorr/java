@@ -21,6 +21,8 @@
 
 package us.pserver.coder;
 
+import java.util.function.Consumer;
+
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
@@ -32,9 +34,18 @@ public abstract class ConfigAttribute<T> {
   
   private T attr;
   
+  private Consumer<T> cs;
+  
   
   ConfigAttribute() {
     attr = null;
+    cs = null;
+  }
+  
+  
+  ConfigAttribute(Consumer<T> cs) {
+    attr = null;
+    this.cs = cs;
   }
   
   
@@ -56,6 +67,22 @@ public abstract class ConfigAttribute<T> {
   
   public void set(T t) {
     attr = t;
+  }
+  
+  
+  public void setDefineMethod(Consumer<T> cs) {
+    this.cs = cs;
+  }
+  
+  
+  public Consumer<T> getDefineMethod() {
+    return cs;
+  }
+  
+  
+  public void define() {
+    if(cs != null)
+      cs.accept(attr);
   }
   
 }

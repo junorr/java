@@ -22,6 +22,7 @@
 package us.pserver.coder;
 
 import java.awt.Color;
+import java.util.function.Consumer;
 
 /**
  *
@@ -32,6 +33,12 @@ public class ColorAttribute extends ConfigAttribute<Color> {
 
   public ColorAttribute(String name, Color c) {
     super();
+    set(name, c);
+  }
+  
+
+  public ColorAttribute(String name, Color c, Consumer<Color> cs) {
+    super(cs);
     set(name, c);
   }
   

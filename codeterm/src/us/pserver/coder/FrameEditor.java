@@ -131,19 +131,19 @@ public class FrameEditor extends javax.swing.JFrame {
       if(e != null)
         throw new IllegalStateException(e.getMessage(), e);
       editor.setBackground(conf.getTextBgColor());
-      Color c = conf.getTextColor();
       editor.setForeground(conf.getTextColor());
       editor.setFont(conf.getTextFont());
-      System.out.println("* selectionColor: "+ conf.getTextSelectionColor());
       editor.setSelectionColor(conf.getTextSelectionColor());
+      
       lnp.setFont(conf.getTextFont());
       lnp.setBackground(conf.getLinesBgColor());
       lnp.setForeground(conf.getLinesColor());
+      
       statusColor = conf.getStatusColor();
       statusWarnColor = conf.getStatusWarnColor();
-      c = conf.getStatusBgColor();
       statusbar.setBackground(conf.getStatusBgColor());
       statusbar.setFont(conf.getStatusFont());
+      
       Rectangle r = conf.getPosition();
       if(r != null) {
         this.setLocation(r.x, r.y);
@@ -154,9 +154,11 @@ public class FrameEditor extends javax.swing.JFrame {
       editor.setBackground(DEF_EDITOR_BG);
       editor.setForeground(DEF_EDITOR_FG);
       editor.setSelectionColor(DEF_SELECT_COLOR);
+      
       statusColor = DEF_STATUS_COLOR;
       statusWarnColor = STATUS_ERROR_COLOR;
       statusbar.setBackground(DEF_EDITOR_BG);
+      
       defineConfig();
       Exception e = conf.save();
       if(e != null)
@@ -166,16 +168,19 @@ public class FrameEditor extends javax.swing.JFrame {
   
   
   public void defineConfig() {
-    conf.setLinesBgColor(lnp.getBackground());
+    //Lines
     conf.setLinesColor(lnp.getForeground());
-    conf.setStatusBgColor(statusbar.getBackground());
+    conf.setLinesBgColor(lnp.getBackground());
+    //Status
     conf.setStatusColor(statusColor);
-    conf.setStatusFont(statusbar.getFont());
     conf.setStatusWarnColor(statusWarnColor);
-    conf.setTextBgColor(editor.getBackground());
+    conf.setStatusBgColor(statusbar.getBackground());
+    conf.setStatusFont(statusbar.getFont());
+    //Text
     conf.setTextColor(editor.getForeground());
-    conf.setTextFont(editor.getFont());
     conf.setTextSelectionColor(editor.getSelectionColor());
+    conf.setTextBgColor(editor.getBackground());
+    conf.setTextFont(editor.getFont());
   }
   
   
@@ -300,10 +305,10 @@ public class FrameEditor extends javax.swing.JFrame {
   public void configDialog() {
     JDialog dlg = new JDialog(this, "Configurations");
     dlg.setIconImage(IconGetter.getIconGearGray());
-    dlg.setLocation(ScreenPositioner
-        .getCenterWindowPoint(this, dlg));
     dlg.add(new PanelConfig(this));
     dlg.pack();
+    dlg.setLocation(ScreenPositioner
+        .getCenterWindowPoint(this, dlg));
     dlg.setVisible(true);
   }
   

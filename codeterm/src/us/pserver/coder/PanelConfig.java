@@ -7,15 +7,12 @@
 package us.pserver.coder;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
-import java.awt.Frame;
-import java.awt.event.ActionListener;
+import java.awt.Window;
 import java.awt.event.MouseEvent;
 import javax.swing.DefaultListModel;
 import javax.swing.JColorChooser;
-import javax.swing.JDialog;
 
 
 /**
@@ -42,30 +39,30 @@ public class PanelConfig extends javax.swing.JPanel {
     model = new DefaultListModel<>();
     
     model.addElement(new SeparatorAttribute("Text Area"));
-    model.addElement(new FontAttribute("Text Font", fe.getConfig().getTextFont()));
-    model.addElement(new ColorAttribute("Text Color", fe.getConfig().getTextColor()));
-    model.addElement(new ColorAttribute("Selection Color", fe.getConfig().getTextSelectionColor()));
-    model.addElement(new ColorAttribute("Background Color", fe.getConfig().getTextBgColor()));
+    model.addElement(new FontAttribute("Text Font", fe.getConfig().getTextFont(), fe.getConfig()::setTextFont));
+    model.addElement(new ColorAttribute("Text Color", fe.getConfig().getTextColor(), fe.getConfig()::setTextColor));
+    model.addElement(new ColorAttribute("Selection Color", fe.getConfig().getTextSelectionColor(), fe.getConfig()::setTextSelectionColor));
+    model.addElement(new ColorAttribute("Background Color", fe.getConfig().getTextBgColor(), fe.getConfig()::setTextBgColor));
     
     model.addElement(new SeparatorAttribute("Lines Number"));
-    model.addElement(new ColorAttribute("Number Color", fe.getConfig().getLinesColor()));
-    model.addElement(new ColorAttribute("Background Color", fe.getConfig().getLinesBgColor()));
+    model.addElement(new ColorAttribute("Number Color", fe.getConfig().getLinesColor(), fe.getConfig()::setLinesColor));
+    model.addElement(new ColorAttribute("Background Color", fe.getConfig().getLinesBgColor(), fe.getConfig()::setLinesBgColor));
     
     model.addElement(new SeparatorAttribute("Status Bar"));
-    model.addElement(new FontAttribute("Status Font", fe.getConfig().getStatusFont()));
-    model.addElement(new ColorAttribute("Status Color", fe.getConfig().getStatusColor()));
-    model.addElement(new ColorAttribute("Warning Color", fe.getConfig().getStatusWarnColor()));
-    model.addElement(new ColorAttribute("Backgroung Color", fe.getConfig().getStatusBgColor()));
+    model.addElement(new FontAttribute("Status Font", fe.getConfig().getStatusFont(), fe.getConfig()::setStatusFont));
+    model.addElement(new ColorAttribute("Status Color", fe.getConfig().getStatusColor(), fe.getConfig()::setStatusColor));
+    model.addElement(new ColorAttribute("Warning Color", fe.getConfig().getStatusWarnColor(), fe.getConfig()::setStatusWarnColor));
+    model.addElement(new ColorAttribute("Backgroung Color", fe.getConfig().getStatusBgColor(), fe.getConfig()::setStatusBgColor));
     
     initComponents();
   }
   
   
-  private Frame getParentFrame() {
+  private Window getParentWindow() {
     Container c = this;
     while(c != null) {
-      if(c instanceof Frame)
-        return (Frame) c;
+      if(c instanceof Window)
+        return (Window) c;
       c = c.getParent();
     }
     return null;
@@ -101,10 +98,20 @@ public class PanelConfig extends javax.swing.JPanel {
     applyAction.setForeground(new java.awt.Color(255, 255, 255));
     applyAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/check-white-20.png"))); // NOI18N
     applyAction.setText("Apply");
+    applyAction.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        applyActionMouseClicked(evt);
+      }
+    });
 
     cancelAction.setForeground(new java.awt.Color(255, 255, 255));
     cancelAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/cancel-white-20.png"))); // NOI18N
     cancelAction.setText("Cancel");
+    cancelAction.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        cancelActionMouseClicked(evt);
+      }
+    });
 
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
@@ -151,7 +158,7 @@ public class PanelConfig extends javax.swing.JPanel {
         ConfigAttribute attr = (ConfigAttribute) list.getModel().getElementAt(idx);
         System.out.println("* Double Click on: "+ attr);
         if(attr instanceof FontAttribute) {
-          FontSelector fe = new FontSelector(getParentFrame(), true, (Font) attr.get());
+          FontSelector fe = new FontSelector(getParentWindow(), true, (Font) attr.get());
           fe.setVisible(true);
           Font f = fe.getSelectedFont();
           if(f != null)
@@ -165,8 +172,25 @@ public class PanelConfig extends javax.swing.JPanel {
         }
       }
       list.setModel(model);
+      list.setSelectedIndex(idx);
     }
   }//GEN-LAST:event_listMouseClicked
+
+  
+  private void cancelActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancelActionMouseClicked
+    Window w = this.getParentWindow();
+    if(w != null)
+      w.setVisible(false);
+  }//GEN-LAST:event_cancelActionMouseClicked
+
+  
+  private void applyActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_applyActionMouseClicked
+    for(int i = 0; i < model.getSize(); i++) {
+      ConfigAttribute c = model.elementAt(i);
+      c.define();
+    }
+    frame.saveConfig();
+  }//GEN-LAST:event_applyActionMouseClicked
 
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
