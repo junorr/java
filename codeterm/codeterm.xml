@@ -1,6 +1,6 @@
 <us.pserver.coder.CodetermConfig>
-  <text color-rgb="255,255,255"/>
-  <textBG color-rgb="0,0,153"/>
+  <text color-rgb="255,204,85"/>
+  <textBG color-rgb="100,100,100"/>
   <textSelect color-rgb="170,170,170"/>
   <lines color-rgb="0,0,0"/>
   <linesBG color-rgb="220,220,220"/>

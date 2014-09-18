@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes SISBB</div>
+  	
+  	<div class="method">
+  		find( string txt )
+  	</div>
+  	
+  	<div class="desc">
+  		Tenta encontrar o texto <i>txt</i> na tela do terminal,
+  		retornando um objeto <i>cursor</i> representando a
+  		posicao indicada.</br>
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>txt - Texto a ser encontrado na tela</li>
+  			<li>return - Objeto cursor</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+  		object cursor = find( "Pessoal" )<br/>
+  		int linha = cursor.row()<br/>
+  		int coluna = cursor.column()<br/> 
+ 		if cursor.position() == 0<br/>
+ 			&nbsp;&nbsp;&nbsp;
+ 			<span class="comment">
+ 				# Texto nao encontrado
+ 			</span><br/>
+ 		endif
+ 	</div>
+ 		
+  </body>
+ </html>
+      

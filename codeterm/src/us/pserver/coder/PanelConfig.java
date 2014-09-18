@@ -39,20 +39,20 @@ public class PanelConfig extends javax.swing.JPanel {
     model = new DefaultListModel<>();
     
     model.addElement(new SeparatorAttribute("Text Area"));
-    model.addElement(new FontAttribute("Text Font", fe.getConfig().getTextFont(), fe.getConfig()::setTextFont));
-    model.addElement(new ColorAttribute("Text Color", fe.getConfig().getTextColor(), fe.getConfig()::setTextColor));
-    model.addElement(new ColorAttribute("Selection Color", fe.getConfig().getTextSelectionColor(), fe.getConfig()::setTextSelectionColor));
-    model.addElement(new ColorAttribute("Background Color", fe.getConfig().getTextBgColor(), fe.getConfig()::setTextBgColor));
+    model.addElement(new FontAttribute("Text Font", frame.getConfig().getTextFont(), frame::setTextFont));
+    model.addElement(new ColorAttribute("Text Color", frame.getConfig().getTextColor(), frame::setTextColor));
+    model.addElement(new ColorAttribute("Selection Color", frame.getConfig().getTextSelectionColor(), frame::setTextSelectionColor));
+    model.addElement(new ColorAttribute("Background Color", frame.getConfig().getTextBgColor(), frame::setTextBGColor));
     
     model.addElement(new SeparatorAttribute("Lines Number"));
-    model.addElement(new ColorAttribute("Number Color", fe.getConfig().getLinesColor(), fe.getConfig()::setLinesColor));
-    model.addElement(new ColorAttribute("Background Color", fe.getConfig().getLinesBgColor(), fe.getConfig()::setLinesBgColor));
+    model.addElement(new ColorAttribute("Number Color", frame.getConfig().getLinesColor(), frame::setLinesColor));
+    model.addElement(new ColorAttribute("Background Color", frame.getConfig().getLinesBgColor(), frame::setLinesBGColor));
     
     model.addElement(new SeparatorAttribute("Status Bar"));
-    model.addElement(new FontAttribute("Status Font", fe.getConfig().getStatusFont(), fe.getConfig()::setStatusFont));
-    model.addElement(new ColorAttribute("Status Color", fe.getConfig().getStatusColor(), fe.getConfig()::setStatusColor));
-    model.addElement(new ColorAttribute("Warning Color", fe.getConfig().getStatusWarnColor(), fe.getConfig()::setStatusWarnColor));
-    model.addElement(new ColorAttribute("Backgroung Color", fe.getConfig().getStatusBgColor(), fe.getConfig()::setStatusBgColor));
+    model.addElement(new FontAttribute("Status Font", frame.getConfig().getStatusFont(), frame::setStatusFont));
+    model.addElement(new ColorAttribute("Status Color", frame.getConfig().getStatusColor(), frame::setStatusColor));
+    model.addElement(new ColorAttribute("Warning Color", frame.getConfig().getStatusWarnColor(), frame::setStatusWarnColor));
+    model.addElement(new ColorAttribute("Backgroung Color", frame.getConfig().getStatusBgColor(), frame::setStatusBGColor));
     
     initComponents();
   }
@@ -86,6 +86,7 @@ public class PanelConfig extends javax.swing.JPanel {
 
     list.setCellRenderer(new FormAttributeRenderer(frame));
     list.setModel(model);
+    list.setToolTipText("Double Click to Edit");
     list.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
         listMouseClicked(evt);
@@ -156,7 +157,6 @@ public class PanelConfig extends javax.swing.JPanel {
       int idx = list.locationToIndex(evt.getPoint());
       if(idx >= 0 && idx < list.getModel().getSize()) {
         ConfigAttribute attr = (ConfigAttribute) list.getModel().getElementAt(idx);
-        System.out.println("* Double Click on: "+ attr);
         if(attr instanceof FontAttribute) {
           FontSelector fe = new FontSelector(getParentWindow(), true, (Font) attr.get());
           fe.setVisible(true);
@@ -186,9 +186,9 @@ public class PanelConfig extends javax.swing.JPanel {
   
   private void applyActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_applyActionMouseClicked
     for(int i = 0; i < model.getSize(); i++) {
-      ConfigAttribute c = model.elementAt(i);
-      c.define();
+      model.elementAt(i).define();
     }
+    this.getParentWindow().setVisible(false);
     frame.saveConfig();
   }//GEN-LAST:event_applyActionMouseClicked
 

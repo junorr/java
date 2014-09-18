@@ -1,0 +1,83 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Leitura/Escrita (I/O)</div>
+  	
+  	<div class="method">
+  		syscommand( string cmd )
+  	</div>
+  	
+  	<div class="desc">
+  		Executa o comando <i>cmd</i> no sistema operacional, retornando
+  		a saida do comando como string.<br/> 
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>cmd - Comando a ser executado</li>
+  			<li>return - Saida da execucao do comando no sistema</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+		string comando = "cmd /c dir G:"<br/>
+		string saida = syscommand( comando )<br/>
+		print( saida )<br/>
+		<span class="comment">
+			# Imprime no console
+		</span><br/>
+		&gt;&nbsp;O volume na unidade G e New Dinop<br/>
+		O Numero de Serie do Volume e 8A19-F0E4<br/>
+		Pasta de G:\<br/>
+		04/06/2013 20:37 &lt;DIR&gt; .<br/>
+		04/06/2013 20:37 &lt;DIR&gt; ..<br/>
+		04/06/2013 19:47 &lt;DIR&gt; CONFIDENCIAL<br/>
+		20/02/2014 19:11 &lt;DIR&gt; INTERNA<br/>
+		04/06/2013 20:37 &lt;DIR&gt; PUBLICA<br/>
+		04/06/2013 20:37 &lt;DIR&gt; RESTRITA<br/>
+		&nbsp;&nbsp; 0 arquivo(s)&nbsp;&nbsp; 0 bytes<br/>
+		&nbsp;&nbsp; 6 pasta(s)&nbsp;&nbsp; 898.831.851.520 bytes disponiveis
+	</div>
+ 		
+  </body>
+ </html>

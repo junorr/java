@@ -26,7 +26,6 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
@@ -105,6 +104,11 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
         }
       }
     });
+  }
+  
+  
+  public Highlighter getSintaxHighlighter() {
+    return hl;
   }
   
   

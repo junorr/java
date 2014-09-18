@@ -67,6 +67,7 @@ public class FrameEditor extends javax.swing.JFrame {
    * Creates new form FrameEditor
    */
   public FrameEditor() {
+    super("Codeterm");
     editor = new Editor();
     editor.setBackground(DEF_EDITOR_BG);
     editor.setForeground(DEF_EDITOR_FG);
@@ -111,9 +112,7 @@ public class FrameEditor extends javax.swing.JFrame {
     });
     hideStatus = new Timer(STATUS_DELAY, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        statusbar.setPreferredSize(
-            new Dimension(statusbar.getWidth(), 1));
-        content.revalidate();
+        setStatusBarVisible(false);
       }
     });
     hideStatus.setRepeats(false);
@@ -255,6 +254,16 @@ public class FrameEditor extends javax.swing.JFrame {
     if(c != null) {
       conf.setLinesColor(c);
       lnp.setForeground(c);
+      lnp.repaint();
+      saveConfig();
+    }
+  }
+  
+  
+  public void setLinesBGColor(Color c) {
+    if(c != null) {
+      conf.setLinesBgColor(c);
+      lnp.setBackground(c);
       lnp.repaint();
       saveConfig();
     }
@@ -428,6 +437,7 @@ public class FrameEditor extends javax.swing.JFrame {
         bw.newLine();
       }
       bw.flush();
+      this.setTitle("Codeterm - "+ f.getName());
       return true;
     } 
     catch(IOException e) {
@@ -456,6 +466,7 @@ public class FrameEditor extends javax.swing.JFrame {
       editor.setCaretPosition(0);
       editor.update();
       lnp.revalidate();
+      this.setTitle("Codeterm - "+ f.getName());
       return true;
     }
     catch(IOException e) {
@@ -472,12 +483,17 @@ public class FrameEditor extends javax.swing.JFrame {
       statusbar.setForeground(DEF_STATUS_COLOR);
     }
     statusbar.setText(" "+ text);
+    setStatusBarVisible(true);
+    hideStatus.restart();
+  }
+  
+  
+  public void setStatusBarVisible(boolean visible) {
     statusbar.setPreferredSize(
         new Dimension(statusbar.getWidth(), 
-            STATUS_HEIGHT));
+            (visible ? STATUS_HEIGHT : 1)));
     statusbar.repaint();
     content.revalidate();
-    hideStatus.restart();
   }
   
   
@@ -512,7 +528,20 @@ public class FrameEditor extends javax.swing.JFrame {
     statusbar = new javax.swing.JLabel();
     jMenuBar1 = new javax.swing.JMenuBar();
     jMenu1 = new javax.swing.JMenu();
+    menuNew = new javax.swing.JMenuItem();
+    menuOpen = new javax.swing.JMenuItem();
+    menuSave = new javax.swing.JMenuItem();
+    menuSaveAs = new javax.swing.JMenuItem();
     jMenu2 = new javax.swing.JMenu();
+    menuUndo = new javax.swing.JMenuItem();
+    menuRedo = new javax.swing.JMenuItem();
+    menuCopy = new javax.swing.JMenuItem();
+    menuPaste = new javax.swing.JMenuItem();
+    menuFind = new javax.swing.JMenuItem();
+    jMenu3 = new javax.swing.JMenu();
+    menuFont = new javax.swing.JMenuItem();
+    menuConfig = new javax.swing.JMenuItem();
+    menuHideButtons = new javax.swing.JCheckBoxMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setIconImage(IconGetter.getIconCodeterm());
@@ -656,13 +685,136 @@ public class FrameEditor extends javax.swing.JFrame {
     statusbar.setBackground(new java.awt.Color(80, 80, 80));
     statusbar.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
     statusbar.setPreferredSize(new java.awt.Dimension(40, 1));
+    statusbar.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseExited(java.awt.event.MouseEvent evt) {
+        statusbarMouseExited(evt);
+      }
+      public void mouseEntered(java.awt.event.MouseEvent evt) {
+        statusbarMouseEntered(evt);
+      }
+    });
     content.add(statusbar, java.awt.BorderLayout.SOUTH);
 
     jMenu1.setText("File");
+
+    menuNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+    menuNew.setText("New");
+    menuNew.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuNewActionPerformed(evt);
+      }
+    });
+    jMenu1.add(menuNew);
+
+    menuOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+    menuOpen.setText("Open");
+    menuOpen.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuOpenActionPerformed(evt);
+      }
+    });
+    jMenu1.add(menuOpen);
+
+    menuSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+    menuSave.setText("Save");
+    menuSave.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuSaveActionPerformed(evt);
+      }
+    });
+    jMenu1.add(menuSave);
+
+    menuSaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+    menuSaveAs.setText("Save As");
+    menuSaveAs.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuSaveAsActionPerformed(evt);
+      }
+    });
+    jMenu1.add(menuSaveAs);
+
     jMenuBar1.add(jMenu1);
 
     jMenu2.setText("Edit");
+
+    menuUndo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+    menuUndo.setText("Undo");
+    menuUndo.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuUndoActionPerformed(evt);
+      }
+    });
+    jMenu2.add(menuUndo);
+
+    menuRedo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
+    menuRedo.setText("Redo");
+    menuRedo.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuRedoActionPerformed(evt);
+      }
+    });
+    jMenu2.add(menuRedo);
+
+    menuCopy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
+    menuCopy.setText("Copy");
+    menuCopy.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuCopyActionPerformed(evt);
+      }
+    });
+    jMenu2.add(menuCopy);
+
+    menuPaste.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
+    menuPaste.setText("Paste");
+    menuPaste.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuPasteActionPerformed(evt);
+      }
+    });
+    jMenu2.add(menuPaste);
+
+    menuFind.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
+    menuFind.setText("Find");
+    menuFind.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuFindActionPerformed(evt);
+      }
+    });
+    jMenu2.add(menuFind);
+
     jMenuBar1.add(jMenu2);
+
+    jMenu3.setText("Settings");
+
+    menuFont.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+    menuFont.setText("Font Selector");
+    menuFont.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuFontActionPerformed(evt);
+      }
+    });
+    jMenu3.add(menuFont);
+
+    menuConfig.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+    menuConfig.setText("Configurations");
+    menuConfig.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuConfigActionPerformed(evt);
+      }
+    });
+    jMenu3.add(menuConfig);
+
+    menuHideButtons.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
+    menuHideButtons.setSelected(true);
+    menuHideButtons.setText("Show/Hide Buttons Bar");
+    menuHideButtons.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuHideButtonsActionPerformed(evt);
+      }
+    });
+    jMenu3.add(menuHideButtons);
+
+    jMenuBar1.add(jMenu3);
 
     setJMenuBar(jMenuBar1);
 
@@ -717,6 +869,65 @@ public class FrameEditor extends javax.swing.JFrame {
     configDialog();
   }//GEN-LAST:event_colorsActionMouseClicked
 
+  private void menuNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewActionPerformed
+    lastFile = null;
+    editor.setText("");
+    this.setTitle("Codeterm - new");
+  }//GEN-LAST:event_menuNewActionPerformed
+
+  private void menuOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuOpenActionPerformed
+    this.open();
+  }//GEN-LAST:event_menuOpenActionPerformed
+
+  private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveActionPerformed
+    this.save();
+  }//GEN-LAST:event_menuSaveActionPerformed
+
+  private void menuSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveAsActionPerformed
+    this.saveAs();
+  }//GEN-LAST:event_menuSaveAsActionPerformed
+
+  private void menuUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuUndoActionPerformed
+    editor.undo();
+  }//GEN-LAST:event_menuUndoActionPerformed
+
+  private void menuRedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRedoActionPerformed
+    editor.redo();
+  }//GEN-LAST:event_menuRedoActionPerformed
+
+  private void menuCopyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCopyActionPerformed
+    this.copy();
+  }//GEN-LAST:event_menuCopyActionPerformed
+
+  private void menuPasteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPasteActionPerformed
+    this.paste();
+  }//GEN-LAST:event_menuPasteActionPerformed
+
+  private void menuFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFindActionPerformed
+    this.find();
+  }//GEN-LAST:event_menuFindActionPerformed
+
+  private void menuFontActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFontActionPerformed
+    this.fontActionMouseClicked(null);
+  }//GEN-LAST:event_menuFontActionPerformed
+
+  private void menuConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuConfigActionPerformed
+    this.configDialog();
+  }//GEN-LAST:event_menuConfigActionPerformed
+
+  private void menuHideButtonsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuHideButtonsActionPerformed
+    this.toggleButtonBar();
+  }//GEN-LAST:event_menuHideButtonsActionPerformed
+
+  private void statusbarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statusbarMouseEntered
+    setStatusBarVisible(true);
+    this.hideStatus.stop();
+  }//GEN-LAST:event_statusbarMouseEntered
+
+  private void statusbarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statusbarMouseExited
+    this.hideStatus.start();
+  }//GEN-LAST:event_statusbarMouseExited
+
 
   /**
    * @param args the command line arguments
@@ -762,7 +973,20 @@ public class FrameEditor extends javax.swing.JFrame {
   private us.pserver.coder.ActionLabel fontAction;
   private javax.swing.JMenu jMenu1;
   private javax.swing.JMenu jMenu2;
+  private javax.swing.JMenu jMenu3;
   private javax.swing.JMenuBar jMenuBar1;
+  private javax.swing.JMenuItem menuConfig;
+  private javax.swing.JMenuItem menuCopy;
+  private javax.swing.JMenuItem menuFind;
+  private javax.swing.JMenuItem menuFont;
+  private javax.swing.JCheckBoxMenuItem menuHideButtons;
+  private javax.swing.JMenuItem menuNew;
+  private javax.swing.JMenuItem menuOpen;
+  private javax.swing.JMenuItem menuPaste;
+  private javax.swing.JMenuItem menuRedo;
+  private javax.swing.JMenuItem menuSave;
+  private javax.swing.JMenuItem menuSaveAs;
+  private javax.swing.JMenuItem menuUndo;
   private us.pserver.coder.ActionLabel openAction;
   private us.pserver.coder.ActionLabel pasteAction;
   private us.pserver.coder.ActionLabel redoAction;

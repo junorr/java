@@ -60,6 +60,7 @@ public class Highlighter {
     xstream.alias(MATCH, Match.class);
     xstream.alias(COLOR, Color.class);
     xstream.alias(FONT, FontXml.class);
+    xstream.useAttributeFor(Match.class, "name");
     xstream.registerConverter(new ColorConverter());
     xstream.registerConverter(new FontAttrConverter());
     init();
@@ -104,7 +105,7 @@ public class Highlighter {
       Match m = new Match(exp.toString(), ts);
       if(!words.contains(m)) {
         words.add(m);
-        save();
+        this.save();
       }
     }
     return this;

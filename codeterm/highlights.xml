@@ -1,15 +1,57 @@
 <list>
-  <match>
-    <regex>\bpublic\b</regex>
+  <match name="Constants">
+    <regex>[A-Z]+\w*</regex>
     <style>
-      <fg color-rgb="255,0,0"/>
+      <fg color-rgb="255,255,255"/>
+      <font italic="true"/>
+    </style>
+  </match>
+  <match name="Integer">
+    <regex>\bint\b</regex>
+    <style>
+      <fg color-rgb="200,225,255"/>
       <font bold="true"/>
     </style>
   </match>
-  <match>
+  <match name="Double">
+    <regex>\bdouble\b</regex>
+    <style>
+      <fg color-rgb="200,225,255"/>
+      <font bold="true"/>
+    </style>
+  </match>
+  <match name="String">
+    <regex>\bstring\b</regex>
+    <style>
+      <fg color-rgb="200,225,255"/>
+      <font bold="true"/>
+    </style>
+  </match>
+  <match name="Object">
+    <regex>\bobject\b</regex>
+    <style>
+      <fg color-rgb="200,225,255"/>
+      <font bold="true"/>
+    </style>
+  </match>
+  <match name="Method">
+    <regex>[a-zA-Z_]+\w*\(</regex>
+    <style>
+      <fg reference="../../../match/style/fg"/>
+      <font bold="true"/>
+    </style>
+  </match>
+  <match name="String Constant">
+    <regex>&quot;.*&quot;</regex>
+    <style>
+      <fg color-rgb="255,200,80"/>
+      <font italic="true"/>
+    </style>
+  </match>
+  <match name="Comment">
     <regex>#.*</regex>
     <style>
-      <fg color-rgb="0,0,255"/>
+      <fg color-rgb="255,255,160"/>
       <font italic="true"/>
     </style>
   </match>

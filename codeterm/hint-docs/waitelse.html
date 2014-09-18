@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes SISBB</div>
+  	
+  	<div class="method">
+  		waitelse( int lin, int col, string txt, int lin2, int col2, string txt2 )
+  	</div>
+  	
+  	<div class="desc">
+  		Aguarda a atualizacao do terminal e o texto <i>txt</i> na
+  		posicao indicada por <i>lin</i> e <i>col</i>. Caso o texto
+  		<i>txt</i> nao esteja definido na posicao indicada apos a 
+  		atualizacao do terminal, aguarda pelo segundo texto <i>txt2</i>
+  		na posicao <i>lin2 e col2</i>. Se nenhuma condicao for atendida,
+  		um erro e gerado.</br>
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>lin - Linha da posicao do terminal</li>
+  			<li>col - Coluna da posicao do terminal</li>
+  			<li>txt - Texto que devera aparecer apos a atualizacao do terminal</li>
+  			<li>lin2 - Linha da segunda posicao no terminal</li>
+  			<li>col2 - Coluna da segunda posicao no terminal</li>
+  			<li>txt2 - Texto que devera aparecer no caso de falha do primeiro</li>
+  			<li>return - Um dos dois textos a ser exibido no terminal apos a atualizacao</i>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+  		string t1 = "BB30"<br/>
+  		string t2 = "IBBM"<br/>
+ 		string id = waitelse( 1, 2, t1, 1, 3, t2 )<br/>
+ 		if eq( id, t2 )<br/>
+ 		&nbsp;&nbsp;&nbsp;
+ 			<span class="comment">
+ 				# Tela de noticias
+ 			</span><br/>
+ 			&nbsp;&nbsp;&nbsp;
+ 			f3()<br/>
+ 		endif<br/>
+ 	</div>
+ 		
+  </body>
+ </html>
+      

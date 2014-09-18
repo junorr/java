@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Agendamento de Tarefas</div>
+  	
+  	<div class="method">
+  		schedule( object date, string func )
+  	</div>
+  	
+  	<div class="desc">
+  		Agenda a execucao da funcao <i>func</i> previamente definida.<br/> 
+  		<i>Argumentos:</i>
+  		<ul>
+  			<li>date - Data de execucao da funcao</li>
+  			<li>func - Nome da funcao a ser executada</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+ 			object hoje = date( "15/05/2014 12:00:00" )<br/>
+ 			func imprime()<br/>
+ 			&nbsp;&nbsp;&nbsp;
+ 				print( "Executando a funcao 'imprime'" )<br/>
+ 			endfunc<br/>
+ 			schedule( hoje, "imprime" )
+ 		</div>
+ 		
+  </body>
+ </html>
+      

@@ -33,25 +33,39 @@ import ru.lanwen.verbalregex.VerbalExpression;
  */
 public class Match {
 
+  private String name;
+  
   private String regex;
   
   private TextStyle style;
   
   
   public Match() {
+    name = null;
     regex = null;
     style = null;
   }
   
   
   public Match(String rgx, TextStyle ts) {
+    this(null, rgx, ts);
+  }
+  
+  
+  public Match(String name, String rgx, TextStyle ts) {
     if(rgx == null) throw new IllegalArgumentException(
         "Invalid Regex ("+ rgx+ ")");
     if(ts == null) throw new IllegalArgumentException(
         "Invalid TextStyle ("+ ts+ ")");
     Pattern ptn = Pattern.compile(rgx);
+    this.name = name;
     regex = rgx;
     style = ts;
+  }
+  
+  
+  public String getName() {
+    return name;
   }
   
   
@@ -62,6 +76,12 @@ public class Match {
   
   public TextStyle getTextStyle() {
     return style;
+  }
+  
+  
+  public Match setName(String nm) {
+    name = nm;
+    return this;
   }
   
   

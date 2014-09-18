@@ -202,7 +202,6 @@ public class FontSelector extends javax.swing.JDialog {
     setBackground(new java.awt.Color(239, 239, 239));
     setIconImage(IconGetter.getIconFontGray());
 
-    jPanel1.setBackground(new java.awt.Color(239, 239, 239));
     jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
     jLabel1.setFont(new java.awt.Font("SansSerif", 1, 11)); // NOI18N
@@ -266,7 +265,6 @@ public class FontSelector extends javax.swing.JDialog {
     });
     jScrollPane3.setViewportView(sizeList);
 
-    showPanel.setBackground(new java.awt.Color(239, 239, 239));
     showPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Font View", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("SansSerif", 1, 11))); // NOI18N
 
     viewLabel.setText("The Qu1ck Brown FOX Jumps 0ver The L4zy Do9.");
