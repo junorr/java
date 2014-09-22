@@ -1,0 +1,4 @@
+#!/bin/bash
+cd dist
+chmod +x strutils.jar
+java -jar strutils.jar "$1" "$2" "$3" "$4" "$5"

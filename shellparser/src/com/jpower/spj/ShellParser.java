@@ -547,26 +547,26 @@ public class ShellParser {
     if(args == null || args.length == 0 
         || options.isEmpty()) return this;
     
+    Option last = null;
     for(int i = 0; i < args.length; i++) {
       String arg = args[i];
+      if(arg.isEmpty()) continue;
+      //System.out.println("* arg("+ arg+")");
       boolean present = false;
       
       for(Option o : options) {
-        
+
         if((o.getLongName() != null 
             && arg.contains(o.getLongName()))
             || arg.startsWith(o.getName())) {
           
+          //System.out.println("* opt("+ o.getName()+ ")");
+          last = o;
           present = true;
           o.setPresent(true);
           
-          if(o.acceptArgs() 
-              && o.getArgsSeparator().equals(" ") 
-              && args.length > (i + 1)) {
-            o.addArg(args[++i]);
-          }
-          
-          else if(o.getArgsSeparator().isEmpty()) {
+          //System.out.println("* args sep isEmpty? "+ o.getArgsSeparator().isEmpty());
+          if(o.getArgsSeparator().isEmpty()) {
             if(o.getLongName() != null 
                 && arg.startsWith(o.getLongName()))
               arg = arg.substring(o.getLongName().length());
@@ -574,20 +574,27 @@ public class ShellParser {
               arg = arg.substring(o.getName().length());
             o.addArg(arg);
             
-          } else if(arg.contains(o.getArgsSeparator())) {
+          } 
+          else if(!o.getArgsSeparator().equals(" ") 
+              && arg.contains(o.getArgsSeparator())) {
             o.addArg(arg.split(o.getArgsSeparator())[1]);
           }
         }
       }//for
       
-      if(!present && !this.containsOption(Option.EMPTY))
-        errors.add(new Error(Error.LEVEL.WARN, 
-            "Unknown option: '"+ arg+ "'!"));
-      else if(!present && this.containsOption(Option.EMPTY))
-        this.getOption(Option.EMPTY)
-            .addArg(arg).setPresent(true);
+      if(!present && last == null 
+          && containsOption(Option.EMPTY)) {
+        getOption(Option.EMPTY)
+            .setPresent(true).addArg(arg);
+        //System.out.println("* add empty arg("+ arg+ ")");
+      }
+      else if(!present && last != null
+          && last.getArgsSeparator().equals(" ")) {
+        last.addArg(arg);
+        //System.out.println("* add '"+ last.getName()+ "' arg("+ arg+ ")");
+      }
     }
-    
+
     return this;
   }
   
@@ -613,7 +620,7 @@ public class ShellParser {
         if(o == Option.EMPTY_OPTION)
           errors.add(new Error(Error.LEVEL.ERROR, "Argument missing"));
         else
-          errors.add(new Error(Error.LEVEL.ERROR, "Argument missing for '"+ o.getName()+ "' option"));
+          errors.add(new Error(Error.LEVEL.ERROR, "Argument missing: '"+ o.getName()+ "'"));
       }
     }//for
     
@@ -648,7 +655,7 @@ public class ShellParser {
         }
       }
     }
-    
+
     return success;
   }
   
