@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static us.pserver.sdb.SimpleDB.BYTE_END;
 
 /**
  *
@@ -43,12 +44,6 @@ import java.util.regex.Pattern;
 public class FileHandler {
   
   public static final int BLOCK_SIZE = 256;
-  
-  public static final byte BYTE_INDEX_START = 35;
-  
-  public static final byte BYTE_BLOCK_START = 62;
-  
-  public static final byte BYTE_END = 10;
   
 
   private RandomAccessFile raf;
@@ -61,12 +56,6 @@ public class FileHandler {
   public FileHandler(String file) throws IOException {
     init(file);
     block = 0;
-  }
-  
-  
-  public FileHandler(String file, long seek) throws IOException {
-    init(file);
-    this.seek(seek);
   }
   
   
@@ -85,12 +74,13 @@ public class FileHandler {
   
   private void createFile(Path file) throws IOException {
     if(file == null) return;
-    if(file.getParent() != null && !Files.exists(file.getParent()))
+    if(file.getParent() != null 
+        && !Files.exists(file.getParent()))
       Files.createDirectories(file.getParent());
+    
     Files.createFile(file);
     raf = new RandomAccessFile(file.toFile(), "rw");
-    raf.writeBytes(String.valueOf(Long.MAX_VALUE));
-    raf.writeByte(BYTE_END);
+    this.writeLine(String.valueOf(Long.MAX_VALUE));
     nextBlock();
   }
   
@@ -98,7 +88,7 @@ public class FileHandler {
   private void readFile(Path file) throws IOException {
     if(file == null) return;
     raf = new RandomAccessFile(file.toFile(), "rw");
-    String str = readLine();
+    String str = this.readLine();
     if(str == null)
       throw new IOException(
           "Invalid file format: readLine()="+ str);
@@ -135,6 +125,11 @@ public class FileHandler {
     long block = pos / BLOCK_SIZE;
     if(pos % BLOCK_SIZE != 0)
       block++;
+    return block;
+  }
+  
+  
+  public long getBlock() {
     return block;
   }
   
@@ -318,7 +313,8 @@ public class FileHandler {
   
   public FileHandler writeLine(String ln) throws IOException {
     if(ln != null && !ln.isEmpty()) {
-      raf.writeBytes(ln + "\n");
+      raf.writeBytes(ln);
+      raf.writeByte(BYTE_END);
     }
     return this;
   }
@@ -353,40 +349,12 @@ public class FileHandler {
   }
   
   
-  public FileHandler update(String str) throws IOException {
-    long pos = position();
-    if(!isEOF()) {
-      Path p = Files.createTempFile(null, null);
-      Files.copy(Paths.get(file), p, StandardCopyOption.REPLACE_EXISTING);
-      raf.writeBytes(str + "\n");
-      FileHandler fh = new FileHandler(p.toString());
-      fh.seek(pos).moveToNexLine();
-      pos = position();
-      if(!fh.isEOF()) {
-        transfer(fh.internal(), raf);
-      }
-      fh.close();
-      raf.setLength(raf.getFilePointer());
-      seek(pos);
-      Files.delete(p);
-    }
-    else {
-      raf.writeBytes(str + "\n");
-    }
-    return this;
-  }
-  
-  
-  public String deleteLineRegex(String rgx) throws IOException {
-    if(rgx == null || rgx.isEmpty())
-      return null;
-    long pos = seekRegex(rgx);
-    if(pos < 0) return null;
-    long le = seek("\n");
+  public String deleteCurrentLine() throws IOException {
+    long le = seekByte(BYTE_END);
     if(le < 0) le = raf.length();
+    long pos = position();
     String str = readString((int)pos, (int)(le - pos));
-    seek(pos);//.write("\n");
-    //pos = position();
+    seek(pos);
     
     if(!isEOF()) {
       Path p = Files.createTempFile(null, null);
@@ -405,31 +373,23 @@ public class FileHandler {
   }
   
   
+  public String deleteLineRegex(String rgx) throws IOException {
+    if(rgx == null || rgx.isEmpty())
+      return null;
+    long pos = seekRegex(rgx);
+    if(pos < 0) return null;
+    seek(pos);
+    return deleteCurrentLine();
+  }
+  
+  
   public String deleteLineWith(String str) throws IOException {
     if(str == null || str.isEmpty())
       return null;
     long pos = seek(str);
     if(pos < 0) return null;
-    long le = seek("\n");
-    if(le < 0) le = raf.length();
-    String sln = readString((int)pos, (int)(le - pos));
-    seek(pos);//.write("\n");
-    //pos = position();
-    
-    if(!isEOF()) {
-      Path p = Files.createTempFile(null, null);
-      Files.copy(Paths.get(file), p, StandardCopyOption.REPLACE_EXISTING);
-      FileHandler fh = new FileHandler(p.toString());
-      fh.seek(pos).moveToNexLine();
-      if(!fh.isEOF()) {
-        transfer(fh.internal(), raf);
-      }
-      fh.close();
-      raf.setLength(raf.getFilePointer());
-      seek(pos);
-      Files.delete(p);
-    }
-    return sln;
+    seek(pos);
+    return deleteCurrentLine();
   }
   
   

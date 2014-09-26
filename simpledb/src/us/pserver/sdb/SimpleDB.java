@@ -21,8 +21,6 @@
 
 package us.pserver.sdb;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,12 +58,11 @@ public class SimpleDB {
   
   private void init() {
     try {
-      Gson gs = new Gson();
       while(true) {
         byte b = handler.readByte();
         if(b == BYTE_INDEX_START) {
           String str = handler.readLine();
-          ids.add(gs.fromJson(str, Index.class));
+          ids.add(Index.fromXml(str));
           handler.nextBlock();
         }
         else {
@@ -75,8 +72,30 @@ public class SimpleDB {
       }
     } catch(IOException e) {
       throw new SDBException(e.getMessage(), e);
-    } catch(JsonSyntaxException e) {
-      throw new SDBException("Error reading Index: "+ e.getMessage(), e);
+    }
+  }
+  
+  
+  public Document put(Document doc) {
+    if(doc == null) return doc;
+    try {
+      if(doc.block() >= 0) {
+        handler.seekBlock(doc.block());
+        handler.deleteCurrentLine();
+        handler.moveToEnd().nextBlock();
+        doc.block(handler.getBlock());
+        handler.writeLine(doc.toXml());
+        return doc;
+      }
+      else {
+        handler.moveToEnd().nextBlock();
+        doc.block(handler.getBlock());
+        handler.writeLine(doc.toXml());
+        return doc;
+      }
+    }
+    catch(IOException e) {
+      throw new SDBException(e.getMessage(), e);
     }
   }
   

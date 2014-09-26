@@ -21,7 +21,13 @@
 
 package us.pserver.sdb;
 
-import com.google.gson.Gson;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
+import com.thoughtworks.xstream.io.xml.CompactWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -46,7 +52,7 @@ public class Document {
   
   private String label;
   
-  private Map<String, Object> map;
+  private final Map<String, Object> map;
   
   
   protected Document(String lbl, long blk) {
@@ -91,8 +97,7 @@ public class Document {
   
   
   public Document block(long blk) {
-    if(blk >= 0)
-      block = blk;
+    block = blk;
     return this;
   }
   
@@ -253,9 +258,23 @@ public class Document {
   }
   
   
+  public static Document fromXml(String xml) {
+    XStream x = new XStream();
+    return (Document) x.fromXML(xml);
+  }
+  
+  
+  public String toXml() {
+    XStream x = new XStream();
+    StringWriter sw = new StringWriter();
+    x.marshal(this, new CompactWriter(sw));
+    return sw.toString();
+  }
+  
+  
   @Override
   public String toString() {
-    return new Gson().toJson(this);
+    return toXml();
   }
   
   
@@ -268,8 +287,8 @@ public class Document {
             .put("user", "juno")
             .put("pass", "12345678"))
         .put("latency", 0.84);
-    System.out.println("* doc.toJSon=" + doc);
-    System.out.println("* d.fromJSon="+ new Gson().fromJson(doc.toString(), Document.class));
+    System.out.println("* xml=" + doc);
+    System.out.println("* doc="+ Document.fromXml(doc.toXml()));
   }
   
 }
