@@ -41,16 +41,26 @@ import java.util.regex.Pattern;
  * @version 1.0 - 23/09/2014
  */
 public class FileHandler {
+  
+  public static final int BLOCK_SIZE = 256;
+  
+  public static final byte BYTE_INDEX_START = 35;
+  
+  public static final byte BYTE_BLOCK_START = 62;
+  
+  public static final byte BYTE_END = 10;
+  
 
   private RandomAccessFile raf;
   
   private String file;
   
-  private String line;
+  private long block;
   
   
   public FileHandler(String file) throws IOException {
     init(file);
+    block = 0;
   }
   
   
@@ -64,13 +74,113 @@ public class FileHandler {
     if(file == null || file.isEmpty())
       throw new IllegalArgumentException("Invalid file: "+ file);
     this.file = file;
-    raf = new RandomAccessFile(file, "rw");
+    Path p = Paths.get(file);
+    if(Files.exists(p)) {
+      readFile(p);
+    } else {
+      createFile(p);
+    }
+  }
+  
+  
+  private void createFile(Path file) throws IOException {
+    if(file == null) return;
+    if(file.getParent() != null && !Files.exists(file.getParent()))
+      Files.createDirectories(file.getParent());
+    Files.createFile(file);
+    raf = new RandomAccessFile(file.toFile(), "rw");
+    raf.writeBytes(String.valueOf(Long.MAX_VALUE));
+    raf.writeByte(BYTE_END);
+    nextBlock();
+  }
+  
+  
+  private void readFile(Path file) throws IOException {
+    if(file == null) return;
+    raf = new RandomAccessFile(file.toFile(), "rw");
+    String str = readLine();
+    if(str == null)
+      throw new IOException(
+          "Invalid file format: readLine()="+ str);
+    try {
+      long l = Long.parseLong(str);
+      if(l != Long.MAX_VALUE)
+        throw new IOException(
+          "Invalid file format: "+ l+ " != "+ Long.MAX_VALUE);
+    } catch(NumberFormatException e) {
+      throw new IOException("Invalid file format: wrong header '"+ str+ "'");
+    }
+    nextBlock();
+  }
+  
+  
+  public FileHandler seekBlock(long blk) throws IOException {
+    if(blk >= 0) {
+      if(raf.length() < blk * BLOCK_SIZE)
+        raf.setLength((blk + 1) * BLOCK_SIZE);
+      block = blk;
+      seek(block * BLOCK_SIZE);
+    }
+    return this;
+  }
+  
+  
+  public FileHandler seekBlockFromPos(long pos) throws IOException {
+    return seekBlock(blockFromPos(pos));
+  }
+  
+  
+  public static long blockFromPos(long pos) {
+    if(pos <= 0) return 0;
+    long block = pos / BLOCK_SIZE;
+    if(pos % BLOCK_SIZE != 0)
+      block++;
+    return block;
+  }
+  
+  
+  public FileHandler nextBlock() throws IOException {
+    seek(position());
+    return this.seekBlock(++block);
+  }
+  
+  
+  public FileHandler prevBlock() throws IOException {
+    if(block -1 >= 0) {
+      seek(position());
+      seekBlock(--block);
+    }
+    return this;
+  }
+  
+  
+  public boolean hasNextBlock() throws IOException {
+    return raf.length() > (position() + BLOCK_SIZE);
+  }
+  
+  
+  public long seekByte(int b) throws IOException {
+    long ini = position();
+    long pos = ini;
+    try {
+      byte[] bs = new byte[1];
+      int read = 0;
+      while(true) {
+        read = raf.read(bs);
+        if(read <= 0) break;
+        if(bs[0] == b) return pos;
+        pos++;
+      }
+    } catch(EOFException e) {}
+    seek(ini);
+    return -1;
   }
   
   
   public FileHandler seek(long pos) throws IOException {
     if(pos >= 0 && pos <= raf.length()) {
-      raf.seek(pos);
+      seek(pos);
+      block = pos / BLOCK_SIZE;
     }
     return this;
   }
@@ -103,7 +213,7 @@ public class FileHandler {
       }
     }
     catch(EOFException e) {
-      raf.seek(ini);
+      seek(ini);
     }
     return -1;
   }
@@ -133,7 +243,7 @@ public class FileHandler {
       }
     }
     catch(EOFException e) {
-      raf.seek(ini);
+      seek(ini);
       return -1;
     }
   }
@@ -175,14 +285,14 @@ public class FileHandler {
     long pos = seek("\n");
     if(pos < 1) pos = raf.length();
     else pos++;
-    raf.seek(pos);
+    seek(pos);
     return this;
   }
   
   
   public FileHandler moveToEnd() throws IOException {
     if(!isEOF())
-      raf.seek(raf.length());
+      seek(raf.length());
     return this;
   }
   
@@ -199,16 +309,10 @@ public class FileHandler {
   
   public String readLine() throws IOException {
     try {
-      line = raf.readLine();
-      return line;
+      return raf.readLine();
     } catch(EOFException e) {
       return null;
     }
-  }
-  
-  
-  public String lastLine() {
-    return line;
   }
   
   
@@ -225,6 +329,17 @@ public class FileHandler {
       raf.writeBytes(str);
     }
     return this;
+  }
+  
+  
+  public FileHandler writeByte(int b) throws IOException {
+    raf.writeByte(b);
+    return this;
+  }
+  
+  
+  public byte readByte() throws IOException {
+    return raf.readByte();
   }
   
   
@@ -252,7 +367,7 @@ public class FileHandler {
       }
       fh.close();
       raf.setLength(raf.getFilePointer());
-      raf.seek(pos);
+      seek(pos);
       Files.delete(p);
     }
     else {
@@ -283,7 +398,7 @@ public class FileHandler {
       }
       fh.close();
       raf.setLength(raf.getFilePointer());
-      raf.seek(pos);
+      seek(pos);
       Files.delete(p);
     }
     return str;
@@ -311,7 +426,7 @@ public class FileHandler {
       }
       fh.close();
       raf.setLength(raf.getFilePointer());
-      raf.seek(pos);
+      seek(pos);
       Files.delete(p);
     }
     return sln;
@@ -322,13 +437,11 @@ public class FileHandler {
     if(start < 0 || length < 1 
         || (start + length) > raf.length())
       return null;
-    long pos = position();
     seek(start);
     StringBuffer sb = new StringBuffer();
     for(int i = 0; i < length; i++) {
       sb.append((char)raf.read());
     }
-    seek(pos);
     return sb.toString();
   }
   
