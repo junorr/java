@@ -131,8 +131,12 @@ public class IOLib implements FSExtension {
   
   public String syscmd(String cmd) throws FSException {
     try {
-      SystemCommand sc = new SystemCommand(cmd);
-      return sc.runCommand();
+      SystemRun sr = new SystemRun().parseCommand(cmd);
+      sr.setPullOutput(true)
+          .setWaitFor(true)
+          .setOutputLimit(3500);
+      sr.exec();
+      return sr.getOutput();
     } catch(IOException e) {
       throw new FSException(e.toString());
     }

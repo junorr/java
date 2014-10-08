@@ -29,12 +29,10 @@ import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import static us.pserver.sdb.SimpleDB.BYTE_END;
 
 /**
  *
@@ -44,6 +42,8 @@ import static us.pserver.sdb.SimpleDB.BYTE_END;
 public class FileHandler {
   
   public static final int BLOCK_SIZE = 256;
+  
+  public static final int BYTE_END = 10;
   
 
   private RandomAccessFile raf;
@@ -69,6 +69,15 @@ public class FileHandler {
     } else {
       createFile(p);
     }
+  }
+  
+  
+  private void init2(String file) throws IOException {
+    if(file == null || file.isEmpty())
+      throw new IllegalArgumentException("Invalid file: "+ file);
+    this.file = file;
+    Path p = Paths.get(file);
+    raf = new RandomAccessFile(p.toFile(), "rw");
   }
   
   
@@ -104,10 +113,15 @@ public class FileHandler {
   }
   
   
+  public boolean isBlockBoundary() throws IOException {
+    return position() % BLOCK_SIZE == 0;
+  }
+  
+  
   public FileHandler seekBlock(long blk) throws IOException {
     if(blk >= 0) {
       if(raf.length() < blk * BLOCK_SIZE)
-        raf.setLength((blk + 1) * BLOCK_SIZE);
+        raf.setLength(blk * BLOCK_SIZE);
       block = blk;
       seek(block * BLOCK_SIZE);
     }
@@ -129,7 +143,7 @@ public class FileHandler {
   }
   
   
-  public long getBlock() {
+  public long block() {
     return block;
   }
   
@@ -172,9 +186,28 @@ public class FileHandler {
   }
   
   
+  public long reverseSeekByte(int b) throws IOException {
+    long ini = position();
+    long pos = ini;
+    try {
+      byte[] bs = new byte[1];
+      int read = 0;
+      while(pos >= 0) {
+        raf.seek(pos);
+        read = raf.read(bs);
+        if(read <= 0) break;
+        if(bs[0] == b) return pos;
+        pos -= 2;
+      }
+    } catch(EOFException e) {}
+    seek(ini);
+    return -1;
+  }
+  
+  
   public FileHandler seek(long pos) throws IOException {
     if(pos >= 0 && pos <= raf.length()) {
-      seek(pos);
+      raf.seek(pos);
       block = pos / BLOCK_SIZE;
     }
     return this;
@@ -349,25 +382,142 @@ public class FileHandler {
   }
   
   
-  public String deleteCurrentLine() throws IOException {
+  public String clearLine() throws IOException {
+    long ini = position();
     long le = seekByte(BYTE_END);
     if(le < 0) le = raf.length();
-    long pos = position();
-    String str = readString((int)pos, (int)(le - pos));
-    seek(pos);
+    String old = readString((int)ini, (int)(le - ini));
+    
+    raf.seek(ini);
+    for(int i = 0; i < old.length(); i++) {
+      writeByte('0');
+    }
+    return old;
+  }
+  
+  
+  public String updateLine(String ln) throws IOException {
+    if(ln == null || ln.isEmpty())
+      return null;
+    long ini = position();
+    long le = seekByte(BYTE_END);
+    if(le < 0) le = raf.length();
+    String old = readString((int)ini, (int)(le - ini));
+    
+    if(ln.length() <= old.length()) {
+      raf.seek(ini);
+      write(ln);
+      deleteLine();
+    }
+    else if(!isEOF()) {
+      int dif = ln.length() - old.length();
+      byte[] rw = new byte[dif];
+      byte[] buf = new byte[dif];
+      long from = le;
+      long to = from + dif;
+      int read = 0;
+      int rbuf = 0;
+      
+      raf.seek(to);
+      if(!isEOF()) {
+        rbuf = raf.read(buf);
+      }
+      raf.seek(from);
+      read = raf.read(rw);
+      
+      while(true) {
+        raf.seek(to); 
+        raf.write(rw, 0, read);
+        rw = buf;
+        read = rbuf;
+        to += dif;
+        dif = BLOCK_SIZE;
+        buf = new byte[dif];
+        
+        raf.seek(to);
+        if(isEOF()) {
+          if(read > 0)
+            raf.write(rw, 0, read);
+          seek(ini).writeLine(ln);
+          return old;
+        }
+        rbuf = raf.read(buf);
+      }
+    }
+    return old;
+  } 
+  
+  
+  public FileHandler insertBlocks(int blocks) throws IOException {
+    if(blocks < 1) return this;
+    long ini = position();
+    int insb = blocks * BLOCK_SIZE;
     
     if(!isEOF()) {
-      Path p = Files.createTempFile(null, null);
-      Files.copy(Paths.get(file), p, StandardCopyOption.REPLACE_EXISTING);
-      FileHandler fh = new FileHandler(p.toString());
-      fh.seek(pos).moveToNexLine();
-      if(!fh.isEOF()) {
-        transfer(fh.internal(), raf);
+      byte[] rw = new byte[insb];
+      byte[] buf = new byte[insb];
+      long from = ini;
+      long to = from + insb;
+      int read = 0;
+      int rbuf = 0;
+      
+      raf.seek(to);
+      if(!isEOF()) {
+        rbuf = raf.read(buf);
       }
-      fh.close();
-      raf.setLength(raf.getFilePointer());
-      seek(pos);
-      Files.delete(p);
+      raf.seek(from);
+      read = raf.read(rw);
+      
+      while(true) {
+        if(read < 1) {
+          break;
+        }
+        raf.seek(to); 
+        raf.write(rw, 0, read);
+        rw = buf;
+        read = rbuf;
+        to += insb;
+        buf = new byte[insb];
+        
+        raf.seek(to);
+        if(isEOF()) {
+          if(read > 0)
+            raf.write(rw, 0, read);
+        }
+        rbuf = raf.read(buf);
+      }
+    }
+    return this;
+  } 
+  
+  
+  public String deleteLine() throws IOException {
+    long ini = position();
+    long le = seekByte(BYTE_END);
+    if(le < 0) le = raf.length() - ini;
+    String str = readString((int)ini, (int)(le - ini));
+    
+    if(isEOF()) {
+      raf.setLength(ini);
+    }
+    else {
+      byte[] buf = new byte[BLOCK_SIZE];
+      long to = ini;
+      long from = to + (le - ini);
+      int read = 0;
+      while(true) {
+        raf.seek(from);
+        if(isEOF()) {
+          raf.setLength(to - BLOCK_SIZE + read);
+          break;
+        }
+        read = raf.read(buf);
+        if(read <= 0) break;
+        raf.seek(to);
+        raf.write(buf, 0, read);
+        to += BLOCK_SIZE;
+        from += BLOCK_SIZE;
+      }
     }
     return str;
   }
@@ -379,7 +529,7 @@ public class FileHandler {
     long pos = seekRegex(rgx);
     if(pos < 0) return null;
     seek(pos);
-    return deleteCurrentLine();
+    return deleteLine();
   }
   
   
@@ -389,7 +539,7 @@ public class FileHandler {
     long pos = seek(str);
     if(pos < 0) return null;
     seek(pos);
-    return deleteCurrentLine();
+    return deleteLine();
   }
   
   
@@ -403,20 +553,6 @@ public class FileHandler {
       sb.append((char)raf.read());
     }
     return sb.toString();
-  }
-  
-  
-  protected static void transfer(RandomAccessFile r, RandomAccessFile w) throws IOException {
-    if(r == null || r.getFilePointer() >= r.length() -1)
-      return;
-    if(w == null) return;
-    byte[] buf = new byte[1024];
-    int read = 0;
-    while(true) {
-      read = r.read(buf);
-      if(read <= 0) break;
-      w.write(buf, 0, read);
-    }
   }
   
   
@@ -445,25 +581,52 @@ public class FileHandler {
   }
   
   
+  public void rawCat() throws IOException {
+    long pos = position();
+    seek(0);
+    byte[] bs = new byte[1];
+    int read = 0;
+    int count = 1;
+    while(true) {
+      read = raf.read(bs);
+      if(read < 1) break;
+      System.out.print("\t"+(bs[0] == 0 || bs[0] == 10 ? "0" : (char)bs[0]));
+      if(count++ % 20 == 0)
+        System.out.println();
+    }
+    seek(pos);
+  }
+  
+  
   public static void main(String[] args) throws IOException {
     FileHandler fh = new FileHandler("/home/juno/file.txt");
     System.out.println("----- cat -----");
-    System.out.println(fh.cat(0));
+    fh.rawCat();
     System.out.println("----- cat -----");
-    List<Long> ls = fh.seekAll("vm");
-    System.out.println("* seekAll(vm): "+ ls.size());
-    for(long l : ls)
-      System.out.println("  - "+ l);
+    //List<Long> ls = fh.seekAll("vm");
+    //System.out.println("* seekAll(vm): "+ ls.size());
+    //for(long l : ls)
+      //System.out.println("  - "+ l);
     
     //System.out.println("* seek(vm): "+ fh.seek(0).seek("vm"));
-    System.out.println("* readString(31, 2): '"+ fh.readString(31, 2)+ "'");
-    System.out.println("* readString(56, 2): '"+ fh.readString(56, 2)+ "'");
+    //System.out.println("* readString(31, 2): '"+ fh.readString(31, 2)+ "'");
+    //System.out.println("* readString(56, 2): '"+ fh.readString(56, 2)+ "'");
     
     //System.out.println("* deleteLineRegex(($|^)sys): "+ fh.seek(0).deleteLineRegex("($|^)sys"));
-    System.out.println("* deleteLineWith(sys): "+ fh.seek(0).deleteLineWith("sys"));
-    System.out.println("----- cat -----");
-    System.out.println(fh.cat(0));
-    System.out.println("----- cat -----");
+    //System.out.println("* deleteLineWith(sys): "+ fh.seek(0).deleteLineWith("sys"));
+    System.out.println("* fh.seek(0).seek(\"sysctl\"): " + fh.seek(0).seek("sysctl"));
+    //System.out.println("* fh.updateLine(\"some other text 1234567890 abc some other text 1234567890 abc\"): "+ fh.updateLine("some other text 1234567890 abc some other text 1234567890 abc"));
+    //System.out.println("* fh.updateLine(\"some text\"): "+ fh.updateLine("some text"));
+    System.out.println("* fh.insertBlocks(1)");
+    fh.insertBlocks(1);
+    
+    /*
+    fh.seek(0);
+    System.out.println("* fh.seek(\"sys\"): "+ fh.seek("sys"));
+    System.out.println("* fh.seek(\"\\n\"): "+ fh.seek("\n"));
+    System.out.println("* fh.readString(27, 45-27): "+ fh.readString(27, 45-27));
+    fh.seek(0).seek("sys");
+    System.out.println("* fh.deleteLine(): "+ fh.deleteLine());
     
     /*
     fh.moveToNexLine().moveToNexLine();
@@ -476,6 +639,9 @@ public class FileHandler {
     System.out.println(fh.cat(0));
     System.out.println("----- cat -----");
     */
+    System.out.println("----- cat -----");
+    fh.rawCat();
+    System.out.println("----- cat -----");
     fh.close();
   }
   

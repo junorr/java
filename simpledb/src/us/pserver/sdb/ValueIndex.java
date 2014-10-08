@@ -61,6 +61,15 @@ public class ValueIndex {
   public void setValue(String value) {
     this.value = value;
   }
+  
+  
+  public long getLongValue() {
+    try {
+      return Long.parseLong(value);
+    } catch(NumberFormatException e) {
+      return -1;
+    }
+  }
 
 
   public long getIndex() {
@@ -76,7 +85,8 @@ public class ValueIndex {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 97 * hash + Objects.hashCode(this.value);
+    hash = 71 * hash + Objects.hashCode(this.value);
+    hash = 71 * hash + (int) (this.index ^ (this.index >>> 32));
     return hash;
   }
 
@@ -91,6 +101,9 @@ public class ValueIndex {
     }
     final ValueIndex other = (ValueIndex) obj;
     if (!Objects.equals(this.value, other.value)) {
+      return false;
+    }
+    if (this.index != other.index) {
       return false;
     }
     return true;

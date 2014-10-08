@@ -28,7 +28,9 @@ import us.pserver.scron.Job;
 import us.pserver.scron.Schedule;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.swing.JOptionPane;
 import us.pserver.log.Log;
+import us.pserver.log.LogProvider;
 import us.pserver.scron.AbstractCron;
 
 /**
@@ -281,7 +283,6 @@ public class SCronV6 extends AbstractCron {
             Schedule s = pair.schedule().clone();
             s.reeschedule();
             jobs().put(new Pair(s, pair.job()));
-            jobs();
           }
         }
         
@@ -292,6 +293,8 @@ public class SCronV6 extends AbstractCron {
         else {
           delay(GET_DELAY);
         }
+        
+        manager().sort();
       }
     }
     

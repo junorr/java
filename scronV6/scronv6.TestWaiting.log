@@ -1,0 +1,43 @@
+[DEBUG] (02/10/2014 11:07:28): Job inserted: us.pserver.scron.JobFactory$RunnableJob@7ba4f24f @ 02/10/2014 11:07:28 [Repeat: 1 MINUTE]
+[INFO ] (02/10/2014 11:07:28): SCronV6 Started!
+[DEBUG] (02/10/2014 11:07:28): Job inserted: us.pserver.scron.JobFactory$RunnableJob@5f184fc6 @ 02/10/2014 11:07:29 [Repeat: 90 SECOND]
+[INFO ] (02/10/2014 11:07:28): Wanting for 2 min...
+[DEBUG] (02/10/2014 11:07:29): Executing: us.pserver.scron.JobFactory$RunnableJob@7ba4f24f @ 02/10/2014 11:07:28 [Repeat: 1 MINUTE]
+[INFO ] (02/10/2014 11:07:29): * Minute job running
+[DEBUG] (02/10/2014 11:07:29): Executing: us.pserver.scron.JobFactory$RunnableJob@5f184fc6 @ 02/10/2014 11:07:29 [Repeat: 90 SECOND]
+[INFO ] (02/10/2014 11:07:29): * 90 Seconds job running
+[DEBUG] (02/10/2014 11:08:28): Executing: us.pserver.scron.JobFactory$RunnableJob@7ba4f24f @ 02/10/2014 11:08:28 [Repeat: 1 MINUTE]
+[INFO ] (02/10/2014 11:08:28): * Minute job running
+[DEBUG] (02/10/2014 11:08:59): Executing: us.pserver.scron.JobFactory$RunnableJob@5f184fc6 @ 02/10/2014 11:08:59 [Repeat: 90 SECOND]
+[INFO ] (02/10/2014 11:08:59): * 90 Seconds job running
+[DEBUG] (02/10/2014 11:09:28): Executing: us.pserver.scron.JobFactory$RunnableJob@7ba4f24f @ 02/10/2014 11:09:28 [Repeat: 1 MINUTE]
+[INFO ] (02/10/2014 11:09:28): * Minute job running
+[DEBUG] (02/10/2014 11:09:28): Job inserted: us.pserver.scron.JobFactory$RunnableJob@5b480cf9 @ 02/10/2014 11:17:28 [Repeat: disabled]
+[DEBUG] (02/10/2014 11:10:28): Executing: us.pserver.scron.JobFactory$RunnableJob@7ba4f24f @ 02/10/2014 11:10:28 [Repeat: 1 MINUTE]
+[INFO ] (02/10/2014 11:10:28): * Minute job running
+[DEBUG] (02/10/2014 11:10:29): Executing: us.pserver.scron.JobFactory$RunnableJob@5f184fc6 @ 02/10/2014 11:10:29 [Repeat: 90 SECOND]
+[INFO ] (02/10/2014 11:10:29): * 90 Seconds job running
+[DEBUG] (02/10/2014 11:11:28): Executing: us.pserver.scron.JobFactory$RunnableJob@7ba4f24f @ 02/10/2014 11:11:28 [Repeat: 1 MINUTE]
+[INFO ] (02/10/2014 11:11:28): * Minute job running
+[DEBUG] (02/10/2014 11:11:59): Executing: us.pserver.scron.JobFactory$RunnableJob@5f184fc6 @ 02/10/2014 11:11:59 [Repeat: 90 SECOND]
+[INFO ] (02/10/2014 11:11:59): * 90 Seconds job running
+[DEBUG] (02/10/2014 11:12:28): Executing: us.pserver.scron.JobFactory$RunnableJob@7ba4f24f @ 02/10/2014 11:12:28 [Repeat: 1 MINUTE]
+[INFO ] (02/10/2014 11:12:28): * Minute job running
+[DEBUG] (02/10/2014 11:13:28): Executing: us.pserver.scron.JobFactory$RunnableJob@7ba4f24f @ 02/10/2014 11:13:28 [Repeat: 1 MINUTE]
+[INFO ] (02/10/2014 11:13:28): * Minute job running
+[DEBUG] (02/10/2014 11:13:29): Executing: us.pserver.scron.JobFactory$RunnableJob@5f184fc6 @ 02/10/2014 11:13:29 [Repeat: 90 SECOND]
+[INFO ] (02/10/2014 11:13:29): * 90 Seconds job running
+[DEBUG] (02/10/2014 11:14:28): Executing: us.pserver.scron.JobFactory$RunnableJob@7ba4f24f @ 02/10/2014 11:14:28 [Repeat: 1 MINUTE]
+[INFO ] (02/10/2014 11:14:28): * Minute job running
+[DEBUG] (02/10/2014 11:14:59): Executing: us.pserver.scron.JobFactory$RunnableJob@5f184fc6 @ 02/10/2014 11:14:59 [Repeat: 90 SECOND]
+[INFO ] (02/10/2014 11:14:59): * 90 Seconds job running
+[DEBUG] (02/10/2014 11:15:28): Executing: us.pserver.scron.JobFactory$RunnableJob@7ba4f24f @ 02/10/2014 11:15:28 [Repeat: 1 MINUTE]
+[INFO ] (02/10/2014 11:15:28): * Minute job running
+[DEBUG] (02/10/2014 11:16:28): Executing: us.pserver.scron.JobFactory$RunnableJob@7ba4f24f @ 02/10/2014 11:16:28 [Repeat: 1 MINUTE]
+[INFO ] (02/10/2014 11:16:28): * Minute job running
+[DEBUG] (02/10/2014 11:16:29): Executing: us.pserver.scron.JobFactory$RunnableJob@5f184fc6 @ 02/10/2014 11:16:29 [Repeat: 90 SECOND]
+[INFO ] (02/10/2014 11:16:29): * 90 Seconds job running
+[DEBUG] (02/10/2014 11:17:28): Executing: us.pserver.scron.JobFactory$RunnableJob@7ba4f24f @ 02/10/2014 11:17:28 [Repeat: 1 MINUTE]
+[INFO ] (02/10/2014 11:17:28): * Minute job running
+[DEBUG] (02/10/2014 11:17:28): Executing: us.pserver.scron.JobFactory$RunnableJob@5b480cf9 @ 02/10/2014 11:17:28 [Repeat: disabled]
+[INFO ] (02/10/2014 11:17:28): *** 8 Minutes job running ***

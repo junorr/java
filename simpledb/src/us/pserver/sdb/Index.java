@@ -24,6 +24,7 @@ package us.pserver.sdb;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.CompactWriter;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -41,10 +42,13 @@ public class Index {
   
   private final Map<String, List<ValueIndex>> map;
   
+  private transient long block;
+  
   
   public Index() {
     map = new LinkedHashMap<>();
     label = null;
+    block = 0;
   }
   
   
@@ -68,7 +72,23 @@ public class Index {
   }
   
   
-  public Index put(Document doc) {
+  public long block() {
+    return block;
+  }
+  
+  
+  public Index block(long blk) {
+    block = blk;
+    return this;
+  }
+  
+  
+  protected Map<String, List<ValueIndex>> map() {
+    return map;
+  }
+  
+  
+  public boolean put(Document doc) {
     if(doc != null && doc.label()
         .equalsIgnoreCase(label)
         && doc.block() != -1) {
@@ -77,6 +97,7 @@ public class Index {
           .keySet().iterator();
       while(it.hasNext()) {
         String key = it.next();
+        if(key.startsWith("@_")) continue;
         ValueIndex vi = new ValueIndex(doc.map().get(key).toString(), doc.block());
         if(map.containsKey(key)) {
           List<ValueIndex> list = map.get(key);
@@ -91,45 +112,158 @@ public class Index {
           map.put(key, list);
         }
       }
+      return true;
     }
-    return this;
+    return false;
   }
   
   
-  public Document get(Document doc) {
-    if(doc != null && doc.label()
-        .equalsIgnoreCase(label)) {
-      
-      Iterator<String> it = doc.map()
-          .keySet().iterator();
-      while(it.hasNext()) {
-        String key = it.next();
-        if(!map.containsKey(key)) continue;
-        ValueIndex vi = new ValueIndex(doc.map().get(key).toString());
-        List<ValueIndex> list = map.get(key);
-        int id = list.indexOf(vi);
-        if(id < 0) continue;
-        else {
-          doc.block(list.get(id).getIndex());
+  public boolean remove(Document doc) {
+    if(doc == null || !doc.label().equalsIgnoreCase(label)
+        || doc.map().isEmpty() || doc.block() < 0)
+      return false;
+    Iterator<String> it = map.keySet().iterator();
+    boolean success = false;
+    LinkedList<String> rmkeys = new LinkedList<>();
+    while(it.hasNext()) {
+      String k = it.next();
+      List<ValueIndex> lvi = map.get(k);
+      int index = -1;
+      for(int i = 0; i < lvi.size(); i++) {
+        if(lvi.get(i).getIndex() == doc.block()) {
+          index = i;
+          success = true;
           break;
         }
       }
+      if(index >= 0) {
+        //lvi.remove(index);
+        System.out.println("* index.remove: "+ lvi.remove(index));
+      }
+      if(map.get(k).isEmpty())
+        rmkeys.add(k);
     }
-    return doc;
+    for(String key : rmkeys) {
+      map.remove(key);
+    }
+    return success;
   }
   
   
-  public long find(String key, String value) {
+  public long findOne(Document doc) {
+    if(doc != null && doc.label()
+        .equalsIgnoreCase(label)) {
+      return findOne(Query.fromExample(doc));
+    }
+    return -1;
+  }
+  
+  
+  public long findOne(String key, Object value) {
     if(key == null || key.isEmpty()
-        || value == null || value.isEmpty())
+        || value == null || value.toString().isEmpty())
       return -1;
     if(!map.containsKey(key))
       return -1;
     List<ValueIndex> list = map.get(key);
-    ValueIndex vi = new ValueIndex(value);
-    int id = list.indexOf(vi);
+    int id = 0;
+    for(int i = 0; i < list.size(); i++) {
+      if(list.get(i).getValue().equals(value.toString())) {
+        id = i;
+        break;
+      }
+    }
     if(id >= 0) return list.get(id).getIndex();
     return -1;
+  }
+  
+  
+  public long findOne(Query q) {
+    List<Long> list = find(q);
+    if(list.isEmpty()) return -1;
+    return list.get(0);
+  }
+  
+  
+  public List<Long> find(Query q) {
+    List<Long> list = new LinkedList<>();
+    List<Long> rm = new LinkedList<>();
+    q = q.head();
+    if(q == null 
+        || q.key() == null 
+        || q.method() == null 
+        || q.value() == null)
+      return list;
+    
+    while(q != null && q.key() != null 
+        && q.value() != null) {
+      if(!map.containsKey(q.key())) {
+        q = q.next();
+        continue;
+      }
+      List<ValueIndex> lvi = map.get(q.key());
+      for(ValueIndex v : lvi) {
+        boolean b = q.exec(v.getValue()).getResult();
+        System.out.println(" - find.ValueIndex: "+ v.getValue()+ ", exec: "+ b);
+        if(b) {
+          if(!list.contains(v.getIndex()) 
+              && !rm.contains(v.getIndex()))
+            list.add(v.getIndex());
+        } else if(q.prev() != null && q.prev().isAnd()) {
+          if(list.contains(v.getIndex())) {
+            list.remove(v.getIndex());
+            rm.add(v.getIndex());
+          }
+        }
+      }
+      q = q.next();
+    }
+    return list;
+  }
+  
+  
+  public List<Long> find(Document doc) {
+    if(doc != null && doc.label()
+        .equalsIgnoreCase(label)) {
+      return find(Query.fromExample(doc));
+    }
+    return Collections.EMPTY_LIST;
+  }
+  
+  
+  public List<Long> find(String key, Object value) {
+    List<Long> list = Collections.EMPTY_LIST;
+    if(key == null || key.isEmpty()
+        || value == null || value.toString().isEmpty())
+      return list;
+    
+    if(!map.containsKey(key)) 
+      return list;
+    
+    List<ValueIndex> lvi = map.get(key);
+    list = new LinkedList<>();
+    for(int i = 0; i < lvi.size(); i++) {
+      if(lvi.get(i).getValue().equals(value.toString()))
+        list.add(lvi.get(i).getIndex());
+    }
+    return list;
+  }
+  
+  
+  public List<Long> getAllBlocks() {
+    List<Long> list = Collections.EMPTY_LIST;
+    if(map.isEmpty()) return list;
+    list = new LinkedList<>();
+    Iterator<String> it = map.keySet().iterator();
+    while(it.hasNext()) {
+      String key = it.next();
+      List<ValueIndex> lvi = map.get(key);
+      for(ValueIndex v : lvi) {
+        if(!list.contains(v.getIndex()))
+          list.add(v.getIndex());
+      }
+    }
+    return list;
   }
   
   
@@ -154,28 +288,91 @@ public class Index {
   
   
   public static void main(String[] args) {
-    Document d1 = new Document("Server")
+    List<Document> ls = new LinkedList<>();
+    ls.add(new Document("Server")
         .put("name", "102")
         .put("ip", "172.29.14.102")
         .put("port", 22)
         .put("enabled", true)
-        .block(5);
-    Document d2 = new Document("Server")
+        .block(5));
+    ls.add(new Document("Server")
         .put("name", "101")
         .put("ip", "172.29.14.101")
         .put("port", 22)
         .put("enabled", true)
-        .block(4);
-    Index i = new Index("server")
-        .put(d1)
-        .put(d2);
+        .block(4));
+    ls.add(new Document("Server")
+        .put("name", "103")
+        .put("ip", "172.29.14.103")
+        .put("port", 22)
+        .put("enabled", true)
+        .block(6));
+    ls.add(new Document("Server")
+        .put("name", "104")
+        .put("ip", "172.29.14.104")
+        .put("port", 22)
+        .put("enabled", true)
+        .block(7));
+    ls.add(new Document("Server")
+        .put("name", "105")
+        .put("ip", "172.29.14.105")
+        .put("port", 22)
+        .put("enabled", false)
+        .block(8));
+    ls.add(new Document("Server")
+        .put("name", "106")
+        .put("ip", "172.29.14.106")
+        .put("port", 22)
+        .put("enabled", true)
+        .block(9));
+    ls.add(new Document("Server")
+        .put("name", "107")
+        .put("ip", "172.29.14.107")
+        .put("port", 22)
+        .put("enabled", true)
+        .block(10));
+    ls.add(new Document("Server")
+        .put("name", "108")
+        .put("ip", "172.29.14.108")
+        .put("port", 22)
+        .put("enabled", true)
+        .block(11));
+    
+    Index i = new Index("server");
+    for(Document c : ls)
+      i.put(c);
+    
     String str = i.toString();
     System.out.println("* xml = "+ str);
-    System.out.println("* idx = "+ Index.fromXml(str));
-    d1.block(-1);
-    System.out.println("* doc1: "+ d1.block());
-    i.get(d1);
-    System.out.println("* doc1: block="+ d1.block()+ " >> "+ d1);
+    System.out.println("* index length = "+ str.length());
+    //System.out.println("* idx = "+ Index.fromXml(str));
+    
+    str = "";
+    for(Document c : ls)
+      str += c.toXml();
+    
+    System.out.println("* docs  length = " + str.length());
+    System.out.println("* i.find(\"name\", \"105\"): "+ i.findOne("name", "105"));
+    
+    System.out.println("* i.findFirst(port, 22): "+ i.findOne("port", 22));
+    
+    List<Long> ll = i.find("port", 22);
+    System.out.println("* i.find(port, 22): "+ ll.size());
+    for(long l : ll)
+      System.out.println(" - "+ l);
+    
+    
+    Query q = new Query("name")
+        .contains("0")
+        //.and().contains("2")
+        .and("enabled").equal(true)
+        .and("ip").startsWith("172");
+    
+    System.out.println("* " + q);
+    ll = i.find(q);
+    System.out.println("* i.find: "+ ll.size());
+    for(long l : ll)
+      System.out.println(" - "+ l);
   }
   
 }
