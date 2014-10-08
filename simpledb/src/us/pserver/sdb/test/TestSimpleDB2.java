@@ -36,6 +36,9 @@ public class TestSimpleDB2 {
 
   
   public static void create() {
+    System.out.println();
+    System.out.println("---- CREATE ----");
+    
     Document cred = new Document("credentials")
         .put("user", "username")
         .put("pass", "password");
@@ -53,6 +56,9 @@ public class TestSimpleDB2 {
   
   
   public static void get() {
+    System.out.println();
+    System.out.println("---- GET ----");
+    
     Query q = new Query("name")
         .equal("102");
     
@@ -65,6 +71,9 @@ public class TestSimpleDB2 {
   
   
   public static void dontDoThis() {
+    System.out.println();
+    System.out.println("---- DONT DO THIS ----");
+    
     Query q = new Query("user")
         .equal("username");
     
@@ -81,6 +90,9 @@ public class TestSimpleDB2 {
   
   
   public static void put() {
+    System.out.println();
+    System.out.println("---- PUT ----");
+    
     Document server = new Document("server")
         .put("name", "105")
         .put("ip", "172.29.14.105")
@@ -108,6 +120,9 @@ public class TestSimpleDB2 {
   
   
   public static void get2() {
+    System.out.println();
+    System.out.println("---- GET2 ----");
+    
     Query q = new Query("name")
         .equal("105");
     
@@ -124,10 +139,10 @@ public class TestSimpleDB2 {
     try {
       
       create();
-      //get();
-      //dontDoThis();
-      //put();
-      //get2();
+      get();
+      dontDoThis();
+      put();
+      get2();
       
     } catch(Exception e) {
       throw e;

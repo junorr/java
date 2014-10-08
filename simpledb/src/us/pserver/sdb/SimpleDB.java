@@ -246,7 +246,7 @@ public class SimpleDB {
       long pos = hand.position();
       long blk = newBlock();
       hand.seek(pos);
-      String link = "@("+ String.valueOf(blk)+ ")";
+      String link = "@("+ String.valueOf(blk)+ ")@";
       int div = (int) sz - (link.length() + 1) - 1;
       hand.write(xml.substring(0, div));
       hand.writeLine(link);
@@ -389,7 +389,9 @@ public class SimpleDB {
       System.out.println("* reading doc");
       
       String xml = hand.readLine();
+      System.out.println("* get: xml: "+ xml);
       String cont = retrieveContinueLink(xml);
+      System.out.println("* get: cont: "+ cont);
       if(cont != null) {
         xml = xml.substring(0, xml.length()-cont.length());
         cont = cont.replace("@", "").replace("(", "").replace(")", "");
@@ -398,7 +400,7 @@ public class SimpleDB {
         xml = xml + hand.readLine();
       }
       
-      Document doc = Document.fromXml(hand.readLine());
+      Document doc = Document.fromXml(xml);
       System.out.println("* doc: "+ doc);
       Map<String, Long> links = findLinks(doc);
       if(!links.isEmpty()) {
