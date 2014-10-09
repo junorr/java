@@ -29,15 +29,13 @@ package com.pserver.isys;
  */
 public class RebootJob extends CommandJob {
 
-  public static final String[] CMD_ARGS = 
-  { "/c", "shutdown", "/r", "/t", "10", 
-    "/c", "ACESSO ILEGAL. "
-      + "Reinicialização Automática em 10 segundos." };
+  public static final String CMD = 
+      "cmd /c shutdown /r /t 10 /c 'ACESSO ILEGAL. Reinicialização Automática em 10 segundos.'";
   
   
   public RebootJob() {
     super();
-    runner.setArgs(CMD_ARGS);
+    parseCommand(CMD);
   }
   
 }

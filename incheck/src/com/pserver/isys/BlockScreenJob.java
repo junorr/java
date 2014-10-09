@@ -21,6 +21,8 @@
 
 package com.pserver.isys;
 
+import us.pserver.scron.ExecutionContext;
+
 
 /**
  *
@@ -29,13 +31,13 @@ package com.pserver.isys;
  */
 public class BlockScreenJob extends CommandJob {
 
-  public static final String[] CMD_ARGS = 
-      {"/c", "rundll32", "user32,LockWorkStation"};
+  public static final String COMMAND = 
+      "cmd /c rundll32 user32,LockWorkStation";
   
   
   public BlockScreenJob() {
     super();
-    runner.setArgs(CMD_ARGS);
+    parseCommand(COMMAND);
   }
   
 }

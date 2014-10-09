@@ -21,6 +21,9 @@
 
 package com.pserver.isys;
 
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import us.pserver.scron.ExecutionContext;
 
 
@@ -32,18 +35,11 @@ import us.pserver.scron.ExecutionContext;
  */
 public abstract class CommandJob extends BasicJob {
   
-  public static final String 
-      
-      BASIC_COMMAND = "cmd",
-      
-      BASIC_ARG = "/c";
-  
-  
   protected SystemRun runner;
   
   
   public CommandJob() {
-    runner = new SystemRun(BASIC_COMMAND);
+    runner = new SystemRun();
   }
   
   
@@ -59,17 +55,38 @@ public abstract class CommandJob extends BasicJob {
   }
   
   
-  protected void parseCodeCommand(String code) {
+  protected void parseCommand(String code) {
     if(code == null || code.trim().length() < 4)
       return;
     
-    String[] args = code.substring(4).split(" ");
-    String[] cmds = new String[args.length +1];
-    cmds[0] = BASIC_ARG;
-    for(int i = 1; i < cmds.length; i++) {
-      cmds[i] = args[i-1];
+    char[] cs = code.substring(4).toCharArray();
+    System.out.println(new String(cs));
+    List<String> list = new LinkedList<>();
+    StringBuffer sb = new StringBuffer();
+    boolean quote = false;
+    for(int i = 0; i < cs.length; i++) {
+      if(quote) {
+        if(cs[i] == '"' || cs[i] == '\'')
+          quote = false;
+        else 
+          sb.append(cs[i]);
+      }
+      else if(cs[i] == ' ') {
+        if(sb.length() > 0)
+          list.add(sb.toString());
+        sb = new StringBuffer();
+      }
+      else {
+        if(cs[i] == '"' || cs[i] == '\'')
+          quote = true;
+        else 
+          sb.append(cs[i]);
+      }
     }
-    runner.setArgs(cmds);
+    if(sb.length() > 0)
+      list.add(sb.toString());
+    String[] args = new String[list.size()];
+    runner.setCommandArgs(list.toArray(args));
   }
-
+  
 }

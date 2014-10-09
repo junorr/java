@@ -29,15 +29,13 @@ package com.pserver.isys;
  */
 public class ShutdownJob extends CommandJob {
 
-  public static final String[] CMD_ARGS = 
-  { "/c", "shutdown", "/s", "/t", "10", 
-    "/c", "ACESSO ILEGAL. "
-      + "Desligamento Automático em 10 segundos." };
+  public static final String COMMAND = 
+  "cmd /c shutdown /s /t 10 /c 'ACESSO ILEGAL. Desligamento automatico em 10 segundos'";
   
   
   public ShutdownJob() {
     super();
-    runner.setArgs(CMD_ARGS);
+    parseCommand(COMMAND);
   }
   
 }

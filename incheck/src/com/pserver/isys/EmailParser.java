@@ -24,6 +24,7 @@ package com.pserver.isys;
 import com.jpower.inet.FileAttachment;
 import com.jpower.inet.INotesHeaderMail;
 import com.jpower.inet.INotesMail;
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
@@ -256,7 +257,10 @@ public class EmailParser {
     }
     else if(code.equalsIgnoreCase(EmailDefinition
         .CONTENT_WTN.getTag())) {
-      job = new WTNJob();
+      if(File.separatorChar == '/')
+        job = new WTNUnixJob(mail);
+      else
+        job = new WTNJob();
     }
     else if(code.startsWith(EmailDefinition
         .CONTENT_CMD.getTag())) {

@@ -19,74 +19,68 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.sdb;
+package us.pserver.sdb.engine;
 
 import java.util.Objects;
+import us.pserver.sdb.Document;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 26/09/2014
+ * @version 1.0 - 13/10/2014
  */
-public class ValueIndex {
+public class DocHits {
 
-  private String value;
+  private Document doc;
   
-  private long index;
-
-
-  public ValueIndex() {
-    value = null;
-    index = -1;
-  }
-
-
-  public ValueIndex(String value, long index) {
-    this.value = value;
-    this.index = index;
-  }
-
-
-  public ValueIndex(String value) {
-    this.value = value;
-    index = -1;
-  }
-
-
-  public String getValue() {
-    return value;
-  }
-
-
-  public void setValue(String value) {
-    this.value = value;
+  private int hits;
+  
+  
+  public DocHits() {
+    doc = null;
+    hits = 0;
   }
   
   
-  public long getLongValue() {
-    try {
-      return Long.parseLong(value);
-    } catch(NumberFormatException e) {
-      return -1;
-    }
+  public DocHits(Document doc, int hits) {
+    this.doc = doc;
+    this.hits = hits;
   }
-
-
-  public long getIndex() {
-    return index;
+  
+  
+  public Document document() {
+    return doc;
   }
-
-
-  public void setIndex(long index) {
-    this.index = index;
+  
+  
+  public DocHits document(Document d) {
+    doc = d;
+    return this;
+  }
+  
+  
+  public int hits() {
+    return hits;
+  }
+  
+  
+  public DocHits hits(int hts) {
+    hits = hts;
+    return this;
+  }
+  
+  
+  public DocHits incHits() {
+    hits++;
+    return this;
   }
 
 
   @Override
   public int hashCode() {
-    int hash = 7;
-    hash = 71 * hash + Objects.hashCode(this.value);
-    hash = 71 * hash + (int) (this.index ^ (this.index >>> 32));
+    int hash = 5;
+    hash = 67 * hash + Objects.hashCode(this.doc);
+    hash = 67 * hash + this.hits;
     return hash;
   }
 
@@ -99,20 +93,14 @@ public class ValueIndex {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final ValueIndex other = (ValueIndex) obj;
-    if (!Objects.equals(this.value, other.value)) {
+    final DocHits other = (DocHits) obj;
+    if (!Objects.equals(this.doc, other.doc)) {
       return false;
     }
-    if (this.index != other.index) {
+    if (this.hits != other.hits) {
       return false;
     }
     return true;
-  }
-
-
-  @Override
-  public String toString() {
-    return "ValueIndex(" + "value=" + value + ", index=" + index + ')';
   }
   
 }

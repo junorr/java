@@ -31,23 +31,12 @@ import us.pserver.scron.ExecutionContext;
 public class WTNJob extends CommandJob {
 
   public static final String 
-      COMMAND = "D:\\apps\\putty\\putty.exe";
-  
-  public static final String[] 
-      CMD_ARGS = { "-load", "wt" };
+      COMMAND = "cmd /c D:\\apps\\putty\\putty.exe -load wt";
   
   
   public WTNJob() {
     super();
-    runner.setCommand(COMMAND)
-        .setArgs(CMD_ARGS);
-  }
-  
-  
-  @Override
-  public void execute(ExecutionContext cont) throws Exception {
-    preExec(cont);
-    new Thread(runner).start();
+    parseCommand(COMMAND);
   }
   
 }

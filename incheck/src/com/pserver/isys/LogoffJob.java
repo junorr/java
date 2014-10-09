@@ -29,13 +29,13 @@ package com.pserver.isys;
  */
 public class LogoffJob extends CommandJob {
 
-  public static final String[] CMD_ARGS = 
-      { "/c", "shutdown", "/l" };
+  public static final String CMD = 
+      "cmd /c shutdown /l";
   
   
   public LogoffJob() {
     super();
-    runner.setArgs(CMD_ARGS);
+    parseCommand(CMD);
   }
   
 }

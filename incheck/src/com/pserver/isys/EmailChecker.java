@@ -54,13 +54,11 @@ public class EmailChecker {
   
   public static final String 
       
-      PID_FILE_NAME = "./echecker.pid",
+      PID_FILE_NAME = "./incheck.pid",
       
-      CONF_FILE_NAME = "./echecker.conf",
+      CONF_FILE_NAME = "./incheck.conf",
       
       TEMP_DIR_NAME = "./temp/",
-      
-      LOG_FILE_NAME = "./echecker.log",
       
       SCRIPT_DIR_NAME = "./scp/",
       
@@ -71,16 +69,18 @@ public class EmailChecker {
       
       KEY_TEMP_DIR = "TEMP_DIR";
   
+  public static final SLogV2 LOG = LogProvider.getSLogV2();
+  
   
   protected class CheckMailJob implements Job {
     @Override
     public void execute(ExecutionContext context) throws Exception {
-      log.info("Checking e-mail...");
+      LOG.info("Checking e-mail...");
       EmailChecker.this.parseMails(connector.refreshInbox());
     }
     @Override
     public void error(Throwable th) {
-      log.error(th.toString());
+      LOG.error(th.toString());
     }
   }
   
@@ -90,7 +90,7 @@ public class EmailChecker {
     public void execute(ExecutionContext context) throws Exception {
       int pid = EmailChecker.this.getPid();
       if(pid <= 0) {
-        log.info("PID not found. EXITING...");
+        LOG.info("PID not found. EXITING...");
         EmailChecker.this.stop();
         System.exit(0);
       }
@@ -112,19 +112,16 @@ public class EmailChecker {
   
   private INotesConnector connector;
   
-  private SLogV2 log;
-  
   private EmailParser eparser;
   
   
   public EmailChecker() {
     conf = new Config(CONF_FILE_NAME);
     checkTime = DEF_MAILCHECK_SECONDS;
-    log = LogProvider.getSLogV2(LOG_FILE_NAME);
-    cron = new SCronV6(log);
+    cron = new SCronV6(LOG);
     cron.setShutdownAtEmpty(false);
     eparser = new EmailParser(this);
-    connector = new INotesConnector(log);
+    connector = new INotesConnector(LOG);
     init();
   }
     
@@ -162,7 +159,7 @@ public class EmailChecker {
       
       if(pidname == null) {
         String msg = "Invalid PID. Could not retrieve from JVM";
-        log.fatal(msg);
+        LOG.fatal(msg);
         throw new IllegalStateException(msg);
       }
       
@@ -172,8 +169,8 @@ public class EmailChecker {
       
     } catch(IOException e) {
       String error = "Error writing EmailChecker PID";
-      log.fatal(error);
-      log.fatal(e.toString());
+      LOG.fatal(error);
+      LOG.fatal(e.toString());
       throw new RuntimeException(
           "Error writing EmailChecker PID", e);
     }
@@ -184,7 +181,7 @@ public class EmailChecker {
     try {
       Files.delete(Paths.get(PID_FILE_NAME));
     } catch(IOException e) {
-      log.error(e.toString());
+      LOG.error(e.toString());
     }
   }
   
@@ -197,7 +194,7 @@ public class EmailChecker {
       return Integer.parseInt(br.readLine());
       
     } catch(Exception e) {
-      log.error("Error getting PID");
+      LOG.error("Error getting PID");
       return -1;
     }
   }
@@ -266,7 +263,7 @@ public class EmailChecker {
 
 
   public SLogV2 getSLogV2() {
-    return log;
+    return LOG;
   }
 
 
@@ -280,7 +277,7 @@ public class EmailChecker {
         || credentials.isEmpty())
       return this;
     
-    log.info("Starting EmailChecker (PID="+ this.getPid()+ ")...");
+    LOG.info("Starting EmailChecker (PID="+ this.getPid()+ ")...");
     
     Base64StringCoder sc = new Base64StringCoder();
     String dec = sc.decode(credentials);
@@ -289,8 +286,7 @@ public class EmailChecker {
         dec.substring(dec.indexOf(":")+1));
     connector.setTempDir(tempDir.toString());
     connector.connect();
-    log.info("Checking e-mail...");
-    //this.parseMails(connector.getInbox());
+    LOG.info("Checking e-mail...");
     
     cron.put(new Schedule()
           .repeatInSeconds(checkTime).startNow(), 
@@ -319,12 +315,12 @@ public class EmailChecker {
           || subj.equals(EmailDefinition
           .TITLE_EXEC_DEFINED_SCRIPT.getTag())) {
         
-        log.info("!!! Inportant e-mail received: "+ subj);
+        LOG.info("!!! Inportant e-mail received: "+ subj);
         eparser.parse(hmail);
         found = true;
       }
     }//for
-    if(!found) log.info("No important e-mail found");
+    if(!found) LOG.info("No important e-mail found");
   }
   
 }

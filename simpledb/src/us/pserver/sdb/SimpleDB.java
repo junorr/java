@@ -21,17 +21,10 @@
 
 package us.pserver.sdb;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.CompactWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Collections;
+import us.pserver.sdb.engine.Index;
+import us.pserver.sdb.engine.StorageEngine;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import static us.pserver.sdb.FileHandler.BLOCK_SIZE;
 
 
 /**
@@ -41,137 +34,44 @@ import static us.pserver.sdb.FileHandler.BLOCK_SIZE;
  */
 public class SimpleDB {
 
-  public static final byte BYTE_INDEX_START = 35;
+  private StorageEngine engine;
   
-  public static final byte BYTE_BLOCK_START = 36;
-  
-  public static final byte BYTE_END = 10;
-  
-  public static final String EMPTY_INDEX = "@empty";
+  private boolean rmcascade;
   
   
-  private FileHandler hand;
-  
-  private List<Index> ids;
-  
-  
-  public SimpleDB(String file) throws SDBException {
-    if(file == null || file.isEmpty())
-      throw new IllegalArgumentException("Invalid file: "+ file);
-    try {
-      hand = new FileHandler(file);
-      ids = new LinkedList<>();
-      init();
-    } catch(IOException e) {
-      throw new SDBException(e.getMessage(), e);
-    }
+  public SimpleDB(StorageEngine eng) throws SDBException {
+    if(eng == null)
+      throw new IllegalArgumentException(
+          "Invalid DocumentEngine: "+ eng+ " - [SimpleDB.init]");
+    engine = eng;
+    rmcascade = true;
   }
   
   
-  private void init() throws IOException {
-    hand.moveToEnd();
-    long blk = hand.block();
-    while(blk >= 0) {
-      hand.seekBlock(blk);
-      if(hand.isEOF()) continue;
-      byte b = hand.readByte();
-      if(b == BYTE_INDEX_START) {
-        String str = hand.readLine();
-        ids = indexFromXml(str);
-        System.out.println("* indexes: "+ ids.size());
-        System.out.println(indexToXml());
-        hand.seekBlock(blk);
-        hand.internal().setLength(hand.position());
-        break;
-      }
-      blk--;
-    }
+  public StorageEngine getEngine() {
+    return engine;
   }
   
   
-  public FileHandler handler() {
-    return hand;
+  public SimpleDB setRemoveOnCascade(boolean bool) {
+    rmcascade = bool;
+    return this;
   }
   
   
-  private String indexToXml() {
-    try {
-      XStream x = new XStream();
-      StringWriter sw = new StringWriter();
-      x.marshal(ids, new CompactWriter(sw));
-      return sw.toString();
-    } catch(Exception e) {
-      throw new SDBException(e.getMessage(), e);
-    }
-  }
-  
-  
-  public static List<Index> indexFromXml(String xml) {
-    XStream x = new XStream();
-    return (List<Index>) x.fromXML(xml);
+  public boolean isRemoveOnCascade() {
+    return rmcascade;
   }
   
   
   public void close() throws SDBException {
-    try {
-      hand.moveToEnd();
-      if(!hand.isBlockBoundary())
-        hand.nextBlock();
-      hand.writeByte(BYTE_INDEX_START)
-          .writeLine(indexToXml());
-    }
-    catch(IOException e) {
-      throw new SDBException(e.getMessage(), e);
-    }
+    engine.close();
   }
   
   
-  private void indexDoc(Document d) throws SDBException {
-    if(d != null) {
-      for(Index i : ids) {
-        if(i.put(d)) return;
-      }
-      Index id = new Index(d.label());
-      id.put(d);
-      ids.add(id);
-    }
-  }
-  
-  
-  protected Index getIndex(String label) {
-    if(label == null || label.isEmpty())
-      return null;
-    for(Index i : ids)
-      if(i.label().equalsIgnoreCase(label))
-        return i;
-    return null;
-  }
-  
-  
-  protected Map<String, Document> findNested(Document doc) {
-    Map<String, Document> map = Collections.EMPTY_MAP;
-    if(doc == null) return map;
+  protected Document resolveLinks(Document doc) {
+    if(doc == null) return doc;
     Iterator<String> it = doc.map().keySet().iterator();
-    map = new LinkedHashMap<>();
-    while(it.hasNext()) {
-      String key = it.next();
-      Object o = doc.get(key);
-      if(o != null && Document.class
-          .isAssignableFrom(o.getClass())) {
-        Document d = doc.getAs(key);
-        doc.map().remove(key);
-        map.put(key, d);
-      }
-    }
-    return map;
-  }
-  
-  
-  protected Map<String, Long> findLinks(Document doc) {
-    Map<String, Long> map = Collections.EMPTY_MAP;
-    if(doc == null) return map;
-    Iterator<String> it = doc.map().keySet().iterator();
-    map = new LinkedHashMap<>();
     while(it.hasNext()) {
       String key = it.next();
       if(key.startsWith("@_")) {
@@ -180,139 +80,77 @@ public class SimpleDB {
             .isAssignableFrom(o.getClass())) {
           Long l = doc.getAs(key);
           doc.map().remove(key);
-          map.put(key.substring(2), l);
+          Document d = get(l);
+          doc.put(key.substring(2), d);
         }
       }
     }
-    return map;
+    return doc;
   }
   
   
-  private long blockSize() throws IOException {
-    long ini = hand.position();
-    byte b = 0;
-    long count = 0;
-    while (b != BYTE_BLOCK_START 
-        && b != BYTE_INDEX_START 
-        && !hand.isEOF()) 
-    {
-      b = hand.readByte();
-      count++;
-    }
-    hand.seek(ini);
-    return count;
-  }
-  
-  
-  private long newBlock() throws IOException {
-    hand.moveToEnd();
-    if(!hand.isBlockBoundary())
-      hand.nextBlock();
-    return hand.block();
-  }
-  
-  
-  private long recycledBlock() throws IOException {
-    Index id = null;
-    for(Index i : ids) {
-      if(i.label().equals(EMPTY_INDEX)) {
-        id = i;
-        break;
+  protected Document createLinks(Document doc) {
+    if(doc == null) return doc;
+    
+    Iterator<String> it = doc.map().keySet().iterator();
+    while(it.hasNext()) {
+      String key = it.next();
+      Object o = doc.get(key);
+      if(o != null && Document.class
+          .isAssignableFrom(o.getClass())) {
+        Document d = doc.getAs(key);
+        if(d.block() < 0)
+          d = put(d);
+        doc.map().remove(key);
+        doc.put("@_"+ key, d.block());
       }
     }
-    if(id == null 
-        || id.map().isEmpty() 
-        || id.map().get(EMPTY_INDEX).isEmpty()) 
-    {
-      return -1;
-    }
-    else {
-      return id.map().get(EMPTY_INDEX)
-          .remove(0).getIndex();
-    }
+    return doc;
   }
   
   
-  private void write(Document doc) throws IOException {
-    if(doc == null || doc.block() < 0)
+  private void printdoc(Document doc) {
+    if(doc == null)
       return;
-    hand.seekBlock(doc.block()).writeByte(BYTE_BLOCK_START);
-    long sz = blockSize();
-    String xml = doc.toXml();
-    if(xml.length() < sz) {
-      hand.writeLine(xml);
+    System.out.println("* Document: label="+ doc.label());
+    Iterator<String> it = doc.map().keySet().iterator();
+    while(it.hasNext()) {
+      String k = it.next();
+      System.out.println("  - "+ k+ "="+ doc.map().get(k));
     }
-    else {
-      long pos = hand.position();
-      long blk = newBlock();
-      hand.seek(pos);
-      String link = "@("+ String.valueOf(blk)+ ")@";
-      int div = (int) sz - (link.length() + 1) - 1;
-      hand.write(xml.substring(0, div));
-      hand.writeLine(link);
-      hand.seekBlock(blk)
-          .writeByte(BYTE_BLOCK_START)
-          .writeLine(xml.substring(div));
+    System.out.println("* -----------------------------");
+  }
+  
+  
+  protected void rmNested(Document doc) {
+    if(doc == null) return;
+    
+    Iterator<String> it = doc.map().keySet().iterator();
+    while(it.hasNext()) {
+      String key = it.next();
+      Object o = doc.get(key);
+      if(o != null && Document.class
+          .isAssignableFrom(o.getClass())) {
+        Document d = doc.getAs(key);
+        if(d.block() >= 0)
+          remove(d.block());
+      }
     }
   }
   
   
   public Document put(Document doc) throws SDBException {
     if(doc == null) return doc;
-    try {
-      Map<String, Document> nested = findNested(doc);
-      if(!nested.isEmpty()) {
-        Iterator<String> it = nested.keySet().iterator();
-        while(it.hasNext()) {
-          String key = it.next();
-          Document d = put(nested.get(key));
-          if(d == null || d.map().isEmpty())
-            continue;
-          doc.put("@_"+key, d.block());
-        }
-      }
-      if(doc.block() >= 0) {
-        write(doc);
-      }
-      else {
-        long blk = recycledBlock();
-        System.out.println("* recycled block: "+ blk);
-        if(blk >= 0) {
-          write(doc.block(blk));
-        }
-        else {
-          doc.block(newBlock());
-          hand.seekBlock(doc.block())
-              .writeByte(BYTE_BLOCK_START)
-              .writeLine(doc.toXml());
-        }
-      }
-      indexDoc(doc);
-      return doc;
-    }
-    catch(IOException e) {
-      throw new SDBException(e.getMessage(), e);
-    }
+    doc = createLinks(doc);
+    //printdoc(doc);
+    return engine.put(doc);
   }
   
   
-  private void rmIndex(Document doc) {
-    if(doc == null || doc.block() < 0 || doc.label() == null)
-      return;
-    int idx = -1;
-    for(int i = 0; i < ids.size(); i++) {
-      if(ids.get(i).label()
-          .equalsIgnoreCase(doc.label()))
-      {
-        ids.get(i).remove(doc);
-        idx = i; break;
-      }
-    }
-    if(idx >= 0) {
-      Index i = ids.get(idx);
-      if(i.map().isEmpty())
-        ids.remove(i);
-    }
+  public Document remove(long blk) throws SDBException {
+    Document doc = get(blk);
+    rmNested(doc);
+    return engine.remove(blk);
   }
   
   
@@ -323,203 +161,130 @@ public class SimpleDB {
     
     if(doc.block() < 0) {
       Document d = getOne(doc);
+      if(d == null) return false;
       doc.block(d.block());
     }
     if(doc.block() < 0) return false;
     
-    try {
-      hand.seekBlock(doc.block());
-      hand.clearLine();
-      rmIndex(doc);
-      Index id = getIndex(EMPTY_INDEX);
-      if(id == null) {
-        id = new Index(EMPTY_INDEX);
-        ids.add(id);
-      }
-      id.put(new Document(EMPTY_INDEX)
-          .put(EMPTY_INDEX, doc.block())
-          .block(doc.block()));
-      return true;
-    }
-    catch(IOException e) {
-      throw new SDBException(e.getMessage(), e);
-    }
+    return remove(doc.block()) != null;
   }
   
   
-  public Document putOrUpdate(Document doc) throws SDBException {
-    if(doc == null) return doc;
-    if(doc.block() <= 0) {
-      Document d = getOne(doc);
-      if(d != null)
-        doc.block(d.block());
-    }
-    return this.put(doc);
-  }
-  
-  
-  private String retrieveContinueLink(String xml) {
-    if(xml == null 
-        || xml.isEmpty()
-        || !xml.endsWith(")@"))
-      return null;
-    System.out.println("* retrieveContinueLink: "+ xml);
-    StringBuffer sb = new StringBuffer();
-    for(int i = xml.length()-1; i >= 0; i--) {
-      char c = xml.charAt(i);
-      sb.append(c);
-      if(i < xml.length()-1 && c == '@')
-        break;
-    }
-    return sb.reverse().toString();
+  public Result remove(Query q) throws SDBException {
+    Result res = get(q);
+    for(Document d : res)
+      this.remove(d.block());
+    return res;
   }
   
   
   public Document get(long blk) throws SDBException {
-    if(blk <= 0) return null;
-    System.out.println("* block > 0");
-    try {
-      hand.seekBlock(blk);
-      if(hand.isEOF()) return null;
-      System.out.println("* block is not eof");
-      byte b = hand.readByte();
-      System.out.println("* byte readed: "+ b);
-      if(b != BYTE_BLOCK_START)
-        return null;
-      System.out.println("* reading doc");
-      
-      String xml = hand.readLine();
-      System.out.println("* get: xml: "+ xml);
-      String cont = retrieveContinueLink(xml);
-      System.out.println("* get: cont: "+ cont);
-      if(cont != null) {
-        xml = xml.substring(0, xml.length()-cont.length());
-        cont = cont.replace("@", "").replace("(", "").replace(")", "");
-        long cb = Long.parseLong(cont);
-        hand.seekBlock(cb).readByte();
-        xml = xml + hand.readLine();
-      }
-      
-      Document doc = Document.fromXml(xml);
-      System.out.println("* doc: "+ doc);
-      Map<String, Long> links = findLinks(doc);
-      if(!links.isEmpty()) {
-        Iterator<String> it = links.keySet().iterator();
-        while(it.hasNext()) {
-          String key = it.next();
-          Document d = get(links.get(key));
-          if(d == null || d.map().isEmpty())
-            continue;
-          doc.put(key, d);
-        }
-      }
-      return doc.block(blk);
-    }
-    catch(IOException e) {
-      throw new SDBException(e.getMessage(), e);
-    }
+    Document doc = engine.get(blk);
+    return resolveLinks(doc);
   }
   
   
   public Document getOne(Document doc) throws SDBException {
-    if(doc != null && doc.label() != null) {
-      Index i = getIndex(doc.label());
-      System.out.println("* found index: "+ (i != null ? i.label(): "null"));
-      if(i == null) return null;
-      long blk = i.findOne(doc);
-      System.out.println("* found on: "+ blk);
-      return get(blk);
-    }
-    return null;
+    return getOne(Query.fromExample(doc));
   }
   
   
-  public Document getOne(String label, String key, String value) throws SDBException {
-    return getOne(new Document(label).put(key, value));
+  public Document getOne(Query q) throws SDBException {
+    if(q == null) return null;
+    Result docs = get(q.limit(1));
+    if(docs.isEmpty()) return null;
+    Document d = docs.get(0);
+    docs.clear();
+    docs = null;
+    return d;
   }
   
   
-  public List<Document> get(String label, String key, String value) throws SDBException {
-    return get(new Document(label).put(key, value));
+  public Result get(Document doc) throws SDBException {
+    return get(Query.fromExample(doc));
   }
   
   
-  public List<Document> get(Document doc) throws SDBException {
-    List<Document> list = Collections.EMPTY_LIST;
-    if(doc == null || doc.label() == null
-        || doc.label().isEmpty()) 
-      return list;
+  public Result get(String label, int limit) throws SDBException {
+    Result docs = new Result(limit);
+    if(label == null) return docs;
     
-    List<Long> blks = Collections.EMPTY_LIST;
-    for(int i = 0; i < ids.size(); i++) {
-      Index id = ids.get(i);
-      if(id.label().equalsIgnoreCase(doc.label())) {
-        blks = id.find(doc);
-        break;
-      }
-    }
-    if(blks.isEmpty()) return list;
-    list = new LinkedList<>();
-    for(int i = 0; i < blks.size(); i++) {
-      Document d = get(blks.get(i));
-      if(d != null)
-        list.add(d);
-    }
-    return list;
-  }
-  
-  
-  public List<Document> get(String label) throws SDBException {
-    List<Document> list = Collections.EMPTY_LIST;
-    if(label == null || label.isEmpty()) 
-      return list;
+    List<int[]> idx = engine.getIndex().getList(label);
+    if(idx == null || idx.isEmpty())
+      return docs;
     
-    List<Long> blks = Collections.EMPTY_LIST;
-    for(int i = 0; i < ids.size(); i++) {
-      Index id = ids.get(i);
-      if(id.label().equalsIgnoreCase(label)) {
-        blks = id.getAllBlocks();
+    for(int[] is : idx) {
+      if(is == null || is[0] < 0) continue;
+      Document d = get(is[0]);
+      if(d == null) continue;
+      docs.add(d);
+    }
+    return docs;
+  }
+  
+  
+  public Result get(Query q) throws SDBException {
+    Result docs = new Result();
+    if(q == null) return docs;
+    q = q.head();
+    if(q.label() == null)
+      return docs;
+    if(q.key() == null 
+        || q.method() == null 
+        || q.value() == null)
+      return get(q.label(), q.limit());
+    
+    Index id = engine.getIndex();
+    List<int[]> idx = id.getList(q.label());
+    
+    if(idx == null || idx.isEmpty())
+      return docs;
+    
+    Result rm = new Result();
+    
+    for(int[] is : idx) {
+      if(is  == null || is[0] < 0) continue;
+      
+      Document d = get(is[0]);
+      if(d == null) continue;
+      q = q.head();
+      
+      while(q != null && q.key() != null 
+          && q.value() != null) 
+      {
+        if(!d.map().containsKey(q.key()))
+          break;
+        
+        boolean chk = q.exec(d.map()
+            .get(q.key())).getResult();
+        
+        System.out.println("* exec: "+ q.field()+ ": ("+ d.map().get(q.key())+ (q.isNot() ? ") !" : ") ")
+            + q.method()+ " "+ q.value()+ ": "+ chk);
+        
+        if(chk) {
+          if(!docs.containsBlock(d.block()) 
+              && !rm.containsBlock(d.block()))
+            docs.add(d);
+        } else if(q.prev() != null && q.prev().isAnd()) {
+          if(docs.containsBlock(d.block())) {
+            docs.removeBlock(d.block());
+            rm.add(d);
+          }
+        } else {
+          rm.add(d);
+        }
+        q = q.next();
+      }//while
+      
+      d = null;
+      if(q.limit() > 0 && docs.size() >= q.limit()) 
         break;
-      }
-    }
-    if(blks.isEmpty()) return list;
-    list = new LinkedList<>();
-    for(int i = 0; i < blks.size(); i++) {
-      Document d = get(blks.get(i));
-      if(d != null)
-        list.add(d);
-    }
-    return list;
-  }
-  
-  
-  public Document getOne(String label, Query q) throws SDBException {
-    if(label == null || label.isEmpty() 
-        || q == null) return null;
-    Index i = getIndex(label);
-    if(i == null) return null;
-    long blk = i.findOne(q);
-    if(blk == -1) return null;
-    return get(blk);
-  }
-  
-  
-  public List<Document> get(String label, Query q) throws SDBException {
-    List<Document> list = Collections.EMPTY_LIST;
-    if(label == null || label.isEmpty() 
-        || q == null) return list;
-    Index i = getIndex(label);
-    if(i == null) return list;
-    List<Long> bls = i.find(q);
-    if(bls.isEmpty()) return list;
-    list = new LinkedList<>();
-    for(long blk : bls) {
-      if(blk <= 0) continue;
-      Document d = get(blk);
-      if(d != null)
-        list.add(d);
-    }
-    return list;
+    }//for
+    
+    rm.clear();
+    rm = null;
+    idx = null;
+    return docs;
   }
   
 }

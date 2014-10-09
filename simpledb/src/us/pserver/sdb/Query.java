@@ -76,6 +76,10 @@ public class Query {
   
   private String key;
   
+  private String label;
+  
+  private int limit;
+  
   
   private Query() {
     next = prev = null;
@@ -100,9 +104,45 @@ public class Query {
   }
   
   
-  public Query(String key) {
+  public Query(String label) {
     this();
-    key(key);
+    label(label);
+  }
+  
+  
+  public Query(String label, String key) {
+    this();
+    label(label).key(key);
+  }
+  
+  
+  public Query label(String lbl) {
+    if(lbl == null)
+      throw new SDBException("Invalid label: "+ lbl);
+    label = lbl;
+    return this;
+  }
+  
+  
+  public String label() {
+    return label;
+  }
+  
+  
+  public Query limit(int lmt) {
+    if(head == null)
+      limit = lmt;
+    else
+      head.limit = lmt;
+    return this;
+  }
+  
+  
+  public int limit() {
+    if(head == null)
+      return limit;
+    else
+      return head.limit;
   }
   
   
@@ -164,6 +204,16 @@ public class Query {
       throw new SDBException("Invalid key: "+ k);
     key = k;
     return this;
+  }
+  
+  
+  public Query field(String key) {
+    return key(key);
+  }
+  
+  
+  public String field() {
+    return key();
   }
   
   
@@ -634,7 +684,8 @@ public class Query {
       throw new SDBException("Invalid value: "+ value);
     }
     
-    setType(value);
+    if(type == null)
+      setType(value);
     
     boolean bool = false;
     switch(meth) {
@@ -686,7 +737,7 @@ public class Query {
   
   
   public static Query fromExample(Document doc) {
-    Query q = new Query();
+    Query q = new Query(doc.label());
     Iterator<String> it = doc.map().keySet().iterator();
     if(!it.hasNext()) return q;
     String key = it.next();
@@ -712,10 +763,14 @@ public class Query {
   
   
   public String to_string() {
-    if(value == null || meth == null)
-      return "";
     StringBuffer sb = new StringBuffer();
     sb.append("Query");
+    if(label != null)
+      sb.append(":").append(label);
+    
+    if(value == null || meth == null)
+      return sb.toString();
+    
     if(not) sb.append(" !( ");
     else sb.append("( ");
     if(key != null)
@@ -747,6 +802,9 @@ public class Query {
       sb.append(next.to_string());
     }
     sb.append(" )");
+    if(limit > 0)
+      sb.append(".limit(")
+          .append(limit).append(")");
     return sb.toString();
   }
   

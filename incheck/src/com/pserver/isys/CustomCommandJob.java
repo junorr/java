@@ -53,13 +53,14 @@ public class CustomCommandJob extends CommandJob {
           "Invalid Command: "+ cmd);
     
     log.info("Executing command: "+ cmd);
-    parseCodeCommand(cmd);
+    parseCommand(cmd);
+    runner.setOutputLimit(3500);
     runner.run();
     String out = runner.getOutput();
     
     if(out == null || out.trim().isEmpty())
       return;
-    log.info(out);
+    //log.info(out);
     
     if(parser == null)
       throw new IllegalArgumentException(

@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.sdb;
+package us.pserver.sdb.engine;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -119,6 +119,17 @@ public class FileHandler {
   
   
   public FileHandler seekBlock(long blk) throws IOException {
+    if(blk >= 0) {
+      if(raf.length() < blk * BLOCK_SIZE)
+        raf.setLength(blk * BLOCK_SIZE);
+      block = blk;
+      seek(block * BLOCK_SIZE);
+    }
+    return this;
+  }
+  
+  
+  public FileHandler seekBlock(int blk) throws IOException {
     if(blk >= 0) {
       if(raf.length() < blk * BLOCK_SIZE)
         raf.setLength(blk * BLOCK_SIZE);
@@ -396,6 +407,14 @@ public class FileHandler {
   }
   
   
+  public FileHandler clearBlocks(int size) throws IOException {
+    for(int i = 0; i < (size * BLOCK_SIZE); i++) {
+      writeByte('0');
+    }
+    return this;
+  }
+  
+  
   public String updateLine(String ln) throws IOException {
     if(ln == null || ln.isEmpty())
       return null;
@@ -543,7 +562,7 @@ public class FileHandler {
   }
   
   
-  public String readString(int start, int length) throws IOException {
+  public String readString(long start, int length) throws IOException {
     if(start < 0 || length < 1 
         || (start + length) > raf.length())
       return null;

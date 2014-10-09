@@ -19,42 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.sdb.test;
+package us.pserver.sdb.engine;
 
-import java.io.IOException;
 import us.pserver.sdb.Document;
-import us.pserver.sdb.SimpleDB;
+import us.pserver.sdb.SDBException;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 03/10/2014
+ * @version 1.0 - 13/10/2014
  */
-public class TestSimpleDB1 {
+public interface StorageEngine {
 
+  public Document put(Document doc) throws SDBException;
   
-  public static void main(String[] args) throws IOException {
-    SimpleDB sdb = new SimpleDB("./simple.sdb");
-    Document doc = new Document("server");
-    doc.put("name", "102")
-        .put("ip", "172.29.14.102")
-        .put("port", 22)
-        .put("enabled", true)
-        .put("user", "john")
-        .put("pass", "nhoj")
-        .put("ip_", "172.29.14.102")
-        .put("port_", 22)
-        .put("enabled_", true)
-        .put("user_", "john")
-        .put("pass_", "nhoj")
-        .put("_ip", "172.29.14.102")
-        .put("_port", 22)
-        .put("_enabled", true)
-        .put("_user", "john")
-        .put("_pass", "nhoj");
-    
-    doc = sdb.put(doc);
-    sdb.close();
-  }
+  public Document get(long block) throws SDBException;
+  
+  public Document remove(long block) throws SDBException;
+  
+  public void close() throws SDBException;
+  
+  public Index getIndex();
   
 }

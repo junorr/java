@@ -24,6 +24,7 @@ package us.pserver.sdb;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.CompactWriter;
 import java.io.StringWriter;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -35,15 +36,6 @@ import java.util.Map;
  */
 public class Document {
 
-  public static final String 
-      SSTR = "str",
-      SINT = "int",
-      SDOUBLE = "double",
-      SLONG = "long",
-      SBOOLEAN = "boolean",
-      SOJS = "ojs.";
-  
-  
   private transient long block;
   
   private String label;
@@ -68,6 +60,18 @@ public class Document {
   public Document(String label) {
     this();
     label(label);
+  }
+  
+  
+  @Override
+  public Document clone() {
+    Document doc = new Document(label).block(block);
+    Iterator<String> it = map.keySet().iterator();
+    while(it.hasNext()) {
+      String k = it.next();
+      doc.map.put(k, map.get(k));
+    }
+    return doc;
   }
 
   
@@ -276,7 +280,8 @@ public class Document {
   
   public static void main(String[] args) {
     Document doc = new Document("server");
-    doc.put("ip", "172.29.14.102")
+    doc.put("name", "102")
+        .put("ip", "172.29.14.102")
         .put("port", 22)
         .put("active", true)
         .put("cred", new Document("credentials")

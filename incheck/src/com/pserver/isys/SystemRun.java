@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -36,8 +37,6 @@ public class SystemRun implements Runnable, Serializable {
   
   private String[] args;
   
-  private String command;
-  
   private InputStream in;
   
   private transient ProcessBuilder pb;
@@ -46,23 +45,67 @@ public class SystemRun implements Runnable, Serializable {
   
   private int rcode;
   
+  private int limitout;
+  
+  private boolean waitfor;
+  
+  private boolean pullout;
+  
   
   public SystemRun() {
     args = null;
-    command = null;
     pb = new ProcessBuilder();
     in = null;
     output = null;
     rcode = -1;
+    waitfor = true;
+    limitout = -1;
+    pullout = true;
   }
   
   
-  public SystemRun(String cmd, String ... args) {
-    command = cmd;
+  public SystemRun(String ... cmargs) {
     this.args = args;
     pb = new ProcessBuilder();
     in = null;
     output = null;
+    rcode = -1;
+    waitfor = true;
+    limitout = -1;
+    pullout = true;
+  }
+  
+  
+  public boolean isWaitFor() {
+    return waitfor;
+  }
+  
+  
+  public SystemRun setWaitFor(boolean b) {
+    waitfor = b;
+    return this;
+  }
+
+
+  public int getOutputLimit() {
+    return limitout;
+  }
+  
+  
+  public SystemRun setOutputLimit(int lmt) {
+    limitout = lmt;
+    return this;
+  }
+
+
+  public boolean isPullOutput() {
+    return pullout;
+  }
+  
+  
+  public SystemRun setPullOutput(boolean b) {
+    pullout = b;
+    return this;
   }
 
 
@@ -72,14 +115,8 @@ public class SystemRun implements Runnable, Serializable {
   }
   
   
-  public SystemRun setArgs(String ... args) {
-    this.args = args;
-    return this;
-  }
-  
-  
-  public SystemRun setCommand(String cmd) {
-    command = cmd;
+  public SystemRun setCommandArgs(String ... cargs) {
+    args = cargs;
     return this;
   }
   
@@ -89,16 +126,16 @@ public class SystemRun implements Runnable, Serializable {
   }
   
   
-  public String getCommand() {
-    return command;
+  public String[] getCommandArgs() {
+    return args;
   }
   
   
   public String buildCommand() {
     StringBuilder sb = new StringBuilder();
-    sb.append(command);
     for(String s : args)
-      sb.append(" ").append(s);
+      sb.append(s).append(" ");
+    sb.deleteCharAt(sb.length() -1);
     return sb.toString();
   }
   
@@ -119,18 +156,13 @@ public class SystemRun implements Runnable, Serializable {
   
   
   private void setProcessBuilder() {
-    if(command == null || command.trim().isEmpty())
-      throw new IllegalStateException("Invalid Command: "+ command);
+    if(args == null || args.length == 0)
+      throw new IllegalStateException("Invalid CommandArgs: "+ Arrays.toString(args));
     
     if(pb == null)
       pb = new ProcessBuilder();
     
-    String[] cs = new String[args.length +1];
-    cs[0] = command;
-    for(int i = 1; i < cs.length; i++) {
-      cs[i] = args[i-1];
-    }
-    pb.command(cs);
+    pb.command(args);
     pb.redirectErrorStream(true);
   }
   
@@ -156,17 +188,22 @@ public class SystemRun implements Runnable, Serializable {
         in.close();
       }
       
-      InputStream pin = p.getInputStream();
-      int r = pin.read();
-      while(r >= 0) {
-        bos.write(r);
-        r = pin.read();
+      if(pullout) {
+        InputStream pin = p.getInputStream();
+        int r = pin.read();
+        int count = 0;
+        while(r >= 0) {
+          bos.write(r);
+          r = pin.read();
+          if(limitout > 0 
+              && count++ >= limitout)
+            break;
+        }
+        pin.close();
+        output = new String(bos.toByteArray());
       }
-      pin.close();
       
-      output = new String(bos.toByteArray());
-      
-      rcode = p.waitFor();
+      if(waitfor) rcode = p.waitFor();
       
     } catch (Exception ex) {
       throw new IllegalStateException(ex);
