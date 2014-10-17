@@ -21,6 +21,8 @@
 
 package us.pserver.json;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -61,27 +63,172 @@ public class JsonParser {
         ignore = true;
       if(s.trim().endsWith("]"))
         ignore = false;
-      array.add(parse(s));
+      //array.add(parse(s));
     }
     return array;
   }
   
   
-  public Element parse(String json) {
-    if(json == null || json.isEmpty())
-      throw new IllegalArgumentException(
-          "Invalid json: "+ json);
+  public Document parsedoc(String str) {
+    if(str == null 
+        || str.isEmpty() 
+        || !str.contains(":")
+        || (!str.contains("{")
+        &&  !str.contains("}")))
+      return null;
     
-    json = json.trim();
-    if(getNumber(json) != null)
-      return new Element(getNumber(json));
-    if(json.startsWith("[")) {
-      return parseArray(json.substring(1, json.length() -1));
-    }
-    else if(json.startsWith("'")) {
+    StringBuilder sb = new StringBuilder();
+    char[] cs = str.substring(1, str.length()-1).toCharArray();
+    Document doc = new Document();
+    String key = null;
+    Object value = null;
+    boolean cont = false;
+    int opbr = 0;
+    int opsq = 0;
+    for(int i = 0; i < cs.length; i++) {
+      if(cs[i] == '}') {
+        sb.append(cs[i]);
+        opbr--;
+        if(opbr == 0) {
+          value = parsedoc(sb.toString());
+          sb.delete(0, sb.length());
+          cont = false;
+        }
+        continue;
+      }
+      if(cs[i] == ']') {
+        sb.append(cs[i]);
+        opsq--;
+        if(opsq == 0) {
+          value = parsearray(sb.toString());
+          sb.delete(0, sb.length());
+          cont = false;
+        }
+        continue;
+      }
       
+      if(cont) {
+        sb.append(cs[i]);
+        continue;
+      }
+      
+      if(cs[i] == ':') {
+        key = sb.toString().replace("'", "");
+        sb.delete(0, sb.length());
+      }
+      else if(cs[i] == ',') {
+        if(value != null) continue;
+        value = sb.toString().replace("'", "");
+        sb.delete(0, sb.length());
+      }
+      else if(cs[i] == '{') {
+        sb.append(cs[i]);
+        cont = true;
+        opbr++;
+      }
+      else if(cs[i] == '[') {
+        System.out.println(" -> start array for: "+ key);
+        sb.append(cs[i]);
+        cont = true;
+        opsq++;
+      }
+      else {
+        sb.append(cs[i]);
+      }
+      
+      if(key != null && value != null) {
+        doc.put(key, value);
+        key = null;
+        value = null;
+      }
     }
     
+    if(key != null && sb.length() > 0) {
+      value = sb.toString().replace("'", "");
+    }
+    
+    if(key != null && value != null) {
+      doc.put(key, value);
+    }
+    return doc;
   }
+  
+  
+  public List parsearray(String str) {
+    if(str == null 
+        || str.isEmpty() 
+        || !str.contains("[")
+        || !str.contains("]"))
+      return null;
+    
+    StringBuilder sb = new StringBuilder();
+    char[] cs = str.substring(1, str.length()-1).toCharArray();
+    List list = new LinkedList();
+    Object value = null;
+    boolean cont = false;
+    int opbr = 0;
+    int opsq = 0;
+    for(int i = 0; i < cs.length; i++) {
+      if(cs[i] == '}') {
+        sb.append(cs[i]);
+        opbr--;
+        if(opbr == 0) {
+          value = parsedoc(sb.toString());
+          sb.delete(0, sb.length());
+          cont = false;
+        }
+        continue;
+      }
+      if(cs[i] == ']') {
+        sb.append(cs[i]);
+        opsq--;
+        if(opsq == 0) {
+          value = parsearray(sb.toString());
+          sb.delete(0, sb.length());
+          cont = false;
+        }
+        continue;
+      }
+      
+      if(cont) {
+        sb.append(cs[i]);
+        continue;
+      }
+      
+      if(cs[i] == ',') {
+        if(value != null) continue;
+        value = sb.toString().replace("'", "");
+        sb.delete(0, sb.length());
+      }
+      else if(cs[i] == '{') {
+        sb.append(cs[i]);
+        cont = true;
+        opbr++;
+      }
+      else if(cs[i] == '[') {
+        sb.append(cs[i]);
+        cont = true;
+        opsq++;
+      }
+      else {
+        sb.append(cs[i]);
+      }
+      
+      if(value != null) {
+        list.add(value);
+        value = null;
+      }
+    }
+    
+    if(sb.length() > 0) {
+      value = sb.toString().replace("'", "");
+    }
+    
+    if(value != null) {
+      list.add(value);
+    }
+    return list;
+  }
+  
   
 }

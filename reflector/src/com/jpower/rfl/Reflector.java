@@ -64,6 +64,20 @@ public class Reflector {
     }
 		return this;
 	}
+  
+  
+  public Reflector onClass(String className) {
+    synchronized(LOCK) {
+      clearExc();
+  		try {
+        cls = Class.forName(className);
+      } catch(Exception e) {
+        exc = e;
+        cls = null;
+      }
+    }
+		return this;
+  }
 	
 	
 	/**

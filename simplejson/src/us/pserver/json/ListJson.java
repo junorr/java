@@ -45,6 +45,7 @@ public class ListJson {
       return toObjectJsonArray(((List)o).toArray());
     }
     else if(jo.isArray(o)) {
+      System.out.println("-> "+ o+ ".isPrimitiveArray? "+ isPrimitiveArray(o));
       if(isPrimitiveArray(o))
         return toPrimitiveJsonArray(o);
       else

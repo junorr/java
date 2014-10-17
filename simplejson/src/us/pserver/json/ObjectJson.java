@@ -128,9 +128,17 @@ public class ObjectJson {
     sb.append("{")
         .append("'class':'")
         .append(o.getClass().getName())
-        .append("',")
-        .append("'fields':")
-        .append(toJson(fs, o));
+        .append("',");
+    
+    for(int i = 0; i < fs.length; i++) {
+      sb.append("'")
+          .append(fs[i].getName())
+          .append("':");
+      Object val = rf.on(o).field(fs[i].getName()).get();
+      sb.append(toJson(val));
+      if(i < fs.length-1)
+        sb.append(",");
+    }
     return sb.append("}").toString();
   }
   
@@ -173,6 +181,10 @@ public class ObjectJson {
     a.list.add(30);
     a.list.add(40);
     System.out.println("* toJson(a) = "+ jo.toJson(a));
+    JsonParser jp = new JsonParser();
+    Document doc = jp.parsedoc(jo.toJson(a));
+    System.out.println("* doc: "+ doc);
+    System.out.println("* doc.get(bytes).getClass(): "+ doc.get("bytes").getClass());
   }
   
 }
