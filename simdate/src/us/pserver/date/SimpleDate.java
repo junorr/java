@@ -215,6 +215,41 @@ public class SimpleDate extends Date {
 	 */
 	public static final String SQL_DATE_TIME = "yyyy-MM-dd HH:mm:ss.SSSSSSSSS";
 
+  /**
+   * Day of week <code>SUNDAY = 1</code>.
+   */
+  public static final int SUNDAY = 1;
+  
+  /**
+   * Day of week <code>MONDAY = 2</code>.
+   */
+  public static final int MONDAY = 2;
+  
+  /**
+   * Day of week <code>TUESDAY = 3</code>.
+   */
+  public static final int TUESDAY = 3;
+  
+  /**
+   * Day of week <code>WEDNESDAY = 4</code>.
+   */
+  public static final int WEDNESDAY = 4;
+  
+  /**
+   * Day of week <code>THURSDAY = 5</code>.
+   */
+  public static final int THURSDAY = 5;
+  
+  /**
+   * Day of week <code>FRIDAY = 6</code>.
+   */
+  public static final int FRIDAY = 6;
+  
+  /**
+   * Day of week <code>SATURDAY = 7</code>.
+   */
+  public static final int SATURDAY = 7;
+  
 	
 	private TimeZone tzone;
 	
@@ -361,6 +396,16 @@ public class SimpleDate extends Date {
 	public int dayOfWeek() {
 		cal.setTime(this);
 		return cal.get(Calendar.DAY_OF_WEEK);
+	}
+  
+  
+	/**
+	 * Retorna o dia da semana.
+	 * @return dia da semana.
+   * @see us.pserver.date.DayOfWeek;
+	 */
+	public DayOfWeek getDayOfWeek() {
+		return DayOfWeek.fromInt(dayOfWeek());
 	}
   
   

@@ -2,21 +2,21 @@
  * Direitos Autorais Reservados (c) 2011 Juno Roesler
  * Contato: juno.rr@gmail.com
  * 
- * Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os
- * termos da Licença Pública Geral Menor do GNU conforme publicada pela Free
- * Software Foundation; tanto a versão 2.1 da Licença, ou qualquer
- * versão posterior.
+ * Esta biblioteca ï¿½ software livre; vocï¿½ pode redistribuï¿½-la e/ou modificï¿½-la sob os
+ * termos da Licenï¿½a Pï¿½blica Geral Menor do GNU conforme publicada pela Free
+ * Software Foundation; tanto a versï¿½o 2.1 da Licenï¿½a, ou qualquer
+ * versï¿½o posterior.
  * 
- * Esta biblioteca é distribuída na expectativa de que seja útil, porém, SEM
- * NENHUMA GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE
- * OU ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA. Consulte a Licença Pública
+ * Esta biblioteca ï¿½ distribuï¿½da na expectativa de que seja ï¿½til, porï¿½m, SEM
+ * NENHUMA GARANTIA; nem mesmo a garantia implï¿½cita de COMERCIABILIDADE
+ * OU ADEQUAï¿½ï¿½O A UMA FINALIDADE ESPECï¿½FICA. Consulte a Licenï¿½a Pï¿½blica
  * Geral Menor do GNU para mais detalhes.
  * 
- * Você deve ter recebido uma cópia da Licença Pública Geral Menor do GNU junto
- * com esta biblioteca; se não, acesse 
+ * Vocï¿½ deve ter recebido uma cï¿½pia da Licenï¿½a Pï¿½blica Geral Menor do GNU junto
+ * com esta biblioteca; se nï¿½o, acesse 
  * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html, 
  * ou escreva para a Free Software Foundation, Inc., no
- * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
+ * endereï¿½o 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
 package us.pserver.json;
@@ -43,29 +43,6 @@ public class JsonParser {
     } catch(NumberFormatException e) {
       return null;
     }
-  }
-  
-  
-  public JsonArray parseArray(String json) {
-    if(json == null || json.isEmpty()
-        || !json.trim().startsWith("["))
-      return null;
-    
-    StringTokenizer st = new StringTokenizer(json, ",");
-    JsonArray array = new JsonArray();
-    boolean ignore = false;
-    while(st.hasMoreElements()) {
-      Object o = st.nextElement();
-      if(o == null) continue;
-      String s = o.toString();
-      if(ignore) continue;
-      if(s.trim().startsWith("["))
-        ignore = true;
-      if(s.trim().endsWith("]"))
-        ignore = false;
-      //array.add(parse(s));
-    }
-    return array;
   }
   
   
@@ -127,7 +104,6 @@ public class JsonParser {
         opbr++;
       }
       else if(cs[i] == '[') {
-        System.out.println(" -> start array for: "+ key);
         sb.append(cs[i]);
         cont = true;
         opsq++;
@@ -149,6 +125,10 @@ public class JsonParser {
     
     if(key != null && value != null) {
       doc.put(key, value);
+    }
+    if(doc.map().containsKey("class")) {
+      doc.label(doc.getString("class"));
+      doc.map().remove("class");
     }
     return doc;
   }

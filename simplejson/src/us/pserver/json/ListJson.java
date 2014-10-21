@@ -2,21 +2,21 @@
  * Direitos Autorais Reservados (c) 2011 Juno Roesler
  * Contato: juno.rr@gmail.com
  * 
- * Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os
- * termos da Licença Pública Geral Menor do GNU conforme publicada pela Free
- * Software Foundation; tanto a versão 2.1 da Licença, ou qualquer
- * versão posterior.
+ * Esta biblioteca ï¿½ software livre; vocï¿½ pode redistribuï¿½-la e/ou modificï¿½-la sob os
+ * termos da Licenï¿½a Pï¿½blica Geral Menor do GNU conforme publicada pela Free
+ * Software Foundation; tanto a versï¿½o 2.1 da Licenï¿½a, ou qualquer
+ * versï¿½o posterior.
  * 
- * Esta biblioteca é distribuída na expectativa de que seja útil, porém, SEM
- * NENHUMA GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE
- * OU ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA. Consulte a Licença Pública
+ * Esta biblioteca ï¿½ distribuï¿½da na expectativa de que seja ï¿½til, porï¿½m, SEM
+ * NENHUMA GARANTIA; nem mesmo a garantia implï¿½cita de COMERCIABILIDADE
+ * OU ADEQUAï¿½ï¿½O A UMA FINALIDADE ESPECï¿½FICA. Consulte a Licenï¿½a Pï¿½blica
  * Geral Menor do GNU para mais detalhes.
  * 
- * Você deve ter recebido uma cópia da Licença Pública Geral Menor do GNU junto
- * com esta biblioteca; se não, acesse 
+ * Vocï¿½ deve ter recebido uma cï¿½pia da Licenï¿½a Pï¿½blica Geral Menor do GNU junto
+ * com esta biblioteca; se nï¿½o, acesse 
  * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html, 
  * ou escreva para a Free Software Foundation, Inc., no
- * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
+ * endereï¿½o 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
 package us.pserver.json;
@@ -45,7 +45,6 @@ public class ListJson {
       return toObjectJsonArray(((List)o).toArray());
     }
     else if(jo.isArray(o)) {
-      System.out.println("-> "+ o+ ".isPrimitiveArray? "+ isPrimitiveArray(o));
       if(isPrimitiveArray(o))
         return toPrimitiveJsonArray(o);
       else
@@ -159,31 +158,6 @@ public class ListJson {
     }
     sb.append("]");
     return sb.toString();
-  }
-  
-  
-  public static void main(String[] args) {
-    System.out.println("* int[]     = "+ int[].class);
-    System.out.println("* long[]    = "+ long[].class);
-    System.out.println("* byte[]    = "+ byte[].class);
-    System.out.println("* short[]   = "+ short[].class);
-    System.out.println("* double[]  = "+ double[].class);
-    System.out.println("* float[]   = "+ float[].class);
-    System.out.println("* boolean[] = "+ boolean[].class);
-    System.out.println("* Integer[] = "+ Integer[].class);
-    System.out.println("* Lont[]    = "+ Long[].class);
-    System.out.println("* Byte[]    = "+ Byte[].class);
-    System.out.println("* Short[]   = "+ Short[].class);
-    System.out.println("* Double[]  = "+ Double[].class);
-    System.out.println("* Float[]   = "+ Float[].class);
-    System.out.println("* Boolean[] = "+ Boolean[].class);
-    System.out.println("* String[]  = "+ String[].class);
-    int[] is = {1,2,3,4,5,6};
-    System.out.println("* is="+ new ListJson(new ObjectJson()).toJson(is));
-    String[] ss = {"a", "b", "c", "d", "e"};
-    System.out.println("* ss="+ new ListJson(new ObjectJson()).toJson(ss));
-    char[] cs = {'a', 'b', 'c', 'd', 'e'};
-    System.out.println("* cs="+ new ListJson(new ObjectJson()).toJson(cs));
   }
   
 }

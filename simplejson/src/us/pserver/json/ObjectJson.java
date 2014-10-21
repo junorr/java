@@ -2,21 +2,21 @@
  * Direitos Autorais Reservados (c) 2011 Juno Roesler
  * Contato: juno.rr@gmail.com
  * 
- * Esta biblioteca È software livre; vocÍ pode redistribuÌ-la e/ou modific·-la sob os
- * termos da LicenÁa P˙blica Geral Menor do GNU conforme publicada pela Free
- * Software Foundation; tanto a vers„o 2.1 da LicenÁa, ou qualquer
- * vers„o posterior.
+ * Esta biblioteca √© software livre; voc√™ pode redistribu√≠-la e/ou modific√°-la sob os
+ * termos da Licen√ßa P√∫blica Geral Menor do GNU conforme publicada pela Free
+ * Software Foundation; tanto a vers√£o 2.1 da Licen√ßa, ou qualquer
+ * vers√£o posterior.
  * 
- * Esta biblioteca È distribuÌda na expectativa de que seja ˙til, porÈm, SEM
- * NENHUMA GARANTIA; nem mesmo a garantia implÌcita de COMERCIABILIDADE
- * OU ADEQUA«√O A UMA FINALIDADE ESPECÕFICA. Consulte a LicenÁa P˙blica
+ * Esta biblioteca √© distribu√≠da na expectativa de que seja √∫til, por√©m, SEM
+ * NENHUMA GARANTIA; nem mesmo a garantia impl√≠cita de COMERCIABILIDADE
+ * OU ADEQUA√á√ÉO A UMA FINALIDADE ESPEC√çFICA. Consulte a Licen√ßa P√∫blica
  * Geral Menor do GNU para mais detalhes.
  * 
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral Menor do GNU junto
- * com esta biblioteca; se n„o, acesse 
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral Menor do GNU junto
+ * com esta biblioteca; se n√£o, acesse 
  * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html, 
  * ou escreva para a Free Software Foundation, Inc., no
- * endereÁo 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
+ * endere√ßo 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
 package us.pserver.json;
@@ -55,6 +55,16 @@ public class ObjectJson {
   }
   
   
+  public boolean isPrimitive(Class c) {
+    if(c == null) return true;
+    return Number.class.isAssignableFrom(c)
+        || String.class.isAssignableFrom(c)
+        || Boolean.class.isAssignableFrom(c)
+        || Character.class.isAssignableFrom(c)
+        || Byte.class.isAssignableFrom(c);
+  }
+  
+  
   public String primitiveToJson(Object o) {
     if(o == null) return "null";
     if(!isPrimitive(o)) return toJson(o);
@@ -84,6 +94,24 @@ public class ObjectJson {
   public boolean isField(Object o) {
     if(o == null) return false;
     return Field.class.isAssignableFrom(o.getClass());
+  }
+  
+  
+  public boolean isList(Class c) {
+    if(c == null) return false;
+    return List.class.isAssignableFrom(c);
+  }
+  
+  
+  public boolean isArray(Class c) {
+    if(c == null) return false;
+    return c.isArray();
+  }
+  
+  
+  public boolean isField(Class c) {
+    if(c == null) return false;
+    return Field.class.isAssignableFrom(c);
   }
   
   
@@ -131,60 +159,16 @@ public class ObjectJson {
         .append("',");
     
     for(int i = 0; i < fs.length; i++) {
+      Object val = rf.on(o).field(fs[i].getName()).get();
+      if(val == null) continue;
       sb.append("'")
           .append(fs[i].getName())
           .append("':");
-      Object val = rf.on(o).field(fs[i].getName()).get();
       sb.append(toJson(val));
       if(i < fs.length-1)
         sb.append(",");
     }
     return sb.append("}").toString();
-  }
-  
-  
-  public static void main(String[] args) {
-    int i = 5;
-    boolean b = true;
-    Double d = 1.2;
-    String s = "string";
-    byte y = 0;
-    char c = 35;
-    ObjectJson jo = new ObjectJson();
-    System.out.println("* i="+ i+ ", isPrimitive? "+ jo.isPrimitive(i));
-    System.out.println("* b="+ b+ ", isPrimitive? "+ jo.isPrimitive(b));
-    System.out.println("* d="+ d+ ", isPrimitive? "+ jo.isPrimitive(d));
-    System.out.println("* s="+ s+ ", isPrimitive? "+ jo.isPrimitive(s));
-    System.out.println("* y="+ y+ ", isPrimitive? "+ jo.isPrimitive(y));
-    System.out.println("* c="+ c+ ", isPrimitive? "+ jo.isPrimitive(c));
-    int[] is = {1, 2, 3, 4, 5};
-    System.out.println("* "+ Arrays.toString(is) + ", isArray? "+ jo.isArray(is));
-    
-    System.out.println("===========================");
-    
-    class A {
-      int integer;
-      String string;
-      byte[] bytes;
-      List list;
-    }
-    
-    A a = new A();
-    a.integer = 5;
-    a.string = "text";
-    a.bytes = new byte[]{0,1,2,3,4,5};
-    a.list = new LinkedList();
-    a.list.add(10);
-    a.list.add(20);
-    a.list.add("string");
-    a.list.add('c');
-    a.list.add(30);
-    a.list.add(40);
-    System.out.println("* toJson(a) = "+ jo.toJson(a));
-    JsonParser jp = new JsonParser();
-    Document doc = jp.parsedoc(jo.toJson(a));
-    System.out.println("* doc: "+ doc);
-    System.out.println("* doc.get(bytes).getClass(): "+ doc.get("bytes").getClass());
   }
   
 }
