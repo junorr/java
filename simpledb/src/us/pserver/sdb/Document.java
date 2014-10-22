@@ -222,7 +222,7 @@ public class Document {
   
   
   public Document put(String key, Object value) {
-    if(key != null && !key.isEmpty() && value != null) {
+    if(key != null && !key.isEmpty()) {
       map.put(key, value);
     }
     return this;

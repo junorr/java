@@ -230,8 +230,8 @@ public class SimpleDB {
     if(q.label() == null)
       return docs;
     if(q.key() == null 
-        || q.method() == null 
-        || q.value() == null)
+        && q.method() == null 
+        && q.value() == null)
       return get(q.label(), q.limit());
     
     Index id = engine.getIndex();
@@ -249,16 +249,21 @@ public class SimpleDB {
       if(d == null) continue;
       q = q.head();
       
-      while(q != null && q.key() != null 
-          && q.value() != null) 
+      while(q != null && q.key() != null) 
       {
         if(!d.map().containsKey(q.key()))
           break;
         
-        boolean chk = q.exec(d.map()
-            .get(q.key())).getResult();
+        Object val = d.get(q.key());
+        while(val != null && Document.class.isAssignableFrom(val.getClass())) {
+          Document dv = (Document) val;
+          q = q.next();
+          val = dv.get(q.key());
+        }
         
-        System.out.println("* exec: "+ q.field()+ ": ("+ d.map().get(q.key())+ (q.isNot() ? ") !" : ") ")
+        boolean chk = q.exec(val).getResult();
+        
+        System.out.println("* exec: "+ q.field()+ ": ("+ val+ (q.isNot() ? ") !" : ") ")
             + q.method()+ " "+ q.value()+ ": "+ chk);
         
         if(chk) {

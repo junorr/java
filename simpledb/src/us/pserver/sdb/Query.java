@@ -44,7 +44,8 @@ public class Query {
     GREATER, 
     LESSER, 
     GREATER_EQ, 
-    LESSER_EQ;
+    LESSER_EQ,
+    EMPTY;
   }
   
   
@@ -56,7 +57,7 @@ public class Query {
   }
 
   
-  private Query next, prev, head;
+  protected Query next, prev, head;
   
   private QueryMethod meth;
   
@@ -81,7 +82,7 @@ public class Query {
   private int limit;
   
   
-  private Query() {
+  protected Query() {
     next = prev = null;
     head = null;
     meth = null;
@@ -93,7 +94,7 @@ public class Query {
   }
   
   
-  private Query(Query hd, Query pv) {
+  protected Query(Query hd, Query pv) {
     head = hd;
     prev = pv;
     next = null;
@@ -118,13 +119,26 @@ public class Query {
   
   public Query label(String lbl) {
     if(lbl == null)
-      throw new SDBException("Invalid label: "+ lbl);
+      throw new SDBException("Invalid label: "+ lbl+ " - [Query.label]");
     label = lbl;
     return this;
   }
   
   
   public String label() {
+    return label;
+  }
+  
+  
+  public Query className(String lbl) {
+    if(lbl == null)
+      throw new SDBException("Invalid label: "+ lbl+ " - [Query.className]");
+    label = lbl;
+    return this;
+  }
+  
+  
+  public String className() {
     return label;
   }
   
@@ -201,7 +215,7 @@ public class Query {
   
   public Query key(String k) {
     if(k == null)
-      throw new SDBException("Invalid key: "+ k);
+      throw new SDBException("Invalid key: "+ k+ " - [Query.key]");
     key = k;
     return this;
   }
@@ -307,7 +321,7 @@ public class Query {
   public Query or() {
     if(prev == null)
       throw new SDBException(
-          "Query Error: Link condition before value");
+          "Query Error: Link condition before value - [Query.or]");
     prev.or = true;
     prev.and = false;
     key(prev.key());
@@ -318,11 +332,19 @@ public class Query {
   public Query and() {
     if(prev == null)
       throw new SDBException(
-          "Query Error: Link condition before value");
+          "Query Error: Link condition before value - [Query.and]");
     prev.and = true;
     prev.or = false;
     key(prev.key());
     return this;
+  }
+  
+  
+  public Query descend(String field) {
+    if(field == null)
+      throw new SDBException(
+          "Query Error: Invalid field ("+ field+ ") - [Query.descend]");
+    return this.field(field).next();
   }
   
   
@@ -332,10 +354,16 @@ public class Query {
   }
   
   
+  public Query empty() {
+    meth = QueryMethod.EMPTY;
+    return this;
+  }
+  
+  
   public Query or(String key) {
     if(prev == null)
       throw new SDBException(
-          "Query Error: Link condition before value");
+          "Query Error: Link condition before value - [Query.or]");
     prev.or = true;
     prev.and = false;
     return key(key);
@@ -345,7 +373,7 @@ public class Query {
   public Query and(String key) {
     if(prev == null)
       throw new SDBException(
-          "Query Error: Link condition before value");
+          "Query Error: Link condition before value - [Query.and]");
     prev.and = true;
     prev.or = false;
     return key(key);
@@ -525,7 +553,7 @@ public class Query {
     try {
       return Double.parseDouble(o.toString());
     } catch(Exception e) {
-      throw new SDBException("Invalid number value: "+ o);
+      throw new SDBException("Invalid number value: "+ o+ " - [Query.getNumber]");
     }
   }
   
@@ -550,7 +578,7 @@ public class Query {
     if(o == null 
         || (!o.toString().equalsIgnoreCase("true") 
         && !o.toString().equalsIgnoreCase("false")))
-      throw new SDBException("Invalid boolean value: "+ o);
+      throw new SDBException("Invalid boolean value: "+ o+ " - [Query.getBoolean]");
     return Boolean.parseBoolean(o.toString());
   }
   
@@ -677,11 +705,16 @@ public class Query {
   }
   
   
+  private boolean xempty(Object o) {
+    return o == null || o.toString().equalsIgnoreCase("null");
+  }
+  
+  
   protected Query exec(Object obj) throws SDBException {
     if(obj == null) 
-      throw new SDBException("Invalid null argument");
-    if(value == null || meth == null) {
-      throw new SDBException("Invalid value: "+ value);
+      throw new SDBException("Invalid null argument - [Query.exec]");
+    if(meth == null || (value == null && meth != QueryMethod.EMPTY)) {
+      throw new SDBException("Invalid value: "+ value+ " - [Query.exec]");
     }
     
     if(type == null)
@@ -694,6 +727,9 @@ public class Query {
         break;
       case CONTAINS_ICS:
         bool = xcontics(obj);
+        break;
+      case EMPTY:
+        bool = xempty(obj);
         break;
       case ENDS_WITH:
         bool = xendsw(obj);

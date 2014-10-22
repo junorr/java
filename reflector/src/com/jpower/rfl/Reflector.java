@@ -392,8 +392,8 @@ public class Reflector {
 	 */
 	public void set(Object value) {
     synchronized(LOCK) {
-  		if(fld == null || value == null
-    			|| obj == null) return;
+  		if(fld == null || obj == null) 
+        return;
 		
   		clearExc();
     	try {
