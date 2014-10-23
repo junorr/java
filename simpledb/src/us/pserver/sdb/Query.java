@@ -46,6 +46,33 @@ public class Query {
     GREATER_EQ, 
     LESSER_EQ,
     EMPTY;
+    @Override
+    public String toString() {
+      switch(this) {
+        case EQUALS:
+          return "==";
+        case EQUALS_ICS:
+          return "[==]";
+        case CONTAINS:
+          return "CONTAINS";
+        case CONTAINS_ICS:
+          return "[CONTAINS]";
+        case STARTS_WITH:
+          return "(x)...";
+        case ENDS_WITH:
+          return "...(x)";
+        case GREATER:
+          return ">";
+        case GREATER_EQ:
+          return ">=";
+        case LESSER:
+          return "<";
+        case LESSER_EQ:
+          return "<=";
+        default:
+          return "IS_EMPTY";
+      }
+    }
   }
   
   
@@ -89,7 +116,7 @@ public class Query {
     key = null;
     result = false;
     exec = false;
-    type = DataType.STRING;
+    type = null;
     and = or = not = false;
   }
   
@@ -100,7 +127,7 @@ public class Query {
     next = null;
     meth = null;
     key = null;
-    type = DataType.STRING;
+    type = null;
     and = or = not = false;
   }
   
@@ -114,6 +141,11 @@ public class Query {
   public Query(String label, String key) {
     this();
     label(label).key(key);
+  }
+  
+  
+  public Query(Class cls) {
+    this(cls.getName());
   }
   
   
@@ -354,7 +386,7 @@ public class Query {
   }
   
   
-  public Query empty() {
+  public Query isEmpty() {
     meth = QueryMethod.EMPTY;
     return this;
   }
@@ -711,11 +743,12 @@ public class Query {
   
   
   protected Query exec(Object obj) throws SDBException {
-    if(obj == null) 
+    if(meth != null && meth != QueryMethod.EMPTY && obj == null)
       throw new SDBException("Invalid null argument - [Query.exec]");
-    if(meth == null || (value == null && meth != QueryMethod.EMPTY)) {
+    if(value == null && meth != null && meth != QueryMethod.EMPTY) {
       throw new SDBException("Invalid value: "+ value+ " - [Query.exec]");
     }
+    System.out.println(this.to_string());
     
     if(type == null)
       setType(value);
@@ -791,7 +824,7 @@ public class Query {
   @Override
   public String toString() {
     if(head != null) {
-      return head.toString();
+      return "Query"+head.toString();
     } else {
       return this.to_string();
     }
@@ -800,41 +833,29 @@ public class Query {
   
   public String to_string() {
     StringBuffer sb = new StringBuffer();
-    sb.append("Query");
     if(label != null)
       sb.append(":").append(label);
+    sb.append("( ");
     
-    if(value == null || meth == null)
-      return sb.toString();
-    
-    if(not) sb.append(" !( ");
-    else sb.append("( ");
-    if(key != null)
-        sb.append(key)
-        .append(" ");
-    switch(meth) {
-      case EQUALS:
-        sb.append("==");
-        break;
-      case GREATER:
-        sb.append(">");
-        break;
-      case GREATER_EQ:
-        sb.append(">=");
-        break;
-      case LESSER:
-        sb.append("<");
-        break;
-      case LESSER_EQ:
-        sb.append("<=");
-        break;
-      default:
-        sb.append(meth.toString().toLowerCase());
+    if(key != null) {
+      if(value == null && meth == null)
+        sb.append("-").append(key).append("->");
+      else
+        sb.append(key);
     }
-    sb.append(" ").append(value);
-    if(next != null && next.meth != null) {
-      if(and) sb.append(" && ");
-      else if(or) sb.append(" || ");
+    
+    if(meth != null) {
+      sb.append(" ");
+      if(not) sb.append("!");
+      sb.append(meth.toString());
+      if(value != null)
+        sb.append(" ").append(value);
+    }
+    
+    if(next != null && (next.key != null || next.meth != null)) {
+      if(or) sb.append(" || ");
+      else if(and) sb.append(" && ");
+      else sb.append(" ");
       sb.append(next.to_string());
     }
     sb.append(" )");

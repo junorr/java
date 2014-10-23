@@ -334,6 +334,7 @@ public class ObjectDB {
         while(val != null && Document.class.isAssignableFrom(val.getClass())) {
           Document dv = (Document) val;
           q = q.next();
+          if(q.key() == null) break;
           val = dv.get(q.key());
         }
         

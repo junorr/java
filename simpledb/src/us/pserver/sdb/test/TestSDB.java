@@ -22,10 +22,10 @@
 package us.pserver.sdb.test;
 
 import us.pserver.sdb.Document;
-import us.pserver.sdb.engine.MemoryEngine;
 import us.pserver.sdb.Query;
 import us.pserver.sdb.Result;
 import us.pserver.sdb.SimpleDB;
+import us.pserver.sdb.engine.FileEngine;
 
 /**
  *
@@ -147,6 +147,26 @@ public class TestSDB {
   }
 
   
+  public static void get3() {
+    System.out.println();
+    System.out.println("---- GET3 ----");
+    System.out.println();
+    
+    Query q = new Query("server")
+        .descend("creds")
+        .field("user").equal("username")
+        .and("name").not().contains("2");
+    System.out.println("-> query: "+ q);
+    
+    Result rs = sdb.get(q);
+    System.out.println("-> result: "+ rs.size());
+    rs.orderBy("name").asc();
+    while(rs.hasNext()) {
+      System.out.println("  -> item: "+ rs.next());
+    }
+  }
+
+  
   public static void rm() {
     System.out.println();
     System.out.println("---- RM ----");
@@ -157,7 +177,7 @@ public class TestSDB {
   
   
   public static void main(String[] args) {
-    sdb = new SimpleDB(new MemoryEngine("./mem.db"));
+    sdb = new SimpleDB(new FileEngine("./simple.db"));
     
     try 
     {
@@ -166,6 +186,7 @@ public class TestSDB {
       //add2();
       get();
       get2();
+      get3();
       //rm();
       
     }

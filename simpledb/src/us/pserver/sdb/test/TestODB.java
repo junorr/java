@@ -23,6 +23,7 @@ package us.pserver.sdb.test;
 
 import us.pserver.sdb.OID;
 import us.pserver.sdb.ObjectDB;
+import us.pserver.sdb.Query;
 import us.pserver.sdb.engine.FileEngine;
 
 /**
@@ -32,38 +33,89 @@ import us.pserver.sdb.engine.FileEngine;
  */
 public class TestODB {
 
+  static class Creds {
+    String user;
+    String pass;
+    boolean enabled;
+    public String toString() {
+      return "Creds{" + "user=" + user + ", pass=" + pass + ", enabled=" + enabled + '}';
+    }
+  }
+  
+  static class Server {
+    int port;
+    String ip;
+    String name;
+    boolean hasdb;
+    Creds creds;
+    public String toString() {
+      return "Server{" + "port=" + port + ", ip=" + ip + ", name=" + name + ", hasdb=" + hasdb + ", creds="+ creds+ '}';
+    }
+  }
+    
+  static ObjectDB odb;
+  
+  
+  public static void add() {
+    System.out.println("---- ADD ----");
+    System.out.println();
+    
+    Creds creds = new Creds();
+    creds.enabled = true;
+    creds.pass = "1234";
+    creds.user = "juno";
+    
+    Server s102 = new Server();
+    s102.creds = creds;
+    s102.hasdb = true;
+    s102.ip = "172.29.14.102";
+    s102.name = "102";
+    s102.port = 22;
+    
+    OID id = odb.put(s102);
+    System.out.println("* odb.put: "+ id);
+    
+    Server s105 = new Server();
+    s105.hasdb = true;
+    s105.ip = "172.29.14.105";
+    s105.name = "105";
+    s105.port = 22;
+    
+    id = odb.put(s105);
+    System.out.println("* odb.put: "+ id);
+  }
+  
+  
+  public static void get() {
+    System.out.println("---- GET ----");
+    System.out.println();
+    
+    Server ex = new Server();
+    ex.name = "102";
+    ex.port = 22;
+    System.out.println("* ex: "+ ex);
+   
+    OID id = odb.getOne(ex);
+    System.out.println("* odb.getOne: "+ id);
+    
+    Query q = new Query(Server.class)
+        .descend("creds")
+        .isEmpty();
+    System.out.println("* query: "+ q);
+    
+    id = odb.getOne(q);
+    System.out.println("* odb.getOne: "+ id);
+  }
+  
   
   public static void main(String[] args) {
-    class Server {
-      int port;
-      String ip;
-      String name;
-      boolean hasdb;
-      public String toString() {
-        return "Server{" + "port=" + port + ", ip=" + ip + ", name=" + name + ", hasdb=" + hasdb + '}';
-      }
-    }
     
-    ObjectDB odb = new ObjectDB(new FileEngine("./object.db"));
+    odb = new ObjectDB(new FileEngine("./object.db"));
     try {
       
-      Server s102 = new Server();
-      s102.hasdb = true;
-      s102.ip = "172.29.14.102";
-      s102.name = "102";
-      s102.port = 22;
-
-      OID id = new OID();
-      //OID id = odb.put(s102);
-      System.out.println("* odb.put: "+ id);
-    
-      Server ex = new Server();
-      ex.name = "102";
-      ex.port = 22;
-      System.out.println("* ex: "+ ex);
-    
-      id = odb.getOne(ex);
-      System.out.println("* odb.getOne: "+ id);
+      //add();
+      get();
+      
     }
     finally {
       odb.close();

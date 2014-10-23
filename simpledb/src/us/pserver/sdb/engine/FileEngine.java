@@ -21,6 +21,7 @@
 
 package us.pserver.sdb.engine;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import us.pserver.sdb.Document;
@@ -81,8 +82,7 @@ public class FileEngine implements StorageEngine {
       if(hand.isEOF()) continue;
       byte b = hand.readByte();
       if(b == BYTE_INDEX_START) {
-        String str = hand.readLine();
-        index = Index.fromXml(str);
+        index = (Index) serial.deserialize(hand.readLineBytes());
         hand.seekBlock(blk);
         hand.internal().setLength(hand.position());
         break;
@@ -110,7 +110,7 @@ public class FileEngine implements StorageEngine {
       if(!hand.isBlockBoundary())
         hand.nextBlock();
       hand.writeByte(BYTE_INDEX_START)
-          .writeLine(index.toXml());
+          .writeLine(serial.serialize(index));
     }
     catch(IOException e) {
       throw new SDBException(e.getMessage(), e);
@@ -158,8 +158,8 @@ public class FileEngine implements StorageEngine {
     doc.block(is[0]);
     hand.seekBlock(doc.block()).writeByte(BYTE_BLOCK_START);
     int sz = is[1] * FileHandler.BLOCK_SIZE;
-    String xml = doc.toXml();
-    if(xml.length() < sz) {
+    byte[] xml = serial.serialize(doc);
+    if(xml.length < sz) {
       hand.writeLine(xml);
     }
     else {
@@ -168,11 +168,17 @@ public class FileEngine implements StorageEngine {
       hand.seek(pos);
       String link = "@("+ String.valueOf(blk)+ ")@";
       int div = (int) sz - link.length() - 2;
-      hand.write(xml.substring(0, div));
-      hand.writeLine(link);
+      
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      bos.write(xml, 0, div);
+      bos.write(link.getBytes("UTF-8"));
+      hand.writeLine(bos.toByteArray());
+      
+      bos.reset();
+      bos.write(xml, div, (xml.length - div));
       hand.seekBlock(blk)
           .writeByte(BYTE_BLOCK_START)
-          .writeLine(xml.substring(div));
+          .writeLine(bos.toByteArray());
     }
   }
   
@@ -199,7 +205,7 @@ public class FileEngine implements StorageEngine {
           doc.block(newBlock());
           hand.seekBlock(doc.block())
               .writeByte(BYTE_BLOCK_START)
-              .writeLine(doc.toXml());
+              .writeLine(serial.serialize(doc));
         }
       }
       index.put(doc);
@@ -211,26 +217,28 @@ public class FileEngine implements StorageEngine {
   }
   
   
-  protected Document rmContinueLink(String xml) throws IOException {
-    if(xml == null || xml.isEmpty())
+  protected Document rmContinueLink(byte[] bts) throws IOException {
+    if(bts == null || bts.length < 1)
       return null;
     
-    String cont = retrieveContinueLink(xml);
+    String cont = retrieveContinueLink(bts);
     if(cont != null) {
-      xml = xml.substring(0, xml.length() - cont.length());
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      bos.write(bts, 0, bts.length - cont.length());
       cont = cont.replace("@", "").replace("(", "").replace(")", "");
       long cb = Long.parseLong(cont);
-      xml = xml + rmBlock(cb);
+      bos.write(rmBlock(cb));
+      bts = bos.toByteArray();
     }
       
-    return Document.fromXml(xml);
+    return (Document) serial.deserialize(bts);
   }
   
   
-  public int getBlockSize(String xml) {
-    if(xml == null || xml.isEmpty()) 
+  public int getBlockSize(byte[] bts) {
+    if(bts == null || bts.length < 1) 
       return 0;
-    int len = xml.length();
+    int len = bts.length;
     int bls = len / FileHandler.BLOCK_SIZE;
     if(len % FileHandler.BLOCK_SIZE > 0) {
       bls++;
@@ -239,19 +247,23 @@ public class FileEngine implements StorageEngine {
   }
   
   
-  protected String rmBlock(long blk) throws IOException {
+  protected byte[] rmBlock(long blk) throws IOException {
     if(blk < 0) return null;
     hand.seekBlock(blk);
     if(hand.isEOF()) return null;
-    String xml = hand.readLine();
+    
+    byte[] bts = hand.readLineBytes();
     int sz = index.remove(blk);
     if(sz <= 0)
-      sz = getBlockSize(xml);
+      sz = getBlockSize(bts);
     hand.seekBlock(blk).clearBlocks(sz);
     index.put(EMPTY_INDEX, (int)blk, sz);
-    if(xml.startsWith("$"))
-      xml = xml.substring(1);
-    return xml;
+    if(bts[0] == BYTE_BLOCK_START) {
+      byte[] other = new byte[bts.length-1];
+      System.arraycopy(bts, 1, other, 0, other.length);
+      bts = other;
+    }
+    return bts;
   }
   
   
@@ -259,8 +271,8 @@ public class FileEngine implements StorageEngine {
   public Document remove(long blk) throws SDBException {
     if(blk <= 0) return null;
     try {
-      String xml = rmBlock(blk);
-      Document doc = rmContinueLink(xml);
+      byte[] bts = rmBlock(blk);
+      Document doc = rmContinueLink(bts);
       if(doc == null) return doc;
       doc.block(blk);
       index.remove(doc);
@@ -272,55 +284,57 @@ public class FileEngine implements StorageEngine {
   }
   
   
-  protected String retrieveContinueLink(String xml) {
-    if(xml == null 
-        || xml.isEmpty()
-        || !xml.endsWith(")@"))
+  protected String retrieveContinueLink(byte[] bts) {
+    if(bts == null || bts.length < 1)
       return null;
     StringBuffer sb = new StringBuffer();
-    for(int i = xml.length()-1; i >= 0; i--) {
-      char c = xml.charAt(i);
+    for(int i = bts.length-1; i >= 0; i--) {
+      char c = (char) bts[i];
+      if(i == bts.length-1 && c != '@')
+        return null;
       sb.append(c);
-      if(i < xml.length()-1 && c == '@')
+      if(i < bts.length-1 && c == '@')
         break;
     }
     return sb.reverse().toString();
   }
   
   
-  protected Document readDoc(String xml) throws IOException {
-    if(xml == null || xml.isEmpty())
+  protected Document readDoc(byte[] bts) throws IOException {
+    if(bts == null || bts.length < 1)
       return null;
     
-    String cont = retrieveContinueLink(xml);
+    String cont = retrieveContinueLink(bts);
     if(cont != null) {
-      xml = xml.substring(0, xml.length() - cont.length());
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      bos.write(bts, 0, bts.length - cont.length());
       cont = cont.replace("@", "").replace("(", "").replace(")", "");
       long cb = Long.parseLong(cont);
       hand.seekBlock(cb).readByte();
-      xml = xml + hand.readLine();
+      bos.write(hand.readLineBytes());
+      bts = bos.toByteArray();
     }
       
-    return Document.fromXml(xml);
+    return (Document) serial.deserialize(bts);
   }
   
   
-  protected String readXml(long blk) throws IOException {
+  protected byte[] readXml(long blk) throws IOException {
     if(blk <= 0) return null;
     hand.seekBlock(blk);
     if(hand.isEOF()) return null;
     byte b = hand.readByte();
     if(b != BYTE_BLOCK_START)
       return null;
-    return hand.readLine();
+    return hand.readLineBytes();
   }
   
   
   @Override
   public Document get(long blk) throws SDBException {
     try {
-      String xml = readXml(blk);
-      Document doc = readDoc(xml);
+      byte[] bts = readXml(blk);
+      Document doc = readDoc(bts);
       if(doc == null) return null;
       return doc.block(blk);
     }
