@@ -40,6 +40,30 @@ public class ObjectUtils {
   }
   
   
+  public static Document forExample(Object obj) {
+    if(obj == null) return null;
+    Document doc = new Document(obj.getClass().getName());
+    Reflector ref = new Reflector();
+    Field[] fls = ref.on(obj).fields();
+    for(int i = 0; i < fls.length; i++) {
+      Class c = fls[i].getType();
+      Object val = ref.on(obj).field(fls[i].getName()).get();
+      if(val != null && !val.toString().equals("0")
+          && !val.toString().equals("false")
+          && !val.toString().equals("null")
+          && !val.toString().isEmpty()) {
+        if(isPrimitive(c) || isArray(c) || isList(c) || isMap(c)) {
+          doc.put(fls[i].getName(), val);
+        }
+        else {
+          doc.put(fls[i].getName(), forExample(val));
+        }
+      }
+    }
+    return doc;
+  }
+  
+  
   public static Document toDocument(Object obj, boolean includeNullFields) {
     if(obj == null) return null;
     Document doc = new Document(obj.getClass().getName());

@@ -372,6 +372,41 @@ public class FileHandler {
   }
   
   
+  public byte[] readLineBytes() throws IOException {
+    try {
+      long ini = position();
+      long p = seekByte(BYTE_END);
+      if(p < 0) p = position();
+      int size = (int) (p - ini);
+      if(size < 1) return null;
+      byte[] bs = new byte[size];
+      seek(ini);
+      size = raf.read(bs);
+      if(size < 1) return null;
+      return bs;
+    } catch(EOFException e) {
+      return null;
+    }
+  }
+  
+  
+  public FileHandler writeLine(byte[] bts) throws IOException {
+    if(bts != null && bts.length > 0) {
+      raf.write(bts);
+      raf.writeByte(BYTE_END);
+    }
+    return this;
+  }
+  
+  
+  public FileHandler write(byte[] bts) throws IOException {
+    if(bts != null && bts.length > 0) {
+      raf.write(bts);
+    }
+    return this;
+  }
+  
+  
   public FileHandler writeByte(int b) throws IOException {
     raf.writeByte(b);
     return this;

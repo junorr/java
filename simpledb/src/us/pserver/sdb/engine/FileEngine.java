@@ -47,14 +47,25 @@ public class FileEngine implements StorageEngine {
   
   private Index index;
   
+  private SerialEngine serial;
+  
   
   public FileEngine(String file) throws SDBException {
+    this(new XmlSerialEngine(), file);
+  }
+  
+  
+  public FileEngine(SerialEngine serialEngine, String file) throws SDBException {
     if(file == null || file.isEmpty())
       throw new IllegalArgumentException(
           "Invalid file: "+ file+ " - [FileEngine.init]");
+    if(serialEngine == null)
+      throw new IllegalArgumentException(
+          "Invalid SerialEngine: "+ serialEngine+ " - [FileEngine.init]");
     try {
       hand = new FileHandler(file);
       index = new Index();
+      serial = serialEngine;
       init();
     } catch(IOException e) {
       throw new SDBException(e.getMessage(), e);

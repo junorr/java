@@ -81,8 +81,18 @@ public class OID {
   }
   
   
-  public boolean isSetted() {
+  public boolean hasObject() {
     return object != null;
+  }
+  
+  
+  public boolean hasBlock() {
+    return block != -1;
+  }
+  
+  
+  public boolean isSetted() {
+    return hasObject() && hasBlock();
   }
 
 
@@ -116,7 +126,7 @@ public class OID {
 
   @Override
   public String toString() {
-    return "ObjectID{" + "block=" + block + ", object=" + object + '}';
+    return "OID{" + "block=" + block + ", object=" + object + '}';
   }
 
 }

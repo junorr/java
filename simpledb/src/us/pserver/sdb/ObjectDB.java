@@ -39,8 +39,6 @@ public class ObjectDB {
   
   private boolean rmcascade;
   
-  private Reflector ref;
-  
   
   public ObjectDB(StorageEngine eng) throws SDBException {
     if(eng == null)
@@ -48,7 +46,6 @@ public class ObjectDB {
           "Invalid DocumentEngine: "+ eng+ " - [SimpleDB.init]");
     engine = eng;
     rmcascade = true;
-    ref = new Reflector();
   }
   
   
@@ -104,7 +101,7 @@ public class ObjectDB {
           .isAssignableFrom(o.getClass())) {
         Document d = doc.getAs(key);
         if(d.block() < 0)
-          d = put(d);
+          d = putDoc(d);
         doc.map().remove(key);
         doc.put("@_"+ key, d.block());
       }
@@ -146,22 +143,24 @@ public class ObjectDB {
   public OID put(Object obj) throws SDBException {
     OID id = new OID();
     if(obj == null) return id;
-    Document doc = ObjectUtils.toDocument(obj, true);
-    doc = createLinks(doc);
-    //printdoc(doc);
-    doc = engine.put(doc);
+    Document doc = putDoc(
+        ObjectUtils.toDocument(obj, true));
     return id.block(doc.block()).set(obj);
   }
   
   
+  private Document putDoc(Document doc) throws SDBException {
+    doc = createLinks(doc);
+    return engine.put(doc);
+  }
+  
+  
   public OID put(OID oid) throws SDBException {
-    if(oid == null || !oid.isSetted()) 
+    if(oid == null || !oid.hasObject()) 
       return oid;
     Document doc = ObjectUtils.toDocument(oid.get(), true);
     doc.block(oid.block());
-    doc = createLinks(doc);
-    //printdoc(doc);
-    doc = engine.put(doc);
+    doc = putDoc(doc);
     return oid.block(doc.block());
   }
   
@@ -183,7 +182,7 @@ public class ObjectDB {
   
   
   public boolean remove(OID oid) throws SDBException {
-    if(oid == null || (!oid.isSetted() && oid.block() < 0))
+    if(oid == null || (!oid.hasObject() && !oid.hasBlock()))
       return false;
     
     if(oid.block() < 0) {
@@ -198,10 +197,19 @@ public class ObjectDB {
   }
   
   
-  public ResultOID remove(Query q) throws SDBException {
+  public ResultOID removeAll(Query q) throws SDBException {
     ResultOID res = get(q);
     for(OID id : res)
       this.remove(id.block());
+    return res;
+  }
+  
+  
+  public OID removeOne(Query q) throws SDBException {
+    OID res = getOne(q);
+    if(res == null || !res.isSetted())
+      return res;
+    this.remove(res.block());
     return res;
   }
   
@@ -223,7 +231,19 @@ public class ObjectDB {
   public OID getOne(Object example) throws SDBException {
     OID id = new OID();
     if(example == null) return id;
-    return getOne(Query.fromExample(ObjectUtils.toDocument(example, false)));
+    return getOne(
+        Query.fromExample(
+            ObjectUtils.forExample(example)));
+  }
+  
+  
+  public OID getOne(OID oid) throws SDBException {
+    if(oid == null || !oid.hasObject())
+      return oid;
+    if(oid.hasBlock())
+      return getOne(oid.block());
+    else
+      return getOne(oid.get());
   }
   
   
@@ -242,7 +262,7 @@ public class ObjectDB {
   public ResultOID get(Object example) throws SDBException {
     ResultOID ro = new ResultOID(1);
     if(example == null) return ro;
-    return get(Query.fromExample(ObjectUtils.toDocument(example, false)));
+    return get(Query.fromExample(ObjectUtils.forExample(example)));
   }
   
   
