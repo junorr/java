@@ -75,6 +75,16 @@ public class TestODB {
     OID id = odb.put(s102);
     System.out.println("* odb.put: "+ id);
     
+    Server s103 = new Server();
+    s103.creds = creds;
+    s103.hasdb = false;
+    s103.ip = "172.29.14.103";
+    s103.name = "103";
+    s103.port = 22;
+    
+    id = odb.put(s103);
+    System.out.println("* odb.put: "+ id);
+    
     Server s105 = new Server();
     s105.hasdb = true;
     s105.ip = "172.29.14.105";
@@ -87,6 +97,7 @@ public class TestODB {
   
   
   public static void get() {
+    System.out.println();
     System.out.println("---- GET ----");
     System.out.println();
     
@@ -108,13 +119,36 @@ public class TestODB {
   }
   
   
+  public static void get2() {
+    System.out.println();
+    System.out.println("---- GET2 ----");
+    System.out.println();
+    
+    Query q = new Query(Server.class)
+        .descend("creds")
+        .field("user")
+        .equalIgnoreCase("juno");
+    System.out.println("* query: "+ q);
+    
+    OID id = odb.getOne(q);
+    System.out.println("* odb.getOne: "+ id);
+    
+    q = new Query(Server.class)
+        .field("hasdb").equal(false);
+    System.out.println("* query: "+ q);
+    id = odb.getOne(q);
+    System.out.println("* odb.getOne: "+ id);
+  }
+  
+  
   public static void main(String[] args) {
     
     odb = new ObjectDB(new FileEngine("./object.db"));
     try {
       
-      //add();
+      add();
       get();
+      get2();
       
     }
     finally {

@@ -30,19 +30,21 @@ import us.pserver.sdb.SDBException;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 13/10/2014
  */
-public class CachedFileEngine implements StorageEngine {
+public class CachedEngine implements StorageEngine {
   
   public static final int DEFAULT_MAX_CACHE_SIZE = 50;
 
-  private FileEngine engine;
+  private StorageEngine engine;
   
   private ArrayList<DocHits> cache;
   
   private int maxCacheSize;
   
   
-  public CachedFileEngine(String file) throws SDBException {
-    engine = new FileEngine(file);
+  public CachedEngine(StorageEngine eng) throws SDBException {
+    if(eng == null)
+      throw new IllegalArgumentException("Invalid null engine: "+ eng+ " - [CachedEngine.init]");
+    engine = eng;
     maxCacheSize = DEFAULT_MAX_CACHE_SIZE;
     cache = new ArrayList<>(maxCacheSize);
   }
@@ -58,7 +60,12 @@ public class CachedFileEngine implements StorageEngine {
   }
   
   
-  public CachedFileEngine setMaxCacheSize(int max) {
+  public ArrayList<DocHits> getCache() {
+    return cache;
+  }
+  
+  
+  public CachedEngine setMaxCacheSize(int max) {
     if(max <= 0)
       max = DEFAULT_MAX_CACHE_SIZE;
     maxCacheSize = max;

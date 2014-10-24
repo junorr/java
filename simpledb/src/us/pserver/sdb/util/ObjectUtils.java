@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.sdb;
+package us.pserver.sdb.util;
 
 import com.jpower.rfl.Reflector;
 import java.lang.reflect.Field;
@@ -27,6 +27,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import us.pserver.sdb.Document;
+import us.pserver.sdb.OID;
 
 /**
  *
@@ -42,6 +44,10 @@ public class ObjectUtils {
   
   public static Document forExample(Object obj) {
     if(obj == null) return null;
+    if(obj instanceof OID)
+      obj = ((OID)obj).get();
+    if(obj == null) return null;
+    
     Document doc = new Document(obj.getClass().getName());
     Reflector ref = new Reflector();
     Field[] fls = ref.on(obj).fields();
@@ -66,6 +72,10 @@ public class ObjectUtils {
   
   public static Document toDocument(Object obj, boolean includeNullFields) {
     if(obj == null) return null;
+    if(obj instanceof OID)
+      obj = ((OID)obj).get();
+    if(obj == null) return null;
+    
     Document doc = new Document(obj.getClass().getName());
     Reflector ref = new Reflector();
     Field[] fls = ref.on(obj).fields();

@@ -52,15 +52,15 @@ public class Query {
         case EQUALS:
           return "==";
         case EQUALS_ICS:
-          return "[==]";
+          return "==(ics)";
         case CONTAINS:
           return "CONTAINS";
         case CONTAINS_ICS:
-          return "[CONTAINS]";
+          return "CONTAINS(ics)";
         case STARTS_WITH:
-          return "(x)...";
+          return "[STARTS]...";
         case ENDS_WITH:
-          return "...(x)";
+          return "...[ENDS]";
         case GREATER:
           return ">";
         case GREATER_EQ:
@@ -70,7 +70,7 @@ public class Query {
         case LESSER_EQ:
           return "<=";
         default:
-          return "IS_EMPTY";
+          return "IS_EMPTY{}";
       }
     }
   }
@@ -100,6 +100,8 @@ public class Query {
   
   private boolean exec;
   
+  private boolean descend;
+  
   private Object value;
   
   private String key;
@@ -116,6 +118,7 @@ public class Query {
     key = null;
     result = false;
     exec = false;
+    descend = false;
     type = null;
     and = or = not = false;
   }
@@ -205,6 +208,11 @@ public class Query {
   
   private boolean executed() {
     return exec;
+  }
+  
+  
+  protected boolean isDescend() {
+    return descend;
   }
   
   
@@ -376,6 +384,7 @@ public class Query {
     if(field == null)
       throw new SDBException(
           "Query Error: Invalid field ("+ field+ ") - [Query.descend]");
+    descend = true;
     return this.field(field).next();
   }
   
@@ -748,7 +757,6 @@ public class Query {
     if(value == null && meth != null && meth != QueryMethod.EMPTY) {
       throw new SDBException("Invalid value: "+ value+ " - [Query.exec]");
     }
-    System.out.println(this.to_string());
     
     if(type == null)
       setType(value);

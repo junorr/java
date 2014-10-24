@@ -21,11 +21,14 @@
 
 package us.pserver.sdb;
 
-import com.jpower.rfl.Reflector;
+import java.util.ArrayList;
+import us.pserver.sdb.util.ObjectUtils;
 import us.pserver.sdb.engine.Index;
 import us.pserver.sdb.engine.StorageEngine;
 import java.util.Iterator;
 import java.util.List;
+import us.pserver.sdb.engine.CachedEngine;
+import us.pserver.sdb.engine.DocHits;
 
 
 /**
@@ -35,7 +38,7 @@ import java.util.List;
  */
 public class ObjectDB {
 
-  private StorageEngine engine;
+  private CachedEngine engine;
   
   private boolean rmcascade;
   
@@ -44,7 +47,7 @@ public class ObjectDB {
     if(eng == null)
       throw new IllegalArgumentException(
           "Invalid DocumentEngine: "+ eng+ " - [SimpleDB.init]");
-    engine = eng;
+    engine = new CachedEngine(eng);
     rmcascade = true;
   }
   
@@ -141,6 +144,8 @@ public class ObjectDB {
   
   
   public OID put(Object obj) throws SDBException {
+    if(obj instanceof OID) 
+      put((OID)obj);
     OID id = new OID();
     if(obj == null) return id;
     Document doc = putDoc(
@@ -331,12 +336,17 @@ public class ObjectDB {
           break;
         
         Object val = d.get(q.key());
-        while(val != null && Document.class.isAssignableFrom(val.getClass())) {
-          Document dv = (Document) val;
+        while(q.isDescend()) {
+          Document dv = null;
+          if(val != null && Document.class.isAssignableFrom(val.getClass())) {
+            dv = (Document) val;
+          }
           q = q.next();
-          if(q.key() == null) break;
+          if(q.key() == null || dv == null) 
+            break;
           val = dv.get(q.key());
         }
+        if(q == null) continue;
         
         boolean chk = q.exec(val).getResult();
         
@@ -367,6 +377,81 @@ public class ObjectDB {
     rm = null;
     idx = null;
     return convert(docs, objs);
+  }
+  
+  
+  public Document findCached(Query q) throws SDBException {
+    Result docs = new Result();
+    if(q == null) return null;
+    q = q.head();
+    if(q.label() == null)
+      return null;
+    if(q.key() == null 
+        && q.method() == null 
+        && q.value() == null)
+      return null;
+    
+    ArrayList<DocHits> cache = engine.getCache();
+    if(cache == null || cache.isEmpty())
+      return null;
+    
+    q.limit(1);
+    Result rm = new Result();
+    
+    for(DocHits dhs : cache) {
+      Document d = dhs.document();
+      if(d == null) continue;
+      q = q.head();
+      
+      while(q != null && q.key() != null) 
+      {
+        if(!d.map().containsKey(q.key()))
+          break;
+        
+        Object val = d.get(q.key());
+        while(q.isDescend()) {
+          Document dv = null;
+          if(val != null && Document.class.isAssignableFrom(val.getClass())) {
+            dv = (Document) val;
+          }
+          q = q.next();
+          if(q.key() == null || dv == null) 
+            break;
+          val = dv.get(q.key());
+        }
+        if(q == null) continue;
+        
+        boolean chk = q.exec(val).getResult();
+        
+        System.out.println("* exec: "+ q.field()+ ": ("+ val+ (q.isNot() ? ") !" : ") ")
+            + q.method()+ " "+ q.value()+ ": "+ chk);
+        
+        if(chk) {
+          if(!docs.containsBlock(d.block()) 
+              && !rm.containsBlock(d.block()))
+            docs.add(d);
+        } else if(q.prev() != null && q.prev().isAnd()) {
+          if(docs.containsBlock(d.block())) {
+            docs.removeBlock(d.block());
+            rm.add(d);
+          }
+        } else {
+          rm.add(d);
+        }
+        q = q.next();
+      }//while
+      
+      d = null;
+      if(q.limit() > 0 && docs.size() >= q.limit()) 
+        break;
+    }//for
+    
+    rm.clear();
+    rm = null;
+    Document doc = (docs.isEmpty() ? null : docs.get(0));
+    docs.clear();
+    docs = null;
+    return doc;
   }
   
 }

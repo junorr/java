@@ -255,11 +255,17 @@ public class SimpleDB {
           break;
         
         Object val = d.get(q.key());
-        while(val != null && Document.class.isAssignableFrom(val.getClass())) {
-          Document dv = (Document) val;
+        while(q.isDescend()) {
+          Document dv = null;
+          if(val != null && Document.class.isAssignableFrom(val.getClass())) {
+            dv = (Document) val;
+          }
           q = q.next();
+          if(q.key() == null || dv == null) 
+            break;
           val = dv.get(q.key());
         }
+        if(q == null) continue;
         
         boolean chk = q.exec(val).getResult();
         
