@@ -26,9 +26,11 @@ import us.pserver.sdb.util.ObjectUtils;
 import us.pserver.sdb.engine.Index;
 import us.pserver.sdb.engine.StorageEngine;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import us.pserver.sdb.engine.CachedEngine;
 import us.pserver.sdb.engine.DocHits;
+import static us.pserver.sdb.test.TestSDB.rm;
 
 
 /**
@@ -155,7 +157,12 @@ public class ObjectDB {
   
   
   private Document putDoc(Document doc) throws SDBException {
+    if(doc == null) return doc;
     doc = createLinks(doc);
+    Document dc = findCached(Query.fromExample(doc));
+    if(dc != null) {
+      doc.block(dc.block());
+    }
     return engine.put(doc);
   }
   
@@ -305,15 +312,7 @@ public class ObjectDB {
   
   public ResultOID get(Query q) throws SDBException {
     ResultOID objs = new ResultOID();
-    Result docs = new Result();
     if(q == null) return objs;
-    q = q.head();
-    if(q.label() == null)
-      return objs;
-    if(q.key() == null 
-        && q.method() == null 
-        && q.value() == null)
-      return get(q.label(), q.limit());
     
     Index id = engine.getIndex();
     List<int[]> idx = id.getList(q.label());
@@ -321,85 +320,59 @@ public class ObjectDB {
     if(idx == null || idx.isEmpty())
       return objs;
     
-    Result rm = new Result();
-    
-    for(int[] is : idx) {
+    List<Document> ls = new LinkedList<>();
+    for(int i = 0; i < idx.size(); i++) {
+      int[] is = idx.get(i);
       if(is  == null || is[0] < 0) continue;
-      
       Document d = getDoc(is[0]);
       if(d == null) continue;
-      q = q.head();
-      
-      while(q != null && q.key() != null) 
-      {
-        if(!d.map().containsKey(q.key()))
-          break;
-        
-        Object val = d.get(q.key());
-        while(q.isDescend()) {
-          Document dv = null;
-          if(val != null && Document.class.isAssignableFrom(val.getClass())) {
-            dv = (Document) val;
-          }
-          q = q.next();
-          if(q.key() == null || dv == null) 
-            break;
-          val = dv.get(q.key());
-        }
-        if(q == null) continue;
-        
-        boolean chk = q.exec(val).getResult();
-        
-        System.out.println("* exec: "+ q.field()+ ": ("+ val+ (q.isNot() ? ") !" : ") ")
-            + q.method()+ " "+ q.value()+ ": "+ chk);
-        
-        if(chk) {
-          if(!docs.containsBlock(d.block()) 
-              && !rm.containsBlock(d.block()))
-            docs.add(d);
-        } else if(q.prev() != null && q.prev().isAnd()) {
-          if(docs.containsBlock(d.block())) {
-            docs.removeBlock(d.block());
-            rm.add(d);
-          }
-        } else {
-          rm.add(d);
-        }
-        q = q.next();
-      }//while
-      
-      d = null;
-      if(q.limit() > 0 && docs.size() >= q.limit()) 
-        break;
-    }//for
+      ls.add(d);
+    }
     
-    rm.clear();
-    rm = null;
-    idx = null;
-    return convert(docs, objs);
+    Result rs = query(q, ls);
+    if(rs == null || rs.isEmpty())
+      return objs;
+    return convert(rs, objs);
   }
   
   
-  public Document findCached(Query q) throws SDBException {
-    Result docs = new Result();
-    if(q == null) return null;
-    q = q.head();
-    if(q.label() == null)
-      return null;
-    if(q.key() == null 
-        && q.method() == null 
-        && q.value() == null)
+  private Document findCached(Query q) throws SDBException {
+    if(q == null) 
       return null;
     
     ArrayList<DocHits> cache = engine.getCache();
     if(cache == null || cache.isEmpty())
       return null;
     
+    List<Document> list = new LinkedList<>();
+    for(int i = 0; i < cache.size(); i++) {
+      list.add(cache.get(i).document());
+    }
+    
     q.limit(1);
+    Result rs = query(q, list);
+    if(rs == null || rs.isEmpty())
+      return null;
+    return rs.get(0);
+  }
+
+  
+  private Result query(Query q, List<Document> list) throws SDBException {
+    Result docs = new Result();
+    if(q == null || list == null 
+        || list.isEmpty()) 
+      return docs;
+    q = q.head();
+    if(q.label() == null)
+      return docs;
+    if(q.key() == null 
+        && q.method() == null 
+        && q.value() == null)
+      return docs;
+    
     Result rm = new Result();
     
-    for(DocHits dhs : cache) {
-      Document d = dhs.document();
+    for(Document d : list) {
       if(d == null) continue;
       q = q.head();
       
@@ -448,10 +421,68 @@ public class ObjectDB {
     
     rm.clear();
     rm = null;
-    Document doc = (docs.isEmpty() ? null : docs.get(0));
-    docs.clear();
-    docs = null;
-    return doc;
+    return docs;
+  }
+  
+
+  private boolean query(Query q, Document d) throws SDBException {
+    if(q == null || d == null) 
+      return false;
+    q = q.head();
+    if(q.label() == null)
+      return false;
+    if(q.key() == null 
+        && q.method() == null 
+        && q.value() == null)
+      return false;
+    
+    Document doc = null;
+    boolean rm = f;
+    q = q.head();
+    while(q != null && q.key() != null) 
+    {
+      if(!d.map().containsKey(q.key()))
+        break;
+        
+      Object val = d.get(q.key());
+      while(q.isDescend()) {
+        Document dv = null;
+        if(val != null && Document.class.isAssignableFrom(val.getClass())) {
+          dv = (Document) val;
+        }
+        q = q.next();
+        if(q.key() == null || dv == null) 
+          break;
+        val = dv.get(q.key());
+      }
+      if(q == null) continue;
+      
+      boolean chk = q.exec(val).getResult();
+      
+      System.out.println("* exec: "+ q.field()+ ": ("+ val+ (q.isNot() ? ") !" : ") ")
+          + q.method()+ " "+ q.value()+ ": "+ chk);
+      
+      if(chk) {
+        if(!doc.containsBlock(d.block()) 
+            && !rm.containsBlock(d.block()))
+          doc.add(d);
+      } else if(q.prev() != null && q.prev().isAnd()) {
+        if(doc.containsBlock(d.block())) {
+          doc.removeBlock(d.block());
+          rm.add(d);
+        }
+      } else {
+        rm.add(d);
+      }
+      q = q.next();
+    }//while
+      
+    rm.clear();
+    rm = null;
+    boolean empty = doc.isEmpty();
+    doc.clear();
+    doc = null;
+    return !empty;
   }
   
 }

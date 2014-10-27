@@ -84,7 +84,7 @@ public class Query {
   }
 
   
-  protected Query next, prev, head;
+  protected Query next, prev, head, other;
   
   private QueryMethod meth;
   
@@ -281,6 +281,11 @@ public class Query {
   }
   
   
+  protected Query other() {
+    return other;
+  }
+  
+  
   protected QueryMethod method() {
     return meth;
   }
@@ -418,6 +423,34 @@ public class Query {
     prev.and = true;
     prev.or = false;
     return key(key);
+  }
+  
+  
+  public Query or(Query other) {
+    if(other == null)
+      throw new SDBException(
+          "Query Error: Invalid nested Query - [Query.or]");
+    if(prev == null)
+      throw new SDBException(
+          "Query Error: Link condition before value - [Query.or]");
+    prev.or = true;
+    prev.and = false;
+    this.other = other;
+    return next();
+  }
+  
+  
+  public Query and(Query other) {
+    if(other == null)
+      throw new SDBException(
+          "Query Error: Invalid nested Query - [Query.and]");
+    if(prev == null)
+      throw new SDBException(
+          "Query Error: Link condition before value - [Query.and]");
+    prev.and = true;
+    prev.or = false;
+    this.other = other;
+    return next();
   }
   
   
@@ -841,6 +874,9 @@ public class Query {
   
   public String to_string() {
     StringBuffer sb = new StringBuffer();
+    if(other != null)
+      sb.append("(").append(other.toString()).append(")");
+    
     if(label != null)
       sb.append(":").append(label);
     sb.append("( ");
@@ -860,7 +896,7 @@ public class Query {
         sb.append(" ").append(value);
     }
     
-    if(next != null && (next.key != null || next.meth != null)) {
+    if(next != null && (next.key != null || next.meth != null || next.other != null)) {
       if(or) sb.append(" || ");
       else if(and) sb.append(" && ");
       else sb.append(" ");

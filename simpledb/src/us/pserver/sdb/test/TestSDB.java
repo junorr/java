@@ -167,6 +167,28 @@ public class TestSDB {
   }
 
   
+  public static void get4() {
+    System.out.println();
+    System.out.println("---- GET4 ----");
+    System.out.println();
+    
+    Query q = new Query("server")
+        .field("name").equal("102")
+        .or().equal("104")
+        .or().equal("105")
+        .and(new Query("server").field("apps").greater(0))
+        .and(new Query("server").field("db").equal(true));
+    System.out.println("-> query: "+ q);
+    
+    Result rs = sdb.get2(q);
+    System.out.println("-> result: "+ rs.size());
+    rs.orderBy("name").asc();
+    while(rs.hasNext()) {
+      System.out.println("  -> item: "+ rs.next());
+    }
+  }
+
+  
   public static void rm() {
     System.out.println();
     System.out.println("---- RM ----");
@@ -187,6 +209,7 @@ public class TestSDB {
       get();
       get2();
       get3();
+      get4();
       //rm();
       
     }
