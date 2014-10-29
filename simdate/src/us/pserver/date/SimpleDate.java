@@ -421,6 +421,15 @@ public class SimpleDate extends Date {
     return Calendar.SUNDAY != dow
         && Calendar.SATURDAY != dow;
   }
+  
+  
+  /**
+   * Atualiza a data/hora para o momento atual.
+   * @return Esta instância modificada de SimpleDate.
+   */
+  public SimpleDate update() {
+    return this.time(System.currentTimeMillis());
+  }
 	
 	
 	/**

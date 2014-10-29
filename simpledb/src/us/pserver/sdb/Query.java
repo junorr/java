@@ -873,13 +873,22 @@ public class Query {
   
   
   public String to_string() {
+    if(key == null 
+        && meth == null 
+        && other == null)
+      return "";
+    
     StringBuffer sb = new StringBuffer();
-    if(other != null)
-      sb.append("(").append(other.toString()).append(")");
+    if(other != null) {
+      sb.append("( ").append(other.toString()).append(" )");
+      if(next == null || (next.key == null && next.meth == null && next.other == null))
+        return sb.toString();
+    }
     
     if(label != null)
       sb.append(":").append(label);
-    sb.append("( ");
+    
+    sb.append("(");
     
     if(key != null) {
       if(value == null && meth == null)
@@ -902,7 +911,7 @@ public class Query {
       else sb.append(" ");
       sb.append(next.to_string());
     }
-    sb.append(" )");
+    sb.append(")");
     if(limit > 0)
       sb.append(".limit(")
           .append(limit).append(")");

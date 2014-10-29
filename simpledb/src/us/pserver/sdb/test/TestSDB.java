@@ -177,7 +177,7 @@ public class TestSDB {
         .or().equal("104")
         .or().equal("105")
         .and(new Query("server").field("apps").greater(0))
-        .and(new Query("server").field("db").equal(true));
+        .or(new Query("server").field("db").equal(true));
     System.out.println("-> query: "+ q);
     
     Result rs = sdb.get2(q);
