@@ -144,6 +144,16 @@ public class TestSDB {
     while(rs.hasNext()) {
       System.out.println("  -> item: "+ rs.next());
     }
+    
+    q = new Query("server").field("db").not().equal(true);
+    System.out.println("\n-> filter: "+ q);
+    
+    rs = sdb.filter(q, rs);
+    System.out.println("-> result: "+ rs.size());
+    rs.orderBy("name").asc();
+    while(rs.hasNext()) {
+      System.out.println("  -> item: "+ rs.next());
+    }
   }
 
   
@@ -180,7 +190,7 @@ public class TestSDB {
         .or(new Query("server").field("db").equal(true));
     System.out.println("-> query: "+ q);
     
-    Result rs = sdb.get2(q);
+    Result rs = sdb.get(q);
     System.out.println("-> result: "+ rs.size());
     rs.orderBy("name").asc();
     while(rs.hasNext()) {

@@ -223,6 +223,80 @@ public class SimpleDB {
   }
   
   
+  public Result filter(Query q, List<Document> list) throws SDBException {
+    Result docs = new Result();
+    if(q == null || list == null 
+        || list.isEmpty()) 
+      return docs;
+    q = q.head();
+    if(q.label() == null)
+      return docs;
+    if(q.key() == null 
+        && q.method() == null 
+        && q.value() == null)
+      return docs;
+    
+    Result rm = new Result();
+    
+    for(Document d : list) {
+      if(d == null) continue;
+      q = q.head();
+      
+      while(q != null && (q.key() != null || q.other() != null)) 
+      {
+        if(q.key() != null && !d.map().containsKey(q.key()))
+          break;
+        
+        q = queryOther(q, docs, rm);
+        if(q == null 
+            || (q.key() == null 
+            &&  q.other() == null 
+            && !q.isDescend()))
+          break;
+        
+        Object val = d.get(q.key());
+        while(q.isDescend()) {
+          Document dv = null;
+          if(val != null && Document.class.isAssignableFrom(val.getClass())) {
+            dv = (Document) val;
+          }
+          q = q.next();
+          if(q.key() == null || dv == null) 
+            break;
+          val = dv.get(q.key());
+        }
+        
+        boolean chk = q.exec(val).getResult();
+        
+        System.out.println("* exec: "+ q.field()+ ": ("+ val+ (q.isNot() ? ") !" : ") ")
+            + q.method()+ " "+ q.value()+ ": "+ chk);
+        
+        if(chk) {
+          if(!docs.containsBlock(d.block()) 
+              && !rm.containsBlock(d.block()))
+            docs.add(d);
+        } else if(q.prev() != null && q.prev().isAnd()) {
+          if(docs.containsBlock(d.block())) {
+            docs.removeBlock(d.block());
+            rm.add(d);
+          }
+        }// else {
+          //rm.add(d);
+        //}
+        q = q.next();
+      }//while
+      
+      d = null;
+      if(q.limit() > 0 && docs.size() >= q.limit()) 
+        break;
+    }//for
+    
+    rm.clear();
+    rm = null;
+    return docs;
+  }
+  
+
   public Result get(Query q) throws SDBException {
     Result docs = new Result();
     if(q == null) return docs;
@@ -249,221 +323,18 @@ public class SimpleDB {
       if(d == null) continue;
       q = q.head();
       
-      while(q != null && q.key() != null) 
-      {
-        if(!d.map().containsKey(q.key()))
-          break;
-        
-        Object val = d.get(q.key());
-        while(q.isDescend()) {
-          Document dv = null;
-          if(val != null && Document.class.isAssignableFrom(val.getClass())) {
-            dv = (Document) val;
-          }
-          q = q.next();
-          if(q.key() == null || dv == null) 
-            break;
-          val = dv.get(q.key());
-        }
-        if(q == null) continue;
-        
-        boolean chk = q.exec(val).getResult();
-        
-        System.out.println("* exec: "+ q.field()+ ": ("+ val+ (q.isNot() ? ") !" : ") ")
-            + q.method()+ " "+ q.value()+ ": "+ chk);
-        
-        if(chk) {
-          if(!docs.containsBlock(d.block()) 
-              && !rm.containsBlock(d.block()))
-            docs.add(d);
-        } else if(q.prev() != null && q.prev().isAnd()) {
-          if(docs.containsBlock(d.block())) {
-            docs.removeBlock(d.block());
-            rm.add(d);
-          }
-        } else if(q.prev() != null && !q.prev().isOr()) {
-          rm.add(d);
-        }
-        q = q.next();
-      }//while
-      
-      d = null;
-      if(q.limit() > 0 && docs.size() >= q.limit()) 
-        break;
-    }//for
-    
-    rm.clear();
-    rm = null;
-    idx = null;
-    return docs;
-  }
-  
-  
-  private Result query(Query q, List<Document> list) throws SDBException {
-    Result docs = new Result();
-    if(q == null || list == null 
-        || list.isEmpty()) 
-      return docs;
-    q = q.head();
-    if(q.label() == null)
-      return docs;
-    if(q.key() == null 
-        && q.method() == null 
-        && q.value() == null)
-      return docs;
-    
-    Result rm = new Result();
-    
-    for(Document d : list) {
-      if(d == null) continue;
-      q = q.head();
-      
-      while(q != null && (q.key() != null || q.other() != null)) 
+      while(q != null && (q.key() != null || q.other() != null || q.isDescend())) 
       {
         if(q.key() != null && !d.map().containsKey(q.key()))
           break;
         
-        while(q != null && q.other() != null) {
-          System.out.println("* exec.other = "+ q.other());
-          Result ors = query(q.other(), docs);
-          if(ors.isEmpty()) continue;
-          if(q.prev().isAnd()) {
-            for(int i = 0; i < docs.size(); i++) {
-              Document dd = docs.get(i);
-              if(!ors.containsBlock(dd.block())
-                  && !rm.containsBlock(dd.block()))
-                rm.add(dd);
-            }
-            for(int i = 0; i < rm.size(); i++) {
-              Document dd = rm.get(i);
-              if(docs.containsBlock(dd.block())) {
-                System.out.println("  -> removing by other: "+ dd);
-                docs.removeBlock(dd.block());
-              }
-            }
-          }
-          else {
-            for(int i = 0; i < ors.size(); i++) {
-              Document dd = ors.get(i);
-              if(!docs.containsBlock(dd.block()))
-                docs.add(dd);
-            }
-          }
-          q = q.next();
-        }
+        q = queryOther(q, docs, rm);
         if(q == null 
-            || q.key() == null 
-            || q.method() == null) 
-          continue;
-        
-        Object val = d.get(q.key());
-        while(q.isDescend()) {
-          Document dv = null;
-          if(val != null && Document.class.isAssignableFrom(val.getClass())) {
-            dv = (Document) val;
-          }
-          q = q.next();
-          if(q.key() == null || dv == null) 
-            break;
-          val = dv.get(q.key());
-        }
-        //if(q == null) continue;
-        
-        boolean chk = q.exec(val).getResult();
-        
-        System.out.println("* exec: "+ q.field()+ ": ("+ val+ (q.isNot() ? ") !" : ") ")
-            + q.method()+ " "+ q.value()+ ": "+ chk);
-        
-        if(chk) {
-          if(!docs.containsBlock(d.block()) 
-              && !rm.containsBlock(d.block()))
-            docs.add(d);
-        } else if(q.prev() != null && q.prev().isAnd()) {
-          if(docs.containsBlock(d.block())) {
-            docs.removeBlock(d.block());
-            rm.add(d);
-          }
-        } else {
-          rm.add(d);
-        }
-        q = q.next();
-      }//while
-      
-      d = null;
-      if(q.limit() > 0 && docs.size() >= q.limit()) 
-        break;
-    }//for
-    
-    rm.clear();
-    rm = null;
-    return docs;
-  }
-  
-
-  public Result get2(Query q) throws SDBException {
-    Result docs = new Result();
-    if(q == null) return docs;
-    q = q.head();
-    if(q.label() == null)
-      return docs;
-    if(q.key() == null 
-        && q.method() == null 
-        && q.value() == null)
-      return get(q.label(), q.limit());
-    
-    Index id = engine.getIndex();
-    List<int[]> idx = id.getList(q.label());
-    
-    if(idx == null || idx.isEmpty())
-      return docs;
-    
-    Result rm = new Result();
-    
-    for(int[] is : idx) {
-      if(is  == null || is[0] < 0) continue;
-      
-      Document d = get(is[0]);
-      if(d == null) continue;
-      q = q.head();
-      
-      while(q != null && (q.key() != null || q.other() != null)) 
-      {
-        if(q.key() != null && !d.map().containsKey(q.key()))
+            || (q.key() == null 
+            &&  q.other() == null 
+            && !q.isDescend()))
           break;
         
-        while(q != null && q.other() != null) {
-          System.out.println("* exec.other = "+ q.other());
-          Result ors = query(q.other(), docs);
-          if(ors.isEmpty()) continue;
-          if(q.prev().isAnd()) {
-            for(int i = 0; i < docs.size(); i++) {
-              Document dd = docs.get(i);
-              if(!ors.containsBlock(dd.block())
-                  && !rm.containsBlock(dd.block()))
-                rm.add(dd);
-            }
-            for(int i = 0; i < rm.size(); i++) {
-              Document dd = rm.get(i);
-              if(docs.containsBlock(dd.block())) {
-                System.out.println("  -> removing by other: "+ dd);
-                docs.removeBlock(dd.block());
-              }
-            }
-          }
-          else {
-            for(int i = 0; i < ors.size(); i++) {
-              Document dd = ors.get(i);
-              if(!docs.containsBlock(dd.block()))
-                docs.add(dd);
-            }
-          }
-          q = q.next();
-        }
-        if(q == null 
-            || q.key() == null 
-            || q.method() == null) 
-          continue;
-        
         Object val = d.get(q.key());
         while(q.isDescend()) {
           Document dv = null;
@@ -475,7 +346,6 @@ public class SimpleDB {
             break;
           val = dv.get(q.key());
         }
-        //if(q == null) continue;
         
         boolean chk = q.exec(val).getResult();
         
@@ -507,6 +377,54 @@ public class SimpleDB {
     rm = null;
     idx = null;
     return docs;
+  }
+  
+  
+  public Result join(Query q, Result rs) {
+    if(q == null) return rs;
+    if(rs == null) rs = new Result();
+    Result other = get(q);
+    for(Document d : other) {
+      if(!rs.containsBlock(d.block()))
+        rs.add(d);
+    }
+    return rs;
+  }
+  
+  
+  private Query queryOther(Query q, Result docs, Result rm) {
+    if(q == null || q.other() == null || docs == null)
+      return q;
+    
+    while(q != null && q.other() != null) {
+      System.out.println("* exec.other = "+ q.other());
+      Result ors = filter(q.other(), docs);
+      if(ors.isEmpty()) continue;
+      if(q.prev().isAnd()) {
+        for(int i = 0; i < docs.size(); i++) {
+          Document dd = docs.get(i);
+          if(!ors.containsBlock(dd.block())
+              && !rm.containsBlock(dd.block()))
+            rm.add(dd);
+        }
+        for(int i = 0; i < rm.size(); i++) {
+          Document dd = rm.get(i);
+          if(docs.containsBlock(dd.block())) {
+            System.out.println("  -> removing by other: "+ dd);
+            docs.removeBlock(dd.block());
+          }
+        }
+      }
+      else {
+        for(int i = 0; i < ors.size(); i++) {
+          Document dd = ors.get(i);
+          if(!docs.containsBlock(dd.block()))
+            docs.add(dd);
+        }
+      }
+      q = q.next();
+    }
+    return q;
   }
   
 }

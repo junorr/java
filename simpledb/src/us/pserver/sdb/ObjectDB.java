@@ -188,8 +188,15 @@ public class ObjectDB {
   }
   
   
-  public boolean remove(Object example) throws SDBException {
-    return remove(new OID().set(example));
+  public boolean remove(Object obj) throws SDBException {
+    if(obj == null) return false;
+    Document doc = findCached(Query.fromExample(ObjectUtils.toDocument(obj, true)));
+    if(doc != null && doc.block() >= 0) {
+      return remove(doc.block()) != null;
+    }
+    else {
+      return remove(new OID().set(obj));
+    }
   }
   
   
@@ -203,8 +210,6 @@ public class ObjectDB {
         return false;
       oid.block(d.block());
     }
-    if(oid.block() < 0) return false;
-    
     return remove(oid.block()) != null;
   }
   
@@ -422,67 +427,6 @@ public class ObjectDB {
     rm.clear();
     rm = null;
     return docs;
-  }
-  
-
-  private boolean query(Query q, Document d) throws SDBException {
-    if(q == null || d == null) 
-      return false;
-    q = q.head();
-    if(q.label() == null)
-      return false;
-    if(q.key() == null 
-        && q.method() == null 
-        && q.value() == null)
-      return false;
-    
-    Document doc = null;
-    boolean rm = f;
-    q = q.head();
-    while(q != null && q.key() != null) 
-    {
-      if(!d.map().containsKey(q.key()))
-        break;
-        
-      Object val = d.get(q.key());
-      while(q.isDescend()) {
-        Document dv = null;
-        if(val != null && Document.class.isAssignableFrom(val.getClass())) {
-          dv = (Document) val;
-        }
-        q = q.next();
-        if(q.key() == null || dv == null) 
-          break;
-        val = dv.get(q.key());
-      }
-      if(q == null) continue;
-      
-      boolean chk = q.exec(val).getResult();
-      
-      System.out.println("* exec: "+ q.field()+ ": ("+ val+ (q.isNot() ? ") !" : ") ")
-          + q.method()+ " "+ q.value()+ ": "+ chk);
-      
-      if(chk) {
-        if(!doc.containsBlock(d.block()) 
-            && !rm.containsBlock(d.block()))
-          doc.add(d);
-      } else if(q.prev() != null && q.prev().isAnd()) {
-        if(doc.containsBlock(d.block())) {
-          doc.removeBlock(d.block());
-          rm.add(d);
-        }
-      } else {
-        rm.add(d);
-      }
-      q = q.next();
-    }//while
-      
-    rm.clear();
-    rm = null;
-    boolean empty = doc.isEmpty();
-    doc.clear();
-    doc = null;
-    return !empty;
   }
   
 }
