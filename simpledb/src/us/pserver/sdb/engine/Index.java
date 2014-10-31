@@ -40,9 +40,15 @@ public class Index {
 
   private final Map<String, List<int[]>> map;
   
+  private transient SerialEngine serial;
   
-  public Index() {
+  
+  public Index(SerialEngine seng) {
+    if(seng == null)
+      throw new IllegalArgumentException(
+          "Invalid SerialEngine: "+ seng+ " - [Index.init]");
     map = new LinkedHashMap<>();
+    serial = seng;
   }
   
   
@@ -126,7 +132,7 @@ public class Index {
   
   public int getBlockSize(Document doc) {
     if(doc == null) return 0;
-    int len = doc.toXml().length();
+    int len = serial.serialize(doc).length;
     int bls = len / FileHandler.BLOCK_SIZE;
     if(len % FileHandler.BLOCK_SIZE > 0)
       bls++;

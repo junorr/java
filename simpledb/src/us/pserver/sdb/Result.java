@@ -340,4 +340,52 @@ public class Result implements List<Document>, Iterator<Document> {
     return true;
   }
   
+  
+  public Result filter(Query q) {
+    return filter(q, this);
+  }
+ 
+  
+  private Result filter(Query q, List<Document> list) {
+    Result docs = new Result();
+    if(q == null || list == null || list.isEmpty()) 
+      return docs;
+    
+    q = q.head();
+    if(q.label() == null)
+      return docs;
+    if(q.key() == null 
+        && q.method() == null 
+        && q.value() == null)
+      return docs;
+    
+    Result rm = new Result();
+    
+    for(Document d : list) {
+      if(d == null) continue;
+      q = q.head();
+      QueryUtils.match(d, q, docs, rm);
+      
+      if(q.limit() > 0 && docs.size() >= q.limit()) 
+        break;
+    }//for
+    
+    rm.clear();
+    rm = null;
+    return docs;
+  }
+  
+
+  public Result notIn(List<Document> list) {
+    Result dif = new Result();
+    if(this.isEmpty() || list == null || list.isEmpty())
+      return dif;
+    
+    for(Document d : list) {
+      if(!this.contains(d) && !dif.contains(d))
+        dif.add(d);
+    }
+    return dif;
+  }
+  
 }

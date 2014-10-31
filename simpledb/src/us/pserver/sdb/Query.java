@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Objects;
 import us.pserver.date.SimpleDate;
+import us.pserver.sdb.engine.FileEngine;
 
 /**
  *
@@ -148,7 +149,8 @@ public class Query {
   
   
   public Query(Class cls) {
-    this(cls.getName());
+    this();
+    className(cls);
   }
   
   
@@ -162,6 +164,14 @@ public class Query {
   
   public String label() {
     return label;
+  }
+  
+  
+  public Query className(Class cls) {
+    if(cls == null)
+      throw new SDBException("Invalid class: "+ cls+ " - [Query.className]");
+    label = cls.getName();
+    return this;
   }
   
   
@@ -850,14 +860,40 @@ public class Query {
     Query q = new Query(doc.label());
     Iterator<String> it = doc.map().keySet().iterator();
     if(!it.hasNext()) return q;
-    String key = it.next();
-    q.key(key);
-    q = q.equal(doc.map().get(key));
+    boolean first = true;
     while(it.hasNext()) {
-      key = it.next();
-      q = q.and(key).equal(doc.map().get(key));
+      String key = it.next();
+      Object val = doc.map().get(key);
+      if(val == null) continue;
+      if(val instanceof Document) {
+        q = fromExample(key, (Document)val, q);
+        continue;
+      }
+      if(first) {
+        q = q.field(key).equal(val);
+        first = false;
+      } else {
+        q = q.and(key).equal(val);
+      }
     }
     System.out.println("* Query.fromExample: "+ q);
+    return q;
+  }
+  
+  
+  private static Query fromExample(String descend, Document doc, Query q) {
+    Iterator<String> it = doc.map().keySet().iterator();
+    if(!it.hasNext()) return q;
+    while(it.hasNext()) {
+      String key = it.next();
+      Object val = doc.map().get(key);
+      if(val instanceof Document) {
+        q = fromExample(key, (Document)val, q);
+      }
+      else {
+        q = q.descend(descend).field(key).equal(val);
+      }
+    }
     return q;
   }
   
@@ -920,11 +956,23 @@ public class Query {
   
   
   public static void main(String[] args) {
-    Query q = new Query("name")
-        .contains("1")
-        .and().not().contains("3");
-    //q.execute("102").execute(true);
-    System.out.println("* "+ q+ ": "+ q.execute("102").next().exec("102").result());
+    Document doc = new Document("server")
+        .put("name", "102")
+        .put("ip", "172.29.14.102")
+        .put("creds", new Document("creds")
+            .put("user", "john")
+            .put("pass", new Document("pass")
+                .put("str", "1234")));
+    System.out.println("* doc = "+ doc);
+    Query q = Query.fromExample(doc);
+    Result rs = new Result();
+    rs.add(doc);
+    rs = rs.filter(q);
+    System.out.println("-> result: "+ rs.size());
+    rs.orderBy("name").asc();
+    while(rs.hasNext()) {
+      System.out.println("  -> item: "+ rs.next());
+    }
   }
   
 }

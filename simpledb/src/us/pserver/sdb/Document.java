@@ -27,6 +27,7 @@ import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import us.pserver.sdb.util.ObjectUtils;
 
 
 /**
@@ -258,23 +259,9 @@ public class Document {
   }
   
   
-  public static Document fromXml(String xml) {
-    XStream x = new XStream();
-    return (Document) x.fromXML(xml);
-  }
-  
-  
-  public String toXml() {
-    XStream x = new XStream();
-    StringWriter sw = new StringWriter();
-    x.marshal(this, new CompactWriter(sw));
-    return sw.toString();
-  }
-  
-  
   @Override
   public String toString() {
-    return toXml();
+    return ObjectUtils.doc2str(this);
   }
   
   
@@ -289,7 +276,6 @@ public class Document {
             .put("pass", "12345678"))
         .put("latency", 0.84);
     System.out.println("* xml=" + doc);
-    System.out.println("* doc="+ Document.fromXml(doc.toXml()));
   }
   
 }

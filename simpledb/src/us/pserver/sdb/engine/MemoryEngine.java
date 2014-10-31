@@ -171,7 +171,7 @@ public class MemoryEngine implements StorageEngine {
   
   
   private Index createIndex() {
-    Index idx = new Index();
+    Index idx = new Index(new XmlSerialEngine());
     if(map.isEmpty()) return idx;
     Iterator<Long> it = map.keySet().iterator();
     while(it.hasNext()) {

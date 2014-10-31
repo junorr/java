@@ -30,7 +30,6 @@ import java.util.LinkedList;
 import java.util.List;
 import us.pserver.sdb.engine.CachedEngine;
 import us.pserver.sdb.engine.DocHits;
-import static us.pserver.sdb.test.TestSDB.rm;
 
 
 /**
@@ -146,10 +145,11 @@ public class ObjectDB {
   
   
   public OID put(Object obj) throws SDBException {
-    if(obj instanceof OID) 
-      put((OID)obj);
     OID id = new OID();
     if(obj == null) return id;
+    if(obj instanceof OID) {
+      return put((OID)obj);
+    }
     Document doc = putDoc(
         ObjectUtils.toDocument(obj, true));
     return id.block(doc.block()).set(obj);
@@ -255,7 +255,7 @@ public class ObjectDB {
   
   
   public OID getOne(OID oid) throws SDBException {
-    if(oid == null || !oid.hasObject())
+    if(oid == null || (!oid.hasObject() && !oid.hasBlock()))
       return oid;
     if(oid.hasBlock())
       return getOne(oid.block());
@@ -301,43 +301,17 @@ public class ObjectDB {
   }
   
   
-  private ResultOID convert(Result rs, ResultOID ro) {
-    if(rs == null || rs.isEmpty())
-      return ro;
-    if(ro == null)
-      ro = new ResultOID();
-    while(rs.hasNext()) {
-      Document doc = rs.next();
-      if(doc == null) continue;
-      ro.addObj(ObjectUtils.fromDocument(doc), doc.block());
-    }
-    return ro;
-  }
-  
-  
   public ResultOID get(Query q) throws SDBException {
     ResultOID objs = new ResultOID();
     if(q == null) return objs;
+    if(q.key() == null 
+        && q.method() == null 
+        && q.other == null
+        && q.value() == null)
+      return get(q.label(), q.limit());
     
-    Index id = engine.getIndex();
-    List<int[]> idx = id.getList(q.label());
-    
-    if(idx == null || idx.isEmpty())
-      return objs;
-    
-    List<Document> ls = new LinkedList<>();
-    for(int i = 0; i < idx.size(); i++) {
-      int[] is = idx.get(i);
-      if(is  == null || is[0] < 0) continue;
-      Document d = getDoc(is[0]);
-      if(d == null) continue;
-      ls.add(d);
-    }
-    
-    Result rs = query(q, ls);
-    if(rs == null || rs.isEmpty())
-      return objs;
-    return convert(rs, objs);
+    Result rs = query(q);
+    return QueryUtils.convert(rs, objs);
   }
   
   
@@ -349,84 +323,63 @@ public class ObjectDB {
     if(cache == null || cache.isEmpty())
       return null;
     
-    List<Document> list = new LinkedList<>();
+    Result list = new Result();
     for(int i = 0; i < cache.size(); i++) {
       list.add(cache.get(i).document());
     }
     
     q.limit(1);
-    Result rs = query(q, list);
+    Result rs = list.filter(q);
     if(rs == null || rs.isEmpty())
       return null;
     return rs.get(0);
   }
 
   
-  private Result query(Query q, List<Document> list) throws SDBException {
+  private Result query(Query q) throws SDBException {
     Result docs = new Result();
-    if(q == null || list == null 
-        || list.isEmpty()) 
-      return docs;
+    if(q == null) return docs;
     q = q.head();
     if(q.label() == null)
       return docs;
-    if(q.key() == null 
-        && q.method() == null 
-        && q.value() == null)
+    
+    Index id = engine.getIndex();
+    List<int[]> idx = id.getList(q.label());
+    
+    if(idx == null || idx.isEmpty())
       return docs;
     
     Result rm = new Result();
     
-    for(Document d : list) {
+    for(int[] is : idx) {
+      if(is  == null || is[0] < 0) continue;
+      
+      Document d = engine.get(is[0]);
       if(d == null) continue;
       q = q.head();
       
-      while(q != null && q.key() != null) 
-      {
-        if(!d.map().containsKey(q.key()))
-          break;
-        
-        Object val = d.get(q.key());
-        while(q.isDescend()) {
-          Document dv = null;
-          if(val != null && Document.class.isAssignableFrom(val.getClass())) {
-            dv = (Document) val;
-          }
-          q = q.next();
-          if(q.key() == null || dv == null) 
-            break;
-          val = dv.get(q.key());
-        }
-        if(q == null) continue;
-        
-        boolean chk = q.exec(val).getResult();
-        
-        System.out.println("* exec: "+ q.field()+ ": ("+ val+ (q.isNot() ? ") !" : ") ")
-            + q.method()+ " "+ q.value()+ ": "+ chk);
-        
-        if(chk) {
-          if(!docs.containsBlock(d.block()) 
-              && !rm.containsBlock(d.block()))
-            docs.add(d);
-        } else if(q.prev() != null && q.prev().isAnd()) {
-          if(docs.containsBlock(d.block())) {
-            docs.removeBlock(d.block());
-            rm.add(d);
-          }
-        } else {
-          rm.add(d);
-        }
-        q = q.next();
-      }//while
+      QueryUtils.match(d, q, docs, rm);
       
-      d = null;
       if(q.limit() > 0 && docs.size() >= q.limit()) 
         break;
     }//for
     
     rm.clear();
     rm = null;
+    idx = null;
     return docs;
+  }
+  
+  
+  public ResultOID join(Query q, ResultOID rs) {
+    if(q == null) return rs;
+    if(rs == null) rs = new ResultOID();
+    ResultOID other = get(q);
+    for(OID oid : other) {
+      if(!rs.contains(oid))
+        rs.add(oid);
+    }
+    return rs;
   }
   
 }

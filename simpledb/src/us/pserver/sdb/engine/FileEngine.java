@@ -65,8 +65,8 @@ public class FileEngine implements StorageEngine {
           "Invalid SerialEngine: "+ serialEngine+ " - [FileEngine.init]");
     try {
       hand = new FileHandler(file);
-      index = new Index();
       serial = serialEngine;
+      index = new Index(serial);
       init();
     } catch(IOException e) {
       throw new SDBException(e.getMessage(), e);

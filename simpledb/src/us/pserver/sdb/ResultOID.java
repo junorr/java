@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Stream;
+import us.pserver.sdb.util.ObjectUtils;
 
 /**
  *
@@ -355,6 +356,69 @@ public class ResultOID implements List<OID>, Iterator<OID> {
     };
     Collections.sort(list, cp);
     return true;
+  }
+  
+  
+  public ResultOID filter(Query q) {
+    return filter(q, this);
+  }
+ 
+  
+  private ResultOID filter(Query q, List<OID> list) {
+    ResultOID res = new ResultOID();
+    Result docs = new Result();
+    if(q == null || list == null || list.isEmpty()) 
+      return res;
+    
+    q = q.head();
+    if(q.label() == null)
+      return res;
+    if(q.key() == null 
+        && q.method() == null 
+        && q.value() == null)
+      return res;
+    
+    Result rm = new Result();
+    
+    for(OID oid : list) {
+      if(oid == null || !oid.hasObject()) continue;
+      q = q.head();
+      Document d = ObjectUtils.toDocument(oid.get(), true);
+      d.block(oid.block());
+      QueryUtils.match(d, q, docs, rm);
+      
+      if(q.limit() > 0 && docs.size() >= q.limit()) 
+        break;
+    }//for
+    
+    rm.clear();
+    rm = null;
+    for(Document d : docs) {
+      OID oid = null;
+      for(OID o : list) {
+        if(o.block() == d.block()) {
+          oid = o;
+          break;
+        }
+      }
+      if(oid != null)
+        res.add(oid);
+    }
+    
+    return res;
+  }
+  
+
+  public ResultOID notIn(List<OID> list) {
+    ResultOID dif = new ResultOID();
+    if(this.isEmpty() || list == null || list.isEmpty())
+      return dif;
+    
+    for(OID o : list) {
+      if(!this.contains(o) && !dif.contains(o))
+        dif.add(o);
+    }
+    return dif;
   }
   
 }

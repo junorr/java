@@ -148,7 +148,7 @@ public class TestSDB {
     q = new Query("server").field("db").not().equal(true);
     System.out.println("\n-> filter: "+ q);
     
-    rs = sdb.filter(q, rs);
+    rs = rs.filter(q);
     System.out.println("-> result: "+ rs.size());
     rs.orderBy("name").asc();
     while(rs.hasNext()) {

@@ -222,7 +222,6 @@ public class ObjectUtils {
     obj.object.text = "World";
     System.out.println("* myobject="+ obj);
     Document doc = toDocument(obj, true);
-    doc = Document.fromXml(doc.toXml());
     System.out.println("* document="+ doc2str(doc));
     MyObject my = (MyObject) fromDocument(doc);
     System.out.println("* fromdoc="+ my);
