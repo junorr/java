@@ -161,6 +161,7 @@ public class ObjectDB {
     doc = createLinks(doc);
     Document dc = findCached(Query.fromExample(doc));
     if(dc != null) {
+      System.out.println("* found in cache!!");
       doc.block(dc.block());
     }
     return engine.put(doc);
@@ -304,6 +305,8 @@ public class ObjectDB {
   public ResultOID get(Query q) throws SDBException {
     ResultOID objs = new ResultOID();
     if(q == null) return objs;
+    q = q.head();
+    System.out.println("* get( "+ q+ " )");
     if(q.key() == null 
         && q.method() == null 
         && q.other == null
@@ -346,6 +349,7 @@ public class ObjectDB {
     Index id = engine.getIndex();
     List<int[]> idx = id.getList(q.label());
     
+    System.out.println("* query: idx.size()="+ idx.size());
     if(idx == null || idx.isEmpty())
       return docs;
     
@@ -356,6 +360,7 @@ public class ObjectDB {
       
       Document d = engine.get(is[0]);
       if(d == null) continue;
+      d = resolveLinks(d);
       q = q.head();
       
       QueryUtils.match(d, q, docs, rm);

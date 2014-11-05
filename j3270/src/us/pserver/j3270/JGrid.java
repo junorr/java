@@ -693,7 +693,7 @@ public class JGrid extends JPanel implements
     if(fls == null || fls.length == 0) return;
     for(int i = 0; i < fls.length; i++) {
       Field f = fls[i];
-      String cont = this.getFieldContent(f).replace("_", " ").trim();
+      String cont = this.getFieldContent(f).replace("_", " ");
       if(!cont.isEmpty()) {
         for(DisplayListener dl : lst) {
           if(f.isHidden())

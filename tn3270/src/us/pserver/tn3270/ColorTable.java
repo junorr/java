@@ -27,7 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Classe utilitária para conversão de códigos de 
+ * cores 3270 para objetos java.awt.Color.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 07/02/2014
  */
@@ -45,6 +47,10 @@ public class ColorTable {
   public static final Map<Short, Color> MAP = create();
   
   
+  /**
+   * Cria um mapa de códigos de cor 3270 e objetos java.awt.Color.
+   * @return mapa de códigos de cor 3270 e objetos java.awt.Color.
+   */
   public static Map<Short, Color> create() {
     Map<Short, Color> map = new HashMap<>();
     map.put(RW3270Char.BGCOLOR_DEFAULT, DEF_BGCOLOR);
@@ -67,6 +73,11 @@ public class ColorTable {
   }
   
   
+  /**
+   * Converte o codigo 3270 para cor das letras na tela.
+   * @param color codigo 3270 para cor das letras na tela.
+   * @return Objeto java.awt.Color.
+   */
   public static Color getFG(short color) {
     if(color == 0)
       return DEF_FGCOLOR;
@@ -75,6 +86,11 @@ public class ColorTable {
   }
   
   
+  /**
+   * Converte o codigo 3270 para cor de fundo da tela.
+   * @param color codigo 3270 para cor de fundo da tela.
+   * @return Objeto java.awt.Color.
+   */
   public static Color getBG(short color) {
     if(color == 0)
       return DEF_BGCOLOR;

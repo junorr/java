@@ -26,7 +26,8 @@ import us.pserver.cdr.b64.Base64StringCoder;
 
 
 /**
- *
+ * Classe que extende Field para representar um campo de senha.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 01/08/2013
  */
@@ -35,12 +36,21 @@ public class PasswordField extends Field {
   private Base64StringCoder sc;
   
   
+  /**
+   * Construtor padrão sem argumentos.
+   */
   public PasswordField() {
     super();
     sc = new Base64StringCoder();
   }
   
   
+  /**
+   * Construtor que recebe a linha, coluna e senha do campo.
+   * @param row linha.
+   * @param col coluna.
+   * @param pwd senha.
+   */
   public PasswordField(int row, int col, String pwd) {
     this();
     super.setRow(row);
@@ -57,6 +67,11 @@ public class PasswordField extends Field {
   }
   
   
+  /**
+   * Define a senha em formato texto.
+   * @param str senha em formato texto.
+   * @return Este objeto PasswordField modificado.
+   */
   public PasswordField setPlainPassword(String str) {
     if(str != null && !str.isEmpty())
       super.setContent(sc.encode(str));
@@ -64,18 +79,15 @@ public class PasswordField extends Field {
   }
   
   
+  /**
+   * Define a senha codificada em Base64.
+   * @param pwd senha codificada em Base64.
+   * @return Este objeto PasswordField modificado.
+   */
   public PasswordField setPassword(String pwd) {
     if(pwd != null)
       super.setContent(pwd);
     return this;
-  }
-  
-  
-  public static void main(String[] args) {
-    Field fld = new PasswordField()
-        .setPassword("NjU0NjU0Nzc=").setCursor(14, 21);
-    System.out.println(fld);
-    System.out.println(fld.getContent());
   }
   
 }

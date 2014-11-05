@@ -795,10 +795,14 @@ public class Query {
   
   
   protected Query exec(Object obj) throws SDBException {
-    if(meth != null && meth != QueryMethod.EMPTY && obj == null)
-      throw new SDBException("Invalid null argument - [Query.exec]");
+    if(meth != null && meth != QueryMethod.EMPTY && obj == null) {
+      result = false;
+      return this;
+    }
+      
     if(value == null && meth != null && meth != QueryMethod.EMPTY) {
-      throw new SDBException("Invalid value: "+ value+ " - [Query.exec]");
+      result = false;
+      return this;
     }
     
     if(type == null)

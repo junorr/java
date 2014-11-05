@@ -24,7 +24,8 @@ package us.pserver.tn3270;
 import java.awt.event.KeyEvent;
 
 /**
- *
+ * Representações de teclas de função no teclado.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 30/07/2013
  */
@@ -81,6 +82,11 @@ public enum Key {
   }
   
   
+  /**
+   * Retorna uma Key representada pelo código 3270.
+   * @param keyCode código de tecla 3270.
+   * @return Representação de tecla Key.
+   */
   public static Key getByKeyCode(int keyCode) {
     switch(keyCode) {
       case KeyEvent.VK_F1:
@@ -157,16 +163,36 @@ public enum Key {
   }
   
   
+  /**
+   * Verifica se é uma tecla de função 3270.
+   * @return <code>true</code> se esta for uma
+   * tecla de função 3270, <code>false</code>
+   * caso contrário.
+   */
   public boolean isFunctionKey() {
     return isFunctionKey(this);
   }
   
   
+  /**
+   * Verifica se é uma tecla de função 3270.
+   * @param key tecla a ser verificada.
+   * @return <code>true</code> se esta for uma
+   * tecla de função 3270, <code>false</code>
+   * caso contrário.
+   */
   public static boolean isFunctionKey(Key key) {
     return isFunctionKey(key.value());
   }
   
   
+  /**
+   * Verifica se é uma tecla de função 3270.
+   * @param key código 3270 de tecla a ser verificado.
+   * @return <code>true</code> se esta for uma
+   * tecla de função 3270, <code>false</code>
+   * caso contrário.
+   */
   public static boolean isFunctionKey(int key) {
     switch(key) {
       case 0xF1:

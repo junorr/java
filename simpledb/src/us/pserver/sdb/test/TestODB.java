@@ -146,7 +146,7 @@ public class TestODB {
     odb = new ObjectDB(new FileEngine("./object.db"));
     try {
       
-      add();
+      //add();
       get();
       get2();
       

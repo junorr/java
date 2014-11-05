@@ -283,6 +283,7 @@ public class RW3270
    /**
     * This method returns the first character position of the next field from the
     * current cursor position.
+    * @param pos linear position.
     * @return The next unprotected field's address, starting from the current cursor
     * position.
     */

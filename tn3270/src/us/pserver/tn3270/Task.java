@@ -25,7 +25,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Task representa uma tarefa a ser executada em um terminal 3270,
+ * como o pressionamento de uma tecla, aguardar por determinado dado,
+ * definir e capturar campos, entre outras.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 31/07/2013
  */
@@ -38,6 +41,9 @@ public class Task {
   private Field ctrl;
   
   
+  /**
+   * Construtor padrão sem argumentos, cria uma tarefa vazia.
+   */
   public Task() {
     flds = new LinkedList<>();
     key = null;
@@ -45,6 +51,12 @@ public class Task {
   }
   
   
+  /**
+   * Construtor que recebe um campo a ser definido e
+   * uma tecla a ser pressionada no terminal.
+   * @param ctrlField campo a ser definido.
+   * @param key tecla a ser pressionada.
+   */
   public Task(Field ctrlField, Key key) {
     this();
     this.key = key;
@@ -52,6 +64,11 @@ public class Task {
   }
   
   
+  /**
+   * Adiciona um campo a ser definido/capturado pelo terminal.
+   * @param fld campo Field.
+   * @return Este objeto Task modificado.
+   */
   public Task add(Field fld) {
     if(fld != null) {
       flds.add(fld);
@@ -60,33 +77,61 @@ public class Task {
   }
   
   
+  /**
+   * Retorna uma lista com todos os campos adicionados à esta Task.
+   * @return java.util.List&gt;Field&lt;
+   */
   public List<Field> fields() {
     return flds;
   }
   
   
+  /**
+   * Define um campo pelo qual o terminal irá aguardar antes 
+   * de executar as demais tarefas.
+   * @param ctrl Campo de controle que será aguardado.
+   * @return Este objeto Task modificado.
+   */
   public Task setControlField(Field ctrl) {
     this.ctrl = ctrl;
     return this;
   }
   
   
+  /**
+   * Define uma tecla a ser processada no terminal.
+   * @param key tecla a ser processada no terminal.
+   * @return Este objeto Task modificado.
+   */
   public Task setKey(Key key) {
     this.key = key;
     return this;
   }
   
-  
+
+  /**
+   * Retorna a tecla processada no terminal.
+   * @return tecla processada no terminal.
+   */
   public Key key() {
     return key;
   }
   
   
+  /**
+   * Retorna o campo de controle que será aguardado.
+   * @return campo de controle que será aguardado.
+   */
   public Field controlField() {
     return ctrl;
   }
   
   
+  /**
+   * Encontra um campo com o conteúdo especificado.
+   * @param content Conteúdo a ser encontrado.
+   * @return Campo Field ou <code>null</code> caso não seja encontrado.
+   */
   public Field findField(String content) {
     if(content == null)
       return null;
@@ -98,6 +143,13 @@ public class Task {
   }
   
   
+  /**
+   * Encontra um campo com a posição e comprimento especificados.
+   * @param row linha.
+   * @param col coluna.
+   * @param len comprimento.
+   * @return Campo Field ou <code>null</code> caso não seja encontrado.
+   */
   public Field findField(int row, int col, int len) {
     if(!Cursor.isValid(row, col) || len < 1)
       return null;
