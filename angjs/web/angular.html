@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html ng-app="myApp">
+  <head>
+    <title>Angular</title>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    
+    <script type="text/javascript">
+      var myApp = angular.module("myApp", []);
+      
+      myApp.filter("reverse", function() {
+        return function(text) {
+          return text.split("").reverse().join("");
+        }
+      });
+      
+      myApp.filter("reverse2", function(text) {
+          return text.split("").reverse().join("");
+        }
+      );
+      
+      function one($scope) {
+        $scope.msg = "Hello";
+        $scope.sayHello = function() {
+          return $scope.msg.split("").reverse().join("");
+        }
+      }
+    </script>
+  </head>
+  
+  <body>
+    <div ng-controller="one">
+      
+      <input ng-model="msg"/>
+      <h1>{{msg + " World!"}}</h1>
+      <h2>{{msg|reverse}}</h2>
+      
+    </div>
+  </body>
+  
+</html>
