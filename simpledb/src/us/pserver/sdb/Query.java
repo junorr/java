@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Objects;
 import us.pserver.date.SimpleDate;
-import us.pserver.sdb.engine.FileEngine;
 
 /**
  *
@@ -46,7 +45,10 @@ public class Query {
     LESSER, 
     GREATER_EQ, 
     LESSER_EQ,
-    EMPTY;
+    EMPTY,
+    DESCEND,
+    NOT;
+    
     @Override
     public String toString() {
       switch(this) {
@@ -70,6 +72,10 @@ public class Query {
           return "<";
         case LESSER_EQ:
           return "<=";
+        case DESCEND:
+          return "-->";
+        case NOT:
+          return "!";
         default:
           return "IS_EMPTY{}";
       }
@@ -81,7 +87,8 @@ public class Query {
     STRING,
     DATE,
     BOOLEAN,
-    NUMBER;
+    NUMBER,
+    UNDEFINED;
   }
 
   
