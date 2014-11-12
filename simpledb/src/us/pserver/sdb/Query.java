@@ -21,6 +21,7 @@
 
 package us.pserver.sdb;
 
+import us.pserver.sdb.query.Result;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Objects;

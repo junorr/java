@@ -26,7 +26,7 @@ import com.jpower.spj.ShellParser;
 import java.util.Iterator;
 import us.pserver.sdb.Document;
 import us.pserver.sdb.Query;
-import us.pserver.sdb.Result;
+import us.pserver.sdb.query.Result;
 import us.pserver.sdb.SDBException;
 import us.pserver.sdb.SimpleDB;
 import us.pserver.sdb.engine.CachedFileEngine;

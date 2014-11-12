@@ -19,10 +19,11 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.sdb;
+package us.pserver.sdb.query;
 
 import java.util.LinkedList;
 import java.util.List;
+import us.pserver.sdb.Query;
 
 /**
  *
@@ -35,10 +36,13 @@ public class QueryBuilder {
   
   private String label;
   
+  private int limit;
+  
   
   protected QueryBuilder() {
     path = new LinkedList<>();
     label = null;
+    limit = -1;
   }
   
   
@@ -90,6 +94,12 @@ public class QueryBuilder {
     checknull(field, "field");
     path.add(new QueryPath().field(field));
     path.add(new QueryPath().method(Query.QueryMethod.DESCEND));
+    return this;
+  }
+  
+  
+  public QueryBuilder limit(int limit) {
+    this.limit = limit;
     return this;
   }
   
@@ -189,7 +199,7 @@ public class QueryBuilder {
   
   
   public Query1 create() {
-    return new Query1(path, label);
+    return new Query1(path, label).limit(limit);
   }
   
 }

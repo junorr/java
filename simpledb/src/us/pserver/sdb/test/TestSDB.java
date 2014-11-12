@@ -23,7 +23,7 @@ package us.pserver.sdb.test;
 
 import us.pserver.sdb.Document;
 import us.pserver.sdb.Query;
-import us.pserver.sdb.Result;
+import us.pserver.sdb.query.Result;
 import us.pserver.sdb.SimpleDB;
 import us.pserver.sdb.engine.FileEngine;
 

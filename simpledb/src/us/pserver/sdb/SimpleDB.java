@@ -21,10 +21,13 @@
 
 package us.pserver.sdb;
 
+import us.pserver.sdb.query.Result;
+import us.pserver.sdb.query.QueryUtils;
 import us.pserver.sdb.engine.Index;
 import us.pserver.sdb.engine.StorageEngine;
 import java.util.Iterator;
 import java.util.List;
+import us.pserver.sdb.query.Query1;
 
 
 /**
@@ -42,7 +45,8 @@ public class SimpleDB {
   public SimpleDB(StorageEngine eng) throws SDBException {
     if(eng == null)
       throw new IllegalArgumentException(
-          "Invalid DocumentEngine: "+ eng+ " - [SimpleDB.init]");
+          "Invalid DocumentEngine: "
+          + eng+ " - [SimpleDB.init]");
     engine = eng;
     rmcascade = true;
   }
@@ -262,7 +266,36 @@ public class SimpleDB {
   }
   
   
-  public Result join(Query q, Result rs) {
+  public Result get(Query1 q) throws SDBException {
+    Result docs = new Result();
+    if(q == null || q.isEmpty()) 
+      return docs;
+    
+    Index id = engine.getIndex();
+    List<int[]> idx = id.getList(q.label());
+    
+    if(idx == null || idx.isEmpty())
+      return docs;
+    
+    for(int[] is : idx) {
+      if(is  == null || is[0] < 0) 
+        continue;
+      
+      Document d = get(is[0]);
+      if(d == null) continue;
+      
+      if(q.exec(d))
+        docs.add(d);
+      
+      if(q.limit() > 0 && docs.size() >= q.limit()) 
+        break;
+    }//for
+    
+    return docs;
+  }
+  
+  
+  public Result join(Query1 q, Result rs) {
     if(q == null) return rs;
     if(rs == null) rs = new Result();
     Result other = get(q);

@@ -22,8 +22,8 @@
 package us.pserver.sdb.test;
 
 import us.pserver.sdb.Document;
-import us.pserver.sdb.Query1;
-import us.pserver.sdb.QueryBuilder;
+import us.pserver.sdb.query.Query1;
+import us.pserver.sdb.query.QueryBuilder;
 
 /**
  *

@@ -19,14 +19,17 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.sdb;
+package us.pserver.sdb.query;
 
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import us.pserver.sdb.Document;
 import us.pserver.sdb.Query.DataType;
 import us.pserver.sdb.Query.QueryMethod;
+import us.pserver.sdb.SDBException;
 
 /**
  *
@@ -37,9 +40,16 @@ public class Query1 {
   
   private List<QueryPath> path;
   
-  private boolean result;
+  private Query1 and;
   
-  private boolean exec;
+  private Query1 or;
+  
+  private Query1 groupAnd;
+  
+  private Query1 groupOr;
+  
+  
+  private boolean result;
   
   private int limit;
   
@@ -54,9 +64,56 @@ public class Query1 {
     
     this.path = path;
     this.label = label;
+    and = null;
+    or = null;
+    groupAnd = null;
+    groupOr = null;
     result = false;
-    exec = false;
     limit = -1;
+  }
+  
+  
+  public Query1 and() {
+    return and;
+  }
+  
+  
+  public Query1 andGroup() {
+    return groupAnd;
+  }
+  
+  
+  public Query1 or() {
+    return or;
+  }
+  
+  
+  public Query1 orGroup() {
+    return groupOr;
+  }
+  
+  
+  public Query1 and(Query1 qry) {
+    and = qry;
+    return this;
+  }
+  
+  
+  public Query1 or(Query1 qry) {
+    or = qry;
+    return this;
+  }
+  
+  
+  public Query1 andGroup(Query1 qry) {
+    groupAnd = qry;
+    return this;
+  }
+  
+  
+  public Query1 orGroup(Query1 qry) {
+    groupOr = qry;
+    return this;
   }
   
   
@@ -76,13 +133,13 @@ public class Query1 {
   }
   
   
-  private boolean executed() {
-    return exec;
+  protected boolean getResult() {
+    return result;
   }
   
   
-  protected boolean getResult() {
-    return result;
+  public boolean isEmpty() {
+    return path.isEmpty();
   }
   
   
@@ -307,7 +364,16 @@ public class Query1 {
       return false;
     
     Iterator<QueryPath> it = path.iterator();
-    return exec(doc, it, true);
+    boolean exec = exec(doc, it, true);
+    if(groupAnd != null)
+      exec = exec && groupAnd.exec(doc);
+    if(groupOr != null)
+      exec = exec || groupOr.exec(doc);
+    if(and != null)
+      exec = exec && and.exec(doc);
+    if(or != null)
+      exec = exec || or.exec(doc);
+    return exec;
   }
   
   
