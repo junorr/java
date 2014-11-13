@@ -40,13 +40,9 @@ public class Query1 {
   
   private List<QueryPath> path;
   
-  private Query1 and;
+  private List<Query1> and;
   
-  private Query1 or;
-  
-  private Query1 groupAnd;
-  
-  private Query1 groupOr;
+  private List<Query1> or;
   
   
   private boolean result;
@@ -64,55 +60,39 @@ public class Query1 {
     
     this.path = path;
     this.label = label;
-    and = null;
-    or = null;
-    groupAnd = null;
-    groupOr = null;
+    and = new LinkedList<>();
+    or = new LinkedList<>();
     result = false;
     limit = -1;
   }
   
   
-  public Query1 and() {
+  public List<Query1> and() {
     return and;
   }
   
   
-  public Query1 andGroup() {
-    return groupAnd;
-  }
-  
-  
-  public Query1 or() {
+  public List<Query1> or() {
     return or;
   }
   
   
-  public Query1 orGroup() {
-    return groupOr;
-  }
-  
-  
   public Query1 and(Query1 qry) {
-    and = qry;
+    if(qry != null 
+        && (!qry.isEmpty() 
+        ||  qry.label() != null)) {
+      and.add(qry);
+    }
     return this;
   }
   
   
   public Query1 or(Query1 qry) {
-    or = qry;
-    return this;
-  }
-  
-  
-  public Query1 andGroup(Query1 qry) {
-    groupAnd = qry;
-    return this;
-  }
-  
-  
-  public Query1 orGroup(Query1 qry) {
-    groupOr = qry;
+    if(qry != null 
+        && (!qry.isEmpty() 
+        ||  qry.label() != null)) {
+      or.add(qry);
+    }
     return this;
   }
   
@@ -277,33 +257,47 @@ public class Query1 {
   
   protected boolean exec(QueryMethod mth, QueryValue val, Object arg) throws SDBException {
     if(mth == null) return false;
-    System.out.println("-> query: "+ arg+ " "+ mth+ " "+ val);
+    boolean bool = false;
     switch(mth) {
       case CONTAINS:
-        return xcontains(val, arg);
+        bool = xcontains(val, arg);
+        break;
       case CONTAINS_ICS:
-        return xcontics(val, arg);
+        bool = xcontics(val, arg);
+        break;
       case EMPTY:
-        return xempty(arg);
+        bool = xempty(arg);
+        break;
       case ENDS_WITH:
-        return xendsw(val, arg);
+        bool = xendsw(val, arg);
+        break;
       case EQUALS:
-        return xeq(val, arg);
+        bool = xeq(val, arg);
+        break;
       case EQUALS_ICS:
-        return xeqics(val, arg);
+        bool = xeqics(val, arg);
+        break;
       case GREATER:
-        return xgt(val, arg);
+        bool = xgt(val, arg);
+        break;
       case GREATER_EQ:
-        return xge(val, arg);
+        bool = xge(val, arg);
+        break;
       case LESSER:
-        return xlt(val, arg);
+        bool = xlt(val, arg);
+        break;
       case LESSER_EQ:
-        return xle(val, arg);
+        bool = xle(val, arg);
+        break;
       case STARTS_WITH:
-        return xstartsw(val, arg);
+        bool = xstartsw(val, arg);
+        break;
       default:
-        return false;
+        bool = false;
+        break;
     }
+    System.out.println("-> query: "+ arg+ " "+ mth+ " "+ val+ " : "+ bool);
+    return bool;
   }
   
   
@@ -360,19 +354,17 @@ public class Query1 {
   
   public boolean exec(Document doc) throws SDBException {
     if(doc == null) return false;
-    if(doc.label() != null && !doc.label().equals(label))
+    if(doc.label() != null && label != null && !doc.label().equals(label))
       return false;
     
     Iterator<QueryPath> it = path.iterator();
     boolean exec = exec(doc, it, true);
-    if(groupAnd != null)
-      exec = exec && groupAnd.exec(doc);
-    if(groupOr != null)
-      exec = exec || groupOr.exec(doc);
-    if(and != null)
-      exec = exec && and.exec(doc);
-    if(or != null)
-      exec = exec || or.exec(doc);
+    for(int i = 0; i < or.size(); i++) {
+      exec = exec || or.get(i).exec(doc);
+    }
+    for(int i = 0; i < and.size(); i++) {
+      exec = exec && and.get(i).exec(doc);
+    }
     return exec;
   }
   
@@ -380,9 +372,9 @@ public class Query1 {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("Query");
+    //sb.append("Query");
     if(label != null) {
-      sb.append(":").append(label);
+      sb.append(label);
     }
     sb.append("( ");
     
@@ -401,7 +393,16 @@ public class Query1 {
       else
         sb.append(path.get(i).toString()).append(" ");
     }
-    return sb.append(")").toString();  
+    sb.append(")");
+    
+    for(int i = 0; i < or.size(); i++) {
+      sb.append(" || ").append(or.get(i).toString());
+    }
+    for(int i = 0; i < and.size(); i++) {
+      sb.append(" && ").append(and.get(i).toString());
+    }
+    
+    return sb.toString();
   }
   
 }

@@ -213,7 +213,7 @@ public class Query {
   }
   
   
-  private Query setNext() {
+  public Query setNext() {
     if(next == null) {
       if(head != null)
         next = new Query(head, this);
@@ -224,17 +224,17 @@ public class Query {
   }
   
   
-  private boolean executed() {
+  public boolean executed() {
     return exec;
   }
   
   
-  protected boolean isDescend() {
+  public boolean isDescend() {
     return descend;
   }
   
   
-  private boolean computeResult() {
+  public boolean computeResult() {
     if(next != null && next.executed()) {
       boolean nr = next.computeResult();
       if(and) result = result && nr;
@@ -244,7 +244,7 @@ public class Query {
   }
   
   
-  protected boolean getResult() {
+  public boolean getResult() {
     return result;
   }
   
@@ -289,27 +289,27 @@ public class Query {
   }
   
   
-  protected Query next() {
+  public Query next() {
     return setNext();
   }
   
   
-  protected Query prev() {
+  public Query prev() {
     return prev;
   }
   
   
-  protected Query other() {
+  public Query other() {
     return other;
   }
   
   
-  protected QueryMethod method() {
+  public QueryMethod method() {
     return meth;
   }
   
   
-  protected DataType type() {
+  public DataType type() {
     return type;
   }
   
@@ -472,7 +472,7 @@ public class Query {
   }
   
   
-  private void setType(Object o) {
+  public void setType(Object o) {
     if(o != null) {
       if(Number.class.isAssignableFrom(o.getClass()))
         type = DataType.NUMBER;
@@ -641,7 +641,7 @@ public class Query {
   }
   
   
-  private Number getNumber(Object o) {
+  public Number getNumber(Object o) {
     try {
       return Double.parseDouble(o.toString());
     } catch(Exception e) {
@@ -802,7 +802,7 @@ public class Query {
   }
   
   
-  protected Query exec(Object obj) throws SDBException {
+  public Query exec(Object obj) throws SDBException {
     if(meth != null && meth != QueryMethod.EMPTY && obj == null) {
       result = false;
       return this;
@@ -860,7 +860,7 @@ public class Query {
   }
   
   
-  protected Query execute(Object obj) throws SDBException {
+  public Query execute(Object obj) throws SDBException {
     if(head != null) {
       return head.exec(obj);
     }
@@ -893,7 +893,7 @@ public class Query {
   }
   
   
-  private static Query fromExample(String descend, Document doc, Query q) {
+  public static Query fromExample(String descend, Document doc, Query q) {
     Iterator<String> it = doc.map().keySet().iterator();
     if(!it.hasNext()) return q;
     while(it.hasNext()) {
@@ -979,7 +979,6 @@ public class Query {
     Query q = Query.fromExample(doc);
     Result rs = new Result();
     rs.add(doc);
-    rs = rs.filter(q);
     System.out.println("-> result: "+ rs.size());
     rs.orderBy("name").asc();
     while(rs.hasNext()) {

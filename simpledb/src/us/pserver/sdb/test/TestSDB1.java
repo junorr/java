@@ -24,7 +24,7 @@ package us.pserver.sdb.test;
 import us.pserver.sdb.Document;
 import us.pserver.sdb.Query;
 import us.pserver.sdb.query.Result;
-import us.pserver.sdb.SimpleDB;
+import us.pserver.sdb.SimpleDB1;
 import us.pserver.sdb.engine.FileEngine;
 import us.pserver.sdb.query.Query1;
 import us.pserver.sdb.query.QueryBuilder;
@@ -34,9 +34,9 @@ import us.pserver.sdb.query.QueryBuilder;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 09/10/2014
  */
-public class TestSDB {
+public class TestSDB1 {
 
-  static SimpleDB sdb;
+  static SimpleDB1 sdb;
   
   
   public static void add() {
@@ -121,8 +121,9 @@ public class TestSDB {
     System.out.println("---- GET ----");
     System.out.println();
     
-    Query q = new Query("server")
-        .field("name").equal("102");
+    Query1 q = QueryBuilder.builder("server")
+        .field("name").equal("102").create();
+    
     System.out.println("-> query: "+ q);
     
     Document doc = sdb.getOne(q);
@@ -135,9 +136,10 @@ public class TestSDB {
     System.out.println("---- GET2 ----");
     System.out.println();
     
-    Query q = new Query("server")
-        .field("name").not().equal("102")
-        .and("apps").greaterEquals(4);
+    Query1 q = QueryBuilder.builder("server")
+        .field("name").not().equal("102").create();
+    q.and(QueryBuilder.builder().field("apps").greaterEquals(4).create());
+    
     System.out.println("-> query: "+ q);
     
     Result rs = sdb.get(q);
@@ -147,11 +149,12 @@ public class TestSDB {
       System.out.println("  -> item: "+ rs.next());
     }
     
-    Query1 q1 = QueryBuilder.builder("server")
+    q = QueryBuilder.builder("server")
         .field("db").not().equal(true).create();
-    System.out.println("\n-> filter: "+ q1);
     
-    rs = rs.filter(q1);
+    System.out.println("\n-> filter: "+ q);
+    
+    rs = rs.filter(q);
     System.out.println("-> result: "+ rs.size());
     rs.orderBy("name").asc();
     while(rs.hasNext()) {
@@ -165,10 +168,13 @@ public class TestSDB {
     System.out.println("---- GET3 ----");
     System.out.println();
     
-    Query q = new Query("server")
+    Query1 q = QueryBuilder.builder("server")
         .descend("creds")
-        .field("user").equal("username")
-        .and("name").not().contains("2");
+        .field("user")
+        .equal("username").create();
+    q.and(QueryBuilder.builder()
+        .field("name").not().contains("2").create());
+    
     System.out.println("-> query: "+ q);
     
     Result rs = sdb.get(q);
@@ -185,12 +191,13 @@ public class TestSDB {
     System.out.println("---- GET4 ----");
     System.out.println();
     
-    Query q = new Query("server")
-        .field("name").equal("102")
-        .or().equal("104")
-        .or().equal("105")
-        .and(new Query("server").field("apps").greater(0))
-        .or(new Query("server").field("db").equal(true));
+    Query1 q = QueryBuilder.builder("server")
+        .field("name").equal("102").create();
+    q.or(QueryBuilder.builder().field("name").equal("104").create());
+    q.or(QueryBuilder.builder().field("name").equal("105").create());
+    q.and(QueryBuilder.builder().field("apps").greater(0).create());
+    q.or(QueryBuilder.builder().field("db").equal(true).create());
+    
     System.out.println("-> query: "+ q);
     
     Result rs = sdb.get(q);
@@ -212,12 +219,12 @@ public class TestSDB {
   
   
   public static void main(String[] args) {
-    sdb = new SimpleDB(new FileEngine("./simple.db"));
+    sdb = new SimpleDB1(new FileEngine("./simple.db"));
     
     try 
     {
       
-      add();
+      //add();
       //add2();
       get();
       get2();

@@ -362,40 +362,27 @@ public class ResultOID implements List<OID>, Iterator<OID> {
   }
   
   
-  public ResultOID filter(Query q) {
+  public ResultOID filter(Query1 q) {
     return filter(q, this);
   }
  
   
-  private ResultOID filter(Query q, List<OID> list) {
+  private ResultOID filter(Query1 q, List<OID> list) {
     ResultOID res = new ResultOID();
     Result docs = new Result();
     if(q == null || list == null || list.isEmpty()) 
       return res;
     
-    q = q.head();
-    if(q.label() == null)
-      return res;
-    if(q.key() == null 
-        && q.method() == null 
-        && q.value() == null)
-      return res;
-    
-    Result rm = new Result();
-    
     for(OID oid : list) {
       if(oid == null || !oid.hasObject()) continue;
-      q = q.head();
       Document d = ObjectUtils.toDocument(oid.get(), true);
       d.block(oid.block());
-      QueryUtils.match(d, q, docs, rm);
+      if(q.exec(d)) docs.add(d);
       
       if(q.limit() > 0 && docs.size() >= q.limit()) 
         break;
     }//for
     
-    rm.clear();
-    rm = null;
     for(Document d : docs) {
       OID oid = null;
       for(OID o : list) {

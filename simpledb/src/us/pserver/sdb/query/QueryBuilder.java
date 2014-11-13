@@ -21,8 +21,10 @@
 
 package us.pserver.sdb.query;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import us.pserver.sdb.Document;
 import us.pserver.sdb.Query;
 
 /**
@@ -199,7 +201,85 @@ public class QueryBuilder {
   
   
   public Query1 create() {
+    if(path.isEmpty() && label == null) {
+      throw new IllegalStateException(
+          "No conditions applied on this QueryBuilder");
+    }
     return new Query1(path, label).limit(limit);
+  }
+  
+  
+  public void fromExample1(Document doc, String ... keys) {
+    if(doc == null || keys == null || keys.length < 1)
+      return;
+    
+    for(int i = 0; i < keys.length; i++) {
+      this.descend(keys[i]);
+    }
+    
+    Iterator<String> it = doc.map().keySet().iterator();
+    while(it.hasNext()) {
+      String key = it.next();
+      Object val = doc.get(key);
+      if(val instanceof Document) {
+        
+      }
+      else {
+        this.field(key).equal(val);
+      }
+    }
+  }
+  
+  
+  public Query1 fromExample(Document doc, String dkey) {
+    if(doc == null
+        || (doc.map().isEmpty() 
+        &&  doc.label() == null))
+      throw new IllegalArgumentException("Invalid Document: "+ doc);
+    
+    if(doc.label() != null && dkey == null)
+      label = doc.label();
+    
+    if(dkey != null) this.descend(dkey);
+    
+    Iterator<String> it = doc.map().keySet().iterator();
+    Query1 qry = null;
+    boolean first = true;
+    
+    while(it.hasNext()) {
+      String key = it.next();
+      Object val = doc.get(key);
+      if(val == null) continue;
+      if(first) {
+        first = false;
+        if(val instanceof Document) {
+          qry = this.fromExample(doc, key);
+        }
+        else {
+          qry = this.field(key).equal(val).create();
+        }
+      }
+      else {
+        QueryBuilder bld = QueryBuilder.builder();
+        if(dkey != null) bld.descend(dkey);
+        if(val instanceof Document) {
+          qry.and(bld.fromExample((Document) val, key));
+        }
+        else {
+          qry.and(bld.field(key).equal(val).create());
+        }
+      }
+    }
+    return qry;
+  }
+
+  
+  public Query1 fromExample(Document doc) {
+    if(doc == null 
+        || (doc.map().isEmpty() 
+        &&  doc.label() == null))
+      throw new IllegalArgumentException("Invalid Document: "+ doc);
+    return fromExample(doc, null);
   }
   
 }

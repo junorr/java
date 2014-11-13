@@ -343,37 +343,20 @@ public class Result implements List<Document>, Iterator<Document> {
   }
   
   
-  public Result filter(Query q) {
+  public Result filter(Query1 q) {
     return filter(q, this);
   }
  
   
-  private Result filter(Query q, List<Document> list) {
+  private Result filter(Query1 q, List<Document> list) {
     Result docs = new Result();
     if(q == null || list == null || list.isEmpty()) 
       return docs;
     
-    q = q.head();
-    if(q.label() == null)
-      return docs;
-    if(q.key() == null 
-        && q.method() == null 
-        && q.value() == null)
-      return docs;
-    
-    Result rm = new Result();
-    
-    for(Document d : list) {
-      if(d == null) continue;
-      q = q.head();
-      QueryUtils.match(d, q, docs, rm);
-      
-      if(q.limit() > 0 && docs.size() >= q.limit()) 
-        break;
-    }//for
-    
-    rm.clear();
-    rm = null;
+    for(int i = 0; i < list.size(); i++) {
+      if(q.exec(list.get(i)))
+        docs.add(list.get(i));
+    }
     return docs;
   }
   
