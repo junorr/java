@@ -22,8 +22,6 @@
 package us.pserver.sdb.query;
 
 import java.util.Objects;
-import us.pserver.sdb.Query.DataType;
-import us.pserver.sdb.Query.QueryMethod;
 
 /**
  *

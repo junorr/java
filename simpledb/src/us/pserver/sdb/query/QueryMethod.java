@@ -1,0 +1,76 @@
+/*
+ * Direitos Autorais Reservados (c) 2011 Juno Roesler
+ * Contato: juno.rr@gmail.com
+ * 
+ * Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os
+ * termos da Licença Pública Geral Menor do GNU conforme publicada pela Free
+ * Software Foundation; tanto a versão 2.1 da Licença, ou qualquer
+ * versão posterior.
+ * 
+ * Esta biblioteca é distribuída na expectativa de que seja útil, porém, SEM
+ * NENHUMA GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE
+ * OU ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA. Consulte a Licença Pública
+ * Geral Menor do GNU para mais detalhes.
+ * 
+ * Você deve ter recebido uma cópia da Licença Pública Geral Menor do GNU junto
+ * com esta biblioteca; se não, acesse 
+ * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html, 
+ * ou escreva para a Free Software Foundation, Inc., no
+ * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
+ */
+
+package us.pserver.sdb.query;
+
+/**
+ *
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 14/11/2014
+ */
+public enum QueryMethod {
+  
+  EQUALS, 
+  EQUALS_ICS, 
+  CONTAINS, 
+  CONTAINS_ICS, 
+  STARTS_WITH, 
+  ENDS_WITH, 
+  GREATER, 
+  LESSER, 
+  GREATER_EQ, 
+  LESSER_EQ,
+  EMPTY,
+  DESCEND,
+  NOT;
+    
+  @Override
+  public String toString() {
+    switch(this) {
+      case EQUALS:
+        return "==";
+      case EQUALS_ICS:
+        return "==(ics)";
+      case CONTAINS:
+        return "CONTAINS";
+      case CONTAINS_ICS:
+        return "CONTAINS(ics)";
+      case STARTS_WITH:
+        return "[STARTS]...";
+      case ENDS_WITH:
+        return "...[ENDS]";
+      case GREATER:
+        return ">";
+      case GREATER_EQ:
+        return ">=";
+      case LESSER:
+        return "<";
+      case LESSER_EQ:
+        return "<=";
+      case DESCEND:
+        return "-->";
+      case NOT:
+        return "!";
+      default:
+        return "IS_EMPTY{}";
+    }
+  }
+}

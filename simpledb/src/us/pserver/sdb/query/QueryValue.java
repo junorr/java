@@ -21,8 +21,10 @@
 
 package us.pserver.sdb.query;
 
+import java.util.Arrays;
 import java.util.Date;
-import us.pserver.sdb.Query.DataType;
+import java.util.List;
+import us.pserver.sdb.util.ObjectUtils;
 
 /**
  *
@@ -63,6 +65,10 @@ public class QueryValue {
     }
     else if(CharSequence.class.isAssignableFrom(val.getClass())) {
       type = DataType.STRING;
+    }
+    else if(val.getClass().isArray() 
+        || List.class.isAssignableFrom(val.getClass())) {
+      type = DataType.ARRAY;
     }
     else {
       type = DataType.UNDEFINED;
@@ -125,7 +131,11 @@ public class QueryValue {
   
   @Override
   public String toString() {
-    return (value != null ? value.toString() : null);
+    return (value != null 
+        ? (ObjectUtils.isArray(value) 
+          ? Arrays.toString(ObjectUtils.toArray(value)) 
+          : value.toString()) 
+        : null);
   }
   
 }

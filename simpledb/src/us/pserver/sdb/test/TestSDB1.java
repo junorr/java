@@ -192,11 +192,13 @@ public class TestSDB1 {
     System.out.println();
     
     Query1 q = QueryBuilder.builder("server")
-        .field("name").equal("102").create();
-    q.or(QueryBuilder.builder().field("name").equal("104").create());
-    q.or(QueryBuilder.builder().field("name").equal("105").create());
-    q.and(QueryBuilder.builder().field("apps").greater(0).create());
-    q.or(QueryBuilder.builder().field("db").equal(true).create());
+        .field("name").equal("102")
+        .or().field("name").equal("104")
+        .or().field("name").equal("105").create();
+    
+    q.and(QueryBuilder.builder()
+        .field("apps").greater(0)
+        .or().field("db").equal(true).create());
     
     System.out.println("-> query: "+ q);
     

@@ -21,15 +21,15 @@
 
 package us.pserver.sdb.query;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import us.pserver.sdb.Document;
-import us.pserver.sdb.Query.DataType;
-import us.pserver.sdb.Query.QueryMethod;
 import us.pserver.sdb.SDBException;
+import us.pserver.sdb.util.ObjectUtils;
 
 /**
  *
@@ -123,7 +123,70 @@ public class Query1 {
   }
   
   
+  private boolean xcontarray(QueryValue val, Object arg) {
+    if(arg == null 
+        || (!arg.getClass().isArray() 
+        &&  !List.class.isAssignableFrom(arg.getClass()))) 
+        return false;
+    
+    Object[] vals = toArray(val);
+    Object[] args = null;
+    if(ObjectUtils.isArray(arg)) {
+      args = ObjectUtils.toArray(arg);
+    }
+    else {
+      args = ((List) arg).toArray();
+    }
+    return xcontarray(vals, args);
+  }
+  
+  
+  private Object[] toArray(QueryValue val) {
+    Object value = val.value();
+    Object[] vals = null;
+    if(ObjectUtils.isArray(value)) {
+      vals = ObjectUtils.toArray(value);
+    }
+    else if(ObjectUtils.isList(value)) {
+      vals = ((List) value).toArray();
+    }
+    else {
+      vals = new Object[] { value };
+    }
+    return vals;
+  }
+  
+  
+  private boolean xcontarray(Object[] val, Object[] arg) {
+    if(val == null 
+        || arg == null 
+        || val.length < 1 
+        || arg.length < 1)
+      return false;
+    
+    boolean[] bools = new boolean[val.length];
+    for(int i = 0; i < val.length; i++) {
+      bools[i] = false;
+      for(int j = 0; j < arg.length; j++) {
+        if(Objects.equals(val[i], arg[j])) {
+          bools[i] = true;
+          break;
+        }
+      }
+    }
+    boolean res = true;
+    for(int i = 0; i < bools.length; i++) {
+      res = res && bools[i];
+    }
+    return res;
+  }
+  
+  
   private boolean xcontains(QueryValue val, Object arg) {
+    if(ObjectUtils.isArray(arg) 
+        || ObjectUtils.isList(arg)) {
+      return xcontarray(val, arg);
+    }
     return arg.toString().contains(val.asString());
   }
   
@@ -147,6 +210,12 @@ public class Query1 {
   
   
   private boolean xeq(QueryValue val, Object arg) {
+    if(val == null || arg == null)
+      return false;
+    if(ObjectUtils.isArray(arg)) {
+      return Arrays.deepEquals(toArray(val), ObjectUtils.toArray(arg));
+    }
+    
     QueryValue varg = new QueryValue(arg);
     Object o1 = val.asString();
     Object o2 = varg.asString();
@@ -159,7 +228,7 @@ public class Query1 {
     } else if(val.type() == DataType.BOOLEAN) {
       o1 = val.asBoolean();
       o2 = varg.asBoolean();
-    }
+    } 
     return Objects.equals(o1, o2);
   }
   
@@ -372,7 +441,6 @@ public class Query1 {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    //sb.append("Query");
     if(label != null) {
       sb.append(label);
     }

@@ -182,6 +182,93 @@ public class ObjectUtils {
   }
   
   
+  public static boolean isPrimitiveArray(Object obj) {
+    if(obj == null || !isArray(obj))
+      return false;
+    Class cls = obj.getClass();
+    return boolean  [].class.equals(cls)
+        || byte     [].class.equals(cls)
+        || char     [].class.equals(cls)
+        || short    [].class.equals(cls)
+        || int      [].class.equals(cls)
+        || float    [].class.equals(cls)
+        || double   [].class.equals(cls)
+        || long     [].class.equals(cls);
+  }
+  
+  
+  public static Object[] toArray(Object obj) {
+    if(obj == null || !isArray(obj))
+      return null;
+    
+    Class cls = obj.getClass();
+    Object[] objs = null;
+    
+    if(isPrimitiveArray(obj)) {
+      if(boolean[].class.equals(cls)) {
+        boolean[] array = (boolean[]) obj;
+        objs = new Object[array.length];
+        for(int i = 0; i < array.length; i++) {
+          objs[i] = array[i];
+        }
+      }
+      else if(byte[].class.equals(cls)) {
+        byte[] array = (byte[]) obj;
+        objs = new Object[array.length];
+        for(int i = 0; i < array.length; i++) {
+          objs[i] = array[i];
+        }
+      }
+      else if(char[].class.equals(cls)) {
+        char[] array = (char[]) obj;
+        objs = new Object[array.length];
+        for(int i = 0; i < array.length; i++) {
+          objs[i] = array[i];
+        }
+      }
+      else if(short[].class.equals(cls)) {
+        short[] array = (short[]) obj;
+        objs = new Object[array.length];
+        for(int i = 0; i < array.length; i++) {
+          objs[i] = array[i];
+        }
+      }
+      else if(int[].class.equals(cls)) {
+        int[] array = (int[]) obj;
+        objs = new Object[array.length];
+        for(int i = 0; i < array.length; i++) {
+          objs[i] = array[i];
+        }
+      }
+      else if(float[].class.equals(cls)) {
+        float[] array = (float[]) obj;
+        objs = new Object[array.length];
+        for(int i = 0; i < array.length; i++) {
+          objs[i] = array[i];
+        }
+      }
+      else if(double[].class.equals(cls)) {
+        double[] array = (double[]) obj;
+        objs = new Object[array.length];
+        for(int i = 0; i < array.length; i++) {
+          objs[i] = array[i];
+        }
+      }
+      else {
+        long[] array = (long[]) obj;
+        objs = new Object[array.length];
+        for(int i = 0; i < array.length; i++) {
+          objs[i] = array[i];
+        }
+      }
+    }
+    else {
+      objs = (Object[]) obj;
+    }
+    return objs;
+  }
+  
+  
   public static String doc2str(Document doc) {
     if(doc == null) return null;
     StringBuffer sb = new StringBuffer();
@@ -195,6 +282,8 @@ public class ObjectUtils {
       sb.append(key).append(":");
       if(v instanceof Document)
         v = doc2str((Document)v);
+      if(isArray(v))
+        v = Arrays.toString(toArray(v));
       sb.append(v.toString());
       if(it.hasNext())
         sb.append(",");

@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import us.pserver.sdb.Document;
-import us.pserver.sdb.Query;
 
 /**
  *
@@ -40,17 +39,26 @@ public class QueryBuilder {
   
   private int limit;
   
+  private Query1 query;
+  
+  boolean and;
+  
   
   protected QueryBuilder() {
     path = new LinkedList<>();
     label = null;
     limit = -1;
+    query = null;
+    and = false;
   }
   
   
   protected QueryBuilder(String label) {
     path = new LinkedList<>();
     this.label = label;
+    limit = -1;
+    query = null;
+    and = false;
   }
   
   
@@ -61,6 +69,40 @@ public class QueryBuilder {
   
   public static QueryBuilder builder(String label) {
     return new QueryBuilder(label);
+  }
+  
+  
+  public QueryBuilder and() {
+    if(path.isEmpty() && label == null) {
+      throw new IllegalStateException(
+          "No conditions applied on this QueryBuilder. Can not add and operator.");
+    }
+    if(query == null) {
+      query = build();
+    }
+    else {
+      if(and) query.and(build());
+      else query.or(build());
+    }
+    and = true;
+    return this.clear();
+  }
+  
+  
+  public QueryBuilder or() {
+    if(path.isEmpty() && label == null) {
+      throw new IllegalStateException(
+          "No conditions applied on this QueryBuilder. Can not add or operator.");
+    }
+    if(query == null) {
+      query = build();
+    }
+    else {
+      if(and) query.and(build());
+      else query.or(build());
+    }
+    and = false;
+    return clear();
   }
   
   
@@ -95,7 +137,7 @@ public class QueryBuilder {
   public QueryBuilder descend(String field) {
     checknull(field, "field");
     path.add(new QueryPath().field(field));
-    path.add(new QueryPath().method(Query.QueryMethod.DESCEND));
+    path.add(new QueryPath().method(QueryMethod.DESCEND));
     return this;
   }
   
@@ -108,14 +150,14 @@ public class QueryBuilder {
   
   public QueryBuilder not() {
     path.add(new QueryPath()
-        .method(Query.QueryMethod.NOT));
+        .method(QueryMethod.NOT));
     return this;
   }
   
   
   public QueryBuilder empty() {
     path.add(new QueryPath()
-        .method(Query.QueryMethod.EMPTY));
+        .method(QueryMethod.EMPTY));
     return this;
   }
   
@@ -123,7 +165,7 @@ public class QueryBuilder {
   public QueryBuilder equal(Object val) {
     checknull(val, "value");
     path.add(new QueryPath().value(val));
-    path.add(new QueryPath().method(Query.QueryMethod.EQUALS));
+    path.add(new QueryPath().method(QueryMethod.EQUALS));
     return this;
   }
   
@@ -131,7 +173,23 @@ public class QueryBuilder {
   public QueryBuilder equalIgnoreCase(String val) {
     checknull(val, "value");
     path.add(new QueryPath().value(val));
-    path.add(new QueryPath().method(Query.QueryMethod.EQUALS_ICS));
+    path.add(new QueryPath().method(QueryMethod.EQUALS_ICS));
+    return this;
+  }
+  
+  
+  public QueryBuilder contains(Object ... vals) {
+    checknull(vals, "values");
+    path.add(new QueryPath().value(vals));
+    path.add(new QueryPath().method(QueryMethod.CONTAINS));
+    return this;
+  }
+  
+  
+  public QueryBuilder contains(List vals) {
+    checknull(vals, "values");
+    path.add(new QueryPath().value(vals));
+    path.add(new QueryPath().method(QueryMethod.CONTAINS));
     return this;
   }
   
@@ -139,7 +197,7 @@ public class QueryBuilder {
   public QueryBuilder contains(Object val) {
     checknull(val, "value");
     path.add(new QueryPath().value(val));
-    path.add(new QueryPath().method(Query.QueryMethod.CONTAINS));
+    path.add(new QueryPath().method(QueryMethod.CONTAINS));
     return this;
   }
   
@@ -147,7 +205,7 @@ public class QueryBuilder {
   public QueryBuilder containsIgnoreCase(String val) {
     checknull(val, "value");
     path.add(new QueryPath().value(val));
-    path.add(new QueryPath().method(Query.QueryMethod.CONTAINS_ICS));
+    path.add(new QueryPath().method(QueryMethod.CONTAINS_ICS));
     return this;
   }
   
@@ -155,7 +213,7 @@ public class QueryBuilder {
   public QueryBuilder endsWith(String val) {
     checknull(val, "value");
     path.add(new QueryPath().value(val));
-    path.add(new QueryPath().method(Query.QueryMethod.ENDS_WITH));
+    path.add(new QueryPath().method(QueryMethod.ENDS_WITH));
     return this;
   }
   
@@ -163,7 +221,7 @@ public class QueryBuilder {
   public QueryBuilder greater(Object val) {
     checknull(val, "value");
     path.add(new QueryPath().value(val));
-    path.add(new QueryPath().method(Query.QueryMethod.GREATER));
+    path.add(new QueryPath().method(QueryMethod.GREATER));
     return this;
   }
   
@@ -171,7 +229,7 @@ public class QueryBuilder {
   public QueryBuilder greaterEquals(Object val) {
     checknull(val, "value");
     path.add(new QueryPath().value(val));
-    path.add(new QueryPath().method(Query.QueryMethod.GREATER_EQ));
+    path.add(new QueryPath().method(QueryMethod.GREATER_EQ));
     return this;
   }
   
@@ -179,7 +237,7 @@ public class QueryBuilder {
   public QueryBuilder lesser(Object val) {
     checknull(val, "value");
     path.add(new QueryPath().value(val));
-    path.add(new QueryPath().method(Query.QueryMethod.LESSER));
+    path.add(new QueryPath().method(QueryMethod.LESSER));
     return this;
   }
   
@@ -187,7 +245,7 @@ public class QueryBuilder {
   public QueryBuilder lesserEquals(Object val) {
     checknull(val, "value");
     path.add(new QueryPath().value(val));
-    path.add(new QueryPath().method(Query.QueryMethod.LESSER_EQ));
+    path.add(new QueryPath().method(QueryMethod.LESSER_EQ));
     return this;
   }
   
@@ -195,39 +253,50 @@ public class QueryBuilder {
   public QueryBuilder startsWith(String val) {
     checknull(val, "value");
     path.add(new QueryPath().value(val));
-    path.add(new QueryPath().method(Query.QueryMethod.STARTS_WITH));
+    path.add(new QueryPath().method(QueryMethod.STARTS_WITH));
     return this;
   }
   
   
-  public Query1 create() {
+  public QueryBuilder clear() {
+    path.clear();
+    label = null;
+    limit = -1;
+    return this;
+  }
+  
+  
+  private Query1 build() {
     if(path.isEmpty() && label == null) {
       throw new IllegalStateException(
           "No conditions applied on this QueryBuilder");
     }
-    return new Query1(path, label).limit(limit);
+    LinkedList<QueryPath> list = new LinkedList<>();
+    list.addAll(path);
+    return new Query1(list, label).limit(limit);
   }
   
   
-  public void fromExample1(Document doc, String ... keys) {
-    if(doc == null || keys == null || keys.length < 1)
-      return;
-    
-    for(int i = 0; i < keys.length; i++) {
-      this.descend(keys[i]);
+  public Query1 create() {
+    if(query == null 
+        && path.isEmpty() 
+        && label == null) {
+      throw new IllegalStateException(
+          "No conditions applied on this QueryBuilder");
     }
-    
-    Iterator<String> it = doc.map().keySet().iterator();
-    while(it.hasNext()) {
-      String key = it.next();
-      Object val = doc.get(key);
-      if(val instanceof Document) {
-        
+    Query1 qry = null;
+    if(query != null) {
+      if(!path.isEmpty()) {
+        if(and) query.and(build());
+        else query.or(build());
       }
-      else {
-        this.field(key).equal(val);
-      }
+      qry = query;
     }
+    else {
+      qry = build();
+    }
+    this.clear();
+    return qry;
   }
   
   
