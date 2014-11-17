@@ -24,7 +24,7 @@ package us.pserver.sdb.query;
 import java.util.Objects;
 
 /**
- *
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 07/11/2014
  */
@@ -112,6 +112,8 @@ public class QueryPath {
     if(dt == null)
       throw new IllegalArgumentException("Invalid null DataType: "+ dt);
     type = dt;
+    if(value != null)
+      value.type(type);
     return this;
   }
   

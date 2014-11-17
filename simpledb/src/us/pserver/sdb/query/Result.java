@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Stream;
 import us.pserver.sdb.Document;
-import us.pserver.sdb.Query;
 
 /**
  *
@@ -343,12 +342,12 @@ public class Result implements List<Document>, Iterator<Document> {
   }
   
   
-  public Result filter(Query1 q) {
+  public Result filter(Query q) {
     return filter(q, this);
   }
  
   
-  private Result filter(Query1 q, List<Document> list) {
+  private Result filter(Query q, List<Document> list) {
     Result docs = new Result();
     if(q == null || list == null || list.isEmpty()) 
       return docs;

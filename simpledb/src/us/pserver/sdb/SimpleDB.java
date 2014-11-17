@@ -22,12 +22,12 @@
 package us.pserver.sdb;
 
 import us.pserver.sdb.query.Result;
-import us.pserver.sdb.query.QueryUtils;
 import us.pserver.sdb.engine.Index;
 import us.pserver.sdb.engine.StorageEngine;
 import java.util.Iterator;
 import java.util.List;
-import us.pserver.sdb.query.Query1;
+import us.pserver.sdb.query.Query;
+import us.pserver.sdb.query.QueryBuilder;
 
 
 /**
@@ -113,19 +113,6 @@ public class SimpleDB {
   }
   
   
-  private void printdoc(Document doc) {
-    if(doc == null)
-      return;
-    System.out.println("* Document: label="+ doc.label());
-    Iterator<String> it = doc.map().keySet().iterator();
-    while(it.hasNext()) {
-      String k = it.next();
-      System.out.println("  - "+ k+ "="+ doc.map().get(k));
-    }
-    System.out.println("* -----------------------------");
-  }
-  
-  
   protected void rmNested(Document doc) {
     if(doc == null) return;
     
@@ -189,7 +176,7 @@ public class SimpleDB {
   
   
   public Document getOne(Document doc) throws SDBException {
-    return getOne(Query.fromExample(doc));
+    return getOne(QueryBuilder.builder().fromExample(doc));
   }
   
   
@@ -205,7 +192,7 @@ public class SimpleDB {
   
   
   public Result get(Document doc) throws SDBException {
-    return get(Query.fromExample(doc));
+    return get(QueryBuilder.builder().fromExample(doc));
   }
   
   
@@ -229,47 +216,11 @@ public class SimpleDB {
   
   public Result get(Query q) throws SDBException {
     Result docs = new Result();
-    if(q == null) return docs;
-    q = q.head();
-    if(q.label() == null)
+    if(q == null || (q.isEmpty() && q.label() == null)) 
       return docs;
-    if(q.key() == null 
-        && q.method() == null 
-        && q.value() == null)
+    
+    if(q.isEmpty() && q.label() != null)
       return get(q.label(), q.limit());
-    
-    Index id = engine.getIndex();
-    List<int[]> idx = id.getList(q.label());
-    
-    if(idx == null || idx.isEmpty())
-      return docs;
-    
-    Result rm = new Result();
-    
-    for(int[] is : idx) {
-      if(is  == null || is[0] < 0) continue;
-      
-      Document d = get(is[0]);
-      if(d == null) continue;
-      q = q.head();
-      
-      QueryUtils.match(d, q, docs, rm);
-      
-      if(q.limit() > 0 && docs.size() >= q.limit()) 
-        break;
-    }//for
-    
-    rm.clear();
-    rm = null;
-    idx = null;
-    return docs;
-  }
-  
-  
-  public Result get(Query1 q) throws SDBException {
-    Result docs = new Result();
-    if(q == null || q.isEmpty()) 
-      return docs;
     
     Index id = engine.getIndex();
     List<int[]> idx = id.getList(q.label());
@@ -295,7 +246,7 @@ public class SimpleDB {
   }
   
   
-  public Result join(Query1 q, Result rs) {
+  public Result join(Query q, Result rs) {
     if(q == null) return rs;
     if(rs == null) rs = new Result();
     Result other = get(q);

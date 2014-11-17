@@ -33,7 +33,6 @@ import java.util.ListIterator;
 import java.util.stream.Stream;
 import us.pserver.sdb.Document;
 import us.pserver.sdb.OID;
-import us.pserver.sdb.Query;
 import us.pserver.sdb.util.ObjectUtils;
 
 /**
@@ -362,12 +361,12 @@ public class ResultOID implements List<OID>, Iterator<OID> {
   }
   
   
-  public ResultOID filter(Query1 q) {
+  public ResultOID filter(Query q) {
     return filter(q, this);
   }
  
   
-  private ResultOID filter(Query1 q, List<OID> list) {
+  private ResultOID filter(Query q, List<OID> list) {
     ResultOID res = new ResultOID();
     Result docs = new Result();
     if(q == null || list == null || list.isEmpty()) 
@@ -377,23 +376,11 @@ public class ResultOID implements List<OID>, Iterator<OID> {
       if(oid == null || !oid.hasObject()) continue;
       Document d = ObjectUtils.toDocument(oid.get(), true);
       d.block(oid.block());
-      if(q.exec(d)) docs.add(d);
+      if(q.exec(d)) res.add(oid);
       
       if(q.limit() > 0 && docs.size() >= q.limit()) 
         break;
     }//for
-    
-    for(Document d : docs) {
-      OID oid = null;
-      for(OID o : list) {
-        if(o.block() == d.block()) {
-          oid = o;
-          break;
-        }
-      }
-      if(oid != null)
-        res.add(oid);
-    }
     
     return res;
   }

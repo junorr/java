@@ -54,9 +54,9 @@ public enum QueryMethod {
       case CONTAINS_ICS:
         return "CONTAINS(ics)";
       case STARTS_WITH:
-        return "[STARTS]...";
+        return "(STARTS)...";
       case ENDS_WITH:
-        return "...[ENDS]";
+        return "...(ENDS)";
       case GREATER:
         return ">";
       case GREATER_EQ:
@@ -70,7 +70,7 @@ public enum QueryMethod {
       case NOT:
         return "!";
       default:
-        return "IS_EMPTY{}";
+        return "IS_EMPTY";
     }
   }
 }

@@ -22,7 +22,7 @@
 package us.pserver.sdb.test;
 
 import us.pserver.sdb.Document;
-import us.pserver.sdb.query.Query1;
+import us.pserver.sdb.query.Query;
 import us.pserver.sdb.query.QueryBuilder;
 
 /**
@@ -30,11 +30,11 @@ import us.pserver.sdb.query.QueryBuilder;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 11/11/2014
  */
-public class TestQuery1 {
+public class TestQuery {
 
   
   public static void main(String[] args) {
-    Query1 qry = QueryBuilder.builder("server")
+    Query qry = QueryBuilder.builder("server")
         .descend("creds")
         .descend("pass")
         .field("str")

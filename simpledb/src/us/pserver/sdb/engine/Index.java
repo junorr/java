@@ -52,6 +52,17 @@ public class Index {
   }
   
   
+  public Index serialEngine(SerialEngine se) {
+    serial = se;
+    return this;
+  }
+  
+  
+  public SerialEngine serialEngine() {
+    return serial;
+  }
+  
+  
   protected Map<String, List<int[]>> map() {
     return map;
   }

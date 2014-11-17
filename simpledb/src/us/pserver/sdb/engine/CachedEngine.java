@@ -160,13 +160,13 @@ public class CachedEngine implements StorageEngine {
     DocHits d = find(block);
     if(d != null) {
       if(d.document() != null)
-        System.out.println("* get cached: "+ d.document().toString());
+        //System.out.println("* get cached: "+ d.document().toString());
       return d.incHits().document();
     }
     
     Document doc = engine.get(block);
     if(doc != null)
-      System.out.println("* get from file: "+ doc.toString());
+      //System.out.println("* get from file: "+ doc.toString());
     cache(doc);
     return doc;
   }

@@ -23,7 +23,6 @@ package us.pserver.sdb.query;
 
 import us.pserver.sdb.Document;
 import us.pserver.sdb.OID;
-import us.pserver.sdb.Query;
 import us.pserver.sdb.util.ObjectUtils;
 
 /**
@@ -33,97 +32,6 @@ import us.pserver.sdb.util.ObjectUtils;
  */
 public class QueryUtils {
 
-  
-  public static void match(Document doc, Query q, Result docs, Result rm) {
-    if(q == null || doc == null) return;
-    
-    while(q != null && (q.key() != null || q.other() != null || q.isDescend())) 
-    {
-      if(q.key() != null && !doc.map().containsKey(q.key()))
-        break;
-        
-      q = queryOther(q, docs, rm);
-      if(q == null 
-          || (q.key() == null 
-          &&  q.other() == null 
-          && !q.isDescend()))
-        break;
-        
-      Object val = doc.get(q.key());
-      Document dv = null;
-      while(q.isDescend()) {
-        if(val != null && Document.class.isAssignableFrom(val.getClass())) {
-          dv = (Document) val;
-        }
-        q = q.next();
-        if(q.key() == null || dv == null) 
-          break;
-        val = dv.get(q.key());
-      }
-        
-      boolean chk = q.exec(val).getResult();
-      
-      System.out.println("* exec: "+ q.field()+ ": ("+ val+ (q.isNot() ? ") !" : ") ")
-          + q.method()+ " "+ q.value()+ ": "+ chk);
-        
-      if(chk) {
-        if(!docs.contains(doc) 
-            && !rm.contains(doc))
-          docs.add(doc);
-      } else if(q.prev() != null && q.prev().isAnd()) {
-        if(docs.contains(doc)) {
-          docs.remove(doc);
-          rm.add(doc);
-        }
-      }
-      q = q.next();
-      if(q.isDescend() && dv != null
-          && dv.map().containsKey(q.key())) {
-        Result rdc = new Result();
-        match(dv, q, rdc, rm);
-        if(rdc.isEmpty() && docs.contains(doc))
-          docs.remove(doc);
-      }
-    }//while
-  }
-  
-
-  public static Query queryOther(Query q, Result docs, Result rm) {
-    if(q == null || q.other() == null || docs == null)
-      return q;
-    
-    while(q != null && q.other() != null) {
-      System.out.println("* exec.other = "+ q.other());
-      Result ors = docs.filter(q.other());
-      if(ors.isEmpty()) continue;
-      if(q.prev().isAnd()) {
-        for(int i = 0; i < docs.size(); i++) {
-          Document dd = docs.get(i);
-          if(!ors.containsBlock(dd.block())
-              && !rm.containsBlock(dd.block()))
-            rm.add(dd);
-        }
-        for(int i = 0; i < rm.size(); i++) {
-          Document dd = rm.get(i);
-          if(docs.containsBlock(dd.block())) {
-            System.out.println("  -> removing by other: "+ dd);
-            docs.removeBlock(dd.block());
-          }
-        }
-      }
-      else {
-        for(int i = 0; i < ors.size(); i++) {
-          Document dd = ors.get(i);
-          if(!docs.containsBlock(dd.block()))
-            docs.add(dd);
-        }
-      }
-      q = q.next();
-    }
-    return q;
-  }
-  
-  
   public static ResultOID convert(Result rs, ResultOID ro) {
     if(rs == null || rs.isEmpty())
       return ro;

@@ -23,8 +23,9 @@ package us.pserver.sdb.test;
 
 import us.pserver.sdb.OID;
 import us.pserver.sdb.ObjectDB;
-import us.pserver.sdb.Query;
 import us.pserver.sdb.engine.FileEngine;
+import us.pserver.sdb.query.Query;
+import us.pserver.sdb.query.QueryBuilder;
 
 /**
  *
@@ -108,14 +109,16 @@ public class TestODB {
    
     OID id = odb.getOne(ex);
     System.out.println("* odb.getOne: "+ id);
+    System.out.println();
     
-    Query q = new Query(Server.class)
-        .descend("creds")
-        .isEmpty();
+    Query q = QueryBuilder.builder(Server.class)
+        .field("creds").isEmpty().create();
+    
     System.out.println("* query: "+ q);
     
     id = odb.getOne(q);
     System.out.println("* odb.getOne: "+ id);
+    System.out.println();
   }
   
   
@@ -124,20 +127,24 @@ public class TestODB {
     System.out.println("---- GET2 ----");
     System.out.println();
     
-    Query q = new Query(Server.class)
+    Query q = QueryBuilder.builder(Server.class)
         .descend("creds")
         .field("user")
-        .equalIgnoreCase("juno");
+        .equalIgnoreCase("juno").create();
+    
     System.out.println("* query: "+ q);
     
     OID id = odb.getOne(q);
     System.out.println("* odb.getOne: "+ id);
+    System.out.println();
     
-    q = new Query(Server.class)
-        .field("hasdb").equal(false);
+    q = QueryBuilder.builder(Server.class)
+        .field("hasdb").equal(false).create();
+    
     System.out.println("* query: "+ q);
     id = odb.getOne(q);
     System.out.println("* odb.getOne: "+ id);
+    System.out.println();
   }
   
   

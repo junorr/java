@@ -29,10 +29,11 @@ import us.pserver.sdb.util.ObjectUtils;
 import us.pserver.sdb.engine.Index;
 import us.pserver.sdb.engine.StorageEngine;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import us.pserver.sdb.engine.CachedEngine;
 import us.pserver.sdb.engine.DocHits;
+import us.pserver.sdb.query.Query;
+import us.pserver.sdb.query.QueryBuilder;
 
 
 /**
@@ -162,7 +163,8 @@ public class ObjectDB {
   private Document putDoc(Document doc) throws SDBException {
     if(doc == null) return doc;
     doc = createLinks(doc);
-    Document dc = findCached(Query.fromExample(doc));
+    Document dc = findCached(
+        QueryBuilder.builder().fromExample(doc));
     if(dc != null) {
       System.out.println("* found in cache!!");
       doc.block(dc.block());
@@ -194,7 +196,9 @@ public class ObjectDB {
   
   public boolean remove(Object obj) throws SDBException {
     if(obj == null) return false;
-    Document doc = findCached(Query.fromExample(ObjectUtils.toDocument(obj, true)));
+    Document doc = findCached(
+        QueryBuilder.builder().fromExample(
+            ObjectUtils.toDocument(obj, true)));
     if(doc != null && doc.block() >= 0) {
       return remove(doc.block()) != null;
     }
@@ -253,7 +257,7 @@ public class ObjectDB {
     OID id = new OID();
     if(example == null) return id;
     return getOne(
-        Query.fromExample(
+        QueryBuilder.builder().fromExample(
             ObjectUtils.forExample(example)));
   }
   
@@ -283,7 +287,9 @@ public class ObjectDB {
   public ResultOID get(Object example) throws SDBException {
     ResultOID ro = new ResultOID(1);
     if(example == null) return ro;
-    return get(Query.fromExample(ObjectUtils.forExample(example)));
+    return get(
+        QueryBuilder.builder().fromExample(
+            ObjectUtils.forExample(example)));
   }
   
   
@@ -308,12 +314,8 @@ public class ObjectDB {
   public ResultOID get(Query q) throws SDBException {
     ResultOID objs = new ResultOID();
     if(q == null) return objs;
-    q = q.head();
     System.out.println("* get( "+ q+ " )");
-    if(q.key() == null 
-        && q.method() == null 
-        && q.other == null
-        && q.value() == null)
+    if(q.isEmpty() && q.label() != null)
       return get(q.label(), q.limit());
     
     Result rs = query(q);
@@ -344,37 +346,29 @@ public class ObjectDB {
   
   private Result query(Query q) throws SDBException {
     Result docs = new Result();
-    if(q == null) return docs;
-    q = q.head();
-    if(q.label() == null)
+    if(q == null || q.isEmpty()) 
       return docs;
     
     Index id = engine.getIndex();
     List<int[]> idx = id.getList(q.label());
     
-    System.out.println("* query: idx.size()="+ idx.size());
     if(idx == null || idx.isEmpty())
       return docs;
     
-    Result rm = new Result();
-    
     for(int[] is : idx) {
-      if(is  == null || is[0] < 0) continue;
+      if(is  == null || is[0] < 0) 
+        continue;
       
-      Document d = engine.get(is[0]);
+      Document d = getDoc(is[0]);
       if(d == null) continue;
-      d = resolveLinks(d);
-      q = q.head();
       
-      QueryUtils.match(d, q, docs, rm);
+      if(q.exec(d))
+        docs.add(d);
       
       if(q.limit() > 0 && docs.size() >= q.limit()) 
         break;
     }//for
     
-    rm.clear();
-    rm = null;
-    idx = null;
     return docs;
   }
   

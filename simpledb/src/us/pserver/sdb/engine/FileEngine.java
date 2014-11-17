@@ -66,7 +66,7 @@ public class FileEngine implements StorageEngine {
     try {
       hand = new FileHandler(file);
       serial = serialEngine;
-      index = new Index(serial);
+      index = new Index(serialEngine);
       init();
     } catch(IOException e) {
       throw new SDBException(e.getMessage(), e);
@@ -83,6 +83,7 @@ public class FileEngine implements StorageEngine {
       byte b = hand.readByte();
       if(b == BYTE_INDEX_START) {
         index = (Index) serial.deserialize(hand.readLineBytes());
+        index.serialEngine(serial);
         hand.seekBlock(blk);
         hand.internal().setLength(hand.position());
         break;
@@ -197,7 +198,7 @@ public class FileEngine implements StorageEngine {
       }
       else {
         int[] is = recycledBlock();
-        System.out.println("* recycled block: "+ (is != null ? is[0] : -1));
+        //System.out.println("* recycled block: "+ (is != null ? is[0] : -1));
         if(is != null) {
           write(doc, is);
         }

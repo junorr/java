@@ -24,7 +24,7 @@ package us.pserver.sdb.test;
 import java.util.LinkedList;
 import java.util.List;
 import us.pserver.sdb.Document;
-import us.pserver.sdb.query.Query1;
+import us.pserver.sdb.query.Query;
 import us.pserver.sdb.query.QueryBuilder;
 
 /**
@@ -46,8 +46,9 @@ public class TestArray {
         .put("ip", "172.29.14.102")
         .put("latency", ls);
     
-    Query1 q = QueryBuilder.builder("server")
-        .field("latency").contains(28.5).create();
+    Query q = QueryBuilder.builder("server")
+        .field("latency").contains(28.5)
+        .and().field("ip").contains(14).create();
     
     System.out.println("* doc: "+ doc);
     System.out.println("* qry: "+ q);

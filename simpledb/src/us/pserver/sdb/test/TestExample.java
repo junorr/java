@@ -22,7 +22,7 @@
 package us.pserver.sdb.test;
 
 import us.pserver.sdb.Document;
-import us.pserver.sdb.query.Query1;
+import us.pserver.sdb.query.Query;
 import us.pserver.sdb.query.QueryBuilder;
 
 /**
@@ -46,7 +46,7 @@ public class TestExample {
     
     System.out.println("* doc: "+ doc);
     
-    Query1 qry = QueryBuilder.builder().fromExample(doc);
+    Query qry = QueryBuilder.builder().fromExample(doc);
     System.out.println("* query: "+ qry);
     
     System.out.println("* query.exec(doc): "+ qry.exec(doc));

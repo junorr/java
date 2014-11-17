@@ -96,8 +96,6 @@ public class QueryValue {
   
   
   public Number asNumber() {
-    if(type == null || type != DataType.NUMBER)
-      throw new IllegalStateException("Value is not a number type");
     if(value == null)
       throw new IllegalStateException("Invalid null value: "+ value);
     return Double.parseDouble(value.toString());
@@ -105,8 +103,6 @@ public class QueryValue {
   
   
   public Boolean asBoolean() {
-    if(type == null || type != DataType.BOOLEAN)
-      throw new IllegalStateException("Value is not a boolean type");
     if(value == null)
       throw new IllegalStateException("Invalid null value: "+ value);
     return Boolean.parseBoolean(value.toString());
@@ -114,8 +110,6 @@ public class QueryValue {
   
   
   public Date asDate() {
-    if(type == null || type != DataType.DATE)
-      throw new IllegalStateException("Value is not a date type");
     if(value == null)
       throw new IllegalStateException("Invalid null value: "+ value);
     return (Date) value;

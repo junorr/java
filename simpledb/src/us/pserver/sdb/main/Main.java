@@ -25,13 +25,15 @@ import com.jpower.spj.Option;
 import com.jpower.spj.ShellParser;
 import java.util.Iterator;
 import us.pserver.sdb.Document;
-import us.pserver.sdb.Query;
 import us.pserver.sdb.query.Result;
 import us.pserver.sdb.SDBException;
 import us.pserver.sdb.SimpleDB;
-import us.pserver.sdb.engine.CachedFileEngine;
+import us.pserver.sdb.engine.CachedEngine;
 import us.pserver.sdb.engine.FileEngine;
 import us.pserver.sdb.engine.MemoryEngine;
+import us.pserver.sdb.query.DataType;
+import us.pserver.sdb.query.Query;
+import us.pserver.sdb.query.QueryBuilder;
 
 /**
  *
@@ -56,12 +58,12 @@ public class Main {
   
   
   public SimpleDB engineMemory() throws SDBException {
-    return (sdb = new SimpleDB(new MemoryEngine(file)));
+    return sdb = new SimpleDB(new MemoryEngine(file));
   }
   
   
   public SimpleDB engineCachedFile() throws SDBException {
-    return (sdb = new SimpleDB(new CachedFileEngine(file)));
+    return sdb = new SimpleDB(new CachedEngine(new FileEngine(file)));
   }
   
   
@@ -119,7 +121,8 @@ public class Main {
   
   
   public Document query(String str) {
-    Query q = parseQuery(str);
+    QueryBuilder bld = parseQuery(str);
+    Query q = bld.create();
     System.out.println("-> query: "+ q);
     return sdb.getOne(q);
   }
@@ -129,7 +132,8 @@ public class Main {
     if(str == null || str.isEmpty())
       throw new SDBException("-> list: Invalid query string: \""+ str+ "\"");
     if(str.startsWith("query(")) {
-      Query q = parseQuery(str);
+      QueryBuilder bld = parseQuery(str);
+      Query q = bld.create();
       System.out.println("-> "+ q);
       return sdb.get(q);
     } else
@@ -183,83 +187,90 @@ public class Main {
   }
   
 
-  private Query invoke(Query q, String method) {
-    if(q == null || method == null)
-      return q;
+  private QueryBuilder invoke(QueryBuilder bld, String method) {
+    if(bld == null || method == null)
+      return bld;
     
     method = method.replace("\n", "").replace("\r", "").trim();
-    if(method.startsWith("key")) {
-      q = q.key(extArg(method));
+    
+    if(method.startsWith("field")) {
+      bld.field(extArg(method));
     }
     else if(method.startsWith("or")) {
-      q = q.or(extArg(method));
+      bld.or();
     }
     else if(method.startsWith("and")) {
-      q = q.and(extArg(method));
+      bld.and();
     }
     else if(method.startsWith("not")) {
-      q = q.not();
+      bld.not();
     }
     else if(method.startsWith("asNumber")) {
-      //q = q.asNumber(extArg(method));
-      q = q.asNumber();
+      bld.nextType(DataType.NUMBER);
     }
     else if(method.startsWith("asDate")) {
-      //q = q.asDate(extArg(method));
-      q = q.asDate();
+      bld.nextType(DataType.DATE);
     }
     else if(method.startsWith("asBoolean")) {
-      //q = q.asBoolean(extArg(method));
-      q = q.asBoolean();
+      bld.nextType(DataType.BOOLEAN);
+    }
+    else if(method.startsWith("descend")) {
+      bld.descend(extArg(method));
+    }
+    else if(method.startsWith("isEmpty")) {
+      bld.isEmpty();
     }
     else if(method.startsWith("equalIgnoreCase")) {
-      q = q.equalIgnoreCase(extArg(method));
+      bld.equalIgnoreCase(extArg(method));
     }
     else if(method.startsWith("equal")) {
-      q = q.equal(extArg(method));
+      bld.equal(extArg(method));
     }
     else if(method.startsWith("containsIgnoreCase")) {
-      q = q.containsIgnoreCase(extArg(method));
+      bld.containsIgnoreCase(extArg(method));
     }
     else if(method.startsWith("contains")) {
-      q = q.contains(extArg(method));
+      bld.contains(extArg(method));
     }
     else if(method.startsWith("greaterEquals")) {
-      q = q.greaterEquals(extArg(method));
+      bld.greaterEquals(extArg(method));
     }
     else if(method.startsWith("greater")) {
-      q = q.greater(extArg(method));
+      bld.greater(extArg(method));
     }
     else if(method.startsWith("lesserEquals")) {
-      q = q.lesserEquals(extArg(method));
+      bld.lesserEquals(extArg(method));
     }
     else if(method.startsWith("lesser")) {
-      q = q.lesser(extArg(method));
+      bld.lesser(extArg(method));
     }
     else if(method.startsWith("startsWith")) {
-      q = q.startsWith(extArg(method));
+      bld.startsWith(extArg(method));
     }
     else if(method.startsWith("endsWith")) {
-      q = q.endsWith(extArg(method));
+      bld.endsWith(extArg(method));
     }
     else
       throw new SDBException("Invalid Query method: \""+ method+ "\"");
     
-    return q;
+    return bld;
   }
   
   
-  public Query parseQuery(String str) throws SDBException {
+  public QueryBuilder parseQuery(String str) throws SDBException {
     if(str == null || !str.startsWith("query("))
       throw new SDBException("Invalid query: \""+ str+ "\"");
     
     String[] meths = str.split("\\.");
-    Query q = new Query(extArg(meths[0]));
+    QueryBuilder bld = QueryBuilder.builder();
+    if(str.charAt(6) != ')' && str.charAt(6) != ' ') {
+      bld = QueryBuilder.builder(extArg(meths[0]));
+    }
     
     for(int i = 1; i < meths.length; i++) {
-      q = invoke(q, meths[i]);
+      bld = invoke(bld, meths[i]);
     }
-    return q;
+    return bld;
   }
   
   
@@ -372,12 +383,13 @@ public class Main {
     //args = new String[]{"file.db", "-e", "cached", "-p", "server{name:104,ip:172.29.14.104,apps:4}"};
     //args = new String[]{"file.db", "-e", "cached", "-p", "server{name:102,ip:172.29.14.102}"};
     //args = new String[]{"file.db", "-e", "cached", "-g", "server{name:102}"};
-    //args = new String[]{"file.db", "-e", "cached", "-g", "server{name:102}", "-k", "creds", "-b"};
+    //args = new String[]{"file.db", "-e", "cached", "-g", "server{name:102}", "-f", "ip"};
     //args = new String[]{"file.db", "-e", "cached", "-g", "get(1)"};
     //args = new String[]{"file.db", "-e", "cached", "-r", "get(creds{user:juno})"};
-    args = new String[]{"file.db", "-e", "cached", "-q", "query(server)\n    .key(apps)\n    .asNumber.lesser(5).and(name).not.equal(102)", "-b"};
+    //args = new String[]{"file.db", "-e", "cached", "-q", "query(server).field(apps).asNumber.lesser(5).and.field(name).not.equal(102)"};
     //args = new String[]{"file.db", "-e", "cached", "-l", "query(server)"};
     //args = new String[]{"file.db", "-e", "cached", "-l", "server{name:102}"};
+    //args = new String[]{"file.db", "-e", "cached", "-r", "get(8)"};
     //args = new String[]{"file.db", "-e", "cached", "-u", "get(server{name:102})", "server{name:102,ip:172.29.14.102,apps:3}"};
     
     ShellParser sp = new ShellParser()
@@ -422,13 +434,13 @@ public class Main {
         .setLongName("--get");
     sp.addOption(o);
     
-    o = new Option("-k")
+    o = new Option("-f")
         .setMandatory(false)
         .setAcceptArgs(true)
         .setArgsSeparator(" ")
-        .setDescription("Return the value for <key> from the document")
+        .setDescription("Return the value for <field> from the document")
         .setExclusive(false)
-        .setLongName("--key");
+        .setLongName("--field");
     sp.addOption(o);
     
     o = new Option("-b")
@@ -445,10 +457,10 @@ public class Main {
         .setAcceptArgs(true)
         .setArgsSeparator(" ")
         .setDescription("Query database"
-            + "\n    -> Query Format: \"query(<label>).key(<k>).method1(<arg1>).method2(<arg2>)...\""
-            + "\n    -> Methods: or(key), and(key), not(), asNumber(), asDate(), asBoolean(), "
-            + "\n                equal(val), equalIgnoreCase(val), contains(val), "
-            + "\n                containsIgnoreCase(val), greater(val), greaterEquals(val), "
+            + "\n    -> Query Format: \"query(<label>).field(<k>).method1(<arg1>).method2(<arg2>)...\""
+            + "\n    -> Methods: field(name), descend(<field>), or(), and(), not(), asNumber(), asDate(),"
+            + "\n                asBoolean(), equal(val), equalIgnoreCase(val), contains(val), "
+            + "\n                containsIgnoreCase(val), greater(val), greaterEquals(val), isEmpty() "
             + "\n                lesser(val), lesserEquals(val), startsWith(val), endsWith(val)")
         .setExclusive(false)
         .setLongName("--query");
@@ -535,8 +547,8 @@ public class Main {
         doc = m.get(arg);
         if(doc == null)
           throw new SDBException("-> get: No document found for: \""+ arg+ "\"");
-        if(sp.isOptionPresent("-k")) {
-          arg = sp.getOption("-k").getFirstArg();
+        if(sp.isOptionPresent("-f")) {
+          arg = sp.getOption("-f").getFirstArg();
           Object v = doc.get(arg);
           if(v instanceof Document) {
             if(sp.isOptionPresent("-b")) {
@@ -557,8 +569,8 @@ public class Main {
         doc = m.query(arg);
         if(doc == null)
           throw new SDBException("-> query: No document found for: \""+ arg+ "\"");
-        if(sp.isOptionPresent("-k")) {
-          arg = sp.getOption("-k").getFirstArg();
+        if(sp.isOptionPresent("-f")) {
+          arg = sp.getOption("-f").getFirstArg();
           Object v = doc.get(arg);
           if(v instanceof Document) {
             if(sp.isOptionPresent("-b")) {

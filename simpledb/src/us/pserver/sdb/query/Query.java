@@ -36,13 +36,13 @@ import us.pserver.sdb.util.ObjectUtils;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/09/2014
  */
-public class Query1 {
+public class Query {
   
   private List<QueryPath> path;
   
-  private List<Query1> and;
+  private List<Query> and;
   
-  private List<Query1> or;
+  private List<Query> or;
   
   
   private boolean result;
@@ -52,11 +52,10 @@ public class Query1 {
   private String label;
   
   
-  protected Query1(List<QueryPath> path, String label) {
-    if(path == null || path.isEmpty())
+  protected Query(List<QueryPath> path, String label) {
+    if(path == null)
       throw new IllegalArgumentException(
-          "Invalid empty query path: "
-          + (path == null ? "null" : "path.size()=0"));
+          "Invalid empty query path: "+ path);
     
     this.path = path;
     this.label = label;
@@ -67,17 +66,17 @@ public class Query1 {
   }
   
   
-  public List<Query1> and() {
+  public List<Query> andList() {
     return and;
   }
   
   
-  public List<Query1> or() {
+  public List<Query> orList() {
     return or;
   }
   
   
-  public Query1 and(Query1 qry) {
+  public Query and(Query qry) {
     if(qry != null 
         && (!qry.isEmpty() 
         ||  qry.label() != null)) {
@@ -87,7 +86,7 @@ public class Query1 {
   }
   
   
-  public Query1 or(Query1 qry) {
+  public Query or(Query qry) {
     if(qry != null 
         && (!qry.isEmpty() 
         ||  qry.label() != null)) {
@@ -97,7 +96,7 @@ public class Query1 {
   }
   
   
-  public Query1 limit(int lmt) {
+  public Query limit(int lmt) {
     limit = lmt;
     return this;
   }
@@ -365,7 +364,7 @@ public class Query1 {
         bool = false;
         break;
     }
-    System.out.println("-> query: "+ arg+ " "+ mth+ " "+ val+ " : "+ bool);
+    //System.out.println("-> query: "+ arg+ " "+ mth+ " "+ val+ " : "+ bool);
     return bool;
   }
   
@@ -405,12 +404,12 @@ public class Query1 {
             result = false;
             eval = false;
           }
-          System.out.println("-> query: descend --> "+ field);
+          //System.out.println("-> query: descend --> "+ field);
           result = exec((Document) arg, iterator, eval);
         }
         else if(p.method() == QueryMethod.NOT) {
           not = !not;
-          System.out.println("-> query: not="+ not);
+          //System.out.println("-> query: not="+ not);
         }
         else if(eval) {
           result = exec(p.method(), value, arg);
