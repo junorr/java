@@ -550,6 +550,8 @@ public class Main {
         if(sp.isOptionPresent("-f")) {
           arg = sp.getOption("-f").getFirstArg();
           Object v = doc.get(arg);
+          if(v == null)
+            throw new SDBException("No such field: '"+ sp.getOption("-f").getFirstArg()+ "'");
           if(v instanceof Document) {
             if(sp.isOptionPresent("-b")) {
               v = ((Document)v).block();          
@@ -572,6 +574,8 @@ public class Main {
         if(sp.isOptionPresent("-f")) {
           arg = sp.getOption("-f").getFirstArg();
           Object v = doc.get(arg);
+          if(v == null)
+            throw new SDBException("No such field: '"+ sp.getOption("-f").getFirstArg()+ "'");
           if(v instanceof Document) {
             if(sp.isOptionPresent("-b")) {
               v = ((Document)v).block();          
@@ -606,7 +610,7 @@ public class Main {
       }
     } 
     catch(SDBException e) {
-      System.err.println("# "+ e.getMessage());
+      System.out.println("# "+ e.getMessage());
     }
     finally {
       m.sdb().close();
