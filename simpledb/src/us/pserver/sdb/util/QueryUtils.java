@@ -19,11 +19,12 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.sdb.query;
+package us.pserver.sdb.util;
 
 import us.pserver.sdb.Document;
 import us.pserver.sdb.OID;
-import us.pserver.sdb.util.ObjectUtils;
+import us.pserver.sdb.query.Result;
+import us.pserver.sdb.query.ResultOID;
 
 /**
  *

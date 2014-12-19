@@ -38,7 +38,7 @@ public class Document {
   
   private String label;
   
-  private final Map<String, Object> map;
+  private Map<String, Object> map;
   
   
   protected Document(String lbl, long blk) {
@@ -101,6 +101,11 @@ public class Document {
   
   
   public Map<String, Object> map() {
+    return map;
+  }
+  
+  
+  public Map<String, Object> getMap() {
     return map;
   }
   

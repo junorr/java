@@ -23,7 +23,7 @@ package us.pserver.sdb;
 
 import us.pserver.sdb.query.Result;
 import us.pserver.sdb.query.ResultOID;
-import us.pserver.sdb.query.QueryUtils;
+import us.pserver.sdb.util.QueryUtils;
 import java.util.ArrayList;
 import us.pserver.sdb.util.ObjectUtils;
 import us.pserver.sdb.engine.Index;

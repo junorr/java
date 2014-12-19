@@ -38,7 +38,7 @@ public class TestQuery {
         .descend("creds")
         .descend("pass")
         .field("str")
-        .not().contains("5").not()
+        .not().contains(5)
         .create();
     
     System.out.println("* qry = "+ qry);
