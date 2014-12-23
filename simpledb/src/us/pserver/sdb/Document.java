@@ -105,11 +105,6 @@ public class Document {
   }
   
   
-  public Map<String, Object> getMap() {
-    return map;
-  }
-  
-  
   public Object get(String key) {
     if(key != null && !key.isEmpty() 
         && map.containsKey(key)) {
