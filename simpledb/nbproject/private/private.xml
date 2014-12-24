@@ -20,7 +20,7 @@
             <file>file:/home/juno/storage/java/simpledb/src/us/pserver/sdb/ObjectDB.java</file>
             <file>file:/home/juno/storage/java/simpledb/src/us/pserver/sdb/query/QueryMethod.java</file>
             <file>file:/home/juno/storage/java/simpledb/src/us/pserver/sdb/engine/Index.java</file>
-            <file>file:/home/juno/storage/java/simpledb/src/us/pserver/sdb/query/QueryUtils.java</file>
+            <file>file:/home/juno/storage/java/simpledb/src/us/pserver/sdb/test/TestGson.java</file>
             <file>file:/home/juno/storage/java/simpledb/src/us/pserver/sdb/engine/XmlSerialEngine.java</file>
             <file>file:/home/juno/storage/java/simpledb/src/us/pserver/sdb/Document.java</file>
             <file>file:/home/juno/storage/java/simpledb/src/us/pserver/sdb/query/Query.java</file>

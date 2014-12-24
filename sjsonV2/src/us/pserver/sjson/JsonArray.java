@@ -110,6 +110,174 @@ public class JsonArray {
   }
   
   
+  public Object[] getObjectArray() {
+    return list.toArray();
+  }
+  
+  
+  public String[] getStringArray() {
+    List<String> ls = new LinkedList<>();
+    for(int i = 0; i < list.size(); i++) {
+      if(JsonPrimitive.isPrimitive(list.get(i)))
+        ls.add(String.valueOf(list.get(i).get()));
+    }
+    String[] ss = new String[ls.size()];
+    return ls.toArray(ss);
+  }
+  
+  
+  public char[] getCharArray() {
+    List<Character> ls = new LinkedList<>();
+    for(int i = 0; i < list.size(); i++) {
+      if(JsonPrimitive.isPrimitive(list.get(i)))
+        ls.add(String.valueOf(list.get(i).get()).charAt(0));
+    }
+    char[] cs = new char[ls.size()];
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = ls.get(i);
+    }
+    return cs;
+  }
+  
+  
+  public static Double toDouble(String str) {
+    try {
+      return Double.parseDouble(str);
+    } catch(NumberFormatException e) {
+      return null;
+    }
+  }
+  
+  
+  public byte[] getByteArray() {
+    List<Byte> ls = new LinkedList<>();
+    for(int i = 0; i < list.size(); i++) {
+      Double d = toDouble(String.valueOf(
+            list.get(i).get()));
+      if(d != null)
+        ls.add(d.byteValue());
+    }
+    byte[] cs = new byte[ls.size()];
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = ls.get(i);
+    }
+    return cs;
+  }
+  
+  
+  public boolean[] getBooleanArray() {
+    List<Boolean> ls = new LinkedList<>();
+    for(int i = 0; i < list.size(); i++) {
+      if(JsonPrimitive.isPrimitive(list.get(i))
+          && (list.get(i).toString().trim().equalsIgnoreCase("true")
+          ||  list.get(i).toString().trim().equalsIgnoreCase("false")))
+        ls.add(Boolean.parseBoolean(String.valueOf(
+            list.get(i).get())));
+    }
+    boolean[] cs = new boolean[ls.size()];
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = ls.get(i);
+    }
+    return cs;
+  }
+  
+  
+  public short[] getShortArray() {
+    List<Short> ls = new LinkedList<>();
+    for(int i = 0; i < list.size(); i++) {
+      Double d = toDouble(String.valueOf(
+            list.get(i).get()));
+      if(d != null)
+        ls.add(d.shortValue());
+    }
+    short[] cs = new short[ls.size()];
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = ls.get(i);
+    }
+    return cs;
+  }
+  
+  
+  public int[] getIntArray() {
+    List<Integer> ls = new LinkedList<>();
+    for(int i = 0; i < list.size(); i++) {
+      Double d = toDouble(String.valueOf(
+            list.get(i).get()));
+      if(d != null)
+        ls.add(d.intValue());
+    }
+    int[] cs = new int[ls.size()];
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = ls.get(i);
+    }
+    return cs;
+  }
+  
+  
+  public long[] getLongArray() {
+    List<Long> ls = new LinkedList<>();
+    for(int i = 0; i < list.size(); i++) {
+      Double d = toDouble(String.valueOf(
+            list.get(i).get()));
+      if(d != null)
+        ls.add(d.longValue());
+    }
+    long[] cs = new long[ls.size()];
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = ls.get(i);
+    }
+    return cs;
+  }
+  
+  
+  public float[] getFloatArray() {
+    List<Float> ls = new LinkedList<>();
+    for(int i = 0; i < list.size(); i++) {
+      Double d = toDouble(String.valueOf(
+            list.get(i).get()));
+      if(d != null)
+        ls.add(d.floatValue());
+    }
+    float[] cs = new float[ls.size()];
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = ls.get(i);
+    }
+    return cs;
+  }
+  
+  
+  public double[] getDoubleArray() {
+    List<Double> ls = new LinkedList<>();
+    for(int i = 0; i < list.size(); i++) {
+      Double d = toDouble(String.valueOf(
+            list.get(i).get()));
+      if(d != null)
+        ls.add(d);
+    }
+    double[] cs = new double[ls.size()];
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = ls.get(i);
+    }
+    return cs;
+  }
+  
+  
+  public List<Number> getDoubleArray() {
+    List<Number> ls = new LinkedList<>();
+    for(int i = 0; i < list.size(); i++) {
+      Double d = toDouble(String.valueOf(
+            list.get(i).get()));
+      if(d != null)
+        ls.add(d);
+    }
+    double[] cs = new double[ls.size()];
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = ls.get(i);
+    }
+    return cs;
+  }
+  
+  
   public static boolean isPrimitiveArray(Object obj) {
     if(obj == null) return false;
     return isPrimitiveArray(obj.getClass());
