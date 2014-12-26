@@ -72,15 +72,6 @@ public class FileHandler {
   }
   
   
-  private void init2(String file) throws IOException {
-    if(file == null || file.isEmpty())
-      throw new IllegalArgumentException("Invalid file: "+ file);
-    this.file = file;
-    Path p = Paths.get(file);
-    raf = new RandomAccessFile(p.toFile(), "rw");
-  }
-  
-  
   private void createFile(Path file) throws IOException {
     if(file == null) return;
     if(file.getParent() != null 

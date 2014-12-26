@@ -38,9 +38,15 @@ import us.pserver.sdb.Document;
  */
 public class Index {
 
-  private final Map<String, List<int[]>> map;
+  private Map<String, List<int[]>> map;
   
   private transient SerialEngine serial;
+  
+  
+  public Index() {
+    map = new LinkedHashMap<>();
+    serial = null;
+  }
   
   
   public Index(SerialEngine seng) {
@@ -52,13 +58,13 @@ public class Index {
   }
   
   
-  public Index serialEngine(SerialEngine se) {
+  public Index setSerialEngine(SerialEngine se) {
     serial = se;
     return this;
   }
   
   
-  public SerialEngine serialEngine() {
+  public SerialEngine getSerialEngine() {
     return serial;
   }
   

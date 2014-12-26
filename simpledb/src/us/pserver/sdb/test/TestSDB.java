@@ -21,10 +21,16 @@
 
 package us.pserver.sdb.test;
 
+import us.pserver.cdr.crypt.CryptAlgorithm;
+import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.sdb.Document;
 import us.pserver.sdb.query.Result;
 import us.pserver.sdb.SimpleDB;
+import us.pserver.sdb.engine.CachedEngine;
+import us.pserver.sdb.engine.CryptSerialEngine;
 import us.pserver.sdb.engine.FileEngine;
+import us.pserver.sdb.engine.GZipSerialEngine;
+import us.pserver.sdb.engine.JsonSerialEngine;
 import us.pserver.sdb.query.Query;
 import us.pserver.sdb.query.QueryBuilder;
 
@@ -45,6 +51,7 @@ public class TestSDB {
     Document cred = new Document("credentials")
         .put("user", "username")
         .put("pass", "password");
+    System.out.println("-> add: "+ cred);
     sdb.put(cred);
     
     Document doc = new Document("server")
@@ -54,6 +61,7 @@ public class TestSDB {
         .put("apps", 2)
         .put("db", true)
         .put("creds", cred);
+    System.out.println("-> add: "+ doc);
     sdb.put(doc);
     
     doc = new Document("server")
@@ -63,6 +71,7 @@ public class TestSDB {
         .put("apps", 7)
         .put("db", true)
         .put("creds", cred);
+    System.out.println("-> add: "+ doc);
     sdb.put(doc);
     
     doc = new Document("server")
@@ -72,6 +81,7 @@ public class TestSDB {
         .put("apps", 0)
         .put("db", true)
         .put("creds", cred);
+    System.out.println("-> add: "+ doc);
     sdb.put(doc);
     
     doc = new Document("server")
@@ -81,6 +91,7 @@ public class TestSDB {
         .put("apps", 4)
         .put("db", false)
         .put("creds", cred);
+    System.out.println("-> add: "+ doc);
     sdb.put(doc);
     
     doc = new Document("server")
@@ -90,6 +101,7 @@ public class TestSDB {
         .put("apps", 10)
         .put("db", false)
         .put("creds", cred);
+    System.out.println("-> add: "+ doc);
     sdb.put(doc);
   }
   
@@ -220,12 +232,20 @@ public class TestSDB {
   
   
   public static void main(String[] args) {
-    sdb = new SimpleDB(new FileEngine("./simple.db"));
+    CryptKey key = new CryptKey("123456", CryptAlgorithm.AES_CBC_PKCS5);
+    sdb = new SimpleDB(new CachedEngine(
+        new FileEngine(
+            //new CryptSerialEngine(new JsonSerialEngine(), key), 
+            //new GZipSerialEngine(new JsonSerialEngine()), 
+            //new GZipSerialEngine(new CryptSerialEngine(new JsonSerialEngine(), key)), 
+            new CryptSerialEngine(new GZipSerialEngine(new JsonSerialEngine()), key), 
+            //new JsonSerialEngine(),
+            "./simple.db")));
     
     try 
     {
       
-      //add();
+      add();
       //add2();
       get();
       get2();
