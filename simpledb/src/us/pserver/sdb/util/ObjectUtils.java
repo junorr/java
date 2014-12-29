@@ -278,7 +278,7 @@ public class ObjectUtils {
     while(it.hasNext()) {
       String key = it.next();
       Object v = doc.get(key);
-      if(v == null) continue;
+      if(v == null || doc.equals(v)) continue;
       sb.append(key).append(":");
       if(v instanceof Document)
         v = doc2str((Document)v);

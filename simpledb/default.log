@@ -1,0 +1,451 @@
+[INFO ] (29/12/2014 13:54:11): Starting NetworkServer...
+[INFO ] (29/12/2014 13:54:59): Starting NetworkServer...
+[INFO ] (29/12/2014 13:58:22): Starting NetworkServer...
+[INFO ] (29/12/2014 13:58:22): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (29/12/2014 13:58:22): Listening on: NetConnector{ 0.0.0.0:25000 }
+[INFO ] (29/12/2014 13:58:22): Server started!
+
+[INFO ] (29/12/2014 14:07:38): Starting NetworkServer...
+[INFO ] (29/12/2014 14:07:38): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (29/12/2014 14:07:38): Listening on: NetConnector{ 0.0.0.0:25000 }
+[INFO ] (29/12/2014 14:07:38): Server started!
+
+[INFO ] (29/12/2014 14:08:01): ------------------------------
+[INFO ] (29/12/2014 14:08:01): Handling socket: Socket[addr=/127.0.0.1,port=52889,localport=25000]
+[INFO ] (29/12/2014 14:08:02): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.engine.ServerEngine )
+[WARN ] (29/12/2014 14:08:02): Error invoking method [us.pserver.rob.server.NetworkServer.container(  )]
+[WARN ] (29/12/2014 14:08:02): MethodInvocationException: Object not found [us.pserver.rob.server.NetworkServer]
+[WARN ] (29/12/2014 14:08:02):   us.pserver.rob.server.NetworkServer$SocketHandler.getObject(NetworkServer.java:361)
+[WARN ] (29/12/2014 14:08:02):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:404)
+[WARN ] (29/12/2014 14:08:02):   us.pserver.rob.server.NetworkServer$SocketHandler.handleInvoke(NetworkServer.java:480)
+[WARN ] (29/12/2014 14:08:02):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:513)
+[WARN ] (29/12/2014 14:08:02):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (29/12/2014 14:08:02):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (29/12/2014 14:08:02):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (29/12/2014 14:08:02):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (29/12/2014 14:08:02):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (29/12/2014 14:08:02): Response sent: OpResult{ success = false, return = null }
+[INFO ] (29/12/2014 14:08:02): Connection closed by client.
+[INFO ] (29/12/2014 14:11:14): Starting NetworkServer...
+[INFO ] (29/12/2014 14:11:14): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (29/12/2014 14:11:14): Listening on: NetConnector{ 0.0.0.0:25000 }
+[INFO ] (29/12/2014 14:11:14): Server started!
+
+[INFO ] (29/12/2014 14:11:19): ------------------------------
+[INFO ] (29/12/2014 14:11:19): Handling socket: Socket[addr=/127.0.0.1,port=52893,localport=25000]
+[INFO ] (29/12/2014 14:11:19): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.engine.ServerEngine )
+[INFO ] (29/12/2014 14:11:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:19): Invoking: us.pserver.rob.server.NetworkServer.container(  )
+[INFO ] (29/12/2014 14:11:19): Invoking: ObjectContainer.contains( us.pserver.sdb.engine.ServerEngine )
+[INFO ] (29/12/2014 14:11:19): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/12/2014 14:11:19): Remote request: us.pserver.sdb.engine.ServerEngine.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 14:11:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:19): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 14:11:19): Remote request: us.pserver.sdb.engine.ServerEngine.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 14:11:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:19): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 14:11:20): Remote request: us.pserver.sdb.engine.ServerEngine.put( server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} )
+[INFO ] (29/12/2014 14:11:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:20): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:11:20): Remote request: us.pserver.sdb.engine.ServerEngine.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 14:11:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:20): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 14:11:20): Remote request: us.pserver.sdb.engine.ServerEngine.put( server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} )
+[INFO ] (29/12/2014 14:11:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:20): Response sent: OpResult{ success = true, return = server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:11:20): Remote request: us.pserver.sdb.engine.ServerEngine.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 14:11:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:20): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 14:11:20): Remote request: us.pserver.sdb.engine.ServerEngine.put( server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} )
+[INFO ] (29/12/2014 14:11:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:20): Response sent: OpResult{ success = true, return = server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:11:20): Remote request: us.pserver.sdb.engine.ServerEngine.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 14:11:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:20): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 14:11:20): Remote request: us.pserver.sdb.engine.ServerEngine.put( server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} )
+[INFO ] (29/12/2014 14:11:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:20): Response sent: OpResult{ success = true, return = server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:11:20): Remote request: us.pserver.sdb.engine.ServerEngine.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 14:11:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:20): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 14:11:21): Remote request: us.pserver.sdb.engine.ServerEngine.put( server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} )
+[INFO ] (29/12/2014 14:11:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:21): Response sent: OpResult{ success = true, return = server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:11:21): Remote request: us.pserver.sdb.engine.ServerEngine.getIndex(  )
+[INFO ] (29/12/2014 14:11:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:21): Response sent: OpResult{ success = true, return = <us.pserver.sdb.engine.Index><map class="linked-hash-map"><entry><string>us.pserver.rob.container.Credentials</string><linked-list><int-array><int>6</int><int>1</int></int-array></linked-list></entry><entry><string>credentials</string><linked-list><int-array><int>7</int><int>1</int></int-array><int-array><int>8</int><int>1</int></int-array><int-array><int>10</int><int>1</int></int-array><int-array><int>12</int><int>1</int></int-array><int-array><int>14</int><int>1</int></int-array><int-array><int>16</int><int>1</int></int-array></linked-list></entry><entry><string>server</string><linked-list><int-array><int>9</int><int>1</int></int-array><int-array><int>11</int><int>1</int></int-array><int-array><int>13</int><int>1</int></int-array><int-array><int>15</int><int>1</int></int-array><int-array><int>17</int><int>1</int></int-array></linked-list></entry></map></us.pserver.sdb.engine.Index> }
+[INFO ] (29/12/2014 14:11:21): Remote request: us.pserver.sdb.engine.ServerEngine.get( 9 )
+[INFO ] (29/12/2014 14:11:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:11:21): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:11:21): Connection closed by client.
+[INFO ] (29/12/2014 14:19:38): ------------------------------
+[INFO ] (29/12/2014 14:19:38): Handling socket: Socket[addr=/127.0.0.1,port=52921,localport=25000]
+[INFO ] (29/12/2014 14:19:38): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.engine.ServerEngine )
+[INFO ] (29/12/2014 14:19:38): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:19:38): Invoking: us.pserver.rob.server.NetworkServer.container(  )
+[INFO ] (29/12/2014 14:19:38): Invoking: ObjectContainer.contains( us.pserver.sdb.engine.ServerEngine )
+[INFO ] (29/12/2014 14:19:38): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/12/2014 14:19:38): Remote request: us.pserver.sdb.engine.ServerEngine.getIndex(  )
+[INFO ] (29/12/2014 14:19:38): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:19:38): Response sent: OpResult{ success = true, return = <us.pserver.sdb.engine.Index><map class="linked-hash-map"><entry><string>us.pserver.rob.container.Credentials</string><linked-list><int-array><int>6</int><int>1</int></int-array></linked-list></entry><entry><string>credentials</string><linked-list><int-array><int>7</int><int>1</int></int-array><int-array><int>8</int><int>1</int></int-array><int-array><int>10</int><int>1</int></int-array><int-array><int>12</int><int>1</int></int-array><int-array><int>14</int><int>1</int></int-array><int-array><int>16</int><int>1</int></int-array></linked-list></entry><entry><string>server</string><linked-list><int-array><int>9</int><int>1</int></int-array><int-array><int>11</int><int>1</int></int-array><int-array><int>13</int><int>1</int></int-array><int-array><int>15</int><int>1</int></int-array><int-array><int>17</int><int>1</int></int-array></linked-list></entry></map></us.pserver.sdb.engine.Index> }
+[INFO ] (29/12/2014 14:19:38): Remote request: us.pserver.sdb.engine.ServerEngine.get( 9 )
+[INFO ] (29/12/2014 14:19:38): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:19:38): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:19:38): Connection closed by client.
+[INFO ] (29/12/2014 14:20:48): ------------------------------
+[INFO ] (29/12/2014 14:20:48): Handling socket: Socket[addr=/127.0.0.1,port=52925,localport=25000]
+[INFO ] (29/12/2014 14:20:48): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.engine.ServerEngine )
+[INFO ] (29/12/2014 14:20:48): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:48): Invoking: us.pserver.rob.server.NetworkServer.container(  )
+[INFO ] (29/12/2014 14:20:48): Invoking: ObjectContainer.contains( us.pserver.sdb.engine.ServerEngine )
+[INFO ] (29/12/2014 14:20:48): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/12/2014 14:20:48): Remote request: us.pserver.sdb.engine.ServerEngine.getIndex(  )
+[INFO ] (29/12/2014 14:20:48): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:48): Response sent: OpResult{ success = true, return = <us.pserver.sdb.engine.Index><map class="linked-hash-map"><entry><string>us.pserver.rob.container.Credentials</string><linked-list><int-array><int>6</int><int>1</int></int-array></linked-list></entry><entry><string>credentials</string><linked-list><int-array><int>7</int><int>1</int></int-array><int-array><int>8</int><int>1</int></int-array><int-array><int>10</int><int>1</int></int-array><int-array><int>12</int><int>1</int></int-array><int-array><int>14</int><int>1</int></int-array><int-array><int>16</int><int>1</int></int-array></linked-list></entry><entry><string>server</string><linked-list><int-array><int>9</int><int>1</int></int-array><int-array><int>11</int><int>1</int></int-array><int-array><int>13</int><int>1</int></int-array><int-array><int>15</int><int>1</int></int-array><int-array><int>17</int><int>1</int></int-array></linked-list></entry></map></us.pserver.sdb.engine.Index> }
+[INFO ] (29/12/2014 14:20:48): Remote request: us.pserver.sdb.engine.ServerEngine.get( 9 )
+[INFO ] (29/12/2014 14:20:48): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:48): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:20:49): Remote request: us.pserver.sdb.engine.ServerEngine.getIndex(  )
+[INFO ] (29/12/2014 14:20:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:49): Response sent: OpResult{ success = true, return = <us.pserver.sdb.engine.Index><map class="linked-hash-map"><entry><string>us.pserver.rob.container.Credentials</string><linked-list><int-array><int>6</int><int>1</int></int-array></linked-list></entry><entry><string>credentials</string><linked-list><int-array><int>7</int><int>1</int></int-array><int-array><int>8</int><int>1</int></int-array><int-array><int>10</int><int>1</int></int-array><int-array><int>12</int><int>1</int></int-array><int-array><int>14</int><int>1</int></int-array><int-array><int>16</int><int>1</int></int-array></linked-list></entry><entry><string>server</string><linked-list><int-array><int>9</int><int>1</int></int-array><int-array><int>11</int><int>1</int></int-array><int-array><int>13</int><int>1</int></int-array><int-array><int>15</int><int>1</int></int-array><int-array><int>17</int><int>1</int></int-array></linked-list></entry></map></us.pserver.sdb.engine.Index> }
+[INFO ] (29/12/2014 14:20:49): Remote request: us.pserver.sdb.engine.ServerEngine.get( 9 )
+[INFO ] (29/12/2014 14:20:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:49): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:20:49): Remote request: us.pserver.sdb.engine.ServerEngine.get( 11 )
+[INFO ] (29/12/2014 14:20:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:49): Response sent: OpResult{ success = true, return = server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:20:49): Remote request: us.pserver.sdb.engine.ServerEngine.get( 13 )
+[INFO ] (29/12/2014 14:20:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:49): Response sent: OpResult{ success = true, return = server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:20:49): Remote request: us.pserver.sdb.engine.ServerEngine.get( 15 )
+[INFO ] (29/12/2014 14:20:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:49): Response sent: OpResult{ success = true, return = server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:20:49): Remote request: us.pserver.sdb.engine.ServerEngine.get( 17 )
+[INFO ] (29/12/2014 14:20:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:49): Response sent: OpResult{ success = true, return = server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:20:49): Remote request: us.pserver.sdb.engine.ServerEngine.getIndex(  )
+[INFO ] (29/12/2014 14:20:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:49): Response sent: OpResult{ success = true, return = <us.pserver.sdb.engine.Index><map class="linked-hash-map"><entry><string>us.pserver.rob.container.Credentials</string><linked-list><int-array><int>6</int><int>1</int></int-array></linked-list></entry><entry><string>credentials</string><linked-list><int-array><int>7</int><int>1</int></int-array><int-array><int>8</int><int>1</int></int-array><int-array><int>10</int><int>1</int></int-array><int-array><int>12</int><int>1</int></int-array><int-array><int>14</int><int>1</int></int-array><int-array><int>16</int><int>1</int></int-array></linked-list></entry><entry><string>server</string><linked-list><int-array><int>9</int><int>1</int></int-array><int-array><int>11</int><int>1</int></int-array><int-array><int>13</int><int>1</int></int-array><int-array><int>15</int><int>1</int></int-array><int-array><int>17</int><int>1</int></int-array></linked-list></entry></map></us.pserver.sdb.engine.Index> }
+[INFO ] (29/12/2014 14:20:49): Remote request: us.pserver.sdb.engine.ServerEngine.get( 9 )
+[INFO ] (29/12/2014 14:20:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:49): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:20:49): Remote request: us.pserver.sdb.engine.ServerEngine.get( 11 )
+[INFO ] (29/12/2014 14:20:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:49): Response sent: OpResult{ success = true, return = server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:20:50): Remote request: us.pserver.sdb.engine.ServerEngine.get( 13 )
+[INFO ] (29/12/2014 14:20:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:50): Response sent: OpResult{ success = true, return = server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:20:50): Remote request: us.pserver.sdb.engine.ServerEngine.get( 15 )
+[INFO ] (29/12/2014 14:20:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:50): Response sent: OpResult{ success = true, return = server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:20:50): Remote request: us.pserver.sdb.engine.ServerEngine.get( 17 )
+[INFO ] (29/12/2014 14:20:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:50): Response sent: OpResult{ success = true, return = server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:20:50): Remote request: us.pserver.sdb.engine.ServerEngine.getIndex(  )
+[INFO ] (29/12/2014 14:20:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:50): Response sent: OpResult{ success = true, return = <us.pserver.sdb.engine.Index><map class="linked-hash-map"><entry><string>us.pserver.rob.container.Credentials</string><linked-list><int-array><int>6</int><int>1</int></int-array></linked-list></entry><entry><string>credentials</string><linked-list><int-array><int>7</int><int>1</int></int-array><int-array><int>8</int><int>1</int></int-array><int-array><int>10</int><int>1</int></int-array><int-array><int>12</int><int>1</int></int-array><int-array><int>14</int><int>1</int></int-array><int-array><int>16</int><int>1</int></int-array></linked-list></entry><entry><string>server</string><linked-list><int-array><int>9</int><int>1</int></int-array><int-array><int>11</int><int>1</int></int-array><int-array><int>13</int><int>1</int></int-array><int-array><int>15</int><int>1</int></int-array><int-array><int>17</int><int>1</int></int-array></linked-list></entry></map></us.pserver.sdb.engine.Index> }
+[INFO ] (29/12/2014 14:20:50): Remote request: us.pserver.sdb.engine.ServerEngine.get( 9 )
+[INFO ] (29/12/2014 14:20:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:50): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:20:50): Remote request: us.pserver.sdb.engine.ServerEngine.get( 11 )
+[INFO ] (29/12/2014 14:20:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:50): Response sent: OpResult{ success = true, return = server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:20:50): Remote request: us.pserver.sdb.engine.ServerEngine.get( 13 )
+[INFO ] (29/12/2014 14:20:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:50): Response sent: OpResult{ success = true, return = server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:20:50): Remote request: us.pserver.sdb.engine.ServerEngine.get( 15 )
+[INFO ] (29/12/2014 14:20:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:50): Response sent: OpResult{ success = true, return = server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:20:50): Remote request: us.pserver.sdb.engine.ServerEngine.get( 17 )
+[INFO ] (29/12/2014 14:20:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:20:51): Response sent: OpResult{ success = true, return = server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:20:51): Connection closed by client.
+[INFO ] (29/12/2014 14:23:40): Starting NetworkServer...
+[INFO ] (29/12/2014 14:23:40): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (29/12/2014 14:23:40): Listening on: NetConnector{ 0.0.0.0:25000 }
+[INFO ] (29/12/2014 14:23:40): Server started!
+
+[INFO ] (29/12/2014 14:23:49): ------------------------------
+[INFO ] (29/12/2014 14:23:49): Handling socket: Socket[addr=/127.0.0.1,port=52933,localport=25000]
+[INFO ] (29/12/2014 14:23:49): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.engine.ServerEngine )
+[INFO ] (29/12/2014 14:23:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:49): Invoking: us.pserver.rob.server.NetworkServer.container(  )
+[INFO ] (29/12/2014 14:23:49): Invoking: ObjectContainer.contains( us.pserver.sdb.engine.ServerEngine )
+[INFO ] (29/12/2014 14:23:49): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/12/2014 14:23:50): Remote request: us.pserver.sdb.engine.ServerEngine.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 14:23:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:50): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 14:23:50): Remote request: us.pserver.sdb.engine.ServerEngine.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 14:23:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:50): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 14:23:50): Remote request: us.pserver.sdb.engine.ServerEngine.put( server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} )
+[INFO ] (29/12/2014 14:23:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:50): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:50): Remote request: us.pserver.sdb.engine.ServerEngine.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 14:23:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:50): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 14:23:50): Remote request: us.pserver.sdb.engine.ServerEngine.put( server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} )
+[INFO ] (29/12/2014 14:23:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:50): Response sent: OpResult{ success = true, return = server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:50): Remote request: us.pserver.sdb.engine.ServerEngine.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 14:23:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:50): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 14:23:50): Remote request: us.pserver.sdb.engine.ServerEngine.put( server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} )
+[INFO ] (29/12/2014 14:23:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:50): Response sent: OpResult{ success = true, return = server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:50): Remote request: us.pserver.sdb.engine.ServerEngine.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 14:23:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:50): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 14:23:51): Remote request: us.pserver.sdb.engine.ServerEngine.put( server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} )
+[INFO ] (29/12/2014 14:23:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:51): Response sent: OpResult{ success = true, return = server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:23:51): Remote request: us.pserver.sdb.engine.ServerEngine.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 14:23:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:51): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 14:23:51): Remote request: us.pserver.sdb.engine.ServerEngine.put( server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} )
+[INFO ] (29/12/2014 14:23:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:51): Response sent: OpResult{ success = true, return = server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:23:51): Remote request: us.pserver.sdb.engine.ServerEngine.getIndex(  )
+[INFO ] (29/12/2014 14:23:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:51): Response sent: OpResult{ success = true, return = <us.pserver.sdb.engine.Index><map class="linked-hash-map"><entry><string>us.pserver.rob.container.Credentials</string><linked-list><int-array><int>1</int><int>1</int></int-array></linked-list></entry><entry><string>credentials</string><linked-list><int-array><int>2</int><int>1</int></int-array><int-array><int>3</int><int>1</int></int-array><int-array><int>5</int><int>1</int></int-array><int-array><int>7</int><int>1</int></int-array><int-array><int>9</int><int>1</int></int-array><int-array><int>11</int><int>1</int></int-array></linked-list></entry><entry><string>server</string><linked-list><int-array><int>4</int><int>1</int></int-array><int-array><int>6</int><int>1</int></int-array><int-array><int>8</int><int>1</int></int-array><int-array><int>10</int><int>1</int></int-array><int-array><int>12</int><int>1</int></int-array></linked-list></entry></map></us.pserver.sdb.engine.Index> }
+[INFO ] (29/12/2014 14:23:51): Remote request: us.pserver.sdb.engine.ServerEngine.get( 4 )
+[INFO ] (29/12/2014 14:23:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:51): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:51): Remote request: us.pserver.sdb.engine.ServerEngine.getIndex(  )
+[INFO ] (29/12/2014 14:23:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:51): Response sent: OpResult{ success = true, return = <us.pserver.sdb.engine.Index><map class="linked-hash-map"><entry><string>us.pserver.rob.container.Credentials</string><linked-list><int-array><int>1</int><int>1</int></int-array></linked-list></entry><entry><string>credentials</string><linked-list><int-array><int>2</int><int>1</int></int-array><int-array><int>3</int><int>1</int></int-array><int-array><int>5</int><int>1</int></int-array><int-array><int>7</int><int>1</int></int-array><int-array><int>9</int><int>1</int></int-array><int-array><int>11</int><int>1</int></int-array></linked-list></entry><entry><string>server</string><linked-list><int-array><int>4</int><int>1</int></int-array><int-array><int>6</int><int>1</int></int-array><int-array><int>8</int><int>1</int></int-array><int-array><int>10</int><int>1</int></int-array><int-array><int>12</int><int>1</int></int-array></linked-list></entry></map></us.pserver.sdb.engine.Index> }
+[INFO ] (29/12/2014 14:23:51): Remote request: us.pserver.sdb.engine.ServerEngine.get( 4 )
+[INFO ] (29/12/2014 14:23:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:51): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:51): Remote request: us.pserver.sdb.engine.ServerEngine.get( 6 )
+[INFO ] (29/12/2014 14:23:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:51): Response sent: OpResult{ success = true, return = server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:51): Remote request: us.pserver.sdb.engine.ServerEngine.get( 8 )
+[INFO ] (29/12/2014 14:23:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:51): Response sent: OpResult{ success = true, return = server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:52): Remote request: us.pserver.sdb.engine.ServerEngine.get( 10 )
+[INFO ] (29/12/2014 14:23:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:52): Response sent: OpResult{ success = true, return = server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:23:52): Remote request: us.pserver.sdb.engine.ServerEngine.get( 12 )
+[INFO ] (29/12/2014 14:23:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:52): Response sent: OpResult{ success = true, return = server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:23:52): Remote request: us.pserver.sdb.engine.ServerEngine.getIndex(  )
+[INFO ] (29/12/2014 14:23:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:52): Response sent: OpResult{ success = true, return = <us.pserver.sdb.engine.Index><map class="linked-hash-map"><entry><string>us.pserver.rob.container.Credentials</string><linked-list><int-array><int>1</int><int>1</int></int-array></linked-list></entry><entry><string>credentials</string><linked-list><int-array><int>2</int><int>1</int></int-array><int-array><int>3</int><int>1</int></int-array><int-array><int>5</int><int>1</int></int-array><int-array><int>7</int><int>1</int></int-array><int-array><int>9</int><int>1</int></int-array><int-array><int>11</int><int>1</int></int-array></linked-list></entry><entry><string>server</string><linked-list><int-array><int>4</int><int>1</int></int-array><int-array><int>6</int><int>1</int></int-array><int-array><int>8</int><int>1</int></int-array><int-array><int>10</int><int>1</int></int-array><int-array><int>12</int><int>1</int></int-array></linked-list></entry></map></us.pserver.sdb.engine.Index> }
+[INFO ] (29/12/2014 14:23:52): Remote request: us.pserver.sdb.engine.ServerEngine.get( 4 )
+[INFO ] (29/12/2014 14:23:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:52): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:52): Remote request: us.pserver.sdb.engine.ServerEngine.get( 6 )
+[INFO ] (29/12/2014 14:23:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:52): Response sent: OpResult{ success = true, return = server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:52): Remote request: us.pserver.sdb.engine.ServerEngine.get( 8 )
+[INFO ] (29/12/2014 14:23:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:52): Response sent: OpResult{ success = true, return = server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:52): Remote request: us.pserver.sdb.engine.ServerEngine.get( 10 )
+[INFO ] (29/12/2014 14:23:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:52): Response sent: OpResult{ success = true, return = server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:23:52): Remote request: us.pserver.sdb.engine.ServerEngine.get( 12 )
+[INFO ] (29/12/2014 14:23:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:52): Response sent: OpResult{ success = true, return = server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:23:52): Remote request: us.pserver.sdb.engine.ServerEngine.getIndex(  )
+[INFO ] (29/12/2014 14:23:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:53): Response sent: OpResult{ success = true, return = <us.pserver.sdb.engine.Index><map class="linked-hash-map"><entry><string>us.pserver.rob.container.Credentials</string><linked-list><int-array><int>1</int><int>1</int></int-array></linked-list></entry><entry><string>credentials</string><linked-list><int-array><int>2</int><int>1</int></int-array><int-array><int>3</int><int>1</int></int-array><int-array><int>5</int><int>1</int></int-array><int-array><int>7</int><int>1</int></int-array><int-array><int>9</int><int>1</int></int-array><int-array><int>11</int><int>1</int></int-array></linked-list></entry><entry><string>server</string><linked-list><int-array><int>4</int><int>1</int></int-array><int-array><int>6</int><int>1</int></int-array><int-array><int>8</int><int>1</int></int-array><int-array><int>10</int><int>1</int></int-array><int-array><int>12</int><int>1</int></int-array></linked-list></entry></map></us.pserver.sdb.engine.Index> }
+[INFO ] (29/12/2014 14:23:53): Remote request: us.pserver.sdb.engine.ServerEngine.get( 4 )
+[INFO ] (29/12/2014 14:23:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:53): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:53): Remote request: us.pserver.sdb.engine.ServerEngine.get( 6 )
+[INFO ] (29/12/2014 14:23:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:53): Response sent: OpResult{ success = true, return = server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:53): Remote request: us.pserver.sdb.engine.ServerEngine.get( 8 )
+[INFO ] (29/12/2014 14:23:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:53): Response sent: OpResult{ success = true, return = server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} }
+[INFO ] (29/12/2014 14:23:53): Remote request: us.pserver.sdb.engine.ServerEngine.get( 10 )
+[INFO ] (29/12/2014 14:23:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:53): Response sent: OpResult{ success = true, return = server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:23:53): Remote request: us.pserver.sdb.engine.ServerEngine.get( 12 )
+[INFO ] (29/12/2014 14:23:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 14:23:53): Response sent: OpResult{ success = true, return = server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} }
+[INFO ] (29/12/2014 14:23:53): Connection closed by client.
+[INFO ] (29/12/2014 16:53:12): Starting NetworkServer...
+[INFO ] (29/12/2014 16:53:12): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (29/12/2014 16:53:12): Listening on: NetConnector{ 0.0.0.0:25000 }
+[INFO ] (29/12/2014 16:53:12): Server started!
+
+[INFO ] (29/12/2014 16:56:06): Starting NetworkServer...
+[INFO ] (29/12/2014 16:56:06): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (29/12/2014 16:56:06): Listening on: NetConnector{ 0.0.0.0:25000 }
+[INFO ] (29/12/2014 16:56:06): Server started!
+
+[INFO ] (29/12/2014 16:56:10): ------------------------------
+[INFO ] (29/12/2014 16:56:10): Handling socket: Socket[addr=/127.0.0.1,port=53358,localport=25000]
+[INFO ] (29/12/2014 16:56:11): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.SDBServer )
+[INFO ] (29/12/2014 16:56:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:56:11): Invoking: us.pserver.rob.server.NetworkServer.container(  )
+[INFO ] (29/12/2014 16:56:11): Invoking: ObjectContainer.contains( us.pserver.sdb.SDBServer )
+[INFO ] (29/12/2014 16:56:11): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/12/2014 16:56:11): Remote request: us.pserver.sdb.SimpleDB.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 16:56:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:56:11): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 16:56:11): Remote request: us.pserver.sdb.SimpleDB.put( server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 16:56:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:56:11): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 16:56:11): Remote request: us.pserver.sdb.SimpleDB.put( server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 16:56:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:56:11): Response sent: OpResult{ success = true, return = server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} }
+[INFO ] (29/12/2014 16:56:11): Remote request: us.pserver.sdb.SimpleDB.put( server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 16:56:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:56:11): Response sent: OpResult{ success = true, return = server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} }
+[INFO ] (29/12/2014 16:56:11): Remote request: us.pserver.sdb.SimpleDB.put( server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 16:56:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:56:11): Response sent: OpResult{ success = true, return = server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} }
+[INFO ] (29/12/2014 16:56:12): Remote request: us.pserver.sdb.SimpleDB.put( server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 16:56:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:56:12): Response sent: OpResult{ success = true, return = server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} }
+[INFO ] (29/12/2014 16:56:12): Remote request: us.pserver.sdb.SimpleDB.getOne( server( name == 102 ) )
+[INFO ] (29/12/2014 16:56:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:56:12): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true} }
+[INFO ] (29/12/2014 16:56:12): Remote request: us.pserver.sdb.SimpleDB.get( server( name ! == 102 ) && ( apps >= 4 ) )
+[INFO ] (29/12/2014 16:56:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:56:12): Response sent: OpResult{ success = true, return = us.pserver.sdb.query.Result@2bb34ad8 }
+[INFO ] (29/12/2014 16:56:12): Remote request: us.pserver.sdb.SimpleDB.get( server( creds --> user == username ) && ( name ! CONTAINS 2 ) )
+[INFO ] (29/12/2014 16:56:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:56:12): Response sent: OpResult{ success = true, return = us.pserver.sdb.query.Result@28d5c624 }
+[INFO ] (29/12/2014 16:56:12): Remote request: us.pserver.sdb.SimpleDB.get( server( name == 102 ) || ( name == 104 ) || ( name == 105 ) && ( apps > 0 ) || ( db == true ) )
+[INFO ] (29/12/2014 16:56:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:56:12): Response sent: OpResult{ success = true, return = us.pserver.sdb.query.Result@43b68d6d }
+[INFO ] (29/12/2014 16:56:12): Connection closed by client.
+[INFO ] (29/12/2014 16:58:54): ------------------------------
+[INFO ] (29/12/2014 16:58:54): Handling socket: Socket[addr=/127.0.0.1,port=53361,localport=25000]
+[INFO ] (29/12/2014 16:58:54): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.SDBServer )
+[INFO ] (29/12/2014 16:58:54): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:58:54): Invoking: us.pserver.rob.server.NetworkServer.container(  )
+[INFO ] (29/12/2014 16:58:54): Invoking: ObjectContainer.contains( us.pserver.sdb.SDBServer )
+[INFO ] (29/12/2014 16:58:54): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/12/2014 16:58:54): Remote request: us.pserver.sdb.SimpleDB.getOne( server( name == 102 ) )
+[INFO ] (29/12/2014 16:58:54): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:58:54): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true} }
+[INFO ] (29/12/2014 16:58:55): Remote request: us.pserver.sdb.SimpleDB.get( server( name ! == 102 ) && ( apps >= 4 ) )
+[INFO ] (29/12/2014 16:58:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:58:55): Response sent: OpResult{ success = true, return = us.pserver.sdb.query.Result@2c30a51a }
+[INFO ] (29/12/2014 16:58:55): Remote request: us.pserver.sdb.SimpleDB.get( server( creds --> user == username ) && ( name ! CONTAINS 2 ) )
+[INFO ] (29/12/2014 16:58:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:58:55): Response sent: OpResult{ success = true, return = us.pserver.sdb.query.Result@226aed5c }
+[INFO ] (29/12/2014 16:58:55): Remote request: us.pserver.sdb.SimpleDB.get( server( name == 102 ) || ( name == 104 ) || ( name == 105 ) && ( apps > 0 ) || ( db == true ) )
+[INFO ] (29/12/2014 16:58:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:58:55): Response sent: OpResult{ success = true, return = us.pserver.sdb.query.Result@501af31e }
+[INFO ] (29/12/2014 16:58:55): Connection closed by client.
+[INFO ] (29/12/2014 16:59:23): ------------------------------
+[INFO ] (29/12/2014 16:59:23): Handling socket: Socket[addr=/127.0.0.1,port=53362,localport=25000]
+[INFO ] (29/12/2014 16:59:23): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.SDBServer )
+[INFO ] (29/12/2014 16:59:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:59:23): Invoking: us.pserver.rob.server.NetworkServer.container(  )
+[INFO ] (29/12/2014 16:59:23): Invoking: ObjectContainer.contains( us.pserver.sdb.SDBServer )
+[INFO ] (29/12/2014 16:59:23): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/12/2014 16:59:23): Remote request: us.pserver.sdb.SimpleDB.getOne( server( name == 102 ) )
+[INFO ] (29/12/2014 16:59:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:59:23): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true} }
+[INFO ] (29/12/2014 16:59:24): Remote request: us.pserver.sdb.SimpleDB.get( server( name ! == 102 ) && ( apps >= 4 ) )
+[INFO ] (29/12/2014 16:59:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:59:24): Response sent: OpResult{ success = true, return = us.pserver.sdb.query.Result@7a159e63 }
+[INFO ] (29/12/2014 16:59:24): Remote request: us.pserver.sdb.SimpleDB.get( server( creds --> user == username ) && ( name ! CONTAINS 2 ) )
+[INFO ] (29/12/2014 16:59:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:59:24): Response sent: OpResult{ success = true, return = us.pserver.sdb.query.Result@525d2c1b }
+[INFO ] (29/12/2014 16:59:24): Remote request: us.pserver.sdb.SimpleDB.get( server( name == 102 ) || ( name == 104 ) || ( name == 105 ) && ( apps > 0 ) || ( db == true ) )
+[INFO ] (29/12/2014 16:59:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:59:24): Response sent: OpResult{ success = true, return = us.pserver.sdb.query.Result@1506667a }
+[INFO ] (29/12/2014 16:59:24): Remote request: us.pserver.sdb.SimpleDB.close(  )
+[INFO ] (29/12/2014 16:59:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 16:59:24): Response sent: OpResult{ success = true, return = null }
+[INFO ] (29/12/2014 16:59:24): Connection closed by client.
+[INFO ] (29/12/2014 17:24:05): Starting NetworkServer...
+[INFO ] (29/12/2014 17:24:05): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (29/12/2014 17:24:05): Listening on: NetConnector{ 0.0.0.0:25000 }
+[INFO ] (29/12/2014 17:24:05): Server started!
+
+[INFO ] (29/12/2014 17:24:23): ------------------------------
+[INFO ] (29/12/2014 17:24:23): Handling socket: Socket[addr=/127.0.0.1,port=53416,localport=25000]
+[INFO ] (29/12/2014 17:24:24): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.SDBServer )
+[INFO ] (29/12/2014 17:24:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:24:24): Invoking: us.pserver.rob.server.NetworkServer.container(  )
+[INFO ] (29/12/2014 17:24:24): Invoking: ObjectContainer.contains( us.pserver.sdb.SDBServer )
+[INFO ] (29/12/2014 17:24:24): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/12/2014 17:24:24): Remote request: us.pserver.sdb.SimpleDB.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 17:24:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:24:24): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 17:24:24): Remote request: us.pserver.sdb.SimpleDB.put( server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 17:24:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:24:24): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 17:24:24): Remote request: us.pserver.sdb.SimpleDB.put( server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 17:24:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:24:24): Response sent: OpResult{ success = true, return = server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} }
+[INFO ] (29/12/2014 17:24:24): Remote request: us.pserver.sdb.SimpleDB.put( server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 17:24:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:24:24): Response sent: OpResult{ success = true, return = server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} }
+[INFO ] (29/12/2014 17:24:24): Remote request: us.pserver.sdb.SimpleDB.put( server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 17:24:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:24:24): Response sent: OpResult{ success = true, return = server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} }
+[INFO ] (29/12/2014 17:24:25): Remote request: us.pserver.sdb.SimpleDB.put( server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 17:24:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:24:25): Response sent: OpResult{ success = true, return = server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} }
+[INFO ] (29/12/2014 17:24:25): Remote request: us.pserver.sdb.SimpleDB.getOne( server( name == 102 ) )
+[INFO ] (29/12/2014 17:24:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:24:25): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true} }
+[INFO ] (29/12/2014 17:24:25): Remote request: us.pserver.sdb.SimpleDB.get( server( name ! == 102 ) && ( apps >= 4 ) )
+[INFO ] (29/12/2014 17:24:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:24:25): Response sent: OpResult{ success = true, return = Result{ size=3 } }
+[INFO ] (29/12/2014 17:24:25): Remote request: us.pserver.sdb.SimpleDB.get( server( creds --> user == username ) && ( name ! CONTAINS 2 ) )
+[INFO ] (29/12/2014 17:24:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:24:25): Response sent: OpResult{ success = true, return = Result{ size=0 } }
+[INFO ] (29/12/2014 17:24:25): Remote request: us.pserver.sdb.SimpleDB.get( server( name == 102 ) || ( name == 104 ) || ( name == 105 ) && ( apps > 0 ) || ( db == true ) )
+[INFO ] (29/12/2014 17:24:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:24:25): Response sent: OpResult{ success = true, return = Result{ size=3 } }
+[INFO ] (29/12/2014 17:24:25): Remote request: us.pserver.sdb.SDBServer.close(  )
+[INFO ] (29/12/2014 17:24:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:24:25): Response sent: OpResult{ success = true, return = null }
+[INFO ] (29/12/2014 17:24:25): Connection closed by client.
+[INFO ] (29/12/2014 17:25:56): Starting NetworkServer...
+[INFO ] (29/12/2014 17:25:56): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (29/12/2014 17:25:56): Listening on: NetConnector{ 0.0.0.0:25000 }
+[INFO ] (29/12/2014 17:25:56): Server started!
+
+[INFO ] (29/12/2014 17:26:04): ------------------------------
+[INFO ] (29/12/2014 17:26:04): Handling socket: Socket[addr=/127.0.0.1,port=53418,localport=25000]
+[INFO ] (29/12/2014 17:26:05): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.SDBServer )
+[INFO ] (29/12/2014 17:26:05): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:26:05): Invoking: us.pserver.rob.server.NetworkServer.container(  )
+[INFO ] (29/12/2014 17:26:05): Invoking: ObjectContainer.contains( us.pserver.sdb.SDBServer )
+[INFO ] (29/12/2014 17:26:05): Response sent: OpResult{ success = true, return = true }
+[INFO ] (29/12/2014 17:26:05): Remote request: us.pserver.sdb.SimpleDB.put( credentials{user:username,pass:password} )
+[INFO ] (29/12/2014 17:26:05): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:26:05): Response sent: OpResult{ success = true, return = credentials{user:username,pass:password} }
+[INFO ] (29/12/2014 17:26:05): Remote request: us.pserver.sdb.SimpleDB.put( server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 17:26:05): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:26:05): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:0} }
+[INFO ] (29/12/2014 17:26:05): Remote request: us.pserver.sdb.SimpleDB.put( server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 17:26:05): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:26:05): Response sent: OpResult{ success = true, return = server{name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:0} }
+[INFO ] (29/12/2014 17:26:05): Remote request: us.pserver.sdb.SimpleDB.put( server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 17:26:05): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:26:05): Response sent: OpResult{ success = true, return = server{name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:0} }
+[INFO ] (29/12/2014 17:26:05): Remote request: us.pserver.sdb.SimpleDB.put( server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 17:26:05): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:26:05): Response sent: OpResult{ success = true, return = server{name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:0} }
+[INFO ] (29/12/2014 17:26:06): Remote request: us.pserver.sdb.SimpleDB.put( server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,creds:credentials{user:username,pass:password}} )
+[INFO ] (29/12/2014 17:26:06): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:26:06): Response sent: OpResult{ success = true, return = server{name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:0} }
+[INFO ] (29/12/2014 17:26:06): Remote request: us.pserver.sdb.SimpleDB.getOne( server( name == 102 ) )
+[INFO ] (29/12/2014 17:26:06): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:26:06): Response sent: OpResult{ success = true, return = server{name:102,ip:172.29.14.102,enabled:true,apps:2,db:true} }
+[INFO ] (29/12/2014 17:26:06): Remote request: us.pserver.sdb.SimpleDB.get( server( name ! == 102 ) && ( apps >= 4 ) )
+[INFO ] (29/12/2014 17:26:06): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:26:06): Response sent: OpResult{ success = true, return = Result{ size=3 } }
+[INFO ] (29/12/2014 17:26:06): Remote request: us.pserver.sdb.SimpleDB.get( server( creds --> user == username ) && ( name ! CONTAINS 2 ) )
+[INFO ] (29/12/2014 17:26:06): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:26:06): Response sent: OpResult{ success = true, return = Result{ size=0 } }
+[INFO ] (29/12/2014 17:26:06): Remote request: us.pserver.sdb.SimpleDB.get( server( name == 102 ) || ( name == 104 ) || ( name == 105 ) && ( apps > 0 ) || ( db == true ) )
+[INFO ] (29/12/2014 17:26:06): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:26:06): Response sent: OpResult{ success = true, return = Result{ size=3 } }
+[INFO ] (29/12/2014 17:26:06): Remote request: us.pserver.sdb.SDBServer.close(  )
+[INFO ] (29/12/2014 17:26:06): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (29/12/2014 17:26:06): Response sent: OpResult{ success = true, return = null }
+[INFO ] (29/12/2014 17:26:06): Connection closed by client.

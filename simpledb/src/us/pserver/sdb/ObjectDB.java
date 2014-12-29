@@ -41,7 +41,7 @@ import us.pserver.sdb.query.QueryBuilder;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 24/09/2014
  */
-public class ObjectDB {
+public class ObjectDB implements DB {
 
   private CachedEngine engine;
   
@@ -57,22 +57,25 @@ public class ObjectDB {
   }
   
   
+  @Override
   public StorageEngine getEngine() {
     return engine;
   }
   
   
-  public ObjectDB setRemoveOnCascade(boolean bool) {
+  @Override
+  public void setRemoveOnCascade(boolean bool) {
     rmcascade = bool;
-    return this;
   }
   
   
+  @Override
   public boolean isRemoveOnCascade() {
     return rmcascade;
   }
   
   
+  @Override
   public void close() throws SDBException {
     engine.close();
   }
@@ -148,6 +151,7 @@ public class ObjectDB {
   }
   
   
+  @Override
   public OID put(Object obj) throws SDBException {
     OID id = new OID();
     if(obj == null) return id;
@@ -183,6 +187,7 @@ public class ObjectDB {
   }
   
   
+  @Override
   public OID remove(long blk) throws SDBException {
     OID id = new OID();
     Document doc = getDoc(blk);
@@ -194,6 +199,7 @@ public class ObjectDB {
   }
   
   
+  @Override
   public boolean remove(Object obj) throws SDBException {
     if(obj == null) return false;
     Document doc = findCached(
@@ -222,6 +228,7 @@ public class ObjectDB {
   }
   
   
+  @Override
   public ResultOID removeAll(Query q) throws SDBException {
     ResultOID res = get(q);
     for(OID id : res)
@@ -230,6 +237,7 @@ public class ObjectDB {
   }
   
   
+  @Override
   public OID removeOne(Query q) throws SDBException {
     OID res = getOne(q);
     if(res == null || !res.isSetted())
@@ -245,6 +253,7 @@ public class ObjectDB {
   }
   
   
+  @Override
   public OID get(long blk) throws SDBException {
     OID id = new OID().block(blk);
     Document doc = getDoc(blk);
@@ -253,6 +262,7 @@ public class ObjectDB {
   }
   
   
+  @Override
   public OID getOne(Object example) throws SDBException {
     OID id = new OID();
     if(example == null) return id;
@@ -272,6 +282,7 @@ public class ObjectDB {
   }
   
   
+  @Override
   public OID getOne(Query q) throws SDBException {
     OID id = new OID();
     if(q == null) return id;
@@ -284,6 +295,7 @@ public class ObjectDB {
   }
   
   
+  @Override
   public ResultOID get(Object example) throws SDBException {
     ResultOID ro = new ResultOID(1);
     if(example == null) return ro;
@@ -311,6 +323,7 @@ public class ObjectDB {
   }
   
   
+  @Override
   public ResultOID get(Query q) throws SDBException {
     ResultOID objs = new ResultOID();
     if(q == null) return objs;
@@ -373,9 +386,17 @@ public class ObjectDB {
   }
   
   
-  public ResultOID join(Query q, ResultOID rs) {
+  @Override
+  public ResultOID join(Query q, List list) {
+    if(list == null) return null;
+    ResultOID rs = new ResultOID();
+    for(Object o : list) {
+      if(o instanceof OID && !rs.contains(o))
+        rs.add((OID) o);
+      else
+        rs.add(new OID().set(o));
+    }
     if(q == null) return rs;
-    if(rs == null) rs = new ResultOID();
     ResultOID other = get(q);
     for(OID oid : other) {
       if(!rs.contains(oid))

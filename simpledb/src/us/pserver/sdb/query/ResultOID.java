@@ -397,5 +397,11 @@ public class ResultOID implements List<OID>, Iterator<OID> {
     }
     return dif;
   }
+
+
+  @Override
+  public String toString() {
+    return "ResultOID{ size=" + list.size() + " }";
+  }
   
 }

@@ -33,7 +33,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.log.LogProvider;
 import us.pserver.rob.MethodChain;
@@ -52,7 +51,7 @@ import us.pserver.rob.channel.Transport;
  */
 public class NetworkServer extends AbstractServer {
   
-  public static final String SERVER_KEY = "NetworkServer";
+  public static final String SERVER_KEY = NetworkServer.class.getName();
   
   
   private transient Reflector ref;

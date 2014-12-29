@@ -26,6 +26,7 @@ import us.pserver.sdb.engine.Index;
 import us.pserver.sdb.engine.StorageEngine;
 import java.util.Iterator;
 import java.util.List;
+import us.pserver.sdb.engine.MemoryEngine;
 import us.pserver.sdb.query.Query;
 import us.pserver.sdb.query.QueryBuilder;
 
@@ -35,14 +36,20 @@ import us.pserver.sdb.query.QueryBuilder;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 24/09/2014
  */
-public class SimpleDB {
+public class SimpleDB implements DB<Document> {
 
   private StorageEngine engine;
   
   private boolean rmcascade;
   
   
-  public SimpleDB(StorageEngine eng) throws SDBException {
+  protected SimpleDB() {
+    engine = null;
+    rmcascade = true;
+  }
+  
+  
+  public SimpleDB(StorageEngine eng) {
     if(eng == null)
       throw new IllegalArgumentException(
           "Invalid DocumentEngine: "
@@ -52,22 +59,25 @@ public class SimpleDB {
   }
   
   
+  @Override
   public StorageEngine getEngine() {
     return engine;
   }
   
   
-  public SimpleDB setRemoveOnCascade(boolean bool) {
+  @Override
+  public void setRemoveOnCascade(boolean bool) {
     rmcascade = bool;
-    return this;
   }
   
   
+  @Override
   public boolean isRemoveOnCascade() {
     return rmcascade;
   }
   
   
+  @Override
   public void close() throws SDBException {
     engine.close();
   }
@@ -130,6 +140,7 @@ public class SimpleDB {
   }
   
   
+  @Override
   public Document put(Document doc) throws SDBException {
     if(doc == null) return doc;
     doc = createLinks(doc);
@@ -138,6 +149,7 @@ public class SimpleDB {
   }
   
   
+  @Override
   public Document remove(long blk) throws SDBException {
     Document doc = get(blk);
     rmNested(doc);
@@ -145,6 +157,7 @@ public class SimpleDB {
   }
   
   
+  @Override
   public boolean remove(Document doc) throws SDBException {
     if(doc == null || doc.label() == null
         || doc.map().isEmpty()) 
@@ -161,7 +174,8 @@ public class SimpleDB {
   }
   
   
-  public Result remove(Query q) throws SDBException {
+  @Override
+  public Result removeAll(Query q) throws SDBException {
     Result res = get(q);
     for(Document d : res)
       this.remove(d.block());
@@ -169,17 +183,20 @@ public class SimpleDB {
   }
   
   
+  @Override
   public Document get(long blk) throws SDBException {
     Document doc = engine.get(blk);
     return resolveLinks(doc);
   }
   
   
+  @Override
   public Document getOne(Document doc) throws SDBException {
     return getOne(QueryBuilder.builder().fromExample(doc));
   }
   
   
+  @Override
   public Document getOne(Query q) throws SDBException {
     if(q == null) return null;
     Result docs = get(q.limit(1));
@@ -191,6 +208,7 @@ public class SimpleDB {
   }
   
   
+  @Override
   public Result get(Document doc) throws SDBException {
     return get(QueryBuilder.builder().fromExample(doc));
   }
@@ -208,12 +226,15 @@ public class SimpleDB {
       if(is == null || is[0] < 0) continue;
       Document d = get(is[0]);
       if(d == null) continue;
+      if(limit > 0 && docs.size() >= limit)
+        break;
       docs.add(d);
     }
     return docs;
   }
   
   
+  @Override
   public Result get(Query q) throws SDBException {
     Result docs = new Result();
     if(q == null || (q.isEmpty() && q.label() == null)) 
@@ -246,9 +267,12 @@ public class SimpleDB {
   }
   
   
-  public Result join(Query q, Result rs) {
+  @Override
+  public Result join(Query q, List<Document> list) {
+    if(list == null) return null;
+    Result rs = new Result();
+    if(!list.isEmpty()) rs.addAll(list);
     if(q == null) return rs;
-    if(rs == null) rs = new Result();
     Result other = get(q);
     for(Document d : other) {
       if(!rs.containsBlock(d.block()))
@@ -256,5 +280,14 @@ public class SimpleDB {
     }
     return rs;
   }
-  
+
+
+  @Override
+  public Document removeOne(Query q) {
+    if(q == null) return null;
+    Document d = getOne(q);
+    if(d != null) remove(d.block());
+    return d;
+  }
+
 }

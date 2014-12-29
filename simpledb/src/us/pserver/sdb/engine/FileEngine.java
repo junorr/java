@@ -23,6 +23,7 @@ package us.pserver.sdb.engine;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import us.pserver.sdb.Document;
 import us.pserver.sdb.SDBException;
@@ -220,10 +221,11 @@ public class FileEngine implements StorageEngine {
     hand.seekBlock(blk);
     if(hand.isEOF()) return null;
     
-    byte[] bts = hand.readLineBytes();
+    byte[] bts = readBytes(blk);
     int sz = index.remove(blk);
     if(sz <= 0)
       sz = getBlockSize(bts);
+
     hand.seekBlock(blk).clearBlocks(sz);
     index.put(EMPTY_INDEX, (int)blk, sz);
     if(bts[0] == BYTE_BLOCK_START) {
@@ -252,24 +254,14 @@ public class FileEngine implements StorageEngine {
   }
   
   
-  protected byte[] readBytes2(long blk) throws IOException {
-    if(blk <= 0) return null;
-    hand.seekBlock(blk);
-    if(hand.isEOF()) return null;
-    byte b = hand.readByte();
-    if(b != BYTE_BLOCK_START)
-      return null;
-    return hand.readLineBytes();
-  }
-  
-  
   protected byte[] readBytes(long blk) throws IOException {
     if(blk <= 0) return null;
     hand.seekBlock(blk);
     if(hand.isEOF()) return null;
     byte a = 0;
     byte b = hand.readByte();
-    if(b != BYTE_BLOCK_START)
+    if(b != BYTE_BLOCK_START 
+        && b != BYTE_INDEX_START)
       return null;
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     while(!hand.isEOF()) {

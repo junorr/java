@@ -371,5 +371,11 @@ public class Result implements List<Document>, Iterator<Document> {
     }
     return dif;
   }
+
+
+  @Override
+  public String toString() {
+    return "Result{ size=" + list.size() + " }";
+  }
   
 }
