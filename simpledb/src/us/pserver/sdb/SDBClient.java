@@ -38,7 +38,7 @@ import us.pserver.sdb.query.Result;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 29/12/2014
  */
-public class SimpleDBClient extends SimpleDB {
+public class SDBClient extends SimpleDB {
 
   private RemoteObject rob;
   
@@ -47,7 +47,7 @@ public class SimpleDBClient extends SimpleDB {
   private Credentials cred;
   
   
-  public SimpleDBClient(NetConnector conn, Credentials crd) throws IllegalArgumentException, SDBException {
+  public SDBClient(NetConnector conn, Credentials crd) throws IllegalArgumentException, SDBException {
     if(conn == null || conn.getAddress() == null
         || conn.getPort() <= 0)
       throw new IllegalArgumentException(
@@ -121,7 +121,7 @@ public class SimpleDBClient extends SimpleDB {
   public void stopServer() {
     RemoteMethod meth = new RemoteMethod()
         .forObject(SDBServer.class.getName())
-        .method("close");
+        .method("stop");
     if(cred != null) meth.credentials(cred);
     try {
       rob.invokeVoid(meth);

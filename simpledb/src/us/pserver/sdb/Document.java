@@ -34,7 +34,7 @@ import us.pserver.sdb.util.ObjectUtils;
  */
 public class Document {
 
-  private transient long block;
+  private long block;
   
   private String label;
   

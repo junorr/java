@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static us.pserver.chk.Checker.nullarg;
@@ -52,6 +53,8 @@ import us.pserver.rob.channel.Transport;
 public class NetworkServer extends AbstractServer {
   
   public static final String SERVER_KEY = NetworkServer.class.getName();
+  
+  public static final int SOCK_SO_TIMEOUT = 500;
   
   
   private transient Reflector ref;
@@ -184,7 +187,7 @@ public class NetworkServer extends AbstractServer {
           "Invalid ObjectContainer ["+ container+ "]");
     
     LogProvider.getSimpleLog().info("Starting NetworkServer...");
-    running = true;
+    setRunning(true);
     exec = Executors.newFixedThreadPool(availableThreads);
   }
   
@@ -217,15 +220,18 @@ public class NetworkServer extends AbstractServer {
   @Override
   public void run() {
     try(ServerSocket server = con.connectServerSocket();) {
+      server.setSoTimeout(SOCK_SO_TIMEOUT);
       LogProvider.getSimpleLog().info("Channel: "
           + factory.createChannel(new Socket()).getClass().getCanonicalName());
       LogProvider.getSimpleLog().info("Listening on: "+ con.toString());
       LogProvider.getSimpleLog().info("Server started!\n");
       
-      while(running) {
-        Socket sock = server.accept();
-        exec.submit(new SocketHandler(
-            factory.createChannel(sock), sock));
+      while(isRunning()) {
+        try {
+          Socket sock = server.accept();
+          exec.submit(new SocketHandler(
+              factory.createChannel(sock), sock));
+        } catch(SocketTimeoutException se) {}
       }
     } catch(IOException e) {
       LogProvider.getSimpleLog().fatal(

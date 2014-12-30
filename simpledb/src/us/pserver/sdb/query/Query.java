@@ -382,6 +382,7 @@ public class Query {
     
     while(iterator.hasNext()) {
       QueryPath p = iterator.next();
+      //System.out.println("* Query.exec: Evaluating=> " + p);
       if(p.isField()) {
         field = p.field();
         if(!doc.map().containsKey(field)) {
@@ -421,18 +422,22 @@ public class Query {
   
   
   public boolean exec(Document doc) throws SDBException {
+    //System.out.println("* Query.exec: Document=> "+ doc);
     if(doc == null) return false;
     if(doc.label() != null && label != null && !doc.label().equals(label))
       return false;
     
     Iterator<QueryPath> it = path.iterator();
     boolean exec = exec(doc, it, true);
+    
     for(int i = 0; i < or.size(); i++) {
       exec = exec || or.get(i).exec(doc);
     }
     for(int i = 0; i < and.size(); i++) {
       exec = exec && and.get(i).exec(doc);
     }
+    //System.out.println("* Query.exec: Result=> "+ exec);
+    //System.out.println();
     return exec;
   }
   

@@ -98,12 +98,17 @@ public class SDBServer {
   }
   
   
-  public void startServer() {
+  public void start() {
+    server.start();
+  }
+  
+  
+  public void startNewThread() {
     server.startNewThread();
   }
   
   
-  public void close() {
+  public void stop() {
     server.stop();
     sdb.close();
   }

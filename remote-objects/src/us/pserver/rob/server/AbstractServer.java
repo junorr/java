@@ -35,7 +35,7 @@ import us.pserver.rob.server.Server;
  */
 public abstract class AbstractServer implements Server {
   
-  public static final String ABSTRACT_SERVER = "AbstractServer";
+  public static final String ABSTRACT_SERVER = AbstractServer.class.getName();
   
   
   int availableThreads;
@@ -96,17 +96,26 @@ public abstract class AbstractServer implements Server {
   public int getAvailableThreads() {
     return availableThreads;
   }
+  
+  
+  protected void setRunning(boolean run) {
+    synchronized(ABSTRACT_SERVER) {
+      running = run;
+    }
+  }
 
 
   @Override
   public void stop() {
-    running = false;
+    setRunning(false);
   }
 
 
   @Override
   public boolean isRunning() {
-    return running;
+    synchronized(ABSTRACT_SERVER) {
+      return running;
+    }
   }
 
 }

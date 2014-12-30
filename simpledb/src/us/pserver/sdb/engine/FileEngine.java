@@ -113,7 +113,8 @@ public class FileEngine implements StorageEngine {
         hand.nextBlock();
       hand.writeByte(BYTE_INDEX_START)
           .writeLine(serial.serialize(index))
-          .writeByte(BYTE_INDEX_START);
+          .writeByte(BYTE_INDEX_START)
+          .close();
     }
     catch(IOException e) {
       throw new SDBException(e.getMessage(), e);
@@ -182,6 +183,7 @@ public class FileEngine implements StorageEngine {
     }
     
     doc.block(rblock[0]);
+    bytes = serial.serialize(doc);
     hand.seekBlock(rblock[0]);
     hand.writeByte(BYTE_BLOCK_START)
         .writeLine(bytes)

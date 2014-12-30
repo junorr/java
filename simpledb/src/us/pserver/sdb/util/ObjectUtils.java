@@ -273,7 +273,10 @@ public class ObjectUtils {
     if(doc == null) return null;
     StringBuffer sb = new StringBuffer();
     sb.append(doc.label())
-        .append("{");
+        .append("{")
+        .append("blk=")
+        .append(doc.block())
+        .append(",");
     Iterator<String> it = doc.map().keySet().iterator();
     while(it.hasNext()) {
       String key = it.next();

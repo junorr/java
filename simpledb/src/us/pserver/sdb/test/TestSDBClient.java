@@ -25,7 +25,7 @@ import us.pserver.rob.NetConnector;
 import us.pserver.rob.container.Credentials;
 import us.pserver.sdb.Document;
 import us.pserver.sdb.SimpleDB;
-import us.pserver.sdb.SimpleDBClient;
+import us.pserver.sdb.SDBClient;
 import us.pserver.sdb.query.Query;
 import us.pserver.sdb.query.QueryBuilder;
 import us.pserver.sdb.query.Result;
@@ -35,7 +35,7 @@ import us.pserver.sdb.query.Result;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 29/12/2014
  */
-public class TestSimpleDBClient {
+public class TestSDBClient {
 
   static SimpleDB sdb;
   
@@ -48,7 +48,7 @@ public class TestSimpleDBClient {
         .put("user", "username")
         .put("pass", "password");
     System.out.println("-> add: "+ cred);
-    sdb.put(cred);
+    cred = sdb.put(cred);
     
     Document doc = new Document("server")
         .put("name", "102")
@@ -230,7 +230,7 @@ public class TestSimpleDBClient {
   public static void main(String[] args) {
     NetConnector conn = new NetConnector("127.0.0.1", 25000);
     Credentials cred = new Credentials("juno", new StringBuffer("1234"));
-    sdb = new SimpleDBClient(conn, cred);
+    sdb = new SDBClient(conn, cred);
     
     try 
     {
@@ -245,7 +245,7 @@ public class TestSimpleDBClient {
       
     }
     finally {
-      ((SimpleDBClient)sdb).stopServer();
+      ((SDBClient)sdb).stopServer();
       sdb.close();
     }
   }

@@ -42,7 +42,7 @@ public class TestSDBServer {
     InetSocketAddress addr = new InetSocketAddress("0.0.0.0", 25000);
     SDBServer server = new SDBServer(addr, new SimpleDB(new CachedEngine(fe)));
     server.getCredentialsSource().put(new Credentials("juno", new StringBuffer("1234")));
-    server.startServer();
+    server.start();
   }
   
 }
