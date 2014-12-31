@@ -41,6 +41,8 @@ public class StorageCredentialsSource implements CredentialsSource {
   
   public static final String CRED_LABEL = "us.pserver.rob.container.Credentials";
   
+  private StorageEngine eng;
+  
   private SimpleDB sdb;
   
   
@@ -48,13 +50,6 @@ public class StorageCredentialsSource implements CredentialsSource {
     if(eng == null)
       throw new IllegalArgumentException("Invalid StorageEngine: "+ eng);
     sdb = new SimpleDB(eng);
-  }
-  
-  
-  public StorageCredentialsSource(SimpleDB sdb) {
-    if(sdb == null)
-      throw new IllegalArgumentException("Invalid SimpleDB instance: "+ sdb);
-    this.sdb = sdb;
   }
   
   
@@ -84,17 +79,17 @@ public class StorageCredentialsSource implements CredentialsSource {
         .field("user").equal(user).create();
     Document d = sdb.getOne(q);
     if(d == null) return null;
+    
     return (Credentials) ObjectUtils.fromDocument(d);
   }
 
 
   @Override
   public List<Credentials> getCredentials() {
-    Result res = sdb.get(CRED_LABEL, -1);
+    Result rs = sdb.get(CRED_LABEL, -1);
     List<Credentials> creds = new LinkedList<>();
-    for(Document d : res) {
-      if(d != null)
-        creds.add((Credentials) ObjectUtils.fromDocument(d));
+    for(Document d : rs) {
+      creds.add((Credentials)ObjectUtils.fromDocument(d));
     }
     return creds;
   }

@@ -1091,3 +1091,102 @@
 [INFO ] (30/12/2014 17:26:35): Authentication Enabled: Credentials{ user = juno }
 [INFO ] (30/12/2014 17:26:35): Response sent: OpResult{ success = true, return = null }
 [INFO ] (30/12/2014 17:26:35): Connection closed by client.
+[INFO ] (31/12/2014 12:15:42): Starting NetworkServer...
+[INFO ] (31/12/2014 12:15:42): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (31/12/2014 12:15:42): Listening on: NetConnector{ 0.0.0.0:25000 }
+[INFO ] (31/12/2014 12:15:42): Server started!
+
+[INFO ] (31/12/2014 12:16:07): Starting NetworkServer...
+[INFO ] (31/12/2014 12:16:07): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (31/12/2014 12:16:07): Listening on: NetConnector{ 0.0.0.0:25000 }
+[INFO ] (31/12/2014 12:16:07): Server started!
+
+[INFO ] (31/12/2014 12:16:15): ------------------------------
+[INFO ] (31/12/2014 12:16:15): Handling socket: Socket[addr=/127.0.0.1,port=37627,localport=25000]
+[INFO ] (31/12/2014 12:16:16): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.net.DBServer )
+[INFO ] (31/12/2014 12:16:16): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (31/12/2014 12:16:16): Error invoking method [us.pserver.rob.server.NetworkServer.container(  )]
+[WARN ] (31/12/2014 12:16:16): AuthenticationException: Empty CredentialsSource
+[WARN ] (31/12/2014 12:16:16):   us.pserver.rob.container.Authenticator.authenticate(Authenticator.java:50)
+[WARN ] (31/12/2014 12:16:16):   us.pserver.rob.container.ObjectContainer.get(ObjectContainer.java:142)
+[WARN ] (31/12/2014 12:16:16):   us.pserver.rob.server.NetworkServer$SocketHandler.getObject(NetworkServer.java:373)
+[WARN ] (31/12/2014 12:16:16):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:410)
+[WARN ] (31/12/2014 12:16:16):   us.pserver.rob.server.NetworkServer$SocketHandler.handleInvoke(NetworkServer.java:486)
+[WARN ] (31/12/2014 12:16:16):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:519)
+[WARN ] (31/12/2014 12:16:16):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (31/12/2014 12:16:16):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (31/12/2014 12:16:16):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (31/12/2014 12:16:16):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (31/12/2014 12:16:16):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (31/12/2014 12:16:16): Response sent: OpResult{ success = false, return = null }
+[INFO ] (31/12/2014 12:16:16): Connection closed by client.
+[INFO ] (31/12/2014 12:17:19): Starting NetworkServer...
+[INFO ] (31/12/2014 12:17:19): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (31/12/2014 12:17:19): Listening on: NetConnector{ 0.0.0.0:25000 }
+[INFO ] (31/12/2014 12:17:19): Server started!
+
+[INFO ] (31/12/2014 12:17:33): ------------------------------
+[INFO ] (31/12/2014 12:17:33): Handling socket: Socket[addr=/127.0.0.1,port=37630,localport=25000]
+[INFO ] (31/12/2014 12:17:34): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.net.DBServer )
+[INFO ] (31/12/2014 12:17:34): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (31/12/2014 12:17:34): Error invoking method [us.pserver.rob.server.NetworkServer.container(  )]
+[WARN ] (31/12/2014 12:17:34): AuthenticationException: Empty CredentialsSource
+[WARN ] (31/12/2014 12:17:34):   us.pserver.rob.container.Authenticator.authenticate(Authenticator.java:50)
+[WARN ] (31/12/2014 12:17:34):   us.pserver.rob.container.ObjectContainer.get(ObjectContainer.java:142)
+[WARN ] (31/12/2014 12:17:34):   us.pserver.rob.server.NetworkServer$SocketHandler.getObject(NetworkServer.java:373)
+[WARN ] (31/12/2014 12:17:34):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:410)
+[WARN ] (31/12/2014 12:17:34):   us.pserver.rob.server.NetworkServer$SocketHandler.handleInvoke(NetworkServer.java:486)
+[WARN ] (31/12/2014 12:17:34):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:519)
+[WARN ] (31/12/2014 12:17:34):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (31/12/2014 12:17:34):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (31/12/2014 12:17:34):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (31/12/2014 12:17:34):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (31/12/2014 12:17:34):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (31/12/2014 12:17:34): Response sent: OpResult{ success = false, return = null }
+[INFO ] (31/12/2014 12:17:34): Connection closed by client.
+[INFO ] (31/12/2014 12:26:40): Starting NetworkServer...
+[INFO ] (31/12/2014 12:26:40): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (31/12/2014 12:26:40): Listening on: NetConnector{ 0.0.0.0:25000 }
+[INFO ] (31/12/2014 12:26:40): Server started!
+
+[INFO ] (31/12/2014 12:26:45): ------------------------------
+[INFO ] (31/12/2014 12:26:45): Handling socket: Socket[addr=/127.0.0.1,port=37656,localport=25000]
+[INFO ] (31/12/2014 12:26:46): Remote request: us.pserver.rob.server.NetworkServer.container(  ).contains( us.pserver.sdb.net.DBServer )
+[INFO ] (31/12/2014 12:26:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (31/12/2014 12:26:46): Invoking: us.pserver.rob.server.NetworkServer.container(  )
+[INFO ] (31/12/2014 12:26:46): Invoking: ObjectContainer.contains( us.pserver.sdb.net.DBServer )
+[INFO ] (31/12/2014 12:26:46): Response sent: OpResult{ success = true, return = true }
+[INFO ] (31/12/2014 12:26:46): Remote request: us.pserver.sdb.SimpleDB.put( credentials{blk=-1,user:username,pass:password} )
+[INFO ] (31/12/2014 12:26:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (31/12/2014 12:26:46): Response sent: OpResult{ success = true, return = credentials{blk=2,user:username,pass:password} }
+[INFO ] (31/12/2014 12:26:46): Remote request: us.pserver.sdb.SimpleDB.put( server{blk=-1,name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,creds:credentials{blk=2,user:username,pass:password}} )
+[INFO ] (31/12/2014 12:26:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (31/12/2014 12:26:46): Response sent: OpResult{ success = true, return = server{blk=3,name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,@_creds:2} }
+[INFO ] (31/12/2014 12:26:46): Remote request: us.pserver.sdb.SimpleDB.put( server{blk=-1,name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,creds:credentials{blk=2,user:username,pass:password}} )
+[INFO ] (31/12/2014 12:26:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (31/12/2014 12:26:46): Response sent: OpResult{ success = true, return = server{blk=4,name:103,ip:172.29.14.103,enabled:true,apps:7,db:true,@_creds:2} }
+[INFO ] (31/12/2014 12:26:46): Remote request: us.pserver.sdb.SimpleDB.put( server{blk=-1,name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,creds:credentials{blk=2,user:username,pass:password}} )
+[INFO ] (31/12/2014 12:26:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (31/12/2014 12:26:46): Response sent: OpResult{ success = true, return = server{blk=5,name:104,ip:172.29.14.104,enabled:false,apps:0,db:true,@_creds:2} }
+[INFO ] (31/12/2014 12:26:46): Remote request: us.pserver.sdb.SimpleDB.put( server{blk=-1,name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,creds:credentials{blk=2,user:username,pass:password}} )
+[INFO ] (31/12/2014 12:26:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (31/12/2014 12:26:47): Response sent: OpResult{ success = true, return = server{blk=6,name:105,ip:172.29.14.105,enabled:true,apps:4,db:false,@_creds:2} }
+[INFO ] (31/12/2014 12:26:47): Remote request: us.pserver.sdb.SimpleDB.put( server{blk=-1,name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,creds:credentials{blk=2,user:username,pass:password}} )
+[INFO ] (31/12/2014 12:26:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (31/12/2014 12:26:47): Response sent: OpResult{ success = true, return = server{blk=7,name:100,ip:172.29.14.100,enabled:true,apps:10,db:false,@_creds:2} }
+[INFO ] (31/12/2014 12:26:47): Remote request: us.pserver.sdb.SimpleDB.getOne( server( name == 102 ) )
+[INFO ] (31/12/2014 12:26:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (31/12/2014 12:26:47): Response sent: OpResult{ success = true, return = server{blk=3,name:102,ip:172.29.14.102,enabled:true,apps:2,db:true,creds:credentials{blk=2,user:username,pass:password}} }
+[INFO ] (31/12/2014 12:26:47): Remote request: us.pserver.sdb.SimpleDB.get( server( name ! == 102 ) && ( apps >= 4 ) )
+[INFO ] (31/12/2014 12:26:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (31/12/2014 12:26:47): Response sent: OpResult{ success = true, return = Result{ size=3 } }
+[INFO ] (31/12/2014 12:26:47): Remote request: us.pserver.sdb.SimpleDB.get( server( creds --> user == username ) && ( name ! CONTAINS 2 ) )
+[INFO ] (31/12/2014 12:26:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (31/12/2014 12:26:47): Response sent: OpResult{ success = true, return = Result{ size=4 } }
+[INFO ] (31/12/2014 12:26:47): Remote request: us.pserver.sdb.SimpleDB.get( server( name == 102 ) || ( name == 104 ) || ( name == 105 ) && ( apps > 0 ) || ( db == true ) )
+[INFO ] (31/12/2014 12:26:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (31/12/2014 12:26:47): Response sent: OpResult{ success = true, return = Result{ size=3 } }
+[INFO ] (31/12/2014 12:26:47): Remote request: us.pserver.sdb.net.DBServer.stop(  )
+[INFO ] (31/12/2014 12:26:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (31/12/2014 12:26:47): Response sent: OpResult{ success = true, return = null }
+[INFO ] (31/12/2014 12:26:47): Connection closed by client.

@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.sdb;
+package us.pserver.sdb.net;
 
 import java.util.List;
 import us.pserver.rob.MethodChain;
@@ -30,6 +30,9 @@ import us.pserver.rob.RemoteObject;
 import us.pserver.rob.container.Credentials;
 import us.pserver.rob.factory.DefaultFactoryProvider;
 import us.pserver.rob.server.NetworkServer;
+import us.pserver.sdb.Document;
+import us.pserver.sdb.SDBException;
+import us.pserver.sdb.SimpleDB;
 import us.pserver.sdb.query.Query;
 import us.pserver.sdb.query.Result;
 
@@ -38,7 +41,7 @@ import us.pserver.sdb.query.Result;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 29/12/2014
  */
-public class SDBClient extends SimpleDB {
+public class SimpleDBClient extends SimpleDB {
 
   private RemoteObject rob;
   
@@ -47,7 +50,7 @@ public class SDBClient extends SimpleDB {
   private Credentials cred;
   
   
-  public SDBClient(NetConnector conn, Credentials crd) throws IllegalArgumentException, SDBException {
+  public SimpleDBClient(NetConnector conn, Credentials crd) throws IllegalArgumentException, SDBException {
     if(conn == null || conn.getAddress() == null
         || conn.getPort() <= 0)
       throw new IllegalArgumentException(
@@ -65,7 +68,7 @@ public class SDBClient extends SimpleDB {
     RemoteMethod meth = chain.add(NetworkServer.class.getName(), "container");
     if(cred != null) meth.credentials(cred);
     meth = chain.add("contains").types(String.class)
-        .params(SDBServer.class.getName());
+        .params(DBServer.class.getName());
     if(cred != null) meth.credentials(cred);
     try {
       boolean contains = (boolean) rob.invoke(chain);
@@ -120,7 +123,7 @@ public class SDBClient extends SimpleDB {
   
   public void stopServer() {
     RemoteMethod meth = new RemoteMethod()
-        .forObject(SDBServer.class.getName())
+        .forObject(DBServer.class.getName())
         .method("stop");
     if(cred != null) meth.credentials(cred);
     try {
@@ -311,7 +314,7 @@ public class SDBClient extends SimpleDB {
   
   
   @Override
-  public Result join(Query q, List<Document> list) {
+  public Result join(Query q, List list) {
     if(q == null || list == null)
       return new Result();
     RemoteMethod meth = new RemoteMethod()

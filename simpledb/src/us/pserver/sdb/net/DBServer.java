@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.sdb;
+package us.pserver.sdb.net;
 
 import java.net.InetSocketAddress;
 import us.pserver.rob.NetConnector;
@@ -27,6 +27,8 @@ import us.pserver.rob.container.Authenticator;
 import us.pserver.rob.container.ObjectContainer;
 import us.pserver.rob.factory.DefaultFactoryProvider;
 import us.pserver.rob.server.NetworkServer;
+import us.pserver.sdb.DBEngine;
+import us.pserver.sdb.SimpleDB;
 import us.pserver.sdb.engine.StorageCredentialsSource;
 
 /**
@@ -34,9 +36,9 @@ import us.pserver.sdb.engine.StorageCredentialsSource;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 29/12/2014
  */
-public class SDBServer {
+public class DBServer {
 
-  private SimpleDB sdb;
+  private DBEngine sdb;
   
   private NetworkServer server;
   
@@ -47,7 +49,7 @@ public class SDBServer {
   private StorageCredentialsSource crsource;
   
   
-  public SDBServer(NetConnector conn, SimpleDB sdb) {
+  public DBServer(NetConnector conn, DBEngine sdb) {
     if(sdb == null)
       throw new IllegalArgumentException(
           "SimpleDB must be not null: "+ sdb);
@@ -60,7 +62,7 @@ public class SDBServer {
   }
   
   
-  public SDBServer(InetSocketAddress addr, SimpleDB sdb) {
+  public DBServer(InetSocketAddress addr, DBEngine sdb) {
     if(sdb == null)
       throw new IllegalArgumentException(
           "SimpleDB must be not null: "+ sdb);
@@ -74,7 +76,7 @@ public class SDBServer {
   
   
   private void init() {
-    crsource = new StorageCredentialsSource(sdb);
+    crsource = new StorageCredentialsSource(sdb.getEngine());
     container = new ObjectContainer(new Authenticator(crsource));
     container.put(SimpleDB.class.getName(), sdb);
     container.put(this.getClass().getName(), this);
@@ -88,7 +90,7 @@ public class SDBServer {
   }
   
   
-  public SimpleDB getSimpleDB() {
+  public DBEngine getDBEngine() {
     return sdb;
   }
   

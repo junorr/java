@@ -23,7 +23,7 @@ package us.pserver.sdb.test;
 
 import java.net.InetSocketAddress;
 import us.pserver.rob.container.Credentials;
-import us.pserver.sdb.SDBServer;
+import us.pserver.sdb.net.DBServer;
 import us.pserver.sdb.SimpleDB;
 import us.pserver.sdb.engine.CachedEngine;
 import us.pserver.sdb.engine.FileEngine;
@@ -34,13 +34,13 @@ import us.pserver.sdb.engine.JsonSerialEngine;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 29/12/2014
  */
-public class TestSDBServer {
+public class TestDBServer {
 
   
   public static void main(String[] args) {
     FileEngine fe = new FileEngine(new JsonSerialEngine(), "./remote.db");
     InetSocketAddress addr = new InetSocketAddress("0.0.0.0", 25000);
-    SDBServer server = new SDBServer(addr, new SimpleDB(new CachedEngine(fe)));
+    DBServer server = new DBServer(addr, new SimpleDB(new CachedEngine(fe)));
     server.getCredentialsSource().put(new Credentials("juno", new StringBuffer("1234")));
     server.start();
   }

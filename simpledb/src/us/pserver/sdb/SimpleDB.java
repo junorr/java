@@ -26,7 +26,6 @@ import us.pserver.sdb.engine.Index;
 import us.pserver.sdb.engine.StorageEngine;
 import java.util.Iterator;
 import java.util.List;
-import us.pserver.sdb.engine.MemoryEngine;
 import us.pserver.sdb.query.Query;
 import us.pserver.sdb.query.QueryBuilder;
 
@@ -36,7 +35,7 @@ import us.pserver.sdb.query.QueryBuilder;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 24/09/2014
  */
-public class SimpleDB implements DB<Document> {
+public class SimpleDB implements DBEngine<Document> {
 
   private StorageEngine engine;
   
@@ -268,7 +267,7 @@ public class SimpleDB implements DB<Document> {
   
   
   @Override
-  public Result join(Query q, List<Document> list) {
+  public Result join(Query q, List list) {
     if(list == null) return null;
     Result rs = new Result();
     if(!list.isEmpty()) rs.addAll(list);

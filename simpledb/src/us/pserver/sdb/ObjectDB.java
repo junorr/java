@@ -41,7 +41,7 @@ import us.pserver.sdb.query.QueryBuilder;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 24/09/2014
  */
-public class ObjectDB implements DB {
+public class ObjectDB implements DBEngine {
 
   private CachedEngine engine;
   
@@ -305,6 +305,7 @@ public class ObjectDB implements DB {
   }
   
   
+  @Override
   public ResultOID get(String className, int limit) throws SDBException {
     ResultOID docs = new ResultOID(limit);
     if(className == null) return docs;

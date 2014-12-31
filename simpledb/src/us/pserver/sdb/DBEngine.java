@@ -30,7 +30,7 @@ import us.pserver.sdb.query.Query;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 29/12/2014
  */
-public interface DB<T> {
+public interface DBEngine<T> {
 
   public StorageEngine getEngine();
   
@@ -40,29 +40,31 @@ public interface DB<T> {
   
   public void close();
   
-  public T put(T t);
+  public Object put(T t);
   
   
-  public T get(long id);
+  public Object get(long id);
   
-  public List<T> get(T t);
+  public List get(T t);
   
-  public T getOne(T t);
+  public Object getOne(T t);
   
-  public List<T> get(Query q);
+  public List get(Query q);
   
-  public T getOne(Query q);
+  public Object getOne(Query q);
+  
+  public List get(String label, int limit);
   
   
-  public T remove(long id);
+  public Object remove(long id);
   
   public boolean remove(T t);
   
-  public List<T> removeAll(Query q);
+  public List removeAll(Query q);
   
-  public T removeOne(Query q);
+  public Object removeOne(Query q);
   
   
-  public List<T> join(Query q, List<T> ls);
+  public List join(Query q, List ls);
   
 }
