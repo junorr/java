@@ -78,7 +78,7 @@ public class DBServer {
   private void init() {
     crsource = new StorageCredentialsSource(sdb.getEngine());
     container = new ObjectContainer(new Authenticator(crsource));
-    container.put(SimpleDB.class.getName(), sdb);
+    container.put(sdb.getClass().getName(), sdb);
     container.put(this.getClass().getName(), this);
     server = new NetworkServer(container, connector, 
         DefaultFactoryProvider.getHttpResponseChannelFactory());

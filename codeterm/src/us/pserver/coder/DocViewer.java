@@ -29,6 +29,9 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -109,7 +112,7 @@ public class DocViewer extends Frame {
       @Override 
       public void actionPerformed(ActionEvent e) {
         DocViewer.this.setVisible(false);
-        System.exit(0);
+        //System.exit(0);
       }
     });
     this.add(lb);
@@ -139,13 +142,31 @@ public class DocViewer extends Frame {
     });
     this.add(mover);
     
+    KeyListener ke = new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_ESCAPE
+            || e.getKeyCode() == KeyEvent.VK_LEFT) {
+          DocViewer.this.setVisible(false);
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+          DocViewer.this.scrollDown();
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_UP) {
+          DocViewer.this.scrollUp();
+        }
+      }
+    };
+    
     scroll = new JScrollPane(view);
     scroll.setSize(DEF_SIZE.width -2, DEF_SIZE.height -18);
     scroll.setLocation(1, 18);
     this.add(scroll);
     
     view.addMouseWheelListener(mwl);
+    view.addKeyListener(ke);
     this.addMouseWheelListener(mwl);
+    this.addKeyListener(ke);
     scroll.addMouseWheelListener(mwl);
   }
   
@@ -228,8 +249,9 @@ public class DocViewer extends Frame {
   
   public static void main(String[] args) throws IOException {
     DocViewer dv = new DocViewer();
-    dv.show(new Point(60, 60), "c:/.local/info.html");
+    //dv.show(new Point(60, 60), "c:/.local/info.html");
     //dv.show(new Point(60, 60), "/media/warehouse/java/info.html");
+    dv.show(new Point(60, 60), "/storage/java/codeterm/hint-docs/info.html");
   }
   
   

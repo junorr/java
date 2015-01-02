@@ -127,7 +127,7 @@ public class ReplaceDialog extends javax.swing.JDialog {
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     setTitle("Find/Replace");
-    setIconImage(IconGetter.getIconSearchGray());
+    setIconImage(IconProvider.getIconSearchGray());
 
     findLabel.setText("Find");
 

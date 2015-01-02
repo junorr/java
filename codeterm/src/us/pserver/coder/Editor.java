@@ -358,6 +358,8 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
     Point p = new Point(hp.x + hw.getWidth() + 1, hp.y);
     try {
       docv.show(p, doc);
+      this.requestFocus();
+      this.requestFocusInWindow();
     } catch(IOException e) {
       e.printStackTrace();
     }

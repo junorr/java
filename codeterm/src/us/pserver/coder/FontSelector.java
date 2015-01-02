@@ -200,7 +200,7 @@ public class FontSelector extends javax.swing.JDialog {
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     setTitle("Font Selector");
     setBackground(new java.awt.Color(239, 239, 239));
-    setIconImage(IconGetter.getIconFontGray());
+    setIconImage(IconProvider.getIconFontGray());
 
     jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 

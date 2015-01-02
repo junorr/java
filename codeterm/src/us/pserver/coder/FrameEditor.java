@@ -313,7 +313,7 @@ public class FrameEditor extends javax.swing.JFrame {
   
   public void configDialog() {
     JDialog dlg = new JDialog(this, "Configurations");
-    dlg.setIconImage(IconGetter.getIconGearGray());
+    dlg.setIconImage(IconProvider.getIconGearGray());
     dlg.add(new PanelConfig(this));
     dlg.pack();
     dlg.setLocation(ScreenPositioner
@@ -385,9 +385,9 @@ public class FrameEditor extends javax.swing.JFrame {
       protected JDialog createDialog(Component parent) {
         JDialog dlg = super.createDialog(parent);
         if(save) {
-          dlg.setIconImage(IconGetter.getIconSaveGray());
+          dlg.setIconImage(IconProvider.getIconSaveGray());
         } else {
-          dlg.setIconImage(IconGetter.getIconOpenGray());
+          dlg.setIconImage(IconProvider.getIconOpenGray());
         }
         return dlg;
       }
@@ -544,7 +544,7 @@ public class FrameEditor extends javax.swing.JFrame {
     menuHideButtons = new javax.swing.JCheckBoxMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-    setIconImage(IconGetter.getIconCodeterm());
+    setIconImage(IconProvider.getIconCodeterm());
 
     content.setLayout(new java.awt.BorderLayout());
 

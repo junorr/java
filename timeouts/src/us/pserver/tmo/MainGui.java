@@ -82,8 +82,8 @@ public class MainGui extends javax.swing.JFrame
   private void reloadList() {
     DefaultListModel model = 
         new DefaultListModel();
-    if(!tmo.getCron().list().isEmpty()) {
-      tmo.getCron().list().forEach(model::addElement);
+    if(!tmo.getCron().jobs().isEmpty()) {
+      tmo.getCron().jobs().forEach(model::addElement);
     }
     jlist.setModel(model);
     jlist.paint(jlist.getGraphics());
@@ -116,9 +116,9 @@ public class MainGui extends javax.swing.JFrame
   
   
   private boolean checkSelected() {
-    if(tmo.getCron().list().isEmpty()
+    if(tmo.getCron().jobs().isEmpty()
         || selected < 0 || selected
-        > tmo.getCron().list().size()) {
+        > tmo.getCron().jobs().size()) {
       log.error("No Schedule Selected");
       return false;
     }
@@ -130,7 +130,7 @@ public class MainGui extends javax.swing.JFrame
     if(!checkSelected()) return;
     tmo.getCron().stop();
     ScriptPair p = new ScriptPair(
-        tmo.getCron().list().get(selected));
+        tmo.getCron().jobs().get(selected));
     NewJobDialog jd = new NewJobDialog();
     p = jd.showDialog(p, this);
     if(p == null) {
@@ -138,7 +138,7 @@ public class MainGui extends javax.swing.JFrame
       log.error("Edit Canceled");
       return;
     }
-    tmo.getCron().list().set(selected, p);
+    tmo.getCron().jobs().set(selected, p);
     this.reloadList();
     tmo.save();
     tmo.getCron().start();
@@ -149,7 +149,7 @@ public class MainGui extends javax.swing.JFrame
   private void removeSchedule() {
     if(!checkSelected()) return;
     tmo.getCron().stop();
-    tmo.getCron().list().remove(selected);
+    tmo.getCron().jobs().remove(selected);
     this.reloadList();
     tmo.save();
     tmo.getCron().start();
@@ -162,7 +162,7 @@ public class MainGui extends javax.swing.JFrame
     log.info("Running Script...");
     tmo.getCron().stop();
     ScriptPair p = new ScriptPair(
-        tmo.getCron().list().get(selected));
+        tmo.getCron().jobs().get(selected));
     try {
       tmo.getScriptExecutor().exec(
           p.job().getScriptPath().toString());

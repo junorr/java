@@ -60,7 +60,7 @@
   	<div class="desc"><b>Exemplo:</b></div>
   	<div class="example">
  			object data = date( "15/05/2014" )<br/>
- 			data = setmon( data, 2015 )<br/>
+ 			data = setyear( data, 2015 )<br/>
  			print( data )<br/>
  			<span class="comment">
 				# Imprime no console

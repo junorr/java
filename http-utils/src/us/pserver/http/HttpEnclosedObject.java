@@ -21,7 +21,6 @@
 
 package us.pserver.http;
 
-import com.thoughtworks.xstream.XStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -63,7 +62,7 @@ public class HttpEnclosedObject extends HeaderEncryptable {
   
   private Object obj;
   
-  private XStream xst;
+  private ObjectConverter conv;
   
   private int size;
   
@@ -78,7 +77,21 @@ public class HttpEnclosedObject extends HeaderEncryptable {
     crypt = null;
     size = 0;
     obj = null;
-    xst = new XStream();
+    conv = new JsonObjectConverter();
+  }
+  
+  
+  public HttpEnclosedObject(ObjectConverter converter) {
+    super();
+    if(converter == null)
+      throw new IllegalArgumentException(
+          "Invalid ObjectConverter: "+ converter);
+    setName(getClass().getSimpleName());
+    coder = new Base64StringCoder();
+    crypt = null;
+    size = 0;
+    obj = null;
+    conv = converter;
   }
   
   
@@ -90,6 +103,26 @@ public class HttpEnclosedObject extends HeaderEncryptable {
   public HttpEnclosedObject(Object obj) {
     this();
     setObject(obj);
+  }
+  
+  
+  public HttpEnclosedObject(Object obj, ObjectConverter converter) {
+    this(converter);
+    setObject(obj);
+  }
+
+
+  public ObjectConverter getObjectConverter() {
+    return conv;
+  }
+
+
+  public HttpEnclosedObject setObjectConverter(ObjectConverter conv) {
+    if(conv == null)
+      throw new IllegalArgumentException(
+          "Invalid ObjectConverter: "+ conv);
+    this.conv = conv;
+    return this;
   }
   
   
@@ -125,7 +158,7 @@ public class HttpEnclosedObject extends HeaderEncryptable {
   public static HttpEnclosedObject decodeObject(String str) {
     HttpEnclosedObject heo = new HttpEnclosedObject();
     String dec = heo.coder.decode(str);
-    heo.obj = heo.xst.fromXML(dec);
+    heo.obj = heo.conv.convert(dec);
     return heo;
   }
   
@@ -134,7 +167,7 @@ public class HttpEnclosedObject extends HeaderEncryptable {
     HttpEnclosedObject heo = new HttpEnclosedObject()
         .setCryptKey(key);
     String dec = heo.crypt.decode(str);
-    heo.obj = heo.xst.fromXML(dec);
+    heo.obj = heo.conv.convert(dec);
     return heo;
   }
   
@@ -148,7 +181,7 @@ public class HttpEnclosedObject extends HeaderEncryptable {
     nullarg(Object.class, o);
     this.obj = o;
     StringBuilder sb = new StringBuilder();
-    String sob = xst.toXML(obj);
+    String sob = conv.convert(o);
     if(crypt != null) {
       sob = crypt.encode(sob);
     }
@@ -194,6 +227,7 @@ public class HttpEnclosedObject extends HeaderEncryptable {
     
     StringByteConverter cv = new StringByteConverter();
     out.write(cv.convert(start.toString()));
+    //System.out.println("* HttpEnclosedObject.writeContent( "+ getValue()+ " ): "+ cv.convert(getValue()));
     out.write(cv.convert(getValue()));
     out.write(cv.convert(BOUNDARY_XML_END));
     out.flush();

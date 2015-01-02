@@ -55,13 +55,15 @@ public class TestSimpleServer implements HttpConst {
     System.out.println("-----------------------");
     
     String hob = "HttpEnclosedObject";
+    Object obj = null;
     if(rp.containsHeader(hob)) {
-      System.out.println("  - obj: "+ ((HttpEnclosedObject)rp.getHeader(hob)).getObject());
+      obj = ((HttpEnclosedObject)rp.getHeader(hob)).getObject();
+      System.out.println("  - obj: "+ obj);
     }
     
     ResponseLine rl = new ResponseLine(200, "OK");
     HttpBuilder hb = HttpBuilder.responseBuilder(rl);
-    hb.put(rp.getHeader(hob));
+    hb.put(new HttpEnclosedObject(obj));
     hb.writeContent(sock.getOutputStream());
   }
   

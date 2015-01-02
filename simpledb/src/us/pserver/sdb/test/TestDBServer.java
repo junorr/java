@@ -22,10 +22,13 @@
 package us.pserver.sdb.test;
 
 import java.net.InetSocketAddress;
+import us.pserver.cdr.crypt.CryptAlgorithm;
+import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.rob.container.Credentials;
+import us.pserver.sdb.ObjectDB;
 import us.pserver.sdb.net.DBServer;
-import us.pserver.sdb.SimpleDB;
 import us.pserver.sdb.engine.CachedEngine;
+import us.pserver.sdb.engine.CryptSerialEngine;
 import us.pserver.sdb.engine.FileEngine;
 import us.pserver.sdb.engine.JsonSerialEngine;
 
@@ -38,9 +41,12 @@ public class TestDBServer {
 
   
   public static void main(String[] args) {
-    FileEngine fe = new FileEngine(new JsonSerialEngine(), "./remote.db");
+    CryptKey key = new CryptKey("123456", CryptAlgorithm.AES_CBC_PKCS5);
+    FileEngine sfe = new FileEngine(new JsonSerialEngine(), "./remote.sdb");
+    FileEngine ofe = new FileEngine(new CryptSerialEngine(new JsonSerialEngine(), key), "./remote.odb");
     InetSocketAddress addr = new InetSocketAddress("0.0.0.0", 25000);
-    DBServer server = new DBServer(addr, new SimpleDB(new CachedEngine(fe)));
+    //DBServer server = new DBServer(addr, new SimpleDB(new CachedEngine(fe)));
+    DBServer server = new DBServer(addr, new ObjectDB(new CachedEngine(ofe)));
     server.getCredentialsSource().put(new Credentials("juno", new StringBuffer("1234")));
     server.start();
   }

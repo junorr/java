@@ -47,8 +47,8 @@ public class JClock extends JButton implements ActionListener {
   
   public JClock() {
     super();
-    cron = new SimpleCron()
-        .setLogEnabled(false);
+    cron = new SimpleCron();
+    cron.setLogEnabled(false);
     time = SimpleDate.now();
     cal = new CalendarDialog(this, false);
     cal.jcalendar().setCloseAction(
@@ -76,7 +76,7 @@ public class JClock extends JButton implements ActionListener {
   
   public void stop() {
     cron.stop();
-    cron.list().clear();
+    cron.jobs().clear();
   }
 
 

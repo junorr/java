@@ -58,6 +58,27 @@ public class TestEditorPane {
     hl.add(new Match("Object", "\\bobject\\b", 
         new TextStyle().setForeground(new Color(200, 225, 255))
         .setFontBold(true)));
+    hl.add(new Match("if", "\\bif\\b", 
+        new TextStyle().setForeground(new Color(200, 225, 255))
+        .setFontBold(true)));
+    hl.add(new Match("func", "\\bfunc\\b", 
+        new TextStyle().setForeground(new Color(200, 225, 255))
+        .setFontBold(true)));
+    hl.add(new Match("endfunc", "\\bendfunc\\b", 
+        new TextStyle().setForeground(new Color(200, 225, 255))
+        .setFontBold(true)));
+    hl.add(new Match("endif", "\\bendif\\b", 
+        new TextStyle().setForeground(new Color(200, 225, 255))
+        .setFontBold(true)));
+    hl.add(new Match("while", "\\bwhile\\b", 
+        new TextStyle().setForeground(new Color(200, 225, 255))
+        .setFontBold(true)));
+    hl.add(new Match("else", "\\belse\\b", 
+        new TextStyle().setForeground(new Color(200, 225, 255))
+        .setFontBold(true)));
+    hl.add(new Match("elsif", "\\belsif\\b", 
+        new TextStyle().setForeground(new Color(200, 225, 255))
+        .setFontBold(true)));
     hl.add(new Match("Method", "[a-zA-Z_]+\\w*\\(",
         new TextStyle().setForeground(Color.WHITE)
             .setFontBold(true)));

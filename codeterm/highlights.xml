@@ -55,4 +55,53 @@
       <font italic="true"/>
     </style>
   </match>
+  <match name="if">
+    <regex>\bif\b</regex>
+    <style>
+      <fg color-rgb="200,225,255"/>
+      <font bold="true"/>
+    </style>
+  </match>
+  <match name="func">
+    <regex>\bfunc\b</regex>
+    <style>
+      <fg color-rgb="200,225,255"/>
+      <font bold="true"/>
+    </style>
+  </match>
+  <match name="endfunc">
+    <regex>\bendfunc\b</regex>
+    <style>
+      <fg color-rgb="200,225,255"/>
+      <font bold="true"/>
+    </style>
+  </match>
+  <match name="endif">
+    <regex>\bendif\b</regex>
+    <style>
+      <fg color-rgb="200,225,255"/>
+      <font bold="true"/>
+    </style>
+  </match>
+  <match name="while">
+    <regex>\bwhile\b</regex>
+    <style>
+      <fg color-rgb="200,225,255"/>
+      <font bold="true"/>
+    </style>
+  </match>
+  <match name="else">
+    <regex>\belse\b</regex>
+    <style>
+      <fg color-rgb="200,225,255"/>
+      <font bold="true"/>
+    </style>
+  </match>
+  <match name="elsif">
+    <regex>\belsif\b</regex>
+    <style>
+      <fg color-rgb="200,225,255"/>
+      <font bold="true"/>
+    </style>
+  </match>
 </list>

@@ -88,7 +88,7 @@ public class Timeouts implements ParserListener {
             Files.newInputStream(
             p, StandardOpenOption.READ));
         list.forEach(this::set);
-        cron.list().addAll(list);
+        cron.jobs().addAll(list);
       log.debug("Timeouts Loaded!");
       } catch(IOException e) {
         log.error("Error loading config file");
@@ -109,13 +109,11 @@ public class Timeouts implements ParserListener {
   
   
   public void save() {
-    if(cron.list().isEmpty())
-      return;
     Path p = Paths.get(CONF_FILE);
     try {
       boolean run = cron.isRunning();
       if(run) cron.stop();
-      xs.toXML(cron.list().copy(), 
+      xs.toXML(cron.jobs().copy(), 
           Files.newOutputStream(p, 
           StandardOpenOption.WRITE, 
           StandardOpenOption.CREATE));

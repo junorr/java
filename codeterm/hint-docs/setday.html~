@@ -42,28 +42,31 @@
   </head>
   
   <body>
-  	<div class="title">Funcoes de Ambiente Grafico</div>
+  	<div class="title">Funcoes de Data</div>
   	
   	<div class="method">
-  		dialog( int tipo, string titulo, string mensagem )
+  		setday( object date )
   	</div>
   	
   	<div class="desc">
-  		Exibe uma janela/dialogo de informacoes. O tipo de janela 
-  		e definido pelas variaveis globais iniciadas por DL.<br/> 
-  		<i>Argumentos:</i>
+  		Define o dia da data informada, retornando a mesma.<br/> 
+  		<i>Argumentos/Retorno:</i>
   		<ul>
-  			<li>tipo - Tipo de janela (Informacao, Alerta, Erro, Pergunta)</li>
-  			<li>titulo - Titulo da janela</li>
-  			<li>mensagem - Mensagem a ser exibida</li>
+  			<li>data - Data</li>
+  			<li>return - Data com o dia definido</li>
   		</ul>
   	</div>
   	
   	<div class="desc"><b>Exemplo:</b></div>
   	<div class="example">
- 		string titulo = "Titulo da janela"<br/>
- 		dialog( DLINFO, titulo, "Processamento Consluido" )<br/>
-	</div>
+ 			object data = date( "15/05/2014" )<br/>
+ 			data = setday( data, 8 )<br/>
+ 			print( data )<br/>
+ 			<span class="comment">
+				# Imprime no console
+			</span><br/>
+ 			&gt;&nbsp;08/05/2014 00:00:00
+ 		</div>
  		
   </body>
  </html>

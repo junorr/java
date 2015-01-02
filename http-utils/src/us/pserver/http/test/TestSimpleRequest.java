@@ -41,16 +41,16 @@ public class TestSimpleRequest implements HttpConst {
   
   
   public static void main(String[] args) throws IOException {
-    RequestLine req = new RequestLine(Method.POST, "172.24.75.2", 8000);
+    RequestLine req = new RequestLine(Method.POST, "127.0.0.1", 8000);
     HttpBuilder build = HttpBuilder.requestBuilder(req);
     
     Object obj = "A plain text content object.";
     HttpEnclosedObject hob = new HttpEnclosedObject(obj);
-    hob.setCryptKey(CryptKey.createRandomKey(
-        CryptAlgorithm.AES_CBC_PKCS5));
+    //hob.setCryptKey(CryptKey.createRandomKey(
+      //  CryptAlgorithm.AES_CBC_PKCS5));
     build.put(hob);
     
-    Socket sock = new Socket("172.24.75.19", 6060);
+    Socket sock = new Socket("127.0.0.1", 8000);
     //Socket sock = new Socket("172.24.75.2", 8000);
     //Socket sock = new Socket("10.100.0.105", 6060);
     build.writeContent(sock.getOutputStream());
@@ -59,6 +59,9 @@ public class TestSimpleRequest implements HttpConst {
     ResponseParser rp = new ResponseParser();
     rp.parseInput(sock.getInputStream());
     rp.headers().forEach(System.out::print);
+    if(rp.containsHeader("HttpEnclosedObject")) {
+      System.out.println("- obj: "+ ((HttpEnclosedObject)rp.getHeader("HttpEnclosedObject")).getObject());
+    }
     System.out.println("-------------------------");
   }
   

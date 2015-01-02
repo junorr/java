@@ -79,3 +79,31 @@
 [ERROR] (03/05/2014 19:31:00): Error executing Job: java.io.FileNotFoundException: C:\Users\Juno\Documents\script.txt (Arquivo ou diretório não encontrado)
 [INFO ] (05/05/2014 15:06:26): SimpleCron Started!
 [DEBUG] (05/05/2014 15:07:00): Executing: script.txt @ 05/05/2014 15:07:00 [Repeat: 1 MINUTE]
+[INFO ] (02/01/2015 14:49:07): SimpleCron Started!
+[INFO ] (02/01/2015 14:50:28): SimpleCron Started!
+[INFO ] (02/01/2015 14:50:28): SCronV6 Started!
+[DEBUG] (02/01/2015 14:51:12): Job inserted: ARH7966-sample.txt @ 02/01/2015 15:51:02 [Repeat: disabled]
+[INFO ] (02/01/2015 14:51:12): SCronV6 Stopped!
+[INFO ] (02/01/2015 14:51:12): SCronV6 Started!
+[INFO ] (02/01/2015 14:51:30): SCronV6 Stopped!
+[INFO ] (02/01/2015 14:51:32): SCronV6 Started!
+[INFO ] (02/01/2015 14:51:35): SCronV6 Stopped!
+[INFO ] (02/01/2015 14:51:35): SCronV6 Started!
+[INFO ] (02/01/2015 14:52:26): SimpleCron Started!
+[INFO ] (02/01/2015 14:52:27): SCronV6 Started!
+[INFO ] (02/01/2015 14:52:36): SCronV6 Stopped!
+[INFO ] (02/01/2015 14:52:36): SCronV6 Started!
+[INFO ] (02/01/2015 14:52:42): SimpleCron Started!
+[INFO ] (02/01/2015 14:52:43): SCronV6 Started!
+[INFO ] (02/01/2015 14:53:28): SimpleCron Started!
+[INFO ] (02/01/2015 14:53:28): SCronV6 Started!
+[INFO ] (02/01/2015 14:53:57): SCronV6 Stopped!
+[INFO ] (02/01/2015 14:53:57): SCronV6 Started!
+[INFO ] (02/01/2015 14:54:18): SCronV6 Stopped!
+[INFO ] (02/01/2015 14:54:18): SCronV6 Started!
+[INFO ] (02/01/2015 15:19:28): SimpleCron Started!
+[INFO ] (02/01/2015 15:19:28): SCronV6 Started!
+[INFO ] (02/01/2015 15:19:33): SCronV6 Stopped!
+[INFO ] (02/01/2015 15:19:33): SCronV6 Started!
+[INFO ] (02/01/2015 15:19:42): SimpleCron Started!
+[INFO ] (02/01/2015 15:19:42): SCronV6 Started!

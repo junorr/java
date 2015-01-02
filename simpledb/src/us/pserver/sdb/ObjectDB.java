@@ -48,6 +48,12 @@ public class ObjectDB implements DBEngine {
   private boolean rmcascade;
   
   
+  protected ObjectDB() {
+    engine = null;
+    rmcascade = true;
+  }
+  
+  
   public ObjectDB(StorageEngine eng) throws SDBException {
     if(eng == null)
       throw new IllegalArgumentException(
@@ -170,7 +176,7 @@ public class ObjectDB implements DBEngine {
     Document dc = findCached(
         QueryBuilder.builder().fromExample(doc));
     if(dc != null) {
-      System.out.println("* found in cache!!");
+      //System.out.println("* found in cache!!");
       doc.block(dc.block());
     }
     return engine.put(doc);
@@ -328,7 +334,7 @@ public class ObjectDB implements DBEngine {
   public ResultOID get(Query q) throws SDBException {
     ResultOID objs = new ResultOID();
     if(q == null) return objs;
-    System.out.println("* get( "+ q+ " )");
+    //System.out.println("* get( "+ q+ " )");
     if(q.isEmpty() && q.label() != null)
       return get(q.label(), q.limit());
     
