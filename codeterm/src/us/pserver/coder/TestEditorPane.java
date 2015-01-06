@@ -44,49 +44,64 @@ public class TestEditorPane {
     Highlighter hl = edit.getSintaxHighlighter();
     
     hl.add(new Match("Constants", "[A-Z]+\\w*",
-        new TextStyle().setForeground(Color.WHITE)
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(Color.WHITE)
             .setFontItalic(true)));
     hl.add(new Match("Integer", "\\bint\\b", 
-        new TextStyle().setForeground(new Color(200, 225, 255))
-        .setFontBold(true)));
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(200, 225, 255))
+            .setFontBold(true)));
     hl.add(new Match("Double", "\\bdouble\\b", 
-        new TextStyle().setForeground(new Color(200, 225, 255))
-        .setFontBold(true)));
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(200, 225, 255))
+            .setFontBold(true)));
     hl.add(new Match("String", "\\bstring\\b", 
-        new TextStyle().setForeground(new Color(200, 225, 255))
-        .setFontBold(true)));
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(200, 225, 255))
+            .setFontBold(true)));
     hl.add(new Match("Object", "\\bobject\\b", 
-        new TextStyle().setForeground(new Color(200, 225, 255))
-        .setFontBold(true)));
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(200, 225, 255))
+            .setFontBold(true)));
     hl.add(new Match("if", "\\bif\\b", 
-        new TextStyle().setForeground(new Color(200, 225, 255))
-        .setFontBold(true)));
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(200, 225, 255))
+            .setFontBold(true)));
     hl.add(new Match("func", "\\bfunc\\b", 
-        new TextStyle().setForeground(new Color(200, 225, 255))
-        .setFontBold(true)));
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(200, 225, 255))
+            .setFontBold(true)));
     hl.add(new Match("endfunc", "\\bendfunc\\b", 
-        new TextStyle().setForeground(new Color(200, 225, 255))
-        .setFontBold(true)));
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(200, 225, 255))
+            .setFontBold(true)));
     hl.add(new Match("endif", "\\bendif\\b", 
-        new TextStyle().setForeground(new Color(200, 225, 255))
-        .setFontBold(true)));
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(200, 225, 255))
+            .setFontBold(true)));
     hl.add(new Match("while", "\\bwhile\\b", 
-        new TextStyle().setForeground(new Color(200, 225, 255))
-        .setFontBold(true)));
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(200, 225, 255))
+            .setFontBold(true)));
     hl.add(new Match("else", "\\belse\\b", 
-        new TextStyle().setForeground(new Color(200, 225, 255))
-        .setFontBold(true)));
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(200, 225, 255))
+            .setFontBold(true)));
     hl.add(new Match("elsif", "\\belsif\\b", 
-        new TextStyle().setForeground(new Color(200, 225, 255))
-        .setFontBold(true)));
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(200, 225, 255))
+            .setFontBold(true)));
     hl.add(new Match("Method", "[a-zA-Z_]+\\w*\\(",
-        new TextStyle().setForeground(Color.WHITE)
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(Color.WHITE)
             .setFontBold(true)));
     hl.add(new Match("String Constant", "\".*\"",
-        new TextStyle().setForeground(new Color(255, 200, 80))
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(255, 200, 80))
             .setFontItalic(true)));
     hl.add(new Match("Comment", "#.*",
-        new TextStyle().setForeground(new Color(255, 255, 160))
+        new TextStyle().setFontAttr(new FontXml().setFont(edit.getFont()))
+            .setForeground(new Color(255, 255, 160))
             .setFontItalic(true)));
     
     edit.setBackground(new Color(77, 77, 77));

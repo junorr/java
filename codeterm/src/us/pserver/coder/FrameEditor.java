@@ -35,8 +35,8 @@ public class FrameEditor extends javax.swing.JFrame {
   public static final Color
       DEF_STATUS_COLOR = Color.WHITE,
       STATUS_ERROR_COLOR = Color.YELLOW,
-      DEF_EDITOR_BG = new Color(100, 100, 100),
-      DEF_EDITOR_FG = new Color(200, 255, 210),
+      DEF_EDITOR_BG = new Color(61, 61, 61),
+      DEF_EDITOR_FG = new Color(102, 255, 51),
       DEF_SELECT_COLOR = new Color(170, 170, 170);
   
   public static final int 
@@ -108,6 +108,10 @@ public class FrameEditor extends javax.swing.JFrame {
           paste();
           e.consume();
         }
+        else if(e.getKeyCode() == KeyEvent.VK_B && e.isControlDown()) {
+          base64();
+          e.consume();
+        }
       }
     });
     hideStatus = new Timer(STATUS_DELAY, new ActionListener() {
@@ -121,6 +125,11 @@ public class FrameEditor extends javax.swing.JFrame {
   
   public CodetermConfig getConfig() {
     return conf;
+  }
+  
+  
+  public Editor getEditor() {
+    return editor;
   }
   
   
@@ -180,6 +189,15 @@ public class FrameEditor extends javax.swing.JFrame {
     conf.setTextSelectionColor(editor.getSelectionColor());
     conf.setTextBgColor(editor.getBackground());
     conf.setTextFont(editor.getFont());
+  }
+  
+  
+  public void base64() {
+    Base64Converter cv = new Base64Converter(this, true);
+    cv.setTitle("Base64 Converter");
+    cv.setLocationRelativeTo(this);
+    cv.setVisible(true);
+    editor.replace(editor.getCaretPosition(), 0, cv.getConverted());
   }
   
   
@@ -315,6 +333,17 @@ public class FrameEditor extends javax.swing.JFrame {
     JDialog dlg = new JDialog(this, "Configurations");
     dlg.setIconImage(IconProvider.getIconGearGray());
     dlg.add(new PanelConfig(this));
+    dlg.pack();
+    dlg.setLocation(ScreenPositioner
+        .getCenterWindowPoint(this, dlg));
+    dlg.setVisible(true);
+  }
+  
+  
+  public void highlightsDialog() {
+    JDialog dlg = new JDialog(this, "Syntax Highlight");
+    dlg.setIconImage(IconProvider.getIconFontGray());
+    dlg.add(new HighlightConfigPanel(this));
     dlg.pack();
     dlg.setLocation(ScreenPositioner
         .getCenterWindowPoint(this, dlg));
@@ -522,7 +551,7 @@ public class FrameEditor extends javax.swing.JFrame {
     findAction = new us.pserver.coder.ActionLabel();
     undoAction = new us.pserver.coder.ActionLabel();
     redoAction = new us.pserver.coder.ActionLabel();
-    fontAction = new us.pserver.coder.ActionLabel();
+    highlightsAction = new us.pserver.coder.ActionLabel();
     colorsAction = new us.pserver.coder.ActionLabel();
     scroll = new javax.swing.JScrollPane();
     statusbar = new javax.swing.JLabel();
@@ -544,7 +573,7 @@ public class FrameEditor extends javax.swing.JFrame {
     menuHideButtons = new javax.swing.JCheckBoxMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-    setIconImage(IconProvider.getIconCodeterm());
+    setIconImage(us.pserver.coder.IconProvider.getIconCodeterm());
 
     content.setLayout(new java.awt.BorderLayout());
 
@@ -613,12 +642,12 @@ public class FrameEditor extends javax.swing.JFrame {
       }
     });
 
-    fontAction.setForeground(new java.awt.Color(255, 255, 255));
-    fontAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/font-white-20.png"))); // NOI18N
-    fontAction.setText("Font");
-    fontAction.addMouseListener(new java.awt.event.MouseAdapter() {
+    highlightsAction.setForeground(new java.awt.Color(255, 255, 255));
+    highlightsAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/font-white-20.png"))); // NOI18N
+    highlightsAction.setText("Highlights");
+    highlightsAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
-        fontActionMouseClicked(evt);
+        highlightsActionMouseClicked(evt);
       }
     });
 
@@ -651,7 +680,7 @@ public class FrameEditor extends javax.swing.JFrame {
           .addGroup(buttonBarLayout.createSequentialGroup()
             .addComponent(redoAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addComponent(fontAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(highlightsAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
           .addGroup(buttonBarLayout.createSequentialGroup()
             .addComponent(undoAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -675,7 +704,7 @@ public class FrameEditor extends javax.swing.JFrame {
           .addComponent(openAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(pasteAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(redoAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(fontAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(highlightsAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
 
@@ -861,9 +890,9 @@ public class FrameEditor extends javax.swing.JFrame {
     save();
   }//GEN-LAST:event_saveActionMouseClicked
 
-  private void fontActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fontActionMouseClicked
-    selectFont();
-  }//GEN-LAST:event_fontActionMouseClicked
+  private void highlightsActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highlightsActionMouseClicked
+    highlightsDialog();
+  }//GEN-LAST:event_highlightsActionMouseClicked
 
   private void colorsActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_colorsActionMouseClicked
     configDialog();
@@ -908,7 +937,7 @@ public class FrameEditor extends javax.swing.JFrame {
   }//GEN-LAST:event_menuFindActionPerformed
 
   private void menuFontActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFontActionPerformed
-    this.fontActionMouseClicked(null);
+    this.highlightsActionMouseClicked(null);
   }//GEN-LAST:event_menuFontActionPerformed
 
   private void menuConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuConfigActionPerformed
@@ -970,7 +999,7 @@ public class FrameEditor extends javax.swing.JFrame {
   private javax.swing.JPanel content;
   private us.pserver.coder.ActionLabel copyAction;
   private us.pserver.coder.ActionLabel findAction;
-  private us.pserver.coder.ActionLabel fontAction;
+  private us.pserver.coder.ActionLabel highlightsAction;
   private javax.swing.JMenu jMenu1;
   private javax.swing.JMenu jMenu2;
   private javax.swing.JMenu jMenu3;

@@ -92,13 +92,13 @@ public class FormAttribute extends javax.swing.JPanel {
     label = new javax.swing.JLabel();
 
     setBackground(new java.awt.Color(255, 255, 255));
-    setPreferredSize(new java.awt.Dimension(250, 30));
-    setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 4));
+    setPreferredSize(new java.awt.Dimension(300, 30));
+    setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 15, 4));
 
     label.setBackground(new java.awt.Color(255, 255, 255));
     label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     label.setOpaque(true);
-    label.setPreferredSize(new java.awt.Dimension(150, 20));
+    label.setPreferredSize(new java.awt.Dimension(200, 20));
     add(label);
   }// </editor-fold>//GEN-END:initComponents
 

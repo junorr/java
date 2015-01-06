@@ -6,55 +6,36 @@
 
 package us.pserver.coder;
 
-import java.awt.Color;
 import java.awt.Container;
-import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.MouseEvent;
-import java.util.List;
 import javax.swing.DefaultListModel;
-import javax.swing.JColorChooser;
 
 
 /**
  *
  * @author juno
  */
-public class PanelConfig extends javax.swing.JPanel {
+public class HighlightConfigPanel extends javax.swing.JPanel {
 
   private FrameEditor frame;
   
-  private DefaultListModel<ConfigAttribute> model;
+  private DefaultListModel<MatchAttribute> model;
   
   
   /**
    * Creates new form PanelConfig
    */
-  public PanelConfig(FrameEditor fe) {
+  public HighlightConfigPanel(FrameEditor edt) {
     super();
-    if(fe == null)
+    if(edt == null)
       throw new IllegalArgumentException(
-          "Invalid FrameEditor (fe="+ fe+ ")");
+          "Invalid Editor (edt="+ edt+ ")");
     
-    frame = fe;
+    frame = edt;
     model = new DefaultListModel<>();
     
-    model.addElement(new SeparatorAttribute("Text Area"));
-    model.addElement(new FontAttribute("Text Font", frame.getConfig().getTextFont(), frame::setTextFont));
-    model.addElement(new ColorAttribute("Text Color", frame.getConfig().getTextColor(), frame::setTextColor));
-    model.addElement(new ColorAttribute("Selection Color", frame.getConfig().getTextSelectionColor(), frame::setTextSelectionColor));
-    model.addElement(new ColorAttribute("Background Color", frame.getConfig().getTextBgColor(), frame::setTextBGColor));
-    
-    model.addElement(new SeparatorAttribute("Lines Number"));
-    model.addElement(new ColorAttribute("Number Color", frame.getConfig().getLinesColor(), frame::setLinesColor));
-    model.addElement(new ColorAttribute("Background Color", frame.getConfig().getLinesBgColor(), frame::setLinesBGColor));
-    
-    model.addElement(new SeparatorAttribute("Status Bar"));
-    model.addElement(new FontAttribute("Status Font", frame.getConfig().getStatusFont(), frame::setStatusFont));
-    model.addElement(new ColorAttribute("Status Color", frame.getConfig().getStatusColor(), frame::setStatusColor));
-    model.addElement(new ColorAttribute("Warning Color", frame.getConfig().getStatusWarnColor(), frame::setStatusWarnColor));
-    model.addElement(new ColorAttribute("Backgroung Color", frame.getConfig().getStatusBgColor(), frame::setStatusBGColor));
-    
+    updateList();
     initComponents();
   }
   
@@ -67,6 +48,23 @@ public class PanelConfig extends javax.swing.JPanel {
       c = c.getParent();
     }
     return null;
+  }
+  
+  
+  public void updateList() {
+    model.clear();
+    for(Match m : frame.getEditor().getSintaxHighlighter().words()) {
+      model.addElement(new MatchAttribute(m));
+    }
+    if(list != null) list.setModel(model);
+  }
+  
+  
+  public void remove(Match m) {
+    if(m != null) {
+      frame.getEditor().getSintaxHighlighter().remove(m);
+      updateList();
+    }
   }
   
   
@@ -84,8 +82,10 @@ public class PanelConfig extends javax.swing.JPanel {
     jPanel1 = new javax.swing.JPanel();
     applyAction = new us.pserver.coder.ActionLabel();
     cancelAction = new us.pserver.coder.ActionLabel();
+    btnAddHighlight = new javax.swing.JButton();
+    btnRmHighlight = new javax.swing.JButton();
 
-    list.setCellRenderer(new FormAttributeRenderer(frame));
+    list.setCellRenderer(new us.pserver.coder.MatchAttributeRenderer(frame.getEditor().getBackground()));
     list.setModel(model);
     list.setToolTipText("Double Click to Edit");
     list.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -136,18 +136,43 @@ public class PanelConfig extends javax.swing.JPanel {
         .addGap(15, 15, 15))
     );
 
+    btnAddHighlight.setText("Add Highlight");
+    btnAddHighlight.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnAddHighlightActionPerformed(evt);
+      }
+    });
+
+    btnRmHighlight.setText("Remove Highlight");
+    btnRmHighlight.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnRmHighlightActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
     this.setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
       .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+      .addGroup(layout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(btnAddHighlight)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(btnRmHighlight)
+        .addContainerGap())
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
-        .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
-        .addGap(1, 1, 1)
+        .addContainerGap()
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(btnAddHighlight)
+          .addComponent(btnRmHighlight))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
     );
   }// </editor-fold>//GEN-END:initComponents
@@ -157,22 +182,21 @@ public class PanelConfig extends javax.swing.JPanel {
         && evt.getClickCount() > 1) {
       int idx = list.locationToIndex(evt.getPoint());
       if(idx >= 0 && idx < list.getModel().getSize()) {
-        ConfigAttribute attr = (ConfigAttribute) list.getModel().getElementAt(idx);
-        if(attr instanceof FontAttribute) {
-          FontSelector fe = new FontSelector(getParentWindow(), true, (Font) attr.get());
-          fe.setVisible(true);
-          Font f = fe.getSelectedFont();
-          if(f != null)
-            attr.set(f);
-        }
-        else if(attr instanceof ColorAttribute) {
-          Color c = JColorChooser.showDialog(this, attr.name(), (Color) attr.get());
-          if(c != null) {
-            attr.set(c);
-          }
-        }
+        MatchAttribute ma = model.elementAt(idx);
+        ColorFontPanel cf = new ColorFontPanel();
+        cf.setSelectedColor(ma.get().getTextStyle().getForeground());
+        cf.setSelectedFont(ma.get().getTextStyle().getFontAttr().getFont());
+        cf.setDemoBackground(frame.getEditor().getBackground());
+        cf.setSelectedName(ma.get().getName());
+        cf.setSelectedRegex(ma.get().getRegex());
+        cf = ColorFontPanel.showPanel(cf, getParentWindow());
+        ma.get().setName(cf.getSelectedName());
+        ma.get().setRegex(cf.getSelectedRegex());
+        ma.get().getTextStyle().setForeground(cf.getSelectedColor());
+        ma.get().getTextStyle().getFontAttr().setFont(cf.getSelectedFont());
+        frame.getEditor().getSintaxHighlighter().words().set(idx, ma.get());
+        updateList();
       }
-      list.setModel(model);
       list.setSelectedIndex(idx);
     }
   }//GEN-LAST:event_listMouseClicked
@@ -182,6 +206,7 @@ public class PanelConfig extends javax.swing.JPanel {
     Window w = this.getParentWindow();
     if(w != null)
       w.setVisible(false);
+    frame.status("Highlights Canceled", true);
   }//GEN-LAST:event_cancelActionMouseClicked
 
   
@@ -190,12 +215,42 @@ public class PanelConfig extends javax.swing.JPanel {
       model.elementAt(i).define();
     }
     this.getParentWindow().setVisible(false);
-    frame.saveConfig();
+    frame.getEditor().getSintaxHighlighter().save();
+    frame.status("Highlights Saved", false);
+    frame.getEditor().update();
+    
   }//GEN-LAST:event_applyActionMouseClicked
+
+  private void btnAddHighlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddHighlightActionPerformed
+    ColorFontPanel cf = new ColorFontPanel();
+    cf.setSelectedColor(frame.getForeground());
+    cf.setSelectedFont(frame.getFont());
+    cf.setDemoBackground(frame.getBackground());
+    cf = ColorFontPanel.showPanel(cf, getParentWindow());
+    Match m = new Match();
+    m.setName(cf.getSelectedName());
+    m.setRegex(cf.getSelectedRegex());
+    m.setTextStyle(new TextStyle().setFontAttr(
+        new FontXml().setFont(cf.getSelectedFont())));
+    m.getTextStyle().setForeground(cf.getSelectedColor());
+    frame.getEditor().getSintaxHighlighter().words().add(m);
+    updateList();
+  }//GEN-LAST:event_btnAddHighlightActionPerformed
+
+  
+  private void btnRmHighlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRmHighlightActionPerformed
+    int idx = list.getSelectedIndex();
+    if(idx >= 0 && idx < list.getModel().getSize()) {
+      frame.getEditor().getSintaxHighlighter().words().remove(idx);
+      updateList();
+    }
+  }//GEN-LAST:event_btnRmHighlightActionPerformed
 
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private us.pserver.coder.ActionLabel applyAction;
+  private javax.swing.JButton btnAddHighlight;
+  private javax.swing.JButton btnRmHighlight;
   private us.pserver.coder.ActionLabel cancelAction;
   private javax.swing.JPanel jPanel1;
   private javax.swing.JList list;

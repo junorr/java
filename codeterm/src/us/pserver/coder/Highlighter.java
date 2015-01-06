@@ -132,6 +132,37 @@ public class Highlighter {
   }
   
   
+  public void set(Match m) {
+    if(m == null) return;
+    int idx = -1;
+    for(int i = 0; i < words.size(); i++) {
+      if(words.get(i).getName().equals(m.getName())) {
+        idx = i;
+        break;
+      }
+    }
+    if(idx >= 0) words.set(idx, m);
+    else words.add(m);
+    save();
+  }
+  
+  
+  public void remove(Match m) {
+    if(m == null) return;
+    int idx = -1;
+    for(int i = 0; i < words.size(); i++) {
+      if(words.get(i).getName().equals(m.getName())) {
+        idx = i;
+        break;
+      }
+    }
+    if(idx >= 0) {
+      words.remove(idx);
+      save();
+    }
+  }
+  
+  
   public Highlighter clear() {
     words.clear();
     return this;

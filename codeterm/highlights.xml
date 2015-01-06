@@ -1,107 +1,120 @@
 <list>
-  <match name="Constants">
-    <regex>[A-Z]+\w*</regex>
+  <match name="CONSTANTS">
+    <regex>\b[A-Z]+\w*</regex>
     <style>
       <fg color-rgb="255,255,255"/>
-      <font italic="true"/>
+      <font family="Monospaced" size="16" italic="true"/>
     </style>
   </match>
-  <match name="Integer">
+  <match name="int">
     <regex>\bint\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font bold="true"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
-  <match name="Double">
+  <match name="double">
     <regex>\bdouble\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font bold="true"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
-  <match name="String">
+  <match name="string">
     <regex>\bstring\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font bold="true"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
-  <match name="Object">
+  <match name="object">
     <regex>\bobject\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font bold="true"/>
-    </style>
-  </match>
-  <match name="Method">
-    <regex>[a-zA-Z_]+\w*\(</regex>
-    <style>
-      <fg reference="../../../match/style/fg"/>
-      <font bold="true"/>
-    </style>
-  </match>
-  <match name="String Constant">
-    <regex>&quot;.*&quot;</regex>
-    <style>
-      <fg color-rgb="255,200,80"/>
-      <font italic="true"/>
-    </style>
-  </match>
-  <match name="Comment">
-    <regex>#.*</regex>
-    <style>
-      <fg color-rgb="255,255,160"/>
-      <font italic="true"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="if">
     <regex>\bif\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font bold="true"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="func">
     <regex>\bfunc\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font bold="true"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="endfunc">
     <regex>\bendfunc\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font bold="true"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="endif">
     <regex>\bendif\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font bold="true"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="while">
     <regex>\bwhile\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font bold="true"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="else">
     <regex>\belse\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font bold="true"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="elsif">
     <regex>\belsif\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font bold="true"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
-</list>
+  <match name="method">
+    <regex>[a-zA-Z_]+\w*\(</regex>
+    <style>
+      <fg reference="../../../match/style/fg"/>
+      <font family="Monospaced" size="16" bold="true"/>
+    </style>
+  </match>
+  <match name="&quot;string constant&quot;">
+    <regex>&quot;.*&quot;</regex>
+    <style>
+      <fg color-rgb="255,255,102"/>
+      <font family="Monospaced" size="16"/>
+    </style>
+  </match>
+  <match name="# comment">
+    <regex>#.*</regex>
+    <style>
+      <fg color-rgb="83,220,205"/>
+      <font family="Monospaced" size="16" italic="true"/>
+    </style>
+  </match>
+</list>tyle>
+      <fg color-rgb="83,220,205"/>
+      <font family="Monospaced" size="16" italic="true"/>
+    </style>
+  </match>
+</list>>tch>
+</list>h name="HELLO">
+    <regex>123</regex>
+    <style>
+      <fg color-rgb="255,255,51"/>
+      <font family="Monospaced" size="14" bold="true" italic="true"/>
+    </style>
+  </match>
+</list>>

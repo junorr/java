@@ -142,13 +142,31 @@ public class DocViewer extends Frame {
     });
     this.add(mover);
     
+    KeyListener ke = new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_ESCAPE
+            || e.getKeyCode() == KeyEvent.VK_LEFT) {
+          DocViewer.this.setVisible(false);
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+          DocViewer.this.scrollDown();
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_UP) {
+          DocViewer.this.scrollUp();
+        }
+      }
+    };
+    
     scroll = new JScrollPane(view);
     scroll.setSize(DEF_SIZE.width -2, DEF_SIZE.height -18);
     scroll.setLocation(1, 18);
     this.add(scroll);
     
     view.addMouseWheelListener(mwl);
+    view.addKeyListener(ke);
     this.addMouseWheelListener(mwl);
+    this.addKeyListener(ke);
     scroll.addMouseWheelListener(mwl);
   }
   
@@ -159,13 +177,6 @@ public class DocViewer extends Frame {
     this.docpath = docpath;
     setTitle();
     view.setPage(docpath);
-  }
-  
-  
-  public void setKeyListener(KeyListener ke) {
-    this.addKeyListener(ke);
-    view.addKeyListener(ke);
-    scroll.addKeyListener(ke);
   }
   
   

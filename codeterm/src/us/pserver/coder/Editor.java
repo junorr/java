@@ -89,7 +89,6 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
     this.setFont(new Font("Monospaced", Font.PLAIN, 16));
     this.setEditable(true);
     this.addKeyListener(this);
-    docv.setKeyListener(this);
     this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     this.addMouseWheelListener(new MouseWheelListener() {
       public void mouseWheelMoved(MouseWheelEvent e) {

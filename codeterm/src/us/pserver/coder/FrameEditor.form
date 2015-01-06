@@ -235,7 +235,7 @@
                           <Group type="102" attributes="0">
                               <Component id="redoAction" min="-2" pref="70" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="fontAction" min="-2" pref="70" max="-2" attributes="0"/>
+                              <Component id="highlightsAction" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Component id="undoAction" min="-2" pref="70" max="-2" attributes="0"/>
@@ -265,7 +265,7 @@
                           <Component id="openAction" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="pasteAction" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="redoAction" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="fontAction" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="highlightsAction" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -371,7 +371,7 @@
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="redoActionMouseClicked"/>
               </Events>
             </Component>
-            <Component class="us.pserver.coder.ActionLabel" name="fontAction">
+            <Component class="us.pserver.coder.ActionLabel" name="highlightsAction">
               <Properties>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -379,10 +379,10 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/us/pserver/coder/images/font-white-20.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Font"/>
+                <Property name="text" type="java.lang.String" value="Highlights"/>
               </Properties>
               <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="fontActionMouseClicked"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="highlightsActionMouseClicked"/>
               </Events>
             </Component>
             <Component class="us.pserver.coder.ActionLabel" name="colorsAction">
