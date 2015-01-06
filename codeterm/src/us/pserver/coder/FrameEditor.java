@@ -553,6 +553,7 @@ public class FrameEditor extends javax.swing.JFrame {
     redoAction = new us.pserver.coder.ActionLabel();
     highlightsAction = new us.pserver.coder.ActionLabel();
     colorsAction = new us.pserver.coder.ActionLabel();
+    hideAction = new us.pserver.coder.ActionLabel();
     scroll = new javax.swing.JScrollPane();
     statusbar = new javax.swing.JLabel();
     jMenuBar1 = new javax.swing.JMenuBar();
@@ -567,6 +568,7 @@ public class FrameEditor extends javax.swing.JFrame {
     menuCopy = new javax.swing.JMenuItem();
     menuPaste = new javax.swing.JMenuItem();
     menuFind = new javax.swing.JMenuItem();
+    menuToBase64 = new javax.swing.JMenuItem();
     jMenu3 = new javax.swing.JMenu();
     menuFont = new javax.swing.JMenuItem();
     menuConfig = new javax.swing.JMenuItem();
@@ -643,7 +645,7 @@ public class FrameEditor extends javax.swing.JFrame {
     });
 
     highlightsAction.setForeground(new java.awt.Color(255, 255, 255));
-    highlightsAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/font-white-20.png"))); // NOI18N
+    highlightsAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/highlight-white-20.png"))); // NOI18N
     highlightsAction.setText("Highlights");
     highlightsAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -657,6 +659,15 @@ public class FrameEditor extends javax.swing.JFrame {
     colorsAction.addMouseListener(new java.awt.event.MouseAdapter() {
       public void mouseClicked(java.awt.event.MouseEvent evt) {
         colorsActionMouseClicked(evt);
+      }
+    });
+
+    hideAction.setForeground(new java.awt.Color(255, 255, 255));
+    hideAction.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/hide-white-20.png"))); // NOI18N
+    hideAction.setText("Hide");
+    hideAction.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        hideActionMouseClicked(evt);
       }
     });
 
@@ -678,16 +689,18 @@ public class FrameEditor extends javax.swing.JFrame {
         .addGap(12, 12, 12)
         .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(buttonBarLayout.createSequentialGroup()
-            .addComponent(redoAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addComponent(highlightsAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-          .addGroup(buttonBarLayout.createSequentialGroup()
             .addComponent(undoAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addComponent(findAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(findAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addGroup(buttonBarLayout.createSequentialGroup()
+            .addComponent(redoAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addComponent(colorsAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        .addContainerGap(35, Short.MAX_VALUE))
+            .addComponent(hideAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+        .addGroup(buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(highlightsAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(colorsAction, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addContainerGap(15, Short.MAX_VALUE))
     );
     buttonBarLayout.setVerticalGroup(
       buttonBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -704,7 +717,8 @@ public class FrameEditor extends javax.swing.JFrame {
           .addComponent(openAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(pasteAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(redoAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(highlightsAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(highlightsAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(hideAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
 
@@ -811,6 +825,15 @@ public class FrameEditor extends javax.swing.JFrame {
     });
     jMenu2.add(menuFind);
 
+    menuToBase64.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
+    menuToBase64.setText("Text to Base64");
+    menuToBase64.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        menuToBase64ActionPerformed(evt);
+      }
+    });
+    jMenu2.add(menuToBase64);
+
     jMenuBar1.add(jMenu2);
 
     jMenu3.setText("Settings");
@@ -855,7 +878,7 @@ public class FrameEditor extends javax.swing.JFrame {
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+      .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
     );
 
     pack();
@@ -957,6 +980,14 @@ public class FrameEditor extends javax.swing.JFrame {
     this.hideStatus.start();
   }//GEN-LAST:event_statusbarMouseExited
 
+  private void menuToBase64ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuToBase64ActionPerformed
+    base64();
+  }//GEN-LAST:event_menuToBase64ActionPerformed
+
+  private void hideActionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hideActionMouseClicked
+    toggleButtonBar();
+  }//GEN-LAST:event_hideActionMouseClicked
+
 
   /**
    * @param args the command line arguments
@@ -999,6 +1030,7 @@ public class FrameEditor extends javax.swing.JFrame {
   private javax.swing.JPanel content;
   private us.pserver.coder.ActionLabel copyAction;
   private us.pserver.coder.ActionLabel findAction;
+  private us.pserver.coder.ActionLabel hideAction;
   private us.pserver.coder.ActionLabel highlightsAction;
   private javax.swing.JMenu jMenu1;
   private javax.swing.JMenu jMenu2;
@@ -1015,6 +1047,7 @@ public class FrameEditor extends javax.swing.JFrame {
   private javax.swing.JMenuItem menuRedo;
   private javax.swing.JMenuItem menuSave;
   private javax.swing.JMenuItem menuSaveAs;
+  private javax.swing.JMenuItem menuToBase64;
   private javax.swing.JMenuItem menuUndo;
   private us.pserver.coder.ActionLabel openAction;
   private us.pserver.coder.ActionLabel pasteAction;

@@ -136,14 +136,16 @@ public class HighlightConfigPanel extends javax.swing.JPanel {
         .addGap(15, 15, 15))
     );
 
-    btnAddHighlight.setText("Add Highlight");
+    btnAddHighlight.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/add-gray-16.png"))); // NOI18N
+    btnAddHighlight.setToolTipText("Add New Highlight");
     btnAddHighlight.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnAddHighlightActionPerformed(evt);
       }
     });
 
-    btnRmHighlight.setText("Remove Highlight");
+    btnRmHighlight.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/coder/images/minus-gray-16.png"))); // NOI18N
+    btnRmHighlight.setToolTipText("Remove Selected Highlight");
     btnRmHighlight.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnRmHighlightActionPerformed(evt);
@@ -159,9 +161,9 @@ public class HighlightConfigPanel extends javax.swing.JPanel {
       .addGroup(layout.createSequentialGroup()
         .addContainerGap()
         .addComponent(btnAddHighlight)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addGap(18, 18, 18)
         .addComponent(btnRmHighlight)
-        .addContainerGap())
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
