@@ -185,19 +185,12 @@ public class HighlightConfigPanel extends javax.swing.JPanel {
       int idx = list.locationToIndex(evt.getPoint());
       if(idx >= 0 && idx < list.getModel().getSize()) {
         MatchAttribute ma = model.elementAt(idx);
-        ColorFontPanel cf = new ColorFontPanel();
-        cf.setSelectedColor(ma.get().getTextStyle().getForeground());
-        cf.setSelectedFont(ma.get().getTextStyle().getFontAttr().getFont());
-        cf.setDemoBackground(frame.getEditor().getBackground());
-        cf.setSelectedName(ma.get().getName());
-        cf.setSelectedRegex(ma.get().getRegex());
-        cf = ColorFontPanel.showPanel(cf, getParentWindow());
-        ma.get().setName(cf.getSelectedName());
-        ma.get().setRegex(cf.getSelectedRegex());
-        ma.get().getTextStyle().setForeground(cf.getSelectedColor());
-        ma.get().getTextStyle().getFontAttr().setFont(cf.getSelectedFont());
-        frame.getEditor().getSintaxHighlighter().words().set(idx, ma.get());
-        updateList();
+        ma.get().getTextStyle().setBackground(frame.getEditor().getBackground());
+        Match m = MatchConfigDialog.showDialog(getParentWindow(), ma.get());
+        if(m != null) {
+          frame.getEditor().getSintaxHighlighter().words().set(idx, m);
+          updateList();
+        }
       }
       list.setSelectedIndex(idx);
     }
@@ -224,19 +217,16 @@ public class HighlightConfigPanel extends javax.swing.JPanel {
   }//GEN-LAST:event_applyActionMouseClicked
 
   private void btnAddHighlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddHighlightActionPerformed
-    ColorFontPanel cf = new ColorFontPanel();
-    cf.setSelectedColor(frame.getForeground());
-    cf.setSelectedFont(frame.getFont());
-    cf.setDemoBackground(frame.getBackground());
-    cf = ColorFontPanel.showPanel(cf, getParentWindow());
     Match m = new Match();
-    m.setName(cf.getSelectedName());
-    m.setRegex(cf.getSelectedRegex());
-    m.setTextStyle(new TextStyle().setFontAttr(
-        new FontXml().setFont(cf.getSelectedFont())));
-    m.getTextStyle().setForeground(cf.getSelectedColor());
-    frame.getEditor().getSintaxHighlighter().words().add(m);
-    updateList();
+    m.setTextStyle(new TextStyle()
+        .setBackground(frame.getEditor().getBackground()));
+    m.getTextStyle().setFontAttr(
+        new FontXml().setFont(frame.getEditor().getFont()));
+    m = MatchConfigDialog.showDialog(getParentWindow(), m);
+    if(m != null) {
+      frame.getEditor().getSintaxHighlighter().words().add(m);
+      updateList();
+    }
   }//GEN-LAST:event_btnAddHighlightActionPerformed
 
   

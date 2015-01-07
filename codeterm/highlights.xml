@@ -104,17 +104,18 @@
       <font family="Monospaced" size="16" italic="true"/>
     </style>
   </match>
-</list>tyle>
-      <fg color-rgb="83,220,205"/>
-      <font family="Monospaced" size="16" italic="true"/>
-    </style>
-  </match>
-</list>>tch>
-</list>h name="HELLO">
-    <regex>123</regex>
+  <match name=")">
+    <regex>\)</regex>
     <style>
-      <fg color-rgb="255,255,51"/>
-      <font family="Monospaced" size="14" bold="true" italic="true"/>
+      <fg color-rgb="255,255,255"/>
+      <font family="Monospaced" size="16" bold="true"/>
     </style>
   </match>
-</list>>
+  <match name="Numbers">
+    <regex>\b[0-9]+\b</regex>
+    <style>
+      <fg color-rgb="255,255,255"/>
+      <font family="Monospaced" size="16"/>
+    </style>
+  </match>
+</list>

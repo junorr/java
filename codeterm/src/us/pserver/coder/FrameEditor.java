@@ -73,7 +73,20 @@ public class FrameEditor extends javax.swing.JFrame {
     editor.setForeground(DEF_EDITOR_FG);
     editor.setSelectionColor(DEF_SELECT_COLOR);
     lnp = new LineNumberPanel(editor);
-    editor.setText("codeterm\ncodeterm\ncodeterm\ncodeterm\ncodeterm\ncodeterm\n");
+    editor.setText("codeterm\n" +
+        "codeterm\n" +
+        "codeterm\n" +
+        "codeterm\n" +
+        "codeterm\n" +
+        "codeterm\n" +
+        "\n" +
+        "string str = \"some string\"\n" +
+        "string CONSTANT = \"some string\"\n" +
+        "int NUMBERS = 1234567890\n" +
+        "\n" +
+        "if eq(str, CONSTANT)\n" +
+        "  print(CONSTANT)\n" +
+        "endif");
     replace = new ReplaceDialog(this, editor);
     copy = new TextCopy();
     lastFile = null;
@@ -198,6 +211,7 @@ public class FrameEditor extends javax.swing.JFrame {
     cv.setLocationRelativeTo(this);
     cv.setVisible(true);
     editor.replace(editor.getCaretPosition(), 0, cv.getConverted());
+    editor.update();
   }
   
   

@@ -31,7 +31,7 @@ public class Base64Converter extends javax.swing.JDialog {
   
   public String getConverted() {
     if(str == null) return null;
-    return cdr.encode(str);
+    return "\""+ cdr.encode(str)+ "\"";
   }
   
 
