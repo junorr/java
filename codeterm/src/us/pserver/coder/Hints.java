@@ -143,7 +143,9 @@ public class Hints {
   public List<String> hintList(String part) {
     int idx = indexStartsWith(part);
     if(idx < 0) return hints;
-    return hints.subList(idx, hints.size());
+    List<String> sub = hints.subList(idx, hints.size());
+    Collections.sort(sub);
+    return sub;
   }
   
   
@@ -159,6 +161,7 @@ public class Hints {
   
   
   public List<String> hints() {
+    Collections.sort(hints);
     return hints;
   }
   
@@ -175,6 +178,7 @@ public class Hints {
       try {
         List<String> lst = (List) xstream.fromXML(p.toFile());
         hints.addAll(lst);
+        sort();
       } catch(Exception e) {
         e.printStackTrace();
       }

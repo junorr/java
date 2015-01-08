@@ -21,10 +21,13 @@
 
 package us.pserver.coder;
 
+import us.pserver.coder.util.ColorConverter;
+import us.pserver.coder.util.FontAttrConverter;
 import com.thoughtworks.xstream.XStream;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,6 +57,8 @@ public class CodetermConfig {
   private FontXml statusFont;
   
   private Rectangle position;
+  
+  private File lastFile;
   
   private transient XStream xstream;
 
@@ -110,6 +115,16 @@ public class CodetermConfig {
       return e;
     }
     return null;
+  }
+  
+  
+  public File getLastFile() {
+    return lastFile;
+  }
+  
+  
+  public void setLastFile(File f) {
+    lastFile = f;
   }
 
 

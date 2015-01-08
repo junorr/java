@@ -21,6 +21,8 @@
 
 package us.pserver.coder;
 
+import us.pserver.coder.util.ColorConverter;
+import us.pserver.coder.util.FontAttrConverter;
 import com.thoughtworks.xstream.XStream;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -33,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import javax.swing.JEditorPane;
-import ru.lanwen.verbalregex.VerbalExpression;
 
 /**
  *
@@ -95,18 +96,6 @@ public class Highlighter {
         xstream.toXML(words, os);
         os.flush();
       } catch(Exception e) {}
-    }
-    return this;
-  }
-  
-  
-  public Highlighter add(VerbalExpression exp, TextStyle ts) {
-    if(exp != null && ts != null) {
-      Match m = new Match(exp.toString(), ts);
-      if(!words.contains(m)) {
-        words.add(m);
-        this.save();
-      }
     }
     return this;
   }

@@ -21,6 +21,10 @@
 
 package us.pserver.coder;
 
+import us.pserver.coder.util.StringUtils;
+import us.pserver.coder.ui.LineNumberPanel;
+import us.pserver.coder.ui.HintWindow;
+import us.pserver.coder.ui.DocViewer;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -76,10 +80,12 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   
   
   public Editor() {
+    super();
     hw = new HintWindow(this);
     hl = new Highlighter();
     hints = new Hints();
     docv = new DocViewer();
+    docv.setKeyListener(this);
     lnp = null;
     undos = new LinkedList();
     redos = new LinkedList();
@@ -411,9 +417,9 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
       e.consume();
     }
     else if(e.getKeyCode() == KeyEvent.VK_ENTER && hw.isVisible()) {
-      setHint(hw.selected());
-      hw.setVisible(false);
       docv.setVisible(false);
+      hw.setVisible(false);
+      setHint(hw.selected());
       e.consume();
     }
     else if(e.getKeyCode() == KeyEvent.VK_ESCAPE && hw.isVisible()) {
@@ -421,8 +427,26 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
       docv.setVisible(false);
       e.consume();
     }
+    else if(e.getKeyCode() == KeyEvent.VK_BACK_SLASH && e.isControlDown()) {
+      System.out.println("* line="+ getLine());
+    }
+    
+    lnp.highlightLine(getLine());
+    
     this.requestFocus();
     this.requestFocusInWindow();
+  }
+  
+  
+  private int getLine() {
+    int cp = this.getCaretPosition();
+    String txt = this.getText();
+    int line = 1;
+    int idl = -1;
+    while((idl = txt.indexOf(LN, idl+1)) >= 0 && idl < cp) {
+      line++;
+    }
+    return line;
   }
 
 

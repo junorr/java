@@ -24,7 +24,6 @@ package us.pserver.coder;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import ru.lanwen.verbalregex.VerbalExpression;
 
 /**
  * 
@@ -106,12 +105,6 @@ public class Match {
     if(regex == null)
       return null;
     return Pattern.compile(regex);
-  }
-  
-  
-  public VerbalExpression getExpression() {
-    return VerbalExpression
-        .regex().add(regex).build();
   }
   
   

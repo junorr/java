@@ -90,6 +90,13 @@
       <font family="Monospaced" size="16" bold="true"/>
     </style>
   </match>
+  <match name="Numbers">
+    <regex>\b[0-9]+\b</regex>
+    <style>
+      <fg color-rgb="255,255,255"/>
+      <font family="Monospaced" size="16"/>
+    </style>
+  </match>
   <match name="&quot;string constant&quot;">
     <regex>&quot;.*&quot;</regex>
     <style>
@@ -109,13 +116,6 @@
     <style>
       <fg color-rgb="255,255,255"/>
       <font family="Monospaced" size="16" bold="true"/>
-    </style>
-  </match>
-  <match name="Numbers">
-    <regex>\b[0-9]+\b</regex>
-    <style>
-      <fg color-rgb="255,255,255"/>
-      <font family="Monospaced" size="16"/>
     </style>
   </match>
 </list>

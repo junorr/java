@@ -1,0 +1,114 @@
+/*
+ * Direitos Autorais Reservados (c) 2011 Juno Roesler
+ * Contato: juno.rr@gmail.com
+ * 
+ * Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os
+ * termos da Licença Pública Geral Menor do GNU conforme publicada pela Free
+ * Software Foundation; tanto a versão 2.1 da Licença, ou qualquer
+ * versão posterior.
+ * 
+ * Esta biblioteca é distribuída na expectativa de que seja útil, porém, SEM
+ * NENHUMA GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE
+ * OU ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA. Consulte a Licença Pública
+ * Geral Menor do GNU para mais detalhes.
+ * 
+ * Você deve ter recebido uma cópia da Licença Pública Geral Menor do GNU junto
+ * com esta biblioteca; se não, acesse 
+ * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html, 
+ * ou escreva para a Free Software Foundation, Inc., no
+ * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
+ */
+
+package us.pserver.coder.ui;
+
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Window;
+import java.util.List;
+import javax.swing.JScrollPane;
+import us.pserver.coder.Editor;
+
+/**
+ *
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 28/08/2014
+ */
+public class HintWindow extends Window {
+
+  public static final Dimension 
+      DEFAULT_SIZE = new Dimension(120, 150);
+  
+  private HintList lst;
+  
+  private Editor editor;
+  
+  
+  public HintWindow(Editor ed) {
+    super(null);
+    editor = ed;
+    setSize(DEFAULT_SIZE);
+    setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
+    lst = new HintList(editor);
+    JScrollPane js = new JScrollPane(lst);
+    Dimension d = new Dimension(
+        DEFAULT_SIZE.width -2, 
+        DEFAULT_SIZE.height -2);
+    js.setPreferredSize(d);
+    js.setSize(d);
+    this.add(js);
+    this.setFocusable(false);
+    lst.setFocusable(false);
+    this.setAlwaysOnTop(true);
+  }
+  
+  
+  public HintList getHintList() {
+    return lst;
+  }
+  
+  
+  public void show(Point p) {
+    show(p, null);
+  }
+  
+  
+  public void show(Point p, List<String> hints) {
+    lst.setList(hints);
+    this.setLocation(p);
+    this.setVisible(true);
+    lst.index(0);
+    updateVisibleRect();
+  }
+  
+  
+  private void updateVisibleRect() {
+    Rectangle r = lst.getVisibleRect();
+    int idx = lst.getSelectedIndex();
+    Point p = lst.indexToLocation(idx);
+    int y = p.y - (r.height - 25) + 50;
+    if(y <= 0) y = 0;
+    r.setLocation(r.x, y);
+    lst.scrollRectToVisible(r);
+  }
+  
+  
+  public void selectDown() {
+    lst.index(lst.index() +1);
+    updateVisibleRect();
+  }
+  
+  
+  public void selectUp() {
+    lst.index(lst.index() -1);
+    updateVisibleRect();
+  }
+  
+  
+  public String selected() {
+    return lst.getSelectedValue();
+  }
+  
+  
+}
