@@ -25,6 +25,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.geom.AffineTransform;
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -109,25 +110,30 @@ public class LineNumberPanel extends JPanel {
   
   public void highlightLine(int line) {
     if(line < 1) return;
-    int idl = -1;
-    int adl = -1;
-    int ln = 1;
     String txt = lnpane.getText();
-    do {
-      adl = idl;
-      idl = txt.indexOf(Editor.LN, idl+1);
-      ln++;
-    } while(idl >= 0 && ln < line);
+    String[] lns = txt.split(Editor.LN);
+    if(lns == null || lns.length < (line-1))
+      return;
+    int ini = txt.indexOf(lns[line -1]);
+    int len = lns[line -1].length();
+    System.out.println("* line="+ line+ ", ["+ lns[line -1]+ "]");
     TextStyle ts = new TextStyle();
     ts.setFontAttr(new FontXml().setFont(lnpane.getFont()));
     ts.setFontBold(true);
-    ts.apply(adl+1, (idl-adl), lnpane);
+    //ts.setBackground(Color.DARK_GRAY);
+    //ts.setForeground(Color.WHITE);
+    TextStyle.clearStyles(lnpane);
+    ts.apply(ini, len, lnpane);
+    lnpane.repaint();
   }
   
   
   @Override
   public void setFont(Font f) {
     if(f != null && lnpane != null) {
+      //Font f2 = f.deriveFont(AffineTransform.getScaleInstance(1.0, 1.03));
+      System.out.println("* f="+ f);
+      //System.out.println("* f2="+ f2);
       lnpane.setFont(f);
       lnpane.repaint();
     }

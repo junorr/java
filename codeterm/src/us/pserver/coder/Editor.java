@@ -283,8 +283,13 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   public void setFont(Font f) {
     if(f != null) {
       super.setFont(f);
-      if(lnp != null)
+      if(hl != null && !hl.words().isEmpty())
+        for(Match m : hl.words()) {
+          m.getTextStyle().getFontAttr().setSize(f.getSize());
+        }
+      if(lnp != null) {
         lnp.setFont(f);
+      }
     }
   }
   
@@ -431,8 +436,6 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
       System.out.println("* line="+ getLine());
     }
     
-    lnp.highlightLine(getLine());
-    
     this.requestFocus();
     this.requestFocusInWindow();
   }
@@ -455,6 +458,7 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
     if(Highlighter.shouldUpdate(e)) {
       update();
     }
+    lnp.highlightLine(getLine());
     if(hw.isVisible()) {
       this.showHintWindow();
     }

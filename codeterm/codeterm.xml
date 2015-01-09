@@ -7,11 +7,11 @@
   <status color-rgb="255,255,255"/>
   <statusBG color-rgb="100,100,100"/>
   <statusWarn color-rgb="255,255,0"/>
-  <textFont family="Monospaced" size="16"/>
+  <textFont family="FreeMono" size="16"/>
   <statusFont family="Monospaced" size="12"/>
   <position>
-    <x>491</x>
-    <y>165</y>
+    <x>621</x>
+    <y>309</y>
     <width>806</width>
     <height>689</height>
   </position>
