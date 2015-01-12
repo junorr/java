@@ -41,6 +41,8 @@ import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.UIDefaults;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.StyledEditorKit;
@@ -108,6 +110,12 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
           view.setViewPosition(new Point(pv.x, y));
           view.repaint();
         }
+      }
+    });
+    this.addCaretListener(new CaretListener() {
+      @Override
+      public void caretUpdate(CaretEvent e) {
+        lnp.highlightLine(getLine());
       }
     });
   }
@@ -281,15 +289,15 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   
   @Override
   public void setFont(Font f) {
-    if(f != null) {
+    if(f != null && hl != null) {
       super.setFont(f);
-      if(hl != null && !hl.words().isEmpty())
-        for(Match m : hl.words()) {
-          m.getTextStyle().getFontAttr().setSize(f.getSize());
-        }
-      if(lnp != null) {
-        lnp.setFont(f);
+      for(Match m : hl.words()) {
+        m.getTextStyle().getFontAttr()
+            .setFontFamily(f.getFamily()).setSize(f.getSize());
       }
+      hl.save();
+      if(lnp != null) lnp.setFont(f);
+      this.update();
     }
   }
   
@@ -458,7 +466,7 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
     if(Highlighter.shouldUpdate(e)) {
       update();
     }
-    lnp.highlightLine(getLine());
+    
     if(hw.isVisible()) {
       this.showHintWindow();
     }
@@ -466,9 +474,11 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   
   
   public void update() {
+    if(hl == null || lnp == null)
+      return;
     hl.update(this);
-    if(lnp != null)
-      lnp.setLinesNumber(getLinesNumber());
+    lnp.setLinesNumber(getLinesNumber());
+    lnp.highlightLine(getLine());
   }
 
 

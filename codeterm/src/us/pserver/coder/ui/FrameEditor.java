@@ -93,7 +93,7 @@ public class FrameEditor extends javax.swing.JFrame {
         "\n" +
         "if eq(str, CONSTANT)\n" +
         "  print(CONSTANT)\n" +
-        "endif");
+        "endif\n");
     replace = new ReplaceDialog(this, editor);
     copy = new TextCopy();
     lastFile = null;

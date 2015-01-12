@@ -182,7 +182,6 @@ public class Highlighter {
     for(Match mtc : words) {
       Matcher m = mtc.matcherFor(text);
       while(m.find()) {
-        //System.out.println("* found on: "+ m.start()+ ", until="+ m.end()+ ", txt="+ m.group());
         int len = m.end() - m.start();
         if(len > 0)
           mtc.getTextStyle()

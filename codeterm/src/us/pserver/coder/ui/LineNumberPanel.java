@@ -112,16 +112,15 @@ public class LineNumberPanel extends JPanel {
     if(line < 1) return;
     String txt = lnpane.getText();
     String[] lns = txt.split(Editor.LN);
-    if(lns == null || lns.length < (line-1))
+    if(lns == null || (line-1) >= lns.length)
       return;
     int ini = txt.indexOf(lns[line -1]);
     int len = lns[line -1].length();
-    System.out.println("* line="+ line+ ", ["+ lns[line -1]+ "]");
     TextStyle ts = new TextStyle();
     ts.setFontAttr(new FontXml().setFont(lnpane.getFont()));
     ts.setFontBold(true);
-    //ts.setBackground(Color.DARK_GRAY);
-    //ts.setForeground(Color.WHITE);
+    ts.setBackground(Color.WHITE);
+    ts.setForeground(Color.DARK_GRAY);
     TextStyle.clearStyles(lnpane);
     ts.apply(ini, len, lnpane);
     lnpane.repaint();
@@ -131,9 +130,6 @@ public class LineNumberPanel extends JPanel {
   @Override
   public void setFont(Font f) {
     if(f != null && lnpane != null) {
-      //Font f2 = f.deriveFont(AffineTransform.getScaleInstance(1.0, 1.03));
-      System.out.println("* f="+ f);
-      //System.out.println("* f2="+ f2);
       lnpane.setFont(f);
       lnpane.repaint();
     }

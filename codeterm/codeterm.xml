@@ -7,7 +7,7 @@
   <status color-rgb="255,255,255"/>
   <statusBG color-rgb="100,100,100"/>
   <statusWarn color-rgb="255,255,0"/>
-  <textFont family="FreeMono" size="16"/>
+  <textFont family="FreeMono" size="18"/>
   <statusFont family="Monospaced" size="12"/>
   <position>
     <x>621</x>
