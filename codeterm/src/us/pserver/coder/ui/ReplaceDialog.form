@@ -89,7 +89,7 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="replaceButton" min="-2" pref="90" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="repAllButton" min="-2" pref="90" max="-2" attributes="0"/>
+                  <Component id="repAllButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>

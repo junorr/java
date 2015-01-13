@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Texto</div>
+  	
+  	<div class="method">
+  		replace( string text, string arg, string rep )
+  	</div>
+  	
+  	<div class="desc">
+  		Substitui todas as ocorrencias de <i>arg</i> na string <i>text</i>
+  		pelo conteudo do argumento <i>rep</i>.<br/> 
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>text - Texto no qual ocorrerao as substituicoes</li>
+  			<li>arg - Texto a ser substituido</li>
+  			<li>arg - Texto pelo qual <i>arg</i> sera substituido</li>
+  			<li>return - Texto com as substituicoes efetuadas</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+ 			string cpf = "123.456.789-00"<br/>
+ 			print( "cpf = " + cpf )<br/>
+ 			print( "replace '.'" )<br/>
+ 			cpf = replace( cpf, ".", "" )<br/>
+ 			print( "cpf = " + cpf )<br/>
+ 			<span class="comment">
+				# Imprime no console
+			</span><br/>
+ 			&gt;&nbsp;cpf = 123.456.789-00
+ 			&gt;&nbsp;replace '.'
+ 			&gt;&nbsp;cpf = 123456789-00
+ 		</div>
+ 		
+  </body>
+ </html>
+      

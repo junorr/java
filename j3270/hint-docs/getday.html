@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Data</div>
+  	
+  	<div class="method">
+  		getday( object arg )
+  	</div>
+  	
+  	<div class="desc">
+  		Retorna o dia do mes da data informada, ou a quantidade de dias 
+  		da diferenca de tempo.<br/> 
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>arg - Data ou diferenca de tempo</li>
+  			<li>return - Dia do mes ou quantidade de dias</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+ 			object data = date( "15/04/2014" )<br/>
+ 			object hoje = date( "01/04/2014" )<br/>
+ 			object tempo = diff( hoje, data )<br/>
+ 			print( getday( data ) )<br/>
+ 			print( getday( tempo ) )<br/>
+ 			<span class="comment">
+				# Imprime no console
+			</span><br/>
+ 			&gt;&nbsp;15<br/>
+ 			&gt;&nbsp;14
+ 		</div>
+ 		
+  </body>
+ </html>
+      

@@ -62,7 +62,6 @@ public class HintList extends JList<String>
     this.setCellRenderer(this);
     this.addMouseListener(this);
     model = new DefaultListModel();
-    System.out.println();
   }
   
   

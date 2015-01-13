@@ -6,6 +6,7 @@
 
 package us.pserver.j3270;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -20,6 +21,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import murlen.util.fscript.ParserListener;
+import us.pserver.coder.Editor;
+import us.pserver.coder.ui.LineNumberPanel;
 import us.pserver.j3270.script.CodeListener;
 import us.pserver.j3270.script.ScriptProcessor;
 import us.pserver.tn3270.Cursor;
@@ -36,19 +39,25 @@ implements CodeListener, ParserListener {
   
   private static String LN = (File.separatorChar == '/' ? "\n" : "\r\n");
   
+  public static final Color
+      DEF_EDITOR_BG = new Color(100, 100, 100),
+      DEF_EDITOR_FG = new Color(180, 255, 180),
+      DEF_SELECT_COLOR = new Color(220, 220, 220);
+  
+  
   private TextCopy tcp;
   
   private File f, dir;
   
   private J3270 j3270;
   
-  private List<String> undo;
-  
-  private List<String> redo;
-  
   private int uidx, ridx;
   
   private boolean debug;
+  
+  private Editor editor;
+  
+  private LineNumberPanel lnp;
   
   
   /**
@@ -56,7 +65,16 @@ implements CodeListener, ParserListener {
    */
   public CodeViewer(J3270 parent, boolean modal) {
     super(parent, modal);
+    
+    editor = new Editor();
+    editor.setBackground(DEF_EDITOR_BG);
+    editor.setForeground(DEF_EDITOR_FG);
+    editor.setSelectionColor(DEF_SELECT_COLOR);
+    lnp = new LineNumberPanel(editor);
+    
     initComponents();
+    scrollPane.setViewportView(lnp);
+    
     f = dir = null;
     debug = true;
     j3270 = parent;
@@ -74,22 +92,7 @@ implements CodeListener, ParserListener {
     System.setOut(ps);
     j3270.scriptProc().setStdOut(ps);
     
-    undo = new LinkedList<String>();
-    redo = new LinkedList<String>();
     uidx = ridx = 0;
-    codeArea.addKeyListener(new KeyListener() {
-      @Override
-      public void keyTyped(KeyEvent e) {
-        if(e.isControlDown()) return;
-        if(undo.size() > UNDO_MAX)
-          undo.remove(0);
-        undo.add(codeArea.getText());
-        uidx = undo.size() -1;
-        redo.clear();
-      }
-      @Override public void keyPressed(KeyEvent e) {}
-      @Override public void keyReleased(KeyEvent e) {}
-    });
   }
   
   
@@ -102,9 +105,8 @@ implements CodeListener, ParserListener {
   public void codeAppended(String str) {
     if(str == null || str.isEmpty())
       return;
-    codeArea.append(str);
-    codeArea.append(LN);
-    codeArea.setCaretPosition(getCode().length());
+    editor.setText(editor.getText().concat(str).concat(LN));
+    editor.setCaretPosition(editor.getText().length()-1);
   }
   
   
@@ -112,19 +114,19 @@ implements CodeListener, ParserListener {
   public void codeChanged(String str) {
     if(str == null || str.isEmpty())
       return;
-    codeArea.setText(str);
-    codeArea.setCaretPosition(getCode().length());
+    editor.setText(str);
+    editor.setCaretPosition(getCode().length());
   }
   
   
   public void setCode(String code) {
-    codeArea.setText(code);
-    codeArea.setCaretPosition(code.length());
+    editor.setText(code);
+    editor.setCaretPosition(code.length());
   }
   
   
   public String getCode() {
-    return codeArea.getText();
+    return editor.getText();
   }
   
   
@@ -136,53 +138,53 @@ implements CodeListener, ParserListener {
   public void selectAll() {
     if(getCode() == null || getCode().isEmpty())
       return;
-    codeArea.setSelectionStart(0);
-    codeArea.setSelectionEnd(getCode().length());
+    editor.setSelectionStart(0);
+    editor.setSelectionEnd(getCode().length());
   }
   
   
   public void unselect() {
     if(getCode() == null || getCode().isEmpty())
       return;
-    codeArea.setCaretPosition(getCode().length());
+    editor.setCaretPosition(getCode().length());
   }
   
   
   public void copy() {
     if(getCode() == null || getCode().isEmpty()
-        || codeArea.getSelectedText() == null 
-        || codeArea.getSelectedText().isEmpty())
+        || editor.getSelectedText() == null 
+        || editor.getSelectedText().isEmpty())
       return;
-    tcp.setText(codeArea.getSelectedText()).putInClipboard();
+    tcp.setText(editor.getSelectedText()).putInClipboard();
   }
 
 
   public void cut() {
     if(getCode() == null || getCode().isEmpty()
-        || codeArea.getSelectedText() == null 
-        || codeArea.getSelectedText().isEmpty())
+        || editor.getSelectedText() == null 
+        || editor.getSelectedText().isEmpty())
       return;
-    tcp.setText(codeArea.getSelectedText()).putInClipboard();
+    tcp.setText(editor.getSelectedText()).putInClipboard();
     String code = getCode().substring(0, 
-        codeArea.getSelectionStart());
-    if(codeArea.getSelectionEnd() < getCode().length())
+        editor.getSelectionStart());
+    if(editor.getSelectionEnd() < getCode().length())
       code += getCode().substring(
-          codeArea.getSelectionEnd(), getCode().length());
-    codeArea.setText(code);
+          editor.getSelectionEnd(), getCode().length());
+    editor.setText(code);
   }
   
   
   public void paste() {
     tcp.setFromClipboard();
     String code = getCode();
-    int caret = codeArea.getCaretPosition();
+    int caret = editor.getCaretPosition();
     if(code != null && !code.isEmpty()
         && caret < code.length()) {
       code = code.substring(0, caret)
           + tcp.getText() 
           + code.substring(caret, code.length());
     }
-    codeArea.setText(code);
+    editor.setText(code);
   }
   
   
@@ -245,7 +247,7 @@ implements CodeListener, ParserListener {
   
   
   public void newScript() {
-    codeArea.setText("");
+    editor.setText("");
     console.setText("");
     f = null;
     this.setTitle("Code Viewer");
@@ -272,7 +274,7 @@ implements CodeListener, ParserListener {
         if(((char)ch) == '\r') continue;
         sb.append((char) ch);
       }
-      codeArea.setText(sb.toString());
+      editor.setText(sb.toString());
       fr.close();
     } catch(IOException ex) {}
   }
@@ -397,7 +399,6 @@ implements CodeListener, ParserListener {
     saveButton = new javax.swing.JButton();
     jSplitPane1 = new javax.swing.JSplitPane();
     scrollPane = new javax.swing.JScrollPane();
-    codeArea = new javax.swing.JTextArea();
     jScrollPane1 = new javax.swing.JScrollPane();
     console = new javax.swing.JTextArea();
     menuBar = new javax.swing.JMenuBar();
@@ -494,13 +495,6 @@ implements CodeListener, ParserListener {
     jSplitPane1.setDividerLocation(280);
     jSplitPane1.setDividerSize(4);
     jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-
-    codeArea.setColumns(20);
-    codeArea.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
-    codeArea.setRows(5);
-    codeArea.setTabSize(2);
-    scrollPane.setViewportView(codeArea);
-
     jSplitPane1.setTopComponent(scrollPane);
 
     console.setEditable(false);
@@ -783,17 +777,11 @@ implements CodeListener, ParserListener {
   }//GEN-LAST:event_newMenuActionPerformed
 
   private void undoMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoMenuActionPerformed
-    if(undo.isEmpty()) return;
-    redo.add(getCode());
-    ridx = redo.size() -1;
-    codeArea.setText(undo.get(uidx--));
-    if(uidx < 0) uidx = undo.size() -1;
+    editor.undo();
   }//GEN-LAST:event_undoMenuActionPerformed
 
   private void redoMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redoMenuActionPerformed
-    if(redo.isEmpty()) return;
-    codeArea.setText(redo.get(ridx--));
-    if(ridx < 0) ridx = redo.size() -1;
+    editor.redo();
   }//GEN-LAST:event_redoMenuActionPerformed
 
   private void debugMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_debugMenuActionPerformed
@@ -880,7 +868,6 @@ implements CodeListener, ParserListener {
   private javax.swing.JCheckBoxMenuItem autowaitMenu;
   private javax.swing.JMenuItem clearMenu;
   private javax.swing.JMenuItem closeMenu;
-  private javax.swing.JTextArea codeArea;
   private javax.swing.JTextArea console;
   private javax.swing.JMenuItem copyMenu;
   private javax.swing.JMenuItem cutMenu;

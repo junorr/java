@@ -30,6 +30,7 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
@@ -40,6 +41,7 @@ import java.util.List;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -245,7 +247,7 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   
   
   public int find(String str, int fromPos) {
-    System.out.println("* editor.find( '"+ str+ "', "+ fromPos+ " )");
+    //System.out.println("* editor.find( '"+ str+ "', "+ fromPos+ " )");
     if(str == null 
         || str.isEmpty()
         || fromPos < 0 
@@ -298,6 +300,15 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
       hl.save();
       if(lnp != null) lnp.setFont(f);
       this.update();
+      
+      if(this.getScrollParent() == null)
+        return;
+      
+      final Point viewpoint = this.getScrollParent().getViewport().getViewPosition();
+      SwingUtilities.invokeLater(()-> {
+        this.getScrollParent()
+            .getViewport().setViewPosition(viewpoint);
+      });
     }
   }
   

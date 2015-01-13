@@ -77,7 +77,7 @@ public class ReplaceDialog extends javax.swing.JDialog {
     int len = editor.getDocument().getLength();
     if(pos >= len || pos < 0) pos = editor.getCaretPosition();
     pos = editor.find(sf, pos);
-    System.out.println("find="+ pos);
+    //System.out.println("find="+ pos);
     if(pos < 0) {
       editor.setSelectionStart(0);
       editor.setSelectionEnd(0);
@@ -105,7 +105,7 @@ public class ReplaceDialog extends javax.swing.JDialog {
       replace();
       find();
     }
-    System.out.println("* finish replaceAll");
+    //System.out.println("* finish replaceAll");
   }
 
 
@@ -166,7 +166,7 @@ public class ReplaceDialog extends javax.swing.JDialog {
         .addGap(18, 18, 18)
         .addComponent(replaceButton, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addGap(18, 18, 18)
-        .addComponent(repAllButton, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addComponent(repAllButton)
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
     jPanel1Layout.setVerticalGroup(
