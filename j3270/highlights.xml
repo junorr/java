@@ -3,124 +3,122 @@
     <regex>\b[A-Z]+\w*</regex>
     <style>
       <fg color-rgb="255,255,255"/>
-      <font family="FreeMono" size="16" italic="true"/>
+      <font family="Monospaced" size="16" italic="true"/>
     </style>
   </match>
   <match name="int">
     <regex>\bint\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="double">
     <regex>\bdouble\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="string">
     <regex>\bstring\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="object">
     <regex>\bobject\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="if">
     <regex>\bif\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="func">
     <regex>\bfunc\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="endfunc">
     <regex>\bendfunc\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="endif">
     <regex>\bendif\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="while">
     <regex>\bwhile\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="else">
     <regex>\belse\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="elsif">
     <regex>\belsif\b</regex>
     <style>
       <fg color-rgb="200,225,255"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="method">
     <regex>[a-zA-Z_]+\w*\(</regex>
     <style>
-      <fg reference="../../../match/style/fg"/>
-      <font family="FreeMono" size="16" bold="true"/>
+      <fg color-rgb="180,255,180"/>
+      <font family="Monospaced" size="16" bold="true"/>
     </style>
   </match>
   <match name="Numbers">
     <regex>\b[0-9]+\b</regex>
     <style>
       <fg color-rgb="255,255,255"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="&quot;string constant&quot;">
     <regex>&quot;.*&quot;</regex>
     <style>
       <fg color-rgb="255,255,102"/>
-      <font family="FreeMono" size="16"/>
+      <font family="Monospaced" size="16"/>
     </style>
   </match>
   <match name="# comment">
     <regex>#.*</regex>
     <style>
-      <fg color-rgb="83,220,205"/>
-      <font family="FreeMono" size="16" italic="true"/>
+      <fg color-rgb="98,235,220"/>
+      <font family="Monospaced" size="16" italic="true"/>
     </style>
   </match>
   <match name=")">
     <regex>\)</regex>
     <style>
-      <fg color-rgb="255,255,255"/>
-      <font family="FreeMono" size="16" bold="true"/>
+      <fg color-rgb="255,255,180"/>
+      <font family="Monospaced" size="16" bold="true"/>
     </style>
   </match>
-</list>/>
-    </style>
-  </match>
+</list>tch>
 </list>5,255"/>
       <font family="DejaVu Sans Mono" size="12" bold="true"/>
     </style>

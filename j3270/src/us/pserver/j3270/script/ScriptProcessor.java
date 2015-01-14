@@ -35,7 +35,6 @@ import us.pserver.psf.func.CTypeLib;
 import us.pserver.psf.func.CronLib;
 import us.pserver.psf.func.DateLib;
 import us.pserver.psf.func.IOLib;
-import us.pserver.psf.func.ImportScriptLib;
 import us.pserver.psf.func.StrLib;
 import us.pserver.psf.func.UILib;
 
@@ -65,13 +64,11 @@ public class ScriptProcessor {
     UILib uilib = new UILib();
     CronLib cronlib = new CronLib(fs);
     J3270Lib tnlib = new J3270Lib(driver);
-    ImportScriptLib implib = new ImportScriptLib(fs);
     
     tnlib.addTo(funcs);
     strlib.addTo(funcs);
     ctype.addTo(funcs);
     cronlib.addTo(funcs);
-    implib.addTo(funcs);
     
     fs.registerExtension(ref);
     fs.registerExtension(funcs);
@@ -97,7 +94,7 @@ public class ScriptProcessor {
   }
   
   
-  public void loadLine(String line) {
+  public void loadLine(String line) throws IOException {
     fs.loadLine(line);
   }
   
@@ -113,7 +110,7 @@ public class ScriptProcessor {
   }
   
   
-  public void execLine(String line) throws FSException {
+  public void execLine(String line) throws FSException, IOException {
     fs.loadLine(line);
     try { fs.cont(); }
     catch(IOException e) {

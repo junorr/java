@@ -300,15 +300,6 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
       hl.save();
       if(lnp != null) lnp.setFont(f);
       this.update();
-      
-      if(this.getScrollParent() == null)
-        return;
-      
-      final Point viewpoint = this.getScrollParent().getViewport().getViewPosition();
-      SwingUtilities.invokeLater(()-> {
-        this.getScrollParent()
-            .getViewport().setViewPosition(viewpoint);
-      });
     }
   }
   
@@ -477,7 +468,6 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
     if(Highlighter.shouldUpdate(e)) {
       update();
     }
-    
     if(hw.isVisible()) {
       this.showHintWindow();
     }
@@ -487,9 +477,21 @@ public class Editor extends JEditorPane implements KeyListener, HintListener {
   public void update() {
     if(hl == null || lnp == null)
       return;
+    
+    Point pview = null;
+    if(this.getScrollParent() != null
+        && this.getScrollParent().getViewport() != null)
+      pview = this.getScrollParent().getViewport().getViewPosition();
+    
     hl.update(this);
     lnp.setLinesNumber(getLinesNumber());
     lnp.highlightLine(getLine());
+    
+    if(pview != null) {
+      final Point p = pview;
+      SwingUtilities.invokeLater(()->this.getScrollParent()
+          .getViewport().setViewPosition(p));
+    }
   }
 
 

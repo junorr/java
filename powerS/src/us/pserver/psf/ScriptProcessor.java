@@ -34,7 +34,6 @@ import us.pserver.psf.func.CTypeLib;
 import us.pserver.psf.func.CronLib;
 import us.pserver.psf.func.DateLib;
 import us.pserver.psf.func.IOLib;
-import us.pserver.psf.func.ImportScriptLib;
 import us.pserver.psf.func.StrLib;
 import us.pserver.psf.func.TN3270Lib;
 import us.pserver.psf.func.UILib;
@@ -85,14 +84,12 @@ public class ScriptProcessor {
     CTypeLib ctype = new CTypeLib();
     DateLib dlib = new DateLib();
     UILib uilib = new UILib();
-    ImportScriptLib implib = new ImportScriptLib(fs);
     tnlib = new TN3270Lib();
     
     tnlib.addTo(funcs);
     strlib.addTo(funcs);
     ctype.addTo(funcs);
     cronlib.addTo(funcs);
-    implib.addTo(funcs);
     
     fs.registerExtension(ref);
     fs.registerExtension(funcs);

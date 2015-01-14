@@ -7,16 +7,17 @@
 package us.pserver.j3270;
 
 import java.awt.Color;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.LinkedList;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -90,12 +91,14 @@ implements CodeListener, ParserListener {
       }
     });
     System.setOut(ps);
+    System.setErr(ps);
     j3270.scriptProc().setStdOut(ps);
     
     uidx = ridx = 0;
   }
   
   
+  @Override
   public void lineUpdate(String line) {
     if(debug) println(line);
   }
@@ -103,6 +106,7 @@ implements CodeListener, ParserListener {
   
   @Override
   public void codeAppended(String str) {
+    System.out.println("* codeAppended( "+ str+ " )");
     if(str == null || str.isEmpty())
       return;
     editor.setText(editor.getText().concat(str).concat(LN));
@@ -112,6 +116,7 @@ implements CodeListener, ParserListener {
   
   @Override
   public void codeChanged(String str) {
+    System.out.println("* codeChanged( "+ str+ " )");
     if(str == null || str.isEmpty())
       return;
     editor.setText(str);
@@ -120,6 +125,7 @@ implements CodeListener, ParserListener {
   
   
   public void setCode(String code) {
+    System.out.println("* setCode( "+ code+ " )");
     editor.setText(code);
     editor.setCaretPosition(code.length());
   }
@@ -314,9 +320,6 @@ implements CodeListener, ParserListener {
       try {
         println("Iterrupted: "+ j3270.scriptProc()
             .processor().getCurrentLine());
-        if(debug)
-          println("Context>> "+ j3270.scriptProc()
-              .processor().getContext());
         j3270.scriptProc()
           .processor().reset(); 
         j3270.scriptProc().closeIO();
@@ -354,12 +357,10 @@ implements CodeListener, ParserListener {
     String[] lns = getCode().split("\n");
     try {
       for(String l : lns) {
-        if(l.startsWith("import")) {
-          proc.execLine(l);
-        }
-        else {
+        //if(l.startsWith("import"))
+          //loadFile(l);
+        //else
           proc.loadLine(l);
-        }
       }
       
       proc.exec();
@@ -369,6 +370,7 @@ implements CodeListener, ParserListener {
       
     } catch(Exception e) {
       println("### "+ e.getMessage());
+      e.printStackTrace();
       if(playButton.isSelected()) {
         playButton.setSelected(false);
         play();

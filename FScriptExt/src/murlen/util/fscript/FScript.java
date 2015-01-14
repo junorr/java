@@ -1,7 +1,12 @@
 package murlen.util.fscript;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,10 +77,38 @@ public class FScript implements FSExtension{
      * document processing applications
      * @param line the line to load
      */
-    public void loadLine(String line) {
+    public void loadLine(String line) throws IOException {
+      if(line == null || line.trim().isEmpty())
+        return;
+      if(line.trim().startsWith("import"))
+        loadImport(line);
+      else
         code.addLine(line);
     }
     
+    
+    public void loadImport(String line) throws IOException {
+      if(line == null || !line.startsWith("import"))
+        return;
+      line = line.trim().replace("import", "")
+          .replace("(", "")
+          .replace(")", "")
+          .replace("\"", "");
+      Path p = Paths.get(line);
+    
+      if(!Files.exists(p)) 
+        throw new FileNotFoundException("Invalid file to import: "+ line);
+    
+      BufferedReader br = Files.newBufferedReader(p);
+      String ln = br.readLine();
+      while(ln != null) {
+        code.addLine(ln);
+        ln = br.readLine();
+      }
+      br.close();
+    }
+  
+  
     /**
      *Registers language extensions
      *@param extension the extension to register
