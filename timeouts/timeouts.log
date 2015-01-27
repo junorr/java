@@ -32,3 +32,278 @@
 [INFO ] (02/01/2015 15:19:42): Timeouts Started!
 [DEBUG] (07/01/2015 17:21:46): Timeouts Loaded!
 [INFO ] (07/01/2015 17:21:46): Timeouts Started!
+[DEBUG] (27/01/2015 08:47:48): Timeouts Loaded!
+[INFO ] (27/01/2015 08:47:48): Timeouts Started!
+[ERROR] (27/01/2015 08:48:15): No Schedule Selected
+[ERROR] (27/01/2015 08:48:19): No Schedule Selected
+[DEBUG] (27/01/2015 08:54:22): Timeouts Saved!
+[INFO ] (27/01/2015 08:54:22): Schedule Added
+[ERROR] (27/01/2015 08:54:43): Edit Canceled
+[DEBUG] (27/01/2015 09:19:30): Timeouts Loaded!
+[INFO ] (27/01/2015 09:19:30): Timeouts Started!
+[ERROR] (27/01/2015 09:19:39): Edit Canceled
+[DEBUG] (27/01/2015 09:28:01): Timeouts Loaded!
+[INFO ] (27/01/2015 09:28:01): Timeouts Started!
+[ERROR] (27/01/2015 09:28:48): Invalid Schedule
+[DEBUG] (27/01/2015 10:07:11): Timeouts Loaded!
+[INFO ] (27/01/2015 10:07:11): Timeouts Started!
+[DEBUG] (27/01/2015 10:11:36): Timeouts Saved!
+[INFO ] (27/01/2015 10:11:36): Schedule Added
+[DEBUG] (27/01/2015 10:14:22): Timeouts Saved!
+[INFO ] (27/01/2015 10:14:22): Schedule Edited
+[DEBUG] (27/01/2015 10:34:16): Timeouts Loaded!
+[INFO ] (27/01/2015 10:34:16): SimpleCron Started!
+[DEBUG] (27/01/2015 10:34:16): Schedule Removed: show-dialog.txt @ 27/01/2015 10:14:40 [Repeat: disabled]
+[INFO ] (27/01/2015 10:34:16): Timeouts Started!
+[INFO ] (27/01/2015 10:34:39): SimpleCron Stopped!
+[DEBUG] (27/01/2015 10:34:39): Timeouts Saved!
+[INFO ] (27/01/2015 10:34:39): SimpleCron Started!
+[INFO ] (27/01/2015 10:34:39): Schedule Removed
+[DEBUG] (27/01/2015 10:34:49): Timeouts Loaded!
+[INFO ] (27/01/2015 10:34:49): SimpleCron Started!
+[INFO ] (27/01/2015 10:34:49): Timeouts Started!
+[DEBUG] (27/01/2015 10:35:19): Job inserted: show-dialog.txt @ 27/01/2015 10:36:00 [Repeat: 1 MINUTE]
+[INFO ] (27/01/2015 10:35:19): SimpleCron Stopped!
+[INFO ] (27/01/2015 10:35:19): SimpleCron Started!
+[DEBUG] (27/01/2015 10:35:19): Timeouts Saved!
+[INFO ] (27/01/2015 10:35:19): Schedule Added
+[DEBUG] (27/01/2015 10:38:35): Timeouts Loaded!
+[INFO ] (27/01/2015 10:38:35): SimpleCron Started!
+[INFO ] (27/01/2015 10:38:35): Timeouts Started!
+[DEBUG] (27/01/2015 10:43:07): Timeouts Loaded!
+[INFO ] (27/01/2015 10:43:07): SimpleCron Started!
+[INFO ] (27/01/2015 10:43:07): Timeouts Started!
+[DEBUG] (27/01/2015 10:47:16): Timeouts Loaded!
+[INFO ] (27/01/2015 10:47:16): SimpleCron Started!
+[INFO ] (27/01/2015 10:47:16): Timeouts Started!
+[DEBUG] (27/01/2015 10:49:21): Timeouts Loaded!
+[INFO ] (27/01/2015 10:49:21): SimpleCron Started!
+[INFO ] (27/01/2015 10:49:21): Timeouts Started!
+[INFO ] (27/01/2015 10:51:10): SimpleCron Stopped!
+[DEBUG] (27/01/2015 10:51:18): Timeouts Saved!
+[INFO ] (27/01/2015 10:51:18): SimpleCron Started!
+[INFO ] (27/01/2015 10:51:18): Schedule Edited
+[DEBUG] (27/01/2015 10:52:25): Timeouts Loaded!
+[INFO ] (27/01/2015 10:52:25): SimpleCron Started!
+[INFO ] (27/01/2015 10:52:25): Timeouts Started!
+[DEBUG] (27/01/2015 10:52:25): Schedule Removed: show-dialog.txt @ 27/01/2015 10:52:00 [Repeat: disabled]
+[ERROR] (27/01/2015 10:52:29): No Schedule Selected
+[ERROR] (27/01/2015 10:52:32): No Schedule Selected
+[ERROR] (27/01/2015 10:52:34): No Schedule Selected
+[ERROR] (27/01/2015 10:52:35): No Schedule Selected
+[ERROR] (27/01/2015 10:52:45): No Schedule Selected
+[ERROR] (27/01/2015 10:52:47): No Schedule Selected
+[ERROR] (27/01/2015 10:52:49): No Schedule Selected
+[ERROR] (27/01/2015 10:53:06): Invalid Schedule
+[DEBUG] (27/01/2015 11:25:11): Timeouts Loaded!
+[INFO ] (27/01/2015 11:25:11): SimpleCron Started!
+[INFO ] (27/01/2015 11:25:11): Timeouts Started!
+[DEBUG] (27/01/2015 11:25:11): Schedule Removed: show-dialog.txt @ 27/01/2015 10:52:00 [Repeat: disabled]
+[ERROR] (27/01/2015 11:25:19): No Schedule Selected
+[DEBUG] (27/01/2015 12:49:20): Timeouts Loaded!
+[INFO ] (27/01/2015 12:49:20): SimpleCron Started!
+[DEBUG] (27/01/2015 12:49:20): Schedule Removed: show-dialog.txt @ 27/01/2015 10:52:00 [Repeat: disabled]
+[INFO ] (27/01/2015 12:49:20): Timeouts Started!
+[DEBUG] (27/01/2015 12:49:45): Job inserted: show-dialog.txt @ 27/01/2015 12:50:00 [Repeat: 1 MINUTE]
+[INFO ] (27/01/2015 12:49:45): SimpleCron Stopped!
+[INFO ] (27/01/2015 12:49:45): SimpleCron Started!
+[DEBUG] (27/01/2015 12:49:45): Timeouts Saved!
+[INFO ] (27/01/2015 12:49:45): Schedule Added
+[INFO ] (27/01/2015 12:50:04): SimpleCron Stopped!
+[INFO ] (27/01/2015 12:50:07): SimpleCron Started!
+[ERROR] (27/01/2015 12:50:07): Edit Canceled
+[INFO ] (27/01/2015 12:50:09): SimpleCron Stopped!
+[DEBUG] (27/01/2015 12:50:17): Timeouts Saved!
+[INFO ] (27/01/2015 12:50:17): SimpleCron Started!
+[INFO ] (27/01/2015 12:50:17): Schedule Edited
+[DEBUG] (27/01/2015 12:55:38): Timeouts Loaded!
+[INFO ] (27/01/2015 12:55:38): SimpleCron Started!
+[DEBUG] (27/01/2015 12:55:38): Schedule Removed: show-dialog.txt @ 27/01/2015 12:51:00 [Repeat: disabled]
+[INFO ] (27/01/2015 12:55:38): Timeouts Started!
+[DEBUG] (27/01/2015 12:56:09): Job inserted: show-dialog.txt @ 27/01/2015 12:56:30 [Repeat: 1 MINUTE]
+[INFO ] (27/01/2015 12:56:09): SimpleCron Stopped!
+[INFO ] (27/01/2015 12:56:09): SimpleCron Started!
+[DEBUG] (27/01/2015 12:56:09): Timeouts Saved!
+[INFO ] (27/01/2015 12:56:09): Schedule Added
+[INFO ] (27/01/2015 12:56:38): SimpleCron Stopped!
+[DEBUG] (27/01/2015 12:56:44): Timeouts Saved!
+[INFO ] (27/01/2015 12:56:44): SimpleCron Started!
+[INFO ] (27/01/2015 12:56:44): Schedule Edited
+[DEBUG] (27/01/2015 12:58:17): Job inserted: show-dialog.txt @ 27/01/2015 12:59:00 [Repeat: 1 MINUTE]
+[INFO ] (27/01/2015 12:58:17): SimpleCron Stopped!
+[INFO ] (27/01/2015 12:58:17): SimpleCron Started!
+[DEBUG] (27/01/2015 12:58:17): Timeouts Saved!
+[INFO ] (27/01/2015 12:58:17): Schedule Added
+[DEBUG] (27/01/2015 12:59:53): Timeouts Loaded!
+[INFO ] (27/01/2015 12:59:53): SimpleCron Started!
+[INFO ] (27/01/2015 12:59:53): Timeouts Started!
+[INFO ] (27/01/2015 13:03:05): SimpleCron Stopped!
+[DEBUG] (27/01/2015 13:03:05): Timeouts Saved!
+[INFO ] (27/01/2015 13:03:05): SimpleCron Started!
+[INFO ] (27/01/2015 13:03:05): Schedule Removed
+[DEBUG] (27/01/2015 13:09:37): Timeouts Loaded!
+[INFO ] (27/01/2015 13:09:37): SimpleCron Started!
+[INFO ] (27/01/2015 13:09:37): Timeouts Started!
+[DEBUG] (27/01/2015 13:09:58): Timeouts Loaded!
+[INFO ] (27/01/2015 13:09:58): SimpleCron Started!
+[INFO ] (27/01/2015 13:09:58): Timeouts Started!
+[DEBUG] (27/01/2015 13:12:31): Timeouts Loaded!
+[INFO ] (27/01/2015 13:12:31): SimpleCron Started!
+[INFO ] (27/01/2015 13:12:31): Timeouts Started!
+[DEBUG] (27/01/2015 13:24:22): Timeouts Loaded!
+[INFO ] (27/01/2015 13:24:22): SimpleCron Started!
+[INFO ] (27/01/2015 13:24:22): Timeouts Started!
+[DEBUG] (27/01/2015 13:32:43): Timeouts Loaded!
+[INFO ] (27/01/2015 13:32:43): SimpleCron Started!
+[INFO ] (27/01/2015 13:32:43): Timeouts Started!
+[DEBUG] (27/01/2015 13:33:15): Job inserted: show-dialog.txt @ 27/01/2015 13:33:30 [Repeat: 1 MINUTE]
+[INFO ] (27/01/2015 13:33:15): SimpleCron Stopped!
+[INFO ] (27/01/2015 13:33:15): SimpleCron Started!
+[DEBUG] (27/01/2015 13:33:15): Timeouts Saved!
+[INFO ] (27/01/2015 13:33:15): Schedule Added
+[INFO ] (27/01/2015 13:34:10): SimpleCron Stopped!
+[DEBUG] (27/01/2015 13:34:16): Timeouts Saved!
+[INFO ] (27/01/2015 13:34:16): SimpleCron Started!
+[INFO ] (27/01/2015 13:34:16): Schedule Edited
+[INFO ] (27/01/2015 13:34:36): SimpleCron Stopped!
+[DEBUG] (27/01/2015 13:34:38): Timeouts Saved!
+[INFO ] (27/01/2015 13:34:38): SimpleCron Started!
+[INFO ] (27/01/2015 13:34:38): Schedule Edited
+[INFO ] (27/01/2015 13:35:40): SimpleCron Stopped!
+[DEBUG] (27/01/2015 13:35:52): Timeouts Saved!
+[INFO ] (27/01/2015 13:35:52): SimpleCron Started!
+[INFO ] (27/01/2015 13:35:52): Schedule Edited
+[ERROR] (27/01/2015 13:37:35): No Schedule Selected
+[ERROR] (27/01/2015 13:37:38): No Schedule Selected
+[DEBUG] (27/01/2015 14:42:25): Timeouts Loaded!
+[INFO ] (27/01/2015 14:42:25): SimpleCron Started!
+[DEBUG] (27/01/2015 14:42:25): Schedule Removed: show-dialog.txt @ 27/01/2015 13:37:30 [Repeat: disabled]
+[INFO ] (27/01/2015 14:42:25): Timeouts Started!
+[INFO ] (27/01/2015 14:42:33): SimpleCron Stopped!
+[INFO ] (27/01/2015 14:42:33): SimpleCron Started!
+[DEBUG] (27/01/2015 14:42:33): Timeouts Saved!
+[INFO ] (27/01/2015 14:42:33): SimpleCron Stopped!
+[DEBUG] (27/01/2015 14:42:48): Timeouts Loaded!
+[INFO ] (27/01/2015 14:42:48): SimpleCron Started!
+[INFO ] (27/01/2015 14:42:48): Timeouts Started!
+[INFO ] (27/01/2015 14:43:22): SimpleCron Stopped!
+[INFO ] (27/01/2015 14:43:22): SimpleCron Started!
+[DEBUG] (27/01/2015 14:43:22): Timeouts Saved!
+[INFO ] (27/01/2015 14:43:22): SimpleCron Stopped!
+[DEBUG] (27/01/2015 14:44:12): Timeouts Loaded!
+[INFO ] (27/01/2015 14:44:12): SimpleCron Started!
+[INFO ] (27/01/2015 14:44:12): Timeouts Started!
+[INFO ] (27/01/2015 14:44:21): SimpleCron Stopped!
+[INFO ] (27/01/2015 14:44:21): SimpleCron Started!
+[DEBUG] (27/01/2015 14:44:21): Timeouts Saved!
+[INFO ] (27/01/2015 14:44:21): SimpleCron Stopped!
+[DEBUG] (27/01/2015 14:46:32): Timeouts Loaded!
+[INFO ] (27/01/2015 14:46:32): SimpleCron Started!
+[INFO ] (27/01/2015 14:46:32): Timeouts Started!
+[INFO ] (27/01/2015 14:46:48): SimpleCron Stopped!
+[INFO ] (27/01/2015 14:46:48): SimpleCron Started!
+[DEBUG] (27/01/2015 14:46:48): Timeouts Saved!
+[INFO ] (27/01/2015 14:46:48): SimpleCron Stopped!
+[DEBUG] (27/01/2015 14:47:49): Timeouts Loaded!
+[INFO ] (27/01/2015 14:47:49): SimpleCron Started!
+[INFO ] (27/01/2015 14:47:49): Timeouts Started!
+[INFO ] (27/01/2015 14:48:14): SimpleCron Stopped!
+[INFO ] (27/01/2015 14:48:14): SimpleCron Started!
+[DEBUG] (27/01/2015 14:48:14): Timeouts Saved!
+[INFO ] (27/01/2015 14:48:14): SimpleCron Stopped!
+[DEBUG] (27/01/2015 14:48:22): Timeouts Loaded!
+[INFO ] (27/01/2015 14:48:22): SimpleCron Started!
+[INFO ] (27/01/2015 14:48:22): Timeouts Started!
+[INFO ] (27/01/2015 14:48:51): SimpleCron Stopped!
+[INFO ] (27/01/2015 14:48:51): SimpleCron Started!
+[DEBUG] (27/01/2015 14:48:51): Timeouts Saved!
+[INFO ] (27/01/2015 14:48:51): SimpleCron Stopped!
+[DEBUG] (27/01/2015 14:48:58): Timeouts Loaded!
+[INFO ] (27/01/2015 14:48:58): SimpleCron Started!
+[INFO ] (27/01/2015 14:48:58): Timeouts Started!
+[DEBUG] (27/01/2015 14:51:25): Timeouts Loaded!
+[INFO ] (27/01/2015 14:51:25): SimpleCron Started!
+[INFO ] (27/01/2015 14:51:25): Timeouts Started!
+[INFO ] (27/01/2015 14:51:36): SimpleCron Stopped!
+[INFO ] (27/01/2015 14:51:36): SimpleCron Started!
+[DEBUG] (27/01/2015 14:51:36): Timeouts Saved!
+[INFO ] (27/01/2015 14:51:36): SimpleCron Stopped!
+[DEBUG] (27/01/2015 14:51:40): Timeouts Loaded!
+[INFO ] (27/01/2015 14:51:40): SimpleCron Started!
+[INFO ] (27/01/2015 14:51:40): Timeouts Started!
+[INFO ] (27/01/2015 14:51:57): SimpleCron Stopped!
+[INFO ] (27/01/2015 14:51:57): SimpleCron Started!
+[DEBUG] (27/01/2015 14:51:57): Timeouts Saved!
+[INFO ] (27/01/2015 14:51:57): SimpleCron Stopped!
+[DEBUG] (27/01/2015 14:54:30): Timeouts Loaded!
+[INFO ] (27/01/2015 14:54:30): SimpleCron Started!
+[INFO ] (27/01/2015 14:54:30): Timeouts Started!
+[DEBUG] (27/01/2015 14:59:16): Timeouts Loaded!
+[INFO ] (27/01/2015 14:59:16): SimpleCron Started!
+[INFO ] (27/01/2015 14:59:16): Timeouts Started!
+[DEBUG] (27/01/2015 15:17:05): Timeouts Loaded!
+[INFO ] (27/01/2015 15:17:05): SimpleCron Started!
+[INFO ] (27/01/2015 15:17:05): Timeouts Started!
+[INFO ] (27/01/2015 15:17:11): SimpleCron Stopped!
+[INFO ] (27/01/2015 15:17:11): SimpleCron Started!
+[DEBUG] (27/01/2015 15:17:11): Timeouts Saved!
+[INFO ] (27/01/2015 15:17:11): SimpleCron Stopped!
+[DEBUG] (27/01/2015 15:17:59): Timeouts Loaded!
+[INFO ] (27/01/2015 15:17:59): SimpleCron Started!
+[INFO ] (27/01/2015 15:17:59): Timeouts Started!
+[INFO ] (27/01/2015 15:18:02): SimpleCron Stopped!
+[INFO ] (27/01/2015 15:18:02): SimpleCron Started!
+[DEBUG] (27/01/2015 15:18:02): Timeouts Saved!
+[INFO ] (27/01/2015 15:18:02): SimpleCron Stopped!
+[DEBUG] (27/01/2015 15:18:24): Timeouts Loaded!
+[INFO ] (27/01/2015 15:18:24): SimpleCron Started!
+[INFO ] (27/01/2015 15:18:24): Timeouts Started!
+[INFO ] (27/01/2015 15:18:27): SimpleCron Stopped!
+[INFO ] (27/01/2015 15:18:27): SimpleCron Started!
+[DEBUG] (27/01/2015 15:18:27): Timeouts Saved!
+[INFO ] (27/01/2015 15:18:27): SimpleCron Stopped!
+[DEBUG] (27/01/2015 15:19:02): Timeouts Loaded!
+[INFO ] (27/01/2015 15:19:02): SimpleCron Started!
+[INFO ] (27/01/2015 15:19:02): Timeouts Started!
+[INFO ] (27/01/2015 15:19:08): SimpleCron Stopped!
+[INFO ] (27/01/2015 15:19:08): SimpleCron Started!
+[DEBUG] (27/01/2015 15:19:08): Timeouts Saved!
+[INFO ] (27/01/2015 15:19:08): SimpleCron Stopped!
+[DEBUG] (27/01/2015 15:19:16): Timeouts Loaded!
+[INFO ] (27/01/2015 15:19:16): SimpleCron Started!
+[INFO ] (27/01/2015 15:19:16): Timeouts Started!
+[ERROR] (27/01/2015 15:19:41): Invalid Schedule
+[DEBUG] (27/01/2015 15:22:25): Timeouts Loaded!
+[INFO ] (27/01/2015 15:22:25): SimpleCron Started!
+[INFO ] (27/01/2015 15:22:25): Timeouts Started!
+[DEBUG] (27/01/2015 15:23:02): Job inserted: show-dialog.txt @ 27/01/2015 15:24:00 [Repeat: 1 MINUTE]
+[INFO ] (27/01/2015 15:23:02): SimpleCron Stopped!
+[INFO ] (27/01/2015 15:23:02): SimpleCron Started!
+[DEBUG] (27/01/2015 15:23:02): Timeouts Saved!
+[INFO ] (27/01/2015 15:23:02): Schedule Added
+[INFO ] (27/01/2015 15:23:11): SimpleCron Stopped!
+[INFO ] (27/01/2015 15:23:14): SimpleCron Started!
+[ERROR] (27/01/2015 15:23:14): Edit Canceled
+[INFO ] (27/01/2015 15:24:27): SimpleCron Stopped!
+[DEBUG] (27/01/2015 15:24:30): Timeouts Saved!
+[INFO ] (27/01/2015 15:24:30): SimpleCron Started!
+[INFO ] (27/01/2015 15:24:30): Schedule Edited
+[INFO ] (27/01/2015 15:25:03): Running Script...
+[INFO ] (27/01/2015 15:25:03): SimpleCron Stopped!
+[INFO ] (27/01/2015 15:25:05): SimpleCron Started!
+[INFO ] (27/01/2015 15:25:05): Execution Finished
+[DEBUG] (27/01/2015 15:28:24): Timeouts Loaded!
+[INFO ] (27/01/2015 15:28:24): SimpleCron Started!
+[INFO ] (27/01/2015 15:28:24): Timeouts Started!
+[INFO ] (27/01/2015 15:28:31): SimpleCron Stopped!
+[DEBUG] (27/01/2015 15:28:35): Timeouts Saved!
+[INFO ] (27/01/2015 15:28:35): SimpleCron Started!
+[INFO ] (27/01/2015 15:28:35): Schedule Edited
+[INFO ] (27/01/2015 15:29:26): SimpleCron Stopped!
+[DEBUG] (27/01/2015 15:29:26): Timeouts Saved!
+[INFO ] (27/01/2015 15:29:26): SimpleCron Started!
+[INFO ] (27/01/2015 15:29:26): Schedule Removed
+[INFO ] (27/01/2015 15:29:30): SimpleCron Stopped!
+[INFO ] (27/01/2015 15:29:30): SimpleCron Started!
+[DEBUG] (27/01/2015 15:29:30): Timeouts Saved!
+[INFO ] (27/01/2015 15:29:30): SimpleCron Stopped!

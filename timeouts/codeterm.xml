@@ -1,0 +1,19 @@
+<us.pserver.coder.CodetermConfig>
+  <text color-rgb="180,255,180"/>
+  <textBG color-rgb="100,100,100"/>
+  <textSelect color-rgb="220,220,220"/>
+  <lines color-rgb="0,0,0"/>
+  <linesBG color-rgb="220,220,220"/>
+  <status color-rgb="255,255,255"/>
+  <statusBG color-rgb="100,100,100"/>
+  <statusWarn color-rgb="255,255,0"/>
+  <textFont family="FreeMono" size="18"/>
+  <statusFont family="Monospaced" size="12"/>
+  <position>
+    <x>1178</x>
+    <y>313</y>
+    <width>582</width>
+    <height>595</height>
+  </position>
+  <lastFile>/home/juno/show-dialog.txt</lastFile>
+</us.pserver.coder.CodetermConfig>

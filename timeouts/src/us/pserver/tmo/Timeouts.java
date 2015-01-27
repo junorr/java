@@ -33,6 +33,7 @@ import us.pserver.log.SimpleLog;
 import us.pserver.scronv6.hide.Pair;
 import us.pserver.scronv6.SCronV6;
 import us.pserver.scron.Schedule;
+import us.pserver.scron.SimpleCron;
 
 /**
  *
@@ -46,7 +47,7 @@ public class Timeouts implements ParserListener {
       CONF_FILE = "timeouts.xml";
 
   
-  private final SCronV6 cron;
+  private final SimpleCron cron;
   
   private SimpleLog log;
   
@@ -56,7 +57,7 @@ public class Timeouts implements ParserListener {
   
   
   public Timeouts() {
-    cron = new SCronV6();
+    cron = new SimpleCron();
     log = new SimpleLog(LOG_FILE);
     cron.setLogger(log)
         .setLogEnabled(true);
@@ -70,7 +71,7 @@ public class Timeouts implements ParserListener {
   }
   
   
-  public SCronV6 getCron() {
+  public SimpleCron getCron() {
     return cron;
   }
   
@@ -98,7 +99,7 @@ public class Timeouts implements ParserListener {
   }
   
   
-  private Pair set(Pair p) {
+  protected Pair set(Pair p) {
     if(p == null 
         || p.job() == null ||
         !(p.job() instanceof ScriptJob))
@@ -152,7 +153,6 @@ public class Timeouts implements ParserListener {
     this.save();
     cron.stop();
     log.close().clearOutputs();
-    log = null;
     log.info("Timeouts Stopped!");
   }
   

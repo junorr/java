@@ -36,7 +36,8 @@ public class NewJobDialog extends javax.swing.JDialog {
   public ScriptPair getJobPair() {
     if(sched == null || script == null)
       return null;
-    return new ScriptPair(sched, new ScriptJob(script));
+    return new ScriptPair(sched, new ScriptJob(script)
+        .setEnabled(enabledBox.isSelected()));
   }
   
   
@@ -45,6 +46,7 @@ public class NewJobDialog extends javax.swing.JDialog {
         || pair.job() == null) return;
     sched = pair.schedule();
     script = pair.job().getScriptPath().toString();
+    enabledBox.setSelected(pair.job().isEnabled());
     schedInput.setText(sched.toString());
     scriptInput.setText(script);
   }
@@ -81,6 +83,7 @@ public class NewJobDialog extends javax.swing.JDialog {
     jPanel1 = new javax.swing.JPanel();
     cancelButton = new javax.swing.JButton();
     okButton = new javax.swing.JButton();
+    enabledBox = new javax.swing.JCheckBox();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     setTitle("Job Configuration");
@@ -106,7 +109,7 @@ public class NewJobDialog extends javax.swing.JDialog {
 
     scriptInput.setFont(new java.awt.Font("Monospaced", 0, 11)); // NOI18N
 
-    schedButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/tmo/imgs/timer-blue-20.png"))); // NOI18N
+    schedButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/us/pserver/tmo/imgs/hourglass-icon-20.png"))); // NOI18N
     schedButton.setToolTipText("Create a Schedule");
     schedButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -153,10 +156,14 @@ public class NewJobDialog extends javax.swing.JDialog {
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
 
+    enabledBox.setSelected(true);
+    enabledBox.setText("Enabled");
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
       .addGroup(layout.createSequentialGroup()
         .addGap(14, 14, 14)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -164,14 +171,17 @@ public class NewJobDialog extends javax.swing.JDialog {
           .addComponent(jLabel2))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(scriptInput, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-          .addComponent(schedInput))
+          .addComponent(schedInput, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
+          .addComponent(scriptInput))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(schedButton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(scriptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(scriptButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addContainerGap())
-      .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(enabledBox)
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -186,8 +196,10 @@ public class NewJobDialog extends javax.swing.JDialog {
           .addComponent(schedInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jLabel2)
           .addComponent(schedButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(enabledBox)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
     );
 
     pack();
@@ -230,6 +242,7 @@ public class NewJobDialog extends javax.swing.JDialog {
     this.dispose();
   }//GEN-LAST:event_okButtonActionPerformed
 
+  
   /**
    * @param args the command line arguments
    */
@@ -263,6 +276,7 @@ public class NewJobDialog extends javax.swing.JDialog {
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton cancelButton;
+  private javax.swing.JCheckBox enabledBox;
   private javax.swing.JLabel jLabel1;
   private javax.swing.JLabel jLabel2;
   private javax.swing.JPanel jPanel1;

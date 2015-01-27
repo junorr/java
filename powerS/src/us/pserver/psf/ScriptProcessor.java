@@ -37,7 +37,7 @@ import us.pserver.psf.func.IOLib;
 import us.pserver.psf.func.StrLib;
 import us.pserver.psf.func.TN3270Lib;
 import us.pserver.psf.func.UILib;
-import us.pserver.scronv6.SCronV6;
+import us.pserver.scron.SCron;
 
 /**
  *
@@ -65,12 +65,12 @@ public class ScriptProcessor {
   }
   
   
-  public ScriptProcessor(SCronV6 cron) {
+  public ScriptProcessor(SCron cron) {
     init(cron);
   }
   
   
-  private void init(SCronV6 cron) {
+  private void init(SCron cron) {
     fs = new BasicIO();
     FSFastExtension funcs = new FSFastExtension();
     FSReflectionExtension ref = new FSReflectionExtension();

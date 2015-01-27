@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes SISBB</div>
+  	
+  	<div class="method">
+  		settext( int lin, int col, string txt )
+  	</div>
+  	
+  	<div class="desc">
+  		Define um texto na posicao indicada	no terminal.<br/>
+  		<i>Argumentos:</i>
+  		<ul>
+  			<li>lin - Linha da posicao do terminal</li>
+  			<li>col - Coluna da posicao do terminal</li>
+  			<li>txt - Texto a ser definido</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+ 		string s = "pessoal"<br/>
+ 		settext( 16, 14, s )
+ 	</div>
+ 		
+  </body>
+ </html>
+      

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.concurrent.locks.ReentrantLock;
 import murlen.util.fscript.FSException;
 import us.pserver.psf.ScriptProcessor;
+import us.pserver.scron.SimpleCron;
 import us.pserver.scronv6.SCronV6;
 
 /**
@@ -34,7 +35,7 @@ import us.pserver.scronv6.SCronV6;
  */
 public class ScriptExecutor {
 
-  private SCronV6 cron;
+  private SimpleCron cron;
   
   private ScriptProcessor proc;
   
@@ -44,14 +45,14 @@ public class ScriptExecutor {
   
   
   public ScriptExecutor() {
-    cron = new SCronV6();
+    cron = new SimpleCron();
     proc = new ScriptProcessor(cron);
     lock = new ReentrantLock();
     doneAction = null;
   }
   
   
-  public ScriptExecutor(SCronV6 cron) {
+  public ScriptExecutor(SimpleCron cron) {
     if(cron == null)
       throw new IllegalArgumentException(
           "Invalid SCronV6: "+ cron);

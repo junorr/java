@@ -41,6 +41,8 @@ public class ScriptJob implements Job, ParserListener {
   
   private transient ScriptExecutor exec;
   
+  private boolean enabled;
+  
   
   public ScriptJob(String file) {
     if(file == null)
@@ -49,6 +51,7 @@ public class ScriptJob implements Job, ParserListener {
     scpath = file;
     exec = null;
     this.createLog();
+    enabled = true;
   }
   
   
@@ -59,6 +62,7 @@ public class ScriptJob implements Job, ParserListener {
     scpath = null;
     exec = se;
     this.createLog();
+    enabled = true;
   }
   
   
@@ -68,6 +72,29 @@ public class ScriptJob implements Job, ParserListener {
       throw new IllegalArgumentException(
           "Invalid Script File: "+ file);
     scpath = file;
+  }
+  
+  
+  public ScriptJob enable() {
+    enabled = true;
+    return this;
+  }
+  
+  
+  public ScriptJob disable() {
+    enabled = false;
+    return this;
+  }
+  
+  
+  public boolean isEnabled() {
+    return enabled;
+  }
+  
+  
+  public ScriptJob setEnabled(boolean en) {
+    enabled = en;
+    return this;
   }
   
   
@@ -97,13 +124,14 @@ public class ScriptJob implements Job, ParserListener {
 
   @Override
   public void execute(ExecutionContext context) throws Exception {
-    if(log == null) createLog();
-    
-    Object ret = exec.exec(scpath);
-    if(ret != null) 
-      log.debug("Exution Finished [Return: "+ ret+ "]!");
-    else
-      log.debug("Exution Finished!");
+    if(enabled) {
+      if(log == null) createLog();
+      Object ret = exec.exec(scpath);
+      if(ret != null) 
+        log.debug("Exution Finished [Return: "+ ret+ "]!");
+      else
+        log.debug("Exution Finished!");
+    }
     exec.execDone();
   }
 
@@ -128,7 +156,7 @@ public class ScriptJob implements Job, ParserListener {
   public String toString() {
     Path p = this.getScriptPath();
     if(p == null) return scpath;
-    return p.getFileName().toString();
+    return (enabled ? "" : "! ") + p.getFileName().toString();
   }
   
 }

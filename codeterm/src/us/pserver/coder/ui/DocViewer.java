@@ -63,7 +63,7 @@ public class DocViewer extends Frame {
   public static final Icon 
       ICON_CLOSE = new ImageIcon(
           DocViewer.class.getResource(
-              "../images/close-16.png"));
+              "/us/pserver/coder/images/close-16.png"));
   
   public static final String
       FILE = "file:///";

@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Data</div>
+  	
+  	<div class="method">
+  		addhour( object date, int nr )
+  	</div>
+  	
+  	<div class="desc">
+  		Acrescenta <i>nr</i> horas na data <i>date</i>.<br/> 
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>date - Data que sera adiantada</li>
+  			<li>nr - Numero de dias a acrescidos</li>
+  			<li>return - Nova data acrescida em <i>nr</i> dias</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+ 			object hoje = date( "31/03/2014 12:00:00" )<br/>
+ 			object tarde = addhour( hoje, 1 )<br/>
+ 			print( "Tarde sera " + tarde )<br/>
+ 			<span class="comment">
+				# Imprime no console
+			</span><br/>
+ 			&gt;&nbsp;Tarde sera 31/03/2014 13:00:00
+ 		</div>
+ 		
+  </body>
+ </html>
+      

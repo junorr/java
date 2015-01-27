@@ -235,7 +235,7 @@ public class RemoteObject {
       res.setSuccessOperation(false);
     }
     
-    if(!channel.isValid())
+    if(channel != null && !channel.isValid())
         channel.close();
     
     return res;
@@ -311,7 +311,7 @@ public class RemoteObject {
       res.setSuccessOperation(false);
     }
     
-    if(!channel.isValid())
+    if(channel != null && !channel.isValid())
         channel.close();
     
     return res;
@@ -351,7 +351,12 @@ public class RemoteObject {
         IllegalStateException(
         "Invalid Null NetConnector");
     
-    this.channel();
+    try {
+      this.channel();
+    } catch(RuntimeException e) {
+      throw new IOException(e.toString(), e);
+    }
+    
     try {
       channel.write(trp);
     } catch(IOException e) {

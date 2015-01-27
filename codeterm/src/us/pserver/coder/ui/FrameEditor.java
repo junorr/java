@@ -80,6 +80,7 @@ public class FrameEditor extends javax.swing.JFrame {
     editor.setForeground(DEF_EDITOR_FG);
     editor.setSelectionColor(DEF_SELECT_COLOR);
     lnp = new LineNumberPanel(editor);
+    /*
     editor.setText("codeterm\n" +
         "codeterm\n" +
         "codeterm\n" +
@@ -94,6 +95,7 @@ public class FrameEditor extends javax.swing.JFrame {
         "if eq(str, CONSTANT)\n" +
         "  print(CONSTANT)\n" +
         "endif\n");
+    */
     replace = new ReplaceDialog(this, editor);
     copy = new TextCopy();
     lastFile = null;
@@ -220,10 +222,12 @@ public class FrameEditor extends javax.swing.JFrame {
     conf.setTextSelectionColor(editor.getSelectionColor());
     conf.setTextBgColor(editor.getBackground());
     conf.setTextFont(editor.getFont());
-    Rectangle r = new Rectangle();
-    r.setSize(this.getSize());
-    r.setLocation(this.getLocationOnScreen());
-    conf.setPosition(r);
+    if(this.isShowing()) {
+      Rectangle r = new Rectangle();
+      r.setSize(this.getSize());
+      r.setLocation(this.getLocationOnScreen());
+      conf.setPosition(r);
+    }
     conf.setLastFile(lastFile);
   }
   

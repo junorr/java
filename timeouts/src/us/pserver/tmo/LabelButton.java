@@ -70,9 +70,6 @@ public class LabelButton extends JLabel
         repaint();
       }
     };
-    clickAction = ()->{
-      System.out.println("* LabelButton clicked!");
-    };
   }
   
   

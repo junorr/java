@@ -27,7 +27,8 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Component id="jPanel1" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
@@ -35,17 +36,21 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="scriptInput" pref="260" max="32767" attributes="0"/>
-                  <Component id="schedInput" max="32767" attributes="0"/>
+                  <Component id="schedInput" pref="251" max="32767" attributes="0"/>
+                  <Component id="scriptInput" max="32767" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="schedButton" alignment="0" min="-2" pref="46" max="-2" attributes="0"/>
-                  <Component id="scriptButton" alignment="0" min="-2" pref="46" max="-2" attributes="0"/>
+                  <Component id="schedButton" min="-2" pref="46" max="-2" attributes="0"/>
+                  <Component id="scriptButton" alignment="1" min="-2" pref="46" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
-          <Component id="jPanel1" max="32767" attributes="0"/>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="enabledBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -54,7 +59,7 @@
               <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="scriptButton" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                  <Component id="scriptButton" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
                   <Component id="scriptInput" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -63,8 +68,10 @@
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="schedButton" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jPanel1" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="enabledBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -118,7 +125,7 @@
     <Component class="javax.swing.JButton" name="schedButton">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/us/pserver/tmo/imgs/timer-blue-20.png"/>
+          <Image iconType="3" name="/us/pserver/tmo/imgs/hourglass-icon-20.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Create a Schedule"/>
       </Properties>
@@ -183,5 +190,11 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JCheckBox" name="enabledBox">
+      <Properties>
+        <Property name="selected" type="boolean" value="true"/>
+        <Property name="text" type="java.lang.String" value="Enabled"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>

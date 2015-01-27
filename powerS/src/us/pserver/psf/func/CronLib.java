@@ -29,6 +29,7 @@ import murlen.util.fscript.FSFastExtension;
 import murlen.util.fscript.FSFunctionExtension;
 import murlen.util.fscript.FSUnsupportedException;
 import us.pserver.date.SimpleDate;
+import us.pserver.scron.SCron;
 import us.pserver.scronv6.SCronV6;
 import us.pserver.scron.Schedule;
 
@@ -45,7 +46,7 @@ public class CronLib implements FSFunctionExtension {
   
   private BasicIO script;
   
-  private SCronV6 cron;
+  private SCron cron;
   
   
   public CronLib(BasicIO bio) {
@@ -57,7 +58,7 @@ public class CronLib implements FSFunctionExtension {
   }
   
   
-  public CronLib(BasicIO bio, SCronV6 cron) {
+  public CronLib(BasicIO bio, SCron cron) {
     if(bio == null)
       throw new IllegalArgumentException(
           "Invalid BasicIO ["+ bio+ "]");
@@ -66,15 +67,15 @@ public class CronLib implements FSFunctionExtension {
   }
   
   
-  public SCronV6 getCron() {
+  public SCron getCron() {
     return cron;
   }
   
   
-  public CronLib setCron(SCronV6 cron) {
+  public CronLib setCron(SCron cron) {
     if(cron == null)
       throw new IllegalArgumentException(
-          "Invalid SCronV6 ["+ cron+ "]");
+          "Invalid SCron ["+ cron+ "]");
     this.cron = cron;
     return this;
   }

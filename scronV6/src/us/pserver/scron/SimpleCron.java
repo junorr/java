@@ -222,14 +222,16 @@ public class SimpleCron extends AbstractCron {
             .isCountdownBeteewn(0, MIN_DELAY)) {
           
           jobs.list().remove(pair);
-          execJob(pair);
+          
           
           if(pair.schedule().isRepeatEnabled()) {
             Schedule s = pair.schedule().clone();
             s.reeschedule();
             jobs.list().put(new Pair(s, pair.job()));
+            //pair.schedule().reeschedule();
             jobs.sort();
           }
+          execJob(pair);
         }
         
         else if(pair.schedule().getCountdown() < 0) {
