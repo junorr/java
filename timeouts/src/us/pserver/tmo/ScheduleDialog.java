@@ -54,9 +54,9 @@ public class ScheduleDialog extends JDialog {
     else {
       date = sd;
       dateField.setText(date.format(SimpleDate.DDMMYYYY_SLASH));
-      hourSpin.setValue(date.hour());
-      minSpin.setValue(date.minute());
-      secSpin.setValue(date.second());
+      hourBox.setSelectedIndex(date.hour());
+      minBox.setSelectedIndex(date.minute());
+      secBox.setSelectedIndex(date.second());
       sched.startAt(date);
     }
     return this;
@@ -104,10 +104,37 @@ public class ScheduleDialog extends JDialog {
     }
     else {
       date = sd;
-      date.hour((int) hourSpin.getValue())
-          .minute((int) minSpin.getValue())
-          .second((int) secSpin.getValue());
+      date.hour(getHour())
+          .minute(getMin())
+          .second(getSec());
       sched.setDate(date);
+    }
+  }
+  
+  
+  private int getSec() {
+    try {
+      return Integer.parseInt(secBox.getSelectedItem().toString());
+    } catch(Exception e) {
+      return -1;
+    }
+  }
+  
+  
+  private int getMin() {
+    try {
+      return Integer.parseInt(minBox.getSelectedItem().toString());
+    } catch(Exception e) {
+      return -1;
+    }
+  }
+  
+  
+  private int getHour() {
+    try {
+      return Integer.parseInt(hourBox.getSelectedItem().toString());
+    } catch(Exception e) {
+      return -1;
     }
   }
   
@@ -131,9 +158,9 @@ public class ScheduleDialog extends JDialog {
     
     dateField.setText(date.format(
         SimpleDate.DDMMYYYY_SLASH));
-    hourSpin.setValue(date.hour());
-    minSpin.setValue(date.minute());
-    secSpin.setValue(date.second());
+    hourBox.setSelectedIndex(date.hour());
+    minBox.setSelectedIndex(date.minute());
+    secBox.setSelectedIndex(date.second());
     
     if(sched.isRepeatEnabled()) {
       intervalSpin.setEnabled(true);
@@ -168,11 +195,11 @@ public class ScheduleDialog extends JDialog {
     calendarButton = new javax.swing.JButton();
     jPanel2 = new javax.swing.JPanel();
     jLabel4 = new javax.swing.JLabel();
-    hourSpin = new TimeSpin(date.hour(), 0, 23);
     jLabel5 = new javax.swing.JLabel();
-    minSpin = new TimeSpin(date.minute(), 0, 59);
     jLabel6 = new javax.swing.JLabel();
-    secSpin = new TimeSpin(date.second(), 0, 59);
+    secBox = new javax.swing.JComboBox();
+    minBox = new javax.swing.JComboBox();
+    hourBox = new javax.swing.JComboBox();
     jPanel3 = new javax.swing.JPanel();
     repeatCheck = new javax.swing.JCheckBox();
     intervalSpin = new TimeSpin(1, 1, 100);
@@ -186,9 +213,9 @@ public class ScheduleDialog extends JDialog {
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     setTitle("Set Schedule");
-    setIconImage(new ImageIcon(getClass().getResource("/us/pserver/tmo/imgs/timer-blue-32.png")).getImage());
+    setIconImage(new ImageIcon(getClass().getResource("/us/pserver/tmo/imgs/hourglass-icon-32.png")).getImage());
 
-    jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Date", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("sansserif", 1, 12), new java.awt.Color(0, 51, 102))); // NOI18N
+    jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Date", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("DejaVu Sans", 1, 12), new java.awt.Color(0, 51, 102))); // NOI18N
 
     dateField.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
     dateField.setToolTipText("Date: dd/mm/aaaa");
@@ -221,15 +248,19 @@ public class ScheduleDialog extends JDialog {
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
 
-    jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Time", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("sansserif", 1, 12), new java.awt.Color(0, 51, 102))); // NOI18N
+    jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Time", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("DejaVu Sans", 1, 12), new java.awt.Color(0, 51, 102))); // NOI18N
 
     jLabel4.setText("Hour");
-
-    hourSpin.setToolTipText("");
 
     jLabel5.setText("Minutes");
 
     jLabel6.setText("Seconds");
+
+    secBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "00", " " }));
+
+    minBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "00" }));
+
+    hourBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "00" }));
 
     javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
     jPanel2.setLayout(jPanel2Layout);
@@ -238,16 +269,19 @@ public class ScheduleDialog extends JDialog {
       .addGroup(jPanel2Layout.createSequentialGroup()
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(jLabel4)
-          .addComponent(hourSpin, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addGap(18, 18, 18)
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addComponent(jLabel4)
+            .addGap(36, 36, 36))
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addComponent(hourBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(18, 18, 18)))
         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(jLabel5)
-          .addComponent(minSpin, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(minBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addGap(18, 18, 18)
         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(jLabel6)
-          .addComponent(secSpin, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(secBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
     jPanel2Layout.setVerticalGroup(
@@ -259,13 +293,13 @@ public class ScheduleDialog extends JDialog {
           .addComponent(jLabel6))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(hourSpin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(minSpin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-          .addComponent(secSpin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+          .addComponent(secBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(minBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(hourBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addContainerGap(10, Short.MAX_VALUE))
     );
 
-    jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Repeat", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("sansserif", 1, 12), new java.awt.Color(0, 51, 102))); // NOI18N
+    jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Repeat", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("DejaVu Sans", 1, 12), new java.awt.Color(0, 51, 102))); // NOI18N
 
     repeatCheck.setText("Repeat Enabled");
     repeatCheck.addActionListener(new java.awt.event.ActionListener() {
@@ -352,7 +386,7 @@ public class ScheduleDialog extends JDialog {
       jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
         .addComponent(schedBar, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -457,7 +491,7 @@ public class ScheduleDialog extends JDialog {
   private javax.swing.JButton calendarButton;
   private javax.swing.JButton cancelButton;
   private javax.swing.JTextField dateField;
-  private javax.swing.JSpinner hourSpin;
+  private javax.swing.JComboBox hourBox;
   private javax.swing.JLabel intervalLabel;
   private javax.swing.JSpinner intervalSpin;
   private javax.swing.JLabel jLabel4;
@@ -467,11 +501,11 @@ public class ScheduleDialog extends JDialog {
   private javax.swing.JPanel jPanel2;
   private javax.swing.JPanel jPanel3;
   private javax.swing.JPanel jPanel4;
-  private javax.swing.JSpinner minSpin;
+  private javax.swing.JComboBox minBox;
   private javax.swing.JButton okButton;
   private javax.swing.JCheckBox repeatCheck;
   private javax.swing.JLabel schedBar;
-  private javax.swing.JSpinner secSpin;
+  private javax.swing.JComboBox secBox;
   private javax.swing.JComboBox tmUnitCombo;
   private javax.swing.JLabel tmUnitLabel;
   // End of variables declaration//GEN-END:variables

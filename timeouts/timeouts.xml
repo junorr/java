@@ -1,13 +1,13 @@
-<empty-list/>pserver.tmo.ScriptPair>
+<list/>  <us.pserver.tmo.ScriptPair>
     <sched>
       <date serialization="custom">
         <date>
-          <long>1422379740000</long>
+          <long>1422467085000</long>
         </date>
         <us.pserver.date.SimpleDate>
           <default>
             <cal>
-              <time>1422379740000</time>
+              <time>1422467085000</time>
               <timezone>America/Sao_Paulo</timezone>
             </cal>
             <format>dd/MM/yyyy HH:mm:ss</format>
@@ -180,17 +180,17 @@
           </default>
         </us.pserver.date.SimpleDate>
       </date>
-      <rept class="us.pserver.scronv6.hide.MinuteRepeater"/>
-      <amount>1</amount>
+      <rept class="us.pserver.scronv6.hide.SecondRepeater"/>
+      <amount>30</amount>
       <delay>-1</delay>
     </sched>
     <job class="us.pserver.tmo.ScriptJob" defined-in="us.pserver.scronv6.hide.Pair">
-      <scpath>/home/juno/show-dialog.txt</scpath>
+      <scpath>/home/juno/timeouts/scripts/test.txt</scpath>
       <enabled>true</enabled>
     </job>
     <job reference="../job"/>
   </us.pserver.tmo.ScriptPair>
-</list>>       <long>1422960903000</long>
+</list>>g>1422960903000</long>
         </date>
         <us.pserver.date.SimpleDate>
           <default>

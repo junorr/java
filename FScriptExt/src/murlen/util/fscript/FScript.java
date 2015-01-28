@@ -69,7 +69,14 @@ public class FScript implements FSExtension{
      * @param is the input stream
      */
     public void load(Reader is) throws IOException {
-        code.load(is);
+      if(is == null) throw new IOException("Invalid Reader: "+ is);
+      BufferedReader br = new BufferedReader(is);
+      String line = br.readLine();
+      while(line != null) {
+        loadLine(line);
+        line = br.readLine();
+      }
+      br.close();
     }
     
     /**

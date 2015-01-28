@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import murlen.util.fscript.FSException;
@@ -96,11 +97,12 @@ public class MainGui extends javax.swing.JFrame {
   private void reloadList() {
     DefaultListModel model = 
         new DefaultListModel();
-    if(!tmo.getCron().jobs().isEmpty()) {
-      tmo.getCron().jobs().forEach(model::addElement);
+    if(!tmo.list().isEmpty()) {
+      tmo.update();
+      tmo.list().forEach(model::addElement);
     }
     jlist.setModel(model);
-    jlist.paint(jlist.getGraphics());
+    jlist.repaint();
   }
   
   
@@ -113,15 +115,14 @@ public class MainGui extends javax.swing.JFrame {
     }
     tmo.add(p);
     this.reloadList();
-    tmo.save();
     log.info("Schedule Added");
   }
   
   
   private boolean checkSelected() {
-    if(tmo.getCron().jobs().isEmpty()
+    if(tmo.list().isEmpty()
         || selected < 0 || selected
-        > tmo.getCron().jobs().size()) {
+        > tmo.list().size()) {
       log.error("No Schedule Selected");
       return false;
     }
@@ -131,48 +132,46 @@ public class MainGui extends javax.swing.JFrame {
   
   private void editSchedule() {
     if(!checkSelected()) return;
-    tmo.getCron().stop();
-    ScriptPair p = new ScriptPair(
-        tmo.getCron().jobs().get(selected));
+    ScriptPair p = tmo.get(selected);
     NewJobDialog jd = new NewJobDialog();
     p = jd.showDialog(p, this);
     if(p == null) {
-      tmo.getCron().start();
       log.error("Edit Canceled");
       return;
     }
-    tmo.getCron().jobs().set(selected, tmo.set(p));
+    tmo.edit(selected, p);
     this.reloadList();
-    tmo.save();
-    tmo.getCron().start();
     log.info("Schedule Edited");
   }
   
   
   private void removeSchedule() {
     if(!checkSelected()) return;
-    tmo.getCron().stop();
-    tmo.getCron().jobs().remove(selected);
+    tmo.remove(selected);
     this.reloadList();
-    tmo.save();
-    tmo.getCron().start();
     log.info("Schedule Removed");
   }
   
   
   private void runScript() {
     if(!checkSelected()) return;
+    int opt = JOptionPane.showConfirmDialog(
+        this, 
+        "Are you sure do you want to RUN this script NOW?", 
+        "Run Script", 
+        JOptionPane.YES_NO_CANCEL_OPTION);
+    if(opt != JOptionPane.YES_OPTION) {
+      log.info("Script run canceled!");
+      return;
+    }
     log.info("Running Script...");
-    tmo.getCron().stop();
-    ScriptPair p = new ScriptPair(
-        tmo.getCron().jobs().get(selected));
+    ScriptPair p = tmo.get(selected);
     try {
       tmo.getScriptExecutor().exec(
           p.job().getScriptPath().toString());
     } catch(IOException | FSException e) {
       log.error(e.toString());
     } finally {
-      tmo.getCron().start();
       log.info("Execution Finished");
     }
   }
@@ -183,8 +182,7 @@ public class MainGui extends javax.swing.JFrame {
     FrameEditor fe = new FrameEditor();
     Point p = this.getLocationOnScreen();
     fe.setLocation(p.x + this.getWidth() + 2, p.y);
-    ScriptPair sp = new ScriptPair(
-        tmo.getCron().jobs().get(selected));
+    ScriptPair sp = tmo.get(selected);
     fe.read(sp.job().getScriptPath().toFile());
     fe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     fe.setVisible(true);
@@ -245,6 +243,7 @@ public class MainGui extends javax.swing.JFrame {
     deleteMenu = new javax.swing.JMenuItem();
     runMenu = new javax.swing.JMenuItem();
     viewMenu = new javax.swing.JMenuItem();
+    clearMenu = new javax.swing.JMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     setTitle("TimeoutS");
@@ -393,6 +392,15 @@ public class MainGui extends javax.swing.JFrame {
     });
     editMenu.add(viewMenu);
 
+    clearMenu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
+    clearMenu.setText("Clear Console");
+    clearMenu.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        clearMenuActionPerformed(evt);
+      }
+    });
+    editMenu.add(clearMenu);
+
     jMenuBar1.add(editMenu);
 
     setJMenuBar(jMenuBar1);
@@ -444,6 +452,11 @@ public class MainGui extends javax.swing.JFrame {
     viewScript();
   }//GEN-LAST:event_viewMenuActionPerformed
 
+  private void clearMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMenuActionPerformed
+    console.setText("");
+    console.repaint();
+  }//GEN-LAST:event_clearMenuActionPerformed
+
 
   /**
    * @param args the command line arguments
@@ -481,6 +494,7 @@ public class MainGui extends javax.swing.JFrame {
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JMenuItem clearMenu;
   private us.pserver.jcs.JConsole console;
   private javax.swing.JMenuItem deleteMenu;
   private us.pserver.tmo.LabelButton editLButton;

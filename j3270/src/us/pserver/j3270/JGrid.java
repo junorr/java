@@ -435,7 +435,7 @@ public class JGrid extends JPanel implements
   @Override
   public void keyPressed(KeyEvent e) {
     j3270.notifyAction();
-    if(e.getKeyCode() == KeyEvent.VK_ENTER 
+    if(e.getKeyCode() == KeyEvent.VK_ENTER
         && !j3270.session().isConnected()) {
       j3270.disconnect();
       j3270.connect();
@@ -488,13 +488,22 @@ public class JGrid extends JPanel implements
         break;
         
       case KeyEvent.VK_DELETE:
-        if(!current.getChar().isProtected())
-          current.setText(" ");
+        Cursor cs = cursor;
+        JChar jc = this.getCharAt(cs);
+        while(jc != null && !jc.getChar().isProtected() && cs.next().row() == cs.row()) {
+          System.out.println("* char="+jc.getText());
+          jc.setText(" ");
+          JChar next = this.getCharAt(cs.next());
+          if(next != null && !next.getChar().isProtected())
+            jc.setText(next.getText());
+          jc = next;
+          cs = cs.next();
+        }
         break;
         
       case KeyEvent.VK_BACK_SPACE:
-        JChar jc = this.getCharAt(new Cursor(cursor.position()));
-        if(!jc.getChar().isProtected()) {
+        JChar c = this.getCharAt(new Cursor(cursor.position()));
+        if(!c.getChar().isProtected()) {
           this.clearCursor();
           this.setCursorPosition(cursor.prev());
           current.setText(" ");

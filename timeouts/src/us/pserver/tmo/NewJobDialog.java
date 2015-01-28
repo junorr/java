@@ -87,7 +87,7 @@ public class NewJobDialog extends javax.swing.JDialog {
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     setTitle("Job Configuration");
-    setIconImage(new ImageIcon(getClass().getResource("/us/pserver/tmo/imgs/timer-blue-32.png")).getImage());
+    setIconImage(new ImageIcon(getClass().getResource("/us/pserver/tmo/imgs/hourglass-icon-32.png")).getImage());
 
     jLabel1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
     jLabel1.setText("Script File:");
@@ -216,7 +216,7 @@ public class NewJobDialog extends javax.swing.JDialog {
 
   
   private void scriptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scriptButtonActionPerformed
-    JFileChooser ch = new JFileChooser(script);
+    JFileChooser ch = new JFileChooser((script != null ? script : "./"));
     if(ch.showOpenDialog(this) != JFileChooser.APPROVE_OPTION)
       return;
     File f = ch.getSelectedFile();

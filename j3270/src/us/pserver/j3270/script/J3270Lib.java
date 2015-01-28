@@ -64,7 +64,6 @@ public class J3270Lib implements FSFunctionExtension {
       F11 = "f11",
       F12 = "f12",
       GETSCREEN = "getscreen",
-      GETSCREENLN = "getscreenln",
       GETTEXT = "gettext",
       LEFT = "left",
       PASTE = "paste",
@@ -221,8 +220,6 @@ public class J3270Lib implements FSFunctionExtension {
             FUtils._int(al, 1)), 
             FUtils._int(al, 2));
       case GETSCREEN:
-        return driver.getScreen();
-      case GETSCREENLN:
         return driver.getScreenln();
       case CURSOR:
         FUtils.checkLen(al, 2);
@@ -282,7 +279,6 @@ public class J3270Lib implements FSFunctionExtension {
     ext.addFunctionExtension(F11, this);
     ext.addFunctionExtension(F12, this);
     ext.addFunctionExtension(GETSCREEN, this);
-    ext.addFunctionExtension(GETSCREENLN, this);
     ext.addFunctionExtension(GETTEXT, this);
     ext.addFunctionExtension(LEFT, this);
     ext.addFunctionExtension(PASTE, this);

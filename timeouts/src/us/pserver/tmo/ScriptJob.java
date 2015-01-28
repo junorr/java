@@ -23,6 +23,7 @@ package us.pserver.tmo;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import murlen.util.fscript.ParserListener;
 import us.pserver.log.SimpleLog;
 import us.pserver.scron.ExecutionContext;
@@ -157,6 +158,34 @@ public class ScriptJob implements Job, ParserListener {
     Path p = this.getScriptPath();
     if(p == null) return scpath;
     return (enabled ? "" : "! ") + p.getFileName().toString();
+  }
+
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 17 * hash + Objects.hashCode(this.scpath);
+    hash = 17 * hash + (this.enabled ? 1 : 0);
+    return hash;
+  }
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final ScriptJob other = (ScriptJob) obj;
+    if (!Objects.equals(this.scpath, other.scpath)) {
+      return false;
+    }
+    if (this.enabled != other.enabled) {
+      return false;
+    }
+    return true;
   }
   
 }

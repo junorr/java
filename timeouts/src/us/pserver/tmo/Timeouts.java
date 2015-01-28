@@ -27,11 +27,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
 import murlen.util.fscript.ParserListener;
 import us.pserver.log.SimpleLog;
 import us.pserver.scronv6.hide.Pair;
-import us.pserver.scronv6.SCronV6;
 import us.pserver.scron.Schedule;
 import us.pserver.scron.SimpleCron;
 
@@ -55,8 +55,11 @@ public class Timeouts implements ParserListener {
   
   private transient XStream xs;
   
+  private List<ScriptPair> list;
+  
   
   public Timeouts() {
+    list = new ArrayList<>();
     cron = new SimpleCron();
     log = new SimpleLog(LOG_FILE);
     cron.setLogger(log)
@@ -71,8 +74,8 @@ public class Timeouts implements ParserListener {
   }
   
   
-  public SimpleCron getCron() {
-    return cron;
+  public List<ScriptPair> list() {
+    return list;
   }
   
   
@@ -81,15 +84,26 @@ public class Timeouts implements ParserListener {
   }
   
   
+  public void update() {
+    if(cron.jobs().isEmpty())
+      return;
+    list.forEach(sp-> {
+      if(sp.schedule().isRepeatEnabled()
+          && sp.schedule().getCountdown() <= 0)
+        sp.schedule().reeschedule();
+    });
+  }
+  
+  
   public void load() {
     Path p = Paths.get(CONF_FILE);
     if(Files.exists(p)) {
       try {
-        List<Pair> list = (List<Pair>) xs.fromXML(
+        list.addAll((List<ScriptPair>) xs.fromXML(
             Files.newInputStream(
-            p, StandardOpenOption.READ));
+            p, StandardOpenOption.READ)));
         list.forEach(this::set);
-        cron.jobs().addAll(list);
+        list.forEach(sp->cron.put(sp.schedule(), sp.job()));
       log.debug("Timeouts Loaded!");
       } catch(IOException e) {
         log.error("Error loading config file");
@@ -99,12 +113,11 @@ public class Timeouts implements ParserListener {
   }
   
   
-  protected Pair set(Pair p) {
+  protected ScriptPair set(ScriptPair p) {
     if(p == null 
-        || p.job() == null ||
-        !(p.job() instanceof ScriptJob))
+        || p.job() == null)
       return p;
-    ((ScriptJob) p.job()).setExecutor(sexec);
+    p.job().setExecutor(sexec);
     return p;
   }
   
@@ -112,13 +125,10 @@ public class Timeouts implements ParserListener {
   public void save() {
     Path p = Paths.get(CONF_FILE);
     try {
-      boolean run = cron.isRunning();
-      if(run) cron.stop();
-      xs.toXML(cron.jobs().copy(), 
+      xs.toXML(list, 
           Files.newOutputStream(p, 
           StandardOpenOption.WRITE, 
           StandardOpenOption.CREATE));
-      if(run) cron.start();
       log.debug("Timeouts Saved!");
     } catch(IOException e) {
       log.error("Error saving schedules");
@@ -144,14 +154,15 @@ public class Timeouts implements ParserListener {
       cron.setLogger(log);
     }
     this.load();
-    cron.start();
+    if(!cron.isRunning())
+      cron.start();
     log.info("Timeouts Started!");
   }
   
   
   public void stop() {
-    this.save();
     cron.stop();
+    this.save();
     log.close().clearOutputs();
     log.info("Timeouts Stopped!");
   }
@@ -167,7 +178,10 @@ public class Timeouts implements ParserListener {
           "Invalid Schedule: "+ sched);
     }
     if(!isRunning()) start();
-    cron.put(sched, new ScriptJob(script, sexec));
+    ScriptPair sp = new ScriptPair(sched, new ScriptJob(script, sexec));
+    list.add(set(sp));
+    save();
+    cron.put(sched, sp.job());
   }
   
   
@@ -177,8 +191,43 @@ public class Timeouts implements ParserListener {
           "Invalid Pair: "+ p);
     }
     if(!isRunning()) start();
-    this.set(p);
+    list.add(set(p));
+    save();
     cron.put(p.schedule(), p.job());
+  }
+  
+  
+  private void updateCron() {
+    cron.stop();
+    cron.jobs().clear();
+    if(!list.isEmpty())
+      list.forEach(sp->cron.put(sp.schedule(), sp.job()));
+    cron.start();
+  }
+  
+  
+  public void edit(int index, ScriptPair sp) {
+    if(index < 0 || index >= list.size()
+        || sp == null) return;
+    list.set(index, set(sp));
+    save();
+    updateCron();
+  }
+  
+  
+  public void remove(int index) {
+    if(index < 0 || index >= list.size()) 
+      return;
+    list.remove(index);
+    save();
+    updateCron();
+  }
+  
+  
+  public ScriptPair get(int index) {
+    if(index < 0 || index >= list.size()) 
+      return null;
+    return list.get(index);
   }
   
 }
