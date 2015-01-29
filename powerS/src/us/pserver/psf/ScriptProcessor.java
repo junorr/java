@@ -83,7 +83,7 @@ public class ScriptProcessor {
     iolib = new IOLib();
     CTypeLib ctype = new CTypeLib();
     DateLib dlib = new DateLib();
-    UILib uilib = new UILib();
+    UILib uilib = new UILib(fs);
     tnlib = new TN3270Lib();
     
     tnlib.addTo(funcs);

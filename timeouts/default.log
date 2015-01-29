@@ -380,3 +380,9 @@
 [INFO ] (28/01/2015 15:43:38): Listening on: NetConnector{ *:33233 }
 [INFO ] (28/01/2015 15:43:38): Server started!
 
+[INFO ] (29/01/2015 16:44:30): SimpleCron Started!
+[INFO ] (29/01/2015 16:44:30): Starting NetworkServer...
+[INFO ] (29/01/2015 16:44:30): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (29/01/2015 16:44:30): Listening on: NetConnector{ *:33233 }
+[INFO ] (29/01/2015 16:44:30): Server started!
+

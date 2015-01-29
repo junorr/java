@@ -2,6 +2,17 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/juno/storage/java/timeouts/src/us/pserver/tmo/ScriptExecutor.java</file>
+            <file>file:/home/juno/storage/java/timeouts/src/us/pserver/tmo/TimeSpin.java</file>
+            <file>file:/home/juno/storage/java/timeouts/src/us/pserver/tmo/ScriptJob.java</file>
+            <file>file:/home/juno/storage/java/timeouts/src/us/pserver/tmo/Timeouts.java</file>
+            <file>file:/home/juno/storage/java/timeouts/src/us/pserver/tmo/ScheduleDialog.java</file>
+            <file>file:/home/juno/storage/java/timeouts/src/us/pserver/tmo/MainGui.java</file>
+            <file>file:/home/juno/storage/java/timeouts/src/us/pserver/tmo/ScriptPair.java</file>
+            <file>file:/home/juno/storage/java/timeouts/src/us/pserver/tmo/LabelButton.java</file>
+            <file>file:/home/juno/storage/java/timeouts/src/us/pserver/tmo/NewJobDialog.java</file>
+            <file>file:/home/juno/storage/java/timeouts/src/us/pserver/tmo/main/Main.java</file>
+        </group>
     </open-files>
 </project-private>

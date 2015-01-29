@@ -22,17 +22,47 @@
 package us.pserver.psf.func;
 
 import java.awt.AWTException;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import murlen.util.fscript.BasicIO;
 import murlen.util.fscript.FSException;
 import murlen.util.fscript.FSExtension;
 import murlen.util.fscript.FSUnsupportedException;
@@ -56,6 +86,23 @@ public class UILib implements FSExtension {
       MWHEEL = "mwheel",
       SCREENCAPT = "screencapture",
       WRITESTRING = "writestr",
+      
+      UIFRAME = "uiframe",
+      UILABEL = "uilabel",
+      UITEXT = "uitext",
+      UIAREA = "uiarea",
+      UIBUTTON = "uibutton",
+      UIROWPANEL = "uirowpanel",
+      UICOLPANEL = "uicolpanel",
+      UIADD = "uiadd",
+      UISHOW = "uishow",
+      UISETTEXT = "uisettext",
+      UIGETTEXT = "uigettext",
+      UISETSELECTED = "uisetselected",
+      UIGETSELECTED = "uigetselected",
+      UICHECKBOX = "uicheckbox",
+      UICOMBO = "uicombo",
+      UIRADIO = "uiradio",
       
       SCREEN_WIDTH = "SCREENW",
       SCREEN_HEIGHT = "SCREENH",
@@ -92,9 +139,12 @@ public class UILib implements FSExtension {
   
   private KeyMap map;
   
+  private BasicIO bio;
   
-  public UILib() {
+  
+  public UILib(BasicIO bio) {
     map = new KeyMap();
+    this.bio = bio;
     try {
       robot = new Robot();
     } catch(AWTException ae) {
@@ -111,6 +161,289 @@ public class UILib implements FSExtension {
   public void checkCoord(int x, int y) throws FSException {
     if(x < 0) throw new FSException("Invalid X coord ["+ x+ "]");
     if(y < 0) throw new FSException("Invalid Y coord ["+ y+ "]");
+  }
+  
+  
+  public JDialog uiframe(String title, final String onclose, int width, int height) {
+    if(title == null) title = "uiframe";
+    JDialog f = new JDialog();
+    f.setTitle(title);
+    f.setModal(true);
+    if(width != 0 && height != 0)
+      f.setSize(width, height);
+    f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    f.setLocationRelativeTo(null);
+    if(onclose != null) {
+      f.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosed(WindowEvent e) {
+          try {
+            bio.callFunction(onclose, new ArrayList(1));
+          } catch(FSException fe) {}
+        }
+      });
+    }
+    return f;
+  }
+  
+  
+  public JLabel uilabel(String text) {
+    if(text == null) text = "uilabel";
+    return new JLabel(text);
+  }
+  
+  
+  public JTextField uitext(String text, int width) {
+    JTextField tf = new JTextField(text);
+    if(width != 0)
+      tf.setPreferredSize(new Dimension(width, tf.getPreferredSize().height));
+    return tf;
+  }
+  
+  
+  public JTextArea uiarea(String text, int width, int height) {
+    JTextArea ta = new JTextArea(text);
+    Dimension d = new Dimension(ta.getPreferredSize());
+    if(width != 0) d.setSize(width, d.height);
+    if(height != 0) d.setSize(d.width, height);
+    ta.setPreferredSize(d);
+    return ta;
+  }
+  
+  
+  public JButton uibutton(String title, final String function) {
+    if(title == null) title = "uibutton";
+    JButton bt = new JButton(title);
+    if(function != null)
+      bt.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          try {
+            bio.callFunction(function, new ArrayList(1));
+          } catch(FSException fe) {}
+        }
+      });
+    return bt;
+  }
+  
+  
+  public JPanel uicolpanel(int gap) {
+    if(gap < 0) gap = 5;
+    JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, gap, 0));
+    return p;
+  }
+  
+  
+  public JPanel uirowpanel(int gap) {
+    if(gap < 0) gap = 5;
+    JPanel p = new JPanel(new GridLayout(0, 1, 0, gap));
+    return p;
+  }
+  
+  
+  public void uiadd(Object container, Object o) {
+    if(container == null || o == null)
+      return;
+    if(container instanceof Container 
+        && o instanceof Component) {
+      ((Container)container).add((Component)o);
+    }
+    else if(container instanceof JComboBox) {
+      ((JComboBox)container).addItem(o);
+    }
+    else if(container instanceof ButtonGroup
+        && o instanceof JRadioButton) {
+      ButtonGroup bg = (ButtonGroup) container;
+      JRadioButton r = new JRadioButton(o.toString());
+      bg.add(r);
+      Enumeration<AbstractButton> en = bg.getElements();
+      if(!en.hasMoreElements()) return;
+      AbstractButton a = en.nextElement();
+      ChangeListener[] cs = a.getChangeListeners();
+      if(cs == null || cs.length < 1) return;
+      for(ChangeListener c : cs)
+        r.addChangeListener(c);
+    }
+  }
+  
+  
+  public void uishow(Object frame, int x, int y) {
+    if(frame instanceof JDialog) {
+      if(x >= 0 && y >= 0)
+        ((JDialog)frame).setLocation(x, y);
+      final JDialog dlg = (JDialog) frame;
+      try {
+        SwingUtilities.invokeAndWait(new Runnable() {
+          public void run() {
+            dlg.pack();
+            dlg.setSize(300, 200);
+            dlg.setVisible(true);
+            System.out.println(">> dlg.isVisible()? "+ dlg.isVisible());
+            System.out.println(">> dlg.isValid()? "+ dlg.isValid());
+          }
+        });
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+      ((JDialog)frame).pack();
+      ((JDialog)frame).setVisible(true);
+    }
+  }
+  
+  
+  public void uisettext(Object comp, String text) {
+    if(comp == null || text == null)
+      return;
+    if(comp instanceof JFrame) {
+      ((JFrame)comp).setTitle(text);
+    }
+    else if(comp instanceof JButton) {
+      ((JButton)comp).setText(text);
+    }
+    else if(comp instanceof JLabel) {
+      ((JLabel)comp).setText(text);
+    }
+    else if(comp instanceof JTextField) {
+      ((JTextField)comp).setText(text);
+    }
+    else if(comp instanceof JTextArea) {
+      ((JTextArea)comp).setText(text);
+    }
+    else if(comp instanceof JCheckBox) {
+      ((JCheckBox)comp).setText(text);
+    }
+  }
+  
+  
+  public String uigettext(Object comp) {
+    if(comp == null)
+      return null;
+    if(comp instanceof JFrame) {
+      return ((JFrame)comp).getTitle();
+    }
+    else if(comp instanceof JButton) {
+      return ((JButton)comp).getText();
+    }
+    else if(comp instanceof JLabel) {
+      return ((JLabel)comp).getText();
+    }
+    else if(comp instanceof JTextField) {
+      return ((JTextField)comp).getText();
+    }
+    else if(comp instanceof JTextArea) {
+      return ((JTextArea)comp).getText();
+    }
+    else if(comp instanceof JCheckBox) {
+      return ((JCheckBox)comp).getText();
+    }
+    return null;
+  }
+  
+  
+  public void uisetselected(Object comp, Object o) {
+    if(comp == null) return;
+    if(comp instanceof JCheckBox) {
+      ((JCheckBox)comp).setSelected(
+          (o != null && o.toString().equals("1") ? true : false));
+    }
+    else if(comp instanceof JComboBox && o != null) {
+      ((JComboBox)comp).setSelectedItem(o);
+    }
+    else if(comp instanceof ButtonGroup && o != null) {
+      ButtonGroup bg = (ButtonGroup) comp;
+      Enumeration<AbstractButton> en = bg.getElements();
+      while(en.hasMoreElements()) {
+        AbstractButton b = en.nextElement();
+        if(b.getText().equals(o.toString()))
+          bg.setSelected(b.getModel(), true);
+      }
+    }
+  }
+  
+  
+  public Object uigetselected(Object comp) {
+    if(comp == null) return null;
+    if(comp instanceof JCheckBox
+        && ((JCheckBox)comp).isSelected()) {
+      return 1;
+    }
+    else if(comp instanceof JComboBox) {
+      return ((JComboBox)comp).getSelectedItem().toString();
+    }
+    else if(comp instanceof ButtonGroup) {
+      ButtonGroup bg = (ButtonGroup) comp;
+      Enumeration<AbstractButton> en = bg.getElements();
+      while(en.hasMoreElements()) {
+        AbstractButton b = en.nextElement();
+        if(b.isSelected())
+          return b.getText();
+      }
+    }
+    return 0;
+  }
+  
+  
+  public JCheckBox uicheckbox(String title, final String onselect) {
+    if(title == null) title = "uicheckbox";
+    final JCheckBox cb = new JCheckBox(title);
+    if(onselect != null) {
+      cb.addChangeListener(new ChangeListener() {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+          ArrayList al = new ArrayList(1);
+          al.add((cb.isSelected() ? 1 : 0));
+          try {
+            bio.callFunction(onselect, al);
+          } catch(FSException fe) {}
+        }
+      });
+    }
+    return cb;
+  }
+  
+  
+  public JComboBox uicombo(final String onselect, String ... items) {
+    final JComboBox cb = new JComboBox();
+    cb.setEditable(false);
+    if(items != null && items.length > 0) {
+      for(String s : items)
+        cb.addItem(s);
+    }
+    if(onselect != null) {
+      cb.addItemListener(new ItemListener() {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+          ArrayList al = new ArrayList(1);
+          al.add(e.getItem().toString());
+          try {
+            bio.callFunction(onselect, al);
+          } catch(FSException fe) {}
+        }
+      });
+    }
+    return cb;
+  }
+  
+  
+  public ButtonGroup uiradio(final String onselect, String ... names) {
+    final ButtonGroup bg = new ButtonGroup();
+    if(names != null && names.length > 0) {
+      for(String n : names) {
+        JRadioButton rb = new JRadioButton(n);
+        if(onselect != null) {
+          rb.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+              ArrayList al = new ArrayList(1);
+              al.add(uigetselected(bg));
+              try {
+                bio.callFunction(onselect, al);
+              } catch(FSException fe) {}
+            }
+          });
+        }
+      }
+    }
+    return bg;
   }
   
   
@@ -405,6 +738,119 @@ public class UILib implements FSExtension {
         FUtils.checkLen(al, 1);
         writestr(FUtils.str(al, 0));
         break;
+      
+      case UIFRAME:
+        FUtils.checkLen(al, 1);
+        if(al.size() == 1)
+          return uiframe(FUtils.str(al, 0), null, 0, 0);
+        else if(al.size() == 2)
+          return uiframe(FUtils.str(al, 0), FUtils.str(al, 1), 0, 0);
+        else if(al.size() == 4)
+          return uiframe(FUtils.str(al, 0), FUtils.str(al, 1), 
+              FUtils._int(al, 2), FUtils._int(al, 3));
+        break;
+        
+      case UILABEL:
+        FUtils.checkLen(al, 1);
+        return uilabel(FUtils.str(al, 0));
+        
+      case UITEXT:
+        if(al.size() == 0)
+          return uitext(null, 0);
+        if(al.size() == 1)
+          return uitext(FUtils.str(al, 0), 0);
+        else if(al.size() > 1)
+          return uitext(FUtils.str(al, 0), FUtils._int(al, 1));
+        break;
+        
+      case UIAREA:
+        if(al.size() == 0)
+          return uiarea(null, 0, 0);
+        else if(al.size() == 1)
+          return uiarea(FUtils.str(al, 0), 0, 0);
+        else if(al.size() == 2)
+          return uiarea(FUtils.str(al, 0), FUtils._int(al, 1), 0);
+        else if(al.size() > 2)
+          return uiarea(FUtils.str(al, 0), FUtils._int(al, 1), FUtils._int(al, 2));
+        break;
+        
+      case UIBUTTON:
+        FUtils.checkLen(al, 1);
+        if(al.size() == 1)
+          return uibutton(FUtils.str(al, 0), null);
+        else if(al.size() > 1)
+          return uibutton(FUtils.str(al, 0), FUtils.str(al, 1));
+        break;
+        
+      case UIROWPANEL:
+        if(al.size() == 0)
+          return uirowpanel(-1);
+        else if(al.size() > 0)
+          return uirowpanel(FUtils._int(al, 0));
+        break;
+        
+      case UICOLPANEL:
+        if(al.size() == 0)
+          return uicolpanel(-1);
+        else if(al.size() > 0)
+          return uicolpanel(FUtils._int(al, 0));
+        break;
+        
+      case UIADD:
+        FUtils.checkLen(al, 2);
+        uiadd(al.get(0), al.get(1));
+        break;
+        
+      case UISHOW:
+        FUtils.checkLen(al, 1);
+        if(al.size() == 1)
+          uishow(al.get(0), -1, -1);
+        else if(al.size() == 3)
+          uishow(al.get(0), FUtils._int(al, 1), FUtils._int(al, 2));
+        break;
+        
+      case UIGETTEXT:
+        FUtils.checkLen(al, 1);
+        return uigettext(al.get(0));
+        
+      case UISETTEXT:
+        FUtils.checkLen(al, 2);
+        uisettext(al.get(0), FUtils.str(al, 1));
+        break;
+        
+      case UIGETSELECTED:
+        FUtils.checkLen(al, 1);
+        return uigetselected(al.get(0));
+        
+      case UISETSELECTED:
+        FUtils.checkLen(al, 2);
+        uisetselected(al.get(0), al.get(1));
+        break;
+        
+      case UICHECKBOX:
+        FUtils.checkLen(al, 1);
+        if(al.size() == 1)
+          return uicheckbox(FUtils.str(al, 0), null);
+        else
+          return uicheckbox(FUtils.str(al, 0), FUtils.str(al, 1));
+        
+      case UICOMBO:
+        String func = (al.size() >= 1 ? FUtils.str(al, 0) : null);
+        String[] items = new String[al.size() -1];
+        for(int i = 0; i < items.length; i++) {
+          if(al.size() > (i+1))
+            items[i] = al.get(i+1).toString();
+        }
+        return uicombo(func, items);
+        
+      case UIRADIO:
+        String func2 = (al.size() >= 1 ? FUtils.str(al, 0) : null);
+        String[] names = new String[al.size() -1];
+        for(int i = 0; i < names.length; i++) {
+          if(al.size() > (i+1))
+            names[i] = al.get(i+1).toString();
+        }
+        return uiradio(func2, names);
         
       default:
         throw new FSUnsupportedException();

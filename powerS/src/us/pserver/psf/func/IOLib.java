@@ -29,6 +29,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.imageio.ImageIO;
@@ -54,6 +58,10 @@ public class IOLib implements FSExtension {
       FWRITE = "fwrite",
       FWRITEBYTES = "fwbytes",
       FWRITEIMAGE = "fwimage",
+      FSIZE = "fsize",
+      FREMOVE = "fremove",
+      FCOPY = "fcopy",
+      ISEOF = "isEOF",
       IREAD = "iread",
       LENGTH = "length",
       SYSCMD = "syscommand",
@@ -117,6 +125,20 @@ public class IOLib implements FSExtension {
       case FWCLOSE:
         frclose();
         return null;
+      case FSIZE:
+        FUtils.checkLen(al, 1);
+        return fsize(FUtils.str(al, 0));
+      case FREMOVE:
+        FUtils.checkLen(al, 1);
+        fremove(FUtils.str(al, 0));
+        return 1;
+      case FCOPY:
+        FUtils.checkLen(al, 2);
+        fcopy(FUtils.str(al, 0), FUtils.str(al, 1));
+        return 1;
+      case ISEOF:
+        FUtils.checkLen(al, 1);
+        return isEOF(al.get(0));
       case LENGTH:
         FUtils.checkLen(al, 1);
         return length(al.get(0));
@@ -207,6 +229,121 @@ public class IOLib implements FSExtension {
     }
   }
   
+  
+  public int fsize(String path) throws FSException {
+    if(path == null)
+      throw new FSException("fsize( "+ path+ "): Invalid Path");
+    Path p = Paths.get(path);
+    if(p == null || !Files.exists(p))
+      throw new FSException("fsize( "+ path+ "): Invalid Path");
+    try {
+      return (int) Files.size(p);
+    } catch(IOException e) {
+      throw new FSException(e.toString());
+    }
+  }
+  
+  
+  public void fcopy(String src, String dst) throws FSException {
+    if(src == null)
+      throw new FSException("fcopy( "+ src+ "): Invalid src Path");
+    if(dst == null)
+      throw new FSException("fcopy( "+ dst+ "): Invalid dst Path");
+    
+    Path ps = Paths.get(src);
+    if(ps == null || !Files.exists(ps))
+      throw new FSException("fcopy( "+ ps+ "): Invalid src Path");
+    
+    Path pd = Paths.get(dst);
+    if(pd == null || !Files.exists(pd))
+      throw new FSException("fcopy( "+ pd+ "): Invalid dst Path");
+    
+    try {
+      if(Files.isDirectory(ps))
+        fcpdir(ps, pd);
+      else
+        Files.copy(ps, pd, 
+            StandardCopyOption.COPY_ATTRIBUTES, 
+            StandardCopyOption.REPLACE_EXISTING);
+    } catch(IOException e) {
+      throw new FSException(e.toString());
+    }
+  }
+  
+  
+  public void fcpdir(Path src, Path dst) throws FSException {
+    if(src == null || !Files.exists(src))
+      throw new FSException("fcopy( "+ src+ "): Invalid src Path");
+    if(dst == null)
+      throw new FSException("fcopy( "+ dst+ "): Invalid dst Path");
+    if(!Files.isDirectory(src))
+      return;
+    
+    try {
+      if(!Files.exists(dst))
+        Files.createDirectories(dst);
+      File[] fs = src.toFile().listFiles();
+      for(File f : fs) {
+        if(f.isDirectory())
+          fcpdir(f.toPath(), dst.resolve(f.getName()));
+        else
+          Files.copy(f.toPath(), dst.resolve(f.getName()), 
+              StandardCopyOption.COPY_ATTRIBUTES, 
+              StandardCopyOption.REPLACE_EXISTING);
+      }
+    } catch(IOException e) {
+      throw new FSException(e.toString());
+    }
+  }
+  
+  
+  public void fremove(String path) throws FSException {
+    if(path == null)
+      throw new FSException("fremove( "+ path+ "): Invalid Path");
+    
+    Path ps = Paths.get(path);
+    if(ps == null || !Files.exists(ps))
+      throw new FSException("fremove( "+ path+ "): Invalid Path");
+    
+    if(Files.isDirectory(ps))
+      frmdir(ps);
+    else
+      ps.toFile().delete();
+  }
+  
+  
+  public void frmdir(Path dir) throws FSException {
+    if(dir == null)
+      throw new FSException("fremove( "+ dir+ "): Invalid Path");
+    if(!Files.isDirectory(dir))
+      return;
+    
+    File[] fs = dir.toFile().listFiles();
+    if(fs == null) return;
+    for(File f : fs) {
+      if(f.isDirectory())
+        frmdir(f.toPath());
+      else
+        f.delete();
+    }
+  }
+  
+  
+  public int isEOF(Object o) {
+    if(o == null) return 0;
+    if(o instanceof FSObject)
+      o = ((FSObject)o).getObject();
+    if(o instanceof byte[]) {
+      byte[] bs = (byte[]) o;
+      return (bs.length == 3
+          && bs[0] == BYTES_EOF[0]
+          && bs[1] == BYTES_EOF[1]
+          && bs[2] == BYTES_EOF[2] 
+          ? 1 : 0);
+    }
+    return 0;
+  }
+      
   
   public int length(Object o) {
     if(o == null) return 0;

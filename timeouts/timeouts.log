@@ -524,3 +524,8 @@
 [INFO ] (28/01/2015 15:45:20): Schedule Removed
 [INFO ] (28/01/2015 15:45:36): SimpleCron Stopped!
 [DEBUG] (28/01/2015 15:45:36): Timeouts Saved!
+[DEBUG] (29/01/2015 16:44:30): Timeouts Loaded!
+[INFO ] (29/01/2015 16:44:30): SimpleCron Started!
+[INFO ] (29/01/2015 16:44:30): Timeouts Started!
+[INFO ] (29/01/2015 16:44:39): SimpleCron Stopped!
+[DEBUG] (29/01/2015 16:44:39): Timeouts Saved!
