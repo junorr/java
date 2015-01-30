@@ -38,21 +38,19 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -62,9 +60,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import javax.swing.text.JTextComponent;
 import murlen.util.fscript.BasicIO;
 import murlen.util.fscript.FSException;
 import murlen.util.fscript.FSExtension;
+import murlen.util.fscript.FSObject;
 import murlen.util.fscript.FSUnsupportedException;
 
 /**
@@ -103,6 +103,11 @@ public class UILib implements FSExtension {
       UICHECKBOX = "uicheckbox",
       UICOMBO = "uicombo",
       UIRADIO = "uiradio",
+      UISETSIZE = "uisetsize",
+      
+      UICENTER = "CENTER",
+      UILEFT = "LEFT",
+      UIRIGHT = "RIGHT",
       
       SCREEN_WIDTH = "SCREENW",
       SCREEN_HEIGHT = "SCREENH",
@@ -164,22 +169,19 @@ public class UILib implements FSExtension {
   }
   
   
-  public JDialog uiframe(String title, final String onclose, int width, int height) {
+  public JFrame uiframe(String title, final String onclose) {
     if(title == null) title = "uiframe";
-    JDialog f = new JDialog();
-    f.setTitle(title);
-    f.setModal(true);
-    if(width != 0 && height != 0)
-      f.setSize(width, height);
+    JFrame f = new JFrame(title);
+    f.setSize(1, 1);
     f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     f.setLocationRelativeTo(null);
-    if(onclose != null) {
+    if(onclose != null && !onclose.trim().isEmpty()) {
       f.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosed(WindowEvent e) {
           try {
-            bio.callFunction(onclose, new ArrayList(1));
-          } catch(FSException fe) {}
+            bio.callScriptFunction(onclose, new ArrayList(1));
+          } catch(FSException | IOException fe) {}
         }
       });
     }
@@ -201,34 +203,53 @@ public class UILib implements FSExtension {
   }
   
   
-  public JTextArea uiarea(String text, int width, int height) {
-    JTextArea ta = new JTextArea(text);
-    Dimension d = new Dimension(ta.getPreferredSize());
-    if(width != 0) d.setSize(width, d.height);
-    if(height != 0) d.setSize(d.width, height);
-    ta.setPreferredSize(d);
-    return ta;
+  public JPasswordField uipassword(String text, int width) {
+    JPasswordField tf = new JPasswordField(text);
+    if(width != 0)
+      tf.setPreferredSize(new Dimension(width, tf.getPreferredSize().height));
+    return tf;
+  }
+  
+  
+  public JTextArea uiarea(String text) {
+    return new JTextArea(text);
   }
   
   
   public JButton uibutton(String title, final String function) {
     if(title == null) title = "uibutton";
     JButton bt = new JButton(title);
-    if(function != null)
+    if(function != null && !function.trim().isEmpty())
       bt.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           try {
-            bio.callFunction(function, new ArrayList(1));
-          } catch(FSException fe) {}
+            bio.callScriptFunction(function, new ArrayList(1));
+          } catch(FSException | IOException fe) {
+            fe.printStackTrace();
+          }
         }
       });
     return bt;
   }
   
   
-  public JPanel uicolpanel(int gap) {
+  public JPanel uicolpanel(int gap, String align) {
     if(gap < 0) gap = 5;
-    JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, gap, 0));
+    int ialign = FlowLayout.LEFT;
+    if(align != null) {
+      switch(align) {
+        case UICENTER:
+          ialign = FlowLayout.CENTER;
+          break;
+        case UIRIGHT:
+          ialign = FlowLayout.RIGHT;
+          break;
+        default:
+          ialign = FlowLayout.LEFT;
+          break;
+      }
+    }
+    JPanel p = new JPanel(new FlowLayout(ialign, gap, 0));
     return p;
   }
   
@@ -243,6 +264,11 @@ public class UILib implements FSExtension {
   public void uiadd(Object container, Object o) {
     if(container == null || o == null)
       return;
+    if(container instanceof FSObject)
+      container = ((FSObject)container).getObject();
+    if(o instanceof FSObject)
+      o = ((FSObject)o).getObject();
+    
     if(container instanceof Container 
         && o instanceof Component) {
       ((Container)container).add((Component)o);
@@ -267,25 +293,26 @@ public class UILib implements FSExtension {
   
   
   public void uishow(Object frame, int x, int y) {
-    if(frame instanceof JDialog) {
+    if(frame == null) return;
+    if(frame instanceof FSObject)
+      frame = ((FSObject)frame).getObject();
+    if(frame instanceof JFrame) {
+      final JFrame jf = (JFrame) frame;
       if(x >= 0 && y >= 0)
-        ((JDialog)frame).setLocation(x, y);
-      final JDialog dlg = (JDialog) frame;
+        jf.setLocation(x, y);
+      else 
+        jf.setLocationRelativeTo(null);
       try {
-        SwingUtilities.invokeAndWait(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
           public void run() {
-            dlg.pack();
-            dlg.setSize(300, 200);
-            dlg.setVisible(true);
-            System.out.println(">> dlg.isVisible()? "+ dlg.isVisible());
-            System.out.println(">> dlg.isValid()? "+ dlg.isValid());
+            if(jf.getWidth() == 1 && jf.getHeight() == 1)
+              jf.pack();
+            jf.setVisible(true);
           }
         });
       } catch (Exception ex) {
         ex.printStackTrace();
       }
-      ((JDialog)frame).pack();
-      ((JDialog)frame).setVisible(true);
     }
   }
   
@@ -293,6 +320,8 @@ public class UILib implements FSExtension {
   public void uisettext(Object comp, String text) {
     if(comp == null || text == null)
       return;
+    if(comp instanceof FSObject)
+      comp = ((FSObject)comp).getObject();
     if(comp instanceof JFrame) {
       ((JFrame)comp).setTitle(text);
     }
@@ -302,11 +331,8 @@ public class UILib implements FSExtension {
     else if(comp instanceof JLabel) {
       ((JLabel)comp).setText(text);
     }
-    else if(comp instanceof JTextField) {
-      ((JTextField)comp).setText(text);
-    }
-    else if(comp instanceof JTextArea) {
-      ((JTextArea)comp).setText(text);
+    else if(comp instanceof JTextComponent) {
+      ((JTextComponent)comp).setText(text);
     }
     else if(comp instanceof JCheckBox) {
       ((JCheckBox)comp).setText(text);
@@ -317,6 +343,8 @@ public class UILib implements FSExtension {
   public String uigettext(Object comp) {
     if(comp == null)
       return null;
+    if(comp instanceof FSObject)
+      comp = ((FSObject)comp).getObject();
     if(comp instanceof JFrame) {
       return ((JFrame)comp).getTitle();
     }
@@ -326,11 +354,11 @@ public class UILib implements FSExtension {
     else if(comp instanceof JLabel) {
       return ((JLabel)comp).getText();
     }
-    else if(comp instanceof JTextField) {
-      return ((JTextField)comp).getText();
+    else if(comp instanceof JPasswordField) {
+      return new String(((JPasswordField)comp).getPassword());
     }
-    else if(comp instanceof JTextArea) {
-      return ((JTextArea)comp).getText();
+    else if(comp instanceof JTextComponent) {
+      return ((JTextComponent)comp).getText();
     }
     else if(comp instanceof JCheckBox) {
       return ((JCheckBox)comp).getText();
@@ -341,6 +369,8 @@ public class UILib implements FSExtension {
   
   public void uisetselected(Object comp, Object o) {
     if(comp == null) return;
+    if(comp instanceof FSObject)
+      comp = ((FSObject)comp).getObject();
     if(comp instanceof JCheckBox) {
       ((JCheckBox)comp).setSelected(
           (o != null && o.toString().equals("1") ? true : false));
@@ -362,6 +392,8 @@ public class UILib implements FSExtension {
   
   public Object uigetselected(Object comp) {
     if(comp == null) return null;
+    if(comp instanceof FSObject)
+      comp = ((FSObject)comp).getObject();
     if(comp instanceof JCheckBox
         && ((JCheckBox)comp).isSelected()) {
       return 1;
@@ -385,15 +417,15 @@ public class UILib implements FSExtension {
   public JCheckBox uicheckbox(String title, final String onselect) {
     if(title == null) title = "uicheckbox";
     final JCheckBox cb = new JCheckBox(title);
-    if(onselect != null) {
+    if(onselect != null && !onselect.trim().isEmpty()) {
       cb.addChangeListener(new ChangeListener() {
         @Override
         public void stateChanged(ChangeEvent e) {
           ArrayList al = new ArrayList(1);
           al.add((cb.isSelected() ? 1 : 0));
           try {
-            bio.callFunction(onselect, al);
-          } catch(FSException fe) {}
+            bio.callScriptFunction(onselect, new ArrayList(1));
+          } catch(FSException | IOException fe) {}
         }
       });
     }
@@ -408,15 +440,15 @@ public class UILib implements FSExtension {
       for(String s : items)
         cb.addItem(s);
     }
-    if(onselect != null) {
+    if(onselect != null && !onselect.trim().isEmpty()) {
       cb.addItemListener(new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent e) {
           ArrayList al = new ArrayList(1);
           al.add(e.getItem().toString());
           try {
-            bio.callFunction(onselect, al);
-          } catch(FSException fe) {}
+            bio.callScriptFunction(onselect, new ArrayList(1));
+          } catch(FSException | IOException fe) {}
         }
       });
     }
@@ -429,21 +461,34 @@ public class UILib implements FSExtension {
     if(names != null && names.length > 0) {
       for(String n : names) {
         JRadioButton rb = new JRadioButton(n);
-        if(onselect != null) {
+        if(onselect != null && !onselect.trim().isEmpty()) {
           rb.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
               ArrayList al = new ArrayList(1);
               al.add(uigetselected(bg));
               try {
-                bio.callFunction(onselect, al);
-              } catch(FSException fe) {}
+                bio.callScriptFunction(onselect, new ArrayList(1));
+              } catch(FSException | IOException fe) {}
             }
           });
         }
       }
     }
     return bg;
+  }
+  
+  
+  public void uisetsize(Object comp, int width, int height) {
+    if(comp == null || width <= 0 || height <= 0) 
+      return;
+    if(comp instanceof FSObject)
+      comp = ((FSObject)comp).getObject();
+    if(comp instanceof Component) {
+      Dimension d = new Dimension(width, height);
+      ((Component)comp).setSize(d);
+      ((Component)comp).setPreferredSize(d);
+    }
   }
   
   
@@ -662,6 +707,12 @@ public class UILib implements FSExtension {
         return BTN2;
       case BTS6:
         return BTN3;
+      case UICENTER:
+        return UICENTER;
+      case UILEFT:
+        return UILEFT;
+      case UIRIGHT:
+        return UIRIGHT;
       default:
         if(map.getMap().containsKey(string))
           return string;
@@ -740,14 +791,12 @@ public class UILib implements FSExtension {
         break;
       
       case UIFRAME:
-        FUtils.checkLen(al, 1);
-        if(al.size() == 1)
-          return uiframe(FUtils.str(al, 0), null, 0, 0);
-        else if(al.size() == 2)
-          return uiframe(FUtils.str(al, 0), FUtils.str(al, 1), 0, 0);
-        else if(al.size() == 4)
-          return uiframe(FUtils.str(al, 0), FUtils.str(al, 1), 
-              FUtils._int(al, 2), FUtils._int(al, 3));
+        if(al.size() == 0)
+          return uiframe(null, null);
+        else if(al.size() == 1)
+          return uiframe(FUtils.str(al, 0), null);
+        else if(al.size() > 1)
+          return uiframe(FUtils.str(al, 0), FUtils.str(al, 1));
         break;
         
       case UILABEL:
@@ -765,13 +814,9 @@ public class UILib implements FSExtension {
         
       case UIAREA:
         if(al.size() == 0)
-          return uiarea(null, 0, 0);
+          return uiarea(null);
         else if(al.size() == 1)
-          return uiarea(FUtils.str(al, 0), 0, 0);
-        else if(al.size() == 2)
-          return uiarea(FUtils.str(al, 0), FUtils._int(al, 1), 0);
-        else if(al.size() > 2)
-          return uiarea(FUtils.str(al, 0), FUtils._int(al, 1), FUtils._int(al, 2));
+          return uiarea(FUtils.str(al, 0));
         break;
         
       case UIBUTTON:
@@ -791,9 +836,11 @@ public class UILib implements FSExtension {
         
       case UICOLPANEL:
         if(al.size() == 0)
-          return uicolpanel(-1);
-        else if(al.size() > 0)
-          return uicolpanel(FUtils._int(al, 0));
+          return uicolpanel(-1, null);
+        else if(al.size() == 1)
+          return uicolpanel(FUtils._int(al, 0), null);
+        else if(al.size() > 1)
+          return uicolpanel(FUtils._int(al, 0), FUtils.str(al, 1));
         break;
         
       case UIADD:
@@ -807,6 +854,11 @@ public class UILib implements FSExtension {
           uishow(al.get(0), -1, -1);
         else if(al.size() == 3)
           uishow(al.get(0), FUtils._int(al, 1), FUtils._int(al, 2));
+        break;
+        
+      case UISETSIZE:
+        FUtils.checkLen(al, 3);
+        uisetsize(al.get(0), FUtils._int(al, 1), FUtils._int(al, 2));
         break;
         
       case UIGETTEXT:

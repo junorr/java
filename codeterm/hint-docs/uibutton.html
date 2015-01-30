@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Ambiente Gráfico</div>
+  	
+  	<div class="method">
+  		uibutton( string title, string onclick )
+  	</div>
+  	
+  	<div class="desc">
+  		Cria um botão gráfico de ação.</br>
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>title - Texto a ser exibido no botão</li>
+  			<li>onclick - Função a ser chamada quando o botão for clicado</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+		int nr = 0
+		func onclick() 
+			nr = nr + 1
+			print("O botão foi clicado "+ nr+ " vezes.")
+		endfunc
+		object button = uibutton( "Click me", "onclick" )<br/>
+ 	</div>
+ 		
+  </body>
+ </html>
+      

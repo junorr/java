@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Ambiente Gráfico</div>
+  	
+  	<div class="method">
+  		uicolpanel( int hgap, string align )
+  	</div>
+  	
+  	<div class="desc">
+  		Cria um painel para agregação e organização de outros elementos gráficos.
+		Os elementos adicionados são organizados em colunas dispostas de forma horizontal, 
+		um após o outro de acordo com a ordem que forem adicionados.</br>
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>hgap - Distância horizontal entre os elementos, em pixels</li>
+  			<li>align - Forma de alinhamento dos elementos dentro do painel (LEFT/CENTER/RIGHT)</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+		object label = uilabel( "Nome:" )</br>
+		object text = uitext( "", 150 )</br>
+		object cpanel = uicolpanel( 5, UILEFT )</br>
+		uiadd( cpanel, label )</br>
+		uiadd( cpanel, text )
+ 	</div>
+ 		
+  </body>
+ </html>
+      

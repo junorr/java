@@ -117,6 +117,25 @@
   <string>tncontains</string>
   <string>todouble</string>
   <string>toint</string>
+  <string>UICENTER</string>
+  <string>UILEFT</string>
+  <string>UIRIGHT</string>
+  <string>uiframe</string>
+  <string>uilabel</string>
+  <string>uitext</string>
+  <string>uiarea</string>
+  <string>uibutton</string>
+  <string>uirowpanel</string>
+  <string>uiadd</string>
+  <string>uishow</string>
+  <string>uisettext</string>
+  <string>uigettext</string>
+  <string>uisetselected</string>
+  <string>uigetselected</string>
+  <string>uicheckbox</string>
+  <string>uicombo</string>
+  <string>uiradio</string>
+  <string>uisetsize</string>
   <string>up</string>
   <string>upper</string>
   <string>waitelse</string>
