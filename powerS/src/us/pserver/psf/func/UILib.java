@@ -33,8 +33,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -52,12 +50,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.text.JTextComponent;
@@ -76,7 +74,7 @@ public class UILib implements FSExtension {
   
   public static final String
       DIALOG = "dialog",
-      DELAY = "delay",
+      UIDELAY = "uidelay",
       KEY = "key",
       KEYPRESS = "keypress",
       KEYRELEASE = "keyrelease",
@@ -105,9 +103,9 @@ public class UILib implements FSExtension {
       UIRADIO = "uiradio",
       UISETSIZE = "uisetsize",
       
-      UICENTER = "CENTER",
-      UILEFT = "LEFT",
-      UIRIGHT = "RIGHT",
+      UICENTER = "UICENTER",
+      UILEFT = "UILEFT",
+      UIRIGHT = "UIRIGHT",
       
       SCREEN_WIDTH = "SCREENW",
       SCREEN_HEIGHT = "SCREENH",
@@ -211,8 +209,8 @@ public class UILib implements FSExtension {
   }
   
   
-  public JTextArea uiarea(String text) {
-    return new JTextArea(text);
+  public JScrollPane uiarea(String text) {
+    return new JScrollPane(new JTextArea(text));
   }
   
   
@@ -238,7 +236,7 @@ public class UILib implements FSExtension {
     int ialign = FlowLayout.LEFT;
     if(align != null) {
       switch(align) {
-        case UICENTER:
+        case UICENTER:  
           ialign = FlowLayout.CENTER;
           break;
         case UIRIGHT:
@@ -272,6 +270,15 @@ public class UILib implements FSExtension {
     if(container instanceof Container 
         && o instanceof Component) {
       ((Container)container).add((Component)o);
+    }
+    else if(container instanceof Container 
+        && o instanceof ButtonGroup) {
+      Container cc = (Container) container;
+      ButtonGroup bg = (ButtonGroup) o;
+      Enumeration<AbstractButton> en = bg.getElements();
+      while(en.hasMoreElements()) {
+        cc.add(en.nextElement());
+      }
     }
     else if(container instanceof JComboBox) {
       ((JComboBox)container).addItem(o);
@@ -322,6 +329,9 @@ public class UILib implements FSExtension {
       return;
     if(comp instanceof FSObject)
       comp = ((FSObject)comp).getObject();
+    if(comp instanceof JScrollPane)
+      comp = ((JScrollPane)comp).getViewport().getView();
+    
     if(comp instanceof JFrame) {
       ((JFrame)comp).setTitle(text);
     }
@@ -345,6 +355,9 @@ public class UILib implements FSExtension {
       return null;
     if(comp instanceof FSObject)
       comp = ((FSObject)comp).getObject();
+    if(comp instanceof JScrollPane)
+      comp = ((JScrollPane)comp).getViewport().getView();
+    
     if(comp instanceof JFrame) {
       return ((JFrame)comp).getTitle();
     }
@@ -371,6 +384,7 @@ public class UILib implements FSExtension {
     if(comp == null) return;
     if(comp instanceof FSObject)
       comp = ((FSObject)comp).getObject();
+    
     if(comp instanceof JCheckBox) {
       ((JCheckBox)comp).setSelected(
           (o != null && o.toString().equals("1") ? true : false));
@@ -418,14 +432,16 @@ public class UILib implements FSExtension {
     if(title == null) title = "uicheckbox";
     final JCheckBox cb = new JCheckBox(title);
     if(onselect != null && !onselect.trim().isEmpty()) {
-      cb.addChangeListener(new ChangeListener() {
+      cb.addActionListener(new ActionListener() {
         @Override
-        public void stateChanged(ChangeEvent e) {
+        public void actionPerformed(ActionEvent e) {
           ArrayList al = new ArrayList(1);
           al.add((cb.isSelected() ? 1 : 0));
           try {
-            bio.callScriptFunction(onselect, new ArrayList(1));
-          } catch(FSException | IOException fe) {}
+            bio.callScriptFunction(onselect, al);
+          } catch(FSException | IOException fe) {
+            fe.printStackTrace();
+          }
         }
       });
     }
@@ -441,14 +457,16 @@ public class UILib implements FSExtension {
         cb.addItem(s);
     }
     if(onselect != null && !onselect.trim().isEmpty()) {
-      cb.addItemListener(new ItemListener() {
+      cb.addActionListener(new ActionListener() {
         @Override
-        public void itemStateChanged(ItemEvent e) {
+        public void actionPerformed(ActionEvent e) {
           ArrayList al = new ArrayList(1);
-          al.add(e.getItem().toString());
+          al.add(cb.getSelectedItem().toString());
           try {
-            bio.callScriptFunction(onselect, new ArrayList(1));
-          } catch(FSException | IOException fe) {}
+            bio.callScriptFunction(onselect, al);
+          } catch(FSException | IOException fe) {
+            fe.printStackTrace();
+          }
         }
       });
     }
@@ -462,17 +480,20 @@ public class UILib implements FSExtension {
       for(String n : names) {
         JRadioButton rb = new JRadioButton(n);
         if(onselect != null && !onselect.trim().isEmpty()) {
-          rb.addChangeListener(new ChangeListener() {
+          rb.addActionListener(new ActionListener() {
             @Override
-            public void stateChanged(ChangeEvent e) {
+            public void actionPerformed(ActionEvent e) {
               ArrayList al = new ArrayList(1);
               al.add(uigetselected(bg));
               try {
-                bio.callScriptFunction(onselect, new ArrayList(1));
-              } catch(FSException | IOException fe) {}
+                bio.callScriptFunction(onselect, al);
+              } catch(FSException | IOException fe) {
+                fe.printStackTrace();
+              }
             }
           });
         }
+        bg.add(rb);
       }
     }
     return bg;
@@ -484,6 +505,7 @@ public class UILib implements FSExtension {
       return;
     if(comp instanceof FSObject)
       comp = ((FSObject)comp).getObject();
+    
     if(comp instanceof Component) {
       Dimension d = new Dimension(width, height);
       ((Component)comp).setSize(d);
@@ -602,7 +624,6 @@ public class UILib implements FSExtension {
   public void writestr(String str) {
     if(str == null || str.isEmpty())
       return;
-    //System.out.print("* typing...\n>> ");
     for(int i = 0; i < str.length(); i++) {
       System.out.print(str.substring(i, i+1));
       try { key(str.substring(i, i+1)); }
@@ -743,7 +764,7 @@ public class UILib implements FSExtension {
   @Override
   public Object callFunction(String string, ArrayList al) throws FSException {
     switch(string) {
-      case DELAY:
+      case UIDELAY:
         FUtils.checkLen(al, 1);
         delay(FUtils._int(al, 0));
         break;

@@ -98,7 +98,9 @@ public class JobsManager {
    */
   public synchronized JobsManager sort() {
     if(list.isEmpty()) return this;
-    list.sort(this::compare);
+    try {
+      list.sort(this::compare);
+    } catch(Exception e) {}
     return this;
   }
   

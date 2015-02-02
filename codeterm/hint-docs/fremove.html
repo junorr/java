@@ -42,31 +42,25 @@
   </head>
   
   <body>
-  	<div class="title">Funcoes de Texto</div>
+  	<div class="title">Funcoes de Leitura/Escrita (I/O)</div>
   	
   	<div class="method">
-  		concat( string ... args )
+  		fremove( string arq )
   	</div>
   	
   	<div class="desc">
-  		Concatena os argumentos em um texto (string) unico.<br/>
-  		<i>Argumentos/Retorno:</i>
+  		Exclui/Deleta definitivamente o arquivo informado.<br/> 
+  		<i>Argumentos:</i>
   		<ul>
-  			<li>args - Lista de strings separadas por ','</li>
-  			<li>return - string concatenada</li>
+  			<li>arq - Nome do arquivo</li>
   		</ul>
   	</div>
   	
   	<div class="desc"><b>Exemplo:</b></div>
   	<div class="example">
- 			string texto = concat( "Joao ", "Ninguem" )<br/>
- 			<span class="comment">
- 				//Imprime no console
- 			</span><br/>
- 			print("'" + texto + "'")<br/>
- 			&gt;&nbsp;'Joao Ninguem'
- 		</div>
+		string arquivo = "c:/dados.csv"<br/>
+		fremove( arquivo )
+	</div>
  		
   </body>
  </html>
-      

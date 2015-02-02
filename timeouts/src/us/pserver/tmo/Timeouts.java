@@ -103,8 +103,8 @@ public class Timeouts implements ParserListener {
             Files.newInputStream(
             p, StandardOpenOption.READ)));
         list.forEach(this::set);
-        list.forEach(sp->cron.put(sp.schedule(), sp.job()));
-      log.debug("Timeouts Loaded!");
+        updateCron();
+        log.debug("Timeouts Loaded!");
       } catch(IOException e) {
         log.error("Error loading config file");
         log.error(e.toString());
@@ -181,7 +181,7 @@ public class Timeouts implements ParserListener {
     ScriptPair sp = new ScriptPair(sched, new ScriptJob(script, sexec));
     list.add(set(sp));
     save();
-    cron.put(sched, sp.job());
+    updateCron();
   }
   
   
@@ -193,7 +193,7 @@ public class Timeouts implements ParserListener {
     if(!isRunning()) start();
     list.add(set(p));
     save();
-    cron.put(p.schedule(), p.job());
+    updateCron();
   }
   
   
@@ -227,7 +227,10 @@ public class Timeouts implements ParserListener {
   public ScriptPair get(int index) {
     if(index < 0 || index >= list.size()) 
       return null;
-    return list.get(index);
+    ScriptPair sp = null;
+    if(index >= 0 && index < list.size())
+      sp = list.get(index);
+    return sp;
   }
   
 }

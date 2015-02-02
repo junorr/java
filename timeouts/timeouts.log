@@ -529,3 +529,260 @@
 [INFO ] (29/01/2015 16:44:30): Timeouts Started!
 [INFO ] (29/01/2015 16:44:39): SimpleCron Stopped!
 [DEBUG] (29/01/2015 16:44:39): Timeouts Saved!
+[INFO ] (02/02/2015 15:19:26): SimpleCron Started!
+[DEBUG] (02/02/2015 15:19:26): Timeouts Loaded!
+[INFO ] (02/02/2015 15:19:26): Timeouts Started!
+[DEBUG] (02/02/2015 15:20:17): Timeouts Saved!
+[INFO ] (02/02/2015 15:20:17): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:20:17): Job inserted: saida @ 02/02/2015 17:35:00 [Repeat: 1 DAY]
+[INFO ] (02/02/2015 15:20:17): SimpleCron Started!
+[INFO ] (02/02/2015 15:20:17): SimpleCron Started!
+[INFO ] (02/02/2015 15:20:17): Schedule Added
+[DEBUG] (02/02/2015 15:20:46): Timeouts Saved!
+[INFO ] (02/02/2015 15:20:46): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:20:46): Job inserted: saida @ 02/02/2015 17:35:00 [Repeat: 1 DAY]
+[INFO ] (02/02/2015 15:20:46): SimpleCron Started!
+[DEBUG] (02/02/2015 15:20:46): Job inserted: test.txt @ 02/02/2015 15:21:00 [Repeat: 1 MINUTE]
+[INFO ] (02/02/2015 15:20:46): SimpleCron Started!
+[INFO ] (02/02/2015 15:20:46): Schedule Added
+[DEBUG] (02/02/2015 15:21:17): Timeouts Saved!
+[INFO ] (02/02/2015 15:21:17): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:21:17): Job inserted: saida @ 02/02/2015 17:35:00 [Repeat: 1 DAY]
+[INFO ] (02/02/2015 15:21:17): SimpleCron Started!
+[DEBUG] (02/02/2015 15:21:17): Job inserted: test.txt @ 02/02/2015 15:22:00 [Repeat: 1 MINUTE]
+[DEBUG] (02/02/2015 15:21:17): Job inserted: import-test.txt @ 02/02/2015 15:22:00 [Repeat: 2 MINUTE]
+[INFO ] (02/02/2015 15:21:17): SimpleCron Started!
+[INFO ] (02/02/2015 15:21:17): Schedule Added
+[DEBUG] (02/02/2015 15:21:47): Timeouts Saved!
+[INFO ] (02/02/2015 15:21:47): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:21:47): Job inserted: saida @ 02/02/2015 17:35:00 [Repeat: 1 DAY]
+[INFO ] (02/02/2015 15:21:47): SimpleCron Started!
+[DEBUG] (02/02/2015 15:21:47): Job inserted: test.txt @ 02/02/2015 15:22:00 [Repeat: 1 MINUTE]
+[DEBUG] (02/02/2015 15:21:47): Job inserted: import-test.txt @ 02/02/2015 15:22:00 [Repeat: 2 MINUTE]
+[DEBUG] (02/02/2015 15:21:47): Job inserted: uitest.txt @ 02/02/2015 15:23:00 [Repeat: 5 MINUTE]
+[INFO ] (02/02/2015 15:21:47): SimpleCron Started!
+[INFO ] (02/02/2015 15:21:47): Schedule Added
+[ERROR] (02/02/2015 15:22:02): Edit Canceled
+[DEBUG] (02/02/2015 15:24:12): Timeouts Saved!
+[INFO ] (02/02/2015 15:24:12): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:24:12): Job inserted: saida @ 02/02/2015 17:35:00 [Repeat: 1 DAY]
+[INFO ] (02/02/2015 15:24:12): SimpleCron Started!
+[DEBUG] (02/02/2015 15:24:12): Job inserted: test.txt @ 02/02/2015 15:25:00 [Repeat: 1 MINUTE]
+[DEBUG] (02/02/2015 15:24:12): Job inserted: ! import-test.txt @ 02/02/2015 15:26:00 [Repeat: 2 MINUTE]
+[DEBUG] (02/02/2015 15:24:12): Job inserted: uitest.txt @ 02/02/2015 15:28:00 [Repeat: 5 MINUTE]
+[INFO ] (02/02/2015 15:24:12): SimpleCron Started!
+[INFO ] (02/02/2015 15:24:12): Schedule Edited
+[ERROR] (02/02/2015 15:24:47): Edit Canceled
+[ERROR] (02/02/2015 15:24:54): Edit Canceled
+[ERROR] (02/02/2015 15:24:57): Edit Canceled
+[ERROR] (02/02/2015 15:25:02): Edit Canceled
+[ERROR] (02/02/2015 15:25:08): Edit Canceled
+[DEBUG] (02/02/2015 15:25:48): Timeouts Saved!
+[INFO ] (02/02/2015 15:25:48): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:25:48): Job inserted: saida @ 02/02/2015 17:35:00 [Repeat: 1 DAY]
+[INFO ] (02/02/2015 15:25:48): SimpleCron Started!
+[DEBUG] (02/02/2015 15:25:48): Job inserted: test.txt @ 02/02/2015 15:26:00 [Repeat: 1 MINUTE]
+[DEBUG] (02/02/2015 15:25:48): Job inserted: ! import-test.txt @ 02/02/2015 15:26:00 [Repeat: 2 MINUTE]
+[DEBUG] (02/02/2015 15:25:48): Job inserted: uitest.txt @ 02/02/2015 15:28:00 [Repeat: 5 MINUTE]
+[DEBUG] (02/02/2015 15:25:48): Job inserted: saida @ 02/02/2015 15:26:00 [Repeat: 2 MINUTE]
+[INFO ] (02/02/2015 15:25:48): SimpleCron Started!
+[INFO ] (02/02/2015 15:25:48): Schedule Added
+[ERROR] (02/02/2015 15:25:55): Edit Canceled
+[ERROR] (02/02/2015 15:25:59): Edit Canceled
+[ERROR] (02/02/2015 15:26:05): Edit Canceled
+[ERROR] (02/02/2015 15:26:15): Edit Canceled
+[INFO ] (02/02/2015 15:26:38): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:26:38): Timeouts Saved!
+[DEBUG] (02/02/2015 15:47:25): Job inserted: saida @ 02/02/2015 17:35:00 [Repeat: 1 DAY]
+[INFO ] (02/02/2015 15:47:25): SimpleCron Started!
+[DEBUG] (02/02/2015 15:47:25): Job inserted: test.txt @ 02/02/2015 15:48:00 [Repeat: 1 MINUTE]
+[DEBUG] (02/02/2015 15:47:25): Job inserted: ! import-test.txt @ 02/02/2015 15:48:00 [Repeat: 2 MINUTE]
+[DEBUG] (02/02/2015 15:47:25): Job inserted: uitest.txt @ 02/02/2015 15:48:00 [Repeat: 5 MINUTE]
+[DEBUG] (02/02/2015 15:47:25): Job inserted: saida @ 02/02/2015 15:48:00 [Repeat: 2 MINUTE]
+[INFO ] (02/02/2015 15:47:25): SimpleCron Started!
+[DEBUG] (02/02/2015 15:47:25): Timeouts Loaded!
+[INFO ] (02/02/2015 15:47:25): Timeouts Started!
+[DEBUG] (02/02/2015 15:47:33): Timeouts Saved!
+[INFO ] (02/02/2015 15:47:33): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:47:33): Job inserted: saida @ 02/02/2015 17:35:00 [Repeat: 1 DAY]
+[INFO ] (02/02/2015 15:47:33): SimpleCron Started!
+[DEBUG] (02/02/2015 15:47:33): Job inserted: test.txt @ 02/02/2015 15:48:00 [Repeat: 1 MINUTE]
+[DEBUG] (02/02/2015 15:47:33): Job inserted: ! import-test.txt @ 02/02/2015 15:48:00 [Repeat: 2 MINUTE]
+[DEBUG] (02/02/2015 15:47:33): Job inserted: uitest.txt @ 02/02/2015 15:48:00 [Repeat: 5 MINUTE]
+[INFO ] (02/02/2015 15:47:33): SimpleCron Started!
+[INFO ] (02/02/2015 15:47:33): Schedule Removed
+[DEBUG] (02/02/2015 15:47:36): Timeouts Saved!
+[INFO ] (02/02/2015 15:47:36): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:47:36): Job inserted: saida @ 02/02/2015 17:35:00 [Repeat: 1 DAY]
+[INFO ] (02/02/2015 15:47:36): SimpleCron Started!
+[DEBUG] (02/02/2015 15:47:36): Job inserted: test.txt @ 02/02/2015 15:48:00 [Repeat: 1 MINUTE]
+[DEBUG] (02/02/2015 15:47:36): Job inserted: uitest.txt @ 02/02/2015 15:48:00 [Repeat: 5 MINUTE]
+[INFO ] (02/02/2015 15:47:36): SimpleCron Started!
+[INFO ] (02/02/2015 15:47:36): Schedule Removed
+[DEBUG] (02/02/2015 15:47:38): Timeouts Saved!
+[INFO ] (02/02/2015 15:47:38): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:47:38): Job inserted: saida @ 02/02/2015 17:35:00 [Repeat: 1 DAY]
+[INFO ] (02/02/2015 15:47:38): SimpleCron Started!
+[DEBUG] (02/02/2015 15:47:38): Job inserted: uitest.txt @ 02/02/2015 15:48:00 [Repeat: 5 MINUTE]
+[INFO ] (02/02/2015 15:47:38): SimpleCron Started!
+[INFO ] (02/02/2015 15:47:38): Schedule Removed
+[DEBUG] (02/02/2015 15:47:39): Timeouts Saved!
+[INFO ] (02/02/2015 15:47:39): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:47:39): Job inserted: uitest.txt @ 02/02/2015 15:48:00 [Repeat: 5 MINUTE]
+[INFO ] (02/02/2015 15:47:39): SimpleCron Started!
+[INFO ] (02/02/2015 15:47:39): SimpleCron Started!
+[INFO ] (02/02/2015 15:47:39): Schedule Removed
+[INFO ] (02/02/2015 15:48:00): Running Script...
+[INFO ] (02/02/2015 15:48:00): Execution Finished
+[DEBUG] (02/02/2015 15:48:12): Timeouts Saved!
+[INFO ] (02/02/2015 15:48:12): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:48:12): Job inserted: ! uitest.txt @ 02/02/2015 15:53:00 [Repeat: 5 MINUTE]
+[INFO ] (02/02/2015 15:48:12): SimpleCron Started!
+[INFO ] (02/02/2015 15:48:12): SimpleCron Started!
+[INFO ] (02/02/2015 15:48:12): Schedule Edited
+[INFO ] (02/02/2015 15:48:17): Running Script...
+[INFO ] (02/02/2015 15:48:17): Execution Finished
+[INFO ] (02/02/2015 15:48:36): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:48:36): Timeouts Saved!
+[DEBUG] (02/02/2015 15:50:15): Job inserted: ! uitest.txt @ 02/02/2015 15:53:00 [Repeat: 5 MINUTE]
+[INFO ] (02/02/2015 15:50:15): SimpleCron Started!
+[INFO ] (02/02/2015 15:50:15): SimpleCron Started!
+[DEBUG] (02/02/2015 15:50:15): Timeouts Loaded!
+[INFO ] (02/02/2015 15:50:15): Timeouts Started!
+[INFO ] (02/02/2015 15:50:29): Running Script...
+[INFO ] (02/02/2015 15:50:29): Execution Finished
+[INFO ] (02/02/2015 15:50:59): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:50:59): Timeouts Saved!
+[DEBUG] (02/02/2015 15:51:37): Job inserted: ! uitest.txt @ 02/02/2015 15:53:00 [Repeat: 5 MINUTE]
+[INFO ] (02/02/2015 15:51:37): SimpleCron Started!
+[INFO ] (02/02/2015 15:51:37): SimpleCron Started!
+[DEBUG] (02/02/2015 15:51:37): Timeouts Loaded!
+[INFO ] (02/02/2015 15:51:37): Timeouts Started!
+[INFO ] (02/02/2015 15:51:50): Running Script...
+[INFO ] (02/02/2015 15:51:50): Execution Finished
+[INFO ] (02/02/2015 15:52:43): Running Script...
+[INFO ] (02/02/2015 15:52:43): Execution Finished
+[DEBUG] (02/02/2015 15:53:13): Timeouts Saved!
+[INFO ] (02/02/2015 15:53:13): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:53:13): Job inserted: ! uitest.txt @ 02/02/2015 15:58:00 [Repeat: disabled]
+[INFO ] (02/02/2015 15:53:13): SimpleCron Started!
+[INFO ] (02/02/2015 15:53:13): SimpleCron Started!
+[INFO ] (02/02/2015 15:53:13): Schedule Edited
+[INFO ] (02/02/2015 15:56:13): SimpleCron Stopped!
+[DEBUG] (02/02/2015 15:56:13): Timeouts Saved!
+[INFO ] (02/02/2015 16:09:06): SimpleCron Started!
+[DEBUG] (02/02/2015 16:09:06): Timeouts Loaded!
+[INFO ] (02/02/2015 16:09:06): Timeouts Started!
+[INFO ] (02/02/2015 16:10:08): Running Script...
+[ERROR] (02/02/2015 16:10:09): murlen.util.fscript.FSException: 
+	Unrecognized External: UICENTER
+ at line:13 
+			  endfunc
+			  object button = uibutton("Click", "onclick")
+			> object panel = uicolpanel(5, UICENTER) <
+			  uisetsize(button, 100, 30)
+			  uiadd(panel, button)
+		 current token:TT_WORD:UICENTER
+		 Variable dump:{button=FSObject Containing - javax.swing.JButton[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.5,border=javax.swing.plaf.synth.SynthBorder@6a2119a1,flags=288,maximumSize=,minimumSize=,preferredSize=,defaultIcon=,disabledIcon=,disabledSelectedIcon=,margin=javax.swing.plaf.InsetsUIResource[top=0,left=0,bottom=0,right=0],paintBorder=true,paintFocus=true,pressedIcon=,rolloverEnabled=true,rolloverIcon=,rolloverSelectedIcon=,selectedIcon=,text=Click,defaultCapable=true], rowpanel=FSObject Containing - javax.swing.JPanel[,0,0,0x0,invalid,layout=java.awt.GridLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@1c47d365,flags=9,maximumSize=,minimumSize=,preferredSize=], label=FSObject Containing - javax.swing.JLabel[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@7eb4cc59,flags=8388608,maximumSize=,minimumSize=,preferredSize=,defaultIcon=,disabledIcon=,horizontalAlignment=LEADING,horizontalTextPosition=TRAILING,iconTextGap=4,labelFor=,text=Name:,verticalAlignment=CENTER,verticalTextPosition=CENTER], text=FSObject Containing - javax.swing.JTextField[,0,0,0x0,invalid,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@23b4537f,flags=288,maximumSize=,minimumSize=,preferredSize=java.awt.Dimension[width=150,height=27],caretColor=,disabledTextColor=DerivedColor(color=142,143,145 parent=nimbusDisabledText offsets=0.0,0.0,0.0,0 pColor=142,143,145,editable=true,margin=javax.swing.plaf.InsetsUIResource[top=0,left=0,bottom=0,right=0],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=DerivedColor(color=57,105,138 parent=nimbusSelectionBackground offsets=0.0,0.0,0.0,0 pColor=57,105,138,columns=0,columnWidth=0,command=,horizontalAlignment=LEADING], panel=<null>, frame=FSObject Containing - javax.swing.JFrame[frame0,960,553,1x1,invalid,hidden,layout=java.awt.BorderLayout,title=My Frame,resizable,normal,defaultCloseOperation=DISPOSE_ON_CLOSE,rootPane=javax.swing.JRootPane[,0,0,0x0,invalid,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@413abab9,flags=16777673,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true], colpanel=FSObject Containing - javax.swing.JPanel[,0,0,0x0,invalid,layout=java.awt.FlowLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@63448500,flags=9,maximumSize=,minimumSize=,preferredSize=]}
+[INFO ] (02/02/2015 16:10:09): Execution Finished
+[INFO ] (02/02/2015 16:11:45): SimpleCron Stopped!
+[DEBUG] (02/02/2015 16:11:45): Timeouts Saved!
+[INFO ] (02/02/2015 16:12:05): SimpleCron Started!
+[DEBUG] (02/02/2015 16:12:05): Timeouts Loaded!
+[INFO ] (02/02/2015 16:12:05): Timeouts Started!
+[INFO ] (02/02/2015 16:12:13): Running Script...
+[INFO ] (02/02/2015 16:12:13): Execution Finished
+[INFO ] (02/02/2015 16:13:18): Running Script...
+[INFO ] (02/02/2015 16:13:18): Execution Finished
+[INFO ] (02/02/2015 16:15:16): SimpleCron Stopped!
+[DEBUG] (02/02/2015 16:15:16): Timeouts Saved!
+[INFO ] (02/02/2015 16:15:24): SimpleCron Started!
+[DEBUG] (02/02/2015 16:15:24): Timeouts Loaded!
+[INFO ] (02/02/2015 16:15:24): Timeouts Started!
+[INFO ] (02/02/2015 16:17:06): Running Script...
+[INFO ] (02/02/2015 16:17:06): Execution Finished
+[INFO ] (02/02/2015 16:17:44): SimpleCron Stopped!
+[DEBUG] (02/02/2015 16:17:44): Timeouts Saved!
+[INFO ] (02/02/2015 16:21:56): SimpleCron Started!
+[DEBUG] (02/02/2015 16:21:56): Timeouts Loaded!
+[INFO ] (02/02/2015 16:21:56): Timeouts Started!
+[INFO ] (02/02/2015 16:22:04): Running Script...
+[INFO ] (02/02/2015 16:22:04): Execution Finished
+[INFO ] (02/02/2015 16:24:26): Running Script...
+[INFO ] (02/02/2015 16:24:26): Execution Finished
+[INFO ] (02/02/2015 16:24:48): SimpleCron Stopped!
+[DEBUG] (02/02/2015 16:24:48): Timeouts Saved!
+[INFO ] (02/02/2015 16:40:39): SimpleCron Started!
+[DEBUG] (02/02/2015 16:40:39): Timeouts Loaded!
+[INFO ] (02/02/2015 16:40:39): Timeouts Started!
+[INFO ] (02/02/2015 16:41:08): Running Script...
+[INFO ] (02/02/2015 16:41:08): Execution Finished
+[INFO ] (02/02/2015 16:45:35): SimpleCron Started!
+[DEBUG] (02/02/2015 16:45:35): Timeouts Loaded!
+[INFO ] (02/02/2015 16:45:35): Timeouts Started!
+[INFO ] (02/02/2015 16:45:41): Running Script...
+[INFO ] (02/02/2015 16:45:41): Execution Finished
+[INFO ] (02/02/2015 16:45:53): SimpleCron Stopped!
+[DEBUG] (02/02/2015 16:45:53): Timeouts Saved!
+[INFO ] (02/02/2015 16:46:35): SimpleCron Started!
+[DEBUG] (02/02/2015 16:46:35): Timeouts Loaded!
+[INFO ] (02/02/2015 16:46:35): Timeouts Started!
+[INFO ] (02/02/2015 16:46:42): Running Script...
+[INFO ] (02/02/2015 16:46:42): Execution Finished
+[INFO ] (02/02/2015 16:48:25): SimpleCron Started!
+[DEBUG] (02/02/2015 16:48:25): Timeouts Loaded!
+[INFO ] (02/02/2015 16:48:25): Timeouts Started!
+[INFO ] (02/02/2015 16:48:30): Running Script...
+[INFO ] (02/02/2015 16:48:30): Execution Finished
+[INFO ] (02/02/2015 16:50:33): SimpleCron Started!
+[DEBUG] (02/02/2015 16:50:33): Timeouts Loaded!
+[INFO ] (02/02/2015 16:50:33): Timeouts Started!
+[INFO ] (02/02/2015 16:50:38): Running Script...
+[INFO ] (02/02/2015 16:50:38): Execution Finished
+[DEBUG] (02/02/2015 17:01:39): Timeouts Saved!
+[INFO ] (02/02/2015 17:01:39): SimpleCron Stopped!
+[INFO ] (02/02/2015 17:01:39): SimpleCron Started!
+[INFO ] (02/02/2015 17:01:39): Schedule Added
+[INFO ] (02/02/2015 17:01:44): Running Script...
+[ERROR] (02/02/2015 17:01:44): murlen.util.fscript.FSException: 
+	fcopy( /home/juno/nbconf2.zip): Invalid dst Path
+ at line:2 
+			  string f1 = "/home/juno/nbconf.zip"
+			  string f2 = "/home/juno/nbconf2.zip"
+			> fcopy(f1, f2) <
+			  
+			  
+		 current token:):null
+		 Variable dump:{f1=/home/juno/nbconf.zip, f2=/home/juno/nbconf2.zip}
+[INFO ] (02/02/2015 17:01:44): Execution Finished
+[INFO ] (02/02/2015 17:02:25): SimpleCron Stopped!
+[DEBUG] (02/02/2015 17:02:25): Timeouts Saved!
+[INFO ] (02/02/2015 17:03:04): SimpleCron Started!
+[DEBUG] (02/02/2015 17:03:04): Timeouts Loaded!
+[INFO ] (02/02/2015 17:03:04): Timeouts Started!
+[INFO ] (02/02/2015 17:03:47): Running Script...
+[INFO ] (02/02/2015 17:03:47): Execution Finished
+[INFO ] (02/02/2015 17:05:11): Running Script...
+[INFO ] (02/02/2015 17:05:11): Execution Finished
+[INFO ] (02/02/2015 17:13:49): Running Script...
+[INFO ] (02/02/2015 17:13:49): Execution Finished
+[INFO ] (02/02/2015 17:15:58): Running Script...
+[INFO ] (02/02/2015 17:15:58): Execution Finished
+[INFO ] (02/02/2015 17:16:11): SimpleCron Stopped!
+[DEBUG] (02/02/2015 17:16:11): Timeouts Saved!
+[INFO ] (02/02/2015 17:16:17): SimpleCron Started!
+[DEBUG] (02/02/2015 17:16:17): Timeouts Loaded!
+[INFO ] (02/02/2015 17:16:17): Timeouts Started!
+[INFO ] (02/02/2015 17:16:21): Running Script...
+[INFO ] (02/02/2015 17:16:21): Execution Finished
+[INFO ] (02/02/2015 17:17:50): Running Script...
+[INFO ] (02/02/2015 17:17:50): Execution Finished
+[INFO ] (02/02/2015 17:18:08): SimpleCron Stopped!
+[DEBUG] (02/02/2015 17:18:08): Timeouts Saved!
+[INFO ] (02/02/2015 17:19:02): SimpleCron Started!
+[DEBUG] (02/02/2015 17:19:02): Timeouts Loaded!
+[INFO ] (02/02/2015 17:19:02): Timeouts Started!
+[INFO ] (02/02/2015 17:19:12): Running Script...
+[INFO ] (02/02/2015 17:19:12): Execution Finished
+[INFO ] (02/02/2015 17:28:45): SimpleCron Stopped!
+[DEBUG] (02/02/2015 17:28:45): Timeouts Saved!

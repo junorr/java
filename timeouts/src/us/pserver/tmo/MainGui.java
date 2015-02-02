@@ -63,6 +63,7 @@ public class MainGui extends javax.swing.JFrame {
     jlist.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
+        selected = jlist.locationToIndex(e.getPoint());
         if(e.getClickCount() >= 2) {
           editSchedule();
         }
@@ -159,7 +160,7 @@ public class MainGui extends javax.swing.JFrame {
         this, 
         "Are you sure do you want to RUN this script NOW?", 
         "Run Script", 
-        JOptionPane.YES_NO_CANCEL_OPTION);
+        JOptionPane.YES_NO_OPTION);
     if(opt != JOptionPane.YES_OPTION) {
       log.info("Script run canceled!");
       return;
@@ -178,7 +179,7 @@ public class MainGui extends javax.swing.JFrame {
   
   
   private void viewScript() {
-    this.checkSelected();
+    if(!checkSelected()) return;
     FrameEditor fe = new FrameEditor();
     Point p = this.getLocationOnScreen();
     fe.setLocation(p.x + this.getWidth() + 2, p.y);

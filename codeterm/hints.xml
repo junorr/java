@@ -67,6 +67,11 @@
   <string>fwclose</string>
   <string>fwimage</string>
   <string>fwrite</string>
+  <string>fsize</string>
+  <string>fremove</string>
+  <string>fcopy</string>
+  <string>isEOF</string>
+  <string>iread</string>
   <string>getday</string>
   <string>gethour</string>
   <string>getmin</string>
@@ -126,6 +131,7 @@
   <string>uiarea</string>
   <string>uibutton</string>
   <string>uirowpanel</string>
+  <string>uicolpanel</string>
   <string>uiadd</string>
   <string>uishow</string>
   <string>uisettext</string>
@@ -136,6 +142,8 @@
   <string>uicombo</string>
   <string>uiradio</string>
   <string>uisetsize</string>
+  <string>uidelay</string>
+  <string>uipassword</string>
   <string>up</string>
   <string>upper</string>
   <string>waitelse</string>

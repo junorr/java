@@ -237,10 +237,32 @@ public class IOLib implements FSExtension {
     if(p == null || !Files.exists(p))
       throw new FSException("fsize( "+ path+ "): Invalid Path");
     try {
-      return (int) Files.size(p);
+      if(Files.isDirectory(p))
+        return fsizedir(p);
+      else
+        return (int) Files.size(p);
     } catch(IOException e) {
       throw new FSException(e.toString());
     }
+  }
+  
+  
+  public int fsizedir(Path path) throws FSException {
+    if(path == null || !Files.exists(path))
+      throw new FSException("fsize( "+ path+ "): Invalid Path");
+    
+    if(!Files.isDirectory(path))
+      return fsize(path.toString());
+    
+    File[] fs = path.toFile().listFiles();
+    long size = 0;
+    for(File f : fs) {
+      if(f.isDirectory())
+        size += fsizedir(f.toPath());
+      else
+        size += f.length();
+    }
+    return (int) size;
   }
   
   
@@ -255,8 +277,6 @@ public class IOLib implements FSExtension {
       throw new FSException("fcopy( "+ ps+ "): Invalid src Path");
     
     Path pd = Paths.get(dst);
-    if(pd == null || !Files.exists(pd))
-      throw new FSException("fcopy( "+ pd+ "): Invalid dst Path");
     
     try {
       if(Files.isDirectory(ps))
@@ -326,6 +346,7 @@ public class IOLib implements FSExtension {
       else
         f.delete();
     }
+    dir.toFile().delete();
   }
   
   
