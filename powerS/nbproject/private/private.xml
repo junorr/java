@@ -5,7 +5,9 @@
         <group>
             <file>file:/storage/java/powerS/src/us/pserver/psf/func/TN3270Lib.java</file>
             <file>file:/storage/java/powerS/src/us/pserver/psf/func/CronLib.java</file>
+            <file>file:/storage/java/powerS/src/us/pserver/psf/func/IOLib.java</file>
             <file>file:/storage/java/powerS/src/us/pserver/psf/ScriptProcessor.java</file>
+            <file>file:/storage/java/powerS/src/us/pserver/psf/func/UILib.java</file>
         </group>
     </open-files>
 </project-private>

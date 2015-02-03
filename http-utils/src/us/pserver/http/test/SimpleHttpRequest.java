@@ -45,11 +45,11 @@ public class SimpleHttpRequest {
     build.put(new HeaderProxyAuth("f6036477:00000000"));
     build.put(new HttpEnclosedObject("Some String object"));
     build.writeContent(System.out);
-    
+    /*
     System.out.println("-------------------------------");
     Socket sock = new Socket("172.24.75.19", 6060);
     build.writeContent(sock.getOutputStream());
-    StreamUtils.transfer(sock.getInputStream(), System.out);
+    StreamUtils.transfer(sock.getInputStream(), System.out);*/
   }
   
 }

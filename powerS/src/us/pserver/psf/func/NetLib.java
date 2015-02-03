@@ -21,19 +21,22 @@
 
 package us.pserver.psf.func;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import murlen.util.fscript.BasicIO;
 import murlen.util.fscript.FSException;
+import murlen.util.fscript.FSFastExtension;
 import murlen.util.fscript.FSFunctionExtension;
 import murlen.util.fscript.FSObject;
 import murlen.util.fscript.FSUnsupportedException;
+import us.pserver.cdr.b64.Base64StringCoder;
+import static us.pserver.psf.func.CronLib.SCHEDULE;
 
 /**
  *
@@ -51,7 +54,8 @@ public class NetLib implements FSFunctionExtension {
       TCPWRITELN = "tcpwriteln",
       TCPREAD = "tcpread",
       TCPWRITE = "tcpwrite",
-      TCPCLOSE = "tcpclose";
+      TCPCLOSE = "tcpclose",
+      HTTPGET = "httpget";
   
   
   private BasicIO bio;
@@ -61,6 +65,63 @@ public class NetLib implements FSFunctionExtension {
     if(bio == null)
       throw new IllegalArgumentException("Invalid BasicIO: "+ bio);
     this.bio = bio;
+  }
+  
+  
+  public Socket httpget(String address, int port) throws FSException {
+    return httpget(address, port, null, 0, null);
+  }
+  
+  
+  public Socket httpget(String address, int port, String proxyAddr, int proxyPort, String proxyAuth) throws FSException {
+    if(address == null || address.trim().isEmpty()
+        || port <= 0 || port > 65535) {
+      throw new FSException("httpget( "
+          + address+ ":"+ port+ " ): Invalid Address/Port");
+    }
+    
+    String proto = "";
+    String mainaddr = null;
+    String compl = null;
+    int start = 0;
+    int end = 0;
+    
+    if(address.contains("://")) {
+      start = address.indexOf("://") + 3;
+      proto = address.substring(0, start);
+    }
+    if(address.indexOf("/", start) > 0) {
+      end = address.indexOf("/", start);
+    } else {
+      address += "/";
+      end = address.indexOf("/", start);
+    }
+    
+    mainaddr = address.substring(start, end);
+    compl = address.substring(end);
+    
+    Socket sock = null;
+    if(proxyAddr != null && !proxyAddr.trim().isEmpty()) {
+      sock = tcpconnect(proxyAddr, proxyPort);
+    }
+    else {
+      sock = tcpconnect(mainaddr, port);
+    }
+    
+    String req = "GET " + proto + mainaddr + ":" + String.valueOf(port) + compl + " HTTP/1.0";
+    
+    tcpwriteln(sock, req);
+    tcpwriteln(sock, "User-Agent: Mozilla/5.0");
+    tcpwriteln(sock, "Accept: text/html, text/xml, application/octet-stream");
+    tcpwriteln(sock, "Accept-Encoding: deflate");
+    tcpwriteln(sock, "Connection: close");
+    tcpwriteln(sock, "Host: "+ mainaddr+ ":"+ String.valueOf(port));
+    if(proxyAuth != null && !proxyAuth.trim().isEmpty()) {
+      Base64StringCoder cdr = new Base64StringCoder();
+      tcpwriteln(sock, "Proxy-Authorization: Basic "+ cdr.encode(proxyAuth));
+    }
+    tcpwriteln(sock, "\n\n");
+    return sock;
   }
   
   
@@ -147,14 +208,26 @@ public class NetLib implements FSFunctionExtension {
   }
   
   
-  public int tcpwriteln(Object socket, String cont) throws FSException {
-    Socket sock = get(socket, Socket.class);
+  public int tcpwriteln(Object socket, String ln) throws FSException {
+    if(ln == null) return 0;
+    if(socket instanceof FSObject) {
+      socket = ((FSObject)socket).getObject();
+    }
     
     try {
-      PrintStream ps = new PrintStream(
-          sock.getOutputStream());
-      ps.println(cont);
-      ps.flush();
+      OutputStream out = null;
+      if(socket instanceof Socket) {
+        out = ((Socket)socket).getOutputStream();
+      }
+      else if(socket instanceof HttpURLConnection) {
+        out = ((HttpURLConnection)socket).getOutputStream();
+      }
+      else {
+        throw new FSException("tcpwriteln( >"
+            + socket+ "<, "+ ln+ " ): Invalid Argument Type");
+      }
+      System.out.println(ln);
+      out.write((ln + "\n").getBytes("UTF-8"));
       return 1;
     } 
     catch(IOException e) {
@@ -164,12 +237,35 @@ public class NetLib implements FSFunctionExtension {
   
   
   public String tcpreadln(Object socket) throws FSException {
-    Socket sock = get(socket, Socket.class);
+    if(socket instanceof FSObject) {
+      socket = ((FSObject)socket).getObject();
+    }
     
     try {
-      BufferedReader br = new BufferedReader(
-          new InputStreamReader(sock.getInputStream()));
-      return br.readLine();
+      InputStream in = null;
+      if(socket instanceof Socket) {
+        in = ((Socket)socket).getInputStream();
+      }
+      else if(socket instanceof HttpURLConnection) {
+        in = ((HttpURLConnection)socket).getInputStream();
+      }
+      else {
+        throw new FSException("tcpreadln( "
+            + socket+ " ): Invalid Argument Type");
+      }
+      
+      byte[] bs = new byte[1];
+      StringBuffer sb = new StringBuffer();
+      int read = -1;
+      while((read = in.read(bs)) > 0) {
+        sb.append(new String(bs, 0, read, "UTF-8"));
+        if(sb.toString().contains("\n") || read < bs.length)
+          break;
+      }
+      if(sb.toString().contains("\n")) {
+        return sb.toString().substring(0, sb.indexOf("\n"));
+      }
+      return (sb.toString().trim().isEmpty() ? IOLib.EOF : sb.toString());
     }
     catch(IOException e) {
       throw new FSException(e.toString());
@@ -178,10 +274,10 @@ public class NetLib implements FSFunctionExtension {
   
   
   public int tcpwrite(Object socket, Object bytes) throws FSException {
-    Socket sock = get(socket, Socket.class);
-    if(sock == null || bytes == null) 
-      throw new FSException("tcpwrite( "
-          + socket+ ", "+ bytes+ " ): Invalid Arguments");
+    if(bytes == null) return 0;
+    if(socket instanceof FSObject) {
+      socket = ((FSObject)socket).getObject();
+    }
     
     if(bytes instanceof FSObject)
       bytes = ((FSObject)bytes).getObject();
@@ -192,8 +288,20 @@ public class NetLib implements FSFunctionExtension {
     
     byte[] bs = get(bytes, byte[].class);
     try {
-      sock.getOutputStream().write((byte[]) bytes);
-      sock.getOutputStream().flush();
+      OutputStream out = null;
+      if(socket instanceof Socket) {
+        out = ((Socket)socket).getOutputStream();
+      }
+      else if(socket instanceof HttpURLConnection) {
+        out = ((HttpURLConnection)socket).getOutputStream();
+      }
+      else {
+        throw new FSException("tcpwrite( >"
+            + socket+ "<, "+ bytes+ " ): Invalid Argument Type");
+      }
+      
+      out.write((byte[]) bytes);
+      out.flush();
       return 1;
     }
     catch(IOException e) {
@@ -203,14 +311,29 @@ public class NetLib implements FSFunctionExtension {
   
   
   public int tcpwrite(Object socket, int bt) throws FSException {
-    Socket sock = get(socket, Socket.class);
-    if(sock == null || bt == -1) 
+    if(socket == null || bt == -1) 
       throw new FSException("tcpwrite( "
           + socket+ ", "+ bt+ " ): Invalid Arguments");
     
+    if(socket instanceof FSObject) {
+      socket = ((FSObject)socket).getObject();
+    }
+    
     try {
-      sock.getOutputStream().write(bt);
-      sock.getOutputStream().flush();
+      OutputStream out = null;
+      if(socket instanceof Socket) {
+        out = ((Socket)socket).getOutputStream();
+      }
+      else if(socket instanceof HttpURLConnection) {
+        out = ((HttpURLConnection)socket).getOutputStream();
+      }
+      else {
+        throw new FSException("tcpwrite( >"
+            + socket+ "<, "+ bt+ " ): Invalid Argument Type");
+      }
+      
+      out.write(bt);
+      out.flush();
       return 1;
     }
     catch(IOException e) {
@@ -220,14 +343,29 @@ public class NetLib implements FSFunctionExtension {
   
   
   public byte[] tcpread(Object socket, int size) throws FSException {
-    Socket sock = get(socket, Socket.class);
-    if(sock == null || size < 1)
-      throw new FSException("tcpreadbytes( "
-          + socket+ ", "+ size+ " ): Invalid Arguments");
+    if(socket == null || size < 1) 
+      throw new FSException("tcpread( "+ socket
+          + ", "+ String.valueOf(size)+ " ): Invalid Arguments");
     
-    byte[] bs = new byte[size];
+    if(socket instanceof FSObject) {
+      socket = ((FSObject)socket).getObject();
+    }
+    
     try {
-      int read = sock.getInputStream().read(bs);
+      InputStream in = null;
+      if(socket instanceof Socket) {
+        in = ((Socket)socket).getInputStream();
+      }
+      else if(socket instanceof HttpURLConnection) {
+        in = ((HttpURLConnection)socket).getInputStream();
+      }
+      else {
+        throw new FSException("tcpread( >"+ socket
+            + "<, "+ String.valueOf(size)+ " ): Invalid Argument Type");
+      }
+      
+      byte[] bs = new byte[size];
+      int read = in.read(bs);
       if(read <= 0) return BYTES_EOF;
       byte[] bt = new byte[read];
       System.arraycopy(bs, 0, bt, 0, read);
@@ -240,13 +378,28 @@ public class NetLib implements FSFunctionExtension {
   
   
   public int tcpread(Object socket) throws FSException {
-    Socket sock = get(socket, Socket.class);
-    if(sock == null)
-      throw new FSException("tcpreadbytes( "
-          + socket+ " ): Invalid Socket");
+    if(socket == null) 
+      throw new FSException(
+          "tcpread( "+ socket+ " ): Invalid Arguments");
+    
+    if(socket instanceof FSObject) {
+      socket = ((FSObject)socket).getObject();
+    }
     
     try {
-      return sock.getInputStream().read();
+      InputStream in = null;
+      if(socket instanceof Socket) {
+        in = ((Socket)socket).getInputStream();
+      }
+      else if(socket instanceof HttpURLConnection) {
+        in = ((HttpURLConnection)socket).getInputStream();
+      }
+      else {
+        throw new FSException("tcpread( "+ socket
+            + " ): Invalid Argument Type");
+      }
+      
+      return in.read();
     }
     catch(IOException e) {
       throw new FSException(e.toString());
@@ -269,6 +422,9 @@ public class NetLib implements FSFunctionExtension {
       else if(obj instanceof ServerSocket) {
         ServerSocket svr = (ServerSocket) obj;
         svr.close();
+      }
+      else if(obj instanceof HttpURLConnection) {
+        ((HttpURLConnection)obj).disconnect();
       }
     }
     catch(IOException e) {}
@@ -307,10 +463,49 @@ public class NetLib implements FSFunctionExtension {
       case TCPWRITELN:
         FUtils.checkLen(al, 2);
         return tcpwriteln(al.get(0), FUtils.str(al, 1));
+      case HTTPGET:
+        FUtils.checkLen(al, 2);
+        if(al.size() == 2)
+          return httpget(FUtils.str(al, 0), FUtils._int(al, 1));
+        else {
+          FUtils.checkLen(al, 4);
+          String proxyAuth = null;
+          if(al.size() > 4)
+            proxyAuth = FUtils.str(al, 4);
+          return httpget(FUtils.str(al, 0), FUtils._int(al, 1), 
+              FUtils.str(al, 2), FUtils._int(al, 3), proxyAuth);
+        }
       default:
         throw new FSUnsupportedException();
     }
     return null;
+  }
+  
+  
+  public void addTo(FSFastExtension ext) {
+    if(ext == null) return;
+    ext.addFunctionExtension(HTTPGET, this);
+    ext.addFunctionExtension(TCPCLOSE, this);
+    ext.addFunctionExtension(TCPCONNECT, this);
+    ext.addFunctionExtension(TCPLISTEN, this);
+    ext.addFunctionExtension(TCPREAD, this);
+    ext.addFunctionExtension(TCPREADLN, this);
+    ext.addFunctionExtension(TCPWRITE, this);
+    ext.addFunctionExtension(TCPWRITELN, this);
+  }
+
+  
+  public static void main(String[] args) throws FSException {
+    NetLib nlib = new NetLib(new BasicIO());
+    Object conn = nlib.httpget("http://login.intranet.bb.com.br/distAuth/UI/Login", 80);
+    String line = nlib.tcpreadln(conn);
+    System.out.println("--------------");
+    while(!line.equals(IOLib.EOF)) {
+      System.out.println(line);
+      line = nlib.tcpreadln(conn);
+    }
+    System.out.println("--------------");
+    nlib.tcpclose(conn);
   }
   
 }
