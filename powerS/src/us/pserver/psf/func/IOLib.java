@@ -59,6 +59,7 @@ public class IOLib implements FSExtension {
       FWRITEBYTES = "fwbytes",
       FWRITEIMAGE = "fwimage",
       FSIZE = "fsize",
+      FEXISTS = "fexists",
       FREMOVE = "fremove",
       FCOPY = "fcopy",
       ISEOF = "isEOF",
@@ -128,6 +129,9 @@ public class IOLib implements FSExtension {
       case FSIZE:
         FUtils.checkLen(al, 1);
         return fsize(FUtils.str(al, 0));
+      case FEXISTS:
+        FUtils.checkLen(al, 1);
+        return fexists(FUtils.str(al, 0));
       case FREMOVE:
         FUtils.checkLen(al, 1);
         fremove(FUtils.str(al, 0));
@@ -263,6 +267,15 @@ public class IOLib implements FSExtension {
         size += f.length();
     }
     return (int) size;
+  }
+  
+  
+  public int fexists(String path) throws FSException {
+    if(path == null || path.trim().isEmpty())
+      throw new FSException("fexists( "+ path+ " ): Invalid path");
+    
+    Path pt = Paths.get(path);
+    return (Files.exists(pt) ? 1 : 0);
   }
   
   
