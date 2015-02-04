@@ -40,6 +40,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.swing.AbstractButton;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -252,10 +254,9 @@ public class UILib implements FSExtension {
   }
   
   
-  public JPanel uirowpanel(int gap) {
+  public Box uirowpanel(int gap) {
     if(gap < 0) gap = 5;
-    JPanel p = new JPanel(new GridLayout(0, 1, 0, gap));
-    return p;
+    return new Box(BoxLayout.Y_AXIS);
   }
   
   

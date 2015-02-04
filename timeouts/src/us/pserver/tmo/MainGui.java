@@ -15,6 +15,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import murlen.util.fscript.FSException;
@@ -162,19 +163,22 @@ public class MainGui extends javax.swing.JFrame {
         "Run Script", 
         JOptionPane.YES_NO_OPTION);
     if(opt != JOptionPane.YES_OPTION) {
-      log.info("Script run canceled!");
       return;
     }
     log.info("Running Script...");
     ScriptPair p = tmo.get(selected);
-    try {
-      tmo.getScriptExecutor().exec(
-          p.job().getScriptPath().toString());
-    } catch(IOException | FSException e) {
-      log.error(e.toString());
-    } finally {
-      log.info("Execution Finished");
-    }
+    new Thread(new Runnable() {
+      public void run() {
+        try {
+          tmo.getScriptExecutor().exec(
+              p.job().getScriptPath().toString());
+        } catch(IOException | FSException e) {
+          log.error(e.toString());
+        } finally {
+          log.info("Execution Finished");
+        }
+      }
+    }).start();
   }
   
   

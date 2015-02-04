@@ -23,6 +23,7 @@ package us.pserver.psf.func;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Objects;
 import murlen.util.fscript.FSException;
 import murlen.util.fscript.FSFastExtension;
 import murlen.util.fscript.FSFunctionExtension;
@@ -49,7 +50,9 @@ public class StrLib implements FSFunctionExtension {
       SUBS = "extract",
       REPLACE = "replace",
       STRSIZE = "strsize",
-      SIDXLAST = "findlast";
+      SIDXLAST = "findlast",
+      STARTSWITH = "startswith",
+      ENDSWITH = "endswith";
 
   
   private PrintStream ps;
@@ -79,8 +82,8 @@ public class StrLib implements FSFunctionExtension {
       case CONCAT:
         return concat(al);
       case EQ:
-        this.checkMinLength(al, 2);
-        return eq(str(al, 0), str(al, 1));
+        FUtils.checkLen(al, 2);
+        return eq(FUtils.str(al, 0), FUtils.str(al, 1));
       case EQICS:
         this.checkMinLength(al, 2);
         return eqics(str(al, 0), str(al, 1));
@@ -98,9 +101,9 @@ public class StrLib implements FSFunctionExtension {
         return upper(str(al, 0));
       case SUBS:
         this.checkMinLength(al, 3);
-        int off = FUtils.cast(al, 1);
-        int len = FUtils.cast(al, 2);
-        return subs(str(al, 0), off, len);
+        int off = FUtils._int(al, 1);
+        int len = FUtils._int(al, 2);
+        return subs(FUtils.str(al, 0), off, len);
       case SIDX:
         this.checkMinLength(al, 2);
         return sidx(str(al, 0), str(al, 1));
@@ -114,6 +117,12 @@ public class StrLib implements FSFunctionExtension {
       case STRSIZE:
         FUtils.checkLen(al, 1);
         return FUtils.str(al, 0).length();
+      case STARTSWITH:
+        FUtils.checkLen(al, 2);
+        return (FUtils.str(al, 0).startsWith(FUtils.str(al, 1)) ? 1 : 0);
+      case ENDSWITH:
+        FUtils.checkLen(al, 2);
+        return (FUtils.str(al, 0).endsWith(FUtils.str(al, 1)) ? 1 : 0);
       default:
         throw new FSUnsupportedException();
     }
@@ -165,26 +174,15 @@ public class StrLib implements FSFunctionExtension {
   
   
   public int eq(String str1, String str2) {
-    if(str1 == null && str2 == null)
-      return 1;
-    else if(str1 == null || str2 == null)
-      return 0;
-    else if(str1.equals(str2))
-      return 1;
-    else
-      return 0;
+    System.out.println("* eq( "+ str1+ ", "+ str2+ " ): "+ Objects.equals(str1, str2));
+    if(str1 == null) return 0;
+    return (str1.equals(str2) ? 1 : 0);
   }
 
   
   public int eqics(String str1, String str2) {
-    if(str1 == null && str2 == null)
-      return 1;
-    else if(str1 == null || str2 == null)
-      return 0;
-    else if(str1.equalsIgnoreCase(str2))
-      return 1;
-    else
-      return 0;
+    if(str1 == null) return 0;
+    return (str1.equalsIgnoreCase(str2) ? 1 : 0);
   }
   
   
@@ -230,7 +228,7 @@ public class StrLib implements FSFunctionExtension {
       throw new FSException("Invalid offset ["+ off+ "]");
     if(len < 1 || (str.length() - off) < len)
       throw new FSException("Invalid length ["+ len+ "]");
-    return str.substring(off, len);
+    return str.substring(off, off+len);
   }
   
   
@@ -264,6 +262,8 @@ public class StrLib implements FSFunctionExtension {
     ext.addFunctionExtension(UPPER, this);
     ext.addFunctionExtension(REPLACE, this);
     ext.addFunctionExtension(STRSIZE, this);
+    ext.addFunctionExtension(STARTSWITH, this);
+    ext.addFunctionExtension(ENDSWITH, this);
   }
 
 }

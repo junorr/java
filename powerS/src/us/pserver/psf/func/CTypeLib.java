@@ -22,9 +22,11 @@
 package us.pserver.psf.func;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import murlen.util.fscript.FSException;
+import murlen.util.fscript.FSExtension;
 import murlen.util.fscript.FSFastExtension;
-import murlen.util.fscript.FSFunctionExtension;
 import murlen.util.fscript.FSUnsupportedException;
 
 /**
@@ -32,12 +34,21 @@ import murlen.util.fscript.FSUnsupportedException;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 31/01/2014
  */
-public class CTypeLib implements FSFunctionExtension {
+public class CTypeLib implements FSExtension {
   
   public static final String 
       ISNUMBER = "isnumber",
       TOINT = "toint",
-      TODOUBLE = "todouble";
+      TODOUBLE = "todouble",
+      DEFINE = "define";
+  
+  
+  private Map<String, Object> defs;
+  
+  
+  public CTypeLib() {
+    defs = new HashMap<>();
+  }
 
 
   @Override
@@ -52,6 +63,13 @@ public class CTypeLib implements FSFunctionExtension {
       case TOINT:
         FUtils.checkLen(al, 1);
         return (int) FUtils._double(al, 0);
+      case DEFINE:
+        FUtils.checkLen(al, 1);
+        if(al.size() == 1)
+          defs.put(FUtils.str(al, 0), null);
+        else
+          defs.put(FUtils.str(al, 0), al.get(1));
+        return null;
       default:
         throw new FSUnsupportedException();
     }
@@ -72,11 +90,35 @@ public class CTypeLib implements FSFunctionExtension {
   }
   
   
-  public void addTo(FSFastExtension ext) {
-    if(ext == null) return;
-    ext.addFunctionExtension(ISNUMBER, this);
-    ext.addFunctionExtension(TODOUBLE, this);
-    ext.addFunctionExtension(TOINT, this);
+  @Override
+  public Object getVar(String name) throws FSException {
+    if(name != null && !name.trim().isEmpty()
+        && defs.containsKey(name))
+      return defs.get(name);
+    return null;
+  }
+
+
+  @Override
+  public void setVar(String name, Object value) throws FSException {
+    if(name != null && !name.trim().isEmpty()
+        && value != null) {
+      if(!defs.containsKey(name))
+        throw new FSException("Variable '"+ name+ "' not defined");
+      defs.put(name, value);
+    }
+  }
+
+
+  @Override
+  public Object getVar(String name, Object index) throws FSException {
+    return getVar(name);
+  }
+
+
+  @Override
+  public void setVar(String name, Object index, Object value) throws FSException {
+    setVar(name, value);
   }
   
 }

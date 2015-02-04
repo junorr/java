@@ -786,3 +786,576 @@
 [INFO ] (02/02/2015 17:19:12): Execution Finished
 [INFO ] (02/02/2015 17:28:45): SimpleCron Stopped!
 [DEBUG] (02/02/2015 17:28:45): Timeouts Saved!
+[INFO ] (04/02/2015 09:05:48): SimpleCron Started!
+[DEBUG] (04/02/2015 09:05:48): Timeouts Loaded!
+[INFO ] (04/02/2015 09:05:48): Timeouts Started!
+[DEBUG] (04/02/2015 09:06:19): Timeouts Saved!
+[INFO ] (04/02/2015 09:06:19): SimpleCron Stopped!
+[INFO ] (04/02/2015 09:06:19): SimpleCron Started!
+[INFO ] (04/02/2015 09:06:19): Schedule Removed
+[DEBUG] (04/02/2015 09:06:20): Timeouts Saved!
+[INFO ] (04/02/2015 09:06:20): SimpleCron Stopped!
+[INFO ] (04/02/2015 09:06:20): SimpleCron Started!
+[INFO ] (04/02/2015 09:06:20): Schedule Removed
+[DEBUG] (04/02/2015 09:10:06): Timeouts Saved!
+[INFO ] (04/02/2015 09:10:06): SimpleCron Stopped!
+[INFO ] (04/02/2015 09:10:06): SimpleCron Started!
+[INFO ] (04/02/2015 09:10:06): Schedule Added
+[INFO ] (04/02/2015 09:10:09): Running Script...
+[INFO ] (04/02/2015 09:10:26): Execution Finished
+[INFO ] (04/02/2015 09:11:48): Running Script...
+[INFO ] (04/02/2015 09:11:54): Execution Finished
+[INFO ] (04/02/2015 09:12:55): Running Script...
+[ERROR] (04/02/2015 09:12:55): murlen.util.fscript.FSException: 
+	java.net.BindException: Endereço já em uso
+ at line:7 
+			  endfunc
+			  print("* Starting server on 0.0.0.0:22022")
+			> tcplisten("0.0.0.0", 22022, "sayhello") <
+			  
+			  
+		 current token:):null
+		 Variable dump:{}
+[INFO ] (04/02/2015 09:12:55): Execution Finished
+[INFO ] (04/02/2015 09:13:17): SimpleCron Stopped!
+[DEBUG] (04/02/2015 09:13:17): Timeouts Saved!
+[INFO ] (04/02/2015 09:17:13): SimpleCron Started!
+[DEBUG] (04/02/2015 09:17:13): Timeouts Loaded!
+[INFO ] (04/02/2015 09:17:13): Timeouts Started!
+[INFO ] (04/02/2015 09:17:20): Running Script...
+[INFO ] (04/02/2015 09:17:31): Execution Finished
+[INFO ] (04/02/2015 09:17:57): SimpleCron Stopped!
+[DEBUG] (04/02/2015 09:17:57): Timeouts Saved!
+[INFO ] (04/02/2015 09:18:24): SimpleCron Started!
+[DEBUG] (04/02/2015 09:18:24): Timeouts Loaded!
+[INFO ] (04/02/2015 09:18:24): Timeouts Started!
+[INFO ] (04/02/2015 09:26:12): Running Script...
+[INFO ] (04/02/2015 09:26:20): Execution Finished
+[INFO ] (04/02/2015 09:27:29): SimpleCron Stopped!
+[DEBUG] (04/02/2015 09:27:29): Timeouts Saved!
+[INFO ] (04/02/2015 09:27:57): SimpleCron Started!
+[DEBUG] (04/02/2015 09:27:57): Timeouts Loaded!
+[INFO ] (04/02/2015 09:27:57): Timeouts Started!
+[INFO ] (04/02/2015 09:31:06): Running Script...
+[INFO ] (04/02/2015 09:31:11): Execution Finished
+[INFO ] (04/02/2015 09:32:01): SimpleCron Stopped!
+[DEBUG] (04/02/2015 09:32:01): Timeouts Saved!
+[INFO ] (04/02/2015 09:32:07): SimpleCron Started!
+[DEBUG] (04/02/2015 09:32:07): Timeouts Loaded!
+[INFO ] (04/02/2015 09:32:07): Timeouts Started!
+[INFO ] (04/02/2015 09:33:00): Running Script...
+[INFO ] (04/02/2015 09:33:06): Execution Finished
+[INFO ] (04/02/2015 09:37:10): Running Script...
+[INFO ] (04/02/2015 09:37:15): Execution Finished
+[INFO ] (04/02/2015 09:38:59): SimpleCron Stopped!
+[DEBUG] (04/02/2015 09:39:00): Timeouts Saved!
+[INFO ] (04/02/2015 09:39:07): SimpleCron Started!
+[DEBUG] (04/02/2015 09:39:07): Timeouts Loaded!
+[INFO ] (04/02/2015 09:39:07): Timeouts Started!
+[INFO ] (04/02/2015 09:41:38): SimpleCron Started!
+[DEBUG] (04/02/2015 09:41:38): Timeouts Loaded!
+[INFO ] (04/02/2015 09:41:38): Timeouts Started!
+[INFO ] (04/02/2015 09:42:00): Running Script...
+[INFO ] (04/02/2015 09:42:09): Execution Finished
+[INFO ] (04/02/2015 09:43:09): SimpleCron Stopped!
+[DEBUG] (04/02/2015 09:43:09): Timeouts Saved!
+[INFO ] (04/02/2015 09:43:15): SimpleCron Started!
+[DEBUG] (04/02/2015 09:43:15): Timeouts Loaded!
+[INFO ] (04/02/2015 09:43:15): Timeouts Started!
+[INFO ] (04/02/2015 09:45:17): Running Script...
+[INFO ] (04/02/2015 09:45:21): Execution Finished
+[INFO ] (04/02/2015 10:06:35): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:06:36): Timeouts Saved!
+[INFO ] (04/02/2015 10:06:56): SimpleCron Started!
+[DEBUG] (04/02/2015 10:06:56): Timeouts Loaded!
+[INFO ] (04/02/2015 10:06:56): Timeouts Started!
+[DEBUG] (04/02/2015 10:09:23): Timeouts Saved!
+[INFO ] (04/02/2015 10:09:23): SimpleCron Stopped!
+[INFO ] (04/02/2015 10:09:23): SimpleCron Started!
+[INFO ] (04/02/2015 10:09:23): Schedule Added
+[INFO ] (04/02/2015 10:09:28): Running Script...
+[INFO ] (04/02/2015 10:09:50): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:09:50): Timeouts Saved!
+[INFO ] (04/02/2015 10:10:40): SimpleCron Started!
+[DEBUG] (04/02/2015 10:10:40): Timeouts Loaded!
+[INFO ] (04/02/2015 10:10:40): Timeouts Started!
+[INFO ] (04/02/2015 10:16:15): Running Script...
+[INFO ] (04/02/2015 10:16:21): Execution Finished
+[INFO ] (04/02/2015 10:17:17): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:17:17): Timeouts Saved!
+[INFO ] (04/02/2015 10:19:32): SimpleCron Started!
+[DEBUG] (04/02/2015 10:19:32): Timeouts Loaded!
+[INFO ] (04/02/2015 10:19:32): Timeouts Started!
+[INFO ] (04/02/2015 10:19:41): Running Script...
+[ERROR] (04/02/2015 10:19:55): murlen.util.fscript.FSException: 
+	murlen.util.fscript.FSException: 
+	Read only var [rec]
+ at line:6 
+			    tcpwriteln(sock, msg)
+			    print("* Reading...")
+			>   rec = tcpreadln(sock) <
+			    print("< "+ rec+ " - "+ str(date))
+			    if eq("exit", rec)
+		 current token:TT_EOL:null
+		 Variable dump:{date=FSObject Containing - 04/02/2015 10:19:45, msg=> Hello - 04/02/2015 10:19:45, sock=Socket[addr=/127.0.0.1,port=59780,localport=22022], serv=ServerSocket[addr=/0.0.0.0,localport=22022]}
+		 Globals:{}
+ at line:6 
+			    tcpwriteln(sock, msg)
+			    print("* Reading...")
+			>   rec = tcpreadln(sock) <
+			    print("< "+ rec+ " - "+ str(date))
+			    if eq("exit", rec)
+		 current token:):null
+		 Variable dump:{}
+[INFO ] (04/02/2015 10:19:55): Execution Finished
+[INFO ] (04/02/2015 10:21:15): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:21:15): Timeouts Saved!
+[INFO ] (04/02/2015 10:21:21): SimpleCron Started!
+[DEBUG] (04/02/2015 10:21:21): Timeouts Loaded!
+[INFO ] (04/02/2015 10:21:21): Timeouts Started!
+[INFO ] (04/02/2015 10:21:27): Running Script...
+[INFO ] (04/02/2015 10:23:57): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:23:58): Timeouts Saved!
+[INFO ] (04/02/2015 10:24:11): SimpleCron Started!
+[DEBUG] (04/02/2015 10:24:11): Timeouts Loaded!
+[INFO ] (04/02/2015 10:24:11): Timeouts Started!
+[INFO ] (04/02/2015 10:25:15): Running Script...
+[INFO ] (04/02/2015 10:26:56): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:26:56): Timeouts Saved!
+[INFO ] (04/02/2015 10:27:01): SimpleCron Started!
+[DEBUG] (04/02/2015 10:27:01): Timeouts Loaded!
+[INFO ] (04/02/2015 10:27:01): Timeouts Started!
+[INFO ] (04/02/2015 10:27:07): Running Script...
+[INFO ] (04/02/2015 10:29:26): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:29:26): Timeouts Saved!
+[INFO ] (04/02/2015 10:29:31): SimpleCron Started!
+[DEBUG] (04/02/2015 10:29:31): Timeouts Loaded!
+[INFO ] (04/02/2015 10:29:31): Timeouts Started!
+[INFO ] (04/02/2015 10:32:01): Running Script...
+[INFO ] (04/02/2015 10:32:44): SimpleCron Started!
+[DEBUG] (04/02/2015 10:32:44): Timeouts Loaded!
+[INFO ] (04/02/2015 10:32:44): Timeouts Started!
+[INFO ] (04/02/2015 10:33:01): Running Script...
+[ERROR] (04/02/2015 10:33:05): murlen.util.fscript.FSException: 
+	murlen.util.fscript.FSException: 
+	String index out of range: -1
+ at line:11 
+			    int cont = 0
+			    while cont < strsize(rec)
+			>     print("'"+ extract(rec, cont, 1)+ "'") <
+			      cont = cont + 1
+			    endwhile  
+		 current token:):null
+		 Variable dump:{date=FSObject Containing - 04/02/2015 10:33:03, msg=> Hello - 04/02/2015 10:33:03, sock=Socket[addr=/127.0.0.1,port=59824,localport=22022], rec=hi, serv=ServerSocket[addr=/0.0.0.0,localport=22022], cont=2}
+		 Globals:{}
+ at line:11 
+			    int cont = 0
+			    while cont < strsize(rec)
+			>     print("'"+ extract(rec, cont, 1)+ "'") <
+			      cont = cont + 1
+			    endwhile  
+		 current token:):null
+		 Variable dump:{}
+[INFO ] (04/02/2015 10:33:05): Execution Finished
+[INFO ] (04/02/2015 10:37:44): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:37:44): Timeouts Saved!
+[INFO ] (04/02/2015 10:40:35): SimpleCron Started!
+[DEBUG] (04/02/2015 10:40:35): Timeouts Loaded!
+[INFO ] (04/02/2015 10:40:35): Timeouts Started!
+[INFO ] (04/02/2015 10:40:43): Running Script...
+[INFO ] (04/02/2015 10:41:30): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:41:31): Timeouts Saved!
+[INFO ] (04/02/2015 10:41:36): SimpleCron Started!
+[DEBUG] (04/02/2015 10:41:36): Timeouts Loaded!
+[INFO ] (04/02/2015 10:41:36): Timeouts Started!
+[INFO ] (04/02/2015 10:43:33): Running Script...
+[ERROR] (04/02/2015 10:43:38): murlen.util.fscript.FSException: 
+	murlen.util.fscript.FSException: 
+	Invalid length [4]
+ at line:8 
+			    string rec = tcpreadln(sock)
+			    print("< "+ rec+ " - "+ str(date))
+			>   print(extract(rec, 0, 4)) <
+			    print(strsize(extract(rec, 0, 4)))
+			    if eq("exit", extract(rec, 0, 4))
+		 current token:):null
+		 Variable dump:{date=FSObject Containing - 04/02/2015 10:43:35, msg=> Hello - 04/02/2015 10:43:35, sock=Socket[addr=/127.0.0.1,port=59855,localport=22022], rec=hi, serv=ServerSocket[addr=/0.0.0.0,localport=22022]}
+		 Globals:{}
+ at line:8 
+			    string rec = tcpreadln(sock)
+			    print("< "+ rec+ " - "+ str(date))
+			>   print(extract(rec, 0, 4)) <
+			    print(strsize(extract(rec, 0, 4)))
+			    if eq("exit", extract(rec, 0, 4))
+		 current token:):null
+		 Variable dump:{}
+[INFO ] (04/02/2015 10:43:38): Execution Finished
+[INFO ] (04/02/2015 10:44:52): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:44:52): Timeouts Saved!
+[INFO ] (04/02/2015 10:45:03): SimpleCron Started!
+[DEBUG] (04/02/2015 10:45:03): Timeouts Loaded!
+[INFO ] (04/02/2015 10:45:03): Timeouts Started!
+[INFO ] (04/02/2015 10:45:17): Running Script...
+[ERROR] (04/02/2015 10:45:22): murlen.util.fscript.FSException: 
+	murlen.util.fscript.FSException: 
+	Invalid length [4]
+ at line:8 
+			    string rec = tcpreadln(sock)
+			    print("< "+ rec+ " - "+ str(date))
+			>   if strsize(rec) >= 4 && eq("exit", extract(rec, 0, 4)) <
+			      print("* Exiting...")
+			      tcpclose(sock)
+		 current token:):null
+		 Variable dump:{date=FSObject Containing - 04/02/2015 10:45:20, msg=> Hello - 04/02/2015 10:45:20, sock=Socket[addr=/127.0.0.1,port=59861,localport=22022], rec=hi, serv=ServerSocket[addr=/0.0.0.0,localport=22022]}
+		 Globals:{}
+ at line:8 
+			    string rec = tcpreadln(sock)
+			    print("< "+ rec+ " - "+ str(date))
+			>   if strsize(rec) >= 4 && eq("exit", extract(rec, 0, 4)) <
+			      print("* Exiting...")
+			      tcpclose(sock)
+		 current token:):null
+		 Variable dump:{}
+[INFO ] (04/02/2015 10:45:22): Execution Finished
+[INFO ] (04/02/2015 10:49:22): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:49:22): Timeouts Saved!
+[INFO ] (04/02/2015 10:49:28): SimpleCron Started!
+[DEBUG] (04/02/2015 10:49:28): Timeouts Loaded!
+[INFO ] (04/02/2015 10:49:28): Timeouts Started!
+[INFO ] (04/02/2015 10:50:50): Running Script...
+[INFO ] (04/02/2015 10:50:55): Execution Finished
+[INFO ] (04/02/2015 10:51:14): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:51:14): Timeouts Saved!
+[INFO ] (04/02/2015 10:51:19): SimpleCron Started!
+[DEBUG] (04/02/2015 10:51:19): Timeouts Loaded!
+[INFO ] (04/02/2015 10:51:19): Timeouts Started!
+[INFO ] (04/02/2015 10:52:10): Running Script...
+[INFO ] (04/02/2015 10:52:24): Execution Finished
+[INFO ] (04/02/2015 10:55:25): Running Script...
+[INFO ] (04/02/2015 10:55:44): Execution Finished
+[INFO ] (04/02/2015 10:56:20): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:56:20): Timeouts Saved!
+[INFO ] (04/02/2015 10:56:26): SimpleCron Started!
+[DEBUG] (04/02/2015 10:56:26): Timeouts Loaded!
+[INFO ] (04/02/2015 10:56:26): Timeouts Started!
+[INFO ] (04/02/2015 10:58:31): SimpleCron Stopped!
+[DEBUG] (04/02/2015 10:58:31): Timeouts Saved!
+[INFO ] (04/02/2015 11:01:45): SimpleCron Started!
+[DEBUG] (04/02/2015 11:01:45): Timeouts Loaded!
+[INFO ] (04/02/2015 11:01:45): Timeouts Started!
+[INFO ] (04/02/2015 11:02:35): Running Script...
+[INFO ] (04/02/2015 11:02:54): Execution Finished
+[INFO ] (04/02/2015 11:03:00): Running Script...
+[INFO ] (04/02/2015 11:03:19): Execution Finished
+[INFO ] (04/02/2015 11:09:11): SimpleCron Started!
+[DEBUG] (04/02/2015 11:09:11): Timeouts Loaded!
+[INFO ] (04/02/2015 11:09:11): Timeouts Started!
+[INFO ] (04/02/2015 11:10:18): Running Script...
+[INFO ] (04/02/2015 11:11:05): SimpleCron Stopped!
+[DEBUG] (04/02/2015 11:11:06): Timeouts Saved!
+[INFO ] (04/02/2015 11:11:18): SimpleCron Started!
+[DEBUG] (04/02/2015 11:11:18): Timeouts Loaded!
+[INFO ] (04/02/2015 11:11:18): Timeouts Started!
+[INFO ] (04/02/2015 11:13:05): Running Script...
+[INFO ] (04/02/2015 11:13:32): Execution Finished
+[DEBUG] (04/02/2015 11:22:54): Timeouts Saved!
+[INFO ] (04/02/2015 11:22:54): SimpleCron Stopped!
+[INFO ] (04/02/2015 11:22:54): SimpleCron Started!
+[INFO ] (04/02/2015 11:22:54): Schedule Added
+[DEBUG] (04/02/2015 11:22:57): Timeouts Saved!
+[INFO ] (04/02/2015 11:22:57): SimpleCron Stopped!
+[INFO ] (04/02/2015 11:22:57): SimpleCron Started!
+[INFO ] (04/02/2015 11:22:57): Schedule Edited
+[INFO ] (04/02/2015 11:23:02): Running Script...
+[ERROR] (04/02/2015 11:23:02): murlen.util.fscript.FSException: 
+	Incompatible types
+ at line:2 
+			  object obj = date()
+			  print(str(obj))
+			> obj = "string" <
+			  print(obj)
+			  
+		 current token:TT_EOL:null
+		 Variable dump:{obj=FSObject Containing - 04/02/2015 11:23:02}
+[INFO ] (04/02/2015 11:23:02): Execution Finished
+[INFO ] (04/02/2015 12:02:30): Running Script...
+[ERROR] (04/02/2015 12:02:30): murlen.util.fscript.FSException: 
+	Unrecognized External: colpanel
+ at line:6 
+			  object label = uilabel("Send trought socket:")
+			  object text = uitext("", 150)
+			> object p1 = colpanel() <
+			  uiadd(p1, label)
+			  uiadd(p1, text)
+		 current token:):null
+		 Variable dump:{p1=<null>, label=FSObject Containing - javax.swing.JLabel[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@1545e3dc,flags=8388608,maximumSize=,minimumSize=,preferredSize=,defaultIcon=,disabledIcon=,horizontalAlignment=LEADING,horizontalTextPosition=TRAILING,iconTextGap=4,labelFor=,text=Send trought socket:,verticalAlignment=CENTER,verticalTextPosition=CENTER], text=FSObject Containing - javax.swing.JTextField[,0,0,0x0,invalid,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@3cc8141d,flags=288,maximumSize=,minimumSize=,preferredSize=java.awt.Dimension[width=150,height=27],caretColor=,disabledTextColor=DerivedColor(color=142,143,145 parent=nimbusDisabledText offsets=0.0,0.0,0.0,0 pColor=142,143,145,editable=true,margin=javax.swing.plaf.InsetsUIResource[top=0,left=0,bottom=0,right=0],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=DerivedColor(color=57,105,138 parent=nimbusSelectionBackground offsets=0.0,0.0,0.0,0 pColor=57,105,138,columns=0,columnWidth=0,command=,horizontalAlignment=LEADING], frame=FSObject Containing - javax.swing.JFrame[frame0,960,553,1x1,invalid,hidden,layout=java.awt.BorderLayout,title=NetConnector,resizable,normal,defaultCloseOperation=DISPOSE_ON_CLOSE,rootPane=javax.swing.JRootPane[,0,0,0x0,invalid,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@44847ca6,flags=16777673,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true]}
+[INFO ] (04/02/2015 12:02:30): Execution Finished
+[INFO ] (04/02/2015 12:02:45): Running Script...
+[INFO ] (04/02/2015 12:02:46): Execution Finished
+[INFO ] (04/02/2015 12:04:46): Running Script...
+[INFO ] (04/02/2015 12:04:46): Execution Finished
+[INFO ] (04/02/2015 12:06:07): SimpleCron Stopped!
+[DEBUG] (04/02/2015 12:06:07): Timeouts Saved!
+[INFO ] (04/02/2015 12:25:02): SimpleCron Started!
+[DEBUG] (04/02/2015 12:25:02): Timeouts Loaded!
+[INFO ] (04/02/2015 12:25:02): Timeouts Started!
+[INFO ] (04/02/2015 12:25:30): Running Script...
+[INFO ] (04/02/2015 12:25:30): Execution Finished
+[INFO ] (04/02/2015 12:25:46): Running Script...
+[INFO ] (04/02/2015 12:25:46): Execution Finished
+[INFO ] (04/02/2015 12:28:04): Running Script...
+[INFO ] (04/02/2015 12:28:04): Execution Finished
+[INFO ] (04/02/2015 12:29:12): Running Script...
+[INFO ] (04/02/2015 12:29:12): Execution Finished
+[INFO ] (04/02/2015 12:30:32): Running Script...
+[ERROR] (04/02/2015 12:30:32): murlen.util.fscript.FSException: 
+	Expected Operator
+ at line:18 
+			  object pvd = uicolpanel()
+			  uisetsize(pvd, 100, 15)
+			> uiadd(panel pvd) <
+			  uiadd(panel, lpo)
+			  uiadd(panel, area)
+		 current token:TT_WORD:pvd
+		 Variable dump:{lout=FSObject Containing - javax.swing.JLabel[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@330b2e1a,flags=8388608,maximumSize=,minimumSize=,preferredSize=,defaultIcon=,disabledIcon=,horizontalAlignment=LEADING,horizontalTextPosition=TRAILING,iconTextGap=4,labelFor=,text=Socket Output:,verticalAlignment=CENTER,verticalTextPosition=CENTER], area=FSObject Containing - javax.swing.JScrollPane[,0,0,200x200,invalid,layout=javax.swing.ScrollPaneLayout$UIResource,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@130833a4,flags=320,maximumSize=,minimumSize=,preferredSize=java.awt.Dimension[width=200,height=200],columnHeader=,horizontalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@62a4646d,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=HORIZONTAL,unitIncrement=1],horizontalScrollBarPolicy=HORIZONTAL_SCROLLBAR_AS_NEEDED,lowerLeft=,lowerRight=,rowHeader=,upperLeft=,upperRight=,verticalScrollBar=javax.swing.JScrollPane$ScrollBar[,0,0,0x0,invalid,layout=javax.swing.plaf.synth.SynthScrollBarUI,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@7999b973,flags=4194632,maximumSize=,minimumSize=,preferredSize=,blockIncrement=10,orientation=VERTICAL,unitIncrement=1],verticalScrollBarPolicy=VERTICAL_SCROLLBAR_AS_NEEDED,viewport=javax.swing.JViewport[,0,0,0x0,invalid,layout=javax.swing.ViewportLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=25165832,maximumSize=,minimumSize=,preferredSize=,isViewSizeSet=false,lastPaintPosition=,scrollUnderway=false],viewportBorder=javax.swing.plaf.synth.SynthScrollPaneUI$ViewportBorder@162892df], p1=FSObject Containing - javax.swing.JPanel[,0,0,0x0,invalid,layout=java.awt.FlowLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@4164f570,flags=9,maximumSize=,minimumSize=,preferredSize=], lpo=FSObject Containing - javax.swing.JPanel[,0,0,0x0,invalid,layout=java.awt.FlowLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@22763d,flags=9,maximumSize=,minimumSize=,preferredSize=], label=FSObject Containing - javax.swing.JLabel[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@34c4156b,flags=8388608,maximumSize=,minimumSize=,preferredSize=,defaultIcon=,disabledIcon=,horizontalAlignment=LEADING,horizontalTextPosition=TRAILING,iconTextGap=4,labelFor=,text=Send trought socket:,verticalAlignment=CENTER,verticalTextPosition=CENTER], text=FSObject Containing - javax.swing.JTextField[,0,0,0x0,invalid,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@66839544,flags=288,maximumSize=,minimumSize=,preferredSize=java.awt.Dimension[width=150,height=27],caretColor=,disabledTextColor=DerivedColor(color=142,143,145 parent=nimbusDisabledText offsets=0.0,0.0,0.0,0 pColor=142,143,145,editable=true,margin=javax.swing.plaf.InsetsUIResource[top=0,left=0,bottom=0,right=0],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=DerivedColor(color=57,105,138 parent=nimbusSelectionBackground offsets=0.0,0.0,0.0,0 pColor=57,105,138,columns=0,columnWidth=0,command=,horizontalAlignment=LEADING], panel=FSObject Containing - javax.swing.Box[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=0,maximumSize=,minimumSize=,preferredSize=], frame=FSObject Containing - javax.swing.JFrame[frame0,960,553,1x1,invalid,hidden,layout=java.awt.BorderLayout,title=NetConnector,resizable,normal,defaultCloseOperation=DISPOSE_ON_CLOSE,rootPane=javax.swing.JRootPane[,0,0,0x0,invalid,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@2a3391,flags=16777673,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true], pvd=FSObject Containing - javax.swing.JPanel[,0,0,100x15,invalid,layout=java.awt.FlowLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@132a2e37,flags=9,maximumSize=,minimumSize=,preferredSize=java.awt.Dimension[width=100,height=15]]}
+[INFO ] (04/02/2015 12:30:32): Execution Finished
+[INFO ] (04/02/2015 12:30:41): Running Script...
+[INFO ] (04/02/2015 12:30:41): Execution Finished
+[INFO ] (04/02/2015 12:32:37): Running Script...
+[INFO ] (04/02/2015 12:32:37): Execution Finished
+[INFO ] (04/02/2015 12:53:26): Running Script...
+[INFO ] (04/02/2015 12:53:26): Execution Finished
+[INFO ] (04/02/2015 12:54:39): Running Script...
+[ERROR] (04/02/2015 12:54:39): murlen.util.fscript.FSException: 
+	Incompatible types
+ at line:0 
+			  
+			  
+			> object frame = uiframe("NetConnector", "close") <
+			  object rpanel = uirowpanel()
+			  object pconn = uicolpanel()
+		 current token:TT_WORD:sock
+		 Variable dump:{}
+		 Globals:{frame=<null>}
+[INFO ] (04/02/2015 12:54:39): Execution Finished
+[INFO ] (04/02/2015 12:55:05): Running Script...
+[ERROR] (04/02/2015 12:55:05): murlen.util.fscript.FSException: 
+	Incompatible types
+ at line:0 
+			  
+			  
+			> object frame = uiframe("NetConnector", "close") <
+			  object rpanel = uirowpanel()
+			  object pconn = uicolpanel()
+		 current token:TT_WORD:sock
+		 Variable dump:{}
+		 Globals:{frame=<null>}
+[INFO ] (04/02/2015 12:55:05): Execution Finished
+[INFO ] (04/02/2015 12:55:31): Running Script...
+[ERROR] (04/02/2015 12:55:31): murlen.util.fscript.FSException: 
+	Incompatible types
+ at line:0 
+			  
+			  
+			> object frame = uiframe("NetConnector", "close") <
+			  object rpanel = uirowpanel()
+			  object pconn = uicolpanel()
+		 current token:TT_WORD:sock
+		 Variable dump:{}
+		 Globals:{frame=<null>}
+[INFO ] (04/02/2015 12:55:31): Execution Finished
+[INFO ] (04/02/2015 12:55:34): SimpleCron Stopped!
+[DEBUG] (04/02/2015 12:55:34): Timeouts Saved!
+[INFO ] (04/02/2015 12:55:51): SimpleCron Started!
+[DEBUG] (04/02/2015 12:55:51): Timeouts Loaded!
+[INFO ] (04/02/2015 12:55:51): Timeouts Started!
+[INFO ] (04/02/2015 12:55:59): Running Script...
+[INFO ] (04/02/2015 12:55:59): Execution Finished
+[INFO ] (04/02/2015 12:58:04): SimpleCron Stopped!
+[DEBUG] (04/02/2015 12:58:05): Timeouts Saved!
+[INFO ] (04/02/2015 13:09:42): SimpleCron Started!
+[DEBUG] (04/02/2015 13:09:42): Timeouts Loaded!
+[INFO ] (04/02/2015 13:09:42): Timeouts Started!
+[DEBUG] (04/02/2015 13:11:56): Timeouts Saved!
+[INFO ] (04/02/2015 13:11:56): SimpleCron Stopped!
+[INFO ] (04/02/2015 13:11:56): SimpleCron Started!
+[INFO ] (04/02/2015 13:11:56): Schedule Added
+[INFO ] (04/02/2015 13:12:00): Running Script...
+[ERROR] (04/02/2015 13:12:00): murlen.util.fscript.FSException: 
+	Read only var [global]
+ at line:1 
+			  
+			  define("global")
+			> global = "hello" <
+			  print(str(global))
+			  define("global", date())
+		 current token:TT_EOL:null
+		 Variable dump:{}
+[INFO ] (04/02/2015 13:12:00): Execution Finished
+[INFO ] (04/02/2015 13:12:50): Running Script...
+[INFO ] (04/02/2015 13:12:50): Execution Finished
+[INFO ] (04/02/2015 13:16:49): Running Script...
+[INFO ] (04/02/2015 13:16:49): Execution Finished
+[INFO ] (04/02/2015 13:18:14): SimpleCron Started!
+[DEBUG] (04/02/2015 13:18:14): Timeouts Loaded!
+[INFO ] (04/02/2015 13:18:14): Timeouts Started!
+[INFO ] (04/02/2015 13:19:31): Running Script...
+[INFO ] (04/02/2015 13:19:31): Execution Finished
+[INFO ] (04/02/2015 13:20:36): Running Script...
+[ERROR] (04/02/2015 13:20:36): murlen.util.fscript.FSException: 
+	Incompatible types
+ at line:0 
+			  
+			  
+			> object frame = uiframe("NetConnector", "close") <
+			  object rpanel = uirowpanel()
+			  define("sock")
+		 current token:):null
+		 Variable dump:{rec=HTTP/1.0 200 OK, outtext=HTTP/1.0 200 OK
+, text=GET http://www.google.com HTTP/1.0
+
+}
+		 Globals:{frame=<null>}
+[INFO ] (04/02/2015 13:20:36): Execution Finished
+[INFO ] (04/02/2015 13:20:55): SimpleCron Stopped!
+[DEBUG] (04/02/2015 13:20:55): Timeouts Saved!
+[INFO ] (04/02/2015 13:21:38): SimpleCron Started!
+[DEBUG] (04/02/2015 13:21:38): Timeouts Loaded!
+[INFO ] (04/02/2015 13:21:38): Timeouts Started!
+[INFO ] (04/02/2015 13:22:03): Running Script...
+[INFO ] (04/02/2015 13:22:03): Execution Finished
+[INFO ] (04/02/2015 13:27:46): Running Script...
+[ERROR] (04/02/2015 13:27:46): murlen.util.fscript.FSException: 
+	Nested functions are illegal
+ at line:39 
+			      rec = tcpreadln(sock)
+			    endwhile
+			> func <
+			  func send()
+			    string text = uigettext(tsend)
+		 current token:TT_DEFFUNC:func
+		 Variable dump:{laddr=FSObject Containing - javax.swing.JLabel[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@22faaa6e,flags=8388608,maximumSize=,minimumSize=,preferredSize=,defaultIcon=,disabledIcon=,horizontalAlignment=LEADING,horizontalTextPosition=TRAILING,iconTextGap=4,labelFor=,text=Address:,verticalAlignment=CENTER,verticalTextPosition=CENTER], tport=FSObject Containing - javax.swing.JTextField[,0,0,0x0,invalid,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@4667b968,flags=288,maximumSize=,minimumSize=,preferredSize=java.awt.Dimension[width=50,height=27],caretColor=,disabledTextColor=DerivedColor(color=142,143,145 parent=nimbusDisabledText offsets=0.0,0.0,0.0,0 pColor=142,143,145,editable=true,margin=javax.swing.plaf.InsetsUIResource[top=0,left=0,bottom=0,right=0],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=DerivedColor(color=57,105,138 parent=nimbusSelectionBackground offsets=0.0,0.0,0.0,0 pColor=57,105,138,columns=0,columnWidth=0,command=,horizontalAlignment=LEADING], pconn=FSObject Containing - javax.swing.JPanel[,0,0,0x0,invalid,layout=java.awt.FlowLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@7f8c4ed2,flags=9,maximumSize=,minimumSize=,preferredSize=], tsend=FSObject Containing - javax.swing.JTextField[,0,0,0x0,invalid,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@4e20ab70,flags=288,maximumSize=,minimumSize=,preferredSize=java.awt.Dimension[width=150,height=27],caretColor=,disabledTextColor=DerivedColor(color=142,143,145 parent=nimbusDisabledText offsets=0.0,0.0,0.0,0 pColor=142,143,145,editable=true,margin=javax.swing.plaf.InsetsUIResource[top=0,left=0,bottom=0,right=0],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=DerivedColor(color=57,105,138 parent=nimbusSelectionBackground offsets=0.0,0.0,0.0,0 pColor=57,105,138,columns=0,columnWidth=0,command=,horizontalAlignment=LEADING], lport=FSObject Containing - javax.swing.JLabel[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@39fec100,flags=8388608,maximumSize=,minimumSize=,preferredSize=,defaultIcon=,disabledIcon=,horizontalAlignment=LEADING,horizontalTextPosition=TRAILING,iconTextGap=4,labelFor=,text=Port:,verticalAlignment=CENTER,verticalTextPosition=CENTER], div1=FSObject Containing - javax.swing.JPanel[,0,0,100x15,invalid,layout=java.awt.FlowLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@422983ae,flags=9,maximumSize=,minimumSize=,preferredSize=java.awt.Dimension[width=100,height=15]], bsend=FSObject Containing - javax.swing.JButton[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.5,border=javax.swing.plaf.synth.SynthBorder@5f4ebfe7,flags=288,maximumSize=,minimumSize=,preferredSize=,defaultIcon=,disabledIcon=,disabledSelectedIcon=,margin=javax.swing.plaf.InsetsUIResource[top=0,left=0,bottom=0,right=0],paintBorder=true,paintFocus=true,pressedIcon=,rolloverEnabled=true,rolloverIcon=,rolloverSelectedIcon=,selectedIcon=,text=Send,defaultCapable=true], rpanel=FSObject Containing - javax.swing.Box[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=0,maximumSize=,minimumSize=,preferredSize=], lsend=FSObject Containing - javax.swing.JLabel[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@14fee455,flags=8388608,maximumSize=,minimumSize=,preferredSize=,defaultIcon=,disabledIcon=,horizontalAlignment=LEADING,horizontalTextPosition=TRAILING,iconTextGap=4,labelFor=,text=Send text:,verticalAlignment=CENTER,verticalTextPosition=CENTER], taddr=FSObject Containing - javax.swing.JTextField[,0,0,0x0,invalid,layout=javax.swing.plaf.basic.BasicTextUI$UpdateHandler,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@5b47c10b,flags=288,maximumSize=,minimumSize=,preferredSize=java.awt.Dimension[width=100,height=27],caretColor=,disabledTextColor=DerivedColor(color=142,143,145 parent=nimbusDisabledText offsets=0.0,0.0,0.0,0 pColor=142,143,145,editable=true,margin=javax.swing.plaf.InsetsUIResource[top=0,left=0,bottom=0,right=0],selectedTextColor=DerivedColor(color=255,255,255 parent=nimbusSelectedText offsets=0.0,0.0,0.0,0 pColor=255,255,255,selectionColor=DerivedColor(color=57,105,138 parent=nimbusSelectionBackground offsets=0.0,0.0,0.0,0 pColor=57,105,138,columns=0,columnWidth=0,command=,horizontalAlignment=LEADING], psend=FSObject Containing - javax.swing.JPanel[,0,0,0x0,invalid,layout=java.awt.FlowLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@55fd1d3e,flags=9,maximumSize=,minimumSize=,preferredSize=], bconn=FSObject Containing - javax.swing.JButton[,0,0,0x0,invalid,alignmentX=0.0,alignmentY=0.5,border=javax.swing.plaf.synth.SynthBorder@7f6621e1,flags=288,maximumSize=,minimumSize=,preferredSize=,defaultIcon=,disabledIcon=,disabledSelectedIcon=,margin=javax.swing.plaf.InsetsUIResource[top=0,left=0,bottom=0,right=0],paintBorder=true,paintFocus=true,pressedIcon=,rolloverEnabled=true,rolloverIcon=,rolloverSelectedIcon=,selectedIcon=,text=Connect,defaultCapable=true], frame=FSObject Containing - javax.swing.JFrame[frame0,960,553,1x1,invalid,hidden,layout=java.awt.BorderLayout,title=NetConnector,resizable,normal,defaultCloseOperation=DISPOSE_ON_CLOSE,rootPane=javax.swing.JRootPane[,0,0,0x0,invalid,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=javax.swing.plaf.synth.SynthBorder@1cd9be14,flags=16777673,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true]}
+[INFO ] (04/02/2015 13:27:46): Execution Finished
+[INFO ] (04/02/2015 13:28:05): Running Script...
+[INFO ] (04/02/2015 13:28:05): Execution Finished
+[INFO ] (04/02/2015 13:30:12): Running Script...
+[ERROR] (04/02/2015 13:30:12): murlen.util.fscript.FSException: 
+	Incompatible types
+ at line:0 
+			  
+			  
+			> object frame = uiframe("NetConnector", "close") <
+			  object rpanel = uirowpanel()
+			  define("sock")
+		 current token:TT_WORD:tarea
+		 Variable dump:{tarea=HTTP/1.0 200 OK
+, rec=Date: Wed, 04 Feb 2015 15:28:37 GMT}
+		 Globals:{frame=<null>}
+[INFO ] (04/02/2015 13:30:12): Execution Finished
+[INFO ] (04/02/2015 13:30:23): SimpleCron Stopped!
+[DEBUG] (04/02/2015 13:30:23): Timeouts Saved!
+[INFO ] (04/02/2015 13:30:29): SimpleCron Started!
+[DEBUG] (04/02/2015 13:30:29): Timeouts Loaded!
+[INFO ] (04/02/2015 13:30:29): Timeouts Started!
+[INFO ] (04/02/2015 13:30:37): Running Script...
+[INFO ] (04/02/2015 13:30:37): Execution Finished
+[INFO ] (04/02/2015 13:31:43): SimpleCron Stopped!
+[DEBUG] (04/02/2015 13:31:43): Timeouts Saved!
+[INFO ] (04/02/2015 13:31:49): SimpleCron Started!
+[DEBUG] (04/02/2015 13:31:49): Timeouts Loaded!
+[INFO ] (04/02/2015 13:31:49): Timeouts Started!
+[INFO ] (04/02/2015 13:31:55): Running Script...
+[INFO ] (04/02/2015 13:31:55): Execution Finished
+[INFO ] (04/02/2015 13:49:24): SimpleCron Started!
+[DEBUG] (04/02/2015 13:49:24): Timeouts Loaded!
+[INFO ] (04/02/2015 13:49:24): Timeouts Started!
+[DEBUG] (04/02/2015 13:53:36): Timeouts Saved!
+[INFO ] (04/02/2015 13:53:36): SimpleCron Stopped!
+[INFO ] (04/02/2015 13:53:36): SimpleCron Started!
+[INFO ] (04/02/2015 13:53:36): Schedule Added
+[INFO ] (04/02/2015 13:53:59): Running Script...
+[ERROR] (04/02/2015 13:53:59): murlen.util.fscript.FSException: 
+	null
+ at line:2 
+			  object sock = httpget("www.google.com", 80, "localhost", 9000)
+			  string line = tcpreadln(sock)
+			> while !startswith(line, EOF) <
+			    print(line)
+			    line = tcpreadln(sock)
+		 current token:):null
+		 Variable dump:{sock=FSObject Containing - Socket[addr=localhost/127.0.0.1,port=9000,localport=38035], line=HTTP/1.0 400 Bad Request}
+[INFO ] (04/02/2015 13:53:59): Execution Finished
+[INFO ] (04/02/2015 13:55:03): Running Script...
+[ERROR] (04/02/2015 13:55:04): murlen.util.fscript.FSException: 
+	null
+ at line:4 
+			  object sock = httpget(addr, 80, "localhost", 9000)
+			  string line = tcpreadln(sock)
+			> while !startswith(line, EOF) <
+			    print(line)
+			    line = tcpreadln(sock)
+		 current token:):null
+		 Variable dump:{sock=FSObject Containing - Socket[addr=localhost/127.0.0.1,port=9000,localport=38038], line=HTTP/1.0 400 Bad Request, addr=www.google.com}
+[INFO ] (04/02/2015 13:55:04): Execution Finished
+[INFO ] (04/02/2015 13:55:31): SimpleCron Stopped!
+[DEBUG] (04/02/2015 13:55:31): Timeouts Saved!
+[INFO ] (04/02/2015 14:00:47): SimpleCron Started!
+[DEBUG] (04/02/2015 14:00:47): Timeouts Loaded!
+[INFO ] (04/02/2015 14:00:47): Timeouts Started!
+[INFO ] (04/02/2015 14:02:06): Running Script...
+[INFO ] (04/02/2015 14:04:07): SimpleCron Started!
+[DEBUG] (04/02/2015 14:04:07): Timeouts Loaded!
+[INFO ] (04/02/2015 14:04:07): Timeouts Started!
+[INFO ] (04/02/2015 14:05:47): Running Script...
+[ERROR] (04/02/2015 14:05:47): murlen.util.fscript.FSException: 
+	null
+ at line:6 
+			  print("- Received: " + line)
+			  int count = 0
+			> while !startswith(line, EOF) && count < 500 <
+			    print(line)
+			    line = tcpreadln(sock)
+		 current token:):null
+		 Variable dump:{sock=FSObject Containing - Socket[addr=localhost/127.0.0.1,port=9000,localport=38065], line=HTTP/1.0 200 OK, count=0, addr=http://www.google.com}
+[INFO ] (04/02/2015 14:05:47): Execution Finished
+[INFO ] (04/02/2015 14:06:18): Running Script...
+[INFO ] (04/02/2015 14:06:19): Execution Finished
+[INFO ] (04/02/2015 14:07:31): Running Script...
+[INFO ] (04/02/2015 14:07:32): Execution Finished
+[INFO ] (04/02/2015 14:09:25): Running Script...
+[INFO ] (04/02/2015 14:09:26): Execution Finished
+[INFO ] (04/02/2015 14:10:53): Running Script...
+[INFO ] (04/02/2015 14:10:54): Execution Finished
+[INFO ] (04/02/2015 14:11:36): Running Script...
+[INFO ] (04/02/2015 14:11:37): Execution Finished
+[INFO ] (04/02/2015 14:13:41): SimpleCron Started!
+[DEBUG] (04/02/2015 14:13:41): Timeouts Loaded!
+[INFO ] (04/02/2015 14:13:41): Timeouts Started!
+[INFO ] (04/02/2015 14:13:53): Running Script...
+[INFO ] (04/02/2015 14:13:55): Execution Finished
+[INFO ] (04/02/2015 14:14:09): Running Script...
+[INFO ] (04/02/2015 14:14:10): Execution Finished
+[INFO ] (04/02/2015 14:14:28): SimpleCron Stopped!
+[DEBUG] (04/02/2015 14:14:29): Timeouts Saved!
+[INFO ] (04/02/2015 14:15:16): SimpleCron Started!
+[DEBUG] (04/02/2015 14:15:16): Timeouts Loaded!
+[INFO ] (04/02/2015 14:15:16): Timeouts Started!
+[INFO ] (04/02/2015 14:15:25): Running Script...
+[INFO ] (04/02/2015 14:15:27): Execution Finished
+[INFO ] (04/02/2015 14:17:12): SimpleCron Started!
+[DEBUG] (04/02/2015 14:17:12): Timeouts Loaded!
+[INFO ] (04/02/2015 14:17:12): Timeouts Started!
+[INFO ] (04/02/2015 14:17:19): Running Script...
+[ERROR] (04/02/2015 14:17:20): murlen.util.fscript.FSException: 
+	null
+ at line:6 
+			  print("- Received: " + line)
+			  int count = 0
+			> while eq(EOF, line) == 0 && count < 150 <
+			    print(line + " - len=" + strsize(line) + ", "+ eq(EOF, line))
+			    line = tcpreadln(sock)
+		 current token:):null
+		 Variable dump:{sock=FSObject Containing - Socket[addr=localhost/127.0.0.1,port=9000,localport=38094], line=HTTP/1.0 200 OK, count=0, addr=http://www.google.com}
+[INFO ] (04/02/2015 14:17:20): Execution Finished
+[INFO ] (04/02/2015 14:18:00): SimpleCron Stopped!
+[DEBUG] (04/02/2015 14:18:00): Timeouts Saved!

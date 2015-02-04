@@ -92,11 +92,11 @@ public class ScriptProcessor {
     
     tnlib.addTo(funcs);
     strlib.addTo(funcs);
-    ctype.addTo(funcs);
     cronlib.addTo(funcs);
     netlib.addTo(funcs);
     
     fs.registerExtension(ref);
+    fs.registerExtension(ctype);
     fs.registerExtension(funcs);
     fs.registerExtension(iolib);
     fs.registerExtension(dlib);

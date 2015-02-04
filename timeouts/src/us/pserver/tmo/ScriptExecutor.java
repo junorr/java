@@ -77,6 +77,7 @@ public class ScriptExecutor {
   public Object exec(String scriptfile) throws IOException, FSException {
     try {
       lock.lock();
+      proc.executor().reset();
       return proc.execFile(scriptfile);
     } finally {
       lock.unlock();
