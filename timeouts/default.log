@@ -730,3 +730,104 @@
 [INFO ] (04/02/2015 14:17:12): Listening on: NetConnector{ *:33233 }
 [INFO ] (04/02/2015 14:17:12): Server started!
 
+[INFO ] (05/02/2015 08:19:39): SimpleCron Started!
+[INFO ] (05/02/2015 08:19:39): Starting NetworkServer...
+[INFO ] (05/02/2015 08:19:39): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 08:19:39): Listening on: NetConnector{ *:33233 }
+[INFO ] (05/02/2015 08:19:39): Server started!
+
+[INFO ] (05/02/2015 08:21:52): SimpleCron Started!
+[INFO ] (05/02/2015 08:22:09): Starting NetworkServer...
+[INFO ] (05/02/2015 08:22:10): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 08:22:10): Listening on: NetConnector{ *:33233 }
+[INFO ] (05/02/2015 08:22:10): Server started!
+
+[INFO ] (05/02/2015 08:25:25): SimpleCron Started!
+[INFO ] (05/02/2015 08:25:26): Starting NetworkServer...
+[INFO ] (05/02/2015 08:25:26): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 08:25:26): Listening on: NetConnector{ *:33233 }
+[INFO ] (05/02/2015 08:25:26): Server started!
+
+[INFO ] (05/02/2015 08:34:17): SimpleCron Started!
+[INFO ] (05/02/2015 08:34:18): Starting NetworkServer...
+[INFO ] (05/02/2015 08:34:18): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 08:34:18): Listening on: NetConnector{ *:33233 }
+[INFO ] (05/02/2015 08:34:18): Server started!
+
+[INFO ] (05/02/2015 08:36:56): ------------------------------
+[INFO ] (05/02/2015 08:36:56): Handling socket: Socket[addr=/127.0.0.1,port=38973,localport=33233]
+[INFO ] (05/02/2015 08:37:00): Remote request: Main.show(  )
+[INFO ] (05/02/2015 08:37:00): Response sent: OpResult{ success = true, return = null }
+[INFO ] (05/02/2015 08:37:00): Connection closed by client.
+[INFO ] (05/02/2015 08:37:09): SimpleCron Started!
+[INFO ] (05/02/2015 08:37:09): Starting NetworkServer...
+[INFO ] (05/02/2015 08:37:09): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 08:37:09): Listening on: NetConnector{ *:33233 }
+[INFO ] (05/02/2015 08:37:09): Server started!
+
+[INFO ] (05/02/2015 08:39:55): SimpleCron Started!
+[INFO ] (05/02/2015 08:39:55): Starting NetworkServer...
+[INFO ] (05/02/2015 08:39:55): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 08:39:55): Listening on: NetConnector{ *:33233 }
+[INFO ] (05/02/2015 08:39:55): Server started!
+
+[INFO ] (05/02/2015 09:27:29): SimpleCron Started!
+[INFO ] (05/02/2015 09:27:29): Starting NetworkServer...
+[INFO ] (05/02/2015 09:27:29): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 09:27:29): Listening on: NetConnector{ *:33233 }
+[INFO ] (05/02/2015 09:27:29): Server started!
+
+[INFO ] (05/02/2015 10:09:32): SimpleCron Started!
+[INFO ] (05/02/2015 10:09:32): Starting NetworkServer...
+[INFO ] (05/02/2015 10:09:32): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 10:09:32): Listening on: NetConnector{ *:33233 }
+[INFO ] (05/02/2015 10:09:32): Server started!
+
+[INFO ] (05/02/2015 10:19:22): SimpleCron Started!
+[INFO ] (05/02/2015 10:19:23): Starting NetworkServer...
+[INFO ] (05/02/2015 10:19:23): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 10:19:23): Listening on: NetConnector{ *:33233 }
+[INFO ] (05/02/2015 10:19:23): Server started!
+
+[INFO ] (05/02/2015 10:19:45): SimpleCron Started!
+[INFO ] (05/02/2015 10:19:45): Starting NetworkServer...
+[INFO ] (05/02/2015 10:19:45): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 10:19:45): Listening on: NetConnector{ *:33231 }
+[INFO ] (05/02/2015 10:19:45): Server started!
+
+[INFO ] (05/02/2015 10:21:38): SimpleCron Started!
+[INFO ] (05/02/2015 10:21:38): Starting NetworkServer...
+[INFO ] (05/02/2015 10:21:38): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 10:21:38): Listening on: NetConnector{ *:33233 }
+[INFO ] (05/02/2015 10:21:38): Server started!
+
+[INFO ] (05/02/2015 10:22:23): SimpleCron Started!
+[INFO ] (05/02/2015 10:22:24): Starting NetworkServer...
+[INFO ] (05/02/2015 10:22:24): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 10:22:24): Listening on: NetConnector{ *:33231 }
+[INFO ] (05/02/2015 10:22:24): Server started!
+
+[INFO ] (05/02/2015 10:27:12): SimpleCron Started!
+[INFO ] (05/02/2015 10:27:13): Starting NetworkServer...
+[INFO ] (05/02/2015 10:27:13): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 10:27:13): Listening on: NetConnector{ *:33231 }
+[INFO ] (05/02/2015 10:27:13): Server started!
+
+[INFO ] (05/02/2015 10:31:42): SimpleCron Started!
+[INFO ] (05/02/2015 10:31:43): Starting NetworkServer...
+[INFO ] (05/02/2015 10:31:43): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 10:31:43): Listening on: NetConnector{ *:33231 }
+[INFO ] (05/02/2015 10:31:43): Server started!
+
+[INFO ] (05/02/2015 10:39:08): SimpleCron Started!
+[INFO ] (05/02/2015 10:39:08): Starting NetworkServer...
+[INFO ] (05/02/2015 10:39:08): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 10:39:08): Listening on: NetConnector{ *:33233 }
+[INFO ] (05/02/2015 10:39:08): Server started!
+
+[INFO ] (05/02/2015 12:18:15): SimpleCron Started!
+[INFO ] (05/02/2015 12:18:15): Starting NetworkServer...
+[INFO ] (05/02/2015 12:18:15): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (05/02/2015 12:18:15): Listening on: NetConnector{ *:33233 }
+[INFO ] (05/02/2015 12:18:15): Server started!
+

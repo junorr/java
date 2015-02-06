@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Recursos da Linguagem</div>
+  	
+  	<div class="method">
+  		define( string name, [object value] )
+  	</div>
+  	
+  	<div class="desc">
+  		Define uma variável global que pode receber qualquer tipo de valor 
+		e pode ser referenciada em qualquer lugar do código.<br/> 
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>name - Nome da variável global</li>
+  			<li>value - (Opcional) Valor da variável</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+		<span class="comment">
+			# Cria uma variável global sem valor.<br/>
+			# Variáveis sem valor não podem ser referenciadas 
+			  antes de receberem um valor
+		</span><br/>
+		define( "variavel" )</br>
+		<span class="comment">
+			# Atribui um objeto de data à variável.
+		</span><br/>
+		object data = date( )</br>
+		define( "variavel", data )</br>
+		print( variavel )</br>
+		<span class="comment">
+			# Imprime a data na tela
+		</span><br/>
+		&gt;&nbsp;01/02/2015 12:00:35</br>
+		define( "variavel", 1000 )</br>
+		if variavel == 1000</br>
+		&nbsp;&nbsp;&nbsp;print( "Agora a variavel é o número 1000" )</br>
+		endif</br>
+		<span class="comment">
+			# Imprime na tela
+		</span><br/>
+		&gt;&nbsp;Agora a variavel é o número 1000
+	</div>
+  </body>
+ </html>

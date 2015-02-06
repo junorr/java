@@ -1,0 +1,110 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Rede</div>
+  	
+  	<div class="method">
+  		tcplisten( string addr, int port, string func )</br>
+  		tcplisten( object server, string func )
+  	</div>
+  	
+  	<div class="desc">
+		<b>tcplisten( string addr, int port, string func )</b></br>
+  		Inica um servidor TCP/IP para escutar por conexões no endereço e
+		porta especificados, invocando a função informada quando um 
+		conxão externa é realizada ao servidor.</br></br>
+		<b>tcplisten( object server, string func )</b></br>
+  		Reinica o servidor TCP/IP existente, invocando a função informada quando um 
+		conxão externa é realizada ao servidor.</br></br>
+		A função callback chamada quando uma conexão ao servidor é realizada 
+		deve aceitar dois argumentos, o Socket da conexão
+		e o objeto servidor, conforme segue:</br>
+		<i>func nomefuncao( object socket, object server )</br>
+		&nbsp;&nbsp;&nbsp;...</br>
+		endfunc</i></br>
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>addr - Endereço IP ou nome do host</li>
+  			<li>port - Porta onde o servidor irá escutar</li>
+  			<li>server - Objecto servidor previamente criado</li>
+  			<li>func - Função callback que será chamada quando uma 
+				   conexão é realizada ao servidor
+			</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+		<span class="comment">
+			# Função a ser chamada quando uma conexão com o servidor for realizada.
+		</span><br/>
+		func conexao( object socket, object server )</br>
+		&nbsp;&nbsp;&nbsp;print( "- Cliente conectado: " + str( socket ) )</br>
+		&nbsp;&nbsp;&nbsp;object data = date( )</br>
+		&nbsp;&nbsp;&nbsp;
+		<span class="comment">
+			# Envia para o cliente conectado a data atual do servidor
+		</span><br/>
+		&nbsp;&nbsp;&nbsp;tcpwriteln( socket, "Data: " + str( data ) )</br>
+		&nbsp;&nbsp;&nbsp;
+		<span class="comment">
+			# Encerra a conexao com o cliente
+		</span><br/>
+		&nbsp;&nbsp;&nbsp;tcpclose( socket )</br>
+		&nbsp;&nbsp;&nbsp;
+		<span class="comment">
+			# Escuta por novas conexoes, já que a antiga foi encerrada
+		</span><br/>
+		&nbsp;&nbsp;&nbsp;tcplisten( server, "conexao" )</br>
+		endfunc</br></br>
+
+		<span class="comment">
+			# Inicia o servidor pela primeira vez
+		</span><br/>
+		tcplisten( "localhost", 22022, "nomefuncao" )</br>
+ 		tcplisten( server, "nomefuncao" )
+ 	</div>
+ 		
+  </body>
+ </html>

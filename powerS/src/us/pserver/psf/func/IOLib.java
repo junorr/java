@@ -37,7 +37,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import javax.imageio.ImageIO;
 import murlen.util.fscript.FSException;
-import murlen.util.fscript.FSExtension;
+import murlen.util.fscript.FSFastExtension;
+import murlen.util.fscript.FSFunctionExtension;
 import murlen.util.fscript.FSObject;
 import murlen.util.fscript.FSUnsupportedException;
 
@@ -46,7 +47,7 @@ import murlen.util.fscript.FSUnsupportedException;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/01/2014
  */
-public class IOLib implements FSExtension {
+public class IOLib implements FSFunctionExtension {
   
   public static final byte[] BYTES_EOF = {69, 79, 70};
 
@@ -68,14 +69,7 @@ public class IOLib implements FSExtension {
       SYSCMD = "syscommand",
       
       EOF = "EOF",
-      
-      KEY_LN = "LN",
-      KEY_CSV = "CSV",
-      KEY_SPACE = "SPACE",
-      
-      VAL_LN = (File.separatorChar == '/' ? "\n" : "\r\n"),
-      VAL_CSV = ";",
-      VAL_SPACE = " ";
+      LN = (File.separatorChar == '/' ? "\n" : "\r\n");
   
   
   private File filein;
@@ -390,13 +384,13 @@ public class IOLib implements FSExtension {
   
   
   public String iread() throws FSException {
-    return readUntil(System.in, VAL_LN);
+    return readUntil(System.in, LN);
   }
   
   
   public String fread(String path, String token) throws FSException {
     this.checkInput(checkFile(path));
-    if(token == null) token = VAL_LN;
+    if(token == null) token = LN;
     return readUntil(input, token);
   }
   
@@ -483,44 +477,28 @@ public class IOLib implements FSExtension {
       throw new FSException(e.toString());
     }
   }
-
-
-  @Override
-  public Object getVar(String string) throws FSException {
-    switch(string) {
-      case KEY_LN:
-        return VAL_LN;
-      case KEY_CSV:
-        return VAL_CSV;
-      case KEY_SPACE:
-        return VAL_SPACE;
-      case EOF:
-        return EOF;
-      default:
-        throw new FSUnsupportedException();
-    }
-  }
-
-
-  @Override
-  public void setVar(String string, Object o) throws FSException {
-    throw new FSException("Read only var ["+ string+ "]");
-  }
-
-
-  @Override
-  public Object getVar(String string, Object o) throws FSException {
-    return getVar(string);
-  }
-
-
-  @Override
-  public void setVar(String string, Object o, Object o1) throws FSException {
-    setVar(string, o);
-  }
   
   
-  
+  public void addTo(FSFastExtension fs) {
+    if(fs == null) return;
+    fs.addFunctionExtension(FCOPY, this);
+    fs.addFunctionExtension(FEXISTS, this);
+    fs.addFunctionExtension(FRCLOSE, this);
+    fs.addFunctionExtension(FREAD, this);
+    fs.addFunctionExtension(FREADBYTES, this);
+    fs.addFunctionExtension(FREMOVE, this);
+    fs.addFunctionExtension(FSIZE, this);
+    fs.addFunctionExtension(FWCLOSE, this);
+    fs.addFunctionExtension(FWRITE, this);
+    fs.addFunctionExtension(FWRITEBYTES, this);
+    fs.addFunctionExtension(FWRITEIMAGE, this);
+    fs.addFunctionExtension(IREAD, this);
+    fs.addFunctionExtension(ISEOF, this);
+    fs.addFunctionExtension(LENGTH, this);
+    fs.addFunctionExtension(SYSCMD, this);
+  }
+
+
   public static void main(String[] args) throws FSException {
     IOLib io = new IOLib();
     System.out.println(io.syscmd("cmd /c dir d:"));

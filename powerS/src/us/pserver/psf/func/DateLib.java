@@ -23,7 +23,8 @@ package us.pserver.psf.func;
 
 import java.util.ArrayList;
 import murlen.util.fscript.FSException;
-import murlen.util.fscript.FSExtension;
+import murlen.util.fscript.FSFastExtension;
+import murlen.util.fscript.FSFunctionExtension;
 import murlen.util.fscript.FSUnsupportedException;
 import us.pserver.date.DateDiff;
 import us.pserver.date.SimpleDate;
@@ -33,7 +34,7 @@ import us.pserver.date.SimpleDate;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 31/01/2014
  */
-public class DateLib implements FSExtension {
+public class DateLib implements FSFunctionExtension {
   
   public static final String
       ADDDAY = "addday",
@@ -60,9 +61,7 @@ public class DateLib implements FSExtension {
       SETMIN = "setmin",
       SETMON = "setmon",
       SETSEC = "setsec",
-      SETYEAR = "setyear",
-
-      NOW = "NOW";
+      SETYEAR = "setyear";
   
   
   public int eqdate(SimpleDate d1, SimpleDate d2) {
@@ -232,32 +231,6 @@ public class DateLib implements FSExtension {
 
 
   @Override
-  public Object getVar(String string) throws FSException {
-    if(string == null || !NOW.equals(string))
-      throw new FSUnsupportedException();
-    return SimpleDate.now();
-  }
-
-
-  @Override
-  public void setVar(String string, Object o) throws FSException {
-    throw new FSUnsupportedException();
-  }
-
-
-  @Override
-  public Object getVar(String string, Object o) throws FSException {
-    return getVar(string);
-  }
-
-
-  @Override
-  public void setVar(String string, Object o, Object o1) throws FSException {
-    throw new FSUnsupportedException();
-  }
-
-
-  @Override
   public Object callFunction(String string, ArrayList al) throws FSException {
     switch(string) {
       case DATE:
@@ -341,6 +314,36 @@ public class DateLib implements FSExtension {
     SimpleDate d1 = FUtils.date(o1);
     SimpleDate d2 = FUtils.date(o2);
     return new DateDiff(d1, d2);
+  }
+  
+  
+  public void addTo(FSFastExtension fs) {
+    if(fs == null) return;
+    fs.addFunctionExtension(ADDDAY, this);
+    fs.addFunctionExtension(ADDHOUR, this);
+    fs.addFunctionExtension(ADDMIN, this);
+    fs.addFunctionExtension(ADDMON, this);
+    fs.addFunctionExtension(ADDSEC, this);
+    fs.addFunctionExtension(ADDYEAR, this);
+    fs.addFunctionExtension(AFTER, this);
+    fs.addFunctionExtension(BEFORE, this);
+    fs.addFunctionExtension(DATE, this);
+    fs.addFunctionExtension(DAYOFW, this);
+    fs.addFunctionExtension(DIFF, this);
+    fs.addFunctionExtension(EQDATE, this);
+    fs.addFunctionExtension(EQTIME, this);
+    fs.addFunctionExtension(GETDAY, this);
+    fs.addFunctionExtension(GETHOUR, this);
+    fs.addFunctionExtension(GETMIN, this);
+    fs.addFunctionExtension(GETMON, this);
+    fs.addFunctionExtension(GETSEC, this);
+    fs.addFunctionExtension(GETYEAR, this);
+    fs.addFunctionExtension(SETDAY, this);
+    fs.addFunctionExtension(SETHOUR, this);
+    fs.addFunctionExtension(SETMIN, this);
+    fs.addFunctionExtension(SETMON, this);
+    fs.addFunctionExtension(SETSEC, this);
+    fs.addFunctionExtension(SETYEAR, this);
   }
 
 }

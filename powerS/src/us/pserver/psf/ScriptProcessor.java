@@ -33,7 +33,9 @@ import murlen.util.fscript.FSReflectionExtension;
 import us.pserver.psf.func.CTypeLib;
 import us.pserver.psf.func.CronLib;
 import us.pserver.psf.func.DateLib;
+import us.pserver.psf.func.Globals;
 import us.pserver.psf.func.IOLib;
+import us.pserver.psf.func.MysqlLib;
 import us.pserver.psf.func.NetLib;
 import us.pserver.psf.func.StrLib;
 import us.pserver.psf.func.TN3270Lib;
@@ -89,18 +91,22 @@ public class ScriptProcessor {
     DateLib dlib = new DateLib();
     UILib uilib = new UILib(fs);
     tnlib = new TN3270Lib();
+    Globals glob = new Globals();
+    MysqlLib mlib = new MysqlLib();
     
-    tnlib.addTo(funcs);
-    strlib.addTo(funcs);
+    glob.addTo(funcs);
     cronlib.addTo(funcs);
+    strlib.addTo(funcs);
+    iolib.addTo(funcs);
     netlib.addTo(funcs);
+    dlib.addTo(funcs);
+    uilib.addTo(funcs);
+    tnlib.addTo(funcs);
+    mlib.addTo(funcs);
     
     fs.registerExtension(ref);
     fs.registerExtension(ctype);
     fs.registerExtension(funcs);
-    fs.registerExtension(iolib);
-    fs.registerExtension(dlib);
-    fs.registerExtension(uilib);
   }
   
   

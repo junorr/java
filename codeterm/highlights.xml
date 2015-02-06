@@ -69,6 +69,13 @@
       <font family="FreeMono" size="18"/>
     </style>
   </match>
+  <match name="endwhile">
+    <regex>\bendwhile\b</regex>
+    <style>
+      <fg color-rgb="200,225,255"/>
+      <font family="FreeMono" size="18"/>
+    </style>
+  </match>
   <match name="else">
     <regex>\belse\b</regex>
     <style>

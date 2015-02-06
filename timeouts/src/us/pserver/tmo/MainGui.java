@@ -166,6 +166,7 @@ public class MainGui extends javax.swing.JFrame {
       return;
     }
     log.info("Running Script...");
+    tmo.getScriptExecutor().reset();
     ScriptPair p = tmo.get(selected);
     new Thread(new Runnable() {
       public void run() {

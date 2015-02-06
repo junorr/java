@@ -1,0 +1,88 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Rede</div>
+  	
+  	<div class="method">
+  		httpget( string addr, int port, [string proxyAddr], [int proxyPort], [string proxyAuth] )
+  	</div>
+  	
+  	<div class="desc">
+  		Executa uma requisição HTTP para um servidor web, retornando
+		o objeto Socket que representa a conexão.</br>
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>addr - Endereço do servidor web</li>
+  			<li>port - Porta do servidor web</li>
+  			<li>proxyAddr - (Opcional) Endereço do servidor proxy da rede</li>
+  			<li>proxyPort - (Opcional) Porta do servidor proxy da rede</li>
+  			<li>proxyAuth - (Opcional) Autenticação para o servidor proxy (Formato '&lt;usuário&gt;:&lt;senha&gt;')</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+		<span class="comment">
+			# Inicia uma requisição para a página do Google
+		</span></br>
+		object socket = httpget( "http://www.google.com.br", 80 )</br>
+		<span class="comment">
+			# Lê a resposta do servidor
+		</span><br/>
+		string linha = tcpreadln( socket )</br>
+		<span class="comment">
+			# Enquanto a operação de leitura não retornar o sinal de 
+			fim de arquivo, imprime a linha na tela
+		</span><br/>
+		while ! eq( EOF, linha )</br>
+		&nbsp;&nbsp;&nbsp;print( linha )</br>
+		endwhile</br>
+		<span class="comment">
+			# Encerra a conexão
+		</span><br/>
+		tcpclose( socket )
+ 	</div>
+ 		
+  </body>
+ </html>

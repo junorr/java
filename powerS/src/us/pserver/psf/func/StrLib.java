@@ -174,7 +174,6 @@ public class StrLib implements FSFunctionExtension {
   
   
   public int eq(String str1, String str2) {
-    System.out.println("* eq( "+ str1+ ", "+ str2+ " ): "+ Objects.equals(str1, str2));
     if(str1 == null) return 0;
     return (str1.equals(str2) ? 1 : 0);
   }

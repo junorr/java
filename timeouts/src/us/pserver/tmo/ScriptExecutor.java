@@ -63,6 +63,16 @@ public class ScriptExecutor {
   }
   
   
+  public void reset() {
+    try {
+      lock.lock();
+      proc = new ScriptProcessor(cron);
+    } finally {
+      lock.unlock();
+    }
+  }
+  
+  
   public ScriptProcessor getProcessor() {
     return proc;
   }

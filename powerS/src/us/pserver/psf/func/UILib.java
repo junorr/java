@@ -26,13 +26,10 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.Robot;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -63,16 +60,34 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.text.JTextComponent;
 import murlen.util.fscript.BasicIO;
 import murlen.util.fscript.FSException;
-import murlen.util.fscript.FSExtension;
+import murlen.util.fscript.FSFastExtension;
+import murlen.util.fscript.FSFunctionExtension;
 import murlen.util.fscript.FSObject;
 import murlen.util.fscript.FSUnsupportedException;
+import static us.pserver.psf.func.Globals.BTI1;
+import static us.pserver.psf.func.Globals.BTI2;
+import static us.pserver.psf.func.Globals.BTI3;
+import static us.pserver.psf.func.Globals.DIALOG_ERROR;
+import static us.pserver.psf.func.Globals.DIALOG_INFO;
+import static us.pserver.psf.func.Globals.DIALOG_INPUT;
+import static us.pserver.psf.func.Globals.DIALOG_QUESTION;
+import static us.pserver.psf.func.Globals.DIALOG_WARNING;
+import static us.pserver.psf.func.Globals.DLERROR;
+import static us.pserver.psf.func.Globals.DLINFO;
+import static us.pserver.psf.func.Globals.DLINPUT;
+import static us.pserver.psf.func.Globals.DLQUESTION;
+import static us.pserver.psf.func.Globals.DLWARNING;
+import static us.pserver.psf.func.Globals.NO;
+import static us.pserver.psf.func.Globals.UICENTER;
+import static us.pserver.psf.func.Globals.UIRIGHT;
+import static us.pserver.psf.func.Globals.YES;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 03/02/2014
  */
-public class UILib implements FSExtension {
+public class UILib implements FSFunctionExtension {
   
   public static final String
       DIALOG = "dialog",
@@ -103,41 +118,7 @@ public class UILib implements FSExtension {
       UICHECKBOX = "uicheckbox",
       UICOMBO = "uicombo",
       UIRADIO = "uiradio",
-      UISETSIZE = "uisetsize",
-      
-      UICENTER = "UICENTER",
-      UILEFT = "UILEFT",
-      UIRIGHT = "UIRIGHT",
-      
-      SCREEN_WIDTH = "SCREENW",
-      SCREEN_HEIGHT = "SCREENH",
-      
-      BTS1 = "BTN1",
-      BTS2 = "BTN2",
-      BTS3 = "BTN3",
-      BTS4 = "BUTTON1",
-      BTS5 = "BUTTON2",
-      BTS6 = "BUTTON3",
-      
-      DLINFO = "DLINFO",
-      DLINPUT = "DLINPUT",
-      DLQUESTION = "DLQUESTION",
-      DLWARNING = "DLWARNING",
-      DLERROR = "DLERROR",
-      
-      DIALOG_INFO = "DIALOG_INFO",
-      DIALOG_INPUT = "DIALOG_INPUT",
-      DIALOG_QUESTION = "DIALOG_QUESTION",
-      DIALOG_WARNING = "DIALOG_WARNING",
-      DIALOG_ERROR = "DIALOG_ERROR",
-      
-      YES = "YES",
-      NO = "NO";
-  
-  public static final int 
-      BTN1 = InputEvent.BUTTON1_DOWN_MASK,
-      BTN2 = InputEvent.BUTTON2_DOWN_MASK,
-      BTN3 = InputEvent.BUTTON3_DOWN_MASK;
+      UISETSIZE = "uisetsize";
   
   
   private Robot robot;
@@ -584,35 +565,21 @@ public class UILib implements FSExtension {
   
   public void mclick(int button, int x, int y) throws FSException {
     this.checkCoord(x, y);
-    int btn = 0;
-    switch(button) {
-      case 1:
-        btn = BTN1;
-        break;
-      case 2:
-        btn = BTN2;
-        break;
-      case 3:
-        btn = BTN3;
-      default:
-        btn = button;
-        break;
-    }
-    if(btn != BTN1 && btn != BTN2
-        && btn != BTN3) 
-      throw new FSException("Invalid mouse button ["+ btn+ "]");
+    if(button != BTI1 && button != BTI2
+        && button != BTI3) 
+      throw new FSException("Invalid mouse button ["+ button+ "]");
     mmove(x, y);
-    robot.mousePress(btn);
+    robot.mousePress(button);
     robot.waitForIdle();
-    robot.mouseRelease(btn);
+    robot.mouseRelease(button);
   }
   
   
   public void mdrag(int x, int y) throws FSException {
     this.checkCoord(x, y);
-    robot.mousePress(BTN1);
+    robot.mousePress(BTI1);
     mmove(x, y);
-    robot.mouseRelease(BTN1);
+    robot.mouseRelease(BTI1);
   }
   
   
@@ -681,84 +648,6 @@ public class UILib implements FSExtension {
     this.checkCoord(width, height);
     Rectangle rect = new Rectangle(x, y, width, height);
     return robot.createScreenCapture(rect);
-  }
-
-
-  @Override
-  public Object getVar(String string) throws FSException {
-    switch(string) {
-      case SCREEN_WIDTH:
-        return Toolkit.getDefaultToolkit()
-            .getScreenSize().width;
-      case SCREEN_HEIGHT:
-        return Toolkit.getDefaultToolkit()
-            .getScreenSize().height;
-      case DIALOG_ERROR:
-        return DIALOG_ERROR;
-      case DIALOG_INFO:
-        return DIALOG_INFO;
-      case DIALOG_INPUT:
-        return DIALOG_INPUT;
-      case DIALOG_QUESTION:
-        return DIALOG_QUESTION;
-      case DIALOG_WARNING:
-        return DIALOG_WARNING;
-      case DLERROR:
-        return DIALOG_ERROR;
-      case DLINFO:
-        return DIALOG_INFO;
-      case DLINPUT:
-        return DIALOG_INPUT;
-      case DLQUESTION:
-        return DIALOG_QUESTION;
-      case DLWARNING:
-        return DIALOG_WARNING;
-      case YES:
-        return YES;
-      case NO:
-        return NO;
-      case BTS1:
-        return BTN1;
-      case BTS2:
-        return BTN2;
-      case BTS3:
-        return BTN3;
-      case BTS4:
-        return BTN1;
-      case BTS5:
-        return BTN2;
-      case BTS6:
-        return BTN3;
-      case UICENTER:
-        return UICENTER;
-      case UILEFT:
-        return UILEFT;
-      case UIRIGHT:
-        return UIRIGHT;
-      default:
-        if(map.getMap().containsKey(string))
-          return string;
-        else
-          throw new FSUnsupportedException();
-    }
-  }
-
-
-  @Override
-  public void setVar(String string, Object o) throws FSException {
-    throw new FSUnsupportedException();
-  }
-
-
-  @Override
-  public Object getVar(String string, Object o) throws FSException {
-    return getVar(string);
-  }
-
-
-  @Override
-  public void setVar(String string, Object o, Object o1) throws FSException {
-    throw new FSUnsupportedException();
   }
 
 
@@ -930,6 +819,39 @@ public class UILib implements FSExtension {
         throw new FSUnsupportedException();
     }
     return null;
+  }
+  
+  
+  public void addTo(FSFastExtension fs) {
+    if(fs == null) return;
+    fs.addFunctionExtension(KEY, this);
+    fs.addFunctionExtension(DIALOG, this);
+    fs.addFunctionExtension(KEYPRESS, this);
+    fs.addFunctionExtension(KEYRELEASE, this);
+    fs.addFunctionExtension(MCLICK, this);
+    fs.addFunctionExtension(MDRAG, this);
+    fs.addFunctionExtension(MMOVE, this);
+    fs.addFunctionExtension(MWHEEL, this);
+    fs.addFunctionExtension(SCREENCAPT, this);
+    fs.addFunctionExtension(UIADD, this);
+    fs.addFunctionExtension(UIAREA, this);
+    fs.addFunctionExtension(UIBUTTON, this);
+    fs.addFunctionExtension(UICHECKBOX, this);
+    fs.addFunctionExtension(UICOLPANEL, this);
+    fs.addFunctionExtension(UICOMBO, this);
+    fs.addFunctionExtension(UIDELAY, this);
+    fs.addFunctionExtension(UIFRAME, this);
+    fs.addFunctionExtension(UIGETSELECTED, this);
+    fs.addFunctionExtension(UIGETTEXT, this);
+    fs.addFunctionExtension(UILABEL, this);
+    fs.addFunctionExtension(UIRADIO, this);
+    fs.addFunctionExtension(UIROWPANEL, this);
+    fs.addFunctionExtension(UISETSELECTED, this);
+    fs.addFunctionExtension(UISETSIZE, this);
+    fs.addFunctionExtension(UISETTEXT, this);
+    fs.addFunctionExtension(UISHOW, this);
+    fs.addFunctionExtension(UITEXT, this);
+    fs.addFunctionExtension(WRITESTRING, this);
   }
 
 }

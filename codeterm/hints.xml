@@ -37,6 +37,7 @@
   <string>cut</string>
   <string>date</string>
   <string>dayofw</string>
+  <string>define</string>
   <string>delay</string>
   <string>delete</string>
   <string>dialog</string>
@@ -49,6 +50,7 @@
   <string>DLWARNING</string>
   <string>down</string>
   <string>end</string>
+  <string>endswith</string>
   <string>enter</string>
   <string>EOF</string>
   <string>eq</string>
@@ -70,6 +72,7 @@
   <string>fsize</string>
   <string>fremove</string>
   <string>fcopy</string>
+  <string>httpget</string>
   <string>isEOF</string>
   <string>iread</string>
   <string>getday</string>
@@ -115,10 +118,18 @@
   <string>settext</string>
   <string>setyear</string>
   <string>SPACE</string>
+  <string>startswith</string>
   <string>str</string>
   <string>strsize</string>
   <string>syscommand</string>
   <string>tab</string>
+  <string>tcplisten</string>
+  <string>tcpclose</string>
+  <string>tcpconnect</string>
+  <string>tcpreadln</string>
+  <string>tcpread</string>
+  <string>tcpwriteln</string>
+  <string>tcpwrite</string>
   <string>tncontains</string>
   <string>todouble</string>
   <string>toint</string>

@@ -1359,3 +1359,144 @@
 [INFO ] (04/02/2015 14:17:20): Execution Finished
 [INFO ] (04/02/2015 14:18:00): SimpleCron Stopped!
 [DEBUG] (04/02/2015 14:18:00): Timeouts Saved!
+[INFO ] (05/02/2015 08:19:39): SimpleCron Started!
+[DEBUG] (05/02/2015 08:19:39): Timeouts Loaded!
+[INFO ] (05/02/2015 08:19:39): Timeouts Started!
+[INFO ] (05/02/2015 08:20:16): Running Script...
+[INFO ] (05/02/2015 08:20:16): Execution Finished
+[INFO ] (05/02/2015 08:22:09): SimpleCron Started!
+[DEBUG] (05/02/2015 08:22:09): Timeouts Loaded!
+[INFO ] (05/02/2015 08:22:09): Timeouts Started!
+[INFO ] (05/02/2015 08:24:30): Running Script...
+[INFO ] (05/02/2015 08:24:31): Execution Finished
+[INFO ] (05/02/2015 08:25:26): SimpleCron Started!
+[DEBUG] (05/02/2015 08:25:26): Timeouts Loaded!
+[INFO ] (05/02/2015 08:25:26): Timeouts Started!
+[INFO ] (05/02/2015 08:25:32): Running Script...
+[INFO ] (05/02/2015 08:25:33): Execution Finished
+[INFO ] (05/02/2015 08:28:57): Running Script...
+[INFO ] (05/02/2015 08:28:58): Execution Finished
+[INFO ] (05/02/2015 08:32:58): Running Script...
+[INFO ] (05/02/2015 08:32:59): Execution Finished
+[INFO ] (05/02/2015 08:33:37): SimpleCron Stopped!
+[DEBUG] (05/02/2015 08:33:37): Timeouts Saved!
+[INFO ] (05/02/2015 08:34:18): SimpleCron Started!
+[DEBUG] (05/02/2015 08:34:18): Timeouts Loaded!
+[INFO ] (05/02/2015 08:34:18): Timeouts Started!
+[INFO ] (05/02/2015 08:34:56): Running Script...
+[INFO ] (05/02/2015 08:34:57): Execution Finished
+[INFO ] (05/02/2015 08:37:09): SimpleCron Started!
+[DEBUG] (05/02/2015 08:37:09): Timeouts Loaded!
+[INFO ] (05/02/2015 08:37:09): Timeouts Started!
+[INFO ] (05/02/2015 08:38:09): Running Script...
+[INFO ] (05/02/2015 08:38:10): Execution Finished
+[INFO ] (05/02/2015 08:39:16): Running Script...
+[INFO ] (05/02/2015 08:39:17): Execution Finished
+[INFO ] (05/02/2015 08:39:30): SimpleCron Stopped!
+[DEBUG] (05/02/2015 08:39:30): Timeouts Saved!
+[INFO ] (05/02/2015 08:39:55): SimpleCron Started!
+[DEBUG] (05/02/2015 08:39:55): Timeouts Loaded!
+[INFO ] (05/02/2015 08:39:55): Timeouts Started!
+[INFO ] (05/02/2015 08:40:04): Running Script...
+[INFO ] (05/02/2015 08:40:04): Execution Finished
+[INFO ] (05/02/2015 08:54:48): Running Script...
+[INFO ] (05/02/2015 08:54:48): Execution Finished
+[INFO ] (05/02/2015 09:03:57): SimpleCron Stopped!
+[DEBUG] (05/02/2015 09:03:57): Timeouts Saved!
+[INFO ] (05/02/2015 09:27:29): SimpleCron Started!
+[DEBUG] (05/02/2015 09:27:29): Timeouts Loaded!
+[INFO ] (05/02/2015 09:27:29): Timeouts Started!
+[INFO ] (05/02/2015 10:08:15): Running Script...
+[INFO ] (05/02/2015 10:08:15): Execution Finished
+[INFO ] (05/02/2015 10:08:46): Running Script...
+[INFO ] (05/02/2015 10:08:46): Execution Finished
+[INFO ] (05/02/2015 10:09:21): Running Script...
+[INFO ] (05/02/2015 10:09:21): Execution Finished
+[INFO ] (05/02/2015 10:09:26): SimpleCron Stopped!
+[DEBUG] (05/02/2015 10:09:26): Timeouts Saved!
+[INFO ] (05/02/2015 10:09:32): SimpleCron Started!
+[DEBUG] (05/02/2015 10:09:32): Timeouts Loaded!
+[INFO ] (05/02/2015 10:09:32): Timeouts Started!
+[INFO ] (05/02/2015 10:09:38): Running Script...
+[INFO ] (05/02/2015 10:11:16): Execution Finished
+[INFO ] (05/02/2015 10:12:50): Running Script...
+[INFO ] (05/02/2015 10:13:30): Execution Finished
+[INFO ] (05/02/2015 10:16:00): Running Script...
+[INFO ] (05/02/2015 10:17:18): Execution Finished
+[INFO ] (05/02/2015 10:17:30): Running Script...
+[INFO ] (05/02/2015 10:18:38): Execution Finished
+[INFO ] (05/02/2015 10:18:51): Running Script...
+[INFO ] (05/02/2015 10:18:58): Running Script...
+[INFO ] (05/02/2015 10:19:15): SimpleCron Stopped!
+[DEBUG] (05/02/2015 10:19:15): Timeouts Saved!
+[INFO ] (05/02/2015 10:19:23): SimpleCron Started!
+[DEBUG] (05/02/2015 10:19:23): Timeouts Loaded!
+[INFO ] (05/02/2015 10:19:23): Timeouts Started!
+[INFO ] (05/02/2015 10:19:45): SimpleCron Started!
+[DEBUG] (05/02/2015 10:19:45): Timeouts Loaded!
+[INFO ] (05/02/2015 10:19:45): Timeouts Started!
+[INFO ] (05/02/2015 10:20:04): Running Script...
+[INFO ] (05/02/2015 10:20:10): Running Script...
+[INFO ] (05/02/2015 10:20:10): Execution Finished
+[INFO ] (05/02/2015 10:21:28): SimpleCron Stopped!
+[DEBUG] (05/02/2015 10:21:28): Timeouts Saved!
+[INFO ] (05/02/2015 10:21:38): SimpleCron Started!
+[DEBUG] (05/02/2015 10:21:38): Timeouts Loaded!
+[INFO ] (05/02/2015 10:21:38): Timeouts Started!
+[INFO ] (05/02/2015 10:22:13): Running Script...
+[INFO ] (05/02/2015 10:22:24): SimpleCron Started!
+[DEBUG] (05/02/2015 10:22:24): Timeouts Loaded!
+[INFO ] (05/02/2015 10:22:24): Timeouts Started!
+[INFO ] (05/02/2015 10:25:44): Running Script...
+[INFO ] (05/02/2015 10:25:44): Execution Finished
+[INFO ] (05/02/2015 10:27:13): SimpleCron Started!
+[DEBUG] (05/02/2015 10:27:13): Timeouts Loaded!
+[INFO ] (05/02/2015 10:27:13): Timeouts Started!
+[INFO ] (05/02/2015 10:28:06): Running Script...
+[INFO ] (05/02/2015 10:28:06): Execution Finished
+[INFO ] (05/02/2015 10:30:40): Execution Finished
+[INFO ] (05/02/2015 10:31:21): Running Script...
+[INFO ] (05/02/2015 10:31:28): Running Script...
+[ERROR] (05/02/2015 10:31:28): murlen.util.fscript.FSException: 
+	Incompatible types
+ at line:0 
+			  
+			  
+			> object frame = uiframe("NetConnector", "close") <
+			  object rpanel = uirowpanel()
+			  define("sock")
+		 current token:):null
+		 Variable dump:{text=exit-total}
+		 Globals:{frame=<null>}
+[INFO ] (05/02/2015 10:31:28): Execution Finished
+[INFO ] (05/02/2015 10:31:36): SimpleCron Stopped!
+[DEBUG] (05/02/2015 10:31:36): Timeouts Saved!
+[INFO ] (05/02/2015 10:31:43): SimpleCron Started!
+[DEBUG] (05/02/2015 10:31:43): Timeouts Loaded!
+[INFO ] (05/02/2015 10:31:43): Timeouts Started!
+[INFO ] (05/02/2015 10:31:54): Running Script...
+[INFO ] (05/02/2015 10:31:54): Execution Finished
+[INFO ] (05/02/2015 10:32:48): Running Script...
+[INFO ] (05/02/2015 10:32:48): Execution Finished
+[INFO ] (05/02/2015 10:35:12): Execution Finished
+[INFO ] (05/02/2015 10:35:43): SimpleCron Stopped!
+[DEBUG] (05/02/2015 10:35:43): Timeouts Saved!
+[INFO ] (05/02/2015 10:35:47): SimpleCron Stopped!
+[DEBUG] (05/02/2015 10:35:47): Timeouts Saved!
+[INFO ] (05/02/2015 10:39:08): SimpleCron Started!
+[DEBUG] (05/02/2015 10:39:08): Timeouts Loaded!
+[INFO ] (05/02/2015 10:39:08): Timeouts Started!
+[INFO ] (05/02/2015 10:39:14): Running Script...
+[INFO ] (05/02/2015 10:39:14): Execution Finished
+[INFO ] (05/02/2015 10:39:20): Running Script...
+[INFO ] (05/02/2015 10:39:20): Execution Finished
+[INFO ] (05/02/2015 10:39:25): Running Script...
+[INFO ] (05/02/2015 10:39:25): Execution Finished
+[INFO ] (05/02/2015 10:39:30): SimpleCron Stopped!
+[DEBUG] (05/02/2015 10:39:30): Timeouts Saved!
+[INFO ] (05/02/2015 12:18:15): SimpleCron Started!
+[DEBUG] (05/02/2015 12:18:15): Timeouts Loaded!
+[INFO ] (05/02/2015 12:18:15): Timeouts Started!
+[ERROR] (05/02/2015 12:18:30): Invalid Schedule
+[INFO ] (05/02/2015 12:20:19): SimpleCron Stopped!
+[DEBUG] (05/02/2015 12:20:20): Timeouts Saved!

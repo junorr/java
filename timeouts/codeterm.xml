@@ -10,9 +10,10 @@
   <textFont family="FreeMono" size="18"/>
   <statusFont family="Monospaced" size="12"/>
   <position>
-    <x>1178</x>
-    <y>313</y>
+    <x>807</x>
+    <y>327</y>
     <width>679</width>
     <height>595</height>
   </position>
+  <lastFile>/home/juno/timeouts/scripts/nettest.txt</lastFile>
 </us.pserver.coder.CodetermConfig>
