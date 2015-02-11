@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import murlen.util.fscript.FSException;
 import murlen.util.fscript.FSExtension;
-import murlen.util.fscript.FSFastExtension;
 import murlen.util.fscript.FSUnsupportedException;
 
 /**
