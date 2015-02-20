@@ -491,7 +491,6 @@ public class JGrid extends JPanel implements
         Cursor cs = cursor;
         JChar jc = this.getCharAt(cs);
         while(jc != null && !jc.getChar().isProtected() && cs.next().row() == cs.row()) {
-          System.out.println("* char="+jc.getText());
           jc.setText(" ");
           JChar next = this.getCharAt(cs.next());
           if(next != null && !next.getChar().isProtected())
@@ -513,6 +512,14 @@ public class JGrid extends JPanel implements
       case KeyEvent.VK_END:
         Field f = this.getFieldAt(cursor);
         this.clearField(f);
+        break;
+        
+      case KeyEvent.VK_HOME:
+        Field cf = this.getFieldAt(cursor);
+        if(!cf.isProtected()) {
+          this.clearCursor();
+          this.setCursorPosition(cf.getCursor());
+        }
         break;
         
       case KeyEvent.VK_D:

@@ -34,7 +34,10 @@ import us.pserver.j3270.JDriver;
 import us.pserver.psf.func.CTypeLib;
 import us.pserver.psf.func.CronLib;
 import us.pserver.psf.func.DateLib;
+import us.pserver.psf.func.Globals;
 import us.pserver.psf.func.IOLib;
+import us.pserver.psf.func.MysqlLib;
+import us.pserver.psf.func.NetLib;
 import us.pserver.psf.func.StrLib;
 import us.pserver.psf.func.UILib;
 
@@ -61,20 +64,26 @@ public class ScriptProcessor {
     iolib = new IOLib();
     CTypeLib ctype = new CTypeLib();
     DateLib dlib = new DateLib();
-    UILib uilib = new UILib();
+    UILib uilib = new UILib(fs);
     CronLib cronlib = new CronLib(fs);
     J3270Lib tnlib = new J3270Lib(driver);
+    MysqlLib mslib = new MysqlLib();
+    NetLib nlib = new NetLib(fs);
+    Globals glob = new Globals();
     
     tnlib.addTo(funcs);
+    glob.addTo(funcs);
     strlib.addTo(funcs);
-    ctype.addTo(funcs);
     cronlib.addTo(funcs);
+    dlib.addTo(funcs);
+    uilib.addTo(funcs);
+    mslib.addTo(funcs);
+    nlib.addTo(funcs);
+    iolib.addTo(funcs);
     
     fs.registerExtension(ref);
     fs.registerExtension(funcs);
-    fs.registerExtension(iolib);
-    fs.registerExtension(dlib);
-    fs.registerExtension(uilib);
+    fs.registerExtension(ctype);
   }
   
   

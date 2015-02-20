@@ -105,8 +105,8 @@ public class ScriptProcessor {
     mlib.addTo(funcs);
     
     fs.registerExtension(ref);
-    fs.registerExtension(ctype);
     fs.registerExtension(funcs);
+    fs.registerExtension(ctype);
   }
   
   
