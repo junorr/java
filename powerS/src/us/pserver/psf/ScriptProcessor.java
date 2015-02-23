@@ -35,6 +35,7 @@ import us.pserver.psf.func.CronLib;
 import us.pserver.psf.func.DateLib;
 import us.pserver.psf.func.Globals;
 import us.pserver.psf.func.IOLib;
+import us.pserver.psf.func.ListLib;
 import us.pserver.psf.func.MysqlLib;
 import us.pserver.psf.func.NetLib;
 import us.pserver.psf.func.StrLib;
@@ -93,6 +94,7 @@ public class ScriptProcessor {
     tnlib = new TN3270Lib();
     Globals glob = new Globals();
     MysqlLib mlib = new MysqlLib();
+    ListLib lslib = new ListLib(fs);
     
     glob.addTo(funcs);
     cronlib.addTo(funcs);
@@ -103,6 +105,7 @@ public class ScriptProcessor {
     uilib.addTo(funcs);
     tnlib.addTo(funcs);
     mlib.addTo(funcs);
+    lslib.addTo(funcs);
     
     fs.registerExtension(ref);
     fs.registerExtension(funcs);

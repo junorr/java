@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Banco de Dados (MySQL)</div>
+  	
+  	<div class="method">
+  		mysql_next( object result )
+  	</div>
+  	
+  	<div class="desc">
+  		Move o cursor para a próxima linha no resultado.</br>
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>result - Resultado de consulta no banco de dados</li>
+  			<li>return - Verdadeiro(1)/Falso(0) indicando se existe próxima linha no resultado.</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+		object result = ...</br>
+		while mysql_next( result )</br>
+		&nbsp;&nbsp;&nbsp;...</br>
+		endwhile
+ 	</div>
+ 		
+  </body>
+ </html>

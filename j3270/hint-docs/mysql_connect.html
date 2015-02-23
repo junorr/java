@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Banco de Dados (MySQL)</div>
+  	
+  	<div class="method">
+  		mysql_connect( string addr, [string schema], string user, string pwd )
+  	</div>
+  	
+  	<div class="desc">
+  		Inicia uma conexão com servidor MySQL no endereço especificado, 
+		autenticando com o usuário e senha fornecidos.</br>
+		O argumento <i>schema</i> (opcional), seleciona o schema do banco de dados
+		que será utilizado na conexão.</br>
+		Retorna o objeto Connection que representa a conexão estabelecida.</br>
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>addr - Endereço IP ou nome do servidor</li>
+  			<li>[schema] - Schema a ser usado na conexão (opcional)</li>
+  			<li>user - Usuário do banco de dados</li>
+  			<li>pwd - Senha de autenticação</li>
+  			<li>return - Objecto Connection que representa a conexão</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+		<span class="comment">
+			# Inicia uma conexão na máquina local
+		</span><br/>
+		object conn = mysql_connect( "127.0.0.1", "usuario", "senha" )
+ 	</div>
+ 		
+  </body>
+ </html>

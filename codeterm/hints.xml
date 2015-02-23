@@ -103,6 +103,7 @@
   <string>pgup</string>
   <string>print</string>
   <string>replace</string>
+  <string>return</string>
   <string>right</string>
   <string>schedule</string>
   <string>screencapture</string>

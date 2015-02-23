@@ -1,0 +1,70 @@
+<html>
+  <head>
+    <title>Funcao</title>
+    <style type="text/css">
+    	body {
+    		font-family: Monospace;
+    		font-size: 11px;
+    	}
+    	.method {
+    		background-color: #4D7A97;
+    		color: white;
+    		width: 350px;
+    		font-weight: bold;
+    		font-size: 12px;
+    		margin-top: 10px;
+    	}
+    	.desc {
+    		margin-left: 10px;
+    		margin-top: 10px;
+    		background-color: #F1F5FB;
+    		width: 350px;
+    	}
+    	.example {
+    		background-color: #F0F0F0;
+    		color: #0058A3;
+    		background-color: #323232;
+    		color: #FEBC2B;
+    		width: 350px;
+    		margin-top: 2px;
+    		margin-left: 10px;
+    		font-weight: bold;
+    	}
+    	.comment {
+    		color: #00FFFF;
+    		color: #B4B4B4;
+    	}
+    	.title {
+    		font-weight: bold;
+    		font-size: 12px;
+    	}
+    </style>
+  </head>
+  
+  <body>
+  	<div class="title">Funcoes de Banco de Dados (MySQL)</div>
+  	
+  	<div class="method">
+  		mysql_update( object conn, string sql )
+  	</div>
+  	
+  	<div class="desc">
+  		Executa um comando SQL de atualização no banco de dados, 
+		retornando o número de linhas afetadas na atualização.</br>
+  		<i>Argumentos/Retorno:</i>
+  		<ul>
+  			<li>conn - Objeto de conexão com o banco de dados</li>
+  			<li>sql - Comando SQL de atualização</li>
+  			<li>conn - Número de linhas afetadas no comando de atualização</li>
+  		</ul>
+  	</div>
+  	
+  	<div class="desc"><b>Exemplo:</b></div>
+  	<div class="example">
+		object conn = ...</br>
+		string sql = "UPDATE tabela SET campo = valor WHERE condicoes"</br>
+		int linhas = mysql_update( conn, sql )
+ 	</div>
+ 		
+  </body>
+ </html>
