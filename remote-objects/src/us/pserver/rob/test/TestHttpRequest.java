@@ -50,12 +50,12 @@ public class TestHttpRequest {
     Transport trp = new Transport();
     trp.setObject("Hello HttpUtils!!");
 
-    
+    /*
     InputStream input = Files.newInputStream(
         Paths.get("c:/.local/splash.png"), 
         StandardOpenOption.READ);
     //trp.setInputStream(input);
-    
+    */
     channel.write(trp);
     
     System.out.println("* request sent!");

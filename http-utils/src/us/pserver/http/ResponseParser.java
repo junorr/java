@@ -39,12 +39,12 @@ public class ResponseParser extends HttpParser {
     super.parseInput(in);
     if(headers().isEmpty() || headers().get(0) == null) 
       throw new IOException(
-          "Error parsing request (No header identified)");
+          "Error parsing response (No header identified)");
     
     Header hd = headers().get(0);
     String[] ss = hd.getValue().split(BLANK);
     if(ss == null || ss.length < 3) throw new IOException(
-        "Error parsing request: Invalid request line");
+        "Error parsing response: Invalid response line");
     
     response = new ResponseLine();
     response.setHttpVersion(ss[0]);

@@ -2747,3 +2747,237 @@
 [INFO ] (14/08/2014 15:00:57): Authentication Enabled: Credentials{ user = juno }
 [INFO ] (14/08/2014 15:00:57): Response sent: OpResult{ success = true, return = true }
 [INFO ] (14/08/2014 15:00:57): Connection closed by client.
+[INFO ] (02/03/2015 16:00:22): Starting NetworkServer...
+[INFO ] (02/03/2015 16:00:22): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (02/03/2015 16:00:22): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (02/03/2015 16:00:22): Server started!
+
+[INFO ] (02/03/2015 16:00:28): ------------------------------
+[INFO ] (02/03/2015 16:00:28): Handling socket: Socket[addr=/127.0.0.1,port=36182,localport=35000]
+[ERROR] (02/03/2015 16:00:29): Error reading from channel
+[ERROR] (02/03/2015 16:00:29): IOException: Error parsing request (Invalid request line: <<xml><ckey enc='basic'>QUVTL0NCQy9QS0NTNVBhZGRpbmd8fGJFQTJUemdrVUd3eWFDcE9kaWhFTkE9PQ==</ckey>�U��ٲU�\P��ꗛ���L�d�a����6��c{`�.Ӓ)h���\�P�4H2Cb�L���a��~��Y���̫���o/+��.r�M����}��qBV�o5?]��0�(PW\�fVy���y�Ad���#�}���H�^W�9���oa��ʓc����<j��{i�	x_��68��z��<�'�X�bBdag���px�X�&��<�^: �T�IzDd/kn
+h�$�ga
+>)
+[ERROR] (02/03/2015 16:00:29):   us.pserver.http.RequestParser.parseInput(RequestParser.java:45)
+[ERROR] (02/03/2015 16:00:29):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:298)
+[ERROR] (02/03/2015 16:00:29):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:330)
+[ERROR] (02/03/2015 16:00:29):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:512)
+[ERROR] (02/03/2015 16:00:29):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (02/03/2015 16:00:29):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (02/03/2015 16:00:29):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (02/03/2015 16:00:29):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (02/03/2015 16:00:29):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (02/03/2015 16:00:29): Connection closed by client.
+[INFO ] (02/03/2015 16:02:07): Starting NetworkServer...
+[INFO ] (02/03/2015 16:02:07): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (02/03/2015 16:02:07): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (02/03/2015 16:02:07): Server started!
+
+[INFO ] (02/03/2015 16:02:12): ------------------------------
+[INFO ] (02/03/2015 16:02:12): Handling socket: Socket[addr=/127.0.0.1,port=36183,localport=35000]
+[INFO ] (02/03/2015 16:02:12): Remote request: a.compute( 5, 3 )
+[WARN ] (02/03/2015 16:02:12): Error invoking method [compute]
+[WARN ] (02/03/2015 16:02:12): MethodInvocationException: Invocation error [java.lang.IllegalArgumentException: argument type mismatch]
+[WARN ] (02/03/2015 16:02:12):   Caused by: IllegalArgumentException: argument type mismatch
+[WARN ] (02/03/2015 16:02:12):   us.pserver.rob.server.Invoker.invoke(Invoker.java:151)
+[WARN ] (02/03/2015 16:02:12):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[WARN ] (02/03/2015 16:02:12):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[WARN ] (02/03/2015 16:02:12):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[WARN ] (02/03/2015 16:02:12):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[WARN ] (02/03/2015 16:02:12):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[WARN ] (02/03/2015 16:02:12):   us.pserver.rob.server.Invoker.invoke(Invoker.java:110)
+[WARN ] (02/03/2015 16:02:12):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:449)
+[WARN ] (02/03/2015 16:02:12):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:387)
+[WARN ] (02/03/2015 16:02:12):   us.pserver.rob.server.NetworkServer$SocketHandler.handleInvoke(NetworkServer.java:481)
+[WARN ] (02/03/2015 16:02:12):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:519)
+[WARN ] (02/03/2015 16:02:12):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (02/03/2015 16:02:12):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (02/03/2015 16:02:12):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (02/03/2015 16:02:12):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (02/03/2015 16:02:12):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (02/03/2015 16:02:12): Response sent: OpResult{ success = false, return = null }
+[INFO ] (02/03/2015 16:02:12): Connection closed by client.
+[INFO ] (02/03/2015 16:19:24): Starting NetworkServer...
+[INFO ] (02/03/2015 16:19:25): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (02/03/2015 16:19:25): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (02/03/2015 16:19:25): Server started!
+
+[INFO ] (02/03/2015 16:19:33): ------------------------------
+[INFO ] (02/03/2015 16:19:33): Handling socket: Socket[addr=/127.0.0.1,port=36217,localport=35000]
+[INFO ] (02/03/2015 16:19:33): Remote request: a.compute( 5, 3 )
+[WARN ] (02/03/2015 16:19:33): Error invoking method [compute]
+[WARN ] (02/03/2015 16:19:33): MethodInvocationException: Invocation error [java.lang.IllegalArgumentException: argument type mismatch]
+[WARN ] (02/03/2015 16:19:33):   Caused by: IllegalArgumentException: argument type mismatch
+[WARN ] (02/03/2015 16:19:33):   us.pserver.rob.server.Invoker.invoke(Invoker.java:151)
+[WARN ] (02/03/2015 16:19:33):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[WARN ] (02/03/2015 16:19:33):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[WARN ] (02/03/2015 16:19:33):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[WARN ] (02/03/2015 16:19:33):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[WARN ] (02/03/2015 16:19:33):   us.pserver.rob.server.Invoker.invoke(Invoker.java:146)
+[WARN ] (02/03/2015 16:19:33):   us.pserver.rob.server.Invoker.invoke(Invoker.java:110)
+[WARN ] (02/03/2015 16:19:33):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:449)
+[WARN ] (02/03/2015 16:19:33):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:387)
+[WARN ] (02/03/2015 16:19:33):   us.pserver.rob.server.NetworkServer$SocketHandler.handleInvoke(NetworkServer.java:481)
+[WARN ] (02/03/2015 16:19:33):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:519)
+[WARN ] (02/03/2015 16:19:33):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (02/03/2015 16:19:33):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (02/03/2015 16:19:33):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (02/03/2015 16:19:33):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (02/03/2015 16:19:33):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (02/03/2015 16:19:33): Response sent: OpResult{ success = false, return = null }
+[INFO ] (02/03/2015 16:19:33): Connection closed by client.
+[INFO ] (02/03/2015 16:33:59): Starting NetworkServer...
+[INFO ] (02/03/2015 16:33:59): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (02/03/2015 16:33:59): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (02/03/2015 16:33:59): Server started!
+
+[INFO ] (02/03/2015 16:34:02): ------------------------------
+[INFO ] (02/03/2015 16:34:02): Handling socket: Socket[addr=/127.0.0.1,port=36247,localport=35000]
+[INFO ] (02/03/2015 16:34:02): Remote request: a.compute( 5, 3 )
+[WARN ] (02/03/2015 16:34:02): Error invoking method [compute]
+[WARN ] (02/03/2015 16:34:02): MethodInvocationException: Invocation error [java.lang.IllegalArgumentException: argument type mismatch]
+[WARN ] (02/03/2015 16:34:02):   Caused by: IllegalArgumentException: argument type mismatch
+[WARN ] (02/03/2015 16:34:02):   us.pserver.rob.server.Invoker.invoke(Invoker.java:152)
+[WARN ] (02/03/2015 16:34:02):   us.pserver.rob.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (02/03/2015 16:34:02):   us.pserver.rob.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (02/03/2015 16:34:02):   us.pserver.rob.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (02/03/2015 16:34:02):   us.pserver.rob.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (02/03/2015 16:34:02):   us.pserver.rob.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (02/03/2015 16:34:02):   us.pserver.rob.server.Invoker.invoke(Invoker.java:110)
+[WARN ] (02/03/2015 16:34:02):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:449)
+[WARN ] (02/03/2015 16:34:02):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:387)
+[WARN ] (02/03/2015 16:34:02):   us.pserver.rob.server.NetworkServer$SocketHandler.handleInvoke(NetworkServer.java:481)
+[WARN ] (02/03/2015 16:34:02):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:519)
+[WARN ] (02/03/2015 16:34:02):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (02/03/2015 16:34:02):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (02/03/2015 16:34:02):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (02/03/2015 16:34:02):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (02/03/2015 16:34:02):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (02/03/2015 16:34:02): Response sent: OpResult{ success = false, return = null }
+[INFO ] (02/03/2015 16:34:02): Connection closed by client.
+[INFO ] (02/03/2015 16:36:19): Starting NetworkServer...
+[INFO ] (02/03/2015 16:36:19): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (02/03/2015 16:36:20): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (02/03/2015 16:36:20): Server started!
+
+[INFO ] (02/03/2015 16:36:23): ------------------------------
+[INFO ] (02/03/2015 16:36:23): Handling socket: Socket[addr=/127.0.0.1,port=36251,localport=35000]
+[INFO ] (02/03/2015 16:36:23): Remote request: a.compute( 5, 3 )
+[WARN ] (02/03/2015 16:36:23): Error invoking method [compute]
+[WARN ] (02/03/2015 16:36:23): MethodInvocationException: Invocation error [java.lang.IllegalArgumentException: argument type mismatch]
+[WARN ] (02/03/2015 16:36:23):   Caused by: IllegalArgumentException: argument type mismatch
+[WARN ] (02/03/2015 16:36:23):   us.pserver.rob.server.Invoker.invoke(Invoker.java:158)
+[WARN ] (02/03/2015 16:36:23):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:36:23):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:36:23):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:36:23):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:36:23):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:36:23):   us.pserver.rob.server.Invoker.invoke(Invoker.java:111)
+[WARN ] (02/03/2015 16:36:23):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:449)
+[WARN ] (02/03/2015 16:36:23):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:387)
+[WARN ] (02/03/2015 16:36:23):   us.pserver.rob.server.NetworkServer$SocketHandler.handleInvoke(NetworkServer.java:481)
+[WARN ] (02/03/2015 16:36:23):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:519)
+[WARN ] (02/03/2015 16:36:23):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (02/03/2015 16:36:23):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (02/03/2015 16:36:23):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (02/03/2015 16:36:23):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (02/03/2015 16:36:23):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (02/03/2015 16:36:23): Response sent: OpResult{ success = false, return = null }
+[INFO ] (02/03/2015 16:36:23): Connection closed by client.
+[INFO ] (02/03/2015 16:40:35): Starting NetworkServer...
+[INFO ] (02/03/2015 16:40:35): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (02/03/2015 16:40:35): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (02/03/2015 16:40:35): Server started!
+
+[INFO ] (02/03/2015 16:40:41): ------------------------------
+[INFO ] (02/03/2015 16:40:41): Handling socket: Socket[addr=/127.0.0.1,port=36256,localport=35000]
+[INFO ] (02/03/2015 16:40:41): Remote request: a.compute( 5, 3 )
+[WARN ] (02/03/2015 16:40:41): Error invoking method [compute]
+[WARN ] (02/03/2015 16:40:41): MethodInvocationException: Invocation error [java.lang.IllegalArgumentException: argument type mismatch]
+[WARN ] (02/03/2015 16:40:41):   Caused by: IllegalArgumentException: argument type mismatch
+[WARN ] (02/03/2015 16:40:41):   us.pserver.rob.server.Invoker.invoke(Invoker.java:158)
+[WARN ] (02/03/2015 16:40:41):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:40:41):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:40:41):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:40:41):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:40:41):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:40:41):   us.pserver.rob.server.Invoker.invoke(Invoker.java:111)
+[WARN ] (02/03/2015 16:40:41):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:449)
+[WARN ] (02/03/2015 16:40:41):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:387)
+[WARN ] (02/03/2015 16:40:41):   us.pserver.rob.server.NetworkServer$SocketHandler.handleInvoke(NetworkServer.java:481)
+[WARN ] (02/03/2015 16:40:41):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:519)
+[WARN ] (02/03/2015 16:40:41):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (02/03/2015 16:40:41):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (02/03/2015 16:40:41):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (02/03/2015 16:40:41):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (02/03/2015 16:40:41):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (02/03/2015 16:40:41): Response sent: OpResult{ success = false, return = null }
+[INFO ] (02/03/2015 16:40:41): Connection closed by client.
+[INFO ] (02/03/2015 16:44:46): Starting NetworkServer...
+[INFO ] (02/03/2015 16:44:47): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (02/03/2015 16:44:47): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (02/03/2015 16:44:47): Server started!
+
+[INFO ] (02/03/2015 16:44:57): ------------------------------
+[INFO ] (02/03/2015 16:44:57): Handling socket: Socket[addr=/127.0.0.1,port=36269,localport=35000]
+[INFO ] (02/03/2015 16:44:58): Remote request: a.compute( 5, 3 )
+[WARN ] (02/03/2015 16:44:58): Error invoking method [compute]
+[WARN ] (02/03/2015 16:44:58): MethodInvocationException: Invocation error [java.lang.IllegalArgumentException: argument type mismatch]
+[WARN ] (02/03/2015 16:44:58):   Caused by: IllegalArgumentException: argument type mismatch
+[WARN ] (02/03/2015 16:44:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:158)
+[WARN ] (02/03/2015 16:44:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:44:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:44:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:44:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:44:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:44:58):   us.pserver.rob.server.Invoker.invoke(Invoker.java:111)
+[WARN ] (02/03/2015 16:44:58):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:449)
+[WARN ] (02/03/2015 16:44:58):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:387)
+[WARN ] (02/03/2015 16:44:58):   us.pserver.rob.server.NetworkServer$SocketHandler.handleInvoke(NetworkServer.java:481)
+[WARN ] (02/03/2015 16:44:58):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:519)
+[WARN ] (02/03/2015 16:44:58):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (02/03/2015 16:44:58):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (02/03/2015 16:44:58):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (02/03/2015 16:44:58):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (02/03/2015 16:44:58):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (02/03/2015 16:44:58): Response sent: OpResult{ success = false, return = null }
+[INFO ] (02/03/2015 16:44:58): Connection closed by client.
+[INFO ] (02/03/2015 16:46:59): Starting NetworkServer...
+[INFO ] (02/03/2015 16:46:59): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (02/03/2015 16:46:59): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (02/03/2015 16:46:59): Server started!
+
+[INFO ] (02/03/2015 16:47:04): ------------------------------
+[INFO ] (02/03/2015 16:47:04): Handling socket: Socket[addr=/127.0.0.1,port=36273,localport=35000]
+[INFO ] (02/03/2015 16:47:04): Remote request: a.compute( 5, 3 )
+[WARN ] (02/03/2015 16:47:04): Error invoking method [compute]
+[WARN ] (02/03/2015 16:47:04): MethodInvocationException: Invocation error [java.lang.IllegalArgumentException: argument type mismatch]
+[WARN ] (02/03/2015 16:47:04):   Caused by: IllegalArgumentException: argument type mismatch
+[WARN ] (02/03/2015 16:47:04):   us.pserver.rob.server.Invoker.invoke(Invoker.java:158)
+[WARN ] (02/03/2015 16:47:04):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:47:04):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:47:04):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:47:04):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:47:04):   us.pserver.rob.server.Invoker.invoke(Invoker.java:153)
+[WARN ] (02/03/2015 16:47:04):   us.pserver.rob.server.Invoker.invoke(Invoker.java:111)
+[WARN ] (02/03/2015 16:47:04):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:449)
+[WARN ] (02/03/2015 16:47:04):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:387)
+[WARN ] (02/03/2015 16:47:04):   us.pserver.rob.server.NetworkServer$SocketHandler.handleInvoke(NetworkServer.java:481)
+[WARN ] (02/03/2015 16:47:04):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:519)
+[WARN ] (02/03/2015 16:47:04):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (02/03/2015 16:47:04):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (02/03/2015 16:47:04):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (02/03/2015 16:47:04):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (02/03/2015 16:47:04):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (02/03/2015 16:47:04): Response sent: OpResult{ success = false, return = null }
+[INFO ] (02/03/2015 16:47:04): Connection closed by client.
+[INFO ] (02/03/2015 16:50:40): Starting NetworkServer...
+[INFO ] (02/03/2015 16:50:40): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (02/03/2015 16:50:40): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (02/03/2015 16:50:40): Server started!
+
+[INFO ] (02/03/2015 16:50:44): ------------------------------
+[INFO ] (02/03/2015 16:50:44): Handling socket: Socket[addr=/127.0.0.1,port=36281,localport=35000]
+[INFO ] (02/03/2015 16:50:44): Remote request: a.compute( 5, 3 )
+[INFO ] (02/03/2015 16:50:44): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (02/03/2015 16:50:44): Connection closed by client.

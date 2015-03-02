@@ -27,6 +27,8 @@ import us.pserver.rob.channel.XmlNetChannel;
 import java.io.IOException;
 import java.net.Socket;
 import us.pserver.rob.NetConnector;
+import us.pserver.rob.channel.GetRequestChannel;
+import us.pserver.rob.channel.GetResponseChannel;
 
 
 /**
@@ -52,6 +54,25 @@ public abstract class DefaultFactoryProvider {
               "Invalid NetConnector ["+ conn
                   + "]. Cannot create Channel.");
         return new HttpRequestChannel(conn);
+      }
+    };
+  }
+  
+  
+  /**
+   * Cria uma fábrica de canais do tipo 
+   * <code>HttpRequestChannel</code>.
+   * @return <code>ConnectorChannelFactory</code>
+   */
+  public static ConnectorChannelFactory getGetRequestChannelFactory() {
+    return new ConnectorChannelFactory() {
+      @Override
+      public GetRequestChannel createChannel(NetConnector conn) {
+        if(conn == null)
+          throw new IllegalArgumentException(
+              "Invalid NetConnector ["+ conn
+                  + "]. Cannot create Channel.");
+        return new GetRequestChannel(conn);
       }
     };
   }
@@ -93,6 +114,24 @@ public abstract class DefaultFactoryProvider {
           throw new IllegalArgumentException(
               "Invalid Socket ["+ sock+ "]");
         return new HttpResponseChannel(sock);
+      }
+    };
+  }
+  
+  
+  /**
+   * Cria uma fábrica de canais do tipo 
+   * <code>HttpResponseChannel</code>.
+   * @return <code>SocketChannelFactory</code>
+   */
+  public static SocketChannelFactory getGetResponseChannelFactory() {
+    return new SocketChannelFactory() {
+      @Override
+      public GetResponseChannel createChannel(Socket sock) {
+        if(sock == null || sock.isClosed()) 
+          throw new IllegalArgumentException(
+              "Invalid Socket ["+ sock+ "]");
+        return new GetResponseChannel(sock);
       }
     };
   }

@@ -288,7 +288,23 @@ public interface HttpConst {
 
   /**
    * <code>
-   *  LRN = "\r\n"
+   *  AMPERSAND = "&"
+   * </code><br>
+   * '&'.
+   */
+  public static final String AMPERSAND = "&";
+
+  /**
+   * <code>
+   *  QUERY = "?"
+   * </code><br>
+   * '?'.
+   */
+  public static final String QUERY = "?";
+
+  /**
+   * <code>
+   *  CRLF = "\r\n"
    * </code><br>
    * Caracteres de retorno de carro e quebra de linha.
    */

@@ -22,6 +22,7 @@
 package us.pserver.rob.server;
 
 import com.jpower.rfl.Reflector;
+import java.util.Objects;
 import us.pserver.rob.MethodInvocationException;
 import us.pserver.rob.RemoteMethod;
 
@@ -130,6 +131,12 @@ public class Invoker {
     
     Class[] cls = (mth.types().isEmpty() ? null : mth.typesArray());
     ref.on(obj).method(mth.method(), cls);
+    System.out.println("* Invoker: "+ ref.method());
+    System.out.println("* Args {");
+    for(Object o : mth.params()) {
+      System.out.println("  - "+ Objects.toString(o)+ " : "+ o.getClass());
+    }
+    System.out.println("}");
     
     if(!ref.isMethodPresent()) {
       if(currTry < tries)

@@ -142,7 +142,9 @@ public class HttpParser implements HttpConst {
     String boundary = HYFENS + BOUNDARY;
     StreamResult res = StreamUtils.readStringUntilOr(in, boundary, EOF);
     message = res.content();
-    if(res.isEOFReached() || res.size() <= MIN_HEADER_LENGTH)
+    System.out.println("MIN_HEADER_LENGTH="+ MIN_HEADER_LENGTH);
+    System.out.println("StreamResult.size()="+ res.size());
+    if(res.size() <= MIN_HEADER_LENGTH)
       throw new IOException("Invalid length readed ["+ res.size()+ "]");
     
     this.parse();
