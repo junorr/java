@@ -75,7 +75,8 @@ public class GetRequestChannel implements Channel, HttpConst {
       METHOD = "mth",
       OBJECT = "obj",
       TYPES = "types",
-      ARGS = "args";
+      ARGS = "args",
+      AUTH = "auth";
   
   
   private NetConnector netconn;
@@ -187,6 +188,11 @@ public class GetRequestChannel implements Channel, HttpConst {
     get.query(OBJECT, encode(rmt.objectName(), jsc))
         .query(METHOD, encode(rmt.method(), jsc));
     
+    if(rmt.credentials() != null 
+        && rmt.credentials().getUser() != null) {
+      get.query(AUTH, encode(rmt.credentials(), jsc));
+    }
+    
     if(rmt.types() != null && !rmt.types().isEmpty()) {
       get.query(TYPES, encodeArray(rmt.typesArray(), jsc));
     }
@@ -285,8 +291,8 @@ public class GetRequestChannel implements Channel, HttpConst {
       sock = netconn.connectSocket();
     
     builder.writeContent(sock.getOutputStream());
-    //verifyResponse();
-    dump();
+    verifyResponse();
+    //dump();
   }
   
   
@@ -324,6 +330,8 @@ public class GetRequestChannel implements Channel, HttpConst {
     
     StringByteConverter scv = new StringByteConverter();
     String str = hd.getValue();
+    if(str.contains("\n") || str.contains("\r"))
+      str = str.replace("\n", "").replace("\r", "");
     byte[] bs = scv.convert(str);
     
     if(gzip || crypt) {
@@ -339,8 +347,9 @@ public class GetRequestChannel implements Channel, HttpConst {
       bs = gbc.decode(bs);
     }
     
+    str = scv.reverse(bs);
     JsonObjectConverter jsc = new JsonObjectConverter();
-    return (Transport) jsc.convert(scv.reverse(bs));
+    return (Transport) jsc.convert(str);
   }
   
   
@@ -366,31 +375,6 @@ public class GetRequestChannel implements Channel, HttpConst {
       if(sock != null) sock.close(); 
     }
     catch(IOException e) {}
-  }
-  
-  
-  public static void main(String[] args) throws IOException {
-    NetConnector nc = new NetConnector("localhost", 25000)
-        .setProxyAddress("cache.bb.com.br")
-        .setProxyPort(80)
-        .setProxyAuthorization("f6036477:12345678");
-    
-    GetRequestChannel ch = new GetRequestChannel(nc);
-    
-    Transport trp = new Transport();
-    RemoteMethod rmt = new RemoteMethod()
-        .forObject("a")
-        .method("compute")
-        .types(int.class, int.class)
-        .params(5, 2);
-    trp.setObject(rmt);
-    System.out.println("* trp="+ trp);
-    
-    ch.write(trp);
-    System.out.println("----------------------------------");
-    ch.setGZipCompressionEnabled(false)
-        .setEncryptionEnabled(false)
-        .write(trp);
   }
   
 }

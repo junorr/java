@@ -140,10 +140,8 @@ public class HttpParser implements HttpConst {
     }
     
     String boundary = HYFENS + BOUNDARY;
-    StreamResult res = StreamUtils.readStringUntilOr(in, boundary, EOF);
+    StreamResult res = StreamUtils.readStringUntilOr(in, boundary, CRLF+CRLF);//EOF);
     message = res.content();
-    System.out.println("MIN_HEADER_LENGTH="+ MIN_HEADER_LENGTH);
-    System.out.println("StreamResult.size()="+ res.size());
     if(res.size() <= MIN_HEADER_LENGTH)
       throw new IOException("Invalid length readed ["+ res.size()+ "]");
     
@@ -157,7 +155,7 @@ public class HttpParser implements HttpConst {
   
   public HttpParser parseContent(InputStream is) throws IOException {
     nullarg(InputStream.class, is);
-    StreamResult res = StreamUtils.readUntilOr(is, BOUNDARY_XML_START, EOF);
+    StreamResult res = StreamUtils.readUntilOr(is, BOUNDARY_XML_START, CRLF+CRLF);
     if(res.isEOFReached()) return this;
 
     String str = StreamUtils.readString(is, 5);
@@ -230,7 +228,7 @@ public class HttpParser implements HttpConst {
       return null;
     
     Header hd = new Header();
-    if(str.contains(":") && !str.contains(HTTP)) {
+    if(str.contains(":") && !str.contains(HTTP) && !str.contains("{")) {
       int id = str.indexOf(":");
       hd.setName(str.substring(0, id));
       hd.setValue(str.substring(id + 2));

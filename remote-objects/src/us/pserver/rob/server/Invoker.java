@@ -131,12 +131,6 @@ public class Invoker {
     
     Class[] cls = (mth.types().isEmpty() ? null : mth.typesArray());
     ref.on(obj).method(mth.method(), cls);
-    System.out.println("* Invoker: "+ ref.method());
-    System.out.println("* Args {");
-    for(Object o : mth.params()) {
-      System.out.println("  - "+ Objects.toString(o)+ " : "+ o.getClass());
-    }
-    System.out.println("}");
     
     if(!ref.isMethodPresent()) {
       if(currTry < tries)

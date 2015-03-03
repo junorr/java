@@ -26,6 +26,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
@@ -35,8 +37,6 @@ import us.pserver.cdr.gzip.GZipByteCoder;
 import us.pserver.http.GetRequest;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
-import us.pserver.http.HttpCryptKey;
-import us.pserver.http.HttpEnclosedObject;
 import us.pserver.http.HttpInputStream;
 import us.pserver.http.JsonObjectConverter;
 import us.pserver.http.PlainContent;
@@ -45,6 +45,9 @@ import us.pserver.http.RequestParser;
 import us.pserver.http.ResponseLine;
 import us.pserver.rob.RemoteMethod;
 import static us.pserver.rob.channel.GetRequestChannel.*;
+import us.pserver.rob.container.Credentials;
+import us.pserver.streams.IO;
+import us.pserver.streams.StreamUtils;
 
 
 /**
@@ -192,14 +195,14 @@ public class GetResponseChannel implements Channel, HttpConst {
     StringByteConverter scv = new StringByteConverter();
     byte[] bobj = scv.convert(get.queryGet(OBJECT));
     byte[] bmth = scv.convert(get.queryGet(METHOD));
+    byte[] bauth = (get.queryContains(AUTH) 
+        ? scv.convert(get.queryGet(AUTH)) : null);
     List<String> ltypes = get.queryGetList(TYPES);
-    System.out.println(ltypes);
     byte[][] btypes = new byte[ltypes.size()][1];
     for(int i = 0; i < btypes.length; i++) {
       btypes[i] = scv.convert(ltypes.get(i));
     }
     List<String> largs = get.queryGetList(ARGS);
-    System.out.println(largs);
     byte[][] bargs = new byte[largs.size()][1];
     for(int i = 0; i < bargs.length; i++) {
       bargs[i] = scv.convert(largs.get(i));
@@ -211,6 +214,7 @@ public class GetResponseChannel implements Channel, HttpConst {
       Base64ByteCoder bbc = new Base64ByteCoder();
       bobj = bbc.decode(bobj);
       bmth = bbc.decode(bobj);
+      bauth = (bauth != null ? bbc.decode(bauth) : null);
       for(int i = 0; i < btypes.length; i++) {
         btypes[i] = bbc.decode(btypes[i]);
         bargs[i] = bbc.decode(bargs[i]);
@@ -222,6 +226,7 @@ public class GetResponseChannel implements Channel, HttpConst {
       CryptByteCoder cbc = new CryptByteCoder(key);
       bobj = cbc.decode(bobj);
       bmth = cbc.decode(bobj);
+      bauth = (bauth != null ? cbc.decode(bauth) : null);
       for(int i = 0; i < btypes.length; i++) {
         btypes[i] = cbc.decode(btypes[i]);
         bargs[i] = cbc.decode(bargs[i]);
@@ -234,6 +239,7 @@ public class GetResponseChannel implements Channel, HttpConst {
       GZipByteCoder gbc = new GZipByteCoder();
       bobj = gbc.decode(bobj);
       bmth = gbc.decode(bobj);
+      bauth = (bauth != null ? gbc.decode(bauth) : null);
       for(int i = 0; i < btypes.length; i++) {
         btypes[i] = gbc.decode(btypes[i]);
         bargs[i] = gbc.decode(bargs[i]);
@@ -244,6 +250,11 @@ public class GetResponseChannel implements Channel, HttpConst {
     RemoteMethod rmt = new RemoteMethod()
         .forObject(scv.reverse(bobj))
         .method(scv.reverse(bmth));
+    if(bauth != null) {
+      Credentials cr = (Credentials) jsc.convert(scv.reverse(bauth));
+      rmt.credentials(cr);
+    }
+
     for(int i = 0; i < btypes.length; i++) {
       Class cls = null;
       try {
@@ -259,7 +270,6 @@ public class GetResponseChannel implements Channel, HttpConst {
         rmt.addParam(largs.get(i));
       }
       else {
-        System.out.println("* caindo em else que converte via JsonConverter");
         rmt.addParam(jsc.convert(largs.get(i)));
       }
     }
@@ -271,27 +281,22 @@ public class GetResponseChannel implements Channel, HttpConst {
     if(n == null || cls == null) return n;
     if(int.class.isAssignableFrom(cls)
         || Integer.class.isAssignableFrom(cls)) {
-      System.out.println("* convertNumber: "+ Integer.class.getName());
       return new Integer(n.intValue());
     }
     else if(short.class.isAssignableFrom(cls)
         || Short.class.isAssignableFrom(cls)) {
-      System.out.println("* convertNumber: "+ Short.class.getName());
       return new Short(n.shortValue());
     }
     else if(byte.class.isAssignableFrom(cls) 
         || Byte.class.isAssignableFrom(cls)) {
-      System.out.println("* convertNumber: "+ Byte.class.getName());
       return new Byte(n.byteValue());
     }
     else if(long.class.isAssignableFrom(cls)
         || Long.class.isAssignableFrom(cls)) {
-      System.out.println("* convertNumber: "+ Long.class.getName());
       return new Long(n.longValue());
     }
     else if(float.class.isAssignableFrom(cls)
         || Float.class.isAssignableFrom(cls)) {
-      System.out.println("* convertNumber: "+ Float.class.getName());
       return new Float(n.floatValue());
     }
     else return n;
@@ -337,11 +342,14 @@ public class GetResponseChannel implements Channel, HttpConst {
     gzip = false;
     
     GetRequest get = GetRequest.parse(rl.toString());
-    System.out.println("* GetRequest = "+ get);
     if(get == null || get.queryMap().isEmpty())
       throw new IOException("Invalid GET Request ["+ rl.toString()+ "]");
     
     Transport trp;
+    if(get.queryContains("ui") && "1".equals(get.queryGet("ui"))) {
+      sendUI();
+      return null;
+    }
     if(!get.queryContains("trp")) {
       trp = new Transport(createRemote(get));
     }
@@ -349,6 +357,21 @@ public class GetResponseChannel implements Channel, HttpConst {
       trp = createTransport(get);
     }
     return trp;
+  }
+  
+  
+  private void sendUI() throws IOException {
+    System.out.println("* Sending UI...");
+    StringByteConverter scv = new StringByteConverter();
+    InputStream in = getClass().getResourceAsStream("remote-object.html");
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    StreamUtils.transfer(in, bos);
+    IO.cl(in, bos);
+    builder = HttpBuilder.responseBuilder(new ResponseLine(200, "OK"));
+    builder.remove(HD_CONTENT_TYPE);
+    builder.put(HD_CONTENT_TYPE, "text/html");
+    builder.put(new PlainContent(scv.reverse(bos.toByteArray())));
+    builder.writeContent(sock.getOutputStream());
   }
   
   

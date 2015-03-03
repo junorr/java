@@ -22,7 +22,10 @@
 package us.pserver.rob.test;
 
 import us.pserver.rob.NetConnector;
+import us.pserver.rob.container.Authenticator;
+import us.pserver.rob.container.Credentials;
 import us.pserver.rob.container.ObjectContainer;
+import us.pserver.rob.container.SingleCredentialsSource;
 import us.pserver.rob.factory.DefaultFactoryProvider;
 import us.pserver.rob.server.NetworkServer;
 
@@ -39,9 +42,18 @@ public class TestGetServer {
       double compute(int a, int b) {
         return a / (double)b;
       }
+      String info() { return "Hello from "+ getClass(); }
+      double round(double d, int decSize) {
+        int dec = (int) d;
+        double size = (int) Math.pow(10.0, decSize);
+        double frc = (d - dec) * size;
+        return dec + (Math.round(frc) / size);
+      }
     }
     A a = new A();
+    Credentials cr = new Credentials("juno", "32132155".getBytes());
     ObjectContainer oc = new ObjectContainer();
+        //new Authenticator(new SingleCredentialsSource(cr)));
     oc.put("a", a);
     NetworkServer srv = new NetworkServer(oc, nc, 
         DefaultFactoryProvider.getGetResponseChannelFactory());

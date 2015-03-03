@@ -38,6 +38,7 @@ import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.chk.Invoke;
 import us.pserver.streams.StreamUtils;
+import static us.pserver.streams.StreamUtils.EOF;
 
 
 /**
@@ -368,11 +369,13 @@ public class HttpBuilder implements HttpConst {
       end.append(CRLF).append(HYFENS)
           .append(BOUNDARY).append(HYFENS);
     
-    end.append(CRLF).append(CRLF);
+    end.append(CRLF);
     
     StringByteConverter cv = new StringByteConverter();
     out.write(cv.convert(end.toString()));
-    StreamUtils.writeEOF(out);
+    //out.write(cv.convert(EOF));
+    out.write(cv.convert(CRLF+CRLF));
+    out.flush();
   }
   
   

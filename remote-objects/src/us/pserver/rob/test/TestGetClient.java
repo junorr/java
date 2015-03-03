@@ -21,10 +21,13 @@
 
 package us.pserver.rob.test;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import us.pserver.rob.MethodInvocationException;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.RemoteMethod;
 import us.pserver.rob.RemoteObject;
+import us.pserver.rob.container.Credentials;
 import us.pserver.rob.factory.DefaultFactoryProvider;
 
 /**
@@ -34,17 +37,28 @@ import us.pserver.rob.factory.DefaultFactoryProvider;
  */
 public class TestGetClient {
 
-  public static void main(String[] args) throws MethodInvocationException {
+  public static void main(String[] args) throws MethodInvocationException, UnsupportedEncodingException {
+    System.out.println(URLEncoder.encode(";", "UTF-8"));
     NetConnector nc = new NetConnector("localhost", 35000);
     RemoteObject rob = new RemoteObject(nc, DefaultFactoryProvider.getGetRequestChannelFactory());
+    Credentials cr = new Credentials("juno", "32132155".getBytes());
     RemoteMethod mth = new RemoteMethod()
         .forObject("a")
         .method("compute")
         .types(int.class, int.class)
-        .params(5, 3);
-    System.out.println("* invoking: "+ mth);
-    double res = (double) rob.invoke(mth);
-    System.out.println("* result="+ res);
+        .params(5, 3)
+        .credentials(cr);
+    
+    System.out.println("* invoking: "+ mth+ " = "+ round((double)rob.invoke(mth), 2));
+    rob.close();
+  }
+  
+  
+  public static double round(double d, int decSize) {
+    int dec = (int) d;
+    double size = (int) Math.pow(10.0, decSize);
+    double frc = (d - dec) * size;
+    return dec + (Math.round(frc) / size);
   }
   
 }

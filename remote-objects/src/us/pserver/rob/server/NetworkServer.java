@@ -242,7 +242,7 @@ public class NetworkServer extends AbstractServer {
   
   
   
-// Início da classe interna <code>SocketHandler</code>.
+// Início da classe interna SocketHandler.
 /*****************************************************************/
 /*****************************************************************/
 
@@ -517,7 +517,8 @@ public class NetworkServer extends AbstractServer {
       }
       
       this.write(handleInvoke(trp));
-      this.run();
+      this.close();
+      //this.run();
     }
     
     
