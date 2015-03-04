@@ -228,7 +228,10 @@ public class HttpParser implements HttpConst {
       return null;
     
     Header hd = new Header();
-    if(str.contains(":") && !str.contains(HTTP) && !str.contains("{")) {
+    if(str.contains(":") 
+        && !str.contains(HTTP) 
+        && (!str.contains("<") || !str.contains(">"))
+        && !str.contains("{")) {
       int id = str.indexOf(":");
       hd.setName(str.substring(0, id));
       hd.setValue(str.substring(id + 2));

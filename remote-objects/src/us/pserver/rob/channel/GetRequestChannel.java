@@ -23,6 +23,8 @@ package us.pserver.rob.channel;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
@@ -30,20 +32,18 @@ import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptByteCoder;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.gzip.GZipByteCoder;
+import us.pserver.chk.Checker;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.http.GetRequest;
 import us.pserver.http.Header;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
-import us.pserver.http.HttpEnclosedObject;
-import us.pserver.http.HttpInputStream;
 import us.pserver.http.JsonObjectConverter;
 import us.pserver.http.ResponseLine;
 import us.pserver.http.ResponseParser;
+import us.pserver.rob.MethodChain;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.RemoteMethod;
-import static us.pserver.rob.channel.HttpRequestChannel.HTTP_ENCLOSED_OBJECT;
-import static us.pserver.rob.channel.HttpRequestChannel.HTTP_INPUTSTREAM;
 import us.pserver.streams.StreamUtils;
 
 
@@ -107,6 +107,17 @@ public class GetRequestChannel implements Channel, HttpConst {
           "Invalid NetConnector ["+ conn+ "]");
     
     netconn = conn;
+    key = null;
+    crypt = false;
+    gzip = false;
+    algo = CryptAlgorithm.AES_CBC_PKCS5;
+    parser = new ResponseParser();
+    sock = null;
+  }
+  
+  
+  private GetRequestChannel() {
+    netconn = null;
     key = null;
     crypt = false;
     gzip = false;
@@ -182,8 +193,11 @@ public class GetRequestChannel implements Channel, HttpConst {
   
   
   private void encloseRemote(RemoteMethod rmt, GetRequest get, JsonObjectConverter jsc) {
-    if(rmt == null || get == null || jsc == null)
-      return;
+    Checker.nullarg(RemoteMethod.class, rmt);
+    Checker.nullarg(GetRequest.class, get);
+    Checker.nullarg(JsonObjectConverter.class, jsc);
+    Checker.nullstr(rmt.objectName());
+    Checker.nullstr(rmt.method());
     
     get.query(OBJECT, encode(rmt.objectName(), jsc))
         .query(METHOD, encode(rmt.method(), jsc));
@@ -200,6 +214,32 @@ public class GetRequestChannel implements Channel, HttpConst {
     if(rmt.params() != null && !rmt.params().isEmpty()) {
       get.query(ARGS, encodeArray(rmt.params().toArray(), jsc));
     }
+  }
+  
+  
+  private void encloseChain(MethodChain chain, GetRequest get, JsonObjectConverter jsc) {
+    Checker.nullarg(MethodChain.class, chain);
+    Checker.nullarg(GetRequest.class, get);
+    Checker.nullarg(JsonObjectConverter.class, jsc);
+    Checker.nullarg(RemoteMethod.class, chain.current());
+    Checker.nullstr(chain.current().objectName());
+    
+    get.query(OBJECT, encode(chain.current().objectName(), jsc));
+    List<String> meths = new ArrayList<>();
+    List<Class> types = new ArrayList<>();
+    List args = new ArrayList();
+    
+    for(RemoteMethod rm : chain.methods()) {
+      String meth = rm.method() + "-" + rm.types().size();
+      if(!rm.types().isEmpty()) {
+        types.addAll(rm.types());
+        args.addAll(rm.params());
+      }
+      meths.add(meth);
+    }
+    get.query(METHOD, encodeArray(meths.toArray(), jsc));
+    get.query(TYPES, encodeArray(types.toArray(), jsc));
+    get.query(ARGS, encodeArray(args.toArray(), jsc));
   }
   
   
@@ -264,8 +304,11 @@ public class GetRequestChannel implements Channel, HttpConst {
     JsonObjectConverter jsc = new JsonObjectConverter();
     
     if(trp.getObject() != null 
-        && trp.getObject() instanceof RemoteMethod) {
+        && trp.isObjectFromType(RemoteMethod.class)) {
       encloseRemote(trp.castObject(), req, jsc);
+    }
+    else if(trp.isObjectFromType(MethodChain.class)) {
+      encloseChain(trp.castObject(), req, jsc);
     }
     else {
       req.query(TRANSPORT, encode(trp, jsc));
@@ -375,6 +418,30 @@ public class GetRequestChannel implements Channel, HttpConst {
       if(sock != null) sock.close(); 
     }
     catch(IOException e) {}
+  }
+  
+  
+  public static void main(String[] args) throws IOException {
+    GetRequest get = new GetRequest();
+    MethodChain chain = new MethodChain();
+    chain.add(new RemoteMethod()
+          .forObject("a")
+          .method("compute")
+          .types(int.class, int.class)
+          .params(5, 3))
+        .add(new RemoteMethod()
+          .method("info"))
+        .add(new RemoteMethod()
+          .method("round")
+          .types(double.class, int.class)
+          .params(1.66666667, 2));
+    System.out.println("* chain: "+ chain);
+    new GetRequestChannel().encloseChain(chain, get, new JsonObjectConverter());
+    System.out.println(get);
+    
+    GetResponseChannel rch = new GetResponseChannel();
+    chain = rch.createChain(get);
+    System.out.println("* chain: "+ chain);
   }
   
 }

@@ -26,8 +26,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
@@ -43,6 +41,7 @@ import us.pserver.http.PlainContent;
 import us.pserver.http.RequestLine;
 import us.pserver.http.RequestParser;
 import us.pserver.http.ResponseLine;
+import us.pserver.rob.MethodChain;
 import us.pserver.rob.RemoteMethod;
 import static us.pserver.rob.channel.GetRequestChannel.*;
 import us.pserver.rob.container.Credentials;
@@ -105,7 +104,7 @@ public class GetResponseChannel implements Channel, HttpConst {
   }
   
   
-  private GetResponseChannel() {
+  protected GetResponseChannel() {
     sock = null;
     key = null;
     valid = true;
@@ -189,6 +188,59 @@ public class GetResponseChannel implements Channel, HttpConst {
   }
   
   
+  protected MethodChain createChain(GetRequest get) throws IOException {
+    if(get == null) return null;
+    int ims = get.queryKeySize(METHOD);
+    
+    MethodChain chain = new MethodChain();
+    JsonObjectConverter jsc = new JsonObjectConverter();
+    int curtyp = 0;
+    
+    for(int i = 0; i < ims; i++) {
+      String smth = get.queryGet(METHOD, i);
+      if(!smth.contains("-"))
+        throw new IOException(
+            "Invalid Method Format. Missing Number of Arguments ["+ smth+ "]");
+      
+      RemoteMethod rm = new RemoteMethod();
+      if(i == 0) {
+        rm.forObject(get.queryGet(OBJECT));
+      }
+      String st = smth.substring(smth.indexOf("-")+1);
+      smth = smth.substring(0, smth.indexOf("-"));
+      rm.method(smth);
+      
+      int it;
+      try {
+        it = Integer.parseInt(st);
+      } catch(NumberFormatException e) {
+        throw new IOException("Invalid Method Format. "+ e.toString());
+      }
+      
+      int max = curtyp;
+      for(int j = max; j < (max + it); j++) {
+        String sarg = get.queryGet(ARGS, j);
+        String styp = get.queryGet(TYPES, j);
+        Class cls;
+        
+        try {
+          cls = ClassHelper.getClass(styp);
+        } catch(ClassNotFoundException e) {
+          throw new IOException(e);
+        }
+        
+        rm.addType(cls);
+        rm.addParam(convertArgument(sarg, cls, jsc));
+        if(j == (curtyp +it -1))
+          curtyp = j+1;
+      }//for j
+      chain.add(rm);
+    }//for i
+    
+    return chain;
+  }
+  
+  
   private RemoteMethod createRemote(GetRequest get) throws IOException {
     if(get == null) return null;
     
@@ -248,8 +300,13 @@ public class GetResponseChannel implements Channel, HttpConst {
     
     JsonObjectConverter jsc = new JsonObjectConverter();
     RemoteMethod rmt = new RemoteMethod()
-        .forObject(scv.reverse(bobj))
-        .method(scv.reverse(bmth));
+        .forObject(scv.reverse(bobj));
+    
+    String smth = scv.reverse(bmth);
+    if(smth.contains("-"))
+      smth = smth.substring(0, smth.indexOf("-"));
+    rmt.method(smth);
+    
     if(bauth != null) {
       Credentials cr = (Credentials) jsc.convert(scv.reverse(bauth));
       rmt.credentials(cr);
@@ -260,20 +317,27 @@ public class GetResponseChannel implements Channel, HttpConst {
       try {
         cls = ClassHelper.getClass(scv.reverse(btypes[i]));
       } catch(ClassNotFoundException e) {
-        throw new IOException(e.toString());
+        throw new IOException(e);
       }
       rmt.addType(cls);
-      if(ClassHelper.isNumber(cls)) {
-        rmt.addParam(convertNumber(Double.parseDouble(largs.get(i)), cls));
-      }
-      else if(String.class.isAssignableFrom(cls)) {
-        rmt.addParam(largs.get(i));
-      }
-      else {
-        rmt.addParam(jsc.convert(largs.get(i)));
-      }
+      rmt.addParam(convertArgument(largs.get(i), cls, jsc));
     }
     return rmt;
+  }
+  
+  
+  private Object convertArgument(String sarg, Class cls, JsonObjectConverter jsc) {
+    if(sarg == null || cls == null || jsc == null)
+      return null;
+      if(ClassHelper.isNumber(cls)) {
+        return convertNumber(Double.parseDouble(sarg), cls);
+      }
+      else if(String.class.isAssignableFrom(cls)) {
+        return sarg;
+      }
+      else {
+        return jsc.convert(sarg);
+      }
   }
   
   
@@ -345,15 +409,17 @@ public class GetResponseChannel implements Channel, HttpConst {
     if(get == null || get.queryMap().isEmpty())
       throw new IOException("Invalid GET Request ["+ rl.toString()+ "]");
     
-    Transport trp;
+    Transport trp = null;
     if(get.queryContains("ui") && "1".equals(get.queryGet("ui"))) {
       sendUI();
-      return null;
     }
-    if(!get.queryContains("trp")) {
-      trp = new Transport(createRemote(get));
+    else if(get.queryContains(OBJECT) && get.queryContains(METHOD)) {
+      if(get.queryKeySize(METHOD) > 1)
+        trp = new Transport(createChain(get));
+      else
+        trp = new Transport(createRemote(get));
     }
-    else {
+    else if(get.queryContains(TRANSPORT)) {
       trp = createTransport(get);
     }
     return trp;
@@ -382,15 +448,24 @@ public class GetResponseChannel implements Channel, HttpConst {
     if(rl == null)
       throw new IOException("Invalid Request (parse to NULL)");
     
+    key = null;
+    gzip = false;
+    
     GetRequest get = GetRequest.parse(rl.toString());
     if(get == null || get.queryMap().isEmpty())
       throw new IOException("Invalid GET Request ["+ rl.toString()+ "]");
     
-    Transport trp;
-    if(!get.queryContains("trp")) {
-      trp = new Transport(createRemote(get));
+    Transport trp = null;
+    if(get.queryContains("ui") && "1".equals(get.queryGet("ui"))) {
+      sendUI();
     }
-    else {
+    else if(get.queryContains(OBJECT) && get.queryContains(METHOD)) {
+      if(get.queryKeySize(METHOD) > 1)
+        trp = new Transport(createChain(get));
+      else
+        trp = new Transport(createRemote(get));
+    }
+    else if(get.queryContains(TRANSPORT)) {
       trp = createTransport(get);
     }
     return trp;
@@ -428,9 +503,9 @@ public class GetResponseChannel implements Channel, HttpConst {
   public static void main(String[] args) throws IOException, ClassNotFoundException {
     GetRequest get = new GetRequest("localhost", 25000);
     get.query("obj", "a")
-        .query("mth", "compute")
-        .query("types", int.class, int.class)
-        .query("args", 5, 3);
+        .query("mth", "compute-2", "info-0", "round-2")
+        .query("types", int.class, int.class, double.class, int.class)
+        .query("args", 5, 3, 1.666666667, 2);
     HttpBuilder build = HttpBuilder.requestBuilder(get);
     build.remove(HttpConst.HD_CONTENT_TYPE);
     build.writeContent(System.out);
