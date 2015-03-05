@@ -50,7 +50,7 @@ public class TestRClient2 {
             //.setProxyPort(80)
             .setProxyAuthorization("f6036477:32132155"),
         
-        DefaultFactoryProvider
+        DefaultFactoryProvider.factory()
             //.getConnectorXmlChannelFactory());
             .getHttpRequestChannelFactory());
     

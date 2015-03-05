@@ -52,7 +52,9 @@ public class RemoteObject {
    */
   public RemoteObject() {
     net = new NetConnector();
-    factory = DefaultFactoryProvider
+    factory = DefaultFactoryProvider.factory()
+        .enableCryptography()
+        .enableGZipCompression()
         .getConnectorXmlChannelFactory();
     channel = null;
   }
@@ -69,7 +71,9 @@ public class RemoteObject {
       throw new IllegalArgumentException(
           "Invalid NetConnector ["+ con+ "]");
     net = con;
-    factory = DefaultFactoryProvider
+    factory = DefaultFactoryProvider.factory()
+        .enableCryptography()
+        .enableGZipCompression()
         .getConnectorXmlChannelFactory();
   }
   

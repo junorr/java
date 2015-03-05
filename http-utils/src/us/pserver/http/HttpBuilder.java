@@ -365,16 +365,15 @@ public class HttpBuilder implements HttpConst {
     }
     
     StringBuffer end = new StringBuffer();
-    if(content)
-      end.append(CRLF).append(HYFENS)
+    if(content) {
+      end.append(HYFENS)
           .append(BOUNDARY).append(HYFENS);
-    
-    end.append(CRLF);
-    
-    StringByteConverter cv = new StringByteConverter();
-    out.write(cv.convert(end.toString()));
-    //out.write(cv.convert(EOF));
-    out.write(cv.convert(CRLF+CRLF));
+      StringByteConverter cv = new StringByteConverter();
+      out.write(cv.convert(end.toString()));
+    }
+    StreamUtils.write(CRLF, out);
+    StreamUtils.write(CRLF, out);
+    StreamUtils.write(CRLF, out);
     out.flush();
   }
   

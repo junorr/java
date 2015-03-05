@@ -284,12 +284,11 @@ public class HttpInputStream extends HeaderEncryptable {
     BufferedOutputStream bos = IO.bf(out);
     
     StringBuffer start = new StringBuffer();
-    start.append(CRLF).append(HYFENS).append(BOUNDARY)
-        .append(CRLF).append(HD_CONTENT_DISPOSITION)
+    start.append(HYFENS).append(BOUNDARY).append(CRLF)
+        .append(HD_CONTENT_DISPOSITION)
         .append(": ").append(VALUE_DISPOSITION_FORM_DATA)
-        .append("; ").append(NAME_INPUTSTREAM)
-        .append(CRLF).append(HD_CONTENT_TYPE_OCTETSTREAM)
-        .append(CRLF)
+        .append("; ").append(NAME_INPUTSTREAM).append(CRLF)
+        .append(HD_CONTENT_TYPE_OCTETSTREAM)
         .append(BOUNDARY_XML_START)
         .append(BOUNDARY_CONTENT_START);
     
@@ -297,6 +296,7 @@ public class HttpInputStream extends HeaderEncryptable {
     StreamUtils.transfer(buffer.getInputStream(), bos);
     StreamUtils.write(BOUNDARY_CONTENT_END, bos);
     StreamUtils.write(BOUNDARY_XML_END, bos);
+    StreamUtils.write(CRLF, bos);
     out.flush();
   }
   
@@ -307,8 +307,7 @@ public class HttpInputStream extends HeaderEncryptable {
         .append(CRLF).append(HD_CONTENT_DISPOSITION)
         .append(": ").append(VALUE_DISPOSITION_FORM_DATA)
         .append("; ").append(NAME_INPUTSTREAM)
-        .append(CRLF).append(HD_CONTENT_TYPE_OCTETSTREAM)
-        .append(CRLF);
+        .append(CRLF).append(HD_CONTENT_TYPE_OCTETSTREAM);
     
     start.append(BOUNDARY_XML_START)
         .append(BOUNDARY_CONTENT_START)
@@ -338,7 +337,6 @@ public class HttpInputStream extends HeaderEncryptable {
     hin.setupOutbound();
     
     System.out.println("* size = "+ hin.getLength());
-    OutputStream out = new FileOutputStream("d:/http-inputstream.txt");
     hin.writeContent(System.out);
   }
   

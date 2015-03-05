@@ -103,10 +103,10 @@ public abstract class StreamUtils {
     while((read = in.read(buf)) > 0) {
       total += read;
       out.write(buf, 0, read);
+      if(read < buf.length) break;
       int len = (read < 30 ? read : 30);
       String str = new String(buf, read -len, len);
-      if(read < buf.length && str.contains(EOF))
-        break;
+      if(str.contains(EOF)) break;
     }
     out.flush();
     return total;
@@ -317,17 +317,18 @@ public abstract class StreamUtils {
     
     StreamResult res = new StreamResult();
     int read = -1;
+    byte[] buf = new byte[1];
     LimitedBuffer lbuf = new LimitedBuffer(str.length());
     
     while(true) {
-      read = in.read();
-      if(read == -1) {
+      read = in.read(buf);
+      if(read < 1) {
         res.eofOn();
         break;
       }
       
       res.increment();
-      lbuf.put(read);
+      lbuf.put(buf[0]);
       if(str.equals(lbuf.toUTF8())) {
         res.setToken(str);
         break;
@@ -358,18 +359,19 @@ public abstract class StreamUtils {
     
     StreamResult res = new StreamResult();
     int read = -1;
+    byte[] buf = new byte[1];
     int maxlen = Math.max(str.length(), orFalse.length());
     LimitedBuffer lbuf = new LimitedBuffer(maxlen);
     
     while(true) {
-      read = in.read();
-      if(read == -1) {
+      read = in.read(buf);
+      if(read < 1) {
         res.eofOn();
         break;
       }
       
       res.increment();
-      lbuf.put(read);
+      lbuf.put(buf[0]);
       if(lbuf.size() == maxlen) {
         if(lbuf.toUTF8().contains(str)) {
           res.setToken(str);

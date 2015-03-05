@@ -65,6 +65,10 @@ public class XmlNetChannel implements Channel {
   
   private MultiCoderBuffer buffer;
   
+  private boolean crypt, gzip;
+  
+  private CryptAlgorithm algo;
+  
   
   /**
    * Construtor padrão que recebe um 
@@ -78,10 +82,47 @@ public class XmlNetChannel implements Channel {
     sock = sc;
     isvalid = true;
     buffer = null;
+    crypt = false;
+    gzip = false;
+    algo = CryptAlgorithm.AES_CBC_PKCS5;
     xst = new XStream();
     scv = new StringByteConverter();
     bcd = new Base64StringCoder();
-    key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
+    key = null;
+  }
+  
+  
+  public XmlNetChannel setEncryptionEnabled(boolean enabled) {
+    crypt = enabled;
+    return this;
+  }
+  
+  
+  public boolean isEncryptionEnabled() {
+    return crypt;
+  }
+  
+  
+  public XmlNetChannel setGZipCompressionEnabled(boolean enabled) {
+    gzip = enabled;
+    return this;
+  }
+  
+  
+  public boolean isGZipCompressionEnabled() {
+    return gzip;
+  }
+  
+  
+  public XmlNetChannel setCryptAlgorithm(CryptAlgorithm ca) {
+    nullarg(CryptAlgorithm.class, ca);
+    algo = ca;
+    return this;
+  }
+  
+  
+  public CryptAlgorithm getCryptAlgorithm() {
+    return algo;
   }
   
   
@@ -139,11 +180,14 @@ public class XmlNetChannel implements Channel {
     ProtectedOutputStream pos = new ProtectedOutputStream(
         sock.getOutputStream());
     
-    writeKey(pos);
+    if(crypt) {
+      key = CryptKey.createRandomKey(algo);
+      writeKey(pos);
+    }
       
     OutputStream sout = StreamCoderFactory.getNew()
-        .setGZipCoderEnabled(true)
-        .setCryptCoderEnabled(true, key)
+        .setGZipCoderEnabled(gzip)
+        .setCryptCoderEnabled(crypt, key)
         .create(pos);
     writeTransport(trp, sout);
     sout.write(scv.convert(HttpConst.BOUNDARY_XML_END));
@@ -157,12 +201,14 @@ public class XmlNetChannel implements Channel {
   
   private CryptKey readKey(InputStream is) throws IOException {
     nullarg(InputStream.class, is);
-    String startkey = HttpConst.BOUNDARY_CRYPT_KEY_START;
-    StreamResult sr = StreamUtils.readUntilOr(is, startkey, EOF);
-    if(sr.isEOFReached() || sr.token() != startkey) 
+    StreamResult sr = StreamUtils.readUntilOr(is, 
+        HttpConst.BOUNDARY_CRYPT_KEY_START, 
+        HttpConst.BOUNDARY_OBJECT_START);
+    
+    if(sr.token() != HttpConst.BOUNDARY_CRYPT_KEY_START) 
       return null;
-    sr = StreamUtils.readStringUntilOr(is, 
-        HttpConst.BOUNDARY_CRYPT_KEY_END, EOF);
+    
+    sr = StreamUtils.readStringUntil(is, HttpConst.BOUNDARY_CRYPT_KEY_END);
     return CryptKey.fromString(bcd.decode(sr.content()));
   }
   
@@ -172,7 +218,7 @@ public class XmlNetChannel implements Channel {
     if(buffer != null) buffer.close();
     buffer = new MultiCoderBuffer();
     StreamUtils.transferBetween(is, buffer.getOutputStream(), 
-        HttpConst.BOUNDARY_CONTENT_START, 
+        HttpConst.BOUNDARY_CONTENT_START,
         HttpConst.BOUNDARY_CONTENT_END);
     return buffer.flip().getInputStream();
   }
@@ -182,8 +228,7 @@ public class XmlNetChannel implements Channel {
     nullarg(InputStream.class, is);
     
     try {
-      StreamResult sr = StreamUtils.readBetween(is, 
-          HttpConst.BOUNDARY_OBJECT_START, 
+      StreamResult sr = StreamUtils.readUntil(is, 
           HttpConst.BOUNDARY_OBJECT_END);
       
       Transport t = (Transport) xst.fromXML(sr.content());
@@ -209,12 +254,14 @@ public class XmlNetChannel implements Channel {
     if(buffer != null) buffer.close();
     ProtectedInputStream pin = new ProtectedInputStream(
         sock.getInputStream());
+    
     key = readKey(pin);
-    if(key == null) return null;
+    if(key != null)
+      StreamUtils.readUntil(pin, HttpConst.BOUNDARY_OBJECT_START);
     
     InputStream sin = StreamCoderFactory.getNew()
-        .setGZipCoderEnabled(true)
-        .setCryptCoderEnabled(true, key)
+        .setGZipCoderEnabled(gzip)
+        .setCryptCoderEnabled(key != null, key)
         .create(pin);
       
     Transport t = readTransport(sin);

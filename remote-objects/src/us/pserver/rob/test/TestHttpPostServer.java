@@ -34,7 +34,7 @@ import us.pserver.rob.server.NetworkServer;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 02/03/2015
  */
-public class TestGetServer {
+public class TestHttpPostServer {
 
   public static void main(String[] args) {
     NetConnector nc = new NetConnector("localhost", 35000);
@@ -52,11 +52,13 @@ public class TestGetServer {
     }
     A a = new A();
     Credentials cr = new Credentials("juno", "32132155".getBytes());
-    ObjectContainer oc = new ObjectContainer();
-        //new Authenticator(new SingleCredentialsSource(cr)));
+    ObjectContainer oc = new ObjectContainer(
+        new Authenticator(new SingleCredentialsSource(cr)));
     oc.put("a", a);
     NetworkServer srv = new NetworkServer(oc, nc, 
         DefaultFactoryProvider.factory()
+            .enableCryptography()
+            .enableGZipCompression()
             .getGetResponseChannelFactory());
     srv.start();
   }

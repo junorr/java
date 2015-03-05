@@ -26,6 +26,7 @@ import us.pserver.rob.channel.HttpResponseChannel;
 import us.pserver.rob.channel.XmlNetChannel;
 import java.io.IOException;
 import java.net.Socket;
+import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.channel.GetRequestChannel;
 import us.pserver.rob.channel.GetResponseChannel;
@@ -37,7 +38,52 @@ import us.pserver.rob.channel.GetResponseChannel;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 2014-01-21
  */
-public abstract class DefaultFactoryProvider {
+public class DefaultFactoryProvider {
+  
+  private boolean gzip, crypt;
+  
+  private CryptAlgorithm algo;
+  
+  public DefaultFactoryProvider() {
+    gzip = false; crypt = false;
+    algo = CryptAlgorithm.AES_CBC_PKCS5;
+  }
+  
+  
+  public DefaultFactoryProvider enableGZipCompression() {
+    gzip = true;
+    return this;
+  }
+  
+  
+  public DefaultFactoryProvider disableGZipCompression() {
+    gzip = false;
+    return this;
+  }
+  
+  
+  public DefaultFactoryProvider enableCryptography() {
+    crypt = true;
+    return this;
+  }
+  
+  
+  public DefaultFactoryProvider enableCryptography(CryptAlgorithm algo) {
+    if(algo != null) this.algo = algo;
+    crypt = true;
+    return this;
+  }
+  
+  
+  public DefaultFactoryProvider disableCryptography() {
+    crypt = false;
+    return this;
+  }
+  
+  
+  public static DefaultFactoryProvider factory() {
+    return new DefaultFactoryProvider();
+  }
   
   
   /**
@@ -45,7 +91,7 @@ public abstract class DefaultFactoryProvider {
    * <code>HttpRequestChannel</code>.
    * @return <code>ConnectorChannelFactory</code>
    */
-  public static ConnectorChannelFactory getHttpRequestChannelFactory() {
+  public ConnectorChannelFactory getHttpRequestChannelFactory() {
     return new ConnectorChannelFactory() {
       @Override
       public HttpRequestChannel createChannel(NetConnector conn) {
@@ -53,7 +99,10 @@ public abstract class DefaultFactoryProvider {
           throw new IllegalArgumentException(
               "Invalid NetConnector ["+ conn
                   + "]. Cannot create Channel.");
-        return new HttpRequestChannel(conn);
+        return new HttpRequestChannel(conn)
+            .setCryptAlgorithm(algo)
+            .setEncryptionEnabled(crypt)
+            .setGZipCompressionEnabled(gzip);
       }
     };
   }
@@ -64,7 +113,7 @@ public abstract class DefaultFactoryProvider {
    * <code>HttpRequestChannel</code>.
    * @return <code>ConnectorChannelFactory</code>
    */
-  public static ConnectorChannelFactory getGetRequestChannelFactory() {
+  public ConnectorChannelFactory getGetRequestChannelFactory() {
     return new ConnectorChannelFactory() {
       @Override
       public GetRequestChannel createChannel(NetConnector conn) {
@@ -72,7 +121,10 @@ public abstract class DefaultFactoryProvider {
           throw new IllegalArgumentException(
               "Invalid NetConnector ["+ conn
                   + "]. Cannot create Channel.");
-        return new GetRequestChannel(conn);
+        return new GetRequestChannel(conn)
+            .setCryptAlgorithm(algo)
+            .setEncryptionEnabled(crypt)
+            .setGZipCompressionEnabled(gzip);
       }
     };
   }
@@ -83,7 +135,7 @@ public abstract class DefaultFactoryProvider {
    * <code>XmlNetChannel</code>.
    * @return <code>ConnectorChannelFactory</code>
    */
-  public static ConnectorChannelFactory getConnectorXmlChannelFactory() {
+  public ConnectorChannelFactory getConnectorXmlChannelFactory() {
     return new ConnectorChannelFactory() {
       @Override
       public XmlNetChannel createChannel(NetConnector conn) {
@@ -92,7 +144,10 @@ public abstract class DefaultFactoryProvider {
               "Invalid NetConnector ["+ conn
                   + "]. Cannot create Channel.");
         try {
-          return new XmlNetChannel(conn.connectSocket());
+          return new XmlNetChannel(conn.connectSocket())
+              .setCryptAlgorithm(algo)
+              .setEncryptionEnabled(crypt)
+              .setGZipCompressionEnabled(gzip);
         } catch(IOException e) {
           throw new RuntimeException(e.getMessage(), e);
         }
@@ -106,7 +161,7 @@ public abstract class DefaultFactoryProvider {
    * <code>HttpResponseChannel</code>.
    * @return <code>SocketChannelFactory</code>
    */
-  public static SocketChannelFactory getHttpResponseChannelFactory() {
+  public SocketChannelFactory getHttpResponseChannelFactory() {
     return new SocketChannelFactory() {
       @Override
       public HttpResponseChannel createChannel(Socket sock) {
@@ -124,7 +179,7 @@ public abstract class DefaultFactoryProvider {
    * <code>HttpResponseChannel</code>.
    * @return <code>SocketChannelFactory</code>
    */
-  public static SocketChannelFactory getGetResponseChannelFactory() {
+  public SocketChannelFactory getGetResponseChannelFactory() {
     return new SocketChannelFactory() {
       @Override
       public GetResponseChannel createChannel(Socket sock) {
@@ -142,14 +197,17 @@ public abstract class DefaultFactoryProvider {
    * <code>XmlNetChannel</code>.
    * @return <code>SocketChannelFactory</code>
    */
-  public static SocketChannelFactory getSocketXmlChannelFactory() {
+  public SocketChannelFactory getSocketXmlChannelFactory() {
     return new SocketChannelFactory() {
       @Override
       public XmlNetChannel createChannel(Socket sock) {
         if(sock == null || sock.isClosed()) 
           throw new IllegalArgumentException(
               "Invalid Socket ["+ sock+ "]");
-        return new XmlNetChannel(sock);
+        return new XmlNetChannel(sock)
+            .setCryptAlgorithm(algo)
+            .setEncryptionEnabled(crypt)
+            .setGZipCompressionEnabled(gzip);
       }
     };
   }

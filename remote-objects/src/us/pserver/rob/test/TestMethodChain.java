@@ -44,7 +44,7 @@ public class TestMethodChain {
         .setPort(NetConnector.DEFAULT_PORT);
     
     RemoteObject rob = new RemoteObject(nc,
-        DefaultFactoryProvider
+        DefaultFactoryProvider.factory()
             .getHttpRequestChannelFactory());
     
     MethodChain chain = new MethodChain();

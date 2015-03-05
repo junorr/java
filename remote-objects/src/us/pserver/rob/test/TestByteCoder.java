@@ -21,27 +21,40 @@
 
 package us.pserver.rob.test;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import us.pserver.streams.IO;
-import us.pserver.streams.StreamUtils;
+import us.pserver.cdr.StringByteConverter;
+import us.pserver.cdr.b64.Base64ByteCoder;
+import us.pserver.cdr.crypt.CryptAlgorithm;
+import us.pserver.cdr.crypt.CryptByteCoder;
+import us.pserver.cdr.crypt.CryptKey;
+import us.pserver.cdr.gzip.GZipByteCoder;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 03/03/2015
+ * @version 1.0 - 05/03/2015
  */
-public class TestDumpServer {
+public class TestByteCoder {
 
   
-  public static void main(String[] args) throws IOException {
-    //http://localhost:36000/?obj=a&mth=compute&types=int%3Bint&args=5%3B3
-    ServerSocket srv = new ServerSocket(35000);
-    Socket sock = srv.accept();
-    StreamUtils.transfer(sock.getInputStream(), System.out);
-    sock.close();
-    srv.close();
+  public static void main(String[] args) {
+    StringByteConverter scv = new StringByteConverter();
+    GZipByteCoder gz = new GZipByteCoder();
+    Base64ByteCoder bbc = new Base64ByteCoder();
+    CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
+    CryptByteCoder cbc = new CryptByteCoder(key);
+    
+    String str = "compute-2;longValue-0";
+    System.out.println("* str="+ str);
+    byte[] bs = scv.convert(str);
+    bs = gz.encode(bs);
+    bs = cbc.encode(bs);
+    bs = bbc.encode(bs);
+    System.out.println("* encoded="+ scv.reverse(bs));
+    cbc = new CryptByteCoder(key);
+    bs = bbc.decode(bs);
+    bs = cbc.decode(bs);
+    bs = gz.decode(bs);
+    System.out.println("* decoded="+ scv.reverse(bs));
   }
   
 }

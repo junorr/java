@@ -127,5 +127,11 @@ public class StreamResult {
     size += i;
     return this;
   }
+
+
+  @Override
+  public String toString() {
+    return "StreamResult{" + "size=" + size + ", token=" + token + ", str=" + str + ", eof=" + eof + '}';
+  }
   
 }

@@ -658,7 +658,11 @@ public class MultiCoderBuffer {
    * @throws IOException Caso ocorra erro na escrita.
    */
   public void write(byte[] bs, int offset, int length) throws IOException {
-    nullarray(bs);
+    if(bs == null) return;
+    if(bs.length == 0) {
+      outbuffer.write(bs);
+      return;
+    }
     range(offset, -1, bs.length);
     range(length, 1, bs.length - offset);
     if(readmode) flip();

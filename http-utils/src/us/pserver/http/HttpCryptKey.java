@@ -128,15 +128,16 @@ public class HttpCryptKey extends HeaderKeyHolder {
   public void writeContent(OutputStream out) {
     nullarg(OutputStream.class, out);
     StringBuilder start = new StringBuilder()
-        .append(CRLF).append(HYFENS).append(BOUNDARY)
-        .append(CRLF).append(HD_CONTENT_XML.toString())
-        .append(CRLF).append(BOUNDARY_XML_START);
+        .append(HYFENS).append(BOUNDARY).append(CRLF)
+        .append(HD_CONTENT_XML.toString())
+        .append(BOUNDARY_XML_START);
     
     try {
       StringByteConverter cv = new StringByteConverter();
       out.write(cv.convert(start.toString()));
       out.write(cv.convert(getValue()));
       out.write(cv.convert(BOUNDARY_XML_END));
+      out.write(cv.convert(CRLF));
       out.flush();
     } catch(IOException e) {
       throw new RuntimeException(e);
@@ -146,9 +147,9 @@ public class HttpCryptKey extends HeaderKeyHolder {
   
   public static void main(String[] args) throws FileNotFoundException {
     StringBuilder start = new StringBuilder()
-        .append(CRLF).append(HYFENS).append(BOUNDARY)
-        .append(CRLF).append(HD_CONTENT_XML.toString())
-        .append(CRLF).append(BOUNDARY_XML_START)
+        .append(HYFENS).append(BOUNDARY).append(CRLF)
+        .append(HD_CONTENT_XML.toString()).append(CRLF)
+        .append(BOUNDARY_XML_START)
         .append(BOUNDARY_XML_END);
     System.out.println("* static content:");
     System.out.println(start.toString());
@@ -157,7 +158,7 @@ public class HttpCryptKey extends HeaderKeyHolder {
     System.out.println();
     System.out.println("* HttpEncodedObject example:");
     HttpCryptKey hob = new HttpCryptKey();
-    OutputStream out = new FileOutputStream("d:/http-rob.txt");
+    //OutputStream out = new FileOutputStream("d:/http-rob.txt");
     hob.setCryptKey(new CryptKey("123456", CryptAlgorithm.AES_CBC_PKCS5));
     System.out.println("* size = "+ hob.getLength());
     hob.writeContent(System.out);

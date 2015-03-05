@@ -81,7 +81,9 @@ public class NetworkServer extends AbstractServer {
     cont.put(SERVER_KEY, this);
     ref = new Reflector();
     con = new NetConnector();
-    factory = DefaultFactoryProvider
+    factory = DefaultFactoryProvider.factory()
+        .enableGZipCompression()
+        .enableCryptography()
         .getSocketXmlChannelFactory();
   }
   

@@ -72,6 +72,7 @@
         this.node = function() {
           return {data: null, next: null};
         };
+        
         this.add = function(data) {
           if(!this.last) {
             this.first = this.node();
@@ -83,6 +84,7 @@
           this.sz++;
           return this;
         };
+        
         this.get = function(index) {
           if(this.sz === 0 || index < 0 || index >= this.sz)
             return null;
@@ -94,6 +96,7 @@
           }
           return getnode.data;
         };
+        
         this.getNode = function(index) {
           if(this.sz === 0 || index < 0 || index >= this.sz)
             return null;
@@ -105,6 +108,27 @@
           }
           return getnode;
         };
+        
+        this.contains = function(obj) {
+          if(!obj || this.sz < 1) return false;
+          for(var i = 0; i < this.sz; i++) {
+            var node = this.getNode(i);
+            if(node.data === obj)
+              return true;
+          }
+          return false;
+        };
+        
+        this.indexOf = function(obj) {
+          if(!obj || this.sz < 1) return -1;
+          for(var i = 0; i < this.sz; i++) {
+            var node = this.getNode(i);
+            if(node.data === obj)
+              return i;
+          }
+          return -1;
+        };
+        
         this.remove = function(index) {
           if(this.sz === 0 || index < 0 || index >= this.sz)
             return null;
@@ -129,9 +153,11 @@
             this.last = this.first;
           return data;
         };
+        
         this.size = function() {
           return this.sz;
         };
+        
         this.toString = function() {
           var str = "[";
           var i = 0;
@@ -146,6 +172,7 @@
           return str + "]";
         };
       };
+      
       
       function RemoteMethod() {
         this.object = null;

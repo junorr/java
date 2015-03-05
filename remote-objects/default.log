@@ -5029,3 +5029,368 @@ h�$�ga
 [INFO ] (04/03/2015 16:57:37): Invoking: Double.floatValue(  )
 [INFO ] (04/03/2015 16:57:37): Invoking: Float.longValue(  )
 [INFO ] (04/03/2015 16:57:37): Response sent: OpResult{ success = true, return = 125 }
+[INFO ] (05/03/2015 10:28:45): Starting NetworkServer...
+[INFO ] (05/03/2015 10:28:45): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (05/03/2015 10:28:45): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 10:28:45): Server started!
+
+[INFO ] (05/03/2015 10:29:36): ------------------------------
+[INFO ] (05/03/2015 10:29:36): Handling socket: Socket[addr=/127.0.0.1,port=40877,localport=35000]
+[INFO ] (05/03/2015 10:29:36): Connection closed by client.
+[INFO ] (05/03/2015 10:29:36): ------------------------------
+[INFO ] (05/03/2015 10:29:36): Handling socket: Socket[addr=/127.0.0.1,port=40878,localport=35000]
+[INFO ] (05/03/2015 10:29:36): Connection closed by client.
+[INFO ] (05/03/2015 11:02:26): Starting NetworkServer...
+[INFO ] (05/03/2015 11:02:26): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (05/03/2015 11:02:26): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 11:02:26): Server started!
+
+[INFO ] (05/03/2015 11:02:30): ------------------------------
+[INFO ] (05/03/2015 11:02:30): Handling socket: Socket[addr=/127.0.0.1,port=40921,localport=35000]
+[INFO ] (05/03/2015 11:02:30): Connection closed by client.
+[INFO ] (05/03/2015 11:02:30): ------------------------------
+[INFO ] (05/03/2015 11:02:30): Handling socket: Socket[addr=/127.0.0.1,port=40922,localport=35000]
+[INFO ] (05/03/2015 11:02:30): Connection closed by client.
+[INFO ] (05/03/2015 12:07:02): Starting NetworkServer...
+[INFO ] (05/03/2015 12:07:02): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (05/03/2015 12:07:02): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 12:07:02): Server started!
+
+[INFO ] (05/03/2015 12:07:05): ------------------------------
+[INFO ] (05/03/2015 12:07:05): Handling socket: Socket[addr=/127.0.0.1,port=41030,localport=35000]
+[INFO ] (05/03/2015 12:15:23): Starting NetworkServer...
+[INFO ] (05/03/2015 12:15:23): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (05/03/2015 12:15:23): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 12:15:23): Server started!
+
+[INFO ] (05/03/2015 12:15:25): ------------------------------
+[INFO ] (05/03/2015 12:15:25): Handling socket: Socket[addr=/127.0.0.1,port=41060,localport=35000]
+[INFO ] (05/03/2015 12:20:50): Starting NetworkServer...
+[INFO ] (05/03/2015 12:20:50): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (05/03/2015 12:20:50): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 12:20:50): Server started!
+
+[INFO ] (05/03/2015 12:20:54): ------------------------------
+[INFO ] (05/03/2015 12:20:54): Handling socket: Socket[addr=/127.0.0.1,port=41069,localport=35000]
+[INFO ] (05/03/2015 12:22:23): Starting NetworkServer...
+[INFO ] (05/03/2015 12:22:23): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (05/03/2015 12:22:23): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 12:22:23): Server started!
+
+[INFO ] (05/03/2015 12:22:25): ------------------------------
+[INFO ] (05/03/2015 12:22:25): Handling socket: Socket[addr=/127.0.0.1,port=41071,localport=35000]
+[INFO ] (05/03/2015 12:24:31): Starting NetworkServer...
+[INFO ] (05/03/2015 12:24:31): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (05/03/2015 12:24:31): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 12:24:31): Server started!
+
+[INFO ] (05/03/2015 12:24:35): ------------------------------
+[INFO ] (05/03/2015 12:24:35): Handling socket: Socket[addr=/127.0.0.1,port=41074,localport=35000]
+[INFO ] (05/03/2015 12:26:21): Starting NetworkServer...
+[INFO ] (05/03/2015 12:26:21): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (05/03/2015 12:26:21): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 12:26:21): Server started!
+
+[INFO ] (05/03/2015 12:26:26): ------------------------------
+[INFO ] (05/03/2015 12:26:26): Handling socket: Socket[addr=/127.0.0.1,port=41078,localport=35000]
+[INFO ] (05/03/2015 12:56:23): Starting NetworkServer...
+[INFO ] (05/03/2015 12:56:23): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (05/03/2015 12:56:23): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 12:56:23): Server started!
+
+[INFO ] (05/03/2015 12:56:26): ------------------------------
+[INFO ] (05/03/2015 12:56:26): Handling socket: Socket[addr=/127.0.0.1,port=41148,localport=35000]
+[INFO ] (05/03/2015 13:01:00): Starting NetworkServer...
+[INFO ] (05/03/2015 13:01:00): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (05/03/2015 13:01:00): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 13:01:00): Server started!
+
+[INFO ] (05/03/2015 13:01:03): ------------------------------
+[INFO ] (05/03/2015 13:01:03): Handling socket: Socket[addr=/127.0.0.1,port=41161,localport=35000]
+[INFO ] (05/03/2015 13:01:03): Remote request: a.compute( 5, 3 )
+[INFO ] (05/03/2015 13:01:03): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (05/03/2015 13:01:04): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (05/03/2015 13:01:33): Starting NetworkServer...
+[INFO ] (05/03/2015 13:01:33): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (05/03/2015 13:01:33): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 13:01:33): Server started!
+
+[INFO ] (05/03/2015 13:01:36): ------------------------------
+[INFO ] (05/03/2015 13:01:36): Handling socket: Socket[addr=/127.0.0.1,port=41162,localport=35000]
+[INFO ] (05/03/2015 13:01:37): Remote request: a.compute( 5, 3 )
+[INFO ] (05/03/2015 13:01:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (05/03/2015 13:01:37): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (05/03/2015 13:04:25): Starting NetworkServer...
+[INFO ] (05/03/2015 13:04:25): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (05/03/2015 13:04:25): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 13:04:25): Server started!
+
+[INFO ] (05/03/2015 13:04:28): ------------------------------
+[INFO ] (05/03/2015 13:04:28): Handling socket: Socket[addr=/127.0.0.1,port=41164,localport=35000]
+[ERROR] (05/03/2015 13:04:29): Error reading from channel
+[ERROR] (05/03/2015 13:04:29): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:04:29):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:04:29):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 13:04:29):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:277)
+[ERROR] (05/03/2015 13:04:29):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:427)
+[ERROR] (05/03/2015 13:04:29):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 13:04:29):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 13:04:29):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 13:04:29):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 13:04:29):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 13:04:29):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 13:04:29):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 13:04:29): Connection closed by client.
+[INFO ] (05/03/2015 13:11:45): Starting NetworkServer...
+[INFO ] (05/03/2015 13:11:45): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (05/03/2015 13:11:45): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 13:11:45): Server started!
+
+[INFO ] (05/03/2015 13:11:49): ------------------------------
+[INFO ] (05/03/2015 13:11:49): Handling socket: Socket[addr=/127.0.0.1,port=41183,localport=35000]
+[ERROR] (05/03/2015 13:11:50): Error reading from channel
+[ERROR] (05/03/2015 13:11:50): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:11:50):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:11:50):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 13:11:50):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:277)
+[ERROR] (05/03/2015 13:11:50):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:427)
+[ERROR] (05/03/2015 13:11:50):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 13:11:50):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 13:11:50):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 13:11:50):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 13:11:50):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 13:11:50):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 13:11:50):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 13:11:50): Connection closed by client.
+[INFO ] (05/03/2015 13:13:19): Starting NetworkServer...
+[INFO ] (05/03/2015 13:13:19): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (05/03/2015 13:13:19): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 13:13:19): Server started!
+
+[INFO ] (05/03/2015 13:13:22): ------------------------------
+[INFO ] (05/03/2015 13:13:22): Handling socket: Socket[addr=/127.0.0.1,port=41185,localport=35000]
+[ERROR] (05/03/2015 13:13:23): Error reading from channel
+[ERROR] (05/03/2015 13:13:23): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:13:23):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:13:23):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 13:13:23):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:277)
+[ERROR] (05/03/2015 13:13:23):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:427)
+[ERROR] (05/03/2015 13:13:23):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 13:13:23):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 13:13:23):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 13:13:23):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 13:13:23):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 13:13:23):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 13:13:23):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 13:13:23): Connection closed by client.
+[INFO ] (05/03/2015 13:13:23): ------------------------------
+[INFO ] (05/03/2015 13:13:23): Handling socket: Socket[addr=/127.0.0.1,port=41186,localport=35000]
+[ERROR] (05/03/2015 13:13:23): Error reading from channel
+[ERROR] (05/03/2015 13:13:23): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:13:23):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:13:23):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 13:13:23):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:277)
+[ERROR] (05/03/2015 13:13:23):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:427)
+[ERROR] (05/03/2015 13:13:23):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 13:13:23):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 13:13:23):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 13:13:23):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 13:13:23):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 13:13:23):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 13:13:23):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 13:13:23): Connection closed by client.
+[INFO ] (05/03/2015 13:14:40): Starting NetworkServer...
+[INFO ] (05/03/2015 13:14:40): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (05/03/2015 13:14:40): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 13:14:40): Server started!
+
+[INFO ] (05/03/2015 13:14:42): ------------------------------
+[INFO ] (05/03/2015 13:14:43): Handling socket: Socket[addr=/127.0.0.1,port=41188,localport=35000]
+[ERROR] (05/03/2015 13:14:43): Error reading from channel
+[ERROR] (05/03/2015 13:14:43): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:14:43):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:14:43):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 13:14:43):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:277)
+[ERROR] (05/03/2015 13:14:43):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:427)
+[ERROR] (05/03/2015 13:14:43):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 13:14:43):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 13:14:43):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 13:14:43):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 13:14:43):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 13:14:43):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 13:14:43):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 13:14:43): Connection closed by client.
+[INFO ] (05/03/2015 13:14:43): ------------------------------
+[INFO ] (05/03/2015 13:14:43): Handling socket: Socket[addr=/127.0.0.1,port=41189,localport=35000]
+[ERROR] (05/03/2015 13:14:43): Error reading from channel
+[ERROR] (05/03/2015 13:14:43): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:14:43):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:14:43):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 13:14:43):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:277)
+[ERROR] (05/03/2015 13:14:43):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:427)
+[ERROR] (05/03/2015 13:14:43):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 13:14:43):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 13:14:43):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 13:14:43):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 13:14:43):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 13:14:43):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 13:14:43):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 13:14:43): Connection closed by client.
+[INFO ] (05/03/2015 13:27:20): Starting NetworkServer...
+[INFO ] (05/03/2015 13:27:20): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (05/03/2015 13:27:20): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 13:27:20): Server started!
+
+[INFO ] (05/03/2015 13:27:23): ------------------------------
+[INFO ] (05/03/2015 13:27:23): Handling socket: Socket[addr=/127.0.0.1,port=41205,localport=35000]
+[ERROR] (05/03/2015 13:27:24): Error reading from channel
+[ERROR] (05/03/2015 13:27:24): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:27:24):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:27:24):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 13:27:24):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:281)
+[ERROR] (05/03/2015 13:27:24):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:431)
+[ERROR] (05/03/2015 13:27:24):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 13:27:24):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 13:27:24):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 13:27:24):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 13:27:24):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 13:27:24):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 13:27:24):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 13:27:24): Connection closed by client.
+[INFO ] (05/03/2015 13:27:24): ------------------------------
+[INFO ] (05/03/2015 13:27:24): Handling socket: Socket[addr=/127.0.0.1,port=41206,localport=35000]
+[ERROR] (05/03/2015 13:27:24): Error reading from channel
+[ERROR] (05/03/2015 13:27:24): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:27:24):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 13:27:24):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 13:27:24):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:281)
+[ERROR] (05/03/2015 13:27:24):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:431)
+[ERROR] (05/03/2015 13:27:24):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 13:27:24):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 13:27:24):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 13:27:24):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 13:27:24):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 13:27:24):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 13:27:24):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 13:27:24): Connection closed by client.
+[INFO ] (05/03/2015 14:10:12): Starting NetworkServer...
+[INFO ] (05/03/2015 14:10:13): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (05/03/2015 14:10:13): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 14:10:13): Server started!
+
+[INFO ] (05/03/2015 14:10:23): ------------------------------
+[INFO ] (05/03/2015 14:10:23): Handling socket: Socket[addr=/127.0.0.1,port=41272,localport=35000]
+[ERROR] (05/03/2015 14:10:24): Error reading from channel
+[ERROR] (05/03/2015 14:10:24): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 14:10:24):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 14:10:24):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 14:10:24):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:281)
+[ERROR] (05/03/2015 14:10:24):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:431)
+[ERROR] (05/03/2015 14:10:24):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 14:10:24):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 14:10:24):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 14:10:24):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 14:10:24):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 14:10:24):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 14:10:24):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 14:10:24): Connection closed by client.
+[INFO ] (05/03/2015 14:10:24): ------------------------------
+[INFO ] (05/03/2015 14:10:24): Handling socket: Socket[addr=/127.0.0.1,port=41273,localport=35000]
+[ERROR] (05/03/2015 14:10:24): Error reading from channel
+[ERROR] (05/03/2015 14:10:24): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 14:10:24):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 14:10:24):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 14:10:24):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:281)
+[ERROR] (05/03/2015 14:10:24):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:431)
+[ERROR] (05/03/2015 14:10:24):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 14:10:24):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 14:10:24):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 14:10:24):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 14:10:24):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 14:10:24):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 14:10:24):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 14:10:24): Connection closed by client.
+[INFO ] (05/03/2015 14:13:41): Starting NetworkServer...
+[INFO ] (05/03/2015 14:13:42): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (05/03/2015 14:13:42): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 14:13:42): Server started!
+
+[INFO ] (05/03/2015 14:13:45): ------------------------------
+[INFO ] (05/03/2015 14:13:45): Handling socket: Socket[addr=/127.0.0.1,port=41286,localport=35000]
+[ERROR] (05/03/2015 14:13:45): Error reading from channel
+[ERROR] (05/03/2015 14:13:45): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 14:13:45):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 14:13:45):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 14:13:45):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:282)
+[ERROR] (05/03/2015 14:13:45):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:432)
+[ERROR] (05/03/2015 14:13:45):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 14:13:45):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 14:13:45):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 14:13:45):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 14:13:45):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 14:13:45):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 14:13:45):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 14:13:45): Connection closed by client.
+[INFO ] (05/03/2015 14:13:45): ------------------------------
+[INFO ] (05/03/2015 14:13:45): Handling socket: Socket[addr=/127.0.0.1,port=41287,localport=35000]
+[ERROR] (05/03/2015 14:13:45): Error reading from channel
+[ERROR] (05/03/2015 14:13:45): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 14:13:45):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 14:13:46):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 14:13:46):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:282)
+[ERROR] (05/03/2015 14:13:46):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:432)
+[ERROR] (05/03/2015 14:13:46):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 14:13:46):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 14:13:46):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 14:13:46):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 14:13:46):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 14:13:46):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 14:13:46):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 14:13:46): Connection closed by client.
+[INFO ] (05/03/2015 14:16:29): Starting NetworkServer...
+[INFO ] (05/03/2015 14:16:30): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (05/03/2015 14:16:30): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 14:16:30): Server started!
+
+[INFO ] (05/03/2015 14:16:34): ------------------------------
+[INFO ] (05/03/2015 14:16:34): Handling socket: Socket[addr=/127.0.0.1,port=41290,localport=35000]
+[ERROR] (05/03/2015 14:16:35): Error reading from channel
+[ERROR] (05/03/2015 14:16:35): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 14:16:35):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 14:16:35):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 14:16:35):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:282)
+[ERROR] (05/03/2015 14:16:35):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:432)
+[ERROR] (05/03/2015 14:16:35):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 14:16:35):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 14:16:35):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 14:16:35):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 14:16:35):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 14:16:35):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 14:16:35):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 14:16:35): Connection closed by client.
+[INFO ] (05/03/2015 14:16:35): ------------------------------
+[INFO ] (05/03/2015 14:16:35): Handling socket: Socket[addr=/127.0.0.1,port=41291,localport=35000]
+[ERROR] (05/03/2015 14:16:35): Error reading from channel
+[ERROR] (05/03/2015 14:16:35): RuntimeException: Error decrypting: javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 14:16:35):   Caused by: IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
+[ERROR] (05/03/2015 14:16:35):   us.pserver.cdr.crypt.CryptByteCoder.decode(CryptByteCoder.java:113)
+[ERROR] (05/03/2015 14:16:35):   us.pserver.rob.channel.GetResponseChannel.createRemote(GetResponseChannel.java:282)
+[ERROR] (05/03/2015 14:16:35):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:432)
+[ERROR] (05/03/2015 14:16:35):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (05/03/2015 14:16:35):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (05/03/2015 14:16:35):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (05/03/2015 14:16:35):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (05/03/2015 14:16:35):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (05/03/2015 14:16:35):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (05/03/2015 14:16:35):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (05/03/2015 14:16:35): Connection closed by client.
+[INFO ] (05/03/2015 14:17:08): Starting NetworkServer...
+[INFO ] (05/03/2015 14:17:08): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (05/03/2015 14:17:08): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (05/03/2015 14:17:08): Server started!
+
+[INFO ] (05/03/2015 14:17:14): ------------------------------
+[INFO ] (05/03/2015 14:17:14): Handling socket: Socket[addr=/127.0.0.1,port=41293,localport=35000]
+[INFO ] (05/03/2015 14:17:14): Remote request: a.compute( 5, 3 )
+[INFO ] (05/03/2015 14:17:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (05/03/2015 14:17:14): Response sent: OpResult{ success = true, return = 1.6666666666666667 }

@@ -76,6 +76,7 @@ public class GetRequestChannel implements Channel, HttpConst {
       OBJECT = "obj",
       TYPES = "types",
       ARGS = "args",
+      UI = "ui",
       AUTH = "auth";
   
   
@@ -206,6 +207,11 @@ public class GetRequestChannel implements Channel, HttpConst {
         && rmt.credentials().getUser() != null) {
       get.query(AUTH, encode(rmt.credentials(), jsc));
     }
+    
+    System.out.println("* GetRequestChannel.encloseRemote: ");
+    System.out.println("  - obj="+ get.queryGet(OBJECT));
+    System.out.println("  - mth="+ get.queryGet(METHOD));
+    System.out.println("  - aut="+ get.queryGet(AUTH));
     
     if(rmt.types() != null && !rmt.types().isEmpty()) {
       get.query(TYPES, encodeArray(rmt.typesArray(), jsc));

@@ -146,8 +146,7 @@ public class HttpParser implements HttpConst {
       throw new IOException("Invalid length readed ["+ res.size()+ "]");
     
     this.parse();
-    if(!res.isEOFReached() 
-        && boundary.equals(res.token())) 
+    if(boundary.equals(res.token())) 
       parseContent(in);
     return this;
   }
@@ -156,7 +155,8 @@ public class HttpParser implements HttpConst {
   public HttpParser parseContent(InputStream is) throws IOException {
     nullarg(InputStream.class, is);
     StreamResult res = StreamUtils.readUntilOr(is, BOUNDARY_XML_START, CRLF+CRLF);
-    if(res.isEOFReached()) return this;
+    if(CRLF.concat(CRLF).equals(res.token()) || res.isEOFReached()) 
+      return this;
 
     String str = StreamUtils.readString(is, 5);
     StreamUtils.readUntil(is, "'>");

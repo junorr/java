@@ -40,7 +40,8 @@ public class TestGetClient {
   public static void main(String[] args) throws MethodInvocationException, UnsupportedEncodingException {
     System.out.println(URLEncoder.encode(";", "UTF-8"));
     NetConnector nc = new NetConnector("localhost", 35000);
-    RemoteObject rob = new RemoteObject(nc, DefaultFactoryProvider.getGetRequestChannelFactory());
+    RemoteObject rob = new RemoteObject(nc, DefaultFactoryProvider
+        .factory().getGetRequestChannelFactory());
     Credentials cr = new Credentials("juno", "32132155".getBytes());
     RemoteMethod mth = new RemoteMethod()
         .forObject("a")

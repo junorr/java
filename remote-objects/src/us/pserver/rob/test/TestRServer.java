@@ -66,9 +66,9 @@ public class TestRServer {
   
   public static void main(String[] args) {
     NetworkServer sv = new NetworkServer(new ObjectContainer());
-    sv.setChannelFactory(DefaultFactoryProvider
-        .getHttpResponseChannelFactory());
-        //.getSocketXmlChannelFactory());
+    sv.setChannelFactory(DefaultFactoryProvider.factory()
+        //.getHttpResponseChannelFactory());
+        .getSocketXmlChannelFactory());
     
     sv.container().put("StreamHandler", new StreamHandler());
     SingleCredentialsSource src = new SingleCredentialsSource(

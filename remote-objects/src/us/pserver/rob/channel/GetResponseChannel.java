@@ -26,7 +26,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.util.List;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
 import us.pserver.cdr.crypt.CryptByteCoder;
@@ -35,7 +34,6 @@ import us.pserver.cdr.gzip.GZipByteCoder;
 import us.pserver.http.GetRequest;
 import us.pserver.http.HttpBuilder;
 import us.pserver.http.HttpConst;
-import us.pserver.http.HttpInputStream;
 import us.pserver.http.JsonObjectConverter;
 import us.pserver.http.PlainContent;
 import us.pserver.http.RequestLine;
@@ -80,8 +78,6 @@ public class GetResponseChannel implements Channel, HttpConst {
   
   private boolean valid;
   
-  private HttpInputStream his;
-  
   
   /**
    * Construtor padrão, recebe um <code>Socket</code>
@@ -95,22 +91,20 @@ public class GetResponseChannel implements Channel, HttpConst {
           "Invalid Socket ["+ sc+ "]");
     
     sock = sc;
+    valid = true;
     gzip = false;
     key = null;
-    valid = true;
     parser = new RequestParser();
     builder = new HttpBuilder();
-    his = null;
   }
   
   
   protected GetResponseChannel() {
     sock = null;
     key = null;
-    valid = true;
     parser = new RequestParser();
     builder = new HttpBuilder();
-    his = null;
+    valid = true;
   }
   
   
@@ -148,7 +142,7 @@ public class GetResponseChannel implements Channel, HttpConst {
   private void setHeaders(Transport trp) throws IOException {
     if(trp == null || trp.getObject() == null) 
       throw new IllegalArgumentException(
-          "Invalid Transport [trp="+ trp+ "]");
+          "Invalid Transport ["+ trp+ "]");
     
     builder = HttpBuilder.responseBuilder(
         new ResponseLine(200, "OK"));
@@ -188,12 +182,24 @@ public class GetResponseChannel implements Channel, HttpConst {
   }
   
   
+  private int extractNumArgs(String meth) {
+    if(meth == null || !meth.contains("-"))
+      return -1;
+    String si = meth.substring(meth.indexOf("-") +1);
+    try {
+      return Integer.parseInt(si);
+    } catch(NumberFormatException e) {
+      return -1;
+    }
+  }
+  
+  
   protected MethodChain createChain(GetRequest get) throws IOException {
     if(get == null) return null;
-    int ims = get.queryKeySize(METHOD);
     
     MethodChain chain = new MethodChain();
     JsonObjectConverter jsc = new JsonObjectConverter();
+    int ims = get.queryKeySize(METHOD);
     int curtyp = 0;
     
     for(int i = 0; i < ims; i++) {
@@ -206,19 +212,13 @@ public class GetResponseChannel implements Channel, HttpConst {
       if(i == 0) {
         rm.forObject(get.queryGet(OBJECT));
       }
-      String st = smth.substring(smth.indexOf("-")+1);
+      
+      int numArgs = extractNumArgs(smth);
       smth = smth.substring(0, smth.indexOf("-"));
       rm.method(smth);
       
-      int it;
-      try {
-        it = Integer.parseInt(st);
-      } catch(NumberFormatException e) {
-        throw new IOException("Invalid Method Format. "+ e.toString());
-      }
-      
       int max = curtyp;
-      for(int j = max; j < (max + it); j++) {
+      for(int j = max; j < (max + numArgs); j++) {
         String sarg = get.queryGet(ARGS, j);
         String styp = get.queryGet(TYPES, j);
         Class cls;
@@ -231,7 +231,7 @@ public class GetResponseChannel implements Channel, HttpConst {
         
         rm.addType(cls);
         rm.addParam(convertArgument(sarg, cls, jsc));
-        if(j == (curtyp +it -1))
+        if(j == (curtyp +numArgs -1))
           curtyp = j+1;
       }//for j
       chain.add(rm);
@@ -243,21 +243,22 @@ public class GetResponseChannel implements Channel, HttpConst {
   
   private RemoteMethod createRemote(GetRequest get) throws IOException {
     if(get == null) return null;
+    System.out.println("* GetResponseChannel.createRemote: ");
+    System.out.println("  - obj="+ get.queryGet(OBJECT));
+    System.out.println("  - mth="+ get.queryGet(METHOD));
+    System.out.println("  - aut="+ get.queryGet(AUTH));
     
     StringByteConverter scv = new StringByteConverter();
     byte[] bobj = scv.convert(get.queryGet(OBJECT));
     byte[] bmth = scv.convert(get.queryGet(METHOD));
     byte[] bauth = (get.queryContains(AUTH) 
         ? scv.convert(get.queryGet(AUTH)) : null);
-    List<String> ltypes = get.queryGetList(TYPES);
-    byte[][] btypes = new byte[ltypes.size()][1];
+    
+    byte[][] btypes = new byte[get.queryKeySize(TYPES)][1];
+    byte[][] bargs = new byte[get.queryKeySize(ARGS)][1];
     for(int i = 0; i < btypes.length; i++) {
-      btypes[i] = scv.convert(ltypes.get(i));
-    }
-    List<String> largs = get.queryGetList(ARGS);
-    byte[][] bargs = new byte[largs.size()][1];
-    for(int i = 0; i < bargs.length; i++) {
-      bargs[i] = scv.convert(largs.get(i));
+      btypes[i] = scv.convert(get.queryGet(TYPES, i));
+      bargs[i] = scv.convert(get.queryGet(ARGS, i));
     }
     
     if(get.queryContains(CRYPT_KEY)
@@ -265,7 +266,7 @@ public class GetResponseChannel implements Channel, HttpConst {
         && "1".equals(get.queryGet(GZIP)))) {
       Base64ByteCoder bbc = new Base64ByteCoder();
       bobj = bbc.decode(bobj);
-      bmth = bbc.decode(bobj);
+      bmth = bbc.decode(bmth);
       bauth = (bauth != null ? bbc.decode(bauth) : null);
       for(int i = 0; i < btypes.length; i++) {
         btypes[i] = bbc.decode(btypes[i]);
@@ -275,9 +276,10 @@ public class GetResponseChannel implements Channel, HttpConst {
     
     if(get.queryContains(CRYPT_KEY)) {
       key = CryptKey.fromString(get.queryGet(CRYPT_KEY));
+      System.out.println("* GetResponseChannel.createRemote: CryptKey ["+ key+ "]");
       CryptByteCoder cbc = new CryptByteCoder(key);
       bobj = cbc.decode(bobj);
-      bmth = cbc.decode(bobj);
+      bmth = cbc.decode(bmth);
       bauth = (bauth != null ? cbc.decode(bauth) : null);
       for(int i = 0; i < btypes.length; i++) {
         btypes[i] = cbc.decode(btypes[i]);
@@ -290,7 +292,7 @@ public class GetResponseChannel implements Channel, HttpConst {
       gzip = true;
       GZipByteCoder gbc = new GZipByteCoder();
       bobj = gbc.decode(bobj);
-      bmth = gbc.decode(bobj);
+      bmth = gbc.decode(bmth);
       bauth = (bauth != null ? gbc.decode(bauth) : null);
       for(int i = 0; i < btypes.length; i++) {
         btypes[i] = gbc.decode(btypes[i]);
@@ -311,7 +313,18 @@ public class GetResponseChannel implements Channel, HttpConst {
       Credentials cr = (Credentials) jsc.convert(scv.reverse(bauth));
       rmt.credentials(cr);
     }
-
+    
+    addArgsTypes(rmt, btypes, bargs, jsc);
+    return rmt;
+  }
+  
+  
+  private void addArgsTypes(RemoteMethod rm, byte[][] btypes, byte[][] bargs, JsonObjectConverter jsc) throws IOException {
+    if(rm == null || btypes == null || bargs == null)
+      return;
+    
+    StringByteConverter scv = new StringByteConverter();
+    
     for(int i = 0; i < btypes.length; i++) {
       Class cls = null;
       try {
@@ -319,10 +332,9 @@ public class GetResponseChannel implements Channel, HttpConst {
       } catch(ClassNotFoundException e) {
         throw new IOException(e);
       }
-      rmt.addType(cls);
-      rmt.addParam(convertArgument(largs.get(i), cls, jsc));
+      rm.addType(cls);
+      rm.addParam(convertArgument(scv.reverse(bargs[i]), cls, jsc));
     }
-    return rmt;
   }
   
   
@@ -345,23 +357,23 @@ public class GetResponseChannel implements Channel, HttpConst {
     if(n == null || cls == null) return n;
     if(int.class.isAssignableFrom(cls)
         || Integer.class.isAssignableFrom(cls)) {
-      return new Integer(n.intValue());
+      return n.intValue();
     }
     else if(short.class.isAssignableFrom(cls)
         || Short.class.isAssignableFrom(cls)) {
-      return new Short(n.shortValue());
+      return n.shortValue();
     }
     else if(byte.class.isAssignableFrom(cls) 
         || Byte.class.isAssignableFrom(cls)) {
-      return new Byte(n.byteValue());
+      return n.byteValue();
     }
     else if(long.class.isAssignableFrom(cls)
         || Long.class.isAssignableFrom(cls)) {
-      return new Long(n.longValue());
+      return n.longValue();
     }
     else if(float.class.isAssignableFrom(cls)
         || Float.class.isAssignableFrom(cls)) {
-      return new Float(n.floatValue());
+      return n.floatValue();
     }
     else return n;
   }
@@ -410,7 +422,7 @@ public class GetResponseChannel implements Channel, HttpConst {
       throw new IOException("Invalid GET Request ["+ rl.toString()+ "]");
     
     Transport trp = null;
-    if(get.queryContains("ui") && "1".equals(get.queryGet("ui"))) {
+    if(get.queryContains(UI) && "1".equals(get.queryGet(UI))) {
       sendUI();
     }
     else if(get.queryContains(OBJECT) && get.queryContains(METHOD)) {
@@ -427,7 +439,6 @@ public class GetResponseChannel implements Channel, HttpConst {
   
   
   private void sendUI() throws IOException {
-    System.out.println("* Sending UI...");
     StringByteConverter scv = new StringByteConverter();
     InputStream in = getClass().getResourceAsStream("remote-object.html");
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -495,7 +506,6 @@ public class GetResponseChannel implements Channel, HttpConst {
         sock.shutdownOutput();
         sock.close();
       }
-      if(his != null) his.closeBuffer();
     } catch(IOException e) {}
   }
   

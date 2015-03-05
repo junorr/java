@@ -221,15 +221,16 @@ public class HttpEnclosedObject extends HeaderEncryptable {
   public void writeContent(OutputStream out) throws IOException {
     nullarg(OutputStream.class, out);
     StringBuffer start = new StringBuffer()
-        .append(CRLF).append(HYFENS).append(BOUNDARY)
-        .append(CRLF).append(HD_CONTENT_XML)
-        .append(CRLF).append(BOUNDARY_XML_START);
+        .append(HYFENS).append(BOUNDARY).append(CRLF)
+        .append(HD_CONTENT_XML)
+        .append(BOUNDARY_XML_START);
     
     StringByteConverter cv = new StringByteConverter();
     out.write(cv.convert(start.toString()));
     //System.out.println("* HttpEnclosedObject.writeContent( "+ getValue()+ " ): "+ cv.convert(getValue()));
     out.write(cv.convert(getValue()));
     out.write(cv.convert(BOUNDARY_XML_END));
+    out.write(cv.convert(CRLF));
     out.flush();
   }
   
@@ -248,7 +249,7 @@ public class HttpEnclosedObject extends HeaderEncryptable {
     System.out.println("* HttpEncodedObject example:");
     HttpEnclosedObject hob = new HttpEnclosedObject();
     Object obj = "The Object";
-    OutputStream out = new FileOutputStream("d:/http-rob.txt");
+    //OutputStream out = new FileOutputStream("d:/http-rob.txt");
     hob.setCryptKey(new CryptKey(
         "123456", CryptAlgorithm.AES_CBC_PKCS5))
         .setObject(obj);
