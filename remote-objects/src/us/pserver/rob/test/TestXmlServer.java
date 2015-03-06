@@ -26,7 +26,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.channel.Transport;
-import us.pserver.rob.channel.XmlNetChannel;
+import us.pserver.rob.channel.TcpXmlChannel;
 import us.pserver.streams.IO;
 
 /**
@@ -44,7 +44,7 @@ public class TestXmlServer {
     while(true) {
       Socket s = ss.accept();
       System.out.println("* Connection from "+ s);
-      XmlNetChannel ch = new XmlNetChannel(s);
+      TcpXmlChannel ch = new TcpXmlChannel(s);
       Transport t = ch.read();
       System.out.println("* received: "+ t);
       if(t.hasContentEmbedded()) {

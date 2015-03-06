@@ -519,8 +519,10 @@ public class NetworkServer extends AbstractServer {
       }
       
       this.write(handleInvoke(trp));
-      this.close();
-      //this.run();
+      if(channel.isValid())
+        this.run();
+      else
+        this.close();
     }
     
     

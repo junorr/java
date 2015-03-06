@@ -373,6 +373,7 @@ public abstract class StreamUtils {
       res.increment();
       lbuf.put(buf[0]);
       if(lbuf.size() == maxlen) {
+        System.out.println("StreamUtils.readUntilOr["+ lbuf.toUTF8()+ "]");
         if(lbuf.toUTF8().contains(str)) {
           res.setToken(str);
           break;

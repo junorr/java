@@ -380,7 +380,7 @@ public interface HttpConst {
    * </code><br>
    * Cabeçalho delimitador de abertura de objeto.
    */
-  public static final String BOUNDARY_CRYPT_KEY_START = "<ckey enc='basic'>";
+  public static final String BOUNDARY_CRYPT_KEY_START = "<key enc='basic'>";
 
   /**
    * <code>
@@ -388,7 +388,7 @@ public interface HttpConst {
    * </code><br>
    * Cabeçalho delimitador de encerramento de objeto.
    */
-  public static final String BOUNDARY_CRYPT_KEY_END = "</ckey>";
+  public static final String BOUNDARY_CRYPT_KEY_END = "</key>";
   
   
   /**

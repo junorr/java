@@ -82,6 +82,8 @@ public class HttpRequestChannel implements Channel, HttpConst {
   
   private boolean crypt, gzip;
   
+  private boolean valid;
+  
   private CryptAlgorithm algo;
   
   private ResponseLine resp;
@@ -105,6 +107,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
     algo = CryptAlgorithm.AES_CBC_PKCS5;
     parser = new ResponseParser();
     sock = null;
+    valid = true;
     his = null;
   }
   
@@ -218,6 +221,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
     
     builder.writeContent(sock.getOutputStream());
     this.verifyResponse();
+    valid = false;
     //dump();
   }
   
@@ -279,7 +283,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
    */
   @Override
   public boolean isValid() {
-    return sock != null && sock.isConnected() 
+    return valid && sock != null && sock.isConnected() 
         && !sock.isClosed() && !sock.isOutputShutdown();
   }
   

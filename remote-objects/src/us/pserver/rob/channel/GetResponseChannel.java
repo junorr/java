@@ -243,10 +243,6 @@ public class GetResponseChannel implements Channel, HttpConst {
   
   private RemoteMethod createRemote(GetRequest get) throws IOException {
     if(get == null) return null;
-    System.out.println("* GetResponseChannel.createRemote: ");
-    System.out.println("  - obj="+ get.queryGet(OBJECT));
-    System.out.println("  - mth="+ get.queryGet(METHOD));
-    System.out.println("  - aut="+ get.queryGet(AUTH));
     
     StringByteConverter scv = new StringByteConverter();
     byte[] bobj = scv.convert(get.queryGet(OBJECT));
@@ -276,7 +272,6 @@ public class GetResponseChannel implements Channel, HttpConst {
     
     if(get.queryContains(CRYPT_KEY)) {
       key = CryptKey.fromString(get.queryGet(CRYPT_KEY));
-      System.out.println("* GetResponseChannel.createRemote: CryptKey ["+ key+ "]");
       CryptByteCoder cbc = new CryptByteCoder(key);
       bobj = cbc.decode(bobj);
       bmth = cbc.decode(bmth);

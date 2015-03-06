@@ -23,7 +23,7 @@ package us.pserver.rob.factory;
 
 import us.pserver.rob.channel.HttpRequestChannel;
 import us.pserver.rob.channel.HttpResponseChannel;
-import us.pserver.rob.channel.XmlNetChannel;
+import us.pserver.rob.channel.TcpXmlChannel;
 import java.io.IOException;
 import java.net.Socket;
 import us.pserver.cdr.crypt.CryptAlgorithm;
@@ -138,13 +138,13 @@ public class DefaultFactoryProvider {
   public ConnectorChannelFactory getConnectorXmlChannelFactory() {
     return new ConnectorChannelFactory() {
       @Override
-      public XmlNetChannel createChannel(NetConnector conn) {
+      public TcpXmlChannel createChannel(NetConnector conn) {
         if(conn == null)
           throw new IllegalArgumentException(
               "Invalid NetConnector ["+ conn
                   + "]. Cannot create Channel.");
         try {
-          return new XmlNetChannel(conn.connectSocket())
+          return new TcpXmlChannel(conn.connectSocket())
               .setCryptAlgorithm(algo)
               .setEncryptionEnabled(crypt)
               .setGZipCompressionEnabled(gzip);
@@ -200,11 +200,11 @@ public class DefaultFactoryProvider {
   public SocketChannelFactory getSocketXmlChannelFactory() {
     return new SocketChannelFactory() {
       @Override
-      public XmlNetChannel createChannel(Socket sock) {
+      public TcpXmlChannel createChannel(Socket sock) {
         if(sock == null || sock.isClosed()) 
           throw new IllegalArgumentException(
               "Invalid Socket ["+ sock+ "]");
-        return new XmlNetChannel(sock)
+        return new TcpXmlChannel(sock)
             .setCryptAlgorithm(algo)
             .setEncryptionEnabled(crypt)
             .setGZipCompressionEnabled(gzip);

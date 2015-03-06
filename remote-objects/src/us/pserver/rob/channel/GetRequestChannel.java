@@ -90,6 +90,8 @@ public class GetRequestChannel implements Channel, HttpConst {
   
   private boolean crypt, gzip;
   
+  private boolean valid;
+  
   private CryptAlgorithm algo;
   
   private CryptKey key;
@@ -111,6 +113,7 @@ public class GetRequestChannel implements Channel, HttpConst {
     key = null;
     crypt = false;
     gzip = false;
+    valid = true;
     algo = CryptAlgorithm.AES_CBC_PKCS5;
     parser = new ResponseParser();
     sock = null;
@@ -122,6 +125,7 @@ public class GetRequestChannel implements Channel, HttpConst {
     key = null;
     crypt = false;
     gzip = false;
+    valid = true;
     algo = CryptAlgorithm.AES_CBC_PKCS5;
     parser = new ResponseParser();
     sock = null;
@@ -207,11 +211,6 @@ public class GetRequestChannel implements Channel, HttpConst {
         && rmt.credentials().getUser() != null) {
       get.query(AUTH, encode(rmt.credentials(), jsc));
     }
-    
-    System.out.println("* GetRequestChannel.encloseRemote: ");
-    System.out.println("  - obj="+ get.queryGet(OBJECT));
-    System.out.println("  - mth="+ get.queryGet(METHOD));
-    System.out.println("  - aut="+ get.queryGet(AUTH));
     
     if(rmt.types() != null && !rmt.types().isEmpty()) {
       get.query(TYPES, encodeArray(rmt.typesArray(), jsc));
@@ -341,15 +340,17 @@ public class GetRequestChannel implements Channel, HttpConst {
     
     builder.writeContent(sock.getOutputStream());
     verifyResponse();
+    valid = false;
     //dump();
+    //System.exit(0);
   }
   
   
   private void verifyResponse() throws IOException {
     parser.reset().parseInput(sock.getInputStream());
     resp = parser.getResponseLine();
+    //parser.headers().forEach(System.out::print);
     if(resp == null || resp.getCode() != 200) {
-      //parser.headers().forEach(System.out::print);
       throw new IOException(
           "Invalid response from server: "+ resp);
     }
@@ -413,7 +414,7 @@ public class GetRequestChannel implements Channel, HttpConst {
    */
   @Override
   public boolean isValid() {
-    return sock != null && sock.isConnected() 
+    return valid && sock != null && sock.isConnected() 
         && !sock.isClosed() && !sock.isOutputShutdown();
   }
   

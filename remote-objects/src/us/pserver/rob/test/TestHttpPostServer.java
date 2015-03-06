@@ -59,7 +59,7 @@ public class TestHttpPostServer {
         DefaultFactoryProvider.factory()
             .enableCryptography()
             .enableGZipCompression()
-            .getGetResponseChannelFactory());
+            .getSocketXmlChannelFactory());//HttpResponseChannelFactory());
     srv.start();
   }
   

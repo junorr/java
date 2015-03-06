@@ -5394,3 +5394,520 @@ h�$�ga
 [INFO ] (05/03/2015 14:17:14): Remote request: a.compute( 5, 3 )
 [INFO ] (05/03/2015 14:17:14): Authentication Enabled: Credentials{ user = juno }
 [INFO ] (05/03/2015 14:17:14): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 09:32:17): Starting NetworkServer...
+[INFO ] (06/03/2015 09:32:17): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 09:32:17): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 09:32:17): Server started!
+
+[INFO ] (06/03/2015 09:32:29): ------------------------------
+[INFO ] (06/03/2015 09:32:29): Handling socket: Socket[addr=/127.0.0.1,port=43238,localport=35000]
+[INFO ] (06/03/2015 09:32:29): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 09:32:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 09:32:29): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 09:38:07): Starting NetworkServer...
+[INFO ] (06/03/2015 09:38:07): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 09:38:07): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 09:38:07): Server started!
+
+[INFO ] (06/03/2015 09:38:11): ------------------------------
+[INFO ] (06/03/2015 09:38:11): Handling socket: Socket[addr=/127.0.0.1,port=43310,localport=35000]
+[INFO ] (06/03/2015 09:38:12): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 09:38:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 09:38:12): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 09:39:23): Starting NetworkServer...
+[INFO ] (06/03/2015 09:39:23): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 09:39:23): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 09:39:23): Server started!
+
+[INFO ] (06/03/2015 09:39:26): ------------------------------
+[INFO ] (06/03/2015 09:39:26): Handling socket: Socket[addr=/127.0.0.1,port=43325,localport=35000]
+[INFO ] (06/03/2015 09:39:27): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 09:39:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 09:39:27): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 09:40:11): Starting NetworkServer...
+[FATAL] (06/03/2015 09:40:11): IOException: Error running NetworkServer
+[FATAL] (06/03/2015 09:40:11):   Caused by: BindException: Endereço já em uso
+[FATAL] (06/03/2015 09:40:11):   us.pserver.rob.server.NetworkServer.run(NetworkServer.java:239)
+[FATAL] (06/03/2015 09:40:11):   us.pserver.rob.server.NetworkServer.start(NetworkServer.java:203)
+[FATAL] (06/03/2015 09:40:11):   us.pserver.rob.test.TestGetServer.main(TestGetServer.java:61)
+[INFO ] (06/03/2015 09:40:21): Starting NetworkServer...
+[INFO ] (06/03/2015 09:40:21): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 09:40:21): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 09:40:21): Server started!
+
+[INFO ] (06/03/2015 09:40:24): ------------------------------
+[INFO ] (06/03/2015 09:40:24): Handling socket: Socket[addr=/127.0.0.1,port=43338,localport=35000]
+[INFO ] (06/03/2015 09:40:24): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 09:40:24): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 09:43:43): Starting NetworkServer...
+[INFO ] (06/03/2015 09:43:43): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 09:43:43): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 09:43:43): Server started!
+
+[INFO ] (06/03/2015 09:44:21): ------------------------------
+[INFO ] (06/03/2015 09:44:21): Handling socket: Socket[addr=/127.0.0.1,port=43402,localport=35000]
+[INFO ] (06/03/2015 09:44:21): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 09:44:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 09:44:21): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 09:44:52): Starting NetworkServer...
+[INFO ] (06/03/2015 09:44:52): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 09:44:52): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 09:44:52): Server started!
+
+[INFO ] (06/03/2015 09:44:56): ------------------------------
+[INFO ] (06/03/2015 09:44:56): Handling socket: Socket[addr=/127.0.0.1,port=43412,localport=35000]
+[INFO ] (06/03/2015 09:44:56): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 09:44:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 09:44:56): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 09:55:54): Starting NetworkServer...
+[INFO ] (06/03/2015 09:55:54): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 09:55:54): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 09:55:54): Server started!
+
+[INFO ] (06/03/2015 09:55:59): ------------------------------
+[INFO ] (06/03/2015 09:55:59): Handling socket: Socket[addr=/127.0.0.1,port=43532,localport=35000]
+[INFO ] (06/03/2015 09:55:59): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 09:55:59): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 09:55:59): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 09:57:45): ------------------------------
+[INFO ] (06/03/2015 09:57:45): Handling socket: Socket[addr=/127.0.0.1,port=43540,localport=35000]
+[INFO ] (06/03/2015 09:57:45): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 09:57:45): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 09:57:45): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:01:00): Starting NetworkServer...
+[INFO ] (06/03/2015 10:01:00): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 10:01:00): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 10:01:00): Server started!
+
+[INFO ] (06/03/2015 10:01:06): ------------------------------
+[INFO ] (06/03/2015 10:01:06): Handling socket: Socket[addr=/127.0.0.1,port=43543,localport=35000]
+[INFO ] (06/03/2015 10:01:07): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:01:07): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:01:07): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:03:45): Starting NetworkServer...
+[INFO ] (06/03/2015 10:03:45): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 10:03:45): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 10:03:45): Server started!
+
+[INFO ] (06/03/2015 10:03:48): ------------------------------
+[INFO ] (06/03/2015 10:03:48): Handling socket: Socket[addr=/127.0.0.1,port=43547,localport=35000]
+[INFO ] (06/03/2015 10:03:49): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:03:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:03:49): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:04:22): Starting NetworkServer...
+[INFO ] (06/03/2015 10:04:22): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 10:04:22): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 10:04:22): Server started!
+
+[INFO ] (06/03/2015 10:04:26): ------------------------------
+[INFO ] (06/03/2015 10:04:26): Handling socket: Socket[addr=/127.0.0.1,port=43548,localport=35000]
+[INFO ] (06/03/2015 10:04:27): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:04:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:04:27): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:19:02): Starting NetworkServer...
+[INFO ] (06/03/2015 10:19:02): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 10:19:02): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 10:19:02): Server started!
+
+[INFO ] (06/03/2015 10:19:17): ------------------------------
+[INFO ] (06/03/2015 10:19:17): Handling socket: Socket[addr=/127.0.0.1,port=43584,localport=35000]
+[INFO ] (06/03/2015 10:19:18): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:19:18): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:19:18): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:20:08): Starting NetworkServer...
+[INFO ] (06/03/2015 10:20:08): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 10:20:08): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 10:20:08): Server started!
+
+[INFO ] (06/03/2015 10:20:12): ------------------------------
+[INFO ] (06/03/2015 10:20:12): Handling socket: Socket[addr=/127.0.0.1,port=43585,localport=35000]
+[INFO ] (06/03/2015 10:20:12): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:20:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:20:12): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:20:12): Connection closed by client.
+[INFO ] (06/03/2015 10:21:09): Starting NetworkServer...
+[INFO ] (06/03/2015 10:21:09): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 10:21:09): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 10:21:09): Server started!
+
+[INFO ] (06/03/2015 10:21:12): ------------------------------
+[INFO ] (06/03/2015 10:21:12): Handling socket: Socket[addr=/127.0.0.1,port=43587,localport=35000]
+[INFO ] (06/03/2015 10:21:12): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:21:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:21:12): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:21:12): Connection closed by client.
+[INFO ] (06/03/2015 10:22:43): Starting NetworkServer...
+[INFO ] (06/03/2015 10:22:43): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 10:22:43): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 10:22:43): Server started!
+
+[INFO ] (06/03/2015 10:22:46): ------------------------------
+[INFO ] (06/03/2015 10:22:46): Handling socket: Socket[addr=/127.0.0.1,port=43591,localport=35000]
+[INFO ] (06/03/2015 10:22:47): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:22:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:22:47): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:22:47): Connection closed by client.
+[INFO ] (06/03/2015 10:25:19): ------------------------------
+[INFO ] (06/03/2015 10:25:19): Handling socket: Socket[addr=/127.0.0.1,port=43594,localport=35000]
+[INFO ] (06/03/2015 10:25:19): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:25:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:25:19): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:25:19): Connection closed by client.
+[INFO ] (06/03/2015 10:29:34): ------------------------------
+[INFO ] (06/03/2015 10:29:34): Handling socket: Socket[addr=/127.0.0.1,port=43600,localport=35000]
+[INFO ] (06/03/2015 10:29:34): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:29:34): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:29:34): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:29:34): Connection closed by client.
+[INFO ] (06/03/2015 10:31:47): ------------------------------
+[INFO ] (06/03/2015 10:31:47): Handling socket: Socket[addr=/127.0.0.1,port=43605,localport=35000]
+[INFO ] (06/03/2015 10:31:47): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:31:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:31:47): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:31:47): Connection closed by client.
+[INFO ] (06/03/2015 10:32:43): ------------------------------
+[INFO ] (06/03/2015 10:32:43): Handling socket: Socket[addr=/127.0.0.1,port=43608,localport=35000]
+[INFO ] (06/03/2015 10:32:43): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:32:43): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:32:43): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:32:43): Connection closed by client.
+[INFO ] (06/03/2015 10:36:10): Starting NetworkServer...
+[INFO ] (06/03/2015 10:36:10): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 10:36:10): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 10:36:10): Server started!
+
+[INFO ] (06/03/2015 10:36:14): ------------------------------
+[INFO ] (06/03/2015 10:36:14): Handling socket: Socket[addr=/127.0.0.1,port=43611,localport=35000]
+[INFO ] (06/03/2015 10:36:15): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:36:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:36:15): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:36:15): Connection closed by client.
+[INFO ] (06/03/2015 10:37:16): Starting NetworkServer...
+[INFO ] (06/03/2015 10:37:16): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (06/03/2015 10:37:16): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 10:37:16): Server started!
+
+[INFO ] (06/03/2015 10:37:20): ------------------------------
+[INFO ] (06/03/2015 10:37:20): Handling socket: Socket[addr=/127.0.0.1,port=43615,localport=35000]
+[INFO ] (06/03/2015 10:37:20): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:37:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:37:20): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:37:55): Starting NetworkServer...
+[INFO ] (06/03/2015 10:37:55): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (06/03/2015 10:37:55): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 10:37:55): Server started!
+
+[INFO ] (06/03/2015 10:38:05): ------------------------------
+[INFO ] (06/03/2015 10:38:05): Handling socket: Socket[addr=/127.0.0.1,port=43617,localport=35000]
+[INFO ] (06/03/2015 10:38:06): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 10:38:06): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 10:38:06): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 10:40:52): Starting NetworkServer...
+[INFO ] (06/03/2015 10:40:53): Channel: us.pserver.rob.channel.XmlNetChannel
+[INFO ] (06/03/2015 10:40:53): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 10:40:53): Server started!
+
+[INFO ] (06/03/2015 10:40:57): ------------------------------
+[INFO ] (06/03/2015 10:40:57): Handling socket: Socket[addr=/127.0.0.1,port=43620,localport=35000]
+[INFO ] (06/03/2015 10:41:51): Connection closed by client.
+[INFO ] (06/03/2015 11:04:26): Starting NetworkServer...
+[INFO ] (06/03/2015 11:04:26): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 11:04:26): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 11:04:26): Server started!
+
+[INFO ] (06/03/2015 11:04:30): ------------------------------
+[INFO ] (06/03/2015 11:04:30): Handling socket: Socket[addr=/127.0.0.1,port=43655,localport=35000]
+[INFO ] (06/03/2015 11:07:57): Starting NetworkServer...
+[INFO ] (06/03/2015 11:07:57): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 11:07:57): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 11:07:57): Server started!
+
+[INFO ] (06/03/2015 11:08:00): ------------------------------
+[INFO ] (06/03/2015 11:08:00): Handling socket: Socket[addr=/127.0.0.1,port=43663,localport=35000]
+[INFO ] (06/03/2015 11:08:22): Connection closed by client.
+[INFO ] (06/03/2015 11:11:06): Starting NetworkServer...
+[INFO ] (06/03/2015 11:11:06): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 11:11:06): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 11:11:06): Server started!
+
+[INFO ] (06/03/2015 11:11:09): ------------------------------
+[INFO ] (06/03/2015 11:11:09): Handling socket: Socket[addr=/127.0.0.1,port=43666,localport=35000]
+[ERROR] (06/03/2015 11:11:33): Error reading from channel
+[ERROR] (06/03/2015 11:11:33): EOFException: Unexpected end of ZLIB input stream
+[ERROR] (06/03/2015 11:11:33):   java.util.zip.InflaterInputStream.fill(InflaterInputStream.java:240)
+[ERROR] (06/03/2015 11:11:33):   java.util.zip.InflaterInputStream.read(InflaterInputStream.java:158)
+[ERROR] (06/03/2015 11:11:33):   java.util.zip.GZIPInputStream.read(GZIPInputStream.java:117)
+[ERROR] (06/03/2015 11:11:33):   java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+[ERROR] (06/03/2015 11:11:33):   java.io.BufferedInputStream.read1(BufferedInputStream.java:286)
+[ERROR] (06/03/2015 11:11:33):   java.io.BufferedInputStream.read(BufferedInputStream.java:345)
+[ERROR] (06/03/2015 11:11:33):   java.io.FilterInputStream.read(FilterInputStream.java:107)
+[ERROR] (06/03/2015 11:11:33):   us.pserver.streams.StreamUtils.readUntil(StreamUtils.java:324)
+[ERROR] (06/03/2015 11:11:33):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:234)
+[ERROR] (06/03/2015 11:11:33):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:277)
+[ERROR] (06/03/2015 11:11:33):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (06/03/2015 11:11:33):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (06/03/2015 11:11:33):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (06/03/2015 11:11:33):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (06/03/2015 11:11:33):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (06/03/2015 11:11:33):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (06/03/2015 11:11:33):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (06/03/2015 11:11:33): Connection closed by client.
+[INFO ] (06/03/2015 11:25:01): Starting NetworkServer...
+[INFO ] (06/03/2015 11:25:02): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 11:25:02): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 11:25:02): Server started!
+
+[INFO ] (06/03/2015 11:25:04): ------------------------------
+[INFO ] (06/03/2015 11:25:04): Handling socket: Socket[addr=/127.0.0.1,port=43757,localport=35000]
+[ERROR] (06/03/2015 11:25:04): Error reading from channel
+[ERROR] (06/03/2015 11:25:04): IOException: No coder configured
+[ERROR] (06/03/2015 11:25:04):   us.pserver.streams.StreamCoderFactory.create(StreamCoderFactory.java:217)
+[ERROR] (06/03/2015 11:25:04):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:276)
+[ERROR] (06/03/2015 11:25:04):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (06/03/2015 11:25:04):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (06/03/2015 11:25:04):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (06/03/2015 11:25:04):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (06/03/2015 11:25:04):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (06/03/2015 11:25:04):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (06/03/2015 11:25:04):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (06/03/2015 11:25:04): Connection closed by client.
+[INFO ] (06/03/2015 11:26:08): Starting NetworkServer...
+[INFO ] (06/03/2015 11:26:08): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 11:26:08): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 11:26:08): Server started!
+
+[INFO ] (06/03/2015 11:26:10): ------------------------------
+[INFO ] (06/03/2015 11:26:10): Handling socket: Socket[addr=/127.0.0.1,port=43758,localport=35000]
+[ERROR] (06/03/2015 11:26:11): Error reading from channel
+[ERROR] (06/03/2015 11:26:11): IOException: java.lang.NullPointerException
+[ERROR] (06/03/2015 11:26:11):   Caused by: NullPointerException: null
+[ERROR] (06/03/2015 11:26:11):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:251)
+[ERROR] (06/03/2015 11:26:11):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:280)
+[ERROR] (06/03/2015 11:26:11):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (06/03/2015 11:26:11):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (06/03/2015 11:26:11):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (06/03/2015 11:26:11):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (06/03/2015 11:26:11):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (06/03/2015 11:26:11):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (06/03/2015 11:26:11):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (06/03/2015 11:26:11): Connection closed by client.
+[INFO ] (06/03/2015 11:36:38): Starting NetworkServer...
+[INFO ] (06/03/2015 11:36:38): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 11:36:38): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 11:36:38): Server started!
+
+[INFO ] (06/03/2015 11:36:40): ------------------------------
+[INFO ] (06/03/2015 11:36:40): Handling socket: Socket[addr=/127.0.0.1,port=43771,localport=35000]
+[ERROR] (06/03/2015 11:36:40): Error reading from channel
+[ERROR] (06/03/2015 11:36:40): IOException: com.thoughtworks.xstream.io.StreamException:  : only whitespace content allowed before start tag and not u (position: START_DOCUMENT seen u... @1:1) 
+[ERROR] (06/03/2015 11:36:40):   Caused by: StreamException:  : only whitespace content allowed before start tag and not u (position: START_DOCUMENT seen u... @1:1) 
+[ERROR] (06/03/2015 11:36:40):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:251)
+[ERROR] (06/03/2015 11:36:40):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:280)
+[ERROR] (06/03/2015 11:36:40):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (06/03/2015 11:36:40):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (06/03/2015 11:36:40):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (06/03/2015 11:36:40):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (06/03/2015 11:36:40):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (06/03/2015 11:36:40):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (06/03/2015 11:36:40):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (06/03/2015 11:36:40): Connection closed by client.
+[INFO ] (06/03/2015 12:35:13): Starting NetworkServer...
+[INFO ] (06/03/2015 12:35:13): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 12:35:13): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 12:35:13): Server started!
+
+[INFO ] (06/03/2015 12:35:16): ------------------------------
+[INFO ] (06/03/2015 12:35:16): Handling socket: Socket[addr=/127.0.0.1,port=43983,localport=35000]
+[ERROR] (06/03/2015 12:35:16): Error reading from channel
+[ERROR] (06/03/2015 12:35:16): IOException: com.thoughtworks.xstream.io.StreamException:  : only whitespace content allowed before start tag and not u (position: START_DOCUMENT seen u... @1:1) 
+[ERROR] (06/03/2015 12:35:16):   Caused by: StreamException:  : only whitespace content allowed before start tag and not u (position: START_DOCUMENT seen u... @1:1) 
+[ERROR] (06/03/2015 12:35:16):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:251)
+[ERROR] (06/03/2015 12:35:16):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:280)
+[ERROR] (06/03/2015 12:35:16):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (06/03/2015 12:35:16):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (06/03/2015 12:35:16):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (06/03/2015 12:35:16):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (06/03/2015 12:35:16):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (06/03/2015 12:35:16):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (06/03/2015 12:35:16):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (06/03/2015 12:35:16): Connection closed by client.
+[INFO ] (06/03/2015 12:36:23): Starting NetworkServer...
+[INFO ] (06/03/2015 12:36:23): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 12:36:23): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 12:36:23): Server started!
+
+[INFO ] (06/03/2015 12:36:27): ------------------------------
+[INFO ] (06/03/2015 12:36:27): Handling socket: Socket[addr=/127.0.0.1,port=43984,localport=35000]
+[ERROR] (06/03/2015 12:36:27): Error reading from channel
+[ERROR] (06/03/2015 12:36:27): IOException: com.thoughtworks.xstream.io.StreamException:  : only whitespace content allowed before start tag and not u (position: START_DOCUMENT seen u... @1:1) 
+[ERROR] (06/03/2015 12:36:27):   Caused by: StreamException:  : only whitespace content allowed before start tag and not u (position: START_DOCUMENT seen u... @1:1) 
+[ERROR] (06/03/2015 12:36:27):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:251)
+[ERROR] (06/03/2015 12:36:27):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:280)
+[ERROR] (06/03/2015 12:36:27):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (06/03/2015 12:36:27):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (06/03/2015 12:36:27):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (06/03/2015 12:36:27):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (06/03/2015 12:36:27):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (06/03/2015 12:36:27):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (06/03/2015 12:36:27):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (06/03/2015 12:36:27): Connection closed by client.
+[INFO ] (06/03/2015 12:37:41): Starting NetworkServer...
+[INFO ] (06/03/2015 12:37:42): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 12:37:42): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 12:37:42): Server started!
+
+[INFO ] (06/03/2015 12:37:44): ------------------------------
+[INFO ] (06/03/2015 12:37:44): Handling socket: Socket[addr=/127.0.0.1,port=44004,localport=35000]
+[ERROR] (06/03/2015 12:37:44): Error reading from channel
+[ERROR] (06/03/2015 12:37:44): IOException: com.thoughtworks.xstream.io.StreamException:  : only whitespace content allowed before start tag and not . (position: START_DOCUMENT seen .... @1:1) 
+[ERROR] (06/03/2015 12:37:44):   Caused by: StreamException:  : only whitespace content allowed before start tag and not . (position: START_DOCUMENT seen .... @1:1) 
+[ERROR] (06/03/2015 12:37:44):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:254)
+[ERROR] (06/03/2015 12:37:44):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:283)
+[ERROR] (06/03/2015 12:37:44):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (06/03/2015 12:37:44):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (06/03/2015 12:37:44):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (06/03/2015 12:37:44):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (06/03/2015 12:37:44):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (06/03/2015 12:37:44):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (06/03/2015 12:37:44):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (06/03/2015 12:37:44): Connection closed by client.
+[INFO ] (06/03/2015 12:39:39): Starting NetworkServer...
+[INFO ] (06/03/2015 12:39:39): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 12:39:39): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 12:39:39): Server started!
+
+[INFO ] (06/03/2015 12:39:40): ------------------------------
+[INFO ] (06/03/2015 12:39:40): Handling socket: Socket[addr=/127.0.0.1,port=44009,localport=35000]
+[ERROR] (06/03/2015 12:39:41): Error reading from channel
+[ERROR] (06/03/2015 12:39:41): IOException: com.thoughtworks.xstream.io.StreamException:  : only whitespace content allowed before start tag and not . (position: START_DOCUMENT seen .... @1:1) 
+[ERROR] (06/03/2015 12:39:41):   Caused by: StreamException:  : only whitespace content allowed before start tag and not . (position: START_DOCUMENT seen .... @1:1) 
+[ERROR] (06/03/2015 12:39:41):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:254)
+[ERROR] (06/03/2015 12:39:41):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:283)
+[ERROR] (06/03/2015 12:39:41):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (06/03/2015 12:39:41):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (06/03/2015 12:39:41):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (06/03/2015 12:39:41):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (06/03/2015 12:39:41):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (06/03/2015 12:39:41):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (06/03/2015 12:39:41):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (06/03/2015 12:39:41): Connection closed by client.
+[INFO ] (06/03/2015 12:43:41): Starting NetworkServer...
+[INFO ] (06/03/2015 12:43:41): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 12:43:41): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 12:43:41): Server started!
+
+[INFO ] (06/03/2015 12:43:44): ------------------------------
+[INFO ] (06/03/2015 12:43:44): Handling socket: Socket[addr=/127.0.0.1,port=44027,localport=35000]
+[INFO ] (06/03/2015 12:43:44): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 12:43:44): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 12:43:44): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 12:44:59): Starting NetworkServer...
+[INFO ] (06/03/2015 12:44:59): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 12:44:59): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 12:44:59): Server started!
+
+[INFO ] (06/03/2015 12:45:02): ------------------------------
+[INFO ] (06/03/2015 12:45:02): Handling socket: Socket[addr=/127.0.0.1,port=44033,localport=35000]
+[INFO ] (06/03/2015 12:51:50): Connection closed by client.
+[INFO ] (06/03/2015 12:56:12): Starting NetworkServer...
+[INFO ] (06/03/2015 12:56:12): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 12:56:12): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 12:56:12): Server started!
+
+[INFO ] (06/03/2015 12:56:16): ------------------------------
+[INFO ] (06/03/2015 12:56:16): Handling socket: Socket[addr=/127.0.0.1,port=44058,localport=35000]
+[INFO ] (06/03/2015 12:57:07): Connection closed by client.
+[INFO ] (06/03/2015 13:14:40): Starting NetworkServer...
+[INFO ] (06/03/2015 13:14:40): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 13:14:40): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 13:14:40): Server started!
+
+[INFO ] (06/03/2015 13:14:43): ------------------------------
+[INFO ] (06/03/2015 13:14:43): Handling socket: Socket[addr=/127.0.0.1,port=44109,localport=35000]
+[INFO ] (06/03/2015 13:14:44): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 13:14:44): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 13:14:44): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 13:17:41): Starting NetworkServer...
+[INFO ] (06/03/2015 13:17:41): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 13:17:41): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 13:17:41): Server started!
+
+[INFO ] (06/03/2015 13:17:43): ------------------------------
+[INFO ] (06/03/2015 13:17:43): Handling socket: Socket[addr=/127.0.0.1,port=44129,localport=35000]
+[INFO ] (06/03/2015 13:17:44): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 13:17:44): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 13:17:44): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 13:33:41): Starting NetworkServer...
+[INFO ] (06/03/2015 13:33:42): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 13:33:42): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 13:33:42): Server started!
+
+[INFO ] (06/03/2015 13:33:46): ------------------------------
+[INFO ] (06/03/2015 13:33:46): Handling socket: Socket[addr=/127.0.0.1,port=44158,localport=35000]
+[INFO ] (06/03/2015 13:33:46): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 13:33:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 13:33:46): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[ERROR] (06/03/2015 13:39:17): Error reading from channel
+[ERROR] (06/03/2015 13:39:17): EOFException: Unexpected end of ZLIB input stream
+[ERROR] (06/03/2015 13:39:17):   java.util.zip.InflaterInputStream.fill(InflaterInputStream.java:240)
+[ERROR] (06/03/2015 13:39:17):   java.util.zip.InflaterInputStream.read(InflaterInputStream.java:158)
+[ERROR] (06/03/2015 13:39:17):   java.util.zip.GZIPInputStream.read(GZIPInputStream.java:117)
+[ERROR] (06/03/2015 13:39:17):   java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+[ERROR] (06/03/2015 13:39:17):   java.io.BufferedInputStream.read1(BufferedInputStream.java:286)
+[ERROR] (06/03/2015 13:39:17):   java.io.BufferedInputStream.read(BufferedInputStream.java:345)
+[ERROR] (06/03/2015 13:39:17):   java.io.FilterInputStream.read(FilterInputStream.java:107)
+[ERROR] (06/03/2015 13:39:17):   us.pserver.streams.StreamUtils.transferUntil(StreamUtils.java:146)
+[ERROR] (06/03/2015 13:39:17):   us.pserver.streams.StreamUtils.readStringUntil(StreamUtils.java:406)
+[ERROR] (06/03/2015 13:39:17):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:242)
+[ERROR] (06/03/2015 13:39:17):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:287)
+[ERROR] (06/03/2015 13:39:17):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (06/03/2015 13:39:17):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (06/03/2015 13:39:17):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:523)
+[ERROR] (06/03/2015 13:39:17):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (06/03/2015 13:39:17):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (06/03/2015 13:39:17):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (06/03/2015 13:39:17):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (06/03/2015 13:39:17):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (06/03/2015 13:39:17): Connection closed by client.
+[INFO ] (06/03/2015 13:40:01): Starting NetworkServer...
+[INFO ] (06/03/2015 13:40:01): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 13:40:01): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 13:40:01): Server started!
+
+[INFO ] (06/03/2015 13:40:11): ------------------------------
+[INFO ] (06/03/2015 13:40:11): Handling socket: Socket[addr=/127.0.0.1,port=44165,localport=35000]
+[INFO ] (06/03/2015 13:40:11): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 13:40:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 13:40:11): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 13:40:11): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (06/03/2015 13:40:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 13:40:11): Response sent: OpResult{ success = true, return = 1.667 }
+[ERROR] (06/03/2015 13:40:11): Error reading from channel
+[ERROR] (06/03/2015 13:40:11): IOException: com.thoughtworks.xstream.io.StreamException:  : input contained no data
+[ERROR] (06/03/2015 13:40:11):   Caused by: StreamException:  : input contained no data
+[ERROR] (06/03/2015 13:40:11):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:258)
+[ERROR] (06/03/2015 13:40:11):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:287)
+[ERROR] (06/03/2015 13:40:11):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (06/03/2015 13:40:11):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (06/03/2015 13:40:11):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:523)
+[ERROR] (06/03/2015 13:40:11):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:523)
+[ERROR] (06/03/2015 13:40:11):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (06/03/2015 13:40:11):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (06/03/2015 13:40:11):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (06/03/2015 13:40:11):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (06/03/2015 13:40:11):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (06/03/2015 13:40:11): Connection closed by client.
+[INFO ] (06/03/2015 13:53:05): Starting NetworkServer...
+[INFO ] (06/03/2015 13:53:05): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (06/03/2015 13:53:05): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (06/03/2015 13:53:05): Server started!
+
+[INFO ] (06/03/2015 13:53:09): ------------------------------
+[INFO ] (06/03/2015 13:53:09): Handling socket: Socket[addr=/127.0.0.1,port=44195,localport=35000]
+[INFO ] (06/03/2015 13:53:09): Remote request: a.compute( 5, 3 )
+[INFO ] (06/03/2015 13:53:09): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 13:53:09): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (06/03/2015 13:53:10): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (06/03/2015 13:53:10): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (06/03/2015 13:53:10): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (06/03/2015 13:53:10): Connection closed by client.

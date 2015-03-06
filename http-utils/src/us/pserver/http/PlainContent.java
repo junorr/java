@@ -49,7 +49,7 @@ public class PlainContent extends Header {
   
   @Override
   public String toString() {
-    return "\n"+getValue();
+    return getValue();
   }
   
 }

@@ -130,7 +130,8 @@ public class HttpBuilder implements HttpConst {
       .put(HD_SERVER, VALUE_SERVER)
       .putDateHeader()
       .put(HD_CONTENT_TYPE, VALUE_CONTENT_MULTIPART 
-          + HD_BOUNDARY + BOUNDARY);
+          + HD_BOUNDARY + BOUNDARY)
+      .put(HD_CONNECTION, "Close");
   }
   
   

@@ -35,13 +35,13 @@ import us.pserver.rob.factory.DefaultFactoryProvider;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 02/03/2015
  */
-public class TestHttpPostClient {
+public class TestTcpXmlClient {
 
   public static void main(String[] args) throws MethodInvocationException, UnsupportedEncodingException {
     NetConnector nc = new NetConnector("localhost", 35000);
     RemoteObject rob = new RemoteObject(nc, DefaultFactoryProvider.factory()
-        .enableCryptography()
-        .enableGZipCompression()
+        .disableCryptography()
+        .disableGZipCompression()
         .getConnectorXmlChannelFactory());
     Credentials cr = new Credentials("juno", "32132155".getBytes());
     RemoteMethod mth = new RemoteMethod()
@@ -51,7 +51,17 @@ public class TestHttpPostClient {
         .params(5, 3)
         .credentials(cr);
     
-    System.out.println("* invoking: "+ mth+ " = "+ round((double)rob.invoke(mth), 2));
+    double res = (double) rob.invoke(mth);
+    System.out.println("* invoking: "+ mth+ " = "+ res);
+
+    mth = new RemoteMethod()
+        .forObject("a")
+        .method("round")
+        .types(double.class, int.class)
+        .params(res, 3)
+        .credentials(cr);
+    System.out.println("* invoking: "+ mth+ " = "+ rob.invoke(mth));
+    
     rob.close();
   }
   

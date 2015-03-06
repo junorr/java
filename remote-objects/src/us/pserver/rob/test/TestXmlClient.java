@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.channel.Transport;
-import us.pserver.rob.channel.XmlNetChannel;
+import us.pserver.rob.channel.TcpXmlChannel;
 import us.pserver.streams.IO;
 
 /**
@@ -44,7 +44,7 @@ public class TestXmlClient {
     NetConnector nc = new NetConnector()
         .setAddress("172.24.77.60")
         .setPort(NetConnector.DEFAULT_PORT);
-    XmlNetChannel ch = new XmlNetChannel(nc.connectSocket());
+    TcpXmlChannel ch = new TcpXmlChannel(nc.connectSocket());
     ch.write(t);
     is.close();
     /*

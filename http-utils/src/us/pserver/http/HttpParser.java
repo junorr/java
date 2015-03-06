@@ -223,8 +223,7 @@ public class HttpParser implements HttpConst {
   
   
   public Header parseHeader(String str) {
-    if(str == null || (!str.contains(":") 
-        && !str.contains(HTTP)))
+    if(str == null || str.trim().isEmpty()) 
       return null;
     
     Header hd = new Header();

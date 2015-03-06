@@ -49,7 +49,7 @@ import static us.pserver.streams.StreamUtils.EOF;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
  */
-public class XmlNetChannel implements Channel {
+public class TcpXmlChannel implements Channel {
   
   private Socket sock;
   
@@ -75,7 +75,7 @@ public class XmlNetChannel implements Channel {
    * <code>Socket</code> para comunicação em rede.
    * @param sc <code>Socket</code>.
    */
-  public XmlNetChannel(Socket sc) {
+  public TcpXmlChannel(Socket sc) {
     if(sc == null || sc.isClosed())
       throw new IllegalArgumentException(
           "Invalid Socket ["+ sc+ "]");
@@ -92,7 +92,7 @@ public class XmlNetChannel implements Channel {
   }
   
   
-  public XmlNetChannel setEncryptionEnabled(boolean enabled) {
+  public TcpXmlChannel setEncryptionEnabled(boolean enabled) {
     crypt = enabled;
     return this;
   }
@@ -103,7 +103,7 @@ public class XmlNetChannel implements Channel {
   }
   
   
-  public XmlNetChannel setGZipCompressionEnabled(boolean enabled) {
+  public TcpXmlChannel setGZipCompressionEnabled(boolean enabled) {
     gzip = enabled;
     return this;
   }
@@ -114,7 +114,7 @@ public class XmlNetChannel implements Channel {
   }
   
   
-  public XmlNetChannel setCryptAlgorithm(CryptAlgorithm ca) {
+  public TcpXmlChannel setCryptAlgorithm(CryptAlgorithm ca) {
     nullarg(CryptAlgorithm.class, ca);
     algo = ca;
     return this;
@@ -136,6 +136,7 @@ public class XmlNetChannel implements Channel {
   
   
   private void writeKey(OutputStream os) throws IOException {
+    System.out.println("TcpXmlChannel.writeKey");
     nullarg(OutputStream.class, os);
     
     StringBuffer sb = new StringBuffer();
@@ -143,6 +144,8 @@ public class XmlNetChannel implements Channel {
         .append(HttpConst.BOUNDARY_CRYPT_KEY_START)
         .append(bcd.encode(key.toString()))
         .append(HttpConst.BOUNDARY_CRYPT_KEY_END);
+    byte[] bs = scv.convert(sb.toString());
+    System.out.println("StringByteConverter.reverseKey="+ scv.reverse(bs));
     os.write(scv.convert(sb.toString()));
     os.flush();
   }
@@ -153,7 +156,6 @@ public class XmlNetChannel implements Channel {
     nullarg(OutputStream.class, os);
     
     try {
-      os.write(scv.convert(HttpConst.BOUNDARY_OBJECT_START));
       xst.toXML(t.getWriteVersion(), os);
       os.write(scv.convert(HttpConst.BOUNDARY_OBJECT_END));
       
@@ -175,20 +177,25 @@ public class XmlNetChannel implements Channel {
   
   @Override
   public void write(Transport trp) throws IOException {
+    System.out.println("TcpXmlChannel.write");
     if(trp == null) return;
     if(buffer != null) buffer.close();
     ProtectedOutputStream pos = new ProtectedOutputStream(
         sock.getOutputStream());
     
     if(crypt) {
-      key = CryptKey.createRandomKey(algo);
+      if(key == null)
+        key = CryptKey.createRandomKey(algo);
       writeKey(pos);
     }
-      
-    OutputStream sout = StreamCoderFactory.getNew()
-        .setGZipCoderEnabled(gzip)
-        .setCryptCoderEnabled(crypt, key)
-        .create(pos);
+    pos.write(scv.convert(HttpConst.BOUNDARY_OBJECT_START));
+    
+    OutputStream sout = pos;
+    if(gzip || crypt)
+      sout = StreamCoderFactory.getNew()
+          .setGZipCoderEnabled(gzip)
+          .setCryptCoderEnabled(crypt, key)
+          .create(pos);
     writeTransport(trp, sout);
     sout.write(scv.convert(HttpConst.BOUNDARY_XML_END));
     sout.flush();
@@ -200,13 +207,15 @@ public class XmlNetChannel implements Channel {
   
   
   private CryptKey readKey(InputStream is) throws IOException {
+    System.out.println("TcpXmlChannel.readKey()");
     nullarg(InputStream.class, is);
     StreamResult sr = StreamUtils.readUntilOr(is, 
         HttpConst.BOUNDARY_CRYPT_KEY_START, 
         HttpConst.BOUNDARY_OBJECT_START);
-    
-    if(sr.token() != HttpConst.BOUNDARY_CRYPT_KEY_START) 
+    System.out.println("TcpXmlChannel.readKey: "+ sr);
+    if(sr.token() != HttpConst.BOUNDARY_CRYPT_KEY_START) {
       return null;
+    }
     
     sr = StreamUtils.readStringUntil(is, HttpConst.BOUNDARY_CRYPT_KEY_END);
     return CryptKey.fromString(bcd.decode(sr.content()));
@@ -214,6 +223,7 @@ public class XmlNetChannel implements Channel {
   
   
   private InputStream readContent(InputStream is) throws IOException {
+    System.out.println("TcpXmlChannel.readContent()");
     nullarg(InputStream.class, is);
     if(buffer != null) buffer.close();
     buffer = new MultiCoderBuffer();
@@ -225,11 +235,15 @@ public class XmlNetChannel implements Channel {
   
   
   private Transport readTransport(InputStream is) throws IOException {
+    System.out.println("TcpXmlChannel.readTransport()");
     nullarg(InputStream.class, is);
     
     try {
-      StreamResult sr = StreamUtils.readUntil(is, 
+      StreamResult sr = StreamUtils.readStringUntil(is, 
           HttpConst.BOUNDARY_OBJECT_END);
+      System.out.println("TcpXmlChannel.readObjectEnd="+ sr);
+      if(sr.content() == null || sr.content().trim().isEmpty())
+        return null;
       
       Transport t = (Transport) xst.fromXML(sr.content());
       if(t == null)
@@ -254,15 +268,23 @@ public class XmlNetChannel implements Channel {
     if(buffer != null) buffer.close();
     ProtectedInputStream pin = new ProtectedInputStream(
         sock.getInputStream());
+    System.out.println("TcpXmlChannel.read()");
     
     key = readKey(pin);
-    if(key != null)
+    System.out.println("TcpXmlChannel.key="+ key);
+    if(key != null) {
+      System.out.println("TcpXmlChannel.readingObjectBoundary...");
       StreamUtils.readUntil(pin, HttpConst.BOUNDARY_OBJECT_START);
+    }
     
-    InputStream sin = StreamCoderFactory.getNew()
-        .setGZipCoderEnabled(gzip)
-        .setCryptCoderEnabled(key != null, key)
-        .create(pin);
+    System.out.println("TcpXmlChannel.creatingCodecStream...");
+
+    InputStream sin = pin;
+    if(gzip || key != null)
+      sin = StreamCoderFactory.getNew()
+          .setGZipCoderEnabled(gzip)
+          .setCryptCoderEnabled(key != null, key)
+          .create(pin);
       
     Transport t = readTransport(sin);
     sin.close();

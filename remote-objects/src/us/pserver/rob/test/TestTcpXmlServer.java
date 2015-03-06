@@ -21,46 +21,46 @@
 
 package us.pserver.rob.test;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import us.pserver.rob.MethodInvocationException;
 import us.pserver.rob.NetConnector;
-import us.pserver.rob.RemoteMethod;
-import us.pserver.rob.RemoteObject;
+import us.pserver.rob.container.Authenticator;
 import us.pserver.rob.container.Credentials;
+import us.pserver.rob.container.ObjectContainer;
+import us.pserver.rob.container.SingleCredentialsSource;
 import us.pserver.rob.factory.DefaultFactoryProvider;
+import us.pserver.rob.server.NetworkServer;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 02/03/2015
  */
-public class TestHttpPostClient {
+public class TestTcpXmlServer {
 
-  public static void main(String[] args) throws MethodInvocationException, UnsupportedEncodingException {
+  public static void main(String[] args) {
     NetConnector nc = new NetConnector("localhost", 35000);
-    RemoteObject rob = new RemoteObject(nc, DefaultFactoryProvider.factory()
-        .enableCryptography()
-        .enableGZipCompression()
-        .getConnectorXmlChannelFactory());
+    class A {
+      double compute(int a, int b) {
+        return a / (double)b;
+      }
+      String info() { return "Hello from "+ getClass(); }
+      double round(double d, int decSize) {
+        int dec = (int) d;
+        double size = (int) Math.pow(10.0, decSize);
+        double frc = (d - dec) * size;
+        return dec + (Math.round(frc) / size);
+      }
+    }
+    A a = new A();
     Credentials cr = new Credentials("juno", "32132155".getBytes());
-    RemoteMethod mth = new RemoteMethod()
-        .forObject("a")
-        .method("compute")
-        .types(int.class, int.class)
-        .params(5, 3)
-        .credentials(cr);
-    
-    System.out.println("* invoking: "+ mth+ " = "+ round((double)rob.invoke(mth), 2));
-    rob.close();
-  }
-  
-  
-  public static double round(double d, int decSize) {
-    int dec = (int) d;
-    double size = (int) Math.pow(10.0, decSize);
-    double frc = (d - dec) * size;
-    return dec + (Math.round(frc) / size);
+    ObjectContainer oc = new ObjectContainer(
+        new Authenticator(new SingleCredentialsSource(cr)));
+    oc.put("a", a);
+    NetworkServer srv = new NetworkServer(oc, nc, 
+        DefaultFactoryProvider.factory()
+            .disableCryptography()
+            .disableGZipCompression()
+            .getSocketXmlChannelFactory());//HttpResponseChannelFactory());
+    srv.start();
   }
   
 }
