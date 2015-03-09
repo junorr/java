@@ -102,6 +102,7 @@ public abstract class StreamUtils {
     
     while((read = in.read(buf)) > 0) {
       total += read;
+      if(read < 1) System.out.println("StreamUtils.transfer.read="+ read);
       out.write(buf, 0, read);
       if(read < buf.length) break;
       int len = (read < 30 ? read : 30);
@@ -114,7 +115,7 @@ public abstract class StreamUtils {
   
   
   public static long consume(InputStream is) throws IOException {
-    return transfer(is, NullOutput.out);
+    return transfer(is, NullOutput.pout);
   }
   
   
@@ -159,6 +160,9 @@ public abstract class StreamUtils {
         buf.compact();
       }
       buf.put(bs[0]);
+      
+      if(lim.size() == until.length())
+        //System.out.println("StreamUtils.transferUntil["+ lim.toUTF8()+ "]");
       
       if(until.equals(lim.toUTF8())) {
         if(buf.position() > lim.length()) {
@@ -207,6 +211,9 @@ public abstract class StreamUtils {
         buf.compact();
       }
       buf.put(bs[0]);
+      
+      if(lim.size() == maxlen)
+        //System.out.println("StreamUtils.transferUntilOr["+ lim.toUTF8()+ "]");
       
       if(until.equals(lim.toUTF8()) 
           || lim.toUTF8().contains(until)) {
@@ -373,7 +380,7 @@ public abstract class StreamUtils {
       res.increment();
       lbuf.put(buf[0]);
       if(lbuf.size() == maxlen) {
-        System.out.println("StreamUtils.readUntilOr["+ lbuf.toUTF8()+ "]");
+        //System.out.println("StreamUtils.readUntilOr["+ lbuf.toUTF8()+ "]");
         if(lbuf.toUTF8().contains(str)) {
           res.setToken(str);
           break;

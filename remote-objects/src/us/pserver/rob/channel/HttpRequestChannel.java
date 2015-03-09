@@ -195,18 +195,20 @@ public class HttpRequestChannel implements Channel, HttpConst {
       builder.put(HD_PROXY_AUTHORIZATION, 
           netconn.getProxyAuthorization());
     
-    CryptKey key = CryptKey.createRandomKey(algo);
+    CryptKey key = null;
+    if(crypt) {
+      key = CryptKey.createRandomKey(algo);
+      builder.put(new HttpCryptKey(key));
+    }
     
-    builder.put(new HttpCryptKey(key));
     builder.put(new HttpEnclosedObject(
-        trp.getWriteVersion())
-        .setCryptKey(key));
+        trp.getWriteVersion()).setCryptEnabled(crypt, key));
     
     if(trp.getInputStream() != null) {
       his = new HttpInputStream(
           trp.getInputStream())
           .setGZipCoderEnabled(true)
-          .setCryptCoderEnabled(true, key);
+          .setCryptCoderEnabled(crypt, key);
       builder.put(his);
     }
   }
@@ -265,6 +267,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
       if(his != null) his.closeBuffer();
       his = (HttpInputStream) 
           parser.getHeader(HTTP_INPUTSTREAM);
+      //crypt coder already enabled by HttpParser
       tp.setInputStream(his.setGZipCoderEnabled(true)
           .setupInbound().getInputStream());
     }
@@ -293,8 +296,8 @@ public class HttpRequestChannel implements Channel, HttpConst {
     try {
       if(sock != null)
         sock.close(); 
-      if(his != null)
-        his.closeBuffer();
+      //if(his != null)
+        //his.closeBuffer();
     }
     catch(IOException e) {}
   }

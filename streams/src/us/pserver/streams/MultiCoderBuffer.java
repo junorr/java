@@ -498,12 +498,23 @@ public class MultiCoderBuffer {
    * @throws IOException Caso ocorra erro.
    */
   public void close() throws IOException {
+    //System.out.println("MultiCoderBuffer.close()");
+    //print(Thread.currentThread().getStackTrace());
     if(channel != null) {
       channel.close();
       Files.deleteIfExists(temp);
     }
     outbuffer = null;
     inbuffer = null;
+  }
+  
+  
+  private void print(StackTraceElement[] stack) {
+    System.out.println("* StackTrace: "+ stack.length+ " {");
+    for(StackTraceElement el : stack) {
+      System.out.println("  - "+ el.getLineNumber()+ ": "+ el.getClassName()+ "."+ el.getMethodName());
+    }
+    System.out.println("}");
   }
   
   
@@ -591,7 +602,8 @@ public class MultiCoderBuffer {
       OutputStream os = buf.getOutputStream();
       os = createOutput(cd, os);
       InputStream is = this.getInputStream();
-      StreamUtils.transfer(is, os);
+      long l = IO.tr(is, os);
+      System.out.println("MultiCoderBuffer.encode["+ cd+ "]="+ l);
       os.close();
       if(this.channel != null) {
         channel.close();
@@ -617,12 +629,13 @@ public class MultiCoderBuffer {
     if(coders.isEmpty() || size() == 0) return this;
     Iterator<CoderType> it = coders.iterator();
     while(it.hasNext()) {
-      flip();
+      if(!readmode) flip();
       CoderType cd = it.next();
       MultiCoderBuffer buf = new MultiCoderBuffer();
       OutputStream os = buf.getOutputStream();
       InputStream is = createInput(cd, this.getInputStream());
-      StreamUtils.transfer(is, os);
+      long l = IO.tr(is, os);
+      System.out.println("MultiCoderBuffer.decode["+ cd+ "]="+ l);
       os.close();
       if(this.channel != null) {
         channel.close();
@@ -632,7 +645,7 @@ public class MultiCoderBuffer {
       channel = buf.channel;
       inbuffer = buf.inbuffer;
       temp = buf.temp;
-      readmode = false;
+      readmode = buf.readmode;
     }
     return this;
   }

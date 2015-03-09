@@ -57,8 +57,8 @@ public class TestTcpXmlServer {
     oc.put("a", a);
     NetworkServer srv = new NetworkServer(oc, nc, 
         DefaultFactoryProvider.factory()
-            .disableCryptography()
-            .disableGZipCompression()
+            .enableCryptography()
+            .enableGZipCompression()
             .getSocketXmlChannelFactory());//HttpResponseChannelFactory());
     srv.start();
   }

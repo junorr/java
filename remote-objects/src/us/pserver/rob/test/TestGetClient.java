@@ -38,10 +38,11 @@ import us.pserver.rob.factory.DefaultFactoryProvider;
 public class TestGetClient {
 
   public static void main(String[] args) throws MethodInvocationException, UnsupportedEncodingException {
-    System.out.println(URLEncoder.encode(";", "UTF-8"));
     NetConnector nc = new NetConnector("localhost", 35000);
-    RemoteObject rob = new RemoteObject(nc, DefaultFactoryProvider
-        .factory().getGetRequestChannelFactory());
+    RemoteObject rob = new RemoteObject(nc, DefaultFactoryProvider.factory()
+        .enableCryptography()
+        .enableGZipCompression()
+        .getGetRequestChannelFactory());
     Credentials cr = new Credentials("juno", "32132155".getBytes());
     RemoteMethod mth = new RemoteMethod()
         .forObject("a")
@@ -50,7 +51,17 @@ public class TestGetClient {
         .params(5, 3)
         .credentials(cr);
     
-    System.out.println("* invoking: "+ mth+ " = "+ round((double)rob.invoke(mth), 2));
+    double res = (double) rob.invoke(mth);
+    System.out.println("* invoking: "+ mth+ " = "+ res);
+
+    mth = new RemoteMethod()
+        .forObject("a")
+        .method("round")
+        .types(double.class, int.class)
+        .params(res, 3)
+        .credentials(cr);
+    System.out.println("* invoking: "+ mth+ " = "+ rob.invoke(mth));
+    
     rob.close();
   }
   

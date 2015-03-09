@@ -38,6 +38,14 @@ import static us.pserver.chk.Checker.nullarg;
  * @version 1.0 - 01/08/2014
  */
 public abstract class IO {
+  
+  public static int BUFFER_SIZE = 1024;
+  
+  
+  public static void buffer_size(int size) {
+    if(size > 0)
+      BUFFER_SIZE = size;
+  }
 
   
   /**
@@ -174,7 +182,7 @@ public abstract class IO {
   
   /**
    * Transfer the content of <code>InputStream</code> to
-   * <code>OutputStream</code> whit <code>4096</code> buffer size.
+   * <code>OutputStream</code> whit (default) <code>1024</code> buffer size.
    * @param is source <code>InputStream</code>.
    * @param os target <code>OutputStream</code>.
    * @return Bytes transfered.
@@ -182,7 +190,18 @@ public abstract class IO {
    */
   public static long tr(InputStream is, OutputStream os) throws IOException {
     if(is == null || os == null) return -1;
-    return StreamUtils.transfer(is, os);
+    byte[] buf = new byte[BUFFER_SIZE];
+    int read = -1;
+    long total = 0;
+    while(true) {
+      read = is.read(buf);
+      if(read <= 0) break;
+      total += read;
+      os.write(buf, 0, read);
+      os.flush();
+      if(read != buf.length) break;
+    }
+    return total;
   }
   
   
@@ -204,7 +223,7 @@ public abstract class IO {
   
   /**
    * Transfer the content between streams and close them on finish,
-   * using <code>4096</code> buffer size.
+   * using (default) <code>1024</code> buffer size.
    * @param is source <code>InputStream</code>.
    * @param os target <code>OutputStream</code>.
    * @return Bytes transfered.
@@ -212,7 +231,7 @@ public abstract class IO {
    */
   public static long tc(InputStream is, OutputStream os) throws IOException {
     if(is == null || os == null) return -1;
-    long l = StreamUtils.transfer(is, os);
+    long l = tr(is, os);
     cl(is, os);
     return l;
   }

@@ -185,11 +185,10 @@ public class HttpParser implements HttpConst {
     }
     
     else if(BOUNDARY_CONTENT_START.contains(str)) {
+      HttpInputStream his = new HttpInputStream(is);
       if(key != null)
-        addHeader(new HttpInputStream(is)
-            .setCryptCoderEnabled(true, key));
-      else
-        addHeader(new HttpInputStream(is));
+        his.setCryptCoderEnabled(true, key);
+      addHeader(his);
     }
     
     return this;

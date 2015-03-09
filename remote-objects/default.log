@@ -5911,3 +5911,828 @@ h�$�ga
 [INFO ] (06/03/2015 13:53:10): Authentication Enabled: Credentials{ user = juno }
 [INFO ] (06/03/2015 13:53:10): Response sent: OpResult{ success = true, return = 1.667 }
 [INFO ] (06/03/2015 13:53:10): Connection closed by client.
+[INFO ] (09/03/2015 10:10:10): Starting NetworkServer...
+[INFO ] (09/03/2015 10:10:10): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (09/03/2015 10:10:10): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 10:10:10): Server started!
+
+[INFO ] (09/03/2015 10:10:15): ------------------------------
+[INFO ] (09/03/2015 10:10:15): Handling socket: Socket[addr=/127.0.0.1,port=51033,localport=35000]
+[INFO ] (09/03/2015 10:10:16): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 10:10:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:10:16): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[ERROR] (09/03/2015 10:20:03): Error reading from channel
+[ERROR] (09/03/2015 10:20:03): EOFException: Unexpected end of ZLIB input stream
+[ERROR] (09/03/2015 10:20:03):   java.util.zip.InflaterInputStream.fill(InflaterInputStream.java:240)
+[ERROR] (09/03/2015 10:20:03):   java.util.zip.InflaterInputStream.read(InflaterInputStream.java:158)
+[ERROR] (09/03/2015 10:20:03):   java.util.zip.GZIPInputStream.read(GZIPInputStream.java:117)
+[ERROR] (09/03/2015 10:20:03):   java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+[ERROR] (09/03/2015 10:20:03):   java.io.BufferedInputStream.read1(BufferedInputStream.java:286)
+[ERROR] (09/03/2015 10:20:03):   java.io.BufferedInputStream.read(BufferedInputStream.java:345)
+[ERROR] (09/03/2015 10:20:03):   java.io.FilterInputStream.read(FilterInputStream.java:107)
+[ERROR] (09/03/2015 10:20:03):   us.pserver.streams.StreamUtils.transferUntil(StreamUtils.java:146)
+[ERROR] (09/03/2015 10:20:03):   us.pserver.streams.StreamUtils.readStringUntil(StreamUtils.java:406)
+[ERROR] (09/03/2015 10:20:03):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:242)
+[ERROR] (09/03/2015 10:20:03):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:289)
+[ERROR] (09/03/2015 10:20:03):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (09/03/2015 10:20:03):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (09/03/2015 10:20:03):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:523)
+[ERROR] (09/03/2015 10:20:03):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (09/03/2015 10:20:03):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (09/03/2015 10:20:03):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (09/03/2015 10:20:03):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (09/03/2015 10:20:03):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (09/03/2015 10:20:03): Connection closed by client.
+[INFO ] (09/03/2015 10:30:35): Starting NetworkServer...
+[INFO ] (09/03/2015 10:30:35): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (09/03/2015 10:30:35): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 10:30:35): Server started!
+
+[INFO ] (09/03/2015 10:30:37): ------------------------------
+[INFO ] (09/03/2015 10:30:37): Handling socket: Socket[addr=/127.0.0.1,port=51067,localport=35000]
+[INFO ] (09/03/2015 10:30:37): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 10:30:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:30:37): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[ERROR] (09/03/2015 10:38:50): Error reading from channel
+[ERROR] (09/03/2015 10:38:50): EOFException: Unexpected end of ZLIB input stream
+[ERROR] (09/03/2015 10:38:50):   java.util.zip.InflaterInputStream.fill(InflaterInputStream.java:240)
+[ERROR] (09/03/2015 10:38:50):   java.util.zip.InflaterInputStream.read(InflaterInputStream.java:158)
+[ERROR] (09/03/2015 10:38:50):   java.util.zip.GZIPInputStream.read(GZIPInputStream.java:117)
+[ERROR] (09/03/2015 10:38:50):   java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+[ERROR] (09/03/2015 10:38:50):   java.io.BufferedInputStream.read1(BufferedInputStream.java:286)
+[ERROR] (09/03/2015 10:38:50):   java.io.BufferedInputStream.read(BufferedInputStream.java:345)
+[ERROR] (09/03/2015 10:38:50):   java.io.FilterInputStream.read(FilterInputStream.java:107)
+[ERROR] (09/03/2015 10:38:50):   us.pserver.streams.StreamUtils.transferUntil(StreamUtils.java:146)
+[ERROR] (09/03/2015 10:38:50):   us.pserver.streams.StreamUtils.readStringUntil(StreamUtils.java:412)
+[ERROR] (09/03/2015 10:38:50):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:242)
+[ERROR] (09/03/2015 10:38:50):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:289)
+[ERROR] (09/03/2015 10:38:50):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (09/03/2015 10:38:50):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (09/03/2015 10:38:50):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:523)
+[ERROR] (09/03/2015 10:38:50):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (09/03/2015 10:38:50):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (09/03/2015 10:38:50):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (09/03/2015 10:38:50):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (09/03/2015 10:38:50):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (09/03/2015 10:38:50): Connection closed by client.
+[INFO ] (09/03/2015 10:38:58): Starting NetworkServer...
+[INFO ] (09/03/2015 10:38:58): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (09/03/2015 10:38:58): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 10:38:58): Server started!
+
+[INFO ] (09/03/2015 10:39:01): ------------------------------
+[INFO ] (09/03/2015 10:39:01): Handling socket: Socket[addr=/127.0.0.1,port=51079,localport=35000]
+[INFO ] (09/03/2015 10:39:02): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 10:39:02): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:39:02): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[ERROR] (09/03/2015 10:46:52): Error reading from channel
+[ERROR] (09/03/2015 10:46:52): EOFException: Unexpected end of ZLIB input stream
+[ERROR] (09/03/2015 10:46:52):   java.util.zip.InflaterInputStream.fill(InflaterInputStream.java:240)
+[ERROR] (09/03/2015 10:46:52):   java.util.zip.InflaterInputStream.read(InflaterInputStream.java:158)
+[ERROR] (09/03/2015 10:46:52):   java.util.zip.GZIPInputStream.read(GZIPInputStream.java:117)
+[ERROR] (09/03/2015 10:46:52):   java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+[ERROR] (09/03/2015 10:46:52):   java.io.BufferedInputStream.read1(BufferedInputStream.java:286)
+[ERROR] (09/03/2015 10:46:53):   java.io.BufferedInputStream.read(BufferedInputStream.java:345)
+[ERROR] (09/03/2015 10:46:53):   java.io.FilterInputStream.read(FilterInputStream.java:107)
+[ERROR] (09/03/2015 10:46:53):   us.pserver.streams.StreamUtils.transferUntil(StreamUtils.java:146)
+[ERROR] (09/03/2015 10:46:53):   us.pserver.streams.StreamUtils.readStringUntil(StreamUtils.java:412)
+[ERROR] (09/03/2015 10:46:53):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:242)
+[ERROR] (09/03/2015 10:46:53):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:290)
+[ERROR] (09/03/2015 10:46:53):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (09/03/2015 10:46:53):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (09/03/2015 10:46:53):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:523)
+[ERROR] (09/03/2015 10:46:53):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (09/03/2015 10:46:53):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (09/03/2015 10:46:53):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (09/03/2015 10:46:53):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (09/03/2015 10:46:53):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (09/03/2015 10:46:53): Connection closed by client.
+[INFO ] (09/03/2015 10:47:07): Starting NetworkServer...
+[INFO ] (09/03/2015 10:47:07): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (09/03/2015 10:47:07): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 10:47:07): Server started!
+
+[INFO ] (09/03/2015 10:47:10): ------------------------------
+[INFO ] (09/03/2015 10:47:10): Handling socket: Socket[addr=/127.0.0.1,port=51108,localport=35000]
+[INFO ] (09/03/2015 10:47:11): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 10:47:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:47:11): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[ERROR] (09/03/2015 10:49:25): Error reading from channel
+[ERROR] (09/03/2015 10:49:25): EOFException: Unexpected end of ZLIB input stream
+[ERROR] (09/03/2015 10:49:25):   java.util.zip.InflaterInputStream.fill(InflaterInputStream.java:240)
+[ERROR] (09/03/2015 10:49:25):   java.util.zip.InflaterInputStream.read(InflaterInputStream.java:158)
+[ERROR] (09/03/2015 10:49:25):   java.util.zip.GZIPInputStream.read(GZIPInputStream.java:117)
+[ERROR] (09/03/2015 10:49:25):   java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+[ERROR] (09/03/2015 10:49:25):   java.io.BufferedInputStream.read1(BufferedInputStream.java:286)
+[ERROR] (09/03/2015 10:49:25):   java.io.BufferedInputStream.read(BufferedInputStream.java:345)
+[ERROR] (09/03/2015 10:49:25):   java.io.FilterInputStream.read(FilterInputStream.java:107)
+[ERROR] (09/03/2015 10:49:25):   us.pserver.streams.StreamUtils.transferUntil(StreamUtils.java:146)
+[ERROR] (09/03/2015 10:49:25):   us.pserver.streams.StreamUtils.readStringUntil(StreamUtils.java:412)
+[ERROR] (09/03/2015 10:49:25):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:244)
+[ERROR] (09/03/2015 10:49:25):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:292)
+[ERROR] (09/03/2015 10:49:25):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (09/03/2015 10:49:26):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (09/03/2015 10:49:26):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:523)
+[ERROR] (09/03/2015 10:49:26):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (09/03/2015 10:49:26):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (09/03/2015 10:49:26):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (09/03/2015 10:49:26):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (09/03/2015 10:49:26):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (09/03/2015 10:49:26): Connection closed by client.
+[INFO ] (09/03/2015 10:49:34): Starting NetworkServer...
+[INFO ] (09/03/2015 10:49:34): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (09/03/2015 10:49:34): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 10:49:34): Server started!
+
+[INFO ] (09/03/2015 10:49:37): ------------------------------
+[INFO ] (09/03/2015 10:49:37): Handling socket: Socket[addr=/127.0.0.1,port=51117,localport=35000]
+[INFO ] (09/03/2015 10:49:37): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 10:49:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:49:37): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[ERROR] (09/03/2015 10:50:31): Error reading from channel
+[ERROR] (09/03/2015 10:50:32): EOFException: Unexpected end of ZLIB input stream
+[ERROR] (09/03/2015 10:50:32):   java.util.zip.InflaterInputStream.fill(InflaterInputStream.java:240)
+[ERROR] (09/03/2015 10:50:32):   java.util.zip.InflaterInputStream.read(InflaterInputStream.java:158)
+[ERROR] (09/03/2015 10:50:32):   java.util.zip.GZIPInputStream.read(GZIPInputStream.java:117)
+[ERROR] (09/03/2015 10:50:32):   java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+[ERROR] (09/03/2015 10:50:32):   java.io.BufferedInputStream.read1(BufferedInputStream.java:286)
+[ERROR] (09/03/2015 10:50:32):   java.io.BufferedInputStream.read(BufferedInputStream.java:345)
+[ERROR] (09/03/2015 10:50:32):   java.io.FilterInputStream.read(FilterInputStream.java:107)
+[ERROR] (09/03/2015 10:50:32):   us.pserver.streams.StreamUtils.transferUntil(StreamUtils.java:146)
+[ERROR] (09/03/2015 10:50:32):   us.pserver.streams.StreamUtils.readStringUntil(StreamUtils.java:412)
+[ERROR] (09/03/2015 10:50:32):   us.pserver.rob.channel.TcpXmlChannel.readTransport(TcpXmlChannel.java:247)
+[ERROR] (09/03/2015 10:50:32):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:295)
+[ERROR] (09/03/2015 10:50:32):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (09/03/2015 10:50:32):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (09/03/2015 10:50:32):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:523)
+[ERROR] (09/03/2015 10:50:32):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (09/03/2015 10:50:32):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (09/03/2015 10:50:32):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (09/03/2015 10:50:32):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (09/03/2015 10:50:32):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (09/03/2015 10:50:32): Connection closed by client.
+[INFO ] (09/03/2015 10:50:37): Starting NetworkServer...
+[INFO ] (09/03/2015 10:50:37): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (09/03/2015 10:50:37): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 10:50:37): Server started!
+
+[INFO ] (09/03/2015 10:50:39): ------------------------------
+[INFO ] (09/03/2015 10:50:39): Handling socket: Socket[addr=/127.0.0.1,port=51118,localport=35000]
+[INFO ] (09/03/2015 10:50:40): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 10:50:40): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:50:40): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 10:50:40): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 10:50:40): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:50:40): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 10:50:40): Connection closed by client.
+[INFO ] (09/03/2015 10:54:16): Starting NetworkServer...
+[INFO ] (09/03/2015 10:54:16): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (09/03/2015 10:54:16): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 10:54:16): Server started!
+
+[INFO ] (09/03/2015 10:54:17): ------------------------------
+[INFO ] (09/03/2015 10:54:17): Handling socket: Socket[addr=/127.0.0.1,port=51123,localport=35000]
+[INFO ] (09/03/2015 10:54:18): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 10:54:18): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:54:18): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 10:54:18): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 10:54:18): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:54:18): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 10:54:18): Connection closed by client.
+[INFO ] (09/03/2015 10:56:33): Starting NetworkServer...
+[FATAL] (09/03/2015 10:56:33): IOException: Error running NetworkServer
+[FATAL] (09/03/2015 10:56:33):   Caused by: BindException: Endereço já em uso
+[FATAL] (09/03/2015 10:56:33):   us.pserver.rob.server.NetworkServer.run(NetworkServer.java:239)
+[FATAL] (09/03/2015 10:56:33):   us.pserver.rob.server.NetworkServer.start(NetworkServer.java:203)
+[FATAL] (09/03/2015 10:56:33):   us.pserver.rob.test.TestTcpXmlServer.main(TestTcpXmlServer.java:63)
+[INFO ] (09/03/2015 10:56:39): Starting NetworkServer...
+[INFO ] (09/03/2015 10:56:40): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (09/03/2015 10:56:40): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 10:56:40): Server started!
+
+[INFO ] (09/03/2015 10:56:42): ------------------------------
+[INFO ] (09/03/2015 10:56:43): Handling socket: Socket[addr=/127.0.0.1,port=51127,localport=35000]
+[INFO ] (09/03/2015 10:56:43): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 10:56:43): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:56:43): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 10:56:44): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 10:56:44): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:56:44): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 10:56:44): Connection closed by client.
+[INFO ] (09/03/2015 10:57:30): Starting NetworkServer...
+[INFO ] (09/03/2015 10:57:30): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (09/03/2015 10:57:30): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 10:57:30): Server started!
+
+[INFO ] (09/03/2015 10:57:32): ------------------------------
+[INFO ] (09/03/2015 10:57:32): Handling socket: Socket[addr=/127.0.0.1,port=51131,localport=35000]
+[INFO ] (09/03/2015 10:57:33): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 10:57:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:57:33): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 10:57:33): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 10:57:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 10:57:33): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 10:57:33): Connection closed by client.
+[INFO ] (09/03/2015 10:59:29): Starting NetworkServer...
+[INFO ] (09/03/2015 10:59:30): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (09/03/2015 10:59:30): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 10:59:30): Server started!
+
+[INFO ] (09/03/2015 10:59:33): ------------------------------
+[INFO ] (09/03/2015 10:59:33): Handling socket: Socket[addr=/127.0.0.1,port=51133,localport=35000]
+[INFO ] (09/03/2015 10:59:34): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 10:59:34): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 10:59:34): ------------------------------
+[INFO ] (09/03/2015 10:59:34): Handling socket: Socket[addr=/127.0.0.1,port=51134,localport=35000]
+[INFO ] (09/03/2015 10:59:34): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 10:59:34): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 11:00:28): Starting NetworkServer...
+[INFO ] (09/03/2015 11:00:28): Channel: us.pserver.rob.channel.TcpXmlChannel
+[INFO ] (09/03/2015 11:00:28): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 11:00:28): Server started!
+
+[INFO ] (09/03/2015 11:00:32): ------------------------------
+[INFO ] (09/03/2015 11:00:32): Handling socket: Socket[addr=/127.0.0.1,port=51135,localport=35000]
+[ERROR] (09/03/2015 11:00:32): Error reading from channel
+[ERROR] (09/03/2015 11:00:32): ZipException: Not in GZIP format
+[ERROR] (09/03/2015 11:00:32):   java.util.zip.GZIPInputStream.readHeader(GZIPInputStream.java:165)
+[ERROR] (09/03/2015 11:00:32):   java.util.zip.GZIPInputStream.<init>(GZIPInputStream.java:79)
+[ERROR] (09/03/2015 11:00:32):   java.util.zip.GZIPInputStream.<init>(GZIPInputStream.java:91)
+[ERROR] (09/03/2015 11:00:32):   us.pserver.streams.StreamCoderFactory.create(StreamCoderFactory.java:241)
+[ERROR] (09/03/2015 11:00:32):   us.pserver.streams.StreamCoderFactory.create(StreamCoderFactory.java:225)
+[ERROR] (09/03/2015 11:00:32):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:293)
+[ERROR] (09/03/2015 11:00:32):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (09/03/2015 11:00:32):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (09/03/2015 11:00:32):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (09/03/2015 11:00:32):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (09/03/2015 11:00:32):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (09/03/2015 11:00:32):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (09/03/2015 11:00:32):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (09/03/2015 11:00:32): Connection closed by client.
+[INFO ] (09/03/2015 11:00:32): ------------------------------
+[INFO ] (09/03/2015 11:00:32): Handling socket: Socket[addr=/127.0.0.1,port=51136,localport=35000]
+[ERROR] (09/03/2015 11:00:32): Error reading from channel
+[ERROR] (09/03/2015 11:00:32): ZipException: Not in GZIP format
+[ERROR] (09/03/2015 11:00:32):   java.util.zip.GZIPInputStream.readHeader(GZIPInputStream.java:165)
+[ERROR] (09/03/2015 11:00:32):   java.util.zip.GZIPInputStream.<init>(GZIPInputStream.java:79)
+[ERROR] (09/03/2015 11:00:32):   java.util.zip.GZIPInputStream.<init>(GZIPInputStream.java:91)
+[ERROR] (09/03/2015 11:00:32):   us.pserver.streams.StreamCoderFactory.create(StreamCoderFactory.java:241)
+[ERROR] (09/03/2015 11:00:32):   us.pserver.streams.StreamCoderFactory.create(StreamCoderFactory.java:225)
+[ERROR] (09/03/2015 11:00:32):   us.pserver.rob.channel.TcpXmlChannel.read(TcpXmlChannel.java:293)
+[ERROR] (09/03/2015 11:00:32):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (09/03/2015 11:00:32):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (09/03/2015 11:00:32):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (09/03/2015 11:00:32):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (09/03/2015 11:00:32):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (09/03/2015 11:00:32):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (09/03/2015 11:00:32):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (09/03/2015 11:00:32): Connection closed by client.
+[INFO ] (09/03/2015 11:05:53): Starting NetworkServer...
+[INFO ] (09/03/2015 11:05:53): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 11:05:53): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 11:05:53): Server started!
+
+[INFO ] (09/03/2015 11:05:57): ------------------------------
+[INFO ] (09/03/2015 11:05:57): Handling socket: Socket[addr=/127.0.0.1,port=51143,localport=35000]
+[INFO ] (09/03/2015 11:05:57): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 11:05:57): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 11:05:57): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 11:05:57): ------------------------------
+[INFO ] (09/03/2015 11:05:57): Handling socket: Socket[addr=/127.0.0.1,port=51144,localport=35000]
+[INFO ] (09/03/2015 11:05:57): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 11:05:57): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 11:05:57): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 12:31:52): Starting NetworkServer...
+[INFO ] (09/03/2015 12:31:52): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 12:31:52): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 12:31:52): Server started!
+
+[INFO ] (09/03/2015 12:31:57): ------------------------------
+[INFO ] (09/03/2015 12:31:57): Handling socket: Socket[addr=/127.0.0.1,port=51275,localport=35000]
+[INFO ] (09/03/2015 12:31:58): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 12:31:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 12:31:58): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 12:31:58): ------------------------------
+[INFO ] (09/03/2015 12:31:58): Handling socket: Socket[addr=/127.0.0.1,port=51276,localport=35000]
+[INFO ] (09/03/2015 12:31:58): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 12:31:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 12:31:58): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 12:49:48): Starting NetworkServer...
+[INFO ] (09/03/2015 12:49:48): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 12:49:48): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 12:49:48): Server started!
+
+[INFO ] (09/03/2015 12:49:52): ------------------------------
+[INFO ] (09/03/2015 12:49:52): Handling socket: Socket[addr=/127.0.0.1,port=51320,localport=35000]
+[INFO ] (09/03/2015 12:49:53): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 12:49:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 12:49:53): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 12:49:53): ------------------------------
+[INFO ] (09/03/2015 12:49:53): Handling socket: Socket[addr=/127.0.0.1,port=51321,localport=35000]
+[INFO ] (09/03/2015 12:49:53): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 12:49:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 12:49:53): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 12:49:53): ------------------------------
+[INFO ] (09/03/2015 12:49:53): Handling socket: Socket[addr=/127.0.0.1,port=51322,localport=35000]
+[INFO ] (09/03/2015 12:49:53): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 12:49:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 12:49:53): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 13:24:14): Starting NetworkServer...
+[INFO ] (09/03/2015 13:24:14): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 13:24:14): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 13:24:14): Server started!
+
+[INFO ] (09/03/2015 13:24:18): ------------------------------
+[INFO ] (09/03/2015 13:24:18): Handling socket: Socket[addr=/127.0.0.1,port=51374,localport=35000]
+[INFO ] (09/03/2015 13:24:19): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 13:24:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:24:19): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 13:24:19): ------------------------------
+[INFO ] (09/03/2015 13:24:19): Handling socket: Socket[addr=/127.0.0.1,port=51375,localport=35000]
+[INFO ] (09/03/2015 13:24:19): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 13:24:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:24:19): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 13:24:19): ------------------------------
+[INFO ] (09/03/2015 13:24:19): Handling socket: Socket[addr=/127.0.0.1,port=51376,localport=35000]
+[INFO ] (09/03/2015 13:24:19): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 13:24:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:24:19): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 13:24:19): ------------------------------
+[INFO ] (09/03/2015 13:24:19): Handling socket: Socket[addr=/127.0.0.1,port=51377,localport=35000]
+[INFO ] (09/03/2015 13:24:19): Remote request: b.writeFile( /home/juno/freemem )
+[INFO ] (09/03/2015 13:24:19): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (09/03/2015 13:24:19): Error invoking method [writeFile]
+[WARN ] (09/03/2015 13:24:19): MethodInvocationException: Invocation error [java.lang.IllegalArgumentException: wrong number of arguments]
+[WARN ] (09/03/2015 13:24:19):   Caused by: IllegalArgumentException: wrong number of arguments
+[WARN ] (09/03/2015 13:24:19):   us.pserver.rob.server.Invoker.invoke(Invoker.java:152)
+[WARN ] (09/03/2015 13:24:19):   us.pserver.rob.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (09/03/2015 13:24:19):   us.pserver.rob.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (09/03/2015 13:24:19):   us.pserver.rob.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (09/03/2015 13:24:19):   us.pserver.rob.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (09/03/2015 13:24:19):   us.pserver.rob.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (09/03/2015 13:24:19):   us.pserver.rob.server.Invoker.invoke(Invoker.java:111)
+[WARN ] (09/03/2015 13:24:19):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:451)
+[WARN ] (09/03/2015 13:24:19):   us.pserver.rob.server.NetworkServer$SocketHandler.invoke(NetworkServer.java:389)
+[WARN ] (09/03/2015 13:24:19):   us.pserver.rob.server.NetworkServer$SocketHandler.handleInvoke(NetworkServer.java:483)
+[WARN ] (09/03/2015 13:24:19):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:521)
+[WARN ] (09/03/2015 13:24:19):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (09/03/2015 13:24:19):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (09/03/2015 13:24:19):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (09/03/2015 13:24:19):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (09/03/2015 13:24:19):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (09/03/2015 13:24:19): Response sent: OpResult{ success = false, return = null }
+[INFO ] (09/03/2015 13:25:21): ------------------------------
+[INFO ] (09/03/2015 13:25:21): Handling socket: Socket[addr=/127.0.0.1,port=51379,localport=35000]
+[INFO ] (09/03/2015 13:25:21): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 13:25:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:25:21): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 13:25:21): ------------------------------
+[INFO ] (09/03/2015 13:25:21): Handling socket: Socket[addr=/127.0.0.1,port=51380,localport=35000]
+[INFO ] (09/03/2015 13:25:21): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 13:25:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:25:21): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 13:25:21): ------------------------------
+[INFO ] (09/03/2015 13:25:21): Handling socket: Socket[addr=/127.0.0.1,port=51381,localport=35000]
+[INFO ] (09/03/2015 13:25:21): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 13:25:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:25:21): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 13:25:21): ------------------------------
+[INFO ] (09/03/2015 13:25:21): Handling socket: Socket[addr=/127.0.0.1,port=51382,localport=35000]
+[INFO ] (09/03/2015 13:25:21): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 13:25:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:25:21): Response sent: OpResult{ success = true, return = 79 }
+[INFO ] (09/03/2015 13:26:54): Starting NetworkServer...
+[INFO ] (09/03/2015 13:26:54): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 13:26:54): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 13:26:54): Server started!
+
+[INFO ] (09/03/2015 13:26:58): ------------------------------
+[INFO ] (09/03/2015 13:26:58): Handling socket: Socket[addr=/127.0.0.1,port=51386,localport=35000]
+[INFO ] (09/03/2015 13:26:58): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 13:26:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:26:58): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 13:26:58): ------------------------------
+[INFO ] (09/03/2015 13:26:58): Handling socket: Socket[addr=/127.0.0.1,port=51387,localport=35000]
+[INFO ] (09/03/2015 13:26:58): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 13:26:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:26:58): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 13:26:58): ------------------------------
+[INFO ] (09/03/2015 13:26:58): Handling socket: Socket[addr=/127.0.0.1,port=51388,localport=35000]
+[INFO ] (09/03/2015 13:26:58): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 13:26:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:26:58): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 13:26:58): ------------------------------
+[INFO ] (09/03/2015 13:26:58): Handling socket: Socket[addr=/127.0.0.1,port=51389,localport=35000]
+[INFO ] (09/03/2015 13:26:58): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 13:26:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:26:58): Response sent: OpResult{ success = true, return = 79 }
+[INFO ] (09/03/2015 13:31:54): Starting NetworkServer...
+[INFO ] (09/03/2015 13:31:54): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 13:31:54): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 13:31:54): Server started!
+
+[INFO ] (09/03/2015 13:31:58): ------------------------------
+[INFO ] (09/03/2015 13:31:58): Handling socket: Socket[addr=/127.0.0.1,port=51395,localport=35000]
+[INFO ] (09/03/2015 13:31:58): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 13:31:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:31:58): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 13:31:58): ------------------------------
+[INFO ] (09/03/2015 13:31:58): Handling socket: Socket[addr=/127.0.0.1,port=51396,localport=35000]
+[INFO ] (09/03/2015 13:31:58): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 13:31:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:31:59): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 13:31:59): ------------------------------
+[INFO ] (09/03/2015 13:31:59): Handling socket: Socket[addr=/127.0.0.1,port=51397,localport=35000]
+[INFO ] (09/03/2015 13:31:59): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 13:31:59): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:31:59): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 13:31:59): ------------------------------
+[INFO ] (09/03/2015 13:31:59): Handling socket: Socket[addr=/127.0.0.1,port=51398,localport=35000]
+[INFO ] (09/03/2015 13:31:59): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 13:31:59): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:31:59): Response sent: OpResult{ success = true, return = 79 }
+[INFO ] (09/03/2015 13:36:26): Starting NetworkServer...
+[INFO ] (09/03/2015 13:36:26): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 13:36:26): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 13:36:26): Server started!
+
+[INFO ] (09/03/2015 13:36:28): ------------------------------
+[INFO ] (09/03/2015 13:36:28): Handling socket: Socket[addr=/127.0.0.1,port=51403,localport=35000]
+[INFO ] (09/03/2015 13:36:29): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 13:36:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:36:29): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 13:36:29): ------------------------------
+[INFO ] (09/03/2015 13:36:29): Handling socket: Socket[addr=/127.0.0.1,port=51404,localport=35000]
+[INFO ] (09/03/2015 13:36:29): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 13:36:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:36:29): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 13:36:29): ------------------------------
+[INFO ] (09/03/2015 13:36:29): Handling socket: Socket[addr=/127.0.0.1,port=51405,localport=35000]
+[INFO ] (09/03/2015 13:36:29): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 13:36:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:36:29): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 13:36:29): ------------------------------
+[INFO ] (09/03/2015 13:36:29): Handling socket: Socket[addr=/127.0.0.1,port=51406,localport=35000]
+[INFO ] (09/03/2015 13:36:29): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 13:36:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:36:29): Response sent: OpResult{ success = true, return = 79 }
+[INFO ] (09/03/2015 13:44:37): Starting NetworkServer...
+[INFO ] (09/03/2015 13:44:37): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 13:44:37): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 13:44:37): Server started!
+
+[INFO ] (09/03/2015 13:44:39): ------------------------------
+[INFO ] (09/03/2015 13:44:39): Handling socket: Socket[addr=/127.0.0.1,port=51428,localport=35000]
+[INFO ] (09/03/2015 13:44:40): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 13:44:40): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:44:40): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 13:44:40): ------------------------------
+[INFO ] (09/03/2015 13:44:40): Handling socket: Socket[addr=/127.0.0.1,port=51429,localport=35000]
+[INFO ] (09/03/2015 13:44:40): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 13:44:40): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:44:40): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 13:44:40): ------------------------------
+[INFO ] (09/03/2015 13:44:40): Handling socket: Socket[addr=/127.0.0.1,port=51430,localport=35000]
+[INFO ] (09/03/2015 13:44:40): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 13:44:40): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:44:40): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 13:44:40): ------------------------------
+[INFO ] (09/03/2015 13:44:40): Handling socket: Socket[addr=/127.0.0.1,port=51431,localport=35000]
+[INFO ] (09/03/2015 13:44:40): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 13:44:40): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:44:40): Response sent: OpResult{ success = true, return = 79 }
+[INFO ] (09/03/2015 13:49:36): Starting NetworkServer...
+[INFO ] (09/03/2015 13:49:36): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 13:49:36): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 13:49:36): Server started!
+
+[INFO ] (09/03/2015 13:49:38): ------------------------------
+[INFO ] (09/03/2015 13:49:38): Handling socket: Socket[addr=/127.0.0.1,port=51438,localport=35000]
+[INFO ] (09/03/2015 13:49:39): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 13:49:39): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:49:39): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 13:49:39): ------------------------------
+[INFO ] (09/03/2015 13:49:39): Handling socket: Socket[addr=/127.0.0.1,port=51439,localport=35000]
+[INFO ] (09/03/2015 13:49:39): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 13:49:39): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:49:39): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 13:49:39): ------------------------------
+[INFO ] (09/03/2015 13:49:39): Handling socket: Socket[addr=/127.0.0.1,port=51440,localport=35000]
+[INFO ] (09/03/2015 13:49:39): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 13:49:39): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:49:39): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 13:56:04): Starting NetworkServer...
+[INFO ] (09/03/2015 13:56:04): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 13:56:04): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 13:56:04): Server started!
+
+[INFO ] (09/03/2015 13:56:07): ------------------------------
+[INFO ] (09/03/2015 13:56:07): Handling socket: Socket[addr=/127.0.0.1,port=51447,localport=35000]
+[INFO ] (09/03/2015 13:56:08): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 13:56:08): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:56:08): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 13:56:08): ------------------------------
+[INFO ] (09/03/2015 13:56:08): Handling socket: Socket[addr=/127.0.0.1,port=51448,localport=35000]
+[INFO ] (09/03/2015 13:56:08): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 13:56:08): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:56:08): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 13:56:08): ------------------------------
+[INFO ] (09/03/2015 13:56:08): Handling socket: Socket[addr=/127.0.0.1,port=51449,localport=35000]
+[INFO ] (09/03/2015 13:56:08): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 13:56:08): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 13:56:08): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:02:19): Starting NetworkServer...
+[INFO ] (09/03/2015 14:02:19): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 14:02:19): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 14:02:19): Server started!
+
+[INFO ] (09/03/2015 14:02:23): ------------------------------
+[INFO ] (09/03/2015 14:02:23): Handling socket: Socket[addr=/127.0.0.1,port=51460,localport=35000]
+[INFO ] (09/03/2015 14:02:24): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 14:02:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:02:24): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 14:02:24): ------------------------------
+[INFO ] (09/03/2015 14:02:24): Handling socket: Socket[addr=/127.0.0.1,port=51461,localport=35000]
+[INFO ] (09/03/2015 14:02:24): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 14:02:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:02:24): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 14:02:24): ------------------------------
+[INFO ] (09/03/2015 14:02:24): Handling socket: Socket[addr=/127.0.0.1,port=51462,localport=35000]
+[INFO ] (09/03/2015 14:02:24): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 14:02:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:02:24): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:16:35): Starting NetworkServer...
+[INFO ] (09/03/2015 14:16:35): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 14:16:35): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 14:16:35): Server started!
+
+[INFO ] (09/03/2015 14:16:38): ------------------------------
+[INFO ] (09/03/2015 14:16:38): Handling socket: Socket[addr=/127.0.0.1,port=51494,localport=35000]
+[INFO ] (09/03/2015 14:16:39): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 14:16:39): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:16:39): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 14:16:39): ------------------------------
+[INFO ] (09/03/2015 14:16:39): Handling socket: Socket[addr=/127.0.0.1,port=51495,localport=35000]
+[INFO ] (09/03/2015 14:16:39): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 14:16:39): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:16:39): ------------------------------
+[INFO ] (09/03/2015 14:16:39): Handling socket: Socket[addr=/127.0.0.1,port=51496,localport=35000]
+[INFO ] (09/03/2015 14:16:39): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 14:16:39): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 14:16:39): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:16:39): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:16:39): ------------------------------
+[INFO ] (09/03/2015 14:16:39): Handling socket: Socket[addr=/127.0.0.1,port=51497,localport=35000]
+[INFO ] (09/03/2015 14:16:39): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 14:16:39): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:16:39): Response sent: OpResult{ success = true, return = 79 }
+[INFO ] (09/03/2015 14:18:29): Starting NetworkServer...
+[INFO ] (09/03/2015 14:18:29): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 14:18:29): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 14:18:29): Server started!
+
+[INFO ] (09/03/2015 14:18:32): ------------------------------
+[INFO ] (09/03/2015 14:18:32): Handling socket: Socket[addr=/127.0.0.1,port=51502,localport=35000]
+[INFO ] (09/03/2015 14:18:32): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 14:18:32): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:18:32): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 14:18:32): ------------------------------
+[INFO ] (09/03/2015 14:18:32): Handling socket: Socket[addr=/127.0.0.1,port=51503,localport=35000]
+[INFO ] (09/03/2015 14:18:32): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 14:18:32): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:18:32): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 14:18:32): ------------------------------
+[INFO ] (09/03/2015 14:18:32): Handling socket: Socket[addr=/127.0.0.1,port=51504,localport=35000]
+[INFO ] (09/03/2015 14:18:32): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 14:18:32): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:18:33): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:18:33): ------------------------------
+[INFO ] (09/03/2015 14:18:33): Handling socket: Socket[addr=/127.0.0.1,port=51505,localport=35000]
+[INFO ] (09/03/2015 14:18:33): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 14:18:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:18:33): Response sent: OpResult{ success = true, return = 76 }
+[INFO ] (09/03/2015 14:19:36): Starting NetworkServer...
+[INFO ] (09/03/2015 14:19:36): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 14:19:36): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 14:19:36): Server started!
+
+[INFO ] (09/03/2015 14:19:38): ------------------------------
+[INFO ] (09/03/2015 14:19:38): Handling socket: Socket[addr=/127.0.0.1,port=51507,localport=35000]
+[INFO ] (09/03/2015 14:19:39): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 14:19:39): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:19:39): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 14:19:39): ------------------------------
+[INFO ] (09/03/2015 14:19:39): Handling socket: Socket[addr=/127.0.0.1,port=51508,localport=35000]
+[INFO ] (09/03/2015 14:19:39): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 14:19:39): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:19:39): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 14:19:39): ------------------------------
+[INFO ] (09/03/2015 14:19:39): Handling socket: Socket[addr=/127.0.0.1,port=51509,localport=35000]
+[INFO ] (09/03/2015 14:19:39): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 14:19:39): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:19:39): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:19:39): ------------------------------
+[INFO ] (09/03/2015 14:19:39): Handling socket: Socket[addr=/127.0.0.1,port=51510,localport=35000]
+[INFO ] (09/03/2015 14:19:39): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 14:19:39): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:19:39): Response sent: OpResult{ success = true, return = 76 }
+[INFO ] (09/03/2015 14:20:14): Starting NetworkServer...
+[INFO ] (09/03/2015 14:20:15): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 14:20:15): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 14:20:15): Server started!
+
+[INFO ] (09/03/2015 14:20:17): ------------------------------
+[INFO ] (09/03/2015 14:20:17): Handling socket: Socket[addr=/127.0.0.1,port=51511,localport=35000]
+[INFO ] (09/03/2015 14:20:18): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 14:20:18): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:20:18): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 14:20:18): ------------------------------
+[INFO ] (09/03/2015 14:20:18): Handling socket: Socket[addr=/127.0.0.1,port=51512,localport=35000]
+[INFO ] (09/03/2015 14:20:18): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 14:20:18): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:20:18): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 14:20:18): ------------------------------
+[INFO ] (09/03/2015 14:20:18): Handling socket: Socket[addr=/127.0.0.1,port=51513,localport=35000]
+[INFO ] (09/03/2015 14:20:18): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 14:20:18): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:20:18): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:20:18): ------------------------------
+[INFO ] (09/03/2015 14:20:18): Handling socket: Socket[addr=/127.0.0.1,port=51514,localport=35000]
+[INFO ] (09/03/2015 14:20:18): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 14:20:18): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:20:18): Response sent: OpResult{ success = true, return = 76 }
+[INFO ] (09/03/2015 14:25:43): Starting NetworkServer...
+[INFO ] (09/03/2015 14:25:43): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 14:25:43): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 14:25:43): Server started!
+
+[INFO ] (09/03/2015 14:25:46): ------------------------------
+[INFO ] (09/03/2015 14:25:46): Handling socket: Socket[addr=/127.0.0.1,port=51521,localport=35000]
+[INFO ] (09/03/2015 14:25:46): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 14:25:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:25:46): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 14:25:46): ------------------------------
+[INFO ] (09/03/2015 14:25:46): Handling socket: Socket[addr=/127.0.0.1,port=51522,localport=35000]
+[INFO ] (09/03/2015 14:25:46): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 14:25:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:25:46): ------------------------------
+[INFO ] (09/03/2015 14:25:46): Handling socket: Socket[addr=/127.0.0.1,port=51523,localport=35000]
+[INFO ] (09/03/2015 14:25:46): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 14:25:46): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 14:25:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:25:46): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:25:46): ------------------------------
+[INFO ] (09/03/2015 14:25:46): Handling socket: Socket[addr=/127.0.0.1,port=51524,localport=35000]
+[INFO ] (09/03/2015 14:25:46): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 14:25:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:25:46): Response sent: OpResult{ success = true, return = 76 }
+[INFO ] (09/03/2015 14:29:53): Starting NetworkServer...
+[INFO ] (09/03/2015 14:29:53): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 14:29:53): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 14:29:53): Server started!
+
+[INFO ] (09/03/2015 14:29:57): ------------------------------
+[INFO ] (09/03/2015 14:29:57): Handling socket: Socket[addr=/127.0.0.1,port=51530,localport=35000]
+[INFO ] (09/03/2015 14:29:58): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 14:29:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:29:58): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 14:29:58): ------------------------------
+[INFO ] (09/03/2015 14:29:58): Handling socket: Socket[addr=/127.0.0.1,port=51531,localport=35000]
+[INFO ] (09/03/2015 14:29:58): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 14:29:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:29:58): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 14:29:58): ------------------------------
+[INFO ] (09/03/2015 14:29:58): Handling socket: Socket[addr=/127.0.0.1,port=51532,localport=35000]
+[INFO ] (09/03/2015 14:29:58): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 14:29:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:29:58): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:29:58): ------------------------------
+[INFO ] (09/03/2015 14:29:58): Handling socket: Socket[addr=/127.0.0.1,port=51533,localport=35000]
+[INFO ] (09/03/2015 14:29:58): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 14:29:58): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:29:58): Response sent: OpResult{ success = true, return = 76 }
+[INFO ] (09/03/2015 14:31:16): Starting NetworkServer...
+[INFO ] (09/03/2015 14:31:16): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 14:31:16): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 14:31:16): Server started!
+
+[INFO ] (09/03/2015 14:31:19): ------------------------------
+[INFO ] (09/03/2015 14:31:19): Handling socket: Socket[addr=/127.0.0.1,port=51535,localport=35000]
+[INFO ] (09/03/2015 14:31:20): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 14:31:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:31:20): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 14:31:20): ------------------------------
+[INFO ] (09/03/2015 14:31:20): Handling socket: Socket[addr=/127.0.0.1,port=51536,localport=35000]
+[INFO ] (09/03/2015 14:31:20): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 14:31:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:31:20): ------------------------------
+[INFO ] (09/03/2015 14:31:20): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 14:31:20): Handling socket: Socket[addr=/127.0.0.1,port=51537,localport=35000]
+[INFO ] (09/03/2015 14:31:20): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 14:31:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:31:20): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:31:20): ------------------------------
+[INFO ] (09/03/2015 14:31:20): Handling socket: Socket[addr=/127.0.0.1,port=51538,localport=35000]
+[INFO ] (09/03/2015 14:31:20): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 14:31:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:31:20): Response sent: OpResult{ success = true, return = 76 }
+[INFO ] (09/03/2015 14:33:55): Starting NetworkServer...
+[INFO ] (09/03/2015 14:33:55): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 14:33:55): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 14:33:55): Server started!
+
+[INFO ] (09/03/2015 14:33:58): ------------------------------
+[INFO ] (09/03/2015 14:33:58): Handling socket: Socket[addr=/127.0.0.1,port=51542,localport=35000]
+[INFO ] (09/03/2015 14:33:59): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 14:33:59): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:33:59): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 14:33:59): ------------------------------
+[INFO ] (09/03/2015 14:33:59): Handling socket: Socket[addr=/127.0.0.1,port=51543,localport=35000]
+[INFO ] (09/03/2015 14:33:59): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 14:33:59): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:33:59): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 14:33:59): ------------------------------
+[INFO ] (09/03/2015 14:33:59): Handling socket: Socket[addr=/127.0.0.1,port=51544,localport=35000]
+[INFO ] (09/03/2015 14:33:59): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 14:33:59): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:33:59): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:33:59): ------------------------------
+[INFO ] (09/03/2015 14:33:59): Handling socket: Socket[addr=/127.0.0.1,port=51545,localport=35000]
+[INFO ] (09/03/2015 14:33:59): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 14:33:59): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:33:59): Response sent: OpResult{ success = true, return = 76 }
+[INFO ] (09/03/2015 14:39:33): Starting NetworkServer...
+[INFO ] (09/03/2015 14:39:33): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 14:39:33): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 14:39:33): Server started!
+
+[INFO ] (09/03/2015 14:39:36): ------------------------------
+[INFO ] (09/03/2015 14:39:36): Handling socket: Socket[addr=/127.0.0.1,port=51555,localport=35000]
+[INFO ] (09/03/2015 14:39:36): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 14:39:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:39:36): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 14:39:36): ------------------------------
+[INFO ] (09/03/2015 14:39:36): Handling socket: Socket[addr=/127.0.0.1,port=51556,localport=35000]
+[INFO ] (09/03/2015 14:39:36): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 14:39:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:39:36): ------------------------------
+[INFO ] (09/03/2015 14:39:36): Handling socket: Socket[addr=/127.0.0.1,port=51557,localport=35000]
+[INFO ] (09/03/2015 14:39:36): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 14:39:36): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 14:39:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:39:36): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:39:36): ------------------------------
+[INFO ] (09/03/2015 14:39:36): Handling socket: Socket[addr=/127.0.0.1,port=51558,localport=35000]
+[INFO ] (09/03/2015 14:39:36): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 14:39:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:39:36): Response sent: OpResult{ success = true, return = 76 }
+[INFO ] (09/03/2015 14:40:18): Starting NetworkServer...
+[INFO ] (09/03/2015 14:40:18): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 14:40:18): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 14:40:18): Server started!
+
+[INFO ] (09/03/2015 14:40:20): ------------------------------
+[INFO ] (09/03/2015 14:40:20): Handling socket: Socket[addr=/127.0.0.1,port=51559,localport=35000]
+[INFO ] (09/03/2015 14:40:21): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 14:40:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:40:21): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 14:40:21): ------------------------------
+[INFO ] (09/03/2015 14:40:21): Handling socket: Socket[addr=/127.0.0.1,port=51560,localport=35000]
+[INFO ] (09/03/2015 14:40:21): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 14:40:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:40:21): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 14:40:21): ------------------------------
+[INFO ] (09/03/2015 14:40:21): Handling socket: Socket[addr=/127.0.0.1,port=51561,localport=35000]
+[INFO ] (09/03/2015 14:40:21): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 14:40:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:40:21): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:40:21): ------------------------------
+[INFO ] (09/03/2015 14:40:21): Handling socket: Socket[addr=/127.0.0.1,port=51562,localport=35000]
+[INFO ] (09/03/2015 14:40:21): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 14:40:21): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:40:21): Response sent: OpResult{ success = true, return = 76 }
+[INFO ] (09/03/2015 14:42:29): Starting NetworkServer...
+[INFO ] (09/03/2015 14:42:29): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (09/03/2015 14:42:29): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (09/03/2015 14:42:29): Server started!
+
+[INFO ] (09/03/2015 14:42:32): ------------------------------
+[INFO ] (09/03/2015 14:42:32): Handling socket: Socket[addr=/127.0.0.1,port=51575,localport=35000]
+[INFO ] (09/03/2015 14:42:32): Remote request: a.compute( 5, 3 )
+[INFO ] (09/03/2015 14:42:32): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:42:33): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (09/03/2015 14:42:33): ------------------------------
+[INFO ] (09/03/2015 14:42:33): Handling socket: Socket[addr=/127.0.0.1,port=51576,localport=35000]
+[INFO ] (09/03/2015 14:42:33): Remote request: a.round( 1.6666666666666667, 3 )
+[INFO ] (09/03/2015 14:42:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:42:33): Response sent: OpResult{ success = true, return = 1.667 }
+[INFO ] (09/03/2015 14:42:33): ------------------------------
+[INFO ] (09/03/2015 14:42:33): Handling socket: Socket[addr=/127.0.0.1,port=51577,localport=35000]
+[INFO ] (09/03/2015 14:42:33): Remote request: b.readFile( /home/juno/freemem )
+[INFO ] (09/03/2015 14:42:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:42:33): Response sent: OpResult{ success = true, return = null }
+[INFO ] (09/03/2015 14:42:33): ------------------------------
+[INFO ] (09/03/2015 14:42:33): Handling socket: Socket[addr=/127.0.0.1,port=51578,localport=35000]
+[INFO ] (09/03/2015 14:42:33): Remote request: b.writeFile( java.io.InputStream, /home/juno/rob-freemem2 )
+[INFO ] (09/03/2015 14:42:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (09/03/2015 14:42:33): Response sent: OpResult{ success = true, return = 76 }

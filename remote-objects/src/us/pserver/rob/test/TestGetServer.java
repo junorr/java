@@ -57,6 +57,8 @@ public class TestGetServer {
     oc.put("a", a);
     NetworkServer srv = new NetworkServer(oc, nc, 
         DefaultFactoryProvider.factory()
+            .enableCryptography()
+            .enableGZipCompression()
             .getGetResponseChannelFactory());
     srv.start();
   }

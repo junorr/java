@@ -181,7 +181,7 @@ public class HttpInputStream extends HeaderEncryptable {
   public HttpInputStream setupOutbound() throws IOException {
     if(input == null)
       throw new IllegalStateException("InputStream not setted");
-    StreamUtils.transfer(input, buffer.getOutputStream());
+    System.out.println("HttpInputStream.setupOutbound.IO.tr="+ IO.tr(input, buffer.getOutputStream()));
     buffer.encode();
     return this;
   }
@@ -192,11 +192,13 @@ public class HttpInputStream extends HeaderEncryptable {
       throw new IllegalStateException("InputStream not setted");
     StreamResult sr = StreamUtils.transferUntilOr(
         input, buffer.getOutputStream(), 
-        BOUNDARY_CONTENT_END, EOF);
-    if(!sr.isEOFReached()) {
+        BOUNDARY_CONTENT_END, CRLF+CRLF);
+    System.out.println("HttpInputStream.setupInbound.StreamResult: "+ sr);
+    if(!(CRLF+CRLF).equals(sr.token()) && !sr.isEOFReached()) {
       StreamUtils.consume(input);
     }
     buffer.decode();
+    System.out.println("HttpInputStream.setupInbound.buffer.size()="+ buffer.size());
     input = buffer.getInputStream();
     return this;
   }
@@ -293,10 +295,10 @@ public class HttpInputStream extends HeaderEncryptable {
         .append(BOUNDARY_CONTENT_START);
     
     StreamUtils.write(start.toString(), bos);
-    StreamUtils.transfer(buffer.getInputStream(), bos);
+    IO.tr(buffer.getInputStream(), bos);
     StreamUtils.write(BOUNDARY_CONTENT_END, bos);
     StreamUtils.write(BOUNDARY_XML_END, bos);
-    StreamUtils.write(CRLF, bos);
+    StreamUtils.write(CRLF+CRLF, bos);
     out.flush();
   }
   

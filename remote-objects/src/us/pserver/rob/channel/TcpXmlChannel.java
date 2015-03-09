@@ -136,7 +136,7 @@ public class TcpXmlChannel implements Channel {
   
   
   private void writeKey(OutputStream os) throws IOException {
-    System.out.println("TcpXmlChannel.writeKey");
+    //System.out.println("TcpXmlChannel.writeKey");
     nullarg(OutputStream.class, os);
     
     StringBuffer sb = new StringBuffer();
@@ -145,7 +145,7 @@ public class TcpXmlChannel implements Channel {
         .append(bcd.encode(key.toString()))
         .append(HttpConst.BOUNDARY_CRYPT_KEY_END);
     byte[] bs = scv.convert(sb.toString());
-    System.out.println("StringByteConverter.reverseKey="+ scv.reverse(bs));
+    //System.out.println("StringByteConverter.reverseKey="+ scv.reverse(bs));
     os.write(scv.convert(sb.toString()));
     os.flush();
   }
@@ -156,8 +156,13 @@ public class TcpXmlChannel implements Channel {
     nullarg(OutputStream.class, os);
     
     try {
-      xst.toXML(t.getWriteVersion(), os);
-      os.write(scv.convert(HttpConst.BOUNDARY_OBJECT_END));
+      StringBuilder sb = new StringBuilder();
+      sb.append(xst.toXML(t.getWriteVersion()))
+          .append(HttpConst.BOUNDARY_OBJECT_END)
+          .append("        \n");
+      
+      os.write(scv.convert(sb.toString()));
+      os.flush();
       
       if(t.hasContentEmbedded()) {
         os.write(scv.convert(HttpConst.BOUNDARY_CONTENT_START));
@@ -177,7 +182,7 @@ public class TcpXmlChannel implements Channel {
   
   @Override
   public void write(Transport trp) throws IOException {
-    System.out.println("TcpXmlChannel.write");
+    //System.out.println("TcpXmlChannel.write");
     if(trp == null) return;
     if(buffer != null) buffer.close();
     ProtectedOutputStream pos = new ProtectedOutputStream(
@@ -207,12 +212,12 @@ public class TcpXmlChannel implements Channel {
   
   
   private CryptKey readKey(InputStream is) throws IOException {
-    System.out.println("TcpXmlChannel.readKey()");
+    //System.out.println("TcpXmlChannel.readKey()");
     nullarg(InputStream.class, is);
     StreamResult sr = StreamUtils.readUntilOr(is, 
         HttpConst.BOUNDARY_CRYPT_KEY_START, 
         HttpConst.BOUNDARY_OBJECT_START);
-    System.out.println("TcpXmlChannel.readKey: "+ sr);
+    //System.out.println("TcpXmlChannel.readKey: "+ sr);
     if(sr.token() != HttpConst.BOUNDARY_CRYPT_KEY_START) {
       return null;
     }
@@ -223,7 +228,7 @@ public class TcpXmlChannel implements Channel {
   
   
   private InputStream readContent(InputStream is) throws IOException {
-    System.out.println("TcpXmlChannel.readContent()");
+    //System.out.println("TcpXmlChannel.readContent()");
     nullarg(InputStream.class, is);
     if(buffer != null) buffer.close();
     buffer = new MultiCoderBuffer();
@@ -235,16 +240,17 @@ public class TcpXmlChannel implements Channel {
   
   
   private Transport readTransport(InputStream is) throws IOException {
-    System.out.println("TcpXmlChannel.readTransport()");
+    //System.out.println("TcpXmlChannel.readTransport()");
     nullarg(InputStream.class, is);
     
     try {
       StreamResult sr = StreamUtils.readStringUntil(is, 
           HttpConst.BOUNDARY_OBJECT_END);
-      System.out.println("TcpXmlChannel.readObjectEnd="+ sr);
+      //System.out.println("TcpXmlChannel.readObjectEnd="+ sr);
       if(sr.content() == null || sr.content().trim().isEmpty())
         return null;
       
+      //System.out.println("TcpXmlChannel.readTransport="+ sr);
       Transport t = (Transport) xst.fromXML(sr.content());
       if(t == null)
         throw new IOException("Can not read Transport ["+ t+ "]");
@@ -268,16 +274,16 @@ public class TcpXmlChannel implements Channel {
     if(buffer != null) buffer.close();
     ProtectedInputStream pin = new ProtectedInputStream(
         sock.getInputStream());
-    System.out.println("TcpXmlChannel.read()");
+    //System.out.println("TcpXmlChannel.read()");
     
     key = readKey(pin);
-    System.out.println("TcpXmlChannel.key="+ key);
+    //System.out.println("TcpXmlChannel.key="+ key);
     if(key != null) {
-      System.out.println("TcpXmlChannel.readingObjectBoundary...");
+      //System.out.println("TcpXmlChannel.readingObjectBoundary...");
       StreamUtils.readUntil(pin, HttpConst.BOUNDARY_OBJECT_START);
     }
     
-    System.out.println("TcpXmlChannel.creatingCodecStream...");
+    //System.out.println("TcpXmlChannel.creatingCodecStream...");
 
     InputStream sin = pin;
     if(gzip || key != null)
