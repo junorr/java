@@ -53,7 +53,7 @@ public class HttpCryptKey extends HeaderKeyHolder {
    * Tamanho estático do cabeçalho, sem 
    * considrar o tamanho do objeto encapsulado.
    */
-  public static final int STATIC_SIZE = 60;
+  public static final int STATIC_SIZE = 58;
   
   
   private Base64StringCoder coder;
@@ -148,9 +148,10 @@ public class HttpCryptKey extends HeaderKeyHolder {
   public static void main(String[] args) throws FileNotFoundException {
     StringBuilder start = new StringBuilder()
         .append(HYFENS).append(BOUNDARY).append(CRLF)
-        .append(HD_CONTENT_XML.toString()).append(CRLF)
+        .append(HD_CONTENT_XML.toString())
         .append(BOUNDARY_XML_START)
-        .append(BOUNDARY_XML_END);
+        .append(BOUNDARY_XML_END)
+        .append(CRLF);
     System.out.println("* static content:");
     System.out.println(start.toString());
     System.out.println("* length="+ start.length());

@@ -51,13 +51,14 @@ public class TestHttpRequest implements HttpConst {
     build.put(new HttpEnclosedObject(obj)
         .setCryptKey(key));
     
-    build.put(new HttpInputStream(IO.is(IO.p("c:/.local/file.txt"))));
+    build.put(new HttpInputStream(IO.is(IO.p("/home/juno/freemem"))));
     
     //Socket sock = new Socket("172.24.75.19", 6060);
-    Socket sock = new Socket("172.24.77.60", 9099);
+    Socket sock = null;//new Socket("172.24.77.60", 9099);
     //Socket sock = new Socket("10.100.0.105", 6060);
-    build.writeContent(sock.getOutputStream());
-    //build.writeContent(System.out);
+    //build.writeContent(sock.getOutputStream());
+    build.writeContent(System.out);
+    if(true) return;
     
     ResponseParser rp = new ResponseParser();
     rp.parseInput(sock.getInputStream());

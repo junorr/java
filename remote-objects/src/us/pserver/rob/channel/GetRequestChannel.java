@@ -398,6 +398,7 @@ public class GetRequestChannel implements Channel, HttpConst {
     }
     
     str = scv.reverse(bs);
+    System.out.println("GetRequestChannel.read()="+ str);
     JsonObjectConverter jsc = new JsonObjectConverter();
     return (Transport) jsc.convert(str);
   }

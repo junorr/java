@@ -25,10 +25,11 @@ import java.io.IOException;
 import java.net.Socket;
 import us.pserver.http.HeaderProxyAuth;
 import us.pserver.http.HttpBuilder;
+import us.pserver.http.HttpConst;
 import us.pserver.http.HttpConst.Method;
 import us.pserver.http.HttpEnclosedObject;
 import us.pserver.http.RequestLine;
-import us.pserver.streams.StreamUtils;
+import us.pserver.streams.IO;
 
 /**
  *
@@ -40,16 +41,19 @@ public class SimpleHttpRequest {
   
   public static void main(String[] args) throws IOException {
     HttpBuilder build = HttpBuilder.requestBuilder(
-        new RequestLine(Method.POST, "172.24.77.60", 9099));
+        new RequestLine(Method.POST, "powerstat.us", 80));
+    //build.remove(HttpConst.HD_CONTENT_TYPE);
     
-    build.put(new HeaderProxyAuth("f6036477:00000000"));
+    build.put(new HeaderProxyAuth("f6036477:65498788"));
     build.put(new HttpEnclosedObject("Some String object"));
     build.writeContent(System.out);
-    /*
+    
     System.out.println("-------------------------------");
-    Socket sock = new Socket("172.24.75.19", 6060);
+    Socket sock = null;
+    //sock = new Socket("localhost", 9000);
+    sock = new Socket("cache.bb.com.br", 9000);
     build.writeContent(sock.getOutputStream());
-    StreamUtils.transfer(sock.getInputStream(), System.out);*/
+    IO.tr(sock.getInputStream(), System.out);
   }
   
 }

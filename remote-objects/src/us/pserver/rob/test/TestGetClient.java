@@ -40,8 +40,8 @@ public class TestGetClient {
   public static void main(String[] args) throws MethodInvocationException, UnsupportedEncodingException {
     NetConnector nc = new NetConnector("localhost", 35000);
     RemoteObject rob = new RemoteObject(nc, DefaultFactoryProvider.factory()
-        .enableCryptography()
-        .enableGZipCompression()
+        .disableCryptography()
+        .disableGZipCompression()
         .getGetRequestChannelFactory());
     Credentials cr = new Credentials("juno", "32132155".getBytes());
     RemoteMethod mth = new RemoteMethod()

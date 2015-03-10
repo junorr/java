@@ -220,14 +220,13 @@ public class HttpEnclosedObject extends HeaderEncryptable {
   @Override
   public void writeContent(OutputStream out) throws IOException {
     nullarg(OutputStream.class, out);
-    StringBuffer start = new StringBuffer()
+    StringBuffer start = new StringBuffer().append(CRLF)
         .append(HYFENS).append(BOUNDARY).append(CRLF)
         .append(HD_CONTENT_XML)
         .append(BOUNDARY_XML_START);
     
     StringByteConverter cv = new StringByteConverter();
     out.write(cv.convert(start.toString()));
-    //System.out.println("* HttpEnclosedObject.writeContent( "+ getValue()+ " ): "+ cv.convert(getValue()));
     out.write(cv.convert(getValue()));
     out.write(cv.convert(BOUNDARY_XML_END));
     out.write(cv.convert(CRLF));
@@ -236,14 +235,15 @@ public class HttpEnclosedObject extends HeaderEncryptable {
   
   
   public static void main(String[] args) throws IOException {
-    StringBuffer start = new StringBuffer()
-        .append(CRLF).append(HYFENS).append(BOUNDARY)
-        .append(CRLF).append(HD_CONTENT_XML)
-        .append(CRLF).append(BOUNDARY_XML_START)
-        .append(BOUNDARY_XML_END);
+    StringBuffer start = new StringBuffer().append(CRLF)
+        .append(HYFENS).append(BOUNDARY).append(CRLF)
+        .append(HD_CONTENT_XML)
+        .append(BOUNDARY_XML_START)
+        .append(BOUNDARY_XML_END).append(CRLF);
     System.out.println("* static content:");
     System.out.println(start.toString());
-    System.out.println("* length="+ start.length());
+    StringByteConverter scv = new StringByteConverter();
+    System.out.println("* length="+ scv.convert(start.toString()).length);
     
     System.out.println();
     System.out.println("* HttpEncodedObject example:");

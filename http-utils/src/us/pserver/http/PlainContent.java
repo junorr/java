@@ -48,6 +48,18 @@ public class PlainContent extends Header {
   
   
   @Override
+  public boolean isContentHeader() {
+    return true;
+  }
+  
+  
+  @Override
+  public long getLength() {
+    return (super.getValue() != null ? super.getValue().length() : 0);
+  }
+  
+  
+  @Override
   public String toString() {
     return getValue();
   }

@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
@@ -74,7 +75,7 @@ public class HttpInputStream extends HeaderEncryptable {
    * Tamanho estático do cabeçalho sem considerar 
    * o tamanho do stream de dados.
    */
-  public static final int STATIC_SIZE = 160;
+  public static final int STATIC_SIZE = 158;
   
 
   private InputStream input;
@@ -181,7 +182,9 @@ public class HttpInputStream extends HeaderEncryptable {
   public HttpInputStream setupOutbound() throws IOException {
     if(input == null)
       throw new IllegalStateException("InputStream not setted");
-    System.out.println("HttpInputStream.setupOutbound.IO.tr="+ IO.tr(input, buffer.getOutputStream()));
+    long l = IO.tr(input, buffer.getOutputStream());
+    //System.out.println("HttpInputStream.setupOutbound.IO.tr="+ l);
+    buffer.getOutputStream().write(0);
     buffer.encode();
     return this;
   }
@@ -193,7 +196,7 @@ public class HttpInputStream extends HeaderEncryptable {
     StreamResult sr = StreamUtils.transferUntilOr(
         input, buffer.getOutputStream(), 
         BOUNDARY_CONTENT_END, CRLF+CRLF);
-    System.out.println("HttpInputStream.setupInbound.StreamResult: "+ sr);
+    //System.out.println("HttpInputStream.setupInbound.StreamResult: "+ sr);
     if(!(CRLF+CRLF).equals(sr.token()) && !sr.isEOFReached()) {
       StreamUtils.consume(input);
     }
@@ -283,7 +286,6 @@ public class HttpInputStream extends HeaderEncryptable {
   public void writeContent(OutputStream out) throws IOException {
     nullarg(OutputStream.class, out);
     checkSetup();
-    BufferedOutputStream bos = IO.bf(out);
     
     StringBuffer start = new StringBuffer();
     start.append(HYFENS).append(BOUNDARY).append(CRLF)
@@ -294,32 +296,32 @@ public class HttpInputStream extends HeaderEncryptable {
         .append(BOUNDARY_XML_START)
         .append(BOUNDARY_CONTENT_START);
     
-    StreamUtils.write(start.toString(), bos);
-    IO.tr(buffer.getInputStream(), bos);
-    StreamUtils.write(BOUNDARY_CONTENT_END, bos);
-    StreamUtils.write(BOUNDARY_XML_END, bos);
-    StreamUtils.write(CRLF+CRLF, bos);
+    StreamUtils.write(start.toString(), out);
+    IO.tr(buffer.getInputStream(), out);
+    StreamUtils.write(BOUNDARY_CONTENT_END, out);
+    StreamUtils.write(BOUNDARY_XML_END, out);
+    StreamUtils.write(CRLF, out);
     out.flush();
   }
   
   
   public static void main(String[] args) throws IOException {
     StringBuffer start = new StringBuffer();
-    start.append(CRLF).append(HYFENS).append(BOUNDARY)
-        .append(CRLF).append(HD_CONTENT_DISPOSITION)
+    start.append(HYFENS).append(BOUNDARY).append(CRLF)
+        .append(HD_CONTENT_DISPOSITION)
         .append(": ").append(VALUE_DISPOSITION_FORM_DATA)
-        .append("; ").append(NAME_INPUTSTREAM)
-        .append(CRLF).append(HD_CONTENT_TYPE_OCTETSTREAM);
+        .append("; ").append(NAME_INPUTSTREAM).append(CRLF)
+        .append(HD_CONTENT_TYPE_OCTETSTREAM)
+        .append(BOUNDARY_XML_START)
+        .append(BOUNDARY_CONTENT_START);
     
-    start.append(BOUNDARY_XML_START)
-        .append(BOUNDARY_CONTENT_START)
-        //content goes here
-        .append(BOUNDARY_CONTENT_END)
-        .append(BOUNDARY_XML_END);
+    start.append(BOUNDARY_CONTENT_END)
+        .append(BOUNDARY_XML_END).append(CRLF);
     
     System.out.println("* static content:");
     System.out.println(start);
-    System.out.println("* STATIC_SIZE = "+ start.length());
+    StringByteConverter scv = new StringByteConverter();
+    System.out.println("* STATIC_SIZE = "+ scv.convert(start.toString()).length+ ", "+ start.length());
     System.out.println();
     
     

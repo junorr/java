@@ -54,7 +54,7 @@ public class HttpBuilder implements HttpConst {
    * Tamanho estático da saída gerada por <code>HttpBuilder</code>, sem
    * considrar o tamanho dos cabeçalhos adicionados.
    */
-  public static final int STATIC_SIZE = 28;
+  public static final int STATIC_SIZE = 25;
   
   
   private final List<Header> hds;
@@ -341,6 +341,12 @@ public class HttpBuilder implements HttpConst {
     nullarg(OutputStream.class, out);
     if(hds.isEmpty()) return;
     
+    boolean post = false;
+    for(Header h : hds) {
+      if(h.isContentHeader() && !(h instanceof PlainContent))
+        post = true;
+    }
+    
     boolean content = false;
     int idx = 0;
     for(int i = 0; i < hds.size(); i++) {
@@ -358,6 +364,8 @@ public class HttpBuilder implements HttpConst {
       new Header(HD_CONTENT_LENGTH, String.valueOf(getLength()))
           .writeContent(out);
     
+      StreamUtils.write(CRLF, out);
+    
       for(int i = idx; i < hds.size(); i++) {
         if(hds.get(i).isContentHeader()) {
           hds.get(i).writeContent(out);
@@ -366,13 +374,12 @@ public class HttpBuilder implements HttpConst {
     }
     
     StringBuffer end = new StringBuffer();
-    if(content) {
+    if(content && post) {
       end.append(HYFENS)
           .append(BOUNDARY).append(HYFENS);
       StringByteConverter cv = new StringByteConverter();
       out.write(cv.convert(end.toString()));
     }
-    StreamUtils.write(CRLF, out);
     StreamUtils.write(CRLF, out);
     StreamUtils.write(CRLF, out);
     out.flush();
@@ -381,16 +388,10 @@ public class HttpBuilder implements HttpConst {
   
   public static void main(String[] args) throws IOException {
     StringBuilder end = new StringBuilder();
-    end.append(CRLF).append(HYFENS)
-        .append(BOUNDARY).append(HYFENS);
-        //.append(CRLF).append(CRLF);
-    StringByteConverter cv = new StringByteConverter();
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    bos.write(cv.convert(end.toString()));
-    StreamUtils.writeEOF(bos);
-    System.out.println("* STATIC_SIZE = "+ bos.size());
-    end.append("EOF");
-    System.out.println(" str.length="+ end.length());
+    end.append(HYFENS)
+        .append(BOUNDARY).append(HYFENS)
+        .append(CRLF).append(CRLF);
+    System.out.println("* STATIC_SIZE = "+ end.length());
     System.out.println();
     
     HttpBuilder hb = new HttpBuilder();
@@ -418,7 +419,6 @@ public class HttpBuilder implements HttpConst {
     hin.setGZipCoderEnabled(true);
     
     hb.put(hin);
-    OutputStream out = new FileOutputStream("d:/http-builder.txt");
     hb.writeContent(System.out);
   }
   

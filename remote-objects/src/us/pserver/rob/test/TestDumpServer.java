@@ -21,10 +21,18 @@
 
 package us.pserver.rob.test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import us.pserver.cdr.StringByteConverter;
+import us.pserver.http.HttpBuilder;
+import static us.pserver.http.HttpConst.HD_CONTENT_TYPE;
+import us.pserver.http.PlainContent;
+import us.pserver.http.ResponseLine;
+import us.pserver.streams.IO;
 import us.pserver.streams.StreamUtils;
 
 /**
@@ -37,14 +45,32 @@ public class TestDumpServer {
   
   public static void main(String[] args) throws IOException, InterruptedException {
     //http://localhost:36000/?obj=a&mth=compute&types=int%3Bint&args=5%3B3
-    System.out.println("* Listening on localhost:35000");
+    System.out.println("* Listening on localhost:45000");
     ServerSocket srv = new ServerSocket();
-    srv.bind(new InetSocketAddress("localhost", 35000));
-    Socket sock = srv.accept();
-    Thread.sleep(500);
-    System.out.println("* Connection Received: "+ sock);
-    StreamUtils.transfer(sock.getInputStream(), System.out);
-    //sock.close();
+    srv.bind(new InetSocketAddress("localhost", 45000));
+    
+    while(true) {
+      Socket sock = srv.accept();
+      Thread.sleep(500);
+      System.out.println("* Connection Received: "+ sock);
+      StreamUtils.transfer(sock.getInputStream(), System.out);
+      System.out.println("---------------------------------------");
+      
+      StringByteConverter scv = new StringByteConverter();
+      InputStream in = TestDumpServer.class.getClass().getResourceAsStream("/us/pserver/rob/channel/rob-post.html");
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      IO.tc(in, bos);
+    
+      HttpBuilder builder = HttpBuilder.responseBuilder(new ResponseLine(200, "OK"));
+      builder.remove(HD_CONTENT_TYPE);
+      builder.put(HD_CONTENT_TYPE, "text/html");
+      PlainContent pc = new PlainContent(scv.reverse(bos.toByteArray()));
+      builder.put(new PlainContent(scv.reverse(bos.toByteArray())));
+      //builder.writeContent(System.out);
+      builder.writeContent(sock.getOutputStream());
+      sock.getOutputStream().flush();
+      sock.shutdownOutput();
+    }
     //srv.close();
   }
   

@@ -86,7 +86,7 @@ public class TestHttpPostServer {
   }
     
   public static void main(String[] args) {
-    NetConnector nc = new NetConnector("localhost", 35000);
+    NetConnector nc = new NetConnector("0.0.0.0", 9035);
     Credentials cr = new Credentials("juno", "32132155".getBytes());
     ObjectContainer oc = new ObjectContainer(
         new Authenticator(new SingleCredentialsSource(cr)));

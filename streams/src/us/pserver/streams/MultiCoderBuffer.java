@@ -603,7 +603,7 @@ public class MultiCoderBuffer {
       os = createOutput(cd, os);
       InputStream is = this.getInputStream();
       long l = IO.tr(is, os);
-      System.out.println("MultiCoderBuffer.encode["+ cd+ "]="+ l);
+      //System.out.println("MultiCoderBuffer.encode["+ cd+ "]="+ l);
       os.close();
       if(this.channel != null) {
         channel.close();
@@ -635,7 +635,7 @@ public class MultiCoderBuffer {
       OutputStream os = buf.getOutputStream();
       InputStream is = createInput(cd, this.getInputStream());
       long l = IO.tr(is, os);
-      System.out.println("MultiCoderBuffer.decode["+ cd+ "]="+ l);
+      //System.out.println("MultiCoderBuffer.decode["+ cd+ "]="+ l);
       os.close();
       if(this.channel != null) {
         channel.close();

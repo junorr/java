@@ -22,10 +22,6 @@
 package us.pserver.rob.test;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import us.pserver.rob.channel.HttpRequestChannel;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.channel.Transport;
@@ -36,7 +32,6 @@ import us.pserver.rob.channel.Transport;
  * @version 1.0 - 13/06/2014
  */
 public class TestHttpRequest {
-
   
   public static void main(String[] args) throws IOException {
     NetConnector nc = new NetConnector("172.24.77.6", 9099);

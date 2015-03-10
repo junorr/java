@@ -102,7 +102,6 @@ public abstract class StreamUtils {
     
     while((read = in.read(buf)) > 0) {
       total += read;
-      if(read < 1) System.out.println("StreamUtils.transfer.read="+ read);
       out.write(buf, 0, read);
       if(read < buf.length) break;
       int len = (read < 30 ? read : 30);

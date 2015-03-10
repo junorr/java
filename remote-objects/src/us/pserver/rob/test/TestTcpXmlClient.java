@@ -21,14 +21,20 @@
 
 package us.pserver.rob.test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import us.pserver.rob.MethodInvocationException;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.RemoteMethod;
 import us.pserver.rob.RemoteObject;
 import us.pserver.rob.container.Credentials;
 import us.pserver.rob.factory.DefaultFactoryProvider;
+import us.pserver.streams.IO;
 
 /**
  *
@@ -37,13 +43,15 @@ import us.pserver.rob.factory.DefaultFactoryProvider;
  */
 public class TestTcpXmlClient {
 
-  public static void main(String[] args) throws MethodInvocationException, UnsupportedEncodingException {
+  public static void main(String[] args) throws MethodInvocationException, UnsupportedEncodingException, IOException {
     NetConnector nc = new NetConnector("localhost", 35000);
     RemoteObject rob = new RemoteObject(nc, DefaultFactoryProvider.factory()
         .enableCryptography()
         .enableGZipCompression()
         .getConnectorXmlChannelFactory());
     Credentials cr = new Credentials("juno", "32132155".getBytes());
+    
+    //----- a.compute() -----
     RemoteMethod mth = new RemoteMethod()
         .forObject("a")
         .method("compute")
@@ -54,12 +62,42 @@ public class TestTcpXmlClient {
     double res = (double) rob.invoke(mth);
     System.out.println("* invoking: "+ mth+ " = "+ res);
 
+    //----- a.round() -----
     mth = new RemoteMethod()
         .forObject("a")
         .method("round")
         .types(double.class, int.class)
         .params(res, 3)
         .credentials(cr);
+    System.out.println("* invoking: "+ mth+ " = "+ rob.invoke(mth));
+    
+    //----- b.readFile() -----
+    mth = new RemoteMethod()
+        .forObject("b")
+        .method("readFile")
+        .types(String.class)
+        .params("/home/juno/freemem")
+        .credentials(cr);
+    
+    InputStream in = (InputStream) rob.invoke(mth);
+    System.out.println("* invoking: "+ mth+ " = "+ in);
+    long l = IO.tc(in, Files.newOutputStream(
+        Paths.get("/home/juno/rob-freemem"), 
+        StandardOpenOption.WRITE, 
+        StandardOpenOption.CREATE));
+    System.out.println("IO.tc(): "+ l);
+    
+    //----- b.writeFile() -----
+    mth = new RemoteMethod()
+        .forObject("b")
+        .method("writeFile")
+        .types(InputStream.class, String.class)
+        .addParam(Files.newInputStream(
+            Paths.get("/home/juno/freemem"), 
+            StandardOpenOption.READ))
+        .addParam("/home/juno/rob-freemem2")
+        .credentials(cr);
+    
     System.out.println("* invoking: "+ mth+ " = "+ rob.invoke(mth));
     
     rob.close();

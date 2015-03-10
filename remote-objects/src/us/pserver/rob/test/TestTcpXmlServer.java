@@ -21,6 +21,15 @@
 
 package us.pserver.rob.test;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import us.pserver.chk.Checker;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.container.Authenticator;
 import us.pserver.rob.container.Credentials;
@@ -28,6 +37,7 @@ import us.pserver.rob.container.ObjectContainer;
 import us.pserver.rob.container.SingleCredentialsSource;
 import us.pserver.rob.factory.DefaultFactoryProvider;
 import us.pserver.rob.server.NetworkServer;
+import us.pserver.streams.IO;
 
 /**
  *
@@ -36,30 +46,56 @@ import us.pserver.rob.server.NetworkServer;
  */
 public class TestTcpXmlServer {
 
+  static class A {
+    double compute(int a, int b) {
+      return a / (double)b;
+    }
+    
+    String info() { return "Hello from "+ getClass(); }
+    
+    double round(double d, int decSize) {
+      int dec = (int) d;
+      double size = (int) Math.pow(10.0, decSize);
+      double frc = (d - dec) * size;
+      return dec + (Math.round(frc) / size);
+    }
+  }
+    
+  static class B {
+    public InputStream readFile(String fname) throws IOException {
+      Checker.nullstr(fname);
+      Path p = Paths.get(fname);
+      if(!Files.exists(p))
+        throw new FileNotFoundException(fname);
+      return Files.newInputStream(p, 
+          StandardOpenOption.READ);
+    }
+    
+    String info() { return "Hello from "+ getClass(); }
+    
+    public long writeFile(InputStream in, String fname) throws IOException {
+      Checker.nullarg(InputStream.class, in);
+      Checker.nullstr(fname);
+      Path p = Paths.get(fname);
+      OutputStream out = Files.newOutputStream(p, 
+          StandardOpenOption.CREATE, 
+          StandardOpenOption.APPEND, 
+          StandardOpenOption.WRITE);
+      return IO.tc(in, out);
+    }
+  }
+    
   public static void main(String[] args) {
     NetConnector nc = new NetConnector("localhost", 35000);
-    class A {
-      double compute(int a, int b) {
-        return a / (double)b;
-      }
-      String info() { return "Hello from "+ getClass(); }
-      double round(double d, int decSize) {
-        int dec = (int) d;
-        double size = (int) Math.pow(10.0, decSize);
-        double frc = (d - dec) * size;
-        return dec + (Math.round(frc) / size);
-      }
-    }
-    A a = new A();
     Credentials cr = new Credentials("juno", "32132155".getBytes());
     ObjectContainer oc = new ObjectContainer(
         new Authenticator(new SingleCredentialsSource(cr)));
-    oc.put("a", a);
+    oc.put("a", new A()).put("b", new B());
     NetworkServer srv = new NetworkServer(oc, nc, 
         DefaultFactoryProvider.factory()
             .enableCryptography()
             .enableGZipCompression()
-            .getSocketXmlChannelFactory());//HttpResponseChannelFactory());
+            .getSocketXmlChannelFactory());
     srv.start();
   }
   
