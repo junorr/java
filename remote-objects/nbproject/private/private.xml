@@ -6,8 +6,10 @@
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/factory/ConnectorChannelFactory.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestRClient2.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestGetServer.java</file>
+            <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestTcpXmlServer.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/channel/HttpRequestChannel.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestRClient.java</file>
+            <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestHttpRequest.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/NetConnector.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestMethodChain.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/channel/GetRequestChannel.java</file>
@@ -16,6 +18,7 @@
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/channel/GetResponseChannel.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestRServer.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/server/NetworkServer.java</file>
+            <file>file:/storage/java/remote-objects/src/us/pserver/rob/channel/rob-post.html</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestRClient1.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/OpResult.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/server/Invoker.java</file>
@@ -24,10 +27,12 @@
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestXmlServer.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestDumpServer.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/RemoteObject.java</file>
+            <file>file:/storage/java/remote-objects/src/us/pserver/rob/channel/rob-fupload.html</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestHttpPostClient.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/channel/TcpXmlChannel.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestByteCoder.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/MethodChain.java</file>
+            <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestTcpXmlClient.java</file>
         </group>
     </open-files>
 </project-private>

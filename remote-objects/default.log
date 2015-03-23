@@ -144,3 +144,14 @@
 [INFO ] (10/03/2015 17:54:53): Handling socket: Socket[addr=/127.0.0.1,port=56268,localport=35000]
 [INFO ] (10/03/2015 17:54:53): Remote request: a.compute( 5, 3 )
 [INFO ] (10/03/2015 17:54:53): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (10/03/2015 18:03:56): Starting NetworkServer...
+[INFO ] (10/03/2015 18:03:56): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (10/03/2015 18:03:56): Listening on: NetConnector{ 0.0.0.0:9035 }
+[INFO ] (10/03/2015 18:03:56): Server started!
+
+[INFO ] (10/03/2015 18:04:19): ------------------------------
+[INFO ] (10/03/2015 18:04:19): Handling socket: Socket[addr=/127.0.0.1,port=60547,localport=9035]
+[INFO ] (10/03/2015 18:04:19): Connection closed by client.
+[INFO ] (10/03/2015 18:04:19): ------------------------------
+[INFO ] (10/03/2015 18:04:19): Handling socket: Socket[addr=/127.0.0.1,port=60548,localport=9035]
+[INFO ] (10/03/2015 18:04:19): Connection closed by client.
