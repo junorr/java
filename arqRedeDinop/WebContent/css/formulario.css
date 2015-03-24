@@ -1,0 +1,124 @@
+@CHARSET "ISO-8859-1";
+
+.formulario {
+	font: normal 12px Arial;
+	color: #1062A9;
+	padding: 14.4px;
+	padding-left: 0;
+}
+
+.error {
+	color: red;
+}
+
+/*
+.formularioLogoTotal {
+	width: 300px;
+	height: 38px;
+	background-color: #F8F600;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+*/
+.formularioLogo {
+	background: url("../images/logo_faixa.png") no-repeat;
+	float: left;
+	width: 960px;
+	height: 38px;
+	margin-left: -19px;
+}
+
+.fomularioTitulo {
+	float: right;
+	font-size: 14px;
+	font-weight: bold;
+	margin-top: 20px;
+}
+
+.formularioLinha {
+	margin-top: 2.16px;
+	border-bottom: thin solid #1062A9;
+	height: 21.84px;
+	margin-left: 28.8px;
+	margin-right: 28.8px;
+	display: 
+;
+	width: 90%;
+}
+
+.formularioLinha.selected {
+	background-color: #EDEDF5;
+}
+
+.formularioLinha.selected input {
+	background-color: #D3E4FF;
+}
+
+.formularioLinha.selected textarea {
+	background-color: #D3E4FF;
+}
+
+.formularioCampo {
+	padding-left: 2px;
+	float: left;
+	border-left: 3.6px solid #F8F400;
+}
+
+.formulario input, textarea { 
+	/*border: thin solid #CCCCCC;
+	border-bottom-left-radius: 3px 3px; 
+	border-bottom-right-radius: 3px 3px;
+	border-top-left-radius: 3px 3px;
+	border-top-right-radius: 3px 3px;*/
+	border: 0;
+}
+
+.lblTitulo {
+	margin-left: 28.8px;
+	font-size: 8px;
+	font-weight: bold;
+}
+
+.lblsubTitulo {
+	margin-left: 28.8px;
+	font-size: 7px;
+	font-weight: bold;
+}
+
+.tabela {
+	margin-top: 50px;
+	font: normal 12px Arial;
+	color: #1062A9;
+	margin-left: 28.8px;
+	width: 90%;
+	border-collapse: collapse;
+}
+
+.tabela tr th {
+	background-color: #EDEDF5;
+	/*padding-bottom: 15px;*/
+	border-bottom: thin solid #1062A9;
+	border-left: thin solid #1062A9;
+	height: 24px;
+}
+
+.tabela tr.selected {
+	background-color: #D3E4FF;
+	cursor: point;
+}
+
+.tabela tr th:FIRST-CHILD {
+	border-left: 3.6px solid #F8F400;
+	border-bottom: thin solid #1062A9;
+}
+
+.tabela tr td {
+	height: 24px;
+	border-bottom: thin solid #1062A9;
+	border-left: thin solid #1062A9;
+}
+
+.tabela tr td:FIRST-CHILD {
+	border-left: 3.6px solid #F8F400;
+	border-bottom: thin solid #1062A9;
+}

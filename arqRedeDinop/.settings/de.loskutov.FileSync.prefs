@@ -1,0 +1,14 @@
+WARNING=DO NOT MODIFY THIS FILE IF YOU DON'T UNDERSTAND
+defaultDestination=S\:/webapps/ci
+defaultVariables=
+eclipse.preferences.version=1
+includeTeamPrivateFiles=false
+map|0=WebContent/css|S\:/webapps/arqRedeDinop/css|,|,|,
+map|1=WebContent/images|S\:/webapps/arqRedeDinop/images|,|,|,
+map|2=build/classes/br/com/bb/dinop/ci|S\:/webapps/arqRedeDinop/WEB-INF/classes/br/com/bb/dinop/ci|,|,|,
+map|3=WebContent/js|S\:/webapps/arqRedeDinop/js|,|,|,
+map|4=WebContent/META-INF|S\:/webapps/arqRedeDinop/META-INF|,|,|,
+map|5=WebContent/testeira|S\:/webapps/arqRedeDinop/testeira|,|,|,
+map|6=WebContent/WEB-INF/lib|S\:/webapps/arqRedeDinop/WEB-INF/lib|,|,|,
+map|7=WebContent/WEB-INF/tld|S\:/webapps/arqRedeDinop/WEB-INF/tld|,|,|,
+useCurrentDateForDestinationFiles=false

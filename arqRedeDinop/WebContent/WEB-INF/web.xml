@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <filter>
+     <filter-name>FiltroSeguranca</filter-name>
+     <filter-class>br.com.bb.sso.api.filter.FiltroSeguranca</filter-class>
+  </filter>
+  <filter-mapping>
+     <filter-name>FiltroSeguranca</filter-name>
+     <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <display-name>arqRedeDinop</display-name>
+  <servlet>
+    <servlet-name>exiba</servlet-name>
+    <servlet-class>br.com.bb.dinop.servlet.ExibaGenerico</servlet-class>
+    <init-param>
+      <description>parametro com caminho para o mapping contendo os aliases de comando</description>
+      <param-name>action-mappings</param-name>
+      <param-value>br/com/bb/dinop/arqRedeDinop/mappings</param-value>
+    </init-param>
+    <init-param>
+      <description>parametro com alias para a classe que trata de upload de binários</description>
+      <param-name>upload-alias</param-name>
+      <param-value>arqRedeDinop.upload</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>exiba</servlet-name>
+    <url-pattern>/exiba</url-pattern>
+  </servlet-mapping>
+  
+  <!-- servlet>
+ 	<servlet-name>oimundo</servlet-name>
+ 	<servlet-class>br.com.bb.dinop.arqRedeDinop.servlet.OiMundo</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>oimundo</servlet-name>
+  	<url-pattern>/oi</url-pattern>
+  </servlet-mapping -->
+  
+  
+  <servlet>
+ 	<servlet-name>uploadfile</servlet-name>
+ 	<servlet-class>br.com.bb.dinop.arqRedeDinop.servlet.UploadFile</servlet-class>
+    <init-param>
+      <description>Caminho para upload de arquivos</description>
+      <param-name>upload_path</param-name>
+      <param-value>/dados/arquivos/arqRedeDinop/atb/</param-value>
+    </init-param>
+    <init-param>
+      <description>Tamanho máximo (em bytes) para upload de arquivos</description>
+      <param-name>max_file_size</param-name>
+      <param-value>10485760</param-value>
+    </init-param>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>uploadfile</servlet-name>
+  	<url-pattern>/uploadfile</url-pattern>
+  </servlet-mapping>
+  
+  
+  <context-param>
+    <description>Códigos UOR autorizados a efetuar upload de arquivos</description>
+    <param-name>upload_allowed_uors</param-name>
+    <param-value>283235, 283269</param-value>
+  </context-param>
+  <context-param>
+    <description>Códigos de Comissões autorizados a efetuar upload de arquivos</description>
+    <param-name>upload_allowed_cmss</param-name>
+    <param-value> </param-value>
+  </context-param>
+  <context-param>
+    <description>Matrículas autorizadas a efetuar upload de arquivos</description>
+    <param-name>upload_allowed_chaves</param-name>
+    <param-value> </param-value>
+  </context-param>
+  
+  
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <login-config>
+    <auth-method>BASIC</auth-method>
+  </login-config>
+  <servlet>
+    <description></description>
+    <display-name>Close</display-name>
+    <servlet-name>Close</servlet-name>
+    <servlet-class>br.com.bb.sso.api.logout.Logout</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Close</servlet-name>
+    <url-pattern>/Close</url-pattern>
+  </servlet-mapping>
+  <!-- DWR -->
+  <servlet>
+  	<servlet-name>dwr-invoker</servlet-name>
+  	<!-- <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class> -->
+  	<servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
+  	<init-param>
+  		<param-name>debug</param-name>
+  		<param-value>false</param-value>
+  	</init-param>
+  	<init-param>
+   		<param-name>activeReverseAjaxEnabled</param-name>
+   		<param-value>true</param-value>
+ 	</init-param>
+ 	<init-param>
+ 		<param-name>maxWaitAfterWrite</param-name>
+ 		<param-value>100</param-value>
+ 	</init-param>
+ 	<init-param>
+   		<param-name>pollAndCometEnabled</param-name>
+   		<param-value>true</param-value>
+ 	</init-param>
+ 	<init-param>
+   		<param-name>org.directwebremoting.extend.ServerLoadMonitor</param-name>
+   		<param-value>org.directwebremoting.impl.PollingServerLoadMonitor</param-value>
+ 	</init-param>
+ 	 
+ 	<init-param>
+ 		<param-name>disconnectedTime</param-name>
+ 		<param-value>120000</param-value>
+ 	</init-param>
+ 	
+ 	<init-param>
+      <param-name>accessLogLevel</param-name>
+      <param-value>runtimeexception</param-value>
+    </init-param>
+    <!-- By default DWR creates application scope objects when they are first
+    used. This creates them when the app-server is started -->
+    <init-param>
+      <param-name>initApplicationScopeCreatorsAtStartup</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <!-- WARNING: allowing JSON-RPC connections bypasses much of the security
+    protection that DWR gives you. Take this out if security is important -->
+    <init-param>
+      <param-name>jsonRpcEnabled</param-name>
+      <param-value>true</param-value>
+    </init-param>
+
+    <!-- WARNING: allowing JSONP connections bypasses much of the security
+    protection that DWR gives you. Take this out if security is important -->
+    <init-param>
+      <param-name>jsonpEnabled</param-name>
+      <param-value>true</param-value>
+    </init-param>
+
+    <!-- data: URLs are good for small images, but are slower, and could OOM for
+    larger images. Leave this out (or keep 'false') for anything but small images -->
+    <init-param>
+      <param-name>preferDataUrlSchema</param-name>
+      <param-value>false</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>dwr-invoker</servlet-name>
+  	<url-pattern>/dwr/*</url-pattern>
+  </servlet-mapping>
+ <!-- FIM DWR -->
+ 
+  <listener>  
+  	<listener-class>br.com.bb.dinop.servlet.CounterSessionListener</listener-class>  
+  </listener>
+ 
+</web-app>

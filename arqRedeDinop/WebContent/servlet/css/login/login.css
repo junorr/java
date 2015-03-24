@@ -1,0 +1,9 @@
+body{background:#ccddee url("../../img/login/login_back.png") repeat-x 0 0;font: bold 12px Arial,sans-serif;color:#3085B6;margin:65px 0px 0px 80px;}
+#logo{position:absolute;width:54px;height:56px;right:15px;top:10px;background: url("../../img/login/login_sprite.png");}
+h1{font-size: 25px;margin: 16px 0;}
+label{display: block;}
+input{font-size: 11px;color: #000;border:1px solid #4C8696;background-color:#FFFCD7;margin-bottom:3px;padding:0 2px;width:150px;height:14px;}
+#entrar{font-size:8px;color:#FFF;padding:0px;background-color:#3493c5;margin-left:5px;width:50px;height:16px;}
+.termo{display:block;font-size:10px;font-weight:normal;color:#004078;height:37px;background:url("../../img/login/login_sprite.png") no-repeat -54px 0;padding:10px 0 0 40px;margin:5px 0;}
+a{color: #004078;}
+#noticias{width:500px;}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<queries>
+	<query group='arqRedeDinop' dcr='Consultas do arqRedeDinop'>
+		<sql name='listaArquivos'><![CDATA[
+			SELECT 
+				CD_ARQ, NM_ARQ, LABEL, CD_UOR, DT_ATL, LINK, DCR
+			FROM
+				arqRedeDinop.tb_arquivos
+			WHERE
+				$where
+				AND LABEL = '$label'
+			;
+ 		]]></sql>
+		<sql name='insertArqLog'><![CDATA[
+			INSERT INTO	arqRedeDinop.tb_arq_log (
+				CD_ARQ, CD_USU, CD_CMSS, CD_PRF, CD_UOR, DT_LOG
+			) VALUES (
+				?, ?, ?, ?, ?, NOW()
+			)
+			;
+ 		]]></sql>
+		<sql name='listaArqJRDC'><![CDATA[
+			SELECT 
+				CD_ARQ, NM_ARQ, LABEL, CD_UOR, DT_ATL, LINK, DCR
+			FROM
+				arqRedeDinop.tb_arquivos
+			WHERE
+				CD_UOR IN (SELECT CD_UOR FROM mstNovo.depe_hrqo WHERE depe_hrqo.CD_UOR_HRQO = $where)
+				AND LABEL = '$label'
+			;
+ 		]]></sql>
+	</query>
+</queries>

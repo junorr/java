@@ -1,0 +1,112 @@
+.footerLinha {
+    background: none repeat scroll 0 0 #0058A3;
+    height: 2px;
+}
+
+#extraContent{
+	font-family: arial,verdana,sans-serif;
+	background-color: #FFFFFF;
+    border: 1px solid black;
+    border-radius: 5px 5px 5px 5px;
+    display: none;
+    padding: 5px;
+}
+
+#extraContent div.title{
+	color: #0058A3;
+    font-size: 21px;
+    font-weight: bolder;
+    text-align: center;
+}
+
+#extraContent div.menuDireita{
+	display: none;
+}
+
+#extraContent div.grid_1{
+	display: none;
+}
+
+#newsLogo{
+	display: none;
+}
+
+#extraContent div.boxlinha{
+	background-color: #8D8E8E;
+    height: 1px;
+    width: 940px;
+    margin-bottom: 10px;
+}
+
+
+
+
+.newsDets{
+	margin: 5px;
+	font-size: 11px;
+	font-weight: bolder;
+}
+
+.newsDetEsquerda{
+	float: left;
+}
+
+.newsDetDireita{
+	float: right;
+}
+
+
+.newsAnexos{
+	border: 2px groove #0058A3;
+    border-radius: 5px 5px 5px 5px;
+    height: auto;
+    margin-right: 5px;
+    max-height: 100px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.newsAnexos div.title{
+	color: #0058A3;
+    font-size: 11px;
+    font-weight: bolder;
+    height: 10px;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.newsAnexos div.title span{
+	left: 0;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.newsAnexos div.title span img{
+	height: auto;
+	width: 20px;
+	cursor: pointer;
+}
+
+.newsAnexos ul li{
+	list-style: none outside none;
+    text-decoration: none;
+}
+
+.imgGrid img{
+	height: auto;
+	height: 50px;
+	width: auto;
+	cursor: pointer;
+	padding: 5px;
+	border-radius: 5px;
+	float: left;
+}
+
+.newsTxt{
+	font-size: 12px;
+}
+
+button{
+	display: none;
+}

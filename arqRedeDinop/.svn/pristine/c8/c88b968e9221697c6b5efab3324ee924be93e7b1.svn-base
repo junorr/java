@@ -1,0 +1,5 @@
+LogSql=false
+ChecaAcesso=true
+ConexaoDB=true
+ChecaAtivo=true
+Autenticar=true

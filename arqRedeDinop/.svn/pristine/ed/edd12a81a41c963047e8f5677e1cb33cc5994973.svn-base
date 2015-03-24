@@ -1,0 +1,241 @@
+<%@page language="java" trimDirectiveWhitespaces="true" contentType="text/html; charset=ISO-8859-1"%>
+<%@taglib uri="/WEB-INF/tld/c.tld" prefix="c"%>
+<%@taglib uri="/WEB-INF/tld/fmt.tld" prefix="fmt"%>
+<fmt:setLocale value="pt_BR" />
+
+<style>
+	.fmtComment {
+		font-size: 14;
+		color: gray;
+	}
+</style>
+
+<h3 style="left: 0px;">Arquivos Principais</h3>
+<table  class="tbArquivos">
+	<thead>
+		<tr>
+			<th>Nome</th>
+			<th>Cod. UOR</th>
+			<th>Data Atualização</th>	
+			<th>Descrição</th>
+			<th>Baixar</th>
+		</tr>
+	</thead>
+	<tbody>
+		<c:forEach items="${arquivos}" var="arq">
+		<tr>
+			<td><a href="/arqRedeDinop/exiba?cmdo=arqRedeDinop.filedownload&arqId=${arq.id}&label=${arq.label}">${arq.nome}</a></td>
+			<td>${arq.uor}</td>
+			<td><fmt:formatDate value="${arq.atualizacao}" pattern="dd/MM/yyyy HH:mm:ss" var="dtAtl" ></fmt:formatDate>${dtAtl}</td>
+			<td>${arq.descricao}</td>
+			<td>
+				<center>
+				<a href="/arqRedeDinop/exiba?cmdo=arqRedeDinop.filedownload&arqId=${arq.id}&label=${arq.label}">
+					<img src="/arqRedeDinop/images/download.png" 
+						 alt="Baixar Arquivo" style="width: 20px; height: 20px;"></img>
+				</a>
+				</center>
+			</td>
+		</tr>
+		</c:forEach>
+	</tbody>
+</table>
+<br/>
+<div style="${auxiliares.isEmpty() ? 'visibility: hidden; height: 1px;' : 'visibility: visible;'}">
+<h3 style="left: 0px;">Arquivos Auxiliares</h3>
+<table  class="tbArqAuxiliares">
+	<thead>
+		<tr>
+			<th>Nome</th>
+			<th>Data Atualização</th>	
+			<th>Descrição</th>
+			<th>Baixar</th>
+		</tr>
+	</thead>
+	<tbody>
+		<c:forEach items="${auxiliares}" var="aux">
+		<tr>
+			<td><a href="/arqRedeDinop/exiba?cmdo=arqRedeDinop.filedownload&arqId=${aux.id}&label=${aux.label}">${aux.nome}</a></td>
+			<td><fmt:formatDate value="${aux.atualizacao}" pattern="dd/MM/yyyy HH:mm:ss" var="dtAtl" ></fmt:formatDate>${dtAtl}</td>
+			<td>${aux.descricao}</td>
+			<td>
+				<center>
+				<a href="/arqRedeDinop/exiba?cmdo=arqRedeDinop.filedownload&arqId=${aux.id}&label=${aux.label}">
+					<img src="/arqRedeDinop/images/download.png" 
+						 alt="Baixar Arquivo" style="width: 20px; height: 20px;"></img>
+				</a>
+				</center>
+			</td>
+		</tr>
+		</c:forEach>
+	</tbody>
+</table>
+</div>
+<br />
+<span class='fmtComment'>
+	${(arquivos.isEmpty() ? '' 
+		: (arquivos.get(0).label == 'atb' ? 'Arquivos no formato planilha excel (xls)' 
+			: 'Os arquivos encontram-se em formato texto, com as colunas separadas por tabulação'))}
+</span>
+
+
+<script>
+	
+	$(document).ready(function() {		
+		$(".tbArqAuxiliares tbody").on('click', function(event) {
+			$(oTableExample.fnSettings().aoData).each(function (){
+				$(this.nTr).removeClass('row_selected');
+			});
+			$(event.target.parentNode).addClass('row_selected');
+		});
+		
+		$(document).ready(function() {
+			$('.tbArqAuxiliares tbody tr').on('click', function() {
+				$('.tbArqAuxiliares tbody tr').removeClass('selected');
+				$(this).addClass('selected');
+			});
+		});
+		$('.tbArqAuxiliares tbody tr').mouseenter(function(){
+				if($(this).hasClass('odd')){
+					$('td', $(this)).addClass("inside");	
+				}else if($(this).hasClass('even')){
+					$('td', $(this)).addClass("inside");
+				}else{
+					$(this).css('cursor', 'default');
+				}
+		});
+		$('.tbArqAuxiliares tbody tr').mouseleave(function(){
+			if($(this).hasClass('odd')){
+				$('td', $(this)).removeClass("inside");	
+			}else if($(this).hasClass('even')){
+				$('td', $(this)).removeClass("inside");	
+			}else{
+				$(this).css('cursor', 'default');
+			}
+		});
+	    var oTableExample = $('.tbArqAuxiliares').dataTable( {
+	    	"sDom": '<"H"Tfrl>t<"F"ip>',
+            "oTableTools": {
+                "aButtons": [
+					{
+					    "sExtends": "copy",
+					    "sButtonText": "Copiar"
+					},
+                    {
+                        "sExtends": "print",
+                        "sButtonText": "Imprimir"
+                    }
+                ]
+            },
+            
+	    	"bJQueryUI": true,
+			"bStateSave": true,
+			"bLengthChange": true,
+			"iDisplayLength": 30,
+			"aLengthMenu":[[30,50,100,-1],[30,50,100,"Todos"]],
+			"oLanguage": {
+		      "oPaginate": {
+		        "sNext": "Próximo",
+		   		"sPrevious": "Prévio",
+		   		"sEmptyTable": "Não há dados disponíveis.",
+		   		"sInfo": "Total de _TOTAL_ registros filtrados (_START_ to _END_)",
+		   		"sInfoEmpty": "Não há registros disponíveis",
+		   		"sInfoFiltered": " - filtrando de _MAX_ records",
+		   		"sInfoPostFix": "Todos os registros selecionados advém de informações reais.",
+		   		"sLoadingRecords": "Favor, aguarde - carregando...",
+		   		"sSearch": "Registros filtrados:"
+		      }
+		    },
+//		    "sScrollX": "100%",
+		    "bDestroy":  true,
+		    "bRetrieve": true,
+//		    "aoColumns": 
+		    //"bAutoWidth": true
+//		    "aoColumns": [
+//						  { "sWidth": "150px"},
+//						  { "sWidth": "250px"},
+//						  { "sWidth": "450px"},
+//			              { "sWidth": "50px"},
+//			              { "sWidth": "50px"}
+//			]
+	    });
+		
+		$(".tbArquivos tbody").on('click', function(event) {
+			$(oTableExample.fnSettings().aoData).each(function (){
+				$(this.nTr).removeClass('row_selected');
+			});
+			$(event.target.parentNode).addClass('row_selected');
+		});
+		
+		$(document).ready(function() {
+			$('.tbArquivos tbody tr').on('click', function() {
+				$('.tbArquivos tbody tr').removeClass('selected');
+				$(this).addClass('selected');
+			});
+		});
+		$('.tbArquivos tbody tr').mouseenter(function(){
+			if($(this).hasClass('odd')){
+				$('td', $(this)).addClass("inside");	
+			}else if($(this).hasClass('even')){
+				$('td', $(this)).addClass("inside");
+			}else{
+				$(this).css('cursor', 'default');
+			}
+		});
+		$('.tbArquivos tbody tr').mouseleave(function(){
+			if($(this).hasClass('odd')){
+				$('td', $(this)).removeClass("inside");	
+			}else if($(this).hasClass('even')){
+				$('td', $(this)).removeClass("inside");	
+			}else{
+				$(this).css('cursor', 'default');
+			}
+		});
+	    var oTableExample = $('.tbArquivos').dataTable( {
+	    	"sDom": '<"H"Tfrl>t<"F"ip>',
+	    	"oTableTools": {
+                "aButtons": [
+					{
+					    "sExtends": "copy",
+					    "sButtonText": "Copiar"
+					},
+                    {
+						"sExtends": "print",
+						"sButtonText": "Imprimir"
+					}
+              ]
+           },
+            
+	    	"bJQueryUI": true,
+			"bStateSave": true,
+			"bLengthChange": true,
+			"iDisplayLength": 30,
+			"aLengthMenu":[[30,50,100,-1],[30,50,100,"Todos"]],
+			"oLanguage": {
+		      "oPaginate": {
+		        "sNext": "Próximo",
+		   		"sPrevious": "Prévio",
+		   		"sEmptyTable": "Não há dados disponíveis.",
+		   		"sInfo": "Total de _TOTAL_ registros filtrados (_START_ to _END_)",
+		   		"sInfoEmpty": "Não há registros disponíveis",
+		   		"sInfoFiltered": " - filtrando de _MAX_ records",
+		   		"sInfoPostFix": "Todos os registros selecionados advém de informações reais.",
+		   		"sLoadingRecords": "Favor, aguarde - carregando...",
+		   		"sSearch": "Registros filtrados:"
+		      }
+		    },
+//		    "sScrollX": "100%",
+		    "bDestroy":  true,
+		    "bRetrieve": true,
+//		    "aoColumns": 
+		    //"bAutoWidth": true
+//		    "aoColumns": [
+//						  { "sWidth": "150px"},
+//						  { "sWidth": "250px"},
+//						  { "sWidth": "450px"},
+//			              { "sWidth": "50px"},
+//			              { "sWidth": "50px"}
+//			]
+	    });	
+	});
+</script>

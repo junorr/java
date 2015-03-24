@@ -1,0 +1,144 @@
+.menuSlider {
+    margin-left: 2px;
+	float: left;
+	font-family: arial;
+    margin-right: 5px;
+}
+
+.menuSlider  .itemSlider {
+    border-radius: 5px 5px 5px 5px;
+	padding: 0;
+	margin: 0;
+	position: relative;
+}
+
+.grid_24 {
+	display:inline;
+	float: left;
+	position: relative;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.menuSliderTableDiv {
+	overflow: hidden;
+	float: left;
+	margin-left: 5px;
+}
+
+.menuSliderBtn {
+	float: left;
+	width: 18px;
+}
+
+.menuSliderBtn div.btn-next{
+	width:21px;
+	height:174px;
+	background-image:url(../images/slider/buttons.png);
+	background-repeat:none;
+	float:left;
+}
+
+.menuSliderBtn div.btn-down-next-default{
+	background-position:-2px 161px;
+	cursor:hand;
+	cursor:pointer
+}
+
+.menuSliderBtn div.btn-down-next{
+	background-position:21px 161px;
+	cursor:default;
+}
+
+
+.menuSliderBtn div.btn-prev{
+	width:21px;
+	height:174px;
+	background-image:url(../images/slider/buttons.png);
+	background-repeat:none;
+	background-position:-2px 161px;
+	float:left;
+}
+
+.menuSliderBtnVertical{
+	float: left;
+	height: 79px;
+}
+
+.menuSliderBtnVertical div.btn-prev{
+	background-image: url(../images/slider/seta_cima.png);
+    background-position: -3px -3px;
+    background-repeat: repeat-x;
+    height: 23px;
+    width: 25px;
+}
+
+.menuSliderBtnVertical div.btn-next{
+	background-image: url(../images/slider/seta_baixo.png);
+    background-position: -2px -3px;
+    background-repeat: repeat-x;
+    height: 23px;
+    margin-top: 32px;
+    width: 25px;
+}
+
+.menuSliderBtn div.btn-down-prev-default{
+	background-position:0px -13px;
+	cursor:hand;
+	cursor:pointer
+}
+
+.menuSliderBtn div.btn-down-prev{
+	background-position:25px -13px;
+	cursor:default;
+}
+
+.menuSliderBullets {
+	text-align: center;
+	width: 941px;
+}
+
+.titleNews {
+	font-family: arial;
+	font-size: 12px;
+	font-weight: bold;
+	position: absolute;
+	padding-left: 5px;
+	padding-right: 5px;
+	color: white;
+	background-color: rgba(0,0,0,0.7);
+	height: 45px;
+	border-radius: 3px 3px 3px 3px;
+	top: 83px;
+}
+
+.imgCtu {
+	border-radius: 3px 3px 3px 3px;
+}
+
+.titleCtu {
+	color: #FFFFFF;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 94px 5px 5px;
+    text-align: center;
+}
+
+.contentCtu.off {
+	display: none;
+}
+
+.contentCtu.on {
+	display: inline;
+}
+
+.menuSlider fieldset  {
+	background: #FFFFFF url("../images/slider/bkgd_fade.png") repeat-x center bottom;
+	/* padding: 0px; */
+}
+
+.menuSliderBullets img {
+	width: 10px;
+	margin: 10px;
+	cursor: pointer;
+}

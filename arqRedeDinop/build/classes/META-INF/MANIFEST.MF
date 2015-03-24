@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+
+Name: org/aspectj/lang/
+Implementation-Title: org.aspectj.tools
+Implementation-Version: 1.6.0
+Bundle-Name: AspectJ
+Bundle-Version: 1.6
+Specification-Vendor: aspectj.org
+Specification-Title: AspectJ Runtime Classes 
+Bundle-Copyright: (C) Copyright 1999-2001 Xerox Corporation, 2002 Palo
+   Alto Research Center, Incorporated (PARC), 2003-2005 Contributors. 
+  All Rights Reserved.
+Import-Package: org.aspectj.lang,org.aspectj.lang.reflect,org.aspectj.
+  runtime
+Specification-Version: 1.6
+Implementation-Vendor: aspectj.org
+

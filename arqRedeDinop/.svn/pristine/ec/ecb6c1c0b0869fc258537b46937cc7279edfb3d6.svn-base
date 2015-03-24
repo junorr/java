@@ -1,0 +1,1942 @@
+/*
+	CSS default - NÃO REMOVER OU ALTERAR.
+*/
+
+div.title{
+	color: #0058A3;
+    float: left;
+    font-size: 27px;
+    font-weight: bolder;
+    margin-left: 37px;
+}
+
+.box{
+	//border: 1px solid;
+}
+
+.box11, .box21, .box31{
+	height: 240px;
+	margin-bottom: 5px; 
+}
+
+.boxLeft{
+	height: 720px;
+	margin-bottom: 5px;
+	background-color:  #EBEBEB;
+	border: 1px solid #C8C8C8;
+}
+
+.box23{
+	height: 240px;
+	margin-bottom: 5px;
+	overflow: visible;
+}
+
+.box24{
+	height: 240px;
+	margin-bottom: 5px;
+	margin-top: 10px;
+}
+
+.box44{
+	height: 106px;
+	width: 143px;
+	float: left;
+	margin-top: 14px;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.box64{
+	height: 100px;
+	margin-top: 5px;
+	width: 228.5px;
+	float: left;
+	background:url(../images/paineis/box_centro.png) repeat-x;
+}
+
+.box64Left{
+	margin-top: 5px;
+	margin-left: 30px;
+	float: left;
+	height: 110px;
+	width: 4px;
+	background:url(../images/paineis/lateral_esquerdo_box.png) no-repeat;
+}
+
+.box64Right{
+	margin-top: 5px;
+	float: left;
+	height: 110px;
+	width: 5px;
+	background:url(../images/paineis/lateral_direito_box.png) no-repeat;
+	margin-right: 30px;
+}
+
+.boxlinha{
+	height: 1px;
+	background-color: #8d8e8e;
+	width: 150px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.box div.title{
+	color: #0058A3;
+    font-size: 14px;
+    font-weight: bolder;
+    height: 35px;
+}
+
+.box div.title img{
+	height: 35px;
+	width: auto;
+	vertical-align: middle;
+	float: left;
+	border: 0;
+}
+
+.box div.title span{
+	vertical-align: middle;
+    position: relative;
+    bottom: -8px;
+    left: 5px;
+}
+
+#alertas{
+	text-align: justify;
+	font-size: 14px;
+	font-weight: bolder;
+}
+
+#back{
+	border:0; 
+	height: 23px; 
+	width: auto;
+	margin-left: 28px;
+}
+
+#tableCrumb{
+	width: 1003px;
+	text-align: right;
+}
+
+#tableCrumb tr{
+	height: 25px;
+}
+
+.alertTable{
+	font-family: Arial,Helvetica,sans-serif;
+	color: red;
+	font-size: 11px;
+	font-weight: bolder;
+}
+
+.errorTable{
+	font-family: Arial,Helvetica,sans-serif;
+	font-size: 11px;
+	font-weight: bolder;
+	width: 935px;
+	text-align: center;
+}
+/*
+	Fim dos CSSs default.
+*/
+
+
+#tabs1{
+	width: 994px;
+	font-size: 12px;
+	height: 390px;
+	overflow: auto;
+	font-family: Arial,Helvetica,sans-serif;
+}
+
+.chartTable{
+	font-family: Arial,Helvetica,sans-serif;
+	font-size: 11px;
+}
+
+.chartTable thead tr{
+	background: #f8d610;
+	font-weight: bolder;
+}
+
+.odd{
+	background-color:white;
+}
+
+.even{
+	background-color:#E5EBF6;
+}
+
+#tooltip {
+	position: absolute;
+	z-index: 8004;
+	border: 1px solid #111;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #C6D2EA;
+	padding: 5px;
+	opacity: 0.85;
+	font-weight: bolder;
+}
+
+#tooltip h3, #tooltip div { 
+	margin: 0; 
+	font-size: 14px;	
+}
+
+#noticias {
+	border: 2px solid #C8C8C8;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px;
+    height: 235px;
+    margin: auto;
+    width: 306px;
+}
+
+#noticias div.title{
+	-moz-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px;
+    color: #0058A3;
+    font-size: 14px;
+    font-weight: bolder;
+    margin: 3px;
+    height: 32px;
+}
+
+#noticias div.title img{
+	//bottom: 12px;
+    //height: 45px;
+    bottom: 0px;
+    height: 35px;
+    float: left;
+    margin-left: 7px;
+    position: relative;
+    width: auto;
+    border: 0;
+}
+
+#noticias div.title span {
+    bottom: -8px;
+    left: 15px;
+    position: relative;
+}
+
+.conteudoNoticia{
+	overflow: hidden;
+	width: 88%;
+	height: 182px;
+	font-size: 12px;
+	line-height: 2;
+	margin: 0 0 0 3px;
+}
+
+.conteudoNoticia p{
+	height: auto;
+    width: 100%;
+}
+
+#noticias .buttons{
+	float: right;
+	height: 18px;
+	width: auto;
+	cursor: pointer;
+}
+
+#noticias .up{
+	bottom: 10px;
+    left: -4px;
+    position: relative;
+    right: 0;
+    top: -173px;
+}
+
+#noticias .down{
+	bottom: 10px;
+    left: 14px;
+    position: relative;
+    right: 0;
+    top: -12px;
+}
+
+.over{
+	height: auto;
+	cursor: pointer;
+}
+
+.over p.callNews{
+	margin-bottom: 12px;
+    margin-top: 12px;
+    color: grey;
+    font-weight: bold;
+}
+
+.overDestaque{
+	color: black;
+}
+
+#ferramentas {
+	border: 2px solid #C8C8C8;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px;
+    height: 235px;
+    margin: auto;
+    width: 307px;
+}
+
+#ferramentas div.title{
+	-moz-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px;
+    color: #0058A3;
+    font-size: 14px;
+    font-weight: bolder;
+    margin: 3px;
+    height: 32px;
+}
+
+#ferramentas div.title img{
+	//bottom: 12px;
+	//height: 45px;
+	bottom: 0px;
+	height: 35px;
+    float: left;
+    margin-left: 7px;
+    position: relative;
+    width: auto;
+    border: 0;
+}
+
+#ferramentas div.title span {
+    bottom: -8px;
+    left: 15px;
+    position: relative;
+}
+
+.conteudoFerramentas{
+	height: 192px;
+    overflow: hidden;
+    width: 100%;
+}
+
+#ferramentas .buttons{
+	float: right;
+	height: 30px;
+	width: auto;
+	cursor: pointer;
+}
+
+#ferramentas .up{
+	bottom: 10px;
+    left: 0;
+    position: relative;
+    right: 0;
+    top: -192px;
+}
+
+#ferramentas .down{
+	bottom: 10px;
+    left: 30px;
+    position: relative;
+    right: 0;
+    top: -27px;
+}
+
+.grid_16 fieldset {
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+}
+
+.grid_16 fieldset img{
+		height: 35px;
+		width: auto;
+		border: 0;
+}
+
+.grid_16 div.title {
+    -moz-border-radius: 5px 5px 5px 5px;
+    color: #0058A3;
+    font-size: 12px;
+    font-weight: bolder;
+    height: 32px;
+    width: 626px;
+}
+
+.grid_16 div.title img {
+    //bottom: 12px;
+    //height: 45px;
+    bottom: 0px;
+    height: 35px;
+    float: left;
+    margin-left: 7px;
+    position: relative;
+    width: auto;
+    border: 0;
+}
+
+.grid_16 div.title span {
+    top: 0;
+    left: 15px;
+    position: relative;
+}
+/*
+#searchAplics input{
+	width: 551px;
+	top: 5px;
+	position: relative;
+}
+*/
+#searchOper {
+	height: 41px;
+	width: 626px;
+	margin-top: 8px;
+}
+
+#searchOper input[type="button"]{
+	width:91px; 
+	height:23px; 
+	background:url(../images/icons/pesquisar.png) no-repeat; 
+	border:none;"
+	cursor: pointer; 
+}
+
+#searchOperBuscar{
+	bottom: 0px;
+    cursor: pointer;
+    display: inline;
+    float: right;
+    height: 24px;
+    position: relative;
+    right: 117px;
+    width: auto;
+}
+
+#searchCedulas {
+	float: left;
+    height: 41px;
+    margin: 8px 0px 0px 0px;
+    width: 626px;
+}
+
+#searchCedulas input[type="button"]{
+	width:91px; 
+	height:23px; 
+	background:url(../images/icons/pesquisar.png) no-repeat; 
+	border:none;"
+	cursor: pointer; 
+}
+
+#searchCedulasBuscar{
+	bottom: 0px;
+    cursor: pointer;
+    display: inline;
+    float: right;
+    height: 24px;
+    position: relative;
+    right: 5px;
+    width: auto;
+}
+
+#extraContent.bkgBirthday{
+	background: url("/header2012/images/niver/bkgNiver.png") no-repeat scroll 0% 0% #FFFFFF;
+}
+
+.lateralBirthday{
+	height: 440px;
+}
+
+.foto{
+	height: 110px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	vertical-align: top;
+	margin-top: 13px;
+	margin-right: 10px;
+}
+
+.picBirthday{
+	text-align: right;
+	vertical-align: top;
+}
+
+.parabens{
+	font-family: arial;
+	font-size: 48px;
+	font-weight: bolder;
+	text-shadow: #dbe8f2 3px 3px 0, #dbe8f2 -3px 3px 0, #dbe8f2 3px -3px 0, #dbe8f2 -3px -3px 0;
+	color: #0058a3;
+}
+
+/*
+.digi{
+	font-family: arial;
+	font-size: 48px;
+	font-weight: bolder;
+	text-shadow: #dbe8f2 3px 3px 0, #dbe8f2 -3px 3px 0, #dbe8f2 3px -3px 0, #dbe8f2 -3px -3px 0;
+	color: #0058a3;
+}
+*/
+
+.digi{
+	font-family: arial;
+	font-size: 36px;
+	font-weight: bolder;
+	color: #FFFFFF;
+	text-align: right;
+}
+
+.textNiver {
+    color: #F0FF9E;
+    font-family: Arial;
+    font-size: 11.5px;
+    font-weight: bolder;
+    margin-top: -2px;
+    width: 100%;
+    height: 100%;
+}
+
+.textParabens{
+	text-align: right;
+	vertical-align: middle;
+	font-size: 48px;
+	font-weight: bolder;
+	text-shadow: #dbe8f2 3px 3px 0, #dbe8f2 -3px 3px 0, #dbe8f2 3px -3px 0, #dbe8f2 -3px -3px 0;
+	color: #0058A3;
+}
+
+.conteudoNiver{
+	margin-top: 10px;
+}
+
+.nmNiver{
+	font-weight: bolder;
+}
+
+.boxNiverLeft{
+    background: url("/header2012/images/niver/box_esquerdo.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 139px;
+    width: 9px;
+    margin-top: 1px;
+}
+
+.boxNiverRight{
+    background: url("/header2012/images/niver/box_direito.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 139px;
+    width: 8px;
+}
+
+.boxNiverCentro{
+	background: url("/header2012/images/niver/box_centro.png") repeat-x scroll 0 0 transparent;
+    float: left;
+    height: 139px;
+    width: 288.5px;
+}
+
+.conteudoTwitter{
+	display: none;
+}
+
+.showTwitter{
+	font-size:11px;
+	height: 33px;
+    overflow: hidden;
+}
+
+element.style {
+    display: block;
+}
+
+.faleTooltip {
+    background: url("../images/twitter/balao.png") repeat scroll 0 0 transparent;
+    color: black;
+    display: none;
+    font-size: 11px;
+    height: 210px;
+    left: 106px;
+    padding: 24px 30px 10px;
+    position: absolute;
+    top: -211px;
+    width: 339px;
+    z-index: 3;
+}
+
+.countTwitter{
+	float: right;
+	margin-right: 15px;
+}
+
+.enviarTwitter{
+	background: url("/header2012/css/cssjQuery/images/ui-bg_glass_75_c8c8c8_1x400.png") repeat-x scroll 50% 50% #C8C8C8;
+    color: #0058A3;
+    font-size: 12px;
+    font-weight: bolder;
+    height: 16px;
+    width: 51px;
+    float: left;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#sendTwitter{
+	height: 26px;
+    width: auto;
+    position: relative;
+    top: -2;
+    left: 3;
+    cursor: pointer;
+}
+
+.statusTwitter{
+	height: 15px;
+}
+
+.menus span{
+	float: left;
+    font-size: 11px;
+    font-weight: bolder;
+    line-height: 13px;
+    margin-top: 10px;
+    width: 150px;
+}
+
+.menus span a, .menus span a:hover, .menus span a:visited{
+	color: black;
+	text-decoration: none;
+}
+
+#jslidernews3{
+	float: left;
+	left: -1px;
+}
+
+#Favoritos {
+	cursor: pointer;
+}
+
+#extraContent .loading{
+	font-size: 15px;
+    font-weight: bolder;
+    left: 343px;
+    position: relative;
+    text-align: center;
+    top: 97;
+}
+
+#extraContent .loading img{
+	height: 34px;
+    vertical-align: middle;
+    width: auto;
+	border: 0;
+}
+
+#extraContent div.title{
+	color: #0058A3;
+    font-size: 12px;
+    font-weight: bolder;
+    height: 29px;
+    margin: 3px 3px 10px;
+}
+
+#extraContent div.title img{
+	bottom: 5px;
+    height: 30px;
+    left: -4px;
+    margin: 3px;
+    position: relative;
+    vertical-align: bottom;
+    width: auto;
+    border: 0;
+}
+
+#extraContent div.title div.buttons{
+	float: right;
+    left: 8px;
+    position: relative;
+}
+
+#extraContent div.title span#statusConfigFavoritos img{
+	height: 15px;
+	width: auto;
+	border: 0;
+}
+
+#extraContent div.title span#statusConfigFavoritos span{
+	color: black;
+	font-size: 11px;
+}
+
+#extraContent div.title span{
+	font-size: 14px;
+    left: -6px;
+    position: relative;
+    top: 6px;
+}
+
+#extraContent div.boxlinha {
+    background-color: #8D8E8E;
+    height: 1px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 37px;
+    width: 940px;
+}
+
+.conteudoConfigFavoritos{
+	height: 415px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.conteudoConfigFavoritos span{
+	width: 150px;
+}
+
+.conteudoConfigFavoritos .coluna{
+	display: inline;
+    float: left;
+    font-size: 11px;
+    font-weight: bolder;
+    line-height: 2;
+    margin-left: 5px;
+    margin-right: 5px;
+    position: relative;
+    width: 297px;
+}
+
+.pointer{
+	cursor: pointer;
+}
+
+.conteudoRamais{
+	margin-top: -20px;
+	height: 200px;
+}
+
+#containerNews{
+	display: none;
+    float: left;
+    height: 300px;
+    left: 0px;
+    position: absolute;
+    top: -6px;
+    z-index: 201;
+    background-color: white;
+    border: 2px solid #C8C8C8;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    height: 735px;
+    width: 790px;
+}
+
+#containerNews div.title{
+	width: auto;
+	z-index: -1;
+}
+
+.contentNews{
+	font-size: 12px;
+    height: 352px;
+    margin: 10px;
+    overflow: hidden;
+    text-align: justify;
+   	overflow-x: hidden;
+    overflow-y: scroll;
+    border: 1px solid #0058A3;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.gridFloat20{
+	top: 0;
+}
+
+.gridFloat20 div.title{
+	height: 40px;
+	color: #0058A3;
+    font-size: 22px;
+    font-weight: bolder;
+    text-align: center;
+}
+
+.gridFloat20 div.title span{
+	top: 5px;
+}
+
+.gridFloat20 div.title img{
+	bottom: 0;
+    height: 32px;
+    left: 0;
+    margin: 0;
+    position: relative;
+    top: 5px;
+    vertical-align: bottom;
+    width: auto;
+    border: 0;
+}
+
+.gridFloat20 div.boxlinha{
+	background-color: #8D8E8E;
+    height: 1px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 776px;
+    margin-bottom: 5px;
+}
+
+.newsDets{
+	margin: 5px;
+	font-size: 11px;
+	font-weight: bolder;
+}
+
+.newsDetEsquerda{
+	float: left;
+	position: relative;
+	left: 5px;
+}
+
+.newsDetDireita{
+	float: right;
+	position: relative;
+	right: 5px;
+}
+
+.newsAnexos{
+	border: 2px groove #0058A3;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px;
+    height: auto;
+    margin-right: 5px;
+    min-height: 75px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.newsAnexos div.title{
+	color: #0058A3;
+    font-size: 11px;
+    font-weight: bolder;
+    height: 10px;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.newsAnexos div.title span{
+	left: 0;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.newsAnexos div.title span img{
+	height: auto;
+	width: 20px;
+	cursor: pointer;
+	border: 0;
+}
+
+.newsAnexos ul li{
+	list-style: none outside none;
+    text-decoration: none;
+}
+
+.imgGrid img{
+	height: auto;
+	height: 50px;
+	width: auto;
+	cursor: pointer;
+	padding: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	float: left;
+	border: 0;
+}
+
+.newsTxt{
+	min-width: 462px;
+}
+
+.tools{
+	height: 90px;
+	width: 143px;
+	display: inline;
+	float: left;
+	margin-left: 5px;
+	margin-top: 5px;
+	margin-right: 5px;
+	color: #000000;
+}
+
+.statusTool{
+    float: right;
+    height: 25px;
+    position: relative;
+    right: -3px;
+    top: -4px;
+    width: 25px;	
+}
+
+.newTool{
+	background: url("../images/ferramentas/new.png") no-repeat;
+}
+
+.updateTool{
+	background: url("../images/ferramentas/update.png") no-repeat;
+}
+
+.tools span.area{
+	font-size: 11px;
+    font-weight: bolder;
+    left: 6px;
+    position: relative;
+    top: 2px;
+}
+
+.tools div.nome{
+	cursor: pointer;
+    float: left;
+    font-size: 15px;
+    font-weight: bolder;
+    height: 57px;
+    left: -1px;
+    padding-left: 65px;
+    position: relative;
+    text-align: right;
+    top: 3px;
+    vertical-align: middle;
+    width: 69px;
+}
+
+.tools span.data{
+	font-size: 11px;
+    font-weight: bolder;
+    left: 13px;
+    position: relative;
+    top: 70px;
+}
+
+#bannerInterno {
+	border: 2px solid #C8C8C8;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px;
+    height: 235px;
+    margin: auto;
+    width: 306px;
+}
+
+#bannerInterno div.title{
+	-moz-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px;
+    color: #0058A3;
+    font-size: 14px;
+    font-weight: bolder;
+    margin: 3px;
+    height: 32px;
+}
+
+#bannerInterno div.title img{
+	//bottom: 12px;
+	//height: 45px;
+	bottom: 0px;
+	height: 35px;
+    float: left;
+    margin-left: 7px;
+    position: relative;
+    width: auto;
+    border: 0;
+}
+
+#bannerInterno div.title span {
+    bottom: -8px;
+    left: 15px;
+    position: relative;
+}
+
+.bis{
+	margin-left: auto;
+    margin-right: auto;
+    width: 300px;
+    margin-top: 8px;
+}
+
+.bis img{
+	width: 300px;
+	height: auto;
+	-moz-border-radius: 5px 5px 0px 0px;
+	border-radius: 5px;
+	border: 0;
+}
+
+.textBannerInterno{
+	background-color: #D8D8D8;
+    -moz-border-radius: 0 0 5px 5px;
+    border-radius: 0 0 5px 5px;
+    height: 72px;
+    position: relative;
+    padding: 1px 0px 0px 15px;
+}
+
+.textBannerInterno h4{
+	color: #0058A3;
+}
+
+.bis p{
+	font-size: 11px;
+    font-weight: bolder;
+    position: relative;
+    top: -21px;
+}
+
+.bis a{
+	background: none repeat scroll 0 0 #0058A3;
+    font-family: "Trebuchet MS",Trebuchet,Arial,Verdana,sans-serif;
+    font-size: 10px;
+    margin: 0;
+    padding: 2px 3px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #FFFFFF;
+}
+
+#menuInterno {
+    height: auto;
+    margin: auto;
+    width: 626px;
+    position: relative;
+    top: 5px;
+}
+
+#menuInterno div.title{
+	-moz-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px;
+    color: #0058A3;
+    font-size: 14px;
+    font-weight: bolder;
+    margin: 3px;
+    height: 32px;
+    width: 618px;
+}
+
+#menuInterno div.title img{
+	bottom: 4px;
+    height: 35px;
+    margin-left: 5px;
+    position: relative;
+    width: auto;
+    margin-right: 5px;
+    border: 0;
+}
+
+#menuInterno div.title span {
+    top: 5px;
+    left: 15px;
+    position: relative;
+}
+
+#menuInterno div.conteudoMenuInterno{	
+	height: 100%;
+	margin: 5px;
+}
+
+#menuInterno div.conteudoMenuInterno div.list{
+	font-size: 12px;
+	font-weight: bolder;
+	line-height: 25px;
+}
+
+#menuInterno div.conteudoMenuInterno div.list span{
+	cursor: pointer;
+}
+
+#menuInterno div.conteudoMenuInterno div.list img{
+	height: 35px;
+	width: auto;
+	vertical-align: middle;
+	border: 0;
+}
+
+.conteudoMenuInterno div.list a, .conteudoMenuInterno div.list a:hover, .conteudoMenuInterno div.list a:visited{
+	text-decoration: none;
+	color: black;
+}
+
+.menuInterno{
+	overflow: hidden;
+	width: 100%;
+	height: 182px;
+	font-size: 12px;
+	line-height: 2;
+}
+
+.documentos{
+	height: auto;
+}
+
+.overVisible{
+	overflow: visible;
+	z-index: 200;
+}
+
+.menuInternoColuna{
+	width: 313px;
+}
+
+.contentCentral12 div#extraContent{
+	top: -8px;
+	padding-top: 8px;
+}
+/*
+#menuInterno div.conteudoMenuInterno div.vcSabia{
+	float: right;
+	background:url(../images/icons/einstein.png) no-repeat;
+	height: 125px;
+	position: relative;
+	top: -20px;	
+}
+
+#menuInterno div.conteudoMenuInterno div.vcSabia div.title{
+	margin-left: 125px;
+    height: auto;
+    margin-left: 125px;
+    width: auto;
+}
+
+.conteudoVcSabia{
+	font-size: 11px;
+    font-weight: bolder;
+    margin-left: 125px;
+    margin-top: 10px;
+}
+
+.listaVcSabia{
+	display: none;
+}
+*/
+
+div.vcSabia{
+	background:url(../images/icons/einstein.png) no-repeat;
+	height: 110px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+div.vcSabia div.title{
+    height: auto;
+    width: auto;
+}
+
+.conteudoVcSabia{
+	font-size: 12px;
+    font-weight: bolder;
+    margin-top: 10px;
+}
+
+.contentVcSabia{
+	margin: 5px;
+}
+
+.contentVcSabia div.title{
+	width: 140px;
+	height: auto;
+	font-size: 14px;
+	font-weight: bolder;
+}
+
+.listaVcSabia{
+	display: none;
+}
+
+.documentos span{
+	font-size: 11px;
+    font-weight: bold;
+}
+
+#accNvlDoc{
+	border: 0px;
+	margin-top: 10px;
+}
+
+#accNvlDoc, #accSubNvlDoc{
+	font-size: 10px;
+	padding: 0px;
+	margin-left: 10px;
+	width: 98%;
+}
+
+#accSubNvlDoc p{
+	line-height: 10px;
+}
+
+#accSubNvlDoc h3 a, #accSubNvlDoc h3 a:visited, #accSubNvlDoc h3 a:link{
+	color: #0058A3;
+}
+
+#accSubNvlDoc a, #accSubNvlDoc a:link, #accSubNvlDoc a:visited, #accSubNvlDoc h3{
+	color: black;
+	background: none;
+	border: none;
+	text-decoration: none;
+	font-size: 11px;
+	font-weight: bolder;
+}
+
+#accNvlDoc div.ui-accordion-content{
+	padding: 0px;
+	margin-left: 25px;
+}
+
+.indicadores{
+	background:url(../images/icons/indicador-qd.png) no-repeat;
+	height: 240px;
+}
+
+.indicadores div.title span{
+	color: white;
+    font-size: 12px;
+    font-weight: bolder;
+    position: relative;
+    left: 44px;
+    top: 13px;
+}
+
+.sessionAplics{
+	height: 142px;
+	width: 630px;
+}
+
+.aplics{
+	width: 306px;
+	float: left;
+	border: 2px solid #C8C8C8;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px;
+    margin: auto;
+    position: relative;
+    top: 15px;
+    height: 124px;
+}
+
+.aplics table{
+	width: 305px;
+}
+
+.aplics table td.title{
+    color: #0058A3;
+    font-size: 13px;
+    font-weight: bolder;
+    width: 192px;
+}
+
+.aplics table td.right{
+	text-align: right;
+}
+
+.aplics table td{
+	font-size: 10px;
+    font-weight: bolder;
+    margin: 0px 0px 0px 5px;
+}
+
+.aplics table td.logo{
+	text-align: center;
+	border: 2px solid #C8C8C8;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px;
+}
+
+.aplics img.logo{
+	height: 82px;
+	width: auto;
+	cursor: pointer;
+	border: 0;
+}
+
+.aplics img.aplicCS{
+	cursor: pointer;
+	border: 0;
+}
+
+.aplics td select{
+	width: 120px;
+}
+
+#aplic1{
+	margin-right: 5px;
+}
+
+#aplic2{
+	margin-left: 5px;
+	background-color: #d9d9d9; 
+}
+/*
+#menusInternos{
+	float: left;
+    margin-top: 10px;
+}
+*/
+#menusInternos{
+    
+}
+
+#menuInternoFechar{
+	float: right;
+	height: 35px;
+	width: auto;
+}
+
+#extraContent div.conteudoMenuInterno{
+	height: 200px;
+	z-index: 100;
+}
+
+#extraContent div#menuInterno{
+	height: 230px;
+	z-index: 100;
+	background-color: white;
+	position: relative;
+	top: 0px;
+	border: 2px solid #C8C8C8;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px;
+}
+
+#loadEdic{
+	height: 570px;
+    width: 776px;
+    margin-top: 5px;
+    border: 0;
+}
+
+#containerNews div.lateralEdic{
+	float: left;
+	height: 120px;
+}
+
+#containerNews div.lateralEdic a{
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    float: left;
+    margin-right: 20px;
+   	cursor: pointer;
+}
+
+#containerNews div.lateralEdic fieldset{
+	height: 98px;
+    width: 748px;
+    border: 1px solid #0058A3;
+}
+
+#containerNews div.lateralEdic fieldset legend.title{
+	color: #0058A3;
+    font-size: 14px;
+    font-weight: bolder;
+}
+
+#containerNews div.lateralEdic fieldset img{
+	height: 75px;
+	border: 0;
+}
+
+.momentoBotoes{
+	float: right;
+	height: 30px;
+	width: auto;
+	cursor: pointer;
+	margin: 5px;
+}
+
+.menuMomento{
+	height: 0;
+}
+
+.menuDfnc{
+	height: 0;
+}
+
+.menuDfnc div.title{
+	position: relative;
+	top: 8px;
+}
+
+.contentMenuDfnc{
+	width: 770px;
+}
+
+.boxMenuDfncHorizontal{
+	padding: 10px;
+	margin-top: 30px;
+	margin-left: 11px;	
+}
+
+.boxMenuDfnc div.grid_9{
+	margin-left: 52px;
+    margin-top: 40px;
+    margin-bottom: 10px;
+    width: 309px;
+    height: 229px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.boxMenuDfnc div.grid_9 a, .boxMenuDfnc div.grid_9 a:hover, .boxMenuDfnc div.grid_9 a:visited{
+	text-decoration: none;
+	color: black;
+}
+
+.boxMenuDfncHorizontalNormal{
+	border: 3px solid #EBEBEB;
+	cursor: pointer;
+}
+
+.boxMenuDfncHorizontalOver {
+	border: 3px solid #C1C8EF;
+	cursor: pointer;
+}
+
+.boxMenuDfncNormal{
+	border: 3px solid #EBEBEB;
+	cursor: pointer;
+}
+
+.boxMenuDfncOver {
+	border: 3px solid #C1C8EF;
+	cursor: pointer;
+}
+
+.boxMenuDfnc img{
+	-moz-border-radius: 5px 5px 0 0;
+	border-radius: 5px;
+    height: 170px;
+    left: 0;
+    position: relative;
+    width: 350px;
+    border: 0;
+}
+
+.boxMenuDfnc p{
+	font-size: 12px;
+    font-weight: bolder;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    text-align: justify;
+    top: 140px;
+    width: 293px;
+}
+
+.boxDfncHorizontal{
+	border-radius: 5px 5px 5px 5px;
+    height: 114px;
+    margin: 10px;
+}
+
+#boxCheck{
+	margin: 20px;
+}
+
+.boxDfncHorizontal p.title{
+	color: #0058A3;
+    font-weight: bolder;
+    margin-left: 287px;
+    position: relative;
+    top: -4;
+}
+
+.boxDfncHorizontal p.dcr{
+	color: black;
+    font-weight: bolder;
+    margin-left: 287px;
+    position: relative;
+    top: -15px;
+    font-size: 12px;
+}
+
+.boxDfncHorizontal a, .boxDfncHorizontal a:hover, .boxDfncHorizontal a:visited{
+	color: #0058A3;
+	text-decoration: none;
+}
+
+.checkDcr{
+	width: 202px; 
+	height: 114px;
+}
+
+.menuDireita{
+	float: right;
+    left: 22px;
+    position: relative;
+}
+
+.conteudoFaleDinop{
+	font-size: 11px;
+    font-weight: bolder;
+    margin: 5px;
+    position: relative;
+    top: -27px;
+}
+
+.contentFaleDinop{
+	display: none;
+}
+
+.contentFaleDinop textarea{
+	width:622px;
+	height:75px;
+	font-size:11px; 
+}
+
+.contentFaleDinop img{
+	margin-right: 10px;
+	cursor: pointer;
+	height: 24px;
+	width: auto;
+	border: 0;
+}
+
+.contentFaleDinop select{
+	font-size: 11px;
+}
+
+.extraContent span{
+	font-size: 11px;
+    font-weight: bolder;
+    margin: 5px;
+}
+
+.extraContent div.list {
+	margin: 5px;
+	text-align: center;
+}
+
+/* #paineis{
+	background-image: url(../images/bg_graph.png);
+	height: 110px;
+	margin-bottom: 5px;
+} */
+
+/*#paineis{
+	background-image: url(/header2012/images/iconsNew/bg_graph.png);
+	height: 110px;
+	margin-bottom: 5px;
+	margin-top: 5px;
+	width:950px;
+}*/
+
+#paineis{
+	//background: url("../images/paineis/fundo.png") repeat-x scroll transparent;
+    height: 114px;
+    width: 100%;
+    display: inline;
+    float: left;
+    position: relative;
+    top: -20px;
+}
+
+#barraEfeitos{
+	height: 110px;
+	margin-bottom: 5px;
+}
+
+.container{
+	height: 100px;
+    width: 228px;
+}
+
+.tablePainel{
+	display: none;
+}
+
+table.tabular{
+    padding-left: 5px;
+    padding-right: 5px;
+    width: 100%;
+    border: 0;
+}
+
+
+table.tabular tbody tr {
+	font: bolder 11px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif;
+	background: none;
+}
+
+table.tabular tbody tr td{
+	border: 0px;
+	height: auto;
+}
+
+table.tabular tbody tr.odd{
+	color: #8ea3fe;
+}
+
+table.tabular tbody tr.even{
+	color: #f8d30e;
+}
+
+table.tabular thead tr th{
+	color: black;
+	font: 12px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bolder;
+	border: 0;
+	background: transparent;
+	height: auto;
+}
+
+table.placa{
+	padding-left: 5px;
+    width: 100%;
+}
+
+table.placa thead tr th{
+	color: black;
+	font: 12px Lucida Grande,Lucida Sans Unicode,Verdana,Arial,Helvetica,sans-serif;
+	font-weight: bolder;
+}
+
+
+table.placa tbody tr td{
+	font: bolder 11px Lucida Grande,Lucida Sans Unicode,Verdana,Arial,Helvetica,sans-serif;
+}
+
+table.placa tbody tr td.valor{
+	font: 11px Lucida Grande,Lucida Sans Unicode,Verdana,Arial,Helvetica,sans-serif;
+	float: left;
+	position: relative;
+}
+
+table.placa tbody tr.odd{
+	color: #8ea3fe;
+	background: none;
+}
+
+table.placa tbody tr.even{
+	color: #f8d30e;
+	background: none;
+}
+
+table.gauge{
+	display: none;
+}
+
+.valor span.placa{
+	color: black;
+    font-size: 25px;
+    position: absolute;
+    right: 9px;
+}
+
+.valor img.bg{
+    float: right;
+    height: 36px;
+    vertical-align: middle;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+
+.links{
+	border: 3px solid #EBEBEB;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.linksHover{
+	border: 3px solid #C1C8EF;
+}
+
+.textGauge{
+	color: #000000;
+    display: inline;
+    float: left;
+    font: bolder 11px Lucida Grande,Lucida Sans Unicode,Verdana,Arial,Helvetica,sans-serif;
+    height: 100px;
+    width: 98px;
+    margin-left: 9px;
+    margin-top: 1px;
+}
+
+.gauge{
+	position: relative;
+	top: -6px;
+}
+
+.displayGauge{
+    font: bolder 23px Lucida Grande,Lucida Sans Unicode,Verdana,Arial,Helvetica,sans-serif;
+    color: #8EA3FE;
+}
+
+.errDisplayGauge{
+	font: bolder 12px Lucida Grande,Lucida Sans Unicode,Verdana,Arial,Helvetica,sans-serif;
+    color: #8EA3FE;
+}
+
+#paineis .contentPaineis .box64 div.placarTitle{
+	color: #000000;
+    display: inline;
+    float: left;
+    font: bolder 11px Lucida Grande,Lucida Sans Unicode,Verdana,Arial,Helvetica,sans-serif;
+    text-align: center;
+    width: 229px;
+}
+
+#paineis .contentPaineis .box64 div.placar{
+
+	padding: 0 0 0 46;
+}
+
+.conteudoMural{
+	width: 149px;
+    height: 200px;
+    display: none;
+}
+
+.mural{
+	//background: url("../images/icons/post_it2.png") no-repeat scroll 50% 50% transparent
+}
+
+.contentMural{
+	overflow: visible;
+}
+
+.showMural{
+	font-size: 11px;
+    font-weight: bolder;
+    height: 138px;
+    margin-left: 7px;
+    margin-top: 18px;
+    overflow: hidden;
+    position: relative;
+    top: 43px;
+    width: 138px;
+    z-index: 2;
+}
+
+.imgMural img{
+	float: left;
+    height: 279px;
+    left: -26px;
+    margin: 0;
+    position: relative;
+    top: -170px;
+    width: 196px;
+    z-index: 1;
+}
+
+.imgLapis img{
+	float: right;
+    height: 50px;
+    left: 9px;
+    margin: 0;
+    position: relative;
+    top: -425px;
+    width: auto;
+    z-index: 2;
+    cursor: pointer;
+}
+
+#iconsCtu{
+	float: right; 
+	padding-right: 37px;
+}
+
+#iconsCtu img{
+	width: 36px; 
+	margin-left: 2px; 
+	margin-right: 2px;
+	cursor: pointer;
+}
+
+.listaNoticias{
+	height: 150px;
+}
+
+#conteudo{
+	position: relative;
+	top: -15px;	
+}
+
+.contentPaineis{
+	font-family: arial,verdana,sans-serif;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1000px;
+    padding-left: 26px;
+}
+
+#listaConteudo{
+	font-size: 12px;
+    font-weight: bolder;
+    text-align: center;
+    height: auto;
+    vertical-align: middle;
+    min-height: 205px;
+}
+
+.btnFechar{
+	cursor: pointer;
+}
+
+.contentNewsTicker{
+	color: #394A72;
+    float: right;
+    font-size: 12px;
+    font-weight: bolder;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-right: 40px;
+    height: 32px;
+}
+
+.newsTicker{
+	overflow:hidden; 
+	width:520px;
+	position: relative;
+	left: 0;
+	top: 0;
+	width: 700px;
+}
+
+.newsTicker span.text{
+	color: #394A72;
+    font-size: 12px;
+    padding-bottom: 0;
+    padding-top: 0;
+    position: relative;
+    bottom: 1;
+}
+
+.newsticker span.title{
+	background-color: #394A72;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: bolder;
+    margin-left: 5px;
+    margin-right: 5px;
+    position: relative;
+    top: -2;
+    padding: 5;
+}
+
+.newsTickerImg{
+	float: right;
+    height: 31px;
+    position: relative;
+    top: -27;
+    right: -10;
+}
+
+.contentNoticias{
+	height: 35px;
+}
+
+/*Inicio css slyder inferior da página */
+
+#container{
+	background: url('/images/paineis/bg-fundo.png') repeat-x;
+	border:1px solid #c3c5c6;
+	width: 250px;
+	height: 127px;
+	font-size: 12px;
+	font-family: arial;
+	color: blue;
+	}
+
+#titulo{
+	width: 250px;
+	height: 24px;
+	margin-top:1px;
+	color: black;
+	font-weight:bold;
+	text-align: center;
+}
+
+.linhaquadro{
+	height:24px;
+	width:250px;
+	margin-top:1px;
+}
+
+.linhadupla{
+	height:49px;
+	width:250px;
+	margin-top:1px;
+}
+
+.colunaquadro{
+	width:120px;
+	float: left;
+	margin-left:5px;
+	display: inline;
+}
+
+.meialinha{
+	height:12px;
+}
+
+.meiacoluna{
+	width:60px;
+	display: inline;
+	float: left;
+}
+
+.sub_title{
+	color: blue;
+	text-align: center;
+	border-bottom: 1px solid #333;
+	font-weight:bold;
+}
+
+.legenda{
+	font-size: 10px;
+	text-align: right;
+	color: #333;
+}
+
+.mesanterior{
+	font-size: 10px;
+	text-align: left;
+}
+
+.rowRed{
+	color: red;
+	font-size: 24px;
+	font-weight:bold;
+	text-align: center;
+}
+
+.rowGreen{
+	color: green;
+	font-size: 24px;
+	font-weight:bold;
+	text-align: center;
+}
+
+.cont_red{
+	color: red;
+	text-align: right;
+}
+
+.cont_green{
+	color: green;
+	text-align: right;
+}
+
+.img_align{
+	margin-left:25px;
+}
+
+#paineis div.itemSlider {
+	cursor: default !important;
+}
+
+
+
+/*
+	Início de outros CSSs - Altere a vontade.
+*/
+
