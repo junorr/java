@@ -53,7 +53,7 @@ public class HttpEnclosedObject extends HeaderEncryptable {
    * Tamanho estático do cabeçalho, sem 
    * considrar o tamanho do objeto encapsulado.
    */
-  public static final int STATIC_SIZE = 60;
+  public static final int STATIC_SIZE = 58;
   
   
   private Base64StringCoder coder;
@@ -220,7 +220,7 @@ public class HttpEnclosedObject extends HeaderEncryptable {
   @Override
   public void writeContent(OutputStream out) throws IOException {
     nullarg(OutputStream.class, out);
-    StringBuffer start = new StringBuffer().append(CRLF)
+    StringBuffer start = new StringBuffer()
         .append(HYFENS).append(BOUNDARY).append(CRLF)
         .append(HD_CONTENT_XML)
         .append(BOUNDARY_XML_START);
@@ -235,7 +235,7 @@ public class HttpEnclosedObject extends HeaderEncryptable {
   
   
   public static void main(String[] args) throws IOException {
-    StringBuffer start = new StringBuffer().append(CRLF)
+    StringBuffer start = new StringBuffer()
         .append(HYFENS).append(BOUNDARY).append(CRLF)
         .append(HD_CONTENT_XML)
         .append(BOUNDARY_XML_START)
