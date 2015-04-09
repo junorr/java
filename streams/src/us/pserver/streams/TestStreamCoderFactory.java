@@ -38,8 +38,8 @@ public class TestStreamCoderFactory {
   
   public static void main(String[] args) throws IOException {
     // --ENCODE --
-    Path pi = IO.p("c:/.local/splash.png");
-    Path po = IO.p("c:/.local/splash.enc");
+    Path pi = IO.p("/storage/pic.jpg");
+    Path po = IO.p("/storage/pic.enc");
     
     InputStream is = IO.is(pi);
     OutputStream os = IO.os(po);
@@ -47,9 +47,9 @@ public class TestStreamCoderFactory {
     CryptKey k = CryptKey.createRandomKey(CryptAlgorithm.DESede_CBC_PKCS5);
     
     os = StreamCoderFactory.getNew()
+        .setBase64CoderEnabled(true)
         .setGZipCoderEnabled(true)
         .setCryptCoderEnabled(true, k)
-        .setBase64CoderEnabled(true)
         .create(os);
     
     IO.tc(is, os);
@@ -57,8 +57,8 @@ public class TestStreamCoderFactory {
     System.out.println("* Done!");
     
     // --DECODE --
-    pi = IO.p("c:/.local/splash.enc");
-    po = IO.p("c:/.local/splash-d.png");
+    pi = IO.p("/storage/pic.enc");
+    po = IO.p("/storage/pic-dec.jpg");
     
     is = IO.is(pi);
     os = IO.os(po);

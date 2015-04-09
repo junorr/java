@@ -19,15 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.rob.http;
+package us.pserver.streams;
+
+import java.nio.file.Path;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 08/04/2015
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 08/04/2015
  */
-public class ObjectEntityFactory {
+public class MixedBuffer {
 
+  private Path temp;
+  
   private 
   
 }

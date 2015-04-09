@@ -38,29 +38,23 @@ public class TestMultiCoderBuffer {
   public static void main(String[] args) throws IOException {
     MultiCoderBuffer mb = new MultiCoderBuffer();
     
-    /*
-    Path p1 = Paths.get("d:/base.csv");
-    Path p2 = Paths.get("d:/base2.csv.gz");
-    Path p3 = Paths.get("d:/base2.gz.csv");
-    */
-    
-    Path p1 = Paths.get("d:/pic_large.jpg");
-    Path p2 = Paths.get("d:/pic_large.jpg.gz");
-    Path p3 = Paths.get("d:/pic_large.gz.jpg");
+    Path p1 = Paths.get("/storage/pic.jpg");
+    Path p2 = Paths.get("/storage/pic.enc");
+    Path p3 = Paths.get("/storage/pic-dec.jpg");
     
     CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
     
     mb.load(p1)
         .setGZipCoderEnabled(true)
-        .setCryptCoderEnabled(true, key)
-        .setBase64CoderEnabled(true)
-        .setLzmaCoderEnabled(true)
+        //.setCryptCoderEnabled(true, key)
+        //.setBase64CoderEnabled(true)
+        //.setLzmaCoderEnabled(true)
         .encode().save(p2);
     
     mb.reset().load(p2)
-        .setLzmaCoderEnabled(true)
-        .setBase64CoderEnabled(true)
-        .setCryptCoderEnabled(true, key)
+        //.setLzmaCoderEnabled(true)
+        //.setBase64CoderEnabled(true)
+        //.setCryptCoderEnabled(true, key)
         .setGZipCoderEnabled(true)
         .decode().save(p3);
   }
