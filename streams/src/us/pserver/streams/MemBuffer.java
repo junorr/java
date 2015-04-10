@@ -110,7 +110,7 @@ public class MemBuffer {
   }
   
   
-  public boolean isLimitOverloaded() {
+  public boolean isLimitExceeded() {
     return buffer.size() >= limit;
   }
   

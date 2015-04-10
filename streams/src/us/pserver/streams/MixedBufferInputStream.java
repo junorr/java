@@ -21,6 +21,7 @@
 
 package us.pserver.streams;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -28,33 +29,34 @@ import java.io.InputStream;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 09/04/2015
  */
-public class MemBufferInputStream_1 extends InputStream {
+public class MixedBufferInputStream extends InputStream {
   
-  private MemBuffer buffer;
+  private MixedReadBuffer buffer;
   
   
-  public MemBufferInputStream_1(MemBuffer buf) {
+  public MixedBufferInputStream(MixedReadBuffer buf) {
     if(buf == null) throw new IllegalArgumentException(
-        "[MemBufferInputStream( MemBuffer )] Invalid MemBuffer: '"+ buf+ "'");
+        "[MixedBufferInputStream( MixedReadBuffer )] Invalid MixedReadBuffer: '"+ buf+ "'");
     buffer = buf;
   }
   
   
   @Override
-  public int available() {
-    return buffer.size() - buffer.index();
+  public int available() throws IOException {
+    return (int) buffer.length();
   }
   
   
   @Override
-  public void close() {
-    buffer.clear();
-  }
+  public void close() {}
   
   
   @Override
   public void mark(int readLimit) {
-    buffer.mark();
+    try { buffer.mark(); }
+    catch(IOException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   
@@ -65,35 +67,38 @@ public class MemBufferInputStream_1 extends InputStream {
   
   
   @Override
-  public int read() {
+  public int read() throws IOException {
     return buffer.read();
   }
   
   
   @Override
-  public int read(byte[] bs) {
+  public int read(byte[] bs) throws IOException {
     return buffer.read(bs);
   }
   
   
   @Override
-  public int read(byte[] bs, int off, int len) {
+  public int read(byte[] bs, int off, int len) throws IOException {
     return buffer.read(bs, off, len);
   }
   
   
   @Override
   public void reset() {
-    buffer.reset();
+    try { buffer.reset(); }
+    catch(IOException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   
   @Override
-  public long skip(long skip) {
+  public long skip(long skip) throws IOException {
     if(skip <= 0) return 0;
-    if(skip > buffer.size() - buffer.index())
-      skip = buffer.size() - buffer.index();
-    buffer.index((int) (buffer.index() + skip));
+    if(skip > buffer.length() - buffer.index())
+      skip = buffer.length() - buffer.index();
+    buffer.seek(buffer.index() + skip);
     return skip;
   }
 

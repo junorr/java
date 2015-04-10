@@ -23,6 +23,8 @@ package us.pserver.streams;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 
@@ -41,7 +43,9 @@ public class MixedBuffer {
   
   private long idx, rmark, wmark, rlimit;
   
-  private boolean valid;
+  private boolean valid, rmode;
+  
+  private StreamCoderFactory coders;
   
   
   public MixedBuffer(int memsize) {
@@ -54,6 +58,7 @@ public class MixedBuffer {
     rlimit = 0;
     wmark = -1;
     valid = true;
+    rmode = false;
   }
   
   
@@ -72,6 +77,14 @@ public class MixedBuffer {
   }
   
   
+  public StreamCoderFactory getCoderFactory() {
+    if(coders == null) {
+      coders = StreamCoderFactory.getNew();
+    }
+    return coders;
+  }
+  
+  
   public MixedBuffer write(int b) throws IOException {
     this.checkValid();
     this.checkLimit();
@@ -79,8 +92,11 @@ public class MixedBuffer {
       buffer.write(b);
     } catch(IndexOutOfBoundsException e) {
       initTemp();
+      if(rmode) {
+        raf.seek(wmark);
+        rmode = false;
+      }
       raf.write(b);
-      wmark = raf.length();
     }
     return this;
   }
@@ -89,7 +105,7 @@ public class MixedBuffer {
   public MixedBuffer write(byte[] bs, int off, int len) throws IOException {
     this.checkValid();
     this.checkLimit();
-    if(bs == null || bs.length < 1
+    if(bs == null
         || off < 0 || len > bs.length - off) {
       throw new IOException(
           "[MixedBuffer.write( [B, int, int )] "
@@ -97,14 +113,22 @@ public class MixedBuffer {
               + bs+ "("+ bs.length+ "), "+ off
               + ", "+ len+ "'");
     }
+    if(bs.length == 0 || len == 0 || len > bs.length) return this;
     int writed = 0;
     try {
       for(int i = off; i < len; i++) {
         buffer.write(bs[i]);
         writed = i;
       }
+      writed++;
     } catch(IndexOutOfBoundsException e) {
       initTemp();
+      if(rmode) {
+        raf.seek(wmark);
+        rmode = false;
+      }
+      if(len > bs.length - writed)
+        len = bs.length - writed;
       raf.write(bs, writed, len);
       wmark = raf.length();
     }
@@ -115,11 +139,9 @@ public class MixedBuffer {
   public MixedBuffer write(byte[] bs) throws IOException {
     this.checkValid();
     this.checkLimit();
-    if(bs == null || bs.length < 1) {
+    if(bs == null) {
       throw new IOException(
-          "[MixedBuffer.write( [B )] "
-              + "Invalid byte array: '"+ bs
-              + (bs != null ? "("+bs.length+")" : "") + "'");
+          "[MixedBuffer.write( [B )] Invalid byte array: '"+ bs+ "'");
     }
     return this.write(bs, 0, bs.length);
   }
@@ -135,17 +157,20 @@ public class MixedBuffer {
       idx++;
     }
     else if(temp != null && (idx - buffer.size()) < raf.length()) {
-      wmark = raf.length();
+      if(!rmode) {
+        wmark = raf.length();
+        rmode = true;
+      }
       raf.seek(idx - buffer.size());
       b = raf.read();
       idx++;
-      raf.seek(wmark);
     } 
     return b;
   }
   
   
   public int read(byte[] bs, int off, int len) throws IOException {
+    //long init = System.currentTimeMillis();
     this.checkValid();
     if(bs == null || bs.length < 1
         || off < 0 || len > bs.length - off) {
@@ -170,17 +195,16 @@ public class MixedBuffer {
         max++;
       }
     }
+    //System.out.println("[read( [B, int, int )]: time = "+ (System.currentTimeMillis() - init));
     return max;
   }
   
   
   public int read(byte[] bs) throws IOException {
     this.checkValid();
-    if(bs == null || bs.length < 1) {
+    if(bs == null) {
       throw new IOException(
-          "[MixedBuffer.read( [B )] "
-              + "Invalid byte array: '"+ bs
-              + (bs != null ? "("+bs.length+")" : "") + "'");
+          "[MixedBuffer.read( [B )] "+ "Invalid byte array: '"+ bs+ "'");
     }
     return read(bs, 0, bs.length);
   }
@@ -253,9 +277,33 @@ public class MixedBuffer {
   }
   
   
-  public boolean isLimitOverloaded() throws IOException {
+  public boolean isLimitExceeded() throws IOException {
     this.checkValid();
     return size() >= rlimit;
+  }
+  
+  
+  public InputStream getInputStream() {
+    InputStream is = new MixedBufferInputStream(this);
+    if(coders != null && coders.isAnyCoderEnabled()) {
+      try { is = coders.create(is); }
+      catch(IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return is;
+  }
+  
+  
+  public OutputStream getOutputStream() {
+    OutputStream os = new MixedBufferOutputStream(this);
+    if(coders != null && coders.isAnyCoderEnabled()) {
+      try { os = coders.create(os); }
+      catch(IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return os;
   }
   
   

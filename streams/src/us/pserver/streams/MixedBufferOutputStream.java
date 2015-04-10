@@ -21,6 +21,7 @@
 
 package us.pserver.streams;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -28,15 +29,15 @@ import java.io.OutputStream;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 09/04/2015
  */
-public class MemBufferOutputStream_1 extends OutputStream {
+public class MixedBufferOutputStream extends OutputStream {
 
-  private MemBuffer buffer;
+  private MixedWriteBuffer buffer;
   
   
-  public MemBufferOutputStream_1(MemBuffer buf) {
+  public MixedBufferOutputStream(MixedWriteBuffer buf) {
     if(buf == null)
       throw new IllegalArgumentException(
-          "[MemBufferOutputStream( MemBuffer )] Invalid MemBuffer: '"+ buf+ "'");
+          "[MixedBufferOutputStream( MixedWriteBuffer )] Invalid MixedWriteBuffer: '"+ buf+ "'");
     buffer = buf;
   }
   
@@ -47,19 +48,19 @@ public class MemBufferOutputStream_1 extends OutputStream {
   
   
   @Override
-  public void write(int b) {
+  public void write(int b) throws IOException {
     buffer.write(b);
   }
   
   
   @Override
-  public void write(byte[] bs, int off, int len) {
+  public void write(byte[] bs, int off, int len) throws IOException {
     buffer.write(bs, off, len);
   }
   
   
   @Override
-  public void write(byte[] bs) {
+  public void write(byte[] bs) throws IOException {
     buffer.write(bs);
   }
   
