@@ -21,6 +21,7 @@
 
 package us.pserver.streams;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -156,7 +157,7 @@ public class MixedWriteBuffer extends AbstractMixedBuffer {
   
   public OutputStream getOutputStream() throws IOException {
     validate();
-    OutputStream out = new MixedBufferOutputStream(this);
+    OutputStream out = new BufferedOutputStream(new MixedBufferOutputStream(this));
     if(coderfac.isAnyCoderEnabled()) {
       out = coderfac.create(out);
     }
@@ -168,10 +169,7 @@ public class MixedWriteBuffer extends AbstractMixedBuffer {
     validate();
     valid = false;
     buffer.flip();
-    if(raf != null) {
-      raf.close();
-    }
-    return new MixedReadBuffer(buffer, temp);
+    return new MixedReadBuffer(buffer, temp, this);
   }
   
 }

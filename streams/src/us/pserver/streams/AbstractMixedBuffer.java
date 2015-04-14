@@ -41,7 +41,7 @@ public abstract class AbstractMixedBuffer implements MixedBuffer {
   
   protected RandomAccessFile raf;
   
-  protected static final StreamCoderFactory 
+  protected final StreamCoderFactory 
       coderfac = StreamCoderFactory.getNew();
   
   

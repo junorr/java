@@ -21,6 +21,7 @@
 
 package us.pserver.streams;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,8 +40,9 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
   
   private long mark, idx;
   
+  private MixedWriteBuffer writer;
   
-  protected MixedReadBuffer(ByteBuffer buf, File tmp) throws IOException {
+  protected MixedReadBuffer(ByteBuffer buf, File tmp, MixedWriteBuffer writer) throws IOException {
     super();
     if(buf == null)
       throw new IllegalArgumentException(
@@ -51,6 +53,7 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
     mark = 0;
     idx = 0;
     valid = true;
+    this.writer = writer;
     if(temp != null) {
       raf = new RandomAccessFile(temp, "rw");
     }
@@ -189,7 +192,7 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
   
   public InputStream getInputStream() throws IOException {
     validate();
-    InputStream in = new MixedBufferInputStream(this);
+    InputStream in = new BufferedInputStream(new MixedBufferInputStream(this));
     if(coderfac.isAnyCoderEnabled()) {
       in = coderfac.create(in);
     }
@@ -201,10 +204,8 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
     validate();
     valid = false;
     buffer.flip();
-    if(raf != null) {
-      raf.close();
-    }
-    return new MixedWriteBuffer(buffer, temp);
+    writer.valid = true;
+    return writer;
   }
   
 }

@@ -40,10 +40,10 @@ public class TestMixedBuffer {
   public static void main(String[] args) throws IOException {
     MixedWriteBuffer wbuf = new MixedWriteBuffer();
     Path pi = IO.p("/storage/pic.jpg");
-    Path po = IO.p("/storage/pic2.jpg");
+    Path po = IO.p("/storage/pic-2.jpg");
     
     CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
-    wbuf.getCoderFactory().setCryptCoderEnabled(true, key);
+    wbuf.getCoderFactory().setBase64CoderEnabled(true).setGZipCoderEnabled(true).setCryptCoderEnabled(true, key);
     
     System.out.print("* buffer in  << ("+ pi+ ")\t");
     long millis = System.currentTimeMillis();
@@ -53,6 +53,7 @@ public class TestMixedBuffer {
     System.out.println("* wbuf.length="+ wbuf.length());
     
     MixedReadBuffer rbuf = wbuf.getReadBuffer();
+    rbuf.getCoderFactory().setBase64CoderEnabled(true).setGZipCoderEnabled(true).setCryptCoderEnabled(true, key);
     System.out.print("* buffer out >> ("+ po+ ")\t");
     millis = System.currentTimeMillis();
     rbuf.flush(po);

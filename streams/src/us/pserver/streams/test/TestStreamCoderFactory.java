@@ -41,7 +41,7 @@ public class TestStreamCoderFactory {
   public static void main(String[] args) throws IOException {
     // --ENCODE --
     Path pi = IO.p("/storage/pic.jpg");
-    Path po = IO.p("/storage/pic.enc");
+    Path po = IO.p("/storage/pic-enc.enc");
     
     InputStream is = IO.is(pi);
     OutputStream os = IO.os(po);
@@ -60,7 +60,7 @@ public class TestStreamCoderFactory {
     System.out.println("* Done!");
     
     // --DECODE --
-    pi = IO.p("/storage/pic.enc");
+    pi = IO.p("/storage/pic-enc.enc");
     po = IO.p("/storage/pic-dec.jpg");
     
     is = IO.is(pi);

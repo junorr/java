@@ -31,6 +31,7 @@ import org.apache.commons.codec.binary.Base64OutputStream;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.crypt.CryptUtils;
 import static us.pserver.chk.Checker.nullarg;
+import static us.pserver.streams.IO.os;
 
 /**
  *
@@ -201,6 +202,7 @@ public class StreamCoderFactory {
     switch(tp) {
       case CRYPT:
         return CryptUtils.createCipherOutputStream(os, key);
+        //return new CryptOutputStream(os, key);
       case BASE64:
         return new Base64OutputStream(os);
       case GZIP:
@@ -230,15 +232,16 @@ public class StreamCoderFactory {
   }
   
   
-  private InputStream create(InputStream os, CoderType tp) throws IOException {
-    if(tp == null) return os;
+  private InputStream create(InputStream is, CoderType tp) throws IOException {
+    if(tp == null) return is;
     switch(tp) {
       case CRYPT:
-        return CryptUtils.createCipherInputStream(os, key);
+        return CryptUtils.createCipherInputStream(is, key);
+        //return new CryptInputStream(is, key);
       case BASE64:
-        return new Base64InputStream(os);
+        return new Base64InputStream(is);
       case GZIP:
-        return new GZIPInputStream(os);
+        return new GZIPInputStream(is);
       default:
         throw new IOException(
             "create( InputStream, "

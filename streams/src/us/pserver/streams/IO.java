@@ -195,11 +195,11 @@ public abstract class IO {
     long total = 0;
     while(true) {
       read = is.read(buf);
-      if(read < 0) break;
+      if(read < 1) break;
       total += read;
       os.write(buf, 0, read);
       os.flush();
-      if(read != buf.length) break;
+      //if(read != buf.length) break;
     }
     return total;
   }
