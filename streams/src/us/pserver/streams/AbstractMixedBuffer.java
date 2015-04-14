@@ -41,18 +41,26 @@ public abstract class AbstractMixedBuffer implements MixedBuffer {
   
   protected RandomAccessFile raf;
   
-  protected final StreamCoderFactory 
-      coderfac = StreamCoderFactory.getNew();
+  protected StreamCoderFactory coderfac;
   
   
   protected AbstractMixedBuffer() {
     valid = true;
+    coderfac = StreamCoderFactory.getNew();
   }
   
   
   @Override
   public StreamCoderFactory getCoderFactory() {
     return coderfac;
+  }
+  
+  
+  public AbstractMixedBuffer setCoderFactory(StreamCoderFactory fac) {
+    if(fac != null) {
+      coderfac = fac;
+    }
+    return this;
   }
   
   
@@ -113,11 +121,12 @@ public abstract class AbstractMixedBuffer implements MixedBuffer {
     valid = false;
     try {
       buffer.clear();
-      buffer = null;
       if(raf != null) {
         raf.close();
         temp.deleteOnExit();
         temp.delete();
+        raf = null;
+        temp = null;
       }
     } catch(Exception e) {}
   }

@@ -42,6 +42,7 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
   
   private MixedWriteBuffer writer;
   
+  
   protected MixedReadBuffer(ByteBuffer buf, File tmp, MixedWriteBuffer writer) throws IOException {
     super();
     if(buf == null)
@@ -190,6 +191,11 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
   }
   
   
+  public InputStream getRawInputStream() {
+    return new BufferedInputStream(new MixedBufferInputStream(this));
+  }
+  
+  
   public InputStream getInputStream() throws IOException {
     validate();
     InputStream in = new BufferedInputStream(new MixedBufferInputStream(this));
@@ -204,6 +210,9 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
     validate();
     valid = false;
     buffer.flip();
+    if(raf != null) {
+      raf.close();
+    }
     writer.valid = true;
     return writer;
   }

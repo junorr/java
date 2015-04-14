@@ -23,6 +23,7 @@ package us.pserver.rob.channel;
 
 import java.io.IOException;
 import java.net.Socket;
+import org.apache.http.impl.DefaultBHttpClientConnection;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
@@ -58,7 +59,9 @@ import us.pserver.streams.StreamUtils;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
  */
-public class HttpRequestChannel implements Channel, HttpConst {
+public class HttpRequestChannel implements Channel {
+  
+  public static final int BUFFER_SIZE = 8*1024;
 
   
   private Socket sock;
@@ -68,6 +71,10 @@ public class HttpRequestChannel implements Channel, HttpConst {
   private boolean valid;
   
   private CryptAlgorithm algo;
+  
+  private NetConnector netc;
+  
+  private DefaultBHttpClientConnection conn;
   
   
   /**
@@ -80,14 +87,12 @@ public class HttpRequestChannel implements Channel, HttpConst {
       throw new IllegalArgumentException(
           "Invalid NetConnector ["+ conn+ "]");
     
-    netconn = conn;
+    netc = conn;
     crypt = true;
     gzip = true;
     algo = CryptAlgorithm.AES_CBC_PKCS5;
-    parser = new ResponseParser();
     sock = null;
     valid = true;
-    his = null;
   }
   
   
@@ -96,7 +101,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
    * @return <code>NetConnector</code>.
    */
   public NetConnector getNetConnector() {
-    return netconn;
+    return netc;
   }
   
   
@@ -134,62 +139,13 @@ public class HttpRequestChannel implements Channel, HttpConst {
   }
   
   
-  public Socket getSocket() {
-    return sock;
-  }
-  
-  
-  public HttpBuilder getHttpBuilder() {
-    if(builder == null)
-      builder = HttpBuilder.requestBuilder();
-    return builder;
-  }
-  
-  
-  public ResponseParser getResponseParser() {
-    return parser;
-  }
-  
-  
-  public ResponseLine getResponseLine() {
-    return resp;
-  }
-  
-  
   /**
    * Define alguns cabeçalhos da requisição HTTP,
    * como tipo de conteúdo, codificação, conteúdo
    * aceito e agente da requisição.
    */
   private void setHeaders(Transport trp) throws IOException {
-    if(trp == null || trp.getObject() == null) 
-      throw new IllegalArgumentException(
-          "Invalid Transport [trp="+ trp+ "]");
-    
-    RequestLine req = new RequestLine(Method.POST, 
-        netconn.getAddress(), netconn.getPort());
-    builder = HttpBuilder.requestBuilder(req);
-    
-    if(netconn.getProxyAuthorization() != null)
-      builder.put(HD_PROXY_AUTHORIZATION, 
-          netconn.getProxyAuthorization());
-    
-    CryptKey key = null;
-    if(crypt) {
-      key = CryptKey.createRandomKey(algo);
-      builder.put(new HttpCryptKey(key));
-    }
-    
-    builder.put(new HttpEnclosedObject(
-        trp.getWriteVersion()).setCryptEnabled(crypt, key));
-    
-    if(trp.getInputStream() != null) {
-      his = new HttpInputStream(
-          trp.getInputStream())
-          .setGZipCoderEnabled(true)
-          .setCryptCoderEnabled(crypt, key);
-      builder.put(his);
-    }
+    Ba
   }
   
   
@@ -198,7 +154,7 @@ public class HttpRequestChannel implements Channel, HttpConst {
     if(his != null) his.closeBuffer();
     this.setHeaders(trp);
     if(sock == null)
-      sock = netconn.connectSocket();
+      sock = netc.connectSocket();
     
     builder.writeContent(sock.getOutputStream());
     this.verifyResponse();

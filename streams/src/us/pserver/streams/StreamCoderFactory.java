@@ -249,4 +249,9 @@ public class StreamCoderFactory {
     }
   }
   
+  
+  public String toString() {
+    return "StreamCoderFactory{BASE64="+ isBase64CoderEnabled()+ ", GZIP="+ isGZipCoderEnabled()+ ", CRYPT="+ isCryptCoderEnabled()+ "}";
+  }
+  
 }

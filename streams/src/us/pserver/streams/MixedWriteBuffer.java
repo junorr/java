@@ -132,6 +132,14 @@ public class MixedWriteBuffer extends AbstractMixedBuffer {
   }
   
   
+  public MixedWriteBuffer clear() {
+    valid = true;
+    close();
+    valid = true;
+    return this;
+  }
+  
+  
   public MixedWriteBuffer load(Path p) throws IOException {
     validate();
     if(p == null)
@@ -155,6 +163,11 @@ public class MixedWriteBuffer extends AbstractMixedBuffer {
   }
   
   
+  public OutputStream getRawOutputStream() {
+    return new BufferedOutputStream(new MixedBufferOutputStream(this));
+  }
+  
+  
   public OutputStream getOutputStream() throws IOException {
     validate();
     OutputStream out = new BufferedOutputStream(new MixedBufferOutputStream(this));
@@ -169,7 +182,9 @@ public class MixedWriteBuffer extends AbstractMixedBuffer {
     validate();
     valid = false;
     buffer.flip();
-    return new MixedReadBuffer(buffer, temp, this);
+    MixedReadBuffer rbuf = new MixedReadBuffer(buffer, temp, this);
+    rbuf.setCoderFactory(getCoderFactory());
+    return rbuf;
   }
   
 }
