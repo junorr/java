@@ -23,33 +23,30 @@ package us.pserver.streams;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 10/04/2015
  */
-public class MixedWriteBuffer {
-  
-  public static final int DEFAULT_MEM_SIZE = 512 * 1024;
-
-  private File temp;
-  
-  private ByteBuffer buffer;
-  
-  private RandomAccessFile raf;
+public class MixedWriteBuffer extends AbstractMixedBuffer {
   
   
   protected MixedWriteBuffer(ByteBuffer buf, File tmp) throws IOException {
+    super();
     if(buf == null)
       throw new IllegalArgumentException(
           "[MixeWritedBuffer( ByteBuffer, File )] Invalid ByteBuffer: "+ buf);
     this.buffer = buf;
     temp = tmp;
     raf = null;
+    valid = true;
     if(temp != null) {
       raf = new RandomAccessFile(temp, "rw");
     }
@@ -57,9 +54,11 @@ public class MixedWriteBuffer {
   
   
   public MixedWriteBuffer(int memsize) {
+    super();
     if(memsize < 1) memsize = DEFAULT_MEM_SIZE;
     buffer = ByteBuffer.allocateDirect(memsize);
     raf = null;
+    valid = true;
   }
   
   
@@ -68,25 +67,24 @@ public class MixedWriteBuffer {
   }
   
   
-  public ByteBuffer getBuffer() {
-    return buffer;
-  }
-  
-  
-  public File getTemp() {
-    return temp;
-  }
-  
-  
   private void initTemp() throws IOException {
     if(temp == null) {
-      temp = File.createTempFile("MixedBuffer-", ".tmp");
+      temp = File.createTempFile("mixed_buffer_", ".tmp");
+      temp.deleteOnExit();
       raf = new RandomAccessFile(temp, "rw");
     }
   }
   
   
+  private void validate() {
+    if(!valid) {
+      throw new IllegalStateException("This buffer becomes invalid. It is closed or being readed?");
+    }
+  }
+  
+  
   public void write(int b) throws IOException {
+    validate();
     if(buffer.hasRemaining()) {
       buffer.put((byte) b);
     }
@@ -98,6 +96,7 @@ public class MixedWriteBuffer {
   
   
   public void write(byte[] bs, int off, int len) throws IOException {
+    validate();
     if(bs == null || off < 0 || len > bs.length - off)
       throw new IllegalArgumentException(
           "[MixedWriteBuffer.write( [B, int, int )] Invalid Arguments {bs="
@@ -124,6 +123,7 @@ public class MixedWriteBuffer {
   
   
   public void write(byte[] bs) throws IOException {
+    validate();
     if(bs == null)
       throw new IllegalArgumentException(
           "[MixedWriteBuffer.write( [B )] Invalid byte array {bs="+ bs+ "}");
@@ -131,26 +131,42 @@ public class MixedWriteBuffer {
   }
   
   
-  public OutputStream getOutputStream() {
-    return new MixedBufferOutputStream(this);
+  public MixedWriteBuffer load(Path p) throws IOException {
+    validate();
+    if(p == null)
+      throw new IllegalArgumentException(
+          "[MixedWriteBuffer.load( Path )] Invalid null path {p="+ p+ "}");
+    if(!Files.exists(p))
+      throw new IllegalArgumentException(
+          "[MixedWriteBuffer.load( Path )] Path does not exist {p="+ p+ "}");
+    IO.tc(IO.is(p), getOutputStream());
+    return this;
   }
   
   
-  public void close() {
-    try {
-      buffer.clear();
-      buffer = null;
-      if(raf != null)
-        raf.close();
-      if(temp != null) {
-        temp.deleteOnExit();
-        temp.delete();
-      }
-    } catch(Exception e) {}
+  public MixedWriteBuffer load(InputStream in) throws IOException {
+    validate();
+    if(in == null)
+      throw new IllegalArgumentException(
+          "[MixedWriteBuffer.load( InputStream )] Invalid null stream {in="+ in+ "}");
+    IO.tc(in, getOutputStream());
+    return this;
+  }
+  
+  
+  public OutputStream getOutputStream() throws IOException {
+    validate();
+    OutputStream out = new MixedBufferOutputStream(this);
+    if(coderfac.isAnyCoderEnabled()) {
+      out = coderfac.create(out);
+    }
+    return out;
   }
   
   
   public MixedReadBuffer getReadBuffer() throws IOException {
+    validate();
+    valid = false;
     buffer.flip();
     if(raf != null) {
       raf.close();

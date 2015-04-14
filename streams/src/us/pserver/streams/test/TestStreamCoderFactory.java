@@ -19,44 +19,62 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.streams;
+package us.pserver.streams.test;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
+import us.pserver.streams.IO;
+import us.pserver.streams.StreamCoderFactory;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 16/07/2014
+ * @version 1.0 - 01/08/2014
  */
-public class TestMultiCoderBuffer {
+public class TestStreamCoderFactory {
 
   
   public static void main(String[] args) throws IOException {
-    MultiCoderBuffer mb = new MultiCoderBuffer();
+    // --ENCODE --
+    Path pi = IO.p("/storage/pic.jpg");
+    Path po = IO.p("/storage/pic.enc");
     
-    Path p1 = Paths.get("/storage/pic.jpg");
-    Path p2 = Paths.get("/storage/pic.enc");
-    Path p3 = Paths.get("/storage/pic-dec.jpg");
+    InputStream is = IO.is(pi);
+    OutputStream os = IO.os(po);
     
-    CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
+    CryptKey k = CryptKey.createRandomKey(CryptAlgorithm.DESede_CBC_PKCS5);
     
-    mb.load(p1)
+    StreamCoderFactory scf = StreamCoderFactory.getNew()
+        .setBase64CoderEnabled(true)
         .setGZipCoderEnabled(true)
-        //.setCryptCoderEnabled(true, key)
-        //.setBase64CoderEnabled(true)
-        //.setLzmaCoderEnabled(true)
-        .encode().save(p2);
+        .setCryptCoderEnabled(true, k);
     
-    mb.reset().load(p2)
-        //.setLzmaCoderEnabled(true)
-        //.setBase64CoderEnabled(true)
-        //.setCryptCoderEnabled(true, key)
+    os = scf.create(os);
+    
+    IO.tc(is, os);
+    os.close();
+    System.out.println("* Done!");
+    
+    // --DECODE --
+    pi = IO.p("/storage/pic.enc");
+    po = IO.p("/storage/pic-dec.jpg");
+    
+    is = IO.is(pi);
+    os = IO.os(po);
+    
+    scf = StreamCoderFactory.getNew()
+        .setBase64CoderEnabled(true)
         .setGZipCoderEnabled(true)
-        .decode().save(p3);
+        .setCryptCoderEnabled(true, k);
+    
+    is = scf.create(is);
+    
+    IO.tc(is, os);
+    System.out.println("* Done!");
   }
   
 }

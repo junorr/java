@@ -24,28 +24,24 @@ package us.pserver.streams;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 10/04/2015
  */
-public class MixedReadBuffer {
-  
-  public static final int DEFAULT_MEM_SIZE = 512 * 1024;
-
-  private File temp;
-  
-  private ByteBuffer buffer;
-  
-  private RandomAccessFile raf;
+public class MixedReadBuffer extends AbstractMixedBuffer {
   
   private long mark, idx;
   
   
   protected MixedReadBuffer(ByteBuffer buf, File tmp) throws IOException {
+    super();
     if(buf == null)
       throw new IllegalArgumentException(
           "[MixeReadBuffer( ByteBuffer, File )] Invalid ByteBuffer: "+ buf);
@@ -54,23 +50,22 @@ public class MixedReadBuffer {
     raf = null;
     mark = 0;
     idx = 0;
+    valid = true;
     if(temp != null) {
       raf = new RandomAccessFile(temp, "rw");
     }
   }
   
   
-  public ByteBuffer getBuffer() {
-    return buffer;
-  }
-  
-  
-  public File getTemp() {
-    return temp;
+  private void validate() {
+    if(!valid) {
+      throw new IllegalStateException("This buffer becomes invalid. It is closed or being writed?");
+    }
   }
   
   
   public int read() throws IOException {
+    validate();
     int b = -1;
     if(buffer == null)
       return b;
@@ -87,12 +82,13 @@ public class MixedReadBuffer {
   
   
   public int read(byte[] bs, int off, int len) throws IOException {
+    validate();
     if(bs == null || off < 0 || len > bs.length - off)
       throw new IllegalArgumentException(
           "[MixedReadBuffer.read( [B, int, int )] Invalid Arguments {bs="
               + bs+ ", bs.length="+ (bs != null ? bs.length : 0)+ ", off="+ off+ ", len="+ len+ "}");
     
-    int read = 0;
+    int read = -1;
     int ilen = len;
     if(buffer.hasRemaining()) {
       if(ilen > buffer.remaining())
@@ -106,15 +102,18 @@ public class MixedReadBuffer {
     if(raf != null && ilen > 0) {
       if(ilen > raf.length())
         ilen = (int) raf.length();
-      raf.read(bs, off, ilen);
-      read += ilen;
-      idx += ilen;
+      int rread = raf.read(bs, off, ilen);
+      if(rread > 0) {
+        read = (read <= 0 ? rread : read + rread);
+        idx += rread;
+      }
     }
     return read;
   }
   
   
   public int read(byte[] bs) throws IOException {
+    validate();
     if(bs == null)
       throw new IllegalArgumentException(
           "[MixedReadBuffer.write( [B )] Invalid byte array {bs="+ bs+ "}");
@@ -122,7 +121,34 @@ public class MixedReadBuffer {
   }
   
   
+  public MixedReadBuffer flush(Path p) throws IOException {
+    validate();
+    if(p == null)
+      throw new IllegalArgumentException(
+          "[MixedWriteBuffer.load( Path )] Invalid null path {p="+ p+ "}");
+    if(!Files.exists(p)) {
+      if(p.getParent() != null && !Files.exists(p.getParent())) {
+        Files.createDirectories(p.getParent());
+      }
+      Files.createFile(p);
+    }
+    IO.tc(getInputStream(), IO.os(p));
+    return this;
+  }
+  
+  
+  public MixedReadBuffer flush(OutputStream out) throws IOException {
+    validate();
+    if(out == null)
+      throw new IllegalArgumentException(
+          "[MixedReadBuffer.flush( OutputStream )] Invalid null stream {out="+ out+ "}");
+    IO.tc(getInputStream(), out);
+    return this;
+  }
+  
+  
   public MixedReadBuffer rewind() throws IOException {
+    validate();
     buffer.rewind();
     idx = 0;
     mark = 0;
@@ -134,6 +160,7 @@ public class MixedReadBuffer {
   
   
   public MixedReadBuffer mark() throws IOException {
+    validate();
     mark = idx;
     if(buffer.hasRemaining())
       buffer.mark();
@@ -142,6 +169,7 @@ public class MixedReadBuffer {
   
   
   public MixedReadBuffer reset() throws IOException {
+    validate();
     idx = mark;
     if(idx < buffer.limit()) {
       buffer.reset();
@@ -153,54 +181,25 @@ public class MixedReadBuffer {
   }
   
   
-  public long length() throws IOException {
-    long sz = buffer.limit();
-    if(raf != null)
-      sz += raf.length();
-    return sz;
-  }
-  
-  
   public long index() {
+    validate();
     return idx;
   }
   
   
-  public MixedReadBuffer seek(long pos) throws IOException {
-    if(pos < 0 || pos > length()) {
-      throw new IndexOutOfBoundsException(
-          "[MixedReadBuffer.seek( long )] Invalid position {pos="+ pos+ "}");
+  public InputStream getInputStream() throws IOException {
+    validate();
+    InputStream in = new MixedBufferInputStream(this);
+    if(coderfac.isAnyCoderEnabled()) {
+      in = coderfac.create(in);
     }
-    if(pos < buffer.limit()) {
-      buffer.position((int) pos);
-    }
-    else if(raf != null && raf.length() >= pos - buffer.limit()) {
-      raf.seek(pos - buffer.limit());
-    }
-    return this;
+    return in;
   }
-  
-  
-  public InputStream getInputStream() {
-    return new MixedBufferInputStream(this);
-  }
-  
-  
-  public void close() {
-    try {
-      buffer.clear();
-      buffer = null;
-      if(raf != null)
-        raf.close();
-      if(temp != null) {
-        temp.deleteOnExit();
-        temp.delete();
-      }
-    } catch(Exception e) {}
-  }
-  
+
   
   public MixedWriteBuffer getWriteBuffer() throws IOException {
+    validate();
+    valid = false;
     buffer.flip();
     if(raf != null) {
       raf.close();

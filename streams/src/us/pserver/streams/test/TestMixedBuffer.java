@@ -19,12 +19,15 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.streams;
+package us.pserver.streams.test;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
+import us.pserver.streams.IO;
+import us.pserver.streams.MixedReadBuffer;
+import us.pserver.streams.MixedWriteBuffer;
 
 /**
  *
@@ -35,39 +38,28 @@ public class TestMixedBuffer {
 
   
   public static void main(String[] args) throws IOException {
-    MixedBuffer buf = new MixedBuffer();
+    MixedWriteBuffer wbuf = new MixedWriteBuffer();
+    Path pi = IO.p("/storage/pic.jpg");
+    Path po = IO.p("/storage/pic2.jpg");
     
     CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
-    System.out.print("* Enable Coders: {Crypt}");// GZip Crypt}");
-    buf.getCoderFactory()//.setBase64CoderEnabled(true);
-    //    .setGZipCoderEnabled(true)
-        .setCryptCoderEnabled(true, key);
-    System.out.println("  [OK]");
+    wbuf.getCoderFactory().setCryptCoderEnabled(true, key);
     
-    Path pi = IO.p("/storage/pic.jpg");
-    Path po = IO.p("/storage/pic.enc");
     System.out.print("* buffer in  << ("+ pi+ ")\t");
-    IO.tc(IO.is(pi), buf.getOutputStream());
-    System.out.println("  [OK]");
+    long millis = System.currentTimeMillis();
+    wbuf.load(pi);
+    System.out.println(" [OK]  ");
+    System.out.println("  time: "+ (System.currentTimeMillis() - millis));
+    System.out.println("* wbuf.length="+ wbuf.length());
     
-    buf.getCoderFactory().clearCoders();
+    MixedReadBuffer rbuf = wbuf.getReadBuffer();
     System.out.print("* buffer out >> ("+ po+ ")\t");
-    IO.tc(buf.getInputStream(), IO.os(po));
-    System.out.println("  [OK]");
+    millis = System.currentTimeMillis();
+    rbuf.flush(po);
+    System.out.println(" [OK]  ");
+    System.out.println("  time: "+ (System.currentTimeMillis() - millis));
     
-    buf.reset();
-    System.out.print("* Enable Coders: {Crypt}");// GZip Crypt}");
-    buf.getCoderFactory()//.setBase64CoderEnabled(true);
-    //    .setGZipCoderEnabled(true)
-        .setCryptCoderEnabled(true, key);
-    System.out.println("  [OK]");
-    po = IO.p("/storage/pic2.jpg");
-    System.out.print("* buffer out >> ("+ po+ ")\t");
-    IO.tc(buf.getInputStream(), IO.os(po));
-    System.out.println("  [OK]");
-    
-    System.out.println("* Done!");
-    buf.close();
+    wbuf.close();
   }
   
 }
