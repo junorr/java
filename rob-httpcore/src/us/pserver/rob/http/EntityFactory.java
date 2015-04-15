@@ -211,7 +211,9 @@ public class EntityFactory {
     os.write(scv.convert(Tags.END_XML));
     os.flush();
     os.close();
-    return new InputStreamEntity(buffer.getReadBuffer().getRawInputStream(), type);
+    
+    InputStream istream = buffer.getReadBuffer().getRawInputStream();
+    return new InputStreamEntity(istream, istream.available(), type);
   }
   
   

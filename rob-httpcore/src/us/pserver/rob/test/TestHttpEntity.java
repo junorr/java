@@ -22,31 +22,29 @@
 package us.pserver.rob.test;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.util.Iterator;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
 import org.apache.http.impl.DefaultBHttpServerConnection;
-import us.pserver.rob.channel.HttpResponseChannel;
-import us.pserver.rob.channel.Transport;
-import us.pserver.streams.StreamUtils;
+import org.apache.http.util.EntityUtils;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 16/06/2014
  */
-public class TestHttpResponse {
+public class TestHttpEntity {
 
   
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, HttpException {
     //InetSocketAddress addr = new InetSocketAddress("172.24.75.2", 9011);
     //InetSocketAddress addr = new InetSocketAddress("10.100.0.104", 9011);
-    InetSocketAddress addr = new InetSocketAddress("0.0.0.0", 9011);
+    InetSocketAddress addr = new InetSocketAddress("localhost", 9011);
     
     ServerSocket server = new ServerSocket();
     server.bind(addr);
@@ -57,25 +55,27 @@ public class TestHttpResponse {
     
     DefaultBHttpServerConnection conn = new DefaultBHttpServerConnection(8*1024);
     conn.bind(sock);
-    HttpResponseChannel channel = new HttpResponseChannel(conn);
-    Transport trp = channel.read();
-    System.out.println("* received: "+ trp);
-    /*
-    if(trp.hasContentEmbedded()) {
-      System.out.println("* content embedded received!");
-      Path to = Paths.get("c:/.local/inputstream.png");
-      System.out.println("* writing to: "+ to.toString());
-      OutputStream out = Files.newOutputStream(to,
-          StandardOpenOption.WRITE, 
-          StandardOpenOption.CREATE);
-      StreamUtils.transfer(trp.getInputStream(), out);
-      out.close();
-    }
-    */
-    channel.write(trp.setInputStream(null));
-    System.out.println("* echo response writed!");
-    sock.close();
-    server.close();
+    HttpRequest basereq = conn.receiveRequestHeader();
+    System.out.println("* HttpRequest basereq="+ basereq);
+    System.out.println("* HttpRequest basereq instanceof HttpEntityEnclosingRequest="+ (basereq instanceof HttpEntityEnclosingRequest));
+    
+    HttpEntityEnclosingRequest request = (HttpEntityEnclosingRequest) basereq;
+    System.out.println("* HttpRequest request_line="+ request.getRequestLine());
+    Iterator it = request.headerIterator();
+    while(it.hasNext())
+      System.out.println("  - header="+ it.next());
+    
+    conn.receiveRequestEntity(request);
+    conn.receiveRequestEntity(request);
+    HttpEntity entity = request.getEntity();
+    System.out.println("* HttpEntity entity="+ entity);
+    System.out.println("* entity.content_encoding="+ entity.getContentEncoding());
+    System.out.println("* entity.content_type="+ entity.getContentType());
+    System.out.println("* entity.content_length="+ entity.getContentLength());
+    
+    System.out.println("* entity.string_content="+ EntityUtils.toString(entity));
+    
+    conn.close();
   }
   
 }

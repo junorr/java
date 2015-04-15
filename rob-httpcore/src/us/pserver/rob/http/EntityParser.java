@@ -127,20 +127,20 @@ public class EntityParser {
     if(entity == null)
       throw new IllegalArgumentException(
           "[EntityParser.parse( HttpEntity )] "
-              + "Invalid HttpEntity {entity="+ entity+ "}");
+              + "Invalid MixedWriteBuffer {entity="+ entity+ "}");
     
     buffer.clear();
-    InputStream content = entity.getContent();
+    InputStream contstream = entity.getContent();
     
-    String five = readFive(content);
+    String five = readFive(contstream);
     if(!Tags.START_XML.equals(five)) {
       throw new IOException("[EntityParser.parse()] "
           + "Invalid Content to Parse {expected="
           + Tags.START_XML+ ", read="+ five+ "}");
     }
     
-    five = readFive(content);
-    five = tryCryptKey(content, five);
+    five = readFive(contstream);
+    five = tryCryptKey(contstream, five);
     
     if(!Tags.START_CONTENT.equals(five)) {
       throw new IOException("[EntityParser.parse()] "
@@ -148,13 +148,13 @@ public class EntityParser {
           + Tags.START_CONTENT+ ", read="+ five+ "}");
     }
     
-    IO.tr(content, buffer.getRawOutputStream());
-    content = buffer.getReadBuffer().getInputStream();
-    
-    five = readFive(content);
-    five = tryObject(content, five);
-    tryStream(content, five);
+    IO.tr(contstream, buffer.getRawOutputStream());
+    contstream = buffer.getReadBuffer().getInputStream();
     EntityUtils.consume(entity);
+    
+    five = readFive(contstream);
+    five = tryObject(contstream, five);
+    tryStream(contstream, five);
     return this;
   }
   

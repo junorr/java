@@ -22,6 +22,7 @@
 package us.pserver.rob.channel;
 
 import java.io.IOException;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
@@ -29,9 +30,19 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpServerConnection;
 import org.apache.http.HttpVersion;
 import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.protocol.HttpCoreContext;
+import org.apache.http.protocol.HttpProcessor;
+import org.apache.http.protocol.HttpProcessorBuilder;
+import org.apache.http.protocol.ResponseConnControl;
+import org.apache.http.protocol.ResponseContent;
+import org.apache.http.protocol.ResponseDate;
+import org.apache.http.protocol.ResponseServer;
+import org.apache.http.util.EntityUtils;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.rob.http.EntityFactory;
+import us.pserver.rob.http.EntityParser;
 import us.pserver.rob.http.HttpConsts;
+import us.pserver.streams.MixedWriteBuffer;
 
 
 /**
@@ -61,6 +72,10 @@ public class HttpResponseChannel implements Channel {
   
   private HttpServerConnection conn;
   
+  private HttpProcessor processor;
+  
+  private HttpCoreContext context;
+  
   
   /**
    * Construtor padrão, recebe um <code>Socket</code>
@@ -77,6 +92,19 @@ public class HttpResponseChannel implements Channel {
     conn = hsc;
     key = null;
     valid = true;
+    gzip = true;
+    init();
+  }
+  
+  
+  private void init() {
+    context = HttpCoreContext.create();
+    processor = HttpProcessorBuilder.create()
+        .add(new ResponseServer(HttpConsts.VAL_SERVER))
+        .add(new ResponseDate())
+        .add(new ResponseContent())
+        .add(new ResponseConnControl())
+        .build();
   }
   
   
@@ -104,17 +132,13 @@ public class HttpResponseChannel implements Channel {
   private HttpResponse createResponse(Transport trp) throws IOException {
     if(trp == null) return null;
     HttpResponse response = new BasicHttpResponse(
-        HttpVersion.HTTP_1_1, 200, "OK");
-    response.addHeader(HttpConsts.HD_SERVER, 
-        HttpConsts.VAL_SERVER);
-    response.addHeader(HttpConsts.HD_DATE, 
-        String.valueOf(new java.util.Date()));
-    response.addHeader(HttpConsts.HD_CONT_TYPE, 
-        HttpConsts.VAL_ACCEPT);
-    response.addHeader(HttpConsts.HD_CONT_ENCODING, 
-        HttpConsts.VAL_ENCODING);
-    response.addHeader(HttpConsts.HD_CONNECTION, 
-        HttpConsts.VAL_CONNECTION);
+        HttpVersion.HTTP_1_1, 
+        HttpConsts.STATUS_200, 
+        HttpConsts.STATUS_OK);
+    
+    String contenc = HttpConsts.VAL_NO_ENCODING;
+    if(gzip) contenc = HttpConsts.VAL_GZIP_ENCODING;
+    response.addHeader(HttpConsts.HD_CONT_ENCODING, contenc);
     
     EntityFactory fac = EntityFactory.factory();
     if(gzip) fac.enableGZipCoder();
@@ -132,6 +156,7 @@ public class HttpResponseChannel implements Channel {
     HttpResponse response = createResponse(trp);
     if(response == null) return;
     try {
+      processor.process(response, context);
       conn.sendResponseHeader(response);
       conn.sendResponseEntity(response);
       conn.flush();
@@ -146,10 +171,31 @@ public class HttpResponseChannel implements Channel {
   public Transport read() throws IOException {
     if(conn == null || !conn.isOpen())
       return null;
-    HttpRequest basereq = conn.receiveRequestHeader();
-    if(basereq == null 
-        || !HttpEntityEnclosingRequest.class
-            .isAssignableFrom(basereq.getClass()))
+    try {
+      HttpRequest basereq = conn.receiveRequestHeader();
+      if(basereq == null 
+          || !HttpEntityEnclosingRequest.class
+              .isAssignableFrom(basereq.getClass())) {
+        throw new IOException("[HttpResponseChannel.read()] "
+            + "Invalid HttpRequest without content received");
+      }
+      
+      HttpEntityEnclosingRequest request = (HttpEntityEnclosingRequest) basereq;
+      conn.receiveRequestEntity(request);
+      HttpEntity content = request.getEntity();
+      if(content == null) return null;
+      
+      EntityParser par = EntityParser.create();
+      if(gzip) par.enableGZipCoder();
+      par.parse(content);
+      Transport t = (Transport) par.getObject();
+      if(par.getInputStream() != null)
+        t.setInputStream(par.getInputStream());
+      return t;
+    }
+    catch(HttpException e) {
+      throw new IOException(e.toString(), e);
+    }
   }
   
   

@@ -28,20 +28,21 @@ package us.pserver.rob.http;
  */
 public interface HttpConsts {
 
+  public static final int STATUS_200 = 200;
+  
   public static final String
-      
       HTTP = "http://",
       DOTS = ":",
       SLASH = "/",
       
-      HD_USER_AGENT = "User-Agent",
       VAL_USER_AGENT = "Mozilla/5.0",
       
       HD_ACCEPT = "Accept",
-      VAL_ACCEPT = "text/html, application/x-java-rob",
+      VAL_ACCEPT = "text/xml, application/x-java-rob",
       
       HD_ENCODING = "Accept-Encoding",
-      VAL_ENCODING = "deflate",
+      VAL_NO_ENCODING = "deflate",
+      VAL_GZIP_ENCODING = "gzip",
       
       HD_CONNECTION = "Connection",
       VAL_CONNECTION = "keep-alive",
@@ -53,6 +54,8 @@ public interface HttpConsts {
       HD_CONT_ENCODING = "Content-Encoding",
       
       HD_SERVER = "Server",
-      VAL_SERVER = "http-rob/v1.0";
+      VAL_SERVER = "httpcore-revoke/4.4",
+      
+      STATUS_OK = "OK";
   
 }

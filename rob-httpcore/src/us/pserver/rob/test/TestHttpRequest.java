@@ -35,7 +35,7 @@ public class TestHttpRequest {
   
   public static void main(String[] args) throws IOException {
     //NetConnector nc = new NetConnector("172.24.77.6", 9099);
-    NetConnector nc = new NetConnector("localhost", 45000);
+    NetConnector nc = new NetConnector("localhost", 9011);
     /* set proxy 
     nc.setProxyAddress("172.24.75.19")
         .setProxyPort(6060)
@@ -44,7 +44,7 @@ public class TestHttpRequest {
     HttpRequestChannel channel = new HttpRequestChannel(nc);
     
     Transport trp = new Transport();
-    trp.setObject("Hello HttpUtils!!");
+    trp.setObject("Hello Apache HttpCore!!");
 
     /*
     InputStream input = Files.newInputStream(

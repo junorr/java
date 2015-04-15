@@ -56,7 +56,7 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
     valid = true;
     this.writer = writer;
     if(temp != null) {
-      raf = new RandomAccessFile(temp, "rw");
+      raf = new RandomAccessFile(temp, "r");
     }
   }
   
@@ -94,9 +94,9 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
     
     int read = -1;
     int ilen = len;
+    
     if(buffer.hasRemaining()) {
-      if(ilen > buffer.remaining())
-        ilen = buffer.remaining();
+      ilen = Math.min(ilen, buffer.remaining());
       buffer.get(bs, off, ilen);
       read = ilen;
       off += ilen;
@@ -104,8 +104,7 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
       ilen = len - ilen;
     }
     if(raf != null && ilen > 0) {
-      if(ilen > raf.length())
-        ilen = (int) raf.length();
+      ilen = (int) Math.min(ilen, raf.length());
       int rread = raf.read(bs, off, ilen);
       if(rread > 0) {
         read = (read <= 0 ? rread : read + rread);

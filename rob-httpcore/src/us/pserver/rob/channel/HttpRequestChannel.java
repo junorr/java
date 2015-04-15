@@ -23,13 +23,21 @@ package us.pserver.rob.channel;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Iterator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.impl.DefaultBHttpClientConnection;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.protocol.HttpCoreContext;
+import org.apache.http.protocol.HttpProcessor;
+import org.apache.http.protocol.HttpProcessorBuilder;
+import org.apache.http.protocol.RequestConnControl;
+import org.apache.http.protocol.RequestContent;
+import org.apache.http.protocol.RequestTargetHost;
+import org.apache.http.protocol.RequestUserAgent;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
@@ -79,6 +87,10 @@ public class HttpRequestChannel implements Channel {
   
   private HttpResponse response;
   
+  private HttpProcessor processor;
+  
+  private HttpCoreContext context;
+  
   
   /**
    * Construtor padrão que recebe <code>NetConnector</code>
@@ -93,12 +105,25 @@ public class HttpRequestChannel implements Channel {
     netc = conn;
     crypt = true;
     gzip = true;
-    algo = CryptAlgorithm.AES_CBC_PKCS5;
     sock = null;
     valid = true;
     this.conn = null;
     key = null;
     response = null;
+    init();
+  }
+  
+  
+  private void init() {
+    algo = CryptAlgorithm.AES_CBC_PKCS5;
+    context = HttpCoreContext.create();
+    context.setTargetHost(new HttpHost(netc.getAddress(), netc.getPort()));
+    processor = HttpProcessorBuilder.create()
+        .add(new RequestContent())
+        .add(new RequestTargetHost())
+        .add(new RequestUserAgent(HttpConsts.VAL_USER_AGENT))
+        .add(new RequestConnControl())
+        .build();
   }
   
   
@@ -161,7 +186,9 @@ public class HttpRequestChannel implements Channel {
         new BasicHttpEntityEnclosingRequest("POST", netc.getURIString());
     
     EntityFactory fac = EntityFactory.factory();
+    String contenc = HttpConsts.VAL_NO_ENCODING;
     if(gzip) {
+      contenc = HttpConsts.VAL_GZIP_ENCODING;
       fac.enableGZipCoder();
     }
     if(crypt) {
@@ -172,14 +199,10 @@ public class HttpRequestChannel implements Channel {
     if(trp.hasContentEmbedded())
       fac.put(trp.getInputStream());
     
-    request.addHeader(HttpConsts.HD_USER_AGENT, 
-        HttpConsts.VAL_USER_AGENT);
-    request.addHeader(HttpConsts.HD_ENCODING, 
-        HttpConsts.VAL_ENCODING);
+    request.addHeader(HttpConsts.HD_CONT_ENCODING, contenc);
     request.addHeader(HttpConsts.HD_ACCEPT, 
         HttpConsts.VAL_ACCEPT);
-    request.addHeader(HttpConsts.HD_CONNECTION, 
-        HttpConsts.VAL_CONNECTION);
+    
     request.setEntity(fac.create());
     return request;
   }
@@ -195,6 +218,7 @@ public class HttpRequestChannel implements Channel {
     }
     try {
       HttpEntityEnclosingRequest request = createRequest(trp);
+      processor.process(request, context);
       conn.sendRequestHeader(request);
       conn.sendRequestEntity(request);
       this.verifyResponse();
@@ -211,6 +235,13 @@ public class HttpRequestChannel implements Channel {
         .getStatusLine().getStatusCode() != 200) {
       throw new IOException(
           "Invalid response from server: "+ response.getStatusLine());
+    }
+    processor.process(response, context);
+    
+    System.out.println("[HttpRequestChannel.verifyResponse()] response.status="+ response.getStatusLine());
+    Iterator it = response.headerIterator();
+    while(it.hasNext()) {
+      System.out.println("  - "+ it.next());
     }
   }
   
@@ -238,6 +269,7 @@ public class HttpRequestChannel implements Channel {
       if(content == null) return null;
       EntityParser par = EntityParser.create();
       if(gzip) par.enableGZipCoder();
+      
       par.parse(content);
       Transport t = (Transport) par.getObject();
       if(par.getInputStream() != null)
