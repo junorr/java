@@ -24,9 +24,10 @@ package us.pserver.rob.http;
 import com.cedarsoftware.util.io.JsonReader;
 import java.io.IOException;
 import java.io.InputStream;
+import org.apache.http.HttpEntity;
+import org.apache.http.util.EntityUtils;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.streams.IO;
-import us.pserver.streams.MixedReadBuffer;
 import us.pserver.streams.MixedWriteBuffer;
 import us.pserver.streams.StreamResult;
 import us.pserver.streams.StreamUtils;
@@ -40,24 +41,20 @@ public class EntityParser {
 
   private MixedWriteBuffer buffer;
   
-  private InputStream parseInput, input;
+  private InputStream input;
   
   private Object obj;
   
   private CryptKey key;
   
   
-  public EntityParser(InputStream is) {
-    if(is == null)
-      throw new IllegalArgumentException("[EntityParser( InputStream )] "
-          + "Invalid InputStream {is="+ is+ "}");
-    parseInput = is;
+  public EntityParser() {
     buffer = new MixedWriteBuffer();
   }
   
   
-  public static EntityParser parser(InputStream is) {
-    return new EntityParser(is);
+  public static EntityParser create() {
+    return new EntityParser();
   }
   
   
@@ -120,53 +117,86 @@ public class EntityParser {
   }
   
   
-  public EntityParser parse() throws IOException {
-    buffer.clear();
-    //System.out.println("parse(): buffer.coder="+ buffer.getCoderFactory());
+  private String readFive(InputStream is) throws IOException {
+    if(is == null) return null;
+    return StreamUtils.readString(is, 5);
+  }
+  
+  
+  public EntityParser parse(HttpEntity entity) throws IOException {
+    if(entity == null)
+      throw new IllegalArgumentException(
+          "[EntityParser.parse( HttpEntity )] "
+              + "Invalid HttpEntity {entity="+ entity+ "}");
     
-    String five = StreamUtils.readString(parseInput, 5);
-    System.out.println("* five='"+ five+ "'");
-    if(!MessageConsts.START_XML.equals(five)) {
+    buffer.clear();
+    InputStream content = entity.getContent();
+    
+    String five = readFive(content);
+    if(!Tags.START_XML.equals(five)) {
       throw new IOException("[EntityParser.parse()] "
-          + "Invalid Content to Parse {expected=<xml>, read="+ five+ "}");
+          + "Invalid Content to Parse {expected="
+          + Tags.START_XML+ ", read="+ five+ "}");
     }
     
-    five = StreamUtils.readString(parseInput, 5);
-    System.out.println("* five='"+ five+ "'");
-    if(MessageConsts.START_CRYPT_KEY.contains(five)) {
-      StreamUtils.readString(parseInput, 1);
-      StreamResult sr = StreamUtils.readStringUntil(parseInput, MessageConsts.END_CRYPT_KEY);
+    five = readFive(content);
+    five = tryCryptKey(content, five);
+    
+    if(!Tags.START_CONTENT.equals(five)) {
+      throw new IOException("[EntityParser.parse()] "
+          + "Invalid Content to Parse {expected="
+          + Tags.START_CONTENT+ ", read="+ five+ "}");
+    }
+    
+    IO.tr(content, buffer.getRawOutputStream());
+    content = buffer.getReadBuffer().getInputStream();
+    
+    five = readFive(content);
+    five = tryObject(content, five);
+    tryStream(content, five);
+    EntityUtils.consume(entity);
+    return this;
+  }
+  
+  
+  private String tryCryptKey(InputStream is, String five) throws IOException {
+    if(five == null || five.trim().isEmpty()
+        || is == null)
+      return five;
+    if(Tags.START_CRYPT_KEY.contains(five)) {
+      StreamUtils.readUntil(is, Tags.GT);
+      StreamResult sr = StreamUtils.readStringUntil(is, Tags.END_CRYPT_KEY);
       key = CryptKey.fromString(sr.content());
       this.enableCryptCoder(key);
-      five = StreamUtils.readString(parseInput, 5);
-      System.out.println("* five='"+ five+ "'");
+      five = readFive(is);
+    }
+    return five;
   }
-    
-    if(!MessageConsts.START_CONTENT.equals(five)) {
-      throw new IOException("[EntityParser.parse()] "
-          + "Invalid Content to Parse {expected=<cnt>, read="+ five+ "}");
+  
+  
+  private String tryObject(InputStream is, String five) throws IOException {
+    if(five == null || five.trim().isEmpty()
+        || is == null)
+      return five;
+    if(Tags.START_ROB.contains(five)) {
+      StreamResult sr = StreamUtils.readStringUntil(is, Tags.END_ROB);
+      obj = JsonReader.jsonToJava(sr.content());
+      five = readFive(is);
     }
-    
-    IO.tr(parseInput, buffer.getRawOutputStream());
-    parseInput = buffer.getReadBuffer().getInputStream();
-    
-    five = StreamUtils.readString(parseInput, 5);
-    System.out.println("* five='"+ five+ "'");
-    if(MessageConsts.START_ROB.contains(five)) {
-      StreamResult sr = StreamUtils.readStringUntil(parseInput, MessageConsts.END_ROB);
-      String js = sr.content();
-      obj = JsonReader.jsonToJava(js);
-      five = StreamUtils.readString(parseInput, 5);
-      System.out.println("* five='"+ five+ "'");
-    }
-    
-    if(MessageConsts.START_STREAM.contains(five)) {
+    return five;
+  }
+  
+  
+  private void tryStream(InputStream is, String five) throws IOException {
+    if(five == null || five.trim().isEmpty()
+        || is == null)
+      return;
+    if(Tags.START_STREAM.contains(five)) {
       MixedWriteBuffer inbuf = new MixedWriteBuffer();
-      StreamUtils.readString(parseInput, 3);
-      StreamUtils.transferUntil(parseInput, inbuf.getRawOutputStream(), MessageConsts.END_STREAM);
+      StreamUtils.readUntil(is, Tags.GT);
+      StreamUtils.transferUntil(is, inbuf.getRawOutputStream(), Tags.END_STREAM);
       input = inbuf.getReadBuffer().getRawInputStream();
     }
-    return this;
   }
   
 }

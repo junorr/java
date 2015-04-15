@@ -22,17 +22,16 @@
 package us.pserver.rob.channel;
 
 import java.io.IOException;
-import java.net.Socket;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpServerConnection;
+import org.apache.http.HttpVersion;
+import org.apache.http.message.BasicHttpResponse;
 import us.pserver.cdr.crypt.CryptKey;
-import us.pserver.http.HttpBuilder;
-import us.pserver.http.HttpConst;
-import us.pserver.http.HttpCryptKey;
-import us.pserver.http.HttpEnclosedObject;
-import us.pserver.http.HttpInputStream;
-import us.pserver.http.RequestParser;
-import us.pserver.http.ResponseLine;
-import static us.pserver.rob.channel.HttpRequestChannel.HTTP_ENCLOSED_OBJECT;
-import static us.pserver.rob.channel.HttpRequestChannel.HTTP_INPUTSTREAM;
+import us.pserver.rob.http.EntityFactory;
+import us.pserver.rob.http.HttpConsts;
 
 
 /**
@@ -52,19 +51,15 @@ import static us.pserver.rob.channel.HttpRequestChannel.HTTP_INPUTSTREAM;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
  */
-public class HttpResponseChannel implements Channel, HttpConst {
-  
-  private final Socket sock;
-  
-  private HttpBuilder builder;
-  
-  private RequestParser parser;
+public class HttpResponseChannel implements Channel {
   
   private CryptKey key;
   
   private boolean valid;
   
-  private HttpInputStream his;
+  private boolean gzip;
+  
+  private HttpServerConnection conn;
   
   
   /**
@@ -73,32 +68,31 @@ public class HttpResponseChannel implements Channel, HttpConst {
    * @param sc <code>Socket</code>, possivelmente obtido
    * através do método <code>ServerSocket.accept() : Socket</code>.
    */
-  public HttpResponseChannel(Socket sc) {
-    if(sc == null || sc.isClosed())
+  public HttpResponseChannel(HttpServerConnection hsc) {
+    if(hsc == null || !hsc.isOpen())
       throw new IllegalArgumentException(
-          "Invalid Socket ["+ sc+ "]");
+          "[HttpResponseChannel( HttpServerConnection )] "
+          + "Invalid Connection {hsc="+ hsc+ "}");
     
-    sock = sc;
+    conn = hsc;
     key = null;
     valid = true;
-    parser = new RequestParser();
-    builder = new HttpBuilder();
-    his = null;
   }
   
   
-  public Socket getSocket() {
-    return sock;
+  public HttpServerConnection getConnection() {
+    return conn;
   }
   
   
-  public HttpBuilder getHttpBuilder() {
-    return builder;
+  public HttpResponseChannel setGZipCompressionEnabled(boolean bool) {
+    gzip = bool;
+    return this;
   }
   
   
-  public RequestParser getRequestParser() {
-    return parser;
+  public boolean isGZipCompressionEnabled() {
+    return gzip;
   }
   
   
@@ -107,77 +101,55 @@ public class HttpResponseChannel implements Channel, HttpConst {
   }
   
   
-  /**
-   * Define alguns cabeçalhos HTTP da resposta,
-   * como tipo de servidor, conteúdo, codificação,
-   * data e tamanho da mensagem.
-   * @param trp <code>Transport</code>
-   * @return <code>HttpBuilder</code>.
-   * @throws IOException Caso ocorra erro
-   * construindo os cabeçalhos.
-   * @see us.pserver.remote.Transport
-   * @see us.pserver.remote.http.HttpBuilder
-   */
-  private void setHeaders(Transport trp) throws IOException {
-    if(trp == null || trp.getObject() == null) 
-      throw new IllegalArgumentException(
-          "Invalid Transport [trp="+ trp+ "]");
+  private HttpResponse createResponse(Transport trp) throws IOException {
+    if(trp == null) return null;
+    HttpResponse response = new BasicHttpResponse(
+        HttpVersion.HTTP_1_1, 200, "OK");
+    response.addHeader(HttpConsts.HD_SERVER, 
+        HttpConsts.VAL_SERVER);
+    response.addHeader(HttpConsts.HD_DATE, 
+        String.valueOf(new java.util.Date()));
+    response.addHeader(HttpConsts.HD_CONT_TYPE, 
+        HttpConsts.VAL_ACCEPT);
+    response.addHeader(HttpConsts.HD_CONT_ENCODING, 
+        HttpConsts.VAL_ENCODING);
+    response.addHeader(HttpConsts.HD_CONNECTION, 
+        HttpConsts.VAL_CONNECTION);
     
-    builder = HttpBuilder.responseBuilder(
-        new ResponseLine(200, "OK"));
-    
-    HttpEnclosedObject hob = new HttpEnclosedObject(
-        trp.getWriteVersion());
-    
-    if(his != null) his.closeBuffer();
-    his = (trp.getInputStream() != null 
-        ? new HttpInputStream(trp.getInputStream())
-            .setGZipCoderEnabled(true) : null);
-    
-    if(key != null) {
-      builder.put(new HttpCryptKey(key));
-      hob.setCryptKey(key);
-      if(his != null) 
-        his.setCryptCoderEnabled(true, key);
-    }
-    
-    builder.put(hob).put(his);
+    EntityFactory fac = EntityFactory.factory();
+    if(gzip) fac.enableGZipCoder();
+    if(key != null) fac.enableCryptCoder(key);
+    fac.put(trp.getWriteVersion());
+    if(trp.getInputStream() != null)
+      fac.put(trp.getInputStream());
+    response.setEntity(fac.create());
+    return response;
   }
   
   
   @Override
   public void write(Transport trp) throws IOException {
-    if(his != null) his.closeBuffer();
-    this.setHeaders(trp);
-    builder.writeContent(sock.getOutputStream());
-    sock.getOutputStream().flush();
-    valid = false;
+    HttpResponse response = createResponse(trp);
+    if(response == null) return;
+    try {
+      conn.sendResponseHeader(response);
+      conn.sendResponseEntity(response);
+      conn.flush();
+    }
+    catch(HttpException e) {
+      throw new IOException(e.toString(), e);
+    }
   }
   
   
   @Override
   public Transport read() throws IOException {
-    if(his != null) his.closeBuffer();
-    parser.reset().parseInput(sock.getInputStream());
-    key = parser.getCryptKey();
-    if(!parser.containsHeader(HTTP_ENCLOSED_OBJECT))
+    if(conn == null || !conn.isOpen())
       return null;
-    
-    HttpEnclosedObject hob = (HttpEnclosedObject)
-        parser.getHeader(HTTP_ENCLOSED_OBJECT);
-    
-    Transport tp = hob.getObjectAs();
-    
-    if(parser.containsHeader(HTTP_INPUTSTREAM)) {
-      if(his != null) his.closeBuffer();
-      his = (HttpInputStream)
-          parser.getHeader(HTTP_INPUTSTREAM);
-      //crypt coder already enabled by HttpParser
-      his.setGZipCoderEnabled(true);
-      tp.setInputStream(his.setupInbound()
-          .getInputStream());
-    }
-    return tp;
+    HttpRequest basereq = conn.receiveRequestHeader();
+    if(basereq == null 
+        || !HttpEntityEnclosingRequest.class
+            .isAssignableFrom(basereq.getClass()))
   }
   
   
@@ -199,12 +171,9 @@ public class HttpResponseChannel implements Channel, HttpConst {
   @Override
   public void close() {
     try {
-      if(sock != null) {
-        sock.shutdownInput();
-        sock.shutdownOutput();
-        sock.close();
+      if(conn != null) {
+        conn.close();
       }
-      if(his != null) his.closeBuffer();
     } catch(IOException e) {}
   }
   

@@ -25,6 +25,7 @@
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/factory/DefaultFactoryProvider.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestGetClient.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestXmlServer.java</file>
+            <file>file:/storage/java/remote-objects/src/us/pserver/rob/channel/Transport.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/test/TestDumpServer.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/RemoteObject.java</file>
             <file>file:/storage/java/remote-objects/src/us/pserver/rob/channel/rob-fupload.html</file>

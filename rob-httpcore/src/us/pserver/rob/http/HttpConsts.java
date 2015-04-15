@@ -21,43 +21,38 @@
 
 package us.pserver.rob.http;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 14/04/2015
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 14/04/2015
  */
-public interface MessageConsts {
+public interface HttpConsts {
 
   public static final String
       
-      START_CRYPT_KEY = "<ckey>",
-      END_CRYPT_KEY = "</ckey>",
+      HTTP = "http://",
+      DOTS = ":",
+      SLASH = "/",
       
-      START_XML = "<xml>",
-      END_XML = "</xml>",
+      HD_USER_AGENT = "User-Agent",
+      VAL_USER_AGENT = "Mozilla/5.0",
       
-      START_CONTENT = "<cnt>",
-      END_CONTENT = "</cnt>",
+      HD_ACCEPT = "Accept",
+      VAL_ACCEPT = "text/html, application/x-java-rob",
       
-      START_ROB = "<rob>",
-      END_ROB = "</rob>",
+      HD_ENCODING = "Accept-Encoding",
+      VAL_ENCODING = "deflate",
       
-      START_STREAM = "<stream>",
-      END_STREAM = "</stream>",
+      HD_CONNECTION = "Connection",
+      VAL_CONNECTION = "keep-alive",
       
-      UTF8 = "UTF-8";
-  
-  
-  public static byte[] getUTF8(String str) {
-    if(str == null || str.trim().isEmpty())
-      return null;
-    try {
-      return str.getBytes(UTF8);
-    } catch(UnsupportedEncodingException e) {
-      return null;
-    }
-  }
+      HD_DATE = "Date",
+      
+      HD_CONT_TYPE = "Content-Type",
+      
+      HD_CONT_ENCODING = "Content-Encoding",
+      
+      HD_SERVER = "Server",
+      VAL_SERVER = "http-rob/v1.0";
   
 }

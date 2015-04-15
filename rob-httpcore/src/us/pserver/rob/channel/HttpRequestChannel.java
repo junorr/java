@@ -23,21 +23,20 @@ package us.pserver.rob.channel;
 
 import java.io.IOException;
 import java.net.Socket;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpResponse;
 import org.apache.http.impl.DefaultBHttpClientConnection;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.apache.http.util.EntityUtils;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
-import us.pserver.http.HttpBuilder;
-import us.pserver.http.HttpConst;
-import us.pserver.http.HttpCryptKey;
-import us.pserver.http.HttpEnclosedObject;
-import us.pserver.http.HttpInputStream;
-import us.pserver.http.RequestLine;
-import us.pserver.http.ResponseLine;
-import us.pserver.http.ResponseParser;
 import us.pserver.rob.NetConnector;
-import us.pserver.streams.IO;
-import us.pserver.streams.NullOutput;
+import us.pserver.rob.http.EntityFactory;
+import us.pserver.rob.http.EntityParser;
+import us.pserver.rob.http.HttpConsts;
 import us.pserver.streams.StreamUtils;
 
 
@@ -72,9 +71,13 @@ public class HttpRequestChannel implements Channel {
   
   private CryptAlgorithm algo;
   
+  private CryptKey key;
+  
   private NetConnector netc;
   
   private DefaultBHttpClientConnection conn;
+  
+  private HttpResponse response;
   
   
   /**
@@ -93,6 +96,9 @@ public class HttpRequestChannel implements Channel {
     algo = CryptAlgorithm.AES_CBC_PKCS5;
     sock = null;
     valid = true;
+    this.conn = null;
+    key = null;
+    response = null;
   }
   
   
@@ -102,6 +108,11 @@ public class HttpRequestChannel implements Channel {
    */
   public NetConnector getNetConnector() {
     return netc;
+  }
+  
+  
+  public HttpResponse getLastResponse() {
+    return response;
   }
   
   
@@ -144,32 +155,62 @@ public class HttpRequestChannel implements Channel {
    * como tipo de conteúdo, codificação, conteúdo
    * aceito e agente da requisição.
    */
-  private void setHeaders(Transport trp) throws IOException {
-    Ba
+  private HttpEntityEnclosingRequest createRequest(Transport trp) throws IOException {
+    if(trp == null) return null;
+    BasicHttpEntityEnclosingRequest request = 
+        new BasicHttpEntityEnclosingRequest("POST", netc.getURIString());
+    
+    EntityFactory fac = EntityFactory.factory();
+    if(gzip) {
+      fac.enableGZipCoder();
+    }
+    if(crypt) {
+      key = CryptKey.createRandomKey(algo);
+      fac.enableCryptCoder(key);
+    }
+    fac.put(trp.getWriteVersion());
+    if(trp.hasContentEmbedded())
+      fac.put(trp.getInputStream());
+    
+    request.addHeader(HttpConsts.HD_USER_AGENT, 
+        HttpConsts.VAL_USER_AGENT);
+    request.addHeader(HttpConsts.HD_ENCODING, 
+        HttpConsts.VAL_ENCODING);
+    request.addHeader(HttpConsts.HD_ACCEPT, 
+        HttpConsts.VAL_ACCEPT);
+    request.addHeader(HttpConsts.HD_CONNECTION, 
+        HttpConsts.VAL_CONNECTION);
+    request.setEntity(fac.create());
+    return request;
   }
   
   
   @Override
   public void write(Transport trp) throws IOException {
-    if(his != null) his.closeBuffer();
-    this.setHeaders(trp);
-    if(sock == null)
-      sock = netc.connectSocket();
-    
-    builder.writeContent(sock.getOutputStream());
-    this.verifyResponse();
-    valid = false;
-    //dump();
+    if(conn == null) {
+      conn = new DefaultBHttpClientConnection(BUFFER_SIZE);
+      if(sock == null)
+        sock = netc.connectSocket();
+      conn.bind(sock);
+    }
+    try {
+      HttpEntityEnclosingRequest request = createRequest(trp);
+      conn.sendRequestHeader(request);
+      conn.sendRequestEntity(request);
+      this.verifyResponse();
+    }
+    catch(HttpException e) {
+      throw new IOException(e.toString(), e);
+    }
   }
   
   
-  private void verifyResponse() throws IOException {
-    parser.reset().parseInput(sock.getInputStream());
-    resp = parser.getResponseLine();
-    if(resp == null || resp.getCode() != 200) {
-      //parser.headers().forEach(System.out::print);
+  private void verifyResponse() throws IOException, HttpException {
+    response = conn.receiveResponseHeader();
+    if(response == null || response
+        .getStatusLine().getStatusCode() != 200) {
       throw new IOException(
-          "Invalid response from server: "+ resp);
+          "Invalid response from server: "+ response.getStatusLine());
     }
   }
   
@@ -189,24 +230,23 @@ public class HttpRequestChannel implements Channel {
   
   @Override
   public Transport read() throws IOException {
-    if(his != null) his.closeBuffer();
-    if(!parser.containsHeader(HTTP_ENCLOSED_OBJECT))
+    if(response == null)
       return null;
-    
-    HttpEnclosedObject hob = (HttpEnclosedObject) 
-        parser.getHeader(HTTP_ENCLOSED_OBJECT);
-    
-    Transport tp = hob.getObjectAs();
-    
-    if(parser.containsHeader(HTTP_INPUTSTREAM)) {
-      if(his != null) his.closeBuffer();
-      his = (HttpInputStream) 
-          parser.getHeader(HTTP_INPUTSTREAM);
-      //crypt coder already enabled by HttpParser
-      tp.setInputStream(his.setGZipCoderEnabled(true)
-          .setupInbound().getInputStream());
+    try {
+      conn.receiveResponseEntity(response);
+      HttpEntity content = response.getEntity();
+      if(content == null) return null;
+      EntityParser par = EntityParser.create();
+      if(gzip) par.enableGZipCoder();
+      par.parse(content);
+      Transport t = (Transport) par.getObject();
+      if(par.getInputStream() != null)
+        t.setInputStream(par.getInputStream());
+      return t;
     }
-    return tp;
+    catch(HttpException e) {
+      throw new IOException(e.toString(), e);
+    }
   }
   
   
@@ -229,10 +269,10 @@ public class HttpRequestChannel implements Channel {
   @Override
   public void close() {
     try {
+      if(conn != null)
+        conn.close();
       if(sock != null)
         sock.close(); 
-      //if(his != null)
-        //his.closeBuffer();
     }
     catch(IOException e) {}
   }

@@ -34,8 +34,9 @@ import us.pserver.rob.channel.Transport;
 public class TestHttpRequest {
   
   public static void main(String[] args) throws IOException {
-    NetConnector nc = new NetConnector("172.24.77.6", 9099);
-    /* set proxy */
+    //NetConnector nc = new NetConnector("172.24.77.6", 9099);
+    NetConnector nc = new NetConnector("localhost", 45000);
+    /* set proxy 
     nc.setProxyAddress("172.24.75.19")
         .setProxyPort(6060)
         .setProxyAuthorization("f6036477:00000000");
@@ -54,14 +55,11 @@ public class TestHttpRequest {
     channel.write(trp);
     
     System.out.println("* request sent!");
-    System.out.println("* "+ channel.getResponseLine());
+    System.out.println("* "+ channel.getLastResponse().getStatusLine());
     trp = channel.read();
     
     System.out.println("* received: "+ trp);
     System.out.println("--------------------------------");
-    channel.getResponseParser().headers()
-        .forEach(System.out::print);
-    //req.getHttpBuilder().writeTo(System.out);
     channel.close();
   }
   

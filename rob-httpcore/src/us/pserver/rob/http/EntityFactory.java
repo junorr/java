@@ -34,7 +34,6 @@ import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.streams.IO;
-import us.pserver.streams.MixedReadBuffer;
 import us.pserver.streams.MixedWriteBuffer;
 
 /**
@@ -46,13 +45,7 @@ public class EntityFactory {
 
   public static final ContentType 
       TYPE_X_JAVA_ROB = ContentType.create(
-          "application/x-java-rob", Consts.UTF_8),
-      TYPE_X_ROB_OBJECT = ContentType.create(
-          "application/x-rob-object", Consts.UTF_8),
-      TYPE_X_ROB_KEY = ContentType.create(
-          "application/x-rob-key", Consts.UTF_8),
-      TYPE_X_ROB_STREAM = ContentType.create(
-          "application/x-rob-stream", Consts.UTF_8);
+          "application/x-java-rob", Consts.UTF_8);
   
   
   private static EntityFactory instance;
@@ -187,35 +180,35 @@ public class EntityFactory {
       return null;
     
     buffer.clear();
-    buffer.write(scv.convert(MessageConsts.START_XML));
+    buffer.write(scv.convert(Tags.START_XML));
     OutputStream os = buffer.getOutputStream();
     
     if(key != null) {
-      buffer.write(scv.convert(MessageConsts.START_CRYPT_KEY));
+      buffer.write(scv.convert(Tags.START_CRYPT_KEY));
       buffer.write(scv.convert(key.toString()));
-      buffer.write(scv.convert(MessageConsts.END_CRYPT_KEY));
+      buffer.write(scv.convert(Tags.END_CRYPT_KEY));
     }
     if(obj != null || input != null) {
-      buffer.write(scv.convert(MessageConsts.START_CONTENT));
+      buffer.write(scv.convert(Tags.START_CONTENT));
     }
     if(obj != null) {
-      os.write(scv.convert(MessageConsts.START_ROB));
+      os.write(scv.convert(Tags.START_ROB));
       String js = JsonWriter.objectToJson(obj);
       os.write(scv.convert(js));
-      os.write(scv.convert(MessageConsts.END_ROB));
+      os.write(scv.convert(Tags.END_ROB));
       os.flush();
     }
     if(input != null) {
-      os.write(scv.convert(MessageConsts.START_STREAM));
+      os.write(scv.convert(Tags.START_STREAM));
       IO.tr(input, os);
-      os.write(scv.convert(MessageConsts.END_STREAM));
+      os.write(scv.convert(Tags.END_STREAM));
       os.flush();
     }
     if(obj != null || input != null) {
-      os.write(scv.convert(MessageConsts.END_CONTENT));
+      os.write(scv.convert(Tags.END_CONTENT));
       os.flush();
     }
-    os.write(scv.convert(MessageConsts.END_XML));
+    os.write(scv.convert(Tags.END_XML));
     os.flush();
     os.close();
     return new InputStreamEntity(buffer.getReadBuffer().getRawInputStream(), type);
@@ -238,8 +231,8 @@ public class EntityFactory {
     System.out.println();
     
     ent = fac.create();
-    EntityParser ep = EntityParser.parser(ent.getContent());//.enableGZipCoder();
-    ep.parse();
+    EntityParser ep = EntityParser.create();//.enableGZipCoder();
+    ep.parse(ent);
     System.out.println("* key: "+ ep.getCryptKey());
     System.out.println("* rob: "+ ep.getObject());
     EntityUtils.consume(ent);

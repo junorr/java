@@ -53,6 +53,12 @@ public class NetConnector {
   public static final int DEFAULT_PORT = 9099;
   
   
+  public static final String 
+      HTTP = "http://", 
+      SLASH = "/", 
+      DOTS = ":";
+  
+  
   private String address;
   
   private int port;
@@ -211,6 +217,15 @@ public class NetConnector {
     if(auth != null)
       proxyAuth = "Basic " + cdr.encode(auth);
     return this;
+  }
+  
+  
+  public String getURIString() {
+    if(address == null) return null;
+    return HTTP.concat(address)
+        .concat(DOTS)
+        .concat(String.valueOf(port))
+        .concat(SLASH);
   }
   
   

@@ -19,37 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.rob.test;
+package us.pserver.rob.http;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import us.pserver.streams.StreamUtils;
+import java.io.UnsupportedEncodingException;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 03/03/2015
+ * @version 1.0 - 14/04/2015
  */
-public class TestDumpServer {
+public interface Tags {
 
-  
-  public static void main(String[] args) throws IOException, InterruptedException {
-    //http://localhost:36000/?obj=a&mth=compute&types=int%3Bint&args=5%3B3
-    System.out.println("* Listening on localhost:45000");
-    ServerSocket srv = new ServerSocket();
-    srv.bind(new InetSocketAddress("localhost", 45000));
-    
-    while(true) {
-      Socket sock = srv.accept();
-      Thread.sleep(500);
-      System.out.println("* Connection Received: "+ sock);
-      System.out.println("---------------------------------------");
-      StreamUtils.transfer(sock.getInputStream(), System.out);
-      System.out.println();
-      System.out.println("---------------------------------------");
-    }
-  }
+  public static final String
+      
+      START_CRYPT_KEY = "<ckey>",
+      END_CRYPT_KEY = "</ckey>",
+      
+      START_XML = "<xml>",
+      END_XML = "</xml>",
+      
+      START_CONTENT = "<cnt>",
+      END_CONTENT = "</cnt>",
+      
+      START_ROB = "<rob>",
+      END_ROB = "</rob>",
+      
+      START_STREAM = "<stream>",
+      END_STREAM = "</stream>",
+      
+      GT = ">";
   
 }
