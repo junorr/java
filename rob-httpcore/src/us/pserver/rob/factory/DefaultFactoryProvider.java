@@ -26,8 +26,11 @@ import us.pserver.rob.channel.HttpResponseChannel;
 import us.pserver.rob.channel.TcpXmlChannel;
 import java.io.IOException;
 import java.net.Socket;
+import org.apache.http.HttpClientConnection;
+import org.apache.http.HttpServerConnection;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.rob.NetConnector;
+import us.pserver.rob.channel.Channel;
 import us.pserver.rob.channel.GetRequestChannel;
 import us.pserver.rob.channel.GetResponseChannel;
 
@@ -91,14 +94,15 @@ public class DefaultFactoryProvider {
    * <code>HttpRequestChannel</code>.
    * @return <code>ConnectorChannelFactory</code>
    */
-  public ConnectorChannelFactory getHttpRequestChannelFactory() {
-    return new ConnectorChannelFactory() {
+  public ChannelFactory<NetConnector> getHttpRequestChannelFactory() {
+    return new ChannelFactory<NetConnector>() {
       @Override
       public HttpRequestChannel createChannel(NetConnector conn) {
-        if(conn == null)
+        if(conn == null) {
           throw new IllegalArgumentException(
-              "Invalid NetConnector ["+ conn
-                  + "]. Cannot create Channel.");
+              "[ChannelFactory.createChannel( NetConnector )] "
+                  + "Invalid NetConnector {conn="+ conn+ "}");
+        }
         return new HttpRequestChannel(conn)
             .setCryptAlgorithm(algo)
             .setEncryptionEnabled(crypt)
@@ -113,14 +117,15 @@ public class DefaultFactoryProvider {
    * <code>HttpRequestChannel</code>.
    * @return <code>ConnectorChannelFactory</code>
    */
-  public ConnectorChannelFactory getGetRequestChannelFactory() {
-    return new ConnectorChannelFactory() {
+  public ChannelFactory<NetConnector> getGetRequestChannelFactory() {
+    return new ChannelFactory<NetConnector>() {
       @Override
       public GetRequestChannel createChannel(NetConnector conn) {
-        if(conn == null)
+        if(conn == null) {
           throw new IllegalArgumentException(
-              "Invalid NetConnector ["+ conn
-                  + "]. Cannot create Channel.");
+              "[ChannelFactory.createChannel( NetConnector )] "
+                  + "Invalid NetConnector {conn="+ conn+ "}");
+        }
         return new GetRequestChannel(conn)
             .setCryptAlgorithm(algo)
             .setEncryptionEnabled(crypt)
@@ -135,14 +140,15 @@ public class DefaultFactoryProvider {
    * <code>XmlNetChannel</code>.
    * @return <code>ConnectorChannelFactory</code>
    */
-  public ConnectorChannelFactory getConnectorXmlChannelFactory() {
-    return new ConnectorChannelFactory() {
+  public ChannelFactory<NetConnector> getConnectorXmlChannelFactory() {
+    return new ChannelFactory<NetConnector>() {
       @Override
       public TcpXmlChannel createChannel(NetConnector conn) {
-        if(conn == null)
+        if(conn == null) {
           throw new IllegalArgumentException(
-              "Invalid NetConnector ["+ conn
-                  + "]. Cannot create Channel.");
+              "[ChannelFactory.createChannel( NetConnector )] "
+                  + "Invalid NetConnector {conn="+ conn+ "}");
+        }
         try {
           return new TcpXmlChannel(conn.connectSocket())
               .setCryptAlgorithm(algo)
@@ -161,14 +167,16 @@ public class DefaultFactoryProvider {
    * <code>HttpResponseChannel</code>.
    * @return <code>SocketChannelFactory</code>
    */
-  public SocketChannelFactory getHttpResponseChannelFactory() {
-    return new SocketChannelFactory() {
+  public ChannelFactory<HttpServerConnection> getHttpResponseChannelFactory() {
+    return new ChannelFactory<HttpServerConnection>() {
       @Override
-      public HttpResponseChannel createChannel(Socket sock) {
-        if(sock == null || sock.isClosed()) 
+      public HttpResponseChannel createChannel(HttpServerConnection conn) {
+        if(conn == null || !conn.isOpen()) {
           throw new IllegalArgumentException(
-              "Invalid Socket ["+ sock+ "]");
-        return new HttpResponseChannel(sock);
+              "[ChannelFactory.createChannel( HttpServerConnection )] "
+              + "Invalid HttpServerConnection {conn="+ conn+ "}");
+        }
+        return new HttpResponseChannel(conn);
       }
     };
   }
@@ -179,14 +187,16 @@ public class DefaultFactoryProvider {
    * <code>HttpResponseChannel</code>.
    * @return <code>SocketChannelFactory</code>
    */
-  public SocketChannelFactory getGetResponseChannelFactory() {
-    return new SocketChannelFactory() {
+  public ChannelFactory<HttpServerConnection> getGetResponseChannelFactory() {
+    return new ChannelFactory<HttpServerConnection>() {
       @Override
-      public GetResponseChannel createChannel(Socket sock) {
-        if(sock == null || sock.isClosed()) 
+      public GetResponseChannel createChannel(HttpServerConnection conn) {
+        if(conn == null || !conn.isOpen()) {
           throw new IllegalArgumentException(
-              "Invalid Socket ["+ sock+ "]");
-        return new GetResponseChannel(sock);
+              "[ChannelFactory.createChannel( HttpServerConnection )] "
+              + "Invalid HttpServerConnection {conn="+ conn+ "}");
+        }
+        return new GetResponseChannel(conn);
       }
     };
   }
@@ -197,13 +207,15 @@ public class DefaultFactoryProvider {
    * <code>XmlNetChannel</code>.
    * @return <code>SocketChannelFactory</code>
    */
-  public SocketChannelFactory getSocketXmlChannelFactory() {
-    return new SocketChannelFactory() {
+  public ChannelFactory<Socket> getSocketXmlChannelFactory() {
+    return new ChannelFactory<Socket>() {
       @Override
       public TcpXmlChannel createChannel(Socket sock) {
-        if(sock == null || sock.isClosed()) 
+        if(sock == null || sock.isClosed()) {
           throw new IllegalArgumentException(
-              "Invalid Socket ["+ sock+ "]");
+              "[ChannelFactory.createChannel( Socket )] "
+              + "Invalid Socket {sock="+ sock+ "}");
+        }
         return new TcpXmlChannel(sock)
             .setCryptAlgorithm(algo)
             .setEncryptionEnabled(crypt)

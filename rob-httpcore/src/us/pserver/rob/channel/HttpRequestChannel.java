@@ -121,7 +121,7 @@ public class HttpRequestChannel implements Channel {
     processor = HttpProcessorBuilder.create()
         .add(new RequestContent())
         .add(new RequestTargetHost())
-        .add(new RequestUserAgent(HttpConsts.VAL_USER_AGENT))
+        .add(new RequestUserAgent(HttpConsts.HD_VAL_USER_AGENT))
         .add(new RequestConnControl())
         .build();
   }
@@ -183,12 +183,12 @@ public class HttpRequestChannel implements Channel {
   private HttpEntityEnclosingRequest createRequest(Transport trp) throws IOException {
     if(trp == null) return null;
     BasicHttpEntityEnclosingRequest request = 
-        new BasicHttpEntityEnclosingRequest("POST", netc.getURIString());
+        new BasicHttpEntityEnclosingRequest(HttpConsts.POST, netc.getURIString());
     
     EntityFactory fac = EntityFactory.factory();
-    String contenc = HttpConsts.VAL_NO_ENCODING;
+    String contenc = HttpConsts.HD_VAL_DEF_ENCODING;
     if(gzip) {
-      contenc = HttpConsts.VAL_GZIP_ENCODING;
+      contenc = HttpConsts.HD_VAL_GZIP_ENCODING;
       fac.enableGZipCoder();
     }
     if(crypt) {
@@ -201,7 +201,11 @@ public class HttpRequestChannel implements Channel {
     
     request.addHeader(HttpConsts.HD_CONT_ENCODING, contenc);
     request.addHeader(HttpConsts.HD_ACCEPT, 
-        HttpConsts.VAL_ACCEPT);
+        HttpConsts.HD_VAL_ACCEPT);
+    if(netc.getProxyAuthorization() != null) {
+      request.addHeader(HttpConsts.HD_PROXY_AUTH,
+          netc.getProxyAuthorization());
+    }
     
     request.setEntity(fac.create());
     return request;

@@ -28,34 +28,188 @@ package us.pserver.rob.http;
  */
 public interface HttpConsts {
 
+  /**
+   * <code>
+   *  STATUS_200 = 200
+   * </code><br>
+   * Http Response Code.
+   */
   public static final int STATUS_200 = 200;
   
-  public static final String
-      HTTP = "http://",
-      DOTS = ":",
-      SLASH = "/",
-      
-      VAL_USER_AGENT = "Mozilla/5.0",
-      
-      HD_ACCEPT = "Accept",
-      VAL_ACCEPT = "text/xml, application/x-java-rob",
-      
-      HD_ENCODING = "Accept-Encoding",
-      VAL_NO_ENCODING = "deflate",
-      VAL_GZIP_ENCODING = "gzip",
-      
-      HD_CONNECTION = "Connection",
-      VAL_CONNECTION = "keep-alive",
-      
-      HD_DATE = "Date",
-      
-      HD_CONT_TYPE = "Content-Type",
-      
-      HD_CONT_ENCODING = "Content-Encoding",
-      
-      HD_SERVER = "Server",
-      VAL_SERVER = "httpcore-revoke/4.4",
-      
-      STATUS_OK = "OK";
+  /**
+   * <code>
+   *  STATUS_OK = "OK"
+   * </code><br>
+   * Http Response Reason.
+   */
+  public static final String STATUS_OK = "OK";
+  
+  /**
+   * <code>
+   *  AMPERSAND = "&"
+   * </code><br>
+   * '&'.
+   */
+  public static final String AMPERSAND = "&";
+
+  /**
+   * <code>
+   *  QUERY = "?"
+   * </code><br>
+   * '?'.
+   */
+  public static final String QUERY = "?";
+
+  /**
+   * <code>
+   *  CRLF = "\r\n"
+   * </code><br>
+   * Caracteres de retorno de carro e quebra de linha.
+   */
+  public static final String CRLF = "\r\n";
+  
+  /**
+   * <code>
+   *  GET = "GET"
+   * </code><br>
+   * String for Http GET Method.
+   */
+  public static final String GET = "GET";
+  
+  /**
+   * <code>
+   *  POST = "POST"
+   * </code><br>
+   * String for Http POST Method.
+   */
+  public static final String POST = "POST";
+
+  /**
+   * <code>
+   *  EQ = "="
+   * </code><br>
+   * Equal signal.
+   */
+  public static final String EQ = "=";
+
+  /**
+   * <code>
+   *  SEMICOLON = ";"
+   * </code><br>
+   * String for Semicolon char.
+   */
+  public static final String SEMICOLON = ";";
+
+  /**
+   * <code>
+   *  COLON = "\r\n"
+   * </code><br>
+   * String for Colon char.
+   */
+  public static final String COLON = ":";
+
+  /**
+   * <code>
+   *  SP = " "
+   * </code><br>
+   * String for white space char.
+   */
+  public static final String SP = " ";
+
+  /**
+   * <code>
+   *  HTTP = "http://"
+   * </code><br>
+   * Http Protocol URI.
+   */
+  public static final String HTTP = "http://";
+
+  /**
+   * <code>
+   *  SLASH = "/"
+   * </code><br>
+   * String for slash char.
+   */
+  public static final String SLASH = "/";
+
+  /**
+   * <code>
+   *  DASH = "-"
+   * </code><br>
+   * String for Dash char.
+   */
+  public static final String DASH = "-";
+  
+  /**
+   * <code>
+   *  HD_VAL_USER_AGENT = "Mosilla/5.0"
+   * </code><br>
+   * Http User-Agent Header Value.
+   */
+  public static final String HD_VAL_USER_AGENT = "Mosilla/5.0";
+
+  /**
+   * <code>
+   *  HD_ACCEPT = "Accept"
+   * </code><br>
+   * Http Accept Header.
+   */
+  public static final String HD_ACCEPT = "Accept";
+
+  /**
+   * <code>
+   *  HD_VAL_ACCEPT = "text/xml,application/x-java-rob"
+   * </code><br>
+   * Http Accept Header Value.
+   */
+  public static final String HD_VAL_ACCEPT = "text/xml,application/x-java-rob";
+
+  /**
+   * <code>
+   *  HD_CONT_ENCODING = "Content-Encoding"
+   * </code><br>
+   * Http Content-Encoding Header.
+   */
+  public static final String HD_CONT_ENCODING = "Content-Encoding";
+
+  /**
+   * <code>
+   *  HD_VAL_DEF_ENCODING = "deflate"
+   * </code><br>
+   * Http Content-Encoding Header Value.
+   */
+  public static final String HD_VAL_DEF_ENCODING = "deflate";
+
+  /**
+   * <code>
+   *  HD_VAL_GZIP_ENCODING = "gzip"
+   * </code><br>
+   * Http Content-Encoding Header Value.
+   */
+  public static final String HD_VAL_GZIP_ENCODING = "gzip";
+
+  /**
+   * <code>
+   *  HD_VAL_SERVER = "httpcore-revok"
+   * </code><br>
+   * Http Content-Encoding Header Value.
+   */
+  public static final String HD_VAL_SERVER = "httpcore-revok";
+
+  /**
+   * <code>
+   *  HD_PROXY_AUTHORIZATION = "Proxy-Authorization"
+   * </code><br>
+   * Cabeçalho HTTP.
+   */
+  public static final String HD_PROXY_AUTH = "Proxy-Authorization";
+
+  /**
+   * <code>
+   *  UTF8 = "UTF-8"
+   * </code><br>
+   * UTF-8 Character encoding..
+   */
+  public static final String UTF8 = "UTF-8";
   
 }

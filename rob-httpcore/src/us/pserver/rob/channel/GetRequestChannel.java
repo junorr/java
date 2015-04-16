@@ -21,11 +21,30 @@
 
 package us.pserver.rob.channel;
 
+import com.cedarsoftware.util.io.JsonWriter;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import org.apache.http.HttpClientConnection;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.impl.DefaultBHttpClientConnection;
+import org.apache.http.message.BasicHttpRequest;
+import org.apache.http.protocol.HttpCoreContext;
+import org.apache.http.protocol.HttpProcessor;
+import org.apache.http.protocol.HttpProcessorBuilder;
+import org.apache.http.protocol.RequestConnControl;
+import org.apache.http.protocol.RequestContent;
+import org.apache.http.protocol.RequestTargetHost;
+import org.apache.http.protocol.RequestUserAgent;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
 import us.pserver.cdr.crypt.CryptAlgorithm;
@@ -34,16 +53,14 @@ import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.gzip.GZipByteCoder;
 import us.pserver.chk.Checker;
 import static us.pserver.chk.Checker.nullarg;
-import us.pserver.http.GetRequest;
-import us.pserver.http.Header;
-import us.pserver.http.HttpBuilder;
-import us.pserver.http.HttpConst;
-import us.pserver.http.JsonObjectConverter;
-import us.pserver.http.ResponseLine;
-import us.pserver.http.ResponseParser;
 import us.pserver.rob.MethodChain;
 import us.pserver.rob.NetConnector;
 import us.pserver.rob.RemoteMethod;
+import static us.pserver.rob.channel.HttpRequestChannel.BUFFER_SIZE;
+import us.pserver.rob.http.EntityParser;
+import us.pserver.rob.http.GetRequest;
+import us.pserver.rob.http.GetRequestFactory;
+import us.pserver.rob.http.HttpConsts;
 import us.pserver.streams.StreamUtils;
 
 
@@ -65,39 +82,25 @@ import us.pserver.streams.StreamUtils;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
  */
-public class GetRequestChannel implements Channel, HttpConst {
+public class GetRequestChannel implements Channel {
 
-  public static final String 
-      
-      TRANSPORT = "trp",
-      CRYPT_KEY = "crk",
-      GZIP = "gz",
-      METHOD = "mth",
-      OBJECT = "obj",
-      TYPES = "types",
-      ARGS = "args",
-      UI = "ui",
-      AUTH = "auth";
-  
-  
-  private NetConnector netconn;
-  
-  private HttpBuilder builder;
+  private NetConnector netc;
   
   private Socket sock;
   
-  private ResponseParser parser;
-  
-  private boolean crypt, gzip;
+  private GetRequestFactory getfac;
   
   private boolean valid;
   
-  private CryptAlgorithm algo;
+  private StatusLine resp;
   
-  private CryptKey key;
+  private DefaultBHttpClientConnection conn;
+
+  private HttpResponse response;
   
-  private ResponseLine resp;
+  private HttpProcessor processor;
   
+  private HttpCoreContext context;
   
   /**
    * Construtor padrão que recebe <code>NetConnector</code>
@@ -109,26 +112,25 @@ public class GetRequestChannel implements Channel, HttpConst {
       throw new IllegalArgumentException(
           "Invalid NetConnector ["+ conn+ "]");
     
-    netconn = conn;
-    key = null;
-    crypt = false;
-    gzip = false;
+    netc = conn;
+    this.conn = null;
     valid = true;
-    algo = CryptAlgorithm.AES_CBC_PKCS5;
-    parser = new ResponseParser();
     sock = null;
+    init();
   }
   
   
-  private GetRequestChannel() {
-    netconn = null;
-    key = null;
-    crypt = false;
-    gzip = false;
-    valid = true;
-    algo = CryptAlgorithm.AES_CBC_PKCS5;
-    parser = new ResponseParser();
-    sock = null;
+  private void init() {
+    getfac = new GetRequestFactory(netc.getURIString());
+    getfac.setCryptAlgorithm(CryptAlgorithm.AES_CBC_PKCS5);
+    context = HttpCoreContext.create();
+    context.setTargetHost(new HttpHost(netc.getAddress(), netc.getPort()));
+    processor = HttpProcessorBuilder.create()
+        .add(new RequestContent())
+        .add(new RequestTargetHost())
+        .add(new RequestUserAgent(HttpConsts.HD_VAL_USER_AGENT))
+        .add(new RequestConnControl())
+        .build();
   }
   
   
@@ -137,158 +139,50 @@ public class GetRequestChannel implements Channel, HttpConst {
    * @return <code>NetConnector</code>.
    */
   public NetConnector getNetConnector() {
-    return netconn;
+    return netc;
   }
   
   
   public GetRequestChannel setEncryptionEnabled(boolean enabled) {
-    crypt = enabled;
+    getfac.setEncryptionEnabled(enabled);
     return this;
   }
   
   
   public boolean isEncryptionEnabled() {
-    return crypt;
+    return getfac.isEncryptionEnabled();
   }
   
   
   public GetRequestChannel setGZipCompressionEnabled(boolean enabled) {
-    gzip = enabled;
+    getfac.setGZipCompressionEnabled(enabled);
     return this;
   }
   
   
   public boolean isGZipCompressionEnabled() {
-    return gzip;
+    return getfac.isGZipCompressionEnabled();
   }
   
   
   public GetRequestChannel setCryptAlgorithm(CryptAlgorithm ca) {
-    nullarg(CryptAlgorithm.class, ca);
-    algo = ca;
+    getfac.setCryptAlgorithm(ca);
     return this;
   }
   
   
   public CryptAlgorithm getCryptAlgorithm() {
-    return algo;
+    return getfac.getCryptAlgorithm();
   }
   
   
-  public Socket getSocket() {
-    return sock;
+  public DefaultBHttpClientConnection getHttpClientConnection() {
+    return conn;
   }
   
   
-  public HttpBuilder getHttpBuilder() {
-    if(builder == null)
-      builder = HttpBuilder.requestBuilder();
-    return builder;
-  }
-  
-  
-  public ResponseParser getResponseParser() {
-    return parser;
-  }
-  
-  
-  public ResponseLine getResponseLine() {
+  public StatusLine getStatusLine() {
     return resp;
-  }
-  
-  
-  private void encloseRemote(RemoteMethod rmt, GetRequest get, JsonObjectConverter jsc) {
-    Checker.nullarg(RemoteMethod.class, rmt);
-    Checker.nullarg(GetRequest.class, get);
-    Checker.nullarg(JsonObjectConverter.class, jsc);
-    Checker.nullstr(rmt.objectName());
-    Checker.nullstr(rmt.method());
-    
-    get.query(OBJECT, encode(rmt.objectName(), jsc))
-        .query(METHOD, encode(rmt.method(), jsc));
-    
-    if(rmt.credentials() != null 
-        && rmt.credentials().getUser() != null) {
-      get.query(AUTH, encode(rmt.credentials(), jsc));
-    }
-    
-    if(rmt.types() != null && !rmt.types().isEmpty()) {
-      get.query(TYPES, encodeArray(rmt.typesArray(), jsc));
-    }
-    
-    if(rmt.params() != null && !rmt.params().isEmpty()) {
-      get.query(ARGS, encodeArray(rmt.params().toArray(), jsc));
-    }
-  }
-  
-  
-  private void encloseChain(MethodChain chain, GetRequest get, JsonObjectConverter jsc) {
-    Checker.nullarg(MethodChain.class, chain);
-    Checker.nullarg(GetRequest.class, get);
-    Checker.nullarg(JsonObjectConverter.class, jsc);
-    Checker.nullarg(RemoteMethod.class, chain.current());
-    Checker.nullstr(chain.current().objectName());
-    
-    get.query(OBJECT, encode(chain.current().objectName(), jsc));
-    List<String> meths = new ArrayList<>();
-    List<Class> types = new ArrayList<>();
-    List args = new ArrayList();
-    
-    for(RemoteMethod rm : chain.methods()) {
-      String meth = rm.method() + "-" + rm.types().size();
-      if(!rm.types().isEmpty()) {
-        types.addAll(rm.types());
-        args.addAll(rm.params());
-      }
-      meths.add(meth);
-    }
-    get.query(METHOD, encodeArray(meths.toArray(), jsc));
-    get.query(TYPES, encodeArray(types.toArray(), jsc));
-    get.query(ARGS, encodeArray(args.toArray(), jsc));
-  }
-  
-  
-  private String encode(Object obj, JsonObjectConverter jsc) {
-    if(obj == null || jsc == null) return null;
-    StringByteConverter sbc = new StringByteConverter();
-    
-    String cont;
-    if(obj instanceof CharSequence || obj instanceof Number)
-      cont = Objects.toString(obj);
-    else if(obj instanceof Class)
-      cont = ((Class)obj).getName();
-    else
-      cont = jsc.convert(obj);
-    
-    if(!crypt && !gzip) return cont;
-    
-    byte[] bs = sbc.convert(cont);
-    if(isGZipCompressionEnabled()) {
-      GZipByteCoder gz = new GZipByteCoder();
-      bs = gz.encode(bs);
-    }
-    if(isEncryptionEnabled() && key != null) {
-      CryptByteCoder cbc = new CryptByteCoder(key);
-      bs = cbc.encode(bs);
-    }
-    if(crypt || gzip) {
-      Base64ByteCoder bbc = new Base64ByteCoder();
-      bs = bbc.encode(bs);
-    }
-    return sbc.reverse(bs);
-  }
-  
-  
-  private String[] encodeArray(Object[] objs, JsonObjectConverter jsc) {
-    if(objs == null || objs.length < 1 || jsc == null) 
-      return null;
-    
-    String[] ss = new String[objs.length];
-    for(int i = 0; i < objs.length; i++) {
-      if(objs[i] == null) continue;
-      ss[i] = encode(objs[i], jsc);
-    }
-    return ss;
   }
   
   
@@ -297,62 +191,69 @@ public class GetRequestChannel implements Channel, HttpConst {
    * como tipo de conteúdo, codificação, conteúdo
    * aceito e agente da requisição.
    */
-  private void setHeaders(Transport trp) throws IOException {
+  private HttpRequest createRequest(Transport trp) throws IOException {
     if(trp == null || trp.getObject() == null) 
       throw new IllegalArgumentException(
           "Invalid Transport [trp="+ trp+ "]");
     
-    GetRequest req = new GetRequest(
-        netconn.getAddress(), netconn.getPort());
-    
-    key = (crypt ? CryptKey.createRandomKey(algo) : null);
-    JsonObjectConverter jsc = new JsonObjectConverter();
-    
-    if(trp.getObject() != null 
-        && trp.isObjectFromType(RemoteMethod.class)) {
-      encloseRemote(trp.castObject(), req, jsc);
+    GetRequest get;
+    if(trp.isObjectFromType(RemoteMethod.class)) {
+      get = getfac.create((RemoteMethod) trp.getObject());
     }
     else if(trp.isObjectFromType(MethodChain.class)) {
-      encloseChain(trp.castObject(), req, jsc);
+      get = getfac.create((MethodChain) trp.getObject());
     }
     else {
-      req.query(TRANSPORT, encode(trp, jsc));
+      throw new IllegalArgumentException(
+          "[GetRequestChannel.createRequest( Transport )] "
+              + "Invalid object type for Transport {trp.object="+ trp.getObject()+ "}");
     }
-    if(key != null) req.query(CRYPT_KEY, key);
-    if(gzip) req.query(GZIP, 1);
-    if(req.build().length() > 2012)
-      throw new IOException("Oversized Request Line (length="+ req.build().length()+ ", max=2012)");
     
-    builder = HttpBuilder.requestBuilder(req);
-    if(netconn.getProxyAuthorization() != null)
-      builder.put(HD_PROXY_AUTHORIZATION, 
-          netconn.getProxyAuthorization());
-    builder.remove(HD_CONTENT_TYPE);
+    BasicHttpRequest request = new BasicHttpRequest(get);
+    
+    request.addHeader(HttpConsts.HD_ACCEPT, 
+        HttpConsts.HD_VAL_ACCEPT);
+    if(netc.getProxyAuthorization() != null) {
+      request.addHeader(HttpConsts.HD_PROXY_AUTH,
+          netc.getProxyAuthorization());
+    }
+    return request;
   }
   
   
   @Override
   public void write(Transport trp) throws IOException {
-    this.setHeaders(trp);
-
-    if(sock == null)
-      sock = netconn.connectSocket();
-    
-    builder.writeContent(sock.getOutputStream());
-    verifyResponse();
-    valid = false;
-    //dump();
-    //System.exit(0);
+    if(conn == null) {
+      conn = new DefaultBHttpClientConnection(BUFFER_SIZE);
+      if(sock == null)
+        sock = netc.connectSocket();
+      conn.bind(sock);
+    }
+    try {
+      HttpRequest request = createRequest(trp);
+      processor.process(request, context);
+      conn.sendRequestHeader(request);
+      this.verifyResponse();
+    }
+    catch(HttpException e) {
+      throw new IOException(e.toString(), e);
+    }
   }
   
   
-  private void verifyResponse() throws IOException {
-    parser.reset().parseInput(sock.getInputStream());
-    resp = parser.getResponseLine();
-    //parser.headers().forEach(System.out::print);
-    if(resp == null || resp.getCode() != 200) {
-      throw new IOException(
-          "Invalid response from server: "+ resp);
+  private void verifyResponse() throws IOException, HttpException {
+    response = conn.receiveResponseHeader();
+    if(response == null || response
+        .getStatusLine().getStatusCode() != 200) {
+      throw new IOException("[GetRequestChannel.verifyResponse()] "
+          + "Invalid response from server: "+ response.getStatusLine());
+    }
+    processor.process(response, context);
+    
+    System.out.println("[GetRequestChannel.verifyResponse()] response.status="+ response.getStatusLine());
+    Iterator it = response.headerIterator();
+    while(it.hasNext()) {
+      System.out.println("  - "+ it.next());
     }
   }
   
@@ -372,35 +273,33 @@ public class GetRequestChannel implements Channel, HttpConst {
   
   @Override
   public Transport read() throws IOException {
-    if(parser.headers().isEmpty())
-      throw new IOException("No Content Received");
-    Header hd = parser.headers().get(parser.headers().size() -1);
-    if(hd == null)
-      throw new IOException("No Content Received");
-    
-    StringByteConverter scv = new StringByteConverter();
-    String str = hd.getValue();
-    if(str.contains("\n") || str.contains("\r"))
-      str = str.replace("\n", "").replace("\r", "");
-    byte[] bs = scv.convert(str);
-    
-    if(gzip || crypt) {
-      Base64ByteCoder bbc = new Base64ByteCoder();
-      bs = bbc.decode(bs);
+    if(conn == null || !conn.isOpen())
+      return null;
+    try {
+      HttpRequest basereq = conn.receiveRequestHeader();
+      if(basereq == null 
+          || !HttpEntityEnclosingRequest.class
+              .isAssignableFrom(basereq.getClass())) {
+        throw new IOException("[HttpResponseChannel.read()] "
+            + "Invalid HttpRequest without content received");
+      }
+      
+      HttpEntityEnclosingRequest request = (HttpEntityEnclosingRequest) basereq;
+      conn.receiveRequestEntity(request);
+      HttpEntity content = request.getEntity();
+      if(content == null) return null;
+      
+      EntityParser par = EntityParser.create();
+      if(gzip) par.enableGZipCoder();
+      par.parse(content);
+      Transport t = (Transport) par.getObject();
+      if(par.getInputStream() != null)
+        t.setInputStream(par.getInputStream());
+      return t;
     }
-    if(crypt && key != null) {
-      CryptByteCoder cbc = new CryptByteCoder(key);
-      bs = cbc.decode(bs);
+    catch(HttpException e) {
+      throw new IOException(e.toString(), e);
     }
-    if(gzip) {
-      GZipByteCoder gbc = new GZipByteCoder();
-      bs = gbc.decode(bs);
-    }
-    
-    str = scv.reverse(bs);
-    System.out.println("GetRequestChannel.read()="+ str);
-    JsonObjectConverter jsc = new JsonObjectConverter();
-    return (Transport) jsc.convert(str);
   }
   
   

@@ -100,7 +100,7 @@ public class HttpResponseChannel implements Channel {
   private void init() {
     context = HttpCoreContext.create();
     processor = HttpProcessorBuilder.create()
-        .add(new ResponseServer(HttpConsts.VAL_SERVER))
+        .add(new ResponseServer(HttpConsts.HD_VAL_SERVER))
         .add(new ResponseDate())
         .add(new ResponseContent())
         .add(new ResponseConnControl())
@@ -136,8 +136,8 @@ public class HttpResponseChannel implements Channel {
         HttpConsts.STATUS_200, 
         HttpConsts.STATUS_OK);
     
-    String contenc = HttpConsts.VAL_NO_ENCODING;
-    if(gzip) contenc = HttpConsts.VAL_GZIP_ENCODING;
+    String contenc = HttpConsts.HD_VAL_DEF_ENCODING;
+    if(gzip) contenc = HttpConsts.HD_VAL_GZIP_ENCODING;
     response.addHeader(HttpConsts.HD_CONT_ENCODING, contenc);
     
     EntityFactory fac = EntityFactory.factory();

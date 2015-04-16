@@ -31,17 +31,9 @@ import us.pserver.cdr.b64.Base64ByteCoder;
 import us.pserver.cdr.crypt.CryptByteCoder;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.gzip.GZipByteCoder;
-import us.pserver.http.GetRequest;
-import us.pserver.http.HttpBuilder;
-import us.pserver.http.HttpConst;
-import us.pserver.http.JsonObjectConverter;
-import us.pserver.http.PlainContent;
-import us.pserver.http.RequestLine;
-import us.pserver.http.RequestParser;
-import us.pserver.http.ResponseLine;
 import us.pserver.rob.MethodChain;
 import us.pserver.rob.RemoteMethod;
-import static us.pserver.rob.channel.GetRequestChannel.*;
+import static us.pserver.rob.http.HttpConsts.*;
 import us.pserver.rob.container.Credentials;
 import us.pserver.streams.IO;
 import us.pserver.streams.StreamUtils;
@@ -64,7 +56,7 @@ import us.pserver.streams.StreamUtils;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
  */
-public class GetResponseChannel implements Channel, HttpConst {
+public class GetResponseChannel implements Channel {
   
   private final Socket sock;
   

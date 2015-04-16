@@ -24,96 +24,73 @@ package us.pserver.rob.http;
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 14/04/2015
+ * @version 1.0 - 16/04/2015
  */
-public interface Tags {
+public interface GetConsts {
+  
+  /**
+   * <code>
+   *  TRANSPORT = "trp"
+   * </code><br>
+   * Query key Transport.
+   */
+  public static final String TRANSPORT = "trp";
+  
+  /**
+   * <code>
+   *  CRYPT_KEY = "crk"
+   * </code><br>
+   * Query key CryptKey.
+   */
+  public static final String CRYPT_KEY = "crk";
+  
+  
+  /**
+   * <code>
+   *  GZIP = "gz"
+   * </code><br>
+   * Query key GZIP.
+   */
+  public static final String GZIP = "gz";
+  
+  /**
+   * <code>
+   *  METHOD = "mth"
+   * </code><br>
+   * Query key Method.
+   */
+  public static final String METHOD = "mth";
+  
+  /**
+   * <code>
+   *  OBJECT = "obj"
+   * </code><br>
+   * Query key Object.
+   */
+  public static final String OBJECT = "obj";
+  
+  /**
+   * <code>
+   *  TYPES = "tps"
+   * </code><br>
+   * Query key Types.
+   */
+  public static final String TYPES = "tps";
+  
+  /**
+   * <code>
+   *  ARGS = "args"
+   * </code><br>
+   * Query key Arguments.
+   */
+  public static final String ARGS = "args";
+  
+  /**
+   * <code>
+   *  AUTH = "auth"
+   * </code><br>
+   * Query key Authentication.
+   */
+  public static final String AUTH = "auth";
 
-  /**
-   * <code>
-   *  START_CRYPT_KEY = "<ckey>"
-   * </code><br>
-   * XML Tag for CryptKey.
-   */
-  public static final String START_CRYPT_KEY = "<ckey>";
-  
-  /**
-   * <code>
-   *  END_CRYPT_KEY = "</ckey>"
-   * </code><br>
-   * Close XML Tag for CryptKey.
-   */
-  public static final String END_CRYPT_KEY = "</ckey>";
-  
-  /**
-   * <code>
-   *  START_XML = "<xml>"
-   * </code><br>
-   * XML Tag.
-   */
-  public static final String START_XML = "<xml>";
-  
-  /**
-   * <code>
-   *  END_XML = "</xml>"
-   * </code><br>
-   * Close XML Tag.
-   */
-  public static final String END_XML = "</xml>";
-  
-  /**
-   * <code>
-   *  START_CONTENT = "<cnt>"
-   * </code><br>
-   * XML Tag for Content.
-   */
-  public static final String START_CONTENT = "<cnt>";
-  
-  /**
-   * <code>
-   *  END_CONTENT = "</cnt>"
-   * </code><br>
-   * Close XML Tag for Content.
-   */
-  public static final String END_CONTENT = "</cnt>";
-  
-  /**
-   * <code>
-   *  START_ROB = "<rob>"
-   * </code><br>
-   * XML Tag for ROB.
-   */
-  public static final String START_ROB = "<rob>";
-  
-  /**
-   * <code>
-   *  END_ROB = "</rob>"
-   * </code><br>
-   * Close XML Tag for ROB.
-   */
-  public static final String END_ROB = "</rob>";
-  
-  /**
-   * <code>
-   *  START_STREAM = "<stream>"
-   * </code><br>
-   * XML Tag for Stream.
-   */
-  public static final String START_STREAM = "<stream>";
-  
-  /**
-   * <code>
-   *  END_STREAM = "</stream>"
-   * </code><br>
-   * Close XML Tag for Stream.
-   */
-  public static final String END_STREAM = "</stream>";
-  
-  /**
-   * <code>
-   *  GT = ">"
-   * </code><br>
-   * String for Greater char.
-   */
-  public static final String GT = ">";
-  
 }
