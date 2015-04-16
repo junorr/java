@@ -28,7 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import us.pserver.rob.MethodInvocationException;
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.RemoteMethod;
 import us.pserver.rob.RemoteObject;
 import us.pserver.rob.container.Credentials;
@@ -43,7 +43,10 @@ import us.pserver.streams.IO;
 public class TestHttpPostClient {
 
   public static void main(String[] args) throws MethodInvocationException, UnsupportedEncodingException, IOException {
-    NetConnector nc = new NetConnector("localhost", 9035)
+    HttpConnector nc = new NetConnector("localhost", 9035)
+        //.setProxyAddress("cache.bb.com.br")
+        //.setProxyPort(80)
+new HttpConnector("localhost", 9035)
         //.setProxyAddress("cache.bb.com.br")
         //.setProxyPort(80)
         .setProxyAuthorization("f6036477:65498788");

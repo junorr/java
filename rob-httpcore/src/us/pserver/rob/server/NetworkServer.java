@@ -38,7 +38,7 @@ import static us.pserver.chk.Checker.nullarg;
 import us.pserver.log.LogProvider;
 import us.pserver.rob.MethodChain;
 import us.pserver.rob.MethodInvocationException;
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.OpResult;
 import us.pserver.rob.RemoteMethod;
 import us.pserver.rob.channel.Transport;
@@ -59,7 +59,7 @@ public class NetworkServer extends AbstractServer {
   
   private transient Reflector ref;
   
-  private transient NetConnector con;
+  private transient HttpConnector con;
   
   private transient SocketChannelFactory factory;
   
@@ -69,7 +69,7 @@ public class NetworkServer extends AbstractServer {
   /**
    * Construtor que recebe como argumento o 
    * container de objetos <code>ObjectContainer</code>.
-   * e informações de conexão de rede <code>NetConnector</code>.
+   * e informações de conexão de rede <code>HttpConnector</code>.
    * Cria um servidor com conexão de rede padrão com canal de 
    * comunicação do tipo <code>NetworkChannel</code>.
    * @param cont container de objetos <code>ObjectContainer</code>.
@@ -80,7 +80,7 @@ public class NetworkServer extends AbstractServer {
     super(cont);
     cont.put(SERVER_KEY, this);
     ref = new Reflector();
-    con = new NetConnector();
+    con = new HttpConnector();
     factory = DefaultFactoryProvider.factory()
         .enableGZipCompression()
         .enableCryptography()
@@ -91,15 +91,15 @@ public class NetworkServer extends AbstractServer {
   /**
    * Construtor que recebe como argumentos o 
    * container de objetos <code>ObjectContainer</code> 
-   * e a conexão de rede <code>NetConnector</code>.
+   * e a conexão de rede <code>HttpConnector</code>.
    * Cria um servidor com o canal de 
    * comunicação do tipo <code>NetworkChannel</code>.
    * @param cont container de objetos <code>ObjectContainer</code>.
-   * @param netCon Conexão de rede <code>NetConnector</code>.
+   * @param netCon Conexão de rede <code>HttpConnector</code>.
    * @see us.pserver.remote.ObjectContainer
    * @see us.pserver.remote.NetConnector
    */
-  public NetworkServer(ObjectContainer cont, NetConnector netCon) {
+  public NetworkServer(ObjectContainer cont, HttpConnector netCon) {
     this(cont);
     cont.put(SERVER_KEY, this);
     if(con == null) throw new
@@ -112,16 +112,16 @@ public class NetworkServer extends AbstractServer {
   /**
    * Construtor que recebe como argumentos o 
    * container de objetos <code>ObjectContainer</code>,
-   * as informações de conexão de rede <code>NetConnector</code> 
+   * as informações de conexão de rede <code>HttpConnector</code> 
    * e a fábrica do canal de comunicação de objetos na rede.
    * @param cont container de objetos <code>ObjectContainer</code>.
-   * @param netCon Conexão de rede <code>NetConnector</code>.
+   * @param netCon Conexão de rede <code>HttpConnector</code>.
    * @param fact Fábrica do canal de comunicação de objetos na
    * rede <code>ChannelFactory&lt;Socket&gt;</code>
    * @see us.pserver.remote.ObjectContainer
    * @see us.pserver.remote.NetConnector
    */
-  public NetworkServer(ObjectContainer cont, NetConnector netCon, SocketChannelFactory fact) {
+  public NetworkServer(ObjectContainer cont, HttpConnector netCon, SocketChannelFactory fact) {
     this(cont, netCon);
     cont.put(SERVER_KEY, this);
     if(fact == null)
@@ -133,21 +133,21 @@ public class NetworkServer extends AbstractServer {
   
   /**
    * Retorna as informações de rede encapsuladas
-   * por <code>NetConnector</code>.
-   * @return <code>NetConnector</code>.
+   * por <code>HttpConnector</code>.
+   * @return <code>HttpConnector</code>.
    */
-  public NetConnector getNetConnector() {
+  public HttpConnector getNetConnector() {
     return con;
   }
 
 
   /**
    * Define as informações de rede encapsuladas
-   * por <code>NetConnector</code>.
-   * @param con <code>NetConnector</code>.
+   * por <code>HttpConnector</code>.
+   * @param con <code>HttpConnector</code>.
    * @return Esta instância modificada de ObjectServer.
    */
-  public NetworkServer setNetConnector(NetConnector con) {
+  public NetworkServer setNetConnector(HttpConnector con) {
     this.con = con;
     return this;
   }

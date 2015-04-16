@@ -30,7 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import us.pserver.chk.Checker;
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.container.Authenticator;
 import us.pserver.rob.container.Credentials;
 import us.pserver.rob.container.ObjectContainer;
@@ -86,7 +86,7 @@ public class TestHttpPostServer {
   }
     
   public static void main(String[] args) {
-    NetConnector nc = new NetConnector("0.0.0.0", 9035);
+    HttpConnector nc = new HttpConnector("0.0.0.0", 9035);
     Credentials cr = new Credentials("juno", "32132155".getBytes());
     ObjectContainer oc = new ObjectContainer(
         new Authenticator(new SingleCredentialsSource(cr)));

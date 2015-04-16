@@ -1,0 +1,157 @@
+[INFO ] (10/03/2015 16:28:09): Starting NetworkServer...
+[FATAL] (10/03/2015 16:28:09): IOException: Error running NetworkServer
+[FATAL] (10/03/2015 16:28:09):   Caused by: BindException: Endereço já em uso
+[FATAL] (10/03/2015 16:28:09):   us.pserver.rob.server.NetworkServer.run(NetworkServer.java:239)
+[FATAL] (10/03/2015 16:28:09):   us.pserver.rob.server.NetworkServer.start(NetworkServer.java:203)
+[FATAL] (10/03/2015 16:28:09):   us.pserver.rob.test.TestGetServer.main(TestGetServer.java:63)
+[INFO ] (10/03/2015 16:28:18): Starting NetworkServer...
+[INFO ] (10/03/2015 16:28:18): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (10/03/2015 16:28:18): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (10/03/2015 16:28:18): Server started!
+
+[INFO ] (10/03/2015 16:28:27): ------------------------------
+[INFO ] (10/03/2015 16:28:27): Handling socket: Socket[addr=/127.0.0.1,port=55969,localport=35000]
+[INFO ] (10/03/2015 16:28:27): Connection closed by client.
+[INFO ] (10/03/2015 16:29:13): ------------------------------
+[INFO ] (10/03/2015 16:29:13): Handling socket: Socket[addr=/127.0.0.1,port=55971,localport=35000]
+[INFO ] (10/03/2015 16:29:13): Connection closed by client.
+[INFO ] (10/03/2015 16:29:20): ------------------------------
+[INFO ] (10/03/2015 16:29:20): Handling socket: Socket[addr=/127.0.0.1,port=55972,localport=35000]
+[INFO ] (10/03/2015 16:29:20): Connection closed by client.
+[INFO ] (10/03/2015 16:29:22): ------------------------------
+[INFO ] (10/03/2015 16:29:22): Handling socket: Socket[addr=/127.0.0.1,port=55973,localport=35000]
+[INFO ] (10/03/2015 16:29:22): Connection closed by client.
+[INFO ] (10/03/2015 16:29:24): ------------------------------
+[INFO ] (10/03/2015 16:29:24): Handling socket: Socket[addr=/127.0.0.1,port=55974,localport=35000]
+[INFO ] (10/03/2015 16:29:24): Connection closed by client.
+[INFO ] (10/03/2015 16:29:26): ------------------------------
+[INFO ] (10/03/2015 16:29:26): Handling socket: Socket[addr=/127.0.0.1,port=55975,localport=35000]
+[INFO ] (10/03/2015 16:29:26): Connection closed by client.
+[INFO ] (10/03/2015 16:37:56): ------------------------------
+[INFO ] (10/03/2015 16:37:56): Handling socket: Socket[addr=/127.0.0.1,port=56004,localport=35000]
+[INFO ] (10/03/2015 16:37:56): Connection closed by client.
+[INFO ] (10/03/2015 17:49:10): Starting NetworkServer...
+[INFO ] (10/03/2015 17:49:10): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (10/03/2015 17:49:10): Listening on: NetConnector{ 0.0.0.0:9035 }
+[INFO ] (10/03/2015 17:49:10): Server started!
+
+[INFO ] (10/03/2015 17:49:38): ------------------------------
+[INFO ] (10/03/2015 17:49:38): Handling socket: Socket[addr=/127.0.0.1,port=60504,localport=9035]
+[INFO ] (10/03/2015 17:49:38): Connection closed by client.
+[INFO ] (10/03/2015 17:49:44): ------------------------------
+[INFO ] (10/03/2015 17:49:44): Handling socket: Socket[addr=/127.0.0.1,port=60505,localport=9035]
+[INFO ] (10/03/2015 17:49:44): Connection closed by client.
+[INFO ] (10/03/2015 17:50:07): ------------------------------
+[INFO ] (10/03/2015 17:50:07): Handling socket: Socket[addr=/127.0.0.1,port=60507,localport=9035]
+[INFO ] (10/03/2015 17:50:07): Connection closed by client.
+[INFO ] (10/03/2015 17:50:17): ------------------------------
+[INFO ] (10/03/2015 17:50:17): Handling socket: Socket[addr=/127.0.0.1,port=60508,localport=9035]
+[INFO ] (10/03/2015 17:50:17): Connection closed by client.
+[INFO ] (10/03/2015 17:50:24): ------------------------------
+[INFO ] (10/03/2015 17:50:24): Handling socket: Socket[addr=/127.0.0.1,port=60509,localport=9035]
+[INFO ] (10/03/2015 17:50:24): Connection closed by client.
+[INFO ] (10/03/2015 17:50:32): ------------------------------
+[INFO ] (10/03/2015 17:50:32): Handling socket: Socket[addr=/127.0.0.1,port=60510,localport=9035]
+[INFO ] (10/03/2015 17:50:32): Connection closed by client.
+[INFO ] (10/03/2015 17:50:38): ------------------------------
+[INFO ] (10/03/2015 17:50:38): Handling socket: Socket[addr=/127.0.0.1,port=60511,localport=9035]
+[INFO ] (10/03/2015 17:50:38): Connection closed by client.
+[INFO ] (10/03/2015 17:50:50): ------------------------------
+[INFO ] (10/03/2015 17:50:50): Handling socket: Socket[addr=/127.0.0.1,port=60512,localport=9035]
+[INFO ] (10/03/2015 17:50:50): Connection closed by client.
+[INFO ] (10/03/2015 17:51:12): Starting NetworkServer...
+[INFO ] (10/03/2015 17:51:12): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (10/03/2015 17:51:12): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (10/03/2015 17:51:12): Server started!
+
+[INFO ] (10/03/2015 17:51:18): ------------------------------
+[INFO ] (10/03/2015 17:51:18): Handling socket: Socket[addr=/127.0.0.1,port=56250,localport=35000]
+[INFO ] (10/03/2015 17:51:18): Connection closed by client.
+[INFO ] (10/03/2015 17:51:19): ------------------------------
+[INFO ] (10/03/2015 17:51:19): Handling socket: Socket[addr=/127.0.0.1,port=56251,localport=35000]
+[ERROR] (10/03/2015 17:51:19): Error reading from channel
+[ERROR] (10/03/2015 17:51:19): IOException: Invalid GET Request [GET /favicon.ico HTTP/1.1
+]
+[ERROR] (10/03/2015 17:51:19):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:417)
+[ERROR] (10/03/2015 17:51:19):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (10/03/2015 17:51:19):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (10/03/2015 17:51:19):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (10/03/2015 17:51:19):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (10/03/2015 17:51:19):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (10/03/2015 17:51:19):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (10/03/2015 17:51:19):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (10/03/2015 17:51:19): Connection closed by client.
+[INFO ] (10/03/2015 17:51:19): ------------------------------
+[INFO ] (10/03/2015 17:51:19): Handling socket: Socket[addr=/127.0.0.1,port=56252,localport=35000]
+[ERROR] (10/03/2015 17:51:19): Error reading from channel
+[ERROR] (10/03/2015 17:51:19): IOException: Invalid GET Request [GET /favicon.ico HTTP/1.1
+]
+[ERROR] (10/03/2015 17:51:19):   us.pserver.rob.channel.GetResponseChannel.read(GetResponseChannel.java:417)
+[ERROR] (10/03/2015 17:51:19):   us.pserver.rob.server.NetworkServer$SocketHandler.read(NetworkServer.java:332)
+[ERROR] (10/03/2015 17:51:19):   us.pserver.rob.server.NetworkServer$SocketHandler.run(NetworkServer.java:514)
+[ERROR] (10/03/2015 17:51:19):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (10/03/2015 17:51:19):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (10/03/2015 17:51:19):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (10/03/2015 17:51:19):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (10/03/2015 17:51:19):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (10/03/2015 17:51:19): Connection closed by client.
+[INFO ] (10/03/2015 17:51:34): ------------------------------
+[INFO ] (10/03/2015 17:51:34): Handling socket: Socket[addr=/127.0.0.1,port=56253,localport=35000]
+[INFO ] (10/03/2015 17:51:34): Connection closed by client.
+[INFO ] (10/03/2015 17:51:41): ------------------------------
+[INFO ] (10/03/2015 17:51:41): Handling socket: Socket[addr=/127.0.0.1,port=56254,localport=35000]
+[INFO ] (10/03/2015 17:51:41): Connection closed by client.
+[INFO ] (10/03/2015 17:51:55): ------------------------------
+[INFO ] (10/03/2015 17:51:55): Handling socket: Socket[addr=/127.0.0.1,port=56256,localport=35000]
+[INFO ] (10/03/2015 17:51:55): Remote request: a.compute( 5, 3 )
+[INFO ] (10/03/2015 17:51:55): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (10/03/2015 17:52:14): ------------------------------
+[INFO ] (10/03/2015 17:52:14): Handling socket: Socket[addr=/127.0.0.1,port=56257,localport=35000]
+[INFO ] (10/03/2015 17:52:14): Remote request: a.compute( 5, 3 )
+[INFO ] (10/03/2015 17:52:14): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (10/03/2015 17:52:40): Starting NetworkServer...
+[INFO ] (10/03/2015 17:52:40): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (10/03/2015 17:52:40): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (10/03/2015 17:52:40): Server started!
+
+[INFO ] (10/03/2015 17:52:44): ------------------------------
+[INFO ] (10/03/2015 17:52:44): Handling socket: Socket[addr=/127.0.0.1,port=56258,localport=35000]
+[INFO ] (10/03/2015 17:52:45): Remote request: a.compute( 5, 3 )
+[INFO ] (10/03/2015 17:52:45): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (10/03/2015 17:53:14): Starting NetworkServer...
+[INFO ] (10/03/2015 17:53:14): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (10/03/2015 17:53:14): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (10/03/2015 17:53:14): Server started!
+
+[INFO ] (10/03/2015 17:53:16): ------------------------------
+[INFO ] (10/03/2015 17:53:16): Handling socket: Socket[addr=/127.0.0.1,port=56261,localport=35000]
+[INFO ] (10/03/2015 17:53:17): Remote request: a.compute( 5, 3 )
+[INFO ] (10/03/2015 17:53:17): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (10/03/2015 17:53:34): ------------------------------
+[INFO ] (10/03/2015 17:53:34): Handling socket: Socket[addr=/127.0.0.1,port=56263,localport=35000]
+[INFO ] (10/03/2015 17:53:34): Remote request: a.compute( 5, 3 )
+[INFO ] (10/03/2015 17:53:34): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (10/03/2015 17:53:59): ------------------------------
+[INFO ] (10/03/2015 17:53:59): Handling socket: Socket[addr=/127.0.0.1,port=56265,localport=35000]
+[INFO ] (10/03/2015 17:53:59): Remote request: a.compute( 5, 3 )
+[INFO ] (10/03/2015 17:53:59): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (10/03/2015 17:54:51): Starting NetworkServer...
+[INFO ] (10/03/2015 17:54:51): Channel: us.pserver.rob.channel.GetResponseChannel
+[INFO ] (10/03/2015 17:54:51): Listening on: NetConnector{ localhost:35000 }
+[INFO ] (10/03/2015 17:54:51): Server started!
+
+[INFO ] (10/03/2015 17:54:52): ------------------------------
+[INFO ] (10/03/2015 17:54:53): Handling socket: Socket[addr=/127.0.0.1,port=56268,localport=35000]
+[INFO ] (10/03/2015 17:54:53): Remote request: a.compute( 5, 3 )
+[INFO ] (10/03/2015 17:54:53): Response sent: OpResult{ success = true, return = 1.6666666666666667 }
+[INFO ] (10/03/2015 18:03:56): Starting NetworkServer...
+[INFO ] (10/03/2015 18:03:56): Channel: us.pserver.rob.channel.HttpResponseChannel
+[INFO ] (10/03/2015 18:03:56): Listening on: NetConnector{ 0.0.0.0:9035 }
+[INFO ] (10/03/2015 18:03:56): Server started!
+
+[INFO ] (10/03/2015 18:04:19): ------------------------------
+[INFO ] (10/03/2015 18:04:19): Handling socket: Socket[addr=/127.0.0.1,port=60547,localport=9035]
+[INFO ] (10/03/2015 18:04:19): Connection closed by client.
+[INFO ] (10/03/2015 18:04:19): ------------------------------
+[INFO ] (10/03/2015 18:04:19): Handling socket: Socket[addr=/127.0.0.1,port=60548,localport=9035]
+[INFO ] (10/03/2015 18:04:19): Connection closed by client.

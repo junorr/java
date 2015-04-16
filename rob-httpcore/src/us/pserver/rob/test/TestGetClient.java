@@ -24,7 +24,7 @@ package us.pserver.rob.test;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import us.pserver.rob.MethodInvocationException;
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.RemoteMethod;
 import us.pserver.rob.RemoteObject;
 import us.pserver.rob.container.Credentials;
@@ -38,7 +38,7 @@ import us.pserver.rob.factory.DefaultFactoryProvider;
 public class TestGetClient {
 
   public static void main(String[] args) throws MethodInvocationException, UnsupportedEncodingException {
-    NetConnector nc = new NetConnector("localhost", 35000);
+    HttpConnector nc = new HttpConnector("localhost", 35000);
     RemoteObject rob = new RemoteObject(nc, DefaultFactoryProvider.factory()
         .disableCryptography()
         .disableGZipCompression()

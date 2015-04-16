@@ -23,7 +23,7 @@ package us.pserver.rob.test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.channel.Transport;
 import us.pserver.rob.channel.TcpXmlChannel;
 import us.pserver.streams.IO;
@@ -41,9 +41,9 @@ public class TestXmlClient {
     t.setObject("Hello encrypted xml channel");
     InputStream is = IO.is(IO.p("c:/.local/splash.png"));
     t.setInputStream(is);
-    NetConnector nc = new NetConnector()
+    HttpConnector nc = new HttpConnector()
         .setAddress("172.24.77.60")
-        .setPort(NetConnector.DEFAULT_PORT);
+        .setPort(HttpConnector.DEFAULT_PORT);
     TcpXmlChannel ch = new TcpXmlChannel(nc.connectSocket());
     ch.write(t);
     is.close();

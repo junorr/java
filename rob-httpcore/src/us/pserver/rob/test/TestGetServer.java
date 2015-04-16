@@ -21,7 +21,7 @@
 
 package us.pserver.rob.test;
 
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.container.Authenticator;
 import us.pserver.rob.container.Credentials;
 import us.pserver.rob.container.ObjectContainer;
@@ -37,7 +37,7 @@ import us.pserver.rob.server.NetworkServer;
 public class TestGetServer {
 
   public static void main(String[] args) {
-    NetConnector nc = new NetConnector("localhost", 35000);
+    HttpConnector nc = new HttpConnector("localhost", 35000);
     class A {
       double compute(int a, int b) {
         return a / (double)b;

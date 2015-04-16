@@ -29,7 +29,7 @@ import java.net.Socket;
 import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpServerConnection;
 import us.pserver.cdr.crypt.CryptAlgorithm;
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.channel.Channel;
 import us.pserver.rob.channel.GetRequestChannel;
 import us.pserver.rob.channel.GetResponseChannel;
@@ -94,10 +94,10 @@ public class DefaultFactoryProvider {
    * <code>HttpRequestChannel</code>.
    * @return <code>ConnectorChannelFactory</code>
    */
-  public ChannelFactory<NetConnector> getHttpRequestChannelFactory() {
-    return new ChannelFactory<NetConnector>() {
+  public ChannelFactory<HttpConnector> getHttpRequestChannelFactory() {
+    return new ChannelFactory<HttpConnector>() {
       @Override
-      public HttpRequestChannel createChannel(NetConnector conn) {
+      public HttpRequestChannel createChannel(HttpConnector conn) {
         if(conn == null) {
           throw new IllegalArgumentException(
               "[ChannelFactory.createChannel( NetConnector )] "
@@ -117,10 +117,10 @@ public class DefaultFactoryProvider {
    * <code>HttpRequestChannel</code>.
    * @return <code>ConnectorChannelFactory</code>
    */
-  public ChannelFactory<NetConnector> getGetRequestChannelFactory() {
-    return new ChannelFactory<NetConnector>() {
+  public ChannelFactory<HttpConnector> getGetRequestChannelFactory() {
+    return new ChannelFactory<HttpConnector>() {
       @Override
-      public GetRequestChannel createChannel(NetConnector conn) {
+      public GetRequestChannel createChannel(HttpConnector conn) {
         if(conn == null) {
           throw new IllegalArgumentException(
               "[ChannelFactory.createChannel( NetConnector )] "
@@ -140,10 +140,10 @@ public class DefaultFactoryProvider {
    * <code>XmlNetChannel</code>.
    * @return <code>ConnectorChannelFactory</code>
    */
-  public ChannelFactory<NetConnector> getConnectorXmlChannelFactory() {
-    return new ChannelFactory<NetConnector>() {
+  public ChannelFactory<HttpConnector> getConnectorXmlChannelFactory() {
+    return new ChannelFactory<HttpConnector>() {
       @Override
-      public TcpXmlChannel createChannel(NetConnector conn) {
+      public TcpXmlChannel createChannel(HttpConnector conn) {
         if(conn == null) {
           throw new IllegalArgumentException(
               "[ChannelFactory.createChannel( NetConnector )] "

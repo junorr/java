@@ -41,7 +41,7 @@ import org.apache.http.protocol.RequestUserAgent;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.http.EntityFactory;
 import us.pserver.rob.http.EntityParser;
 import us.pserver.rob.http.HttpConsts;
@@ -81,7 +81,7 @@ public class HttpRequestChannel implements Channel {
   
   private CryptKey key;
   
-  private NetConnector netc;
+  private HttpConnector netc;
   
   private DefaultBHttpClientConnection conn;
   
@@ -93,11 +93,11 @@ public class HttpRequestChannel implements Channel {
   
   
   /**
-   * Construtor padrão que recebe <code>NetConnector</code>
+   * Construtor padrão que recebe <code>HttpConnector</code>
    * para comunicação com o servidor.
-   * @param conn <code>NetConnector</code>.
+   * @param conn <code>HttpConnector</code>.
    */
-  public HttpRequestChannel(NetConnector conn) {
+  public HttpRequestChannel(HttpConnector conn) {
     if(conn == null)
       throw new IllegalArgumentException(
           "Invalid NetConnector ["+ conn+ "]");
@@ -128,10 +128,10 @@ public class HttpRequestChannel implements Channel {
   
   
   /**
-   * Retorna o objeto <code>NetConnector</code>.
-   * @return <code>NetConnector</code>.
+   * Retorna o objeto <code>HttpConnector</code>.
+   * @return <code>HttpConnector</code>.
    */
-  public NetConnector getNetConnector() {
+  public HttpConnector getNetConnector() {
     return netc;
   }
   

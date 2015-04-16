@@ -38,7 +38,7 @@ import us.pserver.rob.server.FakeInputStreamRef;
  */
 public class RemoteObject {
   
-  private NetConnector net;
+  private HttpConnector net;
   
   private ConnectorChannelFactory factory;
   
@@ -51,7 +51,7 @@ public class RemoteObject {
    * tipo padrão <code>XmlNetChannel</code>.
    */
   public RemoteObject() {
-    net = new NetConnector();
+    net = new HttpConnector();
     factory = DefaultFactoryProvider.factory()
         .enableCryptography()
         .enableGZipCompression()
@@ -65,7 +65,7 @@ public class RemoteObject {
    * conexão de rede.
    * @param con Conexão de rede.
    */
-  public RemoteObject(NetConnector con) {
+  public RemoteObject(HttpConnector con) {
     this();
     if(con == null)
       throw new IllegalArgumentException(
@@ -80,11 +80,11 @@ public class RemoteObject {
   
   /**
    * Construtor que recebe as informações de rede 
-   * <code>NetConnector</code> e a fábrica do canal de 
+   * <code>HttpConnector</code> e a fábrica do canal de 
    * transmissão de objetos na rede.
    * @param fact fábrica de canal transmissão de objetos na rede.
    */
-  public RemoteObject(NetConnector con, ConnectorChannelFactory fact) {
+  public RemoteObject(HttpConnector con, ConnectorChannelFactory fact) {
     this(con);
     if(fact == null)
       throw new IllegalArgumentException(
@@ -97,7 +97,7 @@ public class RemoteObject {
    * Retorna informações de conexão de rede.
    * @return informações de conexão de rede.
    */
-  public NetConnector getNetConnector() {
+  public HttpConnector getNetConnector() {
     return net;
   }
 
@@ -107,7 +107,7 @@ public class RemoteObject {
    * @param net informações de conexão de rede.
    * @return Esta instância modificada de RemoteObject.
    */
-  public RemoteObject setNetConnector(NetConnector net) {
+  public RemoteObject setNetConnector(HttpConnector net) {
     this.net = net;
     return this;
   }

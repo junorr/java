@@ -45,16 +45,9 @@ import org.apache.http.protocol.RequestConnControl;
 import org.apache.http.protocol.RequestContent;
 import org.apache.http.protocol.RequestTargetHost;
 import org.apache.http.protocol.RequestUserAgent;
-import us.pserver.cdr.StringByteConverter;
-import us.pserver.cdr.b64.Base64ByteCoder;
 import us.pserver.cdr.crypt.CryptAlgorithm;
-import us.pserver.cdr.crypt.CryptByteCoder;
-import us.pserver.cdr.crypt.CryptKey;
-import us.pserver.cdr.gzip.GZipByteCoder;
-import us.pserver.chk.Checker;
-import static us.pserver.chk.Checker.nullarg;
 import us.pserver.rob.MethodChain;
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.RemoteMethod;
 import static us.pserver.rob.channel.HttpRequestChannel.BUFFER_SIZE;
 import us.pserver.rob.http.EntityParser;
@@ -84,7 +77,7 @@ import us.pserver.streams.StreamUtils;
  */
 public class GetRequestChannel implements Channel {
 
-  private NetConnector netc;
+  private HttpConnector netc;
   
   private Socket sock;
   
@@ -103,11 +96,11 @@ public class GetRequestChannel implements Channel {
   private HttpCoreContext context;
   
   /**
-   * Construtor padrão que recebe <code>NetConnector</code>
+   * Construtor padrão que recebe <code>HttpConnector</code>
    * para comunicação com o servidor.
-   * @param conn <code>NetConnector</code>.
+   * @param conn <code>HttpConnector</code>.
    */
-  public GetRequestChannel(NetConnector conn) {
+  public GetRequestChannel(HttpConnector conn) {
     if(conn == null)
       throw new IllegalArgumentException(
           "Invalid NetConnector ["+ conn+ "]");
@@ -135,10 +128,10 @@ public class GetRequestChannel implements Channel {
   
   
   /**
-   * Retorna o objeto <code>NetConnector</code>.
-   * @return <code>NetConnector</code>.
+   * Retorna o objeto <code>HttpConnector</code>.
+   * @return <code>HttpConnector</code>.
    */
-  public NetConnector getNetConnector() {
+  public HttpConnector getNetConnector() {
     return netc;
   }
   
@@ -273,29 +266,18 @@ public class GetRequestChannel implements Channel {
   
   @Override
   public Transport read() throws IOException {
-    if(conn == null || !conn.isOpen())
+    if(response == null)
       return null;
     try {
-      HttpRequest basereq = conn.receiveRequestHeader();
-      if(basereq == null 
-          || !HttpEntityEnclosingRequest.class
-              .isAssignableFrom(basereq.getClass())) {
-        throw new IOException("[HttpResponseChannel.read()] "
-            + "Invalid HttpRequest without content received");
-      }
-      
-      HttpEntityEnclosingRequest request = (HttpEntityEnclosingRequest) basereq;
-      conn.receiveRequestEntity(request);
-      HttpEntity content = request.getEntity();
+      conn.receiveResponseEntity(response);
+      HttpEntity content = response.getEntity();
       if(content == null) return null;
-      
       EntityParser par = EntityParser.create();
-      if(gzip) par.enableGZipCoder();
+      if(isGZipCompressionEnabled()) 
+        par.enableGZipCoder();
+      
       par.parse(content);
-      Transport t = (Transport) par.getObject();
-      if(par.getInputStream() != null)
-        t.setInputStream(par.getInputStream());
-      return t;
+      return (Transport) par.getObject();
     }
     catch(HttpException e) {
       throw new IOException(e.toString(), e);
@@ -322,6 +304,7 @@ public class GetRequestChannel implements Channel {
   @Override
   public void close() {
     try {
+      if(conn != null) conn.close(); 
       if(sock != null) sock.close(); 
     }
     catch(IOException e) {}
@@ -329,26 +312,6 @@ public class GetRequestChannel implements Channel {
   
   
   public static void main(String[] args) throws IOException {
-    GetRequest get = new GetRequest();
-    MethodChain chain = new MethodChain();
-    chain.add(new RemoteMethod()
-          .forObject("a")
-          .method("compute")
-          .types(int.class, int.class)
-          .params(5, 3))
-        .add(new RemoteMethod()
-          .method("info"))
-        .add(new RemoteMethod()
-          .method("round")
-          .types(double.class, int.class)
-          .params(1.66666667, 2));
-    System.out.println("* chain: "+ chain);
-    new GetRequestChannel().encloseChain(chain, get, new JsonObjectConverter());
-    System.out.println(get);
-    
-    GetResponseChannel rch = new GetResponseChannel();
-    chain = rch.createChain(get);
-    System.out.println("* chain: "+ chain);
   }
   
 }

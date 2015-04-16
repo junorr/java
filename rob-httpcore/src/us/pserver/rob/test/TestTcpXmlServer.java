@@ -30,7 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import us.pserver.chk.Checker;
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.container.Authenticator;
 import us.pserver.rob.container.Credentials;
 import us.pserver.rob.container.ObjectContainer;
@@ -86,7 +86,7 @@ public class TestTcpXmlServer {
   }
     
   public static void main(String[] args) {
-    NetConnector nc = new NetConnector("localhost", 35000);
+    HttpConnector nc = new HttpConnector("localhost", 35000);
     Credentials cr = new Credentials("juno", "32132155".getBytes());
     ObjectContainer oc = new ObjectContainer(
         new Authenticator(new SingleCredentialsSource(cr)));

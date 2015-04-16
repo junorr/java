@@ -23,7 +23,7 @@ package us.pserver.rob.test;
 
 import us.pserver.rob.MethodChain;
 import us.pserver.rob.MethodInvocationException;
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.RemoteObject;
 import us.pserver.rob.container.Credentials;
 import us.pserver.rob.factory.DefaultFactoryProvider;
@@ -37,11 +37,11 @@ public class TestMethodChain {
 
   
   public static void main(String[] args) throws MethodInvocationException {
-    NetConnector nc = new NetConnector()
+    HttpConnector nc = new HttpConnector()
         .setAddress("172.24.77.60")
         .setProxyAddress("172.24.75.19")
         .setProxyPort(6060)
-        .setPort(NetConnector.DEFAULT_PORT);
+        .setPort(HttpConnector.DEFAULT_PORT);
     
     RemoteObject rob = new RemoteObject(nc,
         DefaultFactoryProvider.factory()

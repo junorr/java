@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import us.pserver.rob.factory.DefaultFactoryProvider;
 import us.pserver.rob.MethodInvocationException;
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.RemoteMethod;
 import us.pserver.rob.RemoteObject;
 import us.pserver.rob.container.Credentials;
@@ -41,9 +41,15 @@ public class TestRClient2 {
 
   public static void main(String[] args) throws MethodInvocationException, IOException {
     RemoteObject rem = new RemoteObject(
-        //new NetConnector("pserver.us", 
+        //new HttpConnector("pserver.us", 
         new NetConnector("172.24.77.60", 
             NetConnector.DEFAULT_PORT)
+            //.setProxyAddress("172.24.75.19")
+            //.setProxyPort(6060)
+            //.setProxyAddress("cache.bb.com.br")
+            //.setProxyPort(80)
+new HttpConnector("172.24.77.60", 
+            HttpConnector.DEFAULT_PORT)
             //.setProxyAddress("172.24.75.19")
             //.setProxyPort(6060)
             //.setProxyAddress("cache.bb.com.br")

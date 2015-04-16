@@ -24,7 +24,7 @@ package us.pserver.rob.test;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import us.pserver.rob.NetConnector;
+import us.pserver.rob.HttpConnector;
 import us.pserver.rob.channel.Transport;
 import us.pserver.rob.channel.TcpXmlChannel;
 import us.pserver.streams.IO;
@@ -38,7 +38,7 @@ public class TestXmlServer {
 
   
   public static void main(String[] args) throws IOException {
-    NetConnector nc = new NetConnector();
+    HttpConnector nc = new HttpConnector();
     System.out.println("* Listening on "+ nc);
     ServerSocket ss = nc.connectServerSocket();
     while(true) {
