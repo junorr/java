@@ -22,6 +22,7 @@
 package us.pserver.revok.channel;
 
 import java.io.IOException;
+import org.apache.http.ConnectionClosedException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpException;
@@ -37,12 +38,10 @@ import org.apache.http.protocol.ResponseConnControl;
 import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
-import org.apache.http.util.EntityUtils;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.revok.http.EntityFactory;
 import us.pserver.revok.http.EntityParser;
 import us.pserver.revok.http.HttpConsts;
-import us.pserver.streams.MixedWriteBuffer;
 
 
 /**
@@ -192,6 +191,9 @@ public class HttpResponseChannel implements Channel {
       if(par.getInputStream() != null)
         t.setInputStream(par.getInputStream());
       return t;
+    }
+    catch(ConnectionClosedException e) {
+      return null;
     }
     catch(HttpException e) {
       throw new IOException(e.toString(), e);

@@ -22,9 +22,16 @@
 package us.pserver.revok.server;
 
 import com.jpower.rfl.Reflector;
-import java.util.Objects;
+import java.util.List;
+import java.util.stream.Collectors;
+import static us.pserver.chk.Checker.nullarg;
+import us.pserver.log.LogProvider;
 import us.pserver.revok.MethodInvocationException;
 import us.pserver.revok.RemoteMethod;
+import us.pserver.revok.container.AuthenticationException;
+import us.pserver.revok.container.Credentials;
+import us.pserver.revok.container.ObjectContainer;
+import static us.pserver.revok.server.Invoker.DEFAULT_INVOKE_TRIES;
 
 
 /**
@@ -45,11 +52,15 @@ public class Invoker {
    */
   public static final int DEFAULT_INVOKE_TRIES = 5;
   
-  private Object obj;
+  public static final String VAR_MARK = "$";
   
-  private RemoteMethod mth;
+  private ObjectContainer container;
+  
+  private Credentials credentials;
   
   private Reflector ref;
+  
+  private Object target;
   
   private int tries;
   
@@ -63,15 +74,20 @@ public class Invoker {
    * @param r <code>RemoteMethod</code>
    * @see us.pserver.remote.RemoteMethod
    */
-  public Invoker(Object o, RemoteMethod r) {
-    if(o == null) 
-      throw new IllegalArgumentException(
-          "Invalid Object ["+ o+ "]");
-    if(r == null || r.method() == null) 
-      throw new IllegalArgumentException(
-          "Invalid RemoteMethod ["+ r+ "]");
-    obj = o;
-    mth = r;
+  public Invoker(ObjectContainer cont, Credentials cred) {
+    if(cont == null) 
+      throw new IllegalArgumentException("[Invoker( ObjectContainer, RemoteMethod )] "
+          + "Invalid ObjectContainer ["+ cont+ "]");
+    container = cont;
+    if(container.isAuthEnabled()) {
+      LogProvider.getSimpleLog().info(
+          "Authentication Enabled: "+ credentials);
+      if(cred == null) throw new IllegalArgumentException(
+          "[Invoker( ObjectContainer, RemoteMethod )] "
+              + "Invalid Credentials ["+ cred+ "]");
+    }
+    target = null;
+    credentials = cred;
     ref = new Reflector();
     tries = DEFAULT_INVOKE_TRIES;
   }
@@ -100,6 +116,38 @@ public class Invoker {
   }
   
   
+  public Object getObject(RemoteMethod rm) 
+      throws MethodInvocationException, AuthenticationException {
+    nullarg(RemoteMethod.class, rm);
+    if(!container.contains(rm.objectName())) {
+      throw new MethodInvocationException("[Invoker.getObject( RemoteMethod )] "
+          + "Object not found ["+ rm.objectName()+ "]");
+    }
+    return getObject(rm.objectName());
+  }
+  
+  
+  private Object getObject(String name) throws MethodInvocationException, AuthenticationException {
+    Object o = null;
+    if(container.isAuthEnabled()) {
+      o = container.get(credentials, name);
+    }
+    else {
+      o = container.get(name);
+    }
+    return o;
+  }
+  
+  
+  private Object invokeAndSave(RemoteMethod mth) throws MethodInvocationException, AuthenticationException {
+    Object res = invoke(mth, 0);
+    if(res != null) {
+      container.put(mth.returnVar(), res);
+    }
+    return res;
+  }
+    
+    
   /**
    * Invoca o método.
    * @return Objeto de retorno do método ou
@@ -107,8 +155,25 @@ public class Invoker {
    * @throws MethodInvocationException caso
    * ocorra erro na invocação do método.
    */
-  public Object invoke() throws MethodInvocationException {
-    return invoke(0);
+  public Object invoke(RemoteMethod mth) throws MethodInvocationException, AuthenticationException {
+    if(mth.returnVar() != null) {
+      return invokeAndSave(mth);
+    }
+    else {
+      return invoke(mth, 0);
+    }
+  }
+  
+  
+  private void processArgs(RemoteMethod mth) throws MethodInvocationException, AuthenticationException {
+    List args = (List) mth.params().stream()
+        .filter(o->o.toString().startsWith(VAR_MARK))
+        .collect(Collectors.toList());
+    for(Object o : args) {
+      Object x = getObject(o.toString().substring(1));
+      int idx = mth.params().indexOf(o);
+      mth.params().set(idx, x);
+    }
   }
   
   
@@ -122,29 +187,39 @@ public class Invoker {
    * erro na invocação do método.
    * @see DEFAULT_INVOKE_TRIES
    */
-  private Object invoke(int currTry) throws MethodInvocationException {
-    if(obj == null || mth == null 
+  private Object invoke(RemoteMethod mth, int currTry) throws MethodInvocationException, AuthenticationException {
+    if(container == null || mth == null 
         || mth.method() == null 
         || tries < 1 || ref == null) 
       throw new IllegalStateException(
           "Invoker not properly configured");
     
+    if(target == null && mth.objectName() == null) {
+      throw new MethodInvocationException("[Invoker.invoke( RemoteMethod )] "
+          + "Invalid Target Object Name {"+ mth.objectName()+ "}");
+    }
+    if(mth.objectName() != null) {
+      target = getObject(mth);
+    }
+    
+    processArgs(mth);
     Class[] cls = (mth.types().isEmpty() ? null : mth.typesArray());
-    ref.on(obj).method(mth.method(), cls);
+    ref.on(target).method(mth.method(), cls);
     
     if(!ref.isMethodPresent()) {
       if(currTry < tries)
-        return invoke(currTry+1);
+        return invoke(mth, currTry+1);
       
       throw new MethodInvocationException("Method not found: "+ mth);
     }
-      
+    
     Object ret = ref.invoke((mth.params().isEmpty() 
         ? null : mth.params().toArray()));
+    System.out.println(ret);
       
     if(ref.hasError()) {
       if(currTry < tries) 
-        return invoke(currTry+1);
+        return invoke(mth, currTry+1);
         
       throw new MethodInvocationException(
           "Invocation error ["

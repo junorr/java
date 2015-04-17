@@ -123,7 +123,8 @@ public class HttpRequestChannel implements Channel {
   private void init() {
     algo = CryptAlgorithm.AES_CBC_PKCS5;
     context = HttpCoreContext.create();
-    context.setTargetHost(new HttpHost(netc.getAddress(), netc.getPort()));
+    context.setTargetHost(new HttpHost(
+        (netc.getAddress() == null ? "localhost" : netc.getAddress()), netc.getPort()));
     processor = HttpProcessorBuilder.create()
         .add(new RequestContent())
         .add(new RequestTargetHost())

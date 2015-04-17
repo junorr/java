@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import us.pserver.revok.http.HttpConsts;
+import us.pserver.revok.server.Invoker;
 
 /**
  * Representa um método remoto a ser invocado
@@ -49,6 +51,8 @@ public class RemoteMethod {
   
   private Credentials cred;
   
+  private String returnVar;
+  
   
   /**
    * Construtor padrão sem argumentos, constrói
@@ -60,6 +64,7 @@ public class RemoteMethod {
     params = new LinkedList();
     types = new LinkedList<>();
     cred = null;
+    returnVar = null;
   }
 
   
@@ -104,6 +109,20 @@ public class RemoteMethod {
     if(cls != null)
       types.add(cls);
     return this;
+  }
+  
+  
+  public RemoteMethod returnVar(String var) {
+    if(var == null || !var.startsWith(Invoker.VAR_MARK))
+      throw new IllegalArgumentException("[RemoteMethod.returnVar( String )] "
+          + "Invalid var name {"+ var+ "}. Variables must starts with '"+ Invoker.VAR_MARK+ "'");
+    returnVar = var;
+    return this;
+  }
+  
+  
+  public String returnVar() {
+    return returnVar;
   }
   
   
@@ -255,6 +274,12 @@ public class RemoteMethod {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
+    if(returnVar != null) {
+      sb.append(returnVar)
+          .append(HttpConsts.SP)
+          .append(HttpConsts.EQ)
+          .append(HttpConsts.SP);
+    }
     if(objname != null) {
       sb.append(objname);
     }

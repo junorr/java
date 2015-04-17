@@ -294,9 +294,7 @@ public class HttpConnector {
   
   
   public String getURIString() {
-    if(address == null) return null;
-    
-    String uri = proto.concat(address);
+    String uri = proto.concat(address == null ? "localhost" : address);
     if(port > 0)
       uri = uri.concat(HttpConsts.COLON).concat(String.valueOf(port));
     return uri.concat(HttpConsts.SLASH);

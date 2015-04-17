@@ -88,7 +88,7 @@ public class RevokServer extends AbstractServer {
    */
   public RevokServer(ObjectContainer cont) {
     super(cont);
-    cont.put(SERVER_KEY, this);
+    cont.put(ObjectContainer.NAMESPACE_GLOBAL, SERVER_KEY, this);
     ref = new Reflector();
     con = new HttpConnector();
     factory = HttpFactoryProvider.factory()
@@ -111,7 +111,6 @@ public class RevokServer extends AbstractServer {
    */
   public RevokServer(ObjectContainer cont, HttpConnector hcon) {
     this(cont);
-    cont.put(SERVER_KEY, this);
     if(con == null) throw new
         IllegalArgumentException(
             "[RevokServer( ObjectContainer, HttpConnector )] "
@@ -221,6 +220,7 @@ public class RevokServer extends AbstractServer {
           DefaultBHttpServerConnection conn = 
               new DefaultBHttpServerConnection(
                   HTTP_CONN_BUFFER_SIZE);
+          conn.bind(sock);
           exec.submit(new HttpConnectionHandler(
               factory.createChannel(conn), conn));
         } catch(SocketTimeoutException se) {}
@@ -345,36 +345,15 @@ public class RevokServer extends AbstractServer {
     }
     
     
-    private Object getObject(RemoteMethod rm) 
-        throws MethodInvocationException, AuthenticationException {
-      nullarg(RemoteMethod.class, rm);
-      if(!container.contains(rm.objectName())) {
-        throw new MethodInvocationException(
-            "Object not found ["+ rm.objectName()+ "]");
-      }
-      Object o = null;
-      if(container.isAuthEnabled()) {
-        LogProvider.getSimpleLog().info(
-            "Authentication Enabled: "+ rm.credentials());
-        o = container.get(rm.credentials(), rm.objectName());
-      }
-      else {
-        o = container.get(rm.objectName());
-      }
-      return o;
-    }
-    
-    
     private OpResult invoke(RemoteMethod rm) {
       nullarg(RemoteMethod.class, rm);
       OpResult op = new OpResult();
+      Invoker iv = new Invoker(container, rm.credentials());
       try {
-        op.setReturn(
-            this.invoke(
-                this.getObject(rm), rm));
+        op.setReturn(iv.invoke(rm));
         op.setSuccessOperation(true);
       }
-      catch(AuthenticationException | MethodInvocationException e) {
+      catch(Exception e) {
         op.setSuccessOperation(false);
         op.setError(e);
         LogProvider.getSimpleLog()
@@ -393,10 +372,11 @@ public class RevokServer extends AbstractServer {
           throw new MethodInvocationException(
               "Empty MethodChain. No method to invoke");
         
-        Object obj = getObject(chain.current());
+        Invoker iv = new Invoker(container, chain.current().credentials());
+        Object obj = iv.getObject(chain.current());
         do {
           this.logChain(obj, chain);
-          obj = invoke(obj, chain.current());
+          obj = iv.invoke(chain.current());
         } while(chain.next() != null);
         op.setSuccessOperation(true);
         op.setReturn(obj);
@@ -420,21 +400,6 @@ public class RevokServer extends AbstractServer {
         msg = obj.getClass().getSimpleName();
       msg += chain.current().toString();
       LogProvider.getSimpleLog().info("Invoking: "+ msg);
-    }
-    
-    
-    private Object invoke(Object obj, RemoteMethod rm) 
-        throws AuthenticationException, MethodInvocationException {
-      if(obj == null)
-        throw new MethodInvocationException(
-            "[HttpConnectionHandler.invoke( Object, RemoteMethod )] "
-                + "Invalid invocation object ["+ obj+ "]");
-      if(rm == null || rm.method() == null)
-        throw new MethodInvocationException(
-            "[HttpConnectionHandler.invoke( Object, RemoteMethod )] "
-                + "Invalid RemoteMethod ["+ rm+ "]");
-      Invoker iv = new Invoker(obj, rm);
-      return iv.invoke();
     }
     
     

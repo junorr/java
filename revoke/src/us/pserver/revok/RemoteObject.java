@@ -142,7 +142,9 @@ public class RemoteObject {
         "Cannot create Channel. Invalid NetConnector ["+ net+ "]");
     if(factory == null) throw new IllegalStateException(
         "Invalid ChannelFactory ["+ factory+ "]");
+    System.out.print("* [RemoteObject.channel()] Creating new Channel: ");
     channel = factory.createChannel(net);
+    System.out.println(channel);
     return channel;
   }
   

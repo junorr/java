@@ -21,7 +21,11 @@
 
 package us.pserver.revok.container;
 
-import java.util.Iterator;
+import com.jpower.rfl.Reflector;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import static us.pserver.chk.Checker.nullarg;
@@ -38,7 +42,9 @@ import static us.pserver.chk.Checker.nullarg;
  */
 public class ObjectContainer {
   
-  private final Map<String, Object> objs;
+  public static final String NAMESPACE_GLOBAL = "global";
+  
+  private final Map<String, Map<String, Object>> space;
   
   private Authenticator auth;
   
@@ -47,7 +53,9 @@ public class ObjectContainer {
    * Construtor padrão sem argumentos.
    */
   public ObjectContainer() {
-    objs = new ConcurrentHashMap<>();
+    space = new ConcurrentHashMap<>();
+    space.put(NAMESPACE_GLOBAL, new ConcurrentHashMap<>());
+    space.get(NAMESPACE_GLOBAL).put("ObjectContainer", this);
   }
   
   
@@ -83,8 +91,35 @@ public class ObjectContainer {
    * @return Esta instância modificada de <code>ObjectContainer</code>.
    */
   public ObjectContainer put(String name, Object obj) {
-    if(name != null && obj != null)
-      objs.put(name, obj);
+    if(name != null && obj != null) {
+      if(!name.contains("."))
+        throw new IllegalArgumentException(
+            "[ObjectContainer.put( String, Object )] "
+                + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
+      String[] names = name.split("\\.");
+      put(names[0], names[1], obj);
+    }
+    return this;
+  }
+  
+  
+  public ObjectContainer put(String namespace, String name, Object obj) {
+    if(namespace == null)
+      throw new IllegalArgumentException(
+          "[ObjectContainer.put( String, String, Object )] "
+              + "Invalid Namespace {"+ namespace+ "}");
+    if(name == null)
+      throw new IllegalArgumentException(
+          "[ObjectContainer.put( String, String, Object )] "
+              + "Invalid name {"+ name+ "}");
+    if(obj == null)
+      throw new IllegalArgumentException(
+          "[ObjectContainer.put( String, String, Object )] "
+              + "Invalid Object {"+ obj+ "}");
+    if(!space.containsKey(namespace)) {
+      space.put(namespace, new ConcurrentHashMap<>());
+    }
+    space.get(namespace).put(name, obj);
     return this;
   }
   
@@ -97,8 +132,16 @@ public class ObjectContainer {
    */
   public Object remove(String name) throws AuthenticationException {
     if(isAuthEnabled())
-      throw new AuthenticationException("Authentication needed");
-    return objs.remove(name);
+      throw new AuthenticationException("[ObjectContainer.remove( String )] Authentication needed");
+    if(!name.contains("."))
+      throw new IllegalArgumentException(
+          "[ObjectContainer.remove( String )] "
+              + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
+    String[] names = name.split("\\.");
+    if(space.containsKey(names[0])) {
+      return space.get(names[0]).remove(names[1]);
+    }
+    return null;
   }
   
   
@@ -106,7 +149,15 @@ public class ObjectContainer {
     if(isAuthEnabled()) {
       auth.authenticate(c);
     }
-    return objs.remove(name);
+    if(!name.contains("."))
+      throw new IllegalArgumentException(
+          "[ObjectContainer.remove( Credentials, String )] "
+              + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
+    String[] names = name.split("\\.");
+    if(space.containsKey(names[0])) {
+      return space.get(names[0]).remove(names[1]);
+    }
+    return null;
   }
   
   
@@ -119,7 +170,15 @@ public class ObjectContainer {
    * <code>false</code> caso contrário.
    */
   public boolean contains(String name) {
-    return objs.containsKey(name);
+    if(!name.contains("."))
+      throw new IllegalArgumentException(
+          "[ObjectContainer.contains( String )] "
+              + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
+    String[] names = name.split("\\.");
+    if(space.containsKey(names[0])) {
+      return space.get(names[0]).containsKey(names[1]);
+    }
+    return false;
   }
   
   
@@ -132,8 +191,16 @@ public class ObjectContainer {
    */
   public Object get(String name) throws AuthenticationException {
     if(isAuthEnabled())
-      throw new AuthenticationException("Authentication needed");
-    return objs.get(name);
+      throw new AuthenticationException("[ObjectContainer.get( String )] Authentication needed");
+    if(!name.contains("."))
+      throw new IllegalArgumentException(
+          "[ObjectContainer.get( String )] "
+              + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
+    String[] names = name.split("\\.");
+    if(space.containsKey(names[0])) {
+      return space.get(names[0]).get(names[1]);
+    }
+    return null;
   }
   
   
@@ -141,7 +208,15 @@ public class ObjectContainer {
     if(isAuthEnabled()) {
       auth.authenticate(c);
     }
-    return objs.get(name);
+    if(!name.contains("."))
+      throw new IllegalArgumentException(
+          "[ObjectContainer.get( Credentials, String )] "
+              + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
+    String[] names = name.split("\\.");
+    if(space.containsKey(names[0])) {
+      return space.get(names[0]).get(names[1]);
+    }
+    return null;
   }
   
   
@@ -149,18 +224,49 @@ public class ObjectContainer {
    * Retorna a quantidade de objetos armazenados.
    * @return <code>int</code>.
    */
-  public int size() {
-    return objs.size();
+  public int namespaceSize() {
+    return space.size();
   }
   
   
-  /**
-   * Retorna um <code>Iterator</code> com todas
-   * as chaves de identificação armazenadas.
-   * @return <code>Iterator</code>.
-   */
-  public Iterator<String> names() {
-    return objs.keySet().iterator();
+  public int sizeOf(String namespace) {
+    if(namespace == null || !space.containsKey(namespace))
+      return -1;
+    return space.get(namespace).size();
   }
   
+  
+  public List<String> namespaces() {
+    List<String> nsp = new LinkedList<>();
+    space.keySet().stream().forEach(m->nsp.add(m));
+    return nsp;
+  }
+  
+  
+  public List<String> objects(String namespace) {
+    List<String> nsp = new LinkedList<>();
+    if(namespace == null || !space.containsKey(namespace))
+      return nsp;
+    space.get(namespace).keySet().stream().forEach(no->nsp.add(no));
+    return nsp;
+  }
+  
+  
+  public List<Method> listMethods(String name) {
+    if(!name.contains("."))
+      throw new IllegalArgumentException(
+          "[ObjectContainer.get( Credentials, String )] "
+              + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
+    List<Method> mts = new LinkedList<>();
+    String[] names = name.split("\\.");
+    if(space.containsKey(names[0])) {
+      Object o = space.get(names[0]).get(names[1]);
+      if(o != null) {
+        Reflector ref = new Reflector();
+        mts.addAll(Arrays.asList(ref.on(o).methods()));
+      }
+    }
+    return mts;
+  }
+
 }

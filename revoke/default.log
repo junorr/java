@@ -155,3 +155,300 @@
 [INFO ] (10/03/2015 18:04:19): ------------------------------
 [INFO ] (10/03/2015 18:04:19): Handling socket: Socket[addr=/127.0.0.1,port=60548,localport=9035]
 [INFO ] (10/03/2015 18:04:19): Connection closed by client.
+[INFO ] (17/04/2015 08:23:03): Starting NetworkServer...
+[INFO ] (17/04/2015 08:23:03): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 08:23:03): Server started!
+
+[INFO ] (17/04/2015 08:27:12): Starting NetworkServer...
+[INFO ] (17/04/2015 08:27:12): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 08:27:12): Server started!
+
+[INFO ] (17/04/2015 08:29:27): Starting NetworkServer...
+[INFO ] (17/04/2015 08:29:27): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 08:29:27): Server started!
+
+[INFO ] (17/04/2015 08:31:11): Starting NetworkServer...
+[INFO ] (17/04/2015 08:31:11): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 08:31:11): Server started!
+
+[INFO ] (17/04/2015 08:31:14): ------------------------------
+[INFO ] (17/04/2015 08:31:14): Handling socket: 127.0.0.1:9099<->127.0.0.1:41308
+[INFO ] (17/04/2015 08:31:15): Remote request: calculator.xyz( 13, 5, 0 ).div(  ).moveZX(  ).round(  ).z(  )
+[INFO ] (17/04/2015 08:31:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (17/04/2015 08:31:15): Invoking: calculator.xyz( 13, 5, 0 )
+[INFO ] (17/04/2015 08:31:15): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 08:31:15): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 08:31:15): Invoking: Calculator.round(  )
+[WARN ] (17/04/2015 08:31:15): Error invoking method [.round(  )]
+[WARN ] (17/04/2015 08:31:15): MethodInvocationException: Invocation error [java.lang.IllegalArgumentException: wrong number of arguments]
+[WARN ] (17/04/2015 08:31:15):   Caused by: IllegalArgumentException: wrong number of arguments
+[WARN ] (17/04/2015 08:31:15):   us.pserver.revok.server.Invoker.invoke(Invoker.java:152)
+[WARN ] (17/04/2015 08:31:15):   us.pserver.revok.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (17/04/2015 08:31:15):   us.pserver.revok.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (17/04/2015 08:31:15):   us.pserver.revok.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (17/04/2015 08:31:15):   us.pserver.revok.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (17/04/2015 08:31:15):   us.pserver.revok.server.Invoker.invoke(Invoker.java:147)
+[WARN ] (17/04/2015 08:31:15):   us.pserver.revok.server.Invoker.invoke(Invoker.java:111)
+[WARN ] (17/04/2015 08:31:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.invoke(RevokServer.java:438)
+[WARN ] (17/04/2015 08:31:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.invoke(RevokServer.java:400)
+[WARN ] (17/04/2015 08:31:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.handleInvoke(RevokServer.java:475)
+[WARN ] (17/04/2015 08:31:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:509)
+[WARN ] (17/04/2015 08:31:15):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (17/04/2015 08:31:15):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (17/04/2015 08:31:15):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (17/04/2015 08:31:15):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (17/04/2015 08:31:15):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (17/04/2015 08:31:15): Response sent: OpResult{ success = false, return = null }
+[ERROR] (17/04/2015 08:31:15): Error reading from channel
+[ERROR] (17/04/2015 08:31:15): ConnectionClosedException: Client closed connection
+[ERROR] (17/04/2015 08:31:15):   org.apache.http.impl.io.DefaultHttpRequestParser.parseHead(DefaultHttpRequestParser.java:133)
+[ERROR] (17/04/2015 08:31:15):   org.apache.http.impl.io.DefaultHttpRequestParser.parseHead(DefaultHttpRequestParser.java:54)
+[ERROR] (17/04/2015 08:31:15):   org.apache.http.impl.io.AbstractMessageParser.parse(AbstractMessageParser.java:261)
+[ERROR] (17/04/2015 08:31:15):   org.apache.http.impl.DefaultBHttpServerConnection.receiveRequestHeader(DefaultBHttpServerConnection.java:132)
+[ERROR] (17/04/2015 08:31:15):   us.pserver.revok.channel.HttpResponseChannel.read(HttpResponseChannel.java:175)
+[ERROR] (17/04/2015 08:31:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.read(RevokServer.java:317)
+[ERROR] (17/04/2015 08:31:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:502)
+[ERROR] (17/04/2015 08:31:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:511)
+[ERROR] (17/04/2015 08:31:15):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (17/04/2015 08:31:15):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (17/04/2015 08:31:15):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (17/04/2015 08:31:15):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (17/04/2015 08:31:15):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (17/04/2015 08:31:15): Connection closed by client.
+[INFO ] (17/04/2015 08:33:21): Starting NetworkServer...
+[INFO ] (17/04/2015 08:33:21): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 08:33:21): Server started!
+
+[INFO ] (17/04/2015 08:33:24): ------------------------------
+[INFO ] (17/04/2015 08:33:24): Handling socket: 127.0.0.1:9099<->127.0.0.1:41311
+[INFO ] (17/04/2015 08:33:24): Remote request: calculator.xyz( 13, 5, 0 ).div(  ).moveZX(  ).round( 2 ).z(  )
+[INFO ] (17/04/2015 08:33:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (17/04/2015 08:33:24): Invoking: calculator.xyz( 13, 5, 0 )
+[INFO ] (17/04/2015 08:33:24): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 08:33:24): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 08:33:24): Invoking: Calculator.round( 2 )
+[INFO ] (17/04/2015 08:33:24): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 08:33:24): Response sent: OpResult{ success = true, return = 2.6 }
+[ERROR] (17/04/2015 08:33:24): Error reading from channel
+[ERROR] (17/04/2015 08:33:24): ConnectionClosedException: Client closed connection
+[ERROR] (17/04/2015 08:33:24):   org.apache.http.impl.io.DefaultHttpRequestParser.parseHead(DefaultHttpRequestParser.java:133)
+[ERROR] (17/04/2015 08:33:24):   org.apache.http.impl.io.DefaultHttpRequestParser.parseHead(DefaultHttpRequestParser.java:54)
+[ERROR] (17/04/2015 08:33:24):   org.apache.http.impl.io.AbstractMessageParser.parse(AbstractMessageParser.java:261)
+[ERROR] (17/04/2015 08:33:24):   org.apache.http.impl.DefaultBHttpServerConnection.receiveRequestHeader(DefaultBHttpServerConnection.java:132)
+[ERROR] (17/04/2015 08:33:24):   us.pserver.revok.channel.HttpResponseChannel.read(HttpResponseChannel.java:175)
+[ERROR] (17/04/2015 08:33:25):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.read(RevokServer.java:317)
+[ERROR] (17/04/2015 08:33:25):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:502)
+[ERROR] (17/04/2015 08:33:25):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:511)
+[ERROR] (17/04/2015 08:33:25):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (17/04/2015 08:33:25):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (17/04/2015 08:33:25):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (17/04/2015 08:33:25):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (17/04/2015 08:33:25):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (17/04/2015 08:33:25): Connection closed by client.
+[INFO ] (17/04/2015 08:38:56): Starting NetworkServer...
+[INFO ] (17/04/2015 08:38:56): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 08:38:56): Server started!
+
+[INFO ] (17/04/2015 08:38:58): ------------------------------
+[INFO ] (17/04/2015 08:38:58): Handling socket: 127.0.0.1:9099<->127.0.0.1:41315
+[INFO ] (17/04/2015 08:38:59): Remote request: calculator.xyz( 113, 7, 0 ).div(  ).moveZX(  ).round( 2 ).z(  )
+[INFO ] (17/04/2015 08:38:59): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (17/04/2015 08:38:59): Invoking: calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 08:38:59): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 08:38:59): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 08:38:59): Invoking: Calculator.round( 2 )
+[INFO ] (17/04/2015 08:38:59): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 08:38:59): Response sent: OpResult{ success = true, return = 16.14 }
+[INFO ] (17/04/2015 08:38:59): Connection closed by client.
+[INFO ] (17/04/2015 08:42:23): ------------------------------
+[INFO ] (17/04/2015 08:42:23): Handling socket: 127.0.0.1:9099<->127.0.0.1:41319
+[INFO ] (17/04/2015 08:42:24): Remote request: calculator.xyz( 113, 7, 0 ).div(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 08:42:24): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (17/04/2015 08:42:24): Invoking: calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 08:42:24): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 08:42:24): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 08:42:24): Invoking: Calculator.round( 4 )
+[INFO ] (17/04/2015 08:42:24): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 08:42:24): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (17/04/2015 08:42:24): Connection closed by client.
+[INFO ] (17/04/2015 08:44:13): Starting NetworkServer...
+[INFO ] (17/04/2015 08:44:13): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 08:44:13): Server started!
+
+[INFO ] (17/04/2015 08:44:19): ------------------------------
+[INFO ] (17/04/2015 08:44:19): Handling socket: 127.0.0.1:9099<->127.0.0.1:41321
+[INFO ] (17/04/2015 08:44:20): Remote request: calculator.xyz( 113, 7, 0 ).div(  ).printZ(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 08:44:20): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (17/04/2015 08:44:20): Invoking: calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 08:44:20): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 08:44:20): Invoking: Calculator.printZ(  )
+[INFO ] (17/04/2015 08:44:20): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 08:44:20): Invoking: Calculator.round( 4 )
+[INFO ] (17/04/2015 08:44:20): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 08:44:20): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (17/04/2015 08:44:20): Connection closed by client.
+[INFO ] (17/04/2015 08:47:27): Starting NetworkServer...
+[INFO ] (17/04/2015 08:47:27): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 08:47:27): Server started!
+
+[INFO ] (17/04/2015 08:47:38): ------------------------------
+[INFO ] (17/04/2015 08:47:38): Handling socket: 127.0.0.1:9099<->127.0.0.1:41325
+[INFO ] (17/04/2015 08:47:39): Remote request: calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 08:47:39): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (17/04/2015 08:47:39): Invoking: calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 08:47:39): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 08:47:39): Invoking: Calculator.print(  )
+[INFO ] (17/04/2015 08:47:39): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 08:47:39): Invoking: Calculator.round( 4 )
+[INFO ] (17/04/2015 08:47:39): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 08:47:39): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (17/04/2015 08:47:39): Connection closed by client.
+[INFO ] (17/04/2015 08:49:16): ------------------------------
+[INFO ] (17/04/2015 08:49:16): Handling socket: 127.0.0.1:9099<->127.0.0.1:41327
+[INFO ] (17/04/2015 08:49:17): Remote request: calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 08:49:17): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (17/04/2015 08:49:17): Invoking: calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 08:49:17): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 08:49:17): Invoking: Calculator.print(  )
+[INFO ] (17/04/2015 08:49:17): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 08:49:17): Invoking: Calculator.round( 4 )
+[INFO ] (17/04/2015 08:49:17): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 08:49:17): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (17/04/2015 08:49:17): Connection closed by client.
+[INFO ] (17/04/2015 13:33:40): Starting NetworkServer...
+[INFO ] (17/04/2015 13:33:40): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 13:33:40): Server started!
+
+[INFO ] (17/04/2015 13:33:53): ------------------------------
+[INFO ] (17/04/2015 13:33:53): Handling socket: 127.0.0.1:9099<->127.0.0.1:39260
+[INFO ] (17/04/2015 13:33:54): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 13:33:54): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (17/04/2015 13:33:54): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 13:33:54): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (17/04/2015 13:33:54): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 13:42:30): Starting NetworkServer...
+[INFO ] (17/04/2015 13:42:30): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 13:42:30): Server started!
+
+[INFO ] (17/04/2015 13:42:32): ------------------------------
+[INFO ] (17/04/2015 13:42:32): Handling socket: 127.0.0.1:9099<->127.0.0.1:39296
+[INFO ] (17/04/2015 13:42:33): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 13:42:33): Authentication Enabled: null
+[INFO ] (17/04/2015 13:42:33): [Invoker.getObject( calc.calculator )] var=Calculator{ x=0.0, y=0.0, z=0.0 }
+[INFO ] (17/04/2015 13:42:33): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 13:42:33): [Invoker.getObject( calc.calculator )] var=Calculator{ x=0.0, y=0.0, z=0.0 }
+[INFO ] (17/04/2015 13:42:33): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 13:44:10): Starting NetworkServer...
+[INFO ] (17/04/2015 13:44:10): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 13:44:10): Server started!
+
+[INFO ] (17/04/2015 13:44:12): ------------------------------
+[INFO ] (17/04/2015 13:44:12): Handling socket: 127.0.0.1:9099<->127.0.0.1:39315
+[INFO ] (17/04/2015 13:44:13): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 13:44:14): Authentication Enabled: null
+[INFO ] (17/04/2015 13:44:14): [Invoker.getObject( calc.calculator )] var=Calculator{ x=0.0, y=0.0, z=0.0 }
+[INFO ] (17/04/2015 13:44:14): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 13:44:14): [Invoker.processArgs( calc.calculator.xyz( 113, 7, 0 ) )]
+[INFO ] (17/04/2015 13:44:14): [Invoker.processArgs( calc.calculator.xyz( 113, 7, 0 ) )] args.size=0
+[INFO ] (17/04/2015 13:44:14): [Invoker.getObject( calc.calculator )] var=Calculator{ x=0.0, y=0.0, z=0.0 }
+[INFO ] (17/04/2015 13:44:14): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 13:44:14): [Invoker.processArgs( .div(  ) )]
+[INFO ] (17/04/2015 13:44:14): [Invoker.processArgs( .div(  ) )] args.size=0
+[INFO ] (17/04/2015 13:45:21): Starting NetworkServer...
+[INFO ] (17/04/2015 13:45:21): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 13:45:21): Server started!
+
+[INFO ] (17/04/2015 13:45:23): ------------------------------
+[INFO ] (17/04/2015 13:45:23): Handling socket: 127.0.0.1:9099<->127.0.0.1:39323
+[INFO ] (17/04/2015 13:45:24): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 13:45:24): Authentication Enabled: null
+[INFO ] (17/04/2015 13:45:24): [Invoker.getObject( calc.calculator )] var=Calculator{ x=0.0, y=0.0, z=0.0 }
+[INFO ] (17/04/2015 13:45:24): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 13:45:24): [Invoker.processArgs( calc.calculator.xyz( 113, 7, 0 ) )]
+[INFO ] (17/04/2015 13:45:24): [Invoker.processArgs( calc.calculator.xyz( 113, 7, 0 ) )] args.size=0
+[INFO ] (17/04/2015 13:45:24): [Invoker.getObject( calc.calculator )] var=Calculator{ x=0.0, y=0.0, z=0.0 }
+[INFO ] (17/04/2015 13:45:24): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 13:45:24): [Invoker.processArgs( .div(  ) )]
+[INFO ] (17/04/2015 13:45:24): [Invoker.processArgs( .div(  ) )] args.size=0
+[INFO ] (17/04/2015 13:47:57): Starting NetworkServer...
+[INFO ] (17/04/2015 13:47:57): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 13:47:57): Server started!
+
+[INFO ] (17/04/2015 13:47:59): ------------------------------
+[INFO ] (17/04/2015 13:47:59): Handling socket: 127.0.0.1:9099<->127.0.0.1:39336
+[INFO ] (17/04/2015 13:48:00): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 13:48:00): Authentication Enabled: null
+[INFO ] (17/04/2015 13:48:00): [Invoker.getObject( calc.calculator )] var=Calculator{ x=0.0, y=0.0, z=0.0 }
+[INFO ] (17/04/2015 13:48:00): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 13:48:00): [Invoker.processArgs( calc.calculator.xyz( 113, 7, 0 ) )]
+[INFO ] (17/04/2015 13:48:00): [Invoker.processArgs( calc.calculator.xyz( 113, 7, 0 ) )] args.size=0
+[INFO ] (17/04/2015 13:48:00): [Invoker.getObject( calc.calculator )] var=Calculator{ x=0.0, y=0.0, z=0.0 }
+[INFO ] (17/04/2015 13:48:00): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 13:48:00): [Invoker.processArgs( .div(  ) )]
+[INFO ] (17/04/2015 13:48:00): [Invoker.processArgs( .div(  ) )] args.size=0
+[INFO ] (17/04/2015 13:52:45): Starting NetworkServer...
+[INFO ] (17/04/2015 13:52:45): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 13:52:45): Server started!
+
+[INFO ] (17/04/2015 13:52:47): ------------------------------
+[INFO ] (17/04/2015 13:52:47): Handling socket: 127.0.0.1:9099<->127.0.0.1:39355
+[INFO ] (17/04/2015 13:52:48): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 13:52:48): Authentication Enabled: null
+[INFO ] (17/04/2015 13:52:48): [Invoker.getObject( calc.calculator )] var=Calculator{ x=0.0, y=0.0, z=0.0 }
+[INFO ] (17/04/2015 13:52:48): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 13:52:48): [Invoker.processArgs( calc.calculator.xyz( 113, 7, 0 ) )]
+[INFO ] (17/04/2015 13:52:48): [Invoker.processArgs( calc.calculator.xyz( 113, 7, 0 ) )] args.size=0
+[INFO ] (17/04/2015 13:52:48): [Invoker.getObject( calc.calculator )] var=Calculator{ x=0.0, y=0.0, z=0.0 }
+[INFO ] (17/04/2015 13:52:48): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 13:52:48): [Invoker.processArgs( .div(  ) )]
+[INFO ] (17/04/2015 13:52:48): [Invoker.processArgs( .div(  ) )] args.size=0
+[INFO ] (17/04/2015 15:44:47): Starting NetworkServer...
+[INFO ] (17/04/2015 15:44:47): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 15:44:47): Server started!
+
+[INFO ] (17/04/2015 15:44:57): ------------------------------
+[INFO ] (17/04/2015 15:44:57): Handling socket: 127.0.0.1:9099<->127.0.0.1:47526
+[INFO ] (17/04/2015 15:45:01): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 15:45:01): Authentication Enabled: null
+[INFO ] (17/04/2015 15:45:01): [Invoker.getObject( calc.calculator )] var=Calculator{ x=0.0, y=0.0, z=0.0 }
+[INFO ] (17/04/2015 15:45:01): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 15:45:01): [Invoker.getObject( calc.calculator )] var=Calculator{ x=0.0, y=0.0, z=0.0 }
+[INFO ] (17/04/2015 15:45:01): [Invoker.processArgs( calc.calculator.xyz( 113, 7, 0 ) )]
+[INFO ] (17/04/2015 15:45:02): [Invoker.processArgs( calc.calculator.xyz( 113, 7, 0 ) )] args.size=0
+[INFO ] (17/04/2015 15:45:02): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 15:45:02): [Invoker.processArgs( .div(  ) )]
+[INFO ] (17/04/2015 15:45:02): [Invoker.processArgs( .div(  ) )] args.size=0
+[INFO ] (17/04/2015 15:45:02): Invoking: Calculator.print(  )
+[INFO ] (17/04/2015 15:45:02): [Invoker.processArgs( .print(  ) )]
+[INFO ] (17/04/2015 15:45:02): [Invoker.processArgs( .print(  ) )] args.size=0
+[INFO ] (17/04/2015 15:45:02): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 15:45:02): [Invoker.processArgs( .moveZX(  ) )]
+[INFO ] (17/04/2015 15:45:02): [Invoker.processArgs( .moveZX(  ) )] args.size=0
+[INFO ] (17/04/2015 15:45:02): Invoking: Calculator.round( 4 )
+[INFO ] (17/04/2015 15:45:02): [Invoker.processArgs( .round( 4 ) )]
+[INFO ] (17/04/2015 15:45:02): [Invoker.processArgs( .round( 4 ) )] args.size=0
+[INFO ] (17/04/2015 15:45:02): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 15:45:02): [Invoker.processArgs( .z(  ) )]
+[INFO ] (17/04/2015 15:45:02): [Invoker.processArgs( .z(  ) )] args.size=0
+[INFO ] (17/04/2015 15:45:03): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (17/04/2015 15:45:03): Connection closed by client.
+[INFO ] (17/04/2015 16:01:42): Starting NetworkServer...
+[INFO ] (17/04/2015 16:01:42): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 16:01:42): Server started!
+
+[INFO ] (17/04/2015 16:01:44): ------------------------------
+[INFO ] (17/04/2015 16:01:44): Handling socket: 127.0.0.1:9099<->127.0.0.1:52837
+[INFO ] (17/04/2015 16:01:45): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 16:01:45): Authentication Enabled: null
+[INFO ] (17/04/2015 16:01:45): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 16:01:45): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 16:01:45): Invoking: Calculator.print(  )
+[INFO ] (17/04/2015 16:01:45): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 16:01:45): Invoking: Calculator.round( 4 )
+[INFO ] (17/04/2015 16:01:45): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 16:01:45): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (17/04/2015 16:01:45): Connection closed by client.
+[INFO ] (17/04/2015 16:01:45): ------------------------------
+[INFO ] (17/04/2015 16:01:45): Handling socket: 127.0.0.1:9099<->127.0.0.1:52838
+[INFO ] (17/04/2015 16:01:45): Remote request: global.ObjectContainer.listMethods( calc.calculator )
+[INFO ] (17/04/2015 16:01:45): Authentication Enabled: null
