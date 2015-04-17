@@ -348,8 +348,8 @@ public class RevokServer extends AbstractServer {
     private OpResult invoke(RemoteMethod rm) {
       nullarg(RemoteMethod.class, rm);
       OpResult op = new OpResult();
-      Invoker iv = new Invoker(container, rm.credentials());
       try {
+        Invoker iv = new Invoker(container, rm.credentials());
         op.setReturn(iv.invoke(rm));
         op.setSuccessOperation(true);
       }

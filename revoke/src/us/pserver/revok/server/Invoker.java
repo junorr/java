@@ -74,7 +74,7 @@ public class Invoker {
    * @param r <code>RemoteMethod</code>
    * @see us.pserver.remote.RemoteMethod
    */
-  public Invoker(ObjectContainer cont, Credentials cred) {
+  public Invoker(ObjectContainer cont, Credentials cred) throws MethodInvocationException {
     if(cont == null) 
       throw new IllegalArgumentException("[Invoker( ObjectContainer, RemoteMethod )] "
           + "Invalid ObjectContainer ["+ cont+ "]");
@@ -82,7 +82,7 @@ public class Invoker {
     if(container.isAuthEnabled()) {
       LogProvider.getSimpleLog().info(
           "Authentication Enabled: "+ credentials);
-      if(cred == null) throw new IllegalArgumentException(
+      if(cred == null) throw new MethodInvocationException(
           "[Invoker( ObjectContainer, RemoteMethod )] "
               + "Invalid Credentials ["+ cred+ "]");
     }
@@ -215,7 +215,6 @@ public class Invoker {
     
     Object ret = ref.invoke((mth.params().isEmpty() 
         ? null : mth.params().toArray()));
-    System.out.println(ret);
       
     if(ref.hasError()) {
       if(currTry < tries) 

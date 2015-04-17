@@ -452,3 +452,118 @@
 [INFO ] (17/04/2015 16:01:45): Handling socket: 127.0.0.1:9099<->127.0.0.1:52838
 [INFO ] (17/04/2015 16:01:45): Remote request: global.ObjectContainer.listMethods( calc.calculator )
 [INFO ] (17/04/2015 16:01:45): Authentication Enabled: null
+[INFO ] (17/04/2015 16:09:35): Starting NetworkServer...
+[INFO ] (17/04/2015 16:09:35): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 16:09:35): Server started!
+
+[INFO ] (17/04/2015 16:09:40): ------------------------------
+[INFO ] (17/04/2015 16:09:40): Handling socket: 127.0.0.1:9099<->127.0.0.1:58541
+[INFO ] (17/04/2015 16:09:40): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 16:09:40): Authentication Enabled: null
+[INFO ] (17/04/2015 16:09:40): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 16:09:40): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 16:09:40): Invoking: Calculator.print(  )
+[INFO ] (17/04/2015 16:09:40): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 16:09:40): Invoking: Calculator.round( 4 )
+[INFO ] (17/04/2015 16:09:40): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 16:09:40): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (17/04/2015 16:09:40): Connection closed by client.
+[INFO ] (17/04/2015 16:09:40): ------------------------------
+[INFO ] (17/04/2015 16:09:40): Handling socket: 127.0.0.1:9099<->127.0.0.1:58545
+[INFO ] (17/04/2015 16:09:40): Remote request: global.ObjectContainer.listMethods( calc.calculator )
+[INFO ] (17/04/2015 16:09:40): Authentication Enabled: null
+[INFO ] (17/04/2015 16:10:39): Starting NetworkServer...
+[INFO ] (17/04/2015 16:10:39): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 16:10:39): Server started!
+
+[INFO ] (17/04/2015 16:10:41): ------------------------------
+[INFO ] (17/04/2015 16:10:41): Handling socket: 127.0.0.1:9099<->127.0.0.1:58957
+[INFO ] (17/04/2015 16:10:42): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 16:10:42): Authentication Enabled: null
+[INFO ] (17/04/2015 16:10:42): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 16:10:42): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 16:10:42): Invoking: Calculator.print(  )
+[INFO ] (17/04/2015 16:10:42): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 16:10:42): Invoking: Calculator.round( 4 )
+[INFO ] (17/04/2015 16:10:42): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 16:10:42): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (17/04/2015 16:10:42): ------------------------------
+[INFO ] (17/04/2015 16:10:42): Handling socket: 127.0.0.1:9099<->127.0.0.1:58969
+[INFO ] (17/04/2015 16:10:42): Connection closed by client.
+[INFO ] (17/04/2015 16:10:42): Remote request: global.ObjectContainer.listMethods( calc.calculator )
+[INFO ] (17/04/2015 16:10:42): Authentication Enabled: null
+[INFO ] (17/04/2015 16:13:00): Starting NetworkServer...
+[INFO ] (17/04/2015 16:13:00): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 16:13:00): Server started!
+
+[INFO ] (17/04/2015 16:13:02): ------------------------------
+[INFO ] (17/04/2015 16:13:02): Handling socket: 127.0.0.1:9099<->127.0.0.1:60531
+[INFO ] (17/04/2015 16:13:03): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 16:13:03): Authentication Enabled: null
+[INFO ] (17/04/2015 16:13:03): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 16:13:03): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 16:13:03): Invoking: Calculator.print(  )
+[INFO ] (17/04/2015 16:13:03): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 16:13:03): Invoking: Calculator.round( 4 )
+[INFO ] (17/04/2015 16:13:03): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 16:13:03): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (17/04/2015 16:13:03): ------------------------------
+[INFO ] (17/04/2015 16:13:03): Connection closed by client.
+[INFO ] (17/04/2015 16:13:03): Handling socket: 127.0.0.1:9099<->127.0.0.1:60543
+[INFO ] (17/04/2015 16:13:03): Remote request: global.ObjectContainer.listMethods( calc.calculator )
+[INFO ] (17/04/2015 16:13:03): Authentication Enabled: null
+[INFO ] (17/04/2015 16:15:13): Starting NetworkServer...
+[INFO ] (17/04/2015 16:15:13): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 16:15:13): Server started!
+
+[INFO ] (17/04/2015 16:15:15): ------------------------------
+[INFO ] (17/04/2015 16:15:15): Handling socket: 127.0.0.1:9099<->127.0.0.1:33547
+[INFO ] (17/04/2015 16:15:16): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 16:15:16): Authentication Enabled: null
+[INFO ] (17/04/2015 16:15:16): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 16:15:16): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 16:15:16): Invoking: Calculator.print(  )
+[INFO ] (17/04/2015 16:15:16): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 16:15:16): Invoking: Calculator.round( 4 )
+[INFO ] (17/04/2015 16:15:16): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 16:15:16): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (17/04/2015 16:15:16): Connection closed by client.
+[INFO ] (17/04/2015 16:15:16): ------------------------------
+[INFO ] (17/04/2015 16:15:16): Handling socket: 127.0.0.1:9099<->127.0.0.1:33558
+[INFO ] (17/04/2015 16:15:16): Remote request: global.ObjectContainer.listMethods( calc.calculator )
+[INFO ] (17/04/2015 16:15:16): Authentication Enabled: null
+[WARN ] (17/04/2015 16:15:16): Error invoking method [listMethods]
+[WARN ] (17/04/2015 16:15:16): MethodInvocationException: [Invoker( ObjectContainer, RemoteMethod )] Invalid Credentials [null]
+[WARN ] (17/04/2015 16:15:16):   us.pserver.revok.server.Invoker.<init>(Invoker.java:85)
+[WARN ] (17/04/2015 16:15:16):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.invoke(RevokServer.java:352)
+[WARN ] (17/04/2015 16:15:16):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.handleInvoke(RevokServer.java:434)
+[WARN ] (17/04/2015 16:15:16):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:473)
+[WARN ] (17/04/2015 16:15:16):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (17/04/2015 16:15:16):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (17/04/2015 16:15:16):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (17/04/2015 16:15:16):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (17/04/2015 16:15:16):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (17/04/2015 16:15:16): Response sent: OpResult{ success = false, return = null }
+[INFO ] (17/04/2015 16:15:16): Connection closed by client.
+[INFO ] (17/04/2015 16:16:50): Starting NetworkServer...
+[INFO ] (17/04/2015 16:16:50): Listening on: HttpConnector{ *:9099 }
+[INFO ] (17/04/2015 16:16:50): Server started!
+
+[INFO ] (17/04/2015 16:16:52): ------------------------------
+[INFO ] (17/04/2015 16:16:52): Handling socket: 127.0.0.1:9099<->127.0.0.1:34441
+[INFO ] (17/04/2015 16:16:53): Remote request: calc.calculator.xyz( 113, 7, 0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (17/04/2015 16:16:53): Authentication Enabled: null
+[INFO ] (17/04/2015 16:16:53): Invoking: calc.calculator.xyz( 113, 7, 0 )
+[INFO ] (17/04/2015 16:16:53): Invoking: Calculator.div(  )
+[INFO ] (17/04/2015 16:16:53): Invoking: Calculator.print(  )
+[INFO ] (17/04/2015 16:16:53): Invoking: Calculator.moveZX(  )
+[INFO ] (17/04/2015 16:16:53): Invoking: Calculator.round( 4 )
+[INFO ] (17/04/2015 16:16:53): Invoking: Calculator.z(  )
+[INFO ] (17/04/2015 16:16:53): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (17/04/2015 16:16:53): Connection closed by client.
+[INFO ] (17/04/2015 16:16:53): ------------------------------
+[INFO ] (17/04/2015 16:16:53): Handling socket: 127.0.0.1:9099<->127.0.0.1:34455
+[INFO ] (17/04/2015 16:16:53): Remote request: global.ObjectContainer.listMethods( calc.calculator )
+[INFO ] (17/04/2015 16:16:53): Authentication Enabled: null
+[INFO ] (17/04/2015 16:16:53): Response sent: OpResult{ success = true, return = [public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.printX(), public double us.pserver.revok.test.Calculator.y(), public double us.pserver.revok.test.Calculator.z(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.setX(double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.setY(double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.setZ(double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.xyz(double,double,double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.printY(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.printZ(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.moveXY(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.moveXZ(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.moveYX(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.moveYZ(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.moveZX(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.moveZY(), public double us.pserver.revok.test.Calculator.sub(double,double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.sub(), public double us.pserver.revok.test.Calculator.mult(double,double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.mult(), public double us.pserver.revok.test.Calculator.div(double,double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.div(), public java.lang.String us.pserver.revok.test.Calculator.toString(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.sqrt(), public double us.pserver.revok.test.Calculator.sqrt(double), public double us.pserver.revok.test.Calculator.pow(double,double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.pow(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.print(), public double us.pserver.revok.test.Calculator.sum(double,double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.sum(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.round(int), public double us.pserver.revok.test.Calculator.round(double,int), public double us.pserver.revok.test.Calculator.random(int), public double us.pserver.revok.test.Calculator.x(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.printX(), public double us.pserver.revok.test.Calculator.y(), public double us.pserver.revok.test.Calculator.z(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.setX(double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.setY(double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.setZ(double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.xyz(double,double,double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.printY(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.printZ(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.moveXY(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.moveXZ(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.moveYX(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.moveYZ(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.moveZX(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.moveZY(), public double us.pserver.revok.test.Calculator.sub(double,double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.sub(), public double us.pserver.revok.test.Calculator.mult(double,double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.mult(), public double us.pserver.revok.test.Calculator.div(double,double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.div(), public java.lang.String us.pserver.revok.test.Calculator.toString(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.sqrt(), public double us.pserver.revok.test.Calculator.sqrt(double), public double us.pserver.revok.test.Calculator.pow(double,double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.pow(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.print(), public double us.pserver.revok.test.Calculator.sum(double,double), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.sum(), public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.round(int), public double us.pserver.revok.test.Calculator.round(double,int), public double us.pserver.revok.test.Calculator.random(int), public double us.pserver.revok.test.Calculator.x(), public final void java.lang.Object.wait(long,int) throws java.lang.InterruptedException, public final native void java.lang.Object.wait(long) throws java.lang.InterruptedException, public final void java.lang.Object.wait() throws java.lang.InterruptedException, public boolean java.lang.Object.equals(java.lang.Object), public native int java.lang.Object.hashCode(), public final native java.lang.Class java.lang.Object.getClass(), public final native void java.lang.Object.notify(), public final native void java.lang.Object.notifyAll()] }
+[INFO ] (17/04/2015 16:16:53): Connection closed by client.

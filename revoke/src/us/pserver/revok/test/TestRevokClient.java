@@ -42,11 +42,12 @@ public class TestRevokClient {
     MethodChain chain = new MethodChain();
     HttpConnector hc = new HttpConnector();
     RemoteObject rob = new RemoteObject(hc);
+    Credentials cred = new Credentials("juno", "1234".getBytes());
     
     chain.add("calc.calculator", "xyz")
         .types(double.class, double.class, double.class)
         .params(113, 7, 0)
-        .credentials(new Credentials("juno", "1234".getBytes()));
+        .credentials(cred);
     chain.add("div");
     chain.add("print");
     chain.add("moveZX");
@@ -63,7 +64,8 @@ public class TestRevokClient {
         .forObject("global.ObjectContainer")
         .method("listMethods")
         .types(String.class)
-        .params("calc.calculator");
+        .params("calc.calculator")
+        .credentials(cred);
     System.out.println("* Invoke      --> "+ rm);
     List<Method> mts = (List<Method>) rob.invoke(rm);
     System.out.println("  mts.size="+ mts.size());
