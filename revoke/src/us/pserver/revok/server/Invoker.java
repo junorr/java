@@ -81,7 +81,7 @@ public class Invoker {
     container = cont;
     if(container.isAuthEnabled()) {
       LogProvider.getSimpleLog().info(
-          "Authentication Enabled: "+ credentials);
+          "Authentication Enabled: "+ cred);
       if(cred == null) throw new MethodInvocationException(
           "[Invoker( ObjectContainer, RemoteMethod )] "
               + "Invalid Credentials ["+ cred+ "]");
@@ -142,7 +142,7 @@ public class Invoker {
   private Object invokeAndSave(RemoteMethod mth) throws MethodInvocationException, AuthenticationException {
     Object res = invoke(mth, 0);
     if(res != null) {
-      container.put(mth.returnVar(), res);
+      container.put(mth.returnVar().substring(1), res);
     }
     return res;
   }

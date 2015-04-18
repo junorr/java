@@ -26,7 +26,7 @@ package us.pserver.revok.test;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 17/04/2015
  */
-public class Calculator {
+public class Calculator implements ICalculator {
   
   private double x, y, z;
   
@@ -52,17 +52,17 @@ public class Calculator {
   }
   
   public Calculator printX() { 
-    System.out.println("* Calculator{ x="+ x+ "}"); 
+    System.out.println("* Calculator{ x="+ x+ " }"); 
     return this;
   }
   
   public Calculator printY() { 
-    System.out.println("* Calculator{ x="+ x+ "}"); 
+    System.out.println("* Calculator{ y="+ y+ " }"); 
     return this;
   }
   
   public Calculator printZ() { 
-    System.out.println("* Calculator{ x="+ x+ "}"); 
+    System.out.println("* Calculator{ z="+ z+ " }"); 
     return this;
   }
   

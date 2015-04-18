@@ -3,6 +3,9 @@ package com.jpower.rfl;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Reflection utils
@@ -255,10 +258,13 @@ public class Reflector {
     if(c == null) return null;
     Method[] dec = c.getDeclaredMethods();
     Method[] pub = c.getMethods();
-    Method[] all = new Method[dec.length + pub.length];
-    System.arraycopy(dec, 0, all, 0, dec.length);
-    System.arraycopy(pub, 0, all, dec.length, pub.length);
-    return all;
+    List<Method> all = new ArrayList<>();
+    Arrays.asList(dec).stream().filter(
+        m->!all.contains(m)).forEach(all::add);
+    Arrays.asList(pub).stream().filter(
+        m->!all.contains(m)).forEach(all::add);
+    Method[] mts = new Method[all.size()];
+    return all.toArray(mts);
   }
 	
 	
@@ -266,10 +272,13 @@ public class Reflector {
     if(c == null) return null;
     Field[] dec = c.getDeclaredFields();
     Field[] pub = c.getFields();
-    Field[] all = new Field[dec.length + pub.length];
-    System.arraycopy(dec, 0, all, 0, dec.length);
-    System.arraycopy(pub, 0, all, dec.length, pub.length);
-    return all;
+    List<Field> all = new ArrayList<>();
+    Arrays.asList(dec).stream().filter(
+        m->!all.contains(m)).forEach(all::add);
+    Arrays.asList(pub).stream().filter(
+        m->!all.contains(m)).forEach(all::add);
+    Field[] mts = new Field[all.size()];
+    return all.toArray(mts);
   }
 	
 	
@@ -277,10 +286,13 @@ public class Reflector {
     if(c == null) return null;
     Constructor[] dec = c.getDeclaredConstructors();
     Constructor[] pub = c.getConstructors();
-    Constructor[] all = new Constructor[dec.length + pub.length];
-    System.arraycopy(dec, 0, all, 0, dec.length);
-    System.arraycopy(pub, 0, all, dec.length, pub.length);
-    return all;
+    List<Constructor> all = new ArrayList<>();
+    Arrays.asList(dec).stream().filter(
+        m->!all.contains(m)).forEach(all::add);
+    Arrays.asList(pub).stream().filter(
+        m->!all.contains(m)).forEach(all::add);
+    Constructor[] mts = new Constructor[all.size()];
+    return all.toArray(mts);
   }
 	
 	

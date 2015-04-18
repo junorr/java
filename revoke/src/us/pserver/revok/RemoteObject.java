@@ -23,11 +23,13 @@ package us.pserver.revok;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Proxy;
 import us.pserver.revok.channel.Channel;
-import us.pserver.revok.channel.HttpRequestChannel;
 import us.pserver.revok.channel.Transport;
+import us.pserver.revok.container.Credentials;
 import us.pserver.revok.factory.ChannelFactory;
 import us.pserver.revok.factory.HttpFactoryProvider;
+import us.pserver.revok.proxy.RemoteInvocationHandler;
 import us.pserver.revok.server.FakeInputStreamRef;
 
 /**
@@ -45,6 +47,8 @@ public class RemoteObject {
   
   private Channel channel;
   
+  private Credentials cred;
+  
   
   /**
    * Construtor padrão sem argumentos,
@@ -58,6 +62,7 @@ public class RemoteObject {
         .enableGZipCompression()
         .getHttpRequestChannelFactory();
     channel = null;
+    cred = null;
   }
   
   
@@ -76,6 +81,17 @@ public class RemoteObject {
         .enableCryptography()
         .enableGZipCompression()
         .getHttpRequestChannelFactory();
+  }
+  
+  
+  public Credentials getCredentials() {
+    return cred;
+  }
+  
+  
+  public RemoteObject setCredentials(Credentials crd) {
+    cred = crd;
+    return this;
   }
   
   
@@ -163,6 +179,21 @@ public class RemoteObject {
   }
   
   
+  public <T> T createRemoteObject(String namespace, Class cls) throws MethodInvocationException {
+    if(namespace == null || namespace.trim().isEmpty())
+      throw new IllegalArgumentException(
+          "RemoteObject.createRemoteObject( Class, String )] "
+              + "Invalid Class {"+ cls+ "}");
+    if(cls == null)
+      throw new IllegalArgumentException(
+          "RemoteObject.createRemoteObject( Class, String )] "
+              + "Invalid Class {"+ cls+ "}");
+    return (T) Proxy.newProxyInstance(
+        cls.getClassLoader(), new Class[]{cls}, 
+        new RemoteInvocationHandler(this, namespace));
+  }
+  
+  
   /**
    * Invoca o método remoto informado.
    * @param rmt método remoto a ser invocado.
@@ -207,6 +238,7 @@ public class RemoteObject {
   public OpResult invokeSafe(RemoteMethod rmt) {
     OpResult res = new OpResult();
     try {
+      if(cred != null) rmt.credentials(cred);
       Transport trp = new Transport();
       this.checkInputStreamRef(trp, rmt);
       trp.setObject(rmt);
@@ -283,6 +315,7 @@ public class RemoteObject {
     this.validateChain(chain);
     OpResult res = new OpResult();
     try {
+      if(cred != null) chain.current().credentials(cred);
       Transport trp = new Transport();
       this.checkInputStreamRef(trp, chain.current());
       trp.setObject(chain.rewind());

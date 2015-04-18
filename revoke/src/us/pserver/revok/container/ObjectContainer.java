@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import static us.pserver.chk.Checker.nullarg;
+import us.pserver.revok.server.RevokServer;
 
 
 /**
@@ -44,6 +45,10 @@ public class ObjectContainer {
   
   public static final String NAMESPACE_GLOBAL = "global";
   
+  public static final String CONTAINER_KEY = ObjectContainer.class.getSimpleName();
+  
+  public static final String STDOUT = "stdout";
+  
   private final Map<String, Map<String, Object>> space;
   
   private Authenticator auth;
@@ -55,7 +60,8 @@ public class ObjectContainer {
   public ObjectContainer() {
     space = new ConcurrentHashMap<>();
     space.put(NAMESPACE_GLOBAL, new ConcurrentHashMap<>());
-    space.get(NAMESPACE_GLOBAL).put("ObjectContainer", this);
+    space.get(NAMESPACE_GLOBAL).put(CONTAINER_KEY, this);
+    space.get(NAMESPACE_GLOBAL).put(STDOUT, System.err);
   }
   
   
@@ -96,10 +102,20 @@ public class ObjectContainer {
         throw new IllegalArgumentException(
             "[ObjectContainer.put( String, Object )] "
                 + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
-      String[] names = name.split("\\.");
+      String[] names = split(name);
       put(names[0], names[1], obj);
     }
     return this;
+  }
+  
+  
+  public String[] split(String str) {
+    if(!str.contains(".")) return new String[0];
+    int ip = str.indexOf(".");
+    String[] ss = new String[2];
+    ss[0] = str.substring(0, ip);
+    ss[1] = str.substring(ip+1);
+    return ss;
   }
   
   
@@ -137,7 +153,7 @@ public class ObjectContainer {
       throw new IllegalArgumentException(
           "[ObjectContainer.remove( String )] "
               + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
-    String[] names = name.split("\\.");
+    String[] names = split(name);
     if(space.containsKey(names[0])) {
       return space.get(names[0]).remove(names[1]);
     }
@@ -153,7 +169,7 @@ public class ObjectContainer {
       throw new IllegalArgumentException(
           "[ObjectContainer.remove( Credentials, String )] "
               + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
-    String[] names = name.split("\\.");
+    String[] names = split(name);
     if(space.containsKey(names[0])) {
       return space.get(names[0]).remove(names[1]);
     }
@@ -174,7 +190,7 @@ public class ObjectContainer {
       throw new IllegalArgumentException(
           "[ObjectContainer.contains( String )] "
               + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
-    String[] names = name.split("\\.");
+    String[] names = split(name);
     if(space.containsKey(names[0])) {
       return space.get(names[0]).containsKey(names[1]);
     }
@@ -196,7 +212,7 @@ public class ObjectContainer {
       throw new IllegalArgumentException(
           "[ObjectContainer.get( String )] "
               + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
-    String[] names = name.split("\\.");
+    String[] names = split(name);
     if(space.containsKey(names[0])) {
       return space.get(names[0]).get(names[1]);
     }
@@ -212,7 +228,7 @@ public class ObjectContainer {
       throw new IllegalArgumentException(
           "[ObjectContainer.get( Credentials, String )] "
               + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
-    String[] names = name.split("\\.");
+    String[] names = split(name);
     if(space.containsKey(names[0])) {
       return space.get(names[0]).get(names[1]);
     }
@@ -252,18 +268,19 @@ public class ObjectContainer {
   }
   
   
-  public List<Method> listMethods(String name) {
+  public List<String> listMethods(String name) {
     if(!name.contains("."))
       throw new IllegalArgumentException(
           "[ObjectContainer.get( Credentials, String )] "
               + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
-    List<Method> mts = new LinkedList<>();
-    String[] names = name.split("\\.");
+    List<String> mts = new LinkedList<>();
+    String[] names = split(name);
     if(space.containsKey(names[0])) {
       Object o = space.get(names[0]).get(names[1]);
       if(o != null) {
         Reflector ref = new Reflector();
-        mts.addAll(Arrays.asList(ref.on(o).methods()));
+        Method[] ms = ref.on(o).methods();
+        Arrays.asList(ms).forEach(m->mts.add(m.toString()));
       }
     }
     return mts;

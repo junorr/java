@@ -37,12 +37,10 @@ import org.apache.http.protocol.ResponseConnControl;
 import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
-import org.apache.http.util.EntityUtils;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.rob.http.EntityFactory;
 import us.pserver.rob.http.EntityParser;
 import us.pserver.rob.http.HttpConsts;
-import us.pserver.streams.MixedWriteBuffer;
 
 
 /**

@@ -41,35 +41,74 @@ public class TestRevokClient {
   public static void main(String[] args) throws MethodInvocationException {
     MethodChain chain = new MethodChain();
     HttpConnector hc = new HttpConnector();
-    RemoteObject rob = new RemoteObject(hc);
     Credentials cred = new Credentials("juno", "1234".getBytes());
+    RemoteObject rob = new RemoteObject(hc)
+        .setCredentials(cred);
     
-    chain.add("calc.calculator", "xyz")
+    System.out.println("----------------------------------");
+    RemoteMethod rm = new RemoteMethod()
+        .forObject("global.ObjectContainer")
+        .method("listMethods")
+        .types(String.class)
+        .params("calc.calculator");
+    System.out.println("* Invoke      --> "+ rm);
+    List<String> mts = (List<String>) rob.invoke(rm);
+    System.out.println("* mts.size="+ mts.size());
+    mts.forEach(System.out::println);
+    
+    
+    System.out.println("----------------------------------");
+    rm = new RemoteMethod()
+        .forObject("global.ObjectContainer")
+        .method("objects")
+        .types(String.class)
+        .params("global");
+    System.out.println("* Invoke      --> "+ rm);
+    mts = (List<String>) rob.invoke(rm);
+    System.out.println("* objs.size="+ mts.size());
+    mts.forEach(System.out::println);
+    
+    
+    System.out.println("----------------------------------");
+    chain.add("calc.ICalculator", "xyz")
         .types(double.class, double.class, double.class)
-        .params(113, 7, 0)
-        .credentials(cred);
+        .params(113.0, 7.0, 0.0);
     chain.add("div");
     chain.add("print");
     chain.add("moveZX");
     chain.add("round").types(int.class).params(4);
     chain.add("z");
-    System.out.println("* MethodChain --> "+ chain);
-    System.out.println("* Connecting  --> "+ hc);
-    double z = (double) rob.invoke(chain);
-    System.out.println("* Invoke      --> "+ chain+ " = "+ z);
-    rob.close();
-
+    System.out.println("* Invoke      --> "+ chain);
+    Double z = (Double) rob.invoke(chain);
+    System.out.println(">> "+ z);
     
-    RemoteMethod rm = new RemoteMethod()
-        .forObject("global.ObjectContainer")
-        .method("listMethods")
-        .types(String.class)
-        .params("calc.calculator")
-        .credentials(cred);
+    
+    System.out.println("----------------------------------");
+    rm = new RemoteMethod()
+        .forObject("calc.ICalculator")
+        .method("z")
+        .returnVar("$calc.temp");
     System.out.println("* Invoke      --> "+ rm);
-    List<Method> mts = (List<Method>) rob.invoke(rm);
-    System.out.println("  mts.size="+ mts.size());
-    mts.forEach(System.out::println);
+    System.out.println(">> "+ rob.invoke(rm));
+    
+    
+    System.out.println("----------------------------------");
+    rm = new RemoteMethod()
+        .forObject("calc.ICalculator")
+        .method("sum")
+        .types(double.class, double.class)
+        .params("$calc.temp", 30.0);
+    System.out.println("* Invoke      --> "+ rm);
+    System.out.println(">> "+ rob.invoke(rm));
+    
+    
+    System.out.println("----- ProxyClass -----");
+    ICalculator calc = rob.createRemoteObject("calc", ICalculator.class);
+    System.out.println("* Invoking calc.sum( 30, 27 ) = "+ calc.sum(30, 27));
+    System.out.println("* Invoking calc.printZ()");
+    calc.printZ();
+    
+    rob.close();
   }
   
 }

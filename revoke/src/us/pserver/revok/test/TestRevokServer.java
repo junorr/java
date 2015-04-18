@@ -42,7 +42,7 @@ public class TestRevokServer {
             new Credentials("juno", "1234".getBytes()))));
     RevokServer revok = new RevokServer(cont, hc);
     Calculator calc = new Calculator();
-    cont.put("calc.calculator", calc);
+    cont.put("calc.ICalculator", calc);
     revok.start();
   }
   

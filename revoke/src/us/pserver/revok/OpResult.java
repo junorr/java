@@ -126,6 +126,8 @@ public class OpResult {
    * @param error Exception lançada.
    */
   public void setError(Exception error) {
+      System.err.println("##-> [OpResult.setError( "+ error.toString()+ " )]");
+      error.printStackTrace();
     if(error != null) {
       if(MethodInvocationException.class
           .isAssignableFrom(error.getClass()))
@@ -166,7 +168,10 @@ public class OpResult {
 
   @Override
   public String toString() {
-    return "OpResult{ " + "success = " + success + ", return = " + ret + " }";
+    return "OpResult{ " + "success = " + success 
+        + ", return = " + (ret.toString().length() > 87 
+            ? ret.toString().substring(0, 87).concat("...")
+            : ret.toString()) + " }";
   }
   
 }

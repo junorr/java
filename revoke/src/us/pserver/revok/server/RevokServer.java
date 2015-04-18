@@ -54,7 +54,7 @@ import us.pserver.revok.factory.HttpFactoryProvider;
  */
 public class RevokServer extends AbstractServer {
   
-  public static final String SERVER_KEY = RevokServer.class.getName();
+  public static final String SERVER_KEY = RevokServer.class.getSimpleName();
   
   public static final int SOCK_SO_TIMEOUT = 500;
   
