@@ -1551,3 +1551,37 @@
 [INFO ] (18/04/2015 01:09:58): Authentication Enabled: Credentials{ user = juno }
 [INFO ] (18/04/2015 01:09:58): Response sent: OpResult{ success = true, return = Calculator{ x=16.142857142857142, y=7.0, z=16.1429 } }
 [INFO ] (18/04/2015 01:09:58): Connection closed by client.
+[INFO ] (18/04/2015 12:58:49): Starting NetworkServer...
+[INFO ] (18/04/2015 12:58:49): Listening on: HttpConnector{ *:9099 }
+[INFO ] (18/04/2015 12:58:49): Server started!
+
+[INFO ] (18/04/2015 12:58:54): ------------------------------
+[INFO ] (18/04/2015 12:58:54): Handling socket: 127.0.0.1:9099<->127.0.0.1:35306
+[INFO ] (18/04/2015 12:58:55): Remote request: global.ObjectContainer.listMethods( calc.calculator )
+[INFO ] (18/04/2015 12:58:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/04/2015 12:58:55): Response sent: OpResult{ success = true, return = [] }
+[INFO ] (18/04/2015 12:58:55): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/04/2015 12:58:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/04/2015 12:58:55): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/04/2015 12:58:55): Remote request: calc.ICalculator.xyz( 113.0, 7.0, 0.0 ).div(  ).print(  ).moveZX(  ).round( 4 ).z(  )
+[INFO ] (18/04/2015 12:58:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/04/2015 12:58:55): Invoking: calc.ICalculator.xyz( 113.0, 7.0, 0.0 )
+[INFO ] (18/04/2015 12:58:55): Invoking: Calculator.div(  )
+[INFO ] (18/04/2015 12:58:55): Invoking: Calculator.print(  )
+[INFO ] (18/04/2015 12:58:55): Invoking: Calculator.moveZX(  )
+[INFO ] (18/04/2015 12:58:55): Invoking: Calculator.round( 4 )
+[INFO ] (18/04/2015 12:58:55): Invoking: Calculator.z(  )
+[INFO ] (18/04/2015 12:58:55): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (18/04/2015 12:58:55): Remote request: $calc.temp = calc.ICalculator.z(  )
+[INFO ] (18/04/2015 12:58:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/04/2015 12:58:55): Response sent: OpResult{ success = true, return = 16.1429 }
+[INFO ] (18/04/2015 12:58:55): Remote request: calc.ICalculator.sum( $calc.temp, 30.0 )
+[INFO ] (18/04/2015 12:58:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/04/2015 12:58:55): Response sent: OpResult{ success = true, return = 46.1429 }
+[INFO ] (18/04/2015 12:58:55): Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/04/2015 12:58:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/04/2015 12:58:55): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/04/2015 12:58:55): Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/04/2015 12:58:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/04/2015 12:58:55): Response sent: OpResult{ success = true, return = Calculator{ x=16.142857142857142, y=7.0, z=16.1429 } }
+[INFO ] (18/04/2015 12:58:55): Connection closed by client.

@@ -248,13 +248,13 @@ public class HttpRequestChannel implements Channel {
           "Invalid response from server: "+ response.getStatusLine());
     }
     processor.process(response, context);
-    /*
+    
     System.out.println("[HttpRequestChannel.verifyResponse()] response.status="+ response.getStatusLine());
     Iterator it = response.headerIterator();
     while(it.hasNext()) {
       System.out.println("  - "+ it.next());
     }
-    */
+    
   }
   
   

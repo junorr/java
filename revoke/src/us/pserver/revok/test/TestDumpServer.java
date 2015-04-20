@@ -37,9 +37,9 @@ public class TestDumpServer {
   
   public static void main(String[] args) throws IOException, InterruptedException {
     //http://localhost:36000/?obj=a&mth=compute&types=int%3Bint&args=5%3B3
-    System.out.println("* Listening on localhost:9011");
+    System.out.println("* Listening on 0.0.0.0:9011");
     ServerSocket srv = new ServerSocket();
-    srv.bind(new InetSocketAddress("localhost", 9011));
+    srv.bind(new InetSocketAddress("0.0.0.0", 9011));
     
     while(true) {
       Socket sock = srv.accept();

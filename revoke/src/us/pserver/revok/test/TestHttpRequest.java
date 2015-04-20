@@ -35,9 +35,9 @@ public class TestHttpRequest {
   
   public static void main(String[] args) throws IOException {
     //NetConnector nc = newHttpConnectorr("172.24.77.6", 9099);
-  HttpConnector hc = new HttpConnector("localhost", 9011);
-    /* set proxy 
-    nc.setProxyAddress("172.24.75.19")
+  HttpConnector hc = new HttpConnector("10.100.0.102", 9011);
+    /* set proxy */
+    hc.setProxyAddress("127.0.0.1")
         .setProxyPort(6060)
         .setProxyAuthorization("f6036477:00000000");
     /**/
