@@ -30,14 +30,11 @@ import us.pserver.revok.http.HttpConsts;
 import us.pserver.revok.server.Invoker;
 
 /**
- * Representa um método remoto a ser invocado
- * em um objeto remoto. Contêm informações sobre o nome 
- * do método, nome do objeto proprietário, lista de argumentos 
- * e suas classes de tipo, além da classe do tipo de 
- * retorno do método.
+ * Represents a remote method to be invoked in a remote object.
+ * Contains informations about method name, object name, arguments and types.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 11/11/2013
+ * @version 1.1 - 20150422
  */
 public class RemoteMethod {
   
@@ -55,8 +52,7 @@ public class RemoteMethod {
   
   
   /**
-   * Construtor padrão sem argumentos, constrói
-   * um objeto vazio.
+   * Default Constructor without arguments.
    */
   public RemoteMethod() {
     objname = null;
@@ -83,13 +79,22 @@ public class RemoteMethod {
   }
   
   
-  public RemoteMethod credentials(Credentials c) {
+  /**
+   * Define the Credentials object to authentication with server.
+   * @param c Credentials object.
+   * @return This instance of RemoteMethod.
+   */
+  public RemoteMethod setCredentials(Credentials c) {
     cred = c;
     return this;
   }
   
   
-  public Credentials credentials() {
+  /**
+   * Return the Credentials object to authentication with server.
+   * @return Credentials object.
+   */
+  public Credentials getCredentials() {
     return cred;
   }
   
@@ -104,7 +109,12 @@ public class RemoteMethod {
     return this;
   }
   
-  
+
+  /**
+   * Add a class type of an argument of the method.
+   * @param cls Class type.
+   * @return This instance of RemoteMethod.
+   */
   public RemoteMethod addType(Class cls) {
     if(cls != null)
       types.add(cls);
@@ -112,6 +122,14 @@ public class RemoteMethod {
   }
   
   
+  /**
+   * Define a variable in the server wich will receive the 
+   * returned value of the method. The variable name must 
+   * start with '$' and contains the namespace ('.' separeted) 
+   * where the variable will be stored. Example: $temp.myvar
+   * @param var Variable name.
+   * @return This instance of RemoteMethod.
+   */
   public RemoteMethod returnVar(String var) {
     if(var == null || !var.startsWith(Invoker.VAR_MARK))
       throw new IllegalArgumentException("[RemoteMethod.returnVar( String )] "
@@ -121,6 +139,11 @@ public class RemoteMethod {
   }
   
   
+  /**
+   * Return the variable in the server wich will receive the 
+   * returned value of the method.
+   * @return Variable name.
+   */
   public String returnVar() {
     return retvar;
   }
@@ -136,22 +159,38 @@ public class RemoteMethod {
   }
   
   
+  /**
+   * Clear the list of classes of the method arguments.
+   * @return This instance of RemoteMethod.
+   */
   public RemoteMethod clearTypes() {
     types.clear();
     return this;
   }
   
   
+  /**
+   * Return a list with the classes of the method arguments.
+   * @return java.util.List
+   */
   public List<Class> types() {
     return types;
   }
   
   
+  /**
+   * Return a list with the method arguments.
+   * @return java.util.List
+   */
   public List params() {
     return params;
   }
   
   
+  /**
+   * Return an array with the classes of the method arguments.
+   * @return Array of Class
+   */
   public Class[] typesArray() {
     Class[] cls = new Class[types.size()];
     if(types.isEmpty()) return cls;

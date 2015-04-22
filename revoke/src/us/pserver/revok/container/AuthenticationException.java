@@ -22,18 +22,32 @@
 package us.pserver.revok.container;
 
 /**
- *
+ * Represents an error in the authentication process on the server.
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 25/07/2014
+ * @version 1.1 - 20150422
  */
 public class AuthenticationException extends Exception {
 
+  /**
+   * Default constructor without arguments.
+   */
   public AuthenticationException() {}
   
+  
+  /**
+   * Constructor with the message of the exception.
+   * @param msg Message of exception.
+   */
   public AuthenticationException(String msg) {
     super(msg);
   }
   
+  
+  /**
+   * Constructor with message and cause of the exception.
+   * @param msg Message of exception.
+   * @param cause Cause of exception.
+   */
   public AuthenticationException(String msg, Throwable cause) {
     super(msg, cause);
   }

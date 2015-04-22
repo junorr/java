@@ -39,10 +39,10 @@ import static us.pserver.revok.http.HttpConsts.SLASH;
  * proxy de rede. Possui métodos utilitários
  * para criação de <code>Socket</code>, 
  * <code>ServerSocket</code> e 
- * <code>HttpURLConnection</code>.
+ * <code>HttpClientConnection</code>.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 21/01/2014
+ * @version 1.1 - 20150422
  */
 public class HttpConnector {
   
@@ -295,8 +295,11 @@ public class HttpConnector {
   
   public String getURIString() {
     String uri = proto.concat(address == null ? "localhost" : address);
-    if(port > 0)
+    if(port > 0) {
+      if(address.endsWith(HttpConsts.SLASH))
+        uri = uri.substring(0, uri.length() -1);
       uri = uri.concat(HttpConsts.COLON).concat(String.valueOf(port));
+    }
     return uri.concat(HttpConsts.SLASH);
   }
   
@@ -336,6 +339,11 @@ public class HttpConnector {
   }
   
   
+  /**
+   * Create and returns a Http connection binded to a new Socket.
+   * @return HttpClientConnection binded.
+   * @throws IOException On error creating and binding Socket.
+   */
   public HttpClientConnection connectHttp() throws IOException {
     Socket s = connectSocket();
     DefaultBHttpClientConnection conn = 

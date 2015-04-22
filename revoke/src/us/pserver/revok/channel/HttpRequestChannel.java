@@ -52,19 +52,13 @@ import us.pserver.streams.StreamUtils;
  * Canal de transmissão de objetos através do
  * protocolo HTTP. Implementa o lado cliente
  * da comunicação, cujas requisições são efetuadas
- * utilizando o método POST. O objeto é codificado
- * em hexadecimal e transmitido no corpo
+ * utilizando o método POST. O objeto é serializado
+ * em json e transmitido no corpo
  * da requisição utilizando delimitadores no formato
- * XML.<br/><br/>
- * Canais de comunicação no protocolo HTTP
- * permanecem válidos para apenas um ciclo
- * de leitura e escrita. Após um ciclo o canal 
- * se torna inválido e deve ser fechado.
- * Novas requisições deverão ser efetuadas em
- * novas instâncias de <code>HttpRequestChannel</code>.
+ * XML.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 21/01/2014
+ * @version 1.1 - 20150422
  */
 public class HttpRequestChannel implements Channel {
   
@@ -143,33 +137,62 @@ public class HttpRequestChannel implements Channel {
   }
   
   
+  /**
+   * Return the last response received from the server.
+   * @return HttpResponse of the last response received from the server.
+   */
   public HttpResponse getLastResponse() {
     return response;
   }
   
   
+  /**
+   * Enable criptography of data transmitted on the channel.
+   * The default criptography algorithm is AES CBC PKCS5 padded.
+   * @param enabled <code>true</code> for enable criptography, <code>false</code> to disable it.
+   * @return This instance of HttpRequestChannel.
+   */
   public HttpRequestChannel setEncryptionEnabled(boolean enabled) {
     crypt = enabled;
     return this;
   }
   
   
+  /**
+   * Verifies if criptography is enalbed.
+   * @return <code>true</code> if criptography is enabled, <code>false</code> otherwise.
+   */
   public boolean isEncryptionEnabled() {
     return crypt;
   }
   
   
+  /**
+   * Enable GZIP compression of the data transmitted on the channel.
+   * @param enabled <code>true</code> for enable GZIP compression, <code>false</code> to disable it.
+   * @return This instance of HttpRequestChannel.
+   */
   public HttpRequestChannel setGZipCompressionEnabled(boolean enabled) {
     gzip = enabled;
     return this;
   }
   
   
+  /**
+   * Verifies if GZIP compression is enalbed.
+   * @return <code>true</code> if GZIP compression is enabled, <code>false</code> otherwise.
+   */
   public boolean isGZipCompressionEnabled() {
     return gzip;
   }
   
   
+  /**
+   * Define the criptography algorithm utilized.
+   * The default criptography algorithm is AES CBC PKCS5 padded.
+   * @param ca CryptAlgorithm
+   * @return This instance of HttpRequestChannel
+   */
   public HttpRequestChannel setCryptAlgorithm(CryptAlgorithm ca) {
     nullarg(CryptAlgorithm.class, ca);
     algo = ca;
@@ -177,6 +200,11 @@ public class HttpRequestChannel implements Channel {
   }
   
   
+  /**
+   * Return the criptography algorithm utilized.
+   * The default criptography algorithm is AES CBC PKCS5 padded.
+   * @return The criptography algorithm utilized.
+   */
   public CryptAlgorithm getCryptAlgorithm() {
     return algo;
   }

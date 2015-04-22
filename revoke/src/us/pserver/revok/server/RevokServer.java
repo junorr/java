@@ -94,7 +94,7 @@ public class RevokServer extends AbstractServer {
     factory = HttpFactoryProvider.factory()
         .enableGZipCompression()
         .enableCryptography()
-        .getHttpResponseChannel1Factory();
+        .getHttpResponseChannelFactory();
   }
   
   
@@ -349,7 +349,7 @@ public class RevokServer extends AbstractServer {
       nullarg(RemoteMethod.class, rm);
       OpResult op = new OpResult();
       try {
-        Invoker iv = new Invoker(container, rm.credentials());
+        Invoker iv = new Invoker(container, rm.getCredentials());
         op.setReturn(iv.invoke(rm));
         op.setSuccessOperation(true);
       }
@@ -372,7 +372,7 @@ public class RevokServer extends AbstractServer {
           throw new MethodInvocationException(
               "Empty MethodChain. No method to invoke");
         
-        Invoker iv = new Invoker(container, chain.current().credentials());
+        Invoker iv = new Invoker(container, chain.current().getCredentials());
         Object obj = iv.getObject(chain.current());
         do {
           this.logChain(obj, chain);

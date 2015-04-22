@@ -47,7 +47,7 @@ public class TestMethodChain {
     
     MethodChain chain = new MethodChain();
     chain.add("NetworkServer", "container")
-        .credentials(new Credentials("juno", new StringBuffer("32132155")));
+        .setCredentials(new Credentials("juno", new StringBuffer("32132155")));
     chain.add("contains")
         .types(String.class)
         .params("StreamHandler");

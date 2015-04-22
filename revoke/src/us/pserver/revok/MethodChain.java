@@ -26,7 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Represents a list of methods wich will bi invoked in sequence 
+ * (i.e.: someobj.toString().length() ).
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 13/08/2014
  */
@@ -39,6 +40,9 @@ public class MethodChain {
   private RemoteMethod curr, lastadd;
   
   
+  /**
+   * Default Constructor without arguments.
+   */
   public MethodChain() {
     meths = new LinkedList<>();
     iter = null;
@@ -47,6 +51,11 @@ public class MethodChain {
   }
   
   
+  /**
+   * Add a RemoteMethod to the sequence.
+   * @param rm RemoteMethod to be added.
+   * @return This instance of MethodChain.
+   */
   public MethodChain add(RemoteMethod rm) {
     if(rm != null) {
       meths.add(rm);
@@ -56,6 +65,12 @@ public class MethodChain {
   }
   
   
+  /**
+   * Add a RemoteMethod constructed with passed arguments.
+   * @param objname Object name.
+   * @param method Method name.
+   * @return The created RemoteMethod object.
+   */
   public RemoteMethod add(String objname, String method) {
     if(objname != null && method != null) {
       RemoteMethod rm = new RemoteMethod(objname, method);
@@ -67,6 +82,11 @@ public class MethodChain {
   }
   
   
+  /**
+   * Add a RemoteMethod constructed with passed argument.
+   * @param method Method name.
+   * @return The created RemoteMethod object.
+   */
   public RemoteMethod add(String method) {
     if(method != null) {
       RemoteMethod rm = new RemoteMethod()
@@ -79,16 +99,28 @@ public class MethodChain {
   }
   
   
+  /**
+   * Return the last RemoteMethod added.
+   * @return The last RemoteMethod added.
+   */
   public RemoteMethod lastAdded() {
     return lastadd;
   }
   
   
+  /**
+   * Return a list with the RemoteMethod's.
+   * @return java.util.List.
+   */
   public List<RemoteMethod> methods() {
     return meths;
   }
   
   
+  /**
+   * Reset the internal iterator.
+   * @return This instance of MethodChain.
+   */
   public MethodChain rewind() {
     iter = null;
     curr = null;
@@ -96,12 +128,20 @@ public class MethodChain {
   }
   
   
+  /**
+   * Return the current RemoteMethod of the internal iterator.
+   * @return The current RemoteMethod of the internal iterator.
+   */
   public RemoteMethod current() {
     if(curr == null) return next();
     return curr;
   }
   
   
+  /**
+   * Return the next element of the internal iterator.
+   * @return The next element of the internal iterator.
+   */
   public RemoteMethod next() {
     if(iter == null)
       iter = meths.iterator();
@@ -113,6 +153,10 @@ public class MethodChain {
   }
   
   
+  /**
+   * Verifies if the internal iterator has next element.
+   * @return <code>true</code> if the internal iterator has a next element, <code>false</code> in other case.
+   */
   public boolean hasNext() {
     if(iter == null)
       iter = meths.iterator();
@@ -127,6 +171,10 @@ public class MethodChain {
   }
   
   
+  /**
+   * Return the String representation of this MethodChain (Same as toString()).
+   * @return The String representation of this MethodChain (Same as toString()).
+   */
   public String stringChain() {
     StringBuffer sb = new StringBuffer();
     meths.forEach(rm->sb.append(rm.toString()));

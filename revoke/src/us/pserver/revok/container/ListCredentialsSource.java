@@ -27,17 +27,21 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Optional;
 
 /**
- *
+ * A CredentialsSource based on a list of Credentials objects.
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 12/08/2014
+ * @version 1.1 - 20150422
  */
 public class ListCredentialsSource implements CredentialsSource, List<Credentials> {
 
   private List<Credentials> creds;
   
   
+  /**
+   * Default constructor without arguments.
+   */
   public ListCredentialsSource() {
     creds = new LinkedList<>();
   }
@@ -46,6 +50,17 @@ public class ListCredentialsSource implements CredentialsSource, List<Credential
   @Override
   public List<Credentials> getCredentials() {
     return Collections.unmodifiableList(creds);
+  }
+  
+  
+  @Override
+  public Credentials get(String username) {
+    if(username == null || username.trim().isEmpty())
+      return null;
+    Optional<Credentials> opt = creds.stream()
+        .filter(c->c.getUser() != null 
+            && c.getUser().equals(username)).findFirst();
+    return (opt.isPresent() ? opt.get() : null);
   }
 
 

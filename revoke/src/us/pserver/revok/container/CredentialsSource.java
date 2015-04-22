@@ -24,12 +24,24 @@ package us.pserver.revok.container;
 import java.util.List;
 
 /**
- *
+ * Represents a source of Credentials objects.
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 25/07/2014
+ * @version 1.1 - 20150422
  */
 public interface CredentialsSource {
 
+  /**
+   * Return a list with all the credentials objects of this source.
+   * @return java.util.List
+   */
   public List<Credentials> getCredentials();
+  
+  /**
+   * Return the Credentials object associated with the username argument.
+   * @param username User name.
+   * @return The Credentials object associated with the 
+   * username argument, or <code>null</code> if there is no one.
+   */
+  public Credentials get(String username);
   
 }

@@ -180,35 +180,35 @@ public class EntityFactory {
       return null;
     
     buffer.clear();
-    buffer.write(scv.convert(Tags.START_XML));
+    buffer.write(scv.convert(XmlConsts.START_XML));
     OutputStream os = buffer.getOutputStream();
     
     if(key != null) {
-      buffer.write(scv.convert(Tags.START_CRYPT_KEY));
+      buffer.write(scv.convert(XmlConsts.START_CRYPT_KEY));
       buffer.write(scv.convert(key.toString()));
-      buffer.write(scv.convert(Tags.END_CRYPT_KEY));
+      buffer.write(scv.convert(XmlConsts.END_CRYPT_KEY));
     }
     if(obj != null || input != null) {
-      buffer.write(scv.convert(Tags.START_CONTENT));
+      buffer.write(scv.convert(XmlConsts.START_CONTENT));
     }
     if(obj != null) {
-      os.write(scv.convert(Tags.START_ROB));
+      os.write(scv.convert(XmlConsts.START_ROB));
       String js = JsonWriter.objectToJson(obj);
       os.write(scv.convert(js));
-      os.write(scv.convert(Tags.END_ROB));
+      os.write(scv.convert(XmlConsts.END_ROB));
       os.flush();
     }
     if(input != null) {
-      os.write(scv.convert(Tags.START_STREAM));
+      os.write(scv.convert(XmlConsts.START_STREAM));
       IO.tr(input, os);
-      os.write(scv.convert(Tags.END_STREAM));
+      os.write(scv.convert(XmlConsts.END_STREAM));
       os.flush();
     }
     if(obj != null || input != null) {
-      os.write(scv.convert(Tags.END_CONTENT));
+      os.write(scv.convert(XmlConsts.END_CONTENT));
       os.flush();
     }
-    os.write(scv.convert(Tags.END_XML));
+    os.write(scv.convert(XmlConsts.END_XML));
     os.flush();
     os.close();
     

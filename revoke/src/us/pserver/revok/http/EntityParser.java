@@ -133,19 +133,19 @@ public class EntityParser {
     InputStream contstream = entity.getContent();
     
     String five = readFive(contstream);
-    if(!Tags.START_XML.equals(five)) {
+    if(!XmlConsts.START_XML.equals(five)) {
       throw new IOException("[EntityParser.parse()] "
           + "Invalid Content to Parse {expected="
-          + Tags.START_XML+ ", read="+ five+ "}");
+          + XmlConsts.START_XML+ ", read="+ five+ "}");
     }
     
     five = readFive(contstream);
     five = tryCryptKey(contstream, five);
     
-    if(!Tags.START_CONTENT.equals(five)) {
+    if(!XmlConsts.START_CONTENT.equals(five)) {
       throw new IOException("[EntityParser.parse()] "
           + "Invalid Content to Parse {expected="
-          + Tags.START_CONTENT+ ", read="+ five+ "}");
+          + XmlConsts.START_CONTENT+ ", read="+ five+ "}");
     }
     
     IO.tr(contstream, buffer.getRawOutputStream());
@@ -163,9 +163,9 @@ public class EntityParser {
     if(five == null || five.trim().isEmpty()
         || is == null)
       return five;
-    if(Tags.START_CRYPT_KEY.contains(five)) {
-      StreamUtils.readUntil(is, Tags.GT);
-      StreamResult sr = StreamUtils.readStringUntil(is, Tags.END_CRYPT_KEY);
+    if(XmlConsts.START_CRYPT_KEY.contains(five)) {
+      StreamUtils.readUntil(is, XmlConsts.GT);
+      StreamResult sr = StreamUtils.readStringUntil(is, XmlConsts.END_CRYPT_KEY);
       key = CryptKey.fromString(sr.content());
       this.enableCryptCoder(key);
       five = readFive(is);
@@ -178,8 +178,8 @@ public class EntityParser {
     if(five == null || five.trim().isEmpty()
         || is == null)
       return five;
-    if(Tags.START_ROB.contains(five)) {
-      StreamResult sr = StreamUtils.readStringUntil(is, Tags.END_ROB);
+    if(XmlConsts.START_ROB.contains(five)) {
+      StreamResult sr = StreamUtils.readStringUntil(is, XmlConsts.END_ROB);
       obj = JsonReader.jsonToJava(sr.content());
       five = readFive(is);
     }
@@ -191,10 +191,10 @@ public class EntityParser {
     if(five == null || five.trim().isEmpty()
         || is == null)
       return;
-    if(Tags.START_STREAM.contains(five)) {
+    if(XmlConsts.START_STREAM.contains(five)) {
       MixedWriteBuffer inbuf = new MixedWriteBuffer();
-      StreamUtils.readUntil(is, Tags.GT);
-      StreamUtils.transferUntil(is, inbuf.getRawOutputStream(), Tags.END_STREAM);
+      StreamUtils.readUntil(is, XmlConsts.GT);
+      StreamUtils.transferUntil(is, inbuf.getRawOutputStream(), XmlConsts.END_STREAM);
       input = inbuf.getReadBuffer().getRawInputStream();
     }
   }

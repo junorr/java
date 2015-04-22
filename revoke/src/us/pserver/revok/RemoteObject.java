@@ -84,11 +84,20 @@ public class RemoteObject {
   }
   
   
+  /**
+   * Return the Credentials object to authentication with server.
+   * @return Credentials object.
+   */
   public Credentials getCredentials() {
     return cred;
   }
   
   
+  /**
+   * Define the Credentials object to authentication with server.
+   * @param c Credentials object.
+   * @return This instance of RemoteObject.
+   */
   public RemoteObject setCredentials(Credentials crd) {
     cred = crd;
     return this;
@@ -165,6 +174,10 @@ public class RemoteObject {
   }
   
   
+  /**
+   * Create a new Channel instance.
+   * @return The create Channel.
+   */
   private Channel newChannel() {
     channel.close();
     channel = null;
@@ -172,6 +185,10 @@ public class RemoteObject {
   }
   
   
+  /**
+   * Close any current open connections.
+   * @return This instance of RemoteObject
+   */
   public RemoteObject close() {
     if(channel != null)
       channel.close();
@@ -179,17 +196,25 @@ public class RemoteObject {
   }
   
   
-  public <T> T createRemoteObject(String namespace, Class cls) throws MethodInvocationException {
+  /**
+   * Create a Proxy instance of the remote object represented by interface Class passed.
+   * Any method invocation in the returned proxy object, will be invoked remotly in the real object on server side.
+   * @param <T> The type of the Proxy Object (same of the Class interface argument).
+   * @param namespace The namespace on the server where is stored the remote instance, or the [namespace].[objectname].
+   * @param interf Class of Interface representation
+   * @return The Proxy object created.
+   */
+  public <T> T createRemoteObject(String namespace, Class interf) {
     if(namespace == null || namespace.trim().isEmpty())
       throw new IllegalArgumentException(
           "RemoteObject.createRemoteObject( Class, String )] "
-              + "Invalid Class {"+ cls+ "}");
-    if(cls == null)
+              + "Invalid Class {"+ interf+ "}");
+    if(interf == null)
       throw new IllegalArgumentException(
           "RemoteObject.createRemoteObject( Class, String )] "
-              + "Invalid Class {"+ cls+ "}");
+              + "Invalid Class {"+ interf+ "}");
     return (T) Proxy.newProxyInstance(
-        cls.getClassLoader(), new Class[]{cls}, 
+        interf.getClassLoader(), new Class[]{interf}, 
         new RemoteInvocationHandler(this, namespace));
   }
   
@@ -238,7 +263,7 @@ public class RemoteObject {
   public OpResult invokeSafe(RemoteMethod rmt) {
     OpResult res = new OpResult();
     try {
-      if(cred != null) rmt.credentials(cred);
+      if(cred != null) rmt.setCredentials(cred);
       Transport trp = new Transport();
       this.checkInputStreamRef(trp, rmt);
       trp.setObject(rmt);
@@ -315,7 +340,7 @@ public class RemoteObject {
     this.validateChain(chain);
     OpResult res = new OpResult();
     try {
-      if(cred != null) chain.current().credentials(cred);
+      if(cred != null) chain.current().setCredentials(cred);
       Transport trp = new Transport();
       this.checkInputStreamRef(trp, chain.current());
       trp.setObject(chain.rewind());

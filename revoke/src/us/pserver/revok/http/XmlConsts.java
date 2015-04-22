@@ -26,7 +26,7 @@ package us.pserver.revok.http;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 14/04/2015
  */
-public interface Tags {
+public interface XmlConsts {
 
   /**
    * <code>

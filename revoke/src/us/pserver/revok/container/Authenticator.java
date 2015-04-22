@@ -25,21 +25,34 @@ import java.util.List;
 import static us.pserver.chk.Checker.nullarg;
 
 /**
- *
+ * Execute authentications of Credentials objects 
+ * against a CredentialsSource database.
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 25/07/2014
+ * @version 1.1 - 20150422
  */
 public class Authenticator {
 
   private CredentialsSource source;
   
   
+  /**
+   * Default Constructor receive a CredentialsSource
+   * for execute athentications.
+   * @param cs CredentialsSource
+   */
   public Authenticator(CredentialsSource cs) {
     nullarg(CredentialsSource.class, cs);
     source = cs;
   }
   
   
+  /**
+   * Execute an authentication of the Credentials object agains the CredentialsSource database.
+   * This method will throw an AuthenticationException if the authentication fails.
+   * @param cred Credentials wich will be authenticated.
+   * @return <code>true</code> if the authentication process is successful.
+   * @throws AuthenticationException In case the authentication fail for any reason (Access denied, invalid Credentials, etc.).
+   */
   public boolean authenticate(Credentials cred) throws AuthenticationException {
     if(cred == null || cred.getUser() == null)
       throw new AuthenticationException(

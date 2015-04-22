@@ -23,15 +23,15 @@ package us.pserver.revok.container;
 
 import java.util.Arrays;
 import java.util.Objects;
-import us.pserver.cdr.StringByteConverter;
-import static us.pserver.chk.Checker.nullarg;
 import static us.pserver.chk.Checker.nullarray;
 import static us.pserver.chk.Checker.nullstr;
 
 /**
- *
+ * The Credentials object encapsulates information 
+ * about username and password for authentication 
+ * with the server.
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 25/07/2014
+ * @version 1.1 - 20150422
  */
 public class Credentials {
 
@@ -40,12 +40,20 @@ public class Credentials {
   private byte[] pswd;
   
   
+  /**
+   * Constructor without arguments.
+   */
   public Credentials() {
     user = null;
     pswd = null;
   }
   
   
+  /**
+   * Constructor wich receives the user name and byte array password.
+   * @param user User name
+   * @param pswd Byte array password.
+   */
   public Credentials(String user, byte[] pswd) {
     nullstr(user);
     nullarray(pswd);
@@ -54,19 +62,22 @@ public class Credentials {
   }
   
   
-  public Credentials(String user, StringBuffer pwd) {
-    nullstr(user);
-    this.user = user;
-    setPassword(pwd);
-  }
-  
-  
+  /**
+   * Define the user name.
+   * @param u User name
+   * @return This instance of Credentials.
+   */
   public Credentials setUser(String u) {
     if(u != null) user = u;
     return this;
   }
   
   
+  /**
+   * Define the password.
+   * @param p Byte array password.
+   * @return This instance of Credentials.
+   */
   public Credentials setPassword(byte[] p) {
     if(p != null && p.length > 0)
       pswd = p;
@@ -74,24 +85,24 @@ public class Credentials {
   }
   
   
-  public Credentials setPassword(StringBuffer pwd) {
-    nullarg(StringBuffer.class, pwd);
-    nullstr(pwd.toString());
-    StringByteConverter cv = new StringByteConverter();
-    pswd = cv.convert(pwd.toString());
-    for(int i = 0; i < pwd.length(); i++) {
-      pwd.deleteCharAt(i);
-    }
-    pwd = null;
-    return this;
-  }
-  
-  
+  /**
+   * Return the user name.
+   * @return User name.
+   */
   public String getUser() {
     return user;
   }
   
   
+  /**
+   * Authenticate this Credentials against other 
+   * instance of Credentials. 
+   * The equals method could be used instead.
+   * @param c Another credentials object.
+   * @return <code>true</code> if the user name and 
+   * password of the another instance, is exactly the 
+   * same of this instance of Credentials.
+   */
   public boolean authenticate(Credentials c) {
     return c != null && c.getUser() != null
         && c.user.equals(user)
@@ -99,6 +110,13 @@ public class Credentials {
   }
   
   
+  /**
+   * Utility method for comparing the content of two byte arrays.
+   * @param c1 First byte array.
+   * @param c2 Second byte array.
+   * @return <code>true</code> if all elements of the two 
+   * byte arrays are equals, <code>false</code> otherwise.
+   */
   public static boolean equals(byte[] c1, byte[] c2) {
     if(c1 == null || c2 == null)
       return false;

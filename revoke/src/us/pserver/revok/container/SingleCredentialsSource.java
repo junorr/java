@@ -23,31 +23,53 @@ package us.pserver.revok.container;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import static us.pserver.chk.Checker.nullarg;
+import static us.pserver.chk.Checker.nullstr;
 
 /**
- *
+ * A CredentialsSource based on a single Credentials object.
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 25/07/2014
+ * @version 1.1 - 20150422
  */
 public class SingleCredentialsSource implements CredentialsSource {
 
   private Credentials cred;
   
   
+  /**
+   * Default constructor wich receives the single Credentials object.
+   * @param c The Credentials object.
+   */
   public SingleCredentialsSource(Credentials c) {
     nullarg(Credentials.class, c);
+    nullstr(c.getUser());
     cred = c;
   }
   
   
+  @Override
+  public Credentials get(String username) {
+    if(cred.getUser().equals(username))
+      return cred;
+    return null;
+  }
+  
+  
+  /**
+   * Return the single Credentials object.
+   * @return The single Credentials object.
+   */
   public Credentials credentials() {
     return cred;
   }
   
   
+  /**
+   * Define the backend single Credentials object.
+   * @param c The Credentials object.
+   * @return This instance of SingleCredentialsSource.
+   */
   public SingleCredentialsSource setCredentials(Credentials c) {
     nullarg(Credentials.class, c);
     cred = c;

@@ -26,7 +26,6 @@ import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.revok.HttpConnector;
 import us.pserver.revok.channel.HttpRequestChannel;
 import us.pserver.revok.channel.HttpResponseChannel;
-import us.pserver.revok.channel.HttpResponseChannel1;
 
 
 /**
@@ -122,21 +121,6 @@ public class HttpFactoryProvider {
               + "Invalid HttpServerConnection {conn="+ conn+ "}");
         }
         return new HttpResponseChannel(conn);
-      }
-    };
-  }
-  
-
-  public ChannelFactory<HttpServerConnection> getHttpResponseChannel1Factory() {
-    return new ChannelFactory<HttpServerConnection>() {
-      @Override
-      public HttpResponseChannel1 createChannel(HttpServerConnection conn) {
-        if(conn == null || !conn.isOpen()) {
-          throw new IllegalArgumentException(
-              "[ChannelFactory.createChannel( HttpServerConnection )] "
-              + "Invalid HttpServerConnection {conn="+ conn+ "}");
-        }
-        return new HttpResponseChannel1(conn);
       }
     };
   }
