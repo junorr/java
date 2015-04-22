@@ -51,7 +51,7 @@ public class RemoteMethod {
   
   private Credentials cred;
   
-  private String returnVar;
+  private String retvar;
   
   
   /**
@@ -64,7 +64,7 @@ public class RemoteMethod {
     params = new LinkedList();
     types = new LinkedList<>();
     cred = null;
-    returnVar = null;
+    retvar = null;
   }
 
   
@@ -116,13 +116,13 @@ public class RemoteMethod {
     if(var == null || !var.startsWith(Invoker.VAR_MARK))
       throw new IllegalArgumentException("[RemoteMethod.returnVar( String )] "
           + "Invalid var name {"+ var+ "}. Variables must starts with '"+ Invoker.VAR_MARK+ "'");
-    returnVar = var;
+    retvar = var;
     return this;
   }
   
   
   public String returnVar() {
-    return returnVar;
+    return retvar;
   }
   
   
@@ -274,8 +274,8 @@ public class RemoteMethod {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    if(returnVar != null) {
-      sb.append(returnVar)
+    if(retvar != null) {
+      sb.append(retvar)
           .append(HttpConsts.SP)
           .append(HttpConsts.EQ)
           .append(HttpConsts.SP);

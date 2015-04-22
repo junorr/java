@@ -1585,3 +1585,571 @@
 [INFO ] (18/04/2015 12:58:55): Authentication Enabled: Credentials{ user = juno }
 [INFO ] (18/04/2015 12:58:55): Response sent: OpResult{ success = true, return = Calculator{ x=16.142857142857142, y=7.0, z=16.1429 } }
 [INFO ] (18/04/2015 12:58:55): Connection closed by client.
+[INFO ] (20/04/2015 21:46:11): Starting NetworkServer...
+[INFO ] (20/04/2015 21:46:11): Listening on: HttpConnector{ *:9099 }
+[INFO ] (20/04/2015 21:46:11): Server started!
+
+[INFO ] (20/04/2015 21:46:46): Starting NetworkServer...
+[INFO ] (20/04/2015 21:46:46): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 21:46:46): Server started!
+
+[INFO ] (20/04/2015 21:46:52): ------------------------------
+[INFO ] (20/04/2015 21:46:52): Handling socket: 127.0.0.1:9995<->127.0.0.1:52320
+[ERROR] (20/04/2015 21:46:52): Error reading from channel
+[ERROR] (20/04/2015 21:46:52): IOException: [HttpResponseChannel.read()] Invalid HttpRequest without content received
+[ERROR] (20/04/2015 21:46:52):   us.pserver.revok.channel.HttpResponseChannel.read(HttpResponseChannel.java:178)
+[ERROR] (20/04/2015 21:46:52):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.read(RevokServer.java:316)
+[ERROR] (20/04/2015 21:46:52):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:466)
+[ERROR] (20/04/2015 21:46:52):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (20/04/2015 21:46:52):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (20/04/2015 21:46:52):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (20/04/2015 21:46:52):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (20/04/2015 21:46:52):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (20/04/2015 21:46:52): Connection closed by client.
+[INFO ] (20/04/2015 21:49:40): Starting NetworkServer...
+[INFO ] (20/04/2015 21:49:40): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 21:49:40): Server started!
+
+[INFO ] (20/04/2015 21:49:44): ------------------------------
+[INFO ] (20/04/2015 21:49:44): Handling socket: 127.0.0.1:9995<->127.0.0.1:52334
+[INFO ] (20/04/2015 21:49:44): Connection closed by client.
+[INFO ] (20/04/2015 21:51:58): Starting NetworkServer...
+[INFO ] (20/04/2015 21:51:58): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 21:51:58): Server started!
+
+[INFO ] (20/04/2015 21:52:02): ------------------------------
+[INFO ] (20/04/2015 21:52:02): Handling socket: 127.0.0.1:9995<->127.0.0.1:52361
+[INFO ] (20/04/2015 21:52:02): Connection closed by client.
+[INFO ] (20/04/2015 21:52:08): ------------------------------
+[INFO ] (20/04/2015 21:52:08): Handling socket: 127.0.0.1:9995<->127.0.0.1:52364
+[INFO ] (20/04/2015 21:52:08): Connection closed by client.
+[INFO ] (20/04/2015 21:53:07): Starting NetworkServer...
+[INFO ] (20/04/2015 21:53:07): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 21:53:07): Server started!
+
+[INFO ] (20/04/2015 21:53:12): ------------------------------
+[INFO ] (20/04/2015 21:53:12): Handling socket: 127.0.0.1:9995<->127.0.0.1:52379
+[INFO ] (20/04/2015 21:53:12): Connection closed by client.
+[INFO ] (20/04/2015 21:54:22): Starting NetworkServer...
+[INFO ] (20/04/2015 21:54:22): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 21:54:22): Server started!
+
+[INFO ] (20/04/2015 21:54:26): ------------------------------
+[INFO ] (20/04/2015 21:54:26): Handling socket: 127.0.0.1:9995<->127.0.0.1:52388
+[INFO ] (20/04/2015 21:54:26): Connection closed by client.
+[INFO ] (20/04/2015 21:55:06): Starting NetworkServer...
+[INFO ] (20/04/2015 21:55:06): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 21:55:06): Server started!
+
+[INFO ] (20/04/2015 21:55:09): ------------------------------
+[INFO ] (20/04/2015 21:55:09): Handling socket: 127.0.0.1:9995<->127.0.0.1:52395
+[INFO ] (20/04/2015 21:55:09): Connection closed by client.
+[INFO ] (20/04/2015 21:56:51): Starting NetworkServer...
+[INFO ] (20/04/2015 21:56:51): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 21:56:51): Server started!
+
+[INFO ] (20/04/2015 21:56:54): ------------------------------
+[INFO ] (20/04/2015 21:56:54): Handling socket: 127.0.0.1:9995<->127.0.0.1:52421
+[INFO ] (20/04/2015 21:56:54): Connection closed by client.
+[INFO ] (20/04/2015 21:59:08): Starting NetworkServer...
+[INFO ] (20/04/2015 21:59:08): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 21:59:08): Server started!
+
+[INFO ] (20/04/2015 21:59:15): ------------------------------
+[INFO ] (20/04/2015 21:59:15): Handling socket: 127.0.0.1:9995<->127.0.0.1:52437
+[INFO ] (20/04/2015 21:59:15): Connection closed by client.
+[INFO ] (20/04/2015 22:05:28): Starting NetworkServer...
+[INFO ] (20/04/2015 22:05:28): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 22:05:28): Server started!
+
+[INFO ] (20/04/2015 22:05:35): ------------------------------
+[INFO ] (20/04/2015 22:05:35): Handling socket: 127.0.0.1:9995<->127.0.0.1:52475
+[INFO ] (20/04/2015 22:05:35): Connection closed by client.
+[INFO ] (20/04/2015 22:07:39): Starting NetworkServer...
+[INFO ] (20/04/2015 22:07:39): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 22:07:39): Server started!
+
+[INFO ] (20/04/2015 22:07:42): ------------------------------
+[INFO ] (20/04/2015 22:07:42): Handling socket: 127.0.0.1:9995<->127.0.0.1:52506
+[INFO ] (20/04/2015 22:07:42): Connection closed by client.
+[INFO ] (20/04/2015 22:07:47): ------------------------------
+[INFO ] (20/04/2015 22:07:47): Handling socket: 127.0.0.1:9995<->127.0.0.1:52507
+[INFO ] (20/04/2015 22:07:47): Connection closed by client.
+[INFO ] (20/04/2015 22:08:03): ------------------------------
+[INFO ] (20/04/2015 22:08:03): Handling socket: 127.0.0.1:9995<->127.0.0.1:52513
+[INFO ] (20/04/2015 22:08:03): Connection closed by client.
+[INFO ] (20/04/2015 22:09:56): Starting NetworkServer...
+[INFO ] (20/04/2015 22:09:56): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 22:09:56): Server started!
+
+[INFO ] (20/04/2015 22:10:00): ------------------------------
+[INFO ] (20/04/2015 22:10:00): Handling socket: 127.0.0.1:9995<->127.0.0.1:52525
+[INFO ] (20/04/2015 22:10:00): Connection closed by client.
+[INFO ] (20/04/2015 22:11:22): Starting NetworkServer...
+[INFO ] (20/04/2015 22:11:22): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 22:11:22): Server started!
+
+[INFO ] (20/04/2015 22:11:30): ------------------------------
+[INFO ] (20/04/2015 22:11:30): Handling socket: 127.0.0.1:9995<->127.0.0.1:52533
+[INFO ] (20/04/2015 22:11:30): Connection closed by client.
+[INFO ] (20/04/2015 22:11:38): ------------------------------
+[INFO ] (20/04/2015 22:11:38): Handling socket: 127.0.0.1:9995<->127.0.0.1:52534
+[INFO ] (20/04/2015 22:11:38): Connection closed by client.
+[INFO ] (20/04/2015 22:11:40): ------------------------------
+[INFO ] (20/04/2015 22:11:40): Handling socket: 127.0.0.1:9995<->127.0.0.1:52535
+[INFO ] (20/04/2015 22:11:40): Connection closed by client.
+[INFO ] (20/04/2015 22:11:47): ------------------------------
+[INFO ] (20/04/2015 22:11:47): Handling socket: 127.0.0.1:9995<->127.0.0.1:52536
+[INFO ] (20/04/2015 22:11:47): Connection closed by client.
+[INFO ] (20/04/2015 22:11:48): ------------------------------
+[INFO ] (20/04/2015 22:11:48): Handling socket: 127.0.0.1:9995<->127.0.0.1:52537
+[INFO ] (20/04/2015 22:11:48): Connection closed by client.
+[INFO ] (20/04/2015 22:11:50): ------------------------------
+[INFO ] (20/04/2015 22:11:50): Handling socket: 127.0.0.1:9995<->127.0.0.1:52538
+[INFO ] (20/04/2015 22:11:50): Connection closed by client.
+[INFO ] (20/04/2015 22:12:24): Starting NetworkServer...
+[INFO ] (20/04/2015 22:12:24): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 22:12:24): Server started!
+
+[INFO ] (20/04/2015 22:12:30): ------------------------------
+[INFO ] (20/04/2015 22:12:30): Handling socket: 127.0.0.1:9995<->127.0.0.1:52544
+[INFO ] (20/04/2015 22:12:31): Connection closed by client.
+[INFO ] (20/04/2015 22:12:39): ------------------------------
+[INFO ] (20/04/2015 22:12:39): Handling socket: 127.0.0.1:9995<->127.0.0.1:52545
+[INFO ] (20/04/2015 22:12:39): Connection closed by client.
+[INFO ] (20/04/2015 22:14:08): ------------------------------
+[INFO ] (20/04/2015 22:14:08): Handling socket: 127.0.0.1:9995<->127.0.0.1:52579
+[INFO ] (20/04/2015 22:14:08): Connection closed by client.
+[INFO ] (20/04/2015 22:15:53): Starting NetworkServer...
+[INFO ] (20/04/2015 22:15:53): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 22:15:53): Server started!
+
+[INFO ] (20/04/2015 22:15:56): ------------------------------
+[INFO ] (20/04/2015 22:15:56): Handling socket: 127.0.0.1:9995<->127.0.0.1:52586
+[INFO ] (20/04/2015 22:15:56): Connection closed by client.
+[INFO ] (20/04/2015 22:16:00): ------------------------------
+[INFO ] (20/04/2015 22:16:00): Handling socket: 127.0.0.1:9995<->127.0.0.1:52587
+[INFO ] (20/04/2015 22:16:00): Connection closed by client.
+[INFO ] (20/04/2015 22:16:07): ------------------------------
+[INFO ] (20/04/2015 22:16:07): Handling socket: 127.0.0.1:9995<->127.0.0.1:52588
+[INFO ] (20/04/2015 22:16:07): Connection closed by client.
+[INFO ] (20/04/2015 22:16:21): ------------------------------
+[INFO ] (20/04/2015 22:16:21): Handling socket: 127.0.0.1:9995<->127.0.0.1:52589
+[INFO ] (20/04/2015 22:16:21): Connection closed by client.
+[INFO ] (20/04/2015 22:18:00): Starting NetworkServer...
+[INFO ] (20/04/2015 22:18:00): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 22:18:00): Server started!
+
+[INFO ] (20/04/2015 22:18:04): ------------------------------
+[INFO ] (20/04/2015 22:18:04): Handling socket: 127.0.0.1:9995<->127.0.0.1:52601
+[INFO ] (20/04/2015 22:18:04): Connection closed by client.
+[INFO ] (20/04/2015 22:19:18): Starting NetworkServer...
+[INFO ] (20/04/2015 22:19:18): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 22:19:18): Server started!
+
+[INFO ] (20/04/2015 22:19:22): ------------------------------
+[INFO ] (20/04/2015 22:19:22): Handling socket: 127.0.0.1:9995<->127.0.0.1:52610
+[INFO ] (20/04/2015 22:19:22): Connection closed by client.
+[INFO ] (20/04/2015 22:19:46): Starting NetworkServer...
+[INFO ] (20/04/2015 22:19:46): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (20/04/2015 22:19:46): Server started!
+
+[INFO ] (20/04/2015 22:19:51): ------------------------------
+[INFO ] (20/04/2015 22:19:51): Handling socket: 127.0.0.1:9995<->127.0.0.1:52612
+[INFO ] (20/04/2015 22:19:51): Connection closed by client.
+[INFO ] (20/04/2015 22:20:33): ------------------------------
+[INFO ] (20/04/2015 22:20:33): Handling socket: 127.0.0.1:9995<->127.0.0.1:52618
+[INFO ] (20/04/2015 22:20:33): Connection closed by client.
+[INFO ] (20/04/2015 22:21:02): ------------------------------
+[INFO ] (20/04/2015 22:21:02): Handling socket: 127.0.0.1:9995<->127.0.0.1:52637
+[INFO ] (20/04/2015 22:21:03): Connection closed by client.
+[INFO ] (20/04/2015 22:22:19): ------------------------------
+[INFO ] (20/04/2015 22:22:19): Handling socket: 127.0.0.1:9995<->127.0.0.1:52657
+[INFO ] (20/04/2015 22:22:19): Connection closed by client.
+[INFO ] (20/04/2015 22:22:46): ------------------------------
+[INFO ] (20/04/2015 22:22:46): Handling socket: 127.0.0.1:9995<->127.0.0.1:52661
+[INFO ] (20/04/2015 22:22:46): Connection closed by client.
+[INFO ] (20/04/2015 22:23:11): ------------------------------
+[INFO ] (20/04/2015 22:23:11): Handling socket: 127.0.0.1:9995<->127.0.0.1:52662
+[INFO ] (20/04/2015 22:23:11): Connection closed by client.
+[INFO ] (20/04/2015 22:23:24): ------------------------------
+[INFO ] (20/04/2015 22:23:24): Handling socket: 127.0.0.1:9995<->127.0.0.1:52665
+[INFO ] (20/04/2015 22:23:24): Connection closed by client.
+[INFO ] (20/04/2015 22:23:39): ------------------------------
+[INFO ] (20/04/2015 22:23:39): Handling socket: 127.0.0.1:9995<->127.0.0.1:52669
+[INFO ] (20/04/2015 22:23:39): Connection closed by client.
+[INFO ] (21/04/2015 10:57:52): Starting NetworkServer...
+[INFO ] (21/04/2015 10:57:52): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (21/04/2015 10:57:52): Server started!
+
+[INFO ] (21/04/2015 10:57:54): ------------------------------
+[INFO ] (21/04/2015 10:57:54): Handling socket: 127.0.0.1:9995<->127.0.0.1:60803
+[INFO ] (21/04/2015 10:57:55): Connection closed by client.
+[INFO ] (21/04/2015 10:58:26): ------------------------------
+[INFO ] (21/04/2015 10:58:26): Handling socket: 127.0.0.1:9995<->127.0.0.1:60807
+[INFO ] (21/04/2015 10:58:26): Connection closed by client.
+[INFO ] (21/04/2015 11:00:55): ------------------------------
+[INFO ] (21/04/2015 11:00:55): Handling socket: 127.0.0.1:9995<->127.0.0.1:60839
+[INFO ] (21/04/2015 11:00:55): Connection closed by client.
+[INFO ] (21/04/2015 11:02:17): ------------------------------
+[INFO ] (21/04/2015 11:02:17): Handling socket: 127.0.0.1:9995<->127.0.0.1:60856
+[INFO ] (21/04/2015 11:02:17): Connection closed by client.
+[INFO ] (21/04/2015 11:03:39): ------------------------------
+[INFO ] (21/04/2015 11:03:39): Handling socket: 127.0.0.1:9995<->127.0.0.1:60859
+[INFO ] (21/04/2015 11:03:39): Connection closed by client.
+[INFO ] (21/04/2015 11:04:08): ------------------------------
+[INFO ] (21/04/2015 11:04:08): Handling socket: 127.0.0.1:9995<->127.0.0.1:60875
+[INFO ] (21/04/2015 11:04:08): Connection closed by client.
+[INFO ] (21/04/2015 11:07:27): ------------------------------
+[INFO ] (21/04/2015 11:07:27): Handling socket: 127.0.0.1:9995<->127.0.0.1:60912
+[INFO ] (21/04/2015 11:07:27): Connection closed by client.
+[INFO ] (21/04/2015 11:07:59): ------------------------------
+[INFO ] (21/04/2015 11:07:59): Handling socket: 127.0.0.1:9995<->127.0.0.1:60914
+[INFO ] (21/04/2015 11:07:59): Connection closed by client.
+[INFO ] (21/04/2015 11:11:51): ------------------------------
+[INFO ] (21/04/2015 11:11:51): Handling socket: 127.0.0.1:9995<->127.0.0.1:60984
+[INFO ] (21/04/2015 11:11:51): Connection closed by client.
+[INFO ] (21/04/2015 11:26:49): ------------------------------
+[INFO ] (21/04/2015 11:26:49): Handling socket: 127.0.0.1:9995<->127.0.0.1:32982
+[INFO ] (21/04/2015 11:26:49): Connection closed by client.
+[INFO ] (21/04/2015 11:27:47): ------------------------------
+[INFO ] (21/04/2015 11:27:47): Handling socket: 127.0.0.1:9995<->127.0.0.1:33000
+[INFO ] (21/04/2015 11:27:47): Connection closed by client.
+[INFO ] (21/04/2015 11:30:04): ------------------------------
+[INFO ] (21/04/2015 11:30:04): Handling socket: 127.0.0.1:9995<->127.0.0.1:33020
+[INFO ] (21/04/2015 11:30:04): Connection closed by client.
+[INFO ] (21/04/2015 11:31:32): ------------------------------
+[INFO ] (21/04/2015 11:31:32): Handling socket: 127.0.0.1:9995<->127.0.0.1:33040
+[INFO ] (21/04/2015 11:31:32): Connection closed by client.
+[INFO ] (21/04/2015 11:31:53): ------------------------------
+[INFO ] (21/04/2015 11:31:53): Handling socket: 127.0.0.1:9995<->127.0.0.1:33041
+[INFO ] (21/04/2015 11:31:53): Connection closed by client.
+[INFO ] (21/04/2015 11:31:56): ------------------------------
+[INFO ] (21/04/2015 11:31:56): Handling socket: 127.0.0.1:9995<->127.0.0.1:33042
+[INFO ] (21/04/2015 11:31:56): Connection closed by client.
+[INFO ] (21/04/2015 11:32:08): ------------------------------
+[INFO ] (21/04/2015 11:32:08): Handling socket: 127.0.0.1:9995<->127.0.0.1:33055
+[INFO ] (21/04/2015 11:32:08): Connection closed by client.
+[INFO ] (21/04/2015 11:32:10): ------------------------------
+[INFO ] (21/04/2015 11:32:10): Handling socket: 127.0.0.1:9995<->127.0.0.1:33056
+[INFO ] (21/04/2015 11:32:10): Connection closed by client.
+[INFO ] (21/04/2015 11:32:45): ------------------------------
+[INFO ] (21/04/2015 11:32:45): Handling socket: 127.0.0.1:9995<->127.0.0.1:33058
+[INFO ] (21/04/2015 11:32:45): Connection closed by client.
+[INFO ] (21/04/2015 11:32:49): ------------------------------
+[INFO ] (21/04/2015 11:32:49): Handling socket: 127.0.0.1:9995<->127.0.0.1:33059
+[INFO ] (21/04/2015 11:32:49): Connection closed by client.
+[INFO ] (21/04/2015 11:32:51): ------------------------------
+[INFO ] (21/04/2015 11:32:51): Handling socket: 127.0.0.1:9995<->127.0.0.1:33060
+[INFO ] (21/04/2015 11:32:51): Connection closed by client.
+[INFO ] (21/04/2015 11:34:12): ------------------------------
+[INFO ] (21/04/2015 11:34:12): Handling socket: 127.0.0.1:9995<->127.0.0.1:33074
+[INFO ] (21/04/2015 11:34:12): Connection closed by client.
+[INFO ] (21/04/2015 11:37:27): ------------------------------
+[INFO ] (21/04/2015 11:37:27): Handling socket: 127.0.0.1:9995<->127.0.0.1:33128
+[INFO ] (21/04/2015 11:37:27): Connection closed by client.
+[INFO ] (21/04/2015 11:39:33): ------------------------------
+[INFO ] (21/04/2015 11:39:33): Handling socket: 127.0.0.1:9995<->127.0.0.1:33144
+[INFO ] (21/04/2015 11:39:33): Connection closed by client.
+[INFO ] (21/04/2015 11:39:49): ------------------------------
+[INFO ] (21/04/2015 11:39:49): Handling socket: 127.0.0.1:9995<->127.0.0.1:33164
+[INFO ] (21/04/2015 11:39:49): Connection closed by client.
+[INFO ] (21/04/2015 11:40:03): ------------------------------
+[INFO ] (21/04/2015 11:40:03): Handling socket: 127.0.0.1:9995<->127.0.0.1:33166
+[INFO ] (21/04/2015 11:40:03): Connection closed by client.
+[INFO ] (21/04/2015 11:43:34): ------------------------------
+[INFO ] (21/04/2015 11:43:34): Handling socket: 127.0.0.1:9995<->127.0.0.1:33216
+[INFO ] (21/04/2015 11:43:34): Connection closed by client.
+[INFO ] (21/04/2015 11:43:55): ------------------------------
+[INFO ] (21/04/2015 11:43:55): Handling socket: 127.0.0.1:9995<->127.0.0.1:33229
+[INFO ] (21/04/2015 11:43:55): Connection closed by client.
+[INFO ] (21/04/2015 11:44:59): ------------------------------
+[INFO ] (21/04/2015 11:44:59): Handling socket: 127.0.0.1:9995<->127.0.0.1:33231
+[INFO ] (21/04/2015 11:44:59): Connection closed by client.
+[INFO ] (21/04/2015 11:45:35): ------------------------------
+[INFO ] (21/04/2015 11:45:35): Handling socket: 127.0.0.1:9995<->127.0.0.1:33248
+[INFO ] (21/04/2015 11:45:35): Connection closed by client.
+[INFO ] (21/04/2015 11:45:49): ------------------------------
+[INFO ] (21/04/2015 11:45:49): Handling socket: 127.0.0.1:9995<->127.0.0.1:33249
+[INFO ] (21/04/2015 11:45:49): Connection closed by client.
+[INFO ] (21/04/2015 11:46:34): ------------------------------
+[INFO ] (21/04/2015 11:46:34): Handling socket: 127.0.0.1:9995<->127.0.0.1:33253
+[INFO ] (21/04/2015 11:46:34): Connection closed by client.
+[INFO ] (21/04/2015 11:47:06): ------------------------------
+[INFO ] (21/04/2015 11:47:06): Handling socket: 127.0.0.1:9995<->127.0.0.1:33266
+[INFO ] (21/04/2015 11:47:06): Connection closed by client.
+[INFO ] (21/04/2015 11:47:49): ------------------------------
+[INFO ] (21/04/2015 11:47:49): Handling socket: 127.0.0.1:9995<->127.0.0.1:33268
+[INFO ] (21/04/2015 11:47:49): Connection closed by client.
+[INFO ] (21/04/2015 11:48:14): ------------------------------
+[INFO ] (21/04/2015 11:48:14): Handling socket: 127.0.0.1:9995<->127.0.0.1:33269
+[INFO ] (21/04/2015 11:48:14): Connection closed by client.
+[INFO ] (21/04/2015 11:49:36): ------------------------------
+[INFO ] (21/04/2015 11:49:36): Handling socket: 127.0.0.1:9995<->127.0.0.1:33288
+[INFO ] (21/04/2015 11:49:36): Connection closed by client.
+[INFO ] (21/04/2015 11:49:39): ------------------------------
+[INFO ] (21/04/2015 11:49:39): Handling socket: 127.0.0.1:9995<->127.0.0.1:33289
+[INFO ] (21/04/2015 11:49:39): Connection closed by client.
+[INFO ] (21/04/2015 11:49:41): ------------------------------
+[INFO ] (21/04/2015 11:49:41): Handling socket: 127.0.0.1:9995<->127.0.0.1:33290
+[INFO ] (21/04/2015 11:49:41): Connection closed by client.
+[INFO ] (21/04/2015 11:50:27): ------------------------------
+[INFO ] (21/04/2015 11:50:27): Handling socket: 127.0.0.1:9995<->127.0.0.1:33307
+[INFO ] (21/04/2015 11:50:27): Connection closed by client.
+[INFO ] (21/04/2015 11:50:58): ------------------------------
+[INFO ] (21/04/2015 11:50:58): Handling socket: 127.0.0.1:9995<->127.0.0.1:33311
+[INFO ] (21/04/2015 11:50:58): Connection closed by client.
+[INFO ] (21/04/2015 11:51:19): ------------------------------
+[INFO ] (21/04/2015 11:51:19): Handling socket: 127.0.0.1:9995<->127.0.0.1:33312
+[INFO ] (21/04/2015 11:51:19): Connection closed by client.
+[INFO ] (21/04/2015 11:53:08): ------------------------------
+[INFO ] (21/04/2015 11:53:08): Handling socket: 127.0.0.1:9995<->127.0.0.1:33335
+[INFO ] (21/04/2015 11:53:08): Connection closed by client.
+[INFO ] (21/04/2015 12:08:36): ------------------------------
+[INFO ] (21/04/2015 12:08:36): Handling socket: 127.0.0.1:9995<->127.0.0.1:33558
+[INFO ] (21/04/2015 12:08:36): Connection closed by client.
+[INFO ] (21/04/2015 12:10:45): ------------------------------
+[INFO ] (21/04/2015 12:10:45): Handling socket: 127.0.0.1:9995<->127.0.0.1:33607
+[INFO ] (21/04/2015 12:10:45): Connection closed by client.
+[INFO ] (21/04/2015 12:11:41): ------------------------------
+[INFO ] (21/04/2015 12:11:41): Handling socket: 127.0.0.1:9995<->127.0.0.1:33611
+[INFO ] (21/04/2015 12:11:41): Connection closed by client.
+[INFO ] (21/04/2015 12:12:10): ------------------------------
+[INFO ] (21/04/2015 12:12:10): Handling socket: 127.0.0.1:9995<->127.0.0.1:33624
+[INFO ] (21/04/2015 12:12:10): Connection closed by client.
+[INFO ] (21/04/2015 12:13:11): ------------------------------
+[INFO ] (21/04/2015 12:13:11): Handling socket: 127.0.0.1:9995<->127.0.0.1:33626
+[INFO ] (21/04/2015 12:13:11): Connection closed by client.
+[INFO ] (21/04/2015 12:13:40): ------------------------------
+[INFO ] (21/04/2015 12:13:40): Handling socket: 127.0.0.1:9995<->127.0.0.1:33628
+[INFO ] (21/04/2015 12:13:40): Connection closed by client.
+[INFO ] (21/04/2015 12:14:11): ------------------------------
+[INFO ] (21/04/2015 12:14:11): Handling socket: 127.0.0.1:9995<->127.0.0.1:33644
+[INFO ] (21/04/2015 12:14:11): Connection closed by client.
+[INFO ] (21/04/2015 12:17:08): ------------------------------
+[INFO ] (21/04/2015 12:17:08): Handling socket: 127.0.0.1:9995<->127.0.0.1:33678
+[INFO ] (21/04/2015 12:17:08): Connection closed by client.
+[INFO ] (21/04/2015 12:17:25): ------------------------------
+[INFO ] (21/04/2015 12:17:25): Handling socket: 127.0.0.1:9995<->127.0.0.1:33679
+[INFO ] (21/04/2015 12:17:25): Connection closed by client.
+[INFO ] (21/04/2015 12:17:37): ------------------------------
+[INFO ] (21/04/2015 12:17:37): Handling socket: 127.0.0.1:9995<->127.0.0.1:33681
+[INFO ] (21/04/2015 12:17:37): Connection closed by client.
+[INFO ] (21/04/2015 12:17:51): ------------------------------
+[INFO ] (21/04/2015 12:17:51): Handling socket: 127.0.0.1:9995<->127.0.0.1:33682
+[INFO ] (21/04/2015 12:17:51): Connection closed by client.
+[INFO ] (21/04/2015 12:18:25): ------------------------------
+[INFO ] (21/04/2015 12:18:25): Handling socket: 127.0.0.1:9995<->127.0.0.1:33684
+[INFO ] (21/04/2015 12:18:25): Connection closed by client.
+[INFO ] (21/04/2015 12:25:36): ------------------------------
+[INFO ] (21/04/2015 12:25:36): Handling socket: 127.0.0.1:9995<->127.0.0.1:33805
+[INFO ] (21/04/2015 12:25:36): Connection closed by client.
+[INFO ] (21/04/2015 12:25:37): ------------------------------
+[INFO ] (21/04/2015 12:25:37): Handling socket: 127.0.0.1:9995<->127.0.0.1:33810
+[INFO ] (21/04/2015 12:25:37): Connection closed by client.
+[INFO ] (21/04/2015 12:25:37): ------------------------------
+[INFO ] (21/04/2015 12:25:37): Handling socket: 127.0.0.1:9995<->127.0.0.1:33811
+[INFO ] (21/04/2015 12:25:37): Connection closed by client.
+[INFO ] (21/04/2015 12:27:04): ------------------------------
+[INFO ] (21/04/2015 12:27:04): Handling socket: 127.0.0.1:9995<->127.0.0.1:33863
+[INFO ] (21/04/2015 12:27:04): Connection closed by client.
+[INFO ] (21/04/2015 12:27:04): ------------------------------
+[INFO ] (21/04/2015 12:27:04): Handling socket: 127.0.0.1:9995<->127.0.0.1:33864
+[INFO ] (21/04/2015 12:27:04): Connection closed by client.
+[INFO ] (21/04/2015 12:51:07): Starting NetworkServer...
+[INFO ] (21/04/2015 12:51:07): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (21/04/2015 12:51:07): Server started!
+
+[INFO ] (21/04/2015 12:51:10): ------------------------------
+[INFO ] (21/04/2015 12:51:10): Handling socket: 127.0.0.1:9995<->127.0.0.1:34234
+[INFO ] (21/04/2015 12:51:11): Connection closed by client.
+[INFO ] (21/04/2015 12:51:12): ------------------------------
+[INFO ] (21/04/2015 12:51:12): Handling socket: 127.0.0.1:9995<->127.0.0.1:34235
+[INFO ] (21/04/2015 12:51:12): Connection closed by client.
+[INFO ] (21/04/2015 12:52:42): ------------------------------
+[INFO ] (21/04/2015 12:52:42): Handling socket: 127.0.0.1:9995<->127.0.0.1:34249
+[INFO ] (21/04/2015 12:52:42): Connection closed by client.
+[INFO ] (21/04/2015 12:53:04): ------------------------------
+[INFO ] (21/04/2015 12:53:04): Handling socket: 127.0.0.1:9995<->127.0.0.1:34250
+[ERROR] (21/04/2015 12:53:04): Error reading from channel
+[ERROR] (21/04/2015 12:53:04): IOException: Expected quote
+Last read: {o
+line: 1, col: 3
+[ERROR] (21/04/2015 12:53:04):   com.cedarsoftware.util.io.JsonReader.error(JsonReader.java:3308)
+[ERROR] (21/04/2015 12:53:04):   com.cedarsoftware.util.io.JsonReader.readJsonObject(JsonReader.java:2332)
+[ERROR] (21/04/2015 12:53:04):   com.cedarsoftware.util.io.JsonReader.readValue(JsonReader.java:2399)
+[ERROR] (21/04/2015 12:53:04):   com.cedarsoftware.util.io.JsonReader.readObject(JsonReader.java:1236)
+[ERROR] (21/04/2015 12:53:04):   com.cedarsoftware.util.io.JsonReader.jsonToMaps(JsonReader.java:1179)
+[ERROR] (21/04/2015 12:53:04):   us.pserver.revok.channel.HttpResponseChannel1.handleJSRequest(HttpResponseChannel1.java:205)
+[ERROR] (21/04/2015 12:53:04):   us.pserver.revok.channel.HttpResponseChannel1.read(HttpResponseChannel1.java:234)
+[ERROR] (21/04/2015 12:53:04):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.read(RevokServer.java:316)
+[ERROR] (21/04/2015 12:53:04):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:466)
+[ERROR] (21/04/2015 12:53:04):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (21/04/2015 12:53:04):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (21/04/2015 12:53:04):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (21/04/2015 12:53:04):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (21/04/2015 12:53:04):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (21/04/2015 12:53:04): Connection closed by client.
+[INFO ] (21/04/2015 12:55:16): ------------------------------
+[INFO ] (21/04/2015 12:55:16): Handling socket: 127.0.0.1:9995<->127.0.0.1:34269
+[INFO ] (21/04/2015 12:55:16): Connection closed by client.
+[INFO ] (21/04/2015 12:55:21): ------------------------------
+[INFO ] (21/04/2015 12:55:21): Handling socket: 127.0.0.1:9995<->127.0.0.1:34284
+[INFO ] (21/04/2015 12:55:21): Connection closed by client.
+[INFO ] (21/04/2015 12:55:26): ------------------------------
+[INFO ] (21/04/2015 12:55:26): Handling socket: 127.0.0.1:9995<->127.0.0.1:34285
+[INFO ] (21/04/2015 12:55:26): Connection closed by client.
+[INFO ] (21/04/2015 12:55:52): ------------------------------
+[INFO ] (21/04/2015 12:55:52): Handling socket: 127.0.0.1:9995<->127.0.0.1:34287
+[ERROR] (21/04/2015 12:55:52): Error reading from channel
+[ERROR] (21/04/2015 12:55:52): IOException: Expected quote
+Last read: {'
+line: 1, col: 3
+[ERROR] (21/04/2015 12:55:52):   com.cedarsoftware.util.io.JsonReader.error(JsonReader.java:3308)
+[ERROR] (21/04/2015 12:55:52):   com.cedarsoftware.util.io.JsonReader.readJsonObject(JsonReader.java:2332)
+[ERROR] (21/04/2015 12:55:52):   com.cedarsoftware.util.io.JsonReader.readValue(JsonReader.java:2399)
+[ERROR] (21/04/2015 12:55:52):   com.cedarsoftware.util.io.JsonReader.readObject(JsonReader.java:1236)
+[ERROR] (21/04/2015 12:55:52):   com.cedarsoftware.util.io.JsonReader.jsonToMaps(JsonReader.java:1179)
+[ERROR] (21/04/2015 12:55:52):   us.pserver.revok.channel.HttpResponseChannel1.handleJSRequest(HttpResponseChannel1.java:205)
+[ERROR] (21/04/2015 12:55:52):   us.pserver.revok.channel.HttpResponseChannel1.read(HttpResponseChannel1.java:234)
+[ERROR] (21/04/2015 12:55:52):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.read(RevokServer.java:316)
+[ERROR] (21/04/2015 12:55:52):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:466)
+[ERROR] (21/04/2015 12:55:52):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (21/04/2015 12:55:52):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (21/04/2015 12:55:52):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (21/04/2015 12:55:52):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (21/04/2015 12:55:52):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (21/04/2015 12:55:52): Connection closed by client.
+[INFO ] (21/04/2015 13:01:41): ------------------------------
+[INFO ] (21/04/2015 13:01:41): Handling socket: 127.0.0.1:9995<->127.0.0.1:34377
+[INFO ] (21/04/2015 13:01:41): Connection closed by client.
+[INFO ] (21/04/2015 13:02:19): ------------------------------
+[INFO ] (21/04/2015 13:02:19): Handling socket: 127.0.0.1:9995<->127.0.0.1:34394
+[ERROR] (21/04/2015 13:02:19): Error reading from channel
+[ERROR] (21/04/2015 13:02:19): IOException: Attempted read from closed stream.
+[ERROR] (21/04/2015 13:02:19):   org.apache.http.impl.io.ContentLengthInputStream.read(ContentLengthInputStream.java:167)
+[ERROR] (21/04/2015 13:02:19):   org.apache.http.impl.io.ContentLengthInputStream.read(ContentLengthInputStream.java:200)
+[ERROR] (21/04/2015 13:02:19):   us.pserver.streams.StreamUtils.readString(StreamUtils.java:401)
+[ERROR] (21/04/2015 13:02:19):   us.pserver.revok.http.EntityParser.readFive(EntityParser.java:122)
+[ERROR] (21/04/2015 13:02:19):   us.pserver.revok.http.EntityParser.parse(EntityParser.java:135)
+[ERROR] (21/04/2015 13:02:19):   us.pserver.revok.channel.HttpResponseChannel1.read(HttpResponseChannel1.java:239)
+[ERROR] (21/04/2015 13:02:19):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.read(RevokServer.java:316)
+[ERROR] (21/04/2015 13:02:19):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:466)
+[ERROR] (21/04/2015 13:02:19):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (21/04/2015 13:02:19):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (21/04/2015 13:02:19):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (21/04/2015 13:02:19):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (21/04/2015 13:02:19):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (21/04/2015 13:02:19): Connection closed by client.
+[INFO ] (21/04/2015 13:04:03): ------------------------------
+[INFO ] (21/04/2015 13:04:03): Handling socket: 127.0.0.1:9995<->127.0.0.1:34409
+[ERROR] (21/04/2015 13:04:03): Error reading from channel
+[ERROR] (21/04/2015 13:04:03): IOException: Attempted read from closed stream.
+[ERROR] (21/04/2015 13:04:03):   org.apache.http.impl.io.ContentLengthInputStream.read(ContentLengthInputStream.java:167)
+[ERROR] (21/04/2015 13:04:03):   org.apache.http.impl.io.ContentLengthInputStream.read(ContentLengthInputStream.java:200)
+[ERROR] (21/04/2015 13:04:03):   us.pserver.streams.StreamUtils.readString(StreamUtils.java:401)
+[ERROR] (21/04/2015 13:04:03):   us.pserver.revok.http.EntityParser.readFive(EntityParser.java:122)
+[ERROR] (21/04/2015 13:04:03):   us.pserver.revok.http.EntityParser.parse(EntityParser.java:135)
+[ERROR] (21/04/2015 13:04:03):   us.pserver.revok.channel.HttpResponseChannel1.read(HttpResponseChannel1.java:239)
+[ERROR] (21/04/2015 13:04:03):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.read(RevokServer.java:316)
+[ERROR] (21/04/2015 13:04:03):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:466)
+[ERROR] (21/04/2015 13:04:03):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (21/04/2015 13:04:03):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (21/04/2015 13:04:03):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (21/04/2015 13:04:03):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (21/04/2015 13:04:03):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (21/04/2015 13:04:03): Connection closed by client.
+[INFO ] (21/04/2015 14:00:17): Starting NetworkServer...
+[INFO ] (21/04/2015 14:00:17): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (21/04/2015 14:00:17): Server started!
+
+[INFO ] (21/04/2015 14:00:23): ------------------------------
+[INFO ] (21/04/2015 14:00:23): Handling socket: 127.0.0.1:9995<->127.0.0.1:35010
+[INFO ] (21/04/2015 14:00:23): Connection closed by client.
+[INFO ] (21/04/2015 14:01:30): ------------------------------
+[INFO ] (21/04/2015 14:01:30): Handling socket: 127.0.0.1:9995<->127.0.0.1:35011
+[INFO ] (21/04/2015 14:01:30): Connection closed by client.
+[INFO ] (21/04/2015 14:03:15): Starting NetworkServer...
+[INFO ] (21/04/2015 14:03:15): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (21/04/2015 14:03:15): Server started!
+
+[INFO ] (21/04/2015 14:03:22): ------------------------------
+[INFO ] (21/04/2015 14:03:22): Handling socket: 127.0.0.1:9995<->127.0.0.1:35029
+[INFO ] (21/04/2015 14:03:22): Connection closed by client.
+[INFO ] (21/04/2015 14:03:45): ------------------------------
+[INFO ] (21/04/2015 14:03:46): Handling socket: 127.0.0.1:9995<->127.0.0.1:35044
+[INFO ] (21/04/2015 14:03:46): Connection closed by client.
+[INFO ] (21/04/2015 14:08:44): Starting NetworkServer...
+[INFO ] (21/04/2015 14:08:44): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (21/04/2015 14:08:44): Server started!
+
+[INFO ] (21/04/2015 14:08:47): ------------------------------
+[INFO ] (21/04/2015 14:08:47): Handling socket: 127.0.0.1:9995<->127.0.0.1:35125
+[INFO ] (21/04/2015 14:08:47): Connection closed by client.
+[INFO ] (21/04/2015 14:11:24): Starting NetworkServer...
+[INFO ] (21/04/2015 14:11:24): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (21/04/2015 14:11:24): Server started!
+
+[INFO ] (21/04/2015 14:11:28): ------------------------------
+[INFO ] (21/04/2015 14:11:28): Handling socket: 127.0.0.1:9995<->127.0.0.1:35165
+[ERROR] (21/04/2015 14:11:28): Error reading from channel
+[ERROR] (21/04/2015 14:11:28): ClassCastException: com.cedarsoftware.util.io.JsonObject cannot be cast to [Ljava.lang.Object;
+[ERROR] (21/04/2015 14:11:28):   us.pserver.revok.channel.HttpResponseChannel1.handleJSRequest(HttpResponseChannel1.java:212)
+[ERROR] (21/04/2015 14:11:28):   us.pserver.revok.channel.HttpResponseChannel1.read(HttpResponseChannel1.java:241)
+[ERROR] (21/04/2015 14:11:28):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.read(RevokServer.java:316)
+[ERROR] (21/04/2015 14:11:28):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:466)
+[ERROR] (21/04/2015 14:11:28):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (21/04/2015 14:11:28):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (21/04/2015 14:11:28):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (21/04/2015 14:11:28):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (21/04/2015 14:11:28):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (21/04/2015 14:11:28): Connection closed by client.
+[INFO ] (21/04/2015 14:12:54): ------------------------------
+[INFO ] (21/04/2015 14:12:54): Handling socket: 127.0.0.1:9995<->127.0.0.1:35189
+[ERROR] (21/04/2015 14:12:54): Error reading from channel
+[ERROR] (21/04/2015 14:12:54): ClassCastException: com.cedarsoftware.util.io.JsonObject cannot be cast to [Ljava.lang.Object;
+[ERROR] (21/04/2015 14:12:54):   us.pserver.revok.channel.HttpResponseChannel1.handleJSRequest(HttpResponseChannel1.java:212)
+[ERROR] (21/04/2015 14:12:54):   us.pserver.revok.channel.HttpResponseChannel1.read(HttpResponseChannel1.java:241)
+[ERROR] (21/04/2015 14:12:54):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.read(RevokServer.java:316)
+[ERROR] (21/04/2015 14:12:54):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:466)
+[ERROR] (21/04/2015 14:12:54):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (21/04/2015 14:12:54):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (21/04/2015 14:12:54):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (21/04/2015 14:12:54):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (21/04/2015 14:12:54):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (21/04/2015 14:12:54): Connection closed by client.
+[INFO ] (21/04/2015 14:13:08): Starting NetworkServer...
+[INFO ] (21/04/2015 14:13:08): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (21/04/2015 14:13:08): Server started!
+
+[INFO ] (21/04/2015 14:13:11): ------------------------------
+[INFO ] (21/04/2015 14:13:11): Handling socket: 127.0.0.1:9995<->127.0.0.1:35190
+[INFO ] (21/04/2015 14:13:11): Connection closed by client.
+[INFO ] (21/04/2015 14:14:43): Starting NetworkServer...
+[INFO ] (21/04/2015 14:14:43): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (21/04/2015 14:14:43): Server started!
+
+[INFO ] (21/04/2015 14:14:47): ------------------------------
+[INFO ] (21/04/2015 14:14:47): Handling socket: 127.0.0.1:9995<->127.0.0.1:35219
+[INFO ] (21/04/2015 14:14:47): Connection closed by client.
+[INFO ] (21/04/2015 14:46:40): Starting NetworkServer...
+[INFO ] (21/04/2015 14:46:40): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (21/04/2015 14:46:40): Server started!
+
+[INFO ] (21/04/2015 14:46:47): ------------------------------
+[INFO ] (21/04/2015 14:46:47): Handling socket: 127.0.0.1:9995<->127.0.0.1:35645
+[INFO ] (21/04/2015 14:46:47): Connection closed by client.
+[INFO ] (21/04/2015 14:51:24): Starting NetworkServer...
+[INFO ] (21/04/2015 14:51:24): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (21/04/2015 14:51:24): Server started!
+
+[INFO ] (21/04/2015 14:51:27): ------------------------------
+[INFO ] (21/04/2015 14:51:27): Handling socket: 127.0.0.1:9995<->127.0.0.1:35733
+[INFO ] (21/04/2015 14:51:27): Connection closed by client.
+[INFO ] (21/04/2015 14:54:34): Starting NetworkServer...
+[INFO ] (21/04/2015 14:54:34): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (21/04/2015 14:54:34): Server started!
+
+[INFO ] (21/04/2015 14:54:37): ------------------------------
+[INFO ] (21/04/2015 14:54:37): Handling socket: 127.0.0.1:9995<->127.0.0.1:35790
+[INFO ] (21/04/2015 14:54:37): Connection closed by client.

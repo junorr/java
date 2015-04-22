@@ -36,7 +36,7 @@ import us.pserver.revok.server.RevokServer;
 public class TestRevokServer {
 
   public static void main(String[] args) {
-    HttpConnector hc = new HttpConnector();
+    HttpConnector hc = new HttpConnector("0.0.0.0", 9995);
     ObjectContainer cont = new ObjectContainer(
         new Authenticator( new SingleCredentialsSource(
             new Credentials("juno", "1234".getBytes()))));

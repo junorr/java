@@ -23,8 +23,6 @@ package us.pserver.revok.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import us.pserver.revok.MethodInvocationException;
 import us.pserver.revok.RemoteMethod;
 import us.pserver.revok.RemoteObject;
 
@@ -37,20 +35,20 @@ public class RemoteInvocationHandler implements InvocationHandler {
 
   private RemoteObject rob;
   
-  private String namespace;
+  private String objname;
   
   
-  public RemoteInvocationHandler(RemoteObject rob, String namespace) {
+  public RemoteInvocationHandler(RemoteObject rob, String objname) {
     if(rob == null)
       throw new IllegalArgumentException(
           "[RemoteInvocationHandler( RemoteObject )] "
               + "Invalid RemoteObject {"+ rob+ "}");
-    if(namespace == null || namespace.trim().isEmpty())
+    if(objname == null || objname.trim().isEmpty())
       throw new IllegalArgumentException(
           "[RemoteInvocationHandler( RemoteObject )] "
               + "Invalid namespace {"+ rob+ "}");
     this.rob = rob;
-    this.namespace = namespace;
+    this.objname = objname;
   }
   
   
@@ -59,54 +57,19 @@ public class RemoteInvocationHandler implements InvocationHandler {
   }
   
   
-  public String getNamespace() {
-    return namespace;
+  public String getObjectName() {
+    return objname;
   }
   
   
-  private Class mapToNative(Class c) {
-    if(c == null) return c;
-    else if(c.equals(Boolean.class))
-      return boolean.class;
-    else if(c.equals(Byte.class))
-      return byte.class;
-    else if(c.equals(Short.class))
-      return short.class;
-    else if(c.equals(Integer.class))
-      return int.class;
-    else if(c.equals(Character.class))
-      return char.class;
-    else if(c.equals(Long.class))
-      return long.class;
-    else if(c.equals(Float.class))
-      return float.class;
-    else if(c.equals(Double.class))
-      return double.class;
-    else
-      return c;
-  }
-  
-  
-  private boolean maybeNative(Class c) {
-    return c.equals(Boolean.class)
-        || c.equals(Byte.class)
-        || c.equals(Short.class)
-        || c.equals(Integer.class)
-        || c.equals(Character.class)
-        || c.equals(Long.class)
-        || c.equals(Float.class)
-        || c.equals(Double.class);
-  }
-  
-
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     Class[] ints = proxy.getClass().getInterfaces();
     if(ints == null || ints.length == 0)
       throw new IllegalArgumentException("Invalid Proxy object. No implemented interfaces");
     RemoteMethod rm = new RemoteMethod()
-        .forObject(namespace.concat(".")
-            .concat(ints[0].getSimpleName()))
+        .forObject((!objname.contains(".") ? objname.concat(".")
+            .concat(ints[0].getSimpleName()) : objname))
         .method(method.getName());
     if(args != null && args.length > 0) {
       rm.types(method.getParameterTypes()).params(args);

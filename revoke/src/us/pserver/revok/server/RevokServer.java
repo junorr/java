@@ -94,7 +94,7 @@ public class RevokServer extends AbstractServer {
     factory = HttpFactoryProvider.factory()
         .enableGZipCompression()
         .enableCryptography()
-        .getHttpResponseChannelFactory();
+        .getHttpResponseChannel1Factory();
   }
   
   

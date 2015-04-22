@@ -22,9 +22,13 @@
 package us.pserver.revok.test;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import us.pserver.streams.IO;
 import us.pserver.streams.StreamUtils;
 
 /**
@@ -35,20 +39,44 @@ import us.pserver.streams.StreamUtils;
 public class TestDumpServer {
 
   
+  static void sendUI(OutputStream out) throws IOException {
+    System.out.println("* Sending UI...");
+    InputStream in = TestDumpServer.class
+        .getResourceAsStream("/us/pserver/revok/http/revok.html");
+    PrintWriter pw = new PrintWriter(out);
+    pw.print("HTTP/1.1 200 OK\r\n");
+    pw.print("Content-Type: 'text/html'\r\n");
+    pw.flush();
+    IO.tr(in, out);
+    StreamUtils.write("\r\n\r\n\r\n\r\n", out);
+    in.close();
+    out.flush();
+    System.out.println("* Done UI!");
+  }
+  
+  
   public static void main(String[] args) throws IOException, InterruptedException {
     //http://localhost:36000/?obj=a&mth=compute&types=int%3Bint&args=5%3B3
-    System.out.println("* Listening on 0.0.0.0:9011");
+    System.out.println("* Listening on 0.0.0.0:9995");
     ServerSocket srv = new ServerSocket();
-    srv.bind(new InetSocketAddress("0.0.0.0", 9011));
+    srv.bind(new InetSocketAddress("0.0.0.0", 9995));
     
     while(true) {
       Socket sock = srv.accept();
       Thread.sleep(500);
       System.out.println("* Connection Received: "+ sock);
       System.out.println("---------------------------------------");
-      StreamUtils.transfer(sock.getInputStream(), System.out);
+      String hds = StreamUtils.readString(sock.getInputStream(), 30);
+      System.out.print(hds);
+      StreamUtils.transferUntil(sock.getInputStream(), System.out, "\r\n\r\n");
       System.out.println();
       System.out.println("---------------------------------------");
+      System.out.println();
+      if(hds.contains("/ui/")) {
+        sendUI(sock.getOutputStream());
+      }
+      sock.shutdownOutput();
+      sock.close();
     }
   }
   
