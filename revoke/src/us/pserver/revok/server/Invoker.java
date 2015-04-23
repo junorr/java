@@ -35,11 +35,11 @@ import static us.pserver.revok.server.Invoker.DEFAULT_INVOKE_TRIES;
 
 
 /**
- * Classe responsável pelo invocação de métodos
+ * Classe responsável pela invocação de métodos
  * em objetos utilizando reflexão.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 21/01/2014
+ * @version 1.1 - 20150422
  */
 public class Invoker {
   
@@ -52,7 +52,14 @@ public class Invoker {
    */
   public static final int DEFAULT_INVOKE_TRIES = 5;
   
-  public static final String VAR_MARK = "$";
+  /**
+   * <code>
+   *   VAR_SIGNAL = "$"
+   * </code><br/>
+   * Character used to mark a variable name on the server.
+   */
+  public static final String VAR_SIGNAL = "$";
+  
   
   private ObjectContainer container;
   
@@ -127,6 +134,13 @@ public class Invoker {
   }
   
   
+  /**
+   * Return the object stored in ObjectContainer.
+   * @param name Object name and namespace.
+   * @return The object stored in ObjectContainer.
+   * @throws MethodInvocationException If the object does not exists on the server.
+   * @throws AuthenticationException If authentication fails.
+   */
   private Object getObject(String name) throws MethodInvocationException, AuthenticationException {
     Object o = null;
     if(container.isAuthEnabled()) {
@@ -139,6 +153,14 @@ public class Invoker {
   }
   
   
+  /**
+   * Invoke a method on object and store the returned 
+   * value in a variable on the server (if defined).
+   * @param mth Method to invoke.
+   * @return The return value of the method.
+   * @throws MethodInvocationException In case an error occurs on invocation.
+   * @throws AuthenticationException If authentication fails.
+   */
   private Object invokeAndSave(RemoteMethod mth) throws MethodInvocationException, AuthenticationException {
     Object res = invoke(mth, 0);
     if(res != null) {
@@ -149,11 +171,11 @@ public class Invoker {
     
     
   /**
-   * Invoca o método.
+   * Invoke a method on object.
    * @return Objeto de retorno do método ou
    * <code>null</code> no caso <code>void</code>.
-   * @throws MethodInvocationException caso
-   * ocorra erro na invocação do método.
+   * @throws MethodInvocationException In case an error occurs on invocation.
+   * @throws AuthenticationException If authentication fails.
    */
   public Object invoke(RemoteMethod mth) throws MethodInvocationException, AuthenticationException {
     if(mth.returnVar() != null) {
@@ -165,9 +187,16 @@ public class Invoker {
   }
   
   
+  /**
+   * Verifies if exists any server variable defined 
+   * as an argument or return value.
+   * @param mth The method to invoke.
+   * @throws MethodInvocationException If the object does not exists on the server.
+   * @throws AuthenticationException If authentication fails.
+   */
   private void processArgs(RemoteMethod mth) throws MethodInvocationException, AuthenticationException {
     List args = (List) mth.params().stream()
-        .filter(o->o.toString().startsWith(VAR_MARK))
+        .filter(o->o.toString().startsWith(VAR_SIGNAL))
         .collect(Collectors.toList());
     for(Object o : args) {
       Object x = getObject(o.toString().substring(1));
@@ -178,8 +207,8 @@ public class Invoker {
   
   
   /**
-   * Invoca o método em modo de recursão
-   * até o número máximo de tentativas definidas.
+   * Invoca o método em modo de recursão,
+   * até o número máximo de tentativas definidas em caso de erro.
    * @param currTry Número da tentativa atual.
    * @return Objeto de retorno do método ou
    * <code>null</code> no caso de <code>void</code>.

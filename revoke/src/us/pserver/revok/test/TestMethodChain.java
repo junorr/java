@@ -26,7 +26,6 @@ import us.pserver.revok.MethodInvocationException;
 import us.pserver.revok.HttpConnector;
 import us.pserver.revok.RemoteObject;
 import us.pserver.revok.container.Credentials;
-import us.pserver.revok.factory.HttpFactoryProvider;
 
 /**
  *
@@ -47,7 +46,7 @@ public class TestMethodChain {
     
     MethodChain chain = new MethodChain();
     chain.add("NetworkServer", "container")
-        .setCredentials(new Credentials("juno", new StringBuffer("32132155")));
+        .setCredentials(new Credentials("juno", "32132155".getBytes()));
     chain.add("contains")
         .types(String.class)
         .params("StreamHandler");

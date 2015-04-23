@@ -22,9 +22,10 @@
 package us.pserver.revok.http;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 14/04/2015
+ * Constants values utilized in communication protocol.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.1 - 20150422
  */
 public interface XmlConsts {
 

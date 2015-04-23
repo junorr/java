@@ -22,9 +22,10 @@
 package us.pserver.revok.http;
 
 /**
- *
+ * Constants values utilized in communication protocol.
+ * 
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/04/2015
+ * @version 1.1 - 20150422
  */
 public interface HttpConsts {
 

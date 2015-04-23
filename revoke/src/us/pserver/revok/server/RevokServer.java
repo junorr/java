@@ -50,12 +50,24 @@ import us.pserver.revok.factory.HttpFactoryProvider;
  * serão invocados remotamente.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 11/11/2013
+ * @version 1.1 - 20150422
  */
 public class RevokServer extends AbstractServer {
   
+  /**
+   * <code>
+   *   SERVER_KEY = RevokServer.class.getSimpleName();
+   * </code><br/>
+   * Key used to store the server on ObjectContainer.
+   */
   public static final String SERVER_KEY = RevokServer.class.getSimpleName();
   
+  /**
+   * <code>
+   *   SOCK_SO_TIMEOUT = 500;
+   * </code><br/>
+   * Default socket timeout.
+   */
   public static final int SOCK_SO_TIMEOUT = 500;
   
   /**

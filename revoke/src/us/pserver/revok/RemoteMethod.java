@@ -131,9 +131,9 @@ public class RemoteMethod {
    * @return This instance of RemoteMethod.
    */
   public RemoteMethod returnVar(String var) {
-    if(var == null || !var.startsWith(Invoker.VAR_MARK))
+    if(var == null || !var.startsWith(Invoker.VAR_SIGNAL))
       throw new IllegalArgumentException("[RemoteMethod.returnVar( String )] "
-          + "Invalid var name {"+ var+ "}. Variables must starts with '"+ Invoker.VAR_MARK+ "'");
+          + "Invalid var name {"+ var+ "}. Variables must starts with '"+ Invoker.VAR_SIGNAL+ "'");
     retvar = var;
     return this;
   }

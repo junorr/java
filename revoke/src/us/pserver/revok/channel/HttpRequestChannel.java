@@ -147,8 +147,8 @@ public class HttpRequestChannel implements Channel {
   
   
   /**
-   * Enable criptography of data transmitted on the channel.
-   * The default criptography algorithm is AES CBC PKCS5 padded.
+   * Enable cryptography of data transmitted on the channel.
+   * The default cryptography algorithm is AES CBC PKCS5 padded.
    * @param enabled <code>true</code> for enable criptography, <code>false</code> to disable it.
    * @return This instance of HttpRequestChannel.
    */
@@ -159,8 +159,8 @@ public class HttpRequestChannel implements Channel {
   
   
   /**
-   * Verifies if criptography is enalbed.
-   * @return <code>true</code> if criptography is enabled, <code>false</code> otherwise.
+   * Verifies if cryptography is enalbed.
+   * @return <code>true</code> if cryptography is enabled, <code>false</code> otherwise.
    */
   public boolean isEncryptionEnabled() {
     return crypt;
@@ -188,8 +188,8 @@ public class HttpRequestChannel implements Channel {
   
   
   /**
-   * Define the criptography algorithm utilized.
-   * The default criptography algorithm is AES CBC PKCS5 padded.
+   * Define the cryptography algorithm utilized.
+   * The default cryptography algorithm is AES CBC PKCS5 padded.
    * @param ca CryptAlgorithm
    * @return This instance of HttpRequestChannel
    */
@@ -201,9 +201,9 @@ public class HttpRequestChannel implements Channel {
   
   
   /**
-   * Return the criptography algorithm utilized.
-   * The default criptography algorithm is AES CBC PKCS5 padded.
-   * @return The criptography algorithm utilized.
+   * Return the cryptography algorithm utilized.
+   * The default cryptography algorithm is AES CBC PKCS5 padded.
+   * @return The cryptography algorithm utilized.
    */
   public CryptAlgorithm getCryptAlgorithm() {
     return algo;

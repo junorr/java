@@ -27,9 +27,11 @@ import us.pserver.revok.RemoteMethod;
 import us.pserver.revok.RemoteObject;
 
 /**
- *
+ * Invocation handler used by the Proxy remote object.
+ * 
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/04/2015
+ * @version 1.1 - 20150422
+ * @see us.pserver.revok.RemoteObject#createRemoteObject(java.lang.String, java.lang.Class) 
  */
 public class RemoteInvocationHandler implements InvocationHandler {
 
@@ -38,6 +40,12 @@ public class RemoteInvocationHandler implements InvocationHandler {
   private String objname;
   
   
+  /**
+   * Default constructor wich receives the RemoteObject used in 
+   * methods invocations and the object name on the server.
+   * @param rob RemoteObject.
+   * @param objname Object name on the server.
+   */
   public RemoteInvocationHandler(RemoteObject rob, String objname) {
     if(rob == null)
       throw new IllegalArgumentException(
@@ -52,11 +60,19 @@ public class RemoteInvocationHandler implements InvocationHandler {
   }
   
   
+  /**
+   * Return the RemoteObject used in methods invocations.
+   * @return The RemoteObject used in methods invocations.
+   */
   public RemoteObject getRemoteObject() {
     return rob;
   }
   
   
+  /**
+   * Return the object name on server.
+   * @return The object name on server.
+   */
   public String getObjectName() {
     return objname;
   }

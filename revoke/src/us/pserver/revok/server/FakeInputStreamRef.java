@@ -25,14 +25,21 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- *
+ * A fake implementation of InputStream wich does nothing (what?).
+ * This is used for transfering information about method arguments 
+ * on the wire, but not the InputStream itself.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/08/2014
+ * @version 1.1 - 20150422
  */
 public class FakeInputStreamRef extends InputStream {
 
+  /**
+   * Default constructor without arguments.
+   */
   public FakeInputStreamRef() {}
 
+  
   @Override
   public int read() throws IOException {
     return -1;

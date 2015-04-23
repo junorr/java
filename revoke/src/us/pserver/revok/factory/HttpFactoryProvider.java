@@ -32,7 +32,7 @@ import us.pserver.revok.channel.HttpResponseChannel;
  * Provedor padrão de fábricas de canais de transmissão.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 2014-01-21
+ * @version 1.1 - 20150422
  */
 public class HttpFactoryProvider {
   
@@ -41,30 +41,50 @@ public class HttpFactoryProvider {
   private CryptAlgorithm algo;
   
   
+  /**
+   * Default constructor without arguments.
+   */
   public HttpFactoryProvider() {
     gzip = false; crypt = false;
     algo = CryptAlgorithm.AES_CBC_PKCS5;
   }
   
   
+  /**
+   * Configure GZIP compression on the factory.
+   * @return This instance of HttpFactoryProvider.
+   */
   public HttpFactoryProvider enableGZipCompression() {
     gzip = true;
     return this;
   }
   
   
+  /**
+   * Disable GZIP compression on the factory.
+   * @return This instance of HttpFactoryProvider.
+   */
   public HttpFactoryProvider disableGZipCompression() {
     gzip = false;
     return this;
   }
   
   
+  /**
+   * Configure cryptography on the factory.
+   * @return This instance of HttpFactoryProvider.
+   */
   public HttpFactoryProvider enableCryptography() {
     crypt = true;
     return this;
   }
   
   
+  /**
+   * Configure cryptography on the factory.
+   * @param algo Cryptography algorithm.
+   * @return This instance of HttpFactoryProvider.
+   */
   public HttpFactoryProvider enableCryptography(CryptAlgorithm algo) {
     if(algo != null) this.algo = algo;
     crypt = true;
@@ -72,12 +92,20 @@ public class HttpFactoryProvider {
   }
   
   
+  /**
+   * Disable cryptography on the factory.
+   * @return This instance of HttpFactoryProvider.
+   */
   public HttpFactoryProvider disableCryptography() {
     crypt = false;
     return this;
   }
   
   
+  /**
+   * Return a new instance of HttpFactoryProvider.
+   * @return A new instance of HttpFactoryProvider.
+   */
   public static HttpFactoryProvider factory() {
     return new HttpFactoryProvider();
   }
