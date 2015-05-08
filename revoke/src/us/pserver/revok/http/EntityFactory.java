@@ -181,9 +181,11 @@ public class EntityFactory {
     
     buffer.clear();
     buffer.write(scv.convert(XmlConsts.START_XML));
+    // Encoded OutputStream
     OutputStream os = buffer.getOutputStream();
     
     if(key != null) {
+      // write plain data
       buffer.write(scv.convert(XmlConsts.START_CRYPT_KEY));
       buffer.write(scv.convert(key.toString()));
       buffer.write(scv.convert(XmlConsts.END_CRYPT_KEY));

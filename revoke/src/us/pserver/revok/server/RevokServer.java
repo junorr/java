@@ -79,8 +79,6 @@ public class RevokServer extends AbstractServer {
   public static final int HTTP_CONN_BUFFER_SIZE = 8*1024;
   
   
-  private transient Reflector ref;
-  
   private transient HttpConnector con;
   
   private transient ChannelFactory<HttpServerConnection> factory;
@@ -101,7 +99,6 @@ public class RevokServer extends AbstractServer {
   public RevokServer(ObjectContainer cont) {
     super(cont);
     cont.put(ObjectContainer.NAMESPACE_GLOBAL, SERVER_KEY, this);
-    ref = new Reflector();
     con = new HttpConnector();
     factory = HttpFactoryProvider.factory()
         .enableGZipCompression()
@@ -188,7 +185,7 @@ public class RevokServer extends AbstractServer {
       throw new IllegalArgumentException("[RevokServer.preStart()] "
           + "Invalid ObjectContainer ["+ container+ "]");
     
-    LogProvider.getSimpleLog().info("Starting NetworkServer...");
+    LogProvider.getSimpleLog().info("Starting RevokServer...");
     setRunning(true);
     exec = Executors.newFixedThreadPool(availableThreads);
   }
@@ -224,7 +221,7 @@ public class RevokServer extends AbstractServer {
     try(ServerSocket server = con.connectServerSocket();) {
       server.setSoTimeout(SOCK_SO_TIMEOUT);
       LogProvider.getSimpleLog().info("Listening on: "+ con.toString());
-      LogProvider.getSimpleLog().info("Server started!\n");
+      LogProvider.getSimpleLog().info("RevokServer started!\n");
       
       while(isRunning()) {
         try {
@@ -236,12 +233,14 @@ public class RevokServer extends AbstractServer {
           exec.submit(new HttpConnectionHandler(
               factory.createChannel(conn), conn));
         } catch(SocketTimeoutException se) {}
-      }
+      }//while
     } catch(IOException e) {
       LogProvider.getSimpleLog().fatal(
           new IOException("Error running NetworkServer", e), true);
     }
+    LogProvider.getSimpleLog().info("Stopping ExecutorService...");
     exec.shutdown();
+    LogProvider.getSimpleLog().info("RevokServer Shutdown!");
   }
   
   

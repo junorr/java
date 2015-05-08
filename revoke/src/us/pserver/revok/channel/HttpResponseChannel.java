@@ -86,7 +86,7 @@ public class HttpResponseChannel implements Channel {
     if(hsc == null || !hsc.isOpen())
       throw new IllegalArgumentException(
           "[HttpResponseChannel( HttpServerConnection )] "
-          + "Invalid Connection {hsc="+ hsc+ "}");
+          + "Invalid Connection {"+ hsc+ "}");
     
     conn = hsc;
     key = null;
@@ -107,7 +107,7 @@ public class HttpResponseChannel implements Channel {
   }
   
   
-  public HttpServerConnection getConnection() {
+  public HttpServerConnection getHttpConnection() {
     return conn;
   }
   

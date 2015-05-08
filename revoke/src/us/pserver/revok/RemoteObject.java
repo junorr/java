@@ -108,7 +108,7 @@ public class RemoteObject {
    * Retorna informações de conexão de rede.
    * @return informações de conexão de rede.
    */
-  public HttpConnector getConnector() {
+  public HttpConnector getHttpConnector() {
     return net;
   }
 
@@ -118,7 +118,7 @@ public class RemoteObject {
    * @param net informações de conexão de rede.
    * @return Esta instância modificada de RemoteObject.
    */
-  public RemoteObject setConnector(HttpConnector net) {
+  public RemoteObject setHttpConnector(HttpConnector net) {
     this.net = net;
     return this;
   }

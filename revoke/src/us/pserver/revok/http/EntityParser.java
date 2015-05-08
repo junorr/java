@@ -127,14 +127,14 @@ public class EntityParser {
     if(entity == null)
       throw new IllegalArgumentException(
           "[EntityParser.parse( HttpEntity )] "
-              + "Invalid MixedWriteBuffer {entity="+ entity+ "}");
+              + "Invalid HttpEntity {"+ entity+ "}");
     
     buffer.clear();
     InputStream contstream = entity.getContent();
     
     String five = readFive(contstream);
     if(!XmlConsts.START_XML.equals(five)) {
-      throw new IOException("[EntityParser.parse()] "
+      throw new IOException("[EntityParser.parse( HttpEntity )] "
           + "Invalid Content to Parse {expected="
           + XmlConsts.START_XML+ ", read="+ five+ "}");
     }
@@ -143,12 +143,13 @@ public class EntityParser {
     five = tryCryptKey(contstream, five);
     
     if(!XmlConsts.START_CONTENT.equals(five)) {
-      throw new IOException("[EntityParser.parse()] "
+      throw new IOException("[EntityParser.parse( HttpEntity )] "
           + "Invalid Content to Parse {expected="
           + XmlConsts.START_CONTENT+ ", read="+ five+ "}");
     }
     
     IO.tr(contstream, buffer.getRawOutputStream());
+    // get decoding stream
     contstream = buffer.getReadBuffer().getInputStream();
     EntityUtils.consume(entity);
     
@@ -160,8 +161,7 @@ public class EntityParser {
   
   
   private String tryCryptKey(InputStream is, String five) throws IOException {
-    if(five == null || five.trim().isEmpty()
-        || is == null)
+    if(five == null || five.trim().isEmpty() || is == null)
       return five;
     if(XmlConsts.START_CRYPT_KEY.contains(five)) {
       StreamUtils.readUntil(is, XmlConsts.GT);
@@ -175,10 +175,9 @@ public class EntityParser {
   
   
   private String tryObject(InputStream is, String five) throws IOException {
-    if(five == null || five.trim().isEmpty()
-        || is == null)
+    if(five == null || five.trim().isEmpty() || is == null)
       return five;
-    if(XmlConsts.START_ROB.contains(five)) {
+    if(XmlConsts.START_ROB.equals(five)) {
       StreamResult sr = StreamUtils.readStringUntil(is, XmlConsts.END_ROB);
       obj = JsonReader.jsonToJava(sr.content());
       five = readFive(is);
@@ -188,8 +187,7 @@ public class EntityParser {
   
   
   private void tryStream(InputStream is, String five) throws IOException {
-    if(five == null || five.trim().isEmpty()
-        || is == null)
+    if(five == null || five.trim().isEmpty() || is == null)
       return;
     if(XmlConsts.START_STREAM.contains(five)) {
       MixedWriteBuffer inbuf = new MixedWriteBuffer();

@@ -21,30 +21,21 @@
 
 package us.pserver.revok.test;
 
-import us.pserver.revok.HttpConnector;
-import us.pserver.revok.container.Authenticator;
-import us.pserver.revok.container.Credentials;
-import us.pserver.revok.container.ObjectContainer;
-import us.pserver.revok.container.SingleCredentialsSource;
-import us.pserver.revok.server.RevokServer;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 17/04/2015
+ * @version 1.0 - 08/05/2015
  */
-public class TestRevokServer {
-
-  public static void main(String[] args) {
-    HttpConnector hc = new HttpConnector("0.0.0.0", 9995);
-    ObjectContainer cont = new ObjectContainer(
-        new Authenticator( new SingleCredentialsSource(
-            new Credentials("juno", "1234".getBytes()))));
-    RevokServer revok = new RevokServer(cont, hc);
-    Calculator calc = new Calculator();
-    cont.put("calc.ICalculator", calc);
-    cont.put("io.IStreamHandler", new StreamHandler());
-    revok.start();
-  }
+public interface IStreamHandler {
   
+  public long write(String path, InputStream input) throws IOException;
+  
+  public InputStream read(String path) throws IOException;
+  
+  public long size(String path) throws IOException;
+
 }

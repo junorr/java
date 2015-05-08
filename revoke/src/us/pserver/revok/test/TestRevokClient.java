@@ -21,7 +21,8 @@
 
 package us.pserver.revok.test;
 
-import java.lang.reflect.Method;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import us.pserver.revok.HttpConnector;
 import us.pserver.revok.MethodChain;
@@ -29,6 +30,7 @@ import us.pserver.revok.MethodInvocationException;
 import us.pserver.revok.RemoteMethod;
 import us.pserver.revok.RemoteObject;
 import us.pserver.revok.container.Credentials;
+import us.pserver.streams.IO;
 
 /**
  *
@@ -38,9 +40,9 @@ import us.pserver.revok.container.Credentials;
 public class TestRevokClient {
 
   
-  public static void main(String[] args) throws MethodInvocationException {
+  public static void main(String[] args) throws MethodInvocationException, IOException {
     MethodChain chain = new MethodChain();
-    HttpConnector hc = new HttpConnector();
+    HttpConnector hc = new HttpConnector("localhost", 9995);
     Credentials cred = new Credentials("juno", "1234".getBytes());
     RemoteObject rob = new RemoteObject(hc)
         .setCredentials(cred);
@@ -50,7 +52,7 @@ public class TestRevokClient {
         .forObject("global.ObjectContainer")
         .method("listMethods")
         .types(String.class)
-        .params("calc.calculator");
+        .params("calc.ICalculator");
     System.out.println("* Invoke      --> "+ rm);
     List<String> mts = (List<String>) rob.invoke(rm);
     System.out.println("* mts.size="+ mts.size());
@@ -68,7 +70,7 @@ public class TestRevokClient {
     System.out.println("* objs.size="+ mts.size());
     mts.forEach(System.out::println);
     
-    
+    /*
     System.out.println("----------------------------------");
     chain.add("calc.ICalculator", "xyz")
         .types(double.class, double.class, double.class)
@@ -102,11 +104,29 @@ public class TestRevokClient {
     System.out.println(">> "+ rob.invoke(rm));
     
     
-    System.out.println("----- ProxyClass -----");
+    System.out.println("----- ProxyClass: ICalculator -----");
     ICalculator calc = rob.createRemoteObject("calc", ICalculator.class);
     System.out.println("* Invoking calc.sum( 30, 27 ) = "+ calc.sum(30, 27));
     System.out.println("* Invoking calc.printZ()");
     calc.printZ();
+    /*
+    System.out.println("----- ProxyClass: Server -----");
+    Server srv = rob.createRemoteObject("global.RevokServer", Server.class);
+    System.out.println("* Server: srv="+ srv);
+    System.out.println("* Invoking srv.isRunning() = "+ srv.isRunning());
+    System.out.println("* Invoking srv.getAvailableThreads() = "+ srv.getAvailableThreads());
+    //System.out.println("* Invoking srv.stop()");
+    //srv.stop();
+    */
+    System.out.println("----------------------------------");
+    IStreamHandler handler = rob.createRemoteObject("io", IStreamHandler.class);
+    String p = "/storage/pic.jpg";
+    System.out.println("* Invoking IStreamHandler.toString() = "+ handler);
+    System.out.println("* Invoking IStreamHandler.size( "+ p+ " ) = "+ handler.size(p));
+    System.out.print("* Invoking IStreamHandler.read( "+ p+ " ) = ");
+    InputStream is = handler.read(p);
+    System.out.println(is+ ", available="+ is.available());
+    IO.tr(is, IO.os(IO.p("/storage/pic-2.jpg")));
     
     rob.close();
   }

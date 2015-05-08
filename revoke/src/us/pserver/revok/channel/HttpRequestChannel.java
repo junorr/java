@@ -132,7 +132,7 @@ public class HttpRequestChannel implements Channel {
    * Retorna o objeto <code>HttpConnector</code>.
    * @return <code>HttpConnector</code>.
    */
-  public HttpConnector getNetConnector() {
+  public HttpConnector getHttpConnector() {
     return netc;
   }
   
@@ -235,8 +235,7 @@ public class HttpRequestChannel implements Channel {
       fac.put(trp.getInputStream());
     
     request.addHeader(HttpConsts.HD_CONT_ENCODING, contenc);
-    request.addHeader(HttpConsts.HD_ACCEPT, 
-        HttpConsts.HD_VAL_ACCEPT);
+    request.addHeader(HttpConsts.HD_ACCEPT, HttpConsts.HD_VAL_ACCEPT);
     if(netc.getProxyAuthorization() != null) {
       request.addHeader(HttpConsts.HD_PROXY_AUTH,
           netc.getProxyAuthorization());
@@ -277,32 +276,18 @@ public class HttpRequestChannel implements Channel {
     }
     processor.process(response, context);
     
-    System.out.println("[HttpRequestChannel.verifyResponse()] response.status="+ response.getStatusLine());
+    //System.out.println("[HttpRequestChannel.verifyResponse()] response.status="+ response.getStatusLine());
+    
     Iterator it = response.headerIterator();
     while(it.hasNext()) {
       System.out.println("  - "+ it.next());
     }
-    
-  }
-  
-  
-  /**
-   * Imprime todo o conteúdo recebido do canal
-   * na saída padrão.
-   * @throws IOException Caso ocorra erro na leitura
-   * da transmissão.
-   *
-  */
-  public void dump() throws IOException {
-    System.out.println("--- Response ---");
-    StreamUtils.transfer(sock.getInputStream(), System.out);
   }
   
   
   @Override
   public Transport read() throws IOException {
-    if(response == null)
-      return null;
+    if(response == null) return null;
     try {
       conn.receiveResponseEntity(response);
       HttpEntity content = response.getEntity();
