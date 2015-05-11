@@ -22,11 +22,14 @@
 package us.pserver.revok.http;
 
 import com.cedarsoftware.util.io.JsonReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
 import us.pserver.cdr.crypt.CryptKey;
+import us.pserver.revok.protocol.JsonSerializer;
+import us.pserver.revok.protocol.ObjectSerializer;
 import us.pserver.streams.IO;
 import us.pserver.streams.MixedWriteBuffer;
 import us.pserver.streams.StreamResult;
@@ -47,14 +50,49 @@ public class EntityParser {
   
   private CryptKey key;
   
+  private ObjectSerializer serial;
+  
   
   public EntityParser() {
     buffer = new MixedWriteBuffer();
+    input = null;
+    obj = null;
+    key = null;
+    serial = new JsonSerializer();
   }
   
   
-  public static EntityParser create() {
+  public EntityParser(ObjectSerializer os) {
+    buffer = new MixedWriteBuffer();
+    buffer = new MixedWriteBuffer();
+    input = null;
+    obj = null;
+    key = null;
+    if(os == null) os = new JsonSerializer();
+    serial = os;
+  }
+  
+  
+  public static EntityParser instance() {
     return new EntityParser();
+  }
+  
+  
+  public static EntityParser instance(ObjectSerializer os) {
+    return new EntityParser(os);
+  }
+  
+  
+  public ObjectSerializer getObjectSerializer() {
+    return serial;
+  }
+  
+  
+  public EntityParser setObjectSerializer(ObjectSerializer serializer) {
+    if(serializer != null) {
+      serial = serializer;
+    }
+    return this;
   }
   
   
@@ -178,8 +216,9 @@ public class EntityParser {
     if(five == null || five.trim().isEmpty() || is == null)
       return five;
     if(XmlConsts.START_ROB.equals(five)) {
-      StreamResult sr = StreamUtils.readStringUntil(is, XmlConsts.END_ROB);
-      obj = JsonReader.jsonToJava(sr.content());
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      StreamUtils.transferUntil(is, bos, XmlConsts.END_ROB);
+      obj = serial.fromBytes(bos.toByteArray());
       five = readFive(is);
     }
     return five;

@@ -21,7 +21,7 @@
 
 package us.pserver.revok.server;
 
-import com.jpower.rfl.Reflector;
+import us.pserver.revok.protocol.FakeInputStreamRef;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -39,11 +39,13 @@ import us.pserver.revok.MethodInvocationException;
 import us.pserver.revok.OpResult;
 import us.pserver.revok.RemoteMethod;
 import us.pserver.revok.channel.Channel;
-import us.pserver.revok.channel.Transport;
+import us.pserver.revok.protocol.Transport;
 import us.pserver.revok.container.AuthenticationException;
 import us.pserver.revok.container.ObjectContainer;
 import us.pserver.revok.factory.ChannelFactory;
 import us.pserver.revok.factory.HttpFactoryProvider;
+import us.pserver.revok.protocol.JsonSerializer;
+import us.pserver.revok.protocol.ObjectSerializer;
 
 /**
  * Servidor de rede para objetos remotos, cujos métodos 
@@ -85,6 +87,8 @@ public class RevokServer extends AbstractServer {
   
   private ExecutorService exec;
   
+  private ObjectSerializer serial;
+  
   
   /**
    * Construtor que recebe como argumento o 
@@ -104,6 +108,7 @@ public class RevokServer extends AbstractServer {
         .enableGZipCompression()
         .enableCryptography()
         .getHttpResponseChannelFactory();
+    serial = new JsonSerializer();
   }
   
   
@@ -125,6 +130,27 @@ public class RevokServer extends AbstractServer {
             "[RevokServer( ObjectContainer, HttpConnector )] "
                 + "Invalid NetConnector: "+ con);
     this.con = hcon;
+  }
+  
+  
+  public RevokServer(ObjectContainer cont, HttpConnector hcon, ObjectSerializer serial) {
+    this(cont, hcon);
+    if(serial == null)
+      serial = new JsonSerializer();
+    this.serial = serial;
+  }
+  
+  
+  public ObjectSerializer getObjectSerializer() {
+    return serial;
+  }
+  
+  
+  public RevokServer setObjectSerializer(ObjectSerializer serializer) {
+    if(serializer != null) {
+      serial = serializer;
+    }
+    return this;
   }
   
   
@@ -231,7 +257,7 @@ public class RevokServer extends AbstractServer {
                   HTTP_CONN_BUFFER_SIZE);
           conn.bind(sock);
           exec.submit(new HttpConnectionHandler(
-              factory.createChannel(conn), conn));
+              factory.createChannel(conn, serial), conn));
         } catch(SocketTimeoutException se) {}
       }//while
     } catch(IOException e) {
@@ -421,7 +447,7 @@ public class RevokServer extends AbstractServer {
       if(ret != null && InputStream.class
           .isAssignableFrom(ret.getClass())) {
         t.setInputStream((InputStream) ret);
-        op.setReturn(null);
+        op.setReturn(new FakeInputStreamRef());
       }
       t.setObject(op);
       return t;
@@ -480,8 +506,7 @@ public class RevokServer extends AbstractServer {
         close();
         return;
       }
-      
-      this.write(handleInvoke(trp));
+      this.write( handleInvoke(trp) );
       if(channel.isValid())
         this.run();
       else
@@ -507,15 +532,15 @@ public class RevokServer extends AbstractServer {
       if(trp == null 
           || !trp.hasContentEmbedded() 
           || rmt == null 
-          || rmt.params() == null
-          || rmt.params().isEmpty())
+          || rmt.args() == null
+          || rmt.args().isEmpty())
         return;
       
-      for(int i = 0; i < rmt.params().size(); i++) {
-        Object o = rmt.params().get(i);
+      for(int i = 0; i < rmt.args().size(); i++) {
+        Object o = rmt.args().get(i);
         if(o != null && FakeInputStreamRef.class
             .isAssignableFrom(o.getClass())) {
-          rmt.params().set(i, trp.getInputStream());
+          rmt.args().set(i, trp.getInputStream());
         }
       }//for
     }

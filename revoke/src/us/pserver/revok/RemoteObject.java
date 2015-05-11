@@ -25,12 +25,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Proxy;
 import us.pserver.revok.channel.Channel;
-import us.pserver.revok.channel.Transport;
+import us.pserver.revok.channel.HttpResponseChannel;
+import us.pserver.revok.protocol.Transport;
 import us.pserver.revok.container.Credentials;
 import us.pserver.revok.factory.ChannelFactory;
 import us.pserver.revok.factory.HttpFactoryProvider;
+import us.pserver.revok.protocol.JsonSerializer;
+import us.pserver.revok.protocol.ObjectSerializer;
 import us.pserver.revok.proxy.RemoteInvocationHandler;
-import us.pserver.revok.server.FakeInputStreamRef;
+import us.pserver.revok.protocol.FakeInputStreamRef;
 
 /**
  * Representa um objeto remoto para invocação de
@@ -49,6 +52,8 @@ public class RemoteObject {
   
   private Credentials cred;
   
+  private ObjectSerializer serial;
+  
   
   /**
    * Construtor padrão sem argumentos,
@@ -63,6 +68,7 @@ public class RemoteObject {
         .getHttpRequestChannelFactory();
     channel = null;
     cred = null;
+    serial = new JsonSerializer();
   }
   
   
@@ -81,6 +87,33 @@ public class RemoteObject {
         .enableCryptography()
         .enableGZipCompression()
         .getHttpRequestChannelFactory();
+    serial = new JsonSerializer();
+  }
+  
+  
+  /**
+   * Construtor que recebe as informações de 
+   * conexão de rede.
+   * @param con Conexão de rede.
+   */
+  public RemoteObject(HttpConnector con, ObjectSerializer serial) {
+    this(con);
+    if(serial == null)
+      serial = new JsonSerializer();
+    this.serial = serial;
+  }
+  
+  
+  public ObjectSerializer getObjectSerializer() {
+    return serial;
+  }
+  
+  
+  public RemoteObject setObjectSerializer(ObjectSerializer serializer) {
+    if(serializer != null) {
+      serial = serializer;
+    }
+    return this;
   }
   
   
@@ -167,9 +200,7 @@ public class RemoteObject {
         "Cannot create Channel. Invalid NetConnector ["+ net+ "]");
     if(factory == null) throw new IllegalStateException(
         "Invalid ChannelFactory ["+ factory+ "]");
-    System.out.print("* [RemoteObject.channel()] Creating new Channel: ");
-    channel = factory.createChannel(net);
-    System.out.println(channel);
+    channel = factory.createChannel(net, serial);
     return channel;
   }
   
@@ -197,7 +228,7 @@ public class RemoteObject {
   
   
   /**
-   * Create a Proxy instance of the remote object represented by interface Class passed.
+   * Create a Proxy instance of the remote object represented by the interface Class passed.
    * Any method invocation in the returned proxy object, will be invoked remotly in the real object on server side.
    * @param <T> The type of the Proxy Object (same of the Class interface argument).
    * @param namespace The namespace on the server where is stored the remote instance, or the [namespace].[objectname].
@@ -370,16 +401,16 @@ public class RemoteObject {
   
   private void checkInputStreamRef(Transport t, RemoteMethod r) {
     if(t == null || r == null) return;
-    if(r.types().isEmpty()) r.extTypesParams();
+    if(r.types().isEmpty()) r.extractTypesFromArgs();
     if(r.types().isEmpty()) return;
     for(int i = 0; i < r.types().size(); i++) {
       Class c = r.types().get(i);
       if(InputStream.class.isAssignableFrom(c)) {
-        Object o = r.params().get(i);
+        Object o = r.args().get(i);
         if(o != null && InputStream.class
             .isAssignableFrom(o.getClass())) {
           t.setInputStream((InputStream) o);
-          r.params().set(i, new FakeInputStreamRef());
+          r.args().set(i, new FakeInputStreamRef());
         }
       }
     }

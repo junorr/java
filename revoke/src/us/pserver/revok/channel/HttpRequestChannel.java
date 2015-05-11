@@ -21,6 +21,7 @@
 
 package us.pserver.revok.channel;
 
+import us.pserver.revok.protocol.Transport;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Iterator;
@@ -45,7 +46,8 @@ import us.pserver.revok.HttpConnector;
 import us.pserver.revok.http.EntityFactory;
 import us.pserver.revok.http.EntityParser;
 import us.pserver.revok.http.HttpConsts;
-import us.pserver.streams.StreamUtils;
+import us.pserver.revok.protocol.JsonSerializer;
+import us.pserver.revok.protocol.ObjectSerializer;
 
 
 /**
@@ -81,6 +83,8 @@ public class HttpRequestChannel implements Channel {
   
   private CryptKey key;
   
+  private ObjectSerializer serial;
+  
   private HttpConnector netc;
   
   private DefaultBHttpClientConnection conn;
@@ -110,7 +114,16 @@ public class HttpRequestChannel implements Channel {
     this.conn = null;
     key = null;
     response = null;
+    serial = new JsonSerializer();
     init();
+  }
+  
+  
+  public HttpRequestChannel(HttpConnector conn, ObjectSerializer serializer) {
+    this(conn);
+    if(serializer == null)
+      serializer = new JsonSerializer();
+    serial = serializer;
   }
   
   
@@ -125,6 +138,19 @@ public class HttpRequestChannel implements Channel {
         .add(new RequestUserAgent(HttpConsts.HD_VAL_USER_AGENT))
         .add(new RequestConnControl())
         .build();
+  }
+  
+  
+  public ObjectSerializer getObjectSerializer() {
+    return serial;
+  }
+  
+  
+  public HttpRequestChannel setObjectSerializer(ObjectSerializer serializer) {
+    if(serializer != null) {
+      serial = serializer;
+    }
+    return this;
   }
   
   
@@ -220,7 +246,7 @@ public class HttpRequestChannel implements Channel {
     BasicHttpEntityEnclosingRequest request = 
         new BasicHttpEntityEnclosingRequest(HttpConsts.POST, netc.getURIString());
     
-    EntityFactory fac = EntityFactory.factory();
+    EntityFactory fac = EntityFactory.instance(serial);
     String contenc = HttpConsts.HD_VAL_DEF_ENCODING;
     if(gzip) {
       contenc = HttpConsts.HD_VAL_GZIP_ENCODING;
@@ -292,7 +318,7 @@ public class HttpRequestChannel implements Channel {
       conn.receiveResponseEntity(response);
       HttpEntity content = response.getEntity();
       if(content == null) return null;
-      EntityParser par = EntityParser.create();
+      EntityParser par = EntityParser.instance(serial);
       if(gzip) par.enableGZipCoder();
       
       par.parse(content);

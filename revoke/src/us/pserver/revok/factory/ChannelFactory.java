@@ -22,6 +22,7 @@
 package us.pserver.revok.factory;
 
 import us.pserver.revok.channel.Channel;
+import us.pserver.revok.protocol.ObjectSerializer;
 
 
 /**
@@ -41,5 +42,12 @@ public interface ChannelFactory<T> {
    * @return <code>Channel</code>.
    */
   Channel createChannel(T arg);
+  
+  /**
+   * Cria um canal de transmissão de objetos.
+   * @param arg Argumento para a criação do canal.
+   * @return <code>Channel</code>.
+   */
+  Channel createChannel(T arg, ObjectSerializer serial);
   
 }

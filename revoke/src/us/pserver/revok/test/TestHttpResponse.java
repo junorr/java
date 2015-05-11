@@ -32,7 +32,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import org.apache.http.impl.DefaultBHttpServerConnection;
 import us.pserver.revok.channel.HttpResponseChannel;
-import us.pserver.revok.channel.Transport;
+import us.pserver.revok.protocol.Transport;
 import us.pserver.streams.StreamUtils;
 
 /**

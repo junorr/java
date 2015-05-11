@@ -21,7 +21,6 @@
 
 package us.pserver.revok.http;
 
-import com.cedarsoftware.util.io.JsonWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,8 +30,10 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.util.EntityUtils;
 import us.pserver.cdr.StringByteConverter;
-import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
+import us.pserver.revok.protocol.JsonSerializer;
+import us.pserver.revok.protocol.ObjectSerializer;
+import us.pserver.revok.protocol.XmlSerializer;
 import us.pserver.streams.IO;
 import us.pserver.streams.MixedWriteBuffer;
 
@@ -62,6 +63,8 @@ public class EntityFactory {
   
   private InputStream input;
   
+  private ObjectSerializer serial;
+  
   
   public EntityFactory(ContentType type) {
     if(type == null)
@@ -72,11 +75,21 @@ public class EntityFactory {
     key = null;
     obj = null;
     input = null;
+    serial = new JsonSerializer();
   }
   
   
-  public EntityFactory(String stype) {
-    this(ContentType.create(stype));
+  public EntityFactory(ContentType type, ObjectSerializer os) {
+    this(type);
+    if(os == null) os = new JsonSerializer();
+    serial = os;
+  }
+  
+  
+  public EntityFactory(ObjectSerializer os) {
+    this(TYPE_X_JAVA_ROB);
+    if(os == null) os = new JsonSerializer();
+    serial = os;
   }
   
   
@@ -85,24 +98,44 @@ public class EntityFactory {
   }
   
   
-  public static EntityFactory factory(ContentType type) {
+  public static EntityFactory instance(ContentType type) {
     if(instance == null) 
       instance = new EntityFactory(type);
     return instance;
   }
   
   
-  public static EntityFactory factory(String stype) {
+  public static EntityFactory instance(ContentType type, ObjectSerializer os) {
     if(instance == null) 
-      instance = new EntityFactory(stype);
+      instance = new EntityFactory(type, os);
     return instance;
   }
   
   
-  public static EntityFactory factory() {
+  public static EntityFactory instance(ObjectSerializer os) {
+    if(instance == null) 
+      instance = new EntityFactory(os);
+    return instance;
+  }
+  
+  
+  public static EntityFactory instance() {
     if(instance == null) 
       instance = new EntityFactory();
     return instance;
+  }
+  
+  
+  public ObjectSerializer getObjectSerializer() {
+    return serial;
+  }
+  
+  
+  public EntityFactory setObjectSerializer(ObjectSerializer serializer) {
+    if(serializer != null) {
+      serial = serializer;
+    }
+    return this;
   }
   
   
@@ -195,8 +228,7 @@ public class EntityFactory {
     }
     if(obj != null) {
       os.write(scv.convert(XmlConsts.START_ROB));
-      String js = JsonWriter.objectToJson(obj);
-      os.write(scv.convert(js));
+      os.write(serial.toBytes(obj));
       os.write(scv.convert(XmlConsts.END_ROB));
       os.flush();
     }
@@ -220,10 +252,10 @@ public class EntityFactory {
   
   
   public static void main(String[] args) throws IOException {
-    EntityFactory fac = EntityFactory.factory()
+    EntityFactory fac = EntityFactory.instance(new XmlSerializer());
         //.enableGZipCoder()
-        .enableCryptCoder(
-            CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5));
+        //.enableCryptCoder(
+          //  CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5));
     class MSG {
       String str;
       public MSG(String s) { str = s; }
@@ -235,7 +267,7 @@ public class EntityFactory {
     System.out.println();
     
     ent = fac.create();
-    EntityParser ep = EntityParser.create();//.enableGZipCoder();
+    EntityParser ep = EntityParser.instance(new XmlSerializer());//.enableGZipCoder();
     ep.parse(ent);
     System.out.println("* key: "+ ep.getCryptKey());
     System.out.println("* rob: "+ ep.getObject());

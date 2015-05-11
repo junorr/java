@@ -21,6 +21,7 @@
 
 package us.pserver.revok.channel;
 
+import us.pserver.revok.protocol.Transport;
 import java.io.IOException;
 
 

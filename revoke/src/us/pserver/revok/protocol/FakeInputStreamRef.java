@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.revok.server;
+package us.pserver.revok.protocol;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ import java.io.InputStream;
 /**
  * A fake implementation of InputStream wich does nothing (what?).
  * This is used for transfering information about method arguments 
- * on the wire, but not the InputStream itself.
+ * over the wire, but not the InputStream itself.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.1 - 20150422

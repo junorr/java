@@ -195,13 +195,13 @@ public class Invoker {
    * @throws AuthenticationException If authentication fails.
    */
   private void processArgs(RemoteMethod mth) throws MethodInvocationException, AuthenticationException {
-    List args = (List) mth.params().stream()
+    List args = (List) mth.args().stream()
         .filter(o->o.toString().startsWith(VAR_SIGNAL))
         .collect(Collectors.toList());
     for(Object o : args) {
       Object x = getObject(o.toString().substring(1));
-      int idx = mth.params().indexOf(o);
-      mth.params().set(idx, x);
+      int idx = mth.args().indexOf(o);
+      mth.args().set(idx, x);
     }
   }
   
@@ -242,8 +242,8 @@ public class Invoker {
       throw new MethodInvocationException("Method not found: "+ mth);
     }
     
-    Object ret = ref.invoke((mth.params().isEmpty() 
-        ? null : mth.params().toArray()));
+    Object ret = ref.invoke((mth.args().isEmpty() 
+        ? null : mth.args().toArray()));
       
     if(ref.hasError()) {
       if(currTry < tries) 

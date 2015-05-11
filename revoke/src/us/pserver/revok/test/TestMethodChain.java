@@ -49,7 +49,7 @@ public class TestMethodChain {
         .setCredentials(new Credentials("juno", "32132155".getBytes()));
     chain.add("contains")
         .types(String.class)
-        .params("StreamHandler");
+        .args("StreamHandler");
     
     System.out.println("* invoking...");
     System.out.println(chain.stringChain());

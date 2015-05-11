@@ -21,6 +21,7 @@
 
 package us.pserver.revok.channel;
 
+import us.pserver.revok.protocol.Transport;
 import java.io.IOException;
 import org.apache.http.ConnectionClosedException;
 import org.apache.http.HttpEntity;
@@ -42,6 +43,8 @@ import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.revok.http.EntityFactory;
 import us.pserver.revok.http.EntityParser;
 import us.pserver.revok.http.HttpConsts;
+import us.pserver.revok.protocol.JsonSerializer;
+import us.pserver.revok.protocol.ObjectSerializer;
 
 
 /**
@@ -75,6 +78,8 @@ public class HttpResponseChannel implements Channel {
   
   private HttpCoreContext context;
   
+  private ObjectSerializer serial;
+  
   
   /**
    * Construtor padrão, recebe um <code>Socket</code>
@@ -92,7 +97,15 @@ public class HttpResponseChannel implements Channel {
     key = null;
     valid = true;
     gzip = true;
+    serial = new JsonSerializer();
     init();
+  }
+  
+  
+  public HttpResponseChannel(HttpServerConnection hsc, ObjectSerializer os) {
+    this(hsc);
+    if(os == null) os = new JsonSerializer();
+    serial = os;
   }
   
   
@@ -104,6 +117,19 @@ public class HttpResponseChannel implements Channel {
         .add(new ResponseContent())
         .add(new ResponseConnControl())
         .build();
+  }
+  
+  
+  public ObjectSerializer getObjectSerializer() {
+    return serial;
+  }
+  
+  
+  public HttpResponseChannel setObjectSerializer(ObjectSerializer serializer) {
+    if(serializer != null) {
+      serial = serializer;
+    }
+    return this;
   }
   
   
@@ -139,7 +165,7 @@ public class HttpResponseChannel implements Channel {
     if(gzip) contenc = HttpConsts.HD_VAL_GZIP_ENCODING;
     response.addHeader(HttpConsts.HD_CONT_ENCODING, contenc);
     
-    EntityFactory fac = EntityFactory.factory();
+    EntityFactory fac = EntityFactory.instance(serial);
     if(gzip) fac.enableGZipCoder();
     if(key != null) fac.enableCryptCoder(key);
     fac.put(trp.getWriteVersion());
@@ -184,7 +210,7 @@ public class HttpResponseChannel implements Channel {
       HttpEntity content = request.getEntity();
       if(content == null) return null;
       
-      EntityParser par = EntityParser.create();
+      EntityParser par = EntityParser.instance(serial);
       if(gzip) par.enableGZipCoder();
       par.parse(content);
       Transport t = (Transport) par.getObject();

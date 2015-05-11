@@ -126,8 +126,6 @@ public class OpResult {
    * @param error Exception lançada.
    */
   public void setError(Exception error) {
-      System.err.println("##-> [OpResult.setError( "+ error.toString()+ " )]");
-      error.printStackTrace();
     if(error != null) {
       if(MethodInvocationException.class
           .isAssignableFrom(error.getClass()))

@@ -2714,3 +2714,200 @@ line: 1, col: 3
 [INFO ] (08/05/2015 14:03:22): Authentication Enabled: Credentials{ user = juno }
 [INFO ] (08/05/2015 14:03:22): Response sent: OpResult{ success = true, return = [public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.xyz(double,do... }
 [INFO ] (08/05/2015 14:03:22): Connection closed by client.
+[INFO ] (11/05/2015 10:59:18): Starting RevokServer...
+[INFO ] (11/05/2015 10:59:18): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (11/05/2015 10:59:18): RevokServer started!
+
+[INFO ] (11/05/2015 10:59:26): ------------------------------
+[INFO ] (11/05/2015 10:59:26): Handling socket: 127.0.0.1:9995<->127.0.0.1:49777
+[INFO ] (11/05/2015 10:59:27): Remote request: global.ObjectContainer.listMethods( calc.ICalculator )
+[INFO ] (11/05/2015 10:59:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 10:59:27): Response sent: OpResult{ success = true, return = [public us.pserver.revok.test.Calculator us.pserver.revok.test.Calculator.sub(), public... }
+[INFO ] (11/05/2015 10:59:27): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (11/05/2015 10:59:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 10:59:27): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (11/05/2015 10:59:27): Connection closed by client.
+[INFO ] (11/05/2015 11:12:54): ------------------------------
+[INFO ] (11/05/2015 11:12:54): Handling socket: 127.0.0.1:9995<->127.0.0.1:49824
+[INFO ] (11/05/2015 11:12:55): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (11/05/2015 11:12:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:12:55): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (11/05/2015 11:12:55): Remote request: global.RevokServer.toString(  )
+[INFO ] (11/05/2015 11:12:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:12:55): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@29656b1a }
+[INFO ] (11/05/2015 11:12:55): Remote request: global.RevokServer.isRunning(  )
+[INFO ] (11/05/2015 11:12:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:12:55): Response sent: OpResult{ success = true, return = true }
+[INFO ] (11/05/2015 11:12:55): Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (11/05/2015 11:12:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:12:55): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (11/05/2015 11:12:55): Remote request: io.IStreamHandler.toString(  )
+[INFO ] (11/05/2015 11:12:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:12:55): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@3cfe0092 }
+[INFO ] (11/05/2015 11:12:55): Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (11/05/2015 11:12:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:12:55): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (11/05/2015 11:12:55): Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (11/05/2015 11:12:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:16:26): Starting RevokServer...
+[INFO ] (11/05/2015 11:16:26): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (11/05/2015 11:16:26): RevokServer started!
+
+[INFO ] (11/05/2015 11:16:28): ------------------------------
+[INFO ] (11/05/2015 11:16:28): Handling socket: 127.0.0.1:9995<->127.0.0.1:49832
+[INFO ] (11/05/2015 11:16:28): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (11/05/2015 11:16:28): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:16:28):  -->> Method Invoked. Return transport: Transport{object=OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:16:28): Remote request: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (11/05/2015 11:16:46): Starting RevokServer...
+[INFO ] (11/05/2015 11:16:46): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (11/05/2015 11:16:46): RevokServer started!
+
+[INFO ] (11/05/2015 11:17:01): Starting RevokServer...
+[INFO ] (11/05/2015 11:17:01): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (11/05/2015 11:17:01): RevokServer started!
+
+[INFO ] (11/05/2015 11:17:04): ------------------------------
+[INFO ] (11/05/2015 11:17:04): Handling socket: 127.0.0.1:9995<->127.0.0.1:49833
+[INFO ] (11/05/2015 11:17:04): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (11/05/2015 11:17:04): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:17:04):  -->> Method Invoked. Return transport: Transport{object=OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:17:04): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (11/05/2015 11:17:04): Remote request: global.RevokServer.toString(  )
+[INFO ] (11/05/2015 11:17:04): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:17:04):  -->> Method Invoked. Return transport: Transport{object=OpResult{ success = true, return = us.pserver.revok.server.RevokServer@799d9dd8 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:17:04): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@799d9dd8 }
+[INFO ] (11/05/2015 11:17:04): Remote request: global.RevokServer.isRunning(  )
+[INFO ] (11/05/2015 11:17:04): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:17:04):  -->> Method Invoked. Return transport: Transport{object=OpResult{ success = true, return = true }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:17:04): Response sent: OpResult{ success = true, return = true }
+[INFO ] (11/05/2015 11:17:04): Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (11/05/2015 11:17:04): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:17:04):  -->> Method Invoked. Return transport: Transport{object=OpResult{ success = true, return = 6 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:17:04): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (11/05/2015 11:17:04): Remote request: io.IStreamHandler.toString(  )
+[INFO ] (11/05/2015 11:17:04): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:17:04):  -->> Method Invoked. Return transport: Transport{object=OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@7a13b0e5 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:17:04): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@7a13b0e5 }
+[INFO ] (11/05/2015 11:17:05): Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (11/05/2015 11:17:05): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:17:05):  -->> Method Invoked. Return transport: Transport{object=OpResult{ success = true, return = 298491 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:17:05): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (11/05/2015 11:17:05): Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (11/05/2015 11:17:05): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:20:26): Starting RevokServer...
+[INFO ] (11/05/2015 11:20:26): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (11/05/2015 11:20:26): RevokServer started!
+
+[INFO ] (11/05/2015 11:20:29): ------------------------------
+[INFO ] (11/05/2015 11:20:29): Handling socket: 127.0.0.1:9995<->127.0.0.1:49842
+[INFO ] (11/05/2015 11:20:29): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (11/05/2015 11:20:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:20:29): -->> OpResult=OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (11/05/2015 11:20:29): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:20:29): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (11/05/2015 11:20:30): Remote request: global.RevokServer.toString(  )
+[INFO ] (11/05/2015 11:20:30): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:20:30): -->> OpResult=OpResult{ success = true, return = us.pserver.revok.server.RevokServer@5d10b156 }
+[INFO ] (11/05/2015 11:20:30): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = us.pserver.revok.server.RevokServer@5d10b156 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:20:30): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@5d10b156 }
+[INFO ] (11/05/2015 11:20:30): Remote request: global.RevokServer.isRunning(  )
+[INFO ] (11/05/2015 11:20:30): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:20:30): -->> OpResult=OpResult{ success = true, return = true }
+[INFO ] (11/05/2015 11:20:30): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = true }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:20:30): Response sent: OpResult{ success = true, return = true }
+[INFO ] (11/05/2015 11:20:30): Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (11/05/2015 11:20:30): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:20:30): -->> OpResult=OpResult{ success = true, return = 6 }
+[INFO ] (11/05/2015 11:20:30): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = 6 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:20:30): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (11/05/2015 11:20:30): Remote request: io.IStreamHandler.toString(  )
+[INFO ] (11/05/2015 11:20:30): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:20:30): -->> OpResult=OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@1d74977f }
+[INFO ] (11/05/2015 11:20:30): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@1d74977f }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:20:30): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@1d74977f }
+[INFO ] (11/05/2015 11:20:30): Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (11/05/2015 11:20:30): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:20:30): -->> OpResult=OpResult{ success = true, return = 298491 }
+[INFO ] (11/05/2015 11:20:30): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = 298491 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:20:30): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (11/05/2015 11:20:30): Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (11/05/2015 11:20:30): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:20:30): -->> OpResult=OpResult{ success = true, return = sun.nio.ch.ChannelInputStream@4d07d564 }
+[INFO ] (11/05/2015 11:22:44): Starting RevokServer...
+[INFO ] (11/05/2015 11:22:44): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (11/05/2015 11:22:44): RevokServer started!
+
+[INFO ] (11/05/2015 11:22:46): ------------------------------
+[INFO ] (11/05/2015 11:22:46): Handling socket: 127.0.0.1:9995<->127.0.0.1:49849
+[INFO ] (11/05/2015 11:22:47): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (11/05/2015 11:22:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:22:47): -->> OpResult=OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (11/05/2015 11:22:47): -->> Pack Transport=Transport{object=OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:22:47): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:22:47): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (11/05/2015 11:22:47): Remote request: global.RevokServer.toString(  )
+[INFO ] (11/05/2015 11:22:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:22:47): -->> OpResult=OpResult{ success = true, return = us.pserver.revok.server.RevokServer@3c907504 }
+[INFO ] (11/05/2015 11:22:47): -->> Pack Transport=Transport{object=OpResult{ success = true, return = us.pserver.revok.server.RevokServer@3c907504 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:22:47): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = us.pserver.revok.server.RevokServer@3c907504 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:22:47): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@3c907504 }
+[INFO ] (11/05/2015 11:22:47): Remote request: global.RevokServer.isRunning(  )
+[INFO ] (11/05/2015 11:22:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:22:47): -->> OpResult=OpResult{ success = true, return = true }
+[INFO ] (11/05/2015 11:22:47): -->> Pack Transport=Transport{object=OpResult{ success = true, return = true }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:22:47): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = true }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:22:47): Response sent: OpResult{ success = true, return = true }
+[INFO ] (11/05/2015 11:22:47): Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (11/05/2015 11:22:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:22:47): -->> OpResult=OpResult{ success = true, return = 6 }
+[INFO ] (11/05/2015 11:22:47): -->> Pack Transport=Transport{object=OpResult{ success = true, return = 6 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:22:47): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = 6 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:22:47): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (11/05/2015 11:22:47): Remote request: io.IStreamHandler.toString(  )
+[INFO ] (11/05/2015 11:22:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:22:47): -->> OpResult=OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@62513e32 }
+[INFO ] (11/05/2015 11:22:47): -->> Pack Transport=Transport{object=OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@62513e32 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:22:47): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@62513e32 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:22:47): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@62513e32 }
+[INFO ] (11/05/2015 11:22:47): Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (11/05/2015 11:22:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:22:47): -->> OpResult=OpResult{ success = true, return = 298491 }
+[INFO ] (11/05/2015 11:22:47): -->> Pack Transport=Transport{object=OpResult{ success = true, return = 298491 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:22:47): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = 298491 }, hasContentEmbedded=false}
+[INFO ] (11/05/2015 11:22:47): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (11/05/2015 11:22:47): Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (11/05/2015 11:22:47): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:22:47): -->> OpResult=OpResult{ success = true, return = sun.nio.ch.ChannelInputStream@77b822e6 }
+[INFO ] (11/05/2015 11:22:47): -->> Pack Transport=Transport{object=OpResult{ success = true, return = java.io.InputStream }, hasContentEmbedded=true}
+[INFO ] (11/05/2015 11:22:47): -->> Method Invoked. Return=Transport{object=OpResult{ success = true, return = java.io.InputStream }, hasContentEmbedded=true}
+[INFO ] (11/05/2015 11:22:47): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (11/05/2015 11:22:47): Connection closed by client.
+[INFO ] (11/05/2015 11:34:12): Starting RevokServer...
+[INFO ] (11/05/2015 11:34:12): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (11/05/2015 11:34:12): RevokServer started!
+
+[INFO ] (11/05/2015 11:34:24): ------------------------------
+[INFO ] (11/05/2015 11:34:24): Handling socket: 127.0.0.1:9995<->127.0.0.1:49930
+[INFO ] (11/05/2015 11:34:25): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (11/05/2015 11:34:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:34:25): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (11/05/2015 11:34:25): Remote request: global.RevokServer.toString(  )
+[INFO ] (11/05/2015 11:34:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:34:25): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@31146ef4 }
+[INFO ] (11/05/2015 11:34:25): Remote request: global.RevokServer.isRunning(  )
+[INFO ] (11/05/2015 11:34:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:34:25): Response sent: OpResult{ success = true, return = true }
+[INFO ] (11/05/2015 11:34:25): Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (11/05/2015 11:34:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:34:25): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (11/05/2015 11:34:25): Remote request: io.IStreamHandler.toString(  )
+[INFO ] (11/05/2015 11:34:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:34:25): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@3994bf24 }
+[INFO ] (11/05/2015 11:34:26): Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (11/05/2015 11:34:26): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:34:26): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (11/05/2015 11:34:26): Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (11/05/2015 11:34:26): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (11/05/2015 11:34:26): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (11/05/2015 11:34:26): Connection closed by client.

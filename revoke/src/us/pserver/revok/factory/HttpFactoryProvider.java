@@ -26,6 +26,7 @@ import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.revok.HttpConnector;
 import us.pserver.revok.channel.HttpRequestChannel;
 import us.pserver.revok.channel.HttpResponseChannel;
+import us.pserver.revok.protocol.ObjectSerializer;
 
 
 /**
@@ -130,6 +131,18 @@ public class HttpFactoryProvider {
             .setEncryptionEnabled(crypt)
             .setGZipCompressionEnabled(gzip);
       }
+      @Override
+      public HttpRequestChannel createChannel(HttpConnector conn, ObjectSerializer serial) {
+        if(conn == null) {
+          throw new IllegalArgumentException(
+              "[ChannelFactory.createChannel( NetConnector )] "
+                  + "Invalid NetConnector {conn="+ conn+ "}");
+        }
+        return new HttpRequestChannel(conn, serial)
+            .setCryptAlgorithm(algo)
+            .setEncryptionEnabled(crypt)
+            .setGZipCompressionEnabled(gzip);
+      }
     };
   }
   
@@ -149,6 +162,15 @@ public class HttpFactoryProvider {
               + "Invalid HttpServerConnection {conn="+ conn+ "}");
         }
         return new HttpResponseChannel(conn);
+      }
+      @Override
+      public HttpResponseChannel createChannel(HttpServerConnection conn, ObjectSerializer serial) {
+        if(conn == null || !conn.isOpen()) {
+          throw new IllegalArgumentException(
+              "[ChannelFactory.createChannel( HttpServerConnection )] "
+              + "Invalid HttpServerConnection {conn="+ conn+ "}");
+        }
+        return new HttpResponseChannel(conn, serial);
       }
     };
   }

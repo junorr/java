@@ -24,7 +24,7 @@ package us.pserver.revok.test;
 import java.io.IOException;
 import us.pserver.revok.channel.HttpRequestChannel;
 import us.pserver.revok.HttpConnector;
-import us.pserver.revok.channel.Transport;
+import us.pserver.revok.protocol.Transport;
 
 /**
  *

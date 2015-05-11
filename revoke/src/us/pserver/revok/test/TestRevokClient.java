@@ -30,6 +30,8 @@ import us.pserver.revok.MethodInvocationException;
 import us.pserver.revok.RemoteMethod;
 import us.pserver.revok.RemoteObject;
 import us.pserver.revok.container.Credentials;
+import us.pserver.revok.protocol.XmlSerializer;
+import us.pserver.revok.server.Server;
 import us.pserver.streams.IO;
 
 /**
@@ -44,27 +46,30 @@ public class TestRevokClient {
     MethodChain chain = new MethodChain();
     HttpConnector hc = new HttpConnector("localhost", 9995);
     Credentials cred = new Credentials("juno", "1234".getBytes());
-    RemoteObject rob = new RemoteObject(hc)
+    RemoteObject rob = new RemoteObject(hc, new XmlSerializer())
         .setCredentials(cred);
+    RemoteMethod rm = null;
+    List<String> mts = null;
     
+    /*
     System.out.println("----------------------------------");
-    RemoteMethod rm = new RemoteMethod()
+    rm = new RemoteMethod()
         .forObject("global.ObjectContainer")
         .method("listMethods")
         .types(String.class)
-        .params("calc.ICalculator");
+        .args("calc.ICalculator");
     System.out.println("* Invoke      --> "+ rm);
-    List<String> mts = (List<String>) rob.invoke(rm);
+    mts = (List<String>) rob.invoke(rm);
     System.out.println("* mts.size="+ mts.size());
     mts.forEach(System.out::println);
-    
+    */
     
     System.out.println("----------------------------------");
     rm = new RemoteMethod()
         .forObject("global.ObjectContainer")
         .method("objects")
         .types(String.class)
-        .params("global");
+        .args("global");
     System.out.println("* Invoke      --> "+ rm);
     mts = (List<String>) rob.invoke(rm);
     System.out.println("* objs.size="+ mts.size());
@@ -109,7 +114,7 @@ public class TestRevokClient {
     System.out.println("* Invoking calc.sum( 30, 27 ) = "+ calc.sum(30, 27));
     System.out.println("* Invoking calc.printZ()");
     calc.printZ();
-    /*
+    */
     System.out.println("----- ProxyClass: Server -----");
     Server srv = rob.createRemoteObject("global.RevokServer", Server.class);
     System.out.println("* Server: srv="+ srv);
@@ -117,7 +122,7 @@ public class TestRevokClient {
     System.out.println("* Invoking srv.getAvailableThreads() = "+ srv.getAvailableThreads());
     //System.out.println("* Invoking srv.stop()");
     //srv.stop();
-    */
+    
     System.out.println("----------------------------------");
     IStreamHandler handler = rob.createRemoteObject("io", IStreamHandler.class);
     String p = "/storage/pic.jpg";

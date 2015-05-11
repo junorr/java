@@ -21,31 +21,34 @@
 
 package us.pserver.revok.test;
 
-import us.pserver.revok.HttpConnector;
-import us.pserver.revok.container.Authenticator;
-import us.pserver.revok.container.Credentials;
-import us.pserver.revok.container.ObjectContainer;
-import us.pserver.revok.container.SingleCredentialsSource;
+import java.io.IOException;
+import us.pserver.cdr.StringByteConverter;
+import us.pserver.revok.OpResult;
 import us.pserver.revok.protocol.XmlSerializer;
-import us.pserver.revok.server.RevokServer;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 17/04/2015
+ * @version 1.0 - 11/05/2015
  */
-public class TestRevokServer {
+public class TestXStream {
 
-  public static void main(String[] args) {
-    HttpConnector hc = new HttpConnector("0.0.0.0", 9995);
-    ObjectContainer cont = new ObjectContainer(
-        new Authenticator( new SingleCredentialsSource(
-            new Credentials("juno", "1234".getBytes()))));
-    RevokServer revok = new RevokServer(cont, hc, new XmlSerializer());
-    Calculator calc = new Calculator();
-    cont.put("calc.ICalculator", calc);
-    cont.put("io.IStreamHandler", new StreamHandler());
-    revok.start();
+  
+  public static void main(String[] args) throws IOException {
+    XmlSerializer xs = new XmlSerializer();
+    StringByteConverter scv = new StringByteConverter();
+    OpResult result = new OpResult();
+    result.setReturn("Some String");
+    result.setError(new IOException("Some Exception"));
+    result.setSuccessOperation(false);
+    System.out.println("* toBytes:");
+    byte[] bs = xs.toBytes(result);
+    System.out.println(scv.reverse(bs));
+    
+    System.out.println("\n");
+    
+    System.out.println("* fromBytes:");
+    System.out.println(xs.fromBytes(bs));
   }
   
 }

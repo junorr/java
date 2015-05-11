@@ -88,7 +88,7 @@ public class RemoteInvocationHandler implements InvocationHandler {
             .concat(ints[0].getSimpleName()) : objname))
         .method(method.getName());
     if(args != null && args.length > 0) {
-      rm.types(method.getParameterTypes()).params(args);
+      rm.types(method.getParameterTypes()).args(args);
     }
     return rob.invoke(rm);
   }
