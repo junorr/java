@@ -40,7 +40,8 @@ public class TestRevokServer {
     HttpConnector hc = new HttpConnector("0.0.0.0", 9995);
     ObjectContainer cont = new ObjectContainer(
         new Authenticator( new SingleCredentialsSource(
-            new Credentials("juno", "1234".getBytes()))));
+            new Credentials("juno", "1234".getBytes())
+                .addAccess("*"))));
     RevokServer revok = new RevokServer(cont, hc, new XmlSerializer());
     Calculator calc = new Calculator();
     cont.put("calc.ICalculator", calc);

@@ -40,7 +40,7 @@ import us.pserver.streams.StreamUtils;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 14/04/2015
  */
-public class EntityParser {
+public class HttpEntityParser {
 
   private MixedWriteBuffer buffer;
   
@@ -53,7 +53,7 @@ public class EntityParser {
   private ObjectSerializer serial;
   
   
-  public EntityParser() {
+  public HttpEntityParser() {
     buffer = new MixedWriteBuffer();
     input = null;
     obj = null;
@@ -62,7 +62,7 @@ public class EntityParser {
   }
   
   
-  public EntityParser(ObjectSerializer os) {
+  public HttpEntityParser(ObjectSerializer os) {
     buffer = new MixedWriteBuffer();
     buffer = new MixedWriteBuffer();
     input = null;
@@ -73,13 +73,13 @@ public class EntityParser {
   }
   
   
-  public static EntityParser instance() {
-    return new EntityParser();
+  public static HttpEntityParser instance() {
+    return new HttpEntityParser();
   }
   
   
-  public static EntityParser instance(ObjectSerializer os) {
-    return new EntityParser(os);
+  public static HttpEntityParser instance(ObjectSerializer os) {
+    return new HttpEntityParser(os);
   }
   
   
@@ -88,7 +88,7 @@ public class EntityParser {
   }
   
   
-  public EntityParser setObjectSerializer(ObjectSerializer serializer) {
+  public HttpEntityParser setObjectSerializer(ObjectSerializer serializer) {
     if(serializer != null) {
       serial = serializer;
     }
@@ -96,7 +96,7 @@ public class EntityParser {
   }
   
   
-  public EntityParser enableCryptCoder(CryptKey key) {
+  public HttpEntityParser enableCryptCoder(CryptKey key) {
     if(key != null) {
       buffer.getCoderFactory().setCryptCoderEnabled(true, key);
     }
@@ -104,37 +104,37 @@ public class EntityParser {
   }
   
   
-  public EntityParser disableAllCoders() {
+  public HttpEntityParser disableAllCoders() {
     buffer.getCoderFactory().clearCoders();
     return this;
   }
   
   
-  public EntityParser disableCryptCoder() {
+  public HttpEntityParser disableCryptCoder() {
     buffer.getCoderFactory().setCryptCoderEnabled(false, null);
     return this;
   }
   
   
-  public EntityParser enableGZipCoder() {
+  public HttpEntityParser enableGZipCoder() {
     buffer.getCoderFactory().setGZipCoderEnabled(true);
     return this;
   }
   
   
-  public EntityParser disableGZipCoder() {
+  public HttpEntityParser disableGZipCoder() {
     buffer.getCoderFactory().setGZipCoderEnabled(false);
     return this;
   }
   
   
-  public EntityParser enableBase64Coder() {
+  public HttpEntityParser enableBase64Coder() {
     buffer.getCoderFactory().setBase64CoderEnabled(true);
     return this;
   }
   
   
-  public EntityParser disableBase64Coder() {
+  public HttpEntityParser disableBase64Coder() {
     buffer.getCoderFactory().setBase64CoderEnabled(false);
     return this;
   }
@@ -161,7 +161,7 @@ public class EntityParser {
   }
   
   
-  public EntityParser parse(HttpEntity entity) throws IOException {
+  public HttpEntityParser parse(HttpEntity entity) throws IOException {
     if(entity == null)
       throw new IllegalArgumentException(
           "[EntityParser.parse( HttpEntity )] "

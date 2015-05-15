@@ -394,8 +394,8 @@ public class RevokServer extends AbstractServer {
         op.setSuccessOperation(false);
         op.setError(e);
         LogProvider.getSimpleLog()
-            .warning("Error invoking method ["+ rm.method()+ "]")
-            .warning(e, true);
+            .warning("Error invoking method ["+ rm+ "}")
+            .warning(e, !(e instanceof AuthenticationException));
       }
       return op;
     }
@@ -464,7 +464,7 @@ public class RevokServer extends AbstractServer {
     private Transport handleInvoke(Transport trp) {
       if(trp == null || trp.getObject() == null) 
         return null;
-      LogProvider.getSimpleLog().info("Remote request: "+ trp.getObject());
+      LogProvider.getSimpleLog().info("<- Remote request: "+ trp.getObject());
       if(trp.isObjectFromType(RemoteMethod.class)) {
         RemoteMethod rm = trp.castObject();
         this.checkInputStreamReference(rm, trp);

@@ -128,7 +128,7 @@ public class Invoker {
     nullarg(RemoteMethod.class, rm);
     if(!container.contains(rm.objectName())) {
       throw new MethodInvocationException("[Invoker.getObject( RemoteMethod )] "
-          + "Object not found ["+ rm.objectName()+ "]");
+          + "Object not found {"+ rm.objectName()+ "}");
     }
     return getObject(rm.objectName());
   }
@@ -164,7 +164,7 @@ public class Invoker {
   private Object invokeAndSave(RemoteMethod mth) throws MethodInvocationException, AuthenticationException {
     Object res = invoke(mth, 0);
     if(res != null) {
-      container.put(mth.returnVar().substring(1), res);
+      container.put(mth.getReturnVar().substring(1), res);
     }
     return res;
   }
@@ -178,7 +178,7 @@ public class Invoker {
    * @throws AuthenticationException If authentication fails.
    */
   public Object invoke(RemoteMethod mth) throws MethodInvocationException, AuthenticationException {
-    if(mth.returnVar() != null) {
+    if(mth.getReturnVar() != null) {
       return invokeAndSave(mth);
     }
     else {

@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Proxy;
 import us.pserver.revok.channel.Channel;
-import us.pserver.revok.channel.HttpResponseChannel;
 import us.pserver.revok.protocol.Transport;
 import us.pserver.revok.container.Credentials;
 import us.pserver.revok.factory.ChannelFactory;

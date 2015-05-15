@@ -50,13 +50,13 @@ public class Authenticator {
    * Execute an authentication of the Credentials object agains the CredentialsSource database.
    * This method will throw an AuthenticationException if the authentication fails.
    * @param cred Credentials wich will be authenticated.
-   * @return <code>true</code> if the authentication process is successful.
+   * @return The Credentials object stored in server side.
    * @throws AuthenticationException In case the authentication fail for any reason (Access denied, invalid Credentials, etc.).
    */
-  public boolean authenticate(Credentials cred) throws AuthenticationException {
+  public Credentials authenticate(Credentials cred) throws AuthenticationException {
     if(cred == null || cred.getUser() == null)
       throw new AuthenticationException(
-          "Invalid Credentials ["+ cred+ "]");
+          "Invalid Credentials {"+ cred+ "}");
     
     List<Credentials> cs = source.getCredentials();
     if(cs.isEmpty())
@@ -64,7 +64,7 @@ public class Authenticator {
     
     for(Credentials c : cs) {
       if(c != null && c.authenticate(cred))
-        return true;
+        return c;
     }
     throw new AuthenticationException("Authentication Failed");
   }

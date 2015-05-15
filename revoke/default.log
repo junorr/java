@@ -2911,3 +2911,367 @@ line: 1, col: 3
 [INFO ] (11/05/2015 11:34:26): Authentication Enabled: Credentials{ user = juno }
 [INFO ] (11/05/2015 11:34:26): Response sent: OpResult{ success = true, return = java.io.InputStream }
 [INFO ] (11/05/2015 11:34:26): Connection closed by client.
+[INFO ] (15/05/2015 11:20:45): Starting RevokServer...
+[INFO ] (15/05/2015 11:20:45): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 11:20:45): RevokServer started!
+
+[INFO ] (15/05/2015 11:20:56): ------------------------------
+[INFO ] (15/05/2015 11:20:56): Handling socket: 127.0.0.1:9995<->127.0.0.1:51118
+[INFO ] (15/05/2015 11:20:57): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 11:20:57): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 11:20:57): Error invoking method [objects]
+[WARN ] (15/05/2015 11:20:57): AuthenticationException: Credentials{ user = juno } do not have access to namespace {global}
+[WARN ] (15/05/2015 11:20:57):   us.pserver.revok.container.ObjectContainer.get(ObjectContainer.java:235)
+[WARN ] (15/05/2015 11:20:57):   us.pserver.revok.server.Invoker.getObject(Invoker.java:147)
+[WARN ] (15/05/2015 11:20:57):   us.pserver.revok.server.Invoker.getObject(Invoker.java:133)
+[WARN ] (15/05/2015 11:20:57):   us.pserver.revok.server.Invoker.invoke(Invoker.java:231)
+[WARN ] (15/05/2015 11:20:57):   us.pserver.revok.server.Invoker.invoke(Invoker.java:185)
+[WARN ] (15/05/2015 11:20:57):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.invoke(RevokServer.java:390)
+[WARN ] (15/05/2015 11:20:57):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.handleInvoke(RevokServer.java:471)
+[WARN ] (15/05/2015 11:20:57):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:509)
+[WARN ] (15/05/2015 11:20:57):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (15/05/2015 11:20:57):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (15/05/2015 11:20:57):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (15/05/2015 11:20:57):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (15/05/2015 11:20:57):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (15/05/2015 11:24:30): ------------------------------
+[INFO ] (15/05/2015 11:24:30): Handling socket: 127.0.0.1:9995<->127.0.0.1:51126
+[INFO ] (15/05/2015 11:24:30): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 11:24:30): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 11:24:30): Error invoking method [objects]
+[WARN ] (15/05/2015 11:24:30): AuthenticationException: Credentials{ user = juno } do not have access to namespace {global}
+[WARN ] (15/05/2015 11:24:30):   us.pserver.revok.container.ObjectContainer.get(ObjectContainer.java:235)
+[WARN ] (15/05/2015 11:24:30):   us.pserver.revok.server.Invoker.getObject(Invoker.java:147)
+[WARN ] (15/05/2015 11:24:30):   us.pserver.revok.server.Invoker.getObject(Invoker.java:133)
+[WARN ] (15/05/2015 11:24:30):   us.pserver.revok.server.Invoker.invoke(Invoker.java:231)
+[WARN ] (15/05/2015 11:24:30):   us.pserver.revok.server.Invoker.invoke(Invoker.java:185)
+[WARN ] (15/05/2015 11:24:30):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.invoke(RevokServer.java:390)
+[WARN ] (15/05/2015 11:24:30):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.handleInvoke(RevokServer.java:471)
+[WARN ] (15/05/2015 11:24:30):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:509)
+[WARN ] (15/05/2015 11:24:30):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (15/05/2015 11:24:30):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (15/05/2015 11:24:30):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (15/05/2015 11:24:30):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (15/05/2015 11:24:30):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (15/05/2015 11:26:48): ------------------------------
+[INFO ] (15/05/2015 11:26:48): Handling socket: 127.0.0.1:9995<->127.0.0.1:51129
+[INFO ] (15/05/2015 11:26:49): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 11:26:49): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 11:26:49): Error invoking method [objects]
+[WARN ] (15/05/2015 11:26:49): AuthenticationException: Credentials{ user = juno } do not have access to namespace {global}
+[WARN ] (15/05/2015 11:26:49):   us.pserver.revok.container.ObjectContainer.get(ObjectContainer.java:235)
+[WARN ] (15/05/2015 11:26:49):   us.pserver.revok.server.Invoker.getObject(Invoker.java:147)
+[WARN ] (15/05/2015 11:26:49):   us.pserver.revok.server.Invoker.getObject(Invoker.java:133)
+[WARN ] (15/05/2015 11:26:49):   us.pserver.revok.server.Invoker.invoke(Invoker.java:231)
+[WARN ] (15/05/2015 11:26:49):   us.pserver.revok.server.Invoker.invoke(Invoker.java:185)
+[WARN ] (15/05/2015 11:26:49):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.invoke(RevokServer.java:390)
+[WARN ] (15/05/2015 11:26:49):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.handleInvoke(RevokServer.java:471)
+[WARN ] (15/05/2015 11:26:49):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:509)
+[WARN ] (15/05/2015 11:26:49):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (15/05/2015 11:26:49):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (15/05/2015 11:26:49):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (15/05/2015 11:26:49):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (15/05/2015 11:26:49):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (15/05/2015 11:27:02): Starting RevokServer...
+[INFO ] (15/05/2015 11:27:02): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 11:27:02): RevokServer started!
+
+[INFO ] (15/05/2015 11:27:05): ------------------------------
+[INFO ] (15/05/2015 11:27:05): Handling socket: 127.0.0.1:9995<->127.0.0.1:51130
+[INFO ] (15/05/2015 11:27:06): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 11:27:06): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 11:27:06): Error invoking method [objects]
+[WARN ] (15/05/2015 11:27:06): AuthenticationException: Credentials{ user = juno } do not have access to namespace{global}
+[WARN ] (15/05/2015 11:27:06):   us.pserver.revok.container.ObjectContainer.get(ObjectContainer.java:236)
+[WARN ] (15/05/2015 11:27:06):   us.pserver.revok.server.Invoker.getObject(Invoker.java:147)
+[WARN ] (15/05/2015 11:27:06):   us.pserver.revok.server.Invoker.getObject(Invoker.java:133)
+[WARN ] (15/05/2015 11:27:06):   us.pserver.revok.server.Invoker.invoke(Invoker.java:231)
+[WARN ] (15/05/2015 11:27:06):   us.pserver.revok.server.Invoker.invoke(Invoker.java:185)
+[WARN ] (15/05/2015 11:27:06):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.invoke(RevokServer.java:390)
+[WARN ] (15/05/2015 11:27:06):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.handleInvoke(RevokServer.java:471)
+[WARN ] (15/05/2015 11:27:06):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:509)
+[WARN ] (15/05/2015 11:27:06):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (15/05/2015 11:27:06):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (15/05/2015 11:27:06):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (15/05/2015 11:27:06):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (15/05/2015 11:27:06):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (15/05/2015 11:28:11): Starting RevokServer...
+[INFO ] (15/05/2015 11:28:11): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 11:28:11): RevokServer started!
+
+[INFO ] (15/05/2015 11:28:14): ------------------------------
+[INFO ] (15/05/2015 11:28:14): Handling socket: 127.0.0.1:9995<->127.0.0.1:51132
+[INFO ] (15/05/2015 11:28:14): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 11:28:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 11:28:14): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (15/05/2015 11:28:15): Remote request: global.RevokServer.toString(  )
+[INFO ] (15/05/2015 11:28:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 11:28:15): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@2b9995d1 }
+[INFO ] (15/05/2015 11:28:15): Remote request: global.RevokServer.isRunning(  )
+[INFO ] (15/05/2015 11:28:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 11:28:15): Response sent: OpResult{ success = true, return = true }
+[INFO ] (15/05/2015 11:28:15): Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (15/05/2015 11:28:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 11:28:15): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (15/05/2015 11:28:15): Remote request: io.IStreamHandler.toString(  )
+[INFO ] (15/05/2015 11:28:15): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 11:28:15): Error invoking method [toString]
+[WARN ] (15/05/2015 11:28:15): AuthenticationException: Credentials{ user = juno } do not have access to namespace{io}
+[WARN ] (15/05/2015 11:28:15):   us.pserver.revok.container.ObjectContainer.get(ObjectContainer.java:235)
+[WARN ] (15/05/2015 11:28:15):   us.pserver.revok.server.Invoker.getObject(Invoker.java:147)
+[WARN ] (15/05/2015 11:28:15):   us.pserver.revok.server.Invoker.getObject(Invoker.java:133)
+[WARN ] (15/05/2015 11:28:15):   us.pserver.revok.server.Invoker.invoke(Invoker.java:231)
+[WARN ] (15/05/2015 11:28:15):   us.pserver.revok.server.Invoker.invoke(Invoker.java:185)
+[WARN ] (15/05/2015 11:28:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.invoke(RevokServer.java:390)
+[WARN ] (15/05/2015 11:28:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.handleInvoke(RevokServer.java:471)
+[WARN ] (15/05/2015 11:28:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:509)
+[WARN ] (15/05/2015 11:28:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:511)
+[WARN ] (15/05/2015 11:28:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:511)
+[WARN ] (15/05/2015 11:28:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:511)
+[WARN ] (15/05/2015 11:28:15):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:511)
+[WARN ] (15/05/2015 11:28:15):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (15/05/2015 11:28:15):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (15/05/2015 11:28:15):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (15/05/2015 11:28:15):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (15/05/2015 11:28:15):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (15/05/2015 12:37:47): Starting RevokServer...
+[INFO ] (15/05/2015 12:37:47): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 12:37:47): RevokServer started!
+
+[INFO ] (15/05/2015 12:38:22): ------------------------------
+[INFO ] (15/05/2015 12:38:22): Handling socket: 127.0.0.1:9995<->127.0.0.1:51240
+[INFO ] (15/05/2015 12:38:23): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 12:38:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:38:23): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (15/05/2015 12:38:23): Remote request: global.RevokServer.toString(  )
+[INFO ] (15/05/2015 12:38:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:38:23): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@3a61d991 }
+[INFO ] (15/05/2015 12:38:23): Remote request: global.RevokServer.isRunning(  )
+[INFO ] (15/05/2015 12:38:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:38:23): Response sent: OpResult{ success = true, return = true }
+[INFO ] (15/05/2015 12:38:23): Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (15/05/2015 12:38:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:38:23): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (15/05/2015 12:38:23): Remote request: io.IStreamHandler.toString(  )
+[INFO ] (15/05/2015 12:38:23): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 12:38:23): Error invoking method [io.IStreamHandler.toString(  )}
+[WARN ] (15/05/2015 12:38:23): AuthenticationException: Credentials{ user = juno } do not have access to namespace{io}
+[WARN ] (15/05/2015 12:38:23):   us.pserver.revok.container.ObjectContainer.get(ObjectContainer.java:235)
+[WARN ] (15/05/2015 12:38:23):   us.pserver.revok.server.Invoker.getObject(Invoker.java:147)
+[WARN ] (15/05/2015 12:38:23):   us.pserver.revok.server.Invoker.getObject(Invoker.java:133)
+[WARN ] (15/05/2015 12:38:23):   us.pserver.revok.server.Invoker.invoke(Invoker.java:231)
+[WARN ] (15/05/2015 12:38:23):   us.pserver.revok.server.Invoker.invoke(Invoker.java:185)
+[WARN ] (15/05/2015 12:38:23):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.invoke(RevokServer.java:390)
+[WARN ] (15/05/2015 12:38:23):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.handleInvoke(RevokServer.java:471)
+[WARN ] (15/05/2015 12:38:23):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:509)
+[WARN ] (15/05/2015 12:38:23):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:511)
+[WARN ] (15/05/2015 12:38:24):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:511)
+[WARN ] (15/05/2015 12:38:24):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:511)
+[WARN ] (15/05/2015 12:38:24):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:511)
+[WARN ] (15/05/2015 12:38:24):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[WARN ] (15/05/2015 12:38:24):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[WARN ] (15/05/2015 12:38:24):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[WARN ] (15/05/2015 12:38:24):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[WARN ] (15/05/2015 12:38:24):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (15/05/2015 12:39:38): Starting RevokServer...
+[INFO ] (15/05/2015 12:39:38): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 12:39:38): RevokServer started!
+
+[INFO ] (15/05/2015 12:39:41): ------------------------------
+[INFO ] (15/05/2015 12:39:41): Handling socket: 127.0.0.1:9995<->127.0.0.1:51241
+[INFO ] (15/05/2015 12:39:42): Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 12:39:42): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:39:42): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (15/05/2015 12:39:42): Remote request: global.RevokServer.toString(  )
+[INFO ] (15/05/2015 12:39:42): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:39:42): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@3a61d991 }
+[INFO ] (15/05/2015 12:39:42): Remote request: global.RevokServer.isRunning(  )
+[INFO ] (15/05/2015 12:39:42): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:39:42): Response sent: OpResult{ success = true, return = true }
+[INFO ] (15/05/2015 12:39:42): Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (15/05/2015 12:39:42): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:39:42): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (15/05/2015 12:39:42): Remote request: io.IStreamHandler.toString(  )
+[INFO ] (15/05/2015 12:39:42): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 12:39:42): Error invoking method [io.IStreamHandler.toString(  )}
+[WARN ] (15/05/2015 12:39:42): AuthenticationException: Credentials{ user = juno } do not have access to namespace{ io }
+[INFO ] (15/05/2015 12:44:05): Starting RevokServer...
+[INFO ] (15/05/2015 12:44:05): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 12:44:05): RevokServer started!
+
+[INFO ] (15/05/2015 12:44:13): Starting RevokServer...
+[INFO ] (15/05/2015 12:44:13): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 12:44:13): RevokServer started!
+
+[INFO ] (15/05/2015 12:44:16): ------------------------------
+[INFO ] (15/05/2015 12:44:16): Handling socket: 127.0.0.1:9995<->127.0.0.1:51257
+[INFO ] (15/05/2015 12:44:17): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 12:44:17): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:44:17): -> Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (15/05/2015 12:44:17): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (15/05/2015 12:44:17): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:44:17): -> Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@3c907504 }
+[INFO ] (15/05/2015 12:44:17): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (15/05/2015 12:44:17): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:44:17): -> Response sent: OpResult{ success = true, return = true }
+[INFO ] (15/05/2015 12:44:17): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (15/05/2015 12:44:17): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:44:17): -> Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (15/05/2015 12:44:17): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (15/05/2015 12:44:17): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 12:44:17): Error invoking method [io.IStreamHandler.toString(  )}
+[WARN ] (15/05/2015 12:44:17): AuthenticationException: Credentials{ user = juno } do not have access to namespace{ io }
+[INFO ] (15/05/2015 12:44:52): Starting RevokServer...
+[INFO ] (15/05/2015 12:44:52): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 12:44:52): RevokServer started!
+
+[INFO ] (15/05/2015 12:44:54): ------------------------------
+[INFO ] (15/05/2015 12:44:54): Handling socket: 127.0.0.1:9995<->127.0.0.1:51270
+[INFO ] (15/05/2015 12:44:55): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 12:44:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:44:55): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (15/05/2015 12:44:55): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (15/05/2015 12:44:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:44:55): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@3c907504 }
+[INFO ] (15/05/2015 12:44:55): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (15/05/2015 12:44:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:44:55): Response sent: OpResult{ success = true, return = true }
+[INFO ] (15/05/2015 12:44:55): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (15/05/2015 12:44:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 12:44:55): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (15/05/2015 12:44:55): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (15/05/2015 12:44:55): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 12:44:55): Error invoking method [io.IStreamHandler.toString(  )}
+[WARN ] (15/05/2015 12:44:55): AuthenticationException: Credentials{ user = juno } do not have access to namespace{ io }
+[INFO ] (15/05/2015 14:55:15): Starting RevokServer...
+[INFO ] (15/05/2015 14:55:15): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 14:55:15): RevokServer started!
+
+[INFO ] (15/05/2015 14:55:45): Starting RevokServer...
+[INFO ] (15/05/2015 14:55:45): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 14:55:45): RevokServer started!
+
+[INFO ] (15/05/2015 14:55:49): ------------------------------
+[INFO ] (15/05/2015 14:55:49): Handling socket: 127.0.0.1:9995<->127.0.0.1:37211
+[INFO ] (15/05/2015 14:55:51): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 14:55:51): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 14:55:51): Error invoking method [global.ObjectContainer.objects( global )}
+[WARN ] (15/05/2015 14:55:51): AuthenticationException: Authentication Failed
+[INFO ] (15/05/2015 15:06:34): Starting RevokServer...
+[INFO ] (15/05/2015 15:06:34): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 15:06:34): RevokServer started!
+
+[INFO ] (15/05/2015 15:06:50): ------------------------------
+[INFO ] (15/05/2015 15:06:50): Handling socket: 127.0.0.1:9995<->127.0.0.1:34511
+[INFO ] (15/05/2015 15:06:51): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 15:06:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:06:51): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (15/05/2015 15:06:51): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (15/05/2015 15:06:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:06:51): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@223841e4 }
+[INFO ] (15/05/2015 15:06:51): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (15/05/2015 15:06:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:06:51): Response sent: OpResult{ success = true, return = true }
+[INFO ] (15/05/2015 15:06:51): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (15/05/2015 15:06:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:06:51): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (15/05/2015 15:06:51): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (15/05/2015 15:06:51): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 15:06:51): Error invoking method [io.IStreamHandler.toString(  )}
+[WARN ] (15/05/2015 15:06:51): AuthenticationException: Credentials{ user = juno } do not have access to namespace{ io }
+[INFO ] (15/05/2015 15:07:29): Starting RevokServer...
+[INFO ] (15/05/2015 15:07:29): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 15:07:29): RevokServer started!
+
+[INFO ] (15/05/2015 15:07:32): ------------------------------
+[INFO ] (15/05/2015 15:07:32): Handling socket: 127.0.0.1:9995<->127.0.0.1:38304
+[INFO ] (15/05/2015 15:07:33): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 15:07:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:07:33): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (15/05/2015 15:07:33): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (15/05/2015 15:07:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:07:33): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@223841e4 }
+[INFO ] (15/05/2015 15:07:33): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (15/05/2015 15:07:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:07:33): Response sent: OpResult{ success = true, return = true }
+[INFO ] (15/05/2015 15:07:33): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (15/05/2015 15:07:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:07:33): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (15/05/2015 15:07:33): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (15/05/2015 15:07:33): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 15:07:33): Error invoking method [io.IStreamHandler.toString(  )}
+[WARN ] (15/05/2015 15:07:33): AuthenticationException: Credentials{ user = juno } do not have access to namespace{ io }
+[INFO ] (15/05/2015 15:07:45): ------------------------------
+[INFO ] (15/05/2015 15:07:45): Handling socket: 127.0.0.1:9995<->127.0.0.1:39723
+[INFO ] (15/05/2015 15:07:46): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 15:07:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:07:46): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (15/05/2015 15:07:46): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (15/05/2015 15:07:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:07:46): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@223841e4 }
+[INFO ] (15/05/2015 15:07:46): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (15/05/2015 15:07:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:07:46): Response sent: OpResult{ success = true, return = true }
+[INFO ] (15/05/2015 15:07:46): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (15/05/2015 15:07:46): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:07:46): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (15/05/2015 15:07:46): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (15/05/2015 15:07:46): Authentication Enabled: Credentials{ user = juno }
+[WARN ] (15/05/2015 15:07:46): Error invoking method [io.IStreamHandler.toString(  )}
+[WARN ] (15/05/2015 15:07:46): AuthenticationException: Credentials{ user = juno } do not have access to namespace{ io }
+[INFO ] (15/05/2015 15:15:32): Starting RevokServer...
+[INFO ] (15/05/2015 15:15:33): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 15:15:33): RevokServer started!
+
+[INFO ] (15/05/2015 15:15:37): ------------------------------
+[INFO ] (15/05/2015 15:15:37): Handling socket: 127.0.0.1:9995<->127.0.0.1:46592
+[INFO ] (15/05/2015 15:15:37): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 15:15:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:15:37): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (15/05/2015 15:15:37): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (15/05/2015 15:15:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:15:37): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@3a61d991 }
+[INFO ] (15/05/2015 15:15:37): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (15/05/2015 15:15:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:15:37): Response sent: OpResult{ success = true, return = true }
+[INFO ] (15/05/2015 15:15:37): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (15/05/2015 15:15:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:15:37): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (15/05/2015 15:15:37): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (15/05/2015 15:15:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:15:37): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@1abebc27 }
+[INFO ] (15/05/2015 15:15:37): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (15/05/2015 15:15:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:15:37): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (15/05/2015 15:15:37): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (15/05/2015 15:15:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:15:37): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (15/05/2015 15:15:38): Connection closed by client.
+[INFO ] (15/05/2015 15:19:28): Starting RevokServer...
+[INFO ] (15/05/2015 15:19:28): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (15/05/2015 15:19:28): RevokServer started!
+
+[INFO ] (15/05/2015 15:19:31): ------------------------------
+[INFO ] (15/05/2015 15:19:31): Handling socket: 127.0.0.1:9995<->127.0.0.1:46635
+[INFO ] (15/05/2015 15:19:31): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (15/05/2015 15:19:31): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:19:31): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (15/05/2015 15:19:32): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (15/05/2015 15:19:32): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:19:32): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@223841e4 }
+[INFO ] (15/05/2015 15:19:32): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (15/05/2015 15:19:32): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:19:32): Response sent: OpResult{ success = true, return = true }
+[INFO ] (15/05/2015 15:19:32): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (15/05/2015 15:19:32): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:19:32): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (15/05/2015 15:19:32): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (15/05/2015 15:19:32): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:19:32): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@73baa0ef }
+[INFO ] (15/05/2015 15:19:32): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (15/05/2015 15:19:32): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:19:32): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (15/05/2015 15:19:32): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (15/05/2015 15:19:32): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (15/05/2015 15:19:32): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (15/05/2015 15:19:32): Connection closed by client.

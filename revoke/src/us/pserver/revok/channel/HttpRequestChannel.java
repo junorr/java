@@ -43,8 +43,8 @@ import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import static us.pserver.chk.Checker.nullarg;
 import us.pserver.revok.HttpConnector;
-import us.pserver.revok.http.EntityFactory;
-import us.pserver.revok.http.EntityParser;
+import us.pserver.revok.http.HttpEntityFactory;
+import us.pserver.revok.http.HttpEntityParser;
 import us.pserver.revok.http.HttpConsts;
 import us.pserver.revok.protocol.JsonSerializer;
 import us.pserver.revok.protocol.ObjectSerializer;
@@ -246,7 +246,7 @@ public class HttpRequestChannel implements Channel {
     BasicHttpEntityEnclosingRequest request = 
         new BasicHttpEntityEnclosingRequest(HttpConsts.POST, netc.getURIString());
     
-    EntityFactory fac = EntityFactory.instance(serial);
+    HttpEntityFactory fac = HttpEntityFactory.instance(serial);
     String contenc = HttpConsts.HD_VAL_DEF_ENCODING;
     if(gzip) {
       contenc = HttpConsts.HD_VAL_GZIP_ENCODING;
@@ -303,11 +303,12 @@ public class HttpRequestChannel implements Channel {
     processor.process(response, context);
     
     //System.out.println("[HttpRequestChannel.verifyResponse()] response.status="+ response.getStatusLine());
-    
+    /*
     Iterator it = response.headerIterator();
     while(it.hasNext()) {
       System.out.println("  - "+ it.next());
     }
+    */
   }
   
   
@@ -318,7 +319,7 @@ public class HttpRequestChannel implements Channel {
       conn.receiveResponseEntity(response);
       HttpEntity content = response.getEntity();
       if(content == null) return null;
-      EntityParser par = EntityParser.instance(serial);
+      HttpEntityParser par = HttpEntityParser.instance(serial);
       if(gzip) par.enableGZipCoder();
       
       par.parse(content);

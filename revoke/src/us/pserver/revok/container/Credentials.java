@@ -22,6 +22,8 @@
 package us.pserver.revok.container;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import static us.pserver.chk.Checker.nullarray;
 import static us.pserver.chk.Checker.nullstr;
@@ -39,6 +41,8 @@ public class Credentials {
   
   private byte[] pswd;
   
+  private List<String> access;
+  
   
   /**
    * Constructor without arguments.
@@ -46,6 +50,7 @@ public class Credentials {
   public Credentials() {
     user = null;
     pswd = null;
+    access = new LinkedList<>();
   }
   
   
@@ -59,6 +64,28 @@ public class Credentials {
     nullarray(pswd);
     this.user = user;
     this.pswd = pswd;
+    access = new LinkedList<>();
+  }
+  
+  
+  public Credentials addAccess(String label) {
+    if(label != null) {
+      access.add(label);
+    }
+    return this;
+  }
+  
+  
+  public Credentials addAccess(String ... labels) {
+    if(labels != null && labels.length > 0) {
+      access.addAll(Arrays.asList(labels));
+    }
+    return this;
+  }
+  
+  
+  public List<String> accessList() {
+    return access;
   }
   
   
@@ -105,7 +132,7 @@ public class Credentials {
    */
   public boolean authenticate(Credentials c) {
     return c != null && c.getUser() != null
-        && c.user.equals(user)
+        && user.equals(c.user)
         && equals(pswd, c.pswd);
   }
   

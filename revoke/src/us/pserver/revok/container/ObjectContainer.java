@@ -109,7 +109,7 @@ public class ObjectContainer {
   }
   
   
-  public String[] split(String str) {
+  private String[] split(String str) {
     if(!str.contains(".")) return new String[0];
     int ip = str.indexOf(".");
     String[] ss = new String[2];
@@ -221,14 +221,20 @@ public class ObjectContainer {
   
   
   public Object get(Credentials c, String name) throws AuthenticationException {
-    if(isAuthEnabled()) {
-      auth.authenticate(c);
-    }
     if(!name.contains("."))
       throw new IllegalArgumentException(
           "[ObjectContainer.get( Credentials, String )] "
               + "Namespace missing. Name argument must be provided like: <namespace>.<object_name>");
     String[] names = split(name);
+    if(isAuthEnabled()) {
+      Credentials serverCreds = auth.authenticate(c);
+      // Verify access to namespace
+      // '*' represents all namespaces
+      if(!serverCreds.accessList().contains(names[0])
+          && !serverCreds.accessList().contains("*")) {
+        throw new AuthenticationException(serverCreds+ " do not have access to namespace{ "+ names[0]+ " }");
+      }
+    }
     if(space.containsKey(names[0])) {
       return space.get(names[0]).get(names[1]);
     }

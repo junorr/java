@@ -109,7 +109,7 @@ public class HttpConnector {
           + "Invalid address ["+ address+ "]");
     if(port < 0 || port > 65535)
       throw new IllegalArgumentException("[HttpConnector( String, int )] "
-          + "Port not in range 1-65535 ["+ port+ "]");
+          + "Port out of range 1-65535 {"+ port+ "}");
     this.address = address;
     this.port = port;
     proto = HttpConsts.HTTP;
@@ -129,8 +129,10 @@ public class HttpConnector {
   public InetSocketAddress createSocketAddress() {
     if(address != null)
       return new InetSocketAddress(address, port);
-    else
+    else {
+      address = "0.0.0.0";
       return new InetSocketAddress(port);
+    }
   }
   
   
@@ -227,6 +229,9 @@ public class HttpConnector {
    * @return Esta instância de <code>HttpConnector</code>.
    */
   public HttpConnector setPort(int port) {
+    if(port < 0 || port > 65535)
+      throw new IllegalArgumentException("[HttpConnector.setPort( int )] "
+          + "Port not out of range 1-65535 {"+ port+ "}");
     this.port = port;
     return this;
   }

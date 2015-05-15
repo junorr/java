@@ -40,8 +40,8 @@ import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
 import us.pserver.cdr.crypt.CryptKey;
-import us.pserver.revok.http.EntityFactory;
-import us.pserver.revok.http.EntityParser;
+import us.pserver.revok.http.HttpEntityFactory;
+import us.pserver.revok.http.HttpEntityParser;
 import us.pserver.revok.http.HttpConsts;
 import us.pserver.revok.protocol.JsonSerializer;
 import us.pserver.revok.protocol.ObjectSerializer;
@@ -165,7 +165,7 @@ public class HttpResponseChannel implements Channel {
     if(gzip) contenc = HttpConsts.HD_VAL_GZIP_ENCODING;
     response.addHeader(HttpConsts.HD_CONT_ENCODING, contenc);
     
-    EntityFactory fac = EntityFactory.instance(serial);
+    HttpEntityFactory fac = HttpEntityFactory.instance(serial);
     if(gzip) fac.enableGZipCoder();
     if(key != null) fac.enableCryptCoder(key);
     fac.put(trp.getWriteVersion());
@@ -210,7 +210,7 @@ public class HttpResponseChannel implements Channel {
       HttpEntity content = request.getEntity();
       if(content == null) return null;
       
-      EntityParser par = EntityParser.instance(serial);
+      HttpEntityParser par = HttpEntityParser.instance(serial);
       if(gzip) par.enableGZipCoder();
       par.parse(content);
       Transport t = (Transport) par.getObject();

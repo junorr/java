@@ -130,7 +130,7 @@ public class RemoteMethod {
    * @param var Variable name.
    * @return This instance of RemoteMethod.
    */
-  public RemoteMethod returnVar(String var) {
+  public RemoteMethod setReturnVar(String var) {
     if(var == null || !var.startsWith(Invoker.VAR_SIGNAL))
       throw new IllegalArgumentException("[RemoteMethod.returnVar( String )] "
           + "Invalid var name {"+ var+ "}. Variables must starts with '"+ Invoker.VAR_SIGNAL+ "'");
@@ -144,7 +144,7 @@ public class RemoteMethod {
    * returned value of the method.
    * @return Variable name.
    */
-  public String returnVar() {
+  public String getReturnVar() {
     return retvar;
   }
   

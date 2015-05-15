@@ -42,14 +42,14 @@ import us.pserver.streams.MixedWriteBuffer;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 08/04/2015
  */
-public class EntityFactory {
+public class HttpEntityFactory {
 
   public static final ContentType 
       TYPE_X_JAVA_ROB = ContentType.create(
           "application/x-java-rob", Consts.UTF_8);
   
   
-  private static EntityFactory instance;
+  private static HttpEntityFactory instance;
   
   private MixedWriteBuffer buffer;
   
@@ -66,7 +66,7 @@ public class EntityFactory {
   private ObjectSerializer serial;
   
   
-  public EntityFactory(ContentType type) {
+  public HttpEntityFactory(ContentType type) {
     if(type == null)
       type = TYPE_X_JAVA_ROB;
     this.type = type;
@@ -79,49 +79,49 @@ public class EntityFactory {
   }
   
   
-  public EntityFactory(ContentType type, ObjectSerializer os) {
+  public HttpEntityFactory(ContentType type, ObjectSerializer os) {
     this(type);
     if(os == null) os = new JsonSerializer();
     serial = os;
   }
   
   
-  public EntityFactory(ObjectSerializer os) {
+  public HttpEntityFactory(ObjectSerializer os) {
     this(TYPE_X_JAVA_ROB);
     if(os == null) os = new JsonSerializer();
     serial = os;
   }
   
   
-  public EntityFactory() {
+  public HttpEntityFactory() {
     this(TYPE_X_JAVA_ROB);
   }
   
   
-  public static EntityFactory instance(ContentType type) {
+  public static HttpEntityFactory instance(ContentType type) {
     if(instance == null) 
-      instance = new EntityFactory(type);
+      instance = new HttpEntityFactory(type);
     return instance;
   }
   
   
-  public static EntityFactory instance(ContentType type, ObjectSerializer os) {
+  public static HttpEntityFactory instance(ContentType type, ObjectSerializer os) {
     if(instance == null) 
-      instance = new EntityFactory(type, os);
+      instance = new HttpEntityFactory(type, os);
     return instance;
   }
   
   
-  public static EntityFactory instance(ObjectSerializer os) {
+  public static HttpEntityFactory instance(ObjectSerializer os) {
     if(instance == null) 
-      instance = new EntityFactory(os);
+      instance = new HttpEntityFactory(os);
     return instance;
   }
   
   
-  public static EntityFactory instance() {
+  public static HttpEntityFactory instance() {
     if(instance == null) 
-      instance = new EntityFactory();
+      instance = new HttpEntityFactory();
     return instance;
   }
   
@@ -131,7 +131,7 @@ public class EntityFactory {
   }
   
   
-  public EntityFactory setObjectSerializer(ObjectSerializer serializer) {
+  public HttpEntityFactory setObjectSerializer(ObjectSerializer serializer) {
     if(serializer != null) {
       serial = serializer;
     }
@@ -139,7 +139,7 @@ public class EntityFactory {
   }
   
   
-  public EntityFactory enableCryptCoder(CryptKey key) {
+  public HttpEntityFactory enableCryptCoder(CryptKey key) {
     if(key != null) {
       buffer.getCoderFactory().setCryptCoderEnabled(true, key);
       this.key = key;
@@ -148,43 +148,43 @@ public class EntityFactory {
   }
   
   
-  public EntityFactory disableAllCoders() {
+  public HttpEntityFactory disableAllCoders() {
     buffer.getCoderFactory().clearCoders();
     return this;
   }
   
   
-  public EntityFactory disableCryptCoder() {
+  public HttpEntityFactory disableCryptCoder() {
     buffer.getCoderFactory().setCryptCoderEnabled(false, null);
     return this;
   }
   
   
-  public EntityFactory enableGZipCoder() {
+  public HttpEntityFactory enableGZipCoder() {
     buffer.getCoderFactory().setGZipCoderEnabled(true);
     return this;
   }
   
   
-  public EntityFactory disableGZipCoder() {
+  public HttpEntityFactory disableGZipCoder() {
     buffer.getCoderFactory().setGZipCoderEnabled(false);
     return this;
   }
   
   
-  public EntityFactory enableBase64Coder() {
+  public HttpEntityFactory enableBase64Coder() {
     buffer.getCoderFactory().setBase64CoderEnabled(true);
     return this;
   }
   
   
-  public EntityFactory disableBase64Coder() {
+  public HttpEntityFactory disableBase64Coder() {
     buffer.getCoderFactory().setBase64CoderEnabled(false);
     return this;
   }
   
   
-  public EntityFactory put(CryptKey key) {
+  public HttpEntityFactory put(CryptKey key) {
     if(key != null) {
       this.key = key;
     }
@@ -192,7 +192,7 @@ public class EntityFactory {
   }
   
   
-  public EntityFactory put(Object obj) {
+  public HttpEntityFactory put(Object obj) {
     if(obj != null) {
       this.obj = obj;
     }
@@ -200,7 +200,7 @@ public class EntityFactory {
   }
   
   
-  public EntityFactory put(InputStream is) {
+  public HttpEntityFactory put(InputStream is) {
     if(is != null) {
       this.input = is;
     }
@@ -252,7 +252,7 @@ public class EntityFactory {
   
   
   public static void main(String[] args) throws IOException {
-    EntityFactory fac = EntityFactory.instance(new XmlSerializer());
+    HttpEntityFactory fac = HttpEntityFactory.instance(new XmlSerializer());
         //.enableGZipCoder()
         //.enableCryptCoder(
           //  CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5));
@@ -267,7 +267,7 @@ public class EntityFactory {
     System.out.println();
     
     ent = fac.create();
-    EntityParser ep = EntityParser.instance(new XmlSerializer());//.enableGZipCoder();
+    HttpEntityParser ep = HttpEntityParser.instance(new XmlSerializer());//.enableGZipCoder();
     ep.parse(ent);
     System.out.println("* key: "+ ep.getCryptKey());
     System.out.println("* rob: "+ ep.getObject());
