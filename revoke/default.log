@@ -3275,3 +3275,1159 @@ line: 1, col: 3
 [INFO ] (15/05/2015 15:19:32): Authentication Enabled: Credentials{ user = juno }
 [INFO ] (15/05/2015 15:19:32): Response sent: OpResult{ success = true, return = java.io.InputStream }
 [INFO ] (15/05/2015 15:19:32): Connection closed by client.
+[INFO ] (18/05/2015 08:38:03): Starting RevokServer...
+[INFO ] (18/05/2015 08:38:03): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 08:38:03): RevokServer started!
+
+[INFO ] (18/05/2015 08:38:15): ------------------------------
+[INFO ] (18/05/2015 08:38:15): Handling socket: 127.0.0.1:9995<->127.0.0.1:36261
+[INFO ] (18/05/2015 08:38:19): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 08:38:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:38:19): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 08:38:19): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 08:38:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:38:19): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@49a5b2f }
+[INFO ] (18/05/2015 08:38:19): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 08:38:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:38:19): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 08:38:19): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 08:38:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:38:19): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 08:38:19): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 08:38:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:38:19): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@5e383568 }
+[INFO ] (18/05/2015 08:38:19): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 08:38:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:38:19): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 08:38:19): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 08:38:19): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:38:19): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 08:38:20): Connection closed by client.
+[INFO ] (18/05/2015 08:39:05): ------------------------------
+[INFO ] (18/05/2015 08:39:05): Handling socket: 127.0.0.1:9995<->127.0.0.1:36263
+[INFO ] (18/05/2015 08:39:05): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 08:39:05): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:39:06): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 08:39:06): Connection closed by client.
+[INFO ] (18/05/2015 08:40:09): ------------------------------
+[INFO ] (18/05/2015 08:40:09): Handling socket: 127.0.0.1:9995<->127.0.0.1:36267
+[INFO ] (18/05/2015 08:40:09): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 08:40:09): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:40:09): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 08:40:09): Connection closed by client.
+[INFO ] (18/05/2015 08:42:26): ------------------------------
+[INFO ] (18/05/2015 08:42:26): Handling socket: 127.0.0.1:9995<->127.0.0.1:36275
+[INFO ] (18/05/2015 08:42:27): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 08:42:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:42:27): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 08:42:27): Connection closed by client.
+[INFO ] (18/05/2015 08:45:20): Starting RevokServer...
+[INFO ] (18/05/2015 08:45:20): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 08:45:20): RevokServer started!
+
+[INFO ] (18/05/2015 08:45:22): ------------------------------
+[INFO ] (18/05/2015 08:45:22): Handling socket: 127.0.0.1:9995<->127.0.0.1:36286
+[INFO ] (18/05/2015 08:45:23): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 08:45:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:45:23): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 08:45:23): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 08:45:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:45:23): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 08:45:23): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 08:45:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:45:23): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 08:45:23): Connection closed by client.
+[INFO ] (18/05/2015 08:45:47): ------------------------------
+[INFO ] (18/05/2015 08:45:47): Handling socket: 127.0.0.1:9995<->127.0.0.1:36289
+[INFO ] (18/05/2015 08:45:48): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 08:45:48): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:45:48): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 08:45:48): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 08:45:48): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:45:48): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 08:45:48): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 08:45:48): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:45:48): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 08:45:48): Connection closed by client.
+[INFO ] (18/05/2015 08:47:33): ------------------------------
+[INFO ] (18/05/2015 08:47:33): Handling socket: 127.0.0.1:9995<->127.0.0.1:36295
+[INFO ] (18/05/2015 08:47:33): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 08:47:33): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:47:33): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 08:47:34): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 08:47:34): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:47:34): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 08:47:34): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 08:47:34): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:47:34): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 08:47:34): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 08:47:34): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:47:34): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@6b48b5da }
+[INFO ] (18/05/2015 08:47:34): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 08:47:34): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:47:34): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 08:47:34): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 08:47:34): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:47:34): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 08:47:34): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 08:47:34): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:47:34): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@456b8783 }
+[INFO ] (18/05/2015 08:47:34): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 08:47:34): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:47:34): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 08:47:34): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 08:47:34): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:47:34): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 08:47:34): Connection closed by client.
+[INFO ] (18/05/2015 08:47:38): ------------------------------
+[INFO ] (18/05/2015 08:47:38): Handling socket: 127.0.0.1:9995<->127.0.0.1:36296
+[INFO ] (18/05/2015 08:47:38): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 08:47:38): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:47:38): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 08:47:38): Connection closed by client.
+[INFO ] (18/05/2015 08:51:45): ------------------------------
+[INFO ] (18/05/2015 08:51:45): Handling socket: 127.0.0.1:9995<->127.0.0.1:36312
+[INFO ] (18/05/2015 08:51:45): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 08:51:45): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:51:45): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 08:51:45): Connection closed by client.
+[INFO ] (18/05/2015 08:55:19): Starting RevokServer...
+[INFO ] (18/05/2015 08:55:19): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 08:55:19): RevokServer started!
+
+[INFO ] (18/05/2015 08:55:25): ------------------------------
+[INFO ] (18/05/2015 08:55:25): Handling socket: 127.0.0.1:9995<->127.0.0.1:36329
+[INFO ] (18/05/2015 08:55:25): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 08:55:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:55:25): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 08:55:25): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 08:55:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:55:25): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 08:55:25): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 08:55:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:55:25): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 08:55:25): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 08:55:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:55:25): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@9dba100 }
+[INFO ] (18/05/2015 08:55:25): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 08:55:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:55:25): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 08:55:25): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 08:55:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:55:25): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 08:55:25): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 08:55:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:55:25): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@507b5a71 }
+[INFO ] (18/05/2015 08:55:25): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 08:55:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:55:25): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 08:55:25): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 08:55:25): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:55:25): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 08:55:26): Connection closed by client.
+[INFO ] (18/05/2015 08:55:55): ------------------------------
+[INFO ] (18/05/2015 08:55:55): Handling socket: 127.0.0.1:9995<->127.0.0.1:36331
+[INFO ] (18/05/2015 08:55:55): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 08:55:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 08:55:55): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 08:55:55): Connection closed by client.
+[INFO ] (18/05/2015 09:04:45): ------------------------------
+[INFO ] (18/05/2015 09:04:45): Handling socket: 127.0.0.1:9995<->127.0.0.1:36370
+[INFO ] (18/05/2015 09:04:45): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 09:04:45): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:04:45): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 09:04:45): Connection closed by client.
+[INFO ] (18/05/2015 09:05:20): Starting RevokServer...
+[INFO ] (18/05/2015 09:05:20): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 09:05:20): RevokServer started!
+
+[INFO ] (18/05/2015 09:05:23): ------------------------------
+[INFO ] (18/05/2015 09:05:23): Handling socket: 127.0.0.1:9995<->127.0.0.1:36373
+[INFO ] (18/05/2015 09:05:23): Connection closed by client.
+[INFO ] (18/05/2015 09:05:23): ------------------------------
+[INFO ] (18/05/2015 09:05:23): Handling socket: 127.0.0.1:9995<->127.0.0.1:36374
+[INFO ] (18/05/2015 09:05:23): Connection closed by client.
+[INFO ] (18/05/2015 09:05:38): Starting RevokServer...
+[INFO ] (18/05/2015 09:05:38): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 09:05:38): RevokServer started!
+
+[INFO ] (18/05/2015 09:05:47): ------------------------------
+[INFO ] (18/05/2015 09:05:47): Handling socket: 127.0.0.1:9995<->127.0.0.1:36375
+[INFO ] (18/05/2015 09:05:47): Connection closed by client.
+[INFO ] (18/05/2015 09:05:47): ------------------------------
+[INFO ] (18/05/2015 09:05:47): Handling socket: 127.0.0.1:9995<->127.0.0.1:36376
+[INFO ] (18/05/2015 09:05:47): Connection closed by client.
+[INFO ] (18/05/2015 09:06:41): ------------------------------
+[INFO ] (18/05/2015 09:06:41): Handling socket: 127.0.0.1:9995<->127.0.0.1:36382
+[INFO ] (18/05/2015 09:06:41): Connection closed by client.
+[INFO ] (18/05/2015 09:06:41): ------------------------------
+[INFO ] (18/05/2015 09:06:41): Handling socket: 127.0.0.1:9995<->127.0.0.1:36383
+[INFO ] (18/05/2015 09:06:41): Connection closed by client.
+[INFO ] (18/05/2015 09:06:48): Starting RevokServer...
+[INFO ] (18/05/2015 09:06:48): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 09:06:48): RevokServer started!
+
+[INFO ] (18/05/2015 09:06:53): ------------------------------
+[INFO ] (18/05/2015 09:06:53): Handling socket: 127.0.0.1:9995<->127.0.0.1:36384
+[INFO ] (18/05/2015 09:06:53): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 09:06:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:06:53): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 09:06:53): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 09:06:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:06:53): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 09:06:53): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 09:06:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:06:53): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 09:06:53): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 09:06:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:06:53): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@45244099 }
+[INFO ] (18/05/2015 09:06:53): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 09:06:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:06:53): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 09:06:53): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 09:06:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:06:53): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 09:06:53): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 09:06:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:06:53): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@3671498e }
+[INFO ] (18/05/2015 09:06:53): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 09:06:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:06:53): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 09:06:53): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 09:06:53): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:06:53): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 09:06:54): Connection closed by client.
+[INFO ] (18/05/2015 09:06:58): ------------------------------
+[INFO ] (18/05/2015 09:06:58): Handling socket: 127.0.0.1:9995<->127.0.0.1:36385
+[INFO ] (18/05/2015 09:06:59): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 09:06:59): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:06:59): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 09:06:59): Connection closed by client.
+[INFO ] (18/05/2015 09:38:42): Starting RevokServer...
+[FATAL] (18/05/2015 09:38:42): IOException: Error running NetworkServer
+[FATAL] (18/05/2015 09:38:42):   Caused by: BindException: Endereço já em uso
+[FATAL] (18/05/2015 09:38:42):   us.pserver.revok.server.RevokServer.run(RevokServer.java:264)
+[FATAL] (18/05/2015 09:38:42):   us.pserver.revok.server.RevokServer.start(RevokServer.java:226)
+[FATAL] (18/05/2015 09:38:42):   us.pserver.revok.test.TestRevokServer.main(TestRevokServer.java:49)
+[INFO ] (18/05/2015 09:38:42): Stopping ExecutorService...
+[INFO ] (18/05/2015 09:38:42): RevokServer Shutdown!
+[INFO ] (18/05/2015 09:39:13): ------------------------------
+[INFO ] (18/05/2015 09:39:13): Handling socket: 127.0.0.1:9995<->127.0.0.1:36602
+[INFO ] (18/05/2015 09:39:14): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 09:39:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:39:14): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 09:39:14): Connection closed by client.
+[INFO ] (18/05/2015 09:43:21): ------------------------------
+[INFO ] (18/05/2015 09:43:21): Handling socket: 127.0.0.1:9995<->127.0.0.1:36617
+[INFO ] (18/05/2015 09:43:22): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 09:43:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:43:22): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 09:43:22): Connection closed by client.
+[INFO ] (18/05/2015 09:47:21): ------------------------------
+[INFO ] (18/05/2015 09:47:21): Handling socket: 127.0.0.1:9995<->127.0.0.1:36632
+[INFO ] (18/05/2015 09:47:22): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 09:47:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:47:22): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 09:47:22): Connection closed by client.
+[INFO ] (18/05/2015 09:50:13): ------------------------------
+[INFO ] (18/05/2015 09:50:13): Handling socket: 127.0.0.1:9995<->127.0.0.1:36656
+[INFO ] (18/05/2015 09:50:14): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 09:50:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:50:14): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 09:50:14): Connection closed by client.
+[INFO ] (18/05/2015 09:50:37): ------------------------------
+[INFO ] (18/05/2015 09:50:37): Handling socket: 127.0.0.1:9995<->127.0.0.1:36657
+[INFO ] (18/05/2015 09:50:37): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 09:50:37): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:50:37): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 09:50:37): Connection closed by client.
+[INFO ] (18/05/2015 09:53:54): ------------------------------
+[INFO ] (18/05/2015 09:53:54): Handling socket: 127.0.0.1:9995<->127.0.0.1:36669
+[INFO ] (18/05/2015 09:53:55): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 09:53:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:53:55): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 09:53:55): Connection closed by client.
+[INFO ] (18/05/2015 09:56:59): ------------------------------
+[INFO ] (18/05/2015 09:56:59): Handling socket: 127.0.0.1:9995<->127.0.0.1:36691
+[INFO ] (18/05/2015 09:56:59): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 09:56:59): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:56:59): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 09:56:59): Connection closed by client.
+[INFO ] (18/05/2015 09:58:51): ------------------------------
+[INFO ] (18/05/2015 09:58:51): Handling socket: 127.0.0.1:9995<->127.0.0.1:36701
+[INFO ] (18/05/2015 09:58:51): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 09:58:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 09:58:51): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 09:58:52): Connection closed by client.
+[INFO ] (18/05/2015 10:04:38): Starting RevokServer...
+[INFO ] (18/05/2015 10:04:38): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 10:04:38): RevokServer started!
+
+[INFO ] (18/05/2015 10:04:41): ------------------------------
+[INFO ] (18/05/2015 10:04:41): Handling socket: 127.0.0.1:9995<->127.0.0.1:36738
+[ERROR] (18/05/2015 10:04:41): Error reading from channel
+[ERROR] (18/05/2015 10:04:41): RuntimeException: Uncompilable source code - Erroneous tree type: <any>
+[ERROR] (18/05/2015 10:04:41):   us.pserver.revok.http.HttpEntityParser.parse(HttpEntityParser.java:197)
+[ERROR] (18/05/2015 10:04:41):   us.pserver.revok.channel.HttpResponseChannel.read(HttpResponseChannel.java:215)
+[ERROR] (18/05/2015 10:04:41):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.read(RevokServer.java:353)
+[ERROR] (18/05/2015 10:04:41):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:504)
+[ERROR] (18/05/2015 10:04:41):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (18/05/2015 10:04:41):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (18/05/2015 10:04:41):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (18/05/2015 10:04:41):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (18/05/2015 10:04:41):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (18/05/2015 10:04:41): Connection closed by client.
+[INFO ] (18/05/2015 10:04:41): ------------------------------
+[INFO ] (18/05/2015 10:04:41): Handling socket: 127.0.0.1:9995<->127.0.0.1:36739
+[ERROR] (18/05/2015 10:04:41): Error reading from channel
+[ERROR] (18/05/2015 10:04:41): RuntimeException: Uncompilable source code - Erroneous tree type: <any>
+[ERROR] (18/05/2015 10:04:41):   us.pserver.revok.http.HttpEntityParser.parse(HttpEntityParser.java:197)
+[ERROR] (18/05/2015 10:04:41):   us.pserver.revok.channel.HttpResponseChannel.read(HttpResponseChannel.java:215)
+[ERROR] (18/05/2015 10:04:41):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.read(RevokServer.java:353)
+[ERROR] (18/05/2015 10:04:41):   us.pserver.revok.server.RevokServer$HttpConnectionHandler.run(RevokServer.java:504)
+[ERROR] (18/05/2015 10:04:41):   java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+[ERROR] (18/05/2015 10:04:41):   java.util.concurrent.FutureTask.run(FutureTask.java:266)
+[ERROR] (18/05/2015 10:04:41):   java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+[ERROR] (18/05/2015 10:04:41):   java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+[ERROR] (18/05/2015 10:04:41):   java.lang.Thread.run(Thread.java:745)
+[INFO ] (18/05/2015 10:04:41): Connection closed by client.
+[INFO ] (18/05/2015 10:07:12): Starting RevokServer...
+[INFO ] (18/05/2015 10:07:12): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 10:07:12): RevokServer started!
+
+[INFO ] (18/05/2015 10:07:15): ------------------------------
+[INFO ] (18/05/2015 10:07:15): Handling socket: 127.0.0.1:9995<->127.0.0.1:36748
+[INFO ] (18/05/2015 10:07:16): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:07:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:07:16): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:07:16): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:07:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:07:16): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:07:16): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:07:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:07:16): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:07:16): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:07:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:07:16): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@45244099 }
+[INFO ] (18/05/2015 10:07:16): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:07:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:07:16): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:07:16): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:07:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:07:16): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:07:16): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:07:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:07:16): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@3671498e }
+[INFO ] (18/05/2015 10:07:16): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:07:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:07:16): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:07:16): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:07:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:07:16): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:07:17): Connection closed by client.
+[INFO ] (18/05/2015 10:08:23): ------------------------------
+[INFO ] (18/05/2015 10:08:23): Handling socket: 127.0.0.1:9995<->127.0.0.1:36753
+[INFO ] (18/05/2015 10:08:23): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:08:23): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:08:23): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:08:23): Connection closed by client.
+[INFO ] (18/05/2015 10:13:45): Starting RevokServer...
+[INFO ] (18/05/2015 10:13:45): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 10:13:45): RevokServer started!
+
+[INFO ] (18/05/2015 10:13:48): ------------------------------
+[INFO ] (18/05/2015 10:13:48): Handling socket: 127.0.0.1:9995<->127.0.0.1:36774
+[INFO ] (18/05/2015 10:13:49): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:13:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:13:49): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:13:49): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:13:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:13:49): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:13:49): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:13:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:13:49): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:13:49): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:13:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:13:49): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@27f3f696 }
+[INFO ] (18/05/2015 10:13:49): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:13:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:13:49): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:13:49): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:13:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:13:49): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:13:49): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:13:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:13:49): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@3ebce3ad }
+[INFO ] (18/05/2015 10:13:49): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:13:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:13:49): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:13:49): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:13:49): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:13:49): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:13:50): Connection closed by client.
+[INFO ] (18/05/2015 10:14:30): ------------------------------
+[INFO ] (18/05/2015 10:14:30): Handling socket: 127.0.0.1:9995<->127.0.0.1:36776
+[INFO ] (18/05/2015 10:14:30): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:14:30): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:14:30): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:14:30): Connection closed by client.
+[INFO ] (18/05/2015 10:16:47): Starting RevokServer...
+[INFO ] (18/05/2015 10:16:47): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 10:16:47): RevokServer started!
+
+[INFO ] (18/05/2015 10:16:50): ------------------------------
+[INFO ] (18/05/2015 10:16:50): Handling socket: 127.0.0.1:9995<->127.0.0.1:36786
+[INFO ] (18/05/2015 10:16:50): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:16:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:16:50): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:16:51): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:16:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:16:51): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:16:51): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:16:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:16:51): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:16:51): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:16:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:16:51): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@27f3f696 }
+[INFO ] (18/05/2015 10:16:51): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:16:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:16:51): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:16:51): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:16:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:16:51): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:16:51): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:16:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:16:51): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@3ebce3ad }
+[INFO ] (18/05/2015 10:16:51): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:16:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:16:51): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:16:51): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:16:51): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:16:51): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:16:51): Connection closed by client.
+[INFO ] (18/05/2015 10:16:56): ------------------------------
+[INFO ] (18/05/2015 10:16:56): Handling socket: 127.0.0.1:9995<->127.0.0.1:36787
+[INFO ] (18/05/2015 10:16:56): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:16:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:16:56): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:16:56): Connection closed by client.
+[INFO ] (18/05/2015 10:20:06): Starting RevokServer...
+[INFO ] (18/05/2015 10:20:06): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 10:20:06): RevokServer started!
+
+[INFO ] (18/05/2015 10:20:08): ------------------------------
+[INFO ] (18/05/2015 10:20:08): Handling socket: 127.0.0.1:9995<->127.0.0.1:36800
+[INFO ] (18/05/2015 10:20:09): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:20:09): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:20:09): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:20:09): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:20:09): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:20:09): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:20:09): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:20:09): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:20:09): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:20:09): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:20:09): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:20:09): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@45244099 }
+[INFO ] (18/05/2015 10:20:09): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:20:09): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:20:09): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:20:09): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:20:09): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:20:09): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:20:09): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:20:09): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:20:09): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@3671498e }
+[INFO ] (18/05/2015 10:20:09): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:20:09): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:20:09): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:20:09): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:20:09): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:20:09): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:20:10): Connection closed by client.
+[INFO ] (18/05/2015 10:20:12): ------------------------------
+[INFO ] (18/05/2015 10:20:12): Handling socket: 127.0.0.1:9995<->127.0.0.1:36802
+[INFO ] (18/05/2015 10:20:12): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:20:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:20:12): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:20:12): Connection closed by client.
+[INFO ] (18/05/2015 10:33:49): Starting RevokServer...
+[INFO ] (18/05/2015 10:33:49): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 10:33:49): RevokServer started!
+
+[INFO ] (18/05/2015 10:33:53): ------------------------------
+[INFO ] (18/05/2015 10:33:53): Handling socket: 127.0.0.1:9995<->127.0.0.1:36848
+[INFO ] (18/05/2015 10:33:53): Channel: us.pserver.revok.channel.HttpResponseChannel@4232c52b
+[INFO ] (18/05/2015 10:33:55): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:33:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:33:55): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:33:55): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:33:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:33:55): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:33:55): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:33:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:33:55): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:33:55): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:33:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:33:55): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@9dba100 }
+[INFO ] (18/05/2015 10:33:55): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:33:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:33:55): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:33:55): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:33:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:33:55): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:33:55): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:33:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:33:55): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@507b5a71 }
+[INFO ] (18/05/2015 10:33:55): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:33:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:33:55): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:33:55): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:33:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:33:55): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:33:56): Connection closed by client.
+[INFO ] (18/05/2015 10:34:18): ------------------------------
+[INFO ] (18/05/2015 10:34:18): Handling socket: 127.0.0.1:9995<->127.0.0.1:36852
+[INFO ] (18/05/2015 10:34:18): Channel: us.pserver.revok.channel.HttpResponseChannel@458c1321
+[INFO ] (18/05/2015 10:34:18): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:34:18): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:34:18): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:34:19): Connection closed by client.
+[INFO ] (18/05/2015 10:37:46): Starting RevokServer...
+[INFO ] (18/05/2015 10:37:46): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 10:37:46): RevokServer started!
+
+[INFO ] (18/05/2015 10:37:49): ------------------------------
+[INFO ] (18/05/2015 10:37:49): Handling socket: 127.0.0.1:9995<->127.0.0.1:36873
+[INFO ] (18/05/2015 10:37:49): Channel: us.pserver.revok.channel.HttpResponseChannel@4232c52b
+[INFO ] (18/05/2015 10:37:50): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:37:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:37:50): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:37:50): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:37:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:37:50): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:37:50): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:37:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:37:50): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:37:50): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:37:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:37:50): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@20a410cb }
+[INFO ] (18/05/2015 10:37:50): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:37:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:37:50): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:37:50): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:37:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:37:50): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:37:50): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:37:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:37:50): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@252b7fbf }
+[INFO ] (18/05/2015 10:37:50): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:37:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:37:50): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:37:50): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:37:50): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:37:50): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:37:51): Connection closed by client.
+[INFO ] (18/05/2015 10:37:55): ------------------------------
+[INFO ] (18/05/2015 10:37:55): Handling socket: 127.0.0.1:9995<->127.0.0.1:36874
+[INFO ] (18/05/2015 10:37:55): Channel: us.pserver.revok.channel.HttpResponseChannel@458c1321
+[INFO ] (18/05/2015 10:37:56): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:37:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:37:56): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:37:56): Connection closed by client.
+[INFO ] (18/05/2015 10:38:32): Starting RevokServer...
+[INFO ] (18/05/2015 10:38:32): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 10:38:32): RevokServer started!
+
+[INFO ] (18/05/2015 10:38:35): ------------------------------
+[INFO ] (18/05/2015 10:38:35): Handling socket: 127.0.0.1:9995<->127.0.0.1:36879
+[INFO ] (18/05/2015 10:38:35): Channel: us.pserver.revok.channel.HttpResponseChannel@4232c52b
+[INFO ] (18/05/2015 10:38:35): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:38:35): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:38:35): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:38:35): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:38:35): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:38:35): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:38:35): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:38:35): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:38:36): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:38:36): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:38:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:38:36): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@9dba100 }
+[INFO ] (18/05/2015 10:38:36): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:38:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:38:36): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:38:36): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:38:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:38:36): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:38:36): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:38:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:38:36): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@507b5a71 }
+[INFO ] (18/05/2015 10:38:36): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:38:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:38:36): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:38:36): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:38:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:38:36): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:38:36): Connection closed by client.
+[INFO ] (18/05/2015 10:38:42): ------------------------------
+[INFO ] (18/05/2015 10:38:42): Handling socket: 127.0.0.1:9995<->127.0.0.1:36881
+[INFO ] (18/05/2015 10:38:42): Channel: us.pserver.revok.channel.HttpResponseChannel@458c1321
+[INFO ] (18/05/2015 10:38:42): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:38:42): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:38:42): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:38:42): Connection closed by client.
+[INFO ] (18/05/2015 10:42:18): Starting RevokServer...
+[INFO ] (18/05/2015 10:42:18): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 10:42:18): RevokServer started!
+
+[INFO ] (18/05/2015 10:42:21): ------------------------------
+[INFO ] (18/05/2015 10:42:21): Handling socket: 127.0.0.1:9995<->127.0.0.1:36891
+[INFO ] (18/05/2015 10:42:21): Channel: us.pserver.revok.channel.HttpResponseChannel@4232c52b
+[INFO ] (18/05/2015 10:42:22): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:42:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:22): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:42:22): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:42:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:22): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:42:22): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:42:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:22): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:42:22): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:42:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:22): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@25413c6f }
+[INFO ] (18/05/2015 10:42:22): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:42:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:22): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:42:22): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:42:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:22): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:42:22): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:42:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:22): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@7917a469 }
+[INFO ] (18/05/2015 10:42:22): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:42:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:22): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:42:22): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:42:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:22): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:42:23): Connection closed by client.
+[INFO ] (18/05/2015 10:42:26): ------------------------------
+[INFO ] (18/05/2015 10:42:26): Handling socket: 127.0.0.1:9995<->127.0.0.1:36892
+[INFO ] (18/05/2015 10:42:26): Channel: us.pserver.revok.channel.HttpResponseChannel@458c1321
+[INFO ] (18/05/2015 10:42:27): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:42:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:27): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:42:27): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:42:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:27): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:42:27): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:42:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:27): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:42:27): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:42:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:27): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@25413c6f }
+[INFO ] (18/05/2015 10:42:27): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:42:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:27): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:42:27): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:42:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:27): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:42:27): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:42:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:27): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@7917a469 }
+[INFO ] (18/05/2015 10:42:27): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:42:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:27): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:42:27): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:42:27): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:27): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:42:27): Connection closed by client.
+[INFO ] (18/05/2015 10:42:36): ------------------------------
+[INFO ] (18/05/2015 10:42:36): Handling socket: 127.0.0.1:9995<->127.0.0.1:36894
+[INFO ] (18/05/2015 10:42:36): Channel: us.pserver.revok.channel.HttpResponseChannel@34cd072c
+[INFO ] (18/05/2015 10:42:36): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:42:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:36): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:42:36): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:42:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:36): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:42:36): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:42:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:36): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:42:36): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:42:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:36): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@25413c6f }
+[INFO ] (18/05/2015 10:42:36): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:42:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:36): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:42:36): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:42:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:36): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:42:36): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:42:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:36): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@7917a469 }
+[INFO ] (18/05/2015 10:42:36): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:42:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:36): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:42:36): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:42:36): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:42:36): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:42:37): Connection closed by client.
+[INFO ] (18/05/2015 10:44:25): Starting RevokServer...
+[INFO ] (18/05/2015 10:44:25): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 10:44:25): RevokServer started!
+
+[INFO ] (18/05/2015 10:44:28): ------------------------------
+[INFO ] (18/05/2015 10:44:28): Handling socket: 127.0.0.1:9995<->127.0.0.1:36902
+[INFO ] (18/05/2015 10:44:28): Channel: us.pserver.revok.channel.HttpResponseChannel@4232c52b
+[INFO ] (18/05/2015 10:44:28): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:44:28): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:44:28): Response sent: OpResult{ success = true, return = [stdout, RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:44:28): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:44:28): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:44:28): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:44:29): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:44:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:44:29): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:44:29): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:44:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:44:29): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@9dba100 }
+[INFO ] (18/05/2015 10:44:29): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:44:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:44:29): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:44:29): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:44:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:44:29): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:44:29): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:44:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:44:29): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@507b5a71 }
+[INFO ] (18/05/2015 10:44:29): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:44:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:44:29): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:44:29): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:44:29): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:44:29): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:44:29): Connection closed by client.
+[INFO ] (18/05/2015 10:46:52): Starting RevokServer...
+[INFO ] (18/05/2015 10:46:52): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 10:46:52): RevokServer started!
+
+[INFO ] (18/05/2015 10:46:55): ------------------------------
+[INFO ] (18/05/2015 10:46:55): Handling socket: 127.0.0.1:9995<->127.0.0.1:36911
+[INFO ] (18/05/2015 10:46:55): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:46:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:46:55): Response sent: OpResult{ success = true, return = [RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:46:55): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:46:55): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:46:56): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:46:56): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:46:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:46:56): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:46:56): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:46:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:46:56): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@506295a2 }
+[INFO ] (18/05/2015 10:46:56): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:46:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:46:56): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:46:56): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:46:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:46:56): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:46:56): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:46:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:46:56): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@2043c50a }
+[INFO ] (18/05/2015 10:46:56): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:46:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:46:56): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:46:56): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:46:56): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:46:56): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:46:56): Connection closed by client.
+[INFO ] (18/05/2015 10:48:01): Starting RevokServer...
+[INFO ] (18/05/2015 10:48:01): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 10:48:01): RevokServer started!
+
+[INFO ] (18/05/2015 10:48:11): ------------------------------
+[INFO ] (18/05/2015 10:48:11): Handling socket: 127.0.0.1:9995<->127.0.0.1:36917
+[INFO ] (18/05/2015 10:48:11): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:48:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:11): Response sent: OpResult{ success = true, return = [RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:48:12): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:48:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:12): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:48:12): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:48:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:12): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:48:12): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:48:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:12): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@9dba100 }
+[INFO ] (18/05/2015 10:48:12): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:48:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:12): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:48:12): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:48:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:12): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:48:12): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:48:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:12): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@507b5a71 }
+[INFO ] (18/05/2015 10:48:12): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:48:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:12): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:48:12): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:48:12): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:12): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:48:12): Connection closed by client.
+[INFO ] (18/05/2015 10:48:15): ------------------------------
+[INFO ] (18/05/2015 10:48:15): Handling socket: 127.0.0.1:9995<->127.0.0.1:36918
+[INFO ] (18/05/2015 10:48:15): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 10:48:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:15): Response sent: OpResult{ success = true, return = [RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 10:48:15): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 10:48:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:15): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 10:48:15): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 10:48:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:15): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 10:48:15): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 10:48:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:15): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@9dba100 }
+[INFO ] (18/05/2015 10:48:15): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 10:48:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:15): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 10:48:15): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 10:48:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:15): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 10:48:15): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 10:48:15): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:15): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@507b5a71 }
+[INFO ] (18/05/2015 10:48:16): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:48:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:16): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 10:48:16): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 10:48:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 10:48:16): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 10:48:16): Connection closed by client.
+[INFO ] (18/05/2015 15:45:34): Starting RevokServer...
+[INFO ] (18/05/2015 15:45:34): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 15:45:34): RevokServer started!
+
+[INFO ] (18/05/2015 15:45:38): ------------------------------
+[INFO ] (18/05/2015 15:45:38): Handling socket: 127.0.0.1:9995<->127.0.0.1:38309
+[INFO ] (18/05/2015 15:45:39): Connection closed by client.
+[INFO ] (18/05/2015 15:49:46): Starting RevokServer...
+[INFO ] (18/05/2015 15:49:46): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 15:49:46): RevokServer started!
+
+[INFO ] (18/05/2015 15:49:50): ------------------------------
+[INFO ] (18/05/2015 15:49:50): Handling socket: 127.0.0.1:9995<->127.0.0.1:38318
+[INFO ] (18/05/2015 15:49:51): Connection closed by client.
+[INFO ] (18/05/2015 15:49:51): ------------------------------
+[INFO ] (18/05/2015 15:49:51): Handling socket: 127.0.0.1:9995<->127.0.0.1:38319
+[INFO ] (18/05/2015 15:49:51): Connection closed by client.
+[INFO ] (18/05/2015 15:53:12): Starting RevokServer...
+[INFO ] (18/05/2015 15:53:12): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 15:53:12): RevokServer started!
+
+[INFO ] (18/05/2015 15:53:15): ------------------------------
+[INFO ] (18/05/2015 15:53:15): Handling socket: 127.0.0.1:9995<->127.0.0.1:38332
+[INFO ] (18/05/2015 15:53:16): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 15:53:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:53:16): Response sent: OpResult{ success = true, return = [RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 15:53:16): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 15:53:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:53:16): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 15:53:16): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 15:53:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:53:16): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 15:53:16): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 15:53:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:53:16): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@3a5764ec }
+[INFO ] (18/05/2015 15:53:16): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 15:53:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:53:16): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 15:53:16): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 15:53:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:53:16): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 15:53:16): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 15:53:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:53:16): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@55c0a9e1 }
+[INFO ] (18/05/2015 15:53:16): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 15:53:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:53:16): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 15:53:16): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 15:53:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:53:16): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 15:53:16): Connection closed by client.
+[INFO ] (18/05/2015 15:54:10): Starting RevokServer...
+[INFO ] (18/05/2015 15:54:10): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 15:54:10): RevokServer started!
+
+[INFO ] (18/05/2015 15:54:13): ------------------------------
+[INFO ] (18/05/2015 15:54:13): Handling socket: 127.0.0.1:9995<->127.0.0.1:38333
+[INFO ] (18/05/2015 15:54:14): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 15:54:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:54:14): Response sent: OpResult{ success = true, return = [RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 15:54:14): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 15:54:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:54:14): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 15:54:14): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 15:54:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:54:14): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 15:54:14): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 15:54:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:54:14): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@4e53dbe8 }
+[INFO ] (18/05/2015 15:54:14): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 15:54:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:54:14): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 15:54:14): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 15:54:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:54:14): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 15:54:14): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 15:54:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:54:14): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@4c11ed1a }
+[INFO ] (18/05/2015 15:54:14): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 15:54:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:54:14): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 15:54:14): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 15:54:14): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:54:14): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 15:54:14): Connection closed by client.
+[INFO ] (18/05/2015 15:55:04): Starting RevokServer...
+[INFO ] (18/05/2015 15:55:04): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 15:55:04): RevokServer started!
+
+[INFO ] (18/05/2015 15:55:06): ------------------------------
+[INFO ] (18/05/2015 15:55:06): Handling socket: 127.0.0.1:9995<->127.0.0.1:38336
+[INFO ] (18/05/2015 15:55:07): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 15:55:07): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:07): Response sent: OpResult{ success = true, return = [RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 15:55:07): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 15:55:07): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:07): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 15:55:07): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 15:55:07): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:07): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 15:55:07): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 15:55:07): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:07): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@1f56bee2 }
+[INFO ] (18/05/2015 15:55:07): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 15:55:07): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:07): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 15:55:07): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 15:55:07): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:07): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 15:55:07): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 15:55:07): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:07): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@6c63ce37 }
+[INFO ] (18/05/2015 15:55:07): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 15:55:07): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:07): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 15:55:07): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 15:55:07): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:07): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 15:55:07): Connection closed by client.
+[INFO ] (18/05/2015 15:55:47): Starting RevokServer...
+[INFO ] (18/05/2015 15:55:47): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 15:55:47): RevokServer started!
+
+[INFO ] (18/05/2015 15:55:51): ------------------------------
+[INFO ] (18/05/2015 15:55:51): Handling socket: 127.0.0.1:9995<->127.0.0.1:38341
+[INFO ] (18/05/2015 15:55:52): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 15:55:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:52): Response sent: OpResult{ success = true, return = [RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 15:55:52): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 15:55:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:52): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 15:55:52): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 15:55:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:52): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 15:55:52): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 15:55:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:52): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@435caca7 }
+[INFO ] (18/05/2015 15:55:52): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 15:55:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:52): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 15:55:52): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 15:55:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:52): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 15:55:52): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 15:55:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:52): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@725503a3 }
+[INFO ] (18/05/2015 15:55:52): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 15:55:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:52): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 15:55:52): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 15:55:52): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:55:52): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 15:55:52): Connection closed by client.
+[INFO ] (18/05/2015 15:57:08): Starting RevokServer...
+[INFO ] (18/05/2015 15:57:08): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 15:57:08): RevokServer started!
+
+[INFO ] (18/05/2015 15:57:10): ------------------------------
+[INFO ] (18/05/2015 15:57:10): Handling socket: 127.0.0.1:9995<->127.0.0.1:38345
+[INFO ] (18/05/2015 15:57:11): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 15:57:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:57:11): Response sent: OpResult{ success = true, return = [RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 15:57:11): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 15:57:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:57:11): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 15:57:11): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 15:57:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:57:11): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 15:57:11): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 15:57:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:57:11): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@3a5764ec }
+[INFO ] (18/05/2015 15:57:11): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 15:57:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:57:11): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 15:57:11): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 15:57:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:57:11): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 15:57:11): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 15:57:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:57:11): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@5c70269d }
+[INFO ] (18/05/2015 15:57:11): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 15:57:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:57:11): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 15:57:11): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 15:57:11): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:57:11): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 15:57:12): Connection closed by client.
+[INFO ] (18/05/2015 15:58:16): Starting RevokServer...
+[INFO ] (18/05/2015 15:58:16): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 15:58:16): RevokServer started!
+
+[INFO ] (18/05/2015 15:58:21): ------------------------------
+[INFO ] (18/05/2015 15:58:21): Handling socket: 127.0.0.1:9995<->127.0.0.1:38349
+[INFO ] (18/05/2015 15:58:22): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 15:58:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:58:22): Response sent: OpResult{ success = true, return = [RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 15:58:22): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 15:58:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:58:22): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 15:58:22): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 15:58:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:58:22): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 15:58:22): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 15:58:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:58:22): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@674f7f4 }
+[INFO ] (18/05/2015 15:58:22): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 15:58:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:58:22): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 15:58:22): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 15:58:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:58:22): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 15:58:22): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 15:58:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:58:22): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@520258a6 }
+[INFO ] (18/05/2015 15:58:22): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 15:58:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:58:22): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 15:58:22): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 15:58:22): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 15:58:22): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 15:58:23): Connection closed by client.
+[INFO ] (18/05/2015 16:06:12): Starting RevokServer...
+[INFO ] (18/05/2015 16:06:12): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 16:06:12): RevokServer started!
+
+[INFO ] (18/05/2015 16:06:15): ------------------------------
+[INFO ] (18/05/2015 16:06:15): Handling socket: 127.0.0.1:9995<->127.0.0.1:38371
+[INFO ] (18/05/2015 16:06:15): Connection closed by client.
+[INFO ] (18/05/2015 16:06:36): ------------------------------
+[INFO ] (18/05/2015 16:06:36): Handling socket: 127.0.0.1:9995<->127.0.0.1:38372
+[INFO ] (18/05/2015 16:06:36): Connection closed by client.
+[INFO ] (18/05/2015 16:06:36): ------------------------------
+[INFO ] (18/05/2015 16:06:36): Handling socket: 127.0.0.1:9995<->127.0.0.1:38373
+[INFO ] (18/05/2015 16:06:36): Connection closed by client.
+[INFO ] (18/05/2015 16:08:36): ------------------------------
+[INFO ] (18/05/2015 16:08:36): Handling socket: 127.0.0.1:9995<->127.0.0.1:38380
+[INFO ] (18/05/2015 16:08:36): Connection closed by client.
+[INFO ] (18/05/2015 16:08:36): ------------------------------
+[INFO ] (18/05/2015 16:08:36): Handling socket: 127.0.0.1:9995<->127.0.0.1:38381
+[INFO ] (18/05/2015 16:08:36): Connection closed by client.
+[INFO ] (18/05/2015 16:08:48): Starting RevokServer...
+[INFO ] (18/05/2015 16:08:48): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 16:08:48): RevokServer started!
+
+[INFO ] (18/05/2015 16:08:50): ------------------------------
+[INFO ] (18/05/2015 16:08:50): Handling socket: 127.0.0.1:9995<->127.0.0.1:38383
+[INFO ] (18/05/2015 16:08:51): Connection closed by client.
+[INFO ] (18/05/2015 16:08:51): ------------------------------
+[INFO ] (18/05/2015 16:08:51): Handling socket: 127.0.0.1:9995<->127.0.0.1:38384
+[INFO ] (18/05/2015 16:08:51): Connection closed by client.
+[INFO ] (18/05/2015 16:11:02): Starting RevokServer...
+[INFO ] (18/05/2015 16:11:02): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 16:11:02): RevokServer started!
+
+[INFO ] (18/05/2015 16:11:04): ------------------------------
+[INFO ] (18/05/2015 16:11:04): Handling socket: 127.0.0.1:9995<->127.0.0.1:38386
+[INFO ] (18/05/2015 16:11:05): Connection closed by client.
+[INFO ] (18/05/2015 16:11:05): ------------------------------
+[INFO ] (18/05/2015 16:11:05): Handling socket: 127.0.0.1:9995<->127.0.0.1:38387
+[INFO ] (18/05/2015 16:11:05): Connection closed by client.
+[INFO ] (18/05/2015 16:15:13): Starting RevokServer...
+[INFO ] (18/05/2015 16:15:13): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 16:15:13): RevokServer started!
+
+[INFO ] (18/05/2015 16:15:15): ------------------------------
+[INFO ] (18/05/2015 16:15:15): Handling socket: 127.0.0.1:9995<->127.0.0.1:38396
+[INFO ] (18/05/2015 16:15:16): Connection closed by client.
+[INFO ] (18/05/2015 16:15:16): ------------------------------
+[INFO ] (18/05/2015 16:15:16): Handling socket: 127.0.0.1:9995<->127.0.0.1:38397
+[INFO ] (18/05/2015 16:15:16): Connection closed by client.
+[INFO ] (18/05/2015 16:15:27): Starting RevokServer...
+[INFO ] (18/05/2015 16:15:27): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 16:15:27): RevokServer started!
+
+[INFO ] (18/05/2015 16:15:31): ------------------------------
+[INFO ] (18/05/2015 16:15:31): Handling socket: 127.0.0.1:9995<->127.0.0.1:38398
+[INFO ] (18/05/2015 16:15:31): Connection closed by client.
+[INFO ] (18/05/2015 16:15:31): ------------------------------
+[INFO ] (18/05/2015 16:15:31): Handling socket: 127.0.0.1:9995<->127.0.0.1:38399
+[INFO ] (18/05/2015 16:15:31): Connection closed by client.
+[INFO ] (18/05/2015 16:16:11): Starting RevokServer...
+[INFO ] (18/05/2015 16:16:11): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 16:16:11): RevokServer started!
+
+[INFO ] (18/05/2015 16:16:14): ------------------------------
+[INFO ] (18/05/2015 16:16:14): Handling socket: 127.0.0.1:9995<->127.0.0.1:38402
+[INFO ] (18/05/2015 16:16:15): Connection closed by client.
+[INFO ] (18/05/2015 16:16:15): ------------------------------
+[INFO ] (18/05/2015 16:16:15): Handling socket: 127.0.0.1:9995<->127.0.0.1:38403
+[INFO ] (18/05/2015 16:16:15): Connection closed by client.
+[INFO ] (18/05/2015 16:17:12): Starting RevokServer...
+[INFO ] (18/05/2015 16:17:12): Listening on: HttpConnector{ 0.0.0.0:9995 }
+[INFO ] (18/05/2015 16:17:12): RevokServer started!
+
+[INFO ] (18/05/2015 16:17:15): ------------------------------
+[INFO ] (18/05/2015 16:17:15): Handling socket: 127.0.0.1:9995<->127.0.0.1:38405
+[INFO ] (18/05/2015 16:17:16): <- Remote request: global.ObjectContainer.objects( global )
+[INFO ] (18/05/2015 16:17:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 16:17:16): Response sent: OpResult{ success = true, return = [RevokServer, ObjectContainer] }
+[INFO ] (18/05/2015 16:17:16): <- Remote request: calc.ICalculator.sum( 30.0, 27.0 )
+[INFO ] (18/05/2015 16:17:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 16:17:16): Response sent: OpResult{ success = true, return = 57.0 }
+[INFO ] (18/05/2015 16:17:16): <- Remote request: calc.ICalculator.printZ(  )
+[INFO ] (18/05/2015 16:17:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 16:17:16): Response sent: OpResult{ success = true, return = Calculator{ x=0.0, y=0.0, z=0.0 } }
+[INFO ] (18/05/2015 16:17:16): <- Remote request: global.RevokServer.toString(  )
+[INFO ] (18/05/2015 16:17:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 16:17:16): Response sent: OpResult{ success = true, return = us.pserver.revok.server.RevokServer@20e948b5 }
+[INFO ] (18/05/2015 16:17:16): <- Remote request: global.RevokServer.isRunning(  )
+[INFO ] (18/05/2015 16:17:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 16:17:16): Response sent: OpResult{ success = true, return = true }
+[INFO ] (18/05/2015 16:17:16): <- Remote request: global.RevokServer.getAvailableThreads(  )
+[INFO ] (18/05/2015 16:17:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 16:17:16): Response sent: OpResult{ success = true, return = 6 }
+[INFO ] (18/05/2015 16:17:16): <- Remote request: io.IStreamHandler.toString(  )
+[INFO ] (18/05/2015 16:17:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 16:17:16): Response sent: OpResult{ success = true, return = us.pserver.revok.test.StreamHandler@6e004219 }
+[INFO ] (18/05/2015 16:17:16): <- Remote request: io.IStreamHandler.size( /storage/pic.jpg )
+[INFO ] (18/05/2015 16:17:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 16:17:16): Response sent: OpResult{ success = true, return = 298491 }
+[INFO ] (18/05/2015 16:17:16): <- Remote request: io.IStreamHandler.read( /storage/pic.jpg )
+[INFO ] (18/05/2015 16:17:16): Authentication Enabled: Credentials{ user = juno }
+[INFO ] (18/05/2015 16:17:16): Response sent: OpResult{ success = true, return = java.io.InputStream }
+[INFO ] (18/05/2015 16:17:16): Connection closed by client.

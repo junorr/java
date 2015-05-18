@@ -47,8 +47,6 @@ public class ObjectContainer {
   
   public static final String CONTAINER_KEY = ObjectContainer.class.getSimpleName();
   
-  public static final String STDOUT = "stdout";
-  
   private final Map<String, Map<String, Object>> space;
   
   private Authenticator auth;
@@ -61,7 +59,6 @@ public class ObjectContainer {
     space = new ConcurrentHashMap<>();
     space.put(NAMESPACE_GLOBAL, new ConcurrentHashMap<>());
     space.get(NAMESPACE_GLOBAL).put(CONTAINER_KEY, this);
-    space.get(NAMESPACE_GLOBAL).put(STDOUT, System.err);
   }
   
   

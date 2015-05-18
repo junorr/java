@@ -84,8 +84,7 @@ public class HttpResponseChannel implements Channel {
   /**
    * Construtor padrão, recebe um <code>Socket</code>
    * para comunicação na rede.
-   * @param sc <code>Socket</code>, possivelmente obtido
-   * através do método <code>ServerSocket.accept() : Socket</code>.
+   * @param hsc HttpServerConnection.
    */
   public HttpResponseChannel(HttpServerConnection hsc) {
     if(hsc == null || !hsc.isOpen())
@@ -169,8 +168,9 @@ public class HttpResponseChannel implements Channel {
     if(gzip) fac.enableGZipCoder();
     if(key != null) fac.enableCryptCoder(key);
     fac.put(trp.getWriteVersion());
-    if(trp.getInputStream() != null)
+    if(trp.getInputStream() != null) {
       fac.put(trp.getInputStream());
+    }
     response.setEntity(fac.create());
     return response;
   }
@@ -213,6 +213,7 @@ public class HttpResponseChannel implements Channel {
       HttpEntityParser par = HttpEntityParser.instance(serial);
       if(gzip) par.enableGZipCoder();
       par.parse(content);
+      key = par.getCryptKey();
       Transport t = (Transport) par.getObject();
       if(par.getInputStream() != null)
         t.setInputStream(par.getInputStream());

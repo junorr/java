@@ -24,6 +24,7 @@ package us.pserver.revok.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
@@ -48,8 +49,6 @@ public class HttpEntityFactory {
       TYPE_X_JAVA_ROB = ContentType.create(
           "application/x-java-rob", Consts.UTF_8);
   
-  
-  private static HttpEntityFactory instance;
   
   private MixedWriteBuffer buffer;
   
@@ -99,30 +98,22 @@ public class HttpEntityFactory {
   
   
   public static HttpEntityFactory instance(ContentType type) {
-    if(instance == null) 
-      instance = new HttpEntityFactory(type);
-    return instance;
+    return new HttpEntityFactory(type);
   }
   
   
   public static HttpEntityFactory instance(ContentType type, ObjectSerializer os) {
-    if(instance == null) 
-      instance = new HttpEntityFactory(type, os);
-    return instance;
+    return new HttpEntityFactory(type, os);
   }
   
   
   public static HttpEntityFactory instance(ObjectSerializer os) {
-    if(instance == null) 
-      instance = new HttpEntityFactory(os);
-    return instance;
+    return new HttpEntityFactory(os);
   }
   
   
   public static HttpEntityFactory instance() {
-    if(instance == null) 
-      instance = new HttpEntityFactory();
-    return instance;
+    return new HttpEntityFactory();
   }
   
   

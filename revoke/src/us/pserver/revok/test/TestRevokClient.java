@@ -107,14 +107,14 @@ public class TestRevokClient {
         .params("$calc.temp", 30.0);
     System.out.println("* Invoke      --> "+ rm);
     System.out.println(">> "+ rob.invoke(rm));
-    
+    */
     
     System.out.println("----- ProxyClass: ICalculator -----");
     ICalculator calc = rob.createRemoteObject("calc", ICalculator.class);
     System.out.println("* Invoking calc.sum( 30, 27 ) = "+ calc.sum(30, 27));
     System.out.println("* Invoking calc.printZ()");
     calc.printZ();
-    */
+    
     System.out.println("----- ProxyClass: Server -----");
     Server srv = rob.createRemoteObject("global.RevokServer", Server.class);
     System.out.println("* Server: srv="+ srv);

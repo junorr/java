@@ -23,6 +23,7 @@ package us.pserver.streams;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  *

@@ -324,6 +324,7 @@ public class HttpRequestChannel implements Channel {
       
       par.parse(content);
       Transport t = (Transport) par.getObject();
+      
       if(par.getInputStream() != null)
         t.setInputStream(par.getInputStream());
       return t;

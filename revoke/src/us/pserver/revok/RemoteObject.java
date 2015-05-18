@@ -310,6 +310,7 @@ public class RemoteObject {
       }
     } 
     catch(IOException ex) {
+      ex.printStackTrace();
       res.setError(ex);
       res.setSuccessOperation(false);
     }

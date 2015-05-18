@@ -21,7 +21,6 @@
 
 package us.pserver.revok.http;
 
-import com.cedarsoftware.util.io.JsonReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -168,6 +167,7 @@ public class HttpEntityParser {
               + "Invalid HttpEntity {"+ entity+ "}");
     
     buffer.clear();
+    //buffer = new MixedWriteBuffer();
     InputStream contstream = entity.getContent();
     
     String five = readFive(contstream);
