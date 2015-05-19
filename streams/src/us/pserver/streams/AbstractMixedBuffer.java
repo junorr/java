@@ -117,6 +117,15 @@ public abstract class AbstractMixedBuffer implements MixedBuffer {
   
   
   @Override
+  protected void finalize() {
+    try {
+      super.finalize();
+      this.close();
+    } catch(Throwable th) {}
+  }
+  
+  
+  @Override
   public void close() {
     valid = false;
     try {
