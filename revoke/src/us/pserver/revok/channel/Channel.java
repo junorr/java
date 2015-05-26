@@ -26,45 +26,42 @@ import java.io.IOException;
 
 
 /**
- * Interface que define um canal de transmissão 
- * e codificação de objetos.
+ * Channel interface for network communication.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
  */
 public interface Channel {
   
+  
   /**
-   * Escreve um objeto <code>Transport</code> no canal
-   * de transmissão.
-   * @param trp Objeto <code>Transport</code>.
-   * @throws IOException Caso ocorra erro na
-   * transmissão.
+   * Writes a <code>Transport</code> object on this transmission channel.
+   * @param trp <code>Transport</code> object to write.
+   * @throws IOException In case of error writing the object.
    * @see us.pserver.remote.Transport
    */
   public void write(Transport trp) throws IOException;
   
+  
   /**
-   * Lê um objeto <code>Transport</code> do
-   * canal de transmissão.
-   * @return Objeto <code>Transport</code>
-   * @throws IOException Caso ocorra erro 
-   * na leitura da transmissão.
+   * Reads a <code>Transport</code> object from this transmission channel.
+   * @return <code>Transport</code> object readed.
+   * @throws IOException In case of error reading the object.
    * @see us.pserver.remote.Transport
    */
   public Transport read() throws IOException;
   
+  
   /**
-   * Fecha o canal de transmissão.
+   * Close the transmission channel.
    */
   public void close();
   
+  
   /**
-   * Verifica se o canal continua válido
-   * para executar transmissões.
-   * @return <code>true</code> se o canal continua
-   * válido para executar transmissões, <code>false</code>
-   * caso contrário.
+   * Verifies if this channel is still valid for transmissions.
+   * @return <code>true</code> if this channel is still valid for transmissions, 
+   * <code>false</code> otherwise.
    */
   public boolean isValid();
   

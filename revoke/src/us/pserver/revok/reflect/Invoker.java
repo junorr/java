@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.revok.server;
+package us.pserver.revok.reflect;
 
 import com.jpower.rfl.Reflector;
 import java.util.List;
@@ -31,7 +31,7 @@ import us.pserver.revok.RemoteMethod;
 import us.pserver.revok.container.AuthenticationException;
 import us.pserver.revok.container.Credentials;
 import us.pserver.revok.container.ObjectContainer;
-import static us.pserver.revok.server.Invoker.DEFAULT_INVOKE_TRIES;
+import static us.pserver.revok.reflect.Invoker.DEFAULT_INVOKE_TRIES;
 
 
 /**

@@ -21,6 +21,7 @@
 
 package us.pserver.revok.server;
 
+import us.pserver.revok.reflect.Invoker;
 import us.pserver.revok.protocol.FakeInputStreamRef;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +44,7 @@ import us.pserver.revok.protocol.Transport;
 import us.pserver.revok.container.AuthenticationException;
 import us.pserver.revok.container.ObjectContainer;
 import us.pserver.revok.factory.ChannelFactory;
-import us.pserver.revok.factory.HttpFactoryProvider;
+import us.pserver.revok.factory.HttpFactoryBuilder;
 import us.pserver.revok.protocol.JsonSerializer;
 import us.pserver.revok.protocol.ObjectSerializer;
 
@@ -104,7 +105,7 @@ public class RevokServer extends AbstractServer {
     super(cont);
     cont.put(ObjectContainer.NAMESPACE_GLOBAL, SERVER_KEY, this);
     con = new HttpConnector();
-    factory = HttpFactoryProvider.factory()
+    factory = HttpFactoryBuilder.builder()
         .enableGZipCompression()
         .enableCryptography()
         .getHttpResponseChannelFactory();

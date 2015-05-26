@@ -24,7 +24,6 @@ package us.pserver.revok.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
@@ -39,12 +38,21 @@ import us.pserver.streams.IO;
 import us.pserver.streams.MixedWriteBuffer;
 
 /**
- *
+ * A factory for Http entities embedded
+ * in the Http message body.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 08/04/2015
  */
 public class HttpEntityFactory {
 
+  
+  /**
+   * <code>
+   * TYPE_X_JAVA_ROB = "application/x-java-rob"
+   * </code><br/>
+   * Mime type for java remote object.
+   */
   public static final ContentType 
       TYPE_X_JAVA_ROB = ContentType.create(
           "application/x-java-rob", Consts.UTF_8);
@@ -65,6 +73,10 @@ public class HttpEntityFactory {
   private ObjectSerializer serial;
   
   
+  /**
+   * Constructor receives the mime content type.
+   * @param type mime content type.
+   */
   public HttpEntityFactory(ContentType type) {
     if(type == null)
       type = TYPE_X_JAVA_ROB;
@@ -78,6 +90,12 @@ public class HttpEntityFactory {
   }
   
   
+  /**
+   * Constructor which receives the mime content 
+   * type and the object serializator.
+   * @param type Mime content type.
+   * @param os <code>ObjectSerializer</code>.
+   */
   public HttpEntityFactory(ContentType type, ObjectSerializer os) {
     this(type);
     if(os == null) os = new JsonSerializer();
@@ -85,6 +103,10 @@ public class HttpEntityFactory {
   }
   
   
+  /**
+   * Constructor which receives an <code>ObjectSerializer</code>.
+   * @param os <code>ObjectSerializer</code>.
+   */
   public HttpEntityFactory(ObjectSerializer os) {
     this(TYPE_X_JAVA_ROB);
     if(os == null) os = new JsonSerializer();
@@ -92,36 +114,76 @@ public class HttpEntityFactory {
   }
   
   
+  /**
+   * Default constructor without arguments.
+   */
   public HttpEntityFactory() {
     this(TYPE_X_JAVA_ROB);
   }
   
   
+  /**
+   * Create an <code>HttpEntityFactory</code> 
+   * with the specified content mime type.
+   * @param type Content mime type.
+   * @return <code>HttpEntityFactory</code> instance.
+   */
   public static HttpEntityFactory instance(ContentType type) {
     return new HttpEntityFactory(type);
   }
   
   
+  /**
+   * Create an <code>HttpEntityFactory</code> 
+   * with the specified content mime type and 
+   * object serializator.
+   * @param type Content mime type.
+   * @param os <code>ObjectSerializer</code>.
+   * @return <code>HttpEntityFactory</code> instance.
+   */
   public static HttpEntityFactory instance(ContentType type, ObjectSerializer os) {
     return new HttpEntityFactory(type, os);
   }
   
   
+  /**
+   * Create an <code>HttpEntityFactory</code> 
+   * with the specified object serializator.
+   * @param os <code>ObjectSerializer</code>.
+   * @return <code>HttpEntityFactory</code> instance.
+   */
   public static HttpEntityFactory instance(ObjectSerializer os) {
     return new HttpEntityFactory(os);
   }
   
   
+  /**
+   * Create an <code>HttpEntityFactory</code>.
+   * @return <code>HttpEntityFactory</code> instance.
+   */
   public static HttpEntityFactory instance() {
     return new HttpEntityFactory();
   }
   
   
+  /**
+   * Get the object serializer used by this instance 
+   * of <code>HttpEntityFactory</code>.
+   * @return The object serializer used by this 
+   * instance of <code>HttpEntityFactory</code>.
+   */
   public ObjectSerializer getObjectSerializer() {
     return serial;
   }
   
   
+  /**
+   * Set the object serializer used by this instance 
+   * of <code>HttpEntityFactory</code>.
+   * @param serializer The object serializer used by this 
+   * instance of <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityFactory setObjectSerializer(ObjectSerializer serializer) {
     if(serializer != null) {
       serial = serializer;
@@ -130,6 +192,12 @@ public class HttpEntityFactory {
   }
   
   
+  /**
+   * Enable criptography for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @param key Criptography key.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityFactory enableCryptCoder(CryptKey key) {
     if(key != null) {
       buffer.getCoderFactory().setCryptCoderEnabled(true, key);
@@ -139,36 +207,66 @@ public class HttpEntityFactory {
   }
   
   
+  /**
+   * Disable all coders for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityFactory disableAllCoders() {
     buffer.getCoderFactory().clearCoders();
     return this;
   }
   
   
+  /**
+   * Disable criptography for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityFactory disableCryptCoder() {
     buffer.getCoderFactory().setCryptCoderEnabled(false, null);
     return this;
   }
   
   
+  /**
+   * Enable GZip compression for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityFactory enableGZipCoder() {
     buffer.getCoderFactory().setGZipCoderEnabled(true);
     return this;
   }
   
   
+  /**
+   * Disable GZip compression for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityFactory disableGZipCoder() {
     buffer.getCoderFactory().setGZipCoderEnabled(false);
     return this;
   }
   
   
+  /**
+   * Enable Base64 encoding for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityFactory enableBase64Coder() {
     buffer.getCoderFactory().setBase64CoderEnabled(true);
     return this;
   }
   
   
+  /**
+   * Disable Base64 encoding for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityFactory disableBase64Coder() {
     buffer.getCoderFactory().setBase64CoderEnabled(false);
     return this;

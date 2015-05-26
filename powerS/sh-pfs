@@ -1,0 +1,5 @@
+#!/bin/bash
+java -jar "$0" "$1" "$2"
+exit
+
+

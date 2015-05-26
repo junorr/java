@@ -57,7 +57,7 @@ public class SingleCredentialsSource implements CredentialsSource {
   
   
   /**
-   * Return the single Credentials object.
+   * Get the single Credentials object.
    * @return The single Credentials object.
    */
   public Credentials credentials() {
@@ -66,7 +66,7 @@ public class SingleCredentialsSource implements CredentialsSource {
   
   
   /**
-   * Define the backend single Credentials object.
+   * Set the backend single Credentials object.
    * @param c The Credentials object.
    * @return This instance of SingleCredentialsSource.
    */

@@ -24,10 +24,8 @@ package us.pserver.revok;
 import java.util.Objects;
 
 /**
- * Encapsula informações sobre o resultado da
- * invocação de um método, indicando se a operação
- * foi bem sucedida, seu valor de retorno ou exceção 
- * lançada.
+ * Encapsulates method invocation results like
+ * success, exceptions and return object.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 11/11/2013
@@ -42,7 +40,7 @@ public class OpResult {
   
   
   /**
-   * Construtor padrão sem argumentos.
+   * Default constructor without arguments.
    */
   public OpResult() {
     success = true;
@@ -52,10 +50,9 @@ public class OpResult {
 
 
   /**
-   * Verifica se a operação foi bem sucedida.
-   * @return <code>true</code> se a operação foi
-   * bem sucedida, <code>false</code> caso
-   * contrário.
+   * Verifies if the operation is successful.
+   * @return <code>true</code> if the operation was successful,
+   * <code>false</code> otherwise.
    */
   public boolean isSuccessOperation() {
     return success;
@@ -63,8 +60,9 @@ public class OpResult {
 
 
   /**
-   * Define se a operação foi bem sucedida.
-   * @param success <code>boolean</code>.
+   * Set the operation success.
+   * @param success <code>true</code> if the operation was successful,
+   * <code>false</code> otherwise.
    */
   public void setSuccessOperation(boolean success) {
     this.success = success;
@@ -72,10 +70,9 @@ public class OpResult {
   
   
   /**
-   * Verifica se a operação possui valor de retorno.
-   * @return <code>true</code> se a operação possui
-   * valor de retorno, <code>false</code> caso
-   * contrário.
+   * Verifies if it has a return value.
+   * @return <code>true</code> if it has a return value,
+   * <code>false</code> otherwise.
    */
   public boolean hasReturn() {
     return ret != null;
@@ -83,9 +80,9 @@ public class OpResult {
   
   
   /**
-   * Verifica se houve erro na operação.
-   * @return <code>true</code> se houve erro
-   * na operação, <code>false</code> caso contrário.
+   * Verifies if it has an exception error.
+   * @return <code>true</code> if it has an exception error,
+   * <code>false</code> otherwise.
    */
   public boolean hasError() {
     return error != null;
@@ -93,9 +90,8 @@ public class OpResult {
 
 
   /**
-   * Retorna o valor de retorno da operação.
-   * @return objeto de retorno da operação ou
-   * <code>null</code> caso não existir.
+   * Get the return value.
+   * @return Return value or <code>null</code>.
    */
   public Object getReturn() {
     return ret;
@@ -103,8 +99,8 @@ public class OpResult {
 
 
   /**
-   * Define o valor de retorno da operação.
-   * @param ret valor de retorno da operação.
+   * Set the return value.
+   * @param ret Return value.
    */
   public void setReturn(Object ret) {
     this.ret = ret;
@@ -112,9 +108,8 @@ public class OpResult {
 
 
   /**
-   * Retorna o erro da operação.
-   * @return Exception lançada na operação
-   * ou <code>null</code> se não existir.
+   * Get the exception thrown.
+   * @return exception thrown or <code>null</code>.
    */
   public MethodInvocationException getError() {
     return error;
@@ -122,8 +117,8 @@ public class OpResult {
 
 
   /**
-   * Define erro da operação.
-   * @param error Exception lançada.
+   * Set the exception thrown.
+   * @param error Exception thrown.
    */
   public void setError(Exception error) {
     if(error != null) {

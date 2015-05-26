@@ -23,8 +23,7 @@ package us.pserver.revok;
 
 
 /**
- * Exceção lançada em caso de erro na invocação
- * de um método remoto.
+ * Exception thrown in case of method invocation error.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 2014-01-21
@@ -33,14 +32,14 @@ public class MethodInvocationException extends Exception {
   
   
   /**
-   * Construtor padrão.
+   * Default constructor.
    */
   public MethodInvocationException() {}
   
   
   /**
-   * Construtor que recebe a mensagem de erro.
-   * @param msg Mensagem de erro.
+   * Receives the error message.
+   * @param msg Error message <code>String</code>.
    */
   public MethodInvocationException(String msg) {
     super(msg);
@@ -48,10 +47,9 @@ public class MethodInvocationException extends Exception {
   
   
   /**
-   * Construtor que recebe a mensagem e o
-   * <code>Throwable</code> da causa do erro.
-   * @param msg Mensagem de erro.
-   * @param cause Causa do erro.
+   * Receives the error message and cause.
+   * @param msg Error message <code>String</code>.
+   * @param cause Cause error <code>Throwable</code>.
    */
   public MethodInvocationException(String msg, Throwable cause) {
     super(msg, cause);
@@ -59,8 +57,8 @@ public class MethodInvocationException extends Exception {
   
   
   /**
-   * Construtor que recebe a causa do erro.
-   * @param cause Causa do erro.
+   * Receives the cause error.
+   * @param cause Cause error <code>Throwable</code>.
    */
   public MethodInvocationException(Throwable cause) {
     super(cause);

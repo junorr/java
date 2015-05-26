@@ -1,6 +1,0 @@
-delay(1000)
-mclick(1, 1600, 600)
-typestr("A String to be typed by robot!")
-key("ENTER")
-
-

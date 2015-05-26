@@ -27,7 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import us.pserver.revok.http.HttpConsts;
-import us.pserver.revok.server.Invoker;
+import us.pserver.revok.reflect.Invoker;
 
 /**
  * Represents a remote method to be invoked in a remote object.
@@ -65,10 +65,9 @@ public class RemoteMethod {
 
   
   /**
-   * Construtor que recebe como argumentos o nome
-   * do método e nome do objeto proprietário.
-   * @param ownerObject Nome do objeto proprietário.
-   * @param name Nome do método.
+   * Constructor which receives object and method names.
+   * @param ownerObject Owner object name.
+   * @param name Method name.
    */
   public RemoteMethod(String ownerObject, String name) {
     method = name;
@@ -80,9 +79,9 @@ public class RemoteMethod {
   
   
   /**
-   * Define the Credentials object to authentication with server.
+   * Set the authentication <code>Credentials</code> object with server.
    * @param c Credentials object.
-   * @return This instance of RemoteMethod.
+   * @return This modified <code>RemoteMethod</code> instance.
    */
   public RemoteMethod setCredentials(Credentials c) {
     cred = c;
@@ -100,9 +99,9 @@ public class RemoteMethod {
   
   
   /**
-   * Adiciona um argumento ao método remoto.
-   * @param obj Argumento de invocação do método.
-   * @return Esta instância modificada de RemoteMethod.
+   * Adds a method argument.
+   * @param obj Method argument.
+   * @return This modified <code>RemoteMethod</code> instance.
    */
   public RemoteMethod addArg(Object obj) {
     arguments.add(obj);
@@ -111,9 +110,9 @@ public class RemoteMethod {
   
 
   /**
-   * Add a class type of an argument of the method.
+   * Adds a class type of a method argument.
    * @param cls Class type.
-   * @return This instance of RemoteMethod.
+   * @return This modified <code>RemoteMethod</code> instance.
    */
   public RemoteMethod addType(Class cls) {
     if(cls != null)
@@ -123,12 +122,11 @@ public class RemoteMethod {
   
   
   /**
-   * Define a variable in the server wich will receive the 
+   * Set a variable in the server which will receive the 
    * returned value of the method. The variable name must 
-   * start with '$' and contains the namespace ('.' separeted) 
-   * where the variable will be stored. Example: $temp.myvar
+   * start with '$' and contains the namespace, dot separeted (i.e: '$global.myvar').
    * @param var Variable name.
-   * @return This instance of RemoteMethod.
+   * @return This modified <code>RemoteMethod</code> instance.
    */
   public RemoteMethod setReturnVar(String var) {
     if(var == null || !var.startsWith(Invoker.VAR_SIGNAL))
@@ -140,9 +138,8 @@ public class RemoteMethod {
   
   
   /**
-   * Return the variable in the server wich will receive the 
-   * returned value of the method.
-   * @return Variable name.
+   * Get the return variable in the server.
+   * @return Variable name <code>String</code>.
    */
   public String getReturnVar() {
     return retvar;
@@ -150,8 +147,8 @@ public class RemoteMethod {
   
   
   /**
-   * Limpa a lista de argumentos do método.
-   * @return Esta instância modificada de RemoteMethod.
+   * Clear the argument list.
+   * @return This modified <code>RemoteMethod</code> instance.
    */
   public RemoteMethod clearArguments() {
     arguments.clear();
@@ -161,7 +158,7 @@ public class RemoteMethod {
   
   /**
    * Clear the list of classes of the method arguments.
-   * @return This instance of RemoteMethod.
+   * @return This modified <code>RemoteMethod</code> instance.
    */
   public RemoteMethod clearTypes() {
     types.clear();
@@ -199,9 +196,9 @@ public class RemoteMethod {
   
   
   /**
-   * Define a lista de classes dos tipos de argumentos do método.
+   * Set the types of the method arguments.
    * @param cls Classes dos tipos de argumentos.
-   * @return Esta instância modificada de RemoteMethod.
+   * @return This modified <code>RemoteMethod</code> instance.
    */
   public RemoteMethod types(Class ... cls) {
     types.addAll(Arrays.asList(cls));
@@ -210,9 +207,10 @@ public class RemoteMethod {
   
   
   /**
-   * Extrai as classes a partir dos argumentos 
-   * informados para o método.
-   * @return Array de classes de tipos de argumentos.
+   * Extract the types of method arguments 
+   * (this method is imprecise and may cause 
+   * invocation errors i.e: double/java.lang.Double).
+   * @return This modified <code>RemoteMethod</code> instance.
    */
   public RemoteMethod extractTypesFromArgs() {
     if(arguments.isEmpty()) return null;
@@ -225,8 +223,8 @@ public class RemoteMethod {
   
   
   /**
-   * Retorna o nome do método.
-   * @return nome do método.
+   * Get the method name.
+   * @return Method name.
    */
   public String method() {
     return method;
@@ -234,9 +232,9 @@ public class RemoteMethod {
 
 
   /**
-   * Define o nome do método.
-   * @param name Nome do método.
-   * @return Esta instância modificada de RemoteMethod.
+   * Set the method name.
+   * @param name Method name.
+   * @return This modified <code>RemoteMethod</code> instance.
    */
   public RemoteMethod method(String name) {
     this.method = name;
@@ -245,9 +243,9 @@ public class RemoteMethod {
 
 
   /**
-   * Define os argumentos do método.
-   * @param objs Argumentos do método.
-   * @return Esta instância modificada de RemoteMethod.
+   * Set the method arguments.
+   * @param objs Method arguments.
+   * @return This modified <code>RemoteMethod</code> instance.
    */
   public RemoteMethod args(Object ... objs) {
     if(objs != null && objs.length > 0) {
@@ -259,8 +257,8 @@ public class RemoteMethod {
 
 
   /**
-   * Retorna o nome do objeto proprietário do método.
-   * @return nome do objeto proprietário do método.
+   * Get the object name.
+   * @return Object name.
    */
   public String objectName() {
     return objname;
@@ -268,9 +266,9 @@ public class RemoteMethod {
 
 
   /**
-   * Define o nome do objeto proprietário do método.
-   * @param objName nome do objeto proprietário do método.
-   * @return Esta instância modificada de RemoteMethod.
+   * Set the object name.
+   * @param objName Object name.
+   * @return This modified <code>RemoteMethod</code> instance.
    */
   public RemoteMethod forObject(String objName) {
     this.objname = objName;

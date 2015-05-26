@@ -34,12 +34,11 @@ import static us.pserver.revok.http.HttpConsts.SLASH;
 
 
 /**
- * Encapsula informações de rede, como 
- * endereço e porta de conexão e informações de
- * proxy de rede. Possui métodos utilitários
- * para criação de <code>Socket</code>, 
- * <code>ServerSocket</code> e 
- * <code>HttpClientConnection</code>.
+ * Encapsulates network informations, like
+ * connection port and address and network proxy.
+ * It has utility methods for <code>Socket</code>,
+ * <code>ServerSocket</code>, <code>InetAddress</code>
+ * and <code>HttpClientConnection</code> creation.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.1 - 20150422
@@ -50,7 +49,7 @@ public class HttpConnector {
    * <code>
    *  DEFAULT_PORT = 9099
    * </code><br>
-   * Porta de comunicação padrão.
+   * Default network port.
    */
   public static final int DEFAULT_PORT = 9099;
   
@@ -58,7 +57,7 @@ public class HttpConnector {
    * <code>
    *  HTTP_CONN_BUFFER_SIZE = 8*1024
    * </code><br>
-   * Tamanho de buffer da conexao HTTP.
+   * Default buffer size.
    */
   public static final int HTTP_CONN_BUFFER_SIZE = 8*1024;
   
@@ -81,9 +80,8 @@ public class HttpConnector {
   
   
   /**
-   * Construtor padrão sem argumentos,
-   * referencia o endereço localhost
-   * e porta 9099.
+   * Default no arguments constructor,
+   * uses localhost:9099 network address.
    */
   public HttpConnector() {
     address = null;
@@ -98,10 +96,9 @@ public class HttpConnector {
   
   
   /**
-   * Construtor que recebe o endereço e porta
-   * de conexão.
-   * @param address Endereço <code>String</code>.
-   * @param port Porta <code>int</code>.
+   * Receives connection port and address.
+   * @param address Network address <code>String</code>.
+   * @param port Network port <code>int</code>.
    */
   public HttpConnector(String address, int port) {
     if(address == null)
@@ -122,8 +119,8 @@ public class HttpConnector {
   
 
   /**
-   * Cria um objeto <code>InetSocketAddress</code>
- a partir das informações deste HttpConnector.
+   * Creates an <code>InetSocketAddress</code>
+   * from this HttpConnector informations.
    * @return <code>InetSocketAddress</code>
    */
   public InetSocketAddress createSocketAddress() {
@@ -137,9 +134,9 @@ public class HttpConnector {
   
   
   /**
-   * Define o endereço remoto.
+   * Set network (http) address.
    * @param addr <code>String</code>.
-   * @return Esta instância de <code>HttpConnector</code>.
+   * @return This modified <code>HttpConnector</code> instance.
    */
   public HttpConnector setAddress(String addr) {
     if(addr == null) 
@@ -168,14 +165,20 @@ public class HttpConnector {
 
 
   /**
-   * Retorna o endereço de conexão.
-   * @return <code>String</code>.
+   * Return the network (http) address.
+   * @return Network address <code>String</code>.
    */
   public String getAddress() {
     return address;
   }
 
 
+  /**
+   * Set Network (http) address.
+   * @param address <code>String</code>
+   * @param port <code>int</code>
+   * @return This modified <code>HttpConnector</code> instance.
+   */
   public HttpConnector setAddress(String address, int port) {
     if(port <= 0)
       return setAddress(address);
@@ -188,8 +191,8 @@ public class HttpConnector {
   
   
   /**
-   * Retorna o protocolo do endereço (Ex: <b>https://</b>localhost:8080/post/).
-   * @return protocolo do endereço (Ex: <b>https://</b>localhost:8080/post/).
+   * Return the network protocol from address (i.e: <b>https://</b>localhost:8080/post/).
+   * @return The protocol address part (i.e: <b>https://</b>localhost:8080/post/).
    */
   public String getProtocol() {
     return proto;
@@ -197,14 +200,18 @@ public class HttpConnector {
   
   
   /**
-   * Retorna o caminho do endereço (Ex: https://localhost:8080<b>/post/</b>).
-   * @return caminho do endereço (Ex: https://localhost:8080<b>/post/</b>).
+   * Return the address path (i.e: https://localhost:8080<b>/post/</b>).
+   * @return Address path (i.e: https://localhost:8080<b>/post/</b>).
    */
   public String getPath() {
     return path;
   }
   
   
+  /**
+   * Return the full address.
+   * @return Full address <code>String</code>.
+   */
   public String getFullAddress() {
     if(address == null || address.trim().isEmpty()
         && path != null) 
@@ -215,8 +222,8 @@ public class HttpConnector {
   
   
   /**
-   * Retorna a porta de conexão.
-   * @return <code>int</code>.
+   * Return the network port.
+   * @return Network port <code>int</code>.
    */
   public int getPort() {
     return port;
@@ -224,9 +231,9 @@ public class HttpConnector {
 
 
   /**
-   * Define a porta de conexão.
-   * @param port Porta <code>int</code>.
-   * @return Esta instância de <code>HttpConnector</code>.
+   * Set the network port.
+   * @param port Network port <code>int</code>.
+   * @return This modified <code>HttpConnector</code> instance.
    */
   public HttpConnector setPort(int port) {
     if(port < 0 || port > 65535)
@@ -238,8 +245,8 @@ public class HttpConnector {
 
 
   /**
-   * Retorna o endereço do servidor de proxy da rede.
-   * @return Endereço <code>String</code>.
+   * Return the network proxy address.
+   * @return Network proxy address <code>String</code>.
    */
   public String getProxyAddress() {
     return proxyAddr;
@@ -247,9 +254,9 @@ public class HttpConnector {
 
 
   /**
-   * Define o endereço do servidor de proxy da rede.
-   * @param proxyAddr Endereço <code>String</code>.
-   * @return Esta instância de <code>HttpConnector</code>.
+   * Set the network proxy address.
+   * @param proxyAddr Network proxy address <code>String</code>.
+   * @return This modified <code>HttpConnector</code> instance.
    */
   public HttpConnector setProxyAddress(String proxyAddr) {
     this.proxyAddr = proxyAddr;
@@ -258,8 +265,8 @@ public class HttpConnector {
 
 
   /**
-   * Retorna a porta de conexão do proxy da rede.
-   * @return Porta <code>int</code>.
+   * Return the network proxy port.
+   * @return Network proxy port <code>int</code>.
    */
   public int getProxyPort() {
     return proxyPort;
@@ -267,9 +274,9 @@ public class HttpConnector {
 
 
   /**
-   * Define a porta de conexão do proxy da rede.
-   * @param proxyPort <code>int</code>.
-   * @return Esta instância de <code>HttpConnector</code>.
+   * Set the network proxy port
+   * @param proxyPort Network proxy port <code>int</code>.
+   * @return This modified <code>HttpConnector</code> instance.
    */
   public HttpConnector setProxyPort(int proxyPort) {
     this.proxyPort = proxyPort;
@@ -278,8 +285,8 @@ public class HttpConnector {
 
 
   /**
-   * Retorna as informações de autorização de proxy.
-   * @return <code>String</code>.
+   * Return the network proxy authorization (&lt;user:password&gt;).
+   * @return Network proxy authorization (&lt;user:password&gt;) <code>String</code>.
    */
   public String getProxyAuthorization() {
     return proxyAuth;
@@ -287,9 +294,9 @@ public class HttpConnector {
 
 
   /**
-   * Define as informações de autorização de proxy.
-   * @param auth <code>String</code>.
-   * @return Esta instância de <code>HttpConnector</code>.
+   * Set network proxy authorization (&lt;user:password&gt;).
+   * @param auth Network proxy authorization (&lt;user:password&gt;) <code>String</code>.
+   * @return This modified <code>HttpConnector</code> instance.
    */
   public HttpConnector setProxyAuthorization(String auth) {
     if(auth != null)
@@ -298,6 +305,10 @@ public class HttpConnector {
   }
   
   
+  /**
+   * Return URI String address.
+   * @return URI String address. 
+   */
   public String getURIString() {
     String uri = proto.concat(address == null ? "localhost" : address);
     if(port > 0) {
@@ -310,12 +321,10 @@ public class HttpConnector {
   
   
   /**
-   * Cria um servidor de conexões <code>ServerSocket</code>
-   * vinculado às informações de rede contidas 
-   * por <code>HttpConnector</code>.
+   * Create a bounded <code>ServerSocket</code> 
+   * connection with this HttpConnector informations.
    * @return <code>ServerSocket</code>.
-   * @throws IOException Caso ocorra erro na criação
-   * de <code>ServerSocket</code>.
+   * @throws IOException In case of creation error.
    */
   public ServerSocket connectServerSocket() throws IOException {
     ServerSocket sc = new ServerSocket();
@@ -325,11 +334,10 @@ public class HttpConnector {
   
   
   /**
-   * Cria um <code>Socket</code> de rede
-   * a partir das informações de <code>HttpConnector</code>.
+   * Create a bounded network <code>Socket</code> 
+   * with this HttpConnector informations.
    * @return <code>Socket</code>.
-   * @throws IOException Caso ocorra erro na criação
-   * do <code>Socket</code>.
+   * @throws IOException In case of creation error.
    */
   public Socket connectSocket() throws IOException {
     Socket sc = new Socket();
@@ -345,9 +353,10 @@ public class HttpConnector {
   
   
   /**
-   * Create and returns a Http connection binded to a new Socket.
-   * @return HttpClientConnection binded.
-   * @throws IOException On error creating and binding Socket.
+   * Create a bounded <code>HttpClientConnection</code> 
+   * with this HttpConnector informations.
+   * @return Bounded <code>HttpClientConnection</code>.
+   * @throws IOException In case of creation error.
    */
   public HttpClientConnection connectHttp() throws IOException {
     Socket s = connectSocket();

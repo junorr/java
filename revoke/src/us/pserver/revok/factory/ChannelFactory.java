@@ -26,8 +26,7 @@ import us.pserver.revok.protocol.ObjectSerializer;
 
 
 /**
- * Interface que define uma fábrica de canais
- * de transmissão de objetos.
+ * Interface for a Channel factory.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 2014-01-21
@@ -37,16 +36,17 @@ import us.pserver.revok.protocol.ObjectSerializer;
 public interface ChannelFactory<T> {
   
   /**
-   * Cria um canal de transmissão de objetos.
-   * @param arg Argumento para a criação do canal.
-   * @return <code>Channel</code>.
+   * Create a Channel for network communication.
+   * @param arg An argument for creating the channel.
+   * @return The <code>Channel</code>.
    */
   Channel createChannel(T arg);
   
   /**
-   * Cria um canal de transmissão de objetos.
-   * @param arg Argumento para a criação do canal.
-   * @return <code>Channel</code>.
+   * Create a Channel for network communication.
+   * @param arg An argument for creating the channel.
+   * @param serial An object serializer to be used by the created channel.
+   * @return The <code>Channel</code>.
    */
   Channel createChannel(T arg, ObjectSerializer serial);
   

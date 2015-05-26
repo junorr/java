@@ -48,18 +48,13 @@ import us.pserver.revok.protocol.ObjectSerializer;
 
 
 /**
- * Canal de transmissão de objetos através do
- * protocolo HTTP. Implementa o lado servidor
- * da comunicação. O objeto é codificado
- * em hexadecimal e transmitido no corpo
- * da resposta utilizando delimitadores no formato
- * XML.<br/><br/>
- * Canais de comunicação no protocolo HTTP
- * permanecem válidos para apenas um ciclo
- * de leitura e escrita. Após um ciclo o canal 
- * se torna inválido e deve ser fechado.
- * Novas requisições deverão ser efetuadas em
- * novas instâncias de <code>HttpResponseChannel</code>.
+ * Http protocol communication channel.
+ * Implements the server side (http response) 
+ * of the network communication, handling POST 
+ * requests.
+ * The implementation of HTTP protocol used in all 
+ * classes of Revok project, is the high performance 
+ * lib Apache Http Core 4.4.1.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
@@ -82,9 +77,10 @@ public class HttpResponseChannel implements Channel {
   
   
   /**
-   * Construtor padrão, recebe um <code>Socket</code>
-   * para comunicação na rede.
-   * @param hsc HttpServerConnection.
+   * Default constructor which receives a 
+   * <code>HttpServerConnection</code> for
+   * network communication.
+   * @param hsc <code>HttpServerConnection</code>.
    */
   public HttpResponseChannel(HttpServerConnection hsc) {
     if(hsc == null || !hsc.isOpen())
@@ -101,6 +97,14 @@ public class HttpResponseChannel implements Channel {
   }
   
   
+  /**
+   * Constructor which receives  
+   * <code>HttpServerConnection</code> 
+   * and <code>ObjectSerializer</code>
+   * for network communication.
+   * @param hsc <code>HttpServerConnection</code>.
+   * @param os <code>ObjectSerializer</code> for object serialization.
+   */
   public HttpResponseChannel(HttpServerConnection hsc, ObjectSerializer os) {
     this(hsc);
     if(os == null) os = new JsonSerializer();
@@ -108,6 +112,9 @@ public class HttpResponseChannel implements Channel {
   }
   
   
+  /**
+   * Init some objects for http communication.
+   */
   private void init() {
     context = HttpCoreContext.create();
     processor = HttpProcessorBuilder.create()
@@ -119,11 +126,19 @@ public class HttpResponseChannel implements Channel {
   }
   
   
+  /**
+   * Get the <code>ObjectSerializer</code> for objects serialization.
+   * @return <code>ObjectSerializer</code> for objects serialization.
+   */
   public ObjectSerializer getObjectSerializer() {
     return serial;
   }
   
   
+  /**
+   * Set the <code>ObjectSerializer</code> for objects serialization.
+   * @param serializer <code>ObjectSerializer</code> for objects serialization.
+   */
   public HttpResponseChannel setObjectSerializer(ObjectSerializer serializer) {
     if(serializer != null) {
       serial = serializer;
@@ -132,27 +147,53 @@ public class HttpResponseChannel implements Channel {
   }
   
   
+  /**
+   * Get the <code>HttpServerConnection</code> object.
+   * @return <code>HttpServerConnection</code> object.
+   */
   public HttpServerConnection getHttpConnection() {
     return conn;
   }
   
   
+  /**
+   * Enable GZIP compression of the data transmitted on the channel.
+   * @param enabled <code>true</code> for enable GZIP compression, <code>false</code> to disable it.
+   * @return This instance of HttpRequestChannel.
+   */
   public HttpResponseChannel setGZipCompressionEnabled(boolean bool) {
     gzip = bool;
     return this;
   }
   
   
+  /**
+   * Verifies if GZIP compression is enalbed.
+   * @return <code>true</code> if GZIP compression is enabled, <code>false</code> otherwise.
+   */
   public boolean isGZipCompressionEnabled() {
     return gzip;
   }
   
   
+  /**
+   * Get the criptography key.
+   * @return criptography key.
+   */
   public CryptKey getCryptKey() {
     return key;
   }
   
   
+  /**
+   * Create the HTTP response, encoding the 
+   * <code>Transport</code> object, criptography key
+   * and eventual stream content in the Http 
+   * response body.
+   * @param trp <code>Transport</code> object.
+   * @return <code>HttpResponse</code>.
+   * @throws IOException In case of error creating the response.
+   */
   private HttpResponse createResponse(Transport trp) throws IOException {
     if(trp == null) return null;
     HttpResponse response = new BasicHttpResponse(
@@ -228,15 +269,6 @@ public class HttpResponseChannel implements Channel {
   }
   
   
-  /**
-   * Canais de comunicação no protocolo HTTP
-   * permanecem válidos para apenas um ciclo
-   * de leitura e escrita. Após um ciclo o canal 
-   * se torna inválido e deve ser fechado.
-   * Novas requisições deverão ser efetuadas em
-   * novas instâncias de <code>HttpResponseChannel</code>.
-   * @return <code>boolean</code>.
-   */
   @Override
   public boolean isValid() {
     return valid;

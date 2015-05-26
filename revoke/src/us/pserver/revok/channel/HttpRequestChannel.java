@@ -24,7 +24,6 @@ package us.pserver.revok.channel;
 import us.pserver.revok.protocol.Transport;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Iterator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpException;
@@ -51,13 +50,12 @@ import us.pserver.revok.protocol.ObjectSerializer;
 
 
 /**
- * Canal de transmissão de objetos através do
- * protocolo HTTP. Implementa o lado cliente
- * da comunicação, cujas requisições são efetuadas
- * utilizando o método POST. O objeto é serializado
- * em json e transmitido no corpo
- * da requisição utilizando delimitadores no formato
- * XML.
+ * Http protocol communication channel.
+ * Implements the client side (http request) 
+ * of the network communication, using POST requests.
+ * The implementation of HTTP protocol used in all 
+ * classes of Revok project, is the high performance 
+ * lib Apache Http Core 4.4.1.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.1 - 20150422
@@ -68,7 +66,7 @@ public class HttpRequestChannel implements Channel {
    * <code>
    *  HTTP_CONN_BUFFER_SIZE = 8*1024
    * </code><br>
-   * Tamanho de buffer da conexao HTTP.
+   * Default buffer size.
    */
   public static final int HTTP_CONN_BUFFER_SIZE = 8*1024;
 
@@ -97,9 +95,11 @@ public class HttpRequestChannel implements Channel {
   
   
   /**
-   * Construtor padrão que recebe <code>HttpConnector</code>
-   * para comunicação com o servidor.
-   * @param conn <code>HttpConnector</code>.
+   * Default constructor which receives the network 
+   * information <code>HttpConnector</code> object.
+   * Internally uses Apache 
+   * @param conn Network information 
+   * <code>HttpConnector</code> object.
    */
   public HttpRequestChannel(HttpConnector conn) {
     if(conn == null)
@@ -119,6 +119,13 @@ public class HttpRequestChannel implements Channel {
   }
   
   
+  /**
+   * Constructor which receives the <code>HttpConnector</code>
+   * and the <code>ObjectSerializer</code> objects.
+   * @param conn Network information 
+   * <code>HttpConnector</code> object.
+   * @param serializer <code>ObjectSerializer</code> for objects serialization.
+   */
   public HttpRequestChannel(HttpConnector conn, ObjectSerializer serializer) {
     this(conn);
     if(serializer == null)
@@ -127,6 +134,9 @@ public class HttpRequestChannel implements Channel {
   }
   
   
+  /**
+   * Init some objects for http communication.
+   */
   private void init() {
     algo = CryptAlgorithm.AES_CBC_PKCS5;
     context = HttpCoreContext.create();
@@ -141,11 +151,19 @@ public class HttpRequestChannel implements Channel {
   }
   
   
+  /**
+   * Get the <code>ObjectSerializer</code> for objects serialization.
+   * @return <code>ObjectSerializer</code> for objects serialization.
+   */
   public ObjectSerializer getObjectSerializer() {
     return serial;
   }
   
   
+  /**
+   * Set the <code>ObjectSerializer</code> for objects serialization.
+   * @param serializer <code>ObjectSerializer</code> for objects serialization.
+   */
   public HttpRequestChannel setObjectSerializer(ObjectSerializer serializer) {
     if(serializer != null) {
       serial = serializer;
@@ -155,8 +173,8 @@ public class HttpRequestChannel implements Channel {
   
   
   /**
-   * Retorna o objeto <code>HttpConnector</code>.
-   * @return <code>HttpConnector</code>.
+   * Get the network information <code>HttpConnector</code> object.
+   * @return Network information <code>HttpConnector</code> object.
    */
   public HttpConnector getHttpConnector() {
     return netc;
@@ -174,7 +192,7 @@ public class HttpRequestChannel implements Channel {
   
   /**
    * Enable cryptography of data transmitted on the channel.
-   * The default cryptography algorithm is AES CBC PKCS5 padded.
+   * The default cryptography algorithm is AES/CBC/PKCS5 padded.
    * @param enabled <code>true</code> for enable criptography, <code>false</code> to disable it.
    * @return This instance of HttpRequestChannel.
    */
@@ -237,9 +255,10 @@ public class HttpRequestChannel implements Channel {
   
   
   /**
-   * Define alguns cabeçalhos da requisição HTTP,
-   * como tipo de conteúdo, codificação, conteúdo
-   * aceito e agente da requisição.
+   * Create the HTTP Entity Request, encoding the 
+   * <code>Transport</code> object, cryptography key
+   * and eventual stream content in the Http POST 
+   * request body.
    */
   private HttpEntityEnclosingRequest createRequest(Transport trp) throws IOException {
     if(trp == null) return null;
@@ -293,6 +312,13 @@ public class HttpRequestChannel implements Channel {
   }
   
   
+  /**
+   * Verify the Http response from server,
+   * throwing an exception if the response 
+   * is not expected.
+   * @throws IOException in case of error reading the response.
+   * @throws HttpException in case of error reading the response.
+   */
   private void verifyResponse() throws IOException, HttpException {
     response = conn.receiveResponseHeader();
     if(response == null || response
@@ -301,14 +327,6 @@ public class HttpRequestChannel implements Channel {
           "Invalid response from server: "+ response.getStatusLine());
     }
     processor.process(response, context);
-    
-    //System.out.println("[HttpRequestChannel.verifyResponse()] response.status="+ response.getStatusLine());
-    /*
-    Iterator it = response.headerIterator();
-    while(it.hasNext()) {
-      System.out.println("  - "+ it.next());
-    }
-    */
   }
   
   
@@ -335,15 +353,6 @@ public class HttpRequestChannel implements Channel {
   }
   
   
-  /**
-   * Canais de comunicação no protocolo HTTP
-   * permanecem válidos para apenas um ciclo
-   * de leitura e escrita. Após um ciclo o canal 
-   * se torna inválido e deve ser fechado.
-   * Novas requisições deverão ser efetuadas em
-   * novas instâncias de <code>HttpRequestChannel</code>.
-   * @return <code>boolean</code>.
-   */
   @Override
   public boolean isValid() {
     return valid && sock != null && sock.isConnected() 

@@ -33,10 +33,10 @@ import us.pserver.revok.server.RevokServer;
 
 
 /**
- * Armazena os objetos no servidor, vinculando-os 
- * à uma chave de recuperação <code>String</code>.
- * <code>ObjectContainer</code> é seguro para ambientes
- * com múltiplos processos.
+ * Objects storage on server, biding 
+ * them to recovery key <code>String</code>.
+ * <code>ObjectContainer</code> is secure for 
+ * multithreaded environments.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
@@ -53,7 +53,7 @@ public class ObjectContainer {
   
   
   /**
-   * Construtor padrão sem argumentos.
+   * Default constructor without arguments.
    */
   public ObjectContainer() {
     space = new ConcurrentHashMap<>();
@@ -62,6 +62,10 @@ public class ObjectContainer {
   }
   
   
+  /**
+   * Constructor which receives an <code>Authenticator</code> object.
+   * @param a <code>Authenticator</code>
+   */
   public ObjectContainer(Authenticator a) {
     this();
     nullarg(Authenticator.class, a);
@@ -69,29 +73,43 @@ public class ObjectContainer {
   }
   
   
+  /**
+   * Set the <code>Authenticator</code> object.
+   * @param a <code>Authenticator</code> object.
+   * @return This modified <code>ObjectContainer</code> instance.
+   */
   public ObjectContainer setAuthenticator(Authenticator a) {
     auth = a;
     return this;
   }
   
-  
+
+  /**
+   * Get the <code>Authenticator</code> object.
+   * @return <code>Authenticator</code> object.
+   */
   public Authenticator getAuthenticator() {
     return auth;
   }
   
   
+  /**
+   * Verify if the authentication is enabled 
+   * on this container.
+   * @return <code>true</code> if the authentication
+   * is enabled on this container.
+   */
   public boolean isAuthEnabled() {
     return auth != null;
   }
   
   
   /**
-   * Insere um objeto a ser armazenado com
-   * uma chave <code>String</code> de recuperação.
-   * @param name Chave <code>String</code> de recuperação 
-   * do objeto armazenado.
-   * @param obj Objeto a ser armazenado.
-   * @return Esta instância modificada de <code>ObjectContainer</code>.
+   * Insert an object with the specified key
+   * on this object container.
+   * @param name Recovery key <code>String</code>.
+   * @param obj Stored object.
+   * @return This modified <code>ObjectContainer</code> instance.
    */
   public ObjectContainer put(String name, Object obj) {
     if(name != null && obj != null) {
@@ -116,6 +134,14 @@ public class ObjectContainer {
   }
   
   
+  /**
+   * Insert an object with the specified namespace and key
+   * on this object container.
+   * @param namespace The namespace of the stored object.
+   * @param name Recovery key <code>String</code>.
+   * @param obj Stored object.
+   * @return This modified <code>ObjectContainer</code> instance.
+   */
   public ObjectContainer put(String namespace, String name, Object obj) {
     if(namespace == null)
       throw new IllegalArgumentException(
@@ -138,10 +164,10 @@ public class ObjectContainer {
   
   
   /**
-   * Remove um objeto do container através da 
-   * chave de identificação.
-   * @param name Chave <code>String</code>.
-   * @return O objeto removido do container.
+   * Removes an object with the specified key
+   * from this object container.
+   * @param name Recovery key <code>String</code>.
+   * @return The removed object.
    */
   public Object remove(String name) throws AuthenticationException {
     if(isAuthEnabled())
@@ -158,6 +184,14 @@ public class ObjectContainer {
   }
   
   
+  /**
+   * Removes an object with the specified key
+   * from this object container.
+   * @param c <code>Credentials</code> object for authentication.
+   * @param name Recovery key <code>String</code>.
+   * @return The removed object.
+   * @throws AuthenticationException In case the authentication fails for the <code>Credentials</code> object.
+   */
   public Object remove(Credentials c, String name) throws AuthenticationException {
     if(isAuthEnabled()) {
       auth.authenticate(c);
@@ -175,12 +209,14 @@ public class ObjectContainer {
   
   
   /**
+   * Verify if this object container contains
+   * an stored object with the specified name/namespace.
    * Verifica se existe um objeto armazenado,
    * identificado pela chave fornecida.
-   * @param name Chave <code>String</code>.
-   * @return <code>true</code> se existir um
-   * objeto armazenado identificado pela chave fornecida,
-   * <code>false</code> caso contrário.
+   * @param name Recovery key/namespace <code>String</code>.
+   * @return <code>true</code> if exists an stored object
+   * with the specified key/namespace in this object container,
+   * <code>false</code> otherwise.
    */
   public boolean contains(String name) {
     if(!name.contains("."))
@@ -196,11 +232,10 @@ public class ObjectContainer {
   
   
   /**
-   * Retorna o objeto armazenado no container,
-   * identificado pela chave fornecida.
-   * @param name Chave <code>String</code>.
-   * @return O Objeto armazenado ou <code>null</code>
-   * caso a chave de identificação não exista no container.
+   * Get an stored object with the specified key
+   * from this object container.
+   * @param name Recovery key <code>String</code>.
+   * @return The removed object.
    */
   public Object get(String name) throws AuthenticationException {
     if(isAuthEnabled())
@@ -217,6 +252,14 @@ public class ObjectContainer {
   }
   
   
+  /**
+   * Get an stored object with the specified key
+   * from this object container.
+   * @param c <code>Credentials</code> object for authentication.
+   * @param name Recovery key <code>String</code>.
+   * @return The removed object.
+   * @throws AuthenticationException In case the authentication fails for the <code>Credentials</code> object.
+   */
   public Object get(Credentials c, String name) throws AuthenticationException {
     if(!name.contains("."))
       throw new IllegalArgumentException(
@@ -240,14 +283,19 @@ public class ObjectContainer {
   
   
   /**
-   * Retorna a quantidade de objetos armazenados.
-   * @return <code>int</code>.
+   * Get the number of namespaces.
+   * @return number of namespaces <code>int</code>.
    */
   public int namespaceSize() {
     return space.size();
   }
   
   
+  /**
+   * Get the number of stored objects for specified namespace.
+   * @param namespace The namespace.
+   * @return number of stored objects for specified namespace.
+   */
   public int sizeOf(String namespace) {
     if(namespace == null || !space.containsKey(namespace))
       return -1;
@@ -255,6 +303,10 @@ public class ObjectContainer {
   }
   
   
+  /**
+   * Get a list of all namespaces on this object container.
+   * @return list of all namespaces on this object container.
+   */
   public List<String> namespaces() {
     List<String> nsp = new LinkedList<>();
     space.keySet().stream().forEach(m->nsp.add(m));
@@ -262,6 +314,11 @@ public class ObjectContainer {
   }
   
   
+  /**
+   * Get a list of all objects for the specified namespace.
+   * @param namespace The namespace.
+   * @return list of all objects for the specified namespace.
+   */
   public List<String> objects(String namespace) {
     List<String> nsp = new LinkedList<>();
     if(namespace == null || !space.containsKey(namespace))
@@ -271,6 +328,12 @@ public class ObjectContainer {
   }
   
   
+  /**
+   * Get a list of all methods for the specified object 
+   * stored in this object container.
+   * @param name The object name/namespace.
+   * @return list of all methods for the specified object.
+   */
   public List<String> listMethods(String name) {
     if(!name.contains("."))
       throw new IllegalArgumentException(

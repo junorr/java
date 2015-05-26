@@ -189,7 +189,9 @@ public class ScriptProcessor {
         spr.interactiveShell();
       }
       else {
-        System.out.println("\n>> exit( "+ spr.execFile(args[0])+ " )");
+        Object ret = spr.execFile(args[0]);
+        if(ret != null)
+          System.out.println(ret);
       }
     } catch(FSException | IOException e) {
       e.printStackTrace();

@@ -68,6 +68,11 @@ public class Credentials {
   }
   
   
+  /**
+   * Add access to the specified server namespace.
+   * @param label Server namespace.
+   * @return This modified <code>Credentials</code> instance.
+   */
   public Credentials addAccess(String label) {
     if(label != null) {
       access.add(label);
@@ -76,6 +81,11 @@ public class Credentials {
   }
   
   
+  /**
+   * Add access to all the specified server namespaces.
+   * @param labels Server namespaces.
+   * @return This modified <code>Credentials</code> instance.
+   */
   public Credentials addAccess(String ... labels) {
     if(labels != null && labels.length > 0) {
       access.addAll(Arrays.asList(labels));
@@ -84,15 +94,19 @@ public class Credentials {
   }
   
   
+  /**
+   * Get the list of access namespaces.
+   * @return list of access namespaces.
+   */
   public List<String> accessList() {
     return access;
   }
   
   
   /**
-   * Define the user name.
+   * Set the user name.
    * @param u User name
-   * @return This instance of Credentials.
+   * @return This modified <code>Credentials</code> instance.
    */
   public Credentials setUser(String u) {
     if(u != null) user = u;
@@ -101,9 +115,9 @@ public class Credentials {
   
   
   /**
-   * Define the password.
+   * Set the password.
    * @param p Byte array password.
-   * @return This instance of Credentials.
+   * @return This modified <code>Credentials</code> instance.
    */
   public Credentials setPassword(byte[] p) {
     if(p != null && p.length > 0)
@@ -123,7 +137,7 @@ public class Credentials {
   
   /**
    * Authenticate this Credentials against other 
-   * instance of Credentials. 
+   * <code>Credentials</code> instance. 
    * The equals method could be used instead.
    * @param c Another credentials object.
    * @return <code>true</code> if the user name and 

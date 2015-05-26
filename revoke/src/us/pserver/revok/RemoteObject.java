@@ -28,15 +28,14 @@ import us.pserver.revok.channel.Channel;
 import us.pserver.revok.protocol.Transport;
 import us.pserver.revok.container.Credentials;
 import us.pserver.revok.factory.ChannelFactory;
-import us.pserver.revok.factory.HttpFactoryProvider;
+import us.pserver.revok.factory.HttpFactoryBuilder;
 import us.pserver.revok.protocol.JsonSerializer;
 import us.pserver.revok.protocol.ObjectSerializer;
 import us.pserver.revok.proxy.RemoteInvocationHandler;
 import us.pserver.revok.protocol.FakeInputStreamRef;
 
 /**
- * Representa um objeto remoto para invocação de
- * métodos.
+ * Represents a remote object for methods invocation.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 11/11/2013
@@ -55,13 +54,12 @@ public class RemoteObject {
   
   
   /**
-   * Construtor padrão sem argumentos,
-   * com canal de comunicação de objetos na rede do
-   * tipo padrão <code>XmlNetChannel</code>.
+   * Default constructor without arguments,
+   * uses a <code>XmlSerializer</code> for object serialization.
    */
   public RemoteObject() {
     net = new HttpConnector();
-    factory = HttpFactoryProvider.factory()
+    factory = HttpFactoryBuilder.builder()
         .enableCryptography()
         .enableGZipCompression()
         .getHttpRequestChannelFactory();
@@ -72,9 +70,9 @@ public class RemoteObject {
   
   
   /**
-   * Construtor que recebe as informações de 
-   * conexão de rede.
-   * @param con Conexão de rede.
+   * Constructo which receives a <code>HttpConnector</code> 
+   * for network information.
+   * @param con <code>HttpConnector</code>.
    */
   public RemoteObject(HttpConnector con) {
     this();
@@ -82,7 +80,7 @@ public class RemoteObject {
       throw new IllegalArgumentException(
           "Invalid NetConnector ["+ con+ "]");
     net = con;
-    factory = HttpFactoryProvider.factory()
+    factory = HttpFactoryBuilder.builder()
         .enableCryptography()
         .enableGZipCompression()
         .getHttpRequestChannelFactory();
@@ -91,9 +89,10 @@ public class RemoteObject {
   
   
   /**
-   * Construtor que recebe as informações de 
-   * conexão de rede.
-   * @param con Conexão de rede.
+   * Constructor which receives <code>HttpConnector</code>
+   * and <code>ObjectSerializer</code> for objects serialization.
+   * @param con <code>HttpConnector</code>.
+   * @param serial <code>ObjectSerializer</code> for object serialization.
    */
   public RemoteObject(HttpConnector con, ObjectSerializer serial) {
     this(con);
@@ -103,11 +102,19 @@ public class RemoteObject {
   }
   
   
+  /**
+   * Get the <code>ObjectSerializer</code> for objects serialization.
+   * @return <code>ObjectSerializer</code> for objects serialization.
+   */
   public ObjectSerializer getObjectSerializer() {
     return serial;
   }
   
   
+  /**
+   * Set the <code>ObjectSerializer</code> for objects serialization.
+   * @param serializer <code>ObjectSerializer</code> for objects serialization.
+   */
   public RemoteObject setObjectSerializer(ObjectSerializer serializer) {
     if(serializer != null) {
       serial = serializer;
@@ -126,9 +133,9 @@ public class RemoteObject {
   
   
   /**
-   * Define the Credentials object to authentication with server.
+   * Set the Credentials object to authentication with server.
    * @param c Credentials object.
-   * @return This instance of RemoteObject.
+   * @return This modified <code>RemoteObject</code> instance.
    */
   public RemoteObject setCredentials(Credentials crd) {
     cred = crd;
@@ -137,8 +144,8 @@ public class RemoteObject {
   
   
   /**
-   * Retorna informações de conexão de rede.
-   * @return informações de conexão de rede.
+   * Get the network informations <code>HttpConnector</code>.
+   * @return Network informations <code>HttpConnector</code>.
    */
   public HttpConnector getHttpConnector() {
     return net;
@@ -146,9 +153,9 @@ public class RemoteObject {
 
 
   /**
-   * Define informações de conexão de rede.
-   * @param net informações de conexão de rede.
-   * @return Esta instância modificada de RemoteObject.
+   * Set the network informations <code>HttpConnector</code>.
+   * @param net Network informations <code>HttpConnector</code>.
+   * @return This modified <code>RemoteObject</code> instance.
    */
   public RemoteObject setHttpConnector(HttpConnector net) {
     this.net = net;
@@ -157,8 +164,8 @@ public class RemoteObject {
 
 
   /**
-   * Retorna a fábrica do canal de transmissão de objetos na rede.
-   * @return fábrica do canal de transmissão de objetos na rede.
+   * Get the network channel factory.
+   * @return Network channel factory <code>ChannelFactory</code>.
    */
   public ChannelFactory<HttpConnector> getChannelFactory() {
     return factory;
@@ -166,9 +173,9 @@ public class RemoteObject {
 
 
   /**
-   * Define a fábrica do canal de transmissão de objetos na rede.
-   * @param fact fábrica do canal de transmissão de objetos na rede.
-   * @return Esta instância modificada de RemoteObject.
+   * Set the network channel factory.
+   * @param fact Network channel factory <code>ChannelFactory</code>.
+   * @return This modified <code>RemoteObject</code> instance.
    */
   public RemoteObject setChannelFactory(ChannelFactory<HttpConnector> fact) {
     this.factory = fact;
@@ -177,9 +184,7 @@ public class RemoteObject {
   
   
   /**
-   * Retorna o último canal de comunicação 
-   * de objetos criado e utilizado por 
-   * <code>RemoteObject</code>.
+   * Get the current network channel in use.
    * @return <code>Channel</code>
    */
   public Channel getChannel() {
@@ -188,7 +193,7 @@ public class RemoteObject {
   
   
   /**
-   * Cria um canal de comunicação de objetos na rede.
+   * Create a network channel.
    * @return <code>Channel</code>.
    */
   private Channel channel() {
@@ -206,7 +211,7 @@ public class RemoteObject {
   
   /**
    * Create a new Channel instance.
-   * @return The create Channel.
+   * @return The created Channel.
    */
   private Channel newChannel() {
     channel.close();
@@ -250,12 +255,10 @@ public class RemoteObject {
   
   
   /**
-   * Invoca o método remoto informado.
-   * @param rmt método remoto a ser invocado.
-   * @return Retorno do método remoto ou <code>null</code>
-   * se não houver.
-   * @throws MethodInvocationException Caso ocorra erro na invocação do
-   * método.
+   * Invoke the remote method.
+   * @param rmt Remote method information <code>RemoteMethod</code>.
+   * @return Remote method return value or <code>null</code>.
+   * @throws MethodInvocationException In case of error invoking the method.
    */
   public Object invoke(RemoteMethod rmt) throws MethodInvocationException {
     if(rmt == null) throw new 
@@ -274,10 +277,9 @@ public class RemoteObject {
   
   
   /**
-   * Invoca o método remoto informado.
-   * @param rmt método remoto a ser invocado.
-   * @throws MethodInvocationException Caso ocorra erro na invocação do
-   * método.
+   * Invoke the remote method.
+   * @param rmt Remote method information <code>RemoteMethod</code>.
+   * @throws MethodInvocationException In case of error invoking the method.
    */
   public void invokeVoid(RemoteMethod rmt) throws MethodInvocationException {
     this.invoke(rmt);
@@ -285,10 +287,9 @@ public class RemoteObject {
   
   
   /**
-   * Invoca o método remoto informado.
-   * @param rmt método remoto a ser invocado.
-   * @return Objeto OpResult com informações do 
-   * resultado da invocação do método remoto.
+   * Invoke the remote method.
+   * @param rmt Remote method information <code>RemoteMethod</code>.
+   * @return Remote method return value or <code>null</code>.
    */
   public OpResult invokeSafe(RemoteMethod rmt) {
     OpResult res = new OpResult();
@@ -323,12 +324,10 @@ public class RemoteObject {
   
   
   /**
-   * Invoca o a cadeia de métodos informada.
-   * @param chain cadeia de métodos a ser invocada.
-   * @return Retorno do método remoto ou <code>null</code>
-   * se não houver.
-   * @throws MethodInvocationException Caso ocorra erro na invocação do
-   * método.
+   * Invoke the remote method chain.
+   * @param rmt Remote method chain information <code>MethodChain</code>.
+   * @return Remote method return value or <code>null</code>.
+   * @throws MethodInvocationException In case of error invoking the method.
    */
   public Object invoke(MethodChain chain) throws MethodInvocationException {
     this.validateChain(chain);
@@ -343,6 +342,11 @@ public class RemoteObject {
   }
   
   
+  /**
+   * Validates the method chain.
+   * @param chain <code>MethodChain</code>
+   * @throws IllegalArgumentException If the method chain is not valid.
+   */
   private void validateChain(MethodChain chain) throws IllegalArgumentException {
     if(chain == null || chain.methods().isEmpty()) 
       throw new IllegalArgumentException(
@@ -351,10 +355,10 @@ public class RemoteObject {
   
   
   /**
-   * Invoca o a cadeia de métodos informada.
-   * @param chain cadeia de métodos a ser invocada.
-   * @throws MethodInvocationException Caso ocorra erro na invocação do
-   * método.
+   * 
+   * Invoke the remote method chain.
+   * @param rmt Remote method chain information <code>MethodChain</code>.
+   * @throws MethodInvocationException In case of error invoking the method.
    */
   public void invokeVoid(MethodChain chain) throws MethodInvocationException {
     this.invoke(chain);
@@ -362,10 +366,9 @@ public class RemoteObject {
   
   
   /**
-   * Invoca o a cadeia de métodos informada.
-   * @param chain cadeia de métodos a ser invocada.
-   * @return Objeto OpResult com informações do 
-   * resultado da invocação do método remoto.
+   * Invoke the remote method chain.
+   * @param rmt Remote method chain information <code>MethodChain</code>.
+   * @return Remote method return value or <code>null</code>.
    */
   public OpResult invokeSafe(MethodChain chain) {
     this.validateChain(chain);
@@ -399,6 +402,11 @@ public class RemoteObject {
   }
   
   
+  /**
+   * Check for <code>InputStream</code> reference in method arguments.
+   * @param t <code>Transport</code> with remote method object.
+   * @param r Remote method object.
+   */
   private void checkInputStreamRef(Transport t, RemoteMethod r) {
     if(t == null || r == null) return;
     if(r.types().isEmpty()) r.extractTypesFromArgs();
@@ -418,11 +426,10 @@ public class RemoteObject {
   
   
   /**
-   * Envia um objeto <code>Transport</code> através
-   * do canal de comunicação e retorna o canal utilizado.
-   * @param trp <code>Transport</code> a ser enviado.
-   * @return <code>Channel</code> de transmissão de objetos na rede.
-   * @throws IOException Caso ocorra erro enviando
+   * Sends a <code>Transport</code> object over the wire (Channel).
+   * @param trp <code>Transport</code> object to send.
+   * @return <code>Channel</code> for network communication.
+   * @throws IOException In case of error sending the object.
    */
   public Channel sendTransport(Transport trp) throws IOException {
     if(trp == null) throw new 

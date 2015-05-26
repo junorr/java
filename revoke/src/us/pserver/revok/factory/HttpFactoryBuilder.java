@@ -30,12 +30,12 @@ import us.pserver.revok.protocol.ObjectSerializer;
 
 
 /**
- * Provedor padrão de fábricas de canais de transmissão.
+ * Default builder of channels factory.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.1 - 20150422
  */
-public class HttpFactoryProvider {
+public class HttpFactoryBuilder {
   
   private boolean gzip, crypt;
   
@@ -45,7 +45,7 @@ public class HttpFactoryProvider {
   /**
    * Default constructor without arguments.
    */
-  public HttpFactoryProvider() {
+  public HttpFactoryBuilder() {
     gzip = false; crypt = false;
     algo = CryptAlgorithm.AES_CBC_PKCS5;
   }
@@ -55,7 +55,7 @@ public class HttpFactoryProvider {
    * Configure GZIP compression on the factory.
    * @return This instance of HttpFactoryProvider.
    */
-  public HttpFactoryProvider enableGZipCompression() {
+  public HttpFactoryBuilder enableGZipCompression() {
     gzip = true;
     return this;
   }
@@ -65,7 +65,7 @@ public class HttpFactoryProvider {
    * Disable GZIP compression on the factory.
    * @return This instance of HttpFactoryProvider.
    */
-  public HttpFactoryProvider disableGZipCompression() {
+  public HttpFactoryBuilder disableGZipCompression() {
     gzip = false;
     return this;
   }
@@ -75,7 +75,7 @@ public class HttpFactoryProvider {
    * Configure cryptography on the factory.
    * @return This instance of HttpFactoryProvider.
    */
-  public HttpFactoryProvider enableCryptography() {
+  public HttpFactoryBuilder enableCryptography() {
     crypt = true;
     return this;
   }
@@ -86,7 +86,7 @@ public class HttpFactoryProvider {
    * @param algo Cryptography algorithm.
    * @return This instance of HttpFactoryProvider.
    */
-  public HttpFactoryProvider enableCryptography(CryptAlgorithm algo) {
+  public HttpFactoryBuilder enableCryptography(CryptAlgorithm algo) {
     if(algo != null) this.algo = algo;
     crypt = true;
     return this;
@@ -97,25 +97,24 @@ public class HttpFactoryProvider {
    * Disable cryptography on the factory.
    * @return This instance of HttpFactoryProvider.
    */
-  public HttpFactoryProvider disableCryptography() {
+  public HttpFactoryBuilder disableCryptography() {
     crypt = false;
     return this;
   }
   
   
   /**
-   * Return a new instance of HttpFactoryProvider.
-   * @return A new instance of HttpFactoryProvider.
+   * Return a new instance of HttpFactoryBuilder.
+   * @return A new instance of HttpFactoryBuilder.
    */
-  public static HttpFactoryProvider factory() {
-    return new HttpFactoryProvider();
+  public static HttpFactoryBuilder builder() {
+    return new HttpFactoryBuilder();
   }
   
   
   /**
-   * Cria uma fábrica de canais do tipo 
-   * <code>HttpRequestChannel</code>.
-   * @return <code>ConnectorChannelFactory</code>
+   * Create a Http request channel factory.
+   * @return ChannelFactory&lt;HttpConnector&gt;
    */
   public ChannelFactory<HttpConnector> getHttpRequestChannelFactory() {
     return new ChannelFactory<HttpConnector>() {
@@ -148,9 +147,8 @@ public class HttpFactoryProvider {
   
   
   /**
-   * Cria uma fábrica de canais do tipo 
-   * <code>HttpResponseChannel</code>.
-   * @return <code>SocketChannelFactory</code>
+   * Create a Http response channel factory.
+   * @return ChannelFactory&lt;HttpServerConnection&gt;
    */
   public ChannelFactory<HttpServerConnection> getHttpResponseChannelFactory() {
     return new ChannelFactory<HttpServerConnection>() {

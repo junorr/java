@@ -65,7 +65,7 @@ public interface HttpConsts {
    * <code>
    *  CRLF = "\r\n"
    * </code><br>
-   * Caracteres de retorno de carro e quebra de linha.
+   * Carriage return and line break characters.
    */
   public static final String CRLF = "\r\n";
   
@@ -209,7 +209,7 @@ public interface HttpConsts {
    * <code>
    *  UTF8 = "UTF-8"
    * </code><br>
-   * UTF-8 Character encoding..
+   * UTF-8 Character encoding.
    */
   public static final String UTF8 = "UTF-8";
   
