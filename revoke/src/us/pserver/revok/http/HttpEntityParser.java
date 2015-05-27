@@ -35,7 +35,8 @@ import us.pserver.streams.StreamResult;
 import us.pserver.streams.StreamUtils;
 
 /**
- *
+ * Parser for reading and converting <code>HttpEntity</code> content.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 14/04/2015
  */
@@ -52,6 +53,9 @@ public class HttpEntityParser {
   private ObjectSerializer serial;
   
   
+  /**
+   * Default constructor without arguments.
+   */
   public HttpEntityParser() {
     buffer = new MixedWriteBuffer();
     input = null;
@@ -61,6 +65,12 @@ public class HttpEntityParser {
   }
   
   
+  /**
+   * Constructor with <code>ObjectSerializer</code>
+   * for objects serialization.
+   * @param os <code>ObjectSerializer</code>
+   * for objects serialization.
+   */
   public HttpEntityParser(ObjectSerializer os) {
     buffer = new MixedWriteBuffer();
     buffer = new MixedWriteBuffer();
@@ -72,21 +82,43 @@ public class HttpEntityParser {
   }
   
   
+  /**
+   * Create a new instance of <code>HttpEntityParser</code>.
+   * @return New <code>HttpEntityParser</code> instance.
+   */
   public static HttpEntityParser instance() {
     return new HttpEntityParser();
   }
   
   
+  /**
+   * Create a new instance of <code>HttpEntityParser</code>,
+   * with the specified <code>ObjectSerializer</code>.
+   * @return New <code>HttpEntityParser</code> instance.
+   */
   public static HttpEntityParser instance(ObjectSerializer os) {
     return new HttpEntityParser(os);
   }
   
   
+  /**
+   * Get the object serializer used by this instance 
+   * of <code>HttpEntityFactory</code>.
+   * @return The object serializer used by this 
+   * instance of <code>HttpEntityFactory</code>.
+   */
   public ObjectSerializer getObjectSerializer() {
     return serial;
   }
   
   
+  /**
+   * Set the object serializer used by this instance 
+   * of <code>HttpEntityFactory</code>.
+   * @param serializer The object serializer used by this 
+   * instance of <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityParser setObjectSerializer(ObjectSerializer serializer) {
     if(serializer != null) {
       serial = serializer;
@@ -95,6 +127,12 @@ public class HttpEntityParser {
   }
   
   
+  /**
+   * Enable criptography for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @param key Criptography key.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityParser enableCryptCoder(CryptKey key) {
     if(key != null) {
       buffer.getCoderFactory().setCryptCoderEnabled(true, key);
@@ -103,63 +141,132 @@ public class HttpEntityParser {
   }
   
   
+  /**
+   * Disable all coders for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityParser disableAllCoders() {
     buffer.getCoderFactory().clearCoders();
     return this;
   }
   
   
+  /**
+   * Disable criptography for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityParser disableCryptCoder() {
     buffer.getCoderFactory().setCryptCoderEnabled(false, null);
     return this;
   }
   
   
+  /**
+   * Enable GZip compression for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityParser enableGZipCoder() {
     buffer.getCoderFactory().setGZipCoderEnabled(true);
     return this;
   }
   
   
+  /**
+   * Disable GZip compression for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityParser disableGZipCoder() {
     buffer.getCoderFactory().setGZipCoderEnabled(false);
     return this;
   }
   
   
+  /**
+   * Enable Base64 encoding for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityParser enableBase64Coder() {
     buffer.getCoderFactory().setBase64CoderEnabled(true);
     return this;
   }
   
   
+  /**
+   * Disable Base64 encoding for this instance of 
+   * <code>HttpEntityFactory</code>.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityParser disableBase64Coder() {
     buffer.getCoderFactory().setBase64CoderEnabled(false);
     return this;
   }
   
-  
+
+  /**
+   * Get the readed object from <code>HttpEntity</code>.
+   * @return The readed object from <code>HttpEntity</code>.
+   */
   public Object getObject() {
     return obj;
   }
   
   
+  /**
+   * Get the readed criptography key from <code>HttpEntity</code>.
+   * @return The readed criptography key from <code>HttpEntity</code>.
+   */
   public CryptKey getCryptKey() {
     return key;
   }
   
   
+  /**
+   * Get the readed input stream from <code>HttpEntity</code>.
+   * @return The readed input stream from <code>HttpEntity</code>.
+   */
   public InputStream getInputStream() {
     return input;
   }
   
   
+  /**
+   * Read five chars from the input stream.
+   * @param is The <code>InputStream</code> for read.
+   * @return <code>String</code> with five chars readed.
+   * @throws IOException In case of error reading.
+   */
   private String readFive(InputStream is) throws IOException {
     if(is == null) return null;
     return StreamUtils.readString(is, 5);
   }
   
   
+  /**
+   * Verify if the informed string <code>five</code>
+   * is not null and equal to the <code>expected</code> string.
+   * @param expected The expected string.
+   * @param five The string to verify.
+   * @throws IOException Case the string to verify is null or not equal to the expected string.
+   */
+  private void checkExpectedToken(String expected, String five) throws IOException {
+    if(expected == null) return;
+    if(five == null || !expected.equals(five))
+      throw new IOException("Invalid Content to Parse {"
+          + "expected="+ expected+ ", read="+ five+ "}");
+  }
+  
+  
+  /**
+   * Parse the specified <code>HttpEntity</code> content.
+   * @param entity <code>HttpEntity</code> to parse.
+   * @return This modified <code>HttpEntityParser</code> instance.
+   * @throws IOException In case of error parsing.
+   */
   public HttpEntityParser parse(HttpEntity entity) throws IOException {
     if(entity == null)
       throw new IllegalArgumentException(
@@ -167,37 +274,32 @@ public class HttpEntityParser {
               + "Invalid HttpEntity {"+ entity+ "}");
     
     buffer.clear();
-    //buffer = new MixedWriteBuffer();
-    InputStream contstream = entity.getContent();
+    InputStream content = entity.getContent();
+    checkExpectedToken(XmlConsts.START_XML, readFive(content));
     
-    String five = readFive(contstream);
-    if(!XmlConsts.START_XML.equals(five)) {
-      throw new IOException("[EntityParser.parse( HttpEntity )] "
-          + "Invalid Content to Parse {expected="
-          + XmlConsts.START_XML+ ", read="+ five+ "}");
-    }
+    String five = readFive(content);
+    five = tryCryptKey(content, five);
+    checkExpectedToken(XmlConsts.START_CONTENT, five);
     
-    five = readFive(contstream);
-    five = tryCryptKey(contstream, five);
-    
-    if(!XmlConsts.START_CONTENT.equals(five)) {
-      throw new IOException("[EntityParser.parse( HttpEntity )] "
-          + "Invalid Content to Parse {expected="
-          + XmlConsts.START_CONTENT+ ", read="+ five+ "}");
-    }
-    
-    IO.tr(contstream, buffer.getRawOutputStream());
+    IO.tr(content, buffer.getRawOutputStream());
     // get decoding stream
-    contstream = buffer.getReadBuffer().getInputStream();
+    content = buffer.getReadBuffer().getInputStream();
     EntityUtils.consume(entity);
     
-    five = readFive(contstream);
-    five = tryObject(contstream, five);
-    tryStream(contstream, five);
+    five = readFive(content);
+    five = tryObject(content, five);
+    tryStream(content, five);
     return this;
   }
   
   
+  /**
+   * Try to parse a criptography key from the <code>InputStream</code>.
+   * @param is <code>InputStream</code> for read the content.
+   * @param five <code>String</code> with the five chars readed from <code>InputStream</code>.
+   * @return The next five chars readed from <code>InputStream</code>.
+   * @throws IOException In case of error parsing.
+   */
   private String tryCryptKey(InputStream is, String five) throws IOException {
     if(five == null || five.trim().isEmpty() || is == null)
       return five;
@@ -212,6 +314,13 @@ public class HttpEntityParser {
   }
   
   
+  /**
+   * Try to parse an object from the <code>InputStream</code>.
+   * @param is <code>InputStream</code> for read the content.
+   * @param five <code>String</code> with the five chars readed from <code>InputStream</code>.
+   * @return The next five chars readed from <code>InputStream</code>.
+   * @throws IOException In case of error parsing.
+   */
   private String tryObject(InputStream is, String five) throws IOException {
     if(five == null || five.trim().isEmpty() || is == null)
       return five;
@@ -225,6 +334,12 @@ public class HttpEntityParser {
   }
   
   
+  /**
+   * Try to parse an embed input stream content from the <code>InputStream</code>.
+   * @param is <code>InputStream</code> for read the content.
+   * @param five <code>String</code> with the five chars readed from <code>InputStream</code>.
+   * @throws IOException In case of error parsing.
+   */
   private void tryStream(InputStream is, String five) throws IOException {
     if(five == null || five.trim().isEmpty() || is == null)
       return;

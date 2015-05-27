@@ -27,7 +27,8 @@ import java.io.IOException;
 import us.pserver.cdr.StringByteConverter;
 
 /**
- *
+ * An object serializer for (de)serialize objects to/from JSON format.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 11/05/2015
  */
@@ -36,6 +37,9 @@ public class JsonSerializer implements ObjectSerializer {
   private StringByteConverter scv;
   
   
+  /**
+   * Default contructor without arguments.
+   */
   public JsonSerializer() {
     scv = new StringByteConverter();
   }

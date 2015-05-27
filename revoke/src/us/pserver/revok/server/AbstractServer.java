@@ -26,8 +26,7 @@ import us.pserver.revok.server.Server;
 
 
 /**
- * Classe abstrata que implementa funcionalidades
- * básicas de um servidor de objetos, como getters e setters.
+ * Abstract class implementing basic object server functions.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
@@ -35,7 +34,7 @@ import us.pserver.revok.server.Server;
  */
 public abstract class AbstractServer implements Server {
   
-  public static final String ABSTRACT_SERVER = AbstractServer.class.getName();
+  private static final Class ABSTRACT_SERVER = AbstractServer.class;
   
   
   int availableThreads;
@@ -46,7 +45,7 @@ public abstract class AbstractServer implements Server {
   
   
   /**
-   * Construtor padrão sem argumentos.
+   * Default constructor without arguments.
    */
   AbstractServer() {
     availableThreads = DEFAULT_AVAILABLE_THREADS;
@@ -56,14 +55,14 @@ public abstract class AbstractServer implements Server {
   
   
   /**
-   * Construtor que recebe o container de objetos.
-   * @param container Container de objetos.
+   * Constructor which receives the <code>ObjectContainer</code>
+   * with the stored objects whose methods will be invoked.
+   * @param container <code>ObjectContainer</code>.
    */
   AbstractServer(ObjectContainer container) {
     if(container == null)
       throw new IllegalArgumentException(
           "Invalid ObjectContainer ["+ container+ "]");
-    container.put(ABSTRACT_SERVER, this);
     availableThreads = DEFAULT_AVAILABLE_THREADS;
     running = false;
     this.container = container;
@@ -73,8 +72,6 @@ public abstract class AbstractServer implements Server {
   @Override
   public void setContainer(ObjectContainer cont) {
     this.container = cont;
-    if(cont != null)
-      container.put(ABSTRACT_SERVER, this);
   }
 
 
@@ -98,6 +95,11 @@ public abstract class AbstractServer implements Server {
   }
   
   
+  /**
+   * Set if the server is running.
+   * @param run <code>true</code> if the server is running,
+   * <code>false</code> otherwise.
+   */
   protected void setRunning(boolean run) {
     synchronized(ABSTRACT_SERVER) {
       running = run;

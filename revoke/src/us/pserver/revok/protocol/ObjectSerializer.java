@@ -24,14 +24,27 @@ package us.pserver.revok.protocol;
 import java.io.IOException;
 
 /**
- *
+ * Interface defining an object converter to and from byte array.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 11/05/2015
  */
 public interface ObjectSerializer {
 
+  /**
+   * Serialize an object to byte array.
+   * @param o Object to serilize.
+   * @return Byte array from the serilized object.
+   * @throws IOException In case of error serilizing the object.
+   */
   public byte[] toBytes(Object o) throws IOException;
   
+  /**
+   * Deserialize an object from byte array.
+   * @param bytes Byte array with a serilized object
+   * @return An object deserilized from the byte array.
+   * @throws IOException In case of error deserilizing the object.
+   */
   public Object fromBytes(byte[] bytes) throws IOException;
   
 }

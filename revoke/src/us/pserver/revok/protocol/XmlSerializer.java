@@ -30,7 +30,8 @@ import java.io.OutputStreamWriter;
 import us.pserver.cdr.StringByteConverter;
 
 /**
- *
+ * An object serializer for (de)serialize objects to/from XML format.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 11/05/2015
  */
@@ -41,6 +42,9 @@ public class XmlSerializer implements ObjectSerializer {
   private XStream xst;
   
   
+  /**
+   * Default constructor without arguments.
+   */
   public XmlSerializer() {
     scv = new StringByteConverter();
     xst = new XStream();

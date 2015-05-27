@@ -26,8 +26,7 @@ import java.io.IOException;
 
 
 /**
- * Interface que define a estrutura principal
- * do servidor de objetos.
+ * Interface defining the main structure of an object server.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 21/01/2014
@@ -35,62 +34,62 @@ import java.io.IOException;
 public interface Server extends Runnable {
   
   /**
-   * Quantidade total de <code>Threads</code> disponíveis
-   * para no pool que atende as demandas
-   * <br/><code>DEFAULT_AVAILABLE_THREADS = 6</code>.
+   * <code>
+   *  DEFAULT_AVAILABLE_THREADS = 6
+   * </code><br/>
+   * Default number of worker <code>Threads</code> which will
+   * attend client requests.
    */
   public static final int DEFAULT_AVAILABLE_THREADS = 6;
   
   
   /**
-   * Define o container de objetos.
-   * @param cont Container de objetos.
-   * @see us.pserver.remote.ObjectContainer
+   * Set the <code>ObjectContainer</code> with the stored objects
+   * whose methods will be invoked.
+   * @param cont The <code>ObjectContainer</code> with the stored 
+   * objects whose methods will be invoked.
    */
   public void setContainer(ObjectContainer cont);
   
   /**
-   * Retorna o container de objetos.
-   * @return Container de objetos.
-   * @see us.pserver.remote.ObjectContainer
+   * Get the <code>ObjectContainer</code> with the stored objects
+   * whose methods will be invoked.
+   * @return The <code>ObjectContainer</code> with the stored 
+   * objects whose methods will be invoked.
    */
   public ObjectContainer container();
   
   /**
-   * Define a quantidade de <code>Threads</code>
-   * que atenderão as demandas do servidor.
-   * @param threads Quantidade de <code>Threads</code>
-   * que atenderão a demanda do servidor.
+   * Set the number of available worker threads.
+   * @param threads Number of <code>Threads</code>
+   * which will attend client requests.
    * @see us.pserver.remote.Server#DEFAULT_AVAILABLE_THREADS
    */
   public void setAvailableThreads(int threads);
   
   /**
-   * Retorna a quantidade de <code>Threads</code>
-   * que atenderão as demandas do servidor.
-   * @return Quantidade de <code>Threads</code>
-   * que atenderão a demanda do servidor.
+   * Get the number of available worker threads.
+   * @return The number of <code>Threads</code>
+   * which will attend client requests.
    * @see us.pserver.remote.Server#DEFAULT_AVAILABLE_THREADS
    */
   public int getAvailableThreads();
   
   /**
-   * Inicia a execução do servidor.
-   * @throws IOException Caso ocorra erro
-   * na execução do servidor.
+   * Starts the server execution.
+   * @throws IOException In case of error executing server.
    */
   public void start() throws IOException;
   
   /**
-   * Para a execução do servidor.
+   * Stops the server execution.
    */
   public void stop();
   
   /**
-   * Verifica se o servidor está em execução.
-   * @return <code>true</code> se o servidor
-   * está em execução, <code>false</code>
-   * caso contrário.
+   * Check if the server is running.
+   * @return <code>true</code> if the server is running,
+   * <code>false</code> otherwise.
    */
   public boolean isRunning();
   

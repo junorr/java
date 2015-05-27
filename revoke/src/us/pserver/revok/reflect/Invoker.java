@@ -35,8 +35,7 @@ import static us.pserver.revok.reflect.Invoker.DEFAULT_INVOKE_TRIES;
 
 
 /**
- * Classe responsável pela invocação de métodos
- * em objetos utilizando reflexão.
+ * Class for invoking object methods using reflection.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.1 - 20150422
@@ -44,17 +43,17 @@ import static us.pserver.revok.reflect.Invoker.DEFAULT_INVOKE_TRIES;
 public class Invoker {
   
   /**
-   * Número padrão de tentativas na invocação do método em caso de erro
-   * <br/><code>DEFAULT_INVOKE_TRIES = 5</code>.
-   * Permite maior qualidade nos resultados das invocações que,
-   * sob ambientes de múltiplos processos, podem gerar resultados
-   * imprecisos.
+   * <code>
+   *  DEFAULT_INVOKE_TRIES = 5
+   * </code><br/>
+   * Default number of tries to invoke a method in case of error.
+   * Allow greater quality results on multithreaded environments.
    */
   public static final int DEFAULT_INVOKE_TRIES = 5;
   
   /**
    * <code>
-   *   VAR_SIGNAL = "$"
+   *  VAR_SIGNAL = "$"
    * </code><br/>
    * Character used to mark a variable name on the server.
    */
@@ -73,13 +72,12 @@ public class Invoker {
   
   
   /**
-   * Construtor padrão de <code>Invoker</code>,
-   * recebe o objeto cujo método será invocado
-   * e <code>RemoteMethod</code> contendo a 
-   * descrição do método.
-   * @param o Objeto cujo método será invocado.
-   * @param r <code>RemoteMethod</code>
-   * @see us.pserver.remote.RemoteMethod
+   * Default constructor receives the <code>ObjectContainer</code>
+   * with the stored object to invoke and a Credentials
+   * object for authentication.
+   * @param cont <code>ObjectContainer</code> with the 
+   * stored object to invoke.
+   * @param cred Credentials object for authentication.
    */
   public Invoker(ObjectContainer cont, Credentials cred) throws MethodInvocationException {
     if(cont == null) 
@@ -101,9 +99,8 @@ public class Invoker {
   
   
   /**
-   * Retorna o número máximo de tentativas 
-   * de invocação do método em caso de erro.
-   * @return <code>int</code>.
+   * Get the default number of invocation tries.
+   * @return The default number of invocation tries.
    * @see us.pserver.remote.Invoker#DEFAULT_INVOKE_TRIES
    */
   public int tries() {
@@ -112,9 +109,8 @@ public class Invoker {
   
   
   /**
-   * Define o número máximo de tentativas 
-   * de invocação do método em caso de erro.
-   * @param t <code>int</code>.
+   * Set the default number of invocation tries.
+   * @param t The default number of invocation tries.
    * @see us.pserver.remote.Invoker#DEFAULT_INVOKE_TRIES
    */
   public Invoker setTries(int t) {
@@ -123,6 +119,13 @@ public class Invoker {
   }
   
   
+  /**
+   * Get the object whose method will be invoked.
+   * @param rm Method information.
+   * @return The object whose method will be invoked.
+   * @throws MethodInvocationException In case of error invoking the method.
+   * @throws AuthenticationException In case of authentication error.
+   */
   public Object getObject(RemoteMethod rm) 
       throws MethodInvocationException, AuthenticationException {
     nullarg(RemoteMethod.class, rm);
@@ -135,11 +138,11 @@ public class Invoker {
   
   
   /**
-   * Return the object stored in ObjectContainer.
-   * @param name Object name and namespace.
-   * @return The object stored in ObjectContainer.
-   * @throws MethodInvocationException If the object does not exists on the server.
-   * @throws AuthenticationException If authentication fails.
+   * Get the object whose method will be invoked.
+   * @param name Object name/namespace.
+   * @return The object whose method will be invoked.
+   * @throws MethodInvocationException In case of error invoking the method.
+   * @throws AuthenticationException In case of authentication error.
    */
   private Object getObject(String name) throws MethodInvocationException, AuthenticationException {
     Object o = null;
@@ -207,14 +210,11 @@ public class Invoker {
   
   
   /**
-   * Invoca o método em modo de recursão,
-   * até o número máximo de tentativas definidas em caso de erro.
-   * @param currTry Número da tentativa atual.
-   * @return Objeto de retorno do método ou
-   * <code>null</code> no caso de <code>void</code>.
-   * @throws MethodInvocationException Caso ocorra 
-   * erro na invocação do método.
-   * @see DEFAULT_INVOKE_TRIES
+   * Invokes the method in recursion mode, until the maximum 
+   * number of tries (in case of error).
+   * @param currTry Current invocation try.
+   * @return Returned value from the method invocation or <code>null</code>.
+   * @see us.pserver.remote.Invoker#DEFAULT_INVOKE_TRIES
    */
   private Object invoke(RemoteMethod mth, int currTry) throws MethodInvocationException, AuthenticationException {
     if(container == null || mth == null 

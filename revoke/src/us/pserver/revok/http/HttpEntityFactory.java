@@ -30,6 +30,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.util.EntityUtils;
 import us.pserver.cdr.StringByteConverter;
+import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.revok.protocol.JsonSerializer;
 import us.pserver.revok.protocol.ObjectSerializer;
@@ -273,6 +274,11 @@ public class HttpEntityFactory {
   }
   
   
+  /**
+   * Put a criptography key for encoding http content.
+   * @param key Criptography key.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityFactory put(CryptKey key) {
     if(key != null) {
       this.key = key;
@@ -281,6 +287,11 @@ public class HttpEntityFactory {
   }
   
   
+  /**
+   * Put an object for embed in http content.
+   * @param obj Object for embed in http content.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityFactory put(Object obj) {
     if(obj != null) {
       this.obj = obj;
@@ -289,6 +300,11 @@ public class HttpEntityFactory {
   }
   
   
+  /**
+   * Put an input stream for embed in http content.
+   * @param is Input stream for embed in http content.
+   * @return This modified <code>HttpEntityFactory</code> instance.
+   */
   public HttpEntityFactory put(InputStream is) {
     if(is != null) {
       this.input = is;
@@ -297,31 +313,48 @@ public class HttpEntityFactory {
   }
   
   
-  public HttpEntity create() throws IOException {
-    if(key == null && obj == null && input == null)
-      return null;
-    
-    buffer.clear();
-    buffer.write(scv.convert(XmlConsts.START_XML));
-    // Encoded OutputStream
-    OutputStream os = buffer.getOutputStream();
-    
+  /**
+   * Write the criptography key in http content.
+   * @throws IOException In case of error writing.
+   */
+  private void writeCryptKey() throws IOException {
     if(key != null) {
       // write plain data
       buffer.write(scv.convert(XmlConsts.START_CRYPT_KEY));
       buffer.write(scv.convert(key.toString()));
       buffer.write(scv.convert(XmlConsts.END_CRYPT_KEY));
     }
-    if(obj != null || input != null) {
-      buffer.write(scv.convert(XmlConsts.START_CONTENT));
-    }
+  }
+  
+  
+  /**
+   * Write the object in http content.
+   * @param os OutputStream for write the content.
+   * @throws IOException In case of error writing.
+   */
+  private void writeObject(OutputStream os) throws IOException {
+    if(os == null) return;
     if(obj != null) {
+      buffer.write(scv.convert(XmlConsts.START_CONTENT));
       os.write(scv.convert(XmlConsts.START_ROB));
       os.write(serial.toBytes(obj));
       os.write(scv.convert(XmlConsts.END_ROB));
       os.flush();
     }
+  }
+  
+  
+  /**
+   * Write the input stream content.
+   * @param os OutputStream for write the content.
+   * @throws IOException In case of error writing.
+   */
+  private void writeInputStream(OutputStream os) throws IOException {
+    if(os == null) return;
     if(input != null) {
+      if(obj == null) {
+        buffer.write(scv.convert(XmlConsts.START_CONTENT));
+      }
       os.write(scv.convert(XmlConsts.START_STREAM));
       IO.tr(input, os);
       os.write(scv.convert(XmlConsts.END_STREAM));
@@ -331,6 +364,27 @@ public class HttpEntityFactory {
       os.write(scv.convert(XmlConsts.END_CONTENT));
       os.flush();
     }
+  }
+  
+  
+  /**
+   * Create the <code>HttpEntity</code> with the content to be transmitted.
+   * @return The <code>HttpEntity</code> with the content to be transmitted.
+   * @throws IOException In case of error creating the <code>HttpEntity</code>.
+   */
+  public HttpEntity create() throws IOException {
+    if(key == null && obj == null && input == null)
+      return null;
+    
+    buffer.clear();
+    buffer.write(scv.convert(XmlConsts.START_XML));
+    // Encoded OutputStream
+    OutputStream os = buffer.getOutputStream();
+    
+    writeCryptKey();
+    writeObject(os);
+    writeInputStream(os);
+    
     os.write(scv.convert(XmlConsts.END_XML));
     os.flush();
     os.close();
@@ -341,10 +395,10 @@ public class HttpEntityFactory {
   
   
   public static void main(String[] args) throws IOException {
-    HttpEntityFactory fac = HttpEntityFactory.instance(new XmlSerializer());
-        //.enableGZipCoder()
-        //.enableCryptCoder(
-          //  CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5));
+    HttpEntityFactory fac = HttpEntityFactory.instance(new XmlSerializer())
+        .enableGZipCoder()
+        .enableCryptCoder(
+            CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5));
     class MSG {
       String str;
       public MSG(String s) { str = s; }

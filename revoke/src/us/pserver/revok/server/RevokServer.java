@@ -49,8 +49,7 @@ import us.pserver.revok.protocol.JsonSerializer;
 import us.pserver.revok.protocol.ObjectSerializer;
 
 /**
- * Servidor de rede para objetos remotos, cujos métodos 
- * serão invocados remotamente.
+ * Network HTTP object server for remoting method invocation.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.1 - 20150422
@@ -77,7 +76,7 @@ public class RevokServer extends AbstractServer {
    * <code>
    *  HTTP_CONN_BUFFER_SIZE = 8*1024
    * </code><br>
-   * Tamanho de buffer da conexao HTTP.
+   * Default HTTP buffer size.
    */
   public static final int HTTP_CONN_BUFFER_SIZE = 8*1024;
   
@@ -92,14 +91,11 @@ public class RevokServer extends AbstractServer {
   
   
   /**
-   * Construtor que recebe como argumento o 
-   * container de objetos <code>ObjectContainer</code>.
-   * e informações de conexão de rede <code>HttpConnector</code>.
-   * Cria um servidor com conexão de rede padrão com canal de 
-   * comunicação do tipo <code>NetworkChannel</code>.
-   * @param cont container de objetos <code>ObjectContainer</code>.
+   * Default constructor receives the <code>ObjectContainer</code>
+   * with the objects whose methods will be invoked.
+   * @param cont The <code>ObjectContainer</code>
+   * with the objects whose methods will be invoked.
    * @see us.pserver.remote.ObjectContainer
-   * @see us.pserver.remote.NetConnector
    */
   public RevokServer(ObjectContainer cont) {
     super(cont);
@@ -114,13 +110,13 @@ public class RevokServer extends AbstractServer {
   
   
   /**
-   * Construtor que recebe como argumentos o 
-   * container de objetos <code>ObjectContainer</code> 
-   * e a conexão de rede <code>HttpConnector</code>.
-   * Cria um servidor com o canal de 
-   * comunicação do tipo <code>NetworkChannel</code>.
-   * @param cont container de objetos <code>ObjectContainer</code>.
-   * @param hcon Conexão de rede <code>HttpConnector</code>.
+   * Constructor which receives the <code>ObjectContainer</code>
+   * with the objects whose methods will be invoked and the
+   * network information object <code>HttpConnector</code>.
+   * @param cont The <code>ObjectContainer</code>
+   * with the objects whose methods will be invoked.
+   * @param hcon The network information object 
+   * <code>HttpConnector</code>.
    * @see us.pserver.remote.ObjectContainer
    * @see us.pserver.remote.NetConnector
    */
@@ -134,6 +130,17 @@ public class RevokServer extends AbstractServer {
   }
   
   
+  /**
+   * Constructor which receives the <code>ObjectContainer</code>,
+   * the network information <code>HttpConnector</code> and
+   * the default object serializer for encoding transmitted objects.
+   * @param cont The <code>ObjectContainer</code>
+   * with the objects whose methods will be invoked.
+   * @param hcon The network information object 
+   * <code>HttpConnector</code>.
+   * @param serial The default object serializer for encoding 
+   * transmitted objects.
+   */
   public RevokServer(ObjectContainer cont, HttpConnector hcon, ObjectSerializer serial) {
     this(cont, hcon);
     if(serial == null)
@@ -142,11 +149,19 @@ public class RevokServer extends AbstractServer {
   }
   
   
+  /**
+   * Get the <code>ObjectSerializer</code> for objects serialization.
+   * @return <code>ObjectSerializer</code> for objects serialization.
+   */
   public ObjectSerializer getObjectSerializer() {
     return serial;
   }
   
   
+  /**
+   * Set the <code>ObjectSerializer</code> for objects serialization.
+   * @param serializer <code>ObjectSerializer</code> for objects serialization.
+   */
   public RevokServer setObjectSerializer(ObjectSerializer serializer) {
     if(serializer != null) {
       serial = serializer;
@@ -156,9 +171,8 @@ public class RevokServer extends AbstractServer {
   
   
   /**
-   * Retorna as informações de rede encapsuladas
-   * por <code>HttpConnector</code>.
-   * @return <code>HttpConnector</code>.
+   * Get the network information object <code>HttpConnector</code>.
+   * @return The network information object <code>HttpConnector</code>.
    */
   public HttpConnector getConnector() {
     return con;
@@ -166,10 +180,9 @@ public class RevokServer extends AbstractServer {
 
 
   /**
-   * Define as informações de rede encapsuladas
-   * por <code>HttpConnector</code>.
-   * @param con <code>HttpConnector</code>.
-   * @return Esta instância modificada de ObjectServer.
+   * Set the network information object <code>HttpConnector</code>.
+   * @param con The network information object <code>HttpConnector</code>.
+   * @return This modified <code>RevokServer</code> instance.
    */
   public RevokServer setConnector(HttpConnector con) {
     this.con = con;
@@ -178,8 +191,8 @@ public class RevokServer extends AbstractServer {
 
 
   /**
-   * Retorna a fábrica do canal de comunicação de objetos na rede.
-   * @return Fábrica do canal de comunicação de objetos na rede.
+   * Get the network channel factory object.
+   * @return The network channel factory object.
    */
   public ChannelFactory<HttpServerConnection> getChannelFactory() {
     return factory;
@@ -187,9 +200,9 @@ public class RevokServer extends AbstractServer {
 
 
   /**
-   * Define a fábrica do canal de comunicação de objetos na rede.
-   * @param fact fábrica do canal de comunicação de objetos na rede.
-   * @return Esta instância modificada de ObjectServer.
+   * Set the network channel factory object.
+   * @param fact The network channel factory object.
+   * @return This modified <code>RevokServer</code> instance.
    */
   public RevokServer setChannelFactory(ChannelFactory<HttpServerConnection> fact) {
     if(fact != null)
@@ -199,7 +212,7 @@ public class RevokServer extends AbstractServer {
   
   
   /**
-   * Valida pré-requisitos para execução do servidor.
+   * Validates and start the necessary components for server execution.
    */
   private void preStart() {
     if(con == null)
@@ -218,9 +231,6 @@ public class RevokServer extends AbstractServer {
   }
   
   
-  /**
-   * Inicia o servidor de objetos.
-   */
   @Override
   public void start() {
     preStart();
@@ -229,8 +239,8 @@ public class RevokServer extends AbstractServer {
   
   
   /**
-   * Inicia o servidor de objetos em uma nova <code>Thread</code>.
-   * @return Esta instância modificada de ObjectServer.
+   * Starts the server execution in a new <code>Thread</code>.
+   * @return This modified <code>RevokServer</code> instance.
    */
   public RevokServer startNewThread() {
     preStart();
@@ -240,8 +250,7 @@ public class RevokServer extends AbstractServer {
   
   
   /**
-   * Não invocar diretamente. 
-   * Executa as funções de ObjectServer.
+   * Not invoke directly. Executes server routines.
    */
   @Override
   public void run() {
@@ -272,8 +281,8 @@ public class RevokServer extends AbstractServer {
   
   
   
-// Início da classe interna HttpConnectionHandler.
 /*****************************************************************/
+/**   START OF INNER CLASS DECLARATION HttpConnectionHandler    **/
 /*****************************************************************/
 
   

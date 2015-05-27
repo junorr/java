@@ -41,8 +41,8 @@ public class RemoteInvocationHandler implements InvocationHandler {
   
   
   /**
-   * Default constructor wich receives the RemoteObject used in 
-   * methods invocations and the object name on the server.
+   * Default constructor which receives the RemoteObject used in 
+   * method invocations and the object name on the server.
    * @param rob RemoteObject.
    * @param objname Object name on the server.
    */

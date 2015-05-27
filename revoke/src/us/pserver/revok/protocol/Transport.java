@@ -25,7 +25,9 @@ import java.io.InputStream;
 
 
 /**
- * <code>Transport</code> é o objeto padrão
+ * <code>Transport</code> is an object for
+ * transmitting content over a communication channel.
+ * é o objeto padrão
  * utilizado na transmissão de informações pelo 
  * canal de comunicação. Encapsula um objeto
  * embarcado e opcionalmente um <code>InputStream</code>, 
@@ -44,7 +46,7 @@ public class Transport {
   
   
   /**
-   * Construtor padrão sem argumentos.
+   * Default constructor without arguments.
    */
   public Transport() {
     object = null;
@@ -54,8 +56,8 @@ public class Transport {
   
   
   /**
-   * Construtor que recebe o objeto a ser embarcado.
-   * @param obj Objeto a ser embarcado.
+   * Constructor with an embed object.
+   * @param obj Embedded object.
    */
   public Transport(Object obj) {
     object = obj;
@@ -65,11 +67,9 @@ public class Transport {
   
   
   /**
-   * Construtor que recebe o objeto a ser embarcado
-   * e um <code>InputStream</code> com dados a serem
-   * transmitidos via stream.
-   * @param obj Objeto a ser embarcado.
-   * @param input <code>InputStream</code>.
+   * Constructor with an embed object and stream content.
+   * @param obj Embed object.
+   * @param input Embed <code>InputStream</code>.
    */
   public Transport(Object obj, InputStream input) {
     object = obj;
@@ -78,9 +78,10 @@ public class Transport {
   
   
   /**
-   * Retorna um objeto clonado de <code>Transport</code>
-   * pronto para ser enviado pelo canal.
-   * @return cópia de <code>Transport</code>
+   * Get a cloned <code>Transport</code> object,
+   * properly formatted for channel communication.
+   * @return A cloned <code>Transport</code> object,
+   * properly formatted for channel communication.
    */
   public Transport getWriteVersion() {
     Transport t = new Transport();
@@ -91,9 +92,8 @@ public class Transport {
 
 
   /**
-   * Retorna o objeto embarcado.
-   * @return <code>Object</code>
-   * ou <code>null</code>.
+   * Get the embedded object.
+   * @return The embedded object.
    */
   public Object getObject() {
     return object;
@@ -101,10 +101,10 @@ public class Transport {
 
 
   /**
+   * Set the embedded object.
    * Define o objeto a ser embarcado.
-   * @param object <code>Object</code>
-   * @return Esta instância modificada de 
-   * <code>Transport</code>.
+   * @param object The embedded object.
+   * @return This midified <code>Transport</code> instance.
    */
   public Transport setObject(Object object) {
     this.object = object;
@@ -113,9 +113,8 @@ public class Transport {
 
 
   /**
-   * Retorna o <code>InputStream</code> de
-   * dados a serem transmitidos via stream.
-   * @return <code>InputStream</code>.
+   * Get the embedded <code>InputStream</code>.
+   * @return The embedded <code>InputStream</code>.
    */
   public InputStream getInputStream() {
     return input;
@@ -123,11 +122,11 @@ public class Transport {
   
   
   /**
-   * Verifica se existe um <code>InputStream</code>
-   * definido para transmissão de dados via stream.
-   * @return <code>true</code> se foi definido um
-   * <code>InputStream</code> para transmissão de dados 
-   * via stream, <code>false</code> caso contrário.
+   * Check if exists an embedded <code>InputStream</code> 
+   * content in this <code>Transport</code> instance.
+   * @return <code>true</code> if exists an embedded 
+   * <code>InputStream</code> content in this instance, 
+   * <code>false</code> otherwise.
    */
   public boolean hasContentEmbedded() {
     return hasContentEmbedded;
@@ -135,10 +134,9 @@ public class Transport {
 
 
   /**
-   * Define o <code>InputStream</code> de
-   * dados a serem transmitidos via stream.
-   * @param in <code>InputStream</code>.
-   * @return Esta instância modificada de <code>InputStream</code>.
+   * Set the embedded <code>InputStream</code>.
+   * @param in The embedded <code>InputStream</code>.
+   * @return This midified <code>Transport</code> instance.
    */
   public Transport setInputStream(InputStream in) {
     this.input = in;
@@ -148,13 +146,10 @@ public class Transport {
   
   
   /**
-   * Verifica se o objeto embarcado pertence à classe 
-   * especificada.
-   * @param cls Classe a ser comparada com o tipo do 
-   * objeto embarcado.
-   * @return <code>true</code> se o objeto embarcado
-   * pertencer à classe especificada, <code>false</code>
-   * caso contrário.
+   * Check if the embedded object is from the specified class type.
+   * @param cls Class for comparing the object type.
+   * @return <code>true</code> if the embedded object is 
+   * from the specified class type, <code>false</code> otherwise.
    */
   public boolean isObjectFromType(Class cls) {
     if(object == null || cls == null)
@@ -164,11 +159,10 @@ public class Transport {
   
   
   /**
-   * Converte o objeto embarcado para o tipo específico <code>T</code>.
-   * @param <T> Tipo ao qual o objeto será convertido.
-   * @return o objeto convertido para o tipo <code>T</code>
-   * ou <code>null</code> caso ocorra erro 
-   * (<code>ClassCastException</code>) na conversão.
+   * Cast the embedded object to the specified type.
+   * @param <T> Type to the embedded object will be casted.
+   * @return The embedded object casted to the <code>T</code> 
+   * type, or <code>null</code> in case of <code>ClassCastException</code>.
    */
   public <T> T castObject() {
     try {
