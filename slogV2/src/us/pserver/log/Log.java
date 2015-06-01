@@ -83,6 +83,15 @@ public interface Log {
   public Log debug(String msg);
   
   /**
+   * Direciona o erro <code>Throwable</code> para log nível debug.
+   * @param th Exceção.
+   * @param logStackTrace Define se a pilha de rastreamento do
+   * erro será impressa em log ou não.
+   * @return Esta instância modificada <code>Log</code>.
+   */
+  public Log debug(Throwable th, boolean logStackTrace);
+  
+  /**
    * Habilita/Desabilita o nível de log de informação 
    * de todos os <code>LogOutput</code> adicionados.
    * @param bool <code>true</code> para habilitar
@@ -100,6 +109,15 @@ public interface Log {
    * @return Esta instância modificada de <code>Log</code>.
    */
   public Log info(String msg);
+  
+  /**
+   * Direciona o erro <code>Throwable</code> para log nível info.
+   * @param th Exceção.
+   * @param logStackTrace Define se a pilha de rastreamento do
+   * erro será impressa em log ou não.
+   * @return Esta instância modificada <code>Log</code>.
+   */
+  public Log info(Throwable th, boolean logStackTrace);
   
   /**
    * Habilita/Desabilita o nível de log de alerta 
@@ -121,6 +139,15 @@ public interface Log {
   public Log warning(String msg);
   
   /**
+   * Direciona o erro <code>Throwable</code> para log nível warning.
+   * @param th Exceção.
+   * @param logStackTrace Define se a pilha de rastreamento do
+   * erro será impressa em log ou não.
+   * @return Esta instância modificada <code>Log</code>.
+   */
+  public Log warning(Throwable th, boolean logStackTrace);
+  
+  /**
    * Habilita/Desabilita o nível de log de erro 
    * de todos os <code>LogOutput</code> adicionados.
    * @param bool <code>true</code> para habilitar
@@ -140,6 +167,15 @@ public interface Log {
   public Log error(String msg);
   
   /**
+   * Direciona o erro <code>Throwable</code> para log nível error.
+   * @param th Exceção.
+   * @param logStackTrace Define se a pilha de rastreamento do
+   * erro será impressa em log ou não.
+   * @return Esta instância modificada <code>Log</code>.
+   */
+  public Log error(Throwable th, boolean logStackTrace);
+  
+  /**
    * Habilita/Desabilita o nível de log de erro fatal 
    * de todos os <code>LogOutput</code> adicionados.
    * @param bool <code>true</code> para habilitar
@@ -157,6 +193,15 @@ public interface Log {
    * @return Esta instância modificada de <code>Log</code>.
    */
   public Log fatal(String msg);
+  
+  /**
+   * Direciona o erro <code>Throwable</code> para log nível fatal.
+   * @param th Exceção.
+   * @param logStackTrace Define se a pilha de rastreamento do
+   * erro será impressa em log ou não.
+   * @return Esta instância modificada <code>Log</code>.
+   */
+  public Log fatal(Throwable th, boolean logStackTrace);
   
   /**
    * Direciona a mensagem de log com o nível informado

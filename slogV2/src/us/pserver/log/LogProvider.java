@@ -30,47 +30,67 @@ import java.util.Optional;
  */
 public class LogProvider {
 
-  private static final SLogV2 slog = new SLogV2();
+  private static SLogV2 slog;
   
-  private static final SimpleLog log = new SimpleLog();
+  private static SimpleLog log;
   
   
   public static SimpleLog getSimpleLog() {
+    if(log == null)
+      log = new SimpleLog();
     return log;
   }
   
   
   public static SimpleLog getSimpleLog(String logfile) {
-    Optional<LogOutput> opt = log.outputs().stream()
-        .filter(l->l.isFileOutput())
-        .findFirst();
-    if(opt.isPresent()) {
-      opt.get().close();
-      opt.get().setFileOutput(logfile);
-    }
-    else {
-      log.add(new LogOutput().setFileOutput(logfile));
-    }
+    if(logfile == null || logfile.trim().isEmpty())
+      return log;
+    
+    log = SimpleLogFactory.instance()
+        .newStdOutput()
+        .enableNonErrorLevels()
+        .debug(false)
+        .add()
+        
+        .newErrOutput()
+        .enableErrorLevels()
+        .add()
+        
+        .newFileOutput(logfile)
+        .enableAllLevels()
+        .add()
+        
+        .create();
     return log;
   }
   
   
   public static SLogV2 getSLogV2() {
+    if(slog == null)
+      slog = new SLogV2();
     return slog;
   }
   
   
   public static SLogV2 getSLogV2(String logfile) {
-    Optional<LogOutput> opt = slog.outputs().stream()
-        .filter(l->l.isFileOutput())
-        .findFirst();
-    if(opt.isPresent()) {
-      opt.get().close();
-      opt.get().setFileOutput(logfile);
-    }
-    else {
-      slog.add(new LogOutput().setFileOutput(logfile));
-    }
+    if(logfile == null || logfile.trim().isEmpty())
+      return slog;
+    
+    slog = LogFactory.instance()
+        .newStdOutput()
+        .enableNonErrorLevels()
+        .debug(false)
+        .add()
+        
+        .newErrOutput()
+        .enableErrorLevels()
+        .add()
+        
+        .newFileOutput(logfile)
+        .enableAllLevels()
+        .add()
+        
+        .create();
     return slog;
   }
   

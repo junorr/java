@@ -1,4 +1,0 @@
-#!/bin/bash
-java -jar "$0"
-exit
-

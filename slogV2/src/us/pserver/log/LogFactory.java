@@ -112,7 +112,16 @@ public class LogFactory {
    * @return <code>SLogV2</code>.
    */
   public SLogV2 createDefault() {
-    return createDefault(DEFAULT_LOG_FILE);
+    return this.reset()
+        .newStdOutput()
+        .enableNonErrorLevels()
+        .add()
+        
+        .newErrOutput()
+        .enableErrorLevels()
+        .add()
+        
+        .create();
   }
   
   

@@ -36,10 +36,6 @@ import java.nio.file.StandardOpenOption;
  */
 public class FileOutputFactory {
   
-  private String sfile;
-  
-  private File file;
-  
   private Path pfile;
     
   
@@ -47,7 +43,7 @@ public class FileOutputFactory {
     if(sfl == null)
       throw new IllegalArgumentException(
           "Invalid file name: "+ sfl);
-    sfile = sfl;
+    pfile = Paths.get(sfl);
   }
     
   
@@ -55,7 +51,7 @@ public class FileOutputFactory {
     if(fl == null)
       throw new IllegalArgumentException(
           "Invalid file: "+ fl);
-    file = fl;
+    pfile = fl.toPath();
   }
     
   
@@ -68,33 +64,16 @@ public class FileOutputFactory {
     
   
   public PrintStream create() {
-    if(sfile == null && file == null
-        && pfile == null)
+    if(pfile == null)
       throw new IllegalStateException(
           "Null Arguments in FileStreamFactory");
     
     try {
-      if(sfile != null) {
-        return new PrintStream(
-            Files.newOutputStream(Paths.get(sfile), 
-            StandardOpenOption.APPEND, 
-            StandardOpenOption.CREATE, 
-            StandardOpenOption.SYNC));
-      }
-      else if(file != null) {
-        return new PrintStream(
-            Files.newOutputStream(file.toPath(), 
-            StandardOpenOption.APPEND, 
-            StandardOpenOption.CREATE, 
-            StandardOpenOption.SYNC));
-      }
-      else {
-        return new PrintStream(
-            Files.newOutputStream(pfile, 
-            StandardOpenOption.APPEND, 
-            StandardOpenOption.CREATE, 
-            StandardOpenOption.SYNC));
-      }
+      return new PrintStream(
+          Files.newOutputStream(pfile, 
+          StandardOpenOption.APPEND, 
+          StandardOpenOption.CREATE, 
+          StandardOpenOption.SYNC));
     } 
     catch(IOException e) {
       throw new IllegalArgumentException(

@@ -116,7 +116,16 @@ public class SimpleLogFactory {
    * @return <code>SimpleLog</code>.
    */
   public SimpleLog createDefault() {
-    return createDefault(DEFAULT_LOG_FILE);
+    return this.reset()
+        .newStdOutput()
+        .enableNonErrorLevels()
+        .add()
+        
+        .newErrOutput()
+        .enableErrorLevels()
+        .add()
+        
+        .create();
   }
   
   
