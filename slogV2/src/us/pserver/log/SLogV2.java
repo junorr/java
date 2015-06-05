@@ -50,7 +50,7 @@ public class SLogV2 implements Log {
   public static final long DEFAULT_EXEC_UID = 0;
 
   
-  private ExclusiveList<LogOutput> outs;
+  private ExclusiveList<BasicLogOutput> outs;
   
   private final Map<Long, ExecutorService> execs;
   
@@ -103,7 +103,7 @@ public class SLogV2 implements Log {
    * @return Esta instância modificada de <code>SLogV2</code>.
    */
   @Override
-  public SLogV2 add(LogOutput out) {
+  public SLogV2 add(BasicLogOutput out) {
     if(out != null)
       outs.add(out);
     return this;
@@ -155,7 +155,7 @@ public class SLogV2 implements Log {
    * @param out saída de log (<code>LogOutput</code>).
    * @return Esta instância modificada de <code>SLogV2</code>.
    */
-  public SLogV2 allocExecutorFor(LogOutput out) {
+  public SLogV2 allocExecutorFor(BasicLogOutput out) {
     if(out != null && out.uid() != DEFAULT_EXEC_UID)
       execs.put(out.uid(), 
           Executors.newSingleThreadExecutor());
@@ -235,7 +235,7 @@ public class SLogV2 implements Log {
    * @return <code>List&lt;LogOutput&gt;</code>
    */
   @Override
-  public List<LogOutput> outputs() {
+  public List<BasicLogOutput> outputs() {
     return outs;
   }
   
@@ -247,7 +247,7 @@ public class SLogV2 implements Log {
    * @return Esta instância modificada de <code>SLogV2</code>.
    */
   @Override
-  public SLogV2 formatter(OutputFormatter lf) {
+  public SLogV2 formatter(BasicOutputFormatter lf) {
     if(lf == null)
       throw new IllegalArgumentException(
           "Invalid LogFormatter: "+ lf);
@@ -532,7 +532,7 @@ public class SLogV2 implements Log {
    * @param msg Mensagem de log.
    * @param lvl Nível de log.
    */
-  private void submit(LogOutput out, String msg, LogLevel lvl) {
+  private void submit(BasicLogOutput out, String msg, LogLevel lvl) {
     if(out == null || lvl == null || msg == null)
       return;
     

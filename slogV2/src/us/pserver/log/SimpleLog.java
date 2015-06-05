@@ -21,6 +21,7 @@
 
 package us.pserver.log;
 
+import us.pserver.log.output.LogOutput;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -108,7 +109,7 @@ public class SimpleLog implements Log {
    * @return <code>List&lt;LogOutput&gt;</code>
    */
   @Override
-  public List<LogOutput> outputs() {
+  public List<BasicLogOutput> outputs() {
     return outs;
   }
   
@@ -118,7 +119,7 @@ public class SimpleLog implements Log {
    * @param lo <code>List&lt;LogOutput&gt;</code>
    * @return Esta instância modificada de <code>SimpleLog</code>.
    */
-  public SimpleLog outputs(List<LogOutput> lo) {
+  public SimpleLog outputs(List<BasicLogOutput> lo) {
     if(lo == null)
       throw new IllegalArgumentException(
           "Invalid LogOutput List: "+ lo);
@@ -134,7 +135,7 @@ public class SimpleLog implements Log {
    * @return Esta instância modificada de <code>SimpleLog</code>.
    */
   @Override
-  public SimpleLog formatter(OutputFormatter lf) {
+  public SimpleLog formatter(BasicOutputFormatter lf) {
     if(lf == null)
       throw new IllegalArgumentException(
           "Invalid LogFormatter: "+ lf);

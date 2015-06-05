@@ -21,6 +21,7 @@
 
 package us.pserver.log;
 
+import us.pserver.log.output.LogOutput;
 import java.util.List;
 
 /**
@@ -61,18 +62,24 @@ public interface Log {
    * @param fmt Formatador de saída de log <code>OutputFormatter</code>.
    * @return Esta instância modificada de <code>Log</code>.
    */
-  public Log formatter(OutputFormatter fmt);
+  public Log formatter(BasicOutputFormatter fmt);
   
   /**
-   * Habilita/Desabilita o nível de log de debug 
-   * de todos os <code>LogOutput</code> adicionados.
-   * @param bool <code>true</code> para habilitar
-   * o nível de log de debug em todos os 
-   * <code>LogOutput</code>, <code>false</code>
-   * caso contrário.
-   * @return Esta instância modificada de <code>Log</code>.
+   * Enable or disable the specified LogLevel.
+   * @param lvl The LogLevel to change.
+   * @param enabled <code>true</code> if the LogLevel should be enabled, 
+   * <code>false</code> otherwise.
+   * @return This modified <code>Log</code> instance.
    */
-  public Log debug(boolean bool);
+  public Log setLevelEnabled(LogLevel lvl, boolean enabled);
+  
+  /**
+   * Verify if the specified LogLevel is enabled.
+   * @param lvl The LogLevel to be verified.
+   * @return <code>true</code> if the LogLevel should be enabled, 
+   * <code>false</code> otherwise.
+   */
+  public boolean isLevelEnabled(LogLevel lvl);
   
   /**
    * Direciona a mensagem de log nível debug 
@@ -92,17 +99,6 @@ public interface Log {
   public Log debug(Throwable th, boolean logStackTrace);
   
   /**
-   * Habilita/Desabilita o nível de log de informação 
-   * de todos os <code>LogOutput</code> adicionados.
-   * @param bool <code>true</code> para habilitar
-   * o nível de log de informação em todos os 
-   * <code>LogOutput</code>, <code>false</code>
-   * caso contrário.
-   * @return Esta instância modificada de <code>Log</code>.
-   */
-  public Log info(boolean bool);
-  
-  /**
    * Direciona a mensagem de log nível de informação 
    * para todas as saídas configuradas.
    * @param msg Mensagem de log.
@@ -118,17 +114,6 @@ public interface Log {
    * @return Esta instância modificada <code>Log</code>.
    */
   public Log info(Throwable th, boolean logStackTrace);
-  
-  /**
-   * Habilita/Desabilita o nível de log de alerta 
-   * de todos os <code>LogOutput</code> adicionados.
-   * @param bool <code>true</code> para habilitar
-   * o nível de log de alerta em todos os 
-   * <code>LogOutput</code>, <code>false</code>
-   * caso contrário.
-   * @return Esta instância modificada de <code>Log</code>.
-   */
-  public Log warning(boolean bool);
   
   /**
    * Direciona a mensagem de log nível alerta
@@ -148,17 +133,6 @@ public interface Log {
   public Log warning(Throwable th, boolean logStackTrace);
   
   /**
-   * Habilita/Desabilita o nível de log de erro 
-   * de todos os <code>LogOutput</code> adicionados.
-   * @param bool <code>true</code> para habilitar
-   * o nível de log de erro em todos os 
-   * <code>LogOutput</code>, <code>false</code>
-   * caso contrário.
-   * @return Esta instância modificada de <code>Log</code>.
-   */
-  public Log error(boolean bool);
-  
-  /**
    * Direciona a mensagem de log nível erro
    * para todas as saídas configuradas.
    * @param msg Mensagem de log.
@@ -174,17 +148,6 @@ public interface Log {
    * @return Esta instância modificada <code>Log</code>.
    */
   public Log error(Throwable th, boolean logStackTrace);
-  
-  /**
-   * Habilita/Desabilita o nível de log de erro fatal 
-   * de todos os <code>LogOutput</code> adicionados.
-   * @param bool <code>true</code> para habilitar
-   * o nível de log de erro fatal em todos os 
-   * <code>LogOutput</code>, <code>false</code>
-   * caso contrário.
-   * @return Esta instância modificada de <code>Log</code>.
-   */
-  public Log fatal(boolean bool);
   
   /**
    * Direciona a mensagem de log nível erro fatal

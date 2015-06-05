@@ -88,8 +88,8 @@ public class StreamFactory {
    * com saída de log personalizada por
    * <code>Consumer&lt;Character&gt;</code>.
    */
-  public static LogOutput createLogOutput(Consumer<Character> cs) {
-    return new LogOutput().setOutputStream(
+  public static BasicLogOutput createLogOutput(Consumer<Character> cs) {
+    return new BasicLogOutput().setOutputStream(
         createOutputStream(cs));
   }
   

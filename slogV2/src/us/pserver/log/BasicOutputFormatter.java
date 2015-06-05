@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import us.pserver.log.output.OutputFormatter;
 
 /**
  * <b>OutputFormatter</b> formata a saída de mensagens 
@@ -35,7 +36,7 @@ import java.util.List;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 16/04/2014
  */
-public class OutputFormatter {
+public class BasicOutputFormatter implements OutputFormatter {
   
   /**
    * Tamanho máximo do texto que representa 
@@ -66,13 +67,13 @@ public class OutputFormatter {
   
   private DateFormat dfm;
   
-  private static OutputFormatter instance;
+  private static BasicOutputFormatter instance;
   
   
   /**
    * Construtor padrão e sem argumentos.
    */
-  public OutputFormatter() {
+  public BasicOutputFormatter() {
     args = new LinkedList();
     dfm = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     instance = this;
@@ -85,7 +86,7 @@ public class OutputFormatter {
    * @param df Formatador <code>DateFormat</code>.
    * @return Esta instância modificada de <code>OutputFormatter</code>.
    */
-  public OutputFormatter dateFormat(DateFormat df) {
+  public BasicOutputFormatter dateFormat(DateFormat df) {
     if(df != null) dfm = df;
     return this;
   }
@@ -98,7 +99,7 @@ public class OutputFormatter {
    * @return Esta instância modificada de <code>OutputFormatter</code>.
    * @see java.text.DateFormat
    */
-  public OutputFormatter dateFormat(String fmt) {
+  public BasicOutputFormatter dateFormat(String fmt) {
     if(fmt != null) 
       dfm = new SimpleDateFormat(fmt);
     return this;
@@ -112,7 +113,7 @@ public class OutputFormatter {
    * de log formatada.
    * @return Esta instância modificada de <code>OutputFormatter</code>.
    */
-  public OutputFormatter append(String str) {
+  public BasicOutputFormatter append(String str) {
     if(str != null)
       args.add(str);
     return this;
@@ -126,7 +127,7 @@ public class OutputFormatter {
    * de log formatada.
    * @return Esta instância modificada de <code>OutputFormatter</code>.
    */
-  public OutputFormatter append(char ch) {
+  public BasicOutputFormatter append(char ch) {
     args.add(String.valueOf(ch));
     return this;
   }
@@ -136,7 +137,7 @@ public class OutputFormatter {
    * Anexa o nível de log na saída formatada.
    * @return Esta instância modificada de <code>OutputFormatter</code>.
    */
-  public OutputFormatter appendLevel() {
+  public BasicOutputFormatter appendLevel() {
     args.add(LEVEL);
     return this;
   }
@@ -146,7 +147,7 @@ public class OutputFormatter {
    * Anexa a data do log na saída formatada.
    * @return Esta instância modificada de <code>OutputFormatter</code>.
    */
-  public OutputFormatter appendDate() {
+  public BasicOutputFormatter appendDate() {
     args.add(DATE);
     return this;
   }
@@ -156,7 +157,7 @@ public class OutputFormatter {
    * Anexa a mensagem de log na saída formatada.
    * @return Esta instância modificada de <code>OutputFormatter</code>.
    */
-  public OutputFormatter appendMessage() {
+  public BasicOutputFormatter appendMessage() {
     args.add(MESSAGE);
     return this;
   }
@@ -166,9 +167,9 @@ public class OutputFormatter {
    * Retorna uma instância de <code>OutputFormatter</code>.
    * @return instância de <code>OutputFormatter</code>.
    */
-  public static OutputFormatter instance() {
+  public static BasicOutputFormatter instance() {
     if(instance == null)
-      instance = new OutputFormatter();
+      instance = new BasicOutputFormatter();
     return instance;
   }
   
@@ -178,7 +179,7 @@ public class OutputFormatter {
    * de formatação.
    * @return Esta instância modificada de <code>OutputFormatter</code>.
    */
-  public OutputFormatter reset() {
+  public BasicOutputFormatter reset() {
     args.clear();
     return this;
   }
@@ -190,8 +191,8 @@ public class OutputFormatter {
    * níveis erro e fatal.
    * @return Instância pré-configurada de <code>OutputFormatter</code>.
    */
-  public static OutputFormatter errorFormatter() {
-    return new OutputFormatter()
+  public static BasicOutputFormatter errorFormatter() {
+    return new BasicOutputFormatter()
         .append("# ")
         .append("(")
         .appendDate()
@@ -207,8 +208,8 @@ public class OutputFormatter {
    * configurado para formatar mensagens padrão de log.
    * @return Instância pré-configurada de <code>OutputFormatter</code>.
    */
-  public static OutputFormatter stdFormatter() {
-    return new OutputFormatter()
+  public static BasicOutputFormatter stdFormatter() {
+    return new BasicOutputFormatter()
         .append("* ")
         .append("(")
         .appendDate()
@@ -225,8 +226,8 @@ public class OutputFormatter {
    * com saída para arquivo.
    * @return Instância pré-configurada de <code>OutputFormatter</code>.
    */
-  public static OutputFormatter fileFormatter() {
-    return new OutputFormatter()
+  public static BasicOutputFormatter fileFormatter() {
+    return new BasicOutputFormatter()
         .append('[')
         .appendLevel()
         .append("] (")
@@ -258,20 +259,27 @@ public class OutputFormatter {
    * @return A mensagem de log formatada para saída.
    * @see us.pserver.log.LogLevel
    */
-  public String format(String message, LogLevel level) {
-    if(message == null || level == null)
+  @Override
+  public String format(LogLevel level, String message) {
+    return format(level, new Date(), message);
+  }
+
+
+  @Override
+  public String format(LogLevel lvl, Date dte, String msg) {
+    if(msg == null || lvl == null)
       return null;
     StringBuilder sb = new StringBuilder();
     args.forEach(s-> {
       switch(s) {
         case LEVEL:
-          sb.append(justify(level.name(), LEVEL_LENGTH));
+          sb.append(justify(lvl.name(), LEVEL_LENGTH));
           break;
         case DATE:
-          sb.append(dfm.format(new Date()));
+          sb.append(dfm.format(dte));
           break;
         case MESSAGE:
-          sb.append(message);
+          sb.append(msg);
           break;
         default:
           sb.append(s);

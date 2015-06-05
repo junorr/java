@@ -21,14 +21,9 @@
 
 package us.pserver.log;
 
-import java.io.File;
-import java.io.IOException;
+import us.pserver.log.output.LogOutput;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 /**
  * Saída de mensagens de log, define onde a
@@ -37,15 +32,15 @@ import java.nio.file.StandardOpenOption;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 15/04/2014
  */
-public class LogOutput {
+public class BasicLogOutput implements LogOutput {
 
   private PrintStream output;
   
-  private boolean debug, info, warn, error, fatal;
+  private LogLevelManager levels;
   
   private boolean stdout, errout, fileout;
   
-  private OutputFormatter format;
+  private BasicOutputFormatter format;
   
   private FileOutputFactory fsfact;
   
@@ -57,14 +52,10 @@ public class LogOutput {
    * constrói uma saída de log para a saída
    * padrão do sistema.
    */
-  public LogOutput() {
+  public BasicLogOutput() {
     setStdOutput();
-    format = OutputFormatter.stdFormatter();
-    debug = false;
-    info = true;
-    warn = true;
-    error = true;
-    fatal = true;
+    format = BasicOutputFormatter.stdFormatter();
+    levels = new LogLevelManager();
     stdout = errout = fileout = false;
     fsfact = null;
     uid = System.currentTimeMillis();
@@ -75,7 +66,7 @@ public class LogOutput {
    * Define este <code>LogOutput</code> para a saída padrão do sistema.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput setStdOutput() {
+  public BasicLogOutput setStdOutput() {
     stdout = true;
     errout = fileout = false;
     output = StreamFactory.createPrintStream(
@@ -88,7 +79,7 @@ public class LogOutput {
       }
     });
     */
-    format = OutputFormatter.stdFormatter();
+    format = BasicOutputFormatter.stdFormatter();
     return this;
   }
   
@@ -97,7 +88,7 @@ public class LogOutput {
    * Define este <code>LogOutput</code> para a saída de erros padrão do sistema.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput setErrOutput() {
+  public BasicLogOutput setErrOutput() {
     errout = true;
     stdout = fileout = false;
     output = StreamFactory.createPrintStream(
@@ -110,7 +101,7 @@ public class LogOutput {
       }
     });
     */
-    format = OutputFormatter.errorFormatter();
+    format = BasicOutputFormatter.errorFormatter();
     return this;
   }
   
@@ -120,10 +111,10 @@ public class LogOutput {
    * @param file Nome do arquivo de log.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput setFileOutput(String file) {
+  public BasicLogOutput setFileOutput(String file) {
     fileout = true;
     stdout = errout = false;
-    format = OutputFormatter.fileFormatter();
+    format = BasicOutputFormatter.fileFormatter();
     output = null;
     fsfact = new FileOutputFactory(file);
     return this;
@@ -135,13 +126,13 @@ public class LogOutput {
    * @param fsf Fábrica de saída para arquivo.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput setFileOutput(FileOutputFactory fsf) {
+  public BasicLogOutput setFileOutput(FileOutputFactory fsf) {
     if(fsf == null)
       throw new IllegalArgumentException(
           "Invalid FileOutputFactory: "+ fsf);
     fileout = true;
     stdout = errout = false;
-    format = OutputFormatter.fileFormatter();
+    format = BasicOutputFormatter.fileFormatter();
     output = null;
     fsfact = fsf;
     return this;
@@ -154,7 +145,7 @@ public class LogOutput {
    * @param os <code>OutputStream</code> de saída.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput setOutputStream(OutputStream os) {
+  public BasicLogOutput setOutputStream(OutputStream os) {
     if(os == null)
       throw new IllegalArgumentException(
           "Invalid OutputStream: "+ os);
@@ -170,7 +161,7 @@ public class LogOutput {
    * @param ps <code>PrintStream</code> de saída.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput setPrintStream(PrintStream ps) {
+  public BasicLogOutput setPrintStream(PrintStream ps) {
     if(ps == null)
       throw new IllegalArgumentException(
           "Invalid OutputStream: "+ ps);
@@ -242,7 +233,7 @@ public class LogOutput {
    * @param uid número de identificação deste <code>LogOutput</code>.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput uid(long uid) {
+  public BasicLogOutput uid(long uid) {
     this.uid = uid;
     return this;
   }
@@ -310,7 +301,7 @@ public class LogOutput {
    * caso contrário.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput debug(boolean bool) {
+  public BasicLogOutput debug(boolean bool) {
     debug = bool;
     return this;
   }
@@ -323,7 +314,7 @@ public class LogOutput {
    * caso contrário.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput info(boolean bool) {
+  public BasicLogOutput info(boolean bool) {
     info = bool;
     return this;
   }
@@ -336,7 +327,7 @@ public class LogOutput {
    * caso contrário.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput warning(boolean bool) {
+  public BasicLogOutput warning(boolean bool) {
     warn = bool;
     return this;
   }
@@ -349,7 +340,7 @@ public class LogOutput {
    * caso contrário.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput error(boolean bool) {
+  public BasicLogOutput error(boolean bool) {
     error = bool;
     return this;
   }
@@ -362,7 +353,7 @@ public class LogOutput {
    * caso contrário.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput fatal(boolean bool) {
+  public BasicLogOutput fatal(boolean bool) {
     fatal = bool;
     return this;
   }
@@ -372,7 +363,7 @@ public class LogOutput {
    * Retorna o formatador de saída de mensagens de log.
    * @return OutputFormatter.
    */
-  public OutputFormatter formatter() {
+  public BasicOutputFormatter formatter() {
     return format;
   }
   
@@ -382,7 +373,7 @@ public class LogOutput {
    * @param lf OutputFormatter.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput formatter(OutputFormatter lf) {
+  public BasicLogOutput formatter(BasicOutputFormatter lf) {
     if(lf == null)
       throw new IllegalArgumentException(
           "Invalid LofFormatter: "+ lf);
@@ -397,7 +388,7 @@ public class LogOutput {
    * @param msg Mensagem de log.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput debug(String msg) {
+  public BasicLogOutput debug(String msg) {
     this.log(msg, LogLevel.DEBUG);
     return this;
   }
@@ -409,7 +400,7 @@ public class LogOutput {
    * @param msg Mensagem de log.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput info(String msg) {
+  public BasicLogOutput info(String msg) {
     this.log(msg, LogLevel.INFO);
     return this;
   }
@@ -421,7 +412,7 @@ public class LogOutput {
    * @param msg Mensagem de log.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput warning(String msg) {
+  public BasicLogOutput warning(String msg) {
     this.log(msg, LogLevel.WARN);
     return this;
   }
@@ -433,7 +424,7 @@ public class LogOutput {
    * @param msg Mensagem de log.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput error(String msg) {
+  public BasicLogOutput error(String msg) {
     this.log(msg, LogLevel.ERROR);
     return this;
   }
@@ -445,7 +436,7 @@ public class LogOutput {
    * @param msg Mensagem de log.
    * @return Esta instância modificada de <code>LogOutput</code>.
    */
-  public LogOutput fatal(String msg) {
+  public BasicLogOutput fatal(String msg) {
     this.log(msg, LogLevel.FATAL);
     return this;
   }
@@ -458,7 +449,7 @@ public class LogOutput {
    * @param level Nível da mensagem de log.
    * @return Esta intância modificada de <code>LogOutput</code>.
    */
-  public LogOutput log(String msg, LogLevel level) {
+  public BasicLogOutput log(String msg, LogLevel level) {
     boolean enabled = false;
     switch(level) {
       case DEBUG:

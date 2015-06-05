@@ -40,7 +40,7 @@ import java.util.function.Consumer;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 15/04/2014
  * @see us.pserver.log.SimpleLog
- * @see us.pserver.log.OutputFormatter
+ * @see us.pserver.log.BasicOutputFormatter
  */
 public class SimpleLogFactory {
   
@@ -51,7 +51,7 @@ public class SimpleLogFactory {
 
   private SimpleLog log;
   
-  private LogOutput edit;
+  private BasicLogOutput edit;
   
   
   /**
@@ -216,7 +216,7 @@ public class SimpleLogFactory {
    * @return Esta instância modificada de <code>SimpleLogFactory</code>.
    */
   public SimpleLogFactory newStdOutput() {
-    edit = new LogOutput();
+    edit = new BasicLogOutput();
     return this;
   }
   
@@ -227,7 +227,7 @@ public class SimpleLogFactory {
    * @return Esta instância modificada de <code>SimpleLogFactory</code>.
    */
   public SimpleLogFactory newErrOutput() {
-    edit = new LogOutput().setErrOutput();
+    edit = new BasicLogOutput().setErrOutput();
     return this;
   }
   
@@ -239,7 +239,7 @@ public class SimpleLogFactory {
    * @return Esta instância modificada de <code>SimpleLogFactory</code>.
    */
   public SimpleLogFactory newFileOutput(String file) {
-    edit = new LogOutput().setFileOutput(file);
+    edit = new BasicLogOutput().setFileOutput(file);
     return this;
   }
   
@@ -284,7 +284,7 @@ public class SimpleLogFactory {
    * Retorna o <code>LogOutput</code> configurado.
    * @return <code>LogOutput</code>.
    */
-  public LogOutput get() {
+  public BasicLogOutput get() {
     return edit;
   }
   
@@ -295,7 +295,7 @@ public class SimpleLogFactory {
    * @param lf Formatador de saída de log <code>OutputFormatter</code>.
    * @return Esta instância modificada de <code>SimpleLogFactory</code>.
    */
-  public SimpleLogFactory formatter(OutputFormatter lf) {
+  public SimpleLogFactory formatter(BasicOutputFormatter lf) {
     if(edit != null)
       edit.formatter(lf);
     return this;

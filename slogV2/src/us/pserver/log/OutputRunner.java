@@ -31,7 +31,7 @@ package us.pserver.log;
  */
 public class OutputRunner implements Runnable {
 
-  private LogOutput output;
+  private BasicLogOutput output;
   
   private LogLevel level;
   
@@ -46,7 +46,7 @@ public class OutputRunner implements Runnable {
    * @param msg Mensagem de log.
    * @param lvl Nível de log.
    */
-  public OutputRunner(LogOutput out, String msg, LogLevel lvl) {
+  public OutputRunner(BasicLogOutput out, String msg, LogLevel lvl) {
     if(out == null)
       throw new IllegalArgumentException(
           "Invalid LogOutput: "+ out);
