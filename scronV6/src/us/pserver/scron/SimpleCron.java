@@ -22,7 +22,6 @@
 package us.pserver.scron;
 
 import us.pserver.scronv6.hide.Pair;
-import us.pserver.log.Log;
 
 /**
  * <b>SimpleCron</b> é o motor de execução dos trabalhos
@@ -42,14 +41,6 @@ public class SimpleCron extends AbstractCron {
   /**
    * Construtor que recebe o objeto de log padrão.
    * @param l objeto de log padrão.
-   */
-  public SimpleCron(Log l) {
-    super(l);
-  }
-  
-  
-  /**
-   * Construtor padrão sem argumentos.
    */
   public SimpleCron() {
     super();

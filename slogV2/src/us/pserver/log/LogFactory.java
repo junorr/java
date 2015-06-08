@@ -22,10 +22,12 @@
 package us.pserver.log;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Collections;
 import us.pserver.log.impl.SimpleLog;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import us.pserver.log.format.OutputFormatter;
 import us.pserver.log.format.OutputFormatterFactory;
 import us.pserver.log.impl.SLogV2;
@@ -97,7 +99,13 @@ public class LogFactory {
   }
   
   
-  public Map<String, LogOutput> outputs() {
+  public Collection<LogOutput> outputs() {
+    return Collections.synchronizedCollection(
+        Collections.unmodifiableCollection(outputs.values()));
+  }
+  
+  
+  public Map<String, LogOutput> outputsMap() {
     return outputs;
   }
   
@@ -149,15 +157,83 @@ public class LogFactory {
   }
   
   
-  public static Log getSimpleLogger(String name) {
-    return getSimpleLogger(name, null);
+  public static Log getCached(String name) {
+    if(name == null || name.trim().isEmpty())
+      return null;
+    
+    Optional<String> equal = cache.keySet().stream().filter(s->
+        name.equalsIgnoreCase(s)).findFirst();
+    if(equal.isPresent()) 
+      return cache.get(equal.get());
+    
+    Optional<String> similar = cache.keySet().stream().filter(s->
+        name.startsWith(s)).findFirst();
+    if(!similar.isPresent()) return null;
+      
+    Log lsim = cache.get(similar.get());
+    Log log = (SLogV2.class.isAssignableFrom(lsim.getClass()) 
+        ? new SLogV2(name) : new SimpleLog(name));
+    log.clearOutputs();
+    lsim.outputsMap().entrySet().forEach(e->
+        log.put(e.getKey(), e.getValue()));
+    lsim.levelsMap().entrySet().forEach(e->
+        log.setLevelEnabled(e.getKey(), e.getValue()));
+    cache.put(name, log);
+    return log;
   }
   
   
-  public static Log getSimpleLogger(String name, Path logfile) {
+  public static Log getCached(Class cls) {
+    if(cls != null) 
+      return getCached(cls.getName());
+    return null;
+  }
+  
+  
+  public static void putCached(String name, Log log) {
+    if(name != null 
+        && !name.trim().isEmpty() 
+        && log != null) {
+      cache.put(name, log);
+    }
+  }
+  
+  
+  public static boolean isCached(String name) {
+    if(name != null && !name.trim().isEmpty()) {
+      return cache.keySet().stream().filter(s->
+          s.equalsIgnoreCase(name) || name.startsWith(s))
+          .findFirst().isPresent();
+    }
+    return false;
+  }
+  
+  
+  public static boolean isCached(Class cls) {
+    if(cls == null) return false;
+    return isCached(cls.getName());
+  }
+  
+  
+  public static Log getSimpleLog(String name) {
+    return LogFactory.getSimpleLog(name, null);
+  }
+  
+  
+  public static Log getSimpleLog(String name, Path logfile) {
     if(name == null || name.trim().isEmpty())
       throw new IllegalArgumentException("Invalid Logger name: '"+ name+ "'");
-    if(!cache.containsKey(name)) {
+    
+    if(isCached(name)) {
+      Log log = getCached(name);
+      boolean hasFileLog = log.outputs().stream().filter(o->
+          FileLogOutput.class.isAssignableFrom(log.getClass()))
+          .findFirst().isPresent();
+      if(!hasFileLog)
+        log.put(ID_FILE_OUTPUT, new FileLogOutput(logfile));
+      cache.put(name, log);
+    }
+    else {
       LogOutput file = null;
       if(logfile != null) {
         file = new FileLogOutput(logfile);
@@ -176,17 +252,17 @@ public class LogFactory {
   }
   
   
-  public static Log getSimpleLogger(Class cls) {
+  public static Log getSimpleLog(Class cls) {
     if(cls == null)
       throw new IllegalArgumentException("Invalid null Class");
-    return getSimpleLogger(cls.getName());
+    return getSimpleLog(cls.getName());
   }
   
   
-  public static Log getSimpleLogger(Class cls, Path logfile) {
+  public static Log getSimpleLog(Class cls, Path logfile) {
     if(cls == null)
       throw new IllegalArgumentException("Invalid null Class");
-    return getSimpleLogger(cls.getName(), logfile);
+    return LogFactory.getSimpleLog(cls.getName(), logfile);
   }
   
   
@@ -198,7 +274,25 @@ public class LogFactory {
   public static SLogV2 getSLogV2(String name, Path logfile) {
     if(name == null || name.trim().isEmpty())
       throw new IllegalArgumentException("Invalid Logger name: '"+ name+ "'");
-    if(!cache.containsKey(name)) {
+    
+    if(isCached(name)) {
+      Log log = getCached(name);
+      if(!SLogV2.class.isAssignableFrom(log.getClass())) {
+        SLogV2 slog = new SLogV2(name);
+        slog.clearOutputs();
+        log.outputsMap().entrySet().forEach(e->
+            slog.put(e.getKey(), e.getValue()));
+        log.levelsMap().entrySet().forEach(e->
+            slog.setLevelEnabled(e.getKey(), e.getValue()));
+        cache.put(name, slog);
+      }
+      boolean hasFileLog = log.outputs().stream().filter(o->
+          FileLogOutput.class.isAssignableFrom(o.getClass()))
+          .findFirst().isPresent();
+      if(!hasFileLog)
+        log.put(ID_FILE_OUTPUT, new FileLogOutput(logfile));
+    }
+    else {
       LogOutput file = null;
       if(logfile != null) {
         file = new FileLogOutput(logfile);

@@ -24,8 +24,6 @@ package us.pserver.log.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import us.pserver.log.Log;
 import static us.pserver.log.Log.interpolate;
@@ -129,6 +127,12 @@ public abstract class AbstractLog implements Log {
   @Override
   public boolean contains(String id) {
     return outputs.containsKey(id);
+  }
+  
+  
+  @Override
+  public Map<LogLevel, Boolean> levelsMap() {
+    return levels.levels();
   }
 
 

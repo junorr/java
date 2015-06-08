@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.JOptionPane;
 import us.pserver.log.Log;
-import us.pserver.log.LogProvider;
+import us.pserver.log.LogFactory;
 import us.pserver.scron.AbstractCron;
 
 /**
@@ -67,20 +67,7 @@ public class SCronV6 extends AbstractCron {
   public SCronV6() {
     super();
     threads = DEFAULT_THREADS;
-    log = getLogger();
-  }
-  
-  
-  /**
-   * Construtor que recebe um objeto <code>Log</code>
-   * para realização do log de execução de 
-   * <code>SCronV6</code>.
-   * @param l objeto <code>Log</code> para realização do log.
-   */
-  public SCronV6(Log l) {
-    super(l);
-    threads = DEFAULT_THREADS;
-    log = getLogger();
+    log = LogFactory.getSimpleLog(this.getClass());
   }
   
   
@@ -103,6 +90,16 @@ public class SCronV6 extends AbstractCron {
       if(!isRunning()) start();
     }
     return this;
+  }
+  
+  
+  public Log getLog() {
+    return log;
+  }
+  
+  
+  public void setLog(Log l) {
+    if(l != null) log = l;
   }
   
   

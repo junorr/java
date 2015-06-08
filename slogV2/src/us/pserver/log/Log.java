@@ -98,6 +98,9 @@ public interface Log {
   public boolean contains(String id);
   
   
+  public Map<LogLevel, Boolean> levelsMap();
+  
+  
   /**
    * Get the log name for this <code>Log</code> instance.
    * @return The log name.

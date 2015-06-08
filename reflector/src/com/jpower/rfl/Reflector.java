@@ -109,6 +109,15 @@ public class Reflector {
 	
 	
 	/**
+	 * Procura pelo construtor sem argumentos.
+	 * @return A instância de Reflector modificada.
+	 */
+	public Reflector constructor() {
+    return constructor((Class[])null);
+	}
+	
+	
+	/**
 	 * Cria uma nova instância da classe (<code>on(Class)</code>),
 	 * chamando o construtor (<code>constructor(Class[])</code>)
 	 * com os argumentos informados (<code>null</code> quando
@@ -118,6 +127,7 @@ public class Reflector {
 	 * @return A nova instância criada da classe.
 	 */
 	public Object create(Object ... args) {
+    if(args == null) return create();
     synchronized(LOCK) {
   		if(cls == null || cct == null)
     		return null;
@@ -148,11 +158,11 @@ public class Reflector {
     		return null;
     
       if(cct == null)
-        this.constructor(null);
+        this.constructor();
     	try {
       	if(!cct.isAccessible())
         	cct.setAccessible(true);
-  			return cct.newInstance(null);
+  			return cct.newInstance((Object[]) null);
     	} catch(Exception ex) {
       	exc = ex;
         return null;
@@ -187,6 +197,15 @@ public class Reflector {
       	return null;
   		}
     }
+	}
+	
+	
+	/**
+	 * Invoca o método sem argumentos..
+	 * @return O objeto de retorno do método invocado.
+	 */
+	public Object invoke() {
+    return invoke((Object[]) null);
 	}
 	
 	
@@ -552,12 +571,13 @@ public class Reflector {
 		Reflector rfl = new Reflector();
 
 		System.out.println("Creating new A with PROTECTED constructor 'A()'...");
-		A a = (A) rfl.on(A.class).constructor(null).create(null);
+		A a = (A) rfl.on(A.class).constructor().create();
 		if(rfl.hasError())
 			rfl.getError().printStackTrace();
 		
     System.out.println("isMethodPresent(toString)? "+ rfl.on(a).method("toString").isMethodPresent());
-		System.out.println(rfl.on(a).method("toString", null).invoke(null));
+    System.out.println("Invoking 'a.toString()'");
+		System.out.println(rfl.on(a).method("toString").invoke());
 		if(rfl.hasError())
 			rfl.getError().printStackTrace();
 		
@@ -566,7 +586,8 @@ public class Reflector {
 		if(rfl.hasError())
 			rfl.getError().printStackTrace();
 		
-		System.out.println(rfl.on(a).method("toString", null).invoke(null));
+    System.out.println("Invoking 'a.toString()'");
+		System.out.println(rfl.on(a).method("toString").invoke());
 		if(rfl.hasError())
 			rfl.getError().printStackTrace();
 		
@@ -575,7 +596,8 @@ public class Reflector {
 		if(rfl.hasError())
 			rfl.getError().printStackTrace();
 		
-		System.out.println(rfl.on(a).method("toString", null).invoke(null));
+    System.out.println("Invoking 'a.toString()'");
+		System.out.println(rfl.on(a).method("toString").invoke());
 		if(rfl.hasError())
 			rfl.getError().printStackTrace();
 	}

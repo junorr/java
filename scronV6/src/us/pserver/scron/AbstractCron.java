@@ -25,7 +25,7 @@ import us.pserver.scronv6.hide.JobsManager;
 import us.pserver.scronv6.hide.Pair;
 import us.pserver.conc.ExclusiveList;
 import us.pserver.log.Log;
-import us.pserver.log.LogProvider;
+import us.pserver.log.LogFactory;
 
 /**
  *
@@ -72,22 +72,13 @@ public abstract class AbstractCron implements SCron {
    * Construtor que recebe o objeto de log padrão.
    * @param l objeto de log padrão.
    */
-  public AbstractCron(Log l) {
+  public AbstractCron() {
     jobs = new JobsManager();
     shutdownAtEmpty = false;
     logEnabled = true;
-    if(l == null) l = LogProvider.getSimpleLog();
-    log = l;
+    log = LogFactory.getSimpleLog(SCron.class);
     dataMap.put(KEY_LOGGER, log)
         .put(getClass().getSimpleName(), this);
-  }
-  
-  
-  /**
-   * Construtor padrão sem argumentos.
-   */
-  public AbstractCron() {
-    this(null);
   }
   
   
