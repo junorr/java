@@ -19,39 +19,44 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.log;
+package us.pserver.log.output;
 
-import java.util.HashMap;
-import java.util.Map;
+import us.pserver.log.format.OutputFormatterFactory;
+import us.pserver.log.LogLevel;
+import us.pserver.log.internal.LogLevelManager;
+import us.pserver.log.output.LogOutput;
+import us.pserver.log.format.OutputFormatter;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 05/06/2015
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 06/06/2015
  */
-public class LogLevelManager {
+public abstract class AbstractLogOutput implements LogOutput {
 
-  private Map<LogLevel, Boolean> levels;
+  LogLevelManager levels;
   
   
-  public LogLevelManager() {
-    levels = new HashMap<>();
-    levels.put(LogLevel.DEBUG, Boolean.TRUE);
-    levels.put(LogLevel.INFO, Boolean.TRUE);
-    levels.put(LogLevel.WARN, Boolean.TRUE);
-    levels.put(LogLevel.ERROR, Boolean.TRUE);
-    levels.put(LogLevel.FATAL, Boolean.TRUE);
+  AbstractLogOutput() {
+    levels = new LogLevelManager();
   }
   
   
-  public void setLevelEnabled(LogLevel lvl, boolean enabled) {
-    if(lvl == null) return;
-    levels.put(lvl, enabled);
+  AbstractLogOutput(OutputFormatter fmt) {
+    this();
   }
+
   
-  
+  @Override
+  public AbstractLogOutput setLevelEnabled(LogLevel lvl, boolean enabled) {
+    levels.setLevelEnabled(lvl, enabled);
+    return this;
+  }
+
+
+  @Override
   public boolean isLevelEnabled(LogLevel lvl) {
-    return levels.get(lvl);
+    return levels.isLevelEnabled(lvl);
   }
-  
+
 }

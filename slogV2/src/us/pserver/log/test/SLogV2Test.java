@@ -21,7 +21,10 @@
 
 package us.pserver.log.test;
 
-import us.pserver.log.SLogV2;
+import java.io.IOException;
+import us.pserver.log.Log;
+import us.pserver.log.LogFactory;
+import us.pserver.log.impl.SLogV2;
 
 /**
  *
@@ -29,23 +32,27 @@ import us.pserver.log.SLogV2;
  * @version 1.0 - 16/04/2014
  */
 public class SLogV2Test {
+  
+  public static Throwable newIOException() {
+    return new IOException("Some IO error");
+  }
 
-  public static void runFor(int times, Runnable r) {
+  public static void repeat(int times, Runnable r) {
     for(int i = 0; i < times; i++) {
       r.run();
     }
   }
    
-  public static void main(String[] args) {
-    SLogV2 log = new SLogV2()
-        .allocFileOutputExecutor();
-    
-    runFor(5, ()-> log.debug("This is a Debug Message."));
-    runFor(5, ()-> log.info("This is a Info Message."));
-    runFor(5, ()-> log.warning("This is a Warning Message."));
-    runFor(5, ()-> log.error("This is a Error Message."));
-    runFor(5, ()-> log.fatal("This is a Fatal Message."));
-    log.stop();
+  public static void main(String[] args) throws InterruptedException {
+    Log log = LogFactory.getSLogV2(SLogV2Test.class).start();
+    log.error(newIOException(), false);
+    repeat(5, ()-> log.debug("This is a Debug Message."));
+    repeat(5, ()-> log.info("This is a Info Message."));
+    repeat(5, ()-> log.warn("This is a Warning Message."));
+    repeat(5, ()-> log.error("This is a Error Message."));
+    Thread.sleep(200);
+    log.error(newIOException(), true);
+    ((SLogV2) log).stopOnFinish();
   }
   
 }

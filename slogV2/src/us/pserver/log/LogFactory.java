@@ -21,368 +21,213 @@
 
 package us.pserver.log;
 
-import java.util.function.Consumer;
+import java.nio.file.Path;
+import java.util.Collections;
+import us.pserver.log.impl.SimpleLog;
+import java.util.HashMap;
+import java.util.Map;
+import us.pserver.log.format.OutputFormatter;
+import us.pserver.log.format.OutputFormatterFactory;
+import us.pserver.log.impl.SLogV2;
+import us.pserver.log.output.FileLogOutput;
+import us.pserver.log.output.LogOutput;
+import us.pserver.log.output.PrintStreamOutput;
 
-/**
- * Fábrica de objetos <code>SLogV2</code> com métodos funcionais.
- * <pre>
- * 
- * Exemplo de utilização:
- * SLogV2 log = LogFactory.instance()
- *    .newErrOutput()
- *    .enableErrorLevels()
- *    .formatter(
- *        OutputFormatter.errorFormatter())
- *    .add()
- *    .create();
- * </pre>
- * 
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 15/04/2014
- * @see us.pserver.log.SLogV2
- * @see us.pserver.log.BasicOutputFormatter
- */
+
 public class LogFactory {
   
   /**
-   * Nome padrão do arquivo de log <code>("default.log")</code>.
+   * <code>
+   *  ID_STD_OUTPUT = "stdout";
+   * </code><br>
+   * <code>LogOutput</code> ID for system standard output.
    */
-  public static final String DEFAULT_LOG_FILE = "./default.log";
+  public static final String ID_STD_OUTPUT = "stdout";
+  
+  /**
+   * <code>
+   *  ID_STDERR_OUTPUT = "stdout";
+   * </code><br>
+   * <code>LogOutput</code> ID for system error output.
+   */
+  public static final String ID_STDERR_OUTPUT = "stderr";
 
-  private SLogV2 log;
-  
-  private BasicLogOutput edit;
-  
-  
   /**
-   * Construtor padrão sem argumentos.
+   * <code>
+   *  ID_FILE_OUTPUT = "stdout";
+   * </code><br>
+   * <code>LogOutput</code> ID for file output.
    */
+  public static final String ID_FILE_OUTPUT = "file";
+  
+
+  private final Map<String, LogOutput> outputs;
+  
+  private OutputFormatter formatter;
+  
+  private static final Map<String, Log> cache = 
+      Collections.synchronizedMap(new HashMap<String, Log>());
+  
+  
   public LogFactory() {
-    log = new SLogV2();
-    edit = null;
+    outputs = Collections.synchronizedMap(
+        new HashMap<String, LogOutput>());
+    formatter = OutputFormatterFactory.standardFormatter();
   }
   
   
-  /**
-   * Construtor protegido que recebe a instância
-   * de <code>SLogV2</code> a ser configurada.
-   * @param sl Instância de <code>SLogV2</code> a ser configurada.
-   */
-  protected LogFactory(SLogV2 sl) {
-    if(sl == null)
-      throw new IllegalArgumentException(
-          "Invalid SLogV2 instance: "+ sl);
-    log = sl;
-    edit = null;
+  public LogFactory formatter(OutputFormatter fmt) {
+    if(fmt == null)
+      throw new IllegalArgumentException("Invalid null OutputFormatter");
+    formatter = fmt;
+    return this;
   }
   
   
-  /**
-   * Obtém uma instância de <code>LogFactory</code>.
-   * @return instância de <code>LogFactory</code>.
-   */
-  public static LogFactory instance() {
+  public OutputFormatter getOutputFormatter() {
+    return formatter;
+  }
+  
+  
+  public LogFactory put(String id, LogOutput out) {
+    if(id != null && !id.trim().isEmpty() && out != null) {
+      outputs.put(id, out);
+    }
+    return this;
+  }
+  
+  
+  public Map<String, LogOutput> outputs() {
+    return outputs;
+  }
+  
+  
+  public LogOutput get(String id) {
+    return outputs.get(id);
+  }
+  
+  
+  public boolean containsOutput(String id) {
+    return outputs.containsKey(id);
+  }
+  
+  
+  public LogOutput remove(String id) {
+    return outputs.remove(id);
+  }
+  
+  
+  public Log createSimpleLogger(String name) {
+    if(name == null || name.trim().isEmpty())
+      throw new IllegalArgumentException("Invalid Logger name: '"+ name+ "'");
+    Log log = new SimpleLog(name);
+    outputs.keySet().forEach(k->log.put(k, outputs.get(k)));
+    cache.put(name, log);
+    return log;
+  }
+  
+  
+  public Log createSLogV2(String name) {
+    if(name == null || name.trim().isEmpty())
+      throw new IllegalArgumentException("Invalid Logger name: '"+ name+ "'");
+    Log log = new SLogV2(name);
+    outputs.keySet().forEach(k->log.put(k, outputs.get(k)));
+    cache.put(name, log);
+    return log;
+  }
+  
+  
+  public LogFactory reset() {
+    outputs.clear();
+    formatter = OutputFormatterFactory.standardFormatter();
+    return this;
+  }
+  
+  
+  public static LogFactory factory() {
     return new LogFactory();
   }
   
   
-  /**
-   * Retorna a instância de <code>SLogV2</code> criada e configurada
-   * por <code>LogFactory</code>.
-   * @return <code>SLogV2</code>.
-   */
-  public SLogV2 create() {
-    return log.start();
+  public static Log getSimpleLogger(String name) {
+    return getSimpleLogger(name, null);
   }
   
   
-  /**
-   * Redefine as configurações para criação de <code>SLogV2</code>.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory reset() {
-    log.reset();
-    edit = null;
-    return this;
-  }
-  
-  
-  /**
-   * Cria uma instância pré-configurada de <code>SLogV2</code>.
-   * @return <code>SLogV2</code>.
-   */
-  public SLogV2 createDefault() {
-    return this.reset()
-        .newStdOutput()
-        .enableNonErrorLevels()
-        .add()
-        
-        .newErrOutput()
-        .enableErrorLevels()
-        .add()
-        
-        .create();
-  }
-  
-  
-  /**
-   * Cria uma instância pré-configurada de <code>SLogV2</code>,
-   * com saída para o arquivo informado <code>logFile</code>.
-   * @param logFile Nome do arquivo de log.
-   * @return <code>SLogV2</code>
-   */
-  public SLogV2 createDefault(String logFile) {
-    return this.reset()
-        .newStdOutput()
-        .enableNonErrorLevels()
-        .debug(false)
-        .add()
-        
-        .newErrOutput()
-        .enableErrorLevels()
-        .add()
-        
-        .newFileOutput(logFile)
-        .enableAllLevels()
-        .add()
-        
-        .create();
-  }
-  
-  
-  /**
-   * Desabilita todos os níveis de log do
-   * <code>LogOutput</code> configurado.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory disableAllLevels() {
-    if(edit != null)
-      edit.debug(false).info(false)
-          .warning(false)
-          .error(false).fatal(false);
-    return this;
-  }
-  
-  
-  /**
-   * Habilita todos os níveis de log do 
-   * <code>LogOutput</code> configurado.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory enableAllLevels() {
-    if(edit != null)
-      edit.debug(true).info(true)
-          .warning(true)
-          .error(true).fatal(true);
-    return this;
-  }
-  
-  
-  /**
-   * Habilita os níveis de log, exceto níveis de erro do 
-   * <code>LogOutput</code> configurado.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory enableNonErrorLevels() {
-    if(edit != null)
-      edit.debug(true).info(true)
-          .warning(true)
-          .error(false).fatal(false);
-    return this;
-  }
-  
-  
-  /**
-   * Habilita todos os níveis de erros de log do 
-   * <code>LogOutput</code> configurado.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory enableErrorLevels() {
-    if(edit != null)
-      edit.debug(false).info(false)
-          .warning(false)
-          .error(true).fatal(true);
-    return this;
-  }
-  
-  
-  /**
-   * Cria uma nova instância de <code>LogOutput</code> 
-   * com saída configurada para a saída padrão.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory newStdOutput() {
-    edit = new BasicLogOutput();
-    return this;
-  }
-  
-  
-  /**
-   * Cria uma nova instância de <code>LogOutput</code> 
-   * com saída configurada para a saída de erros padrão.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory newErrOutput() {
-    edit = new BasicLogOutput().setErrOutput();
-    return this;
-  }
-  
-  
-  /**
-   * Cria uma nova instância de <code>LogOutput</code> 
-   * com saída configurada para o arquivo de log informado.
-   * @param file Nome do arquivo de log.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory newFileOutput(String file) {
-    edit = new BasicLogOutput().setFileOutput(file);
-    return this;
-  }
-  
-  
-  /**
-   * Cria uma nova instância de <code>LogOutput</code> 
-   * com saída configurada para o objeto 
-   * <code>Consumer&lt;Character&gt;</code>.
-   * @param cs <code>Consumer&lt;Character&gt;</code>.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory newStreamOutput(Consumer<Character> cs) {
-    edit = StreamFactory.createLogOutput(cs);
-    return this;
-  }
-  
-  
-  /**
-   * Define o identificador único do <code>LogOutput</code> configurado.
-   * @param uid Identificador único.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory uid(long uid) {
-    if(edit != null)
-      edit.uid(uid);
-    return this;
-  }
-  
-  
-  /**
-   * Retorna o identificador único do <code>LogOutput</code> configurado.
-   * @return identificador único do <code>LogOutput</code> configurado.
-   */
-  public long uid() {
-    if(edit != null)
-      return edit.uid();
-    return -1;
-  }
-  
-  
-  /**
-   * Retorna o <code>LogOutput</code> configurado.
-   * @return <code>LogOutput</code>.
-   */
-  public BasicLogOutput get() {
-    return edit;
-  }
-  
-  
-  /**
-   * Define o formatador de log <code>OutputFormatter</code>
-   * do <code>LogOutput</code> configurado.
-   * @param lf Formatador de saída de log <code>OutputFormatter</code>.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory formatter(BasicOutputFormatter lf) {
-    if(edit != null)
-      edit.formatter(lf);
-    return this;
-  }
-  
-  
-  /**
-   * Habilita/Desabilita o nível de debug do <code>LogOutput</code> 
-   * configurado.
-   * @param bool <code>true</code> para habilitar 
-   * o nível de debug do <code>LogOutput</code> configurado,
-   * <code>false</code> caso contrário.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory debug(boolean bool) {
-    if(edit != null)
-      edit.debug(bool);
-    return this;
-  }
-  
-  
-  /**
-   * Habilita/Desabilita o nível de informação do <code>LogOutput</code> 
-   * configurado.
-   * @param bool <code>true</code> para habilitar 
-   * o nível de info do <code>LogOutput</code> configurado,
-   * <code>false</code> caso contrário.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory info(boolean bool) {
-    if(edit != null)
-      edit.info(bool);
-    return this;
-  }
-  
-  
-  /**
-   * Habilita/Desabilita o nível de alerta do <code>LogOutput</code> 
-   * configurado.
-   * @param bool <code>true</code> para habilitar 
-   * o nível de warning do <code>LogOutput</code> configurado,
-   * <code>false</code> caso contrário.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory warning(boolean bool) {
-    if(edit != null)
-      edit.warning(bool);
-    return this;
-  }
-  
-  
-  /**
-   * Habilita/Desabilita o nível de erro do <code>LogOutput</code> 
-   * configurado.
-   * @param bool <code>true</code> para habilitar 
-   * o nível de error do <code>LogOutput</code> configurado,
-   * <code>false</code> caso contrário.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory error(boolean bool) {
-    if(edit != null)
-      edit.error(bool);
-    return this;
-  }
-  
-  
-  /**
-   * Habilita/Desabilita o nível de erro fatal do <code>LogOutput</code> 
-   * configurado.
-   * @param bool <code>true</code> para habilitar 
-   * o nível de fatal do <code>LogOutput</code> configurado,
-   * <code>false</code> caso contrário.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory fatal(boolean bool) {
-    if(edit != null)
-      edit.fatal(bool);
-    return this;
-  }
-  
-  
-  /**
-   * Adiciona o <code>LogOutput</code> configurado a <code>SLogV2</code>.
-   * @return Esta instância modificada de <code>LogFactory</code>.
-   */
-  public LogFactory add() {
-    if(edit != null) {
-      log.add(edit);
-      edit = null;
+  public static Log getSimpleLogger(String name, Path logfile) {
+    if(name == null || name.trim().isEmpty())
+      throw new IllegalArgumentException("Invalid Logger name: '"+ name+ "'");
+    if(!cache.containsKey(name)) {
+      LogOutput file = null;
+      if(logfile != null) {
+        file = new FileLogOutput(logfile);
+      }
+      LogOutput std = new PrintStreamOutput(()->System.out)
+          .setLevelEnabled(LogLevel.ERROR, false);
+      LogOutput err = new PrintStreamOutput(()->System.err)
+          .setAllLevelsEnabled(false)
+          .setLevelEnabled(LogLevel.ERROR, true);
+      factory().put(ID_STD_OUTPUT, std)
+          .put(ID_STDERR_OUTPUT, err)
+          .put(ID_FILE_OUTPUT, file)
+          .createSimpleLogger(name);
     }
-    return this;
+    return cache.get(name);
+  }
+  
+  
+  public static Log getSimpleLogger(Class cls) {
+    if(cls == null)
+      throw new IllegalArgumentException("Invalid null Class");
+    return getSimpleLogger(cls.getName());
+  }
+  
+  
+  public static Log getSimpleLogger(Class cls, Path logfile) {
+    if(cls == null)
+      throw new IllegalArgumentException("Invalid null Class");
+    return getSimpleLogger(cls.getName(), logfile);
+  }
+  
+  
+  public static SLogV2 getSLogV2(String name) {
+    return getSLogV2(name, null);
+  }
+  
+  
+  public static SLogV2 getSLogV2(String name, Path logfile) {
+    if(name == null || name.trim().isEmpty())
+      throw new IllegalArgumentException("Invalid Logger name: '"+ name+ "'");
+    if(!cache.containsKey(name)) {
+      LogOutput file = null;
+      if(logfile != null) {
+        file = new FileLogOutput(logfile);
+      }
+      LogOutput std = new PrintStreamOutput(()->System.out)
+          .setLevelEnabled(LogLevel.ERROR, false);
+      LogOutput err = new PrintStreamOutput(()->System.err)
+          .setAllLevelsEnabled(false)
+          .setLevelEnabled(LogLevel.ERROR, true);
+      factory().put(ID_STD_OUTPUT, std)
+          .put(ID_STDERR_OUTPUT, err)
+          .put(ID_FILE_OUTPUT, file)
+          .createSLogV2(name);
+    }
+    return (SLogV2) cache.get(name);
+  }
+  
+  
+  public static SLogV2 getSLogV2(Class cls) {
+    if(cls == null)
+      throw new IllegalArgumentException("Invalid null Class");
+    return LogFactory.getSLogV2(cls.getName());
+  }
+  
+
+  public static Log getSLogV2(Class cls, Path logfile) {
+    if(cls == null)
+      throw new IllegalArgumentException("Invalid null Class");
+    return getSLogV2(cls.getName(), logfile);
   }
   
 }

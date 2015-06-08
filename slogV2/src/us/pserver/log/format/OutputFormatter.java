@@ -19,8 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.log.output;
+package us.pserver.log.format;
 
+import java.text.DateFormat;
 import java.util.Date;
 import us.pserver.log.LogLevel;
 
@@ -29,10 +30,9 @@ import us.pserver.log.LogLevel;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 05/06/2015
  */
+@FunctionalInterface
 public interface OutputFormatter {
-
-  public String format(LogLevel lvl, String msg);
   
-  public String format(LogLevel lvl, Date dte, String msg);
+  public String format(LogLevel lvl, Date dte, String name, String msg);
   
 }

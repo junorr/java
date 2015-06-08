@@ -19,9 +19,11 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.log.output;
+package us.pserver.log.internal;
 
-import us.pserver.log.format.OutputFormatter;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 import us.pserver.log.LogLevel;
 
 /**
@@ -29,21 +31,39 @@ import us.pserver.log.LogLevel;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 05/06/2015
  */
-public interface LogOutput {
+public class LogLevelManager {
+
+  private Map<LogLevel, Boolean> levels;
   
-  public LogOutput setLevelEnabled(LogLevel lvl, boolean enabled);
   
-  public default LogOutput setAllLevelsEnabled(boolean enabled) {
-    return setLevelEnabled(LogLevel.DEBUG, enabled)
-        .setLevelEnabled(LogLevel.INFO, enabled)
-        .setLevelEnabled(LogLevel.WARN, enabled)
-        .setLevelEnabled(LogLevel.ERROR, enabled);
+  public LogLevelManager() {
+    levels = Collections.synchronizedMap(
+        new EnumMap<LogLevel, Boolean>(LogLevel.class));
+    levels.put(LogLevel.DEBUG, Boolean.TRUE);
+    levels.put(LogLevel.INFO, Boolean.TRUE);
+    levels.put(LogLevel.WARN, Boolean.TRUE);
+    levels.put(LogLevel.ERROR, Boolean.TRUE);
   }
   
-  public boolean isLevelEnabled(LogLevel lvl);
   
-  public LogOutput log(LogLevel lvl, String msg);
+  public Map<LogLevel, Boolean> levels() {
+    return levels;
+  }
   
-  public void close();
+  
+  public void setLevelEnabled(LogLevel lvl, boolean enabled) {
+    if(lvl == null) return;
+    levels.put(lvl, enabled);
+  }
+  
+  
+  public boolean isLevelEnabled(LogLevel lvl) {
+    return levels.get(lvl);
+  }
+  
+  
+  public void setAllLevelsEnabled(boolean enabled) {
+    levels.keySet().forEach(k->levels.put(k, enabled));
+  }
   
 }

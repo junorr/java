@@ -21,7 +21,9 @@
 
 package us.pserver.log.test;
 
-import us.pserver.log.SimpleLog;
+import java.io.IOException;
+import us.pserver.log.Log;
+import us.pserver.log.LogFactory;
 
 /**
  *
@@ -29,6 +31,10 @@ import us.pserver.log.SimpleLog;
  * @version 1.0 - 16/04/2014
  */
 public class SimpleLogTest {
+  
+  public static Throwable newIOException() {
+    return new IOException("Some IO error");
+  }
 
   public static void runFor(int times, Runnable r) {
     for(int i = 0; i < times; i++) {
@@ -36,13 +42,15 @@ public class SimpleLogTest {
     }
   }
    
-  public static void main(String[] args) {
-    SimpleLog log = new SimpleLog();
+  public static void main(String[] args) throws InterruptedException {
+    Log log = LogFactory.getSimpleLogger(SimpleLogTest.class);
+    log.error(newIOException(), false);
     runFor(5, ()-> log.debug("This is a Debug Message."));
     runFor(5, ()-> log.info("This is a Info Message."));
-    runFor(5, ()-> log.warning("This is a Warning Message."));
+    runFor(5, ()-> log.warn("This is a Warning Message."));
     runFor(5, ()-> log.error("This is a Error Message."));
-    runFor(5, ()-> log.fatal("This is a Fatal Message."));
+    Thread.sleep(200);
+    log.error(newIOException(), true);
   }
   
 }

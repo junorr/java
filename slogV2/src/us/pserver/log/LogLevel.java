@@ -49,9 +49,4 @@ public enum LogLevel {
    */
   ERROR, 
   
-  /**
-   * Nível de log de erro fatal.
-   */
-  FATAL;
-  
 }

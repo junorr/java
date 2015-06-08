@@ -17,7 +17,7 @@
         <param-name>us.pserver.revok.container.ObjectContainer</param-name>
         <param-value>
           calc.ICalculator=us.pserver.revok.test.Calculator, 
-          io.StreamHandler=us.pserver.test.StreamHandler
+          io.StreamHandler=us.pserver.revok.test.StreamHandler
         </param-value>
       </init-param>
     </servlet>

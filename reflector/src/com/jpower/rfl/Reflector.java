@@ -74,6 +74,7 @@ public class Reflector {
   		try {
         cls = Class.forName(className);
       } catch(Exception e) {
+        e.printStackTrace();
         exc = e;
         cls = null;
       }

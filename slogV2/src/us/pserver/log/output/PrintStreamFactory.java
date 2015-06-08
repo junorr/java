@@ -21,29 +21,16 @@
 
 package us.pserver.log.output;
 
-import us.pserver.log.format.OutputFormatter;
-import us.pserver.log.LogLevel;
+import java.io.PrintStream;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 05/06/2015
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 06/06/2015
  */
-public interface LogOutput {
-  
-  public LogOutput setLevelEnabled(LogLevel lvl, boolean enabled);
-  
-  public default LogOutput setAllLevelsEnabled(boolean enabled) {
-    return setLevelEnabled(LogLevel.DEBUG, enabled)
-        .setLevelEnabled(LogLevel.INFO, enabled)
-        .setLevelEnabled(LogLevel.WARN, enabled)
-        .setLevelEnabled(LogLevel.ERROR, enabled);
-  }
-  
-  public boolean isLevelEnabled(LogLevel lvl);
-  
-  public LogOutput log(LogLevel lvl, String msg);
-  
-  public void close();
+@FunctionalInterface
+public interface PrintStreamFactory {
+
+  public PrintStream create();
   
 }
