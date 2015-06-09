@@ -229,7 +229,7 @@ public class LogFactory {
       boolean hasFileLog = log.outputs().stream().filter(o->
           FileLogOutput.class.isAssignableFrom(log.getClass()))
           .findFirst().isPresent();
-      if(!hasFileLog)
+      if(!hasFileLog && logfile != null)
         log.put(ID_FILE_OUTPUT, new FileLogOutput(logfile));
       cache.put(name, log);
     }
@@ -289,7 +289,7 @@ public class LogFactory {
       boolean hasFileLog = log.outputs().stream().filter(o->
           FileLogOutput.class.isAssignableFrom(o.getClass()))
           .findFirst().isPresent();
-      if(!hasFileLog)
+      if(!hasFileLog && logfile != null)
         log.put(ID_FILE_OUTPUT, new FileLogOutput(logfile));
     }
     else {

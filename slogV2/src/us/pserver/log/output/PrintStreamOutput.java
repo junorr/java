@@ -33,6 +33,8 @@ import us.pserver.log.LogLevel;
  */
 public class PrintStreamOutput extends AbstractLogOutput {
   
+  private static final Object SYNC = new Object();
+  
   private PrintStreamFactory factory;
   
   PrintStream print;
@@ -65,18 +67,22 @@ public class PrintStreamOutput extends AbstractLogOutput {
   
   
   public PrintStream getPrinter() {
-    if(print == null)
-      print = factory.create();
-    return print;
+    synchronized(SYNC) {
+      if(print == null)
+        print = factory.create();
+      return print;
+    }
   }
 
 
   @Override
   public PrintStreamOutput log(LogLevel lvl, String msg) {
-    if(levels.isLevelEnabled(lvl)) {
-      getPrinter().println(msg);
+    synchronized(SYNC) {
+      if(levels.isLevelEnabled(lvl)) {
+        getPrinter().println(msg);
+      }
+      return this;
     }
-    return this;
   }
 
 
