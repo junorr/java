@@ -30,7 +30,7 @@ import us.pserver.log.format.OutputFormatter;
 /**
  * Basic log service interface.
  * @author Juno Roesler - juno@pserver.us
- * @version 1.1 - 2015-06
+ * @version 1.1 - 201506
  */
 public interface Log {
 

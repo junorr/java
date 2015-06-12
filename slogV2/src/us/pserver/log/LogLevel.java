@@ -22,31 +22,31 @@
 package us.pserver.log;
 
 /**
- * Representa um nível de importância de log.
+ * Represents a log level.
  * 
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 15/04/2014
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.1 - 201506
  */
 public enum LogLevel {
 
   /**
-   * Nível de log de debug.
+   * Debug log level.
    */
   DEBUG,
 
   /**
-   * Nível de log de informação.
+   * Information log level.
    */
   INFO, 
   
   /**
-   * Nível de log de alerta.
+   * Warning log level.
    */
   WARN, 
   
   /**
-   * Nível de log de erro.
+   * Error log level.
    */
-  ERROR, 
+  ERROR
   
 }

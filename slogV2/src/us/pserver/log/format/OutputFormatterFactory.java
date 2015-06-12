@@ -23,25 +23,24 @@ package us.pserver.log.format;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import us.pserver.log.LogLevel;
-import us.pserver.log.format.OutputFormatter;
 
 /**
- * <b>OutputFormatter</b> formata a saída de mensagens 
- * de log de acordo com seu nível de importância 
- * e parâmetros configurados.
+ * Factory for <code>OutputFormatter</code>
+ * objects, allows configure a formatter in any
+ * style for log strings.
  * 
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 16/04/2014
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.1 - 201506
  */
 public class OutputFormatterFactory {
   
   /**
-   * Tamanho máximo do texto que representa 
-   * o nível de log na mensagem <code>(5)</code>.
+   * <code>
+   *  LEVEL_LENGTH = 5;
+   * </code>
+   * Max size of the string log level.
    */
   public static final int LEVEL_LENGTH = 5;
   
@@ -52,7 +51,7 @@ public class OutputFormatterFactory {
   
   
   /**
-   * Construtor padrão e sem argumentos.
+   * Default constructor without arguments.
    */
   public OutputFormatterFactory() {
     args = new LinkedList();
@@ -61,10 +60,9 @@ public class OutputFormatterFactory {
   
   
   /**
-   * Define o formatador de datas utilizado nas 
-   * mensagens de log.
-   * @param df Formatador <code>DateFormat</code>.
-   * @return Esta instância modificada de <code>OutputFormatter</code>.
+   * Set a <code>DateFormat</code> object for formatting dates.
+   * @param df A <code>DateFormat</code> object for formatting dates.
+   * @return This modified <code>OutputFormatterFactory</code> instance.
    */
   public OutputFormatterFactory setDateFormat(DateFormat df) {
     if(df != null) dfm = df;
@@ -73,10 +71,9 @@ public class OutputFormatterFactory {
   
   
   /**
-   * Define o formato de saída de datas utilizadas nas 
-   * mensagens de log.
-   * @param pattern Formato de saída de datas.
-   * @return Esta instância modificada de <code>OutputFormatter</code>.
+   * Set a <code>DateFormat</code> pattern for formatting dates.
+   * @param df A <code>DateFormat</code> pattern for formatting dates.
+   * @return This modified <code>OutputFormatterFactory</code> instance.
    * @see java.text.DateFormat
    */
   public OutputFormatterFactory setDatePattern(String pattern) {
@@ -87,11 +84,9 @@ public class OutputFormatterFactory {
   
   
   /**
-   * Anexa o texto especificado na saída de log 
-   * formatada.
-   * @param str Texto a ser anexado na saída 
-   * de log formatada.
-   * @return Esta instância modificada de <code>OutputFormatter</code>.
+   * Append a static string in the formatted log output.
+   * @param str The static string to be appended.
+   * @return This modified <code>OutputFormatterFactory</code> instance.
    */
   public OutputFormatterFactory append(String str) {
     if(str != null)
@@ -101,11 +96,9 @@ public class OutputFormatterFactory {
   
   
   /**
-   * Anexa o caractere especificado na saída de log 
-   * formatada.
-   * @param ch Caractere a ser anexado na saída 
-   * de log formatada.
-   * @return Esta instância modificada de <code>OutputFormatter</code>.
+   * Append a static char in the formatted log output.
+   * @param str The static char to be appended.
+   * @return This modified <code>OutputFormatterFactory</code> instance.
    */
   public OutputFormatterFactory append(char ch) {
     args.add(String.valueOf(ch));
@@ -113,6 +106,13 @@ public class OutputFormatterFactory {
   }
   
   
+  /**
+   * Append a log mark that will be replaced in the 
+   * final log string by his respective value.
+   * @param mark The <code>LogMark</code> to append.
+   * @return This modified <code>OutputFormatterFactory</code> instance.
+   * @see us.pserver.log.format.LogMark
+   */
   public OutputFormatterFactory append(LogMark mark) {
     if(mark == null)
       throw new IllegalArgumentException("Invalid null LogMark");
@@ -121,32 +121,64 @@ public class OutputFormatterFactory {
   }
   
   
+  /**
+   * Append a log LEVEL mark that will be replaced in the 
+   * final log string by his respective value.
+   * @return This modified <code>OutputFormatterFactory</code> instance.
+   * @see us.pserver.log.format.LogMark
+   */
   public OutputFormatterFactory appendLevel() {
     return append(LogMark.LEVEL);
   }
   
   
+  /**
+   * Append a log DATE mark that will be replaced in the 
+   * final log string by his respective value.
+   * @return This modified <code>OutputFormatterFactory</code> instance.
+   * @see us.pserver.log.format.LogMark
+   */
   public OutputFormatterFactory appendDate() {
     return append(LogMark.DATE);
   }
   
   
+  /**
+   * Append a log MESSAGE mark that will be replaced in the 
+   * final log string by his respective value.
+   * @return This modified <code>OutputFormatterFactory</code> instance.
+   * @see us.pserver.log.format.LogMark
+   */
   public OutputFormatterFactory appendMessage() {
     return append(LogMark.MESSAGE);
   }
   
   
+  /**
+   * Append a log NAME mark that will be replaced in the 
+   * final log string by his respective value.
+   * @return This modified <code>OutputFormatterFactory</code> instance.
+   * @see us.pserver.log.format.LogMark
+   */
   public OutputFormatterFactory appendName() {
     return append(LogMark.NAME);
   }
   
   
+  /**
+   * Reset the configurations of this <code>OutputFormatterFactory</code> instance.
+   * @return This modified <code>OutputFormatterFactory</code> instance.
+   */
   public OutputFormatterFactory reset() {
     args.clear();
     return this;
   }
   
   
+  /**
+   * Create an <code>OutputFormatter</code> instance with the configured pattern.
+   * @return An <code>OutputFormatter</code> instance with the configured pattern.
+   */
   public OutputFormatter create() {
     return (level, date, name, msg)-> {
       StringBuilder sb = new StringBuilder();
@@ -167,11 +199,19 @@ public class OutputFormatterFactory {
   }
   
   
+  /**
+   * Create an instance of <code>OutputFormatterFactory</code>.
+   * @return An instance of <code>OutputFormatterFactory</code>.
+   */
   public static OutputFormatterFactory factory() {
     return new OutputFormatterFactory();
   }
   
   
+  /**
+   * Get an <code>OutputFormatter</code> configured with default log pattern.
+   * @return An <code>OutputFormatter</code> configured with default log pattern.
+   */
   public static OutputFormatter standardFormatter() {
     return new OutputFormatterFactory()
         .appendDate()

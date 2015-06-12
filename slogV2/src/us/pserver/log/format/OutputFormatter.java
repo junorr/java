@@ -21,18 +21,26 @@
 
 package us.pserver.log.format;
 
-import java.text.DateFormat;
 import java.util.Date;
 import us.pserver.log.LogLevel;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 05/06/2015
+ * A formatter for the log message.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.1 - 201506
  */
 @FunctionalInterface
 public interface OutputFormatter {
   
+  /**
+   * Format the arguments in a unique log string.
+   * @param lvl The log level.
+   * @param dte The date of the log.
+   * @param name The name of the <code>Log</code> instance.
+   * @param msg The log message.
+   * @return The formatted log string.
+   */
   public String format(LogLevel lvl, Date dte, String name, String msg);
   
 }

@@ -36,6 +36,12 @@ import us.pserver.log.output.LogOutput;
 import us.pserver.log.output.PrintStreamOutput;
 
 
+/**
+ * Factory of Log objects with caching.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.1 - 201506
+ */
 public class LogFactory {
   
   /**
@@ -71,6 +77,9 @@ public class LogFactory {
       Collections.synchronizedMap(new HashMap<String, Log>());
   
   
+  /**
+   * Defaultconstructor without arguments.
+   */
   public LogFactory() {
     outputs = Collections.synchronizedMap(
         new HashMap<String, LogOutput>());
@@ -78,7 +87,12 @@ public class LogFactory {
   }
   
   
-  public LogFactory formatter(OutputFormatter fmt) {
+  /**
+   * Set the log output formatter.
+   * @param fmt The log output formatter.
+   * @return The modified <code>LogFactory</code> instance.
+   */
+  public LogFactory setOutputFormatter(OutputFormatter fmt) {
     if(fmt == null)
       throw new IllegalArgumentException("Invalid null OutputFormatter");
     formatter = fmt;
@@ -86,11 +100,21 @@ public class LogFactory {
   }
   
   
+  /**
+   * Get the log output formatter.
+   * @return The log output formatter.
+   */
   public OutputFormatter getOutputFormatter() {
     return formatter;
   }
   
   
+  /**
+   * Put a <code>LogOutput</code> for the creating log.
+   * @param id Identification of the <code>LogOutput</code>.
+   * @param out The <code>LogOutput</code> object.
+   * @return The modified <code>LogFactory</code> instance.
+   */
   public LogFactory put(String id, LogOutput out) {
     if(id != null && !id.trim().isEmpty() && out != null) {
       outputs.put(id, out);
@@ -99,32 +123,70 @@ public class LogFactory {
   }
   
   
+  /**
+   * Get an immutable collection with all configured 
+   * <code>LogOutput</code> objects.
+   * @return An immutable collection with all configured 
+   * <code>LogOutput</code> objects.
+   */
   public Collection<LogOutput> outputs() {
     return Collections.synchronizedCollection(
         Collections.unmodifiableCollection(outputs.values()));
   }
   
   
+  /**
+   * Get a map with all configured 
+   * <code>LogOutput</code> objects.
+   * @return A map with all configured 
+   * <code>LogOutput</code> objects.
+   */
   public Map<String, LogOutput> outputsMap() {
     return outputs;
   }
   
   
+  /**
+   * Get the <code>LogOutput</code> identified by the given id.
+   * @param id The <code>LogOutput</code> id.
+   * @return The <code>LogOutput</code> or null.
+   */
   public LogOutput get(String id) {
     return outputs.get(id);
   }
   
   
+  /**
+   * Verify if this <code>LogFactory</code> instance has 
+   * an output configured with the given id.
+   * @param id The <code>LogOutput</code> id to be verified.
+   * @return <code>true</code> if this <code>LogFactory</code> 
+   * instance has an output configured with the given id, 
+   * <code>false</code> otherwise.
+   */
   public boolean containsOutput(String id) {
     return outputs.containsKey(id);
   }
   
   
+  /**
+   * Remove and return the <code>LogOutput</code> 
+   * identified by the given id.
+   * @param id The <code>LogOutput</code> id.
+   * @return The <code>LogOutput</code> identified 
+   * by the given id.
+   */
   public LogOutput remove(String id) {
     return outputs.remove(id);
   }
   
   
+  /**
+   * Create and cache a <code>Log</code> instance 
+   * with the specified name.
+   * @param name The <code>Log</code> name.
+   * @return The created <code>Log</code> object.
+   */
   public Log createSimpleLogger(String name) {
     if(name == null || name.trim().isEmpty())
       throw new IllegalArgumentException("Invalid Logger name: '"+ name+ "'");
@@ -135,6 +197,12 @@ public class LogFactory {
   }
   
   
+  /**
+   * Create and cache a <code>Log</code> instance 
+   * with the specified name.
+   * @param name The <code>Log</code> name.
+   * @return The created <code>Log</code> object.
+   */
   public Log createSLogV2(String name) {
     if(name == null || name.trim().isEmpty())
       throw new IllegalArgumentException("Invalid Logger name: '"+ name+ "'");
@@ -144,7 +212,12 @@ public class LogFactory {
     return log;
   }
   
-  
+
+  /**
+   * Resets all configurations of this 
+   * <code>LogFactory</code> instance.
+   * @return This modified <code>LogFactory</code> instance.
+   */
   public LogFactory reset() {
     outputs.clear();
     formatter = OutputFormatterFactory.standardFormatter();
@@ -152,11 +225,27 @@ public class LogFactory {
   }
   
   
+  /**
+   * Create a <code>LogFactory</code> instance.
+   * @return 
+   */
   public static LogFactory factory() {
     return new LogFactory();
   }
   
   
+  /**
+   * Get a cached instance of <code>Log</code> with 
+   * (or starting with) the given name.
+   * For example, suppose we have a cached <code>Log</code>
+   * instance cached with the name <code>com.mysite.mypackage</code>
+   * and we call this method with the name 
+   * <code>com.mysite.mypackage.myclass</code>,
+   * the returned <code>Log</code> instance will be configured 
+   * in the same way of this 'ancestor'
+   * @param name The name of the <code>Log</code> instance.
+   * @return The cached or created <code>Log</code> instance.
+   */
   public static Log getCached(String name) {
     if(name == null || name.trim().isEmpty())
       return null;
@@ -183,6 +272,18 @@ public class LogFactory {
   }
   
   
+  /**
+   * Get a cached instance of <code>Log</code> with 
+   * (or starting with) the given class.
+   * For example, suppose we have a cached <code>Log</code>
+   * instance cached with the name <code>com.mysite.mypackage</code>
+   * and we call this method with the class 
+   * <code>com.mysite.mypackage.myclass</code>,
+   * the returned <code>Log</code> instance will be configured 
+   * in the same way of this 'ancestor'
+   * @param cls The class identifying the <code>Log</code> instance.
+   * @return The cached or created <code>Log</code> instance.
+   */
   public static Log getCached(Class cls) {
     if(cls != null) 
       return getCached(cls.getName());
@@ -190,6 +291,12 @@ public class LogFactory {
   }
   
   
+  /**
+   * Put a <code>Log</code> instance in the cache with
+   * the specified name.
+   * @param name The identifying name of the <code>Log</code> instance.
+   * @param log The <code>Log</code> instance to be cached.
+   */
   public static void putCached(String name, Log log) {
     if(name != null 
         && !name.trim().isEmpty() 
@@ -199,6 +306,18 @@ public class LogFactory {
   }
   
   
+  /**
+   * Verify if the <code>LogFactory</code> contains a cached 
+   * <code>Log</code> instance with (or starting with) the given name.
+   * For example, suppose we have a cached <code>Log</code>
+   * instance cached with the name <code>com.mysite.mypackage</code>
+   * and we call this method with the name 
+   * <code>com.mysite.mypackage.myclass</code>, the return will 
+   * be <code>true</code>.
+   * @param name The name of the <code>Log</code> instance.
+   * @return <code>true</code> if the cache has an <code>Log</code>
+   * intance with (or starting with) the given name.
+   */
   public static boolean isCached(String name) {
     if(name != null && !name.trim().isEmpty()) {
       return cache.keySet().stream().filter(s->
@@ -209,17 +328,41 @@ public class LogFactory {
   }
   
   
+  /**
+   * Verify if the <code>LogFactory</code> contains a cached 
+   * <code>Log</code> instance with (or starting with) the given class name.
+   * For example, suppose we have a cached <code>Log</code>
+   * instance cached with the name <code>com.mysite.mypackage</code>
+   * and we call this method with the class name 
+   * <code>com.mysite.mypackage.myclass</code>, the return will 
+   * be <code>true</code>.
+   * @param name The name of the <code>Log</code> instance.
+   * @return <code>true</code> if the cache has an <code>Log</code>
+   * intance with (or starting with) the given class name.
+   */
   public static boolean isCached(Class cls) {
     if(cls == null) return false;
     return isCached(cls.getName());
   }
   
   
+  /**
+   * Get a cached or created <code>Log</code> for
+   * the given name.
+   * @param name The <code>Log</code> name.
+   * @return The cached or created <code>Log</code> instance.
+   */
   public static Log getSimpleLog(String name) {
     return LogFactory.getSimpleLog(name, null);
   }
   
   
+  /**
+   * Get a cached or created <code>Log</code> for
+   * the given name, configured with the specified file log output.
+   * @param name The <code>Log</code> name.
+   * @return The cached or created <code>Log</code> instance.
+   */
   public static Log getSimpleLog(String name, Path logfile) {
     if(name == null || name.trim().isEmpty())
       throw new IllegalArgumentException("Invalid Logger name: '"+ name+ "'");
@@ -252,6 +395,13 @@ public class LogFactory {
   }
   
   
+  /**
+   * Get a cached or created <code>Log</code> for
+   * the given class name.
+   * @param name The identifying class for the 
+   * <code>Log</code> instance.
+   * @return The cached or created <code>Log</code> instance.
+   */
   public static Log getSimpleLog(Class cls) {
     if(cls == null)
       throw new IllegalArgumentException("Invalid null Class");
@@ -259,6 +409,14 @@ public class LogFactory {
   }
   
   
+  /**
+   * Get a cached or created <code>Log</code> for
+   * the given class name, configured with the 
+   * specified file log output.
+   * @param name The identifying class for the 
+   * <code>Log</code> instance.
+   * @return The cached or created <code>Log</code> instance.
+   */
   public static Log getSimpleLog(Class cls, Path logfile) {
     if(cls == null)
       throw new IllegalArgumentException("Invalid null Class");
@@ -266,11 +424,23 @@ public class LogFactory {
   }
   
   
+  /**
+   * Get a cached or created <code>Log</code> for
+   * the given name.
+   * @param name The <code>Log</code> name.
+   * @return The cached or created <code>Log</code> instance.
+   */
   public static SLogV2 getSLogV2(String name) {
     return getSLogV2(name, null);
   }
   
   
+  /**
+   * Get a cached or created <code>Log</code> for
+   * the given name, configured with the specified file log output.
+   * @param name The <code>Log</code> name.
+   * @return The cached or created <code>Log</code> instance.
+   */
   public static SLogV2 getSLogV2(String name, Path logfile) {
     if(name == null || name.trim().isEmpty())
       throw new IllegalArgumentException("Invalid Logger name: '"+ name+ "'");
@@ -311,6 +481,13 @@ public class LogFactory {
   }
   
   
+  /**
+   * Get a cached or created <code>Log</code> for
+   * the given class name.
+   * @param name The identifying class for the 
+   * <code>Log</code> instance.
+   * @return The cached or created <code>Log</code> instance.
+   */
   public static SLogV2 getSLogV2(Class cls) {
     if(cls == null)
       throw new IllegalArgumentException("Invalid null Class");
@@ -318,6 +495,14 @@ public class LogFactory {
   }
   
 
+  /**
+   * Get a cached or created <code>Log</code> for
+   * the given class name, configured with the 
+   * specified file log output.
+   * @param name The identifying class for the 
+   * <code>Log</code> instance.
+   * @return The cached or created <code>Log</code> instance.
+   */
   public static Log getSLogV2(Class cls, Path logfile) {
     if(cls == null)
       throw new IllegalArgumentException("Invalid null Class");

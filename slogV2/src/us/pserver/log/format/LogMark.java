@@ -22,9 +22,12 @@
 package us.pserver.log.format;
 
 /**
- *
+ * Represents a mark on the log string pattern format, 
+ * that will be interpreted as a log property like 
+ * date, level, name and message.
+ * 
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/06/2015
+ * @version 1.1 - 201506
  */
 public enum LogMark {
 
@@ -37,20 +40,38 @@ public enum LogMark {
   NAME("{NAME}");
   
   
+  /**
+   * Constructor with the string mark.
+   * @param mark The string mark pattern.
+   */
   LogMark(String mark) {
     if(mark == null || mark.trim().isEmpty())
       throw new IllegalArgumentException("Invalid mark: '"+ mark+ "'");
     this.mark = mark;
   }
   
+  /**
+   * Get the string mark.
+   * @return The string mark.
+   */
   public String getMark() {
     return this.mark;
   }
   
+  /**
+   * Verify if the given string match with the mark of 
+   * this <code>LogMark</code> enum.
+   * @param str The string to be verified.
+   * @return <code>true</code> if the string matches
+   * with this <code>LogMark</code> enum.
+   */
   public boolean match(String str) {
     return mark.equalsIgnoreCase(str);
   }
   
+  /**
+   * The string mark.
+   */
   private String mark;
   
 }
