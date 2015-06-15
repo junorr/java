@@ -30,15 +30,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- *
+ * Implements a <code>LogOutput</code> which redirects logs to a file.
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/06/2015
+ * @version 1.1 - 201506
  */
 public class FileLogOutput extends PrintStreamOutput {
 
   private Path path;
   
   
+  /**
+   * A <code>PrintStream</code> factory for file.
+   */
   static class FilePrintStreamFactory implements PrintStreamFactory {
     private final Path path;
     FilePrintStreamFactory(Path p) { path = p; }
@@ -53,11 +56,21 @@ public class FileLogOutput extends PrintStreamOutput {
   }
   
   
+  /**
+   * Constructor which receives the log file path and the
+   * <code>OutputFormatter</code> object.
+   * @param logfile The log file path.
+   * @param fmt The <code>OutputFormatter</code> object.
+   */
   public FileLogOutput(Path logfile, OutputFormatter fmt) {
     super(new FilePrintStreamFactory(logfile), fmt);
   }
   
-  
+
+  /**
+   * Default constructor 
+   * @param logfile 
+   */
   public FileLogOutput(Path logfile) {
     this(logfile, OutputFormatterFactory.standardFormatter());
   }

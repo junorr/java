@@ -25,7 +25,7 @@ import java.util.Date;
 import us.pserver.log.LogLevel;
 
 /**
- * A formatter for the log message.
+ * A formatter for log messages.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.1 - 201506

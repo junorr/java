@@ -31,22 +31,24 @@ import us.pserver.log.format.OutputFormatter;
  * Single threaded log system implementaion.
  * 
  * @author Juno Roesler - juno@pserver.us
- * @version 1.0 - 14/04/2014
- * @see us.pserver.log.SLogV2
+ * @version 1.1 - 201506
  */
 public class SimpleLog extends AbstractLog {
   
   
   /**
-   * Construtor padrão e sem argumentos,
-   * cria uma instância de <code>SimpleLog</code> com configurações
-   * padrão, pronto para ser utilizado.
+   * Default constructor, receives this log instance name.
+   * @param name This log instance name.
    */
   public SimpleLog(String name) {
     super(name);
   }
   
   
+  /**
+   * Constructor which receives this log instance class name.
+   * @param cls This log instance class name.
+   */
   public SimpleLog(Class cls) {
     super();
     if(cls == null)
@@ -55,12 +57,25 @@ public class SimpleLog extends AbstractLog {
   }
   
   
+  /**
+   * Constructor which receives the log instance name and 
+   * the <code>OutputFormatter</code> object.
+   * @param name This Log instance name.
+   * @param fmt The <code>OutputFormatter</code> object.
+   * @see us.pserver.log.format.OutputFormatter
+   */
   public SimpleLog(String name, OutputFormatter fmt) {
     this(name);
     this.setOutputFormatter(fmt);
   }
   
   
+  /**
+   * Constructor which receives this log instance class 
+   * name and the <code>OutputFormatter</code> object.
+   * @param cls This log instance class name.
+   * @param fmt The <code>OutputFormatter</code> object.
+   */
   public SimpleLog(Class cls, OutputFormatter fmt) {
     this(cls);
     this.setOutputFormatter(fmt);

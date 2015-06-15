@@ -21,27 +21,33 @@
 
 package us.pserver.log.output;
 
-import us.pserver.log.format.OutputFormatterFactory;
 import us.pserver.log.LogLevel;
 import us.pserver.log.internal.LogLevelManager;
-import us.pserver.log.output.LogOutput;
 import us.pserver.log.format.OutputFormatter;
 
 /**
- *
+ * Implements basic functionalities for <code>LogOutput</code>.
+ * 
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/06/2015
+ * @version 1.1 - 201506
  */
 public abstract class AbstractLogOutput implements LogOutput {
 
   LogLevelManager levels;
   
   
+  /**
+   * Default constructor without arguments.
+   */
   AbstractLogOutput() {
     levels = new LogLevelManager();
   }
   
   
+  /**
+   * Constructor which receives the output formatter class.
+   * @param fmt The output formatter class.
+   */
   AbstractLogOutput(OutputFormatter fmt) {
     this();
   }

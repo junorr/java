@@ -38,7 +38,7 @@ import us.pserver.log.internal.LogEntry;
  * High performance, double threaded log system implementation.
  * 
  * @author Juno Roesler - juno@pserver.us
- * @version 1.0 - 14/04/2014
+ * @version 1.1 - 201506
  */
 public class SLogV2 extends AbstractLog implements Runnable {
   
@@ -62,6 +62,13 @@ public class SLogV2 extends AbstractLog implements Runnable {
   private boolean stopOnFinish;
   
   
+  /**
+   * Constructor which receives the log instance name and 
+   * the <code>OutputFormatter</code> object.
+   * @param name This Log instance name.
+   * @param fmt The <code>OutputFormatter</code> object.
+   * @see us.pserver.log.format.OutputFormatter
+   */
   public SLogV2(String name, OutputFormatter fmt) {
     super(name);
     this.setOutputFormatter(fmt);
@@ -72,20 +79,40 @@ public class SLogV2 extends AbstractLog implements Runnable {
   }
   
   
+  /**
+   * Default construtor, receives this log instance name.
+   * @param name This log instance name.
+   */
   public SLogV2(String name) {
     this(name, OutputFormatterFactory.standardFormatter());
   }
   
   
+  /**
+   * Constructor which receives this log instance class name.
+   * @param cls This log instance class name.
+   */
   public SLogV2(Class cls) {
     this((cls == null ? null : cls.getName()));
   }
   
+  /**
+   * Constructor which receives this log instance class 
+   * name and the <code>OutputFormatter</code> object.
+   * @param cls This log instance class name.
+   * @param fmt The <code>OutputFormatter</code> object.
+   */
   public SLogV2(Class cls, OutputFormatter fmt) {
     this((cls == null ? null : cls.getName()), fmt);
   }
   
   
+  /**
+   * Set the default number of available threads to 
+   * perform asynchronous log outputs requests.
+   * @param num The default number of available threads.
+   * @return This modified <code>SLogV2</code> instance.
+   */
   public SLogV2 setAvailableThreads(int num) {
     if(num > 0)
       availableThreads = num;
@@ -93,11 +120,21 @@ public class SLogV2 extends AbstractLog implements Runnable {
   }
   
   
+  /**
+   * Get the default number of available threads to 
+   * perform asynchronous log outputs requests.
+   * @return The default number of available threads.
+   */
   public int getAvailableThreads() {
     return availableThreads;
   }
   
   
+  /**
+   * Return <code>true</code> if the executor threads are running.
+   * @return <code>true</code> if the executor threads are running,
+   * <code>false</code> otherwise.
+   */
   public boolean isRunning() {
     synchronized(DEFAULT_AVAILABLE_THREADS) {
       return running;
@@ -105,6 +142,10 @@ public class SLogV2 extends AbstractLog implements Runnable {
   }
   
   
+  /**
+   * Start asynchronous log processing.
+   * @return This modified <code>SLogV2</code> instance.
+   */
   public SLogV2 start() {
     synchronized(DEFAULT_AVAILABLE_THREADS) {
       running = true;
@@ -115,6 +156,10 @@ public class SLogV2 extends AbstractLog implements Runnable {
   }
   
   
+  /**
+   * Stop asynchronous log processing.
+   * @return This modified <code>SLogV2</code> instance.
+   */
   public SLogV2 stop() {
     synchronized(DEFAULT_AVAILABLE_THREADS) {
       running = false;
@@ -122,7 +167,10 @@ public class SLogV2 extends AbstractLog implements Runnable {
     return this;
   }
   
-  
+  /**
+   * Stop asynchronous log processing when all requests are done.
+   * @return This modified <code>SLogV2</code> instance.
+   */
   public SLogV2 stopOnFinish() {
     synchronized(DEFAULT_AVAILABLE_THREADS) {
       stopOnFinish = true;
@@ -131,6 +179,13 @@ public class SLogV2 extends AbstractLog implements Runnable {
   }
   
   
+  /**
+   * Verify if the log processing is configured to stop 
+   * when all requests are done.
+   * @return <code>true</code> if the log processing is 
+   * configured to stop when all requests are done, 
+   * <code>false</code> otherwise.
+   */
   public boolean isStopOnFinish() {
     synchronized(DEFAULT_AVAILABLE_THREADS) {
       return stopOnFinish;
@@ -195,9 +250,18 @@ public class SLogV2 extends AbstractLog implements Runnable {
   /**************************************************/
   
   
+  /**
+   * Internal class which perform log outputs requests, 
+   * to be used in <code>ExecutorService</code>.
+   */
   class LogExecutor implements Runnable {
+    
     private LogEntry entry;
     
+    /**
+     * Default Constructor receives a LogEntry object to be processed.
+     * @param le LogEntry object to be processed.
+     */
     public LogExecutor(LogEntry le) {
       this.entry = le;
     }
@@ -215,6 +279,12 @@ public class SLogV2 extends AbstractLog implements Runnable {
       }
     }
     
+    /**
+     * Perform the log output.
+     * @param lvl Log Level.
+     * @param dte Log Date.
+     * @param msg Log message.
+     */
     public void log(LogLevel lvl, Date dte, String msg) {
       if(lvl != null && msg != null && dte != null) {
         outputs.values().forEach(o->
@@ -222,6 +292,14 @@ public class SLogV2 extends AbstractLog implements Runnable {
       }
     }
   
+    /**
+     * Perform the log output.
+     * @param lvl Log Level.
+     * @param dte Log Date.
+     * @param msg Error to be logged.
+     * @param logStackTrace If <code>true</code>, all the 
+     * throwable stack trace will be logged.
+     */
     public void log(LogLevel lvl, Date dte, Throwable th, boolean logStackTrace) {
       if(lvl != null && th != null && dte != null) {
         Date dt = new Date();

@@ -29,9 +29,13 @@ import java.util.List;
 import us.pserver.log.LogLevel;
 
 /**
- *
+ * A formatter for log massages, based on a string pattern,
+ * replacing special markers by the respective values. Ex:
+ * <code>"{DATE}  [{LEVEL}]  {NAME} - {MESSAGE}"</code> is translated to<br>
+ * <code>"2015-06-15 09:39:41.554  [INFO ]  us.pserver.log.format.PatternOutputFormatter - A message log"</code>
+ * 
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/06/2015
+ * @version 1.1 - 201506
  */
 public class PatternOutputFormatter implements OutputFormatter {
 
@@ -42,11 +46,19 @@ public class PatternOutputFormatter implements OutputFormatter {
   private String pattern;
   
   
+  /**
+   * Default constructor, receives the string pattern to format log outputs.
+   * @param pattern The string pattern to format log outputs.
+   */
   public PatternOutputFormatter(String pattern) {
     this.init(pattern);
   }
   
   
+  /**
+   * Parse the string pattern.
+   * @param pattern The string pattern to format log outputs.
+   */
   private void init(String pattern) {
     if(pattern == null || pattern.trim().isEmpty())
       throw new IllegalArgumentException("Invalid string pattern: '"+ pattern+ "'");
@@ -85,11 +97,20 @@ public class PatternOutputFormatter implements OutputFormatter {
   }
   
   
+  /**
+   * Return the string pattern to format log outputs.
+   * @return The string pattern to format log outputs.
+   */
   public String getPattern() {
     return pattern;
   }
   
   
+  /**
+   * Set the string pattern to format dates.
+   * @param format The string pattern to format dates.
+   * @return This modified <code>PatternOutputFormatter</code> instance.
+   */
   public PatternOutputFormatter setDateFormat(String format) {
     dtfm = new SimpleDateFormat(format);
     init(this.pattern);
@@ -97,6 +118,11 @@ public class PatternOutputFormatter implements OutputFormatter {
   }
 
 
+  /**
+   * Set the <code>DateFormat</code> object to format dates.
+   * @param format The <code>DateFormat</code> object to format dates.
+   * @return This modified <code>PatternOutputFormatter</code> instance.
+   */
   public PatternOutputFormatter setDateFormat(DateFormat df) {
     if(df == null) 
       throw new IllegalArgumentException("Invalid null DateFormat");

@@ -26,9 +26,12 @@ import java.util.Objects;
 import us.pserver.log.LogLevel;
 
 /**
- *
+ * <code>LogEntry</code> holds information
+ * to perform a log output. 
+ * Used in <code>SLogV2 ExecutorService</code>.
+ * 
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/06/2015
+ * @version 1.1 - 201506
  */
 public class LogEntry {
 
@@ -45,15 +48,29 @@ public class LogEntry {
   private boolean logStackTrace;
 
 
+  /**
+   * Default constructor without arguments.
+   */
   public LogEntry() {
   }
 
 
+  /**
+   * Constructor which receives the log instance name.
+   * @param name The log instance name.
+   */
   public LogEntry(String name) {
     this.name = name;
   }
 
 
+  /**
+   * Constructor which receives the details of log output to perform.
+   * @param level The log level.
+   * @param date The log date.
+   * @param name The log instance name.
+   * @param massage The log message.
+   */
   public LogEntry(LogLevel level, Date date, String name, String massage) {
     this.level = level;
     this.date = date;
@@ -62,6 +79,14 @@ public class LogEntry {
   }
 
 
+  /**
+   * Constructor which receives the details of log output to perform.
+   * @param level The log level.
+   * @param date The log date.
+   * @param name The log instance name.
+   * @param massage The throwable to log.
+   * @param logStackTrace If <code>true</code> log all the throwable stack trace.
+   */
   public LogEntry(LogLevel level, Date date, String name, Throwable throwable, boolean logStackTrace) {
     this.level = level;
     this.date = date;
@@ -71,66 +96,125 @@ public class LogEntry {
   }
 
 
+  /**
+   * Get the log level.
+   * @return the log level.
+   */
   public LogLevel getLevel() {
     return level;
   }
 
 
+  /**
+   * Set the log level.
+   * @param level The log level.
+   */
   public void setLevel(LogLevel level) {
     this.level = level;
   }
 
 
+  /**
+   * Get the log date.
+   * @return The log date.
+   */
   public Date getDate() {
     return date;
   }
 
 
+  /**
+   * Set the log date.
+   * @param date The log date.
+   */
   public void setDate(Date date) {
     this.date = date;
   }
 
 
+  /**
+   * Get the log instance name.
+   * @return The log instance name.
+   */
   public String getName() {
     return name;
   }
 
 
+  /**
+   * Set the log instance name.
+   * @param name The log instance name.
+   */
   public void setName(String name) {
     this.name = name;
   }
 
 
+  /**
+   * Get the log message.
+   * @return The log message.
+   */
   public String getMassage() {
     return massage;
   }
 
 
+  /**
+   * Set the log message.
+   * @param message The log message.
+   */
   public void setMassage(String massage) {
     this.massage = massage;
   }
 
 
+  /**
+   * Get the log throwable.
+   * @return The log throwable.
+   */
   public Throwable getThrowable() {
     return throwable;
   }
 
 
+  /**
+   * Set the log throwable.
+   * @param throwable The log throwable.
+   */
   public void setThrowable(Throwable throwable) {
     this.throwable = throwable;
   }
 
 
+  /**
+   * Verify if this entry is configured to print 
+   * all the throwable stack trace.
+   * @return <code>true</code> if this entry is 
+   * configured to print all the throwable stack trace,
+   * <code>false</code> otherwise.
+   */
   public boolean isLoggingStackTrace() {
     return logStackTrace;
   }
 
 
+  /**
+   * Set if this entry is configured to print 
+   * all the throwable stack trace.
+   * @param logStackTrace If <code>true</code>,
+   * configure this entry to print all the throwable 
+   * stack trace.
+   */
   public void setLoggingStackTrace(boolean logStackTrace) {
     this.logStackTrace = logStackTrace;
   }
   
-  
+
+  /**
+   * Verify if this entry is configured to log a throwable instance.
+   * @return <code>true</code> if this entry is configured to log a 
+   * throwable instance, <code>false</code> otherwise.
+   */
   public boolean isThrowable() {
     return throwable != null;
   }
@@ -174,7 +258,7 @@ public class LogEntry {
 
   @Override
   public String toString() {
-    return "LogInput{" + "level=" + level + ", date=" + date + ", name=" + name + ", massage=" + massage + '}';
+    return "LogEntry{" + "level=" + level + ", date=" + date + ", name=" + name + ", massage=" + massage + '}';
   }
   
 }

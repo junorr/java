@@ -35,9 +35,10 @@ import us.pserver.log.internal.LogLevelManager;
 import us.pserver.log.output.LogOutput;
 
 /**
- *
+ * Implements basic logging functionalities.
+ * 
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 07/06/2015
+ * @version 1.1 - 201506
  */
 public abstract class AbstractLog implements Log {
   
@@ -61,6 +62,9 @@ public abstract class AbstractLog implements Log {
   OutputFormatter continueFormat;
   
   
+  /**
+   * Default constructor without arguments.
+   */
   AbstractLog() {
     outputs = Collections.synchronizedMap(
         new HashMap<String, LogOutput>());
@@ -71,6 +75,13 @@ public abstract class AbstractLog implements Log {
   }
   
   
+  /**
+   * Constructor which receives the name of this log instance. 
+   * This name, usualy the class name which is creating 
+   * the log instance, will be printed in the formatted 
+   * log message.
+   * @param name The name of this log instance.
+   */
   AbstractLog(String name) {
     this();
     if(name == null || name.trim().isEmpty())

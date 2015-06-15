@@ -27,15 +27,19 @@ import java.util.Map;
 import us.pserver.log.LogLevel;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 05/06/2015
+ * Utility class to manage configuration of LogLevel enum.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.1 - 201506
  */
 public class LogLevelManager {
 
   private Map<LogLevel, Boolean> levels;
   
   
+  /**
+   * Default constructor, create the 4 LogLevel types enabled.
+   */
   public LogLevelManager() {
     levels = Collections.synchronizedMap(
         new EnumMap<LogLevel, Boolean>(LogLevel.class));
@@ -46,22 +50,43 @@ public class LogLevelManager {
   }
   
   
+  /**
+   * Get the internal map with <code>LogLevel's</code>.
+   * @return The internal map with <code>LogLevel's</code>.
+   */
   public Map<LogLevel, Boolean> levels() {
     return levels;
   }
   
   
+  /**
+   * Configure the <code>LogLevel</code>.
+   * @param lvl The <code>LogLevel</code> to configure.
+   * @param enabled <code>true</code> for enable the
+   * <code>LogLevel</code>, <code>false</code> otherwise.
+   */
   public void setLevelEnabled(LogLevel lvl, boolean enabled) {
     if(lvl == null) return;
     levels.put(lvl, enabled);
   }
   
   
+  /**
+   * Verify if the <code>LogLevel</code> is enabled.
+   * @param lvl The <code>LogLevel</code> type.
+   * @return <code>true</code> if the <code>LogLevel</code> 
+   * is enabled, <code>false</code> otherwise.
+   */
   public boolean isLevelEnabled(LogLevel lvl) {
     return levels.get(lvl);
   }
   
   
+  /**
+   * Configure all <code>LogLevel</code> types at once.
+   * @param enabled <code>true</code> for enable all 
+   * <code>LogLevel</code>, <code>false</code> for diable it.
+   */
   public void setAllLevelsEnabled(boolean enabled) {
     levels.keySet().forEach(k->levels.put(k, enabled));
   }
