@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion> 
+  <parent>
+    <groupId>com.fasterxml.jackson</groupId>
+    <artifactId>jackson-parent</artifactId>
+    <version>2.5.1</version>
+  </parent>
+  <groupId>com.fasterxml.jackson.jr</groupId>
+  <artifactId>jackson-jr-parent</artifactId>
+  <name>Parent pom for Jackson jr components</name>
+  <version>2.5.4</version>
+  <packaging>pom</packaging>
+  <description>Parent pom for Jackson jr components
+  </description>
+
+  <modules>
+    <module>jr-objects</module>
+    <module>jr-all</module>
+  </modules>
+
+  <url>https://github.com/FasterXML/jackson-jr</url>
+  <scm>
+    <connection>scm:git:git@github.com:FasterXML/jackson-jr.git</connection>
+    <developerConnection>scm:git:git@github.com:FasterXML/jackson-jr.git</developerConnection>
+    <url>http://github.com/FasterXML/jackson-jr</url>    
+    <tag>jackson-jr-parent-2.5.4</tag>
+  </scm>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.jackson>2.5.4</version.jackson>
+    <javac.src.version>1.6</javac.src.version>
+    <javac.target.version>1.6</javac.target.version>
+    <!-- Aggressively minimize jar size; drop 'lines' and 'vars' -->
+    <javac.debuglevel>source</javac.debuglevel>
+  </properties>
+
+  <dependencies>
+   <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${version.jackson}</version>
+    </dependency>
+  </dependencies>
+
+</project>

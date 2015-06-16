@@ -1,0 +1,47 @@
+Project: jackson-jr
+
+------------------------------------------------------------------------
+=== Releases ===
+------------------------------------------------------------------------
+
+2.5.4 (09-Jun-2015)
+2.5.3 (24-Apr-2015)
+2.5.2 (29-Mar-2015)
+2.5.1 (06-Feb-2015)
+2.5.0 (01-Jan-2015)
+
+No changes since 2.4.
+
+2.4.4 (24-Nov-2014)
+2.4.3 (04-Oct-2014)
+
+No changes since 2.4.2
+
+2.4.2 (13-Aug-2014)
+
+#15: Problem with Number to Long conversions
+ (reported by "gsmiro@github")
+#16: Error serializing POJO-valued Maps
+ (reported by Zac M (ZacWolf@github))
+
+2.4.1 (17-Jun-2014)
+
+No changes since 2.4.0
+
+2.4.0 (29-May-2014)
+
+#9: Support lazily materialized Maps with `JSON.Feature.USE_DEFERRED_MAPS`
+#11: Replace use of `java.bean.Introspector` since Android SDK doesn't have it.
+
+2.3.3 (10-Apr-2014)
+
+No changes, but depends on Jackson 2.3.3 core.
+
+2.3.1 (26-Mar-2014)
+
+#6: Support reading of `Enum` values from String representation
+#8: Handle generic Collection and Map types properly
+
+2.3.0 (17-Mar-2014)
+
+The very first publicly available release!
