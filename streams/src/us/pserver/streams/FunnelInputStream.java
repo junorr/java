@@ -36,7 +36,7 @@ public class FunnelInputStream extends InputStream {
   
   private static final Object O = new Object();
   
-  private List<InputStream> streams;
+  private final List<InputStream> streams;
   
   private int index;
   
@@ -72,8 +72,9 @@ public class FunnelInputStream extends InputStream {
       throw new IllegalArgumentException(
           "Invalid length: "+ len);
         
-    if(streams.isEmpty() || index >= streams.size())
+    if(streams.isEmpty() || index >= streams.size()) {
       return -1;
+    }
     
     synchronized(O) {
       InputStream is = streams.get(index);
@@ -85,7 +86,8 @@ public class FunnelInputStream extends InputStream {
       off += read;
       len -= read;
       if(len > 0) {
-        read += read(bs, off, len);
+        int nextRead = read(bs, off, len);
+        read += (nextRead < 0 ? 0 : nextRead);
       }
       return read;
     }

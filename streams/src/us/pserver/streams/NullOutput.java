@@ -96,7 +96,6 @@ public abstract class NullOutput extends OutputStream {
   @Override
   public void write(int b) throws IOException {
     if(print) System.out.write(b);
-    b = 0;
   }
   
 }

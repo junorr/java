@@ -41,7 +41,9 @@ public class TestDynamicBuffer {
   public static void main(String[] args) throws IOException {
     SequenceInputStream in = new SequenceInputStream(100);
     DynamicBuffer buffer = new DynamicBuffer(10);
-    OutputStream os = buffer.getOutputStream();
+    buffer.setGZipCoderEnabled(true);
+    //OutputStream os = buffer.getOutputStream();
+    OutputStream os = buffer.getEncoderStream();
     int read = -1;
     byte[] bs = new byte[7];
     while((read = in.read(bs)) > 0) {
@@ -54,7 +56,7 @@ public class TestDynamicBuffer {
       list.add(read);
     }
     System.out.println("* Sequence: "+ Arrays.toString(list.toArray()));
-    System.out.println("* listBuffer.size="+ buffer.listBuffer().size());
+    System.out.println("* buffer.getUsedPages() = "+ buffer.getUsedPages());
   }
   
 }

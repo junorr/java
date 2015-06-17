@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import us.pserver.cdr.crypt.CryptKey;
 
 /**
  *
@@ -37,7 +38,8 @@ import java.util.List;
  */
 public class DynamicBuffer implements Closeable {
   
-  public static Integer DEFAULT_PAGE_SIZE = 512 * 1024;
+  public static final Integer DEFAULT_PAGE_SIZE = 512 * 1024;
+  
 
   private List<ByteBuffer> buffers;
   
@@ -47,12 +49,15 @@ public class DynamicBuffer implements Closeable {
   
   private boolean read;
   
+  private StreamCoderFactory coder;
+  
   
   public DynamicBuffer() {
-    buffers = new ArrayList<>();
+    buffers = Collections.synchronizedList(new ArrayList<ByteBuffer>());
     index = 0;
     read = false;
     pageSize = DEFAULT_PAGE_SIZE;
+    coder = StreamCoderFactory.getNew();
   }
   
   
@@ -64,7 +69,7 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  public DynamicBuffer appendNew() {
+  private DynamicBuffer appendNew() {
     synchronized(DEFAULT_PAGE_SIZE) {
     buffers.add(ByteBuffer.allocateDirect(pageSize));
     index = buffers.size() -1;
@@ -73,7 +78,45 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  public ByteBuffer getCurrentBuffer() {
+  public DynamicBuffer setCryptCoderEnabled(boolean enabled, CryptKey key) {
+    coder.setCryptCoderEnabled(enabled, key);
+    return this;
+  }
+  
+  
+  public DynamicBuffer setGZipCoderEnabled(boolean enabled) {
+    coder.setGZipCoderEnabled(enabled);
+    return this;
+  }
+  
+  
+  public DynamicBuffer setBase64CoderEnabled(boolean enabled) {
+    coder.setBase64CoderEnabled(enabled);
+    return this;
+  }
+  
+  
+  public boolean isCryptCoderEnabled() {
+    return coder.isCryptCoderEnabled();
+  }
+  
+  
+  public boolean isGZipCoderEnabled() {
+    return coder.isGZipCoderEnabled();
+  }
+  
+  
+  public boolean isBase64CoderEnabled() {
+    return coder.isBase64CoderEnabled();
+  }
+  
+  
+  public boolean isAnyCoderEnabled() {
+    return coder.isAnyCoderEnabled();
+  }
+  
+  
+  public ByteBuffer getCurrentPage() {
     if(buffers.size() <= index) {
       this.appendNew();
     }
@@ -81,22 +124,50 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  public DynamicBuffer clear() {
-    synchronized(DEFAULT_PAGE_SIZE) {
-    buffers.forEach(b->b.reset());
-    buffers.clear();
+  public int getPageSize() {
+    return pageSize;
+  }
+  
+  
+  public DynamicBuffer setPageSize(int pg) {
+    if(pg > 0)
+      pageSize = pg;
     return this;
+  }
+  
+  
+  public int getUsedPages() {
+    return buffers.size();
+  }
+  
+  
+  public List<ByteBuffer> pagesList() {
+    return Collections.unmodifiableList(buffers);
+  }
+  
+  
+  public long size() {
+    synchronized(DEFAULT_PAGE_SIZE) {
+      boolean write = !read;
+      if(write) setReading();
+      Thing<Long> t = new Thing(0);
+      buffers.forEach(b->t.plus(b.remaining()));
+      if(write) setWriting();
+      return t.get();
     }
   }
   
   
   @Override
   public void close() {
-    clear();
+    synchronized(DEFAULT_PAGE_SIZE) {
+      buffers.forEach(b->b.reset());
+      buffers.clear();
+    }
   }
   
   
-  public boolean isReadingMode() {
+  public boolean isReading() {
     return read;
   }
   
@@ -130,9 +201,17 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  public List<ByteBuffer> listBuffer() {
-    return Collections.synchronizedList(
-        Collections.unmodifiableList(buffers));
+  public OutputStream getEncoderStream() throws IOException {
+    if(!coder.isAnyCoderEnabled())
+      return getOutputStream();
+    return coder.create(getOutputStream());
+  }
+  
+  
+  public InputStream getDecoderStream() throws IOException {
+    if(!coder.isAnyCoderEnabled())
+      return getInputStream();
+    return coder.create(getInputStream());
   }
   
   
@@ -142,9 +221,9 @@ public class DynamicBuffer implements Closeable {
       public void write(int b) throws IOException {
         synchronized(DEFAULT_PAGE_SIZE) {
         setWriting();
-        ByteBuffer buf = getCurrentBuffer();
+        ByteBuffer buf = getCurrentPage();
         if(buf.remaining() < 1) 
-          buf = appendNew().getCurrentBuffer();
+          buf = appendNew().getCurrentPage();
         buf.put((byte) b);
         }
       }
@@ -162,9 +241,9 @@ public class DynamicBuffer implements Closeable {
         
         synchronized(DEFAULT_PAGE_SIZE) {
         setWriting();
-        ByteBuffer buf = getCurrentBuffer();
+        ByteBuffer buf = getCurrentPage();
         if(buf.remaining() < 1) 
-          buf = appendNew().getCurrentBuffer();
+          buf = appendNew().getCurrentPage();
         int nlen = Math.min(buf.remaining(), len);
         buf.put(bs, off, nlen);
         off += nlen;
@@ -188,15 +267,22 @@ public class DynamicBuffer implements Closeable {
     return new InputStream() {
       @Override
       public int read() throws IOException {
+        synchronized(DEFAULT_PAGE_SIZE) {
         setReading();
-        if(buffers.isEmpty() || index >= buffers.size()) 
-          return -1;
+        int read = -1;
+        if(buffers.isEmpty() || index >= buffers.size()) {
+          return read;
+        }
         ByteBuffer buf = buffers.get(index);
         if(buf.remaining() < 1) { 
           index++;
-          return read();
+          read = read();
         } 
-        return buf.get();
+        else {
+          read = buf.get();
+        }
+        return read;
+        }
       }
       @Override
       public int read(byte[] bs, int off, int len) throws IOException {
@@ -210,6 +296,7 @@ public class DynamicBuffer implements Closeable {
           throw new IllegalArgumentException(
               "Invalid length: "+ len);
         
+        synchronized(DEFAULT_PAGE_SIZE) {
         setReading();
         if(buffers.isEmpty() || index >= buffers.size()) 
           return -1;
@@ -224,9 +311,11 @@ public class DynamicBuffer implements Closeable {
         off += nlen;
         len -= nlen;
         if(len > 0) {
-          nlen += read(bs, off, len);
+          int nextRead = read(bs, off, len);
+          nlen += (nextRead < 0 ? 0 : nextRead);
         }
         return nlen;
+        }
       }
       @Override
       public int read(byte[] bs) throws IOException {

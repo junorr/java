@@ -58,6 +58,12 @@ public class SequenceInputStream extends InputStream {
   
   
   @Override
+  public int available() throws IOException {
+    return Math.abs(limit - count);
+  }
+  
+  
+  @Override
   public void close() throws IOException {
     synchronized(SYNC) {
       limit = 0;
@@ -71,6 +77,12 @@ public class SequenceInputStream extends InputStream {
       if(count >= limit) return -1;
       return count++;
     }
+  }
+
+
+  @Override
+  public String toString() {
+    return "SequenceInputStream{ " + count + " -> " + limit + " }";
   }
   
 }

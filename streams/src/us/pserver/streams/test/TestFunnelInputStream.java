@@ -41,8 +41,11 @@ public class TestFunnelInputStream {
   
   public static void main(String[] args) throws IOException {
     SequenceInputStream i0 = new SequenceInputStream(0, 10);
-    SequenceInputStream i10 = new SequenceInputStream(0, 10);
-    SequenceInputStream i20 = new SequenceInputStream(0, 10);
+    System.out.println("i0.available() = "+ i0.available());
+    SequenceInputStream i10 = new SequenceInputStream(10, 20);
+    System.out.println("i10.available() = "+ i10.available());
+    SequenceInputStream i20 = new SequenceInputStream(20, 30);
+    System.out.println("i20.available() = "+ i20.available());
     FunnelInputStream is = new FunnelInputStream();
     is.add(i0).add(i10).add(i20);
     
@@ -59,9 +62,9 @@ public class TestFunnelInputStream {
     while((read = in.read()) != -1) {
       list.add(read);
     }
+    System.out.println("* List.size() = "+ list.size());
     System.out.println("* Sequence: "+ Arrays.toString(list.toArray()));
-    System.out.println("* listBuffer.size="+ buffer.listBuffer().size());
-    
+    System.out.println("* listBuffer.getUsedPages() = "+ buffer.getUsedPages());
   }
   
 }
