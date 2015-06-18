@@ -58,6 +58,19 @@ public class Thing<T> {
   }
   
   
+  public Number getNumber() {
+    if(thing instanceof Number)
+      return (Number) thing;
+    else
+      return null;
+  }
+  
+  
+  public boolean isNumber() {
+    return (thing instanceof Number);
+  }
+  
+  
   public Thing set(T t) {
     synchronized(S) {
       this.thing = t;
@@ -74,44 +87,30 @@ public class Thing<T> {
   
   
   public Thing increment() {
-    synchronized(S) {
-      if(thing != null && thing instanceof Number) {
-        Double d = ((Number) thing).doubleValue();
-        d++;
-        thing = (T) d;
-      }
-    }
-    return this;
+    return this.plus(1);
   }
   
   
   public Thing decrement() {
-    synchronized(S) {
-      if(thing != null && thing instanceof Number) {
-        Double d = ((Number) thing).doubleValue();
-        d--;
-        thing = (T) d;
-      }
-    }
-    return this;
+    return this.minus(1);
   }
   
   
   public Thing plus(int l) {
     synchronized(S) {
       if(thing != null && thing instanceof Number) {
-        Double d = ((Number) thing).doubleValue() + l;
+        Integer d = ((Number) thing).intValue() + l;
         thing = (T) d;
-      }
+  }
     }
     return this;
   }
   
   
-  public Thing sub(int l) {
+  public Thing minus(int l) {
     synchronized(S) {
       if(thing != null && thing instanceof Number) {
-        Double d = ((Number) thing).doubleValue() - l;
+        Integer d = ((Number) thing).intValue() - l;
         thing = (T) d;
       }
     }
@@ -122,7 +121,7 @@ public class Thing<T> {
   public Thing plus(long l) {
     synchronized(S) {
       if(thing != null && thing instanceof Number) {
-        Double d = ((Number) thing).doubleValue() + l;
+        Long d = ((Number) thing).longValue() + l;
         thing = (T) d;
       }
     }
@@ -130,10 +129,10 @@ public class Thing<T> {
   }
   
   
-  public Thing sub(long l) {
+  public Thing minus(long l) {
     synchronized(S) {
       if(thing != null && thing instanceof Number) {
-        Double d = ((Number) thing).doubleValue() - l;
+        Long d = ((Number) thing).longValue() - l;
         thing = (T) d;
       }
     }
@@ -152,7 +151,7 @@ public class Thing<T> {
   }
   
   
-  public Thing sub(double l) {
+  public Thing minus(double l) {
     synchronized(S) {
       if(thing != null && thing instanceof Number) {
         Double d = ((Number) thing).doubleValue() - l;

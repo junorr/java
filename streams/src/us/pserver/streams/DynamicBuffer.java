@@ -47,6 +47,8 @@ public class DynamicBuffer implements Closeable {
   
   private int pageSize;
   
+  private Thing<Long> size;
+  
   private boolean read;
   
   private StreamCoderFactory coder;
@@ -58,6 +60,7 @@ public class DynamicBuffer implements Closeable {
     read = false;
     pageSize = DEFAULT_PAGE_SIZE;
     coder = StreamCoderFactory.getNew();
+    size = new Thing<>(0L);
   }
   
   
@@ -147,14 +150,16 @@ public class DynamicBuffer implements Closeable {
   
   
   public long size() {
+    return size.getNumber().longValue();
+  }
+  
+  
+  public DynamicBuffer rewind() {
     synchronized(DEFAULT_PAGE_SIZE) {
-      boolean write = !read;
-      if(write) setReading();
-      Thing<Long> t = new Thing(0);
-      buffers.forEach(b->t.plus(b.remaining()));
-      if(write) setWriting();
-      return t.get();
+      index = 0;
+      buffers.forEach(b->b.rewind());
     }
+    return this;
   }
   
   
@@ -220,18 +225,22 @@ public class DynamicBuffer implements Closeable {
       @Override
       public void write(int b) throws IOException {
         synchronized(DEFAULT_PAGE_SIZE) {
-        setWriting();
-        ByteBuffer buf = getCurrentPage();
-        if(buf.remaining() < 1) 
-          buf = appendNew().getCurrentPage();
-        buf.put((byte) b);
+          setWriting();
+          ByteBuffer buf = getCurrentPage();
+          if(buf.remaining() < 1) 
+            buf = appendNew().getCurrentPage();
+          buf.put((byte) b);
+          size.increment();
         }
       }
       @Override
       public void write(byte[] bs, int off, int len) throws IOException {
-        if(bs == null || bs.length < 1)
+        if(bs == null) {
           throw new IllegalArgumentException(
-              "Invalid byte array: "+ (bs != null ? bs.length : bs));
+              "Invalid byte array: "+ bs);
+        }
+        if(bs.length == 0 || len == 0) return;
+        
         if(off < 0 || off+len > bs.length)
           throw new IllegalArgumentException(
               "Invalid off position: "+ off);
@@ -240,17 +249,18 @@ public class DynamicBuffer implements Closeable {
               "Invalid length: "+ len);
         
         synchronized(DEFAULT_PAGE_SIZE) {
-        setWriting();
-        ByteBuffer buf = getCurrentPage();
-        if(buf.remaining() < 1) 
-          buf = appendNew().getCurrentPage();
-        int nlen = Math.min(buf.remaining(), len);
-        buf.put(bs, off, nlen);
-        off += nlen;
-        len -= nlen;
-        if(len > 0) {
-          write(bs, off, len);
-        }
+          setWriting();
+          ByteBuffer buf = getCurrentPage();
+          if(buf.remaining() < 1) 
+            buf = appendNew().getCurrentPage();
+          int nlen = Math.min(buf.remaining(), len);
+          buf.put(bs, off, nlen);
+          off += nlen;
+          len -= nlen;
+          size.plus(nlen);
+          if(len > 0) {
+            write(bs, off, len);
+          }
         }
       }
       @Override

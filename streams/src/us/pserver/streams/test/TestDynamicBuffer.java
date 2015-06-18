@@ -27,6 +27,8 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import us.pserver.cdr.crypt.CryptAlgorithm;
+import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.streams.DynamicBuffer;
 import us.pserver.streams.SequenceInputStream;
 
@@ -41,7 +43,12 @@ public class TestDynamicBuffer {
   public static void main(String[] args) throws IOException {
     SequenceInputStream in = new SequenceInputStream(100);
     DynamicBuffer buffer = new DynamicBuffer(10);
-    buffer.setGZipCoderEnabled(true);
+    CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
+    buffer
+        .setGZipCoderEnabled(true)
+        .setCryptCoderEnabled(true, key)
+        //.setBase64CoderEnabled(true)
+        ;
     //OutputStream os = buffer.getOutputStream();
     OutputStream os = buffer.getEncoderStream();
     int read = -1;
@@ -49,6 +56,7 @@ public class TestDynamicBuffer {
     while((read = in.read(bs)) > 0) {
       os.write(bs, 0, read);
     }
+    os.close();
     
     List<Integer> list = new LinkedList<>();
     InputStream is = buffer.getInputStream();
@@ -57,6 +65,16 @@ public class TestDynamicBuffer {
     }
     System.out.println("* Sequence: "+ Arrays.toString(list.toArray()));
     System.out.println("* buffer.getUsedPages() = "+ buffer.getUsedPages());
+    System.out.println("* buffer.size() = "+ buffer.size());
+    
+    list.clear();
+    is = buffer.rewind().getDecoderStream();
+    while((read = is.read()) != -1) {
+      list.add(read);
+    }
+    System.out.println("* list.size() = "+ list.size());
+    System.out.println("* Sequence: "+ Arrays.toString(list.toArray()));
+    is.close();
   }
   
 }

@@ -183,16 +183,11 @@ public class StreamCoderFactory {
     if(!isAnyCoderEnabled()) throw new IOException(
         "No coder configured");
     int min = Math.min(index, types.length -1);
-    //String scd = "";
     for(int i = min; i >= 0; i--) {
       if(types[i] != null) {
-        //scd = types[i].name() + scd;
-        //scd = " >> " + scd;
-        os = IO.bf(create(os, types[i]));
+        os = create(os, types[i]);
       }
     }
-    //scd = "* StreamCoderFactory.Encoder" + scd;
-    //System.out.println(scd);
     return os;
   }
   
@@ -202,15 +197,12 @@ public class StreamCoderFactory {
     switch(tp) {
       case CRYPT:
         return CryptUtils.createCipherOutputStream(os, key);
-        //return new CryptOutputStream(os, key);
       case BASE64:
         return new Base64OutputStream(os);
       case GZIP:
         return new GZIPOutputStream(os);
       default:
-        throw new IOException(
-            "create( OutputStream, "
-                + "CoderType ): No such coder ["+ tp+ "]");
+        throw new IOException("No such coder ["+ tp+ "]");
     }
   }
   
@@ -219,15 +211,11 @@ public class StreamCoderFactory {
     if(!isAnyCoderEnabled()) throw new IOException(
         "No coder configured");
     int min = Math.min(index, types.length -1);
-    //String scd = "* StreamCoderFactory.Decoder";
     for(int i = min; i >= 0; i--) {
       if(types[i] != null) {
-        //scd += " >> ";
-        //scd += types[i].name();
-        is = IO.bf(create(is, types[i]));
+        is = create(is, types[i]);
       }
     }
-    //System.out.println(scd);
     return is;
   }
   
@@ -237,19 +225,17 @@ public class StreamCoderFactory {
     switch(tp) {
       case CRYPT:
         return CryptUtils.createCipherInputStream(is, key);
-        //return new CryptInputStream(is, key);
       case BASE64:
         return new Base64InputStream(is);
       case GZIP:
-        return new GZIPInputStream(is);
+        return new GZIPInputStream(new UnsignedInputStream(is));
       default:
-        throw new IOException(
-            "create( InputStream, "
-                + "CoderType ): No such coder ["+ tp+ "]");
+        throw new IOException("No such coder ["+ tp+ "]");
     }
   }
   
   
+  @Override
   public String toString() {
     return "StreamCoderFactory{BASE64="+ isBase64CoderEnabled()+ ", GZIP="+ isGZipCoderEnabled()+ ", CRYPT="+ isCryptCoderEnabled()+ "}";
   }
