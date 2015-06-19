@@ -74,7 +74,7 @@ public class DynamicBuffer implements Closeable {
   
   private DynamicBuffer appendNew() {
     synchronized(DEFAULT_PAGE_SIZE) {
-    buffers.add(ByteBuffer.allocateDirect(pageSize));
+    buffers.add(ByteBuffer.allocate(pageSize));
     index = buffers.size() -1;
     return this;
     }
