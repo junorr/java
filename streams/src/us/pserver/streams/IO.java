@@ -23,6 +23,9 @@ package us.pserver.streams;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,7 +42,7 @@ import static us.pserver.chk.Checker.nullarg;
  */
 public abstract class IO {
   
-  public static int BUFFER_SIZE = 1024;
+  public static int BUFFER_SIZE = 4096;
   
   
   public static void buffer_size(int size) {
@@ -113,6 +116,81 @@ public abstract class IO {
     try {
       return is(p);
     } catch(IOException e) {
+      return null;
+    }
+  }
+  
+  
+  public static File f(String fileName) {
+    if(fileName == null || fileName.trim().isEmpty())
+      return null;
+    return new File(fileName);
+  }
+  
+  
+  public static FileOutputStream fo(String fileName) throws IOException {
+    if(fileName == null || fileName.trim().isEmpty())
+      throw new IOException("Invalid file name ["+ fileName+ "]");
+    return new FileOutputStream(fileName);
+  }
+  
+  
+  public static FileOutputStream ufo(String fileName) {
+    if(fileName == null || fileName.trim().isEmpty())
+      throw new IllegalArgumentException("Invalid file name ["+ fileName+ "]");
+    try {
+      return new FileOutputStream(fileName);
+    } catch(FileNotFoundException e) {
+      return null;
+    }
+  }
+  
+  
+  public static FileOutputStream fo(File file) throws IOException {
+    if(file == null) return null;
+    return new FileOutputStream(file);
+  }
+  
+  
+  public static FileOutputStream ufo(File file) {
+    if(file == null) return null;
+    try {
+      return new FileOutputStream(file);
+    } catch(FileNotFoundException e) {
+      return null;
+    }
+  }
+  
+  
+  public static FileOutputStream af(String fileName) throws IOException {
+    if(fileName == null || fileName.trim().isEmpty())
+      throw new IOException("Invalid file name ["+ fileName+ "]");
+    return new FileOutputStream(fileName, true);
+  }
+  
+  
+  public static FileOutputStream uaf(String fileName) {
+    if(fileName == null || fileName.trim().isEmpty())
+      throw new IllegalArgumentException("Invalid file name ["+ fileName+ "]");
+    try {
+      return new FileOutputStream(fileName, true);
+    } catch(FileNotFoundException e) {
+      return null;
+    }
+  }
+  
+  
+  public static FileOutputStream af(File file) throws IOException {
+    if(file == null) return null;
+    return new FileOutputStream(file, true);
+  }
+  
+  
+  public static FileOutputStream uaf(File file) {
+    if(file == null) return null;
+    try {
+      return new FileOutputStream(file, true);
+    } catch(FileNotFoundException e) {
       return null;
     }
   }

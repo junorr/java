@@ -21,8 +21,12 @@
 
 package us.pserver.streams.test;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import us.pserver.cdr.crypt.CryptAlgorithm;
+import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.streams.DynamicBuffer;
 import us.pserver.streams.IO;
 import us.pserver.streams.SequenceInputStream;
@@ -37,9 +41,13 @@ public class TestPerformanceDynBuf {
 
   
   public static void main(String[] args) throws IOException {
-    System.out.println("* Using 4096 transfer buffer and 1.1MB in memory buffer");
     IO.BUFFER_SIZE = 4096;
-    int membuf = 1024*1024+10;
+    int membuf = 512*1024;
+    
+    System.out.println("* Using "+IO.BUFFER_SIZE 
+        +" transfer buffer and "+(membuf/1024) 
+        +"KB in memory buffer");
+    
     DynamicBuffer buffer = new DynamicBuffer(membuf);
     SequenceInputStream sin = new SequenceInputStream(1024*1024);
     OutputStream os = buffer.getOutputStream();
@@ -49,16 +57,26 @@ public class TestPerformanceDynBuf {
     long end = System.nanoTime();
     System.out.println("* Time: "+ (end - start)/1000000.0+ " ms");
     
-    os = IO.uos(IO.p("/home/juno/sequence.dat"));
+    os = IO.fo("/home/juno/sequence.dat");
+    FileDescriptor fd = ((FileOutputStream)os).getFD();
     sin = new SequenceInputStream(1024*1024);
     System.out.println("* writing 1MB file plain data");
     start = System.nanoTime();
-    IO.tc(sin, os);
+    IO.tr(sin, os);
+    os.flush();
+    fd.sync();
+    os.close();
     end = System.nanoTime();
     System.out.println("* Time: "+ (end - start)/1000000.0+ " ms");
     
+    CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
+    System.out.println("* CryptKey: "+ key.toString());
+    
     buffer = new DynamicBuffer(membuf);
-    buffer.setGZipCoderEnabled(true);
+    buffer
+        .setGZipCoderEnabled(true)
+        .setCryptCoderEnabled(true, key)
+        ;
     os = buffer.getEncoderStream();
     sin = new SequenceInputStream(1024*1024);
     System.out.println("* writing 1MB in memory gzipped data");
@@ -68,12 +86,20 @@ public class TestPerformanceDynBuf {
     System.out.println("* Time: "+ (end - start)/1000000.0+ " ms");
     
     StreamCoderFactory fact = StreamCoderFactory.getNew();
-    fact.setGZipCoderEnabled(true);
-    os = fact.create(IO.os(IO.p("/home/juno/sequence.gz")));
+    fact
+        .setGZipCoderEnabled(true)
+        .setCryptCoderEnabled(true, key)
+        ;
+    os = IO.fo("/home/juno/sequence.gz");
+    fd = ((FileOutputStream)os).getFD();
+    os = fact.create(os);
     sin = new SequenceInputStream(1024*1024);
     System.out.println("* writing 1MB file gzipped data");
     start = System.nanoTime();
-    IO.tc(sin, os);
+    IO.tr(sin, os);
+    os.flush();
+    fd.sync();
+    os.close();
     end = System.nanoTime();
     System.out.println("* Time: "+ (end - start)/1000000.0+ " ms");
     
