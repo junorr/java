@@ -46,7 +46,7 @@ public class TestDynamicBuffer {
     CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
     buffer
         .setGZipCoderEnabled(true)
-        .setCryptCoderEnabled(true, key)
+        //.setCryptCoderEnabled(true, key)
         //.setBase64CoderEnabled(true)
         ;
     //OutputStream os = buffer.getOutputStream();

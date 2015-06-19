@@ -177,6 +177,16 @@ public class DynamicBuffer implements Closeable {
   }
   
   
+  public DynamicBuffer reset() {
+    synchronized(DEFAULT_PAGE_SIZE) {
+      setReading();
+      rewind();
+      size.set(0L);
+    }
+    return this;
+  }
+  
+  
   public DynamicBuffer flip() {
     synchronized(DEFAULT_PAGE_SIZE) {
     read = !read;
@@ -186,17 +196,18 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  private void setWriting() {
+  public void setWriting() {
     synchronized(DEFAULT_PAGE_SIZE) {
-    if(read) {
-      flip();
-      index = buffers.size() -1;
-    }
+      if(read) {
+        flip();
+        if(!buffers.isEmpty())
+          index = buffers.size() -1;
+      }
     }
   }
   
   
-  private void setReading() {
+  public void setReading() {
     synchronized(DEFAULT_PAGE_SIZE) {
     if(!read) {
       flip();
