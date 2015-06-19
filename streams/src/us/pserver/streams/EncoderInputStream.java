@@ -21,8 +21,6 @@
 
 package us.pserver.streams;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,13 +36,9 @@ public class EncoderInputStream extends FilterInputStream {
   
   public static int BUFFER_SIZE = 4096;
 
-  private StreamCoderFactory sfact;
+  private DynamicBuffer buffer;
   
   private OutputStream out;
-  
-  private ByteArrayOutputStream bos;
-  
-  private ByteArrayInputStream bis;
   
   private boolean closed;
   
@@ -53,87 +47,55 @@ public class EncoderInputStream extends FilterInputStream {
     super(src);
     if(src == null)
       throw new IllegalArgumentException("Invalid null source InputStream");
-    sfact = StreamCoderFactory.getNew();
+    buffer = new DynamicBuffer();
     out = null;
-    bos = new ByteArrayOutputStream();
-    bis = null;
     closed = false;
   }
   
   
   public EncoderInputStream setBase64CoderEnabled(boolean enabled) {
-    sfact.setBase64CoderEnabled(enabled);
+    buffer.setBase64CoderEnabled(enabled);
     return this;
   }
   
   
   public EncoderInputStream setGZipCoderEnabled(boolean enabled) {
-    sfact.setGZipCoderEnabled(enabled);
+    buffer.setGZipCoderEnabled(enabled);
     return this;
   }
   
   
   public EncoderInputStream setCryptCoderEnabled(boolean enabled, CryptKey key) {
-    sfact.setCryptCoderEnabled(enabled, key);
+    buffer.setCryptCoderEnabled(enabled, key);
     return this;
   }
   
   
   public boolean isBase64CoderEnabled() {
-    return sfact.isBase64CoderEnabled();
+    return buffer.isBase64CoderEnabled();
   }
   
   
   public boolean isGZipCoderEnabled() {
-    return sfact.isGZipCoderEnabled();
+    return buffer.isGZipCoderEnabled();
   }
   
   
   public boolean isCryptCoderEnabled() {
-    return sfact.isCryptCoderEnabled();
+    return buffer.isCryptCoderEnabled();
   }
   
   
   private void fillBuffer() throws IOException {
     if(closed) return;
-    if(out == null) {
-      if(sfact.isAnyCoderEnabled())
-        out = sfact.create(bos);
-      else 
-        out = bos;
-    }
-    bos.reset();
-    byte[] bs = new byte[BUFFER_SIZE];
-    int read = in.read(bs);
-    if(read < 1) {
-      closed = true;
-      out.close();
-      in.close();
-    }
-    else {
-      out.write(bs, 0, read);
-      out.flush();
-    }
-    if(read != bs.length) fillBuffer();
-    System.out.println("EncoderInputStream.bos.size()="+ bos.size());
+    
   }
   
   
   @Override
   public int read() throws IOException {
     if(closed) return -1;
-    if(bis == null && bos.size() < 1)
-      fillBuffer();
-    if(bis == null) {
-      if(bos.size() > 0) {
-        bis = new ByteArrayInputStream(bos.toByteArray());
-        bos.reset();
-      }
-      else return -1;
-    }
-    int read = bis.read();
-    if(read < 1) bis = null;
-    return read;
+    
   }
   
   
@@ -146,18 +108,7 @@ public class EncoderInputStream extends FilterInputStream {
     if(off < 0 || off + len > bs.length)
       throw new IllegalArgumentException("Invalid arguments: off="+ off+ ", len="+ len);
     
-    if(bis == null && bos.size() < 1)
-      fillBuffer();
-    if(bis == null) {
-      if(bos.size() > 0) {
-        bis = new ByteArrayInputStream(bos.toByteArray());
-        bos.reset();
-      }
-      else return -1;
-    }
-    int read = bis.read(bs, off, len);
-    if(read < 1) bis = null;
-    return read;
+    
   }
   
   

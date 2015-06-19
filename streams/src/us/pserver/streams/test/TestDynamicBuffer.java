@@ -45,6 +45,7 @@ public class TestDynamicBuffer {
     DynamicBuffer buffer = new DynamicBuffer(10);
     CryptKey key = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
     buffer
+        //.size()
         .setGZipCoderEnabled(true)
         //.setCryptCoderEnabled(true, key)
         //.setBase64CoderEnabled(true)
@@ -66,6 +67,28 @@ public class TestDynamicBuffer {
     System.out.println("* Sequence: "+ Arrays.toString(list.toArray()));
     System.out.println("* buffer.getUsedPages() = "+ buffer.getUsedPages());
     System.out.println("* buffer.size() = "+ buffer.size());
+    
+    
+    System.out.println("* Test buffer reuse by buffer.reset().setWriting()");
+    in = new SequenceInputStream(100);
+    buffer.reset().setWriting();
+    os = buffer.getEncoderStream();
+    read = -1;
+    bs = new byte[7];
+    while((read = in.read(bs)) > 0) {
+      os.write(bs, 0, read);
+    }
+    os.close();
+    
+    list.clear();
+    is = buffer.getInputStream();
+    while((read = is.read()) != -1) {
+      list.add(read);
+    }
+    System.out.println("* Sequence: "+ Arrays.toString(list.toArray()));
+    System.out.println("* buffer.getUsedPages() = "+ buffer.getUsedPages());
+    System.out.println("* buffer.size() = "+ buffer.size());
+
     
     list.clear();
     is = buffer.rewind().getDecoderStream();
