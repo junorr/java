@@ -34,22 +34,36 @@ import us.pserver.cdr.crypt.CryptKey;
  */
 public class EncoderInputStream extends FilterInputStream {
   
-  public static int BUFFER_SIZE = 4096;
+  public static final Integer DEFAULT_TEMP_BUFFER_SIZE = 4096;
+  
 
   private DynamicBuffer buffer;
   
-  private OutputStream out;
+  private OutputStream encout;
   
-  private boolean closed;
+  private InputStream source;
+  
+  private int closed;
+  
+  private byte[] temp;
   
   
   public EncoderInputStream(InputStream src) {
     super(src);
     if(src == null)
       throw new IllegalArgumentException("Invalid null source InputStream");
+    source = src;
     buffer = new DynamicBuffer();
-    out = null;
-    closed = false;
+    encout = null;
+    closed = 0;
+    temp = new byte[DEFAULT_TEMP_BUFFER_SIZE];
+  }
+  
+  
+  public EncoderInputStream(InputStream src, int tempBufSize) {
+    this(src);
+    if(tempBufSize > 0)
+      temp = new byte[tempBufSize];
   }
   
   
@@ -87,28 +101,73 @@ public class EncoderInputStream extends FilterInputStream {
   
   
   private void fillBuffer() throws IOException {
-    if(closed) return;
-    
+    if(closed > 0) {
+      closed++;
+      return;
+    }
+    buffer.reset();
+    if(encout == null) {
+      encout = buffer.getEncoderStream();
+    }
+    while(buffer.size() < 1) {
+      int read = source.read(temp);
+      System.out.println("-> fillBuffer.read = "+ read);
+      if(read < 1) {
+        closed++;
+        source.close();
+        encout.flush();
+        encout.close();
+        System.out.println("-> fillBuffer.size = "+ buffer.size());
+        break;
+      }
+      encout.write(temp, 0, read);
+    }
   }
   
   
   @Override
   public int read() throws IOException {
-    if(closed) return -1;
-    
+    synchronized(DEFAULT_TEMP_BUFFER_SIZE) {
+    if(closed > 1) return -1;
+    if(buffer.size() > 0) {
+      int read = buffer.getInputStream().read();
+      if(read == -1) {
+        fillBuffer();
+        return read();
+      }
+      return read;
+    }
+    else {
+      fillBuffer();
+      return read();
+    }
+    }
   }
   
   
   @Override
   public int read(byte[] bs, int off, int len) throws IOException {
-    if(closed) return -1;
+    synchronized(DEFAULT_TEMP_BUFFER_SIZE) {
+    if(closed > 1) return -1;
     if(bs == null)
       throw new IllegalArgumentException("Invalid null byte array");
     if(bs.length == 0 || len < 1) return -1;
     if(off < 0 || off + len > bs.length)
       throw new IllegalArgumentException("Invalid arguments: off="+ off+ ", len="+ len);
     
-    
+    if(buffer.size() > 0) {
+      int read = buffer.getInputStream().read(bs, off, len);
+      if(read < 1) {
+        fillBuffer();
+        return read(bs, off, len);
+      }
+      return read;
+    }
+    else {
+      fillBuffer();
+      return read(bs, off, len);
+    }
+    }
   }
   
   

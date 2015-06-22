@@ -23,18 +23,29 @@ package us.pserver.streams.test;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 18/06/2015
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 20/06/2015
  */
-public class TestByte {
+public class TestLang {
+  
+  public static void printArgs(int a, int b) {
+    System.out.println(" \\> printArgs( "+ a+ ", "+ b+ " )");
+  }
 
   
   public static void main(String[] args) {
-    int i = 200;
-    System.out.println("* i="+ i);
-    byte b = (byte) 200;
-    System.out.println("* b="+ b);
-    System.out.println("* b+255="+ (b+256));
+    int i = 0;
+    System.out.println("printArgs(i, i++):");
+    printArgs(i, i++);
+    i = 0;
+    System.out.println("printArgs(i++, i):");
+    printArgs(i++, i);
+    i = 0;
+    System.out.println("printArgs(i, ++i):");
+    printArgs(i, ++i);
+    i = 0;
+    System.out.println("printArgs(++i, i):");
+    printArgs(++i, i);
   }
   
 }

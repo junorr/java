@@ -37,14 +37,13 @@ public class TestEncoderInputStream {
   
   public static void main(String[] args) throws IOException {
     SequenceInputStream sin = new SequenceInputStream(100);
-    StoppeableInputStream stop = new StoppeableInputStream(sin, "ABC".getBytes(), s->System.out.println("WE HAVE A MATCH!!!"));
     EncoderInputStream enc = new EncoderInputStream(sin);
     enc.setGZipCoderEnabled(true);
-    //EncoderInputStream enc = new EncoderInputStream(IO.is(IO.p("/home/juno/sequence.dat")));
     byte[] bs = new byte[1];
     int count = 0;
     while(enc.read(bs) > 0) {
       System.out.println("- read = "+ bs[0]);
+      count++;
     }
     System.out.println("* count="+ count);
   }

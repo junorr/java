@@ -47,7 +47,7 @@ public class TestFunnelInputStream {
     SequenceInputStream i20 = new SequenceInputStream(20, 30);
     System.out.println("i20.available() = "+ i20.available());
     FunnelInputStream is = new FunnelInputStream();
-    is.add(i0).add(i10).add(i20);
+    is.append(i0).append(i10).append(i20);
     
     DynamicBuffer buffer = new DynamicBuffer(10);
     OutputStream os = buffer.getOutputStream();

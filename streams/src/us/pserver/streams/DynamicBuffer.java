@@ -41,7 +41,7 @@ public class DynamicBuffer implements Closeable {
   public static final Integer DEFAULT_PAGE_SIZE = 512 * 1024;
   
 
-  private List<ByteBuffer> buffers;
+  private List<ByteBuffer> pages;
   
   private int index;
   
@@ -49,15 +49,15 @@ public class DynamicBuffer implements Closeable {
   
   private Thing<Long> size;
   
-  private boolean read;
+  private Thing<Boolean> read;
   
   private StreamCoderFactory coder;
   
   
   public DynamicBuffer() {
-    buffers = Collections.synchronizedList(new ArrayList<ByteBuffer>());
+    pages = Collections.synchronizedList(new ArrayList<ByteBuffer>());
     index = 0;
-    read = false;
+    read = new Thing<>(false);
     pageSize = DEFAULT_PAGE_SIZE;
     coder = StreamCoderFactory.getNew();
     size = new Thing<>(0L);
@@ -74,9 +74,9 @@ public class DynamicBuffer implements Closeable {
   
   private DynamicBuffer appendNew() {
     synchronized(DEFAULT_PAGE_SIZE) {
-    buffers.add(ByteBuffer.allocate(pageSize));
-    index = buffers.size() -1;
-    return this;
+      pages.add(ByteBuffer.allocate(pageSize));
+      index = pages.size() -1;
+      return this;
     }
   }
   
@@ -119,16 +119,34 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  public ByteBuffer getCurrentPage() {
-    if(buffers.size() <= index) {
+  private ByteBuffer getCurrentPage() {
+    if(pages.size() <= index) {
       this.appendNew();
     }
-    return buffers.get(index);
+    return pages.get(index);
+  }
+  
+  
+  private ByteBuffer nextPage() {
+    ByteBuffer buf = getCurrentPage();
+    if(buf.remaining() < 1) {
+      if(index + 1 < pages.size() 
+          && pages.get(index+1).remaining() > 0)
+        buf = pages.get(++index);
+      else
+        buf = appendNew().getCurrentPage();
+    }
+    return buf;
   }
   
   
   public int getPageSize() {
     return pageSize;
+  }
+  
+  
+  public int getIndex() {
+    return index;
   }
   
   
@@ -140,12 +158,12 @@ public class DynamicBuffer implements Closeable {
   
   
   public int getUsedPages() {
-    return buffers.size();
+    return pages.size();
   }
   
   
   public List<ByteBuffer> pagesList() {
-    return Collections.unmodifiableList(buffers);
+    return Collections.unmodifiableList(pages);
   }
   
   
@@ -155,65 +173,69 @@ public class DynamicBuffer implements Closeable {
   
   
   public DynamicBuffer rewind() {
-    synchronized(DEFAULT_PAGE_SIZE) {
-      index = 0;
-      buffers.forEach(b->b.rewind());
-    }
-    return this;
+    pages.forEach(b->b.rewind());
+    return positionStart();
   }
   
   
   @Override
   public void close() {
-    synchronized(DEFAULT_PAGE_SIZE) {
-      buffers.forEach(b->b.reset());
-      buffers.clear();
-    }
+    pages.forEach(b->b.reset());
+    pages.clear();
   }
   
   
   public boolean isReading() {
-    return read;
+    return read.isTrue();
   }
   
   
   public DynamicBuffer reset() {
-    synchronized(DEFAULT_PAGE_SIZE) {
-      setReading();
-      rewind();
-      size.set(0L);
-    }
-    return this;
+    read.setFalse();
+    pages.forEach(b->b.clear());
+    size.set(0L);
+    return positionStart();
   }
   
   
   public DynamicBuffer flip() {
     synchronized(DEFAULT_PAGE_SIZE) {
-    read = !read;
-    buffers.forEach(b->b.flip());
-    return this;
+      read.invertBoolean();
+      pages.forEach(b->b.flip());
+      return this;
     }
   }
   
   
-  public void setWriting() {
-    synchronized(DEFAULT_PAGE_SIZE) {
-      if(read) {
-        flip();
-        if(!buffers.isEmpty())
-          index = buffers.size() -1;
+  public DynamicBuffer positionEnd() {
+    if(!pages.isEmpty())
+      synchronized(DEFAULT_PAGE_SIZE) {
+        index = pages.size() -1;
       }
-    }
+    return this;
   }
   
   
-  public void setReading() {
+  public DynamicBuffer positionStart() {
     synchronized(DEFAULT_PAGE_SIZE) {
-    if(!read) {
-      flip();
       index = 0;
     }
+    return this;
+  }
+  
+  
+  public DynamicBuffer setWriting() {
+    if(read.isTrue()) flip();
+    return this;
+  }
+  
+  
+  public DynamicBuffer setReading() {
+    if(!read.isTrue()) {
+      flip();
+      positionStart();
     }
+    return this;
   }
   
   
@@ -237,9 +259,7 @@ public class DynamicBuffer implements Closeable {
       public void write(int b) throws IOException {
         synchronized(DEFAULT_PAGE_SIZE) {
           setWriting();
-          ByteBuffer buf = getCurrentPage();
-          if(buf.remaining() < 1) 
-            buf = appendNew().getCurrentPage();
+          ByteBuffer buf = nextPage();
           buf.put((byte) b);
           size.increment();
         }
@@ -261,9 +281,7 @@ public class DynamicBuffer implements Closeable {
         
         synchronized(DEFAULT_PAGE_SIZE) {
           setWriting();
-          ByteBuffer buf = getCurrentPage();
-          if(buf.remaining() < 1) 
-            buf = appendNew().getCurrentPage();
+          ByteBuffer buf = nextPage();
           int nlen = Math.min(buf.remaining(), len);
           buf.put(bs, off, nlen);
           off += nlen;
@@ -291,10 +309,10 @@ public class DynamicBuffer implements Closeable {
         synchronized(DEFAULT_PAGE_SIZE) {
         setReading();
         int read = -1;
-        if(buffers.isEmpty() || index >= buffers.size()) {
+        if(pages.isEmpty() || index >= pages.size()) {
           return read;
         }
-        ByteBuffer buf = buffers.get(index);
+        ByteBuffer buf = pages.get(index);
         if(buf.remaining() < 1) { 
           index++;
           read = read();
@@ -319,9 +337,9 @@ public class DynamicBuffer implements Closeable {
         
         synchronized(DEFAULT_PAGE_SIZE) {
         setReading();
-        if(buffers.isEmpty() || index >= buffers.size()) 
+        if(pages.isEmpty() || index >= pages.size()) 
           return -1;
-        ByteBuffer buf = buffers.get(index);
+        ByteBuffer buf = pages.get(index);
         if(buf.remaining() < 1) { 
           index++;
           return read(bs, off, len);

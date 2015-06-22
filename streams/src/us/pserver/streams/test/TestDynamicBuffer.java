@@ -69,9 +69,9 @@ public class TestDynamicBuffer {
     System.out.println("* buffer.size() = "+ buffer.size());
     
     
-    System.out.println("* Test buffer reuse by buffer.reset().setWriting()");
+    System.out.println("* Test buffer reuse by buffer.reset()");
     in = new SequenceInputStream(100);
-    buffer.reset().setWriting();
+    buffer.reset();
     os = buffer.getEncoderStream();
     read = -1;
     bs = new byte[7];

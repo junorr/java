@@ -71,6 +71,58 @@ public class Thing<T> {
   }
   
   
+  public boolean isBoolean() {
+    return (thing instanceof Boolean);
+  }
+  
+  
+  public boolean isBooleanOrNumber() {
+    return this.isBoolean() || this.isNumber();
+  }
+  
+  
+  public boolean isTrue() {
+    return !this.isEmpty()
+        && ((this.isBoolean() && ((Boolean)thing) == Boolean.TRUE)
+          || (this.isNumber() && this.getNumber().intValue() > 0));
+  }
+  
+  
+  public boolean not() {
+    if(!this.isEmpty() && this.isBooleanOrNumber()) {
+      return !this.isTrue();
+    }
+    return false;
+  }
+  
+  
+  public Thing setTrue() {
+    if(this.isBoolean())
+      thing = (T) Boolean.TRUE;
+    else if(this.isNumber())
+      thing = (T) new Integer(1);
+    return this;
+  }
+  
+  
+  public Thing setFalse() {
+    if(this.isBoolean())
+      thing = (T) Boolean.FALSE;
+    else if(this.isNumber())
+      thing = (T) new Integer(0);
+    return this;
+  }
+  
+  
+  public Thing invertBoolean() {
+    if(this.isBooleanOrNumber()) {
+      if(this.isTrue()) this.setFalse();
+      else this.setTrue();
+    }
+    return this;
+  }
+  
+  
   public Thing set(T t) {
     synchronized(S) {
       this.thing = t;

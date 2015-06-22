@@ -50,12 +50,17 @@ public class StoppeableInputStream extends FilterInputStream {
   private boolean stopped;
   
   
+  public StoppeableInputStream(InputStream src, byte[] stopOn) {
+    this(src, stopOn, null);
+  }
+  
+  
   public StoppeableInputStream(InputStream src, byte[] stopOn, Consumer<StoppeableInputStream> cs) {
     super(src);
     if(src == null)
       throw new IllegalArgumentException("Invalid null InputStream");
     if(stopOn == null)
-      throw new IllegalArgumentException("Invalid null stop string");
+      throw new IllegalArgumentException("Invalid null stop byte array");
     source = src;
     charset = DEFAULT_CHARSET;
     action = cs;
@@ -110,6 +115,7 @@ public class StoppeableInputStream extends FilterInputStream {
   
   @Override
   public int read(byte[] bs, int off, int len) throws IOException {
+    if(stopped) return -1;
     if(bs == null)
       throw new IllegalArgumentException("Invalid null byte array");
     if(bs.length == 0 || len < 1) return -1;

@@ -47,7 +47,7 @@ public class FunnelInputStream extends InputStream {
   }
   
   
-  public FunnelInputStream add(InputStream is) {
+  public FunnelInputStream append(InputStream is) {
     if(is != null) {
       streams.add(is);
     }
