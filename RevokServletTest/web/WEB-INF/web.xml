@@ -20,10 +20,10 @@
           io.IStreamHandler=us.pserver.revok.test.StreamHandler
         </param-value>
       </init-param>
-      <init-param>
+      <!--init-param>
         <param-name>us.pserver.revok.container.Credentials</param-name>
         <param-value>juno:1234@io, @calc, @*</param-value>
-      </init-param>
+      </init-param-->
     </servlet>
     
     <servlet-mapping>

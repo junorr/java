@@ -277,7 +277,6 @@ public abstract class IO {
       total += read;
       os.write(buf, 0, read);
       os.flush();
-      //if(read != buf.length) break;
     }
     return total;
   }

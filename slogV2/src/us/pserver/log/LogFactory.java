@@ -381,9 +381,9 @@ public class LogFactory {
       if(logfile != null) {
         file = new FileLogOutput(logfile);
       }
-      LogOutput std = new PrintStreamOutput(()->System.out)
+      LogOutput std = new PrintStreamOutput(System.out)
           .setLevelEnabled(LogLevel.ERROR, false);
-      LogOutput err = new PrintStreamOutput(()->System.err)
+      LogOutput err = new PrintStreamOutput(System.err)
           .setAllLevelsEnabled(false)
           .setLevelEnabled(LogLevel.ERROR, true);
       factory().put(ID_STD_OUTPUT, std)
@@ -467,9 +467,9 @@ public class LogFactory {
       if(logfile != null) {
         file = new FileLogOutput(logfile);
       }
-      LogOutput std = new PrintStreamOutput(()->System.out)
+      LogOutput std = new PrintStreamOutput(System.out)
           .setLevelEnabled(LogLevel.ERROR, false);
-      LogOutput err = new PrintStreamOutput(()->System.err)
+      LogOutput err = new PrintStreamOutput(System.err)
           .setAllLevelsEnabled(false)
           .setLevelEnabled(LogLevel.ERROR, true);
       factory().put(ID_STD_OUTPUT, std)

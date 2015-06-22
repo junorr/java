@@ -42,8 +42,7 @@ public class MixedWriteBuffer extends AbstractMixedBuffer {
   protected MixedWriteBuffer(ByteBuffer buf, File tmp) throws IOException {
     super();
     if(buf == null)
-      throw new IllegalArgumentException(
-          "[MixeWritedBuffer( ByteBuffer, File )] Invalid ByteBuffer: "+ buf);
+      throw new IllegalArgumentException("Invalid ByteBuffer: "+ buf);
     this.buffer = buf;
     temp = tmp;
     raf = null;
@@ -99,8 +98,7 @@ public class MixedWriteBuffer extends AbstractMixedBuffer {
   public void write(byte[] bs, int off, int len) throws IOException {
     validate();
     if(bs == null || off < 0 || len > bs.length - off)
-      throw new IllegalArgumentException(
-          "[MixedWriteBuffer.write( [B, int, int )] Invalid Arguments {bs="
+      throw new IllegalArgumentException("Invalid Arguments {bs="
               + bs+ ", bs.length="+ (bs != null ? bs.length : 0)+ ", off="+ off+ ", len="+ len+ "}");
     
     if(buffer.hasRemaining()) {
@@ -126,8 +124,7 @@ public class MixedWriteBuffer extends AbstractMixedBuffer {
   public void write(byte[] bs) throws IOException {
     validate();
     if(bs == null)
-      throw new IllegalArgumentException(
-          "[MixedWriteBuffer.write( [B )] Invalid byte array {bs="+ bs+ "}");
+      throw new IllegalArgumentException("Invalid byte array {bs="+ bs+ "}");
     this.write(bs, 0, bs.length);
   }
   
@@ -143,11 +140,9 @@ public class MixedWriteBuffer extends AbstractMixedBuffer {
   public MixedWriteBuffer load(Path p) throws IOException {
     validate();
     if(p == null)
-      throw new IllegalArgumentException(
-          "[MixedWriteBuffer.load( Path )] Invalid null path {p="+ p+ "}");
+      throw new IllegalArgumentException("Invalid null path {p="+ p+ "}");
     if(!Files.exists(p))
-      throw new IllegalArgumentException(
-          "[MixedWriteBuffer.load( Path )] Path does not exist {p="+ p+ "}");
+      throw new IllegalArgumentException("Path does not exist {p="+ p+ "}");
     IO.tc(IO.is(p), getOutputStream());
     return this;
   }
@@ -156,8 +151,7 @@ public class MixedWriteBuffer extends AbstractMixedBuffer {
   public MixedWriteBuffer load(InputStream in) throws IOException {
     validate();
     if(in == null)
-      throw new IllegalArgumentException(
-          "[MixedWriteBuffer.load( InputStream )] Invalid null stream {in="+ in+ "}");
+      throw new IllegalArgumentException("Invalid null stream {in="+ in+ "}");
     IO.tc(in, getOutputStream());
     return this;
   }

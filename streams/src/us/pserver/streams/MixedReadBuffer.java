@@ -46,8 +46,7 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
   protected MixedReadBuffer(ByteBuffer buf, File tmp, MixedWriteBuffer writer) throws IOException {
     super();
     if(buf == null)
-      throw new IllegalArgumentException(
-          "[MixeReadBuffer( ByteBuffer, File )] Invalid ByteBuffer: "+ buf);
+      throw new IllegalArgumentException("Invalid ByteBuffer: "+ buf);
     this.buffer = buf;
     temp = tmp;
     raf = null;
@@ -88,8 +87,7 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
   public int read(byte[] bs, int off, int len) throws IOException {
     validate();
     if(bs == null || off < 0 || len > bs.length - off)
-      throw new IllegalArgumentException(
-          "[MixedReadBuffer.read( [B, int, int )] Invalid Arguments {bs="
+      throw new IllegalArgumentException("Invalid Arguments {bs="
               + bs+ ", bs.length="+ (bs != null ? bs.length : 0)+ ", off="+ off+ ", len="+ len+ "}");
     
     int read = -1;
@@ -118,8 +116,7 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
   public int read(byte[] bs) throws IOException {
     validate();
     if(bs == null)
-      throw new IllegalArgumentException(
-          "[MixedReadBuffer.write( [B )] Invalid byte array {bs="+ bs+ "}");
+      throw new IllegalArgumentException("Invalid byte array {bs="+ bs+ "}");
     return this.read(bs, 0, bs.length);
   }
   
@@ -127,8 +124,7 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
   public MixedReadBuffer flush(Path p) throws IOException {
     validate();
     if(p == null)
-      throw new IllegalArgumentException(
-          "[MixedWriteBuffer.load( Path )] Invalid null path {p="+ p+ "}");
+      throw new IllegalArgumentException("Invalid null path {p="+ p+ "}");
     if(!Files.exists(p)) {
       if(p.getParent() != null && !Files.exists(p.getParent())) {
         Files.createDirectories(p.getParent());
@@ -143,8 +139,7 @@ public class MixedReadBuffer extends AbstractMixedBuffer {
   public MixedReadBuffer flush(OutputStream out) throws IOException {
     validate();
     if(out == null)
-      throw new IllegalArgumentException(
-          "[MixedReadBuffer.flush( OutputStream )] Invalid null stream {out="+ out+ "}");
+      throw new IllegalArgumentException("Invalid null stream {out="+ out+ "}");
     IO.tc(getInputStream(), out);
     return this;
   }

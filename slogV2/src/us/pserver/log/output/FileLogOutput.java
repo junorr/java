@@ -30,7 +30,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Implements a <code>LogOutput</code> which redirects logs to a file.
+ * Implements a <code>LogOutput</code> which redirects logs to file.
+ * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.1 - 201506
  */

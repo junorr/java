@@ -36,6 +36,7 @@ public class TestStoppeableInputStream {
   public static void main(String[] args) throws IOException {
     SequenceInputStream in = new SequenceInputStream(100);
     StoppeableInputStream sin = new StoppeableInputStream(in, "ABC".getBytes(), s->{
+      System.out.println("StopFactor reached: ABC");
       try { s.close(); } 
       catch(IOException e) {}
     });

@@ -111,13 +111,11 @@ public class EncoderInputStream extends FilterInputStream {
     }
     while(buffer.size() < 1) {
       int read = source.read(temp);
-      System.out.println("-> fillBuffer.read = "+ read);
       if(read < 1) {
         closed++;
         source.close();
         encout.flush();
         encout.close();
-        System.out.println("-> fillBuffer.size = "+ buffer.size());
         break;
       }
       encout.write(temp, 0, read);

@@ -27,12 +27,17 @@ import java.io.PrintStream;
 import us.pserver.log.LogLevel;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 05/06/2015
+ * An implementation of <code>LogOutput</code> which
+ * redirect log messages to a <code>PrintStream</code>.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.1 - 201506
  */
 public class PrintStreamOutput extends AbstractLogOutput {
   
+  /**
+   * Synchronized object for thread safety.
+   */
   private static final Object SYNC = new Object();
   
   private PrintStreamFactory factory;
@@ -40,6 +45,14 @@ public class PrintStreamOutput extends AbstractLogOutput {
   PrintStream print;
   
   
+  /**
+   * Constructor which receives the factory of
+   * <code>PrintStream</code> objects for printing log messages
+   * and the formatter for log outputs.
+   * @param fact The factory which will create the 
+   * <code>PrintStream</code> object when needed.
+   * @param fmt The formatter for log outputs.
+   */
   public PrintStreamOutput(PrintStreamFactory fact, OutputFormatter fmt) {
     super(fmt);
     if(fact == null)
@@ -49,11 +62,33 @@ public class PrintStreamOutput extends AbstractLogOutput {
   }
   
   
+  /**
+   * Default constructor receives the factory of
+   * <code>PrintStream</code> objects for printing log messages.
+   * @param fact The factory which will create the 
+   * <code>PrintStream</code> object when needed.
+   */
   public PrintStreamOutput(PrintStreamFactory fact) {
     this(fact, OutputFormatterFactory.standardFormatter());
   }
   
   
+  /**
+   * Constructor which receives the <code>PrintStream</code> 
+   * object for printing log messages.
+   * @param fact The <code>PrintStream</code> object for printing log messages.
+   */
+  public PrintStreamOutput(PrintStream ps) {
+    this(()->ps);
+  }
+  
+  
+  /**
+   * Set the factory of <code>PrintStream</code> 
+   * objects for printing log messages.
+   * @param fact The factory of <code>PrintStream</code> 
+   * objects for print log messages.
+   */
   public void setPrintStreamFactory(PrintStreamFactory fact) {
     if(fact == null)
       throw new IllegalArgumentException("Invalid PrintStreamFactory: "+ fact);
@@ -61,11 +96,23 @@ public class PrintStreamOutput extends AbstractLogOutput {
   }
   
   
+  /**
+   * Get the factory of <code>PrintStream</code> 
+   * objects for printing log messages.
+   * @return The factory to create <code>PrintStream</code> 
+   * objects for print log messages.
+   */
   public PrintStreamFactory getPrintStreamFactory() {
     return factory;
   }
   
   
+  /**
+   * Return the <code>PrintStream</code> object
+   * current in use by this <code>LogOutput</code>.
+   * @return the <code>PrintStream</code> object
+   * current in use by this <code>LogOutput</code>.
+   */
   public PrintStream getPrinter() {
     synchronized(SYNC) {
       if(print == null)

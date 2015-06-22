@@ -39,12 +39,6 @@ public class StringBuilderInputStream extends InputStream {
   
   private ByteArrayInputStream buffer;
   
-  private int mark;
-  
-  private int readLimit;
-  
-  private int count;
-  
   private int index;
   
   private boolean closed;
@@ -128,6 +122,14 @@ public class StringBuilderInputStream extends InputStream {
   }
   
   
+  @Override
+  public int available() {
+    return (builder == null || builder.length() == 0 
+        ? -1 
+        : builder.toString().getBytes(charset).length) ;
+  }
+  
+  
   public StringBuilderInputStream rewind() {
     index = 0;
     closed = false;
@@ -135,37 +137,14 @@ public class StringBuilderInputStream extends InputStream {
   }
   
   
-  @Override
-  public void mark(int readLimit) {
-    if(readLimit > 0) {
-      this.readLimit = readLimit;
-      index = mark;
-    }
-  }
-  
-  
-  @Override
-  public void reset() {
-    index = mark;
-  }
-  
-  
   public StringBuilderInputStream clear() {
     builder = new StringBuilder();
-    index = mark = 0;
-    count = 0;
-    readLimit = -1;
+    index = 0;
     closed = false;
     return this;
   }
   
   
-  private int incIndex() {
-    count += (readLimit > 0 ? 1 : 0);
-    return ++index;
-  }
-
-
   @Override
   public int read() throws IOException {
     if(closed) return -1;

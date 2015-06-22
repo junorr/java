@@ -74,7 +74,6 @@ public class TestDynamicBuffer {
     buffer.reset();
     os = buffer.getEncoderStream();
     read = -1;
-    bs = new byte[7];
     while((read = in.read(bs)) > 0) {
       os.write(bs, 0, read);
     }

@@ -24,13 +24,19 @@ package us.pserver.log.output;
 import java.io.PrintStream;
 
 /**
- *
+ * A functional interface defining factory behavior for 
+ * creating <code>PrintStream</code> objects.
+ * 
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/06/2015
+ * @version 1.1 - 201506
  */
 @FunctionalInterface
 public interface PrintStreamFactory {
 
+  /**
+   * Create a <code>PrintStream</code> instance.
+   * @return The <code>PrintStream</code> object created.
+   */
   public PrintStream create();
   
 }

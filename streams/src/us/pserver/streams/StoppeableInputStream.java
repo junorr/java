@@ -95,20 +95,51 @@ public class StoppeableInputStream extends FilterInputStream {
   }
   
   
-  @Override
-  public int read() throws IOException {
-    if(stopped) return -1;
+  private void fillBuffer() throws IOException {
     byte[] bs = new byte[1];
-    int read = in.read(bs);
-    if(read < 1) return read;
-    buffer.put(bs[0]);
-    if(buffer.size() == stopFactor.length) {
-      if(Arrays.equals(stopFactor, buffer.buffer())) {
-        if(action != null) action.accept(this);
-        stopped = true;
-        return -1;
+    int read = -1;
+    if(buffer.size() < stopFactor.length) {
+      int num = stopFactor.length - buffer.size();
+      for(int i = 0; i < num; i++) {
+        read = in.read(bs);
+        if(read < 1) break;
+        buffer.put(bs[0]);
       }
     }
+    else {
+      read = in.read(bs);
+      if(read < 1) return;
+      buffer.put(bs[0]);
+    }
+  }
+  
+  
+  @Override
+  public int read() throws IOException {
+    System.out.println("STOPPEABLEINPUTSTREAM.READ(): stopped = "+ stopped);
+    if(stopped) {
+      System.out.println("STOPPEABLEINPUTSTREAM.READ(): STOPPED");
+      return -1;
+    }
+    
+    System.out.println("STOPPEABLEINPUTSTREAM.READ(): FILLBUFFER");
+    fillBuffer();
+    if(buffer.size() < stopFactor.length) {
+      System.out.println("STOPPEABLEINPUTSTREAM.READ(): buffer.size < stopFactor = "+ buffer.size()+ " < "+ stopFactor.length);
+      stopped = true;
+      return -1;
+    }
+    
+    System.out.println("STOPPEABLEINPUTSTREAM.READ(): BUFFER = "+ buffer.toUTF8()+ ", ARRAY = "+ Arrays.toString(buffer.buffer()));
+    System.out.println("STOPPEABLEINPUTSTREAM.READ(): COMPAREBUFFER");
+    if(Arrays.equals(stopFactor, buffer.buffer())) {
+      System.out.println("STOPPEABLEINPUTSTREAM.READ(): stopFactor reached = "+ buffer.toUTF8());
+      if(action != null) action.accept(this);
+      stopped = true;
+      return -1;
+    }
+    
+    System.out.println("STOPPEABLEINPUTSTREAM.READ(): BUFFER.GET(0) = "+ buffer.get(0));
     return buffer.get(0);
   }
   
@@ -125,7 +156,7 @@ public class StoppeableInputStream extends FilterInputStream {
     int count = 0;
     for(int i = off; i < (off+len); i++) {
       int read = this.read();
-      if(read == -1) return (count < 1 ? -1 : count);
+      if(stopped) return (count < 1 ? -1 : count);
       count++;
       bs[i] = (byte) read;
     }

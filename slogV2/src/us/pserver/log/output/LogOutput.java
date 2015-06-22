@@ -25,14 +25,28 @@ import us.pserver.log.format.OutputFormatter;
 import us.pserver.log.LogLevel;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 05/06/2015
+ * Interface that defines an output for log messages.
+ * 
+ * @author Juno Roesler - juno@pserver.us
+ * @version 1.0 - 201506
  */
 public interface LogOutput {
   
+  /**
+   * Set the specified log level enabled/disabled.
+   * @param lvl The log level to be setted.
+   * @param enabled <code>true</code> for enable the log level, 
+   * <code>false</code> to disable it.
+   * @return This modified <code>LogOutput</code> instance.
+   */
   public LogOutput setLevelEnabled(LogLevel lvl, boolean enabled);
   
+  /**
+   * Set all log levels enabled/disabled.
+   * @param enabled <code>true</code> for enable all log levels, 
+   * <code>false</code> to disable them.
+   * @return This modified <code>LogOutput</code> instance.
+   */
   public default LogOutput setAllLevelsEnabled(boolean enabled) {
     return setLevelEnabled(LogLevel.DEBUG, enabled)
         .setLevelEnabled(LogLevel.INFO, enabled)
@@ -40,10 +54,26 @@ public interface LogOutput {
         .setLevelEnabled(LogLevel.ERROR, enabled);
   }
   
+  /**
+   * Verify if the specified log level is enabled.
+   * @param lvl The log level to be verified;
+   * @return <code>true</code> if the log level
+   * is enabled, <code>false</code> otherwise.
+   */
   public boolean isLevelEnabled(LogLevel lvl);
   
+  /**
+   * Direct the log to the output implemented 
+   * by this <code>LogOutput</code>.
+   * @param lvl The log level.
+   * @param msg The log message.
+   * @return This modified <code>LogOutput</code> instance.
+   */
   public LogOutput log(LogLevel lvl, String msg);
   
+  /**
+   * Closes any resources used by this log output.
+   */
   public void close();
   
 }
