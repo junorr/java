@@ -379,10 +379,12 @@ public class LogFactory {
     else {
       LogOutput file = null;
       if(logfile != null) {
-        file = new FileLogOutput(logfile);
+        file = new FileLogOutput(logfile)
+            .setAllLevelsEnabled(true);
       }
       LogOutput std = new PrintStreamOutput(System.out)
-          .setLevelEnabled(LogLevel.ERROR, false);
+          .setLevelEnabled(LogLevel.ERROR, false)
+          .setLevelEnabled(LogLevel.DEBUG, false);
       LogOutput err = new PrintStreamOutput(System.err)
           .setAllLevelsEnabled(false)
           .setLevelEnabled(LogLevel.ERROR, true);
@@ -460,15 +462,18 @@ public class LogFactory {
           FileLogOutput.class.isAssignableFrom(o.getClass()))
           .findFirst().isPresent();
       if(!hasFileLog && logfile != null)
-        log.put(ID_FILE_OUTPUT, new FileLogOutput(logfile));
+        log.put(ID_FILE_OUTPUT, new FileLogOutput(logfile)
+            .setAllLevelsEnabled(true));
     }
     else {
       LogOutput file = null;
       if(logfile != null) {
-        file = new FileLogOutput(logfile);
+        file = new FileLogOutput(logfile)
+            .setAllLevelsEnabled(true);
       }
       LogOutput std = new PrintStreamOutput(System.out)
-          .setLevelEnabled(LogLevel.ERROR, false);
+          .setLevelEnabled(LogLevel.ERROR, false)
+          .setLevelEnabled(LogLevel.DEBUG, false);
       LogOutput err = new PrintStreamOutput(System.err)
           .setAllLevelsEnabled(false)
           .setLevelEnabled(LogLevel.ERROR, true);
