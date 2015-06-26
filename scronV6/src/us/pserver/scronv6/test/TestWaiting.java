@@ -32,19 +32,19 @@ import us.pserver.scronv6.SCronV6;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 02/10/2014
  */
-public class TestWainting {
+public class TestWaiting {
 
   
   
   public static void main(String[] args) throws InterruptedException {
     SCronV6 cron = new SCronV6();
-    Log log = LogFactory.getSimpleLog(SCronV6.class);
+    Log log = LogFactory.getOrCreateSimpleLog(SCronV6.class, true);
     cron.put(new Schedule().startNow().repeatInMinutes(1), 
         ()->log.info("* Minute job running"));
     cron.put(new Schedule().startDelayed(500).repeatInSeconds(30), 
         ()->log.info("* 30 Seconds job running"));
     
-    log.info("Wanting for 1 min...");
+    log.info("Waiting for 2 min...");
     Thread.sleep(2000*60);
     cron.put(new Schedule().startAt(new SimpleDate().addMinute(8)), 
         ()->{log.info("*** 8 Minutes job running ***"); System.exit(0);});

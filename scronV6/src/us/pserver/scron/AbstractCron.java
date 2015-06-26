@@ -76,7 +76,7 @@ public abstract class AbstractCron implements SCron {
     jobs = new JobsManager();
     shutdownAtEmpty = false;
     logEnabled = true;
-    log = LogFactory.getSimpleLog(SCron.class);
+    log = LogFactory.getOrCreateSimpleLog(SCron.class, true);
     dataMap.put(KEY_LOGGER, log)
         .put(getClass().getSimpleName(), this);
   }

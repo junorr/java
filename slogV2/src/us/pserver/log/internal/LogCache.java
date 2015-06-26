@@ -34,7 +34,7 @@ import us.pserver.log.output.LogOutput;
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 25/06/2015
+ * @version 1.0 - 26/06/2015
  */
 public class LogCache {
 
@@ -47,33 +47,8 @@ public class LogCache {
   }
   
   
-  public LogCache put(String name, Log log) {
-    if(name != null && log != null) {
-      cache.put(name, log);
-    }
-    return this;
-  }
-  
-  
-  public boolean contains(String name) {
-    return cache.containsKey(name);
-  }
-  
-  
-  public boolean containsWithSamePrefix(String name) {
-    return getAllNames().stream().filter(
-        s->name.startsWith(s) || s.startsWith(name))
-        .findAny().isPresent();
-  }
-  
-  
   public Map<String, Log> cacheMap() {
-    return Collections.unmodifiableMap(cache);
-  }
-  
-  
-  public Log get(String name) {
-    return cache.get(name);
+    return cache;
   }
   
   
@@ -87,16 +62,73 @@ public class LogCache {
   }
   
   
+  public LogCache put(String name, Log log) {
+    if(name != null && log != null) {
+      cache.put(name, log);
+    }
+    return this;
+  }
+  
+  
+  public Log get(String name) {
+    if(name == null) return null;
+    return cache.get(name);
+  }
+  
+  
+  public Log remove(String name) {
+    if(name == null) return null;
+    return cache.remove(name);
+  }
+  
+  
+  public boolean contains(String name) {
+    if(name == null) return false;
+    return cache.containsKey(name);
+  }
+  
+  
   public Log getWithSamePrefix(String name) {
-    Optional<String> opt = getAllNames().stream().filter(
-        s->name.startsWith(s) || s.startsWith(name)).findFirst();
-    return (opt.isPresent() ? cache.get(opt.get()) : null);
+    if(name == null) return null;
+    Optional<Map.Entry<String, Log>> opt = 
+        cache.entrySet().stream().filter(
+            e->e.getKey().startsWith(name) 
+                || name.startsWith(e.getKey()))
+            .findFirst();
+    return (opt.isPresent() ? opt.get().getValue() : null);
+  }
+  
+  
+  public Log removeWithSamePrefix(String name) {
+    if(name == null) return null;
+    Optional<String> opt = cache.keySet().stream().filter(
+        s->s.startsWith(name) || name.startsWith(s)).findFirst();
+    if(!opt.isPresent()) return null;
+    return cache.remove(opt.get());
+  }
+  
+  
+  public Collection<Log> removeAllWithSamePrefix(String name) {
+    if(name == null) return Collections.EMPTY_LIST;
+    List<Log> ls = new LinkedList<>();
+    cache.entrySet().stream().filter(
+        e->e.getKey().startsWith(name) || name.startsWith(e.getKey()))
+        .forEach(e->ls.add(e.getValue()));
+    return ls;
+  }
+  
+  
+  public boolean containsWithSamePrefix(String name) {
+    if(name == null) return false;
+    return cache.keySet().stream().filter(
+        s->s.startsWith(name) || name.startsWith(s))
+        .findFirst().isPresent();
   }
   
   
   public Map<String, LogOutput> getOutputsFor(String name) {
     if(!contains(name)) return Collections.EMPTY_MAP;
-    return cache.get(name).outputsMap();
+    return get(name).outputsMap();
   }
   
   
@@ -106,62 +138,37 @@ public class LogCache {
   }
   
   
+  public Collection<String> getAllNames() {
+    if(cache.isEmpty()) return Collections.EMPTY_LIST;
+    return Collections.unmodifiableCollection(cache.keySet());
+  }
+  
+  
+  public Collection<Log> getAll() {
+    if(cache.isEmpty()) return Collections.EMPTY_LIST;
+    return Collections.unmodifiableCollection(cache.values());
+  }
+  
+  
   public Log copyOutputsFor(String name, Log log) {
-    if(name == null || !contains(name) || log == null)
+    if(!contains(name) || log == null) 
       return log;
-    Log elog = get(name);
-    log.outputsMap().putAll(elog.outputsMap());
+    Log orig = get(name);
+    log.clearOutputs();
+    orig.outputsMap().entrySet().forEach(
+        e->log.put(e.getKey(), e.getValue()));
     return log;
   }
   
   
   public Log copyOutputsForSamePrefix(String name, Log log) {
-    if(name == null || !containsWithSamePrefix(name) || log == null)
+    if(!containsWithSamePrefix(name) || log == null) 
       return log;
-    Log elog = getWithSamePrefix(name);
-    log.outputsMap().putAll(elog.outputsMap());
+    Log orig = getWithSamePrefix(name);
+    log.clearOutputs();
+    orig.outputsMap().entrySet().forEach(
+        e->log.put(e.getKey(), e.getValue()));
     return log;
-  }
-  
-  
-  public Log remove(String name) {
-    return cache.remove(name);
-  }
-  
-  
-  public Log removeWithSamePrefix(String name) {
-    if(name == null || !containsWithSamePrefix(name))
-      return null;
-    Optional<String> opt = cache.keySet().stream().filter(
-        s->name.startsWith(s) || s.startsWith(name)).findFirst();
-    return (opt.isPresent() ? cache.remove(opt.get()) : null);
-  }
-  
-  
-  public List<Log> removeAllWithSamePrefix(String name) {
-    if(name == null || !containsWithSamePrefix(name))
-      return null;
-    List<String> nameList = new LinkedList<>();
-    List<Log> logList = new LinkedList<>();
-    cache.keySet().stream().filter(
-        s->name.startsWith(s) || s.startsWith(name))
-        .forEach(nameList::add);
-    nameList.forEach(s->logList.add(cache.remove(s)));
-    return logList;
-  }
-  
-  
-  public Collection<Log> getAllLogs() {
-    if(cache.isEmpty())
-      return Collections.EMPTY_LIST;
-    return Collections.unmodifiableCollection(cache.values());
-  }
-  
-  
-  public Collection<String> getAllNames() {
-    if(cache.isEmpty())
-      return Collections.EMPTY_LIST;
-    return Collections.unmodifiableCollection(cache.keySet());
   }
   
 }

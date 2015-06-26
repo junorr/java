@@ -70,6 +70,8 @@ public class J3270 extends javax.swing.JFrame {
   
   public static final String CONN_PORT = "connection.port";
   
+  public static final String USE_TERMS = "use_terms_agreed";
+  
   public static final String STARTUP_SCRIPT = "startup_script";
   
   public static final String COMMENT = "J3270 - Java 3270 Terminal Emulator";
@@ -199,6 +201,7 @@ public class J3270 extends javax.swing.JFrame {
       setDefaultConfig();
     else
       readConfig();
+    checkUseTerms();
   }
   
   
@@ -236,6 +239,21 @@ public class J3270 extends javax.swing.JFrame {
     grid.setViewFont(readGridFont());
     readConnection();
     script = readStartupScript();
+  }
+  
+  
+  private void checkUseTerms() {
+    boolean agreed = false;
+    if(config.contains(USE_TERMS)) {
+      agreed = Boolean.parseBoolean(config.get(USE_TERMS));
+    }
+    if(!agreed) {
+      agreed = UseTermsDialog.showDialog(this);
+    }
+    if(!agreed) {
+      System.exit(1);
+    }
+    config.put(USE_TERMS, agreed).save();
   }
   
   

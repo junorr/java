@@ -44,7 +44,7 @@ public class SLogV2Test {
   }
    
   public static void main(String[] args) throws InterruptedException {
-    Log log = LogFactory.getSLogV2(SLogV2Test.class).start();
+    Log log = LogFactory.createDefaultSLogV2(SLogV2Test.class, false).start();
     log.error(newIOException(), false);
     repeat(5, ()-> log.debug("This is a Debug Message."));
     repeat(5, ()-> log.info("This is a Info Message."));

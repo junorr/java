@@ -28,7 +28,6 @@ import us.pserver.scron.Job;
 import us.pserver.scron.Schedule;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.swing.JOptionPane;
 import us.pserver.log.Log;
 import us.pserver.log.LogFactory;
 import us.pserver.scron.AbstractCron;
@@ -67,7 +66,7 @@ public class SCronV6 extends AbstractCron {
   public SCronV6() {
     super();
     threads = DEFAULT_THREADS;
-    log = LogFactory.getSimpleLog(this.getClass());
+    log = LogFactory.getOrCreateSimpleLog(this.getClass(), true);
   }
   
   

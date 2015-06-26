@@ -33,10 +33,14 @@ public class TestFactory {
 
   
   public static void main(String[] args) {
-    Log log = LogFactory.getSimpleLog(TestFactory.class);
+    Log log = LogFactory.createDefaultSimpleLog(TestFactory.class, false);
+    System.out.println("* isCached(TestFactory.class, false) = "+ LogFactory.isCached(TestFactory.class, false));
+    System.out.println("* isCached(TestFactory.class, true) = "+ LogFactory.isCached(TestFactory.class, true));
     log.info("Some initial message");
     LogFactory.putCached("us.pserver.log", log);
-    log = LogFactory.getCached(SimpleLogTest.class);
+    log = LogFactory.getCached(SimpleLogTest.class, true);
+    System.out.println("* isCached(TestFactory.class, false) = "+ LogFactory.isCached(TestFactory.class, false));
+    System.out.println("* isCached(TestFactory.class, true) = "+ LogFactory.isCached(TestFactory.class, true));
     log.info("Message logged with similar cached");
   }
   

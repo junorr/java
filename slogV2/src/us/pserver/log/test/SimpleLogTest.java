@@ -43,7 +43,7 @@ public class SimpleLogTest {
   }
    
   public static void main(String[] args) throws InterruptedException {
-    Log log = LogFactory.getSimpleLog(SimpleLogTest.class);
+    Log log = LogFactory.createDefaultSimpleLog(SimpleLogTest.class, false);
     log.error(newIOException(), false);
     runFor(5, ()-> log.debug("This is a Debug Message."));
     runFor(5, ()-> log.info("This is a Info Message."));

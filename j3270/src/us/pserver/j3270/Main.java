@@ -49,7 +49,7 @@ public class Main {
       }
     };
     w.setLocation((scs.width-img.getWidth())/2, (scs.height-img.getHeight())/2);
-    w.setAlwaysOnTop(true);
+    //w.setAlwaysOnTop(true);
     w.setSize(img.getWidth(), img.getHeight());
     w.setVisible(true);
     
@@ -58,7 +58,7 @@ public class Main {
     new Thread(new Runnable() {
       @Override
       public void run() {
-        try { Thread.sleep(1000); }
+        try { Thread.sleep(1500); }
         catch(InterruptedException e) {}
         w.dispose();
       }
