@@ -26,6 +26,7 @@ import us.pserver.log.LogLevel;
 
 /**
  * Interface that defines an output for log messages.
+ * Implementations of this interface must support multithreading.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 1.0 - 201506

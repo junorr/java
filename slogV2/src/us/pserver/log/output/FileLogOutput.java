@@ -41,7 +41,7 @@ public class FileLogOutput extends PrintStreamOutput {
   
   
   /**
-   * A <code>PrintStream</code> factory for file.
+   * A <code>PrintStream</code> factory for file output.
    */
   static class FilePrintStreamFactory implements PrintStreamFactory {
     private final Path path;
