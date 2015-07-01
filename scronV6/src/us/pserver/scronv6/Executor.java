@@ -22,7 +22,7 @@
 package us.pserver.scronv6;
 
 import us.pserver.scron.ExecutionContext;
-import us.pserver.scronv6.hide.Pair;
+import us.pserver.scronv6.repeat.Pair;
 import us.pserver.log.Log;
 import us.pserver.scron.AbstractCron;
 
@@ -50,7 +50,7 @@ public class Executor implements Runnable {
    * contexto de execução <code>ExecutionContext</code>.
    * @param p <code>Pair</code>.
    * @param c <code>ExecutionContext</code>.
-   * @see us.pserver.scronv6.hide.Pair
+   * @see us.pserver.scronv6.repeat.Pair
    * @see us.pserver.scron.ExecutionContext
    */
   public Executor(Pair p, ExecutionContext c) {

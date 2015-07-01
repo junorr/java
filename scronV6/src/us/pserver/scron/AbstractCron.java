@@ -21,8 +21,8 @@
 
 package us.pserver.scron;
 
-import us.pserver.scronv6.hide.JobsManager;
-import us.pserver.scronv6.hide.Pair;
+import us.pserver.scronv6.repeat.JobsManager;
+import us.pserver.scronv6.repeat.Pair;
 import us.pserver.conc.ExclusiveList;
 import us.pserver.log.Log;
 import us.pserver.log.LogFactory;
@@ -162,7 +162,7 @@ public abstract class AbstractCron implements SCron {
    * Retorna <code>JobsManager</code>
    * utilizado para organizar os agendamentos.
    * @return <code>JobsManager</code>.
-   * @see us.pserver.scronv6.hide.JobsManager
+   * @see us.pserver.scronv6.repeat.JobsManager
    */
   @Override
   public JobsManager manager() {

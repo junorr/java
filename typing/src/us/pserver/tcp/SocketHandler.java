@@ -19,38 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.timer.test;
+package us.pserver.tcp;
 
-import java.util.Arrays;
-import us.pserver.timer.Timer;
+import java.io.IOException;
+import java.net.Socket;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 29/06/2015
+ * @version 1.0 - 01/07/2015
  */
-public class TestTimerNanos {
-
+public interface SocketHandler {
   
-  public static void main(String[] args) {
-    Timer.Nanos tm = new Timer.Nanos();
-    String s1 = "0";
-    String s2 = "01234";
-    String s3 = "0123456789";
-    tm.start();
-    System.out.println(s1);
-    System.out.flush();
-    tm.lap();
-    System.out.println(s2);
-    System.out.flush();
-    tm.lap();
-    System.out.println(s3);
-    System.out.flush();
-    tm.lapAndStop();
-    
-    System.out.println("* "+ tm);
-    System.out.println("* laps: "+ Arrays.toString(tm.lapsElapsedFromLast().lapsToMillis().toArray()));
-    System.out.println("* laps: "+ Arrays.toString(tm.lapsElapsedFromStart().lapsToMillis().toArray()));
-  }
+  public Socket getSocket();
+
+  public void send(byte[] buf, int off, int len) throws IOException;
+  
+  public void send(String str) throws IOException;
+  
+  public int receive(byte[] buf) throws IOException;
+  
+  public String receive() throws IOException;
   
 }

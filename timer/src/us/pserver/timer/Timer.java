@@ -70,6 +70,8 @@ public interface Timer {
   
   public Timer lapsElapsedFromLast();
   
+  public List<Double> lapsToMillis();
+  
   
   public static List<Double> nanosToMillis(List<Long> list) {
     if(list == null || list.isEmpty())
@@ -128,6 +130,7 @@ public interface Timer {
     }
     
     
+    @Override
     public Timer lapsElapsedFromStart() {
       if(laps.isEmpty()) return new Timer.Millis();
       AbstractTimer tm = (AbstractTimer) this.cloneTimer();
@@ -138,6 +141,7 @@ public interface Timer {
     }
     
     
+    @Override
     public Timer lapsElapsedFromLast() {
       if(laps.isEmpty()) return new Timer.Millis();
       AbstractTimer tm = (AbstractTimer) this.cloneTimer();
@@ -288,6 +292,11 @@ public interface Timer {
       return elapsed() / 1_000_000.0;
     }
     
+    
+    public List<Double> lapsToMillis() {
+      return nanosToMillis(laps);
+    }
+    
   }
   
   
@@ -332,6 +341,15 @@ public interface Timer {
     @Override
     public double elapsedMillis() {
       return elapsed();
+    }
+    
+    
+    @Override
+    public List<Double> lapsToMillis() {
+      if(laps.isEmpty()) return Collections.EMPTY_LIST;
+      ArrayList<Double> ls = new ArrayList<>(laps.size());
+      laps.forEach(l->ls.add(l.doubleValue()));
+      return ls;
     }
     
     

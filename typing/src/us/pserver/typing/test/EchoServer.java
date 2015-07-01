@@ -19,38 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.timer.test;
+package us.pserver.typing.test;
 
-import java.util.Arrays;
-import us.pserver.timer.Timer;
+import java.io.IOException;
+import java.util.Date;
+import us.pserver.tcp.TcpListener;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 29/06/2015
+ * @version 1.0 - 01/07/2015
  */
-public class TestTimerNanos {
+public class EchoServer {
 
   
-  public static void main(String[] args) {
-    Timer.Nanos tm = new Timer.Nanos();
-    String s1 = "0";
-    String s2 = "01234";
-    String s3 = "0123456789";
-    tm.start();
-    System.out.println(s1);
-    System.out.flush();
-    tm.lap();
-    System.out.println(s2);
-    System.out.flush();
-    tm.lap();
-    System.out.println(s3);
-    System.out.flush();
-    tm.lapAndStop();
-    
-    System.out.println("* "+ tm);
-    System.out.println("* laps: "+ Arrays.toString(tm.lapsElapsedFromLast().lapsToMillis().toArray()));
-    System.out.println("* laps: "+ Arrays.toString(tm.lapsElapsedFromStart().lapsToMillis().toArray()));
+  public static void main(String[] args) throws IOException {
+    TcpListener tl = new TcpListener("localhost", 50500);
+    System.out.println(tl);
+    tl.startServer(t->{
+      try {
+        String str = t.getSocketHandler().receive();
+        if(str == null) return;
+        System.out.println("<- "+ str);
+        if(str.toLowerCase().startsWith("quit")) {
+          System.out.println(":: bye");
+          System.exit(1);
+        }
+        t.getSocketHandler().send(new Date().toString() + ":"+ str);
+      } catch(IOException e) {
+        throw new RuntimeException(e.toString(), e);
+      }
+    });
   }
   
 }

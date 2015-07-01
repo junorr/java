@@ -23,7 +23,7 @@ package us.pserver.scronv6;
 
 import us.pserver.scron.JobFactory;
 import us.pserver.scron.ExecutionContext;
-import us.pserver.scronv6.hide.Pair;
+import us.pserver.scronv6.repeat.Pair;
 import us.pserver.scron.Job;
 import us.pserver.scron.Schedule;
 import java.util.concurrent.ExecutorService;

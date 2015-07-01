@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.scronv6.hide;
+package us.pserver.scronv6.repeat;
 
 import us.pserver.date.SimpleDate;
 
@@ -29,14 +29,13 @@ import us.pserver.date.SimpleDate;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 10/04/2014
  */
-public class MillisRepeater implements Repeater {
+public class MinuteRepeater implements Repeater {
 
 
   @Override
   public SimpleDate set(SimpleDate date, int amount) {
     if(date == null) return date;
-    date.setTime(date.getTime() + amount);
-    return date;
+    return date.addMinute(amount);
   }
 
 }

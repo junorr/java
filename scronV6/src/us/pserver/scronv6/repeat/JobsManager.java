@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.scronv6.hide;
+package us.pserver.scronv6.repeat;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +34,7 @@ import us.pserver.conc.ExclusiveList;
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 10/04/2014
- * @see us.pserver.scronv6.hide.Pair
+ * @see us.pserver.scronv6.repeat.Pair
  */
 public class JobsManager {
 

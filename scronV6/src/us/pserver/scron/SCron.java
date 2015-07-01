@@ -21,8 +21,8 @@
 
 package us.pserver.scron;
 
-import us.pserver.scronv6.hide.JobsManager;
-import us.pserver.scronv6.hide.Pair;
+import us.pserver.scronv6.repeat.JobsManager;
+import us.pserver.scronv6.repeat.Pair;
 import java.util.List;
 import us.pserver.log.Log;
 
@@ -130,7 +130,7 @@ public interface SCron {
    * Retorna <code>JobsManager</code>
    * utilizado para organizar os agendamentos.
    * @return <code>JobsManager</code>.
-   * @see us.pserver.scronv6.hide.JobsManager
+   * @see us.pserver.scronv6.repeat.JobsManager
    */
   public JobsManager manager();
   

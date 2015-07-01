@@ -21,14 +21,14 @@
 
 package us.pserver.scron;
 
-import us.pserver.scronv6.hide.MonthRepeater;
-import us.pserver.scronv6.hide.SecondRepeater;
-import us.pserver.scronv6.hide.YearRepeater;
-import us.pserver.scronv6.hide.Repeater;
-import us.pserver.scronv6.hide.HourRepeater;
-import us.pserver.scronv6.hide.MillisRepeater;
-import us.pserver.scronv6.hide.DayRepeater;
-import us.pserver.scronv6.hide.MinuteRepeater;
+import us.pserver.scronv6.repeat.MonthRepeater;
+import us.pserver.scronv6.repeat.SecondRepeater;
+import us.pserver.scronv6.repeat.YearRepeater;
+import us.pserver.scronv6.repeat.Repeater;
+import us.pserver.scronv6.repeat.HourRepeater;
+import us.pserver.scronv6.repeat.MillisRepeater;
+import us.pserver.scronv6.repeat.DayRepeater;
+import us.pserver.scronv6.repeat.MinuteRepeater;
 import java.util.Objects;
 import us.pserver.date.SimpleDate;
 
@@ -106,7 +106,7 @@ public class Schedule {
    * Retorna o objeto responsável por ajustar
    * a repetição na data de agendamento.
    * @return <code>Repeater</code>.
-   * @see us.pserver.scronv6.hide.Repeater
+   * @see us.pserver.scronv6.repeat.Repeater
    */
   public Repeater getRepeater() {
     return rept;

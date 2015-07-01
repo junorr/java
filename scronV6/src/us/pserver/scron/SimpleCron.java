@@ -21,7 +21,7 @@
 
 package us.pserver.scron;
 
-import us.pserver.scronv6.hide.Pair;
+import us.pserver.scronv6.repeat.Pair;
 
 /**
  * <b>SimpleCron</b> é o motor de execução dos trabalhos

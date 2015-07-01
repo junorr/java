@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.scronv6.hide;
+package us.pserver.scronv6.repeat;
 
 import us.pserver.scron.Job;
 import us.pserver.scron.Schedule;

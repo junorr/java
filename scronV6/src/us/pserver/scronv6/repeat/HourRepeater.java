@@ -19,22 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.scronv6.hide;
+package us.pserver.scronv6.repeat;
 
 import us.pserver.date.SimpleDate;
+
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 10/04/2014
  */
-public class YearRepeater implements Repeater {
+public class HourRepeater implements Repeater {
 
 
   @Override
   public SimpleDate set(SimpleDate date, int amount) {
     if(date == null) return date;
-    return date.addYear(amount);
+    return date.addHour(amount);
   }
 
 }
