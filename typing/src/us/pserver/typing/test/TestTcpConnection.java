@@ -22,33 +22,46 @@
 package us.pserver.typing.test;
 
 import java.io.IOException;
-import java.util.Date;
-import us.pserver.tcp.TcpListener;
+import java.util.List;
+import us.pserver.tcp.TcpConnector;
+import us.pserver.timer.Timer;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 01/07/2015
  */
-public class EchoServer {
+public class TestTcpConnection {
 
   
-  public static void main(String[] args) throws IOException {
-    TcpListener tl = new TcpListener("localhost", 50500);
-    System.out.println(tl);
-    tl.startServer(t->{
-      try {
-        String str = t.getSocketHandler().receive();
-        while(str != null && !str.toLowerCase().startsWith("quit")) {
-          System.out.println("<- "+ str);
-          t.getSocketHandler().send(new Date().toString() + "::"+ str);
-          str = t.getSocketHandler().receive();
-        }
-        System.out.println(":: bye");
-      } catch(IOException e) {
-        throw new RuntimeException(e.toString(), e);
-      }
-    });
+  public static void main(String[] args) throws IOException, InterruptedException {
+    TcpConnector con = new TcpConnector("172.29.14.102", 3306);
+    Timer.Nanos tm = new Timer.Nanos();
+    
+    tm.start();
+    con.connect();
+    tm.lap();
+    
+    con.disconnect();
+    tm.lapAndStop();
+    
+    List<Double> laps =  tm.lapsElapsedFromLast().lapsToMillis();
+    System.out.println(tm);
+    System.out.println("Conn: "+ laps.get(0));
+    System.out.println("Disc: "+ laps.get(1));
+    System.out.println();
+    
+    tm.clear().start();
+    con.connect();
+    tm.lap();
+    
+    con.disconnect();
+    tm.lapAndStop();
+    
+    laps =  tm.lapsElapsedFromLast().lapsToMillis();
+    System.out.println(tm);
+    System.out.println("Conn: "+ laps.get(0));
+    System.out.println("Disc: "+ laps.get(1));
   }
   
 }

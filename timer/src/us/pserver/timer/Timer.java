@@ -46,6 +46,8 @@ public interface Timer {
   
   public Timer lapAndStop();
   
+  public Timer clear();
+  
   public List<Long> laps();
   
   public long lapsSum();
@@ -121,6 +123,14 @@ public interface Timer {
     protected void addLap(long lapRaw) {
       if(start < 0) start = lapRaw;
       laps.add(lapRaw);
+    }
+    
+    
+    @Override
+    public Timer clear() {
+      start = end = 0;
+      laps.clear();
+      return this;
     }
     
     
@@ -293,6 +303,7 @@ public interface Timer {
     }
     
     
+    @Override
     public List<Double> lapsToMillis() {
       return nanosToMillis(laps);
     }
@@ -349,6 +360,18 @@ public interface Timer {
       if(laps.isEmpty()) return Collections.EMPTY_LIST;
       ArrayList<Double> ls = new ArrayList<>(laps.size());
       laps.forEach(l->ls.add(l.doubleValue()));
+      return ls;
+    }
+    
+    
+    public List<DateDiff> lapsToDiff() {
+      if(laps.isEmpty()) return Collections.EMPTY_LIST;
+      long ant = start;
+      List<DateDiff> ls = new ArrayList<>(laps.size());
+      for(long l : laps) {
+        ls.add(new DateDiff(new Date(ant), new Date(l)));
+        ant = l;
+      }
       return ls;
     }
     

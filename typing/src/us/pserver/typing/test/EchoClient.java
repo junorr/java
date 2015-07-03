@@ -37,15 +37,18 @@ public class EchoClient {
   public static void main(String[] args) throws IOException, InterruptedException {
     TcpConnector con = new TcpConnector("localhost", 50500);
     Timer.Nanos tm = new Timer.Nanos();
-    tm.start();
     
+    tm.start();
     con.connect();
     tm.lap();
     
     con.send("Hello World!");
     tm.lap();
     
-    System.out.println(con.receive());
+    System.out.println("-> "+ con.receive());
+    tm.lap();
+    
+    con.send("quit");
     tm.lap();
     
     con.disconnect();
@@ -53,32 +56,36 @@ public class EchoClient {
     
     List<Double> laps =  tm.lapsElapsedFromLast().lapsToMillis();
     System.out.println(tm);
-    System.out.println("Conn1: "+ laps.get(0));
+    System.out.println("Conn: "+ laps.get(0));
     System.out.println("Send1: "+ laps.get(1));
     System.out.println("Rece1: "+ laps.get(2));
-    System.out.println("Disc1: "+ laps.get(3));
+    System.out.println("Send2: "+ laps.get(3));
+    System.out.println("Disc: "+ laps.get(4));
     System.out.println();
-    tm = new Timer.Nanos().start();
     
+    tm.clear().start();
     con.connect();
+    tm.lap();
+    
+    con.send("Hello World!");
+    tm.lap();
+    
+    System.out.println("-> "+ con.receive());
     tm.lap();
     
     con.send("quit");
     tm.lap();
     
-    System.out.println(con.receive());
-    tm.lap();
-    
     con.disconnect();
     tm.lapAndStop();
     
-    
     laps =  tm.lapsElapsedFromLast().lapsToMillis();
     System.out.println(tm);
-    System.out.println("Conn2: "+ laps.get(0));
-    System.out.println("Send2: "+ laps.get(1));
-    System.out.println("Rece2: "+ laps.get(2));
-    System.out.println("Disc2: "+ laps.get(3));
+    System.out.println("Conn: "+ laps.get(0));
+    System.out.println("Send1: "+ laps.get(1));
+    System.out.println("Rece1: "+ laps.get(2));
+    System.out.println("Send2: "+ laps.get(3));
+    System.out.println("Disc: "+ laps.get(4));
   }
   
 }
