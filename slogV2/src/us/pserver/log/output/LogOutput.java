@@ -21,8 +21,8 @@
 
 package us.pserver.log.output;
 
-import us.pserver.log.format.OutputFormatter;
 import us.pserver.log.LogLevel;
+import us.pserver.log.impl.LogLevels;
 
 /**
  * Interface that defines an output for log messages.
@@ -48,12 +48,7 @@ public interface LogOutput {
    * <code>false</code> to disable them.
    * @return This modified <code>LogOutput</code> instance.
    */
-  public default LogOutput setAllLevelsEnabled(boolean enabled) {
-    return setLevelEnabled(LogLevel.DEBUG, enabled)
-        .setLevelEnabled(LogLevel.INFO, enabled)
-        .setLevelEnabled(LogLevel.WARN, enabled)
-        .setLevelEnabled(LogLevel.ERROR, enabled);
-  }
+  public LogOutput setAllLevelsEnabled(boolean enabled);
   
   /**
    * Verify if the specified log level is enabled.
@@ -62,6 +57,10 @@ public interface LogOutput {
    * is enabled, <code>false</code> otherwise.
    */
   public boolean isLevelEnabled(LogLevel lvl);
+  
+  public boolean isAnyLevelEnabled();
+  
+  public LogLevels levels();
   
   /**
    * Direct the log to the output implemented 

@@ -29,7 +29,7 @@ package us.pserver.log.format;
  * @author Juno Roesler - juno@pserver.us
  * @version 1.1 - 201506
  */
-public enum LogMark {
+public enum LogTag {
 
   MESSAGE("{MESSAGE}"),
   
@@ -44,7 +44,7 @@ public enum LogMark {
    * Constructor with the string mark.
    * @param mark The string mark pattern.
    */
-  LogMark(String mark) {
+  LogTag(String mark) {
     if(mark == null || mark.trim().isEmpty())
       throw new IllegalArgumentException("Invalid mark: '"+ mark+ "'");
     this.mark = mark;

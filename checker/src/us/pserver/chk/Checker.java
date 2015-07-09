@@ -43,7 +43,7 @@ public class Checker {
    */
   public static void throwarg(Class typ, Object arg) {
     throw new IllegalArgumentException(
-        "Invalid "+ typ.getName()+" ["+ arg+ "]");
+        "Invalid "+ typ.getSimpleName()+" ["+ arg+ "]");
   }
   
   

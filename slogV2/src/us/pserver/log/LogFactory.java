@@ -30,7 +30,7 @@ import java.util.Optional;
 import us.pserver.log.format.OutputFormatter;
 import us.pserver.log.format.OutputFormatterFactory;
 import us.pserver.log.impl.SLogV2;
-import us.pserver.log.internal.LogCache;
+import us.pserver.log.impl.LogCache;
 import us.pserver.log.output.FileLogOutput;
 import us.pserver.log.output.LogOutput;
 import us.pserver.log.output.PrintStreamOutput;

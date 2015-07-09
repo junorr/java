@@ -32,7 +32,6 @@ import us.pserver.log.Log;
 import us.pserver.log.LogLevel;
 import us.pserver.log.format.OutputFormatter;
 import us.pserver.log.format.OutputFormatterFactory;
-import us.pserver.log.internal.LogEntry;
 
 /**
  * High performance, double threaded log system implementation.

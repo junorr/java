@@ -47,6 +47,6 @@ public enum LogLevel {
   /**
    * Error log level.
    */
-  ERROR
+  ERROR;
   
 }

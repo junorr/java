@@ -111,9 +111,9 @@ public class OutputFormatterFactory {
    * final log string by his respective value.
    * @param mark The <code>LogMark</code> to append.
    * @return This modified <code>OutputFormatterFactory</code> instance.
-   * @see us.pserver.log.format.LogMark
+   * @see us.pserver.log.format.LogTag
    */
-  public OutputFormatterFactory append(LogMark mark) {
+  public OutputFormatterFactory append(LogTag mark) {
     if(mark == null)
       throw new IllegalArgumentException("Invalid null LogMark");
     args.add(mark.getMark());
@@ -125,10 +125,10 @@ public class OutputFormatterFactory {
    * Append a log LEVEL mark that will be replaced in the 
    * final log string by his respective value.
    * @return This modified <code>OutputFormatterFactory</code> instance.
-   * @see us.pserver.log.format.LogMark
+   * @see us.pserver.log.format.LogTag
    */
   public OutputFormatterFactory appendLevel() {
-    return append(LogMark.LEVEL);
+    return append(LogTag.LEVEL);
   }
   
   
@@ -136,10 +136,10 @@ public class OutputFormatterFactory {
    * Append a log DATE mark that will be replaced in the 
    * final log string by his respective value.
    * @return This modified <code>OutputFormatterFactory</code> instance.
-   * @see us.pserver.log.format.LogMark
+   * @see us.pserver.log.format.LogTag
    */
   public OutputFormatterFactory appendDate() {
-    return append(LogMark.DATE);
+    return append(LogTag.DATE);
   }
   
   
@@ -147,10 +147,10 @@ public class OutputFormatterFactory {
    * Append a log MESSAGE mark that will be replaced in the 
    * final log string by his respective value.
    * @return This modified <code>OutputFormatterFactory</code> instance.
-   * @see us.pserver.log.format.LogMark
+   * @see us.pserver.log.format.LogTag
    */
   public OutputFormatterFactory appendMessage() {
-    return append(LogMark.MESSAGE);
+    return append(LogTag.MESSAGE);
   }
   
   
@@ -158,10 +158,10 @@ public class OutputFormatterFactory {
    * Append a log NAME mark that will be replaced in the 
    * final log string by his respective value.
    * @return This modified <code>OutputFormatterFactory</code> instance.
-   * @see us.pserver.log.format.LogMark
+   * @see us.pserver.log.format.LogTag
    */
   public OutputFormatterFactory appendName() {
-    return append(LogMark.NAME);
+    return append(LogTag.NAME);
   }
   
   
@@ -183,13 +183,13 @@ public class OutputFormatterFactory {
     return (level, date, name, msg)-> {
       StringBuilder sb = new StringBuilder();
       args.forEach(s-> {
-        if(LogMark.DATE.match(s))
+        if(LogTag.DATE.match(s))
           sb.append(dfm.format(date));
-        else if(LogMark.LEVEL.match(s))
+        else if(LogTag.LEVEL.match(s))
           sb.append(justify(level.toString(), LEVEL_LENGTH));
-        else if(LogMark.MESSAGE.match(s))
+        else if(LogTag.MESSAGE.match(s))
           sb.append(msg);
-        else if(LogMark.NAME.match(s))
+        else if(LogTag.NAME.match(s))
           sb.append(name);
         else
           sb.append(s);

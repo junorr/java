@@ -31,7 +31,6 @@ import us.pserver.log.LogLevel;
 import us.pserver.log.format.OutputFormatter;
 import us.pserver.log.format.OutputFormatterFactory;
 import us.pserver.log.format.PatternOutputFormatter;
-import us.pserver.log.internal.LogLevelManager;
 import us.pserver.log.output.LogOutput;
 
 /**
@@ -53,7 +52,7 @@ public abstract class AbstractLog implements Log {
   
   Map<String, LogOutput> outputs;
   
-  LogLevelManager levels;
+  LogLevels levels;
   
   String logname;
   
@@ -68,7 +67,7 @@ public abstract class AbstractLog implements Log {
   AbstractLog() {
     outputs = Collections.synchronizedMap(
         new HashMap<String, LogOutput>());
-    levels = new LogLevelManager();
+    levels = new LogLevels();
     formatter = OutputFormatterFactory.standardFormatter();
     continueFormat = new PatternOutputFormatter(CONTINUE_LOG_PATTERN);
     logname = null;
@@ -142,12 +141,6 @@ public abstract class AbstractLog implements Log {
   
   
   @Override
-  public Map<LogLevel, Boolean> levelsMap() {
-    return levels.levels();
-  }
-
-
-  @Override
   public String getLogName() {
     return logname;
   }
@@ -181,6 +174,24 @@ public abstract class AbstractLog implements Log {
   public Log setAllLevelsEnabled(boolean enabled) {
     levels.setAllLevelsEnabled(enabled);
     return this;
+  }
+  
+  
+  @Override
+  public boolean isAnyLevelEnabled() {
+    return levels.isAnyLevelEnabled();
+  }
+  
+  
+  @Override
+  public boolean isLevelEnabled(LogLevel lvl) {
+    return levels.isLevelEnabled(lvl);
+  }
+  
+  
+  @Override
+  public LogLevels levels() {
+    return levels;
   }
 
 

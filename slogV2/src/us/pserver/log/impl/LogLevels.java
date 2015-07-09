@@ -19,69 +19,64 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.log.output;
+package us.pserver.log.impl;
 
 import us.pserver.log.LogLevel;
-import us.pserver.log.format.OutputFormatter;
-import us.pserver.log.impl.LogLevels;
 
 /**
- * Implements basic functionalities for <code>LogOutput</code>.
- * 
- * @author Juno Roesler - juno@pserver.us
- * @version 1.1 - 201506
+ *
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 09/07/2015
  */
-public abstract class AbstractLogOutput implements LogOutput {
+public class LogLevels {
 
-  LogLevels levels;
+  private final LevelEntry[] levels;
   
   
-  /**
-   * Default constructor without arguments.
-   */
-  AbstractLogOutput() {
-    levels = new LogLevels();
+  public LogLevels() {
+    levels = new LevelEntry[] {
+      new LevelEntry(LogLevel.DEBUG),
+      new LevelEntry(LogLevel.INFO),
+      new LevelEntry(LogLevel.WARN),
+      new LevelEntry(LogLevel.ERROR)
+    };
   }
   
   
-  /**
-   * Constructor which receives the output formatter class.
-   * @param fmt The output formatter class.
-   */
-  AbstractLogOutput(OutputFormatter fmt) {
-    this();
-  }
-
-  
-  @Override
-  public AbstractLogOutput setLevelEnabled(LogLevel lvl, boolean enabled) {
-    levels.setLevelEnabled(lvl, enabled);
-    return this;
-  }
-
-
-  @Override
   public boolean isLevelEnabled(LogLevel lvl) {
-    return levels.isLevelEnabled(lvl);
+    if(lvl == null) return false;
+    return levels[lvl.ordinal()].isEnabled();
   }
   
   
-  @Override
-  public boolean isAnyLevelEnabled() {
-    return levels.isAnyLevelEnabled();
-  }
-  
-  
-  @Override
-  public LogOutput setAllLevelsEnabled(boolean enabled) {
-    levels.setAllLevelsEnabled(enabled);
+  public LogLevels setLevelEnabled(LogLevel lvl, boolean enabled) {
+    if(lvl != null) {
+      levels[lvl.ordinal()].setEnabled(enabled);
+    }
     return this;
   }
   
   
-  @Override
-  public LogLevels levels() {
+  public boolean isAnyLevelEnabled() {
+    for(LevelEntry e : levels) {
+      if(e.isEnabled()) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  
+  public LogLevels setAllLevelsEnabled(boolean enabled) {
+    for(LevelEntry e : levels) {
+      e.setEnabled(enabled);
+    }
+    return this;
+  }
+  
+  
+  public LevelEntry[] entries() {
     return levels;
   }
-
+  
 }

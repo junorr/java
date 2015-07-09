@@ -26,6 +26,7 @@ import us.pserver.log.output.LogOutput;
 import java.util.Map;
 import java.util.Objects;
 import us.pserver.log.format.OutputFormatter;
+import us.pserver.log.impl.LogLevels;
 
 /**
  * Basic log service interface.
@@ -98,9 +99,6 @@ public interface Log {
   public boolean contains(String id);
   
   
-  public Map<LogLevel, Boolean> levelsMap();
-  
-  
   /**
    * Get the log name for this <code>Log</code> instance.
    * @return The log name.
@@ -143,6 +141,15 @@ public interface Log {
    * @return This modified <code>Log</code> instance.
    */
   public Log setAllLevelsEnabled(boolean enabled);
+  
+  
+  public boolean isAnyLevelEnabled();
+  
+  
+  public boolean isLevelEnabled(LogLevel lvl);
+  
+  
+  public LogLevels levels();
   
   
   /**
