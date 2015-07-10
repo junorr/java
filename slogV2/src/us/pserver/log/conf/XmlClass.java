@@ -64,10 +64,17 @@ public class XmlClass {
   public <T> T create() throws InstantiationException {
     Constructor con = findEmptyConstructor();
     if(con == null) 
-      throw new IllegalStateException(
-          "Class type <"+ type+ "> has no empty constructor");
+      throw new InstantiationException(
+          "Class <"+ type+ "> has no empty constructor");
+    return create(con, null);
+  }
+  
+  
+  public <T> T create(Constructor c, Object ... args) throws InstantiationException {
+    if(c == null) 
+      throw new InstantiationException("Invalid constructor: "+ c);
     try {
-      return (T) con.newInstance(null);
+      return (T) c.newInstance(args);
     } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
       throw new InstantiationException(e.toString());
     }
@@ -86,6 +93,13 @@ public class XmlClass {
     if(nl.getLength() < 1)
       throw new IllegalArgumentException("Node does not contains Class type");
     return new XmlClass(Class.forName(nl.item(0).getTextContent()));
+  }
+  
+  
+  public XmlClass setFrom(Node node) throws ClassNotFoundException {
+    XmlClass xc = from(node);
+    type = xc.classType();
+    return this;
   }
   
   

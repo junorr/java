@@ -21,6 +21,7 @@
 
 package us.pserver.log.impl;
 
+import java.util.Arrays;
 import us.pserver.log.LogLevel;
 
 /**
@@ -77,6 +78,25 @@ public class LogLevels {
   
   public LevelEntry[] entries() {
     return levels;
+  }
+  
+  
+  public LogLevels copyFrom(LogLevels lvl) {
+    if(lvl == null) return this;
+    if(!lvl.isAnyLevelEnabled()) {
+      this.setAllLevelsEnabled(false);
+      return this;
+    }
+    for(LevelEntry le : lvl.entries()) {
+      this.setLevelEnabled(le.level(), le.isEnabled());
+    }
+    return this;
+  }
+  
+  
+  @Override
+  public String toString() {
+    return Arrays.toString(levels);
   }
   
 }

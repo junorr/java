@@ -21,13 +21,12 @@
 
 package us.pserver.log.conf;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import us.pserver.log.LogLevel;
-import static us.pserver.log.conf.XmlClass.CLASS;
-import us.pserver.log.impl.LevelEntry;
 import us.pserver.log.impl.LogLevels;
 
 /**
@@ -41,7 +40,7 @@ public abstract class XmlObject extends XmlClass {
   
   public static final String LEVEL = "level";
 
-  LogLevels levels;
+  XmlLevels levels;
   
   String name;
   
@@ -50,7 +49,7 @@ public abstract class XmlObject extends XmlClass {
     super(type);
     if(name == null)
       throw new IllegalArgumentException("Invalid name: "+ name);
-    levels = new LogLevels();
+    levels = new XmlLevels();
     this.name = name;
   }
   
@@ -60,52 +59,43 @@ public abstract class XmlObject extends XmlClass {
   }
   
   
-  public LogLevels levels() {
+  public XmlLevels getXmlLevels() {
     return levels;
   }
   
   
-  public static XmlObject from(Element elt) throws ClassNotFoundException {
-    if(elt == null)
-      throw new IllegalArgumentException("Invalid XmlObject Element: "+ elt);
-    NodeList nl = elt.getElementsByTagName(CLASS);
-    if(nl.getLength() < 1)
-      throw new IllegalArgumentException("Element does not contains Class node");
-    Node nc = nl.item(0);
-    XmlObject xo = new XmlObject(
-        Class.forName(nc.getTextContent()), 
-        elt.getAttribute(NAME)
-    ){};
-    nl = elt.getElementsByTagName(LEVEL);
-    if(nl.getLength() > 0) {
-      nl = nl.item(0).getChildNodes();
-      for(int i = 0; i < nl.getLength(); i++) {
-        Node n = nl.item(i);
-        if(LogLevel.DEBUG.name()
-            .equalsIgnoreCase(n.getNodeName())) {
-          xo.levels().setLevelEnabled(
-              LogLevel.DEBUG, 
-              Boolean.parseBoolean(n.getTextContent())
-          );
-        } else if(LogLevel.INFO.name()
-            .equalsIgnoreCase(n.getNodeName())) {
-          xo.levels().setLevelEnabled(
-              LogLevel.INFO, 
-              Boolean.parseBoolean(n.getTextContent())
-          );
-        } else if(LogLevel.WARN.name()
-            .equalsIgnoreCase(n.getNodeName())) {
-          xo.levels().setLevelEnabled(
-              LogLevel.WARN, 
-              Boolean.parseBoolean(n.getTextContent())
-          );
-        } else {
-          xo.levels().setLevelEnabled(
-              LogLevel.ERROR, 
-              Boolean.parseBoolean(n.getTextContent())
-          );
-        }
+  public LogLevels levels() {
+    return levels.levels();
+  }
+  
+  
+  public static Node find(Node nd, String name) {
+    NodeList nl = nd.getChildNodes();
+    for(int i = 0; i < nl.getLength(); i++) {
+      Node n = nl.item(i);
+      if(name.equalsIgnoreCase(n.getNodeName())) {
+        return n;
       }
+    }
+    return null;
+  }
+  
+  
+  public static XmlObject from(Node node) throws ClassNotFoundException {
+    if(node == null)
+      throw new IllegalArgumentException("Invalid XmlObject Element: "+ node);
+    Node nclass = find(node, CLASS);
+    if(nclass == null)
+      throw new IllegalArgumentException("Node does not contains Class node");
+    NamedNodeMap map = node.getAttributes();
+    Node nname = map.getNamedItem(NAME);
+    if(nname == null)
+      throw new IllegalArgumentException("Node does not contains Name attribute");
+    XmlClass xc = XmlClass.from(nclass);
+    XmlObject xo = new XmlObject(xc.classType(), nname.getNodeValue()){};
+    Node nlvl = find(node, XmlLevels.LEVEL);
+    if(nlvl != null) {
+      xo.levels().copyFrom(XmlLevels.from(nlvl).levels());
     }
     return xo;
   }
@@ -115,27 +105,19 @@ public abstract class XmlObject extends XmlClass {
     if(doc == null || element == null)
       return null;
     Element e = doc.createElement(element);
-    e.setAttribute(NAME, name);
+    Attr atr = doc.createAttribute(NAME);
+    atr.setValue(name);
+    e.setAttributeNode(atr);
     e.appendChild(super.createElement(doc));
-    Element elv = null;
-    for(LevelEntry le : levels.entries()) {
-      if(le.isEnabled()) {
-        if(elv == null) {
-          elv = doc.createElement(LEVEL);
-        }
-        Element l = doc.createElement(le.level().name().toLowerCase());
-        l.appendChild(doc.createTextNode(Boolean.TRUE.toString()));
-        elv.appendChild(l);
-      }
-    }
-    if(elv != null) e.appendChild(elv);
+    Node nlvl = levels.createElement(doc);
+    if(nlvl != null) e.appendChild(nlvl);
     return e;
   }
 
 
   @Override
   public String toString() {
-    return "XmlObject{" + "class=" + type.getName() + ", name=" + name + '}';
+    return "XmlObject{" + "class=" + type.getName() + ", name=" + name + ", levels="+ levels+ '}';
   }
   
 }

@@ -58,4 +58,10 @@ public class LevelEntry {
     return this;
   }
   
+  
+  @Override
+  public String toString() {
+    return level.name()+ "("+ enabled+ ")";
+  }
+  
 }

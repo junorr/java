@@ -21,19 +21,22 @@
 
 package us.pserver.log;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import us.pserver.log.impl.SimpleLog;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import us.pserver.log.conf.LogConfig;
 import us.pserver.log.format.OutputFormatter;
 import us.pserver.log.format.OutputFormatterFactory;
 import us.pserver.log.impl.SLogV2;
 import us.pserver.log.impl.LogCache;
 import us.pserver.log.output.FileLogOutput;
 import us.pserver.log.output.LogOutput;
-import us.pserver.log.output.PrintStreamOutput;
+import us.pserver.log.output.StandardErrorOutput;
+import us.pserver.log.output.StandardOutput;
 
 
 /**
@@ -68,12 +71,17 @@ public class LogFactory {
    */
   public static final String ID_FILE_OUTPUT = "file";
   
+  
+  public static final String DEFAULT_LOG_FILE = "./log.xml";
+  
 
   private final Map<String, LogOutput> outputs;
   
   private OutputFormatter formatter;
   
   private static final LogCache cache = new LogCache();
+  
+  private static LogConfig config = LogConfig.newConfig(DEFAULT_LOG_FILE);
   
   
   /**
@@ -279,10 +287,10 @@ public class LogFactory {
   public static SimpleLog createDefaultSimpleLog(String name, boolean doCache) {
     if(name == null) return null;
     return factory()
-        .put(ID_STD_OUTPUT, new PrintStreamOutput(System.out)
+        .put(ID_STD_OUTPUT, new StandardOutput()
             .setAllLevelsEnabled(true)
             .setLevelEnabled(LogLevel.ERROR, false))
-        .put(ID_STDERR_OUTPUT, new PrintStreamOutput(System.err)
+        .put(ID_STDERR_OUTPUT, new StandardErrorOutput()
             .setAllLevelsEnabled(false)
             .setLevelEnabled(LogLevel.ERROR, true))
         .createSimpleLog(name, doCache);
@@ -292,10 +300,10 @@ public class LogFactory {
   public static SLogV2 createDefaultSLogV2(String name, boolean doCache) {
     if(name == null) return null;
     return factory()
-        .put(ID_STD_OUTPUT, new PrintStreamOutput(System.out)
+        .put(ID_STD_OUTPUT, new StandardOutput()
             .setAllLevelsEnabled(true)
             .setLevelEnabled(LogLevel.ERROR, false))
-        .put(ID_STDERR_OUTPUT, new PrintStreamOutput(System.err)
+        .put(ID_STDERR_OUTPUT, new StandardErrorOutput()
             .setAllLevelsEnabled(false)
             .setLevelEnabled(LogLevel.ERROR, true))
         .createSLogV2(name, doCache);
@@ -305,11 +313,11 @@ public class LogFactory {
   public static SimpleLog createDefaultSimpleLog(String name, String logfile, boolean doCache) {
     if(name == null || logfile == null) return null;
     return factory()
-        .put(ID_STD_OUTPUT, new PrintStreamOutput(System.out)
+        .put(ID_STD_OUTPUT, new StandardOutput()
             .setAllLevelsEnabled(true)
             .setLevelEnabled(LogLevel.DEBUG, false)
             .setLevelEnabled(LogLevel.ERROR, false))
-        .put(ID_STDERR_OUTPUT, new PrintStreamOutput(System.err)
+        .put(ID_STDERR_OUTPUT, new StandardErrorOutput()
             .setAllLevelsEnabled(false)
             .setLevelEnabled(LogLevel.ERROR, true))
         .put(ID_FILE_OUTPUT, new FileLogOutput(logfile)
@@ -321,11 +329,11 @@ public class LogFactory {
   public static SLogV2 createDefaultSLogV2(String name, String logfile, boolean doCache) {
     if(name == null || logfile == null) return null;
     return factory()
-        .put(ID_STD_OUTPUT, new PrintStreamOutput(System.out)
+        .put(ID_STD_OUTPUT, new StandardOutput()
             .setAllLevelsEnabled(true)
             .setLevelEnabled(LogLevel.DEBUG, false)
             .setLevelEnabled(LogLevel.ERROR, false))
-        .put(ID_STDERR_OUTPUT, new PrintStreamOutput(System.err)
+        .put(ID_STDERR_OUTPUT, new StandardErrorOutput()
             .setAllLevelsEnabled(false)
             .setLevelEnabled(LogLevel.ERROR, true))
         .put(ID_FILE_OUTPUT, new FileLogOutput(logfile)
@@ -360,6 +368,14 @@ public class LogFactory {
   
   public static Log getOrCreateSimpleLog(String name, boolean samePrefix) {
     if(name == null) return null;
+    if(config.exists()) {
+      try {
+        config.read();
+        for(Log l : config.tryCreateLogs()) {
+          cache.put(l.getLogName(), l);
+        }
+      } catch(IOException e) {}
+    }
     if(cache.contains(name)) {
       return cache.get(name);
     }
@@ -374,6 +390,14 @@ public class LogFactory {
   
   public static Log getOrCreateSLogV2(String name, boolean samePrefix) {
     if(name == null) return null;
+    if(config.exists()) {
+      try {
+        config.read();
+        for(Log l : config.tryCreateLogs()) {
+          cache.put(l.getLogName(), l);
+        }
+      } catch(IOException e) {}
+    }
     if(cache.contains(name)) {
       return cache.get(name);
     }
@@ -388,6 +412,14 @@ public class LogFactory {
   
   public static Log getOrCreateSimpleLog(String name, String logfile, boolean samePrefix) {
     if(name == null || logfile == null) return null;
+    if(config.exists()) {
+      try {
+        config.read();
+        for(Log l : config.tryCreateLogs()) {
+          cache.put(l.getLogName(), l);
+        }
+      } catch(IOException e) {}
+    }
     if(cache.contains(name)) {
       return cache.get(name);
     }
@@ -409,6 +441,14 @@ public class LogFactory {
   
   public static Log getOrCreateSLogV2(String name, String logfile, boolean samePrefix) {
     if(name == null || logfile == null) return null;
+    if(config.exists()) {
+      try {
+        config.read();
+        for(Log l : config.tryCreateLogs()) {
+          cache.put(l.getLogName(), l);
+        }
+      } catch(IOException e) {}
+    }
     if(cache.contains(name)) {
       return cache.get(name);
     }

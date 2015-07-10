@@ -21,11 +21,9 @@
 
 package us.pserver.log.conf;
 
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import us.pserver.log.impl.LevelEntry;
 import us.pserver.log.output.LogOutput;
 
@@ -47,7 +45,7 @@ public class XmlLogOutput extends XmlObject {
   @Override
   public LogOutput create() throws InstantiationException {
     LogOutput out = super.create();
-    for(LevelEntry e : levels.entries()) {
+    for(LevelEntry e : levels.levels().entries()) {
       out.setLevelEnabled(e.level(), e.isEnabled());
     }
     return out;
@@ -57,29 +55,18 @@ public class XmlLogOutput extends XmlObject {
   public static XmlLogOutput from(LogOutput out, String name) {
     if(out == null) return null;
     XmlLogOutput xout = new XmlLogOutput(out.getClass(), name);
-    for(LevelEntry e : out.levels().entries()) {
-      xout.levels()
-          .setLevelEnabled(e.level(), e.isEnabled());
-    }
+    xout.levels().copyFrom(out.levels());
     return xout;
   }
   
   
-  public static XmlLogOutput from(Element elt) throws ClassNotFoundException {
-    if(elt == null || !elt.getTagName().equals(OUTPUT))
-      throw new IllegalArgumentException("Invalid XmlLogOutput Element: "+ elt);
-    NodeList nl = elt.getElementsByTagName(CLASS);
-    if(nl.getLength() < 1)
-      throw new IllegalArgumentException("Element does not contains Class node");
-    Node nc = nl.item(0);
-    try {
-      XmlLogOutput xout = new XmlLogOutput(
-          (Class<? extends LogOutput>) Class.forName(nc.getNodeValue()), 
-          elt.getAttribute(NAME)
-      );
-    } catch(ClassNotFoundException e) {
-      return null;
-    }
+  public static XmlLogOutput from(Node node) throws ClassNotFoundException {
+    if(node == null || !OUTPUT.equals(node.getNodeName()))
+      throw new IllegalArgumentException("Invalid XmlLogOutput Node: "+ node);
+    XmlObject xo = XmlObject.from(node);
+    XmlLogOutput xl = new XmlLogOutput(xo.classType(), xo.getName());
+    xl.levels().copyFrom(xo.levels());
+    return xl;
   }
   
   

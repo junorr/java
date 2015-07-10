@@ -23,11 +23,19 @@ package us.pserver.log.test;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import us.pserver.log.Log;
+import us.pserver.log.LogLevel;
 import us.pserver.log.conf.XmlClass;
+import us.pserver.log.conf.XmlLog;
+import us.pserver.log.conf.XmlLogOutput;
 import us.pserver.log.conf.XmlObject;
+import us.pserver.log.impl.SimpleLog;
+import us.pserver.log.output.NullOutput;
 
 /**
  *
@@ -47,8 +55,18 @@ public class TestXmlClassType {
       System.out.print(":");
       System.out.print(elt.getNodeValue());
     }
+    NamedNodeMap map = elt.getAttributes();
+    if(map != null) {
+      if(map.getLength() > 0)
+        System.out.println("{");
+      for(int i = 0; i < map.getLength(); i++) {
+        System.out.print(ident+ "  ");
+        System.out.println(map.item(i));
+      }
+    }
     NodeList nl = elt.getChildNodes();
-    if(nl.getLength() > 0) System.out.println("{");
+    if(map != null && map.getLength() < 1 && nl.getLength() > 0) 
+      System.out.println("{");
     for(int i = 0; i < nl.getLength(); i++) {
       print(nl.item(i), ident+"  ");
     }
@@ -60,10 +78,11 @@ public class TestXmlClassType {
   public static void main(String[] args) throws Exception {
     DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
     DocumentBuilder build = fact.newDocumentBuilder();
+    Document doc = build.newDocument();
     
     XmlClass xc = new XmlClass(String.class);
     System.out.println(xc);
-    Element elt = xc.createElement(build.newDocument());
+    Element elt = xc.createElement(doc);
     print(elt);
     xc = XmlClass.from(elt);
     System.out.println(xc);
@@ -77,6 +96,27 @@ public class TestXmlClassType {
     xo = XmlObject.from(elt);
     System.out.println(xo);
     System.out.println(xo.levels().isAnyLevelEnabled());
+    
+    
+    XmlLogOutput xl = new XmlLogOutput(NullOutput.class, "nullout");
+    System.out.println(xl);
+    elt = xl.createElement(doc);
+    print(elt);
+    xl = XmlLogOutput.from(elt);
+    System.out.println(xl);
+    System.out.println(xl.create());
+    
+    
+    XmlLog xlog = new XmlLog(SimpleLog.class, "us.pserver");
+    xlog.levels().setLevelEnabled(LogLevel.INFO, true);
+    xlog.outputs().add(new XmlLogOutput(NullOutput.class, "nullout"));
+    System.out.println(xlog);
+    elt = xlog.createElement(doc);
+    print(elt);
+    xlog = XmlLog.from(elt);
+    System.out.println(xlog);
+    Log log = xlog.create();
+    System.out.println(log.getLogName()+ ": "+ log);
   }
   
 }
