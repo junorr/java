@@ -19,23 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops;
+package us.pserver.xprops.xtest;
+
+import us.pserver.xprops.XID;
 
 /**
  *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/07/2015
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 13/07/2015
  */
-public interface XUnit {
+public class TestXID {
+
   
-  public XID getID();
-  
-  public XUnit setID(XID id);
-  
-  public String toXml();
-  
-  public String value();
-  
-  public XValue xvalue();
+  public static void main(String[] args) {
+    XID id = new XID("03");
+    System.out.println("* id="+ id);
+    id.compose(new XID("02")).compose(new XID("01"));
+    System.out.println("* id="+ id);
+  }
   
 }

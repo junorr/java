@@ -19,54 +19,42 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops;
+package us.pserver.xprops.xtest;
 
-import us.pserver.xprops.util.Valid;
+import us.pserver.xprops.XID;
+import us.pserver.xprops.XTag;
+import us.pserver.xprops.XValue;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 13/07/2015
  */
-public class XID {
+public class TestXml1 {
 
-  private final String id;
   
-  private XID parent;
-  
-  
-  public XID(String id) {
-    this.id = Valid.off(id).getOrFail("Invalid String ID: ");
-    parent = null;
-  }
-  
-  
-  public String getStringID() {
-    return id;
-  }
-  
-  
-  public XID parent() {
-    return parent;
-  }
-  
-  
-  public XID compose(XID parent) {
-    this.parent = Valid.off(parent).getOrFail(XID.class);
-    return parent;
-  }
-  
-  
-  public XID off(String id) {
-    return new XID(id);
-  }
-  
-  
-  @Override
-  public String toString() {
-    return (parent != null
-        ? parent.toString().concat(".") : "")
-        .concat(id);
+  public static void main(String[] args) {
+    XTag root = new XTag("log");
+    root.addNewChild("class")
+        .addChild(new XValue("java.lang.Exception"));
+    root.addNewChild("level")
+        .addNewChild("info")
+        .addNewValue("true");
+    root.addNewAttr("attr", "value");
+    System.out.println(root.setXmlIdentation("  ", 0).toXml());
+    
+    String id = "log.level";
+    System.out.println("root.find(\""+ id+ "\"): "+ root.find(new XID(id), false));
+    
+    id = "log.attr";
+    System.out.println("root.find(\""+ id+ "\"): "+ root.find(new XID(id), true));
+    
+    id = "level";
+    System.out.println("root.find(\""+ id+ "\"): "+ root.find(new XID(id), true));
+    
+    id = "log.level.info";
+    System.out.println("root.find(\""+ id+ "\"): "+ root.find(id, true));
+    System.out.println(root.findOne(new XID(id), true).getID());
   }
   
 }

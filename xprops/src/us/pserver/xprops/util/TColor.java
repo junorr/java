@@ -28,7 +28,7 @@ import java.awt.Color;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
  */
-public class TColor implements StringTransformer<Color> {
+public class TColor extends AbstractStringTransformer<Color> {
 
   @Override
   public Color apply(String str) throws IllegalArgumentException {
@@ -57,4 +57,19 @@ public class TColor implements StringTransformer<Color> {
     );
   }
 
+  
+  @Override
+  public String back(Color clr) throws IllegalArgumentException {
+    Valid.off(clr).testNull("Invalid Color to Transform: ");
+    return new StringBuilder()
+        .append(clr.getRed())
+        .append(";")
+        .append(clr.getGreen())
+        .append(";")
+        .append(clr.getBlue())
+        .append(";")
+        .append(clr.getAlpha())
+        .toString();
+  }
+  
 }

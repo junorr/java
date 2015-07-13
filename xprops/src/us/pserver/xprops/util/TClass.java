@@ -26,7 +26,7 @@ package us.pserver.xprops.util;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
  */
-public class TClass implements StringTransformer<Class> {
+public class TClass extends AbstractStringTransformer<Class> {
 
   @Override
   public Class apply(String str) throws IllegalArgumentException {
@@ -37,6 +37,13 @@ public class TClass implements StringTransformer<Class> {
     } catch(ClassNotFoundException e) {
       throw new IllegalArgumentException(e.toString(), e);
     }
+  }
+  
+  
+  @Override
+  public String back(Class cls) throws IllegalArgumentException {
+    return Valid.off(cls)
+        .getOrFail(Class.class).getName();
   }
 
 }

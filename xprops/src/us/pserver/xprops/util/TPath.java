@@ -21,31 +21,29 @@
 
 package us.pserver.xprops.util;
 
-import java.util.List;
-import java.util.Objects;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/07/2015
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 13/07/2015
  */
-public class SList implements Transformer<List, String> {
-
+public class TPath extends AbstractStringTransformer<Path> {
 
   @Override
-  public String apply(List ls) throws IllegalArgumentException {
-    Valid.off(ls).testNull(List.class);
-    if(ls.isEmpty()) return "";
-    Class type = ls.get(0).getClass();
-    StringBuilder sb = new StringBuilder();
-    sb.append(type.getName()).append(":[");
-    SObject so = new SObject();
-    for(int i = 0; i < ls.size(); i++) {
-      sb.append(so.apply(ls.get(i)));
-      if(i < ls.size()-1)
-        sb.append(",");
-    }
-    return sb.append("]").toString();
+  public Path apply(String str) throws IllegalArgumentException {
+    return Paths.get(Valid.off(str)
+        .getOrFail("Invalid String to Transform: ")
+    );
   }
-
+  
+  
+  @Override
+  public String back(Path pth) throws IllegalArgumentException {
+    return Valid.off(pth)
+        .getOrFail("Invalid Path to Transform: ")
+        .toAbsolutePath().toString();
+  }
+  
 }

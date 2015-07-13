@@ -21,27 +21,20 @@
 
 package us.pserver.xprops.util;
 
-import java.awt.Color;
+import java.util.Objects;
 
 /**
  *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/07/2015
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 13/07/2015
  */
-public class SColor implements Transformer<Color, String> {
+public abstract class AbstractStringTransformer<T> implements StringTransformer<T> {
 
   @Override
-  public String apply(Color clr) throws IllegalArgumentException {
-    Valid.off(clr).testNull("Invalid Color to Transform: ");
-    return new StringBuilder()
-        .append(clr.getRed())
-        .append(";")
-        .append(clr.getGreen())
-        .append(";")
-        .append(clr.getBlue())
-        .append(";")
-        .append(clr.getAlpha())
-        .toString();
+  public String back(T obj) throws IllegalArgumentException {
+    return Objects.toString(Valid.off(obj)
+        .getOrFail("Invalid Object to Transform: ")
+    );
   }
 
 }

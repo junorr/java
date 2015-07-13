@@ -24,6 +24,7 @@ package us.pserver.xprops.util;
 import java.awt.Color;
 import java.io.File;
 import java.net.SocketAddress;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +70,23 @@ public class TList implements StringTransformer<List> {
   }
   
   
+  @Override
+  public String back(List ls) throws IllegalArgumentException {
+    Valid.off(ls).testNull(List.class);
+    if(ls.isEmpty()) return "";
+    Class type = ls.get(0).getClass();
+    StringTransformer trans = getTransformer(type);
+    StringBuilder build = new StringBuilder();
+    build.append(type.getName()).append(":[");
+    for(int i = 0; i < ls.size(); i++) {
+      build.append(trans.back(ls.get(i)));
+      if(i < ls.size()-1)
+        build.append(",");
+    }
+    return build.append("]").toString();
+  }
+  
+  
   public StringTransformer getTransformer(Class cls) throws IllegalArgumentException {
     if(Number.class.isAssignableFrom(cls))
       return new TNumber();
@@ -82,6 +100,8 @@ public class TList implements StringTransformer<List> {
       return new TDate();
     else if(File.class.isAssignableFrom(cls))
       return new TFile();
+    else if(Path.class.isAssignableFrom(cls))
+      return new TPath();
     else if(SocketAddress.class.isAssignableFrom(cls))
       return new TSocketAddress();
     else throw new IllegalArgumentException(

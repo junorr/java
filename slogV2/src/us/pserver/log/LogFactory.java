@@ -286,59 +286,47 @@ public class LogFactory {
   
   public static SimpleLog createDefaultSimpleLog(String name, boolean doCache) {
     if(name == null) return null;
-    return factory()
-        .put(ID_STD_OUTPUT, new StandardOutput()
-            .setAllLevelsEnabled(true)
-            .setLevelEnabled(LogLevel.ERROR, false))
-        .put(ID_STDERR_OUTPUT, new StandardErrorOutput()
-            .setAllLevelsEnabled(false)
-            .setLevelEnabled(LogLevel.ERROR, true))
-        .createSimpleLog(name, doCache);
+    return (SimpleLog) factory()
+        .put(ID_STD_OUTPUT, new StandardOutput())
+        .put(ID_STDERR_OUTPUT, new StandardErrorOutput())
+        .createSimpleLog(name, doCache)
+        .setAllLevelsEnabled(true);
   }
   
   
   public static SLogV2 createDefaultSLogV2(String name, boolean doCache) {
     if(name == null) return null;
-    return factory()
-        .put(ID_STD_OUTPUT, new StandardOutput()
-            .setAllLevelsEnabled(true)
-            .setLevelEnabled(LogLevel.ERROR, false))
-        .put(ID_STDERR_OUTPUT, new StandardErrorOutput()
-            .setAllLevelsEnabled(false)
-            .setLevelEnabled(LogLevel.ERROR, true))
-        .createSLogV2(name, doCache);
+    return (SLogV2) factory()
+        .put(ID_STD_OUTPUT, new StandardOutput())
+        .put(ID_STDERR_OUTPUT, new StandardErrorOutput())
+        .createSLogV2(name, doCache)
+        .setAllLevelsEnabled(true);
   }
   
   
   public static SimpleLog createDefaultSimpleLog(String name, String logfile, boolean doCache) {
     if(name == null || logfile == null) return null;
-    return factory()
+    return (SimpleLog) factory()
         .put(ID_STD_OUTPUT, new StandardOutput()
-            .setAllLevelsEnabled(true)
-            .setLevelEnabled(LogLevel.DEBUG, false)
-            .setLevelEnabled(LogLevel.ERROR, false))
-        .put(ID_STDERR_OUTPUT, new StandardErrorOutput()
-            .setAllLevelsEnabled(false)
-            .setLevelEnabled(LogLevel.ERROR, true))
+            .setLevelEnabled(LogLevel.DEBUG, false))
+        .put(ID_STDERR_OUTPUT, new StandardErrorOutput())
         .put(ID_FILE_OUTPUT, new FileLogOutput(logfile)
             .setAllLevelsEnabled(true))
-        .createSimpleLog(name, doCache);
+        .createSimpleLog(name, doCache)
+        .setAllLevelsEnabled(true);
   }
   
   
   public static SLogV2 createDefaultSLogV2(String name, String logfile, boolean doCache) {
     if(name == null || logfile == null) return null;
-    return factory()
+    return (SLogV2) factory()
         .put(ID_STD_OUTPUT, new StandardOutput()
-            .setAllLevelsEnabled(true)
-            .setLevelEnabled(LogLevel.DEBUG, false)
-            .setLevelEnabled(LogLevel.ERROR, false))
-        .put(ID_STDERR_OUTPUT, new StandardErrorOutput()
-            .setAllLevelsEnabled(false)
-            .setLevelEnabled(LogLevel.ERROR, true))
+            .setLevelEnabled(LogLevel.DEBUG, false))
+        .put(ID_STDERR_OUTPUT, new StandardErrorOutput())
         .put(ID_FILE_OUTPUT, new FileLogOutput(logfile)
             .setAllLevelsEnabled(true))
-        .createSLogV2(name, doCache);
+        .createSLogV2(name, doCache)
+        .setAllLevelsEnabled(true);
   }
   
   

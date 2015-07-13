@@ -25,62 +25,56 @@ import us.pserver.xprops.util.Valid;
 
 /**
  *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/07/2015
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 13/07/2015
  */
-public abstract class AbstractUnit implements XUnit {
+public class XAttr extends XTag {
+
   
-  final String value;
-  
-  XID id;
-  
-  
-  AbstractUnit(final String value, XID id) {
-    this.value = Valid.off(value).getOrFail("Invalid Null Value");
-    this.id = Valid.off(id).getOrFail(XID.class);
+  public XAttr(String name) {
+    super(name);
   }
   
   
-  AbstractUnit(final String value) {
-    this.value = Valid.off(value).getOrFail("Invalid Null Value");
-    this.id = new XID(value);
+  public XAttr(String name, String value) {
+    super(name);
+    this.childs().add(new XValue(Valid.off(value)
+        .getOrFail("Invalid Attribute Value: "))
+    );
   }
   
   
-  @Override
-  public XID getID() {
-    return id;
-  }
-  
-  
-  @Override
-  public XUnit setID(XID id) {
-    this.id = Valid.off(id).getOrFail(XID.class);
-    return this;
-  }
-  
-  
-  @Override
-  public String value() {
+  public String attrName() {
     return value;
   }
-
-
-  @Override
-  public XValue xvalue() {
-    return new XValue(value);
+  
+  
+  public XValue attrValue() {
+    return (childs().isEmpty() 
+        ? null : firstChild().xvalue()
+    );
+  }
+  
+  
+  public XValue attrValue(String value) {
+    XValue v = new XValue(Valid.off(value)
+        .getOrFail("Invalid Attr Value: ")
+    );
+    childs().clear();
+    childs().add(v);
+    return v;
   }
   
   
   @Override
   public String toXml() {
-    return value;
+    return new StringBuilder()
+        .append(value)
+        .append(eq).append(qt)
+        .append(childs().isEmpty() 
+            ? "" : firstChild().value())
+        .append(qt)
+        .toString();
   }
   
-  
-  @Override
-  public String toString() {
-    return value;
-  }
-
 }

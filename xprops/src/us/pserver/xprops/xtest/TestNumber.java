@@ -21,7 +21,6 @@
 
 package us.pserver.xprops.xtest;
 
-import us.pserver.xprops.util.SObject;
 import us.pserver.xprops.util.TNumber;
 
 /**
@@ -35,9 +34,8 @@ public class TestNumber {
   public static void main(String[] args) {
     Number n = 11.712345;
     System.out.println("n ===> "+ n);
-    SObject sn = new SObject();
     TNumber tn = new TNumber();
-    String str = sn.apply(n);
+    String str = tn.back(n);
     System.out.println("str => "+ str);
     n = tn.apply(str);
     System.out.println("n ===> "+ n);
@@ -61,7 +59,7 @@ public class TestNumber {
     System.out.println("n ===> "+ n);
     
     System.out.println();
-    str = sn.apply(5000000);
+    str = tn.back(5000000);
     System.out.println("str => "+ str);
     n = tn.apply(str);
     System.out.println("n ===> "+ n);

@@ -24,6 +24,7 @@ package us.pserver.xprops.util;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
+import java.util.Objects;
 
 /**
  *
@@ -47,6 +48,17 @@ public class TNumber implements StringTransformer<Number> {
       return parse(str, decimal("#,##0.0#", '.', ','));
     }
     else return parse(str, new DecimalFormat());
+  }
+  
+  
+  @Override
+  public String back(Number nb) {
+    Valid.off(nb).testNull(Number.class);
+    if(Double.class.isAssignableFrom(nb.getClass())
+        || Float.class.isAssignableFrom(nb.getClass())) {
+      return decimal("0.0#####", '.').format(nb);
+    }
+    return Objects.toString(nb);
   }
   
   

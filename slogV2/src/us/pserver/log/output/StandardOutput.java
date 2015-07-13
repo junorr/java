@@ -21,6 +21,8 @@
 
 package us.pserver.log.output;
 
+import us.pserver.log.LogLevel;
+
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
@@ -30,6 +32,8 @@ public class StandardOutput extends PrintStreamOutput {
 
   public StandardOutput() {
     super(System.out);
+    this.setAllLevelsEnabled(true);
+    this.setLevelEnabled(LogLevel.ERROR, false);
   }
   
   

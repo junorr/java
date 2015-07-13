@@ -25,10 +25,14 @@ package us.pserver.xprops.util;
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
+ * @param <T>
  */
 public interface StringTransformer<T> extends Transformer<String, T> {
 
   @Override
   public T apply(String str) throws IllegalArgumentException;
+
+  @Override
+  public String back(T obj) throws IllegalArgumentException;
   
 }

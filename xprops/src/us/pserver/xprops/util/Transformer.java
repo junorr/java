@@ -30,4 +30,6 @@ public interface Transformer<X, Y> {
 
   public Y apply(X obj) throws IllegalArgumentException;
   
+  public X back(Y obj) throws IllegalArgumentException;
+  
 }

@@ -67,7 +67,7 @@ public abstract class AbstractLog implements Log {
   AbstractLog() {
     outputs = Collections.synchronizedMap(
         new HashMap<String, LogOutput>());
-    levels = new LogLevels();
+    levels = new LogLevels().setAllLevelsEnabled(true);
     formatter = OutputFormatterFactory.standardFormatter();
     continueFormat = new PatternOutputFormatter(CONTINUE_LOG_PATTERN);
     logname = null;

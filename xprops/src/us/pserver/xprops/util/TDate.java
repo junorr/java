@@ -31,7 +31,7 @@ import java.util.Date;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
  */
-public class TDate implements StringTransformer<Date> {
+public class TDate extends AbstractStringTransformer<Date> {
   
   private static final String format = "yyy-MM-dd HH:mm:ss.SSS";
   
@@ -66,4 +66,11 @@ public class TDate implements StringTransformer<Date> {
     }
   }
 
+
+  @Override
+  public String back(Date dt) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    return df.format(dt);
+  }
+  
 }
