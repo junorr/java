@@ -35,4 +35,27 @@ public class XComment extends XCData {
     super();
   }
   
+  
+  public XComment(String str) {
+    super(str);
+  }
+  
+  
+  @Override
+  public String toXml() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(lt)
+        .append(EX)
+        .append(dash)
+        .append(dash)
+        .append(super.toString());
+    for(XTag x : childs()) {
+      sb.append(x.toXml()).append(ln);
+    }
+    return sb.append(dash)
+        .append(dash)
+        .append(gt)
+        .toString();
+  }
+  
 }

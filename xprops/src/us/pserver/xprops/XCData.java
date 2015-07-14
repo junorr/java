@@ -30,7 +30,7 @@ import java.util.Objects;
  */
 public class XCData extends XTag {
 
-  private static final String 
+  protected static final String 
       CD = "CDATA", 
       EX = "!",
       OB = "[", 
