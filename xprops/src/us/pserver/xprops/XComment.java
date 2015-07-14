@@ -21,66 +21,18 @@
 
 package us.pserver.xprops;
 
-import us.pserver.xprops.util.Valid;
-
 /**
  *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/07/2015
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 14/07/2015
  */
-public abstract class AbstractUnit implements XUnit {
-  
-  final String value;
-  
-  XID id;
-  
-  
-  AbstractUnit(final String value, XID id) {
-    this.value = Valid.off(value).getOrFail("Invalid Null Value");
-    this.id = Valid.off(id).getOrFail(XID.class);
-  }
-  
-  
-  AbstractUnit(final String value) {
-    this.value = Valid.off(value).getOrFail("Invalid Null Value");
-    this.id = new XID(value);
-  }
-  
-  
-  @Override
-  public XID getID() {
-    return id;
-  }
-  
-  
-  @Override
-  public XUnit setID(XID id) {
-    this.id = Valid.off(id).getOrFail(XID.class);
-    return this;
-  }
-  
-  
-  @Override
-  public String value() {
-    return value;
-  }
-  
-  
-  @Override
-  public XValue xvalue() {
-    return new XValue(value);
-  }
-  
-  
-  @Override
-  public String toXml() {
-    return value;
-  }
-  
-  
-  @Override
-  public String toString() {
-    return value;
-  }
+public class XComment extends XCData {
 
+  private static final String dash = "-";
+  
+  
+  public XComment() {
+    super();
+  }
+  
 }
