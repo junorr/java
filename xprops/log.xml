@@ -1,0 +1,14 @@
+<log name="log1">
+  <![CDATA[some cdata value]]>
+  <class>us.pserver.ClassName</class>
+  <level>
+    <info>true</info>
+  </level>
+  <output name="stdout">
+    <class>us.pserver.OutClass</class>
+    <level>
+      <info>true</info>
+    </level>
+  </output>
+  <!-- comment -->
+</log>

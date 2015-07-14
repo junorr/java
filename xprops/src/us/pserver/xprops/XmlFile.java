@@ -38,7 +38,7 @@ import us.pserver.xprops.util.Valid;
  */
 public class XmlFile {
   
-  private static final String XHEADER = 
+  public static final String XHEADER = 
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
   
   private final File file;
@@ -98,6 +98,7 @@ public class XmlFile {
   public boolean save() throws IOException {
     if(root == null) return false;
     PrintStream ps = new PrintStream(file);
+    ps.println(XHEADER);
     ps.println(root.toXml());
     ps.flush();
     ps.close();
