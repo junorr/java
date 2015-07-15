@@ -21,40 +21,38 @@
 
 package us.pserver.xprops.xtest;
 
-import us.pserver.xprops.XID;
-import us.pserver.xprops.XTag;
-import us.pserver.xprops.XValue;
+import us.pserver.xprops.XBean;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/07/2015
+ * @version 1.0 - 15/07/2015
  */
-public class TestXml1 {
+public class TestXBean {
 
+  static class NetEndPoint {
+    String host;
+    int port;
+    public String toString() { 
+      return host+ ":"+ port; 
+    }
+  }
   
   public static void main(String[] args) {
-    XTag root = new XTag("log");
-    root.addNewChild("class")
-        .addChild(new XValue("java.lang.Exception"));
-    root.addNewChild("level")
-        .addNewChild("info")
-        .addNewValue("true");
-    root.addNewAttr("attr", "value");
-    System.out.println(root.setXmlIdentation("  ", 0).toXml());
+    NetEndPoint ne = new NetEndPoint();
+    ne.host = "localhost";
+    ne.port = 5775;
+    XBean bean = new XBean("net", ne);
+    bean.bindField("host")
+        .bindField("port")
+        .bindMethod("toString")
+        .aliasMethod("toString", "string")
+        .scanObject();
+    bean.setXmlIdentation("  ", 0);
+    System.out.println(bean.toXml());
     
-    String id = "log.level";
-    System.out.println("root.find(\""+ id+ "\"): "+ root.find(new XID(id), false));
-    
-    id = "log.attr";
-    System.out.println("root.find(\""+ id+ "\"): "+ root.find(new XID(id), true));
-    
-    id = "level";
-    System.out.println("root.find(\""+ id+ "\"): "+ root.find(new XID(id), true));
-    
-    id = "log.level.info";
-    System.out.println("root.find(\""+ id+ "\"): "+ root.find(id, true));
-    System.out.println(root.findOne(new XID(id), true).id());
+    ne = new NetEndPoint();
+    System.out.println(bean.off(ne).bindAll().scanXml());
   }
   
 }

@@ -21,12 +21,7 @@
 
 package us.pserver.xprops.util;
 
-import java.awt.Color;
-import java.io.File;
-import java.net.SocketAddress;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,8 +47,8 @@ public class TList implements StringTransformer<List> {
     );
     TClass tc = new TClass();
     Class type = tc.apply(str.substring(0, id));
+    TObject to = new TObject(type);
     List list = new ArrayList();
-    StringTransformer st = getTransformer(type);
     str = str.substring(iss+1, ies);
     int i1 = 0, i2 = 0;
     while(true) {
@@ -62,7 +57,7 @@ public class TList implements StringTransformer<List> {
       String sub = str.substring(i1, i2);
       if(sub == null || sub.isEmpty())
         break;
-      list.add(st.apply(sub));
+      list.add(to.apply(sub));
       i1 = i2+1;
       if(i1 >= str.length()) break;
     }
@@ -75,37 +70,15 @@ public class TList implements StringTransformer<List> {
     Valid.off(ls).testNull(List.class);
     if(ls.isEmpty()) return "";
     Class type = ls.get(0).getClass();
-    StringTransformer trans = getTransformer(type);
+    TObject to = new TObject(type);
     StringBuilder build = new StringBuilder();
     build.append(type.getName()).append(":[");
     for(int i = 0; i < ls.size(); i++) {
-      build.append(trans.back(ls.get(i)));
+      build.append(to.back(ls.get(i)));
       if(i < ls.size()-1)
         build.append(",");
     }
     return build.append("]").toString();
   }
   
-  
-  public StringTransformer getTransformer(Class cls) throws IllegalArgumentException {
-    if(Number.class.isAssignableFrom(cls))
-      return new TNumber();
-    else if(Boolean.class.isAssignableFrom(cls))
-      return new TBoolean();
-    else if(Color.class.isAssignableFrom(cls))
-      return new TColor();
-    else if(Class.class.isAssignableFrom(cls))
-      return new TClass();
-    else if(Date.class.isAssignableFrom(cls))
-      return new TDate();
-    else if(File.class.isAssignableFrom(cls))
-      return new TFile();
-    else if(Path.class.isAssignableFrom(cls))
-      return new TPath();
-    else if(SocketAddress.class.isAssignableFrom(cls))
-      return new TSocketAddress();
-    else throw new IllegalArgumentException(
-        "Not Supported Transformation for: "+ cls.getName());
-  }
-
 }

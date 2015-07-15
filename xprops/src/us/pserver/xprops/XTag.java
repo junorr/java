@@ -62,7 +62,7 @@ public class XTag extends AbstractUnit {
     XTag tag = new XTag(Valid.off(value)
         .getOrFail("Invalid Tag Name: ")
     );
-    tag.getID().compose(this.id);
+    tag.id().compose(this.id);
     childs.add(tag);
     return tag;
   }
@@ -72,7 +72,7 @@ public class XTag extends AbstractUnit {
     XValue tag = new XValue(Valid.off(value)
         .getOrFail("Invalid Tag Name: ")
     );
-    tag.getID().compose(this.id);
+    tag.id().compose(this.id);
     childs.add(tag);
     return tag;
   }
@@ -83,7 +83,7 @@ public class XTag extends AbstractUnit {
         Valid.off(name).getOrFail("Invalid Tag Name: "),
         Valid.off(value).getOrFail("Invalid Tag Value: ")
     );
-    tag.getID().compose(this.id);
+    tag.id().compose(this.id);
     childs.add(tag);
     return tag;
   }
@@ -91,7 +91,7 @@ public class XTag extends AbstractUnit {
   
   public XTag addChild(XTag child) throws IllegalArgumentException {
     Valid.off(child).getOrFail(XTag.class)
-        .getID().compose(this.id);
+        .id().compose(this.id);
     childs.add(child);
     return this;
   }
@@ -125,10 +125,10 @@ public class XTag extends AbstractUnit {
     }
     List<XTag> list = new LinkedList<>();
     for(XTag x : childs) {
-      if(x.getID().toString().toLowerCase()
+      if(x.id().toString().toLowerCase()
           .startsWith(id.toString().toLowerCase())
           || x.value().equalsIgnoreCase(id.getStringID())
-          || x.getID().toString().toLowerCase()
+          || x.id().toString().toLowerCase()
               .endsWith(id.toString().toLowerCase())) {
         list.add(x);
       }
@@ -145,10 +145,10 @@ public class XTag extends AbstractUnit {
   public XTag findOne(XID id, boolean includeChilds) {
     Valid.off(id).testNull(XID.class);
     for(XTag x : childs) {
-      if(x.getID().toString().toLowerCase()
+      if(x.id().toString().toLowerCase()
           .startsWith(id.toString().toLowerCase())
           || x.value().equalsIgnoreCase(id.getStringID())
-          || x.getID().toString().toLowerCase()
+          || x.id().toString().toLowerCase()
               .endsWith(id.toString().toLowerCase())) {
         return x;
       }

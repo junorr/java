@@ -28,7 +28,7 @@ package us.pserver.xprops;
  */
 public interface XUnit {
   
-  public XID getID();
+  public XID id();
   
   public XUnit setID(XID id);
   

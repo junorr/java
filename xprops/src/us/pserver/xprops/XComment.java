@@ -28,11 +28,12 @@ package us.pserver.xprops;
  */
 public class XComment extends XCData {
 
-  private static final String dash = "-";
+  private static final String 
+      dashes = "--";
   
   
   public XComment() {
-    super();
+    super(dashes);
   }
   
   
@@ -45,15 +46,15 @@ public class XComment extends XCData {
   public String toXml() {
     StringBuilder sb = new StringBuilder();
     sb.append(lt)
-        .append(EX)
-        .append(dash)
-        .append(dash)
+        .append(ex)
+        .append(dashes)
+        .append(sp)
         .append(super.toString());
     for(XTag x : childs()) {
       sb.append(x.toXml()).append(ln);
     }
-    return sb.append(dash)
-        .append(dash)
+    return sb.append(sp)
+        .append(dashes)
         .append(gt)
         .toString();
   }

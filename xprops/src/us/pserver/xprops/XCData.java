@@ -31,17 +31,17 @@ import java.util.Objects;
 public class XCData extends XTag {
 
   protected static final String 
-      CD = "CDATA", 
-      EX = "!",
-      OB = "[", 
-      CB = "]";
+      cdata = "CDATA", 
+      ex = "!",
+      openbrk = "[", 
+      closebrk = "]";
   
   
   private final StringBuilder builder;
   
   
   public XCData() {
-    super(CD);
+    super(cdata);
     builder = new StringBuilder();
   }
   
@@ -86,16 +86,16 @@ public class XCData extends XTag {
   public String toXml() {
     StringBuilder sb = new StringBuilder();
     sb.append(lt)
-        .append(EX)
-        .append(OB)
-        .append(CD)
-        .append(OB)
+        .append(ex)
+        .append(openbrk)
+        .append(cdata)
+        .append(openbrk)
         .append(builder.toString());
     for(XTag x : childs()) {
       sb.append(x.toXml()).append(ln);
     }
-    return sb.append(CB)
-        .append(CB)
+    return sb.append(closebrk)
+        .append(closebrk)
         .append(gt)
         .toString();
   }

@@ -48,7 +48,7 @@ public abstract class AbstractUnit implements XUnit {
   
   
   @Override
-  public XID getID() {
+  public XID id() {
     return id;
   }
   

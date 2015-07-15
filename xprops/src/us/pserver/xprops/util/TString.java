@@ -19,23 +19,18 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.xtest;
-
-import java.io.IOException;
-import us.pserver.xprops.XmlFile;
+package us.pserver.xprops.util;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 14/07/2015
+ * @version 1.0 - 15/07/2015
  */
-public class TestXmlFile {
+public class TString extends AbstractStringTransformer<String> {
 
-  
-  public static void main(String[] args) throws IOException {
-    XmlFile xfile = new XmlFile("/storage/log.xml");
-    xfile.read();
-    
+  @Override
+  public String apply(String str) throws IllegalArgumentException {
+    return str;
   }
   
 }

@@ -38,6 +38,11 @@ public class Valid<T> {
   }
   
   
+  public Valid newValid(T obj) {
+    return Valid.off(obj);
+  }
+  
+  
   public T getOrFail(String msg) throws IllegalArgumentException {
     return getOrFail(new IllegalArgumentException(msg+ Objects.toString(obj)));
   }
@@ -77,7 +82,9 @@ public class Valid<T> {
   
   
   public Valid test(boolean test, String msg) throws IllegalArgumentException {
-    if(test) getOrFail(msg);
+    if(test) {
+      throw new IllegalArgumentException(msg);
+    }
     return this;
   }
   
