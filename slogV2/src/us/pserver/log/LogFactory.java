@@ -27,6 +27,7 @@ import java.util.Collections;
 import us.pserver.log.impl.SimpleLog;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import us.pserver.log.conf.LogConfig;
 import us.pserver.log.format.OutputFormatter;
@@ -198,7 +199,9 @@ public class LogFactory {
     if(name == null || name.trim().isEmpty())
       throw new IllegalArgumentException("Invalid Log name: '"+ name+ "'");
     SimpleLog log = new SimpleLog(name);
-    outputs.keySet().forEach(k->log.put(k, outputs.get(k)));
+    for(Entry<String, LogOutput> e : outputs.entrySet()) {
+      log.put(e.getKey(), e.getValue());
+    }
     if(doCache) cache.put(name, log);
     return log;
   }
@@ -214,7 +217,9 @@ public class LogFactory {
     if(name == null || name.trim().isEmpty())
       throw new IllegalArgumentException("Invalid Log name: '"+ name+ "'");
     SLogV2 log = new SLogV2(name);
-    outputs.keySet().forEach(k->log.put(k, outputs.get(k)));
+    for(Entry<String, LogOutput> e : outputs.entrySet()) {
+      log.put(e.getKey(), e.getValue());
+    }
     if(doCache) cache.put(name, log);
     return log;
   }
@@ -413,12 +418,18 @@ public class LogFactory {
     }
     if(samePrefix && cache.containsWithSamePrefix(name)) {
       Log log = cache.copyOutputsForSamePrefix(name, new SimpleLog(name));
-      Optional<LogOutput> opt = log.outputs().stream().filter(
-          o->(o instanceof FileLogOutput)).findFirst();
-      if(!opt.isPresent()) {
-        log.put(ID_FILE_OUTPUT, new FileLogOutput(logfile)
-            .setAllLevelsEnabled(true));
+      FileLogOutput fout = null;
+      for(LogOutput o : log.outputs()) {
+        if(o instanceof FileLogOutput) {
+          fout = (FileLogOutput) o;
+          break;
+        }
       }
+      if(fout == null) {
+        fout = new FileLogOutput(logfile);
+        fout.setAllLevelsEnabled(true);
+      }
+      log.put(ID_FILE_OUTPUT, fout);
       return log;
     }
     else {
@@ -442,12 +453,18 @@ public class LogFactory {
     }
     if(samePrefix && cache.containsWithSamePrefix(name)) {
       Log log = cache.copyOutputsForSamePrefix(name, new SLogV2(name));
-      Optional<LogOutput> opt = log.outputs().stream().filter(
-          o->(o instanceof FileLogOutput)).findFirst();
-      if(!opt.isPresent()) {
-        log.put(ID_FILE_OUTPUT, new FileLogOutput(logfile)
-            .setAllLevelsEnabled(true));
+      FileLogOutput fout = null;
+      for(LogOutput o : log.outputs()) {
+        if(o instanceof FileLogOutput) {
+          fout = (FileLogOutput) o;
+          break;
+        }
       }
+      if(fout == null) {
+        fout = new FileLogOutput(logfile);
+        fout.setAllLevelsEnabled(true);
+      }
+      log.put(ID_FILE_OUTPUT, fout);
       return log;
     }
     else {

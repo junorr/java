@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import us.pserver.log.Log;
 import us.pserver.log.output.LogOutput;
@@ -90,39 +91,55 @@ public class LogCache {
   
   public Log getWithSamePrefix(String name) {
     if(name == null) return null;
-    Optional<Map.Entry<String, Log>> opt = 
-        cache.entrySet().stream().filter(
-            e->e.getKey().startsWith(name) 
-                || name.startsWith(e.getKey()))
-            .findFirst();
-    return (opt.isPresent() ? opt.get().getValue() : null);
+    Log log = null;
+    for(Entry<String, Log> e : cache.entrySet()) {
+      if(e.getKey().startsWith(name)
+          || name.startsWith(e.getKey())) {
+        log = e.getValue();
+      }
+    }
+    return log;
   }
   
   
   public Log removeWithSamePrefix(String name) {
     if(name == null) return null;
-    Optional<String> opt = cache.keySet().stream().filter(
-        s->s.startsWith(name) || name.startsWith(s)).findFirst();
-    if(!opt.isPresent()) return null;
-    return cache.remove(opt.get());
+    String found = null;
+    for(String s : cache.keySet()) {
+      if(s.startsWith(name) || name.startsWith(s)) {
+        found = s;
+        break;
+      }
+    }
+    return cache.remove(found);
   }
   
   
   public Collection<Log> removeAllWithSamePrefix(String name) {
     if(name == null) return Collections.EMPTY_LIST;
-    List<Log> ls = new LinkedList<>();
-    cache.entrySet().stream().filter(
-        e->e.getKey().startsWith(name) || name.startsWith(e.getKey()))
-        .forEach(e->ls.add(e.getValue()));
+    List<String> sls = new LinkedList<String>();
+    for(String s : cache.keySet()) {
+      if(s.startsWith(name) || name.startsWith(s)) {
+        sls.add(s);
+      }
+    }
+    List<Log> ls = new LinkedList<Log>();
+    for(String ns : sls) {
+      ls.add(cache.remove(ns));
+    }
     return ls;
   }
   
   
   public boolean containsWithSamePrefix(String name) {
     if(name == null) return false;
-    return cache.keySet().stream().filter(
-        s->s.startsWith(name) || name.startsWith(s))
-        .findFirst().isPresent();
+    String found = null;
+    for(String s : cache.keySet()) {
+      if(s.startsWith(name) || name.startsWith(s)) {
+        return true;
+      }
+    }
+    return false;
   }
   
   
@@ -154,9 +171,11 @@ public class LogCache {
     if(!contains(name) || log == null) 
       return log;
     Log orig = get(name);
+    if(orig == null) return log;
     log.clearOutputs();
-    orig.outputsMap().entrySet().forEach(
-        e->log.put(e.getKey(), e.getValue()));
+    for(Entry<String, LogOutput> e : orig.outputsMap().entrySet()) {
+      log.put(e.getKey(), e.getValue());
+    }
     return log;
   }
   
@@ -165,9 +184,11 @@ public class LogCache {
     if(!containsWithSamePrefix(name) || log == null) 
       return log;
     Log orig = getWithSamePrefix(name);
+    if(orig == null) return log;
     log.clearOutputs();
-    orig.outputsMap().entrySet().forEach(
-        e->log.put(e.getKey(), e.getValue()));
+    for(Entry<String, LogOutput> e : orig.outputsMap().entrySet()) {
+      log.put(e.getKey(), e.getValue());
+    }
     return log;
   }
   

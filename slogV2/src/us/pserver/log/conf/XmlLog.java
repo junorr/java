@@ -49,7 +49,7 @@ public class XmlLog extends XmlObject {
   
   public XmlLog(Class<? extends Log> type, String name) {
     super(type, name);
-    outputs = new ArrayList<>();
+    outputs = new ArrayList<XmlLogOutput>();
   }
   
   
@@ -91,8 +91,8 @@ public class XmlLog extends XmlObject {
           "Class <"+ type.getName()+ "> has no valid constructors"
       );
     }
-    Log log = c.getParameterCount() > 0 
-          ? create(c, name) : create();
+    Log log = (Log) (c.getParameterCount() > 0 
+        ? create(c, name) : create());
     log.levels().copyFrom(levels());
     if(pattern != null) {
       log.setOutputFormatter(pattern);

@@ -75,7 +75,7 @@ public class XmlClass {
       throw new InstantiationException("Invalid constructor: "+ c);
     try {
       return (T) c.newInstance(args);
-    } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+    } catch(Exception e) {
       throw new InstantiationException(e.toString());
     }
   }

@@ -40,8 +40,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import us.pserver.log.Log;
-import us.pserver.log.LogFactory;
-import us.pserver.log.impl.SimpleLog;
 
 /**
  *
@@ -56,7 +54,7 @@ public class LogConfig {
   
   
   private LogConfig(String file) {
-    logs = new ArrayList<>();
+    logs = new ArrayList<XmlLog>();
     this.file = file;
   }
   
@@ -77,7 +75,7 @@ public class LogConfig {
         Node n = nl.item(i);
         logs.add(XmlLog.from(n));
       }
-    } catch(ParserConfigurationException | SAXException | ClassNotFoundException e) {
+    } catch(Exception e) {
       throw new IOException(e);
     }
   }
@@ -119,7 +117,7 @@ public class LogConfig {
   
   public List<Log> tryCreateLogs() {
     if(logs.isEmpty()) return Collections.EMPTY_LIST;
-    ArrayList<Log> ls = new ArrayList<>();
+    ArrayList<Log> ls = new ArrayList<Log>();
     for(XmlLog x : logs) {
       try { ls.add(x.create()); }
       catch(InstantiationException e) {}
@@ -130,7 +128,7 @@ public class LogConfig {
   
   public List<Log> createLogs() throws InstantiationException {
     if(logs.isEmpty()) return Collections.EMPTY_LIST;
-    ArrayList<Log> ls = new ArrayList<>();
+    ArrayList<Log> ls = new ArrayList<Log>();
     for(XmlLog x : logs) {
       ls.add(x.create());
     }

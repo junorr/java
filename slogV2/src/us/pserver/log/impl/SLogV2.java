@@ -32,6 +32,7 @@ import us.pserver.log.Log;
 import us.pserver.log.LogLevel;
 import us.pserver.log.format.OutputFormatter;
 import us.pserver.log.format.OutputFormatterFactory;
+import us.pserver.log.output.LogOutput;
 
 /**
  * High performance, double threaded log system implementation.
@@ -236,7 +237,9 @@ public class SLogV2 extends AbstractLog implements Runnable {
   public Log close() {
     stop();
     exec.shutdownNow();
-    outputs.values().forEach(o->o.close());
+    for(LogOutput o : outputs.values()) {
+      o.close();
+    }
     entries.clear();
     outputs.clear();;
     return this;
@@ -286,8 +289,9 @@ public class SLogV2 extends AbstractLog implements Runnable {
      */
     public void log(LogLevel lvl, Date dte, String msg) {
       if(lvl != null && msg != null && dte != null) {
-        outputs.values().forEach(o->
-            o.log(lvl, formatter.format(lvl, dte, logname, msg)));
+        for(LogOutput o : outputs.values()) {
+          o.log(lvl, formatter.format(lvl, dte, logname, msg));
+        }
       }
     }
   
@@ -303,22 +307,26 @@ public class SLogV2 extends AbstractLog implements Runnable {
       if(lvl != null && th != null && dte != null) {
         Date dt = new Date();
         if(logStackTrace) {
-          outputs.values().forEach(o->
-              o.log(lvl, formatter.format(
-                  lvl, dt, th.getClass().getName(), 
-                  th.getLocalizedMessage())));
+          for(LogOutput o : outputs.values()) {
+            o.log(lvl, formatter.format(
+                lvl, dte, th.getClass().getName(), 
+                th.getLocalizedMessage()));
+          }
         } 
         else {
           String trace = th.getStackTrace()[0].toString();
-          outputs.values().forEach(o->
-              o.log(lvl, formatter.format(
-                  lvl, dt, trace, th.getLocalizedMessage())));
+          for(LogOutput o : outputs.values()) {
+            o.log(lvl, formatter.format(
+                lvl, dte, trace, th.getLocalizedMessage()));
+          }
         }
         if(logStackTrace) {
-          Arrays.asList(th.getStackTrace()).forEach(e->
-              outputs.values().forEach(o->
-                  o.log(lvl, continueFormat.format(
-                      lvl, dt, logname, e.toString()))));
+          StackTraceElement[] elts = th.getStackTrace();
+          for(StackTraceElement st : elts) {
+            for(LogOutput o : outputs.values()) {
+              o.log(lvl, continueFormat.format(lvl, dt, logname, st.toString()));
+            }
+          }
         }//if
       }//if
     }//log method

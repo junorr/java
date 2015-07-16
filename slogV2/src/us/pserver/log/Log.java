@@ -313,28 +313,4 @@ public interface Log {
    */
   public Log close();
   
-  
-  /**
-   * Replace the <b>'{}'</b> marks in the string with the specified arguments.
-   * @param str The string which will be interpolated.
-   * @param args The arguments to replace in the string.
-   * @return The interpolated string.
-   */
-  public static String interpolate(String str, Object ... args) {
-    if(str == null) return null;
-    if(args == null || args.length == 0)
-      return str;
-    int start = 0;
-    int id = start;
-    for(int i = 0; i < args.length; i++) {
-      id = str.indexOf("{}", start);
-      if(id < 0) break;
-      str = str.substring(0, id) 
-          + Objects.toString(args[i]) 
-          + str.substring(id+2);
-      start = id+1;
-    }
-    return str;
-  }
-  
 }

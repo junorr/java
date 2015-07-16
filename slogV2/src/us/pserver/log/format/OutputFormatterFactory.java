@@ -23,8 +23,10 @@ package us.pserver.log.format;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import us.pserver.log.LogLevel;
 
 /**
  * Factory for <code>OutputFormatter</code>
@@ -180,21 +182,24 @@ public class OutputFormatterFactory {
    * @return An <code>OutputFormatter</code> instance with the configured pattern.
    */
   public OutputFormatter create() {
-    return (level, date, name, msg)-> {
-      StringBuilder sb = new StringBuilder();
-      args.forEach(s-> {
-        if(LogTag.DATE.match(s))
-          sb.append(dfm.format(date));
-        else if(LogTag.LEVEL.match(s))
-          sb.append(justify(level.toString(), LEVEL_LENGTH));
-        else if(LogTag.MESSAGE.match(s))
-          sb.append(msg);
-        else if(LogTag.NAME.match(s))
-          sb.append(name);
-        else
-          sb.append(s);
-      });
-      return sb.toString();
+    return new OutputFormatter() {
+      @Override
+      public String format(LogLevel lvl, Date dte, String name, String msg) {
+        StringBuilder sb = new StringBuilder();
+        for(String s : args) {
+          if(LogTag.DATE.match(s))
+            sb.append(dfm.format(dte));
+          else if(LogTag.LEVEL.match(s))
+            sb.append(justify(lvl.toString(), LEVEL_LENGTH));
+          else if(LogTag.MESSAGE.match(s))
+            sb.append(msg);
+          else if(LogTag.NAME.match(s))
+            sb.append(name);
+          else
+            sb.append(s);
+        }
+        return sb.toString();
+      }
     };
   }
   
