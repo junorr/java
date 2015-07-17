@@ -50,7 +50,7 @@ public class FileLogOutput extends PrintStreamOutput {
     public PrintStream create() {
       try {
         return new PrintStream(path.toFile(), "UTF-8");
-      } catch(FileNotFoundException | UnsupportedEncodingException e) {
+      } catch(Exception e) {
         throw new RuntimeException(e.toString(), e);
       }
     }

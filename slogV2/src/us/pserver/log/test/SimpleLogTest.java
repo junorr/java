@@ -24,6 +24,9 @@ package us.pserver.log.test;
 import java.io.IOException;
 import us.pserver.log.Log;
 import us.pserver.log.LogFactory;
+import us.pserver.log.LogLevel;
+import static us.pserver.log.test.SLogV2Test.log;
+import static us.pserver.log.test.SLogV2Test.repeat;
 
 /**
  *
@@ -42,13 +45,21 @@ public class SimpleLogTest {
     }
   }
    
+  public static Runnable log(final Log log, final LogLevel lvl, final String msg) {
+    return new Runnable() {
+      public void run() {
+        log.log(lvl, msg);
+      }
+    };
+  }
+   
   public static void main(String[] args) throws InterruptedException {
     Log log = LogFactory.createDefaultSimpleLog(SimpleLogTest.class, false);
     log.error(newIOException(), false);
-    runFor(5, ()-> log.debug("This is a Debug Message."));
-    runFor(5, ()-> log.info("This is a Info Message."));
-    runFor(5, ()-> log.warn("This is a Warning Message."));
-    runFor(5, ()-> log.error("This is a Error Message."));
+    repeat(5, log(log, LogLevel.DEBUG, "This is a "+ LogLevel.DEBUG+ " Message."));
+    repeat(5, log(log, LogLevel.INFO, "This is a "+ LogLevel.INFO+ " Message."));
+    repeat(5, log(log, LogLevel.WARN, "This is a "+ LogLevel.WARN+ " Message."));
+    repeat(5, log(log, LogLevel.ERROR, "This is a "+ LogLevel.ERROR+ " Message."));
     Thread.sleep(200);
     log.error(newIOException(), true);
   }

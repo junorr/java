@@ -5,17 +5,23 @@
         <group>
             <file>file:/storage/java/slogV2/src/us/pserver/log/output/FileLogOutput.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/impl/SLogV2.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/conf/XmlLogOutput.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/output/AbstractLogOutput.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/impl/SimpleLog.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/test/SimpleLogTest.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/conf/XmlClass.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/test/SLogV2Test.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/output/PrintStreamOutput.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/LogLevel.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/format/OutputFormatterFactory.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/output/LogOutput.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/LogFactory.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/conf/XmlObject.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/test/TestFactory.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/conf/LogConfig.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/format/OutputFormatter.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/conf/XmlLog.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/impl/LogCache.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/output/PrintStreamFactory.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/Log.java</file>
             <file>file:/storage/java/slogV2/src/us/pserver/log/impl/AbstractLog.java</file>

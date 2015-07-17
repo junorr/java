@@ -78,8 +78,13 @@ public class PrintStreamOutput extends AbstractLogOutput {
    * object for printing log messages.
    * @param fact The <code>PrintStream</code> object for printing log messages.
    */
-  public PrintStreamOutput(PrintStream ps) {
-    this(()->ps);
+  public PrintStreamOutput(final PrintStream ps) {
+    this(new PrintStreamFactory() {
+      @Override
+      public PrintStream create() {
+        return ps;
+      }
+    });
   }
   
   
