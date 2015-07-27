@@ -188,6 +188,17 @@ public class XTag extends AbstractUnit {
   }
   
   
+  public XAttr findAttr(String name) {
+    Valid.off(name).testNull("Invalid Attr Name: ");
+    List<XAttr> ls = this.getAllAttrs();
+    for(XAttr a : ls) {
+      if(a.attrName().equals(name))
+        return a;
+    }
+    return null;
+  }
+  
+  
   List<XAttr> getAllAttrs() {
     if(childs.isEmpty())
       return Collections.EMPTY_LIST;

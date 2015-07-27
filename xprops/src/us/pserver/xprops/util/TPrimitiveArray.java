@@ -28,7 +28,7 @@ import java.util.List;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 15/07/2015
  */
-public class TPrimitiveArray extends AbstractStringTransformer<Object> {
+public class TPrimitiveArray extends AbstractXmlTransformer<Object> {
 
   private List list;
 

@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import us.pserver.xprops.util.StringTransformer;
+import us.pserver.xprops.util.XmlTransformer;
 import us.pserver.xprops.util.TBoolean;
 import us.pserver.xprops.util.TNumber;
 import us.pserver.xprops.util.TObject;
@@ -44,9 +44,9 @@ public class XBean extends XTag {
   
   private final Object object;
 
-  private final Map<Field, StringTransformer<Object>> fmap;
+  private final Map<Field, XmlTransformer<Object>> fmap;
 
-  private final Map<Method, StringTransformer<Object>> mmap;
+  private final Map<Method, XmlTransformer<Object>> mmap;
   
   private final Map<Field, String> falias;
 
@@ -165,21 +165,21 @@ public class XBean extends XTag {
   }
   
   
-  public XBean bind(Field f, StringTransformer<Object> trn) {
+  public XBean bind(Field f, XmlTransformer<Object> trn) {
     Valid.off(f)
         .testNull(Field.class)
         .newValid(trn)
-        .testNull(StringTransformer.class);
+        .testNull(XmlTransformer.class);
     fmap.put(f, trn);
     return this;
   }
   
   
-  public XBean bindField(String field, StringTransformer<Object> trn) {
+  public XBean bindField(String field, XmlTransformer<Object> trn) {
     Valid.off(field)
         .testNull(Field.class)
         .newValid(trn)
-        .testNull(StringTransformer.class);
+        .testNull(XmlTransformer.class);
     Field[] fs = type().getDeclaredFields();
     for(Field f : fs) {
       if(field.equalsIgnoreCase(f.getName())) {
@@ -218,22 +218,22 @@ public class XBean extends XTag {
   }
   
   
-  public XBean bind(Method m, StringTransformer<Object> trn) {
+  public XBean bind(Method m, XmlTransformer<Object> trn) {
     Valid.off(m).testNull(Method.class)
         .test(void.class.equals(
             m.getReturnType()), 
             "Invalid Return Type for Method: ")
         .newValid(trn)
-        .testNull(StringTransformer.class);
+        .testNull(XmlTransformer.class);
     mmap.put(m, trn);
     return this;
   }
   
   
-  public XBean bindMethod(String meth, StringTransformer<Object> trn) {
+  public XBean bindMethod(String meth, XmlTransformer<Object> trn) {
     Valid.off(meth).testNull(Method.class)
         .newValid(trn)
-        .testNull(StringTransformer.class);
+        .testNull(XmlTransformer.class);
     Method[] ms = type().getDeclaredMethods();
     for(Method m : ms) {
       if(meth.equalsIgnoreCase(m.getName())) {
@@ -249,20 +249,20 @@ public class XBean extends XTag {
     if(fmap.isEmpty() && mmap.isEmpty())
       return this;
     Set<Map.Entry<Field, 
-        StringTransformer<Object>>> ents = 
+        XmlTransformer<Object>>> ents = 
         fmap.entrySet();
     for(Map.Entry<Field, 
-        StringTransformer<Object>> e : ents) {
+        XmlTransformer<Object>> e : ents) {
       this.addChild(makeTag(
           e.getKey(), 
           e.getValue())
       );
     }
     Set<Map.Entry<Method, 
-        StringTransformer<Object>>> mths = 
+        XmlTransformer<Object>>> mths = 
         mmap.entrySet();
     for(Map.Entry<Method, 
-        StringTransformer<Object>> e : mths) {
+        XmlTransformer<Object>> e : mths) {
       this.addChild(makeTag(
           e.getKey(), 
           e.getValue())
@@ -289,7 +289,7 @@ public class XBean extends XTag {
   }
   
   
-  private void set(Field f, StringTransformer<Object> s, XTag v) {
+  private void set(Field f, XmlTransformer<Object> s, XTag v) {
     if(!f.isAccessible()) {
       f.setAccessible(true);
     }
@@ -336,7 +336,7 @@ public class XBean extends XTag {
   }
   
   
-  private XTag makeTag(Field f, StringTransformer<Object> s) throws IllegalArgumentException {
+  private XTag makeTag(Field f, XmlTransformer<Object> s) throws IllegalArgumentException {
     String name = f.getName();
     if(falias.containsKey(f))
       name = falias.get(f);
@@ -354,7 +354,7 @@ public class XBean extends XTag {
   }
   
   
-  private XTag makeTag(Method m, StringTransformer<Object> s) throws IllegalArgumentException {
+  private XTag makeTag(Method m, XmlTransformer<Object> s) throws IllegalArgumentException {
     String name = m.getName();
     if(malias.containsKey(m))
       name = malias.get(m);

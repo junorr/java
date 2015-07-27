@@ -26,7 +26,7 @@ package us.pserver.xprops.util;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
  */
-public class TClass extends AbstractStringTransformer<Class> {
+public class TClass extends AbstractXmlTransformer<Class> {
 
   @Override
   public Class apply(String str) throws IllegalArgumentException {

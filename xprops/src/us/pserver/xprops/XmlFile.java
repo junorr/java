@@ -23,12 +23,11 @@ package us.pserver.xprops;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Stack;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import static us.pserver.xprops.XmlStream.XHEADER;
 import us.pserver.xprops.util.Valid;
 
 /**
@@ -36,17 +35,10 @@ import us.pserver.xprops.util.Valid;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/07/2015
  */
-public class XmlFile {
-  
-  public static final String XHEADER = 
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+public class XmlFile extends XmlStream {
   
   private final File file;
   
-  private XTag root;
-  
-  private final Stack<XTag> stack;
-
 
   public XmlFile(String file) {
     this(new File(Valid.off(file)
@@ -56,41 +48,33 @@ public class XmlFile {
   
   
   public XmlFile(File file) {
-    this.file = Valid.off(file)
-        .getOrFail(File.class);
-    stack = new Stack<>();
-    root = null;
+    super(createFileInput(file));
+    this.file = file;
   }
   
   
   public XmlFile(String file, XTag root) {
-    this(file);
-    this.root = Valid.off(root)
-        .getOrFail(XTag.class);
+    super(Valid.off(root).getOrFail(XTag.class));
+    this.file = new File(file);
   }
   
   
   public XmlFile(File file, XTag root) {
-    this(file);
-    this.root = Valid.off(root)
-        .getOrFail(XTag.class);
+    super(Valid.off(root).getOrFail(XTag.class));
+    this.file = file;
   }
   
   
-  public XTag getRoot() {
-    return root;
-  }
-  
-  
-  public XTag read() throws IOException {
+  public static InputStream createFileInput(File f) {
     try {
-      SAXParser par = SAXParserFactory
-          .newInstance().newSAXParser();
-      stack.clear();
-      par.parse(file, new XmlHandler(this));
-      return root;
-    } catch(Exception e) {
-      throw new IOException(e.toString(), e);
+      return Files.newInputStream(
+          Valid.off(f).getOrFail(File.class).toPath(),
+          StandardOpenOption.READ,
+          StandardOpenOption.CREATE
+      );
+    }
+    catch(IOException e) {
+      throw new IllegalArgumentException(e.getLocalizedMessage(), e);
     }
   }
   
@@ -99,69 +83,13 @@ public class XmlFile {
     if(root == null) return false;
     PrintStream ps = new PrintStream(file);
     ps.println(XHEADER);
+    if(root == null && input != null) {
+      Valid.off(this.read()).testNull(XTag.class);
+    }
     ps.println(root.toXml());
     ps.flush();
     ps.close();
     return true;
   }
   
-  
-  private void startElement(String name, Attributes attrs) {
-    if(name == null || name.trim().isEmpty())
-      return;
-    System.out.println("* element="+ name);
-    XTag tag = new XTag(name);
-    if(root == null) root = tag;
-    if(!stack.isEmpty()) {
-      stack.peek().addChild(tag);
-    }
-    stack.push(tag);
-    for(int i = 0; i < attrs.getLength(); i++) {
-      tag.addNewAttr(
-          attrs.getQName(i), 
-          attrs.getValue(i)
-      );
-    }
-  }
-  
-  
-  private void endElement(String name) {
-    stack.pop();
-  }
-  
-  
-  private void text(String txt) {
-    if(txt == null || txt.trim().isEmpty())
-      return;
-    System.out.println("* text="+ txt);
-    stack.peek().addNewValue(txt);
-  }
-  
-  
-  
-  private class XmlHandler extends DefaultHandler {
-    
-    private final XmlFile xfile;
-    
-    public XmlHandler(final XmlFile xf) {
-      this.xfile = xf;
-    }
-    
-    @Override
-    public void startElement(String uri, String lname, String qname, Attributes attrs) {
-      xfile.startElement(qname, attrs);
-    }
-    
-    @Override
-    public void endElement(String uri, String lname, String qname) {
-      xfile.endElement(qname);
-    }
-    
-    @Override
-    public void characters(char[] ch, int start, int len) {
-      xfile.text(new String(ch, start, len));
-    }
-    
-  }
-
 }

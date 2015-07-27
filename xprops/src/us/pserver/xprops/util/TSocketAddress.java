@@ -29,7 +29,7 @@ import java.net.SocketAddress;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/07/2015
  */
-public class TSocketAddress extends AbstractStringTransformer<SocketAddress> {
+public class TSocketAddress extends AbstractXmlTransformer<SocketAddress> {
 
   @Override
   public SocketAddress apply(String str) throws IllegalArgumentException {

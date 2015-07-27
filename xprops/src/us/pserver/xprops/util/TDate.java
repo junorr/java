@@ -31,7 +31,7 @@ import java.util.Date;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
  */
-public class TDate extends AbstractStringTransformer<Date> {
+public class TDate extends AbstractXmlTransformer<Date> {
   
   private static final String format = "yyy-MM-dd HH:mm:ss.SSS";
   

@@ -28,7 +28,7 @@ import java.io.File;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/07/2015
  */
-public class TFile extends AbstractStringTransformer<File> {
+public class TFile extends AbstractXmlTransformer<File> {
 
   @Override
   public File apply(String str) throws IllegalArgumentException {

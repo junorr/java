@@ -21,64 +21,77 @@
 
 package us.pserver.xprops.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import us.pserver.xprops.XAttr;
+import us.pserver.xprops.XTag;
+import us.pserver.xprops.XmlStream;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/07/2015
  */
-public class TList implements StringTransformer<List> {
+public class TList implements XmlTransformer<List> {
   
   @Override
   public List apply(String str) throws IllegalArgumentException {
-    Valid v = Valid.off(str).testNull("Invalid String to Transform: ")
-        .test(!str.contains(":") 
-            || !str.contains("[") 
-            || !str.contains("]"), 
-            "Invalid String to Transform: "
-        );
-    int id = str.indexOf(":");
-    int iss = str.indexOf("[", id);
-    int ies = str.indexOf("]", iss);
-    v.test(id < 0 || iss < 0 || ies < 0, 
-        "Invalid String to Transform: "
+    XmlStream xs = new XmlStream(
+        new ByteArrayInputStream(
+            new UTF8String(
+                Valid.off(str).getOrFail("Invalid Xml String: ")
+            ).getBytes()
+        )
     );
-    TClass tc = new TClass();
-    Class type = tc.apply(str.substring(0, id));
-    TObject to = new TObject(type);
-    List list = new ArrayList();
-    str = str.substring(iss+1, ies);
-    int i1 = 0, i2 = 0;
-    while(true) {
-      i2 = str.indexOf(",", i1);
-      if(i2 < 0) i2 = str.length();
-      String sub = str.substring(i1, i2);
-      if(sub == null || sub.isEmpty())
-        break;
-      list.add(to.apply(sub));
-      i1 = i2+1;
-      if(i1 >= str.length()) break;
+    
+    XTag xlist = null;
+    try { xlist = xs.read(); }
+    catch(IOException e) {
+      throw new IllegalArgumentException(e.getLocalizedMessage(), e);
     }
-    return list;
+    
+    if(!xlist.value().equals("list")) {
+      throw new IllegalArgumentException("Invalid Root Tag: "+ xlist.value());
+    }
+    
+    XAttr xclass = xlist.findAttr("class");
+    Valid.off(xclass)
+        .testNull("Root Tag does not contains a 'class' attr: ");
+    Class ltype = xclass.attrValue().asClass();
+    
+    TObject to = new TObject(ltype);
+    List ls = new ArrayList(xlist.childs().size());
+    for(int i = 0; i < xlist.childs().size(); i++) {
+      XTag x = xlist.findOne(String.valueOf(i), false);
+      if(x != null) {
+        ls.add(i, to.apply(str));
+      }
+    }
+    return ls;
   }
   
   
   @Override
   public String back(List ls) throws IllegalArgumentException {
-    Valid.off(ls).testNull(List.class);
-    if(ls.isEmpty()) return "";
-    Class type = ls.get(0).getClass();
-    TObject to = new TObject(type);
-    StringBuilder build = new StringBuilder();
-    build.append(type.getName()).append(":[");
+    Valid.off(ls).testNull(List.class)
+        .test(ls.isEmpty(), "Invalid Empty List: ");
+    Class ltype = ls.get(0).getClass();
+    XTag xlist = new XTag("list");
+    xlist.addNewAttr("class", ltype.getName());
+    TObject to = new TObject(ltype);
     for(int i = 0; i < ls.size(); i++) {
-      build.append(to.back(ls.get(i)));
-      if(i < ls.size()-1)
-        build.append(",");
+      XTag xnum = new XTag(String.valueOf(i));
+      String xml = to.back(ls.get(i));
+      if(xml.startsWith("<")) {
+        xnum.addNewChild(xml);
+      } else {
+        xnum.addNewValue(xml);
+      }
+      xlist.addChild(xnum);
     }
-    return build.append("]").toString();
+    return xlist.toXml();
   }
   
 }

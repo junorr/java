@@ -28,7 +28,7 @@ import java.awt.Color;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
  */
-public class TColor extends AbstractStringTransformer<Color> {
+public class TColor extends AbstractXmlTransformer<Color> {
 
   @Override
   public Color apply(String str) throws IllegalArgumentException {

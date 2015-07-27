@@ -29,7 +29,7 @@ import java.nio.file.Paths;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 13/07/2015
  */
-public class TPath extends AbstractStringTransformer<Path> {
+public class TPath extends AbstractXmlTransformer<Path> {
 
   @Override
   public Path apply(String str) throws IllegalArgumentException {

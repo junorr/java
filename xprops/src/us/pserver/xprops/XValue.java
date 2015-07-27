@@ -26,7 +26,7 @@ import java.io.File;
 import java.net.SocketAddress;
 import java.nio.file.Path;
 import java.util.Date;
-import us.pserver.xprops.util.StringTransformer;
+import us.pserver.xprops.util.XmlTransformer;
 import us.pserver.xprops.util.TBoolean;
 import us.pserver.xprops.util.TClass;
 import us.pserver.xprops.util.TColor;
@@ -50,9 +50,9 @@ public class XValue extends XTag {
   }
   
   
-  public <T> T as(StringTransformer<T> transformer) throws IllegalArgumentException {
+  public <T> T as(XmlTransformer<T> transformer) throws IllegalArgumentException {
     return Valid.off(transformer)
-        .getOrFail(StringTransformer.class)
+        .getOrFail(XmlTransformer.class)
         .apply(value);
   }
   
