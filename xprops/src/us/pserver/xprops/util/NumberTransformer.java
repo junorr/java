@@ -31,10 +31,10 @@ import java.util.Objects;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
  */
-public class NumberTransformer implements XmlTransformer<Number> {
+public class NumberTransformer implements StringTransformer<Number> {
   
   @Override
-  public Number transform(final String str) throws IllegalArgumentException {
+  public Number fromString(final String str) throws IllegalArgumentException {
     Valid.off(str).testNull("Invalid String to Transform: ");
     if(!str.contains(".") && !str.contains(",")) {
       return Long.parseLong(str);
@@ -52,7 +52,7 @@ public class NumberTransformer implements XmlTransformer<Number> {
   
   
   @Override
-  public String reverse(Number nb) {
+  public String toString(Number nb) {
     Valid.off(nb).testNull(Number.class);
     if(Double.class.isAssignableFrom(nb.getClass())
         || Float.class.isAssignableFrom(nb.getClass())) {

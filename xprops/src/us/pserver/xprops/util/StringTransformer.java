@@ -24,19 +24,13 @@ package us.pserver.xprops.util;
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/07/2015
+ * @version 0.0 - 11/07/2015
+ * @param <T>
  */
-public class StringTransformer implements XmlTransformer<String> {
+public interface StringTransformer<T> {
 
-  @Override
-  public String transform(String str) {
-    return str;
-  }
+  public T fromString(String str) throws IllegalArgumentException;
 
-
-  @Override
-  public String reverse(String obj) {
-    return obj;
-  }
-
+  public String toString(T obj) throws IllegalArgumentException;
+  
 }

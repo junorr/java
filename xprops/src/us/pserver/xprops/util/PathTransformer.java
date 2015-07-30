@@ -29,10 +29,10 @@ import java.nio.file.Paths;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 13/07/2015
  */
-public class PathTransformer extends AbstractXmlTransformer<Path> {
+public class PathTransformer extends AbstractStringTransformer<Path> {
 
   @Override
-  public Path transform(String str) throws IllegalArgumentException {
+  public Path fromString(String str) throws IllegalArgumentException {
     return Paths.get(Valid.off(str)
         .getOrFail("Invalid String to Transform: ")
     );
@@ -40,7 +40,7 @@ public class PathTransformer extends AbstractXmlTransformer<Path> {
   
   
   @Override
-  public String reverse(Path pth) throws IllegalArgumentException {
+  public String toString(Path pth) throws IllegalArgumentException {
     return Valid.off(pth)
         .getOrFail("Invalid Path to Transform: ")
         .toAbsolutePath().toString();

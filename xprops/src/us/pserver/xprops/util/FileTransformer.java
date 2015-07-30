@@ -28,17 +28,17 @@ import java.io.File;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/07/2015
  */
-public class FileTransformer extends AbstractXmlTransformer<File> {
+public class FileTransformer extends AbstractStringTransformer<File> {
 
   @Override
-  public File transform(String str) throws IllegalArgumentException {
+  public File fromString(String str) throws IllegalArgumentException {
     Valid.off(str).testNull("Invalid String to Transform: ");
     return new File(str);
   }
   
   
   @Override
-  public String reverse(File f) throws IllegalArgumentException {
+  public String toString(File f) throws IllegalArgumentException {
     return Valid.off(f)
         .getOrFail(File.class).getAbsolutePath();
   }

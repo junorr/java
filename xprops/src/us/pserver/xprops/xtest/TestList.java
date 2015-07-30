@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import us.pserver.xprops.util.ListTransformer;
 
 /**
  *
@@ -40,13 +39,8 @@ public class TestList {
     List<Integer> lsi = new ArrayList<Integer>();
     for(int i = 1; i <= 10; i++) {
       lsi.add(i);
-ListTransformer
-  ListTransformerst tlist = new TList();
-    System.out.println("ls ===> "+ Objects.toString(lsi));
-    String str = tlist.reverse(lsi);
-    System.out.println("str ==> "+ str);
-    lsi = tlist.transform(str);
     System.out.println("list => "+ Objects.toString(lsi));
+    
     
     System.out.println();
     List<Date> lsd = new ArrayList<Date>();

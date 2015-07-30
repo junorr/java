@@ -31,7 +31,7 @@ import java.util.Date;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
  */
-public class DateTransformer extends AbstractXmlTransformer<Date> {
+public class DateTransformer extends AbstractStringTransformer<Date> {
   
   private static final String format = "yyy-MM-dd HH:mm:ss.SSS";
   
@@ -56,7 +56,7 @@ public class DateTransformer extends AbstractXmlTransformer<Date> {
   
   
   @Override
-  public Date transform(String str) throws IllegalArgumentException {
+  public Date fromString(String str) throws IllegalArgumentException {
     try {
       return sdf.parse(Valid.off(str)
           .getOrFail("Invalid String to Transform: "+ str)
@@ -68,7 +68,7 @@ public class DateTransformer extends AbstractXmlTransformer<Date> {
 
 
   @Override
-  public String reverse(Date dt) {
+  public String toString(Date dt) {
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     return df.format(dt);
   }

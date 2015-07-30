@@ -26,10 +26,10 @@ package us.pserver.xprops.util;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
  */
-public class ClassTransformer extends AbstractXmlTransformer<Class> {
+public class ClassTransformer extends AbstractStringTransformer<Class> {
 
   @Override
-  public Class transform(String str) throws IllegalArgumentException {
+  public Class fromString(String str) throws IllegalArgumentException {
     try {
       return Class.forName(Valid.off(str)
           .getOrFail("Invalid String to Transform: ")
@@ -41,7 +41,7 @@ public class ClassTransformer extends AbstractXmlTransformer<Class> {
   
   
   @Override
-  public String reverse(Class cls) throws IllegalArgumentException {
+  public String toString(Class cls) throws IllegalArgumentException {
     return Valid.off(cls)
         .getOrFail(Class.class).getName();
   }

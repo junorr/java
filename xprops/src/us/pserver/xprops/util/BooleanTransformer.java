@@ -26,10 +26,10 @@ package us.pserver.xprops.util;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
  */
-public class BooleanTransformer extends AbstractXmlTransformer<Boolean> {
+public class BooleanTransformer extends AbstractStringTransformer<Boolean> {
 
   @Override
-  public Boolean transform(String str) {
+  public Boolean fromString(String str) {
     return Boolean.parseBoolean(Valid.off(str)
         .getOrFail("Invalid String to Transform: ")
     );

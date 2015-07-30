@@ -26,7 +26,7 @@ import java.io.File;
 import java.net.SocketAddress;
 import java.nio.file.Path;
 import java.util.Date;
-import us.pserver.xprops.util.XmlTransformer;
+import us.pserver.xprops.util.StringTransformer;
 import us.pserver.xprops.util.BooleanTransformer;
 import us.pserver.xprops.util.ClassTransformer;
 import us.pserver.xprops.util.ColorTransformer;
@@ -50,50 +50,50 @@ public class XValue extends XTag {
   }
   
   
-  public <T> T as(XmlTransformer<T> transformer) throws IllegalArgumentException {
+  public <T> T as(StringTransformer<T> transformer) throws IllegalArgumentException {
     return Valid.off(transformer)
-        .getOrFail(XmlTransformer.class)
-        .transform(value);
+        .getOrFail(StringTransformer.class)
+        .fromString(value);
   }
   
   
   public Boolean asBoolean() throws IllegalArgumentException {
-    return new BooleanTransformer().transform(value);
+    return new BooleanTransformer().fromString(value);
   }
   
   
   public Class asClass() throws IllegalArgumentException {
-    return new ClassTransformer().transform(value);
+    return new ClassTransformer().fromString(value);
   }
   
   
   public Color asColor() throws IllegalArgumentException {
-    return new ColorTransformer().transform(value);
+    return new ColorTransformer().fromString(value);
   }
   
   
   public Date asDate() throws IllegalArgumentException {
-    return new DateTransformer().transform(value);
+    return new DateTransformer().fromString(value);
   }
   
   
   public File asFile() throws IllegalArgumentException {
-    return new FileTransformer().transform(value);
+    return new FileTransformer().fromString(value);
   }
   
   
   public Number asNumber() throws IllegalArgumentException {
-    return new NumberTransformer().transform(value);
+    return new NumberTransformer().fromString(value);
   }
   
   
   public Path asPath() throws IllegalArgumentException {
-    return new PathTransformer().transform(value);
+    return new PathTransformer().fromString(value);
   }
   
   
   public SocketAddress asSocketAddress() throws IllegalArgumentException {
-    return new SocketAddressTransformer().transform(value);
+    return new SocketAddressTransformer().fromString(value);
   }
   
   

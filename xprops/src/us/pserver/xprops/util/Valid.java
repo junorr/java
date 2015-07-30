@@ -43,6 +43,16 @@ public class Valid<T> {
   }
   
   
+  public boolean isNull() {
+    return obj == null;
+  }
+  
+  
+  public T get() {
+    return obj;
+  }
+  
+  
   public T getOrFail(String msg) throws IllegalArgumentException {
     return getOrFail(new IllegalArgumentException(msg+ Objects.toString(obj)));
   }
@@ -75,13 +85,13 @@ public class Valid<T> {
   }
   
   
-  public Valid testNull(String msg) throws IllegalArgumentException {
+  public Valid<T> testNull(String msg) throws IllegalArgumentException {
     getOrFail(msg);
     return this;
   }
   
   
-  public Valid test(boolean test, String msg) throws IllegalArgumentException {
+  public Valid<T> test(boolean test, String msg) throws IllegalArgumentException {
     if(test) {
       throw new IllegalArgumentException(msg);
     }
@@ -89,19 +99,19 @@ public class Valid<T> {
   }
   
   
-  public Valid testNull(Class cls) throws IllegalArgumentException {
+  public Valid<T> testNull(Class cls) throws IllegalArgumentException {
     getOrFail(cls);
     return this;
   }
   
   
-  public Valid testNull(IllegalArgumentException exc) throws IllegalArgumentException {
+  public Valid<T> testNull(IllegalArgumentException exc) throws IllegalArgumentException {
     getOrFail(exc);
     return this;
   }
   
   
-  public Valid testNull(Throwable thr) throws IllegalArgumentException {
+  public Valid<T> testNull(Throwable thr) throws IllegalArgumentException {
     getOrFail(thr);
     return this;
   }

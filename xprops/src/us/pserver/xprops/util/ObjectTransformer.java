@@ -34,7 +34,7 @@ import java.util.Objects;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 15/07/2015
  */
-public class ObjectTransformer extends AbstractXmlTransformer<Object> {
+public class ObjectTransformer extends AbstractStringTransformer<Object> {
   
   private final Class type;
   
@@ -65,7 +65,7 @@ public class ObjectTransformer extends AbstractXmlTransformer<Object> {
   }
 
   
-  public XmlTransformer getTransformer() throws IllegalArgumentException {
+  public StringTransformer getTransformer() throws IllegalArgumentException {
     if(Number.class.isAssignableFrom(type))
       return new NumberTransformer();
     else if(Boolean.class.isAssignableFrom(type))

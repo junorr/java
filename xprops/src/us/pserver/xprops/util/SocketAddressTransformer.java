@@ -29,10 +29,10 @@ import java.net.SocketAddress;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/07/2015
  */
-public class SocketAddressTransformer extends AbstractXmlTransformer<SocketAddress> {
+public class SocketAddressTransformer extends AbstractStringTransformer<SocketAddress> {
 
   @Override
-  public SocketAddress transform(String str) throws IllegalArgumentException {
+  public SocketAddress fromString(String str) throws IllegalArgumentException {
     final String msg = "Invalid String to Transform: ";
     Valid v = Valid.off(str).testNull(msg);
     v.test(!str.contains(":"), msg);
@@ -40,7 +40,7 @@ public class SocketAddressTransformer extends AbstractXmlTransformer<SocketAddre
     v.test(id >= str.length(), msg);
     NumberTransformer tn = new NumberTransformer();
     String addr = str.substring(0, id);
-    int port = tn.transform(str.substring(id+1)).intValue();
+    int port = tn.fromString(str.substring(id+1)).intValue();
     return new InetSocketAddress(addr, port);
   }
   

@@ -28,10 +28,10 @@ import java.awt.Color;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
  */
-public class ColorTransformer extends AbstractXmlTransformer<Color> {
+public class ColorTransformer extends AbstractStringTransformer<Color> {
 
   @Override
-  public Color transform(String str) throws IllegalArgumentException {
+  public Color fromString(String str) throws IllegalArgumentException {
     Valid v = Valid.off(str).testNull("Invalid String to Transform: ")
         .test(!str.contains(";"), "Not a valid Color Format: "+ str);
     int i1 = str.indexOf(";");
@@ -59,7 +59,7 @@ public class ColorTransformer extends AbstractXmlTransformer<Color> {
 
   
   @Override
-  public String reverse(Color clr) throws IllegalArgumentException {
+  public String toString(Color clr) throws IllegalArgumentException {
     Valid.off(clr).testNull("Invalid Color to Transform: ");
     return new StringBuilder()
         .append(clr.getRed())
