@@ -31,7 +31,7 @@ import java.util.Objects;
 public abstract class AbstractXmlTransformer<T> implements XmlTransformer<T> {
 
   @Override
-  public String back(T obj) throws IllegalArgumentException {
+  public String reverse(T obj) throws IllegalArgumentException {
     return Objects.toString(Valid.off(obj)
         .getOrFail("Invalid Object to Transform: ")
     );

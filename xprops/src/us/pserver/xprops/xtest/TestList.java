@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import us.pserver.xprops.util.TList;
+import us.pserver.xprops.util.ListTransformer;
 
 /**
  *
@@ -40,30 +40,30 @@ public class TestList {
     List<Integer> lsi = new ArrayList<Integer>();
     for(int i = 1; i <= 10; i++) {
       lsi.add(i);
-    }
-    TList tlist = new TList();
+ListTransformer
+  ListTransformerst tlist = new TList();
     System.out.println("ls ===> "+ Objects.toString(lsi));
-    String str = tlist.back(lsi);
+    String str = tlist.reverse(lsi);
     System.out.println("str ==> "+ str);
-    lsi = tlist.apply(str);
+    lsi = tlist.transform(str);
     System.out.println("list => "+ Objects.toString(lsi));
     
     System.out.println();
     List<Date> lsd = new ArrayList<Date>();
     lsd.add(new Date());
     System.out.println("ls ===> "+ Objects.toString(lsd));
-    str = tlist.back(lsd);
+    str = tlireverseack(lsd);
     System.out.println("str ==> "+ str);
-    lsd = tlist.apply(str);
+    lsd = tltransformpply(str);
     System.out.println("list => "+ Objects.toString(lsd));
     
     System.out.println();
     List<SocketAddress> lsa = new ArrayList<SocketAddress>();
     lsa.add(new InetSocketAddress("10.100.0.105", 1080));
     System.out.println("ls ===> "+ Objects.toString(lsa));
-    str = tlist.back(lsa);
+    str = reverset.back(lsa);
     System.out.println("str ==> "+ str);
-    lsa = tlist.apply(str);
+    lsa transformst.apply(str);
     System.out.println("list => "+ Objects.toString(lsa));
   }
   

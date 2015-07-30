@@ -28,8 +28,8 @@ package us.pserver.xprops.util;
  */
 public interface Transformer<X, Y> {
 
-  public Y apply(X obj) throws IllegalArgumentException;
+  public Y transform(X obj) throws IllegalArgumentException;
   
-  public X back(Y obj) throws IllegalArgumentException;
+  public X reverse(Y obj) throws IllegalArgumentException;
   
 }

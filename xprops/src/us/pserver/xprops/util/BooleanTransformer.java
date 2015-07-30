@@ -21,29 +21,18 @@
 
 package us.pserver.xprops.util;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/07/2015
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 11/07/2015
  */
-public class TPath extends AbstractXmlTransformer<Path> {
+public class BooleanTransformer extends AbstractXmlTransformer<Boolean> {
 
   @Override
-  public Path apply(String str) throws IllegalArgumentException {
-    return Paths.get(Valid.off(str)
+  public Boolean transform(String str) {
+    return Boolean.parseBoolean(Valid.off(str)
         .getOrFail("Invalid String to Transform: ")
     );
   }
-  
-  
-  @Override
-  public String back(Path pth) throws IllegalArgumentException {
-    return Valid.off(pth)
-        .getOrFail("Invalid Path to Transform: ")
-        .toAbsolutePath().toString();
-  }
-  
+
 }

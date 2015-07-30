@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import static us.pserver.xprops.XmlStream.XHEADER;
+import static us.pserver.xprops.XInputStream.XHEADER;
 import us.pserver.xprops.util.Valid;
 
 /**
@@ -35,31 +35,31 @@ import us.pserver.xprops.util.Valid;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/07/2015
  */
-public class XmlFile extends XmlStream {
+public class XFile extends XInputStream {
   
   private final File file;
   
 
-  public XmlFile(String file) {
+  public XFile(String file) {
     this(new File(Valid.off(file)
         .getOrFail("Invalid File Name: "))
     );
   }
   
   
-  public XmlFile(File file) {
+  public XFile(File file) {
     super(createFileInput(file));
     this.file = file;
   }
   
   
-  public XmlFile(String file, XTag root) {
+  public XFile(String file, XTag root) {
     super(Valid.off(root).getOrFail(XTag.class));
     this.file = new File(file);
   }
   
   
-  public XmlFile(File file, XTag root) {
+  public XFile(File file, XTag root) {
     super(Valid.off(root).getOrFail(XTag.class));
     this.file = file;
   }

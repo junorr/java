@@ -37,7 +37,7 @@ import us.pserver.xprops.util.Valid;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/07/2015
  */
-public class XmlStream {
+public class XInputStream {
   
   public static final String XHEADER = 
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -49,7 +49,7 @@ public class XmlStream {
   InputStream input;
 
 
-  public XmlStream(InputStream input) {
+  public XInputStream(InputStream input) {
     this.input = Valid.off(input)
         .getOrFail(InputStream.class);
     this.stack = new Stack<>();
@@ -57,7 +57,7 @@ public class XmlStream {
   }
   
   
-  public XmlStream(XTag root) {
+  public XInputStream(XTag root) {
     this.input = null;
     this.root = Valid.off(root)
         .getOrFail(XTag.class);
@@ -128,9 +128,9 @@ public class XmlStream {
   
   private class XmlHandler extends DefaultHandler {
     
-    private final XmlStream xfile;
+    private final XInputStream xfile;
     
-    public XmlHandler(final XmlStream xf) {
+    public XmlHandler(final XInputStream xf) {
       this.xfile = xf;
     }
     

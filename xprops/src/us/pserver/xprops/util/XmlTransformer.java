@@ -30,9 +30,9 @@ package us.pserver.xprops.util;
 public interface XmlTransformer<T> extends Transformer<String, T> {
 
   @Override
-  public T apply(String str) throws IllegalArgumentException;
+  public T transform(String str) throws IllegalArgumentException;
 
   @Override
-  public String back(T obj) throws IllegalArgumentException;
+  public String reverse(T obj) throws IllegalArgumentException;
   
 }

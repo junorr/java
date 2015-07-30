@@ -22,7 +22,7 @@
 package us.pserver.xprops.xtest;
 
 import java.io.IOException;
-import us.pserver.xprops.XmlFile;
+import us.pserver.xprops.XFile;
 
 /**
  *
@@ -33,7 +33,7 @@ public class TestXmlFile {
 
   
   public static void main(String[] args) throws IOException {
-    XmlFile xfile = new XmlFile("/storage/log.xml");
+    XFile xfile = new XFile("/storage/log.xml");
     xfile.read();
     
   }

@@ -22,7 +22,7 @@
 package us.pserver.xprops.xtest;
 
 import java.lang.reflect.Method;
-import us.pserver.xprops.util.TObject;
+import us.pserver.xprops.util.ObjectTransformer;
 
 /**
  *
@@ -40,7 +40,7 @@ public class TestReflect {
     System.out.println(m.getReturnType());
     System.out.println(void.class.equals(m.getReturnType()));
     
-    System.out.println(TObject.hasDefaultTransformer(String.class));
+    System.out.println(ObjectTransformer.isSupported(String.class));
     obj = new byte[1];
     System.out.println("isArray? "+ Class.forName(obj.getClass().getName()).isArray());
     System.out.println("isPrimitive? "+ Class.forName(obj.getClass().getName()).isPrimitive());

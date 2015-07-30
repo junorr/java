@@ -27,18 +27,18 @@ import java.util.ArrayList;
 import java.util.List;
 import us.pserver.xprops.XAttr;
 import us.pserver.xprops.XTag;
-import us.pserver.xprops.XmlStream;
+import us.pserver.xprops.XInputStream;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/07/2015
  */
-public class TList implements XmlTransformer<List> {
+public class ListTransformer implements XmlTransformer<List> {
   
   @Override
-  public List apply(String str) throws IllegalArgumentException {
-    XmlStream xs = new XmlStream(
+  public List transform(String str) throws IllegalArgumentException {
+    XInputStream xs = new XInputStream(
         new ByteArrayInputStream(
             new UTF8String(
                 Valid.off(str).getOrFail("Invalid Xml String: ")
@@ -61,12 +61,12 @@ public class TList implements XmlTransformer<List> {
         .testNull("Root Tag does not contains a 'class' attr: ");
     Class ltype = xclass.attrValue().asClass();
     
-    TObject to = new TObject(ltype);
+    ObjectTransformer to = new ObjectTransformer(ltype);
     List ls = new ArrayList(xlist.childs().size());
     for(int i = 0; i < xlist.childs().size(); i++) {
       XTag x = xlist.findOne(String.valueOf(i), false);
       if(x != null) {
-        ls.add(i, to.apply(str));
+        ls.add(i, to.transform(str));
       }
     }
     return ls;
@@ -74,16 +74,16 @@ public class TList implements XmlTransformer<List> {
   
   
   @Override
-  public String back(List ls) throws IllegalArgumentException {
+  public String reverse(List ls) throws IllegalArgumentException {
     Valid.off(ls).testNull(List.class)
         .test(ls.isEmpty(), "Invalid Empty List: ");
     Class ltype = ls.get(0).getClass();
     XTag xlist = new XTag("list");
     xlist.addNewAttr("class", ltype.getName());
-    TObject to = new TObject(ltype);
+    ObjectTransformer to = new ObjectTransformer(ltype);
     for(int i = 0; i < ls.size(); i++) {
       XTag xnum = new XTag(String.valueOf(i));
-      String xml = to.back(ls.get(i));
+      String xml = to.reverse(ls.get(i));
       if(xml.startsWith("<")) {
         xnum.addNewChild(xml);
       } else {

@@ -21,7 +21,7 @@
 
 package us.pserver.xprops.xtest;
 
-import us.pserver.xprops.util.TNumber;
+import us.pserver.xprops.util.NumberTransformer;
 
 /**
  *
@@ -33,35 +33,32 @@ public class TestNumber {
   
   public static void main(String[] args) {
     Number n = 11.712345;
-    System.out.println("n ===> "+ n);
-    TNumber tn = new TNumber();
-    String str = tn.back(n);
+    System.out.println("n ===> "NumberTransformerNumberTransformerber tn = new TNumber();
+    String str = tn.reverse(n);
     System.out.println("str => "+ str);
-    n = tn.apply(str);
+    n = tn.transform(str);
     System.out.println("n ===> "+ n);
     
     System.out.println();
     str = "11,712345";
     System.out.println("str => "+ str);
-    n = tn.apply(str);
+    n =transformpply(str);
     System.out.println("n ===> "+ n);
     
     System.out.println();
     str = "5,000,000.01";
     System.out.println("str => "+ str);
-    n = tn.apply(str);
+   transformtn.apply(str);
     System.out.println("n ===> "+ n);
     
     System.out.println();
     str = "5.000.000,01";
-    System.out.println("str => "+ str);
-    n = tn.apply(str);
+    System.out.println("str => "+ str);transformn = tn.apply(str);
     System.out.println("n ===> "+ n);
     
     System.out.println();
-    str = tn.back(5000000);
-    System.out.println("str => "+ str);
-    n = tn.apply(str);
+    str = reverseack(5000000);
+    System.out.println("str => "+ stransform    n = tn.apply(str);
     System.out.println("n ===> "+ n);
   }
   

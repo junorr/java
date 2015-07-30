@@ -30,9 +30,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import us.pserver.xprops.util.XmlTransformer;
-import us.pserver.xprops.util.TBoolean;
-import us.pserver.xprops.util.TNumber;
-import us.pserver.xprops.util.TObject;
+import us.pserver.xprops.util.BooleanTransformer;
+import us.pserver.xprops.util.NumberTransformer;
+import us.pserver.xprops.util.ObjectTransformer;
 import us.pserver.xprops.util.Valid;
 
 /**
@@ -142,12 +142,12 @@ public class XBean extends XTag {
   
   public XBean bind(Field f) {
     Valid.off(f).testNull(Field.class);
-    if(!TObject.hasDefaultTransformer(f.getType())) {
+    if(!ObjectTransformer.isSupported(f.getType())) {
       throw new UnsupportedOperationException(
           "There is No Supported Transformer for Type: "
               + f.getType().getName());
     }
-    fmap.put(f, new TObject(f.getType()));
+    fmap.put(f, new ObjectTransformer(f.getType()));
     return this;
   }
   
@@ -196,12 +196,12 @@ public class XBean extends XTag {
         .test(void.class.equals(
             m.getReturnType()), 
             "Invalid Return Type for Method: ");
-    if(!TObject.hasDefaultTransformer(m.getReturnType())) {
+    if(!ObjectTransformer.isSupported(m.getReturnType())) {
       throw new UnsupportedOperationException(
           "There is No Supported Transformer for Type: "
               + m.getReturnType().getName());
     }
-    return bind(m, new TObject(m.getReturnType()));
+    return bind(m, new ObjectTransformer(m.getReturnType()));
   }
   
   
@@ -300,10 +300,10 @@ public class XBean extends XTag {
       else {
         Object val = null;
         if(boolean.class == f.getType()) {
-          val = new TBoolean().apply(v.value());
+          val = new BooleanTransformer().transform(v.value());
         }
         else {
-          Number n = new TNumber().apply(v.value());
+          Number n = new NumberTransformer().transform(v.value());
           if(byte.class == f.getType())
             val = n.byteValue();
           else if(short.class == f.getType())
@@ -328,7 +328,7 @@ public class XBean extends XTag {
     }
     else {
       try {
-        f.set(object, s.apply(v.value()));
+        f.set(object, s.transform(v.value()));
       } catch(IllegalAccessException e) {
         throw new IllegalArgumentException(e.toString(), e);
       }
@@ -346,7 +346,7 @@ public class XBean extends XTag {
     }
     try {
       Object val = f.get(object);
-      tag.addNewValue(s.back(val));
+      tag.addNewValue(s.reverse(val));
     } catch(IllegalAccessException e) {
       throw new IllegalArgumentException(e.toString(), e);
     }
@@ -364,7 +364,7 @@ public class XBean extends XTag {
     }
     try {
       Object val = m.invoke(object, null);
-      tag.addNewValue(s.back(val));
+      tag.addNewValue(s.reverse(val));
     } catch(InvocationTargetException | IllegalAccessException e) {
       throw new IllegalArgumentException(e.toString(), e);
     }

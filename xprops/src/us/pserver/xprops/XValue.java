@@ -27,14 +27,14 @@ import java.net.SocketAddress;
 import java.nio.file.Path;
 import java.util.Date;
 import us.pserver.xprops.util.XmlTransformer;
-import us.pserver.xprops.util.TBoolean;
-import us.pserver.xprops.util.TClass;
-import us.pserver.xprops.util.TColor;
-import us.pserver.xprops.util.TDate;
-import us.pserver.xprops.util.TFile;
-import us.pserver.xprops.util.TNumber;
-import us.pserver.xprops.util.TPath;
-import us.pserver.xprops.util.TSocketAddress;
+import us.pserver.xprops.util.BooleanTransformer;
+import us.pserver.xprops.util.ClassTransformer;
+import us.pserver.xprops.util.ColorTransformer;
+import us.pserver.xprops.util.DateTransformer;
+import us.pserver.xprops.util.FileTransformer;
+import us.pserver.xprops.util.NumberTransformer;
+import us.pserver.xprops.util.PathTransformer;
+import us.pserver.xprops.util.SocketAddressTransformer;
 import us.pserver.xprops.util.Valid;
 
 /**
@@ -53,47 +53,47 @@ public class XValue extends XTag {
   public <T> T as(XmlTransformer<T> transformer) throws IllegalArgumentException {
     return Valid.off(transformer)
         .getOrFail(XmlTransformer.class)
-        .apply(value);
+        .transform(value);
   }
   
   
   public Boolean asBoolean() throws IllegalArgumentException {
-    return new TBoolean().apply(value);
+    return new BooleanTransformer().transform(value);
   }
   
   
   public Class asClass() throws IllegalArgumentException {
-    return new TClass().apply(value);
+    return new ClassTransformer().transform(value);
   }
   
   
   public Color asColor() throws IllegalArgumentException {
-    return new TColor().apply(value);
+    return new ColorTransformer().transform(value);
   }
   
   
   public Date asDate() throws IllegalArgumentException {
-    return new TDate().apply(value);
+    return new DateTransformer().transform(value);
   }
   
   
   public File asFile() throws IllegalArgumentException {
-    return new TFile().apply(value);
+    return new FileTransformer().transform(value);
   }
   
   
   public Number asNumber() throws IllegalArgumentException {
-    return new TNumber().apply(value);
+    return new NumberTransformer().transform(value);
   }
   
   
   public Path asPath() throws IllegalArgumentException {
-    return new TPath().apply(value);
+    return new PathTransformer().transform(value);
   }
   
   
   public SocketAddress asSocketAddress() throws IllegalArgumentException {
-    return new TSocketAddress().apply(value);
+    return new SocketAddressTransformer().transform(value);
   }
   
   

@@ -34,12 +34,12 @@ import java.util.Objects;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 15/07/2015
  */
-public class TObject extends AbstractXmlTransformer<Object> {
+public class ObjectTransformer extends AbstractXmlTransformer<Object> {
   
   private final Class type;
   
   
-  public TObject(final Class type) {
+  public ObjectTransformer(final Class type) {
     this.type = Valid.off(type)
         .getOrFail(Class.class);
   }
@@ -51,15 +51,15 @@ public class TObject extends AbstractXmlTransformer<Object> {
   
   
   @Override
-  public Object apply(String str) throws IllegalArgumentException {
-    return getTransformer().apply(str);
+  public Object transform(String str) throws IllegalArgumentException {
+    return getTransformer().transform(str);
   }
 
 
   @Override
-  public String back(Object obj) throws IllegalArgumentException {
-    if(TObject.hasDefaultTransformer(type)) {
-      return getTransformer().back(obj);
+  public String reverse(Object obj) throws IllegalArgumentException {
+    if(ObjectTransformer.isSupported(type)) {
+      return getTransformer().reverse(obj);
     }
     return Objects.toString(obj);
   }
@@ -67,33 +67,33 @@ public class TObject extends AbstractXmlTransformer<Object> {
   
   public XmlTransformer getTransformer() throws IllegalArgumentException {
     if(Number.class.isAssignableFrom(type))
-      return new TNumber();
+      return new NumberTransformer();
     else if(Boolean.class.isAssignableFrom(type))
-      return new TBoolean();
+      return new BooleanTransformer();
     else if(Color.class.isAssignableFrom(type))
-      return new TColor();
+      return new ColorTransformer();
     else if(Class.class.isAssignableFrom(type))
-      return new TClass();
+      return new ClassTransformer();
     else if(Date.class.isAssignableFrom(type))
-      return new TDate();
+      return new DateTransformer();
     else if(File.class.isAssignableFrom(type))
-      return new TFile();
+      return new FileTransformer();
     else if(Path.class.isAssignableFrom(type))
-      return new TPath();
+      return new PathTransformer();
     else if(List.class.isAssignableFrom(type))
-      return new TList();
+      return new ListTransformer();
     else if(SocketAddress.class.isAssignableFrom(type))
-      return new TSocketAddress();
+      return new SocketAddressTransformer();
     else if(String.class.isAssignableFrom(type))
-      return new TString();
+      return new StringTransformer();
     else if(type.isPrimitive() && type.isArray())
-      return new TList();
+      return new ListTransformer();
     else throw new IllegalArgumentException(
         "Not Supported Transformation for: "+ type.getName());
   }
 
   
-  public static boolean hasDefaultTransformer(Class cls) throws IllegalArgumentException {
+  public static boolean isSupported(Class cls) throws IllegalArgumentException {
     return cls.isPrimitive()
         || (cls.isPrimitive() && cls.isArray())
         || Number.class.isAssignableFrom(cls)

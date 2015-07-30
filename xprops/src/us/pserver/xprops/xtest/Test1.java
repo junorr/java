@@ -30,8 +30,14 @@ public class Test1 {
 
   
   public static void main(String[] args) {
-    int i = 2;
-    System.out.println(Boolean.parseBoolean(String.valueOf(i)));
+    boolean[] bls = new boolean[0];
+    Boolean[] BLS = new Boolean[0];
+    System.out.println("* bls.getClass: "+ bls.getClass());
+    System.out.println("* BLS.getClass: "+ BLS.getClass());
+    System.out.println("* bls.getClass.isArray: "+ bls.getClass().isArray());
+    System.out.println("* BLS.getClass.isArray: "+ BLS.getClass().isArray());
+    System.out.println("* bls.getClass.isPrimitive: "+ bls.getClass().isPrimitive());
+    System.out.println("* BLS.getClass.isPrimitive: "+ bls.getClass().isPrimitive());
   }
   
 }

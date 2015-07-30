@@ -21,6 +21,10 @@
 
 package us.pserver.xprops.util;
 
+import com.sun.org.apache.xalan.internal.xsltc.util.IntegerArray;
+import java.io.File;
+import java.net.SocketAddress;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,19 +32,43 @@ import java.util.List;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 15/07/2015
  */
-public class TPrimitiveArray extends AbstractXmlTransformer<Object> {
+public class PrimitiveArrayTransformer extends AbstractXmlTransformer<Object> {
+  
+  static final Class[] primitives = {
+      new Boolean[0].getClass(),
+      new boolean[0].getClass(),
+      new Byte[0].getClass(),
+      new byte[0].getClass(),
+      new char[0].getClass(),
+      new Character[0].getClass(),
+      new Short[0].getClass(),
+      new short[0].getClass(),
+      new Integer[0].getClass(),
+      new int[0].getClass(),
+      new Long[0].getClass(),
+      new long[0].getClass(),
+      new Float[0].getClass(),
+      new float[0].getClass(),
+      new Double[0].getClass(),
+      new double[0].getClass(),
+      new String[0].getClass(),
+      new File[0].getClass(),
+      new Date[0].getClass(),
+      new SocketAddress[0].getClass()
+  };
+  
 
   private List list;
 
 
   @Override
-  public Object apply(String str) throws IllegalArgumentException {
-    list = new TList().apply(str);
+  public Object transform(String str) throws IllegalArgumentException {
+    list = new ListTransformer().transform(str);
     return list;
   }
   
   
-  public String back(Object obj) throws IllegalArgumentException {
+  public String reverse(Object obj) throws IllegalArgumentException {
     Valid.off(obj)
         .testNull(Object.class)
         .test(!isPrimitiveArray(obj.getClass()) 
@@ -50,35 +78,19 @@ public class TPrimitiveArray extends AbstractXmlTransformer<Object> {
   }
   
   
-  public TPrimitiveArray transform(String str) throws IllegalArgumentException {
-    List list = new TList().apply(str);
+  public PrimitiveArrayTransformer transform(String str) throws IllegalArgumentException {
+    List list = new ListTransformer().transform(str);
     return this;
   }
   
   
   public static boolean isPrimitiveArray(Class cls) {
-    return Valid.off(cls)
-        .getOrFail(Class.class)
-        .getName().startsWith("[")
-        && cls.getName().length() == 2;
-  }
-  
-  
-  public static boolean isPrimitiveWrapperArray(Class cls) {
-    return Valid.off(cls)
-        .getOrFail(Class.class)
-        .getName().startsWith("[")
-        && (cls.getName().endsWith("Boolean;")
-          || cls.getName().endsWith("Byte;")
-          || cls.getName().endsWith("Character;")
-          || cls.getName().endsWith("String;")
-          || cls.getName().endsWith("Integer;")
-          || cls.getName().endsWith("Short;")
-          || cls.getName().endsWith("Long;")
-          || cls.getName().endsWith("Float;")
-          || cls.getName().endsWith("Double;")
-          || cls.getName().endsWith("Number;")
-        );
+    if(cls == null) return false;
+    boolean primitive = false;
+    for(Class c : primitives) {
+      primitive = primitive || c.equals(cls);
+    }
+    return primitive;
   }
 
 }

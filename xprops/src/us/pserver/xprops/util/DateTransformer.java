@@ -21,27 +21,56 @@
 
 package us.pserver.xprops.util;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/07/2015
+ * @version 0.0 - 11/07/2015
  */
-public class TSocketAddress extends AbstractXmlTransformer<SocketAddress> {
+public class DateTransformer extends AbstractXmlTransformer<Date> {
+  
+  private static final String format = "yyy-MM-dd HH:mm:ss.SSS";
+  
+  private final SimpleDateFormat sdf;
+  
+  
+  public DateTransformer(String format) {
+    sdf = new SimpleDateFormat(Valid.off(format)
+        .getOrFail("Invalid Date Format: ")
+    );
+  }
+  
+  
+  public DateTransformer() {
+    this(format);
+  }
+  
+  
+  public DateFormat dateFormat() {
+    return sdf;
+  }
+  
+  
+  @Override
+  public Date transform(String str) throws IllegalArgumentException {
+    try {
+      return sdf.parse(Valid.off(str)
+          .getOrFail("Invalid String to Transform: "+ str)
+      );
+    } catch(ParseException e) {
+      throw new IllegalArgumentException(e.toString(), e);
+    }
+  }
+
 
   @Override
-  public SocketAddress apply(String str) throws IllegalArgumentException {
-    final String msg = "Invalid String to Transform: ";
-    Valid v = Valid.off(str).testNull(msg);
-    v.test(!str.contains(":"), msg);
-    int id = str.indexOf(":");
-    v.test(id >= str.length(), msg);
-    TNumber tn = new TNumber();
-    String addr = str.substring(0, id);
-    int port = tn.apply(str.substring(id+1)).intValue();
-    return new InetSocketAddress(addr, port);
+  public String reverse(Date dt) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    return df.format(dt);
   }
   
 }

@@ -23,21 +23,27 @@ package us.pserver.xprops.util;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 24/07/2015
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 11/07/2015
  */
-public class SameTransformer<T> implements Transformer<T, T> {
-
+public class ClassTransformer extends AbstractXmlTransformer<Class> {
 
   @Override
-  public T apply(T obj) throws IllegalArgumentException {
-    return obj;
+  public Class transform(String str) throws IllegalArgumentException {
+    try {
+      return Class.forName(Valid.off(str)
+          .getOrFail("Invalid String to Transform: ")
+      );
+    } catch(ClassNotFoundException e) {
+      throw new IllegalArgumentException(e.toString(), e);
+    }
   }
-
-
+  
+  
   @Override
-  public T back(T obj) throws IllegalArgumentException {
-    return obj;
+  public String reverse(Class cls) throws IllegalArgumentException {
+    return Valid.off(cls)
+        .getOrFail(Class.class).getName();
   }
 
 }
