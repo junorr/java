@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.io.File;
 import java.net.SocketAddress;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,10 +38,16 @@ import java.util.List;
 public class XConverterFactory {
 
   public static <T> XConverter<T> getXConverter(Class<T> type) {
-    if(Number.class.isAssignableFrom(type))
-      return (XConverter<T>) new XNumber();
-    else if(Boolean.class.isAssignableFrom(type))
+    if(Boolean.class.isAssignableFrom(type) 
+        || boolean.class.isAssignableFrom(type))
       return (XConverter<T>) new XBoolean();
+    else if(Character.class.isAssignableFrom(type) 
+        || char.class.isAssignableFrom(type))
+      return (XConverter<T>) new XChar();
+    else if(String.class.isAssignableFrom(type))
+      return (XConverter<T>) new XString();
+    else if(Number.class.isAssignableFrom(type) || isPrimitive(type))
+      return (XConverter<T>) new XNumber(type);
     else if(Color.class.isAssignableFrom(type))
       return (XConverter<T>) new XColor();
     else if(Class.class.isAssignableFrom(type))
@@ -53,13 +60,14 @@ public class XConverterFactory {
       return (XConverter<T>) new XPath();
     else if(SocketAddress.class.isAssignableFrom(type))
       return (XConverter<T>) new XSocketAddress();
-    else if(String.class.isAssignableFrom(type))
-      return (XConverter<T>) new XString();
-    /* 
-    else if(type.isPrimitive() && type.isArray())
-      return new ListTransformer();*/
-    else throw new IllegalArgumentException(
-        "Not Supported Transformation for: "+ type.getName());
+    else if(List.class.isAssignableFrom(type))
+      return (XConverter<T>) new XList(type, new ArrayList());
+    else if(type.isArray())
+      return (XConverter<T>) new XArray(type.getComponentType());
+    else
+      return new XObject(type);
+    //else throw new IllegalArgumentException(
+      //  "Not Supported Conversion for: "+ type.getName());
   }
   
   

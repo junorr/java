@@ -19,30 +19,18 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.converter;
-
-import us.pserver.xprops.XTag;
-import us.pserver.xprops.XValue;
-import us.pserver.xprops.util.Valid;
+package us.pserver.xprops.xtest;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 30/07/2015
+ * @version 1.0 - 31/07/2015
  */
-public class XString implements XConverter<String> {
+public class TestClass {
+
   
-  @Override
-  public XTag toXml(String obj) {
-    return new XValue(Valid.off(obj)
-        .getOrFail(String.class));
+  public static void main(String[] args) throws Exception {
+    System.out.println("Number.class.isAssignableFrom(int.class): "+ Number.class.isAssignableFrom(int.class));
   }
-
-
-  @Override
-  public String fromXml(XTag tag) {
-    return Valid.off(tag)
-        .getOrFail(XTag.class).value();
-  }
-
+  
 }

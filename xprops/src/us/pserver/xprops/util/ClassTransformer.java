@@ -27,13 +27,42 @@ package us.pserver.xprops.util;
  * @version 0.0 - 11/07/2015
  */
 public class ClassTransformer extends AbstractStringTransformer<Class> {
+  
+  private static final String 
+      CLASS_BOOLEAN = "boolean",
+      CLASS_BYTE = "byte",
+      CLASS_CHAR = "char",
+      CLASS_SHORT = "short",
+      CLASS_INT = "int",
+      CLASS_LONG = "long",
+      CLASS_FLOAT = "float",
+      CLASS_DOUBLE = "double";
+  
 
   @Override
   public Class fromString(String str) throws IllegalArgumentException {
+    Valid.off(str).testNull("Invalid String to Transform: ");
     try {
-      return Class.forName(Valid.off(str)
-          .getOrFail("Invalid String to Transform: ")
-      );
+      switch(str) {
+        case CLASS_BOOLEAN:
+          return boolean.class;
+        case CLASS_BYTE:
+          return byte.class;
+        case CLASS_CHAR:
+          return char.class;
+        case CLASS_DOUBLE:
+          return double.class;
+        case CLASS_FLOAT:
+          return float.class;
+        case CLASS_INT:
+          return int.class;
+        case CLASS_LONG:
+          return long.class;
+        case CLASS_SHORT:
+          return short.class;
+        default:
+          return Class.forName(str);
+      }
     } catch(ClassNotFoundException e) {
       throw new IllegalArgumentException(e.toString(), e);
     }

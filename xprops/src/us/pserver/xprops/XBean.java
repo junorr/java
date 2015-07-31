@@ -22,17 +22,14 @@
 package us.pserver.xprops;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import us.pserver.xprops.util.StringTransformer;
-import us.pserver.xprops.util.BooleanTransformer;
-import us.pserver.xprops.util.NumberTransformer;
-import us.pserver.xprops.util.ObjectTransformer;
+import us.pserver.xprops.converter.XConverter;
+import us.pserver.xprops.converter.XConverterFactory;
+import us.pserver.xprops.converter.XNumber;
 import us.pserver.xprops.util.Valid;
 
 /**
@@ -44,13 +41,13 @@ public class XBean extends XTag {
   
   private final Object object;
 
-  private final Map<Field, StringTransformer<Object>> fmap;
+  private final Map<Field, XConverter> fieldMap;
 
-  private final Map<Method, StringTransformer<Object>> mmap;
+  private final Map<Method, XConverter> methMap;
   
-  private final Map<Field, String> falias;
+  private final Map<Field, String> fieldAlias;
 
-  private final Map<Method, String> malias;
+  private final Map<Method, String> methAlias;
   
 
   public XBean(Object obj) {
@@ -65,10 +62,19 @@ public class XBean extends XTag {
     super(name);
     this.object = Valid.off(obj)
         .getOrFail(Object.class);
-    this.fmap = new HashMap<>();
-    this.mmap = new HashMap<>();
-    this.falias = new HashMap<>();
-    this.malias = new HashMap<>();
+    this.fieldMap = new HashMap<>();
+    this.methMap = new HashMap<>();
+    this.fieldAlias = new HashMap<>();
+    this.methAlias = new HashMap<>();
+  }
+  
+  
+  public XBean(XTag src, Object dst) {
+    this(Valid.off(dst)
+        .getOrFail(Object.class)
+        .toString(), dst
+    );
+    this.childs().addAll(src.childs());
   }
   
   
@@ -82,23 +88,9 @@ public class XBean extends XTag {
   }
   
   
-  public XBean off(Object obj) {
-    XBean xb = new XBean(obj);
-    xb.childs().addAll(childs());
-    return xb;
-  }
-
-  
-  public XBean off(String name, Object obj) {
-    XBean xb = new XBean(obj);
-    xb.childs().addAll(xb.childs());
-    return xb;
-  }
-  
-  
   public XBean alias(Field field, String alias) {
     if(field != null && alias != null) {
-      falias.put(field, alias);
+      fieldAlias.put(field, alias);
     }
     return this;
   }
@@ -106,7 +98,7 @@ public class XBean extends XTag {
   
   public XBean alias(Method meth, String alias) {
     if(meth != null && alias != null) {
-      malias.put(meth, alias);
+      methAlias.put(meth, alias);
     }
     return this;
   }
@@ -142,12 +134,7 @@ public class XBean extends XTag {
   
   public XBean bind(Field f) {
     Valid.off(f).testNull(Field.class);
-    if(!ObjectTransformer.isSupported(f.getType())) {
-      throw new UnsupportedOperationException(
-          "There is No Supported Transformer for Type: "
-              + f.getType().getName());
-    }
-    fmap.put(f, new ObjectTransformer(f.getType()));
+    fieldMap.put(f, XConverterFactory.getXConverter(f.getType()));
     return this;
   }
   
@@ -165,79 +152,25 @@ public class XBean extends XTag {
   }
   
   
-  public XBean bind(Field f, StringTransformer<Object> trn) {
+  public XBean bind(Field f, XConverter cv) {
     Valid.off(f)
         .testNull(Field.class)
-        .newValid(trn)
-        .testNull(StringTransformer.class);
-    fmap.put(f, trn);
+        .newValid(cv)
+        .testNull(XConverter.class);
+    fieldMap.put(f, cv);
     return this;
   }
   
   
-  public XBean bindField(String field, StringTransformer<Object> trn) {
+  public XBean bindField(String field, XConverter cv) {
     Valid.off(field)
         .testNull(Field.class)
-        .newValid(trn)
-        .testNull(StringTransformer.class);
+        .newValid(cv)
+        .testNull(XConverter.class);
     Field[] fs = type().getDeclaredFields();
     for(Field f : fs) {
       if(field.equalsIgnoreCase(f.getName())) {
-        bind(f, trn);
-        break;
-      }
-    }
-    return this;
-  }
-  
-  
-  public XBean bind(Method m) {
-    Valid.off(m).testNull(Method.class)
-        .test(void.class.equals(
-            m.getReturnType()), 
-            "Invalid Return Type for Method: ");
-    if(!ObjectTransformer.isSupported(m.getReturnType())) {
-      throw new UnsupportedOperationException(
-          "There is No Supported Transformer for Type: "
-              + m.getReturnType().getName());
-    }
-    return bind(m, new ObjectTransformer(m.getReturnType()));
-  }
-  
-  
-  public XBean bindMethod(String meth) {
-    Valid.off(meth).testNull(Method.class);
-    Method[] ms = type().getDeclaredMethods();
-    for(Method m : ms) {
-      if(meth.equalsIgnoreCase(m.getName())) {
-        bind(m);
-        break;
-      }
-    }
-    return this;
-  }
-  
-  
-  public XBean bind(Method m, StringTransformer<Object> trn) {
-    Valid.off(m).testNull(Method.class)
-        .test(void.class.equals(
-            m.getReturnType()), 
-            "Invalid Return Type for Method: ")
-        .newValid(trn)
-        .testNull(StringTransformer.class);
-    mmap.put(m, trn);
-    return this;
-  }
-  
-  
-  public XBean bindMethod(String meth, StringTransformer<Object> trn) {
-    Valid.off(meth).testNull(Method.class)
-        .newValid(trn)
-        .testNull(StringTransformer.class);
-    Method[] ms = type().getDeclaredMethods();
-    for(Method m : ms) {
-      if(meth.equalsIgnoreCase(m.getName())) {
-        bind(m, trn);
+        bind(f, cv);
         break;
       }
     }
@@ -246,23 +179,11 @@ public class XBean extends XTag {
   
   
   public XBean scanObject() {
-    if(fmap.isEmpty() && mmap.isEmpty())
+    if(fieldMap.isEmpty() && methMap.isEmpty())
       return this;
-    Set<Map.Entry<Field, 
-        StringTransformer<Object>>> ents = 
-        fmap.entrySet();
-    for(Map.Entry<Field, 
-        StringTransformer<Object>> e : ents) {
-      this.addChild(makeTag(
-          e.getKey(), 
-          e.getValue())
-      );
-    }
-    Set<Map.Entry<Method, 
-        StringTransformer<Object>>> mths = 
-        mmap.entrySet();
-    for(Map.Entry<Method, 
-        StringTransformer<Object>> e : mths) {
+    Set<Map.Entry<Field, XConverter>> ents = 
+        fieldMap.entrySet();
+    for(Map.Entry<Field, XConverter> e : ents) {
       this.addChild(makeTag(
           e.getKey(), 
           e.getValue())
@@ -275,97 +196,44 @@ public class XBean extends XTag {
   public Object scanXml() {
     Field[] fs = type().getDeclaredFields();
     for(Field f : fs) {
-      if(!fmap.containsKey(f))
+      if(!fieldMap.containsKey(f))
         continue;
       String fname = f.getName();
-      if(falias.containsKey(f))
-        fname = falias.get(f);
+      if(fieldAlias.containsKey(f))
+        fname = fieldAlias.get(f);
       XTag tag = this.findOne(fname, false);
       tag = (tag != null ? tag.firstChild() : tag);
       if(tag == null) continue;
-      set(f, fmap.get(f), tag);
+      set(f, fieldMap.get(f), tag);
     }
     return object;
   }
   
   
-  private void set(Field f, StringTransformer<Object> s, XTag v) {
+  private void set(Field f, XConverter cv, XTag v) {
     if(!f.isAccessible()) {
       f.setAccessible(true);
     }
-    if(f.getType().isPrimitive()) {
-      if(f.getType().isArray()) {
-        
-      }
-      else {
-        Object val = null;
-        if(boolean.class == f.getType()) {
-          val = new BooleanTransformer().transform(v.value());
-        }
-        else {
-          Number n = new NumberTransformer().transform(v.value());
-          if(byte.class == f.getType())
-            val = n.byteValue();
-          else if(short.class == f.getType())
-            val = n.shortValue();
-          else if(int.class == f.getType())
-            val = n.intValue();
-          else if(long.class == f.getType())
-            val = n.longValue();
-          else if(float.class == f.getType())
-            val = n.floatValue();
-          else if(double.class == f.getType())
-            val = n.doubleValue();
-          else
-            val = (char) n.byteValue();
-        }
-        try {
-          f.set(object, val);
-        } catch (IllegalAccessException ex) {
-          throw new IllegalArgumentException(ex.toString(), ex);
-        }
-      }
-    }
-    else {
-      try {
-        f.set(object, s.transform(v.value()));
-      } catch(IllegalAccessException e) {
-        throw new IllegalArgumentException(e.toString(), e);
-      }
+    try {
+      f.set(object, cv.fromXml(v));
+    } catch (Exception ex) {
+      ex.printStackTrace();
     }
   }
   
   
-  private XTag makeTag(Field f, StringTransformer<Object> s) throws IllegalArgumentException {
+  private XTag makeTag(Field f, XConverter cv) throws IllegalArgumentException {
     String name = f.getName();
-    if(falias.containsKey(f))
-      name = falias.get(f);
+    if(fieldAlias.containsKey(f))
+      name = fieldAlias.get(f);
     XTag tag = new XTag(name);
     if(!f.isAccessible()) {
       f.setAccessible(true);
     }
     try {
       Object val = f.get(object);
-      tag.addNewValue(s.reverse(val));
+      tag.addChild(cv.toXml(val));
     } catch(IllegalAccessException e) {
-      throw new IllegalArgumentException(e.toString(), e);
-    }
-    return tag;
-  }
-  
-  
-  private XTag makeTag(Method m, StringTransformer<Object> s) throws IllegalArgumentException {
-    String name = m.getName();
-    if(malias.containsKey(m))
-      name = malias.get(m);
-    XTag tag = new XTag(name);
-    if(!m.isAccessible()) {
-      m.setAccessible(true);
-    }
-    try {
-      Object val = m.invoke(object, null);
-      tag.addNewValue(s.reverse(val));
-    } catch(InvocationTargetException | IllegalAccessException e) {
       throw new IllegalArgumentException(e.toString(), e);
     }
     return tag;

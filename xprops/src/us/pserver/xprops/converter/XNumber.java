@@ -31,9 +31,21 @@ import us.pserver.xprops.util.Valid;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/07/2015
  */
-public class XNumber implements XConverter<Number> {
-
-
+public class XNumber  implements XConverter<Number> {
+  
+  private Class type;
+  
+  
+  public XNumber() {
+    type = null;
+  }
+  
+  
+  public XNumber(Class type) {
+    this.type = type;
+  }
+  
+  
   @Override
   public XTag toXml(Number obj) {
     return new XValue(
@@ -45,9 +57,36 @@ public class XNumber implements XConverter<Number> {
 
   @Override
   public Number fromXml(XTag tag) {
-    return Valid.off(tag)
+    Number n = Valid.off(tag)
         .getOrFail(XTag.class)
         .xvalue().asNumber();
+    if(type != null) {
+      if(Byte.class.isAssignableFrom(type)
+          || byte.class.isAssignableFrom(type)) {
+        n = n.byteValue();
+      }
+      else if(Short.class.isAssignableFrom(type)
+          || short.class.isAssignableFrom(type)) {
+        n = n.shortValue();
+      }
+      else if(Integer.class.isAssignableFrom(type)
+          || int.class.isAssignableFrom(type)) {
+        n = n.intValue();
+      }
+      else if(Long.class.isAssignableFrom(type)
+          || long.class.isAssignableFrom(type)) {
+        n = n.longValue();
+      }
+      else if(Float.class.isAssignableFrom(type)
+          || float.class.isAssignableFrom(type)) {
+        n = n.floatValue();
+      }
+      else if(Double.class.isAssignableFrom(type)
+          || double.class.isAssignableFrom(type)) {
+        n = n.doubleValue();
+      }
+    }
+    return n;
   }
 
 }

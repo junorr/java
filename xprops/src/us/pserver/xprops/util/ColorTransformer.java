@@ -33,10 +33,10 @@ public class ColorTransformer extends AbstractStringTransformer<Color> {
   @Override
   public Color fromString(String str) throws IllegalArgumentException {
     Valid v = Valid.off(str).testNull("Invalid String to Transform: ")
-        .test(!str.contains(";"), "Not a valid Color Format: "+ str);
-    int i1 = str.indexOf(";");
-    int i2 = str.indexOf(";", i1);
-    int i3 = str.indexOf(";", i2);
+        .test(!str.contains(","), "Not a valid Color Format: "+ str);
+    int i1 = str.indexOf(",");
+    int i2 = str.indexOf(",", i1+1);
+    int i3 = str.indexOf(",", i2+1);
     v.test(
         i1 < 0 || i2 < 0, 
         "Not a valid Color Format: "
@@ -63,13 +63,23 @@ public class ColorTransformer extends AbstractStringTransformer<Color> {
     Valid.off(clr).testNull("Invalid Color to Transform: ");
     return new StringBuilder()
         .append(clr.getRed())
-        .append(";")
+        .append(",")
         .append(clr.getGreen())
-        .append(";")
+        .append(",")
         .append(clr.getBlue())
-        .append(";")
+        .append(",")
         .append(clr.getAlpha())
         .toString();
+  }
+  
+  
+  public static void main(String[] args) {
+    ColorTransformer ct = new ColorTransformer();
+    Color c = Color.BLUE;
+    System.out.println("={color}=> "+ c);
+    System.out.println("={string}=> "+ ct.toString(c));
+    c = ct.fromString(ct.toString(c));
+    System.out.println("={color}=> "+ c);
   }
   
 }

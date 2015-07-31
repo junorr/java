@@ -21,6 +21,7 @@
 
 package us.pserver.xprops.xtest;
 
+import java.util.Arrays;
 import us.pserver.xprops.XBean;
 
 /**
@@ -38,21 +39,61 @@ public class TestXBean {
     }
   }
   
+  static class WrongHosts {
+    String[] hosts = new String[10];
+    int[] ports = new int[10];
+    public String toString() {
+      StringBuilder sb = new StringBuilder().append("[");
+      for(int i = 0; i < hosts.length; i++) {
+        sb.append(hosts[i]);
+        if(ports.length > i) 
+          sb.append(":").append(ports[i]);
+        if(i < hosts.length -1) sb.append(",");
+      }
+      return sb.append("]").toString();
+    }
+  }
+  
+  static class Hosts {
+    NetEndPoint[] endpoints = new NetEndPoint[10];
+    public String toString() {
+      return Arrays.toString(endpoints);
+    }
+  }
+  
   public static void main(String[] args) {
+    System.out.println("----------------------------");
     NetEndPoint ne = new NetEndPoint();
     ne.host = "localhost";
     ne.port = 5775;
     XBean bean = new XBean("net", ne);
     bean.bindField("host")
         .bindField("port")
-        .bindMethod("toString")
-        .aliasMethod("toString", "string")
         .scanObject();
     bean.setXmlIdentation("  ", 0);
     System.out.println(bean.toXml());
+    System.out.println(new XBean(bean, new NetEndPoint()).bindAll().scanXml());
     
-    ne = new NetEndPoint();
-    System.out.println(bean.off(ne).bindAll().scanXml());
+    
+    System.out.println("----------------------------");
+    String host = "localhost";
+    WrongHosts whosts = new WrongHosts();
+    for(int i = 0; i < 10; i++) {
+      whosts.hosts[i] = host;
+      whosts.ports[i] = i + 80;
+    }
+    System.out.println("WrongHosts: "+ whosts);
+    XBean bean1 = new XBean("hosts", whosts);
+    bean1.bindAll().scanObject();
+    System.out.println(bean1.toXml());
+    XBean bean2 = new XBean(bean1, new WrongHosts());
+    System.out.println("bean.scanXml() = "+ bean2.bindAll().scanXml());
+    
+    
+    System.out.println("----------------------------");
+    Hosts hosts = new Hosts();
+    String base = "172.24.75.";
+    
   }
   
 }

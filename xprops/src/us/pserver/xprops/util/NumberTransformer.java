@@ -56,7 +56,7 @@ public class NumberTransformer implements StringTransformer<Number> {
     Valid.off(nb).testNull(Number.class);
     if(Double.class.isAssignableFrom(nb.getClass())
         || Float.class.isAssignableFrom(nb.getClass())) {
-      return decimal("0.0#####", '.').format(nb);
+      return decimal("0.0#########", '.').format(nb);
     }
     return Objects.toString(nb);
   }

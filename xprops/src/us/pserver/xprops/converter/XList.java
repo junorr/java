@@ -21,8 +21,16 @@
 
 package us.pserver.xprops.converter;
 
+import java.awt.Color;
+import java.io.File;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import us.pserver.xprops.XAttr;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.util.Valid;
 
@@ -31,44 +39,81 @@ import us.pserver.xprops.util.Valid;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/07/2015
  */
-public class XList extends XTag {
+public class XList<T> extends XTag implements XConverter<List<T>> {
 
-  private final List list;
+  private final List<T> list;
   
-  private final Class type;
+  private Class<T> type;
   
   
-  public XList(List ls) {
-    super(Valid.off(ls)
-        .testNull(List.class)
-        .test(ls.isEmpty(), "Invalid Empty List ")
-        .get().get(0).getClass().getName()
-    );
-    list = ls;
-    this.type = ls.get(0).getClass();
+  public XList(List<T> ls) {
+    super("list");
+    list = Valid.off(ls).getOrFail(List.class);
+    if(!ls.isEmpty())
+      this.type = (Class<T>) ls.get(0).getClass();
   }
   
   
-  public Class getType() {
+  protected XList(Class<T> type, List<T> ls) {
+    super("list");
+    list = Valid.off(ls).getOrFail(List.class);
+    this.type = Valid.off(type).getOrFail(Class.class);
+  }
+  
+  
+  public Class<T> getType() {
     return type;
   }
   
   
-  public List getList() {
+  public List<T> getList() {
     return list;
   }
   
   
-  public void populateXmlTags() {
+  public XList populateXmlTags() {
     childs().clear();
     XClass xc = new XClass();
     XConverter conv = XConverterFactory.getXConverter(type);
     this.addChild(xc.toXml(type));
-    if(list.isEmpty()) return;
+    if(list.isEmpty()) return this;
     for(int i = 0; i < list.size(); i++) {
       this.addNewChild(String.valueOf(i))
           .addChild(conv.toXml(list.get(i)));
     }
+    return this;
+  }
+  
+
+  @Override
+  public XTag toXml(List<T> obj) {
+    this.list.clear();
+    this.list.addAll(obj);
+    System.out.println("* XList.toXml( list.get(0) ) = "+ list.get(0));
+    return this.populateXmlTags();
   }
 
+
+  @Override
+  public List<T> fromXml(XTag tag) {
+    Valid.off(tag).testNull(XTag.class);
+    XAttr cattr = tag.findAttr("class");
+    Valid.off(cattr).testNull("XTag does not contains a 'class' attribute");
+    type = cattr.attrValue().asClass();
+    XConverter<T> xc = XConverterFactory.getXConverter(type);
+    for(int i = 0; i < Integer.MAX_VALUE; i++) {
+      XTag x = tag.findOne(String.valueOf(i), false);
+      if(x == null) break;
+      list.add(xc.fromXml(x.firstChild()));
+    }
+    return list;
+  }
+
+  
+  @Override
+  public String toXml() {
+    this.populateXmlTags();
+    return super.toXml();
+  }
+  
 }

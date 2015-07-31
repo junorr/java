@@ -38,7 +38,7 @@ public class Valid<T> {
   }
   
   
-  public Valid newValid(T obj) {
+  public <X> Valid<X> newValid(X obj) {
     return Valid.off(obj);
   }
   

@@ -28,21 +28,25 @@ import us.pserver.xprops.util.Valid;
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 30/07/2015
+ * @version 1.0 - 31/07/2015
  */
-public class XString implements XConverter<String> {
-  
+public class XChar implements XConverter<Character> {
+
   @Override
-  public XTag toXml(String obj) {
-    return new XValue(Valid.off(obj)
-        .getOrFail(String.class));
+  public XTag toXml(Character obj) {
+    return new XValue(
+        Valid.off(obj)
+            .getOrFail(Character.class)
+            .toString()
+    );
   }
 
 
   @Override
-  public String fromXml(XTag tag) {
+  public Character fromXml(XTag tag) {
     return Valid.off(tag)
-        .getOrFail(XTag.class).value();
+        .getOrFail(XTag.class)
+        .value().charAt(0);
   }
-
+  
 }

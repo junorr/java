@@ -21,28 +21,49 @@
 
 package us.pserver.xprops.converter;
 
+import us.pserver.xprops.XBean;
 import us.pserver.xprops.XTag;
-import us.pserver.xprops.XValue;
 import us.pserver.xprops.util.Valid;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 30/07/2015
+ * @version 1.0 - 31/07/2015
  */
-public class XString implements XConverter<String> {
+public class XObject implements XConverter {
   
+  private Class type;
+  
+  
+  public XObject(Class type) {
+    this.type = Valid.off(type).getOrFail(Class.class);
+  }
+  
+
   @Override
-  public XTag toXml(String obj) {
-    return new XValue(Valid.off(obj)
-        .getOrFail(String.class));
+  public XTag toXml(Object obj) {
+    return new XBean(
+        Valid.off(obj).getOrFail(Object.class)
+    ).bindAll().scanObject();
+  }
+  
+  
+  private Object createInstance() {
+    try {
+      return type.newInstance();
+    } catch(Exception e) {
+      return null;
+    }
   }
 
 
   @Override
-  public String fromXml(XTag tag) {
-    return Valid.off(tag)
-        .getOrFail(XTag.class).value();
+  public Object fromXml(XTag tag) {
+    XBean bean = new XBean(
+        Valid.off(tag).getOrFail(XTag.class), 
+        createInstance()
+    );
+    return bean.bindAll().scanXml();
   }
 
 }

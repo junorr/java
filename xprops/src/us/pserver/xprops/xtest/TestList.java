@@ -21,12 +21,17 @@
 
 package us.pserver.xprops.xtest;
 
+import java.awt.Color;
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import us.pserver.xprops.converter.XList;
 
 /**
  *
@@ -35,30 +40,100 @@ import java.util.Objects;
  */
 public class TestList {
 
-  public static void main(String[] args) {
-    List<Integer> lsi = new ArrayList<Integer>();
-    for(int i = 1; i <= 10; i++) {
-      lsi.add(i);
-    System.out.println("list => "+ Objects.toString(lsi));
-    
-    
-    System.out.println();
-    List<Date> lsd = new ArrayList<Date>();
-    lsd.add(new Date());
-    System.out.println("ls ===> "+ Objects.toString(lsd));
-    str = tlireverseack(lsd);
-    System.out.println("str ==> "+ str);
-    lsd = tltransformpply(str);
-    System.out.println("list => "+ Objects.toString(lsd));
-    
-    System.out.println();
-    List<SocketAddress> lsa = new ArrayList<SocketAddress>();
-    lsa.add(new InetSocketAddress("10.100.0.105", 1080));
-    System.out.println("ls ===> "+ Objects.toString(lsa));
-    str = reverset.back(lsa);
-    System.out.println("str ==> "+ str);
-    lsa transformst.apply(str);
-    System.out.println("list => "+ Objects.toString(lsa));
+  
+  public static void print(String str, Object ... args) {
+    System.out.println(String.format(str, args));
   }
+  
+  
+  public static void main(String[] args) {
+    List<Double> dls = new ArrayList<>();
+    for(int i = 0; i < 10; i++) {
+      dls.add(Math.random() * 100);
+    }
+    print("={list}=> %s", dls);
+    
+    XList<Double> dxl = new XList(dls);
+    print("={xl.type}=> %s", dxl.getType());
+    print("={xl}=\\ %n%s", dxl.toXml());
+    
+    dls.clear();
+    XList<Double> ddxl = new XList(dls);
+    ddxl.fromXml(dxl);
+    print("={list}=> %s", ddxl.getList());
+    
+    print("-------------------------------");
+    List<Date> datels = new ArrayList<>();
+    Calendar cal = Calendar.getInstance();
+    for(int i = 0; i < 10; i++) {
+      cal.set(Calendar.DAY_OF_MONTH, i+1);
+      datels.add(cal.getTime());
+    }
+    print("={list}=> %s", datels);
+    
+    XList<Date> txl = new XList(datels);
+    print("={xl.type}=> %s", txl.getType());
+    print("={xl}=\\ %n%s", txl.toXml());
+    
+    XList<Date> dtxl = new XList(new ArrayList<Date>());
+    datels = dtxl.fromXml(txl);
+    print("={list}=> %s", datels);
+    
+    print("-------------------------------");
+    List<File> fls = new ArrayList<>();
+    for(int i = 0; i < 10; i++) {
+      fls.add(new File("/tmp/f"+ i+ ".tmp"));
+    }
+    print("={list}=> %s", fls);
+    
+    XList<File> fxl = new XList(fls);
+    print("={xl.type}=> %s", fxl.getType());
+    print("={xl}=\\ %n%s", fxl.toXml());
+    
+    XList<File> dfxl = new XList(new LinkedList<File>());
+    fls = dfxl.fromXml(fxl);
+    print("={list}=> %s", fls);
+    
+    print("-------------------------------");
+    List<Color> cls = new ArrayList<>();
+    cls.add(Color.BLACK);
+    cls.add(Color.BLUE);
+    cls.add(Color.CYAN);
+    cls.add(Color.DARK_GRAY);
+    cls.add(Color.GRAY);
+    cls.add(Color.GREEN);
+    cls.add(Color.YELLOW);
+    cls.add(Color.ORANGE);
+    cls.add(Color.RED);
+    cls.add(Color.WHITE);
+    print("={list}=> %s", cls);
+    
+    XList<Color> cxl = new XList(cls);
+    print("={xl.type}=> %s", cxl.getType());
+    print("={xl}=\\ %n%s", cxl.toXml());
+    
+    XList<Color> dcxl = new XList(new LinkedList<Color>());
+    cls = dcxl.fromXml(cxl);
+    print("={list}=> %s", cls);
+    
+    print("-------------------------------");
+    List<SocketAddress> sls = new ArrayList<>();
+    String base = "172.24.75.";
+    for(int i = 80; i < 90; i++) {
+      sls.add(new InetSocketAddress(base+ i, i));
+    }
+    print("={list}=> %s", sls);
+    
+    XList<SocketAddress> sxl = new XList(sls);
+    print("={xl.type}=> %s", sxl.getType());
+    print("={xl}=\\ %n%s", sxl.toXml());
+    
+    XList<SocketAddress> dsxl = new XList(new LinkedList<SocketAddress>());
+    sls = dsxl.fromXml(sxl);
+    print("={list}=> %s", sls);
+    
+    print("-------------------------------");
+  }
+
   
 }
