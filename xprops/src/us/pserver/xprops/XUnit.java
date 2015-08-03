@@ -22,20 +22,42 @@
 package us.pserver.xprops;
 
 /**
- *
+ * Represents a XML unit (element).
+ * 
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/07/2015
+ * @version 1.0 - 201508
  */
 public interface XUnit {
   
+  /**
+   * Get the id of this unit.
+   * @return XID
+   */
   public XID id();
   
+  /**
+   * Set the id of this unit.
+   * @param id XID
+   * @return This modified instance of XUnit.
+   */
   public XUnit setID(XID id);
   
+  /**
+   * Return the XML string representation of this unit.
+   * @return String.
+   */
   public String toXml();
   
+  /**
+   * Return the value of this unit.
+   * @return String
+   */
   public String value();
   
+  /**
+   * Get a XValue instance of this unit value.
+   * @return XValue
+   */
   public XValue xvalue();
   
 }

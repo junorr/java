@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.util;
+package us.pserver.tools;
 
 import java.nio.charset.Charset;
 
@@ -36,27 +36,42 @@ public class UTF8String {
   
   
   public UTF8String(String str) {
-    string = Validator.off(str).forEmpty().getOrFail(String.class);
+    string = Valid.off(str).forEmpty().getOrFail(String.class);
   }
   
   
   public UTF8String(byte[] bs) {
-    Validator.off(bs)
-        .forEmpty().fail("Invalid Byte Array: ")
-        .forTest(bs.length < 1).fail("Invalid Length (bs.length < 1): ");
+    Valid.off(bs)
+        .forEmpty().fail("Invalid Byte Array: ");
     string = new String(bs, getCharset());
   }
   
   
   public UTF8String(byte[] bs, int off, int len) {
-    Validator.off(bs)
-        .forEmpty()
-        .fail("Invalid Byte Array: ")
-        .forTest(bs.length < 1).fail("Invalid Length (bs.length < 1): ")
-        .forTest(off < 0 || off+len > bs.length)
-        .fail("Invalid Parameters: off=%d, len=%d, bs.length=%d", 
-            off, len, bs.length);
+    Valid.off(bs)
+        .forEmpty().fail()
+        
+        .valid(off+len)
+        .forGreaterThen(bs.length).fail()
+        
+        .valid(off)
+        .forLesserThen(0).fail();
     string = new String(bs, off, len, getCharset());
+  }
+  
+  
+  public int length() {
+    return string.length();
+  }
+  
+  
+  public boolean isEmpty() {
+    return string.isEmpty();
+  }
+  
+  
+  public boolean trimmedEmpty() {
+    return string.trim().isEmpty();
   }
   
   
@@ -67,6 +82,26 @@ public class UTF8String {
   
   public String getCharsetString() {
     return utf8;
+  }
+  
+  
+  public static UTF8String format(String str, Object ... args) {
+    return from(String.format(str, args));
+  }
+  
+  
+  public static UTF8String from(String str) {
+    return new UTF8String(str);
+  }
+  
+  
+  public static UTF8String from(byte[] bs, int off, int len) {
+    return new UTF8String(bs, off, len);
+  }
+  
+  
+  public static UTF8String from(byte[] bs) {
+    return new UTF8String(bs);
   }
   
   

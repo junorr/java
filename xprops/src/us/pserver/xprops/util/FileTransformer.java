@@ -22,6 +22,7 @@
 package us.pserver.xprops.util;
 
 import java.io.File;
+import us.pserver.tools.Valid;
 
 /**
  *
@@ -32,7 +33,7 @@ public class FileTransformer extends AbstractStringTransformer<File> {
 
   @Override
   public File fromString(String str) throws IllegalArgumentException {
-    Validator.off(str)
+    Valid.off(str)
         .forEmpty().fail("Invalid String to Transform: ");
     return new File(str);
   }
@@ -40,7 +41,7 @@ public class FileTransformer extends AbstractStringTransformer<File> {
   
   @Override
   public String toString(File f) throws IllegalArgumentException {
-    return Validator.off(f)
+    return Valid.off(f)
         .forNull()
         .getOrFail(File.class).getAbsolutePath();
   }

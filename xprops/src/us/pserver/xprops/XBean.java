@@ -22,13 +22,14 @@
 package us.pserver.xprops;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import us.pserver.tools.Valid;
 import us.pserver.xprops.converter.XConverter;
 import us.pserver.xprops.converter.XConverterFactory;
 import us.pserver.xprops.converter.ObjectXConverter;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -45,7 +46,7 @@ public class XBean extends XTag {
   
 
   public XBean(Object obj) {
-    this(Validator.off(obj)
+    this(Valid.off(obj)
         .forNull().getOrFail(Object.class)
         .getClass().getSimpleName()
         .toLowerCase(), obj
@@ -55,7 +56,7 @@ public class XBean extends XTag {
   
   public XBean(String name, Object obj) {
     super(name);
-    this.object = Validator.off(obj)
+    this.object = Valid.off(obj)
         .forNull().getOrFail(Object.class);
     this.fieldMap = new HashMap<>();
     this.fieldAlias = new HashMap<>();
@@ -63,7 +64,7 @@ public class XBean extends XTag {
   
   
   public XBean(XTag src, Object dst) {
-    this(Validator.off(dst)
+    this(Valid.off(dst)
         .forNull().getOrFail(Object.class)
         .getClass().getSimpleName(), dst
     );
@@ -104,15 +105,16 @@ public class XBean extends XTag {
   
   
   public XBean bind(Field f) {
-    Validator.off(f).forNull().fail(Field.class);
-    //System.out.printf("* XBean(%s).bind( %s )%n", value(), f.getName());
-    fieldMap.put(f, XConverterFactory.getXConverter(f.getType(), f.getName()));
+    Valid.off(f).forNull().fail(Field.class);
+    XConverter cv = XConverterFactory.getXConverter(f.getType(), f.getName());
+    //System.out.printf("* XBean(%s).bind( %s ): %s%n", value(), f.getName(), cv.getClass());
+    fieldMap.put(f, cv);
     return this;
   }
   
   
   public XBean bind(String field) {
-    Validator.off(field).forEmpty().fail(Field.class);
+    Valid.off(field).forEmpty().fail(Field.class);
     Field[] fs = type().getDeclaredFields();
     for(Field f : fs) {
       if(field.equalsIgnoreCase(f.getName())) {
@@ -125,24 +127,20 @@ public class XBean extends XTag {
   
   
   public XBean bind(Field f, XConverter cv) {
-    Validator.off(f)
-        .forNull()
-        .fail(Field.class)
-        .validator(cv)
-        .forNull()
-        .fail(XConverter.class);
+    Valid.off(f)
+        .forNull().fail(Field.class)
+        .valid(cv)
+        .forNull().fail(XConverter.class);
     fieldMap.put(f, cv);
     return this;
   }
   
   
   public XBean bind(String field, XConverter cv) {
-    Validator.off(field)
-        .forEmpty()
-        .fail(Field.class)
-        .validator(cv)
-        .forNull()
-        .fail(XConverter.class);
+    Valid.off(field)
+        .forEmpty().fail(Field.class)
+        .valid(cv)
+        .forNull().fail(XConverter.class);
     Field[] fs = type().getDeclaredFields();
     for(Field f : fs) {
       if(field.equalsIgnoreCase(f.getName())) {
@@ -166,24 +164,6 @@ public class XBean extends XTag {
       );
     }
     return this;
-  }
-  
-  
-  public Object scanXml2() {
-    Field[] fs = type().getDeclaredFields();
-    //System.out.printf("* XBean(%s).scanXml(): %d fields%n", value(), fs.length);
-    for(Field f : fs) {
-      if(!fieldMap.containsKey(f))
-        continue;
-      String fname = f.getName();
-      if(fieldAlias.containsKey(f))
-        fname = fieldAlias.get(f);
-      XTag tag = this.findOne(fname, false);
-      tag = (tag != null ? tag.firstChild() : tag);
-      if(tag == null) continue;
-      set(f, fieldMap.get(f), tag);
-    }
-    return object;
   }
   
   
@@ -232,10 +212,12 @@ public class XBean extends XTag {
   
   private XTag doConvert(XConverter cv, Object value) {
     if(value == null) return null;
-    return cv.toXml(value)
-        .setOmmitRoot(
+    XTag x = cv.toXml(value);
+    //System.out.printf("XBean(%s).doConvert( %s, %s ): %s%n", type().getSimpleName(), cv.getClass().getSimpleName(), value, x);
+    return (x != null 
+        ? x.setOmmitRoot(
             ObjectXConverter.class.isInstance(cv)
-        );
+        ) : x);
   }
   
   
@@ -247,8 +229,11 @@ public class XBean extends XTag {
     XTag tag = new XTag(name);
     try {
       Object val = getFieldValue(f);
+      //System.out.printf("* Bean(%s).makeTag( %s, %s ): val=%s%n", value(), f.getName(), cv.getClass().getSimpleName(), val.getClass().getSimpleName());
       if(val == null) return null;
-      tag.addChild(doConvert(cv, val));
+      XTag xval = doConvert(cv, val);
+      if(xval == null) return null;
+      tag.addChild(xval);
     } catch(IllegalAccessException e) {
       throw new IllegalArgumentException(e.toString(), e);
     }
@@ -260,7 +245,8 @@ public class XBean extends XTag {
     Field[] fs = type().getDeclaredFields();
     //System.out.printf("* XBean(%s).bindAll(): %d fields%n", value(), fs.length);
     for(Field f : fs) {
-      bind(f);
+      if(!Modifier.isTransient(f.getModifiers()))
+        bind(f);
     }
     return this;
   }

@@ -21,28 +21,45 @@
 
 package us.pserver.xprops;
 
-import us.pserver.xprops.util.Validator;
+import us.pserver.tools.Valid;
 
 /**
- *
+ * An abstract implementation of XUnit 
+ * with the default behavior.
+ * 
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/07/2015
+ * @version 1.0 - 201508
  */
 public abstract class AbstractUnit implements XUnit {
   
+  /**
+   * The unit value.
+   */
   final String value;
   
+  /**
+   * The unit id.
+   */
   XID id;
   
   
+  /**
+   * Constructor which receives the unit value and id.
+   * @param value Unit value.
+   * @param id Unit id.
+   */
   AbstractUnit(final String value, XID id) {
-    this.value = Validator.off(value).forEmpty().getOrFail().toLowerCase();
-    this.id = Validator.off(id).forNull().getOrFail(XID.class);
+    this.value = Valid.off(value).forEmpty().getOrFail().toLowerCase();
+    this.id = Valid.off(id).forNull().getOrFail(XID.class);
   }
   
   
+  /**
+   * Default Constructor which receives the unit value.
+   * @param value Unit value.
+   */
   AbstractUnit(final String value) {
-    this.value = Validator.off(value).forEmpty().getOrFail();
+    this.value = Valid.off(value).forEmpty().getOrFail();
     this.id = new XID(value);
   }
   
@@ -55,7 +72,7 @@ public abstract class AbstractUnit implements XUnit {
   
   @Override
   public XUnit setID(XID id) {
-    this.id = Validator.off(id).forNull().getOrFail(XID.class);
+    this.id = Valid.off(id).forNull().getOrFail(XID.class);
     return this;
   }
   

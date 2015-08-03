@@ -29,8 +29,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-import us.pserver.xprops.util.UTF8String;
-import us.pserver.xprops.util.Validator;
+import us.pserver.tools.UTF8String;
+import us.pserver.tools.Valid;
 
 /**
  *
@@ -40,7 +40,7 @@ import us.pserver.xprops.util.Validator;
 public class XInputStream {
   
   public static final String XHEADER = 
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n%s%n";
   
   XTag root;
   
@@ -50,7 +50,7 @@ public class XInputStream {
 
 
   public XInputStream(InputStream input) {
-    this.input = Validator.off(input)
+    this.input = Valid.off(input)
         .forNull()
         .getOrFail(InputStream.class);
     this.stack = new Stack<>();
@@ -60,7 +60,7 @@ public class XInputStream {
   
   public XInputStream(XTag root) {
     this.input = null;
-    this.root = Validator.off(root)
+    this.root = Valid.off(root)
         .forNull()
         .getOrFail(XTag.class);
     this.stack = new Stack<>();
@@ -87,9 +87,9 @@ public class XInputStream {
   
   public InputStream getInputStream() {
     if(input != null) return input;
-    Validator.off(root).forNull().fail("Xml Root Tag is Null: ");
+    Valid.off(root).forNull().fail("Xml Root Tag is Null: ");
     input = new ByteArrayInputStream(
-        new UTF8String(XHEADER.concat(root.toXml())).getBytes()
+        UTF8String.format(XHEADER, root.toXml()).getBytes()
     );
     return input;
   }

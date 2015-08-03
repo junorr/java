@@ -22,10 +22,10 @@
 package us.pserver.xprops.converter;
 
 import java.nio.file.Path;
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
 import us.pserver.xprops.util.PathTransformer;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -38,15 +38,14 @@ public class PathXConverter implements XConverter<Path> {
   @Override
   public XTag toXml(Path obj) {
     return new XValue(
-        new PathTransformer().toString(
-            Validator.off(obj).forEmpty().getOrFail(String.class))
+        new PathTransformer().toString(Valid.off(obj).forEmpty().getOrFail(String.class))
     );
   }
 
 
   @Override
   public Path fromXml(XTag tag) {
-    return Validator.off(tag)
+    return Valid.off(tag)
         .forNull().getOrFail(XTag.class)
         .xvalue().asPath();
   }

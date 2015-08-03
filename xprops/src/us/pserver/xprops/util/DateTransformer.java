@@ -25,6 +25,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import us.pserver.tools.Valid;
 
 /**
  *
@@ -39,7 +40,7 @@ public class DateTransformer extends AbstractStringTransformer<Date> {
   
   
   public DateTransformer(String format) {
-    sdf = new SimpleDateFormat(Validator.off(format)
+    sdf = new SimpleDateFormat(Valid.off(format)
         .forEmpty().getOrFail("Invalid Date Format: ")
     );
   }
@@ -58,7 +59,7 @@ public class DateTransformer extends AbstractStringTransformer<Date> {
   @Override
   public Date fromString(String str) throws IllegalArgumentException {
     try {
-      return sdf.parse(Validator.off(str)
+      return sdf.parse(Valid.off(str)
           .forEmpty().getOrFail("Invalid String to Transform: "+ str)
       );
     } catch(ParseException e) {

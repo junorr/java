@@ -22,6 +22,7 @@
 package us.pserver.xprops.util;
 
 import java.awt.Color;
+import us.pserver.tools.Valid;
 
 /**
  *
@@ -32,15 +33,15 @@ public class ColorTransformer extends AbstractStringTransformer<Color> {
 
   @Override
   public Color fromString(String str) throws IllegalArgumentException {
-    Validator v = Validator.off(str)
+    Valid v = Valid.off(str)
         .forEmpty().fail("Invalid String to Transform: ")
         .forTest(!str.contains(","))
-        .validator().fail("Not a valid Color Format: ", str);
+        .valid().fail("Not a valid Color Format: ", str);
     String msg = "Not a valid Color Format: %s";
     int i1 = str.indexOf(",");
-    Validator.off(i1).forLesserThen(0).fail(msg, str);
+    Valid.off(i1).forLesserThen(0).fail(msg, str);
     int i2 = str.indexOf(",", i1+1);
-    Validator.off(i2).forLesserThen(0).fail(msg, str);
+    Valid.off(i2).forLesserThen(0).fail(msg, str);
     int i3 = str.indexOf(",", i2+1);
     //255,255,255,0
     if(i3 > 0) {
@@ -61,7 +62,7 @@ public class ColorTransformer extends AbstractStringTransformer<Color> {
   
   @Override
   public String toString(Color clr) throws IllegalArgumentException {
-    Validator.off(clr).forNull().fail("Invalid Color to Transform: ");
+    Valid.off(clr).forNull().fail("Invalid Color to Transform: ");
     return new StringBuilder()
         .append(clr.getRed())
         .append(",")

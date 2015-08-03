@@ -21,6 +21,8 @@
 
 package us.pserver.xprops.util;
 
+import us.pserver.tools.Valid;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -30,7 +32,7 @@ public class BooleanTransformer extends AbstractStringTransformer<Boolean> {
 
   @Override
   public Boolean fromString(String str) {
-    return Boolean.parseBoolean(Validator.off(str)
+    return Boolean.parseBoolean(Valid.off(str)
         .forEmpty().getOrFail("Invalid String to Transform: ")
     );
   }

@@ -21,9 +21,9 @@
 
 package us.pserver.xprops.converter;
 
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XAttr;
 import us.pserver.xprops.XTag;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -38,7 +38,7 @@ public class ClassXConverter implements XConverter<Class> {
   @Override
   public XTag toXml(Class obj) {
     return new XAttr(CLASS, 
-        Validator.off(obj).forEmpty().getOrFail(
+        Valid.off(obj).forEmpty().getOrFail(
             Class.class).getName()
     );
   }
@@ -46,7 +46,7 @@ public class ClassXConverter implements XConverter<Class> {
 
   @Override
   public Class fromXml(XTag tag) {
-    return Validator.off(tag)
+    return Valid.off(tag)
         .forNull().getOrFail(XTag.class)
         .firstChild()
         .xvalue().asClass();

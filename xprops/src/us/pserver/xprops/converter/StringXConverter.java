@@ -21,9 +21,9 @@
 
 package us.pserver.xprops.converter;
 
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -34,14 +34,14 @@ public class StringXConverter implements XConverter<String> {
   
   @Override
   public XTag toXml(String obj) {
-    return new XValue(Validator.off(obj)
+    return new XValue(Valid.off(obj)
         .forEmpty().getOrFail(String.class));
   }
 
 
   @Override
   public String fromXml(XTag tag) {
-    return Validator.off(tag)
+    return Valid.off(tag)
         .forNull().getOrFail(XTag.class).value();
   }
 

@@ -21,10 +21,10 @@
 
 package us.pserver.xprops.converter;
 
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
 import us.pserver.xprops.util.NumberTransformer;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -49,15 +49,14 @@ public class NumberXConverter  implements XConverter<Number> {
   @Override
   public XTag toXml(Number obj) {
     return new XValue(
-        new NumberTransformer().toString(
-            Validator.off(obj).forNull().getOrFail(Number.class))
+        new NumberTransformer().toString(Valid.off(obj).forNull().getOrFail(Number.class))
     );
   }
 
 
   @Override
   public Number fromXml(XTag tag) {
-    Number n = Validator.off(tag)
+    Number n = Valid.off(tag)
         .forNull().getOrFail(XTag.class)
         .xvalue().asNumber();
     if(type != null) {

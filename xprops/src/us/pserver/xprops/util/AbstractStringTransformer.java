@@ -22,6 +22,7 @@
 package us.pserver.xprops.util;
 
 import java.util.Objects;
+import us.pserver.tools.Valid;
 
 /**
  *
@@ -32,7 +33,7 @@ public abstract class AbstractStringTransformer<T> implements StringTransformer<
 
   @Override
   public String toString(T obj) throws IllegalArgumentException {
-    return Objects.toString(Validator.off(obj)
+    return Objects.toString(Valid.off(obj)
         .forNull().getOrFail("Invalid Object to Transform: ")
     );
   }

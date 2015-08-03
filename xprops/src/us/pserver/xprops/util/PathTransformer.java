@@ -23,6 +23,7 @@ package us.pserver.xprops.util;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import us.pserver.tools.Valid;
 
 /**
  *
@@ -33,7 +34,7 @@ public class PathTransformer extends AbstractStringTransformer<Path> {
 
   @Override
   public Path fromString(String str) throws IllegalArgumentException {
-    return Paths.get(Validator.off(str)
+    return Paths.get(Valid.off(str)
         .forEmpty().getOrFail("Invalid String to Transform: ")
     );
   }
@@ -41,7 +42,7 @@ public class PathTransformer extends AbstractStringTransformer<Path> {
   
   @Override
   public String toString(Path pth) throws IllegalArgumentException {
-    return Validator.off(pth)
+    return Valid.off(pth)
         .forEmpty().getOrFail("Invalid Path to Transform: ")
         .toAbsolutePath().toString();
   }

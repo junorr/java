@@ -21,9 +21,9 @@
 
 package us.pserver.xprops.converter;
 
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -35,7 +35,7 @@ public class CharXConverter implements XConverter<Character> {
   @Override
   public XTag toXml(Character obj) {
     return new XValue(
-        Validator.off(obj)
+        Valid.off(obj)
             .forNull().getOrFail(Character.class)
             .toString()
     );
@@ -44,7 +44,7 @@ public class CharXConverter implements XConverter<Character> {
 
   @Override
   public Character fromXml(XTag tag) {
-    return Validator.off(tag)
+    return Valid.off(tag)
         .forNull().getOrFail(XTag.class)
         .value().charAt(0);
   }

@@ -26,6 +26,7 @@ import java.io.File;
 import java.net.SocketAddress;
 import java.nio.file.Path;
 import java.util.Date;
+import us.pserver.tools.Valid;
 import us.pserver.xprops.util.StringTransformer;
 import us.pserver.xprops.util.BooleanTransformer;
 import us.pserver.xprops.util.ClassTransformer;
@@ -35,63 +36,126 @@ import us.pserver.xprops.util.FileTransformer;
 import us.pserver.xprops.util.NumberTransformer;
 import us.pserver.xprops.util.PathTransformer;
 import us.pserver.xprops.util.SocketAddressTransformer;
-import us.pserver.xprops.util.Validator;
 
 /**
- *
+ * Represents a XML unit value with some
+ * converting from String methods.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/07/2015
+ * @version 1.0 - 201508
  */
 public class XValue extends XTag {
 
   
+  /**
+   * Default constructor which receives the String value.
+   * @param value Xml unit value.
+   */
   public XValue(final String value) {
     super(value);
   }
   
   
+  /**
+   * Return the value converted from String 
+   * using the specified Transformer.
+   * @param <T> The type of the converted value.
+   * @param transformer The Transformer for 
+   * convert the String value.
+   * @return The value converted from String.
+   * @throws IllegalArgumentException In case of 
+   * error converting the String value.
+   */
   public <T> T as(StringTransformer<T> transformer) throws IllegalArgumentException {
-    return Validator.off(transformer)
+    return Valid.off(transformer)
         .forNull().getOrFail(StringTransformer.class)
         .fromString(value);
   }
   
   
+  /**
+   * Convert the String value to Boolean.
+   * @return Boolean
+   * @throws IllegalArgumentException In case of
+   * error converting to Boolean.
+   */
   public Boolean asBoolean() throws IllegalArgumentException {
     return new BooleanTransformer().fromString(value);
   }
   
   
+  /**
+   * Convert the String value to Class.
+   * @return Class
+   * @throws IllegalArgumentException In case of
+   * error converting to Class.
+   */
   public Class asClass() throws IllegalArgumentException {
     return new ClassTransformer().fromString(value);
   }
   
   
+  /**
+   * Convert the String value to Color.
+   * @return Color
+   * @throws IllegalArgumentException In case of
+   * error converting to Color.
+   */
   public Color asColor() throws IllegalArgumentException {
     return new ColorTransformer().fromString(value);
   }
   
   
+  /**
+   * Convert the String value to Date.
+   * @return Date
+   * @throws IllegalArgumentException In case of
+   * error converting to Date.
+   */
   public Date asDate() throws IllegalArgumentException {
     return new DateTransformer().fromString(value);
   }
   
   
+  /**
+   * Convert the String value to File.
+   * @return File
+   * @throws IllegalArgumentException In case of
+   * error converting to File.
+   */
   public File asFile() throws IllegalArgumentException {
     return new FileTransformer().fromString(value);
   }
   
   
+  /**
+   * Convert the String value to Number.
+   * @return Number
+   * @throws IllegalArgumentException In case of
+   * error converting to Number.
+   */
   public Number asNumber() throws IllegalArgumentException {
     return new NumberTransformer().fromString(value);
   }
   
   
+  /**
+   * Convert the String value to Path.
+   * @return Path
+   * @throws IllegalArgumentException In case of
+   * error converting to Path.
+   */
   public Path asPath() throws IllegalArgumentException {
     return new PathTransformer().fromString(value);
   }
   
   
+  /**
+   * Convert the String value to SocketAddress.
+   * @return SocketAddress
+   * @throws IllegalArgumentException In case of
+   * error converting to SocketAddress.
+   */
   public SocketAddress asSocketAddress() throws IllegalArgumentException {
     return new SocketAddressTransformer().fromString(value);
   }

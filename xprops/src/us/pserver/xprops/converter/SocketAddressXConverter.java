@@ -22,10 +22,10 @@
 package us.pserver.xprops.converter;
 
 import java.net.SocketAddress;
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
 import us.pserver.xprops.util.SocketAddressTransformer;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -38,8 +38,7 @@ public class SocketAddressXConverter implements XConverter<SocketAddress> {
   @Override
   public XTag toXml(SocketAddress obj) {
     return new XValue(
-        new SocketAddressTransformer().toString(
-            Validator.off(obj).forNull()
+        new SocketAddressTransformer().toString(Valid.off(obj).forNull()
                 .getOrFail(SocketAddress.class))
     );
   }
@@ -47,7 +46,7 @@ public class SocketAddressXConverter implements XConverter<SocketAddress> {
 
   @Override
   public SocketAddress fromXml(XTag tag) {
-    return Validator.off(tag)
+    return Valid.off(tag)
         .forNull().getOrFail(XTag.class)
         .xvalue().asSocketAddress();
   }

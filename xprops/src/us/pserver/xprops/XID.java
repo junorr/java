@@ -21,12 +21,13 @@
 
 package us.pserver.xprops;
 
-import us.pserver.xprops.util.Validator;
+import us.pserver.tools.Valid;
 
 /**
- *
+ * Represent a tag ID.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/07/2015
+ * @version 1.0 - 201508
  */
 public class XID {
 
@@ -35,28 +36,50 @@ public class XID {
   private XID parent;
   
   
+  /**
+   * Default constructor which receives the String ID.
+   * @param id The String id.
+   */
   public XID(String id) {
-    this.id = Validator.off(id).forEmpty().getOrFail("Invalid String ID: ");
+    this.id = Valid.off(id).forEmpty().getOrFail("Invalid String ID: ");
     parent = null;
   }
   
   
+  /**
+   * Return the String ID.
+   * @return The String ID.
+   */
   public String getStringID() {
     return id;
   }
   
   
+  /**
+   * Return the parend ID.
+   * @return The parend ID.
+   */
   public XID parent() {
     return parent;
   }
   
   
+  /**
+   * Compose this ID with a parent ID.
+   * @param parent The parent ID that will compose this ID.
+   * @return The parent ID.
+   */
   public XID compose(XID parent) {
-    this.parent = Validator.off(parent).forNull().getOrFail(XID.class);
+    this.parent = Valid.off(parent).forNull().getOrFail(XID.class);
     return parent;
   }
   
   
+  /**
+   * Create a XID with the specified String ID.
+   * @param id}?
+   * @return 
+   */
   public XID off(String id) {
     return new XID(id);
   }

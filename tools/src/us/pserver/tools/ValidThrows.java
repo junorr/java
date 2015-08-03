@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.util;
+package us.pserver.tools;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -33,34 +33,7 @@ import java.util.Objects;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/08/2015
  */
-public class ThrowsValidator<T, E extends Exception> {
-  
-  private static final String MSG_NULL = "Invalid Null Object: %s";
-
-  private static final String MSG_EMPTY = "Invalid Empty %s: %s";
-  
-  private static final String MSG_ARG = "Invalid Argument: %s=%s";
-  
-  private static final String MSG_TYPE = "Invalid %s: %s";
-  
-  private static final String MSG_TEST = "Test Not Passed for %s: %s";
-  
-  private static final String MSG_INSTANCE = "%s is Not a Type of %s";
-  
-  private static final String MSG_EXC_TYPE = "Exception Type not has a <init>( String ) Constructor: %s";
-  
-  private static final String MSG_LESSER = "Argument is Lesser Then %2$s (%1$s < %2$s)";
-  
-  private static final String MSG_LESSER_EQ = "Argument is Lesser Or Equals %2$s (%1$s <= %2$s)";
-  
-  private static final String MSG_GREATER = "Argument is Greater Then %2$s (%1$s > %2$s)";
-  
-  private static final String MSG_GREATER_EQ = "Argument is Greater Or Equals %2$s (%1$s >= %2$s)";
-  
-  private static final String MSG_BETWEEN = "%s is Not Between Range [%s..%s]";
-  
-  private static final String MSG_NOT_EQUALS = "%s is Not Equals %s (%1$s != %2$s)";
-  
+public class ValidThrows<T, E extends Exception> {
 
   private final T obj;
   
@@ -73,34 +46,34 @@ public class ThrowsValidator<T, E extends Exception> {
   private final boolean error;
   
   
-  public ThrowsValidator(T obj, Class<E> exc) {
+  public ValidThrows(T obj, Class<E> exc) {
     this(obj, null, null, exc, false);
   }
   
   
-  ThrowsValidator(T obj, String msg, String defmsg, Class<E> exc, boolean fail) {
+  ValidThrows(T obj, String msg, String defmsg, Class<E> exc, boolean error) {
     if(exc == null) {
       throw new ValidatorException(MSG_ARG, "exc", exc);
     }
     this.obj = obj;
     this.message = msg;
     this.exc = exc;
-    this.error = fail;
+    this.error = error;
     this.defmsg = defmsg;
   }
   
   
-  public static <X,Y extends Exception> ThrowsValidator<X,Y> off(X obj, Class<Y> exc) {
-    return new ThrowsValidator(obj, exc);
+  public static <X,Y extends Exception> ValidThrows<X,Y> off(X obj, Class<Y> exc) {
+    return new ValidThrows(obj, exc);
   }
   
   
-  public <X,Y extends Exception> ThrowsValidator<X,Y> on(X obj, Class<Y> exc) {
-    return new ThrowsValidator(obj, exc);
+  public <X,Y extends Exception> ValidThrows<X,Y> valid(X obj, Class<Y> exc) {
+    return new ValidThrows(obj, exc);
   }
   
   
-  public ThrowsValidator<T,E> message(final String msg) {
+  public ValidThrows<T,E> message(final String msg) {
     if(msg == null || msg.isEmpty()) {
       throw new ValidatorException(MSG_ARG, "msg", msg);
     }
@@ -108,11 +81,11 @@ public class ThrowsValidator<T, E extends Exception> {
     if(msg.trim().endsWith(":")) {
       str = f("%s %s", msg.trim(), obj);
     }
-    return new ThrowsValidator(obj, str, null, exc, error);
+    return new ValidThrows(obj, str, null, exc, error);
   }
   
   
-  public ThrowsValidator<T,E> message(final String msg, final Object ... args) {
+  public ValidThrows<T,E> message(final String msg, final Object ... args) {
     if(msg == null || msg.isEmpty()) {
       throw new ValidatorException(MSG_ARG, "msg", msg);
     }
@@ -120,7 +93,7 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> message(final Class cls) {
+  public ValidThrows<T,E> message(final Class cls) {
     if(cls == null) {
       throw new ValidatorException(MSG_ARG, "cls", cls);
     }
@@ -184,34 +157,34 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> fail() throws E {
+  public ValidThrows<T,E> fail() throws E {
     if(error) throwException();
     return this;
   }
   
   
-  public ThrowsValidator<T,E> fail(String msg) throws E {
+  public ValidThrows<T,E> fail(String msg) throws E {
     return this.message(msg).fail();
   }
   
   
-  public ThrowsValidator<T,E> fail(String msg, Object ... args) throws E {
+  public ValidThrows<T,E> fail(String msg, Object ... args) throws E {
     return this.message(msg, args).fail();
   }
   
   
-  public ThrowsValidator<T,E> fail(Class cls) throws E {
+  public ValidThrows<T,E> fail(Class cls) throws E {
     return this.message(cls).fail();
   }
   
   
-  public Validator<T> validator() {
-    return Validator.off(obj);
+  public Valid<T> valid() {
+    return Valid.off(obj);
   }
   
   
-  public <X> Validator<X> validator(X obj) {
-    return Validator.off(obj);
+  public <X> Valid<X> valid(X obj) {
+    return Valid.off(obj);
   }
   
   
@@ -241,8 +214,8 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forNull() {
-    return new ThrowsValidator(
+  public ValidThrows<T,E> forNull() {
+    return new ValidThrows(
         obj, message, 
         f(MSG_NULL, obj), 
         exc, obj == null
@@ -250,7 +223,7 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forEmpty() throws E {
+  public ValidThrows<T,E> forEmpty() throws E {
     forNull().fail();
     boolean empty = false;
     if(obj.getClass().isArray()) {
@@ -263,16 +236,16 @@ public class ThrowsValidator<T, E extends Exception> {
     else {
       empty = Objects.toString(obj).isEmpty();
     }
-    return new ThrowsValidator(obj, message, 
+    return new ValidThrows(obj, message, 
         f(MSG_EMPTY, obj.getClass().getSimpleName(), obj),
         exc, empty
     );
   }
   
   
-  public ThrowsValidator<T,E> forTest(boolean test) throws E {
+  public ValidThrows<T,E> forTest(boolean test) throws E {
     forNull().fail();
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_TEST, obj.getClass().getSimpleName(), obj), 
         exc, test
@@ -280,12 +253,12 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forTypeMatch(Class cls) throws E {
+  public ValidThrows<T,E> forTypeMatch(Class cls) throws E {
     forNull().fail();
     if(cls == null) {
       throw new ValidatorException(MSG_ARG, "cls", cls);
     }
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_INSTANCE, obj, cls.getName()),
         exc, !cls.isAssignableFrom(obj.getClass())
@@ -293,7 +266,7 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forLesserThen(Number n) throws E {
+  public ValidThrows<T,E> forLesserThen(Number n) throws E {
     forNull().fail()
         .forTypeMatch(Number.class)
         .fail();
@@ -302,7 +275,7 @@ public class ThrowsValidator<T, E extends Exception> {
     }
     BigDecimal bo = new BigDecimal(((Number)obj).doubleValue());
     BigDecimal bn = new BigDecimal(n.doubleValue());
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_LESSER, obj, n), 
         exc, bo.compareTo(bn) < 0
@@ -310,7 +283,7 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forLesserEquals(Number n) throws E {
+  public ValidThrows<T,E> forLesserEquals(Number n) throws E {
     forNull().fail()
         .forTypeMatch(Number.class)
         .fail();
@@ -319,7 +292,7 @@ public class ThrowsValidator<T, E extends Exception> {
     }
     BigDecimal bo = new BigDecimal(((Number)obj).doubleValue());
     BigDecimal bn = new BigDecimal(n.doubleValue());
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_LESSER_EQ, obj, n), 
         exc, bo.compareTo(bn) <= 0
@@ -327,7 +300,7 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forGreaterThen(Number n) throws E {
+  public ValidThrows<T,E> forGreaterThen(Number n) throws E {
     forNull().fail()
         .forTypeMatch(Number.class)
         .fail();
@@ -336,7 +309,7 @@ public class ThrowsValidator<T, E extends Exception> {
     }
     BigDecimal bo = new BigDecimal(((Number)obj).doubleValue());
     BigDecimal bn = new BigDecimal(n.doubleValue());
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_GREATER, obj, n), 
         exc, bo.compareTo(bn) > 0
@@ -344,12 +317,12 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forNotEquals(Object o) throws E {
+  public ValidThrows<T,E> forNotEquals(Object o) throws E {
     if(o == null) {
       throw new ValidatorException(MSG_ARG, "o", o);
     }
     forNull().fail();
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_NOT_EQUALS, obj, o), 
         exc, !obj.equals(o)
@@ -357,14 +330,14 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> not() {
-    return new ThrowsValidator(
+  public ValidThrows<T,E> not() {
+    return new ValidThrows(
         obj, message, defmsg, exc, !error
     );
   }
   
   
-  public ThrowsValidator<T,E> forGreaterEquals(Number n) throws E {
+  public ValidThrows<T,E> forGreaterEquals(Number n) throws E {
     forNull().fail()
         .forTypeMatch(Number.class)
         .fail();
@@ -373,7 +346,7 @@ public class ThrowsValidator<T, E extends Exception> {
     }
     BigDecimal bo = new BigDecimal(((Number)obj).doubleValue());
     BigDecimal bn = new BigDecimal(n.doubleValue());
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_GREATER_EQ, obj, n), 
         exc, bo.compareTo(bn) >= 0
@@ -381,7 +354,7 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forNotBetween(Number start, Number end) throws E {
+  public ValidThrows<T,E> forNotBetween(Number start, Number end) throws E {
     forNull().fail()
         .forTypeMatch(Number.class)
         .fail();
@@ -394,7 +367,7 @@ public class ThrowsValidator<T, E extends Exception> {
     BigDecimal bo = new BigDecimal(((Number)obj).doubleValue());
     BigDecimal bs = new BigDecimal(start.doubleValue());
     BigDecimal be = new BigDecimal(end.doubleValue());
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_BETWEEN, obj, start, end), 
         exc, bo.compareTo(bs) < 0 || bo.compareTo(be) > 0
@@ -402,7 +375,7 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forLesserThen(Date dt) throws E {
+  public ValidThrows<T,E> forLesserThen(Date dt) throws E {
     forNull().fail()
         .forTypeMatch(Date.class)
         .fail();
@@ -410,7 +383,7 @@ public class ThrowsValidator<T, E extends Exception> {
       throw new ValidatorException(MSG_ARG, "d", dt);
     }
     Date date = ((Date)obj);
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_LESSER, obj, dt), 
         exc, date.before(dt)
@@ -418,7 +391,7 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forLesserEquals(Date dt) throws E {
+  public ValidThrows<T,E> forLesserEquals(Date dt) throws E {
     forNull().fail()
         .forTypeMatch(Number.class)
         .fail();
@@ -426,7 +399,7 @@ public class ThrowsValidator<T, E extends Exception> {
       throw new ValidatorException(MSG_ARG, "dt", dt);
     }
     Date date = ((Date)obj);
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_LESSER_EQ, obj, dt), 
         exc, date.before(dt) || date.equals(dt)
@@ -434,7 +407,7 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forGreaterThen(Date dt) throws E {
+  public ValidThrows<T,E> forGreaterThen(Date dt) throws E {
     forNull().fail()
         .forTypeMatch(Number.class)
         .fail();
@@ -442,7 +415,7 @@ public class ThrowsValidator<T, E extends Exception> {
       throw new ValidatorException(MSG_ARG, "dt", dt);
     }
     Date date = ((Date)obj);
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_GREATER, obj, dt), 
         exc, date.after(dt)
@@ -450,7 +423,7 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forGreaterEquals(Date dt) throws E {
+  public ValidThrows<T,E> forGreaterEquals(Date dt) throws E {
     forNull().fail()
         .forTypeMatch(Number.class)
         .fail();
@@ -458,7 +431,7 @@ public class ThrowsValidator<T, E extends Exception> {
       throw new ValidatorException(MSG_ARG, "dt", dt);
     }
     Date date = ((Date)obj);
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_GREATER_EQ, obj, dt), 
         exc, date.after(dt) || date.equals(dt)
@@ -466,7 +439,7 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
-  public ThrowsValidator<T,E> forNotBetween(Date start, Date end) throws E {
+  public ValidThrows<T,E> forNotBetween(Date start, Date end) throws E {
     forNull().fail()
         .forTypeMatch(Number.class)
         .fail();
@@ -477,7 +450,7 @@ public class ThrowsValidator<T, E extends Exception> {
       throw new ValidatorException(MSG_ARG, "end", end);
     }
     Date date = ((Date)obj);
-    return new ThrowsValidator(
+    return new ValidThrows(
         obj, message, 
         f(MSG_BETWEEN, obj, start, end), 
         exc, date.before(start) || date.after(end)
@@ -485,6 +458,33 @@ public class ThrowsValidator<T, E extends Exception> {
   }
   
   
+  private static final String MSG_NULL = "Invalid Null Object: %s";
+
+  private static final String MSG_EMPTY = "Invalid Empty %s: %s";
+  
+  private static final String MSG_ARG = "Invalid Argument: %s=%s";
+  
+  private static final String MSG_TYPE = "Invalid %s: %s";
+  
+  private static final String MSG_TEST = "Test Not Passed for %s: %s";
+  
+  private static final String MSG_INSTANCE = "%s is Not a Type of %s";
+  
+  private static final String MSG_EXC_TYPE = "Exception Type not has a <init>( String ) Constructor: %s";
+  
+  private static final String MSG_LESSER = "Argument is Lesser Then %2$s (%1$s < %2$s)";
+  
+  private static final String MSG_LESSER_EQ = "Argument is Lesser Or Equals %2$s (%1$s <= %2$s)";
+  
+  private static final String MSG_GREATER = "Argument is Greater Then %2$s (%1$s > %2$s)";
+  
+  private static final String MSG_GREATER_EQ = "Argument is Greater Or Equals %2$s (%1$s >= %2$s)";
+  
+  private static final String MSG_BETWEEN = "%s is Not Between Range [%s..%s]";
+  
+  private static final String MSG_NOT_EQUALS = "%s is Not Equals %s (%1$s != %2$s)";
+
+
   
   
   

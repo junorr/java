@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.Objects;
+import us.pserver.tools.Valid;
 
 /**
  *
@@ -35,7 +36,7 @@ public class NumberTransformer implements StringTransformer<Number> {
   
   @Override
   public Number fromString(final String str) throws IllegalArgumentException {
-    Validator.off(str).forEmpty().fail("Invalid String to Transform: ");
+    Valid.off(str).forEmpty().fail("Invalid String to Transform: ");
     if(!str.contains(".") && !str.contains(",")) {
       return Long.parseLong(str);
     }
@@ -53,7 +54,7 @@ public class NumberTransformer implements StringTransformer<Number> {
   
   @Override
   public String toString(Number nb) {
-    Validator.off(nb).forNull().fail(Number.class);
+    Valid.off(nb).forNull().fail(Number.class);
     if(Double.class.isAssignableFrom(nb.getClass())
         || Float.class.isAssignableFrom(nb.getClass())) {
       return decimal("0.0#########", '.').format(nb);

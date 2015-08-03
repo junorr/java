@@ -22,10 +22,10 @@
 package us.pserver.xprops.converter;
 
 import java.io.File;
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
 import us.pserver.xprops.util.FileTransformer;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -38,15 +38,14 @@ public class FileXConverter implements XConverter<File> {
   @Override
   public XTag toXml(File obj) {
     return new XValue(
-        new FileTransformer().toString(
-            Validator.off(obj).forNull().getOrFail(File.class))
+        new FileTransformer().toString(Valid.off(obj).forNull().getOrFail(File.class))
     );
   }
 
 
   @Override
   public File fromXml(XTag tag) {
-    return Validator.off(tag)
+    return Valid.off(tag)
         .forNull().getOrFail(XTag.class)
         .xvalue().asFile();
   }

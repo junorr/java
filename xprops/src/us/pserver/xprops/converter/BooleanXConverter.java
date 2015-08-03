@@ -21,9 +21,9 @@
 
 package us.pserver.xprops.converter;
 
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -36,7 +36,7 @@ public class BooleanXConverter implements XConverter<Boolean> {
   @Override
   public XTag toXml(Boolean obj) {
     return new XValue(
-        Validator.off(obj)
+        Valid.off(obj)
             .forNull().getOrFail(Boolean.class).toString()
     );
   }
@@ -44,7 +44,7 @@ public class BooleanXConverter implements XConverter<Boolean> {
 
   @Override
   public Boolean fromXml(XTag tag) {
-    return Validator.off(tag)
+    return Valid.off(tag)
         .forNull().getOrFail(XTag.class)
         .xvalue().asBoolean();
   }

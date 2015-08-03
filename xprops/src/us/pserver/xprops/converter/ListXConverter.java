@@ -22,9 +22,9 @@
 package us.pserver.xprops.converter;
 
 import java.util.List;
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XAttr;
 import us.pserver.xprops.XTag;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -42,7 +42,7 @@ public class ListXConverter<T> extends XTag implements XConverter<List<T>> {
   
   public ListXConverter(List<T> ls) {
     super("list");
-    list = Validator.off(ls).forEmpty().getOrFail(List.class);
+    list = Valid.off(ls).forEmpty().getOrFail(List.class);
     if(!ls.isEmpty())
       this.type = (Class<T>) ls.get(0).getClass();
   }
@@ -50,8 +50,8 @@ public class ListXConverter<T> extends XTag implements XConverter<List<T>> {
   
   protected ListXConverter(Class<T> type, List<T> ls) {
     super("list");
-    list = Validator.off(ls).forNull().getOrFail(List.class);
-    this.type = Validator.off(type).forNull().getOrFail(Class.class);
+    list = Valid.off(ls).forNull().getOrFail(List.class);
+    this.type = Valid.off(type).forNull().getOrFail(Class.class);
   }
   
   
@@ -66,9 +66,12 @@ public class ListXConverter<T> extends XTag implements XConverter<List<T>> {
   
   
   public ListXConverter populateXmlTags() {
+    if(list.isEmpty()) return this;
     childs().clear();
     ClassXConverter xc = new ClassXConverter();
+    this.type = (Class<T>) list.get(0).getClass();
     XConverter conv = XConverterFactory.getXConverter(type);
+    //System.out.printf("* ListXConverter.populateXmlTags(): %s -> %s%n", type.getSimpleName(), conv.getClass().getSimpleName());
     this.addChild(xc.toXml(type));
     if(list.isEmpty()) return this;
     for(int i = 0; i < list.size(); i++) {
@@ -81,18 +84,18 @@ public class ListXConverter<T> extends XTag implements XConverter<List<T>> {
 
   @Override
   public XTag toXml(List<T> obj) {
+    if(obj.isEmpty()) return null;
     this.list.clear();
     this.list.addAll(obj);
-    //System.out.println("* ListXConverter.toXml( list.get(0) ) = "+ list.get(0));
     return this.populateXmlTags();
   }
 
 
   @Override
   public List<T> fromXml(XTag tag) {
-    Validator.off(tag).forNull().fail(XTag.class);
+    Valid.off(tag).forNull().fail(XTag.class);
     XAttr cattr = tag.findAttr("class");
-    Validator.off(cattr).forNull().fail("XTag does not contains a 'class' attribute");
+    Valid.off(cattr).forNull().fail("XTag does not contains a 'class' attribute");
     type = cattr.attrValue().asClass();
     XConverter<T> xc = XConverterFactory.getXConverter(type);
     for(int i = 0; i < Integer.MAX_VALUE; i++) {

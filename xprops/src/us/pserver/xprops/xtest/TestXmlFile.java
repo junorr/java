@@ -21,13 +21,15 @@
 
 package us.pserver.xprops.xtest;
 
+import com.thoughtworks.xstream.XStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import us.pserver.tools.timer.Timer;
 import us.pserver.xprops.XBean;
 import us.pserver.xprops.XFile;
 import us.pserver.xprops.XTag;
@@ -101,20 +103,38 @@ public class TestXmlFile {
   
   
   public static class Wrapper {
-    Integer _int;
-    String _str;
-    Double _dbl;
-    Wrapper _wrp;
-    byte[] _bts;
-    Date[] _dts;
+    Integer integer;
+    String string;
+    Double dbl;
+    byte[] bytes;
+    List<Wrapper> wlist;
     public String toString() {
-      return "\nWrapper {\n  _int="+ _int
-          + "\n  _str="+ _str
-          + "\n  _dbl="+ _dbl
-          + "\n  _bts="+ Arrays.toString(_bts)
-          + "\n  _dts="+ Arrays.toString(_dts)
-          + "\n  _wrp="+ _wrp
+      return "\nWrapper {\n  integer="+ integer
+          + "\n  string="+ string
+          + "\n  dbl="+ dbl
+          + "\n  bytes="+ Arrays.toString(bytes)
+          + "\n  wlist{"+ (wlist != null && !wlist.isEmpty() ? "type="+ wlist.get(0).getClass().getSimpleName()+ ", size="+ wlist.size() : "")+ "}"
           + "\n}";
+    }
+  }
+  
+  
+  public static Wrapper wrapper() {
+    Wrapper wp = new Wrapper();
+    wp.bytes = new byte[]{0,1,2,3,4,5,6,7,8,9};
+    wp.dbl = Math.random()*100;
+    wp.integer = wp.dbl.intValue();
+    wp.string = String.format("Hello Wrapper (%s)", System.currentTimeMillis());
+    wp.wlist = new LinkedList();
+    return wp;
+  }
+  
+  
+  public static void fill(int size, Wrapper target) {
+    for(int i = 0; i < size; i++) {
+      Wrapper w = wrapper();
+      w.bytes = new byte[0];
+      target.wlist.add(w);
     }
   }
   
@@ -133,30 +153,40 @@ public class TestXmlFile {
     System.out.println(bean.bindAll().scanXml());
     */
     System.out.println("----------------------------");
-    Wrapper wp = new Wrapper();
-    wp._bts = new byte[]{0,1,2,3,4,5,6,7,8,9};
-    wp._dbl = 11.987654321;
-    wp._dts = new Date[]{new Date(),new Date()};
-    wp._int = 5;
-    wp._str = "Hello Wrapper";
-    wp._wrp = new Wrapper();
-    wp._wrp._bts = wp._bts;
-    wp._wrp._dbl = wp._dbl;
-    wp._wrp._dts = wp._dts;
-    wp._wrp._int = wp._int;
-    wp._wrp._str = wp._str;
+    Wrapper wp = wrapper();
+    fill(3, wp);
     System.out.println("* wp -->"+ wp);
     
     XBean bean = new XBean(wp);
     System.out.println("* xml -->");
-    System.out.println(bean.bindAll().scanObject().toXml());
+    Timer tm = new Timer.Nanos().start();
+    String sxml = bean.bindAll().scanObject().toXml();
+    tm.lapAndStop();
+    System.out.println(sxml);
+    System.out.println("* time encoding to xml: "+ tm);
+    
+    tm.clear().start();
+    sxml = new XStream().toXML(wp);
+    tm.lapAndStop();
+    System.out.println(sxml);
+    System.out.println("* time XStream encoding: "+ tm);
     
     String file2 = "/home/juno/xf.xml";
     XFile xf = new XFile(file2, bean.setXmlIdentation("  ", 0));
     System.out.println("* xf.save(): "+ xf.save());
     
     xf = new XFile(file2);
+    tm.clear().start();
     XTag tag = xf.read();
+    tm.lapAndStop();
+    System.out.println("* time parsing xml file: "+ tm);
+    
+    tm.clear().start();
+    Object o = new XStream().fromXML(sxml);
+    tm.lapAndStop();
+    System.out.println(o);
+    System.out.println("* time XStream decode: "+ tm);
+    
     System.out.println("* tag readed: "+ tag.toXml());
     
     bean = new XBean(tag, new Wrapper());

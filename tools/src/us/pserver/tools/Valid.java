@@ -19,25 +19,53 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.xtest;
+package us.pserver.tools;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 14/07/2015
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 01/08/2015
  */
-public class Test1 {
+public class Valid<T> extends ValidThrows<T, IllegalArgumentException> {
 
   
-  public static void main(String[] args) {
-    boolean[] bls = new boolean[0];
-    Boolean[] BLS = new Boolean[0];
-    System.out.println("* bls.getClass: "+ bls.getClass());
-    System.out.println("* BLS.getClass: "+ BLS.getClass());
-    System.out.println("* bls.getClass.isArray: "+ bls.getClass().isArray());
-    System.out.println("* BLS.getClass.isArray: "+ BLS.getClass().isArray());
-    System.out.println("* bls.getClass.isPrimitive: "+ bls.getClass().isPrimitive());
-    System.out.println("* BLS.getClass.isPrimitive: "+ bls.getClass().isPrimitive());
+  public Valid(T obj) {
+    super(obj, IllegalArgumentException.class);
+  }
+  
+  
+  public static <X> Valid<X> off(X obj) {
+    return new Valid(obj);
+  }
+  
+
+  public <X> Valid<X> on(X obj) {
+    return new Valid(obj);
+  }
+  
+
+  @Override
+  public Valid<T> fail() throws IllegalArgumentException {
+    if(hasError()) throwException();
+    return this;
+  }
+  
+  
+  @Override
+  public Valid<T> fail(String msg) throws IllegalArgumentException {
+    return this.message(msg).valid().fail();
+  }
+  
+  
+  @Override
+  public Valid<T> fail(String msg, Object ... args) throws IllegalArgumentException {
+    return this.message(msg, args).valid().fail();
+  }
+  
+  
+  @Override
+  public Valid<T> fail(Class cls) throws IllegalArgumentException {
+    return this.message(cls).valid().fail();
   }
   
 }

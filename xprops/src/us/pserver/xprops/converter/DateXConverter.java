@@ -22,10 +22,10 @@
 package us.pserver.xprops.converter;
 
 import java.util.Date;
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
 import us.pserver.xprops.util.DateTransformer;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -39,7 +39,7 @@ public class DateXConverter implements XConverter<Date> {
   public XTag toXml(Date obj) {
     return new XValue(
         new DateTransformer()
-            .toString(Validator.off(obj)
+            .toString(Valid.off(obj)
                 .forNull().getOrFail(Date.class)
             )
     );
@@ -48,7 +48,7 @@ public class DateXConverter implements XConverter<Date> {
 
   @Override
   public Date fromXml(XTag tag) {
-    return Validator.off(tag)
+    return Valid.off(tag)
         .forNull().getOrFail(XTag.class)
         .xvalue().asDate();
   }

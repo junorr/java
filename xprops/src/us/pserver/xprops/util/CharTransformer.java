@@ -21,6 +21,8 @@
 
 package us.pserver.xprops.util;
 
+import us.pserver.tools.Valid;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -30,7 +32,7 @@ public class CharTransformer extends AbstractStringTransformer<Character> {
 
   @Override
   public Character fromString(String str) throws IllegalArgumentException {
-    return Validator.off(str)
+    return Valid.off(str)
         .forEmpty().getOrFail().charAt(0);
   }
 

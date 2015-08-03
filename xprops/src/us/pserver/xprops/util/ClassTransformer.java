@@ -21,6 +21,8 @@
 
 package us.pserver.xprops.util;
 
+import us.pserver.tools.Valid;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -41,7 +43,7 @@ public class ClassTransformer extends AbstractStringTransformer<Class> {
 
   @Override
   public Class fromString(String str) throws IllegalArgumentException {
-    Validator.off(str).forEmpty()
+    Valid.off(str).forEmpty()
         .fail("Invalid String to Transform: ");
     try {
       switch(str) {
@@ -72,7 +74,7 @@ public class ClassTransformer extends AbstractStringTransformer<Class> {
   
   @Override
   public String toString(Class cls) throws IllegalArgumentException {
-    return Validator.off(cls)
+    return Valid.off(cls)
         .forNull().getOrFail(Class.class).getName();
   }
 

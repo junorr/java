@@ -24,12 +24,13 @@ package us.pserver.xprops;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import us.pserver.xprops.util.Validator;
+import us.pserver.tools.Valid;
 
 /**
- *
+ * XTag represents a Xml tag.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/07/2015
+ * @version 1.0 - 201508
  */
 public class XTag extends AbstractUnit {
   
@@ -52,6 +53,10 @@ public class XTag extends AbstractUnit {
   private boolean ommitRoot;
   
 
+  /**
+   * Default constructor which receives the tag name.
+   * @param value Tag name.
+   */
   public XTag(final String value) {
     super(value);
     childs = new LinkedList<>();
@@ -61,8 +66,14 @@ public class XTag extends AbstractUnit {
   }
   
   
+  /**
+   * Create and add a new child tag.
+   * @param value The child tag name.
+   * @return The created child tag.
+   * @throws IllegalArgumentException If the tag name is null.
+   */
   public XTag addNewChild(String value) throws IllegalArgumentException {
-    XTag tag = new XTag(Validator.off(value)
+    XTag tag = new XTag(Valid.off(value)
         .forEmpty()
         .getOrFail("Invalid Tag Name: ")
     );
@@ -72,8 +83,14 @@ public class XTag extends AbstractUnit {
   }
   
   
+  /**
+   * Create and add a new child value.
+   * @param value The child tag value.
+   * @return The created child XValue.
+   * @throws IllegalArgumentException If the tag name is null.
+   */
   public XValue addNewValue(String value) throws IllegalArgumentException {
-    XValue tag = new XValue(Validator.off(value)
+    XValue tag = new XValue(Valid.off(value)
         .forEmpty()
         .getOrFail("Invalid Tag Name: ")
     );
@@ -83,10 +100,17 @@ public class XTag extends AbstractUnit {
   }
   
   
+  /**
+   * Create and add a new tag attribute.
+   * @param name The attribute name.
+   * @param value The attribute value.
+   * @return The created child XAttr.
+   * @throws IllegalArgumentException If the attribute name or value is null.
+   */
   public XAttr addNewAttr(String name, String value) throws IllegalArgumentException {
     XAttr tag = new XAttr(
-        Validator.off(name).forEmpty().getOrFail("Invalid Tag Name: "),
-        Validator.off(value).forEmpty().getOrFail("Invalid Tag Value: ")
+        Valid.off(name).forEmpty().getOrFail("Invalid Tag Name: "),
+        Valid.off(value).forEmpty().getOrFail("Invalid Tag Value: ")
     );
     tag.id().compose(this.id);
     childs.add(tag);
@@ -94,23 +118,36 @@ public class XTag extends AbstractUnit {
   }
   
   
-  public XTag addChild(XTag child) throws IllegalArgumentException {
+  /**
+   * Add a new child tag.
+   * @param child The child tag to be added.
+   * @return This modified XTag instance.
+   */
+  public XTag addChild(XTag child) {
     if(child != null) {
-    //Validator.off(child).forNull().getOrFail(XTag.class)
-      //  .id().compose(this.id);
       childs.add(child);
     }
     return this;
   }
   
   
+  /**
+   * Return the child list of this tag.
+   * @return List&lt;XTag&gt;
+   */
   public List<XTag> childs() {
     return childs;
   }
   
   
+  /**
+   * Find in this tag childs a tag with the specified value.
+   * @param value The child value to be found.
+   * @param includeChilds If the search should include grandchilds.
+   * @return a List with all results found.
+   */
   public List<XTag> find(String value, boolean includeChilds) {
-    return find(new XID(Validator.off(value)
+    return find(new XID(Valid.off(value)
         .forEmpty()
         .getOrFail("Invalid String Value: ")), 
         includeChilds
@@ -118,8 +155,14 @@ public class XTag extends AbstractUnit {
   }
   
   
+  /**
+   * Find in this tag childs a tag with the specified value.
+   * @param value The child value to be found.
+   * @param includeChilds If the search should include grandchilds.
+   * @return The XTag child found or null.
+   */
   public XTag findOne(String value, boolean includeChilds) {
-    return findOne(new XID(Validator.off(value)
+    return findOne(new XID(Valid.off(value)
         .forEmpty()
         .getOrFail("Invalid String Value: ")), 
         includeChilds
@@ -127,6 +170,12 @@ public class XTag extends AbstractUnit {
   }
   
   
+  /**
+   * Find in this tag childs a tag with the specified ID.
+   * @param id The child ID to be found.
+   * @param includeChilds If the search should include grandchilds.
+   * @return a List with all results found.
+   */
   public List<XTag> find(XID id, boolean includeChilds) {
     if(id == null 
         || childs.isEmpty()) {
@@ -151,8 +200,14 @@ public class XTag extends AbstractUnit {
   }
   
   
+  /**
+   * Find in this tag childs a tag with the specified ID.
+   * @param id The child ID to be found.
+   * @param includeChilds If the search should include grandchilds.
+   * @return The found XTag child or null.
+   */
   public XTag findOne(XID id, boolean includeChilds) {
-    Validator.off(id).forNull().fail(XID.class);
+    Valid.off(id).forNull().fail(XID.class);
     for(XTag x : childs) {
       if(x.id().toString().toLowerCase()
           .startsWith(id.toString().toLowerCase())
@@ -171,11 +226,21 @@ public class XTag extends AbstractUnit {
   }
   
   
+  /**
+   * Return this tag first child or null.
+   * @return The first child tag.
+   */
   public XTag firstChild() {
     return (childs.isEmpty() ? null : childs.get(0));
   }
   
   
+  /**
+   * Set the identation level for formatting this tag xml representation.
+   * @param ident A String of while spaces for identing.
+   * @param level The identation level.
+   * @return Thid modified instance of XTag.
+   */
   public XTag setXmlIdentation(String ident, int level) {
     xmlIdent = ident;
     identLevel = level;
@@ -183,11 +248,19 @@ public class XTag extends AbstractUnit {
   }
   
   
+  /**
+   * Get the identation string for formatting this tag xml representation.
+   * @return A String of while spaces for identing.
+   */
   public String getXmlIdentation() {
     return xmlIdent;
   }
   
-  
+
+  /**
+   * Return the string identation adjusted for the identation level.
+   * @return The string identation.
+   */
   String getIdent() {
     StringBuilder sb = new StringBuilder();
     for(int i = 0; i < identLevel; i++) {
@@ -197,19 +270,38 @@ public class XTag extends AbstractUnit {
   }
   
   
+  /**
+   * Configure if this tag should ommit his root 
+   * element on its xml representation.
+   * @param ommit <code>true</code> if this tag 
+   * should ommit his root element on its xml representation, 
+   * <code>false</code> otherwise.
+   * @return This modified instance of this XTag.
+   */
   public XTag setOmmitRoot(boolean ommit) {
     this.ommitRoot = ommit;
     return this;
   }
   
   
+  /**
+   * Return <code>true</code> if this tag 
+   * should ommit his root element on its xml representation, 
+   * <code>false</code> otherwise.
+   * @return <code>true/false</code>.
+   */
   public boolean isOmmitRoot() {
     return this.ommitRoot;
   }
   
   
+  /**
+   * Find a child attribute with the specified name.
+   * @param name The child attribute name.
+   * @return The XAttr child found or null.
+   */
   public XAttr findAttr(String name) {
-    Validator.off(name).forEmpty().fail("Invalid Attr Name: ");
+    Valid.off(name).forEmpty().fail("Invalid Attr Name: ");
     List<XAttr> ls = this.getAllAttrs();
     for(XAttr a : ls) {
       if(a.attrName().equals(name))
@@ -219,6 +311,10 @@ public class XTag extends AbstractUnit {
   }
   
   
+  /**
+   * Return a list with all child attributes.
+   * @return List&lt;XAttr&gt;
+   */
   List<XAttr> getAllAttrs() {
     if(childs.isEmpty())
       return Collections.EMPTY_LIST;

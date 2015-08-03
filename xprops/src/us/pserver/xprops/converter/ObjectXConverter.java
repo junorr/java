@@ -21,9 +21,9 @@
 
 package us.pserver.xprops.converter;
 
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XBean;
 import us.pserver.xprops.XTag;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -38,16 +38,16 @@ public class ObjectXConverter implements XConverter {
   
   
   public ObjectXConverter(Class type) {
-    this.type = Validator.off(type)
+    this.type = Valid.off(type)
         .forNull().getOrFail(Class.class);
     this.name = null;
   }
   
   
   public ObjectXConverter(Class type, String name) {
-    this.type = Validator.off(type)
+    this.type = Valid.off(type)
         .forNull().getOrFail(Class.class);
-    this.name = Validator.off(name)
+    this.name = Valid.off(name)
         .forEmpty().getOrFail("Invalid Name: ");
   }
   
@@ -88,7 +88,7 @@ public class ObjectXConverter implements XConverter {
   @Override
   public Object fromXml(XTag tag) {
     return new XBean(
-        Validator.off(tag).forNull().getOrFail(XTag.class), 
+        Valid.off(tag).forNull().getOrFail(XTag.class), 
         createInstance()
     ).bindAll().scanXml();
   }

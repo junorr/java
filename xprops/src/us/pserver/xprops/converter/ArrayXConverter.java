@@ -24,9 +24,11 @@ package us.pserver.xprops.converter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
-import us.pserver.xprops.util.Validator;
+import us.pserver.xprops.XValue;
 
 /**
  *
@@ -41,7 +43,7 @@ public class ArrayXConverter implements XConverter {
   
   
   public ArrayXConverter(Class type) {
-    Validator.off(type).forNull().fail(Class.class);
+    Valid.off(type).forNull().fail(Class.class);
     this.type = (type.isArray() ? type.getComponentType() : type);
   }
   
@@ -53,13 +55,27 @@ public class ArrayXConverter implements XConverter {
   
   @Override
   public XTag toXml(Object obj) {
-    xlist = new ListXConverter(type, toList(obj));
-    return xlist.populateXmlTags();
+    if(obj == null) return null;
+    if(!obj.getClass().isArray())
+      return null;
+    if(Array.getLength(obj) <= 0)
+      return null;
+    if(byte.class.equals(type)) {
+      return new XValue(Base64.getEncoder()
+          .encodeToString((byte[])obj)
+      );
+    }
+    xlist = new ListXConverter(type, toList(obj))
+        .populateXmlTags();
+    return (xlist.getList().isEmpty() ? null : xlist);
   }
 
 
   @Override
   public Object fromXml(XTag tag) {
+    if(byte.class.equals(type)) {
+      return Base64.getDecoder().decode(tag.value());
+    }
     xlist = new ListXConverter(type, new ArrayList());
     return toArray(xlist.fromXml(tag));
   }
@@ -86,12 +102,12 @@ public class ArrayXConverter implements XConverter {
   
   
   public static void main(String[] args) {
-    boolean[] bos = {true, false, false, true};
+    byte[] bos = {0,1,2,3,4,5,6,7,8,9};
     System.out.printf("={array}=> %s%n", Arrays.toString(bos));
-    ArrayXConverter xa = new ArrayXConverter(boolean.class);
+    ArrayXConverter xa = new ArrayXConverter(byte.class);
     XTag tag = xa.toXml(bos);
     System.out.printf("={xml}=> %s%n", tag.toXml());
-    bos = (boolean[]) xa.fromXml(tag);
+    bos = (byte[]) xa.fromXml(tag);
     System.out.printf("={array}=> %s%n", Arrays.toString(bos));
   }
   

@@ -22,10 +22,10 @@
 package us.pserver.xprops.converter;
 
 import java.awt.Color;
+import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
 import us.pserver.xprops.util.ColorTransformer;
-import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -43,7 +43,7 @@ public class ColorXConverter implements XConverter<Color> {
 
   @Override
   public Color fromXml(XTag tag) {
-    return Validator.off(tag)
+    return Valid.off(tag)
         .forNull()
         .getOrFail(XTag.class)
         .xvalue().asColor();
