@@ -21,7 +21,7 @@
 
 package us.pserver.xprops;
 
-import us.pserver.xprops.util.Valid;
+import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -36,13 +36,13 @@ public abstract class AbstractUnit implements XUnit {
   
   
   AbstractUnit(final String value, XID id) {
-    this.value = Valid.off(value).getOrFail("Invalid Null Value");
-    this.id = Valid.off(id).getOrFail(XID.class);
+    this.value = Validator.off(value).forEmpty().getOrFail().toLowerCase();
+    this.id = Validator.off(id).forNull().getOrFail(XID.class);
   }
   
   
   AbstractUnit(final String value) {
-    this.value = Valid.off(value).getOrFail("Invalid Null Value");
+    this.value = Validator.off(value).forEmpty().getOrFail();
     this.id = new XID(value);
   }
   
@@ -55,7 +55,7 @@ public abstract class AbstractUnit implements XUnit {
   
   @Override
   public XUnit setID(XID id) {
-    this.id = Valid.off(id).getOrFail(XID.class);
+    this.id = Validator.off(id).forNull().getOrFail(XID.class);
     return this;
   }
   

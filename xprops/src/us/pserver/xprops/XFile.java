@@ -28,7 +28,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import static us.pserver.xprops.XInputStream.XHEADER;
-import us.pserver.xprops.util.Valid;
+import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -41,7 +41,8 @@ public class XFile extends XInputStream {
   
 
   public XFile(String file) {
-    this(new File(Valid.off(file)
+    this(new File(Validator.off(file)
+        .forEmpty()
         .getOrFail("Invalid File Name: "))
     );
   }
@@ -54,13 +55,13 @@ public class XFile extends XInputStream {
   
   
   public XFile(String file, XTag root) {
-    super(Valid.off(root).getOrFail(XTag.class));
+    super(Validator.off(root).forNull().getOrFail(XTag.class));
     this.file = new File(file);
   }
   
   
   public XFile(File file, XTag root) {
-    super(Valid.off(root).getOrFail(XTag.class));
+    super(Validator.off(root).forNull().getOrFail(XTag.class));
     this.file = file;
   }
   
@@ -68,7 +69,7 @@ public class XFile extends XInputStream {
   public static InputStream createFileInput(File f) {
     try {
       return Files.newInputStream(
-          Valid.off(f).getOrFail(File.class).toPath(),
+          Validator.off(f).forNull().getOrFail(File.class).toPath(),
           StandardOpenOption.READ,
           StandardOpenOption.CREATE
       );
@@ -84,7 +85,7 @@ public class XFile extends XInputStream {
     PrintStream ps = new PrintStream(file);
     ps.println(XHEADER);
     if(root == null && input != null) {
-      Valid.off(this.read()).testNull(XTag.class);
+      Validator.off(this.read()).forNull().fail(XTag.class);
     }
     ps.println(root.toXml());
     ps.flush();

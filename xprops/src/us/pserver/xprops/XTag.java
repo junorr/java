@@ -24,7 +24,7 @@ package us.pserver.xprops;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import us.pserver.xprops.util.Valid;
+import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -49,17 +49,21 @@ public class XTag extends AbstractUnit {
   
   private int identLevel;
   
+  private boolean ommitRoot;
+  
 
   public XTag(final String value) {
     super(value);
     childs = new LinkedList<>();
     xmlIdent = null;
     identLevel = 0;
+    ommitRoot = false;
   }
   
   
   public XTag addNewChild(String value) throws IllegalArgumentException {
-    XTag tag = new XTag(Valid.off(value)
+    XTag tag = new XTag(Validator.off(value)
+        .forEmpty()
         .getOrFail("Invalid Tag Name: ")
     );
     tag.id().compose(this.id);
@@ -69,7 +73,8 @@ public class XTag extends AbstractUnit {
   
   
   public XValue addNewValue(String value) throws IllegalArgumentException {
-    XValue tag = new XValue(Valid.off(value)
+    XValue tag = new XValue(Validator.off(value)
+        .forEmpty()
         .getOrFail("Invalid Tag Name: ")
     );
     tag.id().compose(this.id);
@@ -80,8 +85,8 @@ public class XTag extends AbstractUnit {
   
   public XAttr addNewAttr(String name, String value) throws IllegalArgumentException {
     XAttr tag = new XAttr(
-        Valid.off(name).getOrFail("Invalid Tag Name: "),
-        Valid.off(value).getOrFail("Invalid Tag Value: ")
+        Validator.off(name).forEmpty().getOrFail("Invalid Tag Name: "),
+        Validator.off(value).forEmpty().getOrFail("Invalid Tag Value: ")
     );
     tag.id().compose(this.id);
     childs.add(tag);
@@ -90,9 +95,11 @@ public class XTag extends AbstractUnit {
   
   
   public XTag addChild(XTag child) throws IllegalArgumentException {
-    Valid.off(child).getOrFail(XTag.class)
-        .id().compose(this.id);
-    childs.add(child);
+    if(child != null) {
+    //Validator.off(child).forNull().getOrFail(XTag.class)
+      //  .id().compose(this.id);
+      childs.add(child);
+    }
     return this;
   }
   
@@ -103,7 +110,8 @@ public class XTag extends AbstractUnit {
   
   
   public List<XTag> find(String value, boolean includeChilds) {
-    return find(new XID(Valid.off(value)
+    return find(new XID(Validator.off(value)
+        .forEmpty()
         .getOrFail("Invalid String Value: ")), 
         includeChilds
     );
@@ -111,7 +119,8 @@ public class XTag extends AbstractUnit {
   
   
   public XTag findOne(String value, boolean includeChilds) {
-    return findOne(new XID(Valid.off(value)
+    return findOne(new XID(Validator.off(value)
+        .forEmpty()
         .getOrFail("Invalid String Value: ")), 
         includeChilds
     );
@@ -143,7 +152,7 @@ public class XTag extends AbstractUnit {
   
   
   public XTag findOne(XID id, boolean includeChilds) {
-    Valid.off(id).testNull(XID.class);
+    Validator.off(id).forNull().fail(XID.class);
     for(XTag x : childs) {
       if(x.id().toString().toLowerCase()
           .startsWith(id.toString().toLowerCase())
@@ -188,8 +197,19 @@ public class XTag extends AbstractUnit {
   }
   
   
+  public XTag setOmmitRoot(boolean ommit) {
+    this.ommitRoot = ommit;
+    return this;
+  }
+  
+  
+  public boolean isOmmitRoot() {
+    return this.ommitRoot;
+  }
+  
+  
   public XAttr findAttr(String name) {
-    Valid.off(name).testNull("Invalid Attr Name: ");
+    Validator.off(name).forEmpty().fail("Invalid Attr Name: ");
     List<XAttr> ls = this.getAllAttrs();
     for(XAttr a : ls) {
       if(a.attrName().equals(name))
@@ -213,20 +233,24 @@ public class XTag extends AbstractUnit {
   
   @Override
   public String toXml() {
-    StringBuilder sb = new StringBuilder()
-        .append((xmlIdent != null ? getIdent() : ""))
-        .append(lt)
-        .append(value);
+    StringBuilder sb = new StringBuilder();
+    if(!ommitRoot) {
+      sb.append((xmlIdent != null ? getIdent() : ""))
+          .append(lt)
+          .append(value);
     
-    List<XAttr> attrs = getAllAttrs();
-    if(!attrs.isEmpty()) {
-      for(XAttr a : attrs) {
-        sb.append(sp).append(a.toXml());
+      List<XAttr> attrs = getAllAttrs();
+      if(!attrs.isEmpty()) {
+        for(XAttr a : attrs) {
+          sb.append(sp).append(a.toXml());
+        }
       }
+      sb.append(gt);
     }
-    sb.append(gt);
     
-    if(!childs.isEmpty() && xmlIdent != null) {
+    if(!childs.isEmpty() 
+        && xmlIdent != null 
+        && !ommitRoot) {
       sb.append(ln);
     }
     for(XTag x : childs) {
@@ -241,12 +265,14 @@ public class XTag extends AbstractUnit {
         sb.append(x.toXml());
       }
     }
-    return sb.append((xmlIdent != null ? getIdent() : ""))
+    if(!ommitRoot) {
+      sb.append((xmlIdent != null ? getIdent() : ""))
         .append(lt)
         .append(sl)
         .append(value)
-        .append(gt)
-        .toString();
+        .append(gt);
+    }
+    return sb.toString();
   }
 
 }

@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import us.pserver.xprops.converter.XList;
+import us.pserver.xprops.converter.ListXConverter;
 
 /**
  *
@@ -53,12 +53,12 @@ public class TestList {
     }
     print("={list}=> %s", dls);
     
-    XList<Double> dxl = new XList(dls);
+    ListXConverter<Double> dxl = new ListXConverter(dls);
     print("={xl.type}=> %s", dxl.getType());
     print("={xl}=\\ %n%s", dxl.toXml());
     
     dls.clear();
-    XList<Double> ddxl = new XList(dls);
+    ListXConverter<Double> ddxl = new ListXConverter(dls);
     ddxl.fromXml(dxl);
     print("={list}=> %s", ddxl.getList());
     
@@ -71,11 +71,11 @@ public class TestList {
     }
     print("={list}=> %s", datels);
     
-    XList<Date> txl = new XList(datels);
+    ListXConverter<Date> txl = new ListXConverter(datels);
     print("={xl.type}=> %s", txl.getType());
     print("={xl}=\\ %n%s", txl.toXml());
     
-    XList<Date> dtxl = new XList(new ArrayList<Date>());
+    ListXConverter<Date> dtxl = new ListXConverter(new ArrayList<Date>());
     datels = dtxl.fromXml(txl);
     print("={list}=> %s", datels);
     
@@ -86,11 +86,11 @@ public class TestList {
     }
     print("={list}=> %s", fls);
     
-    XList<File> fxl = new XList(fls);
+    ListXConverter<File> fxl = new ListXConverter(fls);
     print("={xl.type}=> %s", fxl.getType());
     print("={xl}=\\ %n%s", fxl.toXml());
     
-    XList<File> dfxl = new XList(new LinkedList<File>());
+    ListXConverter<File> dfxl = new ListXConverter(new LinkedList<File>());
     fls = dfxl.fromXml(fxl);
     print("={list}=> %s", fls);
     
@@ -108,11 +108,11 @@ public class TestList {
     cls.add(Color.WHITE);
     print("={list}=> %s", cls);
     
-    XList<Color> cxl = new XList(cls);
+    ListXConverter<Color> cxl = new ListXConverter(cls);
     print("={xl.type}=> %s", cxl.getType());
     print("={xl}=\\ %n%s", cxl.toXml());
     
-    XList<Color> dcxl = new XList(new LinkedList<Color>());
+    ListXConverter<Color> dcxl = new ListXConverter(new LinkedList<Color>());
     cls = dcxl.fromXml(cxl);
     print("={list}=> %s", cls);
     
@@ -124,11 +124,11 @@ public class TestList {
     }
     print("={list}=> %s", sls);
     
-    XList<SocketAddress> sxl = new XList(sls);
+    ListXConverter<SocketAddress> sxl = new ListXConverter(sls);
     print("={xl.type}=> %s", sxl.getType());
     print("={xl}=\\ %n%s", sxl.toXml());
     
-    XList<SocketAddress> dsxl = new XList(new LinkedList<SocketAddress>());
+    ListXConverter<SocketAddress> dsxl = new ListXConverter(new LinkedList<SocketAddress>());
     sls = dsxl.fromXml(sxl);
     print("={list}=> %s", sls);
     

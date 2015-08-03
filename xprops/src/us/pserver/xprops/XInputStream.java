@@ -30,7 +30,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 import us.pserver.xprops.util.UTF8String;
-import us.pserver.xprops.util.Valid;
+import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -40,7 +40,7 @@ import us.pserver.xprops.util.Valid;
 public class XInputStream {
   
   public static final String XHEADER = 
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
   
   XTag root;
   
@@ -50,7 +50,8 @@ public class XInputStream {
 
 
   public XInputStream(InputStream input) {
-    this.input = Valid.off(input)
+    this.input = Validator.off(input)
+        .forNull()
         .getOrFail(InputStream.class);
     this.stack = new Stack<>();
     this.root = null;
@@ -59,7 +60,8 @@ public class XInputStream {
   
   public XInputStream(XTag root) {
     this.input = null;
-    this.root = Valid.off(root)
+    this.root = Validator.off(root)
+        .forNull()
         .getOrFail(XTag.class);
     this.stack = new Stack<>();
   }
@@ -85,7 +87,7 @@ public class XInputStream {
   
   public InputStream getInputStream() {
     if(input != null) return input;
-    Valid.off(root).testNull("Xml Root Tag is Null: ");
+    Validator.off(root).forNull().fail("Xml Root Tag is Null: ");
     input = new ByteArrayInputStream(
         new UTF8String(XHEADER.concat(root.toXml())).getBytes()
     );
@@ -96,8 +98,8 @@ public class XInputStream {
   private void startElement(String name, Attributes attrs) {
     if(name == null || name.trim().isEmpty())
       return;
-    System.out.println("* element="+ name);
-    XTag tag = new XTag(name);
+    //System.out.println("* element="+ name);
+    XTag tag = new XTag(unformat(name));
     if(root == null) root = tag;
     if(!stack.isEmpty()) {
       stack.peek().addChild(tag);
@@ -105,10 +107,16 @@ public class XInputStream {
     stack.push(tag);
     for(int i = 0; i < attrs.getLength(); i++) {
       tag.addNewAttr(
-          attrs.getQName(i), 
-          attrs.getValue(i)
+          unformat(attrs.getQName(i)), 
+          unformat(attrs.getValue(i))
       );
     }
+  }
+  
+  
+  private String unformat(String str) {
+    if(str == null) return null;
+    return str.replace("\r", "").replace("\n", "").trim();
   }
   
   
@@ -120,8 +128,8 @@ public class XInputStream {
   private void text(String txt) {
     if(txt == null || txt.trim().isEmpty())
       return;
-    System.out.println("* text="+ txt);
-    stack.peek().addNewValue(txt);
+    //System.out.println("* text="+ txt);
+    stack.peek().addNewValue(unformat(txt));
   }
   
   

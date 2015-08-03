@@ -35,7 +35,7 @@ import us.pserver.xprops.util.FileTransformer;
 import us.pserver.xprops.util.NumberTransformer;
 import us.pserver.xprops.util.PathTransformer;
 import us.pserver.xprops.util.SocketAddressTransformer;
-import us.pserver.xprops.util.Valid;
+import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -51,8 +51,8 @@ public class XValue extends XTag {
   
   
   public <T> T as(StringTransformer<T> transformer) throws IllegalArgumentException {
-    return Valid.off(transformer)
-        .getOrFail(StringTransformer.class)
+    return Validator.off(transformer)
+        .forNull().getOrFail(StringTransformer.class)
         .fromString(value);
   }
   

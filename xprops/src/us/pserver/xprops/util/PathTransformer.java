@@ -33,16 +33,16 @@ public class PathTransformer extends AbstractStringTransformer<Path> {
 
   @Override
   public Path fromString(String str) throws IllegalArgumentException {
-    return Paths.get(Valid.off(str)
-        .getOrFail("Invalid String to Transform: ")
+    return Paths.get(Validator.off(str)
+        .forEmpty().getOrFail("Invalid String to Transform: ")
     );
   }
   
   
   @Override
   public String toString(Path pth) throws IllegalArgumentException {
-    return Valid.off(pth)
-        .getOrFail("Invalid Path to Transform: ")
+    return Validator.off(pth)
+        .forEmpty().getOrFail("Invalid Path to Transform: ")
         .toAbsolutePath().toString();
   }
   

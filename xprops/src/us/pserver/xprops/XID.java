@@ -21,7 +21,7 @@
 
 package us.pserver.xprops;
 
-import us.pserver.xprops.util.Valid;
+import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -36,7 +36,7 @@ public class XID {
   
   
   public XID(String id) {
-    this.id = Valid.off(id).getOrFail("Invalid String ID: ");
+    this.id = Validator.off(id).forEmpty().getOrFail("Invalid String ID: ");
     parent = null;
   }
   
@@ -52,7 +52,7 @@ public class XID {
   
   
   public XID compose(XID parent) {
-    this.parent = Valid.off(parent).getOrFail(XID.class);
+    this.parent = Validator.off(parent).forNull().getOrFail(XID.class);
     return parent;
   }
   

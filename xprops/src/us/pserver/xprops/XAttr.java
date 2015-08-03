@@ -21,7 +21,7 @@
 
 package us.pserver.xprops;
 
-import us.pserver.xprops.util.Valid;
+import us.pserver.xprops.util.Validator;
 
 /**
  *
@@ -38,8 +38,8 @@ public class XAttr extends XTag {
   
   public XAttr(String name, String value) {
     super(name);
-    this.childs().add(new XValue(Valid.off(value)
-        .getOrFail("Invalid Attribute Value: "))
+    this.childs().add(new XValue(Validator.off(value)
+        .forEmpty().getOrFail("Invalid Attribute Value: "))
     );
   }
   
@@ -57,8 +57,8 @@ public class XAttr extends XTag {
   
   
   public XValue attrValue(String value) {
-    XValue v = new XValue(Valid.off(value)
-        .getOrFail("Invalid Attr Value: ")
+    XValue v = new XValue(Validator.off(value)
+        .forEmpty().getOrFail("Invalid Attr Value: ")
     );
     childs().clear();
     childs().add(v);

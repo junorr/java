@@ -35,7 +35,7 @@ public class NumberTransformer implements StringTransformer<Number> {
   
   @Override
   public Number fromString(final String str) throws IllegalArgumentException {
-    Valid.off(str).testNull("Invalid String to Transform: ");
+    Validator.off(str).forEmpty().fail("Invalid String to Transform: ");
     if(!str.contains(".") && !str.contains(",")) {
       return Long.parseLong(str);
     }
@@ -53,7 +53,7 @@ public class NumberTransformer implements StringTransformer<Number> {
   
   @Override
   public String toString(Number nb) {
-    Valid.off(nb).testNull(Number.class);
+    Validator.off(nb).forNull().fail(Number.class);
     if(Double.class.isAssignableFrom(nb.getClass())
         || Float.class.isAssignableFrom(nb.getClass())) {
       return decimal("0.0#########", '.').format(nb);

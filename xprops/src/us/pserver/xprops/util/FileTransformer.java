@@ -32,14 +32,16 @@ public class FileTransformer extends AbstractStringTransformer<File> {
 
   @Override
   public File fromString(String str) throws IllegalArgumentException {
-    Valid.off(str).testNull("Invalid String to Transform: ");
+    Validator.off(str)
+        .forEmpty().fail("Invalid String to Transform: ");
     return new File(str);
   }
   
   
   @Override
   public String toString(File f) throws IllegalArgumentException {
-    return Valid.off(f)
+    return Validator.off(f)
+        .forNull()
         .getOrFail(File.class).getAbsolutePath();
   }
 

@@ -39,8 +39,8 @@ public class DateTransformer extends AbstractStringTransformer<Date> {
   
   
   public DateTransformer(String format) {
-    sdf = new SimpleDateFormat(Valid.off(format)
-        .getOrFail("Invalid Date Format: ")
+    sdf = new SimpleDateFormat(Validator.off(format)
+        .forEmpty().getOrFail("Invalid Date Format: ")
     );
   }
   
@@ -58,8 +58,8 @@ public class DateTransformer extends AbstractStringTransformer<Date> {
   @Override
   public Date fromString(String str) throws IllegalArgumentException {
     try {
-      return sdf.parse(Valid.off(str)
-          .getOrFail("Invalid String to Transform: "+ str)
+      return sdf.parse(Validator.off(str)
+          .forEmpty().getOrFail("Invalid String to Transform: "+ str)
       );
     } catch(ParseException e) {
       throw new IllegalArgumentException(e.toString(), e);

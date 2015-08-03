@@ -41,7 +41,8 @@ public class ClassTransformer extends AbstractStringTransformer<Class> {
 
   @Override
   public Class fromString(String str) throws IllegalArgumentException {
-    Valid.off(str).testNull("Invalid String to Transform: ");
+    Validator.off(str).forEmpty()
+        .fail("Invalid String to Transform: ");
     try {
       switch(str) {
         case CLASS_BOOLEAN:
@@ -71,8 +72,8 @@ public class ClassTransformer extends AbstractStringTransformer<Class> {
   
   @Override
   public String toString(Class cls) throws IllegalArgumentException {
-    return Valid.off(cls)
-        .getOrFail(Class.class).getName();
+    return Validator.off(cls)
+        .forNull().getOrFail(Class.class).getName();
   }
 
 }

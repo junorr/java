@@ -34,10 +34,10 @@ public class SocketAddressTransformer extends AbstractStringTransformer<SocketAd
   @Override
   public SocketAddress fromString(String str) throws IllegalArgumentException {
     final String msg = "Invalid String to Transform: ";
-    Valid v = Valid.off(str).testNull(msg);
-    v.test(!str.contains(":"), msg);
+    Validator.off(str).forEmpty().fail(msg);
+    Validator.off(str).forTest(!str.contains(":")).fail(msg);
     int id = str.indexOf(":");
-    v.test(id >= str.length(), msg);
+    Validator.off(str).forTest(id >= str.length()).fail(msg);
     NumberTransformer tn = new NumberTransformer();
     String addr = str.substring(0, id);
     int port = tn.fromString(str.substring(id+1)).intValue();

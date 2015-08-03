@@ -26,7 +26,6 @@ import java.io.File;
 import java.net.SocketAddress;
 import java.nio.file.Path;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -36,10 +35,19 @@ import java.util.List;
 public class StringTransformerFactory {
 
   public static <T> StringTransformer<T> getTransformer(Class<T> type) {
-    if(Number.class.isAssignableFrom(type))
-      return (StringTransformer<T>) new NumberTransformer();
-    else if(Boolean.class.isAssignableFrom(type))
+    if(Boolean.class.isAssignableFrom(type) 
+        || boolean.class.isAssignableFrom(type))
       return (StringTransformer<T>) new BooleanTransformer();
+    else if(Character.class.isAssignableFrom(type) 
+        || char.class.isAssignableFrom(type))
+      return (StringTransformer<T>) new CharTransformer();
+    else if(String.class.isAssignableFrom(type))
+      return (StringTransformer<T>) new StringTransformer<String>() {
+        @Override public String fromString(String str) { return str; }
+        @Override public String toString(String obj) { return obj; }
+      };
+    else if(Number.class.isAssignableFrom(type) || isPrimitive(type))
+      return (StringTransformer<T>) new NumberTransformer();
     else if(Color.class.isAssignableFrom(type))
       return (StringTransformer<T>) new ColorTransformer();
     else if(Class.class.isAssignableFrom(type))
@@ -52,25 +60,8 @@ public class StringTransformerFactory {
       return (StringTransformer<T>) new PathTransformer();
     else if(SocketAddress.class.isAssignableFrom(type))
       return (StringTransformer<T>) new SocketAddressTransformer();
-    else if(String.class.isAssignableFrom(type))
-      return (StringTransformer<T>) new StringTransformer<String>() {
-        @Override public String fromString(String str) { return str; }
-        @Override public String toString(String obj) { return obj; }
-      };
-    /* 
-    else if(type.isPrimitive() && type.isArray())
-      return new ListTransformer();*/
     else throw new IllegalArgumentException(
         "Not Supported Transformation for: "+ type.getName());
-  }
-  
-  
-  public static boolean isSupported(Class cls) {
-    boolean bool = false;
-    for(Class c : supported) {
-      bool = bool || c.equals(cls);
-    }
-    return bool || isPrimitive(cls);
   }
   
   

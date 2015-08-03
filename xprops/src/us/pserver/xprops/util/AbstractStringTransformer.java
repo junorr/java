@@ -32,8 +32,8 @@ public abstract class AbstractStringTransformer<T> implements StringTransformer<
 
   @Override
   public String toString(T obj) throws IllegalArgumentException {
-    return Objects.toString(Valid.off(obj)
-        .getOrFail("Invalid Object to Transform: ")
+    return Objects.toString(Validator.off(obj)
+        .forNull().getOrFail("Invalid Object to Transform: ")
     );
   }
 

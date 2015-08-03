@@ -36,24 +36,26 @@ public class UTF8String {
   
   
   public UTF8String(String str) {
-    string = Valid.off(str).getOrFail(String.class);
+    string = Validator.off(str).forEmpty().getOrFail(String.class);
   }
   
   
   public UTF8String(byte[] bs) {
-    Valid.off(bs)
-        .testNull("Invalid Byte Array: ")
-        .test(bs.length < 1, "Invalid Length (bs.length < 1): ");
+    Validator.off(bs)
+        .forEmpty().fail("Invalid Byte Array: ")
+        .forTest(bs.length < 1).fail("Invalid Length (bs.length < 1): ");
     string = new String(bs, getCharset());
   }
   
   
   public UTF8String(byte[] bs, int off, int len) {
-    Valid.off(bs)
-        .testNull("Invalid Byte Array: ")
-        .test(bs.length < 1, "Invalid Length (bs.length < 1): ")
-        .test(off < 0 || off+len > bs.length, 
-            String.format("Invalid Parameters: off=%d, len=%d, bs.length=%d", off, len, bs.length));
+    Validator.off(bs)
+        .forEmpty()
+        .fail("Invalid Byte Array: ")
+        .forTest(bs.length < 1).fail("Invalid Length (bs.length < 1): ")
+        .forTest(off < 0 || off+len > bs.length)
+        .fail("Invalid Parameters: off=%d, len=%d, bs.length=%d", 
+            off, len, bs.length);
     string = new String(bs, off, len, getCharset());
   }
   

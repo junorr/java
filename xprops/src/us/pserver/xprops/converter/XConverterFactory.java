@@ -38,41 +38,41 @@ import java.util.List;
 public class XConverterFactory {
 
   public static <T> XConverter<T> getXConverter(Class<T> type) {
-    if(Boolean.class.isAssignableFrom(type) 
-        || boolean.class.isAssignableFrom(type))
-      return (XConverter<T>) new XBoolean();
-    else if(Character.class.isAssignableFrom(type) 
-        || char.class.isAssignableFrom(type))
-      return (XConverter<T>) new XChar();
-    else if(String.class.isAssignableFrom(type))
-      return (XConverter<T>) new XString();
-    else if(Number.class.isAssignableFrom(type) || isPrimitive(type))
-      return (XConverter<T>) new XNumber(type);
-    else if(Color.class.isAssignableFrom(type))
-      return (XConverter<T>) new XColor();
-    else if(Class.class.isAssignableFrom(type))
-      return (XConverter<T>) new XClass();
-    else if(Date.class.isAssignableFrom(type))
-      return (XConverter<T>) new XDate();
-    else if(File.class.isAssignableFrom(type))
-      return (XConverter<T>) new XFile();
-    else if(Path.class.isAssignableFrom(type))
-      return (XConverter<T>) new XPath();
-    else if(SocketAddress.class.isAssignableFrom(type))
-      return (XConverter<T>) new XSocketAddress();
-    else if(List.class.isAssignableFrom(type))
-      return (XConverter<T>) new XList(type, new ArrayList());
-    else if(type.isArray())
-      return (XConverter<T>) new XArray(type.getComponentType());
-    else
-      return new XObject(type);
-    //else throw new IllegalArgumentException(
-      //  "Not Supported Conversion for: "+ type.getName());
+    return getXConverter(type, null);
   }
   
   
-  public static boolean isSupported(Class cls) {
-    return StringTransformerFactory.isSupported(cls);
+  public static <T> XConverter<T> getXConverter(Class<T> type, String name) {
+    if(Boolean.class.isAssignableFrom(type) 
+        || boolean.class.isAssignableFrom(type))
+      return (XConverter<T>) new BooleanXConverter();
+    else if(Character.class.isAssignableFrom(type) 
+        || char.class.isAssignableFrom(type))
+      return (XConverter<T>) new CharXConverter();
+    else if(String.class.isAssignableFrom(type))
+      return (XConverter<T>) new StringXConverter();
+    else if(Number.class.isAssignableFrom(type) || isPrimitive(type))
+      return (XConverter<T>) new NumberXConverter(type);
+    else if(Color.class.isAssignableFrom(type))
+      return (XConverter<T>) new ColorXConverter();
+    else if(Class.class.isAssignableFrom(type))
+      return (XConverter<T>) new ClassXConverter();
+    else if(Date.class.isAssignableFrom(type))
+      return (XConverter<T>) new DateXConverter();
+    else if(File.class.isAssignableFrom(type))
+      return (XConverter<T>) new FileXConverter();
+    else if(Path.class.isAssignableFrom(type))
+      return (XConverter<T>) new PathXConverter();
+    else if(SocketAddress.class.isAssignableFrom(type))
+      return (XConverter<T>) new SocketAddressXConverter();
+    else if(List.class.isAssignableFrom(type))
+      return (XConverter<T>) new ListXConverter(type, new ArrayList());
+    else if(type.isArray())
+      return (XConverter<T>) new ArrayXConverter(type.getComponentType());
+    else
+      return (name != null ? new ObjectXConverter(type, name) : new ObjectXConverter(type));
+    //else throw new IllegalArgumentException(
+      //  "Not Supported Conversion for: "+ type.getName());
   }
   
   
