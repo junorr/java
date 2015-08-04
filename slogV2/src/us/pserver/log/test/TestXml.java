@@ -21,8 +21,9 @@
 
 package us.pserver.log.test;
 
-import java.lang.reflect.Field;
-import us.pserver.log.LogLevel;
+import us.pserver.log.conf.OutputConf;
+import us.pserver.log.output.StandardOutput;
+import us.pserver.xprops.XBean;
 
 /**
  *
@@ -32,12 +33,10 @@ import us.pserver.log.LogLevel;
 public class TestXml {
 
   
-  public static void main(String[] args) {
-    LogLevel lvl = LogLevel.DEBUG;
-    Field[] fs = lvl.getClass().getDeclaredFields();
-    for(Field f : fs) {
-      System.out.println(f);
-    }
+  public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
+    OutputConf out = new OutputConf("stdout", StandardOutput.class);
+    XBean bean = new XBean(out);
+    System.out.println(bean.bindAll().scanObject().setXmlIdentation("  ", 0).toXml());
   }
   
 }

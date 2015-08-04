@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<log name="us.pserver">
+  <class>us.pserver.log.impl.SimpleLog</class>
+  <levels>
+    <all>true</all>
+    <debug>false</debug>
+  </levels>
+  <output name="stdout">
+    <class>us.pserver.log.output.StandardOutput</class>
+    <levels>
+      <all>true</all>
+      <debug>false</debug>
+      <error>false</error>
+    </levels>
+  </output>
+  <output name="stderr">
+    <class>us.pserver.log.output.StandardErrorOutput</class>
+    <levels>
+      <error>true</error>
+    </levels>
+  </output>
+  <output name="stdout">
+    <class>us.pserver.log.output.NullOutput</class>
+    <levels>
+      <debug>true</debug>
+    </levels>
+  </output>
+</log>

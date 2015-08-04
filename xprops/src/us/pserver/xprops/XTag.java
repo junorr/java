@@ -50,7 +50,7 @@ public class XTag extends AbstractUnit {
   
   private int identLevel;
   
-  private boolean ommitRoot;
+  private boolean ommitRoot, selfClosing;
   
 
   /**
@@ -63,6 +63,7 @@ public class XTag extends AbstractUnit {
     xmlIdent = null;
     identLevel = 0;
     ommitRoot = false;
+    selfClosing = false;
   }
   
   
@@ -256,6 +257,17 @@ public class XTag extends AbstractUnit {
     return xmlIdent;
   }
   
+  
+  public XTag setSelfClosingTag(boolean bool) {
+    selfClosing = bool;
+    return this;
+  }
+  
+  
+  public boolean isSelfClosingTag() {
+    return selfClosing;
+  }
+  
 
   /**
    * Return the string identation adjusted for the identation level.
@@ -327,8 +339,61 @@ public class XTag extends AbstractUnit {
   }
   
   
+  void sortByName(List<XTag> ls) {
+    if(ls == null || ls.isEmpty())
+      return;
+    Comparator<XTag> comp = new Comparator<>
+  }
+  
+  
   @Override
   public String toXml() {
+    StringBuilder sb = new StringBuilder();
+    if(!ommitRoot) {
+      if(xmlIdent != null)
+        sb.append(getIdent());
+      sb.append(lt).append(value());
+      List<XAttr> attrs = getAllAttrs();
+      for(XAttr at : attrs) {
+        sb.append(sp).append(at.toXml());
+      }
+      if(selfClosing) {
+        return sb.append(sl).append(gt).toString();
+      }
+      else {
+        sb.append(gt);
+      }
+    }
+    Boolean lastValue = null;
+    //System.err.printf("[%s]childs.size()=%d, first=[%s]%n", value(), childs.size(), (!childs.isEmpty() ? childs.get(0).value() : ""));
+    for(XTag x : childs) {
+      if(XAttr.class.isInstance(x))
+        continue;
+      lastValue = true;
+      if(!XValue.class.isInstance(x)
+          && xmlIdent != null) {
+        sb.append(ln);
+        x.setXmlIdentation(xmlIdent, identLevel+1);
+        lastValue = false;
+      }
+      sb.append(x.toXml());
+    }
+    if(xmlIdent != null && !lastValue) {
+      sb.append(ln);
+      if(!ommitRoot)
+        sb.append(getIdent());
+    }
+    if(!ommitRoot) {
+      sb.append(lt)
+          .append(sl)
+          .append(value())
+          .append(gt);
+    }
+    return sb.toString();
+  }
+  
+  
+  public String toXml2() {
     StringBuilder sb = new StringBuilder();
     if(!ommitRoot) {
       sb.append((xmlIdent != null ? getIdent() : ""))
@@ -341,19 +406,22 @@ public class XTag extends AbstractUnit {
           sb.append(sp).append(a.toXml());
         }
       }
-      sb.append(gt);
+      if(!selfClosing) {
+        sb.append(gt);
+      }
     }
     
     if(!childs.isEmpty() 
         && xmlIdent != null 
-        && !ommitRoot) {
+        && !ommitRoot
+        && !selfClosing) {
       sb.append(ln);
     }
     for(XTag x : childs) {
       if(XAttr.class.isInstance(x)) {
         continue;
       }
-      if(xmlIdent != null) {
+      if(xmlIdent != null && !selfClosing) {
         x.setXmlIdentation(xmlIdent, identLevel + 1);
         sb.append(x.toXml()).append(ln);
       } 
@@ -362,11 +430,15 @@ public class XTag extends AbstractUnit {
       }
     }
     if(!ommitRoot) {
-      sb.append((xmlIdent != null ? getIdent() : ""))
-        .append(lt)
-        .append(sl)
-        .append(value)
-        .append(gt);
+      if(selfClosing) {
+        sb.append(sl);
+      } else {
+        sb.append((xmlIdent != null ? getIdent() : ""))
+            .append(lt)
+            .append(sl)
+            .append(value);
+      }
+      sb.append(gt);
     }
     return sb.toString();
   }

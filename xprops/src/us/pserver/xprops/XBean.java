@@ -23,13 +23,21 @@ package us.pserver.xprops;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import us.pserver.tools.MapSorter;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.converter.XConverter;
 import us.pserver.xprops.converter.XConverterFactory;
 import us.pserver.xprops.converter.ObjectXConverter;
+import us.pserver.xprops.transformer.NameFormatter;
 
 /**
  *
@@ -46,10 +54,9 @@ public class XBean<T> extends XTag {
   
 
   public XBean(T obj) {
-    this(Valid.off(obj)
+    this(new NameFormatter().format(Valid.off(obj)
         .forNull().getOrFail(Object.class)
-        .getClass().getSimpleName()
-        .toLowerCase(), obj
+        .getClass()), obj
     );
   }
   
@@ -92,7 +99,7 @@ public class XBean<T> extends XTag {
   
   public XBean alias(String field, String alias) {
     if(field != null && alias != null) {
-      Field[] fs = type().getDeclaredFields();
+      List<Field> fs = getTypeFields();
       for(Field f : fs) {
         if(field.equalsIgnoreCase(f.getName())) {
           alias(f, alias);
@@ -115,7 +122,7 @@ public class XBean<T> extends XTag {
   
   public XBean bind(String field) {
     Valid.off(field).forEmpty().fail(Field.class);
-    Field[] fs = type().getDeclaredFields();
+    List<Field> fs = getTypeFields();
     for(Field f : fs) {
       if(field.equalsIgnoreCase(f.getName())) {
         bind(f);
@@ -141,7 +148,7 @@ public class XBean<T> extends XTag {
         .forEmpty().fail(Field.class)
         .valid(cv)
         .forNull().fail(XConverter.class);
-    Field[] fs = type().getDeclaredFields();
+    List<Field> fs = getTypeFields();
     for(Field f : fs) {
       if(field.equalsIgnoreCase(f.getName())) {
         bind(f, cv);
@@ -152,12 +159,37 @@ public class XBean<T> extends XTag {
   }
   
   
+  List<Entry<Field, XConverter>> sort(Set<Entry<Field, XConverter>> set) {
+    Comparator<Entry<Field, XConverter>> nameOrder = new Comparator<Entry<Field, XConverter>>() {
+      @Override
+      public int compare(Entry<Field, XConverter> o1, Entry<Field, XConverter> o2) {
+        return o1.getKey().getName().compareTo(o2.getKey().getName());
+      }
+    };
+    Comparator<Entry<Field, XConverter>> childsOrder = new Comparator<Entry<Field, XConverter>>() {
+      @Override
+      public int compare(Entry<Field, XConverter> o1, Entry<Field, XConverter> o2) {
+        Field[] fs = o1.getKey().getType().getDeclaredFields();
+        Integer i1 = (fs != null ? fs.length : 0);
+        fs = o2.getKey().getType().getDeclaredFields();
+        Integer i2 = (fs != null ? fs.length : 0);
+        return i1.compareTo(i2);
+      }
+    };
+    List<Entry<Field, XConverter>> ls = new ArrayList(set.size());
+    ls.addAll(set);
+    Collections.sort(ls, nameOrder);
+    Collections.sort(ls, childsOrder);
+    return ls;
+  }
+  
+  
   public XBean scanObject() {
     if(fieldMap.isEmpty())
       return this;
-    Set<Map.Entry<Field, XConverter>> ents = 
-        fieldMap.entrySet();
-    for(Map.Entry<Field, XConverter> e : ents) {
+    this.sortFieldsMap();
+    List<Entry<Field, XConverter>> ents = sort(fieldMap.entrySet());
+    for(Entry<Field, XConverter> e : ents) {
       this.addChild(makeTag(
           e.getKey(), 
           e.getValue())
@@ -214,10 +246,7 @@ public class XBean<T> extends XTag {
     if(value == null) return null;
     XTag x = cv.toXml(value);
     //System.out.printf("XBean(%s).doConvert( %s, %s ): %s%n", type().getSimpleName(), cv.getClass().getSimpleName(), value, x);
-    return (x != null 
-        ? x.setOmmitRoot(
-            ObjectXConverter.class.isInstance(cv)
-        ) : x);
+    return x;
   }
   
   
@@ -227,6 +256,9 @@ public class XBean<T> extends XTag {
       name = fieldAlias.get(f);
     
     XTag tag = new XTag(name);
+    if(Class.class.equals(f.getType())) {
+      tag.setSelfClosingTag(true);
+    }
     try {
       Object val = getFieldValue(f);
       //System.out.printf("* Bean(%s).makeTag( %s, %s ): val=%s%n", value(), f.getName(), cv.getClass().getSimpleName(), val.getClass().getSimpleName());
@@ -234,6 +266,8 @@ public class XBean<T> extends XTag {
       XTag xval = doConvert(cv, val);
       if(xval == null) return null;
       tag.addChild(xval);
+      if(XBean.class.isInstance(xval))
+        return xval;
     } catch(IllegalAccessException e) {
       throw new IllegalArgumentException(e.toString(), e);
     }
@@ -241,8 +275,57 @@ public class XBean<T> extends XTag {
   }
   
   
-  public XBean bindAll() {
+  List<Field> getTypeFields() {
     Field[] fs = type().getDeclaredFields();
+    List<Field> lf = Arrays.asList(fs);
+    Comparator<Field> nameOrder = new Comparator<Field>() {
+      @Override
+      public int compare(Field o1, Field o2) {
+        return o1.getName().compareTo(o2.getName());
+      }
+    };
+    Comparator<Field> childsOrder = new Comparator<Field>() {
+      @Override
+      public int compare(Field o1, Field o2) {
+        Field[] fs = o1.getType().getDeclaredFields();
+        Integer i1 = (fs != null ? fs.length : 0);
+        fs = o2.getType().getDeclaredFields();
+        Integer i2 = (fs != null ? fs.length : 0);
+        return i1.compareTo(i2);
+      }
+    };
+    Collections.sort(lf, nameOrder);
+    //Collections.sort(lf, childsOrder);
+    return lf;
+  }
+  
+  
+  void sortFieldsMap() {
+    Comparator<Field> nameOrder = new Comparator<Field>() {
+      @Override
+      public int compare(Field o1, Field o2) {
+        return o1.getName().compareTo(o2.getName());
+      }
+    };
+    Comparator<Field> childsOrder = new Comparator<Field>() {
+      @Override
+      public int compare(Field o1, Field o2) {
+        Field[] fs = o1.getType().getDeclaredFields();
+        Integer i1 = (fs != null ? fs.length : 0);
+        fs = o2.getType().getDeclaredFields();
+        Integer i2 = (fs != null ? fs.length : 0);
+        return i1.compareTo(i2);
+      }
+    };
+    MapSorter<Field> sorter = new MapSorter(nameOrder);
+    sorter.sortByKey(fieldMap);
+    sorter = new MapSorter(childsOrder);
+    sorter.sortByKey(fieldMap);
+  }
+  
+  
+  public XBean bindAll() {
+    List<Field> fs = getTypeFields();
     //System.out.printf("* XBean(%s).bindAll(): %d fields%n", value(), fs.length);
     for(Field f : fs) {
       if(!Modifier.isTransient(f.getModifiers()))

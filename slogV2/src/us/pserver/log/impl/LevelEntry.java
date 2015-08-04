@@ -35,6 +35,12 @@ public class LevelEntry {
   private boolean enabled;
   
   
+  LevelEntry() {
+    level = null;
+    enabled = false;
+  }
+  
+  
   public LevelEntry(LogLevel lvl) {
     if(lvl == null)
       throw new IllegalArgumentException("Invalid LogLevel: "+ lvl);
@@ -61,6 +67,8 @@ public class LevelEntry {
   
   @Override
   public String toString() {
+    if(level == null)
+      return "null";
     return level.name()+ "("+ enabled+ ")";
   }
   

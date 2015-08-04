@@ -69,6 +69,9 @@ public class XConverterFactory {
       return (XConverter<T>) new ListXConverter(type, new ArrayList());
     else if(type.isArray())
       return (XConverter<T>) new ArrayXConverter(type.getComponentType());
+    else if(type.isEnum()) {
+      return (XConverter<T>) new EnumXConverter((Class<Enum>)type);
+    }
     else
       return (name != null ? new ObjectXConverter(type, name) : new ObjectXConverter(type));
     //else throw new IllegalArgumentException(

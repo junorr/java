@@ -28,7 +28,6 @@ import us.pserver.log.impl.SimpleLog;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import us.pserver.log.conf.LogConfig;
 import us.pserver.log.format.OutputFormatter;
 import us.pserver.log.format.OutputFormatterFactory;
@@ -246,8 +245,23 @@ public class LogFactory {
   }
   
   
+  static void readConfig() {
+    if(config.exists()) {
+      try {
+        config.read();
+        for(Log l : config.tryCreateLogs()) {
+          cache.put(l.getLogName(), l);
+        }
+      } catch(IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+  
+  
   public static Log getCached(String name, boolean samePrefix) {
     if(name == null) return null;
+    readConfig();
     return (samePrefix
         ? cache.getWithSamePrefix(name)
         : cache.get(name));
@@ -361,14 +375,7 @@ public class LogFactory {
   
   public static Log getOrCreateSimpleLog(String name, boolean samePrefix) {
     if(name == null) return null;
-    if(config.exists()) {
-      try {
-        config.read();
-        for(Log l : config.tryCreateLogs()) {
-          cache.put(l.getLogName(), l);
-        }
-      } catch(IOException e) {}
-    }
+    readConfig();
     if(cache.contains(name)) {
       return cache.get(name);
     }
@@ -383,14 +390,7 @@ public class LogFactory {
   
   public static Log getOrCreateSLogV2(String name, boolean samePrefix) {
     if(name == null) return null;
-    if(config.exists()) {
-      try {
-        config.read();
-        for(Log l : config.tryCreateLogs()) {
-          cache.put(l.getLogName(), l);
-        }
-      } catch(IOException e) {}
-    }
+    readConfig();
     if(cache.contains(name)) {
       return cache.get(name);
     }
@@ -405,14 +405,7 @@ public class LogFactory {
   
   public static Log getOrCreateSimpleLog(String name, String logfile, boolean samePrefix) {
     if(name == null || logfile == null) return null;
-    if(config.exists()) {
-      try {
-        config.read();
-        for(Log l : config.tryCreateLogs()) {
-          cache.put(l.getLogName(), l);
-        }
-      } catch(IOException e) {}
-    }
+    readConfig();
     if(cache.contains(name)) {
       return cache.get(name);
     }
@@ -440,14 +433,7 @@ public class LogFactory {
   
   public static Log getOrCreateSLogV2(String name, String logfile, boolean samePrefix) {
     if(name == null || logfile == null) return null;
-    if(config.exists()) {
-      try {
-        config.read();
-        for(Log l : config.tryCreateLogs()) {
-          cache.put(l.getLogName(), l);
-        }
-      } catch(IOException e) {}
-    }
+    readConfig();
     if(cache.contains(name)) {
       return cache.get(name);
     }

@@ -21,6 +21,7 @@
 
 package us.pserver.xprops.converter;
 
+import java.lang.reflect.Constructor;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.XBean;
 import us.pserver.xprops.XTag;
@@ -77,7 +78,11 @@ public class ObjectXConverter implements XConverter {
   
   private Object createInstance() {
     try {
-      return type.newInstance();
+      Constructor c = type.getDeclaredConstructor(null);
+      if(c == null) return null;
+      if(!c.isAccessible())
+        c.setAccessible(true);
+      return c.newInstance(null);
     } catch(Exception e) {
       e.printStackTrace();
       return null;

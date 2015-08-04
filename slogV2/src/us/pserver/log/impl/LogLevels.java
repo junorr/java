@@ -23,6 +23,7 @@ package us.pserver.log.impl;
 
 import java.util.Arrays;
 import us.pserver.log.LogLevel;
+import us.pserver.tools.Valid;
 
 /**
  *
@@ -31,64 +32,76 @@ import us.pserver.log.LogLevel;
  */
 public class LogLevels {
 
-  private final LevelEntry[] levels;
+  private final LevelEntry debug;
+  
+  private final LevelEntry info;
+  
+  private final LevelEntry warn;
+  
+  private final LevelEntry error;
   
   
   public LogLevels() {
-    levels = new LevelEntry[] {
-      new LevelEntry(LogLevel.DEBUG),
-      new LevelEntry(LogLevel.INFO),
-      new LevelEntry(LogLevel.WARN),
-      new LevelEntry(LogLevel.ERROR)
-    };
+    debug = new LevelEntry(LogLevel.DEBUG);
+    info = new LevelEntry(LogLevel.INFO);
+    warn = new LevelEntry(LogLevel.WARN);
+    error = new LevelEntry(LogLevel.ERROR);
+  }
+  
+  
+  public LevelEntry getLevelEntry(LogLevel lvl) {
+    Valid.off(lvl).forNull().fail(LogLevel.class);
+    switch(lvl) {
+      case DEBUG:
+        return debug;
+      case INFO:
+        return info;
+      case WARN:
+        return warn;
+      case ERROR:
+        return error;
+      default:
+        throw new IllegalArgumentException(
+            "Unknown LogLevel: "+ lvl.name());
+    }
   }
   
   
   public boolean isLevelEnabled(LogLevel lvl) {
     if(lvl == null) return false;
-    return levels[lvl.ordinal()].isEnabled();
+    return getLevelEntry(lvl).isEnabled();
   }
   
   
   public LogLevels setLevelEnabled(LogLevel lvl, boolean enabled) {
-    if(lvl != null) {
-      levels[lvl.ordinal()].setEnabled(enabled);
-    }
+    getLevelEntry(lvl).setEnabled(enabled);
     return this;
   }
   
   
   public boolean isAnyLevelEnabled() {
-    for(LevelEntry e : levels) {
-      if(e.isEnabled()) {
-        return true;
-      }
-    }
-    return false;
+    return debug.isEnabled()
+        || info.isEnabled()
+        || warn.isEnabled()
+        || error.isEnabled();
   }
   
   
   public LogLevels setAllLevelsEnabled(boolean enabled) {
-    for(LevelEntry e : levels) {
-      e.setEnabled(enabled);
-    }
+    debug.setEnabled(enabled);
+    info.setEnabled(enabled);
+    warn.setEnabled(enabled);
+    error.setEnabled(enabled);
     return this;
   }
   
   
-  public LevelEntry[] entries() {
-    return levels;
-  }
-  
-  
   public LogLevels copyFrom(LogLevels lvl) {
-    if(lvl == null) return this;
-    if(!lvl.isAnyLevelEnabled()) {
-      this.setAllLevelsEnabled(false);
-      return this;
-    }
-    for(LevelEntry le : lvl.entries()) {
-      this.setLevelEnabled(le.level(), le.isEnabled());
+    if(lvl != null) {
+      debug.setEnabled(lvl.isLevelEnabled(LogLevel.DEBUG));
+      info.setEnabled(lvl.isLevelEnabled(LogLevel.INFO));
+      warn.setEnabled(lvl.isLevelEnabled(LogLevel.WARN));
+      error.setEnabled(lvl.isLevelEnabled(LogLevel.ERROR));
     }
     return this;
   }
@@ -96,7 +109,11 @@ public class LogLevels {
   
   @Override
   public String toString() {
-    return Arrays.toString(levels);
+    return String.format(
+        "LogLevels{debug=%s, info=%s, warn=%s, error=%s}", 
+        debug.isEnabled(), info.isEnabled(), 
+        warn.isEnabled(), error.isEnabled()
+    );
   }
   
 }

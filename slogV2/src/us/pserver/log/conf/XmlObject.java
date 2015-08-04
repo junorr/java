@@ -73,6 +73,7 @@ public abstract class XmlObject extends XmlClass {
     NodeList nl = nd.getChildNodes();
     for(int i = 0; i < nl.getLength(); i++) {
       Node n = nl.item(i);
+      System.out.printf("XmlObject.find( %s, %s ): %s%n", nd, name, n);
       if(name.equalsIgnoreCase(n.getNodeName())) {
         return n;
       }
@@ -85,6 +86,7 @@ public abstract class XmlObject extends XmlClass {
     if(node == null)
       throw new IllegalArgumentException("Invalid XmlObject Element: "+ node);
     Node nclass = find(node, CLASS);
+    System.out.println("XmlObject.from(): "+ node);
     if(nclass == null)
       throw new IllegalArgumentException("Node does not contains Class node");
     NamedNodeMap map = node.getAttributes();

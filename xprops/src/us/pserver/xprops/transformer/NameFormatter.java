@@ -19,21 +19,36 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.log.conf;
+package us.pserver.xprops.transformer;
 
-import us.pserver.log.format.PatternOutputFormatter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import us.pserver.tools.Valid;
 
 /**
  *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 03/08/2015
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 04/08/2015
  */
-public class LogXml {
+public class NameFormatter {
 
-  private Class clazz;
-  
-  private PatternOutputFormatter pattern;
-  
-  private Map<String
+  public String format(Class cls) {
+    Valid.off(cls).forNull().fail(Class.class);
+    String name = cls.getSimpleName();
+    StringBuilder sb = new StringBuilder();
+    Pattern pt = Pattern.compile("[A-Z]");
+    Matcher m = pt.matcher(name);
+    int before = 0;
+    while(m.find()) {
+      int st = m.start();
+      if(st > 0) {
+        sb.append(name.substring(before, st))
+            .append("-");
+        before = st;
+      }
+    }
+    sb.append(name.substring(before));
+    return sb.toString().toLowerCase();
+  }
   
 }

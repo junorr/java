@@ -163,12 +163,7 @@ public class XValue extends XTag {
   
   @Override
   public String toXml() {
-    if(!this.childs().isEmpty())
-      return super.toXml();
-    return (getXmlIdentation() != null 
-        ? this.getIdent().concat(this.value) 
-        : this.value
-    );
+    return value();
   }
   
 }
