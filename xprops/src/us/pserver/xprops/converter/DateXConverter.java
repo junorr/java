@@ -25,7 +25,7 @@ import java.util.Date;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
-import us.pserver.xprops.util.DateTransformer;
+import us.pserver.xprops.transformer.DateTransformer;
 
 /**
  *

@@ -36,16 +36,16 @@ import us.pserver.xprops.converter.ObjectXConverter;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 15/07/2015
  */
-public class XBean extends XTag {
+public class XBean<T> extends XTag {
   
-  private final Object object;
+  private final T object;
 
   private final Map<Field, XConverter> fieldMap;
   
   private final Map<Field, String> fieldAlias;
   
 
-  public XBean(Object obj) {
+  public XBean(T obj) {
     this(Valid.off(obj)
         .forNull().getOrFail(Object.class)
         .getClass().getSimpleName()
@@ -54,7 +54,7 @@ public class XBean extends XTag {
   }
   
   
-  public XBean(String name, Object obj) {
+  public XBean(String name, T obj) {
     super(name);
     this.object = Valid.off(obj)
         .forNull().getOrFail(Object.class);
@@ -63,7 +63,7 @@ public class XBean extends XTag {
   }
   
   
-  public XBean(XTag src, Object dst) {
+  public XBean(XTag src, T dst) {
     this(Valid.off(dst)
         .forNull().getOrFail(Object.class)
         .getClass().getSimpleName(), dst
@@ -72,7 +72,7 @@ public class XBean extends XTag {
   }
   
   
-  public Object object() {
+  public T object() {
     return object;
   }
   
@@ -167,7 +167,7 @@ public class XBean extends XTag {
   }
   
   
-  public Object scanXml() {
+  public T scanXml() {
     Set<Map.Entry<Field,XConverter>> flds = 
         this.fieldMap.entrySet();
     //System.out.printf("* XBean(%s).scanXml(): %d fields%n", value(), flds.size());

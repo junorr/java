@@ -275,8 +275,7 @@ public interface Timer {
 
     @Override
     public Nanos stop() {
-      end = System.nanoTime();
-      return this;
+      return lapAndStop();
     }
 
 
@@ -328,8 +327,7 @@ public interface Timer {
 
     @Override
     public Millis stop() {
-      end = System.currentTimeMillis();
-      return this;
+      return lapAndStop();
     }
 
 

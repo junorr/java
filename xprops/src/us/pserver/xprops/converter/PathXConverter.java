@@ -25,7 +25,7 @@ import java.nio.file.Path;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
-import us.pserver.xprops.util.PathTransformer;
+import us.pserver.xprops.transformer.PathTransformer;
 
 /**
  *

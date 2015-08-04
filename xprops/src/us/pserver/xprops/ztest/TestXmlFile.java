@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.xtest;
+package us.pserver.xprops.ztest;
 
 import com.thoughtworks.xstream.XStream;
 import java.io.IOException;
@@ -106,12 +106,14 @@ public class TestXmlFile {
     Integer integer;
     String string;
     Double dbl;
+    Date date;
     byte[] bytes;
     List<Wrapper> wlist;
     public String toString() {
       return "\nWrapper {\n  integer="+ integer
           + "\n  string="+ string
           + "\n  dbl="+ dbl
+          + "\n  date="+ date
           + "\n  bytes="+ Arrays.toString(bytes)
           + "\n  wlist{"+ (wlist != null && !wlist.isEmpty() ? "type="+ wlist.get(0).getClass().getSimpleName()+ ", size="+ wlist.size() : "")+ "}"
           + "\n}";
@@ -124,16 +126,17 @@ public class TestXmlFile {
     wp.bytes = new byte[]{0,1,2,3,4,5,6,7,8,9};
     wp.dbl = Math.random()*100;
     wp.integer = wp.dbl.intValue();
+    wp.date = new Date();
     wp.string = String.format("Hello Wrapper (%s)", System.currentTimeMillis());
     wp.wlist = new LinkedList();
     return wp;
   }
   
   
-  public static void fill(int size, Wrapper target) {
+  public static void fillWrapperList(int size, Wrapper target) {
     for(int i = 0; i < size; i++) {
       Wrapper w = wrapper();
-      w.bytes = new byte[0];
+      //w.bytes = new byte[0];
       target.wlist.add(w);
     }
   }
@@ -154,21 +157,21 @@ public class TestXmlFile {
     */
     System.out.println("----------------------------");
     Wrapper wp = wrapper();
-    fill(3, wp);
+    fillWrapperList(10000, wp);
     System.out.println("* wp -->"+ wp);
     
     XBean bean = new XBean(wp);
     System.out.println("* xml -->");
     Timer tm = new Timer.Nanos().start();
     String sxml = bean.bindAll().scanObject().toXml();
-    tm.lapAndStop();
-    System.out.println(sxml);
+    tm.stop();
+    System.out.println("* xml length: "+ sxml.length());
     System.out.println("* time encoding to xml: "+ tm);
     
     tm.clear().start();
     sxml = new XStream().toXML(wp);
-    tm.lapAndStop();
-    System.out.println(sxml);
+    tm.stop();
+    //System.out.println(sxml);
     System.out.println("* time XStream encoding: "+ tm);
     
     String file2 = "/home/juno/xf.xml";
@@ -183,14 +186,19 @@ public class TestXmlFile {
     
     tm.clear().start();
     Object o = new XStream().fromXML(sxml);
-    tm.lapAndStop();
-    System.out.println(o);
+    tm.stop();
+    //System.out.println(o);
     System.out.println("* time XStream decode: "+ tm);
     
-    System.out.println("* tag readed: "+ tag.toXml());
+    //System.out.println("* tag readed: "+ tag.toXml());
     
     bean = new XBean(tag, new Wrapper());
+    tm.clear().start();
+    o = bean.bindAll().scanXml();
+    tm.stop();
+    System.out.println("* time XBean bind object: "+ tm);
     System.out.println("* wp -->"+ bean.bindAll().scanXml());
+    System.out.println("* XStream xml: "+ sxml);
   }
   
 }

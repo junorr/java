@@ -25,7 +25,7 @@ import java.io.File;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
-import us.pserver.xprops.util.FileTransformer;
+import us.pserver.xprops.transformer.FileTransformer;
 
 /**
  *

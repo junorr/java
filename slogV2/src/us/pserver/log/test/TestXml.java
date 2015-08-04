@@ -19,22 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.util;
+package us.pserver.log.test;
 
-import us.pserver.tools.Valid;
+import java.lang.reflect.Field;
+import us.pserver.log.LogLevel;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/07/2015
+ * @version 0.0 - 03/08/2015
  */
-public class BooleanTransformer extends AbstractStringTransformer<Boolean> {
+public class TestXml {
 
-  @Override
-  public Boolean fromString(String str) {
-    return Boolean.parseBoolean(Valid.off(str)
-        .forEmpty().getOrFail("Invalid String to Transform: ")
-    );
+  
+  public static void main(String[] args) {
+    LogLevel lvl = LogLevel.DEBUG;
+    Field[] fs = lvl.getClass().getDeclaredFields();
+    for(Field f : fs) {
+      System.out.println(f);
+    }
   }
-
+  
 }

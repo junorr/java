@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.xtest;
+package us.pserver.xprops.ztest;
 
 import us.pserver.xprops.XID;
 import us.pserver.xprops.XTag;

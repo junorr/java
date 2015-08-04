@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.util;
+package us.pserver.xprops.transformer;
 
 import java.awt.Color;
 import java.io.File;

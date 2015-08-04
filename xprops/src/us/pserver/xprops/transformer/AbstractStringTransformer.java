@@ -19,30 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.util;
+package us.pserver.xprops.transformer;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
+import java.util.Objects;
 import us.pserver.tools.Valid;
 
 /**
  *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/07/2015
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 13/07/2015
  */
-public class SocketAddressTransformer extends AbstractStringTransformer<SocketAddress> {
+public abstract class AbstractStringTransformer<T> implements StringTransformer<T> {
 
   @Override
-  public SocketAddress fromString(String str) throws IllegalArgumentException {
-    final String msg = "Invalid String to Transform: ";
-    Valid.off(str).forEmpty().fail(msg);
-    Valid.off(str).forTest(!str.contains(":")).fail(msg);
-    int id = str.indexOf(":");
-    Valid.off(str).forTest(id >= str.length()).fail(msg);
-    NumberTransformer tn = new NumberTransformer();
-    String addr = str.substring(0, id);
-    int port = tn.fromString(str.substring(id+1)).intValue();
-    return new InetSocketAddress(addr, port);
+  public String toString(T obj) throws IllegalArgumentException {
+    return Objects.toString(Valid.off(obj)
+        .forNull().getOrFail("Invalid Object to Transform: ")
+    );
   }
-  
+
 }

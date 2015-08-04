@@ -19,21 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.util;
+package us.pserver.xprops.ztest;
 
-import us.pserver.tools.Valid;
+import us.pserver.xprops.XCData;
 
 /**
  *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/08/2015
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 14/07/2015
  */
-public class CharTransformer extends AbstractStringTransformer<Character> {
+public class TestXCData {
 
-  @Override
-  public Character fromString(String str) throws IllegalArgumentException {
-    return Valid.off(str)
-        .forEmpty().getOrFail().charAt(0);
+  
+  public static void main(String[] args) {
+    XCData cdata = new XCData();
+    cdata.append("Hello CDATA Tag");
+    System.out.println(cdata.toString());
+    System.out.println(cdata.toXml());
   }
-
+  
 }

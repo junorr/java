@@ -39,9 +39,9 @@ import us.pserver.log.LogLevel;
  */
 public class PatternOutputFormatter implements OutputFormatter {
 
-  private OutputFormatter formatter;
+  private transient OutputFormatter formatter;
   
-  private DateFormat dtfm;
+  private transient DateFormat dtfm;
   
   private String pattern;
   

@@ -21,7 +21,6 @@
 
 package us.pserver.xprops.converter;
 
-import us.pserver.xprops.util.*;
 import java.awt.Color;
 import java.io.File;
 import java.net.SocketAddress;
@@ -29,6 +28,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import us.pserver.xprops.transformer.StringTransformerFactory;
 
 /**
  *

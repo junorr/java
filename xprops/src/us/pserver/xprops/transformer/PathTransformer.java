@@ -19,31 +19,32 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.util;
+package us.pserver.xprops.transformer;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import us.pserver.tools.Valid;
 
 /**
  *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/07/2015
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 13/07/2015
  */
-public class FileTransformer extends AbstractStringTransformer<File> {
+public class PathTransformer extends AbstractStringTransformer<Path> {
 
   @Override
-  public File fromString(String str) throws IllegalArgumentException {
-    Valid.off(str)
-        .forEmpty().fail("Invalid String to Transform: ");
-    return new File(str);
+  public Path fromString(String str) throws IllegalArgumentException {
+    return Paths.get(Valid.off(str)
+        .forEmpty().getOrFail("Invalid String to Transform: ")
+    );
   }
   
   
   @Override
-  public String toString(File f) throws IllegalArgumentException {
-    return Valid.off(f)
-        .forNull()
-        .getOrFail(File.class).getAbsolutePath();
+  public String toString(Path pth) throws IllegalArgumentException {
+    return Valid.off(pth)
+        .forEmpty().getOrFail("Invalid Path to Transform: ")
+        .toAbsolutePath().toString();
   }
-
+  
 }

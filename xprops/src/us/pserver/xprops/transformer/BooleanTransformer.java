@@ -19,36 +19,22 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.converter;
+package us.pserver.xprops.transformer;
 
-import java.net.SocketAddress;
 import us.pserver.tools.Valid;
-import us.pserver.xprops.XTag;
-import us.pserver.xprops.XValue;
-import us.pserver.xprops.transformer.SocketAddressTransformer;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 30/07/2015
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 11/07/2015
  */
-public class SocketAddressXConverter implements XConverter<SocketAddress> {
-
+public class BooleanTransformer extends AbstractStringTransformer<Boolean> {
 
   @Override
-  public XTag toXml(SocketAddress obj) {
-    return new XValue(
-        new SocketAddressTransformer().toString(Valid.off(obj).forNull()
-                .getOrFail(SocketAddress.class))
+  public Boolean fromString(String str) {
+    return Boolean.parseBoolean(Valid.off(str)
+        .forEmpty().getOrFail("Invalid String to Transform: ")
     );
-  }
-
-
-  @Override
-  public SocketAddress fromXml(XTag tag) {
-    return Valid.off(tag)
-        .forNull().getOrFail(XTag.class)
-        .xvalue().asSocketAddress();
   }
 
 }

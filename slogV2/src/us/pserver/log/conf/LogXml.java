@@ -19,23 +19,21 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.util;
+package us.pserver.log.conf;
 
-import java.util.Objects;
-import us.pserver.tools.Valid;
+import us.pserver.log.format.PatternOutputFormatter;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/07/2015
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 03/08/2015
  */
-public abstract class AbstractStringTransformer<T> implements StringTransformer<T> {
+public class LogXml {
 
-  @Override
-  public String toString(T obj) throws IllegalArgumentException {
-    return Objects.toString(Valid.off(obj)
-        .forNull().getOrFail("Invalid Object to Transform: ")
-    );
-  }
-
+  private Class clazz;
+  
+  private PatternOutputFormatter pattern;
+  
+  private Map<String
+  
 }

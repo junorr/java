@@ -27,15 +27,15 @@ import java.net.SocketAddress;
 import java.nio.file.Path;
 import java.util.Date;
 import us.pserver.tools.Valid;
-import us.pserver.xprops.util.StringTransformer;
-import us.pserver.xprops.util.BooleanTransformer;
-import us.pserver.xprops.util.ClassTransformer;
-import us.pserver.xprops.util.ColorTransformer;
-import us.pserver.xprops.util.DateTransformer;
-import us.pserver.xprops.util.FileTransformer;
-import us.pserver.xprops.util.NumberTransformer;
-import us.pserver.xprops.util.PathTransformer;
-import us.pserver.xprops.util.SocketAddressTransformer;
+import us.pserver.xprops.transformer.StringTransformer;
+import us.pserver.xprops.transformer.BooleanTransformer;
+import us.pserver.xprops.transformer.ClassTransformer;
+import us.pserver.xprops.transformer.ColorTransformer;
+import us.pserver.xprops.transformer.DateTransformer;
+import us.pserver.xprops.transformer.FileTransformer;
+import us.pserver.xprops.transformer.NumberTransformer;
+import us.pserver.xprops.transformer.PathTransformer;
+import us.pserver.xprops.transformer.SocketAddressTransformer;
 
 /**
  * Represents a XML unit value with some
