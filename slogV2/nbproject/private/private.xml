@@ -2,6 +2,22 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/conf/XmlLogOutput.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/impl/LevelEntry.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/conf/OutputConf.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/output/AbstractLogOutput.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/conf/XmlClass.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/output/PrintStreamOutput.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/output/LogOutput.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/LogFactory.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/conf/XmlObject.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/impl/LogLevels.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/test/TestXml.java</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/conf/LogConfig.java</file>
+            <file>file:/storage/java/slogV2/log.xml</file>
+            <file>file:/storage/java/slogV2/src/us/pserver/log/conf/XmlLog.java</file>
+            <file>file:/storage/java/slogV2/src/log.xml</file>
+        </group>
     </open-files>
 </project-private>

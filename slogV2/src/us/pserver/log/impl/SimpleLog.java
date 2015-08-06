@@ -87,7 +87,7 @@ public class SimpleLog extends AbstractLog {
     if(lvl != null && msg != null && levels.isLevelEnabled(lvl)) {
       for(LogOutput o : outputs.values()) {
         o.log(lvl, formatter.format(
-            lvl, new Date(), logname, msg)
+            lvl, new Date(), logname, getLine(), msg)
         );
       }
     }
@@ -103,6 +103,7 @@ public class SimpleLog extends AbstractLog {
         for(LogOutput o : outputs.values()) {
           o.log(lvl, formatter.format(
               lvl, dt, th.getClass().getName(), 
+              getLine(),
               th.getLocalizedMessage())
           );
         }
@@ -112,6 +113,7 @@ public class SimpleLog extends AbstractLog {
         for(LogOutput o : outputs.values()) {
           o.log(lvl, formatter.format(
               lvl, dt, trace, 
+              getLine(),
               th.getLocalizedMessage())
           );
         }
@@ -121,7 +123,7 @@ public class SimpleLog extends AbstractLog {
         for(StackTraceElement e : els) {
           for(LogOutput o : outputs.values()) {
             o.log(lvl, continueFormat.format(
-                lvl, dt, logname, e.toString())
+                lvl, dt, logname, getLine(), e.toString())
             );
           }
         }

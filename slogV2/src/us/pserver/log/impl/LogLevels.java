@@ -32,13 +32,13 @@ import us.pserver.tools.Valid;
  */
 public class LogLevels {
 
-  private final LevelEntry debug;
+  private LevelEntry debug;
   
-  private final LevelEntry info;
+  private LevelEntry info;
   
-  private final LevelEntry warn;
+  private LevelEntry warn;
   
-  private final LevelEntry error;
+  private LevelEntry error;
   
   
   public LogLevels() {

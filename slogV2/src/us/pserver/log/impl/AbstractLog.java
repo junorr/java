@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import us.pserver.log.Log;
 import us.pserver.log.LogLevel;
 import us.pserver.log.format.OutputFormatter;
@@ -273,10 +272,16 @@ public abstract class AbstractLog implements Log {
   @Override
   public Log log(LogLevel lvl, String msg, Object ... args) {
     if(levels.isLevelEnabled(lvl)) {
-      String imsg = interpolate(msg, args);
+      String imsg = String.format(msg, args);
       log(lvl, imsg);
     }
     return this;
+  }
+  
+  
+  int getLine() {
+    StackTraceElement[] els = Thread.currentThread().getStackTrace();
+    return els[els.length -1].getLineNumber();
   }
   
   
@@ -290,28 +295,4 @@ public abstract class AbstractLog implements Log {
     return this;
   }
 
-  
-  /**
-   * Replace the <b>'{}'</b> marks in the string with the specified arguments.
-   * @param str The string which will be interpolated.
-   * @param args The arguments to replace in the string.
-   * @return The interpolated string.
-   */
-  public static String interpolate(String str, Object ... args) {
-    if(str == null) return null;
-    if(args == null || args.length == 0)
-      return str;
-    int start = 0;
-    int id = start;
-    for(int i = 0; i < args.length; i++) {
-      id = str.indexOf("{}", start);
-      if(id < 0) break;
-      str = str.substring(0, id) 
-          + Objects.toString(args[i]) 
-          + str.substring(id+2);
-      start = id+1;
-    }
-    return str;
-  }
-  
 }

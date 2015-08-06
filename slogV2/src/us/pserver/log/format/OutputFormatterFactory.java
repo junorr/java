@@ -111,14 +111,14 @@ public class OutputFormatterFactory {
   /**
    * Append a log mark that will be replaced in the 
    * final log string by his respective value.
-   * @param mark The <code>LogMark</code> to append.
+   * @param tag The <code>LogMark</code> to append.
    * @return This modified <code>OutputFormatterFactory</code> instance.
    * @see us.pserver.log.format.LogTag
    */
-  public OutputFormatterFactory append(LogTag mark) {
-    if(mark == null)
-      throw new IllegalArgumentException("Invalid null LogMark");
-    args.add(mark.getMark());
+  public OutputFormatterFactory append(LogTag tag) {
+    if(tag == null)
+      throw new IllegalArgumentException("Invalid LogTag: null");
+    args.add(tag.getTag());
     return this;
   }
   
@@ -168,6 +168,17 @@ public class OutputFormatterFactory {
   
   
   /**
+   * Append a log LINE mark that will be replaced in the 
+   * final log string by his respective value.
+   * @return This modified <code>OutputFormatterFactory</code> instance.
+   * @see us.pserver.log.format.LogTag
+   */
+  public OutputFormatterFactory appendLine() {
+    return append(LogTag.LINE);
+  }
+  
+  
+  /**
    * Reset the configurations of this <code>OutputFormatterFactory</code> instance.
    * @return This modified <code>OutputFormatterFactory</code> instance.
    */
@@ -184,7 +195,7 @@ public class OutputFormatterFactory {
   public OutputFormatter create() {
     return new OutputFormatter() {
       @Override
-      public String format(LogLevel lvl, Date dte, String name, String msg) {
+      public String format(LogLevel lvl, Date dte, String name, int line, String msg) {
         StringBuilder sb = new StringBuilder();
         for(String s : args) {
           if(LogTag.DATE.match(s))
@@ -195,6 +206,8 @@ public class OutputFormatterFactory {
             sb.append(msg);
           else if(LogTag.NAME.match(s))
             sb.append(name);
+          else if(LogTag.LINE.match(s))
+            sb.append(line);
           else
             sb.append(s);
         }

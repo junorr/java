@@ -21,8 +21,10 @@
 
 package us.pserver.log.conf;
 
+import us.pserver.log.LogLevel;
 import us.pserver.log.impl.LogLevels;
 import us.pserver.log.output.LogOutput;
+import us.pserver.tools.Reflector;
 import us.pserver.tools.Valid;
 
 /**
@@ -30,7 +32,7 @@ import us.pserver.tools.Valid;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 04/08/2015
  */
-public class OutputConf {
+public class XOutput {
   
   private String name;
   
@@ -39,14 +41,14 @@ public class OutputConf {
   private LogLevels levels;
   
   
-  public OutputConf() {
+  public XOutput() {
     name = null;
     type = null;
     levels = new LogLevels();
   }
   
   
-  public OutputConf(String name, Class<? extends LogOutput> cls) {
+  public XOutput(String name, Class<? extends LogOutput> cls) {
     this.name = Valid.off(name).forEmpty().getOrFail();
     this.type = Valid.off(cls).forNull().getOrFail(Class.class);
     levels = new LogLevels();
@@ -65,6 +67,55 @@ public class OutputConf {
 
   public LogLevels getLevels() {
     return levels;
+  }
+  
+  
+  public static XOutput from(String name, LogOutput out) {
+    XOutput xo = new XOutput(name, out.getClass());
+    xo.levels.setLevelEnabled(
+        LogLevel.DEBUG, 
+        out.isLevelEnabled(LogLevel.DEBUG)
+    );
+    xo.levels.setLevelEnabled(
+        LogLevel.INFO, 
+        out.isLevelEnabled(LogLevel.INFO)
+    );
+    xo.levels.setLevelEnabled(
+        LogLevel.WARN, 
+        out.isLevelEnabled(LogLevel.WARN)
+    );
+    xo.levels.setLevelEnabled(
+        LogLevel.ERROR, 
+        out.isLevelEnabled(LogLevel.ERROR)
+    );
+    return xo;
+  }
+  
+  
+  public LogOutput create() throws Exception {
+    Reflector ref = new Reflector();
+    LogOutput out = (LogOutput)
+        ref.on(type).create();
+    if(ref.hasError())
+      throw (Exception) ref.getError();
+    
+    LogLevel lv = LogLevel.DEBUG;
+    out.levels().setLevelEnabled(
+        lv, levels.isLevelEnabled(lv)
+    );
+    lv = LogLevel.INFO;
+    out.levels().setLevelEnabled(
+        lv, levels.isLevelEnabled(lv)
+    );
+    lv = LogLevel.WARN;
+    out.levels().setLevelEnabled(
+        lv, levels.isLevelEnabled(lv)
+    );
+    lv = LogLevel.ERROR;
+    out.levels().setLevelEnabled(
+        lv, levels.isLevelEnabled(lv)
+    );
+    return out;
   }
 
 
@@ -85,7 +136,7 @@ public class OutputConf {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final OutputConf other = (OutputConf) obj;
+    final XOutput other = (XOutput) obj;
     if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
       return false;
     }

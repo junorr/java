@@ -30,7 +30,7 @@ import us.pserver.log.LogLevel;
  */
 public class LevelEntry {
 
-  private LogLevel level;
+  private transient LogLevel level;
   
   private boolean enabled;
   

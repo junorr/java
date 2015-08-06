@@ -38,6 +38,7 @@ import us.pserver.xprops.converter.XConverter;
 import us.pserver.xprops.converter.XConverterFactory;
 import us.pserver.xprops.converter.ObjectXConverter;
 import us.pserver.xprops.transformer.NameFormatter;
+import us.pserver.xprops.transformer.StringTransformerFactory;
 
 /**
  *
@@ -51,6 +52,8 @@ public class XBean<T> extends XTag {
   private final Map<Field, XConverter> fieldMap;
   
   private final Map<Field, String> fieldAlias;
+  
+  private boolean suppAsAttr;
   
 
   public XBean(T obj) {
@@ -67,6 +70,7 @@ public class XBean<T> extends XTag {
         .forNull().getOrFail(Object.class);
     this.fieldMap = new HashMap<>();
     this.fieldAlias = new HashMap<>();
+    suppAsAttr = false;
   }
   
   
@@ -86,6 +90,17 @@ public class XBean<T> extends XTag {
   
   public Class type() {
     return object.getClass();
+  }
+  
+  
+  public boolean isSupportedAsAttr() {
+    return suppAsAttr;
+  }
+  
+  
+  public XBean setSupportedAsAttr(boolean attr) {
+    suppAsAttr = attr;
+    return this;
   }
   
   
@@ -159,36 +174,10 @@ public class XBean<T> extends XTag {
   }
   
   
-  List<Entry<Field, XConverter>> sort(Set<Entry<Field, XConverter>> set) {
-    Comparator<Entry<Field, XConverter>> nameOrder = new Comparator<Entry<Field, XConverter>>() {
-      @Override
-      public int compare(Entry<Field, XConverter> o1, Entry<Field, XConverter> o2) {
-        return o1.getKey().getName().compareTo(o2.getKey().getName());
-      }
-    };
-    Comparator<Entry<Field, XConverter>> childsOrder = new Comparator<Entry<Field, XConverter>>() {
-      @Override
-      public int compare(Entry<Field, XConverter> o1, Entry<Field, XConverter> o2) {
-        Field[] fs = o1.getKey().getType().getDeclaredFields();
-        Integer i1 = (fs != null ? fs.length : 0);
-        fs = o2.getKey().getType().getDeclaredFields();
-        Integer i2 = (fs != null ? fs.length : 0);
-        return i1.compareTo(i2);
-      }
-    };
-    List<Entry<Field, XConverter>> ls = new ArrayList(set.size());
-    ls.addAll(set);
-    Collections.sort(ls, nameOrder);
-    Collections.sort(ls, childsOrder);
-    return ls;
-  }
-  
-  
   public XBean scanObject() {
     if(fieldMap.isEmpty())
       return this;
-    this.sortFieldsMap();
-    List<Entry<Field, XConverter>> ents = sort(fieldMap.entrySet());
+    Set<Entry<Field, XConverter>> ents = fieldMap.entrySet();
     for(Entry<Field, XConverter> e : ents) {
       this.addChild(makeTag(
           e.getKey(), 
@@ -242,9 +231,22 @@ public class XBean<T> extends XTag {
   }
   
   
-  private XTag doConvert(XConverter cv, Object value) {
+  private XTag doConvert(Field field, Object value, XConverter cv) {
     if(value == null) return null;
     XTag x = cv.toXml(value);
+      if(XBean.class.isInstance(x)) {
+        System.out.println(" dc is XBean");
+        System.out.println(" dc "+object.getClass().getSimpleName() +".isSupportedAsAttr: "+ isSupportedAsAttr());
+        ((XBean)x).setSupportedAsAttr(
+            this.isSupportedAsAttr()
+        );
+        System.out.println("  x.isSupportedAsAttr: "+ ((XBean)x).isSupportedAsAttr());
+      }
+    if(this.isSupportedAsAttr() 
+        && StringTransformerFactory
+            .isSupportedValue(field.getType())) {
+      x = new XAttr(field.getName(), x.value());
+    }
     //System.out.printf("XBean(%s).doConvert( %s, %s ): %s%n", type().getSimpleName(), cv.getClass().getSimpleName(), value, x);
     return x;
   }
@@ -263,11 +265,24 @@ public class XBean<T> extends XTag {
       Object val = getFieldValue(f);
       //System.out.printf("* Bean(%s).makeTag( %s, %s ): val=%s%n", value(), f.getName(), cv.getClass().getSimpleName(), val.getClass().getSimpleName());
       if(val == null) return null;
-      XTag xval = doConvert(cv, val);
+      XTag xval = doConvert(f, val, cv);
+      System.out.printf("XBean(%s).makeTag(%s,%s): suppAsAttr=%s%n", object.getClass().getSimpleName(), f.getName(), cv.getClass().getSimpleName(), isSupportedAsAttr());
       if(xval == null) return null;
       tag.addChild(xval);
-      if(XBean.class.isInstance(xval))
+      if(XBean.class.isInstance(xval)) {
+        System.out.println("  is XBean");
+        System.out.println("  "+object.getClass().getSimpleName() +".isSupportedAsAttr: "+ isSupportedAsAttr());
+        ((XBean)xval).setSupportedAsAttr(
+            this.isSupportedAsAttr()
+        );
+        System.out.println("  xval.isSupportedAsAttr: "+ ((XBean)xval).isSupportedAsAttr());
+        return ((XBean)xval).setSupportedAsAttr(
+            this.isSupportedAsAttr()
+        );
+      }
+      if(XAttr.class.isInstance(xval)) {
         return xval;
+      }
     } catch(IllegalAccessException e) {
       throw new IllegalArgumentException(e.toString(), e);
     }
@@ -277,50 +292,7 @@ public class XBean<T> extends XTag {
   
   List<Field> getTypeFields() {
     Field[] fs = type().getDeclaredFields();
-    List<Field> lf = Arrays.asList(fs);
-    Comparator<Field> nameOrder = new Comparator<Field>() {
-      @Override
-      public int compare(Field o1, Field o2) {
-        return o1.getName().compareTo(o2.getName());
-      }
-    };
-    Comparator<Field> childsOrder = new Comparator<Field>() {
-      @Override
-      public int compare(Field o1, Field o2) {
-        Field[] fs = o1.getType().getDeclaredFields();
-        Integer i1 = (fs != null ? fs.length : 0);
-        fs = o2.getType().getDeclaredFields();
-        Integer i2 = (fs != null ? fs.length : 0);
-        return i1.compareTo(i2);
-      }
-    };
-    Collections.sort(lf, nameOrder);
-    //Collections.sort(lf, childsOrder);
-    return lf;
-  }
-  
-  
-  void sortFieldsMap() {
-    Comparator<Field> nameOrder = new Comparator<Field>() {
-      @Override
-      public int compare(Field o1, Field o2) {
-        return o1.getName().compareTo(o2.getName());
-      }
-    };
-    Comparator<Field> childsOrder = new Comparator<Field>() {
-      @Override
-      public int compare(Field o1, Field o2) {
-        Field[] fs = o1.getType().getDeclaredFields();
-        Integer i1 = (fs != null ? fs.length : 0);
-        fs = o2.getType().getDeclaredFields();
-        Integer i2 = (fs != null ? fs.length : 0);
-        return i1.compareTo(i2);
-      }
-    };
-    MapSorter<Field> sorter = new MapSorter(nameOrder);
-    sorter.sortByKey(fieldMap);
-    sorter = new MapSorter(childsOrder);
-    sorter.sortByKey(fieldMap);
+    return Arrays.asList(fs);
   }
   
   
@@ -328,7 +300,8 @@ public class XBean<T> extends XTag {
     List<Field> fs = getTypeFields();
     //System.out.printf("* XBean(%s).bindAll(): %d fields%n", value(), fs.length);
     for(Field f : fs) {
-      if(!Modifier.isTransient(f.getModifiers()))
+      if(!Modifier.isTransient(f.getModifiers())
+          && !Modifier.isFinal(f.getModifiers()))
         bind(f);
     }
     return this;

@@ -41,7 +41,7 @@ public class NameFormatter {
     int before = 0;
     while(m.find()) {
       int st = m.start();
-      if(st > 0) {
+      if(st > 0 && st > before+1) {
         sb.append(name.substring(before, st))
             .append("-");
         before = st;

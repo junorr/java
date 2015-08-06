@@ -74,6 +74,16 @@ public class StringTransformerFactory {
   }
   
   
+  public static boolean isSupportedValue(Class type) {
+    if(isPrimitive(type)) return true;
+    for(Class c : supported) {
+      if(c.equals(type))
+        return true;
+    }
+    return false;
+  }
+  
+  
   static final Class[] supported = {
       Boolean.class,
       Byte.class,

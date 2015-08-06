@@ -22,24 +22,16 @@
 package us.pserver.log.conf;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import us.pserver.log.Log;
+import us.pserver.log.LogFactory;
+import us.pserver.log.impl.SimpleLog;
+import us.pserver.tools.Valid;
+import us.pserver.xprops.XBean;
+import us.pserver.xprops.XFile;
 
 /**
  *
@@ -48,88 +40,58 @@ import us.pserver.log.Log;
  */
 public class LogConfig {
 
-  private final List<XmlLog> logs;
+  private List<XLog> logs;
   
-  private final String file;
+  private final File file;
   
   
-  private LogConfig(String file) {
-    logs = new ArrayList<XmlLog>();
-    this.file = file;
+  public LogConfig(String file) {
+    logs = new ArrayList<XLog>();
+    this.file = new File(
+        Valid.off(file).getOrFail("Invalid File Name: ")
+    );
+  }
+  
+  
+  public LogConfig(File file) {
+    logs = new ArrayList<XLog>();
+    this.file = Valid.off(file).getOrFail("Invalid File: ");
   }
   
   
   public boolean exists() {
-    return file != null && new File(file).exists();
+    return file != null && file.exists();
   }
   
   
   public void read() throws IOException {
-    if(!exists()) return;
-    DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-    try {
-      DocumentBuilder bld = fact.newDocumentBuilder();
-      Document doc = bld.parse(new File(file));
-      NodeList nl = doc.getElementsByTagName(XmlLog.LOG);
-      for(int i = 0; i < nl.getLength(); i++) {
-        Node n = nl.item(i);
-        logs.add(XmlLog.from(n));
-      }
-    } catch(Exception e) {
-      throw new IOException(e);
-    }
+    XFile xf = new XFile(file);
+    LogConfig conf = new LogConfig(file);
+    XBean bean = new XBean(xf.read(), conf);
+    logs.clear();
+    conf = (LogConfig) bean.bindAll().scanXml();
+    logs.addAll(conf.getXLogList());
   }
   
   
   public void save() throws IOException {
-    DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-    try {
-      if(file == null)
-        throw new FileNotFoundException(file);
-      File f = new File(file);
-      if(!f.exists()) {
-        if(f.getParentFile() != null
-            && !f.getParentFile().exists()) {
-          f.getParentFile().mkdirs();
-        }
-        f.createNewFile();
-      }
-      DocumentBuilder bld = fact.newDocumentBuilder();
-      Document doc = bld.newDocument();
-      for(XmlLog x : logs) {
-        doc.appendChild(x.createElement(doc));
-      }
-      Transformer tf = TransformerFactory.newInstance().newTransformer();
-      tf.setOutputProperty(OutputKeys.INDENT, "yes");
-      DOMSource source = new DOMSource(doc);
-      StreamResult stream = new StreamResult(f);
-      tf.transform(source, stream);
-    } catch(Exception e) {
-      throw new IOException(e);
-    }
+    XBean bean = new XBean(this);
+    XFile xf = new XFile(file, 
+        bean.bindAll().scanObject().setXmlIdentation("  ", 0)
+    );
+    xf.save();
   }
   
   
-  public List<XmlLog> getXmlLogList() {
+  public List<XLog> getXLogList() {
     return logs;
   }
   
   
-  public List<Log> tryCreateLogs() {
+  public List<Log> createLogs() throws Exception {
     if(logs.isEmpty()) return Collections.EMPTY_LIST;
     ArrayList<Log> ls = new ArrayList<Log>();
-    for(XmlLog x : logs) {
-      try { ls.add(x.create()); }
-      catch(InstantiationException e) {}
-    }
-    return ls;
-  }
-  
-  
-  public List<Log> createLogs() throws InstantiationException {
-    if(logs.isEmpty()) return Collections.EMPTY_LIST;
-    ArrayList<Log> ls = new ArrayList<Log>();
-    for(XmlLog x : logs) {
+    for(XLog x : logs) {
       ls.add(x.create());
     }
     return ls;
@@ -138,7 +100,7 @@ public class LogConfig {
   
   public LogConfig put(Log log) {
     if(log != null) {
-      logs.add(XmlLog.from(log));
+      logs.add(XLog.from(log));
     }
     return this;
   }
@@ -154,18 +116,6 @@ public class LogConfig {
   public static LogConfig newConfig(File file) {
     if(file == null) return null;
     return newConfig(file.getAbsolutePath());
-  }
-  
-  
-  public static void main(String[] args) throws IOException {
-    //SimpleLog log = LogFactory.createDefaultSimpleLog(LogConfig.class, false);
-    LogConfig lc = LogConfig.newConfig("/home/juno/log.xml");
-    //lc.put(log).save();
-    lc.read();
-    for(Log l : lc.tryCreateLogs()) {
-      l.info("Log test with retrieved Log from log.xml");
-      System.out.println(l);
-    }
   }
   
 }

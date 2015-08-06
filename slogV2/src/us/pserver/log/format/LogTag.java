@@ -37,6 +37,8 @@ public enum LogTag {
   
   LEVEL("{LEVEL}"),
   
+  LINE("{LINE}"),
+  
   NAME("{NAME}");
   
   
@@ -47,15 +49,15 @@ public enum LogTag {
   LogTag(String mark) {
     if(mark == null || mark.trim().isEmpty())
       throw new IllegalArgumentException("Invalid mark: '"+ mark+ "'");
-    this.mark = mark;
+    this.tag = mark;
   }
   
   /**
    * Get the string mark.
    * @return The string mark.
    */
-  public String getMark() {
-    return this.mark;
+  public String getTag() {
+    return this.tag;
   }
   
   /**
@@ -66,12 +68,12 @@ public enum LogTag {
    * with this <code>LogMark</code> enum.
    */
   public boolean match(String str) {
-    return mark.equalsIgnoreCase(str);
+    return tag.equalsIgnoreCase(str);
   }
   
   /**
    * The string mark.
    */
-  private String mark;
+  private String tag;
   
 }

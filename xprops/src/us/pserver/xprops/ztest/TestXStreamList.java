@@ -19,28 +19,33 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.log.format;
+package us.pserver.xprops.ztest;
 
-import java.util.Date;
-import us.pserver.log.LogLevel;
+import com.thoughtworks.xstream.XStream;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * A formatter for log messages.
- * 
- * @author Juno Roesler - juno@pserver.us
- * @version 1.1 - 201506
+ *
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 06/08/2015
  */
-@FunctionalInterface
-public interface OutputFormatter {
+public class TestXStreamList {
+
+  public static class Some {
+    List<Integer> ints = new LinkedList<>();
+    public String toString() {
+      return "Some{"+ ints.toString()+ "}";
+    }
+  }
   
-  /**
-   * Format the arguments in a unique log string.
-   * @param lvl The log level.
-   * @param dte The date of the log.
-   * @param name The name of the <code>Log</code> instance.
-   * @param msg The log message.
-   * @return The formatted log string.
-   */
-  public String format(LogLevel lvl, Date dte, String name, int line, String msg);
+  
+  public static void main(String[] args) {
+    Some s = new Some();
+    for(int i = 0; i < 10; i++) {
+      s.ints.add(i);
+    }
+    System.out.println(new XStream().toXML(s));
+  }
   
 }

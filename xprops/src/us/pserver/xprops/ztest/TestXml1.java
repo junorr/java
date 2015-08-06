@@ -21,9 +21,11 @@
 
 package us.pserver.xprops.ztest;
 
-import us.pserver.xprops.XID;
-import us.pserver.xprops.XTag;
-import us.pserver.xprops.XValue;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import us.pserver.xprops.XBean;
 
 /**
  *
@@ -33,28 +35,55 @@ import us.pserver.xprops.XValue;
 public class TestXml1 {
 
   
+  public static class Wrapper {
+    Integer integer;
+    String string;
+    Double dbl;
+    Date date;
+    byte[] bytes;
+    List<Wrapper> wlist;
+    public String toString() {
+      return "\nWrapper {\n  integer="+ integer
+          + "\n  string="+ string
+          + "\n  dbl="+ dbl
+          + "\n  date="+ date
+          + "\n  bytes="+ Arrays.toString(bytes)
+          + "\n  wlist{"+ (wlist != null && !wlist.isEmpty() ? "type="+ wlist.get(0).getClass().getSimpleName()+ ", size="+ wlist.size() : "")+ "}"
+          + "\n}";
+    }
+  }
+  
+  
+  public static Wrapper wrapper() {
+    Wrapper wp = new Wrapper();
+    wp.bytes = new byte[]{0,1,2,3,4,5,6,7,8,9};
+    wp.dbl = Math.random()*100;
+    wp.integer = wp.dbl.intValue();
+    wp.date = new Date();
+    wp.string = String.format("Hello Wrapper (%s)", System.currentTimeMillis());
+    wp.wlist = new LinkedList();
+    return wp;
+  }
+  
+  
+  public static void fillWrapperList(int size, Wrapper target) {
+    for(int i = 0; i < size; i++) {
+      Wrapper w = wrapper();
+      //w.bytes = new byte[0];
+      target.wlist.add(w);
+    }
+  }
+  
+  
   public static void main(String[] args) {
-    XTag root = new XTag("log");
-    root.addNewChild("class")
-        .addChild(new XValue("java.lang.Exception"));
-    root.addNewChild("level")
-        .addNewChild("info")
-        .addNewValue("true");
-    root.addNewAttr("attr", "value");
-    System.out.println(root.setXmlIdentation("  ", 0).toXml());
-    
-    String id = "log.level";
-    System.out.println("root.find(\""+ id+ "\"): "+ root.find(new XID(id), false));
-    
-    id = "log.attr";
-    System.out.println("root.find(\""+ id+ "\"): "+ root.find(new XID(id), true));
-    
-    id = "level";
-    System.out.println("root.find(\""+ id+ "\"): "+ root.find(new XID(id), true));
-    
-    id = "log.level.info";
-    System.out.println("root.find(\""+ id+ "\"): "+ root.find(id, true));
-    System.out.println(root.findOne(new XID(id), true).id());
+    Wrapper w = wrapper();
+    System.out.println(w);
+    XBean bean = new XBean(w);
+    bean.setSupportedAsAttr(true).bindAll().scanObject().setXmlIdentation("  ", 0);
+    System.out.println(bean.toXml());
+    bean = new XBean(bean, new Wrapper());
+    bean.setSupportedAsAttr(true).bindAll();
+    System.out.println(bean.scanXml());
   }
   
 }

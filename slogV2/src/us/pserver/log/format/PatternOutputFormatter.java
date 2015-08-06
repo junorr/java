@@ -70,8 +70,8 @@ public class PatternOutputFormatter implements OutputFormatter {
       IntTupple(int i1, int i2) { 
         this.i1 = i1; this.i2 = i2;
       }
-      int getFirst() { return i1; }
-      int getSecond() { return i2; }
+      int getI() { return i1; }
+      int getII() { return i2; }
     }
     
     List<IntTupple> index = new LinkedList();
@@ -80,7 +80,8 @@ public class PatternOutputFormatter implements OutputFormatter {
     while((i = pattern.indexOf("{", id)) >= 0) {
       int i2 = pattern.indexOf("}", i);
       if(i2 < 0) 
-        throw new IllegalArgumentException("Invalid Pattern. No closing token '}' for index ["+ i+ "]");
+        throw new IllegalArgumentException(
+            "Invalid Pattern. No closing token '}' for index ["+ i+ "]");
       id = i2;
       index.add(new IntTupple(i, i2));
     }
@@ -88,9 +89,9 @@ public class PatternOutputFormatter implements OutputFormatter {
     int start = 0;
     for(int j = 0; j < index.size(); j++) {
       IntTupple t = index.get(j);
-      fact.append(pattern.substring(start, t.getFirst()));
-      fact.append(pattern.substring(t.getFirst(), t.getSecond()+1));
-      start = t.getSecond()+ 1;
+      fact.append(pattern.substring(start, t.getI()));
+      fact.append(pattern.substring(t.getI(), t.getII()+1));
+      start = t.getII()+ 1;
     }
     if(dtfm != null) fact.setDateFormat(dtfm);
     formatter = fact.create();
@@ -133,8 +134,8 @@ public class PatternOutputFormatter implements OutputFormatter {
 
 
   @Override
-  public String format(LogLevel lvl, Date dte, String name, String msg) {
-    return formatter.format(lvl, dte, name, msg);
+  public String format(LogLevel lvl, Date dte, String name, int line, String msg) {
+    return formatter.format(lvl, dte, name, line, msg);
   }
   
 }

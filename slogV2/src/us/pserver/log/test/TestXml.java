@@ -21,9 +21,10 @@
 
 package us.pserver.log.test;
 
-import us.pserver.log.conf.OutputConf;
-import us.pserver.log.output.StandardOutput;
-import us.pserver.xprops.XBean;
+import java.io.File;
+import us.pserver.log.Log;
+import us.pserver.log.LogFactory;
+import us.pserver.log.conf.LogConfig;
 
 /**
  *
@@ -34,9 +35,10 @@ public class TestXml {
 
   
   public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
-    OutputConf out = new OutputConf("stdout", StandardOutput.class);
-    XBean bean = new XBean(out);
-    System.out.println(bean.bindAll().scanObject().setXmlIdentation("  ", 0).toXml());
+    Log log = LogFactory
+        .loadFromFile(new File("/home/juno/log.xml"))
+        .getCached(LogConfig.class, true);
+    log.info("Cached Log Message!");
   }
   
 }

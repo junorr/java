@@ -22,6 +22,7 @@
 package us.pserver.xprops;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import us.pserver.tools.Valid;
@@ -50,7 +51,7 @@ public class XTag extends AbstractUnit {
   
   private int identLevel;
   
-  private boolean ommitRoot, selfClosing;
+  private boolean ommitRoot, selfClosing, suppAsAttr;
   
 
   /**
@@ -64,6 +65,7 @@ public class XTag extends AbstractUnit {
     identLevel = 0;
     ommitRoot = false;
     selfClosing = false;
+    suppAsAttr = false;
   }
   
   
@@ -339,16 +341,37 @@ public class XTag extends AbstractUnit {
   }
   
   
-  void sortByName(List<XTag> ls) {
-    if(ls == null || ls.isEmpty())
+  int computeChilds(XTag tag) {
+    if(tag == null) return 0;
+    int total = tag.childs().size();
+    for(XTag x : tag.childs()) {
+      total += computeChilds(x);
+    }
+    return total;
+  }
+  
+  
+  void sortChilds() {
+    if(childs.isEmpty())
       return;
-    Comparator<XTag> comp = new Comparator<>
+    Comparator<XTag> comp = new Comparator<XTag>() {
+      @Override
+      public int compare(XTag o1, XTag o2) {
+        Integer i1 = computeChilds(o1);
+        Integer i2 = computeChilds(o2);
+        if(i1.compareTo(i2) == 0)
+          return o1.value().compareTo(o2.value());
+        return i1.compareTo(i2);
+      }
+    };
+    Collections.sort(childs, comp);
   }
   
   
   @Override
   public String toXml() {
     StringBuilder sb = new StringBuilder();
+    sortChilds();
     if(!ommitRoot) {
       if(xmlIdent != null)
         sb.append(getIdent());
@@ -364,9 +387,10 @@ public class XTag extends AbstractUnit {
         sb.append(gt);
       }
     }
-    Boolean lastValue = null;
+    boolean lastValue = false;
     //System.err.printf("[%s]childs.size()=%d, first=[%s]%n", value(), childs.size(), (!childs.isEmpty() ? childs.get(0).value() : ""));
     for(XTag x : childs) {
+      if(x == null) continue;
       if(XAttr.class.isInstance(x))
         continue;
       lastValue = true;

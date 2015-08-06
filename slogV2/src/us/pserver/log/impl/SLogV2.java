@@ -290,7 +290,7 @@ public class SLogV2 extends AbstractLog implements Runnable {
     public void log(LogLevel lvl, Date dte, String msg) {
       if(lvl != null && msg != null && dte != null) {
         for(LogOutput o : outputs.values()) {
-          o.log(lvl, formatter.format(lvl, dte, logname, msg));
+          o.log(lvl, formatter.format(lvl, dte, logname, getLine(), msg));
         }
       }
     }
@@ -309,7 +309,7 @@ public class SLogV2 extends AbstractLog implements Runnable {
         if(logStackTrace) {
           for(LogOutput o : outputs.values()) {
             o.log(lvl, formatter.format(
-                lvl, dte, th.getClass().getName(), 
+                lvl, dte, th.getClass().getName(), getLine(),
                 th.getLocalizedMessage()));
           }
         } 
@@ -317,14 +317,14 @@ public class SLogV2 extends AbstractLog implements Runnable {
           String trace = th.getStackTrace()[0].toString();
           for(LogOutput o : outputs.values()) {
             o.log(lvl, formatter.format(
-                lvl, dte, trace, th.getLocalizedMessage()));
+                lvl, dte, trace, getLine(), th.getLocalizedMessage()));
           }
         }
         if(logStackTrace) {
           StackTraceElement[] elts = th.getStackTrace();
           for(StackTraceElement st : elts) {
             for(LogOutput o : outputs.values()) {
-              o.log(lvl, continueFormat.format(lvl, dt, logname, st.toString()));
+              o.log(lvl, continueFormat.format(lvl, dt, logname, getLine(), st.toString()));
             }
           }
         }//if

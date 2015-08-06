@@ -157,7 +157,7 @@ public class TestXmlFile {
     */
     System.out.println("----------------------------");
     Wrapper wp = wrapper();
-    fillWrapperList(10000, wp);
+    fillWrapperList(3, wp);
     System.out.println("* wp -->"+ wp);
     
     XBean bean = new XBean(wp);

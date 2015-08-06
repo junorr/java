@@ -33,7 +33,7 @@ import us.pserver.xprops.XTag;
  */
 public class ListXConverter<T> extends XTag implements XConverter<List<T>> {
 
-  private static final String I = "i:";
+  private static final String ITEM = "item:";
   
   private final List<T> list;
   
@@ -75,7 +75,7 @@ public class ListXConverter<T> extends XTag implements XConverter<List<T>> {
     this.addChild(xc.toXml(type));
     if(list.isEmpty()) return this;
     for(int i = 0; i < list.size(); i++) {
-      this.addNewChild(I + String.valueOf(i))
+      this.addNewChild(ITEM + String.valueOf(i))
           .addChild(conv.toXml(list.get(i)));
     }
     return this;
@@ -99,7 +99,7 @@ public class ListXConverter<T> extends XTag implements XConverter<List<T>> {
     type = cattr.attrValue().asClass();
     XConverter<T> xc = XConverterFactory.getXConverter(type);
     for(int i = 0; i < Integer.MAX_VALUE; i++) {
-      XTag x = tag.findOne(I + String.valueOf(i), false);
+      XTag x = tag.findOne(ITEM + String.valueOf(i), false);
       if(x == null) break;
       list.add(xc.fromXml(x.firstChild()));
     }

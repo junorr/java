@@ -19,28 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.log.format;
+package us.pserver.log.test;
 
 import java.util.Date;
 import us.pserver.log.LogLevel;
+import us.pserver.log.format.PatternOutputFormatter;
 
 /**
- * A formatter for log messages.
- * 
- * @author Juno Roesler - juno@pserver.us
- * @version 1.1 - 201506
+ *
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 06/08/2015
  */
-@FunctionalInterface
-public interface OutputFormatter {
+public class TestPatternFormatter {
+
   
-  /**
-   * Format the arguments in a unique log string.
-   * @param lvl The log level.
-   * @param dte The date of the log.
-   * @param name The name of the <code>Log</code> instance.
-   * @param msg The log message.
-   * @return The formatted log string.
-   */
-  public String format(LogLevel lvl, Date dte, String name, int line, String msg);
+  public static void main(String[] args) {
+    String pattern = "{DATE}  [{LEVEL}]  {NAME}:{LINE} - {MESSAGE}";
+    PatternOutputFormatter pof = new PatternOutputFormatter(pattern);
+    System.out.printf("* pattern: %s%n", pattern);
+    System.out.printf("* format: %s%n", pof.format(LogLevel.INFO, new Date(), "Pattern", 39, "A Log Message"));
+  }
   
 }

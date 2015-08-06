@@ -19,28 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.log.format;
+package us.pserver.log.test;
 
-import java.util.Date;
 import us.pserver.log.LogLevel;
+import us.pserver.log.conf.XOutput;
+import us.pserver.log.output.StandardOutput;
+import us.pserver.xprops.XBean;
 
 /**
- * A formatter for log messages.
- * 
- * @author Juno Roesler - juno@pserver.us
- * @version 1.1 - 201506
+ *
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 06/08/2015
  */
-@FunctionalInterface
-public interface OutputFormatter {
+public class TestConfig {
+
   
-  /**
-   * Format the arguments in a unique log string.
-   * @param lvl The log level.
-   * @param dte The date of the log.
-   * @param name The name of the <code>Log</code> instance.
-   * @param msg The log message.
-   * @return The formatted log string.
-   */
-  public String format(LogLevel lvl, Date dte, String name, int line, String msg);
+  public static void main(String[] args) {
+    XOutput out = new XOutput("hello", StandardOutput.class);
+    out.getLevels().setLevelEnabled(LogLevel.INFO, true);
+    XBean bean = new XBean(out);
+    bean.setSupportedAsAttr(true).setXmlIdentation("  ", 0);
+    System.out.println(bean.bindAll().scanObject().toXml());
+    bean = new XBean(bean, new XOutput());
+    bean.setSupportedAsAttr(true);
+    System.out.println(bean.bindAll().scanXml());
+  }
   
 }

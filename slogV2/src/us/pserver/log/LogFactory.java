@@ -21,7 +21,7 @@
 
 package us.pserver.log;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import us.pserver.log.impl.SimpleLog;
@@ -249,13 +249,20 @@ public class LogFactory {
     if(config.exists()) {
       try {
         config.read();
-        for(Log l : config.tryCreateLogs()) {
+        for(Log l : config.createLogs()) {
           cache.put(l.getLogName(), l);
         }
-      } catch(IOException e) {
+      } catch(Exception e) {
         e.printStackTrace();
       }
     }
+  }
+  
+  
+  public static LogFactory loadFromFile(File file) {
+    config = new LogConfig(file);
+    readConfig();
+    return factory();
   }
   
   
