@@ -31,7 +31,7 @@ import us.pserver.xprops.transformer.NumberTransformer;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/07/2015
  */
-public class NumberXConverter  implements XConverter<Number> {
+public class NumberXConverter extends AbstractXConverter<Number> {
   
   private Class type;
   

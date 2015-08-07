@@ -30,7 +30,7 @@ import us.pserver.xprops.XValue;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 31/07/2015
  */
-public class CharXConverter implements XConverter<Character> {
+public class CharXConverter extends AbstractXConverter<Character> {
 
   @Override
   public XTag toXml(Character obj) {

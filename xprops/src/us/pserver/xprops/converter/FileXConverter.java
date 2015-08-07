@@ -32,7 +32,7 @@ import us.pserver.xprops.transformer.FileTransformer;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/07/2015
  */
-public class FileXConverter implements XConverter<File> {
+public class FileXConverter extends AbstractXConverter<File> {
 
 
   @Override

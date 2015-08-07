@@ -38,10 +38,10 @@ public class TestConfig {
     XOutput out = new XOutput("hello", StandardOutput.class);
     out.getLevels().setLevelEnabled(LogLevel.INFO, true);
     XBean bean = new XBean(out);
-    bean.setSupportedAsAttr(true).setXmlIdentation("  ", 0);
+    bean.setFieldsAsAttribute(true).setXmlIdentation("  ", 0);
     System.out.println(bean.bindAll().scanObject().toXml());
     bean = new XBean(bean, new XOutput());
-    bean.setSupportedAsAttr(true);
+    //bean.setAttributeByDefault(true);
     System.out.println(bean.bindAll().scanXml());
   }
   

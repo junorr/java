@@ -23,16 +23,13 @@ package us.pserver.xprops;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import us.pserver.tools.MapSorter;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.converter.XConverter;
 import us.pserver.xprops.converter.XConverterFactory;
@@ -53,7 +50,9 @@ public class XBean<T> extends XTag {
   
   private final Map<Field, String> fieldAlias;
   
-  private boolean suppAsAttr;
+  private final List<Field> fieldAsAttr;
+  
+  private boolean attrByDef;
   
 
   public XBean(T obj) {
@@ -70,7 +69,8 @@ public class XBean<T> extends XTag {
         .forNull().getOrFail(Object.class);
     this.fieldMap = new HashMap<>();
     this.fieldAlias = new HashMap<>();
-    suppAsAttr = false;
+    this.fieldAsAttr = new LinkedList<>();
+    attrByDef = false;
   }
   
   
@@ -93,13 +93,25 @@ public class XBean<T> extends XTag {
   }
   
   
-  public boolean isSupportedAsAttr() {
-    return suppAsAttr;
+  public boolean isFieldsAsAttribute () {
+    return attrByDef;
   }
   
   
-  public XBean setSupportedAsAttr(boolean attr) {
-    suppAsAttr = attr;
+  public XBean setFieldsAsAttribute(boolean attr) {
+    this.attrByDef = attr;
+    if(attrByDef) {
+      if(!fieldMap.isEmpty()) {
+        for(Field f : fieldMap.keySet()) {
+          fieldAsAttr.add(f);
+        }
+      }
+      if(!childs().isEmpty()) {
+        this.childs().clear();
+        this.scanObject();
+      }
+    }
+    //System.out.printf("XBean(%s).isAttributeByDefault()=%s%n", this.value(), this.isFieldsAsAttribute());
     return this;
   }
   
@@ -121,6 +133,22 @@ public class XBean<T> extends XTag {
           break;
         }
       }
+    }
+    return this;
+  }
+  
+  
+  public XBean asAttribute(Field f) {
+    if(f != null) {
+      fieldAsAttr.add(f);
+    }
+    return this;
+  }
+  
+  
+  public XBean notAsAttribute(Field f) {
+    if(f != null) {
+      fieldAsAttr.remove(f);
     }
     return this;
   }
@@ -178,6 +206,7 @@ public class XBean<T> extends XTag {
     if(fieldMap.isEmpty())
       return this;
     Set<Entry<Field, XConverter>> ents = fieldMap.entrySet();
+    if(!ents.isEmpty()) childs().clear();
     for(Entry<Field, XConverter> e : ents) {
       this.addChild(makeTag(
           e.getKey(), 
@@ -231,62 +260,42 @@ public class XBean<T> extends XTag {
   }
   
   
-  private XTag doConvert(Field field, Object value, XConverter cv) {
+  private XTag doConvert(Field f, Object value, XConverter cv) {
     if(value == null) return null;
-    XTag x = cv.toXml(value);
-      if(XBean.class.isInstance(x)) {
-        System.out.println(" dc is XBean");
-        System.out.println(" dc "+object.getClass().getSimpleName() +".isSupportedAsAttr: "+ isSupportedAsAttr());
-        ((XBean)x).setSupportedAsAttr(
-            this.isSupportedAsAttr()
-        );
-        System.out.println("  x.isSupportedAsAttr: "+ ((XBean)x).isSupportedAsAttr());
-      }
-    if(this.isSupportedAsAttr() 
-        && StringTransformerFactory
-            .isSupportedValue(field.getType())) {
-      x = new XAttr(field.getName(), x.value());
-    }
-    //System.out.printf("XBean(%s).doConvert( %s, %s ): %s%n", type().getSimpleName(), cv.getClass().getSimpleName(), value, x);
-    return x;
-  }
-  
-  
-  private XTag makeTag(Field f, XConverter cv) throws IllegalArgumentException {
+
     String name = f.getName();
     if(fieldAlias.containsKey(f))
       name = fieldAlias.get(f);
     
-    XTag tag = new XTag(name);
-    if(Class.class.equals(f.getType())) {
-      tag.setSelfClosingTag(true);
+    cv.setXAttr(attrByDef);
+    XTag tag = cv.toXml(value);
+    if(XBean.class.isAssignableFrom(tag.getClass())) {
+      ((XBean)tag).setFieldsAsAttribute(attrByDef);
+      //System.out.printf("((XBean)%s).setAttributeByDefault(%s)%n", tag.value(), attrByDef);
     }
+    else if(fieldAsAttr.contains(f)
+        && StringTransformerFactory
+            .isSupportedValue(f.getType())) {
+      //System.out.println("* field as attr = "+ f.getName());
+      tag = new XAttr(name, tag.value()).setSelfClosingTag(true);
+    }
+    else {
+      tag = new XTag(name).addChild(tag);
+    }
+    return tag;
+  }
+  
+  
+  private XTag makeTag(Field f, XConverter cv) throws IllegalArgumentException {
     try {
       Object val = getFieldValue(f);
-      //System.out.printf("* Bean(%s).makeTag( %s, %s ): val=%s%n", value(), f.getName(), cv.getClass().getSimpleName(), val.getClass().getSimpleName());
       if(val == null) return null;
-      XTag xval = doConvert(f, val, cv);
-      System.out.printf("XBean(%s).makeTag(%s,%s): suppAsAttr=%s%n", object.getClass().getSimpleName(), f.getName(), cv.getClass().getSimpleName(), isSupportedAsAttr());
-      if(xval == null) return null;
-      tag.addChild(xval);
-      if(XBean.class.isInstance(xval)) {
-        System.out.println("  is XBean");
-        System.out.println("  "+object.getClass().getSimpleName() +".isSupportedAsAttr: "+ isSupportedAsAttr());
-        ((XBean)xval).setSupportedAsAttr(
-            this.isSupportedAsAttr()
-        );
-        System.out.println("  xval.isSupportedAsAttr: "+ ((XBean)xval).isSupportedAsAttr());
-        return ((XBean)xval).setSupportedAsAttr(
-            this.isSupportedAsAttr()
-        );
-      }
-      if(XAttr.class.isInstance(xval)) {
-        return xval;
-      }
+      XTag tag = doConvert(f, val, cv);
+      //System.out.printf("XBean(%s).makeTag(%s,%s): attrByDef=%s%n", this.value(), f.getName(), cv.getClass().getSimpleName(), isAttributeByDefault());
+      return tag;
     } catch(IllegalAccessException e) {
       throw new IllegalArgumentException(e.toString(), e);
     }
-    return tag;
   }
   
   
@@ -298,11 +307,17 @@ public class XBean<T> extends XTag {
   
   public XBean bindAll() {
     List<Field> fs = getTypeFields();
-    //System.out.printf("* XBean(%s).bindAll(): %d fields%n", value(), fs.length);
+    System.out.printf("* XBean(%s).bindAll(): %d fields, attrByDef=%s%n", value(), fs.size(), attrByDef);
     for(Field f : fs) {
       if(!Modifier.isTransient(f.getModifiers())
-          && !Modifier.isFinal(f.getModifiers()))
+          && !Modifier.isFinal(f.getModifiers())) {
         bind(f);
+        if(attrByDef && !fieldAsAttr.contains(f)
+            && StringTransformerFactory
+                .isSupportedValue(f.getType())) {
+          fieldAsAttr.add(f);
+        }
+      }
     }
     return this;
   }

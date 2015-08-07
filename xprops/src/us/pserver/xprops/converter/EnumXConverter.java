@@ -30,7 +30,7 @@ import us.pserver.xprops.XTag;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 04/08/2015
  */
-public class EnumXConverter implements XConverter<Enum> {
+public class EnumXConverter extends AbstractXConverter<Enum> {
   
   private final Class<? extends Enum> type;
   

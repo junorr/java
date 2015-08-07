@@ -22,23 +22,22 @@
 package us.pserver.xprops.converter;
 
 import us.pserver.tools.Valid;
-import us.pserver.xprops.XAttr;
 import us.pserver.xprops.XTag;
+import us.pserver.xprops.XValue;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/07/2015
  */
-public class ClassXConverter implements XConverter<Class> {
+public class ClassXConverter extends AbstractXConverter<Class> {
   
   private static final String CLASS = "class";
 
 
   @Override
   public XTag toXml(Class obj) {
-    return new XAttr(CLASS, 
-        Valid.off(obj).forEmpty().getOrFail(
+    return new XValue(Valid.off(obj).forEmpty().getOrFail(
             Class.class).getName()
     );
   }
@@ -48,7 +47,6 @@ public class ClassXConverter implements XConverter<Class> {
   public Class fromXml(XTag tag) {
     return Valid.off(tag)
         .forNull().getOrFail(XTag.class)
-        .firstChild()
         .xvalue().asClass();
   }
 

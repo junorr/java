@@ -35,7 +35,7 @@ import us.pserver.xprops.XValue;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 31/07/2015
  */
-public class ArrayXConverter implements XConverter {
+public class ArrayXConverter extends AbstractXConverter {
   
   private final Class type;
   
@@ -65,9 +65,10 @@ public class ArrayXConverter implements XConverter {
           .encodeToString((byte[])obj)
       );
     }
-    xlist = new ListXConverter(type, toList(obj))
-        .populateXmlTags();
-    return (xlist.getList().isEmpty() ? null : xlist);
+    ListXConverter xc = new ListXConverter(type, toList(obj));
+    xc.setXAttr(this.isXAttr());
+    XTag xt = xc.populateXmlTags();
+    return (xt.childs().isEmpty() ? null : xt);
   }
 
 

@@ -32,7 +32,7 @@ import us.pserver.xprops.transformer.PathTransformer;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/07/2015
  */
-public class PathXConverter implements XConverter<Path> {
+public class PathXConverter extends AbstractXConverter<Path> {
 
 
   @Override

@@ -21,28 +21,28 @@
 
 package us.pserver.xprops.converter;
 
-import us.pserver.tools.Valid;
 import us.pserver.xprops.XTag;
-import us.pserver.xprops.XValue;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 30/07/2015
+ * @version 1.0 - 07/08/2015
  */
-public class StringXConverter extends AbstractXConverter<String> {
+public abstract class AbstractXConverter<T> implements XConverter<T> {
+
+  private boolean attr = false;
+
   
   @Override
-  public XTag toXml(String obj) {
-    return new XValue(Valid.off(obj)
-        .forEmpty().getOrFail(String.class));
+  public boolean isXAttr() {
+    return attr;
   }
 
 
   @Override
-  public String fromXml(XTag tag) {
-    return Valid.off(tag)
-        .forNull().getOrFail(XTag.class).value();
+  public XConverter<T> setXAttr(boolean attr) {
+    this.attr = attr;
+    return this;
   }
 
 }

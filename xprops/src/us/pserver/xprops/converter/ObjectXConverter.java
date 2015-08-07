@@ -31,7 +31,7 @@ import us.pserver.xprops.XTag;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 31/07/2015
  */
-public class ObjectXConverter implements XConverter {
+public class ObjectXConverter extends AbstractXConverter {
   
   private final Class type;
   
@@ -72,6 +72,7 @@ public class ObjectXConverter implements XConverter {
     } else {
       bean = new XBean(obj);
     }
+    bean.setFieldsAsAttribute(this.isXAttr());
     return bean.bindAll().scanObject();
   }
   

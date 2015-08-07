@@ -75,7 +75,7 @@ public class LogConfig {
   
   
   public void save() throws IOException {
-    XBean bean = new XBean(this);
+    XBean bean = new XBean(this).setFieldsAsAttribute(true);
     XFile xf = new XFile(file, 
         bean.bindAll().scanObject().setXmlIdentation("  ", 0)
     );

@@ -32,7 +32,7 @@ import us.pserver.xprops.transformer.DateTransformer;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/07/2015
  */
-public class DateXConverter implements XConverter<Date> {
+public class DateXConverter extends AbstractXConverter<Date> {
 
 
   @Override

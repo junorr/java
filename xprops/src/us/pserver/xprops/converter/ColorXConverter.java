@@ -32,7 +32,7 @@ import us.pserver.xprops.transformer.ColorTransformer;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/07/2015
  */
-public class ColorXConverter implements XConverter<Color> {
+public class ColorXConverter extends AbstractXConverter<Color> {
 
 
   @Override

@@ -32,7 +32,7 @@ import us.pserver.xprops.transformer.SocketAddressTransformer;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/07/2015
  */
-public class SocketAddressXConverter implements XConverter<SocketAddress> {
+public class SocketAddressXConverter extends AbstractXConverter<SocketAddress> {
 
 
   @Override

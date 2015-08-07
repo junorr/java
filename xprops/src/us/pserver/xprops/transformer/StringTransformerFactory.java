@@ -95,6 +95,7 @@ public class StringTransformerFactory {
       Double.class,
       String.class,
       File.class,
+      Class.class,
       Date.class,
       SocketAddress.class
   };

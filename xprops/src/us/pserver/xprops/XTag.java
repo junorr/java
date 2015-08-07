@@ -380,7 +380,7 @@ public class XTag extends AbstractUnit {
       for(XAttr at : attrs) {
         sb.append(sp).append(at.toXml());
       }
-      if(selfClosing) {
+      if(selfClosing || childs().size() == attrs.size()) {
         return sb.append(sl).append(gt).toString();
       }
       else {

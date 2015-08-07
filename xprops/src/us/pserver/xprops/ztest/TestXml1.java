@@ -79,10 +79,10 @@ public class TestXml1 {
     Wrapper w = wrapper();
     System.out.println(w);
     XBean bean = new XBean(w);
-    bean.setSupportedAsAttr(true).bindAll().scanObject().setXmlIdentation("  ", 0);
+    bean.setFieldsAsAttribute(true).bindAll().scanObject().setXmlIdentation("  ", 0);
     System.out.println(bean.toXml());
     bean = new XBean(bean, new Wrapper());
-    bean.setSupportedAsAttr(true).bindAll();
+    bean.setFieldsAsAttribute(true).bindAll();
     System.out.println(bean.scanXml());
   }
   
