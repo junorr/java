@@ -69,7 +69,6 @@ public class TestXml1 {
   public static void fillWrapperList(int size, Wrapper target) {
     for(int i = 0; i < size; i++) {
       Wrapper w = wrapper();
-      //w.bytes = new byte[0];
       target.wlist.add(w);
     }
   }
@@ -79,10 +78,10 @@ public class TestXml1 {
     Wrapper w = wrapper();
     System.out.println(w);
     XBean bean = new XBean(w);
-    bean.setFieldsAsAttribute(true).bindAll().scanObject().setXmlIdentation("  ", 0);
+    bean.setAttributeByDefault(true).bindAll().scanObject().setXmlIdentation("  ", 0);
     System.out.println(bean.toXml());
     bean = new XBean(bean, new Wrapper());
-    bean.setFieldsAsAttribute(true).bindAll();
+    bean.setAttributeByDefault(true).bindAll();
     System.out.println(bean.scanXml());
   }
   

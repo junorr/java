@@ -75,7 +75,7 @@ public class ListXConverter<T> extends AbstractXConverter<List<T>> {
     ClassXConverter xc = new ClassXConverter();
     this.type = (Class<T>) list.get(0).getClass();
     XConverter conv = XConverterFactory.getXConverter(type);
-    conv.setXAttr(this.isXAttr());
+    conv.setAttributeByDefault(this.isAttributeByDefault());
     //System.out.printf("* ListXConverter.populateXmlTags(): %s -> %s%n", type.getSimpleName(), conv.getClass().getSimpleName());
     tag.addChild(new XAttr(CLASS).addChild(xc.toXml(type)));
     if(list.isEmpty()) return tag;

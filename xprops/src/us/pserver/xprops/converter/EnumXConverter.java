@@ -23,6 +23,7 @@ package us.pserver.xprops.converter;
 
 import java.lang.reflect.Method;
 import us.pserver.tools.Valid;
+import us.pserver.xprops.XBean;
 import us.pserver.xprops.XTag;
 
 /**
@@ -48,25 +49,19 @@ public class EnumXConverter extends AbstractXConverter<Enum> {
   @Override
   public XTag toXml(Enum obj) {
     Valid.off(obj).forNull().fail();
-    XTag tag = new XTag(obj.name());
-    //tag.addNewAttr("class", obj.getClass().getName());
-    return tag.setSelfClosingTag(true);
+    XBean x = new XBean(obj.name(), obj);
+    return x.setAttributeByDefault(true).bindAll().scanObject();
   }
 
 
   @Override
   public Enum fromXml(XTag tag) {
     Valid.off(tag).forNull().fail();
-    /*
-    XTag cattr = tag.findOne("class", false);
-    if(cattr == null) {
-      throw new IllegalArgumentException(
-          "Invalid Tag. Missing 'class' attribute");
-    }
-    Class<Enum> eclass = cattr.firstChild().xvalue().asClass();*/
     try {
       Method vof = type.getMethod("valueOf", String.class);
-      return (Enum) vof.invoke(null, tag.value());
+      Enum e = (Enum) vof.invoke(null, tag.value());
+      XBean x = new XBean(tag, e);
+      return (Enum) x.bindAll().scanXml();
     } catch(Exception e) {
       throw new IllegalArgumentException(e.getMessage(), e);
     }

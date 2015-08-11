@@ -34,7 +34,7 @@ import us.pserver.xprops.XBean;
  */
 public class TestXBean {
 
-  public static class NetEndPoint {
+  public static class NetEndpoint {
     SocketAddress address;
     Date creation = new Date();
     public String toString() { 
@@ -58,14 +58,14 @@ public class TestXBean {
   }
   
   public static class Host {
-    NetEndPoint endpoint = new NetEndPoint();
+    NetEndpoint endpoint = new NetEndpoint();
     public String toString() {
       return "Host{"+ endpoint+ "}";
     }
   }
   
   public static class Hosts {
-    NetEndPoint[] endpoints = new NetEndPoint[10];
+    NetEndpoint[] endpoints = new NetEndpoint[10];
     public String toString() {
       return "Hosts:"+Arrays.toString(endpoints);
     }
@@ -73,13 +73,13 @@ public class TestXBean {
   
   public static void main(String[] args) {
     System.out.println("----------------------------");
-    NetEndPoint ne = new NetEndPoint();
+    NetEndpoint ne = new NetEndpoint();
     ne.address = new InetSocketAddress("localhost", 5775);
-    XBean bean = new XBean("net", ne).setFieldsAsAttribute(true);
+    XBean bean = new XBean("net", ne).setAttributeByDefault(true);
     bean.bindAll().scanObject();
     bean.setXmlIdentation("  ", 0);
     System.out.println(bean.toXml());
-    System.out.println(new XBean(bean, new NetEndPoint()).bindAll().scanXml());
+    System.out.println(new XBean(bean, new NetEndpoint()).bindAll().scanXml());
     
     
     System.out.println("----------------------------");
@@ -90,7 +90,7 @@ public class TestXBean {
       whosts.ports[i] = i + 80;
     }
     System.out.println("WrongHosts: "+ whosts);
-    XBean bean1 = new XBean("hosts", whosts).setFieldsAsAttribute(true);
+    XBean bean1 = new XBean("hosts", whosts).setAttributeByDefault(true);
     bean1.bindAll().scanObject();
     System.out.println(bean1.toXml());
     XBean bean2 = new XBean(bean1, new WrongHosts());
@@ -102,7 +102,7 @@ public class TestXBean {
     host.endpoint.address = new InetSocketAddress("10.100.0.102", 8080);
     System.out.println(host);
     
-    XBean beanHost = new XBean(host).setFieldsAsAttribute(true);
+    XBean beanHost = new XBean(host).setAttributeByDefault(true);
     System.out.println(beanHost.bindAll().scanObject().toXml());
     beanHost = new XBean(beanHost, new Host());
     System.out.println(beanHost.bindAll().scanXml());
@@ -114,14 +114,14 @@ public class TestXBean {
     int startAddr = 100;
     int basePort = 8080;
     for(int i = 0; i < 10; i++) {
-      hosts.endpoints[i] = new NetEndPoint();
+      hosts.endpoints[i] = new NetEndpoint();
       hosts.endpoints[i].address = new InetSocketAddress(baseAddr.concat(
           String.valueOf((startAddr + i))), (basePort + i)
       );
     }
     System.out.println(hosts);
     
-    bean = new XBean(hosts).setFieldsAsAttribute(true);
+    bean = new XBean(hosts).setAttributeByDefault(true);
     System.out.println(bean.bindAll().scanObject().setXmlIdentation("  ", 0).toXml());
     
     bean = new XBean(bean, new Hosts());

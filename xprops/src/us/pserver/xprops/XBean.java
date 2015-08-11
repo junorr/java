@@ -93,25 +93,24 @@ public class XBean<T> extends XTag {
   }
   
   
-  public boolean isFieldsAsAttribute () {
+  public boolean isAttributeByDefault () {
     return attrByDef;
   }
   
   
-  public XBean setFieldsAsAttribute(boolean attr) {
+  public XBean setAttributeByDefault(boolean attr) {
     this.attrByDef = attr;
     if(attrByDef) {
       if(!fieldMap.isEmpty()) {
         for(Field f : fieldMap.keySet()) {
           fieldAsAttr.add(f);
         }
-      }
-      if(!childs().isEmpty()) {
-        this.childs().clear();
-        this.scanObject();
+        if(!childs().isEmpty()) {
+          this.childs().clear();
+          this.scanObject();
+        }
       }
     }
-    //System.out.printf("XBean(%s).isAttributeByDefault()=%s%n", this.value(), this.isFieldsAsAttribute());
     return this;
   }
   
@@ -138,26 +137,27 @@ public class XBean<T> extends XTag {
   }
   
   
-  public XBean asAttribute(Field f) {
+  public XBean setFieldAsAttribute(Field f, boolean attr) {
     if(f != null) {
-      fieldAsAttr.add(f);
+      if(!attr) {
+        fieldAsAttr.remove(f);
+      } else {
+        fieldAsAttr.add(f);
+      }
     }
     return this;
   }
   
   
-  public XBean notAsAttribute(Field f) {
-    if(f != null) {
-      fieldAsAttr.remove(f);
-    }
-    return this;
+  public boolean isFieldAsAttribute(Field f) {
+    return fieldAsAttr.contains(f);
   }
   
   
   public XBean bind(Field f) {
     Valid.off(f).forNull().fail(Field.class);
-    XConverter cv = XConverterFactory.getXConverter(f.getType(), f.getName());
-    //System.out.printf("* XBean(%s).bind( %s ): %s%n", value(), f.getName(), cv.getClass());
+    XConverter cv = XConverterFactory
+        .getXConverter(f.getType(), f.getName());
     fieldMap.put(f, cv);
     return this;
   }
@@ -220,7 +220,6 @@ public class XBean<T> extends XTag {
   public T scanXml() {
     Set<Map.Entry<Field,XConverter>> flds = 
         this.fieldMap.entrySet();
-    //System.out.printf("* XBean(%s).scanXml(): %d fields%n", value(), flds.size());
     for(Map.Entry<Field,XConverter> e : flds) {
       String fname = e.getKey().getName();
       if(fieldAlias.containsKey(e.getKey())) {
@@ -240,7 +239,6 @@ public class XBean<T> extends XTag {
     if(!ObjectXConverter.class.isInstance(cv)) {
       xv = xv.firstChild();
     }
-    //System.out.printf("* XBean(%s).set( %s, %s, %s )%n", value(), f, cv, xv.toXml());
     if(!f.isAccessible()) {
       f.setAccessible(true);
     }
@@ -267,17 +265,16 @@ public class XBean<T> extends XTag {
     if(fieldAlias.containsKey(f))
       name = fieldAlias.get(f);
     
-    cv.setXAttr(attrByDef);
+    cv.setAttributeByDefault(attrByDef);
     XTag tag = cv.toXml(value);
+    if(tag == null) return null;
     if(XBean.class.isAssignableFrom(tag.getClass())) {
-      ((XBean)tag).setFieldsAsAttribute(attrByDef);
-      //System.out.printf("((XBean)%s).setAttributeByDefault(%s)%n", tag.value(), attrByDef);
+      ((XBean)tag).setAttributeByDefault(attrByDef);
     }
     else if(fieldAsAttr.contains(f)
         && StringTransformerFactory
             .isSupportedValue(f.getType())) {
-      //System.out.println("* field as attr = "+ f.getName());
-      tag = new XAttr(name, tag.value()).setSelfClosingTag(true);
+      tag = new XAttr(name, tag.value());
     }
     else {
       tag = new XTag(name).addChild(tag);
@@ -290,9 +287,7 @@ public class XBean<T> extends XTag {
     try {
       Object val = getFieldValue(f);
       if(val == null) return null;
-      XTag tag = doConvert(f, val, cv);
-      //System.out.printf("XBean(%s).makeTag(%s,%s): attrByDef=%s%n", this.value(), f.getName(), cv.getClass().getSimpleName(), isAttributeByDefault());
-      return tag;
+      return doConvert(f, val, cv);
     } catch(IllegalAccessException e) {
       throw new IllegalArgumentException(e.toString(), e);
     }
@@ -307,7 +302,6 @@ public class XBean<T> extends XTag {
   
   public XBean bindAll() {
     List<Field> fs = getTypeFields();
-    System.out.printf("* XBean(%s).bindAll(): %d fields, attrByDef=%s%n", value(), fs.size(), attrByDef);
     for(Field f : fs) {
       if(!Modifier.isTransient(f.getModifiers())
           && !Modifier.isFinal(f.getModifiers())) {

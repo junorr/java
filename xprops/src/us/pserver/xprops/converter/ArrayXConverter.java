@@ -66,7 +66,7 @@ public class ArrayXConverter extends AbstractXConverter {
       );
     }
     ListXConverter xc = new ListXConverter(type, toList(obj));
-    xc.setXAttr(this.isXAttr());
+    xc.setAttributeByDefault(this.isAttributeByDefault());
     XTag xt = xc.populateXmlTags();
     return (xt.childs().isEmpty() ? null : xt);
   }

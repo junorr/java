@@ -51,8 +51,6 @@ public class XTag extends AbstractUnit {
   
   private int identLevel;
   
-  private boolean ommitRoot, selfClosing, suppAsAttr;
-  
 
   /**
    * Default constructor which receives the tag name.
@@ -63,9 +61,6 @@ public class XTag extends AbstractUnit {
     childs = new LinkedList<>();
     xmlIdent = null;
     identLevel = 0;
-    ommitRoot = false;
-    selfClosing = false;
-    suppAsAttr = false;
   }
   
   
@@ -260,17 +255,6 @@ public class XTag extends AbstractUnit {
   }
   
   
-  public XTag setSelfClosingTag(boolean bool) {
-    selfClosing = bool;
-    return this;
-  }
-  
-  
-  public boolean isSelfClosingTag() {
-    return selfClosing;
-  }
-  
-
   /**
    * Return the string identation adjusted for the identation level.
    * @return The string identation.
@@ -281,31 +265,6 @@ public class XTag extends AbstractUnit {
       sb.append(xmlIdent);
     }
     return sb.toString();
-  }
-  
-  
-  /**
-   * Configure if this tag should ommit his root 
-   * element on its xml representation.
-   * @param ommit <code>true</code> if this tag 
-   * should ommit his root element on its xml representation, 
-   * <code>false</code> otherwise.
-   * @return This modified instance of this XTag.
-   */
-  public XTag setOmmitRoot(boolean ommit) {
-    this.ommitRoot = ommit;
-    return this;
-  }
-  
-  
-  /**
-   * Return <code>true</code> if this tag 
-   * should ommit his root element on its xml representation, 
-   * <code>false</code> otherwise.
-   * @return <code>true/false</code>.
-   */
-  public boolean isOmmitRoot() {
-    return this.ommitRoot;
   }
   
   
@@ -372,99 +331,50 @@ public class XTag extends AbstractUnit {
   public String toXml() {
     StringBuilder sb = new StringBuilder();
     sortChilds();
-    if(!ommitRoot) {
-      if(xmlIdent != null)
-        sb.append(getIdent());
-      sb.append(lt).append(value());
-      List<XAttr> attrs = getAllAttrs();
-      for(XAttr at : attrs) {
-        sb.append(sp).append(at.toXml());
-      }
-      if(selfClosing || childs().size() == attrs.size()) {
-        return sb.append(sl).append(gt).toString();
-      }
-      else {
-        sb.append(gt);
-      }
+    if(xmlIdent != null)
+      sb.append(getIdent());
+    sb.append(lt).append(value());
+    List<XAttr> attrs = getAllAttrs();
+    for(XAttr at : attrs) {
+      sb.append(sp).append(at.toXml());
     }
+    if(childs().size() == attrs.size()) {
+      return sb.append(sl).append(gt).toString();
+    }
+    else {
+      sb.append(gt);
+    }
+    return this.appendChilds(sb)
+        .append(lt)
+        .append(sl)
+        .append(value())
+        .append(gt).toString();
+  }
+  
+  
+  private StringBuilder appendChilds(StringBuilder sb) {
+    if(childs.isEmpty() || sb == null) 
+      return sb;
     boolean lastValue = false;
-    //System.err.printf("[%s]childs.size()=%d, first=[%s]%n", value(), childs.size(), (!childs.isEmpty() ? childs.get(0).value() : ""));
     for(XTag x : childs) {
       if(x == null) continue;
       if(XAttr.class.isInstance(x))
         continue;
       lastValue = true;
-      if(!XValue.class.isInstance(x)
-          && xmlIdent != null) {
-        sb.append(ln);
-        x.setXmlIdentation(xmlIdent, identLevel+1);
+      if(!XValue.class.isInstance(x)) {
         lastValue = false;
+        if(xmlIdent != null) {
+          sb.append(ln);
+          x.setXmlIdentation(xmlIdent, identLevel+1);
+        }
       }
       sb.append(x.toXml());
     }
     if(xmlIdent != null && !lastValue) {
-      sb.append(ln);
-      if(!ommitRoot)
-        sb.append(getIdent());
+      sb.append(ln)
+          .append(getIdent());
     }
-    if(!ommitRoot) {
-      sb.append(lt)
-          .append(sl)
-          .append(value())
-          .append(gt);
-    }
-    return sb.toString();
+    return sb;
   }
   
-  
-  public String toXml2() {
-    StringBuilder sb = new StringBuilder();
-    if(!ommitRoot) {
-      sb.append((xmlIdent != null ? getIdent() : ""))
-          .append(lt)
-          .append(value);
-    
-      List<XAttr> attrs = getAllAttrs();
-      if(!attrs.isEmpty()) {
-        for(XAttr a : attrs) {
-          sb.append(sp).append(a.toXml());
-        }
-      }
-      if(!selfClosing) {
-        sb.append(gt);
-      }
-    }
-    
-    if(!childs.isEmpty() 
-        && xmlIdent != null 
-        && !ommitRoot
-        && !selfClosing) {
-      sb.append(ln);
-    }
-    for(XTag x : childs) {
-      if(XAttr.class.isInstance(x)) {
-        continue;
-      }
-      if(xmlIdent != null && !selfClosing) {
-        x.setXmlIdentation(xmlIdent, identLevel + 1);
-        sb.append(x.toXml()).append(ln);
-      } 
-      else {
-        sb.append(x.toXml());
-      }
-    }
-    if(!ommitRoot) {
-      if(selfClosing) {
-        sb.append(sl);
-      } else {
-        sb.append((xmlIdent != null ? getIdent() : ""))
-            .append(lt)
-            .append(sl)
-            .append(value);
-      }
-      sb.append(gt);
-    }
-    return sb.toString();
-  }
-
 }

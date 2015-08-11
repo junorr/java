@@ -34,8 +34,8 @@ public interface XConverter<T> {
   
   public T fromXml(XTag tag);
   
-  public boolean isXAttr();
+  public boolean isAttributeByDefault();
   
-  public XConverter setXAttr(boolean attr);
+  public XConverter setAttributeByDefault(boolean attr);
   
 }

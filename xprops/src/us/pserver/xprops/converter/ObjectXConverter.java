@@ -72,7 +72,7 @@ public class ObjectXConverter extends AbstractXConverter {
     } else {
       bean = new XBean(obj);
     }
-    bean.setFieldsAsAttribute(this.isXAttr());
+    bean.setAttributeByDefault(this.isAttributeByDefault());
     return bean.bindAll().scanObject();
   }
   

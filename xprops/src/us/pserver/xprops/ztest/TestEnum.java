@@ -19,30 +19,53 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.xprops.converter;
+package us.pserver.xprops.ztest;
 
 import us.pserver.xprops.XTag;
+import us.pserver.xprops.converter.EnumXConverter;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 07/08/2015
+ * @version 1.0 - 11/08/2015
  */
-public abstract class AbstractXConverter<T> implements XConverter<T> {
+public class TestEnum {
 
-  private boolean attr = false;
-
+  public static enum ABC {
+    A("a"), B("b"), C("c");
+    private String str;
+    ABC(String str) {
+      this.str = str;
+    }
+    public String getString() {
+      return str;
+    }
+    public String toString() {
+      return this.name()+ "("+ str+ ")";
+    }
+  }
   
-  @Override
-  public boolean isAttributeByDefault() {
-    return attr;
+  
+  public static enum EFG {
+    A, B, C;
   }
-
-
-  @Override
-  public XConverter<T> setAttributeByDefault(boolean attr) {
-    this.attr = attr;
-    return this;
+  
+  
+  public static void main(String[] args) {
+    System.out.println(ABC.A);
+    System.out.println(ABC.B);
+    System.out.println(ABC.C);
+    EnumXConverter ex = new EnumXConverter(ABC.class);
+    XTag t = ex.toXml(ABC.A);
+    System.out.println(t.toXml());
+    ABC d = (ABC) ex.fromXml(t);
+    System.out.println(d);
+    
+    ex = new EnumXConverter(EFG.class);
+    t = ex.toXml(EFG.A);
+    System.out.println(t.toXml());
+    EFG h = (EFG) ex.fromXml(t);
+    System.out.println(h);
   }
-
+  
 }

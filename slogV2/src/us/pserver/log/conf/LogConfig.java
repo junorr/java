@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import us.pserver.log.Log;
-import us.pserver.log.LogFactory;
-import us.pserver.log.impl.SimpleLog;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.XBean;
 import us.pserver.xprops.XFile;
@@ -75,7 +73,7 @@ public class LogConfig {
   
   
   public void save() throws IOException {
-    XBean bean = new XBean(this).setFieldsAsAttribute(true);
+    XBean bean = new XBean(this).setAttributeByDefault(true);
     XFile xf = new XFile(file, 
         bean.bindAll().scanObject().setXmlIdentation("  ", 0)
     );
