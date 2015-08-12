@@ -21,7 +21,6 @@
 
 package us.pserver.xprops.ztest;
 
-import com.thoughtworks.xstream.XStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -168,12 +167,6 @@ public class TestXmlFile {
     System.out.println("* xml length: "+ sxml.length());
     System.out.println("* time encoding to xml: "+ tm);
     
-    tm.clear().start();
-    sxml = new XStream().toXML(wp);
-    tm.stop();
-    //System.out.println(sxml);
-    System.out.println("* time XStream encoding: "+ tm);
-    
     String file2 = "/home/juno/xf.xml";
     XFile xf = new XFile(file2, bean.setXmlIdentation("  ", 0));
     System.out.println("* xf.save(): "+ xf.save());
@@ -184,21 +177,12 @@ public class TestXmlFile {
     tm.lapAndStop();
     System.out.println("* time parsing xml file: "+ tm);
     
-    tm.clear().start();
-    Object o = new XStream().fromXML(sxml);
-    tm.stop();
-    //System.out.println(o);
-    System.out.println("* time XStream decode: "+ tm);
-    
-    //System.out.println("* tag readed: "+ tag.toXml());
-    
     bean = new XBean(tag, new Wrapper());
     tm.clear().start();
-    o = bean.bindAll().scanXml();
+    Object o = bean.bindAll().scanXml();
     tm.stop();
-    System.out.println("* time XBean bind object: "+ tm);
+    System.out.println("* time XBean bind and scan xml: "+ tm);
     System.out.println("* wp -->"+ bean.bindAll().scanXml());
-    System.out.println("* XStream xml: "+ sxml);
   }
   
 }

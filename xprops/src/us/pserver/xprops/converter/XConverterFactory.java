@@ -73,8 +73,6 @@ public class XConverterFactory {
       return (XConverter<T>) new EnumXConverter((Class<Enum>)type);
     else
       return (name != null ? new ObjectXConverter(type, name) : new ObjectXConverter(type));
-    //else throw new IllegalArgumentException(
-      //  "Not Supported Conversion for: "+ type.getName());
   }
   
   

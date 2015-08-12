@@ -68,6 +68,12 @@ public class XAttr extends XTag {
   
   
   @Override
+  public XValue xvalue() {
+    return attrValue();
+  }
+  
+  
+  @Override
   public String toXml() {
     return new StringBuilder()
         .append(value)

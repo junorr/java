@@ -25,6 +25,8 @@ import java.util.List;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.XAttr;
 import us.pserver.xprops.XTag;
+import us.pserver.xprops.transformer.StringTransformer;
+import us.pserver.xprops.transformer.StringTransformerFactory;
 
 /**
  *
@@ -69,19 +71,29 @@ public class ListXConverter<T> extends AbstractXConverter<List<T>> {
   }
   
   
-  public XTag populateXmlTags() {
+  public XTag createXTag() {
     if(list.isEmpty()) return tag;
     tag.childs().clear();
     ClassXConverter xc = new ClassXConverter();
     this.type = (Class<T>) list.get(0).getClass();
-    XConverter conv = XConverterFactory.getXConverter(type);
-    conv.setAttributeByDefault(this.isAttributeByDefault());
-    //System.out.printf("* ListXConverter.populateXmlTags(): %s -> %s%n", type.getSimpleName(), conv.getClass().getSimpleName());
+    
     tag.addChild(new XAttr(CLASS).addChild(xc.toXml(type)));
     if(list.isEmpty()) return tag;
-    for(int i = 0; i < list.size(); i++) {
-      tag.addNewChild(ITEM + String.valueOf(i))
-          .addChild(conv.toXml(list.get(i)));
+    if(StringTransformerFactory.isSupportedValue(type)) {
+      StringTransformer st = StringTransformerFactory
+          .getTransformer(type);
+      for(int i = 0; i < list.size(); i++) {
+        tag.addNewChild(ITEM + String.valueOf(i))
+            .addNewAttr("val", st.toString(list.get(i)));
+      }
+    }
+    else {
+      XConverter conv = XConverterFactory.getXConverter(type);
+      conv.setAttributeByDefault(this.isAttributeByDefault());
+      for(int i = 0; i < list.size(); i++) {
+        tag.addNewChild(ITEM + String.valueOf(i))
+            .addChild(conv.toXml(list.get(i)));
+      }
     }
     return tag;
   }
@@ -92,7 +104,7 @@ public class ListXConverter<T> extends AbstractXConverter<List<T>> {
     if(obj.isEmpty()) return null;
     this.list.clear();
     this.list.addAll(obj);
-    return this.populateXmlTags();
+    return this.createXTag();
   }
 
 
@@ -101,12 +113,19 @@ public class ListXConverter<T> extends AbstractXConverter<List<T>> {
     Valid.off(tag).forNull().fail(XTag.class);
     XAttr cattr = tag.findAttr(CLASS);
     Valid.off(cattr).forNull().fail("XTag does not contains a 'class' attribute");
+    if(!list.isEmpty()) {
+      list.clear();
+    }
     type = cattr.attrValue().asClass();
     XConverter<T> xc = XConverterFactory.getXConverter(type);
     for(int i = 0; i < Integer.MAX_VALUE; i++) {
       XTag x = tag.findOne(ITEM + String.valueOf(i), false);
       if(x == null) break;
-      list.add(xc.fromXml(x.firstChild()));
+      x = x.firstChild();
+      if(XAttr.class.isInstance(x)) {
+        x = x.xvalue();
+      }
+      list.add(xc.fromXml(x));
     }
     return list;
   }

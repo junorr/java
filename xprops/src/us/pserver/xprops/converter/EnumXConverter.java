@@ -24,6 +24,7 @@ package us.pserver.xprops.converter;
 import java.lang.reflect.Method;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.XBean;
+import us.pserver.xprops.XBeanBuilder;
 import us.pserver.xprops.XTag;
 
 /**
@@ -49,8 +50,13 @@ public class EnumXConverter extends AbstractXConverter<Enum> {
   @Override
   public XTag toXml(Enum obj) {
     Valid.off(obj).forNull().fail();
-    XBean x = new XBean(obj.name(), obj);
-    return x.setAttributeByDefault(true).bindAll().scanObject();
+    XBean x = XBeanBuilder.builder(obj.getDeclaringClass())
+        .forObject(obj)
+        .named(obj.name())
+        .setAttributeByDefault(true)
+        .bindAll()
+        .create();
+    return x.scanObject();
   }
 
 
@@ -60,8 +66,13 @@ public class EnumXConverter extends AbstractXConverter<Enum> {
     try {
       Method vof = type.getMethod("valueOf", String.class);
       Enum e = (Enum) vof.invoke(null, tag.value());
-      XBean x = new XBean(tag, e);
-      return (Enum) x.bindAll().scanXml();
+      XBean x = XBeanBuilder.builder(e.getDeclaringClass())
+          .forTag(tag)
+          .forObject(e)
+          .setAttributeByDefault(true)
+          .bindAll()
+          .create();
+      return (Enum) x.scanXml();
     } catch(Exception e) {
       throw new IllegalArgumentException(e.getMessage(), e);
     }

@@ -67,7 +67,7 @@ public class ArrayXConverter extends AbstractXConverter {
     }
     ListXConverter xc = new ListXConverter(type, toList(obj));
     xc.setAttributeByDefault(this.isAttributeByDefault());
-    XTag xt = xc.populateXmlTags();
+    XTag xt = xc.createXTag();
     return (xt.childs().isEmpty() ? null : xt);
   }
 
@@ -99,17 +99,6 @@ public class ArrayXConverter extends AbstractXConverter {
       Array.set(array, i, list.get(i));
     }
     return array;
-  }
-  
-  
-  public static void main(String[] args) {
-    byte[] bos = {0,1,2,3,4,5,6,7,8,9};
-    System.out.printf("={array}=> %s%n", Arrays.toString(bos));
-    ArrayXConverter xa = new ArrayXConverter(byte.class);
-    XTag tag = xa.toXml(bos);
-    System.out.printf("={xml}=> %s%n", tag.toXml());
-    bos = (byte[]) xa.fromXml(tag);
-    System.out.printf("={array}=> %s%n", Arrays.toString(bos));
   }
   
 }

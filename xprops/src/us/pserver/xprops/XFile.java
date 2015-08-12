@@ -66,7 +66,7 @@ public class XFile extends XInputStream {
   }
   
   
-  public static InputStream createFileInput(File f) {
+  private static InputStream createFileInput(File f) {
     try {
       return Files.newInputStream(Valid.off(f).forNull().getOrFail(File.class).toPath(),
           StandardOpenOption.READ,

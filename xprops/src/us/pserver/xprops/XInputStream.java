@@ -98,7 +98,6 @@ public class XInputStream {
   private void startElement(String name, Attributes attrs) {
     if(name == null || name.trim().isEmpty())
       return;
-    //System.out.println("* element="+ name);
     XTag tag = new XTag(unformat(name));
     if(root == null) root = tag;
     if(!stack.isEmpty()) {

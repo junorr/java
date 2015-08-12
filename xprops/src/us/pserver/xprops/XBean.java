@@ -22,19 +22,13 @@
 package us.pserver.xprops;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.converter.XConverter;
-import us.pserver.xprops.converter.XConverterFactory;
 import us.pserver.xprops.converter.ObjectXConverter;
-import us.pserver.xprops.transformer.NameFormatter;
 import us.pserver.xprops.transformer.StringTransformerFactory;
 
 /**
@@ -42,7 +36,7 @@ import us.pserver.xprops.transformer.StringTransformerFactory;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 15/07/2015
  */
-public class XBean<T> extends XTag {
+public abstract class XBean<T> extends XTag {
   
   private final T object;
 
@@ -52,37 +46,25 @@ public class XBean<T> extends XTag {
   
   private final List<Field> fieldAsAttr;
   
-  private boolean attrByDef;
+  private final boolean attrByDef;
+  
+  
+  XBean(String name, T obj, XTag tag, Map<Field, XConverter> fieldMap, Map<Field, String> fieldAlias, List<Field> fieldAsAttr, boolean attrByDef) {
+    super(name);
+    this.object = obj;
+    if(tag != null && !tag.childs().isEmpty()) {
+      this.childs().addAll(tag.childs());
+    }
+    this.fieldMap = Valid.off(fieldMap).forNull()
+        .getOrFail("Invalid null field map: ");
+    this.fieldAlias = Valid.off(fieldAlias).forNull()
+        .getOrFail("Invalid null alias map: ");
+    this.fieldAsAttr = Valid.off(fieldAsAttr).forNull()
+        .getOrFail("Invalid null fields attributes: ");
+    this.attrByDef = attrByDef;
+  }
   
 
-  public XBean(T obj) {
-    this(new NameFormatter().format(Valid.off(obj)
-        .forNull().getOrFail(Object.class)
-        .getClass()), obj
-    );
-  }
-  
-  
-  public XBean(String name, T obj) {
-    super(name);
-    this.object = Valid.off(obj)
-        .forNull().getOrFail(Object.class);
-    this.fieldMap = new HashMap<>();
-    this.fieldAlias = new HashMap<>();
-    this.fieldAsAttr = new LinkedList<>();
-    attrByDef = false;
-  }
-  
-  
-  public XBean(XTag src, T dst) {
-    this(Valid.off(dst)
-        .forNull().getOrFail(Object.class)
-        .getClass().getSimpleName(), dst
-    );
-    this.childs().addAll(src.childs());
-  }
-  
-  
   public T object() {
     return object;
   }
@@ -90,115 +72,6 @@ public class XBean<T> extends XTag {
   
   public Class type() {
     return object.getClass();
-  }
-  
-  
-  public boolean isAttributeByDefault () {
-    return attrByDef;
-  }
-  
-  
-  public XBean setAttributeByDefault(boolean attr) {
-    this.attrByDef = attr;
-    if(attrByDef) {
-      if(!fieldMap.isEmpty()) {
-        for(Field f : fieldMap.keySet()) {
-          fieldAsAttr.add(f);
-        }
-        if(!childs().isEmpty()) {
-          this.childs().clear();
-          this.scanObject();
-        }
-      }
-    }
-    return this;
-  }
-  
-  
-  public XBean alias(Field field, String alias) {
-    if(field != null && alias != null) {
-      fieldAlias.put(field, alias);
-    }
-    return this;
-  }
-  
-  
-  public XBean alias(String field, String alias) {
-    if(field != null && alias != null) {
-      List<Field> fs = getTypeFields();
-      for(Field f : fs) {
-        if(field.equalsIgnoreCase(f.getName())) {
-          alias(f, alias);
-          break;
-        }
-      }
-    }
-    return this;
-  }
-  
-  
-  public XBean setFieldAsAttribute(Field f, boolean attr) {
-    if(f != null) {
-      if(!attr) {
-        fieldAsAttr.remove(f);
-      } else {
-        fieldAsAttr.add(f);
-      }
-    }
-    return this;
-  }
-  
-  
-  public boolean isFieldAsAttribute(Field f) {
-    return fieldAsAttr.contains(f);
-  }
-  
-  
-  public XBean bind(Field f) {
-    Valid.off(f).forNull().fail(Field.class);
-    XConverter cv = XConverterFactory
-        .getXConverter(f.getType(), f.getName());
-    fieldMap.put(f, cv);
-    return this;
-  }
-  
-  
-  public XBean bind(String field) {
-    Valid.off(field).forEmpty().fail(Field.class);
-    List<Field> fs = getTypeFields();
-    for(Field f : fs) {
-      if(field.equalsIgnoreCase(f.getName())) {
-        bind(f);
-        break;
-      }
-    }
-    return this;
-  }
-  
-  
-  public XBean bind(Field f, XConverter cv) {
-    Valid.off(f)
-        .forNull().fail(Field.class)
-        .valid(cv)
-        .forNull().fail(XConverter.class);
-    fieldMap.put(f, cv);
-    return this;
-  }
-  
-  
-  public XBean bind(String field, XConverter cv) {
-    Valid.off(field)
-        .forEmpty().fail(Field.class)
-        .valid(cv)
-        .forNull().fail(XConverter.class);
-    List<Field> fs = getTypeFields();
-    for(Field f : fs) {
-      if(field.equalsIgnoreCase(f.getName())) {
-        bind(f, cv);
-        break;
-      }
-    }
-    return this;
   }
   
   
@@ -268,9 +141,6 @@ public class XBean<T> extends XTag {
     cv.setAttributeByDefault(attrByDef);
     XTag tag = cv.toXml(value);
     if(tag == null) return null;
-    if(XBean.class.isAssignableFrom(tag.getClass())) {
-      ((XBean)tag).setAttributeByDefault(attrByDef);
-    }
     else if(fieldAsAttr.contains(f)
         && StringTransformerFactory
             .isSupportedValue(f.getType())) {
@@ -293,27 +163,4 @@ public class XBean<T> extends XTag {
     }
   }
   
-  
-  List<Field> getTypeFields() {
-    Field[] fs = type().getDeclaredFields();
-    return Arrays.asList(fs);
-  }
-  
-  
-  public XBean bindAll() {
-    List<Field> fs = getTypeFields();
-    for(Field f : fs) {
-      if(!Modifier.isTransient(f.getModifiers())
-          && !Modifier.isFinal(f.getModifiers())) {
-        bind(f);
-        if(attrByDef && !fieldAsAttr.contains(f)
-            && StringTransformerFactory
-                .isSupportedValue(f.getType())) {
-          fieldAsAttr.add(f);
-        }
-      }
-    }
-    return this;
-  }
-
 }

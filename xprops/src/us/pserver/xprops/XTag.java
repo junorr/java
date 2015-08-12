@@ -107,8 +107,10 @@ public class XTag extends AbstractUnit {
    */
   public XAttr addNewAttr(String name, String value) throws IllegalArgumentException {
     XAttr tag = new XAttr(
-        Valid.off(name).forEmpty().getOrFail("Invalid Tag Name: "),
-        Valid.off(value).forEmpty().getOrFail("Invalid Tag Value: ")
+        Valid.off(name).forEmpty()
+            .getOrFail("Invalid Tag Name: "),
+        Valid.off(value).forEmpty()
+            .getOrFail("Invalid Tag Value: ")
     );
     tag.id().compose(this.id);
     childs.add(tag);
@@ -168,6 +170,15 @@ public class XTag extends AbstractUnit {
   }
   
   
+  private boolean match(XID id1, XID id2) {
+    return id1.toString().toLowerCase()
+        .startsWith(id2.toString().toLowerCase())
+        || id1.getStringID().equalsIgnoreCase(id2.getStringID())
+        || id1.toString().toLowerCase()
+            .endsWith(id2.toString().toLowerCase());
+  }
+  
+  
   /**
    * Find in this tag childs a tag with the specified ID.
    * @param id The child ID to be found.
@@ -181,11 +192,7 @@ public class XTag extends AbstractUnit {
     }
     List<XTag> list = new LinkedList<>();
     for(XTag x : childs) {
-      if(x.id().toString().toLowerCase()
-          .startsWith(id.toString().toLowerCase())
-          || x.value().equalsIgnoreCase(id.getStringID())
-          || x.id().toString().toLowerCase()
-              .endsWith(id.toString().toLowerCase())) {
+      if(match(x.id(), id)) {
         list.add(x);
       }
     }
@@ -207,11 +214,7 @@ public class XTag extends AbstractUnit {
   public XTag findOne(XID id, boolean includeChilds) {
     Valid.off(id).forNull().fail(XID.class);
     for(XTag x : childs) {
-      if(x.id().toString().toLowerCase()
-          .startsWith(id.toString().toLowerCase())
-          || x.value().equalsIgnoreCase(id.getStringID())
-          || x.id().toString().toLowerCase()
-              .endsWith(id.toString().toLowerCase())) {
+      if(match(x.id(), id)) {
         return x;
       }
     }

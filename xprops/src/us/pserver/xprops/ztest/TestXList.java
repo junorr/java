@@ -21,31 +21,29 @@
 
 package us.pserver.xprops.ztest;
 
-import com.thoughtworks.xstream.XStream;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import us.pserver.xprops.XTag;
+import us.pserver.xprops.converter.ListXConverter;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 06/08/2015
+ * @version 1.0 - 12/08/2015
  */
-public class TestXStreamList {
+public class TestXList {
 
-  public static class Some {
-    List<Integer> ints = new LinkedList<>();
-    public String toString() {
-      return "Some{"+ ints.toString()+ "}";
-    }
-  }
-  
   
   public static void main(String[] args) {
-    Some s = new Some();
-    for(int i = 0; i < 10; i++) {
-      s.ints.add(i);
-    }
-    System.out.println(new XStream().toXML(s));
+    List<Integer> list = new ArrayList<>();
+    list.addAll(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
+    System.out.println("* list="+ list);
+    ListXConverter xc = new ListXConverter(list);
+    XTag xl = xc.createXTag();
+    System.out.println("* xml="+ xl.toXml());
+    list = xc.fromXml(xl);
+    System.out.println("* list="+ list);
   }
   
 }

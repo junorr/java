@@ -24,6 +24,7 @@ package us.pserver.xprops.converter;
 import java.lang.reflect.Constructor;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.XBean;
+import us.pserver.xprops.XBeanBuilder;
 import us.pserver.xprops.XTag;
 
 /**
@@ -66,14 +67,14 @@ public class ObjectXConverter extends AbstractXConverter {
   @Override
   public XTag toXml(Object obj) {
     if(obj == null) return null;
-    XBean bean = null;
-    if(name != null) {
-      bean = new XBean(name, obj);
-    } else {
-      bean = new XBean(obj);
-    }
-    bean.setAttributeByDefault(this.isAttributeByDefault());
-    return bean.bindAll().scanObject();
+    
+    return XBeanBuilder.builder(type)
+        .forObject(obj)
+        .named(name)
+        .setAttributeByDefault(this.isAttributeByDefault())
+        .bindAll()
+        .create()
+        .scanObject();
   }
   
   
@@ -85,18 +86,23 @@ public class ObjectXConverter extends AbstractXConverter {
         c.setAccessible(true);
       return c.newInstance(null);
     } catch(Exception e) {
-      e.printStackTrace();
-      return null;
+      throw new IllegalArgumentException(e.getMessage(), e);
     }
   }
 
 
   @Override
   public Object fromXml(XTag tag) {
-    return new XBean(
-        Valid.off(tag).forNull().getOrFail(XTag.class), 
-        createInstance()
-    ).bindAll().scanXml();
+    return XBeanBuilder.builder(type)
+        .forObject(createInstance())
+        .forTag(Valid.off(tag)
+            .forNull()
+            .getOrFail(XTag.class)
+        ).named(name)
+        .setAttributeByDefault(this.isAttributeByDefault())
+        .bindAll()
+        .create()
+        .scanXml();
   }
 
 }

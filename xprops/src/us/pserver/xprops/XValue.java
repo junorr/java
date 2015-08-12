@@ -29,6 +29,7 @@ import java.util.Date;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.transformer.StringTransformer;
 import us.pserver.xprops.transformer.BooleanTransformer;
+import us.pserver.xprops.transformer.CharTransformer;
 import us.pserver.xprops.transformer.ClassTransformer;
 import us.pserver.xprops.transformer.ColorTransformer;
 import us.pserver.xprops.transformer.DateTransformer;
@@ -81,6 +82,17 @@ public class XValue extends XTag {
    */
   public Boolean asBoolean() throws IllegalArgumentException {
     return new BooleanTransformer().fromString(value);
+  }
+  
+  
+  /**
+   * Convert the String value to Character.
+   * @return Character
+   * @throws IllegalArgumentException In case of
+   * error converting to Character.
+   */
+  public Character asChar() throws IllegalArgumentException {
+    return new CharTransformer().fromString(value);
   }
   
   

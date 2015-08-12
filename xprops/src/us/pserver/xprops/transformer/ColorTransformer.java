@@ -74,14 +74,4 @@ public class ColorTransformer extends AbstractStringTransformer<Color> {
         .toString();
   }
   
-  
-  public static void main(String[] args) {
-    ColorTransformer ct = new ColorTransformer();
-    Color c = Color.BLUE;
-    System.out.println("={color}=> "+ c);
-    System.out.println("={string}=> "+ ct.toString(c));
-    c = ct.fromString(ct.toString(c));
-    System.out.println("={color}=> "+ c);
-  }
-  
 }
