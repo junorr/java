@@ -34,7 +34,6 @@ import us.pserver.xprops.transformer.StringTransformerFactory;
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 15/07/2015
  */
 public abstract class XBean<T> extends XTag {
   

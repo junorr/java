@@ -31,7 +31,6 @@ import us.pserver.tools.Valid;
  * XTag represents a Xml tag.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 201508
  */
 public class XTag extends AbstractUnit {
   

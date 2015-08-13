@@ -33,9 +33,9 @@ import us.pserver.tools.UTF8String;
 import us.pserver.tools.Valid;
 
 /**
- *
+ * Implements a xml InputStream reader/generator.
+ * 
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 13/07/2015
  */
 public class XInputStream {
   
@@ -49,6 +49,11 @@ public class XInputStream {
   InputStream input;
 
 
+  /**
+   * Constructor which receives an InputStream
+   * for reading the xml content.
+   * @param input InputStream to be readed.
+   */
   public XInputStream(InputStream input) {
     this.input = Valid.off(input)
         .forNull()
@@ -58,6 +63,11 @@ public class XInputStream {
   }
   
   
+  /**
+   * Constructor which receives the xml root tag
+   * to generate a xml InputStream
+   * @param root the root tag.
+   */
   public XInputStream(XTag root) {
     this.input = null;
     this.root = Valid.off(root)
@@ -67,11 +77,20 @@ public class XInputStream {
   }
   
   
+  /**
+   * Get the xml root tag.
+   * @return root tag
+   */
   public XTag getRoot() {
     return root;
   }
   
   
+  /**
+   * Read and parse the InputStream returning the xml root tag.
+   * @return xml root tag
+   * @throws IOException In case of error reading from InputStream.
+   */
   public XTag read() throws IOException {
     try {
       SAXParser par = SAXParserFactory
@@ -85,6 +104,10 @@ public class XInputStream {
   }
   
   
+  /**
+   * Get the xml InputStream.
+   * @return xml InputStream
+   */
   public InputStream getInputStream() {
     if(input != null) return input;
     Valid.off(root).forNull().fail("Xml Root Tag is Null: ");
@@ -95,6 +118,9 @@ public class XInputStream {
   }
   
   
+  /**
+   * SAX Parsers method handler
+   */
   private void startElement(String name, Attributes attrs) {
     if(name == null || name.trim().isEmpty())
       return;
@@ -119,11 +145,17 @@ public class XInputStream {
   }
   
   
+  /**
+   * SAX Parsers method handler
+   */
   private void endElement(String name) {
     stack.pop();
   }
   
   
+  /**
+   * SAX Parsers method handler
+   */
   private void text(String txt) {
     if(txt == null || txt.trim().isEmpty())
       return;
@@ -133,6 +165,9 @@ public class XInputStream {
   
   
   
+  /**
+   * Internal class for handling SAX Parser calls.
+   */
   private class XmlHandler extends DefaultHandler {
     
     private final XInputStream xfile;

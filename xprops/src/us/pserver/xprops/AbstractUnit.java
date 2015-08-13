@@ -28,7 +28,6 @@ import us.pserver.tools.Valid;
  * with the default behavior.
  * 
  * @author Juno Roesler - juno@pserver.us
- * @version 1.0 - 201508
  */
 public abstract class AbstractUnit implements XUnit {
   

@@ -25,7 +25,6 @@ package us.pserver.xprops;
  * Represents a XML unit (element).
  * 
  * @author Juno Roesler - juno@pserver.us
- * @version 1.0 - 201508
  */
 public interface XUnit {
   

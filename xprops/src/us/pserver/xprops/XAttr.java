@@ -27,7 +27,6 @@ import us.pserver.tools.Valid;
  * XAttr is a xml tag attribute.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 201508
  */
 public class XAttr extends XTag {
 

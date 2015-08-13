@@ -27,7 +27,6 @@ import java.util.Objects;
  * Render a xml CDATA.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 201508
  */
 public class XCData extends XTag {
 

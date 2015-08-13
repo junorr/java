@@ -35,13 +35,18 @@ import us.pserver.xprops.transformer.NameFormatter;
 import us.pserver.xprops.transformer.StringTransformerFactory;
 
 /**
- *
+ * Builder for create XBean objects for biding objects to xml.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 15/07/2015
  */
 public class XBeanBuilder {
   
+  /**
+   * <code>DEFAULT_ATTR_FIELDS = false;</code><br>
+   * Default behavior for render fields as attributes or tags.
+   */
   public static boolean DEFAULT_ATTR_FIELDS = false;
+  
   
   private final Map<Field, XConverter> fieldMap;
   
@@ -64,6 +69,10 @@ public class XBeanBuilder {
   private final Object object;
   
 
+  /**
+   * Default Private constructor.
+   * @param obj The object to be bound.
+   */
   private XBeanBuilder(Object obj) {
     this.object = Valid.off(obj)
         .getOrFail(Object.class);

@@ -22,9 +22,9 @@
 package us.pserver.xprops;
 
 /**
- *
+ * Render a xml comment.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 14/07/2015
  */
 public class XComment extends XCData {
 
@@ -32,11 +32,18 @@ public class XComment extends XCData {
       dashes = "--";
   
   
+  /**
+   * Create an empty xml comment.
+   */
   public XComment() {
     super(dashes);
   }
   
   
+  /**
+   * Create a xml commente with the specified content.
+   * @param str comment
+   */
   public XComment(String str) {
     super(str);
   }

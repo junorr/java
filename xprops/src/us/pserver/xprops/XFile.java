@@ -31,15 +31,19 @@ import us.pserver.tools.Valid;
 import static us.pserver.xprops.XInputStream.XHEADER;
 
 /**
- *
+ * Represents a xml file.
+ * 
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 13/07/2015
  */
 public class XFile extends XInputStream {
   
   private final File file;
   
 
+  /**
+   * Constructor which receives the file name.
+   * @param file File name.
+   */
   public XFile(String file) {
     this(new File(Valid.off(file)
         .forEmpty()
@@ -48,18 +52,34 @@ public class XFile extends XInputStream {
   }
   
   
+  /**
+   * Constructor which receives the file.
+   * @param file 
+   */
   public XFile(File file) {
     super(createFileInput(file));
     this.file = file;
   }
   
   
+  /**
+   * Constructor which receive the file name and the root xml 
+   * tag to be rendered as the file content.
+   * @param file File name
+   * @param root XTag
+   */
   public XFile(String file, XTag root) {
     super(Valid.off(root).forNull().getOrFail(XTag.class));
     this.file = new File(file);
   }
   
   
+  /**
+   * Constructor which receives the file and the root xml 
+   * tag to be rendered as the file content.
+   * @param file File
+   * @param root XTag
+   */
   public XFile(File file, XTag root) {
     super(Valid.off(root).forNull().getOrFail(XTag.class));
     this.file = file;
@@ -79,13 +99,16 @@ public class XFile extends XInputStream {
   }
   
   
-  public boolean save() throws IOException {
-    if(root == null) return false;
+  /**
+   * Save the xml file content.
+   * @throws IOException In case of error saving the file.
+   */
+  public void save() throws IOException {
+    if(root == null) return;
     PrintStream ps = new PrintStream(file);
     ps.printf(XHEADER, root.toXml());
     ps.flush();
     ps.close();
-    return true;
   }
   
 }
