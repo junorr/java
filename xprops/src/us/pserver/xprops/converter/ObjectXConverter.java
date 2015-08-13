@@ -68,8 +68,7 @@ public class ObjectXConverter extends AbstractXConverter {
   public XTag toXml(Object obj) {
     if(obj == null) return null;
     
-    return XBeanBuilder.builder(type)
-        .forObject(obj)
+    return XBeanBuilder.builder(obj)
         .named(name)
         .setAttributeByDefault(this.isAttributeByDefault())
         .bindAll()
@@ -93,14 +92,11 @@ public class ObjectXConverter extends AbstractXConverter {
 
   @Override
   public Object fromXml(XTag tag) {
-    return XBeanBuilder.builder(type)
-        .forObject(createInstance())
-        .forTag(Valid.off(tag)
+    return XBeanBuilder.builder(createInstance())
+        .fromTag(Valid.off(tag)
             .forNull()
             .getOrFail(XTag.class)
         ).named(name)
-        .setAttributeByDefault(this.isAttributeByDefault())
-        .bindAll()
         .create()
         .scanXml();
   }

@@ -44,12 +44,12 @@ public abstract class XBean<T> extends XTag {
   
   private final Map<Field, String> fieldAlias;
   
-  private final List<Field> fieldAsAttr;
+  private final List<Class> typeAsAttr;
   
   private final boolean attrByDef;
   
   
-  XBean(String name, T obj, XTag tag, Map<Field, XConverter> fieldMap, Map<Field, String> fieldAlias, List<Field> fieldAsAttr, boolean attrByDef) {
+  XBean(String name, T obj, XTag tag, Map<Field, XConverter> fieldMap, Map<Field, String> fieldAlias, List<Class> fieldAsAttr, boolean attrByDef) {
     super(name);
     this.object = obj;
     if(tag != null && !tag.childs().isEmpty()) {
@@ -59,7 +59,7 @@ public abstract class XBean<T> extends XTag {
         .getOrFail("Invalid null field map: ");
     this.fieldAlias = Valid.off(fieldAlias).forNull()
         .getOrFail("Invalid null alias map: ");
-    this.fieldAsAttr = Valid.off(fieldAsAttr).forNull()
+    this.typeAsAttr = Valid.off(fieldAsAttr).forNull()
         .getOrFail("Invalid null fields attributes: ");
     this.attrByDef = attrByDef;
   }
@@ -141,12 +141,12 @@ public abstract class XBean<T> extends XTag {
     cv.setAttributeByDefault(attrByDef);
     XTag tag = cv.toXml(value);
     if(tag == null) return null;
-    else if(fieldAsAttr.contains(f)
+    else if(typeAsAttr.contains(f.getType())
         && StringTransformerFactory
             .isSupportedValue(f.getType())) {
       tag = new XAttr(name, tag.value());
     }
-    else {
+    else if(!name.equals(tag.value())) {
       tag = new XTag(name).addChild(tag);
     }
     return tag;

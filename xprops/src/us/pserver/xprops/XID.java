@@ -77,8 +77,8 @@ public class XID {
   
   /**
    * Create a XID with the specified String ID.
-   * @param id}?
-   * @return 
+   * @param id String id
+   * @return XID
    */
   public XID off(String id) {
     return new XID(id);

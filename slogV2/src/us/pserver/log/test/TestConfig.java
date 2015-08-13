@@ -25,6 +25,7 @@ import us.pserver.log.LogLevel;
 import us.pserver.log.conf.XOutput;
 import us.pserver.log.output.StandardOutput;
 import us.pserver.xprops.XBean;
+import us.pserver.xprops.XBeanBuilder;
 
 /**
  *
@@ -37,12 +38,14 @@ public class TestConfig {
   public static void main(String[] args) {
     XOutput out = new XOutput("hello", StandardOutput.class);
     out.getLevels().setLevelEnabled(LogLevel.INFO, true);
-    XBean bean = new XBean(out);
-    bean.setAttributeByDefault(true).setXmlIdentation("  ", 0);
-    System.out.println(bean.bindAll().scanObject().toXml());
-    bean = new XBean(bean, new XOutput());
+    XBeanBuilder.DEFAULT_ATTR_FIELDS = true;
+    XBean bean = XBeanBuilder.builder(out).create();
+    bean.setXmlIdentation("  ", 0);
+    System.out.println(bean.scanObject().toXml());
+    bean = XBeanBuilder.builder(
+        new XOutput(), bean).create();
     //bean.setAttributeByDefault(true);
-    System.out.println(bean.bindAll().scanXml());
+    System.out.println(bean.scanXml());
   }
   
 }

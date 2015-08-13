@@ -50,8 +50,7 @@ public class EnumXConverter extends AbstractXConverter<Enum> {
   @Override
   public XTag toXml(Enum obj) {
     Valid.off(obj).forNull().fail();
-    XBean x = XBeanBuilder.builder(obj.getDeclaringClass())
-        .forObject(obj)
+    XBean x = XBeanBuilder.builder(obj)
         .named(obj.name())
         .setAttributeByDefault(true)
         .bindAll()
@@ -66,9 +65,8 @@ public class EnumXConverter extends AbstractXConverter<Enum> {
     try {
       Method vof = type.getMethod("valueOf", String.class);
       Enum e = (Enum) vof.invoke(null, tag.value());
-      XBean x = XBeanBuilder.builder(e.getDeclaringClass())
-          .forTag(tag)
-          .forObject(e)
+      XBean x = XBeanBuilder.builder(e)
+          .fromTag(tag)
           .setAttributeByDefault(true)
           .bindAll()
           .create();

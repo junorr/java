@@ -149,7 +149,7 @@ public class XOutput {
 
   @Override
   public String toString() {
-    return "ConfOutput{" + "name=" + name + ", type=" + type + ", levels=" + levels + '}';
+    return "XOutput{" + "name=" + name + ", type=" + type + ", levels=" + levels + '}';
   }
   
 }

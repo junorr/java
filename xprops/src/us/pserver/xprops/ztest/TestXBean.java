@@ -76,11 +76,19 @@ public class TestXBean {
     System.out.println("----------------------------");
     NetEndpoint ne = new NetEndpoint();
     ne.address = new InetSocketAddress("localhost", 5775);
-    XBean bean = new XBean("net", ne).setAttributeByDefault(true);
-    bean.bindAll().scanObject();
+    XBean bean = XBeanBuilder.builder(ne)
+        .named("net")
+        .setAttributeByDefault(true)
+        .bindAll()
+        .create();
+    bean.scanObject();
     bean.setXmlIdentation("  ", 0);
     System.out.println(bean.toXml());
-    System.out.println(new XBean(bean, new NetEndpoint()).bindAll().scanXml());
+    bean = XBeanBuilder.builder(new NetEndpoint())
+        .fromTag(bean)
+        .bindAll()
+        .create();
+    System.out.println(bean.scanXml());
     
     
     System.out.println("----------------------------");
@@ -91,17 +99,15 @@ public class TestXBean {
       whosts.ports[i] = i + 80;
     }
     System.out.println("WrongHosts: "+ whosts);
-    XBean bean1 = XBeanBuilder.builder(whosts.getClass())
-        .forObject(whosts)
+    XBean bean1 = XBeanBuilder.builder(whosts)
         .named("hosts")
         .setAttributeByDefault(true)
         .bindAll()
         .create();
     bean1.scanObject();
     System.out.println(bean1.toXml());
-    XBean bean2 = XBeanBuilder.builder(WrongHosts.class)
-        .forObject(new WrongHosts())
-        .forTag(bean1)
+    XBean bean2 = XBeanBuilder.builder(new WrongHosts())
+        .fromTag(bean1)
         .setAttributeByDefault(true)
         .bindAll()
         .create();
@@ -113,13 +119,16 @@ public class TestXBean {
     host.endpoint.address = new InetSocketAddress("10.100.0.102", 8080);
     System.out.println(host);
     
-    XBean beanHost = XBeanBuilder.builder(Host.class)
-        .forObject(new Host())
-        .
-        new XBean(host).setAttributeByDefault(true);
-    System.out.println(beanHost.bindAll().scanObject().toXml());
-    beanHost = new XBean(beanHost, new Host());
-    System.out.println(beanHost.bindAll().scanXml());
+    XBean beanHost = XBeanBuilder.builder(host)
+        .setAttributeByDefault(true)
+        .bindAll()
+        .create();
+    System.out.println(beanHost.scanObject().toXml());
+    beanHost = XBeanBuilder.builder(new Host())
+        .fromTag(beanHost)
+        .bindAll()
+        .create();
+    System.out.println(beanHost.scanXml());
     
     
     System.out.println("----------------------------");
@@ -135,11 +144,17 @@ public class TestXBean {
     }
     System.out.println(hosts);
     
-    bean = new XBean(hosts).setAttributeByDefault(true);
-    System.out.println(bean.bindAll().scanObject().setXmlIdentation("  ", 0).toXml());
+    bean = XBeanBuilder.builder(hosts)
+        .setAttributeByDefault(true)
+        .bindAll()
+        .create();
+    System.out.println(bean.scanObject().setXmlIdentation("  ", 0).toXml());
     
-    bean = new XBean(bean, new Hosts());
-    System.out.println(bean.bindAll().scanXml());
+    bean = XBeanBuilder.builder(new Hosts())
+        .fromTag(bean)
+        .bindAll()
+        .create();
+    System.out.println(bean.scanXml());
   }
   
 }

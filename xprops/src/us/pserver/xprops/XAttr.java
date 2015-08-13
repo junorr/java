@@ -24,18 +24,30 @@ package us.pserver.xprops;
 import us.pserver.tools.Valid;
 
 /**
- *
+ * XAttr is a xml tag attribute.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/07/2015
+ * @version 1.0 - 201508
  */
 public class XAttr extends XTag {
 
   
+  /**
+   * Create an attribute with the specified 
+   * name and no value.
+   * @param name Attribute name
+   */
   public XAttr(String name) {
     super(name);
   }
   
   
+  /**
+   * Default Constructor create an attribute with 
+   * the specified name and value.
+   * @param name Attribute name
+   * @param value Attribute value.
+   */
   public XAttr(String name, String value) {
     super(name);
     this.childs().add(new XValue(
@@ -45,11 +57,19 @@ public class XAttr extends XTag {
   }
   
   
+  /**
+   * Get the attribute name.
+   * @return attribute name
+   */
   public String attrName() {
     return value;
   }
   
   
+  /**
+   * Get the attribute value.
+   * @return attribute value
+   */
   public XValue attrValue() {
     return (childs().isEmpty() 
         ? null : firstChild().xvalue()
@@ -57,6 +77,11 @@ public class XAttr extends XTag {
   }
   
   
+  /**
+   * Set the attribute value.
+   * @param value attribute value.
+   * @return Setted value.
+   */
   public XValue attrValue(String value) {
     XValue v = new XValue(Valid.off(value)
         .forEmpty().getOrFail("Invalid Attr Value: ")
@@ -67,6 +92,10 @@ public class XAttr extends XTag {
   }
   
   
+  /**
+   * Get the attribute value.
+   * @return attribute value
+   */
   @Override
   public XValue xvalue() {
     return attrValue();

@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import us.pserver.tools.timer.Timer;
 import us.pserver.xprops.XBean;
+import us.pserver.xprops.XBeanBuilder;
 import us.pserver.xprops.XFile;
 import us.pserver.xprops.XTag;
 
@@ -93,8 +94,8 @@ public class TestXmlFile {
     }
     System.out.println(hosts);
     
-    XBean bean = new XBean(hosts);
-    System.out.println(bean.bindAll().scanObject().setXmlIdentation("  ", 0).toXml());
+    XBean bean = XBeanBuilder.builder(hosts).create();
+    System.out.println(bean.scanObject().setXmlIdentation("  ", 0).toXml());
     
     XFile xfile = new XFile(file, bean);
     System.out.printf("xfile.save(): %s%n", xfile.save());
@@ -159,10 +160,12 @@ public class TestXmlFile {
     fillWrapperList(3, wp);
     System.out.println("* wp -->"+ wp);
     
-    XBean bean = new XBean(wp);
+    XBean bean = XBeanBuilder.builder(wp)
+        .setAttributeByDefault(true)
+        .create();
     System.out.println("* xml -->");
     Timer tm = new Timer.Nanos().start();
-    String sxml = bean.bindAll().scanObject().toXml();
+    String sxml = bean.scanObject().toXml();
     tm.stop();
     System.out.println("* xml length: "+ sxml.length());
     System.out.println("* time encoding to xml: "+ tm);
@@ -177,12 +180,13 @@ public class TestXmlFile {
     tm.lapAndStop();
     System.out.println("* time parsing xml file: "+ tm);
     
-    bean = new XBean(tag, new Wrapper());
+    bean = XBeanBuilder.builder(new Wrapper())
+        .fromTag(tag).create();
     tm.clear().start();
-    Object o = bean.bindAll().scanXml();
+    Object o = bean.scanXml();
     tm.stop();
     System.out.println("* time XBean bind and scan xml: "+ tm);
-    System.out.println("* wp -->"+ bean.bindAll().scanXml());
+    System.out.println("* wp -->"+ bean.scanXml());
   }
   
 }

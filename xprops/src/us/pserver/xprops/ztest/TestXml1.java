@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import us.pserver.xprops.XBean;
+import us.pserver.xprops.XBeanBuilder;
 
 /**
  *
@@ -77,11 +78,13 @@ public class TestXml1 {
   public static void main(String[] args) {
     Wrapper w = wrapper();
     System.out.println(w);
-    XBean bean = new XBean(w);
-    bean.setAttributeByDefault(true).bindAll().scanObject().setXmlIdentation("  ", 0);
+    XBean bean = XBeanBuilder.builder(w)
+        .setAttributeByDefault(true)
+        .create();
+    bean.scanObject().setXmlIdentation("  ", 0);
     System.out.println(bean.toXml());
-    bean = new XBean(bean, new Wrapper());
-    bean.setAttributeByDefault(true).bindAll();
+    bean = XBeanBuilder.builder(new Wrapper())
+        .fromTag(bean).create();
     System.out.println(bean.scanXml());
   }
   

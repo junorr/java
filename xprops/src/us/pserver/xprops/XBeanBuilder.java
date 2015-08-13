@@ -41,11 +41,17 @@ import us.pserver.xprops.transformer.StringTransformerFactory;
  */
 public class XBeanBuilder {
   
+  public static boolean DEFAULT_ATTR_FIELDS = false;
+  
   private final Map<Field, XConverter> fieldMap;
+  
+  private final Map<Class, XConverter> converterMap;
   
   private final Map<Field, String> fieldAlias;
   
-  private final List<Field> fieldAsAttr;
+  private final List<Class> typeAsAttr;
+  
+  private final List<Class> exclist;
   
   private final Class type;
   
@@ -55,22 +61,35 @@ public class XBeanBuilder {
   
   private String name;
   
-  private Object object;
+  private final Object object;
   
 
-  private XBeanBuilder(Class type) {
-    this.type = Valid.off(type).forNull()
-        .getOrFail(Class.class);
+  private XBeanBuilder(Object obj) {
+    this.object = Valid.off(obj)
+        .getOrFail(Object.class);
+    this.type = object.getClass();
     this.fieldMap = new HashMap<>();
+    this.converterMap = new HashMap<>();
     this.fieldAlias = new HashMap<>();
-    this.fieldAsAttr = new LinkedList<>();
-    this.attrByDef = false;
+    this.typeAsAttr = new LinkedList<>();
+    this.exclist = new LinkedList<>();
+    this.attrByDef = DEFAULT_ATTR_FIELDS;
     this.tag = null;
   }
   
   
-  public static  XBeanBuilder builder(Class type) {
-    return new XBeanBuilder(type);
+  public static  XBeanBuilder builder(Object obj) {
+    return new XBeanBuilder(obj);
+  }
+  
+  
+  public static XBeanBuilder builder(Object obj, XTag tag) {
+    return new XBeanBuilder(obj).fromTag(tag);
+  }
+  
+  
+  public static void setDefaultAttributeFields(boolean defAttr) {
+    DEFAULT_ATTR_FIELDS = defAttr;
   }
   
   
@@ -84,7 +103,7 @@ public class XBeanBuilder {
     if(attrByDef) {
       if(!fieldMap.isEmpty()) {
         for(Field f : fieldMap.keySet()) {
-          fieldAsAttr.add(f);
+          typeAsAttr.add(f.getType());
         }
         if(tag != null && !tag.childs().isEmpty()) {
           tag.childs().clear();
@@ -106,14 +125,7 @@ public class XBeanBuilder {
   }
   
   
-  public XBeanBuilder forObject(Object obj) {
-    object = Valid.off(obj).forNull()
-        .getOrFail(type);
-    return this;
-  }
-  
-  
-  public XBeanBuilder forTag(XTag tag) {
+  public XBeanBuilder fromTag(XTag tag) {
     this.tag = Valid.off(tag).forNull()
         .getOrFail(XTag.class);
     return this;
@@ -124,9 +136,12 @@ public class XBeanBuilder {
     if(name == null || name.isEmpty()) {
       name = new NameFormatter().format(type);
     }
+    if(fieldMap.isEmpty()) {
+      this.bindAll();
+    }
     return new XBean(name, object, 
         tag, fieldMap, fieldAlias, 
-        fieldAsAttr, attrByDef
+        typeAsAttr, attrByDef
     ){};
   }
   
@@ -153,20 +168,70 @@ public class XBeanBuilder {
   }
   
   
-  public XBeanBuilder setFieldAsAttribute(Field f, boolean attr) {
-    if(f != null) {
+  public XBeanBuilder setTypeAsAttribute(Class cls, boolean attr) {
+    if(cls != null) {
       if(!attr) {
-        fieldAsAttr.remove(f);
+        typeAsAttr.remove(cls);
       } else {
-        fieldAsAttr.add(f);
+        typeAsAttr.add(cls);
       }
     }
     return this;
   }
   
   
-  public boolean isFieldAsAttribute(Field f) {
-    return fieldAsAttr.contains(f);
+  public boolean isTypeAsAttribute(Field f) {
+    return typeAsAttr.contains(f);
+  }
+  
+  
+  public XBeanBuilder excludeType(Class cls) {
+    if(cls != null) {
+      exclist.add(cls);
+    }
+    return this;
+  }
+  
+  
+  public boolean isExcluded(Class cls) {
+    if(cls != null && !exclist.isEmpty()) {
+      for(Class c : exclist) {
+        if(c.isAssignableFrom(cls))
+          return true;
+      }
+    }
+    return false;
+  }
+  
+  
+  public List<Class> excludeList() {
+    return exclist;
+  }
+  
+  
+  public XBeanBuilder registerConverter(Class type, XConverter conv) {
+    if(type != null && conv != null) {
+      converterMap.put(type, conv);
+    }
+    return this;
+  }
+  
+  
+  public XConverter unregisterConverter(Class type) {
+    if(type != null) {
+      return converterMap.remove(type);
+    }
+    return null;
+  }
+  
+  
+  public boolean containsConverter(Class type) {
+    return converterMap.containsKey(type);
+  }
+  
+  
+  public boolean containsConverter(XConverter cv) {
+    return converterMap.containsValue(cv);
   }
   
   
@@ -174,6 +239,9 @@ public class XBeanBuilder {
     Valid.off(f).forNull().fail(Field.class);
     XConverter cv = XConverterFactory
         .getXConverter(f.getType(), f.getName());
+    if(containsConverter(f.getType())) {
+      cv = converterMap.get(f.getType());
+    }
     fieldMap.put(f, cv);
     return this;
   }
@@ -218,6 +286,18 @@ public class XBeanBuilder {
   }
   
   
+  public boolean isBound(Field f) {
+    return fieldMap.containsKey(f);
+  }
+  
+  
+  public XBeanBuilder unbind(Field f) {
+    if(f != null)
+      fieldMap.remove(f);
+    return this;
+  }
+  
+  
   private List<Field> getTypeFields() {
     Field[] fs = type.getDeclaredFields();
     return Arrays.asList(fs);
@@ -226,14 +306,17 @@ public class XBeanBuilder {
   
   public XBeanBuilder bindAll() {
     List<Field> fs = getTypeFields();
+    fieldMap.clear();
     for(Field f : fs) {
       if(!Modifier.isTransient(f.getModifiers())
-          && !Modifier.isFinal(f.getModifiers())) {
+          && !Modifier.isFinal(f.getModifiers())
+          && !isExcluded(f.getType())) {
         bind(f);
-        if(attrByDef && !fieldAsAttr.contains(f)
+        if(attrByDef 
+            && !typeAsAttr.contains(f.getType())
             && StringTransformerFactory
                 .isSupportedValue(f.getType())) {
-          fieldAsAttr.add(f);
+          typeAsAttr.add(f.getType());
         }
       }
     }

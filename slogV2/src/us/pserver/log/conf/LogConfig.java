@@ -29,6 +29,7 @@ import java.util.List;
 import us.pserver.log.Log;
 import us.pserver.tools.Valid;
 import us.pserver.xprops.XBean;
+import us.pserver.xprops.XBeanBuilder;
 import us.pserver.xprops.XFile;
 
 /**
@@ -65,17 +66,19 @@ public class LogConfig {
   public void read() throws IOException {
     XFile xf = new XFile(file);
     LogConfig conf = new LogConfig(file);
-    XBean bean = new XBean(xf.read(), conf);
+    XBean bean = XBeanBuilder.builder(conf, xf.read()).create();
     logs.clear();
-    conf = (LogConfig) bean.bindAll().scanXml();
+    conf = (LogConfig) bean.scanXml();
     logs.addAll(conf.getXLogList());
   }
   
   
   public void save() throws IOException {
-    XBean bean = new XBean(this).setAttributeByDefault(true);
+    XBean bean = XBeanBuilder.builder(this)
+        .setAttributeByDefault(true)
+        .create();
     XFile xf = new XFile(file, 
-        bean.bindAll().scanObject().setXmlIdentation("  ", 0)
+        bean.scanObject().setXmlIdentation("  ", 0)
     );
     xf.save();
   }

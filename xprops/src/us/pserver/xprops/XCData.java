@@ -24,9 +24,10 @@ package us.pserver.xprops;
 import java.util.Objects;
 
 /**
- *
+ * Render a xml CDATA.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 14/07/2015
+ * @version 1.0 - 201508
  */
 public class XCData extends XTag {
 
@@ -40,18 +41,30 @@ public class XCData extends XTag {
   private final StringBuilder builder;
   
   
+  /**
+   * Constructor without arguments.
+   */
   public XCData() {
     super(cdata);
     builder = new StringBuilder();
   }
   
   
+  /**
+   * Default constructor receives the CDATA content.
+   * @param str 
+   */
   public XCData(String str) {
     this();
     builder.append(str);
   }
   
   
+  /**
+   * Append the String to the CDATA content.
+   * @param str String to append
+   * @return This modified XCData instance.
+   */
   public XCData append(String str) {
     if(str != null)
       builder.append(str);
@@ -59,6 +72,11 @@ public class XCData extends XTag {
   }
   
   
+  /**
+   * Append the object (::toString()) to the CDATA content.
+   * @param str object to append
+   * @return This modified XCData instance.
+   */
   public XCData append(Object obj) {
     if(obj != null)
       builder.append(Objects.toString(obj));
@@ -66,17 +84,30 @@ public class XCData extends XTag {
   }
   
   
+  /**
+   * Append the char to the CDATA content.
+   * @param str char to append
+   * @return This modified XCData instance.
+   */
   public XCData append(char c) {
     builder.append(c);
     return this;
   }
   
   
+  /**
+   * Get the internal StringBuilder.
+   * @return StringBuilder.
+   */
   public StringBuilder stringBuilder() {
     return builder;
   }
   
   
+  /**
+   * Get the CDATA content length
+   * @return content length
+   */
   public int length() {
     return builder.length();
   }
