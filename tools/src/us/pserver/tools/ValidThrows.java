@@ -533,36 +533,90 @@ public class ValidThrows<T, E extends Exception> {
   }
   
   
+  /**
+   * <code>MSG_NULL = "Invalid Null Object: %s";</code><br>
+   * Default message for null test.
+   */
   private static final String MSG_NULL = "Invalid Null Object: %s";
 
+  /**
+   * <code>MSG_EMPTY = "Invalid Empty %s: %s";</code><br>
+   * Default message for empty test.
+   */
   private static final String MSG_EMPTY = "Invalid Empty %s: %s";
   
+  /**
+   * <code>MSG_ARG = "Invalid Argument: %s=%s";</code><br>
+   * Default message for invalid argument.
+   */
   private static final String MSG_ARG = "Invalid Argument: %s=%s";
   
+  /**
+   * <code>MSG_TYPE = "Invalid %s: %s";</code><br>
+   * Default message for invalid type.
+   */
   private static final String MSG_TYPE = "Invalid %s: %s";
   
+  /**
+   * <code>MSG_TEST = "Test Not Passed for %s: %s";</code><br>
+   * Default message for test not passed.
+   */
   private static final String MSG_TEST = "Test Not Passed for %s: %s";
   
+  /**
+   * <code>MSG_INSTANCE = "%s is Not a Type of %s";</code><br>
+   * Default message for invalid instance type.
+   */
   private static final String MSG_INSTANCE = "%s is Not a Type of %s";
   
+  /**
+   * <code>MSG_EXC_TYPE = "Exception Type not has a <init>( String ) Constructor: %s";</code><br>
+   * Default message for invalid exception type.
+   */
   private static final String MSG_EXC_TYPE = "Exception Type not has a <init>( String ) Constructor: %s";
   
+  /**
+   * <code>MSG_LESSER = "Argument is Lesser Then %2$s (%1$s < %2$s)";</code><br>
+   * Default message for argument lesser then.
+   */
   private static final String MSG_LESSER = "Argument is Lesser Then %2$s (%1$s < %2$s)";
   
+  /**
+   * <code>MSG_LESSER_EQ = "Argument is Lesser Or Equals %2$s (%1$s <= %2$s)";</code><br>
+   * Default message for argument lesser or equals then.
+   */
   private static final String MSG_LESSER_EQ = "Argument is Lesser Or Equals %2$s (%1$s <= %2$s)";
   
+  /**
+   * <code>MSG_GREATER = "Argument is Greater Then %2$s (%1$s > %2$s)";</code><br>
+   * Default message for argument greater then.
+   */
   private static final String MSG_GREATER = "Argument is Greater Then %2$s (%1$s > %2$s)";
   
+  /**
+   * <code>MSG_GREATER_EQ = "Argument is Greater Or Equals %2$s (%1$s >= %2$s)";</code><br>
+   * Default message for argument greater or equals then.
+   */
   private static final String MSG_GREATER_EQ = "Argument is Greater Or Equals %2$s (%1$s >= %2$s)";
   
+  /**
+   * <code>MSG_BETWEEN = "%s is Not Between Range [%s..%s]";</code><br>
+   * Default message for argument not between range.
+   */
   private static final String MSG_BETWEEN = "%s is Not Between Range [%s..%s]";
   
+  /**
+   * <code>MSG_NOT_EQUALS = "%s is Not Equals %s (%1$s != %2$s)";</code><br>
+   * Default message for argument not equals.
+   */
   private static final String MSG_NOT_EQUALS = "%s is Not Equals %s (%1$s != %2$s)";
 
 
   
   
-  
+  /**
+   * Unchecked Exception type for validation errors.
+   */
   public static class ValidatorException extends IllegalArgumentException {
     
     public ValidatorException(String msg) {
