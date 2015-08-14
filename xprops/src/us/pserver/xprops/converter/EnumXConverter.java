@@ -28,20 +28,28 @@ import us.pserver.xprops.XBeanBuilder;
 import us.pserver.xprops.XTag;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 04/08/2015
+ * Converter for Enums.
+ * @author Juno Roesler - juno@pserver.us
  */
 public class EnumXConverter extends AbstractXConverter<Enum> {
   
   private final Class<? extends Enum> type;
   
-  
+ 
+  /**
+   * Default constructor receives the type of 
+   * enums to convert.
+   * @param cls Type of Enums to convert.
+   */
   public EnumXConverter(Class<? extends Enum> cls) {
     type = Valid.off(cls).forNull().getOrFail();
   }
   
   
+  /**
+   * Get the type of the enums to convert.
+   * @return The type of the enums to convert.
+   */
   public Class<? extends Enum> getType() {
     return type;
   }

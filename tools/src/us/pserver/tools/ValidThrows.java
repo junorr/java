@@ -29,9 +29,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *
+ * Utility class for argument validations and exception throwing on fails.
+ * @param <T> Type of the validated object.
+ * @param <E> Type of the exception to be throwed on fail.
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/08/2015
  */
 public class ValidThrows<T, E extends Exception> {
 
@@ -46,11 +47,30 @@ public class ValidThrows<T, E extends Exception> {
   private final boolean error;
   
   
+  /**
+   * Default constructor receives the object 
+   * to validated and the type of the exception 
+   * to be throwed on fail.
+   * @param obj The object to be validated.
+   * @param exc The type of the exception to be throwed on fail.
+   */
   public ValidThrows(T obj, Class<E> exc) {
     this(obj, null, null, exc, false);
   }
   
   
+  /**
+   * Protected constructor which receives the object 
+   * to validated, an optional String message for the exception, 
+   * a default message for the exception, the type of the exception 
+   * to be throwed on fail and a boolean indicating if a previos 
+   * validation fail.
+   * @param obj The object to be validated.
+   * @param msg Optional message for the exception.
+   * @param defmsg Default message for the exception.
+   * @param exc The type of the exception to be throwed on fail.
+   * @param error boolean indicating if a previous validation fail.
+   */
   ValidThrows(T obj, String msg, String defmsg, Class<E> exc, boolean error) {
     if(exc == null) {
       throw new ValidatorException(MSG_ARG, "exc", exc);
@@ -63,16 +83,37 @@ public class ValidThrows<T, E extends Exception> {
   }
   
   
+  /**
+   * Creates a new ValidThrows object for the specified object and exception type.
+   * @param <X> Type of the object.
+   * @param <Y> Type of the exception.
+   * @param obj The object to be validated.
+   * @param exc The exception type to be throwed.
+   * @return a new ValidThrows object.
+   */
   public static <X,Y extends Exception> ValidThrows<X,Y> off(X obj, Class<Y> exc) {
     return new ValidThrows(obj, exc);
   }
   
   
+  /**
+   * Creates a new ValidThrows object for the specified object and exception type.
+   * @param <X> Type of the object.
+   * @param <Y> Type of the exception.
+   * @param obj The object to be validated.
+   * @param exc The exception type to be throwed.
+   * @return a new ValidThrows object.
+   */
   public <X,Y extends Exception> ValidThrows<X,Y> valid(X obj, Class<Y> exc) {
     return new ValidThrows(obj, exc);
   }
   
   
+  /**
+   * Configure an error message for the exception on fail.
+   * @param msg an error message for the exception on fail.
+   * @return a new configured ValidThrows object.
+   */
   public ValidThrows<T,E> message(final String msg) {
     if(msg == null || msg.isEmpty()) {
       throw new ValidatorException(MSG_ARG, "msg", msg);
@@ -85,6 +126,12 @@ public class ValidThrows<T, E extends Exception> {
   }
   
   
+  /**
+   * Configure an error message for the exception on fail.
+   * @param msg an error message for the exception on fail.
+   * @param args Objects to be interpolated in the string message.
+   * @return a new configured ValidThrows object.
+   */
   public ValidThrows<T,E> message(final String msg, final Object ... args) {
     if(msg == null || msg.isEmpty()) {
       throw new ValidatorException(MSG_ARG, "msg", msg);
@@ -93,6 +140,11 @@ public class ValidThrows<T, E extends Exception> {
   }
   
   
+  /**
+   * Configure an error message with the class name.
+   * @param cls the class which name will compose the message.
+   * @return a new configured ValidThrows object.
+   */
   public ValidThrows<T,E> message(final Class cls) {
     if(cls == null) {
       throw new ValidatorException(MSG_ARG, "cls", cls);
@@ -101,26 +153,49 @@ public class ValidThrows<T, E extends Exception> {
   }
   
   
+  /**
+   * Get the object used in validations.
+   * @return the object used in validations.
+   */
   public T get() {
     return obj;
   }
   
   
+  /**
+   * Get the configured message for the exception.
+   * @return the configured message for the exception.
+   */
   public String message() {
     return message;
   }
   
   
+  /**
+   * Get the type of the exception to be throwed.
+   * @return the type of the exception to be throwed.
+   */
   public Class<E> exceptionType() {
     return exc;
   }
   
   
+  /**
+   * Check if there was an validation error.
+   * @return <code>true</code> if the
+   * there was an error on validation,
+   * <code>false</code> otherwise.
+   */
   public boolean hasError() {
     return error;
   }
   
   
+  /**
+   * 
+   * @return
+   * @throws NoSuchMethodException 
+   */
   private Constructor getExceptionConstructor() throws NoSuchMethodException {
     Constructor[] cst = exc.getDeclaredConstructors();
     Constructor found = null;

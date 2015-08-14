@@ -29,13 +29,23 @@ import us.pserver.xprops.transformer.StringTransformer;
 import us.pserver.xprops.transformer.StringTransformerFactory;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 30/07/2015
+ * Converter for File objects.
+ * @author Juno Roesler - juno@pserver.us
  */
 public class ListXConverter<T> extends AbstractXConverter<List<T>> {
 
-  private static final String ITEM = "item.", CLASS = "class";
+  /**
+   * <code>ITEM = "item.";</code>
+   * String contant for an xml list item tag.
+   */
+  private static final String ITEM = "item.";
+  
+  /**
+   * <code>CLASS = "class";</code>
+   * String contant for an class tag attribute.
+   */
+  private static final String CLASS = "class";
+  
   
   private final List<T> list;
   
@@ -46,6 +56,10 @@ public class ListXConverter<T> extends AbstractXConverter<List<T>> {
   private XTag tag;
   
   
+  /**
+   * Default constructor receives the List to convert to xml. 
+   * @param ls the List to convert to xml. 
+   */
   public ListXConverter(List<T> ls) {
     tag = new XTag("list");
     list = Valid.off(ls).forEmpty().getOrFail(List.class);
@@ -54,6 +68,12 @@ public class ListXConverter<T> extends AbstractXConverter<List<T>> {
   }
   
   
+  /**
+   * Constructor which receives the type of list items 
+   * and the List to store converted tags.
+   * @param type The type of list items.
+   * @param ls The list for store the converted list items.
+   */
   protected ListXConverter(Class<T> type, List<T> ls) {
     tag = new XTag("list");
     list = Valid.off(ls).forNull().getOrFail(List.class);
@@ -61,16 +81,28 @@ public class ListXConverter<T> extends AbstractXConverter<List<T>> {
   }
   
   
+  /**
+   * Get the type of list item values.
+   * @return the type of list item values.
+   */
   public Class<T> getType() {
     return type;
   }
   
   
+  /**
+   * Get the List used by the converter.
+   * @return java.util.List
+   */
   public List<T> getList() {
     return list;
   }
   
   
+  /**
+   * Create a xml tag representing the converted list.
+   * @return xml tag representing the converted list.
+   */
   public XTag createXTag() {
     if(list.isEmpty()) return tag;
     tag.childs().clear();

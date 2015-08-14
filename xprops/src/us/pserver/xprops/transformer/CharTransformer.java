@@ -24,9 +24,8 @@ package us.pserver.xprops.transformer;
 import us.pserver.tools.Valid;
 
 /**
- *
+ * String transformer for char types.
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/08/2015
  */
 public class CharTransformer extends AbstractStringTransformer<Character> {
 

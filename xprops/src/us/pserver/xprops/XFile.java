@@ -31,8 +31,7 @@ import us.pserver.tools.Valid;
 import static us.pserver.xprops.XInputStream.XHEADER;
 
 /**
- * Represents a xml file.
- * 
+ * Represents a xml file that can be created or readed, from or to a xml tag.
  * @author Juno Roesler - juno@pserver.us
  */
 public class XFile extends XInputStream {
@@ -54,7 +53,7 @@ public class XFile extends XInputStream {
   
   /**
    * Constructor which receives the file.
-   * @param file 
+   * @param file The xml file.
    */
   public XFile(File file) {
     super(createFileInput(file));

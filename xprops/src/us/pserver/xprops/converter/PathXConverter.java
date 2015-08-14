@@ -28,9 +28,8 @@ import us.pserver.xprops.XValue;
 import us.pserver.xprops.transformer.PathTransformer;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 30/07/2015
+ * Converter for java.nio.file.Path objects
+ * @author Juno Roesler - juno@pserver.us
  */
 public class PathXConverter extends AbstractXConverter<Path> {
 

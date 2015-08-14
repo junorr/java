@@ -25,9 +25,8 @@ import java.io.File;
 import us.pserver.tools.Valid;
 
 /**
- *
+ * String transformer for File types.
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/07/2015
  */
 public class FileTransformer extends AbstractStringTransformer<File> {
 

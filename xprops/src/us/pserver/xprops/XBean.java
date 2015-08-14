@@ -32,7 +32,9 @@ import us.pserver.xprops.converter.ObjectXConverter;
 import us.pserver.xprops.transformer.StringTransformerFactory;
 
 /**
- *
+ * XBean object can bind java beans objects 
+ * to xml tag and back again.
+ * 
  * @author Juno Roesler - juno.rr@gmail.com
  */
 public abstract class XBean<T> extends XTag {
@@ -45,10 +47,32 @@ public abstract class XBean<T> extends XTag {
   
   private final List<Class> typeAsAttr;
   
-  private final boolean attrByDef;
+  private boolean attrByDef;
   
   
-  XBean(String name, T obj, XTag tag, Map<Field, XConverter> fieldMap, Map<Field, String> fieldAlias, List<Class> fieldAsAttr, boolean attrByDef) {
+  /**
+   * Protected constructor, receives all data 
+   * to represent an java bean object as xml.
+   * @param name Custom name for the object (may be null).
+   * @param obj object to be bound (not null)
+   * @param tag Optional XTag data source to populate 
+   * the object fields (may be null)
+   * @param fieldMap Map with bound fields (not null).
+   * @param fieldAlias Map with fields aliases (not null).
+   * @param fieldAsAttr List with types to be rendered as 
+   * tag attributes (not null).
+   * @param attrByDef Configure the behavior of this
+   * XBean on converting fields to attributes or tags.
+   */
+  XBean(
+      String name, 
+      T obj, 
+      XTag tag, 
+      Map<Field, XConverter> fieldMap, 
+      Map<Field, String> fieldAlias, 
+      List<Class> fieldAsAttr,
+      boolean attrByDef
+  ) {
     super(name);
     this.object = obj;
     if(tag != null && !tag.childs().isEmpty()) {
@@ -60,20 +84,34 @@ public abstract class XBean<T> extends XTag {
         .getOrFail("Invalid null alias map: ");
     this.typeAsAttr = Valid.off(fieldAsAttr).forNull()
         .getOrFail("Invalid null fields attributes: ");
-    this.attrByDef = attrByDef;
   }
   
 
+  /**
+   * Get the bound object.
+   * @return the bound object.
+   */
   public T object() {
     return object;
   }
   
   
+  /**
+   * Get the type of the bound object.
+   * @return the type of the bound object.
+   */
   public Class type() {
     return object.getClass();
   }
   
   
+  /**
+   * Scan the bound object fields and
+   * creates a representing xml data structure, 
+   * where this XBean is the root tag.
+   * @return This instance of XBean, which is the
+   * root tag of the created xml data structure.
+   */
   public XBean scanObject() {
     if(fieldMap.isEmpty())
       return this;
@@ -89,6 +127,11 @@ public abstract class XBean<T> extends XTag {
   }
   
   
+  /**
+   * Scan this XBean xml data structure for
+   * populating fields of the bound object.
+   * @return The populated bound object.
+   */
   public T scanXml() {
     Set<Map.Entry<Field,XConverter>> flds = 
         this.fieldMap.entrySet();
@@ -105,6 +148,12 @@ public abstract class XBean<T> extends XTag {
   }
   
   
+  /**
+   * Set a field value using reflection.
+   * @param f The field
+   * @param cv The converter
+   * @param xv The tag with the field value.
+   */
   private void set(Field f, XConverter cv, XTag xv) {
     if(f == null || cv == null || xv == null)
       return;
@@ -122,6 +171,13 @@ public abstract class XBean<T> extends XTag {
   }
   
   
+  /**
+   * Get the field value via reflection.
+   * @param f The field
+   * @return The field value.
+   * @throws IllegalAccessException In case
+   * of reflection error.
+   */
   private Object getFieldValue(Field f) throws IllegalAccessException {
     if(!f.isAccessible()) {
       f.setAccessible(true);
@@ -130,6 +186,13 @@ public abstract class XBean<T> extends XTag {
   }
   
   
+  /**
+   * Convert the value object to a xml tag.
+   * @param f The field
+   * @param value The object value to be converted
+   * @param cv The converter
+   * @return The XTag created from the object.
+   */
   private XTag doConvert(Field f, Object value, XConverter cv) {
     if(value == null) return null;
 
@@ -152,6 +215,14 @@ public abstract class XBean<T> extends XTag {
   }
   
   
+  /**
+   * Create a xml tag from the field
+   * @param f The field
+   * @param cv The converter
+   * @return The created xml tag
+   * @throws IllegalArgumentException in case of
+   * error converting the field value to a xml tag.
+   */
   private XTag makeTag(Field f, XConverter cv) throws IllegalArgumentException {
     try {
       Object val = getFieldValue(f);

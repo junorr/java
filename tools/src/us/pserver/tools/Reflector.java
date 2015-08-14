@@ -9,8 +9,7 @@ import java.util.List;
 
 /**
  * Reflection utils
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 2011.04.01
+ * @author Juno Roesler - juno@pserver.us
  */
 public class Reflector {
   

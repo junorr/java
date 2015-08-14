@@ -109,3 +109,5 @@
 /byteBuddy/build/
 /tools/nbproject/private/
 /tools/build/
+/xprops/dist/
+/tools/dist/

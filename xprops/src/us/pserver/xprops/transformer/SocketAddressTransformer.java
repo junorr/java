@@ -26,9 +26,8 @@ import java.net.SocketAddress;
 import us.pserver.tools.Valid;
 
 /**
- *
+ * String transformer for SocketAddress types.
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/07/2015
  */
 public class SocketAddressTransformer extends AbstractStringTransformer<SocketAddress> {
 

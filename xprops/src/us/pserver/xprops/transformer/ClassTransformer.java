@@ -24,21 +24,59 @@ package us.pserver.xprops.transformer;
 import us.pserver.tools.Valid;
 
 /**
- *
+ * String transformer for class types.
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/07/2015
  */
 public class ClassTransformer extends AbstractStringTransformer<Class> {
   
-  private static final String 
-      CLASS_BOOLEAN = "boolean",
-      CLASS_BYTE = "byte",
-      CLASS_CHAR = "char",
-      CLASS_SHORT = "short",
-      CLASS_INT = "int",
-      CLASS_LONG = "long",
-      CLASS_FLOAT = "float",
-      CLASS_DOUBLE = "double";
+  /**
+   * <code>CLASS_BOOLEAN = "boolean";</code><br>
+   * String for boolean class types.
+   */
+  private static final String CLASS_BOOLEAN = "boolean";
+  
+  /**
+   * <code>CLASS_BYTE = "byte";</code><br>
+   * String for byte class types.
+   */
+  private static final String CLASS_BYTE = "byte";
+  
+  /**
+   * <code>CLASS_CHAR = "char";</code><br>
+   * String for char class types.
+   */
+  private static final String CLASS_CHAR = "char";
+  
+  /**
+   * <code>CLASS_SHORT = "short";</code><br>
+   * String for short class types.
+   */
+  private static final String CLASS_SHORT = "short";
+  
+  /**
+   * <code>CLASS_INT = "int";</code><br>
+   * String for int class types.
+   */
+  private static final String CLASS_INT = "int";
+  
+  /**
+   * <code>CLASS_LONG = "long";</code><br>
+   * String for long class types.
+   */
+  private static final String CLASS_LONG = "long";
+  
+  /**
+   * <code>CLASS_FLOAT = "float";</code><br>
+   * String for float class types.
+   */
+  private static final String CLASS_FLOAT = "float";
+  
+  /**
+   * <code>CLASS_DOUBLE = "double";</code><br>
+   * String for double class types.
+   */
+  private static final String CLASS_DOUBLE = "double";
+  
   
 
   @Override

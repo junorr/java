@@ -30,11 +30,29 @@ import java.util.Objects;
  */
 public class XCData extends XTag {
 
-  protected static final String 
-      cdata = "CDATA", 
-      ex = "!",
-      openbrk = "[", 
-      closebrk = "]";
+  /**
+   * <code>cdata = "CDATA";</code><br>
+   * Constant String for CDATA elements.
+   */
+  protected static final String cdata = "CDATA";
+  
+  /**
+   * <code>ex = "&#33;";</code><br>
+   * Constant String for exclamation mark.
+   */
+  protected static final String ex = "!";
+  
+  /**
+   * <code>openbrk = "[";</code><br>
+   * Constant String for open bracket.
+   */
+  protected static final String openbrk = "[";
+  
+  /**
+   * <code>closebrk = "]";</code><br>
+   * Constant String for close bracket.
+   */
+  protected static final String closebrk = "[";
   
   
   private final StringBuilder builder;
@@ -51,7 +69,7 @@ public class XCData extends XTag {
   
   /**
    * Default constructor receives the CDATA content.
-   * @param str 
+   * @param str Initial CData content.
    */
   public XCData(String str) {
     this();
@@ -73,7 +91,7 @@ public class XCData extends XTag {
   
   /**
    * Append the object (::toString()) to the CDATA content.
-   * @param str object to append
+   * @param obj object to append
    * @return This modified XCData instance.
    */
   public XCData append(Object obj) {
@@ -85,7 +103,7 @@ public class XCData extends XTag {
   
   /**
    * Append the char to the CDATA content.
-   * @param str char to append
+   * @param c char to append
    * @return This modified XCData instance.
    */
   public XCData append(char c) {

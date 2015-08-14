@@ -22,15 +22,29 @@
 package us.pserver.xprops.transformer;
 
 /**
- *
+ * A transformer class for converting objects 
+ * to string and back again.
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/07/2015
- * @param <T>
+ * @param <T> The type of the object to transform.
  */
 public interface StringTransformer<T> {
 
+  /**
+   * Convert a String representation to an object.
+   * @param str Object string representation.
+   * @return The converted object.
+   * @throws IllegalArgumentException In case of
+   * error converting to object.
+   */
   public T fromString(String str) throws IllegalArgumentException;
 
+  /**
+   * Convert an object to the String representation.
+   * @param obj Object to convert.
+   * @return The String representation of the object.
+   * @throws IllegalArgumentException In case of error
+   * converting the object.
+   */
   public String toString(T obj) throws IllegalArgumentException;
   
 }

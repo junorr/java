@@ -28,17 +28,26 @@ import java.util.Date;
 import us.pserver.tools.Valid;
 
 /**
- *
+ * String transformer for Date types.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/07/2015
  */
 public class DateTransformer extends AbstractStringTransformer<Date> {
   
-  private static final String format = "yyy-MM-dd HH:mm:ss.SSS";
+  /**
+   * <code>format = "yyyy-MM-dd HH:mm:ss:SSS";</code><br>
+   * Default format for Dates.
+   */
+  private static final String format = "yyyy-MM-dd HH:mm:ss.SSS";
+  
   
   private final SimpleDateFormat sdf;
   
   
+  /**
+   * Constructor which receives the default date format.
+   * @param format default date format.
+   */
   public DateTransformer(String format) {
     sdf = new SimpleDateFormat(Valid.off(format)
         .forEmpty().getOrFail("Invalid Date Format: ")
@@ -46,11 +55,18 @@ public class DateTransformer extends AbstractStringTransformer<Date> {
   }
   
   
+  /**
+   * Default construcotr without arguments.
+   */
   public DateTransformer() {
     this(format);
   }
   
   
+  /**
+   * Return the DateFormat object.
+   * @return DateFormat.
+   */
   public DateFormat dateFormat() {
     return sdf;
   }

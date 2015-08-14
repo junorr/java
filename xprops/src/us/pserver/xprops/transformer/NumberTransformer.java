@@ -28,9 +28,8 @@ import java.util.Objects;
 import us.pserver.tools.Valid;
 
 /**
- *
+ * String transformer for Number types.
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/07/2015
  */
 public class NumberTransformer implements StringTransformer<Number> {
   
@@ -63,6 +62,14 @@ public class NumberTransformer implements StringTransformer<Number> {
   }
   
   
+  /**
+   * Create a DecimalFormat object with the specified format, 
+   * char decimal separator and char group separator.
+   * @param format The number format.
+   * @param decimal The char decimal separator.
+   * @param group The char group separator.
+   * @return The DecimalFormat create.
+   */
   private DecimalFormat decimal(String format, char decimal, char group) {
     DecimalFormat df = new DecimalFormat(format);
     DecimalFormatSymbols dfs = df.getDecimalFormatSymbols();
@@ -73,6 +80,13 @@ public class NumberTransformer implements StringTransformer<Number> {
   }
   
   
+  /**
+   * Create a DecimalFormat object with the specified format, 
+   * and char decimal separator.
+   * @param format The number format.
+   * @param decimal The char decimal separator.
+   * @return The DecimalFormat create.
+   */
   private DecimalFormat decimal(String format, char decimal) {
     DecimalFormat df = new DecimalFormat(format);
     DecimalFormatSymbols dfs = df.getDecimalFormatSymbols();
@@ -82,6 +96,15 @@ public class NumberTransformer implements StringTransformer<Number> {
   }
   
   
+  /**
+   * Parse a String into a number using the specified 
+   * DecimalFormat object.
+   * @param src The String to be parsed.
+   * @param df The DecimalFormat used to parse.
+   * @return The parsed Number.
+   * @throws IllegalArgumentException In case of
+   * error parsing the String.
+   */
   private Number parse(final String src, final DecimalFormat df) throws IllegalArgumentException {
     try {
       return df.parse(src);

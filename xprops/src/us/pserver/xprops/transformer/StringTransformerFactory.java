@@ -28,12 +28,18 @@ import java.nio.file.Path;
 import java.util.Date;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 30/07/2015
+ * Factory class for getting default string transformers.
+ * @author Juno Roesler - juno@pserver.us
  */
 public class StringTransformerFactory {
 
+  
+  /**
+   * Get a transformer accordingly to the specified type.
+   * @param <T> The type of the class
+   * @param type The type of object to transform.
+   * @return A StringTransfomer for the specified type.
+   */
   public static <T> StringTransformer<T> getTransformer(Class<T> type) {
     if(Boolean.class.isAssignableFrom(type) 
         || boolean.class.isAssignableFrom(type))
@@ -65,6 +71,14 @@ public class StringTransformerFactory {
   }
   
   
+  /**
+   * Check if the specified type is a java 
+   * primitive or object wrapper equivalent.
+   * @param cls The type to be checked as primitive.
+   * @return <code>true</code> if the specified type
+   * is a java primitive or a object wrapper equivalent,
+   * <code>false</code> otherwise.
+   */
   public static boolean isPrimitive(Class cls) {
     boolean primitive = false;
     for(Class c : primitives) {
@@ -74,6 +88,15 @@ public class StringTransformerFactory {
   }
   
   
+  /**
+   * Check if the specified type is a java 
+   * primitive or an object natively supported by
+   * with default converters/transformers.
+   * @param type The type to be checked as primitive.
+   * @return <code>true</code> if the specified type
+   * is a java primitive or a object wrapper equivalent,
+   * <code>false</code> otherwise.
+   */
   public static boolean isSupportedValue(Class type) {
     if(isPrimitive(type)) return true;
     for(Class c : supported) {
@@ -84,6 +107,9 @@ public class StringTransformerFactory {
   }
   
   
+  /**
+   * Array with supported types.
+   */
   static final Class[] supported = {
       Boolean.class,
       Byte.class,
@@ -101,6 +127,9 @@ public class StringTransformerFactory {
   };
   
 
+  /**
+   * Array with java primitive types.
+   */
   static final Class[] primitives = {
       boolean.class,
       byte.class,

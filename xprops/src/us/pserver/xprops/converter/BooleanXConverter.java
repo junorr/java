@@ -26,9 +26,8 @@ import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 30/07/2015
+ * Converter for boolean values.
+ * @author Juno Roesler - juno@pserver.us
  */
 public class BooleanXConverter extends AbstractXConverter<Boolean> {
 

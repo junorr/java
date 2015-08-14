@@ -24,9 +24,8 @@ package us.pserver.xprops.transformer;
 import us.pserver.tools.Valid;
 
 /**
- *
+ * String transformer for boolean types.
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/07/2015
  */
 public class BooleanTransformer extends AbstractStringTransformer<Boolean> {
 

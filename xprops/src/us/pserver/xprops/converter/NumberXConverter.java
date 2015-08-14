@@ -27,20 +27,26 @@ import us.pserver.xprops.XValue;
 import us.pserver.xprops.transformer.NumberTransformer;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 30/07/2015
+ * Converter for numbers.
+ * @author Juno Roesler - juno@pserver.us
  */
 public class NumberXConverter extends AbstractXConverter<Number> {
   
   private Class type;
   
   
+  /**
+   * Default constructor without arguments.
+   */
   public NumberXConverter() {
     type = null;
   }
   
   
+  /**
+   * Constructor which receives the type of the number to convert.
+   * @param type the type of the number to convert.
+   */
   public NumberXConverter(Class type) {
     this.type = type;
   }

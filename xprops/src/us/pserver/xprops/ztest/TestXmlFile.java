@@ -98,7 +98,8 @@ public class TestXmlFile {
     System.out.println(bean.scanObject().setXmlIdentation("  ", 0).toXml());
     
     XFile xfile = new XFile(file, bean);
-    System.out.printf("xfile.save(): %s%n", xfile.save());
+    System.out.printf("xfile.save()%n");
+    xfile.save();
   }
   
   
@@ -172,7 +173,8 @@ public class TestXmlFile {
     
     String file2 = "/home/juno/xf.xml";
     XFile xf = new XFile(file2, bean.setXmlIdentation("  ", 0));
-    System.out.println("* xf.save(): "+ xf.save());
+    System.out.println("* xf.save()");
+    xf.save();
     
     xf = new XFile(file2);
     tm.clear().start();

@@ -32,15 +32,19 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 04/08/2015
+ * Utility class for sorting Maps.
+ * @author Juno Roesler - juno@pserver.us
+ * @param <T> The type of key/value for map sorting.
  */
 public class MapSorter<T> {
 
   private final Comparator<T> comp;
   
-  
+
+  /**
+   * Constructor receives the comparator for key or values.
+   * @param compare The comparator used for sorting.
+   */
   public MapSorter(Comparator<T> compare) {
     comp = Valid.off(compare)
         .forNull()
@@ -48,11 +52,20 @@ public class MapSorter<T> {
   }
   
   
+  /**
+   * Get the comparator used for sorting.
+   * @return the comparator used for sorting.
+   */
   public Comparator<T> getComparator() {
     return comp;
   }
   
   
+  /**
+   * Sort the specified map by its key type.
+   * @param <V> The type of the map values.
+   * @param map The map to sort.
+   */
   public <V> void sortByKey(Map<T,V> map) {
     Set<Entry<T,V>> entries = map.entrySet();
     Comparator<Entry<T,V>> korder = new Comparator<Entry<T,V>>() {
@@ -71,6 +84,11 @@ public class MapSorter<T> {
   }
   
   
+  /**
+   * Sort the specified map by its value type.
+   * @param <V> The type of the map keys.
+   * @param map The map to sort.
+   */
   public <V> void sortByValue(Map<V,T> map) {
     Set<Entry<V,T>> entries = map.entrySet();
     Comparator<Entry<V,T>> vorder = new Comparator<Entry<V,T>>() {
@@ -89,6 +107,11 @@ public class MapSorter<T> {
   }
   
   
+  /**
+   * Return a new sorted map by its key type.
+   * @param <V> The type of the map values.
+   * @param map The map to sort.
+   */
   public <V> Map<T,V> newSortedByKey(Map<T,V> map) {
     TreeMap<T,V> sorted = new TreeMap<>(comp);
     Set<Entry<T,V>> entries = map.entrySet();
@@ -99,6 +122,11 @@ public class MapSorter<T> {
   }
   
   
+  /**
+   * Return a new sorted map by its value type.
+   * @param <V> The type of the map keys.
+   * @param map The map to sort.
+   */
   public <V> Map<V,T> newSortedByValue(Map<V,T> map) {
     Set<Entry<V,T>> entries = map.entrySet();
     Comparator<Entry<V,T>> vorder = new Comparator<Entry<V,T>>() {

@@ -26,9 +26,8 @@ import java.nio.file.Paths;
 import us.pserver.tools.Valid;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/07/2015
+ * String transformer for file Path types.
+ * @author Juno Roesler - juno@pserver.us
  */
 public class PathTransformer extends AbstractStringTransformer<Path> {
 

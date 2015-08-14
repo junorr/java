@@ -35,7 +35,7 @@ import us.pserver.xprops.transformer.NameFormatter;
 import us.pserver.xprops.transformer.StringTransformerFactory;
 
 /**
- * Builder for create XBean objects for biding objects to xml.
+ * Builder for create XBean objects (bind java beans objects to xml).
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  */
@@ -87,26 +87,72 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Factory method receives the object to be bound.
+   * @param obj The object to be bound.
+   * @return A new instance of XBeanBuilder.
+   */
   public static  XBeanBuilder builder(Object obj) {
     return new XBeanBuilder(obj);
   }
   
   
+  /**
+   * Factory method receives the object to be bound 
+   * and xml tag data source.
+   * @param obj The object to be bound.
+   * @param tag Xml tag data source.
+   * @return A new instance of XBeanBuilder.
+   */
   public static XBeanBuilder builder(Object obj, XTag tag) {
     return new XBeanBuilder(obj).fromTag(tag);
   }
   
   
+  /**
+   * Set the default behavior of all XBeanBuilder instances, to bind
+   * primitives and supported fields to tag attributes 
+   * or xml tags itself. Note this is a static method and
+   * defines the default behavior of all instances of XBeanBuilder.
+   * To change the behavior of one particular XBeanBuilder instance, use 
+   * the <code>setAttributeByDefault( boolean )</code> method.
+   * @param defAttr If <code>true</code>, all primitives and
+   * supported types are represented as xml tag attributes, 
+   * otherwise fields are represented as xml tags.
+   * @see us.pserver.xprops.XBeanBuilder#setAttributeByDefault(boolean) 
+   */
   public static void setDefaultAttributeFields(boolean defAttr) {
     DEFAULT_ATTR_FIELDS = defAttr;
   }
   
   
+  /**
+   * Check if the default behavior of this XBeanBuilder 
+   * instance is to bind primitives and supported fields 
+   * to tag attributes or xml tags itself. 
+   * @return <code>true</code> if all primitives and
+   * supported types are represented as xml tag attributes, 
+   * <code>false</code> case fields are represented as xml tags.
+   * @see us.pserver.xprops.XBeanBuilder#setAttributeByDefault(boolean) 
+   */
   public boolean isAttributeByDefault () {
     return attrByDef;
   }
   
   
+  /**
+   * Set the default behavior of this XBeanBuilder instance to bind
+   * primitives and supported fields to tag attributes 
+   * or xml tags itself. Note this method defines the default 
+   * behavior to all fields bound in this XBeanBuilder instance.
+   * To change the behavior of just one particular field type, use 
+   * the <code>setTypeAsAttribute( Class, boolean )</code> method.
+   * @param attr If <code>true</code>, all primitives and
+   * supported types are represented as xml tag attributes, 
+   * otherwise fields are represented as xml tags.
+   * @return This modified instance of XBeanBuilder.
+   * @see us.pserver.xprops.XBeanBuilder#setTypeAsAttribute(java.lang.Class, boolean) 
+   */
   public XBeanBuilder setAttributeByDefault(boolean attr) {
     this.attrByDef = attr;
     if(attrByDef) {
@@ -123,17 +169,32 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Set a custom name for the bound object.
+   * @param name custom name for the bound object.
+   * @return This modified XBeanBuilder instance.
+   */
   public XBeanBuilder named(String name) {
     this.name = name;
     return this;
   }
   
   
+  /**
+   * Get the custom name for the bound object.
+   * @return custom name for the bound object
+   */
   public String getName() {
     return name;
   }
   
   
+  /**
+   * Set a xml tag data source to populate
+   * the bound object instance.
+   * @param tag xml tag data source
+   * @return This modified instance of XBeanBuilder.
+   */
   public XBeanBuilder fromTag(XTag tag) {
     this.tag = Valid.off(tag).forNull()
         .getOrFail(XTag.class);
@@ -141,6 +202,10 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Create the XBean object.
+   * @return the created XBean object.
+   */
   public XBean create() {
     if(name == null || name.isEmpty()) {
       name = new NameFormatter().format(type);
@@ -155,6 +220,12 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Configure an alias for the specified field.
+   * @param field The field that will be renamed.
+   * @param alias The field alias.
+   * @return This modified instance of XBeanBuilder.
+   */
   public XBeanBuilder alias(Field field, String alias) {
     if(field != null && alias != null) {
       fieldAlias.put(field, alias);
@@ -163,6 +234,12 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Configure an alias for the specified field.
+   * @param field The field name that will be renamed.
+   * @param alias The field alias.
+   * @return This modified instance of XBeanBuilder.
+   */
   public XBeanBuilder alias(String field, String alias) {
     if(field != null && alias != null) {
       List<Field> fs = getTypeFields();
@@ -177,6 +254,15 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Configure the specified type to be represented
+   * as a tag attribute or as a xml tag itself.
+   * @param cls The configured type.
+   * @param attr <code>true</code> for represent
+   * the specified type as a tag attribute, <code>false</code>
+   * to represent the type as a xml tag.
+   * @return This modified instance of XBeanBuilder.
+   */
   public XBeanBuilder setTypeAsAttribute(Class cls, boolean attr) {
     if(cls != null) {
       if(!attr) {
@@ -189,11 +275,26 @@ public class XBeanBuilder {
   }
   
   
-  public boolean isTypeAsAttribute(Field f) {
-    return typeAsAttr.contains(f);
+  /**
+   * Check if the specified type is configured
+   * to be represented as a tag attribute or as
+   * a xml tag itself.
+   * @param cls The type to be verified.
+   * @return <code>true</code> if the specified
+   * type is configured to be represented as a
+   * tag attribute, <code>false</code> otherwise.
+   */
+  public boolean isTypeAsAttribute(Class cls) {
+    return typeAsAttr.contains(cls);
   }
   
   
+  /**
+   * Configure the specified type to be ignored
+   * when binding fields to xml.
+   * @param cls The type to be ignored on binding.
+   * @return This modified instance of XBeanBuilder.
+   */
   public XBeanBuilder excludeType(Class cls) {
     if(cls != null) {
       exclist.add(cls);
@@ -202,6 +303,14 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Verify if the specified type is configured to
+   * be ignored on binding or not.
+   * @param cls The type to be verified.
+   * @return <code>true</code> is the specified type
+   * is configured to be ignored on binding, 
+   * <code>false</code> otherwise.
+   */
   public boolean isExcluded(Class cls) {
     if(cls != null && !exclist.isEmpty()) {
       for(Class c : exclist) {
@@ -213,11 +322,21 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Get the exclusion types list.
+   * @return The exclusion types list.
+   */
   public List<Class> excludeList() {
     return exclist;
   }
   
   
+  /**
+   * Register a custom converter for the specified type.
+   * @param type The type to be converted 
+   * @param conv The custom converter.
+   * @return This modified instance of XBeanBuilder
+   */
   public XBeanBuilder registerConverter(Class type, XConverter conv) {
     if(type != null && conv != null) {
       converterMap.put(type, conv);
@@ -226,6 +345,12 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Unregister a previously configure converter for the
+   * specified type.
+   * @param type The type to unregister a custom converter.
+   * @return The unregistered converter fo the specified type.
+   */
   public XConverter unregisterConverter(Class type) {
     if(type != null) {
       return converterMap.remove(type);
@@ -234,16 +359,23 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Verify if the specified type has a registered converter.
+   * @param type The type to be virified
+   * @return <code>true</code> if the specified type has
+   * a registered converter, <code>false</code> otherwise.
+   */
   public boolean containsConverter(Class type) {
     return converterMap.containsKey(type);
   }
   
   
-  public boolean containsConverter(XConverter cv) {
-    return converterMap.containsValue(cv);
-  }
-  
-  
+  /**
+   * Bind the specified field to be represented
+   * as xml.
+   * @param f The field to be bound.
+   * @return This modified instance of XBeanBuilder.
+   */
   public XBeanBuilder bind(Field f) {
     Valid.off(f).forNull().fail(Field.class);
     XConverter cv = XConverterFactory
@@ -256,6 +388,12 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Bind the specified field to be represented
+   * as xml.
+   * @param field The field name to be bound.
+   * @return This modified instance of XBeanBuilder.
+   */
   public XBeanBuilder bind(String field) {
     Valid.off(field).forEmpty().fail(Field.class);
     List<Field> fs = getTypeFields();
@@ -269,6 +407,13 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Bind the field to be represented
+   * as xml, specifying a custom converter.
+   * @param f The field to be bound.
+   * @param cv A custom converter for the field.
+   * @return This modified instance of XBeanBuilder.
+   */
   public XBeanBuilder bind(Field f, XConverter cv) {
     Valid.off(f)
         .forNull().fail(Field.class)
@@ -279,6 +424,13 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Bind the field to be represented
+   * as xml, specifying a custom converter.
+   * @param field The field name to be bound.
+   * @param cv A custom converter for the field.
+   * @return This modified instance of XBeanBuilder.
+   */
   public XBeanBuilder bind(String field, XConverter cv) {
     Valid.off(field)
         .forEmpty().fail(Field.class)
@@ -295,11 +447,23 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Verify if the field is bound.
+   * @param f The field to be verified.
+   * @return <code>true</code> if the field
+   * is already bound, <code>false</code>
+   * otherwise.
+   */
   public boolean isBound(Field f) {
     return fieldMap.containsKey(f);
   }
   
   
+  /**
+   * Unbind the field.
+   * @param f The field to be unbound.
+   * @return This modified instance of XBeanBuilder.
+   */
   public XBeanBuilder unbind(Field f) {
     if(f != null)
       fieldMap.remove(f);
@@ -313,6 +477,11 @@ public class XBeanBuilder {
   }
   
   
+  /**
+   * Bind ALL non final, transient and not 
+   * excluded fields of the object.
+   * @return This modified instance of XBeanBuilder.
+   */
   public XBeanBuilder bindAll() {
     List<Field> fs = getTypeFields();
     fieldMap.clear();

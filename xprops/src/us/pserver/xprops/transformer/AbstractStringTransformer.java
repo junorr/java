@@ -25,9 +25,11 @@ import java.util.Objects;
 import us.pserver.tools.Valid;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 13/07/2015
+ * Abstract implementation for StringTransformer, 
+ * provides default behavior for the
+ * <code>toString( T )</code> method with
+ * <code>Objects::toString( Object )</code>.
+ * @author Juno Roesler - juno@pserver.us
  */
 public abstract class AbstractStringTransformer<T> implements StringTransformer<T> {
 

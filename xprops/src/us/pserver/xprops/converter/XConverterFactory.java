@@ -31,17 +31,29 @@ import java.util.List;
 import us.pserver.xprops.transformer.StringTransformerFactory;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 30/07/2015
+ * Factory for get default converters accordingly to the object type.
+ * @author Juno Roesler - juno@pserver.us
  */
 public class XConverterFactory {
 
+  /**
+   * Get a default converter for the specified type.
+   * @param <T> The type of the class.
+   * @param type The class type.
+   * @return a converter for the specified type.
+   */
   public static <T> XConverter<T> getXConverter(Class<T> type) {
     return getXConverter(type, null);
   }
   
   
+  /**
+   * Get a default converter for the specified type.
+   * @param <T> The type of the class.
+   * @param name A custom name supplied for ObjectXConverter if it is the case.
+   * @param type The class type.
+   * @return a converter for the specified type.
+   */
   public static <T> XConverter<T> getXConverter(Class<T> type, String name) {
     if(Boolean.class.isAssignableFrom(type) 
         || boolean.class.isAssignableFrom(type))
@@ -76,6 +88,14 @@ public class XConverterFactory {
   }
   
   
+  /**
+   * Check if the specified type is a java 
+   * primitive or object wrapper equivalent.
+   * @param cls The type to be checked as primitive.
+   * @return <code>true</code> if the specified type
+   * is a java primitive or a object wrapper equivalent,
+   * <code>false</code> otherwise.
+   */
   public static boolean isPrimitive(Class cls) {
     return StringTransformerFactory.isPrimitive(cls);
   }

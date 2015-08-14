@@ -24,18 +24,41 @@ package us.pserver.xprops.converter;
 import us.pserver.xprops.XTag;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 30/07/2015
+ * A converter class for tag-objects conversion.
+ * @author Juno Roesler - juno@pserver.us
  */
 public interface XConverter<T> {
 
+  /**
+   * Convert the object to a xml tag.
+   * @param obj The object to convert.
+   * @return The converted tag.
+   */
   public XTag toXml(T obj);
   
+  /**
+   * Convert the xml tag to a object.
+   * @param tag The xml tag to convert
+   * @return The converted object.
+   */
   public T fromXml(XTag tag);
   
+  /**
+   * Verify if this converter should
+   * convert objects to tag attributes or not.
+   * @return <code>true</code> if this converter
+   * converts objects to tag attributes, <code>false</code>
+   * otherwise.
+   */
   public boolean isAttributeByDefault();
   
-  public XConverter setAttributeByDefault(boolean attr);
+  /**
+   * Set if this converter should convert objects to 
+   * tag attributes or xml tags.
+   * @param attr <code>true</code> for this converter
+   * convert objects to tag attributes, <code>false</code>
+   * otherwise.
+   */
+  public void setAttributeByDefault(boolean attr);
   
 }

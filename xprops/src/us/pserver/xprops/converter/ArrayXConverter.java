@@ -23,7 +23,6 @@ package us.pserver.xprops.converter;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import us.pserver.tools.Valid;
@@ -31,9 +30,8 @@ import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 31/07/2015
+ * Converter for converter arrays to xml tags.
+ * @author Juno Roesler - juno@pserver.us
  */
 public class ArrayXConverter extends AbstractXConverter {
   
@@ -42,12 +40,20 @@ public class ArrayXConverter extends AbstractXConverter {
   private ListXConverter xlist;
   
   
+  /**
+   * Default constructor receives the content object type of the array.
+   * @param type the content object type of the array.
+   */
   public ArrayXConverter(Class type) {
     Valid.off(type).forNull().fail(Class.class);
     this.type = (type.isArray() ? type.getComponentType() : type);
   }
   
   
+  /**
+   * Get the content object type of the array.
+   * @return the content object type of the array.
+   */
   public Class getType() {
     return type;
   }
@@ -82,6 +88,11 @@ public class ArrayXConverter extends AbstractXConverter {
   }
   
   
+  /**
+   * Convert an object array to List.
+   * @param obj The object to convert
+   * @return The converted List
+   */
   private List toList(Object obj) {
     List list = new ArrayList();
     int len = Array.getLength(obj);
@@ -92,6 +103,11 @@ public class ArrayXConverter extends AbstractXConverter {
   }
   
   
+  /**
+   * Convert a List to an object array.
+   * @param list The List to convert.
+   * @return The converted object array.
+   */
   private Object toArray(List list) {
     Object array = null;
     array = Array.newInstance(type, list.size());

@@ -39,8 +39,13 @@ import us.pserver.tools.Valid;
  */
 public class XInputStream {
   
+  /**
+   * <code>XHEADER = "&lt;&#63;xml version='1.0' encoding='UTF-8'&#63;&gt;";</code><br>
+   * Common header for xml files.
+   */
   public static final String XHEADER = 
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>%n%s%n";
+  
   
   XTag root;
   

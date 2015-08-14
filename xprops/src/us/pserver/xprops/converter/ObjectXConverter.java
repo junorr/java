@@ -23,12 +23,11 @@ package us.pserver.xprops.converter;
 
 import java.lang.reflect.Constructor;
 import us.pserver.tools.Valid;
-import us.pserver.xprops.XBean;
 import us.pserver.xprops.XBeanBuilder;
 import us.pserver.xprops.XTag;
 
 /**
- *
+ * Converter for java bens objects.
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 31/07/2015
  */
@@ -39,6 +38,10 @@ public class ObjectXConverter extends AbstractXConverter {
   private final String name;
   
   
+  /**
+   * Constructor which receives the type of the object to convert.
+   * @param type the type of the object to convert.
+   */
   public ObjectXConverter(Class type) {
     this.type = Valid.off(type)
         .forNull().getOrFail(Class.class);
@@ -46,6 +49,12 @@ public class ObjectXConverter extends AbstractXConverter {
   }
   
   
+  /**
+   * Constructor which receives the type of the object 
+   * to convert and a custom name for the object.
+   * @param type the type of the object to convert.
+   * @param name custom name for the object.
+   */
   public ObjectXConverter(Class type, String name) {
     this.type = Valid.off(type)
         .forNull().getOrFail(Class.class);
@@ -54,11 +63,19 @@ public class ObjectXConverter extends AbstractXConverter {
   }
   
   
+  /**
+   * Get the type of the objects to convert.
+   * @return the type of the objects to convert.
+   */
   public Class getType() {
     return type;
   }
   
   
+  /**
+   * Get the configured custom name for the object.
+   * @return the configured custom name for the object.
+   */
   public String getName() {
     return name;
   }
@@ -77,6 +94,12 @@ public class ObjectXConverter extends AbstractXConverter {
   }
   
   
+  /**
+   * Create an instance of the object type using the 
+   * default no args constructor (throwing 
+   * IllegalArgumentException if does not exists).
+   * @return The create object.
+   */
   private Object createInstance() {
     try {
       Constructor c = type.getDeclaredConstructor(null);

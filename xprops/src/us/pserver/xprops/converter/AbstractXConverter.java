@@ -24,9 +24,8 @@ package us.pserver.xprops.converter;
 import us.pserver.xprops.XTag;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 07/08/2015
+ * Abstract implementation of a XConverter.
+ * @author Juno Roesler - juno@pserver.us
  */
 public abstract class AbstractXConverter<T> implements XConverter<T> {
 
@@ -40,9 +39,8 @@ public abstract class AbstractXConverter<T> implements XConverter<T> {
 
 
   @Override
-  public XConverter<T> setAttributeByDefault(boolean attr) {
+  public void setAttributeByDefault(boolean attr) {
     this.attr = attr;
-    return this;
   }
 
 }
