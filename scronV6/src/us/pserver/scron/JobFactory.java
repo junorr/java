@@ -47,7 +47,7 @@ public abstract class JobFactory {
     }
     @Override
     public void error(Throwable th) {
-      th.printStackTrace();
+      throw new RuntimeException(th);
     }
   }
   

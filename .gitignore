@@ -111,3 +111,8 @@
 /tools/build/
 /xprops/dist/
 /tools/dist/
+/logging/nbproject/private/
+/logging/dist/
+/logging/build/
+/test-logging/nbproject/private/
+/test-logging/build/

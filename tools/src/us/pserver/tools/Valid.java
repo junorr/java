@@ -2,43 +2,59 @@
  * Direitos Autorais Reservados (c) 2011 Juno Roesler
  * Contato: juno.rr@gmail.com
  * 
- * Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os
- * termos da Licença Pública Geral Menor do GNU conforme publicada pela Free
- * Software Foundation; tanto a versão 2.1 da Licença, ou qualquer
- * versão posterior.
+ * Esta biblioteca e um software livre; voce pode redistribui-la e/ou modifica-la sob os
+ * termos da Licenca Publica Geral Menor do GNU conforme publicada pela Free
+ * Software Foundation; tanto a versao 2.1 da Licenca, ou qualquer
+ * versao posterior.
  * 
- * Esta biblioteca é distribuída na expectativa de que seja útil, porém, SEM
- * NENHUMA GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE
- * OU ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA. Consulte a Licença Pública
+ * Esta biblioteca eh distribuida na expectativa de que seja util, porem, SEM
+ * NENHUMA GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE
+ * OU ADEQUACAO A UMA FINALIDADE ESPECIFICA. Consulte a Licen�a Publica
  * Geral Menor do GNU para mais detalhes.
  * 
- * Você deve ter recebido uma cópia da Licença Pública Geral Menor do GNU junto
- * com esta biblioteca; se não, acesse 
+ * Voce deve ter recebido uma copia da Licen�a Publica Geral Menor do GNU junto
+ * com esta biblioteca; se nao, acesse 
  * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html, 
  * ou escreva para a Free Software Foundation, Inc., no
- * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
+ * endereco 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
 package us.pserver.tools;
 
 /**
- *
+ * Utility class for argument validations and IllegalArgumentException throwing on fails.
+ * @param <T> Type of the validated object.
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/08/2015
  */
 public class Valid<T> extends ValidThrows<T, IllegalArgumentException> {
 
   
+  /**
+   * Default constructor, receives the object to be validated.
+   * @param obj the object to be validated.
+   */
   public Valid(T obj) {
     super(obj, IllegalArgumentException.class);
   }
   
   
+  /**
+   * Create a new Valid instance for the given object.
+   * @param <X> Type of the object.
+   * @param obj The object to be validated.
+   * @return New Valid instance.
+   */
   public static <X> Valid<X> off(X obj) {
     return new Valid(obj);
   }
   
 
+  /**
+   * Create a new Valid instance for the given object.
+   * @param <X> Type of the object.
+   * @param obj The object to be validated.
+   * @return New Valid instance.
+   */
   public <X> Valid<X> on(X obj) {
     return new Valid(obj);
   }

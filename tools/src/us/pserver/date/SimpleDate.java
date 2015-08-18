@@ -402,7 +402,7 @@ public class SimpleDate extends Date {
 	/**
 	 * Retorna o dia da semana.
 	 * @return dia da semana.
-   * @see us.pserver.date.DayOfWeek;
+   * @see us.pserver.date.DayOfWeek
 	 */
 	public DayOfWeek getDayOfWeek() {
 		return DayOfWeek.fromInt(dayOfWeek());
@@ -411,7 +411,7 @@ public class SimpleDate extends Date {
   
   /**
    * Verifica se a data atual representa um 
-   * dia útil <code>(diferente de sábado e domingo)</code>.
+   * dia �til <code>(diferente de sábado e domingo)</code>.
    * @return <code>true</code> se a data atual 
    * não for sábado nem domingo, 
    * <code>false</code> caso contrário.

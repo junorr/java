@@ -2,21 +2,21 @@
  * Direitos Autorais Reservados (c) 2011 Juno Roesler
  * Contato: juno.rr@gmail.com
  * 
- * Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os
- * termos da Licença Pública Geral Menor do GNU conforme publicada pela Free
- * Software Foundation; tanto a versão 2.1 da Licença, ou qualquer
- * versão posterior.
+ * Esta biblioteca e um software livre; voce pode redistribui-la e/ou modifica-la sob os
+ * termos da Licenca Publica Geral Menor do GNU conforme publicada pela Free
+ * Software Foundation; tanto a versao 2.1 da Licenca, ou qualquer
+ * versao posterior.
  * 
- * Esta biblioteca é distribuída na expectativa de que seja útil, porém, SEM
- * NENHUMA GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE
- * OU ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA. Consulte a Licença Pública
+ * Esta biblioteca eh distribuida na expectativa de que seja util, porem, SEM
+ * NENHUMA GARANTIA; nem mesmo a garantia implicita de COMERCIABILIDADE
+ * OU ADEQUACAO A UMA FINALIDADE ESPECIFICA. Consulte a Licença Publica
  * Geral Menor do GNU para mais detalhes.
  * 
- * Você deve ter recebido uma cópia da Licença Pública Geral Menor do GNU junto
- * com esta biblioteca; se não, acesse 
+ * Voce deve ter recebido uma copia da Licença Publica Geral Menor do GNU junto
+ * com esta biblioteca; se nao, acesse 
  * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html, 
  * ou escreva para a Free Software Foundation, Inc., no
- * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
+ * endereco 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
 package us.pserver.tools.timer;
@@ -30,51 +30,130 @@ import java.util.concurrent.atomic.AtomicLong;
 import us.pserver.date.DateDiff;
 
 /**
- *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 29/06/2015
+ * A Timer object for measuring time intervals.
+ * It has two default implementations for Timer, 
+ * <code>Timer.Nanos</code> for nanoseconds precision
+ * and <code>Timer.Millis</code> for milliseconds precision.
+ * @author Juno Roesler - juno@pserver.us
  */
 public interface Timer {
   
+  /**
+   * Close this instance.
+   * @return A new cloned Timer instance.
+   */
   public Timer cloneTimer();
   
+  /**
+   * Start the Timer.
+   * @return This modified Timer instance.
+   */
   public Timer start();
   
+  /**
+   * Stop the Timer.
+   * @return This modified Timer instance.
+   */
   public Timer stop();
-  
+
+  /**
+   * Adds a new lap time.
+   * @return This modified Timer instance.
+   */
   public Timer lap();
-  
+
+  /**
+   * Adds a new lap time and stop the Timer.
+   * @return This modified Timer instance.
+   */
   public Timer lapAndStop();
-  
+
+  /**
+   * 
+   * @return This modified Timer instance.
+   */
   public Timer clear();
   
+  /**
+   * Get the laps List.
+   * @return the laps List.
+   */
   public List<Long> laps();
   
+  /**
+   * Get the sum of all laps.
+   * @return the sum of all laps.
+   */
   public long lapsSum();
   
+  /**
+   * Get the number of laps in list.
+   * @return the number of laps in list.
+   */
   public int lapsSize();
   
+  /**
+   * Get the average of all laps.
+   * @return the average of all laps.
+   */
   public double lapsAverage();
   
+  /**
+   * Get the minimum lap in List.
+   * @return the minimum lap in List.
+   */
   public long lapsMin();
   
+  /**
+   * Get the maximum lap in List.
+   * @return the maximum lap in List.
+   */
   public long lapsMax();
   
+  /**
+   * Get the total amount of time elapsed between start and stop.
+   * @return the total amount of time elapsed between start and stop.
+   */
   public long elapsed();
   
+  /**
+   * Get the total amount of time in millis elapsed between start and stop.
+   * @return the total amount of time in millis elapsed between start and stop.
+   */
   public double elapsedMillis();
-  
+
+  /**
+   * Get the start time.
+   * @return the start time.
+   */
   public long getStart();
   
-  public long getEnd();
-  
+  /**
+   * Get the stop time.
+   * @return the stop time.
+   */
+  public long getStop();
+
+  /**
+   * 
+   * @return This modified Timer instance.
+   */
   public Timer lapsElapsedFromStart();
   
+  /**
+   * 
+   * @return This modified Timer instance.
+   */
   public Timer lapsElapsedFromLast();
   
   public List<Double> lapsToMillis();
   
   
+  /**
+   * Convert a list with milliseconds values to a nanoseconds.
+   * @param list List with milliseconds values to be converted.
+   * @return New List with nanoseconds values.
+   */
   public static List<Double> nanosToMillis(List<Long> list) {
     if(list == null || list.isEmpty())
       return Collections.EMPTY_LIST;
@@ -82,13 +161,22 @@ public interface Timer {
     list.forEach(l->dl.add(nanosToMillis(l)));
     return dl;
   }
+
   
+  /**
+   * Convert millisenconds to nanoseconds.
+   * @param lng Millisenconds value.
+   * @return Nanoseconds value.
+   */
   public static double nanosToMillis(long lng) {
     return lng / 1_000_000.0;
   }
   
   
   
+  /**
+   * Abstract implementation of Timer.
+   */
   static abstract class AbstractTimer implements Timer {
     
     long start;
@@ -98,6 +186,9 @@ public interface Timer {
     List<Long> laps;
     
     
+    /**
+     * Default constructor without arguments.
+     */
     protected AbstractTimer() {
       start = -1;
       end = -1;
@@ -105,6 +196,11 @@ public interface Timer {
     }
     
     
+    /**
+     * Clone Timer into a new instance with same values.
+     * @param tm The Timer to clone.
+     * @return The cloned Timer.
+     */
     protected Timer clone(AbstractTimer tm) {
       tm.start = start;
       tm.end = end;
@@ -120,6 +216,10 @@ public interface Timer {
     }
     
     
+    /**
+     * Adds a new lap in the laps list.
+     * @param lapRaw Time of the lap.
+     */
     protected void addLap(long lapRaw) {
       if(start < 0) start = lapRaw;
       laps.add(lapRaw);
@@ -215,11 +315,17 @@ public interface Timer {
     
     
     @Override
-    public long getEnd() {
+    public long getStop() {
       return end;
     }
     
     
+    /**
+     * Rounds a double value to the given decimal precision.
+     * @param num The double to be rounded.
+     * @param dec Decimal precision.
+     * @return The rounded value.
+     */
     public double round(double num, int dec) {
       long i = (long) num;
       long d = Math.round((num - i) * Math.pow(10, dec));
@@ -258,6 +364,9 @@ public interface Timer {
   }
   
   
+  /**
+   * Nanoseconds precision <code>Timer</code> implementation.
+   */
   public static final class Nanos extends AbstractTimer {
     
     @Override
@@ -310,6 +419,9 @@ public interface Timer {
   }
   
   
+  /**
+   * The milliseconds precision Timer implementation.
+   */
   public static final class Millis extends AbstractTimer {
     
     @Override
@@ -362,6 +474,10 @@ public interface Timer {
     }
     
     
+    /**
+     * Get amount difference of time between laps.
+     * @return List with the amount difference of time between laps.
+     */
     public List<DateDiff> lapsToDiff() {
       if(laps.isEmpty()) return Collections.EMPTY_LIST;
       long ant = start;
@@ -374,6 +490,10 @@ public interface Timer {
     }
     
     
+    /**
+     * Get the total amount difference of time elapsed between start and stop.
+     * @return the total amount difference of time elapsed between start and stop.
+     */
     public DateDiff getDateDiff() {
       if(start < 0 || end < 0)
         return null;

@@ -109,8 +109,9 @@ public class MapSorter<T> {
   
   /**
    * Return a new sorted map by its key type.
-   * @param <V> The type of the map values.
    * @param map The map to sort.
+   * @param <V> The type of the map values.
+   * @return a new sorted map by its key type.
    */
   public <V> Map<T,V> newSortedByKey(Map<T,V> map) {
     TreeMap<T,V> sorted = new TreeMap<>(comp);
@@ -126,6 +127,7 @@ public class MapSorter<T> {
    * Return a new sorted map by its value type.
    * @param <V> The type of the map keys.
    * @param map The map to sort.
+   * @return a new sorted map by its value type.
    */
   public <V> Map<V,T> newSortedByValue(Map<V,T> map) {
     Set<Entry<V,T>> entries = map.entrySet();

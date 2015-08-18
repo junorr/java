@@ -36,8 +36,8 @@ import us.pserver.scron.AbstractCron;
  * <b>SCronV6</b> é o motor de execução dos trabalhos
  * agendados. É configurado por padrão
  * com 3 Threads executantes, uma responsável por monitorar
- * e agendar os trabalhos e outras duas <code>Threads</code> 
- * responsáveis pela execução dos <code>JobsManager</code>.
+ * e agendar os trabalhos e outras duas
+ * responsáveis pela execução dos <code>Jobs</code>.
  * 
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 11/04/2014
@@ -45,8 +45,9 @@ import us.pserver.scron.AbstractCron;
 public class SCronV6 extends AbstractCron {
 
   /**
-   * Quantidade padrão <code>(2)</code> 
-   * de <code>Threads</code> que executarão os <code>JobsManager</code>.
+   * <code>DEFAULT_THREADS = 2;</code><br>
+   * Quantidade padrão de <code>Threads</code> 
+   * que executarão os <code>Jobs</code> agendados.
    */
   public static final int DEFAULT_THREADS = 2;
   

@@ -56,8 +56,8 @@ public class Reflector {
 	
 	/**
 	 * Class a ser trabalhada por Reflector
-	 * @param o Class
-	 * @return A inst√¢ncia de Reflector modificada.
+	 * @param c Class
+	 * @return A inst‚ncia de Reflector modificada.
 	 */
 	public Reflector on(Class c) {
     synchronized(LOCK) {
@@ -465,7 +465,8 @@ public class Reflector {
 	/**
 	 * Retorna <code>true</code> caso tenha
 	 * ocorrido erro em algum m√©todo, 
-	 * <code>false</code> caso contr√°rio.
+	 * <code>false</code> caso contr·rio.
+   * @return <code>true</code> if an error has ocurred.
 	 */
 	public boolean hasError() {
     synchronized(LOCK) {
@@ -474,6 +475,11 @@ public class Reflector {
 	}
   
   
+  /**
+   * Check if the object type has the queried field.
+   * @return <code>true</code> if the object type has 
+   * the queried field, <code>false</code> otherwise.
+   */
   public boolean isFieldPresent() {
     synchronized(LOCK) {
       if(cls == null || fld == null) 
@@ -489,6 +495,11 @@ public class Reflector {
   }
 	
 	
+  /**
+   * Check if the object type has the queried method.
+   * @return <code>true</code> if the object type has 
+   * the queried method, <code>false</code> otherwise.
+   */
   public boolean isMethodPresent() {
     synchronized(LOCK) {
       if(cls == null || mth == null) 
@@ -504,6 +515,11 @@ public class Reflector {
   }
 	
 	
+  /**
+   * Check if the object type has the queried constructor.
+   * @return <code>true</code> if the object type has 
+   * the queried constructor, <code>false</code> otherwise.
+   */
   public boolean isConstructorPresent() {
     synchronized(LOCK) {
       if(cls == null || cct == null) 
@@ -519,16 +535,28 @@ public class Reflector {
   }
   
   
+  /**
+   * Get the queried field.
+   * @return the queried field.
+   */
   public Field field() {
     return fld;
   }
   
   
+  /**
+   * Get the queried method.
+   * @return the queried method.
+   */
   public Method method() {
     return mth;
   }
   
   
+  /**
+   * Get the queried constructor.
+   * @return the queried constructor.
+   */
   public Constructor getConstructor() {
     return cct;
   }
@@ -536,9 +564,10 @@ public class Reflector {
 	
 	/**
 	 * Retorna o erro ocorrido durante a
-	 * chamada de algum m√©todo, ou 
-	 * <code>null</code> caso n√£o tenha ocorrido
+	 * chamada de algum mÈtodo, ou 
+	 * <code>null</code> caso n„o tenha ocorrido
 	 * erro.
+   * @return The Throwable error ocurred.
 	 */
 	public Throwable getError() {
 		return exc;
