@@ -94,9 +94,9 @@ public class EncoderInputStream extends CounterInputStream {
   public int read(byte[] array, int off, int len) throws IOException {
     Valid.off(array).forEmpty()
         .fail("Invalid byte array");
-    Valid.off(off).forLesserThen(0)
+    Valid.off(off).forLesserThan(0)
         .fail("Invalid off set: ");
-    Valid.off(len).forGreaterThen(array.length - off)
+    Valid.off(len).forGreaterThan(array.length - off)
         .fail("Invalid length: ");
     
     fill();

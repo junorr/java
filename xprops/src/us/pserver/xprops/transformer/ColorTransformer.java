@@ -38,9 +38,9 @@ public class ColorTransformer extends AbstractStringTransformer<Color> {
         .valid().fail("Not a valid Color Format: ", str);
     String msg = "Not a valid Color Format: %s";
     int i1 = str.indexOf(",");
-    Valid.off(i1).forLesserThen(0).fail(msg, str);
+    Valid.off(i1).forLesserThan(0).fail(msg, str);
     int i2 = str.indexOf(",", i1+1);
-    Valid.off(i2).forLesserThen(0).fail(msg, str);
+    Valid.off(i2).forLesserThan(0).fail(msg, str);
     int i3 = str.indexOf(",", i2+1);
     //255,255,255,0
     if(i3 > 0) {

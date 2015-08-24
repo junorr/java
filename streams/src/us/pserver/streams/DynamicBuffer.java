@@ -47,9 +47,9 @@ public class DynamicBuffer implements Closeable {
   
   private int pageSize;
   
-  private Thing<Long> size;
+  private Instance<Long> size;
   
-  private Thing<Boolean> read;
+  private Instance<Boolean> read;
   
   private StreamCoderFactory coder;
   
@@ -57,10 +57,10 @@ public class DynamicBuffer implements Closeable {
   public DynamicBuffer() {
     pages = Collections.synchronizedList(new ArrayList<ByteBuffer>());
     index = 0;
-    read = new Thing<>(false);
+    read = new Instance<>(false);
     pageSize = DEFAULT_PAGE_SIZE;
     coder = StreamCoderFactory.getNew();
-    size = new Thing<>(0L);
+    size = new Instance<>(0L);
   }
   
   

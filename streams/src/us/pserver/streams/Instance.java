@@ -30,20 +30,25 @@ import java.util.function.Function;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 17/06/2015
  */
-public class Thing<T> {
+public class Instance<T> {
   
   private final Integer S = 1;
 
   private T thing;
   
   
-  public Thing() {
+  public Instance() {
     thing = null;
   }
   
   
-  public Thing(T t) {
+  public Instance(T t) {
     thing = t;
+  }
+  
+  
+  public static <X> Instance<X> off(X obj) {
+    return new Instance(obj);
   }
   
   
@@ -96,7 +101,7 @@ public class Thing<T> {
   }
   
   
-  public Thing setTrue() {
+  public Instance setTrue() {
     if(this.isBoolean())
       thing = (T) Boolean.TRUE;
     else if(this.isNumber())
@@ -105,7 +110,7 @@ public class Thing<T> {
   }
   
   
-  public Thing setFalse() {
+  public Instance setFalse() {
     if(this.isBoolean())
       thing = (T) Boolean.FALSE;
     else if(this.isNumber())
@@ -114,7 +119,7 @@ public class Thing<T> {
   }
   
   
-  public Thing invertBoolean() {
+  public Instance invertBoolean() {
     if(this.isBooleanOrNumber()) {
       if(this.isTrue()) this.setFalse();
       else this.setTrue();
@@ -123,7 +128,7 @@ public class Thing<T> {
   }
   
   
-  public Thing set(T t) {
+  public Instance set(T t) {
     synchronized(S) {
       this.thing = t;
     }
@@ -138,17 +143,17 @@ public class Thing<T> {
   }
   
   
-  public Thing increment() {
+  public Instance increment() {
     return this.plus(1);
   }
   
   
-  public Thing decrement() {
+  public Instance decrement() {
     return this.minus(1);
   }
   
   
-  public Thing plus(int l) {
+  public Instance plus(int l) {
     synchronized(S) {
       if(thing != null && thing instanceof Number) {
         Integer d = ((Number) thing).intValue() + l;
@@ -159,7 +164,7 @@ public class Thing<T> {
   }
   
   
-  public Thing minus(int l) {
+  public Instance minus(int l) {
     synchronized(S) {
       if(thing != null && thing instanceof Number) {
         Integer d = ((Number) thing).intValue() - l;
@@ -170,7 +175,7 @@ public class Thing<T> {
   }
   
   
-  public Thing plus(long l) {
+  public Instance plus(long l) {
     synchronized(S) {
       if(thing != null && thing instanceof Number) {
         Long d = ((Number) thing).longValue() + l;
@@ -181,7 +186,7 @@ public class Thing<T> {
   }
   
   
-  public Thing minus(long l) {
+  public Instance minus(long l) {
     synchronized(S) {
       if(thing != null && thing instanceof Number) {
         Long d = ((Number) thing).longValue() - l;
@@ -192,7 +197,7 @@ public class Thing<T> {
   }
   
   
-  public Thing plus(double l) {
+  public Instance plus(double l) {
     synchronized(S) {
       if(thing != null && thing instanceof Number) {
         Double d = ((Number) thing).doubleValue() + l;
@@ -203,7 +208,7 @@ public class Thing<T> {
   }
   
   
-  public Thing minus(double l) {
+  public Instance minus(double l) {
     synchronized(S) {
       if(thing != null && thing instanceof Number) {
         Double d = ((Number) thing).doubleValue() - l;
@@ -214,7 +219,7 @@ public class Thing<T> {
   }
   
   
-  public Thing ifNotNull(Consumer<T> cs) {
+  public Instance ifNotNull(Consumer<T> cs) {
     synchronized(S) {
       if(thing != null) cs.accept(thing);
     }
@@ -222,7 +227,7 @@ public class Thing<T> {
   }
   
   
-  public Thing consume(Consumer<T> cs) {
+  public Instance consume(Consumer<T> cs) {
     synchronized(S) {
       cs.accept(thing);
     }

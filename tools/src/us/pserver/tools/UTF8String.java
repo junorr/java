@@ -69,10 +69,10 @@ public class UTF8String {
         .forEmpty().fail()
         
         .valid(off+len)
-        .forGreaterThen(bs.length).fail()
+        .forGreaterThan(bs.length).fail()
         
         .valid(off)
-        .forLesserThen(0).fail();
+        .forLesserThan(0).fail();
     string = new String(bs, off, len, getCharset());
   }
   

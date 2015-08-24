@@ -381,7 +381,7 @@ public class ValidThrows<T, E extends Exception> {
   
   /**
    * Check if the object is empty. The object is first 
-   * tested <code>forNull()</code> and then for empty 
+   * tested <code>forNull()</code> and than for empty 
    * objects like String, Arrays and Lists.
    * @return A new instance of ValidThrows.
    * @throws E In case of validation error.
@@ -449,7 +449,7 @@ public class ValidThrows<T, E extends Exception> {
   
   
   /**
-   * Check if the object is a number lesser then the given argument. 
+   * Check if the object is a number lesser than the given argument. 
    * The object is first tested <code>forNull()</code> 
    * and then for the comparison.
    * @param n The number to be compared.
@@ -457,7 +457,7 @@ public class ValidThrows<T, E extends Exception> {
    * @throws E In case of validation error.
    * @see ValidThrows#forNull() 
    */
-  public ValidThrows<T,E> forLesserThen(Number n) throws E {
+  public ValidThrows<T,E> forLesserThan(Number n) throws E {
     forNull().fail()
         .forTypeMatch(Number.class)
         .fail();
@@ -475,7 +475,7 @@ public class ValidThrows<T, E extends Exception> {
   
   
   /**
-   * Check if the object is a number lesser or equals then the given argument. 
+   * Check if the object is a number lesser or equals than the given argument. 
    * The object is first tested <code>forNull()</code> 
    * and then for the comparison.
    * @param n The number to be compared.
@@ -501,7 +501,7 @@ public class ValidThrows<T, E extends Exception> {
   
   
   /**
-   * Check if the object is a number greater then the given argument. 
+   * Check if the object is a number greater than the given argument. 
    * The object is first tested <code>forNull()</code> 
    * and then for the comparison.
    * @param n The number to be compared.
@@ -509,7 +509,7 @@ public class ValidThrows<T, E extends Exception> {
    * @throws E In case of validation error.
    * @see ValidThrows#forNull() 
    */
-  public ValidThrows<T,E> forGreaterThen(Number n) throws E {
+  public ValidThrows<T,E> forGreaterThan(Number n) throws E {
     forNull().fail()
         .forTypeMatch(Number.class)
         .fail();
@@ -560,7 +560,7 @@ public class ValidThrows<T, E extends Exception> {
   
   
   /**
-   * Check if the object is a number greater or equals then the given argument. 
+   * Check if the object is a number greater or equals than the given argument. 
    * The object is first tested <code>forNull()</code> 
    * and then for the comparison.
    * @param n The number to be compared.
@@ -618,7 +618,7 @@ public class ValidThrows<T, E extends Exception> {
   
   
   /**
-   * Check if the object is a date before then the given argument. 
+   * Check if the object is a date before than the given argument. 
    * The object is first tested <code>forNull()</code> 
    * and then for the comparison.
    * @param dt The date argument to compare with the object.
@@ -626,7 +626,7 @@ public class ValidThrows<T, E extends Exception> {
    * @throws E In case of validation error.
    * @see ValidThrows#forNull() 
    */
-  public ValidThrows<T,E> forLesserThen(Date dt) throws E {
+  public ValidThrows<T,E> forLesserThan(Date dt) throws E {
     forNull().fail()
         .forTypeMatch(Date.class)
         .fail();
@@ -643,7 +643,7 @@ public class ValidThrows<T, E extends Exception> {
   
   
   /**
-   * Check if the object is a date before or equals then the given argument. 
+   * Check if the object is a date before or equals than the given argument. 
    * The object is first tested <code>forNull()</code> 
    * and then for the comparison.
    * @param dt The date argument to compare with the object.
@@ -668,7 +668,7 @@ public class ValidThrows<T, E extends Exception> {
   
   
   /**
-   * Check if the object is a date after then the given argument. 
+   * Check if the object is a date after than the given argument. 
    * The object is first tested <code>forNull()</code> 
    * and then for the comparison.
    * @param dt The date argument to compare with the object.
@@ -676,7 +676,7 @@ public class ValidThrows<T, E extends Exception> {
    * @throws E In case of validation error.
    * @see ValidThrows#forNull() 
    */
-  public ValidThrows<T,E> forGreaterThen(Date dt) throws E {
+  public ValidThrows<T,E> forGreaterThan(Date dt) throws E {
     forNull().fail()
         .forTypeMatch(Number.class)
         .fail();
@@ -693,7 +693,7 @@ public class ValidThrows<T, E extends Exception> {
   
   
   /**
-   * Check if the object is a date after or equals then the given argument. 
+   * Check if the object is a date after or equals than the given argument. 
    * The object is first tested <code>forNull()</code> 
    * and then for the comparison.
    * @param dt The date argument to compare with the object.
@@ -790,26 +790,26 @@ public class ValidThrows<T, E extends Exception> {
   private static final String MSG_EXC_TYPE = "Exception Type not has a <init>( String ) Constructor: %s";
   
   /**
-   * <code>MSG_LESSER = "Argument is Lesser Then %2$s (%1$s < %2$s)";</code><br>
-   * Default message for argument lesser then.
+   * <code>MSG_LESSER = "Argument is Lesser Than %2$s (%1$s < %2$s)";</code><br>
+   * Default message for argument lesser than.
    */
-  private static final String MSG_LESSER = "Argument is Lesser Then %2$s (%1$s < %2$s)";
+  private static final String MSG_LESSER = "Argument is Lesser Than %2$s (%1$s < %2$s)";
   
   /**
    * <code>MSG_LESSER_EQ = "Argument is Lesser Or Equals %2$s (%1$s <= %2$s)";</code><br>
-   * Default message for argument lesser or equals then.
+   * Default message for argument lesser or equals than.
    */
   private static final String MSG_LESSER_EQ = "Argument is Lesser Or Equals %2$s (%1$s <= %2$s)";
   
   /**
-   * <code>MSG_GREATER = "Argument is Greater Then %2$s (%1$s > %2$s)";</code><br>
-   * Default message for argument greater then.
+   * <code>MSG_GREATER = "Argument is Greater Than %2$s (%1$s > %2$s)";</code><br>
+   * Default message for argument greater than.
    */
-  private static final String MSG_GREATER = "Argument is Greater Then %2$s (%1$s > %2$s)";
+  private static final String MSG_GREATER = "Argument is Greater Than %2$s (%1$s > %2$s)";
   
   /**
    * <code>MSG_GREATER_EQ = "Argument is Greater Or Equals %2$s (%1$s >= %2$s)";</code><br>
-   * Default message for argument greater or equals then.
+   * Default message for argument greater or equals than.
    */
   private static final String MSG_GREATER_EQ = "Argument is Greater Or Equals %2$s (%1$s >= %2$s)";
   
