@@ -32,9 +32,7 @@ import java.util.List;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 16/06/2015
  */
-public class FunnelInputStream extends InputStream {
-  
-  private static final Object O = new Object();
+public class FunnelInputStream extends CounterInputStream {
   
   private final List<InputStream> streams;
   
@@ -42,6 +40,7 @@ public class FunnelInputStream extends InputStream {
   
   
   public FunnelInputStream() {
+    super();
     streams = Collections.synchronizedList(new ArrayList<InputStream>());
     index = 0;
   }
@@ -76,21 +75,19 @@ public class FunnelInputStream extends InputStream {
       return -1;
     }
     
-    synchronized(O) {
-      InputStream is = streams.get(index);
-      int read = is.read(bs, off, len);
-      if(read < 1) {
-        index++;
-        return read(bs, off, len);
-      }
-      off += read;
-      len -= read;
-      if(len > 0) {
-        int nextRead = read(bs, off, len);
-        read += (nextRead < 0 ? 0 : nextRead);
-      }
-      return read;
+    InputStream is = streams.get(index);
+    int read = is.read(bs, off, len);
+    if(read < 1) {
+      index++;
+      return read(bs, off, len);
     }
+    off += read;
+    len -= read;
+    if(len > 0) {
+      int nextRead = read(bs, off, len);
+      read += (nextRead < 0 ? 0 : nextRead);
+    }
+    return increment(read);
   }
   
   
@@ -121,10 +118,8 @@ public class FunnelInputStream extends InputStream {
   
   @Override
   public void close() throws IOException {
-    synchronized(O) {
-      streams.forEach(this::close);
-      streams.clear();
-    }
+    streams.forEach(this::close);
+    streams.clear();
   }
 
 }

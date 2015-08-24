@@ -21,157 +21,118 @@
 
 package us.pserver.streams;
 
-import java.io.FilterInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import us.pserver.cdr.crypt.CryptKey;
+import us.pserver.tools.Valid;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 19/06/2015
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 23/08/2015
  */
-public class EncoderInputStream extends FilterInputStream {
+public class EncoderInputStream extends CounterInputStream {
   
-  public static final Integer DEFAULT_TEMP_BUFFER_SIZE = 4096;
-  
+  public static final int BUFFER_SIZE = 1024 * 256; // 256KB
 
-  private DynamicBuffer buffer;
+  private final InputStream source;
   
-  private OutputStream encout;
+  private final int bufsize;
   
-  private InputStream source;
+  private final StreamCoderFactory coder;
   
-  private int closed;
+  private final ByteArrayOutputStream bytesOut;
   
-  private byte[] temp;
+  private ByteArrayInputStream bytesIn;
+  
+  private final OutputStream encOut;
   
   
-  public EncoderInputStream(InputStream src) {
-    super(src);
-    if(src == null)
-      throw new IllegalArgumentException("Invalid null source InputStream");
-    source = src;
-    buffer = new DynamicBuffer();
-    encout = null;
-    closed = 0;
-    temp = new byte[DEFAULT_TEMP_BUFFER_SIZE];
+  public EncoderInputStream(InputStream source, StreamCoderFactory coder) throws IOException {
+    this(source, coder, 0);
   }
   
   
-  public EncoderInputStream(InputStream src, int tempBufSize) {
-    this(src);
-    if(tempBufSize > 0)
-      temp = new byte[tempBufSize];
+  public EncoderInputStream(InputStream source, StreamCoderFactory coder, int bufferSize) throws IOException {
+    super();
+    this.source = Valid.off(source).forNull()
+        .getOrFail(InputStream.class);
+    this.coder = Valid.off(coder).forNull()
+        .getOrFail(StreamCoderFactory.class);
+    bufsize = (bufferSize > 0 
+        ? bufferSize : BUFFER_SIZE);
+    bytesOut = new ByteArrayOutputStream();
+    encOut = coder.create(bytesOut);
   }
   
   
-  public EncoderInputStream setBase64CoderEnabled(boolean enabled) {
-    buffer.setBase64CoderEnabled(enabled);
-    return this;
+  public int getBufferSize() {
+    return bufsize;
   }
   
   
-  public EncoderInputStream setGZipCoderEnabled(boolean enabled) {
-    buffer.setGZipCoderEnabled(enabled);
-    return this;
+  public InputStream getSourceInputStream() {
+    return source;
   }
   
   
-  public EncoderInputStream setCryptCoderEnabled(boolean enabled, CryptKey key) {
-    buffer.setCryptCoderEnabled(enabled, key);
-    return this;
+  public StreamCoderFactory getStreamCoderFactory() {
+    return coder;
   }
   
   
-  public boolean isBase64CoderEnabled() {
-    return buffer.isBase64CoderEnabled();
+  @Override
+  public void close() throws IOException {
+    source.close();
+    encOut.close();
   }
   
   
-  public boolean isGZipCoderEnabled() {
-    return buffer.isGZipCoderEnabled();
+  @Override
+  public int read(byte[] array, int off, int len) throws IOException {
+    Valid.off(array).forEmpty()
+        .fail("Invalid byte array");
+    Valid.off(off).forLesserThen(0)
+        .fail("Invalid off set: ");
+    Valid.off(len).forGreaterThen(array.length - off)
+        .fail("Invalid length: ");
+    
+    fill();
+    if(bytesIn == null || bytesIn.available() < 1) {
+      return -1;
+    }
+    return increment(bytesIn.read(array, off, len));
   }
   
   
-  public boolean isCryptCoderEnabled() {
-    return buffer.isCryptCoderEnabled();
-  }
-  
-  
-  private void fillBuffer() throws IOException {
-    if(closed > 0) {
-      closed++;
+  private void fill() throws IOException {
+    if(bytesIn != null && bytesIn.available() > 0)
       return;
-    }
-    buffer.reset();
-    if(encout == null) {
-      encout = buffer.getEncoderStream();
-    }
-    while(buffer.size() < 1) {
-      int read = source.read(temp);
-      if(read < 1) {
-        closed++;
-        source.close();
-        encout.flush();
-        encout.close();
+    bytesOut.reset();
+    byte[] array = new byte[4096];
+    while(bytesOut.size() < bufsize) {
+      int read = source.read(array);
+      if(read <= 0) {
+        encOut.close();
         break;
       }
-      encout.write(temp, 0, read);
+      encOut.write(array, 0, read);
+      encOut.flush();
+    }
+    if(bytesOut.size() > 0) {
+      bytesIn = new ByteArrayInputStream(bytesOut.toByteArray());
     }
   }
   
-  
+
   @Override
   public int read() throws IOException {
-    synchronized(DEFAULT_TEMP_BUFFER_SIZE) {
-    if(closed > 1) return -1;
-    if(buffer.size() > 0) {
-      int read = buffer.getInputStream().read();
-      if(read == -1) {
-        fillBuffer();
-        return read();
-      }
-      return read;
-    }
-    else {
-      fillBuffer();
-      return read();
-    }
-    }
+    byte[] bs = new byte[1];
+    int read = read(bs, 0, bs.length);
+    if(read <= 0) return -1;
+    return bs[0];
   }
-  
-  
-  @Override
-  public int read(byte[] bs, int off, int len) throws IOException {
-    synchronized(DEFAULT_TEMP_BUFFER_SIZE) {
-    if(closed > 1) return -1;
-    if(bs == null)
-      throw new IllegalArgumentException("Invalid null byte array");
-    if(bs.length == 0 || len < 1) return -1;
-    if(off < 0 || off + len > bs.length)
-      throw new IllegalArgumentException("Invalid arguments: off="+ off+ ", len="+ len);
-    
-    if(buffer.size() > 0) {
-      int read = buffer.getInputStream().read(bs, off, len);
-      if(read < 1) {
-        fillBuffer();
-        return read(bs, off, len);
-      }
-      return read;
-    }
-    else {
-      fillBuffer();
-      return read(bs, off, len);
-    }
-    }
-  }
-  
-  
-  @Override
-  public int read(byte[] bs) throws IOException {
-    return read(bs, 0, (bs != null ? bs.length : 0));
-  }
-  
+
 }

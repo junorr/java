@@ -19,31 +19,41 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.streams.test;
+package us.pserver.streams;
 
-import java.io.IOException;
-import us.pserver.streams.EncoderInputStream;
-import us.pserver.streams.SequenceInputStream;
+import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicLong;
+import us.pserver.tools.FileSizeFormatter;
 
 /**
  *
- * @author Juno Roesler - juno.rr@gmail.com
- * @version 1.0 - 19/06/2015
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 23/08/2015
  */
-public class TestEncoderInputStream {
+public abstract class CounterInputStream extends InputStream {
 
+  private final AtomicLong count;
   
-  public static void main(String[] args) throws IOException {
-    SequenceInputStream sin = new SequenceInputStream(100);
-    EncoderInputStream enc = new EncoderInputStream(sin);
-    enc.setGZipCoderEnabled(true);
-    byte[] bs = new byte[1];
-    int count = 0;
-    while(enc.read(bs) > 0) {
-      System.out.println("- read = "+ bs[0]);
-      count++;
-    }
-    System.out.println("* count="+ count);
+  
+  protected CounterInputStream() {
+    count = new AtomicLong(0L);
+  }
+  
+  
+  public long getCount() {
+    return count.get();
+  }
+  
+  
+  public String getCountFormatted() {
+    return new FileSizeFormatter()
+        .format(count.get());
+  }
+  
+  
+  protected int increment(int size) {
+    count.addAndGet(size);
+    return size;
   }
   
 }
