@@ -24,7 +24,7 @@ package us.pserver.streams;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import static us.pserver.chk.Checker.nullarg;
+import us.pserver.tools.Valid;
 
 /**
  * <code>FilterInputStream</code> que sobrescreve o método
@@ -55,8 +55,7 @@ public class ProtectedInputStream extends FilterInputStream {
    * @return Esta instância modificada de <code>ProtectedInputStream</code>.
    */
   public ProtectedInputStream setInputStream(InputStream is) {
-    nullarg(InputStream.class, is);
-    input = is;
+    input = Valid.off(is).forNull().getOrFail(InputStream.class);
     return this;
   }
   

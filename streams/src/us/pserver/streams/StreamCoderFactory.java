@@ -30,8 +30,8 @@ import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.crypt.CryptUtils;
-import static us.pserver.chk.Checker.nullarg;
 import static us.pserver.streams.IO.os;
+import us.pserver.tools.Valid;
 
 /**
  *
@@ -86,9 +86,8 @@ public class StreamCoderFactory {
   public StreamCoderFactory setCryptCoderEnabled(boolean enabled, CryptKey k) {
     CoderType.CRYPT.setEnabled(enabled);
     if(enabled) {
-      nullarg(CryptKey.class, k);
       checkIndex();
-      key = k;
+      key = Valid.off(k).forNull().getOrFail(CryptKey.class);
       if(!isCryptCoderEnabled())
         types[index++] = CoderType.CRYPT;
     }
@@ -170,7 +169,7 @@ public class StreamCoderFactory {
   
   
   public int getCoderIndex(CoderType tp) {
-    nullarg(CoderType.class, tp);
+    Valid.off(tp).forNull().fail(CoderType.class);
     for(int i = 0; i < types.length; i++) {
       if(types[i] == tp)
         return i;

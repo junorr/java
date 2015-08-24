@@ -28,9 +28,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
-import static us.pserver.chk.Checker.nullarg;
-import static us.pserver.chk.Checker.nullstr;
-import static us.pserver.chk.Checker.range;
+import us.pserver.tools.Valid;
 
 
 /**
@@ -93,8 +91,8 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na transferência.
    */
   public static long transfer(InputStream in, OutputStream out) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
+    Valid.off(in).forNull().fail(InputStream.class);
+    Valid.off(out).forNull().fail(OutputStream.class);
     
     long total = 0;
     int read = 0;
@@ -130,9 +128,9 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na transferência.
    */
   public static StreamResult transferUntil(InputStream is, OutputStream os, String until) throws IOException {
-    nullarg(InputStream.class, is);
-    nullarg(OutputStream.class, os);
-    nullstr(until);
+    Valid.off(is).forNull().fail(InputStream.class);
+    Valid.off(os).forNull().fail(OutputStream.class);
+    Valid.off(until).forEmpty().fail();
     
     StreamResult res = new StreamResult();
     LimitedBuffer lim = new LimitedBuffer(until.length());
@@ -179,10 +177,10 @@ public abstract class StreamUtils {
   
   
   public static StreamResult transferUntilOr(InputStream is, OutputStream os, String until, String or) throws IOException {
-    nullarg(InputStream.class, is);
-    nullarg(OutputStream.class, os);
-    nullstr(until);
-    nullstr(or);
+    Valid.off(is).forNull().fail(InputStream.class);
+    Valid.off(os).forNull().fail(OutputStream.class);
+    Valid.off(until).forEmpty().fail();
+    Valid.off(or).forEmpty().fail();
     
     StreamResult res = new StreamResult();
     int maxlen = Math.max(until.length(), or.length());
@@ -242,10 +240,10 @@ public abstract class StreamUtils {
   
   public static StreamResult transferBetween(InputStream in, OutputStream out, 
       String start, String end) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
-    nullstr(start);
-    nullstr(end);
+    Valid.off(in).forNull().fail(InputStream.class);
+    Valid.off(out).forNull().fail(OutputStream.class);
+    Valid.off(start).forEmpty().fail();
+    Valid.off(out).forEmpty().fail();
     
     readUntil(in, start);
     return transferUntil(in, out, end);
@@ -260,8 +258,8 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na escrita.
    */
   public static void write(String str, OutputStream out) throws IOException {
-    nullarg(OutputStream.class, out);
-    nullarg(String.class, str);
+    Valid.off(out).forNull().fail(OutputStream.class);
+    Valid.off(str).forEmpty().fail();
     
     out.write(bytes(str));
     out.flush();
@@ -297,9 +295,9 @@ public abstract class StreamUtils {
    * @throws IOException caso ocorra erro na leitura.
    */
   public static StreamResult readBetween(InputStream in, String start, String end) throws IOException {
-    nullarg(InputStream.class, in);
-    nullstr(start);
-    nullstr(end);
+    Valid.off(in).forNull().fail(InputStream.class);
+    Valid.off(start).forEmpty().fail();
+    Valid.off(end).forEmpty().fail();
     
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     StreamResult res = transferBetween(in, bos, start, end);
@@ -318,8 +316,8 @@ public abstract class StreamUtils {
    * @throws IOException Caso ocorra erro na leitura do stream.
    */
   public static StreamResult readUntil(InputStream in, String str) throws IOException {
-    nullarg(InputStream.class, in);
-    nullstr(str);
+    Valid.off(in).forNull().fail(InputStream.class);
+    Valid.off(str).forEmpty().fail();
     
     StreamResult res = new StreamResult();
     int read = -1;
@@ -359,9 +357,9 @@ public abstract class StreamUtils {
    * @throws IOException Caso ocorra erro na leitura do stream.
    */
   public static StreamResult readUntilOr(InputStream in, String str, String orFalse) throws IOException {
-    nullarg(InputStream.class, in);
-    nullstr(str);
-    nullstr(orFalse);
+    Valid.off(in).forNull().fail(InputStream.class);
+    Valid.off(str).forEmpty().fail();
+    Valid.off(orFalse).forEmpty().fail();
     
     StreamResult res = new StreamResult();
     int read = -1;
@@ -395,8 +393,8 @@ public abstract class StreamUtils {
   
   
   public static String readString(InputStream is, int length) throws IOException {
-    nullarg(InputStream.class, is);
-    range(length, 1, Integer.MAX_VALUE);
+    Valid.off(is).forNull().fail(InputStream.class);
+    Valid.off(length).forNotBetween(1, Integer.MAX_VALUE);
     byte[] bs = new byte[length];
     int read = is.read(bs);
     if(read <= 0) return null;
@@ -405,8 +403,8 @@ public abstract class StreamUtils {
   
   
   public static StreamResult readStringUntil(InputStream is, String until) throws IOException {
-    nullarg(InputStream.class, is);
-    nullstr(until);
+    Valid.off(is).forNull().fail(InputStream.class);
+    Valid.off(until).forEmpty().fail();
     
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     StreamResult res = transferUntil(is, bos, until);
@@ -415,9 +413,9 @@ public abstract class StreamUtils {
   
   
   public static StreamResult readStringUntilOr(InputStream is, String until, String or) throws IOException {
-    nullarg(InputStream.class, is);
-    nullstr(until);
-    nullstr(or);
+    Valid.off(is).forNull().fail(InputStream.class);
+    Valid.off(until).forEmpty().fail();
+    Valid.off(or).forEmpty().fail();
     
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     
@@ -427,7 +425,7 @@ public abstract class StreamUtils {
   
   
   public static void writeEOF(OutputStream os) throws IOException {
-    nullarg(OutputStream.class, os);
+    Valid.off(os).forNull().fail(OutputStream.class);
     os.write(BYTES_EOF);
     os.write(new byte[0]);
     os.flush();

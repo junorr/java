@@ -33,7 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import static us.pserver.chk.Checker.nullarg;
+import us.pserver.tools.Valid;
 
 /**
  * Handy shortcut class for IO streams.
@@ -202,8 +202,9 @@ public abstract class IO {
    * @return <code>BufferedOutputStream</code>.
    */
   public static BufferedOutputStream bf(OutputStream os) {
-    nullarg(OutputStream.class, os);
-    return new BufferedOutputStream(os);
+    return new BufferedOutputStream(
+        Valid.off(os).forNull().getOrFail(OutputStream.class)
+    );
   }
   
   
@@ -213,8 +214,9 @@ public abstract class IO {
    * @return <code>BufferedInputStream</code>.
    */
   public static BufferedInputStream bf(InputStream is) {
-    nullarg(InputStream.class, is);
-    return new BufferedInputStream(is);
+    return new BufferedInputStream(
+        Valid.off(is).forNull().getOrFail(InputStream.class)
+    );
   }
   
   
@@ -226,8 +228,8 @@ public abstract class IO {
    * @see java.io.InputStream#available() 
    */
   public static int sz(InputStream is) throws IOException {
-    nullarg(InputStream.class, is);
-    return is.available();
+    return Valid.off(is).forNull()
+        .getOrFail(InputStream.class).available();
   }
   
   

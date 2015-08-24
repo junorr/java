@@ -24,7 +24,7 @@ package us.pserver.streams;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import static us.pserver.chk.Checker.nullarg;
+import us.pserver.tools.Valid;
 
 /**
  * <code>FilterOutputStream</code> que sobrescreve o método
@@ -56,8 +56,7 @@ public class ProtectedOutputStream extends FilterOutputStream {
    * @return Esta instância modificada de <code>ProtectedInputStream</code>.
    */
   public ProtectedOutputStream setOutputStream(OutputStream os) {
-    nullarg(OutputStream.class, os);
-    output = os;
+    output = Valid.off(os).forNull().getOrFail(OutputStream.class);
     return this;
   }
   
