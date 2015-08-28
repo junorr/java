@@ -28,8 +28,7 @@ import java.io.OutputStream;
 import lzma.sdk.lzma.Decoder;
 import lzma.streams.LzmaInputStream;
 import lzma.streams.LzmaOutputStream;
-import static us.pserver.chk.Checker.nullarg;
-import static us.pserver.chk.Checker.nullarray;
+import us.pserver.tools.Valid;
 
 /**
  * Classe utilitária para criação de streams
@@ -49,7 +48,7 @@ public class LzmaStreamFactory {
    * descompactação de dados.
    */
   public static LzmaInputStream createLzmaInput(byte[] buf) {
-    nullarray(buf);
+    Valid.off(buf).forEmpty().fail();
     try {
       return new LzmaInputStream(new ByteArrayInputStream(buf), new Decoder());
     } catch(IOException e) {
@@ -68,7 +67,7 @@ public class LzmaStreamFactory {
    * descompactação de dados.
    */
   public static LzmaInputStream createLzmaInput(InputStream in) {
-    nullarg(InputStream.class, in);
+    Valid.off(in).forNull().fail(InputStream.class);
     try {
       return new LzmaInputStream(in, new Decoder());
     } catch(IOException e) {
@@ -87,7 +86,7 @@ public class LzmaStreamFactory {
    * compactação de dados.
    */
   public static LzmaOutputStream createLzmaOutput(OutputStream out) {
-    nullarg(OutputStream.class, out);
+    Valid.off(out).forNull().fail(OutputStream.class);
     try {
       return new LzmaOutputStream.Builder(out).build();
     } catch(IOException e) {

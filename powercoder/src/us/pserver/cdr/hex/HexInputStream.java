@@ -23,8 +23,7 @@ package us.pserver.cdr.hex;
 
 import java.io.IOException;
 import java.io.InputStream;
-import static us.pserver.chk.Checker.nullarray;
-import static us.pserver.chk.Checker.range;
+import us.pserver.tools.Valid;
 
 
 /**
@@ -56,10 +55,8 @@ public class HexInputStream extends InputStream {
    * lidos os dados a serem decodificados.
    */
   public HexInputStream(InputStream in) {
-    if(in == null)
-      throw new IllegalArgumentException(
-      "Invalid InputStream [in="+ in+ "]");
-    this.in = in;
+    this.in = Valid.off(in).forNull()
+        .getOrFail(InputStream.class);
     buf = new byte[2];
     hex = new HexByteCoder();
     total = 0;
@@ -96,9 +93,9 @@ public class HexInputStream extends InputStream {
   
   @Override
   public int read(byte[] ba, int off, int length) throws IOException {
-    nullarray(ba);
-    range(off, 0, ba.length-2);
-    range(length, 1, ba.length-off);
+    Valid.off(ba).forEmpty().fail();
+    Valid.off(off).forNotBetween(0, ba.length-1);
+    Valid.off(length).forNotBetween(1, ba.length-off);
     if(end) return -1;
     
     int len = 0;

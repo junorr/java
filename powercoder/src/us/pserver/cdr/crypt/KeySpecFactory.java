@@ -23,9 +23,7 @@
 package us.pserver.cdr.crypt;
 
 import javax.crypto.spec.SecretKeySpec;
-import static us.pserver.chk.Checker.nullarg;
-import static us.pserver.chk.Checker.nullarray;
-import static us.pserver.chk.Checker.range;
+import us.pserver.tools.Valid;
 
 
 /**
@@ -45,8 +43,8 @@ public class KeySpecFactory {
    * @return <code>SecretKeySpec</code>
    */
   public static SecretKeySpec createKey(byte[] bs, CryptAlgorithm algo) {
-    nullarray(bs);
-    nullarg(CryptAlgorithm.class, algo);
+    Valid.off(bs).forEmpty().fail();
+    Valid.off(algo).forNull().fail(CryptAlgorithm.class);
     return new SecretKeySpec(bs, getKeyAlgorithm(algo));
   }
   
@@ -57,7 +55,7 @@ public class KeySpecFactory {
    * @return <code>SecretKeySpec</code>
    */
   public SecretKeySpec genetareKey(CryptAlgorithm algo) {
-    nullarg(CryptAlgorithm.class, algo);
+    Valid.off(algo).forNull().fail(CryptAlgorithm.class);
     return new SecretKeySpec(randomBytes(
         algo.getBytesSize()), getKeyAlgorithm(algo));
   }
@@ -69,7 +67,7 @@ public class KeySpecFactory {
    * @return nome do algorítmo.
    */
   public static String getKeyAlgorithm(CryptAlgorithm algo) {
-    nullarg(CryptAlgorithm.class, algo);
+    Valid.off(algo).forNull().fail(CryptAlgorithm.class);
     int idx = algo.toString().indexOf("/");
     if(idx < 0) return null;
     return algo.toString().substring(0, idx);
@@ -82,7 +80,7 @@ public class KeySpecFactory {
    * @return byte array com dados aleatórios.
    */
   public static byte[] randomBytes(int size) {
-    range(size, 1, Integer.MAX_VALUE);
+    Valid.off(size).forNotBetween(1, Integer.MAX_VALUE);
     byte[] bs = new byte[size];
     for(int i = 0; i < size; i++) {
       bs[i] = (byte) Math.random();

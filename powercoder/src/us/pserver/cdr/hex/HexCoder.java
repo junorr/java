@@ -22,8 +22,7 @@
 
 package us.pserver.cdr.hex;
 
-import static us.pserver.chk.Checker.nullarray;
-import static us.pserver.chk.Checker.nullstr;
+import us.pserver.tools.Valid;
 
 
 /**
@@ -45,7 +44,7 @@ public class HexCoder {
    * do byte array informado.
    */
   public static String toHexString(byte[] array) {
-    nullarray(array);
+    Valid.off(array).forEmpty().fail();
     StringBuilder sb = new StringBuilder();
     for(int i = 0; i < array.length; i++) {
       int high = ((array[i] >> 4) & 0xf) << 4;
@@ -66,7 +65,7 @@ public class HexCoder {
    * da <code>String</code> informada.
    */
   public static byte[] fromHexString(String hex) {
-    nullstr(hex);
+    Valid.off(hex).forEmpty().fail();
     int len = hex.length();
     byte[] bytes = new byte[len / 2];
     for(int i = 0; i < len; i += 2) {

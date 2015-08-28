@@ -98,6 +98,12 @@ public class StringBuilderInputStream extends InputStream {
   }
   
   
+  public StringBuilderInputStream append(Object obj) {
+    if(obj != null) builder.append(obj);
+    return this;
+  }
+  
+  
   public StringBuilderInputStream append(char c) {
     builder.append(c);
     return this;

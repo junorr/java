@@ -29,7 +29,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.FileUtils;
-import static us.pserver.chk.Checker.nullarray;
+import us.pserver.tools.Valid;
 
 /**
  * Compactador/Descompactador GZIP para byte array 
@@ -42,7 +42,7 @@ public class GZipByteCoder implements Coder<byte[]> {
   
   
   private GZIPInputStream createGZipInput(byte[] buf) {
-    nullarray(buf);
+    Valid.off(buf).forEmpty().fail();
     try {
       return new GZIPInputStream(new ByteArrayInputStream(buf));
     } catch(IOException e) {
@@ -59,7 +59,7 @@ public class GZipByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] encode(byte[] buf) {
-    nullarray(buf);
+    Valid.off(buf).forEmpty().fail();
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try(GZIPOutputStream gout = new GZIPOutputStream(bos)) {
       gout.write(buf);
@@ -74,7 +74,7 @@ public class GZipByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] decode(byte[] buf) {
-    nullarray(buf);
+    Valid.off(buf).forEmpty().fail();
     try(GZIPInputStream gin = createGZipInput(buf)) {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       FileUtils.transfer(gin, bos);
@@ -110,7 +110,9 @@ public class GZipByteCoder implements Coder<byte[]> {
    * @return Byte array contendo os dados codificados.
    */
   public byte[] encode(byte[] buf, int offset, int length) {
-    nullarray(buf);
+    Valid.off(buf).forEmpty().fail();
+    Valid.off(offset).forNotBetween(0, buf.length-1);
+    Valid.off(length).forNotBetween(1, buf.length - offset);
     buf = Arrays.copyOfRange(buf, offset, offset + length);
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try(GZIPOutputStream gout = new GZIPOutputStream(bos)) {
@@ -131,7 +133,9 @@ public class GZipByteCoder implements Coder<byte[]> {
    * @return Byte array contendo os dados decodificados.
    */
   public byte[] decode(byte[] buf, int offset, int length) {
-    nullarray(buf);
+    Valid.off(buf).forEmpty().fail();
+    Valid.off(offset).forNotBetween(0, buf.length-1);
+    Valid.off(length).forNotBetween(1, buf.length - offset);
     buf = Arrays.copyOfRange(buf, offset, offset + length);
     try(GZIPInputStream gin = createGZipInput(buf)) {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();

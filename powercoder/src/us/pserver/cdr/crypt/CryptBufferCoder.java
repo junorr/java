@@ -24,7 +24,7 @@ package us.pserver.cdr.crypt;
 
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
-import static us.pserver.chk.Checker.nullbuffer;
+import us.pserver.tools.Valid;
 
 
 /**
@@ -72,7 +72,9 @@ public class CryptBufferCoder implements CryptCoder<ByteBuffer> {
   
   @Override
   public ByteBuffer apply(ByteBuffer buf, boolean encode) {
-    nullbuffer(buf);
+    Valid.off(buf).forNull().fail(ByteBuffer.class);
+    Valid.off(buf.remaining()).forLesserThan(1)
+        .fail("No remaining bytes to read");
     byte[] bs = bcv.convert(buf);
     if(bs == null) return buf;
     bs = coder.apply(bs, encode);

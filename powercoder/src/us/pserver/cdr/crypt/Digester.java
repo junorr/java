@@ -25,9 +25,7 @@ package us.pserver.cdr.crypt;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import static us.pserver.chk.Checker.nullarg;
-import static us.pserver.chk.Checker.nullarray;
-import static us.pserver.chk.Checker.nullstr;
+import us.pserver.tools.Valid;
 
 
 /**
@@ -46,8 +44,8 @@ public class Digester {
    * @return hash.
    */
   public static byte[] digest(byte[] bs, DigestAlgorithm algo) {
-    nullarray(bs);
-    nullarg(DigestAlgorithm.class, algo);
+    Valid.off(bs).forEmpty().fail();
+    Valid.off(algo).forNull().fail(DigestAlgorithm.class);
     try {
       return MessageDigest.getInstance(algo.getAlgorithm()).digest(bs);
     } catch(NoSuchAlgorithmException e) {
@@ -65,8 +63,8 @@ public class Digester {
    * @return hash.
    */
   public static byte[] digest(String str, DigestAlgorithm algo) {
-    nullstr(str);
-    nullarg(DigestAlgorithm.class, algo);
+    Valid.off(str).forEmpty().fail("Invalid String to digest: ");
+    Valid.off(algo).forNull().fail(DigestAlgorithm.class);
     return digest(toBytes(str), algo);
   }
   
@@ -78,7 +76,7 @@ public class Digester {
    * @return hash.
    */
   public static byte[] toSHA1(byte[] bs) {
-    nullarray(bs);
+    Valid.off(bs).forEmpty().fail();
     return digest(bs, DigestAlgorithm.SHA_1);
   }
   
@@ -91,7 +89,7 @@ public class Digester {
    * @return hash.
    */
   public static byte[] toSHA1(String str) {
-    nullstr(str);
+    Valid.off(str).forEmpty().fail();
     return digest(str, DigestAlgorithm.SHA_1);
   }
   
@@ -103,7 +101,7 @@ public class Digester {
    * @return hash.
    */
   public static byte[] toSHA256(byte[] bs) {
-    nullarray(bs);
+    Valid.off(bs).forEmpty().fail();
     return digest(bs, DigestAlgorithm.SHA_256);
   }
   
@@ -116,7 +114,7 @@ public class Digester {
    * @return hash.
    */
   public static byte[] toSHA256(String str) {
-    nullstr(str);
+    Valid.off(str).forEmpty().fail();
     return digest(str, DigestAlgorithm.SHA_256);
   }
   
@@ -128,7 +126,7 @@ public class Digester {
    * @return hash.
    */
   public static byte[] toMD5(byte[] bs) {
-    nullarray(bs);
+    Valid.off(bs).forEmpty().fail();
     return digest(bs, DigestAlgorithm.MD5);
   }
   
@@ -141,7 +139,7 @@ public class Digester {
    * @return hash.
    */
   public static byte[] toMD5(String str) {
-    nullstr(str);
+    Valid.off(str).forEmpty().fail();
     return digest(str, DigestAlgorithm.MD5);
   }
   
@@ -153,7 +151,7 @@ public class Digester {
    * <code>String</code>.
    */
   public static byte[] toBytes(String str) {
-    nullstr(str);
+    Valid.off(str).forEmpty().fail();
     if(str.isEmpty()) return new byte[0];
     try {
       return str.getBytes("UTF-8");

@@ -28,8 +28,7 @@ import java.nio.ByteBuffer;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import us.pserver.chk.Checker;
-import static us.pserver.chk.Checker.nullarg;
+import us.pserver.tools.Valid;
 
 /**
  *
@@ -55,8 +54,8 @@ public class CryptInputStream extends InputStream {
   
   
   public CryptInputStream(InputStream in, CryptKey key) {
-    nullarg(InputStream.class, in);
-    nullarg(CryptKey.class, key);
+    Valid.off(in).forNull().fail(InputStream.class);
+    Valid.off(key).forNull().fail(CryptKey.class);
     input = new BufferedInputStream(in);
     buffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
     finished = false;
@@ -80,9 +79,9 @@ public class CryptInputStream extends InputStream {
   
   @Override
   public int read(byte[] bs, int off, int len) throws IOException {
-    Checker.nullarray(bs);
-    Checker.range(off, -1, bs.length);
-    Checker.range(len, 0, bs.length - off);
+    Valid.off(bs).forEmpty().fail();
+    Valid.off(off).forNotBetween(0, bs.length-1);
+    Valid.off(len).forNotBetween(1, bs.length-off);
     if(!buffer.hasRemaining()) {
       encryptRaw();
     }
@@ -98,7 +97,7 @@ public class CryptInputStream extends InputStream {
   
   @Override
   public int read(byte[] bs) throws IOException {
-    Checker.nullarray(bs);
+    Valid.off(bs).forEmpty().fail();
     return read(bs, 0, bs.length);
   }
   

@@ -31,7 +31,7 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
-import static us.pserver.chk.Checker.nullarg;
+import us.pserver.tools.Valid;
 
 
 /**
@@ -50,7 +50,7 @@ public class CryptUtils {
    * @return <code>Cipher</code>.
    */
   public static Cipher createEncryptCipher(CryptKey key) {
-    nullarg(CryptKey.class, key);
+    Valid.off(key).forNull().fail(CryptKey.class);
     try {
       int size = 8;
       if(key.getAlgorithm() == CryptAlgorithm.AES_CBC
@@ -87,7 +87,7 @@ public class CryptUtils {
    * @return <code>Cipher</code>.
    */
   public static Cipher createDecryptCipher(CryptKey key) {
-    nullarg(CryptKey.class, key);
+    Valid.off(key).forNull().fail(CryptKey.class);
     try {
       int size = 8;
       if(key.getAlgorithm() == CryptAlgorithm.AES_CBC
@@ -124,7 +124,7 @@ public class CryptUtils {
    * @return <code>Cipher</code>.
    */
   public static Cipher[] createEncryptDecryptCiphers(CryptKey key) {
-    nullarg(CryptKey.class, key);
+    Valid.off(key).forNull().fail(CryptKey.class);
     try {
       int size = 8;
       if(key.getAlgorithm() == CryptAlgorithm.AES_CBC
@@ -166,8 +166,8 @@ public class CryptUtils {
    * @return <code>OutputStream</code> para criptografia de dados.
    */
   public static CipherOutputStream createCipherOutputStream(OutputStream out, CryptKey key) {
-    nullarg(CryptKey.class, key);
-    nullarg(OutputStream.class, out);
+    Valid.off(key).forNull().fail(CryptKey.class);
+    Valid.off(out).forNull().fail(OutputStream.class);
     Cipher cp = createEncryptCipher(key);
     return new CipherOutputStream(out, cp);
   }
@@ -181,8 +181,8 @@ public class CryptUtils {
    * @return <code>InputStream</code> para descriptografia de dados.
    */
   public static CipherInputStream createCipherInputStream(InputStream in, CryptKey key) {
-    nullarg(CryptKey.class, key);
-    nullarg(OutputStream.class, in);
+    Valid.off(in).forNull().fail(InputStream.class);
+    Valid.off(key).forNull().fail(CryptKey.class);
     Cipher cp = createDecryptCipher(key);
     return new CipherInputStream(in, cp);
   }

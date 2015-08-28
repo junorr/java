@@ -33,8 +33,7 @@ import org.apache.commons.codec.binary.Base64OutputStream;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
-import static us.pserver.chk.Checker.nullarg;
-import static us.pserver.chk.Checker.nullbuffer;
+import us.pserver.tools.Valid;
 
 /**
  * Codificador/Decodificador de arquivos no formato Base64.
@@ -76,8 +75,8 @@ public class Base64FileCoder implements FileCoder {
   
   @Override
   public boolean encode(Path src, Path dst) {
-    nullarg(Path.class, src);
-    nullarg(Path.class, dst);
+    Valid.off(src).forNull().fail(Path.class);
+    Valid.off(dst).forNull().fail(Path.class);
     
     try(InputStream in = FileUtils.inputStream(src);
         OutputStream out = new Base64OutputStream(
@@ -92,8 +91,8 @@ public class Base64FileCoder implements FileCoder {
   
   @Override
   public boolean decode(Path src, Path dst) {
-    nullarg(Path.class, src);
-    nullarg(Path.class, dst);
+    Valid.off(src).forNull().fail(Path.class);
+    Valid.off(dst).forNull().fail(Path.class);
     
     try(InputStream in = new Base64InputStream(
             FileUtils.inputStream(src));
@@ -107,8 +106,8 @@ public class Base64FileCoder implements FileCoder {
   
   
   private boolean encodeTo(Path src, PrintStream ps) {
-    nullarg(Path.class, src);
-    nullarg(PrintStream.class, ps);
+    Valid.off(src).forNull().fail(Path.class);
+    Valid.off(ps).forNull().fail(PrintStream.class);
     
     try(InputStream in = FileUtils.inputStream(src);
         OutputStream out = new Base64OutputStream(ps)) {
@@ -121,8 +120,8 @@ public class Base64FileCoder implements FileCoder {
   
   
   private boolean decodeTo(Path src, PrintStream ps) {
-    nullarg(Path.class, src);
-    nullarg(PrintStream.class, ps);
+    Valid.off(src).forNull().fail(Path.class);
+    Valid.off(ps).forNull().fail(PrintStream.class);
     
     try(InputStream in = new Base64InputStream(
         FileUtils.inputStream(src))) {
@@ -135,8 +134,10 @@ public class Base64FileCoder implements FileCoder {
   
   
   private boolean encodeFrom(ByteBuffer buf, Path dst) {
-    nullbuffer(buf);
-    nullarg(Path.class, dst);
+    Valid.off(buf).forNull().fail(ByteBuffer.class);
+    Valid.off(buf.remaining()).forLesserThan(1)
+        .fail("No remaining bytes to read");
+    Valid.off(dst).forNull().fail(Path.class);
     
     try(Base64OutputStream out = new Base64OutputStream(
         FileUtils.outputStream(dst));) {
@@ -149,8 +150,10 @@ public class Base64FileCoder implements FileCoder {
   
   
   private boolean decodeFrom(ByteBuffer buf, Path dst) {
-    nullbuffer(buf);
-    nullarg(Path.class, dst);
+    Valid.off(buf).forNull().fail(ByteBuffer.class);
+    Valid.off(buf.remaining()).forLesserThan(1)
+        .fail("No remaining bytes to read");
+    Valid.off(dst).forNull().fail(Path.class);
     
     ByteArrayInputStream bin = 
         new ByteArrayInputStream(conv.convert(buf));

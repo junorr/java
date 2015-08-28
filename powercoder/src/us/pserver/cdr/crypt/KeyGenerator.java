@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import us.pserver.cdr.StringByteConverter;
-import static us.pserver.chk.Checker.range;
+import us.pserver.tools.Valid;
 
 /**
  *
@@ -197,7 +197,7 @@ public class KeyGenerator {
   
   
   public char[] genAsChars(int size) {
-    range(size, 1, Integer.MAX_VALUE);
+    Valid.off(size).forNotBetween(1, Integer.MAX_VALUE);
     char[] cs = new char[size];
     for(int i = 0; i < size; i++) {
       cs[i] = nextRandom();

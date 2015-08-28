@@ -24,7 +24,7 @@ package us.pserver.cdr.lzma;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
-import static us.pserver.chk.Checker.nullstr;
+import us.pserver.tools.Valid;
 
 /**
  * Compactador/Descompactador de <code>String's</code> no formato LZMA.
@@ -56,7 +56,7 @@ public class LzmaStringCoder implements Coder<String> {
 
   @Override
   public String encode(String str) {
-    nullstr(str);
+    Valid.off(str).forEmpty().fail();
     byte[] bs = conv.convert(str);
     System.out.println("  length DEcoded="+ bs.length);
     bs = lzma.encode(bs);
@@ -68,7 +68,7 @@ public class LzmaStringCoder implements Coder<String> {
 
   @Override
   public String decode(String str) {
-    nullstr(str);
+    Valid.off(str).forEmpty().fail();
     byte[] bs = conv.convert(str);
     bs = b64.decode(bs);
     bs = lzma.decode(bs);

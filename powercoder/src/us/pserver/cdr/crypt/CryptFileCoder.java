@@ -33,9 +33,7 @@ import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64BufferCoder;
-import static us.pserver.chk.Checker.nullarg;
-import static us.pserver.chk.Checker.nullbuffer;
-import static us.pserver.chk.Checker.nullstr;
+import us.pserver.tools.Valid;
 
 
 /**
@@ -101,7 +99,7 @@ public class CryptFileCoder implements FileCoder {
    * @return Caminho de arquivo <code>Path</code>.
    */
   public Path path(String strPath) {
-    nullstr(strPath);
+    Valid.off(strPath).forEmpty().fail("Invalid path: ");
     Path p = FileUtils.path(strPath);
     this.createIfNotExists(p, true);
     return p;
@@ -120,7 +118,7 @@ public class CryptFileCoder implements FileCoder {
    * caso contrário.
    */
   public boolean createIfNotExists(Path p, boolean isFile) {
-    nullarg(Path.class, p);
+    Valid.off(p).forNull().fail(Path.class);
     try {
       if(Files.exists(p)) return true;
       if(isFile)
@@ -136,8 +134,8 @@ public class CryptFileCoder implements FileCoder {
   
   @Override
   public boolean apply(Path src, Path dst, boolean encode) {
-    nullarg(Path.class, src);
-    nullarg(Path.class, dst);
+    Valid.off(src).forNull().fail(Path.class);
+    Valid.off(dst).forNull().fail(Path.class);
 
     try {
       if(!Files.exists(dst))
@@ -174,8 +172,8 @@ public class CryptFileCoder implements FileCoder {
   
   @Override
   public boolean applyTo(Path src, PrintStream ps, boolean encode) {
-    nullarg(Path.class, src);
-    nullarg(PrintStream.class, ps);
+    Valid.off(src).forNull().fail(Path.class);
+    Valid.off(ps).forNull().fail(PrintStream.class);
     
     try {
       FileChannel rc = FileChannel.open(
@@ -213,8 +211,10 @@ public class CryptFileCoder implements FileCoder {
   
   @Override
   public boolean applyFrom(ByteBuffer buf, Path path, boolean encode) {
-    nullbuffer(buf);
-    nullarg(Path.class, path);
+    Valid.off(buf).forNull().fail(ByteBuffer.class);
+    Valid.off(buf.remaining()).forLesserThan(1)
+        .fail("No remaining bytes to read");
+    Valid.off(path).forNull().fail(Path.class);
     
     if(!this.createIfNotExists(path, true))
       return false;

@@ -33,8 +33,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import static us.pserver.chk.Checker.nullarray;
-import static us.pserver.chk.Checker.range;
+import us.pserver.tools.Valid;
 
 
 /**
@@ -95,7 +94,7 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
   
   @Override
   public byte[] encode(byte[] bs) {
-    nullarray(bs);
+    Valid.off(bs).forEmpty().fail();
     try {
       return encoder.doFinal(bs);
     } catch(BadPaddingException | IllegalBlockSizeException ex) {
@@ -106,7 +105,7 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
   
   @Override
   public byte[] decode(byte[] bs) {
-    nullarray(bs);
+    Valid.off(bs).forEmpty().fail();
     try {
       return decoder.doFinal(bs);
     } catch(BadPaddingException | IllegalBlockSizeException ex) {
@@ -129,9 +128,9 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
    * @return Byte array contendo os dados codificados.
    */
   public byte[] encode(byte[] bs, int offset, int length) {
-    nullarray(bs);
-    range(offset, 0, bs.length -1);
-    range(length, 1, bs.length);
+    Valid.off(bs).forEmpty().fail();
+    Valid.off(offset).forNotBetween(0, bs.length-1);
+    Valid.off(length).forNotBetween(1, bs.length - offset);
     try {
       return encoder.doFinal(bs, offset, length);
     } catch(BadPaddingException | IllegalBlockSizeException ex) {
@@ -148,9 +147,9 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
    * @return Byte array contendo os dados decodificados.
    */
   public byte[] decode(byte[] bs, int offset, int length) {
-    nullarray(bs);
-    range(offset, 0, bs.length -1);
-    range(length, 1, bs.length);
+    Valid.off(bs).forEmpty().fail();
+    Valid.off(offset).forNotBetween(0, bs.length-1);
+    Valid.off(length).forNotBetween(1, bs.length - offset);
     try {
       return decoder.doFinal(bs, offset, length);
     } catch(BadPaddingException | IllegalBlockSizeException ex) {

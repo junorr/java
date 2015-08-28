@@ -26,7 +26,7 @@ import java.util.Arrays;
 import javax.crypto.spec.SecretKeySpec;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
-import static us.pserver.chk.Checker.nullarg;
+import us.pserver.tools.Valid;
 
 
 /**
@@ -215,7 +215,7 @@ public class CryptKey {
    * @return <code>CryptKey</code>.
    */
   public static CryptKey createRandomKey(CryptAlgorithm algo) {
-    nullarg(CryptAlgorithm.class, algo);
+    Valid.off(algo).forNull().fail(CryptAlgorithm.class);
     CryptKey key = new CryptKey();
     key.setKey(KeyGenerator.instance()
         .genAsBytes(algo.getBytesSize()), algo);

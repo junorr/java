@@ -24,7 +24,7 @@ package us.pserver.cdr.gzip;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
-import static us.pserver.chk.Checker.nullstr;
+import us.pserver.tools.Valid;
 
 /**
  * Compactador/Descompactador de <code>String's</code> no formato GZIP.
@@ -56,7 +56,7 @@ public class GZipStringCoder implements Coder<String> {
 
   @Override
   public String encode(String str) {
-    nullstr(str);
+    Valid.off(str).forNull().fail();
     byte[] bs = conv.convert(str);
     bs = gzip.encode(bs);
     bs = b64.encode(bs);
@@ -66,8 +66,7 @@ public class GZipStringCoder implements Coder<String> {
 
   @Override
   public String decode(String str) {
-    nullstr(str);
-    
+    Valid.off(str).forNull().fail();
     byte[] bs = conv.convert(str);
     bs = b64.decode(bs);
     bs = gzip.decode(bs);

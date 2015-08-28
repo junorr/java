@@ -33,8 +33,7 @@ import lzma.streams.LzmaOutputStream;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
-import static us.pserver.chk.Checker.nullarg;
-import static us.pserver.chk.Checker.nullbuffer;
+import us.pserver.tools.Valid;
 
 /**
  * Compactador/Descompactador de arquivos no formato LZMA.
@@ -53,8 +52,10 @@ public class LzmaFileCoder implements FileCoder {
 
   @Override
   public boolean applyFrom(ByteBuffer buf, Path p, boolean encode) {
-    nullbuffer(buf);
-    nullarg(Path.class, p);
+    Valid.off(buf).forNull().fail(ByteBuffer.class);
+    Valid.off(buf.remaining()).forLesserThan(1)
+        .fail("No remaining bytes to read");
+    Valid.off(p).forNull().fail(Path.class);
     
     LzmaByteCoder cdr = new LzmaByteCoder();
     ByteBufferConverter conv = new ByteBufferConverter();
@@ -73,8 +74,8 @@ public class LzmaFileCoder implements FileCoder {
 
   @Override
   public boolean applyTo(Path p, PrintStream ps, boolean encode) {
-    nullarg(Path.class, p);
-    nullarg(PrintStream.class, ps);
+    Valid.off(p).forNull().fail(Path.class);
+    Valid.off(ps).forNull().fail(PrintStream.class);
     
     try(InputStream in = FileUtils.inputStream(p)) {
       if(encode) {
@@ -99,8 +100,8 @@ public class LzmaFileCoder implements FileCoder {
   
   @Override
   public boolean encode(Path p1, Path p2) {
-    nullarg(Path.class, p1);
-    nullarg(Path.class, p2);
+    Valid.off(p1).forNull().fail(Path.class);
+    Valid.off(p2).forNull().fail(Path.class);
     try(InputStream in = FileUtils.inputStream(p1);
         OutputStream out = FileUtils.outputStream(p2);
         LzmaOutputStream lzout = LzmaStreamFactory
@@ -117,8 +118,8 @@ public class LzmaFileCoder implements FileCoder {
 
   @Override
   public boolean decode(Path p1, Path p2) {
-    nullarg(Path.class, p1);
-    nullarg(Path.class, p2);
+    Valid.off(p1).forNull().fail(Path.class);
+    Valid.off(p2).forNull().fail(Path.class);
     try(InputStream in = FileUtils.inputStream(p1);
         OutputStream out = FileUtils.outputStream(p2);
         LzmaInputStream lzin = LzmaStreamFactory

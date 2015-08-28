@@ -31,8 +31,7 @@ import java.nio.file.Path;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
-import static us.pserver.chk.Checker.nullarg;
-import static us.pserver.chk.Checker.nullbuffer;
+import us.pserver.tools.Valid;
 
 /**
  * Codificador/Decodificador de arquivos no 
@@ -78,9 +77,8 @@ public class HexFileCoder implements FileCoder {
   
   @Override
   public boolean encode(Path src, Path dst) {
-    nullarg(Path.class, src);
-    nullarg(Path.class, dst);
-    
+    Valid.off(src).forNull().fail(Path.class);
+    Valid.off(dst).forNull().fail(Path.class);
     try(InputStream in = FileUtils.inputStream(src);
         OutputStream out = new HexOutputStream(
             FileUtils.outputStream(dst))) {
@@ -94,9 +92,8 @@ public class HexFileCoder implements FileCoder {
   
   @Override
   public boolean decode(Path src, Path dst) {
-    nullarg(Path.class, src);
-    nullarg(Path.class, dst);
-    
+    Valid.off(src).forNull().fail(Path.class);
+    Valid.off(dst).forNull().fail(Path.class);
     try(InputStream in = new HexInputStream(
             FileUtils.inputStream(src));
         OutputStream out = FileUtils.outputStream(dst)) {
@@ -109,9 +106,8 @@ public class HexFileCoder implements FileCoder {
   
   
   private boolean encodeTo(Path src, PrintStream ps) {
-    nullarg(Path.class, src);
-    nullarg(PrintStream.class, ps);
-    
+    Valid.off(src).forNull().fail(Path.class);
+    Valid.off(ps).forNull().fail(PrintStream.class);
     try(InputStream in = FileUtils.inputStream(src);
         OutputStream out = new HexOutputStream(ps)) {
       FileUtils.transfer(in, out);
@@ -123,9 +119,8 @@ public class HexFileCoder implements FileCoder {
   
   
   private boolean decodeTo(Path src, PrintStream ps) {
-    nullarg(Path.class, src);
-    nullarg(PrintStream.class, ps);
-    
+    Valid.off(src).forNull().fail(Path.class);
+    Valid.off(ps).forNull().fail(PrintStream.class);
     try(InputStream in = new HexInputStream(
         FileUtils.inputStream(src))) {
       FileUtils.transfer(in, ps);
@@ -137,8 +132,10 @@ public class HexFileCoder implements FileCoder {
   
   
   private boolean encodeFrom(ByteBuffer buf, Path dst) {
-    nullbuffer(buf);
-    nullarg(Path.class, dst);
+    Valid.off(buf).forNull().fail(ByteBuffer.class);
+    Valid.off(buf.remaining()).forLesserThan(1)
+        .fail("No remaining bytes to read");
+    Valid.off(dst).forNull().fail(Path.class);
     
     try(HexOutputStream out = new HexOutputStream(
         FileUtils.outputStream(dst));) {
@@ -151,8 +148,10 @@ public class HexFileCoder implements FileCoder {
   
   
   private boolean decodeFrom(ByteBuffer buf, Path dst) {
-    nullbuffer(buf);
-    nullarg(Path.class, dst);
+    Valid.off(buf).forNull().fail(ByteBuffer.class);
+    Valid.off(buf.remaining()).forLesserThan(1)
+        .fail("No remaining bytes to read");
+    Valid.off(dst).forNull().fail(Path.class);
     
     ByteArrayInputStream bin = 
         new ByteArrayInputStream(conv.convert(buf));

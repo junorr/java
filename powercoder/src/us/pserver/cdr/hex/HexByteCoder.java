@@ -25,8 +25,7 @@ package us.pserver.cdr.hex;
 import java.util.Arrays;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
-import static us.pserver.chk.Checker.nullarray;
-import static us.pserver.chk.Checker.range;
+import us.pserver.tools.Valid;
 
 
 /**
@@ -60,14 +59,14 @@ public class HexByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] encode(byte[] t) {
-    nullarray(t);
+    Valid.off(t).forEmpty().fail();
     return scv.convert(HexCoder.toHexString(t));
   }
 
 
   @Override
   public byte[] decode(byte[] t) {
-    nullarray(t);
+    Valid.off(t).forEmpty().fail();
     return HexCoder.fromHexString(scv.reverse(t));
   }
   
@@ -96,9 +95,9 @@ public class HexByteCoder implements Coder<byte[]> {
    * @return Byte array contendo os dados codificados.
    */
   public byte[] encode(byte[] t, int offset, int length) {
-    nullarray(t);
-    range(offset, 0, t.length-2);
-    range(length, 1, t.length-offset);
+    Valid.off(t).forEmpty().fail();
+    Valid.off(offset).forNotBetween(0, t.length-1);
+    Valid.off(length).forNotBetween(1, t.length-offset);
     return scv.convert(HexCoder.toHexString(
         Arrays.copyOfRange(t, offset, offset+length)));
   }
@@ -112,7 +111,7 @@ public class HexByteCoder implements Coder<byte[]> {
    * @return Byte array contendo os dados decodificados.
    */
   public byte[] decode(byte[] t, int offset, int length) {
-    nullarray(t);
+    Valid.off(t).forEmpty().fail();
     return HexCoder.fromHexString(
         scv.reverse(Arrays.copyOfRange(
             t, offset, offset+length)));

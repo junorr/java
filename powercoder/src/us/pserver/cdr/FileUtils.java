@@ -28,7 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import static us.pserver.chk.Checker.nullarg;
+import us.pserver.tools.Valid;
 
 /**
  * Classe utilitária com funções para manipulação de
@@ -129,8 +129,8 @@ public class FileUtils {
    * @throws IOException Caso ocorra erro na transferência dos dados.
    */
   public static long transfer(InputStream in, OutputStream out) throws IOException {
-    nullarg(InputStream.class, in);
-    nullarg(OutputStream.class, out);
+    Valid.off(in).forNull().fail(InputStream.class);
+    Valid.off(out).forNull().fail(OutputStream.class);
     
     long total = 0;
     byte[] buf = new byte[BUFFER];

@@ -28,7 +28,7 @@ import lzma.streams.LzmaInputStream;
 import lzma.streams.LzmaOutputStream;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.FileUtils;
-import static us.pserver.chk.Checker.nullarray;
+import us.pserver.tools.Valid;
 
 /**
  * Compactador/Descompactador LZMA para byte 
@@ -48,7 +48,7 @@ public class LzmaByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] encode(byte[] buf) {
-    nullarray(buf);
+    Valid.off(buf).forEmpty().fail();
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try {
       LzmaOutputStream lzout = LzmaStreamFactory.createLzmaOutput(bos);
@@ -64,7 +64,7 @@ public class LzmaByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] decode(byte[] buf) {
-    nullarray(buf);
+    Valid.off(buf).forEmpty().fail();
     try(LzmaInputStream lzin = LzmaStreamFactory.createLzmaInput(buf)) {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       FileUtils.transfer(lzin, bos);
@@ -100,7 +100,9 @@ public class LzmaByteCoder implements Coder<byte[]> {
    * @return Byte array contendo os dados codificados.
    */
   public byte[] encode(byte[] buf, int offset, int length) {
-    nullarray(buf);
+    Valid.off(buf).forEmpty().fail();
+    Valid.off(offset).forNotBetween(0, buf.length-1);
+    Valid.off(length).forNotBetween(1, buf.length - offset);
     buf = Arrays.copyOfRange(buf, offset, offset + length);
     return encode(buf);
   }
@@ -114,7 +116,9 @@ public class LzmaByteCoder implements Coder<byte[]> {
    * @return Byte array contendo os dados decodificados.
    */
   public byte[] decode(byte[] buf, int offset, int length) {
-    nullarray(buf);
+    Valid.off(buf).forEmpty().fail();
+    Valid.off(offset).forNotBetween(0, buf.length-1);
+    Valid.off(length).forNotBetween(1, buf.length - offset);
     buf = Arrays.copyOfRange(buf, offset, offset + length);
     return decode(buf);
   }
