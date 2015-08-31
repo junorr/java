@@ -25,11 +25,13 @@ package us.pserver.cdr.crypt;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.file.Path;
 import us.pserver.cdr.hex.HexCoder;
+import us.pserver.tools.Valid;
 
 
 /**
@@ -40,109 +42,58 @@ import us.pserver.cdr.hex.HexCoder;
  * @version 1.0 - 21/08/2013
  */
 public class KeyFile {
-  
-  private CryptKey key;
-  
-  private String file;
-  
+
   
   /**
-   * Construtor que recebe o nome do arquivo a ser 
-   * carregado/gerado.
-   * @param file arquivo a ser carregado/gerado.
+   * Salva a chave na saida especificada.
+   * @param key Chave de criptografia a ser salva.
+   * @param out Stream de saída onde a chave será salva.
+   * @throws IOException em caso de erro no stream de saída.
    */
-  public KeyFile(String file) {
-    if(file == null || file.isEmpty()
-        || !Files.exists(Paths.get(file)))
-      throw new IllegalArgumentException("Invalid file: "+ file);
-    this.file = file;
-    key = null;
+  public static void save(CryptKey key, OutputStream out) throws IOException {
+    Valid.off(key).forNull().fail(CryptKey.class);
+    Valid.off(out).forNull().fail(OutputStream.class);
+    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(out));
+    bw.write(key.getAlgorithm().toString());
+    bw.newLine();
+    bw.write(HexCoder.toHexString(key.getHash()));
+    bw.newLine();
+    bw.write(HexCoder.toHexString(key.getIV().getBytes()));
+    bw.newLine();
+    bw.flush();
   }
   
   
   /**
-   * Construtor que recebe o nome do arquivo a ser 
-   * gerado e a chave de criptografia.
-   * @param k Chave <code>CryptKey</code> a ser 
-   * armazenada em arquivo.
-   * @param file arquivo a ser carregado/gerado.
+   * Carrega a chave do stream de entrada especificado.
+   * @param in Stream de entrada de onde será lida a chave.
+   * @return A chave de criptografia lida.
+   * @throws IOException em caso de erro ao ler do stream.
    */
-  public KeyFile(CryptKey k, String file) {
-    if(file == null || file.isEmpty())
-      throw new IllegalArgumentException("Invalid file: "+ file);
-    this.file = file;
-    key = k;
-  }
-  
-  
-  /**
-   * Salva a chave em arquivo.
-   * @return <code>true</code> se salvo
-   * com sucesso, <code>false</code> caso
-   * contrário.
-   */
-  public boolean save() {
-    if(file == null || key == null)
-      return false;
-    
-    try {
-      BufferedWriter bw = Files.newBufferedWriter(
-          Paths.get(file), Charset.forName("UTF-8"), 
-          StandardOpenOption.WRITE);
-      bw.write(key.getAlgorithm().toString());
-      bw.newLine();
-      bw.write(HexCoder.toHexString(key.getHash()));
-      bw.newLine();
-      bw.flush();
-      bw.close();
-      return true;
-    } catch(IOException e) {
-      return false;
-    }
-  }
-  
-  
-  /**
-   * Carrega a chave do arquivo.
-   * @return Esta instância modificada de <code>KeyFile</code>.
-   */
-  public KeyFile load() {
-    if(file == null || !Files.exists(Paths.get(file)))
-      return this;
-    
-    try {
-      BufferedReader br = Files.newBufferedReader(
-          Paths.get(file), Charset.forName("UTF-8"));
-      String algo = br.readLine();
-      String hex = br.readLine();
-      CryptAlgorithm ca = CryptAlgorithm.fromString(algo);
-      byte[] hash = HexCoder.fromHexString(hex);
-      if(ca != null && hash != null) {
-        key = new CryptKey();
-        key.setKey(hash, ca);
-      }
-      return this;
-    } catch(IOException ex) {
-      throw new RuntimeException(ex);
-    }
-  }
-  
-  
-  /**
-   * Retorna a chave de criptografia <code>CryptKey</code>.
-   * @return chave de criptografia <code>CryptKey</code>.
-   */
-  public CryptKey getKey() {
+  public static CryptKey load(InputStream in) throws IOException {
+    Valid.off(in).forNull().fail(InputStream.class);
+    BufferedReader br = new BufferedReader(new InputStreamReader(in));
+    String algo = Valid.off(br.readLine()).forEmpty()
+        .getOrFail("Invalid Algorithm String: ");
+    String xhash = Valid.off(br.readLine()).forEmpty()
+        .getOrFail("Invalid Hash Hex String: ");
+    String xiv = Valid.off(br.readLine()).forEmpty()
+        .getOrFail("Invalid IV Hex String: ");
+    CryptAlgorithm ca = Valid.off(CryptAlgorithm.fromString(algo))
+        .forNull().getOrFail(CryptAlgorithm.class);
+    byte[] hash = Valid.off(HexCoder.fromHexString(xhash))
+        .forEmpty().getOrFail("Invalid Hash Array");
+    SecureIV iv = new SecureIV(Valid.off(HexCoder.decode(xiv))
+        .forEmpty().getOrFail("Invalid IV Array"), ca
+    );
+    CryptKey key = new CryptKey();
+    key.setKey(hash, iv, ca);
     return key;
   }
   
   
-  /**
-   * Retorna o arquivo de armazenamento.
-   * @return arquivo de armazenamento.
-   */
-  public String getFile() {
-    return file;
+  public static void main(String[] args) throws IOException {
+    KeyFile.save(CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_256_PKCS5), System.out);
   }
   
 }

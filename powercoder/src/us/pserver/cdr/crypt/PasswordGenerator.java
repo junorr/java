@@ -32,7 +32,7 @@ import us.pserver.tools.Valid;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 11/07/2014
  */
-public class KeyGenerator {
+public class PasswordGenerator {
 
   public static char[] NUMBERS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
   
@@ -52,7 +52,7 @@ public class KeyGenerator {
   private List<Character> list;
   
   
-  private KeyGenerator() {
+  private PasswordGenerator() {
     num = upper = lower = spec = true;
     hex = false;
     list = new LinkedList<>();
@@ -60,19 +60,19 @@ public class KeyGenerator {
   }
   
   
-  public static KeyGenerator instance() {
-    return new KeyGenerator();
+  public static PasswordGenerator instance() {
+    return new PasswordGenerator();
   }
   
   
-  public KeyGenerator disableAll() {
+  public PasswordGenerator disableAll() {
     num = upper = lower = spec = hex = false;
     list.clear();
     return this;
   }
   
   
-  public KeyGenerator resetRandom() {
+  public PasswordGenerator resetRandom() {
     list.clear();
     num = upper = lower = spec = true;
     hex = false;
@@ -81,31 +81,31 @@ public class KeyGenerator {
   }
   
   
-  public KeyGenerator useNumbers(boolean use) {
+  public PasswordGenerator useNumbers(boolean use) {
     num = use;
     return this;
   }
   
   
-  public KeyGenerator useLowerAlpha(boolean use) {
+  public PasswordGenerator useLowerAlpha(boolean use) {
     lower = use;
     return this;
   }
   
   
-  public KeyGenerator useUpperAlpha(boolean use) {
+  public PasswordGenerator useUpperAlpha(boolean use) {
     upper = use;
     return this;
   }
   
   
-  public KeyGenerator useSpecials(boolean use) {
+  public PasswordGenerator useSpecials(boolean use) {
     spec = use;
     return this;
   }
   
   
-  public KeyGenerator useHexSymbolsOnly(boolean use) {
+  public PasswordGenerator useHexSymbolsOnly(boolean use) {
     hex = true;
     num = false;
     lower = false;

@@ -38,13 +38,13 @@ public class CryptOutputStream extends OutputStream {
   
   public static final int DEFAULT_BUFFER_SIZE = 4096;
   
-  private byte[] buffer;
+  private final byte[] buffer;
   
   private int index;
   
-  private CryptKey key;
+  private final CryptKey key;
   
-  private Cipher encoder;
+  private final Cipher encoder;
   
   private BufferedOutputStream output;
   
@@ -66,6 +66,11 @@ public class CryptOutputStream extends OutputStream {
   
   public CryptOutputStream(OutputStream out, CryptKey key) {
     this(out, key, 0);
+  }
+  
+  
+  public CryptKey getCryptKey() {
+    return key;
   }
 
 

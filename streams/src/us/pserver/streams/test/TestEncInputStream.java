@@ -30,7 +30,7 @@ import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.streams.EncoderInputStream;
 import us.pserver.streams.IO;
 import us.pserver.streams.StreamCoderFactory;
-import us.pserver.tools.FileSizeFormatter;
+import us.pserver.tools.timer.Timer;
 
 /**
  *
@@ -42,15 +42,16 @@ public class TestEncInputStream {
   
   public static void main(String[] args) throws IOException {
     // --ENCODE --
-    //Path pi = IO.p("/storage/pic.jpg");
-    //Path po = IO.p("/storage/pic-enc.enc");
-    Path pi = IO.p("d:/pic.jpg");
-    Path po = IO.p("d:/pic-enc.enc");
+    Path pi = IO.p("/storage/pic.jpg");
+    Path po = IO.p("/storage/pic-enc.enc");
+    //Path pi = IO.p("d:/pic.jpg");
+    //Path po = IO.p("d:/pic-enc.enc");
     
     InputStream is = IO.is(pi);
     OutputStream os = IO.os(po);
     
-    CryptKey k = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_PKCS5);
+    CryptKey k = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_256_PKCS5);
+    System.out.println("* CryptKey: "+ k);
     
     StreamCoderFactory scf = StreamCoderFactory.getNew()
         //.setBase64CoderEnabled(true)
@@ -65,10 +66,10 @@ public class TestEncInputStream {
     System.out.println("* Done!");
     
     // --DECODE --
-    //pi = IO.p("/storage/pic-enc.enc");
-    //po = IO.p("/storage/pic-dec.jpg");
-    pi = IO.p("d:/pic-enc.enc");
-    po = IO.p("d:/pic-dec.jpg");
+    pi = IO.p("/storage/pic-enc.enc");
+    po = IO.p("/storage/pic-dec.jpg");
+    //pi = IO.p("d:/pic-enc.enc");
+    //po = IO.p("d:/pic-dec.jpg");
     
     is = IO.is(pi);
     os = IO.os(po);
@@ -80,7 +81,9 @@ public class TestEncInputStream {
     
     is = scf.create(is);
     
+    Timer tm = new Timer.Nanos().start();
     IO.tc(is, os);
+    System.out.println("* time decoding: "+ tm.lapAndStop());
     System.out.println("* Done!");
   }
   

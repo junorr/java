@@ -26,11 +26,11 @@ import java.io.OutputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
 import us.pserver.tools.Valid;
 
 
@@ -52,13 +52,7 @@ public class CryptUtils {
   public static Cipher createEncryptCipher(CryptKey key) {
     Valid.off(key).forNull().fail(CryptKey.class);
     try {
-      int size = 8;
-      if(key.getAlgorithm() == CryptAlgorithm.AES_CBC
-          || key.getAlgorithm() == CryptAlgorithm.AES_CBC_PKCS5)
-        size = 16;
-      
-      IvParameterSpec iv = new IvParameterSpec(key.truncate(key.getHash(), size));
-      Cipher encoder = Cipher.getInstance(key.getAlgorithm().toString());
+      Cipher encoder = Cipher.getInstance(key.getAlgorithm().getStringAlgorithm());
       
       if(key.getAlgorithm() == CryptAlgorithm.AES_ECB
           || key.getAlgorithm() == CryptAlgorithm.AES_ECB_PKCS5
@@ -69,7 +63,7 @@ public class CryptUtils {
         encoder.init(Cipher.ENCRYPT_MODE, key.getSpec());
       }
       else {
-        encoder.init(Cipher.ENCRYPT_MODE, key.getSpec(), iv);
+        encoder.init(Cipher.ENCRYPT_MODE, key.getSpec(), key.getIV().getIVSpec());
       }
       return encoder;
     } 
@@ -89,13 +83,7 @@ public class CryptUtils {
   public static Cipher createDecryptCipher(CryptKey key) {
     Valid.off(key).forNull().fail(CryptKey.class);
     try {
-      int size = 8;
-      if(key.getAlgorithm() == CryptAlgorithm.AES_CBC
-          || key.getAlgorithm() == CryptAlgorithm.AES_CBC_PKCS5)
-        size = 16;
-      
-      IvParameterSpec iv = new IvParameterSpec(key.truncate(key.getHash(), size));
-      Cipher decoder = Cipher.getInstance(key.getAlgorithm().toString());
+      Cipher decoder = Cipher.getInstance(key.getAlgorithm().getStringAlgorithm());
       
       if(key.getAlgorithm() == CryptAlgorithm.AES_ECB
           || key.getAlgorithm() == CryptAlgorithm.AES_ECB_PKCS5
@@ -106,7 +94,7 @@ public class CryptUtils {
         decoder.init(Cipher.DECRYPT_MODE, key.getSpec());
       }
       else {
-        decoder.init(Cipher.DECRYPT_MODE, key.getSpec(), iv);
+        decoder.init(Cipher.DECRYPT_MODE, key.getSpec(), key.getIV().getIVSpec());
       }
       return decoder;
     } 
@@ -126,15 +114,9 @@ public class CryptUtils {
   public static Cipher[] createEncryptDecryptCiphers(CryptKey key) {
     Valid.off(key).forNull().fail(CryptKey.class);
     try {
-      int size = 8;
-      if(key.getAlgorithm() == CryptAlgorithm.AES_CBC
-          || key.getAlgorithm() == CryptAlgorithm.AES_CBC_PKCS5)
-        size = 16;
-      
-      IvParameterSpec iv = new IvParameterSpec(key.truncate(key.getHash(), size));
       Cipher[] cps = new Cipher[2];
-      cps[0] = Cipher.getInstance(key.getAlgorithm().toString());
-      cps[1] = Cipher.getInstance(key.getAlgorithm().toString());
+      cps[0] = Cipher.getInstance(key.getAlgorithm().getStringAlgorithm());
+      cps[1] = Cipher.getInstance(key.getAlgorithm().getStringAlgorithm());
       
       if(key.getAlgorithm() == CryptAlgorithm.AES_ECB
           || key.getAlgorithm() == CryptAlgorithm.AES_ECB_PKCS5
@@ -146,8 +128,8 @@ public class CryptUtils {
         cps[1].init(Cipher.DECRYPT_MODE, key.getSpec());
       }
       else {
-        cps[0].init(Cipher.ENCRYPT_MODE, key.getSpec(), iv);
-        cps[1].init(Cipher.DECRYPT_MODE, key.getSpec(), iv);
+        cps[0].init(Cipher.ENCRYPT_MODE, key.getSpec(), key.getIV().getIVSpec());
+        cps[1].init(Cipher.DECRYPT_MODE, key.getSpec(), key.getIV().getIVSpec());
       }
       return cps;
     } 
@@ -185,6 +167,44 @@ public class CryptUtils {
     Valid.off(key).forNull().fail(CryptKey.class);
     Cipher cp = createDecryptCipher(key);
     return new CipherInputStream(in, cp);
+  }
+  
+  
+  /**
+   * Trunca o byte array para o tamanho <code>length</code>
+   * informado, preencehdo com dados repetidos, se necessário.
+   * @param bs Byte array a ser truncado.
+   * @param length Novo tamanho do byte array;
+   * @return Byte array com o novo tamanho.
+   */
+  public static byte[] truncate(byte[] bs, int length) {
+    if(bs == null || bs.length == 0 
+        || length <= 0 || length == bs.length)
+      return bs;
+    
+    byte[] nb = new byte[length];
+    int idx = 0;
+    int ibs = 0;
+    while(idx < length) {
+      if(ibs >= bs.length)
+        ibs = 0;
+      nb[idx++] = bs[ibs++];
+    }
+    return nb;
+  }
+  
+  
+  /**
+   * Gera um byte array com dados aleatórios.
+   * @param size tamanho do byte array a ser gerado.
+   * @return byte array com dados aleatórios.
+   */
+  public static byte[] randomBytes(int size) {
+    Valid.off(size).forNotBetween(1, Integer.MAX_VALUE);
+    SecureRandom random = new SecureRandom();
+    byte[] bs = new byte[size];
+    random.nextBytes(bs);
+    return bs;
   }
   
 }

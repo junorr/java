@@ -21,6 +21,8 @@
 
 package us.pserver.streams;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,7 +32,6 @@ import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.crypt.CryptUtils;
-import static us.pserver.streams.IO.os;
 import us.pserver.tools.Valid;
 
 /**
@@ -199,7 +200,7 @@ public class StreamCoderFactory {
       case BASE64:
         return new Base64OutputStream(os);
       case GZIP:
-        return new GZIPOutputStream(os);
+        return new GZIPOutputStream(new BufferedOutputStream(os));
       default:
         throw new IOException("No such coder ["+ tp+ "]");
     }
@@ -227,7 +228,7 @@ public class StreamCoderFactory {
       case BASE64:
         return new Base64InputStream(is);
       case GZIP:
-        return new GZIPInputStream(new UnsignedInputStream(is));
+        return new GZIPInputStream(new BufferedInputStream(new UnsignedInputStream(is)));
       default:
         throw new IOException("No such coder ["+ tp+ "]");
     }

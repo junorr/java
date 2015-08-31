@@ -56,7 +56,7 @@ public class KeySpecFactory {
    */
   public SecretKeySpec genetareKey(CryptAlgorithm algo) {
     Valid.off(algo).forNull().fail(CryptAlgorithm.class);
-    return new SecretKeySpec(randomBytes(
+    return new SecretKeySpec(CryptUtils.randomBytes(
         algo.getBytesSize()), getKeyAlgorithm(algo));
   }
   
@@ -71,21 +71,6 @@ public class KeySpecFactory {
     int idx = algo.toString().indexOf("/");
     if(idx < 0) return null;
     return algo.toString().substring(0, idx);
-  }
-  
-  
-  /**
-   * Gera um byte array com dados aleatórios.
-   * @param size tamanho do byte array a ser gerado.
-   * @return byte array com dados aleatórios.
-   */
-  public static byte[] randomBytes(int size) {
-    Valid.off(size).forNotBetween(1, Integer.MAX_VALUE);
-    byte[] bs = new byte[size];
-    for(int i = 0; i < size; i++) {
-      bs[i] = (byte) Math.random();
-    }
-    return bs;
   }
   
   

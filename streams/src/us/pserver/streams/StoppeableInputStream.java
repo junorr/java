@@ -25,7 +25,9 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+import us.pserver.tools.Valid;
 
 /**
  *
@@ -39,34 +41,40 @@ public class StoppeableInputStream extends FilterInputStream {
   
   private String charset;
   
-  private InputStream source;
+  private final InputStream source;
   
   private Consumer<StoppeableInputStream> action;
   
-  private byte[] stopFactor;
+  private final byte[] stopFactor;
   
-  private LimitedBuffer buffer;
+  private final LimitedBuffer buffer;
   
   private boolean stopped;
   
+  private final AtomicLong count;
   
-  public StoppeableInputStream(InputStream src, byte[] stopOn) {
+  
+  public StoppeableInputStream(InputStream src, final byte[] stopOn) {
     this(src, stopOn, null);
   }
   
   
-  public StoppeableInputStream(InputStream src, byte[] stopOn, Consumer<StoppeableInputStream> cs) {
+  public StoppeableInputStream(InputStream src, final byte[] stopOn, Consumer<StoppeableInputStream> cs) {
     super(src);
-    if(src == null)
-      throw new IllegalArgumentException("Invalid null InputStream");
-    if(stopOn == null)
-      throw new IllegalArgumentException("Invalid null stop byte array");
+    Valid.off(src).forNull().fail(InputStream.class);
+    Valid.off(stopOn).forEmpty().fail("Invalid stop content");
     source = src;
     charset = DEFAULT_CHARSET;
     action = cs;
     stopped = false;
     buffer = new LimitedBuffer(stopOn.length);
     stopFactor = stopOn;
+    count = new AtomicLong(0L);
+  }
+  
+  
+  public long getCount() {
+    return count.get();
   }
   
   
@@ -85,82 +93,71 @@ public class StoppeableInputStream extends FilterInputStream {
   }
 
 
-  public void setSource(InputStream source) {
-    this.source = source;
-  }
-
-
   public byte[] getStopFactor() {
     return stopFactor;
   }
   
   
   private void fillBuffer() throws IOException {
-    byte[] bs = new byte[1];
-    int read = -1;
-    if(buffer.size() < stopFactor.length) {
-      int num = stopFactor.length - buffer.size();
-      for(int i = 0; i < num; i++) {
-        read = in.read(bs);
-        if(read < 1) break;
-        buffer.put(bs[0]);
-      }
+    if(stopped) return;
+    long before = count.get();
+    while(!stopped 
+        && buffer.size() < stopFactor.length) {
+      readOne();
     }
-    else {
-      read = in.read(bs);
-      if(read < 1) return;
+    if(count.get() == before) {
+      readOne();
+    }
+  }
+  
+  
+  private void readOne() throws IOException {
+    byte[] bs = new byte[1];
+    int read = source.read(bs);
+    if(read < 1) {
+      stopped = true;
+    } else {
+      count.incrementAndGet();
       buffer.put(bs[0]);
     }
   }
   
   
+  private boolean readAndCheck() throws IOException {
+    fillBuffer();
+    stopped = Arrays.equals(stopFactor, buffer.buffer());
+    if(stopped) {
+      action.accept(this);
+    }
+    return stopped;
+  }
+  
+  
   @Override
   public int read() throws IOException {
-    System.out.println("STOPPEABLEINPUTSTREAM.READ(): stopped = "+ stopped);
-    if(stopped) {
-      System.out.println("STOPPEABLEINPUTSTREAM.READ(): STOPPED");
-      return -1;
-    }
-    
-    System.out.println("STOPPEABLEINPUTSTREAM.READ(): FILLBUFFER");
-    fillBuffer();
-    if(buffer.size() < stopFactor.length) {
-      System.out.println("STOPPEABLEINPUTSTREAM.READ(): buffer.size < stopFactor = "+ buffer.size()+ " < "+ stopFactor.length);
-      stopped = true;
-      return -1;
-    }
-    
-    System.out.println("STOPPEABLEINPUTSTREAM.READ(): BUFFER = "+ buffer.toUTF8()+ ", ARRAY = "+ Arrays.toString(buffer.buffer()));
-    System.out.println("STOPPEABLEINPUTSTREAM.READ(): COMPAREBUFFER");
-    if(Arrays.equals(stopFactor, buffer.buffer())) {
-      System.out.println("STOPPEABLEINPUTSTREAM.READ(): stopFactor reached = "+ buffer.toUTF8());
-      if(action != null) action.accept(this);
-      stopped = true;
-      return -1;
-    }
-    
-    System.out.println("STOPPEABLEINPUTSTREAM.READ(): BUFFER.GET(0) = "+ buffer.get(0));
-    return buffer.get(0);
+    return (readAndCheck() ? -1 : buffer.get(0));
   }
   
   
   @Override
   public int read(byte[] bs, int off, int len) throws IOException {
     if(stopped) return -1;
-    if(bs == null)
-      throw new IllegalArgumentException("Invalid null byte array");
-    if(bs.length == 0 || len < 1) return -1;
-    if(off < 0 || off + len > bs.length)
-      throw new IllegalArgumentException("Invalid arguments: off="+ off+ ", len="+ len);
+    Valid.off(bs).forEmpty().fail();
+    Valid.off(off).forNotBetween(0, bs.length -1)
+        .fail("Invalid off set: ");
+    Valid.off(len).forNotBetween(1, bs.length-off)
+        .fail("Invalid length: ");
     
-    int count = 0;
+    int read = 0;
     for(int i = off; i < (off+len); i++) {
-      int read = this.read();
-      if(stopped) return (count < 1 ? -1 : count);
-      count++;
-      bs[i] = (byte) read;
+      byte b = (byte) read();
+      if(stopped) {
+        return read;
+      }
+      read++;
+      bs[i] = b;
     }
-    return count;
+    return read;
   }
   
   

@@ -101,7 +101,23 @@ public abstract class StreamUtils {
     while((read = in.read(buf)) > 0) {
       total += read;
       out.write(buf, 0, read);
-      if(read < buf.length) break;
+    }
+    out.flush();
+    return total;
+  }
+  
+  
+  public static long transferUntilEOF(InputStream in, OutputStream out) throws IOException {
+    Valid.off(in).forNull().fail(InputStream.class);
+    Valid.off(out).forNull().fail(OutputStream.class);
+    
+    long total = 0;
+    int read = 0;
+    byte[] buf = new byte[BUFFER_SIZE];
+    
+    while((read = in.read(buf)) > 0) {
+      total += read;
+      out.write(buf, 0, read);
       int len = (read < 30 ? read : 30);
       String str = new String(buf, read -len, len);
       if(str.contains(EOF)) break;
@@ -245,7 +261,7 @@ public abstract class StreamUtils {
     Valid.off(start).forEmpty().fail();
     Valid.off(out).forEmpty().fail();
     
-    readUntil(in, start);
+    skipUntil(in, start);
     return transferUntil(in, out, end);
   }
   
@@ -315,7 +331,7 @@ public abstract class StreamUtils {
    * caso contrário.
    * @throws IOException Caso ocorra erro na leitura do stream.
    */
-  public static StreamResult readUntil(InputStream in, String str) throws IOException {
+  public static StreamResult skipUntil(InputStream in, String str) throws IOException {
     Valid.off(in).forNull().fail(InputStream.class);
     Valid.off(str).forEmpty().fail();
     
@@ -356,7 +372,7 @@ public abstract class StreamUtils {
    * <code>null</code> no caso de nenhum argumento encontrado.
    * @throws IOException Caso ocorra erro na leitura do stream.
    */
-  public static StreamResult readUntilOr(InputStream in, String str, String orFalse) throws IOException {
+  public static StreamResult skipUntilOr(InputStream in, String str, String orFalse) throws IOException {
     Valid.off(in).forNull().fail(InputStream.class);
     Valid.off(str).forEmpty().fail();
     Valid.off(orFalse).forEmpty().fail();
@@ -377,7 +393,7 @@ public abstract class StreamUtils {
       res.increment();
       lbuf.put(buf[0]);
       if(lbuf.size() == maxlen) {
-        //System.out.println("StreamUtils.readUntilOr["+ lbuf.toUTF8()+ "]");
+        //System.out.println("StreamUtils.skipUntilOr["+ lbuf.toUTF8()+ "]");
         if(lbuf.toUTF8().contains(str)) {
           res.setToken(str);
           break;
@@ -402,7 +418,7 @@ public abstract class StreamUtils {
   }
   
   
-  public static StreamResult readStringUntil(InputStream is, String until) throws IOException {
+  public static StreamResult readUntil(InputStream is, String until) throws IOException {
     Valid.off(is).forNull().fail(InputStream.class);
     Valid.off(until).forEmpty().fail();
     
@@ -412,7 +428,7 @@ public abstract class StreamUtils {
   }
   
   
-  public static StreamResult readStringUntilOr(InputStream is, String until, String or) throws IOException {
+  public static StreamResult readUntilOr(InputStream is, String until, String or) throws IOException {
     Valid.off(is).forNull().fail(InputStream.class);
     Valid.off(until).forEmpty().fail();
     Valid.off(or).forEmpty().fail();
