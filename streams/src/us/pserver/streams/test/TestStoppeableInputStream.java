@@ -23,7 +23,7 @@ package us.pserver.streams.test;
 
 import java.io.IOException;
 import us.pserver.streams.SequenceInputStream;
-import us.pserver.streams.StoppeableInputStream;
+import us.pserver.streams.StoppableInputStream;
 
 /**
  *
@@ -36,7 +36,7 @@ public class TestStoppeableInputStream {
   public static void main(String[] args) throws IOException {
     SequenceInputStream in = new SequenceInputStream(100);
     byte[] stop = {88, 89, 90};
-    StoppeableInputStream sin = new StoppeableInputStream(in, stop, s->{
+    StoppableInputStream sin = new StoppableInputStream(in, stop, s->{
       System.out.println("StopFactor reached!");
       try { s.close(); } 
       catch(IOException e) {}

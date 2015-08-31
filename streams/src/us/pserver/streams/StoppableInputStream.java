@@ -24,11 +24,8 @@ package us.pserver.streams;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import us.pserver.tools.Valid;
 
 /**
@@ -45,30 +42,25 @@ public class StoppableInputStream extends FilterInputStream {
   
   private final byte[] stopBytes;
   
-  private byte[] buffer1;
+  private byte[] buffer;
   
-  private int read1;
-  
-  private byte[] buffer2;
-  
-  private int read2;
+  private int read, index, stopIndex;
   
   private final AtomicBoolean stop;
   
-  private final ExecutorService exec;
+  private final Consumer<StoppableInputStream> listener;
   
   
-  public StoppableInputStream(InputStream source, byte[] stopBytes) {
+  public StoppableInputStream(InputStream source, byte[] stopBytes, Consumer<StoppableInputStream> onstop) {
     super(source);
     input = Valid.off(source).forNull()
         .getOrFail(InputStream.class);
     this.stopBytes = Valid.off(stopBytes)
         .forEmpty().getOrFail("Invalid empty stop bytes");
     stop = new AtomicBoolean(false);
-    buffer1 = new byte[DEFAULT_BUFFER_SIZE/2];
-    buffer2 = new byte[DEFAULT_BUFFER_SIZE/2];
-    read1 = read2 = 0;
-    exec = Executors.newFixedThreadPool(1);
+    buffer = new byte[DEFAULT_BUFFER_SIZE];
+    read = index = stopIndex = 0;
+    listener = onstop;
   }
   
   
@@ -77,8 +69,18 @@ public class StoppableInputStream extends FilterInputStream {
   }
   
   
-  public InputStream getSource() {
+  public InputStream getSourceInputStream() {
     return input;
+  }
+  
+  
+  public Consumer<StoppableInputStream> getStopListener() {
+    return listener;
+  }
+  
+  
+  public int getStopIndex() {
+    return stopIndex;
   }
   
   
@@ -87,67 +89,102 @@ public class StoppableInputStream extends FilterInputStream {
   }
   
   
-  private void fillAndCompare() throws Exception {
-    if(stop.get()) return;
-    read1 = input.read(buffer1);
-    if(read1 < 1) stop.set(true);
-    Future<Boolean> future = exec.submit(
-        new Searcher(stopBytes, buffer1, 0, read1)
-    );
-    read2 = input.read(buffer2);
-    stop.set(future.get());
-    if(!stop.get()) {
-      future = exec.submit(
-          new Searcher(stopBytes, buffer1, 0, read2)
-      );
-      stop.set(future.get());
-    }
+  @Override
+  public void close() throws IOException {
+    super.close();
+    buffer = null;
+    stop.compareAndSet(false, true);
   }
   
   
-  
-  
-  private static class Searcher implements Callable<Boolean> {
-    
-    private final byte[] stop;
-    
-    private final byte[] buffer;
-    
-    private final int off, len;
-    
-    
-    public Searcher(
-        final byte[] stopBytes, 
-        final byte[] buffer, 
-        final int off, 
-        final int len
-    ) {
-      this.stop = stopBytes;
-      this.buffer = buffer;
-      this.off = off;
-      this.len = len;
-    }
-    
-    
-    @Override
-    public Boolean call() throws Exception {
-      int count = 0;
-      for(int i = off; i < (len-stop.length); i++) {
-        if(buffer[i] == stop[0]) {
-          count++;
-          for(int j = 1; j < stop.length; j++) {
-            if(buffer[i+j] == stop[j])
-              count++;
-          }
-        } 
-        else count = 0;
-        if(count == stop.length) {
-          return true;
+  private boolean compare() {
+    if(stop.get()) return false;
+    int count = 0;
+    stopIndex = -1;
+    for(int i = index; i < (read-stopBytes.length); i++) {
+      if(buffer[i] == stopBytes[0]) {
+        count++;
+        stopIndex = i;
+        for(int j = 1; j < stopBytes.length; j++) {
+          if(buffer[i+j] == stopBytes[j])
+            count++;
         }
+      } 
+      else count = 0;
+      if(count == stopBytes.length) {
+        return true;
       }
-      return false;
     }
-    
+    stopIndex = -1;
+    return false;
+  }
+  
+  
+  private void fillAndCompare() throws IOException {
+    if(stop.get()) return;
+    if(index < read) return;
+    read = input.read(buffer);
+    if(read < 1) {
+      stop.set(true);
+      stopIndex = -1;
+      return;
+    }
+    index = 0;
+    stop.set(compare());
+    //System.out.printf("* fillAndCompare{index=%d, read=%d, stopIndex=%d}%n", index, read, stopIndex);
+  }
+  
+  
+  @Override
+  public int read(byte[] array, int off, int len) throws IOException {
+    if(stop.get() && index >= read && stopIndex < index) {
+      return -1;
+    }
+    Valid.off(array).forEmpty()
+        .fail("Invalid empty array");
+    Valid.off(off).forNotBetween(0, array.length-1)
+        .fail("Invalid off set: ");
+    Valid.off(len).forNotBetween(1, array.length-off)
+        .fail("Invalid length: ");
+    fillAndCompare();
+    int nread = -1;
+    int nlen = 0;
+    if(index < stopIndex) {
+      nlen = Math.min(len, stopIndex - index);
+    }
+    else if(!stop.get() && index < read) {
+      nlen = Math.min(len, read - index);
+    }
+    if(nlen > 0) {
+      System.arraycopy(buffer, index, array, off, nlen);
+      nread = nlen;
+      index += nlen;
+    }
+    if(nread <= 0 && listener != null) {
+      listener.accept(this);
+    }
+    return nread;
+  }
+  
+  
+  @Override
+  public int read(byte[] array) throws IOException {
+    return read(
+        Valid.off(array).forEmpty()
+            .getOrFail("Invalid empty array"), 
+        0, array.length
+    );
+  }
+  
+  
+  @Override
+  public int read() throws IOException {
+    byte[] bs = new byte[1];
+    int r = read(bs);
+    if(r > 0) {
+      r = bs[0];
+    }
+    return r;
   }
   
 }

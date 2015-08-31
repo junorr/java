@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
+import us.pserver.tools.UTF8String;
 import us.pserver.tools.Valid;
 
 
@@ -110,20 +111,13 @@ public abstract class StreamUtils {
   public static long transferUntilEOF(InputStream in, OutputStream out) throws IOException {
     Valid.off(in).forNull().fail(InputStream.class);
     Valid.off(out).forNull().fail(OutputStream.class);
-    
-    long total = 0;
-    int read = 0;
-    byte[] buf = new byte[BUFFER_SIZE];
-    
-    while((read = in.read(buf)) > 0) {
-      total += read;
-      out.write(buf, 0, read);
-      int len = (read < 30 ? read : 30);
-      String str = new String(buf, read -len, len);
-      if(str.contains(EOF)) break;
-    }
-    out.flush();
-    return total;
+    StoppableInputStream stopin = new StoppableInputStream(in, BYTES_EOF, s->{
+      try {
+        StreamUtils.consume(s.getSourceInputStream());
+        s.close();
+      } catch(IOException e) {}
+    });
+    return StreamUtils.transfer(stopin, out);
   }
   
   
@@ -147,48 +141,19 @@ public abstract class StreamUtils {
     Valid.off(is).forNull().fail(InputStream.class);
     Valid.off(os).forNull().fail(OutputStream.class);
     Valid.off(until).forEmpty().fail();
-    
-    StreamResult res = new StreamResult();
-    LimitedBuffer lim = new LimitedBuffer(until.length());
-    ByteBuffer buf = ByteBuffer.allocate(until.length() * 2);
-    ByteBufferConverter cv = new ByteBufferConverter();
-    
-    byte[] bs = new byte[1];
-    int read = -1;
-    
-    while(true) {
-      read = is.read(bs);
-      if(read <= 0) {
-        res.eofOn();
-        break;
-      }
-      
-      res.increment(read);
-      lim.put(bs[0]);
-      if(buf.remaining() < 1) {
-        buf.flip();
-        byte[] b = new byte[lim.length()];
-        buf.get(b);
-        os.write(b);
-        buf.compact();
-      }
-      buf.put(bs[0]);
-      
-      if(lim.size() == until.length())
-        //System.out.println("StreamUtils.transferUntil["+ lim.toUTF8()+ "]");
-      
-      if(until.equals(lim.toUTF8())) {
-        if(buf.position() > lim.length()) {
-          buf.position(buf.position() - lim.length());
-          buf.flip();
-          os.write(cv.convert(buf));
-        }
-        res.setToken(until);
-        break;
-      }
-    }
+    final StreamResult sr = new StreamResult();
+    StoppableInputStream stopin = new StoppableInputStream(is, 
+        new UTF8String(until).getBytes(), s->{
+          try {
+            if(s.getStopIndex() >= 0) 
+              sr.setToken(until);
+            StreamUtils.consume(s.getSourceInputStream());
+            s.close();
+          } catch(IOException e) {}
+    });
+    sr.setSize(StreamUtils.transfer(stopin, os));
     os.flush();
-    return res;
+    return sr;
   }
   
   
@@ -197,6 +162,30 @@ public abstract class StreamUtils {
     Valid.off(os).forNull().fail(OutputStream.class);
     Valid.off(until).forEmpty().fail();
     Valid.off(or).forEmpty().fail();
+    
+    final StreamResult sr = new StreamResult();
+    StoppableInputStream stopin = new StoppableInputStream(is, 
+        new UTF8String(until).getBytes(), s->{
+          try {
+            if(s.getStopIndex() >= 0) 
+              sr.setToken(until);
+            StreamUtils.consume(s.getSourceInputStream());
+            s.close();
+          } catch(IOException e) {}
+    });
+    stopin = new StoppableInputStream(stopin, 
+        new UTF8String(or).getBytes(), s->{
+          try {
+            if(s.getStopIndex() >= 0) 
+              sr.setToken(or);
+            StreamUtils.consume(s.getSourceInputStream());
+            s.close();
+          } catch(IOException e) {}
+    });
+    sr.setSize(StreamUtils.transfer(stopin, os));
+    os.flush();
+    return sr;
+    
     
     StreamResult res = new StreamResult();
     int maxlen = Math.max(until.length(), or.length());
