@@ -37,12 +37,6 @@ public abstract class NullOutput extends OutputStream {
    */
   public static final NullOutput out = new NullOutput(){};
   
-  /**
-   * Instância padrão e imutável de <code>NullOutput</code> que
-   * imprime o conteúdo descartado na saída padrão do sistema.
-   */
-  public static final NullOutput pout = new NullOutput(true){};
-  
   
   private boolean print;
   

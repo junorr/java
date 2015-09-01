@@ -208,6 +208,7 @@ public class CryptKey {
    */
   public static CryptKey fromString(String str) {
     String errmsg = "Invalid String Key Format";
+    System.out.printf("##CryptKey##.fromString('%s')%n", str);
     Valid.off(str).forEmpty().fail(errmsg)
         .forTest(!str.contains("||")).fail(errmsg);
     Base64ByteCoder cd = new Base64ByteCoder();

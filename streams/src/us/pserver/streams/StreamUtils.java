@@ -25,7 +25,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.tools.UTF8String;
@@ -82,6 +81,18 @@ public abstract class StreamUtils {
   public static int BUFFER_SIZE = 4096;
   
   
+  public static StoppableInputStream createStoppable(InputStream in, byte[] stopOn, final StreamResult setToken) {
+    return new StoppableInputStream(in, stopOn, s->{
+      try {
+        StreamUtils.consume(s.getSourceInputStream());
+        s.close();
+        if(setToken != null && s.getStopIndex() >= 0) 
+          setToken.setToken(new UTF8String(stopOn).toString());
+      } catch(IOException e) {}
+    });
+  }
+  
+  
   /**
    * Transfere o conteúdo entre dois streams até final
    * ou até encontrar os bytes relativos ao fim de transmissão 
@@ -111,18 +122,12 @@ public abstract class StreamUtils {
   public static long transferUntilEOF(InputStream in, OutputStream out) throws IOException {
     Valid.off(in).forNull().fail(InputStream.class);
     Valid.off(out).forNull().fail(OutputStream.class);
-    StoppableInputStream stopin = new StoppableInputStream(in, BYTES_EOF, s->{
-      try {
-        StreamUtils.consume(s.getSourceInputStream());
-        s.close();
-      } catch(IOException e) {}
-    });
-    return StreamUtils.transfer(stopin, out);
+    return transfer(createStoppable(in, BYTES_EOF, null), out);
   }
   
   
   public static long consume(InputStream is) throws IOException {
-    return transfer(is, NullOutput.pout);
+    return transfer(is, NullOutput.out);
   }
   
   
@@ -141,19 +146,48 @@ public abstract class StreamUtils {
     Valid.off(is).forNull().fail(InputStream.class);
     Valid.off(os).forNull().fail(OutputStream.class);
     Valid.off(until).forEmpty().fail();
-    final StreamResult sr = new StreamResult();
-    StoppableInputStream stopin = new StoppableInputStream(is, 
-        new UTF8String(until).getBytes(), s->{
-          try {
-            if(s.getStopIndex() >= 0) 
-              sr.setToken(until);
-            StreamUtils.consume(s.getSourceInputStream());
-            s.close();
-          } catch(IOException e) {}
-    });
-    sr.setSize(StreamUtils.transfer(stopin, os));
+    
+    StreamResult res = new StreamResult();
+    LimitedBuffer lim = new LimitedBuffer(until.length());
+    ByteBuffer buf = ByteBuffer.allocate(until.length() * 2);
+    ByteBufferConverter cv = new ByteBufferConverter();
+    
+    byte[] bs = new byte[1];
+    int read = -1;
+    
+    while(true) {
+      read = is.read(bs);
+      if(read <= 0) {
+        res.eofOn();
+        break;
+      }
+      
+      res.increment(read);
+      lim.put(bs[0]);
+      if(buf.remaining() < 1) {
+        buf.flip();
+        byte[] b = new byte[lim.length()];
+        buf.get(b);
+        os.write(b);
+        buf.compact();
+      }
+      buf.put(bs[0]);
+      
+      if(lim.size() == until.length())
+        //System.out.println("StreamUtils.transferUntil["+ lim.toUTF8()+ "]");
+      
+      if(until.equals(lim.toUTF8())) {
+        if(buf.position() > lim.length()) {
+          buf.position(buf.position() - lim.length());
+          buf.flip();
+          os.write(cv.convert(buf));
+        }
+        res.setToken(until);
+        break;
+      }
+    }
     os.flush();
-    return sr;
+    return res;
   }
   
   
@@ -162,30 +196,6 @@ public abstract class StreamUtils {
     Valid.off(os).forNull().fail(OutputStream.class);
     Valid.off(until).forEmpty().fail();
     Valid.off(or).forEmpty().fail();
-    
-    final StreamResult sr = new StreamResult();
-    StoppableInputStream stopin = new StoppableInputStream(is, 
-        new UTF8String(until).getBytes(), s->{
-          try {
-            if(s.getStopIndex() >= 0) 
-              sr.setToken(until);
-            StreamUtils.consume(s.getSourceInputStream());
-            s.close();
-          } catch(IOException e) {}
-    });
-    stopin = new StoppableInputStream(stopin, 
-        new UTF8String(or).getBytes(), s->{
-          try {
-            if(s.getStopIndex() >= 0) 
-              sr.setToken(or);
-            StreamUtils.consume(s.getSourceInputStream());
-            s.close();
-          } catch(IOException e) {}
-    });
-    sr.setSize(StreamUtils.transfer(stopin, os));
-    os.flush();
-    return sr;
-    
     
     StreamResult res = new StreamResult();
     int maxlen = Math.max(until.length(), or.length());
@@ -243,13 +253,16 @@ public abstract class StreamUtils {
   }
   
   
-  public static StreamResult transferBetween(InputStream in, OutputStream out, 
-      String start, String end) throws IOException {
+  public static StreamResult transferBetween(
+      InputStream in, 
+      OutputStream out, 
+      String start, 
+      String end
+  ) throws IOException {
     Valid.off(in).forNull().fail(InputStream.class);
     Valid.off(out).forNull().fail(OutputStream.class);
     Valid.off(start).forEmpty().fail();
     Valid.off(out).forEmpty().fail();
-    
     skipUntil(in, start);
     return transferUntil(in, out, end);
   }
@@ -265,7 +278,6 @@ public abstract class StreamUtils {
   public static void write(String str, OutputStream out) throws IOException {
     Valid.off(out).forNull().fail(OutputStream.class);
     Valid.off(str).forEmpty().fail();
-    
     out.write(bytes(str));
     out.flush();
   }
@@ -280,13 +292,8 @@ public abstract class StreamUtils {
   public static byte[] bytes(String str) {
     if(str == null || str.isEmpty())
       return new byte[0];
-    try {
-      return str.getBytes(UTF8);
+    return new UTF8String(str).getBytes();
     } 
-    catch(UnsupportedEncodingException e) {
-      return new byte[0];
-    }
-  }
   
   
   /**
@@ -303,7 +310,6 @@ public abstract class StreamUtils {
     Valid.off(in).forNull().fail(InputStream.class);
     Valid.off(start).forEmpty().fail();
     Valid.off(end).forEmpty().fail();
-    
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     StreamResult res = transferBetween(in, bos, start, end);
     return res.setContent(bos.toString(UTF8));
@@ -407,7 +413,7 @@ public abstract class StreamUtils {
   }
   
   
-  public static StreamResult readUntil(InputStream is, String until) throws IOException {
+  public static StreamResult readStringUntil(InputStream is, String until) throws IOException {
     Valid.off(is).forNull().fail(InputStream.class);
     Valid.off(until).forEmpty().fail();
     
@@ -417,7 +423,7 @@ public abstract class StreamUtils {
   }
   
   
-  public static StreamResult readUntilOr(InputStream is, String until, String or) throws IOException {
+  public static StreamResult readStringUntilOr(InputStream is, String until, String or) throws IOException {
     Valid.off(is).forNull().fail(InputStream.class);
     Valid.off(until).forEmpty().fail();
     Valid.off(or).forEmpty().fail();
