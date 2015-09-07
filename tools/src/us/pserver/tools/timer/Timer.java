@@ -283,7 +283,11 @@ public interface Timer {
     @Override
     public double lapsAverage() {
       if(laps.isEmpty()) return 0;
-      return (double)lapsSum() / lapsSize();
+      double avr = (double)lapsSum() / lapsSize();
+      if(this instanceof Timer.Nanos) {
+       avr = round(nanosToMillis((long)avr), 4);
+      }
+      return avr;
     }
     
     
@@ -345,7 +349,6 @@ public interface Timer {
       if(tc instanceof Timer.Nanos) {
         min = round(nanosToMillis((long)min), 4);
         max = round(nanosToMillis((long)max), 4);
-        avr = round(nanosToMillis((long)avr), 4);
       }
       sb.append("Timer{ elapsed: ")
           .append(df.format(round(tc.elapsedMillis(), 4)))

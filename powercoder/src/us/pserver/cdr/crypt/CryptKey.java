@@ -188,9 +188,10 @@ public class CryptKey {
       return null;
     Base64ByteCoder cd = new Base64ByteCoder();
     StringByteConverter cv = new StringByteConverter();
+    byte[] encAlgo = cd.encode(cv.convert(algorithm.toString()));
     byte[] encHash = cd.encode(hash);
     byte[] encIV = cd.encode(iv.getBytes());
-    return algorithm.toString()
+    return cv.reverse(encAlgo)
         + "||" + cv.reverse(encHash) 
         + "||" + cv.reverse(encIV);
   }
@@ -208,7 +209,7 @@ public class CryptKey {
    */
   public static CryptKey fromString(String str) {
     String errmsg = "Invalid String Key Format";
-    System.out.printf("##CryptKey##.fromString('%s')%n", str);
+    //System.out.printf("##CryptKey##.fromString('%s')%n", str);
     Valid.off(str).forEmpty().fail(errmsg)
         .forTest(!str.contains("||")).fail(errmsg);
     Base64ByteCoder cd = new Base64ByteCoder();
@@ -216,7 +217,9 @@ public class CryptKey {
     String[] ss = str.split("\\|\\|");
     Valid.off(ss).forEmpty().fail(errmsg)
         .forTest(ss.length < 3).fail(errmsg);
-    CryptAlgorithm algo = CryptAlgorithm.fromString(ss[0]);
+    byte[] algoBytes = cv.convert(ss[0]);
+    algoBytes = cd.decode(algoBytes);
+    CryptAlgorithm algo = CryptAlgorithm.fromString(cv.reverse(algoBytes));
     SecureIV iv = new SecureIV(
         cd.decode(cv.convert(ss[2])), algo
     );
@@ -247,12 +250,14 @@ public class CryptKey {
   
   
   public static void main(String[] args) {
-    CryptKey key = new CryptKey("123456", CryptAlgorithm.AES_CBC_PKCS5);
+    CryptKey key = new CryptKey("123456", CryptAlgorithm.AES_CBC_256_PKCS5);
+    System.out.println("* key.algo = "+ key.getAlgorithm().toString());
     System.out.println("* key.hash = "+ Arrays.toString(key.getHash()));
     System.out.println("* key.iv = "+ Arrays.toString(key.getIV().getBytes()));
     System.out.println("* key = "+ key.toString());
     key = CryptKey.fromString(key.toString());
     System.out.println("* key = "+ key.toString());
+    System.out.println("* key.algo = "+ key.getAlgorithm().toString());
     System.out.println("* key.hash = "+ Arrays.toString(key.getHash()));
     System.out.println("* key.iv = "+ Arrays.toString(key.getIV().getBytes()));
   }

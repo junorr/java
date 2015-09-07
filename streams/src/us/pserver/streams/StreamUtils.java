@@ -81,12 +81,14 @@ public abstract class StreamUtils {
   public static int BUFFER_SIZE = 4096;
   
   
-  public static StoppableInputStream createStoppable(InputStream in, byte[] stopOn, final StreamResult setToken) {
-    return new StoppableInputStream(in, stopOn, s->{
+  public static BulkStoppableInputStream createStoppable(InputStream in, byte[] stopOn, final StreamResult setToken, boolean consumeAndClose) {
+    return new BulkStoppableInputStream(in, stopOn, s->{
       try {
-        StreamUtils.consume(s.getSourceInputStream());
-        s.close();
-        if(setToken != null && s.getStopIndex() >= 0) 
+        if(consumeAndClose) {
+          StreamUtils.consume(s.getSourceInputStream());
+          s.close();
+        }
+        if(setToken != null && s.isStopped()) 
           setToken.setToken(new UTF8String(stopOn).toString());
       } catch(IOException e) {}
     });
@@ -122,7 +124,7 @@ public abstract class StreamUtils {
   public static long transferUntilEOF(InputStream in, OutputStream out) throws IOException {
     Valid.off(in).forNull().fail(InputStream.class);
     Valid.off(out).forNull().fail(OutputStream.class);
-    return transfer(createStoppable(in, BYTES_EOF, null), out);
+    return transfer(createStoppable(in, BYTES_EOF, null, true), out);
   }
   
   
@@ -173,7 +175,7 @@ public abstract class StreamUtils {
       }
       buf.put(bs[0]);
       
-      if(lim.size() == until.length())
+      //if(lim.size() == until.length())
         //System.out.println("StreamUtils.transferUntil["+ lim.toUTF8()+ "]");
       
       if(until.equals(lim.toUTF8())) {
@@ -224,7 +226,7 @@ public abstract class StreamUtils {
       }
       buf.put(bs[0]);
       
-      if(lim.size() == maxlen)
+      //if(lim.size() == maxlen)
         //System.out.println("StreamUtils.transferUntilOr["+ lim.toUTF8()+ "]");
       
       if(until.equals(lim.toUTF8()) 
@@ -408,6 +410,8 @@ public abstract class StreamUtils {
     Valid.off(length).forNotBetween(1, Integer.MAX_VALUE);
     byte[] bs = new byte[length];
     int read = is.read(bs);
+    //System.out.println("* StreamUtils.readString(): read="+ read);
+    //System.out.println("* instance of InputStream="+ is.getClass());
     if(read <= 0) return null;
     return new String(bs, 0, read, UTF8);
   }
