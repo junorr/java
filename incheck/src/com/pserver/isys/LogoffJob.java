@@ -29,8 +29,9 @@ package com.pserver.isys;
  */
 public class LogoffJob extends CommandJob {
 
-  public static final String CMD = 
-      "cmd /c shutdown /l";
+  //public static final String CMD = "cmd /c shutdown /l";
+  
+  public static final String CMD = "dbus-send --session --type=method_call --print-reply --dest=org.gnome.SessionManager /org/gnome/SessionManager org.gnome.SessionManager.Logout uint32:1";
   
   
   public LogoffJob() {

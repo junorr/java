@@ -21,8 +21,7 @@
 
 package com.pserver.isys;
 
-import us.pserver.log.Log;
-import us.pserver.log.SLogV2;
+import us.pserver.log.LogHelper;
 import us.pserver.scron.ExecutionContext;
 import us.pserver.scron.Job;
 import us.pserver.scronv6.SCronV6;
@@ -38,7 +37,7 @@ public abstract class BasicJob implements Job {
   public static final String DEFAULT_COMMAND = "cmd";
   
   
-  protected Log log;
+  protected LogHelper log;
   
   protected EmailParser parser;
   
@@ -50,7 +49,7 @@ public abstract class BasicJob implements Job {
     if(context != null) {
       scron = (SCronV6) context.dataMap().get(
           SCronV6.class.getSimpleName());
-      log = (Log) context.dataMap()
+      log = (LogHelper) context.dataMap()
           .get(EmailParser.KEY_LOGGER);
       parser = (EmailParser) context.dataMap()
           .get(EmailParser.KEY_EMAILPARSER);

@@ -56,9 +56,8 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import us.pserver.log.Log;
-import us.pserver.log.LogProvider;
-import us.pserver.log.SimpleLog;
+import us.pserver.log.LogHelper;
+import us.pserver.log.Logging;
 
 /**
  *
@@ -138,7 +137,7 @@ public class INotesConnector {
   
   private String inotesCookie;
   
-  private Log log;
+  private LogHelper log;
   
   private String addressID;
   
@@ -153,7 +152,7 @@ public class INotesConnector {
   private Path tempDir;
   
   
-  public INotesConnector(Log l) {
+  public INotesConnector(LogHelper l) {
     address = HTTP_ADDRESS_BASE + HTTP_ADDRESS_AUTH;
     client = new DefaultHttpClient();
     try {
@@ -186,7 +185,7 @@ public class INotesConnector {
   
   
   public INotesConnector() {
-    this(LogProvider.getSimpleLog());
+    this(Logging.getConfigured(INotesConnector.class));
   }
   
   
@@ -196,18 +195,18 @@ public class INotesConnector {
   }
   
   
-  public INotesConnector(String address, Log l) {
+  public INotesConnector(String address, LogHelper l) {
     this(l);
     this.address = address;
   }
   
   
-  public Log getLog() {
+  public LogHelper getLog() {
     return log;
   }
   
   
-  public INotesConnector setLog(Log l) {
+  public INotesConnector setLog(LogHelper l) {
     if(l != null)
       log = l;
     return this;
@@ -777,11 +776,10 @@ public class INotesConnector {
   
   public static void main(String[] args) throws InterruptedException {
     INotesConnector con = new INotesConnector();
-    con.setCredentials("f6036477", "65465488").connect();
+    con.setCredentials("f6036477", "32165433").connect();
     con.logResponseHeaders();
     
-    SimpleLog l = LogProvider.getSimpleLog();
-    /*
+    LogHelper l = Logging.getConfigured(INotesConnector.class);
     l.info(" ");
     l.info(" ");
     l.info("INotesMail mail = new INotesMail()");
@@ -791,7 +789,7 @@ public class INotesConnector {
     l.info("    .setContent(\"ID arquivo:\");");
     l.info("                  ###161###");
     
-    FileAttachment ath = new FileAttachment("D:/archive.txt");
+    FileAttachment ath = new FileAttachment("/storage/audit.txt");
     l.info("Attachment: "+ ath.getPath());
     
     INotesMail mail = new INotesMail()
@@ -812,9 +810,10 @@ public class INotesConnector {
     l.info("Refreshing inbox...");
     List<INotesHeaderMail> mails = con.refreshInbox();
     System.out.println(mails.get(0));
-    INotesMail mail = con.getMail(mails.get(0));
+    //INotesMail mail = con.getMail(mails.get(0));
+    mail = con.getMail(mails.get(0));
     l.info("First mail: ");
-    l.info(mail.toString());*/
+    l.info(mail.toString());
   }
   
 }

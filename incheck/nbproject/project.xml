@@ -24,14 +24,6 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>checker</foreign-project>
-                <artifact-type>jar</artifact-type>
-                <script>build.xml</script>
-                <target>jar</target>
-                <clean-target>clean</clean-target>
-                <id>jar</id>
-            </reference>
-            <reference>
                 <foreign-project>concurrent</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
@@ -41,6 +33,14 @@
             </reference>
             <reference>
                 <foreign-project>inetAuth</foreign-project>
+                <artifact-type>jar</artifact-type>
+                <script>build.xml</script>
+                <target>jar</target>
+                <clean-target>clean</clean-target>
+                <id>jar</id>
+            </reference>
+            <reference>
+                <foreign-project>logging</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>
@@ -72,7 +72,7 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>slogV2</foreign-project>
+                <foreign-project>tn3270</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>
@@ -80,7 +80,7 @@
                 <id>jar</id>
             </reference>
             <reference>
-                <foreign-project>tn3270</foreign-project>
+                <foreign-project>tools</foreign-project>
                 <artifact-type>jar</artifact-type>
                 <script>build.xml</script>
                 <target>jar</target>

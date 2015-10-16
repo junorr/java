@@ -32,7 +32,7 @@ import us.pserver.scron.ExecutionContext;
 public class WTNUnixJob extends CustomCommandJob {
 
   public static final String COMMAND = 
-      "sh -c 'a=$(/home/juno/wt -wdlrsv >> /dev/null &) "
+      "sh -c 'a=$(/usr/bin/loop-wt >> /dev/null &) "
       + "&& /home/juno/viewports'";
   
   

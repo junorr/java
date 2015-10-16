@@ -49,7 +49,7 @@ public class EmailParser {
   
   private static final CryptKey KEY = 
       new CryptKey("4c036dad7048d8d7d9fa1c42964c54ba5c676a2f53ba9ee9e18d909a997849f1",
-      CryptAlgorithm.DESede_CBC_PKCS5);
+      CryptAlgorithm.AES_CBC_PKCS5);
   
   public static final String 
       MAIL_FROM_STR = "f6036477@bb.com.br",
@@ -82,7 +82,7 @@ public class EmailParser {
           "Invalid EmailChecker: "+ checker);
     this.checker = checker;
     checker.getSCronV6().dataMap()
-        .put(KEY_LOGGER, checker.getSLogV2());
+        .put(KEY_LOGGER, checker.getLog());
     checker.getSCronV6().dataMap()
         .put(KEY_EMAILPARSER, this);
     scoder = new CryptStringCoder(KEY);
@@ -94,8 +94,8 @@ public class EmailParser {
     if(mail == null || mail.getContent() == null)
       return null;
     
-    checker.getSLogV2().info("Getting content tag: "+ mail.getSubject());
-    checker.getSLogV2().info(mail.getContent());
+    checker.getLog().info("Getting content tag: "+ mail.getSubject());
+    checker.getLog().info(mail.getContent());
     int itag = mail.getContent().indexOf(EmailDefinition.CONTENT_TAG.getTag())
         + EmailDefinition.CONTENT_TAG.getTag().length();
     int iend = mail.getContent().indexOf(EmailDefinition
@@ -131,7 +131,7 @@ public class EmailParser {
         .disableRepeat();
     if(date != null) {
       sched.startAt(date);
-      checker.getSLogV2().info("Scheduled to "+ date);
+      checker.getLog().info("Scheduled to "+ date);
     }
     return sched;
   }
@@ -145,7 +145,7 @@ public class EmailParser {
       fcoder.encode(file, tmp);
       return tmp;
     } catch(IOException ex) {
-      checker.getSLogV2().error(ex.toString());
+      checker.getLog().error(ex.toString());
       return null;
     }
   }
@@ -169,7 +169,7 @@ public class EmailParser {
       fcoder.applyFrom(buf, tmp, true);
       return tmp;
     } catch(IOException ex) {
-      checker.getSLogV2().error(ex.toString());
+      checker.getLog().error(ex.toString());
       return null;
     }
   }
@@ -185,7 +185,7 @@ public class EmailParser {
       re.attach(new FileAttachment(attachment.toString()));
     
     checker.getINotesConnector().sendMail(re);
-    checker.getSLogV2().info("Response e-mail sent to: "
+    checker.getLog().info("Response e-mail sent to: "
         + re.getTo()[0]);
   }
   
@@ -224,7 +224,7 @@ public class EmailParser {
     }
     
     if(orig == null || !Files.exists(orig)) {
-      checker.getSLogV2().error("Script execution abborted. Not found: "+ orig);
+      checker.getLog().error("Script execution abborted. Not found: "+ orig);
       return;
     }
     
@@ -267,7 +267,7 @@ public class EmailParser {
       job = new CustomCommandJob(code, mail);
     }
     else {
-      checker.getSLogV2().warning("Invalid code <"+ code+ ">");
+      checker.getLog().warn("Invalid code <"+ code+ ">");
     }
     
     if(job != null) {
@@ -281,17 +281,17 @@ public class EmailParser {
         .getINotesConnector().getMail(hmail);
     if(mail == null) return;
     
-    checker.getSLogV2().info("Deleting e-mail: "+ hmail.getSubject());
+    checker.getLog().info("Deleting e-mail: "+ hmail.getSubject());
     checker.getINotesConnector().deleteMail(hmail);
     
     String content = this.getContentCode(mail);
     String code = null;
     
     if(content == null) {
-      checker.getSLogV2().warning("Empty Content e-mail: "+ mail.getSubject());
+      checker.getLog().warn("Empty Content e-mail: "+ mail.getSubject());
     } else {
       code = scoder.decode(content);
-      checker.getSLogV2().info("Code found: <"+ code+ ">");
+      checker.getLog().info("Code found: <"+ code+ ">");
     }
     
     Schedule sched = this.getSchedule(mail);

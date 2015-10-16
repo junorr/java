@@ -31,8 +31,9 @@ import us.pserver.scron.ExecutionContext;
  */
 public class BlockScreenJob extends CommandJob {
 
-  public static final String COMMAND = 
-      "cmd /c rundll32 user32,LockWorkStation";
+  //public static final String COMMAND = "cmd /c rundll32 user32,LockWorkStation";
+  
+  public static final String COMMAND = "gnome-screensaver-command -l";
   
   
   public BlockScreenJob() {

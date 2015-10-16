@@ -22,6 +22,7 @@
 package com.pserver.isys;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import us.pserver.scron.ExecutionContext;
@@ -59,7 +60,10 @@ public abstract class CommandJob extends BasicJob {
     if(code == null || code.trim().length() < 4)
       return;
     
-    char[] cs = code.substring(4).toCharArray();
+    char[] cs = code.toCharArray();
+    if(code.startsWith("cmd")) {
+      cs = code.substring(4).toCharArray();
+    }
     System.out.println(new String(cs));
     List<String> list = new LinkedList<>();
     StringBuffer sb = new StringBuffer();
@@ -86,7 +90,17 @@ public abstract class CommandJob extends BasicJob {
     if(sb.length() > 0)
       list.add(sb.toString());
     String[] args = new String[list.size()];
+    System.out.println("* args="+ Arrays.toString(args));
     runner.setCommandArgs(list.toArray(args));
+  }
+  
+  
+  public static void main(String[] args) {
+    CommandJob cj = new CommandJob(){};
+    cj.parseCommand("/home/juno/viewports");
+    System.out.println(cj.runner.buildCommand());
+    cj.runner.run();
+    System.out.println(cj.runner.getOutput());
   }
   
 }

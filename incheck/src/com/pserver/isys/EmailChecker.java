@@ -34,8 +34,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import us.pserver.log.LogProvider;
-import us.pserver.log.SLogV2;
+import us.pserver.log.LogHelper;
+import us.pserver.log.Logging;
 import us.pserver.scron.ExecutionContext;
 import us.pserver.scron.Job;
 import us.pserver.scronv6.SCronV6;
@@ -69,7 +69,7 @@ public class EmailChecker {
       
       KEY_TEMP_DIR = "TEMP_DIR";
   
-  public static final SLogV2 LOG = LogProvider.getSLogV2();
+  public static final LogHelper LOG = Logging.getConfigured(EmailChecker.class);
   
   
   protected class CheckMailJob implements Job {
@@ -118,7 +118,7 @@ public class EmailChecker {
   public EmailChecker() {
     conf = new Config(CONF_FILE_NAME);
     checkTime = DEF_MAILCHECK_SECONDS;
-    cron = new SCronV6(LOG);
+    cron = new SCronV6();
     cron.setShutdownAtEmpty(false);
     eparser = new EmailParser(this);
     connector = new INotesConnector(LOG);
@@ -262,7 +262,7 @@ public class EmailChecker {
   }
 
 
-  public SLogV2 getSLogV2() {
+  public LogHelper getLog() {
     return LOG;
   }
 

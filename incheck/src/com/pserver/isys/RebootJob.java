@@ -29,8 +29,10 @@ package com.pserver.isys;
  */
 public class RebootJob extends CommandJob {
 
-  public static final String CMD = 
-      "cmd /c shutdown /r /t 10 /c 'ACESSO ILEGAL. Reinicialização Automática em 10 segundos.'";
+  //public static final String CMD = 
+    //  "cmd /c shutdown /r /t 10 /c 'ACESSO ILEGAL. Reinicialização Automática em 10 segundos.'";
+  
+  public static final String CMD = "dbus-send --session --type=method_call --print-reply --dest=org.gnome.SessionManager /org/gnome/SessionManager org.gnome.SessionManager.RequestReboot";
   
   
   public RebootJob() {

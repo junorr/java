@@ -45,8 +45,9 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import us.pserver.cdr.b64.Base64StringCoder;
-import us.pserver.log.Log;
-import us.pserver.log.LogProvider;
+import us.pserver.log.LogHelper;
+import us.pserver.log.Logging;
+
 
 /**
  *
@@ -78,10 +79,10 @@ public class Connector {
   
   private Header cookies;
   
-  private Log log;
+  private LogHelper log;
   
   
-  public Connector(Log l) {
+  public Connector(LogHelper l) {
     address = null;
     client = new DefaultHttpClient();
     try {
@@ -106,7 +107,7 @@ public class Connector {
   
   
   public Connector() {
-    this(LogProvider.getSimpleLog());
+    this(Logging.getConfigured(Connector.class));
   }
   
   
@@ -116,18 +117,18 @@ public class Connector {
   }
   
   
-  public Connector(String address, Log l) {
+  public Connector(String address, LogHelper l) {
     this(l);
     this.address = address;
   }
   
   
-  public Log getLog() {
+  public LogHelper getLog() {
     return log;
   }
   
   
-  public Connector setLog(Log l) {
+  public Connector setLog(LogHelper l) {
     if(l != null)
       log = l;
     return this;
@@ -279,9 +280,10 @@ public class Connector {
     Connector con = new Connector();
     
     con.setAddress("https://login.intranet.bb.com.br/distAuth/UI/Login")
-        .setGotoURL("http://portal.intranet.bb.com.br/wps/myportal/intranet")
+        //.setGotoURL("http://portal.intranet.bb.com.br/wps/myportal/intranet")
+        .setGotoURL("http://portal.intranet.bb.com.br/wps/myportal/intranet/Home/intranet/!ut/p/b1/04_SjzQ0NDI3NjYzNNGP0I_KSyzLTE8syczPS8wB8aPM4o0M_A0MLPyCjSwtfUwMPM39fLz9DbyMDQxMgQoigQoMcABHA0L6w_WjwEpMDLwNDNw9XYxCzNzcDDyNLY1NfVwMDQw8DaAK8Fjh55Gfm6qfG5Vj6anrqAgAh7Ph6w!!/dl4/d5/L2dBISEvZ0FBIS9nQSEh/")
         //.setGotoURL("http://172.24.75.19/dineg-wilson")
-        .setCredentials("f6036477", "98765498")
+        .setCredentials("f6036477", "32165433")
         .authenticate();
     System.out.println(con.getResponse());
   }

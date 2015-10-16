@@ -30,8 +30,9 @@ import us.pserver.scron.ExecutionContext;
  */
 public class WTNJob extends CommandJob {
 
-  public static final String 
-      COMMAND = "cmd /c D:\\apps\\putty\\putty.exe -load wt";
+  //public static final String COMMAND = "cmd /c D:\\apps\\putty\\putty.exe -load wt";
+  
+  public static final String COMMAND = "/usr/bin/loop-wt >> /dev/null &";
   
   
   public WTNJob() {
