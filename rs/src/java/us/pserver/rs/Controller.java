@@ -37,10 +37,12 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+import us.pserver.cdr.b64.Base64StringCoder;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptFileCoder;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.crypt.CryptStringCoder;
+import us.pserver.cdr.crypt.SecureIV;
 
 /**
  *
@@ -53,7 +55,8 @@ public class Controller implements Serializable {
   
   private static final CryptKey KEY = 
       new CryptKey("4c036dad7048d8d7d9fa1c42964c54ba5c676a2f53ba9ee9e18d909a997849f1",
-      CryptAlgorithm.DESede_CBC_PKCS5);
+          new SecureIV(new byte[]{3,2,1,6,5,4,9,8,7,0,0,0,0,0,0,0}, CryptAlgorithm.AES_CBC_256_PKCS5),
+          CryptAlgorithm.AES_CBC_256_PKCS5);
   
   static final String 
       
@@ -97,6 +100,8 @@ public class Controller implements Serializable {
   private CryptFileCoder fcoder;
   
   private CryptStringCoder scoder;
+  
+  private Base64StringCoder bsc;
 
   
   public Controller() {
@@ -123,6 +128,7 @@ public class Controller implements Serializable {
     conn.setTempDir(TMP_PATH);
     fcoder = new CryptFileCoder(KEY);
     scoder = new CryptStringCoder(KEY);
+    bsc = new Base64StringCoder();
   }
   
   
@@ -371,6 +377,7 @@ public class Controller implements Serializable {
           actionCode.concat(":").concat(command));
     }
     else {
+      System.out.println("* Encode '"+ actionCode+ "'='"+ scoder.encode(actionCode)+ "'");
       cont += scoder.encode(actionCode);
     }
     cont += "###";

@@ -24,8 +24,8 @@ package us.pserver.scron;
 import us.pserver.scronv6.repeat.JobsManager;
 import us.pserver.scronv6.repeat.Pair;
 import us.pserver.conc.ExclusiveList;
-import us.pserver.log.Log;
-import us.pserver.log.LogFactory;
+import us.pserver.log.LogHelper;
+import us.pserver.log.Logging;
 
 /**
  *
@@ -63,7 +63,7 @@ public abstract class AbstractCron implements SCron {
   
   boolean shutdownAtEmpty;
   
-  Log log;
+  LogHelper log;
   
   boolean logEnabled;
   
@@ -76,7 +76,7 @@ public abstract class AbstractCron implements SCron {
     jobs = new JobsManager();
     shutdownAtEmpty = false;
     logEnabled = true;
-    log = LogFactory.getOrCreateSimpleLog(SCron.class, true);
+    log = Logging.getConfigured(SCron.class);
     dataMap.put(KEY_LOGGER, log)
         .put(getClass().getSimpleName(), this);
   }
@@ -87,7 +87,7 @@ public abstract class AbstractCron implements SCron {
    * @return <code>com.jpower.log.Logger</code>
    */
   @Override
-  public Log getLogger() {
+  public LogHelper getLogger() {
     return log;
   }
   
@@ -98,7 +98,7 @@ public abstract class AbstractCron implements SCron {
    * @return Esta instância modificada de <code>SCron</code>.
    */
   @Override
-  public SCron setLogger(Log l) {
+  public SCron setLogger(LogHelper l) {
     if(l != null) log = l;
     return this;
   }

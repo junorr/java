@@ -24,7 +24,7 @@ package us.pserver.scron;
 import us.pserver.scronv6.repeat.JobsManager;
 import us.pserver.scronv6.repeat.Pair;
 import java.util.List;
-import us.pserver.log.Log;
+import us.pserver.log.LogHelper;
 
 /**
  *
@@ -62,14 +62,14 @@ public interface SCron {
    * Retorna o logger padrão de <code>SimpleCron</code>.
    * @return <code>com.jpower.log.Logger</code>
    */
-  public Log getLogger();
+  public LogHelper getLogger();
   
   /**
    * Define o logger padrão de <code>SimpleCron</code>.
    * @param l <code>com.jpower.log.Logger</code>
    * @return Esta instância modificada de <code>SCron</code>.
    */
-  public SCron setLogger(Log l);
+  public SCron setLogger(LogHelper l);
   
   /**
    * Verifica se o log automático de mensagens de 

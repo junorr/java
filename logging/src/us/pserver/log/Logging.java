@@ -22,6 +22,7 @@
 package us.pserver.log;
 
 import java.io.File;
+import java.io.InputStream;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
@@ -37,6 +38,12 @@ public class Logging {
   public static final String CONF_INTERNAL = "/us/pserver/log/log.properties";
   
   /**
+   * <code>CONF_PACKAGE = "/us/pserver/log.properties";</code><br>
+   * Default log internal properties.
+   */
+  public static final String CONF_PACKAGE = "/us/pserver/log.properties";
+  
+  /**
    * <code>CONF_FILE = "./log.properties";</code><br>
    * Default log file properties.
    */
@@ -50,12 +57,16 @@ public class Logging {
    */
   public static void configureLogger() {
     File f = new File(CONF_FILE);
+    InputStream confInput = Logging.class.getResourceAsStream(CONF_PACKAGE);
     if(f.exists()) {
       PropertyConfigurator.configure(f.getAbsolutePath());
     }
+    else if(confInput != null) {
+      PropertyConfigurator.configure(confInput);
+    }
     else {
-      PropertyConfigurator.configure(Logging.class.getResourceAsStream(CONF_INTERNAL)
-      );
+      confInput = Logging.class.getResourceAsStream(CONF_INTERNAL);
+      PropertyConfigurator.configure(confInput);
     }
     CONFIGURED = true;
   }

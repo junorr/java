@@ -21,13 +21,19 @@
 
 package us.pserver.cdr.crypt;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import javax.crypto.CipherOutputStream;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
@@ -59,6 +65,8 @@ public class CryptFileCoder implements FileCoder {
   
   private CryptBufferCoder cryptCoder;
   
+  private CryptKey key;
+  
   
   /**
    * Construtor padrão que recebe a chave de criptografia.
@@ -68,6 +76,7 @@ public class CryptFileCoder implements FileCoder {
     if(key == null || key.getSpec() == null)
       throw new IllegalArgumentException(
           "Invalid CryptKey: "+ key);
+    this.key = key;
     cryptCoder = new CryptBufferCoder(key);
   }
   
@@ -134,6 +143,40 @@ public class CryptFileCoder implements FileCoder {
   
   @Override
   public boolean apply(Path src, Path dst, boolean encode) {
+    Valid.off(src).forNull().fail(Path.class);
+    Valid.off(dst).forNull().fail(Path.class);
+
+    InputStream input = null;
+    OutputStream output = null;
+    
+    try {
+      input = new FileInputStream(src.toFile());
+      output = new FileOutputStream(dst.toFile());
+      if(encode) {
+        output = CryptUtils.createCipherOutputStream(output, key);
+      } else {
+        input = CryptUtils.createCipherInputStream(input, key);
+      }
+      
+      byte[] buf = new byte[4096];
+      int read = 0;
+      while((read = input.read(buf)) != -1) {
+        output.write(buf, 0, read);
+      }
+      output.flush();
+      output.close();
+      input.close();
+      
+      return true;
+      
+    } catch(IOException ex) {
+      return false;
+    }
+  }
+  
+  
+  //@Override
+  public boolean apply2(Path src, Path dst, boolean encode) {
     Valid.off(src).forNull().fail(Path.class);
     Valid.off(dst).forNull().fail(Path.class);
 
@@ -242,26 +285,29 @@ public class CryptFileCoder implements FileCoder {
   }
   
   
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     CryptKey KEY = 
       new CryptKey("4c036dad7048d8d7d9fa1c42964c54ba5c676a2f53ba9ee9e18d909a997849f1",
-      CryptAlgorithm.DESede_CBC_PKCS5);
+          new SecureIV(new byte[]{3,2,1,6,5,4,9,8,7,0,0,0,0,0,0,0}, CryptAlgorithm.AES_CBC_256_PKCS5),
+          CryptAlgorithm.AES_CBC_256_PKCS5);
     
     CryptFileCoder fc = new CryptFileCoder(KEY);
-    /*
-    fc.encode(
-        fc.path("f:/java/incheck/scp/ss.txt"),
-        fc.path("f:/java/incheck/scp/ss.bce"));
-    fc.decode(
-        fc.path("f:/java/incheck/scp/ss.bce"), 
-        fc.path("f:/java/incheck/scp/ss2.txt"));
-    */
-    fc.encode(
-        FileUtils.path("d:/picture_low.jpg"),
-        FileUtils.path("d:/picture_low.des"));
-    fc.decode(
-        FileUtils.path("d:/picture_low.des"), 
-        FileUtils.path("d:/picture_low2.jpg"));
+    
+    /**/
+    Path txtfile = Paths.get("/storage/java/incheck/scp/sample.txt");
+    Path encfile = Paths.get("/storage/java/incheck/scp/sample.bce");
+    Path decfile = Paths.get("/storage/java/incheck/scp/sample.dec.txt");
+    /**//*
+    Path txtfile = Paths.get("/storage/java/incheck/scp/se.txt");
+    Path encfile = Paths.get("/storage/java/incheck/scp/se.bce");
+    Path decfile = Paths.get("/storage/java/incheck/scp/se.dec.txt");
+    /**/
+    
+    if(Files.exists(encfile)) Files.delete(encfile);
+    if(Files.exists(decfile)) Files.delete(decfile);
+    
+    fc.encode(txtfile, encfile);
+    fc.decode(encfile, decfile);
   }
   
 }

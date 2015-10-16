@@ -99,4 +99,20 @@ public class CryptStringCoder implements CryptCoder<String> {
     return apply(str, false);
   }
   
+  
+  private static final CryptKey KEY = 
+      new CryptKey("4c036dad7048d8d7d9fa1c42964c54ba5c676a2f53ba9ee9e18d909a997849f1",
+          new SecureIV(new byte[]{3,2,1,6,5,4,9,8,7,0,0,0,0,0,0,0}, CryptAlgorithm.AES_CBC_256_PKCS5),
+          CryptAlgorithm.AES_CBC_256_PKCS5);
+  
+  public static void main(String[] args) {
+    CryptStringCoder cs = new CryptStringCoder(KEY);
+    System.out.println("* Decode 'BS3g1Nd2o/S/wVT5Se6YTg=='"+ "='"+ cs.decode("BS3g1Nd2o/S/wVT5Se6YTg==")+ "'");
+    String str = "BLS";
+    String enc = cs.encode(str);
+    System.out.println("* Encode '"+ str+ "'='"+ enc+ "'");
+    str = cs.decode(enc);
+    System.out.println("* Decode '"+ enc+ "'='"+ str+ "'");
+  }
+  
 }

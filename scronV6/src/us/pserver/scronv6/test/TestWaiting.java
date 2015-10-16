@@ -22,8 +22,8 @@
 package us.pserver.scronv6.test;
 
 import us.pserver.date.SimpleDate;
-import us.pserver.log.Log;
-import us.pserver.log.LogFactory;
+import us.pserver.log.LogHelper;
+import us.pserver.log.Logging;
 import us.pserver.scron.Schedule;
 import us.pserver.scronv6.SCronV6;
 
@@ -38,7 +38,7 @@ public class TestWaiting {
   
   public static void main(String[] args) throws InterruptedException {
     SCronV6 cron = new SCronV6();
-    Log log = LogFactory.getOrCreateSimpleLog(SCronV6.class, true);
+    LogHelper log = Logging.getConfigured(SCronV6.class);
     cron.put(new Schedule().startNow().repeatInMinutes(1), 
         ()->log.info("* Minute job running"));
     cron.put(new Schedule().startDelayed(500).repeatInSeconds(30), 

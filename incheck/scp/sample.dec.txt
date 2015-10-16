@@ -1,0 +1,50 @@
+connect("3270.df.bb", 8023)
+
+waitfor(20, 39, "SISBB")
+
+settext(20, 39, "SISBB")
+
+cursor(20, 39)
+
+enter()
+
+waitfor(1, 3, "CIC")
+
+settext(13, 21, "f6036477")
+
+setpassword(14, 21, "MzIxNjU0MzM=")
+
+settext(15, 21, "pessoal")
+
+delay(1500)
+enter()
+
+waitfor(1, 2, "BB68")
+
+settext(21, 20, "31")
+
+delay(800)
+enter()
+
+waitfor(5, 3, "Consultar")
+
+delay(800)
+pgdown()
+
+waitfor(5, 3, "Ponto")
+
+settext(21, 20, "32")
+
+delay(800)
+enter()
+
+waitfor(13, 28, "Registro")
+
+string str1 = gettext(16, 4, 28)
+
+string str2 = gettext(17, 4, 28)
+
+print(str1)
+print(str2)
+delay(800)
+disconnect()

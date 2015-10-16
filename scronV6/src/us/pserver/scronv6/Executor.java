@@ -21,9 +21,10 @@
 
 package us.pserver.scronv6;
 
+import sun.rmi.runtime.Log;
+import us.pserver.log.LogHelper;
 import us.pserver.scron.ExecutionContext;
 import us.pserver.scronv6.repeat.Pair;
-import us.pserver.log.Log;
 import us.pserver.scron.AbstractCron;
 
 
@@ -41,7 +42,7 @@ public class Executor implements Runnable {
   
   private ExecutionContext context;
   
-  private Log log;
+  private LogHelper log;
   
   
   /**
@@ -69,7 +70,7 @@ public class Executor implements Runnable {
     
     pair = p;
     context = c;
-    log = (Log) c.dataMap()
+    log = (LogHelper) c.dataMap()
         .get(AbstractCron.KEY_LOGGER);
   }
   

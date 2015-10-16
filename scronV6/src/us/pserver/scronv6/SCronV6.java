@@ -28,8 +28,9 @@ import us.pserver.scron.Job;
 import us.pserver.scron.Schedule;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import us.pserver.log.Log;
-import us.pserver.log.LogFactory;
+import sun.rmi.runtime.Log;
+import us.pserver.log.LogHelper;
+import us.pserver.log.Logging;
 import us.pserver.scron.AbstractCron;
 
 /**
@@ -58,7 +59,7 @@ public class SCronV6 extends AbstractCron {
   
   private Scheduler scheduler;
   
-  private Log log;
+  private LogHelper log;
   
   
   /**
@@ -67,7 +68,7 @@ public class SCronV6 extends AbstractCron {
   public SCronV6() {
     super();
     threads = DEFAULT_THREADS;
-    log = LogFactory.getOrCreateSimpleLog(this.getClass(), true);
+    log = Logging.getConfigured(this.getClass());
   }
   
   
@@ -93,12 +94,12 @@ public class SCronV6 extends AbstractCron {
   }
   
   
-  public Log getLog() {
+  public LogHelper getLog() {
     return log;
   }
   
   
-  public void setLog(Log l) {
+  public void setLog(LogHelper l) {
     if(l != null) log = l;
   }
   
