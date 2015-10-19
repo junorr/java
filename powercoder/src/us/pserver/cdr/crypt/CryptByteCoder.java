@@ -58,7 +58,7 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
    */
   public CryptByteCoder(CryptKey key) {
     if(key == null || key.getAlgorithm() == null
-        || key.getHash() == null || key.getSpec() == null)
+        || key.getHash() == null || key.getKeySpec() == null)
       throw new IllegalArgumentException("Invalid key: "+ key);
     
     this.key = key;

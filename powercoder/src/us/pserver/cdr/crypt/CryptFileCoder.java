@@ -21,6 +21,7 @@
 
 package us.pserver.cdr.crypt;
 
+import us.pserver.cdr.crypt.iv.SecureRandomIV;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -73,7 +74,7 @@ public class CryptFileCoder implements FileCoder {
    * @param key chave de criptografia <code>CryptKey</code>.
    */
   public CryptFileCoder(CryptKey key) {
-    if(key == null || key.getSpec() == null)
+    if(key == null || key.getKeySpec() == null)
       throw new IllegalArgumentException(
           "Invalid CryptKey: "+ key);
     this.key = key;
@@ -286,10 +287,10 @@ public class CryptFileCoder implements FileCoder {
   
   
   public static void main(String[] args) throws IOException {
-    CryptKey KEY = 
-      new CryptKey("4c036dad7048d8d7d9fa1c42964c54ba5c676a2f53ba9ee9e18d909a997849f1",
-          new SecureIV(new byte[]{3,2,1,6,5,4,9,8,7,0,0,0,0,0,0,0}, CryptAlgorithm.AES_CBC_256_PKCS5),
-          CryptAlgorithm.AES_CBC_256_PKCS5);
+    CryptKey KEY = CryptKey.createWithUnsecurePasswordIV(
+        "4c036dad7048d8d7d9fa1c42964c54ba5c676a2f53ba9ee9e18d909a997849f1",
+          CryptAlgorithm.AES_CBC_256_PKCS5
+    );
     
     CryptFileCoder fc = new CryptFileCoder(KEY);
     

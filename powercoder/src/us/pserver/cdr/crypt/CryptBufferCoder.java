@@ -46,7 +46,7 @@ public class CryptBufferCoder implements CryptCoder<ByteBuffer> {
    * @see us.pserver.cdr.crypt.CryptKey
    */
   public CryptBufferCoder(CryptKey key) {
-    if(key == null || key.getSpec() == null)
+    if(key == null || key.getKeySpec() == null)
       throw new IllegalArgumentException(
           "Invalid CryptKey: "+ key);
     coder = new CryptByteCoder(key);

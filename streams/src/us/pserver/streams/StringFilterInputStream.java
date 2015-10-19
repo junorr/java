@@ -36,6 +36,7 @@ import java.util.function.Consumer;
  */
 public class StringFilterInputStream extends FilterInputStream {
   
+  
   public static final String DEFAULT_CHARSET = "UTF-8";
   
   
@@ -74,6 +75,14 @@ public class StringFilterInputStream extends FilterInputStream {
   
   public StringFilterInputStream clearActions() {
     actions.clear();
+    return this;
+  }
+  
+  
+  public StringFilterInputStream addAction(FilterAction action) {
+    if(action != null) {
+      actions.add(action);
+    }
     return this;
   }
   
@@ -238,6 +247,8 @@ public class StringFilterInputStream extends FilterInputStream {
       }
     }
     
+    
   }
 
+  
 }

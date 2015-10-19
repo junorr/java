@@ -22,6 +22,7 @@
 
 package us.pserver.cdr.crypt;
 
+import us.pserver.cdr.crypt.iv.SecureRandomIV;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
 import us.pserver.tools.Valid;
@@ -100,10 +101,11 @@ public class CryptStringCoder implements CryptCoder<String> {
   }
   
   
-  private static final CryptKey KEY = 
-      new CryptKey("4c036dad7048d8d7d9fa1c42964c54ba5c676a2f53ba9ee9e18d909a997849f1",
-          new SecureIV(new byte[]{3,2,1,6,5,4,9,8,7,0,0,0,0,0,0,0}, CryptAlgorithm.AES_CBC_256_PKCS5),
-          CryptAlgorithm.AES_CBC_256_PKCS5);
+  private static final CryptKey KEY = CryptKey.createWithUnsecurePasswordIV(
+      "4c036dad7048d8d7d9fa1c42964c54ba5c676a2f53ba9ee9e18d909a997849f1",
+      CryptAlgorithm.AES_CBC_256_PKCS5
+  );
+  
   
   public static void main(String[] args) {
     CryptStringCoder cs = new CryptStringCoder(KEY);

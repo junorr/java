@@ -22,10 +22,14 @@
 
 package us.pserver.cdr.crypt;
 
+import us.pserver.cdr.crypt.iv.SecureRandomIV;
 import java.util.Arrays;
 import javax.crypto.spec.SecretKeySpec;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
+import us.pserver.cdr.crypt.iv.BasicIV;
+import us.pserver.cdr.crypt.iv.InitVector;
+import us.pserver.cdr.crypt.iv.UnsecurePasswordIV;
 import us.pserver.tools.Valid;
 
 
@@ -40,7 +44,7 @@ public class CryptKey {
   
   private transient SecretKeySpec spec;
   
-  private SecureIV iv;
+  private InitVector iv;
   
   private byte[] hash;
   
@@ -65,10 +69,10 @@ public class CryptKey {
    * @param algo Algorítmo de criptografia.
    */
   public CryptKey(String key, CryptAlgorithm algo) {
-    this(key, SecureIV.createRandom(algo), algo);
+    this(key, new SecureRandomIV(algo), algo);
   }
-
-
+  
+  
   /**
    * Construtor padrão que recebe a senha 
    * <code>String key</code> e o algorítmo de criptografia.
@@ -76,14 +80,14 @@ public class CryptKey {
    * @param iv Initialization Vector Object needed for cryptography.
    * @param algo Algorítmo de criptografia.
    */
-  public CryptKey(String key, SecureIV iv, CryptAlgorithm algo) {
+  public CryptKey(String key, InitVector iv, CryptAlgorithm algo) {
     Valid.off(key).forEmpty().fail("Invalid key: ");
     algorithm = Valid.off(algo).forNull()
         .getOrFail(CryptAlgorithm.class);
     hash = Valid.off(Digester.toSHA256(key))
         .forEmpty().getOrFail("Invalid Key: %s", key);
     this.iv = Valid.off(iv).forNull()
-        .getOrFail(SecureIV.class);
+        .getOrFail(InitVector.class);
     spec = KeySpecFactory.createKey(
         CryptUtils.truncate(hash, algo.getBytesSize()), algo
     );
@@ -94,7 +98,7 @@ public class CryptKey {
    * Retorna a especificação da chave <code>SecretKeySpec</code>.
    * @return especificação da chave <code>SecretKeySpec</code>.
    */
-  public SecretKeySpec getSpec() {
+  public SecretKeySpec getKeySpec() {
     if(spec == null && hash != null && algorithm != null)
       spec = KeySpecFactory.createKey(
           CryptUtils.truncate(hash, 
@@ -130,12 +134,12 @@ public class CryptKey {
   }
 
 
-  public SecureIV getIV() {
+  public InitVector getIV() {
     return iv;
   }
 
 
-  public void setIV(SecureIV iv) {
+  public void setIV(InitVector iv) {
     this.iv = iv;
   }
 
@@ -167,15 +171,12 @@ public class CryptKey {
    * @param algo algorítmo de criptografia 
    * <code>CryptAlgorithm</code>.
    */
-  public void setKey(byte[] hash, SecureIV iv, CryptAlgorithm algo) {
+  public void setKey(byte[] hash, InitVector iv, CryptAlgorithm algo) {
     this.hash = Valid.off(hash).forEmpty()
         .getOrFail("Invalid key hash");
     algorithm = Valid.off(algo).forNull()
         .getOrFail(CryptAlgorithm.class);
-    this.iv = Valid.off(iv)
-        .message(SecureIV.class)
-        .forNull().fail()
-        .forTest(!iv.isInitialized()).getOrFail();
+    this.iv = Valid.off(iv).forNull().getOrFail(InitVector.class);
     spec = KeySpecFactory.createKey(
         CryptUtils.truncate(hash, algo.getBytesSize()), algo
     );
@@ -190,10 +191,20 @@ public class CryptKey {
     StringByteConverter cv = new StringByteConverter();
     byte[] encAlgo = cd.encode(cv.convert(algorithm.toString()));
     byte[] encHash = cd.encode(hash);
-    byte[] encIV = cd.encode(iv.getBytes());
+    byte[] encIV = cd.encode(iv.getVector());
     return cv.reverse(encAlgo)
         + "||" + cv.reverse(encHash) 
         + "||" + cv.reverse(encIV);
+  }
+  
+  
+  public static CryptKey createWithUnsecurePasswordIV(String key, CryptAlgorithm algo) {
+    return new CryptKey(key, new UnsecurePasswordIV(algo, key), algo);
+  }
+  
+  
+  public static CryptKey createWithSecureRandomIV(String key, CryptAlgorithm algo) {
+    return new CryptKey(key, new UnsecurePasswordIV(algo, key), algo);
   }
   
   
@@ -220,12 +231,11 @@ public class CryptKey {
     byte[] algoBytes = cv.convert(ss[0]);
     algoBytes = cd.decode(algoBytes);
     CryptAlgorithm algo = CryptAlgorithm.fromString(cv.reverse(algoBytes));
-    SecureIV iv = new SecureIV(
-        cd.decode(cv.convert(ss[2])), algo
-    );
     CryptKey k = new CryptKey();
     k.setKey(
-        cd.decode(cv.convert(ss[1])), iv, algo
+        cd.decode(cv.convert(ss[1])), 
+        new BasicIV(cd.decode(cv.convert(ss[2]))), 
+        algo
     );
     return k;
   }
@@ -244,7 +254,7 @@ public class CryptKey {
     byte[] hash = Digester.toSHA256(
         CryptUtils.randomBytes(algo.getBytesSize())
     );
-    key.setKey(hash, SecureIV.createRandom(algo), algo);
+    key.setKey(hash, new SecureRandomIV(algo), algo);
     return key;
   }
   
@@ -253,13 +263,13 @@ public class CryptKey {
     CryptKey key = new CryptKey("123456", CryptAlgorithm.AES_CBC_256_PKCS5);
     System.out.println("* key.algo = "+ key.getAlgorithm().toString());
     System.out.println("* key.hash = "+ Arrays.toString(key.getHash()));
-    System.out.println("* key.iv = "+ Arrays.toString(key.getIV().getBytes()));
+    System.out.println("* key.iv = "+ Arrays.toString(key.getIV().getVector()));
     System.out.println("* key = "+ key.toString());
     key = CryptKey.fromString(key.toString());
     System.out.println("* key = "+ key.toString());
     System.out.println("* key.algo = "+ key.getAlgorithm().toString());
     System.out.println("* key.hash = "+ Arrays.toString(key.getHash()));
-    System.out.println("* key.iv = "+ Arrays.toString(key.getIV().getBytes()));
+    System.out.println("* key.iv = "+ Arrays.toString(key.getIV().getVector()));
   }
   
 }

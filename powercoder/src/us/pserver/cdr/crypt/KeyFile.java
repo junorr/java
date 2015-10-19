@@ -29,7 +29,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Path;
+import us.pserver.cdr.crypt.iv.BasicIV;
 import us.pserver.cdr.hex.HexCoder;
 import us.pserver.tools.Valid;
 
@@ -58,7 +58,7 @@ public class KeyFile {
     bw.newLine();
     bw.write(HexCoder.toHexString(key.getHash()));
     bw.newLine();
-    bw.write(HexCoder.toHexString(key.getIV().getBytes()));
+    bw.write(HexCoder.toHexString(key.getIV().getVector()));
     bw.newLine();
     bw.flush();
   }
@@ -83,8 +83,9 @@ public class KeyFile {
         .forNull().getOrFail(CryptAlgorithm.class);
     byte[] hash = Valid.off(HexCoder.fromHexString(xhash))
         .forEmpty().getOrFail("Invalid Hash Array");
-    SecureIV iv = new SecureIV(Valid.off(HexCoder.decode(xiv))
-        .forEmpty().getOrFail("Invalid IV Array"), ca
+    BasicIV iv = new BasicIV(
+        Valid.off(HexCoder.decode(xiv))
+        .forEmpty().getOrFail("Invalid IV Array")
     );
     CryptKey key = new CryptKey();
     key.setKey(hash, iv, ca);

@@ -60,10 +60,10 @@ public class CryptUtils {
           || key.getAlgorithm() == CryptAlgorithm.DES_ECB_PKCS5
           || key.getAlgorithm() == CryptAlgorithm.DESede_ECB
           || key.getAlgorithm() == CryptAlgorithm.DESede_ECB_PKCS5) {
-        encoder.init(Cipher.ENCRYPT_MODE, key.getSpec());
+        encoder.init(Cipher.ENCRYPT_MODE, key.getKeySpec());
       }
       else {
-        encoder.init(Cipher.ENCRYPT_MODE, key.getSpec(), key.getIV().getIVSpec());
+        encoder.init(Cipher.ENCRYPT_MODE, key.getKeySpec(), key.getIV().getIvParameterSpec());
       }
       return encoder;
     } 
@@ -91,10 +91,10 @@ public class CryptUtils {
           || key.getAlgorithm() == CryptAlgorithm.DES_ECB_PKCS5
           || key.getAlgorithm() == CryptAlgorithm.DESede_ECB
           || key.getAlgorithm() == CryptAlgorithm.DESede_ECB_PKCS5) {
-        decoder.init(Cipher.DECRYPT_MODE, key.getSpec());
+        decoder.init(Cipher.DECRYPT_MODE, key.getKeySpec());
       }
       else {
-        decoder.init(Cipher.DECRYPT_MODE, key.getSpec(), key.getIV().getIVSpec());
+        decoder.init(Cipher.DECRYPT_MODE, key.getKeySpec(), key.getIV().getIvParameterSpec());
       }
       return decoder;
     } 
@@ -124,12 +124,12 @@ public class CryptUtils {
           || key.getAlgorithm() == CryptAlgorithm.DES_ECB_PKCS5
           || key.getAlgorithm() == CryptAlgorithm.DESede_ECB
           || key.getAlgorithm() == CryptAlgorithm.DESede_ECB_PKCS5) {
-        cps[0].init(Cipher.ENCRYPT_MODE, key.getSpec());
-        cps[1].init(Cipher.DECRYPT_MODE, key.getSpec());
+        cps[0].init(Cipher.ENCRYPT_MODE, key.getKeySpec());
+        cps[1].init(Cipher.DECRYPT_MODE, key.getKeySpec());
       }
       else {
-        cps[0].init(Cipher.ENCRYPT_MODE, key.getSpec(), key.getIV().getIVSpec());
-        cps[1].init(Cipher.DECRYPT_MODE, key.getSpec(), key.getIV().getIVSpec());
+        cps[0].init(Cipher.ENCRYPT_MODE, key.getKeySpec(), key.getIV().getIvParameterSpec());
+        cps[1].init(Cipher.DECRYPT_MODE, key.getKeySpec(), key.getIV().getIvParameterSpec());
       }
       return cps;
     } 

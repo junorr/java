@@ -27,22 +27,22 @@ import java.nio.charset.Charset;
  * A UTF-8 String representation.
  * @author Juno Roesler - juno@pserver.us
  */
-public class UTF8String extends CharsetString {
+public class CharsetString {
 
   
-  /**
-   * <code>utf8 = "UTF-8";</code><br>
-   * String UTF-8 Charset representation.
-   */
-  private static final String utf8 = "UTF-8";
+  private final Charset charset;
+  
+  
+  private final String string;
   
   
   /**
    * Constructor which receives the encapsulated String.
    * @param str the encapsulated String.
    */
-  public UTF8String(String str) {
-    super(str, Charset.forName(utf8));
+  public CharsetString(String str, Charset cs) {
+    charset = Valid.off(cs).forEmpty().getOrFail(Charset.class);
+    string = Valid.off(str).forEmpty().getOrFail(String.class);
   }
   
   
@@ -50,8 +50,9 @@ public class UTF8String extends CharsetString {
    * Constructor which receives the byte array to encode in a UTF-8 String.
    * @param bs the byte array to encode in a UTF-8 String.
    */
-  public UTF8String(byte[] bs) {
-    super(bs, Charset.forName(utf8));
+  public CharsetString(byte[] bs, Charset cs) {
+    charset = Valid.off(cs).forNull().getOrFail();
+    string = new String(Valid.off(bs).forEmpty().getOrFail(), cs);
   }
   
   
@@ -61,8 +62,63 @@ public class UTF8String extends CharsetString {
    * @param off start array index.
    * @param len Length of bytes to be readed from the byte array.
    */
-  public UTF8String(byte[] bs, int off, int len) {
-    super(bs, off, len, Charset.forName(utf8));
+  public CharsetString(byte[] bs, int off, int len, Charset cs) {
+    charset = Valid.off(cs).forNull().getOrFail();
+    string = new String(
+        Valid.off(bs).forEmpty().getOrFail(), 
+        Valid.off(off).forLesserThan(0).getOrFail(),
+        Valid.off(len)
+            .forGreaterThan(bs.length - off)
+            .getOrFail(), 
+        charset
+    );
+  }
+  
+  
+  /**
+   * Get the length of this UTF8String.
+   * @return the length of this UTF8String.
+   */
+  public int length() {
+    return string.length();
+  }
+  
+  
+  /**
+   * Check if this String is empty.
+   * @return <code>true</code> if this UTF8String is empty,
+   * <code>false</code> otherwise.
+   */
+  public boolean isEmpty() {
+    return string.isEmpty();
+  }
+  
+  
+  /**
+   * Check if this string is empty when trimmed.
+   * @return <code>true</code> if this UTF8String is empty when trimmed,
+   * <code>false</code> otherwise.
+   */
+  public boolean isEmptyTrimmed() {
+    return string.trim().isEmpty();
+  }
+  
+  
+  /**
+   * Get the UTF-8 Charset object.
+   * @return the UTF-8 Charset object.
+   */
+  public Charset getCharset() {
+    return charset;
+  }
+  
+  
+  /**
+   * Return "UTF-8".
+   * @return "UTF-8".
+   */
+  public String getCharsetString() {
+    return charset.name();
   }
   
   
@@ -72,8 +128,8 @@ public class UTF8String extends CharsetString {
    * @param args The objects values to be interpolated into the string.
    * @return a new UTF8String object.
    */
-  public static UTF8String format(String str, Object ... args) {
-    return from(String.format(str, args));
+  public static CharsetString format(String str, Charset cs, Object ... args) {
+    return from(String.format(str, args), cs);
   }
   
   
@@ -82,8 +138,8 @@ public class UTF8String extends CharsetString {
    * @param str The encapsulated String.
    * @return a new UTF8String object.
    */
-  public static UTF8String from(String str) {
-    return new UTF8String(str);
+  public static CharsetString from(String str, Charset cs) {
+    return new CharsetString(str, cs);
   }
   
   
@@ -94,8 +150,8 @@ public class UTF8String extends CharsetString {
    * @param len The length of bytes.
    * @return a new UTF8String object.
    */
-  public static UTF8String from(byte[] bs, int off, int len) {
-    return new UTF8String(bs, off, len);
+  public static CharsetString from(byte[] bs, int off, int len, Charset cs) {
+    return new CharsetString(bs, off, len, cs);
   }
   
   
@@ -104,9 +160,23 @@ public class UTF8String extends CharsetString {
    * @param bs The byte array to be encoded into a UTF-8 String.
    * @return a new UTF8String object.
    */
-  public static UTF8String from(byte[] bs) {
-    return new UTF8String(bs);
+  public static CharsetString from(byte[] bs, Charset cs) {
+    return new CharsetString(bs, cs);
   }
   
+  
+  @Override
+  public String toString() {
+    return string;
+  }
+  
+
+  /**
+   * Return a byte array from the encapsulated UTF-8 String.
+   * @return byte array from the encapsulated UTF-8 String.
+   */
+  public byte[] getBytes() {
+    return string.getBytes(getCharset());
+  }
   
 }
