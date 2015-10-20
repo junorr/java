@@ -19,18 +19,17 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.streams;
+package us.pserver.tar;
 
-import java.io.FilterOutputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.SeekableByteChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.zip.GZIPOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -41,42 +40,28 @@ import us.pserver.tools.Valid;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 17/10/2015
  */
-public class TGZOutputStream extends FilterOutputStream {
+public class TGZWriter extends TarWriter {
   
   
-  public static final int DEFAULT_BUFFER_SIZE = 8192;
-  
-  
-  private Stream<Path> paths;
-  
-  private ByteBuffer buffer;
-  
-  private SeekableByteChannel currin;
-  
-  private TarArchiveEntry currentry;
-  
-  private TarArchiveOutputStream tar;
-  
-  private GZIPOutputStream gzo;
-
-
-  public TGZOutputStream(OutputStream out, Stream<Path> paths) {
-    super(Valid.off(out).getOrFail(OutputStream.class));
-    this.paths = Valid.off(paths).forEmpty()
-        .getOrFail(PathCollection.class);
+  public TGZWriter(OutputStream out) throws IOException {
+    super(new GZIPOutputStream(new BufferedOutputStream(
+        Valid.off(out).forNull().getOrFail(OutputStream.class)))
+    );
   }
   
   
-  public TGZOutputStream(OutputStream out, Path ... paths) {
-    this(out, Arrays.asList(
-        Valid.off(paths).forEmpty().getOrFail()
-    ).stream());
+  public static void main(String[] args) throws IOException {
+    String sout = "D:/test2.tar.gz";
+    TGZWriter tw = new TGZWriter(new FileOutputStream(sout));
+    /*
+    tw.put(new TarPathData("D:/pic.jpg"))
+        .put(new TarPathData("D:/pic-2.jpg"));
+    */
+    /**/
+    tw.put(new TarPathData("D:/test"));
+    /**/
+    tw.write();
+    tw.close();
   }
   
-  
-  private void init() throws IOException {
-    
-  }
-
-
 }

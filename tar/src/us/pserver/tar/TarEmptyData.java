@@ -19,21 +19,51 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.streams;
+package us.pserver.tar;
 
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import us.pserver.tools.Valid;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 18/10/2015
+ * @version 0.0 - 19/10/2015
  */
-public interface TGZData {
+public class TarEmptyData implements TarData {
+  
+  
+  private String name;
+  
+  private TarArchiveEntry entry;
+  
+  
+  public TarEmptyData(String name) {
+    this.name = Valid.off(name)
+        .forEmpty().getOrFail("Invalid name: ");
+  }
+  
+  
+  @Override
+  public InputStream getData() throws IOException {
+    return null;
+  }
+  
+  
+  public TarEmptyData setEntry(TarArchiveEntry e) {
+    this.entry = e;
+    return this;
+  }
 
-  public InputStream getData() throws IOException;
-  
-  public TarArchiveEntry getEntry();
-  
+
+  @Override
+  public TarArchiveEntry getEntry() {
+    if(entry == null) {
+      entry = new TarArchiveEntry(name);
+      entry.setModTime(System.currentTimeMillis());
+    }
+    return entry;
+  }
+
 }

@@ -19,44 +19,40 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.streams;
+package us.pserver.tar;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import us.pserver.tools.Valid;
+import java.util.zip.GZIPInputStream;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 18/10/2015
+ * @version 0.0 - 19/10/2015
  */
-public class TGZPathData implements TGZData {
+public class TGZReader extends TarReader {
+
   
-  
-  private final Path path;
-  
-  
-  public TGZPathData(Path p) {
-    Valid.off(p).forNull().fail(Path.class);
-    Valid.off(p).forTest(Files.isDirectory(p))
-        .fail("Invalid Directory Path");
-    path = p;
+  public TGZReader(InputStream in) throws IOException {
+    super(
+        new GZIPInputStream(in)
+    );
   }
 
-
-  @Override
-  public InputStream getData() throws IOException {
-    return Files.newInputStream(path, StandardOpenOption.READ);
+  
+  public static void main(String[] args) throws IOException {
+    String src = "D:/test2.tar.gz";
+    TarReader tr = new TGZReader(new FileInputStream(src));
+    while(tr.hasNext()) {
+      System.out.println("- "+ tr.next().getEntry().getName());
+    }
+    tr.close();
+    System.out.println("--------------------");
+    tr = new TarReader(new FileInputStream(src));
+    tr.untar("D:/tgzReader").close();
   }
-
-
-  @Override
-  public TarArchiveEntry getEntry() {
-    return new TarArchiveEntry(path.toFile());
-  }
-
+  
+  
 }

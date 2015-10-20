@@ -19,28 +19,21 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.streams;
+package us.pserver.tar;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import us.pserver.tools.Valid;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 18/10/2015
  */
-public class TGZDirectory {
+public interface TarData {
 
+  public InputStream getData() throws IOException;
   
-  private Path dir;
-  
-  
-  public TGZDirectory(Path p) {
-    Valid.off(p).forNull().fail(Path.class);
-    Valid.off(p).forTest(!Files.isDirectory(p))
-        .fail("Path must be a directory");
-    dir = p;
-  }
+  public TarArchiveEntry getEntry();
   
 }

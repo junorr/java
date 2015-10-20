@@ -19,49 +19,38 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.streams;
+package us.pserver.tar;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import us.pserver.tools.Valid;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 18/10/2015
+ * @version 0.0 - 19/10/2015
  */
-public class TGZStreamData implements TGZData {
+public class TBZReader extends TarReader {
 
-  
-  private final InputStream stream;
-  
-  private final String name;
-  
-  
-  public TGZStreamData(InputStream in, String name) {
-    Valid.off(in).forNull().fail(InputStream.class);
-    Valid.off(name).forEmpty().fail("Invalid name: ");
-    stream = in;
-    this.name = name;
+
+  public TBZReader(InputStream in) throws IOException {
+    super(new BZip2CompressorInputStream(new BufferedInputStream(in)));
   }
 
-
-  @Override
-  public InputStream getData() throws IOException {
-    return stream;
-  }
-
-
-  @Override
-  public TarArchiveEntry getEntry() {
-    TarArchiveEntry te = new TarArchiveEntry(name);
-    te.setModTime(System.currentTimeMillis());
-    try { 
-      int avl = stream.available();
-      if(avl > 1) te.setSize(avl); 
-    } catch(IOException e) {}
-    return te;
+  
+  public static void main(String[] args) throws IOException {
+    String src = "D:/test2.tar.bz";
+    TarReader tr = new TBZReader(new FileInputStream(src));
+    while(tr.hasNext()) {
+      System.out.println("- "+ tr.next().getEntry().getName());
+    }
+    tr.close();
+    System.out.println("--------------------");
+    tr = new TarReader(new FileInputStream(src));
+    tr.untar("D:/tbzReader").close();
   }
   
   
