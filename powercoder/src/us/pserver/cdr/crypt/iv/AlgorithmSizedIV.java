@@ -22,8 +22,7 @@
 package us.pserver.cdr.crypt.iv;
 
 import us.pserver.cdr.crypt.CryptAlgorithm;
-import us.pserver.cdr.crypt.CryptUtils;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  *

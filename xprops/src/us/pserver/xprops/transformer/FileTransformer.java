@@ -22,7 +22,7 @@
 package us.pserver.xprops.transformer;
 
 import java.io.File;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * String transformer for File types.

@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 import us.pserver.xprops.converter.XConverter;
 import us.pserver.xprops.converter.XConverterFactory;
 import us.pserver.xprops.transformer.NameFormatter;

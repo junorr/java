@@ -21,7 +21,7 @@
 
 package us.pserver.xprops.converter;
 
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
 

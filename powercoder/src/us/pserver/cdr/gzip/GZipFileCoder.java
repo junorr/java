@@ -32,7 +32,7 @@ import java.util.zip.GZIPOutputStream;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * Compactador/Descompactador de arquivos no formato GZIP.

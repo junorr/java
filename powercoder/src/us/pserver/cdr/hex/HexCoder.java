@@ -22,7 +22,8 @@
 
 package us.pserver.cdr.hex;
 
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
+
 
 
 /**

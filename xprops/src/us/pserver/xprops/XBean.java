@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 import us.pserver.xprops.converter.XConverter;
 import us.pserver.xprops.converter.ObjectXConverter;
 import us.pserver.xprops.transformer.StringTransformerFactory;

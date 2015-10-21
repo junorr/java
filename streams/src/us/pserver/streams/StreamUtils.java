@@ -28,7 +28,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.tools.UTF8String;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 
 /**

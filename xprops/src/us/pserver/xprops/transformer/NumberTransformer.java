@@ -25,7 +25,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.Objects;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * String transformer for Number types.

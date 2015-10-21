@@ -22,10 +22,9 @@
 
 package us.pserver.cdr.crypt;
 
-import us.pserver.cdr.crypt.iv.SecureRandomIV;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 
 /**

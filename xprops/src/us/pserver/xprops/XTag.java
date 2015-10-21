@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * XTag represents a Xml tag.

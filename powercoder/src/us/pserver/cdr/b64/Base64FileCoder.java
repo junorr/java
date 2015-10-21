@@ -33,7 +33,7 @@ import org.apache.commons.codec.binary.Base64OutputStream;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * Codificador/Decodificador de arquivos no formato Base64.

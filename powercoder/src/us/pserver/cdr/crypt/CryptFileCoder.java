@@ -21,7 +21,6 @@
 
 package us.pserver.cdr.crypt;
 
-import us.pserver.cdr.crypt.iv.SecureRandomIV;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,13 +33,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import javax.crypto.CipherOutputStream;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64BufferCoder;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 
 /**

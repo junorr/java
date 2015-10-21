@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 import static us.pserver.xprops.XInputStream.XHEADER;
 
 /**

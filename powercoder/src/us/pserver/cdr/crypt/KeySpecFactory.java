@@ -23,7 +23,7 @@
 package us.pserver.cdr.crypt;
 
 import javax.crypto.spec.SecretKeySpec;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 
 /**

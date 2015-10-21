@@ -30,7 +30,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 import us.pserver.tools.UTF8String;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * Implements a xml InputStream reader/generator.

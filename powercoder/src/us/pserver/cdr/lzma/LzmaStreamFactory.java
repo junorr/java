@@ -28,7 +28,7 @@ import java.io.OutputStream;
 import lzma.sdk.lzma.Decoder;
 import lzma.streams.LzmaInputStream;
 import lzma.streams.LzmaOutputStream;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * Classe utilitária para criação de streams

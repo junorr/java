@@ -32,7 +32,7 @@ import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.crypt.CryptUtils;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  *

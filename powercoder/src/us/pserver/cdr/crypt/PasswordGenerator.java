@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import us.pserver.cdr.StringByteConverter;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  *

@@ -25,7 +25,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.XValue;
 

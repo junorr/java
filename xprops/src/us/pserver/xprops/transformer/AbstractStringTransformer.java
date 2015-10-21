@@ -22,7 +22,7 @@
 package us.pserver.xprops.transformer;
 
 import java.util.Objects;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * Abstract implementation for StringTransformer, 

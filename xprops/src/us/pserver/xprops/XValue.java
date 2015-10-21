@@ -26,7 +26,7 @@ import java.io.File;
 import java.net.SocketAddress;
 import java.nio.file.Path;
 import java.util.Date;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 import us.pserver.xprops.transformer.StringTransformer;
 import us.pserver.xprops.transformer.BooleanTransformer;
 import us.pserver.xprops.transformer.CharTransformer;

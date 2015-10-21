@@ -30,7 +30,7 @@ import us.pserver.cdr.b64.Base64ByteCoder;
 import us.pserver.cdr.crypt.iv.BasicIV;
 import us.pserver.cdr.crypt.iv.InitVector;
 import us.pserver.cdr.crypt.iv.UnsecurePasswordIV;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 
 /**

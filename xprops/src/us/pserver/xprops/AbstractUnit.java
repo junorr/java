@@ -21,7 +21,8 @@
 
 package us.pserver.xprops;
 
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
+
 
 /**
  * An abstract implementation of XUnit 

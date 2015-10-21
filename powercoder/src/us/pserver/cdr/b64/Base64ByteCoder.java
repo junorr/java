@@ -25,7 +25,7 @@ package us.pserver.cdr.b64;
 import java.util.Arrays;
 import org.apache.commons.codec.binary.Base64;
 import us.pserver.cdr.Coder;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 
 /**

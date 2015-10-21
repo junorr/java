@@ -22,6 +22,7 @@
 package us.pserver.tools;
 
 import java.nio.charset.Charset;
+import us.pserver.valid.Valid;
 
 /**
  * A UTF-8 String representation.

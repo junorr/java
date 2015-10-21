@@ -26,7 +26,7 @@ import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.crypt.DigestAlgorithm;
 import us.pserver.cdr.crypt.Digester;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 
 /**

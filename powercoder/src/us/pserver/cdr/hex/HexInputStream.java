@@ -23,7 +23,7 @@ package us.pserver.cdr.hex;
 
 import java.io.IOException;
 import java.io.InputStream;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 
 /**

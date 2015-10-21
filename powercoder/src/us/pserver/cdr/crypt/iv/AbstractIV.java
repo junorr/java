@@ -22,7 +22,7 @@
 package us.pserver.cdr.crypt.iv;
 
 import javax.crypto.spec.IvParameterSpec;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  *

@@ -22,7 +22,7 @@
 package us.pserver.xprops.converter;
 
 import java.util.List;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 import us.pserver.xprops.XAttr;
 import us.pserver.xprops.XTag;
 import us.pserver.xprops.transformer.StringTransformer;

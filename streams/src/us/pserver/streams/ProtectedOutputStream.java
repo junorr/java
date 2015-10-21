@@ -24,7 +24,7 @@ package us.pserver.streams;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * <code>FilterOutputStream</code> que sobrescreve o método

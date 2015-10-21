@@ -33,7 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * Handy shortcut class for IO streams.

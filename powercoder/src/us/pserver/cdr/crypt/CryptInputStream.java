@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  *

@@ -31,7 +31,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import us.pserver.cdr.crypt.iv.BasicIV;
 import us.pserver.cdr.hex.HexCoder;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 
 /**

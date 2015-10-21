@@ -25,7 +25,7 @@ package us.pserver.cdr.crypt;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 
 /**

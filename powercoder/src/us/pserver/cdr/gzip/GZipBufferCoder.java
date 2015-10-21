@@ -24,7 +24,7 @@ package us.pserver.cdr.gzip;
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.Coder;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 
 /**

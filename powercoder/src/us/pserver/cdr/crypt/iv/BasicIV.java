@@ -21,7 +21,6 @@
 
 package us.pserver.cdr.crypt.iv;
 
-import us.pserver.tools.Valid;
 
 /**
  *

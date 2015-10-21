@@ -25,7 +25,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * String transformer for Date types.

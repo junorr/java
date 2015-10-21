@@ -22,7 +22,7 @@
 package us.pserver.xprops.converter;
 
 import java.lang.reflect.Constructor;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 import us.pserver.xprops.XBeanBuilder;
 import us.pserver.xprops.XTag;
 

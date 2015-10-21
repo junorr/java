@@ -21,7 +21,8 @@
 
 package us.pserver.xprops.transformer;
 
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
+
 
 /**
  * String transformer for class types.

@@ -23,7 +23,7 @@ package us.pserver.xprops.transformer;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * String transformer for file Path types.

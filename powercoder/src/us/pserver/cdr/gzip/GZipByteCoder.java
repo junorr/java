@@ -29,7 +29,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.FileUtils;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * Compactador/Descompactador GZIP para byte array 

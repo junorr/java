@@ -28,7 +28,7 @@ import lzma.streams.LzmaInputStream;
 import lzma.streams.LzmaOutputStream;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.FileUtils;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * Compactador/Descompactador LZMA para byte 

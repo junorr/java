@@ -24,7 +24,7 @@ package us.pserver.cdr.gzip;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * Compactador/Descompactador de <code>String's</code> no formato GZIP.

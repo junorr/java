@@ -33,7 +33,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 
 /**

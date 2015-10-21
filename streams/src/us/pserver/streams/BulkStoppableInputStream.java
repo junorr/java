@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  *

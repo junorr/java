@@ -26,7 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  *

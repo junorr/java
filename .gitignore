@@ -118,3 +118,10 @@
 /test-logging/build/
 /tar/nbproject/private/
 /tar/build/
+/tar/dist/
+/jtar/nbproject/private/
+/jtar/dist/
+/jtar/build/
+/jfarch/nbproject/private/
+/flexpack/nbproject/private/
+/flexpack/build/

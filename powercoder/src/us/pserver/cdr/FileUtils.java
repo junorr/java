@@ -28,7 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  * Classe utilitária com funções para manipulação de

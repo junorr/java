@@ -23,7 +23,7 @@ package us.pserver.xprops.transformer;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import us.pserver.tools.Valid;
+import us.pserver.valid.Valid;
 
 /**
  *
