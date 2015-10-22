@@ -45,6 +45,8 @@ public class FPackEntry extends FPackHeader {
   
   private transient CryptKey crypt;
   
+  private transient byte[] buffer;
+  
   
   public FPackEntry(String name) {
     super(name);
@@ -100,15 +102,31 @@ public class FPackEntry extends FPackHeader {
   }
   
   
+  public int getWriteSize() {
+    if(buffer == null) {
+      ByteArrayOutputStream bos = 
+          new ByteArrayOutputStream();
+      try { write(bos); }
+      catch(IOException e){}
+      buffer = bos.toByteArray();
+    }
+    return buffer.length;
+  }
+  
+  
   public void write(OutputStream out) throws IOException {
     Valid.off(out).forNull()
         .fail(OutputStream.class);
-    byte[] bs = new UTF8String(
-        JsonWriter.objectToJson(this)
-    ).getBytes();
-    System.out.println("* entry.bytes="+ bs.length);
-    out.write(bs);
-    new FPackFooter(bs.length).write(out);
+    if(buffer != null) {
+      out.write(buffer);
+    }
+    else {
+      byte[] bs = new UTF8String(
+          JsonWriter.objectToJson(this)
+      ).getBytes();
+      out.write(bs);
+      new FPackFooter(bs.length).write(out);
+    }
   }
   
   

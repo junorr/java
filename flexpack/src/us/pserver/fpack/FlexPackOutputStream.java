@@ -21,11 +21,9 @@
 
 package us.pserver.fpack;
 
-import com.cedarsoftware.util.io.JsonWriter;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import us.pserver.tools.UTF8String;
 import us.pserver.valid.Valid;
 
 /**
@@ -41,7 +39,7 @@ public class FlexPackOutputStream extends FilterOutputStream {
   
   private OutputStream encout;
   
-  private long size;
+  private long size, total;
   
 
   public FlexPackOutputStream(OutputStream out) {
@@ -50,6 +48,12 @@ public class FlexPackOutputStream extends FilterOutputStream {
     writed = false;
     encout = null;
     size = 0;
+    total = 0;
+  }
+  
+  
+  public long getWritedSize() {
+    return total;
   }
   
   
@@ -70,19 +74,7 @@ public class FlexPackOutputStream extends FilterOutputStream {
   
   private void writeFooter() throws IOException {
     if(entry != null && size > 0) {
-      int units = (int) (size / FPackUtils.BLOCK_SIZE);
-      if(size % FPackUtils.)
-      int remaining = (int) (units * FPackUtils.BLOCK_SIZE - size);
-      if(remaining < 8) {
-        remaining += FPackUtils.BLOCK_SIZE;
-      }
-      byte[] bs = new byte[remaining];
-      System.arraycopy(
-          FPackUtils.ENTRY_END_BYTES, 0, bs, 0, 
-          FPackUtils.ENTRY_END_BYTES.length
-      );
-      out.write(bs);
-      out.flush();
+      new FPackFooter(size).write(out);
       size = 0;
     }
   }
@@ -92,15 +84,9 @@ public class FlexPackOutputStream extends FilterOutputStream {
     if(writed) return;
     if(entry == null) {
       throw new IllegalStateException(
-          "Invalid write for no configured entry");
+          "No configured entry. Write not allowed");
     }
-    UTF8String str = new UTF8String(
-        JsonWriter.objectToJson(entry)
-    );
-    byte[] sbs = str.getBytes();
-    size = sbs.length;
-    out.write(sbs);
-    writeFooter();
+    entry.write(out);
     encout = FPackUtils.build(entry, out);
   }
   
@@ -118,6 +104,7 @@ public class FlexPackOutputStream extends FilterOutputStream {
       out.write(bs, off, len);
     }
     size += (len - off);
+    total += (len - off);
   }
 
   
