@@ -19,42 +19,26 @@
  * endereco 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.fpack;
+package us.pserver.fpack.test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import us.pserver.fpack.FPackEntry;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  */
-public enum FPackEncoding {
+public class TestFPackOutputStream {
 
-  //NONE(0),
-  CRYPT(1),
-  GZIP(2),
-  LZMA(3);
   
-  private FPackEncoding(int id) {
-    code = id;
+  public static void main(String[] args) throws IOException {
+    FPackEntry e = new FPackEntry("log.xml");
+    Path p = Paths.get("/storage/log.xml");
+    e.setSize(Files.size(p));
+    
   }
-  
-  public int getID() {
-    return code;
-  }
-  
-  public static FPackEncoding fromID(int id) {
-    switch(id) {
-      //case 0:
-        //return NONE;
-      case 1:
-        return CRYPT;
-      case 2:
-        return GZIP;
-      case 3:
-        return LZMA;
-      default:
-        throw new IllegalArgumentException("No FPackCoding for id: "+ id);
-    }
-  }
-  
-  private int code;
   
 }
