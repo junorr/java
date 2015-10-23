@@ -35,10 +35,10 @@ import us.pserver.valid.Valid;
  */
 public class BulkStoppableInputStream extends FilterInputStream {
   
-  public static final int DEFAULT_BUFFER_SIZE = 8192;
+  public static final int DEFAULT_BUFFER_SIZE = 4096;
   
   
-  private final InputStream input;
+  private final PushbackInputStream input;
   
   private final byte[] stopBytes;
   
@@ -53,8 +53,19 @@ public class BulkStoppableInputStream extends FilterInputStream {
   
   public BulkStoppableInputStream(InputStream source, byte[] stopBytes, Consumer<BulkStoppableInputStream> onstop) {
     super(source);
-    input = Valid.off(source).forNull()
-        .getOrFail(InputStream.class);
+    if(PushbackInputStream.class.isAssignableFrom(source.getClass())) {
+      input = (PushbackInputStream) source;
+    }
+    else {
+      input = new PushbackInputStream(
+          Valid.off(source).forNull()
+              .getOrFail(InputStream.class), 
+          DEFAULT_BUFFER_SIZE - 
+              Valid.off(stopBytes).forEmpty()
+                  .getOrFail("Invalid empty stop bytes")
+                  .length
+      );
+    }
     this.stopBytes = Valid.off(stopBytes)
         .forEmpty().getOrFail("Invalid empty stop bytes");
     stop = new AtomicBoolean(false);
@@ -69,7 +80,7 @@ public class BulkStoppableInputStream extends FilterInputStream {
   }
   
   
-  public InputStream getSourceInputStream() {
+  public PushbackInputStream getInputStream() {
     return input;
   }
   
@@ -131,7 +142,15 @@ public class BulkStoppableInputStream extends FilterInputStream {
     }
     index = 0;
     stop.set(compare());
-    //System.out.printf("* fillAndCompare{index=%d, read=%d, stopIndex=%d}%n", index, read, stopIndex);
+    if(stop.get() 
+        && stopIndex >= 0 
+        && stopIndex < buffer.length-stopBytes.length-1) {
+      
+      int ix = stopIndex + stopBytes.length;
+      for(int i = ix; i < ix+(read-ix); i++) {
+        input.unread(buffer[i]);
+      }
+    }
   }
   
   

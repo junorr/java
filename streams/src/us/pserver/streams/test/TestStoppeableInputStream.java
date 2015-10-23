@@ -22,8 +22,9 @@
 package us.pserver.streams.test;
 
 import java.io.IOException;
+import us.pserver.streams.BulkStoppableInputStream;
+import us.pserver.streams.PushbackInputStream;
 import us.pserver.streams.SequenceInputStream;
-import us.pserver.streams.StoppableInputStream;
 
 /**
  *
@@ -36,13 +37,19 @@ public class TestStoppeableInputStream {
   public static void main(String[] args) throws IOException {
     SequenceInputStream in = new SequenceInputStream(100);
     byte[] stop = {88, 89, 90};
-    StoppableInputStream sin = new StoppableInputStream(in, stop, s->{
+    System.out.println("* in.available="+ in.available());
+    BulkStoppableInputStream sin = new BulkStoppableInputStream(in, stop, s->{
       System.out.println("StopFactor reached!");
       try { s.close(); } 
       catch(IOException e) {}
     });
     int read = -1;
     while((read = sin.read()) != -1) {
+      System.out.println("- read: "+ read+ " ("+ (char)read+ ")");
+    }
+    PushbackInputStream pin = (PushbackInputStream) sin.getInputStream();
+    while(pin.hasUnreadAvailable()) {
+      read = pin.read();
       System.out.println("- read: "+ read+ " ("+ (char)read+ ")");
     }
   }

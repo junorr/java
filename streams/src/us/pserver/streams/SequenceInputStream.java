@@ -59,7 +59,7 @@ public class SequenceInputStream extends InputStream {
   
   @Override
   public int available() throws IOException {
-    return Math.abs(limit - count);
+    return Math.max(limit - count, 0);
   }
   
   

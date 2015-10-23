@@ -85,7 +85,7 @@ public abstract class StreamUtils {
     return new BulkStoppableInputStream(in, stopOn, s->{
       try {
         if(consumeAndClose) {
-          StreamUtils.consume(s.getSourceInputStream());
+          StreamUtils.consume(s.getInputStream());
           s.close();
         }
         if(setToken != null && s.isStopped()) 

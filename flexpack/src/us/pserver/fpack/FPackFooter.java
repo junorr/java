@@ -57,7 +57,7 @@ public class FPackFooter {
     int units = (int) (size / FPackUtils.BLOCK_SIZE);
     if(size % FPackUtils.BLOCK_SIZE > 0)
       units++;
-    System.out.println("* getBlockUnits()="+ units);
+    //System.out.println("* getBlockUnits()="+ units);
     return units;
   }
   

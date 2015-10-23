@@ -22,8 +22,10 @@
 package us.pserver.fpack;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import us.pserver.tools.UTF8String;
 import us.pserver.valid.Valid;
 
 
@@ -163,6 +165,16 @@ public class FPackHeader {
       }
     }
     return sb.append("]}").toString();
+  }
+  
+  
+  public void write(OutputStream out) throws IOException {
+    Valid.off(out).forNull()
+        .fail(OutputStream.class);
+    byte[] bs = new UTF8String(
+        this.toString()).getBytes();
+    out.write(bs);
+    new FPackFooter(bs.length).write(out);
   }
   
   

@@ -22,10 +22,18 @@
 package us.pserver.fpack.test;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import us.pserver.cdr.crypt.CryptAlgorithm;
+import us.pserver.cdr.crypt.CryptKey;
+import us.pserver.fpack.FPackEncoding;
 import us.pserver.fpack.FPackEntry;
+import us.pserver.fpack.FlexPackOutputStream;
+import us.pserver.io.OutputConnector;
 
 /**
  *
@@ -36,9 +44,27 @@ public class TestFPackOutputStream {
   
   public static void main(String[] args) throws IOException {
     FPackEntry e = new FPackEntry("log.xml");
-    Path p = Paths.get("/storage/log.xml");
-    e.setSize(Files.size(p));
-    
+    Path pi = Paths.get("/storage/log.xml");
+    e.setSize(Files.size(pi));
+    e.put("path", pi.toAbsolutePath().toString());
+    Path po = Paths.get("/storage/fpack.plain.test");
+    if(Files.exists(po)) Files.delete(po);
+    InputStream input = Files.newInputStream(
+        pi, StandardOpenOption.READ
+    );
+    OutputStream output = Files.newOutputStream(
+        po, StandardOpenOption.WRITE, 
+        StandardOpenOption.CREATE
+    );
+    //System.out.println("* entry.size="+ e.getWriteSize());
+    e.setCryptKey(CryptKey
+        .createWithUnsecurePasswordIV(
+            "123456", CryptAlgorithm.AES_CBC_PKCS5)
+    ).addEncoding(FPackEncoding.LZMA);
+    FlexPackOutputStream fox = new FlexPackOutputStream(output);
+    OutputConnector con = new OutputConnector(fox);
+    fox.putEntry(e);
+    con.connectAndClose(input);
   }
   
 }

@@ -76,6 +76,7 @@ public class ProtectedOutputStream extends FilterOutputStream {
    */
   @Override
   public void close() throws IOException {
+    System.out.println("* fake closing");
     output.flush();
   }
   

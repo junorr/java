@@ -58,6 +58,9 @@ public class FlexPackOutputStream extends FilterOutputStream {
   
   
   public FlexPackOutputStream putEntry(FPackEntry ent) throws IOException {
+    if(entry == null) {
+      out.write(0);
+    }
     if(ent != null) {
       writeFooter();
       entry = ent;
@@ -69,6 +72,18 @@ public class FlexPackOutputStream extends FilterOutputStream {
       }
     }
     return this;
+  }
+  
+  
+  @Override
+  public void close() throws IOException {
+    if(encout != null) {
+      encout.flush();
+      encout.close();
+      encout = null;
+    }
+    out.flush();
+    out.close();
   }
   
   
@@ -86,7 +101,9 @@ public class FlexPackOutputStream extends FilterOutputStream {
       throw new IllegalStateException(
           "No configured entry. Write not allowed");
     }
-    entry.write(out);
+    int esize = entry.getWriteSize();
+    entry.setPosition(total+esize)
+        .write(out);
     encout = FPackUtils.build(entry, out);
   }
   

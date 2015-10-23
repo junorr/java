@@ -68,6 +68,7 @@ public class FPackEntry extends FPackHeader {
   public FPackEntry put(String key, Object value) {
     if(key != null && value != null) {
       values.put(key, value);
+      buffer = null;
     }
     return this;
   }
@@ -98,6 +99,7 @@ public class FPackEntry extends FPackHeader {
     this.crypt = key;
     if(crypt != null)
       this.key = crypt.toString();
+    buffer = null;
     return this;
   }
   
@@ -114,6 +116,31 @@ public class FPackEntry extends FPackHeader {
   }
   
   
+  @Override
+  public FPackEntry setName(String name) {
+    super.setName(name);
+    buffer = null;
+    return this;
+  }
+  
+  
+  @Override
+  public FPackEntry setPosition(long pos) {
+    super.setPosition(pos);
+    buffer = null;
+    return this;
+  }
+  
+  
+  @Override
+  public FPackEntry setSize(long size) {
+    super.setSize(size);
+    buffer = null;
+    return this;
+  }
+  
+  
+  @Override
   public void write(OutputStream out) throws IOException {
     Valid.off(out).forNull()
         .fail(OutputStream.class);
