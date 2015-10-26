@@ -28,9 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import us.pserver.cdr.crypt.CryptAlgorithm;
-import us.pserver.cdr.crypt.CryptKey;
-import us.pserver.fpack.FPackEncoding;
 import us.pserver.fpack.FPackEntry;
 import us.pserver.fpack.FlexPackOutputStream;
 import us.pserver.io.OutputConnector;
@@ -57,14 +54,20 @@ public class TestFPackOutputStream {
         StandardOpenOption.CREATE
     );
     //System.out.println("* entry.size="+ e.getWriteSize());
-    e.setCryptKey(CryptKey
-        .createWithUnsecurePasswordIV(
-            "123456", CryptAlgorithm.AES_CBC_PKCS5)
-    ).addEncoding(FPackEncoding.LZMA);
     FlexPackOutputStream fox = new FlexPackOutputStream(output);
     OutputConnector con = new OutputConnector(fox);
     fox.putEntry(e);
-    con.connectAndClose(input);
+    con.connect(input);
+	input.close();
+	/**/
+    input = Files.newInputStream(
+        pi, StandardOpenOption.READ
+    );
+	fox.putEntry(e);
+	con.connect(input);
+	/**/
+	input.close();
+	fox.close();
   }
   
 }

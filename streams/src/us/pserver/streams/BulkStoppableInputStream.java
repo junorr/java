@@ -24,8 +24,8 @@ package us.pserver.streams;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import us.pserver.tools.UTF8String;
 import us.pserver.valid.Valid;
 
 /**
@@ -46,7 +46,7 @@ public class BulkStoppableInputStream extends FilterInputStream {
   
   private int read, index, stopIndex;
   
-  private final AtomicBoolean stop;
+  private boolean stopped;
   
   private final Consumer<BulkStoppableInputStream> listener;
   
@@ -68,9 +68,10 @@ public class BulkStoppableInputStream extends FilterInputStream {
     }
     this.stopBytes = Valid.off(stopBytes)
         .forEmpty().getOrFail("Invalid empty stop bytes");
-    stop = new AtomicBoolean(false);
+    stopped = false;
     buffer = new byte[DEFAULT_BUFFER_SIZE];
-    read = index = stopIndex = 0;
+	stopIndex = -1;
+    read = index = 0;
     listener = onstop;
   }
   
@@ -96,7 +97,7 @@ public class BulkStoppableInputStream extends FilterInputStream {
   
   
   public boolean isStopped() {
-    return stop.get();
+    return stopped;
   }
   
   
@@ -104,12 +105,12 @@ public class BulkStoppableInputStream extends FilterInputStream {
   public void close() throws IOException {
     super.close();
     buffer = null;
-    stop.compareAndSet(false, true);
+    stopped = true;
   }
   
   
   private boolean compare() {
-    if(stop.get()) return false;
+    if(stopped) return false;
     int count = 0;
     stopIndex = -1;
     for(int i = index; i < (read-stopBytes.length); i++) {
@@ -132,31 +133,34 @@ public class BulkStoppableInputStream extends FilterInputStream {
   
   
   private void fillAndCompare() throws IOException {
-    if(stop.get()) return;
+    if(stopped) return;
     if(index < read) return;
     read = input.read(buffer);
+	if(read > 0)
+	  System.out.println("\nBulk.fillAndCompare: ["+ new UTF8String(buffer, 0, read)+ "]");
     if(read < 1) {
-      stop.set(true);
+      stopped = true;
       stopIndex = -1;
       return;
     }
     index = 0;
-    stop.set(compare());
-    if(stop.get() 
-        && stopIndex >= 0 
+    stopped = compare();
+    if(stopped && stopIndex >= 0 
         && stopIndex < buffer.length-stopBytes.length-1) {
       
       int ix = stopIndex + stopBytes.length;
-      for(int i = ix; i < ix+(read-ix); i++) {
+      for(int i = ix; i <= read; i++) {
         input.unread(buffer[i]);
       }
+	  read = stopIndex + 1;
     }
   }
   
   
   @Override
   public int read(byte[] array, int off, int len) throws IOException {
-    if(stop.get() && index >= read && stopIndex < index) {
+    if(stopped && index >= read) {
+	  System.out.println("Bulk.read: first if");
       return -1;
     }
     Valid.off(array).forEmpty()
@@ -168,20 +172,26 @@ public class BulkStoppableInputStream extends FilterInputStream {
     fillAndCompare();
     int nread = -1;
     int nlen = 0;
-    if(index < stopIndex) {
+    if(stopIndex >= 0 && index < stopIndex) {
       nlen = Math.min(len, stopIndex - index);
     }
-    else if(!stop.get() && index < read) {
+    else if(index < read) {
       nlen = Math.min(len, read - index);
     }
+	System.out.println("\nBulk.read: index="+ index);
+	System.out.println("Bulk.read: read ="+ read);
     if(nlen > 0) {
       System.arraycopy(buffer, index, array, off, nlen);
       nread = nlen;
       index += nlen;
     }
-    if(nread <= 0 && listener != null) {
+    if(stopped && stopIndex >= 0 && listener != null) {
       listener.accept(this);
     }
+	if(nread == -1) {
+	  System.out.println("Bulk.read: nread == -1");
+	  System.out.println("Bulk.dump buffer: {"+ new UTF8String(buffer, 0, read+1));
+	}
     return nread;
   }
   
@@ -199,11 +209,9 @@ public class BulkStoppableInputStream extends FilterInputStream {
   @Override
   public int read() throws IOException {
     byte[] bs = new byte[1];
-    int r = read(bs);
-    if(r > 0) {
-      r = bs[0];
-    }
-    return r;
+    int read = read(bs);
+    if(read != -1) read = bs[0];
+    return read;
   }
   
 }

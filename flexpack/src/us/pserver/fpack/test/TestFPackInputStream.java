@@ -19,53 +19,41 @@
  * endereco 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.fpack;
+package us.pserver.fpack.test;
 
-import java.util.Iterator;
-import java.util.LinkedList;
+import com.cedarsoftware.util.io.JsonWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import us.pserver.fpack.FPackEntry;
+import us.pserver.fpack.FPackUtils;
+import us.pserver.fpack.FlexPackInputStream;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  */
-public class FPackFileHeader extends LinkedList<FPackHeader> {
+public class TestFPackInputStream {
 
-  private Iterator<FPackHeader> it;
   
-  
-  public FPackFileHeader() {}
-  
-  
-  public FPackFileHeader(FPackHeader hd) {
-    put(hd);
-  }
-  
-  
-  public FPackFileHeader put(FPackHeader hd) {
-    if(hd != null) {
-      add(hd);
-    }
-    return this;
-  }
-
-
-  public boolean hasNext() {
-    if(it == null) {
-      if(isEmpty()) return false;
-      it = iterator();
-    }
-    boolean hn = it.hasNext();
-    if(!hn) it = null;
-    return hn;
-  }
-
-
-  public FPackHeader next() {
-    FPackHeader nx = null;
-    if(hasNext()) {
-      nx = it.next();
-    }
-    return nx;
+  public static void main(String[] args) throws IOException {
+    Path pi = Paths.get("/storage/fpack.plain.test");
+    FlexPackInputStream fin = new FlexPackInputStream(
+        Files.newInputStream(pi, 
+            StandardOpenOption.READ)
+    );
+	while(true) {
+	  FPackEntry ent = fin.getNextEntry();
+	  if(ent == null) break;
+      System.out.println("* entry = "+ JsonWriter.objectToJson(ent));
+	  System.out.println("----------------------");
+	  FPackUtils.connect(fin, System.out, 8);
+	  System.out.flush();
+	}
+    fin.close();
+	System.out.flush();
   }
   
 }

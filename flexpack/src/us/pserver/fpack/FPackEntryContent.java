@@ -61,43 +61,9 @@ public class FPackEntryContent {
   }
   
   
-  protected OutputStream build(OutputStream out) throws IOException {
-    Valid.off(out).forNull()
-        .fail(OutputStream.class);
-    if(!entry.getEncodingList().isEmpty()) {
-      out = new ProtectedOutputStream(out);
-    }
-    for(int i = 0; i < entry.getEncodingList().size(); i++) {
-      FPackEncoding enc = entry.getEncodingList().get(i);
-      switch(enc) {
-        case CRYPT:
-          if(entry.getCryptKey() != null) {
-            out = CryptUtils.createCipherOutputStream(
-                new BufferedOutputStream(out), 
-                entry.getCryptKey()
-            );
-          }
-          break;
-        case GZIP:
-          out = new GZIPOutputStream(
-              new BufferedOutputStream(out)
-          );
-          break;
-        case LZMA:
-          out = LzmaStreamFactory.createLzmaOutput(
-              new BufferedOutputStream(out)
-          );
-          break;
-      }
-    }
-    return out;
-  }
-  
-  
   protected void write(OutputStream out) throws IOException {
     Valid.off(out).forNull()
         .fail(OutputStream.class);
-    out = build(out);
     int read = 0;
     byte[] buff = new byte[FPackUtils.BUFFER_SIZE];
     while(true) {

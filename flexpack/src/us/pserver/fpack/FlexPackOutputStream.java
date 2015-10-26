@@ -37,8 +37,6 @@ public class FlexPackOutputStream extends FilterOutputStream {
   
   private boolean writed;
   
-  private OutputStream encout;
-  
   private long size, total;
   
 
@@ -46,7 +44,6 @@ public class FlexPackOutputStream extends FilterOutputStream {
     super(out);
     entry = null;
     writed = false;
-    encout = null;
     size = 0;
     total = 0;
   }
@@ -61,27 +58,17 @@ public class FlexPackOutputStream extends FilterOutputStream {
     if(entry == null) {
       out.write(0);
     }
-    if(ent != null) {
+    else {
       writeFooter();
-      entry = ent;
-      writed = false;
-      if(encout != null) {
-        encout.flush();
-        encout.close();
-        encout = null;
-      }
     }
+    this.entry = ent;
+    writed = false;
     return this;
   }
   
   
   @Override
   public void close() throws IOException {
-    if(encout != null) {
-      encout.flush();
-      encout.close();
-      encout = null;
-    }
     out.flush();
     out.close();
   }
@@ -89,7 +76,8 @@ public class FlexPackOutputStream extends FilterOutputStream {
   
   private void writeFooter() throws IOException {
     if(entry != null && size > 0) {
-      new FPackFooter(size).write(out);
+      out.write(FPackUtils.ENTRY_END.getBytes());
+      out.flush();
       size = 0;
     }
   }
@@ -101,10 +89,10 @@ public class FlexPackOutputStream extends FilterOutputStream {
       throw new IllegalStateException(
           "No configured entry. Write not allowed");
     }
+    writed = true;
     int esize = entry.getWriteSize();
     entry.setPosition(total+esize)
         .write(out);
-    encout = FPackUtils.build(entry, out);
   }
   
   
@@ -114,12 +102,7 @@ public class FlexPackOutputStream extends FilterOutputStream {
     Valid.off(off).forLesserThan(0).fail();
     Valid.off(off+len).forGreaterThan(bs.length).fail();
     writeEntry();
-    if(encout != null) {
-      encout.write(bs, off, len);
-    }
-    else {
-      out.write(bs, off, len);
-    }
+    out.write(bs, off, len);
     size += (len - off);
     total += (len - off);
   }

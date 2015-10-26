@@ -24,6 +24,7 @@ package us.pserver.streams;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import us.pserver.tools.UTF8String;
 import us.pserver.valid.Valid;
 
 /**
@@ -62,10 +63,53 @@ public class PushbackInputStream extends FilterInputStream {
   }
   
   
+  public PushbackInputStream(InputStream in, byte[] buf, int off, int len) {
+    super(Valid.off(in).forNull().getOrFail(InputStream.class));
+    int bfs = DEFAULT_BUFFER_SIZE;
+    if(buf != null 
+        && off >= 0 
+        && len > 0 
+        && len+off < buf.length) {
+      bfs = buf.length;
+      unread = len;
+      index = off;
+      buffer = buf;
+    }
+    bufsize = bfs;
+  }
+  
+  
+  public PushbackInputStream(PushbackInputStream pin) {
+    super(Valid.off(pin).forNull().getOrFail(
+        InputStream.class).getSourceInput()
+    );
+    int bfs = DEFAULT_BUFFER_SIZE;
+    if(pin.buffer != null 
+        && pin.index >= 0 
+        && pin.unread > 0 
+        && pin.unread+pin.index < pin.buffer.length) {
+      bfs = pin.buffer.length;
+      unread = pin.unread;
+      index = pin.index;
+      buffer = pin.buffer;
+    }
+    bufsize = bfs;
+  }
+  
+  
+  public InputStream getSourceInput() {
+    return in;
+  }
+  
+  
   public void unread(int b) {
     if(buffer == null) {
       buffer = new byte[bufsize];
     }
+	if(!hasUnreadAvailable()) {
+	  unread = 0;
+	  index = 0;
+	}
     buffer[unread++] = (byte) b;
   }
   
@@ -73,8 +117,9 @@ public class PushbackInputStream extends FilterInputStream {
   public void unread(byte[] bs, int off, int len) {
     Valid.off(bs).forEmpty().fail();
     Valid.off(off).forLesserThan(0).fail();
-    Valid.off(len).forLesserThan(1)
-        .and().forGreaterThan(bs.length-off).fail();
+    Valid.off(len).forNotBetween(
+        1, bs.length-off
+    ).fail();
     for(int i = off; i < len; i++) {
       unread(bs[i]);
     }
@@ -90,11 +135,15 @@ public class PushbackInputStream extends FilterInputStream {
   
   
   public int getUnreadAvailable() {
-    return Math.max(unread - index, 0);
+	//int av = Math.max(unread - index, 0);
+	//System.out.println("PushbackInputStream.getUnreadAvailable()="+ av);
+    //return av;
+	return Math.max(unread - index, 0);
   }
   
   
   public boolean hasUnreadAvailable() {
+	//System.out.println("PushbackInputStream.getUnreadAvailable()="+ getUnreadAvailable());
     boolean has = getUnreadAvailable() > 0;
     if(!has && unread > 0) {
       unread = index = 0;
@@ -117,14 +166,22 @@ public class PushbackInputStream extends FilterInputStream {
   public int read(byte[] bs, int off, int len) throws IOException {
     Valid.off(bs).forEmpty().fail();
     Valid.off(off).forLesserThan(0).fail();
-    Valid.off(len)
-        .forNotBetween(1, bs.length-off)
-        .fail();
-    int ix = off;
-    while(hasUnreadAvailable()) {
-      bs[ix++] = buffer[index++];
-    }
-    return ix + super.read(bs, ix, len-ix);
+    Valid.off(len).forNotBetween(
+        1, bs.length-off
+    ).fail();
+	int av = getUnreadAvailable();
+	//System.out.println("\nPushbackInputStream.read: unread="+ av);
+	int read = 0;
+	if(av > 0) {
+	  //System.out.println("PushbackInputStream.read: content=["+ new UTF8String(buffer, 0, av)+ "]");
+	  read = Math.min(av, len);
+	  System.arraycopy(buffer, index, bs, off, Math.min(av, len));
+	  index += read;
+	}
+	if(len-read > 0) {
+	  read += super.read(bs, off+read, len-read);
+	}
+    return read;
   }
   
   

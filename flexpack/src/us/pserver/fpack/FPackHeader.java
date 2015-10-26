@@ -42,7 +42,13 @@ public class FPackHeader {
   
   private long size;
   
-  private List<FPackEncoding> enclist;
+  
+  protected FPackHeader() {
+    name = null;
+    position = 0;
+    size = 0;
+    
+  }
   
   
   public FPackHeader(String name) {
@@ -50,7 +56,6 @@ public class FPackHeader {
         .getOrFail("Invalid name: ");
     position = 0;
     size = 0;
-    enclist = new LinkedList<>();
   }
   
   
@@ -59,7 +64,6 @@ public class FPackHeader {
         .getOrFail("Invalid name: ");
     position = pos;
     this.size = size;
-    enclist = new LinkedList<>();
   }
 
 
@@ -96,19 +100,6 @@ public class FPackHeader {
   }
 
 
-  public List<FPackEncoding> getEncodingList() {
-    return enclist;
-  }
-
-
-  public FPackHeader addEncoding(FPackEncoding encoding) {
-    if(encoding != null && !enclist.contains(encoding)) {
-      enclist.add(encoding);
-    }
-    return this;
-  }
-  
-  
   private static String findValue(String str, String name, String token) {
     int is = str.indexOf(name);
     is = str.indexOf(":", is);
@@ -125,8 +116,7 @@ public class FPackHeader {
     if(str == null || str.isEmpty()
         || !str.contains("name")
         || !str.contains("position")
-        || !str.contains("size")
-        || !str.contains("encoding")) {
+        || !str.contains("size")) {
       return null;
     }
     FPackHeader hd = new FPackHeader(
@@ -134,16 +124,8 @@ public class FPackHeader {
         .setPosition(Long.parseLong(
             findValue(str, "position", ","))
         ).setSize(Long.parseLong(
-            findValue(str, "size", ","))
+            findValue(str, "size", "}"))
         );
-    String slist = findValue(str, "encoding", "]").substring(1);
-    System.out.println("* slist = "+ slist);
-    String[] ss = slist.split(",");
-    for(int i = 0; i < ss.length; i++) {
-      hd.addEncoding(FPackEncoding
-          .fromID(Integer.parseInt(ss[i]))
-      );
-    }
     return hd;
   }
   
@@ -156,15 +138,8 @@ public class FPackHeader {
         .append("\",\"position\":")
         .append(position)
         .append(",\"size\":")
-        .append(size)
-        .append(",\"encoding\":[");
-    for(int i = 0; i < enclist.size(); i++) {
-      sb.append(enclist.get(i).getID());
-      if(i < enclist.size()-1) {
-        sb.append(",");
-      }
-    }
-    return sb.append("]}").toString();
+        .append(size).append("}");
+    return sb.toString();
   }
   
   
@@ -174,16 +149,13 @@ public class FPackHeader {
     byte[] bs = new UTF8String(
         this.toString()).getBytes();
     out.write(bs);
-    new FPackFooter(bs.length).write(out);
   }
   
   
   
   public static void main(String[] args) throws IOException {
     FPackHeader hd = new FPackHeader("header")
-        .setPosition(52).setSize(120)
-        .addEncoding(FPackEncoding.LZMA)
-        .addEncoding(FPackEncoding.CRYPT);
+        .setPosition(52).setSize(120);
     String tostr = hd.toString();
     System.out.println("* header.toString()  : "+ tostr);
     hd = FPackHeader.fromString(tostr);

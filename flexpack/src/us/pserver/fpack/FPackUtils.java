@@ -21,13 +21,10 @@
 
 package us.pserver.fpack;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.zip.GZIPOutputStream;
-import us.pserver.cdr.crypt.CryptUtils;
-import us.pserver.cdr.lzma.LzmaStreamFactory;
-import us.pserver.streams.ProtectedOutputStream;
+import us.pserver.tools.UTF8String;
 import us.pserver.valid.Valid;
 
 /**
@@ -37,50 +34,28 @@ import us.pserver.valid.Valid;
 public abstract class FPackUtils {
 
   
-  public static final int BLOCK_SIZE = 128;
-  
-  
   public static final int BUFFER_SIZE = 4096;
   
   
-  public static final String ENTRY_END_STRING = "#######\n";
+  public static final UTF8String ENTRY_END = new UTF8String("#######\n");
   
   
-  public static final byte[] ENTRY_END_BYTES = {35, 35, 35, 35, 35, 35, 35, 10};
-  
-  
-  protected static OutputStream build(FPackEntry entry, OutputStream out) throws IOException {
-    Valid.off(out).forNull()
-        .fail(OutputStream.class);
-    Valid.off(entry).forNull().fail(FPackEntry.class);
-    OutputStream eout = null;
-    if(!entry.getEncodingList().isEmpty()) {
-      eout = new ProtectedOutputStream(out);
+  public static long connect(InputStream in, OutputStream out, int bufsize) throws IOException {
+    Valid.off(in).forNull().fail(InputStream.class);
+    Valid.off(out).forNull().fail(OutputStream.class);
+    if(bufsize <= 0) bufsize = BUFFER_SIZE;
+    int read = 0;
+    byte[] buf = new byte[bufsize];
+    long count = 0;
+    while(true) {
+      read = in.read(buf);
+      if(read == -1) break;
+      count += read;
+	  //System.out.println("\n* connect.readed("+ read+ "): '"+ new UTF8String(buf)+ "'");
+      out.write(buf, 0, read);
     }
-    for(int i = 0; i < entry.getEncodingList().size(); i++) {
-      FPackEncoding enc = entry.getEncodingList().get(i);
-      switch(enc) {
-        case CRYPT:
-          if(entry.getCryptKey() != null) {
-            eout = CryptUtils.createCipherOutputStream(
-                new BufferedOutputStream(eout), 
-                entry.getCryptKey()
-            );
-          }
-          break;
-        case GZIP:
-          eout = new GZIPOutputStream(
-              new BufferedOutputStream(eout)
-          );
-          break;
-        case LZMA:
-          eout = LzmaStreamFactory.createLzmaOutput(
-              new BufferedOutputStream(eout)
-          );
-          break;
-      }
-    }
-    return eout;
+    out.flush();
+    return count;
   }
   
   

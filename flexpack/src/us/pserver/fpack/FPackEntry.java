@@ -27,8 +27,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import us.pserver.cdr.crypt.CryptAlgorithm;
-import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.tools.UTF8String;
 import us.pserver.valid.Valid;
 
@@ -39,24 +37,29 @@ import us.pserver.valid.Valid;
 public class FPackEntry extends FPackHeader {
 
   
-  private final Map<String, Object> values;
-  
-  private String key;
-  
-  private transient CryptKey crypt;
+  private Map<String, Object> values;
   
   private transient byte[] buffer;
+  
+  
+  protected FPackEntry() {
+    super();
+    values = new HashMap<>();
+    buffer = null;
+  }
   
   
   public FPackEntry(String name) {
     super(name);
     values = new HashMap<>();
+    buffer = null;
   }
   
   
   public FPackEntry(String name, long pos, long size) {
     super(name, pos, size);
     values = new HashMap<>();
+    buffer = null;
   }
   
   
@@ -87,23 +90,6 @@ public class FPackEntry extends FPackHeader {
   }
 
 
-  public CryptKey getCryptKey() {
-    if(crypt == null && key != null) {
-      crypt = CryptKey.fromString(key);
-    }
-    return crypt;
-  }
-
-
-  public FPackEntry setCryptKey(CryptKey key) {
-    this.crypt = key;
-    if(crypt != null)
-      this.key = crypt.toString();
-    buffer = null;
-    return this;
-  }
-  
-  
   public int getWriteSize() {
     if(buffer == null) {
       ByteArrayOutputStream bos = 
@@ -152,17 +138,14 @@ public class FPackEntry extends FPackHeader {
           JsonWriter.objectToJson(this)
       ).getBytes();
       out.write(bs);
-      new FPackFooter(bs.length).write(out);
+      out.write(FPackUtils.ENTRY_END.getBytes());
+      out.flush();
     }
   }
   
   
   public static void main(String[] args) throws IOException {
     FPackEntry entry = new FPackEntry("some entry name");
-    entry.setCryptKey(
-        CryptKey.createWithUnsecurePasswordIV(
-            "123456", CryptAlgorithm.AES_CBC_PKCS5)
-    );
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     entry.write(bos);
     System.out.println("* entry.length="+ bos.size());

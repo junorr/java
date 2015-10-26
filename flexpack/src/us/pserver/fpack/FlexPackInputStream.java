@@ -29,6 +29,8 @@ import java.io.InputStream;
 import us.pserver.streams.BulkStoppableInputStream;
 import us.pserver.streams.PushbackInputStream;
 import us.pserver.tools.UTF8String;
+import us.pserver.valid.Valid;
+import us.pserver.valid.ValidChecked;
 
 /**
  *
@@ -38,9 +40,13 @@ public class FlexPackInputStream extends FilterInputStream {
 
   private PushbackInputStream pin;
   
+  private BulkStoppableInputStream bulk;
+  
   private FPackFileHeader filehd;
   
-  private boolean headers;
+  private boolean headers, nomore;
+  
+  private long readCount;
   
   private FPackEntry entry;
   
@@ -48,6 +54,9 @@ public class FlexPackInputStream extends FilterInputStream {
   public FlexPackInputStream(InputStream in) {
     super(in);
     pin = new PushbackInputStream(in);
+	bulk = null;
+    readCount = 0;
+    nomore = false;
     try {
       headers = pin.read() == 1;
     } catch(IOException e) {
@@ -56,30 +65,85 @@ public class FlexPackInputStream extends FilterInputStream {
   }
   
   
+  public long getReadCount() {
+    return readCount;
+  }
+  
+  
   private byte[] readNextEntry() throws IOException {
     BulkStoppableInputStream bin = 
         new BulkStoppableInputStream(
-            pin, FPackUtils.ENTRY_END_BYTES, null
+            pin, FPackUtils.ENTRY_END.getBytes(), null
         );
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    byte[] block = new byte[FPackUtils.BLOCK_SIZE];
-    int read = 0;
-    while(true) {
-      read = bin.read(block);
-      if(read == -1) break;
-      bos.write(block, 0, read);
-    }
+    long count = FPackUtils.connect(bin, bos, 0);
+    nomore = count < 1;
+    readCount += count;
     return bos.toByteArray();
+  }
+  
+  
+  public FPackFileHeader getFileHeader() {
+    return filehd;
   }
   
   
   public FPackEntry getNextEntry() throws IOException {
     byte[] bes = readNextEntry();
+    if(nomore || bes == null || bes.length < 1) {
+      return null;
+    }
     if(entry == null && headers) {
       filehd = (FPackFileHeader) JsonReader.jsonToJava(
           new UTF8String(bes).toString()
       );
     }
+    if(filehd != null && filehd.hasNext()) {
+      long pos = filehd.next().getPosition();
+      pin.skip(pos - readCount);
+      bes = readNextEntry();
+    }
+    entry = (FPackEntry) JsonReader.jsonToJava(
+        new UTF8String(bes).toString()
+    );
+	if(entry != null) {
+	  bulk = new BulkStoppableInputStream(
+		  pin, FPackUtils.ENTRY_END.getBytes(), null
+	  );
+	}
+    return entry;
+  }
+  
+  
+  @Override
+  public int read(byte[] bs, int off, int len) throws IOException {
+    Valid.off(bs).forEmpty().fail();
+    Valid.off(off).forLesserThan(0).fail();
+    Valid.off(len).forNotBetween(
+        1, bs.length-off
+    ).fail();
+    ValidChecked.<FPackEntry,IOException>off(
+        entry, m->new IOException(m))
+        .forNull().fail("No entry selected. "
+            + "Call getNextEntry() first");
+    return bulk.read(bs, off, len);
+  }
+  
+  
+  @Override
+  public int read(byte[] bs) throws IOException {
+    return read(Valid.off(bs)
+        .forNull().getOrFail(), 0, bs.length
+    );
+  }
+  
+  
+  @Override
+  public int read() throws IOException {
+    byte[] bs = new byte[1];
+    int read = read(bs);
+    if(read != -1) read = bs[0];
+    return read;
   }
   
 }
