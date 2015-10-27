@@ -26,8 +26,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import us.pserver.streams.BulkStoppableInputStream;
 import us.pserver.streams.PushbackInputStream;
+import us.pserver.streams.SearchableInputStream;
 import us.pserver.tools.UTF8String;
 import us.pserver.valid.Valid;
 import us.pserver.valid.ValidChecked;
@@ -40,7 +40,7 @@ public class FlexPackInputStream extends FilterInputStream {
 
   private PushbackInputStream pin;
   
-  private BulkStoppableInputStream bulk;
+  private SearchableInputStream sin;
   
   private FPackFileHeader filehd;
   
@@ -54,7 +54,7 @@ public class FlexPackInputStream extends FilterInputStream {
   public FlexPackInputStream(InputStream in) {
     super(in);
     pin = new PushbackInputStream(in);
-	bulk = null;
+    sin = null;
     readCount = 0;
     nomore = false;
     try {
@@ -71,10 +71,9 @@ public class FlexPackInputStream extends FilterInputStream {
   
   
   private byte[] readNextEntry() throws IOException {
-    BulkStoppableInputStream bin = 
-        new BulkStoppableInputStream(
-            pin, FPackUtils.ENTRY_END.getBytes(), null
-        );
+    SearchableInputStream bin = new SearchableInputStream(
+            pin, FPackUtils.ENTRY_END.getBytes()
+    );
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     long count = FPackUtils.connect(bin, bos, 0);
     nomore = count < 1;
@@ -107,8 +106,8 @@ public class FlexPackInputStream extends FilterInputStream {
         new UTF8String(bes).toString()
     );
 	if(entry != null) {
-	  bulk = new BulkStoppableInputStream(
-		  pin, FPackUtils.ENTRY_END.getBytes(), null
+	  sin = new SearchableInputStream(
+		  pin, FPackUtils.ENTRY_END.getBytes()
 	  );
 	}
     return entry;
@@ -126,7 +125,7 @@ public class FlexPackInputStream extends FilterInputStream {
         entry, m->new IOException(m))
         .forNull().fail("No entry selected. "
             + "Call getNextEntry() first");
-    return bulk.read(bs, off, len);
+    return sin.read(bs, off, len);
   }
   
   
