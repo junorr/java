@@ -81,20 +81,6 @@ public abstract class StreamUtils {
   public static int BUFFER_SIZE = 4096;
   
   
-  public static BulkStoppableInputStream createStoppable(InputStream in, byte[] stopOn, final StreamResult setToken, boolean consumeAndClose) {
-    return new BulkStoppableInputStream(in, stopOn, s->{
-      try {
-        if(consumeAndClose) {
-          StreamUtils.consume(s.getInputStream());
-          s.close();
-        }
-        if(setToken != null && s.isStopped()) 
-          setToken.setToken(new UTF8String(stopOn).toString());
-      } catch(IOException e) {}
-    });
-  }
-  
-  
   /**
    * Transfere o conteúdo entre dois streams até final
    * ou até encontrar os bytes relativos ao fim de transmissão 
@@ -124,7 +110,9 @@ public abstract class StreamUtils {
   public static long transferUntilEOF(InputStream in, OutputStream out) throws IOException {
     Valid.off(in).forNull().fail(InputStream.class);
     Valid.off(out).forNull().fail(OutputStream.class);
-    return transfer(createStoppable(in, BYTES_EOF, null, true), out);
+    return transfer(new SearchableInputStream(
+        new PushbackInputStream(in), BYTES_EOF), out
+    );
   }
   
   

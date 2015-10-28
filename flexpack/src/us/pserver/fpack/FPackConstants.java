@@ -21,42 +21,19 @@
 
 package us.pserver.fpack;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import us.pserver.tools.UTF8String;
-import us.pserver.valid.Valid;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  */
-public abstract class FPackUtils {
+public abstract class FPackConstants {
 
   
   public static final int BUFFER_SIZE = 4096;
   
   
   public static final UTF8String ENTRY_END = new UTF8String("#######\n");
-  
-  
-  public static long connect(InputStream in, OutputStream out, int bufsize) throws IOException {
-    Valid.off(in).forNull().fail(InputStream.class);
-    Valid.off(out).forNull().fail(OutputStream.class);
-    if(bufsize <= 0) bufsize = BUFFER_SIZE;
-    int read = 0;
-    byte[] buf = new byte[bufsize];
-    long count = 0;
-    while(true) {
-      read = in.read(buf);
-      if(read == -1) break;
-      count += read;
-	  //System.out.println("\n* connect.readed("+ read+ "): '"+ new UTF8String(buf)+ "'");
-      out.write(buf, 0, read);
-    }
-    out.flush();
-    return count;
-  }
   
   
 }

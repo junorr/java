@@ -65,7 +65,7 @@ public class FPackEntryContent {
     Valid.off(out).forNull()
         .fail(OutputStream.class);
     int read = 0;
-    byte[] buff = new byte[FPackUtils.BUFFER_SIZE];
+    byte[] buff = new byte[FPackConstants.BUFFER_SIZE];
     while(true) {
       read = input.read(buff);
       if(read == -1) break;

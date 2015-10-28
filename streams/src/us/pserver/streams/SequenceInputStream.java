@@ -78,6 +78,14 @@ public class SequenceInputStream extends InputStream {
       return count++;
     }
   }
+  
+  
+  public SequenceInputStream restart() {
+    synchronized(SYNC) {
+      count = 0;
+    }
+    return this;
+  }
 
 
   @Override

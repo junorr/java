@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import us.pserver.streams.PushbackInputStream;
 import us.pserver.streams.SearchableInputStream;
+import us.pserver.streams.StreamConnector;
 import us.pserver.tools.UTF8String;
 import us.pserver.valid.Valid;
 import us.pserver.valid.ValidChecked;
@@ -71,11 +72,11 @@ public class FlexPackInputStream extends FilterInputStream {
   
   
   private byte[] readNextEntry() throws IOException {
-    SearchableInputStream bin = new SearchableInputStream(
-            pin, FPackUtils.ENTRY_END.getBytes()
+    SearchableInputStream sin = new SearchableInputStream(
+            pin, FPackConstants.ENTRY_END.getBytes()
     );
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    long count = FPackUtils.connect(bin, bos, 0);
+    long count = new StreamConnector(sin, bos).connect();
     nomore = count < 1;
     readCount += count;
     return bos.toByteArray();
@@ -105,11 +106,11 @@ public class FlexPackInputStream extends FilterInputStream {
     entry = (FPackEntry) JsonReader.jsonToJava(
         new UTF8String(bes).toString()
     );
-	if(entry != null) {
-	  sin = new SearchableInputStream(
-		  pin, FPackUtils.ENTRY_END.getBytes()
-	  );
-	}
+    if(entry != null) {
+      sin = new SearchableInputStream(
+        pin, FPackConstants.ENTRY_END.getBytes()
+      );
+    }
     return entry;
   }
   

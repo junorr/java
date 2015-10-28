@@ -34,11 +34,11 @@ import us.pserver.valid.Valid;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 19/06/2015
  */
-public class StoppableInputStream extends FilterInputStream {
+public class TrimmedSearchableInputStream extends FilterInputStream {
   
   private final InputStream source;
   
-  private Consumer<StoppableInputStream> action;
+  private Consumer<TrimmedSearchableInputStream> action;
   
   private final byte[] stopFactor;
   
@@ -49,12 +49,12 @@ public class StoppableInputStream extends FilterInputStream {
   private final AtomicLong count;
   
   
-  public StoppableInputStream(InputStream src, final byte[] stopOn) {
+  public TrimmedSearchableInputStream(InputStream src, final byte[] stopOn) {
     this(src, stopOn, null);
   }
   
   
-  public StoppableInputStream(InputStream src, final byte[] stopOn, Consumer<StoppableInputStream> cs) {
+  public TrimmedSearchableInputStream(InputStream src, final byte[] stopOn, Consumer<TrimmedSearchableInputStream> cs) {
     super(src);
     Valid.off(src).forNull().fail(InputStream.class);
     Valid.off(stopOn).forEmpty().fail("Invalid stop content");

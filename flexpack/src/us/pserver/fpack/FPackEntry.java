@@ -138,7 +138,7 @@ public class FPackEntry extends FPackHeader {
           JsonWriter.objectToJson(this)
       ).getBytes();
       out.write(bs);
-      out.write(FPackUtils.ENTRY_END.getBytes());
+      out.write(FPackConstants.ENTRY_END.getBytes());
       out.flush();
     }
   }

@@ -76,7 +76,7 @@ public class FlexPackOutputStream extends FilterOutputStream {
   
   private void writeFooter() throws IOException {
     if(entry != null && size > 0) {
-      out.write(FPackUtils.ENTRY_END.getBytes());
+      out.write(FPackConstants.ENTRY_END.getBytes());
       out.flush();
       size = 0;
     }

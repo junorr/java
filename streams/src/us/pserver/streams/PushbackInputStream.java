@@ -169,18 +169,18 @@ public class PushbackInputStream extends FilterInputStream {
     Valid.off(len).forNotBetween(
         1, bs.length-off
     ).fail();
-	int av = getUnreadAvailable();
-	//System.out.println("\nPushbackInputStream.read: unread="+ av);
-	int read = 0;
-	if(av > 0) {
-	  //System.out.println("PushbackInputStream.read: content=["+ new UTF8String(buffer, 0, av)+ "]");
-	  read = Math.min(av, len);
-	  System.arraycopy(buffer, index, bs, off, Math.min(av, len));
-	  index += read;
-	}
-	if(len-read > 0) {
-	  read += super.read(bs, off+read, len-read);
-	}
+  	int av = getUnreadAvailable();
+    //System.out.println("\nPushbackInputStream.read: unread="+ av);
+    int read = 0;
+    if(av > 0) {
+      //System.out.println("PushbackInputStream.read: content=["+ new UTF8String(buffer, 0, av)+ "]");
+      read = Math.min(av, len);
+      System.arraycopy(buffer, index, bs, off, Math.min(av, len));
+      index += read;
+    }
+    if(len-read > 0) {
+      read += super.read(bs, off+read, len-read);
+    }
     return read;
   }
   

@@ -28,8 +28,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import us.pserver.fpack.FPackEntry;
-import us.pserver.fpack.FPackUtils;
 import us.pserver.fpack.FlexPackInputStream;
+import us.pserver.streams.StreamConnector;
 
 /**
  *
@@ -44,16 +44,16 @@ public class TestFPackInputStream {
         Files.newInputStream(pi, 
             StandardOpenOption.READ)
     );
-	while(true) {
-	  FPackEntry ent = fin.getNextEntry();
-	  if(ent == null) break;
-      System.out.println("* entry = "+ JsonWriter.objectToJson(ent));
-	  System.out.println("----------------------");
-	  FPackUtils.connect(fin, System.out, 8);
-	  System.out.flush();
-	}
+    StreamConnector sc = new StreamConnector(fin, System.out);
+    while(true) {
+      FPackEntry ent = fin.getNextEntry();
+      if(ent == null) break;
+        System.out.println("* entry = "+ JsonWriter.objectToJson(ent));
+      System.out.println("----------------------");
+      sc.connect(ent.getSize());
+    }
     fin.close();
-	System.out.flush();
+    System.out.flush();
   }
   
 }
