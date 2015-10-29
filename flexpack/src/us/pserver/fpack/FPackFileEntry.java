@@ -6,11 +6,13 @@
 package us.pserver.fpack;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.DosFileAttributes;
@@ -19,6 +21,8 @@ import java.nio.file.attribute.GroupPrincipal;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.UserPrincipal;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -69,6 +73,7 @@ public class FPackFileEntry extends FPackEntry {
     );
     path = p;
     this.put(PATH, path.toAbsolutePath().toString());
+    this.readPathAttributes();
   }
   
   
@@ -145,29 +150,69 @@ public class FPackFileEntry extends FPackEntry {
   }
   
   
-  public int getPosixPermissions() {
+  public String getPosixPermissionsCode() {
     if(!this.getValues().containsKey(POSIX_PERMISSIONS))
-      return -1;
-    return (int) this.get(POSIX_PERMISSIONS);
+      return null;
+    return this.get(POSIX_PERMISSIONS).toString();
   }
   
   
-  public Set<PosixFilePermission> getPosixPermissions(int perms) {
-    String sperm = String.valueOf(perms);
+  public Set<PosixFilePermission> getPosixPermissionsSet() {
+    String perms = getPosixPermissionsCode();
+    if(perms == null) {
+      return Collections.EMPTY_SET;
+    }
     byte owner = Byte.parseByte(
-        String.valueOf(sperm.charAt(0))
+        String.valueOf(perms.charAt(0))
     );
     byte group = Byte.parseByte(
-        String.valueOf(sperm.charAt(1))
+        String.valueOf(perms.charAt(1))
     );
     byte others = Byte.parseByte(
-        String.valueOf(sperm.charAt(2))
+        String.valueOf(perms.charAt(2))
     );
     List<PosixFilePermission> lperm = new LinkedList<>();
     parseOwnerPermission(owner, lperm);
     parseGroupPermission(group, lperm);
     parseOthersPermission(others, lperm);
     return new HashSet<PosixFilePermission>(lperm);
+  }
+  
+  
+  public String getPosixPermissionsString() {
+    String perms = getPosixPermissionsCode();
+    if(perms == null) {
+      return null;
+    }
+    byte owner = Byte.parseByte(
+        String.valueOf(perms.charAt(0))
+    );
+    byte group = Byte.parseByte(
+        String.valueOf(perms.charAt(1))
+    );
+    byte others = Byte.parseByte(
+        String.valueOf(perms.charAt(2))
+    );
+    return new StringBuilder()
+        .append(permToString(owner))
+        .append(permToString(group))
+        .append(permToString(others))
+        .toString();
+  }
+  
+  
+  public List<FPackFileEntry> listDirectory() {
+    if(isFile()) return Collections.EMPTY_LIST;
+    List<FPackFileEntry> list = new LinkedList<>();
+    try {
+      Files.list(path).forEach(
+          p->list.add(new FPackFileEntry(p))
+      );
+    }
+    catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+    return list;
   }
   
   
@@ -203,8 +248,7 @@ public class FPackFileEntry extends FPackEntry {
       }
       if(this.getValues().containsKey(POSIX_PERMISSIONS)) {
         Files.setPosixFilePermissions(path, 
-            this.getPosixPermissions(
-                this.getPosixPermissions())
+            this.getPosixPermissionsSet()
         );
       }
     }
@@ -223,38 +267,54 @@ public class FPackFileEntry extends FPackEntry {
   }
   
   
-  public void readPathAttributes() throws IOException {
-    BasicFileAttributes bat = Files.getFileAttributeView(
-        path, BasicFileAttributeView.class
-    ).readAttributes();
-    this.put(LAST_MOD_TIME, bat.lastModifiedTime().toMillis());
-    this.put(CREATION_TIME, bat.creationTime().toMillis());
-    this.put(DIRECTORY, bat.isDirectory());
-    this.put(OWNER, Files.getOwner(path).getName());
-    this.setSize(Files.size(path));
-    if(OS.isUnix() || OS.isMacOS()) {
-      PosixFileAttributes pat = Files.readAttributes(
-          path, PosixFileAttributes.class
-      );
-      this.put(POSIX_GROUP, pat.group().getName());
-      StringBuilder sperm = new StringBuilder();
-      sperm.append(readOwnerPermissions(pat))
-          .append(readGroupPermissions(pat))
-          .append(readOthersPermissions(pat));
-      this.put(POSIX_PERMISSIONS, Integer.parseInt(sperm.toString()));
+  public FPackFileEntry readPathAttributes() {
+    try {
+      BasicFileAttributes bat = Files.getFileAttributeView(
+          path, BasicFileAttributeView.class
+      ).readAttributes();
+      this.put(LAST_MOD_TIME, bat.lastModifiedTime().toMillis());
+      this.put(CREATION_TIME, bat.creationTime().toMillis());
+      this.put(DIRECTORY, bat.isDirectory());
+      this.put(OWNER, Files.getOwner(path).getName());
+      this.setSize(Files.size(path));
+      if(OS.isUnix() || OS.isMacOS()) {
+        PosixFileAttributes pat = Files.readAttributes(
+            path, PosixFileAttributes.class
+        );
+        this.put(POSIX_GROUP, pat.group().getName());
+        StringBuilder sperm = new StringBuilder();
+        sperm.append(readOwnerPermissions(pat))
+            .append(readGroupPermissions(pat))
+            .append(readOthersPermissions(pat));
+        this.put(POSIX_PERMISSIONS, sperm.toString());
+      }
+      if(OS.isWindows()) {
+        DosFileAttributes dat = Files.readAttributes(
+            path, DosFileAttributes.class
+        );
+        this.put(DOS_HIDDEN, dat.isHidden());
+        this.put(DOS_READ_ONLY, dat.isReadOnly());
+      }
+    } 
+    catch(IOException e) {
+      throw new RuntimeException(e);
     }
-    if(OS.isWindows()) {
-      DosFileAttributes dat = Files.readAttributes(
-          path, DosFileAttributes.class
-      );
-      this.put(DOS_HIDDEN, dat.isHidden());
-      this.put(DOS_READ_ONLY, dat.isReadOnly());
-    }
+    return this;
+  }
+  
+  
+  public InputStream getInputStream() throws IOException {
+    Valid.off(path).forNull()
+        .or().forTest(!Files.exists(path))
+        .fail("File path does not exists: ");
+    return Files.newInputStream(path, StandardOpenOption.READ);
   }
   
   
   public void printInfo(PrintStream ps) {
-    final PrintStream out = (ps != null ? ps : System.out);
+    final PrintStream out = (
+        ps != null ? ps : System.out
+    );
     out.print("* Path.........: ");
     out.println(getPath());
     out.print("* isDirectory..: ");
@@ -274,12 +334,51 @@ public class FPackFileEntry extends FPackEntry {
     out.print("* isDosReadOnly: ");
     out.println(isDosReadOnly());
     out.print("* Posix Perms..: ");
-    out.println(getPosixPermissions());
-    Set<PosixFilePermission> perms = getPosixPermissions(getPosixPermissions());
+    out.println(getPosixPermissionsCode());
+    Set<PosixFilePermission> perms = getPosixPermissionsSet();
     perms.stream().sorted().forEach(
         p->out.println("  - "
             + p.name().toLowerCase())
         );
+  }
+  
+  
+  public void ls() {
+    this.ls(System.out, true, null);
+  }
+  
+  
+  public void ls(PrintStream ps, boolean printChilds, String prepend) {
+    final PrintStream out = (
+        ps != null ? ps : System.out
+    );
+    if(prepend != null) out.print(prepend);
+    if(isDirectory()) {
+      if(printChilds) {
+        out.printf("%s:%n", this.path.toAbsolutePath().toString());
+        this.listDirectory().stream()
+            .sorted((f1,f2)->f1.getName().compareTo(f2.getName()))
+            .forEach(f->f.ls(out, false, "  ")
+        );
+        return;
+      } else {
+        out.print('d');
+      }
+    }
+    else {
+      out.print('-');
+    }
+    out.print(getPosixPermissionsString());
+    out.print("  ");
+    out.printf("%10s", getOwnerName());
+    out.print("  ");
+    out.printf("%10s", getGroupName());
+    out.print("  ");
+    out.printf("%12s", new FileSizeFormatter().format(getSize()));
+    out.print("  ");
+    out.print(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(getLastModTime())));
+    out.print("  ");
+    out.println(getName());
   }
   
   
@@ -349,6 +448,40 @@ public class FPackFileEntry extends FPackEntry {
       return pmod;
     }
     return 0;
+  }
+  
+  
+  private String permToString(byte b) {
+    char[] perm = {'-', '-', '-'};
+    switch(b) {
+      case 1:
+        perm[0] = 'r';
+        break;
+      case 2:
+        perm[1] = 'w';
+        break;
+      case 3:
+        perm[0] = 'r';
+        perm[1] = 'w';
+        break;
+      case 4:
+        perm[2] = 'x';
+        break;
+      case 5:
+        perm[0] = 'r';
+        perm[2] = 'x';
+        break;
+      case 6:
+        perm[1] = 'w';
+        perm[2] = 'x';
+        break;
+      case 7:
+        perm[0] = 'r';
+        perm[1] = 'w';
+        perm[2] = 'x';
+        break;
+    }
+    return new String(perm);
   }
   
   

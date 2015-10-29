@@ -21,11 +21,16 @@ public class TestFPackFileEntry {
   
   public static void main(String[] args) throws IOException {
     //Path path = Paths.get("/etc/profile");
-    Path path = Paths.get("/home/juno/netmap");
+    Path path = Paths.get("/home/juno");
     FPackFileEntry fe = new FPackFileEntry(path);
     fe.readPathAttributes();
     fe.printInfo(null);
+    System.out.println();
     System.out.println(JsonWriter.objectToJson(fe));
+    System.out.println();
+    fe.ls(null, false, null);
+    System.out.println();
+    fe.ls();
   }
   
 }
