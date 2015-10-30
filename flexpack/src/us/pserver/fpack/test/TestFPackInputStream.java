@@ -28,7 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import us.pserver.fpack.FPackEntry;
-import us.pserver.fpack.FlexPackInputStream;
+import us.pserver.fpack.FPackInputStream;
 import us.pserver.streams.StreamConnector;
 
 /**
@@ -40,7 +40,7 @@ public class TestFPackInputStream {
   
   public static void main(String[] args) throws IOException {
     Path pi = Paths.get("/storage/fpack.plain.test");
-    FlexPackInputStream fin = new FlexPackInputStream(
+    FPackInputStream fin = new FPackInputStream(
         Files.newInputStream(pi, 
             StandardOpenOption.READ)
     );

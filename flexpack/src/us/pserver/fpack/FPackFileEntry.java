@@ -24,7 +24,6 @@ import java.nio.file.attribute.UserPrincipal;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -59,10 +58,13 @@ public class FPackFileEntry extends FPackEntry {
   
   private transient Path path;
   
+  private transient PosixPermissions perms;
+  
   
   protected FPackFileEntry() {
     super();
     path = null;
+    perms = null;
   }
   
   
@@ -150,54 +152,13 @@ public class FPackFileEntry extends FPackEntry {
   }
   
   
-  public String getPosixPermissionsCode() {
-    if(!this.getValues().containsKey(POSIX_PERMISSIONS))
-      return null;
-    return this.get(POSIX_PERMISSIONS).toString();
-  }
-  
-  
-  public Set<PosixFilePermission> getPosixPermissionsSet() {
-    String perms = getPosixPermissionsCode();
-    if(perms == null) {
-      return Collections.EMPTY_SET;
+  public PosixPermissions getPosixPermissions() {
+    if(perms == null && this.getValues().containsKey(POSIX_PERMISSIONS)) {
+      perms = new PosixPermissions(
+          this.get(POSIX_PERMISSIONS).toString()
+      );
     }
-    byte owner = Byte.parseByte(
-        String.valueOf(perms.charAt(0))
-    );
-    byte group = Byte.parseByte(
-        String.valueOf(perms.charAt(1))
-    );
-    byte others = Byte.parseByte(
-        String.valueOf(perms.charAt(2))
-    );
-    List<PosixFilePermission> lperm = new LinkedList<>();
-    parseOwnerPermission(owner, lperm);
-    parseGroupPermission(group, lperm);
-    parseOthersPermission(others, lperm);
-    return new HashSet<PosixFilePermission>(lperm);
-  }
-  
-  
-  public String getPosixPermissionsString() {
-    String perms = getPosixPermissionsCode();
-    if(perms == null) {
-      return null;
-    }
-    byte owner = Byte.parseByte(
-        String.valueOf(perms.charAt(0))
-    );
-    byte group = Byte.parseByte(
-        String.valueOf(perms.charAt(1))
-    );
-    byte others = Byte.parseByte(
-        String.valueOf(perms.charAt(2))
-    );
-    return new StringBuilder()
-        .append(permToString(owner))
-        .append(permToString(group))
-        .append(permToString(others))
-        .toString();
+    return perms;
   }
   
   
@@ -248,7 +209,7 @@ public class FPackFileEntry extends FPackEntry {
       }
       if(this.getValues().containsKey(POSIX_PERMISSIONS)) {
         Files.setPosixFilePermissions(path, 
-            this.getPosixPermissionsSet()
+            getPosixPermissions().getPermissionsSet()
         );
       }
     }
@@ -281,12 +242,8 @@ public class FPackFileEntry extends FPackEntry {
         PosixFileAttributes pat = Files.readAttributes(
             path, PosixFileAttributes.class
         );
-        this.put(POSIX_GROUP, pat.group().getName());
-        StringBuilder sperm = new StringBuilder();
-        sperm.append(readOwnerPermissions(pat))
-            .append(readGroupPermissions(pat))
-            .append(readOthersPermissions(pat));
-        this.put(POSIX_PERMISSIONS, sperm.toString());
+        perms = new PosixPermissions(pat.permissions());
+        this.put(POSIX_PERMISSIONS, perms.getPermissionsCode());
       }
       if(OS.isWindows()) {
         DosFileAttributes dat = Files.readAttributes(
@@ -334,9 +291,9 @@ public class FPackFileEntry extends FPackEntry {
     out.print("* isDosReadOnly: ");
     out.println(isDosReadOnly());
     out.print("* Posix Perms..: ");
-    out.println(getPosixPermissionsCode());
-    Set<PosixFilePermission> perms = getPosixPermissionsSet();
-    perms.stream().sorted().forEach(
+    out.println(getPosixPermissions().getPermissionsCode());
+    Set<PosixFilePermission> set = perms.getPermissionsSet();
+    set.stream().sorted().forEach(
         p->out.println("  - "
             + p.name().toLowerCase())
         );
@@ -368,7 +325,7 @@ public class FPackFileEntry extends FPackEntry {
     else {
       out.print('-');
     }
-    out.print(getPosixPermissionsString());
+    out.print(getPosixPermissions().getPermissionsString());
     out.print("  ");
     out.printf("%10s", getOwnerName());
     out.print("  ");
@@ -379,205 +336,6 @@ public class FPackFileEntry extends FPackEntry {
     out.print(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(getLastModTime())));
     out.print("  ");
     out.println(getName());
-  }
-  
-  
-  private byte readOwnerPermissions(PosixFileAttributes pat) throws IOException {
-    if(pat != null) {
-      byte pmod = 0;
-      byte[] pcodes = {1,2,4};
-      for(PosixFilePermission p : pat.permissions()) {
-        switch(p) {
-          case OWNER_READ:
-            pmod += pcodes[0];
-            break;
-          case OWNER_WRITE:
-            pmod += pcodes[1];
-            break;
-          case OWNER_EXECUTE:
-            pmod += pcodes[2];
-            break;
-        }
-      }
-      return pmod;
-    }
-    return 0;
-  }
-  
-  
-  private byte readGroupPermissions(PosixFileAttributes pat) throws IOException {
-    if(pat != null) {
-      byte pmod = 0;
-      byte[] pcodes = {1,2,4};
-      for(PosixFilePermission p : pat.permissions()) {
-        switch(p) {
-          case GROUP_READ:
-            pmod += pcodes[0];
-            break;
-          case GROUP_WRITE:
-            pmod += pcodes[1];
-            break;
-          case GROUP_EXECUTE:
-            pmod += pcodes[2];
-            break;
-        }
-      }
-      return pmod;
-    }
-    return 0;
-  }
-  
-  
-  private byte readOthersPermissions(PosixFileAttributes pat) throws IOException {
-    if(pat != null) {
-      byte pmod = 0;
-      byte[] pcodes = {1,2,4};
-      for(PosixFilePermission p : pat.permissions()) {
-        switch(p) {
-          case OTHERS_READ:
-            pmod += pcodes[0];
-            break;
-          case OTHERS_WRITE:
-            pmod += pcodes[1];
-            break;
-          case OTHERS_EXECUTE:
-            pmod += pcodes[2];
-            break;
-        }
-      }
-      return pmod;
-    }
-    return 0;
-  }
-  
-  
-  private String permToString(byte b) {
-    char[] perm = {'-', '-', '-'};
-    switch(b) {
-      case 1:
-        perm[0] = 'r';
-        break;
-      case 2:
-        perm[1] = 'w';
-        break;
-      case 3:
-        perm[0] = 'r';
-        perm[1] = 'w';
-        break;
-      case 4:
-        perm[2] = 'x';
-        break;
-      case 5:
-        perm[0] = 'r';
-        perm[2] = 'x';
-        break;
-      case 6:
-        perm[1] = 'w';
-        perm[2] = 'x';
-        break;
-      case 7:
-        perm[0] = 'r';
-        perm[1] = 'w';
-        perm[2] = 'x';
-        break;
-    }
-    return new String(perm);
-  }
-  
-  
-  private void parseOwnerPermission(byte perm, List<PosixFilePermission> lperm) {
-    switch(perm) {
-      case 1:
-        lperm.add(PosixFilePermission.OWNER_READ);
-        break;
-      case 2:
-        lperm.add(PosixFilePermission.OWNER_WRITE);
-        break;
-      case 3:
-        lperm.add(PosixFilePermission.OWNER_READ);
-        lperm.add(PosixFilePermission.OWNER_WRITE);
-        break;
-      case 4:
-        lperm.add(PosixFilePermission.OWNER_EXECUTE);
-        break;
-      case 5:
-        lperm.add(PosixFilePermission.OWNER_READ);
-        lperm.add(PosixFilePermission.OWNER_EXECUTE);
-        break;
-      case 6:
-        lperm.add(PosixFilePermission.OWNER_WRITE);
-        lperm.add(PosixFilePermission.OWNER_EXECUTE);
-        break;
-      case 7:
-        lperm.add(PosixFilePermission.OWNER_READ);
-        lperm.add(PosixFilePermission.OWNER_WRITE);
-        lperm.add(PosixFilePermission.OWNER_EXECUTE);
-        break;
-    }
-  }
-  
-  
-  private void parseGroupPermission(byte perm, List<PosixFilePermission> lperm) {
-    switch(perm) {
-      case 1:
-        lperm.add(PosixFilePermission.GROUP_READ);
-        break;
-      case 2:
-        lperm.add(PosixFilePermission.GROUP_WRITE);
-        break;
-      case 3:
-        lperm.add(PosixFilePermission.GROUP_READ);
-        lperm.add(PosixFilePermission.GROUP_WRITE);
-        break;
-      case 4:
-        lperm.add(PosixFilePermission.GROUP_EXECUTE);
-        break;
-      case 5:
-        lperm.add(PosixFilePermission.GROUP_READ);
-        lperm.add(PosixFilePermission.GROUP_EXECUTE);
-        break;
-      case 6:
-        lperm.add(PosixFilePermission.GROUP_WRITE);
-        lperm.add(PosixFilePermission.OWNER_EXECUTE);
-        break;
-      case 7:
-        lperm.add(PosixFilePermission.GROUP_READ);
-        lperm.add(PosixFilePermission.GROUP_WRITE);
-        lperm.add(PosixFilePermission.GROUP_EXECUTE);
-        break;
-    }
-  }
-  
-  
-  private void parseOthersPermission(byte perm, List<PosixFilePermission> lperm) {
-    switch(perm) {
-      case 1:
-        lperm.add(PosixFilePermission.OTHERS_READ);
-        break;
-      case 2:
-        lperm.add(PosixFilePermission.OTHERS_WRITE);
-        break;
-      case 3:
-        lperm.add(PosixFilePermission.OTHERS_READ);
-        lperm.add(PosixFilePermission.OTHERS_WRITE);
-        break;
-      case 4:
-        lperm.add(PosixFilePermission.OTHERS_EXECUTE);
-        break;
-      case 5:
-        lperm.add(PosixFilePermission.OTHERS_READ);
-        lperm.add(PosixFilePermission.OTHERS_EXECUTE);
-        break;
-      case 6:
-        lperm.add(PosixFilePermission.OTHERS_WRITE);
-        lperm.add(PosixFilePermission.OTHERS_EXECUTE);
-        break;
-      case 7:
-        lperm.add(PosixFilePermission.OTHERS_READ);
-        lperm.add(PosixFilePermission.OTHERS_WRITE);
-        lperm.add(PosixFilePermission.OTHERS_EXECUTE);
-        break;
-    }
   }
   
 }

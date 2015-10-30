@@ -30,7 +30,7 @@ import us.pserver.valid.Valid;
  *
  * @author Juno Roesler - juno@pserver.us
  */
-public class FlexPackOutputStream extends FilterOutputStream {
+public class FPackOutputStream extends FilterOutputStream {
   
   
   private FPackEntry entry;
@@ -40,7 +40,7 @@ public class FlexPackOutputStream extends FilterOutputStream {
   private long size, total;
   
 
-  public FlexPackOutputStream(OutputStream out) {
+  public FPackOutputStream(OutputStream out) {
     super(out);
     entry = null;
     writed = false;
@@ -54,7 +54,7 @@ public class FlexPackOutputStream extends FilterOutputStream {
   }
   
   
-  public FlexPackOutputStream putEntry(FPackEntry ent) throws IOException {
+  public FPackOutputStream putEntry(FPackEntry ent) throws IOException {
     if(entry == null) {
       out.write(0);
     }

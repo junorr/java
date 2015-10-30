@@ -29,7 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import us.pserver.fpack.FPackEntry;
-import us.pserver.fpack.FlexPackOutputStream;
+import us.pserver.fpack.FPackOutputStream;
 import us.pserver.io.OutputConnector;
 
 /**
@@ -54,7 +54,7 @@ public class TestFPackOutputStream {
         StandardOpenOption.CREATE
     );
     //System.out.println("* entry.size="+ e.getWriteSize());
-    FlexPackOutputStream fox = new FlexPackOutputStream(output);
+    FPackOutputStream fox = new FPackOutputStream(output);
     OutputConnector con = new OutputConnector(fox);
     fox.putEntry(e);
     con.connect(input);

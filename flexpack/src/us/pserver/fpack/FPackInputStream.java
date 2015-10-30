@@ -37,7 +37,7 @@ import us.pserver.valid.ValidChecked;
  *
  * @author Juno Roesler - juno@pserver.us
  */
-public class FlexPackInputStream extends FilterInputStream {
+public class FPackInputStream extends FilterInputStream {
 
   private PushbackInputStream pin;
   
@@ -52,7 +52,7 @@ public class FlexPackInputStream extends FilterInputStream {
   private FPackEntry entry;
   
   
-  public FlexPackInputStream(InputStream in) {
+  public FPackInputStream(InputStream in) {
     super(in);
     pin = new PushbackInputStream(in);
     sin = null;
