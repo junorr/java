@@ -153,6 +153,19 @@ public class PushbackInputStream extends FilterInputStream {
   
   
   @Override
+  public long skip(long s) throws IOException {
+    if(hasUnreadAvailable()) {
+      long len = Math.min(s, getUnreadAvailable());
+      if(s - len > 0) {
+        len += this.skip(s - len);
+      }
+      return len;
+    }
+    return super.skip(s);
+  }
+  
+  
+  @Override
   public int read() throws IOException {
     if(hasUnreadAvailable()) {
       return buffer[index++];

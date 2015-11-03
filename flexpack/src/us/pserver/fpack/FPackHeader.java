@@ -23,8 +23,6 @@ package us.pserver.fpack;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.LinkedList;
-import java.util.List;
 import us.pserver.tools.UTF8String;
 import us.pserver.valid.Valid;
 
@@ -38,15 +36,15 @@ public class FPackHeader {
   
   private String name;
   
-  private long position;
+  private String position;
   
-  private long size;
+  private String size;
   
   
   protected FPackHeader() {
     name = null;
-    position = 0;
-    size = 0;
+    position = long2str(0);
+    size = long2str(0);
     
   }
   
@@ -54,16 +52,39 @@ public class FPackHeader {
   public FPackHeader(String name) {
     this.name = Valid.off(name).forEmpty()
         .getOrFail("Invalid name: ");
-    position = 0;
-    size = 0;
+    position = long2str(0);
+    size = long2str(0);
   }
   
   
   public FPackHeader(String name, long pos, long size) {
     this.name = Valid.off(name).forEmpty()
         .getOrFail("Invalid name: ");
-    position = pos;
-    this.size = size;
+    position = long2str(pos);
+    this.size = long2str(size);
+  }
+  
+  
+  private String long2str(long l) {
+    StringBuilder sb = new StringBuilder()
+        .append(l);
+    int max = 19 - sb.length();
+    for(int i = 0; i < max; i++) {
+      sb.insert(0, "0");
+    }
+    return sb.toString();
+  }
+  
+  
+  private long str2long(String str) {
+    int idx = 0;
+    for(int i = 0; i < str.length(); i++) {
+      if(str.charAt(i) != '0') {
+        idx = i;
+        break;
+      }
+    }
+    return Long.parseLong(str.substring(idx));
   }
 
 
@@ -79,23 +100,23 @@ public class FPackHeader {
 
 
   public long getPosition() {
-    return position;
+    return str2long(position);
   }
 
 
   public FPackHeader setPosition(long position) {
-    this.position = position;
+    this.position = long2str(position);
     return this;
   }
 
 
   public long getSize() {
-    return size;
+    return str2long(size);
   }
 
 
   public FPackHeader setSize(long size) {
-    this.size = size;
+    this.size = long2str(size);
     return this;
   }
 
@@ -112,7 +133,7 @@ public class FPackHeader {
   }
   
   
-  public static FPackHeader fromString(String str) {
+  public static FPackHeader fromJson(String str) {
     if(str == null || str.isEmpty()
         || !str.contains("name")
         || !str.contains("position")
@@ -120,26 +141,28 @@ public class FPackHeader {
       return null;
     }
     FPackHeader hd = new FPackHeader(
-        findValue(str, "name", ",").replace("\"", ""))
-        .setPosition(Long.parseLong(
-            findValue(str, "position", ","))
-        ).setSize(Long.parseLong(
-            findValue(str, "size", "}"))
-        );
+        findValue(str, "name", ",").replace("\"", ""));
+    hd.position = findValue(str, "position", ",").replace("\"", "");
+    hd.size = findValue(str, "size", "}").replace("\"", "");
     return hd;
+  }
+  
+  
+  public String jsonHeader() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("{\"name\":\"")
+        .append(name)
+        .append("\",\"position\":\"")
+        .append(position)
+        .append("\",\"size\":\"")
+        .append(size).append("\"}");
+    return sb.toString();
   }
   
   
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("{\"name\":\"")
-        .append(name)
-        .append("\",\"position\":")
-        .append(position)
-        .append(",\"size\":")
-        .append(size).append("}");
-    return sb.toString();
+    return jsonHeader();
   }
   
   
@@ -156,9 +179,9 @@ public class FPackHeader {
   public static void main(String[] args) throws IOException {
     FPackHeader hd = new FPackHeader("header")
         .setPosition(52).setSize(120);
-    String tostr = hd.toString();
+    String tostr = hd.jsonHeader();
     System.out.println("* header.toString()  : "+ tostr);
-    hd = FPackHeader.fromString(tostr);
+    hd = FPackHeader.fromJson(tostr);
     System.out.println("* header.fromString(): "+ hd.toString());
   }
   

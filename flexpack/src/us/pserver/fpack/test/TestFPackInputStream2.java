@@ -27,7 +27,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 import us.pserver.fpack.FPackEntry;
+import us.pserver.fpack.FPackHeader;
 import us.pserver.fpack.FPackInputStream;
 import us.pserver.streams.StreamConnector;
 
@@ -35,7 +37,7 @@ import us.pserver.streams.StreamConnector;
  *
  * @author Juno Roesler - juno@pserver.us
  */
-public class TestFPackInputStream {
+public class TestFPackInputStream2 {
 
   
   public static void main(String[] args) throws IOException {
@@ -45,16 +47,17 @@ public class TestFPackInputStream {
         Files.newInputStream(pi, 
             StandardOpenOption.READ)
     );
-    StreamConnector sc = new StreamConnector(fin, System.out);
-    while(true) {
-      FPackEntry ent = fin.getNextEntry();
-      if(ent == null) {
-        break;
-      }
+    List<FPackHeader> hds = fin.getHeaders();
+    hds.forEach(System.out::println);
+    for(FPackHeader h : hds) {
+      FPackEntry e = fin.selectEntry(h);
       System.out.println("--------------------------");
-      System.out.println("* entry = "+ JsonWriter.objectToJson(ent));
-      System.out.println("--------{size="+ ent.getSize()+ "}--------");
-      sc.connect(ent.getSize());
+      System.out.println("* entry = "+ JsonWriter.objectToJson(e));
+      System.out.println("--------{size="+ e.getSize()+ "}--------");
+      StreamConnector.builder()
+          .from(fin)
+          .to(System.out)
+          .get().connect(e.getSize());
     }
     fin.close();
     System.out.flush();

@@ -19,9 +19,8 @@ public enum OS {
   public static final String NAME = System.getProperty("os.name");
   
   public static final OS CURRENT = (
-      NAME.contains("win") ? WINDOWS : (
-      NAME.contains("mac") ? MAC 
-      : UNIX)
+      NAME.toLowerCase().contains("win") ? WINDOWS : (
+      NAME.toLowerCase().contains("mac") ? MAC : UNIX)
   );
   
   

@@ -26,6 +26,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import us.pserver.streams.NullOutput;
 import us.pserver.streams.PushbackInputStream;
 import us.pserver.streams.SearchableInputStream;
 import us.pserver.streams.StreamConnector;
@@ -76,16 +78,48 @@ public class FPackInputStream extends FilterInputStream {
             pin, FPackConstants.ENTRY_END.getBytes()
     );
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    long count = new StreamConnector(sin, bos).connect();
+    long count = StreamConnector.builder()
+        .from(sin)
+        .to(bos)
+        .get()
+        .connect()
+        .getCount();
     nomore = count < 1;
-    readCount += count;
-    return bos.toByteArray();
+    if(!nomore) readCount += count;
+    byte[] ba = bos.toByteArray();
+    if(ba != null && ba.length > 0) {
+      //System.out.println("* readNextEntry: '"+ new UTF8String(ba).toString()+ "'");
+    }
+    return ba;
   }
   
   
-  public FPackFileHeader getFileHeader() {
+  public FPackFileHeader getFileHeader() throws IOException {
+    if(entry == null && headers) {
+      byte[] bes = readNextEntry();
+      filehd = (FPackFileHeader) JsonReader.jsonToJava(
+          new UTF8String(bes).toString()
+      );
+    }
     return filehd;
   }
+  
+  
+  public List<FPackHeader> getHeaders() {
+    try {
+      return getFileHeader();
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  
+  public FPackEntry selectEntry(FPackHeader fhd) throws IOException {
+    Valid.off(fhd).forNull().fail(FPackHeader.class);
+    pin.skip(Math.min(0, fhd.getPosition() - readCount));
+    return getNextEntry();
+  }
+  
   
   
   public FPackEntry getNextEntry() throws IOException {
@@ -93,14 +127,10 @@ public class FPackInputStream extends FilterInputStream {
     if(nomore || bes == null || bes.length < 1) {
       return null;
     }
-    if(entry == null && headers) {
+    if(entry == null && headers && filehd == null) {
       filehd = (FPackFileHeader) JsonReader.jsonToJava(
           new UTF8String(bes).toString()
       );
-    }
-    if(filehd != null && filehd.hasNext()) {
-      long pos = filehd.next().getPosition();
-      pin.skip(pos - readCount);
       bes = readNextEntry();
     }
     entry = (FPackEntry) JsonReader.jsonToJava(
@@ -112,6 +142,20 @@ public class FPackInputStream extends FilterInputStream {
       );
     }
     return entry;
+  }
+  
+  
+  public long consumeEntry() throws IOException {
+    SearchableInputStream sin = new SearchableInputStream(
+        pin, FPackConstants.ENTRY_END.getBytes()
+    );
+    long count = StreamConnector.builder()
+        .from(sin)
+        .to(NullOutput.out)
+        .get().connect()
+        .getCount();
+    readCount += count;
+    return count;
   }
   
   

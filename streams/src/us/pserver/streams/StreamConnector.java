@@ -25,18 +25,13 @@ public class StreamConnector implements Closeable {
   
   public static final int BUFFER_SIZE = 4096;
   
-  private InputStream in;
+  private final InputStream in;
   
-  private OutputStream out;
+  private final OutputStream out;
   
-  private int bufsize;
+  private final int bufsize;
   
-  
-  public StreamConnector() {
-    in = null;
-    out = null;
-    bufsize = BUFFER_SIZE;
-  }
+  private long count;
   
   
   public StreamConnector(InputStream in, OutputStream out) {
@@ -54,14 +49,13 @@ public class StreamConnector implements Closeable {
   }
   
   
-  public InputStream getInput() {
-    return in;
+  public static Builder builder() {
+    return new Builder();
   }
   
   
-  public StreamConnector setInput(InputStream in) {
-    this.in = in;
-    return this;
+  public InputStream getInput() {
+    return in;
   }
   
   
@@ -70,62 +64,53 @@ public class StreamConnector implements Closeable {
   }
   
   
-  public StreamConnector setOutput(OutputStream out) {
-    this.out = out;
-    return this;
-  }
-  
-  
-  public StreamConnector setBufferSize(int size) {
-    if(size > 0) bufsize = size;
-    return this;
-  }
-  
-  
   public int getBufferSize() {
     return bufsize;
   }
   
   
-  public long connect() throws IOException {
+  public long getCount() {
+    return count;
+  }
+  
+  
+  public StreamConnector connect() throws IOException {
     ValidChecked.<Object,IOException>off(in, m->new IOException(m))
         .forNull().fail(InputStream.class)
         .on(out).forNull().fail(OutputStream.class);
     ByteBuffer buffer = ByteBuffer.allocateDirect(bufsize);
     ReadableByteChannel cin = Channels.newChannel(in);
     WritableByteChannel cout = Channels.newChannel(out);
-    long total = 0;
     int read = 0;
     while(true) {
       buffer.clear();
       read = cin.read(buffer);
       if(read < 1) break;
       buffer.flip();
-      total += read;
+      count += read;
       cout.write(buffer);
     }
     buffer = null;
-    return total;
+    return this;
   }
   
   
-  public long connect(long limit) throws IOException {
+  public StreamConnector connect(long limit) throws IOException {
     ValidChecked.<Object,IOException>off(in, m->new IOException(m))
         .forNull().fail(InputStream.class)
         .on(out).forNull().fail(OutputStream.class);
     long lim = limit;
-    long total = 0;
     int read = bufsize;
     byte[] buffer = new byte[Math.min(bufsize, (int) limit)];
     while(lim > 0) {
       read = (int) Math.min(buffer.length, lim);
       read = in.read(buffer, 0, read);
       if(read < 1) break;
-      total += read;
+      count += read;
       lim -= read;
       out.write(buffer, 0, read);
     }
-    return total;
+    return this;
   }
   
   
@@ -151,6 +136,81 @@ public class StreamConnector implements Closeable {
       out.close();
     }
     return this;
+  }
+  
+  
+  public StreamConnector closeBoth() throws IOException {
+    this.close();
+    return this;
+  }
+  
+  
+  
+  
+  public static class Builder {
+    
+    private InputStream in;
+    
+    private OutputStream out;
+    
+    private int bufsize;
+    
+    
+    public Builder() {
+      in = null; out = null;
+      bufsize = BUFFER_SIZE;
+    }
+    
+    
+    public Builder from(InputStream in) {
+      this.in = Valid.off(in).forNull()
+          .getOrFail(InputStream.class);
+      return this;
+    }
+    
+    
+    public Builder to(OutputStream out) {
+      this.out = Valid.off(out).forNull()
+          .getOrFail(OutputStream.class);
+      return this;
+    }
+    
+    
+    public Builder bufferSize(int size) {
+      bufsize = Valid.off(size).forLesserThan(1)
+          .getOrFail("Invalid buffer size: ");
+      return this;
+    }
+    
+    
+    public InputStream input() {
+      return in;
+    }
+    
+    
+    public OutputStream output() {
+      return out;
+    }
+    
+    
+    public int bufferSize() {
+      return bufsize;
+    }
+    
+    
+    public Builder reset() {
+      in = null; out = null;
+      bufsize = BUFFER_SIZE;
+      return this;
+    }
+    
+    
+    public StreamConnector get() {
+      Valid.off(in).forNull().fail(InputStream.class);
+      Valid.off(out).forNull().fail(OutputStream.class);
+      return new StreamConnector(in, out, bufsize);
+    }
+    
   }
   
 }

@@ -53,7 +53,10 @@ public class CharsetString {
    */
   public CharsetString(byte[] bs, Charset cs) {
     charset = Valid.off(cs).forNull().getOrFail();
-    string = new String(Valid.off(bs).forEmpty().getOrFail(), cs);
+    string = new String(
+        Valid.off(bs).forEmpty()
+            .getOrFail("Invalid empty byte array"), cs
+    );
   }
   
   

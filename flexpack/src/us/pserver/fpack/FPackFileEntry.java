@@ -69,13 +69,24 @@ public class FPackFileEntry extends FPackEntry {
   
   
   public FPackFileEntry(Path p) {
-    super(Valid.off(p).forNull()
+    super((Valid.off(p).forNull()
         .getOrFail(Path.class)
-        .getFileName().toString()
+        .getFileName() != null 
+        ? p.getFileName().toString() 
+        : p.toString())
     );
     path = p;
     this.put(PATH, path.toAbsolutePath().toString());
     this.readPathAttributes();
+  }
+  
+  
+  public FPackHeader getHeader() {
+    return new FPackHeader(
+        this.getName(), 
+        this.getPosition(), 
+        this.getSize()
+    );
   }
   
   
@@ -291,12 +302,16 @@ public class FPackFileEntry extends FPackEntry {
     out.print("* isDosReadOnly: ");
     out.println(isDosReadOnly());
     out.print("* Posix Perms..: ");
-    out.println(getPosixPermissions().getPermissionsCode());
-    Set<PosixFilePermission> set = perms.getPermissionsSet();
-    set.stream().sorted().forEach(
-        p->out.println("  - "
-            + p.name().toLowerCase())
-        );
+    if(this.perms != null) {
+      out.println(getPosixPermissions().getPermissionsCode());
+      Set<PosixFilePermission> set = perms.getPermissionsSet();
+      set.stream().sorted().forEach(
+          p->out.println("  - "
+              + p.name().toLowerCase())
+          );
+    } else {
+      out.println("null");
+    }
   }
   
   
@@ -325,7 +340,11 @@ public class FPackFileEntry extends FPackEntry {
     else {
       out.print('-');
     }
-    out.print(getPosixPermissions().getPermissionsString());
+    if(perms != null) {
+      out.print(getPosixPermissions().getPermissionsString());
+    } else {
+      out.print("-");
+    }
     out.print("  ");
     out.printf("%10s", getOwnerName());
     out.print("  ");

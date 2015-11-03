@@ -46,10 +46,15 @@ public class FPackOutputStream extends FilterOutputStream {
     writed = false;
     size = 0;
     total = 0;
+    try {
+      out.write(0);
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
   }
   
   
-  public long getWritedSize() {
+  public long getWritedLength() {
     return total;
   }
   
@@ -76,6 +81,7 @@ public class FPackOutputStream extends FilterOutputStream {
   
   private void writeFooter() throws IOException {
     if(entry != null && size > 0) {
+      total += FPackConstants.ENTRY_END.length();
       out.write(FPackConstants.ENTRY_END.getBytes());
       out.flush();
       size = 0;

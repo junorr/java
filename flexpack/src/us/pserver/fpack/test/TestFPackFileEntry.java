@@ -21,7 +21,8 @@ public class TestFPackFileEntry {
   
   public static void main(String[] args) throws IOException {
     //Path path = Paths.get("/etc/profile");
-    Path path = Paths.get("/home/juno");
+    //Path path = Paths.get("/home/juno");
+    Path path = Paths.get("D:/");
     FPackFileEntry fe = new FPackFileEntry(path);
     fe.readPathAttributes();
     fe.printInfo(null);
