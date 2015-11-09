@@ -80,7 +80,7 @@ public class SearchableInputStream extends FilterInputStream {
       if(buf.get() == search[0]) {
         index = buf.position()-1;
         count++;
-        for(int i = 1; i < search.length; i++) {
+        for(int i = 1; i < search.length && buf.hasRemaining(); i++) {
           count += (buf.get() == search[i] ? 1 : 0);
         }
         if(count == search.length) {

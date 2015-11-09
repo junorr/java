@@ -21,51 +21,33 @@
 
 package us.pserver.zip.test;
 
-import us.pserver.zip.utils.DirScan;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
+import java.util.zip.ZipEntry;
 import us.pserver.listener.SimpleListener;
-import us.pserver.streams.IO;
-import us.pserver.zip.Zip;
+import us.pserver.zip.Unzip;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 15/08/2014
  */
-public class TestZip {
+public class TestUnzip {
+  
+  
+  public static void print(ZipEntry ze) {
+    System.out.println("* Zip ["+ ze.getName()+ "]: compressed="+ ze.getCompressedSize()+ ", size="+ ze.getSize()+ ", crc="+ ze.getCrc()+ ", isdir="+ ze.isDirectory());
+  }
 
   
   public static void main(String[] args) throws IOException {
-    Path dir = IO.p("c:/.local/testzip");
-    DirScan ds = new DirScan(dir);
-    System.out.println("* ds.scan(false):");
-    List<Path> ls = ds.scan(false);
-    ls.forEach(System.out::println);
+    Unzip uz = new Unzip();
     
-    System.out.println("------------------");
-    System.out.println("* ds.scan(true):");
-    ls = ds.scan(true);
-    ls.forEach(System.out::println);
-    /*
-    System.out.println("------------------");
-    new Zip().add("c:/.local/testzip")
-        .output("c:/.local/test.zip")
-        .addListener(new SimpleListener())
-        .run();
-    */
+    uz.input("d:/zipper.zip");
+    uz.output("d:/unzii");
     
-    System.out.println("------------------");
-    new Zip().add("c:/.local/file.txt")
-        .add("c:/.local/client.txt")
-        .add("c:/.local/remote.txt")
-        .add("c:/.local/splash.png")
-        .add("c:/.local/testzip")
-        .output("c:/.local/test.zip")
-        .addListener(new SimpleListener())
-        .run();
-    
+    uz.listEntries().forEach(TestUnzip::print);
+    uz.addListener(new SimpleListener());
+    uz.run();
   }
   
 }

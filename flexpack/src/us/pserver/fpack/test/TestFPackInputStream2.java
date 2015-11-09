@@ -42,7 +42,8 @@ public class TestFPackInputStream2 {
   
   public static void main(String[] args) throws IOException {
     //Path pi = Paths.get("/storage/fpack.plain.test");
-    Path pi = Paths.get("D:/fpack.writer");
+    //Path pi = Paths.get("D:/fpack.writer");
+    Path pi = Paths.get("/storage/fpack.writer");
     FPackInputStream fin = new FPackInputStream(
         Files.newInputStream(pi, 
             StandardOpenOption.READ)

@@ -19,45 +19,33 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.cdr.crypt.iv;
+package us.pserver.streams.test;
 
-import us.pserver.cdr.crypt.CryptAlgorithm;
-import us.pserver.cdr.crypt.CryptUtils;
-import us.pserver.cdr.crypt.Digester;
-import us.pserver.valid.Valid;
+import java.io.IOException;
+import us.pserver.streams.SearchableInputStream2;
+import us.pserver.streams.SequenceInputStream;
 
 /**
  *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 29/08/2015
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 19/06/2015
  */
-public class SecureRandomIV extends AlgorithmSizedIV {
+public class TestSearchableInputStream2 {
+
   
-  
-  public SecureRandomIV(int size) {
-    init(size);
+  public static void main(String[] args) throws IOException {
+    byte[] stop = {88, 89, 90};
+    SearchableInputStream2 sin = new SearchableInputStream2(
+        new SequenceInputStream(100), stop
+    );
+    int read = 0;
+    System.out.println("* Reading...");
+    while(true) {
+      read = sin.read();
+      if(read == -1) break;
+      System.out.println(".: "+ read);
+    }
+    System.out.println("* Done!");
   }
-  
-  
-  public SecureRandomIV(CryptAlgorithm algo) {
-    init(algo);
-  }
-  
-  
-  @Override
-  public void init(int size) {
-    Valid.off(size).forLesserThan(1).fail();
-    byte[] random = CryptUtils.randomBytes(size);
-    super.init(size, Digester.toSHA256(random));
-  }
-  
-  
-  @Override
-  public void init(CryptAlgorithm algo) {
-    Valid.off(algo).forNull().fail(CryptAlgorithm.class);
-    byte[] random = CryptUtils.randomBytes(algo.getBytesSize());
-    init(algo, Digester.toSHA256(random));
-  }
- 
   
 }

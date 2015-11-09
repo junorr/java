@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.streams;
+package us.pserver.tools.io;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -29,7 +29,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.tools.Bean;
 
 /**
@@ -52,15 +51,12 @@ public class DynamicBuffer implements Closeable {
   
   private Bean<Boolean> read;
   
-  private StreamCoderFactory coder;
-  
   
   public DynamicBuffer() {
     pages = Collections.synchronizedList(new ArrayList<ByteBuffer>());
     index = 0;
     read = new Bean<>(false);
     pageSize = DEFAULT_PAGE_SIZE;
-    coder = StreamCoderFactory.getNew();
     size = new Bean<>(0L);
   }
   
@@ -79,44 +75,6 @@ public class DynamicBuffer implements Closeable {
       index = pages.size() -1;
       return this;
     }
-  }
-  
-  
-  public DynamicBuffer setCryptCoderEnabled(boolean enabled, CryptKey key) {
-    coder.setCryptCoderEnabled(enabled, key);
-    return this;
-  }
-  
-  
-  public DynamicBuffer setGZipCoderEnabled(boolean enabled) {
-    coder.setGZipCoderEnabled(enabled);
-    return this;
-  }
-  
-  
-  public DynamicBuffer setBase64CoderEnabled(boolean enabled) {
-    coder.setBase64CoderEnabled(enabled);
-    return this;
-  }
-  
-  
-  public boolean isCryptCoderEnabled() {
-    return coder.isCryptCoderEnabled();
-  }
-  
-  
-  public boolean isGZipCoderEnabled() {
-    return coder.isGZipCoderEnabled();
-  }
-  
-  
-  public boolean isBase64CoderEnabled() {
-    return coder.isBase64CoderEnabled();
-  }
-  
-  
-  public boolean isAnyCoderEnabled() {
-    return coder.isAnyCoderEnabled();
   }
   
   
@@ -237,20 +195,6 @@ public class DynamicBuffer implements Closeable {
       positionStart();
     }
     return this;
-  }
-  
-  
-  public OutputStream getEncoderStream() throws IOException {
-    if(!coder.isAnyCoderEnabled())
-      return getOutputStream();
-    return coder.create(getOutputStream());
-  }
-  
-  
-  public InputStream getDecoderStream() throws IOException {
-    if(!coder.isAnyCoderEnabled())
-      return getInputStream();
-    return coder.create(getInputStream());
   }
   
   

@@ -21,25 +21,47 @@
 
 package us.pserver.zip.test;
 
+import us.pserver.zip.utils.DirScan;
+import java.io.IOException;
 import java.nio.file.Path;
-import us.pserver.streams.IO;
-import us.pserver.zip.utils.ZipConst;
+import java.nio.file.Paths;
+import java.util.List;
+import us.pserver.listener.SimpleListener;
+import us.pserver.zip.Zip;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 15/08/2014
  */
-public class TestZipUtils {
+public class TestZip {
 
   
-  public static void main(String[] args) {
-    Path base = IO.p("c:/.local");
-    Path path = IO.p("c:/.local/tz/.local/testzip/file.txt");
-    System.out.println("* base="+ base);
-    System.out.println("* path="+ path);
-    path = ZipConst.excludeEqualsParts(base, path);
-    System.out.println("* path="+ path);
+  public static void main(String[] args) throws IOException {
+    Path dir = Paths.get("d:/java/zipper");
+    DirScan ds = new DirScan(dir);
+    System.out.println("* ds.scan(false):");
+    List<Path> ls = ds.scan(false);
+    ls.forEach(System.out::println);
+    
+    System.out.println("------------------");
+    System.out.println("* ds.scan(true):");
+    ls = ds.scan(true);
+    ls.forEach(System.out::println);
+    /*
+    System.out.println("------------------");
+    new Zip().add("c:/.local/testzip")
+        .output("c:/.local/test.zip")
+        .addListener(new SimpleListener())
+        .run();
+    */
+    
+    System.out.println("------------------");
+    new Zip().add(dir)
+        .output("d:/zipper.zip")
+        .addListener(new SimpleListener())
+        .run();
+    
   }
   
 }

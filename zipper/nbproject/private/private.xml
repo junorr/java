@@ -3,8 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/.local/java/zipper/src/us/pserver/zip/Zipper.java</file>
-            <file>file:/C:/.local/java/zipper/src/us/pserver/zip/ZipInfo.java</file>
+            <file>file:/D:/java/zipper/src/us/pserver/zip/Main.java</file>
+            <file>file:/D:/java/zipper/src/us/pserver/zip/TextProgressBar.java</file>
+            <file>file:/D:/java/zipper/src/us/pserver/zip/ZipInfo.java</file>
+            <file>file:/D:/java/zipper/src/us/pserver/zip/Zipper.java</file>
         </group>
     </open-files>
 </project-private>

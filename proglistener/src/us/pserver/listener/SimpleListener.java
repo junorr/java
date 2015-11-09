@@ -39,15 +39,15 @@ public class SimpleListener implements ProgressListener {
   @Override
   public void update(long current) {
     size += current;
-    String end = "%\n";
+    String end = "\n";
     int np = (int) Math.round(perc() * 100.0);
     if(np > perc) {
       perc = np;
       int fill = (int) Math.round(perc()*14);
-      System.out.print(path);
-      System.out.print(": [" + rpt('=', fill)); 
+      System.out.print("[" + rpt('=', fill)); 
       System.out.print(rpt(' ', (14 - fill)));
-      System.out.print("] "+ perc+ end);
+      System.out.print("] "+ perc + "%");
+      System.out.print(" : "+ path.toString() + end);
     }
   }
   

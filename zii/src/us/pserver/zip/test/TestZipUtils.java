@@ -21,36 +21,25 @@
 
 package us.pserver.zip.test;
 
-import java.io.IOException;
-import java.util.zip.ZipEntry;
-import us.pserver.listener.SimpleListener;
-import us.pserver.zip.Unzip;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import us.pserver.zip.utils.ZipConst;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 15/08/2014
  */
-public class TestUnzip {
-  
-  
-  public static void print(ZipEntry ze) {
-    System.out.println("* Zip ["+ ze.getName()+ "]: compressed="+ ze.getCompressedSize()+ ", size="+ ze.getSize()+ ", crc="+ ze.getCrc()+ ", isdir="+ ze.isDirectory());
-  }
+public class TestZipUtils {
 
   
-  public static void main(String[] args) throws IOException {
-    Unzip uz = new Unzip();
-    
-    uz.input("c:/.local/test.zip");
-    uz.output("c:/.local");
-    
-    //uz.input("c:/.local/cp_resid.zip");
-    //uz.output("c:/.local/cp_resid.pdf");
-    
-    uz.listEntries().forEach(TestUnzip::print);
-    uz.addListener(new SimpleListener());
-    uz.run();
+  public static void main(String[] args) {
+    Path base = Paths.get("c:/.local");
+    Path path = Paths.get("c:/.local/tz/.local/testzip/file.txt");
+    System.out.println("* base="+ base);
+    System.out.println("* path="+ path);
+    path = ZipConst.excludeEqualsParts(base, path);
+    System.out.println("* path="+ path);
   }
   
 }

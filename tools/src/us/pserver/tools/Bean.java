@@ -68,6 +68,18 @@ public class Bean<T> {
   }
   
   
+  public Bean negate() {
+    if(isEmpty()) return this;
+    if(Boolean.class.isAssignableFrom(t.getClass())) {
+      t = (T)new Boolean(!(Boolean)t);
+    }
+    else if(Number.class.isAssignableFrom(t.getClass())) {
+      t = (T) new Boolean(((Number)t).intValue() == 1);
+    }
+    return this;
+  }
+  
+  
   public boolean isEmpty() {
     return t == null;
   }
@@ -117,7 +129,71 @@ public class Bean<T> {
   }
 
   
+  public Bean plus(double l) {
+    if(t != null) { 
+      if(Number.class.isAssignableFrom(t.getClass())) {
+        Number n = (Number) t;
+        if(Byte.class.isAssignableFrom(t.getClass())) {
+          while(!compareAndSwap(t, (T) new Byte((byte) (n.byteValue() + l))));
+        }
+        else if(Short.class.isAssignableFrom(t.getClass())) {
+          while(!compareAndSwap(t, (T) new Short((short) (n.shortValue() + l))));
+        }
+        else if(Integer.class.isAssignableFrom(t.getClass())) {
+          while(!compareAndSwap(t, (T) new Integer((int) (n.intValue() + l))));
+        }
+        else if(Long.class.isAssignableFrom(t.getClass())) {
+          while(!compareAndSwap(t, (T) new Long((long) (n.longValue() + l))));
+        }
+        else if(Float.class.isAssignableFrom(t.getClass())) {
+          while(!compareAndSwap(t, (T) new Float((float) (n.floatValue() + l))));
+        }
+        else if(Double.class.isAssignableFrom(t.getClass())) {
+          while(!compareAndSwap(t, (T) new Double((double) (n.doubleValue() + l))));
+        }
+      }
+      else if(Character.class.isAssignableFrom(t.getClass())) {
+        Character c = (char) (((Character)t).charValue() + l);
+        while(!compareAndSwap(t, (T) c));
+      }
+    }
+    return this;
+  }
+
+  
   public Bean sub(long l) {
+    if(t != null) { 
+      if(Number.class.isAssignableFrom(t.getClass())) {
+        Number n = (Number) t;
+        if(Byte.class.isAssignableFrom(t.getClass())) {
+          while(!compareAndSwap(t, (T) new Byte((byte) (n.byteValue() - l))));
+        }
+        else if(Short.class.isAssignableFrom(t.getClass())) {
+          while(!compareAndSwap(t, (T) new Short((short) (n.shortValue() - l))));
+        }
+        else if(Integer.class.isAssignableFrom(t.getClass())) {
+          while(!compareAndSwap(t, (T) new Integer((int) (n.intValue() - l))));
+        }
+        else if(Long.class.isAssignableFrom(t.getClass())) {
+          while(!compareAndSwap(t, (T) new Long((long) (n.longValue() - l))));
+        }
+        else if(Float.class.isAssignableFrom(t.getClass())) {
+          while(!compareAndSwap(t, (T) new Float((float) (n.floatValue() - l))));
+        }
+        else if(Double.class.isAssignableFrom(t.getClass())) {
+          while(!compareAndSwap(t, (T) new Double((double) (n.doubleValue() - l))));
+        }
+      }
+      else if(Character.class.isAssignableFrom(t.getClass())) {
+        Character c = (char) (((Character)t).charValue() - l);
+        while(!compareAndSwap(t, (T) c));
+      }
+    }
+    return this;
+  }
+
+
+  public Bean sub(double l) {
     if(t != null) { 
       if(Number.class.isAssignableFrom(t.getClass())) {
         Number n = (Number) t;

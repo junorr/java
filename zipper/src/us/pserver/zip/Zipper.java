@@ -66,7 +66,7 @@ public class Zipper {
       processExpr(path);
     }
     else if(path != null && !path.isEmpty()) {
-      paths.add(Paths.get(path));
+      paths.add(Paths.get(path).toAbsolutePath());
     }
     return this;
   }
@@ -87,7 +87,7 @@ public class Zipper {
     if(str.length() > (idx + 1))
       str = str.substring(idx+1);
     else {
-      this.add(par);
+      this.add(par.toAbsolutePath());
       return;
     }
     
@@ -265,6 +265,7 @@ public class Zipper {
       Files.delete(output);
       
     if(output.getParent() != null 
+        && output.getRoot() != null
         && !output.getRoot().equals(output.getParent()))
       Files.createDirectories(output.getParent());
     Files.createFile(output);

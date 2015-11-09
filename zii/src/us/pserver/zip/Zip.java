@@ -27,16 +27,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileTime;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import static us.pserver.chk.Checker.nullarg;
 import us.pserver.listener.ProgressContainer;
 import us.pserver.listener.ProgressListener;
-import us.pserver.streams.IO;
+import us.pserver.valid.Valid;
 
 /**
  *
@@ -89,7 +90,7 @@ public class Zip {
     
     
   public Zip add(String s) {
-    return this.add(IO.p(s));
+    return this.add(Paths.get(s));
   }
   
   
@@ -107,14 +108,14 @@ public class Zip {
     
     
   public Zip output(Path p) {
-    nullarg(Path.class, p);
+    Valid.off(p).forNull().fail(Path.class);
     out = p;
     return this;
   }
     
     
   public Zip output(String s) {
-    return this.output(IO.p(s));
+    return this.output(Paths.get(s));
   }
     
     
@@ -180,7 +181,12 @@ public class Zip {
     if(srcs.isEmpty())
       throw new IllegalStateException("Zip source not configured");
       
-    ZipOutputStream zos = new ZipOutputStream(IO.os(out));
+    ZipOutputStream zos = new ZipOutputStream(
+        Files.newOutputStream(out, 
+            StandardOpenOption.CREATE, 
+            StandardOpenOption.WRITE
+        )
+    );
     cont.setMax(ZipConst.totalSize(srcs));
     Path base = findCommonBase(srcs.get(0).getParent());
     Iterator<Path> it = srcs.iterator();
@@ -189,7 +195,7 @@ public class Zip {
       Path p = it.next();
       cont.update(p);
       zos.putNextEntry(createZipEntry(base, p));
-      InputStream is = IO.is(p);
+      InputStream is = Files.newInputStream(p, StandardOpenOption.READ);
       ZipConst.transfer(is, zos, cont);
       zos.closeEntry();
       is.close();
