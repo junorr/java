@@ -80,17 +80,28 @@ public class SearchableInputStream2 extends FilterInputStream {
   private boolean search() throws IOException {
     if(finish) return false;
     int max = Math.min(search.length - count, buffer.remaining());
+    int idx = -1;
     for(int i = 0; i < max; i++) {
-      if(buffer.get() != search[count++]) {
+      if(buffer.get() == search[count++]) {
+        if(idx < 0) idx = buffer.position();
+      } else {
         count = 0;
+        idx = -1;
       }
       if(count == search.length) {
+        if(idx >= 0) {
+          buffer.position(idx);
+          buffer.compact();
+        }
         return true;
       }
     }
     if(count > 0) {
       System.out.println("* SearchableInputStream2.count="+ count);
-      buffer.compact();
+      if(idx >= 0) {
+        buffer.position(idx);
+        buffer.compact();
+      }
     }
     else buffer.rewind();
     return false;
