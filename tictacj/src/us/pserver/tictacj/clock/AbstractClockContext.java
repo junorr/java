@@ -21,11 +21,52 @@
 
 package us.pserver.tictacj.clock;
 
+import java.io.PrintStream;
+import us.pserver.tictacj.Clock;
+import us.pserver.tictacj.ClockContext;
+import us.pserver.tictacj.SharedMemory;
+import us.pserver.tictacj.util.NotNull;
+
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 30/11/2015
  */
-public class AbstractClockContext implements ClockContext {
+public abstract class AbstractClockContext implements ClockContext {
+	
+	
+	protected Clock clock;
+	
+	protected PrintStream stdout;
+	
+	
+	protected AbstractClockContext(Clock clk) {
+		this(clk, System.out);
+	}
+	
+	
+	protected AbstractClockContext(Clock clk, PrintStream out) {
+		clock = NotNull.of(clk).getOrFail();
+		stdout = NotNull.of(out).getOrFail();
+	}
+
+
+	@Override
+	public Clock clock() {
+		return clock;
+	}
+
+
+	@Override
+	public PrintStream stdout() {
+		return stdout;
+	}
+
+
+	@Override
+	public SharedMemory sharedMemory() {
+		return new StaticSharedMemory();
+	}
 
 }

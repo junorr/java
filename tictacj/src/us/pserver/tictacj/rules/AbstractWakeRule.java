@@ -32,5 +32,5 @@ import us.pserver.tictacj.WakeRule;
 public abstract class AbstractWakeRule implements WakeRule {
 
   AbstractWakeRule() {}
-  
+	
 }

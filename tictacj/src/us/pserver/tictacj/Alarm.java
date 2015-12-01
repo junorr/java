@@ -28,7 +28,7 @@ import java.io.Serializable;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/11/2015
  */
-public interface Alarm extends Runnable, Serializable, Comparable<Alarm> {
+public interface Alarm extends Serializable, Comparable<Alarm> {
 
   public boolean isActive();
   

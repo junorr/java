@@ -23,6 +23,7 @@ package us.pserver.tictacj;
 
 import java.io.PrintStream;
 import java.util.Map;
+import org.slf4j.Logger;
 
 /**
  *
@@ -32,9 +33,11 @@ import java.util.Map;
 public interface ClockContext {
 
   public Clock clock();
+	
+	public PrintStream stdout();
   
-  public PrintStream sdtout();
+	public Logger logger(Class cls);
   
-  public Map<String,Object> sharedMemory();
+  public SharedMemory sharedMemory();
   
 }

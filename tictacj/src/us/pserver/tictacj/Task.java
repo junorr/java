@@ -22,6 +22,7 @@
 package us.pserver.tictacj;
 
 import java.io.Serializable;
+import java.util.function.Consumer;
 
 /**
  *
@@ -31,5 +32,11 @@ import java.io.Serializable;
 public interface Task extends Runnable, Serializable {
 
   public void execute(AlarmContext ctx) throws Exception;
+	
+	@Override
+	public default void run() {
+		try { this.execute(null); }
+		catch(Exception e) {}
+	}
   
 }

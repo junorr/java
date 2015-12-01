@@ -34,9 +34,14 @@ public class TimeAmountRule extends AbstractWakeRule {
 
   private DateTime dtm;
   
-  private long amount;
+  private long amount, time;
   
   private TemporalUnit unit;
+	
+	
+	public TimeAmountRule(long amount, TemporalUnit unit) {
+		this(DateTime.now(), amount, unit);
+	}
   
   
   public TimeAmountRule(DateTime start, long amount, TemporalUnit unit) {
@@ -48,22 +53,19 @@ public class TimeAmountRule extends AbstractWakeRule {
     this.dtm = NotNull.of(start).getOrFail();
     this.amount = amount;
     this.unit = NotNull.of(unit).getOrFail();
+		dtm = dtm.plus(amount, unit);
   }
   
   
   @Override
   public long resolve() {
-    long res = dtm.toTime();
-    dtm = dtm.plus(amount, unit);
-    return res;
+    return dtm.toTime();
   }
-
-
-  @Override
-  public WakeRule resolve(WakeRule rule) {
-    WakeRule res = new DateTimeRule(dtm).resolve(rule);
-    dtm = dtm.plus(amount, unit);
-    return res;
-  }
+	
+	
+	@Override
+	public TimeAmountRule reset() {
+		return new TimeAmountRule(dtm, amount, unit);
+	}
 
 }

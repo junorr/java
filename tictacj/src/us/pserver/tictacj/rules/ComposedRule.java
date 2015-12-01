@@ -61,27 +61,32 @@ public class ComposedRule extends AbstractWakeRule {
   
   public WakeRule resolveRule() {
     if(index >= rules.size()) {
-      index = 0;
-      return new DateTimeRule(DateTime.of(0));
+      index = rules.size()-1;
     }
-    return rules.get(index++);
+		return rules.get(index);
   }
 
 
   @Override
   public long resolve() {
-    long l = resolveRule().resolve();
-    //System.out.println("[ComposedRule] resolve="+ l);
-    return l;
+    return resolveRule().resolve();
   }
+	
+	
+	@Override
+	public ComposedRule reset() {
+		index++;
+		if(index >= rules.size()) {
+			ComposedRule cr = new ComposedRule();
+			rules.forEach(r->cr.addRule(r.reset()));
+			return cr;
+		}
+		else {
+			return this;
+		}
+	}
 
 
-  @Override
-  public WakeRule resolve(WakeRule rule) {
-    return resolveRule().resolve(rule);
-  }
-  
-  
   public Iterator<WakeRule> iterator() {
     return rules.iterator();
   }
@@ -104,12 +109,10 @@ public class ComposedRule extends AbstractWakeRule {
             LocalDateTime.of(2015, 12, 5, 12, 0, 10)
         ), 1, ChronoUnit.WEEKS)
     );
-    RecurrentRule rr = new RecurrentRule(cr, 6);
-    long time = 0;
-    do {
-      time = rr.resolve();
-      System.out.println("* time = "+ DateTime.of(time).toZonedDT());
-    } while(time > 0);
+    RecurrentRule rr = new RecurrentRule(cr, 3);
+		for(int i = 0; i < 5; i++) {
+			System.out.println("* time = "+ DateTime.of(rr.resolve()).toZonedDT());
+		}
   }
   
 }

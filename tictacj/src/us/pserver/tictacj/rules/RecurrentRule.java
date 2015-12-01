@@ -21,6 +21,7 @@
 
 package us.pserver.tictacj.rules;
 
+import java.time.temporal.ChronoUnit;
 import us.pserver.tictacj.WakeRule;
 import us.pserver.tictacj.util.NotNull;
 
@@ -47,6 +48,7 @@ public class RecurrentRule extends AbstractWakeRule {
   }
   
   
+	@Override
   public RecurrentRule reset() {
     return new RecurrentRule(rule, times);
   }
@@ -55,24 +57,16 @@ public class RecurrentRule extends AbstractWakeRule {
   @Override
   public long resolve() {
     long l = 0;
-    //System.out.println("[RecurrentRule] resolve{count="+ count+ ", times="+ times+ "}");
-    if(count++ < times || times <= 0) {
+    if(++count < times || times <= 0) {
       l = rule.resolve();
+			rule = rule.reset();
     }
     return (l <= 0 ? rule.resolve() : l);
   }
 
 
-  @Override
-  public WakeRule resolve(WakeRule rule) {
-    return new DateTimeRule(DateTime.of(
-        this.resolve())
-    ).resolve(rule);
-  }
-
-  
   public static void main(String[] args) {
-    WakeRule rule = new RecurrentRule(new DateTimeRule(DateTime.now()), 3);
+    WakeRule rule = new RecurrentRule(new TimeAmountRule(5, ChronoUnit.MINUTES), 3);
     for(int i = 0; i < 6; i++) {
       System.out.println(DateTime.of(rule.resolve()).toZonedDT());
     }

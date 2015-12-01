@@ -29,7 +29,7 @@ package us.pserver.tictacj;
 public interface WakeRule {
 
   public long resolve();
-  
-  public WakeRule resolve(WakeRule rule);
+	
+	public WakeRule reset();
   
 }

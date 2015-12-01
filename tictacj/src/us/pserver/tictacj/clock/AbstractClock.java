@@ -21,13 +21,16 @@
 
 package us.pserver.tictacj.clock;
 
-import java.util.Comparator;
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.slf4j.Logger;
 import us.pserver.tictacj.Alarm;
 import us.pserver.tictacj.Clock;
+import us.pserver.tictacj.ContextFactory;
+import us.pserver.tictacj.util.NotNull;
 
 /**
  *
@@ -38,38 +41,115 @@ public abstract class AbstractClock implements Clock {
 
   protected Map<String, Alarm> alarms;
   
-  protected Queue<Alarm> priority;
+  protected Queue<Alarm> queue;
+	
+	protected ContextFactory factory;
+	
+	protected Logger log;
+	
+	protected AtomicBoolean running, stopOnEmpty;
   
   
-  protected AbstractClock() {
+  protected AbstractClock(ContextFactory fact) {
     alarms = new HashMap<>();
-    priority = new PriorityQueue();
+    queue = new ArrayDeque<>();
+		factory = NotNull.of(fact).getOrFail();
+		log = factory.create(this)
+				.logger(this.getClass());
+		running = new AtomicBoolean(false);
+		stopOnEmpty = new AtomicBoolean(false);
   }
+	
+	
+	protected AbstractClock() {
+		this(new DefaultContextFactory());
+	}
+	
+	
+	public boolean isRunning() {
+		return running.get();
+	}
+	
+	
+	@Override
+	public boolean stopOnEmpty() {
+		return stopOnEmpty.get();
+	}
+	
+	
+	@Override
+	public Clock stopOnEmpty(boolean b) {
+		stopOnEmpty.getAndSet(b);
+		return this;
+	}
 
 
   @Override
   public Clock register(String name, Alarm alarm) {
     if(name != null && alarm != null) {
       alarms.put(name, alarm);
-      priority.add(alarm);
+      queue.add(alarm);
     }
     return this;
   }
+	
+	
+	protected void setPriority() {
+    if(alarms.size() != queue.size()) {
+      queue.clear();
+      alarms.values().forEach(a->{
+				if(a.isActive() 
+						&& a.at() >= System.currentTimeMillis()) {
+					queue.add(a);
+					System.out.println("[setPriority] priority.add: "+ a);
+				}
+			});
+			
+    }
+		if(stopOnEmpty() && queue.isEmpty()) {
+			this.stop();
+		}
+	}
 
 
   @Override
   public Clock start() {
-    if(alarms.size() != priority.size()) {
-      priority.clear();
-      alarms.values().forEach(a->priority.add(a));
-    }
+    setPriority();
+		running.getAndSet(true);
     return this; 
   }
 
+
+	protected void execute(Alarm a) {
+		if(a == null) return;
+		System.out.println("[execute] Thread="+ Thread.currentThread().getName());
+		this.sleep(a.at() - System.currentTimeMillis());
+		log.debug("Executing Alarm: {}", a);
+		try {
+			a.execute(factory.create(this));
+		} catch(Exception e) {
+			log.warn("AlarmError: "+ a, e);
+		}
+	}
+	
+	
+	@Override
+	public Clock stop() {
+		running.compareAndSet(true, false);
+		return this;
+	}
+	
 
   @Override
   public Map<String, Alarm> alarms() {
     return alarms;
   }
+	
+	
+	protected void sleep(long time) {
+		if(time <= 0) return;
+		try { Thread.sleep(time); } 
+		catch(InterruptedException e) {}
+	}
   
 }

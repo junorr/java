@@ -35,19 +35,25 @@ public class Logging {
    * <code>CONF_INTERNAL = "/us/pserver/log/log.properties";</code><br>
    * Default log internal properties.
    */
-  public static final String CONF_INTERNAL = "/us/pserver/log/log.properties";
+  public static final String CONF_INTERNAL = "/us/pserver/log/log4j.properties";
   
   /**
    * <code>CONF_PACKAGE = "/us/pserver/log.properties";</code><br>
    * Default log internal properties.
    */
-  public static final String CONF_PACKAGE = "/log/log.properties";
+  public static final String CONF_PACKAGE = "/log/log4j.properties";
+  
+  /**
+   * <code>CONF_PACKAGE_ALT = "/resources/log4j.properties";</code><br>
+   * Default log internal properties.
+   */
+  public static final String CONF_PACKAGE_ALT = "/log/log4j.properties";
   
   /**
    * <code>CONF_FILE = "./log.properties";</code><br>
    * Default log file properties.
    */
-  public static final String CONF_FILE = "./log.properties";
+  public static final String CONF_FILE = "./log4j.properties";
   
   private static boolean CONFIGURED = false;
   
@@ -58,11 +64,15 @@ public class Logging {
   public static void configureLogger() {
     File f = new File(CONF_FILE);
     InputStream confInput = Logging.class.getResourceAsStream(CONF_PACKAGE);
+		InputStream confAlt = Logging.class.getResourceAsStream(CONF_PACKAGE_ALT);
     if(f.exists()) {
       PropertyConfigurator.configure(f.getAbsolutePath());
     }
     else if(confInput != null) {
       PropertyConfigurator.configure(confInput);
+    }
+    else if(confAlt != null) {
+      PropertyConfigurator.configure(confAlt);
     }
     else {
       confInput = Logging.class.getResourceAsStream(CONF_INTERNAL);
@@ -70,6 +80,11 @@ public class Logging {
     }
     CONFIGURED = true;
   }
+	
+	
+	public boolean isConfigured() {
+		return CONFIGURED;
+	}
   
   
   /**

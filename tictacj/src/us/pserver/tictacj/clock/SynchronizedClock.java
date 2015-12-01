@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 import us.pserver.tictacj.Alarm;
+import us.pserver.tictacj.ContextFactory;
 
 /**
  *
@@ -34,8 +35,16 @@ import us.pserver.tictacj.Alarm;
 public abstract class SynchronizedClock extends AbstractClock {
 
   protected SynchronizedClock() {
+		super();
     alarms = Collections.synchronizedMap(new HashMap<String, Alarm>());
-    priority = new PriorityBlockingQueue<>();
+    queue = new PriorityBlockingQueue<>();
   }
+	
+	
+	protected SynchronizedClock(ContextFactory fact) {
+		super(fact);
+    alarms = Collections.synchronizedMap(new HashMap<String, Alarm>());
+    queue = new PriorityBlockingQueue<>();
+	}
   
 }

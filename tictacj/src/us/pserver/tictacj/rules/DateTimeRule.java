@@ -50,18 +50,14 @@ public class DateTimeRule extends AbstractWakeRule {
   public long resolve() {
     return dtm.toTime();
   }
+	
+	
+	@Override
+	public DateTimeRule reset() {
+		return new DateTimeRule(dtm);
+	}
 
 
-  @Override
-  public WakeRule resolve(WakeRule rule) {
-    NotNull.of(rule).fail();
-    DateTime now = DateTime.now();
-    long rl = rule.resolve() - now.toTime();
-    long lg = dtm.toTime() - now.toTime();
-    return new DateTimeRule(DateTime.of(now.toTime() + rl + lg));
-  }
-  
-  
   public static void main(String[] args) {
     DateTimeRule now = new DateTimeRule(DateTime.now());
     ZonedDateTime zdt = ZonedDateTime.now().plusDays(1);
@@ -70,8 +66,6 @@ public class DateTimeRule extends AbstractWakeRule {
     System.out.println("* now = "+ now);
     System.out.println("* tomorrow = "+ tomorrow);
     System.out.println("* after = "+ after);
-    System.out.println("* now.resolve(tomorrow) = "+ now.resolve(tomorrow));
-    System.out.println("* tomorrow.resolve(after) = "+ tomorrow.resolve(after));
   }
   
 }

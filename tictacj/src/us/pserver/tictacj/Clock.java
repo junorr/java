@@ -31,8 +31,12 @@ import java.util.Map;
 public interface Clock {
 
   public Clock register(String name, Alarm alarm);
-  
+	
   public Clock start();
+  
+	public Clock stopOnEmpty(boolean stop);
+	
+	public boolean stopOnEmpty();
   
   public Clock stop();
   
