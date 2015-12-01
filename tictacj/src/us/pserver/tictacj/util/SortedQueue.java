@@ -20,9 +20,9 @@ import java.util.Queue;
  */
 public class SortedQueue<T> implements Queue<T> {
 	
-	private List<T> list;
+	protected final List<T> list;
 	
-	private Comparator<T> comp;
+	protected Comparator<T> comp;
 	
 	
 	public SortedQueue() {
@@ -45,24 +45,28 @@ public class SortedQueue<T> implements Queue<T> {
 
 	@Override
 	public T remove() {
+    if(list.isEmpty()) return null;
 		return list.remove(0);
 	}
 
 
 	@Override
 	public T poll() {
+    if(list.isEmpty()) return null;
 		return list.remove(0);
 	}
 
 
 	@Override
 	public T element() {
+    if(list.isEmpty()) return null;
 		return list.get(0);
 	}
 
 
 	@Override
 	public T peek() {
+    if(list.isEmpty()) return null;
 		return list.get(0);
 	}
 

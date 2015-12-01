@@ -68,4 +68,10 @@ public class TimeAmountRule extends AbstractWakeRule {
 		return new TimeAmountRule(dtm, amount, unit);
 	}
 
+
+  @Override
+  public String toString() {
+    return "TimeAmountRule{" + "dtm=" + dtm + ", amount=" + amount + ", unit=" + unit + '}';
+  }
+
 }

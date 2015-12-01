@@ -90,6 +90,12 @@ public class ComposedRule extends AbstractWakeRule {
   public Iterator<WakeRule> iterator() {
     return rules.iterator();
   }
+
+
+  @Override
+  public String toString() {
+    return "ComposedRule{" + "rules=" + rules + ", index=" + index + '}';
+  }
   
   
   public static void main(String[] args) {

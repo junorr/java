@@ -7,7 +7,7 @@ package us.pserver.tictacj.clock;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import us.pserver.tictacj.Alarm;
 import us.pserver.tictacj.ContextFactory;
 
 
@@ -32,6 +32,7 @@ public class ParallelClock extends SynchronizedClock {
 		exec = Executors.newFixedThreadPool(
 				(threads < 1 ? DEFAULT_THREADS : threads)
 		);
+    
 	}
 	
 	
@@ -49,16 +50,15 @@ public class ParallelClock extends SynchronizedClock {
 	public ParallelClock start() {
 		log.info("Clock started!");
 		super.start();
-		new Thread(()-> {
+		exec.submit(()-> {
 			System.out.println("[ParallelClock] Thread="+ Thread.currentThread().getName());
 			while(running.get()) {
 				exec.submit(()->execute(queue.poll()));
-				this.setPriority();
+        if(queue.isEmpty()) this.sleep(50);
 			}
-			this.sleep(100);
 			exec.shutdownNow();
 			log.info("Clock stopped!");
-		}).start();
+		});
 		return this;
 	}
 	

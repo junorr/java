@@ -32,7 +32,7 @@ public class BasicClock extends AbstractClock {
 		super.start();
 		while(running.get()) {
 			this.execute(queue.poll());
-			this.setPriority();
+			if(queue.isEmpty()) this.sleep(50);
 		}
 		log.info("Clock stopped!");
 		return this;

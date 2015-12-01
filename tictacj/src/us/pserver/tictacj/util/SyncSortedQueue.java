@@ -5,36 +5,28 @@
  */
 package us.pserver.tictacj.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Queue;
 
 
 /**
  *
  * @author juno
  */
-public class SyncSortedQueue<T> implements Queue<T> {
-	
-	private final List<T> list;
-	
-	private Comparator<T> comp;
+public class SyncSortedQueue<T> extends SortedQueue<T> {
 	
 	
 	public SyncSortedQueue() {
-		list = new ArrayList<T>();
-		comp = null;
+		super();
 	}
 
 
 	@Override
 	public boolean add(T e) {
 		synchronized(list) {
-			return list.add(e);
+			return super.add(e);
 		}
 	}
 
@@ -42,7 +34,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public boolean offer(T e) {
 		synchronized(list) {
-			return list.add(e);
+			return super.add(e);
 		}
 	}
 
@@ -50,7 +42,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public T remove() {
 		synchronized(list) {
-			return list.remove(0);
+			return super.remove();
 		}
 	}
 
@@ -58,7 +50,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public T poll() {
 		synchronized(list) {
-			return list.remove(0);
+			return super.poll();
 		}
 	}
 
@@ -66,7 +58,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public T element() {
 		synchronized(list) {
-			return list.get(0);
+			return super.element();
 		}
 	}
 
@@ -74,23 +66,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public T peek() {
 		synchronized(list) {
-			return list.get(0);
-		}
-	}
-
-
-	@Override
-	public int size() {
-		synchronized(list) {
-			return list.size();
-		}
-	}
-
-
-	@Override
-	public boolean isEmpty() {
-		synchronized(list) {
-			return list.isEmpty();
+			return super.peek();
 		}
 	}
 
@@ -98,7 +74,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public boolean contains(Object o) {
 		synchronized(list) {
-			return list.contains(o);
+			return super.contains(o);
 		}
 	}
 
@@ -106,7 +82,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public Iterator<T> iterator() {
 		synchronized(list) {
-			return list.iterator();
+			return super.iterator();
 		}
 	}
 
@@ -114,7 +90,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public Object[] toArray() {
 		synchronized(list) {
-			return list.toArray();
+			return super.toArray();
 		}
 	}
 
@@ -122,7 +98,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public <T> T[] toArray(T[] a) {
 		synchronized(list) {
-			return list.toArray(a);
+			return super.toArray(a);
 		}
 	}
 
@@ -130,7 +106,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public boolean remove(Object o) {
 		synchronized(list) {
-			return list.remove(o);
+			return super.remove(o);
 		}
 	}
 
@@ -138,7 +114,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public boolean containsAll(Collection<?> c) {
 		synchronized(list) {
-			return list.containsAll(c);
+			return super.containsAll(c);
 		}
 	}
 
@@ -146,7 +122,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public boolean addAll(Collection<? extends T> c) {
 		synchronized(list) {
-			return list.addAll(c);
+			return super.addAll(c);
 		}
 	}
 
@@ -154,7 +130,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public boolean removeAll(Collection<?> c) {
 		synchronized(list) {
-			return list.removeAll(c);
+			return super.removeAll(c);
 		}
 	}
 
@@ -162,7 +138,7 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public boolean retainAll(Collection<?> c) {
 		synchronized(list) {
-			return list.retainAll(c);
+			return super.retainAll(c);
 		}
 	}
 
@@ -170,22 +146,15 @@ public class SyncSortedQueue<T> implements Queue<T> {
 	@Override
 	public void clear() {
 		synchronized(list) {
-			list.clear();
+			super.clear();
 		}
 	}
 	
 	
+  @Override
 	public SyncSortedQueue sort() {
 		synchronized(list) {
-			if(!list.isEmpty()) {
-				if(comp != null) {
-					Collections.sort(list, comp);
-				} else if(Comparable.class.isAssignableFrom(
-						this.peek().getClass())) {
-					List<Comparable> sort = (List<Comparable>) list;
-					Collections.sort(sort, (a,b)->a.compareTo(b));
-				}
-			}
+			super.sort();
 		}
 		return this;
 	}

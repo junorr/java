@@ -65,6 +65,12 @@ public class RecurrentRule extends AbstractWakeRule {
   }
 
 
+  @Override
+  public String toString() {
+    return "RecurrentRule{" + "rule=" + rule + ", times=" + times + ", count=" + count + '}';
+  }
+
+
   public static void main(String[] args) {
     WakeRule rule = new RecurrentRule(new TimeAmountRule(5, ChronoUnit.MINUTES), 3);
     for(int i = 0; i < 6; i++) {

@@ -21,16 +21,15 @@
 
 package us.pserver.tictacj.clock;
 
-import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import us.pserver.tictacj.Alarm;
 import us.pserver.tictacj.Clock;
 import us.pserver.tictacj.ContextFactory;
 import us.pserver.tictacj.util.NotNull;
+import us.pserver.tictacj.util.SortedQueue;
 
 /**
  *
@@ -41,7 +40,7 @@ public abstract class AbstractClock implements Clock {
 
   protected Map<String, Alarm> alarms;
   
-  protected Queue<Alarm> queue;
+  protected SortedQueue<Alarm> queue;
 	
 	protected ContextFactory factory;
 	
@@ -52,7 +51,7 @@ public abstract class AbstractClock implements Clock {
   
   protected AbstractClock(ContextFactory fact) {
     alarms = new HashMap<>();
-    queue = new ArrayDeque<>();
+    queue = new SortedQueue<>();
 		factory = NotNull.of(fact).getOrFail();
 		log = factory.create(this)
 				.logger(this.getClass());
@@ -89,6 +88,7 @@ public abstract class AbstractClock implements Clock {
     if(name != null && alarm != null) {
       alarms.put(name, alarm);
       queue.add(alarm);
+      queue.sort();
     }
     return this;
   }
@@ -104,17 +104,29 @@ public abstract class AbstractClock implements Clock {
 					System.out.println("[setPriority] priority.add: "+ a);
 				}
 			});
-			
+			queue.sort();
     }
 		if(stopOnEmpty() && queue.isEmpty()) {
 			this.stop();
 		}
 	}
+  
+  
+  protected void reschedule(Alarm a) {
+    if(a != null && a.isActive() 
+        && a.at() >= System.currentTimeMillis()) {
+      queue.add(a);
+      queue.sort();
+    }
+    if(queue.isEmpty() && stopOnEmpty()) {
+      this.stop();
+    }
+  }
 
 
   @Override
   public Clock start() {
-    setPriority();
+    this.setPriority();
 		running.getAndSet(true);
     return this; 
   }
@@ -128,8 +140,9 @@ public abstract class AbstractClock implements Clock {
 		try {
 			a.execute(factory.create(this));
 		} catch(Exception e) {
-			log.warn("AlarmError: "+ a, e);
+			log.warn("Alarm Error: "+ a, e);
 		}
+    this.reschedule(a);
 	}
 	
 	
