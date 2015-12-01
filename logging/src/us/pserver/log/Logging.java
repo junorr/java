@@ -41,7 +41,7 @@ public class Logging {
    * <code>CONF_PACKAGE = "/us/pserver/log.properties";</code><br>
    * Default log internal properties.
    */
-  public static final String CONF_PACKAGE = "/us/pserver/log.properties";
+  public static final String CONF_PACKAGE = "/log/log.properties";
   
   /**
    * <code>CONF_FILE = "./log.properties";</code><br>
