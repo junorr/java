@@ -2,27 +2,29 @@
  * Direitos Autorais Reservados (c) 2011 Juno Roesler
  * Contato: juno.rr@gmail.com
  * 
- * Esta biblioteca È software livre; vocÍ pode redistribuÌ-la e/ou modific·-la sob os
- * termos da LicenÁa P˙blica Geral Menor do GNU conforme publicada pela Free
- * Software Foundation; tanto a vers„o 2.1 da LicenÁa, ou qualquer
- * vers„o posterior.
+ * Esta biblioteca √© software livre; voc√™ pode redistribu√≠-la e/ou modific√°-la sob os
+ * termos da Licen√ßa P√∫blica Geral Menor do GNU conforme publicada pela Free
+ * Software Foundation; tanto a vers√£o 2.1 da Licen√ßa, ou qualquer
+ * vers√£o posterior.
  * 
- * Esta biblioteca È distribuÌda na expectativa de que seja ˙til, porÈm, SEM
- * NENHUMA GARANTIA; nem mesmo a garantia implÌcita de COMERCIABILIDADE
- * OU ADEQUA«√O A UMA FINALIDADE ESPECÕFICA. Consulte a LicenÁa P˙blica
+ * Esta biblioteca √© distribu√≠da na expectativa de que seja √∫til, por√©m, SEM
+ * NENHUMA GARANTIA; nem mesmo a garantia impl√≠cita de COMERCIABILIDADE
+ * OU ADEQUA√á√ÉO A UMA FINALIDADE ESPEC√çFICA. Consulte a Licen√ßa P√∫blica
  * Geral Menor do GNU para mais detalhes.
  * 
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral Menor do GNU junto
- * com esta biblioteca; se n„o, acesse 
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral Menor do GNU junto
+ * com esta biblioteca; se n√£o, acesse 
  * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html, 
  * ou escreva para a Free Software Foundation, Inc., no
- * endereÁo 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
+ * endere√ßo 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
 package us.pserver.log;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 
 /**
  * Helper class to provide useful log methods for log4j.
@@ -64,7 +66,7 @@ public class LogHelper {
   public static LogHelper off(Class cls) {
     if(cls == null)
       throw new IllegalArgumentException("Invalid log Class: "+ cls);
-    return new LogHelper(Logger.getLogger(cls));
+    return new LogHelper(Logger.getLogger(cls.getName()));
   }
   
   
@@ -83,7 +85,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper debug(String msg) {
-    return this.log(Level.DEBUG, msg);
+    log.log(Level.FINE, msg);
+		return this;
   }
   
   
@@ -96,7 +99,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper debug(String msg, Object ... args) {
-    return this.log(Level.DEBUG, msg, args);
+    log.log(Level.FINE, msg, args);
+		return this;
   }
   
   
@@ -107,7 +111,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper debug(String msg, Throwable th) {
-    return this.log(Level.DEBUG, msg, th);
+    log.log(Level.FINE, msg, th);
+		return this;
   }
   
   
@@ -117,7 +122,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper debug(Throwable th) {
-    return this.log(Level.DEBUG, th.toString(), th);
+    log.log(Level.FINE, th.toString(), th);
+		return this;
   }
   
   
@@ -127,7 +133,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper info(String msg) {
-    return this.log(Level.INFO, msg);
+    log.log(Level.INFO, msg);
+		return this;
   }
   
   
@@ -140,7 +147,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper info(String msg, Object ... args) {
-    return this.log(Level.INFO, msg, args);
+    log.log(Level.INFO, msg, args);
+		return this;
   }
   
   
@@ -151,7 +159,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper info(String msg, Throwable th) {
-    return this.log(Level.INFO, msg, th);
+    log.log(Level.INFO, msg, th);
+		return this;
   }
   
   
@@ -161,7 +170,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper info(Throwable th) {
-    return this.log(Level.INFO, th.toString(), th);
+    log.log(Level.INFO, th.toString(), th);
+		return this;
   }
   
   
@@ -171,7 +181,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper warn(String msg) {
-    return this.log(Level.WARN, msg);
+    log.log(Level.WARNING, msg);
+		return this;
   }
   
   
@@ -184,7 +195,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper warn(String msg, Object ... args) {
-    return this.log(Level.WARN, msg, args);
+    log.log(Level.WARNING, msg, args);
+		return this;
   }
   
   
@@ -195,7 +207,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper warn(String msg, Throwable th) {
-    return this.log(Level.WARN, msg, th);
+    log.log(Level.WARNING, msg, th);
+		return this;
   }
   
   
@@ -205,7 +218,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper warn(Throwable th) {
-    return this.log(Level.WARN, th.toString(), th);
+    log.log(Level.WARNING, th.toString(), th);
+		return this;
   }
   
   
@@ -215,7 +229,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper error(String msg) {
-    return this.log(Level.ERROR, msg);
+    log.log(Level.SEVERE, msg);
+		return this;
   }
   
   
@@ -228,7 +243,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper error(String msg, Object ... args) {
-    return this.log(Level.ERROR, msg, args);
+    log.log(Level.SEVERE, msg, args);
+		return this;
   }
   
   
@@ -239,7 +255,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper error(String msg, Throwable th) {
-    return this.log(Level.ERROR, msg, th);
+    log.log(Level.SEVERE, msg, th);
+		return this;
   }
   
   
@@ -249,127 +266,8 @@ public class LogHelper {
    * @return This instance of LogHelper.
    */
   public LogHelper error(Throwable th) {
-    return this.log(Level.ERROR, th.toString(), th);
-  }
-  
-  
-  /**
-   * Log a fatal message.
-   * @param msg The messge.
-   * @return This instance of LogHelper.
-   */
-  public LogHelper fatal(String msg) {
-    return this.log(Level.FATAL, msg);
-  }
-  
-  
-  /**
-   * Log a fatal message. Interpolates 
-   * arguments in the message with 
-   * <code>String.format(String, Ojbect ...)</code>.
-   * @param msg The messge.
-   * @param args Objects to interpolate in the message.
-   * @return This instance of LogHelper.
-   */
-  public LogHelper fatal(String msg, Object ... args) {
-    return this.log(Level.FATAL, msg, args);
-  }
-  
-  
-  /**
-   * Log a fatal message and a throwable error.
-   * @param msg The messge.
-   * @param th Exception to log.
-   * @return This instance of LogHelper.
-   */
-  public LogHelper fatal(String msg, Throwable th) {
-    return this.log(Level.FATAL, msg, th);
-  }
-  
-  
-  /**
-   * Log a fatal, throwable error.
-   * @param th Exception to log.
-   * @return This instance of LogHelper.
-   */
-  public LogHelper fatal(Throwable th) {
-    return this.log(Level.FATAL, th.toString(), th);
-  }
-  
-
-  /**
-   * Log a message with the specified level.
-   * @param lvl The log level.
-   * @param msg The message.
-   * @return This instance of LogHelper.
-   */
-  public LogHelper log(Level lvl, String msg) {
-    if(log.isEnabledFor(lvl)) {
-      switch(lvl.toInt()) {
-        case Level.DEBUG_INT:
-          log.debug(msg);
-          break;
-        case Level.WARN_INT:
-          log.warn(msg);
-          break;
-        case Level.ERROR_INT:
-          log.error(msg);
-          break;
-        case Level.FATAL_INT:
-          log.fatal(msg);
-          break;
-        default:
-          log.info(msg);
-          break;
-      }
-    }
-    return this;
-  }
-  
-  
-  /**
-   * Log a message and a throwable error with the specified level.
-   * @param lvl The log level.
-   * @param msg The message.
-   * @param th Exception to log.
-   * @return This instance of LogHelper.
-   */
-  public LogHelper log(Level lvl, String msg, Throwable th) {
-    if(log.isEnabledFor(lvl)) {
-      switch(lvl.toInt()) {
-        case Level.DEBUG_INT:
-          log.debug(msg, th);
-          break;
-        case Level.WARN_INT:
-          log.warn(msg, th);
-          break;
-        case Level.ERROR_INT:
-          log.error(msg, th);
-          break;
-        case Level.FATAL_INT:
-          log.fatal(msg, th);
-          break;
-        default:
-          log.info(msg, th);
-          break;
-      }
-    }
-    return this;
-  }
-  
-  
-  /**
-   * Log a message and the interpolated arguments with the specified level.
-   * @param lvl The log level.
-   * @param msg The message.
-   * @param args Interpolated arguments.
-   * @return This instance of LogHelper.
-   */
-  public LogHelper log(Level lvl, String msg, Object ... args) {
-    if(log.isEnabledFor(lvl)) {
-      log(lvl, String.format(msg, args));
-    }
-    return this;
+    log.log(Level.SEVERE, th.toString(), th);
+		return this;
   }
   
 }

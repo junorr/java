@@ -2,28 +2,32 @@
  * Direitos Autorais Reservados (c) 2011 Juno Roesler
  * Contato: juno.rr@gmail.com
  * 
- * Esta biblioteca È software livre; vocÍ pode redistribuÌ-la e/ou modific·-la sob os
- * termos da LicenÁa P˙blica Geral Menor do GNU conforme publicada pela Free
- * Software Foundation; tanto a vers„o 2.1 da LicenÁa, ou qualquer
- * vers„o posterior.
+ * Esta biblioteca √© software livre; voc√™ pode redistribu√≠-la e/ou modific√°-la sob os
+ * termos da Licen√ßa P√∫blica Geral Menor do GNU conforme publicada pela Free
+ * Software Foundation; tanto a vers√£o 2.1 da Licen√ßa, ou qualquer
+ * vers√£o posterior.
  * 
- * Esta biblioteca È distribuÌda na expectativa de que seja ˙til, porÈm, SEM
- * NENHUMA GARANTIA; nem mesmo a garantia implÌcita de COMERCIABILIDADE
- * OU ADEQUA«√O A UMA FINALIDADE ESPECÕFICA. Consulte a LicenÁa P˙blica
+ * Esta biblioteca √© distribu√≠da na expectativa de que seja √∫til, por√©m, SEM
+ * NENHUMA GARANTIA; nem mesmo a garantia impl√≠cita de COMERCIABILIDADE
+ * OU ADEQUA√á√ÉO A UMA FINALIDADE ESPEC√çFICA. Consulte a Licen√ßa P√∫blica
  * Geral Menor do GNU para mais detalhes.
  * 
- * VocÍ deve ter recebido uma cÛpia da LicenÁa P˙blica Geral Menor do GNU junto
- * com esta biblioteca; se n„o, acesse 
+ * Voc√™ deve ter recebido uma c√≥pia da Licen√ßa P√∫blica Geral Menor do GNU junto
+ * com esta biblioteca; se n√£o, acesse 
  * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html, 
  * ou escreva para a Free Software Foundation, Inc., no
- * endereÁo 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
+ * endere√ßo 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
 package us.pserver.log;
 
-import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
-import org.apache.log4j.PropertyConfigurator;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.logging.LogManager;
 
 /**
  * Utility class for configuring and get Logger.
@@ -35,25 +39,25 @@ public class Logging {
    * <code>CONF_INTERNAL = "/us/pserver/log/log.properties";</code><br>
    * Default log internal properties.
    */
-  public static final String CONF_INTERNAL = "/us/pserver/log/log4j.properties";
+  public static final String CONF_INTERNAL = "/us/pserver/log/log.properties";
   
   /**
    * <code>CONF_PACKAGE = "/us/pserver/log.properties";</code><br>
    * Default log internal properties.
    */
-  public static final String CONF_PACKAGE = "/log/log4j.properties";
+  public static final String CONF_PACKAGE = "/log/log.properties";
   
   /**
    * <code>CONF_PACKAGE_ALT = "/resources/log4j.properties";</code><br>
    * Default log internal properties.
    */
-  public static final String CONF_PACKAGE_ALT = "/log/log4j.properties";
+  public static final String CONF_PACKAGE_ALT = "/resources/log.properties";
   
   /**
    * <code>CONF_FILE = "./log.properties";</code><br>
    * Default log file properties.
    */
-  public static final String CONF_FILE = "./log4j.properties";
+  public static final String CONF_FILE = "./log.properties";
   
   private static boolean CONFIGURED = false;
   
@@ -62,23 +66,32 @@ public class Logging {
    * Configure Logger from a file or internal properties.
    */
   public static void configureLogger() {
-    File f = new File(CONF_FILE);
+    Path confPath = Paths.get(CONF_FILE);
     InputStream confInput = Logging.class.getResourceAsStream(CONF_PACKAGE);
 		InputStream confAlt = Logging.class.getResourceAsStream(CONF_PACKAGE_ALT);
-    if(f.exists()) {
-      PropertyConfigurator.configure(f.getAbsolutePath());
-    }
-    else if(confInput != null) {
-      PropertyConfigurator.configure(confInput);
-    }
-    else if(confAlt != null) {
-      PropertyConfigurator.configure(confAlt);
-    }
-    else {
-      confInput = Logging.class.getResourceAsStream(CONF_INTERNAL);
-      PropertyConfigurator.configure(confInput);
-    }
-    CONFIGURED = true;
+		try {
+			if(Files.exists(confPath)) {
+				LogManager.getLogManager().readConfiguration(
+						Files.newInputStream(confPath, 
+								StandardOpenOption.READ
+						)
+				);
+			}
+			else if(confInput != null) {
+				LogManager.getLogManager().readConfiguration(confInput);
+			}
+			else if(confAlt != null) {
+				LogManager.getLogManager().readConfiguration(confAlt);
+			}
+			else {
+				confInput = Logging.class.getResourceAsStream(CONF_INTERNAL);
+				LogManager.getLogManager().readConfiguration(confInput);
+			}
+			CONFIGURED = true;
+		} 
+		catch(IOException e) {
+			throw new RuntimeException(e);
+		}
   }
 	
 	
