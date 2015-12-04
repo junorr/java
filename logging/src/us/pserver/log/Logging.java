@@ -21,13 +21,18 @@
 
 package us.pserver.log;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Enumeration;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * Utility class for configuring and get Logger.
@@ -59,34 +64,22 @@ public class Logging {
    */
   public static final String CONF_FILE = "./log.properties";
   
-  private static boolean CONFIGURED = false;
+  
+	private static boolean CONFIGURED = false;
+	
+	//private static Properties props = null;
   
   
   /**
    * Configure Logger from a file or internal properties.
    */
   public static void configureLogger() {
-    Path confPath = Paths.get(CONF_FILE);
-    InputStream confInput = Logging.class.getResourceAsStream(CONF_PACKAGE);
-		InputStream confAlt = Logging.class.getResourceAsStream(CONF_PACKAGE_ALT);
 		try {
-			if(Files.exists(confPath)) {
-				LogManager.getLogManager().readConfiguration(
-						Files.newInputStream(confPath, 
-								StandardOpenOption.READ
-						)
-				);
-			}
-			else if(confInput != null) {
-				LogManager.getLogManager().readConfiguration(confInput);
-			}
-			else if(confAlt != null) {
-				LogManager.getLogManager().readConfiguration(confAlt);
-			}
-			else {
-				confInput = Logging.class.getResourceAsStream(CONF_INTERNAL);
-				LogManager.getLogManager().readConfiguration(confInput);
-			}
+			//props = new Properties();
+			InputStream in = selectConfigStream();
+			//props.load(in);
+			//in.reset();
+			LogManager.getLogManager().readConfiguration(in);
 			CONFIGURED = true;
 		} 
 		catch(IOException e) {
@@ -95,7 +88,49 @@ public class Logging {
   }
 	
 	
-	public boolean isConfigured() {
+	private static ByteArrayInputStream getBytes(InputStream in) throws IOException {
+		byte[] bs = new byte[in.available()];
+		in.read(bs);
+		ByteArrayInputStream bin =  new ByteArrayInputStream(bs);
+		bin.mark(bs.length +1);
+		return bin;
+	}
+	
+	
+	public static InputStream selectConfigStream() throws IOException {
+    Path path = Paths.get(CONF_FILE);
+		ByteArrayInputStream bin = null;
+		if(Files.exists(path)) {
+			bin = getBytes(Files.newInputStream(path, 
+					StandardOpenOption.READ
+			));
+		}
+		else if(Logging.class.getResource(CONF_PACKAGE_ALT) != null) {
+			bin = getBytes(Logging.class
+					.getResourceAsStream(CONF_PACKAGE_ALT)
+			);
+		}
+		else if(Logging.class.getResource(CONF_PACKAGE) != null) {
+			bin = getBytes(Logging.class
+					.getResourceAsStream(CONF_PACKAGE)
+			);
+		}
+		else {
+			bin = getBytes(Logging.class
+					.getResourceAsStream(CONF_INTERNAL)
+			);
+		}
+		return bin;
+	}
+	
+	
+	//public static String getProperty(String name) {
+		//if(props == null) return null;
+		//return props.getProperty(name);
+	//}
+	
+	
+	public static boolean isConfigured() {
 		return CONFIGURED;
 	}
   
