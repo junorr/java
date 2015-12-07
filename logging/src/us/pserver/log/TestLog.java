@@ -20,7 +20,10 @@ public class TestLog {
 		Logging.configureLogger();
 		LogHelper log = Logging.getConfigured(TestLog.class);
 		Logger lg = log.logger();
-		lg.log(Level.WARNING, "This is a test log");
+		lg.log(Level.FINE, "This is a test log");
+		lg.log(Level.INFO, "This is a test log");
+    lg.log(Level.WARNING, "This is a test log");
+    lg.log(Level.SEVERE, "This is a test log");
 	}
 	
 }

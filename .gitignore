@@ -133,3 +133,6 @@
 /tictacj/dist/
 /simclock/nbproject/private/
 /logging-log4j12/nbproject/private/
+/jclock/nbproject/private/
+/jclock/build/
+/jclock/dist/
