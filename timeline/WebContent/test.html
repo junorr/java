@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style type="text/css">
+			.absolute {
+				position: absolute;
+			}
+			
+			.relative {
+				position: relative;
+			}
+			
+			.round {
+				border-radius: 3px;
+			}
+			
+			.shadow-small {
+				box-shadow: 3px 3px 3px rgba(60,60,60,0.8);
+			}
+			
+			.border-dash-r {
+				border-right: dashed thin gray;
+			}
+			
+			.border-solid {
+				border-style: solid;
+				border-width: thin;
+			}
+			
+			.tm-font {
+				font-family: "Arial" "Sans";
+			}
+			
+			.tm-font-10 {
+				font-size: 10px;
+			}
+			
+			.tm-font-12 {
+				font-size: 12px;
+			}
+			
+			.tm-font-14 {
+				font-size: 14px;
+			}
+			
+			.tm-font-16 {
+				font-size: 16px;
+			}
+			
+			.tm-font-18 {
+				font-size: 18px;
+			}
+			
+			.tm-font-20 {
+				font-size: 20px;
+			}
+			
+			.tm-font-bold {
+				font-weight: bold;
+			}
+			
+			.tm-x {
+				height: 20px; 
+				border-left: solid thin gray; 
+				border-right: solid thin gray;
+			}
+			
+			.tm-x-grid {
+				height: 100%; 
+				top: 0px; 
+				text-align: right;
+			}
+			
+			.tm-x-text {
+				position: relative;
+				margin-right: 5px;
+				top: 5px;
+			}
+			
+			.idx-1 {
+				z-index: 1;
+			}
+			
+			.idx-2 {
+				z-index: 2;
+			}
+			
+			.idx-3 {
+				z-index: 3;
+			}
+			
+			.idx-4 {
+				z-index: 4;
+			}
+			
+			.idx-5 {
+				z-index: 5;
+			}
+			
+			.idx-6 {
+				z-index: 6;
+			}
+			
+			.idx-7 {
+				z-index: 7;
+			}
+			
+			.idx-8 {
+				z-index: 8;
+			}
+			
+			.idx-9 {
+				z-index: 9;
+			}
+			
+			.tm-bg-blue {
+				background-color: rgb(51,122,183);
+			}
+			
+			.tm-bg-light-blue {
+				background-color: rgb(91,192,222);
+			}
+			
+			.tm-bg-gray {
+				background-color: rgb(119,119,119);
+			}
+			
+			.tm-bg-green {
+				background-color: rgb(92,184,92);
+			}
+			
+			.tm-bg-orange {
+				background-color: rgb(240,173,78);
+			}
+			
+			.tm-bg-red {
+				background-color: rgb(217,83,79);
+			}
+			
+			.tm-bg-yellow {
+				background-color: rgb(240,240,80);
+			}
+			
+			.tm-bg-light-gray {
+				background-color: rgba(250,250,250,0.8);
+			}
+			
+			.tm-c-blue {
+				color: rgb(51,122,183);
+			}
+			
+			.tm-c-dark-blue {
+				color: rgb(11,82,143);
+			}
+			
+			.tm-c-light-blue {
+				color: rgb(91,192,222);
+			}
+			
+			.tm-c-gray {
+				color: rgb(119,119,119);
+			}
+			
+			.tm-c-green {
+				color: rgb(92,184,92);
+			}
+			
+			.tm-c-orange {
+				color: rgb(240,173,78);
+			}
+			
+			.tm-c-red {
+				color: rgb(217,83,79);
+			}
+			
+			.tm-c-yellow {
+				color: rgb(240,240,80);
+			}
+			
+			.tm-c-white {
+				color: white;
+			}
+			
+			.tm-br-blue {
+				border-color: rgb(51,122,183);
+			}
+			
+			.tm-br-light-blue {
+				border-color: rgb(91,192,222);
+			}
+			
+			.tm-br-gray {
+				border-color: rgb(119,119,119);
+			}
+			
+			.tm-br-green {
+				border-color: rgb(92,184,92);
+			}
+			
+			.tm-br-orange {
+				border-color: rgb(240,173,78);
+			}
+			
+			.tm-br-red {
+				border-color: rgb(217,83,79);
+			}
+			
+			.tm-br-yellow {
+				border-color: rgb(240,240,80);
+			}
+			
+			.tm-br-white {
+				border-color: rgb(255,255,255);
+			}
+			
+			.tm-br-black {
+				border-color: rgb(0,0,0);
+			}
+			
+			.tm-neon-blue {
+				box-shadow: 0px 0px 4px rgb(18,36,245);
+			}
+			
+			.tm-neon-light-blue {
+				box-shadow: 0px 0px 4px rgb(91,192,222);
+			}
+			
+			.tm-neon-gray {
+				box-shadow: 0px 0px 4px rgb(119,119,119);
+			}
+			
+			.tm-neon-green {
+				box-shadow: 0px 0px 4px rgb(180,245,50);
+			}
+			
+			.tm-neon-orange {
+				box-shadow: 0px 0px 4px rgb(251,178,37);
+			}
+			
+			.tm-neon-red {
+				box-shadow: 0px 0px 4px rgb(255,10,20);
+			}
+			
+			.tm-neon-yellow {
+				box-shadow: 0px 0px 4px yellow;
+			}
+			
+			.tm-center-both {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+			
+			.dsp-none {
+				display: none;
+			}
+			
+			.tm-item-desc {
+				margin-left: 15px;
+			}
+			
+			.tm-item-value {
+				margin-right: 15px;
+				float: right;
+			}
+			
+			.tm-item-dlg {
+				/*width: 195px;  /* retirar */
+				height: 95px;
+			}
+			
+			.tm-item-dlg-body {
+				height: 55px; 
+				/*width: 180px; /* 7 pixels por letra */ /* retirar */
+				margin-left: 16px; 
+				padding-top: 10px; 
+				padding-bottom: 10px;
+			}
+			
+			.tm-item-dlg-base {
+				display: block; 
+				float: left;
+				height: 44px; 
+				width: 15px; 
+				margin-top: 10px;
+			}
+			
+			.tm-body {
+				border: solid thin gray;
+				/*width: 600px; /* retirar */ 
+				/*height: 400px; /* retirar */
+			}
+			
+			.tm-grid {
+				top: 0px;
+			}
+			
+			.font-mono {
+				font-family: monospace;
+			}
+			
+			.tm-br-3px {
+				border-width: 3px;
+			}
+			
+		</style>
+	
+		<meta charset="UTF-8">
+		<title>Timeline</title>
+	</head>
+	<body>
+	
+		<div id="timeunit" style="width: 500px;"></div>
+		
+	</body>
+	
+	<script type="text/javascript" src="js/noq.js"></script>
+	
+	<script type="text/javascript">
+	
+		function itemMouseOver(id) {
+			var sel = "#"+ id;
+			var elt = noq(sel);
+			var dlg = noq(sel+ '-dlg'); 
+			dlg.style('left', elt.bounds.left + elt.bounds.width -5 + "px");
+			dlg.style('top', elt.bounds.top - 25 + "px");
+			dlg.style('display', 'block');
+			noq(sel).addClass('tm-neon-'+ noq(sel).attr('data-color'));
+			noq(sel).addClass('tm-font-bold');
+		}
+		
+		
+		function itemMouseOut(id) {
+			var sel = "#"+ id;
+			var dlg = noq(sel+ '-dlg'); 
+			dlg.style('display', 'none');
+			noq(sel).rmClass('tm-neon-'+ noq(sel).attr('data-color'));
+			noq(sel).rmClass('tm-font-bold');
+		}
+		
+		
+		var data = {
+			labels: ['01/2016', '02/2016', '03/2016', '04/2016', '05/2016', '06/2016'],
+			values: [
+				{name: 'Item 1', start: 1, duration: 2},
+				{name: '000050000500005', start: 0, duration: 3},
+				{name: 'Item 3', start: 3, duration: 1}
+			]
+		};
+		
+		
+		
+		function Timeunit(id, data) {
+			
+			var ref = this;
+			
+			ref.id = id;
+			
+			ref.div = noq(id);
+			
+			ref.data = data;
+			
+			ref.defWidth = 550;
+			
+			ref.defHeight = 300;
+			
+			ref.eltWidth = 0;
+			
+			ref.colors = [
+				{name: 'blue', 		 bg: 'tm-bg-blue', 		 c: 'tm-c-white'},
+				{name: 'green', 	 bg: 'tm-bg-green', 	 c: 'tm-c-black'},
+				{name: 'orange', 	 bg: 'tm-bg-orange', 	 c: 'tm-c-black'},
+				{name: 'yellow', 	 bg: 'tm-bg-yellow', 	 c: 'tm-c-black'},
+				{name: 'red', 		 bg: 'tm-bg-red', 		 c: 'tm-c-white'},
+				{name: 'light-blue', bg: 'tm-bg-light-blue', c: 'tm-c-black'},
+				{name: 'gray', 		 bg: 'tm-bg-gray', 		 c: 'tm-c-white'}
+			]
+			
+			
+			var lenError = function() {
+				var baseHtml = "<span class='tm-bg-red tm-c-white round tm-font-bold tm-font tm-font-16'>Error: Invalid data.";
+				if(typeof ref.data.labels == 'undefined'
+						|| typeof ref.data.labels.length == 'undefined'
+						|| ref.data.labels.length < 1) {
+					ref.div.html(baseHtml + "labels="+ ref.data.labels+"</span>");
+					return true;
+				}
+				if(typeof ref.data.values == 'undefined'
+						|| typeof ref.data.values.length == 'undefined'
+						|| ref.data.values.length < 1) {
+					ref.div.html(baseHtml + "values="+ ref.data.values+ "</span>");
+					return true;
+				}
+				return false;
+			}
+			
+			
+			var parseEltWidth = function() {
+				ref.eltWidth = ref.defWidth / ref.data.labels.length;
+			}
+			
+			
+			var findWidth = function(item) {
+				var len1 = item.name.length;
+				var len2 = ref.data.labels[item.start].length;
+				var len3 = ref.data.labels[item.start + item.duration].length;
+				var len = (len1 > len2 ? len1 : len2);
+				len = (len > len3 ? len : len3);
+				var w = 180;
+				if(len > 10) {
+					w += 9 * (len-10);
+				}
+				return w;
+			}
+			
+			
+			var createValues = function() {
+				var baseID = "tm-item-";
+				var ci = -1;
+				var html = "";
+				for(var i = 0; i < ref.data.values.length; i++) {
+					ci = (ci+1 >= ref.colors.length ? 0 : ci+1);
+					/*
+				<div id="tm-item-2" data-color="green" class="tm-item absolute tm-bg-green tm-c-black round tm-font tm-font-12 idx-2" 
+						style="width: 33.2%; height: 5%; top: 80%; left: 25%;" 
+						onmouseover="showDialog('#tm-item-2', true);" 
+						onmouseout="showDialog('#tm-item-2', false);">
+					<span class="tm-center-both">Item 2</span>
+				</div>
+					*/
+					html += "<div id='"+ baseID+ i
+						+ "' data-color='"+ ref.colors[ci].name
+						+ "' class='"+ ref.colors[i].bg
+						+ " "+ ref.colors[i].c
+						+ " border-solid tm-br-white absolute round tm-font tm-font-12 idx-2 tm-item'"
+						+ " style='width: "+ (ref.eltWidth * ref.data.values[i].duration)
+						+ "px; height: 20px; top: "+ (ref.defHeight - 30 * (i+1))
+						+ "px; left: "+ (ref.data.values[i].start * ref.eltWidth)
+						+ "px;' onmouseover='itemMouseOver(\""+ baseID + i+ "\");'"
+						+ " onmouseout='itemMouseOut(\""	+ baseID + i+ "\");'>"
+						+ "<span id='"+ baseID + i 
+						+ "-name' class='tm-center-both'>"+ ref.data.values[i].name
+						+ "</span></div>";
+						/*
+				<div id="tm-item-2-dlg" class="tm-item-dlg absolute dsp-none idx-9">
+					<div class="tm-item-dlg-base">
+						<svg>
+						 <g id="layer1" transform="translate(-267.45443,-457.77883)">
+						  <path id="path2985" stroke-linejoin="round" d="m281.12,458.49,0,10.01-12.962,5.8501,12.962,6.0982,0,19.356" stroke="#000" stroke-linecap="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="1.41462517" fill="none"/>
+						 </g>
+						</svg>
+					</div>
+					<div class="tm-item-dlg-body round border-solid tm-c-dark-blue tm-br-green shadow-small tm-bg-light-gray font-mono tm-font-12 idx-9">
+						<span class="tm-font-bold tm-item-desc">&bull; Name....: </span><span class="tm-item-value">Item 2</span><br/>
+						<span class="tm-font-bold tm-item-desc">&bull; Start...: </span><span class="tm-item-value">04/2016</span><br/>
+						<span class="tm-font-bold tm-item-desc">&bull; End.....: </span><span class="tm-item-value">08/2016</span><br/>
+						<span class="tm-font-bold tm-item-desc">&bull; Duration: </span><span class="tm-item-value">4</span>
+					</div>
+				</div>
+						*/
+					var labelWidth = findWidth(ref.data.values[i]);
+					html += "<div id='"+ baseID + i + "-dlg'"
+						+ " class='absolute dsp-none idx-9 tm-item-dlg' style='width: "+ (labelWidth+15)+ "px;'>"
+						+ "<div class='tm-item-dlg-base'>"
+						+ "<svg><g transform='translate(-267.45443,-457.77883)'>"
+						+ "<path stroke-linejoin='round' d='m281.12,458.49,0,10.01-12.962,5.8501,12.962,6.0982,0,19.356'"
+						+ " stroke='#000' stroke-linecap='round' stroke-miterlimit='4' stroke-dasharray='none'"
+						+ " stroke-width='1.41462517' fill='none'/></g></svg></div>"
+						+ "<div class='round border-solid tm-c-dark-blue tm-br-3px tm-br-"+ ref.colors[ci].name
+						+ " shadow-small tm-bg-light-gray font-mono tm-font-12 idx-9 tm-item-dlg-body"
+						+ " style='width: "+ labelWidth+ "px;'>"
+						+ "<span class='tm-font-bold tm-item-desc'>&bull; Nome....: </span>"
+						+ "<span class='tm-item-value'>"+ ref.data.values[i].name
+						+ "</span><br/>"
+						+ "<span class='tm-font-bold tm-item-desc'>&bull; Início..: </span>"
+						+ "<span class='tm-item-value'>"+ ref.data.labels[ref.data.values[i].start]
+						+ "</span><br/>"
+						+ "<span class='tm-font-bold tm-item-desc'>&bull; Fim.....: </span>"
+						+ "<span class='tm-item-value'>"+ ref.data.labels[ref.data.values[i].start + ref.data.values[i].duration]
+						+ "</span><br/>"
+						+ "<span class='tm-font-bold tm-item-desc'>&bull; Duração.: </span>"
+						+ "<span class='tm-item-value'>"+ ref.data.values[i].duration
+						+ "</span></div></div>";
+				}
+				return html + "</div>";
+			};
+			
+			
+			ref.create = function() {
+				if(ref.div.style('width') === '') {
+					ref.div.style('width', ref.defWidth+ 'px');
+				} else {
+					ref.defWidth = parseInt(ref.div.style('width'));
+				}
+				if(ref.div.style('height') === '') {
+					ref.div.style('height', ref.defHeight+ 'px');
+				} else {
+					ref.defHeight = parseInt(ref.div.style('height'));
+				}
+				if(lenError()) return;
+				
+				var minHeight = ref.data.values.length * 30 + 10;
+				if(ref.defHeight < minHeight) {
+					ref.defHeight = minHeight;
+				}
+				var minWidth = ref.data.labels.length * (ref.data.labels[0].length * 9);
+				if(ref.defWidth < minWidth) {
+					ref.defWidth = minWidth;
+				}
+				
+				ref.div.width(ref.defWidth);
+				ref.div.height(ref.defHeight);
+				
+				var html = "<div class='tm-body relative idx-1' "
+						+ "style='width: "+ ref.defWidth
+						+ "px; height: "+ ref.defHeight+ "px;'>";
+						
+				parseEltWidth();
+				//Build grids
+				for(var i = 0; i < ref.data.labels.length; i++) {
+					html += "<div class='border-dash-r absolute idx-1 tm-grid' style='width: " + ref.eltWidth + "px; ";
+					html += "height: 100%; left:" + (ref.eltWidth * i) + "px;'></div>";
+				}
+				html += createValues();
+				/* Create Grid-X
+				<div class="tm-x relative tm-font tm-font-10">
+					<div class="tm-x-grid border-dash-r absolute idx-1" style="width: 8.33%; left: 0px;">
+						<span class="tm-x-text">01/2016</span>
+					</div>
+				*/
+				html += "<div class='relative tm-font tm-font-10 tm-x' "
+					+ "style='width: "+ (ref.eltWidth * ref.data.labels.length) + "px;'>";
+				for(var i = 0; i < ref.data.labels.length; i++) {
+					html += "<div class='border-dash-r absolute idx-1 tm-x-grid'"
+						+ " style='width: "+ ref.eltWidth+ "px; left: "+ (ref.eltWidth * i)+ "px;'>"
+						+ "<span class='tm-x-text idx-1'>"+ ref.data.labels[i]
+						+ "</span></div>"; 
+				}
+				html += "</div></div>";
+				ref.div.html(html);
+			};
+			
+		}
+		
+		
+		
+		new Timeunit("#timeunit", data).create();
+		
+	</script>
+</html>
