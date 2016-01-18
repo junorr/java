@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import us.pserver.streams.DynamicBuffer;
-import us.pserver.streams.FunnelInputStream;
+import us.pserver.streams.AppenderInputStream;
 import us.pserver.streams.SequenceInputStream;
 
 /**
@@ -46,7 +46,7 @@ public class TestFunnelInputStream {
     System.out.println("i10.available() = "+ i10.available());
     SequenceInputStream i20 = new SequenceInputStream(20, 30);
     System.out.println("i20.available() = "+ i20.available());
-    FunnelInputStream is = new FunnelInputStream();
+    AppenderInputStream is = new AppenderInputStream();
     is.append(i0).append(i10).append(i20);
     
     DynamicBuffer buffer = new DynamicBuffer(10);

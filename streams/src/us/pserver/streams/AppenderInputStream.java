@@ -32,21 +32,21 @@ import java.util.List;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 16/06/2015
  */
-public class FunnelInputStream extends CounterInputStream {
+public class AppenderInputStream extends CounterInputStream {
   
   private final List<InputStream> streams;
   
   private int index;
   
   
-  public FunnelInputStream() {
+  public AppenderInputStream() {
     super();
     streams = Collections.synchronizedList(new ArrayList<InputStream>());
     index = 0;
   }
   
   
-  public FunnelInputStream append(InputStream is) {
+  public AppenderInputStream append(InputStream is) {
     if(is != null) {
       streams.add(is);
     }

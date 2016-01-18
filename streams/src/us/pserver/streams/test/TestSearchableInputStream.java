@@ -23,7 +23,7 @@ package us.pserver.streams.test;
 
 import java.io.IOException;
 import us.pserver.streams.PushbackInputStream;
-import us.pserver.streams.SearchableInputStream;
+import us.pserver.streams.deprecated.SearchableInputStream;
 import us.pserver.streams.SequenceInputStream;
 
 /**

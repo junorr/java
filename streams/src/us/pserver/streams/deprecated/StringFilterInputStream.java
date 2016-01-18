@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.streams;
+package us.pserver.streams.deprecated;
 
 import java.io.FilterInputStream;
 import java.io.IOException;

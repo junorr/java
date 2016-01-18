@@ -1,199 +1,123 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Direitos Autorais Reservados (c) 2011 Juno Roesler
+ * Contato: juno.rr@gmail.com
+ * 
+ * Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os
+ * termos da Licença Pública Geral Menor do GNU conforme publicada pela Free
+ * Software Foundation; tanto a versão 2.1 da Licença, ou qualquer
+ * versão posterior.
+ * 
+ * Esta biblioteca é distribuída na expectativa de que seja útil, porém, SEM
+ * NENHUMA GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE
+ * OU ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA. Consulte a Licença Pública
+ * Geral Menor do GNU para mais detalhes.
+ * 
+ * Você deve ter recebido uma cópia da Licença Pública Geral Menor do GNU junto
+ * com esta biblioteca; se não, acesse 
+ * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html, 
+ * ou escreva para a Free Software Foundation, Inc., no
+ * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
+
 package us.pserver.streams;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.io.InputStream;
+import java.util.ArrayDeque;
+import java.util.function.Consumer;
 import us.pserver.valid.Valid;
-
 
 /**
  *
- * @author juno
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 14/11/2015
  */
 public class SearchableInputStream extends FilterInputStream {
   
-  public static final int BUFFER_SIZE = 8192;
+  private int count;
   
-  private PushbackInputStream pin;
+  private long total;
   
-  private ByteBuffer buffer;
+  private final byte[] pattern;
   
-  private byte[] search;
+  private ArrayDeque<Byte> buffer;
   
-  private boolean found, eof, reading;
+  private int max;
   
-  
-  public SearchableInputStream(PushbackInputStream pis, byte[] search) {
-    this(pis, search, ByteBuffer.allocateDirect(BUFFER_SIZE));
-  }
+	private Consumer<SearchableInputStream> cs;
   
   
-  public SearchableInputStream(PushbackInputStream pis, byte[] search, ByteBuffer buffer) {
-    super(Valid.off(pis).forNull()
-        .getOrFail(PushbackInputStream.class));
-    pin = pis;
-    this.search = Valid.off(search).forEmpty()
-        .getOrFail();
-    this.buffer = Valid.off(buffer).forNull()
-        .getOrFail(ByteBuffer.class);
-    found = eof = reading = false;
-  }
-  
-  
-  public ByteBuffer getBuffer() {
-    return buffer;
-  }
-  
-  
-  public byte[] getSearchTerm() {
-    return search;
-  }
-  
-  
-  public boolean isFound() {
-    return found;
-  }
-  
-  
-  public boolean isEOF() {
-    return eof;
-  }
-  
-  
-  public PushbackInputStream getInputStream() {
-    return pin;
-  }
-  
-  
-  private int searchBuffer() {
-    //System.out.println("SIN.searchBuffer()");
-    setReading();
-    ByteBuffer buf = buffer.duplicate();
-    int count = 0;
-    int index = -1;
-    while(buf.hasRemaining()) {
-      if(buf.get() == search[0]) {
-        index = buf.position()-1;
-        count++;
-        for(int i = 1; i < search.length && buf.hasRemaining(); i++) {
-          count += (buf.get() == search[i] ? 1 : 0);
-        }
-        if(count == search.length) {
-          found = true;
-          break;
-        }
-      }
-      else {
-        count = 0;
-        index = -1;
-      }
-    }
-    return index;
-  }
-  
-  
-  private void pushback(int index) {
-    //System.out.println("SIN.pushback()");
-    if(index < 0 || index >= buffer.limit() - search.length) {
-      return;
-    }
-    setReading();
-    ByteBuffer buf = buffer.duplicate();
-    buf.position(index + search.length);
-    while(buf.hasRemaining()) {
-      pin.unread(buf.get());
-    }
-  }
-  
-  
-  private void setWriting() {
-    //System.out.println("SIN.setWriting()");
-    if(reading) {
-      buffer.clear();
-      reading = false;
-    }
-  }
-  
-  
-  private void setReading() {
-    //System.out.println("SIN.setReading()");
-    if(!reading) {
-      buffer.flip();
-      reading = true;
-    }
-  }
-  
-  
-  private void fillBuffer() throws IOException {
-    //System.out.println("SIN.fillBuffer()");
-    if(eof || found) return;
-    setWriting();
-    byte[] b = new byte[1];
-    int read = 0;
-    while(buffer.hasRemaining()) {
-      read = pin.read(b);
-      if(read != 1) {
-        eof = true;
-        break;
-      }
-      buffer.put(b[0]);
-    }
-  }
-  
-  
-  private void preRead() throws IOException {
-    //System.out.println("SIN.preRead()");
-    if(eof || found) return;
-    setReading();
-    if(!buffer.hasRemaining()) {
-      fillBuffer();
-    }
-    int index = searchBuffer();
-    if(index >= 0) {
-      pushback(index);
-      buffer.position(index).flip();
-    }
-  }
-  
-  
-  @Override
-  public int read(byte[] bs, int off, int len) throws IOException {
-    //System.out.println("SIN.read()");
-    Valid.off(bs).forEmpty().fail();
-    Valid.off(off).forLesserThan(0)
-        .fail("Invalid offset: ");
-    Valid.off(len).forNotBetween(
-        1, bs.length-off
-    ).fail();
-    
-    preRead();
-    if(!buffer.hasRemaining()) return -1;
-    int nlen = Math.min(len, buffer.remaining());
-    buffer.get(bs, off, nlen);
-    return nlen;
-  }
-  
-  
-  @Override
-  public int read(byte[] bs) throws IOException {
-    return this.read(
-        Valid.off(bs).forEmpty()
-            .getOrFail(), 0, bs.length
+  public SearchableInputStream(InputStream in, byte[] pattern) {
+    super(Valid.off(in).forNull()
+        .getOrFail(InputStream.class)
     );
+    this.pattern = Valid.off(pattern).forEmpty()
+        .getOrFail("Invalid byte array");
+    max = pattern.length;
+    buffer = new ArrayDeque<>(max);
+    count = 0;
+    total = 0;
+  }
+	
+	
+	public SearchableInputStream(
+			InputStream in, 
+			byte[] pattern, 
+			Consumer<SearchableInputStream> cs
+	) {
+		this(in, pattern);
+		this.cs = cs;
+	}
+	
+	
+	public InputStream getSourceStream() {
+		return in;
+	}
+  
+  
+  public long getTotal() {
+    return total;
+  }
+  
+  
+  public byte[] getSearchPattern() {
+    return pattern;
+  }
+  
+  
+  int left() {
+    return max - buffer.size();
   }
   
   
   @Override
   public int read() throws IOException {
+    if(count == pattern.length) {
+			if(cs != null) cs.accept(this);
+      return -1;
+    }
     byte[] bs = new byte[1];
-    int r = this.read(bs);
-    if(r > 0) r = bs[0];
+    int r = super.read(bs);
+		System.out.println(in.toString()+ ": read="+ bs[0]);
+    if(r < 1) return -1;
+    if(pattern[count] == bs[0]) {
+      buffer.add(bs[0]);
+			System.out.println("* SearchableIS.match: "+ bs[0]+ ", count="+ count);
+      count++;
+      r = this.read();
+    }
+    else {
+			if(buffer.isEmpty()) {
+				r = bs[0];
+			}
+			else {
+				r = buffer.poll();
+				buffer.add(bs[0]);
+			}
+			count = 0;
+    }
     return r;
   }
-  
+
 }

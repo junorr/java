@@ -85,7 +85,7 @@ public class TestPerformanceDynBuf {
     end = System.nanoTime();
     System.out.println("* Time: "+ (end - start)/1000000.0+ " ms");
     
-    StreamCoderFactory fact = StreamCoderFactory.getNew();
+    StreamCoderFactory fact = new StreamCoderFactory();
     fact
         .setGZipCoderEnabled(true)
         .setCryptCoderEnabled(true, key)

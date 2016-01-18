@@ -19,35 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.streams;
+package us.pserver.streams.test;
 
-import us.pserver.streams.deprecated.StreamCoderFactory;
-import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import us.pserver.streams.SearchableInputStream;
+import us.pserver.streams.SequenceInputStream;
 
 /**
  *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/04/2015
+ * @author Juno Roesler - juno.rr@gmail.com
+ * @version 1.0 - 19/06/2015
  */
-public interface MixedBuffer {
+public class TestSearchableInputStream3 {
 
-  public static final int DEFAULT_MEM_SIZE = 1024 * 1024;
   
-  
-  public File getTempFile();
-  
-  public ByteBuffer getInternalBuffer();
-  
-  public boolean isValid();
-  
-  public long length() throws IOException;
-  
-  public MixedBuffer seek(long pos) throws IOException;
-  
-  public void close();
-  
-  public StreamCoderFactory getCoderFactory();
+  public static void main(String[] args) throws IOException {
+    byte[] stop1 = {88, 89, 90};
+    byte[] stop2 = {77, 78, 79};
+    SearchableInputStream sin = new SearchableInputStream(
+        new SequenceInputStream(100), stop2
+    );
+    sin = new SearchableInputStream(sin, stop1);
+    int read = 0;
+    System.out.println("* Reading...");
+    while(true) {
+      read = sin.read();
+      if(read == -1) break;
+      System.out.println(".: "+ read);
+    }
+    System.out.println("* Done!");
+  }
   
 }

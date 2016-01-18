@@ -21,6 +21,8 @@
 
 package us.pserver.streams;
 
+import us.pserver.streams.deprecated.LimitedBuffer;
+import us.pserver.streams.SearchableInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,8 +112,8 @@ public abstract class StreamUtils {
   public static long transferUntilEOF(InputStream in, OutputStream out) throws IOException {
     Valid.off(in).forNull().fail(InputStream.class);
     Valid.off(out).forNull().fail(OutputStream.class);
-    return transfer(new SearchableInputStream(
-        new PushbackInputStream(in), BYTES_EOF), out
+    return transfer(new SearchableInputStream(in,
+        BYTES_EOF), out
     );
   }
   

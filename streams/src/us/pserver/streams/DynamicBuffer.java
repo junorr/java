@@ -21,6 +21,7 @@
 
 package us.pserver.streams;
 
+import us.pserver.streams.StreamCoderFactory;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,7 +61,7 @@ public class DynamicBuffer implements Closeable {
     index = 0;
     read = new Bean<>(false);
     pageSize = DEFAULT_PAGE_SIZE;
-    coder = StreamCoderFactory.getNew();
+    coder = new StreamCoderFactory();
     size = new Bean<>(0L);
   }
   

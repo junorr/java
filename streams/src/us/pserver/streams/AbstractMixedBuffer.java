@@ -21,6 +21,7 @@
 
 package us.pserver.streams;
 
+import us.pserver.streams.deprecated.StreamCoderFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -46,7 +47,7 @@ public abstract class AbstractMixedBuffer implements MixedBuffer {
   
   protected AbstractMixedBuffer() {
     valid = true;
-    coderfac = StreamCoderFactory.getNew();
+    coderfac = new StreamCoderFactory();
   }
   
   

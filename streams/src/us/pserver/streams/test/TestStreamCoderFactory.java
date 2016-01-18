@@ -46,10 +46,12 @@ public class TestStreamCoderFactory {
     InputStream is = IO.is(pi);
     OutputStream os = IO.os(po);
     
-    CryptKey k = CryptKey.createRandomKey(CryptAlgorithm.DESede_CBC_PKCS5);
+    CryptKey k = CryptKey.createRandomKey(
+				CryptAlgorithm.AES_CBC_256_PKCS5
+		);
     
-    StreamCoderFactory scf = StreamCoderFactory.getNew()
-        .setBase64CoderEnabled(true)
+    StreamCoderFactory scf = new StreamCoderFactory()
+        //.setBase64CoderEnabled(true)
         .setGZipCoderEnabled(true)
         .setCryptCoderEnabled(true, k);
     
@@ -66,8 +68,8 @@ public class TestStreamCoderFactory {
     is = IO.is(pi);
     os = IO.os(po);
     
-    scf = StreamCoderFactory.getNew()
-        .setBase64CoderEnabled(true)
+    scf = new StreamCoderFactory()
+        //.setBase64CoderEnabled(true)
         .setGZipCoderEnabled(true)
         .setCryptCoderEnabled(true, k);
     

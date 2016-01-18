@@ -27,7 +27,7 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
-import us.pserver.streams.EncoderInputStream;
+import us.pserver.streams.deprecated.EncoderInputStream;
 import us.pserver.streams.IO;
 import us.pserver.streams.StreamCoderFactory;
 import us.pserver.tools.timer.Timer;
@@ -53,7 +53,7 @@ public class TestEncInputStream {
     CryptKey k = CryptKey.createRandomKey(CryptAlgorithm.AES_CBC_256_PKCS5);
     System.out.println("* CryptKey: "+ k);
     
-    StreamCoderFactory scf = StreamCoderFactory.getNew()
+    StreamCoderFactory scf = new StreamCoderFactory()
         //.setBase64CoderEnabled(true)
         .setGZipCoderEnabled(true)
         .setCryptCoderEnabled(true, k);
@@ -74,7 +74,7 @@ public class TestEncInputStream {
     is = IO.is(pi);
     os = IO.os(po);
     
-    scf = StreamCoderFactory.getNew()
+    scf = new StreamCoderFactory()
         //.setBase64CoderEnabled(true)
         .setGZipCoderEnabled(true)
         .setCryptCoderEnabled(true, k);

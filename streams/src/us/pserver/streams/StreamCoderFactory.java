@@ -21,6 +21,7 @@
 
 package us.pserver.streams;
 
+import us.pserver.streams.*;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -32,7 +33,7 @@ import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.cdr.crypt.CryptUtils;
-import us.pserver.valid.Valid;
+
 
 /**
  *
@@ -40,198 +41,117 @@ import us.pserver.valid.Valid;
  * @version 1.0 - 01/08/2014
  */
 public class StreamCoderFactory {
+	
+	protected static final int GZIP = 1;
 
-  private final CoderType[] types;
-  
-  private int index;
+	protected static final int CRYPT = 2;
+
+	protected static final int BASE64 = 4;
+	
+
+  private int coder;
   
   private CryptKey key;
   
-  private static StreamCoderFactory instance;
   
-  
-  private StreamCoderFactory() {
-    types = new CoderType[3];
-    index = 0;
-  }
-  
-  
-  public static StreamCoderFactory get() {
-    if(instance == null)
-      instance = getNew();
-    return instance;
-  }
-  
-  
-  public static StreamCoderFactory getNew() {
-    instance = new StreamCoderFactory();
-    return instance;
-  }
-  
-  
-  private void checkIndex() {
-    if(index >= types.length)
-      throw new IllegalStateException("All coders already enabled");
+  public StreamCoderFactory() {
+    coder = 0;
   }
   
   
   public StreamCoderFactory clearCoders() {
-    for(int i = 0; i < types.length; i++) {
-      types[i] = null;
-    }
-    index = 0;
+    coder = 0;
     return this;
   }
   
   
   public StreamCoderFactory setCryptCoderEnabled(boolean enabled, CryptKey k) {
-    CoderType.CRYPT.setEnabled(enabled);
-    if(enabled) {
-      checkIndex();
-      key = Valid.off(k).forNull().getOrFail(CryptKey.class);
-      if(!isCryptCoderEnabled())
-        types[index++] = CoderType.CRYPT;
-    }
-    else {
-      arrangeTypes(getCoderIndex(CoderType.CRYPT));
-      index--;
-    }
-    return this;
+		if(enabled && !isCryptCoderEnabled()) {
+			if(k == null) {
+				throw new IllegalArgumentException("Invalid CryptKey: "+ k);
+			}
+			coder += CRYPT;
+			this.key = k;
+		}
+		else if(!enabled && isCryptCoderEnabled()) {
+			coder -= CRYPT;
+			this.key = null;
+		}
+		return this;
   }
   
   
   public StreamCoderFactory setBase64CoderEnabled(boolean enabled) {
-    CoderType.BASE64.setEnabled(enabled);
-    if(enabled) {
-      checkIndex();
-      if(!isBase64CoderEnabled()) {
-        types[index++] = CoderType.BASE64;
-      }
-    }
-    else {
-      arrangeTypes(getCoderIndex(CoderType.BASE64));
-      index--;
-    }
-    return this;
+		if(enabled && !isBase64CoderEnabled()) {
+			coder += BASE64;
+		}
+		else if(!enabled && isBase64CoderEnabled()) {
+			coder -= BASE64;
+		}
+		return this;
   }
   
   
   public StreamCoderFactory setGZipCoderEnabled(boolean enabled) {
-    CoderType.GZIP.setEnabled(enabled);
-    if(enabled) {
-      checkIndex();
-      if(!isGZipCoderEnabled())
-        types[index++] = CoderType.GZIP;
-    }
-    else {
-      arrangeTypes(getCoderIndex(CoderType.GZIP));
-      index--;
-    }
-    return this;
+		if(enabled && !isGZipCoderEnabled()) {
+			coder += GZIP;
+		}
+		else if(!enabled && isGZipCoderEnabled()) {
+			coder -= GZIP;
+		}
+		return this;
   }
   
   
   public boolean isCryptCoderEnabled() {
-    return getCoderIndex(CoderType.CRYPT) != -1;
+    return coder == 2 || coder == 3 || coder == 6 || coder == 7;
   }
   
   
   public boolean isBase64CoderEnabled() {
-    return getCoderIndex(CoderType.BASE64) != -1;
+    return coder == 4 || coder == 5 || coder == 6 || coder == 7;
   }
   
   
   public boolean isGZipCoderEnabled() {
-    return getCoderIndex(CoderType.GZIP) != -1;
+    return coder == 1 || coder == 3 || coder == 5 || coder == 7;
   }
   
   
   public boolean isAnyCoderEnabled() {
-    boolean en = false;
-    for(int i = 0; i < types.length; i++) {
-      en = en || (types[i] != null 
-          && types[i].isEnabled());
-    }
-    return en;
-  }
-  
-  
-  private void arrangeTypes(int ix) {
-    if(ix >= 0 && ix < types.length -1) {
-      for(int i = ix; i < types.length -1; i--) {
-        types[ix] = types[ix+1];
-        types[ix+1] = null;
-      }
-    }
-    else if(ix == types.length -1) {
-      types[ix] = null;
-    }
-  }
-  
-  
-  public int getCoderIndex(CoderType tp) {
-    Valid.off(tp).forNull().fail(CoderType.class);
-    for(int i = 0; i < types.length; i++) {
-      if(types[i] == tp)
-        return i;
-    }
-    return -1;
+    return coder > 0;
   }
   
   
   public OutputStream create(OutputStream os) throws IOException {
     if(!isAnyCoderEnabled()) throw new IOException(
         "No coder configured");
-    int min = Math.min(index, types.length -1);
-    for(int i = min; i >= 0; i--) {
-      if(types[i] != null) {
-        os = create(os, types[i]);
-      }
-    }
+		if(isCryptCoderEnabled()) {
+			os = CryptUtils.createCipherOutputStream(os, key);
+		}
+		if(isGZipCoderEnabled()) {
+			os = new GZIPOutputStream(new BufferedOutputStream(os));
+		}
+		if(isBase64CoderEnabled()) {
+			os = new Base64OutputStream(os);
+		}
     return os;
-  }
-  
-  
-  private OutputStream create(OutputStream os, CoderType tp) throws IOException {
-    if(tp == null) return os;
-    switch(tp) {
-      case CRYPT:
-        return CryptUtils.createCipherOutputStream(os, key);
-      case BASE64:
-        return new Base64OutputStream(os);
-      case GZIP:
-        return new GZIPOutputStream(new BufferedOutputStream(os));
-      default:
-        throw new IOException("No such coder ["+ tp+ "]");
-    }
   }
   
   
   public InputStream create(InputStream is) throws IOException {
     if(!isAnyCoderEnabled()) throw new IOException(
         "No coder configured");
-    int min = Math.min(index, types.length -1);
-    for(int i = min; i >= 0; i--) {
-      if(types[i] != null) {
-        is = create(is, types[i]);
-      }
-    }
+		if(isCryptCoderEnabled()) {
+			is = CryptUtils.createCipherInputStream(is, key);
+		}
+		if(isGZipCoderEnabled()) {
+			is = new GZIPInputStream(new BufferedInputStream(is));
+		}
+		if(isBase64CoderEnabled()) {
+			is = new Base64InputStream(is);
+		}
     return is;
-  }
-  
-  
-  private InputStream create(InputStream is, CoderType tp) throws IOException {
-    if(tp == null) return is;
-    switch(tp) {
-      case CRYPT:
-        return CryptUtils.createCipherInputStream(is, key);
-      case BASE64:
-        return new Base64InputStream(is);
-      case GZIP:
-        return new GZIPInputStream(new BufferedInputStream(new UnsignedInputStream(is)));
-      default:
-        throw new IOException("No such coder ["+ tp+ "]");
-    }
   }
   
   
