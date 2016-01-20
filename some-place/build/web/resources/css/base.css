@@ -1,6 +1,6 @@
 .bg_image {
   background-image: url('img/ocean3.jpg');
-  background-size: 100%;// 190%;
+  background-size: 100%;/* 190%*/;
   background-repeat: no-repeat;
 }
 

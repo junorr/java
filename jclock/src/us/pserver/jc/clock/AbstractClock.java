@@ -62,13 +62,13 @@ public abstract class AbstractClock implements Clock {
 	
 	
 	@Override
-	public boolean stopOnEmpty() {
+	public boolean isStopOnEmpty() {
 		return stopOnEmpty.get();
 	}
 	
 	
 	@Override
-	public Clock stopOnEmpty(boolean b) {
+	public Clock setStopOnEmpty(boolean b) {
 		stopOnEmpty.getAndSet(b);
 		return this;
 	}
@@ -89,7 +89,7 @@ public abstract class AbstractClock implements Clock {
       queue.clear();
       alarms.values().forEach(this::schedule);
     }
-		if(stopOnEmpty() && queue.isEmpty()) {
+		if(isStopOnEmpty() && queue.isEmpty()) {
 			this.stop();
 		}
 	}
@@ -101,7 +101,7 @@ public abstract class AbstractClock implements Clock {
       queue.add(a);
       queue.sort();
     }
-    if(queue.isEmpty() && stopOnEmpty()) {
+    if(queue.isEmpty() && isStopOnEmpty()) {
       this.stop();
     }
   }

@@ -18,6 +18,8 @@ public interface SharedMemory {
 	
 	public Object get(String name);
 	
+	public boolean contains(String name);
+	
 	public <T> T as(String name, Class<T> type);
 	
 	public Object remove(String name);

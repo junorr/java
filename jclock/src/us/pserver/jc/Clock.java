@@ -34,9 +34,9 @@ public interface Clock {
 	
   public Clock start();
   
-	public Clock stopOnEmpty(boolean stop);
+	public Clock setStopOnEmpty(boolean stop);
 	
-	public boolean stopOnEmpty();
+	public boolean isStopOnEmpty();
   
   public Clock stop();
   

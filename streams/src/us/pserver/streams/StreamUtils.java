@@ -21,9 +21,8 @@
 
 package us.pserver.streams;
 
-import us.pserver.streams.deprecated.LimitedBuffer;
-import us.pserver.streams.SearchableInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -95,25 +94,20 @@ public abstract class StreamUtils {
   public static long transfer(InputStream in, OutputStream out) throws IOException {
     Valid.off(in).forNull().fail(InputStream.class);
     Valid.off(out).forNull().fail(OutputStream.class);
-    
-    long total = 0;
-    int read = 0;
-    byte[] buf = new byte[BUFFER_SIZE];
-    
-    while((read = in.read(buf)) > 0) {
-      total += read;
-      out.write(buf, 0, read);
-    }
-    out.flush();
-    return total;
+    CounterInputStream cin = new CounterInputStream(in);
+		StreamConnector.builder()
+				.from(cin).to(out)
+				.get().connect();
+		return cin.getCount();
   }
   
   
   public static long transferUntilEOF(InputStream in, OutputStream out) throws IOException {
     Valid.off(in).forNull().fail(InputStream.class);
     Valid.off(out).forNull().fail(OutputStream.class);
-    return transfer(new SearchableInputStream(in,
-        BYTES_EOF), out
+    return transfer(
+				new SearchableInputStream(
+						in, BYTES_EOF), out
     );
   }
   
@@ -138,110 +132,67 @@ public abstract class StreamUtils {
     Valid.off(is).forNull().fail(InputStream.class);
     Valid.off(os).forNull().fail(OutputStream.class);
     Valid.off(until).forEmpty().fail();
-    
-    StreamResult res = new StreamResult();
-    LimitedBuffer lim = new LimitedBuffer(until.length());
-    ByteBuffer buf = ByteBuffer.allocate(until.length() * 2);
-    ByteBufferConverter cv = new ByteBufferConverter();
-    
-    byte[] bs = new byte[1];
-    int read = -1;
-    
-    while(true) {
-      read = is.read(bs);
-      if(read <= 0) {
-        res.eofOn();
-        break;
-      }
-      
-      res.increment(read);
-      lim.put(bs[0]);
-      if(buf.remaining() < 1) {
-        buf.flip();
-        byte[] b = new byte[lim.length()];
-        buf.get(b);
-        os.write(b);
-        buf.compact();
-      }
-      buf.put(bs[0]);
-      
-      //if(lim.size() == until.length())
-        //System.out.println("StreamUtils.transferUntil["+ lim.toUTF8()+ "]");
-      
-      if(until.equals(lim.toUTF8())) {
-        if(buf.position() > lim.length()) {
-          buf.position(buf.position() - lim.length());
-          buf.flip();
-          os.write(cv.convert(buf));
-        }
-        res.setToken(until);
-        break;
-      }
-    }
-    os.flush();
-    return res;
+    final StreamResult res = new StreamResult();
+		SearchableInputStream si = new SearchableInputStream(is,
+				new UTF8String(until).getBytes(),
+				stream -> res.setSize(stream.getTotal())
+						.setContent(until)
+		);
+		while(true) {
+			try {
+				os.write(si.readByte());
+			} catch(EOFException e) {
+				break;
+			}
+		}
+		return res;
   }
-  
-  
+	
+	
+  public static StreamResult transferUntil(InputStream is, OutputStream os, byte[] until) throws IOException {
+    Valid.off(is).forNull().fail(InputStream.class);
+    Valid.off(os).forNull().fail(OutputStream.class);
+    Valid.off(until).forEmpty().fail();
+    final StreamResult res = new StreamResult();
+		SearchableInputStream si = new SearchableInputStream(is,
+				until, stream -> res.setSize(stream.getTotal())
+						.setContent(new UTF8String(until).toString())
+		);
+		while(true) {
+			try {
+				os.write(si.readByte());
+			} catch(EOFException e) {
+				break;
+			}
+		}
+		return res;
+  }
+	
+	
   public static StreamResult transferUntilOr(InputStream is, OutputStream os, String until, String or) throws IOException {
     Valid.off(is).forNull().fail(InputStream.class);
     Valid.off(os).forNull().fail(OutputStream.class);
     Valid.off(until).forEmpty().fail();
     Valid.off(or).forEmpty().fail();
-    
-    StreamResult res = new StreamResult();
-    int maxlen = Math.max(until.length(), or.length());
-    LimitedBuffer lim = new LimitedBuffer(maxlen);
-    ByteBuffer buf = ByteBuffer.allocate(maxlen * 2);
-    ByteBufferConverter cv = new ByteBufferConverter();
-    
-    byte[] bs = new byte[1];
-    int read = -1;
-    
-    while(true) {
-      read = is.read(bs);
-      if(read <= 0) {
-        res.eofOn();
-        break;
-      }
-      
-      res.increment(read);
-      lim.put(bs[0]);
-      if(buf.remaining() < 1) {
-        buf.flip();
-        byte[] b = new byte[maxlen];
-        buf.get(b);
-        os.write(b);
-        buf.compact();
-      }
-      buf.put(bs[0]);
-      
-      //if(lim.size() == maxlen)
-        //System.out.println("StreamUtils.transferUntilOr["+ lim.toUTF8()+ "]");
-      
-      if(until.equals(lim.toUTF8()) 
-          || lim.toUTF8().contains(until)) {
-        if(buf.position() > until.length()) {
-          buf.position(buf.position() - until.length());
-          buf.flip();
-          os.write(cv.convert(buf));
-        }
-        res.setToken(until);
-        break;
-      }
-      else if(or.equals(lim.toUTF8())
-          || lim.toUTF8().contains(or)) {
-        if(buf.position() > or.length()) {
-          buf.position(buf.position() - or.length());
-          buf.flip();
-          os.write(cv.convert(buf));
-        }
-        res.setToken(or);
-        break;
-      }
-    }
-    os.flush();
-    return res;
+    final StreamResult res = new StreamResult();
+		SearchableInputStream si = new SearchableInputStream(is,
+				new UTF8String(until).getBytes(),
+				stream -> res.setSize(stream.getTotal())
+						.setContent(until)
+		);
+		si = new SearchableInputStream(si,
+				new UTF8String(or).getBytes(),
+				stream -> res.setSize(stream.getTotal())
+						.setContent(or)
+		);
+		while(true) {
+			try {
+				os.write(si.readByte());
+			} catch(EOFException e) {
+				break;
+			}
+		}
+		return res;
   }
   
   
@@ -270,22 +221,9 @@ public abstract class StreamUtils {
   public static void write(String str, OutputStream out) throws IOException {
     Valid.off(out).forNull().fail(OutputStream.class);
     Valid.off(str).forEmpty().fail();
-    out.write(bytes(str));
+    out.write(new UTF8String(str).getBytes());
     out.flush();
   }
-  
-  
-  /**
-   * Retorna os bytes relativos ao conteúdo
-   * da <code>String</code> codificada em <code>UTF-8</code>.
-   * @param str <code>String</code>.
-   * @return <code>byte[]</code>;
-   */
-  public static byte[] bytes(String str) {
-    if(str == null || str.isEmpty())
-      return new byte[0];
-    return new UTF8String(str).getBytes();
-    } 
   
   
   /**
@@ -321,27 +259,20 @@ public abstract class StreamUtils {
   public static StreamResult skipUntil(InputStream in, String str) throws IOException {
     Valid.off(in).forNull().fail(InputStream.class);
     Valid.off(str).forEmpty().fail();
-    
-    StreamResult res = new StreamResult();
-    int read = -1;
-    byte[] buf = new byte[1];
-    LimitedBuffer lbuf = new LimitedBuffer(str.length());
-    
-    while(true) {
-      read = in.read(buf);
-      if(read < 1) {
-        res.eofOn();
-        break;
-      }
-      
-      res.increment();
-      lbuf.put(buf[0]);
-      if(str.equals(lbuf.toUTF8())) {
-        res.setToken(str);
-        break;
-      }
-    }
-    return res;
+    final StreamResult res = new StreamResult();
+		SearchableInputStream si = new SearchableInputStream(in,
+				new UTF8String(str).getBytes(),
+				stream -> res.setSize(stream.getTotal())
+						.setContent(str)
+		);
+		while(true) {
+			try {
+				si.readByte();
+			} catch(EOFException e) {
+				break;
+			}
+		}
+		return res;
   }
 
 
@@ -353,45 +284,35 @@ public abstract class StreamUtils {
    * encontrada, ou <code>null</code> no caso de 
    * nenhum argumento encontrado.
    * @param in <code>InputStream</code>
-   * @param str primeira <code>String</code> delimitadora.
-   * @param orFalse segunda <code>String</code> delimitadora.
+   * @param until primeira <code>String</code> delimitadora.
+   * @param or segunda <code>String</code> delimitadora.
    * @return a <code>String</code> encontrada, ou 
    * <code>null</code> no caso de nenhum argumento encontrado.
    * @throws IOException Caso ocorra erro na leitura do stream.
    */
-  public static StreamResult skipUntilOr(InputStream in, String str, String orFalse) throws IOException {
+  public static StreamResult skipUntilOr(InputStream in, String until, String or) throws IOException {
     Valid.off(in).forNull().fail(InputStream.class);
-    Valid.off(str).forEmpty().fail();
-    Valid.off(orFalse).forEmpty().fail();
-    
-    StreamResult res = new StreamResult();
-    int read = -1;
-    byte[] buf = new byte[1];
-    int maxlen = Math.max(str.length(), orFalse.length());
-    LimitedBuffer lbuf = new LimitedBuffer(maxlen);
-    
-    while(true) {
-      read = in.read(buf);
-      if(read < 1) {
-        res.eofOn();
-        break;
-      }
-      
-      res.increment();
-      lbuf.put(buf[0]);
-      if(lbuf.size() == maxlen) {
-        //System.out.println("StreamUtils.skipUntilOr["+ lbuf.toUTF8()+ "]");
-        if(lbuf.toUTF8().contains(str)) {
-          res.setToken(str);
-          break;
-        }
-        else if(lbuf.toUTF8().contains(orFalse)) {
-          res.setToken(orFalse);
-          break;
-        }
-      }
-    }
-    return res;
+    Valid.off(until).forEmpty().fail();
+    Valid.off(or).forEmpty().fail();
+    final StreamResult res = new StreamResult();
+		SearchableInputStream si = new SearchableInputStream(in,
+				new UTF8String(until).getBytes(),
+				stream -> res.setSize(stream.getTotal())
+						.setContent(until)
+		);
+		si = new SearchableInputStream(si,
+				new UTF8String(or).getBytes(),
+				stream -> res.setSize(stream.getTotal())
+						.setContent(or)
+		);
+		while(true) {
+			try {
+				si.readByte();
+			} catch(EOFException e) {
+				break;
+			}
+		}
+		return res;
   }
   
   
@@ -400,17 +321,14 @@ public abstract class StreamUtils {
     Valid.off(length).forNotBetween(1, Integer.MAX_VALUE);
     byte[] bs = new byte[length];
     int read = is.read(bs);
-    //System.out.println("* StreamUtils.readString(): read="+ read);
-    //System.out.println("* instance of InputStream="+ is.getClass());
     if(read <= 0) return null;
-    return new String(bs, 0, read, UTF8);
+    return new UTF8String(bs, 0, read).toString();
   }
   
   
   public static StreamResult readStringUntil(InputStream is, String until) throws IOException {
     Valid.off(is).forNull().fail(InputStream.class);
     Valid.off(until).forEmpty().fail();
-    
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     StreamResult res = transferUntil(is, bos, until);
     return res.setContent(bos.toString(UTF8));
@@ -421,9 +339,7 @@ public abstract class StreamUtils {
     Valid.off(is).forNull().fail(InputStream.class);
     Valid.off(until).forEmpty().fail();
     Valid.off(or).forEmpty().fail();
-    
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    
     StreamResult res = transferUntilOr(is, bos, until, or);
     return res.setContent(bos.toString(UTF8));
   }

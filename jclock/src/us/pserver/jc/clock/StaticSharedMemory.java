@@ -37,6 +37,12 @@ public class StaticSharedMemory implements SharedMemory {
 	public Object get(String name) {
 		return mem.get(name);
 	}
+	
+	
+	@Override
+	public boolean contains(String name) {
+		return mem.containsKey(name);
+	}
 
 
 	@Override

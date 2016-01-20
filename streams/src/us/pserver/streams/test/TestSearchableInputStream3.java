@@ -22,8 +22,8 @@
 package us.pserver.streams.test;
 
 import java.io.IOException;
-import us.pserver.streams.SearchableInputStream;
 import us.pserver.streams.SequenceInputStream;
+import us.pserver.streams.SearchableInputStream;
 
 /**
  *
@@ -37,9 +37,9 @@ public class TestSearchableInputStream3 {
     byte[] stop1 = {88, 89, 90};
     byte[] stop2 = {77, 78, 79};
     SearchableInputStream sin = new SearchableInputStream(
-        new SequenceInputStream(100), stop2
+        new SequenceInputStream(100), stop1
     );
-    sin = new SearchableInputStream(sin, stop1);
+    sin = new SearchableInputStream(sin, stop2);
     int read = 0;
     System.out.println("* Reading...");
     while(true) {

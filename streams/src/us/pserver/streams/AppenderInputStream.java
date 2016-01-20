@@ -26,24 +26,41 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import us.pserver.valid.Valid;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 16/06/2015
  */
-public class AppenderInputStream extends CounterInputStream {
+public class AppenderInputStream extends InputStream {
   
   private final List<InputStream> streams;
   
   private int index;
+	
+	private final AtomicLong count;
   
   
   public AppenderInputStream() {
-    super();
-    streams = Collections.synchronizedList(new ArrayList<InputStream>());
+    streams = Collections.synchronizedList(
+				new ArrayList<InputStream>()
+		);
     index = 0;
+		count = new AtomicLong(0L);
   }
+	
+	
+	public AppenderInputStream(InputStream in) {
+		this();
+		append(in);
+	}
+	
+	
+	public long getCount() {
+		return count.get();
+	}
   
   
   public AppenderInputStream append(InputStream is) {
@@ -61,16 +78,11 @@ public class AppenderInputStream extends CounterInputStream {
   
   @Override
   public int read(byte[] bs, int off, int len) throws IOException {
-    if(bs == null || bs.length < 1)
-      throw new IllegalArgumentException(
-          "Invalid byte array: "+ (bs != null ? bs.length : bs));
-    if(off < 0 || off+len > bs.length)
-      throw new IllegalArgumentException(
-          "Invalid off position: "+ off);
-    if(len < 1 || off+len > bs.length)
-      throw new IllegalArgumentException(
-          "Invalid length: "+ len);
-        
+		Valid.off(bs).forEmpty().fail("Invalid empty byte array");
+		Valid.off(off).forLesserThan(0).fail("Invalid offset: ");
+		Valid.off(len).forLesserThan(1)
+				.or().forGreaterThan(bs.length-off)
+				.fail("Invalid length: ");
     if(streams.isEmpty() || index >= streams.size()) {
       return -1;
     }
@@ -87,7 +99,8 @@ public class AppenderInputStream extends CounterInputStream {
       int nextRead = read(bs, off, len);
       read += (nextRead < 0 ? 0 : nextRead);
     }
-    return increment(read);
+		count.addAndGet(read);
+		return read;
   }
   
   
@@ -101,10 +114,9 @@ public class AppenderInputStream extends CounterInputStream {
   public int read() throws IOException {
     if(streams.isEmpty() || index >= streams.size())
       return -1;
-    byte[] bs = new byte[1];
-    int read = read(bs);
-    if(read < 1) return -1;
-    return bs[0];
+		byte[] bs = new byte[1];
+		int r = this.read(bs);
+		return (r > 0 ? bs[0] : r);
   }
   
   

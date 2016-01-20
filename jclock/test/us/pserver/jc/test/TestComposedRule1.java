@@ -54,7 +54,7 @@ public class TestComposedRule1 {
             LocalDateTime.of(2015, 12, 5, 12, 0, 10)
         ), 1, ChronoUnit.WEEKS)
     );
-		Optional<WakeRule> opt = Optional.of(new RecurrentRule(cr, 9));
+		Optional<WakeRule> opt = Optional.of(new RecurrentRule(cr, 6));
     while(opt.isPresent()) {
       System.out.println(DateTime.of(opt.get().resolve()));
       opt = opt.get().next();

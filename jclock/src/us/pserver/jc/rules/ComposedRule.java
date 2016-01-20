@@ -75,7 +75,7 @@ public class ComposedRule implements WakeRule {
   @Override
   public long resolve() {
     if(rules.isEmpty() || index >= rules.size()) {
-      return 0;
+      return -1;
     }
     return rules.get(index).resolve();
   }
@@ -83,7 +83,7 @@ public class ComposedRule implements WakeRule {
 	
 	@Override
 	public Optional<WakeRule> next() {
-    System.out.println("* [ComposedRule.next] index="+ index);
+    //System.out.println("* [ComposedRule.next] index="+ index);
     if(++index >= rules.size()) {
       ComposedRule cr = new ComposedRule();
       rules.forEach(r->cr.addRule(r.next()));

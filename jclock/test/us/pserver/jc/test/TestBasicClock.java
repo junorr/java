@@ -40,7 +40,7 @@ public class TestBasicClock {
 				})
 		);
 		System.out.println("a="+ a);
-		clock.register("a1", a).stopOnEmpty(true).start();
+		clock.register("a1", a).setStopOnEmpty(true).start();
 	}
 	
 }

@@ -21,7 +21,7 @@
 
 package us.pserver.streams;
 
-import us.pserver.streams.deprecated.StreamCoderFactory;
+import us.pserver.streams.StreamCoderFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;

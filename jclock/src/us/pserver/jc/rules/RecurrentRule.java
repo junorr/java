@@ -62,7 +62,7 @@ public class RecurrentRule implements WakeRule {
 
   @Override
   public Optional<WakeRule> next() {
-    System.out.println("* [RecurrentRule.next] count="+ count+ ", times="+ times);
+    //System.out.println("* [RecurrentRule.next] count="+ count+ ", times="+ times);
     Optional<WakeRule> opt = rule.next();
     if((times <= 0 || ++count < times) && opt.isPresent()) {
       return Optional.of(new RecurrentRule(
@@ -80,9 +80,15 @@ public class RecurrentRule implements WakeRule {
 
 
   public static void main(String[] args) {
-    WakeRule rule = new RecurrentRule(new TimeAmountRule(5, ChronoUnit.MINUTES), 3);
+    Optional<WakeRule> rule = Optional.of(
+				new RecurrentRule(
+						new TimeAmountRule(5, ChronoUnit.MINUTES), 3
+				)
+		);
     for(int i = 0; i < 6; i++) {
-      System.out.println(DateTime.of(rule.resolve()).toZonedDT());
+			if(!rule.isPresent()) break;
+      System.out.println(DateTime.of(rule.get().resolve()).toZonedDT());
+			rule = rule.get().next();
     }
   }
 

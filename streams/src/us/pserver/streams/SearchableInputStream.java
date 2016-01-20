@@ -21,6 +21,7 @@
 
 package us.pserver.streams;
 
+import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,9 +44,7 @@ public class SearchableInputStream extends FilterInputStream {
   
   private ArrayDeque<Byte> buffer;
   
-  private int max;
-  
-	private Consumer<SearchableInputStream> cs;
+  private Consumer<SearchableInputStream> cs;
   
   
   public SearchableInputStream(InputStream in, byte[] pattern) {
@@ -54,8 +53,7 @@ public class SearchableInputStream extends FilterInputStream {
     );
     this.pattern = Valid.off(pattern).forEmpty()
         .getOrFail("Invalid byte array");
-    max = pattern.length;
-    buffer = new ArrayDeque<>(max);
+    buffer = new ArrayDeque<>(pattern.length);
     count = 0;
     total = 0;
   }
@@ -86,26 +84,27 @@ public class SearchableInputStream extends FilterInputStream {
   }
   
   
-  int left() {
-    return max - buffer.size();
-  }
-  
-  
-  @Override
-  public int read() throws IOException {
+	public int readByte() throws IOException, EOFException {
     if(count == pattern.length) {
 			if(cs != null) cs.accept(this);
-      return -1;
+      throw new EOFException();
     }
+		if(count <= 0 && !buffer.isEmpty()) {
+			return buffer.poll();
+		}
     byte[] bs = new byte[1];
-    int r = super.read(bs);
-		System.out.println(in.toString()+ ": read="+ bs[0]);
-    if(r < 1) return -1;
+    int r = in.read(bs);
+    if(r < 1) {
+			count = -1;
+			if(buffer.isEmpty())
+				throw new EOFException();
+			else
+				return buffer.poll();
+		}
     if(pattern[count] == bs[0]) {
       buffer.add(bs[0]);
-			System.out.println("* SearchableIS.match: "+ bs[0]+ ", count="+ count);
       count++;
-      r = this.read();
+      r = this.readByte();
     }
     else {
 			if(buffer.isEmpty()) {
@@ -117,7 +116,49 @@ public class SearchableInputStream extends FilterInputStream {
 			}
 			count = 0;
     }
+		total++;
     return r;
   }
+  
+  
+  @Override
+  public int read() throws IOException {
+    try {
+			return readByte();
+		} catch(EOFException e) {
+			return -1;
+		}
+  }
+	
+	
+	@Override
+	public int read(byte[] bs, int off, int len) throws IOException {
+		Valid.off(bs).forEmpty().fail("Invalid empty byte array");
+		Valid.off(off).forLesserThan(0).fail("Invalid offset: ");
+		Valid.off(len).forLesserThan(1)
+				.or().forGreaterThan(bs.length-off)
+				.fail("Invalid length: ");
+		int count = 0;
+		for(int i = off; i < (len+off); i++) {
+			try {
+				int r = this.readByte();
+				bs[i] = (byte) r;
+				count++;
+			} catch(EOFException e) {
+				break;
+			};
+		}
+		return count;
+	}
+	
+	
+	@Override
+	public int read(byte[] bs) throws IOException {
+		return this.read(
+				Valid.off(bs).forEmpty()
+						.getOrFail("Invalid empty byte array"), 
+				0, bs.length
+		);
+	}
 
 }

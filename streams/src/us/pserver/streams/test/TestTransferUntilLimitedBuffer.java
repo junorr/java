@@ -21,30 +21,32 @@
 
 package us.pserver.streams.test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import us.pserver.streams.deprecated.SearchableInputStream2;
+import us.pserver.streams.SearchableInputStream;
 import us.pserver.streams.SequenceInputStream;
+import us.pserver.streams.StreamUtils;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 19/06/2015
  */
-public class TestSearchableInputStream2 {
+public class TestTransferUntilLimitedBuffer {
 
   
   public static void main(String[] args) throws IOException {
-    byte[] stop = {88, 89, 90};
-    SearchableInputStream2 sin = new SearchableInputStream2(
-        new SequenceInputStream(100), stop
-    );
+    byte[] stop = {-12, -11, -10};
+    SequenceInputStream sis = new SequenceInputStream(255);
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		StreamUtils.transferUntil(sis, bos, stop);
     int read = 0;
     System.out.println("* Reading...");
-    while(true) {
-      read = sin.read();
-      if(read == -1) break;
-      System.out.println(".: "+ read);
-    }
+		byte[] bs = bos.toByteArray();
+		for(int i = 0; i < bs.length; i++) {
+			read = bs[i];
+			System.out.println(".: "+ read);
+		}
     System.out.println("* Done!");
   }
   

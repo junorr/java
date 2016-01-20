@@ -42,7 +42,7 @@ public class AbstractAlarm implements Alarm {
 
 	@Override
 	public boolean isActive() {
-		return active && (rule.resolve() - now()) >= 1;
+		return active && (rule.resolve() - now()) >= 0;
 	}
   
   

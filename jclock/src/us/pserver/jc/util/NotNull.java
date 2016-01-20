@@ -52,9 +52,7 @@ public class NotNull<T> {
   
   
   public T getOrFail() throws NullPointerException {
-    if(obj == null) {
-      throw new NullPointerException("Invalid Null Object");
-    }
+    fail();
     return obj;
   }
   

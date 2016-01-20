@@ -37,7 +37,7 @@ public class ParallelClock extends SynchronizedClock {
 		log.info("Clock started!");
 		super.start();
 		exec.submit(()-> {
-			System.out.println("[ParallelClock] Thread="+ Thread.currentThread().getName());
+			//System.out.println("[ParallelClock] Thread="+ Thread.currentThread().getName());
 			while(running.get()) {
 				exec.submit(()->execute(queue.poll()));
         if(queue.isEmpty()) this.sleep(50);

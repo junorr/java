@@ -21,21 +21,25 @@
 
 package us.pserver.streams;
 
+import java.io.FilterInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicLong;
 import us.pserver.tools.FileSizeFormatter;
+import us.pserver.valid.Valid;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 23/08/2015
  */
-public abstract class CounterInputStream extends InputStream {
+public class CounterInputStream extends FilterInputStream {
 
   private final AtomicLong count;
   
   
-  protected CounterInputStream() {
+  protected CounterInputStream(InputStream in) {
+		super(in);
     count = new AtomicLong(0L);
   }
   
@@ -49,11 +53,35 @@ public abstract class CounterInputStream extends InputStream {
     return new FileSizeFormatter()
         .format(count.get());
   }
-  
-  
-  protected int increment(int size) {
-    count.addAndGet(size);
-    return size;
-  }
+	
+	
+	@Override
+	public int read() throws IOException {
+		byte[] bs = new byte[1];
+		int r = this.read(bs);
+		return (r > 0 ? bs[0] : r);
+	}
+	
+	
+	@Override
+	public int read(byte[] bs, int off, int len) throws IOException {
+		Valid.off(bs).forEmpty().fail("Invalid empty byte array");
+		Valid.off(off).forLesserThan(0).fail("Invalid offset: ");
+		Valid.off(len).forLesserThan(1)
+				.or().forGreaterThan(bs.length-off)
+				.fail("Invalid length: ");
+		int r = in.read(bs, off, len);
+		if(r > 0) count.addAndGet(r);
+		return r;
+	}
+	
+	
+	@Override
+	public int read(byte[] bs) throws IOException {
+		return this.read(Valid.off(bs).forEmpty()
+				.getOrFail("Invalid empty byte array"),
+				0, bs.length
+		);
+	}
   
 }
