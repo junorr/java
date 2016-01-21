@@ -24,7 +24,7 @@ package us.pserver.jc.test;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import us.pserver.jc.WakeRule;
-import us.pserver.jc.rules.DateTime;
+import us.pserver.jc.util.DateTime;
 import us.pserver.jc.rules.RecurrentRule;
 import us.pserver.jc.rules.TimeAmountRule;
 

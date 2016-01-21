@@ -44,9 +44,7 @@ public class TestJConsole {
         new BufferStream(cf.jconsole()));
     cf.setLocationRelativeTo(null);
     cf.setVisible(true);
-    runfor(10, ()->new Thread(
-        ()->runfor(10, 
-        ()->ps.println("Printing Thread"))).start());
+    runfor(10, ()->ps.println("Printing Thread"));
   }
   
 }

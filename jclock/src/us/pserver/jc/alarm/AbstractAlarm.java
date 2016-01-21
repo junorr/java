@@ -11,7 +11,7 @@ import us.pserver.jc.Alarm;
 import us.pserver.jc.ClockContext;
 import us.pserver.jc.Task;
 import us.pserver.jc.WakeRule;
-import us.pserver.jc.rules.DateTime;
+import us.pserver.jc.util.DateTime;
 import us.pserver.jc.util.NotNull;
 
 

@@ -198,7 +198,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="us.pserver.tmo.JClock" name="jclock">
+        <Component class="us.pserver.tmo.ClockButton" name="jclock">
         </Component>
         <Component class="us.pserver.tmo.LabelButton" name="newLButton">
           <Properties>

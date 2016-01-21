@@ -226,7 +226,7 @@ public class MainGui extends javax.swing.JFrame {
   private void initComponents() {
 
     jPanel1 = new javax.swing.JPanel();
-    jclock = new us.pserver.tmo.JClock();
+    jclock = new us.pserver.tmo.ClockButton();
     newLButton = new us.pserver.tmo.LabelButton();
     editLButton = new us.pserver.tmo.LabelButton();
     removeLButton = new us.pserver.tmo.LabelButton();
@@ -513,7 +513,7 @@ public class MainGui extends javax.swing.JFrame {
   private javax.swing.JScrollPane jScrollPane2;
   private javax.swing.JPopupMenu.Separator jSeparator1;
   private javax.swing.JSplitPane jSplitPane1;
-  private us.pserver.tmo.JClock jclock;
+  private us.pserver.tmo.ClockButton jclock;
   private javax.swing.JList jlist;
   private us.pserver.tmo.LabelButton newLButton;
   private javax.swing.JMenuItem newScheduleMenu;

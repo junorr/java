@@ -26,7 +26,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import us.pserver.jc.WakeRule;
 import us.pserver.jc.rules.ComposedRule;
-import us.pserver.jc.rules.DateTime;
+import us.pserver.jc.util.DateTime;
 import us.pserver.jc.rules.DateTimeRule;
 import us.pserver.jc.rules.RecurrentRule;
 import us.pserver.jc.rules.TimeAmountRule;

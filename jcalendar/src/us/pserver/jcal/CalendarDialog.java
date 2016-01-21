@@ -23,6 +23,7 @@ package us.pserver.jcal;
 
 import java.awt.Component;
 import java.awt.Point;
+import java.util.Date;
 import javax.swing.JDialog;
 import us.pserver.date.SimpleDate;
 
@@ -67,6 +68,11 @@ public class CalendarDialog extends JDialog {
   public JCalendar jcalendar() {
     return calendar;
   }
+	
+	
+	public Date getDate() {
+		return calendar.getDate();
+	}
   
   
   public void showDialog() {

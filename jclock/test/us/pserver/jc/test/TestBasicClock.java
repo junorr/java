@@ -12,7 +12,7 @@ import us.pserver.jc.alarm.BasicAlarm;
 import us.pserver.jc.alarm.BasicTask;
 import us.pserver.jc.clock.ParallelClock;
 import us.pserver.jc.rules.ComposedRule;
-import us.pserver.jc.rules.DateTime;
+import us.pserver.jc.util.DateTime;
 import us.pserver.jc.rules.DateTimeRule;
 
 

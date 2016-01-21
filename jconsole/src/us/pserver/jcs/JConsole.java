@@ -39,6 +39,7 @@ public class JConsole extends JTextArea implements Printable {
       BACKGROUND = new Color(61, 61, 61),
       
       FOREGROUND = new Color(102, 255, 51);
+      //FOREGROUND = new Color(230, 230, 240);
   
   public static final String 
       CONSOLAS = "Consolos",

@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jc.rules;
+package us.pserver.jc.util;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -27,7 +27,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalUnit;
 import java.util.Date;
-import us.pserver.jc.util.NotNull;
 
 /**
  *

@@ -18,11 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 
@@ -78,6 +74,7 @@ public class FormGUI extends Application {
 		
 		Button login = new Button("Login", ilockView);
 		login.setMinWidth(80);
+		login.setId("login");
 		login.setOnAction(e->msg.setText("Logged as: "+ user.getText()));
 		HBox bbox = new HBox(10, login);
 		bbox.setAlignment(Pos.CENTER_RIGHT);

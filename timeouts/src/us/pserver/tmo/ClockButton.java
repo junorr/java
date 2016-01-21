@@ -25,31 +25,41 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import javax.swing.JButton;
-import us.pserver.date.SimpleDate;
+import us.pserver.jc.Clock;
+import us.pserver.jc.Task;
+import us.pserver.jc.WakeRule;
+import us.pserver.jc.alarm.BasicAlarm;
+import us.pserver.jc.alarm.BasicTask;
+import us.pserver.jc.clock.BasicClock;
+import us.pserver.jc.rules.RuleBuilder;
+import us.pserver.jc.util.DateTime;
 import us.pserver.jcal.CalendarDialog;
-import us.pserver.scron.Schedule;
-import us.pserver.scron.SimpleCron;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/04/2014
  */
-public class JClock extends JButton implements ActionListener {
+public class ClockButton extends JButton implements ActionListener {
   
-  private final SimpleDate time;
-  
-  private final SimpleCron cron;
+  private DateTime time;
+	
+	private Clock clock;
   
   private final CalendarDialog cal;
+	
+	private final DateTimeFormatter fmt;
   
   
-  public JClock() {
+  public ClockButton() {
     super();
-    cron = new SimpleCron();
-    cron.setLogEnabled(false);
-    time = SimpleDate.now();
+		time = DateTime.now();
+		fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		clock = new BasicClock();
+    time = DateTime.now();
     cal = new CalendarDialog(this, false);
     cal.jcalendar().setCloseAction(
         ()->cal.setVisible(false));
@@ -57,26 +67,28 @@ public class JClock extends JButton implements ActionListener {
         Font.PLAIN, 12));
     this.setForeground(Color.BLUE);
     setBackground(Color.WHITE);
-    this.setText(" "+time.toString()+" ");
+    this.setText(" "+fmt.format(time.toLocalDT())+" ");
     this.addActionListener(this);
   }
   
   
   public void start() {
-    Schedule s = new Schedule()
-        .startNow()
-        .repeatInSeconds(1);
-    cron.put(s, ()-> {
-      time.setNow();
-      this.setText(" "+time.toString()+" ");
-      this.repaint();
-    });
+		Task uptime = new BasicTask(c->{
+			time = DateTime.now();
+			this.setText(fmt.format(time.toLocalDT()));
+			this.repaint();
+		});
+		WakeRule rule = new RuleBuilder()
+				.at(DateTime.now().plus(1, ChronoUnit.SECONDS))
+				.in(1, ChronoUnit.SECONDS)
+				.build().get();
+		clock.register("uptime", new BasicAlarm(rule, uptime));
+		clock.setStopOnEmpty(false).start();
   }
   
   
   public void stop() {
-    cron.stop();
-    cron.jobs().clear();
+    clock.stop();
   }
 
 
