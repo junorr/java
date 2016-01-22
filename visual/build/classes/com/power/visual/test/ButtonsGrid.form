@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="3"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="blackButton2" min="-2" pref="150" max="-2" attributes="0"/>
+                      <EmptySpace min="40" pref="40" max="40" attributes="0"/>
+                      <Component id="blackButton7" min="-2" pref="150" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="blackButton3" min="-2" pref="150" max="-2" attributes="0"/>
+                      <EmptySpace min="40" pref="40" max="40" attributes="0"/>
+                      <Component id="blackButton8" min="-2" pref="150" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="blackButton4" min="-2" pref="150" max="-2" attributes="0"/>
+                      <EmptySpace min="40" pref="40" max="40" attributes="0"/>
+                      <Component id="blackButton9" min="-2" pref="150" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="blackButton5" min="-2" pref="150" max="-2" attributes="0"/>
+                      <EmptySpace min="40" pref="40" max="40" attributes="0"/>
+                      <Component id="blackButton10" min="-2" pref="150" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="blackButton6" min="-2" pref="150" max="-2" attributes="0"/>
+                      <EmptySpace min="40" pref="40" max="40" attributes="0"/>
+                      <Component id="blackButton11" min="-2" pref="150" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="blackButton1" min="-2" pref="150" max="-2" attributes="0"/>
+                      <EmptySpace min="40" pref="40" max="40" attributes="0"/>
+                      <Component id="blackButton12" min="-2" pref="150" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace min="10" pref="10" max="10" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="1" pref="1" max="1" attributes="0"/>
+                      <Component id="blackButton2" min="-2" pref="40" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="blackButton7" min="-2" pref="40" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="19" pref="19" max="19" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="blackButton3" min="-2" pref="40" max="-2" attributes="0"/>
+                  <Component id="blackButton8" min="-2" pref="40" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="20" pref="20" max="20" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="blackButton4" min="-2" pref="40" max="-2" attributes="0"/>
+                  <Component id="blackButton9" min="-2" pref="40" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="20" pref="20" max="20" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="blackButton5" min="-2" pref="40" max="-2" attributes="0"/>
+                  <Component id="blackButton10" min="-2" pref="40" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="20" pref="20" max="20" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="blackButton6" min="-2" pref="40" max="-2" attributes="0"/>
+                  <Component id="blackButton11" min="-2" pref="40" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="20" pref="20" max="20" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="blackButton1" min="-2" pref="40" max="-2" attributes="0"/>
+                  <Component id="blackButton12" min="-2" pref="40" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="com.power.visual.controls.BlackButton" name="blackButton1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Red Style"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.power.visual.controls.BlackButton(PaintStyle.RED_STYLE, &quot;&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="com.power.visual.controls.BlackButton" name="blackButton2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Black Style"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.power.visual.controls.BlackButton(PaintStyle.BLACK_STYLE, &quot;&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="com.power.visual.controls.BlackButton" name="blackButton3">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Blue Style"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.power.visual.controls.BlackButton(PaintStyle.BLUE_STYLE, &quot;&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="com.power.visual.controls.BlackButton" name="blackButton4">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Yellow Style"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.power.visual.controls.BlackButton(PaintStyle.YELLOW_STYLE, &quot;&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="com.power.visual.controls.BlackButton" name="blackButton5">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Green Style"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.power.visual.controls.BlackButton(PaintStyle.GREEN_STYLE, &quot;&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="com.power.visual.controls.BlackButton" name="blackButton6">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Winxp Style"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.power.visual.controls.BlackButton(PaintStyle.WINXP_STYLE, &quot;&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="com.power.visual.controls.BlackButton" name="blackButton7">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Gradient Black"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.power.visual.controls.BlackButton(PaintStyle.GRADIENT_BLACK, &quot;&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="com.power.visual.controls.BlackButton" name="blackButton8">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Gradient Blue"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.power.visual.controls.BlackButton(PaintStyle.GRADIENT_BLUE, &quot;&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="com.power.visual.controls.BlackButton" name="blackButton9">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Gradient Yellow"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.power.visual.controls.BlackButton(PaintStyle.GRADIENT_YELLOW, &quot;&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="com.power.visual.controls.BlackButton" name="blackButton10">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Gradient Green"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.power.visual.controls.BlackButton(PaintStyle.GRADIENT_GREEN, &quot;&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="com.power.visual.controls.BlackButton" name="blackButton11">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Gradient Winxp"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.power.visual.controls.BlackButton(PaintStyle.GRADIENT_WINXP, &quot;&quot;)"/>
+      </AuxValues>
+    </Component>
+    <Component class="com.power.visual.controls.BlackButton" name="blackButton12">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Gradient Red"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.power.visual.controls.BlackButton(PaintStyle.GRADIENT_RED, &quot;&quot;)"/>
+      </AuxValues>
+    </Component>
+  </SubComponents>
+</Form>

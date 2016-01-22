@@ -21,6 +21,7 @@
 
 package us.pserver.jc.clock;
 
+import ch.qos.logback.classic.Level;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -70,6 +71,18 @@ public abstract class AbstractClock implements Clock {
 	@Override
 	public Clock setStopOnEmpty(boolean b) {
 		stopOnEmpty.getAndSet(b);
+		return this;
+	}
+	
+	
+	@Override
+	public Clock setLoggingEnabled(boolean bool) {
+		if(bool) {
+			log = LoggerFactory.getLogger(this.getClass());
+		} else {
+			ch.qos.logback.classic.Logger lb = (ch.qos.logback.classic.Logger) log;
+			lb.setLevel(Level.OFF);
+		}
 		return this;
 	}
 

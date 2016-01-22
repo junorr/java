@@ -37,6 +37,8 @@ public interface Clock {
 	public Clock setStopOnEmpty(boolean stop);
 	
 	public boolean isStopOnEmpty();
+	
+	public Clock setLoggingEnabled(boolean enabled);
   
   public Clock stop();
   

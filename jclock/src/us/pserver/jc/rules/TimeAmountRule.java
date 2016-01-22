@@ -34,11 +34,11 @@ import us.pserver.jc.util.NotNull;
  */
 public class TimeAmountRule implements WakeRule {
 
-  private DateTime dtm;
+  private final DateTime dtm;
   
-  private long amount, time;
+  private final long amount;
   
-  private TemporalUnit unit;
+  private final TemporalUnit unit;
 	
 	
 	public TimeAmountRule(long amount, TemporalUnit unit) {
@@ -56,11 +56,26 @@ public class TimeAmountRule implements WakeRule {
     this.amount = amount;
     this.unit = NotNull.of(unit).getOrFail();
   }
-  
-  
+	
+	
+	public TemporalUnit getTemporalUnit() {
+		return unit;
+	}
+	
+	
+	public long getTimeAmount() {
+		return amount;
+	}
+	
+	
+	public DateTime getStartDate() {
+		return dtm;
+	}
+	
+	
   @Override
   public long resolve() {
-    return dtm.toTime();
+    return dtm.plus(amount, unit).toTime();
   }
 	
 	

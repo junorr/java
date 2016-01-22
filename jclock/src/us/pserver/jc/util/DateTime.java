@@ -25,6 +25,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalUnit;
 import java.util.Date;
 
@@ -48,6 +49,12 @@ public interface DateTime {
   public DateTime plus(long amount, TemporalUnit tu);
   
   public DateTime minus(long amount, TemporalUnit tu);
+	
+	public default String format(String pattern) {
+		return DateTimeFormatter
+				.ofPattern(pattern)
+				.format(this.toLocalDT());
+	}
   
   
   public static DateTime of(Date date) {
@@ -58,6 +65,28 @@ public interface DateTime {
   public static DateTime of(long time) {
     return new ImplDateTime(time);
   }
+	
+	
+	public static DateTime of(int year, int month, int day, int hour, int min, int sec) {
+		return of(LocalDateTime.of(year, month, day, hour, min, sec));
+	}
+  
+  
+	public static DateTime of(int ... fields) {
+		if(fields == null || fields.length == 0) {
+			throw new IllegalArgumentException(
+					"Invalid empty DateTime fields"
+			);
+		}
+		return of(LocalDateTime.of(
+				(fields.length >= 1 ? fields[0] : 0), 
+				(fields.length >= 2 ? fields[1] : 1), 
+				(fields.length >= 3 ? fields[2] : 1), 
+				(fields.length >= 4 ? fields[3] : 0), 
+				(fields.length >= 5 ? fields[4] : 0), 
+				(fields.length >= 6 ? fields[5] : 0)
+		));
+	}
   
   
   public static DateTime of(LocalDateTime ldt) {

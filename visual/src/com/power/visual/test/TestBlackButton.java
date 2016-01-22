@@ -54,21 +54,21 @@ public class TestBlackButton {
     }
 
     BlackButton bb = new BlackButton(paint1, s);
-
+		/*
     BlackButton bc = new BlackButton(paint2,
         PowerImage.getInstance(
         "T:/java/com/power/images/elipse3D-[64x34].png"),
         "");
-
+				*/
     final RunningLabel rl = new RunningLabel();
-
+/*
     bc.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent ae)
         {
           rl.stop();
         }//method()
     });
-
+*/
     bb.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent ae)
         {
@@ -77,13 +77,13 @@ public class TestBlackButton {
     });
 
     bb.setPreferredSize(new Dimension(110, 40));
-    bc.setPreferredSize(new Dimension(110, 40));
+    //bc.setPreferredSize(new Dimension(110, 40));
 
     //rl.setSize(180, 180);
     rl.setPreferredSize(new Dimension(100, 100));
 
     f.add(bb);
-    f.add(bc);
+    //f.add(bc);
     f.add(rl);
     f.setVisible(true);
   }//main()

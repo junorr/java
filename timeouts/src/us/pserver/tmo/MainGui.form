@@ -173,9 +173,7 @@
                   <Component id="runLButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="viewLButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="40" max="32767" attributes="0"/>
-                  <Component id="jclock" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace pref="95" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -185,7 +183,6 @@
                   <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="newScriptButton" min="-2" max="-2" attributes="0"/>
-                      <Component id="jclock" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="newLButton" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="editLButton" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
                       <Component id="removeLButton" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
@@ -198,8 +195,6 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="us.pserver.tmo.ClockButton" name="jclock">
-        </Component>
         <Component class="us.pserver.tmo.LabelButton" name="newLButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">

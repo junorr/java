@@ -7,8 +7,12 @@ package us.pserver.jc.rules;
 
 import us.pserver.jc.util.DateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalUnit;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
+import java.util.function.Predicate;
 import us.pserver.jc.WakeRule;
 
 
@@ -39,6 +43,16 @@ public class RuleBuilder {
 	}
 	
 	
+	public static RuleBuilder ruleAt(DateTime dtm) {
+		return new RuleBuilder().at(dtm);
+	}
+	
+	
+	public static RuleBuilder ruleIn(int amount, TemporalUnit unit) {
+		return new RuleBuilder().in(amount, unit);
+	}
+	
+	
 	public RuleBuilder at(DateTime dtm) {
 		if(dtm != null) {
 			start = dtm;
@@ -62,6 +76,28 @@ public class RuleBuilder {
 	}
 	
 	
+	public RuleBuilder condition(Predicate<TemporalAccessor> ... conds) {
+		if(conds != null 
+				&& conds.length > 0 
+				&& rule != null) {
+			rule = new PredicateRule(rule, conds);
+		}
+		return this;
+	}
+	
+	
+	public RuleBuilder condition(BinaryOperator<Boolean> operator, Predicate<TemporalAccessor> ... conds) {
+		if(conds != null 
+				&& conds.length > 0 
+				&& rule != null) {
+			PredicateRule pr = new PredicateRule(rule, operator);
+			pr.getConditions().addAll(Arrays.asList(conds));
+			rule = pr;
+		}
+		return this;
+	}
+	
+	
 	public Optional<WakeRule> build() {
 		WakeRule wake = null;
 		if(amount > 0 && unit != null) {
@@ -73,10 +109,12 @@ public class RuleBuilder {
 		}	else if(start != null) {
 			wake = new DateTimeRule(start);
 		}
-		if(rule != null && rule instanceof ComposedRule) {
-			((ComposedRule)rule).addRule(wake);
-		} else {
-			rule = wake;
+		if(wake != null) {
+			if(rule != null && rule instanceof ComposedRule) {
+				((ComposedRule)rule).addRule(wake);
+			} else {
+				rule = wake;
+			}
 		}
 		if(repeat > 0 && rule != null) {
 			rule = new RecurrentRule(rule, repeat);

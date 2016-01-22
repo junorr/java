@@ -25,9 +25,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import us.pserver.jc.Clock;
 import us.pserver.jc.Task;
 import us.pserver.jc.WakeRule;
@@ -37,58 +38,73 @@ import us.pserver.jc.clock.BasicClock;
 import us.pserver.jc.rules.RuleBuilder;
 import us.pserver.jc.util.DateTime;
 import us.pserver.jcal.CalendarDialog;
+import us.pserver.tmo.ctrl.BlackButton;
+import us.pserver.tmo.ctrl.PaintStyle;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 30/04/2014
  */
-public class ClockButton extends JButton implements ActionListener {
+public class ClockButton extends BlackButton implements ActionListener {
   
-  private DateTime time;
+	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	
-	private Clock clock;
+	private DateTime time;
+	
+	private BasicClock clock;
   
   private final CalendarDialog cal;
 	
-	private final DateTimeFormatter fmt;
+	private final String dateFormat;
+	
   
-  
-  public ClockButton() {
-    super();
+  public ClockButton(String dateFormat) {
+    super(PaintStyle.BLACK_STYLE, "");
+		if(dateFormat == null 
+				|| dateFormat.trim().isEmpty()) {
+			dateFormat = DEFAULT_DATE_FORMAT;
+		}
+		this.dateFormat = dateFormat;
 		time = DateTime.now();
-		fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		clock = new BasicClock();
-    time = DateTime.now();
     cal = new CalendarDialog(this, false);
     cal.jcalendar().setCloseAction(
         ()->cal.setVisible(false));
     this.setFont(new Font("Monospaced", 
-        Font.PLAIN, 12));
-    this.setForeground(Color.BLUE);
-    setBackground(Color.WHITE);
-    this.setText(" "+fmt.format(time.toLocalDT())+" ");
+        Font.BOLD, 13));
+		//this.setForeground(new Color(0, 177, 255));
+		this.setForeground(new Color(240, 240, 255));
+    this.setText(" "+time.format(dateFormat)+" ");
     this.addActionListener(this);
   }
+	
+	
+	public ClockButton() {
+		this(DEFAULT_DATE_FORMAT);
+	}
   
   
-  public void start() {
+  public ClockButton start() {
 		Task uptime = new BasicTask(c->{
 			time = DateTime.now();
-			this.setText(fmt.format(time.toLocalDT()));
+			this.setText(time.format(dateFormat));
 			this.repaint();
 		});
-		WakeRule rule = new RuleBuilder()
-				.at(DateTime.now().plus(1, ChronoUnit.SECONDS))
-				.in(1, ChronoUnit.SECONDS)
+		WakeRule rule = RuleBuilder
+				.ruleIn(1, ChronoUnit.SECONDS)
 				.build().get();
 		clock.register("uptime", new BasicAlarm(rule, uptime));
-		clock.setStopOnEmpty(false).start();
+		clock.setStopOnEmpty(false)
+				.setLoggingEnabled(false);
+		clock.startNewThread();
+		return this;
   }
   
   
-  public void stop() {
+  public ClockButton stop() {
     clock.stop();
+		return this;
   }
 
 
@@ -100,4 +116,39 @@ public class ClockButton extends JButton implements ActionListener {
       cal.showDialog();
   }
 
+	
+	public static void main(String[] args) {
+		final JFrame f = new JFrame("Test ClockButton");
+		JPanel p = new JPanel();
+		p.add(new ClockButton().start());
+		f.add(p);
+		f.setLocationRelativeTo(null);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.pack();
+    try {
+      for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+        if ("Nimbus".equals(info.getName())) {
+          javax.swing.UIManager.setLookAndFeel(info.getClassName());
+          break;
+        }
+      }
+    } catch (ClassNotFoundException ex) {
+      java.util.logging.Logger.getLogger(MainGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (InstantiationException ex) {
+      java.util.logging.Logger.getLogger(MainGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (IllegalAccessException ex) {
+      java.util.logging.Logger.getLogger(MainGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+      java.util.logging.Logger.getLogger(MainGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    }
+        //</editor-fold>
+
+    /* Create and display the form */
+    java.awt.EventQueue.invokeLater(new Runnable() {
+      public void run() {
+        f.setVisible(true);
+      }
+    });
+	}
+	
 }
