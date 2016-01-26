@@ -1,0 +1,18 @@
+.fxc-bg-color {
+	-fx-background-color: rgb(61, 61, 61);
+}
+
+.fxc-std-color {
+	-fx-fill: rgb(138, 226, 52);
+}
+
+.fxc-err-color {
+	-fx-fill: rgb(255, 95, 86);
+}
+
+.fxc-font {
+	-fx-font-family: "monospace";
+	-fx-font-size: 14px;
+	-fx-font-weight: normal;
+	-fx-font-style: normal;
+}

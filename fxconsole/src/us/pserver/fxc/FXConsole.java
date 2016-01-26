@@ -5,29 +5,77 @@
  */
 package us.pserver.fxc;
 
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.FlowPane;
+import java.io.PrintStream;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.text.TextFlow;
 
 
 /**
  *
  * @author juno
  */
-public class FXConsole extends FlowPane {
+public class FXConsole extends ScrollPane {
 
-	private TextArea text;
+	public static final String 
+			CSS_BG_COLOR = "fxc-bg-color",
+			CSS_STD_COLOR = "fxc-std-color",
+			CSS_ERR_COLOR = "fxc-err-color",
+			CSS_FONT = "fxc-font";
+	
+	
+	private TextFlow flow;
+	
+	private PrintStream stdout;
+	
+	private PrintStream errout;
 	
 	
 	public FXConsole() {
-		super(0, 0);
-		this.setPadding(Insets.EMPTY);
-		this.setWidth(200);
-		this.setHeight(120);
-		text = new TextArea();
-		text.setId("text");
-		this.getChildren().add(text);
+		super();
+		flow = new TextFlow();
+		flow.getStylesheets().clear();
+		flow.getStylesheets().add(
+				this.getClass().getResource(
+						"/us/pserver/fxc/css/fxconsole.css")
+						.toExternalForm()
+		);
+		flow.setOnScroll(e->{
+			double v = (e.getDeltaY() > 0 ? 0.05 : -0.05);
+			this.setVvalue(this.getVvalue() - v);
+		});
+		flow.getStyleClass().add(CSS_BG_COLOR);
+		stdout = new PrintStream(
+				new TextFlowOutputStream(flow, CSS_FONT, CSS_STD_COLOR)
+		);
+		errout = new PrintStream(
+				new TextFlowOutputStream(flow, CSS_FONT, CSS_ERR_COLOR)
+		);
+		this.setHbarPolicy(ScrollBarPolicy.NEVER);
+		this.setContent(flow);
+		flow.heightProperty().addListener((o,v,n)->{
+			this.setVvalue(flow.getHeight());
+		});
+		this.widthProperty().addListener(
+				(o,v,n)->flow.setMinWidth(n.doubleValue() -2)
+		);
+		this.heightProperty().addListener(
+				(o,v,n)->flow.setMinHeight(n.doubleValue() -2)
+		);
 	}
-
+	
+	
+	public PrintStream getStdOut() {
+		return stdout;
+	}
+	
+	
+	public PrintStream getErrOut() {
+		return errout;
+	}
+	
+	
+	public void clear() {
+		flow.getChildren().clear();
+	}
+	
 }
