@@ -59,3 +59,17 @@
 	-fx-text-fill: rgb(255,255,255);
 	-fx-font-size: 22px;
 }
+
+.fxcron-text-field {
+  -fx-background-color: rgba(255,255,255,0.1);
+  -fx-font-family: "DejaVu Sans";
+  -fx-font-size: 18px;
+  -fx-text-fill: rgb(255,255,255);
+}
+
+.fxcron-text-field:hover {
+  -fx-background-color: rgba(255,255,255,0.2);
+	-fx-border-color: white;
+	-fx-border-radius: 2px;
+	-fx-border-width: 2px;
+}
