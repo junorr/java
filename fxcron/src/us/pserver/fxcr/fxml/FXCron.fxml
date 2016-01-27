@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" styleClass="fxcron-bg2" stylesheets="@../css/fxcron.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="us.pserver.fxcr.FXCronController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="NEVER" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="NEVER" />
+  </rowConstraints>
+   <children>
+      <FlowPane fx:id="buttonPane" alignment="CENTER_LEFT" hgap="10.0" prefHeight="66.0" prefWidth="900.0" styleClass="fxcron-btpanel" vgap="10.0" GridPane.columnSpan="2">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+         </padding>
+         <children>
+            <Button fx:id="btnNew" mnemonicParsing="false" text="%fa.plus" textAlignment="CENTER">
+               <styleClass>
+                  <String fx:value="font-awesome" />
+                  <String fx:value="fxcron-btn" />
+               </styleClass>
+               <tooltip>
+                  <Tooltip opacity="0.8" text="New Alarm">
+                     <styleClass>
+                        <String fx:value="fxcron-font" />
+                        <String fx:value="fxcron-font-bold" />
+                     </styleClass></Tooltip>
+               </tooltip>
+            </Button>
+         </children>
+      </FlowPane>
+      <FlowPane alignment="CENTER_LEFT" hgap="10.0" prefHeight="200.0" prefWidth="200.0" styleClass="fxcron-btpanel" GridPane.columnSpan="2" GridPane.rowIndex="3">
+         <children>
+            <Label styleClass="fxcron-status" text="Label" />
+         </children>
+         <padding>
+            <Insets left="20.0" right="20.0" />
+         </padding>
+      </FlowPane>
+      <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" GridPane.rowSpan="2">
+         <content>
+            <ListView prefHeight="200.0" prefWidth="200.0" />
+         </content>
+      </ScrollPane>
+      <StackPane id="contentPane" fx:id="contentPane" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2" />
+   </children>
+</GridPane>

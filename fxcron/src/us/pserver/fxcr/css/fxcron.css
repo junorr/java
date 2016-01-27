@@ -1,0 +1,61 @@
+.fxcron-bg {
+	-fx-background-color: radial-gradient(center 50% 50%, radius 55%, rgb(70,102,134), rgb(13,20,38));
+}
+
+.fxcron-bg2 {
+	-fx-background-color: radial-gradient(focus-angle 225deg, focus-distance 100%, center 35% 35%, radius 55%, rgb(70,102,134), rgb(13,20,38));
+}
+
+.fxcron-btpanel {
+	-fx-background-color: rgba(61,61,61,0.3);
+}
+
+@font-face {
+	font-family: "FontAwesome";
+	src: url("/us/pserver/fxcr/font/fontawesome-webfont.ttf");
+}
+
+.font-awesome {
+	-fx-font-family: "FontAwesome";
+}
+
+.fxcron-btn {
+	-fx-border-color: white;
+	-fx-border-radius: 2px;
+	-fx-border-width: 2px;
+	-fx-background-color: rgba(255,255,255,0.0);
+	-fx-text-fill: white;
+	-fx-font-size: 16px;
+}
+
+.fxcron-btn:hover {
+	-fx-background-color: rgba(255,255,255,0.2);
+}
+
+.fxcron-split-right {
+	-fx-background-color: rgba(255,255,255,0.0);
+}
+
+.fxcron-status {
+	-fx-text-fill: rgba(255,255,255,0.8);
+	-fx-font-family: "monospace";
+	-fx-font-weight: bold;
+}
+
+.fxcron-font {
+	-fx-font-family: "DejaVu Sans";
+}
+
+.fxcron-font-bold {
+	-fx-font-weight: bold;
+}
+
+.fxcron-label {
+	-fx-text-fill: rgb(255,255,255);
+	-fx-font-size: 30px;
+}
+
+.fxcron-sub-label {
+	-fx-text-fill: rgb(255,255,255);
+	-fx-font-size: 22px;
+}
