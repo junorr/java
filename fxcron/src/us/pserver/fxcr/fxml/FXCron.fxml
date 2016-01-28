@@ -25,7 +25,7 @@
       <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="NEVER" />
   </rowConstraints>
    <children>
-      <FlowPane fx:id="buttonPane" alignment="CENTER_LEFT" hgap="10.0" prefHeight="66.0" prefWidth="900.0" styleClass="fxcron-btpanel" vgap="10.0" GridPane.columnSpan="2">
+      <FlowPane fx:id="buttonBar" alignment="CENTER_LEFT" hgap="10.0" prefHeight="66.0" prefWidth="900.0" styleClass="fxcron-btpanel" vgap="10.0" GridPane.columnSpan="2">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
@@ -33,7 +33,7 @@
             <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
          </padding>
          <children>
-            <Button fx:id="btnNew" mnemonicParsing="false" text="%fa.plus" textAlignment="CENTER">
+            <Button fx:id="newButton" mnemonicParsing="false" text="%fa.plus" textAlignment="CENTER">
                <styleClass>
                   <String fx:value="font-awesome" />
                   <String fx:value="fxcron-btn" />
@@ -46,11 +46,53 @@
                      </styleClass></Tooltip>
                </tooltip>
             </Button>
+            <Button fx:id="editButton" mnemonicParsing="false" text="%fa.pencil">
+               <styleClass>
+                  <String fx:value="font-awesome" />
+                  <String fx:value="fxcron-btn" />
+               </styleClass>
+               <tooltip>
+                  <Tooltip text="Edit Alarm">
+                     <styleClass>
+                        <String fx:value="fxcron-font" />
+                        <String fx:value="fxcron-font-bold" />
+                     </styleClass>
+                  </Tooltip>
+               </tooltip>
+            </Button>
+            <Button fx:id="removeButton" mnemonicParsing="false" text="%fa.minus">
+               <styleClass>
+                  <String fx:value="font-awesome" />
+                  <String fx:value="fxcron-btn" />
+               </styleClass>
+               <tooltip>
+                  <Tooltip text="Remove Alarm">
+                     <styleClass>
+                        <String fx:value="fxcron-font" />
+                        <String fx:value="fxcron-font-bold" />
+                     </styleClass>
+                  </Tooltip>
+               </tooltip>
+            </Button>
+            <Button fx:id="termButton" mnemonicParsing="false" text="%fa.term">
+               <styleClass>
+                  <String fx:value="font-awesome" />
+                  <String fx:value="fxcron-btn" />
+               </styleClass>
+               <tooltip>
+                  <Tooltip text="View Terminal">
+                     <styleClass>
+                        <String fx:value="fxcron-font" />
+                        <String fx:value="fxcron-font-bold" />
+                     </styleClass>
+                  </Tooltip>
+               </tooltip>
+            </Button>
          </children>
       </FlowPane>
-      <FlowPane alignment="CENTER_LEFT" hgap="10.0" prefHeight="200.0" prefWidth="200.0" styleClass="fxcron-btpanel" GridPane.columnSpan="2" GridPane.rowIndex="3">
+      <FlowPane fx:id="statusBar" alignment="CENTER_LEFT" hgap="10.0" prefHeight="200.0" prefWidth="200.0" styleClass="fxcron-btpanel" GridPane.columnSpan="2" GridPane.rowIndex="3">
          <children>
-            <Label styleClass="fxcron-status" text="Label" />
+            <Label fx:id="statusLabel" styleClass="fxcron-status" />
          </children>
          <padding>
             <Insets left="20.0" right="20.0" />
@@ -58,9 +100,9 @@
       </FlowPane>
       <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" GridPane.rowSpan="2">
          <content>
-            <ListView prefHeight="200.0" prefWidth="200.0" />
+            <ListView fx:id="alarmList" prefHeight="200.0" prefWidth="200.0" />
          </content>
       </ScrollPane>
-      <StackPane id="contentPane" fx:id="contentPane" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2" />
+      <StackPane id="contentPane" fx:id="content" alignment="TOP_CENTER" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2" />
    </children>
 </GridPane>

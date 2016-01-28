@@ -24,23 +24,23 @@ import javafx.stage.Stage;
  */
 public class FXCron extends Application {
 	
+	public static final Font FONT_AWESOME = 
+			Font.loadFont(FXCron.class.getResource(
+				"/us/pserver/fxcr/font/fontawesome-webfont.ttf")
+				.toExternalForm(), 14
+			);
+	
+	
 	@Override
 	public void start(Stage stage) throws IOException {
-		Font.loadFont(this.getClass().getResource(
-				"/us/pserver/fxcr/font/fontawesome-webfont.ttf")
-				.toExternalForm(), 12
-		);
 		FXMLLoader loader = new FXMLLoader(
 				this.getClass().getResource(
 						"/us/pserver/fxcr/fxml/FXCron.fxml"),
 				ResourceBundle.getBundle("bundles.fa")
 		);
 		Region root = loader.load();
-		FXCronController ctrl = (FXCronController) loader.getController();
-		StackPane content = (StackPane) root.lookup("#contentPane");
-		ctrl.setContentPane(content);
 		
-		Scene scene = new Scene(root, 800, 500);
+		Scene scene = new Scene(root, 1200, 700);
 		stage.setTitle("FXCron");
 		stage.setScene(scene);
 		stage.show();

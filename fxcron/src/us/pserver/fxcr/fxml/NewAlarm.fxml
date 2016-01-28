@@ -3,6 +3,8 @@
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
@@ -13,10 +15,10 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="613.0" styleClass="fxcron-bg2" stylesheets="@../css/fxcron.css" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="572.0" prefWidth="613.0" stylesheets="@../css/fxcron.css" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" percentWidth="60.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
@@ -27,7 +29,8 @@
       <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
       <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
       <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
-      <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnSpan="2">
@@ -91,7 +94,7 @@
             <Insets right="10.0" />
          </padding>
          <children>
-            <TextField fx:id="nameField" promptText="Alarm Name" styleClass="fxcron-text-field" />
+            <TextField fx:id="nameField" opacity="0.8" promptText="Alarm Name" styleClass="fxcron-text-field" />
          </children>
       </StackPane>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
@@ -113,8 +116,7 @@
             <Insets right="10.0" />
          </padding>
          <children>
-            <TextField fx:id="dateField" promptText="Date" styleClass="fxcron-text-field" />
-            <Button fx:id="calendarButton" mnemonicParsing="false" styleClass="fxcron-btn" text="%fa.calendar" />
+            <DatePicker fx:id="dateField" opacity="0.8" prefWidth="1024.0" styleClass="fxcron-text-field" />
          </children>
       </StackPane>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="4">
@@ -136,21 +138,21 @@
             <Insets right="10.0" />
          </padding>
          <children>
-            <TextField fx:id="hourField" alignment="CENTER" prefWidth="45.0" promptText="H" styleClass="fxcron-text-field" />
+            <TextField fx:id="hourField" alignment="CENTER" opacity="0.8" prefWidth="45.0" promptText="H" styleClass="fxcron-text-field" />
             <Label text=":">
                <styleClass>
                   <String fx:value="fxcron-font" />
                   <String fx:value="fxcron-sub-label" />
                </styleClass>
             </Label>
-            <TextField fx:id="minField" alignment="CENTER" prefWidth="45.0" promptText="M" styleClass="fxcron-text-field" />
+            <TextField fx:id="minField" alignment="CENTER" opacity="0.8" prefWidth="45.0" promptText="M" styleClass="fxcron-text-field" />
             <Label text=":">
                <styleClass>
                   <String fx:value="fxcron-font" />
                   <String fx:value="fxcron-sub-label" />
                </styleClass>
             </Label>
-            <TextField fx:id="secField" alignment="CENTER" prefWidth="45.0" promptText="S" styleClass="fxcron-text-field" />
+            <TextField fx:id="secField" alignment="CENTER" opacity="0.8" prefWidth="45.0" promptText="S" styleClass="fxcron-text-field" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="5">
@@ -172,7 +174,7 @@
             <Insets right="10.0" />
          </padding>
          <children>
-            <Slider fx:id="hourSlider" blockIncrement="1.0" majorTickUnit="3.0" max="23.0" minorTickCount="2" showTickLabels="true" />
+            <Slider fx:id="hourSlider" blockIncrement="1.0" majorTickUnit="3.0" max="23.0" minorTickCount="2" opacity="0.8" showTickLabels="true" />
          </children>
       </StackPane>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="6">
@@ -194,7 +196,7 @@
             <Insets right="10.0" />
          </padding>
          <children>
-            <Slider fx:id="minSlider" blockIncrement="1.0" majorTickUnit="10.0" max="59.0" showTickLabels="true" />
+            <Slider fx:id="minSlider" blockIncrement="1.0" majorTickUnit="10.0" max="59.0" opacity="0.8" showTickLabels="true" />
          </children>
       </StackPane>
       <StackPane alignment="CENTER_LEFT" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
@@ -202,7 +204,7 @@
             <Insets right="10.0" />
          </padding>
          <children>
-            <Slider fx:id="secSlider" blockIncrement="1.0" majorTickUnit="10.0" max="59.0" showTickLabels="true" />
+            <Slider fx:id="secSlider" blockIncrement="1.0" majorTickUnit="10.0" max="59.0" opacity="0.8" showTickLabels="true" />
          </children>
       </StackPane>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="7">
@@ -233,107 +235,52 @@
             </Label>
          </children>
       </HBox>
-      <GridPane vgap="10.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
+      <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
          <padding>
             <Insets right="10.0" />
          </padding>
          <children>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <TextField fx:id="repeatField" alignment="CENTER" prefWidth="45.0" promptText="0" styleClass="fxcron-text-field" />
-                  <Label style="-fx-font-size: 18px;" text="Times">
+            <CheckBox fx:id="repeatCheck" mnemonicParsing="false" opacity="0.8" styleClass="fxcron-text-field" text="Enabled" />
+            <Button fx:id="repeatButton" mnemonicParsing="false" styleClass="fxcron-btn" text="%fa.gear">
+               <tooltip>
+                  <Tooltip text="Configure Repeat">
                      <styleClass>
+                        <String fx:value="fxcron-font" />
+                        <String fx:value="fxcron-font-bold" />
+                     </styleClass>
+                  </Tooltip>
+               </tooltip>
+            </Button>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnSpan="2" GridPane.rowIndex="9">
+         <children>
+            <Button fx:id="cancelButton" mnemonicParsing="false" prefWidth="150.0" styleClass="fxcron-btn" text="Cancel">
+               <graphic>
+                  <Label style="-fx-font-size: 16px;" text="%fa.cancel">
+                     <styleClass>
+                        <String fx:value="font-awesome" />
                         <String fx:value="fxcron-font" />
                         <String fx:value="fxcron-sub-label" />
                      </styleClass>
                   </Label>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="1">
-               <padding>
-                  <Insets right="10.0" />
-               </padding>
-               <children>
-                  <Button fx:id="sunButton" mnemonicParsing="false" prefWidth="45.0" styleClass="fxcron-btn" text="S">
-                     <tooltip>
-                        <Tooltip opacity="0.8" text="Sunday">
-                           <styleClass>
-                              <String fx:value="fxcron-font" />
-                              <String fx:value="fxcron-font-bold" />
-                           </styleClass>
-                        </Tooltip>
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="monButton" mnemonicParsing="false" prefWidth="45.0" styleClass="fxcron-btn" text="M">
-                     <tooltip>
-                        <Tooltip opacity="0.8" text="Monday">
-                           <styleClass>
-                              <String fx:value="fxcron-font" />
-                              <String fx:value="fxcron-font-bold" />
-                           </styleClass>
-                        </Tooltip>
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="tueButton" mnemonicParsing="false" prefWidth="45.0" styleClass="fxcron-btn" text="T">
-                     <tooltip>
-                        <Tooltip opacity="0.8" text="Tuesday">
-                           <styleClass>
-                              <String fx:value="fxcron-font" />
-                              <String fx:value="fxcron-font-bold" />
-                           </styleClass>
-                        </Tooltip>
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="wedButton" mnemonicParsing="false" prefWidth="45.0" styleClass="fxcron-btn" text="W">
-                     <tooltip>
-                        <Tooltip opacity="0.8" text="Wednesday">
-                           <styleClass>
-                              <String fx:value="fxcron-font" />
-                              <String fx:value="fxcron-font-bold" />
-                           </styleClass>
-                        </Tooltip>
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="thiButton" mnemonicParsing="false" prefWidth="45.0" styleClass="fxcron-btn" text="T">
-                     <tooltip>
-                        <Tooltip opacity="0.8" text="Thirsday">
-                           <styleClass>
-                              <String fx:value="fxcron-font" />
-                              <String fx:value="fxcron-font-bold" />
-                           </styleClass>
-                        </Tooltip>
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="friButton" mnemonicParsing="false" prefWidth="45.0" styleClass="fxcron-btn" text="F">
-                     <tooltip>
-                        <Tooltip opacity="0.8" text="Friday">
-                           <styleClass>
-                              <String fx:value="fxcron-font" />
-                              <String fx:value="fxcron-font-bold" />
-                           </styleClass>
-                        </Tooltip>
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="satButton" mnemonicParsing="false" prefWidth="45.0" styleClass="fxcron-btn" text="S">
-                     <tooltip>
-                        <Tooltip opacity="0.8" text="Saturday">
-                           <styleClass>
-                              <String fx:value="fxcron-font" />
-                              <String fx:value="fxcron-font-bold" />
-                           </styleClass>
-                        </Tooltip>
-                     </tooltip>
-                  </Button>
-               </children>
-            </HBox>
+               </graphic>
+            </Button>
+            <Button fx:id="saveButton" mnemonicParsing="false" prefWidth="150.0" styleClass="fxcron-btn" text="Save">
+               <graphic>
+                  <Label style="-fx-font-size: 16px;" text="%fa.save">
+                     <styleClass>
+                        <String fx:value="font-awesome" />
+                        <String fx:value="fxcron-font" />
+                        <String fx:value="fxcron-sub-label" />
+                     </styleClass>
+                  </Label>
+               </graphic>
+            </Button>
          </children>
-      </GridPane>
+      </HBox>
    </children>
+   <padding>
+      <Insets bottom="10.0" top="10.0" />
+   </padding>
 </GridPane>

@@ -6,6 +6,7 @@
 package us.pserver.fxc;
 
 import java.io.PrintStream;
+import java.net.URL;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.text.TextFlow;
 
@@ -76,6 +77,14 @@ public class FXConsole extends ScrollPane {
 	
 	public void clear() {
 		flow.getChildren().clear();
+	}
+	
+	
+	public void setStylesheet(String src) {
+		if(src != null) {
+			flow.getStylesheets().clear();
+			flow.getStylesheets().add(src);
+		}
 	}
 	
 }

@@ -12,9 +12,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import us.pserver.jc.Alarm;
 
 
 /**
@@ -24,39 +26,88 @@ import javafx.scene.layout.StackPane;
  */
 public class FXCronController implements Initializable {
 
-	@FXML private FlowPane buttonPane;
+	@FXML private FlowPane buttonBar;
 
-	@FXML private Button btnNew;
+	@FXML private Button newButton;
 	
-	private StackPane contentPane;
+	@FXML private Button editButton;
 	
-	private NextAlarmController nextCtrl;
+	@FXML private Button removeButton;
+	
+	@FXML private Button termButton;
+	
+	@FXML private ListView<Alarm> alarmList;
+	
+	@FXML private StackPane content;
+	
+	private Pane nextPane;
+	
+	private Pane newPane;
+	
+	private Pane rptPane;
+	
+	private NextAlarmController nextController;
+	
+	private NewAlarmController newController;
+	
+	private RepeatAlarmController rptController;
 
 	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
+		try {
+			FXMLLoader loader = new FXMLLoader(
+					this.getClass().getResource(
+							"/us/pserver/fxcr/fxml/RepeatAlarm.fxml"), 
+					ResourceBundle.getBundle("bundles.fa")
+			);
+			rptPane = loader.load();
+			rptController = (RepeatAlarmController) loader.getController();
+			
+			loader = new FXMLLoader(
+					this.getClass().getResource(
+							"/us/pserver/fxcr/fxml/NewAlarm.fxml"), 
+					ResourceBundle.getBundle("bundles.fa")
+			);
+			newPane = loader.load();
+			newController = (NewAlarmController) loader.getController();
+			
+			loader = new FXMLLoader(
+					this.getClass().getResource(
+							"/us/pserver/fxcr/fxml/NextAlarm.fxml"), 
+					ResourceBundle.getBundle("bundles.fa")
+			);
+			nextPane = loader.load();
+			nextController = (NextAlarmController) loader.getController();
+			
+			content.getChildren().clear();
+			content.getChildren().add(nextPane);
+		} catch(IOException e) {
+			throw new RuntimeException(e);
+		}
+		alarmList.setCellFactory(l->new AlarmListCell());
 	}	
 	
 	
-	public FXCronController setContentPane(StackPane pane) {
-		if(pane != null) {
-			contentPane = pane;
-			try {
-				FXMLLoader loader = new FXMLLoader(
-						this.getClass().getResource(
-								"/us/pserver/fxcr/fxml/NextAlarm.fxml"), 
-						ResourceBundle.getBundle("bundles.fa")
-				);
-				Pane nextPane = loader.load();
-				nextCtrl = (NextAlarmController) loader.getController();
-				contentPane.getChildren().clear();
-				contentPane.getChildren().add(nextPane);
-				System.out.println("* nextPane added in controller");
-			} catch(IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
+	private FXCronController setPane(Pane p) {
+		content.getChildren().clear();
+		content.getChildren().add(p);
 		return this;
 	}
-
+	
+	
+	public FXCronController setNextAlarmPane() {
+		return setPane(nextPane);
+	}
+	
+	
+	public FXCronController setNewAlarmPane() {
+		return setPane(newPane);
+	}
+	
+	
+	public FXCronController setRepeatAlarmPane() {
+		return setPane(rptPane);
+	}
+	
 }

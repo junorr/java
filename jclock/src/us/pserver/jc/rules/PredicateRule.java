@@ -31,15 +31,19 @@ public class PredicateRule implements WakeRule {
 	
 	private final BinaryOperator<Boolean> operator;
 	
+	private final boolean negate;
+	
 	
 	private PredicateRule(
 			List<Predicate<TemporalAccessor>> cond, 
 			WakeRule wr, 
-			BinaryOperator<Boolean> operator
+			BinaryOperator<Boolean> operator,
+			boolean negate
 	) {
 		this.conditions = NotNull.of(cond).getOrFail();
 		this.rule = NotNull.of(wr).getOrFail();
 		this.operator = NotNull.of(operator).getOrFail();
+		this.negate = negate;
 	}
 	
 	
@@ -49,7 +53,7 @@ public class PredicateRule implements WakeRule {
 	
 	
 	public PredicateRule(WakeRule rule, BinaryOperator<Boolean> operator) {
-		this(new LinkedList<>(), rule, operator);
+		this(new LinkedList<>(), rule, operator, false);
 	}
 	
 	
@@ -78,6 +82,11 @@ public class PredicateRule implements WakeRule {
 			conditions.add(p);
 		}
 		return this;
+	}
+	
+	
+	public PredicateRule negate() {
+		return new PredicateRule(conditions, rule, operator, !negate);
 	}
 	
 	
@@ -120,8 +129,9 @@ public class PredicateRule implements WakeRule {
 			//}
 		}
 		PredicateRule pr = new PredicateRule(
-				conditions, opt.get(), operator
+				conditions, opt.get(), operator, negate
 		);
+		passed = (negate ? !passed : passed);
 		return (passed ? Optional.of(pr) : pr.next());
 	}
 
