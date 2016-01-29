@@ -22,8 +22,8 @@ public class DefaultClockContext extends AbstractClockContext {
 	}
 	
 	
-	public DefaultClockContext(Clock clk, PrintStream out) {
-		super(clk, out);
+	public DefaultClockContext(Clock clk, PrintStream out, PrintStream err) {
+		super(clk, out, err);
 	}
 
 	

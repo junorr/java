@@ -25,10 +25,12 @@ import ch.qos.logback.classic.Level;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.pserver.jc.Alarm;
 import us.pserver.jc.Clock;
+import us.pserver.jc.ClockContext;
 import us.pserver.jc.context.DefaultClockContext;
 import us.pserver.jc.util.SortedQueue;
 
@@ -47,6 +49,8 @@ public abstract class AbstractClock implements Clock {
 	
 	protected AtomicBoolean running, stopOnEmpty;
   
+	protected Supplier<ClockContext> context;
+	
   
   protected AbstractClock() {
     alarms = new HashMap<>();
@@ -54,7 +58,16 @@ public abstract class AbstractClock implements Clock {
 		log = LoggerFactory.getLogger(this.getClass());
 		running = new AtomicBoolean(false);
 		stopOnEmpty = new AtomicBoolean(false);
+		context = ()->new DefaultClockContext(this);
   }
+	
+	
+	public Clock setContextFactory(Supplier<ClockContext> factory) {
+		if(factory != null) {
+			context = factory;
+		}
+		return this;
+	}
 	
 	
 	public boolean isRunning() {

@@ -22,6 +22,7 @@
 package us.pserver.jc;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  *
@@ -31,6 +32,8 @@ import java.util.Map;
 public interface Clock {
 
   public Clock register(String name, Alarm alarm);
+	
+	public Clock setContextFactory(Supplier<ClockContext> factory);
 	
   public Clock start();
   

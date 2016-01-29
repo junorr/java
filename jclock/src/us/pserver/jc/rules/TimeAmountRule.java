@@ -34,25 +34,20 @@ import us.pserver.jc.util.NotNull;
  */
 public class TimeAmountRule implements WakeRule {
 
-  private final DateTime dtm;
-  
   private final long amount;
   
   private final TemporalUnit unit;
 	
+	private final WakeRule rule;
 	
-	public TimeAmountRule(long amount, TemporalUnit unit) {
-		this(DateTime.now(), amount, unit);
-	}
-  
-  
-  public TimeAmountRule(DateTime start, long amount, TemporalUnit unit) {
+	
+	public TimeAmountRule(WakeRule rule, long amount, TemporalUnit unit) {
     if(amount <= 0) {
       throw new IllegalArgumentException(
           "Invalid amount of time: "+ amount
       );
     }
-    this.dtm = NotNull.of(start).getOrFail();
+    this.rule = NotNull.of(rule).getOrFail();
     this.amount = amount;
     this.unit = NotNull.of(unit).getOrFail();
   }
@@ -68,28 +63,33 @@ public class TimeAmountRule implements WakeRule {
 	}
 	
 	
-	public DateTime getStartDate() {
-		return dtm;
+	public WakeRule getWakeRule() {
+		return rule;
 	}
 	
 	
   @Override
   public long resolve() {
-    return dtm.plus(amount, unit).toTime();
+    return DateTime.of(rule.resolve())
+				.plus(amount, unit).toTime();
   }
 	
 	
 	@Override
 	public Optional<WakeRule> next() {
-		return Optional.of(new TimeAmountRule(
-        dtm.plus(amount, unit), amount, unit)
-    );
+		Optional<WakeRule> next = rule.next();
+		if(next.isPresent()) {
+			next = Optional.of(new TimeAmountRule(
+					next.get(), amount, unit)
+			);
+		}
+		return next;
 	}
 
 
   @Override
   public String toString() {
-    return "TimeAmountRule{" + "dtm=" + dtm + ", amount=" + amount + ", unit=" + unit + '}';
+    return "TimeAmountRule{" + "rule=" + rule + ", amount=" + amount + ", unit=" + unit + '}';
   }
 
 }

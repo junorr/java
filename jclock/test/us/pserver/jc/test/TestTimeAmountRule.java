@@ -5,12 +5,10 @@
  */
 package us.pserver.jc.test;
 
-import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import us.pserver.jc.WakeRule;
-import us.pserver.jc.rules.DatePredicate;
-import us.pserver.jc.rules.BooleanOperator;
+import us.pserver.jc.rules.DateTimeRule;
 import us.pserver.jc.util.DateTime;
 import us.pserver.jc.rules.TimeAmountRule;
 
@@ -26,7 +24,7 @@ public class TestTimeAmountRule {
 		DateTime dtm = DateTime.now();
     System.out.println("now....: "+ dtm);
 		Optional<WakeRule> opt = Optional.of(new TimeAmountRule(
-        dtm, 1, ChronoUnit.DAYS)
+				new DateTimeRule(dtm), 1, ChronoUnit.DAYS)
     );
     System.out.println("rule...: "+ opt.get());
 		System.out.println("resolve: "+ DateTime.of(opt.get().resolve()));

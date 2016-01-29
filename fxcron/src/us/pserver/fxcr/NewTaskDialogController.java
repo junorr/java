@@ -9,10 +9,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import us.pserver.jc.Alarm;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import us.pserver.jc.Task;
 
 
 /**
@@ -20,25 +19,19 @@ import us.pserver.jc.Alarm;
  *
  * @author juno
  */
-public class NewAlarmController implements Initializable, AlarmFactory {
+public class NewTaskDialogController implements Initializable, TaskFactory {
 
 	@FXML
-	private Label nameLabel;
+	private TextField titleField;
 
 	@FXML
-	private Label datetimeLabel;
+	private ComboBox<?> dialogTypeCombo;
 
 	@FXML
-	private HBox buttonBar;
+	private TextField headerField;
 
 	@FXML
-	private Button cancelButton;
-
-	@FXML
-	private Button nextButton;
-	
-	private Alarm alarm;
-	
+	private TextField textField;
 
 	/**
 	 * Initializes the controller class.
@@ -49,8 +42,10 @@ public class NewAlarmController implements Initializable, AlarmFactory {
 	}	
 	
 	
-	public Alarm getAlarm() {
-		return alarm;
+	@Override
+	public Task getTask() {
+		return null;
 	}
+	
 
 }

@@ -35,6 +35,8 @@ public interface ClockContext {
 	
 	public PrintStream stdout();
   
+	public PrintStream stderr();
+  
 	public Logger logger(Class cls);
   
   public SharedMemory sharedMemory();

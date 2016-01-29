@@ -51,6 +51,12 @@ public class DefaultAlarmContext implements AlarmContext {
 
 
 	@Override
+	public PrintStream stderr() {
+		return ctx.stderr();
+	}
+
+
+	@Override
 	public Logger logger(Class cls) {
 		return ctx.logger(cls);
 	}

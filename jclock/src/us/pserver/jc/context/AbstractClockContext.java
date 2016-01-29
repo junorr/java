@@ -41,15 +41,18 @@ public abstract class AbstractClockContext implements ClockContext {
 	
 	protected PrintStream stdout;
 	
+	protected PrintStream stderr;
+	
 	
 	protected AbstractClockContext(Clock clk) {
-		this(clk, System.out);
+		this(clk, System.out, System.err);
 	}
 	
 	
-	protected AbstractClockContext(Clock clk, PrintStream out) {
+	protected AbstractClockContext(Clock clk, PrintStream out, PrintStream err) {
 		clock = NotNull.of(clk).getOrFail();
 		stdout = NotNull.of(out).getOrFail();
+		stderr = NotNull.of(err).getOrFail();
 	}
 
 
@@ -62,6 +65,12 @@ public abstract class AbstractClockContext implements ClockContext {
 	@Override
 	public PrintStream stdout() {
 		return stdout;
+	}
+
+
+	@Override
+	public PrintStream stderr() {
+		return stderr;
 	}
 
 

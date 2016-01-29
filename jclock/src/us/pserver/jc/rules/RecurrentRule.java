@@ -81,9 +81,10 @@ public class RecurrentRule implements WakeRule {
 
 
   public static void main(String[] args) {
+		DateTimeRule dtr = new DateTimeRule(DateTime.now());
     Optional<WakeRule> rule = Optional.of(
 				new RecurrentRule(
-						new TimeAmountRule(5, ChronoUnit.MINUTES), 3
+						new TimeAmountRule(dtr, 5, ChronoUnit.MINUTES), 3
 				)
 		);
     for(int i = 0; i < 6; i++) {

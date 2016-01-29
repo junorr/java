@@ -99,15 +99,10 @@ public class RuleBuilder {
 	
 	
 	public Optional<WakeRule> build() {
-		WakeRule wake = null;
+		if(start == null) start = DateTime.now();
+		WakeRule wake = new DateTimeRule(start);
 		if(amount > 0 && unit != null) {
-			if(start != null) {
-				wake = new TimeAmountRule(start, amount, unit);
-			}	else {
-				wake = new TimeAmountRule(amount, unit);
-			}
-		}	else if(start != null) {
-			wake = new DateTimeRule(start);
+			wake = new TimeAmountRule(wake, amount, unit);
 		}
 		if(wake != null) {
 			if(rule != null && rule instanceof ComposedRule) {

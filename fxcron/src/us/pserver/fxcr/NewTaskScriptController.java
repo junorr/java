@@ -7,7 +7,11 @@ package us.pserver.fxcr;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import us.pserver.jc.Task;
 
 
 /**
@@ -15,7 +19,13 @@ import javafx.fxml.Initializable;
  *
  * @author juno
  */
-public class RepeatAlarmController implements Initializable {
+public class NewTaskScriptController implements Initializable, TaskFactory {
+
+	@FXML
+	private TextField fileField;
+
+	@FXML
+	private Button openFileButton;
 
 	/**
 	 * Initializes the controller class.
@@ -24,6 +34,11 @@ public class RepeatAlarmController implements Initializable {
 	public void initialize(URL url, ResourceBundle rb) {
 		// TODO
 	}	
+	
+	
+	public Task getTask() {
+		return null;
+	}
 	
 
 }

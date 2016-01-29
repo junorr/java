@@ -50,19 +50,17 @@ public class FXCronController implements Initializable {
 	
 	private NewAlarmController newController;
 	
-	private RepeatAlarmController rptController;
-
 	
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		try {
 			FXMLLoader loader = new FXMLLoader(
 					this.getClass().getResource(
-							"/us/pserver/fxcr/fxml/RepeatAlarm.fxml"), 
+							"/us/pserver/fxcr/fxml/NextAlarm.fxml"), 
 					ResourceBundle.getBundle("bundles.fa")
 			);
 			rptPane = loader.load();
-			rptController = (RepeatAlarmController) loader.getController();
+			//rptController = (RepeatAlarmController) loader.getController();
 			
 			loader = new FXMLLoader(
 					this.getClass().getResource(

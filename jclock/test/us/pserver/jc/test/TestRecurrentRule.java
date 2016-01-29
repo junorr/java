@@ -24,6 +24,7 @@ package us.pserver.jc.test;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import us.pserver.jc.WakeRule;
+import us.pserver.jc.rules.DateTimeRule;
 import us.pserver.jc.util.DateTime;
 import us.pserver.jc.rules.RecurrentRule;
 import us.pserver.jc.rules.TimeAmountRule;
@@ -38,9 +39,9 @@ public class TestRecurrentRule {
   
   public static void main(String[] args) {
     RecurrentRule rule = new RecurrentRule(
-        new TimeAmountRule(DateTime.now(), 60, 
-            ChronoUnit.MINUTES
-        ), 3
+        new TimeAmountRule(
+						new DateTimeRule(DateTime.now()), 
+						60, ChronoUnit.MINUTES), 3
     );
     Optional<WakeRule> opt = Optional.of(rule);
     while(opt.isPresent()) {

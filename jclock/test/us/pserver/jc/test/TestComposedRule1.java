@@ -45,14 +45,14 @@ public class TestComposedRule1 {
         LocalDateTime.of(2015, 11, 30, 12, 0, 10)))
     );
     cr.addRule(new TimeAmountRule(
-        DateTime.of(
+        new DateTimeRule(DateTime.of(
             LocalDateTime.of(2015, 12, 3, 12, 0, 10)
-        ), 1, ChronoUnit.WEEKS)
+        )), 1, ChronoUnit.WEEKS)
     );
     cr.addRule(new TimeAmountRule(
-        DateTime.of(
+        new DateTimeRule(DateTime.of(
             LocalDateTime.of(2015, 12, 5, 12, 0, 10)
-        ), 1, ChronoUnit.WEEKS)
+        )), 1, ChronoUnit.WEEKS)
     );
 		Optional<WakeRule> opt = Optional.of(new RecurrentRule(cr, 6));
     while(opt.isPresent()) {
