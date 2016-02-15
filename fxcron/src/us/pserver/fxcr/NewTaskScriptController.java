@@ -5,6 +5,7 @@
  */
 package us.pserver.fxcr;
 
+import us.pserver.fxcr.task.TaskFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;

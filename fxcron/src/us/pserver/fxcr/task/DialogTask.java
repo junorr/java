@@ -28,7 +28,6 @@ public class DialogTask implements Task {
 	public DialogTask(
 			int type, 
 			String title, 
-			String header, 
 			String content
 	) {
 		if(title == null) {

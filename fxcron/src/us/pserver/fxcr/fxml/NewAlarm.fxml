@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="508.0" prefWidth="732.0" styleClass="fxcron-bg" stylesheets="@../css/fxcron.css" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="us.pserver.fxcr.NewAlarmController">
+<GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="508.0" prefWidth="732.0" styleClass="fxcron-bg" stylesheets="@../css/fxcron.css" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="us.pserver.fxcr.NewAlarmController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -90,7 +90,7 @@
             <Insets right="30.0" />
          </padding>
       </HBox>
-      <StackPane alignment="TOP_LEFT" prefHeight="150.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+      <StackPane fx:id="content" alignment="TOP_LEFT" prefHeight="150.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
    </children>
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

@@ -5,6 +5,7 @@
  */
 package us.pserver.fxcr;
 
+import us.pserver.fxcr.task.TaskFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -53,13 +54,13 @@ public class NewAlarmStartController implements Initializable, TaskFactory {
 	
 	private Pane dialogPane;
 	
-	private Pane scriptPane;
+	private Pane commandPane;
 	
 	private NewTaskDialogController dialogController;
 	
 	private NewTaskCommandController commandController;
 	
-	private TaskFactory factory;
+	private TaskFactory taskFactory;
 	
 
 	/**
@@ -77,22 +78,22 @@ public class NewAlarmStartController implements Initializable, TaskFactory {
 			dialogController = fxl.getController();
 			fxl = new FXMLLoader(
 					this.getClass().getResource(
-							"/us/pserver/fxcr/fxml/NewTaskScript.fxml")
+							"/us/pserver/fxcr/fxml/NewTaskCommand.fxml")
 					, rb
 			);
-			scriptPane = (Pane) fxl.load();
+			commandPane = (Pane) fxl.load();
 			commandController = fxl.getController();
 		} catch(IOException e) {
 			throw new RuntimeException(e);
 		}
 		taskTypeCombo.getItems().addAll(
 				TaskType.DIALOG,
-				TaskType.SCRIPT,
 				TaskType.SYSCOMMAND
 		);
 	}
 	
-	
+  
+	@FXML
 	public void onTaskTypeChanged(ActionEvent e) {
 		TaskType type = taskTypeCombo.getSelectionModel()
 				.getSelectedItem();
@@ -100,22 +101,23 @@ public class NewAlarmStartController implements Initializable, TaskFactory {
 		switch(type) {
 			case DIALOG:
 				contentPane.getChildren().add(dialogPane);
-				factory = dialogController;
+				taskFactory = dialogController;
 				break;
 			case SCRIPT:
-				contentPane.getChildren().add(scriptPane);
-				factory = commandController;
+				contentPane.getChildren().add(commandPane);
+				taskFactory = commandController;
 				break;
 			default:
-				return;
+				break;
 		}
 	}
 	
 	
+  @Override
 	public Task getTask() {
-		if(factory == null)
+		if(taskFactory == null)
 			return null;
-		return factory.getTask();
+		return taskFactory.getTask();
 	}
 	
 

@@ -5,6 +5,7 @@
  */
 package us.pserver.fxcr.test;
 
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 import us.pserver.fxcr.task.DialogTask;
 import us.pserver.jc.Alarm;
@@ -28,14 +29,12 @@ public class TestDialogTask {
 		DialogTask task = new DialogTask(
 				JOptionPane.INFORMATION_MESSAGE, 
 				"DialogTask", 
-				"Testing DialogTask", 
-				"Test OK!"
+				"Testing DialogTask..."
 		);
 		DialogTask task2 = new DialogTask(
 				JOptionPane.WARNING_MESSAGE, 
 				"DialogTask", 
-				"Testing DialogTask", 
-				"Test OK!"
+				"Testing DialogTask..."
 		);
 		Alarm a = new BasicAlarm(
 				new DateTimeRule(DateTime.now()), task

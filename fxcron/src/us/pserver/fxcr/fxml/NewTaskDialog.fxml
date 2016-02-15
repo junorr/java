@@ -40,7 +40,7 @@
             <Insets right="10.0" />
          </padding>
          <children>
-            <TextField fx:id="titleField" promptText="Title" styleClass="fxcron-text-field" />
+            <TextField fx:id="titleField" minWidth="240.0" promptText="Title" styleClass="fxcron-text-field" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="1">
@@ -62,7 +62,7 @@
             <Insets right="10.0" />
          </padding>
          <children>
-            <ComboBox fx:id="dialogTypeCombo" minWidth="236.0" promptText="Select" styleClass="fxcron-text-field" />
+            <ComboBox fx:id="dialogTypeCombo" minWidth="240.0" promptText="Select" styleClass="fxcron-text-field" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.rowIndex="2">
@@ -84,7 +84,7 @@
             <Insets right="10.0" />
          </padding>
          <children>
-            <TextField fx:id="textField" promptText="Content Text" styleClass="fxcron-text-field" />
+            <TextField fx:id="textField" minWidth="240.0" promptText="Content Text" styleClass="fxcron-text-field" />
          </children>
       </HBox>
    </children>

@@ -25,7 +25,8 @@ public class TestSysCmdTask {
 	
 	public static void main(String[] args) throws Exception {
 		SystemCommandTask task = new SystemCommandTask(
-				"sh", "-c", "ls -l /storage"
+				//"sh", "-c", "ls -l /storage"
+        "cmd", "/c", "\"dir c:\\\""
 		);
 		Alarm a = new BasicAlarm(
 				new DateTimeRule(DateTime.now()), task

@@ -5,13 +5,17 @@
  */
 package us.pserver.fxcr;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import us.pserver.jc.Alarm;
 
 
@@ -37,6 +41,13 @@ public class NewAlarmController implements Initializable, AlarmFactory {
 	@FXML
 	private Button nextButton;
 	
+	@FXML
+	private StackPane content;
+  
+  private Pane alarmPane;
+  
+  private NewAlarmStartController alarmCtrl;
+	
 	private Alarm alarm;
 	
 
@@ -45,7 +56,19 @@ public class NewAlarmController implements Initializable, AlarmFactory {
 	 */
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		// TODO
+			FXMLLoader fxl = new FXMLLoader(
+					this.getClass().getResource(
+							"/us/pserver/fxcr/fxml/NewAlarmStart.fxml")
+					, rb
+			);
+      try {
+        alarmPane = (Pane) fxl.load();
+        alarmCtrl = fxl.getController();
+        content.getChildren().clear();
+        content.getChildren().add(alarmPane);
+      } catch(IOException e) {
+        throw new RuntimeException(e);
+      }
 	}	
 	
 	

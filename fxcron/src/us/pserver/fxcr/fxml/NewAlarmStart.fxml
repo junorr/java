@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="fxcron-bg" stylesheets="@../css/fxcron.css" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="us.pserver.fxcr.fxml.NewAlarmStartController">
+<GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="fxcron-bg" stylesheets="@../css/fxcron.css" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="us.pserver.fxcr.NewAlarmStartController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -58,7 +58,7 @@
             <Insets right="10.0" />
          </padding>
          <children>
-            <TextField fx:id="nameField" promptText="Alarm Name" styleClass="fxcron-text-field" />
+            <TextField fx:id="nameField" minWidth="240.0" promptText="Alarm Name" styleClass="fxcron-text-field" />
          </children>
       </HBox>
       <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -66,7 +66,7 @@
             <Insets right="10.0" />
          </padding>
          <children>
-            <ComboBox fx:id="taskTypeCombo" minWidth="236.0" promptText="Select" styleClass="fxcron-text-field" />
+            <ComboBox fx:id="taskTypeCombo" minWidth="240.0" onAction="#onTaskTypeChanged" promptText="Select" styleClass="fxcron-text-field" />
          </children>
       </HBox>
       <StackPane fx:id="contentPane" alignment="TOP_LEFT" prefHeight="150.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
