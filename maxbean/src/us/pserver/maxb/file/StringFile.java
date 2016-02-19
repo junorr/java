@@ -107,12 +107,15 @@ public class StringFile implements IStringFile {
 		}
 		ByteBuffer buf = ByteBuffer.allocate(content.length());
 		buf.put(content.getBytes("UTF-8"));
+		buf.flip();
 		try (
 			SeekableByteChannel ch = Files.newByteChannel(path, 
 					StandardOpenOption.CREATE, 
 					StandardOpenOption.WRITE
 			);
-		) {	ch.write(buf); }
+		) {	
+			ch.write(buf); 
+		}
 	}
 	
 }

@@ -42,7 +42,7 @@ public class IFaceCode extends AbstractTableCode implements ICode {
 		StringBuilder sb = new StringBuilder();
 		sb.append("package ")
 				.append(pack)
-				.append(";\n\n");
+				.append(".iface;\n\n");
 		ClassCommentCode cm = new ClassCommentCode(table, ident);
 		sb.append(cm.getCode()).append("\n")
 				.append("public interface I")

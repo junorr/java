@@ -36,7 +36,7 @@ public class SchemaConfig implements ISchemaConfig {
 			);
 		}
 		this.props = config;
-		if(!props.contains("schema")) {
+		if(props.getProperty("schema") == null) {
 			throw new IllegalArgumentException(
 					"Invalid properties. Do not contains 'schema'"
 			);

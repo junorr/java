@@ -57,6 +57,9 @@ public class ClassCode extends AbstractTableCode implements ICode {
 		sb.append("package ")
 				.append(pack)
 				.append(";\n\n");
+		sb.append("import ")
+				.append(pack).append(".iface.*")
+				.append(";\n\n");
 		ClassCommentCode cm = new ClassCommentCode(table, ident);
 		sb.append(cm.getCode()).append("\n")
 				.append("public class ")

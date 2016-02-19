@@ -44,8 +44,15 @@ public class BeanReaderFactory extends AbstractTableCode implements ICode {
 		CamelCaseName tcc = CamelCaseName.of(table.getName());
 		BeanReaderComment cmt = new BeanReaderComment(table, ident);
 		StringBuilder sb = new StringBuilder();
-		sb.append("package ").append(pack).append("\n\n")
-				.append("import java.sql.*;\n\n")
+		sb.append("package ").append(pack)
+				.append(".reader;\n\n")
+				.append("import java.sql.*;\n")
+				.append("import ")
+				.append(pack).append(".*")
+				.append(";\n")
+				.append("import ")
+				.append(pack).append(".iface.*")
+				.append(";\n\n")
 				.append(cmt.commentCode()).append("\n")
 				.append("public class ")
 				.append(tcc)

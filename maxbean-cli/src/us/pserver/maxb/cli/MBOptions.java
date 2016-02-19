@@ -24,6 +24,7 @@ package us.pserver.maxb.cli;
 import java.io.File;
 import java.util.List;
 import uk.co.flamingpenguin.jewel.cli.Option;
+import uk.co.flamingpenguin.jewel.cli.Unparsed;
 
 /**
  *
@@ -34,47 +35,52 @@ public interface MBOptions {
 
   @Option(
       shortName = {"c"}, 
-      longName = {"config-file"}, 
-      description = "Database configuration file properties"
+      longName = {"dbConfig"}, 
+      description = "Database configuration properties file"
   )
-  public File getConfigFile();
-  public boolean isConfigFile();
+  public File getDBConfig();
+  public boolean isDBConfig();
   
   @Option(
-      longName = {"db-driver"}, 
+      longName = {"dbDriver"}, 
       description = "Set the database driver connetcion"
   )
   public String getDBDriver();
   public boolean isDBDriver();
   
   @Option(
-      longName = {"db-url"}, 
+      longName = {"dbUrl"}, 
       description = "Set the database url connetcion"
   )
   public String getDBUrl();
   public boolean isDBUrl();
   
   @Option(
-      longName = {"db-user"}, 
+      longName = {"dbUser"}, 
       description = "Set the database user"
   )
   public String getDBUser();
   public boolean isDBUser();
   
   @Option(
-      longName = {"db-password"}, 
+      longName = {"dbPassword"}, 
       description = "Set the database password"
   )
   public String getDBPassword();
   public boolean isDBPassword();
   
+	/*
+  @Unparsed(
+      name = "Name of Schema to inspect"
+  )
+	*/
   @Option(
       shortName = {"s"},
       longName = {"schema"}, 
-      description = "Name of a Schema to inspect"
+      description = "The Schema name to inspect"
   )
   public String getSchema();
-  public boolean isSchema();
+	public boolean isSchema();
   
   @Option(
       shortName = {"t"},
@@ -83,14 +89,6 @@ public interface MBOptions {
   )
   public List<String> getTables();
   public boolean isTables();
-  
-  @Option(
-      shortName = {"g"},
-      longName = {"generate"}, 
-      description = "Generate the java source code files"
-  )
-  public boolean getGenerate();
-  public boolean isGenerate();
   
   @Option(
       shortName = {"i"},
@@ -103,7 +101,7 @@ public interface MBOptions {
   @Option(
       shortName = {"p"},
       longName = {"properties"}, 
-      description = "Specify the properties file for source code generation"
+      description = "Inspection properties file for source code generation"
   )
   public File getProperties();
   public boolean isProperties();
@@ -111,7 +109,7 @@ public interface MBOptions {
   @Option(
       shortName = {"o"},
       longName = {"output"}, 
-      description = "Output directory for the generated files (.java/.properties)"
+      description = "Output directory for the generated files"
   )
   public File getOutputDir();
   public boolean isOutputDir();
@@ -132,7 +130,18 @@ public interface MBOptions {
   public String getPackage();
   public boolean isPackage();
   
-  @Option(helpRequest = true)
+  @Option(
+      shortName = {"h"},
+			helpRequest = true,
+			description = "Show this Help message"
+	)
   public boolean getHelp();
+  
+  @Option(
+      shortName = {"v"},
+      description = "MaxBean version info"
+  )
+  public boolean getVersion();
+  public boolean isVersion();
   
 }

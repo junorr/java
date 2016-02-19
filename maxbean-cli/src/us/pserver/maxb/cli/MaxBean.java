@@ -24,6 +24,7 @@ package us.pserver.maxb.cli;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Iterator;
@@ -31,8 +32,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import us.pserver.maxb.SchemaInspector;
+import us.pserver.maxb.code.BeanReaderFactory;
+import us.pserver.maxb.code.ClassCode;
 import us.pserver.maxb.code.IFaceCode;
 import us.pserver.maxb.config.SchemaConfig;
+import us.pserver.maxb.file.StringFile;
 import us.pserver.maxb.sql.Schema;
 import us.pserver.maxb.sql.spec.ISchema;
 import us.pserver.maxb.sql.spec.ITable;
@@ -52,7 +56,7 @@ public class MaxBean {
   
   private ISchema schema;
   
-  private File outputDir;
+  private final File outputDir;
   
   
   public MaxBean(MBOptions opts) throws MaxBeanException {
@@ -62,14 +66,16 @@ public class MaxBean {
       );
     }
     this.opts = opts;
-    this.configureConnection();
-    this.configureSchema();
     outputDir = (opts.isOutputDir() 
         ? opts.getOutputDir() 
         : new File("./")
     );
-    this.execute();
   }
+	
+	
+	public Connection getConnection() {
+		return conn;
+	}
   
   
   private void configureConnection() throws MaxBeanException {
@@ -77,10 +83,12 @@ public class MaxBean {
     String url = null;
     String user = null;
     String pwd = null;
+		System.out.println("* Configuring DB connection...");
     try {
-      if(opts.isConfigFile()) {
+      if(opts.isDBConfig()) {
+				System.out.println("  Properties file: "+ opts.getDBConfig());
         Properties p = new Properties();
-        p.load(new FileReader(opts.getConfigFile()));
+        p.load(new FileReader(opts.getDBConfig()));
         driver = p.getProperty("db.driver");
         url = p.getProperty("db.url");
         user = p.getProperty("db.user");
@@ -114,8 +122,11 @@ public class MaxBean {
       if(pwd == null) {
         throw new IllegalArgumentException("Invalid db password: "+ pwd);
       }
+			System.out.println("  Loading driver: "+ driver+ "...");
       Class.forName(driver);
+			System.out.println("  Connecting ["+ url+ "]...");
       conn = DriverManager.getConnection(url, user, pwd);
+			System.out.println("  Done!");
     }//try
     catch(Exception e) {
       throw new MaxBeanException("Error configuring database connection", e);
@@ -124,83 +135,156 @@ public class MaxBean {
   
   
   private void configureSchema() throws MaxBeanException {
+		System.out.println("* Configuring Schema...");
     try {
-      if(opts.isSchema()) {
-        schema = new Schema(opts.getSchema());
-      }
-      else if(opts.isProperties()) {
+      if(opts.isProperties()) {
+				System.out.println("  Properties file: "+ opts.getProperties());
         Properties p = new Properties();
         p.load(new FileReader(opts.getProperties()));
         schema = SchemaConfig.from(p).read();
       }
-      else {
-        throw new IllegalArgumentException(
-            "Schema not configured. Please inform "
-                + "schema through '-s' or '-p' options."
-        );
-      }
+			else {
+				if(!opts.isSchema()) {
+					throw new IllegalArgumentException(
+							"Missing Schema argument. See --help for more information"
+					);
+				}
+				schema = new Schema(opts.getSchema());
+				System.out.println("  Inspecting database...");
+	      SchemaInspector insp = new SchemaInspector(conn, schema.getName());
+		    schema = insp.inspect();
+			}
+			System.out.println("  Done!");
     }
     catch(Exception e) {
       throw new MaxBeanException("Error configuring schema", e);
     }
   }
-  
+	
+	
+	private void inspect() throws IOException {
+		File f = new File(outputDir, schema.getName()+ ".properties");
+		System.out.println("* Writing inspection file: "+ f);
+		List<ITable> exec = getExecTables();
+		schema.getTables().clear();
+		schema.getTables().addAll(exec);
+		Properties p = SchemaConfig.from(schema).write();
+		p.store(new FileWriter(f), "Inspect file for schema ["+ schema.getName()+ "]");
+		System.out.println("  Done!");
+	}
+	
+	
+	private void genSourceCode() throws IOException {
+		System.out.println("* Generating Java source code...");
+    int ident = (opts.isIdentation() ? opts.getIdentation() : 2);
+		if(schema.isEmpty()) {
+			throw new IllegalArgumentException(
+					"No tables selected for the schema: "+ schema.getName()
+			);
+		}
+		if(!opts.isPackage()) {
+			throw new IllegalArgumentException(
+					"No java package specified. Please inform "
+							+ "the package name for the source code."
+			);
+		}
+		List<ITable> exec = this.getExecTables();
+		if(exec == null || exec.isEmpty()) {
+			throw new IllegalArgumentException(
+					"No tables selected for the schema: "+ schema.getName()
+			);
+		}
+		File dir = new File(outputDir, schema.getName());
+		dir.mkdirs();
+		Iterator<ITable> it = exec.iterator();
+		while(it.hasNext()) {
+			ITable t = it.next();
+			Ident id = new Ident(' ', ident);
+			//interface
+			IFaceCode ifc = this.genInterface(t, dir, id);
+			//class
+			this.genClass(ifc, dir);
+			//BeanReader
+			this.genBeanReader(t, dir, id);
+		}
+	}
+	
+	
+	private List<ITable> getExecTables() {
+		List<ITable> tables = schema.getTables();
+		List<ITable> exec = null;
+		if(opts.isTables()) {
+			exec = new LinkedList<>();
+			for(String tname : opts.getTables()) {
+				for(ITable t : tables) {
+					if(t.getName().equals(tname)) {
+						exec.add(t);
+					}
+				}//tables
+			}//table names
+		}
+		else {
+			exec = tables;
+		}
+		return exec;
+	}
+	
+	
+	private IFaceCode genInterface(ITable t, File dir, Ident id) throws IOException {
+		CamelCaseName cn = CamelCaseName.of(t.getName());
+		File subdir = new File(dir, "iface");
+		subdir.mkdirs();
+		File fi = new File(subdir,
+				"I" + cn.toString() + ".java"
+		);
+		System.out.println("  "+ fi);
+		IFaceCode ifc = new IFaceCode(t, id, opts.getPackage());
+		StringFile.of(fi.toPath(), ifc.interfaceCode()).write(true);
+		return ifc;
+	}
+
+	
+	private void genClass(IFaceCode ifc, File dir) throws IOException {
+		CamelCaseName cn = CamelCaseName.of(ifc.getTable().getName());
+		ClassCode cc = new ClassCode(ifc);
+		File fc = new File(dir, 
+				cn.toString() + ".java"
+		);
+		System.out.println("  "+ fc);
+		StringFile.of(fc.toPath(), cc.classCode()).write(true);
+	}
+	
+	
+	private void genBeanReader(ITable t, File dir, Ident id) throws IOException {
+		CamelCaseName cn = CamelCaseName.of(t.getName());
+		File subdir = new File(dir, "reader");
+		subdir.mkdirs();
+		File fr = new File(subdir, 
+				cn.toString() + "Reader.java"
+		);
+		System.out.println("  "+ fr);
+		BeanReaderFactory bf = new BeanReaderFactory(
+				t, id, opts.getPackage()
+		);
+		StringFile.of(fr.toPath(), bf.getCode()).write(true);
+	}
+	
   
   public void execute() throws MaxBeanException {
     try {
-      SchemaInspector insp = new SchemaInspector(conn, schema.getName());
-      schema = insp.inspect();
-      int ident = (opts.isIdentation() ? opts.getIdentation() : 2);
+			if(!opts.isProperties()) {
+				this.configureConnection();
+			}
+			this.configureSchema();
       if(opts.isInspect()) {
-        File f = new File(outputDir, schema.getName()+ ".properties");
-        Properties p = SchemaConfig.from(schema).write();
-        p.store(new FileWriter(f), "Inspect file for the schema ["+ schema.getName()+ "]");
+        this.inspect();
       }
-      else if(opts.isGenerate()) {
-        if(schema.isEmpty()) {
-          throw new IllegalArgumentException(
-              "No tables selected for the schema: "+ schema.getName()
-          );
-        }
-        if(!opts.isPackage()) {
-          throw new IllegalArgumentException(
-              "No java package specified. Please inform "
-                  + "the package name for the source code."
-          );
-        }
-        List<ITable> tables = schema.getTables();
-        List<ITable> exec = new LinkedList<>();
-        if(opts.isTables()) {
-          for(String tname : opts.getTables()) {
-            for(ITable t : tables) {
-              if(t.getName().equals(tname)) {
-                exec.add(t);
-              }
-            }//tables
-          }//table names
-          if(exec.isEmpty()) {
-            throw new IllegalArgumentException(
-                "No tables selected for the schema: "+ schema.getName()
-            );
-          }
-          CamelCaseName schemaName = CamelCaseName.of(schema.getName());
-          File dir = new File(outputDir, schemaName.toString());
-          dir.mkdirs();
-          Iterator<ITable> it = exec.iterator();
-          while(it.hasNext()) {
-            ITable t = it.next();
-            File f = new File(dir, 
-                CamelCaseName.of(t.getName()).toString()+ ".java"
-            );
-            Ident id = new Ident(' ', ident);
-            IFaceCode ifc = new IFaceCode()
-          }
-        }// -t
+      else {
+				this.genSourceCode();
       }//generate
-    }
-    catch(Exception e) {
+    } catch(Exception e) {
       throw new MaxBeanException(
-          "Error inspecting schema: "+ schema.getName(), e
+          "Error Executing MaxBean", e
       );
     }
   }
