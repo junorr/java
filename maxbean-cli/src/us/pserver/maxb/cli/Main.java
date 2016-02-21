@@ -1,76 +1,81 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Direitos Autorais Reservados (c) 2011 Juno Roesler
+ * Contato: juno.rr@gmail.com
+ * 
+ * Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os
+ * termos da Licença Pública Geral Menor do GNU conforme publicada pela Free
+ * Software Foundation; tanto a versão 2.1 da Licença, ou qualquer
+ * versão posterior.
+ * 
+ * Esta biblioteca é distribuída na expectativa de que seja útil, porém, SEM
+ * NENHUMA GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE
+ * OU ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA. Consulte a Licença Pública
+ * Geral Menor do GNU para mais detalhes.
+ * 
+ * Você deve ter recebido uma cópia da Licença Pública Geral Menor do GNU junto
+ * com esta biblioteca; se não, acesse 
+ * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html, 
+ * ou escreva para a Free Software Foundation, Inc., no
+ * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
+
 package us.pserver.maxb.cli;
 
-import java.sql.SQLException;
-import java.util.Arrays;
-import uk.co.flamingpenguin.jewel.cli.ArgumentValidationException;
-import uk.co.flamingpenguin.jewel.cli.CliFactory;
-
-
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.ParserProperties;
 
 /**
  *
- * @author juno
+ * @author Juno Roesler - juno@pserver.us
+ * @version 0.0 - 21/02/2016
  */
 public class Main {
-	
-	public static void printVersion() {
-		System.out.println("|             MaxBean V1             |");
-		System.out.println("|  Copyright (c) 2016 Juno Roesler   |");
-		System.out.println("|      <juno.roesler@bb.com.br>      |");
-		System.out.println("|   Distributed under GNU/LGPL V3    |");
-		System.out.println("+------------------------------------+");
-		System.out.println(" Notice:");
-		System.out.println("  MaxBean uses JewelCLi 0.8.7 for arguments parsing (Apache License V2)");
-		System.out.println(" Links:");
-		//System.out.println("  MaxBean [http://github.com/junorr/maxbean");
-		System.out.println("  GNU/LGPL V3       [http://www.gnu.org/licenses/lgpl-3.0.en.html]");
-		System.out.println("  JewelCli          [http://jewelcli.lexicalscope.com]");
-		System.out.println("  Apache License V2 [http://www.apache.org/licenses/LICENSE-2.0]");
-		System.out.println();
-	}
-	
-	public static void main(String[] args) {
-		String header = 
-				"+------------------------------------+\n" +
-				"|  MaxBean - Database Beans Factory  |\n" +
-				"+------------------------------------+";
-		System.out.println(header);
-		MaxBean maxb = null;
-		try {
-			MBOptions opt = CliFactory.parseArguments(MBOptions.class, args);
-			if(opt.isVersion()) {
-				printVersion();
-				return;
-			}
-			maxb = new MaxBean(opt);
-			maxb.execute();
-		} 
-		catch(ArgumentValidationException e) {
-			String msg = e.getMessage();
-			if(!msg.startsWith("Usage:") && !msg.startsWith("The options")) {
-				System.out.println("# Error parsing arguments:");
-			}
-			System.out.println(msg);
-		}
-		catch(MaxBeanException e) {
-			System.out.println("# "+ e.getMessage());
-			if(e.getCause() != null) {
-				System.out.println("# "+ e.getCause().getMessage());
-			}
-			System.out.println();
-			e.printStackTrace();
-		}
-		finally {
-			if(maxb != null && maxb.getConnection() != null) {
-				try { maxb.getConnection().close(); }
-				catch(SQLException e) {}
-			}
-		}
-	}
-	
+
+  
+  public static void main(String[] args) {
+    //args = new String[]{};
+    args = new String[]{
+      "--db-driver", "com.mysql.jdbc.Driver", 
+      "--db-url", "jdbc:mysql://localhost:3306",
+      "--db-user", "juno",
+      "--db-password", "0988",
+      //"-s", "intranet",
+      "-o", "./gen",
+      "-k", "us.pserver.mbex",
+      "-f", "./gen/intranet.properties"
+      //"-t", "asnt_ctu,sit_ctu",
+      //"-c", "sit_ctu.nm_usu=varchar,sit_ctu.cd_usu=char"
+      //"-i"
+    };
+    MBOptions opt = new MBOptions();
+    CmdLineParser cmd = new CmdLineParser(opt, ParserProperties
+        .defaults().withUsageWidth(80)
+    );
+    try {
+      System.out.println(new MBHeader());
+      cmd.parseArgument(args);
+      if(opt.getHelp()) {
+        System.out.println(new MBHelp());
+      }
+      else {
+        MaxBean mb = new MaxBean(opt);
+        mb.execute();
+      }
+    }
+    catch(CmdLineException ce) {
+      System.err.println("# "+ ce.getMessage());
+      System.err.println();
+      cmd.printUsage(System.err);
+    }
+    catch(Exception e) {
+      System.err.println("# "+ e.getMessage());
+      if(e.getCause() != null) {
+        System.err.println("# "+ e.getCause().getMessage());
+      }
+      System.err.println();
+      e.printStackTrace(System.err);
+    }
+  }
+  
 }

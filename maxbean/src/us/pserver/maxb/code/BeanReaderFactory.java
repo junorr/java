@@ -122,10 +122,10 @@ public class BeanReaderFactory extends AbstractTableCode implements ICode {
 				.append(ident).append(" */\n")
 				.append(ident)
 				.append("public ")
-				.append(tcc)
+				.append("I").append(tcc)
 				.append(" readBean() throws SQLException {\n")
 				.append(ident.increment())
-				.append(tcc).append(" bean = new ")
+				.append("I").append(tcc).append(" bean = new ")
 				.append(tcc).append("();\n");
 		Iterator<IColumn<?>> it = table.getColumns().iterator();
 		while(it.hasNext()) {

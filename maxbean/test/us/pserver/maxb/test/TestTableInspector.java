@@ -30,7 +30,8 @@ public class TestTableInspector {
 	
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mysql://172.29.14.107", "F6036477", "6036577");
+		//Connection conn = DriverManager.getConnection("jdbc:mysql://172.29.14.107", "F6036477", "6036577");
+		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", "juno", "0988");
 		TableInspector ti = new TableInspector(conn, "intranet", "dcr_ctu");
 		ITable table = ti.inspect();
 		System.out.println(table);
