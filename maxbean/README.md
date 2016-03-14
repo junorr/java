@@ -2,15 +2,15 @@
 <p>
 MaxBean is java command line application for automatic generating JavaBeans source code from a relational database schema.
 <br> 
-Here is some goods of this project:</p>
+Here are some goods of this project:</p>
 
 <ul>
-  <li>Auto generating boring JavaBeans source code.</li>
+  <li>Automatic creation of JavaBeans boring source code.</li>
   <li>Generate interface files for all JavaBeans.</li>
-  <li>Generate Beans factory classes for creating JabaBeans from a <code>java.sql.ResultSet</code>.</li>
-  <li>Automatic parse the <code>java.sql.ResultSet</code>, setting only present fields on JavaBeans.</li>
-  <li>Support creating custom columns/fields not presents in the original tables.</li>
-  <li>Allows to select only the desired tables in schema.</li>
+  <li>Generates Bean Readers classes for creating JavaBeans from a <code>java.sql.ResultSet</code>.</li>
+  <li>Bean Readers can parse the <code>java.sql.ResultSet</code>, detecting and setting only present columns on JavaBeans.</li>
+  <li>Supports creation of custom columns/fields not present in the original tables.</li>
+  <li>Allows to select only the desired tables for source code generation.</li>
   <li>MaxBean is open source, distributed under GNU/LGPL v3 license.</li>
 </ul>
 <pre>
@@ -51,20 +51,20 @@ Usage: maxbean <-d|--db-*> <-s|-f> [-c] [-h] [-i] [-I] [-k] [-o] [-t] [-v]
   -v (--version)      : Show MaxBean version information
 
 Usage Examples:
- * Generate source code for all tables in a schema database:
-   > <b>maxbean -d db.properties -s myschema -k com.mypack.ex</b>
- * Inspect the database and generate a relative properties file:
-   > <b>maxbean -d db.properties -s myschema -i</b>
- * Generate source code from a inspection file:
-   > <b>maxbean -d db.properties -f myschema.properties -k com.mypack.ex</b>
- * Generate source code from only a couple tables:
-   > <b>maxbean -d db.properties -s myschema -k com.mypack.ex</b>
-   > ... <b>-t "table_one table_two"</b>
- * Generate source code with additional columns not present in tables:
-   > <b>maxbean -d db.properties -s myschema -k com.mypack.ex</b>
-   > ... <b>-c "table_one.col_x=int table_two.col_y=varchar table_two.col_z=date"</b>
- * Specifing database options manualy:
-   > <b>maxbean -s myschema -k com.mypack.ex</b>
-   > ... <b>--db-driver com.mysql.jdbc.Driver --db-url jdbc:mysql://localhost:3306</b>
-   > ... <b>--db-user myuser --db-password mypassword</b>
+<b> * Generate source code for all tables in a schema database:</b>
+   > maxbean -d db.properties -s myschema -k com.mypack.ex
+<b> * Inspect the database and generate a relative properties file:</b>
+   > maxbean -d db.properties -s myschema -i
+<b> * Generate source code from a inspection file:</b>
+   > maxbean -d db.properties -f myschema.properties -k com.mypack.ex
+<b> * Generate source code from only a couple tables:</b>
+   > maxbean -d db.properties -s myschema -k com.mypack.ex
+   >   -t "table_one,table_two"
+<b> * Generate source code with additional columns not present in tables:</b>
+   > maxbean -d db.properties -s myschema -k com.mypack.ex
+   >   -c "table_one.col_x=int,table_two.col_y=varchar,table_two.col_z=date"
+<b> * Specifing database options manualy:</b>
+   > maxbean -s myschema -k com.mypack.ex
+   >   --db-driver com.mysql.jdbc.Driver --db-url jdbc:mysql://localhost:3306
+   >   --db-user myuser --db-password mypassword
 </pre>

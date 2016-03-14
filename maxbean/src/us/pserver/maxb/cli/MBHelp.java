@@ -65,14 +65,14 @@ public class MBHelp {
         .append("   > maxbean -d db.properties -f myschema.properties -k com.mypack.ex\n")
         .append(" * Generate source code from only a couple tables:\n")
         .append("   > maxbean -d db.properties -s myschema -k com.mypack.ex\n")
-        .append("   > ... -t \"table_one table_two\"\n")
+        .append("   >   -t \"table_one,table_two\"\n")
         .append(" * Generate source code with additional columns not present in tables:\n")
         .append("   > maxbean -d db.properties -s myschema -k com.mypack.ex\n")
-        .append("   > ... -c \"table_one.col_x=int table_two.col_y=varchar table_two.col_z=date\"\n")
+        .append("   >   -c \"table_one.col_x=int,table_two.col_y=varchar,table_two.col_z=date\"\n")
         .append(" * Specifing database options manualy:\n")
         .append("   > maxbean -s myschema -k com.mypack.ex\n")
-        .append("   > ... --db-driver com.mysql.jdbc.Driver --db-url jdbc:mysql://localhost:3306\n")
-        .append("   > ... --db-user myuser --db-password mypassword\n");
+        .append("   >   --db-driver com.mysql.jdbc.Driver --db-url jdbc:mysql://localhost:3306\n")
+        .append("   >   --db-user myuser --db-password mypassword\n");
   }
   
   

@@ -40,7 +40,7 @@ public class CamelCaseName implements Named {
 	
 	
 	public String toCamelCase(boolean firstUpper) {
-		char[] chars = name.toCharArray();
+		char[] chars = name.toLowerCase().toCharArray();
 		StringBuilder sb = new StringBuilder();
 		char SU = '_', SD = '-';
 		boolean toupper = false;

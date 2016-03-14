@@ -35,7 +35,7 @@ public class MBVersion {
     version = new StringBuilder()
         .append("|             MaxBean V1             |\n")
         .append("|  Copyright (c) 2016 Juno Roesler   |\n")
-        .append("|      <juno.roesler@bb.com.br>      |\n")
+        .append("|          <juno@pserver.us>         |\n")
         .append("|   Distributed under GNU/LGPL V3    |\n")
         .append("+------------------------------------+\n")
         .append(" Notice:\n")
