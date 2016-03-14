@@ -17,6 +17,24 @@ import us.pserver.zeromap.impl.ONode;
  */
 public class NumberMapper implements Mapper<Number> {
 
+  private final Class type;
+  
+  
+  public NumberMapper() {
+    this(null);
+  }
+  
+  
+  public NumberMapper(Class<? extends Number> cls) {
+    type = (cls == null ? Number.class : cls);
+  }
+  
+  
+  public Class getType() {
+    return type;
+  }
+  
+  
 	@Override
 	public Node map(Number t) {
 		Node n = null;
@@ -37,6 +55,30 @@ public class NumberMapper implements Mapper<Number> {
 				} else {
 					n = Long.parseLong(node.value());
 				}
+        if(byte.class == type
+            || Byte.class == type) {
+          n = n.byteValue();
+        }
+        else if(short.class == type
+            || Short.class == type) {
+          n = n.shortValue();
+        }
+        else if(int.class == type
+            || Integer.class == type) {
+          n = n.intValue();
+        }
+        else if(long.class == type
+            || Long.class == type) {
+          n = n.longValue();
+        }
+        else if(float.class == type
+            || Float.class == type) {
+          n = n.shortValue();
+        }
+        else if(double.class == type
+            || Double.class == type) {
+          n = n.shortValue();
+        }
 			} catch(NumberFormatException e) {}
 		}
 		return n;

@@ -5,6 +5,8 @@
  */
 package us.pserver.zeromap.test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import us.pserver.date.SimpleDate;
 import us.pserver.zeromap.Mapper;
@@ -20,14 +22,14 @@ import us.pserver.zeromap.mapper.DateMapper;
 public class TestDateMapper {
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		Mapper<Date> mp = new DateMapper();
 		Date d = new SimpleDate().date(2016, 3, 14, 16, 30, 0);
-		System.out.println(d);
+		System.out.println("* date  : "+ d);
 		Node nd = mp.map(d);
-		System.out.println(nd);
+		System.out.println("* map   : "+ nd);
 		d = mp.unmap(nd);
-		System.out.println(d);
+		System.out.println("* unmap : "+ d);
 	}
 	
 }
