@@ -21,13 +21,14 @@
 
 package us.pserver.zeromap.mapper;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import us.pserver.zeromap.Mapper;
 import us.pserver.zeromap.MapperFactory;
 import us.pserver.zeromap.Node;
+import us.pserver.zeromap.impl.ClassFactory;
 import us.pserver.zeromap.impl.ONode;
 
 /**
@@ -35,38 +36,46 @@ import us.pserver.zeromap.impl.ONode;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/03/2016
  */
-public class ListMapper implements Mapper<List> {
+public class CollectionMapper implements Mapper<Collection> {
 
   @Override
-  public Node map(List t) {
+  public Node map(Collection t) {
     Node n = null;
     if(t != null && !t.isEmpty()) {
-      n = new ONode(t.get(0).getClass().getName());
-      for(Object o : t) {
-        Mapper mp = MapperFactory.mapper(o.getClass());
+			Iterator it = t.iterator();
+			while(it.hasNext()) {
+				Object o = it.next();
+				if(n == null) {
+					n = new ONode(t.getClass().getName() + ":" + o.getClass().getName());
+				}
+				Mapper mp = MapperFactory.mapper(o.getClass());
         n.add(mp.map(o));
-      }
+			}
     }
     return n;
   }
 
 
   @Override
-  public List unmap(Node n) {
+  public Collection unmap(Node n) {
     List l = new LinkedList();
+		Collection col = null;
     if(n != null) {
-      Class cls = null;
-      try {
-        cls = Class.forName(n.value());
-      } catch (ClassNotFoundException ex) {
-        throw new RuntimeException(ex);
-      }
+      Class cls = ClassFactory.create(n.value());
       Mapper mp = MapperFactory.mapper(cls);
       for(Node nd : n.childs()) {
         l.add(mp.unmap(nd));
       }
+			String sclass = n.value().substring(0, n.value().indexOf(":"));
+			Class<? extends Collection> cclass = ClassFactory.create(sclass);
+			try {
+				col = cclass.newInstance();
+			} catch(IllegalAccessException | InstantiationException e) {
+				throw new IllegalStateException("Unknown Collection type: "+ sclass, e);
+			}
+			col.addAll(l);
     }
-    return l;
+    return col;
   }
 
 }

@@ -26,7 +26,7 @@ import java.util.List;
 import us.pserver.date.SimpleDate;
 import us.pserver.zeromap.Mapper;
 import us.pserver.zeromap.Node;
-import us.pserver.zeromap.mapper.ListMapper;
+import us.pserver.zeromap.mapper.CollectionMapper;
 
 /**
  *
@@ -41,10 +41,10 @@ public class TestListMapper {
       list.add(i);
     }
     System.out.println("* list : "+ list);
-    Mapper<List> map = new ListMapper();
+    Mapper map = new CollectionMapper();
     Node nl = map.map(list);
     System.out.println("* map  : "+ nl);
-    list = map.unmap(nl);
+    list = (List) map.unmap(nl);
     System.out.println("* unmap: "+ list);
     
     SimpleDate d = new SimpleDate().date(2016, 1, 1, 23, 59, 59);
@@ -54,10 +54,10 @@ public class TestListMapper {
     }
     
     System.out.println("* list : "+ list);
-    map = new ListMapper();
+    map = new CollectionMapper();
     nl = map.map(list);
     System.out.println("* map  : "+ nl);
-    list = map.unmap(nl);
+    list = (List) map.unmap(nl);
     System.out.println("* unmap: "+ list);
   }
   

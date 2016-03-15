@@ -39,6 +39,12 @@ public class NumberMapper implements Mapper<Number> {
 	public Node map(Number t) {
 		Node n = null;
 		if(t != null) {
+			/*double d = t.doubleValue();
+			String s = (d < 10 ? "000" 
+					: (d < 100 ? "00" 
+					: (d < 1000 ? "0" 
+					: ""))) + t.toString();
+			n = new ONode(s);*/
 			n = new ONode(t.toString());
 		}
 		return n;

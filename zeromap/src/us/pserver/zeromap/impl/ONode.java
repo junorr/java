@@ -75,6 +75,16 @@ public class ONode implements Node {
 		}
 		return child;
 	}
+	
+	
+	@Override
+	public Node firstChild() {
+		Node first = null;
+		if(hasChilds()) {
+			first = childs.first();
+		}
+		return first;
+	}
 
 
 	@Override

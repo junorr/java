@@ -31,6 +31,8 @@ public interface Node extends Comparable<Node> {
 	
 	public Node find(String value);
 	
+	public Node firstChild();
+	
 	public boolean contains(String value);
 	
 	public boolean contains(Node child);

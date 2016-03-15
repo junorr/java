@@ -23,6 +23,8 @@ package us.pserver.zeromap.mapper;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import us.pserver.zeromap.Mapper;
 import us.pserver.zeromap.Node;
@@ -38,7 +40,9 @@ public class ArrayMapper<T> implements Mapper<T[]> {
   public Node map(T[] t) {
     Node n = null;
     if(t != null && t.length > 0) {
-      n = new ListMapper().map(Arrays.asList(t));
+			List list = new LinkedList();
+			list.addAll(Arrays.asList(t));
+      n = new CollectionMapper().map(list);
     }
     return n;
   }
@@ -48,11 +52,14 @@ public class ArrayMapper<T> implements Mapper<T[]> {
   public T[] unmap(Node n) {
     T[] t = null;
     if(n != null) {
-      List list = new ListMapper().unmap(n);
-      t = (T[]) Array.newInstance(list.get(0).getClass(), list.size());
-      for(int i = 0; i < list.size(); i++) {
-        t[i] = (T) list.get(i);
-      }
+      Collection list = new CollectionMapper().unmap(n);
+			int i = 0;
+			for(Object o : list) {
+				if(t == null) {
+					t = (T[]) Array.newInstance(o.getClass(), list.size());
+				}
+				t[i++] = (T) o;
+			}
     }
     return t;
   }

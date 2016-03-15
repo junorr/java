@@ -21,10 +21,21 @@
 
 package us.pserver.zeromap;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Date;
+import us.pserver.zeromap.mapper.ArrayMapper;
 import us.pserver.zeromap.mapper.BooleanMapper;
+import us.pserver.zeromap.mapper.CharMapper;
+import us.pserver.zeromap.mapper.ClassMapper;
+import us.pserver.zeromap.mapper.CollectionMapper;
 import us.pserver.zeromap.mapper.DateMapper;
+import us.pserver.zeromap.mapper.FileMapper;
 import us.pserver.zeromap.mapper.NumberMapper;
+import us.pserver.zeromap.mapper.ObjectMapper;
+import us.pserver.zeromap.mapper.PathMapper;
+import us.pserver.zeromap.mapper.PrimitiveArrayMapper;
 import us.pserver.zeromap.mapper.StringMapper;
 
 /**
@@ -52,18 +63,42 @@ public abstract class MapperFactory {
         || boolean.class == cls) {
       map = (Mapper<T>) new BooleanMapper();
     }
-    else if(Character.class == cls
-        || CharSequence.class.isAssignableFrom(cls)
-        || char.class == cls) {
+    else if(CharSequence.class.isAssignableFrom(cls)) {
       map = (Mapper<T>) new StringMapper();
+    }
+    else if(Character.class.isAssignableFrom(cls)
+				|| char.class == cls) {
+      map = (Mapper<T>) new CharMapper();
     }
     else if(Date.class.isAssignableFrom(cls)) {
       map = (Mapper<T>) new DateMapper();
     }
+    else if(File.class.isAssignableFrom(cls)) {
+      map = (Mapper<T>) new FileMapper();
+    }
+    else if(Path.class.isAssignableFrom(cls)) {
+      map = (Mapper<T>) new PathMapper();
+    }
+    else if(Collection.class.isAssignableFrom(cls)) {
+      map = (Mapper<T>) new CollectionMapper();
+    }
+    else if(Class.class.isAssignableFrom(cls)) {
+      map = (Mapper<T>) new ClassMapper();
+    }
+    else if(cls.isArray()) {
+			if(cls.getComponentType().isPrimitive()) {
+				map = (Mapper<T>) new PrimitiveArrayMapper(cls);
+			} else {
+				map = (Mapper<T>) new ArrayMapper<>();
+			}
+    }
     else {
+			map = new ObjectMapper();
+			/*
       throw new IllegalArgumentException(
           "Unknown Mapper type for: "+ cls
       );
+			*/
     }
     return map;
   }

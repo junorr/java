@@ -59,6 +59,17 @@ public class TestArrayMapper {
     System.out.println("* map  : "+ nd);
     ds = mapd.unmap(nd);
     System.out.println("* unmap: "+ Arrays.toString(ds));
+    
+    Character[] cs = new Character[10];
+    for(char i = 'a'; i < 'a' + 10; i++) {
+      cs[i-97] = i;
+    }
+    Mapper<Character[]> mapc = new ArrayMapper<Character>();
+    System.out.println("* array: "+ Arrays.toString(cs));
+    nd = mapc.map(cs);
+    System.out.println("* map  : "+ nd);
+    cs = mapc.unmap(nd);
+    System.out.println("* unmap: "+ Arrays.toString(cs));
   }
   
 }
