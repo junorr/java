@@ -866,15 +866,15 @@ public class SimpleDate extends Date {
 			// 2011-01-20
 			if(date.charAt(4) == '-') {
 				// 2011-01-20 13:50:00
-				if(date.length() > 10 && date.length() < 19)
+				if(date.length() > 10 && date.length() <= 19) {
 					fm = YYYYMMDD_HHMMSS_DASH;
 				// 2011-01-20 13:50:00.123456789
-				else if(date.length() > 19)
+        } else if(date.length() > 19) {
 					fm = SQL_DATE_TIME;
 				// 2011-01-20
-				else
+        } else {
 					fm = YYYYMMDD_DASH;
-
+        }
 			// 2011/01/20
 			} else if(date.charAt(4) == '/') {
 				// 2011/01/20 13:50:00
@@ -894,19 +894,18 @@ public class SimpleDate extends Date {
 					fm = YYYYMMDD_DOT;
 			}
 
-		// Segunda-feira, 20 de MarÃ§o de 2011
+		// Segunda-feira, 20 de Março de 2011
 		} else {
 
-			// Segunda-feira, 20 de MarÃ§o de 2011, 13:50:00
+			// Segunda-feira, 20 de Março de 2011, 13:50:00
 			if(date.contains(":"))
 				fm = LONG_DATE_TIME;
-			// Segunda-feira, 20 de MarÃ§o de 2011
+			// Segunda-feira, 20 de Março de 2011
 			else
 				fm = LONG_DATE;
 		}
 
 		try {
-
 			if(loc != null)
 				df = new SimpleDateFormat(fm, loc);
 			else

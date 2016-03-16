@@ -44,7 +44,7 @@ public class TestListMapper {
     Mapper map = new CollectionMapper();
     Node nl = map.map(list);
     System.out.println("* map  : "+ nl);
-    list = (List) map.unmap(nl);
+    list = (List) map.unmap(nl, LinkedList.class);
     System.out.println("* unmap: "+ list);
     
     SimpleDate d = new SimpleDate().date(2016, 1, 1, 23, 59, 59);
@@ -57,7 +57,7 @@ public class TestListMapper {
     map = new CollectionMapper();
     nl = map.map(list);
     System.out.println("* map  : "+ nl);
-    list = (List) map.unmap(nl);
+    list = (List) map.unmap(nl, LinkedList.class);
     System.out.println("* unmap: "+ list);
   }
   

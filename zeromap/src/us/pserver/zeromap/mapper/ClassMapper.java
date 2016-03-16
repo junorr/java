@@ -29,7 +29,7 @@ public class ClassMapper implements Mapper<Class> {
 
 
 	@Override
-	public Class unmap(Node n) {
+	public Class unmap(Node n, Class<? extends Class> cls) {
 		Class c = null;
 		if(n != null) {
 			c = ClassFactory.create(n.value());
@@ -37,4 +37,11 @@ public class ClassMapper implements Mapper<Class> {
 		return c;
 	}
 	
+	
+	@Override
+	public boolean canHandle(Class cls) {
+		return cls != null 
+				&& Class.class.isAssignableFrom(cls); 
+	}
+
 }

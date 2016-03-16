@@ -28,7 +28,7 @@ public class TestDateMapper {
 		System.out.println("* date  : "+ d);
 		Node nd = mp.map(d);
 		System.out.println("* map   : "+ nd);
-		d = mp.unmap(nd);
+		d = mp.unmap(nd, Date.class);
 		System.out.println("* unmap : "+ d);
 	}
 	

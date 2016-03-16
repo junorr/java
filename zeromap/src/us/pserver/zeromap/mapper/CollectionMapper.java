@@ -48,7 +48,7 @@ public class CollectionMapper implements Mapper<Collection> {
 				if(n == null) {
 					n = new ONode(t.getClass().getName() + ":" + o.getClass().getName());
 				}
-				Mapper mp = MapperFactory.mapper(o.getClass());
+				Mapper mp = MapperFactory.factory().mapper(o.getClass());
         n.add(mp.map(o));
 			}
     }
@@ -57,25 +57,32 @@ public class CollectionMapper implements Mapper<Collection> {
 
 
   @Override
-  public Collection unmap(Node n) {
+  public Collection unmap(Node n, Class<? extends Collection> cls) {
     List l = new LinkedList();
 		Collection col = null;
     if(n != null) {
-      Class cls = ClassFactory.create(n.value());
-      Mapper mp = MapperFactory.mapper(cls);
+      Class type = ClassFactory.create(n.value());
+      Mapper mp = MapperFactory.factory().mapper(type);
       for(Node nd : n.childs()) {
-        l.add(mp.unmap(nd));
+        l.add(mp.unmap(nd, type));
       }
 			String sclass = n.value().substring(0, n.value().indexOf(":"));
 			Class<? extends Collection> cclass = ClassFactory.create(sclass);
 			try {
 				col = cclass.newInstance();
 			} catch(IllegalAccessException | InstantiationException e) {
-				throw new IllegalStateException("Unknown Collection type: "+ sclass, e);
+				throw new IllegalStateException("Can not create Collection type: "+ cls, e);
 			}
 			col.addAll(l);
     }
     return col;
   }
+
+	
+	@Override
+	public boolean canHandle(Class cls) {
+		return cls != null 
+				&& Collection.class.isAssignableFrom(cls); 
+	}
 
 }

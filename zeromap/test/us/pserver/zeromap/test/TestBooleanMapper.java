@@ -39,7 +39,7 @@ public class TestBooleanMapper {
     System.out.println("* boolean: "+ b);
     Node nb = mp.map(b);
     System.out.println("* map    : "+ nb);
-    b = mp.unmap(nb);
+    b = mp.unmap(nb, Boolean.class);
     System.out.println("* unmap  : "+ b);
   }
   

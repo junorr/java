@@ -14,6 +14,16 @@ public interface Mapper<T> {
 	
 	public Node map(T t);
 	
-	public T unmap(Node n);
+	public default Node map(T t, Node parent) {
+		Node n = map(t);
+		if(parent != null) {
+			n = parent.add(n);
+		}
+		return n;
+	}
+	
+	public T unmap(Node n, Class<? extends T> cls);
+	
+	public boolean canHandle(Class cls);
 	
 }

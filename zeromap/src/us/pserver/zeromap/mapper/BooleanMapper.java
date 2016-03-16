@@ -43,12 +43,20 @@ public class BooleanMapper implements Mapper<Boolean> {
 
 
   @Override
-  public Boolean unmap(Node n) {
+  public Boolean unmap(Node n, Class<? extends Boolean> cls) {
     Boolean b = null;
     if(n != null) {
       b = Boolean.parseBoolean(n.value());
     }
     return b;
   }
+	
+	
+	@Override
+	public boolean canHandle(Class cls) {
+		return cls != null 
+				&& (Boolean.class.isAssignableFrom(cls) 
+				|| boolean.class == cls); 
+	}
 
 }

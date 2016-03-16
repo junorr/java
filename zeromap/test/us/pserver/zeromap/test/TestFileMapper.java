@@ -23,10 +23,10 @@ public class TestFileMapper {
 	public static void main(String[] args) {
 		File[] fs = new File("/storage").listFiles();
 		System.out.println("* files: "+ Arrays.toString(fs));
-		Mapper map = MapperFactory.mapper(fs.getClass());
+		Mapper map = MapperFactory.factory().mapper(fs.getClass());
 		Node n = map.map(fs);
 		System.out.println("* map  :\n"+ n);
-		fs = (File[]) map.unmap(n);
+		fs = (File[]) map.unmap(n, File.class);
 		System.out.println("* files: "+ Arrays.toString(fs));
 	}
 	

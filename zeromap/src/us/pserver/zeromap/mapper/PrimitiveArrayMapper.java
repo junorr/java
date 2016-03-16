@@ -21,8 +21,6 @@
 
 package us.pserver.zeromap.mapper;
 
-import static java.util.Collections.list;
-import java.util.Iterator;
 import us.pserver.zeromap.Mapper;
 import us.pserver.zeromap.MapperFactory;
 import us.pserver.zeromap.Node;
@@ -35,24 +33,6 @@ import us.pserver.zeromap.impl.ONode;
  */
 public class PrimitiveArrayMapper implements Mapper {
 	
-	private final Class type;
-	
-	
-	public PrimitiveArrayMapper(Class cls) {
-		if(cls == null) {
-			throw new IllegalArgumentException(
-					"Class must be not null"
-			);
-		}
-		this.type = cls;
-	}
-	
-	
-	public Class getType() {
-		return type;
-	}
-	
-	
   @Override
   public Node map(Object o) {
     Node n = null;
@@ -60,7 +40,7 @@ public class PrimitiveArrayMapper implements Mapper {
 				&& o.getClass().getComponentType().isPrimitive()) {
 			Class<?> ctype = o.getClass().getComponentType();
 			n = new ONode(o.getClass().getName());
-			Mapper map = MapperFactory.mapper(ctype);
+			Mapper map = MapperFactory.factory().mapper(ctype);
       if(byte.class == ctype) {
 				byte[] bs = (byte[]) o;
 				for(int i = 0; i < bs.length; i++) {
@@ -115,66 +95,66 @@ public class PrimitiveArrayMapper implements Mapper {
 
 
   @Override
-  public Object unmap(Node n) {
+  public Object unmap(Node n, Class cls) {
 		Object o = null;
     if(n != null) {
 			Node[] nds = new Node[n.childs().size()];
 			nds = n.childs().toArray(nds);
-			Class<?> ctype = type.getComponentType();
-			Mapper map = MapperFactory.mapper(ctype);
+			Class<?> ctype = cls.getComponentType();
+			Mapper map = MapperFactory.factory().mapper(ctype);
       if(byte.class == ctype) {
 				byte[] bs = new byte[nds.length];
 				for(int i = 0; i < bs.length; i++) {
-					bs[i] = (byte) map.unmap(nds[i]);
+					bs[i] = (byte) map.unmap(nds[i], ctype);
 				}
 				o = bs;
 			}
 			else if(char.class == ctype) {
 				char[] bs = new char[nds.length];
 				for(int i = 0; i < bs.length; i++) {
-					bs[i] = (char) map.unmap(nds[i]);
+					bs[i] = (char) map.unmap(nds[i], ctype);
 				}
 				o = bs;
 			}
 			else if(boolean.class == ctype) {
 				boolean[] bs = new boolean[nds.length];
 				for(int i = 0; i < bs.length; i++) {
-					bs[i] = (boolean) map.unmap(nds[i]);
+					bs[i] = (boolean) map.unmap(nds[i], ctype);
 				}
 				o = bs;
 			}
 			else if(short.class == ctype) {
 				short[] bs = new short[nds.length];
 				for(int i = 0; i < bs.length; i++) {
-					bs[i] = (short) map.unmap(nds[i]);
+					bs[i] = (short) map.unmap(nds[i], ctype);
 				}
 				o = bs;
 			}
 			else if(int.class == ctype) {
 				int[] bs = new int[nds.length];
 				for(int i = 0; i < bs.length; i++) {
-					bs[i] = (int) map.unmap(nds[i]);
+					bs[i] = (int) map.unmap(nds[i], ctype);
 				}
 				o = bs;
 			}
 			else if(long.class == ctype) {
 				long[] bs = new long[nds.length];
 				for(int i = 0; i < bs.length; i++) {
-					bs[i] = (long) map.unmap(nds[i]);
+					bs[i] = (long) map.unmap(nds[i], ctype);
 				}
 				o = bs;
 			}
 			else if(float.class == ctype) {
 				float[] bs = new float[nds.length];
 				for(int i = 0; i < bs.length; i++) {
-					bs[i] = (float) map.unmap(nds[i]);
+					bs[i] = (float) map.unmap(nds[i], ctype);
 				}
 				o = bs;
 			}
 			else if(double.class == ctype) {
 				double[] bs = new double[nds.length];
 				for(int i = 0; i < bs.length; i++) {
-					bs[i] = (double) map.unmap(nds[i]);
+					bs[i] = (double) map.unmap(nds[i], ctype);
 				}
 				o = bs;
 			}
@@ -182,4 +162,12 @@ public class PrimitiveArrayMapper implements Mapper {
 		return o;
   }
   
+	
+	@Override
+	public boolean canHandle(Class cls) {
+		return cls != null 
+				&& cls.isArray() 
+				&& cls.getComponentType().isPrimitive();
+	}
+
 }

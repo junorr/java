@@ -21,28 +21,28 @@ public class TestNode {
 	
 	public static void main(String[] args) {
 		Node root = new ONode("root")
-				.newChild("a").addChild("x").addChild("y")
+				.newChild("a").add("x").add("y")
 				.parent()
-				.newChild("b").addChild("z")
+				.newChild("b").add("z")
 				.parent();
 		System.out.println(root);
 		System.out.println("* root.find('a'):");
-		System.out.println(root.find("a"));
+		System.out.println(root.findAny("a"));
 		
 		System.out.println("* root.find('x'):");
-		System.out.println(root.find("x"));
+		System.out.println(root.findAny("x"));
 		
 		System.out.println("* a.find('y'):");
-		System.out.println(root.find("a").find("y"));
+		System.out.println(root.findAny("a").findAny("y"));
 		
 		System.out.println("* a.find('z'):");
-		System.out.println(root.find("a").find("z"));
+		System.out.println(root.findAny("a").findAny("z"));
 		
 		System.out.println("* root.find('b'):");
-		System.out.println(root.find("b"));
+		System.out.println(root.findAny("b"));
 		
 		System.out.println("* root.find('z'):");
-		System.out.println(root.find("z"));
+		System.out.println(root.findAny("z"));
 	}
 	
 }

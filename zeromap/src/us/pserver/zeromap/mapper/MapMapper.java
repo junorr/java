@@ -32,10 +32,10 @@ public class MapMapper implements Mapper<Map> {
 				Object key = it.next();
 				Object val = t.get(key);
 				if(map == null) {
-					map = MapperFactory.mapper(val.getClass());
+					map = MapperFactory.factory().mapper(val.getClass());
 				}
 				if(n == null) {
-					n = new ONode("map:"+ val.getClass().getName());
+					n = new ONode(val.getClass().getName());
 				}
 				n.newChild(key.toString())
 						.add(map.map(val));
@@ -46,21 +46,33 @@ public class MapMapper implements Mapper<Map> {
 
 
 	@Override
-	public Map unmap(Node n) {
+	public Map unmap(Node n, Class<? extends Map> cls) {
 		Map m = null;
 		if(n != null) {
-			m = new LinkedHashMap();
+			try {
+				m = cls.newInstance();
+			} catch(IllegalAccessException | InstantiationException e) {
+				m = new LinkedHashMap();
+			}
 			Iterator<Node> it = n.childs().iterator();
 			Mapper mapper = null;
 			while(it.hasNext()) {
 				Node cur = it.next();
+				Class type = ClassFactory.create(n.value());
 				if(mapper == null) {
-					mapper = MapperFactory.mapper(ClassFactory.create(n.value()));
+					mapper = MapperFactory.factory().mapper(type);
 				}
-				m.put(cur.value(), mapper.unmap(cur.firstChild()));
+				m.put(cur.value(), mapper.unmap(cur.firstChild(), type));
 			}
 		}
 		return m;
 	}
 	
+	
+	@Override
+	public boolean canHandle(Class cls) {
+		return cls != null 
+				&& Map.class.isAssignableFrom(cls); 
+	}
+
 }

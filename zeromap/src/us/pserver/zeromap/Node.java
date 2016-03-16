@@ -23,13 +23,15 @@ public interface Node extends Comparable<Node> {
 	
 	public Node add(Node child);
 	
-	public Node addChild(String value);
+	public Node add(String value);
 	
 	public Node newChild(String value);
 	
 	public Node parent();
 	
-	public Node find(String value);
+	public Node findChild(String value);
+	
+	public Node findAny(String value);
 	
 	public Node firstChild();
 	

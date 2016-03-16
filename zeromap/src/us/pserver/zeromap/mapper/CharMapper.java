@@ -28,7 +28,7 @@ public class CharMapper implements Mapper<Character> {
 
 
 	@Override
-	public Character unmap(Node n) {
+	public Character unmap(Node n, Class<? extends Character> cls) {
 		Character c = null;
 		if(n != null) {
 			c = n.value().charAt(0);
@@ -36,4 +36,12 @@ public class CharMapper implements Mapper<Character> {
 		return c;
 	}
 	
+	
+	@Override
+	public boolean canHandle(Class cls) {
+		return cls != null 
+				&& (Character.class.isAssignableFrom(cls) 
+				|| char.class == cls); 
+	}
+
 }

@@ -61,16 +61,29 @@ public class ONode implements Node {
 
 
 	@Override
-	public Node find(String value) {
+	public Node findAny(String value) {
 		Node child = null;
 		if(!childs.isEmpty() && value != null) {
 			child = childs.floor(new ONode(value));
 			if(child == null || !value.equals(child.value())) {
 				for(Node n : childs) {
-					if((child = n.find(value)) != null) {
+					if((child = n.findAny(value)) != null) {
 						break;
 					}
 				}
+			}
+		}
+		return child;
+	}
+	
+	
+	@Override
+	public Node findChild(String value) {
+		Node child = null;
+		if(!childs.isEmpty() && value != null) {
+			Node n = childs.floor(new ONode(value));
+			if(n != null && value.equals(n.value())) {
+				child = n;
 			}
 		}
 		return child;
@@ -89,13 +102,13 @@ public class ONode implements Node {
 
 	@Override
 	public boolean contains(String value) {
-		return childs.contains(new ONode(value));
+		return findChild(value) != null;
 	}
 
 
 	@Override
 	public boolean contains(Node child) {
-		return childs.contains(child);
+		return findChild(child.value()) != null;
 	}
 
 
@@ -109,9 +122,9 @@ public class ONode implements Node {
 
 
 	@Override
-	public Node addChild(String value) {
-		if(value != null && !value.isEmpty()) {
-			childs.add(new ONode(value, this));
+	public Node add(String childValue) {
+		if(childValue != null && !childValue.isEmpty()) {
+			childs.add(new ONode(childValue, this));
 		}
 		return this;
 	}

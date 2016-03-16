@@ -32,7 +32,7 @@ public class DateMapper implements Mapper<Date> {
 
 
 	@Override
-	public Date unmap(Node n) {
+	public Date unmap(Node n, Class<? extends Date> cls) {
 		Date d = null;
 		if(n != null) {
 			d = SimpleDate.parseDate(n.value());
@@ -40,4 +40,11 @@ public class DateMapper implements Mapper<Date> {
 		return d;
 	}
 	
+	
+	@Override
+	public boolean canHandle(Class cls) {
+		return cls != null 
+				&& Date.class.isAssignableFrom(cls); 
+	}
+
 }

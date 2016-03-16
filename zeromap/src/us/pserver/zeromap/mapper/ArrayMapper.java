@@ -49,10 +49,10 @@ public class ArrayMapper<T> implements Mapper<T[]> {
 
 
   @Override
-  public T[] unmap(Node n) {
+  public T[] unmap(Node n, Class cls) {
     T[] t = null;
     if(n != null) {
-      Collection list = new CollectionMapper().unmap(n);
+      Collection list = new CollectionMapper().unmap(n, LinkedList.class);
 			int i = 0;
 			for(Object o : list) {
 				if(t == null) {
@@ -63,5 +63,13 @@ public class ArrayMapper<T> implements Mapper<T[]> {
     }
     return t;
   }
+	
+	
+	@Override
+	public boolean canHandle(Class cls) {
+		return cls != null 
+				&& cls.isArray() 
+				&& !cls.getComponentType().isPrimitive();
+	}
   
 }

@@ -5,7 +5,6 @@
  */
 package us.pserver.zeromap.mapper;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import us.pserver.zeromap.Mapper;
@@ -31,7 +30,7 @@ public class PathMapper implements Mapper<Path> {
 
 
 	@Override
-	public Path unmap(Node n) {
+	public Path unmap(Node n, Class<? extends Path> cls) {
 		Path p = null;
 		if(n != null) {
 			p = Paths.get(n.value());
@@ -39,4 +38,11 @@ public class PathMapper implements Mapper<Path> {
 		return p;
 	}
 	
+	
+	@Override
+	public boolean canHandle(Class cls) {
+		return cls != null 
+				&& Path.class.isAssignableFrom(cls); 
+	}
+
 }

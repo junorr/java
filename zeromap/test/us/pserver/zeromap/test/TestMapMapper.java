@@ -44,7 +44,7 @@ public class TestMapMapper {
 		Mapper<Map> mapper = new MapMapper();
 		Node n = mapper.map(map);
 		System.out.println("* node :\n"+n);
-		map = mapper.unmap(n);
+		map = mapper.unmap(n, LinkedHashMap.class);
 		System.out.println("* map  : "+ mapToString(map));
 	}
 	

@@ -43,7 +43,7 @@ public class StringMapper implements Mapper<String> {
 
 
   @Override
-  public String unmap(Node n) {
+  public String unmap(Node n, Class<? extends String> cls) {
     String s = null;
     if(n != null) {
       s = n.value();
@@ -51,4 +51,11 @@ public class StringMapper implements Mapper<String> {
     return s;
   }
   
+	
+	@Override
+	public boolean canHandle(Class cls) {
+		return cls != null 
+				&& String.class.isAssignableFrom(cls); 
+	}
+
 }

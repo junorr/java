@@ -29,7 +29,7 @@ public class FileMapper implements Mapper<File> {
 
 
 	@Override
-	public File unmap(Node n) {
+	public File unmap(Node n, Class<? extends File> cls) {
 		File f = null;
 		if(n != null) {
 			f = new File(n.value());
@@ -37,4 +37,11 @@ public class FileMapper implements Mapper<File> {
 		return f;
 	}
 	
+	
+	@Override
+	public boolean canHandle(Class cls) {
+		return cls != null 
+				&& File.class.isAssignableFrom(cls); 
+	}
+
 }

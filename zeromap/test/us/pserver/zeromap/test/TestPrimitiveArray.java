@@ -28,11 +28,11 @@ public class TestPrimitiveArray {
 		a = (char) ia;
 		System.out.println("* a="+ia+ "="+ a);
 		System.out.println("* array("+ bs.getClass().getName()+ "): "+ Arrays.toString(bs));
-		Mapper map = MapperFactory.mapper(bs.getClass());
+		Mapper map = MapperFactory.factory().mapper(bs.getClass());
 		Node n = map.map(bs);
 		System.out.println("* map  : ");
 		System.out.println(n);
-		bs = (int[]) map.unmap(n);
+		bs = (int[]) map.unmap(n, int[].class);
 		System.out.println("* unmap("+ bs.getClass().getName()+ "): "+ Arrays.toString(bs));
 		System.out.println();
 
@@ -41,11 +41,11 @@ public class TestPrimitiveArray {
 			cs[i-97] = i;
 		}
 		System.out.println("* array("+ cs.getClass().getName()+ "): "+ Arrays.toString(cs));
-		map = MapperFactory.mapper(cs.getClass());
+		map = MapperFactory.factory().mapper(cs.getClass());
 		n = map.map(cs);
 		System.out.println("* map  : ");
 		System.out.println(n);
-		cs = (char[]) map.unmap(n);
+		cs = (char[]) map.unmap(n, char[].class);
 		System.out.println("* unmap("+ cs.getClass().getName()+ "): "+ Arrays.toString(cs));
 		System.out.println();
 	}

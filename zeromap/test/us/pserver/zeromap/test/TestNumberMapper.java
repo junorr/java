@@ -24,12 +24,12 @@ public class TestNumberMapper {
 		int i = 200;
 		Node nd = mp.map(d);
 		System.out.println(nd);
-		d = mp.unmap(nd).doubleValue();
+		d = mp.unmap(nd, double.class).doubleValue();
 		System.out.println(d);
 		
 		Node ni = mp.map(i);
 		System.out.println(ni);
-		i = mp.unmap(ni).intValue();
+		i = mp.unmap(ni, int.class).intValue();
 		System.out.println(i);
 	}
 	

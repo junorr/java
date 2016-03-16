@@ -45,7 +45,7 @@ public class TestArrayMapper {
     Mapper<Integer[]> map = new ArrayMapper<Integer>();
     Node na = map.map(is);
     System.out.println("* map  : "+ na);
-    is = map.unmap(na);
+    is = map.unmap(na, Integer[].class);
     System.out.println("* unmap: "+ Arrays.toString(is));
     System.out.println();
     
@@ -57,7 +57,7 @@ public class TestArrayMapper {
     System.out.println("* array: "+ Arrays.toString(ds));
     Node nd = mapd.map(ds);
     System.out.println("* map  : "+ nd);
-    ds = mapd.unmap(nd);
+    ds = mapd.unmap(nd, Date[].class);
     System.out.println("* unmap: "+ Arrays.toString(ds));
     
     Character[] cs = new Character[10];
@@ -68,7 +68,7 @@ public class TestArrayMapper {
     System.out.println("* array: "+ Arrays.toString(cs));
     nd = mapc.map(cs);
     System.out.println("* map  : "+ nd);
-    cs = mapc.unmap(nd);
+    cs = mapc.unmap(nd, Character[].class);
     System.out.println("* unmap: "+ Arrays.toString(cs));
   }
   

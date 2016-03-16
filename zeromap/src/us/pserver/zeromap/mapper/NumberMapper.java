@@ -17,24 +17,6 @@ import us.pserver.zeromap.impl.ONode;
  */
 public class NumberMapper implements Mapper<Number> {
 
-  private final Class type;
-  
-  
-  public NumberMapper() {
-    this(null);
-  }
-  
-  
-  public NumberMapper(Class<? extends Number> cls) {
-    type = (cls == null ? Number.class : cls);
-  }
-  
-  
-  public Class getType() {
-    return type;
-  }
-  
-  
 	@Override
 	public Node map(Number t) {
 		Node n = null;
@@ -52,7 +34,7 @@ public class NumberMapper implements Mapper<Number> {
 
 
 	@Override
-	public Number unmap(Node node) {
+	public Number unmap(Node node, Class<? extends Number> type) {
 		Number n = null;
 		if(node != null) {
 			try {
@@ -90,4 +72,17 @@ public class NumberMapper implements Mapper<Number> {
 		return n;
 	}
 	
+	
+	@Override
+	public boolean canHandle(Class cls) {
+		return cls != null 
+				&& (Number.class.isAssignableFrom(cls) 
+				|| byte.class == cls
+				|| short.class == cls
+				|| int.class == cls
+				|| long.class == cls
+				|| float.class == cls
+				|| double.class == cls); 
+	}
+
 }
