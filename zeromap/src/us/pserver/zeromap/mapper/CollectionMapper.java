@@ -41,15 +41,18 @@ public class CollectionMapper implements Mapper<Collection> {
   @Override
   public Node map(Collection t) {
     Node n = null;
-    if(t != null && !t.isEmpty()) {
+    if(t != null) {
 			Iterator it = t.iterator();
 			while(it.hasNext()) {
 				Object o = it.next();
 				if(n == null) {
-					n = new ONode(t.getClass().getName() + ":" + o.getClass().getName());
+					n = new ONode(t.getClass().getName() + "|" + o.getClass().getName());
 				}
 				Mapper mp = MapperFactory.factory().mapper(o.getClass());
         n.add(mp.map(o));
+			}
+			if(n == null) {
+				n = new ONode(t.getClass().getName()+ "|"+ Object.class.getName());
 			}
     }
     return n;
@@ -66,7 +69,7 @@ public class CollectionMapper implements Mapper<Collection> {
       for(Node nd : n.childs()) {
         l.add(mp.unmap(nd, type));
       }
-			String sclass = n.value().substring(0, n.value().indexOf(":"));
+			String sclass = n.value().substring(0, n.value().indexOf("|"));
 			Class<? extends Collection> cclass = ClassFactory.create(sclass);
 			try {
 				col = cclass.newInstance();

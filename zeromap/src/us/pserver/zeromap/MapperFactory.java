@@ -47,8 +47,11 @@ public class MapperFactory {
 	
 	private final List<Mapper<?>> mappers;
 	
+	private final List<String> ignored;
+	
 	
 	public MapperFactory() {
+		ignored = new ArrayList<>();
 		mappers = new ArrayList<>();
 		mappers.add(new ArrayMapper());
 		mappers.add(new BooleanMapper());
@@ -67,6 +70,21 @@ public class MapperFactory {
 	
 	public static MapperFactory factory() {
 		return new MapperFactory();
+	}
+	
+	
+	public MapperFactory ignore(String field) {
+		if(field != null) {
+			ignored.add(field);
+		}
+		return this;
+	}
+	
+	
+	public MapperFactory ignore(Class field) {
+		return ignore((field != null 
+				? field.getName() : null)
+		);
 	}
 	
 	

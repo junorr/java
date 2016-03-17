@@ -1,18 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package us.pserver.zeromap.mapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 import us.pserver.tools.rfl.Reflector;
 import us.pserver.zeromap.Mapper;
 import us.pserver.zeromap.MapperFactory;
 import us.pserver.zeromap.Node;
-import us.pserver.zeromap.impl.ClassFactory;
+import us.pserver.zeromap.ObjectBuilder;
 import us.pserver.zeromap.impl.ONode;
 
 
@@ -22,6 +18,21 @@ import us.pserver.zeromap.impl.ONode;
  * @author juno
  */
 public class ObjectMapper implements Mapper {
+	
+	private final List<String> ignored;
+	
+	
+	public ObjectMapper() {
+		this(null);
+	}
+	
+	
+	public ObjectMapper(List<String> ignored) {
+		this.ignored = (ignored != null 
+				? ignored : Collections.EMPTY_LIST
+		);
+	}
+	
 	
 	@Override
 	public Node map(Object t) {
@@ -41,24 +52,39 @@ public class ObjectMapper implements Mapper {
 				n = m.map(t);
 			}
 			else {
-				Reflector ref = new Reflector();
-				Field[] fs = ref.on(t).fields();
+				Reflector ref = Reflector.of(t);
+				Field[] fs = ref.fields();
 				n = (parent != null ? parent 
 						: new ONode(t.getClass().getName()));
 				for(Field f : fs) {
-					if(Modifier.isStatic(f.getModifiers())
-							|| Modifier.isTransient(f.getModifiers())) {
-						continue;
-					}
+					if(isIgnored(f)) continue;
 					Mapper mp = MapperFactory.factory().mapper(f.getType());
 					n.add(mp.map(
-							ref.field(f.getName()).get(), 
+							ref.setField(f.getName()).get(), 
 							new ONode(f.getName()))
 					);
 				}
 			}
 		}
 		return n;
+	}
+	
+	
+	private boolean isIgnored(Field f) {
+		return f == null
+				|| Modifier.isStatic(f.getModifiers())
+				|| Modifier.isTransient(f.getModifiers())
+				|| ignored.contains(f.getName())
+				|| ignored.contains(f.getType().getName());
+	}
+	
+	
+	private Object build(Class cls, Node node) {
+		try {
+			return ObjectBuilder.defaultBuilder().create(cls, node);
+		} catch(ReflectiveOperationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 
@@ -74,15 +100,16 @@ public class ObjectMapper implements Mapper {
 				o = m.unmap(n, cls);
 			}
 			else {
-				Reflector ref = new Reflector();
-				o = ref.on(cls).create();
+				o = build(cls, n);
+				Reflector ref = Reflector.of(o);
 				Field[] fs = ref.fields();
 				for(Field f : fs) {
+					if(isIgnored(f)) continue;
 					Node nc = n.findAny(f.getName());
 					if(nc == null) continue;
 					Class fclass = f.getType();
 					Mapper mp = MapperFactory.factory().mapper(fclass);
-					ref.on(o).field(f.getName()).set(mp.unmap(nc.firstChild(), fclass));
+					ref.setField(f.getName()).set(mp.unmap(nc.firstChild(), fclass));
 				}
 			}
 		}

@@ -112,7 +112,8 @@ public class Session implements RWTnAction {
    */
   public Session connect(String host, int port) {
     rw = new RW3270(this);
-    rw.connect(host, port);
+		System.out.println("rw.connect(host, port, null, 0, true);");
+    rw.connect(host, port, null, 0, true);
     connected = true;
     return this;
   }
@@ -127,7 +128,8 @@ public class Session implements RWTnAction {
    */
   public Session connect(String host, int port, RWTnAction listener) {
     rw = new RW3270(listener);
-    rw.connect(host, port);
+		System.out.println("rw.connect(host, port, null, 0, true);");
+    rw.connect(host, port, null, 0, true);
     connected = true;
     return this;
   }

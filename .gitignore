@@ -159,3 +159,5 @@
 /maxbean-cli2/dist/
 /zeromap/nbproject/private/
 /zeromap/build/
+/test-byte-buddy/nbproject/private/
+/test-byte-buddy/build/

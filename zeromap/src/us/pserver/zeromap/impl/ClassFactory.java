@@ -17,8 +17,8 @@ public abstract class ClassFactory {
 			throw new IllegalArgumentException(
 					"Class name must be not null"
 			);
-		if(name.contains(":")) {
-			name = name.substring(name.indexOf(":")+1);
+		if(name.contains("|")) {
+			name = name.substring(name.indexOf("|")+1);
 		}
 		Class cls = null;
 		if(byte.class.getName().equals(name)) {

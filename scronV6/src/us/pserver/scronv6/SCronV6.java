@@ -28,7 +28,6 @@ import us.pserver.scron.Job;
 import us.pserver.scron.Schedule;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import sun.rmi.runtime.Log;
 import us.pserver.log.LogHelper;
 import us.pserver.log.Logging;
 import us.pserver.scron.AbstractCron;

@@ -21,7 +21,6 @@
 
 package us.pserver.scronv6;
 
-import sun.rmi.runtime.Log;
 import us.pserver.log.LogHelper;
 import us.pserver.scron.ExecutionContext;
 import us.pserver.scronv6.repeat.Pair;

@@ -26,7 +26,7 @@ public class TestByteBuddy {
   }
 
   public static void main(String[] args) throws Exception {
-    ByteBuddyAgent.installOnOpenJDK();
+    //ByteBuddyAgent.installOnOpenJDK();
     ByteBuddy buddy = new ByteBuddy();
     Class<?> myruntype = buddy.redefine(MyString.class)
         .name(String.class.getName())
