@@ -19,11 +19,11 @@ import us.pserver.tictacj.util.NotNull;
  */
 public class AbstractAlarm implements Alarm {
 	
-	protected WakeRule rule;
+	protected final WakeRule rule;
 	
 	protected long at;
 	
-	protected Task task;
+	protected final Task task;
 	
 	
 	protected AbstractAlarm(WakeRule rule, Task tsk) {

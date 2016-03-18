@@ -90,7 +90,7 @@ public interface DateTime {
   
   static class ImplDateTime implements DateTime {
     
-    private Date date;
+    private final Date date;
     
     
     ImplDateTime() {

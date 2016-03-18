@@ -22,7 +22,6 @@
 package us.pserver.tictacj.rules;
 
 import java.time.ZonedDateTime;
-import us.pserver.tictacj.WakeRule;
 import us.pserver.tictacj.util.NotNull;
 
 /**
@@ -32,7 +31,7 @@ import us.pserver.tictacj.util.NotNull;
  */
 public class DateTimeRule extends AbstractWakeRule {
 
-  private DateTime dtm;
+  private final DateTime dtm;
   
   
   public DateTimeRule(DateTime dt) {

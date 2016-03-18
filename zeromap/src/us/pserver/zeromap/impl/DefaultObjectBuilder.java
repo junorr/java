@@ -74,23 +74,6 @@ public class DefaultObjectBuilder<T> implements ObjectBuilder<T> {
 	}
 	
 	
-	private void setFields(T obj) {
-		if(params.isEmpty()) return;
-		Reflector ref = Reflector.of(obj);
-		Iterator<Field> it = params.keySet().iterator();
-		while(it.hasNext()) {
-			Field f = it.next();
-			if(Modifier.isFinal(f.getModifiers())
-					|| Modifier.isStatic(f.getModifiers())) {
-				continue;
-			}
-			Node n = params.get(f);
-			Mapper mp = MapperFactory.factory().mapper(f.getType());
-			ref.setField(f.getName()).set(mp.unmap(n.firstChild(), f.getType()));
-		}
-	}
-	
-	
 	private Object[] initParams() {
 		if(params.isEmpty()) return null;
 		List list = new LinkedList();
@@ -123,14 +106,14 @@ public class DefaultObjectBuilder<T> implements ObjectBuilder<T> {
 					"Node must be not null and not empty"
 			);
 		}
-		Constructor cn = this.guessConstructor(cls, node);
-		if(cn == null) {
+		Constructor ct = this.guessConstructor(cls, node);
+		if(ct == null) {
 			throw new ReflectiveOperationException(
 					"No valid constructor found"
 			);
 		}
 		try {
-			return (T) cn.newInstance(initParams());
+			return (T) ct.newInstance(initParams());
 		} catch(Exception e) {
 			throw new ReflectiveOperationException(e);
 		}

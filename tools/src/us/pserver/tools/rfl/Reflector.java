@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import us.pserver.valid.Valid;
 
 /**
@@ -71,7 +72,7 @@ public class Reflector {
 	 * (<code>null</code> quando sem argumentos).
 	 * @return A instância de Reflector modificada.
 	 */
-	public Reflector setConstructor(Class ... args) {
+	public Reflector selectConstructor(Class ... args) {
   	if(cls != null) {
     	try {
       	cct = cls.getDeclaredConstructor(args);
@@ -88,8 +89,24 @@ public class Reflector {
 	 * Procura pelo construtor sem argumentos.
 	 * @return A instância de Reflector modificada.
 	 */
-	public Reflector setConstructor() {
-    return Reflector.this.setConstructor((Class[])null);
+	public Reflector selectConstructor() {
+    return Reflector.this.selectConstructor((Class[])null);
+	}
+	
+	
+	private void guessConstructor(Object ... args) {
+		Optional<Constructor> opt = Arrays.asList(this.constructors())
+				.stream()
+				.filter(c->c.getParameterCount() == args.length)
+				.filter(c->{
+					return Arrays.asList(c.getParameters())
+							.stream()
+							.allMatch(p->Arrays.asList(args)
+									.stream()
+									.anyMatch(o->p.getType().equals(o.getClass())));
+				}
+		).findFirst();
+		cct = opt.orElse(null);
 	}
 	
 	
@@ -104,8 +121,9 @@ public class Reflector {
 	 */
 	public Object create(Object ... args) {
     if(args == null) return create();
-		if(cls == null || cct == null)
-  		return null;
+		if(cls == null)	return null;
+		if(cct == null) guessConstructor(args);
+		if(cct == null) return null;
    	try {
      	if(!cct.isAccessible())
        	cct.setAccessible(true);
@@ -128,7 +146,7 @@ public class Reflector {
    		return null;
     
      if(cct == null)
-      this.setConstructor();
+      this.selectConstructor();
    	try {
      	if(!cct.isAccessible())
        	cct.setAccessible(true);
@@ -182,8 +200,8 @@ public class Reflector {
 	 * (<code>null</code> quando sem argumentos).
 	 * @return A instância de Reflector modificada.
 	 */
-	public Reflector setMethod(String method, Class ... args) {
-    if(args == null) return Reflector.this.setMethod(method);
+	public Reflector selectMethod(String method, Class ... args) {
+    if(args == null) return Reflector.this.selectMethod(method);
     if(cls != null && method != null) {
       try {
         mth = cls.getDeclaredMethod(method, args);
@@ -204,7 +222,7 @@ public class Reflector {
 	 * @param method Nome do método.
 	 * @return A instância de Reflector modificada.
 	 */
-	public Reflector setMethod(String method) {
+	public Reflector selectMethod(String method) {
     Valid.off(method).forEmpty().fail("Invalid method name: ");
   	if(cls != null && method != null) {
       mth = null;
@@ -271,7 +289,7 @@ public class Reflector {
 	 * @param field Nome do campo.
 	 * @return A instância de Reflector modificada.
 	 */
-	public Reflector setField(String field) {
+	public Reflector selectField(String field) {
     Valid.off(field).forEmpty().fail("Invalid field name: ");
 		if(field != null) {
     	try {

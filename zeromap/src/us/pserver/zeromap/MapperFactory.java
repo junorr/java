@@ -22,7 +22,9 @@
 package us.pserver.zeromap;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import us.pserver.zeromap.mapper.ArrayMapper;
 import us.pserver.zeromap.mapper.BooleanMapper;
@@ -49,9 +51,12 @@ public class MapperFactory {
 	
 	private final List<String> ignored;
 	
+	private final Map<Class,ObjectBuilder> builders;
+	
 	
 	public MapperFactory() {
 		ignored = new ArrayList<>();
+		builders = new LinkedHashMap<>();
 		mappers = new ArrayList<>();
 		mappers.add(new ArrayMapper());
 		mappers.add(new BooleanMapper());
@@ -85,6 +90,24 @@ public class MapperFactory {
 		return ignore((field != null 
 				? field.getName() : null)
 		);
+	}
+	
+	
+	public List<String> ignoredList() {
+		return ignored;
+	}
+	
+	
+	public Map<Class,ObjectBuilder> builders() {
+		return builders;
+	}
+	
+	
+	public MapperFactory register(Class cls, ObjectBuilder ob) {
+		if(cls != null && ob != null) {
+			builders.put(cls, ob);
+		}
+		return this;
 	}
 	
 	
