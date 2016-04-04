@@ -1,6 +1,7 @@
 package us.pserver.zeromap;
 
 import us.pserver.zeromap.impl.DefaultObjectBuilder;
+import us.pserver.zeromap.impl.ProxyObjectBuilder;
 
 
 /**
@@ -13,6 +14,10 @@ public interface ObjectBuilder<T> {
 	
 	public static <T> ObjectBuilder<T> defaultBuilder() {
 		return new DefaultObjectBuilder<>();
+	}
+	
+	public static <T> ObjectBuilder<T> proxyBuilder() {
+		return new ProxyObjectBuilder<>();
 	}
 	
 }

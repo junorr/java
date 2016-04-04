@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
 import java.util.LinkedList;
 import java.util.List;
+import us.pserver.tools.timer.Timer;
+import us.pserver.tools.timer.Timer.Nanos;
 import us.pserver.zeromap.Mapper;
 import us.pserver.zeromap.MapperFactory;
 import us.pserver.zeromap.Node;
@@ -79,8 +81,14 @@ public class TestObjectBuilder {
 		Node n = m.map(a);
 		System.out.println("* "+ n);
 		a = null;
+    //Timer tm = new Nanos().start();
 		a = (A) m.unmap(n, A.class);
+    //tm.lapAndStop();
+    //System.out.println("* Proxy load time: "+ tm);
+    //tm.clear().start();
 		System.out.println("* "+ a);
+    //tm.lapAndStop();
+    //System.out.println("* Effective object creation time: "+ tm);
 	}
 	
 }

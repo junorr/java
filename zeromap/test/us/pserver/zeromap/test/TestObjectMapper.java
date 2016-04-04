@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import us.pserver.zeromap.Mapper;
+import us.pserver.zeromap.MapperFactory;
 import us.pserver.zeromap.Node;
 import us.pserver.zeromap.mapper.ObjectMapper;
 
@@ -58,7 +59,7 @@ public class TestObjectMapper {
 	public static void main(String[] args) {
 		A a = new A();
 		System.out.println("* a: "+ a);
-		Mapper mapper = new ObjectMapper();
+		Mapper mapper = MapperFactory.factory().mapper(A.class);
 		Node na = mapper.map(a);
 		System.out.println(na);
 		a = null;

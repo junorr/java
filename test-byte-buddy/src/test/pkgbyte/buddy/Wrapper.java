@@ -20,14 +20,13 @@ import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 public class Wrapper {
 	
 	@RuntimeType
-	public static void intercept(@Origin Method meth,  @AllArguments Object ... args) {
+	public static Object intercept(@Origin Method meth,  @AllArguments Object ... args) {
 		System.out.println("* Method invocation: "+ meth+ ": ");
 		Arrays.asList(args).forEach(o->System.out.println(" - "+ o.getClass().getName()+ "="+ o));
 		/*if(args != null && args.length == 1) {
 			return args[0];
-		}
+		}*/
 		return null;
-		*/
 	}
 	
 }

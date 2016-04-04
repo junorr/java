@@ -2,12 +2,12 @@ package us.pserver.zeromap.proxy;
 
 import java.lang.reflect.Method;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
-import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
 import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import us.pserver.tools.rfl.Reflector;
 import us.pserver.zeromap.MapperFactory;
 import us.pserver.zeromap.Node;
+import us.pserver.zeromap.mapper.ObjectMapper;
 
 
 
@@ -45,20 +45,16 @@ public class ObjectProxy<T> {
 	}
 	
 	
-	@IgnoreForBinding
-	private void createObject() {
-		if(object == null) {
-			object = factory.mapper(type).unmap(node, type);
-		}
-	}
-	
-	
 	@RuntimeType
-	public Object intercept(@Origin Method meth, @RuntimeType @AllArguments Object ... args) {
-		this.createObject();
-		return Reflector.of(object).selectMethod(
-				meth.getName(), meth.getParameterTypes()
-		).invoke(args);
+	public Object intercept(@Origin Method meth, @AllArguments Object ... args) {
+		if(object == null) {
+      System.out.println("**** ObjectProxy creating real Object ****");
+      object = (T) new ObjectMapper(factory).unmap(node, type);
+      System.out.println("**** "+ object+ " ****");
+		}
+		return Reflector.of(object)
+        .selectMethod(meth)
+        .invoke(args);
 	}
 	
 }

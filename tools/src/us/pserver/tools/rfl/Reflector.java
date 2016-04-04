@@ -215,6 +215,23 @@ public class Reflector {
 	
 	
 	/**
+	 * Procura pelo método especificado.
+	 * @param meth Método a ser selecionado.
+	 * @return Esta instância modificada de Reflector.
+	 */
+	public Reflector selectMethod(Method meth) {
+    if(meth != null) {
+      Optional<Method> mop = Arrays.asList(this.methods())
+          .stream()
+          .filter(m->m.equals(meth))
+          .findFirst();
+      this.mth = mop.orElse(null);
+    }
+		return this;
+	}
+	
+	
+	/**
 	 * Procura pelo mÃ©todo da classe
 	 * (<code>on(Class)</code>), com o nome
 	 * e argumentos informados
