@@ -41,7 +41,6 @@ public abstract class AbstractObjectMapper implements Mapper {
 		if(t != null) {
 			Mapper m = MapperFactory.factory().mapper(t.getClass());
 			if(m != null && !AbstractObjectMapper.class.isAssignableFrom(m.getClass())) {
-        System.out.println("* AbstractObjectMapper.map( Object, Node ).mapper.class = "+ m.getClass().getName());
 				n = m.map(t);
 			}
 			else {

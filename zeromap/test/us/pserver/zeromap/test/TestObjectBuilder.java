@@ -9,6 +9,8 @@ import us.pserver.tools.timer.Timer.Nanos;
 import us.pserver.zeromap.Mapper;
 import us.pserver.zeromap.MapperFactory;
 import us.pserver.zeromap.Node;
+import us.pserver.zeromap.ObjectBuilder;
+import us.pserver.zeromap.impl.DefaultObjectBuilder;
 import us.pserver.zeromap.impl.ONode;
 
 
@@ -67,28 +69,27 @@ public class TestObjectBuilder {
 
 	
 	public static void main(String[] args) throws ReflectiveOperationException {
-		//ObjectBuilder<A> of = ObjectBuilder.defaultBuilder();
+		ObjectBuilder<A> of = ObjectBuilder.defaultBuilder();
+    DefaultObjectBuilder<A> dob = (DefaultObjectBuilder<A>) of;
 		Node na = new ONode(A.class.getName())
 				.add("str").add("i").add("list").add("map").add("c");
-		//Constructor c = of.guessConstructor(A.class, na);
-		//printConst(c);
+		Constructor c = dob.guessConstructor(A.class, na);
+    printConst(c);
 		A a = new A("hello", 1024);
 		for(int i = 0; i < 5; i++) {
-			//a.list.add(i);
+			a.list.add(i);
 		}
 		System.out.println("* "+ a);
 		Mapper m = MapperFactory.factory().mapper(A.class);
 		Node n = m.map(a);
 		System.out.println("* "+ n);
 		a = null;
-    //Timer tm = new Nanos().start();
+    System.out.println("* Creating Object...");
+    Timer tm = new Nanos().start();
 		a = (A) m.unmap(n, A.class);
-    //tm.lapAndStop();
-    //System.out.println("* Proxy load time: "+ tm);
-    //tm.clear().start();
-		System.out.println("* "+ a);
-    //tm.lapAndStop();
-    //System.out.println("* Effective object creation time: "+ tm);
+    tm.lapAndStop();
+    System.out.println("* Object load time: "+ tm);
+    System.out.println(a);
 	}
 	
 }

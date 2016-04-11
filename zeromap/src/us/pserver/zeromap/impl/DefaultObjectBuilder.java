@@ -34,7 +34,26 @@ public class DefaultObjectBuilder<T> implements ObjectBuilder<T> {
 	}
 	
 	
-	private Constructor<T> guessConstructor(Class<T> cls, Node nod) {
+	public String toString(Constructor c) {
+		if(c == null) {
+			return "#null constructor";
+		}
+		StringBuilder sb = new StringBuilder()
+				.append(c.getName()).append("(");
+		Parameter[] ps = c.getParameters();
+		for(Parameter p : ps) {
+			sb.append(" ")
+					.append(p.getType().getSimpleName())
+					.append(" ").append(p.getName()).append(",");
+		}
+		if(sb.toString().endsWith(",")) {
+			sb.deleteCharAt(sb.length()-1);
+		}
+		return sb.append(" )").toString();
+	}
+
+	
+	public Constructor<T> guessConstructor(Class<T> cls, Node nod) {
 		params.clear();
 		Reflector ref = Reflector.of(cls);
 		Constructor[] cs = ref.constructors();
@@ -95,6 +114,7 @@ public class DefaultObjectBuilder<T> implements ObjectBuilder<T> {
 	}
 	
 	
+  @Override
 	public T create(Class<T> cls, Node node) throws ReflectiveOperationException {
 		if(cls == null) {
 			throw new IllegalArgumentException(

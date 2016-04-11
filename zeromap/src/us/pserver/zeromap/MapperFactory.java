@@ -38,7 +38,6 @@ import us.pserver.zeromap.mapper.NumberMapper;
 import us.pserver.zeromap.mapper.ObjectMapper;
 import us.pserver.zeromap.mapper.PathMapper;
 import us.pserver.zeromap.mapper.PrimitiveArrayMapper;
-import us.pserver.zeromap.mapper.ProxyObjectMapper;
 import us.pserver.zeromap.mapper.StringMapper;
 
 /**
@@ -152,11 +151,8 @@ public class MapperFactory {
     if(opt.isPresent()) {
       mpr = (Mapper<T>) opt.get();
     }
-    else if(cls.getName().contains("$ByteBuddy$")) {
-      mpr = (Mapper<T>) new ObjectMapper();
-    }
     else {
-      mpr = (Mapper<T>) new ProxyObjectMapper();
+      mpr = (Mapper<T>) new ObjectMapper();
     }
     return mpr;
   }

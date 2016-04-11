@@ -10,10 +10,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import us.pserver.tools.timer.Timer;
+import us.pserver.tools.timer.Timer.Nanos;
 import us.pserver.zeromap.Mapper;
 import us.pserver.zeromap.MapperFactory;
 import us.pserver.zeromap.Node;
-import us.pserver.zeromap.mapper.ObjectMapper;
 
 
 
@@ -60,10 +61,14 @@ public class TestObjectMapper {
 		A a = new A();
 		System.out.println("* a: "+ a);
 		Mapper mapper = MapperFactory.factory().mapper(A.class);
+    Timer tm = new Nanos().start();
 		Node na = mapper.map(a);
+    System.out.println("* Object mapping time: "+ tm.stop());
 		System.out.println(na);
 		a = null;
+    tm.clear().start();
 		a = (A) mapper.unmap(na, A.class);
+    System.out.println("* Object UNmapping time: "+ tm.stop());
 		System.out.println("* a: "+ a);
 	}
 	
