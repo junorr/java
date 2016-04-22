@@ -43,9 +43,12 @@ public class TestMapMapper {
 		System.out.println("* map  : "+ mapToString(map));
 		Mapper<Map> mapper = new MapMapper();
 		Node n = mapper.map(map);
+    System.out.println("map.size: "+ n.childs().size());
 		System.out.println("* node :\n"+n);
+    
 		map = mapper.unmap(n, LinkedHashMap.class);
 		System.out.println("* map  : "+ mapToString(map));
+    
 	}
 	
 }

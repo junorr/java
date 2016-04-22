@@ -5,12 +5,13 @@
  */
 package us.pserver.zeromap.mapper;
 
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import us.pserver.zeromap.Mapper;
 import us.pserver.zeromap.MapperFactory;
 import us.pserver.zeromap.Node;
+import us.pserver.zeromap.ObjectMappingException;
 import us.pserver.zeromap.impl.ClassFactory;
 import us.pserver.zeromap.impl.ONode;
 
@@ -21,28 +22,61 @@ import us.pserver.zeromap.impl.ONode;
  * @author juno
  */
 public class MapMapper implements Mapper<Map> {
+  
+  public static final String ENTRY_CLASS = "@entry-class";
+  
+  public static final String ENTRY_VALUE = "@entry-value";
+  
 	
 	@Override
 	public Node map(Map t) {
-		Node n = null;
+    Node nmap = null;
 		if(t != null && !t.isEmpty()) {
 			Iterator it = t.keySet().iterator();
 			Mapper map = null;
+      nmap = new ONode(t.getClass().getName());
 			while(it.hasNext()) {
 				Object key = it.next();
 				Object val = t.get(key);
-				if(map == null) {
-					map = MapperFactory.factory().mapper(val.getClass());
-				}
-				if(n == null) {
-					n = new ONode(val.getClass().getName());
-				}
-				n.newChild(key.toString())
-						.add(map.map(val));
+        Node entry = createEntry(key, val);
+        nmap.add(entry);
 			}
 		}
-		return n;
+		return nmap;
 	}
+  
+  
+  private Node createEntryOld(Object key, Object val) {
+    if(key == null || val == null) {
+      return null;
+    }
+    Mapper mk = MapperFactory.factory().mapper(key.getClass());
+    Mapper mv = MapperFactory.factory().mapper(val.getClass());
+    Node entry = mk.map(key);
+    entry.newChild(ENTRY_CLASS).add(
+        key.getClass().getName()+ "|"
+            + val.getClass().getName()
+    );
+    entry.newChild(ENTRY_VALUE).add(mv.map(val));
+    return entry;
+  }
+
+
+  private Node createEntry(Object key, Object val) {
+    if(key == null || val == null) {
+      return null;
+    }
+    Mapper mk = MapperFactory.factory().mapper(key.getClass());
+    Mapper mv = MapperFactory.factory().mapper(val.getClass());
+    Node entry = new ONode("entry#"+ String.valueOf(key.hashCode()));
+    entry.newChild("class").add(
+        key.getClass().getName()+ "|"
+            + val.getClass().getName()
+    );
+    entry.newChild("key").add(mk.map(key));
+    entry.newChild("value").add(mv.map(val));
+    return entry;
+  }
 
 
 	@Override
@@ -50,25 +84,40 @@ public class MapMapper implements Mapper<Map> {
 		Map m = null;
 		if(n != null) {
 			try {
-				m = cls.newInstance();
+				Class<? extends Map> mc = ClassFactory.create(n.value());
+        m = mc.newInstance();
 			} catch(IllegalAccessException | InstantiationException e) {
-				m = new LinkedHashMap();
+				throw new ObjectMappingException("Can not create map from class "+ cls.getName(), e);
 			}
 			Iterator<Node> it = n.childs().iterator();
-			Mapper mapper = null;
 			while(it.hasNext()) {
-				Node cur = it.next();
-				Class type = ClassFactory.create(n.value());
-				if(mapper == null) {
-					mapper = MapperFactory.factory().mapper(type);
-				}
-				m.put(cur.value(), mapper.unmap(cur.firstChild(), type));
+				Object[] oentry = unmapEntry(it.next());
+				m.put(oentry[0], oentry[1]);
 			}
 		}
 		return m;
 	}
-	
-	
+  
+  
+  private Object[] unmapEntry(Node entry) {
+    if(entry == null) {
+      return null;
+    }
+    String[] scs = entry.findChild("class").firstChild().value().split("\\|");
+    Class ck = ClassFactory.create(scs[0]);
+    Class cv = ClassFactory.create(scs[1]);
+    Mapper mk = MapperFactory.factory().mapper(ck);
+    Mapper mv = MapperFactory.factory().mapper(cv);
+    Object key = mk.unmap(entry
+        .findChild("key").firstChild(), ck
+    );
+    Object val = mv.unmap(entry
+        .findChild("value").firstChild(), cv
+    );
+    return new Object[]{key, val};
+  }
+  
+  
 	@Override
 	public boolean canHandle(Class cls) {
 		return cls != null 

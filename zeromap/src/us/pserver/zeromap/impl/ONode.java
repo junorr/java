@@ -145,6 +145,12 @@ public class ONode implements Node {
 	public Node parent() {
 		return parent;
 	}
+  
+  
+  @Override
+  public boolean hasParent() {
+    return parent != null;
+  }
 
 
 	@Override

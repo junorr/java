@@ -26,6 +26,8 @@ public interface Node extends Comparable<Node> {
 	public Node add(String value);
 	
 	public Node newChild(String value);
+  
+  public boolean hasParent();
 	
 	public Node parent();
 	
