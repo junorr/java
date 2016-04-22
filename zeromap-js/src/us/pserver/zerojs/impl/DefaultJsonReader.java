@@ -23,10 +23,6 @@ package us.pserver.zerojs.impl;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.CharBuffer;
-import java.util.LinkedList;
-import java.util.List;
-import us.pserver.zerojs.JsonHandler;
 import us.pserver.zerojs.JsonReader;
 
 /**
@@ -34,10 +30,8 @@ import us.pserver.zerojs.JsonReader;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/04/2016
  */
-public class DefaultJsonReader implements JsonReader {
+public class DefaultJsonReader extends AbstractObservable implements JsonReader {
 
-  private final List<JsonHandler> handlers;
-  
   private final Reader reader;
   
   private final StringBuilder build;
@@ -49,9 +43,14 @@ public class DefaultJsonReader implements JsonReader {
           "Reader must be not null"
       );
     }
-    this.handlers = new LinkedList<>();
     this.reader = rdr;
     this.build = new StringBuilder();
+  }
+  
+  
+  @Override
+  public Reader getReader() {
+    return reader;
   }
   
   
@@ -104,28 +103,19 @@ public class DefaultJsonReader implements JsonReader {
               escQuotes = !escQuotes;
               break;
             case ' ':
+            case '\n':
+            case '\t':
+            case '\r':
               break;
             default:
               build.append(ch);
               break;
           }
         }
-        else if(escQuote && JsonTokens.QUOTE == ch
-            && i < read -1 && 
-            (buffer[i+1] == JsonTokens.COMMA
-            || buffer[i+1] == JsonTokens.COLON
-            || buffer[i+1] == JsonTokens.END_ARRAY
-            || buffer[i+1] == JsonTokens.END_OBJECT)) {
-          //System.out.println("* end escaping quote");
+        else if(escQuote && JsonTokens.QUOTE == ch) {
           escQuote = !escQuote;
         }
-        else if(escQuotes && JsonTokens.QUOTES == ch
-            && i < read -1 && 
-            (buffer[i+1] == JsonTokens.COMMA
-            || buffer[i+1] == JsonTokens.COLON
-            || buffer[i+1] == JsonTokens.END_ARRAY
-            || buffer[i+1] == JsonTokens.END_OBJECT)) {
-          //System.out.println("* end escaping quotes");
+        else if(escQuotes && JsonTokens.QUOTES == ch) {
           escQuotes = !escQuotes;
         }
         else {
@@ -133,52 +123,6 @@ public class DefaultJsonReader implements JsonReader {
           build.append(ch);
         }
       }
-    }
-  }
-  
-  
-  //@Override
-  public void readOld() throws IOException {
-    CharBuffer buffer = CharBuffer.allocate(1024);
-    while(reader.read(buffer) > 0) {
-      buffer.flip();
-      while(buffer.remaining() > 0) {
-        char ch = buffer.get();
-        switch(ch) {
-          case ' ':
-            break;
-          case JsonTokens.START_OBJECT:
-            handlers.forEach(h->{h.startObject();});
-            break;
-          case JsonTokens.START_ARRAY:
-            handlers.forEach(h->{h.startArray();});
-            break;
-          case JsonTokens.END_OBJECT:
-            notifyValue();
-            handlers.forEach(h->{h.endObject();});
-            break;
-          case JsonTokens.END_ARRAY:
-            notifyValue();
-            handlers.forEach(h->{h.endArray();});
-            break;
-          case JsonTokens.COLON:
-            notifyName();
-            break;
-          case JsonTokens.COMMA:
-            notifyValue();
-            break;
-          case JsonTokens.QUOTE:
-          case JsonTokens.QUOTES:
-            if(build.length() > 0) {
-              build.append(ch);
-            }
-            break;
-          default:
-            build.append(ch);
-            break;
-        }
-      }
-      buffer.clear();
     }
   }
   
@@ -211,25 +155,4 @@ public class DefaultJsonReader implements JsonReader {
     }
   }
   
-  
-  @Override
-  public JsonReader addHandler(JsonHandler jsh) {
-    if(jsh != null) {
-      handlers.add(jsh);
-    }
-    return this;
-  }
-
-
-  @Override
-  public boolean removeHandler(JsonHandler jsh) {
-    return handlers.remove(jsh);
-  }
-
-
-  @Override
-  public List<JsonHandler> getHandlers() {
-    return handlers;
-  }
-
 }

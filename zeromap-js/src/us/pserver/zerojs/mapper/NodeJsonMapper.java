@@ -21,97 +21,116 @@
 
 package us.pserver.zerojs.mapper;
 
+import java.io.IOException;
+import java.io.Writer;
 import us.pserver.zerojs.JsonHandler;
 import us.pserver.zerojs.exception.JsonParseException;
-import us.pserver.zeromap.Node;
-import us.pserver.zeromap.impl.ONode;
+import us.pserver.zerojs.impl.JsonTokens;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 21/04/2016
+ * @version 0.0 - 22/04/2016
  */
-public class JsonNodeMapper implements JsonHandler {
-  
-  private final Node root;
-  
-  private Node current;
-  
-  private boolean inarray;
-  
-  private boolean inobj;
-  
-  
-  public JsonNodeMapper() {
-    this(new ONode("root"));
-  }
-  
-  
-  public JsonNodeMapper(Node root) {
-    if(root == null) {
+public class NodeJsonMapper implements JsonHandler {
+
+  private final Writer writer;
+
+  private boolean appendComma;
+
+
+  public NodeJsonMapper(Writer writer) {
+    if(writer == null) {
       throw new IllegalArgumentException(
-          "Root Node must be not null"
+          "Writer must be not null"
       );
     }
-    current = this.root = root;
-    inarray = false;
-    inobj = false;
-  }
-  
-  
-  public Node getRoot() {
-    return root;
+    this.writer = writer;
+    appendComma = false;
   }
 
-      
+
+  public Writer getWriter() {
+    return writer;
+  }
+
+
+  private void append(char ch) throws JsonParseException {
+    try {
+      writer.append(ch);
+    } catch(IOException e) {
+      throw new JsonParseException(e.getMessage(), e);
+    }
+  }
+
+
+  private void append(String str) throws JsonParseException {
+    try {
+      writer.append(str);
+    } catch(IOException e) {
+      throw new JsonParseException(e.getMessage(), e);
+    }
+  }
+
+
   @Override
   public void startObject() throws JsonParseException {
-    if(current != root) {
-      inobj = true;
-      //System.out.println("* start object");
-    }
+    append('{');
   }
 
 
   @Override
   public void endObject() throws JsonParseException {
-    if(current != root) {
-      inobj = false;
-      current = current.parent();
-      //System.out.println("* end object, current: "+ current.value());
-    }
+    append('}');
   }
 
 
   @Override
   public void startArray() throws JsonParseException {
-    inarray = true;
-    //System.out.println("* start array");
+    append('[');
   }
 
 
   @Override
   public void endArray() throws JsonParseException {
-    inarray = false;
-    current = (current.hasParent() 
-        ? current.parent() : current);
-    //System.out.println("* end array, current: "+ current.value());
+    append(']');
   }
 
 
   @Override
   public void name(String str) {
-    current = current.newChild(str);
-    //System.out.println("* name="+ str+ ", current: "+ current.value());
+    if(appendComma) {
+      append(JsonTokens.COMMA);
+      appendComma = false;
+    }
+    append(JsonTokens.QUOTES);
+    append(str);
+    append(JsonTokens.QUOTES);
+    append(JsonTokens.COLON);
   }
 
 
   @Override
   public void value(String str) {
-    current.newChild(str);
-    current = (!inarray && current.hasParent() 
-        ? current.parent() : current);
-    //System.out.println("* value="+ str+ ", current: "+ current.value());
+    if(appendComma) {
+      append(JsonTokens.COMMA);
+    }
+    try {
+      Double.parseDouble(str);
+      append(str);
+    } 
+    catch(NumberFormatException e) {
+      if(str.equalsIgnoreCase("true")
+          || str.equalsIgnoreCase("false")) {
+        append(str);
+      }
+      else {
+        append(JsonTokens.QUOTES);
+        append(str);
+        append(JsonTokens.QUOTES);
+      }
+    }
+    appendComma = true;
   }
 
 }

@@ -23,27 +23,29 @@ package us.pserver.zerojs.test;
 
 import java.io.IOException;
 import java.io.StringReader;
-import us.pserver.zerojs.JsonHandler;
+import java.io.StringWriter;
 import us.pserver.zerojs.JsonReader;
-import us.pserver.zerojs.exception.JsonParseException;
+import us.pserver.zerojs.JsonWriter;
+import us.pserver.zerojs.mapper.JsonNodeMapper;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/04/2016
+ * @version 0.0 - 21/04/2016
  */
-public class TestParser {
+public class TestJsonWriter {
 
   
   public static void main(String[] args) throws IOException {
-    //String json = "{'hello\"escaped quotes\"': 'world '''of {:}{:[]:[]}', 'array': [1, 2, 3, 4], 'objs': [{'a': 0}, {'b': 1}, {'c': 2}]}";
+    //String json = "{'hello': 'world', 'array': [1, 2, 3, 4], 'objs': [{'a': 0}, {'b': {'i': 9}}, {'c': 2}]}";
+    
     String json = "{\n" +
 "  'b': {\n" +
 "    'bool': true,\n" +
 "    'iarray': {\n" +
 "      '[I': [1, 2, 3]\n" +
 "    },\n" +
-"    'str': 'abc\"'\n" +
+"    'str': 'abc'\n" +
 "  },\n" +
 "  'chars': {\n" +
 "    'java.util.LinkedHashMap': {\n" +
@@ -84,49 +86,17 @@ public class TestParser {
 "  },\n" +
 "  'str': 'def'\n" +
 "}";
+    /**/
     System.out.println("* json = "+ json);
-    JsonReader rd = JsonReader.defaultReader(new StringReader(json));
-    JsonHandler hd = new JsonHandler() {
-      boolean value = false;
-      @Override
-      public void startObject() throws JsonParseException {
-        if(value) {
-          System.out.print(", ");
-          value = false;
-        }
-        System.out.print("{ ");
-      }
-      @Override
-      public void endObject() throws JsonParseException {
-        System.out.print(" }");
-      }
-      @Override
-      public void startArray() throws JsonParseException {
-        System.out.print("[ ");
-      }
-      @Override
-      public void endArray() throws JsonParseException {
-        System.out.print(" ]");
-      }
-      @Override
-      public void name(String str) {
-        if(value) {
-          System.out.print(", ");
-          value = false;
-        }
-        System.out.print("'"+ str+ "': ");
-      }
-      @Override
-      public void value(String str) {
-        if(value) {
-          System.out.print(", ");
-        }
-        System.out.print(str);
-        value = true;
-      }
-    };
-    rd.addHandler(hd);
-    rd.read();
+    JsonReader reader = JsonReader.defaultReader(new StringReader(json));
+    JsonNodeMapper mapper = new JsonNodeMapper();
+    reader.addHandler(mapper);
+    reader.read();
+    System.out.println("* node =\n"+ mapper.getRoot());
+    StringWriter sw = new StringWriter();
+    JsonWriter.defaultWriter(mapper.getRoot(), sw).write();
+    System.out.println(json);
+    System.out.println(sw.toString());
   }
   
 }

@@ -21,13 +21,26 @@
 
 package us.pserver.zerojs;
 
+import java.io.IOException;
+import java.io.Writer;
+import us.pserver.zerojs.impl.DefaultJsonWriter;
+import us.pserver.zeromap.Node;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/04/2016
  */
-public interface JsonWriter extends JsonHandler {
+public interface JsonWriter extends ObservableHandler {
 
-  public String getJson();
+  public Node getRoot();
+  
+  public Writer getWriter();
+  
+  public void write() throws IOException;
+  
+  public static JsonWriter defaultWriter(Node root, Writer wt) {
+    return new DefaultJsonWriter(root, wt);
+  }
   
 }

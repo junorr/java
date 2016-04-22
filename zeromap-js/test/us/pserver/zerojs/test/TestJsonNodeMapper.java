@@ -24,7 +24,7 @@ package us.pserver.zerojs.test;
 import java.io.IOException;
 import java.io.StringReader;
 import us.pserver.zerojs.JsonReader;
-import us.pserver.zerojs.mapper.JsonNodeMapper1;
+import us.pserver.zerojs.mapper.JsonNodeMapper;
 
 /**
  *
@@ -36,51 +36,62 @@ public class TestJsonNodeMapper {
   
   public static void main(String[] args) throws IOException {
     String json = "{'hello': 'world', 'array': [1, 2, 3, 4], 'objs': [{'a': 0}, {'b': {'i': 9}}, {'c': 2}]}";
-    json = 
-        "{"
-        +   "'str': 'def', "
-        +   "'list': ['d', 'e', 'f'], "
-        +   "'b': {"
-        +     "'str': 'abc', "
-        +     "'iarray': {"
-        +       "'[I': [1, 2, 3]"
-        +     "}, "
-        +     "'bool': true"
-        +   "}, "
-        +   "'chars': {"
-        +     "'java.util.LinkedHashMap': [{"
-        +       "'entry#100': {"
-        +         "'key': 'a', "
-        +         "'value': 97, "
-        +         "'class': 'java.lang.String|java.lang.Integer'"
-        +       "}"
-        +     "}, {"
-        +       "'entry#101': {"
-        +         "'key': 'b', "
-        +         "'value': 98, "
-        +         "'class': 'java.lang.String|java.lang.Integer'"
-        +       "}"
-        +     "}, {"
-        +       "'entry#102': {"
-        +         "'key': 'c', "
-        +         "'value': 99, "
-        +         "'class': 'java.lang.String|java.lang.Integer'"
-        +       "}"
-        +     "}, {"
-        +       "'entry#103': {"
-        +         "'key': 'd', "
-        +         "'value': 100, "
-        +         "'class': 'java.lang.String|java.lang.Integer'"
-        +       "}"
-        +     "}]"
-        +   "}"
-        + "}";
+    /*
+    String json = "{\n" +
+"  'b': {\n" +
+"    'bool': true,\n" +
+"    'iarray': {\n" +
+"      '[I': [1, 2, 3]\n" +
+"    },\n" +
+"    'str': 'abc'\n" +
+"  },\n" +
+"  'chars': {\n" +
+"    'java.util.LinkedHashMap': {\n" +
+"      'entry#100': {\n" +
+"        'class': 'java.lang.String|java.lang.Integer',\n" +
+"        'key': 'd',\n" +
+"        'value': 100\n" +
+"      },\n" +
+"      'entry#101': {\n" +
+"        'class': 'java.lang.String|java.lang.Integer',\n" +
+"        'key': 'e',\n" +
+"        'value': 101\n" +
+"      },\n" +
+"      'entry#102': {\n" +
+"        'class': 'java.lang.String|java.lang.Integer',\n" +
+"        'key': 'f',\n" +
+"        'value': 102\n" +
+"      },\n" +
+"      'entry#97': {\n" +
+"        'class': 'java.lang.String|java.lang.Integer',\n" +
+"        'key': 'a',\n" +
+"        'value': 97\n" +
+"      },\n" +
+"      'entry#98': {\n" +
+"        'class': 'java.lang.String|java.lang.Integer',\n" +
+"        'key': 'b',\n" +
+"        'value': 98\n" +
+"      },\n" +
+"      'entry#99': {\n" +
+"        'class': 'java.lang.String|java.lang.Integer',\n" +
+"        'key': 'c',\n" +
+"        'value': 99\n" +
+"      }\n" +
+"    }\n" +
+"  },\n" +
+"  'list': {\n" +
+"    'java.util.LinkedList|java.lang.Character': ['d', 'e', 'f']\n" +
+"  },\n" +
+"  'str': 'def'\n" +
+"}";
+    */
     System.out.println("* json = "+ json);
     JsonReader reader = JsonReader.defaultReader(new StringReader(json));
-    JsonNodeMapper1 mapper = new JsonNodeMapper1();
+    JsonNodeMapper mapper = new JsonNodeMapper();
     reader.addHandler(mapper);
     reader.read();
     System.out.println("* node =\n"+ mapper.getRoot());
+    
   }
   
 }

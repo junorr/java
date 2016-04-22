@@ -63,7 +63,7 @@ public class ChannelReader extends Reader {
     this.channel = ch;
     this.charset = cs;
     this.buffer = null;
-    this.bytes = ByteBuffer.allocate(1024);
+    this.bytes = ByteBuffer.allocate(4096);
   }
   
 

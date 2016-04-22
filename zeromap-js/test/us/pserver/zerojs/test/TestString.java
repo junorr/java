@@ -19,25 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs;
-
-import java.io.IOException;
-import java.io.Reader;
-import us.pserver.zerojs.impl.DefaultJsonReader;
+package us.pserver.zerojs.test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/04/2016
+ * @version 0.0 - 22/04/2016
  */
-public interface JsonReader extends ObservableHandler {
+public class TestString {
+
   
-  public Reader getReader();
-  
-  public void read() throws IOException;
-  
-  public static JsonReader defaultReader(Reader rdr) {
-    return new DefaultJsonReader(rdr);
+  public static void main(String[] args) {
+    String str = "'abc\\''";
+    char ch = '\'';
+    System.out.println("str=["+ str+ "]");
+    System.out.println("str.contains(\\'): "+ str.contains("\\'"));
+    System.out.println("char="+ ch);
+    System.out.println("String.valueOf(ch).contains(\\'): "+ String.valueOf(ch).contains("\\'"));
   }
   
 }

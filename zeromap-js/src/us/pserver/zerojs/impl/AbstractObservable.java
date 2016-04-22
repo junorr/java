@@ -19,25 +19,46 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs;
+package us.pserver.zerojs.impl;
 
-import java.io.IOException;
-import java.io.Reader;
-import us.pserver.zerojs.impl.DefaultJsonReader;
+import java.util.LinkedList;
+import java.util.List;
+import us.pserver.zerojs.JsonHandler;
+import us.pserver.zerojs.ObservableHandler;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/04/2016
  */
-public interface JsonReader extends ObservableHandler {
+public abstract class AbstractObservable implements ObservableHandler {
+
+  protected final List<JsonHandler> handlers;
   
-  public Reader getReader();
   
-  public void read() throws IOException;
-  
-  public static JsonReader defaultReader(Reader rdr) {
-    return new DefaultJsonReader(rdr);
+  protected AbstractObservable() {
+    this.handlers = new LinkedList<>();
   }
   
+  
+  @Override
+  public ObservableHandler addHandler(JsonHandler jsh) {
+    if(jsh != null) {
+      handlers.add(jsh);
+    }
+    return this;
+  }
+
+
+  @Override
+  public boolean removeHandler(JsonHandler jsh) {
+    return handlers.remove(jsh);
+  }
+
+
+  @Override
+  public List<JsonHandler> getHandlers() {
+    return handlers;
+  }
+
 }

@@ -166,6 +166,11 @@ public class SimpleDate extends Date {
 	public static final String DDMMYYYY_HHMMSS_DASH = "dd-MM-yyyy HH:mm:ss";
 	
 	/**
+	 * String scape to format (DD-MM-YYYYThh:mm:ss.SSSZ).
+	 */
+	public static final String YYYYMMDDTHHMMSS_SSSZ_DASH = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	/**
 	 * String scape to format (YYYY/MM/DD).
 	 */
 	public static final String YYYYMMDD_SLASH = "yyyy/MM/dd";
@@ -830,15 +835,16 @@ public class SimpleDate extends Date {
 		// 20-01-2011
 		// 2011-01-20
 		if(Character.isDigit(date.charAt(4))) {
-
 			// 20-01-2011
 			if(date.charAt(2) == '-') {
 				// 20-01-2011 13:50:00
-				if(date.length() > 10)
+				if(date.length() > 10) {
 					fm = DDMMYYYY_HHMMSS_DASH;
+        }
 				// 20-01-2011
-				else
+        else {
 					fm = DDMMYYYY_DASH;
+        }
 
 			// 20/01/2011
 			} else if(date.charAt(2) == '/') {
@@ -859,61 +865,73 @@ public class SimpleDate extends Date {
 					fm = DDMMYYYY_DOT;
 			}
 
+		} 
 		// 01234
 		// 2011-01-20
-		} else if(!Character.isLetter(date.charAt(2))) {
-
+    else if(Character.isDigit(date.charAt(2))) {
 			// 2011-01-20
-			if(date.charAt(4) == '-') {
+      if(date.charAt(4) == '-') {
+        //2011-01-20T13:50:00.555Z
+        if(date.length() == 24 && date.charAt(10) == 'T') {
+          fm = YYYYMMDDTHHMMSS_SSSZ_DASH;
+        }
 				// 2011-01-20 13:50:00
-				if(date.length() > 10 && date.length() <= 19) {
+        else if(date.length() > 10 && date.length() <= 19) {
 					fm = YYYYMMDD_HHMMSS_DASH;
+        } 
 				// 2011-01-20 13:50:00.123456789
-        } else if(date.length() > 19) {
+        else if(date.length() > 19) {
 					fm = SQL_DATE_TIME;
+        } 
 				// 2011-01-20
-        } else {
+        else {
 					fm = YYYYMMDD_DASH;
         }
 			// 2011/01/20
-			} else if(date.charAt(4) == '/') {
+			} 
+      else if(date.charAt(4) == '/') {
 				// 2011/01/20 13:50:00
-				if(date.length() > 10)
+				if(date.length() > 10) {
 					fm = YYYYMMDD_HHMMSS_SLASH;
+        }
 				// 2011/01/20
-				else
+        else {
 					fm = YYYYMMDD_SLASH;
-
+        }
 			// 2011.01.20
 			} else {
 				// 2011.01.20 13:50:00
-				if(date.length() > 10)
+				if(date.length() > 10) {
 					fm = YYYYMMDD_HHMMSS_DOT;
+        }
 				// 2011.01.20
-				else
+        else {
 					fm = YYYYMMDD_DOT;
+        }
 			}
-
 		// Segunda-feira, 20 de Março de 2011
 		} else {
 
 			// Segunda-feira, 20 de Março de 2011, 13:50:00
-			if(date.contains(":"))
+			if(date.contains(":")) {
 				fm = LONG_DATE_TIME;
+      }
 			// Segunda-feira, 20 de Março de 2011
-			else
+      else {
 				fm = LONG_DATE;
+      }
 		}
 
 		try {
-			if(loc != null)
+			if(loc != null) {
 				df = new SimpleDateFormat(fm, loc);
-			else
+      }
+      else {
 				df = new SimpleDateFormat(fm);
-
+      }
 			return new SimpleDate(df.parse(date));
-
-		} catch(ParseException ex) {
+		} 
+    catch(ParseException ex) {
 			throw new IllegalArgumentException(ex);
 		}
 	}

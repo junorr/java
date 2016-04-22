@@ -21,23 +21,19 @@
 
 package us.pserver.zerojs;
 
-import java.io.IOException;
-import java.io.Reader;
-import us.pserver.zerojs.impl.DefaultJsonReader;
+import java.util.List;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/04/2016
+ * @version 0.0 - 22/04/2016
  */
-public interface JsonReader extends ObservableHandler {
+public interface ObservableHandler {
+
+  public ObservableHandler addHandler(JsonHandler jsh);
   
-  public Reader getReader();
+  public boolean removeHandler(JsonHandler jsh);
   
-  public void read() throws IOException;
-  
-  public static JsonReader defaultReader(Reader rdr) {
-    return new DefaultJsonReader(rdr);
-  }
+  public List<JsonHandler> getHandlers();
   
 }
