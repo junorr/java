@@ -40,8 +40,6 @@ public class DefaultJsonReader implements JsonReader {
   
   private final Reader reader;
   
-  private boolean isName;
-  
   private final StringBuilder build;
   
   
@@ -53,19 +51,96 @@ public class DefaultJsonReader implements JsonReader {
     }
     this.handlers = new LinkedList<>();
     this.reader = rdr;
-    this.isName = false;
     this.build = new StringBuilder();
   }
   
   
   @Override
   public void read() throws IOException {
-    CharBuffer buffer = CharBuffer.allocate(1024);
-    int quoteCount = 0;
-
-    boolean reading = false;
+    char[] buffer = new char[1024];
+    boolean escQuote = false;
+    boolean escQuotes = false;
     int read = 0;
     while((read = reader.read(buffer)) > 0) {
+      for(int i = 0; i < read; i++) {
+        char ch = buffer[i];
+        //System.out.print("("+ ch+ ") ");
+        if(!escQuote && !escQuotes) {
+          switch(ch) {
+            case JsonTokens.START_OBJECT:
+              //System.out.println("* start object");
+              handlers.forEach(h->{h.startObject();});
+              break;
+            case JsonTokens.START_ARRAY:
+              //System.out.println("* start array");
+              handlers.forEach(h->{h.startArray();});
+              break;
+            case JsonTokens.END_OBJECT:
+              //System.out.println("* notify value: "+ build);
+              //System.out.println("* end object");
+              notifyValue();
+              handlers.forEach(h->{h.endObject();});
+              break;
+            case JsonTokens.END_ARRAY:
+              //System.out.println("* notify value: "+ build);
+              //System.out.println("* end array");
+              notifyValue();
+              handlers.forEach(h->{h.endArray();});
+              break;
+            case JsonTokens.COLON:
+              //System.out.println("* notify name: "+ build);
+              notifyName();
+              break;
+            case JsonTokens.COMMA:
+              //System.out.println("* notify value: "+ build);
+              notifyValue();
+              break;
+            case JsonTokens.QUOTE:
+              //System.out.println("* escape quote");
+              escQuote = !escQuote;
+              break;
+            case JsonTokens.QUOTES:
+              //System.out.println("* escape quotes");
+              escQuotes = !escQuotes;
+              break;
+            case ' ':
+              break;
+            default:
+              build.append(ch);
+              break;
+          }
+        }
+        else if(escQuote && JsonTokens.QUOTE == ch
+            && i < read -1 && 
+            (buffer[i+1] == JsonTokens.COMMA
+            || buffer[i+1] == JsonTokens.COLON
+            || buffer[i+1] == JsonTokens.END_ARRAY
+            || buffer[i+1] == JsonTokens.END_OBJECT)) {
+          //System.out.println("* end escaping quote");
+          escQuote = !escQuote;
+        }
+        else if(escQuotes && JsonTokens.QUOTES == ch
+            && i < read -1 && 
+            (buffer[i+1] == JsonTokens.COMMA
+            || buffer[i+1] == JsonTokens.COLON
+            || buffer[i+1] == JsonTokens.END_ARRAY
+            || buffer[i+1] == JsonTokens.END_OBJECT)) {
+          //System.out.println("* end escaping quotes");
+          escQuotes = !escQuotes;
+        }
+        else {
+          //System.out.println("* append");
+          build.append(ch);
+        }
+      }
+    }
+  }
+  
+  
+  //@Override
+  public void readOld() throws IOException {
+    CharBuffer buffer = CharBuffer.allocate(1024);
+    while(reader.read(buffer) > 0) {
       buffer.flip();
       while(buffer.remaining() > 0) {
         char ch = buffer.get();
@@ -94,16 +169,16 @@ public class DefaultJsonReader implements JsonReader {
             break;
           case JsonTokens.QUOTE:
           case JsonTokens.QUOTES:
-            build.append(ch);
-            reading = !reading;
+            if(build.length() > 0) {
+              build.append(ch);
+            }
             break;
           default:
             build.append(ch);
             break;
         }
-        buffer.clear();
       }
-      
+      buffer.clear();
     }
   }
   
@@ -119,6 +194,7 @@ public class DefaultJsonReader implements JsonReader {
   
   private void notifyName() {
     if(build.length() > 0) {
+      fixQuotes();
       String str = build.toString();
       handlers.forEach(h->h.name(str));
       build.delete(0, build.length());
@@ -128,6 +204,7 @@ public class DefaultJsonReader implements JsonReader {
   
   private void notifyValue() {
     if(build.length() > 0) {
+      fixQuotes();
       String str = build.toString();
       handlers.forEach(h->h.value(str));
       build.delete(0, build.length());

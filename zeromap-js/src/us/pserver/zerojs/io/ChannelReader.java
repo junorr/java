@@ -19,24 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs.reader;
+package us.pserver.zerojs.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
-import us.pserver.zerojs.exception.JsonReadException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 15/04/2016
  */
-public class ChannelInput implements JsonInput {
+public class ChannelReader extends Reader {
   
   private final ReadableByteChannel channel;
   
@@ -47,12 +46,12 @@ public class ChannelInput implements JsonInput {
   private final Charset charset;
   
   
-  public ChannelInput(ReadableByteChannel ch) {
+  public ChannelReader(ReadableByteChannel ch) {
     this(ch, null);
   }
   
   
-  public ChannelInput(ReadableByteChannel ch, Charset cs) {
+  public ChannelReader(ReadableByteChannel ch, Charset cs) {
     if(ch == null) {
       throw new IllegalArgumentException(
           "Channel must be not null"
@@ -68,13 +67,6 @@ public class ChannelInput implements JsonInput {
   }
   
 
-  @Override
-  public boolean hasNext() {
-    fillBuffer();
-    return buffer != null && buffer.remaining() > 0;
-  }
-  
-  
   private void fillBuffer() {
     if(buffer != null && buffer.remaining() > 0)
       return;
@@ -90,23 +82,35 @@ public class ChannelInput implements JsonInput {
 
 
   @Override
-  public Character next() throws JsonReadException {
-    if(!hasNext()) {
-      throw new JsonReadException("No more data");
+  public int read(char[] cbuf, int off, int len) throws IOException {
+    fillBuffer();
+    if(buffer == null || !buffer.hasRemaining()) {
+      return -1;
     }
-    return buffer.get();
+    int read = Math.min(len, buffer.remaining());
+    buffer.get(cbuf, off, read);
+    return read;
   }
 
+
+  @Override
+  public void close() throws IOException {
+    channel.close();
+    bytes.clear();
+    buffer.clear();
+  }
   
-  public static void main(String[] args) {
+
+  public static void main(String[] args) throws IOException {
     ByteArrayInputStream bin = 
         new ByteArrayInputStream(
             "abcdefghijklmnopqrstuvwxyz".getBytes(
                 Charset.forName("UTF-8")));
-    ChannelInput iss = new ChannelInput(Channels.newChannel(bin));
-    while(iss.hasNext()) {
-      System.out.printf("-%s%n", iss.next());
+    ChannelReader iss = new ChannelReader(Channels.newChannel(bin));
+    char[] cs = new char[1];
+    while(iss.read(cs) > 0) {
+      System.out.printf("-%s%n", cs[0]);
     }
   }
-  
+
 }

@@ -21,6 +21,12 @@
 
 package us.pserver.zerojs.test;
 
+import java.io.IOException;
+import java.io.StringReader;
+import us.pserver.zerojs.JsonHandler;
+import us.pserver.zerojs.JsonReader;
+import us.pserver.zerojs.exception.JsonParseException;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -29,9 +35,50 @@ package us.pserver.zerojs.test;
 public class TestParser {
 
   
-  public static void main(String[] args) {
-    String json = "{'hello': 'world', 'array: []}";
-    
+  public static void main(String[] args) throws IOException {
+    String json = "{'hello\"escaped quotes\"': 'world '''of {:}{:[]:[]}', 'array': [1, 2, 3, 4], 'objs': [{'a': 0}, {'b': 1}, {'c': 2}]}";
+    System.out.println("* json = "+ json);
+    JsonReader rd = JsonReader.defaultReader(new StringReader(json));
+    JsonHandler hd = new JsonHandler() {
+      boolean value = false;
+      @Override
+      public void startObject() throws JsonParseException {
+        if(value) {
+          System.out.print(", ");
+          value = false;
+        }
+        System.out.print("{ ");
+      }
+      @Override
+      public void endObject() throws JsonParseException {
+        System.out.print(" }");
+      }
+      @Override
+      public void startArray() throws JsonParseException {
+        System.out.print("[ ");
+      }
+      @Override
+      public void endArray() throws JsonParseException {
+        System.out.print(" ]");
+      }
+      @Override
+      public void name(String str) {
+        if(value) {
+          System.out.print(", ");
+          value = false;
+        }
+        System.out.print("'"+ str+ "': ");
+      }
+      @Override
+      public void value(String str) {
+        if(value) {
+          System.out.print(", ");
+        }
+        System.out.print(str);
+        value = true;
+      }
+    };
+    rd.addHandler(hd).read();
   }
   
 }

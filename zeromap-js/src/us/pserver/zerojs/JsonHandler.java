@@ -21,7 +21,7 @@
 
 package us.pserver.zerojs;
 
-import java.util.Date;
+import java.util.List;
 import us.pserver.zerojs.exception.JsonParseException;
 
 /**
