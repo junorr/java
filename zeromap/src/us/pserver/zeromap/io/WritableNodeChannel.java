@@ -19,24 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs;
+package us.pserver.zeromap.io;
 
 import java.io.IOException;
-import java.io.Writer;
-import us.pserver.zerojs.impl.DefaultJsonWriter;
+import java.nio.channels.WritableByteChannel;
 import us.pserver.zeromap.Node;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/04/2016
+ * @version 0.0 - 24/04/2016
  */
-public interface JsonWriter extends ObservableHandler {
+public interface WritableNodeChannel extends WritableByteChannel {
 
-  public int write(Node) throws IOException;
-  
-  public static JsonWriter defaultWriter(WritableByteChannel channel) {
-    return new DefaultJsonWriter();
-  }
+  public int write(Node node) throws IOException;
   
 }

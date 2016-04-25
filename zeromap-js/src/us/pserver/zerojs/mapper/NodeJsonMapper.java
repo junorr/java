@@ -22,10 +22,12 @@
 package us.pserver.zerojs.mapper;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.nio.CharBuffer;
+import java.nio.channels.WritableByteChannel;
+import java.nio.charset.Charset;
 import us.pserver.zerojs.JsonHandler;
 import us.pserver.zerojs.exception.JsonParseException;
-import us.pserver.zerojs.impl.JsonTokens;
+import us.pserver.zerojs.impl.JsonToken;
 
 /**
  *
@@ -34,39 +36,64 @@ import us.pserver.zerojs.impl.JsonTokens;
  */
 public class NodeJsonMapper implements JsonHandler {
 
-  private final Writer writer;
+  private final WritableByteChannel channel;
+  
+  private final Charset charset;
 
   private boolean appendComma;
+  
+  private final CharBuffer buffer;
+  
+  
+  public NodeJsonMapper(WritableByteChannel wbc) {
+    this(wbc, Charset.forName("UTF-8"));
+  }
 
 
-  public NodeJsonMapper(Writer writer) {
-    if(writer == null) {
+  public NodeJsonMapper(WritableByteChannel wbc, Charset cst) {
+    if(wbc == null) {
       throw new IllegalArgumentException(
           "Writer must be not null"
       );
     }
-    this.writer = writer;
+    if(cst == null) {
+      throw new IllegalArgumentException(
+          "Charset must be not null"
+      );
+    }
+    this.channel = wbc;
+    this.charset = cst;
+    this.buffer = CharBuffer.allocate(4096);
     appendComma = false;
   }
 
 
-  public Writer getWriter() {
-    return writer;
+  public WritableByteChannel getWriter() {
+    return channel;
   }
 
 
   private void append(char ch) throws JsonParseException {
     try {
-      writer.append(ch);
+      buffer.put(ch)
+      channel.append(ch);
     } catch(IOException e) {
       throw new JsonParseException(e.getMessage(), e);
+    }
+  }
+  
+  
+  private void flushBuffer() throws IOException {
+    if(buffer.position() > 0) {
+      buffer.flip();
+      channel.write(src)
     }
   }
 
 
   private void append(String str) throws JsonParseException {
     try {
-      writer.append(str);
+      channel.append(str);
     } catch(IOException e) {
       throw new JsonParseException(e.getMessage(), e);
     }
@@ -100,20 +127,20 @@ public class NodeJsonMapper implements JsonHandler {
   @Override
   public void name(String str) {
     if(appendComma) {
-      append(JsonTokens.COMMA);
+      append(JsonToken.CHAR_COMMA);
       appendComma = false;
     }
-    append(JsonTokens.QUOTES);
+    append(JsonToken.CHAR_QUOTES);
     append(str);
-    append(JsonTokens.QUOTES);
-    append(JsonTokens.COLON);
+    append(JsonToken.CHAR_QUOTES);
+    append(JsonToken.CHAR_COLON);
   }
 
 
   @Override
   public void value(String str) {
     if(appendComma) {
-      append(JsonTokens.COMMA);
+      append(JsonToken.CHAR_COMMA);
     }
     try {
       Double.parseDouble(str);
@@ -125,9 +152,9 @@ public class NodeJsonMapper implements JsonHandler {
         append(str);
       }
       else {
-        append(JsonTokens.QUOTES);
+        append(JsonToken.CHAR_QUOTES);
         append(str);
-        append(JsonTokens.QUOTES);
+        append(JsonToken.CHAR_QUOTES);
       }
     }
     appendComma = true;

@@ -35,8 +35,8 @@ public class TestJsonNodeMapper {
 
   
   public static void main(String[] args) throws IOException {
-    String json = "{'hello': 'world', 'array': [1, 2, 3, 4], 'objs': [{'a': 0}, {'b': {'i': 9}}, {'c': 2}]}";
-    /*
+    //String json = "{'hello': 'world', 'array': [1, 2, 3, 4], 'objs': [{'a': 0}, {'b': {'i': 9}}, {'c': 2}]}";
+    
     String json = "{\n" +
 "  'b': {\n" +
 "    'bool': true,\n" +
@@ -84,8 +84,8 @@ public class TestJsonNodeMapper {
 "  },\n" +
 "  'str': 'def'\n" +
 "}";
-    */
-    System.out.println("* json = "+ json);
+    /**/
+    //System.out.println("* json = "+ json);
     JsonReader reader = JsonReader.defaultReader(new StringReader(json));
     JsonNodeMapper mapper = new JsonNodeMapper();
     reader.addHandler(mapper);

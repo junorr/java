@@ -19,29 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs.impl;
+package us.pserver.zeromap.io;
+
+import java.io.IOException;
+import java.nio.channels.ReadableByteChannel;
+import us.pserver.zeromap.Node;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/04/2016
+ * @version 0.0 - 24/04/2016
  */
-public class JsonTokens {
+public interface ReadableNodeChannel extends ReadableByteChannel {
 
-  public static final char START_OBJECT = '{';
+  public int read(Node root) throws IOException;
   
-  public static final char END_OBJECT = '}';
-  
-  public static final char QUOTES = '"';
-  
-  public static final char QUOTE = '\'';
-  
-  public static final char START_ARRAY = '[';
-  
-  public static final char END_ARRAY = ']';
-  
-  public static final char COMMA = ',';
-  
-  public static final char COLON = ':';
-
 }

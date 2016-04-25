@@ -22,7 +22,10 @@
 package us.pserver.zerojs.impl;
 
 import java.io.IOException;
-import java.io.Reader;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
 import us.pserver.zerojs.JsonReader;
 
 /**
@@ -32,73 +35,90 @@ import us.pserver.zerojs.JsonReader;
  */
 public class DefaultJsonReader extends AbstractObservable implements JsonReader {
 
-  private final Reader reader;
+  private final ReadableByteChannel channel;
   
   private final StringBuilder build;
   
+  private final Charset charset;
   
-  public DefaultJsonReader(Reader rdr) {
-    if(rdr == null) {
+  
+  public DefaultJsonReader(ReadableByteChannel rbc) {
+    this(rbc, Charset.forName("UTF-8"));
+  }
+  
+  
+  public DefaultJsonReader(ReadableByteChannel rbc, Charset cst) {
+    if(rbc == null) {
       throw new IllegalArgumentException(
-          "Reader must be not null"
+          "ReadableByteChannel must be not null"
       );
     }
-    this.reader = rdr;
+    if(cst == null) {
+      throw new IllegalArgumentException(
+          "Charset must be not null"
+      );
+    }
+    this.channel = rbc;
     this.build = new StringBuilder();
+    this.charset = cst;
+  }
+  
+  
+  public ReadableByteChannel getReader() {
+    return channel;
   }
   
   
   @Override
-  public Reader getReader() {
-    return reader;
-  }
-  
-  
-  @Override
-  public void read() throws IOException {
-    char[] buffer = new char[1024];
+  public int read() throws IOException {
+    ByteBuffer bytes = ByteBuffer.allocateDirect(4096);
+    CharBuffer buffer;
     boolean escQuote = false;
     boolean escQuotes = false;
     int read = 0;
-    while((read = reader.read(buffer)) > 0) {
-      for(int i = 0; i < read; i++) {
-        char ch = buffer[i];
+    int total = 0;
+    while((read = channel.read(bytes)) > 0) {
+      total += read;
+      bytes.flip();
+      buffer = charset.decode(bytes);
+      while(buffer.hasRemaining()) {
+        char ch = buffer.get();
         //System.out.print("("+ ch+ ") ");
         if(!escQuote && !escQuotes) {
           switch(ch) {
-            case JsonTokens.START_OBJECT:
+            case JsonToken.CHAR_START_OBJECT:
               //System.out.println("* start object");
               handlers.forEach(h->{h.startObject();});
               break;
-            case JsonTokens.START_ARRAY:
+            case JsonToken.CHAR_START_ARRAY:
               //System.out.println("* start array");
               handlers.forEach(h->{h.startArray();});
               break;
-            case JsonTokens.END_OBJECT:
+            case JsonToken.CHAR_END_OBJECT:
               //System.out.println("* notify value: "+ build);
               //System.out.println("* end object");
               notifyValue();
               handlers.forEach(h->{h.endObject();});
               break;
-            case JsonTokens.END_ARRAY:
+            case JsonToken.CHAR_END_ARRAY:
               //System.out.println("* notify value: "+ build);
               //System.out.println("* end array");
               notifyValue();
               handlers.forEach(h->{h.endArray();});
               break;
-            case JsonTokens.COLON:
+            case JsonToken.CHAR_COLON:
               //System.out.println("* notify name: "+ build);
               notifyName();
               break;
-            case JsonTokens.COMMA:
+            case JsonToken.CHAR_COMMA:
               //System.out.println("* notify value: "+ build);
               notifyValue();
               break;
-            case JsonTokens.QUOTE:
+            case JsonToken.CHAR_QUOTE:
               //System.out.println("* escape quote");
               escQuote = !escQuote;
               break;
-            case JsonTokens.QUOTES:
+            case JsonToken.CHAR_QUOTES:
               //System.out.println("* escape quotes");
               escQuotes = !escQuotes;
               break;
@@ -112,18 +132,20 @@ public class DefaultJsonReader extends AbstractObservable implements JsonReader 
               break;
           }
         }
-        else if(escQuote && JsonTokens.QUOTE == ch) {
+        else if(escQuote && JsonToken.CHAR_QUOTE == ch) {
           escQuote = !escQuote;
         }
-        else if(escQuotes && JsonTokens.QUOTES == ch) {
+        else if(escQuotes && JsonToken.CHAR_QUOTES == ch) {
           escQuotes = !escQuotes;
         }
         else {
           //System.out.println("* append");
           build.append(ch);
         }
-      }
-    }
+      }//inner while
+      bytes.clear();
+    }//while
+    return total;
   }
   
   

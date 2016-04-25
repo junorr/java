@@ -22,7 +22,7 @@
 package us.pserver.zerojs;
 
 import java.io.IOException;
-import java.io.Reader;
+import java.nio.channels.ReadableByteChannel;
 import us.pserver.zerojs.impl.DefaultJsonReader;
 
 /**
@@ -32,12 +32,10 @@ import us.pserver.zerojs.impl.DefaultJsonReader;
  */
 public interface JsonReader extends ObservableHandler {
   
-  public Reader getReader();
+  public int read() throws IOException;
   
-  public void read() throws IOException;
-  
-  public static JsonReader defaultReader(Reader rdr) {
-    return new DefaultJsonReader(rdr);
+  public static JsonReader defaultReader(ReadableByteChannel channel) {
+    return new DefaultJsonReader(channel);
   }
   
 }

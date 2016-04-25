@@ -95,7 +95,7 @@ public class TestJsonWriter {
     System.out.println("* node =\n"+ mapper.getRoot());
     StringWriter sw = new StringWriter();
     JsonWriter.defaultWriter(mapper.getRoot(), sw).write();
-    System.out.println(json);
+    //System.out.println(json);
     System.out.println(sw.toString());
   }
   
