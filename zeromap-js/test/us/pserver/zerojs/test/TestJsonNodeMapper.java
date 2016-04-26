@@ -23,8 +23,8 @@ package us.pserver.zerojs.test;
 
 import java.io.IOException;
 import java.io.StringReader;
-import us.pserver.zerojs.JsonReader;
 import us.pserver.zerojs.mapper.JsonNodeMapper;
+import us.pserver.zerojs.parse.JsonParser;
 
 /**
  *
@@ -86,10 +86,10 @@ public class TestJsonNodeMapper {
 "}";
     /**/
     //System.out.println("* json = "+ json);
-    JsonReader reader = JsonReader.defaultReader(new StringReader(json));
+    JsonParser reader = JsonParser.defaultReader(new StringReader(json));
     JsonNodeMapper mapper = new JsonNodeMapper();
     reader.addHandler(mapper);
-    reader.read();
+    reader.parse();
     System.out.println("* node =\n"+ mapper.getRoot());
     
   }

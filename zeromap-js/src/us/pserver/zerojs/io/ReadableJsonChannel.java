@@ -19,21 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs.impl;
+package us.pserver.zerojs.io;
 
+import us.pserver.zerojs.parse.*;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
-import us.pserver.zerojs.JsonReader;
+import us.pserver.zerojs.impl.AbstractObservableHandler;
+import us.pserver.zeromap.Node;
+import us.pserver.zeromap.io.ReadableNodeChannel;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/04/2016
  */
-public class DefaultJsonReader extends AbstractObservable implements JsonReader {
+public class ReadableJsonChannel extends AbstractObservableHandler implements ReadableNodeChannel {
 
   private final ReadableByteChannel channel;
   
@@ -42,12 +45,12 @@ public class DefaultJsonReader extends AbstractObservable implements JsonReader 
   private final Charset charset;
   
   
-  public DefaultJsonReader(ReadableByteChannel rbc) {
+  public ReadableJsonChannel(ReadableByteChannel rbc) {
     this(rbc, Charset.forName("UTF-8"));
   }
   
   
-  public DefaultJsonReader(ReadableByteChannel rbc, Charset cst) {
+  public ReadableJsonChannel(ReadableByteChannel rbc, Charset cst) {
     if(rbc == null) {
       throw new IllegalArgumentException(
           "ReadableByteChannel must be not null"
@@ -70,7 +73,7 @@ public class DefaultJsonReader extends AbstractObservable implements JsonReader 
   
   
   @Override
-  public int read() throws IOException {
+  public int parse() throws IOException {
     ByteBuffer bytes = ByteBuffer.allocateDirect(4096);
     CharBuffer buffer;
     boolean escQuote = false;
@@ -175,6 +178,104 @@ public class DefaultJsonReader extends AbstractObservable implements JsonReader 
       handlers.forEach(h->h.value(str));
       build.delete(0, build.length());
     }
+  }
+
+
+  @Override
+  public int read(Node root) throws IOException {
+    ByteBuffer bytes = ByteBuffer.allocateDirect(4096);
+    CharBuffer buffer;
+    boolean escQuote = false;
+    boolean escQuotes = false;
+    int read = 0;
+    int total = 0;
+    while((read = channel.read(bytes)) > 0) {
+      total += read;
+      bytes.flip();
+      buffer = charset.decode(bytes);
+      while(buffer.hasRemaining()) {
+        char ch = buffer.get();
+        //System.out.print("("+ ch+ ") ");
+        if(!escQuote && !escQuotes) {
+          switch(ch) {
+            case JsonToken.CHAR_START_OBJECT:
+              //System.out.println("* start object");
+              handlers.forEach(h->{h.startObject();});
+              break;
+            case JsonToken.CHAR_START_ARRAY:
+              //System.out.println("* start array");
+              handlers.forEach(h->{h.startArray();});
+              break;
+            case JsonToken.CHAR_END_OBJECT:
+              //System.out.println("* notify value: "+ build);
+              //System.out.println("* end object");
+              notifyValue();
+              handlers.forEach(h->{h.endObject();});
+              break;
+            case JsonToken.CHAR_END_ARRAY:
+              //System.out.println("* notify value: "+ build);
+              //System.out.println("* end array");
+              notifyValue();
+              handlers.forEach(h->{h.endArray();});
+              break;
+            case JsonToken.CHAR_COLON:
+              //System.out.println("* notify name: "+ build);
+              notifyName();
+              break;
+            case JsonToken.CHAR_COMMA:
+              //System.out.println("* notify value: "+ build);
+              notifyValue();
+              break;
+            case JsonToken.CHAR_QUOTE:
+              //System.out.println("* escape quote");
+              escQuote = !escQuote;
+              break;
+            case JsonToken.CHAR_QUOTES:
+              //System.out.println("* escape quotes");
+              escQuotes = !escQuotes;
+              break;
+            case ' ':
+            case '\n':
+            case '\t':
+            case '\r':
+              break;
+            default:
+              build.append(ch);
+              break;
+          }
+        }
+        else if(escQuote && JsonToken.CHAR_QUOTE == ch) {
+          escQuote = !escQuote;
+        }
+        else if(escQuotes && JsonToken.CHAR_QUOTES == ch) {
+          escQuotes = !escQuotes;
+        }
+        else {
+          //System.out.println("* append");
+          build.append(ch);
+        }
+      }//inner while
+      bytes.clear();
+    }//while
+    return total;
+  }
+
+
+  @Override
+  public int read(ByteBuffer dst) throws IOException {
+    return channel.read(dst);
+  }
+
+
+  @Override
+  public boolean isOpen() {
+    return channel.isOpen();
+  }
+
+
+  @Override
+  public void close() throws IOException {
+    channel.close();
   }
   
 }

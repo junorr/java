@@ -24,8 +24,8 @@ package us.pserver.zerojs.test;
 import java.io.IOException;
 import java.io.StringReader;
 import us.pserver.zerojs.JsonHandler;
-import us.pserver.zerojs.JsonReader;
 import us.pserver.zerojs.exception.JsonParseException;
+import us.pserver.zerojs.parse.JsonParser;
 
 /**
  *
@@ -85,7 +85,7 @@ public class TestParser {
 "  'str': 'def'\n" +
 "}";
     System.out.println("* json = "+ json);
-    JsonReader rd = JsonReader.defaultReader(new StringReader(json));
+    JsonParser rd = JsonParser.defaultReader(new StringReader(json));
     JsonHandler hd = new JsonHandler() {
       boolean value = false;
       @Override
@@ -126,7 +126,7 @@ public class TestParser {
       }
     };
     rd.addHandler(hd);
-    rd.read();
+    rd.parse();
   }
   
 }

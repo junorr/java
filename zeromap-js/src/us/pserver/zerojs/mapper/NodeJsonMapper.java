@@ -21,143 +21,81 @@
 
 package us.pserver.zerojs.mapper;
 
-import java.io.IOException;
-import java.nio.CharBuffer;
-import java.nio.channels.WritableByteChannel;
-import java.nio.charset.Charset;
-import us.pserver.zerojs.JsonHandler;
-import us.pserver.zerojs.exception.JsonParseException;
-import us.pserver.zerojs.impl.JsonToken;
+import java.util.Iterator;
+import us.pserver.zerojs.impl.AbstractObservableHandler;
+import us.pserver.zeromap.Node;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/04/2016
  */
-public class NodeJsonMapper implements JsonHandler {
-
-  private final WritableByteChannel channel;
-  
-  private final Charset charset;
-
-  private boolean appendComma;
-  
-  private final CharBuffer buffer;
+public class NodeJsonMapper extends AbstractObservableHandler {
   
   
-  public NodeJsonMapper(WritableByteChannel wbc) {
-    this(wbc, Charset.forName("UTF-8"));
-  }
-
-
-  public NodeJsonMapper(WritableByteChannel wbc, Charset cst) {
-    if(wbc == null) {
-      throw new IllegalArgumentException(
-          "Writer must be not null"
-      );
-    }
-    if(cst == null) {
-      throw new IllegalArgumentException(
-          "Charset must be not null"
-      );
-    }
-    this.channel = wbc;
-    this.charset = cst;
-    this.buffer = CharBuffer.allocate(4096);
-    appendComma = false;
-  }
-
-
-  public WritableByteChannel getWriter() {
-    return channel;
-  }
-
-
-  private void append(char ch) throws JsonParseException {
-    try {
-      buffer.put(ch)
-      channel.append(ch);
-    } catch(IOException e) {
-      throw new JsonParseException(e.getMessage(), e);
-    }
+  public void map(Node root) {
+    this.handlers.forEach(h->h.startObject());
+    iterate(root);
+    this.handlers.forEach(h->h.endObject());
   }
   
-  
-  private void flushBuffer() throws IOException {
-    if(buffer.position() > 0) {
-      buffer.flip();
-      channel.write(src)
+
+  private void iterate(Node node) {
+    if(node == null) {
+      return;
     }
-  }
-
-
-  private void append(String str) throws JsonParseException {
-    try {
-      channel.append(str);
-    } catch(IOException e) {
-      throw new JsonParseException(e.getMessage(), e);
-    }
-  }
-
-
-  @Override
-  public void startObject() throws JsonParseException {
-    append('{');
-  }
-
-
-  @Override
-  public void endObject() throws JsonParseException {
-    append('}');
-  }
-
-
-  @Override
-  public void startArray() throws JsonParseException {
-    append('[');
-  }
-
-
-  @Override
-  public void endArray() throws JsonParseException {
-    append(']');
-  }
-
-
-  @Override
-  public void name(String str) {
-    if(appendComma) {
-      append(JsonToken.CHAR_COMMA);
-      appendComma = false;
-    }
-    append(JsonToken.CHAR_QUOTES);
-    append(str);
-    append(JsonToken.CHAR_QUOTES);
-    append(JsonToken.CHAR_COLON);
-  }
-
-
-  @Override
-  public void value(String str) {
-    if(appendComma) {
-      append(JsonToken.CHAR_COMMA);
-    }
-    try {
-      Double.parseDouble(str);
-      append(str);
-    } 
-    catch(NumberFormatException e) {
-      if(str.equalsIgnoreCase("true")
-          || str.equalsIgnoreCase("false")) {
-        append(str);
+    Iterator<Node> iter = node.childs().iterator();
+    while(iter.hasNext()) {
+      Node n = iter.next();
+      this.handlers.forEach(h->h.name(n.value()));
+      if(isObject(n)) {
+        this.handlers.forEach(h->h.startObject());
+        iterate(n);
+        this.handlers.forEach(h->h.endObject());
       }
-      else {
-        append(JsonToken.CHAR_QUOTES);
-        append(str);
-        append(JsonToken.CHAR_QUOTES);
+      else if(isArray(n)) {
+        this.handlers.forEach(h->h.startArray());
+        for(Node c : n.childs()) {
+          if(c.hasChilds()) {
+            iterate(c);
+          } 
+          else {
+            this.handlers.forEach(h->h.value(n.value()));
+          }
+        }
+        this.handlers.forEach(h->h.endArray());
+      }
+      else if(n.childs().size() == 1 
+          && !n.firstChild().hasChilds()) {
+        this.handlers.forEach(h->h.value(n.firstChild().value()));
       }
     }
-    appendComma = true;
+  }
+  
+  
+  private boolean isArray(Node n) {
+    if(n == null) {
+      return false;
+    }
+    if(n.childs().size() <= 1) {
+      return false;
+    }
+    return n.childs().stream().anyMatch(
+        (c) -> (!c.hasChilds())
+    );
+  }
+  
+  
+  private boolean isObject(Node n) {
+    if(n == null || isArray(n)) {
+      return false;
+    }
+    if(!n.hasChilds()) {
+      return false;
+    }
+    return n.childs().stream().allMatch(
+        (c) -> (c.hasChilds())
+    );
   }
 
 }

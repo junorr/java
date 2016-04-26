@@ -33,7 +33,7 @@ import us.pserver.zeromap.Node;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/04/2016
  */
-public class DefaultJsonWriter extends AbstractObservable implements JsonWriter {
+public class DefaultJsonWriter extends AbstractObservableHandler implements JsonWriter {
   
   private final Node root;
   

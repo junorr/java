@@ -19,24 +19,46 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs;
+package us.pserver.zerojs.impl;
 
-import java.io.IOException;
-import java.io.Writer;
-import us.pserver.zerojs.impl.DefaultJsonWriter;
-import us.pserver.zeromap.Node;
+import java.util.LinkedList;
+import java.util.List;
+import us.pserver.zerojs.JsonHandler;
+import us.pserver.zerojs.ObservableHandler;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/04/2016
  */
-public interface JsonWriter extends ObservableHandler {
+public abstract class AbstractObservableHandler implements ObservableHandler {
 
-  public int write(Node) throws IOException;
+  protected final List<JsonHandler> handlers;
   
-  public static JsonWriter defaultWriter(WritableByteChannel channel) {
-    return new DefaultJsonWriter();
+  
+  protected AbstractObservableHandler() {
+    this.handlers = new LinkedList<>();
   }
   
+  
+  @Override
+  public ObservableHandler addHandler(JsonHandler jsh) {
+    if(jsh != null) {
+      handlers.add(jsh);
+    }
+    return this;
+  }
+
+
+  @Override
+  public boolean removeHandler(JsonHandler jsh) {
+    return handlers.remove(jsh);
+  }
+
+
+  @Override
+  public List<JsonHandler> getHandlers() {
+    return handlers;
+  }
+
 }
