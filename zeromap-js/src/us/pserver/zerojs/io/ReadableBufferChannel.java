@@ -24,66 +24,64 @@ package us.pserver.zerojs.io;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
-import us.pserver.zerojs.mapper.JsonNodeMapper;
-import us.pserver.zerojs.parse.JsonParser;
-import us.pserver.zeromap.Node;
-import us.pserver.zeromap.io.ReadableNodeChannel;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 25/04/2016
+ * @version 0.0 - 26/04/2016
  */
-public class ReadableJsonChannel_ implements ReadableNodeChannel {
+public class ReadableBufferChannel implements ReadableByteChannel {
   
-  private final ReadableByteChannel channel;
-  
-  private final JsonParser parser;
-  
-  private final JsonNodeMapper handler;
+  private final ByteBuffer buffer;
   
   
-  public ReadableJsonChannel_(ReadableByteChannel rbc) {
-    if(rbc == null) {
+  public ReadableBufferChannel(ByteBuffer buf) {
+    if(buf == null || (buf.remaining() < 1 && buf.position() < 1)) {
       throw new IllegalArgumentException(
-          "ReadableByteChannel must be not null"
+          "Invalid empty ByteBuffer"
       );
     }
-    this.channel = rbc;
-    this.parser = JsonParser.defaultParser(channel);
-    this.handler = new JsonNodeMapper();
-    this.parser.addHandler(handler);
-  }
-
-  
-  @Override
-  public int read(Node root) throws IOException {
-    if(root == null) {
-      throw new IllegalArgumentException(
-          "Root Node must be not null"
-      );
+    if(buf.remaining() < 1) {
+      buf.flip();
     }
-    int read = this.parser.parse();
-    root.add(handler.getRoot());
-    return read;
+    this.buffer = buf;
   }
-
+  
+  
+  public ByteBuffer getBuffer() {
+    return buffer;
+  }
+  
 
   @Override
   public int read(ByteBuffer dst) throws IOException {
-    return channel.read(dst);
+    if(dst == null || dst.remaining() < 1) {
+      throw new IOException(
+          "Invalid empty ByteBuffer"
+      );
+    }
+    int len = Math.min(dst.remaining(), buffer.remaining());
+    if(len < 1) {
+      len = -1;
+    }
+    else {
+      byte[] bs = new byte[len];
+      buffer.get(bs);
+      dst.put(bs);
+    }
+    return len;
   }
 
 
   @Override
   public boolean isOpen() {
-    return channel.isOpen();
+    return true;
   }
 
 
   @Override
   public void close() throws IOException {
-    channel.close();
+    buffer.clear();
   }
 
 }

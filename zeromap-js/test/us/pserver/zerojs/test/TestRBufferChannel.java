@@ -19,61 +19,42 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs.io;
+package us.pserver.zerojs.test;
 
 import java.io.IOException;
-import java.io.Writer;
-import java.nio.CharBuffer;
-import java.nio.channels.WritableByteChannel;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import us.pserver.zerojs.io.ReadableBufferChannel;
+import us.pserver.zerojs.io.WritableBufferChannel;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 22/04/2016
+ * @version 0.0 - 26/04/2016
  */
-public class ChannelWriter extends Writer {
+public class TestRBufferChannel {
+
   
-  private final WritableByteChannel channel;
-  
-  private final Charset charset;
-  
-  
-  public ChannelWriter(WritableByteChannel wch, Charset cst) {
-    if(wch == null) {
-      throw new IllegalArgumentException(
-          "WritableByteChannel must be not null"
-      );
+  public static void main(String[] args) throws IOException {
+    String str = "Hello World!!";
+    WritableBufferChannel buffer = new WritableBufferChannel();
+    Charset utf = Charset.forName("UTF-8");
+    for(int i = 0; i < 10; i++) {
+      String s = String.valueOf(i)
+          .concat(". ")
+          .concat(str)
+          .concat("\n");
+      buffer.write(utf.encode(s));
     }
-    if(cst == null) {
-      throw new IllegalArgumentException(
-          "Charset must be not null"
-      );
+    System.out.println(buffer.toString());
+    
+    ReadableBufferChannel read = new ReadableBufferChannel(buffer.getBuffer());
+    ByteBuffer bb = ByteBuffer.allocate(10);
+    while(read.read(bb) > 0) {
+      bb.flip();
+      System.out.print(utf.decode(bb).toString());
+      bb.clear();
     }
-    this.channel = wch;
-    this.charset = cst;
   }
   
-  
-  public ChannelWriter(WritableByteChannel wch) {
-    this(wch, Charset.forName("UTF-8"));
-  }
-  
-
-  @Override
-  public void write(char[] cbuf, int off, int len) throws IOException {
-    CharBuffer chars = CharBuffer.allocate(len - off);
-    channel.write(charset.encode(chars));
-  }
-
-
-  @Override
-  public void flush() throws IOException {}
-
-
-  @Override
-  public void close() throws IOException {
-    channel.close();
-  }
-
 }

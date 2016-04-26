@@ -19,10 +19,10 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs.mapper;
+package us.pserver.zerojs.impl;
 
 import us.pserver.zerojs.JsonHandler;
-import us.pserver.zerojs.exception.JsonParseException;
+import us.pserver.zerojs.JsonParseException;
 import us.pserver.zeromap.Node;
 import us.pserver.zeromap.impl.ONode;
 

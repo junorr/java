@@ -24,25 +24,25 @@ package us.pserver.zerojs.impl;
 import java.util.LinkedList;
 import java.util.List;
 import us.pserver.zerojs.JsonHandler;
-import us.pserver.zerojs.ObservableHandler;
+import us.pserver.zerojs.JsonParser;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/04/2016
  */
-public abstract class AbstractObservableHandler implements ObservableHandler {
+public abstract class AbstractJsonParser implements JsonParser {
 
   protected final List<JsonHandler> handlers;
   
   
-  protected AbstractObservableHandler() {
+  protected AbstractJsonParser() {
     this.handlers = new LinkedList<>();
   }
   
   
   @Override
-  public ObservableHandler addHandler(JsonHandler jsh) {
+  public JsonParser addHandler(JsonHandler jsh) {
     if(jsh != null) {
       handlers.add(jsh);
     }

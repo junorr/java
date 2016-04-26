@@ -19,24 +19,21 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs.parse;
+package us.pserver.zerojs;
 
-import java.io.IOException;
-import java.nio.channels.ReadableByteChannel;
-import us.pserver.zerojs.ObservableHandler;
-import us.pserver.zerojs.parse.DefaultJsonParser;
+import java.util.List;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/04/2016
+ * @version 0.0 - 22/04/2016
  */
-public interface JsonParser extends ObservableHandler {
+public interface JsonParser {
+
+  public JsonParser addHandler(JsonHandler jsh);
   
-  public int parse() throws IOException;
+  public boolean removeHandler(JsonHandler jsh);
   
-  public static JsonParser defaultParser(ReadableByteChannel channel) {
-    return new DefaultJsonParser(channel);
-  }
+  public List<JsonHandler> getHandlers();
   
 }

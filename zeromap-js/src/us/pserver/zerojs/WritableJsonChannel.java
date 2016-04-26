@@ -19,17 +19,16 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs.io;
+package us.pserver.zerojs;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
-import us.pserver.zerojs.JsonHandler;
-import us.pserver.zerojs.exception.JsonParseException;
-import us.pserver.zerojs.mapper.NodeJsonMapper;
-import us.pserver.zerojs.parse.JsonToken;
+import java.util.Iterator;
+import us.pserver.zerojs.impl.AbstractJsonParser;
+import us.pserver.zerojs.impl.JsonToken;
 import us.pserver.zeromap.Node;
 import us.pserver.zeromap.io.WritableNodeChannel;
 
@@ -38,8 +37,7 @@ import us.pserver.zeromap.io.WritableNodeChannel;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 25/04/2016
  */
-public class WritableJsonChannel implements WritableNodeChannel, JsonHandler {
-  
+public class WritableJsonChannel extends AbstractJsonParser implements WritableNodeChannel, JsonHandler {
   
   private final WritableByteChannel channel;
   
@@ -47,19 +45,18 @@ public class WritableJsonChannel implements WritableNodeChannel, JsonHandler {
 
   private final CharBuffer buffer;
   
-  private final NodeJsonMapper mapper;
-  
   private boolean appendComma;
   
   private int writed;
   
-  
+
   public WritableJsonChannel(WritableByteChannel wbc) {
     this(wbc, Charset.forName("UTF-8"));
   }
 
 
   public WritableJsonChannel(WritableByteChannel wbc, Charset cst) {
+    super();
     if(wbc == null) {
       throw new IllegalArgumentException(
           "Writer must be not null"
@@ -73,10 +70,35 @@ public class WritableJsonChannel implements WritableNodeChannel, JsonHandler {
     this.channel = wbc;
     this.charset = cst;
     this.buffer = CharBuffer.allocate(4096);
-    this.mapper = new NodeJsonMapper();
-    this.mapper.addHandler(this);
     this.appendComma = false;
     this.writed = 0;
+  }
+
+  
+  @Override
+  public int write(Node node) throws IOException {
+    writed = 0;
+    iterate(node);
+    this.flush();
+    return writed;
+  }
+
+
+  @Override
+  public int write(ByteBuffer src) throws IOException {
+    return channel.write(src);
+  }
+
+
+  @Override
+  public boolean isOpen() {
+    return channel.isOpen();
+  }
+
+
+  @Override
+  public void close() throws IOException {
+    channel.close();
   }
 
 
@@ -112,6 +134,70 @@ public class WritableJsonChannel implements WritableNodeChannel, JsonHandler {
     }
   }
   
+
+  private void iterate(Node node) {
+    if(node == null) {
+      return;
+    }
+    boolean array = isArray(node);
+    append((array ? JsonToken.CHAR_START_ARRAY 
+        : JsonToken.CHAR_START_OBJECT));
+    Iterator<Node> iter = node.childs().iterator();
+    while(iter.hasNext()) {
+      Node n = iter.next();
+      this.handlers.forEach(h->h.name(n.value()));
+      if(isObject(n)) {
+        this.handlers.forEach(h->h.startObject());
+        iterate(n);
+        this.handlers.forEach(h->h.endObject());
+      }
+      else if(isArray(n)) {
+        this.handlers.forEach(h->h.startArray());
+        for(Node c : n.childs()) {
+          if(c.hasChilds()) {
+            iterate(c);
+          } 
+          else {
+            this.handlers.forEach(h->h.value(n.value()));
+          }
+        }
+        this.handlers.forEach(h->h.endArray());
+      }
+      else if(n.childs().size() == 1 
+          && !n.firstChild().hasChilds()) {
+        this.handlers.forEach(h->h.value(n.firstChild().value()));
+      }
+    }
+    append((array ? JsonToken.CHAR_START_ARRAY 
+        : JsonToken.CHAR_START_OBJECT));
+  }
+  
+  
+  private boolean isArray(Node n) {
+    if(n == null) {
+      return false;
+    }
+    if(n.childs().size() <= 1) {
+      return false;
+    }
+    return n.childs().stream().anyMatch(
+        (c) -> (!c.hasChilds())
+    );
+  }
+  
+  
+  private boolean isObject(Node n) {
+    if(n == null || isArray(n)) {
+      return false;
+    }
+    if(!n.hasChilds()) {
+      return false;
+    }
+    return n.childs().stream().allMatch(
+        (c) -> (c.hasChilds())
+    );
+  }
+
   
   @Override
   public void startObject() throws JsonParseException {
@@ -172,32 +258,5 @@ public class WritableJsonChannel implements WritableNodeChannel, JsonHandler {
     }
     appendComma = true;
   }
-
   
-  @Override
-  public int write(Node node) throws IOException {
-    writed = 0;
-    this.mapper.map(node);
-    this.flush();
-    return writed;
-  }
-
-
-  @Override
-  public int write(ByteBuffer src) throws IOException {
-    return channel.write(src);
-  }
-
-
-  @Override
-  public boolean isOpen() {
-    return channel.isOpen();
-  }
-
-
-  @Override
-  public void close() throws IOException {
-    channel.close();
-  }
-
 }

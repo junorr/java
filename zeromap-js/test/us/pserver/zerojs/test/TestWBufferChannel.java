@@ -19,21 +19,32 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs;
+package us.pserver.zerojs.test;
 
-import java.util.List;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import us.pserver.zerojs.io.WritableBufferChannel;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 22/04/2016
+ * @version 0.0 - 26/04/2016
  */
-public interface ObservableHandler {
+public class TestWBufferChannel {
 
-  public ObservableHandler addHandler(JsonHandler jsh);
   
-  public boolean removeHandler(JsonHandler jsh);
-  
-  public List<JsonHandler> getHandlers();
+  public static void main(String[] args) throws IOException {
+    String str = "Hello World!!";
+    WritableBufferChannel buffer = new WritableBufferChannel();
+    Charset utf = Charset.forName("UTF-8");
+    for(int i = 0; i < 10; i++) {
+      String s = String.valueOf(i)
+          .concat(". ")
+          .concat(str)
+          .concat("\n");
+      buffer.write(utf.encode(s));
+    }
+    System.out.println(buffer.toString());
+  }
   
 }
