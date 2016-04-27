@@ -19,21 +19,39 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs;
+package us.pserver.zerojs.jen;
 
-import java.util.List;
+import java.util.Date;
+import us.pserver.date.SimpleDate;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 22/04/2016
+ * @version 0.0 - 27/04/2016
  */
-public interface JsonParser {
+public class DateGenerator implements Generator<Date> {
 
-  public JsonParser addHandler(JsonHandler jsh);
+  private final IntegerGenerator gen60;
   
-  public boolean removeHandler(JsonHandler jsh);
+  private final IntegerGenerator gen12;
   
-  public List<JsonHandler> getHandlers();
+  
+  public DateGenerator() {
+    gen60 = new IntegerGenerator(60);
+    gen12 = new IntegerGenerator(12);
+  }
+  
+  
+  @Override
+  public Date generate() {
+    return SimpleDate.now().date(
+        gen60.generate() + gen60.generate() + 1900, //year
+        gen12.generate() + 1,                       //month
+        gen60.generate() / 2,                       //day
+        gen12.generate() + gen12.generate(),        //hour
+        gen60.generate(),                           //minute
+        gen60.generate()                            //second
+    );
+  }
   
 }

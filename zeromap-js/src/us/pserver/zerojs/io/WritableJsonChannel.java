@@ -19,16 +19,16 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs;
+package us.pserver.zerojs.io;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 import java.util.Iterator;
-import us.pserver.zerojs.impl.AbstractJsonParser;
-import us.pserver.zerojs.impl.JsonToken;
+import us.pserver.zerojs.JsonHandler;
+import us.pserver.zerojs.handler.JsonBuilder;
+import us.pserver.zerojs.impl.AbstractHandlerContainer;
 import us.pserver.zeromap.Node;
 import us.pserver.zeromap.io.WritableNodeChannel;
 
@@ -37,18 +37,12 @@ import us.pserver.zeromap.io.WritableNodeChannel;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 25/04/2016
  */
-public class WritableJsonChannel extends AbstractJsonParser implements WritableNodeChannel, JsonHandler {
+public class WritableJsonChannel extends AbstractHandlerContainer implements WritableNodeChannel {
   
   private final WritableByteChannel channel;
   
   private final Charset charset;
 
-  private final CharBuffer buffer;
-  
-  private boolean appendComma;
-  
-  private int writed;
-  
 
   public WritableJsonChannel(WritableByteChannel wbc) {
     this(wbc, Charset.forName("UTF-8"));
@@ -69,18 +63,17 @@ public class WritableJsonChannel extends AbstractJsonParser implements WritableN
     }
     this.channel = wbc;
     this.charset = cst;
-    this.buffer = CharBuffer.allocate(4096);
-    this.appendComma = false;
-    this.writed = 0;
   }
 
   
   @Override
   public int write(Node node) throws IOException {
-    writed = 0;
+    JsonBuilder jb = new JsonBuilder();
+    this.addHandler(jb);
+    notifyStart(node);
     iterate(node);
-    this.flush();
-    return writed;
+    notifyEnd(node);
+    return this.write(jb.toByteBuffer(charset));
   }
 
 
@@ -102,74 +95,56 @@ public class WritableJsonChannel extends AbstractJsonParser implements WritableN
   }
 
 
-  private void append(char ch) throws JsonParseException {
-    try {
-      if(buffer.remaining() < 1) {
-        this.flush();
-      }
-      buffer.put(ch);
-    } catch(IOException e) {
-      throw new JsonParseException(e.getMessage(), e);
-    }
-  }
-  
-  
-  private void append(String str) throws JsonParseException {
-    try {
-      if(buffer.remaining() < str.length()) {
-        this.flush();
-      }
-      buffer.put(str);
-    } catch(IOException e) {
-      throw new JsonParseException(e.getMessage(), e);
-    }
-  }
-
-
-  private void flush() throws IOException {
-    if(buffer.position() > 0) {
-      buffer.flip();
-      writed += channel.write(charset.encode(buffer));
-      buffer.clear();
-    }
-  }
-  
-
   private void iterate(Node node) {
     if(node == null) {
       return;
     }
-    boolean array = isArray(node);
-    append((array ? JsonToken.CHAR_START_ARRAY 
-        : JsonToken.CHAR_START_OBJECT));
     Iterator<Node> iter = node.childs().iterator();
     while(iter.hasNext()) {
       Node n = iter.next();
       this.handlers.forEach(h->h.name(n.value()));
       if(isObject(n)) {
-        this.handlers.forEach(h->h.startObject());
+        this.handlers.forEach(JsonHandler::startObject);
         iterate(n);
-        this.handlers.forEach(h->h.endObject());
+        this.handlers.forEach(JsonHandler::endObject);
       }
       else if(isArray(n)) {
-        this.handlers.forEach(h->h.startArray());
+        this.handlers.forEach(JsonHandler::startArray);
         for(Node c : n.childs()) {
           if(c.hasChilds()) {
             iterate(c);
           } 
           else {
-            this.handlers.forEach(h->h.value(n.value()));
+            this.handlers.forEach(h->h.value(c.value()));
           }
         }
-        this.handlers.forEach(h->h.endArray());
+        this.handlers.forEach(JsonHandler::endArray);
       }
       else if(n.childs().size() == 1 
           && !n.firstChild().hasChilds()) {
         this.handlers.forEach(h->h.value(n.firstChild().value()));
       }
     }
-    append((array ? JsonToken.CHAR_START_ARRAY 
-        : JsonToken.CHAR_START_OBJECT));
+  }
+  
+  
+  private void notifyStart(Node node) {
+    if(isArray(node)) {
+      this.handlers.forEach(JsonHandler::startArray);
+    }
+    else {
+      this.handlers.forEach(JsonHandler::startObject);
+    }
+  }
+  
+  
+  public void notifyEnd(Node node) {
+    if(isArray(node)) {
+      this.handlers.forEach(JsonHandler::endArray);
+    }
+    else {
+      this.handlers.forEach(JsonHandler::endObject);
+    }
   }
   
   
@@ -196,67 +171,6 @@ public class WritableJsonChannel extends AbstractJsonParser implements WritableN
     return n.childs().stream().allMatch(
         (c) -> (c.hasChilds())
     );
-  }
-
-  
-  @Override
-  public void startObject() throws JsonParseException {
-    append(JsonToken.CHAR_START_OBJECT);
-  }
-
-
-  @Override
-  public void endObject() throws JsonParseException {
-    append(JsonToken.CHAR_END_OBJECT);
-  }
-
-
-  @Override
-  public void startArray() throws JsonParseException {
-    append(JsonToken.CHAR_START_ARRAY);
-  }
-
-
-  @Override
-  public void endArray() throws JsonParseException {
-    append(JsonToken.CHAR_END_ARRAY);
-  }
-
-
-  @Override
-  public void name(String str) {
-    if(appendComma) {
-      append(JsonToken.CHAR_COMMA);
-      appendComma = false;
-    }
-    append(JsonToken.CHAR_QUOTES);
-    append(str);
-    append(JsonToken.CHAR_QUOTES);
-    append(JsonToken.CHAR_COLON);
-  }
-
-
-  @Override
-  public void value(String str) {
-    if(appendComma) {
-      append(JsonToken.CHAR_COMMA);
-    }
-    try {
-      Double.parseDouble(str);
-      append(str);
-    } 
-    catch(NumberFormatException e) {
-      if(str.equalsIgnoreCase("true")
-          || str.equalsIgnoreCase("false")) {
-        append(str);
-      }
-      else {
-        append(JsonToken.CHAR_QUOTES);
-        append(str);
-        append(JsonToken.CHAR_QUOTES);
-      }
-    }
-    appendComma = true;
   }
   
 }

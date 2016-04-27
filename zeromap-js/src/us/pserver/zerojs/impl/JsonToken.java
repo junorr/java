@@ -35,7 +35,9 @@ public enum JsonToken {
   QUOTE(JsonToken.CHAR_QUOTE),
   QUOTES(JsonToken.CHAR_QUOTES),
   COLON(JsonToken.CHAR_COLON),
-  COMMA(JsonToken.CHAR_COMMA);
+  COMMA(JsonToken.CHAR_COMMA),
+  NAME((char)0), 
+  VALUE((char)1);
   
   private JsonToken(char ch) {
     this.ch = ch;
@@ -63,6 +65,10 @@ public enum JsonToken {
         return START_ARRAY;
       case CHAR_START_OBJECT:
         return START_OBJECT;
+      case 0:
+        return NAME;
+      case 1:
+        return VALUE;
       default:
         throw new IllegalArgumentException(
             "Unknown JsonToken for char: "+ ch

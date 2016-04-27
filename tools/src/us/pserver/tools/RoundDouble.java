@@ -12,15 +12,20 @@ package us.pserver.tools;
  */
 public class RoundDouble {
 	
-	private int precision;
+	private final int precision;
 	
-	private double number;
+	private final double number;
 	
 	
 	public RoundDouble(double number, int precision) {
 		this.number = number;
 		this.precision = precision;
 	}
+  
+  
+  public static double round(double number, int precision) {
+    return new RoundDouble(number, precision).round();
+  }
 	
 	
 	public double round() {

@@ -19,25 +19,40 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs;
+package us.pserver.zerojs.jen;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/04/2016
+ * @version 0.0 - 27/04/2016
  */
-public interface JsonHandler {
+public class ArrayGenerator implements Generator<String> {
 
-  public void startObject() throws JsonParseException;
+  private final JsonTypeGenerator gen;
   
-  public void endObject() throws JsonParseException;
+  private final int length;
   
-  public void startArray() throws JsonParseException;
   
-  public void endArray() throws JsonParseException;
+  public ArrayGenerator(int minJsonLength) {
+    gen = new JsonTypeGenerator();
+    this.length = minJsonLength;
+  }
   
-  public void name(String str) throws JsonParseException;
   
-  public void value(String str) throws JsonParseException;
+  @Override
+  public String generate() {
+    StringBuilder bld = new StringBuilder()
+        .append('[');
+    Generator g = gen.generate().getGenerator();
+    do {
+      if(bld.charAt(bld.length()-1) != '[') {
+        bld.append(',');
+      }
+      bld.append(g.generate())
+          .append(',')
+          .append(g.generate());
+    } while(bld.length() < length);
+    return bld.append(']').toString();
+  }
   
 }

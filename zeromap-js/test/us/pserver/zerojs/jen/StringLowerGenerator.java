@@ -19,25 +19,50 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs;
+package us.pserver.zerojs.jen;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/04/2016
+ * @version 0.0 - 27/04/2016
  */
-public interface JsonHandler {
+public class StringLowerGenerator implements Generator<String> {
 
-  public void startObject() throws JsonParseException;
+  private final IntegerGenerator cgen;
   
-  public void endObject() throws JsonParseException;
+  private final IntegerGenerator lgen;
   
-  public void startArray() throws JsonParseException;
+  private final int min;
   
-  public void endArray() throws JsonParseException;
+  private final int max;
   
-  public void name(String str) throws JsonParseException;
   
-  public void value(String str) throws JsonParseException;
+  public StringLowerGenerator(int minLen, int maxLen) {
+    if(minLen < 1 || minLen > maxLen) {
+      throw new IllegalArgumentException(
+          "Invalid min length (0 < min < max): "+ minLen
+      );
+    }
+    if(maxLen < 1 || maxLen < minLen) {
+      throw new IllegalArgumentException(
+          "Invalid min length (0 < max > min): "+ maxLen
+      );
+    }
+    this.min = minLen;
+    this.max = maxLen;
+    cgen = new IntegerGenerator(25);
+    lgen = new IntegerGenerator(max - min+1);
+  }
+  
+  
+  @Override
+  public String generate() {
+    int len = lgen.generate() + min;
+    StringBuilder sb = new StringBuilder();
+    for(int i = 0; i < len; i++) {
+      sb.append((char)((int)(cgen.generate()+1) + 97));
+    }
+    return sb.toString();
+  }
   
 }

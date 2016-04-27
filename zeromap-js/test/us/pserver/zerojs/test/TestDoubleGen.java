@@ -19,25 +19,32 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs;
+package us.pserver.zerojs.test;
+
+import us.pserver.zerojs.jen.NumberGenerator;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/04/2016
+ * @version 0.0 - 27/04/2016
  */
-public interface JsonHandler {
+public class TestDoubleGen {
 
-  public void startObject() throws JsonParseException;
   
-  public void endObject() throws JsonParseException;
-  
-  public void startArray() throws JsonParseException;
-  
-  public void endArray() throws JsonParseException;
-  
-  public void name(String str) throws JsonParseException;
-  
-  public void value(String str) throws JsonParseException;
+  public static void main(String[] args) {
+    NumberGenerator gen10 = new NumberGenerator(10);
+    NumberGenerator gen100 = new NumberGenerator(100);
+    NumberGenerator gen2 = new NumberGenerator(2);
+    System.out.println("* gen10.generate()="+ gen10.generate());
+    System.out.println("* gen10.generate()="+ gen10.generate());
+    System.out.println();
+    
+    System.out.println("* gen100.generate()="+ gen100.generate());
+    System.out.println("* gen100.generate()="+ gen100.generate());
+    System.out.println();
+    
+    System.out.println("* gen2.generate()="+ gen2.generate());
+    System.out.println("* gen2.generate()="+ gen2.generate());
+  }
   
 }

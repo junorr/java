@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs;
+package us.pserver.zerojs.io;
 
 import us.pserver.zerojs.impl.JsonToken;
 import java.io.IOException;
@@ -27,8 +27,8 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
-import us.pserver.zerojs.impl.AbstractJsonParser;
-import us.pserver.zerojs.impl.JsonNodeMapper;
+import us.pserver.zerojs.handler.NodeBuilder;
+import us.pserver.zerojs.impl.AbstractHandlerContainer;
 import us.pserver.zeromap.Node;
 import us.pserver.zeromap.io.ReadableNodeChannel;
 
@@ -37,7 +37,7 @@ import us.pserver.zeromap.io.ReadableNodeChannel;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/04/2016
  */
-public class ReadableJsonChannel extends AbstractJsonParser implements ReadableNodeChannel {
+public class ReadableJsonChannel extends AbstractHandlerContainer implements ReadableNodeChannel {
 
   private final ReadableByteChannel channel;
   
@@ -73,8 +73,8 @@ public class ReadableJsonChannel extends AbstractJsonParser implements ReadableN
   @Override
   public int read(Node root) throws IOException {
     ByteBuffer bytes = ByteBuffer.allocateDirect(4096);
-    JsonNodeMapper mapper = new JsonNodeMapper(root);
-    this.addHandler(mapper);
+    NodeBuilder nb = new NodeBuilder(root);
+    this.addHandler(nb);
     CharBuffer buffer;
     escQuote = escQuotes = false;
     int read = 0;
@@ -88,7 +88,7 @@ public class ReadableJsonChannel extends AbstractJsonParser implements ReadableN
       }//inner while
       bytes.clear();
     }//while
-    this.handlers.remove(mapper);
+    this.handlers.remove(nb);
     return total;
   }
 

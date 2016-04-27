@@ -19,46 +19,21 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs.impl;
+package us.pserver.zerojs;
 
-import java.util.LinkedList;
 import java.util.List;
-import us.pserver.zerojs.JsonHandler;
-import us.pserver.zerojs.JsonParser;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/04/2016
+ * @version 0.0 - 22/04/2016
  */
-public abstract class AbstractJsonParser implements JsonParser {
+public interface HandlerContainer {
 
-  protected final List<JsonHandler> handlers;
+  public HandlerContainer addHandler(JsonHandler jsh);
   
+  public boolean removeHandler(JsonHandler jsh);
   
-  protected AbstractJsonParser() {
-    this.handlers = new LinkedList<>();
-  }
+  public List<JsonHandler> getHandlers();
   
-  
-  @Override
-  public JsonParser addHandler(JsonHandler jsh) {
-    if(jsh != null) {
-      handlers.add(jsh);
-    }
-    return this;
-  }
-
-
-  @Override
-  public boolean removeHandler(JsonHandler jsh) {
-    return handlers.remove(jsh);
-  }
-
-
-  @Override
-  public List<JsonHandler> getHandlers() {
-    return handlers;
-  }
-
 }

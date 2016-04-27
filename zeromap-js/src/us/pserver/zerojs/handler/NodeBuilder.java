@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs.impl;
+package us.pserver.zerojs.handler;
 
 import us.pserver.zerojs.JsonHandler;
 import us.pserver.zerojs.JsonParseException;
@@ -29,9 +29,9 @@ import us.pserver.zeromap.impl.ONode;
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 21/04/2016
+ * @version 0.0 - 27/04/2016
  */
-public class JsonNodeMapper implements JsonHandler {
+public class NodeBuilder implements JsonHandler {
   
   private final Node root;
   
@@ -42,28 +42,29 @@ public class JsonNodeMapper implements JsonHandler {
   private boolean inobj;
   
   
-  public JsonNodeMapper() {
-    this(new ONode("root"));
+  public NodeBuilder(Node root) {
+    if(root == null) {
+      throw new IllegalArgumentException(
+          "Invalid null root Node"
+      );
+    }
+    this.root = root;
+    current = this.root;
+    inarray = false;
+    inobj = false;
   }
   
   
-  public JsonNodeMapper(Node root) {
-    if(root == null) {
-      throw new IllegalArgumentException(
-          "Root Node must be not null"
-      );
-    }
-    current = this.root = root;
-    inarray = false;
-    inobj = false;
+  public NodeBuilder() {
+    this(new ONode("root"));
   }
   
   
   public Node getRoot() {
     return root;
   }
+  
 
-      
   @Override
   public void startObject() throws JsonParseException {
     if(current != root) {
@@ -100,14 +101,14 @@ public class JsonNodeMapper implements JsonHandler {
 
 
   @Override
-  public void name(String str) {
+  public void name(String str) throws JsonParseException {
     current = current.newChild(str);
     //System.out.println("* name="+ str+ ", current: "+ current.value());
   }
 
 
   @Override
-  public void value(String str) {
+  public void value(String str) throws JsonParseException {
     current.newChild(str);
     current = (!inarray && current.hasParent() 
         ? current.parent() : current);
