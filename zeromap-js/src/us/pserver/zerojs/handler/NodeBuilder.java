@@ -33,13 +33,13 @@ import us.pserver.zeromap.impl.ONode;
  */
 public class NodeBuilder implements JsonHandler {
   
+  public static final String ID_ARRAY = "@js-array";
+  
   private final Node root;
   
   private Node current;
   
   private boolean inarray;
-  
-  private boolean inobj;
   
   
   public NodeBuilder(Node root) {
@@ -51,7 +51,6 @@ public class NodeBuilder implements JsonHandler {
     this.root = root;
     current = this.root;
     inarray = false;
-    inobj = false;
   }
   
   
@@ -68,7 +67,6 @@ public class NodeBuilder implements JsonHandler {
   @Override
   public void startObject() throws JsonParseException {
     if(current != root) {
-      inobj = true;
       //System.out.println("* start object");
     }
   }
@@ -77,7 +75,6 @@ public class NodeBuilder implements JsonHandler {
   @Override
   public void endObject() throws JsonParseException {
     if(current != root) {
-      inobj = false;
       current = current.parent();
       //System.out.println("* end object, current: "+ current.value());
     }
@@ -87,6 +84,7 @@ public class NodeBuilder implements JsonHandler {
   @Override
   public void startArray() throws JsonParseException {
     inarray = true;
+    current = current.newChild(ID_ARRAY);
     //System.out.println("* start array");
   }
 
@@ -94,8 +92,7 @@ public class NodeBuilder implements JsonHandler {
   @Override
   public void endArray() throws JsonParseException {
     inarray = false;
-    current = (current.hasParent() 
-        ? current.parent() : current);
+    current = current.parent();
     //System.out.println("* end array, current: "+ current.value());
   }
 

@@ -81,45 +81,45 @@ public class JsonBuilder implements JsonHandler {
   
   @Override
   public void startObject() throws JsonParseException {
-    buffer.append(JsonToken.CHAR_START_OBJECT);
+    buffer.append(JsonToken.START_OBJECT);
   }
 
 
   @Override
   public void endObject() throws JsonParseException {
-    buffer.append(JsonToken.CHAR_END_OBJECT);
+    buffer.append(JsonToken.END_OBJECT);
   }
 
 
   @Override
   public void startArray() throws JsonParseException {
-    buffer.append(JsonToken.CHAR_START_ARRAY);
+    buffer.append(JsonToken.START_ARRAY);
   }
 
 
   @Override
   public void endArray() throws JsonParseException {
-    buffer.append(JsonToken.CHAR_END_ARRAY);
+    buffer.append(JsonToken.END_ARRAY);
   }
 
 
   @Override
   public void name(String str) throws JsonParseException {
     if(appendComma) {
-      buffer.append(JsonToken.CHAR_COMMA);
+      buffer.append(JsonToken.COMMA);
       appendComma = false;
     }
-    buffer.append(JsonToken.CHAR_QUOTES);
+    buffer.append(JsonToken.QUOTES);
     buffer.append(str);
-    buffer.append(JsonToken.CHAR_QUOTES);
-    buffer.append(JsonToken.CHAR_COLON);
+    buffer.append(JsonToken.QUOTES);
+    buffer.append(JsonToken.COLON);
   }
 
 
   @Override
   public void value(String str) throws JsonParseException {
     if(appendComma) {
-      buffer.append(JsonToken.CHAR_COMMA);
+      buffer.append(JsonToken.COMMA);
     }
     try {
       Double.parseDouble(str);
@@ -131,9 +131,9 @@ public class JsonBuilder implements JsonHandler {
         buffer.append(str);
       }
       else {
-        buffer.append(JsonToken.CHAR_QUOTES);
+        buffer.append(JsonToken.QUOTES);
         buffer.append(str);
-        buffer.append(JsonToken.CHAR_QUOTES);
+        buffer.append(JsonToken.QUOTES);
       }
     }
     appendComma = true;

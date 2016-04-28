@@ -19,29 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs.impl;
+package us.pserver.zerojs.func;
+
+import java.util.function.Function;
+import us.pserver.zeromap.Node;
+import us.pserver.zeromap.impl.ONode;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/04/2016
+ * @version 0.0 - 28/04/2016
  */
-public class JsonToken {
+public class NodeFunction implements Function<String,Node> {
   
-  public static final char START_OBJECT = '{';
-  
-  public static final char END_OBJECT = '}';
-  
-  public static final char START_ARRAY = '[';
-  
-  public static final char END_ARRAY = ']';
-  
-  public static final char QUOTES = '"';
-  
-  public static final char QUOTE = '\'';
-  
-  public static final char COMMA = ',';
-  
-  public static final char COLON = ':';
+  private final NodeBiFunction fun = new NodeBiFunction();
+
+  @Override
+  public Node apply(String json) {
+    return fun.apply(json, new ONode("root"));
+  }
 
 }

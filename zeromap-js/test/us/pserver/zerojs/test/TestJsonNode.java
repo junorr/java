@@ -19,20 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.zerojs.jen;
+package us.pserver.zerojs.test;
+
+import us.pserver.zerojs.func.JsonFunction;
+import us.pserver.zerojs.func.NodeFunction;
+import us.pserver.zerojs.jen.ObjectGenerator;
+import us.pserver.zeromap.Node;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/04/2016
+ * @version 0.0 - 28/04/2016
  */
-public class JsonGenerator {
+public class TestJsonNode {
 
-  public static enum DataType {
-    STRING, INT, FLOAT, BOOLEAN, DATE;
+  
+  public static void main(String[] args) {
+    String json = new ObjectGenerator(220).generate();
+    System.out.println("* json -> "+ json);
+    Node node = new NodeFunction().apply(json);
+    System.out.println("* node -> \n"+ node);
+    System.out.println();
+    
+    //json = new JsonFunction().apply(node);
+    //System.out.println("* json -> "+ json);
   }
-  
-  
-  
   
 }

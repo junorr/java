@@ -21,14 +21,13 @@
 
 package us.pserver.zerojs.io;
 
-import us.pserver.zerojs.impl.JsonToken;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
+import us.pserver.zerojs.func.NodeBiFunction;
 import us.pserver.zerojs.handler.NodeBuilder;
-import us.pserver.zerojs.impl.AbstractHandlerContainer;
 import us.pserver.zeromap.Node;
 import us.pserver.zeromap.io.ReadableNodeChannel;
 
@@ -37,15 +36,11 @@ import us.pserver.zeromap.io.ReadableNodeChannel;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/04/2016
  */
-public class ReadableJsonChannel extends AbstractHandlerContainer implements ReadableNodeChannel {
+public class ReadableJsonChannel extends NodeBiFunction implements ReadableNodeChannel {
 
   private final ReadableByteChannel channel;
   
-  private final StringBuilder build;
-  
   private final Charset charset;
-  
-  private boolean escQuote, escQuotes;
   
   
   public ReadableJsonChannel(ReadableByteChannel rbc) {
@@ -65,7 +60,6 @@ public class ReadableJsonChannel extends AbstractHandlerContainer implements Rea
       );
     }
     this.channel = rbc;
-    this.build = new StringBuilder();
     this.charset = cst;
   }
   
@@ -73,21 +67,19 @@ public class ReadableJsonChannel extends AbstractHandlerContainer implements Rea
   @Override
   public int read(Node root) throws IOException {
     ByteBuffer bytes = ByteBuffer.allocateDirect(4096);
+    this.clear();
     NodeBuilder nb = new NodeBuilder(root);
     this.addHandler(nb);
     CharBuffer buffer;
-    escQuote = escQuotes = false;
     int read = 0;
     int total = 0;
     while((read = channel.read(bytes)) > 0) {
       total += read;
       bytes.flip();
       buffer = charset.decode(bytes);
-      while(buffer.hasRemaining()) {
-        this.parse(buffer.get());
-      }//inner while
+      buffer.chars().forEach(this::parse);
       bytes.clear();
-    }//while
+    }
     this.handlers.remove(nb);
     return total;
   }
@@ -108,97 +100,6 @@ public class ReadableJsonChannel extends AbstractHandlerContainer implements Rea
   @Override
   public void close() throws IOException {
     channel.close();
-  }
-  
-
-  private void parse(char ch) {
-    if(!escQuote && !escQuotes) {
-      switch(ch) {
-        case JsonToken.CHAR_START_OBJECT:
-          //System.out.println("* start object");
-          handlers.forEach(h->{h.startObject();});
-          break;
-        case JsonToken.CHAR_START_ARRAY:
-          //System.out.println("* start array");
-          handlers.forEach(h->{h.startArray();});
-          break;
-        case JsonToken.CHAR_END_OBJECT:
-          //System.out.println("* notify value: "+ build);
-          //System.out.println("* end object");
-          notifyValue();
-          handlers.forEach(h->{h.endObject();});
-          break;
-        case JsonToken.CHAR_END_ARRAY:
-          //System.out.println("* notify value: "+ build);
-          //System.out.println("* end array");
-          notifyValue();
-          handlers.forEach(h->{h.endArray();});
-          break;
-        case JsonToken.CHAR_COLON:
-          //System.out.println("* notify name: "+ build);
-          notifyName();
-          break;
-        case JsonToken.CHAR_COMMA:
-          //System.out.println("* notify value: "+ build);
-          notifyValue();
-          break;
-        case JsonToken.CHAR_QUOTE:
-          //System.out.println("* escape quote");
-          escQuote = !escQuote;
-          break;
-        case JsonToken.CHAR_QUOTES:
-          //System.out.println("* escape quotes");
-          escQuotes = !escQuotes;
-          break;
-        case ' ':
-        case '\n':
-        case '\t':
-        case '\r':
-          break;
-        default:
-          build.append(ch);
-          break;
-      }
-    }
-    else if(escQuote && JsonToken.CHAR_QUOTE == ch) {
-      escQuote = !escQuote;
-    }
-    else if(escQuotes && JsonToken.CHAR_QUOTES == ch) {
-      escQuotes = !escQuotes;
-    }
-    else {
-      //System.out.println("* append");
-      build.append(ch);
-    }
-  }
-  
-  
-  private void fixQuotes() {
-    if(build.length() > 0 && 
-        (build.toString().endsWith("\"") 
-        || build.toString().endsWith("'"))) {
-      build.deleteCharAt(build.length() -1);
-    }
-  }
-  
-  
-  private void notifyName() {
-    if(build.length() > 0) {
-      fixQuotes();
-      String str = build.toString();
-      handlers.forEach(h->h.name(str));
-      build.delete(0, build.length());
-    }
-  }
-  
-  
-  private void notifyValue() {
-    if(build.length() > 0) {
-      fixQuotes();
-      String str = build.toString();
-      handlers.forEach(h->h.value(str));
-      build.delete(0, build.length());
-    }
   }
   
 }
