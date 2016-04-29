@@ -5,9 +5,9 @@
  */
 package us.pserver.zeromap.mapper;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import us.pserver.zeromap.Mapper;
 import us.pserver.zeromap.MapperFactory;
 import us.pserver.zeromap.Node;
@@ -103,17 +103,25 @@ public class MapMapper implements Mapper<Map> {
     if(entry == null) {
       return null;
     }
-    String[] scs = entry.findChild("class").firstChild().value().split("\\|");
+    Optional<Node> on = entry.findChild("class");
+    if(!on.isPresent() || !on.get().hasChilds()) {
+      return null;
+    }
+    String[] scs = on.get().firstChild().get().value().split("\\|");
     Class ck = ClassFactory.create(scs[0]);
     Class cv = ClassFactory.create(scs[1]);
     Mapper mk = MapperFactory.factory().mapper(ck);
     Mapper mv = MapperFactory.factory().mapper(cv);
-    Object key = mk.unmap(entry
-        .findChild("key").firstChild(), ck
-    );
-    Object val = mv.unmap(entry
-        .findChild("value").firstChild(), cv
-    );
+    on = entry.findChild("key");
+    if(!on.isPresent() || !on.get().hasChilds()) {
+      return null;
+    }
+    Object key = mk.unmap(on.get().firstChild().get(), ck);
+    on = entry.findChild("value");
+    if(!on.isPresent() || !on.get().hasChilds()) {
+      return null;
+    }
+    Object val = mv.unmap(on.get().firstChild().get(), cv);
     return new Object[]{key, val};
   }
   

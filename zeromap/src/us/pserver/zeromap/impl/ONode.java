@@ -5,9 +5,10 @@
  */
 package us.pserver.zeromap.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Optional;
 import us.pserver.zeromap.Node;
 
 
@@ -22,7 +23,7 @@ public class ONode implements Node {
 	
 	private final Node parent;
 	
-	private final TreeSet<Node> childs;
+	private final ArrayList<Node> childs;
 	
 	
 	public ONode(String value) {
@@ -38,7 +39,7 @@ public class ONode implements Node {
 		}
 		this.value = value;
 		this.parent = parent;
-		this.childs = new TreeSet<>();
+		this.childs = new ArrayList<>();
 	}
 	
 	
@@ -55,48 +56,39 @@ public class ONode implements Node {
 
 
 	@Override
-	public Set<Node> childs() {
+	public List<Node> childs() {
 		return childs;
 	}
 
 
 	@Override
-	public Node findAny(String value) {
-		Node child = null;
+	public Optional<Node> findAny(String value) {
+		Optional<Node> child = Optional.empty();
 		if(!childs.isEmpty() && value != null) {
-			child = childs.floor(new ONode(value));
-			if(child == null || !value.equals(child.value())) {
-				for(Node n : childs) {
-					if((child = n.findAny(value)) != null) {
-						break;
-					}
-				}
-			}
-		}
+      child = childs.stream().filter(
+          c->c.value().equals(value)
+      ).findFirst();
+			if(!child.isPresent()) {
+        child = childs.stream().map(c->c.findAny(value))
+            .filter(o->o.isPresent()).findFirst()
+            .orElse(Optional.empty());
+			}//if
+		}//if
 		return child;
 	}
 	
 	
 	@Override
-	public Node findChild(String value) {
-		Node child = null;
-		if(!childs.isEmpty() && value != null) {
-			Node n = childs.floor(new ONode(value));
-			if(n != null && value.equals(n.value())) {
-				child = n;
-			}
-		}
-		return child;
+	public Optional<Node> findChild(String value) {
+		return childs.stream().filter(
+          c->c.value().equals(value)
+      ).findFirst();
 	}
 	
 	
 	@Override
-	public Node firstChild() {
-		Node first = null;
-		if(hasChilds()) {
-			first = childs.first();
-		}
-		return first;
+	public Optional<Node> firstChild() {
+		return childs.stream().findFirst();
 	}
 
 
@@ -142,8 +134,8 @@ public class ONode implements Node {
 
 
 	@Override
-	public Node parent() {
-		return parent;
+	public Optional<Node> parent() {
+		return Optional.ofNullable(parent);
 	}
   
   

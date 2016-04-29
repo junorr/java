@@ -23,6 +23,7 @@ package us.pserver.zerojs.handler;
 
 import us.pserver.zerojs.JsonHandler;
 import us.pserver.zerojs.JsonParseException;
+import us.pserver.zerojs.impl.JsonToken;
 import us.pserver.zeromap.Node;
 import us.pserver.zeromap.impl.ONode;
 
@@ -39,7 +40,7 @@ public class NodeBuilder implements JsonHandler {
   
   private Node current;
   
-  private boolean inarray;
+  private char lasttoken;
   
   
   public NodeBuilder(Node root) {
@@ -50,7 +51,7 @@ public class NodeBuilder implements JsonHandler {
     }
     this.root = root;
     current = this.root;
-    inarray = false;
+    lasttoken = 0;
   }
   
   
@@ -66,50 +67,64 @@ public class NodeBuilder implements JsonHandler {
 
   @Override
   public void startObject() throws JsonParseException {
-    if(current != root) {
-      //System.out.println("* start object");
-    }
+    //System.out.print("{");
+    lasttoken = JsonToken.START_OBJECT;
   }
 
 
   @Override
   public void endObject() throws JsonParseException {
-    if(current != root) {
-      current = current.parent();
-      //System.out.println("* end object, current: "+ current.value());
-    }
+    //System.out.print("}");
+    //lasttoken = JsonToken.END_OBJECT;
+    current = (current != root 
+        ? current.parent().get() : current
+    );
+    //System.out.println("* current="+ current.value());
   }
 
 
   @Override
   public void startArray() throws JsonParseException {
-    inarray = true;
-    current = current.newChild(ID_ARRAY);
-    //System.out.println("* start array");
+    //System.out.print("[");
+    //lasttoken = JsonToken.START_ARRAY;
+    //System.out.print("* current="+ current.value());
+    current = current.newChild(
+        String.valueOf(JsonToken.START_ARRAY)
+    );
+    //System.out.println(", next="+ current.value());
   }
 
 
   @Override
   public void endArray() throws JsonParseException {
-    inarray = false;
-    current = current.parent();
-    //System.out.println("* end array, current: "+ current.value());
+    //System.out.print("]");
+    //lasttoken = JsonToken.END_ARRAY;
+    current = (current != root 
+        ? current.parent().get() : current
+    );
+    //System.out.println("* current="+ current.value());
   }
 
 
   @Override
   public void name(String str) throws JsonParseException {
+    //System.out.print(" '"+ str+ "':");
+    if(lasttoken != JsonToken.START_OBJECT
+        && current != root) {
+      current = current.parent().get();
+    }
+    //System.out.print("* current="+ current.value());
     current = current.newChild(str);
-    //System.out.println("* name="+ str+ ", current: "+ current.value());
+    lasttoken = 0;
+    //System.out.println(", next="+ current.value());
   }
 
 
   @Override
   public void value(String str) throws JsonParseException {
+    //System.out.print(str);
+    lasttoken = 0;
     current.newChild(str);
-    current = (!inarray && current.hasParent() 
-        ? current.parent() : current);
-    //System.out.println("* value="+ str+ ", current: "+ current.value());
   }
 
 }

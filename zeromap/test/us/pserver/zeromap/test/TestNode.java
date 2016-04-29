@@ -22,9 +22,9 @@ public class TestNode {
 	public static void main(String[] args) {
 		Node root = new ONode("root")
 				.newChild("a").add("x").add("y")
-				.parent()
+				.parent().get()
 				.newChild("b").add("z")
-				.parent();
+				.parent().get();
 		System.out.println(root);
 		System.out.println("* root.find('a'):");
 		System.out.println(root.findAny("a"));
@@ -33,10 +33,10 @@ public class TestNode {
 		System.out.println(root.findAny("x"));
 		
 		System.out.println("* a.find('y'):");
-		System.out.println(root.findAny("a").findAny("y"));
+		System.out.println(root.findAny("a").get().findAny("y"));
 		
 		System.out.println("* a.find('z'):");
-		System.out.println(root.findAny("a").findAny("z"));
+		System.out.println(root.findAny("a").get().findAny("z"));
 		
 		System.out.println("* root.find('b'):");
 		System.out.println(root.findAny("b"));

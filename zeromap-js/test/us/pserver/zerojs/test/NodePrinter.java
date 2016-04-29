@@ -21,31 +21,21 @@
 
 package us.pserver.zerojs.test;
 
-import us.pserver.zerojs.func.JsonFunction;
-import us.pserver.zerojs.func.NodeFunction;
-import us.pserver.zerojs.jen.ObjectGenerator;
 import us.pserver.zeromap.Node;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/04/2016
+ * @version 0.0 - 29/04/2016
  */
-public class TestJsonNode {
+public class NodePrinter {
 
-  
-  public static void main(String[] args) {
-    String json = new ObjectGenerator(220).generate();
-    //json = "{'a':1,'b':{'c':2},'d':[[{'e':3},{'f':false}],[{'g':4.5}, true]]}";
-    json = "{\"pida\":[{\"vah\":{\"huvuhe\":\"06/04/1986 17:07:44\"}},{\"qenefu\":\"iwfly\"}],\"cydure\":\"co\",\"dutaba\":{\"pec\":\"05/11/2016 05:47:41\"},\"gyvo\":[\"16/09/2016 21:43:38\",\"06/12/2005 18:41:12\"],\"zak\":false,\"qece\":{\"tucym\":\"25/09/2016 16:30:58\"}}";
-    System.out.println("* json -> "+ json);
-    Node node = new NodeFunction().apply(json);
-    //System.out.println("* node -> \n");
-    //NodePrinter.print(node, "");
-    //System.out.println(node);
-    
-    json = new JsonFunction().apply(node);
-    System.out.println("* json -> "+ json);
+  public static void print(Node n, String ident) {
+    System.out.print(ident+ "'"+ n.value()+ "'");
+    if(n.hasChilds()) System.out.println(" {");
+    n.childs().forEach(c->print(c, ident+ "  "));
+    if(n.hasChilds()) System.out.print(ident+ "}");
+    System.out.println();
   }
   
 }

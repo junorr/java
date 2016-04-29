@@ -2,6 +2,7 @@ package us.pserver.zeromap.mapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Optional;
 import us.pserver.tools.rfl.Reflector;
 import us.pserver.zeromap.Mapper;
 import us.pserver.zeromap.MapperFactory;
@@ -88,11 +89,13 @@ public abstract class AbstractObjectMapper implements Mapper {
 				Field[] fs = ref.fields();
 				for(Field f : fs) {
 					if(isIgnored(f)) continue;
-					Node nc = n.findAny(f.getName());
-					if(nc == null) continue;
+					Optional<Node> nc = n.findAny(f.getName());
+					if(!nc.isPresent()) continue;
 					Class fclass = f.getType();
 					Mapper mp = MapperFactory.factory().mapper(fclass);
-					ref.selectField(f.getName()).set(mp.unmap(nc.firstChild(), fclass));
+          if(nc.get().hasChilds()) {
+            ref.selectField(f.getName()).set(mp.unmap(nc.get().firstChild().get(), fclass));
+          }
 				}
 			}
 		}

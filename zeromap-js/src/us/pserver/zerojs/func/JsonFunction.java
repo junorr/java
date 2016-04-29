@@ -26,6 +26,7 @@ import java.util.function.Function;
 import us.pserver.zerojs.JsonHandler;
 import us.pserver.zerojs.handler.JsonBuilder;
 import us.pserver.zerojs.impl.AbstractHandlerContainer;
+import us.pserver.zerojs.impl.JsonToken;
 import us.pserver.zeromap.Node;
 
 /**
@@ -36,19 +37,72 @@ import us.pserver.zeromap.Node;
 public class JsonFunction extends AbstractHandlerContainer implements Function<Node,String> {
 
   @Override
-  public String apply(Node t) {
-    if(t == null) {
+  public String apply(Node root) {
+    if(root == null) {
       throw new IllegalArgumentException(
           "Invalid null Node"
       );
     }
     JsonBuilder jb = new JsonBuilder();
     this.addHandler(jb);
-    this.notifyStart(t);
-    this.iterate(t);
-    this.notifyEnd(t);
+    this.inspect(root);
     this.handlers.remove(jb);
     return jb.toJson();
+  }
+  
+  
+  private void inspect2(Node node) {
+    if(node == null) return;
+    if(!node.hasChilds()) {
+      System.out.println("* isValue: "+ node.value());
+      handlers.forEach(h->h.value(node.value()));
+    }
+    else if(isArray(node)) {
+      System.out.println("* isArray: "+ node.value());
+      handlers.forEach(h->h.startArray());
+      node.childs().forEach(this::inspect);
+      handlers.forEach(h->h.endArray());
+    }
+    else if(isArray(node.firstChild().get())) {
+      handlers.forEach(h->h.name(node.value()));
+      node.childs().forEach(this::inspect);
+    }
+    else if(isObject(node) || (node.hasParent() 
+        && isArray(node.parent().get()))) {
+      if(node.hasParent()) {
+        handlers.forEach(h->h.name(node.value()));
+      }
+      handlers.forEach(h->h.startObject());
+      node.childs().forEach(this::inspect);
+      handlers.forEach(h->h.endObject());
+    }
+    else {
+      handlers.forEach(h->h.name(node.value()));
+      node.childs().forEach(this::inspect);
+    }
+  }
+
+  
+  private void inspect(Node node) {
+    if(node == null) return;
+    if(!node.hasChilds()) {
+      System.out.println("* isValue: "+ node.value());
+      handlers.forEach(h->h.value(node.value()));
+    }
+    else if(isArray(node)) {
+      System.out.println("* isArray: "+ node.value());
+      handlers.forEach(h->h.startArray());
+      node.childs().forEach(this::inspect);
+      handlers.forEach(h->h.endArray());
+    }
+    else {
+      if(node.hasParent()) {
+        handlers.forEach(h->h.name(node.value()));
+      }
+    }
+    else if(isObject(node) && isChildArray(node)) {
+      
+    }
   }
 
   
@@ -56,65 +110,40 @@ public class JsonFunction extends AbstractHandlerContainer implements Function<N
     if(node == null) {
       return;
     }
+    if(!node.hasChilds()) {
+      handlers.forEach(h->h.value(node.value()));
+      return;
+    }
+    boolean isarray = isArray(node);
+    boolean isobj = isObject(node);
+    handlers.forEach(h->{
+      if(isarray) h.startArray();
+      else if(isobj) h.startObject();
+    });
     Iterator<Node> iter = node.childs().iterator();
     while(iter.hasNext()) {
       Node n = iter.next();
-      this.handlers.forEach(h->h.name(n.value()));
-      if(isObject(n)) {
-        this.handlers.forEach(JsonHandler::startObject);
-        iterate(n);
-        this.handlers.forEach(JsonHandler::endObject);
+      if(!isArray(n)) {
+        handlers.forEach(h->h.name(n.value()));
       }
-      else if(isArray(n)) {
-        this.handlers.forEach(JsonHandler::startArray);
-        for(Node c : n.childs()) {
-          if(c.hasChilds()) {
-            iterate(c);
-          } 
-          else {
-            this.handlers.forEach(h->h.value(c.value()));
-          }
-        }
-        this.handlers.forEach(JsonHandler::endArray);
-      }
-      else if(n.childs().size() == 1 
-          && !n.firstChild().hasChilds()) {
-        this.handlers.forEach(h->h.value(n.firstChild().value()));
-      }
-    }
-  }
-  
-  
-  private void notifyStart(Node node) {
-    if(isArray(node)) {
-      this.handlers.forEach(JsonHandler::startArray);
-    }
-    else {
-      this.handlers.forEach(JsonHandler::startObject);
-    }
-  }
-  
-  
-  public void notifyEnd(Node node) {
-    if(isArray(node)) {
-      this.handlers.forEach(JsonHandler::endArray);
-    }
-    else {
-      this.handlers.forEach(JsonHandler::endObject);
-    }
+      n.childs().forEach(this::iterate);
+    }//while
+    handlers.forEach(h->{
+      if(isarray) h.startArray();
+      else if(isobj) h.startObject();
+    });
   }
   
   
   private boolean isArray(Node n) {
-    if(n == null) {
-      return false;
-    }
-    if(n.childs().size() <= 1) {
-      return false;
-    }
-    return n.childs().stream().anyMatch(
-        (c) -> (!c.hasChilds())
-    );
+    return n.value().length() == 1
+        && n.value().charAt(0) == JsonToken.START_ARRAY;
+  }
+  
+  
+  private boolean isChildArray(Node n) {
+    return n.childs().size() == 1 
+        && isArray(n.firstChild().get());
   }
   
   
@@ -125,9 +154,7 @@ public class JsonFunction extends AbstractHandlerContainer implements Function<N
     if(!n.hasChilds()) {
       return false;
     }
-    return n.childs().stream().allMatch(
-        (c) -> (c.hasChilds())
-    );
+    return n.childs().stream().allMatch(c->c.hasChilds());
   }
   
 }

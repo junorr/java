@@ -5,7 +5,8 @@
  */
 package us.pserver.zeromap;
 
-import java.util.Set;
+import java.util.List;
+import java.util.Optional;
 
 
 
@@ -19,7 +20,7 @@ public interface Node extends Comparable<Node> {
 	
 	public boolean hasChilds();
 	
-	public Set<Node> childs();
+	public List<Node> childs();
 	
 	public Node add(Node child);
 	
@@ -29,13 +30,13 @@ public interface Node extends Comparable<Node> {
   
   public boolean hasParent();
 	
-	public Node parent();
+	public Optional<Node> parent();
 	
-	public Node findChild(String value);
+	public Optional<Node> findChild(String value);
 	
-	public Node findAny(String value);
+	public Optional<Node> findAny(String value);
 	
-	public Node firstChild();
+	public Optional<Node> firstChild();
 	
 	public boolean contains(String value);
 	

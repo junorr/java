@@ -79,14 +79,14 @@ public class DefaultObjectBuilder<T> implements ObjectBuilder<T> {
 		Parameter[] ps = constructor.getParameters();
 		int count = 0;
 		for(Field f : parameters) {
-			Node np = node.findChild(f.getName());
-			if(np == null) continue;
+			Optional<Node> np = node.findChild(f.getName());
+			if(!np.isPresent()) continue;
 			Optional<Parameter> op = Arrays.asList(ps).stream().filter(
 					p->p.getType().equals(f.getType())
 			).findFirst();
 			if(op.isPresent()) {
 				count++;
-				params.put(f, np);
+				params.put(f, np.get());
 			}
 		}
 		return count == constructor.getParameterCount();
@@ -104,7 +104,9 @@ public class DefaultObjectBuilder<T> implements ObjectBuilder<T> {
 			}
 			Node n = params.get(f);
 			Mapper mp = MapperFactory.factory().mapper(f.getType());
-			list.add(mp.unmap(n.firstChild(), f.getType()));
+      if(n.hasChilds()) {
+        list.add(mp.unmap(n.firstChild().get(), f.getType()));
+      }
 		}
 		Object[] os = null;
 		if(!list.isEmpty()) {
