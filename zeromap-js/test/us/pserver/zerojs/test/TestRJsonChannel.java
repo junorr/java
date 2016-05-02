@@ -91,7 +91,7 @@ public class TestRJsonChannel {
     rjc.read(na);
     System.out.println("* Mapping time: "+ tm.stop());
     System.out.println("* Node");
-    //System.out.println(na);
+    System.out.println(na);
     System.out.println();
     
     System.out.println("* Mapping: Node -> Object...");

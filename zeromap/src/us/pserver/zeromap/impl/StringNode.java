@@ -40,9 +40,16 @@ public class StringNode {
 				.append(node.value())
 				.append("){");
 		if(node.hasChilds()) {
+      for(Node c : node.childs()) {
+        sb.append("\n").append(
+            new StringNode(c).toString(ident+"  ")
+        );
+      }
+      /*
 			node.childs().stream().forEach((n) -> {
 				sb.append("\n").append(new StringNode(n).toString(ident+"  "));
 			});
+      */
 			sb.append("\n").append(ident);
 		}
 		return sb.append("}").toString();

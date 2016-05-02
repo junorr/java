@@ -21,9 +21,7 @@
 
 package us.pserver.zerojs.func;
 
-import java.util.Iterator;
 import java.util.function.Function;
-import us.pserver.zerojs.JsonHandler;
 import us.pserver.zerojs.handler.JsonBuilder;
 import us.pserver.zerojs.impl.AbstractHandlerContainer;
 import us.pserver.zerojs.impl.JsonToken;
@@ -51,89 +49,35 @@ public class JsonFunction extends AbstractHandlerContainer implements Function<N
   }
   
   
-  private void inspect2(Node node) {
+  private void inspect(Node node) {
+    //System.out.println("JsonFunction.inspect: node="+ node);
     if(node == null) return;
     if(!node.hasChilds()) {
-      System.out.println("* isValue: "+ node.value());
+      //System.out.println("* value: "+ node.value());
       handlers.forEach(h->h.value(node.value()));
     }
     else if(isArray(node)) {
-      System.out.println("* isArray: "+ node.value());
+      //System.out.println("* array: "+ node.value());
       handlers.forEach(h->h.startArray());
       node.childs().forEach(this::inspect);
       handlers.forEach(h->h.endArray());
     }
-    else if(isArray(node.firstChild().get())) {
-      handlers.forEach(h->h.name(node.value()));
-      node.childs().forEach(this::inspect);
-    }
-    else if(isObject(node) || (node.hasParent() 
-        && isArray(node.parent().get()))) {
-      if(node.hasParent()) {
-        handlers.forEach(h->h.name(node.value()));
-      }
+    else if(isObject(node)) {
+      //System.out.println("* object: "+ node.value());
       handlers.forEach(h->h.startObject());
       node.childs().forEach(this::inspect);
       handlers.forEach(h->h.endObject());
     }
-    else {
+    else if(node.hasParent()) {
+      //System.out.println("* name: "+ node.value());
       handlers.forEach(h->h.name(node.value()));
       node.childs().forEach(this::inspect);
     }
-  }
-
-  
-  private void inspect(Node node) {
-    if(node == null) return;
-    if(!node.hasChilds()) {
-      System.out.println("* isValue: "+ node.value());
-      handlers.forEach(h->h.value(node.value()));
-    }
-    else if(isArray(node)) {
-      System.out.println("* isArray: "+ node.value());
-      handlers.forEach(h->h.startArray());
-      node.childs().forEach(this::inspect);
-      handlers.forEach(h->h.endArray());
-    }
     else {
-      if(node.hasParent()) {
-        handlers.forEach(h->h.name(node.value()));
-      }
-    }
-    else if(isObject(node) && isChildArray(node)) {
-      
+      node.childs().forEach(this::inspect);
     }
   }
 
-  
-  private void iterate(Node node) {
-    if(node == null) {
-      return;
-    }
-    if(!node.hasChilds()) {
-      handlers.forEach(h->h.value(node.value()));
-      return;
-    }
-    boolean isarray = isArray(node);
-    boolean isobj = isObject(node);
-    handlers.forEach(h->{
-      if(isarray) h.startArray();
-      else if(isobj) h.startObject();
-    });
-    Iterator<Node> iter = node.childs().iterator();
-    while(iter.hasNext()) {
-      Node n = iter.next();
-      if(!isArray(n)) {
-        handlers.forEach(h->h.name(n.value()));
-      }
-      n.childs().forEach(this::iterate);
-    }//while
-    handlers.forEach(h->{
-      if(isarray) h.startArray();
-      else if(isobj) h.startObject();
-    });
-  }
-  
   
   private boolean isArray(Node n) {
     return n.value().length() == 1
@@ -141,20 +85,9 @@ public class JsonFunction extends AbstractHandlerContainer implements Function<N
   }
   
   
-  private boolean isChildArray(Node n) {
-    return n.childs().size() == 1 
-        && isArray(n.firstChild().get());
-  }
-  
-  
   private boolean isObject(Node n) {
-    if(n == null || isArray(n)) {
-      return false;
-    }
-    if(!n.hasChilds()) {
-      return false;
-    }
-    return n.childs().stream().allMatch(c->c.hasChilds());
+    return n.value().length() == 1
+        && n.value().charAt(0) == JsonToken.START_OBJECT;
   }
   
 }

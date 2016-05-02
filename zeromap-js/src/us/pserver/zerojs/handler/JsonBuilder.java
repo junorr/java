@@ -39,21 +39,27 @@ public class JsonBuilder implements JsonHandler {
   
   private boolean appendComma;
   
+  private int arrays;
+  
   
   public JsonBuilder() {
     buffer = new StringBuilder();
     appendComma = false;
+    arrays = 0;
   }
   
   
   public String toJson() {
+    if(endWithComma()) {
+      buffer.deleteCharAt(buffer.length() -1);
+    }
     return buffer.toString();
   }
   
   
   public CharBuffer toCharBuffer() {
     CharBuffer cb = CharBuffer.allocate(buffer.length());
-    cb.put(buffer.toString());
+    cb.put(toJson());
     return cb;
   }
   
@@ -79,6 +85,14 @@ public class JsonBuilder implements JsonHandler {
   }
   
   
+  private boolean endWithComma() {
+    return buffer.length() > 0 
+        && buffer.charAt(
+            buffer.length() -1
+        ) == JsonToken.COMMA;
+  }
+  
+  
   @Override
   public void startObject() throws JsonParseException {
     buffer.append(JsonToken.START_OBJECT);
@@ -87,28 +101,34 @@ public class JsonBuilder implements JsonHandler {
 
   @Override
   public void endObject() throws JsonParseException {
+    if(endWithComma()) {
+      buffer.deleteCharAt(buffer.length()-1);
+    }
     buffer.append(JsonToken.END_OBJECT);
+    buffer.append(JsonToken.COMMA);
   }
 
 
   @Override
   public void startArray() throws JsonParseException {
+    arrays++;
     buffer.append(JsonToken.START_ARRAY);
   }
 
 
   @Override
   public void endArray() throws JsonParseException {
+    if(endWithComma()) {
+      buffer.deleteCharAt(buffer.length()-1);
+    }
+    arrays--;
     buffer.append(JsonToken.END_ARRAY);
+    buffer.append(JsonToken.COMMA);
   }
 
 
   @Override
   public void name(String str) throws JsonParseException {
-    if(appendComma) {
-      buffer.append(JsonToken.COMMA);
-      appendComma = false;
-    }
     buffer.append(JsonToken.QUOTES);
     buffer.append(str);
     buffer.append(JsonToken.QUOTES);
@@ -118,9 +138,6 @@ public class JsonBuilder implements JsonHandler {
 
   @Override
   public void value(String str) throws JsonParseException {
-    if(appendComma) {
-      buffer.append(JsonToken.COMMA);
-    }
     try {
       Double.parseDouble(str);
       buffer.append(str);
@@ -136,7 +153,7 @@ public class JsonBuilder implements JsonHandler {
         buffer.append(JsonToken.QUOTES);
       }
     }
-    appendComma = true;
+    buffer.append(JsonToken.COMMA);
   }
 
 }
