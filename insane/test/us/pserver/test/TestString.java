@@ -23,7 +23,7 @@ package us.pserver.test;
 
 import static us.pserver.insane.Checkup.*;
 import us.pserver.insane.SanityCheck;
-import us.pserver.insane.Sane;
+import us.pserver.insane.Insane;
 
 /**
  *
@@ -35,9 +35,9 @@ public class TestString {
   
   public static void main(String[] args) {
     String str = "Hello World!";
-    System.out.println(Sane.of(str).with(contains("lo")).and(startsWith("hell")).or(startsWith("Hell")).check());
-    System.out.println(Sane.of(str).with(contains("lo")).and(startsWith("hell").negate()).check());
-    System.out.println(Sane.of(str).with(contains("lo")).and(endsWith("d!").negate()).check());
+    System.out.println(Insane.of(str).with(contains("lo")).and(startsWith("hell")).or(startsWith("Hell")).check());
+    System.out.println(Insane.of(str).with(contains("lo")).and(startsWith("hell").negate()).check());
+    System.out.println(Insane.of(str).with(contains("lo")).and(endsWith("d!").negate()).check());
   }
   
 }

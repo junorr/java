@@ -98,7 +98,7 @@ public abstract class Checkup {
   
   public static SanityCheck<Collection> contains(Collection list) {
     return new CollectionContains(
-        Sane.of(list).check(new NotNull()).toArray()
+        Insane.of(list).check(new NotNull()).toArray()
     );
   }
   
@@ -154,29 +154,29 @@ public abstract class Checkup {
   
 
   public static SanityCheck<Instant> isGreaterThan(Date d) {
-    return isGreaterThan(Sane.of(d).check(new NotNull()));
+    return isGreaterThan(Insane.of(d).check(new NotNull()));
   }
   
 
   public static SanityCheck<Instant> isGreaterEqualsTo(Date d) {
-    return isGreaterEqualsTo(Sane.of(d).check(new NotNull()));
+    return isGreaterEqualsTo(Insane.of(d).check(new NotNull()));
   }
   
 
   public static SanityCheck<Instant> isLesserThan(Date d) {
-    return isLesserThan(Sane.of(d).check(new NotNull()));
+    return isLesserThan(Insane.of(d).check(new NotNull()));
   }
   
 
   public static SanityCheck<Instant> isLesserEqualsTo(Date d) {
-    return isLesserEqualsTo(Sane.of(d).check(new NotNull()));
+    return isLesserEqualsTo(Insane.of(d).check(new NotNull()));
   }
   
 
   public static SanityCheck<Instant> isBetween(Date min, Date max) {
     return isBetween(
-        Sane.of(min).check(new NotNull()), 
-        Sane.of(max).check(new NotNull())
+        Insane.of(min).check(new NotNull()), 
+        Insane.of(max).check(new NotNull())
     );
   }
   

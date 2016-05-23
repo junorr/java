@@ -22,7 +22,7 @@
 package us.pserver.insane.checkup;
 
 import us.pserver.insane.SanityCheck;
-import us.pserver.insane.Sane;
+import us.pserver.insane.Insane;
 
 /**
  *
@@ -35,13 +35,13 @@ public class StringContains implements SanityCheck<String> {
   
   
   public StringContains(String str) {
-    this.str = Sane.of(str).check(new NotNull());
+    this.str = Insane.of(str).check(new NotNull());
   }
   
   
   @Override
   public boolean test(String obj) {
-    return Sane.of(obj).check(new NotNull()).contains(str);
+    return Insane.of(obj).check(new NotNull()).contains(str);
   }
   
   

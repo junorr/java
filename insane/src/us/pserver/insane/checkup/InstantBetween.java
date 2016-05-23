@@ -23,7 +23,7 @@ package us.pserver.insane.checkup;
 
 import java.time.Instant;
 import us.pserver.insane.SanityCheck;
-import us.pserver.insane.Sane;
+import us.pserver.insane.Insane;
 
 /**
  *
@@ -38,16 +38,16 @@ public class InstantBetween implements SanityCheck<Instant> {
   
   
   public InstantBetween(Instant lesser, Instant greater) {
-    this.lesser = Sane.of(lesser).check(new NotNull());
-    this.greater = Sane.of(greater).check(new NotNull());
+    this.lesser = Insane.of(lesser).check(new NotNull());
+    this.greater = Insane.of(greater).check(new NotNull());
   }
   
 
   @Override
   public boolean test(Instant t) {
-    return Sane.of(t).check(new NotNull())
+    return Insane.of(t).check(new NotNull())
         .compareTo(lesser) >= 0 
-        && Sane.of(t).check(new NotNull())
+        && Insane.of(t).check(new NotNull())
             .compareTo(greater) <= 0;
   }
   

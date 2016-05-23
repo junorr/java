@@ -22,7 +22,7 @@
 package us.pserver.insane.checkup;
 
 import us.pserver.insane.SanityCheck;
-import us.pserver.insane.Sane;
+import us.pserver.insane.Insane;
 
 /**
  *
@@ -35,13 +35,13 @@ public class NumberLesserEquals implements SanityCheck<Number> {
   
   
   public NumberLesserEquals(Number parameter) {
-    this.parameter = Sane.of(parameter).check(new NotNull());
+    this.parameter = Insane.of(parameter).check(new NotNull());
   }
   
 
   @Override
   public boolean test(Number t) {
-    return Double.compare(Sane.of(t).check(new NotNull()).doubleValue(), 
+    return Double.compare(Insane.of(t).check(new NotNull()).doubleValue(), 
         parameter.doubleValue()
     ) <= 0;
   }

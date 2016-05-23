@@ -24,7 +24,7 @@ package us.pserver.insane.checkup;
 import java.time.Instant;
 import java.util.Date;
 import us.pserver.insane.SanityCheck;
-import us.pserver.insane.Sane;
+import us.pserver.insane.Insane;
 
 /**
  *
@@ -37,13 +37,13 @@ public class InstantGreaterEquals implements SanityCheck<Instant> {
   
   
   public InstantGreaterEquals(Instant parameter) {
-    this.parameter = Sane.of(parameter).check(new NotNull());
+    this.parameter = Insane.of(parameter).check(new NotNull());
   }
   
 
   @Override
   public boolean test(Instant t) {
-    return Sane.of(t).check(new NotNull())
+    return Insane.of(t).check(new NotNull())
         .compareTo(parameter) >= 0;
   }
   

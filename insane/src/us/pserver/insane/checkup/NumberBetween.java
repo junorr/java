@@ -22,7 +22,7 @@
 package us.pserver.insane.checkup;
 
 import us.pserver.insane.SanityCheck;
-import us.pserver.insane.Sane;
+import us.pserver.insane.Insane;
 
 /**
  *
@@ -37,16 +37,16 @@ public class NumberBetween implements SanityCheck<Number> {
   
   
   public NumberBetween(Number lesser, Number greater) {
-    this.lesser = Sane.of(lesser).check(new NotNull());
-    this.greater = Sane.of(greater).check(new NotNull());
+    this.lesser = Insane.of(lesser).check(new NotNull());
+    this.greater = Insane.of(greater).check(new NotNull());
   }
   
 
   @Override
   public boolean test(Number t) {
-    return Double.compare(Sane.of(t).check(new NotNull()).doubleValue(), 
+    return Double.compare(Insane.of(t).check(new NotNull()).doubleValue(), 
         lesser.doubleValue()
-    ) >= 0 && Double.compare(Sane.of(t).check(new NotNull()).doubleValue(), 
+    ) >= 0 && Double.compare(Insane.of(t).check(new NotNull()).doubleValue(), 
         greater.doubleValue()
     ) <= 0;
   }

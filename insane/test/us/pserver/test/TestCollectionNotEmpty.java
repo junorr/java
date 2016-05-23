@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import us.pserver.insane.Checkup;
-import us.pserver.insane.Sane;
+import us.pserver.insane.Insane;
 
 /**
  *
@@ -38,9 +38,9 @@ public class TestCollectionNotEmpty {
   public static void main(String[] args) {
     List l1 = Arrays.asList(1, 2, 3, 4, 5);
     List l2 = Collections.EMPTY_LIST;
-    System.out.println(Sane.of(l1).check(Checkup.isNotEmptyCollection()));
-    System.out.println(Sane.of(l1).check(Checkup.contains(1, 3, 5)));
-    System.out.println(Sane.of(l2).check(Checkup.isNotEmptyCollection()));
+    System.out.println(Insane.of(l1).check(Checkup.isNotEmptyCollection()));
+    System.out.println(Insane.of(l1).check(Checkup.contains(1, 3, 5)));
+    System.out.println(Insane.of(l2).check(Checkup.isNotEmptyCollection()));
   }
   
 }

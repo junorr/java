@@ -23,7 +23,7 @@ package us.pserver.insane.checkup;
 
 import java.util.Map;
 import us.pserver.insane.SanityCheck;
-import us.pserver.insane.Sane;
+import us.pserver.insane.Insane;
 
 /**
  *
@@ -34,7 +34,7 @@ public class MapNotEmpty implements SanityCheck<Map> {
 
   @Override
   public boolean test(Map m) {
-    return !Sane.of(m).check(new NotNull()).isEmpty();
+    return !Insane.of(m).check(new NotNull()).isEmpty();
   }
   
   

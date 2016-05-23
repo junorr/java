@@ -24,7 +24,7 @@ package us.pserver.test;
 import java.time.ZoneId;
 import us.pserver.date.SimpleDate;
 import us.pserver.insane.Checkup;
-import us.pserver.insane.Sane;
+import us.pserver.insane.Insane;
 
 /**
  *
@@ -37,9 +37,9 @@ public class TestDates {
   public static void main(String[] args) {
     SimpleDate d1 = new SimpleDate().date(2016, 5, 23, 14, 26);
     SimpleDate d2 = d1.clone().addDay(1);
-    System.out.println(Sane.of(new SimpleDate()).check(Checkup.isBetween(d1, d2)).atZone(ZoneId.of("-3")));
-    System.out.println(Sane.of(new SimpleDate()).check(Checkup.isLesserThan(d2)).atZone(ZoneId.of("-3")));
-    System.out.println(Sane.of(new SimpleDate()).check(Checkup.isLesserThan(d1)).atZone(ZoneId.of("-3")));
+    System.out.println(Insane.of(new SimpleDate()).check(Checkup.isBetween(d1, d2)).atZone(ZoneId.of("-3")));
+    System.out.println(Insane.of(new SimpleDate()).check(Checkup.isLesserThan(d2)).atZone(ZoneId.of("-3")));
+    System.out.println(Insane.of(new SimpleDate()).check(Checkup.isLesserThan(d1)).atZone(ZoneId.of("-3")));
   }
   
 }

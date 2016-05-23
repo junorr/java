@@ -23,7 +23,7 @@ package us.pserver.insane.checkup;
 
 import java.util.Map;
 import us.pserver.insane.SanityCheck;
-import us.pserver.insane.Sane;
+import us.pserver.insane.Insane;
 
 /**
  *
@@ -36,13 +36,13 @@ public class MapContainsValue implements SanityCheck<Map> {
   
   
   public MapContainsValue(Object val) {
-    this.val = Sane.of(val).check(new NotNull());
+    this.val = Insane.of(val).check(new NotNull());
   }
   
   
   @Override
   public boolean test(Map m) {
-    return !Sane.of(m).check(new NotNull()).containsKey(val);
+    return !Insane.of(m).check(new NotNull()).containsKey(val);
   }
   
   

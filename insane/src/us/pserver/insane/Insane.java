@@ -35,7 +35,7 @@ import us.pserver.insane.checkup.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/05/2016
  */
-public interface Sane<T> {
+public interface Insane<T> {
 
   public T check() throws RuntimeException;
   
@@ -43,63 +43,63 @@ public interface Sane<T> {
   
   public T not() throws RuntimeException;
   
-  public Sane<T> and(SanityCheck<T> check);
+  public Insane<T> and(SanityCheck<T> check);
   
-  public Sane<T> or(SanityCheck<T> check);
+  public Insane<T> or(SanityCheck<T> check);
   
-  public Sane<T> not(SanityCheck<T> check);
+  public Insane<T> not(SanityCheck<T> check);
   
-  public Sane<T> with(SanityCheck<T> test);
+  public Insane<T> with(SanityCheck<T> test);
   
-  public Sane<T> with(Panic panic);
+  public Insane<T> with(Panic panic);
   
-  public Sane<T> with(String message);
+  public Insane<T> with(String message);
   
   
-  public static <U> Sane<U> of(U value) {
+  public static <U> Insane<U> of(U value) {
     return new Default(value);
   }
   
-  public static Sane<Number> of(Integer value) {
+  public static Insane<Number> of(Integer value) {
     return new Default(value);
   }
   
-  public static Sane<Number> of(Float value) {
+  public static Insane<Number> of(Float value) {
     return new Default(value);
   }
   
-  public static Sane<Number> of(Double value) {
+  public static Insane<Number> of(Double value) {
     return new Default(value);
   }
   
-  public static Sane<Number> of(Long value) {
+  public static Insane<Number> of(Long value) {
     return new Default(value);
   }
   
-  public static Sane<Number> of(Byte value) {
+  public static Insane<Number> of(Byte value) {
     return new Default(value);
   }
   
-  public static Sane<Number> of(Short value) {
+  public static Insane<Number> of(Short value) {
     return new Default(value);
   }
   
-  public static Sane<Collection> of(List value) {
+  public static Insane<Collection> of(List value) {
     return new Default(value);
   }
   
-  public static Sane<Collection> of(Object ... objs) {
+  public static Insane<Collection> of(Object ... objs) {
     return new Default(Arrays.asList(objs));
   }
   
-  public static Sane<Instant> of(Date value) {
-    Sane.of((Object)value).check(new NotNull());
-    return Sane.of(value.toInstant());
+  public static Insane<Instant> of(Date value) {
+    Insane.of((Object)value).check(new NotNull());
+    return Insane.of(value.toInstant());
   }
   
   
   
-  static class Default<T> implements Sane<T> {
+  static class Default<T> implements Insane<T> {
 
     private final T value;
 
@@ -139,7 +139,7 @@ public interface Sane<T> {
 
 
     @Override
-    public Sane<T> and(SanityCheck<T> check) {
+    public Insane<T> and(SanityCheck<T> check) {
       return new Default(value, panic, 
           this.check.and(check), message
       );
@@ -147,7 +147,7 @@ public interface Sane<T> {
 
 
     @Override
-    public Sane<T> or(SanityCheck<T> check) {
+    public Insane<T> or(SanityCheck<T> check) {
       return new Default(value, panic, 
           this.check.or(check), message
       );
@@ -155,7 +155,7 @@ public interface Sane<T> {
 
 
     @Override
-    public Sane<T> not(SanityCheck<T> check) {
+    public Insane<T> not(SanityCheck<T> check) {
       return new Default(value, panic, 
           check.negate(), message
       );
@@ -171,19 +171,19 @@ public interface Sane<T> {
 
 
     @Override
-    public Sane<T> with(SanityCheck<T> check) {
+    public Insane<T> with(SanityCheck<T> check) {
       return new Default(value, panic, check, message);
     }
     
     
     @Override
-    public Sane<T> with(Panic panic) {
+    public Insane<T> with(Panic panic) {
       return new Default(value, panic, check, message);
     }
 
 
     @Override
-    public Sane<T> with(String message) {
+    public Insane<T> with(String message) {
       return new Default(value, panic, check, message);
     }
 
