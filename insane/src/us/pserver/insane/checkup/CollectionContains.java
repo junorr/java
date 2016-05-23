@@ -19,37 +19,38 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.insane.checkup;
 
-import us.pserver.insane.Sanity;
+import java.util.Arrays;
+import java.util.Collection;
+import us.pserver.insane.SanityCheck;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/05/2016
+ * @version 0.0 - 23/05/2016
  */
-public class NumberGreater implements SanityPredicate<Number> {
-  
-  private final Number parameter;
-  
-  
-  public NumberGreater(Number parameter) {
-    this.parameter = Sanity.of(parameter).check(new NotNull());
-  }
-  
+public class CollectionContains implements SanityCheck<Collection> {
 
-  @Override
-  public boolean test(Number t) {
-    return Double.compare(
-        Sanity.of(t).check(new NotNull()).doubleValue(), 
-        parameter.doubleValue()
-    ) > 0;
+  private final Object[] elts;
+  
+  
+  public CollectionContains(Object ... elt) {
+    this.elts = elt;
   }
   
   
   @Override
-  public String message() {
-    return String.format("Argument must be greater than %1$s. (X > %1$s)", parameter);
+  public boolean test(Collection col) {
+    return Arrays.asList(elts).stream().allMatch(
+        e -> col.stream().anyMatch(o -> o.equals(e))
+    );
   }
-
+  
+  
+  @Override
+  public String failMessage() {
+    return String.format("Collection must contains all elements in %s", Arrays.toString(elts));
+  }
+  
 }

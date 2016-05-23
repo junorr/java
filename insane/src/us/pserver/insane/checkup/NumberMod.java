@@ -19,35 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.insane.checkup;
 
-import java.util.Objects;
-import us.pserver.insane.Sanity;
+import us.pserver.insane.SanityCheck;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/05/2016
  */
-public class Equals implements SanityPredicate {
+public class NumberMod implements SanityCheck<Number> {
   
-  private final Object parameter;
+  private final Number parameter;
   
   
-  public Equals(Object parameter) {
-    this.parameter = Sanity.of(parameter).check(new NotNull());
+  public NumberMod(Number parameter) {
+    this.parameter = Sane.of(parameter).check(new NotNull());
   }
   
 
   @Override
-  public boolean test(Object t) {
-    return Objects.equals(Sanity.of(t).check(new NotNull()), parameter);
+  public boolean test(Number t) {
+    return t.intValue() % parameter.intValue() == 0;
   }
   
   
   @Override
-  public String message() {
-    return String.format("Argument must be equals to: %s", parameter);
+  public String failMessage() {
+    return String.format("Number must be mod of %1$s. (X %% %1$s == 0)", parameter);
   }
 
 }

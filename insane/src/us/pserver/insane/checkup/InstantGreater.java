@@ -19,41 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.insane.checkup;
 
-import java.util.Date;
-import us.pserver.insane.Sanity;
+import java.time.Instant;
+import us.pserver.insane.SanityCheck;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/05/2016
  */
-public class DateBetween implements SanityPredicate<Date> {
+public class InstantGreater implements SanityCheck<Instant> {
   
-  private final Date lesser;
-  
-  private final Date greater;
+  private final Instant parameter;
   
   
-  public DateBetween(Date lesser, Date greater) {
-    this.lesser = Sanity.of(lesser).check(new NotNull());
-    this.greater = Sanity.of(greater).check(new NotNull());
+  public InstantGreater(Instant parameter) {
+    this.parameter = Sane.of(parameter).check(new NotNull());
   }
   
 
   @Override
-  public boolean test(Date t) {
-    return Sanity.of(t).check(new NotNull())
-        .compareTo(lesser) >= 0 
-        && Sanity.of(t).check(new NotNull())
-            .compareTo(greater) <= 0;
+  public boolean test(Instant t) {
+    return Sane.of(t).check(new NotNull())
+        .compareTo(parameter) > 0;
   }
   
   
   @Override
-  public String message() {
-    return String.format("Argument Date must be between %1$s and %2$s. (%1$s >= X <= %2$s)", lesser, greater);
+  public String failMessage() {
+    return String.format("Instant must be greater than %1$s. (X > %1$s)", parameter);
   }
 
 }

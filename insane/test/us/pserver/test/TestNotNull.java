@@ -21,8 +21,8 @@
 
 package us.pserver.test;
 
-import us.pserver.insane.Sanity;
-import us.pserver.insane.test.NotNull;
+import us.pserver.insane.checkup.NotNull;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -35,9 +35,9 @@ public class TestNotNull {
   public static void main(String[] args) {
     Object o = new Object();
     Object p = null;
-    System.out.println(Sanity.of(o).with("Invalid null object").check(new NotNull()));
-    //System.out.println(Sanity.of(p).with("Invalid null object").check(new NotNull()));
-    System.out.println(Sanity.of(p).check(a -> a != null));
+    System.out.println(Sane.of(o).with("Invalid null object").check(new NotNull()));
+    //System.out.println(Sane.of(p).with("Invalid null object").check(new NotNull()));
+    System.out.println(Sane.of(p).check(a -> a != null));
   }
   
 }

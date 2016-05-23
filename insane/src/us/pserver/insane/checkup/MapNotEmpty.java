@@ -19,28 +19,28 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.test;
+package us.pserver.insane.checkup;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import us.pserver.insane.Checkup;
+import java.util.Map;
+import us.pserver.insane.SanityCheck;
 import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/05/2016
+ * @version 0.0 - 23/05/2016
  */
-public class TestCollectionNotEmpty {
+public class MapNotEmpty implements SanityCheck<Map> {
 
+  @Override
+  public boolean test(Map m) {
+    return !Sane.of(m).check(new NotNull()).isEmpty();
+  }
   
-  public static void main(String[] args) {
-    List l1 = Arrays.asList(1, 2, 3, 4, 5);
-    List l2 = Collections.EMPTY_LIST;
-    System.out.println(Sane.of(l1).check(Checkup.isNotEmptyCollection()));
-    System.out.println(Sane.of(l1).check(Checkup.contains(1, 3, 5)));
-    System.out.println(Sane.of(l2).check(Checkup.isNotEmptyCollection()));
+  
+  @Override
+  public String failMessage() {
+    return "Map must be not empty";
   }
   
 }

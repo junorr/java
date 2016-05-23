@@ -19,26 +19,42 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.insane.checkup;
 
-import java.util.function.Predicate;
+import us.pserver.insane.SanityCheck;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/05/2016
  */
-public class NotNull<T> implements SanityPredicate<T> {
+public class NumberBetween implements SanityCheck<Number> {
   
+  private final Number lesser;
+  
+  private final Number greater;
+  
+  
+  public NumberBetween(Number lesser, Number greater) {
+    this.lesser = Sane.of(lesser).check(new NotNull());
+    this.greater = Sane.of(greater).check(new NotNull());
+  }
+  
+
   @Override
-  public boolean test(T value) {
-    return value != null;
+  public boolean test(Number t) {
+    return Double.compare(Sane.of(t).check(new NotNull()).doubleValue(), 
+        lesser.doubleValue()
+    ) >= 0 && Double.compare(Sane.of(t).check(new NotNull()).doubleValue(), 
+        greater.doubleValue()
+    ) <= 0;
   }
   
   
   @Override
-  public String message() {
-    return "Argument must be not null";
+  public String failMessage() {
+    return String.format("Number value must be between %1$s and %2$s. (%1$s >= X <= %2$s)", lesser, greater);
   }
 
 }

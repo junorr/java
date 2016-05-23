@@ -19,43 +19,36 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.insane.checkup;
 
-import us.pserver.insane.Sanity;
+import java.util.Map;
+import us.pserver.insane.SanityCheck;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/05/2016
+ * @version 0.0 - 23/05/2016
  */
-public class NumberBetween implements SanityPredicate<Number> {
-  
-  private final Number lesser;
-  
-  private final Number greater;
-  
-  
-  public NumberBetween(Number lesser, Number greater) {
-    this.lesser = Sanity.of(lesser).check(new NotNull());
-    this.greater = Sanity.of(greater).check(new NotNull());
-  }
-  
+public class MapContainsValue implements SanityCheck<Map> {
 
-  @Override
-  public boolean test(Number t) {
-    return Double.compare(
-        Sanity.of(t).check(new NotNull()).doubleValue(), 
-        lesser.doubleValue()
-    ) >= 0 && Double.compare(
-        Sanity.of(t).check(new NotNull()).doubleValue(), 
-        greater.doubleValue()
-    ) <= 0;
+  private final Object val;
+  
+  
+  public MapContainsValue(Object val) {
+    this.val = Sane.of(val).check(new NotNull());
   }
   
   
   @Override
-  public String message() {
-    return String.format("Argument value must be between %1$s and %2$s. (%1$s >= X <= %2$s)", lesser, greater);
+  public boolean test(Map m) {
+    return !Sane.of(m).check(new NotNull()).containsKey(val);
   }
-
+  
+  
+  @Override
+  public String failMessage() {
+    return String.format("Map must contains value: $s", val);
+  }
+  
 }

@@ -19,37 +19,28 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.test;
 
-import us.pserver.insane.Sanity;
+import static us.pserver.insane.Checkup.isModOf;
+import us.pserver.insane.Sane;
+import static us.pserver.insane.Checkup.isBetween;
+import static us.pserver.insane.Checkup.isGreaterThan;
+import static us.pserver.insane.Checkup.isLesserThan;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/05/2016
+ * @version 0.0 - 23/05/2016
  */
-public class NumberLesserEquals implements SanityPredicate<Number> {
-  
-  private final Number parameter;
-  
-  
-  public NumberLesserEquals(Number parameter) {
-    this.parameter = Sanity.of(parameter).check(new NotNull());
-  }
-  
+public class TestNumber {
 
-  @Override
-  public boolean test(Number t) {
-    return Double.compare(
-        Sanity.of(t).check(new NotNull()).doubleValue(), 
-        parameter.doubleValue()
-    ) <= 0;
+  
+  public static void main(String[] args) {
+    int i = 5;
+    System.out.println(Sane.of(i).with(isBetween(1, 10)).check());
+    System.out.println(Sane.of(i).with(isBetween(1, 10)).and(isLesserThan(6)).and(isGreaterThan(4)).check());
+    System.out.println(Sane.of(8).not(isBetween(-1, 1)).and(isGreaterThan(10).negate()).check());
+    System.out.println(Sane.of(15).not(isGreaterThan(10)).and(isModOf(5)).check());
   }
   
-  
-  @Override
-  public String message() {
-    return String.format("Argument must be lesser than or equals to %1$s. (X <= %1$s)", parameter);
-  }
-
 }

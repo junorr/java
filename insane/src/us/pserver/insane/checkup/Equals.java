@@ -19,36 +19,36 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.insane.checkup;
 
-import java.util.Date;
-import us.pserver.insane.Sanity;
+import java.util.Objects;
+import us.pserver.insane.SanityCheck;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/05/2016
  */
-public class DateGreaterEquals implements SanityPredicate<Date> {
+public class Equals implements SanityCheck {
   
-  private final Date parameter;
+  private final Object parameter;
   
   
-  public DateGreaterEquals(Date parameter) {
-    this.parameter = Sanity.of(parameter).check(new NotNull());
+  public Equals(Object parameter) {
+    this.parameter = Sane.of(parameter).check(new NotNull());
   }
   
 
   @Override
-  public boolean test(Date t) {
-    return Sanity.of(t).check(new NotNull())
-        .compareTo(parameter) >= 0;
+  public boolean test(Object t) {
+    return Objects.equals(Sane.of(t).check(new NotNull()), parameter);
   }
   
   
   @Override
-  public String message() {
-    return String.format("Argument must be greater than or equals to %1$s. (X >= %1$s)", parameter);
+  public String failMessage() {
+    return String.format("Argument must be equals to: %s", parameter);
   }
 
 }

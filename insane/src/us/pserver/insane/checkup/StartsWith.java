@@ -19,24 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.insane.checkup;
+
+import us.pserver.insane.SanityCheck;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/05/2016
+ * @version 0.0 - 23/05/2016
  */
-public class StringNotEmpty implements SanityPredicate<String> {
-  
-  @Override
-  public boolean test(String value) {
-    return value != null && value.length() > 0;
-  }
-  
-  
-  @Override
-  public String message() {
-    return "Argument String must be not empty";
-  }
+public class StartsWith implements SanityCheck<String> {
 
+  private final String str;
+  
+  
+  public StartsWith(String str) {
+    this.str = Sane.of(str).check(new NotNull());
+  }
+  
+  
+  @Override
+  public boolean test(String obj) {
+    return Sane.of(obj).check(new NotNull()).startsWith(str);
+  }
+  
+  
+  @Override
+  public String failMessage() {
+    return String.format("String must starts with '%s'", str);
+  }
+  
 }

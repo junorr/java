@@ -19,12 +19,10 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.test;
+package us.pserver.insane.checkup;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import us.pserver.insane.Checkup;
+import java.time.Instant;
+import us.pserver.insane.SanityCheck;
 import us.pserver.insane.Sane;
 
 /**
@@ -32,15 +30,31 @@ import us.pserver.insane.Sane;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/05/2016
  */
-public class TestCollectionNotEmpty {
-
+public class InstantBetween implements SanityCheck<Instant> {
   
-  public static void main(String[] args) {
-    List l1 = Arrays.asList(1, 2, 3, 4, 5);
-    List l2 = Collections.EMPTY_LIST;
-    System.out.println(Sane.of(l1).check(Checkup.isNotEmptyCollection()));
-    System.out.println(Sane.of(l1).check(Checkup.contains(1, 3, 5)));
-    System.out.println(Sane.of(l2).check(Checkup.isNotEmptyCollection()));
+  private final Instant lesser;
+  
+  private final Instant greater;
+  
+  
+  public InstantBetween(Instant lesser, Instant greater) {
+    this.lesser = Sane.of(lesser).check(new NotNull());
+    this.greater = Sane.of(greater).check(new NotNull());
   }
   
+
+  @Override
+  public boolean test(Instant t) {
+    return Sane.of(t).check(new NotNull())
+        .compareTo(lesser) >= 0 
+        && Sane.of(t).check(new NotNull())
+            .compareTo(greater) <= 0;
+  }
+  
+  
+  @Override
+  public String failMessage() {
+    return String.format("Instant must be between %1$s and %2$s. (%1$s >= X <= %2$s)", lesser, greater);
+  }
+
 }

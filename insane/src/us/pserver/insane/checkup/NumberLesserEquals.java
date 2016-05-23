@@ -19,37 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.insane.checkup;
 
-import us.pserver.insane.Sanity;
+import us.pserver.insane.SanityCheck;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/05/2016
  */
-public class NumberGreaterEquals implements SanityPredicate<Number> {
+public class NumberLesserEquals implements SanityCheck<Number> {
   
   private final Number parameter;
   
   
-  public NumberGreaterEquals(Number parameter) {
-    this.parameter = Sanity.of(parameter).check(new NotNull());
+  public NumberLesserEquals(Number parameter) {
+    this.parameter = Sane.of(parameter).check(new NotNull());
   }
   
 
   @Override
   public boolean test(Number t) {
-    return Double.compare(
-        Sanity.of(t).check(new NotNull()).doubleValue(), 
+    return Double.compare(Sane.of(t).check(new NotNull()).doubleValue(), 
         parameter.doubleValue()
-    ) >= 0;
+    ) <= 0;
   }
   
   
   @Override
-  public String message() {
-    return String.format("Argument must be greater than or equals to %1$s. (X >= %1$s)", parameter);
+  public String failMessage() {
+    return String.format("Number must be lesser than or equals to %1$s. (X <= %1$s)", parameter);
   }
 
 }

@@ -19,26 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.insane.checkup;
 
-import java.util.Collection;
+import us.pserver.insane.SanityCheck;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/05/2016
  */
-public class CollectionNotEmpty implements SanityPredicate<Collection> {
+public class NumberGreater implements SanityCheck<Number> {
   
+  private final Number parameter;
+  
+  
+  public NumberGreater(Number parameter) {
+    this.parameter = Sane.of(parameter).check(new NotNull());
+  }
+  
+
   @Override
-  public boolean test(Collection value) {
-    return value != null && !value.isEmpty();
+  public boolean test(Number t) {
+    return Double.compare(Sane.of(t).check(new NotNull()).doubleValue(), 
+        parameter.doubleValue()
+    ) > 0;
   }
   
   
   @Override
-  public String message() {
-    return "Argument Collection must be not empty";
+  public String failMessage() {
+    return String.format("Number must be greater than %1$s. (X > %1$s)", parameter);
   }
 
 }

@@ -19,31 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane;
+package us.pserver.insane.checkup;
 
-import java.util.function.Predicate;
-import us.pserver.insane.impl.DefaultSanity;
+import us.pserver.insane.SanityCheck;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/05/2016
+ * @version 0.0 - 23/05/2016
  */
-public interface Sanity<T> {
+public class EndsWith implements SanityCheck<String> {
 
-  public T check() throws RuntimeException;
-  
-  public T check(Predicate<T> test) throws RuntimeException;
-  
-  public Sanity<T> with(Predicate<T> test);
-  
-  public Sanity<T> with(Panic panic);
-  
-  public Sanity<T> with(String message);
+  private final String str;
   
   
-  public static <U> Sanity<U> of(U value) {
-    return new DefaultSanity(value);
+  public EndsWith(String str) {
+    this.str = Sane.of(str).check(new NotNull());
+  }
+  
+  
+  @Override
+  public boolean test(String obj) {
+    return Sane.of(obj).check(new NotNull()).endsWith(str);
+  }
+  
+  
+  @Override
+  public String failMessage() {
+    return String.format("String must ends with '%s'", str);
   }
   
 }

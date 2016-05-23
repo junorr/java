@@ -19,12 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.test;
+package us.pserver.insane.checkup;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import us.pserver.insane.Checkup;
+import us.pserver.insane.SanityCheck;
 import us.pserver.insane.Sane;
 
 /**
@@ -32,15 +29,27 @@ import us.pserver.insane.Sane;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/05/2016
  */
-public class TestCollectionNotEmpty {
-
+public class NumberGreaterEquals implements SanityCheck<Number> {
   
-  public static void main(String[] args) {
-    List l1 = Arrays.asList(1, 2, 3, 4, 5);
-    List l2 = Collections.EMPTY_LIST;
-    System.out.println(Sane.of(l1).check(Checkup.isNotEmptyCollection()));
-    System.out.println(Sane.of(l1).check(Checkup.contains(1, 3, 5)));
-    System.out.println(Sane.of(l2).check(Checkup.isNotEmptyCollection()));
+  private final Number parameter;
+  
+  
+  public NumberGreaterEquals(Number parameter) {
+    this.parameter = Sane.of(parameter).check(new NotNull());
   }
   
+
+  @Override
+  public boolean test(Number t) {
+    return Double.compare(Sane.of(t).check(new NotNull()).doubleValue(), 
+        parameter.doubleValue()
+    ) >= 0;
+  }
+  
+  
+  @Override
+  public String failMessage() {
+    return String.format("Number must be greater than or equals to %1$s. (X >= %1$s)", parameter);
+  }
+
 }

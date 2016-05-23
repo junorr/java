@@ -19,37 +19,27 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.test;
 
-import us.pserver.insane.Sanity;
+import java.time.ZoneId;
+import us.pserver.date.SimpleDate;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/05/2016
+ * @version 0.0 - 23/05/2016
  */
-public class NumberLesser implements SanityPredicate<Number> {
-  
-  private final Number parameter;
-  
-  
-  public NumberLesser(Number parameter) {
-    this.parameter = Sanity.of(parameter).check(new NotNull());
-  }
-  
+public class TestDates {
 
-  @Override
-  public boolean test(Number t) {
-    return Double.compare(
-        Sanity.of(t).check(new NotNull()).doubleValue(), 
-        parameter.doubleValue()
-    ) > 0;
+  
+  public static void main(String[] args) {
+    SimpleDate d1 = new SimpleDate().date(2016, 5, 23, 14, 26);
+    SimpleDate d2 = d1.clone().addDay(1);
+    System.out.println(Sane.of(new SimpleDate()).check(Checkup.isBetween(d1, d2)).atZone(ZoneId.of("-3")));
+    System.out.println(Sane.of(new SimpleDate()).check(Checkup.isLesserThan(d2)).atZone(ZoneId.of("-3")));
+    System.out.println(Sane.of(new SimpleDate()).check(Checkup.isLesserThan(d1)).atZone(ZoneId.of("-3")));
   }
   
-  
-  @Override
-  public String message() {
-    return String.format("Argument must be lesser than %1$s. (X < %1$s)", parameter);
-  }
-
 }

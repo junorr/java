@@ -19,17 +19,38 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.insane.checkup;
 
-import java.util.function.Predicate;
+import java.time.Instant;
+import java.util.Date;
+import us.pserver.insane.SanityCheck;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/05/2016
  */
-public interface SanityPredicate<T> extends Predicate<T> {
-
-  public String message();
+public class InstantGreaterEquals implements SanityCheck<Instant> {
   
+  private final Instant parameter;
+  
+  
+  public InstantGreaterEquals(Instant parameter) {
+    this.parameter = Sane.of(parameter).check(new NotNull());
+  }
+  
+
+  @Override
+  public boolean test(Instant t) {
+    return Sane.of(t).check(new NotNull())
+        .compareTo(parameter) >= 0;
+  }
+  
+  
+  @Override
+  public String failMessage() {
+    return String.format("Instant must be greater than or equals to %1$s. (X >= %1$s)", parameter);
+  }
+
 }

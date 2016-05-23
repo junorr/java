@@ -19,36 +19,36 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.insane.checkup;
 
-import java.util.Date;
-import us.pserver.insane.Sanity;
+import java.util.Map;
+import us.pserver.insane.SanityCheck;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/05/2016
+ * @version 0.0 - 23/05/2016
  */
-public class DateLesser implements SanityPredicate<Date> {
-  
-  private final Date parameter;
-  
-  
-  public DateLesser(Date parameter) {
-    this.parameter = Sanity.of(parameter).check(new NotNull());
-  }
-  
+public class MapContainsKey implements SanityCheck<Map> {
 
-  @Override
-  public boolean test(Date t) {
-    return Sanity.of(t).check(new NotNull())
-        .compareTo(parameter) < 0;
+  private final Object key;
+  
+  
+  public MapContainsKey(Object key) {
+    this.key = Sane.of(key).check(new NotNull());
   }
   
   
   @Override
-  public String message() {
-    return String.format("Argument must be lesser than %1$s. (X < %1$s)", parameter);
+  public boolean test(Map m) {
+    return !Sane.of(m).check(new NotNull()).containsKey(key);
   }
-
+  
+  
+  @Override
+  public String failMessage() {
+    return String.format("Map must contains key: $s", key);
+  }
+  
 }

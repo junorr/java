@@ -19,36 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane.test;
+package us.pserver.insane.checkup;
 
-import java.util.Date;
-import us.pserver.insane.Sanity;
+import us.pserver.insane.SanityCheck;
+import us.pserver.insane.Sane;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/05/2016
+ * @version 0.0 - 23/05/2016
  */
-public class DateGreater implements SanityPredicate<Date> {
-  
-  private final Date parameter;
-  
-  
-  public DateGreater(Date parameter) {
-    this.parameter = Sanity.of(parameter).check(new NotNull());
-  }
-  
+public class StringContains implements SanityCheck<String> {
 
-  @Override
-  public boolean test(Date t) {
-    return Sanity.of(t).check(new NotNull())
-        .compareTo(parameter) > 0;
+  private final String str;
+  
+  
+  public StringContains(String str) {
+    this.str = Sane.of(str).check(new NotNull());
   }
   
   
   @Override
-  public String message() {
-    return String.format("Argument must be greater than %1$s. (X > %1$s)", parameter);
+  public boolean test(String obj) {
+    return Sane.of(obj).check(new NotNull()).contains(str);
   }
-
+  
+  
+  @Override
+  public String failMessage() {
+    return String.format("String must contains '%s'", str);
+  }
+  
 }
