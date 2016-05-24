@@ -67,11 +67,7 @@ public class NodeBuilder implements JsonHandler {
 
   @Override
   public void startObject() throws JsonParseException {
-    //System.out.print("{");
     lasttoken = JsonToken.START_OBJECT;
-    current = current.newChild(
-        String.valueOf(JsonToken.START_OBJECT)
-    );
   }
 
 
@@ -79,9 +75,6 @@ public class NodeBuilder implements JsonHandler {
   public void endObject() throws JsonParseException {
     //System.out.print("}");
     lasttoken = JsonToken.END_OBJECT;
-    current = (current != root 
-        ? current.parent().get() : current
-    );
     current = (current != root 
         ? current.parent().get() : current
     );
@@ -94,9 +87,6 @@ public class NodeBuilder implements JsonHandler {
     //System.out.print("[");
     //System.out.print("* current="+ current.value());
     lasttoken = JsonToken.START_ARRAY;
-    current = current.newChild(
-        String.valueOf(JsonToken.START_ARRAY)
-    );
     //System.out.println(", next="+ current.value());
   }
 
@@ -105,9 +95,9 @@ public class NodeBuilder implements JsonHandler {
   public void endArray() throws JsonParseException {
     //System.out.print("]");
     lasttoken = JsonToken.END_ARRAY;
-    current = (current != root 
-        ? current.parent().get() : current
-    );
+    //current = (current != root 
+        //? current.parent().get() : current
+    //);
     //System.out.println("* current="+ current.value());
   }
 

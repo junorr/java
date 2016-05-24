@@ -19,16 +19,38 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane;
+package us.pserver.insane.checkup;
+
+import java.util.Arrays;
+import java.util.Collection;
+import us.pserver.insane.SanityCheck;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/05/2016
+ * @version 0.0 - 23/05/2016
  */
-@FunctionalInterface
-public interface Panic<E extends Throwable> {
+public class CollectionContains implements SanityCheck<Collection> {
 
-  public void panic(String message) throws E;
+  private final Object[] elts;
+  
+  
+  public CollectionContains(Object ... elt) {
+    this.elts = elt;
+  }
+  
+  
+  @Override
+  public boolean test(Collection col) {
+    return Arrays.asList(elts).stream().allMatch(
+        e -> col.stream().anyMatch(o -> o.equals(e))
+    );
+  }
+  
+  
+  @Override
+  public String failMessage() {
+    return String.format("Collection must contains all elements in %s", Arrays.toString(elts));
+  }
   
 }

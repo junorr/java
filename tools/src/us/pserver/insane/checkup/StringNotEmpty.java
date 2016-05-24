@@ -19,16 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane;
+package us.pserver.insane.checkup;
+
+import us.pserver.insane.SanityCheck;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/05/2016
  */
-@FunctionalInterface
-public interface Panic<E extends Throwable> {
-
-  public void panic(String message) throws E;
+public class StringNotEmpty implements SanityCheck<String> {
   
+  @Override
+  public boolean test(String value) {
+    return value != null && value.length() > 0;
+  }
+  
+  
+  @Override
+  public String failMessage() {
+    return "Argument String must be not empty";
+  }
+
 }

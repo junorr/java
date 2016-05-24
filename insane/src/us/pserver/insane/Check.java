@@ -54,7 +54,7 @@ import us.pserver.insane.checkup.StringNotEmpty;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 23/05/2016
  */
-public abstract class Checkup {
+public abstract class Check {
 
   public static <T> SanityCheck<T> isNotNull() {
     return new NotNull<>();
@@ -98,7 +98,7 @@ public abstract class Checkup {
   
   public static SanityCheck<Collection> contains(Collection list) {
     return new CollectionContains(
-        Insane.of(list).check(new NotNull()).toArray()
+        Sane.of(list).get(new NotNull()).toArray()
     );
   }
   
@@ -154,29 +154,29 @@ public abstract class Checkup {
   
 
   public static SanityCheck<Instant> isGreaterThan(Date d) {
-    return isGreaterThan(Insane.of(d).check(new NotNull()));
+    return isGreaterThan(Sane.of(d).get(new NotNull()));
   }
   
 
   public static SanityCheck<Instant> isGreaterEqualsTo(Date d) {
-    return isGreaterEqualsTo(Insane.of(d).check(new NotNull()));
+    return isGreaterEqualsTo(Sane.of(d).get(new NotNull()));
   }
   
 
   public static SanityCheck<Instant> isLesserThan(Date d) {
-    return isLesserThan(Insane.of(d).check(new NotNull()));
+    return isLesserThan(Sane.of(d).get(new NotNull()));
   }
   
 
   public static SanityCheck<Instant> isLesserEqualsTo(Date d) {
-    return isLesserEqualsTo(Insane.of(d).check(new NotNull()));
+    return isLesserEqualsTo(Sane.of(d).get(new NotNull()));
   }
   
 
   public static SanityCheck<Instant> isBetween(Date min, Date max) {
     return isBetween(
-        Insane.of(min).check(new NotNull()), 
-        Insane.of(max).check(new NotNull())
+        Sane.of(min).get(new NotNull()), 
+        Sane.of(max).get(new NotNull())
     );
   }
   

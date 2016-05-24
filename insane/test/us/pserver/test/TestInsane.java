@@ -19,16 +19,28 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane;
+package us.pserver.test;
+
+import java.io.IOException;
+import us.pserver.insane.Insane;
+import us.pserver.insane.checkup.EndsWith;
+import us.pserver.insane.checkup.StartsWith;
+import us.pserver.insane.checkup.StringNotEmpty;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/05/2016
+ * @version 0.0 - 24/05/2016
  */
-@FunctionalInterface
-public interface Panic<E extends Throwable> {
+public class TestInsane {
 
-  public void panic(String message) throws E;
+  
+  public static void main(String[] args) throws IOException {
+    String str = "HelloWorld!";
+    System.out.println(Insane.of(str, IOException.class).with(new StringNotEmpty())
+        .and(new EndsWith("rld!")).and(new StartsWith("hell").negate()).get());
+    System.out.println(Insane.of(str, IOException.class).with(new StringNotEmpty())
+        .and(new EndsWith("rld!")).and(new StartsWith("hell")).get());
+  }
   
 }

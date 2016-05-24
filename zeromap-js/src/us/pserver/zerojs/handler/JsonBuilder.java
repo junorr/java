@@ -37,14 +37,11 @@ public class JsonBuilder implements JsonHandler {
 
   private final StringBuilder buffer;
   
-  private boolean appendComma;
-  
   private int arrays;
   
   
   public JsonBuilder() {
     buffer = new StringBuilder();
-    appendComma = false;
     arrays = 0;
   }
   

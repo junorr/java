@@ -107,7 +107,9 @@ public class ONode implements Node {
 	@Override
 	public Node add(Node child) {
 		if(child != null) {
-			childs.add(child);
+      Node ch = new ONode(child.value(), this);
+      ch.childs().addAll(child.childs());
+			childs.add(ch);
 		}
 		return this;
 	}

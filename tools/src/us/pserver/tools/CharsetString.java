@@ -22,7 +22,8 @@
 package us.pserver.tools;
 
 import java.nio.charset.Charset;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  * A UTF-8 String representation.
@@ -42,8 +43,8 @@ public class CharsetString {
    * @param str the encapsulated String.
    */
   public CharsetString(String str, Charset cs) {
-    charset = Valid.off(cs).forEmpty().getOrFail(Charset.class);
-    string = Valid.off(str).forEmpty().getOrFail(String.class);
+    charset = Sane.of(cs).get(Checkup.isNotNull());
+    string = Sane.of(str).get(Checkup.isNotEmpty());
   }
   
   
@@ -52,10 +53,9 @@ public class CharsetString {
    * @param bs the byte array to encode in a UTF-8 String.
    */
   public CharsetString(byte[] bs, Charset cs) {
-    charset = Valid.off(cs).forNull().getOrFail();
+    charset = Sane.of(cs).get(Checkup.isNotNull());
     string = new String(
-        Valid.off(bs).forEmpty()
-            .getOrFail("Invalid empty byte array"), cs
+        Sane.of(bs).get(b -> b != null && b.length > 0)
     );
   }
   
@@ -67,13 +67,11 @@ public class CharsetString {
    * @param len Length of bytes to be readed from the byte array.
    */
   public CharsetString(byte[] bs, int off, int len, Charset cs) {
-    charset = Valid.off(cs).forNull().getOrFail();
+    charset = Sane.of(cs).get(Checkup.isNotNull());
     string = new String(
-        Valid.off(bs).forEmpty().getOrFail(), 
-        Valid.off(off).forLesserThan(0).getOrFail(),
-        Valid.off(len)
-            .forGreaterThan(bs.length - off)
-            .getOrFail(), 
+        Sane.of(bs).get(b -> b != null && b.length > 0),
+        Sane.of(off).get(Checkup.isGreaterEqualsTo(0)).intValue(),
+        Sane.of(len).get(Checkup.isGreaterThan(0)).intValue(),
         charset
     );
   }

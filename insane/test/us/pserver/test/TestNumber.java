@@ -21,14 +21,11 @@
 
 package us.pserver.test;
 
-import static us.pserver.insane.Checkup.isModOf;
-import static us.pserver.insane.Checkup.isBetween;
-import static us.pserver.insane.Checkup.isGreaterThan;
-import static us.pserver.insane.Checkup.isLesserThan;
-import us.pserver.insane.Insane;
-import static us.pserver.insane.Checkup.isBetween;
-import static us.pserver.insane.Checkup.isGreaterThan;
-import static us.pserver.insane.Checkup.isLesserThan;
+import static us.pserver.insane.Check.isModOf;
+import us.pserver.insane.Sane;
+import static us.pserver.insane.Check.isBetween;
+import static us.pserver.insane.Check.isGreaterThan;
+import static us.pserver.insane.Check.isLesserThan;
 
 /**
  *
@@ -40,10 +37,10 @@ public class TestNumber {
   
   public static void main(String[] args) {
     int i = 5;
-    System.out.println(Insane.of(i).with(isBetween(1, 10)).check());
-    System.out.println(Insane.of(i).with(isBetween(1, 10)).and(isLesserThan(6)).and(isGreaterThan(4)).check());
-    System.out.println(Insane.of(8).not(isBetween(-1, 1)).and(isGreaterThan(10).negate()).check());
-    System.out.println(Insane.of(15).not(isGreaterThan(10)).and(isModOf(5)).check());
+    System.out.println(Sane.of(i).with(isBetween(1, 10)).get());
+    System.out.println(Sane.of(i).with(isBetween(1, 10)).and(isLesserThan(6)).and(isGreaterThan(4)).get());
+    System.out.println(Sane.of(8).not(isBetween(-1, 1)).and(isGreaterThan(10).negate()).get());
+    System.out.println(Sane.of(15).not(isGreaterThan(10)).and(isModOf(5)).get());
   }
   
 }

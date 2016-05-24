@@ -71,7 +71,7 @@ public class TestRJsonChannel {
     Timer tm = new Nanos().start();
 		Node na = mapper.map(a);
     System.out.println("* Mapping time: "+ tm.stop());
-		//System.out.println(na);
+		System.out.println(na);
     System.out.println();
     
     WritableBufferChannel wbuf = new WritableBufferChannel();

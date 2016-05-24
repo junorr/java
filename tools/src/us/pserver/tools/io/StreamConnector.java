@@ -17,8 +17,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import us.pserver.valid.Valid;
-import us.pserver.valid.ValidChecked;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Insane;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -44,12 +45,10 @@ public class StreamConnector implements Closeable {
   
   
   public StreamConnector(InputStream in, OutputStream out, int bufferSize) {
-    this.in = Valid.off(in).forNull()
-        .getOrFail(InputStream.class);
-    this.out = Valid.off(out).forNull()
-        .getOrFail(OutputStream.class);
-    bufsize = Valid.off(bufferSize).forLesserThan(1)
-        .getOrFail("Invalid buffer size: ");
+    this.in = Sane.of(in).get(Checkup.isNotNull());
+    this.out = Sane.of(out).get(Checkup.isNotNull());
+    bufsize = Sane.of(bufferSize).with("Invalid buffer size")
+        .get(Checkup.isGreaterEqualsTo(1)).intValue();
   }
   
   
@@ -79,9 +78,8 @@ public class StreamConnector implements Closeable {
   
   
   public StreamConnector connect() throws IOException {
-    ValidChecked.<Object,IOException>off(in, m->new IOException(m))
-        .forNull().fail(InputStream.class)
-        .on(out).forNull().fail(OutputStream.class);
+    Insane.of(in, IOException.class).check(Checkup.isNotNull())
+        .swap(out, IOException.class).check(Checkup.isNotNull());
     ByteBuffer buffer = ByteBuffer.allocateDirect(bufsize);
     ReadableByteChannel cin = Channels.newChannel(in);
     WritableByteChannel cout = Channels.newChannel(out);
@@ -100,9 +98,8 @@ public class StreamConnector implements Closeable {
   
   
   public StreamConnector connect(long limit) throws IOException {
-    ValidChecked.<Object,IOException>off(in, m->new IOException(m))
-        .forNull().fail(InputStream.class)
-        .on(out).forNull().fail(OutputStream.class);
+    Insane.of(in, IOException.class).check(Checkup.isNotNull())
+        .swap(out, IOException.class).check(Checkup.isNotNull());
     long lim = limit;
     int read = bufsize;
     byte[] buffer = new byte[Math.min(bufsize, (int) limit)];
@@ -167,24 +164,21 @@ public class StreamConnector implements Closeable {
     
     
     public Builder from(InputStream in) {
-      this.in = Valid.off(in).forNull()
-          .getOrFail(InputStream.class);
+      this.in = Sane.of(in).get(Checkup.isNotNull());
       return this;
     }
     
     
     public Builder fromFile(String file) throws IOException {
       return fromFile(Paths.get(
-          Valid.off(file).forEmpty()
-              .getOrFail("Invalid file name: "))
+          Sane.of(file).get(Checkup.isNotEmpty()))
       );
     }
     
     
     public Builder fromFile(Path file) throws IOException {
       this.in = Files.newInputStream(
-          Valid.off(file).forNull()
-              .getOrFail(Path.class),
+          Sane.of(file).get(Checkup.isNotNull()),
           StandardOpenOption.READ
       );
       return this;
@@ -192,24 +186,21 @@ public class StreamConnector implements Closeable {
     
     
     public Builder to(OutputStream out) {
-      this.out = Valid.off(out).forNull()
-          .getOrFail(OutputStream.class);
+      this.out = Sane.of(out).get(Checkup.isNotNull());
       return this;
     }
     
     
     public Builder toFile(String file) throws IOException {
       return toFile(Paths.get(
-          Valid.off(file).forEmpty()
-              .getOrFail("Invalid file name: "))
+          Sane.of(file).get(Checkup.isNotEmpty()))
       );
     }
     
     
     public Builder toFile(Path file) throws IOException {
       this.out = Files.newOutputStream(
-          Valid.off(file).forNull()
-              .getOrFail(Path.class),
+          Sane.of(file).get(Checkup.isNotNull()),
           StandardOpenOption.WRITE,
           StandardOpenOption.CREATE
       );
@@ -218,8 +209,7 @@ public class StreamConnector implements Closeable {
     
     
     public Builder bufferSize(int size) {
-      bufsize = Valid.off(size).forLesserThan(1)
-          .getOrFail("Invalid buffer size: ");
+      bufsize = Sane.of(size).get(Checkup.isGreaterThan(0)).intValue();
       return this;
     }
     
@@ -247,9 +237,9 @@ public class StreamConnector implements Closeable {
     
     
     public StreamConnector get() {
-      Valid.off(in).forNull().fail(InputStream.class);
-      Valid.off(out).forNull().fail(OutputStream.class);
-      return new StreamConnector(in, out, bufsize);
+      return new StreamConnector(
+          Sane.of(in).get(Checkup.isNotNull()), 
+          Sane.of(out).get(Checkup.isNotNull()), bufsize);
     }
     
   }

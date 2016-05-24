@@ -30,7 +30,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  * Utility class for sorting Maps.
@@ -47,9 +48,7 @@ public class MapSorter<T> {
    * @param compare The comparator used for sorting.
    */
   public MapSorter(Comparator<T> compare) {
-    comp = Valid.off(compare)
-        .forNull()
-        .getOrFail(Comparator.class);
+    comp = Sane.of(compare).get(Checkup.isNotNull());
   }
   
   

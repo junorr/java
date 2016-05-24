@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  * Reflection utils
@@ -240,7 +241,8 @@ public class Reflector {
 	 * @return A instância de Reflector modificada.
 	 */
 	public Reflector selectMethod(String method) {
-    Valid.off(method).forEmpty().fail("Invalid method name: ");
+    Sane.of(method).with("Invalid method name")
+        .check(Checkup.isNotEmpty());
   	if(cls != null && method != null) {
       mth = null;
       Method[] meths = methods();
@@ -307,7 +309,7 @@ public class Reflector {
 	 * @return A instância de Reflector modificada.
 	 */
 	public Reflector selectField(String field) {
-    Valid.off(field).forEmpty().fail("Invalid field name: ");
+    Sane.of(field).with("Invalid field name").check(Checkup.isNotEmpty());
 		if(field != null) {
     	try {
       	fld = cls.getDeclaredField(field);
@@ -367,8 +369,8 @@ public class Reflector {
 	 * @return Valor contido no campo.
 	 */
 	public Object get() {
-    Valid.off(obj).forNull().fail(Object.class);
-    Valid.off(fld).forNull().fail(Field.class);
+    Sane.of(obj).check(Checkup.isNotNull());
+    Sane.of(fld).check(Checkup.isNotNull());
 		try {
   		if(!fld.isAccessible())
     		fld.setAccessible(true);

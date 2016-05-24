@@ -19,16 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.insane;
+package us.pserver.insane.checkup;
+
+import us.pserver.insane.Sane;
+import us.pserver.insane.SanityCheck;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/05/2016
+ * @version 0.0 - 24/05/2016
  */
-@FunctionalInterface
-public interface Panic<E extends Throwable> {
-
-  public void panic(String message) throws E;
+public class InstanceOf implements SanityCheck<Class> {
   
+  private final Class cls;
+  
+  
+  public InstanceOf(Class cls) {
+    this.cls = Sane.of(cls).get(new NotNull());
+  }
+  
+  
+  @Override
+  public boolean test(Class t) {
+    return cls.isAssignableFrom(
+        Sane.of(t).get(new NotNull())
+    );
+  }
+  
+  
+  @Override
+  public String failMessage() {
+    return String.format("Class must be instance of %s", cls);
+  }
+
 }
