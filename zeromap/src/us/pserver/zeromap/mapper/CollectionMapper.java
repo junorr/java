@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import us.pserver.zeromap.Mapper;
 import us.pserver.zeromap.MapperFactory;
 import us.pserver.zeromap.Node;
@@ -46,21 +47,46 @@ public class CollectionMapper implements Mapper<Collection> {
 			while(it.hasNext()) {
 				Object o = it.next();
 				if(n == null) {
-					n = new ONode(t.getClass().getName() + "|" + o.getClass().getName());
+          n = new ONode(t.getClass().getName());
 				}
+        Node entry = new ONode("list-entry");
+        entry.newChild("type").add(o.getClass().getName());
 				Mapper mp = MapperFactory.factory().mapper(o.getClass());
-        n.add(mp.map(o));
+        entry.newChild("value").add(mp.map(o));
+        n.add(entry);
 			}
 			if(n == null) {
-				n = new ONode(t.getClass().getName()+ "|"+ Object.class.getName());
+				n = new ONode(t.getClass().getName());
 			}
     }
     return n;
   }
 
 
-  @Override
   public Collection unmap(Node n, Class<? extends Collection> cls) {
+    Collection col = null;
+    Class<? extends Collection> cclass = ClassFactory.create(n.value());
+    try {
+      col = cclass.newInstance();
+    } catch(IllegalAccessException | InstantiationException e) {
+      throw new IllegalStateException("Can not create Collection type: "+ cls, e);
+    }
+    for(Node e : n.childs()) {
+      if(!"list-entry".equals(e.value())) continue;
+      Optional<Node> otype = e.findChild("type");
+      if(!otype.isPresent()) continue;
+      String stype = otype.get().firstChild().get().value();
+      Optional<Node> ovalue = e.findChild("value");
+      if(!ovalue.isPresent()) continue;
+      Class type = ClassFactory.create(stype);
+      Mapper mp = MapperFactory.factory().mapper(type);
+      col.add(mp.unmap(ovalue.get().firstChild().get(), type));
+    }
+    return col;
+  }
+
+	
+  public Collection unmap2(Node n, Class<? extends Collection> cls) {
     List l = new LinkedList();
 		Collection col = null;
     if(n != null) {

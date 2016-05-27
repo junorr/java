@@ -6,6 +6,7 @@
 package us.pserver.zerojs.test;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -61,46 +62,154 @@ public class TestRJsonChannel {
 			return "A{" + "str=" + str + ", list=" + list + ", b=" + b + ", chars=" + chars + '}';
 		}
 	}
-	
-	
-	public static void main(String[] args) throws IOException {
-		A a = new A();
-		System.out.println("* a: "+ a);
+  
+  
+  public static Node obj2node() {
+    A a = new A();
 		Mapper mapper = MapperFactory.factory().mapper(A.class);
-    System.out.println("* Mapping: Object -> Node...");
-    Timer tm = new Nanos().start();
-		Node na = mapper.map(a);
-    System.out.println("* Mapping time: "+ tm.stop());
-		System.out.println(na);
-    System.out.println();
-    
+		return mapper.map(a);
+  }
+  
+  
+  public static WritableBufferChannel node2json(Node n) throws IOException {
     WritableBufferChannel wbuf = new WritableBufferChannel();
     WritableJsonChannel wjc = new WritableJsonChannel(wbuf);
-    System.out.println("* Mapping: Node -> Json...");
+    wjc.write(n);
+    return wbuf;
+  }
+  
+  
+  public static WritableBufferChannel obj2json() throws IOException {
+    return node2json(obj2node());
+  }
+  
+  
+  public static Node json2node(ReadableBufferChannel ch) throws IOException {
+    ReadableJsonChannel rjc = new ReadableJsonChannel(ch);
+    Node na = new ONode(A.class.getName());
+    rjc.read(na);
+    return na;
+  }
+  
+  
+  public static A node2obj(Node n) throws IOException {
+    Mapper mapper = MapperFactory.factory().mapper(A.class);
+    return (A) mapper.unmap(n, A.class);
+  }
+  
+  
+  public static A json2obj(ReadableBufferChannel ch) throws IOException {
+    return node2obj(json2node(ch));
+  }
+  
+  
+  public static void process() throws IOException {
+		A a = new A();
+		System.out.println("* a: "+ a);
+    System.out.println("* Mapping: Object -> Json...");
+    Timer tm = new Nanos();
+    System.out.println("* Warming up 5x...");
+    tm.start();
+    for(int i = 0; i < 5; i++) {
+      obj2json();
+      if(i == 4) tm.lapAndStop();
+      else tm.lap();
+    }
+    System.out.println("* Warming up time: "+ tm);
+    System.out.println("* Measuring 10x...");
+    WritableBufferChannel wbuf = null;
     tm.clear().start();
-    wjc.write(na);
-    System.out.println("* Mapping time: "+ tm.stop());
+    for(int i = 0; i < 10; i++) {
+      wbuf = obj2json();
+      if(i == 9) tm.lapAndStop();
+      else tm.lap();
+    }
+    System.out.println("* Measuring time: "+ tm);
     System.out.println("* JSon: "+ wbuf.toString());
     System.out.println();
     
-    ReadableBufferChannel rbuf = new ReadableBufferChannel(wbuf.getBuffer());
-    ReadableJsonChannel rjc = new ReadableJsonChannel(rbuf);
-    System.out.println("* Mapping: Json -> Node...");
-    na = new ONode(A.class.getName());
+    System.out.println("* Mapping: Json -> Object...");
+    System.out.println("* Warming up 5x...");
     tm.clear().start();
-    rjc.read(na);
-    System.out.println("* Mapping time: "+ tm.stop());
-    System.out.println("* Node");
-    System.out.println(na);
+    for(int i = 0; i < 5; i++) {
+      a = json2obj(new ReadableBufferChannel(wbuf.getBuffer()));
+      if(i == 4) tm.lapAndStop();
+      else tm.lap();
+    }
+    System.out.println("* Warming up time: "+ tm);
+    System.out.println("* Measuring 10x...");
+    tm.clear().start();
+    for(int i = 0; i < 10; i++) {
+      a = json2obj(new ReadableBufferChannel(wbuf.getBuffer()));
+      if(i == 9) tm.lapAndStop();
+      else tm.lap();
+    }
+    System.out.println("* Measuring time: "+ tm);
+    System.out.println("* Object: "+ a);
+  }
+	
+  
+  public static void process2() throws IOException {
+		A a = new A();
+		System.out.println("* a: "+ a);
+    System.out.println("* Mapping: Object -> Json...");
+    WritableBufferChannel wbuf = null;
+    Timer tm = new Nanos();
+    tm.start();
+    wbuf = obj2json();
+    tm.lap();
+    wbuf = obj2json();
+    tm.lapAndStop();
+    System.out.println("* Time: "+ tm);
+    System.out.println("* JSon: "+ wbuf.toString());
     System.out.println();
     
+    System.out.println("* Mapping: Json -> Object...");
+    tm.clear().start();
+    a = json2obj(new ReadableBufferChannel(wbuf.getBuffer()));
+    tm.lap();
+    a = json2obj(new ReadableBufferChannel(wbuf.getBuffer()));
+    tm.lapAndStop();
+    System.out.println("* Time: "+ tm);
+    System.out.println("* Object: "+ a);
+  }
+	
+  
+  public static void process3() throws IOException {
+		A a = new A();
+		System.out.println("* a: "+ a);
+    System.out.println("* Mapping: Object -> Node...");
+    WritableBufferChannel wbuf = null;
+    Timer tm = new Nanos();
+    tm.start();
+    Node node = obj2node();
+    tm.stop();
+    System.out.println("* Time: "+ tm);
+    System.out.println("* Mapping: Node -> Json...");
+    tm.clear().start();
+    wbuf = node2json(node);
+    tm.stop();
+    System.out.println("* Time: "+ tm);
+    System.out.println("* JSon: "+ wbuf.toString());
+    System.out.println();
+    
+    System.out.println("* Mapping: Json -> Node...");
+    ReadableBufferChannel rch = new ReadableBufferChannel(wbuf.getBuffer());
+    tm.clear().start();
+    node = json2node(rch);
+    tm.stop();
+    System.out.println("* Time: "+ tm);
     System.out.println("* Mapping: Node -> Object...");
     tm.clear().start();
-    a = (A) mapper.unmap(na, A.class);
-    System.out.println("* Mapping time: "+ tm.stop());
-    System.out.println("* "+ A.class);
-    System.out.println(a);
-    System.out.println();
-	}
+    a = node2obj(node);
+    tm.stop();
+    System.out.println("* Time: "+ tm);
+    System.out.println("* Object: "+ a);
+  }
 	
+  
+  public static void main(String[] args) throws IOException {
+    process3();
+  }
+  
 }

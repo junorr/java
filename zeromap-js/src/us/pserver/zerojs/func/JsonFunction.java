@@ -21,10 +21,13 @@
 
 package us.pserver.zerojs.func;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.function.Function;
 import us.pserver.zerojs.JsonHandler;
 import us.pserver.zerojs.handler.JsonBuilder;
 import us.pserver.zerojs.impl.AbstractHandlerContainer;
+import us.pserver.zerojs.impl.JsonToken;
 import us.pserver.zeromap.Node;
 
 /**
@@ -34,7 +37,7 @@ import us.pserver.zeromap.Node;
  */
 public class JsonFunction extends AbstractHandlerContainer implements Function<Node,String> {
   
-  private int inarray;
+  private Deque<Character> tokens = new ArrayDeque<>();
   
 
   @Override
@@ -44,7 +47,7 @@ public class JsonFunction extends AbstractHandlerContainer implements Function<N
           "Invalid null Node"
       );
     }
-    inarray = 0;
+    tokens.clear();
     JsonBuilder jb = new JsonBuilder();
     this.addHandler(jb);
     this.inspect(root);
@@ -58,68 +61,66 @@ public class JsonFunction extends AbstractHandlerContainer implements Function<N
     if(!node.hasChilds()) {
       handlers.forEach(h->h.value(node.value()));
     }
+    else if(isArray(node)) {
+      inspectArray(node);
+    }
+    else if(isObject(node)) {
+      inspectObject(node);
+    }
+    else if(node.hasChilds()) {
+      inspectKeyValue(node);
+    }
     else {
-      if(inarray <= 0) {
-        if(node.hasParent()) {
-          handlers.forEach(h->h.name(node.value()));
-        }
-        if(isArray(node)) {
-          inarray++;
-          handlers.forEach(h->h.startArray());
-          node.childs().forEach(this::inspect);
-          handlers.forEach(h->h.endArray());
-          inarray--;
-        }
-        else if(isObject(node)) {
-          handlers.forEach(h->h.startObject());
-          node.childs().forEach(this::inspect);
-          handlers.forEach(h->h.endObject());
-        }
-        else {
-          
-        }
-      }
-      else {
-        handlers.forEach(JsonHandler::startObject);
-        node.childs().forEach(this::inspect);
-        handlers.forEach(JsonHandler::endObject);
-      }
+      node.childs().forEach(this::inspect);
     }
   }
   
   
-  private void inspect2(Node node) {
-    if(node == null) return;
-    //System.out.println("JsonFunction.inspect: node="+ node.value());
-    if(node.hasChilds() && node.hasParent()) {
-      //System.out.println("* name: "+ node.value());
-      if(inarray > 0) {
-        handlers.forEach(h->h.startObject());
-        handlers.forEach(h->h.name(node.value()));
-        handlers.forEach(h->h.endObject());
-      } else {
-        handlers.forEach(h->h.name(node.value()));
-      }
+  private void inspectArray(Node node) {
+    if(node.hasParent()) {
+      handlers.forEach(h->h.name(node.value()));
     }
-    if(!node.hasChilds()) {
-      //System.out.println("* value: "+ node.value());
-      handlers.forEach(h->h.value(node.value()));
+    tokens.addLast(JsonToken.START_ARRAY);
+    handlers.forEach(JsonHandler::startArray);
+    node.childs().forEach(this::inspect);
+    handlers.forEach(JsonHandler::endArray);
+    tokens.pollLast();
+  }
+  
+  
+  private void inspectObject(Node node) {
+    boolean inarray = !tokens.isEmpty() && JsonToken.START_ARRAY == tokens.peekLast();
+    if(inarray) {
+      handlers.forEach(JsonHandler::startObject);
+      tokens.addLast(JsonToken.START_OBJECT);
     }
-    else if(isArray(node)) {
-      //System.out.println("* array: "+ node.value());
-      inarray++;
-      handlers.forEach(h->h.startArray());
+    if(node.hasParent()) {
+      handlers.forEach(h->h.name(node.value()));
+    }
+    tokens.addLast(JsonToken.START_OBJECT);
+    handlers.forEach(JsonHandler::startObject);
+
+    node.childs().forEach(this::inspect);
+    handlers.forEach(JsonHandler::endObject);
+    tokens.pollLast();
+    
+    if(inarray) {
+      handlers.forEach(JsonHandler::endObject);
+      tokens.pollLast();
+    }
+  }
+  
+  
+  private void inspectKeyValue(Node node) {
+    if(!tokens.isEmpty() && JsonToken.START_ARRAY == tokens.peekLast()) {
+      tokens.addLast(JsonToken.START_OBJECT);
+      handlers.forEach(JsonHandler::startObject);
+      handlers.forEach(h->h.name(node.value()));
       node.childs().forEach(this::inspect);
-      handlers.forEach(h->h.endArray());
-      inarray--;
-    }
-    else if(isObject(node)) {
-      //System.out.println("* object: "+ node.value());
-      handlers.forEach(h->h.startObject());
-      node.childs().forEach(this::inspect);
-      handlers.forEach(h->h.endObject());
-    }
-    else {
+      handlers.forEach(JsonHandler::endObject);
+      tokens.pollLast();
+    } else {
+      handlers.forEach(h->h.name(node.value()));
       node.childs().forEach(this::inspect);
     }
   }

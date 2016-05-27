@@ -46,6 +46,23 @@ public class MapMapper implements Mapper<Map> {
 	}
   
   
+  private Node createEntry(Object key, Object val) {
+    if(key == null || val == null) {
+      return null;
+    }
+    Mapper mk = MapperFactory.factory().mapper(key.getClass());
+    Mapper mv = MapperFactory.factory().mapper(val.getClass());
+    Node entry = new ONode("map-entry");
+    Node nkey = entry.newChild("entry-key");
+    nkey.newChild("type").add(key.getClass().getName());
+    nkey.newChild("value").add(mk.map(key));
+    Node nval = entry.newChild("entry-value");
+    nval.newChild("type").add(val.getClass().getName());
+    nval.newChild("value").add(mv.map(val));
+    return entry;
+  }
+
+
   private Node createEntryOld(Object key, Object val) {
     if(key == null || val == null) {
       return null;
@@ -62,7 +79,7 @@ public class MapMapper implements Mapper<Map> {
   }
 
 
-  private Node createEntry(Object key, Object val) {
+  private Node createEntry2(Object key, Object val) {
     if(key == null || val == null) {
       return null;
     }
@@ -92,7 +109,9 @@ public class MapMapper implements Mapper<Map> {
 			Iterator<Node> it = n.childs().iterator();
 			while(it.hasNext()) {
 				Object[] oentry = unmapEntry(it.next());
-				m.put(oentry[0], oentry[1]);
+        if(oentry != null) {
+          m.put(oentry[0], oentry[1]);
+        }
 			}
 		}
 		return m;
@@ -100,6 +119,31 @@ public class MapMapper implements Mapper<Map> {
   
   
   private Object[] unmapEntry(Node entry) {
+    if(entry == null || !"map-entry".equals(entry.value())) {
+      return null;
+    }
+    Optional<Node> okey = entry.findChild("entry-key");
+    Optional<Node> oval = entry.findChild("entry-value");
+    if(!okey.isPresent() || !oval.isPresent()) {
+      return null;
+    }
+    Node nkey = okey.get();
+    Node nval = oval.get();
+    Node nktype = nkey.findChild("type").get();
+    Node nvtype = nval.findChild("type").get();
+    Node nkval = nkey.findChild("value").get();
+    Node nvval = nval.findChild("value").get();
+    Class ckey = ClassFactory.create(nktype.firstChild().get().value());
+    Class cval = ClassFactory.create(nvtype.firstChild().get().value());
+    Mapper mk = MapperFactory.factory().mapper(ckey);
+    Mapper mv = MapperFactory.factory().mapper(cval);
+    Object key = mk.unmap(nkval.firstChild().get(), ckey);
+    Object val = mv.unmap(nvval.firstChild().get(), ckey);
+    return new Object[]{key, val};
+  }
+  
+  
+  private Object[] unmapEntry2(Node entry) {
     if(entry == null) {
       return null;
     }
