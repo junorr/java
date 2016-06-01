@@ -21,13 +21,26 @@
 
 package us.pserver.fastgear;
 
+import java.util.Optional;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/05/2016
+ * @version 0.0 - 01/06/2016
  */
-public interface Drive<I,O> {
+@FunctionalInterface
+public interface Producer<T,E extends Exception> {
 
-  public Running<I,O> start();
+  public T produce() throws E;
+  
+  public default Optional<T> safe() {
+    Optional<T> opt;
+    try {
+      opt = Optional.of(produce());
+    } catch(Exception e) {
+      opt = Optional.empty();
+    }
+    return opt;
+  }
   
 }

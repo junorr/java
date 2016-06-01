@@ -21,14 +21,82 @@
 
 package us.pserver.fastgear;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 31/05/2016
  */
-@FunctionalInterface
-public interface Gear<T,E extends Exception> {
+public interface Gear<I,O> extends Runnable {
 
-  public T run() throws E;
+  public Running<I,O> start();
+  
+  public boolean isReady();
+  
+  public void suspend() throws InterruptedException;
+  
+  public void suspend(long timeout) throws InterruptedException;
+  
+  public void resume() throws InterruptedException;
+  
+  
+  public static <A,B> Gear<A,B> of(Shift<A,B,? extends Exception> shf) {
+    return null;
+  }
+  
+  public static <B> Gear<Void,B> of(Producer<B,? extends Exception> prd) {
+    return null;
+  }
+  
+  public static <A,B> Gear<A,B> of(Function<A,B> fun) {
+    return null;
+  }
+  
+  public static <A> Gear<A,Void> of(Consumer<A> csm) {
+    return null;
+  }
+  
+  
+  
+  public static class DefGear<I,O> implements Gear<I,O> {
+
+    @Override
+    public Running<I, O> start() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
+    @Override
+    public void suspend() throws InterruptedException {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
+    @Override
+    public void suspend(long timeout) throws InterruptedException {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
+    @Override
+    public void resume() throws InterruptedException {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
+    @Override
+    public boolean isReady() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
+    @Override
+    public void run() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+  }
   
 }

@@ -21,6 +21,8 @@
 
 package us.pserver.fastgear;
 
+import java.util.Optional;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -30,5 +32,15 @@ package us.pserver.fastgear;
 public interface Shift<T,R,E extends Exception> {
 
   public R shift(T t) throws E;
+  
+  public default Optional<R> safe(T t) {
+    Optional<R> opt;
+    try {
+      opt = Optional.of(shift(t));
+    } catch(Exception e) {
+      opt = Optional.empty();
+    }
+    return opt;
+  }
   
 }

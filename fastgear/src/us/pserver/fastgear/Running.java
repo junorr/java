@@ -21,6 +21,7 @@
 
 package us.pserver.fastgear;
 
+import java.util.concurrent.locks.Condition;
 import java.util.function.Consumer;
 
 /**
@@ -35,6 +36,12 @@ public interface Running<I,O> {
   public Wire<I> input();
   
   public boolean isRunning();
+  
+  public Condition suspend() throws InterruptedException;
+  
+  public Condition suspend(long timeout) throws InterruptedException;
+  
+  public void resume() throws InterruptedException;
   
   public void onComplete(Runnable run);
   
