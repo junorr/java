@@ -85,6 +85,16 @@ public final class Engine {
   }
   
   
+  public ForkJoinPool getPool() {
+    return pool;
+  }
+  
+  
+  public List<Gear<?,?>> gears() {
+    return gears;
+  }
+  
+  
   public int parallelism() {
     return pool.getParallelism();
   }
