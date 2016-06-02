@@ -21,8 +21,12 @@
 
 package us.pserver.fastgear;
 
-import java.util.concurrent.locks.Condition;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -31,20 +35,111 @@ import java.util.function.Consumer;
  */
 public interface Running<I,O> {
 
-  public Wire<O> output();
+  public Wire<O> getOutputWire();
   
-  public Wire<I> input();
+  public Wire<I> getInputWire();
   
   public boolean isRunning();
   
-  public Condition suspend() throws InterruptedException;
-  
-  public Condition suspend(long timeout) throws InterruptedException;
+  public void suspend(long timeout) throws InterruptedException;
   
   public void resume() throws InterruptedException;
   
-  public void onComplete(Runnable run);
+  public void notify(Exception exc);
   
-  public void onException(Consumer<? extends Exception> cs);
+  public void onException(Consumer<Exception> cs);
+  
+  
+  public static <A,B> Running<B,A> defaultRunning(Gear<A,B> gear) {
+    return new DefRunning(gear);
+  }
+  
+  
+  public static <A> Running<Void,A> outputOnly(Gear<A,?> gear) {
+    return new DefRunning(gear, Wire.defaultWire(), Wire.emptyWire());
+  }
+  
+  
+  public static <B> Running<B,Void> inputOnly(Gear<?,B> gear) {
+    return new DefRunning(gear, Wire.emptyWire(), Wire.defaultWire());
+  }
+  
+  
+  public static Running<Void,Void> emptyRunning(Gear<?,?> gear) {
+    return new DefRunning(gear, Wire.emptyWire(), Wire.emptyWire());
+  }
+  
+  
+  
+  
+  static class DefRunning<I,O> implements Running<I,O> {
+    
+    private final Wire<I> input;
+    
+    private final Wire<O> output;
+    
+    private final Gear<O,I> gear;
+    
+    private final List<Consumer<Exception>> exlistener;
+    
+    
+    public DefRunning(Gear<O,I> gear) {
+      this(gear, Wire.defaultWire(), Wire.defaultWire());
+    }
+    
+    
+    public DefRunning(Gear<O,I> gear, Wire<I> in, Wire<O> out) {
+      this.gear = (Gear<O,I>) Sane.of(gear)
+          .check(Checkup.isNotNull());
+      input = (Wire<I>) Sane.of(in).check(Checkup.isNotNull());
+      output = (Wire<O>) Sane.of(out).check(Checkup.isNotNull());
+      this.exlistener = Collections.synchronizedList(
+          new ArrayList<Consumer<Exception>>()
+      );
+    }
+    
+    
+    @Override
+    public Wire<O> getOutputWire() {
+      return output;
+    }
+
+
+    @Override
+    public Wire<I> getInputWire() {
+      return input;
+    }
+
+
+    @Override
+    public boolean isRunning() {
+      return gear.isReady();
+    }
+
+
+    @Override
+    public void suspend(long timeout) throws InterruptedException {
+      gear.suspend(timeout);
+    }
+
+
+    @Override
+    public void resume() throws InterruptedException {
+      gear.resume();
+    }
+
+
+    @Override
+    public void notify(Exception exc) {
+      exlistener.forEach(c->c.accept(exc));
+    }
+
+
+    @Override
+    public void onException(Consumer<Exception> cs) {
+      exlistener.add(cs);
+    }
+    
+  }
   
 }

@@ -55,6 +55,42 @@ public interface Wire<T> {
   }
   
   
+  public static Wire<Void> emptyWire() {
+    return new EmptyWire();
+  }
+  
+  
+  
+  
+  public static class EmptyWire implements Wire<Void> {
+
+    @Override public void push(Void t) {}
+
+    @Override
+    public Optional<Void> pull(long timeout) {
+      return Optional.empty();
+    }
+
+    @Override
+    public Optional<Void> peek() {
+      return Optional.empty();
+    }
+
+    @Override
+    public boolean isAvailable() {
+      return false;
+    }
+
+    @Override public void onAvailable(Consumer<Void> cs) {}
+
+    @Override 
+    public boolean remove(Consumer<Void> cs) {
+      return false;
+    }
+    
+  }
+  
+  
   
   
   public static class DefWire<T> implements Wire<T> {
@@ -78,6 +114,7 @@ public interface Wire<T> {
 
     @Override
     public void push(T t) {
+      if(t == null) return;
       lock.writeLock().lock();
       try {
         list.add(t);
@@ -92,7 +129,10 @@ public interface Wire<T> {
     private void notifyAwaiters() {
       if(!list.isEmpty()) {
         T value = list.get(list.size() -1);
-        consumers.stream().forEach(c -> c.accept(value));
+        for(Consumer c : consumers) {
+          Running<Void,T> run = Gear.of(c).start();
+          run.getOutputWire().push(value);
+        }
       }
       empty.signalAll();
     }

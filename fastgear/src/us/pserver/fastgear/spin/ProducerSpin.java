@@ -19,28 +19,32 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.fastgear;
+package us.pserver.fastgear.spin;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/05/2016
+ * @version 0.0 - 02/06/2016
  */
 @FunctionalInterface
-public interface Shift<T,R,E extends Exception> {
+public interface ProducerSpin<O, E extends Exception> {
 
-  public R shift(T t) throws E;
+  public O spin() throws E;
   
-  public default Optional<R> safe(T t) {
-    Optional<R> opt;
+  public default Optional<O> safe() {
     try {
-      opt = Optional.of(shift(t));
+      return Optional.of(spin());
     } catch(Exception e) {
-      opt = Optional.empty();
+      return Optional.empty();
     }
-    return opt;
+  }
+  
+  
+  public static <T> ProducerSpin<T,RuntimeException> of(Supplier<T> s) {
+    return ()->s.get();
   }
   
 }

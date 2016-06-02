@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -40,13 +39,12 @@ public final class Engine {
   
   private static final Lock get = new ReentrantLock(true);
   
-  private static final Condition work = get.newCondition();
+  private static final Holder<Boolean> shutdown = Holder.sync(false);
+  
   
   private final ForkJoinPool pool;
   
   private final List<Gear<?,?>> gears;
-  
-  private final Holder<Boolean> shutdown;
   
   
   private Engine() {
@@ -55,10 +53,15 @@ public final class Engine {
     }
     pool = new ForkJoinPool(Runtime.getRuntime().availableProcessors() + 1);
     gears = Collections.synchronizedList(new ArrayList<Gear<?,?>>());
-    shutdown = Holder.sync(false);
     pool.execute(() -> {
       while(!shutdown.get()) {
-        gears.stream().filter(Gear::isReady).forEach(pool::execute);
+        if(gears.isEmpty()) synchronized(this) {
+          try { this.wait(50); }
+          catch(InterruptedException e) {}
+        }
+        else {
+          gears.stream().filter(Gear::isReady).forEach(pool::execute);
+        }
       }
     });
   }
@@ -70,6 +73,7 @@ public final class Engine {
       try {
         if(instance == null) {
           instance = new Engine();
+          shutdown.set(false);
         }
       }
       finally {
@@ -81,12 +85,19 @@ public final class Engine {
   
   
   public void shutdown() {
+    shutdown.set(true);
+    gears.clear();
     pool.shutdownNow();
   }
   
   
-  public ForkJoinPool getPool() {
-    return pool;
+  public Engine reset() {
+    if(!shutdown.get()) {
+      this.shutdown();
+    }
+    instance = null;
+    gears.clear();
+    return get();
   }
   
   
