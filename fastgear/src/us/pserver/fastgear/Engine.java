@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -101,18 +103,19 @@ public final class Engine {
   }
   
   
-  public List<Gear<?,?>> gears() {
-    return gears;
-  }
-  
-  
   public int parallelism() {
     return pool.getParallelism();
   }
   
   
   public void engage(Gear<?,?> gear) {
-    pool.execute(gear);
+    pool.execute(Sane.of(gear).get(Checkup.isNotNull()));
+  }
+  
+  
+  public void cancel(Gear<?,?> gear) {
+    Sane.of(gear).get(Checkup.isNotNull()).suspend(0);
+    gears.remove(gear);
   }
   
 }

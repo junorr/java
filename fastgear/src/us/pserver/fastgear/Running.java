@@ -35,19 +35,27 @@ import us.pserver.insane.Sane;
  */
 public interface Running<I,O> {
 
-  public Wire<O> getOutputWire();
+  public Wire<O> output();
   
-  public Wire<I> getInputWire();
+  public Wire<I> input();
   
   public boolean isRunning();
   
-  public void suspend(long timeout) throws InterruptedException;
+  public void suspend(long timeout);
   
-  public void resume() throws InterruptedException;
+  public void resume();
+  
+  public void cancel();
   
   public void notify(Exception exc);
   
+  public void notifyComplete(I i);
+  
   public void onException(Consumer<Exception> cs);
+  
+  public void rmException(Consumer<Exception> cs);
+  
+  public void clearOnException();
   
   
   public static <A,B> Running<B,A> defaultRunning(Gear<A,B> gear) {
@@ -56,12 +64,12 @@ public interface Running<I,O> {
   
   
   public static <A> Running<Void,A> outputOnly(Gear<A,?> gear) {
-    return new DefRunning(gear, Wire.defaultWire(), Wire.emptyWire());
+    return new DefRunning(gear, Wire.emptyWire(), Wire.defaultWire());
   }
   
   
   public static <B> Running<B,Void> inputOnly(Gear<?,B> gear) {
-    return new DefRunning(gear, Wire.emptyWire(), Wire.defaultWire());
+    return new DefRunning(gear, Wire.defaultWire(), Wire.emptyWire());
   }
   
   
@@ -82,6 +90,8 @@ public interface Running<I,O> {
     
     private final List<Consumer<Exception>> exlistener;
     
+    private final List<Consumer<I>> oncomplete;
+    
     
     public DefRunning(Gear<O,I> gear) {
       this(gear, Wire.defaultWire(), Wire.defaultWire());
@@ -89,24 +99,26 @@ public interface Running<I,O> {
     
     
     public DefRunning(Gear<O,I> gear, Wire<I> in, Wire<O> out) {
-      this.gear = (Gear<O,I>) Sane.of(gear)
-          .check(Checkup.isNotNull());
-      input = (Wire<I>) Sane.of(in).check(Checkup.isNotNull());
-      output = (Wire<O>) Sane.of(out).check(Checkup.isNotNull());
+      this.gear = Sane.of(gear).get(Checkup.isNotNull());
+      input = Sane.of(in).get(Checkup.isNotNull());
+      output = Sane.of(out).get(Checkup.isNotNull());
       this.exlistener = Collections.synchronizedList(
           new ArrayList<Consumer<Exception>>()
+      );
+      this.oncomplete = Collections.synchronizedList(
+          new ArrayList<Consumer<I>>()
       );
     }
     
     
     @Override
-    public Wire<O> getOutputWire() {
+    public Wire<O> output() {
       return output;
     }
 
 
     @Override
-    public Wire<I> getInputWire() {
+    public Wire<I> input() {
       return input;
     }
 
@@ -118,14 +130,20 @@ public interface Running<I,O> {
 
 
     @Override
-    public void suspend(long timeout) throws InterruptedException {
+    public void suspend(long timeout) {
       gear.suspend(timeout);
     }
 
 
     @Override
-    public void resume() throws InterruptedException {
+    public void resume() {
       gear.resume();
+    }
+    
+    
+    @Override
+    public void cancel() {
+      gear.cancel();
     }
 
 
@@ -133,11 +151,29 @@ public interface Running<I,O> {
     public void notify(Exception exc) {
       exlistener.forEach(c->c.accept(exc));
     }
+    
+    
+    @Override
+    public void notifyComplete(I i) {
+      oncomplete.forEach(c->c.accept(i));
+    }
 
 
     @Override
     public void onException(Consumer<Exception> cs) {
       exlistener.add(cs);
+    }
+    
+    
+    @Override
+    public void rmException(Consumer<Exception> cs) {
+      exlistener.remove(cs);
+    }
+    
+    
+    @Override
+    public void clearOnException() {
+      exlistener.clear();
     }
     
   }

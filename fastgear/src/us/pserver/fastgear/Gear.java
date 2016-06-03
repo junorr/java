@@ -21,8 +21,6 @@
 
 package us.pserver.fastgear;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -46,79 +44,88 @@ public interface Gear<I,O> extends Runnable {
   
   public boolean isReady();
   
-  public void suspend(long timeout) throws InterruptedException;
+  public void suspend(long timeout);
   
   public void resume();
   
+  public void cancel();
   
-  public static <A,B> Gear<B,A> of(IOSpin<A,B,?> spin) {
+  
+  public static <A,B> Gear<A,B> of(IOSpin<A,B,?> spin) {
     return new IOGear(spin);
   }
   
-  public static <A,B> Gear<B,A> of(Function<A,B> fun) {
-    return new IOGear(fun);
-  }
-  
-  
-  public static <A> Gear<A,Void> of(ProducerSpin<A,? extends Exception> spin) {
+  public static <A> Gear<Void,A> of(ProducerSpin<A,? extends Exception> spin) {
     return new ProducerGear(spin);
   }
   
-  public static <A> Gear<A,Void> of(Supplier<A> sup) {
-    return new ProducerGear(sup);
-  }
-  
-  
-  public static <A> Gear<Void,A> of(ConsumerSpin<A,?> spin) {
+  public static <A> Gear<A,Void> of(ConsumerSpin<A,?> spin) {
     return new ConsumerGear(spin);
   }
   
-  public static <A> Gear<Void,A> of(Consumer<A> csm) {
-    return new ConsumerGear(csm);
+  public static Gear<Void,Void> of(Spin<?> spin) {
+    return new VoidGear(spin);
   }
   
   
-  public static Gear<Void,Void> of(Spin<?> spin) {
-    return new VoidGear(spin);
+  public static <A,B> Gear<A,B> of(Function<A,B> fun) {
+    return new IOGear(fun);
   }
   
   public static Gear<Void,Void> of(Runnable run) {
     return new VoidGear(run);
   }
   
+  public static <A> Gear<A,Void> of(Consumer<A> csm) {
+    return new ConsumerGear(csm);
+  }
+  
+  public static <A> Gear<Void,A> of(Supplier<A> sup) {
+    return new ProducerGear(sup);
+  }
   
   
   
+
   
   static abstract class AbstractGear<I,O> implements Gear<I,O> {
     
     private boolean ready;
     
-    private Instant suspend;
-    
-    private long timeout;
+    protected Running<O,I> running;
     
     
-    private AbstractGear() {
+    protected AbstractGear() {
       ready = true;
-      suspend = null;
-      timeout = 0;
     }
     
     
     @Override
-    public void suspend(long timeout) throws InterruptedException {
+    public void suspend(long timeout) {
       ready = false;
-      suspend = Instant.now();
-      this.timeout = timeout;
+      if(timeout > 0) {
+        final Gear<I,O> gear = this;
+        Gear.of(()->{
+          synchronized(this) {
+            this.wait(timeout);
+            gear.resume();
+          }
+        }).start();
+      }
     }
 
 
     @Override
     public void resume() {
       ready = true;
-      timeout = 0;
       Engine.get().engage(this);
+    }
+    
+    
+    @Override
+    public Running<O,I> start() {
+      Engine.get().engage(this);
+      return running;
     }
 
 
@@ -128,12 +135,14 @@ public interface Gear<I,O> extends Runnable {
     }
     
     
+    @Override
+    public void cancel() {
+      Engine.get().cancel(this);
+    }
+    
+    
     protected boolean checkReady() {
-      Duration dur = Duration.ZERO;
-      if(timeout > 0) {
-        dur = Duration.between(suspend, Instant.now());
-      }
-      return ready || dur.toMillis() > timeout;
+      return ready;
     }
 
   }
@@ -146,36 +155,28 @@ public interface Gear<I,O> extends Runnable {
     
     private final IOSpin<I,O,?> spin;
     
-    private final Running<O,I> running;
-    
-    
     private IOGear(IOSpin<I,O,?> spin) {
       super();
-      this.spin = (IOSpin<I,O,?>) Sane.of(spin)
-          .check(Checkup.isNotNull());
+      this.spin = Sane.of(spin).get(Checkup.isNotNull());
       running = Running.defaultRunning(this);
     }
-    
     
     private IOGear(Function<I,O> fun) {
       this(IOSpin.of(fun));
     }
     
-
-    @Override
-    public Running<O,I> start() {
-      return running;
-    }
-    
-    
     @Override
     public void run() {
       while(checkReady()) {
         try {
-          if(running.getOutputWire().isAvailable()) {
-            Optional<I> pull = running.getOutputWire().pull(0);
+          if(running.output().isClosed() || running.input().isClosed()) {
+            this.cancel();
+            break;
+          }
+          if(running.output().isAvailable()) {
+            Optional<I> pull = running.output().pull(0);
             if(pull.isPresent()) {
-              running.getInputWire().push(spin.spin(pull.get()));
+              running.input().push(spin.spin(pull.get()));
             }
           }
           else synchronized(this) {
@@ -183,6 +184,7 @@ public interface Gear<I,O> extends Runnable {
           }
         }
         catch(Exception e) {
+          e.printStackTrace();
           running.notify(e);
         }
       }
@@ -198,39 +200,31 @@ public interface Gear<I,O> extends Runnable {
     
     private final ProducerSpin<O,?> spin;
     
-    private final Running<O,Void> running;
-    
     private O lastVal;
-    
     
     private ProducerGear(ProducerSpin<O,?> spin) {
       super();
-      this.spin = (ProducerSpin<O,?>) Sane.of(spin)
-          .check(Checkup.isNotNull());
+      this.spin = Sane.of(spin).get(Checkup.isNotNull());
       running = Running.inputOnly(this);
       lastVal = null;
     }
-    
     
     private ProducerGear(Supplier<O> sup) {
       this(ProducerSpin.of(sup));
     }
     
-
-    @Override
-    public Running<O,Void> start() {
-      return running;
-    }
-    
-    
     @Override
     public void run() {
       while(checkReady()) {
         try {
+          if(running.input().isClosed()) {
+            this.cancel();
+            break;
+          }
           O val = spin.spin();
           if(!Objects.equals(val, lastVal)) {
             lastVal = val;
-            running.getInputWire().push(val);
+            running.input().push(val);
           }
           else synchronized(this) {
             this.wait(50);
@@ -252,34 +246,26 @@ public interface Gear<I,O> extends Runnable {
     
     private final ConsumerSpin<I,?> spin;
     
-    private final Running<Void,I> running;
-    
-    
     private ConsumerGear(ConsumerSpin<I,?> spin) {
       super();
-      this.spin = (ConsumerSpin<I,?>) Sane.of(spin)
-          .check(Checkup.isNotNull());
+      this.spin = Sane.of(spin).get(Checkup.isNotNull());
       running = Running.outputOnly(this);
     }
-    
     
     private ConsumerGear(Consumer<I> cs) {
       this(ConsumerSpin.of(cs));
     }
     
-    
-    @Override
-    public Running<Void,I> start() {
-      return running;
-    }
-    
-    
     @Override
     public void run() {
       while(checkReady()) {
         try {
-          if(running.getOutputWire().isAvailable()) {
-            Optional<I> pull = running.getOutputWire().pull(0);
+          if(running.output().isClosed()) {
+            this.cancel();
+            break;
+          }
+          if(running.output().isAvailable()) {
+            Optional<I> pull = running.output().pull(0);
             if(pull.isPresent()) {
               spin.spin(pull.get());
             }
@@ -304,27 +290,15 @@ public interface Gear<I,O> extends Runnable {
     
     private final Spin<?> spin;
     
-    private final Running<Void,Void> running;
-    
-    
     private VoidGear(Spin<?> spin) {
       super();
-      this.spin = (Spin<?>) Sane.of(spin)
-          .check(Checkup.isNotNull());
+      this.spin = Sane.of(spin).get(Checkup.isNotNull());
       running = Running.emptyRunning(this);
     }
-    
     
     private VoidGear(Runnable run) {
       this(Spin.of(run));
     }
-    
-
-    @Override
-    public Running<Void,Void> start() {
-      return running;
-    }
-    
     
     @Override
     public void run() {
@@ -335,6 +309,9 @@ public interface Gear<I,O> extends Runnable {
         }
         catch(Exception e) {
           running.notify(e);
+        }
+        finally {
+          running.notifyComplete(null);
         }
       }
     }
