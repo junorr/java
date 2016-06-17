@@ -114,8 +114,7 @@ public final class Engine {
   
   
   public void cancel(Gear<?,?> gear) {
-    Sane.of(gear).get(Checkup.isNotNull()).suspend(0);
-    gears.remove(gear);
+    gears.remove(Sane.of(gear).get(Checkup.isNotNull()));
   }
   
 }

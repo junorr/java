@@ -49,6 +49,24 @@ public class IFaceCode extends AbstractTableCode implements ICode {
 				.append(CamelCaseName.of(table.getName()))
 				.append(" {\n\n");
 		for(IColumn<?> c : table.getColumns()) {
+      sb.append(ident)
+          .append("/**\n")
+          .append(ident)
+          .append(" * Table column name [")
+          .append(c.getName())
+          .append(": ")
+          .append(c.getType().getName())
+          .append("].\n")
+          .append(ident)
+          .append(" */\n")
+          .append(ident)
+          .append("public static final String COLUMN_")
+          .append(c.getName().toUpperCase())
+          .append(" = \"").append(c.getName())
+          .append("\";\n\n");
+    }
+    sb.append("\n");
+		for(IColumn<?> c : table.getColumns()) {
 			IFaceGetterCode get = new IFaceGetterCode(c, ident);
 			sb.append(get.getCode()).append("\n\n");
 			IFaceSetterCode set = new IFaceSetterCode(

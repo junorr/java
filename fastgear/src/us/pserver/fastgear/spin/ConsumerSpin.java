@@ -33,16 +33,6 @@ public interface ConsumerSpin<I, E extends Exception> {
 
   public void spin(I t) throws E;
   
-  public default boolean safe(I i) {
-    try {
-      spin(i);
-      return true;
-    } catch(Exception e) {
-      return false;
-    }
-  }
-  
-  
   public static <T> ConsumerSpin<T,RuntimeException> of(Consumer<T> c) {
     return i->c.accept(i);
   }

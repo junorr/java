@@ -21,7 +21,6 @@
 
 package us.pserver.fastgear.spin;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -33,15 +32,6 @@ import java.util.function.Supplier;
 public interface ProducerSpin<O, E extends Exception> {
 
   public O spin() throws E;
-  
-  public default Optional<O> safe() {
-    try {
-      return Optional.of(spin());
-    } catch(Exception e) {
-      return Optional.empty();
-    }
-  }
-  
   
   public static <T> ProducerSpin<T,RuntimeException> of(Supplier<T> s) {
     return ()->s.get();

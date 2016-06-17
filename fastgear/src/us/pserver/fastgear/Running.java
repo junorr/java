@@ -24,6 +24,8 @@ package us.pserver.fastgear;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
@@ -47,9 +49,11 @@ public interface Running<I,O> {
   
   public void cancel();
   
-  public void notify(Exception exc);
+  public void join() throws InterruptedException;
   
-  public void notifyComplete(I i);
+  public void signal();
+  
+  public void notify(Exception exc);
   
   public void onException(Consumer<Exception> cs);
   
@@ -88,9 +92,11 @@ public interface Running<I,O> {
     
     private final Gear<O,I> gear;
     
-    private final List<Consumer<Exception>> exlistener;
+    private final ReentrantLock lock;
     
-    private final List<Consumer<I>> oncomplete;
+    private final Condition wait;
+    
+    private final List<Consumer<Exception>> exlistener;
     
     
     public DefRunning(Gear<O,I> gear) {
@@ -105,9 +111,8 @@ public interface Running<I,O> {
       this.exlistener = Collections.synchronizedList(
           new ArrayList<Consumer<Exception>>()
       );
-      this.oncomplete = Collections.synchronizedList(
-          new ArrayList<Consumer<I>>()
-      );
+      lock = new ReentrantLock();
+      wait = lock.newCondition();
     }
     
     
@@ -145,6 +150,22 @@ public interface Running<I,O> {
     public void cancel() {
       gear.cancel();
     }
+    
+    
+    public void signal() {
+      try {
+        lock.lock();
+        wait.signalAll();
+      } 
+      finally {
+        lock.unlock();
+      }
+    }
+    
+    
+    public void join() throws InterruptedException {
+      wait.await();
+    }
 
 
     @Override
@@ -153,12 +174,6 @@ public interface Running<I,O> {
     }
     
     
-    @Override
-    public void notifyComplete(I i) {
-      oncomplete.forEach(c->c.accept(i));
-    }
-
-
     @Override
     public void onException(Consumer<Exception> cs) {
       exlistener.add(cs);

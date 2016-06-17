@@ -147,8 +147,6 @@ public interface Wire<T> {
         T value = list.get(list.size() -1);
         for(Consumer c : consumers) {
           c.accept(value);
-          //Running run = Gear.of(c).start();
-          //run.output().push(value);
         }
       }
       empty.signalAll();
@@ -171,12 +169,15 @@ public interface Wire<T> {
 
     @Override
     public Optional<T> pull(long timeout) {
-      if(closed) {
+      if(list.isEmpty() && closed) {
         throw new IllegalStateException("Wire is closed");
       }
       lock.writeLock().lock();
       if(list.isEmpty()) {
         this.waitFor(timeout);
+      }
+      if(list.isEmpty() && closed) {
+        throw new IllegalStateException("Wire is closed");
       }
       Optional<T> opt;
       try {
@@ -193,7 +194,7 @@ public interface Wire<T> {
     
     @Override
     public Optional<T> peek() {
-      if(closed) {
+      if(list.isEmpty() && closed) {
         throw new IllegalStateException("Wire is closed");
       }
       lock.readLock().lock();
@@ -208,6 +209,13 @@ public interface Wire<T> {
     @Override 
     public void close() {
       closed = true;
+      lock.writeLock().lock();
+      try {
+        empty.signalAll();
+      }
+      finally {
+        lock.writeLock().unlock();
+      }
     }
     
     
@@ -221,7 +229,7 @@ public interface Wire<T> {
     public boolean isAvailable() {
       lock.readLock().lock();
       try {
-        return !closed && !list.isEmpty();
+        return !list.isEmpty();
       } finally {
         lock.readLock().unlock();
       }

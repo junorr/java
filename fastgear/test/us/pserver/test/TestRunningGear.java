@@ -21,25 +21,38 @@
 
 package us.pserver.test;
 
-import java.util.function.Consumer;
+import java.util.Optional;
 import us.pserver.fastgear.Gear;
 import us.pserver.fastgear.Running;
+import us.pserver.fastgear.spin.RunningSpin;
+import us.pserver.tools.timer.Timer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 03/06/2016
+ * @version 0.0 - 17/06/2016
  */
-public class TestConsumerGear {
+public class TestRunningGear {
 
-  public static void main(String[] args) throws InterruptedException {
-    Running run = Gear.of((Consumer)v->System.out.println(v)).start();
-    System.out.println("* input : "+ run.input().getClass());
-    System.out.println("* output: "+ run.output().getClass());
-    for(int i = 0; i < 5; i++) {
-      run.output().push("=> "+ i+ " <=");
-      if(i == 3) run.cancel();
-      Thread.sleep(2000);
+  
+  public static void main(String[] args) {
+    Running<Integer,Integer> run = Gear.spin((RunningSpin<Integer,Integer,?>)r->{
+      Optional<Integer> in = r.output().pull(0);
+      if(in.isPresent()) {
+        System.out.println("* "+ Thread.currentThread().getName()+ " -> received: "+ in.get());
+        if(in.get() > 6) {
+          //Thread.sleep(2000);
+          r.cancel();
+        }
+        else if(in.get() % 2 == 0) {
+          r.input().push(Double.valueOf(in.get()*1.5).intValue());
+        }
+      }
+    }).start();
+    
+    run.input().onAvailable(i->System.out.println("Processed: "+ i));
+    for(int i = 1; i <= 10; i++) {
+      run.output().push(i);
     }
   }
   

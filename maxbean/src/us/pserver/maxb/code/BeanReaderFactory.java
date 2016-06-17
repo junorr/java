@@ -133,12 +133,17 @@ public class BeanReaderFactory extends AbstractTableCode implements ICode {
 			String cname = c.getName();
 			CamelCaseName cc = CamelCaseName.of(cname);
 			sb.append(ident)
-					.append("if(this.contains( \"")
-					.append(cname).append("\" )) {\n")
+					.append("if(this.contains( I").append(tcc)
+          .append(".COLUMN_")
+          .append(cname.toUpperCase())
+					.append(" )) {\n")
 					.append(ident.increment())
 					.append("bean.set").append(cc)
 					.append("( rset.get").append(getMethod(c))
-					.append("(\"").append(cname).append("\") );\n")
+          .append("( I").append(tcc)
+          .append(".COLUMN_")
+          .append(cname.toUpperCase())
+					.append(") );\n")
 					.append(ident.decrement())
 					.append("}\n");
 		}

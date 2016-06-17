@@ -19,28 +19,17 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.test;
+package us.pserver.fastgear.spin;
 
-import java.util.function.Consumer;
-import us.pserver.fastgear.Gear;
 import us.pserver.fastgear.Running;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 03/06/2016
+ * @version 0.0 - 17/06/2016
  */
-public class TestConsumerGear {
+public interface RunningSpin<I,O,E extends Exception> {
 
-  public static void main(String[] args) throws InterruptedException {
-    Running run = Gear.of((Consumer)v->System.out.println(v)).start();
-    System.out.println("* input : "+ run.input().getClass());
-    System.out.println("* output: "+ run.output().getClass());
-    for(int i = 0; i < 5; i++) {
-      run.output().push("=> "+ i+ " <=");
-      if(i == 3) run.cancel();
-      Thread.sleep(2000);
-    }
-  }
+  public void spin(Running<O,I> r) throws E;
   
 }

@@ -21,7 +21,6 @@
 
 package us.pserver.fastgear.spin;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -30,20 +29,11 @@ import java.util.function.Function;
  * @version 0.0 - 02/06/2016
  */
 @FunctionalInterface
-public interface IOSpin<I, O, E extends Exception> {
+public interface FunctionSpin<I, O, E extends Exception> {
 
   public O spin(I t) throws E;
   
-  public default Optional<O> safe(I i) {
-    try {
-      return Optional.of(spin(i));
-    } catch(Exception e) {
-      return Optional.empty();
-    }
-  }
-  
-  
-  public static <T,R> IOSpin<T,R,RuntimeException> of(Function<T,R> f) {
+  public static <T,R> FunctionSpin<T,R,RuntimeException> of(Function<T,R> f) {
     return t->f.apply(t);
   }
   

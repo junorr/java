@@ -30,22 +30,15 @@ package us.pserver.fastgear.spin;
 public interface Spin<E extends Exception> extends Runnable {
 
   public void spin() throws E;
-  
-  public default boolean safe() {
-    try { 
-      spin(); 
-      return true;
-    } catch(Exception e) {
-      return false;
-    }
-  }
+
   
   @Override
   public default void run() {
     try { spin(); }
-    catch(Exception e) {}
+    catch(Exception e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
   }
-  
   
   public static Spin<RuntimeException> of(Runnable r) {
     return ()->r.run();
