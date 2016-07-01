@@ -21,7 +21,10 @@
 
 package us.pserver.fastgear.spin;
 
+import java.util.Optional;
 import java.util.function.Function;
+import static us.pserver.fastgear.Gear.spin;
+import us.pserver.fastgear.Running;
 
 /**
  *
@@ -32,6 +35,29 @@ import java.util.function.Function;
 public interface FunctionSpin<I, O, E extends Exception> {
 
   public O spin(I t) throws E;
+  
+  public default void spin(Running<O,I> run) {
+    while(!run.output().isClosed() && !run.input().isClosed()) {
+      try {
+        if(run.output().isAvailable()) {
+          Optional<I> pull = run.output().pull(0);
+          if(pull.isPresent()) {
+            run.input().push(spin(pull.get()));
+          }
+        }
+        else synchronized(this) {
+          this.wait(50);
+        }
+      }
+      catch(Exception e) {
+        e.printStackTrace();
+        run.exception(e);
+      }
+    }//while
+    run.complete();
+    run.gear().signal();
+  }
+
   
   public static <T,R> FunctionSpin<T,R,RuntimeException> of(Function<T,R> f) {
     return t->f.apply(t);

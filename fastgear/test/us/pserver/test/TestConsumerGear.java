@@ -34,13 +34,15 @@ public class TestConsumerGear {
 
   public static void main(String[] args) throws InterruptedException {
     Running run = Gear.of((Consumer)v->System.out.println(v)).start();
+    run.onComplete(r -> System.out.println("* Completed: isRunning? "+ ((Running)r).isRunning()));
     System.out.println("* input : "+ run.input().getClass());
     System.out.println("* output: "+ run.output().getClass());
+    Thread.sleep(2000);
     for(int i = 0; i < 5; i++) {
       run.output().push("=> "+ i+ " <=");
-      if(i == 3) run.cancel();
-      Thread.sleep(2000);
     }
+    run.output().closeOnEmpty();
+    run.gear().join();
   }
   
 }

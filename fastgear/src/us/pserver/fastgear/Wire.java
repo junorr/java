@@ -45,6 +45,8 @@ public interface Wire<T> {
   
   public void close();
   
+  public void closeOnEmpty();
+  
   public boolean isClosed();
   
   public boolean isAvailable();
@@ -82,8 +84,10 @@ public interface Wire<T> {
     
     @Override public void close() {}
     
+    @Override public void closeOnEmpty() {}
+    
     @Override public boolean isClosed() {
-      return true;
+      return false;
     }
 
     @Override
@@ -113,7 +117,9 @@ public interface Wire<T> {
     
     private final List<Consumer<T>> consumers;
     
-    private boolean closed;
+    private boolean close;
+    
+    private boolean closeOnEmpty;
     
     
     public DefWire() {
@@ -121,13 +127,14 @@ public interface Wire<T> {
       consumers = new LinkedList<>();
       lock = new ReentrantReadWriteLock(true);
       empty = lock.writeLock().newCondition();
-      closed = false;
+      close = false;
+      closeOnEmpty = false;
     }
     
 
     @Override
     public void push(T t) {
-      if(closed) {
+      if(close) {
         throw new IllegalStateException("Wire is closed");
       }
       if(t == null) return;
@@ -169,14 +176,14 @@ public interface Wire<T> {
 
     @Override
     public Optional<T> pull(long timeout) {
-      if(list.isEmpty() && closed) {
+      if(list.isEmpty() && close) {
         throw new IllegalStateException("Wire is closed");
       }
       lock.writeLock().lock();
       if(list.isEmpty()) {
         this.waitFor(timeout);
       }
-      if(list.isEmpty() && closed) {
+      if(list.isEmpty() && close) {
         throw new IllegalStateException("Wire is closed");
       }
       Optional<T> opt;
@@ -194,7 +201,7 @@ public interface Wire<T> {
     
     @Override
     public Optional<T> peek() {
-      if(list.isEmpty() && closed) {
+      if(list.isEmpty() && close) {
         throw new IllegalStateException("Wire is closed");
       }
       lock.readLock().lock();
@@ -208,7 +215,20 @@ public interface Wire<T> {
     
     @Override 
     public void close() {
-      closed = true;
+      close = true;
+      lock.writeLock().lock();
+      try {
+        empty.signalAll();
+      }
+      finally {
+        lock.writeLock().unlock();
+      }
+    }
+    
+    
+    @Override 
+    public void closeOnEmpty() {
+      closeOnEmpty = true;
       lock.writeLock().lock();
       try {
         empty.signalAll();
@@ -221,7 +241,7 @@ public interface Wire<T> {
     
     @Override
     public boolean isClosed() {
-      return closed;
+      return close || (closeOnEmpty && !isAvailable());
     }
     
     
@@ -238,7 +258,7 @@ public interface Wire<T> {
 
     @Override
     public void onAvailable(Consumer<T> cs) {
-      if(closed) {
+      if(close) {
         throw new IllegalStateException("Wire is closed");
       }
       consumers.add(cs);
@@ -247,7 +267,7 @@ public interface Wire<T> {
     
     @Override
     public boolean remove(Consumer<T> cs) {
-      if(closed) {
+      if(close) {
         throw new IllegalStateException("Wire is closed");
       }
       return consumers.remove(cs);

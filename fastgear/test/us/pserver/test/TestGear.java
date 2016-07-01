@@ -41,23 +41,23 @@ public class TestGear {
     for(int i = 0; i < 5; i++) {
       System.out.println("* writing: "+ i);
       run.output().push(i);
-      try { Thread.sleep(2000); }
+      try { Thread.sleep(1000); }
       catch(InterruptedException e) {}
     }
     System.out.println("* run.suspend(2000)...");
-    run.suspend(2000);
+    run.gear().suspend(3000);
     for(int i = 0; i < 3; i++) {
       System.out.println("* writing: "+ i);
       run.output().push(i);
-      try { Thread.sleep(2000); }
-      catch(InterruptedException e) {}
+      //try { Thread.sleep(2000); }
+      //catch(InterruptedException e) {}
     }
-    System.out.println("* run.resume()...");
-    run.resume();
+    //System.out.println("* run.resume()...");
+    //run.gear().resume();
     for(int i = 0; i < 3; i++) {
       System.out.println("* writing: "+ i);
       run.output().push(i);
-      try { Thread.sleep(2000); }
+      try { Thread.sleep(1000); }
       catch(InterruptedException e) {}
     }
   }

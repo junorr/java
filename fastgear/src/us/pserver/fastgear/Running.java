@@ -24,8 +24,6 @@ package us.pserver.fastgear;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
@@ -41,25 +39,17 @@ public interface Running<I,O> {
   
   public Wire<I> input();
   
+  public Gear<O,I> gear();
+  
   public boolean isRunning();
   
-  public void suspend(long timeout);
+  public void exception(Exception exc);
   
-  public void resume();
-  
-  public void cancel();
-  
-  public void join() throws InterruptedException;
-  
-  public void signal();
-  
-  public void notify(Exception exc);
+  public void complete();
   
   public void onException(Consumer<Exception> cs);
   
-  public void rmException(Consumer<Exception> cs);
-  
-  public void clearOnException();
+  public void onComplete(Consumer<Running<I,O>> cs);
   
   
   public static <A,B> Running<B,A> defaultRunning(Gear<A,B> gear) {
@@ -92,11 +82,9 @@ public interface Running<I,O> {
     
     private final Gear<O,I> gear;
     
-    private final ReentrantLock lock;
+    private final List<Consumer<Exception>> exception;
     
-    private final Condition wait;
-    
-    private final List<Consumer<Exception>> exlistener;
+    private final List<Consumer<Running<I,O>>> complete;
     
     
     public DefRunning(Gear<O,I> gear) {
@@ -108,11 +96,12 @@ public interface Running<I,O> {
       this.gear = Sane.of(gear).get(Checkup.isNotNull());
       input = Sane.of(in).get(Checkup.isNotNull());
       output = Sane.of(out).get(Checkup.isNotNull());
-      this.exlistener = Collections.synchronizedList(
+      this.exception = Collections.synchronizedList(
           new ArrayList<Consumer<Exception>>()
       );
-      lock = new ReentrantLock();
-      wait = lock.newCondition();
+      this.complete = Collections.synchronizedList(
+          new ArrayList<Consumer<Running<I,O>>>()
+      );
     }
     
     
@@ -126,6 +115,12 @@ public interface Running<I,O> {
     public Wire<I> input() {
       return input;
     }
+    
+    
+    @Override
+    public Gear<O,I> gear() {
+      return gear;
+    }
 
 
     @Override
@@ -135,60 +130,26 @@ public interface Running<I,O> {
 
 
     @Override
-    public void suspend(long timeout) {
-      gear.suspend(timeout);
-    }
-
-
-    @Override
-    public void resume() {
-      gear.resume();
-    }
-    
-    
-    @Override
-    public void cancel() {
-      gear.cancel();
-    }
-    
-    
-    public void signal() {
-      try {
-        lock.lock();
-        wait.signalAll();
-      } 
-      finally {
-        lock.unlock();
-      }
-    }
-    
-    
-    public void join() throws InterruptedException {
-      wait.await();
-    }
-
-
-    @Override
-    public void notify(Exception exc) {
-      exlistener.forEach(c->c.accept(exc));
+    public void exception(Exception exc) {
+      exception.forEach(c->c.accept(exc));
     }
     
     
     @Override
     public void onException(Consumer<Exception> cs) {
-      exlistener.add(cs);
+      exception.add(cs);
     }
     
     
     @Override
-    public void rmException(Consumer<Exception> cs) {
-      exlistener.remove(cs);
+    public void onComplete(Consumer<Running<I,O>> cs) {
+      complete.add(cs);
     }
     
     
     @Override
-    public void clearOnException() {
-      exlistener.clear();
+    public void complete() {
+      complete.forEach(c -> c.accept(this));
     }
     
   }

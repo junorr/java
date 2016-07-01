@@ -21,6 +21,8 @@
 
 package us.pserver.fastgear.spin;
 
+import us.pserver.fastgear.Running;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -30,6 +32,21 @@ package us.pserver.fastgear.spin;
 public interface Spin<E extends Exception> extends Runnable {
 
   public void spin() throws E;
+
+  
+  public default void spin(Running<Void,Void> run) {
+    try {
+      if(!run.input().isClosed() && !run.output().isClosed()) {
+        spin();
+      }
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      run.exception(e);
+    }
+    run.complete();
+    run.gear().signal();
+  }
 
   
   @Override

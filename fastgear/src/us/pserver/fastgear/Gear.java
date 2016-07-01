@@ -23,6 +23,9 @@ package us.pserver.fastgear;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -32,7 +35,6 @@ import us.pserver.fastgear.spin.Spin;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
 import us.pserver.fastgear.spin.FunctionSpin;
-import us.pserver.fastgear.spin.RunningSpin;
 
 /**
  *
@@ -53,13 +55,13 @@ public interface Gear<I,O> extends Runnable {
   
   public void cancel();
   
+  public void join() throws InterruptedException;
+  
+  public void signal();
+  
   
   public static <A,B> Gear<A,B> spin(FunctionSpin<A,B,?> spin) {
     return new IOGear(spin);
-  }
-  
-  public static <A,B> Gear<A,B> spin(RunningSpin<A,B,?> spin) {
-    return new RunningGear(spin);
   }
   
   public static <A> Gear<Void,A> spin(ProducerSpin<A,? extends Exception> spin) {
@@ -101,9 +103,15 @@ public interface Gear<I,O> extends Runnable {
     
     protected Running<O,I> running;
     
+    protected Lock lock;
+    
+    protected Condition join;
+    
     
     protected AbstractGear() {
       ready = true;
+      lock = new ReentrantLock();
+      join = lock.newCondition();
     }
     
     
@@ -126,6 +134,30 @@ public interface Gear<I,O> extends Runnable {
     public void resume() {
       ready = true;
       Engine.get().engage(this);
+    }
+    
+    
+    @Override
+    public void join() throws InterruptedException {
+      lock.lock();
+      try {
+        join.await();
+      }
+      finally {
+        lock.unlock();
+      }
+    }
+    
+    
+    @Override
+    public void signal() {
+      lock.lock();
+      try {
+        join.signalAll();
+      }
+      finally {
+        lock.unlock();
+      }
     }
     
     
@@ -154,7 +186,7 @@ public interface Gear<I,O> extends Runnable {
       running.input().close();
       running.output().close();
       Engine.get().cancel(this);
-      running.signal();
+      signal();
     }
     
   }
@@ -197,45 +229,11 @@ public interface Gear<I,O> extends Runnable {
         }
         catch(Exception e) {
           e.printStackTrace();
-          running.notify(e);
+          running.exception(e);
         }
-      }
-    }
-
-  }
-
-
-
-
-
-  static class RunningGear<I,O> extends AbstractGear<I,O> {
-    
-    private final RunningSpin<I,O,?> spin;
-    
-    private RunningGear(RunningSpin<I,O,?> spin) {
-      super();
-      this.spin = Sane.of(spin).get(Checkup.isNotNull());
-      running = Running.defaultRunning(this);
-    }
-    
-    @Override
-    public void run() {
-      while(isReady()) {
-        try {
-          if(running.output().isClosed() || running.input().isClosed()) {
-            this.cancel();
-            break;
-          }
-          spin.spin(running);
-        }
-        catch(Exception e) {
-          e.printStackTrace();
-          running.notify(e);
-        }
-        finally {
-          running.signal();
-        }
-      }
+      }//while
+      running.complete();
+      signal();
     }
 
   }
@@ -263,26 +261,7 @@ public interface Gear<I,O> extends Runnable {
     
     @Override
     public void run() {
-      while(isReady()) {
-        try {
-          if(running.input().isClosed()) {
-            this.cancel();
-            break;
-          }
-          O val = spin.spin();
-          if(!Objects.equals(val, lastVal)) {
-            lastVal = val;
-            running.input().push(val);
-          }
-          else synchronized(this) {
-            this.wait(50);
-          }
-        }
-        catch(Exception e) {
-          running.notify(e);
-        }
-      }
-      running.signal();
+      spin.spin(running);
     }
 
   }
@@ -307,27 +286,7 @@ public interface Gear<I,O> extends Runnable {
     
     @Override
     public void run() {
-      while(isReady()) {
-        try {
-          if(running.output().isClosed()) {
-            this.cancel();
-            break;
-          }
-          if(running.output().isAvailable()) {
-            Optional<I> pull = running.output().pull(0);
-            if(pull.isPresent()) {
-              spin.spin(pull.get());
-            }
-          }
-          else synchronized(this) {
-            this.wait(50);
-          }
-        }
-        catch(Exception e) {
-          running.notify(e);
-        }
-      }
-      running.signal();
+      spin.spin(running);
     }
 
   }
@@ -352,15 +311,7 @@ public interface Gear<I,O> extends Runnable {
     
     @Override
     public void run() {
-      try {
-        spin.spin();
-      }
-      catch(Exception e) {
-        running.notify(e);
-      }
-      finally {
-        running.signal();
-      }
+      spin.spin(running);
     }
 
   }

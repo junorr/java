@@ -21,7 +21,10 @@
 
 package us.pserver.fastgear.spin;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
+import us.pserver.fastgear.Running;
 
 /**
  *
@@ -32,6 +35,21 @@ import java.util.function.Supplier;
 public interface ProducerSpin<O, E extends Exception> {
 
   public O spin() throws E;
+  
+  public default void spin(Running<O,Void> run) {
+    try {
+      if(!run.input().isClosed()) {
+        run.input().push(spin());
+      }
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      run.exception(e);
+    }
+    run.complete();
+    run.gear().signal();
+  }
+
   
   public static <T> ProducerSpin<T,RuntimeException> of(Supplier<T> s) {
     return ()->s.get();
