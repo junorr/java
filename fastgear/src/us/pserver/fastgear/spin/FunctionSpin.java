@@ -21,9 +21,8 @@
 
 package us.pserver.fastgear.spin;
 
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import us.pserver.fastgear.Running;
 
 /**
@@ -32,27 +31,39 @@ import us.pserver.fastgear.Running;
  * @version 0.0 - 02/06/2016
  */
 @FunctionalInterface
-public interface IProducerSpin<O, E extends Exception> {
+public interface FunctionSpin<I,O,E extends Exception> extends RunningSpin<I,O> {
 
-  public O spin() throws E;
-  
-  public default void spin(Running<O,Void> run) {
-    try {
-      if(!run.input().isClosed()) {
-        run.input().push(spin());
+  public O spin(I t) throws E;
+
+  @Override
+  public default void spin(Running<O,I> run) {
+    while(run.gear().isReady()) {
+      try {
+        if(run.output().isClosed() || run.input().isClosed()) {
+          run.gear().cancel();
+          break;
+        }
+        if(run.output().isAvailable()) {
+          Optional<I> pull = run.output().pull(0);
+          if(pull.isPresent()) {
+            run.input().push(spin(pull.get()));
+          }
+        }
+        else synchronized(this) {
+          this.wait(50);
+        }
       }
-    }
-    catch(Exception e) {
-      e.printStackTrace();
-      run.exception(e);
-    }
+      catch(Exception e) {
+        e.printStackTrace();
+        run.exception(e);
+      }
+    }//while
     run.complete();
     run.gear().signal();
   }
-
   
-  public static <T> IProducerSpin<T,RuntimeException> of(Supplier<T> s) {
-    return ()->s.get();
+  public static <T,R> FunctionSpin<T,R,RuntimeException> of(Function<T,R> f) {
+    return t->f.apply(t);
   }
   
 }

@@ -21,20 +21,19 @@
 
 package us.pserver.fastgear;
 
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import us.pserver.fastgear.spin.Spin;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
-import us.pserver.fastgear.spin.IConsumerSpin;
-import us.pserver.fastgear.spin.IFunctionSpin;
-import us.pserver.fastgear.spin.IProducerSpin;
+import us.pserver.fastgear.spin.ProducerSpin;
+import us.pserver.fastgear.spin.FunctionSpin;
+import us.pserver.fastgear.spin.ConsumerSpin;
+import us.pserver.fastgear.spin.RunningSpin;
+import us.pserver.fastgear.spin.Spin;
 
 /**
  *
@@ -60,55 +59,59 @@ public interface Gear<I,O> extends Runnable {
   public void signal();
   
   
-  public static <A,B> Gear<A,B> spin(IFunctionSpin<A,B,?> spin) {
-    return new IOGear(spin);
+  public static <A,B> Gear<A,B> spin(FunctionSpin<A,B,?> spin) {
+    return new DefGear(spin, new Running.IOBuilder<>());
   }
   
-  public static <A> Gear<Void,A> spin(IProducerSpin<A,? extends Exception> spin) {
-    return new ProducerGear(spin);
+  public static <A> Gear<Void,A> spin(ProducerSpin<A,? extends Exception> spin) {
+    return new DefGear(spin, new Running.InputOnlyBuilder<>());
   }
   
-  public static <A> Gear<A,Void> spin(IConsumerSpin<A,?> spin) {
-    return new ConsumerGear(spin);
+  public static <A> Gear<A,Void> spin(ConsumerSpin<A,?> spin) {
+    return new DefGear(spin, new Running.OutputOnlyBuilder<>());
   }
   
   public static Gear<Void,Void> spin(Spin<?> spin) {
-    return new VoidGear(spin);
+    return new DefGear(spin, new Running.EmptyBuilder());
   }
   
   
   public static <A,B> Gear<A,B> of(Function<A,B> fun) {
-    return new IOGear(fun);
+    return new DefGear(FunctionSpin.of(fun), new Running.IOBuilder<>());
   }
   
   public static Gear<Void,Void> of(Runnable run) {
-    return new VoidGear(run);
+    return new DefGear(Spin.of(run), new Running.EmptyBuilder());
   }
   
   public static <A> Gear<A,Void> of(Consumer<A> csm) {
-    return new ConsumerGear(csm);
+    return new DefGear(ConsumerSpin.of(csm), new Running.OutputOnlyBuilder<>());
   }
   
   public static <A> Gear<Void,A> of(Supplier<A> sup) {
-    return new ProducerGear(sup);
+    return new DefGear(ProducerSpin.of(sup), new Running.InputOnlyBuilder<>());
   }
   
   
   
 
   
-  static abstract class AbstractGear<I,O> implements Gear<I,O> {
+  static class DefGear<I,O> implements Gear<I,O> {
     
     private boolean ready;
     
-    protected Running<O,I> running;
+    private final Running<O,I> running;
     
-    protected Lock lock;
+    private final Lock lock;
     
-    protected Condition join;
+    private final Condition join;
+    
+    private final RunningSpin<I,O> spin;
     
     
-    protected AbstractGear() {
+    public DefGear(RunningSpin<I,O> spin, Running.Builder<O,I> build) {
+      this.spin = Sane.of(spin).get(Checkup.isNotNull());
+      this.running = Sane.of(build).get(Checkup.isNotNull()).build(this);
       ready = true;
       lock = new ReentrantLock();
       join = lock.newCondition();
@@ -189,110 +192,13 @@ public interface Gear<I,O> extends Runnable {
       signal();
     }
     
-  }
-
-
-
-
-
-  static class IOGear<I,O> extends AbstractGear<I,O> {
-    
-    private final IFunctionSpin<I,O,?> spin;
-    
-    private IOGear(IFunctionSpin<I,O,?> spin) {
-      super();
-      this.spin = Sane.of(spin).get(Checkup.isNotNull());
-      running = Running.defaultRunning(this);
-    }
-    
-    private IOGear(Function<I,O> fun) {
-      this(IFunctionSpin.of(fun));
-    }
     
     @Override
     public void run() {
       spin.spin(running);
     }
-
+    
   }
 
 
-
-
-
-  static class ProducerGear<O> extends AbstractGear<Void,O> {
-    
-    private final IProducerSpin<O,?> spin;
-    
-    private O lastVal;
-    
-    private ProducerGear(IProducerSpin<O,?> spin) {
-      super();
-      this.spin = Sane.of(spin).get(Checkup.isNotNull());
-      running = Running.inputOnly(this);
-      lastVal = null;
-    }
-    
-    private ProducerGear(Supplier<O> sup) {
-      this(IProducerSpin.of(sup));
-    }
-    
-    @Override
-    public void run() {
-      spin.spin(running);
-    }
-
-  }
-
-
-
-
-
-  static class ConsumerGear<I> extends AbstractGear<I,Void> {
-    
-    private final IConsumerSpin<I,?> spin;
-    
-    private ConsumerGear(IConsumerSpin<I,?> spin) {
-      super();
-      this.spin = Sane.of(spin).get(Checkup.isNotNull());
-      running = Running.outputOnly(this);
-    }
-    
-    private ConsumerGear(Consumer<I> cs) {
-      this(IConsumerSpin.of(cs));
-    }
-    
-    @Override
-    public void run() {
-      spin.spin(running);
-    }
-
-  }
-
-
-
-
-
-  static class VoidGear extends AbstractGear<Void,Void> {
-    
-    private final Spin<?> spin;
-    
-    private VoidGear(Spin<?> spin) {
-      super();
-      this.spin = Sane.of(spin).get(Checkup.isNotNull());
-      running = Running.emptyRunning(this);
-    }
-    
-    private VoidGear(Runnable run) {
-      this(Spin.of(run));
-    }
-    
-    @Override
-    public void run() {
-      spin.spin(running);
-    }
-
-  }
-
-  
 }

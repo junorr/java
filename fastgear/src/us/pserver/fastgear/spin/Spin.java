@@ -29,11 +29,12 @@ import us.pserver.fastgear.Running;
  * @version 0.0 - 02/06/2016
  */
 @FunctionalInterface
-public interface Spin<E extends Exception> extends Runnable {
+public interface Spin<E extends Exception> extends Runnable, RunningSpin<Void,Void> {
 
   public void spin() throws E;
 
   
+  @Override
   public default void spin(Running<Void,Void> run) {
     try {
       if(!run.input().isClosed() && !run.output().isClosed()) {
@@ -56,6 +57,7 @@ public interface Spin<E extends Exception> extends Runnable {
       throw new RuntimeException(e.getMessage(), e);
     }
   }
+  
   
   public static Spin<RuntimeException> of(Runnable r) {
     return ()->r.run();

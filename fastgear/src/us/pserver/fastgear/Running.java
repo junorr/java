@@ -154,4 +154,66 @@ public interface Running<I,O> {
     
   }
   
+  
+  
+  
+  
+  public static interface Builder<I,O> {
+    
+    public Running<I,O> build(Gear<O,I> g);
+    
+  }
+  
+  
+  
+  
+  
+  public static class IOBuilder<I,O> implements Builder<I,O> {
+    
+    @Override
+    public Running<I,O> build(Gear<O,I> g) {
+      return Running.defaultRunning(g);
+    }
+    
+  }
+  
+  
+  
+  
+  
+  public static class InputOnlyBuilder<I> implements Builder<I,Void> {
+    
+    @Override
+    public Running<I,Void> build(Gear<Void,I> g) {
+      return Running.inputOnly(g);
+    }
+    
+  }
+  
+  
+  
+  
+  
+  public static class OutputOnlyBuilder<O> implements Builder<Void,O> {
+
+    @Override
+    public Running<Void,O> build(Gear<O,Void> g) {
+      return Running.outputOnly(g);
+    }
+    
+  }
+  
+  
+  
+  
+  
+  public static class EmptyBuilder implements Builder<Void,Void> {
+    
+    @Override
+    public Running<Void,Void> build(Gear<Void,Void> g) {
+      return Running.emptyRunning(g);
+    }
+    
+  }
+  
 }

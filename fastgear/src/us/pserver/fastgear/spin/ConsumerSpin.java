@@ -22,7 +22,7 @@
 package us.pserver.fastgear.spin;
 
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.Consumer;
 import us.pserver.fastgear.Running;
 
 /**
@@ -31,21 +31,18 @@ import us.pserver.fastgear.Running;
  * @version 0.0 - 02/06/2016
  */
 @FunctionalInterface
-public interface IFunctionSpin<I, O, E extends Exception> {
+public interface ConsumerSpin<I, E extends Exception> extends RunningSpin<I,Void> {
 
-  public O spin(I t) throws E;
-  /*
-  public default void spin(Running<O,I> run) {
-    while(run.gear().isReady()) {
+  public void spin(I t) throws E;
+  
+  @Override
+  public default void spin(Running<Void,I> run) {
+    while(!run.output().isClosed()) {
       try {
-        if(run.output().isClosed() || run.input().isClosed()) {
-          run.gear().cancel();
-          break;
-        }
         if(run.output().isAvailable()) {
           Optional<I> pull = run.output().pull(0);
           if(pull.isPresent()) {
-            run.input().push(spin(pull.get()));
+            spin(pull.get());
           }
         }
         else synchronized(this) {
@@ -60,10 +57,9 @@ public interface IFunctionSpin<I, O, E extends Exception> {
     run.complete();
     run.gear().signal();
   }
-
-  */
-  public static <T,R> IFunctionSpin<T,R,RuntimeException> of(Function<T,R> f) {
-    return t->f.apply(t);
+  
+  public static <T> ConsumerSpin<T,RuntimeException> of(Consumer<T> c) {
+    return i->c.accept(i);
   }
   
 }

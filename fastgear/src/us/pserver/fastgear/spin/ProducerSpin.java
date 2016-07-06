@@ -19,44 +19,38 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.fastgear.spin.impl;
+package us.pserver.fastgear.spin;
 
-import java.util.Optional;
+import java.util.function.Supplier;
 import us.pserver.fastgear.Running;
-import us.pserver.fastgear.spin.IFunctionSpin;
-import us.pserver.fastgear.spin.RunningSpin;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/07/2016
+ * @version 0.0 - 02/06/2016
  */
-public abstract class FunctionSpin<I, O, E extends Exception> implements IFunctionSpin<I,O,E>, RunningSpin<I,O> {
+@FunctionalInterface
+public interface ProducerSpin<O, E extends Exception> extends RunningSpin<Void,O> {
 
-    public void spin(Running<O,I> run) {
-    while(run.gear().isReady()) {
-      try {
-        if(run.output().isClosed() || run.input().isClosed()) {
-          run.gear().cancel();
-          break;
-        }
-        if(run.output().isAvailable()) {
-          Optional<I> pull = run.output().pull(0);
-          if(pull.isPresent()) {
-            run.input().push(spin(pull.get()));
-          }
-        }
-        else synchronized(this) {
-          this.wait(50);
-        }
+  public O spin() throws E;
+  
+  @Override
+  public default void spin(Running<O,Void> run) {
+    try {
+      if(!run.input().isClosed()) {
+        run.input().push(spin());
       }
-      catch(Exception e) {
-        e.printStackTrace();
-        run.exception(e);
-      }
-    }//while
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      run.exception(e);
+    }
     run.complete();
     run.gear().signal();
   }
-
+    
+  public static <T> ProducerSpin<T,RuntimeException> of(Supplier<T> s) {
+    return ()->s.get();
+  }
+  
 }
