@@ -21,45 +21,15 @@
 
 package us.pserver.fastgear.spin;
 
-import java.util.Optional;
-import java.util.function.Consumer;
 import us.pserver.fastgear.Running;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/06/2016
+ * @version 0.0 - 06/07/2016
  */
-@FunctionalInterface
-public interface ConsumerSpin<I, E extends Exception> {
+public interface RunningSpin<I,O> {
 
-  public void spin(I t) throws E;
-  
-  public default void spin(Running<Void,I> run) {
-    while(!run.output().isClosed()) {
-      try {
-        if(run.output().isAvailable()) {
-          Optional<I> pull = run.output().pull(0);
-          if(pull.isPresent()) {
-            spin(pull.get());
-          }
-        }
-        else synchronized(this) {
-          this.wait(50);
-        }
-      }
-      catch(Exception e) {
-        e.printStackTrace();
-        run.exception(e);
-      }
-    }//while
-    run.complete();
-    run.gear().signal();
-  }
-
-  
-  public static <T> ConsumerSpin<T,RuntimeException> of(Consumer<T> c) {
-    return i->c.accept(i);
-  }
+  public void spin(Running<O,I> run);
   
 }
