@@ -35,13 +35,13 @@ import us.pserver.insane.Sane;
  */
 public interface Running<I,O> {
 
-  public Wire<O> output();
-  
   public Wire<I> input();
+  
+  public Wire<O> output();
   
   public Gear<O,I> gear();
   
-  public boolean isRunning();
+  public boolean isCompleted();
   
   public void exception(Exception exc);
   
@@ -86,6 +86,8 @@ public interface Running<I,O> {
     
     private final List<Consumer<Running<I,O>>> complete;
     
+    private final Holder<Boolean> completed;
+    
     
     public DefRunning(Gear<O,I> gear) {
       this(gear, Wire.defaultWire(), Wire.defaultWire());
@@ -102,6 +104,7 @@ public interface Running<I,O> {
       this.complete = Collections.synchronizedList(
           new ArrayList<Consumer<Running<I,O>>>()
       );
+      this.completed = Holder.sync(false);
     }
     
     
@@ -121,11 +124,11 @@ public interface Running<I,O> {
     public Gear<O,I> gear() {
       return gear;
     }
-
-
+    
+    
     @Override
-    public boolean isRunning() {
-      return gear.isReady();
+    public boolean isCompleted() {
+      return this.completed.get();
     }
 
 
@@ -149,6 +152,7 @@ public interface Running<I,O> {
     
     @Override
     public void complete() {
+      this.completed.set(Boolean.TRUE);
       complete.forEach(c -> c.accept(this));
     }
     

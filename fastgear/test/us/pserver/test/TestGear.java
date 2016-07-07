@@ -33,7 +33,7 @@ import us.pserver.fastgear.Running;
 public class TestGear {
 
   
-  public static void main(String[] args) {
+  public static void main(String[] args) throws InterruptedException {
     Running<String,Integer> run = Gear.<Integer,String>of((Function)
         i->String.valueOf(" - "+ i+ " - ")
     ).start();
@@ -45,7 +45,7 @@ public class TestGear {
       catch(InterruptedException e) {}
     }
     System.out.println("* run.suspend(2000)...");
-    run.gear().suspend(3000);
+    run.gear().suspend(2000);
     for(int i = 0; i < 3; i++) {
       System.out.println("* writing: "+ i);
       run.output().push(i);
@@ -60,6 +60,8 @@ public class TestGear {
       try { Thread.sleep(1000); }
       catch(InterruptedException e) {}
     }
+    run.output().closeOnEmpty();
+    run.gear().join();
   }
   
 }

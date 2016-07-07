@@ -21,6 +21,7 @@
 
 package us.pserver.fastgear;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -43,8 +44,6 @@ import us.pserver.fastgear.spin.Spin;
 public interface Gear<I,O> extends Runnable {
 
   public Running<O,I> start();
-  
-  public Running<O,I> running();
   
   public boolean isReady();
   
@@ -106,6 +105,8 @@ public interface Gear<I,O> extends Runnable {
     
     private final Condition join;
     
+    private final Condition await;
+    
     private final RunningSpin<I,O> spin;
     
     
@@ -115,6 +116,7 @@ public interface Gear<I,O> extends Runnable {
       ready = true;
       lock = new ReentrantLock();
       join = lock.newCondition();
+      await = lock.newCondition();
     }
     
     
@@ -137,6 +139,7 @@ public interface Gear<I,O> extends Runnable {
     public void resume() {
       ready = true;
       Engine.get().engage(this);
+      //await.signalAll();
     }
     
     
@@ -171,12 +174,6 @@ public interface Gear<I,O> extends Runnable {
     }
     
     
-    @Override
-    public Running<O,I> running() {
-      return running;
-    }
-
-
     @Override
     public boolean isReady() {
       return ready;

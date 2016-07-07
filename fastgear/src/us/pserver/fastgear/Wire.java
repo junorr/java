@@ -53,8 +53,6 @@ public interface Wire<T> {
   
   public void onAvailable(Consumer<T> cs);
   
-  public boolean remove(Consumer<T> cs);
-  
   
   public static <U> Wire<U> defaultWire() {
     return new DefWire<>();
@@ -97,11 +95,6 @@ public interface Wire<T> {
 
     @Override public void onAvailable(Consumer<Void> cs) {}
 
-    @Override 
-    public boolean remove(Consumer<Void> cs) {
-      return false;
-    }
-    
   }
   
   
@@ -262,15 +255,6 @@ public interface Wire<T> {
         throw new IllegalStateException("Wire is closed");
       }
       consumers.add(cs);
-    }
-    
-    
-    @Override
-    public boolean remove(Consumer<T> cs) {
-      if(close) {
-        throw new IllegalStateException("Wire is closed");
-      }
-      return consumers.remove(cs);
     }
     
   }
