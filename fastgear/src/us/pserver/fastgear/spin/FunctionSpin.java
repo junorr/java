@@ -37,11 +37,10 @@ public interface FunctionSpin<I,O,E extends Exception> extends RunningSpin<I,O> 
 
   @Override
   public default void spin(Running<O,I> run) {
-    while(run.gear().isReady()) {
+    while(!run.output().isClosed() && !run.input().isClosed()) {
       try {
-        if(run.output().isClosed() || run.input().isClosed()) {
-          run.gear().cancel();
-          break;
+        if(!run.gear().isReady()) synchronized(run) {
+          run.wait();
         }
         if(run.output().isAvailable()) {
           Optional<I> pull = run.output().pull(0);
@@ -50,7 +49,7 @@ public interface FunctionSpin<I,O,E extends Exception> extends RunningSpin<I,O> 
           }
         }
         else synchronized(this) {
-          this.wait(50);
+          this.wait(10);
         }
       }
       catch(Exception e) {
@@ -58,6 +57,7 @@ public interface FunctionSpin<I,O,E extends Exception> extends RunningSpin<I,O> 
         run.exception(e);
       }
     }//while
+    run.gear().cancel();
     run.complete();
     run.gear().signal();
   }

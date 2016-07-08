@@ -86,13 +86,11 @@ public class BeanBuilder {
   public <T> T build(Class<T> cls) throws BuildingException {
     T t = null;
     if(!props.isEmpty()) {
-      Reflector ref = new Reflector();
-      ref.on(cls);
+      Reflector ref = new Reflector(cls);
       t = (T) ref.create();
-      ref.on(t);
       props.forEach((k,v)->{
         //System.out.println("[BeanBuilder].prop{"+ k+ ": "+ v+ "}");
-        if(ref.field(k).isFieldPresent() && v != null) {
+        if(ref.selectField(k).isFieldPresent() && v != null) {
           ref.set(v);
         }
       });

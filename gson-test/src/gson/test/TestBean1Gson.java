@@ -19,41 +19,33 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.fastgear.spin;
+package gson.test;
 
-import java.util.function.Supplier;
-import us.pserver.fastgear.Running;
+import com.google.gson.Gson;
+import us.pserver.tools.timer.Timer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/06/2016
+ * @version 0.0 - 08/07/2016
  */
-@FunctionalInterface
-public interface ProducerSpin<O, E extends Exception> extends RunningSpin<Void,O> {
+public class TestBean1Gson {
 
-  public O spin() throws E;
   
-  @Override
-  public default void spin(Running<O,Void> run) {
-    try {
-      if(!run.gear().isReady()) synchronized(run) {
-        run.wait();
-      }
-      if(!run.input().isClosed()) {
-        run.input().push(spin());
-      }
-    }
-    catch(Exception e) {
-      e.printStackTrace();
-      run.exception(e);
-    }
-    run.complete();
-    run.gear().signal();
-  }
-    
-  public static <T> ProducerSpin<T,RuntimeException> of(Supplier<T> s) {
-    return ()->s.get();
+  public static void main(String[] args) {
+    Gson gson = new Gson();
+    Bean1 b = new Bean1().add(new Bean1().add(new Bean1().add(new Bean1())));
+    System.out.println("* b: "+ b);
+    Timer tm = new Timer.Nanos().start();
+    String json = gson.toJson(b);
+    System.out.println("* toJson: "+ tm.stop());
+    gson = new Gson();
+    System.out.println("* j: "+ json);
+    tm = new Timer.Nanos().start();
+    b = gson.fromJson(json, Bean1.class);
+    System.out.println("* fromJson: "+ tm.stop());
+    System.out.println("* b: "+ b);
+    System.out.println("* b.lst.class="+ b.lst.getClass());
   }
   
 }

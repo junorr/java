@@ -39,8 +39,8 @@ public interface ConsumerSpin<I, E extends Exception> extends RunningSpin<I,Void
   public default void spin(Running<Void,I> run) {
     while(!run.output().isClosed()) {
       try {
-        if(!run.gear().isReady()) synchronized(this) {
-          this.wait();
+        if(!run.gear().isReady()) synchronized(run) {
+          run.wait();
         }
         if(run.output().isAvailable()) {
           Optional<I> pull = run.output().pull(0);
@@ -49,7 +49,7 @@ public interface ConsumerSpin<I, E extends Exception> extends RunningSpin<I,Void
           }
         }
         else synchronized(this) {
-          this.wait(50);
+          this.wait(10);
         }
       }
       catch(Exception e) {
@@ -57,7 +57,6 @@ public interface ConsumerSpin<I, E extends Exception> extends RunningSpin<I,Void
         run.exception(e);
       }
     }//while
-    System.out.println("* loop_out");
     run.gear().cancel();
     run.complete();
     run.gear().signal();

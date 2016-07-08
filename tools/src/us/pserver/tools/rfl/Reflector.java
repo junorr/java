@@ -128,7 +128,8 @@ public class Reflector {
    	try {
      	if(!cct.isAccessible())
        	cct.setAccessible(true);
- 			return cct.newInstance(args);
+ 			obj = cct.newInstance(args);
+      return obj;
    	} catch(Exception ex) {
      	throw new ReflectorException(ex);
     }
@@ -151,7 +152,8 @@ public class Reflector {
    	try {
      	if(!cct.isAccessible())
        	cct.setAccessible(true);
- 			return cct.newInstance((Object[]) null);
+ 			obj = cct.newInstance((Object[]) null);
+      return obj;
    	} catch(Exception ex) {
      	throw new ReflectorException(ex);
  		}

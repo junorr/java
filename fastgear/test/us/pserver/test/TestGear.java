@@ -57,8 +57,8 @@ public class TestGear {
     for(int i = 0; i < 3; i++) {
       System.out.println("* writing: "+ i);
       run.output().push(i);
-      try { Thread.sleep(1000); }
-      catch(InterruptedException e) {}
+      //try { Thread.sleep(1000); }
+      //catch(InterruptedException e) {}
     }
     run.output().closeOnEmpty();
     run.gear().join();

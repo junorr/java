@@ -58,7 +58,7 @@ public final class Engine {
     pool.execute(() -> {
       while(!shutdown.get()) {
         if(gears.isEmpty()) synchronized(this) {
-          try { this.wait(50); }
+          try { this.wait(10); }
           catch(InterruptedException e) {}
         }
         else {

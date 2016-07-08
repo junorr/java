@@ -105,8 +105,6 @@ public interface Gear<I,O> extends Runnable {
     
     private final Condition join;
     
-    private final Condition await;
-    
     private final RunningSpin<I,O> spin;
     
     
@@ -116,7 +114,6 @@ public interface Gear<I,O> extends Runnable {
       ready = true;
       lock = new ReentrantLock();
       join = lock.newCondition();
-      await = lock.newCondition();
     }
     
     
@@ -138,8 +135,9 @@ public interface Gear<I,O> extends Runnable {
     @Override
     public void resume() {
       ready = true;
-      Engine.get().engage(this);
-      //await.signalAll();
+      synchronized(running) {
+        running.notifyAll();
+      }
     }
     
     
@@ -182,9 +180,12 @@ public interface Gear<I,O> extends Runnable {
     
     @Override
     public void cancel() {
-      ready = false;
       running.input().close();
       running.output().close();
+      ready = false;
+      synchronized(running) {
+        running.notifyAll();
+      }
       Engine.get().cancel(this);
       signal();
     }

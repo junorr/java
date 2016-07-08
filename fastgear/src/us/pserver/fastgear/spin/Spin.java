@@ -37,9 +37,10 @@ public interface Spin<E extends Exception> extends Runnable, RunningSpin<Void,Vo
   @Override
   public default void spin(Running<Void,Void> run) {
     try {
-      if(!run.input().isClosed() && !run.output().isClosed()) {
-        spin();
+      if(!run.gear().isReady()) synchronized(run) {
+        run.wait();
       }
+      spin();
     }
     catch(Exception e) {
       e.printStackTrace();

@@ -31,7 +31,8 @@ import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -49,14 +50,13 @@ public class SerialObject {
   
   
   public SerialObject(Object s) {
-    Valid.off(s).forNull().fail(Serializable.class);
+    Sane.of(s).get(Checkup.isNotNull());
     obj = s;
   }
   
   
   public SerialObject(byte[] serial) {
-    this.serial = Valid.off(serial)
-        .forEmpty().getOrFail();
+    this.serial = Sane.of(serial).get(Checkup.isNotNull());
   }
   
   
