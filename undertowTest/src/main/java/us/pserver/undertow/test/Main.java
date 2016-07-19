@@ -54,7 +54,7 @@ public class Main {
     ServerConfig conf = ServerConfig.builder().load(
         Paths.get(Main.class.getResource("/server-config.json").toURI())
     ).build();
-    System.out.println("* "+ conf);
+    System.out.println("INFO: "+ conf);
     new Server(conf).start();
   }
   
