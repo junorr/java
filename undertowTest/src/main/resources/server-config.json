@@ -1,0 +1,8 @@
+{
+  "serverAddress": "127.0.0.1",
+  "serverPort": 9088,
+  "useDispatcher": true,
+  "handlers": {
+    "/": "us.pserver.undertow.test.Main$HelloHandler"
+  }
+}
