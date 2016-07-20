@@ -19,38 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.undertow.test;
+package br.com.bb.disec.micro.json;
 
-import io.undertow.Undertow;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import java.lang.reflect.Type;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/07/2016
  */
-public class ShutdownHandler implements HttpHandler {
-  
-  private final Server server;
-  
-  
-  public ShutdownHandler(Server server) {
-    if(server == null) {
-      throw new IllegalArgumentException("Invalid Undertow Server: "+ server);
-    }
-    this.server = server;
-  }
-  
+public class ClassConverter implements JsonDeserializer<Class>, JsonSerializer<Class> {
 
   @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    System.out.println("* Requested URI: "+ hse.getRequestURI());
-    if(hse.getRequestURI().contains("shutdown")) {
-      hse.addExchangeCompleteListener((h,n)->server.stop());
-      hse.getResponseSender().send("Server Shutdown");
-      hse.endExchange();
+  public Class deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
+    try {
+      return Class.forName(je.getAsString());
     }
+    catch(ClassNotFoundException e) {
+      throw new JsonParseException(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public JsonElement serialize(Class t, Type type, JsonSerializationContext jsc) {
+    return new JsonPrimitive(t.getName());
   }
 
 }

@@ -19,38 +19,28 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.undertow.test;
+package br.com.bb.disec.micro.handler;
 
-import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/07/2016
+ * @version 0.0 - 20/07/2016
  */
-public class ShutdownHandler implements HttpHandler {
-  
-  private final Server server;
-  
-  
-  public ShutdownHandler(Server server) {
-    if(server == null) {
-      throw new IllegalArgumentException("Invalid Undertow Server: "+ server);
-    }
-    this.server = server;
-  }
-  
+public class HelloHandler implements HttpHandler {
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    System.out.println("* Requested URI: "+ hse.getRequestURI());
-    if(hse.getRequestURI().contains("shutdown")) {
-      hse.addExchangeCompleteListener((h,n)->server.stop());
-      hse.getResponseSender().send("Server Shutdown");
-      hse.endExchange();
-    }
+    String str = this.toString();
+    StringBuilder sb = new StringBuilder()
+        .append("<h2 style='font-family: monospace;'>")
+        .append("&bull; HelloHandler Instance ID: ")
+        .append(str.substring(str.indexOf('@')))
+        .append("</h2>");
+    hse.getResponseSender().send(sb.toString());
+    hse.endExchange();
   }
-
+    
 }

@@ -19,11 +19,14 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.undertow.test;
+package br.com.bb.disec.micro;
 
+import br.com.bb.disec.micro.handler.DispatcherHandler;
+import br.com.bb.disec.micro.handler.ShutdownHandler;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.handlers.PathHandler;
+import org.xnio.Options;
 
 /**
  *
@@ -43,9 +46,11 @@ public class Server {
     }
     this.config = conf;
     PathHandler ph = this.initPathHandler();
-    this.server = Undertow.builder().addHttpListener(
-        config.getPort(), config.getAddress(), ph
-    ).build();
+    this.server = Undertow.builder()
+        //.setServerOption(Options.WORKER_TASK_MAX_THREADS, 10)
+        .setWorkerOption(Options.WORKER_TASK_MAX_THREADS, 10)
+        .addHttpListener(config.getPort(), config.getAddress(), ph)
+        .build();
     ph.addExactPath("/shutdown", new ShutdownHandler(this));
   }
   

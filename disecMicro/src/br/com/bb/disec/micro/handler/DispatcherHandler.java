@@ -19,9 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.undertow.test;
+package br.com.bb.disec.micro.handler;
 
-import io.undertow.Undertow;
+import br.com.bb.disec.micro.ServerConfig;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
@@ -30,27 +30,38 @@ import io.undertow.server.HttpServerExchange;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/07/2016
  */
-public class ShutdownHandler implements HttpHandler {
+public class DispatcherHandler implements HttpHandler {
+
+  private final ServerConfig config;
   
-  private final Server server;
+  private final String path;
   
   
-  public ShutdownHandler(Server server) {
-    if(server == null) {
-      throw new IllegalArgumentException("Invalid Undertow Server: "+ server);
+  public DispatcherHandler(String path, ServerConfig conf) {
+    if(path == null || path.trim().isEmpty()) {
+      throw new IllegalArgumentException("Invalid Path: "+ path);
     }
-    this.server = server;
+    if(conf == null || conf.handlers().isEmpty()) {
+      throw new IllegalArgumentException("Invalid ServerConfig: "+ conf);
+    }
+    this.path = path;
+    this.config = conf;
   }
   
-
+  
+  public String getPath() {
+    return path;
+  }
+  
+  
+  public ServerConfig getServerConfig() {
+    return config;
+  }
+  
+  
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    System.out.println("* Requested URI: "+ hse.getRequestURI());
-    if(hse.getRequestURI().contains("shutdown")) {
-      hse.addExchangeCompleteListener((h,n)->server.stop());
-      hse.getResponseSender().send("Server Shutdown");
-      hse.endExchange();
-    }
+    config.createHandler(path).ifPresent(hnd->hse.dispatch(hnd));
   }
-
+  
 }

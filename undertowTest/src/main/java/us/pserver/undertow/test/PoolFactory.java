@@ -21,36 +21,51 @@
 
 package us.pserver.undertow.test;
 
-import io.undertow.Undertow;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/07/2016
+ * @version 0.0 - 20/07/2016
  */
-public class ShutdownHandler implements HttpHandler {
+public class PoolFactory {
+
+  public static final PoolFactory instance = new PoolFactory();
   
-  private final Server server;
+  private final Map<String,ConnectionPool> pools;
   
   
-  public ShutdownHandler(Server server) {
-    if(server == null) {
-      throw new IllegalArgumentException("Invalid Undertow Server: "+ server);
-    }
-    this.server = server;
+  private PoolFactory() {
+    pools = Collections.synchronizedMap(
+        new HashMap<String,ConnectionPool>()
+    );
   }
   
-
-  @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    System.out.println("* Requested URI: "+ hse.getRequestURI());
-    if(hse.getRequestURI().contains("shutdown")) {
-      hse.addExchangeCompleteListener((h,n)->server.stop());
-      hse.getResponseSender().send("Server Shutdown");
-      hse.endExchange();
-    }
+  
+  public static void close() {
+    instance.pools.values().forEach(ConnectionPool::closeDataSource);
+    instance.pools.clear();
   }
-
+  
+  
+  public static Optional<ConnectionPool> getPool(String dsname) {
+    Optional<ConnectionPool> opt = Optional.empty();
+    if(dsname != null && !dsname.trim().isEmpty()) {
+      if(instance.pools.containsKey(dsname)) {
+        opt = Optional.of(instance.pools.get(dsname));
+      }
+      else {
+        try {
+          opt = Optional.of(ConnectionPool.createPool(dsname));
+          instance.pools.put(dsname, opt.get());
+        } catch(IOException e) {}
+      }
+    }
+    return opt;
+  }
+  
 }

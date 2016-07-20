@@ -19,9 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.undertow.test;
+package br.com.bb.disec.micro.handler;
 
-import io.undertow.Undertow;
+import br.com.bb.disec.micro.Server;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
@@ -45,7 +45,6 @@ public class ShutdownHandler implements HttpHandler {
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    System.out.println("* Requested URI: "+ hse.getRequestURI());
     if(hse.getRequestURI().contains("shutdown")) {
       hse.addExchangeCompleteListener((h,n)->server.stop());
       hse.getResponseSender().send("Server Shutdown");
