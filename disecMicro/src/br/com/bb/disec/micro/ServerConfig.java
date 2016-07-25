@@ -56,6 +56,8 @@ public class ServerConfig {
   
   private final boolean dispatcherEnabled;
   
+  private final boolean logHandlerEnabled;
+  
   private final boolean shutdownHandler;
   
   private final int maxWorkerThreads;
@@ -65,7 +67,16 @@ public class ServerConfig {
   private final Map<String,Class> handlers;
   
   
-  public ServerConfig(String address, int port, boolean dispatcherEnabled, boolean shutdownHandler, int ioThreads, int maxWorkerThreads, Map<String,Class> map) {
+  public ServerConfig(
+      String address, 
+      int port, 
+      boolean dispatcherEnabled, 
+      boolean logHandlerEnabled, 
+      boolean shutdownHandler, 
+      int ioThreads, 
+      int maxWorkerThreads, 
+      Map<String,Class> map
+  ) {
     if(address == null || address.trim().isEmpty()) {
       throw new IllegalArgumentException("Invalid Address: "+ address);
     }
@@ -75,6 +86,7 @@ public class ServerConfig {
     this.address = address;
     this.port = port;
     this.dispatcherEnabled = dispatcherEnabled;
+    this.logHandlerEnabled = logHandlerEnabled;
     this.shutdownHandler = shutdownHandler;
     this.ioThreads = (ioThreads > 0 
         ? ioThreads 
@@ -110,6 +122,11 @@ public class ServerConfig {
 
   public boolean isDispatcherEnabled() {
     return dispatcherEnabled;
+  }
+  
+  
+  public boolean isLogHandlerEnabled() {
+    return logHandlerEnabled;
   }
   
   
@@ -200,7 +217,8 @@ public class ServerConfig {
         + "address: " + address 
         + "\n    port: " + port 
         + "\n    dispatcherEnabled: " + dispatcherEnabled 
-        + "\n    shutdownHandler: " + shutdownHandler
+        + "\n    logHandlerEnabled: " + logHandlerEnabled
+        + "\n    shutdownHandlerEnabled: " + shutdownHandler
         + "\n    ioThreads: " + ioThreads 
         + "\n    maxWorkerThreads: " + maxWorkerThreads 
         + "\n    handlers: " + handlers + "\n}";
@@ -219,17 +237,20 @@ public class ServerConfig {
     
     private boolean dispatcherEnabled;
     
+    private boolean logHandlerEnabled;
+    
     private int maxWorkerThreads;
     
     private int ioThreads;
     
-    private boolean shutdownHandler;
+    private boolean shutdownHandlerEnabled;
     
     private Map<String,Class> handlers;
     
     
     public Builder() {
       handlers = new HashMap<>();
+      logHandlerEnabled = true;
     }
     
     
@@ -272,15 +293,26 @@ public class ServerConfig {
       this.dispatcherEnabled = useDispatcher;
       return this;
     }
+    
+    
+    public Builder setLogHandlerEnabled(boolean logHandlerEnabled) {
+      this.logHandlerEnabled = logHandlerEnabled;
+      return this;
+    }
+    
+    
+    public boolean isLogHandlerEnabled() {
+      return logHandlerEnabled;
+    }
 
 
     public boolean isShutdownHandlerEnabled() {
-      return shutdownHandler;
+      return shutdownHandlerEnabled;
     }
 
 
     public Builder setShutdownHandlerEnabled(boolean enableShutdownHandler) {
-      this.shutdownHandler = enableShutdownHandler;
+      this.shutdownHandlerEnabled = enableShutdownHandler;
       return this;
     }
     
@@ -323,7 +355,8 @@ public class ServerConfig {
           serverAddress, 
           serverPort, 
           dispatcherEnabled, 
-          shutdownHandler, 
+          logHandlerEnabled,
+          shutdownHandlerEnabled, 
           ioThreads, 
           maxWorkerThreads, 
           handlers
@@ -351,6 +384,7 @@ public class ServerConfig {
         this.setServerAddress(b.getServerAddress())
             .setServerPort(b.getServerPort())
             .setDispatcherEnabled(b.isDispatcherEnabled())
+            .setLogHandlerEnabled(logHandlerEnabled)
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
@@ -369,6 +403,7 @@ public class ServerConfig {
         this.setServerAddress(b.getServerAddress())
             .setServerPort(b.getServerPort())
             .setDispatcherEnabled(b.isDispatcherEnabled())
+            .setLogHandlerEnabled(logHandlerEnabled)
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
@@ -384,7 +419,8 @@ public class ServerConfig {
           + "address: " + serverAddress 
           + "\n    port: " + serverPort 
           + "\n    dispatcherEnabled: " + dispatcherEnabled 
-          + "\n    shutdownHandler: " + shutdownHandler
+          + "\n    logHandlerEnabled: " + logHandlerEnabled
+          + "\n    shutdownHandlerEnabled: " + shutdownHandlerEnabled
           + "\n    ioThreads: " + ioThreads 
           + "\n    maxWorkerThreads: " + maxWorkerThreads 
           + "\n    handlers: " + handlers + "\n}";

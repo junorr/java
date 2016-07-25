@@ -22,7 +22,6 @@
 package br.com.bb.disec.micro.db;
 
 import br.com.bb.disec.micro.json.JsonResultSet;
-import br.com.bb.disec.micro.util.IniSql;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -36,18 +35,18 @@ public class SqlQuery {
 
   private final Connection connection;
   
-  private final IniSql iniSql;
+  private final SqlStore store;
   
   
-  public SqlQuery(Connection con, IniSql sqls) {
+  public SqlQuery(Connection con, SqlStore sqls) {
     if(con == null) {
-      throw new IllegalArgumentException("Invalid Null Connection");
+      throw new IllegalArgumentException("Bad Null Connection");
     }
     if(sqls == null || sqls.queries().isEmpty()) {
-      throw new IllegalArgumentException("Invalid Empty IniSql");
+      throw new IllegalArgumentException("Bad Empty SqlStore");
     }
     this.connection = con;
-    this.iniSql = sqls;
+    this.store = sqls;
   }
 
 
@@ -56,17 +55,17 @@ public class SqlQuery {
   }
 
 
-  public IniSql getIniSql() {
-    return iniSql;
+  public SqlStore getIniSql() {
+    return store;
   }
   
   
   public JsonResultSet exec(String query, Object ... args) throws SQLException {
-    if(query == null || !iniSql.queries().containsKey(query)) {
+    if(query == null || !store.queries().containsKey(query)) {
       throw new IllegalArgumentException("Query Not Found ("+ query+ ")");
     }
     PreparedStatement ps = connection
-        .prepareStatement(iniSql.queries().get(query));
+        .prepareStatement(store.queries().get(query));
     try {
       if(args != null && args.length > 0) {
         for(int i = 0; i < args.length; i++) {
@@ -84,6 +83,27 @@ public class SqlQuery {
   
   public String execJson(String query, Object ... args) throws SQLException {
     return this.exec(query, args).toJson();
+  }
+  
+  
+  public int update(String query, Object ... args) throws SQLException {
+    if(query == null || !store.queries().containsKey(query)) {
+      throw new IllegalArgumentException("Query Not Found ("+ query+ ")");
+    }
+    PreparedStatement ps = connection
+        .prepareStatement(store.queries().get(query));
+    try {
+      if(args != null && args.length > 0) {
+        for(int i = 0; i < args.length; i++) {
+          ps.setObject(i+1, args[i]);
+        }
+      }
+      return ps.executeUpdate();
+    }
+    finally {
+      ps.close();
+      connection.close();
+    }
   }
   
 }

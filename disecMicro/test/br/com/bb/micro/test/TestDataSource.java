@@ -56,7 +56,7 @@ public class TestDataSource {
     maximumPoolSize=10
     */
     //HikariDataSource hds = new HikariDataSource(hconf);
-    ConnectionPool cp = PoolFactory.getPool("103").get();
+    ConnectionPool cp = PoolFactory.getPool("103");
     HikariDataSource hds = cp.getDataSource();
     System.out.println("* dataSourceClassName---="+ hds.getDataSourceClassName());
     System.out.println("* dataSource.poolName---="+ hds.getPoolName());

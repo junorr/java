@@ -50,7 +50,12 @@ public class URIParam {
   
   
   public int length() {
-    return params.size();
+    return params.size() -1;
+  }
+  
+  
+  public String getURI() {
+    return uri;
   }
   
   
@@ -91,6 +96,15 @@ public class URIParam {
       }
       return this.getParam(index);
     }
+  }
+  
+  
+  public Object[] getObjectArgs() {
+    Object[] args = new Object[this.length()];
+    for(int i = 0; i < this.length(); i++) {
+      args[i] = this.getObject(i);
+    }
+    return args;
   }
   
 }

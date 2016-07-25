@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.util;
+package br.com.bb.disec.micro.db;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -36,7 +36,7 @@ import java.util.Map;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/07/2016
  */
-public class IniSql {
+public class SqlStore {
   
   public static final String DEFAULT_INI_SQL = "/resources/sql.ini";
 
@@ -46,21 +46,22 @@ public class IniSql {
   private final Map<String,String> queries;
   
   
-  public IniSql() {
-    this(IniSql.class.getResource(DEFAULT_INI_SQL));
+  public SqlStore() throws IOException {
+    this(SqlStore.class.getResource(DEFAULT_INI_SQL));
   }
   
   
-  public IniSql(String file) {
+  public SqlStore(String file) throws IOException {
     if(file == null || file.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad File Name: "+ file);
     }
     this.file = Paths.get(file);
     this.queries = new HashMap<>();
+    this.readSource();
   }
   
   
-  public IniSql(URL url) {
+  public SqlStore(URL url) throws IOException {
     if(url == null) {
       throw new IllegalArgumentException("Bad URL: "+ url);
     }
@@ -70,10 +71,11 @@ public class IniSql {
       throw new IllegalArgumentException("Bad URL: "+ e.getMessage(), e);
     }
     this.queries = new HashMap<>();
+    this.readSource();
   }
   
   
-  public IniSql readSource() throws IOException {
+  private SqlStore readSource() throws IOException {
     Iterator<String> it = Files.lines(file).iterator();
     String key = null;
     StringBuilder value = new StringBuilder();

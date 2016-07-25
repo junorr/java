@@ -24,7 +24,7 @@ package br.com.bb.micro.test;
 import br.com.bb.disec.micro.Main;
 import br.com.bb.disec.micro.db.ConnectionPool;
 import br.com.bb.disec.micro.db.SqlQuery;
-import br.com.bb.disec.micro.util.IniSql;
+import br.com.bb.disec.micro.db.SqlStore;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -37,10 +37,9 @@ public class TestIniSql {
 
   
   public static void main(String[] args) throws IOException, SQLException {
-    IniSql sql = new IniSql(Main.class
-        .getResource("/resources/statements.ini")
+    SqlStore sql = new SqlStore(Main.class
+        .getResource("/resources/sql.ini")
     );
-    sql.readSource();
     System.out.println("* despesas----: "+ sql.queries().get("despesas"));
     System.out.println("* despesasTipo: "+ sql.queries().get("despesasTipo"));
     System.out.println("* despesas PACOTE:");

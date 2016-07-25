@@ -32,7 +32,7 @@ import java.nio.file.Paths;
  */
 public class Main {
   
-  public static final String SERVER_CONF_FILE = "/resources/server-config.json";
+  public static final String SERVER_CONF_FILE = "/resources/serverconf.json";
   
   
   public static void main(String[] args) throws IOException, URISyntaxException {

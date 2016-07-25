@@ -22,9 +22,11 @@
 package br.com.bb.disec.micro;
 
 import br.com.bb.disec.micro.handler.DispatcherHandler;
+import br.com.bb.disec.micro.handler.LogHandler;
 import br.com.bb.disec.micro.handler.ShutdownHandler;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import org.xnio.Options;
 
@@ -45,11 +47,17 @@ public class Server {
       throw new IllegalArgumentException("Invalid ServerConfig: "+ conf);
     }
     this.config = conf;
+    HttpHandler root = null;
     PathHandler ph = this.initPathHandler();
+    if(config.isLogHandlerEnabled()) {
+      root = new LogHandler(ph);
+    } else {
+      root = ph;
+    }
     this.server = Undertow.builder()
         .setIoThreads(config.getIoThreads())
         .setWorkerOption(Options.WORKER_TASK_MAX_THREADS, config.getMaxWorkerThreads())
-        .addHttpListener(config.getPort(), config.getAddress(), ph)
+        .addHttpListener(config.getPort(), config.getAddress(), root)
         .build();
     if(config.isShutdownHandlerEnabled()) {
       ph.addExactPath("/shutdown", new ShutdownHandler(this));

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
@@ -37,6 +38,8 @@ public class PoolFactory {
   
   private final Map<String,ConnectionPool> pools;
   
+  private final ReentrantLock lock;
+  
   
   private PoolFactory() {
     pools = Collections.synchronizedMap(
@@ -45,29 +48,42 @@ public class PoolFactory {
     Runtime.getRuntime().addShutdownHook(
         new Thread(()->PoolFactory.closePools())
     );
+    lock = new ReentrantLock();
   }
   
   
   public void close() {
-    pools.values().forEach(ConnectionPool::closeDataSource);
-    pools.clear();
+    lock.lock();
+    try {
+      pools.values().forEach(ConnectionPool::closeDataSource);
+      pools.clear();
+    }
+    finally {
+      lock.unlock();
+    }
   }
   
   
   public ConnectionPool get(String dsname) {
-    if(dsname == null || !pools.containsKey(dsname)) {
+    if(dsname == null || dsname.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad DataSource Name: "+ dsname);
     }
     ConnectionPool pool = null;
-    if(dsname != null && !dsname.trim().isEmpty()) {
-      if(pools.containsKey(dsname)) {
-        pool = pools.get(dsname);
-      }
-      else {
-        try {
-          pool = ConnectionPool.createPool(dsname);
-          pools.put(dsname, pool);
-        } catch(IOException e) {}
+    if(pools.containsKey(dsname)) {
+      pool = pools.get(dsname);
+    }
+    else {
+      lock.lock();
+      try {
+        if(pools.containsKey(dsname)) {
+          pool = pools.get(dsname);
+        }
+        pool = ConnectionPool.createPool(dsname);
+        pools.put(dsname, pool);
+      } 
+      catch(IOException e) {}
+      finally {
+        lock.unlock();
       }
     }
     return pool;

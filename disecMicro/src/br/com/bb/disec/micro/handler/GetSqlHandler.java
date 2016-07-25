@@ -23,48 +23,67 @@ package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
+import br.com.bb.disec.micro.db.SqlStore;
 import br.com.bb.disec.micro.db.SqlStorePool;
 import br.com.bb.disec.micro.util.URIParam;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HttpString;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.sql.SQLException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/07/2016
+ * @version 0.0 - 22/07/2016
  */
-public class LogHandler implements HttpHandler {
+public class GetSqlHandler implements HttpHandler {
   
-  public static final String DB_LOG = "103";
+  public static final String DEFAULT_DB = "103";
   
-  public static final String SQL_INSERT_LOG = "insertLog";
-  
-  
-  private final HttpHandler next;
+  private final SqlStore store;
   
   
-  public LogHandler(HttpHandler next) {
-    if(next == null) {
-      throw new IllegalArgumentException("Bad Next HttpHandler: "+ next);
+  public GetSqlHandler() {
+    try {
+      store = SqlStorePool.getDefaultStore();
     }
-    this.next = next;
+    catch(IOException e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
+  }
+  
+  
+  public SqlQuery getQuery() throws IOException, SQLException {
+    return new SqlQuery(PoolFactory
+        .getPool(DEFAULT_DB).getConnection(), store
+    );
   }
   
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     URIParam pars = new URIParam(hse.getRequestURI());
-    new SqlQuery(
-        PoolFactory.getPool(DB_LOG).getConnection(), 
-        SqlStorePool.getDefaultStore()
-    ).update(
-        SQL_INSERT_LOG, 
-        hse.getConnection().getPeerAddress().toString(), 
-        hse.getRequestURL(), 
-        pars.getContext(), 
-        pars.getURI()
+    hse.getResponseHeaders().put(
+        new HttpString("Content-Type"), "application/json; charset=utf-8"
     );
-    next.handleRequest(hse);
+    String query = pars.getParam(0);
+    if(!store.queries().containsKey(query)) {
+      System.out.println("ERROR: [GetSqlHandler] Query Not Found ("+ query+ ")");
+      hse.setStatusCode(404)
+          .setReasonPhrase("Not Found ("+ query+ ")");
+      hse.endExchange();
+      return;
+    }
+    Object[] args = new Object[pars.length() -1];
+    for(int i = 0; i < pars.length() -1; i++) {
+      args[i] = pars.getObject(i+1);
+    }
+    String resp = this.getQuery()
+        .exec(query, args).toPrettyPrintJson();
+    hse.getResponseSender().send(resp, Charset.forName("UTF-8"));
+    hse.endExchange();
   }
-    
+
 }
