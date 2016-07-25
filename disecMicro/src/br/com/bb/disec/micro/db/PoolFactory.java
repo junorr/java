@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  *
@@ -43,29 +42,45 @@ public class PoolFactory {
     pools = Collections.synchronizedMap(
         new HashMap<String,ConnectionPool>()
     );
+    Runtime.getRuntime().addShutdownHook(
+        new Thread(()->PoolFactory.closePools())
+    );
   }
   
   
-  public static void close() {
-    instance.pools.values().forEach(ConnectionPool::closeDataSource);
-    instance.pools.clear();
+  public void close() {
+    pools.values().forEach(ConnectionPool::closeDataSource);
+    pools.clear();
   }
   
   
-  public static Optional<ConnectionPool> getPool(String dsname) {
-    Optional<ConnectionPool> opt = Optional.empty();
+  public ConnectionPool get(String dsname) {
+    if(dsname == null || !pools.containsKey(dsname)) {
+      throw new IllegalArgumentException("Bad DataSource Name: "+ dsname);
+    }
+    ConnectionPool pool = null;
     if(dsname != null && !dsname.trim().isEmpty()) {
-      if(instance.pools.containsKey(dsname)) {
-        opt = Optional.of(instance.pools.get(dsname));
+      if(pools.containsKey(dsname)) {
+        pool = pools.get(dsname);
       }
       else {
         try {
-          opt = Optional.of(ConnectionPool.createPool(dsname));
-          instance.pools.put(dsname, opt.get());
+          pool = ConnectionPool.createPool(dsname);
+          pools.put(dsname, pool);
         } catch(IOException e) {}
       }
     }
-    return opt;
+    return pool;
+  }
+  
+  
+  public static void closePools() {
+    instance.close();
+  }
+  
+  
+  public static ConnectionPool getPool(String dsname) {
+    return instance.get(dsname);
   }
   
 }

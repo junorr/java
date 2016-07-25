@@ -21,7 +21,7 @@
 
 package br.com.bb.disec.micro;
 
-import br.com.bb.disec.micro.json.ClassConverter;
+import br.com.bb.disec.micro.json.JsonClass;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpHandler;
@@ -44,17 +44,28 @@ import java.util.Optional;
  * @version 0.0 - 19/07/2016
  */
 public class ServerConfig {
-
+  
+  public static final int DEFAULT_IO_THREADS = 4;
+  
+  public static final int DEFAULT_MAX_WORKER_THREADS = 10;
+  
+  
   private final String address;
   
   private final int port;
   
-  private final boolean useDispatcher;
+  private final boolean dispatcherEnabled;
+  
+  private final boolean shutdownHandler;
+  
+  private final int maxWorkerThreads;
+  
+  private final int ioThreads;
   
   private final Map<String,Class> handlers;
   
   
-  public ServerConfig(String address, int port, boolean useDispatcher, Map<String,Class> map) {
+  public ServerConfig(String address, int port, boolean dispatcherEnabled, boolean shutdownHandler, int ioThreads, int maxWorkerThreads, Map<String,Class> map) {
     if(address == null || address.trim().isEmpty()) {
       throw new IllegalArgumentException("Invalid Address: "+ address);
     }
@@ -63,7 +74,16 @@ public class ServerConfig {
     }
     this.address = address;
     this.port = port;
-    this.useDispatcher = useDispatcher;
+    this.dispatcherEnabled = dispatcherEnabled;
+    this.shutdownHandler = shutdownHandler;
+    this.ioThreads = (ioThreads > 0 
+        ? ioThreads 
+        : DEFAULT_IO_THREADS
+    );
+    this.maxWorkerThreads = (maxWorkerThreads > 0 
+        ? maxWorkerThreads 
+        : DEFAULT_MAX_WORKER_THREADS
+    );
     if(map != null) {
       this.handlers = Collections.unmodifiableMap(map);
     }
@@ -88,8 +108,23 @@ public class ServerConfig {
   }
 
 
-  public boolean isUseDispatcher() {
-    return useDispatcher;
+  public boolean isDispatcherEnabled() {
+    return dispatcherEnabled;
+  }
+  
+  
+  public boolean isShutdownHandlerEnabled() {
+    return shutdownHandler;
+  }
+
+
+  public int getMaxWorkerThreads() {
+    return maxWorkerThreads;
+  }
+
+
+  public int getIoThreads() {
+    return ioThreads;
   }
 
 
@@ -161,7 +196,14 @@ public class ServerConfig {
 
   @Override
   public String toString() {
-    return "ServerConfig{\n    " + "address: " + address + "\n    port: " + port + "\n    useDispatcher: " + useDispatcher + "\n    handlers: " + handlers + "\n}";
+    return "ServerConfig{\n    " 
+        + "address: " + address 
+        + "\n    port: " + port 
+        + "\n    dispatcherEnabled: " + dispatcherEnabled 
+        + "\n    shutdownHandler: " + shutdownHandler
+        + "\n    ioThreads: " + ioThreads 
+        + "\n    maxWorkerThreads: " + maxWorkerThreads 
+        + "\n    handlers: " + handlers + "\n}";
   }
   
   
@@ -175,7 +217,13 @@ public class ServerConfig {
     
     private int serverPort;
     
-    private boolean dispatcher;
+    private boolean dispatcherEnabled;
+    
+    private int maxWorkerThreads;
+    
+    private int ioThreads;
+    
+    private boolean shutdownHandler;
     
     private Map<String,Class> handlers;
     
@@ -215,16 +263,27 @@ public class ServerConfig {
     }
 
 
-    public boolean isUseDispatcher() {
-      return dispatcher;
+    public boolean isDispatcherEnabled() {
+      return dispatcherEnabled;
     }
 
 
-    public Builder setUseDispatcher(boolean useDispatcher) {
-      this.dispatcher = useDispatcher;
+    public Builder setDispatcherEnabled(boolean useDispatcher) {
+      this.dispatcherEnabled = useDispatcher;
       return this;
     }
 
+
+    public boolean isShutdownHandlerEnabled() {
+      return shutdownHandler;
+    }
+
+
+    public Builder setShutdownHandlerEnabled(boolean enableShutdownHandler) {
+      this.shutdownHandler = enableShutdownHandler;
+      return this;
+    }
+    
 
     public Map<String, Class> getHandlers() {
       return handlers;
@@ -235,17 +294,47 @@ public class ServerConfig {
       this.handlers = handlers;
       return this;
     }
+
+
+    public int getMaxWorkerThreads() {
+      return maxWorkerThreads;
+    }
+
+
+    public Builder setMaxWorkerThreads(int maxWorkerThreads) {
+      this.maxWorkerThreads = maxWorkerThreads;
+      return this;
+    }
+
+
+    public int getIoThreads() {
+      return ioThreads;
+    }
+
+
+    public Builder setIoThreads(int ioThreads) {
+      this.ioThreads = ioThreads;
+      return this;
+    }
     
     
     public ServerConfig build() {
-      return new ServerConfig(serverAddress, serverPort, dispatcher, handlers);
+      return new ServerConfig(
+          serverAddress, 
+          serverPort, 
+          dispatcherEnabled, 
+          shutdownHandler, 
+          ioThreads, 
+          maxWorkerThreads, 
+          handlers
+      );
     }
     
     
     public Builder save(Path path) throws IOException {
       try (FileWriter fw = new FileWriter(path.toFile())) {
         Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Class.class, new ClassConverter())
+            .registerTypeAdapter(Class.class, new JsonClass())
             .setPrettyPrinting().create();
         fw.write(gson.toJson(this));
       }
@@ -256,13 +345,16 @@ public class ServerConfig {
     public Builder load(Path path) throws IOException {
       try (FileReader fr = new FileReader(path.toFile())) {
         Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Class.class, new ClassConverter())
+            .registerTypeAdapter(Class.class, new JsonClass())
             .create();
         Builder b = gson.fromJson(fr, Builder.class);
         this.setServerAddress(b.getServerAddress())
             .setServerPort(b.getServerPort())
-            .setUseDispatcher(b.isUseDispatcher())
-            .setHandlers(b.getHandlers());
+            .setDispatcherEnabled(b.isDispatcherEnabled())
+            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
+            .setHandlers(b.getHandlers())
+            .setIoThreads(b.getIoThreads())
+            .setMaxWorkerThreads(b.getMaxWorkerThreads());
         return this;
       }
     }
@@ -271,13 +363,16 @@ public class ServerConfig {
     public Builder load(InputStream input) throws IOException {
       try (InputStreamReader ir = new InputStreamReader(input)) {
         Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Class.class, new ClassConverter())
+            .registerTypeAdapter(Class.class, new JsonClass())
             .create();
         Builder b = gson.fromJson(ir, Builder.class);
         this.setServerAddress(b.getServerAddress())
             .setServerPort(b.getServerPort())
-            .setUseDispatcher(b.isUseDispatcher())
-            .setHandlers(b.getHandlers());
+            .setDispatcherEnabled(b.isDispatcherEnabled())
+            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
+            .setHandlers(b.getHandlers())
+            .setIoThreads(b.getIoThreads())
+            .setMaxWorkerThreads(b.getMaxWorkerThreads());
         return this;
       }
     }
@@ -285,7 +380,14 @@ public class ServerConfig {
 
     @Override
     public String toString() {
-      return "ServerConfig.Builder{\n    " + "address: " + serverAddress + "\n    port: " + serverPort + "\n    useDispatcher: " + dispatcher + "\n    handlers: " + handlers + "\n}";
+      return "ServerConfig.Builder{\n    " 
+          + "address: " + serverAddress 
+          + "\n    port: " + serverPort 
+          + "\n    dispatcherEnabled: " + dispatcherEnabled 
+          + "\n    shutdownHandler: " + shutdownHandler
+          + "\n    ioThreads: " + ioThreads 
+          + "\n    maxWorkerThreads: " + maxWorkerThreads 
+          + "\n    handlers: " + handlers + "\n}";
     }
     
   }

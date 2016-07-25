@@ -74,7 +74,6 @@ public class TestDataSource {
     rs.next();
     System.out.println("* MySQL SysDate---------= "+ rs.getString(1));
     cp.close(cn, st, rs);
-    PoolFactory.close();
   }
   
 }

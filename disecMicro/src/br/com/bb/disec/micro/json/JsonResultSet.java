@@ -90,6 +90,9 @@ public class JsonResultSet {
     catch(Exception ex) {
       throw new SQLException(ex.getMessage(), ex);
     }
+    finally {
+      r.close();
+    }
   }
   
   

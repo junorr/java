@@ -47,17 +47,19 @@ public class Server {
     this.config = conf;
     PathHandler ph = this.initPathHandler();
     this.server = Undertow.builder()
-        //.setServerOption(Options.WORKER_TASK_MAX_THREADS, 10)
-        .setWorkerOption(Options.WORKER_TASK_MAX_THREADS, 10)
+        .setIoThreads(config.getIoThreads())
+        .setWorkerOption(Options.WORKER_TASK_MAX_THREADS, config.getMaxWorkerThreads())
         .addHttpListener(config.getPort(), config.getAddress(), ph)
         .build();
-    ph.addExactPath("/shutdown", new ShutdownHandler(this));
+    if(config.isShutdownHandlerEnabled()) {
+      ph.addExactPath("/shutdown", new ShutdownHandler(this));
+    }
   }
   
   
   private PathHandler initPathHandler() {
     PathHandler ph = Handlers.path();
-    if(config.isUseDispatcher()) {
+    if(config.isDispatcherEnabled()) {
       config.handlers().keySet().forEach(p->{
         System.out.println("INFO: PathHandler{ \""+ p+ "\": \""+ config.handlers().get(p).getName()+ "\" }");
         ph.addPrefixPath(p, new DispatcherHandler(p, config));

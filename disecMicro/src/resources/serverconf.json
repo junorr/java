@@ -1,0 +1,11 @@
+{
+  "serverAddress": "127.0.0.1",
+  "serverPort": 9088,
+  "dispatcherEnabled": true,
+  "shutdownHandler": true,
+  "ioThreads": 4,
+  "maxWorkerThreads": 10,
+  "handlers": {
+    "/hello": "br.com.bb.disec.micro.handler.HelloHandler"
+  }
+}
