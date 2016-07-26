@@ -1,0 +1,12 @@
+{
+  "maxSize": {
+    "size": 50.0,
+    "unit": "MB"
+  },
+  "uploadDir": "/storage/tempUpload",
+  "allowedExtensions": [
+    "xls",
+    "csv",
+    "ods"
+  ]
+}

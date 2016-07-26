@@ -30,6 +30,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -89,7 +90,7 @@ public class PostSqlHandler extends StringPostHandler {
   public void handleRequest(HttpServerExchange hse) throws Exception {
     super.handleRequest(hse);
     hse.getResponseHeaders().put(
-        new HttpString("Content-Type"), "application/json; charset=utf-8"
+        Headers.CONTENT_TYPE, "application/json; charset=utf-8"
     );
     JsonParser prs = new JsonParser();
     JsonObject json = prs.parse(this.getPostData()).getAsJsonObject();

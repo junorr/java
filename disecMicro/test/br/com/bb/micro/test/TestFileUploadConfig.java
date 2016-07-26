@@ -19,24 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler;
+package br.com.bb.micro.test;
 
-import io.undertow.server.HttpServerExchange;
+import br.com.bb.disec.micro.handler.FileUploadConfig;
+import br.com.bb.disec.micro.util.FileSize;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Arrays;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 25/07/2016
+ * @version 0.0 - 26/07/2016
  */
-public class PostPrinterHandler extends StringPostHandler {
+public class TestFileUploadConfig {
 
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    super.handleRequest(hse);
-    System.out.println("* Post Data");
-    System.out.println("----------------------------------");
-    System.out.println(this.getPostData());
-    System.out.println("----------------------------------");
-    hse.endExchange();
+  
+  
+  public static void main(String[] args) throws IOException {
+    FileUploadConfig conf = FileUploadConfig.builder()
+        .setMaxSize(new FileSize(50, FileSize.Unit.GB))
+        .setUploadDir("/storage/tempUpload")
+        .setAllowedExtensions(Arrays.asList("xls", "csv", "ods"))
+        .save(Paths.get("./build/classes/resources/fileupload.json"))
+        .save(Paths.get("./src/resources/fileupload.json"))
+        .build();
+    System.out.println("* conf.getMaxSize()..........: "+ conf.getMaxSize());
+    System.out.println("* conf.getUploadDir()........: "+ conf.getUploadDir());
+    System.out.println("* conf.getAllowedExtensions(): "+ conf.getAllowedExtensions());
   }
+  
   
 }

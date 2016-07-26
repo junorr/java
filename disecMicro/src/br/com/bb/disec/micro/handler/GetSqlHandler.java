@@ -28,6 +28,7 @@ import br.com.bb.disec.micro.db.SqlStorePool;
 import br.com.bb.disec.micro.util.URIParam;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -66,7 +67,7 @@ public class GetSqlHandler implements HttpHandler {
   public void handleRequest(HttpServerExchange hse) throws Exception {
     URIParam pars = new URIParam(hse.getRequestURI());
     hse.getResponseHeaders().put(
-        new HttpString("Content-Type"), "application/json; charset=utf-8"
+        Headers.CONTENT_TYPE, "application/json; charset=utf-8"
     );
     String query = pars.getParam(0);
     if(!store.queries().containsKey(query)) {

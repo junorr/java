@@ -7,9 +7,8 @@
   "ioThreads": 4,
   "maxWorkerThreads": 10,
   "handlers": {
-    "/hello": "br.com.bb.disec.micro.handler.HelloHandler",
     "/getsql": "br.com.bb.disec.micro.handler.GetSqlHandler",
     "/postsql": "br.com.bb.disec.micro.handler.PostSqlHandler",
-    "/postprint": "br.com.bb.disec.micro.handler.PostPrinterHandler"
+    "/upload": "br.com.bb.disec.micro.handler.FileUploadHandler"
   }
 }

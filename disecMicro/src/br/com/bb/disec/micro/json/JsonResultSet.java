@@ -56,7 +56,10 @@ public class JsonResultSet {
   
   
   public String toJson() {
-    return new Gson().toJson(json);
+    return new GsonBuilder().registerTypeAdapter(
+        Double.class, new JsonDouble())
+        .setPrettyPrinting()
+        .create().toJson(json);
   }
   
   
