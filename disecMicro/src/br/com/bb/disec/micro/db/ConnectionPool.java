@@ -97,26 +97,26 @@ public class ConnectionPool {
   }
   
   
-  public void close(Connection con) {
-    try { con.close(); } 
+  public static void close(Connection con) {
+    try { if(con != null) con.close(); } 
     catch(SQLException e) {}
   }
   
   
-  public void close(Connection con, Statement stm) {
-    try { con.close(); } 
+  public static void close(Connection con, Statement stm) {
+    try { if(con != null) con.close(); } 
     catch(SQLException e) {}
-    try { stm.close(); } 
+    try { if(stm != null) stm.close(); } 
     catch(SQLException e) {}
   }
   
   
-  public void close(Connection con, Statement stm, ResultSet rst) {
-    try { con.close(); } 
+  public static void close(Connection con, Statement stm, ResultSet rst) {
+    try { if(con != null) con.close(); } 
     catch(SQLException e) {}
-    try { stm.close(); } 
+    try { if(stm != null) stm.close(); } 
     catch(SQLException e) {}
-    try { rst.close(); } 
+    try { if(rst != null) rst.close(); } 
     catch(SQLException e) {}
   }
   

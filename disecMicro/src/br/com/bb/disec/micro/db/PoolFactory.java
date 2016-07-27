@@ -46,7 +46,7 @@ public class PoolFactory {
         new HashMap<String,ConnectionPool>()
     );
     Runtime.getRuntime().addShutdownHook(
-        new Thread(()->PoolFactory.closePools())
+        new Thread(PoolFactory::closePools)
     );
     lock = new ReentrantLock();
   }
@@ -78,8 +78,10 @@ public class PoolFactory {
         if(pools.containsKey(dsname)) {
           pool = pools.get(dsname);
         }
-        pool = ConnectionPool.createPool(dsname);
-        pools.put(dsname, pool);
+        else {
+          pool = ConnectionPool.createPool(dsname);
+          pools.put(dsname, pool);
+        }
       } 
       catch(IOException e) {}
       finally {

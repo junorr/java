@@ -23,7 +23,7 @@ package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
-import br.com.bb.disec.micro.db.SqlStorePool;
+import br.com.bb.disec.micro.db.SqlSourcePool;
 import br.com.bb.disec.micro.util.URIParam;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -56,7 +56,7 @@ public class LogHandler implements HttpHandler {
     URIParam pars = new URIParam(hse.getRequestURI());
     new SqlQuery(
         PoolFactory.getPool(DB_LOG).getConnection(), 
-        SqlStorePool.getDefaultStore()
+        SqlSourcePool.getDefaultSqlSource()
     ).update(
         SQL_INSERT_LOG, 
         hse.getConnection().getPeerAddress().toString(), 

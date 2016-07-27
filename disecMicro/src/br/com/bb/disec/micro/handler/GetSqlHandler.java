@@ -23,13 +23,12 @@ package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
-import br.com.bb.disec.micro.db.SqlStore;
-import br.com.bb.disec.micro.db.SqlStorePool;
+import br.com.bb.disec.micro.db.SqlSourcePool;
 import br.com.bb.disec.micro.util.URIParam;
+import com.hazelcast.logging.Logger;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
-import io.undertow.util.HttpString;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
@@ -43,22 +42,11 @@ public class GetSqlHandler implements HttpHandler {
   
   public static final String DEFAULT_DB = "103";
   
-  private final SqlStore store;
-  
-  
-  public GetSqlHandler() {
-    try {
-      store = SqlStorePool.getDefaultStore();
-    }
-    catch(IOException e) {
-      throw new RuntimeException(e.getMessage(), e);
-    }
-  }
-  
   
   public SqlQuery getQuery() throws IOException, SQLException {
-    return new SqlQuery(PoolFactory
-        .getPool(DEFAULT_DB).getConnection(), store
+    return new SqlQuery(
+        PoolFactory.getPool(DEFAULT_DB).getConnection(),
+        SqlSourcePool.getDefaultSqlSource()
     );
   }
   
@@ -66,12 +54,14 @@ public class GetSqlHandler implements HttpHandler {
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     URIParam pars = new URIParam(hse.getRequestURI());
-    hse.getResponseHeaders().put(
-        Headers.CONTENT_TYPE, "application/json; charset=utf-8"
-    );
+    if(pars.length() < 1) {
+      hse.setStatusCode(400).setReasonPhrase("Bad Request. No Query Informed");
+      hse.endExchange();
+      return;
+    }
     String query = pars.getParam(0);
-    if(!store.queries().containsKey(query)) {
-      System.out.println("ERROR: [GetSqlHandler] Query Not Found ("+ query+ ")");
+    if(!SqlSourcePool.getDefaultSqlSource().containsSql(query)) {
+      Logger.getLogger(this.getClass()).warning("Query Not Found ("+ query+ ")");
       hse.setStatusCode(404)
           .setReasonPhrase("Not Found ("+ query+ ")");
       hse.endExchange();
@@ -82,7 +72,10 @@ public class GetSqlHandler implements HttpHandler {
       args[i] = pars.getObject(i+1);
     }
     String resp = this.getQuery()
-        .exec(query, args).toPrettyPrintJson();
+        .exec(query, args).toPrettyPrintJson() + "\n";
+    hse.getResponseHeaders().put(
+        Headers.CONTENT_TYPE, "application/json; charset=utf-8"
+    );
     hse.getResponseSender().send(resp, Charset.forName("UTF-8"));
     hse.endExchange();
   }

@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.StreamSupport;
 
 /**
  *
@@ -81,7 +82,6 @@ public class FileUploadHandler implements HttpHandler {
         File f = value.getPath().toFile();
         if(f.length() > config.getMaxSize().getSize()) {
           String msg = "Bad Request. Size Overflow (maxSize: "+ config.getMaxSize()+ ")";
-          hse.setStatusCode(400).setReasonPhrase(msg);
           json.addProperty("success", Boolean.FALSE);
           json.addProperty("message", msg);
           json.addProperty("name", value.getFileName());
@@ -92,32 +92,40 @@ public class FileUploadHandler implements HttpHandler {
                 .toLowerCase().endsWith(e.toLowerCase())
             ).findAny().isPresent()) {
           String msg = "Bad Request. Extension Not Allowed ("+ config.getAllowedExtensions().toString()+ ")";
-          hse.setStatusCode(400).setReasonPhrase(msg);
           json.addProperty("success", Boolean.FALSE);
           json.addProperty("message", msg);
           json.addProperty("name", value.getFileName());
           json.addProperty("length", new FileSize(f.length()).toString());
         }
         else {
-          hse.setStatusCode(200).setReasonPhrase("OK");
           json.addProperty("success", Boolean.TRUE);
           json.addProperty("message", "OK");
           json.addProperty("name", value.getFileName());
           json.addProperty("length", new FileSize(f.length()).toString());
           Files.move(
               value.getPath(), 
-              config.getUploadDir(), 
+              config.getUploadDir().resolve(value.getFileName()), 
               StandardCopyOption.REPLACE_EXISTING
           );
         }
         resp.add(json);
       }//isFile
     }//for
+    boolean success = StreamSupport.stream(resp.spliterator(), false)
+        .filter(e->e.getAsJsonObject()
+            .get("success").getAsBoolean()
+        ).findAny().isPresent();
+    if(success) {
+      hse.setStatusCode(200).setReasonPhrase("OK");
+    }
+    else {
+      hse.setStatusCode(400).setReasonPhrase("Bad Request");
+    }
     hse.getResponseHeaders().put(
         Headers.CONTENT_TYPE, "application/json; charset=utf-8"
     );
     hse.getResponseSender().send(new GsonBuilder()
-        .setPrettyPrinting().create().toJson(resp)
+        .setPrettyPrinting().create().toJson(resp) + "\n"
     );
     hse.endExchange();
   }

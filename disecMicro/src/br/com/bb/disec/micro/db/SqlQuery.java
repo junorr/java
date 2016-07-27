@@ -22,6 +22,7 @@
 package br.com.bb.disec.micro.db;
 
 import br.com.bb.disec.micro.json.JsonResultSet;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -35,37 +36,27 @@ public class SqlQuery {
 
   private final Connection connection;
   
-  private final SqlStore store;
+  private final SqlSource source;
   
   
-  public SqlQuery(Connection con, SqlStore sqls) {
+  public SqlQuery(Connection con, SqlSource source) {
     if(con == null) {
       throw new IllegalArgumentException("Bad Null Connection");
     }
-    if(sqls == null || sqls.queries().isEmpty()) {
-      throw new IllegalArgumentException("Bad Empty SqlStore");
+    if(source == null) {
+      throw new IllegalArgumentException("Bad SqlSource: "+ source);
     }
     this.connection = con;
-    this.store = sqls;
+    this.source = source;
   }
 
 
-  public Connection getConnection() {
-    return connection;
-  }
-
-
-  public SqlStore getIniSql() {
-    return store;
-  }
-  
-  
-  public JsonResultSet exec(String query, Object ... args) throws SQLException {
-    if(query == null || !store.queries().containsKey(query)) {
+  public JsonResultSet exec(String query, Object ... args) throws SQLException, IOException {
+    if(query == null || !source.containsSql(query)) {
       throw new IllegalArgumentException("Query Not Found ("+ query+ ")");
     }
     PreparedStatement ps = connection
-        .prepareStatement(store.queries().get(query));
+        .prepareStatement(source.getSql(query));
     try {
       if(args != null && args.length > 0) {
         for(int i = 0; i < args.length; i++) {
@@ -81,17 +72,17 @@ public class SqlQuery {
   }
   
   
-  public String execJson(String query, Object ... args) throws SQLException {
+  public String execJson(String query, Object ... args) throws SQLException, IOException {
     return this.exec(query, args).toJson();
   }
   
   
-  public int update(String query, Object ... args) throws SQLException {
-    if(query == null || !store.queries().containsKey(query)) {
+  public int update(String query, Object ... args) throws SQLException, IOException {
+    if(query == null || !source.containsSql(query)) {
       throw new IllegalArgumentException("Query Not Found ("+ query+ ")");
     }
     PreparedStatement ps = connection
-        .prepareStatement(store.queries().get(query));
+        .prepareStatement(source.getSql(query));
     try {
       if(args != null && args.length > 0) {
         for(int i = 0; i < args.length; i++) {

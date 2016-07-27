@@ -28,6 +28,7 @@ import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
+import org.jboss.logging.Logger;
 import org.xnio.Options;
 
 /**
@@ -70,13 +71,13 @@ public class Server {
     if(config.isDispatcherEnabled()) {
       org.jboss.logging.Logger.getLogger(this.getClass());
       config.handlers().keySet().forEach(p->{
-        System.out.println("INFO: PathHandler{ \""+ p+ "\": \""+ config.handlers().get(p).getName()+ "\" }");
+        Logger.getLogger(getClass()).info("PathHandler{ \""+ p+ "\": \""+ config.handlers().get(p).getName()+ "\" }");
         ph.addPrefixPath(p, new DispatcherHandler(p, config));
       });
     }
     else {
       config.handlers().keySet().forEach(p->{
-        System.out.println("INFO: PathHandler{ \""+ p+ "\": \""+ config.handlers().get(p).getName()+ "\" }");
+        Logger.getLogger(getClass()).info("PathHandler{ \""+ p+ "\": \""+ config.handlers().get(p).getName()+ "\" }");
         config.createHandler(p).ifPresent(h->ph.addPrefixPath(p, h));
       });
     }

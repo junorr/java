@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.jboss.logging.Logger;
 
 /**
  *
@@ -160,7 +161,7 @@ public class ServerConfig {
       return Optional.of(cct.newInstance(null));
     }
     catch(Exception ex) {
-      System.out.println("ERROR: "+ ex.getClass().getSimpleName()+ ":"+ ex.getMessage());
+      Logger.getLogger(getClass()).error(ex.getClass().getSimpleName()+ ":"+ ex.getMessage());
       return Optional.empty();
     }
   }

@@ -1,0 +1,4475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="canonical" href="http://docs.hazelcast.org/docs/3.6.3/manual/html-single/"/>
+<noscript>
+	<meta http-equiv="refresh" content="0;URL=http://docs.hazelcast.org/docs/3.6.3/manual/html-single/">
+</noscript>
+<!--[if lt IE 9]><script type="text/javascript">var IE_fix=true;</script><![endif]-->
+<script type="text/javascript">
+	var url = "http://docs.hazelcast.org/docs/3.6.3/manual/html-single/";
+	if(typeof IE_fix != "undefined") // IE8 and lower fix to pass the http referer
+	{
+		document.write("redirecting..."); // Don't remove this line or appendChild() will fail because it is called before document.onload to make the redirect as fast as possible. Nobody will see this text, it is only a tech fix.
+		var referLink = document.createElement("a");
+		referLink.href = url;
+		document.body.appendChild(referLink);
+		referLink.click();
+	}
+	else { window.location.replace(url); } // All other browsers
+</script>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Hazelcast Documentation Version: 3.6.4</title>
+
+    <link type="text/css" rel="stylesheet" href="assets/css/reset.css">
+    <link type="text/css" rel="stylesheet" href="http://yandex.st/highlightjs/7.3/styles/github.min.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/docs.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/print.css" media="print">
+    
+
+    <script type="text/javascript" src="assets/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.sticky-kit.js"></script>
+    <script type="text/javascript" src="http://yandex.st/highlightjs/6.1/highlight.min.js"></script>
+    <script type="text/javascript" src="assets/js/lunr.min.js"></script>
+
+    
+
+    <script type="text/javascript">var BASE_URL = "";</script>
+    <script type="text/javascript" src="assets/js/viewer.js"></script>
+    <script type="text/javascript" src="assets/js/toc.scroll.js"></script>
+
+    <script type="text/javascript">
+  	$(function(){
+		$("#sidebar").stick_in_parent()
+	});
+    </script>
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-3921306-1']);
+        _gaq.push(['_setDomainName', 'hazelcast.com']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+    <script type="text/javascript">
+        setTimeout(function(){var a=document.createElement("script");
+            var b=document.getElementsByTagName("script")[0];
+            a.src=document.location.protocol+"//dnn506yrbagrg.cloudfront.net/pages/scripts/0020/7413.js?"+Math.floor(new Date().getTime()/3600000);
+            a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);
+    </script>
+
+</head>
+<body>
+    <div id="page">
+        <a name="top" />
+         <div id="sitebar">
+    <div class="content">
+      <p><a href="http://hazelcast.org/documentation">Go to <span style="font-weight:bold">hazelcast.org/documentation</span></a></p>
+      </div>
+  </div>
+
+        <header id="header">
+			<div class="content">
+			<div style="overflow:hidden">
+				<div style="float:left">
+                    <a href="http://www.hazelcast.org"><img src="assets/img/logo.png" style="width: 199px;padding-top: 18px"/></a>
+					
+				</div>	
+				<div style="float:left;padding-top: 15px;padding-left: 30px;">
+<h1><a href="">Documentation <span style="font-size:12px"> Version: 3.6.4 - Publication Date : Jun 30, 2016 </span></a></h1>
+				</div>
+			</div>
+			</div>
+        </header>
+        <div class="content" style="width:1200px; margin: 0 auto">
+	        
+
+	<div id="sidebar" style="overflow-y:auto">
+	    <form action="search.html"><input id="search" type="text" placeholder="Search" name="q" /></form>
+	    <nav id="toc">
+	        
+    <ol>
+    
+        <li>
+            <a href="preface.html">Preface</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="preface.html">Hazelcast Editions</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="preface.html">Hazelcast Architecture</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="preface.html">Hazelcast Plugins</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="preface.html">Licensing</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="preface.html">Trademarks</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="preface.html">Customer Support</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="preface.html">Release Notes</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="preface.html">Contributing to Hazelcast</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="preface.html">Phone Home</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="preface.html">Typographical Conventions</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="documentrevisionhistory.html">Document Revision History</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="installinghazelcast.html">Getting Started</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="installinghazelcast.html">Installation</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="installinghazelcast.html">Hazelcast</a>
+            
+        </li>
+    
+        <li>
+            <a href="installinghazelcastenterprise.html">Hazelcast Enterprise</a>
+            
+        </li>
+    
+        <li>
+            <a href="licensekeys.html">Setting the License Key</a>
+            
+        </li>
+    
+        <li>
+            <a href="upgradingfrom3x.html">Upgrading from 3.x</a>
+            
+        </li>
+    
+        <li>
+            <a href="upgradingfrom2x.html">Upgrading from 2.x</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="startingmemberandclient.html">Starting the Member and Client</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="usingthescripts.html">Using the Scripts In The Package</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="deployingonamazonec2.html">Deploying On Amazon EC2</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="deploymentviadocker.html">Deploying using Docker</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="hazelcastoverview.html">Hazelcast Overview</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="shardinginhazelcast.html">Sharding in Hazelcast</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="hazelcasttopology.html">Hazelcast Topology</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="whyhazelcast.html">Why Hazelcast?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="datapartitioning.html">Data Partitioning</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="datapartitioning.html">How the Data is Partitioned</a>
+            
+        </li>
+    
+        <li>
+            <a href="datapartitioning.html">Partition Table</a>
+            
+        </li>
+    
+        <li>
+            <a href="datapartitioning.html">Repartitioning</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="usecases.html">Use Cases</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="resources.html">Resources</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="understandingconfiguration.html">Understanding Configuration</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="understandingconfiguration.html">Configuring Declaratively</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="understandingconfiguration.html">Composing Declarative Configuration</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="understandingconfiguration.html">Configuring Programmatically</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="understandingconfiguration.html">Configuring with System Properties</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="understandingconfiguration.html">Configuring within Spring Context</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="understandingconfiguration.html">Checking Configuration</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="understandingconfiguration.html">Using Wildcards</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="understandingconfiguration.html">Using Variables</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="settingupclusters.html">Setting Up Clusters</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="settingupclusters.html">Discovering Cluster Members</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="multicast.html">Discovering Members by Multicast</a>
+            
+        </li>
+    
+        <li>
+            <a href="tcp.html">Discovering Members by TCP</a>
+            
+        </li>
+    
+        <li>
+            <a href="ec2.html">Discovering Members within EC2 Cloud</a>
+            
+        </li>
+    
+        <li>
+            <a href="jclouds.html">Discovering Members with jclouds</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="createclustergroups.html">Creating Cluster Groups</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="createpartitiongroups.html">Partition Group Configuration</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="logging.html">Logging Configuration</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="othernetworkconfigurations.html">Other Network Configurations</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="othernetworkconfigurations.html">Public Address</a>
+            
+        </li>
+    
+        <li>
+            <a href="othernetworkconfigurations.html">Port</a>
+            
+        </li>
+    
+        <li>
+            <a href="othernetworkconfigurations.html">Outbound Ports</a>
+            
+        </li>
+    
+        <li>
+            <a href="othernetworkconfigurations.html">Reuse Address</a>
+            
+        </li>
+    
+        <li>
+            <a href="othernetworkconfigurations.html">Join</a>
+            
+        </li>
+    
+        <li>
+            <a href="othernetworkconfigurations.html">Interfaces</a>
+            
+        </li>
+    
+        <li>
+            <a href="othernetworkconfigurations.html">IPv6 Support</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="dds.html">Distributed Data Structures</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="map.html">Map</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="map.html">Getting a Map and Putting an Entry</a>
+            
+        </li>
+    
+        <li>
+            <a href="map-backups.html">Backing Up Maps</a>
+            
+        </li>
+    
+        <li>
+            <a href="map-eviction.html">Evicting Map Entries</a>
+            
+        </li>
+    
+        <li>
+            <a href="map-inmemoryformat.html">Setting In Memory Format</a>
+            
+        </li>
+    
+        <li>
+            <a href="map-usinghd.html">Using High-Density Memory Store with Map</a>
+            
+        </li>
+    
+        <li>
+            <a href="map-persistence.html">Loading and Storing Persistent Data</a>
+            
+        </li>
+    
+        <li>
+            <a href="map-nearcache.html">Creating Near Cache for Map</a>
+            
+        </li>
+    
+        <li>
+            <a href="map-locks.html">Locking Maps</a>
+            
+        </li>
+    
+        <li>
+            <a href="map-entrystatistics.html">Accessing Entry Statistics</a>
+            
+        </li>
+    
+        <li>
+            <a href="map-maplistener.html">Map Listener</a>
+            
+        </li>
+    
+        <li>
+            <a href="map-listenerwithpredicates.html">Listening to Map Entries with Predicates</a>
+            
+        </li>
+    
+        <li>
+            <a href="map-interceptors.html">Adding Interceptors</a>
+            
+        </li>
+    
+        <li>
+            <a href="map-queryresultsizelimiter.html">Preventing Out of Memory Exceptions</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="queue.html">Queue</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="queue.html">Getting a Queue and Putting Items</a>
+            
+        </li>
+    
+        <li>
+            <a href="queue-samplequeuecode.html">Creating an Example Queue</a>
+            
+        </li>
+    
+        <li>
+            <a href="queue-boundedqueue.html">Setting a Bounded Queue</a>
+            
+        </li>
+    
+        <li>
+            <a href="queue-persistence.html">Queueing with Persistent Datastore</a>
+            
+        </li>
+    
+        <li>
+            <a href="queue-configuration.html">Configuring Queue</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="multimap.html">MultiMap</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="multimap.html">Getting a MultiMap and Putting an Entry</a>
+            
+        </li>
+    
+        <li>
+            <a href="multimap.html">Configuring MultiMap</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="set.html">Set</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="set.html">Getting a Set and Putting Items</a>
+            
+        </li>
+    
+        <li>
+            <a href="set.html">Configuring Set</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="list.html">List</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="list.html">Getting a List and Putting Items</a>
+            
+        </li>
+    
+        <li>
+            <a href="list.html">Configuring List</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="ringbuffer.html">Ringbuffer</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="ringbuffer.html">Getting a Ringbuffer and Reading Items</a>
+            
+        </li>
+    
+        <li>
+            <a href="ringbuffer.html">Adding Items to a Ringbuffer</a>
+            
+        </li>
+    
+        <li>
+            <a href="ringbuffer.html">IQueue vs. Ringbuffer</a>
+            
+        </li>
+    
+        <li>
+            <a href="ringbuffer.html">Configuring Ringbuffer Capacity</a>
+            
+        </li>
+    
+        <li>
+            <a href="ringbuffer.html">Backing Up Ringbuffer</a>
+            
+        </li>
+    
+        <li>
+            <a href="ringbuffer.html">Configuring Ringbuffer Time To Live</a>
+            
+        </li>
+    
+        <li>
+            <a href="ringbuffer.html">Setting Ringbuffer Overflow Policy</a>
+            
+        </li>
+    
+        <li>
+            <a href="ringbuffer.html">Configuring Ringbuffer In-Memory Format</a>
+            
+        </li>
+    
+        <li>
+            <a href="ringbuffer.html">Adding Batched Items</a>
+            
+        </li>
+    
+        <li>
+            <a href="ringbuffer.html">Reading Batched Items</a>
+            
+        </li>
+    
+        <li>
+            <a href="ringbuffer.html">Using Async Methods</a>
+            
+        </li>
+    
+        <li>
+            <a href="ringbuffer.html">Ringbuffer Configuration Examples</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="topic.html">Topic</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="topic.html">Getting a Topic and Publishing Messages</a>
+            
+        </li>
+    
+        <li>
+            <a href="topicstatistics.html">Getting Topic Statistics</a>
+            
+        </li>
+    
+        <li>
+            <a href="topicinternals.html">Understanding Topic Behavior</a>
+            
+        </li>
+    
+        <li>
+            <a href="topicconfiguration.html">Configuring Topic</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="reliabletopic.html">Reliable Topic</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="reliabletopic.html">Sample Reliable ITopic Code</a>
+            
+        </li>
+    
+        <li>
+            <a href="reliabletopic.html">Slow Consumers</a>
+            
+        </li>
+    
+        <li>
+            <a href="reliabletopic.html">Configuring Reliable Topic</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="lock.html">Lock</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="lock.html">Using Try-Catch Blocks with Locks</a>
+            
+        </li>
+    
+        <li>
+            <a href="lock.html">Releasing Locks with tryLock Timeout</a>
+            
+        </li>
+    
+        <li>
+            <a href="lock.html">Avoiding Waiting Threads with Lease Time</a>
+            
+        </li>
+    
+        <li>
+            <a href="lock.html">Understanding Lock Behavior</a>
+            
+        </li>
+    
+        <li>
+            <a href="lockicondition.html">Synchronizing Threads with ICondition</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="iatomiclong.html">IAtomicLong</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="iatomiclong.html">Sending Functions to IAtomicLong</a>
+            
+        </li>
+    
+        <li>
+            <a href="iatomiclong.html">Executing Functions on IAtomicLong</a>
+            
+        </li>
+    
+        <li>
+            <a href="iatomiclong.html">Reasons to Use Functions with IAtomic</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="isemaphore.html">ISemaphore</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="isemaphore.html">Controlling Thread Counts with Semaphore Permits</a>
+            
+        </li>
+    
+        <li>
+            <a href="isemaphore.html">Example Semaphore Code</a>
+            
+        </li>
+    
+        <li>
+            <a href="isemaphore.html">Configuring Semaphore</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="iatomicreference.html">IAtomicReference</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="iatomicreference.html">Sending Functions to IAtomicReference</a>
+            
+        </li>
+    
+        <li>
+            <a href="iatomicreference.html">Using IAtomicReference</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="icountdownlatch.html">ICountDownLatch</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="icountdownlatch.html">Gate-Keeping Concurrent Activities</a>
+            
+        </li>
+    
+        <li>
+            <a href="icountdownlatch.html">Recovering From Failure</a>
+            
+        </li>
+    
+        <li>
+            <a href="icountdownlatch.html">Using ICountDownLatch</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="idgenerator.html">IdGenerator</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="idgenerator.html">Generating Cluster-Wide IDs</a>
+            
+        </li>
+    
+        <li>
+            <a href="idgenerator.html">Unique IDs and Duplicate IDs</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="replicatedmap.html">Replicated Map</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="replicatedmap.html">Replicating Instead of Partitioning</a>
+            
+        </li>
+    
+        <li>
+            <a href="replicatedmap.html">Example Replicated Map Code</a>
+            
+        </li>
+    
+        <li>
+            <a href="replicatedmap.html">Considerations for Replicated Map</a>
+            
+        </li>
+    
+        <li>
+            <a href="replicatedmap.html">Configuration Design for Replicated Map</a>
+            
+        </li>
+    
+        <li>
+            <a href="replicatedmap.html">Configuring Replicated Map</a>
+            
+        </li>
+    
+        <li>
+            <a href="replicatedmap.html">Using EntryListener on Replicated Map</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="distributedevents.html">Distributed Events</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="distributedevents.html">Event Listeners for Hazelcast Members</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="memberevents.html">Listening for Member Events</a>
+            
+        </li>
+    
+        <li>
+            <a href="distributedobjectevents.html">Listening for Distributed Object Events</a>
+            
+        </li>
+    
+        <li>
+            <a href="migrationevents.html">Listening for Migration Events</a>
+            
+        </li>
+    
+        <li>
+            <a href="partitionlostevents.html">Listening for Partition Lost Events</a>
+            
+        </li>
+    
+        <li>
+            <a href="lifecycleevents.html">Listening for Lifecycle Events</a>
+            
+        </li>
+    
+        <li>
+            <a href="mapevents.html">Listening for Map Events</a>
+            
+        </li>
+    
+        <li>
+            <a href="multimapevents.html">Listening for MultiMap Events</a>
+            
+        </li>
+    
+        <li>
+            <a href="itemevents.html">Listening for Item Events</a>
+            
+        </li>
+    
+        <li>
+            <a href="topicmessages.html">Listening for Topic Messages</a>
+            
+        </li>
+    
+        <li>
+            <a href="listeningclients.html">Listening for Clients</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="eventlistenersforclients.html">Event Listeners for Hazelcast Clients</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="globaleventconfiguration.html">Global Event Configuration</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="distributedcomputing.html">Distributed Computing</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="distributedcomputing.html">Executor Service</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="distributedcomputing.html">Implementing a Callable Task</a>
+            
+        </li>
+    
+        <li>
+            <a href="distributedcomputing.html">Implementing a Runnable Task</a>
+            
+        </li>
+    
+        <li>
+            <a href="distributedcomputing.html">Scaling The Executor Service</a>
+            
+        </li>
+    
+        <li>
+            <a href="execution.html">Executing Code in the Cluster</a>
+            
+        </li>
+    
+        <li>
+            <a href="executioncancellation.html">Canceling an Executing Task</a>
+            
+        </li>
+    
+        <li>
+            <a href="executioncallback.html">Callback When Task Completes</a>
+            
+        </li>
+    
+        <li>
+            <a href="executionmemberselector.html">Selecting Members for Task Execution</a>
+            
+        </li>
+    
+        <li>
+            <a href="executionmemberselector.html">Configuring Executor Service</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="entryprocessor.html">Entry Processor</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="entryprocessor.html">Performing Fast In-Memory Map Operations</a>
+            
+        </li>
+    
+        <li>
+            <a href="entryprocessorsamplecode.html">Creating an Entry Processor</a>
+            
+        </li>
+    
+        <li>
+            <a href="entryprocessorabstract.html">Abstract Entry Processor</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="distributedquery.html">Distributed Query</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="distributedquery.html">How Distributed Query Works</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="distributedquery.html">Employee Map Query Example</a>
+            
+        </li>
+    
+        <li>
+            <a href="querycriteriaapi.html">Querying with Criteria API</a>
+            
+        </li>
+    
+        <li>
+            <a href="querysql.html">Querying with SQL</a>
+            
+        </li>
+    
+        <li>
+            <a href="querypagingpredicate.html">Filtering with Paging Predicates</a>
+            
+        </li>
+    
+        <li>
+            <a href="queryindexing.html">Indexing Queries</a>
+            
+        </li>
+    
+        <li>
+            <a href="querythreadconfiguration.html">Configuring Query Thread Pool</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="querycollections.html">Querying in Collections and Arrays</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="querycollections.html">Indexing in Collections and Arrays</a>
+            
+        </li>
+    
+        <li>
+            <a href="querycollections.html">Corner cases</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="customattributes.html">Custom Attributes</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="customattributes.html">Implementing a ValueExtractor</a>
+            
+        </li>
+    
+        <li>
+            <a href="customattributes.html">Extraction Arguments</a>
+            
+        </li>
+    
+        <li>
+            <a href="customattributes.html">Configuring a Custom Attribute Programmatically</a>
+            
+        </li>
+    
+        <li>
+            <a href="customattributes.html">Configuring a Custom Attribute Declaratively</a>
+            
+        </li>
+    
+        <li>
+            <a href="customattributes.html">Indexing Custom Attributes</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="mapreduce.html">MapReduce</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="mr-essentials.html">Understanding MapReduce</a>
+            
+        </li>
+    
+        <li>
+            <a href="mr-introduction.html">Using the MapReduce API</a>
+            
+        </li>
+    
+        <li>
+            <a href="mr-architecture.html">Hazelcast MapReduce Architecture</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="aggregators.html">Aggregators</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="aggregators.html">Aggregations Basics</a>
+            
+        </li>
+    
+        <li>
+            <a href="aggregatorsintroduction.html">Using the Aggregations API</a>
+            
+        </li>
+    
+        <li>
+            <a href="aggregatorsexample.html">Aggregations Examples</a>
+            
+        </li>
+    
+        <li>
+            <a href="aggregatorsimplementation.html">Implementing Aggregations</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="continuousquerycache.html">Continuous Query Cache</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="continuousquerycache.html">Keeping Query Results Local and Ready</a>
+            
+        </li>
+    
+        <li>
+            <a href="continuousquerycache.html">Accessing Continuous Query Cache from Member</a>
+            
+        </li>
+    
+        <li>
+            <a href="continuousquerycache.html">Accessing Continuous Query Cache from Client Side</a>
+            
+        </li>
+    
+        <li>
+            <a href="continuousquerycache.html">Features of Continuous Query Cache</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="transactions.html">Transactions</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="transactions.html">Creating a Transaction Interface</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="transactions.html">Queue/Set/List vs. Map/Multimap</a>
+            
+        </li>
+    
+        <li>
+            <a href="transactions.html">ONE_PHASE vs. TWO_PHASE</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="xatransactions.html">Providing XA Transactions</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="j2eeintegration.html">Integrating into J2EE</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="j2eeintegration.html">Sample Code for J2EE Integration</a>
+            
+        </li>
+    
+        <li>
+            <a href="resourceadapterconfiguration.html">Configuring Resource Adapter</a>
+            
+        </li>
+    
+        <li>
+            <a href="sampleglassfishconfiguration.html">Configuring a Glassfish v3 Web Application</a>
+            
+        </li>
+    
+        <li>
+            <a href="samplejbossconfiguration.html">Configuring a JBoss AS 5 Web Application</a>
+            
+        </li>
+    
+        <li>
+            <a href="samplejboss7configuration.html">Configuring a JBoss AS 7 / EAP 6 Web Application</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="jcache.html">Hazelcast JCache</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="jcache.html">JCache Overview</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="jcache-setup.html">JCache Setup and Configuration</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="jcache-setup.html">Setting up Your Application</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-quickexample.html">Example JCache Application</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-jcacheconfiguration.html">Configuring for JCache</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="jcache-providers.html">JCache Providers</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="jcache-providers.html">Configuring JCache Provider</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-clientprovider.html">Configuring JCache with Client Provider</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-serverprovider.html">Configuring JCache with Server Provider</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="jcache-api.html">JCache API</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="jcache-api.html">JCache API Application Example</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-apibasics.html">JCache Base Classes</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-apifactory.html">Implementing Factory and FactoryBuilder</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-apicacheloader.html">Implementing CacheLoader</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-apicachewriter.html">CacheWriter</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-ep.html">Implementing EntryProcessor</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-cacheentrylistener.html">CacheEntryListener</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-expirepolicy.html">ExpirePolicy</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="jcache-icache.html">Hazelcast JCache Extension - ICache</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="jcache-icache.html">Scoping to Join Clusters</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-icache.html">Namespacing</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-retrievingicacheinstance.html">Retrieving an ICache Instance</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-icacheconf.html">ICache Configuration</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-asyncoperations.html">ICache Async Methods</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-customexpirypolicy.html">Defining a Custom ExpiryPolicy</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-eviction.html">JCache Eviction</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-nearcache.html">JCache Near Cache</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-additionalmethods.html">ICache Convenience Methods</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-backupawareep.html">Implementing BackupAwareEntryProcessor</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-partitionlostlistener.html">ICache Partition Lost Listener</a>
+            
+        </li>
+    
+        <li>
+            <a href="jcache-splitbrain.html">JCache Split-Brain</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="jcache-speccompliance.html">Testing for JCache Specification Compliance</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="integratedclustering.html">Integrated Clustering</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="hibernate.html">Hibernate Second Level Cache</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="hibernate.html">Sample Code for Hibernate</a>
+            
+        </li>
+    
+        <li>
+            <a href="hibernate.html">Supported Hibernate Versions</a>
+            
+        </li>
+    
+        <li>
+            <a href="hibernate.html">Configuring Hibernate for Hazelcast</a>
+            
+        </li>
+    
+        <li>
+            <a href="hibernate.html">Configuring Hazelcast for Hibernate</a>
+            
+        </li>
+    
+        <li>
+            <a href="hibernate.html">Setting P2P (Peer-to-Peer) for Hibernate</a>
+            
+        </li>
+    
+        <li>
+            <a href="hibernate.html">Setting Client/Server for Hibernate</a>
+            
+        </li>
+    
+        <li>
+            <a href="hibernate.html">Configuring Cache Concurrency Strategy</a>
+            
+        </li>
+    
+        <li>
+            <a href="hibernate.html">Advanced Settings</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="websessionreplication.html">Web Session Replication</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="websessionreplication.html">Filter Based Web Session Replication</a>
+            
+        </li>
+    
+        <li>
+            <a href="tomcatsessionreplication.html">Tomcat Based Web Session Replication</a>
+            
+        </li>
+    
+        <li>
+            <a href="jettysessionreplication.html">Jetty Based Web Session Replication</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="springintegration.html">Spring Integration</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="springintegration.html">Supported Versions</a>
+            
+        </li>
+    
+        <li>
+            <a href="springintegration.html">Configuring Spring</a>
+            
+        </li>
+    
+        <li>
+            <a href="springintegration.html">Enabling SpringAware Objects</a>
+            
+        </li>
+    
+        <li>
+            <a href="springintegration.html">Adding Caching to Spring</a>
+            
+        </li>
+    
+        <li>
+            <a href="springintegration.html">Configuring Hibernate Second Level Cache</a>
+            
+        </li>
+    
+        <li>
+            <a href="springintegration.html">Best Practices</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="storage-hd.html">Storage</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="storage-hd.html">High-Density Memory Store</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="configuringhd.html">Configuring High-Density Memory Store</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="sizingpractices.html">Sizing Practices</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="hotrestartpersistence.html">Hot Restart Persistence</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="hotrestartpersistence.html">Hot Restart Persistence Overview</a>
+            
+        </li>
+    
+        <li>
+            <a href="hotrestartpersistence.html">Configuring Hot Restart</a>
+            
+        </li>
+    
+        <li>
+            <a href="hotrestartpersistence.html">Hot Restart and IP Address-Port</a>
+            
+        </li>
+    
+        <li>
+            <a href="hotrestartpersistence.html">Hot Restart Persistence Design Details</a>
+            
+        </li>
+    
+        <li>
+            <a href="hotrestartpersistence.html">Concurrent, Incremental, Generational GC</a>
+            
+        </li>
+    
+        <li>
+            <a href="hotrestartpersistence.html">Hot Restart Performance Considerations</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="javaclient.html">Hazelcast Java Client</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="javaclient.html">Hazelcast Clients Feature Comparison</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="javaclientoverview.html">Java Client Overview</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="javaclientoverview.html">Including Dependencies for Java Clients</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientoverview.html">Getting Started with Client API</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientoverview.html">Java Client Operation Modes</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientoverview.html">Handling Failures</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientoverview.html">Using Supported Distributed Data Structures</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientoverview.html">Using Client Services</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientoverview.html">Client Listeners</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientoverview.html">Client Transactions</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="javaclientconfiguration.html">Configuring Java Client</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="javaclientconfiguration.html">Configuring Client Network</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientconfiguration.html">Configuring Client Load Balancer</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientconfiguration.html">Configuring Client Near Cache</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientconfiguration.html">Client Group Configuration</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientconfiguration.html">Client Security Configuration</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientconfiguration.html">Client Serialization Configuration</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientconfiguration.html">Configuring Client Listeners</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientconfiguration.html">ExecutorPoolSize</a>
+            
+        </li>
+    
+        <li>
+            <a href="javaclientconfiguration.html">ClassLoader</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="javaclientsystemproperties.html">Client System Properties</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="javaclientsystemproperties.html">Sample Codes for Client</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="javaclienthd.html">Using High-Density Memory Store with Java Client</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="otherclientimplementations.html">Other Client Implementations</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="cplusclient.html">C++ Client</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="cplusclient.html">Setting Up C++ Client</a>
+            
+        </li>
+    
+        <li>
+            <a href="cplusclient.html">Installing C++ Client</a>
+            
+        </li>
+    
+        <li>
+            <a href="cplusclient.html">C++ Client Code Examples</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="csharpclient.html">.NET Client</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="csharpclient.html">Configuring .NET Client</a>
+            
+        </li>
+    
+        <li>
+            <a href="csharpclient.html">Starting .NET Client</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="restclient.html">REST Client</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="restclient.html">REST Client GET/POST/DELETE Examples</a>
+            
+        </li>
+    
+        <li>
+            <a href="restclient.html">Checking the Status of the Cluster for REST Client</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="memcacheclient.html">Memcache Client</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="memcacheclient.html">Memcache Client Code Examples</a>
+            
+        </li>
+    
+        <li>
+            <a href="memcacheclient.html">Unsupported Operations for Memcache</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="serialization.html">Serialization</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="serializationinterfaces.html">Serialization Interface Types</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="serializationcomparisontable.html">Comparing Serialization Interfaces</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="serializable.html">Implementing Java Serializable and Externalizable</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="serializable.html">Implementing Java Externalizable</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="dataserialization.html">Implementing DataSerializable</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="dataserialization.html">IdentifiedDataSerializable</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="portableserialization.html">Implementing Portable Serialization</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="portableserialization.html">Portable Serialization Example Code</a>
+            
+        </li>
+    
+        <li>
+            <a href="portableserialization.html">Registering the Portable Factory</a>
+            
+        </li>
+    
+        <li>
+            <a href="portableserialization.html">Versioning for Portable Serialization</a>
+            
+        </li>
+    
+        <li>
+            <a href="portableserialization.html">Null Portable Serialization</a>
+            
+        </li>
+    
+        <li>
+            <a href="portableserialization.html">DistributedObject Serialization</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="customserialization.html">Custom Serialization</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="customserialization.html">Implementing StreamSerializer</a>
+            
+        </li>
+    
+        <li>
+            <a href="bytearrayserializer.html">Implementing ByteArraySerializer</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="globalserializer.html">Global Serializer</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="globalserializer.html">Sample Global Serializer</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="hazelcastinstanceaware.html">Implementing HazelcastInstanceAware</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="serializationconfigurationwrapup.html">Serialization Configuration Wrap-Up</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="management.html">Management</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="management.html">Getting Member Statistics from Distributed Data Structures</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="management.html">Map Statistics</a>
+            
+        </li>
+    
+        <li>
+            <a href="management.html">Multimap Statistics</a>
+            
+        </li>
+    
+        <li>
+            <a href="management.html">Queue Statistics</a>
+            
+        </li>
+    
+        <li>
+            <a href="management.html">Topic Statistics</a>
+            
+        </li>
+    
+        <li>
+            <a href="management.html">Executor Statistics</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="jmxapipernode.html">JMX API per Node</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="monitoringwithjmx.html">Monitoring with JMX</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="monitoringwithjmx.html">MBean Naming for Hazelcast Data Structures</a>
+            
+        </li>
+    
+        <li>
+            <a href="monitoringwithjmx.html">Connecting to JMX Agent</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="clusterutilities.html">Cluster Utilities</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="clusterutilities.html">Getting Member Events and Member Sets</a>
+            
+        </li>
+    
+        <li>
+            <a href="managingclusterstate.html">Managing Cluster and Member States</a>
+            
+        </li>
+    
+        <li>
+            <a href="clustershscript.html">Using the Script cluster.sh</a>
+            
+        </li>
+    
+        <li>
+            <a href="restforclustermanagement.html">Using REST API for Cluster Management</a>
+            
+        </li>
+    
+        <li>
+            <a href="litemember.html">Enabling Lite Members</a>
+            
+        </li>
+    
+        <li>
+            <a href="memberattributes.html">Defining Member Attributes</a>
+            
+        </li>
+    
+        <li>
+            <a href="clustermembersafetycheck.html">Safety Checking Cluster Members</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusterquorum.html">Defining a Cluster Quorum</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Management Center</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="managementcenter.html">Installing Management Center</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Getting Started to Management Center</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Management Center Tools</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Management Center Home Page</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Monitoring Caches</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Managing Maps</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Monitoring Replicated Maps</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Monitoring Queues</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Monitoring Topics</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Monitoring MultiMaps</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Monitoring Executors</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Monitoring WAN Replication</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Monitoring Members</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Scripting</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Executing Console Commands</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Creating Alerts</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Administering Management Center</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Hot Restart</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Checking Past Status with Time Travel</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Management Center Documentation</a>
+            
+        </li>
+    
+        <li>
+            <a href="managementcenter.html">Suggested Heap Size</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="clusteredjmx.html">Clustered JMX via Management Center</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="clusteredjmx.html">Configuring Clustered JMX</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredjmx.html">Clustered JMX API</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredjmx.html">Integrating with New Relic</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredjmx.html">Integrating with AppDynamics</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="clusteredrest.html">Clustered REST via Management Center</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="clusteredrest.html">Enabling Clustered REST</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredrest.html">Clustered REST API Root</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredrest.html">Clusters Resource</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredrest.html">Cluster Resource</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredrest.html">Members Resource</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredrest.html">Member Resource</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredrest.html">Clients Resource</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredrest.html">Maps Resource</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredrest.html">MultiMaps Resource</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredrest.html">Queues Resource</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredrest.html">Topics Resource</a>
+            
+        </li>
+    
+        <li>
+            <a href="clusteredrest.html">Executors Resource</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="security.html">Security</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="security.html">Enabling Security for Hazelcast Enterprise</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="socketinterceptor.html">Socket Interceptor</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="securityinterceptor.html">Security Interceptor</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="encryption.html">Encryption</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="ssl.html">SSL</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="credentials.html">Credentials</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="clusterloginmodule.html">ClusterLoginModule</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="clusterloginmodule.html">Enterprise Integration</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="clustermembersecurity.html">Cluster Member Security</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="nativeclientsecurity.html">Native Client Security</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="nativeclientsecurity.html">Authentication</a>
+            
+        </li>
+    
+        <li>
+            <a href="nativeclientsecurity.html">Authorization</a>
+            
+        </li>
+    
+        <li>
+            <a href="nativeclientsecurity.html">Permissions</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="performance.html">Performance</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="performance.html">Data Affinity</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="backpressure.html">Back Pressure</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="threadingmodel.html">Threading Model</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="threadingmodel.html">I/O Threading</a>
+            
+        </li>
+    
+        <li>
+            <a href="threadingevent.html">Event Threading</a>
+            
+        </li>
+    
+        <li>
+            <a href="threadingexecutor.html">IExecutor Threading</a>
+            
+        </li>
+    
+        <li>
+            <a href="threadingoperation.html">Operation Threading</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="slowoperationdetector.html">SlowOperationDetector</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="slowoperationdetector.html">Logging of Slow Operations</a>
+            
+        </li>
+    
+        <li>
+            <a href="slowoperationdetector.html">Purging of Slow Operation Logs</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="hazelcastperformanceonaws.html">Hazelcast Performance on AWS</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="hazelcastperformanceonaws.html">Selecting EC2 Instance Type</a>
+            
+        </li>
+    
+        <li>
+            <a href="hazelcastperformanceonaws.html">Dealing with Network Latency</a>
+            
+        </li>
+    
+        <li>
+            <a href="hazelcastperformanceonaws.html">Selecting Virtualization</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="simulatoroverview.html">Hazelcast Simulator</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="simulatoroverview.html">Key Concepts</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="installingsimulator.html">Installing Simulator</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="installingsimulator.html">Firewall Settings</a>
+            
+        </li>
+    
+        <li>
+            <a href="installingsimulator.html">Setting Up the Local Machine (Coordinator)</a>
+            
+        </li>
+    
+        <li>
+            <a href="installingsimulator.html">Setting Up the Remote Machines (Agents, Workers)</a>
+            
+        </li>
+    
+        <li>
+            <a href="installingsimulator.html">Setting Up the Public/Private Key Pair</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="settingupforec2.html">Setting Up For Amazon EC2</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="settingupforgce.html">Setting Up For Google Compute Engine</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="settingupmachinesmanually.html">Setting Up Machines Manually</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="executingasimulatortest.html">Executing a Simulator Test</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="executingasimulatortest.html">Creating and Editing Properties File</a>
+            
+        </li>
+    
+        <li>
+            <a href="executingasimulatortest.html">Running the Test</a>
+            
+        </li>
+    
+        <li>
+            <a href="executingasimulatortest.html">Running the Test with a Script</a>
+            
+        </li>
+    
+        <li>
+            <a href="executingasimulatortest.html">Using Maven Archetypes</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="provisioner.html">Provisioner</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="provisioner.html">Accessing the Provisioned Machine</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="coordinator.html">Coordinator</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="coordinator.html">Controlling Hazelcast Declarative Configuration</a>
+            
+        </li>
+    
+        <li>
+            <a href="coordinator.html">Controlling Test Duration</a>
+            
+        </li>
+    
+        <li>
+            <a href="coordinator.html">Controlling Client And Workers</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="communicator.html">Communicator</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="communicator.html">Example</a>
+            
+        </li>
+    
+        <li>
+            <a href="communicator.html">Message Types</a>
+            
+        </li>
+    
+        <li>
+            <a href="communicator.html">Message Addressing</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="simulatorproperties.html">Simulator.Properties File Description</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="performanceandbenchmarking.html">Performance and Benchmarking</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="wan.html">WAN</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="wan.html">WAN Replication</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="definingwanreplication.html">Defining WAN Replication</a>
+            
+        </li>
+    
+        <li>
+            <a href="configuringwanreplicationformapcache.html">Configuring WAN Replication for IMap and ICache</a>
+            
+        </li>
+    
+        <li>
+            <a href="batchsize.html">Batch Size</a>
+            
+        </li>
+    
+        <li>
+            <a href="batchmaximumdelay.html">Batch Maximum Delay</a>
+            
+        </li>
+    
+        <li>
+            <a href="responsetimeout.html">Response Timeout</a>
+            
+        </li>
+    
+        <li>
+            <a href="queuecapacity.html">Queue Capacity</a>
+            
+        </li>
+    
+        <li>
+            <a href="queuefullbehavior.html">Queue Full Behavior</a>
+            
+        </li>
+    
+        <li>
+            <a href="eventfiltering.html">Event Filtering API</a>
+            
+        </li>
+    
+        <li>
+            <a href="acktypes.html">Acknowledge Types</a>
+            
+        </li>
+    
+        <li>
+            <a href="ewradditionalinfo.html">WAN Replication Additional Information</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="osgi.html">OSGI</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="osgi.html">OSGI Support</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="osgi.html">API</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="osgi.html">Configuring Hazelcast OSGI Support</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="osgi.html">Design</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="osgi.html">Using Hazelcast OSGI Service</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="osgi.html">Getting Hazelcast OSGI Service Instances</a>
+            
+        </li>
+    
+        <li>
+            <a href="osgi.html">Managing and Using Hazelcast instances</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="extendinghazelcast.html">Extending Hazelcast</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="userdefinedservices.html">User Defined Services</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="spicreateclass.html">Creating the Service Class</a>
+            
+        </li>
+    
+        <li>
+            <a href="spienableclass.html">Enabling the Service Class</a>
+            
+        </li>
+    
+        <li>
+            <a href="spiaddproperties.html">Adding Properties to the Service</a>
+            
+        </li>
+    
+        <li>
+            <a href="spistartservice.html">Starting the Service</a>
+            
+        </li>
+    
+        <li>
+            <a href="spiproxy.html">Placing a Remote Call via Proxy</a>
+            
+        </li>
+    
+        <li>
+            <a href="spicreatecontainer.html">Creating Containers</a>
+            
+        </li>
+    
+        <li>
+            <a href="spipartitionmigration.html">Partition Migration</a>
+            
+        </li>
+    
+        <li>
+            <a href="spicreatebackups.html">Creating Backups</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="spiwaitnotifyservice.html">WaitNotifyService</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="discoveryspi.html">Discovery SPI</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="discoveryoverview.html">Discovery SPI Interfaces and Classes</a>
+            
+        </li>
+    
+        <li>
+            <a href="discoverystrategy.html">Discovery Strategy</a>
+            
+        </li>
+    
+        <li>
+            <a href="discoveryintegration.html">DiscoveryService (Framework integration)</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="config-properties.html">Config Properties SPI</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="config-properties.html">Config Properties SPI Classes</a>
+            
+        </li>
+    
+        <li>
+            <a href="config-properties.html">Config Properties SPI Example</a>
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="networkpartitioning.html">Network Partitioning - Split Brain Syndrome</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="partitionrecreation.html">Understanding Partition Recreation</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="backuppartitionrecreation.html">Understanding Backup Partition Creation</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="updateoverwrite.html">Understanding The Update Overwrite Scenario</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="afternetworkfailure.html">What Happens When The Network Failure Is Fixed</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="merging.html">How Hazelcast Split Brain Merge Happens</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="mergepolicies.html">Specifying Merge Policies</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="systemproperties-member.html">System Properties</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="commonexceptiontypes.html">Common Exception Types</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="licenses.html">License Questions</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="licenses.html">Embedded Dependencies</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="licenses.html">Runtime Dependencies</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">Frequently Asked Questions</a>
+            
+                
+    <ol>
+    
+        <li>
+            <a href="faq.html">Why 271 as the default partition count?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">Is Hazelcast thread safe?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">How do members discover each other?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">What happens when a member goes down?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">How do I test the connectivity?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">How do I choose keys properly?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">How do I reflect value modifications?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">How do I test my Hazelcast cluster?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">Does Hazelcast support hundreds of members?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">Does Hazelcast support thousands of clients?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">What is the difference between old LiteMember and new Smart Client?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">How do you give support?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">Does Hazelcast persist?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">Can I use Hazelcast in a single server?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">How can I monitor Hazelcast?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">How can I see debug level logs?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">What is the difference between client-server and embedded topologies?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">How do I know it is safe to kill the second member?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">When do I need Native Memory solutions?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">Is there any disadvantage of using near-cache?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">Is Hazelcast secure?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">How can I set socket options?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">I periodically see client disconnections during idle time?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">How to get rid of &quot;java.lang.OutOfMemoryError: unable to create new native thread&quot;?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">Does repartitioning wait for Entry Processor?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">Why do Hazelcast instances on different machines not see each other?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="faq.html">What Does &quot;Replica: 1 has no owner&quot; Mean?</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="glossary.html">Glossary</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+	    </nav>
+	    
+	    <nav id="links">
+	        <ul>
+	            
+	        </ul>
+	    </nav>
+	    
+		<div id="copyright">
+			Powered by <a href="http://github.com/maximebf/beautiful-docs">beautiful-docs</a> -
+	        <a href="#top">Back to top</a>
+		</div>
+	
+	</div>
+
+	        <div id="content">
+	            <a name="management-center"></a><h2 id="management-center">Management Center</h2>
+<p>Hazelcast Management Center enables you to monitor and manage your cluster members running Hazelcast. In addition to monitoring overall state of your clusters, you can also analyze and browse your data structures in detail, update map configurations and take thread dumps from members. With its scripting and console module, you can run scripts (JavaScript, Groovy, etc.) and commands on your members.</p>
+<a name="installing-management-center"></a><h3 id="installing-management-center">Installing Management Center</h3>
+<p>You have two options for installing Hazelcast Management Center:</p>
+<ul>
+<li>deploy the <code>mancenter</code>-<em>version</em><code>.war</code> application into your Java application server/container,</li>
+<li>or start Hazelcast Management Center from the command line and then have the Hazelcast cluster members communicate with that web application. This means that your members should know the URL of the <code>mancenter</code> application before they start.</li>
+</ul>
+<p>Here are the steps.</p>
+<ul>
+<li>Download the latest Hazelcast ZIP from <a href="http://www.hazelcast.org/download/" target="_blank">hazelcast.org</a>. The ZIP contains the <code>mancenter</code>-<em>version</em><code>.war</code> file.</li>
+<li>You can directly start <code>mancenter</code>-<em>version</em><code>.war</code> file from the command line. The following command will start Hazelcast Management Center on port 8080 with context root &#39;mancenter&#39; (<code>http://localhost:8080/mancenter</code>).</li>
+</ul>
+<pre><code class="lang-java">java -jar mancenter-*version*.war 8080 mancenter
+</code></pre>
+<ul>
+<li>Or, instead of starting at the command line, you can deploy it to your web server (Tomcat, Jetty, etc.). Let us say it is running at <code>http://localhost:8080/mancenter</code>.</li>
+<li>After you perform the above steps, make sure that <code>http://localhost:8080/mancenter</code> is up.</li>
+<li>Configure your Hazelcast members by adding the URL of your web application to your <code>hazelcast.xml</code>. Hazelcast members will send their states to this URL.</li>
+</ul>
+<pre><code class="lang-xml">&lt;management-center enabled=&quot;true&quot;&gt;
+    http://localhost:8080/mancenter
+&lt;/management-center&gt;
+</code></pre>
+<ul>
+<li>You can also set a frequency (in seconds) for which Management Center will take information from the Hazelcast cluster, using the element <code>update-interval</code> as shown below. <code>update-interval</code> is optional and its default value is 3 seconds.</li>
+</ul>
+<pre><code class="lang-xml">&lt;management-center enabled=&quot;true&quot; update-interval=&quot;3&quot;&gt;http://localhost:8080/
+mancenter&lt;/management-center&gt;
+</code></pre>
+<ul>
+<li>Start your Hazelcast cluster.</li>
+<li>Browse to <code>http://localhost:8080/mancenter</code> and setup your <a href="#getting-started-to-management-center">administrator account</a> explained in the next section.</li>
+</ul>
+<a name="getting-started-to-management-center"></a><h3 id="getting-started-to-management-center">Getting Started to Management Center</h3>
+<p>If you have the open source edition of Hazelcast, Management Center can be used for at most 2 members in the cluster. To use it for more members, you need to have either a Management Center license, Hazelcast Enterprise license or Hazelcast Enterprise HD license. This license should be entered within the Management Center as described in the following paragraphs.</p>
+<p><img src="images/NoteSmall.jpg" alt="image"> <strong><em>NOTE:</em></strong> <em>Even if you have a Hazelcast Enterprise or Enterprise HD license key and you set it as explained in the <a href="#setting-the-license-key">Setting the License Key</a> section, you still need to enter this same license within the Management Center. Please see the following paragraphs to learn how you can enter your license.</em>
+<br></br></p>
+<p>Once you browse to <code>http://localhost:8080/mancenter</code> and since you are going to use Management Center for the first time, the following dialog box appears.</p>
+<p><img src="images/SignUp-Popup.jpg" alt="Signup" style="width:413px;height:345px;"></p>
+<p><img src="images/NoteSmall.jpg" alt="image"> <strong><em>NOTE:</em></strong> <em>If you already created an administrator account before, a login dialog box appears instead.</em></p>
+<p>It asks you to create a username and password and give a valid e-mail address of yours. Once you press the <strong>Sign Up</strong> button, your administrator account credentials are created and the following dialog box appears.</p>
+<p><img src="images/ConnectCluster.jpg" alt="Connect to Cluster" style="width:313px;height:243px;"></p>
+<p>&quot;Select Cluster to Connect&quot; dialog box lists the clusters that send statistics to Management Center. You can either select a cluster to connect using the <strong>Connect</strong> button or enter your Management Center license key using the <strong>Enter License</strong> button. Management Center can be used without a license if the cluster that you want to monitor has at most 2 members.</p>
+<p>If you have a Management Center license or Hazelcast Enterprise license, you can enter it in the dialog box that appears once you press the <strong>Enter License</strong> button, as shown below.</p>
+<p><img src="images/EnterLicense.jpg" alt="Enter License" style="width:312px;height:244px;"></p>
+<p>When you try to connect to a cluster that has more than 2 members without entering a license key or if your license key is expired, the following dialog box appears.</p>
+<p><img src="images/ExpiredLicense.jpg" alt="License Warning" style="width:313px;height:244px;"></p>
+<p>Here, you can either choose to connect to a cluster without providing a license key or to enter your license key. If you choose to continue without a license, Management Center still continues to function but you will only be able to monitor up to 2 members of your cluster.</p>
+<p>Management Center creates a folder with the name <code>mancenter</code> under your <code>user/home</code> folder to save data files and above settings/license information. You can change the data folder by setting the <code>hazelcast.mancenter.home</code> system property. Please see the <a href="#system-properties">System Properties section</a> to see the description of this property and to learn how to set a system property.</p>
+<p><br></br></p>
+<p><strong><em>RELATED INFORMATION</em></strong></p>
+<p><em>Please refer to the <a href="#management-center-configuration">Management Center Configuration section</a> for a full description of Hazelcast Management Center configuration.</em></p>
+<a name="management-center-tools"></a><h3 id="management-center-tools">Management Center Tools</h3>
+<p>Once the page is loaded after selecting a cluster, the tool&#39;s home page appears as shown below.</p>
+<p><img src="images/NonHostedMCHomePage.jpg" alt=""></p>
+<p>This page provides the fundamental properties of the selected cluster which are explained in the <a href="#management-center-home-page">Home Page</a> section. The page has a toolbar on the top and a menu on the left.</p>
+<a name="toolbar"></a><h4 id="toolbar">Toolbar</h4>
+<p><img src="images/Toolbar.png" alt=""></p>
+<p>The toolbar has the following buttons:</p>
+<ul>
+<li><strong>Home</strong>: Loads the home page shown above. Please see the <a href="#management-center-home-page">Management Center Home Page section</a>.</li>
+<li><strong>Scripting</strong>: Loads the page used to write and execute the user`s own scripts on the cluster. Please see the <a href="#scripting">Scripting section</a>.</li>
+<li><strong>Console</strong>: Loads the page used to execute commands on the cluster. Please see the <a href="#executing-console-commands">Console section</a>.</li>
+<li><strong>Alerts</strong>: Creates alerts by specifying filters. Please see the <a href="#creating-alerts">Setting Alerts section</a>.</li>
+<li><strong>Documentation</strong>: Opens the Management Center documentation in a window inside the tool. Please see the <a href="#management-center-documentation">Documentation section</a>.</li>
+<li><strong>Administration</strong>: Used by the admin users to manage users in the system. Please see the <a href="#administering-management-center">Administering Management Center section</a>.</li>
+<li><strong>Logout</strong>: Closes the current user&#39;s session.</li>
+<li><strong>Hot Restart</strong>: Used by the admin users to manage cluster state. Please see the <a href="#hot-restart">Hot Restart section</a>.</li>
+<li><strong>Time Travel</strong>: Sees the cluster&#39;s situation at a time in the past. Please see the <a href="#checking-past-status-with-time-travel">Time Travel section</a>.</li>
+<li><p><strong>Cluster Selector</strong>: Switches between clusters. When the mouse is moved onto this item, a drop down list of clusters appears.</p>
+<p><img src="images/4ChangeCluster.jpg" alt=""></p>
+<p>The user can select any cluster and once selected, the page immediately loads with the selected cluster&#39;s information.</p>
+</li>
+</ul>
+<p><img src="images/NoteSmall.jpg" alt="image"> <strong><em>NOTE:</em></strong> <em>Some of the above listed toolbar items are not visible to users who are not admin or who have <strong>read-only</strong> permission. Also, some of the operations explained in the later sections cannot be performed by users with read-only permission. Please see the <a href="#administering-management-center">Administering Management Center section</a> for details.</em></p>
+<a name="menu"></a><h4 id="menu">Menu</h4>
+<p>The Home Page includes a menu on the left which lists the distributed data structures in the cluster and all the cluster members, as shown below.</p>
+<p><img src="images/LeftMenu.png" alt=""></p>
+<p><img src="images/NoteSmall.jpg" alt="image"> <strong><em>NOTE:</em></strong> <em>Distributed data structures will be shown there when the proxies are created for them.</em></p>
+<p><img src="images/NoteSmall.jpg" alt="image"> <strong><em>NOTE:</em></strong> <em>WAN Replication tab is only visible with <font color="#3981DB"><strong>Hazelcast Enterprise</strong></font> license.</em></p>
+<p>You can expand and collapse menu items by clicking on them. Below is the list of menu items with links to their explanations.</p>
+<ul>
+<li><a href="#monitoring-caches">Caches</a></li>
+<li><a href="#managing-maps">Maps</a></li>
+<li><a href="#monitoring-replicated-maps">Replicated Maps</a></li>
+<li><a href="#monitoring-queues">Queues</a></li>
+<li><a href="#monitoring-topics">Topics</a></li>
+<li><a href="#monitoring-multimaps">MultiMaps</a></li>
+<li><a href="#monitoring-executors">Executors</a></li>
+<li><a href="#monitoring-wan-replication">WAN</a></li>
+<li><a href="#monitoring-members">Members</a></li>
+</ul>
+<a name="tabbed-view"></a><h4 id="tabbed-view">Tabbed View</h4>
+<p>Each time you select an item from the toolbar or menu, the item is added to the main view as a tab, as shown below.</p>
+<p><img src="images/NonHMCTabbedView.jpg" alt=""></p>
+<p>In the above example, <em>Home</em>, <em>Scripting</em>, <em>Console</em>, <em>queue1</em> and <em>map1</em> windows can be seen as tabs. Windows can be closed using the <img src="images/CloseIcon.jpg" alt=""> icon on each tab (except the Home Page; it cannot be closed).</p>
+<a name="management-center-home-page"></a><h3 id="management-center-home-page">Management Center Home Page</h3>
+<p>This is the first page appearing after logging in. It gives an overview of the connected cluster. The following subsections describe each portion of the page.</p>
+<a name="cpu-utilization"></a><h4 id="cpu-utilization">CPU Utilization</h4>
+<p>This part of the page provides load and utilization information for the CPUs for each node (cluster member), as shown below.</p>
+<p><img src="images/NonHMCCPUUtil.jpg" alt=""></p>
+<p>The first column lists the nodes with their IPs and ports. The next columns list the system load averages on each node for the last 1, 5 and 15 minutes. These average values are calculated as the sum of the count of runnable entities running on and queued to the available CPUs averaged over the last 1, 5 and 15 minutes. This calculation is operating system specific, typically a damped time-dependent average. If system load average is not available, these columns show negative values.</p>
+<p>The last column (<strong>Chart</strong>) graphically shows the recent load on the CPUs. When you move the mouse cursor on a chart, you can see the CPU load at the time where the cursor is placed. Charts under this column shows the CPU loads approximately for the last 2 minutes. If recent CPU load is not available, you will see a negative value.</p>
+<a name="memory-utilization"></a><h4 id="memory-utilization">Memory Utilization</h4>
+<p>This part of the page provides information related to memory usages for each node (cluster member), as shown below.</p>
+<p><img src="images/NonHMCMemoryUtil.jpg" alt=""></p>
+<p>The first column lists the nodes with their IPs and ports. The next columns show the used and free memories out of the total memory reserved for Hazelcast usage, in real-time. The <strong>Max</strong> column lists the maximum memory capacity of each node and the <strong>Percent</strong> column lists the percentage value of used memory out of the maximum memory. The last column (<strong>Chart</strong>) shows the memory usage of nodes graphically. When you move the mouse cursor on a desired graph, you can see the memory usage at the time where the cursor is placed. Graphs under this column shows the memory usages approximately for the last 2 minutes.</p>
+<a name="memory-distribution"></a><h4 id="memory-distribution">Memory Distribution</h4>
+<p>This part of the page graphically provides the cluster wise breakdown of memory, as shown below. The blue area is the memory used by maps. The dark yellow area is the memory used by both non-Hazelcast entities and all Hazelcast entities except the map (i.e. the memory used by all entities subtracted by the memory used by map). The green area is the free memory out of the whole cluster`s memory capacity.</p>
+<p><img src="images/Home-MemoryDistribution.jpg" alt=""></p>
+<p>In the above example, you can see 0.32% of the total memory is used by Hazelcast maps (it can be seen by placing the mouse cursor on it), 58.75% is used by non-Hazelcast entities and 40.85% of the total memory is free.</p>
+<a name="map-memory-distribution"></a><h4 id="map-memory-distribution">Map Memory Distribution</h4>
+<p>This part is the breakdown of the blue area shown in the <strong>Memory Distribution</strong> graph explained above. It provides the percentage values of the memories used by each map, out of the total cluster memory reserved for all Hazelcast maps.</p>
+<p><img src="images/Home-MapMemoryDistribution.jpg" alt=""></p>
+<p>In the above example, you can see 49.55% of the total map memory is used by <strong>map1</strong> and 49.55% is used by <strong>map2</strong>.</p>
+<a name="partition-distribution"></a><h4 id="partition-distribution">Partition Distribution</h4>
+<p>This pie chart shows what percentage of partitions each node (cluster member) has, as shown below.</p>
+<p><img src="images/Home-PartitionDistribution.jpg" alt=""></p>
+<p>You can see each node&#39;s partition percentages by placing the mouse cursor on the chart. In the above example, you can see the node &quot;127.0.0.1:5708&quot; has 5.64% of the total partition count (which is 271 by default and configurable, please see the <code>hazelcast.partition.count</code> property explained in the <a href="#system-properties">System Properties section</a>).</p>
+<a name="monitoring-caches"></a><h3 id="monitoring-caches">Monitoring Caches</h3>
+<p>You can monitor your caches&#39; metrics by clicking the cache name listed on the left panel under <strong>Caches</strong> menu item. A new tab for monitoring that cache instance is opened on the right, as shown below.</p>
+<p><img src="images/ManCenter-Caches.jpg" alt=""></p>
+<p>On top of the page, four charts monitor the <strong>Gets</strong>, <strong>Puts</strong>, <strong>Removals</strong> and <strong>Evictions</strong> in real-time. The X-axis of all the charts show the current system time. To open a chart as a separate dialog, click on the <img src="images/MaximizeChart.jpg" alt=""> button placed at the top right of each chart.</p>
+<p>Under these charts is the Cache Statistics Data Table. From left to right, this table lists the IP addresses and ports of each member, and the get, put, removal, eviction, and hit and miss counts per second in real-time.</p>
+<p>You can navigate through the pages using the buttons at the bottom right of the table (<strong>First, Previous, Next, Last</strong>). You can ascend or descend the order of the listings in each column by clicking on column headings.</p>
+<p><img src="images/NoteSmall.jpg" alt="image"> <strong><em>NOTE:</em></strong> <em>You need to enable the statistics for caches to monitor them in the Management Center. Use the <code>&lt;statistics-enabled&gt;</code> element or <code>setStatisticsEnabled()</code> method in declarative or programmatic configuration, respectively, to enable the statistics. Please refer to the <a href="#jcache-declarative-configuration">JCache Declarative Configuration section</a> for more information.</em></p>
+<a name="managing-maps"></a><h3 id="managing-maps">Managing Maps</h3>
+<p>Map instances are listed under the <strong>Maps</strong> menu item on the left. When you click on a map, a new tab for monitoring that map instance opens on the right, as shown below. In this tab, you can monitor metrics and also re-configure the selected map.</p>
+<p><img src="images/MapsHome.jpg" alt=""></p>
+<p>The below subsections explain the portions of this window.</p>
+<a name="map-browser"></a><h4 id="map-browser">Map Browser</h4>
+<p>Use the Map Browser tool to retrieve properties of the entries stored in the selected map. To open the Map Browser tool, click on the <strong>Map Browser</strong> button, located at the top right of the window. Once opened, the tool appears as a dialog, as shown below.</p>
+<p><img src="images/Map-MapBrowser.jpg" alt=""></p>
+<p>Once the key and the key&#39;s type are specified and the <strong>Browse</strong> button is clicked, the key&#39;s properties along with its value are listed.</p>
+<a name="map-config"></a><h4 id="map-config">Map Config</h4>
+<p>Use the Map Config tool to set the selected map&#39;s attributes, such as the backup count, TTL, and eviction policy. To open the Map Config tool, click on the <strong>Map Config</strong> button, located at the top right of the window. Once opened, the tool appears as a dialog, as shown below.</p>
+<p><img src="images/Map-MapConfig.jpg" alt=""></p>
+<p>You can change any attribute and click the <strong>Update</strong> button to save your changes.</p>
+<a name="map-monitoring"></a><h4 id="map-monitoring">Map Monitoring</h4>
+<p>Besides the Map Browser and Map Config tools, the map monitoring page has monitoring options that are explained below. All of these options perform real-time monitoring.</p>
+<p>On top of the page, small charts monitor the size, throughput, memory usage, backup size, etc. of the selected map in real-time. The X-axis of all the charts show the current system time. You can select other small monitoring charts using the <img src="images/ChangeWindowIcon.jpg" alt=""> button at the top right of each chart. When you click the button, the monitoring options are listed, as shown below.</p>
+<p><img src="images/SelectConfOpt.jpg" alt=""></p>
+<p>When you click on a desired monitoring, the chart is loaded with the selected option. To open a chart as a separate dialog, click on the <img src="images/MaximizeChart.jpg" alt=""> button placed at the top right of each chart. The monitoring charts below are available:</p>
+<ul>
+<li><strong>Size</strong>: Monitors the size of the map. Y-axis is the entry count (should be multiplied by 1000).</li>
+<li><strong>Throughput</strong>: Monitors get, put and remove operations performed on the map. Y-axis is the operation count.</li>
+<li><strong>Memory</strong>: Monitors the memory usage on the map. Y-axis is the memory count.</li>
+<li><strong>Backups</strong>: Chart loaded when &quot;Backup Size&quot; is selected. Monitors the size of the backups in the map. Y-axis is the backup entry count (should be multiplied by 1000).</li>
+<li><strong>Backup Memory</strong>: Chart loaded when &quot;Backup Mem.&quot; is selected. Monitors the memory usage of the backups. Y-axis is the memory count.</li>
+<li><strong>Hits</strong>: Monitors the hit count of the map.</li>
+<li><strong>Puts/s, Gets/s, Removes/s</strong>: These three charts monitor the put, get and remove operations (per second) performed on the selected map.</li>
+</ul>
+<p>Under these charts are <strong>Map Memory</strong> and <strong>Map Throughput</strong> data tables. The Map Memory data table provides memory metrics distributed over members, as shown below.</p>
+<p><img src="images/Map-MemoryDataTable.jpg" alt=""></p>
+<p>From left to right, this table lists the IP address and port, entry counts, memory used by entries, backup entry counts, memory used by backup entries, events, hits, locks and dirty entries (in the cases where <em>MapStore</em> is enabled, these are the entries that are put to/removed from the map but not written to/removed from a database yet) of each entry in the map. You can navigate through the pages using the buttons at the bottom right of the table (<strong>First, Previous, Next, Last</strong>). You can ascend or descend the order of the listings by clicking on the column headings.</p>
+<p>Map Throughput data table provides information about the operations (get, put, remove) performed on each member in the map, as shown below.</p>
+<p><img src="images/Map-MapThroughputDataTable.jpg" alt=""></p>
+<p>From left to right, this table lists:</p>
+<ul>
+<li>the IP address and port of each member,</li>
+<li>the put, get and remove operations on each member,</li>
+<li>the average put, get, remove latencies,</li>
+<li>and the maximum put, get, remove latencies on each member.</li>
+</ul>
+<p>You can select the period in the combo box placed at the top right corner of the window, for which the table data will be shown. Available values are <strong>Since Beginning</strong>, <strong>Last Minute</strong>, <strong>Last 10 Minutes</strong> and <strong>Last 1 Hour</strong>.</p>
+<p>You can navigate through the pages using the buttons placed at the bottom right of the table (<strong>First, Previous, Next, Last</strong>). To ascend or descent the order of the listings, click on the column headings.</p>
+<a name="monitoring-replicated-maps"></a><h3 id="monitoring-replicated-maps">Monitoring Replicated Maps</h3>
+<p>Replicated Map instances are shown under the <strong>Replicated Maps</strong> menu item on the left. When you click on a Replicated Map, a new tab for monitoring that instance opens on the right, as shown below.</p>
+<p><img src="images/replicated-map-stats.png" alt=""></p>
+<p>In this tab, you can monitor metrics and also re-configure the selected Replicated Map. All of the statistics are real-time monitoring statistics.</p>
+<p>When you click on a desired monitoring, the chart is loaded with the selected option. Also you can open the chart in new window.</p>
+<ul>
+<li><strong>Size</strong>: Monitors the size of the Replicated Map. Y-axis is the entry count (should be multiplied by 1000).</li>
+<li><strong>Throughput</strong>: Monitors get, put and remove operations performed on the Replicated Map. Y-axis is the operation count.</li>
+<li><strong>Memory</strong>: Monitors the memory usage on the Replicated Map. Y-axis is the memory count.</li>
+<li><strong>Hits</strong>: Monitors the hit count of the Replicated Map.</li>
+<li><strong>Puts/s, Gets/s, Removes/s</strong>: These three charts monitor the put, get and remove operations (per second) performed on the selected Replicated Map, the average put, get, remove latencies, and the maximum put, get, remove latencies on each member.</li>
+</ul>
+<p>The Replicated Map Throughput Data Table provides information about operations (get, put, remove) performed on each member in the selected Replicated Map.</p>
+<p><img src="images/replicated-map-throughput.png" alt=""></p>
+<p>From left to right, this table lists:</p>
+<ul>
+<li>the IP address and port of each member,</li>
+<li>the put, get, and remove operations on each member,</li>
+<li>the average put, get, and remove latencies,</li>
+<li>and the maximum put, get, and remove latencies on each member.</li>
+</ul>
+<p>You can select the period from the combo box placed at the top right corner of the window, in which the table data is shown. Available values are <strong>Since Beginning</strong>, <strong>Last Minute</strong>, <strong>Last 10 Minutes</strong> and <strong>Last 1 Hour</strong>.</p>
+<p>You can navigate through the pages using the buttons placed at the bottom right of the table (<strong>First, Previous, Next, Last</strong>). To ascend or descent the order of the listings, click on the column headings.</p>
+<a name="monitoring-queues"></a><h3 id="monitoring-queues">Monitoring Queues</h3>
+<p>Using the menu item <strong>Queues</strong>, you can monitor your queues data structure. When you expand this menu item and click on a queue, a new tab for monitoring that queue instance is opened on the right, as shown below.</p>
+<p><img src="images/Queues-Home.jpg" alt=""></p>
+<p>On top of the page, small charts monitor the size, offers and polls of the selected queue in real-time. The X-axis of all the charts shows the current system time. To open a chart as a separate dialog, click on the <img src="images/MaximizeChart.jpg" alt=""> button placed at the top right of each chart. The monitoring charts below are available:</p>
+<ul>
+<li><strong>Size</strong>: Monitors the size of the queue. Y-axis is the entry count (should be multiplied by 1000).</li>
+<li><strong>Offers</strong>: Monitors the offers sent to the selected queue. Y-axis is the offer count.</li>
+<li><strong>Polls</strong>: Monitors the polls sent to the selected queue. Y-axis is the poll count.</li>
+</ul>
+<p>Under these charts are <strong>Queue Statistics</strong> and <strong>Queue Operation Statistics</strong> tables. The Queue Statistics table provides item and backup item counts in the queue and age statistics of items and backup items at each member, as shown below.</p>
+<p><img src="images/QueueStatistics.jpg" alt=""></p>
+<p>From left to right, this table lists the IP address and port, items and backup items on the queue of each member, and maximum, minimum and average age of items in the queue. You can navigate through the pages using the buttons placed at the bottom right of the table (<strong>First, Previous, Next, Last</strong>). The order of the listings in each column can be ascended or descended by clicking on column headings.</p>
+<p>Queue Operations Statistics table provides information about the operations (offers, polls, events) performed on the queues, as shown below.</p>
+<p><img src="images/QueueOperationStatistics.jpg" alt=""></p>
+<p>From left to right, this table lists the IP address and port of each member, and counts of offers, rejected offers, polls, poll misses and events.</p>
+<p>You can select the period in the combo box placed at the top right corner of the window to show the table data. Available values are <strong>Since Beginning</strong>, <strong>Last Minute</strong>, <strong>Last 10 Minutes</strong> and <strong>Last 1 Hour</strong>.</p>
+<p>You can navigate through the pages using the buttons placed at the bottom right of the table (<strong>First, Previous, Next, Last</strong>). Click on the column headings to ascend or descend the order of the listings.</p>
+<a name="monitoring-topics"></a><h3 id="monitoring-topics">Monitoring Topics</h3>
+<p>To monitor your topics&#39; metrics, click the topic name listed on the left panel under the <strong>Topics</strong> menu item. A new tab for monitoring that topic instance opens on the right, as shown below.</p>
+<p><img src="images/ManCenter-Topics.jpg" alt=""></p>
+<p>On top of the page, two charts monitor the <strong>Publishes</strong> and <strong>Receives</strong> in real-time. They show the published and received message counts of the cluster, the members of which are subscribed to the selected topic. The X-axis of both charts show the current system time. To open a chart as a separate dialog, click on the <img src="images/MaximizeChart.jpg" alt=""> button placed at the top right of each chart.</p>
+<p>Under these charts is the Topic Operation Statistics table. From left to right, this table lists the IP addresses and ports of each member, and counts of message published and receives per second in real-time. You can select the period in the combo box placed at top right corner of the table to show the table data. The available values are <strong>Since Beginning</strong>, <strong>Last Minute</strong>, <strong>Last 10 Minutes</strong> and <strong>Last 1 Hour</strong>.</p>
+<p>You can navigate through the pages using the buttons placed at the bottom right of the table (<strong>First, Previous, Next, Last</strong>). Click on the column heading to ascend or descend the order of the listings.</p>
+<a name="monitoring-multimaps"></a><h3 id="monitoring-multimaps">Monitoring MultiMaps</h3>
+<p>MultiMap is a specialized map where you can associate a key with multiple values. This monitoring option is similar to the <strong>Maps</strong> option: the same monitoring charts and data tables monitor MultiMaps. The differences are that you cannot browse the MultiMaps and re-configure it. Please see <a href="#managing-maps">Managing Maps</a>.</p>
+<a name="monitoring-executors"></a><h3 id="monitoring-executors">Monitoring Executors</h3>
+<p>Executor instances are listed under the <strong>Executors</strong> menu item on the left. When you click on a executor, a new tab for monitoring that executor instance opens on the right, as shown below.</p>
+<p><img src="images/ExecutorsHome.jpg" alt=""></p>
+<p>On top of the page, small charts monitor the pending, started, completed, etc. executors in real-time. The X-axis of all the charts shows the current system time. You can select other small monitoring charts using the <img src="images/ChangeWindowIcon.jpg" alt=""> button placed at the top right of each chart. Click the button to list the monitoring options, as shown below.</p>
+<p><img src="images/SelectExecMonOpt.jpg" alt=""></p>
+<p>When you click on a desired monitoring, the chart loads with the selected option. To open a chart as a separate dialog, click on the <img src="images/MaximizeChart.jpg" alt=""> button placed at top right of each chart. The below monitoring charts are available:</p>
+<ul>
+<li><strong>Pending</strong>: Monitors the pending executors. Y-axis is the executor count.</li>
+<li><strong>Started</strong>: Monitors the started executors. Y-axis is the executor count.</li>
+<li><strong>Start Lat. (msec.)</strong>: Shows the latency when executors are started. Y-axis is the duration in milliseconds.</li>
+<li><strong>Completed</strong>: Monitors the completed executors. Y-axis is the executor count.</li>
+<li><strong>Comp. Time (msec.)</strong>: Shows the completion period of executors. Y-axis is the duration in milliseconds.</li>
+</ul>
+<p>Under these charts is the <strong>Executor Operation Statistics</strong> table, as shown below.</p>
+<p><img src="images/ExecutorOperationStats.jpg" alt=""></p>
+<p>From left to right, this table lists the IP address and port of members, the counts of pending, started and completed executors per second, and the execution time and average start latency of executors on each member. You can navigate through the pages using the buttons placed at the bottom right of the table (<strong>First, Previous, Next, Last</strong>). Click on the column heading to ascend or descend the order of the listings.</p>
+<a name="monitoring-wan-replication"></a><h3 id="monitoring-wan-replication">Monitoring WAN Replication</h3>
+<p>WAN Replication schemes are listed under the <strong>WAN</strong> menu item on the left. When you click on a scheme, a new tab for monitoring the targets which that scheme has appears on the right, as shown below.</p>
+<p><img src="images/WanPublisherStats.png" alt=""></p>
+<p>In this tab, you see <strong>WAN Replication Operations Table</strong> for each target which belongs to this scheme. One of the example tables is shown below.</p>
+<p><img src="images/WanTargetTable.png" alt=""></p>
+<ul>
+<li><strong>Connected</strong>: Status of the member connection to the target.</li>
+<li><strong>Outbound Recs (sec)</strong>: Average number of records sent to target per second from this member.</li>
+<li><strong>Outbound Lat (ms)</strong>: Average latency of sending a record to the target from this member.</li>
+<li><strong>Outbound Queue</strong>: Number of records waiting in the queue to be sent to the target.</li>
+<li><strong>Action</strong>: Stops/Resumes replication of this member&#39;s records.</li>
+</ul>
+<a name="monitoring-members"></a><h3 id="monitoring-members">Monitoring Members</h3>
+<p>Use this menu item to monitor each cluster member and perform operations like running garbage collection (GC) and taking a thread dump. Once you select a member from the menu, a new tab for monitoring that member opens on the right, as shown below.</p>
+<p><img src="images/MembersHome.png" alt=""></p>
+<p>The <strong>CPU Utilization</strong> chart shows the percentage of CPU usage on the selected member. The <strong>Memory Utilization</strong> chart shows the memory usage on the selected member with three different metrics (maximum, used and total memory). You can open both of these charts as separate windows using the <img src="images/ChangeWindowIcon.jpg" alt=""> button placed at top right of each chart; this gives you a clearer view of the chart.</p>
+<p>The window titled <strong>Partitions</strong> shows which partitions are assigned to the selected member. <strong>Runtime</strong> is a dynamically updated window tab showing the processor number, the start and up times, and the maximum, total and free memory sizes of the selected member. These values are collected from the default MXBeans provided by the Java Virtual Machine (JVM). Descriptions from the Javadocs and some explanations are below:</p>
+<ul>
+<li><p><strong>Number of Processors</strong>: Number of processors available to the member (JVM).</p>
+</li>
+<li><p><strong>Start Time</strong>: Start time of the member (JVM) in milliseconds.</p>
+</li>
+<li><p><strong>Up Time</strong>: Uptime of the member (JVM) in milliseconds</p>
+</li>
+<li><p><strong>Maximum Memory</strong>: Maximum amount of memory that the member (JVM) will attempt to use.</p>
+</li>
+<li><p><strong>Free Memory</strong>: Amount of free memory in the member (JVM).</p>
+</li>
+<li><p><strong>Used Heap Memory</strong>: Amount of used memory in bytes.</p>
+</li>
+<li><p><strong>Max Heap Memory</strong>: Maximum amount of memory in bytes that can be used for memory management.</p>
+</li>
+<li><p><strong>Used Non-Heap Memory</strong>: Amount of used memory in bytes.</p>
+</li>
+<li><p><strong>Max Non-Heap Memory</strong>: Maximum amount of memory in bytes that can be used for memory management.</p>
+</li>
+<li><p><strong>Total Loaded Classes</strong>: Total number of classes that have been loaded since the member (JVM) has started execution.</p>
+</li>
+<li><p><strong>Current Loaded Classes</strong>: Number of classes that are currently loaded in the member (JVM).</p>
+</li>
+<li><p><strong>Total Unloaded Classes</strong>: Total number of classes unloaded since the member (JVM) has started execution.</p>
+</li>
+<li><p><strong>Total Thread Count</strong>: Total number of threads created and also started since the member (JVM) started.</p>
+</li>
+<li><p><strong>Active Thread Count</strong>: Current number of live threads including both daemon and non-daemon threads.</p>
+</li>
+<li><p><strong>Peak Thread Count</strong>: Peak live thread count since the member (JVM) started or peak was reset.</p>
+</li>
+<li><p><strong>Daemon Thread Count</strong>: Current number of live daemon threads.</p>
+</li>
+<li><p><strong>OS: Free Physical Memory</strong>: Amount of free physical memory in bytes.</p>
+</li>
+<li><p><strong>OS: Committed Virtual Memory</strong>: Amount of virtual memory that is guaranteed to be available to the running process in bytes.</p>
+</li>
+<li><p><strong>OS: Total Physical Memory</strong>: Total amount of physical memory in bytes.</p>
+</li>
+<li><p><strong>OS: Free Swap Space</strong>: Amount of free swap space in bytes. Swap space is used when the amount of physical memory (RAM) is full. If the system needs more memory resources and the RAM is full, inactive pages in memory are moved to the swap space.</p>
+</li>
+<li><p><strong>OS: Total Swap Space</strong>: Total amount of swap space in bytes.</p>
+</li>
+<li><p><strong>OS: Maximum File Descriptor Count</strong>: Maximum number of file descriptors. File descriptor is an integer number that uniquely represents an opened file in the operating system.</p>
+</li>
+<li><p><strong>OS: Open File Descriptor Count</strong>: Number of open file descriptors.</p>
+</li>
+<li><p><strong>OS: Process CPU Time</strong>: CPU time used by the process on which the member (JVM) is running in nanoseconds.</p>
+</li>
+<li><p><strong>OS: Process CPU Load</strong>: Recent CPU usage for the member (JVM) process. This is a double with a value from 0.0 to 1.0. A value of 0.0 means that none of the CPUs were running threads from the member (JVM) process during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running threads from the member (JVM) 100% of the time during the recent period being observed. Threads from the member (JVM) include the application threads as well as the member (JVM) internal threads.</p>
+</li>
+<li><p><strong>OS: System Load Average</strong>: System load average for the last minute. The system load average is the average over a period of time of this sum: (the number of runnable entities queued to the available processors) + (the number of runnable entities running on the available processors). The way in which the load average is calculated is operating system specific but it is typically a damped time-dependent average.</p>
+</li>
+<li><p><strong>OS: System CPU Load</strong>:
+Recent CPU usage for the whole system. This is a double with a value from 0.0 to 1.0. A value of 0.0 means that all CPUs were idle during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running 100% of the time during the recent period being observed.</p>
+</li>
+</ul>
+<p><img src="images/NoteSmall.jpg" alt="image"> <strong><em>NOTE:</em></strong> <em>These descriptions may vary according to the JVM version or vendor.</em></p>
+<p>Next to the <strong>Runtime</strong> tab, the <strong>Properties</strong> tab shows the system properties. The <strong>Member Configuration</strong> window shows the XML configuration of the connected Hazelcast cluster.</p>
+<p>The <strong>List of Slow Operations</strong> gives an overview of detected slow operations which occurred on that member. The data is collected by the <a href="#slowoperationdetector">SlowOperationDetector</a>.</p>
+<p><img src="images/ListOfSlowOperations.png" alt=""></p>
+<p>Click on an entry to open a dialog which shows the stacktrace and detailed information about each slow invocation of this operation.</p>
+<p><img src="images/SlowOperationDetail.png" alt=""></p>
+<p>Besides the aforementioned monitoring charts and windows, you can also perform operations on the selected member through this page. The operation buttons are located at the top right of the page, as explained below:</p>
+<ul>
+<li><strong>Run GC</strong>: Press this button to execute garbage collection on the selected member. A notification stating that the GC execution was successful will be shown.</li>
+<li><strong>Thread Dump</strong>: Press this button to take a thread dump of the selected member and show it as a separate dialog to the user.</li>
+<li><strong>Shutdown Node</strong>: Press this button to shutdown the selected member.</li>
+</ul>
+<a name="scripting"></a><h3 id="scripting">Scripting</h3>
+<p>You can use the scripting feature of this tool to execute codes on the cluster. To open this feature as a tab, select <strong>Scripting</strong> located at the toolbar on top. Once selected, the scripting feature opens as shown below.</p>
+<p><img src="images/Scripting.jpg" alt=""></p>
+<p>In this window, the <strong>Scripting</strong> part is the actual coding editor. You can select the members on which the code will execute from the <strong>Members</strong> list shown at the right side of the window. Below the members list, a combo box enables you to select a scripting language: currently, JavaScript, Ruby, Groovy and Python languages are supported. After you write your script and press the <strong>Execute</strong> button, you can see the execution result in the <strong>Result</strong> part of the window.</p>
+<p><img src="images/NoteSmall.jpg" alt="image"> <strong><em>NOTE:</em></strong> <em>To use the scripting languages other than JavaScript on a member, the libraries for those languages should be placed in the classpath of that member.</em></p>
+<p>There are <strong>Save</strong> and <strong>Delete</strong> buttons on the top right of the scripting editor. To save your scripts, press the <strong>Save</strong> button after you type a name for your script into the field next to this button. The scripts you saved are listed in the <strong>Saved Scripts</strong> part of the window, located at the bottom right of the page. Click on a saved script from this list to execute or edit it. If you want to remove a script that you wrote and saved before, select it from this list and press the <strong>Delete</strong> button.</p>
+<p>In the scripting engine you have a <code>HazelcastInstance</code> bonded to a variable named <code>hazelcast</code>. You can invoke any method that <code>HazelcastInstance</code> has via the <code>hazelcast</code> variable. You can see example usage for JavaScript below.</p>
+<pre><code class="lang-javascript">var name = hazelcast.getName();
+var node = hazelcast.getCluster().getLocalMember();
+var employees = hazelcast.getMap(&quot;employees&quot;);
+employees.put(&quot;1&quot;,&quot;John Doe&quot;);
+employees.get(&quot;1&quot;); // will return &quot;John Doe&quot;
+</code></pre>
+<a name="executing-console-commands"></a><h3 id="executing-console-commands">Executing Console Commands</h3>
+<p>The Management Center has a console feature that enables you to execute commands on the cluster. For example, you can perform <code>put</code>s and <code>get</code>s on a map, after you set the namespace with the command <code>ns &lt;name of your map&gt;</code>. The same is valid for queues, topics, etc. To execute your command, type it into the field below the console and press <strong>Enter</strong>. Type <code>help</code> to see all the commands that you can use.</p>
+<p>Open a console window by clicking on the <strong>Console</strong> button located on the toolbar. Below is a sample view with some executed commands.</p>
+<p><img src="images/Console.jpg" alt=""></p>
+<a name="creating-alerts"></a><h3 id="creating-alerts">Creating Alerts</h3>
+<p>You can use the alerts feature of this tool to receive alerts and/or e-mail notifications by creating filters. In these filters, you can specify criteria for cluster members or data structures. When the specified criteria are met for a filter, the related alert is shown as a pop-up message on the top right of the page or sent as an e-mail.</p>
+<p>Once you click the <strong>Alerts</strong> button located on the toolbar, the page shown below appears.</p>
+<p><img src="images/Alerts-Home.png" alt=""></p>
+<p>If you want to enable the Management Center to send e-mail notifications to the Management Center Admin users, you need to configure the SMTP server. To do this, click on the <strong>Create STMP Config</strong> shown above. The form shown below appears.</p>
+<p><img src="images/CreateSMTPConfig.png" alt=""></p>
+<p>In this form, specify the e-mail address from which the notifications will be sent and also its password. Then, provide the SMTP server host address and port. Finally, check the <strong>TLS Connection</strong> checkbox if the connection is secured by TLS (Transport Layer Security).</p>
+<p>After you provide the required information, click on the <strong>Save Config</strong> button. After a processing period (for a couple of seconds), the form will be closed if the configuration is created successfully. In this case, an e-mail will be sent to the e-mail address you provided in the form stating that the SMTP configuration is successful and e-mail alert system is created.</p>
+<p>If not, you will see an error message at the bottom of this form as shown below.   </p>
+<p><img src="images/SMTPConfigFormWithError.png" alt=""></p>
+<p>As you can see, the reasons can be wrong SMTP configuration or connectivity problems. In this case, please check the form fields and check for any causes for the connections issues with your server.</p>
+<p><strong>Creating Filters for Cluster Members</strong></p>
+<p>Select <strong>Member Alerts</strong> check box to create filters for some or all members in the cluster. Once selected, the next screen asks for which members the alert will be created. Select the desired members and click on the <strong>Next</strong> button. On the next page (shown below), specify the criteria.</p>
+<p><img src="images/MemberAlert1.jpg" alt=""></p>
+<p>You can create alerts when:</p>
+<ul>
+<li>free memory on the selected member nodes is less than the specified number.</li>
+<li>used heap memory is larger than the specified number.</li>
+<li>the number of active threads are less than the specified count.</li>
+<li>the number of daemon threads are larger than the specified count.</li>
+</ul>
+<p>When two or more criteria is specified they will be bound with the logical operator <strong>AND</strong>.</p>
+<p>On the next page, give a name for the filter. Then, select whether notification e-mails will be sent to the Management Center Admins using the <strong>Send Email Alert</strong> checkbox. Then, provide a time interval (in seconds) for which the e-mails with the <strong>same notification content</strong> will be sent using the <strong>Email Interval (secs)</strong> field.  Finally, select whether the alert data will be written to the disk (if checked, you can see the alert log at the folder <em>/users/<your user>/mancenter<version></em>).</p>
+<p>Click on the <strong>Save</strong> button; your filter will be saved and put into the <strong>Filters</strong> part of the page. To edit the filter, click on the <img src="images/EditIcon.jpg" alt=""> icon. To delete it, click on the <img src="images/DeleteIcon.jpg" alt=""> icon.</p>
+<p><strong>Creating Filters for Data Types</strong></p>
+<p>Select the <strong>Data Type Alerts</strong> check box to create filters for data structures. The next screen asks for which data structure (maps, queues, multimaps, executors) the alert will be created. Once a structure is selected, the next screen immediately loads and you then select the data structure instances (i.e. if you selected <em>Maps</em>, it will list all the maps defined in the cluster, you can select one map or more). Select as desired, click on the <strong>Next</strong> button, and select the members on which the selected data structure instances will run.</p>
+<p>The next screen, as shown below, is the one where you specify the criteria for the selected data structure.</p>
+<p><img src="images/DataAlert1.jpg" alt=""></p>
+<p>As the screen shown above shows, you will select an item from the left combo box, select the operator in the middle one, specify a value in the input field, and click on the <strong>Add</strong> button. You can create more than one criteria in this page; those will be bound by the logical operator <strong>AND</strong>.</p>
+<p>After you specify the criteria, click the <strong>Next</strong> button. On the next page, give a name for the filter. Then, select whether notification e-mails will be sent to the Management Center Admins using the <strong>Send Email Alert</strong> checkbox. Then, provide a time interval (in seconds) for which the e-mails with the <strong>same notification content</strong> will be sent using the <strong>Email Interval (secs)</strong> field.  Finally, select whether the alert data will be written to the disk (if checked, you can see the alert log at the folder <em>/users/<your user>/mancenter<version></em>).</p>
+<p>Click on the <strong>Save</strong> button; your filter will be saved and put into the <strong>Filters</strong> part of the page. To edit the filter, click on the <img src="images/EditIcon.jpg" alt=""> icon. To delete it, click on the <img src="images/DeleteIcon.jpg" alt=""> icon.</p>
+<a name="administering-management-center"></a><h3 id="administering-management-center">Administering Management Center</h3>
+<p><img src="images/NoteSmall.jpg" alt="image"> <strong><em>NOTE:</em></strong> <em>This toolbar item is available only to admin users.</em></p>
+<p>The <strong>Admin</strong> user can add, edit, and remove users and specify the permissions for the users of Management Center. To perform these operations, click on the <strong>Administration</strong> button located on the toolbar. The page below appears.</p>
+<p><img src="images/admin.jpg" alt=""></p>
+<p>To add a user to the system, specify the username, e-mail and password in the <strong>Add/Edit User</strong> part of the page. If the user to be added will have administrator privileges, select <strong>isAdmin</strong> checkbox. <strong>Permissions</strong> checkboxes have two values:</p>
+<ul>
+<li><strong>Read Only</strong>: If this permission is given to the user, only <em>Home</em>, <em>Documentation</em> and <em>Time Travel</em> items will be visible at the toolbar at that user&#39;s session. Also, users with this permission cannot update a <a href="#map-config">map configuration</a>, run a garbage collection and take a thread dump on a cluster member, or shutdown a member (please see <a href="#monitoring-members">Monitoring Members</a>).</li>
+<li><strong>Read/Write</strong>: If this permission is given to the user, <em>Home</em>, <em>Scripting</em>, <em>Console</em>, <em>Documentation</em> and <em>Time Travel</em> items will be visible. The users with this permission can update a map configuration and perform operations on the members.</li>
+</ul>
+<p>After you enter/select all fields, click <strong>Save</strong> button to create the user. You will see the newly created user&#39;s username on the left side, in the <strong>Users</strong> part of the page.</p>
+<p>To edit or delete a user, select a username listed in the <strong>Users</strong>. Selected user information appears on the right side of the page. To update the user information, change the fields as desired and click the <strong>Save</strong> button. To delete the user from the system, click the <strong>Delete</strong> button.</p>
+<a name="hot-restart"></a><h3 id="hot-restart">Hot Restart</h3>
+<p><img src="images/NoteSmall.jpg" alt="image"> <strong><em>NOTE:</em></strong> <em>This toolbar item is available only to admin users.</em></p>
+<p>The admin user can see and change the cluster state, shut down the cluster, and force start the cluster using the operations listed in this screen as shown below.</p>
+<p><img src="images/HotRestart.png" alt=""></p>
+<p><strong>Cluster States</strong></p>
+<ul>
+<li><p><strong>Active</strong>: Cluster will continue to operate without any restriction. All operations are allowed. This is the default state of a cluster.</p>
+</li>
+<li><p><strong>Frozen</strong>: New members are not allowed to join, except the members left in <strong>this</strong> state or <strong>Passive</strong> state. All other operations except migrations are allowed and will operate without any restriction.</p>
+</li>
+<li><p><strong>Passive</strong>: New members are not allowed to join, except the members left in <strong>this</strong> state or <strong>Frozen</strong> state. All operations, except the ones marked with <code>AllowedDuringPassiveState</code>, will be rejected immediately.</p>
+</li>
+<li><p><strong>In Transition</strong>: Shows that the cluster state is in transition. This is a temporary and intermediate state. It is not allowed to set it explicitly.</p>
+</li>
+</ul>
+<p><strong>Changing Cluster State</strong></p>
+<p><img src="images/ChangeClusterState.png" alt=""></p>
+<ul>
+<li>Click the dropdown menu and choose the state to which you want your cluster to change. A pop-up will appear and stay on the screen until the state is successfully changed.</li>
+</ul>
+<p><img src="images/ChangeClusterState-wait.png" alt=""></p>
+<p><strong>Shutting Down the Cluster</strong></p>
+<ul>
+<li>Click the <strong>Shutdown</strong> button. A pop-up will appear and stay on screen until the cluster is successfully shutdown.</li>
+</ul>
+<p><img src="images/ShutdownCluster.png" alt=""></p>
+<p>If an exception occurs during the state change or shutdown operation on the cluster, this exception message will be shown on the screen as a notification.</p>
+<p><strong>Force Start the Cluster</strong></p>
+<p>Restart process cannot be completed if a node crashes permanently and cannot recover from the failure since it cannot start or it fails to load its own data. In that case, you can force the cluster to clean its persisted data and make a fresh start. This process is called <strong>force start</strong>.</p>
+<p><img src="images/ForceStart.png" alt=""></p>
+<p>Click the <strong>Force Start</strong> button. A pop-up will appear and stay on screen until the operation is triggered.</p>
+<p>If an exception occurs, this exception message will be showed on the screen as a notification.</p>
+<p><br></br>
+<img src="images/NoteSmall.jpg" alt="image"> <strong><em>NOTE:</em></strong> <em>The operations explained in this section (Hot Restart) can also be performed using REST API and the script <code>cluster.sh</code>. Please refer to the <a href="#using-rest-api-for-cluster-management">Using REST API for Cluster Management section</a> and <a href="#using-the-script-cluster-sh">Using the Script cluster.sh section</a>.</em></p>
+<a name="checking-past-status-with-time-travel"></a><h3 id="checking-past-status-with-time-travel">Checking Past Status with Time Travel</h3>
+<p>Use the Time Travel toolbar item to check the status of the cluster at a time in the past. When you select it on the toolbar, a small window appears on top of the page, as shown below.</p>
+<p><img src="images/Timetravel.jpg" alt=""></p>
+<p>To see the cluster status in a past time, you should first enable the Time Travel. Click on the area where it says <strong>OFF</strong> (on the right of Time Travel window). It will turn to <strong>ON</strong> after it asks whether to enable the Time Travel with a dialog: click on <strong>Enable</strong> in the dialog to enable the Time Travel.</p>
+<p>Once it is <strong>ON</strong>, the status of your cluster will be stored on your disk as long as your web server is alive.</p>
+<p>You can go back in time using the slider and/or calendar and check your cluster&#39;s situation at the selected time. All data structures and members can be monitored as if you are using the management center normally (charts and data tables for each data structure and members). Using the arrow buttons placed at both sides of the slider, you can go back or further with steps of 5 seconds. It will show status if Time Travel has been <strong>ON</strong> at the selected time in past; otherwise, all the charts and tables will be shown as empty.</p>
+<p>The historical data collected with Time Travel feature are stored in a file database on the disk. These files can be found in the folder <code>&lt;User&#39;s Home Directory&gt;/mancenter&lt;Hazelcast version&gt;</code>, e.g. <code>/home/mancenter3.5</code>. This folder can be changed using the <code>hazelcast.mancenter.home</code> property on the server where Management Center is running.</p>
+<p>Time travel data files are created monthly. Their file name format is <code>[group-name]-[year][month].db</code> and
+ <code>[group-name]-[year][month].lg</code>. Time travel data is kept in the <code>*.db</code> files. The files with the extension <code>lg</code> are temporary files created internally and you do not have to worry about them.</p>
+<p>Management Center has no automatic way of removing or archiving old time travel data files. They remain in the aforementioned folder until you delete or archive them.</p>
+<a name="management-center-documentation"></a><h3 id="management-center-documentation">Management Center Documentation</h3>
+<p>To see the documentation, click on the <strong>Documentation</strong> button located at the toolbar. Management Center manual will appear as a tab.</p>
+<a name="suggested-heap-size"></a><h3 id="suggested-heap-size">Suggested Heap Size</h3>
+<p><strong>For 2 Nodes (Cluster Members)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Mancenter Heap Size</th>
+<th># of Maps</th>
+<th># of Queues</th>
+<th># of Topics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>256m</td>
+<td>3k</td>
+<td>1k</td>
+<td>1k</td>
+</tr>
+<tr>
+<td>1024m</td>
+<td>10k</td>
+<td>1k</td>
+<td>1k</td>
+</tr>
+</tbody>
+</table>
+<p><strong>For 10 Nodes</strong></p>
+<table>
+<thead>
+<tr>
+<th>Mancenter Heap Size</th>
+<th># of Maps</th>
+<th># of Queues</th>
+<th># of Topics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>256m</td>
+<td>50</td>
+<td>30</td>
+<td>30</td>
+</tr>
+<tr>
+<td>1024m</td>
+<td>2k</td>
+<td>1k</td>
+<td>1k</td>
+</tr>
+</tbody>
+</table>
+<p><strong>For 20 Nodes</strong></p>
+<table>
+<thead>
+<tr>
+<th>Mancenter Heap Size</th>
+<th># of Maps</th>
+<th># of Queues</th>
+<th># of Topics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>256m*</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>1024m</td>
+<td>1k</td>
+<td>1k</td>
+<td>1k</td>
+</tr>
+</tbody>
+</table>
+<p>* With 256m heap, management center is unable to collect statistics.</p>
+
+
+
+
+	        </div>
+	        </div>			
+    </div>
+</body>
+</html>

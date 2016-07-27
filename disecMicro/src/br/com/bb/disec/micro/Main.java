@@ -24,6 +24,7 @@ package br.com.bb.disec.micro;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import org.jboss.logging.Logger;
 
 /**
  *
@@ -39,7 +40,7 @@ public class Main {
     ServerConfig conf = ServerConfig.builder().load(
         Paths.get(Main.class.getResource(SERVER_CONF_FILE).toURI())
     ).build();
-    System.out.println("INFO: "+ conf);
+    Logger.getLogger(Main.class).info(conf);
     new Server(conf).start();
   }
   
