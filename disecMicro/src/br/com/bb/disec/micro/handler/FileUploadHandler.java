@@ -21,29 +21,29 @@
 
 package br.com.bb.disec.micro.handler;
 
+import br.com.bb.disec.micro.conf.FileUploadConfig;
 import br.com.bb.disec.micro.util.FileSize;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.form.FormData;
 import io.undertow.server.handlers.form.FormData.FormValue;
 import io.undertow.server.handlers.form.FormDataParser;
 import io.undertow.server.handlers.form.FormParserFactory;
-import io.undertow.util.Headers;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.StreamSupport;
+import org.jboss.logging.Logger;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/07/2016
  */
-public class FileUploadHandler implements HttpHandler {
+public class FileUploadHandler implements JsonHandler {
   
   public static final String DEFAULT_UPLOAD_CONFIG = "/resources/fileupload.json";
   
@@ -55,20 +55,26 @@ public class FileUploadHandler implements HttpHandler {
       config = FileUploadConfig.builder()
           .load(getClass().getResource(DEFAULT_UPLOAD_CONFIG))
           .build();
+      Logger.getLogger(getClass()).info(config);
     }
     catch(IOException e) {
+      Logger.getLogger(getClass()).error("Error Reading FileUploadConfig", e);
       throw new RuntimeException(e.getMessage(), e);
     }
   }
   
   
-  public FileUploadConfig getFormData() {
+  public FileUploadConfig getFileUploadConfig() {
     return config;
   }
   
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
+    if(hse.isInIoThread()) {
+      hse.dispatch(this);
+      return;
+    }
     hse.startBlocking();
     FormParserFactory.Builder fbd = FormParserFactory.builder(true);
     fbd.setDefaultCharset("UTF-8");
@@ -81,7 +87,7 @@ public class FileUploadHandler implements HttpHandler {
       if(value.isFile()) {
         File f = value.getPath().toFile();
         if(f.length() > config.getMaxSize().getSize()) {
-          String msg = "Bad Request. Size Overflow (maxSize: "+ config.getMaxSize()+ ")";
+          String msg = "Bad Request. Size Overflow (maxSize="+ config.getMaxSize()+ ")";
           json.addProperty("success", Boolean.FALSE);
           json.addProperty("message", msg);
           json.addProperty("name", value.getFileName());
@@ -121,9 +127,7 @@ public class FileUploadHandler implements HttpHandler {
     else {
       hse.setStatusCode(400).setReasonPhrase("Bad Request");
     }
-    hse.getResponseHeaders().put(
-        Headers.CONTENT_TYPE, "application/json; charset=utf-8"
-    );
+    this.putJsonHeader(hse);
     hse.getResponseSender().send(new GsonBuilder()
         .setPrettyPrinting().create().toJson(resp) + "\n"
     );

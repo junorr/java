@@ -21,49 +21,39 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.db.PoolFactory;
-import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.db.SqlSourcePool;
 import br.com.bb.disec.micro.util.URIParam;
-import com.hazelcast.logging.Logger;
-import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
+import org.jboss.logging.Logger;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/07/2016
  */
-public class GetSqlHandler implements HttpHandler {
+public class GetSqlHandler implements SqlHandler, JsonHandler {
   
-  public static final String DEFAULT_DB = "103";
-  
-  
-  public SqlQuery getQuery() throws IOException, SQLException {
-    return new SqlQuery(
-        PoolFactory.getPool(DEFAULT_DB).getConnection(),
-        SqlSourcePool.getDefaultSqlSource()
-    );
-  }
-  
-
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
+    if(hse.isInIoThread()) {
+      hse.dispatch(this);
+      return;
+    }
     URIParam pars = new URIParam(hse.getRequestURI());
     if(pars.length() < 1) {
-      hse.setStatusCode(400).setReasonPhrase("Bad Request. No Query Informed");
+      String msg = "Bad Request. No Query Informed";
+      Logger.getLogger(this.getClass()).warn(msg);
+      hse.setStatusCode(400).setReasonPhrase(msg);
       hse.endExchange();
       return;
     }
     String query = pars.getParam(0);
     if(!SqlSourcePool.getDefaultSqlSource().containsSql(query)) {
-      Logger.getLogger(this.getClass()).warning("Query Not Found ("+ query+ ")");
+      String msg = "Not Found (query="+ query+ ")";
+      Logger.getLogger(this.getClass()).warn(msg);
       hse.setStatusCode(404)
-          .setReasonPhrase("Not Found ("+ query+ ")");
+          .setReasonPhrase(msg);
       hse.endExchange();
       return;
     }
@@ -73,9 +63,7 @@ public class GetSqlHandler implements HttpHandler {
     }
     String resp = this.getQuery()
         .exec(query, args).toPrettyPrintJson() + "\n";
-    hse.getResponseHeaders().put(
-        Headers.CONTENT_TYPE, "application/json; charset=utf-8"
-    );
+    this.putJsonHeader(hse);
     hse.getResponseSender().send(resp, Charset.forName("UTF-8"));
     hse.endExchange();
   }

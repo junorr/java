@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler;
+package br.com.bb.disec.micro.conf;
 
 import br.com.bb.disec.micro.json.JsonDouble;
 import br.com.bb.disec.micro.util.FileSize;
@@ -37,6 +37,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.List;
+import org.jboss.logging.Logger;
 
 /**
  *
@@ -89,6 +90,16 @@ public class FileUploadConfig {
 
   public static Builder builder() {
     return new Builder();
+  }
+
+
+  @Override
+  public String toString() {
+    return "FileUploadConfig{\n" 
+        + "    maxSize: " + maxSize 
+        + "\n    uploadDir: " + uploadDir 
+        + "\n    allowedExtensions: " 
+        + allowedExtensions + "\n}";
   }
 
   

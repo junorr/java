@@ -44,6 +44,7 @@ public class TestHazelcast {
     System.out.println("* Thread.sleep(1000);");
     Thread.sleep(1000);
     System.out.println("* map.get(key): "+ map.get("key"));
+    hi.shutdown();
   }
   
 }

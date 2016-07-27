@@ -38,7 +38,7 @@ public class SqlSourcePool {
   
   public static final String DEFAULT_SOURCE = "default";
   
-  public static final String DEFAULT_DB_NAME = "103";
+  public static final String DEFAULT_DB_NAME = "blackened";
   
   public static final SqlSourcePool INSTANCE = new SqlSourcePool();
   

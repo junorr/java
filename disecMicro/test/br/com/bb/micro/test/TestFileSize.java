@@ -47,7 +47,7 @@ public class TestFileSize {
     System.out.println("* size (KB): "+ df.format(RDouble.of(size.getAs(Unit.KB)).round(2)));
     System.out.println("* size (MB): "+ df.format(RDouble.of(size.getAs(Unit.MB)).round(2)));
     System.out.println("* size (GB): "+ df.format(RDouble.of(size.getAs(Unit.GB)).round(2)));
-    System.out.println("* size (KB): "+ df.format(RDouble.of(size.getAs(Unit.TB)).round(4)));
+    System.out.println("* size (TB): "+ df.format(RDouble.of(size.getAs(Unit.TB)).round(4)));
     
     Gson gson = new GsonBuilder()
         .setPrettyPrinting()

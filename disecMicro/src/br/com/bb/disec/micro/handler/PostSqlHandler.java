@@ -21,17 +21,12 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.db.PoolFactory;
-import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.db.SqlSourcePool;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
-import java.io.IOException;
-import java.sql.SQLException;
 import org.jboss.logging.Logger;
 
 /**
@@ -39,17 +34,7 @@ import org.jboss.logging.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/07/2016
  */
-public class PostSqlHandler extends StringPostHandler {
-  
-  public static final String DEFAULT_DB = "103";
-  
-  
-  public SqlQuery getQuery() throws IOException, SQLException {
-    return new SqlQuery(
-        PoolFactory.getPool(DEFAULT_DB).getConnection(),
-        SqlSourcePool.getDefaultSqlSource()
-    );
-  }
+public class PostSqlHandler extends StringPostHandler implements SqlHandler, JsonHandler {
   
   
   public Object[] parseArgs(JsonObject json) {
@@ -76,28 +61,33 @@ public class PostSqlHandler extends StringPostHandler {
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
+    if(hse.isInIoThread()) {
+      hse.dispatch(this);
+      return;
+    }
     super.handleRequest(hse);
     JsonParser prs = new JsonParser();
     JsonObject json = prs.parse(this.getPostData()).getAsJsonObject();
     if(!json.has("query")) {
+      String msg = "Bad Request. No Query Informed";
+      Logger.getLogger(getClass()).warn(msg);
       hse.setStatusCode(400)
-          .setReasonPhrase("Bad Request")
+          .setReasonPhrase(msg)
           .endExchange();
     }
     String query = json.get("query").getAsString();
     if(!SqlSourcePool.getDefaultSqlSource().containsSql(query)) {
-      Logger.getLogger(getClass()).error("Query Not Found ("+ query+ ")");
+      String msg = "Not Found (query="+ query+ ")";
+      Logger.getLogger(getClass()).warn(msg);
       hse.setStatusCode(404)
-          .setReasonPhrase("Not Found ("+ query+ ")")
+          .setReasonPhrase(msg)
           .endExchange();
       return;
     }
     String resp = this.getQuery().exec(
         query, this.parseArgs(json) + "\n"
     ).toPrettyPrintJson();
-    hse.getResponseHeaders().put(
-        Headers.CONTENT_TYPE, "application/json; charset=utf-8"
-    );
+    this.putJsonHeader(hse);
     hse.getResponseSender().send(resp);
     hse.endExchange();
   }

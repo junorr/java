@@ -48,6 +48,10 @@ public class StringPostHandler implements HttpHandler {
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
+    if(hse.isInIoThread()) {
+      hse.dispatch(this);
+      return;
+    }
     hse.startBlocking();
     BufferedReader read = new BufferedReader(
         new InputStreamReader(hse.getInputStream())

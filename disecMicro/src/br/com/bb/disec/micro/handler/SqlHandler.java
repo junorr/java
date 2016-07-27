@@ -19,52 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.util;
+package br.com.bb.disec.micro.handler;
 
-import java.util.Iterator;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import br.com.bb.disec.micro.db.PoolFactory;
+import br.com.bb.disec.micro.db.SqlQuery;
+import br.com.bb.disec.micro.db.SqlSourcePool;
+import io.undertow.server.HttpHandler;
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 27/07/2016
  */
-public class StreamIterator<T> {
+public interface SqlHandler extends HttpHandler {
+  
+  public static final String DEFAULT_DB = "blackened";
+  
 
-  private final Iterator<T> iter;
-  
-  
-  public StreamIterator(Iterator<T> i) {
-    if(i == null) {
-      throw new IllegalArgumentException("Bad Null Iterator");
-    }
-    this.iter = i;
-  }
-  
-  
-  public static <U> StreamIterator<U> of(Iterator<U> iter) {
-    return new StreamIterator(iter);
-  }
-  
-  
-  public Iterator<T> iterator() {
-    return iter;
-  }
-  
-  
-  public Iterable<T> iterable() {
-    return ()->iter;
-  }
-  
-  
-  public Stream<T> stream() {
-    return StreamSupport.stream(iterable().spliterator(), false);
-  }
-  
-  
-  public Stream<T> parallelStream() {
-    return StreamSupport.stream(iterable().spliterator(), true);
+  public default SqlQuery getQuery() throws IOException, SQLException {
+    return new SqlQuery(
+        PoolFactory.getPool(DEFAULT_DB).getConnection(),
+        SqlSourcePool.getDefaultSqlSource()
+    );
   }
   
 }

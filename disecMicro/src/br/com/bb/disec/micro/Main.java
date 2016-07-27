@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro;
 
+import br.com.bb.disec.micro.conf.ServerConfig;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;

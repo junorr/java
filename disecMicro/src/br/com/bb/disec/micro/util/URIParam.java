@@ -67,7 +67,7 @@ public class URIParam {
   public String getParam(int index) {
     if(index < 0 || index > params.size() -2) {
       throw new IllegalArgumentException(
-          "Bad Index Param (0-"+ (params.size()-2)+ "): "+ index
+          "Bad Index Param (0 - "+ (params.size()-2)+ "): "+ index
       );
     }
     return params.get(index+1);

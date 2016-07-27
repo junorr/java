@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro;
 
+import br.com.bb.disec.micro.conf.ServerConfig;
 import br.com.bb.disec.micro.handler.DispatcherHandler;
 import br.com.bb.disec.micro.handler.LogHandler;
 import br.com.bb.disec.micro.handler.ShutdownHandler;
@@ -69,7 +70,6 @@ public class Server {
   private PathHandler initPathHandler() {
     PathHandler ph = Handlers.path();
     if(config.isDispatcherEnabled()) {
-      org.jboss.logging.Logger.getLogger(this.getClass());
       config.handlers().keySet().forEach(p->{
         Logger.getLogger(getClass()).info("PathHandler{ \""+ p+ "\": \""+ config.handlers().get(p).getName()+ "\" }");
         ph.addPrefixPath(p, new DispatcherHandler(p, config));

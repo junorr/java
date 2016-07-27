@@ -21,7 +21,7 @@
 
 package br.com.bb.micro.test;
 
-import br.com.bb.disec.micro.handler.FileUploadConfig;
+import br.com.bb.disec.micro.conf.FileUploadConfig;
 import br.com.bb.disec.micro.util.FileSize;
 import java.io.IOException;
 import java.nio.file.Paths;

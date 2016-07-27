@@ -19,27 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.db;
+package br.com.bb.disec.micro.handler;
+
+import io.undertow.server.HttpHandler;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 27/07/2016
  */
-public class DefaultDBSqlSource extends DBSqlSource {
+public interface JsonHandler extends HttpHandler {
+  
+  public static final String HEADER_VALUE_JSON = "application/json; charset=utf-8";
 
-  public static final String DEFAULT_DB_NAME = "blackened";
   
-  public static final String DEFAULT_FIND_SQL = "findQuery";
-  
-  
-  public DefaultDBSqlSource() {
-    super(DEFAULT_DB_NAME, DEFAULT_FIND_SQL, new DefaultFileSqlSource());
-  }
-  
-  
-  public DefaultDBSqlSource(SqlSource source) {
-    super(DEFAULT_DB_NAME, DEFAULT_FIND_SQL, source);
+  public default void putJsonHeader(HttpServerExchange hse) {
+    hse.getResponseHeaders().put(
+        Headers.CONTENT_TYPE, HEADER_VALUE_JSON
+    );
   }
   
 }

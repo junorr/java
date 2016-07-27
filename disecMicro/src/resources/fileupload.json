@@ -1,12 +1,13 @@
 {
   "maxSize": {
     "size": 50.0,
-    "unit": "GB"
+    "unit": "MB"
   },
-  "uploadDir": "/storage/tempUpload",
+  "uploadDir": "/home/juno/tempUpload",
   "allowedExtensions": [
     "xls",
     "csv",
-    "ods"
+    "ods",
+    "ini"
   ]
 }

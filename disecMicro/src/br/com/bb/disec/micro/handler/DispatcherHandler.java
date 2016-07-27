@@ -21,7 +21,7 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.ServerConfig;
+import br.com.bb.disec.micro.conf.ServerConfig;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
@@ -39,10 +39,10 @@ public class DispatcherHandler implements HttpHandler {
   
   public DispatcherHandler(String path, ServerConfig conf) {
     if(path == null || path.trim().isEmpty()) {
-      throw new IllegalArgumentException("Invalid Path: "+ path);
+      throw new IllegalArgumentException("Bad URI Path: "+ path);
     }
     if(conf == null || conf.handlers().isEmpty()) {
-      throw new IllegalArgumentException("Invalid ServerConfig: "+ conf);
+      throw new IllegalArgumentException("Bad ServerConfig: "+ conf);
     }
     this.path = path;
     this.config = conf;

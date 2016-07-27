@@ -5,7 +5,7 @@
   "shutdownHandlerEnabled": true,
   "ioThreads": 4,
   "maxWorkerThreads": 10,
-  "dispatcherEnabled": true,
+  "dispatcherEnabled": false,
   "handlers": {
     "/getsql": "br.com.bb.disec.micro.handler.GetSqlHandler",
     "/postsql": "br.com.bb.disec.micro.handler.PostSqlHandler",

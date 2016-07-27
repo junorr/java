@@ -35,7 +35,7 @@ import io.undertow.server.HttpServerExchange;
  */
 public class LogHandler implements HttpHandler {
   
-  public static final String DB_LOG = "103";
+  public static final String DB_LOG = "blackened";
   
   public static final String SQL_INSERT_LOG = "insertLog";
   
@@ -53,6 +53,10 @@ public class LogHandler implements HttpHandler {
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
+    if(hse.isInIoThread()) {
+      hse.dispatch(this);
+      return;
+    }
     URIParam pars = new URIParam(hse.getRequestURI());
     new SqlQuery(
         PoolFactory.getPool(DB_LOG).getConnection(), 

@@ -32,6 +32,8 @@ import io.undertow.server.HttpServerExchange;
  */
 public class ShutdownHandler implements HttpHandler {
   
+  public static final String SHUTDOWN_MESSAGE = "Server Shutdown";
+  
   private final Server server;
   
   
@@ -45,11 +47,9 @@ public class ShutdownHandler implements HttpHandler {
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    if(hse.getRequestURI().contains("shutdown")) {
-      hse.addExchangeCompleteListener((h,n)->server.stop());
-      hse.getResponseSender().send("Server Shutdown");
-      hse.endExchange();
-    }
+    hse.addExchangeCompleteListener((h,n)->server.stop());
+    hse.getResponseSender().send(SHUTDOWN_MESSAGE+ "\n");
+    hse.endExchange();
   }
 
 }
