@@ -24,10 +24,12 @@ package br.com.bb.micro.test;
 import br.com.bb.disec.micro.json.JsonDouble;
 import br.com.bb.disec.micro.util.FileSize;
 import br.com.bb.disec.micro.util.FileSize.Unit;
-import static br.com.bb.disec.micro.util.FileSize.round;
+import br.com.bb.disec.micro.util.RDouble;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 /**
  *
@@ -39,13 +41,13 @@ public class TestFileSize {
   
   public static void main(String[] args) {
     FileSize size = new FileSize(35, Unit.GB);
-    DecimalFormat df = new DecimalFormat("#,##0.000");
+    DecimalFormat df = new DecimalFormat("#,##0.0#####", new DecimalFormatSymbols(Locale.US));
     System.out.println("* size (B) : "+ df.format(size.getSize())+ " bytes");
     System.out.println("* size (UN): "+ size.toString());
-    System.out.println("* size (KB): "+ df.format(round(size.getAs(Unit.KB), 2)));
-    System.out.println("* size (MB): "+ df.format(round(size.getAs(Unit.MB), 2)));
-    System.out.println("* size (GB): "+ df.format(round(size.getAs(Unit.GB), 2)));
-    System.out.println("* size (TB): "+ round(size.getAs(Unit.TB), 4));
+    System.out.println("* size (KB): "+ df.format(RDouble.of(size.getAs(Unit.KB)).round(2)));
+    System.out.println("* size (MB): "+ df.format(RDouble.of(size.getAs(Unit.MB)).round(2)));
+    System.out.println("* size (GB): "+ df.format(RDouble.of(size.getAs(Unit.GB)).round(2)));
+    System.out.println("* size (KB): "+ df.format(RDouble.of(size.getAs(Unit.TB)).round(4)));
     
     Gson gson = new GsonBuilder()
         .setPrettyPrinting()

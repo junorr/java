@@ -21,9 +21,7 @@
 
 package br.com.bb.disec.micro.util;
 
-import br.com.bb.disec.micro.json.JsonDouble;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -32,9 +30,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
 
 /**
  *
@@ -46,7 +41,7 @@ public class FileSize {
   public static enum Unit {
     B, KB, MB, GB, TB;
     
-    public static Unit from(double size) {
+    public static Unit defaultFor(long size) {
       Unit unit = B;
       while(true) {
         if(size / 1024 > 1) {
@@ -75,11 +70,11 @@ public class FileSize {
   }
   
   
-  private double size;
+  private Double size;
   
   
   public FileSize(long size) {
-    this.size = size;
+    this.size = Long.valueOf(size).doubleValue();
   }
   
   
@@ -89,12 +84,12 @@ public class FileSize {
 
 
   public long getSize() {
-    return Double.valueOf(size).longValue();
+    return size.longValue();
   }
 
 
   public FileSize setSize(long size) {
-    this.size = size;
+    this.size = Long.valueOf(size).doubleValue();
     return this;
   }
   
@@ -144,14 +139,6 @@ public class FileSize {
   }
   
   
-  public static double round(double num, int dec) {
-    double pow = Math.pow(10, dec);
-    //5.1234
-    long l = (long) (num * pow);
-    return l / pow;
-  }
-  
-  
   public static Converter converter() {
     return new Converter();
   }
@@ -165,7 +152,8 @@ public class FileSize {
       }
       sz = sz / 1024.0;
     }
-    return String.valueOf(round(sz, 2)) + " " + Unit.from(size);
+    return RDouble.of(sz).round(2) + " " 
+        + Unit.defaultFor(RDouble.of(size).longValue());
   }
   
   
@@ -177,12 +165,10 @@ public class FileSize {
 
     @Override
     public JsonElement serialize(FileSize t, Type type, JsonSerializationContext jsc) {
-      Gson gson = new GsonBuilder()
-          .registerTypeAdapter(Double.class, new JsonDouble())
-          .create();
+      Gson gson = new Gson();
       JsonObject obj = new JsonObject();
-      Unit unit = Unit.from(t.getSize());
-      obj.addProperty("size", FileSize.round(t.getAs(unit), 2));
+      Unit unit = Unit.defaultFor(t.getSize());
+      obj.addProperty("size", RDouble.of(t.getAs(unit)).round(2));
       obj.addProperty("unit", unit.name());
       return gson.toJsonTree(obj);
     }

@@ -68,6 +68,7 @@ public class Server {
   private PathHandler initPathHandler() {
     PathHandler ph = Handlers.path();
     if(config.isDispatcherEnabled()) {
+      org.jboss.logging.Logger.getLogger(this.getClass());
       config.handlers().keySet().forEach(p->{
         System.out.println("INFO: PathHandler{ \""+ p+ "\": \""+ config.handlers().get(p).getName()+ "\" }");
         ph.addPrefixPath(p, new DispatcherHandler(p, config));

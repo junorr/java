@@ -35,7 +35,6 @@ import java.sql.Statement;
  * @version 0.0 - 20/07/2016
  */
 public class TestJsonResultSet {
-
   
   public static void main(String[] args) throws IOException, SQLException {
     ConnectionPool pool = ConnectionPool.createPool("103");

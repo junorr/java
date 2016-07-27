@@ -21,12 +21,12 @@
 
 package br.com.bb.disec.micro.json;
 
+import br.com.bb.disec.micro.util.RDouble;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
-import java.text.DecimalFormat;
 
 /**
  *
@@ -37,10 +37,7 @@ public class JsonDouble implements JsonSerializer<Double> {
 
   @Override
   public JsonElement serialize(Double t, Type type, JsonSerializationContext jsc) {
-    DecimalFormat df = new DecimalFormat("#0.00######");
-    df.getDecimalFormatSymbols().setDecimalSeparator('.');
-    df.getDecimalFormatSymbols().setGroupingSeparator(',');
-    return new JsonPrimitive(df.format(t));
+    return new JsonPrimitive(RDouble.of(t).round(4));
   }
 
 }

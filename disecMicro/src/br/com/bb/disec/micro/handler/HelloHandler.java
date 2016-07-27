@@ -37,9 +37,9 @@ public class HelloHandler implements HttpHandler {
     URIParam pars = new URIParam(hse.getRequestURI());
     System.out.println("* context: "+ pars.getContext());
     System.out.println("* param 0: "+ pars.getObject(0)+ " - "+ pars.getObject(0).getClass().getName());
-    System.out.println("* param 1: "+ pars.getObject(0)+ " - "+ pars.getObject(0).getClass().getName());
-    System.out.println("* param 2: "+ pars.getObject(0)+ " - "+ pars.getObject(0).getClass().getName());
-    System.out.println("* param 3: "+ pars.getObject(0)+ " - "+ pars.getObject(0).getClass().getName());
+    System.out.println("* param 1: "+ pars.getObject(1)+ " - "+ pars.getObject(1).getClass().getName());
+    System.out.println("* param 2: "+ pars.getObject(2)+ " - "+ pars.getObject(2).getClass().getName());
+    System.out.println("* param 3: "+ pars.getObject(3)+ " - "+ pars.getObject(3).getClass().getName());
     String str = this.toString();
     StringBuilder sb = new StringBuilder()
         .append("<h2 style='font-family: monospace;'>")
