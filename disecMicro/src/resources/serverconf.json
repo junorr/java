@@ -9,6 +9,7 @@
   "handlers": {
     "/getsql": "br.com.bb.disec.micro.handler.GetSqlHandler",
     "/postsql": "br.com.bb.disec.micro.handler.PostSqlHandler",
-    "/upload": "br.com.bb.disec.micro.handler.FileUploadHandler"
+    "/upload": "br.com.bb.disec.micro.handler.FileUploadHandler",
+    "/auth": "br.com.bb.disec.micro.handler.AuthenticationHandler"
   }
 }

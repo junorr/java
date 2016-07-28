@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+  <head>
+    <title>Disec - Acesso Negado</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style type="text/css">
+			.shadow {
+				box-shadow: 4px 4px 5px rgba(60,60,60,0.8),0px 0px 2px rgba(60,60,60,0.8);
+			}
+			
+			.tx-shadow {
+				text-shadow: 2px 2px 4px rgba(60,60,60,0.8),0px 0px 3px rgba(60,60,60,0.8);
+			}
+			
+			.round {
+				border-radius: 6px; 
+			}
+			
+			.detail-panel {
+				background-color: rgba(100,100,100,0.7); 
+				padding-top: 30px; 
+				padding-bottom: 30px; 
+				padding-left: 30px; 
+				padding-right: 30px; 
+				width: 80%;
+				z-index: 1;
+			}
+			
+			.detail-inner {
+				background-color: rgba(250,250,250,1.0);
+				border: solid 2px white;
+				padding-top: 15px; 
+				padding-bottom: 15px; 
+				padding-left: 30px; 
+				padding-right: 30px; 
+				z-index: 2;
+			}
+			
+			.font-mono {
+				font-family: monospace;
+				font-size: 14px;
+			}
+			
+			.color-white {
+				color: white;
+			}
+		</style>
+  </head>
+  <body>
+    <h3>Desculpe $USERNAME, voc&ecirc; n&atilde;o possui acesso &agrave; este recurso!</h3>
+		<div class="detail-panel round shadow">
+			<div class="detail-inner round">
+        <h4 class="color-white tx-shadow">Detalhes do usu&aacute;rio:</h4>
+				<ul class="font-mono">
+					<li><b>Nome...............: </b>$USERNAME</li>
+          <li><b>Matr&iacute;cula..........: </b>$CHAVE</li>
+          <li><b>C&oacute;digo Comiss&atilde;o....: </b>$CDCMSS</li>
+          <li><b>Prefixo Depend&ecirc;ncia: </b>$PRFDEPE</li>
+					<li><b>UOR Equipe.........: </b>$UOREQP</li>
+					<li><b>UOR Depend&ecirc;ncia....: </b>$UORDEPE</li>
+				</ul>
+				<h4 class="color-white tx-shadow">Detalhes do controle de acesso:</h4>
+				<ul class="font-mono">
+					<li><b>Contexto...........: </b>$CONTEXTO</li>
+          <li><b>Nome Aplica&ccedil;&atilde;o.....: </b>$NMAPLIC</li>
+          <li><b>C&oacute;digo Aplica&ccedil;&atilde;o...: </b>$CDAPLIC</li>
+					<li><b>Nome Perfil........: </b>$NMPERFIL</li>
+					<li><b>Tipo Perfil........: </b>$TIPPERFIL</li>
+          <li><b>C&oacute;digo Perfil......: </b>$CDPERFIL</li>
+					<li><b>Grupo Perfil.......: </b>$GRPERFIL</li>
+				</ul>
+			</div>
+		</div>
+  </body>
+</html>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE queries [
+<!ELEMENT queries (query+)>
+<!ELEMENT query (sql+)>
+<!ELEMENT sql (#PCDATA)>
+<!ATTLIST queries ver CDATA #REQUIRED>
+<!ATTLIST query group CDATA #REQUIRED>
+<!ATTLIST query dcr CDATA #REQUIRED>
+<!ATTLIST sql name CDATA #REQUIRED>
+]>
+<queries
+	ver="$Id: sql.properties.xml 1312 2010-03-23 13:13:26Z f8712661 $">
+
+	<query group='log' dcr='Log Queries'>
+		<sql name='sample'><![CDATA[
+		]]></sql>
+		
+		<sql name='selectLogExclusao'><![CDATA[
+			SELECT SQL_CACHE tx_excl 
+			FROM intranet.logExclusao;
+		]]></sql>
+		
+		<sql name='insertlog'><![CDATA[
+				INSERT IGNORE INTO intranet.logDisec	(
+					cd_ctu, 
+					cd_depe_fun, 
+					cd_uor_eqp, 
+					cd_chv_fun, 
+					dt_acss, 
+					hr_acss,
+					cd_end_ip,
+					tx_url,
+					id_sessao,
+					nm_fun,
+					cd_sit_acss,
+					cd_crg_fun,
+					browser
+				)	VALUES (
+					?, ?, ?, ?, 
+					SYSDATE(), 
+					current_timestamp, 
+					?, ?, ?, ?, ?, ?, ?
+				);
+		]]></sql>
+		
+	</query>
+
+
+	<query group='intranet' dcr='schema intranet queries'>
+		
+		<sql name='sample'><![CDATA[
+		]]></sql>
+		
+		<sql name='selectPflAcss'><![CDATA[
+			SELECT PA.cd_pfl_acss, 
+				PA.nm_pfl_acss, 
+				PA.cd_tp_pfl_acss, 
+				GP.cd_grp_acss,
+				PA.sql_val
+			FROM acss.pfl_acss AS PA
+			INNER JOIN acss.grp_pfl AS GP
+				ON GP.cd_pfl_acss = PA.cd_pfl_acss
+			INNER JOIN acss.ctu_grp AS CG
+				ON CG.cd_gr_acss = GP.cd_grp_acss
+			WHERE CG.cd_ctu = ?
+			ORDER BY PA.cd_tp_pfl_acss ASC;
+		]]></sql>
+		
+		<sql name='selectCtuByPath'><![CDATA[
+			SELECT SQL_CACHE *
+			FROM intranet.dcr_ctu 
+			WHERE cd_tp_ctu NOT IN (99, 199)
+				AND (
+					tx_url_ctu like '/$where'
+					OR tx_url_ctu like 'http://%/$where'
+					OR tx_url_ctu like 'https://%/$where'
+				)
+			ORDER BY tx_url_ctu asc;
+		]]></sql>
+		
+		<sql name='selectCtuByUrl'><![CDATA[
+			SELECT SQL_CACHE *
+			FROM intranet.dcr_ctu 
+			WHERE cd_tp_ctu NOT IN (99, 199)
+				AND (
+					tx_url_ctu like 'http://$where'
+					OR tx_url_ctu like 'https://$where'
+				)
+			ORDER BY tx_url_ctu asc;
+		]]></sql>
+		
+	</query>
+	
+</queries>
