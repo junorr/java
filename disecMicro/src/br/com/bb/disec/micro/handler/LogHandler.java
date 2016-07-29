@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro.handler;
 
+import static br.com.bb.disec.micro.db.ConnectionPool.DEFAULT_DB_NAME;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.db.SqlSourcePool;
@@ -34,8 +35,6 @@ import io.undertow.server.HttpServerExchange;
  * @version 0.0 - 20/07/2016
  */
 public class LogHandler implements HttpHandler {
-  
-  public static final String DB_LOG = "blackened";
   
   public static final String SQL_INSERT_LOG = "insertLog";
   
@@ -59,7 +58,7 @@ public class LogHandler implements HttpHandler {
     }
     URIParam pars = new URIParam(hse.getRequestURI());
     new SqlQuery(
-        PoolFactory.getPool(DB_LOG).getConnection(), 
+        PoolFactory.getPool(DEFAULT_DB_NAME).getConnection(), 
         SqlSourcePool.getDefaultSqlSource()
     ).update(
         SQL_INSERT_LOG, 

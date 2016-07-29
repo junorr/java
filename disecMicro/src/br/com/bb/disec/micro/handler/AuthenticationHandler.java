@@ -37,8 +37,8 @@ public class AuthenticationHandler implements HttpHandler {
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    if(!hse.getRequestCookies().containsKey(CookieName.BBSSOToken)
-        || !hse.getRequestCookies().containsKey(CookieName.ssoacr)) {
+    if(!hse.getRequestCookies().containsKey(CookieName.BBSSOToken.name())
+        || !hse.getRequestCookies().containsKey(CookieName.ssoacr.name())) {
       hse.setStatusCode(401).setReasonPhrase("Unauthorized");
       hse.endExchange();
       return;

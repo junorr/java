@@ -1,7 +1,6 @@
 package br.com.bb.disec.micro.sso;
 
 import br.com.bb.sso.bean.User;
-import br.com.bb.sso.bean.Usuario;
 import java.util.Map;
 
 
@@ -108,63 +107,6 @@ public class MappedUser {
 				.setUF(get(SSOField.UF))
 				.setUorDepe(getInt(SSOField.UOR_DEPE))
 				.setUorEquipe(getInt(SSOField.UOR_EQP));
-	}
-	
-	
-	/**
-	 * Cria um novo objeto Usuario com as informações do mapa.
-	 * @return Novo objeto Usuario.
-	 */
-	public Usuario createUsuario() {
-		Usuario usu = new Usuario();
-		usu.setTokenId(map.get("tokenId"));
-		usu.setAcessos(map.get("acessosUsu"));
-		usu.setChave(map.get("chaveFuncionario"));
-		usu.setChaveCripto(map.get("chaveCripto")); 
-		usu.setCodigoCliente(map.get("cd-cli")); 
-		usu.setCodigoComissao(map.get("codigoComissao")); 
-		usu.setCodigoComissaoUsuario(map.get("cd-cmss-usu") == null ? map.get("codigoComissao") : map.get("cd-cmss-usu"));
-		usu.setCodigoDivisao(map.get("cd-dvs"));
-		usu.setCodigoIdentificacaoDigitalUsuario(map.get("cd-idgl-usu"));
-		usu.setCodigoInstituicao(map.get("codigoInstituicao")); 
-		usu.setCodigoInstituicaoOrganizacional(map.get("cd-ior"));
-		usu.setCodigoNucleo(map.get("cd-ncl"));
-		usu.setCodigoPilar(map.get("codigoPilar"));
-		usu.setCodigoPrefixoDependencia(map.get("cd-pref-depe"));
-		usu.setCodigoReferenciaOrganizacional(map.get("cd-ref-orgc"));
-		usu.setCodigoTipoDependencia(map.get("cd-tip-dep"));
-		usu.setCodigoTipoIdentificacaoDigital(map.get("cd-tip-idgl"));
-		usu.setCodigoUorDependencia(map.get("cd-uor-dep"));
-		//user.setDiretorioHome(map.get("homedirectory"));
-		usu.setEmail(map.get("mail")); 
-		//user.setEnderecoResidencial(map.get("homepostaladdress"));
-		usu.setGrupamento(map.get("grupamento"));
-		usu.setIdentificadorUnico(map.get("uid"));
-		usu.setIdNativoIBM(map.get("ibm-nativeid"));
-		usu.setIdSessao(map.get("idSessao"));
-		//user.setLoginShell(map.get("loginshell")); 
-		usu.setNome(map.get("nomeFuncionario"));
-		usu.setNomeCamelCase(map.get("nm-idgl")); 
-		usu.setNomeComum(map.get("cn"));
-		usu.setNomeDistinto(map.get("DN"));
-		usu.setCdUorEqp(map.get("cd-eqp"));
-		usu.setNomeGuerra(map.get("nomeGuerra"));
-		usu.setSiglaUF(map.get("nomeUF"));
-		usu.setNumeroCPF(map.get("nr-cpf"));
-		//user.setNumeroIdentificadorDeGrupo(map.get("gidnumber"));
-		//user.setNumeroIdentificadorUnico(map.get("uidnumber"));
-		usu.setPrefixoDependencia(map.get("prefixoDependencia"));
-		usu.setPrefixoDiretoria(map.get("prefixoDiretoria")); 
-		usu.setPrefixoSuperEstadual(map.get("prefixoSuperEstadual"));
-		usu.setResponsabilidadeFuncional(map.get("responsabilidadeFuncional")); 
-		usu.setSenhaCripto(map.get("pwd")); 
-		usu.setSobrenome(map.get("sn"));
-		usu.setTelefoneCelular(map.get("mobile"));
-		usu.setTelefoneComercial(map.get("telephonenumber")); 
-		usu.setTelefoneResidencial(map.get("homephone"));
-		usu.setTextoComissaoUsuario(map.get("tx-cmss-usu"));
-		usu.setTipoDependencia(map.get("tipoDependencia"));
-		return usu;
 	}
 	
 }

@@ -1,7 +1,6 @@
 package br.com.bb.disec.micro.sso;
 
 import br.com.bb.sso.bean.User;
-import br.com.bb.sso.bean.Usuario;
 import io.undertow.server.handlers.Cookie;
 import java.io.IOException;
 
@@ -72,41 +71,6 @@ public class SSOUserFactory {
 	}
 	
 	
-	/**
-	 * Conecta no servidor SSO, recupera as informações 
-	 * e cria um objeto Usuario a partir delas.
-	 * @return Novo objeto Usuario criado a partir das 
-	 * informações recuperadas do servidor SSO.
-	 * @throws IOException Em caso de erro na conexão e
-	 * recuperação das informações.
-	 */
-	public Usuario createUsuario() throws IOException {
-		if(connector == null) {
-			connector = this.createConnector();
-		}
-		Usuario usuario = null;
-		if(connector == null) {
-			this.errorMessage.append("Falha no Login. Não existe cookie SSO");
-		}
-		else if(mappedUser == null) {
-			SSOParser spr = connector.connect();
-			if(spr == null 
-					|| (mappedUser = spr.parse()) == null 
-					|| (usuario = mappedUser.createUsuario()) == null) {
-				this.errorMessage
-						.append("Não foi possível recuperar dados ")
-						.append("do usuário do servidor SSO.\n")
-						.append("Resposta do Servidor SSO: ")
-						.append(connector.getResponseString());
-			}
-		}
-		else {
-			usuario = mappedUser.createUsuario();
-		}
-		return usuario;
-	}
-	
-
 	/**
 	 * Conecta no servidor SSO, recupera as informações 
 	 * e cria um objeto User a partir delas.

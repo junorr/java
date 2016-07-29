@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro.handler;
 
+import static br.com.bb.disec.micro.db.ConnectionPool.DEFAULT_DB_NAME;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.db.SqlSourcePool;
@@ -35,12 +36,10 @@ import java.sql.SQLException;
  */
 public interface SqlHandler extends HttpHandler {
   
-  public static final String DEFAULT_DB = "blackened";
-  
 
   public default SqlQuery getQuery() throws IOException, SQLException {
     return new SqlQuery(
-        PoolFactory.getPool(DEFAULT_DB).getConnection(),
+        PoolFactory.getPool(DEFAULT_DB_NAME).getConnection(),
         SqlSourcePool.getDefaultSqlSource()
     );
   }

@@ -37,6 +37,8 @@ import java.sql.Statement;
  * @version 0.0 - 20/07/2016
  */
 public class ConnectionPool {
+  
+  public static final String DEFAULT_DB_NAME = "103";
 
   public static final String DSFILE_PRE = "/resources/datasource-";
   

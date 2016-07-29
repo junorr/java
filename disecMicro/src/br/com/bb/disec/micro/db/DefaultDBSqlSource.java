@@ -21,6 +21,8 @@
 
 package br.com.bb.disec.micro.db;
 
+import static br.com.bb.disec.micro.db.ConnectionPool.DEFAULT_DB_NAME;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -28,8 +30,6 @@ package br.com.bb.disec.micro.db;
  */
 public class DefaultDBSqlSource extends DBSqlSource {
 
-  public static final String DEFAULT_DB_NAME = "103";
-  
   public static final String DEFAULT_FIND_SQL = "findQuery";
   
   
