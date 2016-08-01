@@ -19,56 +19,48 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler;
+package br.com.bb.disec.micro.cache;
 
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import br.com.bb.sso.bean.User;
+import com.hazelcast.config.Config;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 25/07/2016
+ * @version 0.0 - 01/08/2016
  */
-public class StringPostHandler implements HttpHandler {
-  
-  private final StringBuilder data;
-  
-  
-  public StringPostHandler() {
-    data = new StringBuilder();
-  }
-  
-  
-  public String getPostData() {
-    return data.toString();
-  }
-  
-  
-  public void resetPostData() {
-    data.delete(0, data.length());
-  }
-  
+public class UserCache {
 
-  @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    if(hse.isInIoThread()) {
-      hse.dispatch(this);
-      return;
-    }
-    this.resetPostData();
-    hse.startBlocking();
-    BufferedReader read = new BufferedReader(
-        new InputStreamReader(hse.getInputStream())
-    );
-    String line = null;
-    while((line = read.readLine()) != null) {
-      if(!data.toString().isEmpty()) {
-        data.append("\n");
-      }
-      data.append(line);
-    }
-  }
+  public static final String NAME_AUTH_USERS = "authenticated-users";
+  
+  public static final String USU_SIM_CHAVE = "usu-sim-chave";
+  
+  public static final UserCache INSTANCE = new UserCache();
 
+  
+  private final IMap<String,User> users;
+  
+  
+  public UserCache() {
+    users = PublicCache.getHazelcastInstance().getMap(NAME_AUTH_USERS);
+  }
+  
+  
+  public static IMap<String,User> getUsers() {
+    return INSTANCE.users;
+  }
+  
+  
+  public static User get(String key) {
+    return INSTANCE.users.get(key);
+  }
+  
+  
+  public static boolean contains(String key) {
+    return INSTANCE.users.containsKey(key);
+  }
+  
 }

@@ -21,54 +21,35 @@
 
 package br.com.bb.disec.micro.handler;
 
-import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 25/07/2016
+ * @version 0.0 - 01/08/2016
  */
-public class StringPostHandler implements HttpHandler {
+public class TimeHandler implements JsonHandler {
   
-  private final StringBuilder data;
+  private final SimpleDateFormat fmt;
   
   
-  public StringPostHandler() {
-    data = new StringBuilder();
+  public TimeHandler() {
+    fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
   }
   
   
-  public String getPostData() {
-    return data.toString();
-  }
-  
-  
-  public void resetPostData() {
-    data.delete(0, data.length());
+  public DateFormat getDateFormat() {
+    return fmt;
   }
   
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    if(hse.isInIoThread()) {
-      hse.dispatch(this);
-      return;
-    }
-    this.resetPostData();
-    hse.startBlocking();
-    BufferedReader read = new BufferedReader(
-        new InputStreamReader(hse.getInputStream())
-    );
-    String line = null;
-    while((line = read.readLine()) != null) {
-      if(!data.toString().isEmpty()) {
-        data.append("\n");
-      }
-      data.append(line);
-    }
+    hse.getResponseSender().send(fmt.format(new Date()));
+    hse.endExchange();
   }
-
+  
 }

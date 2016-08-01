@@ -61,6 +61,8 @@ public class ServerConfig {
   
   private final boolean shutdownHandler;
   
+  private final boolean authenticationEnabled;
+  
   private final int maxWorkerThreads;
   
   private final int ioThreads;
@@ -74,6 +76,7 @@ public class ServerConfig {
       boolean dispatcherEnabled, 
       boolean logHandlerEnabled, 
       boolean shutdownHandler, 
+      boolean authEnabled,
       int ioThreads, 
       int maxWorkerThreads, 
       Map<String,Class> map
@@ -89,6 +92,7 @@ public class ServerConfig {
     this.dispatcherEnabled = dispatcherEnabled;
     this.logHandlerEnabled = logHandlerEnabled;
     this.shutdownHandler = shutdownHandler;
+    this.authenticationEnabled = authEnabled;
     this.ioThreads = (ioThreads > 0 
         ? ioThreads 
         : DEFAULT_IO_THREADS
@@ -133,6 +137,11 @@ public class ServerConfig {
   
   public boolean isShutdownHandlerEnabled() {
     return shutdownHandler;
+  }
+
+
+  public boolean isAuthenticationEnabled() {
+    return authenticationEnabled;
   }
 
 
@@ -220,6 +229,7 @@ public class ServerConfig {
         + "\n    dispatcherEnabled: " + dispatcherEnabled 
         + "\n    logHandlerEnabled: " + logHandlerEnabled
         + "\n    shutdownHandlerEnabled: " + shutdownHandler
+        + "\n    authenticationEnabled: " + authenticationEnabled
         + "\n    ioThreads: " + ioThreads 
         + "\n    maxWorkerThreads: " + maxWorkerThreads 
         + "\n    handlers: " + handlers + "\n}";
@@ -239,6 +249,8 @@ public class ServerConfig {
     private boolean dispatcherEnabled;
     
     private boolean logHandlerEnabled;
+    
+    private boolean authenticationEnabled;
     
     private int maxWorkerThreads;
     
@@ -300,6 +312,17 @@ public class ServerConfig {
       this.logHandlerEnabled = logHandlerEnabled;
       return this;
     }
+
+
+    public boolean isAuthenticationEnabled() {
+      return authenticationEnabled;
+    }
+
+
+    public Builder setAuthenticationEnabled(boolean authenticationEnabled) {
+      this.authenticationEnabled = authenticationEnabled;
+      return this;
+    }
     
     
     public boolean isLogHandlerEnabled() {
@@ -358,6 +381,7 @@ public class ServerConfig {
           dispatcherEnabled, 
           logHandlerEnabled,
           shutdownHandlerEnabled, 
+          authenticationEnabled,
           ioThreads, 
           maxWorkerThreads, 
           handlers
@@ -385,8 +409,9 @@ public class ServerConfig {
         this.setServerAddress(b.getServerAddress())
             .setServerPort(b.getServerPort())
             .setDispatcherEnabled(b.isDispatcherEnabled())
-            .setLogHandlerEnabled(logHandlerEnabled)
+            .setLogHandlerEnabled(b.isLogHandlerEnabled())
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
+            .setAuthenticationEnabled(b.isAuthenticationEnabled())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
             .setMaxWorkerThreads(b.getMaxWorkerThreads());
@@ -404,8 +429,9 @@ public class ServerConfig {
         this.setServerAddress(b.getServerAddress())
             .setServerPort(b.getServerPort())
             .setDispatcherEnabled(b.isDispatcherEnabled())
-            .setLogHandlerEnabled(logHandlerEnabled)
+            .setLogHandlerEnabled(b.isLogHandlerEnabled())
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
+            .setAuthenticationEnabled(b.isAuthenticationEnabled())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
             .setMaxWorkerThreads(b.getMaxWorkerThreads());
@@ -422,6 +448,7 @@ public class ServerConfig {
           + "\n    dispatcherEnabled: " + dispatcherEnabled 
           + "\n    logHandlerEnabled: " + logHandlerEnabled
           + "\n    shutdownHandlerEnabled: " + shutdownHandlerEnabled
+          + "\n    authenticationEnabled: " + authenticationEnabled
           + "\n    ioThreads: " + ioThreads 
           + "\n    maxWorkerThreads: " + maxWorkerThreads 
           + "\n    handlers: " + handlers + "\n}";

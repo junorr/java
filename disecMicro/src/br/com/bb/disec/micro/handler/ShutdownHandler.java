@@ -22,6 +22,8 @@
 package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.Server;
+import br.com.bb.disec.micro.cache.PublicCache;
+import br.com.bb.disec.micro.db.PoolFactory;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
@@ -47,7 +49,11 @@ public class ShutdownHandler implements HttpHandler {
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    hse.addExchangeCompleteListener((h,n)->server.stop());
+    hse.addExchangeCompleteListener((h,n)->{
+      PublicCache.shutdown();
+      PoolFactory.closePools();
+      server.stop();
+    });
     hse.getResponseSender().send(SHUTDOWN_MESSAGE+ "\n");
     hse.endExchange();
   }

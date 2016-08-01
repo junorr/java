@@ -23,6 +23,7 @@ package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.conf.FileUploadConfig;
 import br.com.bb.disec.micro.util.FileSize;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -49,8 +50,11 @@ public class FileUploadHandler implements JsonHandler {
   
   private final FileUploadConfig config;
   
+  private final Gson gson;
+  
   
   public FileUploadHandler() {
+    gson = new GsonBuilder().setPrettyPrinting().create();
     try {
       config = FileUploadConfig.builder()
           .load(getClass().getResource(DEFAULT_UPLOAD_CONFIG))
@@ -87,7 +91,7 @@ public class FileUploadHandler implements JsonHandler {
       if(value.isFile()) {
         File f = value.getPath().toFile();
         if(f.length() > config.getMaxSize().getSize()) {
-          String msg = "Bad Request. Size Overflow (maxSize="+ config.getMaxSize()+ ")";
+          String msg = "Bad Request. Max Size Exceeded ("+ config.getMaxSize()+ ")";
           json.addProperty("success", Boolean.FALSE);
           json.addProperty("message", msg);
           json.addProperty("name", value.getFileName());
@@ -121,16 +125,11 @@ public class FileUploadHandler implements JsonHandler {
         .filter(e->e.getAsJsonObject()
             .get("success").getAsBoolean()
         ).findAny().isPresent();
-    if(success) {
-      hse.setStatusCode(200).setReasonPhrase("OK");
-    }
-    else {
+    if(!success) {
       hse.setStatusCode(400).setReasonPhrase("Bad Request");
     }
     this.putJsonHeader(hse);
-    hse.getResponseSender().send(new GsonBuilder()
-        .setPrettyPrinting().create().toJson(resp) + "\n"
-    );
+    hse.getResponseSender().send(gson.toJson(resp) + "\n");
     hse.endExchange();
   }
     

@@ -22,6 +22,7 @@
 package br.com.bb.disec.micro;
 
 import br.com.bb.disec.micro.conf.ServerConfig;
+import br.com.bb.disec.micro.handler.AuthenticationHandler;
 import br.com.bb.disec.micro.handler.DispatcherHandler;
 import br.com.bb.disec.micro.handler.LogHandler;
 import br.com.bb.disec.micro.handler.ShutdownHandler;
@@ -63,6 +64,9 @@ public class Server {
         .build();
     if(config.isShutdownHandlerEnabled()) {
       ph.addExactPath("/shutdown", new ShutdownHandler(this));
+    }
+    if(config.isAuthenticationEnabled()) {
+      ph.addExactPath("/auth", new AuthenticationHandler());
     }
   }
   

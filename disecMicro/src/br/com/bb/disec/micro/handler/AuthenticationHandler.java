@@ -21,36 +21,36 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.sso.CookieName;
-import br.com.bb.disec.micro.sso.SSOUserFactory;
-import br.com.bb.sso.bean.User;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.server.handlers.Cookie;
+import io.undertow.util.Methods;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/07/2016
  */
-public class AuthenticationHandler implements HttpHandler {
-
+public class AuthenticationHandler extends StringPostHandler implements JsonHandler {
+  
+  private final HttpHandler cookieHandler;
+  
+  private final HttpHandler usuSimHandler;
+  
+  
+  public AuthenticationHandler() {
+    cookieHandler = new CookieAuthHandler();
+    usuSimHandler = new SimAuthHandler();
+  }
+  
+  
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    if(!hse.getRequestCookies().containsKey(CookieName.BBSSOToken.name())
-        || !hse.getRequestCookies().containsKey(CookieName.ssoacr.name())) {
-      hse.setStatusCode(401).setReasonPhrase("Unauthorized");
-      hse.endExchange();
-      return;
+    if(Methods.GET.equals(hse.getRequestMethod())) {
+      cookieHandler.handleRequest(hse);
     }
-    Cookie[] cookies = new Cookie[hse.getRequestCookies().size()];
-    cookies = hse.getRequestCookies().values().toArray(cookies);
-    SSOUserFactory suf = new SSOUserFactory(cookies);
-    User user = suf.createUser();
-    System.out.println(user.getNomeGuerra());
-    System.out.println(" - chave: "+ user.getChave());
-    System.out.println(" - uor_e: "+ user.getUorEquipe());
-    System.out.println(" - uor_d: "+ user.getUorDepe());
+    else if(Methods.POST.equals(hse.getRequestMethod())) {
+      usuSimHandler.handleRequest(hse);
+    }
   }
 
 }

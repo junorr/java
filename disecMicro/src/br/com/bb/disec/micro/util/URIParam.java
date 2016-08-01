@@ -74,8 +74,18 @@ public class URIParam {
   }
   
   
+  public boolean isNumber(int index) {
+    Number n = this.getNumber(index);
+    return n != null && n.doubleValue() != Double.NaN;
+  }
+  
+  
   public Number getNumber(int index) {
-    return Double.parseDouble(getParam(index));
+    try {
+      return Double.parseDouble(getParam(index));
+    } catch(NumberFormatException e) {
+      return Double.NaN;
+    }
   }
   
   
