@@ -22,10 +22,7 @@
 package br.com.bb.disec.micro.cache;
 
 import br.com.bb.sso.bean.User;
-import com.hazelcast.config.Config;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
+import us.pserver.dropmap.DMap;
 
 /**
  *
@@ -41,16 +38,21 @@ public class UserCache {
   public static final UserCache INSTANCE = new UserCache();
 
   
-  private final IMap<String,User> users;
+  private final DMap<String,User> users;
   
   
   public UserCache() {
-    users = PublicCache.getHazelcastInstance().getMap(NAME_AUTH_USERS);
+    users = DMap.newMap();
   }
   
   
-  public static IMap<String,User> getUsers() {
+  public static DMap<String,User> getUsers() {
     return INSTANCE.users;
+  }
+  
+  
+  public static DMap.DEntry<String,User> getEntry(String key) {
+    return INSTANCE.users.getEntry(key);
   }
   
   
@@ -61,6 +63,11 @@ public class UserCache {
   
   public static boolean contains(String key) {
     return INSTANCE.users.containsKey(key);
+  }
+  
+  
+  public static void shutdown() {
+    INSTANCE.users.getEngine().stop();
   }
   
 }

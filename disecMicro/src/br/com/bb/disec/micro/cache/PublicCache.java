@@ -21,9 +21,9 @@
 
 package br.com.bb.disec.micro.cache;
 
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
+import us.pserver.dropmap.DMap;
+import us.pserver.dropmap.DMap.DEntry;
+
 
 /**
  *
@@ -37,23 +37,15 @@ public class PublicCache {
   public static final PublicCache INSTANCE = new PublicCache();
 
   
-  private final HazelcastInstance hazelcast;
-  
-  private final IMap<String,String> cache;
+  private final DMap<String,String> cache;
   
   
   public PublicCache() {
-    hazelcast = Hazelcast.newHazelcastInstance();
-    cache = hazelcast.getMap(NAME_CACHE_PUBLIC);
+    cache = DMap.newMap();
   }
   
   
-  public static HazelcastInstance getHazelcastInstance() {
-    return INSTANCE.hazelcast;
-  }
-  
-  
-  public static IMap<String,String> getCache() {
+  public static DMap<String,String> getCache() {
     return INSTANCE.cache;
   }
   
@@ -63,8 +55,8 @@ public class PublicCache {
   }
   
   
-  public static long getTtl(String key) {
-    return INSTANCE.cache.getEntryView(key).getTtl();
+  public static DEntry<String,String> getEntry(String key) {
+    return INSTANCE.cache.getEntry(key);
   }
   
   
@@ -74,7 +66,7 @@ public class PublicCache {
   
   
   public static void shutdown() {
-    INSTANCE.hazelcast.shutdown();
+    INSTANCE.cache.getEngine().stop();
   }
   
 }

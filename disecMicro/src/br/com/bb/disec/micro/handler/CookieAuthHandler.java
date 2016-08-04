@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.Cookie;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import org.jboss.logging.Logger;
@@ -74,7 +75,7 @@ public class CookieAuthHandler extends StringPostHandler implements JsonHandler 
       }
       Logger.getLogger(getClass()).info("Authenticated: "+ user.toString());
     }
-    UserCache.getUsers().put(hash.getValue(), user, 30, TimeUnit.MINUTES);
+    UserCache.getUsers().put(hash.getValue(), user, Duration.ofMinutes(30));
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     this.putJsonHeader(hse);
     hse.getResponseSender().send(gson.toJson(user));

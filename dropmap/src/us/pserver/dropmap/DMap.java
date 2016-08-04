@@ -24,30 +24,75 @@ package us.pserver.dropmap;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import us.pserver.dropmap.impl.DropMap;
 
 /**
- *
+ * ConcurrentHashMap with scheduled entry discarding capabilities.
+ * 
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 03/08/2016
+ * @param <K> Key Type.
+ * @param <V> Value Type.
  */
 public interface DMap<K,V> extends Map<K,V> {
 
-  public DMap<K,V> put(K k, V v, long timeout, TimeUnit unit);
+  /**
+   * Puts an entry and schedule the drop time.
+   * @param k Key
+   * @param v Value
+   * @param dur Amount of time until entry drop.
+   * @return This instance of DropMap.
+   */
+  public DMap<K,V> put(K k, V v, Duration dur);
   
+  /**
+   * Puts an entry and schedule the drop time.
+   * @param k Key
+   * @param v Value
+   * @param dur Amount of time until entry drop.
+   * @param cs Consumer invoked wneh entry is dropped.
+   * @return This instance of DropMap.
+   */
   public DMap<K,V> put(K k, V v, Duration dur, Consumer<DEntry<K,V>> cs);
   
-  public DMap<K,V> drop(K k, long timeout, TimeUnit unit);
+  /**
+   * Schedule the drop of a previous map entry.
+   * @param k Key
+   * @param dur Amount of time until entry drop.
+   * @return This instance of DropMap.
+   */
+  public DMap<K,V> drop(K k, Duration dur);
   
+  /**
+   * Schedule the drop of a previous map entry.
+   * @param k Key
+   * @param dur Amount of time until entry drop.
+   * @param cs Consumer invoked wneh entry is dropped.
+   * @return This instance of DropMap.
+   */
   public DMap<K,V> drop(K k, Duration dur, Consumer<DEntry<K,V>> cs);
   
-  public DMap<K,V> drop(K k);
+  /**
+   * Get the entry of the given key.
+   * @param k Key
+   * @return DEntry of the key.
+   */
+  public DEntry<K,V> getEntry(K k);
   
-  public DEntry<K,V> entry(K k);
+  /**
+   * Get the DropEngine of this instance of DMap.
+   * @return the DropEngine of this instance of DropMap.
+   */
+  public DEngine<K,V> getEngine();
   
   
+  /**
+   * Creata a new instance of DropMap.
+   * @param <T> Key Type
+   * @param <U> Value Type
+   * @return The new instance of DropMap.
+   */
   public static <T,U> DMap<T,U> newMap() {
     return new DropMap();
   }
@@ -55,20 +100,65 @@ public interface DMap<K,V> extends Map<K,V> {
   
   
   
+  /**
+   * Entry of DMap to keep MetaData of key-value pairs.
+   * @param <K> Key Type.
+   * @param <V> Value Type.
+   */
   public static interface DEntry<K,V> extends Comparable<DEntry<K,V>> {
     
+    /**
+     * Get the key.
+     * @return The Key.
+     */
     public K getKey();
     
+    /**
+     * Get the value.
+     * @return The Value.
+     */
     public V getValue();
     
+    /**
+     * Get the DropMap instance holding this entry.
+     * @return The DropMap instance holding this entry.
+     */
     public DMap<K,V> getMap();
     
+    /**
+     * Get the original amount of time until entry drop.
+     * @return Amount of time until entry drop, or Duration.ZERO if not setted.
+     */
     public Duration getDuration();
     
+    /**
+     * Get the time left from now until entry drop.
+     * @return Time left from now until entry drop, or Duration.ZERO if not setted.
+     */
     public Duration getTTL();
     
+    /**
+     * Get the instant of entry creation.
+     * @return instant of entry creation.
+     */
     public Instant getStoredInstant();
     
+    /**
+     * Get the last access time (Map::get) of this entry.
+     * @return last access time of this entry.
+     */
+    public Instant getLastAccess();
+    
+    /**
+     * Update the last access time of this entry.
+     * @return This instance of DropEntry.
+     */
+    public DEntry<K,V> updateLastAccess();
+    
+    /**
+     * Get the instant of the last update of this entry in DropMap.
+     * @return instant of the last update of this entry in DropMap.
+     */
     public Instant getLastUpdate();
     
   }
@@ -76,20 +166,64 @@ public interface DMap<K,V> extends Map<K,V> {
   
   
   
+  /**
+   * Drop Engine for DMap. The drop engine uses only one 
+   * daemon thread with minimum priority.
+   * Final users normaly do not need to care abaout this class.
+   * @param <K> Key Type.
+   * @param <V> Value Type.
+   */
   public static interface DEngine<K,V> {
     
+    /**
+     * Starts the Drop Engine Thread.
+     * @return This instance of DropEngine.
+     */
     public DEngine<K,V> start();
     
+    /**
+     * Stops the Drop Engine Thread. Once Stopped, 
+     * the DropEngine can not be used again.
+     * @return This instance of DropEngine.
+     */
     public DEngine<K,V> stop();
     
+    /**
+     * Return true if DropEngine (thread) is running, false otherwise.
+     * @return true if DropEngine (thread) is running, false otherwise.
+     */
     public boolean isRunning();
     
+    /**
+     * Resets the DropEngine, canceling all drop schedules.
+     * The DropEngine is enabled for reusing after this.
+     * @return This instance of DropEngine.
+     */
     public DEngine<K,V> reset();
     
+    /**
+     * Return true if DropEngine is current 
+     * trackind the given entry for dropping.
+     * @param e DEntry
+     * @return true if DropEngine is current 
+     * trackind the given entry, false otherwise.
+     */
     public boolean isTracking(DEntry<K,V> e);
     
+    /**
+     * Adds an entry for dropping.
+     * @param e DEntry for dropping.
+     * @param c Consumer called when entry is dropped.
+     * @return This instance of DropEngine.
+     */
     public DEngine<K,V> add(DEntry<K,V> e, Consumer<DEntry<K,V>> c);
     
+    /**
+     * Removes the given entry of DropEngine, 
+     * canceling the drop schedule.
+     * @param e DEntry for remove.
+     * @return This instance of DropEngine.
+     */
     public DEngine<K,V> remove(DEntry<K,V> e);
     
   }

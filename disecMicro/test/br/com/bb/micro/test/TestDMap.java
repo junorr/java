@@ -21,30 +21,32 @@
 
 package br.com.bb.micro.test;
 
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+import us.pserver.dropmap.DMap;
+import us.pserver.dropmap.DMap.DEntry;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/07/2016
+ * @version 0.0 - 03/08/2016
  */
-public class TestHazelcast {
+public class TestDMap {
+  
+  
+  public static void removed(DEntry<Integer,String> entry) {
+    System.out.println("* Removed: "+ entry);
+  }
 
   
   public static void main(String[] args) throws InterruptedException {
-    HazelcastInstance hi = Hazelcast.newHazelcastInstance();
-    IMap<String,Object> map = hi.getMap("my-hazelcast-map");
-    map.put("key", "value", 5, TimeUnit.SECONDS);
-    System.out.println("* Thread.sleep(4000);");
-    Thread.sleep(4000);
-    System.out.println("* map.get(key): "+ map.get("key"));
-    System.out.println("* Thread.sleep(1000);");
-    Thread.sleep(1000);
-    System.out.println("* map.get(key): "+ map.get("key"));
-    hi.shutdown();
+    DMap<Integer,String> map = DMap.newMap();
+    map.put(0, "zero", Duration.ofSeconds(2), TestDMap::removed);
+    map.put(1, "one", Duration.ofMillis(2250), TestDMap::removed);
+    map.put(2, "two", Duration.ofMillis(2750), TestDMap::removed);
+    map.put(3, "three", Duration.ofSeconds(3), TestDMap::removed);
+    System.out.println("* map.size: "+ map.size());
+    Thread.sleep(3100);
+    System.out.println("* map.size: "+ map.size());
   }
   
 }

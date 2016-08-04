@@ -23,6 +23,7 @@ package us.pserver.dropmap.impl;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Objects;
 import us.pserver.dropmap.DMap;
 import us.pserver.dropmap.DMap.DEntry;
 
@@ -40,6 +41,8 @@ public class DropEntry<K,V> implements DEntry<K,V> {
   private final DMap<K,V> map;
   
   private final Instant stored;
+  
+  private Instant access;
   
   private final Instant update;
   
@@ -125,6 +128,18 @@ public class DropEntry<K,V> implements DEntry<K,V> {
   public Instant getStoredInstant() {
     return stored;
   }
+  
+  
+  @Override
+  public Instant getLastAccess() {
+    return access;
+  }
+  
+  
+  public DropEntry<K,V> updateLastAccess() {
+    this.access = Instant.now();
+    return this;
+  }
 
 
   @Override
@@ -139,6 +154,50 @@ public class DropEntry<K,V> implements DEntry<K,V> {
       throw new IllegalArgumentException("Bad Null DEntry");
     }
     return duration.compareTo(o.getDuration());
+  }
+
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 97 * hash + Objects.hashCode(this.key);
+    hash = 97 * hash + Objects.hashCode(this.stored);
+    return hash;
+  }
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final DropEntry<?, ?> other = (DropEntry<?, ?>) obj;
+    if (!Objects.equals(this.key, other.key)) {
+      return false;
+    }
+    if (!Objects.equals(this.stored, other.stored)) {
+      return false;
+    }
+    return true;
+  }
+
+
+  @Override
+  public String toString() {
+    return "DropEntry" 
+        + "{\n   key.....: " + key 
+        + ",\n   value...: " + value 
+        + ",\n   stored..: " + stored 
+        + ",\n   update..: " + update 
+        + ",\n   duration: " + duration.toMillis() + " ms" 
+        + ",\n   ttl.....: " + this.getTTL().toMillis() + " ms"
+        + "\n}";
   }
 
 }

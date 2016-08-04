@@ -31,7 +31,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.CookieImpl;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jboss.logging.Logger;
 
@@ -69,7 +69,7 @@ public class SimAuthHandler extends StringPostHandler implements JsonHandler {
     cookie.setMaxAge(COOKIE_MAX_AGE);
     cookie.setValue(DigestUtils.sha256Hex(user.getChave() + String.valueOf(System.currentTimeMillis())));
     hse.setResponseCookie(cookie);
-    UserCache.getUsers().put(cookie.getValue(), user, 30, TimeUnit.MINUTES);
+    UserCache.getUsers().put(cookie.getValue(), user, Duration.ofMinutes(30));
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     this.putJsonHeader(hse);
     hse.getResponseSender().send(gson.toJson(user));

@@ -47,12 +47,6 @@ public class DropEngine<K,V> implements DEngine<K,V> {
   
   private final Map<K,Consumer<DEntry<K,V>>> consumers;
   
-  private final AtomicBoolean running;
-  
-  private final ReentrantLock waitLock;
-  
-  private final Condition waitCond;
-  
   private final ReentrantLock lock;
   
   private final Dropper dropper;
@@ -64,26 +58,28 @@ public class DropEngine<K,V> implements DEngine<K,V> {
     }
     this.map = map;
     consumers = new TreeMap<>();
-    running = new AtomicBoolean();
     drops = new TreeSet<>();
     lock = new ReentrantLock();
-    waitLock = new ReentrantLock();
-    waitCond = waitLock.newCondition();
     dropper = new Dropper();
   }
   
   
   @Override
   public boolean isRunning() {
-    return running.get();
+    return dropper.isRunning();
   }
   
   
   @Override
   public DEngine<K,V> reset() {
-    this.stop();
-    consumers.clear();
-    drops.clear();
+    lock.lock();
+    try {
+      dropper.disable();
+      consumers.clear();
+      drops.clear();
+    } finally {
+      lock.unlock();
+    }
     return this;
   }
   
@@ -93,8 +89,6 @@ public class DropEngine<K,V> implements DEngine<K,V> {
     if(!map.isEmpty()) {
       lock.lock();
       try {
-        running.compareAndSet(false, true);
-        System.out.println("engine.start.running: "+ running.get());
         dropper.start();
       } finally {
         lock.unlock();
@@ -102,20 +96,13 @@ public class DropEngine<K,V> implements DEngine<K,V> {
     }
     return this;
   }
-
-
+  
+  
   @Override
   public DEngine<K,V> stop() {
     lock.lock();
     try {
-      running.compareAndSet(true, false);
-      dropper.disable();
-      waitLock.lock();
-      try { 
-        waitCond.signalAll(); 
-      } finally { 
-        waitLock.unlock(); 
-      }
+      dropper.stop();
     } finally {
       lock.unlock();
     }
@@ -130,12 +117,15 @@ public class DropEngine<K,V> implements DEngine<K,V> {
     }
     lock.lock();
     try {
-      this.stop();
+      dropper.disable();
       drops.add(e);
       consumers.put(e.getKey(), (c != null ? c : x->{}));
-      this.start();
     } finally {
       lock.unlock();
+      dropper.enable();
+      if(!dropper.isRunning()) {
+        dropper.start();
+      }
     }
     return this;
   }
@@ -152,12 +142,12 @@ public class DropEngine<K,V> implements DEngine<K,V> {
     if(e != null && drops.contains(e)) {
       lock.lock();
       try {
-        this.stop();
+        dropper.disable();
         drops.remove(e);
         consumers.remove(e.getKey());
-        this.start();
       } finally {
         lock.unlock();
+        dropper.enable();
       }
     }
     return this;
@@ -166,14 +156,30 @@ public class DropEngine<K,V> implements DEngine<K,V> {
   
   
   
-  class Dropper extends Thread {
+  class Dropper implements Runnable {
+    
+    private final AtomicBoolean running;
     
     private final AtomicBoolean disabled;
     
+    private final ReentrantLock waitLock;
+
+    private final Condition waitCond;
+  
+    private final Thread thread;
+    
     public Dropper() {
-      this.setDaemon(true);
-      this.setPriority(MIN_PRIORITY);
       disabled = new AtomicBoolean(false);
+      running = new AtomicBoolean(false);
+      thread = new Thread(this, "Dropper.Thread");
+      thread.setDaemon(true);
+      thread.setPriority(Thread.MIN_PRIORITY);
+      waitLock = new ReentrantLock();
+      waitCond = waitLock.newCondition();
+    }
+    
+    public boolean isRunning() {
+      return running.get();
     }
     
     public Dropper disable() {
@@ -181,14 +187,33 @@ public class DropEngine<K,V> implements DEngine<K,V> {
       return this;
     }
     
+    public Dropper enable() {
+      disabled.compareAndSet(true, false);
+      return this.signal();
+    }
+    
+    public Dropper signal() {
+      waitLock.lock();
+      try {
+        waitCond.signalAll();
+      } finally {
+        waitLock.unlock();
+      }
+      return this;
+    }
+    
     @Override
     public void run() {
-      while(!drops.isEmpty()) {
+      while(!drops.isEmpty() && running.get()) {
         DEntry<K,V> entry = drops.first();
+        long ttlms = entry.getTTL().toMillis();
         waitLock.lock();
         try {
-          waitCond.await(entry.getTTL().toMillis(), TimeUnit.MILLISECONDS);
-          if(running.get() && !disabled.get()) {
+          waitCond.await(ttlms, TimeUnit.MILLISECONDS);
+          if(disabled.get()) {
+            waitCond.awaitUninterruptibly();
+          }
+          else if(drops.contains(entry) && ttlms <= 0) {
             map.remove(entry.getKey());
             drops.remove(entry);
             consumers.remove(entry.getKey()).accept(entry);
@@ -197,14 +222,19 @@ public class DropEngine<K,V> implements DEngine<K,V> {
         catch(InterruptedException e) {}
         finally {
           waitLock.unlock();
-          disabled.compareAndSet(true, false);
         }
       }
     }
     
-    public Dropper startDropping() {
-      super.start();
+    public Dropper start() {
+      running.set(true);
+      thread.start();
       return this;
+    }
+    
+    public Dropper stop() {
+      running.set(false);
+      return signal();
     }
     
   }

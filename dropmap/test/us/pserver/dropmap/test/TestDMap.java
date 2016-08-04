@@ -22,8 +22,8 @@
 package us.pserver.dropmap.test;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import us.pserver.dropmap.DMap;
+import us.pserver.dropmap.DMap.DEntry;
 
 /**
  *
@@ -31,12 +31,19 @@ import us.pserver.dropmap.DMap;
  * @version 0.0 - 03/08/2016
  */
 public class TestDMap {
+  
+  
+  public static void removed(DEntry<Integer,String> entry) {
+    System.out.println("* Removed: "+ entry);
+  }
 
   
   public static void main(String[] args) throws InterruptedException {
     DMap<Integer,String> map = DMap.newMap();
-    map.put(0, "zero", Duration.of(3, ChronoUnit.SECONDS), e->System.out.println("* removed: "+ e.getValue()));
-    map.put(1, "one", Duration.of(2500, ChronoUnit.MILLIS), e->System.out.println("* removed: "+ e.getValue()));
+    map.put(0, "zero", Duration.ofSeconds(2), TestDMap::removed);
+    map.put(1, "one", Duration.ofMillis(2250), TestDMap::removed);
+    map.put(2, "two", Duration.ofMillis(2750), TestDMap::removed);
+    map.put(3, "three", Duration.ofSeconds(3), TestDMap::removed);
     System.out.println("* map.size: "+ map.size());
     Thread.sleep(3100);
     System.out.println("* map.size: "+ map.size());

@@ -22,9 +22,7 @@
 package br.com.bb.disec.micro.handler;
 
 import io.undertow.server.HttpServerExchange;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  *
@@ -33,22 +31,9 @@ import java.util.Date;
  */
 public class TimeHandler implements JsonHandler {
   
-  private final SimpleDateFormat fmt;
-  
-  
-  public TimeHandler() {
-    fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-  }
-  
-  
-  public DateFormat getDateFormat() {
-    return fmt;
-  }
-  
-
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    hse.getResponseSender().send(fmt.format(new Date()));
+    hse.getResponseSender().send(Instant.now().toString());
     hse.endExchange();
   }
   

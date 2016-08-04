@@ -27,11 +27,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.hazelcast.core.EntryView;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Methods;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import org.jboss.logging.Logger;
+import us.pserver.dropmap.DMap.DEntry;
 
 /**
  *
@@ -100,7 +100,7 @@ public class PublicCacheHandler extends StringPostHandler implements JsonHandler
     }
     PublicCache.getCache().put(
         key, this.getPostData(), 
-        ttl, TimeUnit.SECONDS
+        Duration.ofSeconds(ttl)
     );
     Logger.getLogger(getClass()).info("PUT ["+ key+ "="+ this.getPostData()+ "]");
   }
@@ -110,12 +110,13 @@ public class PublicCacheHandler extends StringPostHandler implements JsonHandler
       if(PublicCache.contains(key)) {
         this.putJsonHeader(hse);
         JsonObject resp = new JsonObject();
-        EntryView<String,String> ev = PublicCache.getCache().getEntryView(key);
+        DEntry<String,String> ev = PublicCache.getCache().getEntry(key);
         String value = ev.getValue();
         resp.addProperty("key", key);
-        resp.addProperty("lastAccessTime", ev.getLastAccessTime());
-        resp.addProperty("lastUpdateTime", ev.getLastUpdateTime());
-        resp.addProperty("ttl", ev.getTtl());
+        resp.addProperty("entryStoreTime", ev.getStoredInstant().toString());
+        resp.addProperty("lastUpdateTime", ev.getLastUpdate().toString());
+        resp.addProperty("lastAccessTime", ev.getLastAccess().toString());
+        resp.addProperty("ttl", ev.getTTL().toMillis());
         if(isJsonValue(value)) {
           JsonParser jps = new JsonParser();
           resp.add("value", jps.parse(value));

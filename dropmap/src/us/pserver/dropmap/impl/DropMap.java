@@ -23,17 +23,15 @@ package us.pserver.dropmap.impl;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import us.pserver.dropmap.DMap;
 
@@ -50,46 +48,14 @@ public class DropMap<K,V> implements DMap<K,V> {
   
   
   public DropMap() {
-    map = Collections.synchronizedMap(new HashMap<K,DEntry<K,V>>());
+    map = new ConcurrentHashMap<>();
     engine = new DropEngine(this);
   }
   
   
-  private Duration duration(long time, TimeUnit unit) {
-    Duration dur = null;
-    switch(unit) {
-      case DAYS:
-        dur = Duration.of(time, ChronoUnit.DAYS);
-        break;
-      case HOURS:
-        dur = Duration.of(time, ChronoUnit.HOURS);
-        break;
-      case MICROSECONDS:
-        dur = Duration.of(time, ChronoUnit.MICROS);
-        break;
-      case MILLISECONDS:
-        dur = Duration.of(time, ChronoUnit.MILLIS);
-        break;
-      case MINUTES:
-        dur = Duration.of(time, ChronoUnit.MINUTES);
-        break;
-      case NANOSECONDS:
-        dur = Duration.of(time, ChronoUnit.NANOS);
-        break;
-      case SECONDS:
-        dur = Duration.of(time, ChronoUnit.SECONDS);
-        break;
-      default:
-        dur = Duration.ZERO;
-        break;
-    }
-    return dur;
-  }
-  
-
   @Override
-  public DMap<K, V> put(K k, V v, long timeout, TimeUnit unit) {
-    return this.put(k, v, duration(timeout, unit), null);
+  public DMap<K, V> put(K k, V v, Duration dur) {
+    return put(k, v, dur, null);
   }
 
 
@@ -105,8 +71,8 @@ public class DropMap<K,V> implements DMap<K,V> {
 
 
   @Override
-  public DMap<K, V> drop(K k, long timeout, TimeUnit unit) {
-    return drop(k, duration(timeout, unit), null);
+  public DMap<K, V> drop(K k, Duration dur) {
+    return drop(k, dur, null);
   }
 
 
@@ -125,18 +91,17 @@ public class DropMap<K,V> implements DMap<K,V> {
     }
     return this;
   }
-
-
+  
+  
   @Override
-  public DMap<K, V> drop(K k) {
-    engine.remove(map.remove(k));
-    return this;
+  public DEngine<K,V> getEngine() {
+    return engine;
   }
 
 
   @Override
-  public DEntry<K, V> entry(K k) {
-    return map.get(k);
+  public DEntry<K, V> getEntry(K k) {
+    return map.get(k).updateLastAccess();
   }
 
 
@@ -167,7 +132,9 @@ public class DropMap<K,V> implements DMap<K,V> {
   @Override
   public V get(Object key) {
     if(map.containsKey(key)) {
-      return map.get(key).getValue();
+      return map.get(key)
+          .updateLastAccess()
+          .getValue();
     }
     return null;
   }

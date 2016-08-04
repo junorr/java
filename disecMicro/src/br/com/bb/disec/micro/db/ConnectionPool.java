@@ -38,7 +38,7 @@ import java.sql.Statement;
  */
 public class ConnectionPool {
   
-  public static final String DEFAULT_DB_NAME = "103";
+  public static final String DEFAULT_DB_NAME = "default";
 
   public static final String DSFILE_PRE = "/resources/datasource-";
   
@@ -71,11 +71,9 @@ public class ConnectionPool {
   
   
   private String createFileName() throws URISyntaxException {
-    StringBuilder sb = new StringBuilder()
-        .append(DSFILE_PRE)
-        .append(dsname)
-        .append(DSFILE_EXT);
-    return new File(this.getClass().getResource(sb.toString()).toURI()).getAbsolutePath();
+    return new File(this.getClass().getResource(
+        DSFILE_PRE + dsname + DSFILE_EXT
+    ).toURI()).getAbsolutePath();
   }
   
   
