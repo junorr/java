@@ -23,44 +23,38 @@ package us.pserver.dropmap.test;
 
 import java.time.Duration;
 import us.pserver.dropmap.DMap;
-import us.pserver.dropmap.DMap.DEntry;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 03/08/2016
+ * @version 0.0 - 04/08/2016
  */
-public class TestDMap {
-  
-  private static double lastlap;
-  
-  
-  public static void removed(DEntry<Integer,String> entry) {
-    double end = System.nanoTime();
-    double ms = ((end - lastlap) / 1_000_000.0);
-    if(ms > 1002) {
-      System.out.println("\n* Removed: "+ entry+ " (elapsed: "+ ms+ " ms)");
-    } else {
-      System.out.print(entry.getKey()+ ".");
-    }
-    lastlap = end;
-  }
+public class TestReentries {
 
   
   public static void main(String[] args) throws InterruptedException {
     DMap<Integer,String> map = DMap.newMap();
-    long ttl = 250;
-    for(int i = 0; i < 100; i++) {
-      map.put(i, "string-"+String.valueOf(i), Duration.ofMillis(ttl), TestDMap::removed);
-      ttl += 250;
-      if(i == 0) {
-        lastlap = System.nanoTime();
-      }
-    }
-    System.out.println("* map.size: "+ map.size());
-    Thread.sleep(25100);
-    System.out.println();
-    System.out.println("* map.size: "+ map.size());
+    int val = 5;
+    System.out.println("- inserted: "+ val);
+    map.put(val, "val="+val, Duration.ofSeconds(1), e->System.out.println("- removed: "+ e.getValue()));
+    Thread.sleep(1200);
+    System.out.println("- get( "+ val+ " ): "+ map.get(val));
+    
+    System.out.println("- inserted: "+ val);
+    map.put(val, "val="+val, Duration.ofSeconds(1), e->System.out.println("- removed: "+ e.getValue()));
+    Thread.sleep(1200);
+    System.out.println("- get( "+ val+ " ): "+ map.get(val));
+    
+    System.out.println("- inserted: "+ val);
+    map.put(val, "val="+val, Duration.ofSeconds(1), e->System.out.println("- removed: "+ e.getValue()));
+    Thread.sleep(1200);
+    System.out.println("- get( "+ val+ " ): "+ map.get(val));
+    
+    System.out.println("- inserted: "+ val);
+    map.put(val, "val="+val, Duration.ofSeconds(1), e->System.out.println("- removed: "+ e.getValue()));
+    Thread.sleep(1200);
+    System.out.println("- get( "+ val+ " ): "+ map.get(val));
+    
   }
   
 }

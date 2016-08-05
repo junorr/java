@@ -28,7 +28,9 @@ import java.util.function.Consumer;
 import us.pserver.dropmap.impl.DropMap;
 
 /**
- * ConcurrentHashMap with scheduled entry discarding capabilities.
+ * ConcurrentHashMap with entry discarding (TTL) capabilities.
+ * A key-value pair can be inserted with a time-to-live argument,
+ * and DropMap will discard this entry after the given TTL.
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 03/08/2016
@@ -57,7 +59,7 @@ public interface DMap<K,V> extends Map<K,V> {
   public DMap<K,V> put(K k, V v, Duration dur, Consumer<DEntry<K,V>> cs);
   
   /**
-   * Schedule the drop of a previous map entry.
+   * Schedule the drop of an existing map entry.
    * @param k Key
    * @param dur Amount of time until entry drop.
    * @return This instance of DropMap.
@@ -65,7 +67,7 @@ public interface DMap<K,V> extends Map<K,V> {
   public DMap<K,V> drop(K k, Duration dur);
   
   /**
-   * Schedule the drop of a previous map entry.
+   * Schedule the drop of an existing map entry.
    * @param k Key
    * @param dur Amount of time until entry drop.
    * @param cs Consumer invoked wneh entry is dropped.
@@ -81,14 +83,14 @@ public interface DMap<K,V> extends Map<K,V> {
   public DEntry<K,V> getEntry(K k);
   
   /**
-   * Get the DropEngine of this instance of DMap.
-   * @return the DropEngine of this instance of DropMap.
+   * Get the DropEngine of this DropMap instance.
+   * @return the DropEngine of this DropMap instance.
    */
   public DEngine<K,V> getEngine();
   
   
   /**
-   * Creata a new instance of DropMap.
+   * Create a new instance of DropMap.
    * @param <T> Key Type
    * @param <U> Value Type
    * @return The new instance of DropMap.
@@ -101,7 +103,7 @@ public interface DMap<K,V> extends Map<K,V> {
   
   
   /**
-   * Entry of DMap to keep MetaData of key-value pairs.
+   * Entry of DropMap to keep MetaData of key-value pairs.
    * @param <K> Key Type.
    * @param <V> Value Type.
    */
@@ -127,19 +129,21 @@ public interface DMap<K,V> extends Map<K,V> {
     
     /**
      * Get the original amount of time until entry drop.
-     * @return Amount of time until entry drop, or Duration.ZERO if not setted.
+     * @return Original amount of time until entry drop, 
+     * or Duration.ZERO if not setted.
      */
     public Duration getDuration();
     
     /**
-     * Get the time left from now until entry drop.
-     * @return Time left from now until entry drop, or Duration.ZERO if not setted.
+     * Get the time left (time-to-live) from now until entry drop.
+     * @return Time left (time-to-live) from now until entry drop, 
+     * or Duration.ZERO if not setted.
      */
     public Duration getTTL();
     
     /**
-     * Get the instant of entry creation.
-     * @return instant of entry creation.
+     * Get the creation time of this entry.
+     * @return creation time of this entry.
      */
     public Instant getStoredInstant();
     
@@ -156,8 +160,8 @@ public interface DMap<K,V> extends Map<K,V> {
     public DEntry<K,V> updateLastAccess();
     
     /**
-     * Get the instant of the last update of this entry in DropMap.
-     * @return instant of the last update of this entry in DropMap.
+     * Get the last update time of this entry.
+     * @return last update time of this entry.
      */
     public Instant getLastUpdate();
     
@@ -169,14 +173,14 @@ public interface DMap<K,V> extends Map<K,V> {
   /**
    * Drop Engine for DMap. The drop engine uses only one 
    * daemon thread with minimum priority.
-   * Final users normaly do not need to care abaout this class.
+   * Final users usually do not need to care about this class.
    * @param <K> Key Type.
    * @param <V> Value Type.
    */
   public static interface DEngine<K,V> {
     
     /**
-     * Starts the Drop Engine Thread.
+     * Starts the DropEngine Thread.
      * @return This instance of DropEngine.
      */
     public DEngine<K,V> start();

@@ -61,11 +61,18 @@ public class DropMap<K,V> implements DMap<K,V> {
 
   @Override
   public DMap<K, V> put(K k, V v, Duration dur, Consumer<DEntry<K, V>> cs) {
-    if(k != null && v != null) {
-      DEntry<K,V> entry = new DropEntry(k, v, this, Instant.now(), dur);
-      map.put(k, entry);
-      engine.add(entry, cs);
+    if(k == null) {
+      throw new IllegalArgumentException("Bad Null Key");
     }
+    if(v == null) {
+      throw new IllegalArgumentException("Bad Null Value");
+    }
+    if(dur == null) {
+      throw new IllegalArgumentException("Bad Null Duration");
+    }
+    DEntry<K,V> entry = new DropEntry(k, v, this, Instant.now(), dur);
+    map.put(k, entry);
+    engine.add(entry, cs);
     return this;
   }
 
@@ -78,17 +85,24 @@ public class DropMap<K,V> implements DMap<K,V> {
 
   @Override
   public DMap<K, V> drop(K k, Duration dur, Consumer<DEntry<K, V>> cs) {
-    if(k != null && map.containsKey(k)) {
-      DEntry<K,V> orig = map.get(k);
-      DEntry<K,V> entry = new DropEntry(
-          orig.getKey(), 
-          orig.getValue(), 
-          this, 
-          orig.getStoredInstant(), 
-          dur
-      );
-      engine.add(entry, cs);
+    if(k == null) {
+      throw new IllegalArgumentException("Bad Null Key");
     }
+    if(dur == null) {
+      throw new IllegalArgumentException("Bad Null Duration");
+    }
+    if(!map.containsKey(k)) {
+      throw new IllegalArgumentException("Bad Key (not found)");
+    }
+    DEntry<K,V> orig = map.get(k);
+    DEntry<K,V> entry = new DropEntry(
+        orig.getKey(), 
+        orig.getValue(), 
+        this, 
+        orig.getStoredInstant(), 
+        dur
+    );
+    engine.add(entry, cs);
     return this;
   }
   

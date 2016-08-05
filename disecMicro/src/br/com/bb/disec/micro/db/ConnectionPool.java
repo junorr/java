@@ -38,7 +38,7 @@ import java.sql.Statement;
  */
 public class ConnectionPool {
   
-  public static final String DEFAULT_DB_NAME = "default";
+  public static final String DEFAULT_DB_NAME = "blackened";
 
   public static final String DSFILE_PRE = "/resources/datasource-";
   

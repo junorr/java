@@ -30,6 +30,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import us.pserver.dropmap.DMap;
 import us.pserver.dropmap.DMap.DEngine;
 import us.pserver.dropmap.DMap.DEntry;
@@ -120,12 +122,9 @@ public class DropEngine<K,V> implements DEngine<K,V> {
       dropper.disable();
       drops.add(e);
       consumers.put(e.getKey(), (c != null ? c : x->{}));
+      dropper.enable();
     } finally {
       lock.unlock();
-      dropper.enable();
-      if(!dropper.isRunning()) {
-        dropper.start();
-      }
     }
     return this;
   }
@@ -154,6 +153,33 @@ public class DropEngine<K,V> implements DEngine<K,V> {
   }
   
   
+  private DropEngine<K,V> rmDrop(DEntry<K,V> entry) {
+    if(entry != null && drops.contains(entry)) {
+      lock.lock();
+      try {
+        drops.remove(entry);
+      } finally {
+        lock.unlock();
+      }
+    }
+    return this;
+  }
+  
+  
+  private Consumer<DEntry<K,V>> rmConsumer(K k) {
+    Consumer<DEntry<K,V>> cs = c->{};
+    if(k != null && consumers.containsKey(k)) {
+      lock.lock();
+      try {
+        cs = consumers.remove(k);
+      } finally {
+        lock.unlock();
+      }
+    }
+    return cs;
+  }
+  
+  
   
   
   class Dropper implements Runnable {
@@ -166,16 +192,19 @@ public class DropEngine<K,V> implements DEngine<K,V> {
 
     private final Condition waitCond;
   
-    private final Thread thread;
+    private Thread thread;
     
     public Dropper() {
       disabled = new AtomicBoolean(false);
       running = new AtomicBoolean(false);
+      waitLock = new ReentrantLock();
+      waitCond = waitLock.newCondition();
+    }
+    
+    private void setThread() {
       thread = new Thread(this, "Dropper.Thread");
       thread.setDaemon(true);
       thread.setPriority(Thread.MIN_PRIORITY);
-      waitLock = new ReentrantLock();
-      waitCond = waitLock.newCondition();
     }
     
     public boolean isRunning() {
@@ -189,7 +218,12 @@ public class DropEngine<K,V> implements DEngine<K,V> {
     
     public Dropper enable() {
       disabled.compareAndSet(true, false);
-      return this.signal();
+      if(!this.isRunning()) {
+        this.start();
+      } else {
+        this.signal();
+      }
+      return this;
     }
     
     public Dropper signal() {
@@ -202,32 +236,41 @@ public class DropEngine<K,V> implements DEngine<K,V> {
       return this;
     }
     
+    private void await(long ms) {
+      waitLock.lock();
+      try {
+        if(ms > 0) {
+          waitCond.await(ms, TimeUnit.MILLISECONDS);
+        } else {
+          waitCond.awaitUninterruptibly();
+        }
+      } catch(InterruptedException ex) {
+      } finally {
+        waitLock.unlock();
+      }
+    }
+    
     @Override
     public void run() {
-      while(!drops.isEmpty() && running.get()) {
+      while(!drops.isEmpty() && isRunning()) {
         DEntry<K,V> entry = drops.first();
         long ttlms = entry.getTTL().toMillis();
-        waitLock.lock();
-        try {
-          waitCond.await(ttlms, TimeUnit.MILLISECONDS);
-          if(disabled.get()) {
-            waitCond.awaitUninterruptibly();
-          }
-          else if(drops.contains(entry) && ttlms <= 0) {
-            map.remove(entry.getKey());
-            drops.remove(entry);
-            consumers.remove(entry.getKey()).accept(entry);
-          }
-        } 
-        catch(InterruptedException e) {}
-        finally {
-          waitLock.unlock();
+        await(ttlms);
+        if(disabled.get()) {
+          await(0);
+        }
+        else if(drops.contains(entry) && ttlms <= 0) {
+          map.remove(entry.getKey());
+          rmDrop(entry);
+          rmConsumer(entry.getKey()).accept(entry);
         }
       }
+      running.set(false);
     }
     
     public Dropper start() {
       running.set(true);
+      setThread();
       thread.start();
       return this;
     }
