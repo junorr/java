@@ -51,12 +51,15 @@ public class SqlQuery {
   }
 
 
-  public JsonResultSet exec(String query, Object ... args) throws SQLException, IOException {
-    if(query == null || !source.containsSql(query)) {
+  public JsonResultSet exec(String group, String query, Object ... args) throws SQLException, IOException {
+    if(group == null) {
+      throw new IllegalArgumentException("Bad Null Group Name");
+    }
+    if(query == null || !source.containsSql(group, query)) {
       throw new IllegalArgumentException("Query Not Found ("+ query+ ")");
     }
     PreparedStatement ps = connection
-        .prepareStatement(source.getSql(query));
+        .prepareStatement(source.getSql(group, query));
     try {
       if(args != null && args.length > 0) {
         for(int i = 0; i < args.length; i++) {
@@ -72,17 +75,20 @@ public class SqlQuery {
   }
   
   
-  public String execJson(String query, Object ... args) throws SQLException, IOException {
-    return this.exec(query, args).toJson();
+  public String execJson(String group, String query, Object ... args) throws SQLException, IOException {
+    return this.exec(group, query, args).toJson();
   }
   
   
-  public int update(String query, Object ... args) throws SQLException, IOException {
-    if(query == null || !source.containsSql(query)) {
+  public int update(String group, String query, Object ... args) throws SQLException, IOException {
+    if(group == null) {
+      throw new IllegalArgumentException("Bad Null Group Name");
+    }
+    if(query == null || !source.containsSql(group, query)) {
       throw new IllegalArgumentException("Query Not Found ("+ query+ ")");
     }
     PreparedStatement ps = connection
-        .prepareStatement(source.getSql(query));
+        .prepareStatement(source.getSql(group, query));
     try {
       if(args != null && args.length > 0) {
         for(int i = 0; i < args.length; i++) {

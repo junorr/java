@@ -27,6 +27,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import io.undertow.server.HttpServerExchange;
+import java.util.Arrays;
 import org.jboss.logging.Logger;
 
 /**
@@ -85,7 +86,7 @@ public class PostSqlHandler extends StringPostHandler implements SqlHandler, Jso
       return;
     }
     String resp = this.getQuery().exec(
-        query, this.parseArgs(json) + "\n"
+        query, this.parseArgs(json)
     ).toPrettyPrintJson();
     this.putJsonHeader(hse);
     hse.getResponseSender().send(resp);

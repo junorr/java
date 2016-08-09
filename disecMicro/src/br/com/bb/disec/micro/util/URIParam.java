@@ -66,9 +66,7 @@ public class URIParam {
   
   public String getParam(int index) {
     if(index < 0 || index > params.size() -2) {
-      throw new IllegalArgumentException(
-          "Bad Index Param (0 - "+ (params.size()-2)+ "): "+ index
-      );
+      return null;
     }
     return params.get(index+1);
   }
@@ -95,16 +93,16 @@ public class URIParam {
   
   
   public Object getObject(int index) {
+    String param = getParam(index);
     try {
-      return getNumber(index);
+      return Double.parseDouble(param);
     } 
-    catch(Exception e) {
-      String param = getParam(index);
+    catch(NumberFormatException e) {
       if(param.equalsIgnoreCase("true")
           || param.equalsIgnoreCase("false")) {
         return getBoolean(index);
       }
-      return this.getParam(index);
+      return param;
     }
   }
   

@@ -40,48 +40,56 @@ public class DBSqlSource implements SqlSource {
 
   private final String dbname;
   
+  private final String findGroup;
+  
   private final String findQuery;
   
   private final SqlSource source;
   
-  private final Map<String,String> sqls;
+  private final Map<String,Map<String,String>> sqls;
   
   
-  public DBSqlSource(String dbname, String findQueryName, SqlSource source) {
+  public DBSqlSource(String dbname, String group, String queryName, SqlSource source) {
     if(dbname == null || dbname.isEmpty()) {
       throw new IllegalArgumentException("Bad DB Name: "+ dbname);
     }
-    if(findQueryName == null || findQueryName.isEmpty()) {
-      throw new IllegalArgumentException("Bad Find Query Name: "+ findQueryName);
+    if(group == null || group.isEmpty()) {
+      throw new IllegalArgumentException("Bad Group Name: "+ group);
+    }
+    if(queryName == null || queryName.isEmpty()) {
+      throw new IllegalArgumentException("Bad Find Query Name: "+ queryName);
     }
     if(source == null) {
       throw new IllegalArgumentException("Bad SqlSource: "+ source);
     }
     this.dbname = dbname;
-    this.findQuery = findQueryName;
+    this.findGroup = group;
+    this.findQuery = queryName;
     this.source = source;
     this.sqls = Collections.synchronizedMap(
-        new HashMap<String,String>()
+        new HashMap<String,Map<String,String>>()
     );
   }
   
   
   @Override
-  public String getSql(String name) throws IOException {
-    if(name == null || name.isEmpty()) {
+  public String getSql(String group, String name) throws IOException {
+    if(name == null || group == null) {
       return null;
     }
     String query = null;
     if(sqls.containsKey(name)) {
-      query = sqls.get(name);
+      query = sqls.get(group).get(name);
     }
-    else if(source.containsSql(name)) {
-      query = source.getSql(name);
+    else if(source.containsSql(group, name)) {
+      query = source.getSql(group, name);
     }
     else {
-      query = findQuery(name);
+      query = findQuery(group, name);
       if(query != null) {
-        sqls.put(name, query);
+        Map<String,String> map = new HashMap<>();
+        map.put(name, query);
+        sqls.put(group, map);
       }
     }
     return query;
@@ -89,20 +97,21 @@ public class DBSqlSource implements SqlSource {
   
   
   @Override
-  public boolean containsSql(String name) throws IOException {
-    return this.getSql(name) != null;
+  public boolean containsSql(String group, String name) throws IOException {
+    return this.getSql(group, name) != null;
   }
   
   
-  private String findQuery(String name) throws IOException {
+  private String findQuery(String group, String name) throws IOException {
     Connection cn = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
     String query = null;
     try {
       cn = PoolFactory.getPool(dbname).getConnection();
-      ps = cn.prepareStatement(source.getSql(findQuery));
-      ps.setString(1, name);
+      ps = cn.prepareStatement(source.getSql(findGroup, findQuery));
+      ps.setString(1, group);
+      ps.setString(2, name);
       rs = ps.executeQuery();
       if(rs.next()) {
         query = rs.getString(1);

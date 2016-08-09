@@ -180,12 +180,6 @@ public interface DMap<K,V> extends Map<K,V> {
   public static interface DEngine<K,V> {
     
     /**
-     * Starts the DropEngine Thread.
-     * @return This instance of DropEngine.
-     */
-    public DEngine<K,V> start();
-    
-    /**
      * Stops the Drop Engine Thread. Once Stopped, 
      * the DropEngine can not be used again.
      * @return This instance of DropEngine.

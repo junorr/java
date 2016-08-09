@@ -30,8 +30,8 @@ import java.io.IOException;
  */
 public interface SqlSource {
 
-  public String getSql(String name) throws IOException;
+  public String getSql(String group, String name) throws IOException;
   
-  public boolean containsSql(String name) throws IOException;
+  public boolean containsSql(String group, String name) throws IOException;
   
 }

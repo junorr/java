@@ -50,7 +50,7 @@ public class TestDMap {
   public static void main(String[] args) throws InterruptedException {
     DMap<Integer,String> map = DMap.newMap();
     long ttl = 250;
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < 50; i++) {
       map.put(i, "string-"+String.valueOf(i), Duration.ofMillis(ttl), TestDMap::removed);
       ttl += 250;
       if(i == 0) {
@@ -58,7 +58,7 @@ public class TestDMap {
       }
     }
     System.out.println("* map.size: "+ map.size());
-    Thread.sleep(25100);
+    Thread.sleep(12600);
     System.out.println();
     System.out.println("* map.size: "+ map.size());
   }

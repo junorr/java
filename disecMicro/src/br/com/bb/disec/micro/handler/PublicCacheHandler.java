@@ -56,7 +56,7 @@ public class PublicCacheHandler extends StringPostHandler implements JsonHandler
     String key = pars.getParam(0);
     if(key == null) {
       hse.setStatusCode(400).setReasonPhrase(
-          "Bad Request. Invalid Cache Key \""+ key+ "\""
+          "Bad Request. Key Not Found \""+ key+ "\""
       );
       hse.endExchange();
       return;
@@ -73,6 +73,7 @@ public class PublicCacheHandler extends StringPostHandler implements JsonHandler
         delete(hse, key);
         break;
       default:
+        Logger.getLogger(getClass()).warn("Invalid Http Method ["+ meth+ "]");
         hse.setStatusCode(400).setReasonPhrase(
             "Bad Request. Invalid Method \""+ hse.getRequestMethod().toString()+ "\""
         );
@@ -91,7 +92,7 @@ public class PublicCacheHandler extends StringPostHandler implements JsonHandler
     super.handleRequest(hse);
     if(this.getPostData() == null || this.getPostData().trim().isEmpty()) {
       hse.setStatusCode(400).setReasonPhrase(
-          "Bad Request. No Put Value"
+          "Bad Request. No Value"
       );
     }
     long ttl = DEFAULT_TTL;
@@ -102,7 +103,7 @@ public class PublicCacheHandler extends StringPostHandler implements JsonHandler
         key, this.getPostData(), 
         Duration.ofSeconds(ttl)
     );
-    Logger.getLogger(getClass()).info("PUT ["+ key+ "="+ this.getPostData()+ "]");
+    Logger.getLogger(getClass()).info("PUT ["+ key+ "]");
   }
   
   
@@ -127,8 +128,9 @@ public class PublicCacheHandler extends StringPostHandler implements JsonHandler
         Logger.getLogger(getClass()).info("GET ["+ key+ "]");
       }
       else {
+        Logger.getLogger(getClass()).warn("Key Not Found: GET ["+ key+ "]");
         hse.setStatusCode(400).setReasonPhrase(
-            "Bad Request. Invalid Cache Key \""+ key+ "\""
+            "Bad Request. Key Not Found \""+ key+ "\""
         );
       }
   }
@@ -140,8 +142,9 @@ public class PublicCacheHandler extends StringPostHandler implements JsonHandler
       PublicCache.getCache().remove(key);
     }
     else {
+      Logger.getLogger(getClass()).warn("Key Not Found: DELETE ["+ key+ "]");
       hse.setStatusCode(400).setReasonPhrase(
-          "Bad Request. Invalid Cache Key \""+ key+ "\""
+          "Bad Request. Key Not Found \""+ key+ "\""
       );
     }
   }

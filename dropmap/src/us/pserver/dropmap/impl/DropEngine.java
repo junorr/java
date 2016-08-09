@@ -30,8 +30,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import us.pserver.dropmap.DMap;
 import us.pserver.dropmap.DMap.DEngine;
 import us.pserver.dropmap.DMap.DEntry;
@@ -86,20 +84,6 @@ public class DropEngine<K,V> implements DEngine<K,V> {
   }
   
 
-  @Override
-  public DEngine<K,V> start() {
-    if(!map.isEmpty()) {
-      lock.lock();
-      try {
-        dropper.start();
-      } finally {
-        lock.unlock();
-      }
-    }
-    return this;
-  }
-  
-  
   @Override
   public DEngine<K,V> stop() {
     lock.lock();
@@ -182,6 +166,7 @@ public class DropEngine<K,V> implements DEngine<K,V> {
   
   
   
+  
   class Dropper implements Runnable {
     
     private final AtomicBoolean running;
@@ -192,19 +177,11 @@ public class DropEngine<K,V> implements DEngine<K,V> {
 
     private final Condition waitCond;
   
-    private Thread thread;
-    
     public Dropper() {
       disabled = new AtomicBoolean(false);
       running = new AtomicBoolean(false);
       waitLock = new ReentrantLock();
       waitCond = waitLock.newCondition();
-    }
-    
-    private void setThread() {
-      thread = new Thread(this, "Dropper.Thread");
-      thread.setDaemon(true);
-      thread.setPriority(Thread.MIN_PRIORITY);
     }
     
     public boolean isRunning() {
@@ -242,7 +219,7 @@ public class DropEngine<K,V> implements DEngine<K,V> {
         if(ms > 0) {
           waitCond.await(ms, TimeUnit.MILLISECONDS);
         } else {
-          waitCond.awaitUninterruptibly();
+          waitCond.await();
         }
       } catch(InterruptedException ex) {
       } finally {
@@ -252,25 +229,25 @@ public class DropEngine<K,V> implements DEngine<K,V> {
     
     @Override
     public void run() {
-      while(!drops.isEmpty() && isRunning()) {
-        DEntry<K,V> entry = drops.first();
-        long ttlms = entry.getTTL().toMillis();
-        await(ttlms);
-        if(disabled.get()) {
+      while(isRunning()) {
+        if(drops.isEmpty() || disabled.get()) {
           await(0);
         }
-        else if(drops.contains(entry) && ttlms <= 0) {
+        DEntry<K,V> entry = drops.first();
+        await(entry.getTTL().toMillis());
+        if(drops.contains(entry) && entry.getTTL().toMillis() <= 0) {
           map.remove(entry.getKey());
           rmDrop(entry);
           rmConsumer(entry.getKey()).accept(entry);
         }
-      }
-      running.set(false);
+      }//while
     }
     
     public Dropper start() {
       running.set(true);
-      setThread();
+      Thread thread = new Thread(this, "Dropper.Thread");
+      thread.setDaemon(true);
+      thread.setPriority(Thread.MIN_PRIORITY);
       thread.start();
       return this;
     }

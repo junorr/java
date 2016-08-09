@@ -36,23 +36,23 @@ public class TestReentries {
     DMap<Integer,String> map = DMap.newMap();
     int val = 5;
     System.out.println("- inserted: "+ val);
-    map.put(val, "val="+val, Duration.ofSeconds(1), e->System.out.println("- removed: "+ e.getValue()));
-    Thread.sleep(1200);
+    map.put(val, "five", Duration.ofSeconds(1), e->System.out.println("- removed: "+ e.getValue()));
+    Thread.sleep(1050);
     System.out.println("- get( "+ val+ " ): "+ map.get(val));
     
     System.out.println("- inserted: "+ val);
-    map.put(val, "val="+val, Duration.ofSeconds(1), e->System.out.println("- removed: "+ e.getValue()));
-    Thread.sleep(1200);
+    map.put(val, "five", Duration.ofSeconds(1), e->System.out.println("- removed: "+ e.getValue()));
+    Thread.sleep(1050);
     System.out.println("- get( "+ val+ " ): "+ map.get(val));
     
     System.out.println("- inserted: "+ val);
-    map.put(val, "val="+val, Duration.ofSeconds(1), e->System.out.println("- removed: "+ e.getValue()));
-    Thread.sleep(1200);
+    map.put(val, "five", Duration.ofSeconds(1), e->System.out.println("- removed: "+ e.getValue()));
+    Thread.sleep(1050);
     System.out.println("- get( "+ val+ " ): "+ map.get(val));
     
     System.out.println("- inserted: "+ val);
-    map.put(val, "val="+val, Duration.ofSeconds(1), e->System.out.println("- removed: "+ e.getValue()));
-    Thread.sleep(1200);
+    map.put(val, "five", Duration.ofSeconds(1), e->System.out.println("- removed: "+ e.getValue()));
+    Thread.sleep(1050);
     System.out.println("- get( "+ val+ " ): "+ map.get(val));
     
   }

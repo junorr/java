@@ -14,6 +14,8 @@ import java.sql.SQLException;
  */
 public class DBUserFactory {
 
+  public static final String SQL_GROUP = "user";
+  
   public static final String SQL_SEL_USER = "selectUser";
 
   
@@ -21,7 +23,7 @@ public class DBUserFactory {
     if(chave == null || chave.trim().isEmpty()) {
       return null;
     }
-    String sql = SqlSourcePool.getDefaultSqlSource().getSql(SQL_SEL_USER);
+    String sql = SqlSourcePool.getDefaultSqlSource().getSql(SQL_GROUP, SQL_SEL_USER);
     Connection cn = null;
     PreparedStatement st = null;
     ResultSet rs = null;

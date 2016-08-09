@@ -40,7 +40,7 @@ import java.util.Map;
  */
 public class FileSqlSource implements SqlSource {
 
-  private final Map<String,String> sqls;
+  private final Map<String, Map<String,String>> sqls;
   
   private final Path path;
   
@@ -54,7 +54,7 @@ public class FileSqlSource implements SqlSource {
     }
     this.path = path;
     sqls = Collections.synchronizedMap(
-        new HashMap<String,String>()
+        new HashMap<String,Map<String,String>>()
     );
   }
   
@@ -70,29 +70,42 @@ public class FileSqlSource implements SqlSource {
   
   
   @Override
-  public String getSql(String name) throws IOException {
+  public String getSql(String group, String name) throws IOException {
     if(sqls.isEmpty()) {
       this.readSqlFile();
     }
-    return sqls.get(name);
+    if(sqls.containsKey(group)) {
+      return sqls.get(group).get(name);
+    }
+    return null;
   }
   
   
   @Override
-  public boolean containsSql(String name) throws IOException {
-    return getSql(name) != null;
+  public boolean containsSql(String group, String name) throws IOException {
+    return getSql(group, name) != null;
   }
   
   
   private void readSqlFile() throws IOException {
     Iterator<String> it = Files.lines(path).iterator();
+    String group = null;
     String key = null;
     StringBuilder value = new StringBuilder();
     while(it.hasNext()) {
       String line = it.next().trim();
-      if(line.startsWith("[") && line.endsWith("]")) {
-        if(key != null && value.length() > 0) {
-          sqls.put(key, value.toString());
+      if(line.startsWith("{") && line.endsWith("}")) {
+        Map<String,String> map = new HashMap<>();
+        if(group != null && key != null && value.length() > 0) {
+          map.put(key, value.toString());
+          value = new StringBuilder();
+        }
+        group = line.substring(1, line.length() -1);
+        sqls.put(group, map);
+      }
+      else if(line.startsWith("[") && line.endsWith("]")) {
+        if(group != null && key != null && value.length() > 0) {
+          sqls.get(group).put(key, value.toString());
           value = new StringBuilder();
         }
         key = line.substring(1, line.length() -1);
@@ -101,8 +114,8 @@ public class FileSqlSource implements SqlSource {
         value.append(line).append(" ");
       }
     }//while
-    if(key != null && value.length() > 0) {
-      sqls.put(key, value.toString());
+    if(group != null && key != null && value.length() > 0) {
+      sqls.get(group).put(key, value.toString());
     }
   }
   

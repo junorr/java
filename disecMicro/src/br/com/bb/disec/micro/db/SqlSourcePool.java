@@ -68,6 +68,7 @@ public class SqlSourcePool {
     }
     else {
       source = new DBSqlSource(name, 
+          DefaultDBSqlSource.DEFAULT_FIND_GROUP,
           DefaultDBSqlSource.DEFAULT_FIND_SQL, 
           pool.get(DEFAULT_SOURCE)
       );
@@ -76,19 +77,19 @@ public class SqlSourcePool {
   }
   
   
-  public SqlSource getDBSource(String name, String findQueryName) {
+  public SqlSource getDBSource(String name, String findGroup, String queryName) {
     if(name == null || name.isEmpty()) {
       throw new IllegalArgumentException("Bad Source Name: "+ name);
     }
-    if(findQueryName == null || findQueryName.isEmpty()) {
-      throw new IllegalArgumentException("Bad Find Query Name: "+ findQueryName);
+    if(queryName == null || queryName.isEmpty()) {
+      throw new IllegalArgumentException("Bad Find Query Name: "+ queryName);
     }
     SqlSource src = null;
     if(pool.containsKey(name)) {
       src = pool.get(name);
     }
     else {
-      src = new DBSqlSource(name, findQueryName, pool.get(DEFAULT_SOURCE));
+      src = new DBSqlSource(name, findGroup, queryName, pool.get(DEFAULT_SOURCE));
       pool.put(name, src);
     }
     return src;
@@ -150,7 +151,7 @@ public class SqlSourcePool {
   }
   
   
-  public static SqlSource getDBSqlSource(String name, String findQueryName) {
+  public static SqlSource getDBSqlSource(String name String findQueryName) {
     return INSTANCE.getDBSource(name, findQueryName);
   }
   
