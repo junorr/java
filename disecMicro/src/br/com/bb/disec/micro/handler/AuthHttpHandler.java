@@ -19,30 +19,18 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.micro.test;
+package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.conf.FileUploadConfig;
-import br.com.bb.disec.micro.util.FileSize;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Arrays;
+import br.com.bb.sso.bean.User;
+import io.undertow.server.HttpHandler;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 26/07/2016
+ * @version 0.0 - 12/08/2016
  */
-public class TestFileUploadConfig {
+public interface AuthHttpHandler extends HttpHandler {
 
-  
-  
-  public static void main(String[] args) throws IOException {
-    FileUploadConfig conf = FileUploadConfig.builder()
-        .load("disecMicro").build();
-    System.out.println("* conf.getMaxSize()..........: "+ conf.getMaxSize());
-    System.out.println("* conf.getUploadDir()........: "+ conf.getUploadDir());
-    System.out.println("* conf.getAllowedExtensions(): "+ conf.getAllowedExtensions());
-  }
-  
+  public User getAuthUser();
   
 }

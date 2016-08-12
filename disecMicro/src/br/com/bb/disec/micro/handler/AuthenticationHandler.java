@@ -21,20 +21,31 @@
 
 package br.com.bb.disec.micro.handler;
 
-import io.undertow.server.HttpHandler;
+import br.com.bb.disec.bean.DcrCtu;
+import br.com.bb.disec.bean.iface.IDcrCtu;
+import br.com.bb.disec.micro.db.AccessPersistencia;
+import br.com.bb.disec.micro.db.CtuPersistencia;
+import br.com.bb.disec.util.URLD;
+import br.com.bb.sso.bean.User;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Methods;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+import org.jboss.logging.Logger;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/07/2016
  */
-public class AuthenticationHandler extends StringPostHandler implements JsonHandler {
+public class AuthenticationHandler extends StringPostHandler implements JsonHandler, AuthHttpHandler {
   
-  private final HttpHandler cookieHandler;
+  private final AuthHttpHandler cookieHandler;
   
-  private final HttpHandler usuSimHandler;
+  private final AuthHttpHandler usuSimHandler;
+  
+  private User user;
   
   
   public AuthenticationHandler() {
@@ -44,13 +55,48 @@ public class AuthenticationHandler extends StringPostHandler implements JsonHand
   
   
   @Override
+  public User getAuthUser() {
+    return user;
+  }
+  
+  
+  @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
+    User user = null;
     if(Methods.GET.equals(hse.getRequestMethod())) {
       cookieHandler.handleRequest(hse);
+      user = cookieHandler.getAuthUser();
     }
     else if(Methods.POST.equals(hse.getRequestMethod())) {
       usuSimHandler.handleRequest(hse);
+      user = usuSimHandler.getAuthUser();
+    }
+    if(!doAuth(hse)) {
+      hse.setStatusCode(401).setReasonPhrase("Unauthorized");
+      hse.endExchange();
     }
   }
+  
+  
+  public boolean doAuth(HttpServerExchange hse) throws SQLException {
+    URLD urld = new URLD(hse.getRequestURL());
+		CtuPersistencia ctp = new CtuPersistencia(urld);
+		AccessPersistencia acp = new AccessPersistencia();
+    //recupera todos os conteúdos da tabela dcr_ctu
+    //com base na URL acessada.
+    List<IDcrCtu> ctus = ctp.findAll();
+    if(ctus == null || ctus.isEmpty()) {
+      Logger.getLogger(this.getClass()).info("Nenhum conteúdo encontrado para a URL: %s"+ urld);
+      ctus = Arrays.asList((IDcrCtu)new DcrCtu().setCdCtu(99999));
+    }
+    //Verifica autorização de acesso para os conteúdos encontrados.
+    boolean access = false;
+    for(IDcrCtu ctu : ctus) {
+      access = access || acp.checkAccess(
+          user, ctu.getCdCtu()
+      );
+    }
+    return access;
+	}
 
 }

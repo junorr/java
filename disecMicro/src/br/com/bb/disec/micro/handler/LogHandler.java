@@ -36,6 +36,8 @@ import io.undertow.server.HttpServerExchange;
  */
 public class LogHandler implements HttpHandler {
   
+  public static final String SQL_GROUP = "disecMicro";
+  
   public static final String SQL_INSERT_LOG = "insertLog";
   
   
@@ -61,6 +63,7 @@ public class LogHandler implements HttpHandler {
         PoolFactory.getPool(DEFAULT_DB_NAME).getConnection(), 
         SqlSourcePool.getDefaultSqlSource()
     ).update(
+        SQL_GROUP,
         SQL_INSERT_LOG, 
         hse.getConnection().getPeerAddress().toString(), 
         hse.getRequestURL(), 

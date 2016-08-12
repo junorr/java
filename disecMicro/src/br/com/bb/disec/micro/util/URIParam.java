@@ -94,6 +94,7 @@ public class URIParam {
   
   public Object getObject(int index) {
     String param = getParam(index);
+    if(param == null) return null;
     try {
       return Double.parseDouble(param);
     } 

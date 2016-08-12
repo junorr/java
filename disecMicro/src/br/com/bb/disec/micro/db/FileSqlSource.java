@@ -97,7 +97,7 @@ public class FileSqlSource implements SqlSource {
       if(line.startsWith("{") && line.endsWith("}")) {
         Map<String,String> map = new HashMap<>();
         if(group != null && key != null && value.length() > 0) {
-          map.put(key, value.toString());
+          sqls.get(group).put(key, value.toString());
           value = new StringBuilder();
         }
         group = line.substring(1, line.length() -1);

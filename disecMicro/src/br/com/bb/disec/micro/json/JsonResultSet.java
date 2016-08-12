@@ -21,7 +21,6 @@
 
 package br.com.bb.disec.micro.json;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -82,7 +81,9 @@ public class JsonResultSet {
         JsonObject entry = new JsonObject();
         for(int i = 1; i <= cols; i++) {
           String label = meta.getColumnLabel(i);
-          entry.add(label, getElement(r, i));
+          if(r.getObject(i) != null) {
+            entry.add(label, getElement(r, i));
+          }
         }
         data.add(entry);
       }

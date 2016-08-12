@@ -30,8 +30,6 @@ import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.Cookie;
 import java.time.Duration;
-import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 import org.jboss.logging.Logger;
 
 /**
@@ -39,7 +37,16 @@ import org.jboss.logging.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/07/2016
  */
-public class CookieAuthHandler extends StringPostHandler implements JsonHandler {
+public class CookieAuthHandler extends StringPostHandler implements JsonHandler, AuthHttpHandler {
+  
+  private User user;
+  
+  
+  @Override
+  public User getAuthUser() {
+    return user;
+  }
+  
   
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
@@ -48,7 +55,6 @@ public class CookieAuthHandler extends StringPostHandler implements JsonHandler 
       hse.endExchange();
       return;
     }
-    User user = null;
     Cookie hash = hse.getRequestCookies().get(
         CookieName.BBSSOToken.name()
     );

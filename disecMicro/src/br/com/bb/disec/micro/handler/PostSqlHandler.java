@@ -69,15 +69,16 @@ public class PostSqlHandler extends StringPostHandler implements SqlHandler, Jso
     super.handleRequest(hse);
     JsonParser prs = new JsonParser();
     JsonObject json = prs.parse(this.getPostData()).getAsJsonObject();
-    if(!json.has("query")) {
+    if(!json.has("query") || !json.has("group")) {
       String msg = "Bad Request. No Query Informed";
       Logger.getLogger(getClass()).warn(msg);
       hse.setStatusCode(400)
           .setReasonPhrase(msg)
           .endExchange();
     }
+    String group = json.get("group").getAsString();
     String query = json.get("query").getAsString();
-    if(!SqlSourcePool.getDefaultSqlSource().containsSql(query)) {
+    if(!SqlSourcePool.getDefaultSqlSource().containsSql(group, query)) {
       String msg = "Not Found (query="+ query+ ")";
       Logger.getLogger(getClass()).warn(msg);
       hse.setStatusCode(404)
@@ -86,7 +87,7 @@ public class PostSqlHandler extends StringPostHandler implements SqlHandler, Jso
       return;
     }
     String resp = this.getQuery().exec(
-        query, this.parseArgs(json)
+        group, query, this.parseArgs(json)
     ).toPrettyPrintJson();
     this.putJsonHeader(hse);
     hse.getResponseSender().send(resp);

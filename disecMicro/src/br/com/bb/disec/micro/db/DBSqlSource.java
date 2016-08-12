@@ -78,7 +78,7 @@ public class DBSqlSource implements SqlSource {
       return null;
     }
     String query = null;
-    if(sqls.containsKey(name)) {
+    if(sqls.containsKey(group) && sqls.get(group).containsKey(name)) {
       query = sqls.get(group).get(name);
     }
     else if(source.containsSql(group, name)) {
@@ -109,9 +109,11 @@ public class DBSqlSource implements SqlSource {
     String query = null;
     try {
       cn = PoolFactory.getPool(dbname).getConnection();
-      ps = cn.prepareStatement(source.getSql(findGroup, findQuery));
+      String sql = source.getSql(findGroup, findQuery);
+      ps = cn.prepareStatement(sql);
       ps.setString(1, group);
       ps.setString(2, name);
+      System.out.println("* sql="+ ps);
       rs = ps.executeQuery();
       if(rs.next()) {
         query = rs.getString(1);

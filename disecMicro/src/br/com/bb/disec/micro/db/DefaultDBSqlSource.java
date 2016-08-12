@@ -30,7 +30,7 @@ import static br.com.bb.disec.micro.db.ConnectionPool.DEFAULT_DB_NAME;
  */
 public class DefaultDBSqlSource extends DBSqlSource {
 
-  public static final String DEFAULT_FIND_GROUP = "findGroup";
+  public static final String DEFAULT_FIND_GROUP = "disecMicro";
   
   public static final String DEFAULT_FIND_SQL = "findQuery";
   

@@ -151,8 +151,8 @@ public class SqlSourcePool {
   }
   
   
-  public static SqlSource getDBSqlSource(String name String findQueryName) {
-    return INSTANCE.getDBSource(name, findQueryName);
+  public static SqlSource getDBSqlSource(String name, String group, String queryName) {
+    return INSTANCE.getDBSource(name, group, queryName);
   }
   
 }

@@ -21,23 +21,20 @@
 
 package br.com.bb.disec.micro.conf;
 
-import br.com.bb.disec.micro.json.JsonDouble;
+import br.com.bb.disec.micro.db.DefaultDBSqlSource;
+import br.com.bb.disec.micro.db.PoolFactory;
+import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.util.FileSize;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.jboss.logging.Logger;
 
 /**
  *
@@ -45,6 +42,11 @@ import org.jboss.logging.Logger;
  * @version 0.0 - 26/07/2016
  */
 public class FileUploadConfig {
+  
+  public static final String SQL_GROUP = "disecMicro";
+  
+  public static final String SQL_FIND_UPLOAD = "findUpload";
+  
 
   private final FileSize maxSize;
   
@@ -153,68 +155,36 @@ public class FileUploadConfig {
     }
     
     
-    public Builder load(URL url) throws IOException {
-      if(url == null) {
-        throw new IllegalArgumentException("Bad URL: "+ url);
+    public Builder load(String aplicName) throws IOException {
+      if(aplicName == null) {
+        throw new IllegalArgumentException("Bad Aplic Name: "+ aplicName);
       }
       try {
-        return load(Paths.get(url.toURI()));
-      } catch(URISyntaxException e) {
+        SqlQuery query = new SqlQuery(
+            PoolFactory.getDefaultPool().getConnection(), 
+            new DefaultDBSqlSource()
+        );
+        JsonParser parser = new JsonParser();
+        String js = query.execJson(SQL_GROUP, SQL_FIND_UPLOAD, aplicName);
+        System.out.println("* js: "+ js);
+        JsonArray data = parser.parse(js)
+            .getAsJsonObject()
+            .get("data")
+            .getAsJsonArray();
+        if(data.size() < 1) {
+          throw new IOException("Config Not Found For Aplic Name: "+ aplicName);
+        }
+        JsonObject json = data.get(0).getAsJsonObject();
+        if(json.get("allowed_ext") != null) {
+          this.allowedExtensions = Arrays.asList(
+              json.get("allowed_ext").getAsString().split(",")
+          );
+        }
+        this.maxSize = new FileSize(json.get("max_size").getAsLong());
+        this.uploadDir = json.get("path").getAsString();
+      }
+      catch(SQLException e) {
         throw new IOException(e.getMessage(), e);
-      }
-    }
-    
-    
-    public Builder load(Path path) throws IOException {
-      if(path == null) {
-        throw new IllegalArgumentException("Bad Path: "+ path);
-      }
-      Gson gson = new GsonBuilder()
-          .registerTypeAdapter(FileSize.class, FileSize.converter())
-          .registerTypeAdapter(Double.class, new JsonDouble())
-          .create();
-      try (BufferedReader br = Files.newBufferedReader(
-          path, Charset.forName("UTF-8"))
-          ) {
-        Builder b = gson.fromJson(br, Builder.class);
-        this.setMaxSize(b.getMaxSize())
-            .setUploadDir(b.getUploadDir())
-            .setAllowedExtensions(b.getAllowedExtensions());
-      }
-      return this;
-    }
-    
-    
-    public Builder save(URL url) throws IOException {
-      if(url == null) {
-        throw new IllegalArgumentException("Bad URL: "+ url);
-      }
-      try {
-        return save(Paths.get(url.toURI()));
-      } catch(URISyntaxException e) {
-        throw new IOException(e.getMessage(), e);
-      }
-    }
-    
-    
-    public Builder save(Path path) throws IOException {
-      if(path == null) {
-        throw new IllegalArgumentException("Bad Path: "+ path);
-      }
-      Gson gson = new GsonBuilder()
-          .setPrettyPrinting()
-          .registerTypeAdapter(FileSize.class, FileSize.converter())
-          .registerTypeAdapter(Double.class, new JsonDouble())
-          .create();
-      try (BufferedWriter fw = Files.newBufferedWriter(
-          path, Charset.forName("UTF-8"), 
-          StandardOpenOption.WRITE, 
-          StandardOpenOption.TRUNCATE_EXISTING, 
-          StandardOpenOption.CREATE)
-          ) {
-        fw.write(gson.toJson(this));
-        fw.write('\n');
-        fw.flush();
       }
       return this;
     }

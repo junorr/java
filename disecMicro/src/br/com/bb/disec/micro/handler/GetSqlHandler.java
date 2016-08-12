@@ -48,8 +48,9 @@ public class GetSqlHandler implements SqlHandler, JsonHandler {
       hse.endExchange();
       return;
     }
-    String query = pars.getParam(0);
-    if(!SqlSourcePool.getDefaultSqlSource().containsSql(query)) {
+    String group = pars.getParam(0);
+    String query = pars.getParam(1);
+    if(!SqlSourcePool.getDefaultSqlSource().containsSql(group, query)) {
       String msg = "Not Found (query="+ query+ ")";
       Logger.getLogger(this.getClass()).warn(msg);
       hse.setStatusCode(404)
@@ -57,12 +58,12 @@ public class GetSqlHandler implements SqlHandler, JsonHandler {
       hse.endExchange();
       return;
     }
-    Object[] args = new Object[pars.length() -1];
-    for(int i = 0; i < pars.length() -1; i++) {
-      args[i] = pars.getObject(i+1);
+    Object[] args = new Object[pars.length() -2];
+    for(int i = 0; i < pars.length() -2; i++) {
+      args[i] = pars.getObject(i+2);
     }
     String resp = this.getQuery()
-        .exec(query, args).toPrettyPrintJson() + "\n";
+        .exec(group, query, args).toPrettyPrintJson() + "\n";
     this.putJsonHeader(hse);
     hse.getResponseSender().send(resp, Charset.forName("UTF-8"));
     hse.endExchange();

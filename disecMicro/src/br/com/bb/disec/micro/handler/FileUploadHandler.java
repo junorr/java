@@ -23,6 +23,7 @@ package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.conf.FileUploadConfig;
 import br.com.bb.disec.micro.util.FileSize;
+import br.com.bb.disec.micro.util.URIParam;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -35,9 +36,11 @@ import io.undertow.server.handlers.form.FormParserFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
-import org.jboss.logging.Logger;
 
 /**
  *
@@ -46,33 +49,90 @@ import org.jboss.logging.Logger;
  */
 public class FileUploadHandler implements JsonHandler {
   
-  public static final String DEFAULT_UPLOAD_CONFIG = "/resources/fileupload.json";
-  
-  private final FileUploadConfig config;
-  
   private final Gson gson;
   
   
   public FileUploadHandler() {
     gson = new GsonBuilder().setPrettyPrinting().create();
+  }
+  
+  
+  private String getExtFileName(FormValue value) {
+    String fname = value.getFileName();
+    String ext = fname.substring(fname.lastIndexOf("."));
+    return "_" + LocalDateTime.now().toString()
+        .replace("-", "")
+        .replace(":", "")
+        .replace(".", "") 
+        + ext;
+  }
+  
+  
+  private JsonObject buildJson(boolean success, String msg, String name, String path, long size) {
+    JsonObject json = new JsonObject();
+    json.addProperty("success", success);
+    json.addProperty("message", Objects.toString(msg));
+    json.addProperty("name", Objects.toString(name));
+    json.addProperty("path", Objects.toString(path));
+    FileSize fs = (size > 0 ? new FileSize(size) : null);
+    json.addProperty("length", Objects.toString(fs));
+    return json;
+  }
+  
+  
+  private boolean isUploadAllowed(JsonArray resp, FileUploadConfig fuck, FormValue value) throws Exception {
+    File f = value.getPath().toFile();
+    boolean success = true;
+    if(f.length() > fuck.getMaxSize().getSize()) {
+      resp.add(buildJson(
+          false, 
+          "Bad Request. Max Size Exceeded ("
+              + fuck.getMaxSize()+ ")", 
+          value.getFileName(), 
+          f.getAbsolutePath(), 
+          f.length())
+      );
+      success = false;
+    }
+    else if(!fuck.getAllowedExtensions().isEmpty() 
+        && !fuck.getAllowedExtensions()
+            .stream().filter(e->value.getFileName()
+            .toLowerCase().endsWith(e.toLowerCase()))
+            .findAny().isPresent()) {
+      resp.add(buildJson(
+          false, 
+          "Bad Request. Extension Not Allowed ("
+              + fuck.getAllowedExtensions().toString()+ ")", 
+          value.getFileName(), 
+          f.getAbsolutePath(), 
+          f.length())
+      );
+      success = false;
+    }
+    return success;
+  }
+  
+  
+  private FileUploadConfig readConfig(JsonArray resp, URIParam pars) throws Exception {
+    String aplicName = null;
     try {
-      config = FileUploadConfig.builder()
-          .load(getClass().getResource(DEFAULT_UPLOAD_CONFIG))
+      if(pars.length() < 1) {
+        throw new IOException("Aplic Name Not Informed");
+      }
+      aplicName = pars.getParam(0);
+      FileUploadConfig fuc = FileUploadConfig
+          .builder()
+          .load(aplicName)
           .build();
-      Logger.getLogger(getClass()).info(config);
-    }
+      return fuc;
+    } 
     catch(IOException e) {
-      Logger.getLogger(getClass()).error("Error Reading FileUploadConfig", e);
-      throw new RuntimeException(e.getMessage(), e);
+      resp.add(buildJson(false, "Bad Application Name: "+ aplicName, null, null, 0));
+      return null;
     }
   }
   
   
-  public FileUploadConfig getFileUploadConfig() {
-    return config;
-  }
-  
-
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     if(hse.isInIoThread()) {
@@ -80,57 +140,60 @@ public class FileUploadHandler implements JsonHandler {
       return;
     }
     hse.startBlocking();
-    FormParserFactory.Builder fbd = FormParserFactory.builder(true);
-    fbd.setDefaultCharset("UTF-8");
-    FormDataParser fp = fbd.build().createParser(hse);
-    FormData data = fp.parseBlocking();
     JsonArray resp = new JsonArray();
-    for(String field : data) {
-      JsonObject json = new JsonObject();
-      FormValue value = data.getFirst(field);
-      if(value.isFile()) {
-        File f = value.getPath().toFile();
-        if(f.length() > config.getMaxSize().getSize()) {
-          String msg = "Bad Request. Max Size Exceeded ("+ config.getMaxSize()+ ")";
-          json.addProperty("success", Boolean.FALSE);
-          json.addProperty("message", msg);
-          json.addProperty("name", value.getFileName());
-          json.addProperty("length", new FileSize(f.length()).toString());
-        }
-        else if(!config.getAllowedExtensions()
-            .stream().filter(e->value.getFileName()
-                .toLowerCase().endsWith(e.toLowerCase())
-            ).findAny().isPresent()) {
-          String msg = "Bad Request. Extension Not Allowed ("+ config.getAllowedExtensions().toString()+ ")";
-          json.addProperty("success", Boolean.FALSE);
-          json.addProperty("message", msg);
-          json.addProperty("name", value.getFileName());
-          json.addProperty("length", new FileSize(f.length()).toString());
-        }
-        else {
-          json.addProperty("success", Boolean.TRUE);
-          json.addProperty("message", "OK");
-          json.addProperty("name", value.getFileName());
-          json.addProperty("length", new FileSize(f.length()).toString());
-          Files.move(
-              value.getPath(), 
-              config.getUploadDir().resolve(value.getFileName()), 
-              StandardCopyOption.REPLACE_EXISTING
-          );
-        }
-        resp.add(json);
-      }//isFile
-    }//for
-    boolean success = StreamSupport.stream(resp.spliterator(), false)
+    URIParam pars = new URIParam(hse.getRequestURI());
+    FileUploadConfig fuck = readConfig(resp, pars);
+    String aplicName = (pars.length() < 1 ? null : pars.getParam(0));
+    if(fuck != null) {
+      FormParserFactory.Builder fbd = FormParserFactory.builder(true);
+      fbd.setDefaultCharset("UTF-8");
+      FormDataParser fp = fbd.build().createParser(hse);
+      FormData data = fp.parseBlocking();
+      for(String field : data) {
+        FormValue value = data.getFirst(field);
+        if(value.isFile()) {
+          if(isUploadAllowed(resp, fuck, value)) {
+            Path dest = fuck.getUploadDir().resolve(
+                aplicName + getExtFileName(value)
+            );
+            try {
+              Files.move(
+                  value.getPath(), dest, 
+                  StandardCopyOption.REPLACE_EXISTING
+              );
+              resp.add(buildJson(
+                  true, "OK", 
+                  value.getFileName(), 
+                  dest.toString(), 
+                  Files.size(dest))
+              );
+            } catch(IOException e) {
+              resp.add(buildJson(
+                  false, e.getMessage(), 
+                  value.getFileName(), 
+                  value.getPath().toString(), 
+                  Files.size(value.getPath()))
+              );
+            }
+          }
+        }//isFile
+      }//for
+    }//fuck != null
+    this.setStatus(hse, resp);
+    this.putJsonHeader(hse);
+    hse.getResponseSender().send(gson.toJson(resp) + "\n");
+    hse.endExchange();
+  }
+  
+  
+  private void setStatus(HttpServerExchange hse, JsonArray array) {
+    boolean success = StreamSupport.stream(array.spliterator(), false)
         .filter(e->e.getAsJsonObject()
             .get("success").getAsBoolean()
         ).findAny().isPresent();
     if(!success) {
       hse.setStatusCode(400).setReasonPhrase("Bad Request");
     }
-    this.putJsonHeader(hse);
-    hse.getResponseSender().send(gson.toJson(resp) + "\n");
-    hse.endExchange();
   }
     
 }

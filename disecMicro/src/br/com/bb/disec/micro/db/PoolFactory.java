@@ -64,6 +64,11 @@ public class PoolFactory {
   }
   
   
+  public ConnectionPool getDefault() {
+    return this.get(ConnectionPool.DEFAULT_DB_NAME);
+  }
+  
+  
   public ConnectionPool get(String dsname) {
     if(dsname == null || dsname.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad DataSource Name: "+ dsname);
@@ -99,6 +104,11 @@ public class PoolFactory {
   
   public static ConnectionPool getPool(String dsname) {
     return instance.get(dsname);
+  }
+  
+  
+  public static ConnectionPool getDefaultPool() {
+    return instance.getDefault();
   }
   
 }

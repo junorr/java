@@ -40,11 +40,20 @@ import org.jboss.logging.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/07/2016
  */
-public class SimAuthHandler extends StringPostHandler implements JsonHandler {
+public class SimAuthHandler extends StringPostHandler implements JsonHandler, AuthHttpHandler {
   
   public static final String USU_SIM_CHAVE = "usu-sim-chave";
   
   public static final Integer COOKIE_MAX_AGE = 60 * 30; //30 MIN. IN SECONDS
+  
+  
+  private User user;
+  
+  
+  @Override
+  public User getAuthUser() {
+    return user;
+  }
 
   
   @Override
@@ -61,7 +70,7 @@ public class SimAuthHandler extends StringPostHandler implements JsonHandler {
       hse.endExchange();
       return;
     }
-    User user = new DBUserFactory().createUser(
+    user = new DBUserFactory().createUser(
         json.get(USU_SIM_CHAVE).getAsString()
     );
     Logger.getLogger(getClass()).info("Simulated: "+ user.toString());

@@ -66,6 +66,7 @@ public class SqlQuery {
           ps.setObject(i+1, args[i]);
         }
       }
+      System.out.println("* SqlQuery.exec: "+ ps);
       return new JsonResultSet(ps.executeQuery());
     }
     finally {
@@ -95,6 +96,7 @@ public class SqlQuery {
           ps.setObject(i+1, args[i]);
         }
       }
+      System.out.println("* SqlQuery.update: "+ ps);
       return ps.executeUpdate();
     }
     finally {

@@ -21,28 +21,25 @@
 
 package br.com.bb.micro.test;
 
-import br.com.bb.disec.micro.conf.FileUploadConfig;
-import br.com.bb.disec.micro.util.FileSize;
+import br.com.bb.disec.micro.db.DefaultDBSqlSource;
+import br.com.bb.disec.micro.db.FileSqlSource;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Arrays;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 26/07/2016
+ * @version 0.0 - 11/08/2016
  */
-public class TestFileUploadConfig {
+public class TestFileSqlSource {
 
   
-  
   public static void main(String[] args) throws IOException {
-    FileUploadConfig conf = FileUploadConfig.builder()
-        .load("disecMicro").build();
-    System.out.println("* conf.getMaxSize()..........: "+ conf.getMaxSize());
-    System.out.println("* conf.getUploadDir()........: "+ conf.getUploadDir());
-    System.out.println("* conf.getAllowedExtensions(): "+ conf.getAllowedExtensions());
+    //FileSqlSource src = new FileSqlSource(FileSqlSource.class.getResource("/resources/sql.ini"));
+    //System.out.println(src.getSql("disecMicro", "findQuery"));
+    
+    DefaultDBSqlSource dbs = new DefaultDBSqlSource();
+    System.out.println(dbs.getSql("disecMicro", "findQuery"));
+    System.out.println(dbs.getSql("orc", "dspTipoMes"));
   }
-  
   
 }
