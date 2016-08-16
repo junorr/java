@@ -1,6 +1,10 @@
 package br.com.bb.disec.micro.sso;
 
 import br.com.bb.sso.bean.User;
+import br.com.bb.sso.session.CookieName;
+import br.com.bb.sso.util.MappedUser;
+import br.com.bb.sso.util.SSOConnector;
+import br.com.bb.sso.util.SSOParser;
 import io.undertow.server.handlers.Cookie;
 import java.io.IOException;
 

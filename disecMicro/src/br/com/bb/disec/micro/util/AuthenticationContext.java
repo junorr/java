@@ -22,8 +22,8 @@
 package br.com.bb.disec.micro.util;
 
 import br.com.bb.disec.micro.cache.UserCache;
-import br.com.bb.disec.micro.sso.CookieName;
 import br.com.bb.sso.bean.User;
+import br.com.bb.sso.session.CookieName;
 import io.undertow.server.HttpServerExchange;
 
 /**

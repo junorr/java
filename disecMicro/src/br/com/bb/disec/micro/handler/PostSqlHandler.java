@@ -21,13 +21,13 @@
 
 package br.com.bb.disec.micro.handler;
 
+import br.com.bb.disec.micro.db.SqlQueryFactory;
 import br.com.bb.disec.micro.db.SqlSourcePool;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import io.undertow.server.HttpServerExchange;
-import java.util.Arrays;
 import org.jboss.logging.Logger;
 
 /**
@@ -35,7 +35,7 @@ import org.jboss.logging.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/07/2016
  */
-public class PostSqlHandler extends StringPostHandler implements SqlHandler, JsonHandler {
+public class PostSqlHandler extends StringPostHandler implements JsonHandler {
   
   
   public Object[] parseArgs(JsonObject json) {
@@ -86,9 +86,13 @@ public class PostSqlHandler extends StringPostHandler implements SqlHandler, Jso
           .endExchange();
       return;
     }
-    String resp = this.getQuery().exec(
-        group, query, this.parseArgs(json)
+    String resp = SqlQueryFactory.getDefaultQuery()
+        .exec(group, query, this.parseArgs(json)
     ).toPrettyPrintJson();
+    if(hse.getQueryParameters().containsKey("callback")) {
+      resp = hse.getQueryParameters().get("callback").peekFirst()
+          + "(" + resp + ")";
+    }
     this.putJsonHeader(hse);
     hse.getResponseSender().send(resp);
     hse.endExchange();

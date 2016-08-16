@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro.handler;
 
+import br.com.bb.disec.micro.db.SqlQueryFactory;
 import br.com.bb.disec.micro.db.SqlSourcePool;
 import br.com.bb.disec.micro.util.URIParam;
 import io.undertow.server.HttpServerExchange;
@@ -32,7 +33,7 @@ import org.jboss.logging.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/07/2016
  */
-public class GetSqlHandler implements SqlHandler, JsonHandler {
+public class GetSqlHandler implements JsonHandler {
   
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
@@ -62,9 +63,13 @@ public class GetSqlHandler implements SqlHandler, JsonHandler {
     for(int i = 0; i < pars.length() -2; i++) {
       args[i] = pars.getObject(i+2);
     }
-    String resp = this.getQuery()
+    String resp = SqlQueryFactory.getDefaultQuery()
         .exec(group, query, args).toPrettyPrintJson() + "\n";
     this.putJsonHeader(hse);
+    if(hse.getQueryParameters().containsKey("callback")) {
+      resp = hse.getQueryParameters().get("callback").peekFirst()
+          + "(" + resp + ")";
+    }
     hse.getResponseSender().send(resp, Charset.forName("UTF-8"));
     hse.endExchange();
   }

@@ -19,35 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler;
+package br.com.bb.disec.micro.db;
 
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Methods;
+import static br.com.bb.disec.micro.db.ConnectionPool.DEFAULT_DB_NAME;
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 27/07/2016
  */
-public class SqlHandler implements HttpHandler {
-
-  @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    if(hse.isInIoThread()) {
-      hse.dispatch(this);
-      return;
-    }
-    if(Methods.GET.equals(hse.getRequestMethod())) {
-      new GetSqlHandler().handleRequest(hse);
-    }
-    else if(Methods.POST.equals(hse.getRequestMethod())) {
-      new PostSqlHandler().handleRequest(hse);
-    }
-    else {
-      hse.setStatusCode(400).setReasonPhrase("Bad Request");
-      hse.endExchange();
-    }
+public class SqlQueryFactory {
+  
+  public static SqlQuery getDefaultQuery() throws IOException, SQLException {
+    return new SqlQuery(
+        PoolFactory.getPool(DEFAULT_DB_NAME).getConnection(),
+        SqlSourcePool.getDefaultSqlSource()
+    );
   }
   
 }

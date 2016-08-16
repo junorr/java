@@ -22,9 +22,9 @@
 package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.cache.UserCache;
-import br.com.bb.disec.micro.sso.CookieName;
 import br.com.bb.disec.micro.sso.SSOUserFactory;
 import br.com.bb.sso.bean.User;
+import br.com.bb.sso.session.CookieName;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpServerExchange;

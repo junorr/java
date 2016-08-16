@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro.sso;
 
+import br.com.bb.sso.session.CookieName;
 import io.undertow.util.Headers;
 import java.io.IOException;
 import org.apache.http.HttpResponse;

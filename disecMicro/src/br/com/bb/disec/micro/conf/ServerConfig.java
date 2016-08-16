@@ -170,7 +170,9 @@ public class ServerConfig {
       return Optional.of(cct.newInstance(null));
     }
     catch(Exception ex) {
-      Logger.getLogger(getClass()).error(ex.getClass().getSimpleName()+ ":"+ ex.getMessage());
+      Logger.getLogger(getClass()).error(
+          ex.getClass().getSimpleName()+ ":"+ ex.getMessage()
+      );
       return Optional.empty();
     }
   }
