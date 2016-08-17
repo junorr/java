@@ -66,7 +66,7 @@ public class Server {
       ph.addExactPath("/shutdown", new ShutdownHandler(this));
     }
     if(config.isAuthenticationEnabled()) {
-      ph.addExactPath("/auth", new AuthenticationHandler());
+      ph.addPrefixPath("/auth", new AuthenticationHandler());
     }
   }
   

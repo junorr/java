@@ -23,6 +23,7 @@ package br.com.bb.disec.micro.db;
 
 import br.com.bb.disec.bean.iface.IDcrCtu;
 import br.com.bb.disec.bean.reader.DcrCtuReader;
+import br.com.bb.disec.sql.SqlXmlResource;
 import br.com.bb.disec.util.SqlClose;
 import br.com.bb.disec.util.URLD;
 import java.io.IOException;
@@ -40,13 +41,15 @@ import java.util.List;
  */
 public class CtuPersistencia {
   
-  public static final String SQL_GROUP = "disecMicro";
+  public static final String SQL_GROUP = "intranet";
 	
 	public static final String WHERE = "$where";
 	
 	public static final String SQL_SEL_CTU_BY_PATH = "selectCtuByPath";
 	
 	public static final String SQL_SEL_CTU_BY_URL = "selectCtuByUrl";
+  
+  public static final String SQL_SEL_CTU_BY_ID = "selectCtuById";
 	
   
   private final SqlSource source;
@@ -100,7 +103,7 @@ public class CtuPersistencia {
 					SQL_GROUP, SQL_SEL_CTU_BY_URL
 			);
 			sql = sql.replace(WHERE, url.getHost());
-			con = PoolFactory.getDefaultPool().getConnection();
+			con = PoolFactory.getPool("107").getConnection();
 			pst = con.prepareStatement(sql);
 			rst = pst.executeQuery();
 			while(rst.next()) {
@@ -140,7 +143,7 @@ public class CtuPersistencia {
 					SQL_GROUP, SQL_SEL_CTU_BY_PATH
 			);
 			sql = sql.replace(WHERE, url.getContext());
-			con = PoolFactory.getDefaultPool().getConnection();
+			con = PoolFactory.getPool("107").getConnection();
       //System.out.println("CtuPersistencia.getByContext:\n "+ sql);
 			pst = con.prepareStatement(sql);
 			rst = pst.executeQuery();
@@ -179,7 +182,7 @@ public class CtuPersistencia {
 		PreparedStatement pst = null;
 		ResultSet rst = null;
 		try {
-			con = PoolFactory.getDefaultPool().getConnection();
+			con = PoolFactory.getPool("107").getConnection();
 			for(String path : paths) {
 				if(path == null || path.trim().isEmpty()) {
 					continue;
@@ -204,4 +207,36 @@ public class CtuPersistencia {
 		}
 	}
 	
+
+	/**
+	 * Recupera do banco o DcrCtu identificado pelo código informado.
+	 * @param cdCtu Código do conteúdo em intranet.dcr_ctu
+	 * @throws SQLException Em caso de erro na excução do SQL.
+	 */
+	public IDcrCtu getById(int cdCtu) throws SQLException {
+    IDcrCtu ctu = null;
+		if(cdCtu <= 0) {
+			return ctu;
+		}
+		String sql = null;
+		Connection con = null;
+		PreparedStatement pst = null;
+		ResultSet rst = null;
+		try {
+			sql = SqlXmlResource.resource(this.getClass()).getQuery(
+					SQL_GROUP, SQL_SEL_CTU_BY_ID
+			);
+			con = PoolFactory.getPool("107").getConnection();
+			pst = con.prepareStatement(sql);
+			rst = pst.executeQuery();
+			if(rst.next()) {
+				ctu = DcrCtuReader.of(rst).readBean();
+			}
+		}
+		finally {
+			SqlClose.of(con, pst, rst).close();
+		}
+    return ctu;
+	}
+
 }

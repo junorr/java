@@ -68,7 +68,7 @@ public class GetSqlHandler implements JsonHandler {
     this.putJsonHeader(hse);
     if(hse.getQueryParameters().containsKey("callback")) {
       resp = hse.getQueryParameters().get("callback").peekFirst()
-          + "(" + resp + ")";
+          + "(" + resp + ");";
     }
     hse.getResponseSender().send(resp, Charset.forName("UTF-8"));
     hse.endExchange();

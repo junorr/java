@@ -39,8 +39,8 @@ public class AuthenticationClient extends AbstractAuthClient {
   private final String token;
   
   
-  public AuthenticationClient(String address, int port, String tokenSSO) {
-    super(address, port);
+  public AuthenticationClient(String address, int port, String context, String tokenSSO) {
+    super(address, port, context);
     if(tokenSSO == null || tokenSSO.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad BBSSOToken: "+ tokenSSO);
     }
@@ -48,13 +48,13 @@ public class AuthenticationClient extends AbstractAuthClient {
   }
   
   
-  public static AuthenticationClient of(String address, int port, String tokenSSO) {
-    return new AuthenticationClient(address, port, tokenSSO);
+  public static AuthenticationClient of(String address, int port, String context, String tokenSSO) {
+    return new AuthenticationClient(address, port, context, tokenSSO);
   }
   
   
-  public static AuthenticationClient ofDefault(String tokenSSO) {
-    return new AuthenticationClient(DEFAUTL_ADDRESS, DEFAULT_PORT, tokenSSO);
+  public static AuthenticationClient ofDefault(String context, String tokenSSO) {
+    return new AuthenticationClient(DEFAUTL_ADDRESS, DEFAULT_PORT, context, tokenSSO);
   }
   
   

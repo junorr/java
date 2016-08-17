@@ -45,12 +45,14 @@ public abstract class AbstractAuthClient {
   
   protected final int port;
   
+  protected final String context;
+  
   protected String jsonUser;
   
   protected StatusLine status;
   
   
-  protected AbstractAuthClient(String address, int port) {
+  protected AbstractAuthClient(String address, int port, String context) {
     if(address == null || address.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad Address: "+ address);
     }
@@ -59,16 +61,20 @@ public abstract class AbstractAuthClient {
     }
     this.address = address;
     this.port = port;
+    this.context = context;
   }
   
   
   public String getUriString() {
-    return new StringBuilder()
+    StringBuilder sb = new StringBuilder()
         .append(address)
         .append(":")
         .append(port)
-        .append(DEFAULT_CONTEXT)
-        .toString();
+        .append(DEFAULT_CONTEXT);
+    if(context != null) {
+      sb.append("/").append(context);
+    }
+    return sb.toString();
   }
   
   

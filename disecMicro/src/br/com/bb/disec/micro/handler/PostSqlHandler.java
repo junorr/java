@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro.handler;
 
+import br.com.bb.disec.micro.util.StringPostParser;
 import br.com.bb.disec.micro.db.SqlQueryFactory;
 import br.com.bb.disec.micro.db.SqlSourcePool;
 import com.google.gson.JsonArray;
@@ -35,7 +36,7 @@ import org.jboss.logging.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/07/2016
  */
-public class PostSqlHandler extends StringPostHandler implements JsonHandler {
+public class PostSqlHandler implements JsonHandler {
   
   
   public Object[] parseArgs(JsonObject json) {
@@ -66,9 +67,9 @@ public class PostSqlHandler extends StringPostHandler implements JsonHandler {
       hse.dispatch(this);
       return;
     }
-    super.handleRequest(hse);
+    String post = new StringPostParser().parseHttp(hse);
     JsonParser prs = new JsonParser();
-    JsonObject json = prs.parse(this.getPostData()).getAsJsonObject();
+    JsonObject json = prs.parse(post).getAsJsonObject();
     if(!json.has("query") || !json.has("group")) {
       String msg = "Bad Request. No Query Informed";
       Logger.getLogger(getClass()).warn(msg);
@@ -91,7 +92,7 @@ public class PostSqlHandler extends StringPostHandler implements JsonHandler {
     ).toPrettyPrintJson();
     if(hse.getQueryParameters().containsKey("callback")) {
       resp = hse.getQueryParameters().get("callback").peekFirst()
-          + "(" + resp + ")";
+          + "(" + resp + ");";
     }
     this.putJsonHeader(hse);
     hse.getResponseSender().send(resp);

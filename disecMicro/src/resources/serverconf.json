@@ -1,7 +1,7 @@
 {
   "serverAddress": "127.0.0.1",
   "serverPort": 9088,
-  "logHandlerEnabled": true,
+  "logHandlerEnabled": false,
   "shutdownHandlerEnabled": true,
   "ioThreads": 4,
   "maxWorkerThreads": 10,

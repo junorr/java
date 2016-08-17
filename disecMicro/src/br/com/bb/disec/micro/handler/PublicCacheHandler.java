@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro.handler;
 
+import br.com.bb.disec.micro.util.StringPostParser;
 import br.com.bb.disec.micro.cache.PublicCache;
 import br.com.bb.disec.micro.util.URIParam;
 import com.google.gson.Gson;
@@ -38,7 +39,7 @@ import us.pserver.dropmap.DMap.DEntry;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/08/2016
  */
-public class PublicCacheHandler extends StringPostHandler implements JsonHandler {
+public class PublicCacheHandler implements JsonHandler {
   
   public static final long DEFAULT_TTL = 30 * 60; //30 MIN. IN SEC.
   
@@ -89,8 +90,8 @@ public class PublicCacheHandler extends StringPostHandler implements JsonHandler
   
   
   private void put(HttpServerExchange hse, String key, URIParam pars) throws Exception {
-    super.handleRequest(hse);
-    if(this.getPostData() == null || this.getPostData().trim().isEmpty()) {
+    String post = new StringPostParser().parseHttp(hse);
+    if(post == null || post.trim().isEmpty()) {
       hse.setStatusCode(400).setReasonPhrase(
           "Bad Request. No Value"
       );
@@ -100,7 +101,7 @@ public class PublicCacheHandler extends StringPostHandler implements JsonHandler
       ttl = pars.getNumber(1).longValue();
     }
     PublicCache.getCache().put(
-        key, this.getPostData(), 
+        key, post, 
         Duration.ofSeconds(ttl)
     );
     Logger.getLogger(getClass()).info("PUT ["+ key+ "]");

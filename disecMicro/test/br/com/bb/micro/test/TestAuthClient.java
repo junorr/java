@@ -34,8 +34,8 @@ public class TestAuthClient {
 
   
   public static void main(String[] args) throws IOException {
-    String token = SimAuthClient.ofDefault("F6036477").doAuth().getBBSSOToken();
-    AuthenticationClient ac = AuthenticationClient.ofDefault(token);
+    String token = SimAuthClient.ofDefault("kanban", "F6036477").doAuth().getBBSSOToken();
+    AuthenticationClient ac = AuthenticationClient.ofDefault("kanban", token);
     System.out.println("* Auth: "+ ac.authenticate());
     System.out.println("* User: "+ ac.getUser());
   }

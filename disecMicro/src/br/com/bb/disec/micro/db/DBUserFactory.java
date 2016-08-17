@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public class DBUserFactory {
 
-  public static final String SQL_GROUP = "user";
+  public static final String SQL_GROUP = "auth";
   
   public static final String SQL_SEL_USER = "selectUser";
 

@@ -21,15 +21,21 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.bean.DcrCtu;
 import br.com.bb.disec.bean.iface.IDcrCtu;
 import br.com.bb.disec.micro.db.AccessPersistencia;
 import br.com.bb.disec.micro.db.CtuPersistencia;
+import br.com.bb.disec.micro.db.PoolFactory;
+import br.com.bb.disec.micro.db.SqlQuery;
+import br.com.bb.disec.micro.db.SqlSourcePool;
+import br.com.bb.disec.micro.util.CookieUserParser;
+import br.com.bb.disec.micro.util.SimulatedUserParser;
 import br.com.bb.disec.util.URLD;
 import br.com.bb.sso.bean.User;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Methods;
-import java.sql.SQLException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import org.jboss.logging.Logger;
@@ -39,64 +45,106 @@ import org.jboss.logging.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/07/2016
  */
-public class AuthenticationHandler extends StringPostHandler implements JsonHandler, AuthHttpHandler {
+public class AuthenticationHandler implements JsonHandler {
   
-  private final AuthHttpHandler cookieHandler;
+  public static final String SQL_GROUP = "disecMicro";
   
-  private final AuthHttpHandler usuSimHandler;
+  public static final String SQL_INSERT_LOG = "insertLog";
   
-  private User user;
+  public static final int DEFAULT_CD_CTU = 99999;
+  
+  private final Gson gson;
   
   
   public AuthenticationHandler() {
-    cookieHandler = new CookieAuthHandler();
-    usuSimHandler = new SimAuthHandler();
-  }
-  
-  
-  @Override
-  public User getAuthUser() {
-    return user;
+    gson = new GsonBuilder().setPrettyPrinting().create();
   }
   
   
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
+    if(hse.isInIoThread()) {
+      hse.dispatch(this);
+      return;
+    }
     User user = null;
-    if(Methods.GET.equals(hse.getRequestMethod())) {
-      cookieHandler.handleRequest(hse);
-      user = cookieHandler.getAuthUser();
+    try {
+      if(Methods.GET.equals(hse.getRequestMethod())) {
+        user = new CookieUserParser().parseHttp(hse);
+      }
+      else if(Methods.POST.equals(hse.getRequestMethod())) {
+        SimulatedUserParser sup = new SimulatedUserParser();
+        user = sup.parseHttp(hse);
+        hse.setResponseCookie(sup.getCookie());
+      }
+      if(!doAuth(hse, user)) {
+        hse.setStatusCode(401).setReasonPhrase("Unauthorized");
+      }
+      else {
+        hse.setStatusCode(200).setReasonPhrase("OK");
+        hse.getResponseSender().send(gson.toJson(user));
+      }
     }
-    else if(Methods.POST.equals(hse.getRequestMethod())) {
-      usuSimHandler.handleRequest(hse);
-      user = usuSimHandler.getAuthUser();
+    catch(IOException e) {
+      e.printStackTrace();
+      hse.setStatusCode(400).setReasonPhrase("Bad Request. "+ e.getMessage());
     }
-    if(!doAuth(hse)) {
-      hse.setStatusCode(401).setReasonPhrase("Unauthorized");
-      hse.endExchange();
-    }
+    hse.endExchange();
   }
   
   
-  public boolean doAuth(HttpServerExchange hse) throws SQLException {
-    URLD urld = new URLD(hse.getRequestURL());
+  private String getAuthURL(HttpServerExchange hse) {
+    String url = hse.getRequestURL();
+    if(url.contains("auth/")) {
+      int idx = url.indexOf("auth/");
+      url = url.substring(0, idx)
+          + url.substring(idx+5);
+    }
+    return url;
+  }
+  
+  
+  public boolean doAuth(HttpServerExchange hse, User user) throws Exception {
+    URLD urld = new URLD(getAuthURL(hse));
 		CtuPersistencia ctp = new CtuPersistencia(urld);
 		AccessPersistencia acp = new AccessPersistencia();
     //recupera todos os conteúdos da tabela dcr_ctu
     //com base na URL acessada.
     List<IDcrCtu> ctus = ctp.findAll();
     if(ctus == null || ctus.isEmpty()) {
-      Logger.getLogger(this.getClass()).info("Nenhum conteúdo encontrado para a URL: %s"+ urld);
-      ctus = Arrays.asList((IDcrCtu)new DcrCtu().setCdCtu(99999));
+      Logger.getLogger(this.getClass()).info("Nenhum conteúdo encontrado para a URL: "+ urld);
+      ctus = Arrays.asList(ctp.getById(DEFAULT_CD_CTU));
     }
     //Verifica autorização de acesso para os conteúdos encontrados.
-    boolean access = false;
+    boolean access = ctus.get(0).getCdCtu() == DEFAULT_CD_CTU;
     for(IDcrCtu ctu : ctus) {
       access = access || acp.checkAccess(
           user, ctu.getCdCtu()
       );
     }
+    log(hse, user, access);
     return access;
 	}
+  
+  
+  public void log(HttpServerExchange hse, User user, boolean auth) throws Exception {
+    //ip, url, context, uri, cd_usu, uor_depe, uor_eqp, autd
+    URLD url = new URLD(this.getAuthURL(hse));
+    new SqlQuery(
+        PoolFactory.getDefaultPool().getConnection(), 
+        SqlSourcePool.getDefaultSqlSource()
+    ).update(
+        SQL_GROUP,
+        SQL_INSERT_LOG, 
+        hse.getConnection().getPeerAddress().toString(), 
+        url.getURL(), 
+        url.getContext(), 
+        url.getURI(),
+        user.getChave(),
+        user.getUorDepe(),
+        user.getUorEquipe(),
+        auth
+    );
+  }
 
 }

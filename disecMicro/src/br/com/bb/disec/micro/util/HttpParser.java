@@ -19,56 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler;
+package br.com.bb.disec.micro.util;
 
-import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 25/07/2016
+ * @version 0.0 - 17/08/2016
  */
-public class StringPostHandler implements HttpHandler {
-  
-  private final StringBuilder data;
-  
-  
-  public StringPostHandler() {
-    data = new StringBuilder();
-  }
-  
-  
-  public String getPostData() {
-    return data.toString();
-  }
-  
-  
-  public void resetPostData() {
-    data.delete(0, data.length());
-  }
-  
+@FunctionalInterface
+public interface HttpParser<R> {
 
-  @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    if(hse.isInIoThread()) {
-      hse.dispatch(this);
-      return;
-    }
-    this.resetPostData();
-    hse.startBlocking();
-    BufferedReader read = new BufferedReader(
-        new InputStreamReader(hse.getInputStream())
-    );
-    String line = null;
-    while((line = read.readLine()) != null) {
-      if(!data.toString().isEmpty()) {
-        data.append("\n");
-      }
-      data.append(line);
-    }
-  }
-
+  public R parseHttp(HttpServerExchange hse) throws IOException;
+  
 }

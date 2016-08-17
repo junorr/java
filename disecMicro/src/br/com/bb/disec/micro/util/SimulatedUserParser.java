@@ -19,70 +19,84 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler;
+package br.com.bb.disec.micro.util;
 
 import br.com.bb.disec.micro.cache.UserCache;
 import br.com.bb.disec.micro.db.DBUserFactory;
 import br.com.bb.sso.bean.User;
 import br.com.bb.sso.session.CookieName;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.server.handlers.Cookie;
 import io.undertow.server.handlers.CookieImpl;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.time.Duration;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.jboss.logging.Logger;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/07/2016
+ * @version 0.0 - 17/08/2016
  */
-public class SimAuthHandler extends StringPostHandler implements JsonHandler, AuthHttpHandler {
-  
+public class SimulatedUserParser implements HttpParser<User> {
+
   public static final String USU_SIM_CHAVE = "usu-sim-chave";
   
   public static final Integer COOKIE_MAX_AGE = 60 * 30; //30 MIN. IN SECONDS
   
-  
-  private User user;
+  public Cookie cookie;
   
   
   @Override
-  public User getAuthUser() {
+  public User parseHttp(HttpServerExchange hse) throws IOException {
+    User user = createFromDB(hse);
+    UserCache.getUsers().put(
+        setCookie(hse, user).getValue(), 
+        user, Duration.ofMinutes(30)
+    );
     return user;
   }
-
   
-  @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    super.handleRequest(hse);
-    String post = this.getPostData();
-    JsonObject json = null;
-    if(post != null && post.length() > 8) {
-      JsonParser prs = new JsonParser();
-      json = prs.parse(post).getAsJsonObject();
-    }
-    if(json == null || !json.has(USU_SIM_CHAVE)) {
-      hse.setStatusCode(401).setReasonPhrase("Unauthorized");
-      hse.endExchange();
-      return;
-    }
-    user = new DBUserFactory().createUser(
-        json.get(USU_SIM_CHAVE).getAsString()
-    );
-    Logger.getLogger(getClass()).info("Simulated: "+ user.toString());
-    CookieImpl cookie = new CookieImpl(CookieName.BBSSOToken.name());
+  
+  public Cookie getCookie() {
+    return cookie;
+  }
+  
+  
+  private Cookie setCookie(HttpServerExchange hse, User user) {
+    cookie = new CookieImpl(CookieName.BBSSOToken.name());
     cookie.setMaxAge(COOKIE_MAX_AGE);
     cookie.setValue(DigestUtils.sha256Hex(user.getChave() + String.valueOf(System.currentTimeMillis())));
     hse.setResponseCookie(cookie);
-    UserCache.getUsers().put(cookie.getValue(), user, Duration.ofMinutes(30));
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    this.putJsonHeader(hse);
-    hse.getResponseSender().send(gson.toJson(user));
-    hse.endExchange();
+    return cookie;
+  }
+  
+  
+  private JsonObject getPostedObject(HttpServerExchange hse) throws IOException {
+    String post = new StringPostParser().parseHttp(hse);
+    if(post == null || post.length() < 8) {
+      throw new IOException("Invalid Post Data");
+    }
+    return new JsonParser()
+        .parse(post).getAsJsonObject();
+  }
+  
+  
+  private User createFromDB(HttpServerExchange hse) throws IOException {
+    JsonObject json = getPostedObject(hse);
+    if(json == null || !json.has(USU_SIM_CHAVE)) {
+      throw new IOException("Invalid Post Data");
+    }
+    try {
+      return new DBUserFactory().createUser(
+          json.get(USU_SIM_CHAVE).getAsString()
+      );
+    } 
+    catch(SQLException e) {
+      throw new IOException(e.getMessage());
+    }
   }
 
 }

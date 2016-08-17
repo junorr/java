@@ -46,8 +46,8 @@ public class SimAuthClient extends AbstractAuthClient {
   private String tokenSSO;
   
   
-  public SimAuthClient(String address, int port, String chave) {
-    super(address, port);
+  public SimAuthClient(String address, int port, String context, String chave) {
+    super(address, port, context);
     if(chave == null || chave.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad User Key: "+ chave);
     }
@@ -55,13 +55,13 @@ public class SimAuthClient extends AbstractAuthClient {
   }
   
   
-  public static SimAuthClient of(String address, int port, String chave) {
-    return new SimAuthClient(address, port, chave);
+  public static SimAuthClient of(String address, int port, String context, String chave) {
+    return new SimAuthClient(address, port, context, chave);
   }
   
   
-  public static SimAuthClient ofDefault(String chave) {
-    return new SimAuthClient(DEFAUTL_ADDRESS, DEFAULT_PORT, chave);
+  public static SimAuthClient ofDefault(String context, String chave) {
+    return new SimAuthClient(DEFAUTL_ADDRESS, DEFAULT_PORT, context, chave);
   }
   
   
@@ -84,9 +84,12 @@ public class SimAuthClient extends AbstractAuthClient {
         .bodyString(getJsonContent(), ContentType.APPLICATION_JSON)
         .execute();
     HttpResponse hresp = resp.returnResponse();
-    tokenSSO = hresp.getFirstHeader(Headers.SET_COOKIE_STRING).getValue();
-    jsonUser = EntityUtils.toString(hresp.getEntity());
     status = hresp.getStatusLine();
+    System.out.println(status);
+    if(status.getStatusCode() == 200) {
+      tokenSSO = hresp.getFirstHeader(Headers.SET_COOKIE_STRING).getValue();
+      jsonUser = EntityUtils.toString(hresp.getEntity());
+    }
     return this;
   }
   

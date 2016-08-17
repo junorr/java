@@ -21,7 +21,6 @@
 
 package br.com.bb.disec.micro.handler;
 
-import static br.com.bb.disec.micro.db.ConnectionPool.DEFAULT_DB_NAME;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.db.SqlSourcePool;
@@ -60,7 +59,7 @@ public class LogHandler implements HttpHandler {
     }
     URIParam pars = new URIParam(hse.getRequestURI());
     new SqlQuery(
-        PoolFactory.getPool(DEFAULT_DB_NAME).getConnection(), 
+        PoolFactory.getDefaultPool().getConnection(), 
         SqlSourcePool.getDefaultSqlSource()
     ).update(
         SQL_GROUP,

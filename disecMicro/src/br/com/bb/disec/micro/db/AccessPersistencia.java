@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class AccessPersistencia {
   
-  public static final String SQL_GROUP = "disecMicro";
+  public static final String SQL_GROUP = "intranet";
   
 	private static final String SQL_SEL_PFL_ACSS = "selectPflAcss";
   
@@ -85,7 +85,7 @@ public class AccessPersistencia {
 			sql = source.getSql(
 					SQL_GROUP, SQL_SEL_PFL_ACSS
 			);
-			con = PoolFactory.getDefaultPool().getConnection();
+			con = PoolFactory.getPool("107").getConnection();
 			ps = con.prepareStatement(sql);
 			ps.setInt(1, cdCtu);
 			rs = ps.executeQuery();
@@ -137,7 +137,7 @@ public class AccessPersistencia {
 		ResultSet rs = null;
 		boolean access = false;
 		try {
-			con = PoolFactory.getDefaultPool().getConnection();
+			con = PoolFactory.getPool("107").getConnection();
 			ps = con.prepareStatement(sql);
 			this.setParam(ps, pfl, usu);
 			rs = ps.executeQuery();
@@ -223,7 +223,7 @@ public class AccessPersistencia {
 				ps.setInt(1, usu.getUorEquipe());
 				break;
 			case UOR_DEPE:
-				ps.setInt(2, usu.getUorDepe());
+				ps.setInt(1, usu.getUorDepe());
 				break;
 			default:
 				throw new IllegalArgumentException(
