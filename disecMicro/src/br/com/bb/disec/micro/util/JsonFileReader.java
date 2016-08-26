@@ -21,51 +21,11 @@
 
 package br.com.bb.disec.micro.util;
 
-import io.undertow.server.HttpServerExchange;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 25/07/2016
+ * @version 0.0 - 26/08/2016
  */
-public class StringPostParser implements HttpParser<String> {
-  
-  private final StringBuilder data;
-  
-  
-  public StringPostParser() {
-    data = new StringBuilder();
-  }
-  
-  
-  public String getPostData() {
-    return data.toString();
-  }
-  
-  
-  private void resetPostData() {
-    data.delete(0, data.length());
-  }
-  
-
-  @Override
-  public String parseHttp(HttpServerExchange hse) throws IOException {
-    this.resetPostData();
-    hse.startBlocking();
-    BufferedReader read = new BufferedReader(
-        new InputStreamReader(hse.getInputStream())
-    );
-    String line = null;
-    while((line = read.readLine()) != null) {
-      if(!data.toString().isEmpty()) {
-        data.append("\n");
-      }
-      data.append(line);
-    }
-    return data.toString();
-  }
+public class JsonFileReader {
 
 }

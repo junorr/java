@@ -19,8 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.sso;
+package br.com.bb.disec.micro.client;
 
+import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import java.io.IOException;
 import org.apache.http.HttpResponse;
@@ -75,8 +76,13 @@ public class SimAuthClient extends AbstractAuthClient {
   }
   
   
-  @Override
   public SimAuthClient doAuth() throws IOException {
+    return this.doAuth(null);
+  }
+  
+  
+  @Override
+  public SimAuthClient doAuth(HttpServerExchange hse) throws IOException {
     jsonUser = null;
     tokenSSO = null;
     status = null;
@@ -85,7 +91,6 @@ public class SimAuthClient extends AbstractAuthClient {
         .execute();
     HttpResponse hresp = resp.returnResponse();
     status = hresp.getStatusLine();
-    System.out.println(status);
     if(status.getStatusCode() == 200) {
       tokenSSO = hresp.getFirstHeader(Headers.SET_COOKIE_STRING).getValue();
       jsonUser = EntityUtils.toString(hresp.getEntity());

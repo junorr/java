@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import us.pserver.timer.Timer;
 
 /**
  *
@@ -58,6 +59,8 @@ public class SqlQuery {
     if(query == null || !source.containsSql(group, query)) {
       throw new IllegalArgumentException("Query Not Found ("+ query+ ")");
     }
+    Timer tm = new Timer.Nanos();
+    tm.start();
     PreparedStatement ps = connection
         .prepareStatement(source.getSql(group, query));
     try {
@@ -67,7 +70,12 @@ public class SqlQuery {
         }
       }
       System.out.println("* SqlQuery.exec: "+ ps);
-      return new JsonResultSet(ps.executeQuery());
+      JsonResultSet jrs = new JsonResultSet(ps.executeQuery());
+      System.out.println("* db   time: "+ tm.lapAndStop());
+      tm.clear().start();
+      jrs.getJsonObject();
+      System.out.println("* json time: "+ tm.lapAndStop());
+      return jrs;
     }
     finally {
       ps.close();

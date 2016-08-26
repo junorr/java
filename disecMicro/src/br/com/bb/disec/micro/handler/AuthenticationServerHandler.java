@@ -45,7 +45,7 @@ import org.jboss.logging.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/07/2016
  */
-public class AuthenticationHandler implements JsonHandler {
+public class AuthenticationServerHandler implements JsonHandler {
   
   public static final String SQL_GROUP = "disecMicro";
   
@@ -56,7 +56,7 @@ public class AuthenticationHandler implements JsonHandler {
   private final Gson gson;
   
   
-  public AuthenticationHandler() {
+  public AuthenticationServerHandler() {
     gson = new GsonBuilder().setPrettyPrinting().create();
   }
   
@@ -77,16 +77,18 @@ public class AuthenticationHandler implements JsonHandler {
         user = sup.parseHttp(hse);
         hse.setResponseCookie(sup.getCookie());
       }
-      if(!doAuth(hse, user)) {
-        hse.setStatusCode(401).setReasonPhrase("Unauthorized");
+      if(doAuth(hse, user)) {
+        this.log(hse, user, true);
+        hse.setStatusCode(200).setReasonPhrase("OK");
+        this.putJsonHeader(hse);
+        hse.getResponseSender().send(gson.toJson(user));
       }
       else {
-        hse.setStatusCode(200).setReasonPhrase("OK");
-        hse.getResponseSender().send(gson.toJson(user));
+        this.log(hse, user, false);
+        hse.setStatusCode(401).setReasonPhrase("Unauthorized");
       }
     }
     catch(IOException e) {
-      e.printStackTrace();
       hse.setStatusCode(400).setReasonPhrase("Bad Request. "+ e.getMessage());
     }
     hse.endExchange();
@@ -122,7 +124,6 @@ public class AuthenticationHandler implements JsonHandler {
           user, ctu.getCdCtu()
       );
     }
-    log(hse, user, access);
     return access;
 	}
   

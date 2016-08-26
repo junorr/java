@@ -19,12 +19,8 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.sso;
+package br.com.bb.disec.micro.client;
 
-import br.com.bb.sso.bean.User;
-import com.google.gson.Gson;
-import java.io.IOException;
-import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 
 /**
@@ -32,27 +28,18 @@ import org.apache.http.StatusLine;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/08/2016
  */
-public abstract class AbstractAuthClient {
+public abstract class AbstractClient {
   
-  public static final String DEFAUTL_ADDRESS = "http://127.0.0.1";
-  
-  public static final int DEFAULT_PORT = 9088;
-  
-  public static final String DEFAULT_CONTEXT = "/auth";
-  
-
   protected final String address;
   
   protected final int port;
   
   protected final String context;
   
-  protected String jsonUser;
-  
   protected StatusLine status;
   
   
-  protected AbstractAuthClient(String address, int port, String context) {
+  protected AbstractClient(String address, int port, String context) {
     if(address == null || address.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad Address: "+ address);
     }
@@ -70,10 +57,8 @@ public abstract class AbstractAuthClient {
         .append(address)
         .append(":")
         .append(port)
-        .append(DEFAULT_CONTEXT);
-    if(context != null) {
-      sb.append("/").append(context);
-    }
+        .append("/")
+        .append(context);
     return sb.toString();
   }
   
@@ -85,28 +70,6 @@ public abstract class AbstractAuthClient {
   
   public String getResponsePhrase() {
     return (status != null ? status.getReasonPhrase() : null);
-  }
-  
-  
-  public User getUser() {
-    if(jsonUser == null || jsonUser.length() < 10) {
-      throw new IllegalArgumentException("Bad Response. Can not create User");
-    }
-    return new Gson().fromJson(jsonUser, User.class);
-  }
-  
-  
-  public abstract AbstractAuthClient doAuth() throws IOException;
-  
-  
-  public boolean isAuthenticated() {
-    return status != null 
-        && status.getStatusCode() == HttpStatus.SC_OK;
-  }
-  
-  
-  public boolean authenticate() throws IOException {
-    return doAuth().isAuthenticated();
   }
   
 }

@@ -16,7 +16,7 @@ import java.io.IOException;
  * recupera as informações do usuário.
  * @author Juno Roesler - F6036477
  */
-public class SSOUserFactory {
+public class MicroSSOUserFactory {
 	
 	private final Cookie[] cookies;
 	
@@ -31,7 +31,7 @@ public class SSOUserFactory {
 	 * Construtor padrão que recebe os cookies de autenticação.
 	 * @param cookies Cookies da requisição Http.
 	 */
-	public SSOUserFactory(Cookie[] cookies) {
+	public MicroSSOUserFactory(Cookie[] cookies) {
 		if(cookies == null || cookies.length < 1) {
 			throw new IllegalArgumentException(
 					"Cookie array nulo ou vazio: "+ cookies

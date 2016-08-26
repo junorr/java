@@ -22,7 +22,7 @@
 package br.com.bb.disec.micro.util;
 
 import br.com.bb.disec.micro.cache.UserCache;
-import br.com.bb.disec.micro.sso.SSOUserFactory;
+import br.com.bb.disec.micro.sso.MicroSSOUserFactory;
 import br.com.bb.sso.bean.User;
 import br.com.bb.sso.session.CookieName;
 import io.undertow.server.HttpServerExchange;
@@ -65,7 +65,7 @@ public class CookieUserParser implements HttpParser<User> {
     User user = null;
     if(hash != null && UserCache.contains(hash.getValue())) {
       user = UserCache.get(hash.getValue());
-      //Logger.getLogger(getClass()).info("Cached ("+ hash.getValue()+ "): "+ user.toString());
+      Logger.getLogger(getClass()).info("Cached ("+ hash.getValue()+ "): "+ user.toString());
     }
     return user;
   }
@@ -75,12 +75,13 @@ public class CookieUserParser implements HttpParser<User> {
     if(!hse.getRequestCookies().containsKey(CookieName.ssoacr.name())) {
       throw new IOException("Missing Cookie "+ CookieName.ssoacr.name());
     }
-    SSOUserFactory suf = new SSOUserFactory(getCookies(hse));
+    MicroSSOUserFactory suf = new MicroSSOUserFactory(getCookies(hse));
     User user = null;
     user = suf.createUser();
     if(user == null) {
       throw new IOException("Invalid Cookie "+ CookieName.BBSSOToken.name());
     }
+    Logger.getLogger(getClass()).info("SSO: "+ user.toString());
     return user;
   } 
   

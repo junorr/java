@@ -19,53 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.util;
+package br.com.bb.micro.test;
 
-import io.undertow.server.HttpServerExchange;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 25/07/2016
+ * @version 0.0 - 26/08/2016
  */
-public class StringPostParser implements HttpParser<String> {
-  
-  private final StringBuilder data;
-  
-  
-  public StringPostParser() {
-    data = new StringBuilder();
-  }
-  
-  
-  public String getPostData() {
-    return data.toString();
-  }
-  
-  
-  private void resetPostData() {
-    data.delete(0, data.length());
-  }
-  
+public class TestIntMaxVal {
 
-  @Override
-  public String parseHttp(HttpServerExchange hse) throws IOException {
-    this.resetPostData();
-    hse.startBlocking();
-    BufferedReader read = new BufferedReader(
-        new InputStreamReader(hse.getInputStream())
-    );
-    String line = null;
-    while((line = read.readLine()) != null) {
-      if(!data.toString().isEmpty()) {
-        data.append("\n");
-      }
-      data.append(line);
-    }
-    return data.toString();
-  }
+  private static JsonObject createHeader() {
+    JsonObject obj = new JsonObject();
+    obj.addProperty("json-start", Long.MAX_VALUE);
+    obj.addProperty("data-start", Long.MAX_VALUE);
+    obj.addProperty("entries-count", Long.MAX_VALUE);
+    obj.addProperty("entry-length", Long.MAX_VALUE);
+    obj.addProperty("trash", "0");
+    return obj;
+  }  
 
+  public static void main(String[] args) {
+    System.out.println(Integer.MAX_VALUE);
+    System.out.println(Long.MAX_VALUE);
+    String header = new Gson().toJson(createHeader())+"\n\r";
+    System.out.println(header);
+    System.out.println("* length: "+ header.length());
+  }
+  
 }

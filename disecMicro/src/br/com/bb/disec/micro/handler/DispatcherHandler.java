@@ -61,6 +61,10 @@ public class DispatcherHandler implements HttpHandler {
   
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
+    if(hse.isInIoThread()) {
+      hse.dispatch(this);
+      return;
+    }
     config.createHandler(path).ifPresent(hnd->hse.dispatch(hnd));
   }
   

@@ -19,24 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.db;
+package br.com.bb.micro.test;
 
-import static br.com.bb.disec.micro.db.ConnectionPool.DEFAULT_DB_NAME;
+import com.google.gson.JsonObject;
 import java.io.IOException;
-import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/07/2016
+ * @version 0.0 - 24/08/2016
  */
-public class SqlQueryFactory {
+public class TestPublicCacheClient {
+
   
-  public static SqlQuery getDefaultQuery() throws IOException, SQLException {
-    return new SqlQuery(
-        PoolFactory.getPool(DEFAULT_DB_NAME).getConnection(),
-        SqlSourcePool.getDefaultSqlSource()
-    );
+  public static void main(String[] args) throws IOException {
+    PublicCacheClient cli = PublicCacheClient.ofDefault();
+    String key = "mykey";
+    JsonObject json = new JsonObject();
+    json.addProperty("name", "myjson");
+    json.addProperty("magic", Math.PI);
+    System.out.println("* put( "+ key+ " ): "+ cli.put(key, json));
+    Optional<String> opt = cli.get(key);
+    System.out.println("* get( "+ key+ " ): "+ opt.isPresent());
+    opt.ifPresent(s->System.out.println("  "+ s));
   }
   
 }

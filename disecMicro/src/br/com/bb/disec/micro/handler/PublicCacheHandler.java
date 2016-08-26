@@ -23,6 +23,7 @@ package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.util.StringPostParser;
 import br.com.bb.disec.micro.cache.PublicCache;
+import br.com.bb.disec.micro.client.AuthenticationClient;
 import br.com.bb.disec.micro.util.URIParam;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -41,7 +42,7 @@ import us.pserver.dropmap.DMap.DEntry;
  */
 public class PublicCacheHandler implements JsonHandler {
   
-  public static final long DEFAULT_TTL = 30 * 60; //30 MIN. IN SEC.
+  public static final long DEFAULT_TTL = 20 * 60; //20 MIN. IN SEC.
   
   private final Gson gson;
   
@@ -53,6 +54,10 @@ public class PublicCacheHandler implements JsonHandler {
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
+    if(hse.isInIoThread()) {
+      hse.dispatch(this);
+      return;
+    }
     URIParam pars = new URIParam(hse.getRequestURI());
     String key = pars.getParam(0);
     if(key == null) {
@@ -91,6 +96,7 @@ public class PublicCacheHandler implements JsonHandler {
   
   private void put(HttpServerExchange hse, String key, URIParam pars) throws Exception {
     String post = new StringPostParser().parseHttp(hse);
+    System.out.println("* PublicCacheHandler.put( "+ key+ " ): '"+ post+ "'");
     if(post == null || post.trim().isEmpty()) {
       hse.setStatusCode(400).setReasonPhrase(
           "Bad Request. No Value"
@@ -108,32 +114,49 @@ public class PublicCacheHandler implements JsonHandler {
   }
   
   
+  private void getMethResponse(JsonObject resp, DEntry<String,String> ev) {
+    String value = ev.getValue();
+    resp.addProperty("key", ev.getKey());
+    resp.addProperty("entryStoreTime", ev.getStoredInstant().toString());
+    resp.addProperty("lastUpdateTime", ev.getLastUpdate().toString());
+    resp.addProperty("lastAccessTime", ev.getLastAccess().toString());
+    resp.addProperty("ttl", ev.getTTL().toMillis());
+    if(isJsonValue(value)) {
+      JsonParser jps = new JsonParser();
+      resp.add("value", jps.parse(value));
+    } else {
+      resp.addProperty("value", value);
+    }
+  }
+  
+  
   private void get(HttpServerExchange hse, String key) throws Exception {
-      if(PublicCache.contains(key)) {
-        this.putJsonHeader(hse);
-        JsonObject resp = new JsonObject();
-        DEntry<String,String> ev = PublicCache.getCache().getEntry(key);
-        String value = ev.getValue();
-        resp.addProperty("key", key);
-        resp.addProperty("entryStoreTime", ev.getStoredInstant().toString());
-        resp.addProperty("lastUpdateTime", ev.getLastUpdate().toString());
-        resp.addProperty("lastAccessTime", ev.getLastAccess().toString());
-        resp.addProperty("ttl", ev.getTTL().toMillis());
-        if(isJsonValue(value)) {
-          JsonParser jps = new JsonParser();
-          resp.add("value", jps.parse(value));
-        } else {
-          resp.addProperty("value", value);
-        }
-        hse.getResponseSender().send(gson.toJson(resp));
-        Logger.getLogger(getClass()).info("GET ["+ key+ "]");
-      }
-      else {
-        Logger.getLogger(getClass()).warn("Key Not Found: GET ["+ key+ "]");
-        hse.setStatusCode(400).setReasonPhrase(
-            "Bad Request. Key Not Found \""+ key+ "\""
+    if(hse.getQueryParameters().containsKey("value")) {
+      long ttl = DEFAULT_TTL;
+      if(hse.getQueryParameters().containsKey("ttl")) {
+        ttl = Long.parseLong(
+            hse.getQueryParameters().get("ttl").peekFirst()
         );
       }
+      PublicCache.getCache().put(key, 
+          hse.getQueryParameters().get("value").peekFirst(), 
+          Duration.ofSeconds(ttl)
+      );
+    }
+    if(PublicCache.contains(key)) {
+      this.putJsonHeader(hse);
+      JsonObject resp = new JsonObject();
+      DEntry<String,String> ev = PublicCache.getCache().getEntry(key);
+      this.getMethResponse(resp, ev);
+      hse.getResponseSender().send(gson.toJson(resp));
+      Logger.getLogger(getClass()).info("GET ["+ key+ "]");
+    }
+    else {
+      Logger.getLogger(getClass()).warn("Key Not Found: GET ["+ key+ "]");
+      hse.setStatusCode(400).setReasonPhrase(
+          "Bad Request. Key Not Found \""+ key+ "\""
+      );
+    }
   }
   
   

@@ -22,9 +22,9 @@
 package br.com.bb.disec.micro;
 
 import br.com.bb.disec.micro.conf.ServerConfig;
-import br.com.bb.disec.micro.handler.AuthenticationHandler;
+import br.com.bb.disec.micro.handler.AuthenticationServerHandler;
+import br.com.bb.disec.micro.handler.AuthenticationShieldHandler;
 import br.com.bb.disec.micro.handler.DispatcherHandler;
-import br.com.bb.disec.micro.handler.LogHandler;
 import br.com.bb.disec.micro.handler.ShutdownHandler;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
@@ -52,22 +52,22 @@ public class Server {
     this.config = conf;
     HttpHandler root = null;
     PathHandler ph = this.initPathHandler();
-    if(config.isLogHandlerEnabled()) {
-      root = new LogHandler(ph);
+    if(config.isAuthenticationShield()) {
+      root = new AuthenticationShieldHandler(ph);
     } else {
       root = ph;
+    }
+    if(config.isShutdownHandlerEnabled()) {
+      ph.addExactPath("/shutdown", new ShutdownHandler(this));
+    }
+    if(config.isAuthenticationServer()) {
+      ph.addPrefixPath("/auth", new AuthenticationServerHandler());
     }
     this.server = Undertow.builder()
         .setIoThreads(config.getIoThreads())
         .setWorkerOption(Options.WORKER_TASK_MAX_THREADS, config.getMaxWorkerThreads())
         .addHttpListener(config.getPort(), config.getAddress(), root)
         .build();
-    if(config.isShutdownHandlerEnabled()) {
-      ph.addExactPath("/shutdown", new ShutdownHandler(this));
-    }
-    if(config.isAuthenticationEnabled()) {
-      ph.addPrefixPath("/auth", new AuthenticationHandler());
-    }
   }
   
   

@@ -19,10 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.sso;
+package br.com.bb.disec.micro.client;
 
-import br.com.bb.sso.session.CookieName;
-import io.undertow.util.Headers;
+import io.undertow.server.HttpServerExchange;
 import java.io.IOException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -36,43 +35,27 @@ import org.apache.http.util.EntityUtils;
  */
 public class AuthenticationClient extends AbstractAuthClient {
   
-  private final String token;
   
-  
-  public AuthenticationClient(String address, int port, String context, String tokenSSO) {
+  public AuthenticationClient(String address, int port, String context) {
     super(address, port, context);
-    if(tokenSSO == null || tokenSSO.trim().isEmpty()) {
-      throw new IllegalArgumentException("Bad BBSSOToken: "+ tokenSSO);
-    }
-    this.token = tokenSSO;
   }
   
   
-  public static AuthenticationClient of(String address, int port, String context, String tokenSSO) {
-    return new AuthenticationClient(address, port, context, tokenSSO);
+  public static AuthenticationClient of(String address, int port, String context) {
+    return new AuthenticationClient(address, port, context);
   }
   
   
-  public static AuthenticationClient ofDefault(String context, String tokenSSO) {
-    return new AuthenticationClient(DEFAUTL_ADDRESS, DEFAULT_PORT, context, tokenSSO);
-  }
-  
-  
-  private String getSSOCookie() {
-    return new StringBuilder()
-        .append(CookieName.BBSSOToken.name())
-        .append("=")
-        .append(token)
-        .append(";")
-        .toString();
+  public static AuthenticationClient ofDefault() {
+    return new AuthenticationClient(DEFAUTL_ADDRESS, DEFAULT_PORT, DEFAULT_CONTEXT);
   }
   
   
   @Override
-  public AuthenticationClient doAuth() throws IOException {
-    Response resp = Request.Get(getUriString())
-        .addHeader(Headers.COOKIE_STRING, getSSOCookie())
-        .execute();
+  public AuthenticationClient doAuth(HttpServerExchange hse) throws IOException {
+    Request req = Request.Get(getUriString());
+    new AuthCookieManager().injectAuthCookies(req, hse);
+    Response resp = req.execute();
     HttpResponse hresp = resp.returnResponse();
     status = hresp.getStatusLine();
     jsonUser = EntityUtils.toString(hresp.getEntity());

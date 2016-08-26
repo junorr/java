@@ -19,53 +19,55 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.util;
+package br.com.bb.disec.micro.handler;
 
+import br.com.bb.disec.micro.client.AuthenticationClient;
+import br.com.bb.disec.micro.util.URIParam;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 25/07/2016
+ * @version 0.0 - 24/08/2016
  */
-public class StringPostParser implements HttpParser<String> {
+public class AuthenticationShieldHandler implements HttpHandler {
   
-  private final StringBuilder data;
+  public static final String AUTH_CONTEXT = "auth";
+  
+  private final HttpHandler next;
   
   
-  public StringPostParser() {
-    data = new StringBuilder();
+  public AuthenticationShieldHandler(HttpHandler next) {
+    this.next = next;
   }
   
   
-  public String getPostData() {
-    return data.toString();
-  }
-  
-  
-  private void resetPostData() {
-    data.delete(0, data.length());
+  public HttpHandler getNext() {
+    return next;
   }
   
 
   @Override
-  public String parseHttp(HttpServerExchange hse) throws IOException {
-    this.resetPostData();
-    hse.startBlocking();
-    BufferedReader read = new BufferedReader(
-        new InputStreamReader(hse.getInputStream())
-    );
-    String line = null;
-    while((line = read.readLine()) != null) {
-      if(!data.toString().isEmpty()) {
-        data.append("\n");
-      }
-      data.append(line);
+  public void handleRequest(HttpServerExchange hse) throws Exception {
+    if(hse.isInIoThread()) {
+      hse.dispatch(this);
+      return;
     }
-    return data.toString();
+    URIParam uri = new URIParam(hse.getRequestURI());
+    boolean donext = true;
+    if(!AUTH_CONTEXT.equals(uri.getContext())) {
+      AuthenticationClient acli = AuthenticationClient.ofDefault();
+      if(!acli.authenticate(hse)) {
+        hse.setStatusCode(401)
+            .setReasonPhrase("Unauthorized")
+            .endExchange();
+        donext = false;
+      }
+    }
+    if(donext && next != null) {
+      next.handleRequest(hse);
+    }
   }
 
 }

@@ -21,23 +21,24 @@
 
 package br.com.bb.micro.test;
 
-import br.com.bb.disec.micro.sso.AuthenticationClient;
-import br.com.bb.disec.micro.sso.SimAuthClient;
-import java.io.IOException;
+import br.com.bb.disec.micro.util.Identation;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/08/2016
+ * @version 0.0 - 26/08/2016
  */
-public class TestAuthClient {
+public class TestIdentation {
 
   
-  public static void main(String[] args) throws IOException {
-    String token = SimAuthClient.ofDefault("kanban", "F6036477").doAuth().getBBSSOToken();
-    AuthenticationClient ac = AuthenticationClient.ofDefault("kanban", token);
-    System.out.println("* Auth: "+ ac.authenticate());
-    System.out.println("* User: "+ ac.getUser());
+  public static void main(String[] args) {
+    Identation ident = new Identation(2, 0);
+    System.out.println("* ident='"+ ident.postIncrement()+ "'");
+    System.out.println("* ident='"+ ident.postIncrement()+ "'");
+    System.out.println("* ident='"+ ident.postIncrement()+ "'");
+    System.out.println("* ident='"+ ident.postDecrement()+ "'");
+    System.out.println("* ident='"+ ident.postDecrement()+ "'");
+    System.out.println("* ident='"+ ident.postDecrement()+ "'");
   }
   
 }

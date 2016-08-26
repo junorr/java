@@ -23,6 +23,7 @@ package br.com.bb.disec.micro.handler;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HttpString;
 import io.undertow.util.Methods;
 
 /**
@@ -43,6 +44,25 @@ public class SqlHandler implements HttpHandler {
     }
     else if(Methods.POST.equals(hse.getRequestMethod())) {
       new PostSqlHandler().handleRequest(hse);
+    }
+    else if(Methods.OPTIONS.equals(hse.getRequestMethod())) {
+      System.out.println("* Access-Control-Request-Method : "+ hse.getRequestHeaders().getFirst("Access-Control-Request-Method"));
+      System.out.println("* Access-Control-Request-Headers: "+ hse.getRequestHeaders().getFirst("Access-Control-Request-Headers"));
+      System.out.println("* Origin: "+ hse.getRequestHeaders().getFirst("origin"));
+      hse.getResponseHeaders().put(
+          new HttpString("Access-Control-Allow-Origin"), hse.getRequestHeaders().getFirst("origin")
+      );
+      hse.getResponseHeaders().put(
+          new HttpString("Access-Control-Allow-Credentials"), "true"
+      );
+      hse.getResponseHeaders().put(
+          new HttpString("Access-Control-Allow-Method"), hse.getRequestHeaders().getFirst("Access-Control-Request-Method")
+      );
+      hse.getResponseHeaders().put(
+          new HttpString("Access-Control-Allow-Headers"), hse.getRequestHeaders().getFirst("Access-Control-Request-Headers")
+      );
+      hse.setStatusCode(200);
+      hse.endExchange();
     }
     else {
       hse.setStatusCode(400).setReasonPhrase("Bad Request");

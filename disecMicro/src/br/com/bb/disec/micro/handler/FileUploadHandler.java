@@ -27,6 +27,7 @@ import br.com.bb.disec.micro.util.URIParam;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.form.FormData;
@@ -80,56 +81,31 @@ public class FileUploadHandler implements JsonHandler {
   }
   
   
-  private boolean isUploadAllowed(JsonArray resp, FileUploadConfig fuck, FormValue value) throws Exception {
+  private boolean isUploadAllowed(FileUploadConfig fuck, FormValue value) throws IOException {
     File f = value.getPath().toFile();
-    boolean success = true;
     if(f.length() > fuck.getMaxSize().getSize()) {
-      resp.add(buildJson(
-          false, 
-          "Bad Request. Max Size Exceeded ("
-              + fuck.getMaxSize()+ ")", 
-          value.getFileName(), 
-          f.getAbsolutePath(), 
-          f.length())
-      );
-      success = false;
+      throw new IOException("Max Size Exceeded ("+ fuck.getMaxSize()+ ")");
     }
     else if(!fuck.getAllowedExtensions().isEmpty() 
         && !fuck.getAllowedExtensions()
             .stream().filter(e->value.getFileName()
             .toLowerCase().endsWith(e.toLowerCase()))
             .findAny().isPresent()) {
-      resp.add(buildJson(
-          false, 
-          "Bad Request. Extension Not Allowed ("
-              + fuck.getAllowedExtensions().toString()+ ")", 
-          value.getFileName(), 
-          f.getAbsolutePath(), 
-          f.length())
-      );
-      success = false;
+      throw new IOException("Extension Not Allowed ("+ fuck.getAllowedExtensions()+ ")");
     }
-    return success;
+    return true;
   }
   
   
-  private FileUploadConfig readConfig(JsonArray resp, URIParam pars) throws Exception {
-    String aplicName = null;
-    try {
-      if(pars.length() < 1) {
-        throw new IOException("Aplic Name Not Informed");
-      }
-      aplicName = pars.getParam(0);
-      FileUploadConfig fuc = FileUploadConfig
-          .builder()
-          .load(aplicName)
-          .build();
-      return fuc;
-    } 
-    catch(IOException e) {
-      resp.add(buildJson(false, "Bad Application Name: "+ aplicName, null, null, 0));
-      return null;
+  private FileUploadConfig readConfig(URIParam pars) throws IOException {
+    if(pars.length() < 1) {
+      throw new IOException("Aplic Name Not Informed");
     }
+    FileUploadConfig fuc = FileUploadConfig
+        .builder()
+        .load(pars.getParam(0))
+        .build();
+    return fuc;
   }
   
   
@@ -142,41 +118,25 @@ public class FileUploadHandler implements JsonHandler {
     hse.startBlocking();
     JsonArray resp = new JsonArray();
     URIParam pars = new URIParam(hse.getRequestURI());
-    FileUploadConfig fuck = readConfig(resp, pars);
-    String aplicName = (pars.length() < 1 ? null : pars.getParam(0));
+    FileUploadConfig fuck = null;
+    try {
+      fuck = readConfig(pars);
+    } catch(IOException e) {
+      resp.add(buildJson(false, 
+          "Bad Application Name: "+ pars.getParam(0), 
+          null, null, 0)
+      );
+    }
     if(fuck != null) {
       FormParserFactory.Builder fbd = FormParserFactory.builder(true);
       fbd.setDefaultCharset("UTF-8");
       FormDataParser fp = fbd.build().createParser(hse);
       FormData data = fp.parseBlocking();
       for(String field : data) {
-        FormValue value = data.getFirst(field);
-        if(value.isFile()) {
-          if(isUploadAllowed(resp, fuck, value)) {
-            Path dest = fuck.getUploadDir().resolve(
-                aplicName + getExtFileName(value)
-            );
-            try {
-              Files.move(
-                  value.getPath(), dest, 
-                  StandardCopyOption.REPLACE_EXISTING
-              );
-              resp.add(buildJson(
-                  true, "OK", 
-                  value.getFileName(), 
-                  dest.toString(), 
-                  Files.size(dest))
-              );
-            } catch(IOException e) {
-              resp.add(buildJson(
-                  false, e.getMessage(), 
-                  value.getFileName(), 
-                  value.getPath().toString(), 
-                  Files.size(value.getPath()))
-              );
-            }
-          }
-        }//isFile
+        resp.add(this.doUpload(
+            fuck, data.getFirst(field), 
+            pars.getParam(0))
+        );
       }//for
     }//fuck != null
     this.setStatus(hse, resp);
@@ -195,5 +155,38 @@ public class FileUploadHandler implements JsonHandler {
       hse.setStatusCode(400).setReasonPhrase("Bad Request");
     }
   }
+  
+  
+  private JsonElement doUpload(FileUploadConfig fuck, FormValue value, String name) {
+    JsonElement elt = null;
+    long fsize = 0;
+    if(value.isFile()) {
+      try {
+        if(isUploadAllowed(fuck, value)) {
+          fsize = Files.size(value.getPath());
+          Path dest = fuck.getUploadDir().resolve(
+              name + getExtFileName(value)
+          );
+          Files.move(
+              value.getPath(), dest, 
+              StandardCopyOption.REPLACE_EXISTING
+          );
+          elt = buildJson(true, "OK", 
+              value.getFileName(), 
+              dest.toString(), fsize
+          );
+        }
+      } catch(IOException e) {
+        elt = buildJson(false, 
+            "Bad Request. "+ e.getMessage(), 
+            value.getFileName(), 
+            value.getPath().toString(), 
+            fsize
+        );
+      }
+    }
+    return elt;
+  }
+  
     
 }
