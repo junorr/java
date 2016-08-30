@@ -36,7 +36,7 @@ import java.sql.Statement;
  */
 public class TestJsonResultSet {
   
-  public static void main(String[] args) throws IOException, SQLException {
+  public static void main(String[] args) throws IOException, SQLException {/*
     ConnectionPool pool = ConnectionPool.createPool("default");
     Connection cn = pool.getConnection();
     Statement st = cn.createStatement();
@@ -45,7 +45,7 @@ public class TestJsonResultSet {
     System.out.println(jrs.getJsonObject().getPath().toAbsolutePath().toString());
     jrs.getJsonObject().close();
     pool.close(cn, st, rs);
-    pool.closeDataSource();
+    pool.closeDataSource();*/
   }
   
 }

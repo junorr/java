@@ -21,28 +21,32 @@
 
 package br.com.bb.disec.micro.json;
 
-import com.google.gson.GsonBuilder;
+import br.com.bb.disec.micro.util.JsonFileChannel;
+import br.com.bb.disec.micro.util.JsonFileWriter;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
-import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/07/2016
  */
-public class JsonResultSet {
-  
+public class JsonResultSet_FileChannel {
+  /*
   public static final String FCOLUMNS = "columns";
   
   public static final String FROWS = "rows";
@@ -56,29 +60,35 @@ public class JsonResultSet {
   public static final String FTYPES = "types";
   
   
+  private final JsonFileChannel channel;
+  
   private JsonObject json;
+  
+  private int count, columns;
   
   private final ResultSet rset;
   
   
-  public JsonResultSet(ResultSet rs) {
+  public JsonResultSet_FileChannel(ResultSet rs) throws IOException {
     if(rs == null) {
       throw new IllegalArgumentException("Bad Null ResultSet");
     }
     this.rset = rs;
+    channel = JsonFileChannel.temp();
+    json = 
   }
   
   
-  public JsonResultSet(JsonObject json) {
-    if(json == null) {
-      throw new IllegalArgumentException("Bad Null JsonObject");
+  public JsonResultSet_FileChannel(JsonFileChannel channel) {
+    if(channel == null) {
+      throw new IllegalArgumentException("Bad Null JsonFileChannel");
     }
-    this.json = json;
     this.rset = null;
+    this.channel = channel;
   }
   
   
-  public JsonObject getJsonObject() throws SQLException {
+  public JsonFileWriter getJsonFileWriter() throws SQLException, IOException {
     if(json == null) {
       this.serialize();
     }
@@ -86,55 +96,90 @@ public class JsonResultSet {
   }
   
   
-  public String toJson() throws SQLException {
-    if(json == null) {
-      this.serialize();
-    }
-    return new GsonBuilder().registerTypeAdapter(
-        Double.class, new JsonDouble())
-        .setPrettyPrinting()
-        .create().toJson(json);
+  private String measure() throws SQLException {
+    JsonObject obj = new JsonObject();
+    ResultSetMetaData meta = rset.getMetaData();
+    for(int i = 1; i <= columns; i++) {
+      if(rset.next()) {
+        String label = meta.getColumnLabel(i);
+        int type = meta.getColumnType(i);
+        if(isBoolean(type)) {
+          obj.addProperty(label, rset.getBoolean(i));
+        }
+        else if(isDateTime(type)) {
+          obj.addProperty(label, Objects.toString(
+              LocalDateTime.ofInstant(
+                  Instant.ofEpochMilli(
+                      rset.getTimestamp(i).getTime()), 
+                  ZoneId.systemDefault()
+              )
+          ));
+        }
+        else if(isDecimal(type)) {
+          obj.addProperty(label, rset.getDouble(i));
+        }
+        else if(isNumber(type)) {
+          obj.addProperty(label, rset.getLong(i));
+        }
+        else {
+          obj.addProperty(label, rset.getString(i));
+        }
+      }//next
+    }//for
+    return new Gson().toJson(obj);
   }
   
   
-  public String toPrettyPrintJson() throws SQLException {
-    if(json == null) {
-      this.serialize();
-    }
-    return new GsonBuilder().registerTypeAdapter(
-        Double.class, new JsonDouble())
-        .setPrettyPrinting()
-        .create().toJson(json);
+  private JsonObject createHeader() {
+    JsonObject obj = new JsonObject();
+    obj.addProperty("json-start", Long.MAX_VALUE);
+    obj.addProperty("data-start", Long.MAX_VALUE);
+    obj.addProperty("entries-count", Long.MAX_VALUE);
+    obj.addProperty("entry-length", Long.MAX_VALUE);
+    obj.addProperty("trash", "0");
+    return obj;
   }
   
   
-  private JsonResultSet serialize() throws SQLException {
+  private JsonResultSet_FileChannel serialize() throws SQLException, IOException {
     if(rset == null && json != null) {
       return this;
     }
     try {
-      json = new JsonObject();
-      JsonArray data = new JsonArray();
+      json = JsonFileWriter.temp();
       ResultSetMetaData meta = rset.getMetaData();
-      int cols = meta.getColumnCount();
-      json.add(FCOLUMNS, this.getColumns(meta));
-      json.add(FTYPES, this.getTypes(meta));
+      columns = meta.getColumnCount();
+      json.startObject()
+          .startArray(FCOLUMNS);
+      this.putColumns(meta);
+      json.endArray()
+          .nextElement()
+          .startArray(FTYPES);
+      this.putTypes(meta);
+      json.endArray()
+          .nextElement()
+          .startArray(FDATA);
+      count = 0;
       while(rset.next()) {
-        JsonObject entry = new JsonObject();
-        for(int i = 1; i <= cols; i++) {
-          String label = meta.getColumnLabel(i);
+        if(count > 0) {
+          json.nextElement();
+        }
+        json.startObject();
+        for(int i = 1; i <= columns; i++) {
           if(rset.getObject(i) != null) {
-            entry.add(label, getElement(rset, i));
+            this.putElement(rset, i);
+            if(i < columns) json.nextElement();
           }
         }
-        data.add(entry);
+        json.endObject();
+        count++;
       }
-      json.addProperty(FROWS, data.size());
-      json.addProperty(FTOTAL, data.size());
-      json.add(FDATA, data);
-    }
-    catch(Exception ex) {
-      throw new SQLException(ex.getMessage(), ex);
+      json.endArray()
+          .nextElement()
+          .put(FROWS, count)
+          .nextElement()
+          .put(FTOTAL, count)
+          .endObject();
     }
     finally {
       rset.close();
@@ -144,29 +189,22 @@ public class JsonResultSet {
   
   
   public int getRows() {
-    int rows = 0;
-    if(json != null) {
-      rows = json.get(FROWS).getAsInt();
-    }
-    return rows;
+    return count;
   }
   
   
   public int getColumns() {
-    int cols = 0;
-    if(json != null) {
-      cols = json.get(FCOLUMNS).getAsJsonArray().size();
-    }
-    return cols;
+    return columns;
   }
   
   
-  public JsonResultSet filter(int col, String value) {
+  public JsonResultSet_FileChannel filter(int col, String value) {
     if(col >= 0 
         && col < getColumns() 
         && value != null 
         && !value.trim().isEmpty()) 
     {
+      /*
       List<JsonElement> list = this.toList(json.getAsJsonArray(FDATA));
       JsonArray array = new JsonArray();
       String scol = json.getAsJsonArray(FCOLUMNS)
@@ -182,13 +220,15 @@ public class JsonResultSet {
       json.add("filter", obj);
       json.addProperty(FROWS, array.size());
       json.add(FDATA, array);
+      
     }
     return this;
   }
   
   
-  public JsonResultSet sort(int col, boolean asc) {
+  public JsonResultSet_FileChannel sort(int col, boolean asc) {
     if(col >= 0 && col < getColumns()) {
+      /*
       List<JsonElement> list = toList(json.getAsJsonArray(FDATA));
       JsonArray array = new JsonArray();
       String type = json.getAsJsonArray(FTYPES)
@@ -203,12 +243,14 @@ public class JsonResultSet {
       obj.addProperty("asc", asc);
       json.add("sort", obj);
       json.add(FDATA, array);
+      
     }
     return this;
   }
   
   
-  public JsonResultSet limit(int[] limit) {
+  public JsonResultSet_FileChannel limit(int[] limit) {
+    /*
     List<JsonElement> list = this.toList(json.getAsJsonArray(FDATA));
     JsonArray array = new JsonArray();
     list.stream()
@@ -221,6 +263,7 @@ public class JsonResultSet {
     json.add(FLIMIT, alim);
     json.addProperty(FROWS, array.size());
     json.add(FDATA, array);
+    
     return this;
   }
   
@@ -239,18 +282,16 @@ public class JsonResultSet {
   }
   
   
-  private JsonArray getColumns(ResultSetMetaData meta) throws SQLException {
-    JsonArray array = new JsonArray();
+  private void putColumns(ResultSetMetaData meta) throws SQLException, IOException {
     int cols = meta.getColumnCount();
     for(int i = 1; i <= cols; i++) {
-      array.add(meta.getColumnLabel(i));
+      json.put(meta.getColumnLabel(i));
+      if(i < cols) json.nextElement();
     }
-    return array;
   }
   
   
-  public JsonArray getTypes(ResultSetMetaData meta) throws SQLException {
-    JsonArray types = new JsonArray();
+  public void putTypes(ResultSetMetaData meta) throws SQLException, IOException {
     int cols = meta.getColumnCount();
     for(int i = 1; i <= cols; i++) {
       String type = "string";
@@ -266,33 +307,33 @@ public class JsonResultSet {
       else if(isNumber(meta.getColumnType(i))) {
         type = "number";
       }
-      types.add(type);
+      json.put(type);
+      if(i < cols) json.nextElement();
     }
-    return types;
   }
   
   
-  private JsonElement getElement(ResultSet r, int col) throws SQLException {
-    JsonElement elt;
+  private void putElement(ResultSet r, int col) throws SQLException, IOException {
     int type = r.getMetaData().getColumnType(col);
+    String label = r.getMetaData().getColumnLabel(col);
     if(isNumber(type)) {
-      elt = new JsonPrimitive(r.getLong(col));
+      json.put(label, r.getLong(col));
     } 
     else if(isDecimal(type)) {
-      elt = new JsonPrimitive(r.getDouble(col));
+      DecimalFormat df = new DecimalFormat("0.00########");
+      df.setNegativePrefix("-");
+      df.getDecimalFormatSymbols().setDecimalSeparator('.');
+      json.put(label, df.format(r.getDouble(col)));
     }
     else if(isBoolean(type)) {
-      elt = new JsonPrimitive(r.getBoolean(col));
+      json.put(label, r.getBoolean(col));
     }
     else if(isDateTime(type)) {
-      SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-      Timestamp ts = r.getTimestamp(col);
-      elt = new JsonPrimitive(df.format(new Date(ts.getTime())));
+      json.put(label, r.getTimestamp(col));
     }
     else {
-      elt = new JsonPrimitive(r.getString(col));
+      json.put(label, r.getString(col));
     }
-    return elt;
   }
   
   
@@ -325,5 +366,5 @@ public class JsonResultSet {
   private boolean isBoolean(int type) {
     return type == Types.BOOLEAN;
   }
-  
+  */
 }

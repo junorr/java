@@ -21,23 +21,14 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.client.PublicCacheClient;
-import br.com.bb.disec.micro.db.ConnectionPool;
-import br.com.bb.disec.micro.db.PoolFactory;
-import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.util.StringPostParser;
-import br.com.bb.disec.micro.db.SqlSourcePool;
-import br.com.bb.disec.micro.json.JsonResultSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HttpString;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.Optional;
 import org.jboss.logging.Logger;
 
 /**
@@ -57,7 +48,8 @@ public class PostSqlHandler implements JsonHandler {
     try {
       JsonObject json = this.parseJson(hse);
       this.validateJson(json);
-      this.setResponse(hse, json, this.getResultSet(hse, json));
+      this.putJsonHeader(hse);
+      new CachedSqlExecutor().exec(hse, json);
     }
     catch(IOException | NumberFormatException | SQLException e) {
       hse.setStatusCode(400)
@@ -75,23 +67,6 @@ public class PostSqlHandler implements JsonHandler {
   }
   
   
-  private JsonResultSet getResultSet(HttpServerExchange hse, JsonObject json) throws SQLException, IOException {
-    PublicCacheClient cli = PublicCacheClient.ofDefault(hse);
-    JsonResultSet jrs = null;
-    String key = json.get("group").getAsString() 
-        + "-" + json.get("query").getAsString();
-    Optional<JsonObject> opt = cli.getJson(key);
-    if(opt.isPresent()) {
-      jrs = new JsonResultSet(opt.get());
-    }
-    else {
-      jrs = this.exec(json, this.getDBName(json));
-      cli.put(key, jrs.getJsonObject());
-    }
-    return jrs;
-  }
-  
-  
   private JsonObject parseJson(HttpServerExchange hse) throws IOException {
     return new JsonParser().parse(
         new StringPostParser().parseHttp(hse)
@@ -105,15 +80,6 @@ public class PostSqlHandler implements JsonHandler {
       Logger.getLogger(getClass()).warn(msg);
       throw new IllegalArgumentException(msg);
     }
-  }
-  
-  
-  private String getDBName(JsonObject json) {
-    String db = ConnectionPool.DEFAULT_DB_NAME;
-    if(json.has("db")) {
-      db = json.get("db").getAsString();
-    }
-    return db;
   }
   
   
@@ -138,71 +104,4 @@ public class PostSqlHandler implements JsonHandler {
     return args;
   }
   
-  
-  private void applySort(JsonObject json, JsonResultSet jrs) {
-    if(json.has("sortBy")) {
-      boolean asc = (!json.has("sortAsc") ? true
-          : json.get("sortAsc").getAsBoolean());
-      jrs.sort(json.get("sortBy").getAsInt(), asc);
-    }
-  }
-
-  
-  private void applyFilter(JsonObject json, JsonResultSet jrs) {
-    if(json.has("filterBy") && json.has("filter")) {
-      jrs.filter(
-          json.get("filterBy").getAsInt(), 
-          json.get("filter").getAsString()
-      );
-    }
-  }
-  
-  
-  private void appyLimit(JsonObject json, JsonResultSet jrs) {
-    if(json.has("limit")) {
-      int limit[] = new int[2];
-      if(json.get("limit").isJsonPrimitive()) {
-        limit[1] = json.get("limit").getAsInt();
-      }
-      else if(json.get("limit").isJsonArray()) {
-        JsonArray alim = json.getAsJsonArray("limit");
-        limit[0] = (alim.size() > 1 
-            ? alim.get(0).getAsInt() : 0
-        );
-        limit[1] = (alim.size() > 1 
-            ? alim.get(1).getAsInt() 
-            : alim.get(0).getAsInt()
-        );
-      }
-      jrs.limit(limit);
-    }
-  }
-
-  
-  private void setResponse(HttpServerExchange hse, JsonObject json, JsonResultSet jrs) throws SQLException {
-    this.applyFilter(json, jrs);
-    this.appyLimit(json, jrs);
-    this.applySort(json, jrs);
-    String resp = jrs.toPrettyPrintJson();
-    if(json.has("callback")) {
-      resp = json.get("callback").getAsString()
-          + "(" + resp + ");";
-    }
-    this.putJsonHeader(hse);
-    hse.getResponseSender().send(resp.concat("\n"), Charset.forName("UTF-8"));
-  }
-  
-  
-  private JsonResultSet exec(JsonObject json, String dbname) throws SQLException, IOException {
-    SqlQuery sq = new SqlQuery(
-        PoolFactory.getPool(dbname).getConnection(), 
-        SqlSourcePool.getDefaultSqlSource()
-    );
-    return sq.exec(
-        json.get("group").getAsString(),
-        json.get("query").getAsString(), 
-        this.getArguments(json)
-    );
-  }
-
 }

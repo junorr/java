@@ -25,6 +25,7 @@ import br.com.bb.disec.micro.json.JsonResultSet;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import us.pserver.timer.Timer;
 
@@ -39,6 +40,10 @@ public class SqlQuery {
   
   private final SqlSource source;
   
+  private PreparedStatement statement;
+  
+  private ResultSet result;
+  
   
   public SqlQuery(Connection con, SqlSource source) {
     if(con == null) {
@@ -50,9 +55,24 @@ public class SqlQuery {
     this.connection = con;
     this.source = source;
   }
+  
+  
+  public void close() {
+    try { result.close(); }
+    catch(SQLException e) {}
+    try { statement.close(); }
+    catch(SQLException e) {}
+    try { connection.close(); }
+    catch(SQLException e) {}
+  }
+  
+  
+  public ResultSet getResultSet() {
+    return result;
+  }
 
 
-  public JsonResultSet exec(String group, String query, Object ... args) throws SQLException, IOException {
+  public ResultSet execResultSet(String group, String query, Object ... args) throws SQLException, IOException {
     if(group == null) {
       throw new IllegalArgumentException("Bad Null Group Name");
     }
@@ -61,16 +81,26 @@ public class SqlQuery {
     }
     Timer tm = new Timer.Nanos();
     tm.start();
-    PreparedStatement ps = connection
-        .prepareStatement(source.getSql(group, query));
-    try {
-      if(args != null && args.length > 0) {
-        for(int i = 0; i < args.length; i++) {
-          ps.setObject(i+1, args[i]);
-        }
+    statement = connection.prepareStatement(
+        source.getSql(group, query)
+    );
+    if(args != null && args.length > 0) {
+      for(int i = 0; i < args.length; i++) {
+        statement.setObject(i+1, args[i]);
       }
-      System.out.println("* SqlQuery.exec: "+ ps);
-      JsonResultSet jrs = new JsonResultSet(ps.executeQuery());
+    }
+    System.out.println("* SqlQuery.exec: "+ statement);
+    result = statement.executeQuery();
+    System.out.println("* db   time: "+ tm.lapAndStop());
+    return result;
+  }
+  
+  
+  public JsonResultSet exec(String group, String query, Object ... args) throws SQLException, IOException {
+    try {
+      execResultSet(group, query, args);
+      Timer tm = new Timer.Nanos().start();
+      JsonResultSet jrs = new JsonResultSet(result);
       System.out.println("* db   time: "+ tm.lapAndStop());
       tm.clear().start();
       jrs.getJsonObject();
@@ -78,8 +108,7 @@ public class SqlQuery {
       return jrs;
     }
     finally {
-      ps.close();
-      connection.close();
+      this.close();
     }
   }
   
