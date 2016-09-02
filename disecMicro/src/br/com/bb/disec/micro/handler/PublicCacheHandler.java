@@ -22,18 +22,21 @@
 package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.util.StringPostParser;
-import br.com.bb.disec.micro.cache.PublicCache;
-import br.com.bb.disec.micro.client.AuthenticationClient;
+import br.com.bb.disec.micro.db.MongoConnectionPool;
+import br.com.bb.disec.micro.util.JsonSender;
 import br.com.bb.disec.micro.util.URIParam;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.util.JSON;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Methods;
-import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import org.bson.Document;
 import org.jboss.logging.Logger;
-import us.pserver.dropmap.DMap.DEntry;
 
 /**
  *
@@ -44,14 +47,9 @@ public class PublicCacheHandler implements JsonHandler {
   
   public static final long DEFAULT_TTL = 20 * 60; //20 MIN. IN SEC.
   
-  private final Gson gson;
+  public static final String DEFAULT_COLLECTION = "public";
   
   
-  public PublicCacheHandler() {
-    gson = new GsonBuilder().setPrettyPrinting().create();
-  }
-  
-
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     if(hse.isInIoThread()) {
@@ -88,9 +86,16 @@ public class PublicCacheHandler implements JsonHandler {
   }
   
   
-  private boolean isJsonValue(String value) {
-    return (value.startsWith("{") && value.endsWith("}")) 
-        || (value.startsWith("[") && value.endsWith("]"));
+  private void createIndex(MongoCollection<Document> col, long ttl) {
+    try { col.dropIndex("created"); }
+    catch(Exception e) {}
+    try {
+      col.createIndex(
+          new Document("created", 1), 
+          new IndexOptions().expireAfter(
+              ttl, TimeUnit.SECONDS)
+      );
+    } catch(Exception e) {}
   }
   
   
@@ -106,50 +111,74 @@ public class PublicCacheHandler implements JsonHandler {
     if(pars.length() > 1 && pars.isNumber(1)) {
       ttl = pars.getNumber(1).longValue();
     }
-    PublicCache.getCache().put(
-        key, post, 
-        Duration.ofSeconds(ttl)
+    MongoCollection<Document> col = MongoConnectionPool.collection(
+        MongoConnectionPool.DEFAULT_DB, key
+    );
+    this.createIndex(col, ttl);
+    Instant now = Instant.now();
+    Document doc = new Document()
+        .append("key", key)
+        .append("created", new Date())
+        .append("store", now.getEpochSecond())
+        .append("update", now.getEpochSecond())
+        .append("access", now.getEpochSecond())
+        .append("ttl", ttl)
+        .append("value", JSON.parse(post));
+    col.replaceOne(
+        new Document("key", key), doc, 
+        new UpdateOptions().upsert(true)
     );
     Logger.getLogger(getClass()).info("PUT ["+ key+ "]");
   }
   
   
-  private void getMethResponse(JsonObject resp, DEntry<String,String> ev) {
-    String value = ev.getValue();
-    resp.addProperty("key", ev.getKey());
-    resp.addProperty("entryStoreTime", ev.getStoredInstant().toString());
-    resp.addProperty("lastUpdateTime", ev.getLastUpdate().toString());
-    resp.addProperty("lastAccessTime", ev.getLastAccess().toString());
-    resp.addProperty("ttl", ev.getTTL().toMillis());
-    if(isJsonValue(value)) {
-      JsonParser jps = new JsonParser();
-      resp.add("value", jps.parse(value));
-    } else {
-      resp.addProperty("value", value);
-    }
+  private void sendDoc(HttpServerExchange hse, Document doc) {
+    JsonSender send = new JsonSender(hse.getResponseSender());
+    send.startObject()
+        .put("key", doc.getString("key"))
+        .nextElement()
+        .put("storeTime", Instant.ofEpochSecond(
+            doc.getLong("store")).toString())
+        .nextElement()
+        .put("updateTime", Instant.ofEpochSecond(
+            doc.getLong("update")).toString())
+        .nextElement()
+        .put("accessTime", Instant.ofEpochSecond(
+            doc.getLong("access")).toString())
+        .nextElement()
+        .put("ttl", doc.getLong("ttl"))
+        .nextElement()
+        .put("value").write(":")
+        .write(JSON.serialize(doc.get("value")))
+        .endObject()
+        .flush();
   }
   
   
   private void get(HttpServerExchange hse, String key) throws Exception {
-    if(hse.getQueryParameters().containsKey("value")) {
-      long ttl = DEFAULT_TTL;
-      if(hse.getQueryParameters().containsKey("ttl")) {
-        ttl = Long.parseLong(
-            hse.getQueryParameters().get("ttl").peekFirst()
-        );
-      }
-      PublicCache.getCache().put(key, 
-          hse.getQueryParameters().get("value").peekFirst(), 
-          Duration.ofSeconds(ttl)
+    MongoCollection<Document> col = MongoConnectionPool.collection(
+        MongoConnectionPool.DEFAULT_DB, key
+    );
+    Document doc = col.find(new Document("key", key)).first();
+    if(doc != null) {
+      long store = doc.getLong("store");
+      long ttl = doc.getLong("ttl");
+      Instant now = Instant.now();
+      col.findOneAndUpdate(
+          new Document("key", key), 
+          new Document("$set", new Document(
+              "access", now.getEpochSecond()
+          ))
       );
-    }
-    if(PublicCache.contains(key)) {
-      this.putJsonHeader(hse);
-      JsonObject resp = new JsonObject();
-      DEntry<String,String> ev = PublicCache.getCache().getEntry(key);
-      this.getMethResponse(resp, ev);
-      hse.getResponseSender().send(gson.toJson(resp));
-      Logger.getLogger(getClass()).info("GET ["+ key+ "]");
+      ttl = Instant.ofEpochSecond(store)
+          .plus(ttl, ChronoUnit.SECONDS)
+          .getEpochSecond() - now.getEpochSecond();
+      if(ttl < 0) {
+        col.drop();
+      }
+      doc.replace("ttl", ttl);
+      doc.replace("access", now.getEpochSecond());
+      this.sendDoc(hse, doc);
     }
     else {
       Logger.getLogger(getClass()).warn("Key Not Found: GET ["+ key+ "]");
@@ -162,8 +191,12 @@ public class PublicCacheHandler implements JsonHandler {
   
   private void delete(HttpServerExchange hse, String key) throws Exception {
     Logger.getLogger(getClass()).info("DELETE ["+ key+ "]");
-    if(PublicCache.contains(key)) {
-      PublicCache.getCache().remove(key);
+    MongoCollection<Document> col = MongoConnectionPool.collection(
+        MongoConnectionPool.DEFAULT_DB, key
+    );
+    Document doc = col.find(new Document("key", key)).first();
+    if(doc != null) {
+      col.drop();
     }
     else {
       Logger.getLogger(getClass()).warn("Key Not Found: DELETE ["+ key+ "]");

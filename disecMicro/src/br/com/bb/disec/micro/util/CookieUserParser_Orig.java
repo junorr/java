@@ -21,21 +21,14 @@
 
 package br.com.bb.disec.micro.util;
 
-import br.com.bb.disec.micro.db.MongoConnectionPool;
+import br.com.bb.disec.micro.cache.UserCache;
 import br.com.bb.disec.micro.sso.MicroSSOUserFactory;
 import br.com.bb.sso.bean.User;
 import br.com.bb.sso.session.CookieName;
-import com.google.gson.Gson;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.IndexOptions;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.util.JSON;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.Cookie;
 import java.io.IOException;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-import org.bson.Document;
+import java.time.Duration;
 import org.jboss.logging.Logger;
 
 /**
@@ -43,11 +36,7 @@ import org.jboss.logging.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 17/08/2016
  */
-public class CookieUserParser implements HttpParser<User> {
-  
-  public static final String SESSION_COLLECTION = "session";
-  
-  public static final long DEFAULT_SESSION_TIME = 30 * 60; //30 min. in sec.
+public class CookieUserParser_Orig implements HttpParser<User> {
 
   
   @Override
@@ -64,54 +53,19 @@ public class CookieUserParser implements HttpParser<User> {
       user = getFromSSO(hse);
     }
     if(user != null) {
-      this.cacheUser(user, hash);
+      UserCache.getUsers().put(
+          hash.getValue(), user, Duration.ofMinutes(30)
+      );
     }
     return user;
   }
   
   
-  private void cacheUser(User user, Cookie hash) {
-    MongoCollection<Document> col = MongoConnectionPool.collection(
-        MongoConnectionPool.DEFAULT_DB, 
-        SESSION_COLLECTION
-    );
-    try {
-      col.createIndex(
-          new Document("created", 1), 
-          new IndexOptions().expireAfter(
-              DEFAULT_SESSION_TIME, TimeUnit.SECONDS)
-      );
-    } catch(Exception e) {}
-    Gson gson = new Gson();
-    Document duser = new Document()
-        .append("created", new Date())
-        .append(CookieName.BBSSOToken.name(), hash.getValue())
-        .append("user", JSON.parse(gson.toJson(user)));
-    col.replaceOne(new Document(
-        CookieName.BBSSOToken.name(), 
-        hash.getValue()), duser, 
-        new UpdateOptions().upsert(true)
-    );
-  }
-  
-  
   private User getFromCache(Cookie hash) {
     User user = null;
-    if(hash != null) {
-      MongoCollection<Document> col = MongoConnectionPool.collection(
-          MongoConnectionPool.DEFAULT_DB, 
-          SESSION_COLLECTION
-      );
-      Document sess = col.find(new Document(
-          CookieName.BBSSOToken.name(), 
-          hash.getValue())
-      ).first();
-      if(sess != null) {
-        Gson gson = new Gson();
-        String json = JSON.serialize(sess.get("user"));
-        user = gson.fromJson(json, User.class);
-        Logger.getLogger(getClass()).info("Cached ("+ hash.getValue()+ "): "+ user.toString());
-      }
+    if(hash != null && UserCache.contains(hash.getValue())) {
+      user = UserCache.get(hash.getValue());
+      Logger.getLogger(getClass()).info("Cached ("+ hash.getValue()+ "): "+ user.toString());
     }
     return user;
   }

@@ -56,10 +56,13 @@ public class SqlHandler implements HttpHandler {
           new HttpString("Access-Control-Allow-Credentials"), "true"
       );
       hse.getResponseHeaders().put(
-          new HttpString("Access-Control-Allow-Method"), hse.getRequestHeaders().getFirst("Access-Control-Request-Method")
+          new HttpString("Access-Control-Allow-Method"), 
+          hse.getRequestHeaders().getFirst("Access-Control-Request-Method")
       );
       hse.getResponseHeaders().put(
-          new HttpString("Access-Control-Allow-Headers"), hse.getRequestHeaders().getFirst("Access-Control-Request-Headers")
+          new HttpString("Access-Control-Allow-Headers"), 
+          hse.getRequestHeaders().getFirst("Access-Control-Request-Headers")
+          + ", X-BBSSOToken, X-ssoacr"
       );
       hse.setStatusCode(200);
       hse.endExchange();

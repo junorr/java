@@ -22,7 +22,9 @@
 package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.db.MongoConnectionPool;
-import com.google.gson.Gson;
+import br.com.bb.disec.micro.util.DateParser;
+import br.com.bb.disec.micro.util.JsonSender;
+import br.com.bb.disec.micro.util.SqlJsonType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mongodb.client.FindIterable;
@@ -30,6 +32,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.util.JSON;
+import com.sun.istack.internal.logging.Logger;
 import io.undertow.io.IoCallback;
 import io.undertow.io.Sender;
 import io.undertow.server.HttpServerExchange;
@@ -41,8 +44,10 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.bson.Document;
 import us.pserver.timer.Timer;
 
@@ -72,15 +77,13 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
   
   @Override
   public void exec(HttpServerExchange hse, JsonObject req) throws Exception {
-    String colname = req.get("group").getAsString() 
-        + "_" + req.get("query").getAsString();
-    MongoCollection<Document> col = this.getCollection(colname);
+    MongoCollection<Document> col = this.getCollection(req);
     if(!isCached) {
       super.exec(hse, req);
       Timer tm = new Timer.Nanos().start();
       doCache(col);
-      setMetaData(col, colname);
-      System.out.println("* mongo insert time: "+ tm.lapAndStop());
+      setMetaData(col, calcHash(req));
+      //System.out.println("* mongo insert time: "+ tm.lapAndStop());
       query.close();
     }
     this.setResponse(hse, req, col);
@@ -126,32 +129,37 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
     );
     MongoCursor<Document> cur = result.iterator();
     Sender sender = hse.getResponseSender();
-    String sobj = "{\"columns\":" 
-        + JSON.serialize(columns) 
-        + ",\"total\":"+ total+ ",\"data\":[";
-    sender.send(sobj, callback);
+    JsonSender js = new JsonSender(sender);
+    js.startObject()
+        .put("columns")
+        .write(":")
+        .write(JSON.serialize(columns))
+        .nextElement()
+        .put("total", total)
+        .nextElement()
+        .startArray("data");
     Timer tm = new Timer.Nanos().start();
-    this.sendDocs(sender, cur);
-    System.out.println("* mongo find time: "+ tm.lapAndStop());
-    sender.send("],\"count\":"+ count+ "}");
+    this.sendDocs(js, cur);
+    //System.out.println("* mongo find time: "+ tm.lapAndStop());
+    js.endArray()
+        .nextElement()
+        .put("count", count)
+        .endObject()
+        .flush();
     hse.endExchange();
   }
   
   
-  private void sendDocs(Sender sender, MongoCursor<Document> cur) {
-    Document next = (cur.hasNext() ? cur.next() : null);
+  private void sendDocs(JsonSender sender, MongoCursor<Document> cur) {
     count = 0;
+    Document next = (cur.hasNext() ? cur.next() : null);
     do {
-      String json = "";
       if(next != null) {
-        json = JSON.serialize(next);
+        sender.write(JSON.serialize(next));
         count++;
       }
       next = (cur.hasNext() ? cur.next() : null);
-      if(next != null) json += ",";
-      if(!json.isEmpty()) {
-        sender.send(json, callback);
-      }
+      if(next != null) sender.nextElement();
     } while(next != null);
   }
   
@@ -193,10 +201,13 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
   
   
   private Object getJsonValue(String str) {
-    Object val = str;
+    Object val = null;
     if("true".equalsIgnoreCase(str)
         || "false".equalsIgnoreCase(str)) {
       val = Boolean.parseBoolean(str);
+    }
+    else if(DateParser.isDateString(str)) {
+      val = DateParser.parser(str).toDate();
     }
     else {
       try {
@@ -214,10 +225,24 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
     ResultSetMetaData meta = rs.getMetaData();
     int cols = meta.getColumnCount();
     Document doc = new Document().append("created", new Date());
+    SqlJsonType jt = new SqlJsonType();
     for(int i = 1; i <= cols; i++) {
-      doc.append(meta.getColumnLabel(i), rs.getObject(i));
+      doc.append(meta.getColumnLabel(i), jt.getObject(rs, i));
     }
     return doc;
+  }
+  
+  
+  private String calcHash(JsonObject json) {
+    String input = json.get("group").getAsString()
+        + json.get("query").getAsString();
+    if(json.has("args")) {
+      JsonArray args = json.getAsJsonArray("args");
+      for(int i = 0; i < args.size(); i++) {
+        input += Objects.toString(args.get(i));
+      }
+    }
+    return DigestUtils.md5Hex(input);
   }
   
   
@@ -225,29 +250,17 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
     Document query = new Document();
     query.append("collection", colname);
     Document doc = col.find(query).first();
-    System.out.println("* isCached.doc: "+ doc);
     isCached = doc != null;
-    if(isCached) {
-      if(doc.containsKey("total")) {
-        total = doc.getInteger("total");
-      }
-      if(doc.containsKey("columns")) {
-        columns = (List<String>) doc.get("columns");
-      }
-      Instant max = Instant.ofEpochMilli(doc.getDate("created").getTime() + DEFAULT_CACHE_TIME);
-      isCached = Instant.now().isBefore(max);
-    }
-    System.out.println("* isCached: "+ isCached);
+    Logger.getLogger(getClass()).info("collection("+ colname+ ") cached: "+ isCached);
     return isCached;
   }
   
   
-  private MongoCollection<Document> createCollection(String colname) {
+  private MongoCollection<Document> createCollection(String colname, long ttl) {
     MongoCollection<Document> col = MongoConnectionPool.collection(DEFAULT_DB, colname);
     col.createIndex(
         new Document().append("created", 1),
-        new IndexOptions().expireAfter(
-            DEFAULT_CACHE_TIME, TimeUnit.MILLISECONDS)
+        new IndexOptions().expireAfter(ttl, TimeUnit.SECONDS)
     );
     Document created = new Document()
         .append("collection", colname)
@@ -257,11 +270,12 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
   }
   
   
-  private MongoCollection<Document> getCollection(String colname) {
+  private MongoCollection<Document> getCollection(JsonObject json) {
+    String colname = calcHash(json);
     MongoCollection<Document> col = MongoConnectionPool.collection(DEFAULT_DB, colname);
     if(!isCachedCollection(col, colname)) {
       col.drop();
-      col = createCollection(colname);
+      col = createCollection(colname, json.get("cachettl").getAsLong());
     }
     return col;
   }

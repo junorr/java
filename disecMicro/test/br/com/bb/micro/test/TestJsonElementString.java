@@ -21,24 +21,25 @@
 
 package br.com.bb.micro.test;
 
-import br.com.bb.disec.micro.util.Identation;
+import com.google.gson.JsonObject;
+import java.util.Objects;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 26/08/2016
+ * @version 0.0 - 01/09/2016
  */
-public class TestIdentation {
+public class TestJsonElementString {
 
   
   public static void main(String[] args) {
-    Identation ident = new Identation(2, 0);
-    System.out.println("* ident='"+ ident.postIncrement()+ "'");
-    System.out.println("* ident='"+ ident.postIncrement()+ "'");
-    System.out.println("* ident='"+ ident.postIncrement()+ "'");
-    System.out.println("* ident='"+ ident.postDecrement()+ "'");
-    System.out.println("* ident='"+ ident.postDecrement()+ "'");
-    System.out.println("* ident='"+ ident.postDecrement()+ "'");
+    JsonObject el = new JsonObject();
+    el.addProperty("boolean", true);
+    el.addProperty("number", 5.12);
+    el.addProperty("string", "abc");
+    System.out.println("* boolean: "+ Objects.toString(el.get("boolean")));
+    System.out.println("* string: "+ Objects.toString(el.get("string")));
+    System.out.println("* number: "+ Objects.toString(el.get("number")));
   }
   
 }

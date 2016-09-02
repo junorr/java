@@ -28,7 +28,6 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import io.undertow.server.HttpServerExchange;
 import java.io.IOException;
-import java.sql.SQLException;
 import org.jboss.logging.Logger;
 
 /**
@@ -49,15 +48,20 @@ public class PostSqlHandler implements JsonHandler {
       JsonObject json = this.parseJson(hse);
       this.validateJson(json);
       this.putJsonHeader(hse);
-      new CachedSqlExecutor().exec(hse, json);
-    }
-    catch(IOException | NumberFormatException | SQLException e) {
-      hse.setStatusCode(400)
-          .setReasonPhrase(e.getMessage());
-      throw e;
+      if(json.has("cachettl")) {
+        new CachedSqlExecutor().exec(hse, json);
+      }
+      else {
+        new DirectSqlExecutor().exec(hse, json);
+      }
     }
     catch(IllegalArgumentException e) {
       hse.setStatusCode(404)
+          .setReasonPhrase(e.getMessage());
+      throw e;
+    }
+    catch(Exception e) {
+      hse.setStatusCode(400)
           .setReasonPhrase(e.getMessage());
       throw e;
     }

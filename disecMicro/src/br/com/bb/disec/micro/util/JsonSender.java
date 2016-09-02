@@ -21,15 +21,12 @@
 
 package br.com.bb.disec.micro.util;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import io.undertow.io.IoCallback;
+import io.undertow.io.Sender;
+import io.undertow.server.HttpServerExchange;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SeekableByteChannel;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -41,117 +38,52 @@ import java.util.Objects;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 25/08/2016
  */
-public class JsonFileChannel {
+public class JsonSender {
   
-  public static final String LINE_BREAK = "\n\r";
-
-  private final Path path;
+  private static final IoCallback callback = new IoCallback() {
+      public void onComplete(HttpServerExchange hse, Sender sender) {}
+      public void onException(HttpServerExchange hse, Sender sender, IOException ioe) {}
+  };
   
-  private SeekableByteChannel channel;
+  private final Sender sender;
   
   private ByteBuffer buffer;
   
   private final Charset charset;
   
   
-  public JsonFileChannel(Path path) {
-    if(path == null) {
-      throw new IllegalArgumentException("Bad Null Path");
+  public JsonSender(Sender snd) {
+    if(snd == null) {
+      throw new IllegalArgumentException("Bad Null Sender");
     }
-    this.path = path;
+    this.sender = snd;
     charset = Charset.forName("UTF-8");
+    buffer = ByteBuffer.allocateDirect(4096);
   }
   
   
-  private String bufferString() {
-    String str = "";
-    if(buffer.remaining() > 0) {
-      byte[] bs = new byte[buffer.remaining()];
-      buffer.get(bs);
-      str = new String(bs, charset);
-    }
-    return str;
+  public Sender getSender() {
+    return sender;
   }
   
   
-  public JsonObject readJson() throws IOException {
-    long pos = channel.position();
-    flush();
-    channel.position(0);
-    int read = 0;
-    StringBuilder sb = new StringBuilder();
-    while((read = channel.read(buffer)) > 0) {
-      buffer.flip();
-      sb.append(bufferString());
-      buffer.clear();
-    }
-    return new JsonParser().parse(sb.toString()).getAsJsonObject();
-  }
-  
-  
-  public static JsonFileChannel of(Path path) {
-    return new JsonFileChannel(path);
-  }
-  
-  
-  public static JsonFileChannel temp() throws IOException {
-    return new JsonFileChannel(Files.createTempFile(null, ".json"));
-  }
-  
-  
-  public Path getPath() {
-    return path;
-  }
-  
-  
-  public SeekableByteChannel getFileChannel() {
-    return channel;
-  }
-  
-  
-  public JsonFileChannel open() throws IOException {
-    if(channel == null) {
-      buffer = ByteBuffer.allocateDirect(4096);
-      channel = Files.newByteChannel(
-          path, 
-          StandardOpenOption.WRITE, 
-          StandardOpenOption.CREATE
-      );
-    }
-    return this;
-  }
-  
-  
-  public JsonFileChannel close() throws IOException {
-    if(channel != null) {
-      channel.close();
-      channel = null;
-      buffer = null;
-    }
-    return this;
-  }
-  
-  
-  private JsonFileChannel flush() throws IOException {
+  public JsonSender flush() {
     if(buffer.position() > 0) {
       buffer.flip();
-      channel.write(buffer);
+      sender.send(buffer, callback);
       buffer.clear();
     }
     return this;
   }
   
   
-  private JsonFileChannel write(String s) throws IOException {
+  public JsonSender write(String s) {
     if(s == null || s.isEmpty()) return this;
-    if(channel == null) {
-      this.open();
-    }
     return this.write(s.getBytes(charset));
   }
   
   
-  private JsonFileChannel write(byte[] bs) throws IOException {
+  private JsonSender write(byte[] bs) {
     int start = 0;
     int count = 0;
     while(start < bs.length) {
@@ -167,30 +99,25 @@ public class JsonFileChannel {
   }
   
   
-  public JsonFileChannel lineBreak() throws IOException {
-    return this.write(LINE_BREAK);
-  }
-  
-  
-  public JsonFileChannel put(String s) throws IOException {
+  public JsonSender put(String s) {
     if(s == null || s.isEmpty()) return this;
     return this.write("\"").write(s).write("\"");
   }
   
   
-  public JsonFileChannel put(Number n) throws IOException {
+  public JsonSender put(Number n) {
     if(n == null) return this;
     return this.write(Objects.toString(n));
   }
   
   
-  public JsonFileChannel put(Boolean b) throws IOException {
+  public JsonSender put(Boolean b) {
     if(b == null) return this;
     return this.write(Objects.toString(b));
   }
   
   
-  public JsonFileChannel put(Date d) throws IOException {
+  public JsonSender put(Date d) {
     if(d == null) return this;
     return this.put(Objects.toString(
         LocalDateTime.ofInstant(
@@ -200,42 +127,42 @@ public class JsonFileChannel {
   }
   
   
-  public JsonFileChannel startObject() throws IOException {
+  public JsonSender startObject() {
     return this.write("{");
   }
   
   
-  public JsonFileChannel startObject(String key) throws IOException {
+  public JsonSender startObject(String key) {
     return this.put(key).write(":{");
   }
   
   
-  public JsonFileChannel endObject() throws IOException {
+  public JsonSender endObject() {
     return this.write("}");
   }
   
   
-  public JsonFileChannel startArray(String key) throws IOException {
+  public JsonSender startArray(String key) {
     return this.put(key).write(":[");
   }
   
   
-  public JsonFileChannel startArray() throws IOException {
+  public JsonSender startArray() {
     return this.write("[");
   }
   
   
-  public JsonFileChannel endArray() throws IOException {
+  public JsonSender endArray() {
     return this.write("]");
   }
   
   
-  public JsonFileChannel nextElement() throws IOException {
+  public JsonSender nextElement() {
     return this.write(",");
   }
   
   
-  public JsonFileChannel put(String key, String value) throws IOException {
+  public JsonSender put(String key, String value) {
     if(key == null 
         || key.isEmpty() 
         || value == null 
@@ -246,7 +173,7 @@ public class JsonFileChannel {
   }
   
   
-  public JsonFileChannel put(String key, Number value) throws IOException {
+  public JsonSender put(String key, Number value) {
     if(key == null 
         || key.isEmpty() 
         || value == null) {
@@ -256,7 +183,7 @@ public class JsonFileChannel {
   }
   
   
-  public JsonFileChannel put(String key, Boolean value) throws IOException {
+  public JsonSender put(String key, Boolean value) {
     if(key == null 
         || key.isEmpty() 
         || value == null) {
@@ -266,7 +193,24 @@ public class JsonFileChannel {
   }
   
   
-  public JsonFileChannel put(String key, Date value) throws IOException {
+  
+  public JsonSender put(String key, Object value) {
+    if(key == null 
+        || key.isEmpty() 
+        || value == null) {
+      return this;
+    }
+    this.put(key).write(": ");
+    if(CharSequence.class.isAssignableFrom(value.getClass())) {
+      this.put(value.toString());
+    } else {
+      this.write(Objects.toString(value));
+    }
+    return this;
+  }
+  
+  
+  public JsonSender put(String key, Date value) {
     if(key == null 
         || key.isEmpty() 
         || value == null) {

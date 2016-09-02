@@ -40,6 +40,8 @@ public class MongoConnectionPool {
   
   public static final MongoConnectionPool INSTANCE = new MongoConnectionPool();
   
+  public static final String DEFAULT_DB = "micro";
+  
   
   private final Properties props;
   
