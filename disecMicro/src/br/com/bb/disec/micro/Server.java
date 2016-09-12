@@ -24,6 +24,7 @@ package br.com.bb.disec.micro;
 import br.com.bb.disec.micro.conf.ServerConfig;
 import br.com.bb.disec.micro.handler.AuthenticationServerHandler;
 import br.com.bb.disec.micro.handler.AuthenticationShieldHandler;
+import br.com.bb.disec.micro.handler.CorsHandler;
 import br.com.bb.disec.micro.handler.DispatcherHandler;
 import br.com.bb.disec.micro.handler.ShutdownHandler;
 import io.undertow.Handlers;
@@ -53,9 +54,9 @@ public class Server {
     HttpHandler root = null;
     PathHandler ph = this.initPathHandler();
     if(config.isAuthenticationShield()) {
-      root = new AuthenticationShieldHandler(ph);
+      root = new AuthenticationShieldHandler(new CorsHandler(ph));
     } else {
-      root = ph;
+      root = new CorsHandler(ph);
     }
     if(config.isShutdownHandlerEnabled()) {
       ph.addExactPath("/shutdown", new ShutdownHandler(this));

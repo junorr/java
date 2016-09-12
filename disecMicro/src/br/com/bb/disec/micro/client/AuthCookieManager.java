@@ -24,6 +24,7 @@ package br.com.bb.disec.micro.client;
 import br.com.bb.sso.session.CookieName;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.Cookie;
+import io.undertow.server.handlers.CookieImpl;
 import io.undertow.util.Headers;
 import org.apache.http.Header;
 import org.apache.http.client.fluent.Request;
@@ -35,22 +36,41 @@ import org.apache.http.message.BasicHeader;
  * @version 0.0 - 24/08/2016
  */
 public class AuthCookieManager {
+  
+  public static final String X_BBSSOTOKEN = "X-BBSSOToken";
+
+  public static final String X_SSOACR = "X-ssoacr";
+  
 
   public Cookie getBBSsoToken(HttpServerExchange hse) {
-    if(hse == null || !hse.getRequestCookies()
-        .containsKey(CookieName.BBSSOToken.name())) {
-      return null;
+    Cookie cookie = null;
+    if(hse == null) return cookie;
+    if(hse.getRequestCookies().containsKey(CookieName.BBSSOToken.name())) {
+      cookie = hse.getRequestCookies().get(CookieName.BBSSOToken.name());
     }
-    return hse.getRequestCookies().get(CookieName.BBSSOToken.name());
+    else if(hse.getRequestHeaders().contains(X_BBSSOTOKEN)) {
+      cookie = new CookieImpl(
+          CookieName.BBSSOToken.name(), 
+          hse.getRequestHeaders().getFirst(X_BBSSOTOKEN)
+      );
+    }
+    return cookie;
   }
   
 
   public Cookie getSsoAcr(HttpServerExchange hse) {
-    if(hse == null || !hse.getRequestCookies()
-        .containsKey(CookieName.ssoacr.name())) {
-      return null;
+    Cookie cookie = null;
+    if(hse == null) return cookie;
+    if(hse.getRequestCookies().containsKey(CookieName.ssoacr.name())) {
+      cookie = hse.getRequestCookies().get(CookieName.ssoacr.name());
     }
-    return hse.getRequestCookies().get(CookieName.ssoacr.name());
+    else if(hse.getRequestHeaders().contains(X_SSOACR)) {
+      cookie = new CookieImpl(
+          CookieName.ssoacr.name(), 
+          hse.getRequestHeaders().getFirst(X_SSOACR)
+      );
+    }
+    return cookie;
   }
   
   

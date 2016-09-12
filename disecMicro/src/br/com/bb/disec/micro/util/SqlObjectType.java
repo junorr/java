@@ -35,7 +35,7 @@ import java.util.Date;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/09/2016
  */
-public class SqlJsonType {
+public class SqlObjectType {
 
   
   public JsonElement getElement(ResultSet r, int col) throws SQLException {

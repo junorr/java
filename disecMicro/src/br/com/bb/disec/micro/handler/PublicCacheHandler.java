@@ -149,9 +149,8 @@ public class PublicCacheHandler implements JsonHandler {
         .put("ttl", doc.getLong("ttl"))
         .nextElement()
         .put("value").write(":")
-        .write(JSON.serialize(doc.get("value")))
-        .endObject()
-        .flush();
+        .write(JSON.serialize(doc.get("value")));
+    send.endObject().flush();
   }
   
   

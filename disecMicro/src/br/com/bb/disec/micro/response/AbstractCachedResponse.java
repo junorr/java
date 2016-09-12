@@ -19,40 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler;
+package br.com.bb.disec.micro.response;
 
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HttpString;
-import io.undertow.util.Methods;
+import java.util.List;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/07/2016
+ * @version 0.0 - 09/09/2016
  */
-public class SqlHandler implements HttpHandler {
+public abstract class AbstractCachedResponse implements CachedFormatResponse {
 
-  @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    if(hse.isInIoThread()) {
-      hse.dispatch(this);
-      return;
+  protected final List<String> columns;
+  
+  
+  public AbstractCachedResponse(List<String> columns) {
+    if(columns == null || columns.isEmpty()) {
+      throw new IllegalArgumentException("Bad Null/Empty Columns List");
     }
-    if(Methods.GET.equals(hse.getRequestMethod())) {
-      new GetSqlHandler().handleRequest(hse);
-    }
-    else if(Methods.POST.equals(hse.getRequestMethod())) {
-      new PostSqlHandler().handleRequest(hse);
-    }
-    else if(Methods.OPTIONS.equals(hse.getRequestMethod())) {
-      hse.setStatusCode(200);
-      hse.endExchange();
-    }
-    else {
-      hse.setStatusCode(400).setReasonPhrase("Bad Request");
-      hse.endExchange();
-    }
+    this.columns = columns;
+  }
+  
+  
+  public List<String> getColumns() {
+    return columns;
   }
   
 }

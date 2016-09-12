@@ -21,13 +21,16 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.util.JsonSender;
-import br.com.bb.disec.micro.util.SqlJsonType;
+import br.com.bb.disec.micro.response.CsvDirectResponse;
+import br.com.bb.disec.micro.response.JsonDirectResponse;
+import br.com.bb.disec.micro.response.XlsDirectResponse;
+import br.com.bb.disec.micro.util.SqlObjectType;
 import com.google.gson.JsonObject;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import org.jboss.logging.Logger;
+import us.pserver.timer.Timer;
 
 /**
  *
@@ -36,61 +39,31 @@ import java.sql.SQLException;
  */
 public class DirectSqlExecutor extends AbstractSqlExecutor {
   
-  private final SqlJsonType jt = new SqlJsonType();
-
-  
   @Override
-  public void exec(HttpServerExchange hse, JsonObject obj) throws Exception {
-    super.exec(hse, obj);
-    ResultSet rs = query.getResultSet();
-    JsonSender js = new JsonSender(hse.getResponseSender());
-    int count = 0;
-    js.startObject();
-    this.writeColumns(js, rs);
-    js.nextElement().startArray("data");
-    if(rs.next()) {
-      while(true) {
-        this.writeRow(js, rs);
-        count++;
-        if(rs.next()) js.nextElement();
-        else break;
-      }
+  public void exec(HttpServerExchange hse, JsonObject req) throws Exception {
+    super.exec(hse, req);
+    ResultSet rst = query.getResultSet();
+    Timer tm = new Timer.Nanos().start();
+    if(req.has("format") && "csv".equalsIgnoreCase(
+        req.get("format").getAsString())) {
+      hse.getResponseHeaders().put(
+          Headers.CONTENT_DISPOSITION, "attachment; filename=\""
+              + req.get("query").getAsString()+ ".csv\""
+      );
+      new CsvDirectResponse().doResponse(hse, rst);
     }
-    js.endArray()
-        .nextElement()
-        .put("total", count)
-        .nextElement()
-        .put("count", count)
-        .endObject()
-        .flush();
+    else if(req.has("format") && "xls".equalsIgnoreCase(
+        req.get("format").getAsString())) {
+      hse.getResponseHeaders().put(
+          Headers.CONTENT_DISPOSITION, "attachment; filename=\""
+              + req.get("query").getAsString()+ ".xls\""
+      );
+      new XlsDirectResponse().doResponse(hse, rst);
+    }
+    else {
+      new JsonDirectResponse().doResponse(hse, rst);
+    }
+    Logger.getLogger(getClass()).info("DIRECT RETRIEVE TIME: "+ tm.lapAndStop());
   }
   
-  
-  private void writeRow(JsonSender js, ResultSet rs) throws SQLException {
-    ResultSetMetaData meta = rs.getMetaData();
-    int cols = meta.getColumnCount();
-    js.startObject();
-    for(int i = 1; i <= cols; i++) {
-      js.put(meta.getColumnLabel(i), jt.getObject(rs, i));
-      if(i < cols) {
-        js.nextElement();
-      }
-    }
-    js.endObject();
-  }
-  
-  
-  private void writeColumns(JsonSender js, ResultSet rs) throws SQLException {
-    ResultSetMetaData meta = rs.getMetaData();
-    js.startArray("columns");
-    int cols = meta.getColumnCount();
-    for(int i = 1; i <= cols; i++) {
-      js.put(meta.getColumnLabel(i));
-      if(i < cols) {
-        js.nextElement();
-      }
-    }
-    js.endArray();
-  }
-
 }

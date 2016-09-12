@@ -1,14 +1,15 @@
 {
-  "serverAddress": "127.0.0.1",
+  "serverAddress": "0.0.0.0",
   "serverPort": 9088,
   "ioThreads": 4,
   "maxWorkerThreads": 10,
-  "dispatcherEnabled": false,
+  "dispatcherEnabled": true,
   "shutdownHandlerEnabled": true,
   "authenticationShield": false,
   "authenticationServer": true,
   "handlers": {
     "/sql": "br.com.bb.disec.micro.handler.SqlHandler",
+    "/download": "br.com.bb.disec.micro.handler.DownloadHandler",
     "/upload": "br.com.bb.disec.micro.handler.FileUploadHandler",
     "/cache": "br.com.bb.disec.micro.handler.PublicCacheHandler",
     "/time": "br.com.bb.disec.micro.handler.TimeHandler"

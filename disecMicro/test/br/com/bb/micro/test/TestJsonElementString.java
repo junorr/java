@@ -21,7 +21,10 @@
 
 package br.com.bb.micro.test;
 
+import br.com.bb.disec.micro.util.JsonTransformer;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mongodb.util.JSON;
 import java.util.Objects;
 
 /**
@@ -40,6 +43,17 @@ public class TestJsonElementString {
     System.out.println("* boolean: "+ Objects.toString(el.get("boolean")));
     System.out.println("* string: "+ Objects.toString(el.get("string")));
     System.out.println("* number: "+ Objects.toString(el.get("number")));
+    
+    JsonArray array = new JsonArray();
+    for(int i = 0; i < 10; i++) {
+      array.add(i);
+    }
+    el.add("array", array);
+    
+    JsonTransformer jt = new JsonTransformer();
+    System.out.println("* array: "+ Objects.toString(array));
+    System.out.println("* toList: "+ Objects.toString(jt.toList(array)));
+    System.out.println("* toDoc: "+ JSON.serialize(jt.toDocument(el)));
   }
   
 }

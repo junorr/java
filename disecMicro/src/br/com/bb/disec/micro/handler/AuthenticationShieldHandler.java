@@ -23,8 +23,17 @@ package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.client.AuthenticationClient;
 import br.com.bb.disec.micro.util.URIParam;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HttpString;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  *
@@ -33,13 +42,37 @@ import io.undertow.server.HttpServerExchange;
  */
 public class AuthenticationShieldHandler implements HttpHandler {
   
-  public static final String AUTH_CONTEXT = "auth";
+  public static final String AUTH_EXCEPTIONS_FILE = "/resources/authexceptions.json";
   
   private final HttpHandler next;
+  
+  private final JsonArray exceptions;
   
   
   public AuthenticationShieldHandler(HttpHandler next) {
     this.next = next;
+    exceptions = readExceptions();
+  }
+  
+  
+  private JsonArray readExceptions() {
+    InputStreamReader rdr = null;
+    try {
+      rdr = new InputStreamReader(getClass()
+          .getResourceAsStream(AUTH_EXCEPTIONS_FILE)
+      );
+      return new JsonParser()
+          .parse(rdr)
+          .getAsJsonArray();
+    }
+    catch(JsonIOException | JsonSyntaxException e) {
+      throw new RuntimeException(e);
+    }
+    finally {
+      if(rdr != null) try { 
+        rdr.close(); 
+      } catch(IOException e) {}
+    }
   }
   
   
@@ -56,7 +89,7 @@ public class AuthenticationShieldHandler implements HttpHandler {
     }
     URIParam uri = new URIParam(hse.getRequestURI());
     boolean donext = true;
-    if(!AUTH_CONTEXT.equals(uri.getContext())) {
+    if(!isUriExcluded(hse.getRequestMethod(), hse.getRequestURI())) {
       AuthenticationClient acli = AuthenticationClient.ofDefault();
       if(!acli.authenticate(hse)) {
         hse.setStatusCode(401)
@@ -69,5 +102,53 @@ public class AuthenticationShieldHandler implements HttpHandler {
       next.handleRequest(hse);
     }
   }
+  
+  
+  private boolean isUriExcluded(HttpString meth, String uri) {
+    if(exceptions == null 
+        || exceptions.size() < 1) {
+      return false;
+    }
+    boolean excluded = false;
+    for(JsonElement e : exceptions) {
+      if(e.isJsonObject()) {
+        JsonObject obj = e.getAsJsonObject();
+        excluded = obj.has("method") && obj.has("uri")
+            && meth.equalToString(obj.get("method").getAsString())
+            && matchUri(uri, obj.get("uri").getAsString());
+      }
+      else {
+        excluded = matchUri(uri, e.getAsString());
+      }
+      if(excluded) break;
+    }
+    return excluded;
+  }
+
+  
+  private boolean matchUri(String uri, String exclude) {
+		if(uri == null || exclude == null) 
+      return false;
+    String suri = uri.toLowerCase();
+    boolean match = false;
+    exclude = exclude.toLowerCase();
+    if(exclude.startsWith("*")) {
+      match = suri.endsWith(exclude.replace("*", ""));
+    }
+    else if(exclude.endsWith("*")) {
+      match = suri.startsWith(exclude.replace("*", ""));
+    }
+    else if(exclude.contains("*")) {
+      String[] split = exclude.split("\\*");
+      match = suri.startsWith(split[0]);
+      if(split.length > 1) {
+        match = match && suri.endsWith(split[1]);
+      }
+    }
+    else {
+      match = suri.contains(exclude);
+    }
+		return match;
+	}
 
 }

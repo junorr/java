@@ -22,10 +22,8 @@
 package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.util.StringPostParser;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import io.undertow.server.HttpServerExchange;
 import java.io.IOException;
 import org.jboss.logging.Logger;
@@ -47,7 +45,6 @@ public class PostSqlHandler implements JsonHandler {
     try {
       JsonObject json = this.parseJson(hse);
       this.validateJson(json);
-      this.putJsonHeader(hse);
       if(json.has("cachettl")) {
         new CachedSqlExecutor().exec(hse, json);
       }
@@ -84,28 +81,6 @@ public class PostSqlHandler implements JsonHandler {
       Logger.getLogger(getClass()).warn(msg);
       throw new IllegalArgumentException(msg);
     }
-  }
-  
-  
-  private Object[] getArguments(JsonObject json) {
-    if(json == null || !json.has("args")) {
-      return null;
-    }
-    JsonArray array = json.getAsJsonArray("args");
-    Object[] args = new Object[array.size()];
-    for(int i = 0; i < array.size(); i++) {
-      JsonPrimitive jp = array.get(i).getAsJsonPrimitive();
-      if(jp.isNumber()) {
-        args[i] = jp.getAsDouble();
-      }
-      else if(jp.isBoolean()) {
-        args[i] = jp.getAsBoolean();
-      }
-      else {
-        args[i] = jp.getAsString();
-      }
-    }
-    return args;
   }
   
 }

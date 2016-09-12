@@ -22,33 +22,33 @@
 package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.db.MongoConnectionPool;
-import br.com.bb.disec.micro.util.DateParser;
-import br.com.bb.disec.micro.util.JsonSender;
-import br.com.bb.disec.micro.util.SqlJsonType;
+import br.com.bb.disec.micro.response.CsvCachedResponse;
+import br.com.bb.disec.micro.response.JsonCachedResponse;
+import br.com.bb.disec.micro.response.XlsCachedResponse;
+import br.com.bb.disec.micro.util.JsonTransformer;
+import br.com.bb.disec.micro.util.SqlObjectType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.IndexOptions;
-import com.mongodb.util.JSON;
-import com.sun.istack.internal.logging.Logger;
 import io.undertow.io.IoCallback;
 import io.undertow.io.Sender;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.bson.Document;
+import org.jboss.logging.Logger;
 import us.pserver.timer.Timer;
 
 /**
@@ -68,7 +68,11 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
   };
   
   
-  private int total, count;
+  private long total, count;
+  
+  private String colname;
+  
+  private String filterHash = "0";
   
   private List<String> columns;
   
@@ -82,20 +86,22 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
       super.exec(hse, req);
       Timer tm = new Timer.Nanos().start();
       doCache(col);
-      setMetaData(col, calcHash(req));
-      //System.out.println("* mongo insert time: "+ tm.lapAndStop());
+      setMetaData(col);
+      Logger.getLogger(getClass()).info("CACHE BUILD TIME: "+ tm.lapAndStop());
       query.close();
     }
     this.setResponse(hse, req, col);
   }
   
   
-  private void setMetaData(MongoCollection<Document> col, String colname) {
+  private void setMetaData(MongoCollection<Document> col) {
     col.findOneAndUpdate(
         new Document().append("collection", colname), 
         new Document().append("$set", 
-            new Document().append("total", total)
-                .append("columns", columns))
+            new Document()
+                .append("total", total)
+                .append("columns", columns)
+                .append("filterHash", filterHash))
     );
   }
   
@@ -103,6 +109,9 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
   private void doCache(MongoCollection<Document> col) throws SQLException {
     ResultSet rs = query.getResultSet();
     columns = this.getColumns(rs.getMetaData());
+    for(int i = 0; i < columns.size(); i++) {
+      col.createIndex(new Document(columns.get(i), 1));
+    }
     total = 0;
     while(rs.next()) {
       col.insertOne(createDoc(rs));
@@ -121,57 +130,62 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
   }
   
   
-  private void setResponse(HttpServerExchange hse, JsonObject req, MongoCollection<Document> col) {
+  private void setResponse(HttpServerExchange hse, JsonObject req, MongoCollection<Document> col) throws Exception {
     FindIterable<Document> result = applyLimit(
         applySort(
             applyFilter(col, req), 
             req), req
     );
     MongoCursor<Document> cur = result.iterator();
-    Sender sender = hse.getResponseSender();
-    JsonSender js = new JsonSender(sender);
-    js.startObject()
-        .put("columns")
-        .write(":")
-        .write(JSON.serialize(columns))
-        .nextElement()
-        .put("total", total)
-        .nextElement()
-        .startArray("data");
     Timer tm = new Timer.Nanos().start();
-    this.sendDocs(js, cur);
-    //System.out.println("* mongo find time: "+ tm.lapAndStop());
-    js.endArray()
-        .nextElement()
-        .put("count", count)
-        .endObject()
-        .flush();
+    if(req.has("format") && "csv".equalsIgnoreCase(
+        req.get("format").getAsString())) {
+      hse.getResponseHeaders().put(
+          Headers.CONTENT_DISPOSITION, "attachment; filename=\""
+              + req.get("query").getAsString()+ ".csv\""
+      );
+      new CsvCachedResponse(columns).doResponse(hse, cur);
+    }
+    else if(req.has("format") && "xls".equalsIgnoreCase(
+        req.get("format").getAsString())) {
+      hse.getResponseHeaders().put(
+          Headers.CONTENT_DISPOSITION, "attachment; filename=\""
+              + req.get("query").getAsString()+ ".xls\""
+      );
+      new XlsCachedResponse(columns).doResponse(hse, cur);
+    }
+    else {
+      new JsonCachedResponse(columns, total).doResponse(hse, cur);
+    }
+    Logger.getLogger(getClass()).info("CACHE RETRIEVE TIME: "+ tm.lapAndStop());
     hse.endExchange();
-  }
-  
-  
-  private void sendDocs(JsonSender sender, MongoCursor<Document> cur) {
-    count = 0;
-    Document next = (cur.hasNext() ? cur.next() : null);
-    do {
-      if(next != null) {
-        sender.write(JSON.serialize(next));
-        count++;
-      }
-      next = (cur.hasNext() ? cur.next() : null);
-      if(next != null) sender.nextElement();
-    } while(next != null);
   }
   
   
   private FindIterable<Document> applyFilter(MongoCollection<Document> col, JsonObject req) {
     Document query = new Document()
         .append("collection", new Document().append("$exists", false));
-    if(req.has("filterBy")) {
-      query.append(
-          req.get("filterBy").getAsString(),
-          getJsonValue(req.get("filter").getAsString())
-      );
+    if(req.has("filterBy") && req.has("filter")) {
+      JsonArray fby = req.getAsJsonArray("filterBy");
+      JsonArray fil = req.getAsJsonArray("filter");
+      String hash = filterHash(fby, fil);
+      for(int i = 0; i < fby.size(); i++) {
+        query.append(
+            fby.get(i).getAsString(), 
+            new JsonTransformer().toDocumentQuery(
+                fil.get(i).getAsString())
+        );
+      }
+      if(!hash.equals(filterHash)) {
+        filterHash = hash;
+        total = col.count(query);
+        this.setMetaData(col);
+      }
+    } 
+    else if(!filterHash.equals("0")) {
+      filterHash = "0";
+      total = col.count(query);
+      this.setMetaData(col);
     }
     return col.find(query);
   }
@@ -200,32 +214,11 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
   }
   
   
-  private Object getJsonValue(String str) {
-    Object val = null;
-    if("true".equalsIgnoreCase(str)
-        || "false".equalsIgnoreCase(str)) {
-      val = Boolean.parseBoolean(str);
-    }
-    else if(DateParser.isDateString(str)) {
-      val = DateParser.parser(str).toDate();
-    }
-    else {
-      try {
-      Double d = Double.parseDouble(str);
-      val = (str.contains(".") ? d.doubleValue() : d.longValue());
-      } catch(NumberFormatException e) {
-        val = Pattern.compile("^"+ Pattern.quote(str)+ ".*", Pattern.CASE_INSENSITIVE);
-      }
-    }
-    return val;
-  }
-  
-  
   private Document createDoc(ResultSet rs) throws SQLException {
     ResultSetMetaData meta = rs.getMetaData();
     int cols = meta.getColumnCount();
     Document doc = new Document().append("created", new Date());
-    SqlJsonType jt = new SqlJsonType();
+    SqlObjectType jt = new SqlObjectType();
     for(int i = 1; i <= cols; i++) {
       doc.append(meta.getColumnLabel(i), jt.getObject(rs, i));
     }
@@ -233,7 +226,17 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
   }
   
   
-  private String calcHash(JsonObject json) {
+  private String filterHash(JsonArray fby, JsonArray fil) {
+    String input = "";
+    for(int i = 0; i < Math.min(fby.size(), fil.size()); i++) {
+      input += Objects.toString(fby.get(i))
+          + Objects.toString(fil.get(i));
+    }
+    return DigestUtils.md5Hex(input);
+  }
+  
+  
+  private String queryHash(JsonObject json) {
     String input = json.get("group").getAsString()
         + json.get("query").getAsString();
     if(json.has("args")) {
@@ -246,7 +249,7 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
   }
   
   
-  private boolean isCachedCollection(MongoCollection<Document> col, String colname) {
+  private boolean isCachedCollection(MongoCollection<Document> col) {
     Document query = new Document();
     query.append("collection", colname);
     Document doc = col.find(query).first();
@@ -271,11 +274,17 @@ public class CachedSqlExecutor extends AbstractSqlExecutor {
   
   
   private MongoCollection<Document> getCollection(JsonObject json) {
-    String colname = calcHash(json);
+    colname = queryHash(json);
     MongoCollection<Document> col = MongoConnectionPool.collection(DEFAULT_DB, colname);
-    if(!isCachedCollection(col, colname)) {
+    if(!isCachedCollection(col) || json.has("dropcache")) {
       col.drop();
       col = createCollection(colname, json.get("cachettl").getAsLong());
+    }
+    else {
+      Document info = col.find(new Document("collection", colname)).first();
+      columns = (List<String>) info.get("columns");
+      total = info.getLong("total");
+      filterHash = info.getString("filterHash");
     }
     return col;
   }

@@ -21,16 +21,14 @@
 
 package br.com.bb.disec.micro.util;
 
-import io.undertow.io.IoCallback;
 import io.undertow.io.Sender;
-import io.undertow.server.HttpServerExchange;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -38,85 +36,43 @@ import java.util.Objects;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 25/08/2016
  */
-public class JsonSender {
+public class JsonSender extends AbstractSender {
   
-  private static final IoCallback callback = new IoCallback() {
-      public void onComplete(HttpServerExchange hse, Sender sender) {}
-      public void onException(HttpServerExchange hse, Sender sender, IOException ioe) {}
-  };
-  
-  private final Sender sender;
-  
-  private ByteBuffer buffer;
-  
-  private final Charset charset;
+  private final DecimalFormat df;
   
   
   public JsonSender(Sender snd) {
-    if(snd == null) {
-      throw new IllegalArgumentException("Bad Null Sender");
-    }
-    this.sender = snd;
-    charset = Charset.forName("UTF-8");
-    buffer = ByteBuffer.allocateDirect(4096);
+    super(snd);
+    df = new DecimalFormat("#0.00#######");
+    df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
   }
   
   
-  public Sender getSender() {
-    return sender;
-  }
-  
-  
-  public JsonSender flush() {
-    if(buffer.position() > 0) {
-      buffer.flip();
-      sender.send(buffer, callback);
-      buffer.clear();
-    }
-    return this;
-  }
-  
-  
-  public JsonSender write(String s) {
-    if(s == null || s.isEmpty()) return this;
-    return this.write(s.getBytes(charset));
-  }
-  
-  
-  private JsonSender write(byte[] bs) {
-    int start = 0;
-    int count = 0;
-    while(start < bs.length) {
-      count = Math.min(
-          (bs.length-start), 
-          buffer.remaining()
-      );
-      buffer.put(bs, start, count);
-      flush();
-      start += count;
-    }
-    return this;
-  }
-  
-  
+  @Override
   public JsonSender put(String s) {
     if(s == null || s.isEmpty()) return this;
-    return this.write("\"").write(s).write("\"");
+    write("\"").write(s.replace("\"", "'")).write("\"");
+    return this;
   }
   
   
+  @Override
   public JsonSender put(Number n) {
     if(n == null) return this;
-    return this.write(Objects.toString(n));
+    write((n.toString().contains(".") ? df.format(n) : Objects.toString(n)));
+    return this;
   }
   
   
+  @Override
   public JsonSender put(Boolean b) {
     if(b == null) return this;
-    return this.write(Objects.toString(b));
+    write(Objects.toString(b));
+    return this;
   }
   
   
+  @Override
   public JsonSender put(Date d) {
     if(d == null) return this;
     return this.put(Objects.toString(
@@ -127,38 +83,63 @@ public class JsonSender {
   }
   
   
+  @Override
+  public JsonSender put(Object o) {
+    if(Date.class.isAssignableFrom(o.getClass())) {
+      put((Date) o);
+    }
+    else if(Number.class.isAssignableFrom(o.getClass())) {
+      put((Number) o);
+    }
+    else if(Boolean.class.isAssignableFrom(o.getClass())) {
+      put((Boolean) o);
+    }
+    else {
+      put(Objects.toString(o));
+    }
+    return this;
+  }
+  
+  
   public JsonSender startObject() {
-    return this.write("{");
+    write("{");
+    return this;
   }
   
   
   public JsonSender startObject(String key) {
-    return this.put(key).write(":{");
+    put(key).write(":{");
+    return this;
   }
   
   
   public JsonSender endObject() {
-    return this.write("}");
+    write("}");
+    return this;
   }
   
   
   public JsonSender startArray(String key) {
-    return this.put(key).write(":[");
+    put(key).write(":[");
+    return this;
   }
   
   
   public JsonSender startArray() {
-    return this.write("[");
+    write("[");
+    return this;
   }
   
   
   public JsonSender endArray() {
-    return this.write("]");
+    write("]");
+    return this;
   }
   
   
   public JsonSender nextElement() {
-    return this.write(",");
+    write(",");
+    return this;
   }
   
   
@@ -169,7 +150,8 @@ public class JsonSender {
         || value.isEmpty()) {
       return this;
     }
-    return this.put(key).write(":").put(value);
+    put(key).write(":").put(value);
+    return this;
   }
   
   
@@ -179,7 +161,8 @@ public class JsonSender {
         || value == null) {
       return this;
     }
-    return this.put(key).write(":").put(value);
+    put(key).write(":").put(value);
+    return this;
   }
   
   
@@ -189,7 +172,8 @@ public class JsonSender {
         || value == null) {
       return this;
     }
-    return this.put(key).write(": ").put(value);
+    put(key).write(": ").put(value);
+    return this;
   }
   
   
@@ -216,7 +200,8 @@ public class JsonSender {
         || value == null) {
       return this;
     }
-    return this.put(key).write(": ").put(value);
+    put(key).write(": ").put(value);
+    return this;
   }
   
 }
