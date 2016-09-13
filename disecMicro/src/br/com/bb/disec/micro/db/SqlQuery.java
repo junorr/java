@@ -21,12 +21,12 @@
 
 package br.com.bb.disec.micro.db;
 
-import br.com.bb.disec.micro.json.JsonResultSet;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.jboss.logging.Logger;
 import us.pserver.timer.Timer;
 
 /**
@@ -58,12 +58,18 @@ public class SqlQuery {
   
   
   public void close() {
-    try { result.close(); }
-    catch(SQLException e) {}
-    try { statement.close(); }
-    catch(SQLException e) {}
-    try { connection.close(); }
-    catch(SQLException e) {}
+    if(result != null) {
+      try { result.close(); }
+      catch(SQLException e) {}
+    }
+    if(statement != null) {
+      try { statement.close(); }
+      catch(SQLException e) {}
+    }
+    if(connection != null) {
+      try { connection.close(); }
+      catch(SQLException e) {}
+    }
   }
   
   
@@ -79,8 +85,6 @@ public class SqlQuery {
     if(query == null || !source.containsSql(group, query)) {
       throw new IllegalArgumentException("Query Not Found ("+ query+ ")");
     }
-    Timer tm = new Timer.Nanos();
-    tm.start();
     statement = connection.prepareStatement(
         source.getSql(group, query)
     );
@@ -89,32 +93,9 @@ public class SqlQuery {
         statement.setObject(i+1, args[i]);
       }
     }
-    System.out.println("* SqlQuery.exec: "+ statement);
+    //System.out.println("* SqlQuery.exec: "+ statement);
     result = statement.executeQuery();
-    System.out.println("* db   time: "+ tm.lapAndStop());
     return result;
-  }
-  
-  
-  public JsonResultSet exec(String group, String query, Object ... args) throws SQLException, IOException {
-    try {
-      execResultSet(group, query, args);
-      Timer tm = new Timer.Nanos().start();
-      JsonResultSet jrs = new JsonResultSet(result);
-      System.out.println("* db   time: "+ tm.lapAndStop());
-      tm.clear().start();
-      jrs.getJsonObject();
-      System.out.println("* json time: "+ tm.lapAndStop());
-      return jrs;
-    }
-    finally {
-      this.close();
-    }
-  }
-  
-  
-  public String execJson(String group, String query, Object ... args) throws SQLException, IOException {
-    return this.exec(group, query, args).toJson();
   }
   
   
@@ -133,12 +114,11 @@ public class SqlQuery {
           ps.setObject(i+1, args[i]);
         }
       }
-      System.out.println("* SqlQuery.update: "+ ps);
+      //System.out.println("* SqlQuery.update: "+ ps);
       return ps.executeUpdate();
     }
     finally {
-      ps.close();
-      connection.close();
+      this.close();
     }
   }
   

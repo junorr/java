@@ -21,7 +21,6 @@
 
 package br.com.bb.micro.test;
 
-import br.com.bb.disec.micro.json.JsonDouble;
 import br.com.bb.disec.micro.util.FileSize;
 import br.com.bb.disec.micro.util.FileSize.Unit;
 import br.com.bb.disec.micro.util.RDouble;
@@ -29,9 +28,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Locale;
 
 /**
@@ -54,7 +50,6 @@ public class TestFileSize {
     
     Gson gson = new GsonBuilder()
         .setPrettyPrinting()
-        .registerTypeAdapter(Double.class, new JsonDouble())
         .registerTypeAdapter(FileSize.class, FileSize.converter())
         .create();
     System.out.println("* json: "+ gson.toJson(size));

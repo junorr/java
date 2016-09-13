@@ -21,8 +21,10 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.util.DateParser;
-import br.com.bb.disec.micro.util.SqlObjectType;
+import br.com.bb.disec.micro.handler.exec.CachedSqlExecutor;
+import br.com.bb.disec.micro.handler.exec.DirectSqlExecutor;
+import br.com.bb.disec.micro.util.parser.DateParser;
+import br.com.bb.disec.micro.db.SqlObjectType;
 import br.com.bb.disec.micro.util.URIParam;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

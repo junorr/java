@@ -42,7 +42,7 @@ import java.io.InputStreamReader;
  */
 public class AuthenticationShieldHandler implements HttpHandler {
   
-  public static final String AUTH_EXCEPTIONS_FILE = "/resources/authexceptions.json";
+  public static final String AUTH_EXCEPTIONS_FILE = "/resources/auth-exclude.json";
   
   private final HttpHandler next;
   

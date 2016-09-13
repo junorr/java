@@ -21,9 +21,9 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.util.StringPostParser;
+import br.com.bb.disec.micro.util.parser.StringPostParser;
 import br.com.bb.disec.micro.db.MongoConnectionPool;
-import br.com.bb.disec.micro.util.JsonSender;
+import br.com.bb.disec.micro.channel.JsonChannel;
 import br.com.bb.disec.micro.util.URIParam;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
@@ -31,6 +31,7 @@ import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.util.JSON;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Methods;
+import java.nio.channels.Channels;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -112,7 +113,7 @@ public class PublicCacheHandler implements JsonHandler {
       ttl = pars.getNumber(1).longValue();
     }
     MongoCollection<Document> col = MongoConnectionPool.collection(
-        MongoConnectionPool.DEFAULT_DB, key
+        MongoConnectionPool.DEFAULT_DB, "C"+ key
     );
     this.createIndex(col, ttl);
     Instant now = Instant.now();
@@ -133,7 +134,8 @@ public class PublicCacheHandler implements JsonHandler {
   
   
   private void sendDoc(HttpServerExchange hse, Document doc) {
-    JsonSender send = new JsonSender(hse.getResponseSender());
+    hse.startBlocking();
+    JsonChannel send = new JsonChannel(Channels.newChannel(hse.getOutputStream()));
     send.startObject()
         .put("key", doc.getString("key"))
         .nextElement()
@@ -156,7 +158,7 @@ public class PublicCacheHandler implements JsonHandler {
   
   private void get(HttpServerExchange hse, String key) throws Exception {
     MongoCollection<Document> col = MongoConnectionPool.collection(
-        MongoConnectionPool.DEFAULT_DB, key
+        MongoConnectionPool.DEFAULT_DB, "C"+ key
     );
     Document doc = col.find(new Document("key", key)).first();
     if(doc != null) {
@@ -191,7 +193,7 @@ public class PublicCacheHandler implements JsonHandler {
   private void delete(HttpServerExchange hse, String key) throws Exception {
     Logger.getLogger(getClass()).info("DELETE ["+ key+ "]");
     MongoCollection<Document> col = MongoConnectionPool.collection(
-        MongoConnectionPool.DEFAULT_DB, key
+        MongoConnectionPool.DEFAULT_DB, "C"+ key
     );
     Document doc = col.find(new Document("key", key)).first();
     if(doc != null) {

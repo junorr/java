@@ -21,8 +21,8 @@
 
 package br.com.bb.micro.test;
 
-import br.com.bb.disec.micro.util.DateFormatter;
-import br.com.bb.disec.micro.util.DateParser;
+import br.com.bb.disec.micro.util.parser.DateFormatter;
+import br.com.bb.disec.micro.util.parser.DateParser;
 
 /**
  *

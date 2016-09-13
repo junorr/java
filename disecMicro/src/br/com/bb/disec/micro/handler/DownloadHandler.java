@@ -21,9 +21,12 @@
 
 package br.com.bb.disec.micro.handler;
 
+import br.com.bb.disec.micro.handler.exec.CachedSqlExecutor;
+import br.com.bb.disec.micro.handler.exec.DirectSqlExecutor;
+import br.com.bb.disec.micro.client.AuthCookieManager;
 import br.com.bb.disec.micro.db.MongoConnectionPool;
-import br.com.bb.disec.micro.util.JsonTransformer;
-import br.com.bb.disec.micro.util.StringPostParser;
+import br.com.bb.disec.micro.util.json.JsonTransformer;
+import br.com.bb.disec.micro.util.parser.StringPostParser;
 import br.com.bb.disec.micro.util.URIParam;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -91,7 +94,7 @@ public class DownloadHandler implements HttpHandler {
   
   private void post(HttpServerExchange hse) throws Exception {
     JsonObject json = parseJson(hse);
-    String token = calcHash(json);
+    String token = calcHash(hse, json);
     Document doc = new JsonTransformer().toDocument(json);
     doc.append("created", new Date());
     doc.append("token", token);
@@ -119,7 +122,7 @@ public class DownloadHandler implements HttpHandler {
     if(col.listIndexes().first() == null) {
       col.createIndex(
           new Document("created", 1), 
-          new IndexOptions().expireAfter(20L, TimeUnit.MINUTES)
+          new IndexOptions().expireAfter(10L, TimeUnit.MINUTES)
       );
       col.createIndex(new Document("token", 1));
     }
@@ -127,8 +130,10 @@ public class DownloadHandler implements HttpHandler {
   }
   
   
-  private String calcHash(JsonObject json) {
-    StringBuilder sb = new StringBuilder();
+  private String calcHash(HttpServerExchange hse, JsonObject json) {
+    AuthCookieManager acm = new AuthCookieManager();
+    StringBuilder sb = new StringBuilder()
+        .append(acm.getBBSsoToken(hse).getValue());
     json.entrySet().forEach(e->{
       sb.append(e.getKey())
           .append(Objects.toString(e.getValue()));

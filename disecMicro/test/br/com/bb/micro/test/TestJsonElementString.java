@@ -21,7 +21,7 @@
 
 package br.com.bb.micro.test;
 
-import br.com.bb.disec.micro.util.JsonTransformer;
+import br.com.bb.disec.micro.util.json.JsonTransformer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mongodb.util.JSON;

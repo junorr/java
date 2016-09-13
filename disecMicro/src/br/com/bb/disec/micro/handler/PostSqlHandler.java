@@ -21,7 +21,9 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.util.StringPostParser;
+import br.com.bb.disec.micro.handler.exec.CachedSqlExecutor;
+import br.com.bb.disec.micro.handler.exec.DirectSqlExecutor;
+import br.com.bb.disec.micro.util.parser.StringPostParser;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.undertow.server.HttpServerExchange;

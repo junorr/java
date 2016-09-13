@@ -25,12 +25,15 @@ import br.com.bb.disec.micro.db.DefaultDBSqlSource;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.util.FileSize;
+import br.com.bb.disec.micro.db.SqlObjectType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -155,6 +158,20 @@ public class FileUploadConfig {
     }
     
     
+    private JsonObject readJson(ResultSet rst) throws SQLException {
+      JsonObject json = new JsonObject();
+      SqlObjectType sot = new SqlObjectType();
+      ResultSetMetaData meta = rst.getMetaData();
+      int cols = meta.getColumnCount();
+      if(rst.next()) {
+        for(int i = 1; i <= cols; i++) {
+          json.add(meta.getColumnLabel(i), sot.getElement(rst, i));
+        }
+      }
+      return json;
+    }
+    
+    
     public Builder load(String aplicName) throws IOException {
       if(aplicName == null) {
         throw new IllegalArgumentException("Bad Aplic Name: "+ aplicName);
@@ -164,17 +181,13 @@ public class FileUploadConfig {
             PoolFactory.getDefaultPool().getConnection(), 
             new DefaultDBSqlSource()
         );
-        JsonParser parser = new JsonParser();
-        String js = query.execJson(SQL_GROUP, SQL_FIND_UPLOAD, aplicName);
-        System.out.println("* js: "+ js);
-        JsonArray data = parser.parse(js)
-            .getAsJsonObject()
-            .get("data")
-            .getAsJsonArray();
-        if(data.size() < 1) {
+        JsonObject json = readJson(query.execResultSet(
+            SQL_GROUP, SQL_FIND_UPLOAD, aplicName)
+        );
+        query.close();
+        if(json.size() == 0) {
           throw new IOException("Config Not Found For Aplic Name: "+ aplicName);
         }
-        JsonObject json = data.get(0).getAsJsonObject();
         if(json.get("allowed_ext") != null) {
           this.allowedExtensions = Arrays.asList(
               json.get("allowed_ext").getAsString().split(",")

@@ -21,7 +21,7 @@
 
 package br.com.bb.disec.micro.conf;
 
-import br.com.bb.disec.micro.json.JsonClass;
+import br.com.bb.disec.micro.util.json.JsonClass;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpHandler;
