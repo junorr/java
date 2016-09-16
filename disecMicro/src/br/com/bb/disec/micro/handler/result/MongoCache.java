@@ -21,13 +21,149 @@
 
 package br.com.bb.disec.micro.handler.result;
 
+import br.com.bb.disec.micro.db.MongoConnectionPool;
+import br.com.bb.disec.micro.db.SqlObjectType;
+import static br.com.bb.disec.micro.handler.result.CachedResultHandler.DEFAULT_DB;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.IndexOptions;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.bson.Document;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/09/2016
  */
 public class MongoCache {
-
   
+  
+  private final JsonObject json;
+  
+  private final String colname;
+  
+  private final MongoCollection<Document> collection;
+  
+  private long total;
+  
+  
+  public MongoCache(JsonObject json) {
+    if(json == null) {
+      throw new IllegalArgumentException("Bad Null JsonObject");
+    }
+    this.json = json;
+    this.colname = this.queryHash();
+    collection = this.getCollection();
+    total = 0;
+  }
+  
+  
+  public JsonObject json() {
+    return json;
+  }
+  
+  
+  public String collectionName() {
+    return colname;
+  }
+  
+  
+  public MongoCollection<Document> collection() {
+    return collection;
+  }
+  
+  
+  public long total() {
+    return total;
+  }
+  
+
+  public long doCache(ResultSet rs) throws SQLException {
+    String[] cols = this.getColumns(rs.getMetaData());
+    for (String col : cols) {
+      collection.createIndex(new Document(col, 1));
+    }
+    total = 0;
+    while(rs.next()) {
+      collection.insertOne(createDoc(rs));
+      total++;
+    }
+    return total;
+  }
+  
+  
+  private Document createDoc(ResultSet rs) throws SQLException {
+    ResultSetMetaData meta = rs.getMetaData();
+    int cols = meta.getColumnCount();
+    Document doc = new Document().append("created", new Date());
+    SqlObjectType jt = new SqlObjectType();
+    for(int i = 1; i <= cols; i++) {
+      doc.append(meta.getColumnLabel(i), jt.getObject(rs, i));
+    }
+    return doc;
+  }
+  
+  
+  private String[] getColumns(ResultSetMetaData meta) throws SQLException {
+    int ncols = meta.getColumnCount();
+    String[] cols = new String[ncols];
+    for(int i = 1; i <= ncols; i++) {
+      cols[i-1] = meta.getColumnLabel(i);
+    }
+    return cols;
+  }
+  
+  
+  private String queryHash() {
+    String input = json.get("group").getAsString()
+        + json.get("query").getAsString();
+    if(json.has("args")) {
+      JsonArray args = json.getAsJsonArray("args");
+      for(int i = 0; i < args.size(); i++) {
+        input += Objects.toString(args.get(i));
+      }
+    }
+    return "C"+ DigestUtils.md5Hex(input);
+  }
+  
+  
+  public boolean isCachedCollection() {
+    return collection.count(
+        new Document("collection", colname)
+    ) > 0;
+  }
+  
+  
+  private MongoCollection<Document> createCollection(String colname, long ttl) {
+    MongoCollection<Document> col = MongoConnectionPool.collection(DEFAULT_DB, colname);
+    col.createIndex(
+        new Document().append("created", 1),
+        new IndexOptions().expireAfter(ttl, TimeUnit.SECONDS)
+    );
+    Document created = new Document()
+        .append("collection", colname)
+        .append("created", new Date());
+    col.insertOne(created);
+    return col;
+  }
+  
+  
+  private MongoCollection<Document> getCollection() {
+    MongoCollection<Document> col = MongoConnectionPool.collection(DEFAULT_DB, colname);
+    if(!isCachedCollection() || json.has("dropcache")) {
+      col.drop();
+      col = createCollection(colname, json.get("cachettl").getAsLong());
+    }
+    return col;
+  }
 
 }
