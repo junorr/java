@@ -19,14 +19,14 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.resp;
+package br.com.bb.disec.micro.handler.encode;
 
 import br.com.bb.disec.micro.channel.CsvChannel;
-import com.mongodb.client.MongoCursor;
+import br.com.bb.disec.micro.jiterator.JsonIterator;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import java.nio.channels.Channels;
-import java.util.List;
+import java.util.Objects;
 import org.bson.Document;
 
 /**
@@ -34,46 +34,59 @@ import org.bson.Document;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 09/09/2016
  */
-public class CsvCachedResponse extends AbstractCachedResponse {
+public class CsvEncodingHandler extends AbstractEncodingHandler {
   
   
-  public CsvCachedResponse(List<String> columns) {
-    super(columns);
+  public CsvEncodingHandler(JsonIterator ji) {
+    super(ji, EncodingFormat.CSV);
   }
   
   
   @Override
-  public void doResponse(HttpServerExchange hse, MongoCursor<Document> cursor) throws Exception {
-    hse.getResponseHeaders().put(
-        Headers.CONTENT_TYPE, "text/csv; charset=utf-8"
-    );
+  public void handleRequest(HttpServerExchange hse) throws Exception {
+    super.handleRequest(hse);
+    if(!jiter.hasNext()) {
+      hse.endExchange();
+      return;
+    }
     hse.startBlocking();
     CsvChannel channel = new CsvChannel(Channels.newChannel(hse.getOutputStream()));
-    for(int i = 0; i < columns.size(); i++) {
-      channel.put(columns.get(i));
-      if(i < columns.size() -1) {
+    Document doc = jiter.next();
+    this.writeColumns(channel, doc);
+    channel.newLine();
+    do {
+      this.writeDocument(channel, doc);
+      if((doc = jiter.next()) != null) channel.newLine();
+    } 
+    while(doc != null);
+    channel.close();
+  }
+  
+  
+  private void writeColumns(CsvChannel channel, Document doc) throws Exception {
+    if(doc == null) return;
+    Object[] keys = doc.keySet().toArray();
+    for(int i = 0; i < keys.length; i++) {
+      channel.put(Objects.toString(keys[i]));
+      if(i < keys.length -1) {
         channel.nextElement();
       }
     }
-    channel.newLine();
-    Document next = (cursor.hasNext() ? cursor.next() : null);
-    do {
-      if(next != null) {
-        Object[] keys = next.keySet().toArray();
-        for(int i = 0; i < keys.length; i++) {
-          if(!"_id".equals(keys[i].toString())
-              && !"created".equals(keys[i].toString())) {
-            channel.put(next.get(keys[i]));
-            if(i < keys.length -1) {
-              channel.nextElement();
-            }
-          }
+  }
+  
+  
+  private void writeDocument(CsvChannel channel, Document doc) throws Exception {
+    if(doc == null) return;
+    Object[] keys = doc.keySet().toArray();
+    for(int i = 0; i < keys.length; i++) {
+      if(!"_id".equals(keys[i].toString())
+          && !"created".equals(keys[i].toString())) {
+        channel.put(doc.get(keys[i]));
+        if(i < keys.length -1) {
+          channel.nextElement();
         }
       }
-      next = (cursor.hasNext() ? cursor.next() : null);
-      if(next != null) channel.newLine();
-    } while(next != null);
-    channel.close();
+    }
   }
 
 }

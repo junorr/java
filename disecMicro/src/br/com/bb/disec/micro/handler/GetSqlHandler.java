@@ -21,8 +21,8 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.handler.exec.CachedSqlExecutor;
-import br.com.bb.disec.micro.handler.exec.DirectSqlExecutor;
+import br.com.bb.disec.micro.handler.result.CachedResultHandler;
+import br.com.bb.disec.micro.handler.result.DirectResultHandler;
 import br.com.bb.disec.micro.util.parser.DateParser;
 import br.com.bb.disec.micro.db.SqlObjectType;
 import br.com.bb.disec.micro.util.URIParam;
@@ -55,10 +55,10 @@ public class GetSqlHandler implements JsonHandler {
       JsonObject json = this.parseJson(hse);
       this.validateJson(json);
       if(json.has("cachettl")) {
-        new CachedSqlExecutor().exec(hse, json);
+        new CachedResultHandler().exec(hse, json);
       }
       else {
-        new DirectSqlExecutor().exec(hse, json);
+        new DirectResultHandler().exec(hse, json);
       }
     }
     catch(IllegalArgumentException e) {

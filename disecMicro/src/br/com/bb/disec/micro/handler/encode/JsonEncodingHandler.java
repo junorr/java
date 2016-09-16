@@ -19,15 +19,13 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.resp;
+package br.com.bb.disec.micro.handler.encode;
 
 import br.com.bb.disec.micro.channel.JsonChannel;
-import com.mongodb.client.MongoCursor;
+import br.com.bb.disec.micro.jiterator.JsonIterator;
 import com.mongodb.util.JSON;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
 import java.nio.channels.Channels;
-import java.util.List;
 import org.bson.Document;
 
 /**
@@ -35,47 +33,54 @@ import org.bson.Document;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 08/09/2016
  */
-public class JsonCachedResponse extends AbstractCachedResponse {
+public class JsonEncodingHandler extends AbstractEncodingHandler {
 
   private final long total;
   
   
-  public JsonCachedResponse(List<String> columns, long totalCount) {
-    super(columns);
+  public JsonEncodingHandler(JsonIterator ji, long totalCount) {
+    super(ji, EncodingFormat.JSON);
     this.total = totalCount;
   }
   
   
   @Override
-  public void doResponse(HttpServerExchange hse, MongoCursor<Document> cur) throws Exception {
-    hse.getResponseHeaders().put(
-        Headers.CONTENT_TYPE, "application/json; charset=utf-8"
-    );
+  public void handleRequest(HttpServerExchange hse) throws Exception {
+    if(!jiter.hasNext()) {
+      hse.endExchange();
+      return;
+    }
+    super.handleRequest(hse);
     hse.startBlocking();
-    JsonChannel js = new JsonChannel(Channels.newChannel(hse.getOutputStream()));
-    js.startObject()
-        .put("columns")
-        .write(":")
-        .write(JSON.serialize(columns));
-    js.nextElement()
+    JsonChannel channel = new JsonChannel(Channels.newChannel(hse.getOutputStream()));
+    Document doc = jiter.next();
+    this.writeColumns(channel, doc);
+    channel.nextElement()
         .put("total", total)
         .nextElement()
         .startArray("data");
     long count = 0;
-    Document next = (cur.hasNext() ? cur.next() : null);
     do {
-      if(next != null) {
-        js.write(JSON.serialize(next));
-        count++;
-      }
-      next = (cur.hasNext() ? cur.next() : null);
-      if(next != null) js.nextElement();
-    } while(next != null);
-    js.endArray()
+      channel.write(JSON.serialize(doc));
+      count++;
+      if((doc = jiter.next()) != null) 
+        channel.nextElement();
+    } 
+    while(doc != null);
+    channel.endArray()
         .nextElement()
         .put("count", count)
         .endObject()
         .close();
+  }
+  
+  
+  private void writeColumns(JsonChannel channel, Document doc) throws Exception {
+    if(doc == null) return;
+    Object[] keys = doc.keySet().toArray();
+    channel.startObject()
+        .put("columns").write(":")
+        .write(JSON.serialize(keys));
   }
   
 }

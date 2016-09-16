@@ -19,16 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.exec;
+package br.com.bb.disec.micro.handler.result;
 
 import br.com.bb.disec.micro.db.ConnectionPool;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.db.SqlSourcePool;
+import br.com.bb.disec.micro.handler.encode.EncodingFormat;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import static io.undertow.util.Headers.CONTENT_DISPOSITION;
 import org.jboss.logging.Logger;
 import us.pserver.timer.Timer;
 
@@ -37,10 +40,51 @@ import us.pserver.timer.Timer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 29/08/2016
  */
-public abstract class AbstractSqlExecutor implements SqlExecutor {
+public abstract class AbstractResultHandler implements HttpHandler {
+  
+  protected final JsonObject json;
+  
+  protected final EncodingFormat format;
   
   protected SqlQuery query;
+  
+  
+  public AbstractResultHandler(JsonObject json) {
+    if(json == null) {
+      throw new IllegalArgumentException("Bad Null JsonObject");
+    }
+    this.json = json;
+    format = this.getEncodingFormat();
+  }
+  
+  
+  public JsonObject json() {
+    return json;
+  }
+  
+  
+  public SqlQuery sqlQuery() {
+    return query;
+  }
 
+  
+  
+  protected EncodingFormat getEncodingFormat() {
+    return (json.has("format") 
+        ? EncodingFormat.from(
+            json.get("format").getAsString()) 
+        : EncodingFormat.JSON
+    );
+  }
+  
+  
+  protected void setContentDisposition(HttpServerExchange hse) {
+    hse.getResponseHeaders().put(CONTENT_DISPOSITION, 
+        "attachment; filename=" 
+            + json.get("query").getAsString() 
+            + format.name().toLowerCase() + "\""
+    );
+  }
   
   private String getDBName(JsonObject json) {
     String db = ConnectionPool.DEFAULT_DB_NAME;
@@ -74,16 +118,16 @@ public abstract class AbstractSqlExecutor implements SqlExecutor {
   
   
   @Override
-  public void exec(HttpServerExchange hse, JsonObject req) throws Exception {
+  public void handleRequest(HttpServerExchange hse) throws Exception {
     query = new SqlQuery(
-        PoolFactory.getPool(getDBName(req)).getConnection(), 
+        PoolFactory.getPool(getDBName(json)).getConnection(), 
         SqlSourcePool.getDefaultSqlSource()
     );
     Timer tm = new Timer.Nanos().start();
     query.execResultSet(
-        req.get("group").getAsString(), 
-        req.get("query").getAsString(), 
-        this.getArguments(req)
+        json.get("group").getAsString(), 
+        json.get("query").getAsString(), 
+        this.getArguments(json)
     );
     Logger.getLogger(getClass()).info("DATABASE TIME: "+ tm.lapAndStop());
   }

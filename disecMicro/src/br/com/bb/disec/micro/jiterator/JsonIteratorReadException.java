@@ -19,40 +19,27 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler;
-
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HttpString;
-import io.undertow.util.Methods;
+package br.com.bb.disec.micro.jiterator;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/07/2016
+ * @version 0.0 - 16/09/2016
  */
-public class SqlHandler implements HttpHandler {
+public class JsonIteratorReadException extends RuntimeException {
 
-  @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    if(hse.isInIoThread()) {
-      hse.dispatch(this);
-      return;
-    }
-    if(Methods.GET.equals(hse.getRequestMethod())) {
-      new GetSqlHandler().handleRequest(hse);
-    }
-    else if(Methods.POST.equals(hse.getRequestMethod())) {
-      new PostSqlHandler().handleRequest(hse);
-    }
-    //else if(Methods.OPTIONS.equals(hse.getRequestMethod())) {
-      //hse.setStatusCode(200);
-      //hse.endExchange();
-    //}
-    else {
-      hse.setStatusCode(400).setReasonPhrase("Bad Request");
-      hse.endExchange();
-    }
+  public JsonIteratorReadException(String message) {
+    super(message);
   }
-  
+
+
+  public JsonIteratorReadException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+
+  public JsonIteratorReadException(Throwable cause) {
+    super(cause);
+  }
+
 }

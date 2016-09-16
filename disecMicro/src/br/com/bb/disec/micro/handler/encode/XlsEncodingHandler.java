@@ -19,13 +19,13 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.resp;
+package br.com.bb.disec.micro.handler.encode;
 
-import com.mongodb.client.MongoCursor;
+import br.com.bb.disec.micro.jiterator.JsonIterator;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import jxl.Workbook;
 import jxl.write.DateTime;
@@ -40,45 +40,49 @@ import org.bson.Document;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 09/09/2016
  */
-public class XlsCachedResponse extends AbstractCachedResponse {
-
+public class XlsEncodingHandler extends AbstractEncodingHandler {
   
-  public XlsCachedResponse(List<String> columns) {
-    super(columns);
+  public static final int XLS_MAX_ROWS = 65500;
+  
+  
+  public XlsEncodingHandler(JsonIterator ji) {
+    super(ji, EncodingFormat.XLS);
   }
   
   
   @Override
-  public void doResponse(HttpServerExchange hse, MongoCursor<Document> cursor) throws Exception {
-    hse.getResponseHeaders().put(
-        Headers.CONTENT_TYPE, "application/vnd.ms-excel"
-    );
+  public void handleRequest(HttpServerExchange hse) throws Exception {
+    super.handleRequest(hse);
+    if(!jiter.hasNext()) {
+      hse.endExchange();
+      return;
+    }
     hse.startBlocking();
     WritableWorkbook wb = Workbook.createWorkbook(hse.getOutputStream());
+    WritableSheet sh = null;
     int shnum = 0;
-    WritableSheet sh = wb.createSheet(
-        "sheet".concat(String.valueOf(shnum)), shnum++
-    );
-    writeColumns(sh);
-    int row = 1;
-    while(cursor.hasNext()) {
-      writeRow(sh, row++, cursor.next());
-      if(row > 65500) {
+    int row = XLS_MAX_ROWS + 1;
+    while(jiter.hasNext()) {
+      Document doc = jiter.next();
+      if(row > XLS_MAX_ROWS) {
         row = 1;
         sh = wb.createSheet(
             "sheet".concat(String.valueOf(shnum)), shnum++
         );
-        writeColumns(sh);
+        writeColumns(sh, doc);
       }
+      writeRow(sh, row++, doc);
     }
     wb.write();
     wb.close();
   }
   
   
-  private void writeColumns(WritableSheet sheet) throws Exception {
-    for(int i = 0; i < columns.size(); i++) {
-      sheet.addCell(new Label(i, 0, columns.get(i)));
+  private void writeColumns(WritableSheet sheet, Document doc) throws Exception {
+    if(doc == null) return;
+    Object[] keys = doc.keySet().toArray();
+    for(int i = 0; i < keys.length; i++) {
+      sheet.addCell(new Label(i, 0, Objects.toString(keys[i])));
     }
   }
   

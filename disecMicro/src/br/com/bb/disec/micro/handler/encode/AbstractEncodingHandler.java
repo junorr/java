@@ -19,18 +19,53 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.exec;
+package br.com.bb.disec.micro.handler.encode;
 
-import com.google.gson.JsonObject;
+import br.com.bb.disec.micro.jiterator.JsonIterator;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 29/08/2016
+ * @version 0.0 - 16/09/2016
  */
-public interface SqlExecutor {
+public abstract class AbstractEncodingHandler implements HttpHandler {
 
-  public void exec(HttpServerExchange hse, JsonObject obj) throws Exception;
+  protected final JsonIterator jiter;
+  
+  protected final String contentType;
+  
+  
+  public AbstractEncodingHandler(JsonIterator ji, EncodingFormat fmt) {
+    if(ji == null) {
+      throw new IllegalArgumentException("Bad Null JsonIterator");
+    }
+    if(fmt == null) {
+      throw new IllegalArgumentException("Bad Null Encoding Format");
+    }
+    this.jiter = ji;
+    this.contentType = fmt.getContentType();
+  }
+  
+  
+  public JsonIterator jsonIterator() {
+    return jiter;
+  }
+  
+  
+  public String contentType() {
+    return contentType;
+  }
+  
+  
+  @Override
+  public void handleRequest(HttpServerExchange hse) throws Exception {
+    if(hse.isInIoThread()) {
+      hse.dispatch(this);
+    }
+    hse.getResponseHeaders().add(Headers.CONTENT_TYPE, contentType);
+  }
   
 }

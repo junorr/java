@@ -19,19 +19,45 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.resp;
-
-import com.mongodb.client.MongoCursor;
-import io.undertow.server.HttpServerExchange;
-import org.bson.Document;
+package br.com.bb.disec.micro.handler.encode;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 09/09/2016
+ * @version 0.0 - 16/09/2016
  */
-public interface CachedFormatResponse {
+public enum EncodingFormat {
 
-  public void doResponse(HttpServerExchange hse, MongoCursor<Document> cursor) throws Exception;
+  JSON("application/json; charset=utf-8"), 
+  XLS("application/vnd.ms-excel"), 
+  CSV("text/csv; charset=utf-8");
+  
+  
+  private EncodingFormat(String conttype) {
+    if(conttype == null) {
+      throw new IllegalArgumentException("Bad Null Content Type");
+    }
+    this.conttype = conttype;
+  }
+  
+  
+  public String getContentType() {
+    return conttype;
+  }
+  
+  
+  private String conttype;
+  
+  
+  public static EncodingFormat from(String str) {
+    switch(str.toLowerCase()) {
+      case "xls":
+        return XLS;
+      case "csv":
+        return CSV;
+      default:
+        return JSON;
+    }
+  }
   
 }

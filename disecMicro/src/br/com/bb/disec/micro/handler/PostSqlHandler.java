@@ -21,8 +21,8 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.handler.exec.CachedSqlExecutor;
-import br.com.bb.disec.micro.handler.exec.DirectSqlExecutor;
+import br.com.bb.disec.micro.handler.result.CachedResultHandler;
+import br.com.bb.disec.micro.handler.result.DirectResultHandler;
 import br.com.bb.disec.micro.util.parser.StringPostParser;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -48,10 +48,10 @@ public class PostSqlHandler implements JsonHandler {
       JsonObject json = this.parseJson(hse);
       this.validateJson(json);
       if(json.has("cachettl")) {
-        new CachedSqlExecutor().exec(hse, json);
+        new CachedResultHandler().exec(hse, json);
       }
       else {
-        new DirectSqlExecutor().exec(hse, json);
+        new DirectResultHandler().exec(hse, json);
       }
     }
     catch(IllegalArgumentException e) {

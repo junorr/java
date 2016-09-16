@@ -26,8 +26,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.jboss.logging.Logger;
-import us.pserver.timer.Timer;
 
 /**
  *

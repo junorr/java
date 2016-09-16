@@ -19,30 +19,58 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.resp;
+package br.com.bb.disec.micro.jiterator;
 
-import java.util.List;
+import com.mongodb.client.MongoCursor;
+import java.util.Iterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import org.bson.Document;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 09/09/2016
+ * @version 0.0 - 16/09/2016
  */
-public abstract class AbstractCachedResponse implements CachedFormatResponse {
-
-  protected final List<String> columns;
+public class MongoJsonIterator implements JsonIterator {
+  
+  private final MongoCursor<Document> cursor;
   
   
-  public AbstractCachedResponse(List<String> columns) {
-    if(columns == null || columns.isEmpty()) {
-      throw new IllegalArgumentException("Bad Null/Empty Columns List");
+  public MongoJsonIterator(MongoCursor<Document> cur) {
+    if(cur == null) {
+      throw new IllegalArgumentException("Bad Null MongoCursor");
     }
-    this.columns = columns;
+    this.cursor = cur;
   }
   
   
-  public List<String> getColumns() {
-    return columns;
+  public MongoCursor<Document> getMongoCursor() {
+    return cursor;
   }
   
+
+  @Override
+  public Stream<Document> stream() {
+    return StreamSupport.stream(this.spliterator(), false);
+  }
+
+
+  @Override
+  public Document next() {
+    return cursor.tryNext();
+  }
+
+
+  @Override
+  public boolean hasNext() {
+    return cursor.hasNext();
+  }
+
+
+  @Override
+  public Iterator<Document> iterator() {
+    return this;
+  }
+
 }

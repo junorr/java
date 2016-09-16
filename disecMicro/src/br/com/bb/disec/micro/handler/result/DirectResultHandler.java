@@ -19,12 +19,8 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.exec;
+package br.com.bb.disec.micro.handler.result;
 
-import br.com.bb.disec.micro.handler.resp.CsvDirectResponse;
-import br.com.bb.disec.micro.handler.resp.JsonDirectResponse;
-import br.com.bb.disec.micro.handler.resp.XlsDirectResponse;
-import br.com.bb.disec.micro.db.SqlObjectType;
 import com.google.gson.JsonObject;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
@@ -37,26 +33,32 @@ import us.pserver.timer.Timer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/09/2016
  */
-public class DirectSqlExecutor extends AbstractSqlExecutor {
+public class DirectResultHandler extends AbstractResultHandler {
+  
+  
+  public DirectResultHandler(JsonObject json) {
+    super(json);
+  }
+  
   
   @Override
-  public void exec(HttpServerExchange hse, JsonObject req) throws Exception {
-    super.exec(hse, req);
+  public void handleRequest(HttpServerExchange hse) throws Exception {
+    super.handleRequest(hse);
     ResultSet rst = query.getResultSet();
     Timer tm = new Timer.Nanos().start();
-    if(req.has("format") && "csv".equalsIgnoreCase(
-        req.get("format").getAsString())) {
+    if(json.has("format") && "csv".equalsIgnoreCase(
+        json.get("format").getAsString())) {
       hse.getResponseHeaders().put(
           Headers.CONTENT_DISPOSITION, "attachment; filename=\""
-              + req.get("query").getAsString()+ ".csv\""
+              + json.get("query").getAsString()+ ".csv\""
       );
       new CsvDirectResponse().doResponse(hse, rst);
     }
-    else if(req.has("format") && "xls".equalsIgnoreCase(
-        req.get("format").getAsString())) {
+    else if(json.has("format") && "xls".equalsIgnoreCase(
+        json.get("format").getAsString())) {
       hse.getResponseHeaders().put(
           Headers.CONTENT_DISPOSITION, "attachment; filename=\""
-              + req.get("query").getAsString()+ ".xls\""
+              + json.get("query").getAsString()+ ".xls\""
       );
       new XlsDirectResponse().doResponse(hse, rst);
     }

@@ -19,18 +19,15 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.resp;
-
-import io.undertow.server.HttpServerExchange;
-import java.sql.ResultSet;
+package br.com.bb.disec.micro.handler.result;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 09/09/2016
+ * @version 0.0 - 16/09/2016
  */
-public interface DirectFormatResponse {
+public class MongoCache {
 
-  public void doResponse(HttpServerExchange hse, ResultSet rst) throws Exception;
   
+
 }
