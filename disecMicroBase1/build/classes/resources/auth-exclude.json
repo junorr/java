@@ -1,8 +1,0 @@
-[
-  "/auth*",
-  {
-    "uri": "/download*",
-    "method": "GET"
-  }
-]
-
