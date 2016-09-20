@@ -21,11 +21,11 @@
 
 package br.com.bb.disec.micro.db;
 
+import br.com.bb.disec.micro.ResourceLoader.ResourceLoadException;
+import br.com.bb.disec.micro.ServerSetup;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,7 +50,7 @@ public class ConnectionPool {
   private final String dsname;
   
   
-  private ConnectionPool(String dsname) throws URISyntaxException {
+  private ConnectionPool(String dsname) throws ResourceLoadException {
     if(dsname == null || dsname.trim().isEmpty()) {
       throw new IllegalArgumentException("Invalid DataSource Name: "+ dsname);
     }
@@ -70,10 +70,9 @@ public class ConnectionPool {
   }
   
   
-  private String createFileName() throws URISyntaxException {
-    return new File(this.getClass().getResource(
-        DSFILE_PRE + dsname + DSFILE_EXT
-    ).toURI()).getAbsolutePath();
+  private String createFileName() throws ResourceLoadException {
+    return ServerSetup.instance().loader()
+        .toStringUri(DSFILE_PRE + dsname + DSFILE_EXT);
   }
   
   

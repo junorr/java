@@ -21,7 +21,9 @@
 
 package br.com.bb.disec.micro.client;
 
+import br.com.bb.sso.session.CookieName;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 import java.io.IOException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -51,10 +53,29 @@ public class AuthenticationClient extends AbstractAuthClient {
   }
   
   
+  public AuthenticationClient doAuth(String bbssoToken) throws IOException {
+    if(bbssoToken != null) {
+      Request req = Request.Get(getUriString());
+      req.setHeader(
+          Headers.COOKIE_STRING, 
+          CookieName.BBSSOToken.name() + "="+ bbssoToken+ ";"
+      );
+      System.out.println("* doAuth.cookie: "+ CookieName.BBSSOToken.name() + "="+ bbssoToken+ ";");
+      doAuth(req);
+    }
+    return this;
+  }
+  
+  
   @Override
   public AuthenticationClient doAuth(HttpServerExchange hse) throws IOException {
     Request req = Request.Get(getUriString());
     new AuthCookieManager().injectAuthCookies(req, hse);
+    return doAuth(req);
+  }
+  
+  
+  private AuthenticationClient doAuth(Request req) throws IOException {
     Response resp = req.execute();
     HttpResponse hresp = resp.returnResponse();
     status = hresp.getStatusLine();

@@ -22,7 +22,6 @@
 package br.com.bb.disec.micro.db;
 
 import static br.com.bb.disec.micro.db.ConnectionPool.DEFAULT_DB_NAME;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -96,21 +95,6 @@ public class SqlSourcePool {
   }
   
   
-  public SqlSource getSource(URL url) {
-    if(url == null) {
-      throw new IllegalArgumentException("Bad File Path: "+ url);
-    }
-    SqlSource src = null;
-    if(pool.containsKey(url.toString())) {
-      src = pool.get(url.toString());
-    }
-    else {
-      src = new FileSqlSource(url);
-    }
-    return src;
-  }
-  
-  
   public SqlSource getSource(Path file) {
     if(file == null) {
       throw new IllegalArgumentException("Bad File Path: "+ file);
@@ -138,11 +122,6 @@ public class SqlSourcePool {
   
   public static SqlSource getSqlSource(String name) {
     return INSTANCE.getSource(name);
-  }
-  
-  
-  public static SqlSource getSqlSource(URL url) {
-    return INSTANCE.getSource(url);
   }
   
   

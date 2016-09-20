@@ -8,11 +8,7 @@
   "authenticationShield": false,
   "handlers": {
     "/auth": "br.com.bb.disec.micro.handler.AuthenticationServerHandler",
-    "/cache": "br.com.bb.disec.micro.handler.PublicCacheHandler",
-    "/download": "br.com.bb.disec.micro.handler.DownloadHandler",
     "/simulate": "br.com.bb.disec.micro.handler.SimulatedUserHandler",
-    "/sql": "br.com.bb.disec.micro.handler.SqlHandler",
-    "/time": "br.com.bb.disec.micro.handler.TimeHandler",
-    "/upload": "br.com.bb.disec.micro.handler.FileUploadHandler"
+    "/time": "br.com.bb.disec.micro.handler.TimeHandler"
   }
 }

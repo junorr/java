@@ -27,7 +27,7 @@ import br.com.bb.disec.micro.db.CtuPersistencia;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.db.SqlSourcePool;
-import br.com.bb.disec.micro.util.parser.CookieUserParser;
+import br.com.bb.disec.micro.util.CookieUserParser;
 import br.com.bb.disec.util.URLD;
 import br.com.bb.sso.bean.User;
 import com.google.gson.Gson;

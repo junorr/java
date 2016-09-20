@@ -64,11 +64,6 @@ public class FileSqlSource implements SqlSource {
   }
   
   
-  public FileSqlSource(URL url) {
-    this(Paths.get(toURI(url)));
-  }
-  
-  
   @Override
   public String getSql(String group, String name) throws IOException {
     if(sqls.isEmpty()) {

@@ -21,6 +21,8 @@
 
 package br.com.bb.disec.micro.db;
 
+import br.com.bb.disec.micro.ServerSetup;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -32,7 +34,9 @@ public class DefaultFileSqlSource extends FileSqlSource {
   
 
   public DefaultFileSqlSource() {
-    super(SqlSource.class.getResource(DEFAULT_SQL_FILE));
+    super(ServerSetup.instance()
+        .loader().loadPath(DEFAULT_SQL_FILE)
+    );
   }
   
 }

@@ -21,8 +21,6 @@
 
 package br.com.bb.disec.micro;
 
-import br.com.bb.disec.micro.conf.ServerConfig;
-import br.com.bb.disec.micro.handler.AuthenticationServerHandler;
 import br.com.bb.disec.micro.handler.AuthenticationShieldHandler;
 import br.com.bb.disec.micro.handler.CorsHandler;
 import br.com.bb.disec.micro.handler.DispatcherHandler;
@@ -51,6 +49,12 @@ public class Server {
       throw new IllegalArgumentException("Invalid ServerConfig: "+ conf);
     }
     this.config = conf;
+    this.server = this.initServer();
+  }
+  
+  
+  private Undertow initServer() {
+    Logger.getLogger(Server.class).info(config);
     HttpHandler root = null;
     PathHandler ph = this.initPathHandler();
     if(config.isAuthenticationShield()) {
@@ -61,7 +65,7 @@ public class Server {
     if(config.isShutdownHandlerEnabled()) {
       ph.addExactPath("/shutdown", new ShutdownHandler(this));
     }
-    this.server = Undertow.builder()
+    return Undertow.builder()
         .setIoThreads(config.getIoThreads())
         .setWorkerOption(Options.WORKER_TASK_MAX_THREADS, config.getMaxWorkerThreads())
         .addHttpListener(config.getPort(), config.getAddress(), root)

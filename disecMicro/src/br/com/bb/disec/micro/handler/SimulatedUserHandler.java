@@ -84,10 +84,18 @@ public class SimulatedUserHandler implements JsonHandler {
     if(pars == null || pars.length() < 1) {
       throw new IOException("No User Key Parameter Found");
     }
+    String hash = DigestUtils.md5Hex(pars.getParam(0));
+    return (ucache.isCachedUser(hash) 
+        ? ucache.getCachedUser(hash) 
+        : createDBUser(pars.getParam(0)));
+  }
+  
+  
+  private User createDBUser(String chave) throws IOException {
     try {
-      User user = factory.createUser(pars.getParam(0));
+      User user = factory.createUser(chave);
       if(user == null) {
-        throw new IOException("Invalid User Key: "+ pars.getParam(0));
+        throw new IOException("Invalid User Key: "+ chave);
       }
       return user;
     } 

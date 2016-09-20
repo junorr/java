@@ -24,10 +24,10 @@ package br.com.bb.disec.micro.client;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import java.io.IOException;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
-import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 
 /**
@@ -37,9 +37,7 @@ import org.apache.http.util.EntityUtils;
  */
 public class SimAuthClient extends AbstractAuthClient {
   
-  public static final String JSON_SIM_START = "{\"usu-sim-chave\":\"";
-  
-  public static final String JSON_SIM_END = "\"}";
+  public static final String DEFAULT_CONTEXT = "simulate";
   
 
   private final String chave;
@@ -61,18 +59,13 @@ public class SimAuthClient extends AbstractAuthClient {
   }
   
   
-  public static SimAuthClient ofDefault(String context, String chave) {
-    return new SimAuthClient(DEFAUTL_ADDRESS, DEFAULT_PORT, context, chave);
+  public static SimAuthClient ofDefault(String chave) {
+    return new SimAuthClient(DEFAUTL_ADDRESS, DEFAULT_PORT, DEFAULT_CONTEXT, chave);
   }
   
   
   public String getBBSSOToken() {
     return tokenSSO;
-  }
-  
-  
-  private String getJsonContent() {
-    return JSON_SIM_START + chave + JSON_SIM_END;
   }
   
   
@@ -86,13 +79,11 @@ public class SimAuthClient extends AbstractAuthClient {
     jsonUser = null;
     tokenSSO = null;
     status = null;
-    Response resp = Request.Post(getUriString())
-        .bodyString(getJsonContent(), ContentType.APPLICATION_JSON)
-        .execute();
+    Response resp = Request.Get(getUriString()+"/"+chave).execute();
     HttpResponse hresp = resp.returnResponse();
     status = hresp.getStatusLine();
     if(status.getStatusCode() == 200) {
-      tokenSSO = hresp.getFirstHeader(Headers.SET_COOKIE_STRING).getValue();
+      tokenSSO = hresp.getFirstHeader(Headers.SET_COOKIE_STRING).getValue().split("=")[1];
       jsonUser = EntityUtils.toString(hresp.getEntity());
     }
     return this;

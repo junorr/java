@@ -21,7 +21,7 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.conf.ServerConfig;
+import br.com.bb.disec.micro.ServerConfig;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 

@@ -21,19 +21,16 @@
 
 package br.com.bb.disec.micro.handler;
 
+import br.com.bb.disec.micro.ServerSetup;
 import br.com.bb.disec.micro.client.AuthenticationClient;
 import br.com.bb.disec.micro.util.URIParam;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
 
 /**
  *
@@ -43,6 +40,7 @@ import java.io.InputStreamReader;
 public class AuthenticationShieldHandler implements HttpHandler {
   
   public static final String AUTH_EXCEPTIONS_FILE = "/resources/auth-exclude.json";
+  
   
   private final HttpHandler next;
   
@@ -56,23 +54,10 @@ public class AuthenticationShieldHandler implements HttpHandler {
   
   
   private JsonArray readExcludes() {
-    InputStreamReader rdr = null;
-    try {
-      rdr = new InputStreamReader(getClass()
-          .getResourceAsStream(AUTH_EXCEPTIONS_FILE)
-      );
-      return new JsonParser()
-          .parse(rdr)
-          .getAsJsonArray();
-    }
-    catch(JsonIOException | JsonSyntaxException e) {
-      throw new RuntimeException(e);
-    }
-    finally {
-      if(rdr != null) try { 
-        rdr.close(); 
-      } catch(IOException e) {}
-    }
+    return ServerSetup.instance()
+        .loader()
+        .loadJson(AUTH_EXCEPTIONS_FILE)
+        .getAsJsonArray();
   }
   
   
