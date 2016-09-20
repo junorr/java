@@ -96,9 +96,12 @@ public class ResourceLoader {
         String surl = url.toString();
         if(surl.contains(def)) break;
       }
+      if(url == null) {
+        throw new ResourceLoadException("Resource Not Found: "+ resource);
+      }
       return url;
     }
-    catch(Exception e) {
+    catch(IOException e) {
       throw new ResourceLoadException(e);
     }
   }
