@@ -23,7 +23,6 @@ package br.com.bb.disec.micro.handler.result;
 
 import br.com.bb.disec.micro.db.MongoConnectionPool;
 import br.com.bb.disec.micro.db.SqlObjectType;
-import static br.com.bb.disec.micro.handler.result.CachedResultHandler.DEFAULT_DB;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
@@ -31,8 +30,8 @@ import com.mongodb.client.model.IndexOptions;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +45,8 @@ import org.bson.Document;
  */
 public class MongoCache {
   
+  public static final String DEFAULT_DB = "micro";
+  
   
   private final JsonObject json;
   
@@ -55,6 +56,10 @@ public class MongoCache {
   
   private long total;
   
+  private List<String> columns;
+  
+  private String filterHash;
+  
   
   public MongoCache(JsonObject json) {
     if(json == null) {
@@ -62,8 +67,14 @@ public class MongoCache {
     }
     this.json = json;
     this.colname = this.queryHash();
-    collection = this.getCollection();
-    total = 0;
+    this.collection = this.getCollection();
+    if(this.isCachedCollection()) {
+      this.readMetaData();
+    }
+    else {
+      this.filterHash = this.createFilterHash();
+      this.total = 0;
+    }
   }
   
   
@@ -86,17 +97,33 @@ public class MongoCache {
     return total;
   }
   
+  
+  public List<String> columns() {
+    return columns;
+  }
+  
+  
+  public String filterHash() {
+    return filterHash;
+  }
+  
+  
+  public boolean isFilterHashChanged() {
+    return !filterHash.equals(this.createFilterHash());
+  }
+  
 
   public long doCache(ResultSet rs) throws SQLException {
-    String[] cols = this.getColumns(rs.getMetaData());
-    for (String col : cols) {
-      collection.createIndex(new Document(col, 1));
-    }
+    this.columns = this.getColumns(rs.getMetaData());
+    columns.forEach(c->collection
+        .createIndex(new Document(c, 1))
+    );
     total = 0;
     while(rs.next()) {
       collection.insertOne(createDoc(rs));
       total++;
     }
+    this.setMetaData();
     return total;
   }
   
@@ -113,11 +140,11 @@ public class MongoCache {
   }
   
   
-  private String[] getColumns(ResultSetMetaData meta) throws SQLException {
+  private List<String> getColumns(ResultSetMetaData meta) throws SQLException {
     int ncols = meta.getColumnCount();
-    String[] cols = new String[ncols];
+    List<String> cols = new ArrayList<>(ncols);
     for(int i = 1; i <= ncols; i++) {
-      cols[i-1] = meta.getColumnLabel(i);
+      cols.add(meta.getColumnLabel(i));
     }
     return cols;
   }
@@ -133,6 +160,20 @@ public class MongoCache {
       }
     }
     return "C"+ DigestUtils.md5Hex(input);
+  }
+  
+  
+  public String createFilterHash() {
+    String hash = "0";
+    if(json.has("filterBy") && json.has("filter")) {
+      JsonArray fby = json.getAsJsonArray("filterBy");
+      JsonArray fil = json.getAsJsonArray("filter");
+      for(int i = 0; i < fby.size(); i++) {
+        hash += fby.get(i).getAsString()
+            + Objects.toString(fil.get(i));
+      }
+    }
+    return "C" + DigestUtils.md5Hex(hash);
   }
   
   
@@ -166,4 +207,26 @@ public class MongoCache {
     return col;
   }
 
+  
+  private void setMetaData() {
+    collection.findOneAndUpdate(
+        new Document().append("collection", colname), 
+        new Document().append("$set", 
+            new Document()
+                .append("total", total)
+                .append("columns", columns)
+                .append("filterHash", filterHash))
+    );
+  }
+  
+  
+  private void readMetaData() {
+    Document info = collection.find(new Document("collection", colname)).first();
+    if(info != null) {
+      columns = (List<String>) info.get("columns");
+      total = info.getLong("total");
+      filterHash = info.getString("filterHash");
+    }
+  }
+  
 }

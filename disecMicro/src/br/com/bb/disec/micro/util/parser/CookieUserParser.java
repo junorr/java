@@ -21,22 +21,14 @@
 
 package br.com.bb.disec.micro.util.parser;
 
-import br.com.bb.disec.micro.db.MongoConnectionPool;
+import br.com.bb.disec.micro.client.UserCache;
+import br.com.bb.disec.micro.client.AuthCookieManager;
 import br.com.bb.disec.micro.sso.MicroSSOUserFactory;
 import br.com.bb.sso.bean.User;
 import br.com.bb.sso.session.CookieName;
-import com.google.gson.Gson;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.IndexOptions;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.util.JSON;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.Cookie;
 import java.io.IOException;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-import org.bson.Document;
-import org.jboss.logging.Logger;
 
 /**
  *
@@ -45,96 +37,57 @@ import org.jboss.logging.Logger;
  */
 public class CookieUserParser implements HttpParser<User> {
   
-  public static final String SESSION_COLLECTION = "session";
+  private final UserCache ucache;
   
-  public static final long DEFAULT_SESSION_TIME = 30 * 60; //30 min. in sec.
+  
+  public CookieUserParser() {
+    ucache = new UserCache();
+  }
 
   
   @Override
   public User parseHttp(HttpServerExchange hse) throws IOException {
-    if(!hse.getRequestCookies()
-        .containsKey(CookieName.BBSSOToken.name())) {
+    Cookie[] cks = this.getCookies(hse);
+    if(cks[0] == null) {
       throw new IOException("Missing Cookie "+ CookieName.BBSSOToken.name());
     }
-    Cookie hash = hse.getRequestCookies().get(
-        CookieName.BBSSOToken.name()
-    );
-    User user = getFromCache(hash);
+    User user = ucache.getCachedUser(cks[0]);
     if(user == null) {
-      user = getFromSSO(hse);
+      user = querySSO(cks);
     }
     if(user != null) {
-      this.cacheUser(user, hash);
+      ucache.setCachedUser(cks[0], user);
     }
     return user;
   }
   
   
-  private void cacheUser(User user, Cookie hash) {
-    MongoCollection<Document> col = MongoConnectionPool.collection(
-        MongoConnectionPool.DEFAULT_DB, 
-        SESSION_COLLECTION
-    );
-    try {
-      col.createIndex(
-          new Document("created", 1), 
-          new IndexOptions().expireAfter(
-              DEFAULT_SESSION_TIME, TimeUnit.SECONDS)
-      );
-    } catch(Exception e) {}
-    Gson gson = new Gson();
-    Document duser = new Document()
-        .append("created", new Date())
-        .append(CookieName.BBSSOToken.name(), hash.getValue())
-        .append("user", JSON.parse(gson.toJson(user)));
-    col.replaceOne(new Document(
-        CookieName.BBSSOToken.name(), 
-        hash.getValue()), duser, 
-        new UpdateOptions().upsert(true)
-    );
-  }
-  
-  
-  private User getFromCache(Cookie hash) {
-    User user = null;
-    if(hash != null) {
-      MongoCollection<Document> col = MongoConnectionPool.collection(
-          MongoConnectionPool.DEFAULT_DB, 
-          SESSION_COLLECTION
-      );
-      Document sess = col.find(new Document(
-          CookieName.BBSSOToken.name(), 
-          hash.getValue())
-      ).first();
-      if(sess != null) {
-        Gson gson = new Gson();
-        String json = JSON.serialize(sess.get("user"));
-        user = gson.fromJson(json, User.class);
-        Logger.getLogger(getClass()).info("Cached ("+ hash.getValue()+ "): "+ user.toString());
-      }
+  private User querySSO(Cookie[] cks) throws IOException {
+    if(cks == null || cks.length < 2) {
+      throw new IOException("Invalid Auth Cookies");
     }
-    return user;
-  }
-  
-  
-  private User getFromSSO(HttpServerExchange hse) throws IOException {
-    if(!hse.getRequestCookies().containsKey(CookieName.ssoacr.name())) {
+    if(cks[0] == null) {
+      throw new IOException("Missing Cookie "+ CookieName.BBSSOToken.name());
+    }
+    if(cks[1] == null) {
       throw new IOException("Missing Cookie "+ CookieName.ssoacr.name());
     }
-    MicroSSOUserFactory suf = new MicroSSOUserFactory(getCookies(hse));
+    MicroSSOUserFactory suf = new MicroSSOUserFactory(cks);
     User user = null;
     user = suf.createUser();
     if(user == null) {
       throw new IOException("Invalid Cookie "+ CookieName.BBSSOToken.name());
     }
-    Logger.getLogger(getClass()).info("SSO: "+ user.toString());
     return user;
   } 
   
   
   private Cookie[] getCookies(HttpServerExchange hse) {
-    Cookie[] cookies = new Cookie[hse.getRequestCookies().size()];
-    return hse.getRequestCookies().values().toArray(cookies);
+    AuthCookieManager man = new AuthCookieManager();
+    Cookie[] cks = new Cookie[2];
+    cks[0] = man.getBBSsoToken(hse);
+    cks[1] = man.getSsoAcr(hse);
+    return cks;
   }
 
 }

@@ -35,12 +35,9 @@ import org.bson.Document;
  */
 public class JsonEncodingHandler extends AbstractEncodingHandler {
 
-  private final long total;
   
-  
-  public JsonEncodingHandler(JsonIterator ji, long totalCount) {
+  public JsonEncodingHandler(JsonIterator ji) {
     super(ji, EncodingFormat.JSON);
-    this.total = totalCount;
   }
   
   
@@ -56,7 +53,7 @@ public class JsonEncodingHandler extends AbstractEncodingHandler {
     Document doc = jiter.next();
     this.writeColumns(channel, doc);
     channel.nextElement()
-        .put("total", total)
+        .put("total", jiter.total())
         .nextElement()
         .startArray("data");
     long count = 0;

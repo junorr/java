@@ -61,9 +61,6 @@ public class Server {
     if(config.isShutdownHandlerEnabled()) {
       ph.addExactPath("/shutdown", new ShutdownHandler(this));
     }
-    if(config.isAuthenticationServer()) {
-      ph.addPrefixPath("/auth", new AuthenticationServerHandler());
-    }
     this.server = Undertow.builder()
         .setIoThreads(config.getIoThreads())
         .setWorkerOption(Options.WORKER_TASK_MAX_THREADS, config.getMaxWorkerThreads())

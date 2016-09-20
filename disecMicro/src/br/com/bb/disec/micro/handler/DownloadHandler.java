@@ -109,10 +109,10 @@ public class DownloadHandler implements HttpHandler {
   
   private void execute(HttpServerExchange hse, JsonObject json) throws Exception {
     if(json.has("cachettl")) {
-      new CachedResultHandler().exec(hse, json);
+      new CachedResultHandler(json).handleRequest(hse);
     }
     else {
-      new DirectResultHandler().exec(hse, json);
+      new DirectResultHandler(json).handleRequest(hse);
     }
   }
   

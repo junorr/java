@@ -23,7 +23,6 @@ package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.handler.result.CachedResultHandler;
 import br.com.bb.disec.micro.handler.result.DirectResultHandler;
-import br.com.bb.disec.micro.util.parser.DateParser;
 import br.com.bb.disec.micro.db.SqlObjectType;
 import br.com.bb.disec.micro.util.URIParam;
 import com.google.gson.Gson;
@@ -32,8 +31,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.undertow.server.HttpServerExchange;
 import java.io.IOException;
-import java.util.regex.Pattern;
-import org.bson.Document;
 import org.jboss.logging.Logger;
 
 /**
@@ -55,10 +52,10 @@ public class GetSqlHandler implements JsonHandler {
       JsonObject json = this.parseJson(hse);
       this.validateJson(json);
       if(json.has("cachettl")) {
-        new CachedResultHandler().exec(hse, json);
+        new CachedResultHandler(json).handleRequest(hse);
       }
       else {
-        new DirectResultHandler().exec(hse, json);
+        new DirectResultHandler(json).handleRequest(hse);
       }
     }
     catch(IllegalArgumentException e) {

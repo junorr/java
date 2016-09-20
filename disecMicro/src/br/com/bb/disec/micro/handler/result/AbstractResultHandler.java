@@ -25,7 +25,11 @@ import br.com.bb.disec.micro.db.ConnectionPool;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.db.SqlSourcePool;
+import br.com.bb.disec.micro.handler.encode.CsvEncodingHandler;
 import br.com.bb.disec.micro.handler.encode.EncodingFormat;
+import br.com.bb.disec.micro.handler.encode.JsonEncodingHandler;
+import br.com.bb.disec.micro.handler.encode.XlsEncodingHandler;
+import br.com.bb.disec.micro.jiterator.JsonIterator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -130,6 +134,19 @@ public abstract class AbstractResultHandler implements HttpHandler {
         this.getArguments(json)
     );
     Logger.getLogger(getClass()).info("DATABASE TIME: "+ tm.lapAndStop());
+    this.setContentDisposition(hse);
+  }
+  
+  
+  protected HttpHandler getEncodingHandler(JsonIterator jiter) {
+    switch(this.format) {
+      case XLS:
+        return new XlsEncodingHandler(jiter);
+      case CSV:
+        return new CsvEncodingHandler(jiter);
+      default:
+        return new JsonEncodingHandler(jiter);
+    }
   }
   
 }

@@ -32,12 +32,13 @@ import org.bson.Document;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/09/2016
  */
-public class MongoJsonIterator implements JsonIterator {
+public class MongoJsonIterator extends AbstractJsonIterator {
   
   private final MongoCursor<Document> cursor;
   
   
-  public MongoJsonIterator(MongoCursor<Document> cur) {
+  public MongoJsonIterator(MongoCursor<Document> cur, long total) {
+    super(total);
     if(cur == null) {
       throw new IllegalArgumentException("Bad Null MongoCursor");
     }

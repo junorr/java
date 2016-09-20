@@ -59,8 +59,6 @@ public class ServerConfig {
   
   private final boolean shutdownHandler;
   
-  private final boolean authenticationServer;
-  
   private final boolean authenticationShield;
   
   private final int maxWorkerThreads;
@@ -76,7 +74,6 @@ public class ServerConfig {
       boolean dispatcherEnabled, 
       boolean logHandlerEnabled, 
       boolean shutdownHandler, 
-      boolean authServer,
       boolean authShield,
       int ioThreads, 
       int maxWorkerThreads, 
@@ -92,7 +89,6 @@ public class ServerConfig {
     this.port = port;
     this.dispatcherEnabled = dispatcherEnabled;
     this.shutdownHandler = shutdownHandler;
-    this.authenticationServer = authServer;
     this.authenticationShield = authShield;
     this.ioThreads = (ioThreads > 0 
         ? ioThreads 
@@ -133,11 +129,6 @@ public class ServerConfig {
   
   public boolean isShutdownHandlerEnabled() {
     return shutdownHandler;
-  }
-
-
-  public boolean isAuthenticationServer() {
-    return authenticationServer;
   }
 
 
@@ -233,7 +224,6 @@ public class ServerConfig {
         + "\n    maxWorkerThreads: " + maxWorkerThreads 
         + "\n    dispatcherEnabled: " + dispatcherEnabled 
         + "\n    shutdownHandlerEnabled: " + shutdownHandler
-        + "\n    authenticationServer: " + authenticationServer
         + "\n    authenticationShield: " + authenticationShield
         + "\n    handlers: " + handlers + "\n}";
   }
@@ -252,8 +242,6 @@ public class ServerConfig {
     private boolean dispatcherEnabled;
     
     private boolean logHandlerEnabled;
-    
-    private boolean authenticationServer;
     
     private boolean authenticationShield;
     
@@ -309,17 +297,6 @@ public class ServerConfig {
 
     public Builder setDispatcherEnabled(boolean useDispatcher) {
       this.dispatcherEnabled = useDispatcher;
-      return this;
-    }
-    
-    
-    public boolean isAuthenticationServer() {
-      return authenticationServer;
-    }
-
-
-    public Builder setAuthenticationServer(boolean authenticationEnabled) {
-      this.authenticationServer = authenticationEnabled;
       return this;
     }
     
@@ -386,7 +363,6 @@ public class ServerConfig {
           dispatcherEnabled, 
           logHandlerEnabled,
           shutdownHandlerEnabled, 
-          authenticationServer,
           authenticationShield,
           ioThreads, 
           maxWorkerThreads, 
@@ -416,7 +392,6 @@ public class ServerConfig {
             .setServerPort(b.getServerPort())
             .setDispatcherEnabled(b.isDispatcherEnabled())
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
-            .setAuthenticationServer(b.isAuthenticationServer())
             .setAuthenticationShield(b.isAuthenticationShield())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
@@ -436,7 +411,6 @@ public class ServerConfig {
             .setServerPort(b.getServerPort())
             .setDispatcherEnabled(b.isDispatcherEnabled())
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
-            .setAuthenticationServer(b.isAuthenticationServer())
             .setAuthenticationShield(b.isAuthenticationShield())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
@@ -455,7 +429,6 @@ public class ServerConfig {
           + "\n    ioThreads: " + ioThreads 
           + "\n    maxWorkerThreads: " + maxWorkerThreads 
           + "\n    shutdownHandlerEnabled: " + shutdownHandlerEnabled
-          + "\n    authenticationServer: " + authenticationServer
           + "\n    authenticationShield: " + authenticationShield
           + "\n    handlers: " + handlers + "\n}";
     }

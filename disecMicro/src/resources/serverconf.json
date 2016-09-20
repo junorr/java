@@ -6,12 +6,13 @@
   "dispatcherEnabled": true,
   "shutdownHandlerEnabled": true,
   "authenticationShield": false,
-  "authenticationServer": true,
   "handlers": {
-    "/sql": "br.com.bb.disec.micro.handler.SqlHandler",
-    "/download": "br.com.bb.disec.micro.handler.DownloadHandler",
-    "/upload": "br.com.bb.disec.micro.handler.FileUploadHandler",
+    "/auth": "br.com.bb.disec.micro.handler.AuthenticationServerHandler",
     "/cache": "br.com.bb.disec.micro.handler.PublicCacheHandler",
-    "/time": "br.com.bb.disec.micro.handler.TimeHandler"
+    "/download": "br.com.bb.disec.micro.handler.DownloadHandler",
+    "/simulate": "br.com.bb.disec.micro.handler.SimulatedUserHandler",
+    "/sql": "br.com.bb.disec.micro.handler.SqlHandler",
+    "/time": "br.com.bb.disec.micro.handler.TimeHandler",
+    "/upload": "br.com.bb.disec.micro.handler.FileUploadHandler"
   }
 }

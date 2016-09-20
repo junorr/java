@@ -48,10 +48,10 @@ public class PostSqlHandler implements JsonHandler {
       JsonObject json = this.parseJson(hse);
       this.validateJson(json);
       if(json.has("cachettl")) {
-        new CachedResultHandler().exec(hse, json);
+        new CachedResultHandler(json).handleRequest(hse);
       }
       else {
-        new DirectResultHandler().exec(hse, json);
+        new DirectResultHandler(json).handleRequest(hse);
       }
     }
     catch(IllegalArgumentException e) {

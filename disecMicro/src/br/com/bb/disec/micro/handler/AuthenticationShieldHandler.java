@@ -51,11 +51,11 @@ public class AuthenticationShieldHandler implements HttpHandler {
   
   public AuthenticationShieldHandler(HttpHandler next) {
     this.next = next;
-    exceptions = readExceptions();
+    exceptions = readExcludes();
   }
   
   
-  private JsonArray readExceptions() {
+  private JsonArray readExcludes() {
     InputStreamReader rdr = null;
     try {
       rdr = new InputStreamReader(getClass()
@@ -96,6 +96,8 @@ public class AuthenticationShieldHandler implements HttpHandler {
             .setReasonPhrase("Unauthorized")
             .endExchange();
         donext = false;
+      } else {
+        System.out.println("* Authenticated: "+ acli.getUser());
       }
     }
     if(donext && next != null) {

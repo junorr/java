@@ -34,4 +34,6 @@ public interface JsonIterator extends Iterator<Document>, Iterable<Document> {
 
   public Stream<Document> stream();
   
+  public long total();
+  
 }

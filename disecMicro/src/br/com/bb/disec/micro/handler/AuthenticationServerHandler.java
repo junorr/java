@@ -28,13 +28,11 @@ import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.db.SqlSourcePool;
 import br.com.bb.disec.micro.util.parser.CookieUserParser;
-import br.com.bb.disec.micro.util.parser.SimulatedUserParser;
 import br.com.bb.disec.util.URLD;
 import br.com.bb.sso.bean.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Methods;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -69,14 +67,7 @@ public class AuthenticationServerHandler implements JsonHandler {
     }
     User user = null;
     try {
-      if(Methods.GET.equals(hse.getRequestMethod())) {
-        user = new CookieUserParser().parseHttp(hse);
-      }
-      else if(Methods.POST.equals(hse.getRequestMethod())) {
-        SimulatedUserParser sup = new SimulatedUserParser();
-        user = sup.parseHttp(hse);
-        hse.setResponseCookie(sup.getCookie());
-      }
+      user = new CookieUserParser().parseHttp(hse);
       if(doAuth(hse, user)) {
         this.log(hse, user, true);
         hse.setStatusCode(200).setReasonPhrase("OK");
@@ -89,7 +80,8 @@ public class AuthenticationServerHandler implements JsonHandler {
       }
     }
     catch(IOException e) {
-      hse.setStatusCode(400).setReasonPhrase("Bad Request. "+ e.getMessage());
+      hse.setStatusCode(400)
+          .setReasonPhrase("Bad Request. "+ e.getMessage());
     }
     hse.endExchange();
   }

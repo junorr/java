@@ -21,10 +21,9 @@
 
 package br.com.bb.disec.micro.handler.result;
 
+import br.com.bb.disec.micro.jiterator.ResultSetJsonIterator;
 import com.google.gson.JsonObject;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
-import java.sql.ResultSet;
 import org.jboss.logging.Logger;
 import us.pserver.timer.Timer;
 
@@ -44,29 +43,16 @@ public class DirectResultHandler extends AbstractResultHandler {
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     super.handleRequest(hse);
-    ResultSet rst = query.getResultSet();
     Timer tm = new Timer.Nanos().start();
-    if(json.has("format") && "csv".equalsIgnoreCase(
-        json.get("format").getAsString())) {
-      hse.getResponseHeaders().put(
-          Headers.CONTENT_DISPOSITION, "attachment; filename=\""
-              + json.get("query").getAsString()+ ".csv\""
-      );
-      new CsvDirectResponse().doResponse(hse, rst);
+    try {
+      this.getEncodingHandler(
+          new ResultSetJsonIterator(query.getResultSet())
+      ).handleRequest(hse);
     }
-    else if(json.has("format") && "xls".equalsIgnoreCase(
-        json.get("format").getAsString())) {
-      hse.getResponseHeaders().put(
-          Headers.CONTENT_DISPOSITION, "attachment; filename=\""
-              + json.get("query").getAsString()+ ".xls\""
-      );
-      new XlsDirectResponse().doResponse(hse, rst);
+    finally {
+      Logger.getLogger(getClass()).info("DIRECT RETRIEVE TIME: "+ tm.lapAndStop());
+      query.close();
     }
-    else {
-      new JsonDirectResponse().doResponse(hse, rst);
-    }
-    query.close();
-    Logger.getLogger(getClass()).info("DIRECT RETRIEVE TIME: "+ tm.lapAndStop());
   }
   
 }

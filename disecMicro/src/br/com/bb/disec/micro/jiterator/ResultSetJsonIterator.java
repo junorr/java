@@ -35,7 +35,7 @@ import org.bson.Document;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/09/2016
  */
-public class ResultSetJsonIterator implements JsonIterator {
+public class ResultSetJsonIterator extends AbstractJsonIterator {
 
   private final ResultSet rset;
   
@@ -81,6 +81,7 @@ public class ResultSetJsonIterator implements JsonIterator {
       for(int i = 0; i < columns.length; i++) {
         doc.append(columns[i], stype.getObject(rset, i+1));
       }
+      total++;
       return doc;
     }
     catch(SQLException e) {

@@ -229,7 +229,7 @@ public interface Timer {
     
     @Override
     public String toString() {
-      StringBuffer sb = new StringBuffer();
+      StringBuilder sb = new StringBuilder();
       DecimalFormat df = new DecimalFormat("0.000#ms");
       Timer tc = this.lapsElapsedFromLast();
       double min, avr, max;
@@ -275,8 +275,7 @@ public interface Timer {
 
     @Override
     public Nanos stop() {
-      end = System.nanoTime();
-      return this;
+      return lapAndStop();
     }
 
 
@@ -328,8 +327,7 @@ public interface Timer {
 
     @Override
     public Millis stop() {
-      end = System.currentTimeMillis();
-      return this;
+      return lapAndStop();
     }
 
 
