@@ -72,7 +72,7 @@ public class ConnectionPool {
   
   private String createFileName() throws ResourceLoadException {
     return ServerSetup.instance().loader()
-        .toStringUri(DSFILE_PRE + dsname + DSFILE_EXT);
+        .loadStringPath(DSFILE_PRE + dsname + DSFILE_EXT);
   }
   
   

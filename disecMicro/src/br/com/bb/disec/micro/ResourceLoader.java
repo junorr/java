@@ -159,8 +159,8 @@ public class ResourceLoader {
   }
   
   
-  public String toStringUri(String resource) throws ResourceLoadException {
-    return this.findResource(resource).toString();
+  public String loadStringPath(String resource) throws ResourceLoadException {
+    return this.loadPath(resource).toAbsolutePath().toString();
   }
   
   
