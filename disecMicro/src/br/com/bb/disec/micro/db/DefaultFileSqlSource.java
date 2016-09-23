@@ -21,7 +21,7 @@
 
 package br.com.bb.disec.micro.db;
 
-import br.com.bb.disec.micro.ServerSetup;
+import br.com.bb.disec.micro.ResourceLoader;
 
 /**
  *
@@ -33,10 +33,8 @@ public class DefaultFileSqlSource extends FileSqlSource {
   public static final String DEFAULT_SQL_FILE = "/resources/sql.ini";
   
 
-  public DefaultFileSqlSource() {
-    super(ServerSetup.instance()
-        .loader().loadPath(DEFAULT_SQL_FILE)
-    );
+  public DefaultFileSqlSource(ResourceLoader rld) {
+    super(rld.loadPath(DEFAULT_SQL_FILE));
   }
   
 }

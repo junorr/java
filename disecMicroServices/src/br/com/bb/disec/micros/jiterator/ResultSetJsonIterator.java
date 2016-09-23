@@ -45,6 +45,8 @@ public class ResultSetJsonIterator extends AbstractJsonIterator {
   
   private String[] columns;
   
+  private boolean next;
+  
   
   public ResultSetJsonIterator(ResultSet rs) {
     if(rs == null) {
@@ -73,7 +75,7 @@ public class ResultSetJsonIterator extends AbstractJsonIterator {
   @Override
   public Document next() throws JsonIteratorReadException {
     try {
-      if(!rset.next()) {
+      if(!next) {
         return null;
       }
       this.readMetaData();
@@ -98,7 +100,7 @@ public class ResultSetJsonIterator extends AbstractJsonIterator {
 
   @Override
   public boolean hasNext() {
-    boolean next = false;
+    next = false;
     try { next = rset.next(); } 
     catch(SQLException e) {}
     return next;

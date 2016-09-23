@@ -231,6 +231,7 @@ public class DropEngine<K,V> implements DEngine<K,V> {
     public void run() {
       while(isRunning()) {
         if(drops.isEmpty() || disabled.get()) {
+          if(drops.isEmpty()) System.out.println("!!! Drops Empty");
           await(0);
         }
         DEntry<K,V> entry = drops.first();
@@ -241,13 +242,14 @@ public class DropEngine<K,V> implements DEngine<K,V> {
           rmConsumer(entry.getKey()).accept(entry);
         }
       }//while
+      System.out.println("!!! Dropper.Thread Exited !!!");
     }
     
     public Dropper start() {
       running.set(true);
       Thread thread = new Thread(this, "Dropper.Thread");
-      thread.setDaemon(true);
-      thread.setPriority(Thread.MIN_PRIORITY);
+      //thread.setDaemon(true);
+      //thread.setPriority(Thread.MIN_PRIORITY);
       thread.start();
       return this;
     }

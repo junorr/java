@@ -42,7 +42,10 @@ public class SqlObjectType {
   public JsonElement getElement(ResultSet r, int col) throws SQLException {
     JsonElement elt;
     int type = r.getMetaData().getColumnType(col);
-    if(isNumber(type)) {
+    if(r.getObject(col) == null) {
+      elt = new JsonPrimitive("");
+    }
+    else if(isNumber(type)) {
       elt = new JsonPrimitive(r.getLong(col));
     } 
     else if(isDecimal(type)) {

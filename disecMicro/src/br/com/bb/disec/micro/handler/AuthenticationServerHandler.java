@@ -22,11 +22,12 @@
 package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.bean.iface.IDcrCtu;
+import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.disec.micro.db.AccessPersistencia;
 import br.com.bb.disec.micro.db.CtuPersistencia;
+import br.com.bb.disec.micro.db.DefaultFileSqlSource;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
-import br.com.bb.disec.micro.db.SqlSourcePool;
 import br.com.bb.disec.micro.util.CookieUserParser;
 import br.com.bb.disec.util.URLD;
 import br.com.bb.sso.bean.User;
@@ -125,7 +126,7 @@ public class AuthenticationServerHandler implements JsonHandler {
     URLD url = new URLD(this.getAuthURL(hse));
     new SqlQuery(
         PoolFactory.getDefaultPool().getConnection(), 
-        SqlSourcePool.getDefaultSqlSource()
+        new DefaultFileSqlSource(ResourceLoader.self())
     ).update(
         SQL_GROUP,
         SQL_INSERT_LOG, 

@@ -19,14 +19,14 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros.handler.encode;
+package br.com.bb.disec.micros.coder;
 
 import br.com.bb.disec.micros.jiterator.JsonIterator;
-import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 import jxl.Workbook;
 import jxl.write.DateTime;
 import jxl.write.Label;
@@ -40,25 +40,14 @@ import org.bson.Document;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 09/09/2016
  */
-public class XlsEncodingHandler extends AbstractEncodingHandler {
+public class XlsEncoder implements Encoder {
   
   public static final int XLS_MAX_ROWS = 65500;
   
   
-  public XlsEncodingHandler(JsonIterator ji) {
-    super(ji, EncodingFormat.XLS);
-  }
-  
-  
   @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    super.handleRequest(hse);
-    if(!jiter.hasNext()) {
-      hse.endExchange();
-      return;
-    }
-    hse.startBlocking();
-    WritableWorkbook wb = Workbook.createWorkbook(hse.getOutputStream());
+  public void encode(JsonIterator jiter, OutputStream out) throws Exception {
+    WritableWorkbook wb = Workbook.createWorkbook(out);
     WritableSheet sh = null;
     int shnum = 0;
     int row = XLS_MAX_ROWS + 1;
@@ -88,7 +77,10 @@ public class XlsEncodingHandler extends AbstractEncodingHandler {
   
   
   private void writeRow(WritableSheet sheet, int row, Document doc) throws Exception {
-    Object[] keys = doc.keySet().toArray();
+    if(doc == null) return;
+    Set<String> kset = doc.keySet();
+    if(kset == null) return;
+    Object[] keys = kset.toArray();
     int col = 0;
     for(Object key : keys) {
       if("_id".equals(key.toString()) 

@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros.handler.result;
+package br.com.bb.disec.micros.db.mongo;
 
 import br.com.bb.disec.micro.db.MongoConnectionPool;
 import br.com.bb.disec.micros.db.SqlObjectType;
@@ -37,6 +37,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.bson.Document;
+import us.pserver.timer.Timer;
 
 /**
  *
@@ -48,7 +49,7 @@ public class MongoCache {
   public static final String DEFAULT_DB = "micro";
   
   
-  private final JsonObject json;
+  private JsonObject json;
   
   private final String colname;
   
@@ -58,23 +59,26 @@ public class MongoCache {
   
   private List<String> columns;
   
-  private String filterHash;
+  private String fhash;
+  
+  private boolean cached;
+  
+  private boolean fchanged;
+  
+  
+  public MongoCache() {
+    this.json = null;
+    this.colname = "0";
+    this.fhash = colname;
+    this.total = 0;
+    this.cached = false;
+    this.fchanged = false;
+  }
   
   
   public MongoCache(JsonObject json) {
-    if(json == null) {
-      throw new IllegalArgumentException("Bad Null JsonObject");
-    }
-    this.json = json;
-    this.colname = this.queryHash();
-    this.collection = this.getCollection();
-    if(this.isCachedCollection()) {
-      this.readMetaData();
-    }
-    else {
-      this.filterHash = this.createFilterHash();
-      this.total = 0;
-    }
+    this();
+    this.setup(json);
   }
   
   
@@ -98,22 +102,55 @@ public class MongoCache {
   }
   
   
+  public String filterHash() {
+    return fhash;
+  }
+  
+  
   public List<String> columns() {
     return columns;
   }
   
   
-  public String filterHash() {
-    return filterHash;
+  public boolean isFilterChanged() {
+    return fchanged;
   }
   
   
-  public boolean isFilterHashChanged() {
-    return !filterHash.equals(this.createFilterHash());
+  private void checkFilter() {
+    String hash = this.createFilterHash();
+    fchanged = !fhash.equals(hash);
+    if(fchanged) {
+      fhash = hash;
+      this.setMetaData();
+    }
   }
   
-
+  
+  public MongoCache setup(JsonObject json) {
+    if(json == null) return this;
+    this.json = json;
+    String cn = this.queryHash();
+    if(!colname.equals(cn)) {
+      colname = cn;
+      collection = this.getCollection();
+      fhash = this.createFilterHash();
+      total = 0;
+      columns = null;
+      if(isCachedCollection()) {
+        this.readMetaData();
+      } 
+      else {
+        this.createCollection(colname, json.get("cachettl").getAsLong());
+      }
+    }
+    this.checkFilter();
+    return this;
+  }
+  
+  
   public long doCache(ResultSet rs) throws SQLException {
+    System.out.println("rs = "+ rs);
     this.columns = this.getColumns(rs.getMetaData());
     columns.forEach(c->collection
         .createIndex(new Document(c, 1))
@@ -159,7 +196,7 @@ public class MongoCache {
         input += Objects.toString(args.get(i));
       }
     }
-    return "C"+ DigestUtils.md5Hex(input);
+    return "h"+ DigestUtils.md5Hex(input);
   }
   
   
@@ -173,14 +210,27 @@ public class MongoCache {
             + Objects.toString(fil.get(i));
       }
     }
-    return "C" + DigestUtils.md5Hex(hash);
+    return "h" + DigestUtils.md5Hex(hash);
   }
   
   
   public boolean isCachedCollection() {
-    return collection.count(
-        new Document("collection", colname)
+    Timer tm = new Timer.Nanos().start();
+    ca MongoConnectionPool
+        .collection(DEFAULT_DB, "cache")
+        .count(new Document("collection", colname)) > 0;
+  }
+  
+  
+  private boolean isCachedCollection(MongoCollection<Document> col) {
+    Timer tm = new Timer.Nanos().start();
+    cached = !json.has("dropcache") 
+        && col.count(new Document("collection", colname)
+            .append("columns", new Document("$exists", true))
+            .append("total", new Document("$exists", true))
     ) > 0;
+    System.out.println("* MongoCache isCachedCollection Timer: "+ tm.stop());
+    return cached;
   }
   
   
@@ -192,7 +242,9 @@ public class MongoCache {
     );
     Document created = new Document()
         .append("collection", colname)
-        .append("created", new Date());
+        .append("created", new Date())
+        .append("total", total)
+        .append("filterHash", fhash);
     col.insertOne(created);
     return col;
   }
@@ -200,32 +252,37 @@ public class MongoCache {
   
   private MongoCollection<Document> getCollection() {
     MongoCollection<Document> col = MongoConnectionPool.collection(DEFAULT_DB, colname);
-    if(!isCachedCollection() || json.has("dropcache")) {
-      col.drop();
-      col = createCollection(colname, json.get("cachettl").getAsLong());
-    }
+    isCachedCollection(col);
     return col;
   }
 
   
   private void setMetaData() {
+    Document meta = new Document("total", total)
+        .append("filterHash", fhash);
+    if(columns != null) {
+      meta.append("columns", columns);
+    }
     collection.findOneAndUpdate(
         new Document().append("collection", colname), 
-        new Document().append("$set", 
-            new Document()
-                .append("total", total)
-                .append("columns", columns)
-                .append("filterHash", filterHash))
+        new Document("$set", meta)
     );
   }
   
   
   private void readMetaData() {
     Document info = collection.find(new Document("collection", colname)).first();
-    if(info != null) {
-      columns = (List<String>) info.get("columns");
-      total = info.getLong("total");
-      filterHash = info.getString("filterHash");
+    if(info != null) 
+    {
+      if(info.containsKey("columns")) {
+        columns = (List<String>) info.get("columns");
+      }
+      if(info.containsKey("total")) {
+        total = info.getLong("total");
+      }
+      if(info.containsKey("filterHash")) {
+        fhash = info.get("filterHash").toString();
+      }
     }
   }
   

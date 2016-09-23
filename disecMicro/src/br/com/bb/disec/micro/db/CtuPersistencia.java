@@ -23,6 +23,7 @@ package br.com.bb.disec.micro.db;
 
 import br.com.bb.disec.bean.iface.IDcrCtu;
 import br.com.bb.disec.bean.reader.DcrCtuReader;
+import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.disec.sql.SqlXmlResource;
 import br.com.bb.disec.util.SqlClose;
 import br.com.bb.disec.util.URLD;
@@ -61,7 +62,7 @@ public class CtuPersistencia {
     if(url == null) {
       throw new IllegalArgumentException("Bad Null URLD");
     }
-    source = new DefaultFileSqlSource();
+    source = new DefaultFileSqlSource(ResourceLoader.self());
     this.url = url;
   }
   

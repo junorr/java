@@ -23,8 +23,8 @@ package br.com.bb.disec.micros.handler;
 
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HttpString;
 import io.undertow.util.Methods;
+import us.pserver.timer.Timer;
 
 /**
  *
@@ -32,6 +32,17 @@ import io.undertow.util.Methods;
  * @version 0.0 - 27/07/2016
  */
 public class SqlHandler implements HttpHandler {
+  
+  private final GetSqlHandler get;
+  
+  private final PostSqlHandler post;
+  
+  
+  public SqlHandler() {
+    get = new GetSqlHandler();
+    post = new PostSqlHandler();
+  }
+  
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
@@ -39,20 +50,18 @@ public class SqlHandler implements HttpHandler {
       hse.dispatch(this);
       return;
     }
+    Timer tm = new Timer.Nanos().start();
     if(Methods.GET.equals(hse.getRequestMethod())) {
-      new GetSqlHandler().handleRequest(hse);
+      get.handleRequest(hse);
     }
     else if(Methods.POST.equals(hse.getRequestMethod())) {
-      new PostSqlHandler().handleRequest(hse);
+      post.handleRequest(hse);
     }
-    //else if(Methods.OPTIONS.equals(hse.getRequestMethod())) {
-      //hse.setStatusCode(200);
-      //hse.endExchange();
-    //}
     else {
       hse.setStatusCode(400).setReasonPhrase("Bad Request");
       hse.endExchange();
     }
+    System.out.println("* SqlHandler Time: "+ tm.stop());
   }
   
 }

@@ -19,23 +19,41 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros;
+package br.com.bb.disec.micros.db;
 
 import br.com.bb.disec.micro.ResourceLoader;
-import br.com.bb.disec.micro.ServerSetup;
+import br.com.bb.disec.micro.db.DefaultFileSqlSource;
+import br.com.bb.disec.micro.db.SqlSource;
+import static br.com.bb.disec.micro.db.ConnectionPool.DEFAULT_DB_NAME;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2016
+ * @version 0.0 - 27/07/2016
  */
-public class Main {
+public class DefaultDBSqlSource extends DBSqlSource {
 
+  public static final String DEFAULT_FIND_GROUP = "disecMicro";
   
-  public static void main(String[] args) {
-    ServerSetup.autoSetup(ResourceLoader.caller())
-        .server()
-        .start();
+  public static final String DEFAULT_FIND_SQL = "findQuery";
+  
+  
+  public DefaultDBSqlSource() {
+    super(DEFAULT_DB_NAME, 
+        DEFAULT_FIND_GROUP, 
+        DEFAULT_FIND_SQL, 
+        new DefaultFileSqlSource(
+            ResourceLoader.caller())
+    );
+  }
+  
+  
+  public DefaultDBSqlSource(SqlSource source) {
+    super(DEFAULT_DB_NAME, 
+        DEFAULT_FIND_GROUP, 
+        DEFAULT_FIND_SQL, 
+        source
+    );
   }
   
 }

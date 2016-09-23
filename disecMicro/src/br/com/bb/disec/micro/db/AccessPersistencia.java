@@ -23,6 +23,7 @@ package br.com.bb.disec.micro.db;
 
 import br.com.bb.disec.bean.iface.IPflAcss;
 import br.com.bb.disec.bean.reader.PflAcssReader;
+import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.disec.util.SqlClose;
 import br.com.bb.sso.bean.User;
 import java.io.IOException;
@@ -55,7 +56,9 @@ public class AccessPersistencia {
 	
   
   public AccessPersistencia() {
-    this.source = new DefaultFileSqlSource();
+    this.source = new DefaultFileSqlSource(
+        ResourceLoader.self()
+    );
   }
   
   

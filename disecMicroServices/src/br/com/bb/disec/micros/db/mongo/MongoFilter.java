@@ -19,13 +19,12 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros.handler.result;
+package br.com.bb.disec.micros.db.mongo;
 
 import br.com.bb.disec.micros.util.JsonTransformer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.util.JSON;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.bson.Document;
@@ -73,8 +72,9 @@ public class MongoFilter {
   
   private MongoFilter applyFilter(JsonObject json) {
     Document query = this.createFilterQuery(json);
-    if(cache.isFilterHashChanged()) {
+    if(cache.isFilterChanged()) {
       total = cache.collection().count(query);
+      System.out.println("* Filter Changed!");
     }
     filter = cache.collection().find(query);
     return this;
@@ -100,7 +100,9 @@ public class MongoFilter {
         filter = filter.skip(lim.get(0).getAsInt())
             .limit(lim.get(1).getAsInt());
       }
-      filter = filter.limit(json.get("limit").getAsInt());
+      else {
+        filter = filter.limit(json.get("limit").getAsInt());
+      }
     }
     return this;
   }

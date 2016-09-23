@@ -21,8 +21,8 @@
 
 package br.com.bb.disec.micro.db;
 
+import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.disec.micro.ResourceLoader.ResourceLoadException;
-import br.com.bb.disec.micro.ServerSetup;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.io.IOException;
@@ -51,28 +51,42 @@ public class ConnectionPool {
   
   
   private ConnectionPool(String dsname) throws ResourceLoadException {
+    this(dsname, null);
+  }
+  
+  
+  private ConnectionPool(String dsname, ResourceLoader rld) {
     if(dsname == null || dsname.trim().isEmpty()) {
       throw new IllegalArgumentException("Invalid DataSource Name: "+ dsname);
     }
+    if(rld == null) {
+      rld = ResourceLoader.self();
+    }
     this.dsname = dsname;
     this.datasource = new HikariDataSource(
-        new HikariConfig(this.createFileName())
+        new HikariConfig(getFileName(rld))
     );
   }
   
   
   public static ConnectionPool createPool(String dsname) throws IOException {
+    return createPool(dsname, null);
+  }
+  
+  
+  public static ConnectionPool createPool(String dsname, ResourceLoader rld) throws IOException {
     try {
-      return new ConnectionPool(dsname);
+      return new ConnectionPool(dsname, rld);
     } catch(Exception ex) {
       throw new IOException("DataSource Config Not Found ("+ dsname+ ")", ex);
     }
   }
   
   
-  private String createFileName() throws ResourceLoadException {
-    return ServerSetup.instance().loader()
-        .loadStringPath(DSFILE_PRE + dsname + DSFILE_EXT);
+  private String getFileName(ResourceLoader rld) throws ResourceLoadException {
+    return rld.loadStringPath(
+        DSFILE_PRE + dsname + DSFILE_EXT
+    );
   }
   
   

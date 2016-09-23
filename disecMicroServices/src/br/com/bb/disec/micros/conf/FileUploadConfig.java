@@ -21,14 +21,13 @@
 
 package br.com.bb.disec.micros.conf;
 
-import br.com.bb.disec.micro.db.DefaultDBSqlSource;
+import br.com.bb.disec.micro.ResourceLoader;
+import br.com.bb.disec.micro.db.DefaultFileSqlSource;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micros.util.FileSize;
 import br.com.bb.disec.micros.db.SqlObjectType;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,7 +45,7 @@ import java.util.List;
  */
 public class FileUploadConfig {
   
-  public static final String SQL_GROUP = "disecMicro";
+  public static final String SQL_GROUP = "disecMicroServices";
   
   public static final String SQL_FIND_UPLOAD = "findUpload";
   
@@ -179,7 +178,7 @@ public class FileUploadConfig {
       try {
         SqlQuery query = new SqlQuery(
             PoolFactory.getDefaultPool().getConnection(), 
-            new DefaultDBSqlSource()
+            new DefaultFileSqlSource(ResourceLoader.caller())
         );
         JsonObject json = readJson(query.execResultSet(
             SQL_GROUP, SQL_FIND_UPLOAD, aplicName)

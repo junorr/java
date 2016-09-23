@@ -21,7 +21,7 @@
 
 package br.com.bb.disec.micro.db;
 
-import br.com.bb.disec.micro.ServerSetup;
+import br.com.bb.disec.micro.ResourceLoader;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
@@ -52,9 +52,8 @@ public class MongoConnectionPool {
   private MongoConnectionPool() {
     props = new Properties();
     try {
-      props.load(ServerSetup.instance()
-          .loader().loadReader(MONGO_PROPERTIES)
-      );
+      ResourceLoader rld = ResourceLoader.self();
+      props.load(rld.loadReader(MONGO_PROPERTIES));
     }
     catch(IOException e) {
       throw new RuntimeException(e);

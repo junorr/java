@@ -19,29 +19,22 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.db;
+package br.com.bb.disec.micros.test;
 
-import static br.com.bb.disec.micro.db.ConnectionPool.DEFAULT_DB_NAME;
+import br.com.bb.disec.micros.conf.FileUploadConfig;
+import java.io.IOException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/07/2016
+ * @version 0.0 - 21/09/2016
  */
-public class DefaultDBSqlSource extends DBSqlSource {
+public class TestFileUploadConfig {
 
-  public static final String DEFAULT_FIND_GROUP = "disecMicro";
   
-  public static final String DEFAULT_FIND_SQL = "findQuery";
-  
-  
-  public DefaultDBSqlSource() {
-    super(DEFAULT_DB_NAME, DEFAULT_FIND_GROUP, DEFAULT_FIND_SQL, new DefaultFileSqlSource());
-  }
-  
-  
-  public DefaultDBSqlSource(SqlSource source) {
-    super(DEFAULT_DB_NAME, DEFAULT_FIND_GROUP, DEFAULT_FIND_SQL, source);
+  public static void main(String[] args) throws IOException {
+    FileUploadConfig fuck = FileUploadConfig.builder().load("disecMicro").build();
+    System.out.println(fuck);
   }
   
 }

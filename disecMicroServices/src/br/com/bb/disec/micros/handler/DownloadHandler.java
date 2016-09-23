@@ -21,13 +21,14 @@
 
 package br.com.bb.disec.micros.handler;
 
-import br.com.bb.disec.micros.handler.result.CachedResultHandler;
-import br.com.bb.disec.micros.handler.result.DirectResultHandler;
+import br.com.bb.disec.micros.handler.response.CachedResponse;
+import br.com.bb.disec.micros.handler.response.DirectResponse;
 import br.com.bb.disec.micro.client.AuthCookieManager;
 import br.com.bb.disec.micro.db.MongoConnectionPool;
 import br.com.bb.disec.micros.util.JsonTransformer;
 import br.com.bb.disec.micros.util.StringPostParser;
 import br.com.bb.disec.micro.util.URIParam;
+import br.com.bb.disec.micros.handler.encode.EncodingFormat;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mongodb.client.MongoCollection;
@@ -36,6 +37,7 @@ import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.util.JSON;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 import io.undertow.util.Methods;
 import java.io.IOException;
 import java.util.Date;
@@ -49,11 +51,15 @@ import org.bson.Document;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/09/2016
  */
-public class DownloadHandler implements HttpHandler {
-
+public class DownloadHandler extends AbstractResponseHandler {
+  
   
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
+    if(hse.isInIoThread()) {
+      hse.dispatch(this);
+      return;
+    }
     if(Methods.GET.equals(hse.getRequestMethod())) {
       this.get(hse);
     }
@@ -96,8 +102,9 @@ public class DownloadHandler implements HttpHandler {
     JsonObject json = parseJson(hse);
     String token = calcHash(hse, json);
     Document doc = new JsonTransformer().toDocument(json);
-    doc.append("created", new Date());
-    doc.append("token", token);
+    doc.append("created", new Date())
+        .append("filename", this.getFileName(json))
+        .append("token", token);
     MongoCollection<Document> col = getCollection();
     col.replaceOne(
         new Document("token", token), doc, 
@@ -108,12 +115,32 @@ public class DownloadHandler implements HttpHandler {
   
   
   private void execute(HttpServerExchange hse, JsonObject json) throws Exception {
-    if(json.has("cachettl")) {
-      new CachedResultHandler(json).handleRequest(hse);
-    }
-    else {
-      new DirectResultHandler(json).handleRequest(hse);
-    }
+    this.setContentDisposition(hse, json);
+    this.send(hse, json);
+  }
+  
+  
+  private String getFileName(JsonObject json) {
+    EncodingFormat fmt = (json.has("format") 
+        ? EncodingFormat.from(
+            json.get("format").getAsString()) 
+        : EncodingFormat.JSON);
+    return json.get("query").getAsString()
+        + "." + fmt.name().toLowerCase();
+  }
+  
+  
+  private void setContentDisposition(HttpServerExchange hse, JsonObject json) throws Exception {
+    EncodingFormat fmt = (json.has("format") 
+        ? EncodingFormat.from(
+            json.get("format").getAsString()) 
+        : EncodingFormat.JSON);
+    hse.getResponseHeaders().add(
+        Headers.CONTENT_DISPOSITION, 
+        "attachment; filename=\""
+            + json.get("query").getAsString() + "." 
+            + fmt.name().toLowerCase() + "\""
+    );
   }
   
   

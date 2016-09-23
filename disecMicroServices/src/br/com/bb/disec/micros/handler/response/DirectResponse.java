@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros.handler.result;
+package br.com.bb.disec.micros.handler.response;
 
 import br.com.bb.disec.micros.jiterator.ResultSetJsonIterator;
 import com.google.gson.JsonObject;
@@ -32,22 +32,16 @@ import us.pserver.timer.Timer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/09/2016
  */
-public class DirectResultHandler extends AbstractResultHandler {
-  
-  
-  public DirectResultHandler(JsonObject json) {
-    super(json);
-  }
+public class DirectResponse extends AbstractResponse {
   
   
   @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    super.handleRequest(hse);
+  public void send(HttpServerExchange hse, JsonObject json) throws Exception {
+    super.send(hse, json);
     Timer tm = new Timer.Nanos().start();
     try {
-      this.getEncodingHandler(
-          new ResultSetJsonIterator(query.getResultSet())
-      ).handleRequest(hse);
+      ResultSetJsonIterator jiter = new ResultSetJsonIterator(query.getResultSet());
+      this.getEncoder().encode(jiter, hse.getOutputStream());
     }
     finally {
       Logger.getLogger(getClass()).info("DIRECT RETRIEVE TIME: "+ tm.lapAndStop());

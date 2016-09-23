@@ -58,6 +58,29 @@ public class ResourceLoader {
   }
   
   
+  public static ResourceLoader self() {
+    return new ResourceLoader(ResourceLoader.class);
+  }
+  
+  
+  public static ResourceLoader of(Class cls) {
+    return new ResourceLoader(cls);
+  }
+  
+  
+  public static ResourceLoader caller() throws ResourceLoadException {
+    try {
+      Thread cur = Thread.currentThread();
+      StackTraceElement[] els = cur.getStackTrace();
+      return of(cur.getContextClassLoader()
+          .loadClass(els[Math.min(2, els.length-1)].getClassName())
+      );
+    } catch(Exception e) {
+      throw new ResourceLoadException(e);
+    }
+  }
+  
+  
   public Class loader() {
     return loader;
   }

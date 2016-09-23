@@ -19,12 +19,13 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros.handler.encode;
+package br.com.bb.disec.micros.coder;
 
+import br.com.bb.disec.micros.handler.encode.*;
 import br.com.bb.disec.micros.channel.CsvChannel;
 import br.com.bb.disec.micros.jiterator.JsonIterator;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
+import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.util.Objects;
 import org.bson.Document;
@@ -34,23 +35,14 @@ import org.bson.Document;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 09/09/2016
  */
-public class CsvEncodingHandler extends AbstractEncodingHandler {
-  
-  
-  public CsvEncodingHandler(JsonIterator ji) {
-    super(ji, EncodingFormat.CSV);
-  }
+public class CsvEncoder implements Encoder {
   
   
   @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    super.handleRequest(hse);
-    if(!jiter.hasNext()) {
-      hse.endExchange();
-      return;
-    }
-    hse.startBlocking();
-    CsvChannel channel = new CsvChannel(Channels.newChannel(hse.getOutputStream()));
+  public void encode(JsonIterator jiter, OutputStream out) throws Exception {
+    CsvChannel channel = new CsvChannel(
+        Channels.newChannel(out)
+    );
     Document doc = jiter.next();
     this.writeColumns(channel, doc);
     channel.newLine();

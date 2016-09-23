@@ -19,23 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros.handler.result;
+package br.com.bb.disec.micros.handler.response;
 
+import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.disec.micro.db.ConnectionPool;
+import br.com.bb.disec.micros.db.DBSqlSource;
+import br.com.bb.disec.micro.db.DefaultFileSqlSource;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
-import br.com.bb.disec.micro.db.SqlSourcePool;
-import br.com.bb.disec.micros.handler.encode.CsvEncodingHandler;
+import br.com.bb.disec.micro.db.SqlSource;
+import br.com.bb.disec.micros.coder.CsvEncoder;
+import br.com.bb.disec.micros.coder.Encoder;
+import br.com.bb.disec.micros.coder.JsonEncoder;
+import br.com.bb.disec.micros.coder.XlsEncoder;
 import br.com.bb.disec.micros.handler.encode.EncodingFormat;
-import br.com.bb.disec.micros.handler.encode.JsonEncodingHandler;
-import br.com.bb.disec.micros.handler.encode.XlsEncodingHandler;
-import br.com.bb.disec.micros.jiterator.JsonIterator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import static io.undertow.util.Headers.CONTENT_DISPOSITION;
+import java.sql.Connection;
 import org.jboss.logging.Logger;
 import us.pserver.timer.Timer;
 
@@ -44,33 +46,18 @@ import us.pserver.timer.Timer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 29/08/2016
  */
-public abstract class AbstractResultHandler implements HttpHandler {
+public abstract class AbstractResponse implements Response {
   
-  protected final JsonObject json;
+  public static final String SQL_GROUP = "disecMicroServices";
   
-  protected final EncodingFormat format;
+  public static final String SQL_FIND_QUERY = "findQuery";
+  
+  
+  protected JsonObject json;
+  
+  protected EncodingFormat format;
   
   protected SqlQuery query;
-  
-  
-  public AbstractResultHandler(JsonObject json) {
-    if(json == null) {
-      throw new IllegalArgumentException("Bad Null JsonObject");
-    }
-    this.json = json;
-    format = this.getEncodingFormat();
-  }
-  
-  
-  public JsonObject json() {
-    return json;
-  }
-  
-  
-  public SqlQuery sqlQuery() {
-    return query;
-  }
-
   
   
   protected EncodingFormat getEncodingFormat() {
@@ -81,14 +68,6 @@ public abstract class AbstractResultHandler implements HttpHandler {
     );
   }
   
-  
-  protected void setContentDisposition(HttpServerExchange hse) {
-    hse.getResponseHeaders().put(CONTENT_DISPOSITION, 
-        "attachment; filename=" 
-            + json.get("query").getAsString() 
-            + format.name().toLowerCase() + "\""
-    );
-  }
   
   private String getDBName(JsonObject json) {
     String db = ConnectionPool.DEFAULT_DB_NAME;
@@ -121,12 +100,32 @@ public abstract class AbstractResultHandler implements HttpHandler {
   }
   
   
-  @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    query = new SqlQuery(
-        PoolFactory.getPool(getDBName(json)).getConnection(), 
-        SqlSourcePool.getDefaultSqlSource()
+  private SqlQuery createSqlQuery() throws Exception {
+    Connection con = PoolFactory.getPool(getDBName(json)).getConnection();
+    SqlSource src = new DBSqlSource(
+        ConnectionPool.DEFAULT_DB_NAME, 
+        SQL_GROUP, SQL_FIND_QUERY,
+        new DefaultFileSqlSource(ResourceLoader.caller())
     );
+    return new SqlQuery(con, src);
+  }
+  
+  
+  protected void init(HttpServerExchange hse, JsonObject json) {
+    if(hse == null) {
+      throw new IllegalArgumentException("Bad Null HttpServerExchange");
+    }
+    if(json == null) {
+      throw new IllegalArgumentException("Bad Null JsonObject");
+    }
+    this.json = json;
+  }
+  
+  
+  @Override
+  public void send(HttpServerExchange hse, JsonObject json) throws Exception {
+    this.init(hse, json);
+    query = this.createSqlQuery();
     Timer tm = new Timer.Nanos().start();
     query.execResultSet(
         json.get("group").getAsString(), 
@@ -134,18 +133,17 @@ public abstract class AbstractResultHandler implements HttpHandler {
         this.getArguments(json)
     );
     Logger.getLogger(getClass()).info("DATABASE TIME: "+ tm.lapAndStop());
-    this.setContentDisposition(hse);
   }
   
   
-  protected HttpHandler getEncodingHandler(JsonIterator jiter) {
-    switch(this.format) {
+  protected Encoder getEncoder() {
+    switch(this.getEncodingFormat()) {
       case XLS:
-        return new XlsEncodingHandler(jiter);
+        return new XlsEncoder();
       case CSV:
-        return new CsvEncodingHandler(jiter);
+        return new CsvEncoder();
       default:
-        return new JsonEncodingHandler(jiter);
+        return new JsonEncoder();
     }
   }
   

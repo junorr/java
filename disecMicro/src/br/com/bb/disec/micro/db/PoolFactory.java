@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro.db;
 
+import br.com.bb.disec.micro.ResourceLoader;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,12 +65,28 @@ public class PoolFactory {
   }
   
   
+  private ConnectionPool createPool(String dsname, ResourceLoader rld) throws IOException {
+    ConnectionPool pool = (pools.containsKey(dsname) 
+        ? pools.get(dsname) : null);
+    if(pool == null) {
+      pool = ConnectionPool.createPool(dsname, rld);
+      pools.put(dsname, pool);
+    }
+    return pool;
+  }
+  
+  
   public ConnectionPool getDefault() {
     return this.get(ConnectionPool.DEFAULT_DB_NAME);
   }
   
   
   public ConnectionPool get(String dsname) {
+    return this.get(dsname, null);
+  }
+  
+  
+  public ConnectionPool get(String dsname, ResourceLoader rld) throws PoolFactoryException {
     if(dsname == null || dsname.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad DataSource Name: "+ dsname);
     }
@@ -80,15 +97,11 @@ public class PoolFactory {
     else {
       lock.lock();
       try {
-        if(pools.containsKey(dsname)) {
-          pool = pools.get(dsname);
-        }
-        else {
-          pool = ConnectionPool.createPool(dsname);
-          pools.put(dsname, pool);
-        }
+        pool = this.createPool(dsname, rld);
       } 
-      catch(IOException e) {}
+      catch(IOException e) {
+        throw new PoolFactoryException(e);
+      }
       finally {
         lock.unlock();
       }
@@ -107,8 +120,35 @@ public class PoolFactory {
   }
   
   
+  public static ConnectionPool getPool(String dsname, ResourceLoader rld) {
+    return instance.get(dsname, rld);
+  }
+  
+  
   public static ConnectionPool getDefaultPool() {
     return instance.getDefault();
+  }
+  
+  
+  
+  
+  
+  public static class PoolFactoryException extends RuntimeException {
+
+    public PoolFactoryException(String message) {
+      super(message);
+    }
+
+
+    public PoolFactoryException(String message, Throwable cause) {
+      super(message, cause);
+    }
+
+
+    public PoolFactoryException(Throwable cause) {
+      super("["+ cause.getClass().getSimpleName()+ "]-> "+ cause.getMessage());
+    }
+    
   }
   
 }

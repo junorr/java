@@ -21,8 +21,8 @@
 
 package br.com.bb.disec.micros.handler;
 
-import br.com.bb.disec.micros.handler.result.CachedResultHandler;
-import br.com.bb.disec.micros.handler.result.DirectResultHandler;
+import br.com.bb.disec.micros.handler.response.CachedResponse;
+import br.com.bb.disec.micros.handler.response.DirectResponse;
 import br.com.bb.disec.micros.util.StringPostParser;
 import br.com.bb.disec.micro.handler.JsonHandler;
 import com.google.gson.JsonObject;
@@ -30,13 +30,15 @@ import com.google.gson.JsonParser;
 import io.undertow.server.HttpServerExchange;
 import java.io.IOException;
 import org.jboss.logging.Logger;
+import us.pserver.timer.Timer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/07/2016
  */
-public class PostSqlHandler implements JsonHandler {
+public class PostSqlHandler extends AbstractResponseHandler implements JsonHandler {
+  
   
   
   @Override
@@ -46,14 +48,15 @@ public class PostSqlHandler implements JsonHandler {
       return;
     }
     try {
+      Timer tm = new Timer.Nanos().start();
       JsonObject json = this.parseJson(hse);
+      System.out.println("* PostSqlHandler parseJson Time: "+ tm.stop());
+      tm.clear().start();
       this.validateJson(json);
-      if(json.has("cachettl")) {
-        new CachedResultHandler(json).handleRequest(hse);
-      }
-      else {
-        new DirectResultHandler(json).handleRequest(hse);
-      }
+      System.out.println("* PostSqlHandler validateJson Time: "+ tm.stop());
+      tm.clear().start();
+      this.send(hse, json);
+      System.out.println("* PostSqlHandler result Time: "+ tm.stop());
     }
     catch(IllegalArgumentException e) {
       hse.setStatusCode(404)
@@ -61,6 +64,7 @@ public class PostSqlHandler implements JsonHandler {
       throw e;
     }
     catch(Exception e) {
+      e.printStackTrace();
       hse.setStatusCode(400)
           .setReasonPhrase(e.getMessage());
       throw e;

@@ -44,16 +44,16 @@ public class ServerSetup {
   private final Server server;
   
   
-  private ServerSetup(Class cls) throws ResourceLoadException {
-    this(cls, DEFAULT_CONFIG);
+  private ServerSetup(ResourceLoader rld) throws ResourceLoadException {
+    this(rld, DEFAULT_CONFIG);
   }
   
   
-  private ServerSetup(Class cls, String configPath) throws ResourceLoadException {
+  private ServerSetup(ResourceLoader rld, String configPath) throws ResourceLoadException {
     if(instance != null) {
       throw new IllegalStateException("ServerSetup is Already Instantiated");
     }
-    this.loader = new ResourceLoader(cls);
+    this.loader = (rld != null ? rld : ResourceLoader.self());
     try {
       config = ServerConfig.builder().load(
           loader.loadPath(configPath)
@@ -66,32 +66,30 @@ public class ServerSetup {
   }
   
   
-  public static ServerSetup autoSetup(Class cls) throws ResourceLoadException {
+  public static ServerSetup autoSetup(ResourceLoader rld) throws ResourceLoadException {
     if(instance == null) {
-      instance = new ServerSetup(cls);
+      instance = new ServerSetup(rld);
     }
     return instance;
   }
   
   
   public static ServerSetup autoSetup() throws ResourceLoadException {
-    return autoSetup(ServerSetup.class);
+    return autoSetup(null);
   }
   
   
-  public static ServerSetup setup(Class cls, String configPath) throws ResourceLoadException {
+  public static ServerSetup setup(ResourceLoader rld, String configPath) throws ResourceLoadException {
     if(instance == null) {
-      instance = new ServerSetup(cls, configPath);
+      instance = new ServerSetup(rld, configPath);
     }
     return instance;
   }
   
   
   public static ServerSetup instance() {
-    if(instance == null) {
-      throw new IllegalStateException("ServerSetup is Not Configured");
-    }
-    return instance;
+    return (instance != null 
+        ? instance : autoSetup());
   }
   
   

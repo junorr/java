@@ -19,23 +19,41 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros;
+package br.com.bb.disec.micros.handler;
 
-import br.com.bb.disec.micro.ResourceLoader;
-import br.com.bb.disec.micro.ServerSetup;
+import br.com.bb.disec.micros.handler.response.CachedResponse;
+import br.com.bb.disec.micros.handler.response.DirectResponse;
+import br.com.bb.disec.micros.handler.response.Response;
+import com.google.gson.JsonObject;
+import io.undertow.server.HttpHandler;
+import io.undertow.server.HttpServerExchange;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2016
+ * @version 0.0 - 22/09/2016
  */
-public class Main {
+public abstract class AbstractResponseHandler implements HttpHandler, Response {
 
+  protected final CachedResponse cached;
   
-  public static void main(String[] args) {
-    ServerSetup.autoSetup(ResourceLoader.caller())
-        .server()
-        .start();
+  protected final DirectResponse direct;
+  
+  
+  protected AbstractResponseHandler() {
+    cached = new CachedResponse();
+    direct = new DirectResponse();
+  }
+  
+  
+  @Override
+  public void send(HttpServerExchange hse, JsonObject json) throws Exception {
+    if(json.has("cachettl")) {
+      cached.send(hse, json);
+    }
+    else {
+      direct.send(hse, json);
+    }
   }
   
 }

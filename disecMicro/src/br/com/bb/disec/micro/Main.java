@@ -19,10 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros;
-
-import br.com.bb.disec.micro.ResourceLoader;
-import br.com.bb.disec.micro.ServerSetup;
+package br.com.bb.disec.micro;
 
 /**
  *
@@ -33,7 +30,7 @@ public class Main {
 
   
   public static void main(String[] args) {
-    ServerSetup.autoSetup(ResourceLoader.caller())
+    ServerSetup.autoSetup(ResourceLoader.self())
         .server()
         .start();
   }

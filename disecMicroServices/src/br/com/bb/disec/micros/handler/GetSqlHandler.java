@@ -21,8 +21,8 @@
 
 package br.com.bb.disec.micros.handler;
 
-import br.com.bb.disec.micros.handler.result.CachedResultHandler;
-import br.com.bb.disec.micros.handler.result.DirectResultHandler;
+import br.com.bb.disec.micros.handler.response.CachedResponse;
+import br.com.bb.disec.micros.handler.response.DirectResponse;
 import br.com.bb.disec.micros.db.SqlObjectType;
 import br.com.bb.disec.micro.handler.JsonHandler;
 import br.com.bb.disec.micro.util.URIParam;
@@ -39,7 +39,7 @@ import org.jboss.logging.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/07/2016
  */
-public class GetSqlHandler implements JsonHandler {
+public class GetSqlHandler extends AbstractResponseHandler implements JsonHandler {
   
   
   @Override
@@ -48,16 +48,11 @@ public class GetSqlHandler implements JsonHandler {
       hse.dispatch(this);
       return;
     }
-    System.out.println("* URI = "+ hse.getRequestURI());
+    //System.out.println("* URI = "+ hse.getRequestURI());
     try {
       JsonObject json = this.parseJson(hse);
       this.validateJson(json);
-      if(json.has("cachettl")) {
-        new CachedResultHandler(json).handleRequest(hse);
-      }
-      else {
-        new DirectResultHandler(json).handleRequest(hse);
-      }
+      this.send(hse, json);
     }
     catch(IllegalArgumentException e) {
       hse.setStatusCode(404)
@@ -95,7 +90,7 @@ public class GetSqlHandler implements JsonHandler {
         (s,d)->setJsonValue(json, s, d.peekFirst())
     );
     Gson gs = new GsonBuilder().setPrettyPrinting().create();
-    System.out.println("* GET: parseJson:\n"+ gs.toJson(json));
+    //System.out.println("* GET: parseJson:\n"+ gs.toJson(json));
     return json;
   }
   

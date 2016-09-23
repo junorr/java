@@ -19,23 +19,47 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros;
+package br.com.bb.disec.micros.coder;
 
-import br.com.bb.disec.micro.ResourceLoader;
-import br.com.bb.disec.micro.ServerSetup;
+import br.com.bb.disec.micros.handler.encode.*;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2016
+ * @version 0.0 - 16/09/2016
  */
-public class Main {
+public enum EncodingFormat {
 
+  JSON("application/json; charset=utf-8"), 
+  XLS("application/vnd.ms-excel"), 
+  CSV("text/csv; charset=utf-8");
   
-  public static void main(String[] args) {
-    ServerSetup.autoSetup(ResourceLoader.caller())
-        .server()
-        .start();
+  
+  private EncodingFormat(String conttype) {
+    if(conttype == null) {
+      throw new IllegalArgumentException("Bad Null Content Type");
+    }
+    this.conttype = conttype;
+  }
+  
+  
+  public String getContentType() {
+    return conttype;
+  }
+  
+  
+  private String conttype;
+  
+  
+  public static EncodingFormat from(String str) {
+    switch(str.toLowerCase()) {
+      case "xls":
+        return XLS;
+      case "csv":
+        return CSV;
+      default:
+        return JSON;
+    }
   }
   
 }

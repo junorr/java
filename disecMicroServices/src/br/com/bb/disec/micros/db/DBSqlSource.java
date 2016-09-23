@@ -19,8 +19,11 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.db;
+package br.com.bb.disec.micros.db;
 
+import br.com.bb.disec.micro.db.ConnectionPool;
+import br.com.bb.disec.micro.db.PoolFactory;
+import br.com.bb.disec.micro.db.SqlSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -113,7 +116,7 @@ public class DBSqlSource implements SqlSource {
       ps = cn.prepareStatement(sql);
       ps.setString(1, group);
       ps.setString(2, name);
-      System.out.println("* sql="+ ps);
+      //System.out.println("* sql="+ ps);
       rs = ps.executeQuery();
       if(rs.next()) {
         query = rs.getString(1);

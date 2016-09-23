@@ -19,23 +19,18 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros;
+package br.com.bb.disec.micros.coder;
 
-import br.com.bb.disec.micro.ResourceLoader;
-import br.com.bb.disec.micro.ServerSetup;
+import br.com.bb.disec.micros.jiterator.JsonIterator;
+import java.io.OutputStream;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2016
+ * @version 0.0 - 21/09/2016
  */
-public class Main {
+public interface Encoder {
 
-  
-  public static void main(String[] args) {
-    ServerSetup.autoSetup(ResourceLoader.caller())
-        .server()
-        .start();
-  }
+  public void encode(JsonIterator jiter, OutputStream out) throws Exception;
   
 }

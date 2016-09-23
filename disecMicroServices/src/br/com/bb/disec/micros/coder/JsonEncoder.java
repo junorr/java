@@ -19,12 +19,12 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros.handler.encode;
+package br.com.bb.disec.micros.coder;
 
 import br.com.bb.disec.micros.channel.JsonChannel;
 import br.com.bb.disec.micros.jiterator.JsonIterator;
 import com.mongodb.util.JSON;
-import io.undertow.server.HttpServerExchange;
+import java.io.OutputStream;
 import java.nio.channels.Channels;
 import org.bson.Document;
 
@@ -33,23 +33,14 @@ import org.bson.Document;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 08/09/2016
  */
-public class JsonEncodingHandler extends AbstractEncodingHandler {
+public class JsonEncoder implements Encoder {
 
   
-  public JsonEncodingHandler(JsonIterator ji) {
-    super(ji, EncodingFormat.JSON);
-  }
-  
-  
   @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    if(!jiter.hasNext()) {
-      hse.endExchange();
-      return;
-    }
-    super.handleRequest(hse);
-    hse.startBlocking();
-    JsonChannel channel = new JsonChannel(Channels.newChannel(hse.getOutputStream()));
+  public void encode(JsonIterator jiter, OutputStream out) throws Exception {
+    JsonChannel channel = new JsonChannel(
+        Channels.newChannel(out)
+    );
     Document doc = jiter.next();
     this.writeColumns(channel, doc);
     channel.nextElement()
