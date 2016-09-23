@@ -49,6 +49,13 @@ public class MongoCache {
   public static final String DEFAULT_DB = "micro";
   
   
+  /*****************************************/
+  /* - - - - - - - - - - - - - - - - - - - */
+  /*  CACHEAR CACHED_RESPONSE POR COLEÇÃO  */
+  /* - - - - - - - - - - - - - - - - - - - */
+  /*****************************************/
+  
+  
   private JsonObject json;
   
   private final String colname;
