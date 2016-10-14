@@ -100,7 +100,7 @@ public class FileUploadHandler implements JsonHandler {
   
   private FileUploadConfig readConfig(URIParam pars) throws IOException {
     if(pars.length() < 1) {
-      throw new IOException("Aplic Name Not Informed");
+      throw new IOException("Missing Aplication Context");
     }
     FileUploadConfig fuc = FileUploadConfig
         .builder()
@@ -158,7 +158,7 @@ public class FileUploadHandler implements JsonHandler {
   }
   
   
-  private JsonElement doUpload(FileUploadConfig fuck, FormValue value, String name) {
+  private JsonElement doUpload(FileUploadConfig fuck, FormValue value, String fileName) {
     JsonElement elt = null;
     long fsize = 0;
     if(value.isFile()) {
@@ -166,7 +166,7 @@ public class FileUploadHandler implements JsonHandler {
         if(isUploadAllowed(fuck, value)) {
           fsize = Files.size(value.getPath());
           Path dest = fuck.getUploadDir().resolve(
-              name + getExtFileName(value)
+              fileName + getExtFileName(value)
           );
           Files.move(
               value.getPath(), dest, 
@@ -189,5 +189,4 @@ public class FileUploadHandler implements JsonHandler {
     return elt;
   }
   
-    
 }

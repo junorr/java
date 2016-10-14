@@ -21,6 +21,8 @@
 
 package br.com.bb.disec.micros.jiterator;
 
+import static br.com.bb.disec.micros.util.JsonConstants.CREATED;
+import static br.com.bb.disec.micros.util.JsonConstants.ID;
 import com.mongodb.client.MongoCursor;
 import java.util.Iterator;
 import java.util.stream.Stream;
@@ -50,6 +52,18 @@ public class MongoJsonIterator extends AbstractJsonIterator {
     return cursor;
   }
   
+  
+  private Document dropMetaColumns(Document doc) {
+    if(doc == null) return doc;
+    if(doc.containsKey(ID)) {
+      doc.remove(ID);
+    }
+    if(doc.containsKey(CREATED)) {
+      doc.remove(CREATED);
+    }
+    return doc;
+  }
+  
 
   @Override
   public Stream<Document> stream() {
@@ -59,7 +73,7 @@ public class MongoJsonIterator extends AbstractJsonIterator {
 
   @Override
   public Document next() {
-    return cursor.tryNext();
+    return dropMetaColumns(cursor.tryNext());
   }
 
 

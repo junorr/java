@@ -21,15 +21,13 @@
 
 package br.com.bb.disec.micros.handler.response;
 
+import br.com.bb.disec.micros.MemCache;
 import br.com.bb.disec.micros.db.mongo.MongoCache;
-import br.com.bb.disec.micros.db.mongo.MongoFilter;
-import br.com.bb.disec.micros.db.mongo.MongoMetaData;
-import br.com.bb.disec.micros.jiterator.MongoJsonIterator;
+import br.com.bb.disec.micros.util.JsonHash;
 import com.google.gson.JsonObject;
-import com.mongodb.client.FindIterable;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
-import org.bson.Document;
+import java.io.OutputStream;
 import org.jboss.logging.Logger;
 import us.pserver.timer.Timer;
 
@@ -40,14 +38,18 @@ import us.pserver.timer.Timer;
  */
 public class CachedResponse extends AbstractResponse {
   
-  public static final String DEFAULT_DB = "micro";
+  private final MongoCache cache;
+  
+  private final JsonHash hash;
   
   
-  private MongoMetaData meta;
   
-  
-  public CachedResponse() {
-    
+  public CachedResponse(JsonObject json) {
+    super(json);
+    hash = new JsonHash(json);
+    Timer tm = new Timer.Nanos().start();
+    this.cache = MongoCache.builder(json).build();
+    System.out.println("* CachedResponse.MongoCache build time: "+ tm.stop());
   }
   
   
@@ -56,43 +58,47 @@ public class CachedResponse extends AbstractResponse {
   }
   
   
+  public JsonObject json() {
+    return json;
+  }
+  
+  
   @Override
-  public void send(HttpServerExchange hse, JsonObject json) throws Exception {
-    this.init(hse, json);
-    Timer tm = new Timer.Nanos().start();
-    cache.setup(json);
-    System.out.println("* CachedResponse cache.setup() Time: "+ tm.stop());
-    if(!cache.isCachedCollection()) {
-      super.send(hse, json);
+  public CachedResponse setup() throws Exception {
+    if(!MemCache.cache().contains(hash.collectionHash())) {
+      super.handleRequest(null);
       Timer t = new Timer.Nanos().start();
       cache.doCache(query.getResultSet());
       Logger.getLogger(getClass()).info("CACHE BUILD TIME: "+ t.lapAndStop());
       query.close();
     }
-    //Timer tm = new Timer.Nanos().start();
-    tm.clear().start();
-    this.sendCached(hse);
-    System.out.println("* CachedResultHandler sendResponse Time: "+ tm.stop());
-    //Logger.getLogger(getClass()).info("CACHE RETRIEVE TIME: "+ tm.lapAndStop());
+    return this;
   }
   
   
-  private void sendCached(HttpServerExchange hse) throws Exception {
+  @Override
+  public void handleRequest(HttpServerExchange hse) throws Exception {
+    this.setup();
     Timer tm = new Timer.Nanos().start();
+    this.sendResponse(hse);
+    System.out.println("* CachedResultHandler sendResponse Time: "+ tm.stop());
+  }
+  
+  
+  public void sendResponse(HttpServerExchange hse) throws Exception {
     hse.getResponseHeaders().add(
         Headers.CONTENT_TYPE, 
         this.getEncodingFormat().getContentType()
     );
-    System.out.println("* CachedResultHandler set header Time: "+ tm.stop());
-    tm.clear().start();
-    MongoFilter mop = new MongoFilter(cache);
-    FindIterable<Document> result = mop.apply(json);
-    System.out.println("* CachedResultHandler apply filter Time: "+ tm.stop());
-    tm.clear().start();
-    MongoJsonIterator jiter = new MongoJsonIterator(result.iterator(), mop.total());
-    this.getEncoder().encode(jiter, hse.getOutputStream());
-    System.out.println("* CachedResultHandler stream response Time: "+ tm.stop());
+    hse.startBlocking();
+    this.sendResponse(hse.getOutputStream());
     hse.endExchange();
+  }
+  
+  
+  @Override
+  public void sendResponse(OutputStream out) throws Exception {
+    this.getEncoder().encode(cache.getCached(), out);
   }
   
 }

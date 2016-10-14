@@ -21,19 +21,12 @@
 
 package br.com.bb.disec.micros.handler;
 
-import br.com.bb.disec.micros.coder.Encoder;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 
 /**
  *
@@ -44,8 +37,10 @@ public class FileStreamHandler implements HttpHandler {
 
   private final Path path;
   
+  private final String alias;
   
-  public FileStreamHandler(Path path) {
+  
+  public FileStreamHandler(Path path, String alias) {
     if(path == null) {
       throw new IllegalArgumentException("Bad Null Path");
     }
@@ -53,6 +48,12 @@ public class FileStreamHandler implements HttpHandler {
       throw new IllegalArgumentException("Path Does Not Exists");
     }
     this.path = path;
+    this.alias = alias;
+  }
+  
+  
+  public FileStreamHandler(Path path) {
+    this(path, null);
   }
   
   
@@ -61,11 +62,20 @@ public class FileStreamHandler implements HttpHandler {
   }
   
   
+  public String getAlias() {
+    return alias;
+  }
+  
+  
   private void setHeaders(HttpServerExchange hse) throws IOException {
+      hse.getResponseHeaders().add(
+          Headers.CONTENT_TYPE, 
+          "application/octet-stream"
+      );
     hse.getResponseHeaders().add(
         Headers.CONTENT_DISPOSITION, 
-        "attachment; filename=\""
-            + path.getFileName()+ "\""
+        "attachment; filename=\"" + (alias != null 
+            ? alias : path.getFileName().toString()) + "\""
     );
     hse.setResponseContentLength(Files.size(path));
   }
@@ -79,25 +89,8 @@ public class FileStreamHandler implements HttpHandler {
     }
     this.setHeaders(hse);
     hse.startBlocking();
-    this.write(hse.getOutputStream());
+    Files.copy(path, hse.getOutputStream());
     hse.endExchange();
-  }
-  
-  
-  public void write(OutputStream out) throws Exception {
-    ByteBuffer buf = ByteBuffer.allocateDirect(4096);
-    try (
-      WritableByteChannel och = Channels.newChannel(out);
-      ReadableByteChannel ich = Files.newByteChannel(path, StandardOpenOption.READ);
-    ) {
-      while(ich.read(buf) > 0) {
-        buf.flip();
-        och.write(buf);
-        buf.clear();
-      }
-    }
-    out.flush();
-    out.close();
   }
   
 }

@@ -21,11 +21,12 @@
 
 package br.com.bb.disec.micros.handler;
 
-import br.com.bb.disec.micros.util.StringPostParser;
 import br.com.bb.disec.micro.db.MongoConnectionPool;
 import br.com.bb.disec.micros.channel.JsonChannel;
 import br.com.bb.disec.micro.handler.JsonHandler;
+import br.com.bb.disec.micro.util.StringPostParser;
 import br.com.bb.disec.micro.util.URIParam;
+import br.com.bb.disec.micros.coder.EncodingFormat;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.UpdateOptions;
@@ -39,6 +40,9 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
 import org.jboss.logging.Logger;
+import static br.com.bb.disec.micros.util.JsonConstants.*;
+import io.undertow.util.Headers;
+
 
 /**
  *
@@ -89,11 +93,11 @@ public class PublicCacheHandler implements JsonHandler {
   
   
   private void createIndex(MongoCollection<Document> col, long ttl) {
-    try { col.dropIndex("created"); }
+    try { col.dropIndex(CREATED); }
     catch(Exception e) {}
     try {
       col.createIndex(
-          new Document("created", 1), 
+          new Document(CREATED, 1), 
           new IndexOptions().expireAfter(
               ttl, TimeUnit.SECONDS)
       );
@@ -103,7 +107,6 @@ public class PublicCacheHandler implements JsonHandler {
   
   private void put(HttpServerExchange hse, String key, URIParam pars) throws Exception {
     String post = new StringPostParser().parseHttp(hse);
-    //System.out.println("* PublicCacheHandler.put( "+ key+ " ): '"+ post+ "'");
     if(post == null || post.trim().isEmpty()) {
       hse.setStatusCode(400).setReasonPhrase(
           "Bad Request. No Value"
@@ -114,20 +117,20 @@ public class PublicCacheHandler implements JsonHandler {
       ttl = pars.getNumber(1).longValue();
     }
     MongoCollection<Document> col = MongoConnectionPool.collection(
-        MongoConnectionPool.DEFAULT_DB, "C"+ key
+        MongoConnectionPool.DEFAULT_DB, "h"+ key
     );
     this.createIndex(col, ttl);
     Instant now = Instant.now();
     Document doc = new Document()
-        .append("key", key)
-        .append("created", new Date())
-        .append("store", now.getEpochSecond())
-        .append("update", now.getEpochSecond())
-        .append("access", now.getEpochSecond())
-        .append("ttl", ttl)
-        .append("value", JSON.parse(post));
+        .append(KEY, key)
+        .append(CREATED, new Date())
+        .append(STORE, now.getEpochSecond())
+        .append(UPDATE, now.getEpochSecond())
+        .append(ACCESS, now.getEpochSecond())
+        .append(CACHETTL, ttl)
+        .append(VALUE, JSON.parse(post));
     col.replaceOne(
-        new Document("key", key), doc, 
+        new Document(KEY, key), doc, 
         new UpdateOptions().upsert(true)
     );
     Logger.getLogger(getClass()).info("PUT ["+ key+ "]");
@@ -135,41 +138,45 @@ public class PublicCacheHandler implements JsonHandler {
   
   
   private void sendDoc(HttpServerExchange hse, Document doc) {
+    hse.getResponseHeaders().add(
+        Headers.CONTENT_TYPE, 
+        EncodingFormat.JSON.getContentType()
+    );
     hse.startBlocking();
     JsonChannel send = new JsonChannel(Channels.newChannel(hse.getOutputStream()));
     send.startObject()
-        .put("key", doc.getString("key"))
+        .put(KEY, doc.getString(KEY))
         .nextElement()
-        .put("storeTime", Instant.ofEpochSecond(
-            doc.getLong("store")).toString())
+        .put(STORE, Instant.ofEpochSecond(
+            doc.getLong(STORE)).toString())
         .nextElement()
-        .put("updateTime", Instant.ofEpochSecond(
-            doc.getLong("update")).toString())
+        .put(UPDATE, Instant.ofEpochSecond(
+            doc.getLong(UPDATE)).toString())
         .nextElement()
-        .put("accessTime", Instant.ofEpochSecond(
-            doc.getLong("access")).toString())
+        .put(ACCESS, Instant.ofEpochSecond(
+            doc.getLong(ACCESS)).toString())
         .nextElement()
-        .put("ttl", doc.getLong("ttl"))
+        .put(CACHETTL, doc.getLong(CACHETTL))
         .nextElement()
-        .put("value").write(":")
-        .write(JSON.serialize(doc.get("value")));
+        .put(VALUE).write(":")
+        .write(JSON.serialize(doc.get(VALUE)));
     send.endObject().flush();
   }
   
   
   private void get(HttpServerExchange hse, String key) throws Exception {
     MongoCollection<Document> col = MongoConnectionPool.collection(
-        MongoConnectionPool.DEFAULT_DB, "C"+ key
+        MongoConnectionPool.DEFAULT_DB, "h"+ key
     );
-    Document doc = col.find(new Document("key", key)).first();
+    Document doc = col.find(new Document(KEY, key)).first();
     if(doc != null) {
-      long store = doc.getLong("store");
-      long ttl = doc.getLong("ttl");
+      long store = doc.getLong(STORE);
+      long ttl = doc.getLong(CACHETTL);
       Instant now = Instant.now();
       col.findOneAndUpdate(
-          new Document("key", key), 
+          new Document(KEY, key), 
           new Document("$set", new Document(
-              "access", now.getEpochSecond()
+              ACCESS, now.getEpochSecond()
           ))
       );
       ttl = Instant.ofEpochSecond(store)
@@ -178,8 +185,8 @@ public class PublicCacheHandler implements JsonHandler {
       if(ttl < 0) {
         col.drop();
       }
-      doc.replace("ttl", ttl);
-      doc.replace("access", now.getEpochSecond());
+      doc.replace(CACHETTL, ttl);
+      doc.replace(ACCESS, now.getEpochSecond());
       this.sendDoc(hse, doc);
     }
     else {
@@ -194,9 +201,9 @@ public class PublicCacheHandler implements JsonHandler {
   private void delete(HttpServerExchange hse, String key) throws Exception {
     Logger.getLogger(getClass()).info("DELETE ["+ key+ "]");
     MongoCollection<Document> col = MongoConnectionPool.collection(
-        MongoConnectionPool.DEFAULT_DB, "C"+ key
+        MongoConnectionPool.DEFAULT_DB, "h"+ key
     );
-    Document doc = col.find(new Document("key", key)).first();
+    Document doc = col.find(new Document(KEY, key)).first();
     if(doc != null) {
       col.drop();
     }

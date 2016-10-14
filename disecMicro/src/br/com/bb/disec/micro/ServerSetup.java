@@ -66,20 +66,21 @@ public class ServerSetup {
   }
   
   
-  public static ServerSetup autoSetup(ResourceLoader rld) throws ResourceLoadException {
+  public static synchronized ServerSetup autoSetup(ResourceLoader rld) throws ResourceLoadException {
     if(instance == null) {
+      System.out.println("* Created new ServerSetup!");
       instance = new ServerSetup(rld);
     }
     return instance;
   }
   
   
-  public static ServerSetup autoSetup() throws ResourceLoadException {
+  public static synchronized ServerSetup autoSetup() throws ResourceLoadException {
     return autoSetup(null);
   }
   
   
-  public static ServerSetup setup(ResourceLoader rld, String configPath) throws ResourceLoadException {
+  public static synchronized ServerSetup setup(ResourceLoader rld, String configPath) throws ResourceLoadException {
     if(instance == null) {
       instance = new ServerSetup(rld, configPath);
     }
@@ -87,7 +88,7 @@ public class ServerSetup {
   }
   
   
-  public static ServerSetup instance() {
+  public static synchronized ServerSetup instance() {
     return (instance != null 
         ? instance : autoSetup());
   }

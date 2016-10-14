@@ -62,6 +62,11 @@ public abstract class AbstractAuthClient extends AbstractClient {
   }
   
   
+  public String getUriString(HttpServerExchange hse) {
+    return this.getUriString() + "/" + hse.getRequestURI();
+  }
+  
+  
   public abstract AbstractAuthClient doAuth(HttpServerExchange hse) throws IOException;
   
   

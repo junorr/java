@@ -21,6 +21,10 @@
 
 package br.com.bb.disec.micros.jiterator;
 
+import static br.com.bb.disec.micros.util.JsonConstants.CREATED;
+import static br.com.bb.disec.micros.util.JsonConstants.ID;
+import org.bson.Document;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us

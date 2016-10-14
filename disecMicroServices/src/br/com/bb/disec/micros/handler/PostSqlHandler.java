@@ -21,10 +21,14 @@
 
 package br.com.bb.disec.micros.handler;
 
+import br.com.bb.disec.micro.handler.JsonHandler;
+import br.com.bb.disec.micro.util.StringPostParser;
+import br.com.bb.disec.micro.util.URIParam;
 import br.com.bb.disec.micros.handler.response.CachedResponse;
 import br.com.bb.disec.micros.handler.response.DirectResponse;
-import br.com.bb.disec.micros.util.StringPostParser;
-import br.com.bb.disec.micro.handler.JsonHandler;
+import static br.com.bb.disec.micros.util.JsonConstants.CACHETTL;
+import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
+import static br.com.bb.disec.micros.util.JsonConstants.QUERY;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.undertow.server.HttpServerExchange;
@@ -37,9 +41,7 @@ import us.pserver.timer.Timer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/07/2016
  */
-public class PostSqlHandler extends AbstractResponseHandler implements JsonHandler {
-  
-  
+public class PostSqlHandler implements JsonHandler {
   
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
@@ -50,12 +52,24 @@ public class PostSqlHandler extends AbstractResponseHandler implements JsonHandl
     try {
       Timer tm = new Timer.Nanos().start();
       JsonObject json = this.parseJson(hse);
+      URIParam pars = new URIParam(hse.getRequestURI());
+      if(pars.length() < 2) {
+        throw new IllegalArgumentException(
+            "Missing Query Group and Name in URI"
+        );
+      }
+      json.addProperty(GROUP, pars.getParam(0));
+      json.addProperty(QUERY, pars.getParam(1));
       System.out.println("* PostSqlHandler parseJson Time: "+ tm.stop());
       tm.clear().start();
       this.validateJson(json);
       System.out.println("* PostSqlHandler validateJson Time: "+ tm.stop());
       tm.clear().start();
-      this.send(hse, json);
+      if(json.has(CACHETTL)) {
+        new CachedResponse(json).handleRequest(hse);
+      } else {
+        new DirectResponse(json).handleRequest(hse);
+      }
       System.out.println("* PostSqlHandler result Time: "+ tm.stop());
     }
     catch(IllegalArgumentException e) {
@@ -83,7 +97,7 @@ public class PostSqlHandler extends AbstractResponseHandler implements JsonHandl
   
   
   private void validateJson(JsonObject json) {
-    if(!json.has("query") || !json.has("group")) {
+    if(!json.has(QUERY) || !json.has(GROUP)) {
       String msg = "Bad Request. No Query Informed";
       Logger.getLogger(getClass()).warn(msg);
       throw new IllegalArgumentException(msg);

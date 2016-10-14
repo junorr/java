@@ -21,7 +21,6 @@
 
 package br.com.bb.disec.micros.coder;
 
-import br.com.bb.disec.micros.handler.encode.*;
 
 /**
  *

@@ -21,13 +21,112 @@
 
 package br.com.bb.disec.micros;
 
+import java.time.Duration;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
+import us.pserver.dropmap.DMap;
+import us.pserver.dropmap.DMap.DEntry;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 23/09/2016
  */
 public class MemCache {
+  
+  public static final Duration DEFAULT_DURATION = Duration.ofMinutes(20);
 
-  private 
+  private static final MemCache instance = new MemCache();
+  
+  
+  private final DMap<String,Object> map;
+  
+  private final ReentrantReadWriteLock lock;
+  
+  
+  private MemCache() {
+    map = DMap.newMap();
+    lock = new ReentrantReadWriteLock();
+  }
+  
+  
+  public void put(String key, Object val) {
+    lock.writeLock().lock();
+    try {
+      map.put(key, val, DEFAULT_DURATION);
+    } finally {
+      lock.writeLock().unlock();
+    }
+  }
+  
+  
+  public void put(String key, Object val, Duration dur) {
+    lock.writeLock().lock();
+    try {
+      map.put(key, val, dur);
+    } finally {
+      lock.writeLock().unlock();
+    }
+  }
+  
+  
+  public void put(String key, Object val, Duration dur, Consumer<DEntry<String,Object>> cns) {
+    lock.writeLock().lock();
+    try {
+      map.put(key, val, dur, cns);
+    } finally {
+      lock.writeLock().unlock();
+    }
+  }
+  
+  
+  public boolean contains(String key) {
+    lock.readLock().lock();
+    try {
+      return map.containsKey(key);
+    } finally {
+      lock.readLock().unlock();
+    }
+  }
+  
+  
+  public void remove(String key) {
+    lock.writeLock().lock();
+    try {
+      map.remove(key);
+    } finally {
+      lock.writeLock().unlock();
+    }
+  }
+  
+  
+  public Object get(String key) {
+    lock.readLock().lock();
+    try {
+      return map.get(key);
+    } finally {
+      lock.readLock().unlock();
+    }
+  }
+  
+  
+  public <T> T getAs(String key) {
+    return (T) get(key);
+  }
+  
+  
+  public DEntry<String,Object> getEntry(String key) {
+    lock.readLock().lock();
+    try {
+      return map.getEntry(key);
+    } finally {
+      lock.readLock().unlock();
+    }
+  }
+  
+  
+  public static MemCache cache() {
+    return instance;
+  }
   
 }

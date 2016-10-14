@@ -23,7 +23,6 @@ package br.com.bb.disec.micro.db;
 
 import br.com.bb.disec.bean.iface.IPflAcss;
 import br.com.bb.disec.bean.reader.PflAcssReader;
-import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.disec.util.SqlClose;
 import br.com.bb.sso.bean.User;
 import java.io.IOException;
@@ -47,25 +46,10 @@ public class AccessPersistencia {
 	private static final String SQL_SEL_PFL_ACSS = "selectPflAcss";
   
 
-  private final SqlSource source;
-  
-	
 	private IPflAcss evalPfl;
   
   private List<IPflAcss> evalPfls;
 	
-  
-  public AccessPersistencia() {
-    this.source = new DefaultFileSqlSource(
-        ResourceLoader.self()
-    );
-  }
-  
-  
-  public SqlSource getSqlSource() {
-    return source;
-  }
-  
   
 	/**
 	 * Retorna uma lista de perfis de acesso para o código 
@@ -85,7 +69,7 @@ public class AccessPersistencia {
 		ResultSet rs = null;
 		List<IPflAcss> pfls = new ArrayList<>();
 		try {
-			sql = source.getSql(
+			sql = SqlSourcePool.pool().getSql(
 					SQL_GROUP, SQL_SEL_PFL_ACSS
 			);
 			con = PoolFactory.getPool("107").getConnection();

@@ -21,10 +21,8 @@
 
 package br.com.bb.disec.micros.coder;
 
-import br.com.bb.disec.micros.handler.encode.*;
 import br.com.bb.disec.micros.channel.CsvChannel;
 import br.com.bb.disec.micros.jiterator.JsonIterator;
-import io.undertow.server.HttpServerExchange;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.util.Objects;
@@ -43,12 +41,17 @@ public class CsvEncoder implements Encoder {
     CsvChannel channel = new CsvChannel(
         Channels.newChannel(out)
     );
+    if(!jiter.hasNext()) {
+      channel.close();
+      return;
+    }
     Document doc = jiter.next();
     this.writeColumns(channel, doc);
     channel.newLine();
     do {
       this.writeDocument(channel, doc);
-      if((doc = jiter.next()) != null) channel.newLine();
+      doc = (jiter.hasNext() ? jiter.next() : null);
+      if(doc != null) channel.newLine();
     } 
     while(doc != null);
     channel.close();
@@ -59,9 +62,12 @@ public class CsvEncoder implements Encoder {
     if(doc == null) return;
     Object[] keys = doc.keySet().toArray();
     for(int i = 0; i < keys.length; i++) {
-      channel.put(Objects.toString(keys[i]));
-      if(i < keys.length -1) {
-        channel.nextElement();
+      if(!"_id".equals(keys[i].toString())
+          && !"created".equals(keys[i].toString())) {
+        channel.put(Objects.toString(keys[i]));
+        if(i < keys.length -1) {
+          channel.nextElement();
+        }
       }
     }
   }

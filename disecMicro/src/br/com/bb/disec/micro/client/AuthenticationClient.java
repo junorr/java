@@ -60,7 +60,6 @@ public class AuthenticationClient extends AbstractAuthClient {
           Headers.COOKIE_STRING, 
           CookieName.BBSSOToken.name() + "="+ bbssoToken+ ";"
       );
-      System.out.println("* doAuth.cookie: "+ CookieName.BBSSOToken.name() + "="+ bbssoToken+ ";");
       doAuth(req);
     }
     return this;
@@ -69,7 +68,7 @@ public class AuthenticationClient extends AbstractAuthClient {
   
   @Override
   public AuthenticationClient doAuth(HttpServerExchange hse) throws IOException {
-    Request req = Request.Get(getUriString());
+    Request req = Request.Get(getUriString(hse));
     new AuthCookieManager().injectAuthCookies(req, hse);
     return doAuth(req);
   }

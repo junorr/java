@@ -21,38 +21,27 @@
 
 package br.com.bb.disec.micros.handler;
 
-import br.com.bb.disec.micros.handler.response.CachedResponse;
-import br.com.bb.disec.micros.handler.response.DirectResponse;
-import br.com.bb.disec.micro.client.AuthCookieManager;
-import br.com.bb.disec.micro.db.MongoConnectionPool;
-import br.com.bb.disec.micros.util.JsonTransformer;
-import br.com.bb.disec.micros.util.StringPostParser;
+import br.com.bb.disec.micro.util.StringPostParser;
 import br.com.bb.disec.micro.util.URIParam;
-import br.com.bb.disec.micros.handler.encode.EncodingFormat;
+import br.com.bb.disec.micros.conf.FileDownloadConfig;
+import static br.com.bb.disec.micros.util.JsonConstants.ALIAS;
+import static br.com.bb.disec.micros.util.JsonConstants.FILE;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.IndexOptions;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.util.JSON;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
 import io.undertow.util.Methods;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.bson.Document;
+import java.nio.file.Paths;
+
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/09/2016
+ * @version 0.0 - 05/10/2016
  */
-public class DownloadHandler extends AbstractResponseHandler {
-  
+public class DownloadHandler implements HttpHandler {
+
   
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
@@ -60,119 +49,65 @@ public class DownloadHandler extends AbstractResponseHandler {
       hse.dispatch(this);
       return;
     }
-    if(Methods.GET.equals(hse.getRequestMethod())) {
-      this.get(hse);
+    URIParam pars = new URIParam(hse.getRequestURI());
+    if(pars.length() < 1) {
+      hse.setStatusCode(400)
+          .setReasonPhrase("Bad Request. Missing File Context")
+          .endExchange();
+    }
+    else if(Methods.GET.equals(hse.getRequestMethod())) {
+      this.get(hse, pars);
     }
     else if(Methods.POST.equals(hse.getRequestMethod())) {
-      this.post(hse);
+      this.post(hse, pars);
     }
     else {
-      hse.setStatusCode(405)
-          .setReasonPhrase("Method Not Allowed")
+      hse.setStatusCode(400).setReasonPhrase(
+          "Bad Request. Invalid Method \""
+              + hse.getRequestMethod().toString()+ "\""
+      );
+    }
+  }
+  
+  
+  private void get(HttpServerExchange hse, URIParam pars) throws Exception {
+    try {
+      FileDownloadConfig conf = FileDownloadConfig.builder()
+          .load(pars.getParam(0)).build();
+      new FileStreamHandler(conf.getPath(), conf.getAlias())
+          .handleRequest(hse);
+    } 
+    catch(IOException e) {
+      hse.setStatusCode(404)
+          .setReasonPhrase("Not Found ("+ pars.getParam(0)+ "). ["
+              + e.getClass().getSimpleName()+ "]-> "+ e.getMessage())
           .endExchange();
     }
   }
-  
-  
-  private void get(HttpServerExchange hse) throws Exception {
-    URIParam ups = new URIParam(hse.getRequestURI());
-    if(ups.length() > 0) {
-      MongoCollection<Document> col = getCollection();
-      Document res = col.find(new Document("token", ups.getParam(0))).first();
-      if(res != null) {
-        JsonObject json = new JsonParser().parse(
-            JSON.serialize(res)
-        ).getAsJsonObject();
-        this.execute(hse, json);
-      }
-      else {
-        hse.setStatusCode(400)
-            .setReasonPhrase("Bad Request. Bad Download Token");
-      }
-    }
-    else {
-      hse.setStatusCode(400)
-          .setReasonPhrase("Bad Request. Missing Download Token");
-    }
-    hse.endExchange();
-  }
-  
-  
-  private void post(HttpServerExchange hse) throws Exception {
-    JsonObject json = parseJson(hse);
-    String token = calcHash(hse, json);
-    Document doc = new JsonTransformer().toDocument(json);
-    doc.append("created", new Date())
-        .append("filename", this.getFileName(json))
-        .append("token", token);
-    MongoCollection<Document> col = getCollection();
-    col.replaceOne(
-        new Document("token", token), doc, 
-        new UpdateOptions().upsert(true)
-    );
-    hse.getResponseSender().send(token);
-  }
-  
-  
-  private void execute(HttpServerExchange hse, JsonObject json) throws Exception {
-    this.setContentDisposition(hse, json);
-    this.send(hse, json);
-  }
-  
-  
-  private String getFileName(JsonObject json) {
-    EncodingFormat fmt = (json.has("format") 
-        ? EncodingFormat.from(
-            json.get("format").getAsString()) 
-        : EncodingFormat.JSON);
-    return json.get("query").getAsString()
-        + "." + fmt.name().toLowerCase();
-  }
-  
-  
-  private void setContentDisposition(HttpServerExchange hse, JsonObject json) throws Exception {
-    EncodingFormat fmt = (json.has("format") 
-        ? EncodingFormat.from(
-            json.get("format").getAsString()) 
-        : EncodingFormat.JSON);
-    hse.getResponseHeaders().add(
-        Headers.CONTENT_DISPOSITION, 
-        "attachment; filename=\""
-            + json.get("query").getAsString() + "." 
-            + fmt.name().toLowerCase() + "\""
-    );
-  }
-  
-  
-  private MongoCollection<Document> getCollection() {
-    MongoCollection<Document> col = MongoConnectionPool.collection("micro", "download");
-    if(col.listIndexes().first() == null) {
-      col.createIndex(
-          new Document("created", 1), 
-          new IndexOptions().expireAfter(10L, TimeUnit.MINUTES)
-      );
-      col.createIndex(new Document("token", 1));
-    }
-    return col;
-  }
-  
-  
-  private String calcHash(HttpServerExchange hse, JsonObject json) {
-    AuthCookieManager acm = new AuthCookieManager();
-    StringBuilder sb = new StringBuilder()
-        .append(acm.getBBSsoToken(hse).getValue());
-    json.entrySet().forEach(e->{
-      sb.append(e.getKey())
-          .append(Objects.toString(e.getValue()));
-    });
-    return DigestUtils.md5Hex(sb.toString());
-  }
 
-
-  private JsonObject parseJson(HttpServerExchange hse) throws IOException {
-    return new JsonParser().parse(
+  
+  private void post(HttpServerExchange hse, URIParam pars) throws Exception {
+    JsonObject json = new JsonParser().parse(
         new StringPostParser().parseHttp(hse)
     ).getAsJsonObject();
+    try {
+      if(!json.has(FILE)) {
+        throw new IllegalArgumentException("Missing File Path");
+      }
+      FileDownloadConfig.Builder bld = FileDownloadConfig.builder()
+          .setPath(Paths.get(json.get(FILE).getAsString()))
+          .setContext(pars.getParam(0));
+      if(json.has(ALIAS)) {
+        bld.setAlias(json.get(ALIAS).getAsString());
+      }
+      bld.build().store();
+    }
+    catch(IllegalArgumentException | IOException e) {
+      hse.setStatusCode(400)
+          .setReasonPhrase("Bad Request. ["+ e.getClass()
+              .getSimpleName()+ "]-> "+ e.getMessage())
+          .endExchange();
+    }
   }
 
 }

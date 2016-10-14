@@ -29,6 +29,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -120,6 +121,11 @@ public class DBSqlSource implements SqlSource {
       rs = ps.executeQuery();
       if(rs.next()) {
         query = rs.getString(1);
+        StringBuilder sb = new StringBuilder();
+        Arrays.asList(query.split("\n")).forEach(
+            s->sb.append(s.trim()).append(" ")
+        );
+        query = sb.toString();
       }
     }
     catch(SQLException e) {

@@ -23,7 +23,6 @@ package br.com.bb.disec.micro.db;
 
 import br.com.bb.disec.bean.iface.IDcrCtu;
 import br.com.bb.disec.bean.reader.DcrCtuReader;
-import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.disec.sql.SqlXmlResource;
 import br.com.bb.disec.util.SqlClose;
 import br.com.bb.disec.util.URLD;
@@ -53,8 +52,6 @@ public class CtuPersistencia {
   public static final String SQL_SEL_CTU_BY_ID = "selectCtuById";
 	
   
-  private final SqlSource source;
-  
   private final URLD url;
   
   
@@ -62,7 +59,6 @@ public class CtuPersistencia {
     if(url == null) {
       throw new IllegalArgumentException("Bad Null URLD");
     }
-    source = new DefaultFileSqlSource(ResourceLoader.self());
     this.url = url;
   }
   
@@ -100,7 +96,7 @@ public class CtuPersistencia {
 		PreparedStatement pst = null;
 		ResultSet rst = null;
 		try {
-			sql = source.getSql(
+			sql = SqlSourcePool.pool().getSql(
 					SQL_GROUP, SQL_SEL_CTU_BY_URL
 			);
 			sql = sql.replace(WHERE, url.getHost());
@@ -140,7 +136,7 @@ public class CtuPersistencia {
 		PreparedStatement pst = null;
 		ResultSet rst = null;
 		try {
-			sql = source.getSql(
+			sql = SqlSourcePool.pool().getSql(
 					SQL_GROUP, SQL_SEL_CTU_BY_PATH
 			);
 			sql = sql.replace(WHERE, url.getContext());
@@ -189,7 +185,7 @@ public class CtuPersistencia {
 					continue;
 				}
 				sb.append("/").append(path);
-				sql = source.getSql(
+				sql = SqlSourcePool.pool().getSql(
 						SQL_GROUP, SQL_SEL_CTU_BY_PATH
 				).replace(WHERE, sb.toString());
 				pst = con.prepareStatement(sql);

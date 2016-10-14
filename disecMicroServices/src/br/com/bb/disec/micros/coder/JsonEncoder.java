@@ -23,6 +23,10 @@ package br.com.bb.disec.micros.coder;
 
 import br.com.bb.disec.micros.channel.JsonChannel;
 import br.com.bb.disec.micros.jiterator.JsonIterator;
+import static br.com.bb.disec.micros.util.JsonConstants.COLUMNS;
+import static br.com.bb.disec.micros.util.JsonConstants.COUNT;
+import static br.com.bb.disec.micros.util.JsonConstants.DATA;
+import static br.com.bb.disec.micros.util.JsonConstants.TOTAL;
 import com.mongodb.util.JSON;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
@@ -41,23 +45,29 @@ public class JsonEncoder implements Encoder {
     JsonChannel channel = new JsonChannel(
         Channels.newChannel(out)
     );
+    if(!jiter.hasNext()) {
+      channel.close();
+      return;
+    }
     Document doc = jiter.next();
     this.writeColumns(channel, doc);
     channel.nextElement()
-        .put("total", jiter.total())
+        .put(TOTAL, jiter.total())
         .nextElement()
-        .startArray("data");
+        .startArray(DATA);
     long count = 0;
     do {
       channel.write(JSON.serialize(doc));
       count++;
-      if((doc = jiter.next()) != null) 
+      doc = (jiter.hasNext() ? jiter.next() : null);
+      if(doc != null) { 
         channel.nextElement();
+      }
     } 
     while(doc != null);
     channel.endArray()
         .nextElement()
-        .put("count", count)
+        .put(COUNT, count)
         .endObject()
         .close();
   }
@@ -67,7 +77,7 @@ public class JsonEncoder implements Encoder {
     if(doc == null) return;
     Object[] keys = doc.keySet().toArray();
     channel.startObject()
-        .put("columns").write(":")
+        .put(COLUMNS).write(":")
         .write(JSON.serialize(keys));
   }
   

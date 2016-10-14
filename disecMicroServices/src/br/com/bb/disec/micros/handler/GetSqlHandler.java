@@ -26,8 +26,10 @@ import br.com.bb.disec.micros.handler.response.DirectResponse;
 import br.com.bb.disec.micros.db.SqlObjectType;
 import br.com.bb.disec.micro.handler.JsonHandler;
 import br.com.bb.disec.micro.util.URIParam;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import static br.com.bb.disec.micros.util.JsonConstants.ARGS;
+import static br.com.bb.disec.micros.util.JsonConstants.CACHETTL;
+import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
+import static br.com.bb.disec.micros.util.JsonConstants.QUERY;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.undertow.server.HttpServerExchange;
@@ -39,7 +41,7 @@ import org.jboss.logging.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/07/2016
  */
-public class GetSqlHandler extends AbstractResponseHandler implements JsonHandler {
+public class GetSqlHandler implements JsonHandler {
   
   
   @Override
@@ -48,11 +50,15 @@ public class GetSqlHandler extends AbstractResponseHandler implements JsonHandle
       hse.dispatch(this);
       return;
     }
-    //System.out.println("* URI = "+ hse.getRequestURI());
     try {
       JsonObject json = this.parseJson(hse);
       this.validateJson(json);
-      this.send(hse, json);
+      if(json.has(CACHETTL)) {
+        new CachedResponse(json).handleRequest(hse);
+      } 
+      else {
+        new DirectResponse(json).handleRequest(hse);
+      }
     }
     catch(IllegalArgumentException e) {
       hse.setStatusCode(404)
@@ -77,26 +83,26 @@ public class GetSqlHandler extends AbstractResponseHandler implements JsonHandle
     if(ups.length() < 2) {
       throw new IllegalArgumentException("Bad Arguments Length: "+ ups.length());
     }
-    json.addProperty("group", ups.getParam(0));
-    json.addProperty("query", ups.getParam(1));
+    json.addProperty(GROUP, ups.getParam(0));
+    json.addProperty(QUERY, ups.getParam(1));
     if(ups.length() > 2) {
       JsonArray args = new JsonArray();
       for(int i = 2; i < ups.length(); i++) {
         setJsonArrayValue(args, ups.getParam(i));
       }
-      json.add("args", args);
+      json.add(ARGS, args);
     }
     hse.getQueryParameters().forEach(
         (s,d)->setJsonValue(json, s, d.peekFirst())
     );
-    Gson gs = new GsonBuilder().setPrettyPrinting().create();
+    //Gson gs = new GsonBuilder().setPrettyPrinting().create();
     //System.out.println("* GET: parseJson:\n"+ gs.toJson(json));
     return json;
   }
   
   
   private void validateJson(JsonObject json) {
-    if(!json.has("query") || !json.has("group")) {
+    if(!json.has(QUERY) || !json.has(GROUP)) {
       String msg = "Bad Request. No Query Informed";
       Logger.getLogger(getClass()).warn(msg);
       throw new IllegalArgumentException(msg);

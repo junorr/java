@@ -1,6 +1,6 @@
 /*
- * Direitos Autorais Reservados (c) 2011 Juno Roesler
- * Contato: juno.rr@gmail.com
+ * Direitos Autorais Reservados (c) 2011 Banco do Brasil S.A.
+ * Contato: f6036477@bb.com.br
  * 
  * Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os
  * termos da Licença Pública Geral Menor do GNU conforme publicada pela Free
@@ -38,15 +38,26 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+
 /**
- *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 26/07/2016
+ * Configurações para upload de arquivos.
+ * Encapsula informações a respeito do tamanho
+ * máximo do arquivo para upload, extensões permitidas
+ * e caminho onde o arquivo será salvo.
+ * 
+ * @author Juno Roesler - f6036477@bb.com.br
+ * @version 20160726
  */
 public class FileUploadConfig {
   
+  /**
+   * Grupo de consultas SQL no banco ("disecMicroServices").
+   */
   public static final String SQL_GROUP = "disecMicroServices";
   
+  /**
+   * SQL para buscar informações de upload no banco de dados ("findUpload").
+   */
   public static final String SQL_FIND_UPLOAD = "findUpload";
   
 
@@ -57,6 +68,12 @@ public class FileUploadConfig {
   private final List<String> allowedExtensions;
   
   
+  /**
+   * Construtor padrão. 
+   * @param maxSize Tamanho máximo do arquivo.
+   * @param uploadDir Diretório onde o arquivo será salvo.
+   * @param allowedExtensions Lista de extensões permitidas.
+   */
   private FileUploadConfig(
       FileSize maxSize, 
       String uploadDir, 
@@ -77,21 +94,38 @@ public class FileUploadConfig {
   }
 
 
+  /**
+   * Retorna o tamanho máximo permitido.
+   * @return FileSize.
+   */
   public FileSize getMaxSize() {
     return maxSize;
   }
 
-
+  
+  /**
+   * Retorna o diretório onde será salvo o arquivo.
+   * @return Path
+   */
   public Path getUploadDir() {
     return uploadDir;
   }
 
 
+  /**
+   * Retorna a lista de extensões permitidas.
+   * @return List&lt;String&gt;
+   */
   public List<String> getAllowedExtensions() {
     return allowedExtensions;
   }
   
-
+  
+  /**
+   * Cria e retorna um objeto construtor
+   * Builder de FileUploadConfig.
+   * @return Builder.
+   */
   public static Builder builder() {
     return new Builder();
   }
@@ -110,6 +144,9 @@ public class FileUploadConfig {
   
   
   
+  /**
+   * Objeto construtor de FileUploadConfig.
+   */
   public static class Builder {
     
     private FileSize maxSize;
@@ -119,44 +156,90 @@ public class FileUploadConfig {
     private List<String> allowedExtensions;
     
 
+    /**
+     * Retorna o tamanho máximo para 
+     * upload de arquivos.
+     * @return FileSize.
+     */
     public FileSize getMaxSize() {
       return maxSize;
     }
-
-
+    
+    
+    /**
+     * Define o tamanho máximo para upload 
+     * de arquivos.
+     * @param fs Objeto FileSize encapsulando 
+     * tamanho de arquivo.
+     * @return Esta instância de Builder.
+     */
     public Builder setMaxSize(FileSize fs) {
       this.maxSize = fs;
       return this;
     }
-
-
+    
+    
+    /**
+     * Retorna o diretório de upload de arquivos.
+     * @return String.
+     */
     public String getUploadDir() {
       return uploadDir;
     }
-
-
+    
+    
+    /**
+     * Define o diretório de upload de arquivos.
+     * @param uploadDir String
+     * @return Esta instância de Builder.
+     */
     public Builder setUploadDir(String uploadDir) {
       this.uploadDir = uploadDir;
       return this;
     }
-
-
+    
+    
+    /**
+     * Retorna uma lista contendo as extensões 
+     * de arquivos permitidas.
+     * @return List&lt;String&gt;
+     */
     public List<String> getAllowedExtensions() {
       return allowedExtensions;
     }
 
 
+    /**
+     * Define lista de extensões de arquivos 
+     * permitidas.
+     * @param allowedExtensions List&lt;String&gt;
+     * @return Esta instância de Builder
+     */
     public Builder setAllowedExtensions(List<String> allowedExtensions) {
       this.allowedExtensions = allowedExtensions;
       return this;
     }
-
-
+    
+    
+    /**
+     * Cria e retorna um objeto FileUploadConfig com 
+     * as informações deste Builder.
+     * @return Nova instância de FileUploadConfig.
+     */
     public FileUploadConfig build() {
       return new FileUploadConfig(maxSize, uploadDir, allowedExtensions);
     }
     
     
+    /**
+     * Retorna um objeto json com as 
+     * informações do ResultSet informado.
+     * @param rst ResultSet.
+     * @return Novo objeto json com as 
+     * informaçoes do ResultSet.
+     * @throws SQLException Em caso de erro 
+     * na consulta ao banco de dados.
+     */
     private JsonObject readJson(ResultSet rst) throws SQLException {
       JsonObject json = new JsonObject();
       SqlObjectType sot = new SqlObjectType();
@@ -171,6 +254,13 @@ public class FileUploadConfig {
     }
     
     
+    /**
+     * Carrega informações do banco de dados 
+     * no objeto Builder.
+     * @param aplicName Nome
+     * @return
+     * @throws IOException 
+     */
     public Builder load(String aplicName) throws IOException {
       if(aplicName == null) {
         throw new IllegalArgumentException("Bad Aplic Name: "+ aplicName);

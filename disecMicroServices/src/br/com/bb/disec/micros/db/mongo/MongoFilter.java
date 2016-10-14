@@ -25,9 +25,9 @@ import br.com.bb.disec.micros.util.JsonTransformer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mongodb.client.FindIterable;
-import com.mongodb.util.JSON;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.bson.Document;
+import static br.com.bb.disec.micros.util.JsonConstants.*;
+
 
 /**
  *
@@ -48,7 +48,7 @@ public class MongoFilter {
       throw new IllegalArgumentException("Bad Null MongoCache");
     }
     this.cache = cache;
-    this.total = cache.total();
+    this.total = cache.metaData().total();
   }
   
   
@@ -72,9 +72,8 @@ public class MongoFilter {
   
   private MongoFilter applyFilter(JsonObject json) {
     Document query = this.createFilterQuery(json);
-    if(cache.isFilterChanged()) {
+    if(cache.metaData().isFilterChanged()) {
       total = cache.collection().count(query);
-      System.out.println("* Filter Changed!");
     }
     filter = cache.collection().find(query);
     return this;
@@ -82,11 +81,11 @@ public class MongoFilter {
   
   
   private MongoFilter applySort(JsonObject json) {
-    if(json.has("sortBy")) {
-      int asc = (json.has("sortAsc") 
-          && !json.get("sortAsc").getAsBoolean() ? -1 : 1);
+    if(json.has(SORTBY)) {
+      int asc = (json.has(SORTASC) 
+          && !json.get(SORTASC).getAsBoolean() ? -1 : 1);
       filter =  filter.sort(new Document().append(
-          json.get("sortBy").getAsString(), asc)
+          json.get(SORTBY).getAsString(), asc)
       );
     }
     return this;
@@ -94,14 +93,14 @@ public class MongoFilter {
   
   
   private MongoFilter applyLimit(JsonObject json) {
-    if(json.has("limit")) {
-      if(json.get("limit").isJsonArray()) {
-        JsonArray lim = json.getAsJsonArray("limit");
+    if(json.has(LIMIT)) {
+      if(json.get(LIMIT).isJsonArray()) {
+        JsonArray lim = json.getAsJsonArray(LIMIT);
         filter = filter.skip(lim.get(0).getAsInt())
             .limit(lim.get(1).getAsInt());
       }
       else {
-        filter = filter.limit(json.get("limit").getAsInt());
+        filter = filter.limit(json.get(LIMIT).getAsInt());
       }
     }
     return this;
@@ -109,11 +108,10 @@ public class MongoFilter {
   
   
   private Document createFilterQuery(JsonObject json) {
-    Document query = new Document()
-        .append("collection", new Document("$exists", false));
-    if(json.has("filterBy") && json.has("filter")) {
-      JsonArray fby = json.getAsJsonArray("filterBy");
-      JsonArray fil = json.getAsJsonArray("filter");
+    Document query = new Document();
+    if(json.has(FILTERBY) && json.has(FILTER)) {
+      JsonArray fby = json.getAsJsonArray(FILTERBY);
+      JsonArray fil = json.getAsJsonArray(FILTER);
       for(int i = 0; i < fby.size(); i++) {
         query.append(
             fby.get(i).getAsString(), 
@@ -123,11 +121,6 @@ public class MongoFilter {
       }
     }
     return query;
-  }
-  
-  
-  private String filterHash(Document doc) {
-    return "C"+ DigestUtils.md5Hex(JSON.serialize(doc));
   }
   
 }

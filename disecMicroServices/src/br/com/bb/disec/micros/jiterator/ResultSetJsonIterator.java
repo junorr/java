@@ -54,6 +54,7 @@ public class ResultSetJsonIterator extends AbstractJsonIterator {
     }
     this.rset = rs;
     this.stype = new SqlObjectType();
+    this.next = false;
   }
   
   

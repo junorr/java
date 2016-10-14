@@ -21,9 +21,9 @@
 
 package br.com.bb.disec.micro;
 
-import br.com.bb.disec.micro.handler.AuthenticationShieldHandler;
 import br.com.bb.disec.micro.handler.CorsHandler;
 import br.com.bb.disec.micro.handler.DispatcherHandler;
+import br.com.bb.disec.micro.handler.JWTShieldHandler;
 import br.com.bb.disec.micro.handler.ShutdownHandler;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
@@ -54,11 +54,12 @@ public class Server {
   
   
   private Undertow initServer() {
+    System.out.println("* Init Server!");
     Logger.getLogger(Server.class).info(config);
     HttpHandler root = null;
     PathHandler ph = this.initPathHandler();
     if(config.isAuthenticationShield()) {
-      root = new AuthenticationShieldHandler(new CorsHandler(ph));
+      root = new JWTShieldHandler(new CorsHandler(ph));
     } else {
       root = new CorsHandler(ph);
     }
@@ -77,13 +78,11 @@ public class Server {
     PathHandler ph = Handlers.path();
     if(config.isDispatcherEnabled()) {
       config.handlers().keySet().forEach(p->{
-        Logger.getLogger(getClass()).info("PathHandler{ \""+ p+ "\": \""+ config.handlers().get(p).getName()+ "\" }");
         ph.addPrefixPath(p, new DispatcherHandler(p, config));
       });
     }
     else {
       config.handlers().keySet().forEach(p->{
-        Logger.getLogger(getClass()).info("PathHandler{ \""+ p+ "\": \""+ config.handlers().get(p).getName()+ "\" }");
         config.createHandler(p).ifPresent(h->ph.addPrefixPath(p, h));
       });
     }

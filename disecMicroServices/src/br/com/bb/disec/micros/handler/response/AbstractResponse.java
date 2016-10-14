@@ -21,22 +21,27 @@
 
 package br.com.bb.disec.micros.handler.response;
 
-import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.disec.micro.db.ConnectionPool;
-import br.com.bb.disec.micros.db.DBSqlSource;
-import br.com.bb.disec.micro.db.DefaultFileSqlSource;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
-import br.com.bb.disec.micro.db.SqlSource;
 import br.com.bb.disec.micros.coder.CsvEncoder;
 import br.com.bb.disec.micros.coder.Encoder;
+import br.com.bb.disec.micros.coder.EncodingFormat;
+import static br.com.bb.disec.micros.coder.EncodingFormat.CSV;
+import static br.com.bb.disec.micros.coder.EncodingFormat.XLS;
 import br.com.bb.disec.micros.coder.JsonEncoder;
 import br.com.bb.disec.micros.coder.XlsEncoder;
-import br.com.bb.disec.micros.handler.encode.EncodingFormat;
+import br.com.bb.disec.micros.db.DBSqlSourcePool;
+import static br.com.bb.disec.micros.util.JsonConstants.ARGS;
+import static br.com.bb.disec.micros.util.JsonConstants.FORMAT;
+import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
+import static br.com.bb.disec.micros.util.JsonConstants.QUERY;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import java.io.OutputStream;
 import java.sql.Connection;
 import org.jboss.logging.Logger;
 import us.pserver.timer.Timer;
@@ -46,24 +51,30 @@ import us.pserver.timer.Timer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 29/08/2016
  */
-public abstract class AbstractResponse implements Response {
+public abstract class AbstractResponse implements HttpHandler {
   
   public static final String SQL_GROUP = "disecMicroServices";
   
   public static final String SQL_FIND_QUERY = "findQuery";
   
   
-  protected JsonObject json;
-  
-  protected EncodingFormat format;
+  protected final JsonObject json;
   
   protected SqlQuery query;
   
   
+  public AbstractResponse(JsonObject json) {
+    if(json == null) {
+      throw new IllegalArgumentException("Bad Null JsonObject");
+    }
+    this.json = json;
+  }
+  
+  
   protected EncodingFormat getEncodingFormat() {
-    return (json.has("format") 
+    return (json.has(FORMAT) 
         ? EncodingFormat.from(
-            json.get("format").getAsString()) 
+            json.get(FORMAT).getAsString()) 
         : EncodingFormat.JSON
     );
   }
@@ -79,10 +90,10 @@ public abstract class AbstractResponse implements Response {
   
   
   private Object[] getArguments(JsonObject json) {
-    if(json == null || !json.has("args")) {
+    if(json == null || !json.has(ARGS)) {
       return null;
     }
-    JsonArray array = json.getAsJsonArray("args");
+    JsonArray array = json.getAsJsonArray(ARGS);
     Object[] args = new Object[array.size()];
     for(int i = 0; i < array.size(); i++) {
       JsonPrimitive jp = array.get(i).getAsJsonPrimitive();
@@ -102,34 +113,17 @@ public abstract class AbstractResponse implements Response {
   
   private SqlQuery createSqlQuery() throws Exception {
     Connection con = PoolFactory.getPool(getDBName(json)).getConnection();
-    SqlSource src = new DBSqlSource(
-        ConnectionPool.DEFAULT_DB_NAME, 
-        SQL_GROUP, SQL_FIND_QUERY,
-        new DefaultFileSqlSource(ResourceLoader.caller())
-    );
-    return new SqlQuery(con, src);
-  }
-  
-  
-  protected void init(HttpServerExchange hse, JsonObject json) {
-    if(hse == null) {
-      throw new IllegalArgumentException("Bad Null HttpServerExchange");
-    }
-    if(json == null) {
-      throw new IllegalArgumentException("Bad Null JsonObject");
-    }
-    this.json = json;
+    return new SqlQuery(con, DBSqlSourcePool.pool());
   }
   
   
   @Override
-  public void send(HttpServerExchange hse, JsonObject json) throws Exception {
-    this.init(hse, json);
+  public void handleRequest(HttpServerExchange hse) throws Exception {
     query = this.createSqlQuery();
     Timer tm = new Timer.Nanos().start();
     query.execResultSet(
-        json.get("group").getAsString(), 
-        json.get("query").getAsString(), 
+        json.get(GROUP).getAsString(), 
+        json.get(QUERY).getAsString(), 
         this.getArguments(json)
     );
     Logger.getLogger(getClass()).info("DATABASE TIME: "+ tm.lapAndStop());
@@ -146,5 +140,10 @@ public abstract class AbstractResponse implements Response {
         return new JsonEncoder();
     }
   }
+  
+  
+  public abstract AbstractResponse setup() throws Exception;
+  
+  public abstract void sendResponse(OutputStream out) throws Exception;
   
 }

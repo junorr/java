@@ -133,8 +133,6 @@ public class MicroSSOUserFactory {
 		if(tokenId == null || server == null) {
 			return null;
 		}
-		//System.out.println("* SSO TokenID="+ tokenId);
-		//System.out.println("* SSO  Server="+ server);
 		return new SSOConnector(server, tokenId);
 	}
 

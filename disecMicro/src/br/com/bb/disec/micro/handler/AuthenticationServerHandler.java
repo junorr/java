@@ -22,12 +22,11 @@
 package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.bean.iface.IDcrCtu;
-import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.disec.micro.db.AccessPersistencia;
 import br.com.bb.disec.micro.db.CtuPersistencia;
-import br.com.bb.disec.micro.db.DefaultFileSqlSource;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
+import br.com.bb.disec.micro.db.SqlSourcePool;
 import br.com.bb.disec.micro.util.CookieUserParser;
 import br.com.bb.disec.util.URLD;
 import br.com.bb.sso.bean.User;
@@ -49,6 +48,8 @@ public class AuthenticationServerHandler implements JsonHandler {
   public static final String SQL_GROUP = "disecMicro";
   
   public static final String SQL_INSERT_LOG = "insertLog";
+  
+  public static final String AUTH_CONTEXT = "/auth";
   
   public static final int DEFAULT_CD_CTU = 99999;
   
@@ -90,8 +91,8 @@ public class AuthenticationServerHandler implements JsonHandler {
   
   private String getAuthURL(HttpServerExchange hse) {
     String url = hse.getRequestURL();
-    if(url.contains("auth/")) {
-      int idx = url.indexOf("auth/");
+    if(url.contains(AUTH_CONTEXT)) {
+      int idx = url.indexOf(AUTH_CONTEXT);
       url = url.substring(0, idx)
           + url.substring(idx+5);
     }
@@ -126,7 +127,7 @@ public class AuthenticationServerHandler implements JsonHandler {
     URLD url = new URLD(this.getAuthURL(hse));
     new SqlQuery(
         PoolFactory.getDefaultPool().getConnection(), 
-        new DefaultFileSqlSource(ResourceLoader.self())
+        SqlSourcePool.pool()
     ).update(
         SQL_GROUP,
         SQL_INSERT_LOG, 

@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro;
 
+import br.com.bb.disec.micro.jwt.JWTKey;
 import br.com.bb.disec.micro.util.JsonClass;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -61,6 +62,8 @@ public class ServerConfig {
   
   private final boolean authenticationShield;
   
+  private final JWTKey jwtKey;
+  
   private final int maxWorkerThreads;
   
   private final int ioThreads;
@@ -72,9 +75,9 @@ public class ServerConfig {
       String address, 
       int port, 
       boolean dispatcherEnabled, 
-      boolean logHandlerEnabled, 
       boolean shutdownHandler, 
       boolean authShield,
+      JWTKey jwtKey,
       int ioThreads, 
       int maxWorkerThreads, 
       Map<String,Class> map
@@ -85,8 +88,12 @@ public class ServerConfig {
     if(port <= 0 || port > 65535) {
       throw new IllegalArgumentException("Invalid Port: "+ port);
     }
+    if(jwtKey == null) {
+      throw new IllegalArgumentException("Bad Null Auth JWTKey");
+    }
     this.address = address;
     this.port = port;
+    this.jwtKey = jwtKey;
     this.dispatcherEnabled = dispatcherEnabled;
     this.shutdownHandler = shutdownHandler;
     this.authenticationShield = authShield;
@@ -119,6 +126,11 @@ public class ServerConfig {
 
   public int getPort() {
     return port;
+  }
+  
+  
+  public JWTKey getJWTKey() {
+    return jwtKey;
   }
 
 
@@ -225,7 +237,8 @@ public class ServerConfig {
         + "\n    dispatcherEnabled: " + dispatcherEnabled 
         + "\n    shutdownHandlerEnabled: " + shutdownHandler
         + "\n    authenticationShield: " + authenticationShield
-        + "\n    handlers: " + handlers + "\n}";
+        + "\n    jwtAuthKey: " + jwtKey
+        + "\n    handlers: " + handlers.toString().replace(", ", "\n      - ") + "\n}";
   }
   
   
@@ -241,9 +254,9 @@ public class ServerConfig {
     
     private boolean dispatcherEnabled;
     
-    private boolean logHandlerEnabled;
-    
     private boolean authenticationShield;
+    
+    private String jwtAuthKey;
     
     private int maxWorkerThreads;
     
@@ -256,7 +269,6 @@ public class ServerConfig {
     
     public Builder() {
       handlers = new HashMap<>();
-      logHandlerEnabled = true;
     }
     
     
@@ -286,6 +298,17 @@ public class ServerConfig {
 
     public Builder setServerPort(int serverPort) {
       this.serverPort = serverPort;
+      return this;
+    }
+
+
+    public String getJwtAuthKey() {
+      return jwtAuthKey;
+    }
+
+
+    public Builder setJwtAuthKey(String jwtAuthKey) {
+      this.jwtAuthKey = jwtAuthKey;
       return this;
     }
 
@@ -361,9 +384,9 @@ public class ServerConfig {
           serverAddress, 
           serverPort, 
           dispatcherEnabled, 
-          logHandlerEnabled,
           shutdownHandlerEnabled, 
           authenticationShield,
+          JWTKey.fromPlainString(jwtAuthKey),
           ioThreads, 
           maxWorkerThreads, 
           handlers
@@ -393,6 +416,7 @@ public class ServerConfig {
             .setDispatcherEnabled(b.isDispatcherEnabled())
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
             .setAuthenticationShield(b.isAuthenticationShield())
+            .setJwtAuthKey(b.getJwtAuthKey())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
             .setMaxWorkerThreads(b.getMaxWorkerThreads());
@@ -413,6 +437,7 @@ public class ServerConfig {
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
             .setAuthenticationShield(b.isAuthenticationShield())
             .setHandlers(b.getHandlers())
+            .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
             .setMaxWorkerThreads(b.getMaxWorkerThreads());
         return this;
@@ -430,6 +455,7 @@ public class ServerConfig {
           + "\n    maxWorkerThreads: " + maxWorkerThreads 
           + "\n    shutdownHandlerEnabled: " + shutdownHandlerEnabled
           + "\n    authenticationShield: " + authenticationShield
+          + "\n    jwtAuthKey: " + jwtAuthKey
           + "\n    handlers: " + handlers + "\n}";
     }
     

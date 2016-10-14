@@ -1,6 +1,5 @@
 package br.com.bb.disec.micro.db;
 
-import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.sso.bean.User;
 import java.io.IOException;
 import java.sql.Connection;
@@ -24,9 +23,8 @@ public class DBUserFactory {
     if(chave == null || chave.trim().isEmpty()) {
       return null;
     }
-    String sql = new DefaultFileSqlSource(
-        ResourceLoader.self()
-    ).getSql(SQL_GROUP, SQL_SEL_USER);
+    String sql = SqlSourcePool.pool()
+        .getSql(SQL_GROUP, SQL_SEL_USER);
     Connection cn = null;
     PreparedStatement st = null;
     ResultSet rs = null;

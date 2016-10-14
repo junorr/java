@@ -21,9 +21,12 @@
 
 package br.com.bb.disec.micros.handler.response;
 
+import br.com.bb.disec.micros.jiterator.JsonIterator;
 import br.com.bb.disec.micros.jiterator.ResultSetJsonIterator;
 import com.google.gson.JsonObject;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
+import java.io.OutputStream;
 import org.jboss.logging.Logger;
 import us.pserver.timer.Timer;
 
@@ -34,14 +37,38 @@ import us.pserver.timer.Timer;
  */
 public class DirectResponse extends AbstractResponse {
   
+  private JsonIterator jiter;
+  
+  
+  public DirectResponse(JsonObject json) {
+    super(json);
+  }
+  
   
   @Override
-  public void send(HttpServerExchange hse, JsonObject json) throws Exception {
-    super.send(hse, json);
+  public DirectResponse setup() throws Exception {
+    super.handleRequest(null);
+    jiter = new ResultSetJsonIterator(query.getResultSet());
+    return this;
+  }
+  
+  
+  @Override
+  public void handleRequest(HttpServerExchange hse) throws Exception {
+    hse.getResponseHeaders().add(
+        Headers.CONTENT_TYPE, 
+        this.getEncodingFormat().getContentType()
+    );
+    hse.startBlocking();
+    this.setup().sendResponse(hse.getOutputStream());
+  }
+  
+  
+  @Override
+  public void sendResponse(OutputStream out) throws Exception {
     Timer tm = new Timer.Nanos().start();
     try {
-      ResultSetJsonIterator jiter = new ResultSetJsonIterator(query.getResultSet());
-      this.getEncoder().encode(jiter, hse.getOutputStream());
+      this.getEncoder().encode(jiter, out);
     }
     finally {
       Logger.getLogger(getClass()).info("DIRECT RETRIEVE TIME: "+ tm.lapAndStop());

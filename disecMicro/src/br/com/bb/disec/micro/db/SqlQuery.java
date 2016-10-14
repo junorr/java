@@ -91,7 +91,7 @@ public class SqlQuery {
         statement.setObject(i+1, args[i]);
       }
     }
-    //System.out.println("* SqlQuery.exec: "+ statement);
+    System.out.println("* SqlQuery.exec: "+ statement);
     result = statement.executeQuery();
     return result;
   }
@@ -112,7 +112,7 @@ public class SqlQuery {
           ps.setObject(i+1, args[i]);
         }
       }
-      //System.out.println("* SqlQuery.update: "+ ps);
+      System.out.println("* SqlQuery.update: "+ ps);
       return ps.executeUpdate();
     }
     finally {
