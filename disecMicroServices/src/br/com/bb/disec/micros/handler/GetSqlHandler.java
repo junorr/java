@@ -29,12 +29,12 @@ import br.com.bb.disec.micro.util.URIParam;
 import static br.com.bb.disec.micros.util.JsonConstants.ARGS;
 import static br.com.bb.disec.micros.util.JsonConstants.CACHETTL;
 import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
-import static br.com.bb.disec.micros.util.JsonConstants.QUERY;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.undertow.server.HttpServerExchange;
 import java.io.IOException;
 import org.jboss.logging.Logger;
+import static br.com.bb.disec.micros.util.JsonConstants.NAME;
 
 /**
  *
@@ -84,7 +84,7 @@ public class GetSqlHandler implements JsonHandler {
       throw new IllegalArgumentException("Bad Arguments Length: "+ ups.length());
     }
     json.addProperty(GROUP, ups.getParam(0));
-    json.addProperty(QUERY, ups.getParam(1));
+    json.addProperty(NAME, ups.getParam(1));
     if(ups.length() > 2) {
       JsonArray args = new JsonArray();
       for(int i = 2; i < ups.length(); i++) {
@@ -102,7 +102,7 @@ public class GetSqlHandler implements JsonHandler {
   
   
   private void validateJson(JsonObject json) {
-    if(!json.has(QUERY) || !json.has(GROUP)) {
+    if(!json.has(NAME) || !json.has(GROUP)) {
       String msg = "Bad Request. No Query Informed";
       Logger.getLogger(getClass()).warn(msg);
       throw new IllegalArgumentException(msg);

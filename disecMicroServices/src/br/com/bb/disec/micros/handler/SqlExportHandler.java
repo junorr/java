@@ -21,41 +21,37 @@
 
 package br.com.bb.disec.micros.handler;
 
-import br.com.bb.disec.micro.util.URIParam;
-import br.com.bb.disec.micros.conf.FileDownloadConfig;
-import static br.com.bb.disec.micros.util.JsonConstants.FILE;
-import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
+import br.com.bb.disec.micros.handler.response.CachedResponse;
+import br.com.bb.disec.micros.handler.response.DirectResponse;
+import br.com.bb.disec.micros.coder.EncodingFormat;
+import static br.com.bb.disec.micros.util.JsonConstants.CACHETTL;
+import static br.com.bb.disec.micros.util.JsonConstants.FORMAT;
 import static br.com.bb.disec.micros.util.JsonConstants.NAME;
+import com.google.gson.JsonObject;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 import io.undertow.util.Methods;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 05/10/2016
+ * @version 0.0 - 12/09/2016
  */
-public class DownloadHandler extends HashDownloadHandler {
-
+public class SqlExportHandler extends HashDownloadHandler {
+  
   
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     try {
       super.handleRequest(hse);
       if(Methods.GET.equals(hse.getRequestMethod())) {
-        this.get(hse);
+        this.execute(hse, this.getJson());
       }
       else if(Methods.POST.equals(hse.getRequestMethod())) {
         hse.getResponseSender().send(this.getHash());
       }
-      else if(Methods.PUT.equals(hse.getRequestMethod())) {
-        this.put(hse);
-      }
-    }
+    } 
     catch(Exception e) {
-      e.printStackTrace();
       hse.setStatusCode(400).setReasonPhrase(
           "Bad Request: "+ e.getMessage()
       );
@@ -64,32 +60,32 @@ public class DownloadHandler extends HashDownloadHandler {
   }
   
   
-  private void get(HttpServerExchange hse) throws Exception {
-    FileDownloadConfig conf = FileDownloadConfig
-        .builder().load(
-            json.get(GROUP).getAsString(), 
-            json.get(NAME).getAsString()
-        ).build();
-    new FileStreamHandler(
-        conf.getPath(), conf.getName()
-    ).handleRequest(hse);
-  }
-
   
-  private void put(HttpServerExchange hse) throws Exception {
-    if(!json.has(FILE)) {
-      throw new IllegalArgumentException("Missing File Path");
+  private void execute(HttpServerExchange hse, JsonObject json) throws Exception {
+    this.setContentDisposition(hse, json);
+    if(json.has(CACHETTL)) {
+      new CachedResponse(json).handleRequest(hse);
+    } else {
+      new DirectResponse(json).handleRequest(hse);
     }
-    URIParam pars = new URIParam(hse.getRequestURI());
-    Path path = Paths.get(json.get(FILE).getAsString());
-    String name = pars.length() > 1 
-        ? pars.getParam(1) 
-        : path.getFileName().toString();
-    FileDownloadConfig.Builder bld = FileDownloadConfig.builder()
-        .setPath(path)
-        .setGroup(pars.getParam(0))
-        .setName(name);
-    bld.build().store();
   }
-
+  
+  
+  private EncodingFormat getEncodingFormat(JsonObject json) {
+    return (json.has(FORMAT) 
+        ? EncodingFormat.from(
+            json.get(FORMAT).getAsString()) 
+        : EncodingFormat.JSON);
+  }
+  
+  
+  private void setContentDisposition(HttpServerExchange hse, JsonObject json) throws Exception {
+    EncodingFormat fmt = this.getEncodingFormat(json);
+    hse.getResponseHeaders().add(Headers.CONTENT_DISPOSITION, 
+        "attachment; filename=\""
+            + json.get(NAME).getAsString() + "." 
+            + fmt.name().toLowerCase() + "\""
+    );
+  }
+  
 }

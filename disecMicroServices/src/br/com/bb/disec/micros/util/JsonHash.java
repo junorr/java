@@ -25,11 +25,11 @@ import static br.com.bb.disec.micros.util.JsonConstants.ARGS;
 import static br.com.bb.disec.micros.util.JsonConstants.FILTER;
 import static br.com.bb.disec.micros.util.JsonConstants.FILTERBY;
 import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
-import static br.com.bb.disec.micros.util.JsonConstants.QUERY;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.Objects;
 import org.apache.commons.codec.digest.DigestUtils;
+import static br.com.bb.disec.micros.util.JsonConstants.NAME;
 
 /**
  *
@@ -63,7 +63,7 @@ public class JsonHash {
       return chash;
     }
     String input = json.get(GROUP).getAsString()
-        + json.get(QUERY).getAsString();
+        + json.get(NAME).getAsString();
     if(json.has(ARGS)) {
       JsonArray args = json.getAsJsonArray(ARGS);
       for(int i = 0; i < args.size(); i++) {

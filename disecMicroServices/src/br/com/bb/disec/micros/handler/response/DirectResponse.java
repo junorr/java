@@ -46,7 +46,7 @@ public class DirectResponse extends AbstractResponse {
   
   
   @Override
-  public DirectResponse setup() throws Exception {
+  public DirectResponse setupCache() throws Exception {
     super.handleRequest(null);
     jiter = new ResultSetJsonIterator(query.getResultSet());
     return this;
@@ -60,7 +60,7 @@ public class DirectResponse extends AbstractResponse {
         this.getEncodingFormat().getContentType()
     );
     hse.startBlocking();
-    this.setup().sendResponse(hse.getOutputStream());
+    this.setupCache().sendResponse(hse.getOutputStream());
   }
   
   

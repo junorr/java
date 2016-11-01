@@ -43,13 +43,10 @@ public class CachedResponse extends AbstractResponse {
   private final JsonHash hash;
   
   
-  
   public CachedResponse(JsonObject json) {
     super(json);
     hash = new JsonHash(json);
-    Timer tm = new Timer.Nanos().start();
     this.cache = MongoCache.builder(json).build();
-    System.out.println("* CachedResponse.MongoCache build time: "+ tm.stop());
   }
   
   
@@ -63,8 +60,14 @@ public class CachedResponse extends AbstractResponse {
   }
   
   
+  /**
+   * Verifica se existe cache no MongoDB para a query
+   * requisitada, criando o cache se necessário.
+   * @return Esta instância de CachedResponse.
+   * @throws Exception 
+   */
   @Override
-  public CachedResponse setup() throws Exception {
+  public CachedResponse setupCache() throws Exception {
     if(!MemCache.cache().contains(hash.collectionHash())) {
       super.handleRequest(null);
       Timer t = new Timer.Nanos().start();
@@ -78,7 +81,7 @@ public class CachedResponse extends AbstractResponse {
   
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    this.setup();
+    this.setupCache();
     Timer tm = new Timer.Nanos().start();
     this.sendResponse(hse);
     System.out.println("* CachedResultHandler sendResponse Time: "+ tm.stop());

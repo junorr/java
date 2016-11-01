@@ -11,7 +11,7 @@
     "/jwt": "br.com.bb.disec.micro.handler.JWTAuthHandler",
     "/cache": "br.com.bb.disec.micros.handler.PublicCacheHandler",
     "/download": "br.com.bb.disec.micros.handler.DownloadHandler",
-    "/extract": "br.com.bb.disec.micros.handler.SqlExtractHandler",
+    "/export": "br.com.bb.disec.micros.handler.SqlExportHandler",
     "/simulate": "br.com.bb.disec.micro.handler.SimulatedUserHandler",
     "/sql": "br.com.bb.disec.micros.handler.SqlHandler",
     "/time": "br.com.bb.disec.micro.handler.TimeHandler",

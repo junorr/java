@@ -45,7 +45,7 @@ public class Main {
     o.setAcceptArgs(true);
     o.setExclusive(false);
     o.setMandatory(false);
-    o.setDescription("Loads a file with the text");
+    o.setDescription("Loads text from file");
     sp.addOption(o);
     
     //find
@@ -327,7 +327,7 @@ public class Main {
       if(sp.isOptionPresent("-f")) {
         o = sp.getOption("-f");
         if(o.arguments().size() > 1) {
-          System.out.println(st.find(o.getFirstArg(), o.getAsInteger(1)));
+          System.out.println(st.find(o.getFirstArg(), o.getAsInt(1)));
         } else {
           System.out.println(st.find(o.getFirstArg()));
         }
@@ -347,7 +347,7 @@ public class Main {
       }
       else if(sp.isOptionPresent("-A")) {
         o = sp.getOption("-A");
-        System.out.println(st.charAt(o.getAsInteger(0)));
+        System.out.println(st.charAt(o.getAsInt(0)));
       }
       else if(sp.isOptionPresent("-l")) {
         o = sp.getOption("-l");
@@ -402,7 +402,7 @@ public class Main {
         o = sp.getOption("-p");
         String[] ss = st.split(o.getFirstArg());
         if(o.arguments().size() > 1) {
-          int i = o.getAsInteger(1);
+          int i = o.getAsInt(1);
           if(i < 0 || i >= ss.length) {
             throw new IllegalStateException(
                 "Invalid segment number: "+ o.getArg(1));
@@ -424,9 +424,9 @@ public class Main {
       else if(sp.isOptionPresent("-b")) {
         o = sp.getOption("-b");
         if(o.arguments().size() > 1) {
-          System.out.println(st.subs(o.getAsInteger(0), o.getAsInteger(1)));
+          System.out.println(st.subs(o.getAsInt(0), o.getAsInt(1)));
         } else {
-          System.out.println(st.subs(o.getAsInteger(0)));
+          System.out.println(st.subs(o.getAsInt(0)));
         }
       }
       else if(sp.isOptionPresent("-B")) {

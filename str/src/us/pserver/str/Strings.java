@@ -100,6 +100,7 @@ public class Strings {
     checkEmpty("Argument", s);
     if(idx < 0 || idx > str.length())
       throw new IllegalArgumentException("Invalid find index: "+ idx);
+    System.out.println("find( "+ s+ ", "+ idx+ " ): "+ str.indexOf(s, idx));
     return str.indexOf(s, idx);
   }
   

@@ -106,7 +106,7 @@ public class Option {
    * <code>Option</code>.
    */
   public Option addArg(String arg) {
-    if(arg != null && !arg.trim().isEmpty())
+    if(arg != null)
       arguments.add(arg);
     return this;
   }
@@ -160,7 +160,7 @@ public class Option {
    * pelo índice informado na lista
    * de argumentos.
    */
-  public int getAsInteger(int argIndex) {
+  public int getAsInt(int argIndex) {
     try {
       return Integer.parseInt(arguments.get(argIndex));
     } catch(Exception e) {

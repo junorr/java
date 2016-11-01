@@ -62,39 +62,39 @@ public class FileDownloadConfig {
   public static final String SQL_ADD_DOWNLOAD = "addDownload";
   
   
-  private final String context;
+  private final String group;
 
   private final Path path;
   
-  private final String alias;
+  private final String name;
   
   private final Instant date;
 
 
   /**
    * Construtor padrão.
-   * @param context Contexto do download.
+   * @param group Grupo do download.
+   * @param name Nome do arquivo (opcional).
    * @param path Caminho do arquivo.
-   * @param alias Apelido do arquivo (opcional).
    * @param date Data de registro no banco.
    */
-  public FileDownloadConfig(String context, Path path, String alias, Instant date) {
-    Objects.requireNonNull(context, "Bad Null Context");
+  public FileDownloadConfig(String group, String name, Path path, Instant date) {
+    Objects.requireNonNull(group, "Bad Null Context");
     Objects.requireNonNull(path, "Bad Null Path");
     Objects.requireNonNull(date, "Bad Null Date");
-    this.context = context;
+    this.group = group;
     this.path = path;
-    this.alias = alias;
+    this.name = name;
     this.date = date;
   }
 
 
   /**
-   * Retorna o contexto sob o qual o arquivo estará disponível.
+   * Retorna o grupo do arquivo.
    * @return String
    */
-  public String getContext() {
-    return context;
+  public String getGroup() {
+    return group;
   }
 
 
@@ -108,11 +108,11 @@ public class FileDownloadConfig {
 
 
   /**
-   * Retorna o apelido do arquivo (opcional).
+   * Retorna o nome público (apelido) apelido do arquivo.
    * @return String
    */
-  public String getAlias() {
-    return alias;
+  public String getName() {
+    return name;
   }
 
 
@@ -140,9 +140,8 @@ public class FileDownloadConfig {
           new DefaultFileSqlSource(ResourceLoader.caller())
       );
       query.update(SQL_GROUP, SQL_ADD_DOWNLOAD, 
-          this.context, 
-          this.path.toAbsolutePath().toString(), 
-          this.alias
+          this.group, this.name,
+          this.path.toAbsolutePath().toString()
       );
       query.close();
     }
@@ -160,7 +159,7 @@ public class FileDownloadConfig {
   @Override
   public int hashCode() {
     int hash = 3;
-    hash = 67 * hash + Objects.hashCode(this.context);
+    hash = 67 * hash + Objects.hashCode(this.group);
     hash = 67 * hash + Objects.hashCode(this.path);
     return hash;
   }
@@ -168,29 +167,26 @@ public class FileDownloadConfig {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) {
+    if(this == obj) {
       return true;
     }
-    if (obj == null) {
+    if(obj == null) {
       return false;
     }
-    if (getClass() != obj.getClass()) {
+    if(getClass() != obj.getClass()) {
       return false;
     }
     final FileDownloadConfig other = (FileDownloadConfig) obj;
-    if (!Objects.equals(this.context, other.context)) {
+    if(!Objects.equals(this.group, other.group)) {
       return false;
     }
-    if (!Objects.equals(this.path, other.path)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(this.path, other.path);
   }
 
 
   @Override
   public String toString() {
-    return "FileDownloadConfig{" + "context=" + context + ", path=" + path + ", alias=" + alias + ", date=" + date + '}';
+    return "FileDownloadConfig{" + "context=" + group + ", path=" + path + ", alias=" + name + ", date=" + date + '}';
   }
 
 
@@ -217,33 +213,31 @@ public class FileDownloadConfig {
    */
   public static class Builder {
     
-    private String context;
+    private String group;
     
     private Path path;
     
-    private String alias;
+    private String name;
     
     private Instant date = Instant.now();
     
 
     /**
-     * Retorna o contexto sob o qual o arquivo 
-     * estará disponível para download.
+     * Retorna o grupo do arquivo.
      * @return String
      */
-    public String getContext() {
-      return context;
+    public String getGroup() {
+      return group;
     }
 
 
     /**
-     * Define o contexto sob o qual o arquivo 
-     * estará disponíovel para download.
-     * @param context Contexto.
+     * Define o grupo do arquivo.
+     * @param group Contexto.
      * @return Esta instância de Builder.
      */
-    public Builder setContext(String context) {
-      this.context = context;
+    public Builder setGroup(String group) {
+      this.group = group;
       return this;
     }
 
@@ -269,21 +263,21 @@ public class FileDownloadConfig {
 
 
     /**
-     * Retorna o apelido do arquivo.
+     * Retorna o nome público (apelido) do arquivo.
      * @return String
      */
-    public String getAlias() {
-      return alias;
+    public String getName() {
+      return name;
     }
 
 
     /**
-     * Define o apelido do arquivo.
-     * @param alias Apelido do arquivo.
+     * Define o nome público (apelido) do arquivo.
+     * @param name Apelido do arquivo.
      * @return Esta instância de Builder.
      */
-    public Builder setAlias(String alias) {
-      this.alias = alias;
+    public Builder setName(String name) {
+      this.name = name;
       return this;
     }
 
@@ -314,20 +308,20 @@ public class FileDownloadConfig {
      * @return Novo objeto FileDownloadConfig.
      */
     public FileDownloadConfig build() {
-      return new FileDownloadConfig(context, path, alias, date);
+      return new FileDownloadConfig(group, name, path, date);
     }
     
     
     /**
      * Carrega as informações a partir do banco de dados.
-     * @param context Contexto ao qual as informações 
-     * estão associadas no banco.
+     * @param group Grupo do arquivo.
+     * @param name Nome visível (apelido) do arquivo
      * @return Esta instância de Builder.
      * @throws IOException Em caso de erro na comunicação 
      * com o banco.
      */
-    public Builder load(String context) throws IOException {
-      if(context == null) {
+    public Builder load(String group, String name) throws IOException {
+      if(group == null) {
         throw new IllegalArgumentException("Bad Null Context");
       }
       SqlQuery query = null;
@@ -336,11 +330,11 @@ public class FileDownloadConfig {
             PoolFactory.getDefaultPool().getConnection(), 
             new DefaultFileSqlSource(ResourceLoader.caller())
         );
-        ResultSet rs = query.execResultSet(SQL_GROUP, SQL_FIND_DOWNLOAD, context);
+        ResultSet rs = query.execResultSet(SQL_GROUP, SQL_FIND_DOWNLOAD, group, name);
         rs.next();
-        this.context = rs.getString(1);
-        this.path = Paths.get(rs.getString(2));
-        this.alias = rs.getString(3);
+        this.group = rs.getString(1);
+        this.name = rs.getString(2);
+        this.path = Paths.get(rs.getString(3));
         this.date = Instant.ofEpochMilli(rs.getTimestamp(4).getTime());
         query.close();
       }
@@ -352,6 +346,12 @@ public class FileDownloadConfig {
             .ifPresent(SqlQuery::close);
       }
       return this;
+    }
+
+
+    @Override
+    public String toString() {
+      return "Builder{" + "group=" + group + ", name=" + name + ", path=" + path + ", date=" + date + '}';
     }
     
   }

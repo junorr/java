@@ -74,7 +74,7 @@ public interface JsonConstants {
   
   public static final String LIMIT = "limit";
   
-  public static final String QUERY = "query";
+  public static final String NAME = "name";
   
   public static final String SORTASC = "sortAsc";
   

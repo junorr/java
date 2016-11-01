@@ -31,8 +31,7 @@ public class Main {
   
   public static void main(String[] args) {
     ServerSetup.autoSetup(ResourceLoader.self())
-        .server()
-        .start();
+        .createServer().start();
   }
   
 }

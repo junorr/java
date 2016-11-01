@@ -33,9 +33,14 @@ import org.jboss.logging.Logger;
 import org.xnio.Options;
 
 /**
- *
+ * Servidor de rede responsável por invocar os HttpHandler's 
+ * responsáveis por atender as requisições. As configurações do
+ * servidor como endereço e porta de escuta são realizadas através
+ * do arquivo /resources/serverconf.json, que é manipulado pela
+ * classe br.com.bb.disec.micro.ServerConfig
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/07/2016
+ * @version 1.0.201607
+ * @see br.com.bb.disec.micro.ServerConfig
  */
 public class Server {
 
@@ -44,6 +49,10 @@ public class Server {
   private final ServerConfig config;
   
   
+  /**
+   * Construtor padrão, recebe um objeto ServerConfig.
+   * @param conf Configuração do servidor.
+   */
   public Server(ServerConfig conf) {
     if(conf == null || conf.getAddress() == null || conf.getPort() <= 0) {
       throw new IllegalArgumentException("Invalid ServerConfig: "+ conf);
@@ -53,8 +62,12 @@ public class Server {
   }
   
   
+  /**
+   * Cria o serviço e os HttpHandler's essenciais do servidor e 
+   * associa às respectivas URI's.
+   * @return Undertow Server
+   */
   private Undertow initServer() {
-    System.out.println("* Init Server!");
     Logger.getLogger(Server.class).info(config);
     HttpHandler root = null;
     PathHandler ph = this.initPathHandler();
@@ -74,6 +87,11 @@ public class Server {
   }
   
   
+  /**
+   * Cria o HttpHandler responsável por rotear as requisições
+   * aos respectivos handlers de acordo com a URI.
+   * @return PathHandler
+   */
   private PathHandler initPathHandler() {
     PathHandler ph = Handlers.path();
     if(config.isDispatcherEnabled()) {
@@ -90,21 +108,37 @@ public class Server {
   }
   
   
+  /**
+   * Retorna o objeto servidor da api interna undertow.
+   * @return Undertow Server.
+   */
   public Undertow server() {
     return server;
   }
   
   
+  /**
+   * Retorna o objeto de configuração do servidor.
+   * @return ServerConfig
+   */
   public ServerConfig getServerConfig() {
     return config;
   }
   
   
+  /**
+   * Inicia o serviço de rede, associando-o
+   * ao endereço e portas configuradas.
+   */
   public void start() {
     server.start();
   }
   
   
+  /**
+   * Pára o serviço de rede, desassociando
+   * do endereço e portas alocados previamente.
+   */
   public void stop() {
     server.stop();
   }

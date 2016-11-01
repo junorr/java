@@ -28,13 +28,12 @@ import br.com.bb.disec.micros.handler.response.CachedResponse;
 import br.com.bb.disec.micros.handler.response.DirectResponse;
 import static br.com.bb.disec.micros.util.JsonConstants.CACHETTL;
 import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
-import static br.com.bb.disec.micros.util.JsonConstants.QUERY;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.undertow.server.HttpServerExchange;
 import java.io.IOException;
-import org.jboss.logging.Logger;
 import us.pserver.timer.Timer;
+import static br.com.bb.disec.micros.util.JsonConstants.NAME;
 
 /**
  *
@@ -54,16 +53,13 @@ public class PostSqlHandler implements JsonHandler {
       JsonObject json = this.parseJson(hse);
       URIParam pars = new URIParam(hse.getRequestURI());
       if(pars.length() < 2) {
-        throw new IllegalArgumentException(
-            "Missing Query Group and Name in URI"
-        );
+        hse.setStatusCode(404)
+          .setReasonPhrase("Not Found: Missing Query Group and Name");
+        return;
       }
       json.addProperty(GROUP, pars.getParam(0));
-      json.addProperty(QUERY, pars.getParam(1));
+      json.addProperty(NAME, pars.getParam(1));
       System.out.println("* PostSqlHandler parseJson Time: "+ tm.stop());
-      tm.clear().start();
-      this.validateJson(json);
-      System.out.println("* PostSqlHandler validateJson Time: "+ tm.stop());
       tm.clear().start();
       if(json.has(CACHETTL)) {
         new CachedResponse(json).handleRequest(hse);
@@ -71,11 +67,6 @@ public class PostSqlHandler implements JsonHandler {
         new DirectResponse(json).handleRequest(hse);
       }
       System.out.println("* PostSqlHandler result Time: "+ tm.stop());
-    }
-    catch(IllegalArgumentException e) {
-      hse.setStatusCode(404)
-          .setReasonPhrase(e.getMessage());
-      throw e;
     }
     catch(Exception e) {
       e.printStackTrace();
@@ -93,15 +84,6 @@ public class PostSqlHandler implements JsonHandler {
     return new JsonParser().parse(
         new StringPostParser().parseHttp(hse)
     ).getAsJsonObject();
-  }
-  
-  
-  private void validateJson(JsonObject json) {
-    if(!json.has(QUERY) || !json.has(GROUP)) {
-      String msg = "Bad Request. No Query Informed";
-      Logger.getLogger(getClass()).warn(msg);
-      throw new IllegalArgumentException(msg);
-    }
   }
   
 }

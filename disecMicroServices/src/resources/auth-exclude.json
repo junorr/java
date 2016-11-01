@@ -1,5 +1,9 @@
 [
-  "/auth*",
+  "/jwt*",
+  {
+    "uri": "/export*",
+    "method": "GET"
+  },
   {
     "uri": "/download*",
     "method": "GET"

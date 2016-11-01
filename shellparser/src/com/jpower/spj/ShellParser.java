@@ -98,37 +98,37 @@ import java.util.List;
  * // Options and arguments to parse
  * // from the command:
  * // <b>sayit "Shell Rock's" -n=3</b>
- * 
- *  args = new String[] {"Shell Rock's", "-n=3"};
- *  
- *  shell.parseArgs(args);
- *  boolean all_ok = shell.parseErrors();
- *  
- *  if(!all_ok || shell.isOptionPresent("-h")) {
- *    
- *    System.out.println(
- *        shell.createHeader(40));
- *    
- *    System.out.println( 
- *        shell.createUsage() );
- *    
- *    shell.printAllMessages(System.out);
- *    
- *  } else if(shell.isOptionPresent(Option.EMPTY)) {
- *    
- *    Option num = shell.getOption("-n");
- *    int times;
- * 
- *    // The option was informed?
- *    if(num.isPresent())
- *      // lets get the first argument
- *      // of the option as an integer
- *      times = num.getAsInteger(0);
- *    else
- *      // else get the default value
- *      times = (int) num.getDefaultvalue();
- *    
- *    for(int i = 0; i &lt; times; i++) {
+ 
+  args = new String[] {"Shell Rock's", "-n=3"};
+  
+  shell.parseArgs(args);
+  boolean all_ok = shell.parseErrors();
+  
+  if(!all_ok || shell.isOptionPresent("-h")) {
+    
+    System.out.println(
+        shell.createHeader(40));
+    
+    System.out.println( 
+        shell.createUsage() );
+    
+    shell.printAllMessages(System.out);
+    
+  } else if(shell.isOptionPresent(Option.EMPTY)) {
+    
+    Option num = shell.getOption("-n");
+    int times;
+ 
+    // The option was informed?
+    if(num.isPresent())
+      // lets get the first argument
+      // of the option as an integer
+      times = num.getAsInt(0);
+    else
+      // else get the default value
+      times = (int) num.getDefaultvalue();
+    
+    for(int i = 0; i &lt; times; i++) {
  *      System.out.println(
  *          shell.getOption(Option.EMPTY).getFirstArg());
  *    }
@@ -780,7 +780,7 @@ public class ShellParser {
       if(num.isPresent())
         // lets get the first argument (index=0)
         // of the option as an integer
-        times = num.getAsInteger(0);
+        times = num.getAsInt(0);
       else
         // else get the default value
         times = (int) num.getDefaultvalue();

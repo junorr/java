@@ -21,22 +21,15 @@
 
 package br.com.bb.disec.micros.handler;
 
-import br.com.bb.disec.micros.handler.response.CachedResponse;
-import br.com.bb.disec.micros.handler.response.DirectResponse;
-import br.com.bb.disec.micro.client.AuthCookieManager;
 import br.com.bb.disec.micro.util.StringPostParser;
 import br.com.bb.disec.micro.util.URIParam;
 import br.com.bb.disec.micros.MemCache;
-import br.com.bb.disec.micros.coder.EncodingFormat;
-import static br.com.bb.disec.micros.util.JsonConstants.CACHETTL;
-import static br.com.bb.disec.micros.util.JsonConstants.FORMAT;
 import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
-import static br.com.bb.disec.micros.util.JsonConstants.QUERY;
+import static br.com.bb.disec.micros.util.JsonConstants.NAME;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.server.handlers.Cookie;
 import io.undertow.util.Headers;
 import io.undertow.util.Methods;
 import java.io.IOException;
@@ -49,9 +42,14 @@ import org.apache.commons.codec.digest.DigestUtils;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/09/2016
  */
-public class SqlExtractHandler implements HttpHandler {
+public class HashDownloadHandler implements HttpHandler {
   
-  public static final long DEFAULT_AVAILABLE_TIME = 10*60L;
+  public static final long DEFAULT_DROP_TIMEOUT = 10*60L;
+  
+  
+  protected String hash;
+  
+  protected JsonObject json;
   
   
   @Override
@@ -63,14 +61,20 @@ public class SqlExtractHandler implements HttpHandler {
     if(Methods.GET.equals(hse.getRequestMethod())) {
       this.get(hse);
     }
-    else if(Methods.POST.equals(hse.getRequestMethod())) {
+    else if(Methods.POST.equals(hse.getRequestMethod())
+        || Methods.PUT.equals(hse.getRequestMethod())) {
       this.post(hse);
     }
-    else {
-      hse.setStatusCode(405)
-          .setReasonPhrase("Method Not Allowed")
-          .endExchange();
-    }
+  }
+  
+  
+  public String getHash() {
+    return hash;
+  }
+  
+  
+  public JsonObject getJson() {
+    return json;
   }
   
   
@@ -78,71 +82,40 @@ public class SqlExtractHandler implements HttpHandler {
     URIParam ups = new URIParam(hse.getRequestURI());
     if(ups.length() > 0 && MemCache.cache()
         .contains(ups.getParam(0))) {
-      JsonObject json = MemCache.cache().getAs(ups.getParam(0));
-      this.execute(hse, json);
+      json = MemCache.cache().getAs(ups.getParam(0));
     }
     else {
-      hse.setStatusCode(400)
-          .setReasonPhrase("Bad Request. Bad Download Token");
+      throw new IllegalArgumentException("Bad Download Token");
     }
-    hse.endExchange();
   }
   
   
   private void post(HttpServerExchange hse) throws Exception {
-    JsonObject json = parseJson(hse);
+    json = parseJson(hse);
     URIParam pars = new URIParam(hse.getRequestURI());
-    if(pars.length() < 2) {
-      hse.setStatusCode(400).setReasonPhrase(
-          "Missing Query Group and Name in URI"
-      ).endExchange();
-      return;
+    if(pars.length() >= 1) {
+      json.addProperty(GROUP, pars.getParam(0));
     }
-    json.addProperty(GROUP, pars.getParam(0));
-    json.addProperty(QUERY, pars.getParam(1));
-    String token = calcHash(hse, json);
-    MemCache.cache().put(token, json, 
-        Duration.ofSeconds(DEFAULT_AVAILABLE_TIME)
-    );
-    hse.getResponseSender().send(token);
-  }
-  
-  
-  private void execute(HttpServerExchange hse, JsonObject json) throws Exception {
-    this.setContentDisposition(hse, json);
-    if(json.has(CACHETTL)) {
-      new CachedResponse(json).handleRequest(hse);
-    } else {
-      new DirectResponse(json).handleRequest(hse);
+    if(pars.length() >= 2) {
+      json.addProperty(NAME, pars.getParam(1));
     }
-  }
-  
-  
-  private EncodingFormat getEncodingFormat(JsonObject json) {
-    return (json.has(FORMAT) 
-        ? EncodingFormat.from(
-            json.get(FORMAT).getAsString()) 
-        : EncodingFormat.JSON);
-  }
-  
-  
-  private void setContentDisposition(HttpServerExchange hse, JsonObject json) throws Exception {
-    EncodingFormat fmt = this.getEncodingFormat(json);
-    hse.getResponseHeaders().add(
-        Headers.CONTENT_DISPOSITION, 
-        "attachment; filename=\""
-            + json.get(QUERY).getAsString() + "." 
-            + fmt.name().toLowerCase() + "\""
+    hash = calcHash(hse, json);
+    MemCache.cache().put(hash, json, 
+        Duration.ofSeconds(DEFAULT_DROP_TIMEOUT)
     );
   }
   
   
   private String calcHash(HttpServerExchange hse, JsonObject json) {
     StringBuilder sb = new StringBuilder();
-    AuthCookieManager acm = new AuthCookieManager();
-    Cookie token = acm.getBBSsoToken(hse);
-    if(token != null) {
-      sb.append(token.getValue());
+    URIParam pars = new URIParam(hse.getRequestURI());
+    for(int i = 0; i < pars.length(); i++) {
+      sb.append(pars.getParam(i));
+    }
+    if(hse.getRequestHeaders().contains(Headers.AUTHORIZATION)) {
+      sb.append(hse.getRequestHeaders()
+          .getFirst(Headers.AUTHORIZATION)
+      );
     }
     json.entrySet().forEach(e->{
       sb.append(e.getKey())
@@ -153,9 +126,13 @@ public class SqlExtractHandler implements HttpHandler {
 
 
   private JsonObject parseJson(HttpServerExchange hse) throws IOException {
-    return new JsonParser().parse(
-        new StringPostParser().parseHttp(hse)
-    ).getAsJsonObject();
+    String sjson = new StringPostParser().parseHttp(hse);
+    JsonObject json = new JsonObject();
+    if(sjson != null && !sjson.trim().isEmpty()) {
+      json = new JsonParser().parse(sjson)
+          .getAsJsonObject();
+    }
+    return json;
   }
 
 }

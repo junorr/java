@@ -124,14 +124,14 @@ public class FileUploadHandler implements JsonHandler {
       fuck = readConfig(pars);
     } catch(IOException e) {
       resp.add(buildJson(false, 
-          "Bad Application Name: "+ pars.getParam(0), 
+          "Bad File Group: "+ pars.getParam(0), 
           null, null, 0)
       );
     }
     if(fuck != null) {
-      FormParserFactory.Builder fbd = FormParserFactory.builder(true);
-      fbd.setDefaultCharset("UTF-8");
-      FormDataParser fp = fbd.build().createParser(hse);
+      FormParserFactory.Builder fdp = FormParserFactory.builder(true);
+      fdp.setDefaultCharset("UTF-8");
+      FormDataParser fp = fdp.build().createParser(hse);
       FormData data = fp.parseBlocking();
       for(String field : data) {
         resp.add(this.doUpload(

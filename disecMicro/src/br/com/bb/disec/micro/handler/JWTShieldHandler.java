@@ -80,17 +80,17 @@ public class JWTShieldHandler implements HttpHandler {
     if(!isUriExcluded(hse.getRequestMethod(), hse.getRequestURI())) {
       try {
         if(!hse.getRequestHeaders().contains(Headers.AUTHORIZATION)) {
-          throw new IllegalStateException();
+          throw new IllegalStateException("Authorization Header Missing");
         }
         String token = hse.getRequestHeaders().getFirst(Headers.AUTHORIZATION);
         if(token.contains("Bearer ")) {
           token = token.replace("Bearer ", "");
         }
         JWT jwt = JWT.fromBase64(token);
-        System.out.println("* jwt.verifySign: "+ jwt.verifySign(jwtKey));
-        System.out.println("* jwt.isExpired.: "+ jwt.isExpired());
-        System.out.println("* jwt.url.......: "+ jwt.getPayload().get("url"));
-        System.out.println("* hse.url.......: "+ hse.getRequestURL());
+        //System.out.println("* jwt.verifySign: "+ jwt.verifySign(jwtKey));
+        //System.out.println("* jwt.isExpired.: "+ jwt.isExpired());
+        //System.out.println("* jwt.url.......: "+ jwt.getPayload().get("url"));
+        //System.out.println("* hse.url.......: "+ hse.getRequestURL());
         boolean urlmatch = false;
         if(jwt.getPayload().get("url").isJsonArray()) {
           JsonArray ar = jwt.getPayload().get("url").getAsJsonArray();
@@ -108,14 +108,24 @@ public class JWTShieldHandler implements HttpHandler {
               || url.equals(hse.getRequestURL()) 
               || hse.getRequestURL().startsWith(url);
         }
-        if(!jwt.verifySign(jwtKey) 
-            || jwt.isExpired() || !urlmatch) {
-          throw new IllegalAccessException();
+        //System.out.println("* urlmatch......: "+ urlmatch);
+        String error = null;
+        if(!jwt.verifySign(jwtKey)) error = "Bad Signature";
+        if(jwt.isExpired()) error = "JWT Expired";
+        if(!urlmatch) error = hse.getRequestURL();
+        if(error != null) {
+          throw new IllegalAccessException(error);
         }
       }
       catch(Exception e) {
+        //e.printStackTrace();
+        //System.out.println("# "+ e.toString());
+        String reason = "Unauthorized";
+        if(e.getMessage() != null && !e.getMessage().isEmpty()) {
+          reason += ": "+ e.getMessage();
+        }
         hse.setStatusCode(401)
-            .setReasonPhrase("Unauthorized")
+            .setReasonPhrase(reason)
             .endExchange();
         donext = false;
       }

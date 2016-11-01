@@ -41,7 +41,7 @@ public class JWTPayload extends JWTObject {
   
   public static final String SUB_VAL = "disecMicroAuth";
   
-  public static final long DEFAULT_EXP = 600;
+  public static final long DEFAULT_EXP = 1800;
   
   
   public JWTPayload() {
@@ -49,6 +49,14 @@ public class JWTPayload extends JWTObject {
     put(ISS, ISS_VAL);
     put(EXP, DEFAULT_EXP);
     put(SUB, SUB_VAL);
+  }
+  
+  
+  public JWTPayload(String issuer, String subject, long expiration) {
+    super();
+    put(ISS, issuer);
+    put(SUB, subject);
+    put(EXP, expiration);
   }
   
   

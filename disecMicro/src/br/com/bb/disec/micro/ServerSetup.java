@@ -23,6 +23,7 @@ package br.com.bb.disec.micro;
 
 import br.com.bb.disec.micro.ResourceLoader.ResourceLoadException;
 import java.io.IOException;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  *
@@ -33,6 +34,8 @@ public class ServerSetup {
   
   public static final String DEFAULT_CONFIG = "/resources/serverconf.json";
   
+  private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+  
 
   private static ServerSetup instance;
   
@@ -41,8 +44,6 @@ public class ServerSetup {
   
   private final ServerConfig config;
   
-  private final Server server;
-  
   
   private ServerSetup(ResourceLoader rld) throws ResourceLoadException {
     this(rld, DEFAULT_CONFIG);
@@ -50,7 +51,7 @@ public class ServerSetup {
   
   
   private ServerSetup(ResourceLoader rld, String configPath) throws ResourceLoadException {
-    if(instance != null) {
+    if(isInstantiated()) {
       throw new IllegalStateException("ServerSetup is Already Instantiated");
     }
     this.loader = (rld != null ? rld : ResourceLoader.self());
@@ -58,44 +59,57 @@ public class ServerSetup {
       config = ServerConfig.builder().load(
           loader.loadPath(configPath)
       ).build();
-      server = new Server(config);
     }
     catch(IOException e) {
       throw new ResourceLoadException(e);
+    } 
+  }
+  
+  
+  private static boolean isInstantiated() {
+    lock.readLock().lock();
+    try {
+      return instance != null;
+    } finally {
+      lock.readLock().unlock();
     }
   }
   
   
-  public static synchronized ServerSetup autoSetup(ResourceLoader rld) throws ResourceLoadException {
-    if(instance == null) {
-      System.out.println("* Created new ServerSetup!");
-      instance = new ServerSetup(rld);
+  public static void createInstance(ResourceLoader rld, String configPath) {
+    if(isInstantiated()) return;
+    lock.writeLock().lock();
+    try {
+      instance = new ServerSetup(rld, configPath);
+    } finally {
+      lock.writeLock().unlock();
+    }
+  }
+  
+  
+  public static ServerSetup autoSetup(ResourceLoader rld) throws ResourceLoadException {
+    if(!isInstantiated()) {
+      createInstance(rld, DEFAULT_CONFIG);
     }
     return instance;
   }
   
   
-  public static synchronized ServerSetup autoSetup() throws ResourceLoadException {
+  public static ServerSetup autoSetup() throws ResourceLoadException {
     return autoSetup(null);
   }
   
   
-  public static synchronized ServerSetup setup(ResourceLoader rld, String configPath) throws ResourceLoadException {
-    if(instance == null) {
-      instance = new ServerSetup(rld, configPath);
+  public static ServerSetup setup(ResourceLoader rld, String configPath) throws ResourceLoadException {
+    if(!isInstantiated()) {
+      createInstance(rld, configPath);
     }
     return instance;
   }
   
   
-  public static synchronized ServerSetup instance() {
-    return (instance != null 
-        ? instance : autoSetup());
-  }
-  
-  
-  public Server server() {
-    return server;
+  public static ServerSetup instance() {
+    return instance;
   }
   
   
@@ -106,6 +120,11 @@ public class ServerSetup {
   
   public ResourceLoader loader() {
     return loader;
+  }
+  
+  
+  public Server createServer() {
+    return new Server(config);
   }
   
 }

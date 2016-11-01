@@ -19,22 +19,22 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros;
+package br.com.bb.disec.microb.test;
 
-import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.disec.micro.ServerSetup;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2016
+ * @version 0.0 - 17/10/2016
  */
-public class Main {
+public class TestServerSetup {
 
   
   public static void main(String[] args) {
-    ServerSetup.autoSetup(ResourceLoader.caller())
-        .createServer().start();
+    System.out.println("* auth-exclude: "+ ServerSetup.autoSetup().loader().loadJson("/resources/auth-exclude.json"));
+    System.out.println("* auth-exclude: "+ ServerSetup.instance().loader());
+    System.out.println("* auth-exclude: "+ ServerSetup.instance().loader().loadJson("/resources/auth-exclude.json"));
   }
   
 }

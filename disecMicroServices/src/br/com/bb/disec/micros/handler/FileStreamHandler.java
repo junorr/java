@@ -45,7 +45,7 @@ public class FileStreamHandler implements HttpHandler {
       throw new IllegalArgumentException("Bad Null Path");
     }
     if(!Files.exists(path)) {
-      throw new IllegalArgumentException("Path Does Not Exists");
+      throw new IllegalArgumentException("Path Does Not Exists: "+ path.toString());
     }
     this.path = path;
     this.alias = alias;
