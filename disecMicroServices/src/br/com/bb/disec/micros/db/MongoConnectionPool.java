@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.db;
+package br.com.bb.disec.micros.db;
 
 import br.com.bb.disec.micro.ResourceLoader;
 import com.mongodb.MongoClient;

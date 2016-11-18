@@ -21,7 +21,6 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.micro.client.UserCache;
 import br.com.bb.disec.micro.db.DBUserFactory;
 import br.com.bb.disec.micro.util.URIParam;
 import br.com.bb.sso.bean.User;
@@ -41,13 +40,10 @@ import org.apache.commons.codec.digest.DigestUtils;
  */
 public class SimulatedUserHandler implements JsonHandler {
 
-  private final UserCache ucache;
-  
   private final DBUserFactory factory;
   
   
   public SimulatedUserHandler() {
-    ucache = new UserCache();
     factory = new DBUserFactory();
   }
   
@@ -66,7 +62,6 @@ public class SimulatedUserHandler implements JsonHandler {
           CookieName.BBSSOToken.name(), 
           DigestUtils.md5Hex(user.getChave())
       );
-      ucache.setCachedUser(token, user);
       hse.setResponseCookie(token);
       hse.getResponseSender().send(new Gson().toJson(user));
     }
@@ -84,10 +79,7 @@ public class SimulatedUserHandler implements JsonHandler {
     if(pars == null || pars.length() < 1) {
       throw new IOException("No User Key Parameter Found");
     }
-    String hash = DigestUtils.md5Hex(pars.getParam(0));
-    return (ucache.isCachedUser(hash) 
-        ? ucache.getCachedUser(hash) 
-        : createDBUser(pars.getParam(0)));
+    return createDBUser(pars.getParam(0));
   }
   
   

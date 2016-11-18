@@ -21,8 +21,8 @@
 
 package br.com.bb.disec.micros.db.mongo;
 
-import br.com.bb.disec.micro.db.MongoConnectionPool;
 import br.com.bb.disec.micros.MemCache;
+import br.com.bb.disec.micros.db.MongoConnectionPool;
 import br.com.bb.disec.micros.db.SqlObjectType;
 import br.com.bb.disec.micros.jiterator.JsonIterator;
 import br.com.bb.disec.micros.jiterator.MongoJsonIterator;

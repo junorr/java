@@ -21,12 +21,12 @@
 
 package br.com.bb.disec.micros.handler;
 
-import br.com.bb.disec.micro.db.MongoConnectionPool;
 import br.com.bb.disec.micros.channel.JsonChannel;
 import br.com.bb.disec.micro.handler.JsonHandler;
 import br.com.bb.disec.micro.util.StringPostParser;
 import br.com.bb.disec.micro.util.URIParam;
 import br.com.bb.disec.micros.coder.EncodingFormat;
+import br.com.bb.disec.micros.db.MongoConnectionPool;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.UpdateOptions;

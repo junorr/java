@@ -25,10 +25,11 @@ import br.com.bb.disec.micro.ResourceLoader.ResourceLoadException;
 import java.io.IOException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+
 /**
  *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2016
+ * @author Juno Roesler - juno.roesler@bb.com.br
+ * @version 1.0.201609
  */
 public class ServerSetup {
   

@@ -21,31 +21,29 @@
 
 package br.com.bb.disec.micro.handler;
 
-import br.com.bb.disec.bean.iface.IDcrCtu;
 import br.com.bb.disec.micro.ServerSetup;
-import br.com.bb.disec.micro.db.AccessPersistencia;
-import br.com.bb.disec.micro.db.CtuPersistencia;
-import br.com.bb.disec.micro.db.PoolFactory;
-import br.com.bb.disec.micro.db.SqlQuery;
-import br.com.bb.disec.micro.db.SqlSourcePool;
+import br.com.bb.disec.micro.client.AuthCookieManager;
 import br.com.bb.disec.micro.jwt.JWT;
 import br.com.bb.disec.micro.jwt.JWTHeader;
 import br.com.bb.disec.micro.jwt.JWTKey;
 import br.com.bb.disec.micro.jwt.JWTPayload;
-import br.com.bb.disec.micro.util.CookieUserParser;
+import br.com.bb.disec.micro.util.AuthorizationService;
+import br.com.bb.disec.micro.util.MicroSSOUserFactory;
 import br.com.bb.disec.micro.util.StringPostParser;
 import br.com.bb.disec.util.URLD;
 import br.com.bb.sso.bean.User;
+import br.com.bb.sso.session.CookieName;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.server.handlers.Cookie;
 import io.undertow.util.Methods;
-import java.util.Arrays;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import org.jboss.logging.Logger;
 
 /**
  *
@@ -54,13 +52,7 @@ import org.jboss.logging.Logger;
  */
 public class JWTAuthHandler implements JsonHandler {
   
-  public static final String SQL_GROUP = "disecMicro";
-  
-  public static final String SQL_INSERT_LOG = "insertLog";
-  
   public static final String AUTH_CONTEXT = "/jwt";
-  
-  public static final int DEFAULT_CD_CTU = 99999;
   
   
   public final JWTKey jwtKey;
@@ -69,7 +61,7 @@ public class JWTAuthHandler implements JsonHandler {
   
   
   public JWTAuthHandler() {
-    gson = new GsonBuilder().setPrettyPrinting().create();
+    gson = new GsonBuilder().create();
     jwtKey = ServerSetup.instance().config().getJWTKey();
   }
   
@@ -82,7 +74,7 @@ public class JWTAuthHandler implements JsonHandler {
     }
     User user = null;
     try {
-      user = new CookieUserParser().parseHttp(hse);
+      user = this.querySSO(this.getCookies(hse));
       JWT jwt = null;
       if(Methods.GET.equals(hse.getRequestMethod())) {
         jwt = this.get(hse, user);
@@ -108,14 +100,13 @@ public class JWTAuthHandler implements JsonHandler {
   
   
   private JWT get(HttpServerExchange hse, User user) throws Exception {
-    if(!doAuth(hse, user)) {
-      log(hse, user, false);
+    URLD url = new URLD(this.getAuthURL(hse));
+    if(!new AuthorizationService(user).authorize(hse, url)) {
       throw new IllegalAccessException(hse.getRequestURI());
     }
-    log(hse, user, true);
     JWTPayload pld = new JWTPayload();
     pld.put("user", gson.toJsonTree(user));
-    pld.put("url", this.getAuthURL(hse));
+    pld.put("url", url.toString());
     return new JWT(new JWTHeader(), pld, jwtKey);
   }
   
@@ -128,13 +119,13 @@ public class JWTAuthHandler implements JsonHandler {
       throw new IllegalStateException("Json Array Expected");
     }
     JsonArray ar = json.getAsJsonArray();
+    List<URLD> urls = new ArrayList<>(ar.size());
     for(int i = 0; i < ar.size(); i++) {
-      URLD url = new URLD(ar.get(i).getAsString());
-      if(!doAuth(url, user)) {
-        log(url, hse, user, false);
-        throw new IllegalAccessException(url.toString());
-      }
-      log(url, hse, user, true);
+      urls.add(new URLD(ar.get(i).getAsString()));
+    }
+    AuthorizationService auths = new AuthorizationService(user);
+    if(!auths.authorize(hse, urls)) {
+      throw new IllegalAccessException(auths.getUnauthorizedURL().toString());
     }
     JWTPayload pld = new JWTPayload();
     pld.put("user", gson.toJsonTree(user));
@@ -142,6 +133,35 @@ public class JWTAuthHandler implements JsonHandler {
     return new JWT(new JWTHeader(), pld, jwtKey);
   }
   
+  
+  private User querySSO(Cookie[] cks) throws IOException {
+    if(cks == null || cks.length < 2) {
+      throw new IOException("Invalid Auth Cookies");
+    }
+    if(cks[0] == null) {
+      throw new IOException("Missing Cookie "+ CookieName.BBSSOToken.name());
+    }
+    if(cks[1] == null) {
+      throw new IOException("Missing Cookie "+ CookieName.ssoacr.name());
+    }
+    MicroSSOUserFactory suf = new MicroSSOUserFactory(cks);
+    User user = null;
+    user = suf.createUser();
+    if(user == null) {
+      throw new IOException("Invalid Cookie "+ CookieName.BBSSOToken.name());
+    }
+    return user;
+  } 
+  
+  
+  private Cookie[] getCookies(HttpServerExchange hse) {
+    AuthCookieManager man = new AuthCookieManager();
+    Cookie[] cks = new Cookie[2];
+    cks[0] = man.getBBSsoToken(hse);
+    cks[1] = man.getSsoAcr(hse);
+    return cks;
+  }
+
   
   private String getAuthURL(HttpServerExchange hse) {
     String url = hse.getRequestURL();
@@ -153,55 +173,4 @@ public class JWTAuthHandler implements JsonHandler {
     return url;
   }
   
-  
-  public boolean doAuth(HttpServerExchange hse, User user) throws Exception {
-		return doAuth(new URLD(getAuthURL(hse)), user);
-	}
-  
-  
-  public boolean doAuth(URLD urld, User user) throws Exception {
-		CtuPersistencia ctp = new CtuPersistencia(urld);
-		AccessPersistencia acp = new AccessPersistencia();
-    //recupera todos os conteúdos da tabela dcr_ctu
-    //com base na URL acessada.
-    List<IDcrCtu> ctus = ctp.findAll();
-    if(ctus == null || ctus.isEmpty()) {
-      Logger.getLogger(this.getClass()).info("Nenhum conteúdo encontrado para a URL: "+ urld);
-      ctus = Arrays.asList(ctp.getById(DEFAULT_CD_CTU));
-    }
-    //Verifica autorização de acesso para os conteúdos encontrados.
-    boolean access = ctus.get(0).getCdCtu() == DEFAULT_CD_CTU;
-    for(IDcrCtu ctu : ctus) {
-      access = access || acp.checkAccess(
-          user, ctu.getCdCtu()
-      );
-    }
-    return access;
-	}
-  
-  
-  public void log(HttpServerExchange hse, User user, boolean auth) throws Exception {
-    log(new URLD(hse.getRequestURL()), hse, user, auth);
-  }
-
-
-  public void log(URLD url, HttpServerExchange hse, User user, boolean auth) throws Exception {
-    //ip, url, context, uri, cd_usu, uor_depe, uor_eqp, autd
-    new SqlQuery(
-        PoolFactory.getDefaultPool().getConnection(), 
-        SqlSourcePool.pool()
-    ).update(
-        SQL_GROUP,
-        SQL_INSERT_LOG, 
-        hse.getConnection().getPeerAddress().toString(), 
-        url.getURL(), 
-        url.getContext(), 
-        url.getURI(),
-        user.getChave(),
-        user.getUorDepe(),
-        user.getUorEquipe(),
-        auth
-    );
-  }
-
 }

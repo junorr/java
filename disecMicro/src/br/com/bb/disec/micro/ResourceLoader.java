@@ -41,15 +41,30 @@ import java.util.Enumeration;
 
 
 /**
- *
- * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2016
+ * Provê funções para carregar recursos de pacotes
+ * de acordo com a classe informada no construtor.
+ * A capacidade de carregamento de recursos do Java
+ * é limitada e não permite escolher o recurso a ser
+ * carregado, quando este possui o mesmo nome, porém 
+ * arquivos JAR diferentes. ResourceLoader contorna
+ * essa limitação, permitindo carregar recursos que 
+ * estejam no mesmo arquivo JAR da classe informada
+ * no construtor.
+ * 
+ * @author Juno Roesler - junoroesler@bb.com.br
+ * @version 1.0.201609
  */
 public class ResourceLoader {
   
   private final Class loader;
   
   
+  /**
+   * Construtor padrão que recebe a classe a partir da qual 
+   * os recursos serão carregados.
+   * @param cls Classe a partir da qual 
+   * os recursos serão carregados.
+   */
   public ResourceLoader(Class cls) {
     if(cls == null) {
       throw new IllegalArgumentException("Bad Null Class");
@@ -58,16 +73,33 @@ public class ResourceLoader {
   }
   
   
+  /**
+   * Constrói um ResourceLoader utilizando a própria
+   * classe para carregar recursos.
+   * @return Nova instância de ResourceLoader.
+   */
   public static ResourceLoader self() {
     return new ResourceLoader(ResourceLoader.class);
   }
   
   
+  /**
+   * Constrói um ResourceLoader utilizando a 
+   * classe informada para carregar recursos.
+   * @param cls Classe a partir da qual 
+   * os recursos serão carregados.
+   * @return Nova instância de ResourceLoader.
+   */
   public static ResourceLoader of(Class cls) {
     return new ResourceLoader(cls);
   }
   
   
+  /**
+   * Constrói um ResourceLoader utilizando a classe 
+   * chamadora deste método para carregar recursos.
+   * @return Nova instância de ResourceLoader.
+   */
   public static ResourceLoader caller() throws ResourceLoadException {
     try {
       Thread cur = Thread.currentThread();
@@ -81,6 +113,10 @@ public class ResourceLoader {
   }
   
   
+  /**
+   * Retorna a classe utilizada para carregar recursos.
+   * @return classe utilizada para carregar recursos.
+   */
   public Class loader() {
     return loader;
   }
@@ -102,6 +138,14 @@ public class ResourceLoader {
   }
   
   
+  /**
+   * Procura todos os recursos com o mesmo nome e seleciona
+   * um de acordo com a classe utilizada para carregar.
+   * @param resource Nome do recurso a ser carregado.
+   * @return URL do recurso procurado.
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   private URL findResource(String resource) throws ResourceLoadException {
     testResource(resource);
     String cpath = "/"+ loader.getName().replace(".", "/") + ".class";
@@ -130,12 +174,26 @@ public class ResourceLoader {
   }
   
   
+  /**
+   * Carrega um Path a partir nome do recurso informado.
+   * @param resource Nome do recurso procurado.
+   * @return Path a partir nome do recurso informado.
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   public Path loadPath(String resource) throws ResourceLoadException {
     return Paths.get(this.getURI(resource));
   }
   
   
-  public InputStream loadStream(String resource) {
+  /**
+   * Carrega um InputStream a partir do nome do recurso informado.
+   * @param resource Nome do recurso procurado.
+   * @return InputStream a partir do nome do recurso informado.
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
+  public InputStream loadStream(String resource) throws ResourceLoadException {
     this.testResource(resource);
     try {
       return findResource(resource).openStream();
@@ -145,7 +203,14 @@ public class ResourceLoader {
   }
   
   
-  public BufferedReader loadReader(String resource) {
+  /**
+   * Carrega um BufferedReader a partir do nome do recurso informado.
+   * @param resource Nome do recurso procurado.
+   * @return BufferedReader a partir do nome do recurso informado.
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
+  public BufferedReader loadReader(String resource) throws ResourceLoadException {
     this.testResource(resource);
     return new BufferedReader(
         new InputStreamReader(
@@ -154,6 +219,13 @@ public class ResourceLoader {
   }
   
   
+  /**
+   * Carrega um ReadableByteChannel a partir do nome do recurso informado.
+   * @param resource Nome do recurso procurado.
+   * @return ReadableByteChannel a partir do nome do recurso informado.
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   public ReadableByteChannel loadChannel(String resource) {
     this.testResource(resource);
     return Channels.newChannel(
@@ -162,6 +234,13 @@ public class ResourceLoader {
   }
   
   
+  /**
+   * Carrega o conteúdo de texto a partir do recurso informado.
+   * @param resource Nome do recurso procurado.
+   * @return String com o conteúdo de texto a partir do recurso informado.
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   public String loadContentString(String resource) throws ResourceLoadException {
     ReadableByteChannel channel = this.loadChannel(resource);
     ByteBuffer buffer = ByteBuffer.allocateDirect(4096);
@@ -186,6 +265,13 @@ public class ResourceLoader {
   }
   
   
+  /**
+   * Carrega um caminho de arquivo a partir nome do recurso informado.
+   * @param resource Nome do recurso procurado.
+   * @return Caminho de arquivo a partir nome do recurso informado.
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   public String loadStringPath(String resource) throws ResourceLoadException {
     return this.loadPath(resource).toAbsolutePath().toString();
   }
@@ -206,6 +292,9 @@ public class ResourceLoader {
   
   
   
+  /**
+   * Exceção de runtime para erros lançados por ResourceLoader.
+   */
   public static class ResourceLoadException extends RuntimeException {
 
     public ResourceLoadException(String message) {

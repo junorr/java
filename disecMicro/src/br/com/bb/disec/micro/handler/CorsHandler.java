@@ -77,7 +77,9 @@ public class CorsHandler implements HttpHandler {
     if(hds.contains(AC_REQUEST_HEADERS)) {
       hse.getResponseHeaders().put(
           new HttpString(AC_ALLOW_HEADERS), 
-          hds.getFirst(AC_REQUEST_HEADERS)
+          (!hds.getFirst(AC_REQUEST_HEADERS).contains("thorization") 
+              ? hds.getFirst(AC_REQUEST_HEADERS) + ",authorization" 
+              : hds.getFirst(AC_REQUEST_HEADERS))
       );
     }
     

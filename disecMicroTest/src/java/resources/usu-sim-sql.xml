@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<queries>
+
+	<query group='arh' dcr='SQLs arh'>
+		
+		<sql name='selectUser'><![CDATA[
+      select u.CD_USU, 
+          u.NM_USU,
+          u.NM_ABVD,
+          p.NR_TCEL,
+          concat(u.CD_USU, ' ', u.NM_USU) as chaveNome,
+          u.CD_CMSS,
+          u.CD_IOR,
+          d.CD_PILAR,
+          p.TX_CMSS_FUN,
+          p.NR_CPF,
+          p.CD_EMAI_BB,
+          p.CD_CLI,
+          d.CD_PRF,
+          (	select CD_PRF from mstNovo.depe 
+            where CD_UOR = mstNovo.diretoria(u.CD_UOR_LCLZ)
+          ) as prfDiretoria,
+          e.SG_UF,
+          p.CD_TEL_TRB,
+          d.CD_TIP_UOR,
+          u.CD_UOR_LCLZ,
+          u.CD_UOR_EQP
+      from arhNovo.tb_usu as u
+      left join arh.dado_pss as p
+        on p.CD_USU = u.CD_USU
+      inner join mstNovo.depe as d
+        on d.CD_UOR = u.CD_UOR_LCLZ
+      left join mstNovo.depe_end as e
+        on e.CD_UOR = d.CD_UOR
+      where u.CD_USU = ?
+      limit 1;
+		]]></sql>
+    
+  </query>
+		
+</queries>

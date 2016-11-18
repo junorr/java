@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler;
+package br.com.bb.disec.micro.util;
 
 import br.com.bb.disec.bean.iface.IDcrCtu;
 import br.com.bb.disec.micro.db.AccessPersistencia;
@@ -27,83 +27,76 @@ import br.com.bb.disec.micro.db.CtuPersistencia;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
 import br.com.bb.disec.micro.db.SqlSourcePool;
-import br.com.bb.disec.micro.util.CookieUserParser;
 import br.com.bb.disec.util.URLD;
 import br.com.bb.sso.bean.User;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpServerExchange;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import org.jboss.logging.Logger;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/07/2016
+ * @version 0.0 - 17/11/2016
  */
-public class AuthenticationServerHandler implements JsonHandler {
-  
+public class AuthorizationService {
+
   public static final String SQL_GROUP = "disecMicro";
   
   public static final String SQL_INSERT_LOG = "insertLog";
   
-  public static final String AUTH_CONTEXT = "/auth";
+  public static final String AUTH_CONTEXT = "/jwt";
   
   public static final int DEFAULT_CD_CTU = 99999;
   
-  private final Gson gson;
+  
+  private final User user;
+  
+  private final AccessPersistencia acss;
+  
+  private URLD unauth;
   
   
-  public AuthenticationServerHandler() {
-    gson = new GsonBuilder().setPrettyPrinting().create();
+  public AuthorizationService(User usr) {
+    Objects.requireNonNull(usr, "Bad Null User");
+    this.user = usr;
+    acss = new AccessPersistencia();
+    unauth = null;
   }
   
   
-  @Override
-  public void handleRequest(HttpServerExchange hse) throws Exception {
-    if(hse.isInIoThread()) {
-      hse.dispatch(this);
-      return;
-    }
-    User user = null;
-    try {
-      user = new CookieUserParser().parseHttp(hse);
-      if(doAuth(hse, user)) {
-        this.log(hse, user, true);
-        hse.setStatusCode(200).setReasonPhrase("OK");
-        this.putJsonHeader(hse);
-        hse.getResponseSender().send(gson.toJson(user));
-      }
-      else {
-        this.log(hse, user, false);
-        hse.setStatusCode(401).setReasonPhrase("Unauthorized");
-      }
-    }
-    catch(IOException e) {
-      hse.setStatusCode(400)
-          .setReasonPhrase("Bad Request. "+ e.getMessage());
-    }
-    hse.endExchange();
+  public User getUser() {
+    return user;
   }
   
   
-  private String getAuthURL(HttpServerExchange hse) {
-    String url = hse.getRequestURL();
-    if(url.contains(AUTH_CONTEXT)) {
-      int idx = url.indexOf(AUTH_CONTEXT);
-      url = url.substring(0, idx)
-          + url.substring(idx+5);
-    }
-    return url;
+  public URLD getUnauthorizedURL() {
+    return unauth;
   }
   
   
-  public boolean doAuth(HttpServerExchange hse, User user) throws Exception {
-    URLD urld = new URLD(getAuthURL(hse));
+  public boolean hasUnauthorizedURL() {
+    return unauth != null;
+  }
+  
+  
+  public boolean authorize(HttpServerExchange hse, List<URLD> urls) throws Exception {
+    Objects.requireNonNull(hse, "Bad Null HttpServerExchange");
+    Objects.requireNonNull(urls, "Bad Null List<URLD>");
+    unauth = null;
+    boolean access = true;
+    for(URLD url : urls) {
+      access = access && authorize(hse, url);
+    }
+    return access;
+	}
+  
+  
+  public boolean authorize(HttpServerExchange hse, URLD urld) throws Exception {
+    Objects.requireNonNull(urld, "Bad Null URLD");
+    Objects.requireNonNull(hse, "Bad Null HttpServerExchange");
 		CtuPersistencia ctp = new CtuPersistencia(urld);
-		AccessPersistencia acp = new AccessPersistencia();
     //recupera todos os conteúdos da tabela dcr_ctu
     //com base na URL acessada.
     List<IDcrCtu> ctus = ctp.findAll();
@@ -114,17 +107,18 @@ public class AuthenticationServerHandler implements JsonHandler {
     //Verifica autorização de acesso para os conteúdos encontrados.
     boolean access = ctus.get(0).getCdCtu() == DEFAULT_CD_CTU;
     for(IDcrCtu ctu : ctus) {
-      access = access || acp.checkAccess(
+      access = access || acss.checkAccess(
           user, ctu.getCdCtu()
       );
     }
+    this.log(urld, hse, access);
+    if(!access) unauth = urld;
     return access;
 	}
   
-  
-  public void log(HttpServerExchange hse, User user, boolean auth) throws Exception {
+
+  private void log(URLD url, HttpServerExchange hse, boolean auth) throws Exception {
     //ip, url, context, uri, cd_usu, uor_depe, uor_eqp, autd
-    URLD url = new URLD(this.getAuthURL(hse));
     new SqlQuery(
         PoolFactory.getDefaultPool().getConnection(), 
         SqlSourcePool.pool()

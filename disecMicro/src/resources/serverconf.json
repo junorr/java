@@ -9,7 +9,7 @@
   "jwtAuthKey": "F8BFDDC2130A81CDD33E63D63B1A39BE815EDB49272F442CB2E50090ABD40D88",
   "handlers": {
     "/jwt": "br.com.bb.disec.micro.handler.JWTAuthHandler",
-    "/simulate": "br.com.bb.disec.micro.handler.SimulatedUserHandler",
+    "/simulate": "br.com.bb.disec.micro.handler.SimulateUserHandler",
     "/time": "br.com.bb.disec.micro.handler.TimeHandler"
   }
 }

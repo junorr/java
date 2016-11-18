@@ -72,7 +72,7 @@ public class Server {
     HttpHandler root = null;
     PathHandler ph = this.initPathHandler();
     if(config.isAuthenticationShield()) {
-      root = new JWTShieldHandler(new CorsHandler(ph));
+      root = new CorsHandler(new JWTShieldHandler(ph));
     } else {
       root = new CorsHandler(ph);
     }

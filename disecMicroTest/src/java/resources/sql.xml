@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE queries [
+<!ELEMENT queries (query+)>
+<!ELEMENT query (sql+)>
+<!ELEMENT sql (#PCDATA)>
+<!ATTLIST queries ver CDATA #REQUIRED>
+<!ATTLIST query group CDATA #REQUIRED>
+<!ATTLIST query dcr CDATA #REQUIRED>
+<!ATTLIST sql name CDATA #REQUIRED>
+]>
+<queries>
+
+	<query group='mst' dcr='SQLs mestre'>
+		
+		<sql name='sample'><![CDATA[
+		]]></sql>
+		
+		<sql name='selectDepeByPrf'><![CDATA[
+			SELECT CD_PRF, CD_UOR, NM_UOR_CMPL
+			FROM mstNovo.depe
+			WHERE CD_PRF = ?
+				AND CD_SBDD = 0;
+		]]></sql>
+		
+		<sql name='selectDepeByUor'><![CDATA[
+			SELECT CD_PRF, CD_UOR, NM_UOR_CMPL
+			FROM mstNovo.depe
+			WHERE CD_UOR = ?
+				AND CD_SBDD = 0;
+		]]></sql>
+		
+	</query>
+	
+</queries>
