@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package oodb.tests.beans.impl;
+package oodb.tests.beans;
 
 import java.io.IOException;
 import java.nio.file.Files;

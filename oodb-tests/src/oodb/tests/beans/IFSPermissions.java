@@ -19,35 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.db;
+package oodb.tests.beans;
 
-import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 /**
- * Interface com padronização de métodos para manipulação de queries SQL.
+ *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/07/2016
+ * @version 0.0 - 12/12/2016
  */
-public interface SqlSource {
+public interface IFSPermissions {
 
-  /**
-   * Busca uma query SQL a partir do grupo que ela está inserido e o nome atribuído
-   * a query.
-   * @param group Grupo da query
-   * @param name Nome da query
-   * @return query
-   * @throws IOException 
-   */
-  public String getSql(String group, String name) throws IOException;
+  public Set<Permission> owner();
   
-  /**
-   * Verifica se uma query SQL existe a partir do grupo que ela está inserido e
-   * o nome atribuído a query.
-   * @param group Grupo da query
-   * @param name Nome da query
-   * @return true | false Caso exista | Caso contrário
-   * @throws IOException 
-   */
-  public boolean containsSql(String group, String name) throws IOException;
+  public Set<Permission> group();
+  
+  public Set<Permission> others();
+  
+  public List<PermEntity> permissions();
+  
   
 }

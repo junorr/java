@@ -45,12 +45,25 @@ public class ServerSetup {
   
   private final ServerConfig config;
   
-  
+  /**
+   * Construtor para a configuração do servidor. O servidor é configurado com
+   * as configurações padrões.
+   * @param rld
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   private ServerSetup(ResourceLoader rld) throws ResourceLoadException {
     this(rld, DEFAULT_CONFIG);
   }
   
-  
+  /**
+   * Construtor para a configuração do servidor. O servidor é configurado com
+   * as configurações customizadas definidas pelo usuário.
+   * @param rld
+   * @param configPath
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   private ServerSetup(ResourceLoader rld, String configPath) throws ResourceLoadException {
     if(isInstantiated()) {
       throw new IllegalStateException("ServerSetup is Already Instantiated");
@@ -66,7 +79,10 @@ public class ServerSetup {
     } 
   }
   
-  
+  /**
+   * Verifica se a classe já está instânciada.
+   * @return true se tive instânciado, false caso contrário
+   */
   private static boolean isInstantiated() {
     lock.readLock().lock();
     try {
@@ -76,7 +92,11 @@ public class ServerSetup {
     }
   }
   
-  
+  /**
+   * Cria a instância de forma segura usando um ReentrantReadWriteLock.
+   * @param rld ResourceLoader
+   * @param configPath Caminho de localização do arquivo de configuração do servidor
+   */
   public static void createInstance(ResourceLoader rld, String configPath) {
     if(isInstantiated()) return;
     lock.writeLock().lock();
@@ -87,7 +107,14 @@ public class ServerSetup {
     }
   }
   
-  
+  /**
+   * Cria uma instância da classe com as configurações padrões e um recurso definido
+   * pelo usuário.
+   * @param rld ResourceLoader 
+   * @return Instância criada
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   public static ServerSetup autoSetup(ResourceLoader rld) throws ResourceLoadException {
     if(!isInstantiated()) {
       createInstance(rld, DEFAULT_CONFIG);
@@ -95,12 +122,24 @@ public class ServerSetup {
     return instance;
   }
   
-  
+  /**
+   * Configura a instancia usando uma configuração totalmente padrão e pré-definida.
+   * @return instancia configurada
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   public static ServerSetup autoSetup() throws ResourceLoadException {
     return autoSetup(null);
   }
   
-  
+  /**
+   * Configura a instancia com as configurações e recurso definidas pelo usuário.
+   * @param rld Recurso
+   * @param configPath Caminha do arquivo de configuração
+   * @return instancia configurada
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   public static ServerSetup setup(ResourceLoader rld, String configPath) throws ResourceLoadException {
     if(!isInstantiated()) {
       createInstance(rld, configPath);
@@ -108,22 +147,34 @@ public class ServerSetup {
     return instance;
   }
   
-  
+  /**
+   * Pega a instancia existente na classe.
+   * @return instancia existente
+   */
   public static ServerSetup instance() {
     return instance;
   }
   
-  
+  /**
+   * Pega a configuração de servidor existente na classe.
+   * @return configuração existente
+   */
   public ServerConfig config() {
     return config;
   }
   
-  
+  /**
+   * Pega o carregador de recursos existente na classe.
+   * @return carregador de recursos
+   */
   public ResourceLoader loader() {
     return loader;
   }
   
-  
+  /**
+   * Cria o servidor com as configurações existentes na classe.
+   * @return servidor criado
+   */
   public Server createServer() {
     return new Server(config);
   }

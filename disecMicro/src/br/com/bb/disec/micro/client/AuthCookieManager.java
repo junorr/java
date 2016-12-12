@@ -31,7 +31,8 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.message.BasicHeader;
 
 /**
- *
+ * Gerenciador dos cookies de autenticação. Classe é responsável por gerenciar
+ * os tokens de autenticação das requisições.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 24/08/2016
  */
@@ -41,7 +42,11 @@ public class AuthCookieManager {
 
   public static final String X_SSOACR = "X-ssoacr";
   
-
+  /**
+   * Busca o BBSSO Token nos cookies da requisição.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @return Cookie
+   */
   public Cookie getBBSsoToken(HttpServerExchange hse) {
     Cookie cookie = null;
     if(hse == null) return cookie;
@@ -57,7 +62,11 @@ public class AuthCookieManager {
     return cookie;
   }
   
-
+  /**
+   * Busca o SSOACR nos cookies da requisição.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @return Cookie
+   */
   public Cookie getSsoAcr(HttpServerExchange hse) {
     Cookie cookie = null;
     if(hse == null) return cookie;
@@ -73,7 +82,11 @@ public class AuthCookieManager {
     return cookie;
   }
   
-  
+  /**
+   * Injeta os cookies de autenticação, BBSSO Token e SSOACR, na requisição.
+   * @param req Requisição
+   * @param hse Exchanger de resquisição e resposta do servidor
+   */
   public void injectAuthCookies(Request req, HttpServerExchange hse) {
     if(req == null || hse == null) 
       return;

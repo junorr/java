@@ -21,9 +21,9 @@
 
 package oodb.tests.beans;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -34,18 +34,32 @@ public interface IFSPath {
 
   public String getName();
   
+  public String getPath();
+  
+  public String[] split();
+  
+  public Path toPath();
+  
+  public File toFile();
+  
   public IFSPath cd();
   
   public IFSPath cd(IFSPath path);
   
   public List<IFSPath> ls();
   
-  public Set<IPermission> getPermissions();
-  
   public boolean isDirectory();
   
   public boolean isRoot();
   
   public ISize size();
+  
+  public IFSPermissions getPermissions();
+  
+  public IFSTime getTime();
+  
+  public String getOwner();
+  
+  public String getGroup();
   
 }

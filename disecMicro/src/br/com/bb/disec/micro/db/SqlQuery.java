@@ -28,7 +28,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- *
+ * Um objeto que pode ser usado para executar as transações SQL da aplicação.
+ * Connection connection é a conexão definida do banco de dados.
+ * SqlSource source é onde estará armazenado a SQL que será executado.
+ * PreparedStatement statement é onde ficará armazenado a query da ultima requisição.
+ * ResultSet result é onde ficará armazenado do resultado da ultima requisição.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/07/2016
  */
@@ -42,7 +46,12 @@ public class SqlQuery {
   
   private ResultSet result;
   
-  
+  /**
+   * Contrutor padrão para criação de um objeto, nele é inicializado a Connection 
+   * do banco de dados e a SqlSource onde está localizado as SQLs
+   * @param con Conexão do banco
+   * @param source SqlSource
+   */
   public SqlQuery(Connection con, SqlSource source) {
     if(con == null) {
       throw new IllegalArgumentException("Bad Null Connection");
@@ -54,7 +63,9 @@ public class SqlQuery {
     this.source = source;
   }
   
-  
+  /**
+   * Fecha a Connection, Statement e ResultSet do objeto.
+   */
   public void close() {
     if(result != null) {
       try { result.close(); }
@@ -70,12 +81,25 @@ public class SqlQuery {
     }
   }
   
-  
+  /**
+   * Pega o ResultSet da ultima SQL executada do objeto.
+   * @return ResultSet
+   */
   public ResultSet getResultSet() {
     return result;
   }
 
-
+  /**
+   * Executa uma query na Connection definida na criação do objeto.
+   * @param group Grupo da SQL
+   * @param query Nome da SQL
+   * @param args Argumentos para serem adicionados a SQL query
+   * @return ResultSet da SQL
+   * @throws SQLException
+   * Se der algum erro de SQL
+   * @throws IOException 
+   * Se a query não for localizada
+   */
   public ResultSet execResultSet(String group, String query, Object ... args) throws SQLException, IOException {
     if(group == null) {
       throw new IllegalArgumentException("Bad Null Group Name");
@@ -96,7 +120,17 @@ public class SqlQuery {
     return result;
   }
   
-  
+  /**
+   * Executa um update na Connection definida na criação do objeto.
+   * @param group Grupo da SQL
+   * @param query Nome da SQL
+   * @param args Argumentos para serem adicionados a SQL query
+   * @return update count
+   * @throws SQLException
+   * Se der algum erro de SQL
+   * @throws IOException 
+   * Se a query não for localizada
+   */
   public int update(String group, String query, Object ... args) throws SQLException, IOException {
     if(group == null) {
       throw new IllegalArgumentException("Bad Null Group Name");

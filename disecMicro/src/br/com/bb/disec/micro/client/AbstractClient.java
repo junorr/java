@@ -24,7 +24,10 @@ package br.com.bb.disec.micro.client;
 import org.apache.http.StatusLine;
 
 /**
- *
+ * Classe abstrata modelo com métodos e propriedades padrões para a definição de 
+ * um cliente de autenticação. Neste classe está encapsulada propriedades de endereço,
+ * porta e contexto da autenticação do cliente bem como algumas validações fundamentais
+ * dessas propriedades.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/08/2016
  */
@@ -38,7 +41,12 @@ public abstract class AbstractClient {
   
   protected StatusLine status;
   
-  
+  /**
+   * Construtor padrão para a instanciação da classe filha.
+   * @param address Endereço do servidor de autenticação
+   * @param port Porta do servidor de autenticação
+   * @param context Contexto do servidor de autenticação
+   */
   protected AbstractClient(String address, int port, String context) {
     if(address == null || address.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad Address: "+ address);
@@ -51,7 +59,10 @@ public abstract class AbstractClient {
     this.context = context;
   }
   
-  
+  /**
+   * Constroi o endereço completo da URL do cliente de autenticação.
+   * @return URL completa
+   */
   public String getUriString() {
     StringBuilder sb = new StringBuilder()
         .append(address)
@@ -62,12 +73,18 @@ public abstract class AbstractClient {
     return sb.toString();
   }
   
-  
+  /**
+   * Pega o código de status do StatusLine
+   * @return Código de status
+   */
   public int getResponseCode() {
     return (status != null ? status.getStatusCode() : 0);
   }
   
-  
+  /**
+   * Pega a frase de resposta do StatusLine.
+   * @return frase de resposta
+   */
   public String getResponsePhrase() {
     return (status != null ? status.getReasonPhrase() : null);
   }

@@ -19,39 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package tests.of.tests;
+package oodb.tests;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import oodb.tests.beans.FileSize;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.Set;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/12/2016
+ * @version 0.0 - 12/12/2016
  */
-public class TestISize {
+public class TestPosixFileAttr {
 
   
   public static void main(String[] args) throws IOException {
-    //Path path = Paths.get("D:\\javadoc\\jdk-8-api\\api\\constant-values.html");
     Path path = Paths.get("/home/juno/nb/disecLib/dist/disecLib.jar");
-    FileSize size = FileSize.of(path);
-    System.out.println("bytes="+ size.bytes());
-    System.out.println("unit="+ size.unit());
-    System.out.println(size.unit().prev() + " < " + size.unit() + " > " + size.unit().next());
-    System.out.println(size);
-    
-    System.out.println(" ----------------- ");
-
-    //path = Paths.get("D:\\javadoc\\jdk-8-api\\api");
-    path = Paths.get("/home/juno/nb/disecLib/dist");
-    size = FileSize.of(path);
-    System.out.println("bytes="+ size.bytes());
-    System.out.println("unit="+ size.unit());
-    System.out.println(size.unit().prev() + " < " + size.unit() + " > " + size.unit().next());
-    System.out.println(size);
+    PosixFileAttributes attrs = Files.readAttributes(path, PosixFileAttributes.class);
+    System.out.println("* path="+ path);
+    System.out.println("* isDirectory? "+ attrs.isDirectory());
+    System.out.println("* owner: "+ attrs.owner());
+    System.out.println("* group: "+ attrs.group());
+    System.out.println("* created: "+ attrs.creationTime());
+    System.out.println("* modified: "+ attrs.lastModifiedTime());
+    System.out.println("* accessed: "+ attrs.lastAccessTime());
+    Set<PosixFilePermission> prs = attrs.permissions();
+    System.out.println("* Permissions: ");
+    prs.forEach(System.out::println);
   }
   
 }

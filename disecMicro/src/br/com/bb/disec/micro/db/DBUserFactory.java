@@ -8,7 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- *
+ * Um objeto que pode ser usado como uma fábrica de sso.bean.User. Ela é responsável 
+ * por criar instancias de sso.bean.User a partir de sua chave.
+ * String SQL_GROUP é o grupo padrão da SQL de autenticação.
+ * String SQL_SEL_USER é o nome padrão da SQL de autenticação.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/04/2016
  */
@@ -18,7 +21,15 @@ public class DBUserFactory {
   
   public static final String SQL_SEL_USER = "selectUser";
 
-  
+  /**
+   * Cria um objeto User a partir da sua chave.
+   * @param chave Chave do User que deseja criar
+   * @return User criado
+   * @throws SQLException
+   * Se der algum erro de SQL
+   * @throws IOException 
+   * Se a query não for localizada
+   */
   public User createUser(String chave) throws SQLException, IOException {
     if(chave == null || chave.trim().isEmpty()) {
       return null;
@@ -46,7 +57,12 @@ public class DBUserFactory {
     return user;
   }
   
-  
+  /**
+   * Pega todos os dados do User no ResultSet e o cria.
+   * @param rs ResultSet da query
+   * @return User
+   * @throws SQLException 
+   */
   private User getUser(ResultSet rs) throws SQLException {
     User user = null;
     if(rs != null) {

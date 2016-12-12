@@ -24,7 +24,7 @@ package br.com.bb.disec.micro.db;
 import br.com.bb.disec.micro.ResourceLoader;
 
 /**
- *
+ * Extensão da classe FileSqlSource com a definição do Path padrão da aplicação.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 27/07/2016
  */

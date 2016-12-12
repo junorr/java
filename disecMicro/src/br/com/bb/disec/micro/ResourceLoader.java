@@ -114,21 +114,30 @@ public class ResourceLoader {
   
   
   /**
-   * Retorna a classe utilizada para carregar recursos.
+   * Pega a classe utilizada para carregar recursos.
    * @return classe utilizada para carregar recursos.
    */
   public Class loader() {
     return loader;
   }
   
-  
+  /**
+   * Valida um recurso para não ser vazio ou nulo.
+   * @param resource Nome do resource a ser validado
+   */
   private void testResource(String resource) {
     if(resource == null || resource.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad Empty Resource");
     }
   }
   
-  
+  /**
+   * Procura por um recurso de nome específico.
+   * @param resource Nome do recurso a ser carregado
+   * @return URI do recurso procurado
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   private URI getURI(String resource) throws ResourceLoadException {
     try {
       return findResource(resource).toURI();
@@ -266,7 +275,7 @@ public class ResourceLoader {
   
   
   /**
-   * Carrega um caminho de arquivo a partir nome do recurso informado.
+   * Carrega um caminho de arquivo a partir do nome do recurso informado.
    * @param resource Nome do recurso procurado.
    * @return Caminho de arquivo a partir nome do recurso informado.
    * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
@@ -276,7 +285,13 @@ public class ResourceLoader {
     return this.loadPath(resource).toAbsolutePath().toString();
   }
   
-  
+  /**
+   * Carrega um JSON a partir do recurso informado.
+   * @param resource Nome do recurso procurado
+   * @return JSON carregado
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   public JsonElement loadJson(String resource) throws ResourceLoadException {
     Reader rd = this.loadReader(resource);
     try {

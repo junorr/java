@@ -29,7 +29,9 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- *
+ * Esta classe é responsavel pelo gerenciamento dos pools de conexão do microserviço,
+ * nela está contida a abstração de criação e seleção de pools de acordo com o pedido
+ * do cliente.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/07/2016
  */
@@ -41,7 +43,10 @@ public class PoolFactory {
   
   private final ReentrantLock lock;
   
-  
+  /**
+   * Cria um PoolFactory padrão e encapsula a complexidades de criação do mapa 
+   * de pools e do tratamento de Threads.
+   */
   private PoolFactory() {
     pools = Collections.synchronizedMap(
         new HashMap<String,ConnectionPool>()
@@ -52,7 +57,9 @@ public class PoolFactory {
     lock = new ReentrantLock();
   }
   
-  
+  /**
+   * Fecha o DataSource de todas as ConnectionPool contidas no objeto.
+   */
   public void close() {
     lock.lock();
     try {
@@ -64,7 +71,16 @@ public class PoolFactory {
     }
   }
   
-  
+  /**
+   * Cria um ConnectionPool a partir de um ResourceLoader com as configurações 
+   * definidas no arquivo datasource.
+   * @param dsname Complemento do nome do arquivo datasource onmde está as configurações
+   * da conexão
+   * @param rld ResourceLoader
+   * @return ConnectionPool criado
+   * @throws IOException 
+   * Se nenhum datasource for encontradado
+   */
   private ConnectionPool createPool(String dsname, ResourceLoader rld) throws IOException {
     ConnectionPool pool = (pools.containsKey(dsname) 
         ? pools.get(dsname) : null);
@@ -75,17 +91,33 @@ public class PoolFactory {
     return pool;
   }
   
-  
+  /**
+   * Pega a ConnectionPool padrão do objeto.
+   * @return ConnectionPool
+   */
   public ConnectionPool getDefault() {
     return this.get(ConnectionPool.DEFAULT_DB_NAME);
   }
   
-  
+  /**
+   * Pega uma ConnectionPool a partir do nome do DataSource dela.
+   * @param dsname Nome do arquivo DataSource
+   * @return ConnectionPool
+   */
   public ConnectionPool get(String dsname) {
     return this.get(dsname, null);
   }
   
-  
+  /**
+   * Pega uma ConnectionPool a partir de um ResourceLoader com as configurações 
+   * definidas no arquivo datasource, caso a ConnectionPool não exista ela será 
+   * criada.
+   * @param dsname Nome do arquivo DataSource
+   * @param rld ResourceLoader
+   * @return ConnectionPool
+   * @throws br.com.bb.disec.micro.db.PoolFactory.PoolFactoryException 
+   * Se a pool não for criada
+   */
   public ConnectionPool get(String dsname, ResourceLoader rld) throws PoolFactoryException {
     if(dsname == null || dsname.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad DataSource Name: "+ dsname);
@@ -109,22 +141,40 @@ public class PoolFactory {
     return pool;
   }
   
-  
+  /**
+   * Fecha o DataSource de todas as ConnectionPool contidas no instancia.
+   */
   public static void closePools() {
     instance.close();
   }
   
-  
+  /**
+   * Pega uma ConnectionPool da instancia a partir do nome do DataSource dela.
+   * @param dsname Nome do arquivo DataSource
+   * @return ConnectionPool
+   */
   public static ConnectionPool getPool(String dsname) {
     return instance.get(dsname);
   }
   
-  
+  /**
+   * Pega uma ConnectionPool da instancia a partir de um ResourceLoader com as 
+   * configurações definidas no arquivo datasource, caso a ConnectionPool não 
+   * exista ela será criada.
+   * @param dsname Nome do arquivo DataSource
+   * @param rld ResourceLoader
+   * @return ConnectionPool
+   * @throws br.com.bb.disec.micro.db.PoolFactory.PoolFactoryException 
+   * Se a pool não for criada
+   */
   public static ConnectionPool getPool(String dsname, ResourceLoader rld) {
     return instance.get(dsname, rld);
   }
   
-  
+  /**
+   * Pega a ConnectionPool padrão da instancia.
+   * @return ConnectionPool
+   */
   public static ConnectionPool getDefaultPool() {
     return instance.getDefault();
   }

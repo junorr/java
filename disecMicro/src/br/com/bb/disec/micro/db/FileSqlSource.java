@@ -34,7 +34,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- *
+ * Um objeto que pode ser usado para armazenar as SQLs da aplicação.
+ * Esta classe representa uma fonte onde serão armazenadas todas as SQLs da aplicação.
+ * O Path definirá onde está o arquivo fonte com as SQLs e que, posteriormente,
+ * será lido e gravado nos mapas da classe.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 27/07/2016
  */
@@ -44,7 +47,10 @@ public class FileSqlSource implements SqlSource {
   
   private final Path path;
   
-  
+  /**
+   * Construtor padrão que encapsula a criação do mapa de sqls.
+   * @param path Objeto utilizado para achar o caminho do arquivo sql.ini
+   */
   public FileSqlSource(Path path) {
     if(path == null) {
       throw new IllegalArgumentException("Bad File Path: "+ path);
@@ -58,12 +64,22 @@ public class FileSqlSource implements SqlSource {
     );
   }
   
-  
+  /**
+   * Cria um FileSqlSource com o Path do arquivo passado por parametro.
+   * @param file Nome do arquivo que deseja pegar o Path
+   */
   public FileSqlSource(String file) {
     this(Paths.get(file));
   }
   
-  
+  /**
+   * Pega uma SQL a partir do seu grupo e nome.
+   * @param group Grupo do SQL
+   * @param name Nome da SQL
+   * @return SQL encontrada ou null
+   * @throws IOException 
+   * Se o arquivo não for encontrado.
+   */
   @Override
   public String getSql(String group, String name) throws IOException {
     if(sqls.isEmpty()) {
@@ -75,13 +91,33 @@ public class FileSqlSource implements SqlSource {
     return null;
   }
   
-  
+  /**
+   * Retorna true se a SQL existir no objeto.
+   * @param group Grupo do SQL
+   * @param name Nome da SQL
+   * @return true ou false
+   * @throws IOException 
+   * Se o arquivo não for encontrado.
+   */
   @Override
   public boolean containsSql(String group, String name) throws IOException {
     return getSql(group, name) != null;
   }
   
-  
+  /**
+   * Le o arquivo de SQL e popula o mapa de SQLS com as informações encontradas
+   * no arquivo.
+   * O arquivo deve SEMPRE seguir o seguinte padrão:
+   * 
+   * {nome_do_grupo}
+   * 
+   * [nome_da_sql]
+   *    SQL query
+   * [nome_da_sql]
+   *    SQL query
+   * 
+   * @throws IOException 
+   */
   private void readSqlFile() throws IOException {
     Iterator<String> it = Files.lines(path).iterator();
     String group = null;
@@ -114,7 +150,11 @@ public class FileSqlSource implements SqlSource {
     }
   }
   
-  
+  /**
+   * Pega o URI de uma URL
+   * @param url
+   * @return URI da URL
+   */
   public static URI toURI(URL url) {
     try {
       return url.toURI();

@@ -21,11 +21,19 @@
 
 package oodb.tests.beans;
 
+import java.time.Instant;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/12/2016
+ * @version 0.0 - 12/12/2016
  */
-public interface IPermission {
+public interface IFSTime {
 
+  public Instant getCreationTime();
+  
+  public Instant getLastModifiedTime();
+  
+  public Instant getLastAccessTime();
+  
 }

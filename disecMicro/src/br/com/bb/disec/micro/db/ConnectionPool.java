@@ -32,7 +32,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- *
+ * Esta classe é responsável pelo gerenciamento de conexões com o banco de dados,
+ * nela está contida toda a abstração para a criação e usabilidade de um pool de
+ * conexões.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/07/2016
  */
@@ -49,12 +51,24 @@ public class ConnectionPool {
   
   private final String dsname;
   
-  
+  /**
+   * Cria um ConnectionPool padrão com as configurações definidas no arquivo datasource.
+   * @param dsname Complemento do nome do arquivo datasource onmde está as configurações
+   * da conexão
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   private ConnectionPool(String dsname) throws ResourceLoadException {
     this(dsname, null);
   }
   
-  
+  /**
+   * Cria um ConnectionPool a partir de um ResourceLoader com as configurações 
+   * definidas no arquivo datasource.
+   * @param dsname Complemento do nome do arquivo datasource onmde está as configurações
+   * da conexão
+   * @param rld ResourceLoader
+   */
   private ConnectionPool(String dsname, ResourceLoader rld) {
     if(dsname == null || dsname.trim().isEmpty()) {
       throw new IllegalArgumentException("Invalid DataSource Name: "+ dsname);
@@ -68,12 +82,26 @@ public class ConnectionPool {
     );
   }
   
-  
+  /**
+   * Instancia um ConnectionPool com as configurações definidadas no datasource
+   * @param dsname Nome do datasource on estão as configurações do ConnectionPool
+   * @return Instancia configurada do ConnectionPool
+   * @throws IOException 
+   * Se nenhum datasource for encontradado
+   */
   public static ConnectionPool createPool(String dsname) throws IOException {
     return createPool(dsname, null);
   }
   
-  
+  /**
+   * Instancia um ConnectionPool a partir de um ResourceLoader com as configurações 
+   * definidas no arquivo datasource.
+   * @param dsname Nome do datasource on estão as configurações do ConnectionPool
+   * @param rld ResourceLoader
+   * @return Instancia configurada do ConnectionPool
+   * @throws IOException 
+   * Se nenhum datasource for encontradado
+   */
   public static ConnectionPool createPool(String dsname, ResourceLoader rld) throws IOException {
     try {
       return new ConnectionPool(dsname, rld);
@@ -82,40 +110,65 @@ public class ConnectionPool {
     }
   }
   
-  
+  /**
+   * Pega o caminho completo do arquivo datasource.
+   * @param rld ResourceLoader
+   * @return caminho do arquivo
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
   private String getFileName(ResourceLoader rld) throws ResourceLoadException {
     return rld.loadStringPath(
         DSFILE_PRE + dsname + DSFILE_EXT
     );
   }
   
-  
+  /**
+   * Pega o objeto datasource do ConnectionPool.
+   * @return configuração datasource
+   */
   public HikariDataSource getDataSource() {
     return datasource;
   }
   
-  
+  /**
+   * Pega o nome do datasource da ConnectionPool.
+   * @return nome do datasource
+   */
   public String getDSName() {
     return dsname;
   }
   
-  
+  /**
+   * Pega a conexão do objeto datasource com o banco de dados.
+   * @return conexão com o banco de dados
+   * @throws SQLException 
+   */
   public Connection getConnection() throws SQLException {
     return datasource.getConnection();
   }
   
-  
+  /**
+   * Fecha o DataSource e todas as suas pools associadas.
+   */
   public void closeDataSource() {
     datasource.close();
   }
   
-  
+  /**
+   * Fecha uma conexão com o banco de dados.
+   * @param con Conexão que pretende ser fechada
+   */
   public static void close(Connection con) {
     try { if(con != null) con.close(); } 
     catch(SQLException e) {}
   }
   
-  
+  /**
+   * Fecha uma conexão e statement com o banco de dados.
+   * @param con Conexão que pretende ser fechada
+   * @param stm Statement que pretende ser fechado
+   */
   public static void close(Connection con, Statement stm) {
     try { if(con != null) con.close(); } 
     catch(SQLException e) {}
@@ -123,7 +176,12 @@ public class ConnectionPool {
     catch(SQLException e) {}
   }
   
-  
+  /**
+   * Fecha uma conexão, statement e resultset com o banco de dados.
+   * @param con Conexão que pretende ser fechada
+   * @param stm Statement que pretende ser fechado
+   * @param rst ResultSet que pretende ser fechado
+   */
   public static void close(Connection con, Statement stm, ResultSet rst) {
     try { if(con != null) con.close(); } 
     catch(SQLException e) {}

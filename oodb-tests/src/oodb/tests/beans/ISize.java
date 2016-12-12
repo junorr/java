@@ -21,8 +21,9 @@
 
 package oodb.tests.beans;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  *
@@ -31,9 +32,21 @@ import java.text.NumberFormat;
  */
 public interface ISize extends ByteValue {
   
+  public static final ISize ZERO = new FileSize(0L);
+  
+  
   public double value();
   
   public Unit unit();
+  
+  
+  public static ISize from(Path p) {
+    try {
+      return new FileSize(Files.size(p));
+    } catch(IOException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
   
   
   
