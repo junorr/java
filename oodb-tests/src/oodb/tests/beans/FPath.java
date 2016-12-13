@@ -29,13 +29,9 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -53,14 +49,14 @@ public class FPath implements IFPath {
   
   private final IFTime time;
   
-  private final IFPermissions perms;
+  private final int perms;
   
   private final IFSize size;
   
   private final boolean isdir;
 
 
-  public FPath(String path, String owner, String group, IFTime time, IFPermissions perms, IFSize size, boolean isdir) {
+  public FPath(String path, String owner, String group, IFTime time, int perms, IFSize size, boolean isdir) {
     this.path = path;
     this.owner = owner;
     this.group = group;
@@ -146,7 +142,7 @@ public class FPath implements IFPath {
 
   @Override
   public IFPermissions getPermissions() {
-    return perms;
+    return IFPermissions.fromPosixBin(perms);
   }
 
 
@@ -172,7 +168,8 @@ public class FPath implements IFPath {
   public String toString() {
     return new StringBuilder()
         .append((isDirectory() ? 'd' : '-'))
-        .append(getPermissions())
+        //.append(getPermissions())
+        .append(perms)
         .append("  ")
         .append(getOwner())
         .append(" \t")
@@ -180,8 +177,9 @@ public class FPath implements IFPath {
         .append(" \t")
         .append(size())
         .append(" \t")
-        .append(getTime().getLastModifiedTime())
-        .append("  ")
+        //.append(getTime().getLastModifiedTime())
+        //.append(getTime().getLastModifiedTime())
+        //.append("  ")
         .append(getName())
         .toString();
   }
@@ -320,7 +318,7 @@ public class FPath implements IFPath {
           atts.owner().toString(), 
           atts.group().toString(), 
           IFTime.from(atts), 
-          IFPermissions.fromPosixAttrs(atts), 
+          IFPermissions.fromPosixAttrs(atts).toPosixBin(), 
           IFSize.from(atts), 
           atts.isDirectory()
       );
@@ -333,7 +331,7 @@ public class FPath implements IFPath {
           System.getProperty("user.name"),
           "-", 
           IFTime.from(atts), 
-          IFPermissions.fromDosAttrs(atts), 
+          IFPermissions.fromDosAttrs(atts).toPosixBin(), 
           IFSize.from(atts), 
           atts.isDirectory()
       );
@@ -351,7 +349,7 @@ public class FPath implements IFPath {
         }
       }
       else {
-        fpath = new FPath(spath, owner, group, time, perms, size, isdir);
+        fpath = new FPath(spath, owner, group, time, perms.toPosixBin(), size, isdir);
       }
       return fpath;
     }

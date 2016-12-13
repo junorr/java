@@ -70,7 +70,7 @@ public class ONode implements Node {
       ).findFirst();
 			if(!child.isPresent()) {
         child = childs.stream().map(c->c.findAny(value))
-            .filter(o->o.isPresent()).findFirst()
+            .filter(Optional::isPresent).findFirst()
             .orElse(Optional.empty());
 			}//if
 		}//if

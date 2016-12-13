@@ -35,14 +35,18 @@ public class TestFPath {
 
   
   public static void main(String[] args) throws IOException {
-    //Path path = Paths.get("/home/juno/nb/disecLib/dist/disecLib.jar");
-    Path path = Paths.get("D:/videos");
+    Path path = Paths.get("/home/juno/nb/disecLib/dist");
+    //Path path = Paths.get("D:/videos");
     IFPath fpath = IFPath.from(path);
     System.out.println(fpath);
     System.out.println("--- ls() ---");
     fpath.ls().forEach(System.out::println);
-    System.out.println("--- cd(\"porn/anal.mp4\") ---");
-    System.out.println(fpath.cd("porn/anal.mp4"));
+    
+    String scd = "disecLib.jar";
+    //String scd = "disecLib.jar";
+    System.out.println("--- cd(\""+ scd+ "\") ---");
+    fpath = fpath.cd(scd);
+    System.out.println(fpath);
   }
   
 }

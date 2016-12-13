@@ -23,6 +23,7 @@ public class ObjectMapper extends AbstractObjectMapper {
 	}
 	
 	
+  @Override
 	protected Object build(Class cls, Node node) {
 		try {
 			ObjectBuilder bld = ObjectBuilder.defaultBuilder();

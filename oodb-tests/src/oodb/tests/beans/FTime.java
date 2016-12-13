@@ -39,6 +39,13 @@ public class FTime implements IFTime {
   private final Instant access;
   
   
+  public FTime() {
+    create = null;
+    modified = null;
+    access = null;
+  }
+  
+  
   public FTime(FileTime cre, FileTime mod, FileTime acc) {
     Objects.requireNonNull(cre, "Bad Null Create FileTime");
     Objects.requireNonNull(mod, "Bad Null Modified FileTime");
@@ -49,13 +56,13 @@ public class FTime implements IFTime {
   }
   
 
-  public FTime(Instant cre, Instant mod, Instant acc) {
-    Objects.requireNonNull(cre, "Bad Null Create FileTime");
-    Objects.requireNonNull(mod, "Bad Null Modified FileTime");
-    Objects.requireNonNull(acc, "Bad Null Access FileTime");
-    this.create = cre;
-    this.modified = mod;
-    this.access = acc;
+  public FTime(Instant create, Instant modified, Instant access) {
+    Objects.requireNonNull(create, "Bad Null Create FileTime");
+    Objects.requireNonNull(modified, "Bad Null Modified FileTime");
+    Objects.requireNonNull(access, "Bad Null Access FileTime");
+    this.create = create;
+    this.modified = modified;
+    this.access = access;
   }
   
 
@@ -74,6 +81,12 @@ public class FTime implements IFTime {
   @Override
   public Instant getLastAccessTime() {
     return this.access;
+  }
+
+
+  @Override
+  public String toString() {
+    return "FTime{" + "create=" + create + ", modified=" + modified + ", access=" + access + '}';
   }
 
 }
