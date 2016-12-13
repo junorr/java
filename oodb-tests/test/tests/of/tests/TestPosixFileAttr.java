@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package oodb.tests;
+package tests.of.tests;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,7 +38,8 @@ public class TestPosixFileAttr {
 
   
   public static void main(String[] args) throws IOException {
-    Path path = Paths.get("/home/juno/nb/disecLib/dist/disecLib.jar");
+    //Path path = Paths.get("/home/juno/nb/disecLib/dist/disecLib.jar");
+    Path path = Paths.get("D:/videos/porn/anal.mp4");
     PosixFileAttributes attrs = Files.readAttributes(path, PosixFileAttributes.class);
     System.out.println("* path="+ path);
     System.out.println("* isDirectory? "+ attrs.isDirectory());

@@ -24,7 +24,7 @@ package tests.of.tests;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import oodb.tests.beans.FileSize;
+import oodb.tests.beans.FSize;
 
 /**
  *
@@ -37,7 +37,7 @@ public class TestISize {
   public static void main(String[] args) throws IOException {
     //Path path = Paths.get("D:\\javadoc\\jdk-8-api\\api\\constant-values.html");
     Path path = Paths.get("/home/juno/nb/disecLib/dist/disecLib.jar");
-    FileSize size = FileSize.of(path);
+    FSize size = FSize.of(path);
     System.out.println("bytes="+ size.bytes());
     System.out.println("unit="+ size.unit());
     System.out.println(size.unit().prev() + " < " + size.unit() + " > " + size.unit().next());
@@ -47,7 +47,7 @@ public class TestISize {
 
     //path = Paths.get("D:\\javadoc\\jdk-8-api\\api");
     path = Paths.get("/home/juno/nb/disecLib/dist");
-    size = FileSize.of(path);
+    size = FSize.of(path);
     System.out.println("bytes="+ size.bytes());
     System.out.println("unit="+ size.unit());
     System.out.println(size.unit().prev() + " < " + size.unit() + " > " + size.unit().next());

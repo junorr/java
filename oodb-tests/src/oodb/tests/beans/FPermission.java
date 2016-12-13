@@ -22,7 +22,6 @@
 package oodb.tests.beans;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 
@@ -31,11 +30,11 @@ import java.util.Set;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2016
  */
-public enum Permission {
+public enum FPermission {
 
   NOPERM(0), EXEC(1), WRITE(2), READ(4);
   
-  private Permission(int code) {
+  private FPermission(int code) {
     this.code = code;
   }
   
@@ -46,8 +45,9 @@ public enum Permission {
   private final int code;
   
   
-  public static Set<Permission> fromCode(int cd) {
-    Set<Permission> prs = new HashSet<>();
+  
+  public static Set<FPermission> fromPosixBin(int cd) {
+    Set<FPermission> prs = new HashSet<>();
     switch(cd) {
       case 0:
         prs.add(NOPERM);
@@ -85,48 +85,75 @@ public enum Permission {
   }
   
   
-  public static int toCode(Set<Permission> prs) {
+  public static int toPosixBin(Set<FPermission> prs) {
     Objects.requireNonNull(prs, "Bad Null Permission Set");
-    int code = 0;
-    Iterator<Permission> it = prs.iterator();
-    while(it.hasNext()) {
-      code += it.next().getCode();
-    }
-    return code;
+    return prs.stream()
+        .map(FPermission::getCode)
+        .reduce(0, Integer::sum);
   }
   
   
-  public static String toString(Set<Permission> prs) {
+  public static Set<FPermission> fromPosixString(String str) {
+    if(str == null || str.length() != 3) {
+      throw new IllegalArgumentException("Bad Posix String: "+ str);
+    }
+    Set<FPermission> prs = new HashSet<>();
+    switch(str) {
+      case "--x":
+        prs.add(EXEC);
+        break;
+      case "-w-":
+        prs.add(WRITE);
+        break;
+      case "-wx":
+        prs.add(WRITE);
+        prs.add(EXEC);
+        break;
+      case "r--":
+        prs.add(READ);
+        break;
+      case "r-x":
+        prs.add(READ);
+        prs.add(EXEC);
+        break;
+      case "rw-":
+        prs.add(READ);
+        prs.add(WRITE);
+        break;
+      case "rwx":
+        prs.add(READ);
+        prs.add(WRITE);
+        prs.add(EXEC);
+        break;
+      default:
+        prs.add(NOPERM);
+        break;
+    }
+    return prs;
+  }
+  
+  
+  public static String toPosixString(Set<FPermission> prs) {
     Objects.requireNonNull(prs, "Bad Null Permission Set");
-    int code = Permission.toCode(prs);
-    String str = "---";
+    int code = FPermission.toPosixBin(prs);
     switch(code) {
-      case 0:
-        str = "---";
-        break;
-      case 1: 
-        str = "--x";
-        break;
+      case 1:
+        return "--x";
       case 2:
-        str = "-w-";
-        break;
+        return "-w-";
       case 3:
-        str = "-wx";
-        break;
+        return "-wx";
       case 4:
-        str = "r--";
-        break;
+        return "r--";
       case 5:
-        str = "r-x";
-        break;
+        return "r-x";
       case 6:
-        str = "rw-";
-        break;
+        return "rw-";
       case 7:
-        str = "rwx";
-        break;
+        return "rwx";
+      default:
+        return "---";
     }
-    return str;
   }
-    
+  
 }

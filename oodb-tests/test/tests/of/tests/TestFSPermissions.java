@@ -19,47 +19,28 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package oodb.tests.beans;
+package tests.of.tests;
 
-import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
+import java.nio.file.Paths;
+import oodb.tests.beans.IFPermissions;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/12/2016
+ * @version 0.0 - 12/12/2016
  */
-public interface IFSPath {
+public class TestFSPermissions {
 
-  public String getName();
   
-  public String getPath();
-  
-  public String[] split();
-  
-  public Path toPath();
-  
-  public File toFile();
-  
-  public IFSPath cd();
-  
-  public IFSPath cd(IFSPath path);
-  
-  public List<IFSPath> ls();
-  
-  public boolean isDirectory();
-  
-  public boolean isRoot();
-  
-  public ISize size();
-  
-  public IFSPermissions getPermissions();
-  
-  public IFSTime getTime();
-  
-  public String getOwner();
-  
-  public String getGroup();
+  public static void main(String[] args) throws IOException {
+    Path path = Paths.get("D:/videos/porn/anal.mp4");
+    IFPermissions prs = IFPermissions.from(path);
+    System.out.println(prs);
+    System.out.println("prs.toPosixBin()...: "+ prs.toPosixBin());
+    System.out.println("prs.toPosixCode()..: "+ prs.toPosixCode());
+    System.out.println("prs.toPosixString(): "+ prs.toPosixString());
+  }
   
 }

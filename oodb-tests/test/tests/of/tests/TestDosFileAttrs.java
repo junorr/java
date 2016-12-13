@@ -36,7 +36,8 @@ public class TestDosFileAttrs {
 
   
   public static void main(String[] args) throws IOException {
-    Path path = Paths.get("/home/juno/nb/disecLib/dist/disecLib.jar");
+    //Path path = Paths.get("/home/juno/nb/disecLib/dist/disecLib.jar");
+    Path path = Paths.get("D:/videos/porn/anal.mp4");
     DosFileAttributes attrs = Files.readAttributes(path, DosFileAttributes.class);
     System.out.println("* path="+ path);
     System.out.println("* isDirectory? "+ attrs.isDirectory());

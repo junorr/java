@@ -21,67 +21,70 @@
 
 package oodb.tests.beans;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.DecimalFormat;
-import oodb.tests.beans.ISize;
+import java.nio.file.attribute.DosFileAttributes;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.util.List;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 06/12/2016
  */
-public class FileSize implements ISize {
+public interface IFPath {
 
-  private final long bytes;
+  public String getName();
+  
+  public String getPath();
+  
+  public String[] split();
+  
+  public Path toPath();
+  
+  public File toFile();
+  
+  public IFPath cd() throws IOException;
+  
+  public IFPath cd(String spath) throws IOException;
+  
+  public IFPath cd(IFPath path) throws IOException;
+  
+  public List<IFPath> ls() throws IOException;
+  
+  public boolean isDirectory();
+  
+  public boolean isRoot();
+  
+  public IFSize size();
+  
+  public IFPermissions getPermissions();
+  
+  public IFTime getTime();
+  
+  public String getOwner();
+  
+  public String getGroup();
   
   
-  public FileSize(long bytes) {
-    this.bytes = bytes;
+  public static IFPath from(Path path) {
+    try {
+      return FPath.builder(path).create();
+    }
+    catch(IOException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
   }
   
   
-  public FileSize(ISize size) {
-    this.bytes = size.bytes();
+  public static IFPath from(PosixFileAttributes atts) {
+    return FPath.builder().create(atts);
   }
   
   
-  @Override
-  public long bytes() {
-    return bytes;
-  }
-
-
-  @Override
-  public double value() {
-    Unit unit = Unit.from(bytes);
-    return Long.valueOf(bytes).doubleValue() / unit.bytes();
-  }
-
-
-  @Override
-  public Unit unit() {
-    return Unit.from(bytes);
-  }
-  
-  
-  @Override
-  public String toString() {
-    return new DecimalFormat("0.0###").format(value())+ " "+ unit().name();
-  }
-  
-  
-  public static FileSize of(long bytes) {
-    return new FileSize(bytes);
-  }
-  
-  
-  public static FileSize of(Path path) {
-    FileSize size = of(Long.MIN_VALUE);
-    try { size = of(Files.size(path)); } 
-    catch(IOException e) {}
-    return size;
+  public static IFPath from(DosFileAttributes atts) {
+    return FPath.builder().create(atts);
   }
   
 }

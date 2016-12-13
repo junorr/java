@@ -21,6 +21,7 @@
 
 package oodb.tests.beans;
 
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Instant;
 
 /**
@@ -28,12 +29,21 @@ import java.time.Instant;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2016
  */
-public interface IFSTime {
+public interface IFTime {
 
   public Instant getCreationTime();
   
   public Instant getLastModifiedTime();
   
   public Instant getLastAccessTime();
+  
+  
+  public static IFTime from(BasicFileAttributes atts) {
+    return new FTime(
+        atts.creationTime(), 
+        atts.lastModifiedTime(), 
+        atts.lastAccessTime()
+    );
+  }
   
 }

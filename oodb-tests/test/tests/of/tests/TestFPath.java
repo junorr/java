@@ -19,25 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package oodb.tests.beans;
+package tests.of.tests;
 
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import oodb.tests.beans.IFPath;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2016
  */
-public interface IFSPermissions {
+public class TestFPath {
 
-  public Set<Permission> owner();
   
-  public Set<Permission> group();
-  
-  public Set<Permission> others();
-  
-  public List<PermEntity> permissions();
-  
+  public static void main(String[] args) throws IOException {
+    //Path path = Paths.get("/home/juno/nb/disecLib/dist/disecLib.jar");
+    Path path = Paths.get("D:/videos");
+    IFPath fpath = IFPath.from(path);
+    System.out.println(fpath);
+    System.out.println("--- ls() ---");
+    fpath.ls().forEach(System.out::println);
+    System.out.println("--- cd(\"porn/anal.mp4\") ---");
+    System.out.println(fpath.cd("porn/anal.mp4"));
+  }
   
 }

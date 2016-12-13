@@ -23,8 +23,8 @@ package tests.of.tests;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import oodb.tests.beans.ISize.Unit;
-import static oodb.tests.beans.ISize.Unit.BYTE;
+import oodb.tests.beans.IFSize.Unit;
+import static oodb.tests.beans.IFSize.Unit.BYTE;
 
 /**
  *

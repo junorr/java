@@ -30,7 +30,7 @@ import java.util.Objects;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2016
  */
-public class FSTime implements IFSTime {
+public class FTime implements IFTime {
   
   private final Instant create;
   
@@ -39,7 +39,7 @@ public class FSTime implements IFSTime {
   private final Instant access;
   
   
-  public FSTime(FileTime cre, FileTime mod, FileTime acc) {
+  public FTime(FileTime cre, FileTime mod, FileTime acc) {
     Objects.requireNonNull(cre, "Bad Null Create FileTime");
     Objects.requireNonNull(mod, "Bad Null Modified FileTime");
     Objects.requireNonNull(acc, "Bad Null Access FileTime");
@@ -49,7 +49,7 @@ public class FSTime implements IFSTime {
   }
   
 
-  public FSTime(Instant cre, Instant mod, Instant acc) {
+  public FTime(Instant cre, Instant mod, Instant acc) {
     Objects.requireNonNull(cre, "Bad Null Create FileTime");
     Objects.requireNonNull(mod, "Bad Null Modified FileTime");
     Objects.requireNonNull(acc, "Bad Null Access FileTime");

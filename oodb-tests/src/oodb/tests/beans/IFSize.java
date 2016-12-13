@@ -24,15 +24,16 @@ package oodb.tests.beans;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 06/12/2016
  */
-public interface ISize extends ByteValue {
+public interface IFSize extends ByteValue {
   
-  public static final ISize ZERO = new FileSize(0L);
+  public static final IFSize ZERO = new FSize(0L);
   
   
   public double value();
@@ -40,12 +41,17 @@ public interface ISize extends ByteValue {
   public Unit unit();
   
   
-  public static ISize from(Path p) {
+  public static IFSize from(Path p) {
     try {
-      return new FileSize(Files.size(p));
+      return new FSize(Files.size(p));
     } catch(IOException e) {
       throw new RuntimeException(e.toString(), e);
     }
+  }
+  
+  
+  public static IFSize from(BasicFileAttributes atts) {
+    return new FSize(atts.size());
   }
   
   
@@ -169,6 +175,9 @@ public interface ISize extends ByteValue {
     }
     
     public static Unit from(long bytes) {
+      if(bytes == 0) {
+        return Unit.BYTE;
+      }
       Unit un = MAX;
       while(un.gt(bytes)) {
         un = un.prev();

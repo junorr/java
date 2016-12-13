@@ -21,26 +21,67 @@
 
 package oodb.tests.beans;
 
-import java.util.Set;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.DecimalFormat;
+import oodb.tests.beans.IFSize;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/12/2016
+ * @version 0.0 - 06/12/2016
  */
-public class PermOther extends AbstractPermEntity {
+public class FSize implements IFSize {
 
-  public PermOther() {
-    super();
+  private final long bytes;
+  
+  
+  public FSize(long bytes) {
+    this.bytes = bytes;
+  }
+  
+  
+  public FSize(IFSize size) {
+    this.bytes = size.bytes();
+  }
+  
+  
+  @Override
+  public long bytes() {
+    return bytes;
   }
 
-  public PermOther(Set<Permission> prs) {
-    super(prs);
-  }
 
   @Override
-  public Type getType() {
-    return Type.OTHER;
+  public double value() {
+    Unit unit = Unit.from(bytes);
+    return Long.valueOf(bytes).doubleValue() / unit.bytes();
   }
 
+
+  @Override
+  public Unit unit() {
+    return Unit.from(bytes);
+  }
+  
+  
+  @Override
+  public String toString() {
+    return new DecimalFormat("0.00").format(value())+ " "+ unit().name();
+  }
+  
+  
+  public static FSize of(long bytes) {
+    return new FSize(bytes);
+  }
+  
+  
+  public static FSize of(Path path) {
+    FSize size = of(Long.MIN_VALUE);
+    try { size = of(Files.size(path)); } 
+    catch(IOException e) {}
+    return size;
+  }
+  
 }
