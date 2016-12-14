@@ -74,7 +74,7 @@ public class Bean<T> {
       t = (T)new Boolean(!(Boolean)t);
     }
     else if(Number.class.isAssignableFrom(t.getClass())) {
-      t = (T) new Boolean(((Number)t).intValue() == 1);
+      t = (T) Integer.valueOf(((Number)t).intValue() == 1 ? 0 : 1);
     }
     return this;
   }
@@ -102,27 +102,26 @@ public class Bean<T> {
       if(Number.class.isAssignableFrom(t.getClass())) {
         Number n = (Number) t;
         if(Byte.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Byte((byte) (n.byteValue() + l))));
+          t = (T) Byte.valueOf((byte) (n.byteValue() + l));
         }
         else if(Short.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Short((short) (n.shortValue() + l))));
+          t = (T) Short.valueOf((short) (n.shortValue() + l));
         }
         else if(Integer.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Integer((int) (n.intValue() + l))));
+          t = (T) Integer.valueOf((int) (n.intValue() + l));
         }
         else if(Long.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Long((long) (n.longValue() + l))));
+          t = (T) Long.valueOf(n.longValue() + l);
         }
         else if(Float.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Float((float) (n.floatValue() + l))));
+          t = (T) Float.valueOf((float) (n.floatValue() + l));
         }
         else if(Double.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Double((double) (n.doubleValue() + l))));
+          t = (T) Double.valueOf((double) (n.doubleValue() + l));
         }
       }
       else if(Character.class.isAssignableFrom(t.getClass())) {
-        Character c = (char) (((Character)t).charValue() + l);
-        while(!compareAndSwap(t, (T) c));
+        t = (T) Character.valueOf((char) (((Character)t).charValue() + l));
       }
     }
     return this;
@@ -134,27 +133,26 @@ public class Bean<T> {
       if(Number.class.isAssignableFrom(t.getClass())) {
         Number n = (Number) t;
         if(Byte.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Byte((byte) (n.byteValue() + l))));
+          t = (T) Byte.valueOf((byte) (n.byteValue() + l));
         }
         else if(Short.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Short((short) (n.shortValue() + l))));
+          t = (T) Short.valueOf((short) (n.shortValue() + l));
         }
         else if(Integer.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Integer((int) (n.intValue() + l))));
+          t = (T) Integer.valueOf((int) (n.intValue() + l));
         }
         else if(Long.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Long((long) (n.longValue() + l))));
+          t = (T) Long.valueOf((long) (n.longValue() + l));
         }
         else if(Float.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Float((float) (n.floatValue() + l))));
+          t = (T) Float.valueOf((float) (n.floatValue() + l));
         }
         else if(Double.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Double((double) (n.doubleValue() + l))));
+          t = (T) Double.valueOf((double) (n.doubleValue() + l));
         }
       }
       else if(Character.class.isAssignableFrom(t.getClass())) {
-        Character c = (char) (((Character)t).charValue() + l);
-        while(!compareAndSwap(t, (T) c));
+        t = (T) Character.valueOf((char) (((Character)t).charValue() + l));
       }
     }
     return this;
@@ -166,27 +164,26 @@ public class Bean<T> {
       if(Number.class.isAssignableFrom(t.getClass())) {
         Number n = (Number) t;
         if(Byte.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Byte((byte) (n.byteValue() - l))));
+          t = (T) Byte.valueOf((byte) (n.byteValue() - l));
         }
         else if(Short.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Short((short) (n.shortValue() - l))));
+          t = (T) Short.valueOf((short) (n.shortValue() - l));
         }
         else if(Integer.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Integer((int) (n.intValue() - l))));
+          t = (T) Integer.valueOf((int) (n.intValue() - l));
         }
         else if(Long.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Long((long) (n.longValue() - l))));
+          t = (T) Long.valueOf((long) (n.longValue() - l));
         }
         else if(Float.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Float((float) (n.floatValue() - l))));
+          t = (T) Float.valueOf((float) (n.floatValue() - l));
         }
         else if(Double.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Double((double) (n.doubleValue() - l))));
+          t = (T) Double.valueOf((double) (n.doubleValue() - l));
         }
       }
       else if(Character.class.isAssignableFrom(t.getClass())) {
-        Character c = (char) (((Character)t).charValue() - l);
-        while(!compareAndSwap(t, (T) c));
+        t = (T) Character.valueOf((char) (((Character)t).charValue() - l));
       }
     }
     return this;
@@ -198,27 +195,26 @@ public class Bean<T> {
       if(Number.class.isAssignableFrom(t.getClass())) {
         Number n = (Number) t;
         if(Byte.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Byte((byte) (n.byteValue() - l))));
+          t = (T) Byte.valueOf((byte) (n.byteValue() - l));
         }
         else if(Short.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Short((short) (n.shortValue() - l))));
+          t = (T) Short.valueOf((short) (n.shortValue() - l));
         }
         else if(Integer.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Integer((int) (n.intValue() - l))));
+          t = (T) Integer.valueOf((int) (n.intValue() - l));
         }
         else if(Long.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Long((long) (n.longValue() - l))));
+          t = (T) Long.valueOf((long) (n.longValue() - l));
         }
         else if(Float.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Float((float) (n.floatValue() - l))));
+          t = (T) Float.valueOf((float) (n.floatValue() - l));
         }
         else if(Double.class.isAssignableFrom(t.getClass())) {
-          while(!compareAndSwap(t, (T) new Double((double) (n.doubleValue() - l))));
+          t = (T) Double.valueOf((double) (n.doubleValue() - l));
         }
       }
       else if(Character.class.isAssignableFrom(t.getClass())) {
-        Character c = (char) (((Character)t).charValue() - l);
-        while(!compareAndSwap(t, (T) c));
+        t = (T) Character.valueOf((char) (((Character)t).charValue() - l));
       }
     }
     return this;
@@ -262,6 +258,9 @@ public class Bean<T> {
     System.out.println(b);
     System.out.println("* b.compareAndSwap(95, 100)="+ b.compareAndSwap(95, 100));
     System.out.println(b);
+    b.set(5);
+    System.out.println(b);
+    System.out.println("* b.negate()="+ b.negate()); 
   }
   
 }

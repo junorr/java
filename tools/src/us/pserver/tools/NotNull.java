@@ -21,6 +21,8 @@
 
 package us.pserver.tools;
 
+import java.util.function.Consumer;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -51,6 +53,11 @@ public class NotNull<T> {
   }
   
   
+  public void ifNotNull(Consumer<T> cs) {
+    if(obj != null) cs.accept(obj);
+  }
+  
+  
   public T getOrFail() throws NullPointerException {
     fail();
     return obj;
@@ -59,7 +66,20 @@ public class NotNull<T> {
   
   public void fail() throws NullPointerException {
     if(obj == null) {
-      throw new NullPointerException("Invalid Null Object");
+      throw new NullPointerException("Bad Null "+ obj.getClass().getSimpleName());
+    }
+  }
+  
+  
+  public T getOrFail(String msg) throws NullPointerException {
+    fail(msg);
+    return obj;
+  }
+  
+  
+  public void fail(String msg) throws NullPointerException {
+    if(obj == null) {
+      throw new NullPointerException(msg);
     }
   }
   

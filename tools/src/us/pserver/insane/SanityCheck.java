@@ -31,7 +31,7 @@ import java.util.function.Predicate;
 public interface SanityCheck<T> extends Predicate<T> {
 
   public default String failMessage() {
-    return "Invalid Argument Value";
+    return "Bad Argument Value";
   }
   
   

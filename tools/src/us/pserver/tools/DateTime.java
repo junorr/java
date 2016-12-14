@@ -221,6 +221,7 @@ public interface DateTime {
     System.out.println("fromLong(): "+ dtlo);
     System.out.println("fromZoDt(): "+ dtzd);
     System.out.println("fromLoDt(): "+ dtld);
+    System.out.println("zone="+ ZoneId.systemDefault());
   }
   
 }
