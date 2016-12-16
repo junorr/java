@@ -39,19 +39,19 @@ public class TestRegionLock {
     System.out.println(buf.remaining());
     
     RegionLock rl = RegionLock.of(buf);
-    System.out.println("* rl.locks(): "+ rl.locks());
+    System.out.println("* "+ rl);
     
     Region r = new DefRegion(100, 200);
     System.out.println("* r: "+ r);
     
     System.out.println("* rl.tryLock(r): "+ rl.tryLock(r));
-    System.out.println("* rl.locks(): "+ rl.locks());
+    System.out.println("* "+ rl);
     
     Region r2 = new DefRegion(300, 200);
     System.out.println("* r2: "+ r2);
     
     System.out.println("* rl.tryLock(r2): "+ rl.tryLock(r2));
-    System.out.println("* rl.locks(): "+ rl.locks());
+    System.out.println("* "+ rl);
     
     Region r3 = new DefRegion(150, 30);
     System.out.println(r3);
@@ -61,7 +61,7 @@ public class TestRegionLock {
     rl.unlock(r);
     System.out.println("* rl.isLocked(r3): "+ rl.isLocked(r3));
     System.out.println("* rl.tryLock(r3): "+ rl.tryLock(r3));
-    System.out.println("* rl.locks(): "+ rl.locks());
+    System.out.println("* "+ rl);
   }
   
 }

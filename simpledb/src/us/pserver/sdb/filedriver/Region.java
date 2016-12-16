@@ -85,7 +85,7 @@ public interface Region extends WritableBytes {
 
     @Override
     public boolean isDefined() {
-      return start >= 0 && length > 0;
+      return start != -1 && length > 0;
     }
     
     
@@ -140,7 +140,7 @@ public interface Region extends WritableBytes {
 
     @Override
     public String toString() {
-      return "DefRegion{" + "start=" + start + ", length=" + length + '}';
+      return "Region{" + "start=" + start + ", length=" + length + '}';
     }
     
   }

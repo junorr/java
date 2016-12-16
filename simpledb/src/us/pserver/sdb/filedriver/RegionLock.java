@@ -25,6 +25,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
 import us.pserver.sdb.filedriver.Region.DefRegion;
@@ -36,12 +38,12 @@ import us.pserver.sdb.filedriver.Region.DefRegion;
  */
 public interface RegionLock extends WritableBytes {
   
-  public static final int LOCK_BYTES = 256;
+  public static final int LOCK_BYTES = 16;
   
-  public static final int LOCKS = 16;
   
-
   public List<Region> locks();
+  
+  public int maxLocks();
   
   public boolean isLocked(Region reg);
   
@@ -60,47 +62,76 @@ public interface RegionLock extends WritableBytes {
   
   
   
-  public static class DefRegionLock implements RegionLock {
+  public static final class DefRegionLock implements RegionLock {
+    
+    private final Region LOCK_REGION = new DefRegion(Long.MIN_VALUE, Long.MAX_VALUE);
     
     private final List<Region> regions;
     
     private final ByteBuffer buffer;
     
+    private final int maxLocks;
     
-    private DefRegionLock() {
-      regions = null;
-      buffer = null;
-    }
+    private final ReentrantReadWriteLock inner;
     
     
     public DefRegionLock(ByteBuffer buf) {
       this.buffer = Sane.of(buf)
           .with(Checkup.isNotNull())
-          .and(b->b.capacity()>=LOCK_BYTES).get();
-      this.regions = new ArrayList<>(LOCKS);
-      this.readBuffer();
+          .and(b->b.capacity()>=LOCK_BYTES*2)
+          .get();
+      this.maxLocks = buffer.capacity() / LOCK_BYTES -1;
+      this.regions = new ArrayList<>(maxLocks);
+      this.inner = new ReentrantReadWriteLock();
     }
     
     
     private void readBuffer() {
-      regions.clear();
-      for(int i = 0; i < LOCKS; i++) {
-        Region r = Region.of(buffer);
-        if(r.isDefined()) regions.add(r);
+      inner.readLock().lock();
+      try {
+        regions.clear();
+        for(int i = 0; i < maxLocks; i++) {
+          Region r = Region.of(buffer);
+          if(r.isDefined()) regions.add(r);
+        }
+        buffer.rewind();
       }
-      buffer.rewind();
+      finally {
+        inner.readLock().unlock();
+      }
     }
     
     
     private void writeBuffer() {
+      this.wlock();
       this.write(buffer);
       buffer.rewind();
     }
     
     
+    private void wlock() {
+      inner.writeLock().lock();
+      regions.add(LOCK_REGION);
+      this.writeBuffer();
+    }
+    
+    
+    private void wunlock() {
+      if(inner.writeLock().isHeldByCurrentThread()) {
+        try {
+          regions.remove(LOCK_REGION);
+          this.writeBuffer();
+        }
+        finally {
+          inner.writeLock().unlock();
+        }
+      }
+    }
+    
+    
     @Override
     public RegionLock write(ByteBuffer buf) {
-      int rest = LOCKS - regions.size();
+      int rest = maxLocks - regions.size();
       regions.forEach(r->r.write(buf));
       Region r = new DefRegion(0, 0);
       for(int i = 0; i < rest; i++) {
@@ -112,7 +143,14 @@ public interface RegionLock extends WritableBytes {
 
     @Override
     public List<Region> locks() {
+      this.readBuffer();
       return Collections.unmodifiableList(regions);
+    }
+    
+    
+    @Override
+    public int maxLocks() {
+      return this.maxLocks;
     }
 
 
@@ -129,7 +167,7 @@ public interface RegionLock extends WritableBytes {
 
     @Override
     public boolean tryLock(Region reg) {
-      if(reg != null && !isLocked(reg) && regions.size() < LOCKS) {
+      if(reg != null && !isLocked(reg) && regions.size() < maxLocks) {
         regions.add(reg);
         this.writeBuffer();
         return true;
@@ -155,6 +193,12 @@ public interface RegionLock extends WritableBytes {
         writeBuffer();
       }
       return this;
+    }
+
+
+    @Override
+    public String toString() {
+      return "RegionLock{" + "maxLocks=" + maxLocks + ", regions=" + regions + '}';
     }
     
   }
