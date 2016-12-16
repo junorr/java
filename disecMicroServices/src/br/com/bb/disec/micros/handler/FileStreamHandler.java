@@ -68,7 +68,7 @@ public class FileStreamHandler implements HttpHandler {
   
   
   private void setHeaders(HttpServerExchange hse) throws IOException {
-      hse.getResponseHeaders().add(
+    hse.getResponseHeaders().add(
           Headers.CONTENT_TYPE, 
           "application/octet-stream"
       );

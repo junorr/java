@@ -121,26 +121,16 @@ public interface Region extends WritableBytes {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj) {
-        return true;
-      }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
-        return false;
-      }
-      final DefRegion other = (DefRegion) obj;
-      if (this.start != other.start) {
-        return false;
-      }
-      return this.length == other.length;
+      return obj != null
+          && Region.class.isAssignableFrom(obj.getClass())
+          && ((Region)obj).start() == start
+          && ((Region)obj).length()== length;
     }
 
 
     @Override
     public String toString() {
-      return "Region{" + "start=" + start + ", length=" + length + '}';
+      return start + "-" + length;
     }
     
   }

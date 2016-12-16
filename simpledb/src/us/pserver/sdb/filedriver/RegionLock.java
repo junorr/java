@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
 import us.pserver.sdb.filedriver.Region.DefRegion;
@@ -49,9 +48,11 @@ public interface RegionLock extends WritableBytes {
   
   public boolean tryLock(Region reg);
   
-  public RegionLock lock(Region reg) throws InterruptedException;
+  public boolean lock(Region reg);
   
-  public RegionLock unlock(Region reg);
+  public boolean unlock(Region reg);
+  
+  public RegionLock forceUpdate();
   
   
   public static RegionLock of(ByteBuffer buf) {
@@ -64,68 +65,106 @@ public interface RegionLock extends WritableBytes {
   
   public static final class DefRegionLock implements RegionLock {
     
-    private final Region LOCK_REGION = new DefRegion(Long.MIN_VALUE, Long.MAX_VALUE);
+    public static final long MAGIC_SLEEP = (long) (Math.random() * 10);
+    
+    public final Region LOCK_REGION = new DefRegion(Long.MIN_VALUE, Long.MAX_VALUE);
     
     private final List<Region> regions;
     
-    private final ByteBuffer buffer;
+    private final ByteBuffer regbuf;
+    
+    private final ByteBuffer lockbuf;
     
     private final int maxLocks;
     
-    private final ReentrantReadWriteLock inner;
+    private final ReentrantLock lock;
     
     
     public DefRegionLock(ByteBuffer buf) {
-      this.buffer = Sane.of(buf)
+      Sane.of(buf)
           .with(Checkup.isNotNull())
           .and(b->b.capacity()>=LOCK_BYTES*2)
-          .get();
-      this.maxLocks = buffer.capacity() / LOCK_BYTES -1;
-      this.regions = new ArrayList<>(maxLocks);
-      this.inner = new ReentrantReadWriteLock();
+          .check();
+      buf.clear().position(0)
+          .limit(LOCK_BYTES);
+      this.lockbuf = buf.slice();
+      buf.clear().position(LOCK_BYTES)
+          .limit(buf.capacity());
+      this.regbuf = buf.slice();
+      this.maxLocks = regbuf.capacity() / LOCK_BYTES;
+      this.regions = Collections.synchronizedList(new ArrayList<>(maxLocks));
+      this.lock = new ReentrantLock(true);
+    }
+    
+    
+    @Override
+    public RegionLock forceUpdate() {
+      this.readBuffer();
+      return this;
     }
     
     
     private void readBuffer() {
-      inner.readLock().lock();
+      lock.lock();
       try {
+        this.waitLockRelease();
         regions.clear();
+        regbuf.clear();
         for(int i = 0; i < maxLocks; i++) {
-          Region r = Region.of(buffer);
+          Region r = Region.of(regbuf);
           if(r.isDefined()) regions.add(r);
         }
-        buffer.rewind();
       }
       finally {
-        inner.readLock().unlock();
+        lock.unlock();
+      }
+    }
+    
+    
+    private void waitLockRelease() {
+      while(!lock.isHeldByCurrentThread() || isBufferLocked()) {
+        sleep(MAGIC_SLEEP);
       }
     }
     
     
     private void writeBuffer() {
-      this.wlock();
-      this.write(buffer);
-      buffer.rewind();
-    }
-    
-    
-    private void wlock() {
-      inner.writeLock().lock();
-      regions.add(LOCK_REGION);
-      this.writeBuffer();
-    }
-    
-    
-    private void wunlock() {
-      if(inner.writeLock().isHeldByCurrentThread()) {
-        try {
-          regions.remove(LOCK_REGION);
-          this.writeBuffer();
-        }
-        finally {
-          inner.writeLock().unlock();
-        }
+      lock.lock();
+      try {
+        this.lockBuffer();
+        regbuf.clear();
+        this.write(regbuf);
+        this.unlockBuffer();
       }
+      finally {
+        lock.unlock();
+      }
+    }
+    
+    
+    private boolean isBufferLocked() {
+      lockbuf.clear();
+      Region r = Region.of(lockbuf);
+      return LOCK_REGION.equals(r);
+    }
+    
+    
+    private void lockBuffer() {
+      this.waitLockRelease();
+      lockbuf.clear();
+      LOCK_REGION.write(lockbuf);
+    }
+    
+    
+    private void unlockBuffer() {
+      lockbuf.clear();
+      new DefRegion(0, 0).write(lockbuf);
+    }
+    
+    
+    private void sleep(long ms) {
+      try { Thread.sleep(ms); }
+      catch(InterruptedException e) {}
     }
     
     
@@ -156,43 +195,74 @@ public interface RegionLock extends WritableBytes {
 
     @Override
     public boolean isLocked(Region reg) {
-      this.readBuffer();
-      return regions.stream()
-          .map(r->r.contains(reg))
-          .filter(b->b==true)
-          .findAny()
-          .isPresent();
+      lock.lock();
+      try {
+        this.readBuffer();
+        return regions.stream()
+            .map(r->r.contains(reg))
+            .filter(b->b==true)
+            .findAny()
+            .isPresent();
+      }
+      finally {
+        lock.unlock();
+      }
     }
 
 
     @Override
     public boolean tryLock(Region reg) {
-      if(reg != null && !isLocked(reg) && regions.size() < maxLocks) {
+      if(reg == null || !lock.tryLock())
+        return false;
+      try {
+        if(!isBufferLocked()
+            && !isLocked(reg) 
+            && regions.size() < maxLocks) {
+          regions.add(reg);
+          this.writeBuffer();
+          return true;
+        }
+        return false;
+      }
+      finally {
+        lock.unlock();
+      }
+    }
+
+
+    @Override
+    public boolean lock(Region reg) {
+      if(reg == null) return false;
+      lock.lock();
+      try {
+        if(isLocked(reg) || regions.size() >= maxLocks) {
+          return false;
+        }
         regions.add(reg);
         this.writeBuffer();
         return true;
       }
-      return false;
-    }
-
-
-    @Override
-    public RegionLock lock(Region reg) throws InterruptedException {
-      while(reg != null && !tryLock(reg)) {
-        Thread.sleep(10);
-        this.readBuffer();
+      finally {
+        lock.unlock();
       }
-      return this;
     }
 
 
     @Override
-    public RegionLock unlock(Region reg) {
-      if(reg != null && isLocked(reg)) {
+    public boolean unlock(Region reg) {
+      if(reg == null) return false;
+      lock.lock();
+      try {
+        if(!isLocked(reg)) {
+          return false;
+        }
         regions.remove(reg);
-        writeBuffer();
+        this.writeBuffer();
+        return true;
       }
-      return this;
+      finally {
+        lock.unlock();
+      }
     }
 
 

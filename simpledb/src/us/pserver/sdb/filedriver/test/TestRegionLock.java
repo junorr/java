@@ -32,36 +32,48 @@ import us.pserver.sdb.filedriver.RegionLock;
  * @version 0.0 - 15/12/2016
  */
 public class TestRegionLock {
+  
+  
+  public static void locker(RegionLock lock) {
+    String tn = Thread.currentThread().getName();
+    Region r = new DefRegion(100, 200);
+    System.out.println("* ["+tn+"] r: "+ r);
+    
+    System.out.println("* ["+tn+"] rl.tryLock(r): "+ lock.lock(r));
+    System.out.println("* ["+tn+"] "+ lock.forceUpdate());
+    
+    Region r2 = new DefRegion(300, 200);
+    System.out.println("* ["+tn+"] r2: "+ r2);
+    
+    System.out.println("* ["+tn+"] rl.tryLock(r2): "+ lock.lock(r2));
+    System.out.println("* ["+tn+"] "+ lock.forceUpdate());
+    
+    Region r3 = new DefRegion(150, 30);
+    System.out.println("* ["+tn+"] r3: "+ r3);
+    System.out.println("* ["+tn+"] rl.isLocked(r3): "+ lock.isLocked(r3));
+    
+    System.out.println("* ["+tn+"] rl.unlock(r);");
+    lock.unlock(r);
+    System.out.println("* ["+tn+"] rl.isLocked(r3): "+ lock.isLocked(r3));
+    System.out.println("* ["+tn+"] rl.tryLock(r3): "+ lock.lock(r3));
+    System.out.println("* ["+tn+"] "+ lock.forceUpdate());
+  }
 
   
   public static void main(String[] args) {
     ByteBuffer buf = ByteBuffer.allocate(256);
-    System.out.println(buf.remaining());
     
-    RegionLock rl = RegionLock.of(buf);
-    System.out.println("* "+ rl);
-    
-    Region r = new DefRegion(100, 200);
-    System.out.println("* r: "+ r);
-    
-    System.out.println("* rl.tryLock(r): "+ rl.tryLock(r));
-    System.out.println("* "+ rl);
-    
-    Region r2 = new DefRegion(300, 200);
-    System.out.println("* r2: "+ r2);
-    
-    System.out.println("* rl.tryLock(r2): "+ rl.tryLock(r2));
-    System.out.println("* "+ rl);
-    
-    Region r3 = new DefRegion(150, 30);
-    System.out.println(r3);
-    System.out.println("* rl.isLocked(r3): "+ rl.isLocked(r3));
-    
-    System.out.println("* rl.unlock(r);");
-    rl.unlock(r);
-    System.out.println("* rl.isLocked(r3): "+ rl.isLocked(r3));
-    System.out.println("* rl.tryLock(r3): "+ rl.tryLock(r3));
-    System.out.println("* "+ rl);
+    RegionLock lock = RegionLock.of(buf);
+    new Thread(()->locker(lock), "T-0").start();
+    new Thread(()->locker(lock), "T-1").start();
+    new Thread(()->locker(lock), "T-2").start();
+    //new Thread(()->locker(lock), "T-3").start();
+    //new Thread(()->locker(lock), "T-4").start();
+    //new Thread(()->locker(lock), "T-5").start();
+    //new Thread(()->locker(lock), "T-6").start();
+    //new Thread(()->locker(lock), "T-7").start();
+    //new Thread(()->locker(lock), "T-8").start();
+    //new Thread(()->locker(lock), "T-9").start();
   }
   
 }

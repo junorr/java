@@ -21,6 +21,8 @@
 
 package tests.of.tests;
 
+import java.nio.ByteBuffer;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -33,6 +35,14 @@ public class TestLong {
     System.out.println("* Long.MAX_VALUE: "+ Long.MAX_VALUE);
     System.out.println("* Long.MIN_VALUE: "+ Long.MIN_VALUE);
     System.out.println("* MAX + MIN = "+ (Long.MAX_VALUE - Long.MIN_VALUE));
+    
+    ByteBuffer buf = ByteBuffer.allocate(100);
+    System.out.println(buf);
+    buf.position(30);
+    buf.limit(70);
+    System.out.println(buf);
+    ByteBuffer bb = buf.slice();
+    System.out.println(bb);
   }
   
 }
