@@ -21,16 +21,16 @@
 
 package us.pserver.sdb.filedriver.test;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import us.pserver.sdb.filedriver.Region;
 import us.pserver.sdb.filedriver.Region.DefRegion;
-import us.pserver.sdb.filedriver.RegionLock;
+import us.pserver.sdb.filedriver.RegionFileLock;
 import us.pserver.tools.timer.Timer;
 
 /**
@@ -38,50 +38,53 @@ import us.pserver.tools.timer.Timer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 15/12/2016
  */
-public class TestRegionLock {
+public class TestRegionFileLock {
   
   public static final int MAX_THREADS = 10;
   
   public static final List<String> tnames = new ArrayList<>();
   
   
-  public static void locker(RegionLock lock, Timer tm, ExecutorService serv) {
+  public static void locker(RegionFileLock lock, Timer tm, ExecutorService serv) {
     String tn = Thread.currentThread().getName();
-    Region r = new DefRegion(100, 200);
-    System.out.println("* ["+tn+"] r: "+ r);
-    
-    System.out.println("* ["+tn+"] rl.lock(r): "+ lock.lock(r));
-    System.out.println("* ["+tn+"] "+ lock.update());
-    
-    Region r2 = new DefRegion(300, 200);
-    System.out.println("* ["+tn+"] r2: "+ r2);
-    
-    System.out.println("* ["+tn+"] rl.lock(r2): "+ lock.lock(r2));
-    System.out.println("* ["+tn+"] "+ lock.update());
-    
-    Region r3 = new DefRegion(150, 30);
-    System.out.println("* ["+tn+"] r3: "+ r3);
-    System.out.println("* ["+tn+"] rl.isLocked(r3): "+ lock.isLocked(r3));
-    
-    System.out.println("* ["+tn+"] rl.unlock(r);");
-    lock.unlock(r);
-    System.out.println("* ["+tn+"] rl.isLocked(r3): "+ lock.isLocked(r3));
-    System.out.println("* ["+tn+"] rl.lock(r3): "+ lock.lock(r3));
-    System.out.println("* ["+tn+"] "+ lock.update());
+    try {
+      Region r = new DefRegion(100, 200);
+      System.out.println("* ["+tn+"] r: "+ r);
+
+      System.out.println("* ["+tn+"] rl.lock(r): "+ lock.lock(r, false));
+      System.out.println("* ["+tn+"] "+ lock);
+
+      Region r2 = new DefRegion(300, 200);
+      System.out.println("* ["+tn+"] r2: "+ r2);
+
+      System.out.println("* ["+tn+"] rl.lock(r2): "+ lock.lock(r2, true));
+      System.out.println("* ["+tn+"] "+ lock);
+
+      Region r3 = new DefRegion(150, 30);
+      System.out.println("* ["+tn+"] r3: "+ r3);
+      System.out.println("* ["+tn+"] rl.isLocked(r3): "+ lock.isLocked(r3));
+
+      System.out.println("* ["+tn+"] rl.unlock(r);");
+      lock.unlock(r);
+      System.out.println("* ["+tn+"] rl.isLocked(r3): "+ lock.isLocked(r3));
+      System.out.println("* ["+tn+"] rl.lock(r3): "+ lock.lock(r3, false));
+      System.out.println("* ["+tn+"] "+ lock);
+    }
+    catch(IOException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
     tnames.add(tn);
     if(tnames.size() == MAX_THREADS) {
       System.out.println("* Terminating All Lockers...");
       System.out.println("* "+ tm.stop());
-      //tnames.forEach(System.out::println);
       serv.shutdownNow();
     }
   }
 
   
-  public static void main(String[] args) throws InterruptedException {
-    ByteBuffer buf = ByteBuffer.allocate(256);
-    
-    RegionLock lock = RegionLock.of(buf);
+  public static void main(String[] args) throws InterruptedException, IOException {
+    Path path = Paths.get("d:/test.lok");
+    RegionFileLock lock = RegionFileLock.of(path);
     ExecutorService serv = Executors.newFixedThreadPool(MAX_THREADS);
     Timer tm = new Timer.Nanos().start();
     for(int i = 0; i < MAX_THREADS; i++) {

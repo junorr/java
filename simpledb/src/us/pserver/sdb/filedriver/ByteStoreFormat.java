@@ -29,7 +29,11 @@ package us.pserver.sdb.filedriver;
 public interface ByteStoreFormat {
 
   //04 - Integer: Block Size
-  //16 - Region.: Lock
+  //16 - Region.: Index
+  //16 - Region.: Free Blocks
   //...- Content
+  //...- Index
+  //...- Free Blocks
+  
   
 }

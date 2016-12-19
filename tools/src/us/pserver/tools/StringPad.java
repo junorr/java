@@ -72,7 +72,7 @@ public class StringPad {
       sb.append(pad);
     }
     if(length <= sb.length()) {
-      sb.delete((sb.length() - length), sb.length());
+      sb.delete(length, sb.length());
     }
     return sb.toString();
   }
