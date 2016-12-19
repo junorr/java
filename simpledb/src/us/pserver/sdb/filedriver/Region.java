@@ -30,13 +30,13 @@ import us.pserver.insane.Sane;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 15/12/2016
  */
-public interface Region extends WritableBytes {
+public interface Region extends Writable {
 
   public long start();
   
   public long length();
   
-  public boolean isDefined();
+  public boolean isValid();
   
   public boolean contains(Region reg);
   
@@ -84,7 +84,7 @@ public interface Region extends WritableBytes {
 
 
     @Override
-    public boolean isDefined() {
+    public boolean isValid() {
       return start != -1 && length > 0;
     }
     
@@ -93,7 +93,7 @@ public interface Region extends WritableBytes {
     public boolean contains(Region reg) {
       return reg != null
           && reg.start() < (start + length)
-          && (reg.start() + reg.length()) >= start;
+          && (reg.start() + reg.length()) > start;
     }
 
 

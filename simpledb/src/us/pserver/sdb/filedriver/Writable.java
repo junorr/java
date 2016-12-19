@@ -21,19 +21,15 @@
 
 package us.pserver.sdb.filedriver;
 
+import java.nio.ByteBuffer;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 15/12/2016
  */
-public interface Metadata extends Region, WritableBytes {
+public interface Writable {
 
-  public int getBlockSize();
-  
-  public long getRegistrySize();
-  
-  public RegionLock getLock();
-  
-  public Object getRegistry();
+  public Writable write(ByteBuffer buf);
   
 }

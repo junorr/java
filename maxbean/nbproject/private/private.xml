@@ -2,23 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/cli/handler/AbstractHandler.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/code/IFaceCode.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/cli/MBVersion.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/code/AbstractTableCode.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/TableInspector.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/code/IFaceSetterCode.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/cli/Main.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/cli/MaxBean.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/cli/parser/SchemaParser.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/cli/handler/SourceCode.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/cli/parser/TablesParser.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/util/CamelCaseName.java</file>
-            <file>file:/storage/java/maxbean/src/resources/sql.properties</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/cli/parser/ConnectionParser.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/cli/MBOptions.java</file>
-            <file>file:/storage/java/maxbean/src/us/pserver/maxb/code/IFaceGetterCode.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

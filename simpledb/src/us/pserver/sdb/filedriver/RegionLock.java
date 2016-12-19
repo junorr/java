@@ -35,7 +35,7 @@ import us.pserver.sdb.filedriver.Region.DefRegion;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 15/12/2016
  */
-public interface RegionLock extends WritableBytes {
+public interface RegionLock extends Writable {
   
   public static final int LOCK_BYTES = 16;
   
@@ -52,7 +52,7 @@ public interface RegionLock extends WritableBytes {
   
   public boolean unlock(Region reg);
   
-  public RegionLock forceUpdate();
+  public RegionLock update();
   
   
   public static RegionLock of(ByteBuffer buf) {
@@ -65,7 +65,7 @@ public interface RegionLock extends WritableBytes {
   
   public static final class DefRegionLock implements RegionLock {
     
-    public static final long MAGIC_SLEEP = (long) (Math.random() * 10);
+    public static final long MAGIC_TIME = (long) (Math.random() * 10);
     
     public final Region LOCK_REGION = new DefRegion(Long.MIN_VALUE, Long.MAX_VALUE);
     
@@ -93,12 +93,12 @@ public interface RegionLock extends WritableBytes {
       this.regbuf = buf.slice();
       this.maxLocks = regbuf.capacity() / LOCK_BYTES;
       this.regions = Collections.synchronizedList(new ArrayList<>(maxLocks));
-      this.lock = new ReentrantLock(true);
+      this.lock = new ReentrantLock();
     }
     
     
     @Override
-    public RegionLock forceUpdate() {
+    public RegionLock update() {
       this.readBuffer();
       return this;
     }
@@ -112,7 +112,7 @@ public interface RegionLock extends WritableBytes {
         regbuf.clear();
         for(int i = 0; i < maxLocks; i++) {
           Region r = Region.of(regbuf);
-          if(r.isDefined()) regions.add(r);
+          if(r.isValid()) regions.add(r);
         }
       }
       finally {
@@ -123,7 +123,7 @@ public interface RegionLock extends WritableBytes {
     
     private void waitLockRelease() {
       while(!lock.isHeldByCurrentThread() || isBufferLocked()) {
-        sleep(MAGIC_SLEEP);
+        sleep(MAGIC_TIME);
       }
     }
     

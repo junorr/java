@@ -21,15 +21,15 @@
 
 package us.pserver.sdb.filedriver;
 
-import java.nio.ByteBuffer;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 15/12/2016
+ * @version 0.0 - 19/12/2016
  */
-public interface WritableBytes {
+public interface ByteStoreFormat {
 
-  public WritableBytes write(ByteBuffer buf);
+  //04 - Integer: Block Size
+  //16 - Region.: Lock
+  //...- Content
   
 }
