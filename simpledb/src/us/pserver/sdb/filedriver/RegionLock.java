@@ -35,7 +35,7 @@ import us.pserver.sdb.filedriver.Region.DefRegion;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 15/12/2016
  */
-public interface RegionLock extends Writable {
+public interface RegionLock {
   
   public static final int LOCK_BYTES = 16;
   
@@ -168,7 +168,6 @@ public interface RegionLock extends Writable {
     }
     
     
-    @Override
     public RegionLock write(ByteBuffer buf) {
       int rest = maxLocks - regions.size();
       regions.forEach(r->r.write(buf));

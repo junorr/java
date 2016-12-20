@@ -39,7 +39,9 @@ public class TestFileLock {
 
   
   public static void main(String[] args) throws IOException, InterruptedException {
-    Path path = Paths.get("d:/test.lok");
+    //Path path = Paths.get("d:/test.lok");
+    //Path path = Paths.get("/home/juno/consultaspdf.zip");
+    Path path = Paths.get("/storage/fases_sislog.xls");
     System.out.print(StringPad.of("* Opening File "+ path+ "...").rpad(" ", 50));
     FileChannel ch = FileChannel.open(path, 
         StandardOpenOption.CREATE, 
@@ -63,7 +65,7 @@ public class TestFileLock {
     //tm.clear().start();
     //wlock = ch.lock(start, length, false);
     //System.out.println("[OK]\n   "+ tm.stop());
-
+//
     start = 1280;
     System.out.print(StringPad.of("* Acquiring Shared Lock For "+ start+ "-"+ length+ "...").rpad(" ", 50));
     tm.clear().start();

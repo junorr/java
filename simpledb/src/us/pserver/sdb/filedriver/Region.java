@@ -21,6 +21,7 @@
 
 package us.pserver.sdb.filedriver;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
@@ -30,7 +31,7 @@ import us.pserver.insane.Sane;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 15/12/2016
  */
-public interface Region extends Writable {
+public interface Region extends Writable, Serializable {
 
   public long start();
   
@@ -39,6 +40,11 @@ public interface Region extends Writable {
   public boolean isValid();
   
   public boolean contains(Region reg);
+  
+  
+  public static Region of(long start, long length) {
+    return new DefRegion(start, length);
+  }
   
   
   public static Region of(ByteBuffer buf) {

@@ -21,7 +21,11 @@
 
 package us.pserver.sdb.filedriver;
 
-import java.util.Map;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
 
@@ -30,43 +34,182 @@ import us.pserver.insane.Sane;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/12/2016
  */
-public interface Index<T> {
+public interface Index<T extends Serializable> extends Serializable {
 
   public String getName();
   
-  public Map<T,Region[]> getValues();
+  public T getValue();
+  
+  public List<Region> regions();
+  
+  
+  public static <U extends Serializable> Builder<U> builder() {
+    return new Builder();
+  }
+  
+  
+  public static <U extends Serializable> Index<U> of(String name, U value, List<Region> regions) {
+    return new DefIndex(name, value, regions);
+  }
   
   
   
   
   
-  public static class DefIndex<T> implements Index<T> {
+  public static final class Builder<T extends Serializable> {
+    
+    private String name;
+    
+    private T value;
+    
+    private List<Region> regions;
+    
+    
+    public Builder() {
+      name = null;
+      value = null;
+      regions = new ArrayList<>();
+    }
+
+
+    public String getName() {
+      return name;
+    }
+
+
+    public Builder<T> setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+
+    public T getValue() {
+      return value;
+    }
+
+
+    public Builder<T> setValue(T value) {
+      this.value = value;
+      return this;
+    }
+
+
+    public List<Region> getRegions() {
+      return regions;
+    }
+
+
+    public Builder<T> setRegions(List<Region> regions) {
+      this.regions = regions;
+      return this;
+    }
+    
+    
+    public Builder<T> addRegion(Region r) {
+      if(r != null) {
+        regions.add(r);
+      }
+      return this;
+    }
+    
+    
+    public Index<T> build() {
+      return new DefIndex(name, value, regions);
+    }
+    
+  }
+  
+  
+  
+  
+  
+  public static class DefIndex<T extends Serializable> implements Index<T> {
     
     private final String name;
     
-    private final Map<T,Region[]> values;
+    private final T value;
+    
+    private final List<Region> regions;
     
     
-    public DefIndex(String name, Map<T,Region[]> vals) {
+    private DefIndex() {
+      name = null;
+      value = null;
+      regions = null;
+    }
+    
+    
+    public DefIndex(String name, T value) {
+      this(name, value, new ArrayList<>());
+    }
+    
+    
+    public DefIndex(String name, T value, List<Region> regs) {
       this.name = Sane.of(name)
           .with("Bad Name: "+ name)
           .get(Checkup.isNotEmpty());
-      this.values = Sane.of(vals)
-          .with("Bad Values Map")
-          .with(Checkup.isNotNull())
-          .and(m->!m.isEmpty()).get();
+      this.value = Sane.of(value)
+          .with("Bad Null Value")
+          .get(Checkup.isNotNull());
+      this.regions = Collections.unmodifiableList(
+          (List<Region>) Sane.of(regs)
+              .with("Bad Region List")
+              .with(Checkup.isNotNull())
+              .and(Checkup.isNotEmptyCollection())
+              .get()
+      );
     }
     
 
     @Override
     public String getName() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return name;
     }
 
 
     @Override
-    public Map<T, Region[]> getValues() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public T getValue() {
+      return value;
+    }
+    
+    
+    @Override
+    public List<Region> regions() {
+      return regions;
+    }
+    
+    
+    @Override
+    public int hashCode() {
+      int hash = 3;
+      hash = 83 * hash + Objects.hashCode(this.name);
+      hash = 83 * hash + Objects.hashCode(this.value);
+      return hash;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      final DefIndex<?> other = (DefIndex<?>) obj;
+      if (!Objects.equals(this.name, other.name)) {
+        return false;
+      }
+      return Objects.equals(this.value, other.value);
+    }
+
+
+    @Override
+    public String toString() {
+      return "Index{\"" + name + "\", " + value + ", " + regions + '}';
     }
     
   }

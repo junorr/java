@@ -35,5 +35,4 @@ public interface ByteStoreFormat {
   //...- Index
   //...- Free Blocks
   
-  
 }
