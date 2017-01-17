@@ -59,6 +59,7 @@ public interface Region extends Writable, Serializable {
   
   
   
+  
   public static class DefRegion implements Region {
     
     private final long start;

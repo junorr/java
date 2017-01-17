@@ -76,7 +76,10 @@ public class TestIndexStore {
     System.out.println();
     
     System.out.println("* store.find(\"measurement\", v->v > 50.0 && v < 65.0):");
-    System.out.println("   "+ store.find("measurement", v->v > 50.0 && v < 65.0));
+    System.out.println("   "+ store.query().find("measurement", v->v > 50.0 && v < 65.0));
+    System.out.println("* store.remove(\"measurement\", v->v > 50.0 && v < 65.0):");
+    System.out.println("   "+ store.remove("measurement", v->v > 50.0 && v < 65.0));
+    System.out.println(store);
   }
   
   

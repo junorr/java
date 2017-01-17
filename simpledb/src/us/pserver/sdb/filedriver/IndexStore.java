@@ -31,7 +31,6 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
 
@@ -44,33 +43,23 @@ public interface IndexStore<T extends Serializable> extends Serializable {
 
   public List<Index<T>> getStore(String name);
   
-  public List<Index<T>> find(String name, Predicate<T> prd);
+  public IndexQuery<T> query();
   
-  public List<Index<T>> find(Predicate<T> prd);
-  
-  public Optional<Index<T>> findOne(String name, Predicate<T> prd);
-  
-  public List<Index<T>> findByIndex(String name, Predicate<Index<T>> prd);
-  
-  public List<Index<T>> findByIndex(Predicate<Index<T>> prd);
+  public IndexUpdate<T> update();
   
   public IndexStore<T> insert(Index<T> idx);
   
-  public IndexBuilder<T> newIndex();
-  
   public int insertMany(Index<T> ... idxs);
+  
+  public IndexBuilder<T> newIndex();
   
   public List<Index<T>> remove(String name, Predicate<T> prd);
   
-  public IndexStore<T> removeOne(String name, Predicate<T> prd);
+  public List<Index<T>> remove(Predicate<Index<T>> prd);
   
-  public List<Index<T>> removeByIndex(Predicate<Index<T>> prd);
+  public boolean removeOne(String name, Predicate<T> prd);
   
-  public int update(String name, Predicate<T> prd, T newValue);
-  
-  public boolean updateOne(String name, Predicate<T> prd, T newValue);
-  
-  public boolean updateByIndex(String name, Predicate<Index<T>> prd, Index<T> newIndex);
+  public boolean removeOne(Predicate<Index<T>> prd);
   
   
   public static <U extends Serializable> IndexStore<U> newStore() {
@@ -145,98 +134,23 @@ public interface IndexStore<T extends Serializable> extends Serializable {
       }
       return store.get(name);
     }
-
-
+    
+    
     @Override
-    public List<Index<T>> find(String name, Predicate<T> prd) {
-      if(name == null || name.isEmpty()) {
-        return Collections.EMPTY_LIST;
-      }
-      lock.lock();
-      try {
-        return store.get(name).stream()
-            .filter(i->prd.test(i.getValue()))
-            .collect(Collectors.toList());
-      }
-      finally {
-        lock.unlock();
-      }
+    public IndexQuery<T> query() {
+      return IndexQuery.of(store, lock);
     }
-
-
+    
+    
     @Override
-    public List<Index<T>> find(Predicate<T> prd) {
-      lock.lock();
-      try {
-        return store.values().stream()
-            .flatMap(l->l.stream())
-            .filter(i->prd.test(i.getValue()))
-            .collect(Collectors.toList());
-      }
-      finally {
-        lock.unlock();
-      }
-    }
-
-
-    @Override
-    public Optional<Index<T>> findOne(String name, Predicate<T> prd) {
-      if(name == null || name.isEmpty()) {
-        return Optional.empty();
-      }
-      lock.lock();
-      try {
-        return store.get(name).stream()
-            .filter(i->prd.test(i.getValue()))
-            .findFirst();
-      }
-      finally {
-        lock.unlock();
-      }
-    }
-
-
-    @Override
-    public List<Index<T>> findByIndex(String name, Predicate<Index<T>> prd) {
-      if(name == null 
-          || name.isEmpty() 
-          || !store.containsKey(name) 
-          || prd == null) {
-        return Collections.EMPTY_LIST;
-      }
-      lock.lock();
-      try {
-        return store.get(name).stream()
-            .filter(prd)
-            .collect(Collectors.toList());
-      }
-      finally {
-        lock.unlock();
-      }
-    }
-
-
-    @Override
-    public List<Index<T>> findByIndex(Predicate<Index<T>> prd) {
-      if(prd == null) {
-        return Collections.EMPTY_LIST;
-      }
-      lock.lock();
-      try {
-        return store.values().stream()
-            .flatMap(l->l.stream())
-            .filter(prd)
-            .collect(Collectors.toList());
-      }
-      finally {
-        lock.unlock();
-      }
+    public IndexUpdate<T> update() {
+      return IndexUpdate.of(store, lock);
     }
 
 
     @Override
     public IndexStore<T> insert(Index<T> idx) {
-      insertMany(idx);
+      this.insertMany(idx);
       return this;
     }
     
@@ -276,88 +190,15 @@ public interface IndexStore<T extends Serializable> extends Serializable {
 
     @Override
     public List<Index<T>> remove(String name, Predicate<T> prd) {
-      lock.lock();
-      try {
-        List<Index<T>> res = find(name, prd);
-        if(!res.isEmpty()) {
-          store.get(res).removeAll(res);
-        }
-        return res;
-      }
-      finally {
-        lock.unlock();
-      }
-    }
-
-
-    @Override
-    public IndexStore<T> removeOne(String name, Predicate<T> prd) {
-      lock.lock();
-      try {
-        findOne(name, prd).ifPresent(i->store.get(name).remove(i));
-        return this;
-      }
-      finally {
-        lock.unlock();
-      }
-    }
-
-
-    @Override
-    public int update(String name, Predicate<T> prd, T newValue) {
-      lock.lock();
-      try {
-        int count = 0;
-        List<Index<T>> res = find(name, prd);
-        if(res.isEmpty()) return count;
-        List<Index<T>> lst = store.get(name);
-        for(Index<T> i : res) {
-          lst.remove(i);
-          lst.add(Index.of(i.getName(), newValue, i.regions()));
-          count++;
-        }
-        return count;
-      }
-      finally {
-        lock.unlock();
-      }
-    }
-
-
-    @Override
-    public boolean updateOne(String name, Predicate<T> prd, T newValue) {
-      lock.lock();
-      try {
-        Optional<Index<T>> opt = findOne(name, prd);
-        if(opt.isPresent()) {
-          Index<T> i = opt.get();
-          List<Index<T>> lst = store.get(name);
-          lst.remove(i);
-          lst.add(Index.of(i.getName(), newValue, i.regions()));
-        }
-        return opt.isPresent();
-      }
-      finally {
-        lock.unlock();
-      }
-    }
-
-
-    @Override
-    public List<Index<T>> removeByIndex(String name, Predicate<Index<T>> prd) {
-      if(name == null 
-          || name.isEmpty() 
-          || !store.containsKey(name) 
-          || prd == null) {
+      if(name == null || name.isEmpty() || prd == null) {
         return Collections.EMPTY_LIST;
       }
       lock.lock();
       try {
-        List<Index<T>> lst = store.get(name);
-        List<Index<T>> res = lst.stream()
-            .filter(prd)
-            .collect(Collectors.toList());
-        lst.removeAll(res);
+        List<Index<T>> res = query().find(name, prd);
+        if(!res.isEmpty()) {
+          store.get(name).removeAll(res);
+        }
         return res;
       }
       finally {
@@ -367,21 +208,48 @@ public interface IndexStore<T extends Serializable> extends Serializable {
 
 
     @Override
-    public boolean updateByIndex(String name, Predicate<Index<T>> prd, Index<T> newIndex) {
-      if(name == null 
-          || name.isEmpty() 
-          || !store.containsKey(name) 
-          || prd == null) {
+    public List<Index<T>> remove(Predicate<Index<T>> prd) {
+      if(prd == null) {
+        return Collections.EMPTY_LIST;
+      }
+      lock.lock();
+      try {
+        List<Index<T>> res = query().find(prd);
+        res.forEach(i->store.get(i.getName()).remove(i));
+        return res;
+      }
+      finally {
+        lock.unlock();
+      }
+    }
+
+
+    @Override
+    public boolean removeOne(String name, Predicate<T> prd) {
+      if(name == null || name.isEmpty() || prd == null) {
         return false;
       }
       lock.lock();
       try {
-        List<Index<T>> lst = store.get(name);
-        Optional<Index<T>> opt = lst.stream().filter(prd).findFirst();
-        if(opt.isPresent()) {
-          lst.remove(opt.get());
-          lst.add(newIndex);
-        }
+        Optional<Index<T>> opt = query().findOne(name, prd);
+        opt.ifPresent(i->store.get(name).remove(i));
+        return opt.isPresent();
+      }
+      finally {
+        lock.unlock();
+      }
+    }
+
+
+    @Override
+    public boolean removeOne(Predicate<Index<T>> prd) {
+      if(prd == null) {
+        return false;
+      }
+      lock.lock();
+      try {
+        Optional<Index<T>> opt = query().findOne(prd);
+        opt.ifPresent(i->store.get(i.getName()).remove(i));
         return opt.isPresent();
       }
       finally {
@@ -389,7 +257,7 @@ public interface IndexStore<T extends Serializable> extends Serializable {
       }
     }
     
-    
+
     @Override
     public String toString() {
       lock.lock();
@@ -423,7 +291,7 @@ public interface IndexStore<T extends Serializable> extends Serializable {
         lock.unlock();
       }
     }
-    
+
   }
   
 }

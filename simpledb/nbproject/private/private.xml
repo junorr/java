@@ -3,10 +3,23 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/storage/java/simpledb/src/us/pserver/sdb/filedriver/RegionLock.java</file>
-            <file>file:/storage/java/simpledb/src/us/pserver/sdb/filedriver/Region.java</file>
-            <file>file:/storage/java/simpledb/src/us/pserver/sdb/filedriver/RegionLock1.java</file>
-            <file>file:/storage/java/simpledb/src/us/pserver/sdb/filedriver/test/TestRegionLock.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/RegionLock.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/IndexQuery.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/test/TestDBServer.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/RegionFileLock.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/IndexUpdate.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/DBMetadata.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/test/TestIndexStore.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/test/TestArray.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/Pointer.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/test/TestSDBClient.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/Seekable.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/Region.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/IndexStore.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/Writable.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/test/TestODB.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/test/TestRegionLock.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/Index.java</file>
         </group>
     </open-files>
 </project-private>

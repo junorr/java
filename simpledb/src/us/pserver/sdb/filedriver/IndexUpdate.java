@@ -22,8 +22,10 @@
 package us.pserver.sdb.filedriver;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import us.pserver.insane.Checkup;
@@ -59,6 +61,8 @@ public interface IndexUpdate<T extends Serializable> {
     
     private final ReentrantLock lock;
     
+    private final IndexQuery<T> query;
+    
     
     public DefIndexUpdate(Map<String, List<Index<T>>> store, ReentrantLock lock) {
       this.store = Sane.of(store)
@@ -67,30 +71,103 @@ public interface IndexUpdate<T extends Serializable> {
       this.lock = Sane.of(lock)
           .with("Bad Null ReentrantLock")
           .get(Checkup.isNotNull());
+      query = IndexQuery.of(store, lock);
     }
 
 
     @Override
     public int update(String name, Predicate<T> prd, T newValue) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      if(name == null || name.isEmpty() 
+          || prd == null 
+          || newValue == null 
+          || !store.containsKey(name)) {
+        return -1;
+      }
+      lock.lock();
+      try {
+        List<Index<T>> ls = query.find(name, prd);
+        ls.forEach(i->{
+          store.get(name).remove(i);
+          store.get(name).add(
+              Index.of(name, newValue, i.regions())
+          );
+        });
+        return ls.size();
+      }
+      finally {
+        lock.unlock();
+      }
     }
 
 
     @Override
     public int update(Predicate<Index<T>> prd, Index<T> newIndex) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      if(prd == null || newIndex == null) {
+        return -1;
+      }
+      lock.lock();
+      try {
+        List<Index<T>> ls = query.find(prd);
+        ls.forEach(i->{
+          store.get(i.getName()).remove(i);
+          if(!store.containsKey(newIndex.getName())) {
+            store.put(newIndex.getName(), new ArrayList<>());
+          }
+          store.get(newIndex.getName()).add(newIndex);
+        });
+        return ls.size();
+      }
+      finally {
+        lock.unlock();
+      }
     }
 
 
     @Override
     public boolean updateOne(String name, Predicate<T> prd, T newValue) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      if(name == null || name.isEmpty() 
+          || prd == null 
+          || newValue == null 
+          || !store.containsKey(name)) {
+        return false;
+      }
+      lock.lock();
+      try {
+        Optional<Index<T>> opt = query.findOne(name, prd);
+        opt.ifPresent(i->{
+          store.get(name).remove(i);
+          store.get(name).add(
+              Index.of(name, newValue, i.regions())
+          );
+        });
+        return true;
+      }
+      finally {
+        lock.unlock();
+      }
     }
 
 
     @Override
     public boolean updateOne(Predicate<Index<T>> prd, Index<T> newIndex) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      if(prd == null || newIndex == null) {
+        return false;
+      }
+      lock.lock();
+      try {
+        Optional<Index<T>> opt = query.findOne(prd);
+        opt.ifPresent(i->{
+          store.get(i.getName()).remove(i);
+          if(!store.containsKey(newIndex.getName())) {
+            store.put(newIndex.getName(), new ArrayList<>());
+          }
+          store.get(newIndex.getName()).add(newIndex);
+        });
+        return true;
+      }
+      finally {
+        lock.unlock();
+      }
     }
     
   }

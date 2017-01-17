@@ -75,7 +75,9 @@ public interface IndexQuery<T extends Serializable> {
 
     @Override
     public List<Index<T>> find(String name, Predicate<T> prd) {
-      if(name == null || name.isEmpty()) {
+      if(name == null || name.isEmpty() 
+          || !store.containsKey(name)
+          || prd == null) {
         return Collections.EMPTY_LIST;
       }
       lock.lock();
