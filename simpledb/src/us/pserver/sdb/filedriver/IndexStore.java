@@ -21,16 +21,13 @@
 
 package us.pserver.sdb.filedriver;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Predicate;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
 
@@ -39,7 +36,7 @@ import us.pserver.insane.Sane;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/12/2016
  */
-public interface IndexStore<T extends Serializable> extends Serializable {
+public interface IndexStore<T> {
 
   public List<Index<T>> getStore(String name);
   
@@ -53,16 +50,8 @@ public interface IndexStore<T extends Serializable> extends Serializable {
   
   public IndexBuilder<T> newIndex();
   
-  public List<Index<T>> remove(String name, Predicate<T> prd);
   
-  public List<Index<T>> remove(Predicate<Index<T>> prd);
-  
-  public boolean removeOne(String name, Predicate<T> prd);
-  
-  public boolean removeOne(Predicate<Index<T>> prd);
-  
-  
-  public static <U extends Serializable> IndexStore<U> newStore() {
+  public static <U> IndexStore<U> newStore() {
     return new DefIndexStore();
   }
   
@@ -71,7 +60,7 @@ public interface IndexStore<T extends Serializable> extends Serializable {
   
   
   
-  public static final class IndexBuilder<T extends Serializable> {
+  public static final class IndexBuilder<T> {
     
     private final IndexStore<T> store;
     
@@ -114,7 +103,7 @@ public interface IndexStore<T extends Serializable> extends Serializable {
   
   
   
-  public static class DefIndexStore<T extends Serializable> implements IndexStore<T> {
+  public static class DefIndexStore<T> implements IndexStore<T> {
     
     private final Map<String, List<Index<T>>> store;
     
@@ -187,76 +176,6 @@ public interface IndexStore<T extends Serializable> extends Serializable {
       }
     }
 
-
-    @Override
-    public List<Index<T>> remove(String name, Predicate<T> prd) {
-      if(name == null || name.isEmpty() || prd == null) {
-        return Collections.EMPTY_LIST;
-      }
-      lock.lock();
-      try {
-        List<Index<T>> res = query().find(name, prd);
-        if(!res.isEmpty()) {
-          store.get(name).removeAll(res);
-        }
-        return res;
-      }
-      finally {
-        lock.unlock();
-      }
-    }
-
-
-    @Override
-    public List<Index<T>> remove(Predicate<Index<T>> prd) {
-      if(prd == null) {
-        return Collections.EMPTY_LIST;
-      }
-      lock.lock();
-      try {
-        List<Index<T>> res = query().find(prd);
-        res.forEach(i->store.get(i.getName()).remove(i));
-        return res;
-      }
-      finally {
-        lock.unlock();
-      }
-    }
-
-
-    @Override
-    public boolean removeOne(String name, Predicate<T> prd) {
-      if(name == null || name.isEmpty() || prd == null) {
-        return false;
-      }
-      lock.lock();
-      try {
-        Optional<Index<T>> opt = query().findOne(name, prd);
-        opt.ifPresent(i->store.get(name).remove(i));
-        return opt.isPresent();
-      }
-      finally {
-        lock.unlock();
-      }
-    }
-
-
-    @Override
-    public boolean removeOne(Predicate<Index<T>> prd) {
-      if(prd == null) {
-        return false;
-      }
-      lock.lock();
-      try {
-        Optional<Index<T>> opt = query().findOne(prd);
-        opt.ifPresent(i->store.get(i.getName()).remove(i));
-        return opt.isPresent();
-      }
-      finally {
-        lock.unlock();
-      }
-    }
-    
 
     @Override
     public String toString() {

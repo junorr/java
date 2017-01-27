@@ -77,8 +77,13 @@ public class TestIndexStore {
     
     System.out.println("* store.find(\"measurement\", v->v > 50.0 && v < 65.0):");
     System.out.println("   "+ store.query().find("measurement", v->v > 50.0 && v < 65.0));
-    System.out.println("* store.remove(\"measurement\", v->v > 50.0 && v < 65.0):");
-    System.out.println("   "+ store.remove("measurement", v->v > 50.0 && v < 65.0));
+    
+    double nv = Math.random() * 100;
+    System.out.println("* store.update().update(\"measurement\", v->v > 50.0 && v < 65.0, "+ nv+ ")");
+    System.out.println("   "+ store.update().update("measurement", v->v > 50.0 && v < 65.0, nv));
+    
+    System.out.printf("* store.update().remove(\"measurement\", v->v > %f && v < %f):%n", nv-1, nv+1);
+    System.out.println("   "+ store.update().remove("measurement", v->v > nv-1 && v < nv+1));
     System.out.println(store);
   }
   

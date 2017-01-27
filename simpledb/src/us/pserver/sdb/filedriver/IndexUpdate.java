@@ -21,11 +21,10 @@
 
 package us.pserver.sdb.filedriver;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import us.pserver.insane.Checkup;
@@ -36,18 +35,22 @@ import us.pserver.insane.Sane;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/12/2016
  */
-public interface IndexUpdate<T extends Serializable> {
+public interface IndexUpdate<T> extends QueryLimit {
 
   public int update(String name, Predicate<T> prd, T newValue);
   
   public int update(Predicate<Index<T>> prd, Index<T> newIndex);
   
-  public boolean updateOne(String name, Predicate<T> prd, T newValue);
+  public List<Index<T>> remove(String name, Predicate<T> prd);
   
-  public boolean updateOne(Predicate<Index<T>> prd, Index<T> newIndex);
+  public List<Index<T>> remove(Predicate<Index<T>> prd);
+  
+  @Override public IndexUpdate<T> skip(int n);
+  
+  @Override public IndexUpdate<T> limit(int len);
   
   
-  public static <U extends Serializable> IndexUpdate<U> of(Map<String, List<Index<U>>> store, ReentrantLock lock) {
+  public static <U> IndexUpdate<U> of(Map<String, List<Index<U>>> store, ReentrantLock lock) {
     return new DefIndexUpdate(store, lock);
   }
   
@@ -55,7 +58,7 @@ public interface IndexUpdate<T extends Serializable> {
   
   
   
-  public static class DefIndexUpdate<T extends Serializable> implements IndexUpdate<T> {
+  public static class DefIndexUpdate<T> implements IndexUpdate<T> {
     
     private final Map<String, List<Index<T>>> store;
     
@@ -63,8 +66,12 @@ public interface IndexUpdate<T extends Serializable> {
     
     private final IndexQuery<T> query;
     
+    private final int skip;
     
-    public DefIndexUpdate(Map<String, List<Index<T>>> store, ReentrantLock lock) {
+    private final int limit;
+    
+    
+    public DefIndexUpdate(Map<String, List<Index<T>>> store, ReentrantLock lock, int skip, int limit) {
       this.store = Sane.of(store)
           .with("Bad Null Map")
           .get(Checkup.isNotNull());
@@ -72,6 +79,13 @@ public interface IndexUpdate<T extends Serializable> {
           .with("Bad Null ReentrantLock")
           .get(Checkup.isNotNull());
       query = IndexQuery.of(store, lock);
+      this.skip = skip;
+      this.limit = limit;
+    }
+    
+    
+    public DefIndexUpdate(Map<String, List<Index<T>>> store, ReentrantLock lock) {
+      this(store, lock, 0, Integer.MAX_VALUE);
     }
 
 
@@ -85,7 +99,7 @@ public interface IndexUpdate<T extends Serializable> {
       }
       lock.lock();
       try {
-        List<Index<T>> ls = query.find(name, prd);
+        List<Index<T>> ls = query.skip(skip).limit(limit).find(name, prd);
         ls.forEach(i->{
           store.get(name).remove(i);
           store.get(name).add(
@@ -107,7 +121,7 @@ public interface IndexUpdate<T extends Serializable> {
       }
       lock.lock();
       try {
-        List<Index<T>> ls = query.find(prd);
+        List<Index<T>> ls = query.skip(skip).limit(limit).find(prd);
         ls.forEach(i->{
           store.get(i.getName()).remove(i);
           if(!store.containsKey(newIndex.getName())) {
@@ -124,23 +138,17 @@ public interface IndexUpdate<T extends Serializable> {
 
 
     @Override
-    public boolean updateOne(String name, Predicate<T> prd, T newValue) {
-      if(name == null || name.isEmpty() 
-          || prd == null 
-          || newValue == null 
-          || !store.containsKey(name)) {
-        return false;
+    public List<Index<T>> remove(String name, Predicate<T> prd) {
+      if(name == null || name.isEmpty() || prd == null) {
+        return Collections.EMPTY_LIST;
       }
       lock.lock();
       try {
-        Optional<Index<T>> opt = query.findOne(name, prd);
-        opt.ifPresent(i->{
-          store.get(name).remove(i);
-          store.get(name).add(
-              Index.of(name, newValue, i.regions())
-          );
-        });
-        return true;
+        List<Index<T>> res = query.skip(skip).limit(limit).find(name, prd);
+        if(!res.isEmpty()) {
+          store.get(name).removeAll(res);
+        }
+        return res;
       }
       finally {
         lock.unlock();
@@ -149,25 +157,31 @@ public interface IndexUpdate<T extends Serializable> {
 
 
     @Override
-    public boolean updateOne(Predicate<Index<T>> prd, Index<T> newIndex) {
-      if(prd == null || newIndex == null) {
-        return false;
+    public List<Index<T>> remove(Predicate<Index<T>> prd) {
+      if(prd == null) {
+        return Collections.EMPTY_LIST;
       }
       lock.lock();
       try {
-        Optional<Index<T>> opt = query.findOne(prd);
-        opt.ifPresent(i->{
-          store.get(i.getName()).remove(i);
-          if(!store.containsKey(newIndex.getName())) {
-            store.put(newIndex.getName(), new ArrayList<>());
-          }
-          store.get(newIndex.getName()).add(newIndex);
-        });
-        return true;
+        List<Index<T>> res = query.skip(skip).limit(limit).find(prd);
+        res.forEach(i->store.get(i.getName()).remove(i));
+        return res;
       }
       finally {
         lock.unlock();
       }
+    }
+
+
+    @Override
+    public IndexUpdate<T> skip(int skip) {
+      return new DefIndexUpdate(store, lock, skip, limit);
+    }
+
+
+    @Override
+    public IndexUpdate<T> limit(int limit) {
+      return new DefIndexUpdate(store, lock, skip, limit);
     }
     
   }

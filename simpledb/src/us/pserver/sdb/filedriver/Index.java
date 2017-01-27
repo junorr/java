@@ -21,7 +21,6 @@
 
 package us.pserver.sdb.filedriver;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +33,7 @@ import us.pserver.insane.Sane;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/12/2016
  */
-public interface Index<T extends Serializable> extends Serializable {
+public interface Index<T> {
 
   public String getName();
   
@@ -43,12 +42,12 @@ public interface Index<T extends Serializable> extends Serializable {
   public List<Region> regions();
   
   
-  public static <U extends Serializable> Builder<U> builder() {
+  public static <U> Builder<U> builder() {
     return new Builder();
   }
   
   
-  public static <U extends Serializable> Index<U> of(String name, U value, List<Region> regions) {
+  public static <U> Index<U> of(String name, U value, List<Region> regions) {
     return new DefIndex(name, value, regions);
   }
   
@@ -56,7 +55,7 @@ public interface Index<T extends Serializable> extends Serializable {
   
   
   
-  public static final class Builder<T extends Serializable> {
+  public static final class Builder<T> {
     
     private String name;
     
@@ -123,7 +122,7 @@ public interface Index<T extends Serializable> extends Serializable {
   
   
   
-  public static class DefIndex<T extends Serializable> implements Index<T> {
+  public static class DefIndex<T> implements Index<T> {
     
     private final String name;
     

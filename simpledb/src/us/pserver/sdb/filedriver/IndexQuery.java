@@ -21,11 +21,9 @@
 
 package us.pserver.sdb.filedriver;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -37,18 +35,18 @@ import us.pserver.insane.Sane;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/12/2016
  */
-public interface IndexQuery<T extends Serializable> {
+public interface IndexQuery<T> extends QueryLimit {
 
   public List<Index<T>> find(String name, Predicate<T> prd);
   
   public List<Index<T>> find(Predicate<Index<T>> prd);
   
-  public Optional<Index<T>> findOne(String name, Predicate<T> prd);
+  @Override public IndexQuery<T> skip(int n);
   
-  public Optional<Index<T>> findOne(Predicate<Index<T>> prd);
+  @Override public IndexQuery<T> limit(int len);
   
   
-  public static <U extends Serializable> IndexQuery<U> of(Map<String, List<Index<U>>> store, ReentrantLock lock) {
+  public static <U> IndexQuery<U> of(Map<String, List<Index<U>>> store, ReentrantLock lock) {
     return new DefIndexQuery(store, lock);
   }
   
@@ -56,20 +54,31 @@ public interface IndexQuery<T extends Serializable> {
   
   
   
-  public static class DefIndexQuery<T extends Serializable> implements IndexQuery<T> {
+  public static class DefIndexQuery<T> implements IndexQuery<T> {
     
     private final Map<String, List<Index<T>>> store;
     
     private final ReentrantLock lock;
     
+    private final int skip;
+    
+    private final int limit;
+    
     
     public DefIndexQuery(Map<String, List<Index<T>>> store, ReentrantLock lock) {
+      this(store, lock, 0, Integer.MAX_VALUE);
+    }
+    
+
+    public DefIndexQuery(Map<String, List<Index<T>>> store, ReentrantLock lock, int skip, int limit) {
       this.store = Sane.of(store)
           .with("Bad Null Map")
           .get(Checkup.isNotNull());
       this.lock = Sane.of(lock)
           .with("Bad Null ReentrantLock")
           .get(Checkup.isNotNull());
+      this.skip = skip;
+      this.limit = limit;
     }
     
 
@@ -84,17 +93,13 @@ public interface IndexQuery<T extends Serializable> {
       try {
         return store.get(name).stream()
             .filter(i->prd.test(i.getValue()))
+            .skip(skip)
+            .limit(limit)
             .collect(Collectors.toList());
       }
       finally {
         lock.unlock();
       }
-    }
-
-
-    @Override
-    public Optional<Index<T>> findOne(String name, Predicate<T> prd) {
-      return find(name, prd).stream().findFirst();
     }
 
 
@@ -108,6 +113,8 @@ public interface IndexQuery<T extends Serializable> {
         return store.values().stream()
             .flatMap(l->l.stream())
             .filter(prd)
+            .skip(skip)
+            .limit(limit)
             .collect(Collectors.toList());
       }
       finally {
@@ -117,8 +124,14 @@ public interface IndexQuery<T extends Serializable> {
     
 
     @Override
-    public Optional<Index<T>> findOne(Predicate<Index<T>> prd) {
-      return find(prd).stream().findFirst();
+    public IndexQuery<T> skip(int skip) {
+      return new DefIndexQuery(store, lock, skip, limit);
+    }
+
+
+    @Override
+    public IndexQuery<T> limit(int limit) {
+      return new DefIndexQuery(store, lock, skip, limit);
     }
     
   }

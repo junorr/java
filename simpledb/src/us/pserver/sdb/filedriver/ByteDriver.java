@@ -37,10 +37,6 @@ public interface ByteDriver extends Seekable {
   
   public Page read(int blocks) throws IOException;
   
-  public Page seekRead(long position, int blocks) throws IOException;
-  
   public int write(Page block) throws IOException;
-  
-  public int seekWrite(long position, Page block) throws IOException;
   
 }
