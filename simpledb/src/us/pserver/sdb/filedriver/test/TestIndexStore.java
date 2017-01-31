@@ -21,8 +21,8 @@
 
 package us.pserver.sdb.filedriver.test;
 
-import us.pserver.sdb.filedriver.IndexStore;
-import us.pserver.sdb.filedriver.Region;
+import us.pserver.job.index.IndexStore;
+import us.pserver.job.Region;
 import us.pserver.tools.RoundDouble;
 
 /**

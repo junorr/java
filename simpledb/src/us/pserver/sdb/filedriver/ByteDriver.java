@@ -30,13 +30,4 @@ import java.io.IOException;
  */
 public interface ByteDriver extends Seekable {
 
-  public long size();
-  
-  @Override
-  public ByteDriver seek(long position) throws IOException;
-  
-  public Page read(int blocks) throws IOException;
-  
-  public int write(Page block) throws IOException;
-  
 }

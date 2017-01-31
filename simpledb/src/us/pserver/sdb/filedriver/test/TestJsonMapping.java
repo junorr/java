@@ -224,7 +224,7 @@ public class TestJsonMapping {
     System.out.println(tm.stop());
     System.out.println(conf);
   }
-
+  
   
   public static void main(String[] args) throws IOException {
     jsonio();
