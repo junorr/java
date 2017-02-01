@@ -30,11 +30,9 @@ public abstract class StringOperation extends Operation<String> {
 
   final String value;
   
-  
   public StringOperation() {
     value = "";
   }
-  
   
   public StringOperation(String s) {
     if(s == null) {
@@ -42,7 +40,6 @@ public abstract class StringOperation extends Operation<String> {
     }
     this.value = s;
   }
-
 
   @Override String value() {
     return value;

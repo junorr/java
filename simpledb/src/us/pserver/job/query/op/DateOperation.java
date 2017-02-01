@@ -32,11 +32,9 @@ public abstract class DateOperation extends Operation<Date> {
 
   final Date value;
   
-  
   public DateOperation() {
     value = new Date();
   }
-  
   
   public DateOperation(Date d) {
     if(d == null) {
@@ -45,9 +43,8 @@ public abstract class DateOperation extends Operation<Date> {
     this.value = d;
   }
 
-
   @Override Date value() {
     return value;
   }
-
+  
 }

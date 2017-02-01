@@ -32,14 +32,14 @@ import java.util.List;
  */
 public final class DateInArray extends DateOperation {
   
-  final List array;
+  final List<Date> array;
   
   public DateInArray() { 
     super(); 
     this.array = Collections.EMPTY_LIST;
   }
   
-  public DateInArray(List array) { 
+  public DateInArray(List<Date> array) { 
     super(); 
     if(array == null) {
       throw new IllegalArgumentException("Bad Null Array");
@@ -47,10 +47,14 @@ public final class DateInArray extends DateOperation {
     this.array = array;
   }
 
+  public List<Date> array() {
+    return array;
+  }
+
   @Override
   public boolean apply(Date other) {
     return other != null 
-        && array.stream().anyMatch(o->other.equals(o));
+        && array.stream().anyMatch(d->other.equals(d));
   }
 
 }

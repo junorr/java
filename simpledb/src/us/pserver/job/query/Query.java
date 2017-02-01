@@ -46,7 +46,7 @@ public interface Query {
   
   public Query descend(String field);
   
-  public Query field(String field, Operation op);
+  public Query filter(String field, Operation op);
   
   public Query and(String field, Operation op);
   
@@ -112,7 +112,7 @@ public interface Query {
 
     @Override
     public Query descend(String field) {
-      return findOrCreate(field, childs, null);
+      return createQuery(field, childs, null);
     }
 
 
@@ -123,20 +123,20 @@ public interface Query {
 
 
     @Override
-    public Query field(String field, Operation op) {
-      return findOrCreate(field, childs, op);
+    public Query filter(String field, Operation op) {
+      return createQuery(field, childs, op);
     }
 
 
     @Override
     public Query and(String field, Operation op) {
-      return findOrCreate(field, and, op);
+      return createQuery(field, and, op);
     }
 
 
     @Override
     public Query or(String field, Operation op) {
-      return findOrCreate(field, or, op);
+      return createQuery(field, or, op);
     }
     
 
@@ -152,26 +152,19 @@ public interface Query {
     }
     
     
-    private Query findOrCreate(String field, List<Query> lst, Operation op) {
+    private Query createQuery(String field, List<Query> lst, Operation op) {
       if(field == null) {
         throw new IllegalArgumentException("Bad Null Field");
       }
-      Query query = find(field, lst);
-      if(query == null) {
-        query = new DefQuery(field, op);
-        lst.add(query);
-      }
+      Query query = new DefQuery(field, op);
+      lst.add(query);
       return query;
     }
 
     
-    private Query find(String field, List<Query> lst) {
-      if(field == null) {
-        return null;
-      }
-      Optional<Query> opt = lst.stream()
-          .filter(q->q.name().equals(field)).findAny();
-      return opt.isPresent() ? opt.get() : null;
+    @Override
+    public String toString() {
+      return "Query{" + "name=" + name + ", oper=" + oper + ", childs=" + childs.size() + ", and=" + and.size() + ", or=" + or.size() + '}';
     }
 
   }

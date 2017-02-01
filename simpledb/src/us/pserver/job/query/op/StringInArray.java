@@ -31,25 +31,29 @@ import java.util.List;
  */
 public final class StringInArray extends StringOperation {
   
-  final List array;
+  final List<String> array;
   
   public StringInArray() { 
     super(); 
     this.array = Collections.EMPTY_LIST;
   }
   
-  public StringInArray(List array) { 
+  public StringInArray(List<String> array) { 
     super(); 
     if(array == null) {
       throw new IllegalArgumentException("Bad Null Array");
     }
     this.array = array;
   }
+  
+  public List<String> array() {
+    return array;
+  }
 
   @Override
   public boolean apply(String other) {
     return other != null 
-        && array.stream().anyMatch(o->other.equals(o.toString()));
+        && array.stream().anyMatch(s->other.equals(s));
   }
 
 }

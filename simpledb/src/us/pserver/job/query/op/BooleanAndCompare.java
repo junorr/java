@@ -21,41 +21,41 @@
 
 package us.pserver.job.query.op;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/01/2017
+ * @version 0.0 - 01/02/2017
  */
-public final class ArrayContains extends Operation<List> {
-
-  final Object value;
+public class BooleanAndCompare extends BooleanOperation {
+  
+  private final boolean and;
+  
+  //private final boolean orig;
   
   
-  public ArrayContains() {
-    value = "";
+  public BooleanAndCompare(boolean value, boolean compareByAnd) {
+    super(value);
+    //this.orig = orig;
+    this.and = compareByAnd;
   }
   
+  /*
+  public boolean original() {
+    return orig;
+  }
+  */
   
-  public ArrayContains(Object o) {
-    if(o == null) {
-      throw new IllegalArgumentException("Bad NUll Number");
-    }
-    this.value = o;
+  public boolean compareByAnd() {
+    return and;
   }
 
-
-  @Override List value() {
-    return Arrays.asList(value);
-  }
-
-
+  
   @Override
-  public boolean apply(List other) {
+  public boolean apply(Boolean other) {
     return other != null
-        && other.stream().anyMatch(o->o.toString().equals(value.toString()));
+        && (and 
+        ? value && other 
+        : value || other);
   }
 
 }

@@ -31,25 +31,29 @@ import java.util.List;
  */
 public final class NumberInArray extends NumberOperation {
   
-  final List array;
+  final List<Number> array;
   
   public NumberInArray() { 
     super(); 
     this.array = Collections.EMPTY_LIST;
   }
   
-  public NumberInArray(List array) { 
+  public NumberInArray(List<Number> array) { 
     super(); 
     if(array == null) {
       throw new IllegalArgumentException("Bad Null Array");
     }
     this.array = array;
   }
+  
+  public List<Number> array() {
+    return array;
+  }
 
   @Override
   public boolean apply(Number other) {
     return other != null 
-        && array.stream().anyMatch(o->other.equals(o));
+        && array.stream().anyMatch(n->other.doubleValue() == n.doubleValue());
   }
 
 }

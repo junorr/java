@@ -27,9 +27,15 @@ package us.pserver.job.query.op;
  * @version 0.0 - 31/01/2017
  */
 public abstract class Operation<T> {
-
-  abstract T value();
   
+  abstract T value();
+
   public abstract boolean apply(T other);
+  
+  
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName()+ "{"+ value()+ "}";
+  }
   
 }

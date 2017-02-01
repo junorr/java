@@ -25,7 +25,9 @@ package us.pserver.cdr.crypt;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import us.pserver.valid.Valid;
+import java.util.Objects;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -44,6 +46,7 @@ public class Digester {
    * @return hash.
    */
   public static byte[] digest(byte[] bs, DigestAlgorithm algo) {
+    Sane.of(bs).with("Bad Empty Array").check(Checkup.of(bs->bs.length))
     Valid.off(bs).forEmpty().fail();
     Valid.off(algo).forNull().fail(DigestAlgorithm.class);
     try {

@@ -26,23 +26,16 @@ package us.pserver.job.query.op;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 31/01/2017
  */
-public abstract class NumberOperation extends Operation<Number> {
-
-  final Number value;
+public final class BooleanNotEquals extends BooleanOperation {
   
-  public NumberOperation() {
-    value = 0;
-  }
+  public BooleanNotEquals() { super(); }
   
-  public NumberOperation(Number n) {
-    if(n == null) {
-      throw new IllegalArgumentException("Bad NUll Number");
-    }
-    this.value = n;
-  }
+  public BooleanNotEquals(Boolean b) { super(b); }
 
-  @Override Number value() {
-    return value;
+  @Override
+  public boolean apply(Boolean other) {
+    return other != null
+        && !other.equals(value);
   }
 
 }

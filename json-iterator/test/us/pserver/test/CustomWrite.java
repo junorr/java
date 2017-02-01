@@ -60,35 +60,6 @@ public class CustomWrite {
     }
 
     @Override
-    public int hashCode() {
-      int hash = 7;
-      hash = 67 * hash + Objects.hashCode(this.value);
-      hash = 67 * hash + this.magic;
-      return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj) {
-        return true;
-      }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
-        return false;
-      }
-      final MyValue other = (MyValue) obj;
-      if (this.magic != other.magic) {
-        return false;
-      }
-      if (!Objects.equals(this.value, other.value)) {
-        return false;
-      }
-      return true;
-    }
-
-    @Override
     public String toString() {
       return "MyValue{" + "value=" + value + ", magic=" + magic + '}';
     }
@@ -126,39 +97,6 @@ public class CustomWrite {
 
     public long getLength() {
       return length;
-    }
-
-    @Override
-    public int hashCode() {
-      int hash = 3;
-      hash = 97 * hash + Objects.hashCode(this.name);
-      hash = 97 * hash + (int) (this.position ^ (this.position >>> 32));
-      hash = 97 * hash + (int) (this.length ^ (this.length >>> 32));
-      return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj) {
-        return true;
-      }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
-        return false;
-      }
-      final RefObject other = (RefObject) obj;
-      if (this.position != other.position) {
-        return false;
-      }
-      if (this.length != other.length) {
-        return false;
-      }
-      if (!Objects.equals(this.name, other.name)) {
-        return false;
-      }
-      return true;
     }
 
     @Override
@@ -221,39 +159,6 @@ public class CustomWrite {
     }
 
     @Override
-    public int hashCode() {
-      int hash = 7;
-      hash = 37 * hash + Objects.hashCode(this.name);
-      hash = 37 * hash + this.code;
-      hash = 37 * hash + Objects.hashCode(this.values);
-      return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj) {
-        return true;
-      }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
-        return false;
-      }
-      final MyObject other = (MyObject) obj;
-      if (this.code != other.code) {
-        return false;
-      }
-      if (!Objects.equals(this.name, other.name)) {
-        return false;
-      }
-      if (!Objects.equals(this.values, other.values)) {
-        return false;
-      }
-      return true;
-    }
-
-    @Override
     public String toString() {
       return "MyObject{" + "name=" + name + ", code=" + code + ", values=" + values + '}';
     }
@@ -265,11 +170,18 @@ public class CustomWrite {
   
   
   public static void main(String[] args) {
-    MyObject obj = new MyObject("object");
-    obj.add(new MyValue("v1", 1))
+    MyObject obj = new MyObject("object", 308327225)
+        .add(new MyValue("v1", 1))
         .add(new MyValue("v2", 2))
         .add(new MyValue("v3", 3));
     System.out.println("* obj: "+ obj);
+    System.out.println("Objects.hashCode( ): "+ Objects.hashCode(obj));
+    //obj.getValues().remove(1);
+    MyObject ob = new MyObject("object", 308327225)
+        .add(new MyValue("v1", 1))
+        .add(new MyValue("v2", 2))
+        .add(new MyValue("v3", 3));
+    System.out.println("Objects.hashCode( ): "+ Objects.hashCode(ob));
     
     Any any = JsonStream.wrap(obj);
     String json = any.toString();

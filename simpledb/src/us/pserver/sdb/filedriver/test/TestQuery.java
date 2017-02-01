@@ -22,15 +22,12 @@
 package us.pserver.sdb.filedriver.test;
 
 import com.jsoniter.JsonIterator;
-import com.jsoniter.ValueType;
 import com.jsoniter.any.Any;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import us.pserver.job.query.Operations;
 import us.pserver.job.query.Query;
 import us.pserver.job.query.Query.DefQuery;
+import us.pserver.job.query.QueryJson;
 
 /**
  *
@@ -38,87 +35,6 @@ import us.pserver.job.query.Query.DefQuery;
  * @version 0.0 - 31/01/2017
  */
 public class TestQuery {
-  
-  
-  public static boolean isDouble(Any any) {
-    return any.valueType() == ValueType.NUMBER
-        && any.toString().contains(".");
-  }
-  
-  
-  public static boolean resolve(Query query, Any any) {
-    System.out.println("__resolve( "+ any+ " )__");
-    Set<String> keys = any.keys();
-    Boolean comp = null;
-    for(String k : keys) {
-      Any a = any.get(k);
-      ValueType valt = a.valueType();
-      boolean and = true;
-      Query qf = query.andFields().stream().filter(q->q.name().equals(k)).findAny().orElse(null);
-      if(qf == null) {
-        and = false;
-        qf = query.orFields().stream().filter(q->q.name().equals(k)).findAny().orElse(null);
-      }
-      if(qf == null) {
-        and = true;
-        qf = query.childFields().stream().filter(q->q.name().equals(k)).findAny().orElse(null);
-      }
-      if(qf == null) continue;
-      switch(valt) {
-        case ARRAY:
-          List<Any> als = a.asList();
-          List lst = new ArrayList(als.size());
-          als.forEach(aa->lst.add(aa.object()));
-          if(and) {
-            comp = (comp == null ? true : comp) && qf.operation().apply(a.object());
-          } else {
-            comp = (comp == null ? false : comp) || qf.operation().apply(a.object());
-          }
-          System.out.println(lst+ " - "+ lst.get(0).getClass());
-          System.out.println("\""+ k+ "\""+ ".operation().apply( "+ a+ " ): "+ comp);
-          break;
-        case BOOLEAN:
-          if(and) {
-            comp = (comp == null ? true : comp) && qf.operation().apply(a.toBoolean());
-          } else {
-            comp = (comp == null ? false : comp) || qf.operation().apply(a.toBoolean());
-          }
-          System.out.println("\""+ k+ "\""+ ".operation().apply( "+ a+ " ): "+ comp);
-          break;
-        case NUMBER:
-          if(and) {
-            comp = (comp == null ? true : comp) && qf.operation().apply((isDouble(a) ? a.toDouble() : a.toLong()));
-          } else {
-            comp = (comp == null ? false : comp) && qf.operation().apply((isDouble(a) ? a.toDouble() : a.toLong()));
-          }
-          System.out.println("\""+ k+ "\""+ ".operation().apply( "+ a+ " ): "+ comp);
-          break;
-        case STRING:
-          if(and) {
-            comp = (comp == null ? true : comp) && qf.operation().apply(a.toString());
-          } else {
-            comp = (comp == null ? false : comp) || qf.operation().apply(a.toString());
-          }
-          System.out.println("\""+ k+ "\""+ ".operation().apply( "+ a+ " ): "+ comp);
-          break;
-        case OBJECT:
-          boolean b = resolve(qf, a);
-          if(and) {
-            comp = (comp == null ? true : comp) && b;
-          } else {
-            comp = (comp == null ? false : comp) || b;
-          }
-          System.out.println("\""+ k+ "\""+ ".operation().apply( "+ a+ " ): "+ comp);
-          break;
-        default:
-          System.out.println("default for: "+ a);
-          comp = false;
-          break;
-      }
-    }
-    return comp;
-  }
-
   
   public static void main(String[] args) throws IOException {
     String json = (
@@ -139,24 +55,20 @@ public class TestQuery {
         + "}").replace("'", "\"");
     System.out.println("* json: "+ json);
     Any any = JsonIterator.deserialize(json);
-    System.out.println("* any : "+ any);
-    Set<String> keys = any.keys();
-    for(String k : keys) {
-      Any a = any.get(k);
-      System.out.println(" - "+ k+ ": "+ a+ " - "+ a.valueType());
-    }
-    System.out.println();
     
     Query query = new DefQuery("us.pserver.Test");
-    query.field("num", Operations.between(200, 600));
+    query.filter("num", Operations.in(200, 300, 400, 500, 600));
     query.and("str2", Operations.endsWith("ld"));
     query.and("array", Operations.arrayContains(2));
-    query.descend("child").field("bool", Operations.eq(false));
-    query.descend("child2").field("bool", Operations.eq(false));
-    query.descend("child2").field("world", Operations.startsWith("h"));
+    query.and("array", Operations.arrayContains(3));
     
-    boolean compare = resolve(query, any);
-    System.out.println();
+    query.descend("child").filter("bool", Operations.eq(false));
+    query.descend("child2").filter("bool", Operations.ne(false));
+    query.descend("child2").filter("world", Operations.startsWith("h"));
+    
+    //boolean compare = resolve(query, any);
+    boolean compare = QueryJson.debug().resolve(query, any);
+    //boolean compare = QueryJson.resolved(query, any);
     System.out.println("resolve(query, any): "+ compare);
   }
   

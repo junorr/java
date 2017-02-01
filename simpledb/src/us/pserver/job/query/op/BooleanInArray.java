@@ -31,14 +31,14 @@ import java.util.List;
  */
 public final class BooleanInArray extends BooleanOperation {
   
-  final List array;
+  final List<Boolean> array;
   
   public BooleanInArray() { 
     super(); 
     this.array = Collections.EMPTY_LIST;
   }
   
-  public BooleanInArray(List array) { 
+  public BooleanInArray(List<Boolean> array) { 
     super(); 
     if(array == null) {
       throw new IllegalArgumentException("Bad Null Array");
@@ -46,10 +46,14 @@ public final class BooleanInArray extends BooleanOperation {
     this.array = array;
   }
 
+  public List<Boolean> array() {
+    return array;
+  }
+
   @Override
   public boolean apply(Boolean other) {
     return other != null 
-        && array.stream().anyMatch(o->other.equals(o));
+        && array.stream().anyMatch(b->other.booleanValue() == b.booleanValue());
   }
 
 }

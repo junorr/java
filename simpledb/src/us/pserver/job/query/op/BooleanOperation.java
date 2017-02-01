@@ -30,11 +30,9 @@ public abstract class BooleanOperation extends Operation<Boolean> {
 
   final Boolean value;
   
-  
   public BooleanOperation() {
     value = Boolean.FALSE;
   }
-  
   
   public BooleanOperation(Boolean b) {
     if(b == null) {
@@ -42,7 +40,6 @@ public abstract class BooleanOperation extends Operation<Boolean> {
     }
     this.value = b;
   }
-
 
   @Override Boolean value() {
     return value;
