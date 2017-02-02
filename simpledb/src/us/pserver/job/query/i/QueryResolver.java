@@ -19,29 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.job.query;
+package us.pserver.job.query.i;
 
 import com.jsoniter.ValueType;
 import com.jsoniter.any.Any;
 import java.util.List;
 import java.util.Set;
+import us.pserver.job.query.Query;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/02/2017
  */
-public interface QueryJson {
+public interface QueryResolver {
 
   public boolean resolve(Query query, Any any);
   
   
-  public static QueryJson instance() {
+  public static QueryResolver instance() {
     return new DefQueryJson();
   }
   
   
-  public static QueryJson debug() {
+  public static QueryResolver debug() {
     return new DefQueryJson(true);
   }
   
@@ -54,7 +55,7 @@ public interface QueryJson {
   
   
   
-  static final class DefQueryJson implements QueryJson {
+  static final class DefQueryJson implements QueryResolver {
     
     private final boolean debug;
     
@@ -148,9 +149,9 @@ public interface QueryJson {
         }
       } 
       else {
-        result = resolveList(query.andFields(), any, true)
-            && resolveList(query.childFields(), any, true)
-            || resolveList(query.orFields(), any, false);
+        result = resolveList(query.ands(), any, true)
+            && resolveList(query.childs(), any, true)
+            || resolveList(query.ors(), any, false);
       }
       return result;
     }

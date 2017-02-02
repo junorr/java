@@ -21,7 +21,7 @@
 
 package us.pserver.job.index;
 
-import us.pserver.job.query.QueryLimit;
+import us.pserver.job.query.i.QueryLimit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +51,7 @@ public interface IndexUpdate<T> extends QueryLimit {
   @Override public IndexUpdate<T> limit(int len);
   
   
-  public static <U> IndexUpdate<U> of(Map<String, List<Index<U>>> store, ReentrantLock lock) {
+  static <U> IndexUpdate<U> of(Map<String, List<Index<U>>> store, ReentrantLock lock) {
     return new DefIndexUpdate(store, lock);
   }
   

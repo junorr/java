@@ -21,7 +21,7 @@
 
 package us.pserver.job.index;
 
-import us.pserver.job.query.QueryLimit;
+import us.pserver.job.query.i.QueryLimit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +47,7 @@ public interface IndexQuery<T> extends QueryLimit {
   @Override public IndexQuery<T> limit(int len);
   
   
-  public static <U> IndexQuery<U> of(Map<String, List<Index<U>>> store, ReentrantLock lock) {
+  static <U> IndexQuery<U> of(Map<String, List<Index<U>>> store, ReentrantLock lock) {
     return new DefIndexQuery(store, lock);
   }
   

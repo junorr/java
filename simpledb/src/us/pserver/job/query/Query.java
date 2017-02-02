@@ -24,7 +24,6 @@ package us.pserver.job.query;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import us.pserver.job.query.op.Operation;
 
 /**
@@ -33,24 +32,30 @@ import us.pserver.job.query.op.Operation;
  * @version 0.0 - 30/01/2017
  */
 public interface Query {
-
+  
   public String name();
   
-  public List<Query> childFields();
+  public List<Query> childs();
   
-  public List<Query> andFields();
+  public List<Query> ands();
   
-  public List<Query> orFields();
+  public List<Query> ors();
   
   public Operation operation();
   
   public Query descend(String field);
   
-  public Query filter(String field, Operation op);
+  public QueryBuilder filter(String field);
   
-  public Query and(String field, Operation op);
+  public Query filter(Query q);
   
-  public Query or(String field, Operation op);
+  public QueryBuilder and(String field);
+  
+  public Query and(Query q);
+  
+  public QueryBuilder or(String field);
+  
+  public Query or(Query q);
   
   
   public static Query of(Class cls) {
@@ -99,7 +104,7 @@ public interface Query {
     
     
     @Override
-    public List<Query> childFields() {
+    public List<Query> childs() {
       return Collections.unmodifiableList(childs);
     }
     
@@ -123,31 +128,52 @@ public interface Query {
 
 
     @Override
-    public Query filter(String field, Operation op) {
-      return createQuery(field, childs, op);
+    public QueryBuilder filter(String field) {
+      return QueryBuilder.builder(this::filter, field);
     }
 
 
     @Override
-    public Query and(String field, Operation op) {
-      return createQuery(field, and, op);
+    public Query filter(Query q) {
+      if(q != null) this.childs.add(q);
+      return this;
     }
 
 
     @Override
-    public Query or(String field, Operation op) {
-      return createQuery(field, or, op);
+    public QueryBuilder and(String field) {
+      return QueryBuilder.builder(this::and, field);
     }
+
+
+    @Override
+    public Query and(Query q) {
+      if(q != null) this.and.add(q);
+      return this;
+    }
+
+
+    @Override
+    public QueryBuilder or(String field) {
+      return QueryBuilder.builder(this::or, field);
+    }
+
+
+    @Override
+    public Query or(Query q) {
+      if(q != null) this.or.add(q);
+      return this;
+    }
+
     
-
     @Override
-    public List<Query> andFields() {
+    public List<Query> ands() {
       return and;
     }
     
 
     @Override
-    public List<Query> orFields() {
+    public List<Query> ors() {
       return or;
     }
     

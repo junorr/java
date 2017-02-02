@@ -24,10 +24,10 @@ package us.pserver.sdb.filedriver.test;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 import java.io.IOException;
-import us.pserver.job.query.Operations;
+import us.pserver.job.query.op.Operations;
 import us.pserver.job.query.Query;
 import us.pserver.job.query.Query.DefQuery;
-import us.pserver.job.query.QueryJson;
+import us.pserver.job.query.i.QueryResolver;
 
 /**
  *
@@ -57,18 +57,18 @@ public class TestQuery {
     Any any = JsonIterator.deserialize(json);
     
     Query query = new DefQuery("us.pserver.Test");
-    query.filter("num", Operations.in(200, 300, 400, 500, 600));
-    query.and("str2", Operations.endsWith("ld"));
-    query.and("array", Operations.arrayContains(2));
-    query.and("array", Operations.arrayContains(3));
-    
-    query.descend("child").filter("bool", Operations.eq(false));
-    query.descend("child2").filter("bool", Operations.ne(false));
-    query.descend("child2").filter("world", Operations.startsWith("h"));
+    query.filter("num").in(200, 300, 400, 500, 600)
+        .and("str2").endsWith("ld")
+        .and("array").arrayContains(2)
+        .and("array").arrayContains(3)
+        .descend("child").filter("bool").eq(false);
+    query.descend("child2")
+        .filter("bool").ne(false)
+        .and("world").startsWith("h");
     
     //boolean compare = resolve(query, any);
-    boolean compare = QueryJson.debug().resolve(query, any);
-    //boolean compare = QueryJson.resolved(query, any);
+    boolean compare = QueryResolver.debug().resolve(query, any);
+    //boolean compare = QueryResolver.resolved(query, any);
     System.out.println("resolve(query, any): "+ compare);
   }
   
