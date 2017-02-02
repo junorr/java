@@ -28,7 +28,8 @@ import java.nio.ByteBuffer;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -54,8 +55,8 @@ public class CryptInputStream extends InputStream {
   
   
   public CryptInputStream(InputStream in, CryptKey key) {
-    Valid.off(in).forNull().fail(InputStream.class);
-    Valid.off(key).forNull().fail(CryptKey.class);
+    Sane.of(in).check(Checkup.isNotNull())
+        .swap(key).check(Checkup.isNotNull());
     input = new BufferedInputStream(in);
     buffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE);
     finished = false;
@@ -79,9 +80,9 @@ public class CryptInputStream extends InputStream {
   
   @Override
   public int read(byte[] bs, int off, int len) throws IOException {
-    Valid.off(bs).forEmpty().fail();
-    Valid.off(off).forNotBetween(0, bs.length-1);
-    Valid.off(len).forNotBetween(1, bs.length-off);
+    Sane.of((Object)bs).check(Checkup.isNotEmptyArray());
+    Sane.of(off).check(Checkup.isBetween(0, bs.length -1));
+    Sane.of(len).check(Checkup.isBetween(1, bs.length-off));
     if(!buffer.hasRemaining()) {
       encryptRaw();
     }
@@ -97,7 +98,7 @@ public class CryptInputStream extends InputStream {
   
   @Override
   public int read(byte[] bs) throws IOException {
-    Valid.off(bs).forEmpty().fail();
+    Sane.of((Object)bs).check(Checkup.isNotEmptyArray());
     return read(bs, 0, bs.length);
   }
   
@@ -107,8 +108,8 @@ public class CryptInputStream extends InputStream {
     byte[] temp = new byte[DEFAULT_BUFFER_SIZE];
     int read = input.read(temp, 0, temp.length);
     finished = (read < 1);
-    if(finished)
-      System.out.println("* CryptInputStream.finished = "+ finished);
+    //if(finished)
+      //System.out.println("* CryptInputStream.finished = "+ finished);
     buffer.clear();
     try {
       if(finished)
@@ -127,8 +128,8 @@ public class CryptInputStream extends InputStream {
   @Override
   public void close() throws IOException {
     input.close();
-    System.out.println("* CryptInputStream.finished = "+ finished);
-    System.out.println("* CryptInputStream.count = "+ count);
+    //System.out.println("* CryptInputStream.finished = "+ finished);
+    //System.out.println("* CryptInputStream.count = "+ count);
   }
   
 }

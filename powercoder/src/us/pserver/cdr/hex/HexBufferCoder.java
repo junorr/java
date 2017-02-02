@@ -24,7 +24,8 @@ package us.pserver.cdr.hex;
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.Coder;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  * Codificador/Decodificador hexadecimal para <code>ByteBuffer</code>.
@@ -50,9 +51,9 @@ public class HexBufferCoder implements Coder<ByteBuffer> {
   
   @Override
   public ByteBuffer apply(ByteBuffer buffer, boolean encode) {
-    Valid.off(buffer).forNull().fail(ByteBuffer.class);
-    Valid.off(buffer.remaining()).forLesserThan(1)
-        .fail("No remaining bytes to read");
+    Sane.of(buffer).check(Checkup.isNotNull());
+    Sane.of(buffer).with("No remaining bytes to read")
+        .check(b->b.remaining() > 0);
     byte[] bs = bcv.convert(buffer);
     if(bs == null || bs.length == 0)
       return null;

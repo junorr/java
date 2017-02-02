@@ -24,7 +24,7 @@ package us.pserver.cdr.lzma;
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.Coder;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Sane;
 
 /**
  * Compactador/Descompactador LZMA para <code>ByteBuffer</code>.
@@ -56,9 +56,8 @@ public class LzmaBufferCoder implements Coder<ByteBuffer> {
 
   @Override
   public ByteBuffer encode(ByteBuffer buf) {
-    Valid.off(buf).forNull().fail(ByteBuffer.class);
-    Valid.off(buf.remaining()).forLesserThan(1)
-        .fail("No remaining bytes to read");
+    Sane.of(buf).checkup().isNotNull().check();
+    Sane.of(buf.remaining()).checkup().isGreaterThan(0).check();
     byte[] bs = conv.convert(buf);
     return conv.reverse(cdr.encode(bs));
   }
@@ -66,9 +65,9 @@ public class LzmaBufferCoder implements Coder<ByteBuffer> {
 
   @Override
   public ByteBuffer decode(ByteBuffer buf) {
-    Valid.off(buf).forNull().fail(ByteBuffer.class);
-    Valid.off(buf.remaining()).forLesserThan(1)
-        .fail("No remaining bytes to read");
+    Sane.of(buf).checkup().isNotNull().check();
+    Sane.of(buf.remaining()).checkup().isGreaterThan(0)
+        .with("No remaining bytes to read").check();
     byte[] bs = conv.convert(buf);
     return conv.reverse(cdr.decode(bs));
   }

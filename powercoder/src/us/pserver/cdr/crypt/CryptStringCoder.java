@@ -24,7 +24,8 @@ package us.pserver.cdr.crypt;
 
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64ByteCoder;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -74,7 +75,8 @@ public class CryptStringCoder implements CryptCoder<String> {
   
   @Override
   public String apply(String  str, boolean encode) {
-    Valid.off(str).forEmpty().fail("Invalid String: ");
+    Sane.of(str).with("Invalid String: "+ str)
+        .check(Checkup.isNotEmpty());
     byte[] bs = scv.convert(str);
     if(encode) {
       bs = coder.encode(bs);

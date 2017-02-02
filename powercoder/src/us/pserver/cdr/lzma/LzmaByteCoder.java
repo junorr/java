@@ -28,7 +28,8 @@ import lzma.streams.LzmaInputStream;
 import lzma.streams.LzmaOutputStream;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.FileUtils;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  * Compactador/Descompactador LZMA para byte 
@@ -48,7 +49,7 @@ public class LzmaByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] encode(byte[] buf) {
-    Valid.off(buf).forEmpty().fail();
+    Sane.of(buf).check(Checkup.isNotEmptyArray());
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     try {
       LzmaOutputStream lzout = LzmaStreamFactory.createLzmaOutput(bos);
@@ -64,7 +65,7 @@ public class LzmaByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] decode(byte[] buf) {
-    Valid.off(buf).forEmpty().fail();
+    Sane.of(buf).check(Checkup.isNotEmptyArray());
     try(LzmaInputStream lzin = LzmaStreamFactory.createLzmaInput(buf)) {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       FileUtils.transfer(lzin, bos);
@@ -100,9 +101,9 @@ public class LzmaByteCoder implements Coder<byte[]> {
    * @return Byte array contendo os dados codificados.
    */
   public byte[] encode(byte[] buf, int offset, int length) {
-    Valid.off(buf).forEmpty().fail();
-    Valid.off(offset).forNotBetween(0, buf.length-1);
-    Valid.off(length).forNotBetween(1, buf.length - offset);
+    Sane.of(buf).check(Checkup.isNotNull());
+    Sane.of(offset).check(Checkup.isBetween(0, buf.length -1));
+    Sane.of(length).check(Checkup.isBetween(1, buf.length-offset));
     buf = Arrays.copyOfRange(buf, offset, offset + length);
     return encode(buf);
   }
@@ -116,9 +117,9 @@ public class LzmaByteCoder implements Coder<byte[]> {
    * @return Byte array contendo os dados decodificados.
    */
   public byte[] decode(byte[] buf, int offset, int length) {
-    Valid.off(buf).forEmpty().fail();
-    Valid.off(offset).forNotBetween(0, buf.length-1);
-    Valid.off(length).forNotBetween(1, buf.length - offset);
+    Sane.of(buf).check(Checkup.isNotNull());
+    Sane.of(offset).check(Checkup.isBetween(0, buf.length -1));
+    Sane.of(length).check(Checkup.isBetween(1, buf.length-offset));
     buf = Arrays.copyOfRange(buf, offset, offset + length);
     return decode(buf);
   }

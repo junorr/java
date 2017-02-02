@@ -27,7 +27,8 @@ import java.io.OutputStream;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -52,8 +53,8 @@ public class CryptOutputStream extends OutputStream {
   
   
   public CryptOutputStream(OutputStream out, CryptKey key, int bufferSize) {
-    Valid.off(out).forNull().fail(OutputStream.class);
-    Valid.off(key).forNull().fail(CryptKey.class);
+    Sane.of(out).check(Checkup.isNotNull());
+    Sane.of(key).check(Checkup.isNotNull());
     if(bufferSize < 128) 
       bufferSize = DEFAULT_BUFFER_SIZE;
     output = new BufferedOutputStream(out);

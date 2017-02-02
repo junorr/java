@@ -19,40 +19,29 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.cdr.crypt.iv;
+package us.pserver.insane.checkup;
 
-import javax.crypto.spec.IvParameterSpec;
-import us.pserver.insane.Checkup;
-import us.pserver.insane.Sane;
+import java.lang.reflect.Array;
+import us.pserver.insane.SanityCheck;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/10/2015
+ * @version 0.0 - 20/05/2016
  */
-public abstract class AbstractIV implements InitVector {
+public class ArrayNotEmpty<T> implements SanityCheck<T> {
   
-  
-  private byte[] vector;
-
-
   @Override
-  public void init(byte[] vector) {
-    this.vector = Sane.of(vector)
-        .get(Checkup.isNotEmptyArray());
-  }
-
-
-  @Override
-  public byte[] getVector() {
-    return vector;
-  }
-  
-
-  @Override
-  public IvParameterSpec getIvParameterSpec() {
-    return new IvParameterSpec(vector);
+  public boolean test(T value) {
+    return value != null 
+        && value.getClass().isArray() 
+        && Array.getLength(value) > 0;
   }
   
   
+  @Override
+  public String failMessage() {
+    return "Array must be not empty";
+  }
+
 }

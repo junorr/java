@@ -46,7 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Um handler que pode ser usado para fazer a autenticação dos usuário no microserviço.
+ * Este handler gera o JWT de um usuário a partir dos cookies de SSO do usuário.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/07/2016
  */
@@ -59,13 +60,20 @@ public class JWTAuthHandler implements JsonHandler {
   
   private final Gson gson;
   
-  
+  /**
+   * Construtor padrão com inicialização dos atributos da classe.
+   * @see com.google.gson.Gson
+   */
   public JWTAuthHandler() {
     gson = new GsonBuilder().create();
     jwtKey = ServerSetup.instance().config().getJWTKey();
   }
   
-  
+  /**
+   * Cria o JWT do usuário autenticado.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @throws Exception 
+   */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     if(hse.isInIoThread()) {
@@ -98,7 +106,15 @@ public class JWTAuthHandler implements JsonHandler {
     hse.endExchange();
   }
   
-  
+  /**
+   * PARA REQUISIÇÕES GET
+   * Verifica se um usuário está autorizado a fazer requisição 
+   * para um URL e gera um JWT para ele, caso esteja.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @param user Usuário que receberá o JWT
+   * @return JWT
+   * @throws Exception 
+   */
   private JWT get(HttpServerExchange hse, User user) throws Exception {
     URLD url = new URLD(this.getAuthURL(hse));
     if(!new AuthorizationService(user).authorize(hse, url)) {
@@ -110,7 +126,15 @@ public class JWTAuthHandler implements JsonHandler {
     return new JWT(new JWTHeader(), pld, jwtKey);
   }
   
-  
+  /**
+   * PARA REQUISIÇÕES POST
+   * Verifica se um usuário está autorizado a fazer requisição 
+   * para um URL e gera um JWT para ele, caso esteja.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @param user Usuário que receberá o JWT
+   * @return JWT
+   * @throws Exception 
+   */
   private JWT post(HttpServerExchange hse, User user) throws Exception {
     JsonElement json = new JsonParser().parse(
         new StringPostParser().parseHttp(hse)
@@ -133,7 +157,12 @@ public class JWTAuthHandler implements JsonHandler {
     return new JWT(new JWTHeader(), pld, jwtKey);
   }
   
-  
+  /**
+   * Busca usuário a partir dos cookies SSO.
+   * @param cks Cookies SSO
+   * @return Usuário criado
+   * @throws IOException 
+   */
   private User querySSO(Cookie[] cks) throws IOException {
     if(cks == null || cks.length < 2) {
       throw new IOException("Invalid Auth Cookies");
@@ -153,7 +182,11 @@ public class JWTAuthHandler implements JsonHandler {
     return user;
   } 
   
-  
+  /**
+   * Pega os cookies SSO da requisição.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @return Cookies SSO
+   */
   private Cookie[] getCookies(HttpServerExchange hse) {
     AuthCookieManager man = new AuthCookieManager();
     Cookie[] cks = new Cookie[2];
@@ -162,7 +195,11 @@ public class JWTAuthHandler implements JsonHandler {
     return cks;
   }
 
-  
+  /**
+   * Pega a URL completa da requisição.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @return URL
+   */
   private String getAuthURL(HttpServerExchange hse) {
     String url = hse.getRequestURL();
     if(url.contains(AUTH_CONTEXT)) {

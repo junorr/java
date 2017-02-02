@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Predicate;
+import us.pserver.insane.checkup.ArrayNotEmpty;
 import us.pserver.insane.checkup.CollectionContains;
 import us.pserver.insane.checkup.CollectionNotEmpty;
 import us.pserver.insane.checkup.EndsWith;
@@ -121,6 +122,11 @@ public abstract class Checkup {
   
   public static SanityCheck<Collection> isNotEmptyCollection() {
     return new CollectionNotEmpty();
+  }
+  
+
+  public static <T> SanityCheck<T> isNotEmptyArray() {
+    return new ArrayNotEmpty();
   }
   
 

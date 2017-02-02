@@ -22,7 +22,8 @@
 package us.pserver.cdr.crypt.iv;
 
 import us.pserver.cdr.crypt.CryptUtils;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -46,15 +47,16 @@ public abstract class FixedSizeIV extends AbstractIV {
   
   
   public void init(int size, byte[] vector) {
-    Valid.off(size).forLesserEquals(0).fail("Invalid size");
-    Valid.off(vector).forEmpty().fail();
+    Sane.of(size).with("Invalid Size: "+ size)
+        .check(Checkup.isGreaterThan(0));
+    Sane.of(vector).check(Checkup.isNotEmptyArray());
     super.init(CryptUtils.truncate(vector, size));
   }
   
   
   public void init(int size) {
-    Valid.off(size).forLesserEquals(0)
-        .fail("Invalid size (must be > 0): ");
+    Sane.of(size).with("Bad Size (must be > 0)")
+        .check(Checkup.isGreaterThan(0));
     super.init(new byte[size]);
   }
   

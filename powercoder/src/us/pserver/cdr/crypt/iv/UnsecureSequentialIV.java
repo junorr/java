@@ -22,7 +22,8 @@
 package us.pserver.cdr.crypt.iv;
 
 import us.pserver.cdr.crypt.CryptAlgorithm;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -77,8 +78,9 @@ public class UnsecureSequentialIV extends AlgorithmSizedIV {
   
   
   public void setSequentialIV(int start) {
-    Valid.off(getVector()).forEmpty()
-        .fail("Invalid unitialized vector");
+    Sane.of(getVector())
+        .with("Invalid unitialized vector")
+        .check(Checkup.isNotEmptyArray());
     byte[] vec = getVector();
     byte seq = (byte) start;
     for(int i = 0; i < vec.length; i++) {

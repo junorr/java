@@ -26,7 +26,8 @@ import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.crypt.DigestAlgorithm;
 import us.pserver.cdr.crypt.Digester;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -51,21 +52,21 @@ public class HexStringCoder implements Coder<String> {
   
   @Override
   public String apply(String t, boolean encode) {
-    Valid.off(t).forEmpty().fail();
+    Sane.of(t).check(Checkup.isNotEmpty());
     return (encode ? encode(t): decode(t));
   }
   
   
   @Override
   public String encode(String t) {
-    Valid.off(t).forEmpty().fail();
+    Sane.of(t).check(Checkup.isNotEmpty());
     return HexCoder.toHexString(scv.convert(t));
   }
 
 
   @Override
   public String decode(String t) {
-    Valid.off(t).forEmpty().fail();
+    Sane.of(t).check(Checkup.isNotEmpty());
     return scv.reverse(HexCoder.fromHexString(t));
   }
   

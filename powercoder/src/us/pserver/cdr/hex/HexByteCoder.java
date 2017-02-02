@@ -25,7 +25,8 @@ package us.pserver.cdr.hex;
 import java.util.Arrays;
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -59,14 +60,14 @@ public class HexByteCoder implements Coder<byte[]> {
 
   @Override
   public byte[] encode(byte[] t) {
-    Valid.off(t).forEmpty().fail();
+    Sane.of(t).check(Checkup.isNotEmptyArray());
     return scv.convert(HexCoder.toHexString(t));
   }
 
 
   @Override
   public byte[] decode(byte[] t) {
-    Valid.off(t).forEmpty().fail();
+    Sane.of(t).check(Checkup.isNotEmptyArray());
     return HexCoder.fromHexString(scv.reverse(t));
   }
   
@@ -95,9 +96,9 @@ public class HexByteCoder implements Coder<byte[]> {
    * @return Byte array contendo os dados codificados.
    */
   public byte[] encode(byte[] t, int offset, int length) {
-    Valid.off(t).forEmpty().fail();
-    Valid.off(offset).forNotBetween(0, t.length-1);
-    Valid.off(length).forNotBetween(1, t.length-offset);
+    Sane.of(t).check(Checkup.isNotEmptyArray());
+    Sane.of(offset).check(Checkup.isBetween(0, t.length-1));
+    Sane.of(length).check(Checkup.isBetween(1, t.length-offset));
     return scv.convert(HexCoder.toHexString(
         Arrays.copyOfRange(t, offset, offset+length)));
   }
@@ -111,7 +112,9 @@ public class HexByteCoder implements Coder<byte[]> {
    * @return Byte array contendo os dados decodificados.
    */
   public byte[] decode(byte[] t, int offset, int length) {
-    Valid.off(t).forEmpty().fail();
+    Sane.of(t).check(Checkup.isNotEmptyArray());
+    Sane.of(offset).check(Checkup.isBetween(0, t.length-1));
+    Sane.of(length).check(Checkup.isBetween(1, t.length-offset));
     return HexCoder.fromHexString(
         scv.reverse(Arrays.copyOfRange(
             t, offset, offset+length)));

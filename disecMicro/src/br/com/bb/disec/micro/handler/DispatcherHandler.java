@@ -26,7 +26,8 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
 /**
- *
+ * Um handler que pode ser usado para despachar requisições para um handler usando
+ * um ServerConfig definido.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/07/2016
  */
@@ -36,7 +37,9 @@ public class DispatcherHandler implements HttpHandler {
   
   private final String path;
   
-  
+  /**
+   * Construtor padrão com inicialização dos atributos da classe.
+   */
   public DispatcherHandler(String path, ServerConfig conf) {
     if(path == null || path.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad URI Path: "+ path);
@@ -48,17 +51,28 @@ public class DispatcherHandler implements HttpHandler {
     this.config = conf;
   }
   
-  
+  /**
+   * Pega o path armazenado.
+   * @return path da instancia
+   */
   public String getPath() {
     return path;
   }
   
-  
+  /**
+   * Pega o ServerConfig armazenado.
+   * @return ServerConfig da instancia
+   */
   public ServerConfig getServerConfig() {
     return config;
   }
   
-  
+  /**
+   * Despacha a requisição para o path definido na instancia da classe usando um
+   * ServerConfig específico também definido na instancia.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @throws Exception 
+   */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     if(hse.isInIoThread()) {

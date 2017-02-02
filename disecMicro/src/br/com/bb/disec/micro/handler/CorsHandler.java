@@ -28,7 +28,8 @@ import io.undertow.util.HttpString;
 import io.undertow.util.Methods;
 
 /**
- *
+ * Um handler que pode ser usado para fazer o tratamento dos headers da requisição
+ * e resposta. Neste objeto também está encapsulado a opção de encadeamento de handlers.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 08/09/2016
  */
@@ -51,12 +52,20 @@ public class CorsHandler implements HttpHandler {
   
   private final HttpHandler next;
   
-  
+  /**
+   * Construtor padrão da classe.
+   * @param next Próximo handler a ser chamado no caso de encadeamento de handlers
+   */
   public CorsHandler(HttpHandler next) {
     this.next = next;
   }
   
-
+  /**
+   * Trata o header da resposta a partir do header da requisição. Verifica o conteúdo
+   * do header da requisição e define qual será o conteúdo do header da resposta.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @throws Exception 
+   */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     HeaderMap hds = hse.getRequestHeaders();

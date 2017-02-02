@@ -33,7 +33,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -94,7 +95,7 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
   
   @Override
   public byte[] encode(byte[] bs) {
-    Valid.off(bs).forEmpty().fail();
+    Sane.of((Object)bs).check(Checkup.isNotEmptyArray());
     try {
       return encoder.doFinal(bs);
     } catch(BadPaddingException | IllegalBlockSizeException ex) {
@@ -105,7 +106,7 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
   
   @Override
   public byte[] decode(byte[] bs) {
-    Valid.off(bs).forEmpty().fail();
+    Sane.of((Object)bs).check(Checkup.isNotEmptyArray());
     try {
       return decoder.doFinal(bs);
     } catch(BadPaddingException | IllegalBlockSizeException ex) {
@@ -128,9 +129,9 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
    * @return Byte array contendo os dados codificados.
    */
   public byte[] encode(byte[] bs, int offset, int length) {
-    Valid.off(bs).forEmpty().fail();
-    Valid.off(offset).forNotBetween(0, bs.length-1);
-    Valid.off(length).forNotBetween(1, bs.length - offset);
+    Sane.of((Object)bs).check(Checkup.isNotEmptyArray());
+    Sane.of(offset).check(Checkup.isBetween(0, bs.length-1));
+    Sane.of(length).check(Checkup.isBetween(1, bs.length-offset));
     try {
       return encoder.doFinal(bs, offset, length);
     } catch(BadPaddingException | IllegalBlockSizeException ex) {
@@ -147,9 +148,9 @@ public class CryptByteCoder implements CryptCoder<byte[]> {
    * @return Byte array contendo os dados decodificados.
    */
   public byte[] decode(byte[] bs, int offset, int length) {
-    Valid.off(bs).forEmpty().fail();
-    Valid.off(offset).forNotBetween(0, bs.length-1);
-    Valid.off(length).forNotBetween(1, bs.length - offset);
+    Sane.of((Object)bs).check(Checkup.isNotEmptyArray());
+    Sane.of(offset).check(Checkup.isBetween(0, bs.length-1));
+    Sane.of(length).check(Checkup.isBetween(1, bs.length-offset));
     try {
       return decoder.doFinal(bs, offset, length);
     } catch(BadPaddingException | IllegalBlockSizeException ex) {

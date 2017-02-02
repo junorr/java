@@ -24,7 +24,8 @@ package us.pserver.cdr.gzip;
 import java.nio.ByteBuffer;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.Coder;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -57,9 +58,9 @@ public class GZipBufferCoder implements Coder<ByteBuffer> {
 
   @Override
   public ByteBuffer encode(ByteBuffer buf) {
-    Valid.off(buf).forNull().fail(ByteBuffer.class);
-    Valid.off(buf.remaining()).forLesserThan(1)
-        .fail("No remaining bytes to read");
+    Sane.of(buf).check(Checkup.isNotNull());
+    Sane.of(buf).with("No remaining bytes to read")
+        .check(b->b.remaining() > 0);
     byte[] bs = conv.convert(buf);
     return conv.reverse(cdr.encode(bs));
   }
@@ -67,9 +68,9 @@ public class GZipBufferCoder implements Coder<ByteBuffer> {
 
   @Override
   public ByteBuffer decode(ByteBuffer buf) {
-    Valid.off(buf).forNull().fail(ByteBuffer.class);
-    Valid.off(buf.remaining()).forLesserThan(1)
-        .fail("No remaining bytes to read");
+    Sane.of(buf).check(Checkup.isNotNull());
+    Sane.of(buf).with("No remaining bytes to read")
+        .check(b->b.remaining() > 0);
     byte[] bs = conv.convert(buf);
     return conv.reverse(cdr.decode(bs));
   }

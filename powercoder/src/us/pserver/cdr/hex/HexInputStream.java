@@ -23,7 +23,8 @@ package us.pserver.cdr.hex;
 
 import java.io.IOException;
 import java.io.InputStream;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -55,8 +56,7 @@ public class HexInputStream extends InputStream {
    * lidos os dados a serem decodificados.
    */
   public HexInputStream(InputStream in) {
-    this.in = Valid.off(in).forNull()
-        .getOrFail(InputStream.class);
+    this.in = Sane.of(in).get(Checkup.isNotNull());
     buf = new byte[2];
     hex = new HexByteCoder();
     total = 0;
@@ -93,9 +93,9 @@ public class HexInputStream extends InputStream {
   
   @Override
   public int read(byte[] ba, int off, int length) throws IOException {
-    Valid.off(ba).forEmpty().fail();
-    Valid.off(off).forNotBetween(0, ba.length-1);
-    Valid.off(length).forNotBetween(1, ba.length-off);
+    Sane.of(ba).check(Checkup.isNotEmptyArray());
+    Sane.of(off).check(Checkup.isBetween(0, ba.length-1));
+    Sane.of(length).check(Checkup.isBetween(1, ba.length-off));
     if(end) return -1;
     
     int len = 0;

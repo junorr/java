@@ -24,7 +24,8 @@ package us.pserver.cdr.crypt.iv;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptUtils;
 import us.pserver.cdr.crypt.Digester;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -49,7 +50,7 @@ public class UnsecurePasswordIV extends AlgorithmSizedIV {
   
   
   public void init(int size, String str) {
-    Valid.off(str).forEmpty().fail();
+    Sane.of(str).check(Checkup.isNotEmpty());
     this.init(
         CryptUtils.truncate(Digester.toSHA256(str), size)
     );
@@ -57,7 +58,7 @@ public class UnsecurePasswordIV extends AlgorithmSizedIV {
   
   
   public void init(CryptAlgorithm algo, String str) {
-    Valid.off(str).forEmpty().fail();
+    Sane.of(str).check(Checkup.isNotEmpty());
     this.init(
         CryptUtils.truncate(
             Digester.toSHA256(str), 

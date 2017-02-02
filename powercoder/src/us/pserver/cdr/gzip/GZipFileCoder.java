@@ -32,7 +32,8 @@ import java.util.zip.GZIPOutputStream;
 import us.pserver.cdr.ByteBufferConverter;
 import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  * Compactador/Descompactador de arquivos no formato GZIP.
@@ -51,10 +52,11 @@ public class GZipFileCoder implements FileCoder {
 
   @Override
   public boolean applyFrom(ByteBuffer buf, Path p, boolean encode) {
-    Valid.off(buf).forNull().fail(ByteBuffer.class);
-    Valid.off(buf.remaining()).forLesserThan(1)
-        .fail("No remaining bytes to read");
-    Valid.off(p).forNull().fail(Path.class);
+    Sane.of(buf).check(Checkup.isNotNull());
+    Sane.of(buf.remaining())
+        .with("No remaining bytes to read")
+        .check(Checkup.isGreaterThan(0));
+    Sane.of(p).check(Checkup.isNotNull());
     
     GZipByteCoder cdr = new GZipByteCoder();
     ByteBufferConverter conv = new ByteBufferConverter();
@@ -73,8 +75,8 @@ public class GZipFileCoder implements FileCoder {
 
   @Override
   public boolean applyTo(Path p, PrintStream ps, boolean encode) {
-    Valid.off(p).forNull().fail(Path.class);
-    Valid.off(ps).forNull().fail(PrintStream.class);
+    Sane.of(p).check(Checkup.isNotNull());
+    Sane.of(ps).check(Checkup.isNotNull());
     
     try(InputStream in = FileUtils.inputStream(p)) {
       if(encode) {
@@ -99,8 +101,8 @@ public class GZipFileCoder implements FileCoder {
   
   @Override
   public boolean encode(Path p1, Path p2) {
-    Valid.off(p1).forNull().fail(Path.class);
-    Valid.off(p2).forNull().fail(Path.class);
+    Sane.of(p1).check(Checkup.isNotNull());
+    Sane.of(p2).check(Checkup.isNotNull());
     try(InputStream in = FileUtils.inputStream(p1);
         OutputStream out = FileUtils.outputStream(p2);
         GZIPOutputStream gout = new GZIPOutputStream(out)) {
@@ -117,8 +119,8 @@ public class GZipFileCoder implements FileCoder {
 
   @Override
   public boolean decode(Path p1, Path p2) {
-    Valid.off(p1).forNull().fail(Path.class);
-    Valid.off(p2).forNull().fail(Path.class);
+    Sane.of(p1).check(Checkup.isNotNull());
+    Sane.of(p2).check(Checkup.isNotNull());
     try(InputStream in = FileUtils.inputStream(p1);
         OutputStream out = FileUtils.outputStream(p2);
         GZIPInputStream gin = new GZIPInputStream(in)) {

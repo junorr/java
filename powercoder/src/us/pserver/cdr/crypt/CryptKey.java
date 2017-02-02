@@ -30,7 +30,8 @@ import us.pserver.cdr.b64.Base64ByteCoder;
 import us.pserver.cdr.crypt.iv.BasicIV;
 import us.pserver.cdr.crypt.iv.InitVector;
 import us.pserver.cdr.crypt.iv.UnsecurePasswordIV;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -81,13 +82,14 @@ public class CryptKey {
    * @param algo Algorítmo de criptografia.
    */
   public CryptKey(String key, InitVector iv, CryptAlgorithm algo) {
-    Valid.off(key).forEmpty().fail("Invalid key: ");
-    algorithm = Valid.off(algo).forNull()
-        .getOrFail(CryptAlgorithm.class);
-    hash = Valid.off(Digester.toSHA256(key))
-        .forEmpty().getOrFail("Invalid Key: %s", key);
-    this.iv = Valid.off(iv).forNull()
-        .getOrFail(InitVector.class);
+    Sane.of(key).with("Bad Empty Key")
+        .check(Checkup.isNotEmpty());
+    algorithm = Sane.of(algo).get(Checkup.isNotNull());
+    hash = Digester.toSHA256(key);
+    Sane.of((Object)hash)
+        .with("Invalid key: "+ key)
+        .check(Checkup.isNotEmptyArray());
+    this.iv = Sane.of(iv).get(Checkup.isNotNull());
     spec = KeySpecFactory.createKey(
         CryptUtils.truncate(hash, algo.getBytesSize()), algo
     );
@@ -172,11 +174,10 @@ public class CryptKey {
    * <code>CryptAlgorithm</code>.
    */
   public void setKey(byte[] hash, InitVector iv, CryptAlgorithm algo) {
-    this.hash = Valid.off(hash).forEmpty()
-        .getOrFail("Invalid key hash");
-    algorithm = Valid.off(algo).forNull()
-        .getOrFail(CryptAlgorithm.class);
-    this.iv = Valid.off(iv).forNull().getOrFail(InitVector.class);
+    this.hash = Sane.of(hash).with("Bad key hash")
+        .get(Checkup.isNotEmptyArray());
+    algorithm = Sane.of(algo).get(Checkup.isNotNull());
+    this.iv = Sane.of(iv).get(Checkup.isNotNull());
     spec = KeySpecFactory.createKey(
         CryptUtils.truncate(hash, algo.getBytesSize()), algo
     );
@@ -221,13 +222,15 @@ public class CryptKey {
   public static CryptKey fromString(String str) {
     String errmsg = "Invalid String Key Format";
     //System.out.printf("##CryptKey##.fromString('%s')%n", str);
-    Valid.off(str).forEmpty().fail(errmsg)
-        .forTest(!str.contains("||")).fail(errmsg);
+    Sane.of(str).with(errmsg)
+        .with(Checkup.isNotEmpty())
+        .and(Checkup.contains("||")).check();
     Base64ByteCoder cd = new Base64ByteCoder();
     StringByteConverter cv = new StringByteConverter();
     String[] ss = str.split("\\|\\|");
-    Valid.off(ss).forEmpty().fail(errmsg)
-        .forTest(ss.length < 3).fail(errmsg);
+    Sane.of(ss).with(errmsg)
+        .with(Checkup.isNotEmptyCollection())
+        .and(c->c.size() < 3).check();
     byte[] algoBytes = cv.convert(ss[0]);
     algoBytes = cd.decode(algoBytes);
     CryptAlgorithm algo = CryptAlgorithm.fromString(cv.reverse(algoBytes));
@@ -249,7 +252,7 @@ public class CryptKey {
    * @return <code>CryptKey</code>.
    */
   public static CryptKey createRandomKey(CryptAlgorithm algo) {
-    Valid.off(algo).forNull().fail(CryptAlgorithm.class);
+    Sane.of(algo).check(Checkup.isNotNull());
     CryptKey key = new CryptKey();
     byte[] hash = Digester.toSHA256(
         CryptUtils.randomBytes(algo.getBytesSize())

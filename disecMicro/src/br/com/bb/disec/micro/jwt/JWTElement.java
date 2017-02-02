@@ -22,14 +22,23 @@
 package br.com.bb.disec.micro.jwt;
 
 /**
- *
+ * Uma interface que pode ser usada para definir alguns métodos padrões de objetos
+ * JWT.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 06/10/2016
  */
 public interface JWTElement {
 
+  /**
+   * Codificar dados do objeto para base64.
+   * @return dados codificado
+   */
   public String encodeBase64();
   
+  /**
+   * Construir dados do objeto em formato JSON.
+   * @return json construído
+   */
   public String toJson();
   
 }

@@ -25,7 +25,8 @@ package us.pserver.cdr.b64;
 import java.util.Arrays;
 import org.apache.commons.codec.binary.Base64;
 import us.pserver.cdr.Coder;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -40,7 +41,7 @@ public class Base64ByteCoder implements Coder<byte[]> {
   
   @Override
   public byte[] apply(byte[] t, boolean encode) {
-    Valid.off(t).forEmpty().fail();
+    Sane.of((Object)t).check(Checkup.isNotEmptyArray());
     
     if(encode)
       return Base64.encodeBase64(t);
@@ -72,9 +73,9 @@ public class Base64ByteCoder implements Coder<byte[]> {
    * @return Byte array contendo os dados (de)codificados.
    */
   public byte[] apply(byte[] t, int offset, int length, boolean encode) {
-    Valid.off(t).forEmpty().fail();
-    Valid.off(offset).forNotBetween(0, t.length-1).fail();
-    Valid.off(length).forNotBetween(1, t.length-offset).fail();
+    Sane.of((Object)t).check(Checkup.isNotEmptyArray());
+    Sane.of(offset).check(Checkup.isBetween(0, t.length -1));
+    Sane.of(length).check(Checkup.isBetween(1, t.length-offset));
     
     byte[] bs = Arrays.copyOfRange(t, offset, offset+length);
     if(encode)

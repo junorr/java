@@ -23,7 +23,8 @@ package us.pserver.cdr.hex;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -49,7 +50,7 @@ public class HexOutputStream extends OutputStream {
    * escritos os dados codificados.
    */
   public HexOutputStream(OutputStream out) {
-    Valid.off(out).forNull().fail(OutputStream.class);
+    Sane.of(out).check(Checkup.isNotNull());
     this.out = out;
     hex = new HexByteCoder();
     bin = new byte[1];

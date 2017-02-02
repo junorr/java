@@ -22,7 +22,8 @@
 package us.pserver.cdr.crypt.iv;
 
 import us.pserver.cdr.crypt.CryptAlgorithm;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -67,7 +68,7 @@ public class UnsecureIntegerIV extends AlgorithmSizedIV {
   
   
   public void setIntegerIV(int value) {
-    Valid.off(this.getVector()).forEmpty().fail();
+    Sane.of(this.getVector()).check(Checkup.isNotEmptyArray());
     for(int i = 0; i < this.getVector().length; i++) {
       this.getVector()[i] = (byte) value;
     }

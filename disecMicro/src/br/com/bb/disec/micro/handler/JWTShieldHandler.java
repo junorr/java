@@ -35,7 +35,9 @@ import io.undertow.util.HttpString;
 
 
 /**
- *
+ * Um handler que pode ser usado para fazer as validações do JWT da requisição.
+ * Valida o conteúdo do JWT e verifica se a requisição na URL é autorizada para
+ * o JWT.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 24/08/2016
  */
@@ -50,14 +52,20 @@ public class JWTShieldHandler implements HttpHandler {
   
   private final JWTKey jwtKey;
   
-  
+  /**
+   * Construtor padrão com inicialização dos atributos da classe.
+   * @param next Próximo handler a ser chamado no caso de encadeamento de handlers
+   */
   public JWTShieldHandler(HttpHandler next) {
     this.next = next;
     exceptions = readExcludes();
     jwtKey = ServerSetup.instance().config().getJWTKey();
   }
   
-  
+  /**
+   * Ler o arquivo padrão de exclusão de URLs.
+   * @return JSON array das URLs de exclusão
+   */
   private JsonArray readExcludes() {
     return ServerSetup.instance()
         .loader()
@@ -65,12 +73,20 @@ public class JWTShieldHandler implements HttpHandler {
         .getAsJsonArray();
   }
   
-  
+  /**
+   * Pega o próximo handler.
+   * @return handler
+   */
   public HttpHandler getNext() {
     return next;
   }
   
-
+  /**
+   * Valida o token JWT e verifica se a requisição à URL está de acordo com as URLs
+   * autorizadas pelo token JWT da requisição.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @throws Exception 
+   */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     if(hse.isInIoThread()) {
@@ -136,7 +152,12 @@ public class JWTShieldHandler implements HttpHandler {
     }
   }
   
-  
+  /**
+   * Verifica se a URL da requisição está no arquivo de exclusão (auth-exclude.json).
+   * @param meth Método de requisição
+   * @param uri URL de requisição
+   * @return true | false Caso esteja | Caso contrário
+   */
   private boolean isUriExcluded(HttpString meth, String uri) {
     if(exceptions == null 
         || exceptions.size() < 1) {
@@ -158,7 +179,12 @@ public class JWTShieldHandler implements HttpHandler {
     return excluded;
   }
 
-  
+  /**
+   * Verifica se duas URLs dão match.
+   * @param uri URL da requisição
+   * @param exclude URL do arquivo de exclusão
+   * @return true | false Caso dê match | Caso contrário
+   */
   private boolean matchUri(String uri, String exclude) {
 		if(uri == null || exclude == null) 
       return false;

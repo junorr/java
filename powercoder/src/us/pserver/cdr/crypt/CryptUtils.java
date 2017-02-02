@@ -31,7 +31,8 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -50,7 +51,7 @@ public class CryptUtils {
    * @return <code>Cipher</code>.
    */
   public static Cipher createEncryptCipher(CryptKey key) {
-    Valid.off(key).forNull().fail(CryptKey.class);
+    Sane.of(key).check(Checkup.isNotNull());
     try {
       Cipher encoder = Cipher.getInstance(key.getAlgorithm().getStringAlgorithm());
       
@@ -81,7 +82,7 @@ public class CryptUtils {
    * @return <code>Cipher</code>.
    */
   public static Cipher createDecryptCipher(CryptKey key) {
-    Valid.off(key).forNull().fail(CryptKey.class);
+    Sane.of(key).check(Checkup.isNotNull());
     try {
       Cipher decoder = Cipher.getInstance(key.getAlgorithm().getStringAlgorithm());
       
@@ -112,7 +113,7 @@ public class CryptUtils {
    * @return <code>Cipher</code>.
    */
   public static Cipher[] createEncryptDecryptCiphers(CryptKey key) {
-    Valid.off(key).forNull().fail(CryptKey.class);
+    Sane.of(key).check(Checkup.isNotNull());
     try {
       Cipher[] cps = new Cipher[2];
       cps[0] = Cipher.getInstance(key.getAlgorithm().getStringAlgorithm());
@@ -148,8 +149,8 @@ public class CryptUtils {
    * @return <code>OutputStream</code> para criptografia de dados.
    */
   public static CipherOutputStream createCipherOutputStream(OutputStream out, CryptKey key) {
-    Valid.off(key).forNull().fail(CryptKey.class);
-    Valid.off(out).forNull().fail(OutputStream.class);
+    Sane.of(key).check(Checkup.isNotNull());
+    Sane.of(out).check(Checkup.isNotNull());
     Cipher cp = createEncryptCipher(key);
     return new CipherOutputStream(out, cp);
   }
@@ -163,8 +164,8 @@ public class CryptUtils {
    * @return <code>InputStream</code> para descriptografia de dados.
    */
   public static CipherInputStream createCipherInputStream(InputStream in, CryptKey key) {
-    Valid.off(in).forNull().fail(InputStream.class);
-    Valid.off(key).forNull().fail(CryptKey.class);
+    Sane.of(in).check(Checkup.isNotNull());
+    Sane.of(key).check(Checkup.isNotNull());
     Cipher cp = createDecryptCipher(key);
     return new CipherInputStream(in, cp);
   }
@@ -200,7 +201,7 @@ public class CryptUtils {
    * @return byte array com dados aleatórios.
    */
   public static byte[] randomBytes(int size) {
-    Valid.off(size).forNotBetween(1, Integer.MAX_VALUE);
+    Sane.of(size).check(Checkup.isBetween(1, Integer.MAX_VALUE));
     SecureRandom random = new SecureRandom();
     byte[] bs = new byte[size];
     random.nextBytes(bs);

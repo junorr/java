@@ -38,7 +38,8 @@ import us.pserver.cdr.FileCoder;
 import us.pserver.cdr.FileUtils;
 import us.pserver.cdr.StringByteConverter;
 import us.pserver.cdr.b64.Base64BufferCoder;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -107,7 +108,8 @@ public class CryptFileCoder implements FileCoder {
    * @return Caminho de arquivo <code>Path</code>.
    */
   public Path path(String strPath) {
-    Valid.off(strPath).forEmpty().fail("Invalid path: ");
+    Sane.of(strPath).with("Bad Empty Path")
+        .check(Checkup.isNotEmpty());
     Path p = FileUtils.path(strPath);
     this.createIfNotExists(p, true);
     return p;
@@ -126,7 +128,7 @@ public class CryptFileCoder implements FileCoder {
    * caso contrário.
    */
   public boolean createIfNotExists(Path p, boolean isFile) {
-    Valid.off(p).forNull().fail(Path.class);
+    Sane.of(p).check(Checkup.isNotNull());
     try {
       if(Files.exists(p)) return true;
       if(isFile)
@@ -142,8 +144,8 @@ public class CryptFileCoder implements FileCoder {
   
   @Override
   public boolean apply(Path src, Path dst, boolean encode) {
-    Valid.off(src).forNull().fail(Path.class);
-    Valid.off(dst).forNull().fail(Path.class);
+    Sane.of(src).check(Checkup.isNotNull());
+    Sane.of(dst).check(Checkup.isNotNull());
 
     InputStream input = null;
     OutputStream output = null;
@@ -176,8 +178,8 @@ public class CryptFileCoder implements FileCoder {
   
   //@Override
   public boolean apply2(Path src, Path dst, boolean encode) {
-    Valid.off(src).forNull().fail(Path.class);
-    Valid.off(dst).forNull().fail(Path.class);
+    Sane.of(src).check(Checkup.isNotNull());
+    Sane.of(dst).check(Checkup.isNotNull());
 
     try {
       if(!Files.exists(dst))
@@ -214,8 +216,8 @@ public class CryptFileCoder implements FileCoder {
   
   @Override
   public boolean applyTo(Path src, PrintStream ps, boolean encode) {
-    Valid.off(src).forNull().fail(Path.class);
-    Valid.off(ps).forNull().fail(PrintStream.class);
+    Sane.of(src).check(Checkup.isNotNull());
+    Sane.of(ps).check(Checkup.isNotNull());
     
     try {
       FileChannel rc = FileChannel.open(
@@ -253,10 +255,10 @@ public class CryptFileCoder implements FileCoder {
   
   @Override
   public boolean applyFrom(ByteBuffer buf, Path path, boolean encode) {
-    Valid.off(buf).forNull().fail(ByteBuffer.class);
-    Valid.off(buf.remaining()).forLesserThan(1)
-        .fail("No remaining bytes to read");
-    Valid.off(path).forNull().fail(Path.class);
+    Sane.of(buf).check(Checkup.isNotNull());
+    Sane.of(buf).with("No remaining byte to read")
+        .check(b->b.remaining() > 0);
+    Sane.of(path).check(Checkup.isNotNull());
     
     if(!this.createIfNotExists(path, true))
       return false;

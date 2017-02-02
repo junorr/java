@@ -27,7 +27,7 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
 /**
- *
+ * Um handler que pode ser usado para parar a uma instancia do microserviço.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/07/2016
  */
@@ -37,7 +37,10 @@ public class ShutdownHandler implements HttpHandler {
   
   private final Server server;
   
-  
+  /**
+   * Contrutor padrão da classe.
+   * @param server Servidor que vai ser desligado.
+   */
   public ShutdownHandler(Server server) {
     if(server == null) {
       throw new IllegalArgumentException("Invalid Undertow Server: "+ server);
@@ -45,7 +48,11 @@ public class ShutdownHandler implements HttpHandler {
     this.server = server;
   }
   
-
+  /**
+   * Fecha as pools de conexão e para o servidor.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @throws Exception 
+   */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     hse.addExchangeCompleteListener((h,n)->{

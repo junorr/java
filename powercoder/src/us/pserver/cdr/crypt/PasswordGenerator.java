@@ -25,7 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import us.pserver.cdr.StringByteConverter;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -197,7 +198,7 @@ public class PasswordGenerator {
   
   
   public char[] genAsChars(int size) {
-    Valid.off(size).forNotBetween(1, Integer.MAX_VALUE);
+    Sane.of(size).check(Checkup.isBetween(1, Integer.MAX_VALUE));
     char[] cs = new char[size];
     for(int i = 0; i < size; i++) {
       cs[i] = nextRandom();

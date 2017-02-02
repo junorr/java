@@ -25,12 +25,17 @@ import io.undertow.server.HttpServerExchange;
 import java.time.Instant;
 
 /**
- *
+ * Um handler que pode ser usado para se obter a hora local do servidor.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/08/2016
  */
 public class TimeHandler implements JsonHandler {
   
+  /**
+   * Envia uma resposta com um JSON da hora local do servidor.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @throws Exception 
+   */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     hse.getResponseSender().send(Instant.now().toString());

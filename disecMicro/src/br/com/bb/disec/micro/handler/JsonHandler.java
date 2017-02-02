@@ -26,7 +26,8 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 
 /**
- *
+ * Uma interface que pode ser usada para definir o header de respostas que serão
+ * do tipo JSON.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 27/07/2016
  */
@@ -34,7 +35,10 @@ public interface JsonHandler extends HttpHandler {
   
   public static final String HEADER_VALUE_JSON = "application/json; charset=utf-8";
 
-  
+  /**
+   * Adiciona header de JSON na resposta do Exchanger.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   */
   public default void putJsonHeader(HttpServerExchange hse) {
     hse.getResponseHeaders().put(
         Headers.CONTENT_TYPE, HEADER_VALUE_JSON

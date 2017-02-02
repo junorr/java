@@ -24,7 +24,8 @@ package us.pserver.cdr.crypt.iv;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptUtils;
 import us.pserver.cdr.crypt.Digester;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -46,7 +47,7 @@ public class SecureRandomIV extends AlgorithmSizedIV {
   
   @Override
   public void init(int size) {
-    Valid.off(size).forLesserThan(1).fail();
+    Sane.of(size).check(Checkup.isGreaterThan(0));
     byte[] random = CryptUtils.randomBytes(size);
     super.init(size, Digester.toSHA256(random));
   }
@@ -54,7 +55,7 @@ public class SecureRandomIV extends AlgorithmSizedIV {
   
   @Override
   public void init(CryptAlgorithm algo) {
-    Valid.off(algo).forNull().fail(CryptAlgorithm.class);
+    Sane.of(algo).check(Checkup.isNotNull());
     byte[] random = CryptUtils.randomBytes(algo.getBytesSize());
     init(algo, Digester.toSHA256(random));
   }

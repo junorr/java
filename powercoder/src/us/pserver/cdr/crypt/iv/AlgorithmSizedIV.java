@@ -22,7 +22,8 @@
 package us.pserver.cdr.crypt.iv;
 
 import us.pserver.cdr.crypt.CryptAlgorithm;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 /**
  *
@@ -57,7 +58,7 @@ public class AlgorithmSizedIV extends FixedSizeIV {
   
   public void init(CryptAlgorithm algo) {
     super.init(
-        (Valid.off(algo).forNull().getOrFail()
+        (Sane.of(algo).get(Checkup.isNotNull())
             .getStringAlgorithm().contains("AES") 
             ? 16 
             : 8
@@ -68,7 +69,7 @@ public class AlgorithmSizedIV extends FixedSizeIV {
   
   public void init(CryptAlgorithm algo, byte[] vector) {
     super.init(
-        (Valid.off(algo).forNull().getOrFail()
+        (Sane.of(algo).get(Checkup.isNotNull())
             .getStringAlgorithm().contains("AES") 
             ? 16 
             : 8

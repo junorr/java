@@ -23,7 +23,8 @@
 package us.pserver.cdr.crypt;
 
 import javax.crypto.spec.SecretKeySpec;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -43,8 +44,8 @@ public class KeySpecFactory {
    * @return <code>SecretKeySpec</code>
    */
   public static SecretKeySpec createKey(byte[] bs, CryptAlgorithm algo) {
-    Valid.off(bs).forEmpty().fail();
-    Valid.off(algo).forNull().fail(CryptAlgorithm.class);
+    Sane.of(bs).check(Checkup.isNotEmptyArray());
+    Sane.of(algo).check(Checkup.isNotNull());
     return new SecretKeySpec(bs, getKeyAlgorithm(algo));
   }
   
@@ -55,7 +56,7 @@ public class KeySpecFactory {
    * @return <code>SecretKeySpec</code>
    */
   public SecretKeySpec genetareKey(CryptAlgorithm algo) {
-    Valid.off(algo).forNull().fail(CryptAlgorithm.class);
+    Sane.of(algo).check(Checkup.isNotNull());
     return new SecretKeySpec(CryptUtils.randomBytes(
         algo.getBytesSize()), getKeyAlgorithm(algo));
   }
@@ -67,7 +68,7 @@ public class KeySpecFactory {
    * @return nome do algorítmo.
    */
   public static String getKeyAlgorithm(CryptAlgorithm algo) {
-    Valid.off(algo).forNull().fail(CryptAlgorithm.class);
+    Sane.of(algo).check(Checkup.isNotNull());
     int idx = algo.toString().indexOf("/");
     if(idx < 0) return null;
     return algo.toString().substring(0, idx);

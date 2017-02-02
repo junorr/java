@@ -31,7 +31,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import us.pserver.cdr.crypt.iv.BasicIV;
 import us.pserver.cdr.hex.HexCoder;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 /**
@@ -51,8 +52,8 @@ public class KeyFile {
    * @throws IOException em caso de erro no stream de saída.
    */
   public static void save(CryptKey key, OutputStream out) throws IOException {
-    Valid.off(key).forNull().fail(CryptKey.class);
-    Valid.off(out).forNull().fail(OutputStream.class);
+    Sane.of(key).check(Checkup.isNotNull());
+    Sane.of(out).check(Checkup.isNotNull());
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(out));
     bw.write(key.getAlgorithm().toString());
     bw.newLine();
@@ -71,21 +72,26 @@ public class KeyFile {
    * @throws IOException em caso de erro ao ler do stream.
    */
   public static CryptKey load(InputStream in) throws IOException {
-    Valid.off(in).forNull().fail(InputStream.class);
+    Sane.of(in).check(Checkup.isNotNull());
     BufferedReader br = new BufferedReader(new InputStreamReader(in));
-    String algo = Valid.off(br.readLine()).forEmpty()
-        .getOrFail("Invalid Algorithm String: ");
-    String xhash = Valid.off(br.readLine()).forEmpty()
-        .getOrFail("Invalid Hash Hex String: ");
-    String xiv = Valid.off(br.readLine()).forEmpty()
-        .getOrFail("Invalid IV Hex String: ");
-    CryptAlgorithm ca = Valid.off(CryptAlgorithm.fromString(algo))
-        .forNull().getOrFail(CryptAlgorithm.class);
-    byte[] hash = Valid.off(HexCoder.fromHexString(xhash))
-        .forEmpty().getOrFail("Invalid Hash Array");
+    String algo = Sane.of(br.readLine())
+        .with("Invalid Algorithm String")
+        .get(Checkup.isNotEmpty());
+    String xhash = Sane.of(br.readLine())
+        .with("Invalid Hash Hex String")
+        .get(Checkup.isNotEmpty());
+    String xiv = Sane.of(br.readLine())
+        .with("Invalid IV Hex String")
+        .get(Checkup.isNotEmpty());
+    CryptAlgorithm ca = Sane.of(CryptAlgorithm.fromString(algo))
+        .get(Checkup.isNotNull());
+    byte[] hash = Sane.of(HexCoder.fromHexString(xhash))
+        .with("Invalid Hash Array")
+        .get(Checkup.isNotEmptyArray());
     BasicIV iv = new BasicIV(
-        Valid.off(HexCoder.decode(xiv))
-        .forEmpty().getOrFail("Invalid IV Array")
+        Sane.of(HexCoder.decode(xiv))
+            .with("Invalid IV Array")
+            .get(Checkup.isNotEmptyArray())
     );
     CryptKey key = new CryptKey();
     key.setKey(hash, iv, ca);

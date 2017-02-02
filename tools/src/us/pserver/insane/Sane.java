@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import us.pserver.insane.CheckBuilder.DefCheckBuilder;
 import us.pserver.insane.checkup.NotNull;
 
 
@@ -39,6 +40,8 @@ public interface Sane<T> extends Insane<T, RuntimeException> {
   @Override
   public Sane<T> check() throws RuntimeException;
   
+  public CheckBuilder<T> checkup();
+    
   @Override
   public Sane<T> check(SanityCheck<T> check) throws RuntimeException;
   
@@ -115,6 +118,7 @@ public interface Sane<T> extends Insane<T, RuntimeException> {
   
   
   
+  
   static class Default<T> implements Sane<T> {
 
     private final T value;
@@ -124,6 +128,8 @@ public interface Sane<T> extends Insane<T, RuntimeException> {
     private final SanityCheck<T> check;
 
     private final String message;
+    
+    private final CheckBuilder<T> checkb;
 
 
     private Default(T value, Panic<RuntimeException> panic, SanityCheck<T> check, String message) {
@@ -131,6 +137,7 @@ public interface Sane<T> extends Insane<T, RuntimeException> {
       this.check = check;
       this.panic = panic;
       this.message = message;
+      this.checkb = new DefCheckBuilder(this);
     }
 
 
@@ -145,6 +152,12 @@ public interface Sane<T> extends Insane<T, RuntimeException> {
         panic.panic((message != null ? message : check.failMessage()));
       }
       return this;
+    }
+    
+    
+    @Override
+    public CheckBuilder<T> checkup() {
+      return checkb;
     }
     
     

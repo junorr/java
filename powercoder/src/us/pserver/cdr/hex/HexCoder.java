@@ -22,7 +22,8 @@
 
 package us.pserver.cdr.hex;
 
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Sane;
 
 
 
@@ -45,7 +46,7 @@ public class HexCoder {
    * do byte array informado.
    */
   public static String toHexString(byte[] array) {
-    Valid.off(array).forEmpty().fail();
+    Sane.of(array).check(Checkup.isNotEmptyArray());
     StringBuilder sb = new StringBuilder();
     for(int i = 0; i < array.length; i++) {
       int high = ((array[i] >> 4) & 0xf) << 4;
@@ -66,7 +67,7 @@ public class HexCoder {
    * da <code>String</code> informada.
    */
   public static byte[] fromHexString(String hex) {
-    Valid.off(hex).forEmpty().fail();
+    Sane.of(hex).check(Checkup.isNotEmpty());
     int len = hex.length();
     byte[] bytes = new byte[len / 2];
     for(int i = 0; i < len; i += 2) {

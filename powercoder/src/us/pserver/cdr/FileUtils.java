@@ -28,7 +28,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import us.pserver.valid.Valid;
+import us.pserver.insane.Checkup;
+import us.pserver.insane.Panic;
+import us.pserver.insane.Sane;
 
 /**
  * Classe utilitária com funções para manipulação de
@@ -129,8 +131,8 @@ public class FileUtils {
    * @throws IOException Caso ocorra erro na transferência dos dados.
    */
   public static long transfer(InputStream in, OutputStream out) throws IOException {
-    Valid.off(in).forNull().fail(InputStream.class);
-    Valid.off(out).forNull().fail(OutputStream.class);
+    Sane.of(in).check(Checkup.isNotNull());
+    Sane.of(out).check(Checkup.isNotNull());
     
     long total = 0;
     byte[] buf = new byte[BUFFER];

@@ -49,7 +49,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Um handler que pode ser usado para simular autenticação de usuários no microserviço.
+ * Este handler define um usuário a partir de dados passado por parametro e gera um JWT
+ * caso o usuário seja autenticado.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/07/2016
  */
@@ -64,14 +66,21 @@ public class SimulateUserHandler implements JsonHandler {
   
   private final DBUserFactory factory;
   
-  
+  /**
+   * Construtor padrão com inicialização dos atributos da classe.
+   */
   public SimulateUserHandler() {
     gson = new GsonBuilder().create();
     jwtKey = ServerSetup.instance().config().getJWTKey();
     factory = new DBUserFactory();
   }
   
-  
+  /**
+   * Simula a criação de um usuário a partir dos parametros da requisição e gera 
+   * um token para ele. Devolve o token gerado como resposta.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @throws Exception 
+   */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     if(hse.isInIoThread()) {
@@ -105,7 +114,15 @@ public class SimulateUserHandler implements JsonHandler {
     hse.endExchange();
   }
   
-  
+  /**
+   * PARA REQUISIÇÕES GET
+   * Verifica se um usuário está autorizado a fazer requisição 
+   * para um URL e gera um JWT para ele, caso esteja.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @param user Usuário que receberá o JWT
+   * @return JWT
+   * @throws Exception 
+   */
   private JWT get(HttpServerExchange hse, User user) throws Exception {
     URLD url = new URLD(this.getAuthURL(hse));
     if(!new AuthorizationService(user).authorize(hse, url)) {
@@ -117,7 +134,15 @@ public class SimulateUserHandler implements JsonHandler {
     return new JWT(new JWTHeader(), pld, jwtKey);
   }
   
-  
+  /**
+   * PARA REQUISIÇÕES POST
+   * Verifica se um usuário está autorizado a fazer requisição 
+   * para um URL e gera um JWT para ele, caso esteja.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @param user Usuário que receberá o JWT
+   * @return JWT
+   * @throws Exception 
+   */
   private JWT post(HttpServerExchange hse, User user) throws Exception {
     JsonElement json = new JsonParser().parse(
         new StringPostParser().parseHttp(hse)
@@ -140,7 +165,12 @@ public class SimulateUserHandler implements JsonHandler {
     return new JWT(new JWTHeader(), pld, jwtKey);
   }
   
-  
+  /**
+   * Pega um usuário a partir dos parametros da requisição.
+   * @param pars Parametros da requisição
+   * @return Usuário
+   * @throws IOException 
+   */
   private User getUser(URIParam pars) throws IOException {
     if(pars == null || pars.length() < 1) {
       throw new IOException("No User Key Parameter Found");
@@ -148,7 +178,12 @@ public class SimulateUserHandler implements JsonHandler {
     return createDBUser(pars.getParam(0));
   }
   
-  
+  /**
+   * Cria um usuário na factory a partir da sua chave.
+   * @param chave Chave do usuário
+   * @return Usuário
+   * @throws IOException 
+   */
   private User createDBUser(String chave) throws IOException {
     try {
       User user = factory.createUser(chave);
@@ -162,7 +197,11 @@ public class SimulateUserHandler implements JsonHandler {
     }
   }
   
-  
+  /**
+   * Pega a URL completa da requisição.
+   * @param hse Exchanger de resquisição e resposta do servidor
+   * @return URL
+   */
   private String getAuthURL(HttpServerExchange hse) {
     String url = hse.getRequestURL();
     if(url.contains(AUTH_CONTEXT)) {
