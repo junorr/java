@@ -111,7 +111,12 @@ public class AuthenticationClient extends AbstractAuthClient {
     Response resp = req.execute();
     HttpResponse hresp = resp.returnResponse();
     status = hresp.getStatusLine();
-    jsonUser = EntityUtils.toString(hresp.getEntity());
+    if(status.getStatusCode() == 200) {
+      jsonUser = EntityUtils.toString(hresp.getEntity());
+    } else {
+      throw new IOException("Cannot authenticate against: "+ getUriString()
+          + ".\n\t[Server Response]=> "+ status.toString());
+    }
     return this;
   }
   

@@ -21,7 +21,7 @@
 
 package br.com.bb.disec.micros.db.mongo;
 
-import br.com.bb.disec.micros.MemCache;
+import br.com.bb.disec.micros.db.Infinispan;
 import br.com.bb.disec.micros.db.MongoConnectionPool;
 import br.com.bb.disec.micros.db.SqlObjectType;
 import br.com.bb.disec.micros.jiterator.JsonIterator;
@@ -149,10 +149,10 @@ public class MongoCache {
       collection.insertOne(createDoc(rs));
       meta.incrementTotal();
     }
-    MemCache.cache().put(
-        meta.collectionName(), meta,
-        Duration.ofSeconds(json.get(CACHETTL).getAsLong()), 
-        e->MongoConnectionPool.collection(DB_MICRO, e.getKey()).drop()
+    Infinispan.cache().put(
+        meta.collectionName(), meta, 
+        json.get(CACHETTL).getAsLong(), 
+        TimeUnit.SECONDS
     );
     return meta;
   }
@@ -216,7 +216,7 @@ public class MongoCache {
     
     
     private MongoCache getCached() {
-      MongoMetaData meta = MemCache.cache().getAs(hash.collectionHash());
+      MongoMetaData meta = Infinispan.getAs(hash.collectionHash());
       meta.filterHash(hash.filterHash());
       MongoCollection<Document> col = MongoConnectionPool
           .collection(DB_MICRO, hash.collectionHash());
@@ -242,7 +242,7 @@ public class MongoCache {
     
     public MongoCache build() {
       MongoCache mc;
-      if(MemCache.cache().contains(hash.collectionHash()) 
+      if(Infinispan.cache().containsKey(hash.collectionHash()) 
           && !json.has(DROPCACHE)) {
         mc = getCached();
       }

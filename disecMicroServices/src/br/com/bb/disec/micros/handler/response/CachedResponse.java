@@ -21,7 +21,7 @@
 
 package br.com.bb.disec.micros.handler.response;
 
-import br.com.bb.disec.micros.MemCache;
+import br.com.bb.disec.micros.db.Infinispan;
 import br.com.bb.disec.micros.db.mongo.MongoCache;
 import br.com.bb.disec.micros.util.JsonHash;
 import com.google.gson.JsonObject;
@@ -68,7 +68,7 @@ public class CachedResponse extends AbstractResponse {
    */
   @Override
   public CachedResponse setupCache() throws Exception {
-    if(!MemCache.cache().contains(hash.collectionHash())) {
+    if(!Infinispan.cache().containsKey(hash.collectionHash())) {
       super.handleRequest(null);
       Timer t = new Timer.Nanos().start();
       cache.doCache(query.getResultSet());
@@ -82,9 +82,9 @@ public class CachedResponse extends AbstractResponse {
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     this.setupCache();
-    Timer tm = new Timer.Nanos().start();
+    //Timer tm = new Timer.Nanos().start();
     this.sendResponse(hse);
-    System.out.println("* CachedResultHandler sendResponse Time: "+ tm.stop());
+    //System.out.println("* CachedResultHandler sendResponse Time: "+ tm.stop());
   }
   
   

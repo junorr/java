@@ -22,7 +22,7 @@
 package br.com.bb.disec.micro;
 
 /**
- *
+ * Classe principal, executa o servidor.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/09/2016
  */

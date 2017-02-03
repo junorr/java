@@ -49,7 +49,7 @@ public class PostSqlHandler implements JsonHandler {
       return;
     }
     try {
-      Timer tm = new Timer.Nanos().start();
+      //Timer tm = new Timer.Nanos().start();
       JsonObject json = this.parseJson(hse);
       URIParam pars = new URIParam(hse.getRequestURI());
       if(pars.length() < 2) {
@@ -59,14 +59,14 @@ public class PostSqlHandler implements JsonHandler {
       }
       json.addProperty(GROUP, pars.getParam(0));
       json.addProperty(NAME, pars.getParam(1));
-      System.out.println("* PostSqlHandler parseJson Time: "+ tm.stop());
-      tm.clear().start();
+      //System.out.println("* PostSqlHandler parseJson Time: "+ tm.stop());
+      //tm.clear().start();
       if(json.has(CACHETTL)) {
         new CachedResponse(json).handleRequest(hse);
       } else {
         new DirectResponse(json).handleRequest(hse);
       }
-      System.out.println("* PostSqlHandler result Time: "+ tm.stop());
+      //System.out.println("* PostSqlHandler result Time: "+ tm.stop());
     }
     catch(Exception e) {
       e.printStackTrace();

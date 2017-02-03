@@ -1,0 +1,1 @@
+$ISPN_HOME/lib/jdom-1.0.jar:$ISPN_HOME/lib/forms_rt-6.0.5.jar:$ISPN_HOME/lib/forms-1.0.7.jar:$ISPN_HOME/lib/asm-commons-2.2.3.jar:$ISPN_HOME/lib/asm-tree-2.2.3.jar:$ISPN_HOME/lib/log4j-core-2.5.jar:$ISPN_HOME/lib/jboss-transaction-api_1.1_spec-1.0.1.Final.jar:$ISPN_HOME/lib/log4j-api-2.5.jar:$ISPN_HOME/lib/asm-2.2.3.jar

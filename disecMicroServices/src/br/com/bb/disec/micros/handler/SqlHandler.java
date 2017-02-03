@@ -50,7 +50,7 @@ public class SqlHandler implements HttpHandler {
       hse.dispatch(this);
       return;
     }
-    Timer tm = new Timer.Nanos().start();
+    //Timer tm = new Timer.Nanos().start();
     if(Methods.GET.equals(hse.getRequestMethod())) {
       get.handleRequest(hse);
     }
@@ -61,7 +61,7 @@ public class SqlHandler implements HttpHandler {
       hse.setStatusCode(400).setReasonPhrase("Bad Request");
       hse.endExchange();
     }
-    System.out.println("* SqlHandler Time: "+ tm.stop());
+    //System.out.println("* SqlHandler Time: "+ tm.stop());
   }
   
 }

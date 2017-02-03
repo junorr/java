@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>http://www.infinispan.org/schemas/spring</title>
+<style>
+               body { font-family: 'sans-serif'; }
+               div.element, div.complexType { margin: 0 0 1em 1em; border-left: 5px solid #4477aa; border-bottom: 2px groove #4477aa;}
+               table { border: 1px solid red; border-collapse: collapse; margin: 5px; width: 95%; }
+               th { text-align: left; background: #eeeeee; color: #773333; }
+               td, th { border: 1px solid gray; }
+               h3 { border: 1px solid #4477aa; background: #eeeeee; color: #4477aa; margin: 0.3em 0 0 0; padding: 0.3em; }
+               a { text-decoration: none; color: #4477aa; }
+               a:hover { color: white; background: #4477aa; }
+               .error { color: white; background: red; }
+               .content { }
+               .heading { cursor: pointer; }
+               .complexType, .simpleType {  }
+               table.enumeration { border: 0; margin: 0; }
+               #global {
+                  position: fixed;
+                  top: 1em;
+                  right: 1em;
+                  border: 1px solid #4477aa;
+                  border-bottom: 2px groove #4477aa;
+                  z-index: 100;
+                  background: white;
+                  padding: 0.5em;
+               }
+            </style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">//</script>
+<script type="text/javascript">
+               jQuery(document).ready(function() {
+                 jQuery(".heading").click(function() {
+                   jQuery(this).next(".content").slideToggle(500);
+                 });
+                 jQuery("#global a").click(function() {
+                   jQuery(".content").toggle();
+                 });
+               });
+            </script>
+</head>
+<body>
+<h1>http://www.infinispan.org/schemas/spring</h1>
+<div class="element">
+<h3 class="heading">embedded-cache-manager</h3>
+<div class="content">
+<p/>
+<table>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>id</td>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td>configuration</td>
+<td/>
+<td/>
+<td/>
+</tr>
+</table>
+</div>
+</div>
+<div class="element">
+<h3 class="heading">remote-cache-manager</h3>
+<div class="content">
+<p/>
+<table>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>id</td>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td>configuration</td>
+<td/>
+<td/>
+<td/>
+</tr>
+</table>
+</div>
+</div>
+<div class="element">
+<h3 class="heading">container-cache-manager</h3>
+<div class="content">
+<p/>
+<table>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>id</td>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td>cache-container-ref</td>
+<td/>
+<td/>
+<td/>
+</tr>
+</table>
+</div>
+</div>
+<div id="global">
+<a href="#">Expand/Collapse All</a>
+</div>
+</body>
+</html>

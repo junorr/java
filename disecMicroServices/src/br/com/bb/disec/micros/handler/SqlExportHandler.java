@@ -53,7 +53,7 @@ public class SqlExportHandler extends HashDownloadHandler {
     } 
     catch(Exception e) {
       hse.setStatusCode(400).setReasonPhrase(
-          "Bad Request: "+ e.getMessage()
+          "Bad Request: "+ e.toString()
       );
     }
     hse.endExchange();

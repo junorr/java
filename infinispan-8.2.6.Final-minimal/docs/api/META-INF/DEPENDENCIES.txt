@@ -1,0 +1,200 @@
+// ------------------------------------------------------------------
+// Transitive dependencies of this project determined from the
+// maven pom organized by organization.
+// ------------------------------------------------------------------
+
+Infinispan JavaDoc
+
+
+From: 'an unknown organization'
+  - AntLR Parser Generator (http://www.antlr.org/) antlr:antlr:jar:2.7.7
+    License: BSD License  (http://www.antlr.org/license.html)
+  - AOP alliance (http://aopalliance.sourceforge.net) aopalliance:aopalliance:jar:1.0
+    License: Public Domain 
+  - stream-lib (https://github.com/clearspring/stream-lib) com.clearspring.analytics:stream:jar:2.2.0
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - ParaNamer Core (http://paranamer.codehaus.org/paranamer) com.thoughtworks.paranamer:paranamer:jar:2.3
+    License: BSD  (LICENSE.txt)
+  - JavaBeans(TM) Activation Framework (http://java.sun.com/javase/technologies/desktop/javabeans/jaf/index.jsp) javax.activation:activation:jar:1.1.1
+    License: COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0  (https://glassfish.dev.java.net/public/CDDLv1.0.html)
+  - "Java Concurrency in Practice" book annotations (http://jcip.net/) net.jcip:jcip-annotations:jar:1.0
+
+  - Antlr 3.4 Runtime (http://www.antlr.org) org.antlr:antlr-runtime:jar:3.4
+
+  - ANTLR StringTemplate (http://www.stringtemplate.org) org.antlr:stringtemplate:jar:3.2.1
+    License: BSD licence  (http://antlr.org/license.html)
+  - Java Persistence API, Version 2.1 (http://hibernate.org) org.hibernate.javax.persistence:hibernate-jpa-2.1-api:jar:1.0.0.Final
+    License: Eclipse Public License (EPL), Version 1.0  (http://www.eclipse.org/legal/epl-v10.html)    License: Eclipse Distribution License (EDL), Version 1.0  (http://www.eclipse.org/org/documents/edl-v10.php)
+
+From: 'Apache Software Foundation' (http://www.apache.org)
+  - Apache Log4j API (http://logging.apache.org/log4j/2.x/log4j-api/) org.apache.logging.log4j:log4j-api:jar:2.5
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache Log4j Core (http://logging.apache.org/log4j/2.x/log4j-core/) org.apache.logging.log4j:log4j-core:jar:2.5
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache Log4j Commons Logging Bridge (http://logging.apache.org/log4j/2.x/log4j-jcl/) org.apache.logging.log4j:log4j-jcl:jar:2.5
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache Log4j SLF4J Binding (http://logging.apache.org/log4j/2.x/log4j-slf4j-impl/) org.apache.logging.log4j:log4j-slf4j-impl:jar:2.5
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'FasterXML' (http://fasterxml.com)
+  - Jackson (http://jackson.codehaus.org) org.codehaus.jackson:jackson-core-asl:jar:1.9.13
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Data Mapper for Jackson (http://jackson.codehaus.org) org.codehaus.jackson:jackson-mapper-asl:jar:1.9.13
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'Google' (http://www.google.com/)
+  - Protocol Buffer Java API (https://developers.google.com/protocol-buffers/) com.google.protobuf:protobuf-java:bundle:2.6.1
+    License: New BSD license  (http://www.opensource.org/licenses/bsd-license.php)
+
+From: 'Hibernate' (http://www.hibernate.org)
+  - Hibernate Search Engine (http://search.hibernate.org/hibernate-search-engine) org.hibernate:hibernate-search-engine:jar:5.6.0.Beta1
+    License: GNU Lesser General Public License  (http://www.gnu.org/licenses/lgpl-2.1.html)
+  - Hibernate Search Avro Serialization (http://search.hibernate.org/hibernate-search-serialization-avro) org.hibernate:hibernate-search-serialization-avro:jar:5.6.0.Beta1
+    License: GNU Lesser General Public License  (http://www.gnu.org/licenses/lgpl-2.1.html)
+
+From: 'Hibernate.org' (http://hibernate.org)
+  - Hibernate Commons Annotations (http://hibernate.org) org.hibernate.common:hibernate-commons-annotations:jar:5.0.1.Final
+    License: GNU Lesser General Public License  (http://www.gnu.org/licenses/lgpl-2.1.html)
+
+From: 'Hibernate.org' (http://www.hibernate.org/)
+  - Hibernate HQL/JP-QL Walker for Lucene (http://ogm.hibernate.org/) org.hibernate.hql:hibernate-hql-lucene:jar:1.3.0.Alpha2
+    License: GNU Lesser General Public License  (http://www.gnu.org/licenses/lgpl-2.1.html)
+  - Hibernate HQL/JP-QL Parser (http://ogm.hibernate.org/) org.hibernate.hql:hibernate-hql-parser:jar:1.3.0.Alpha2
+    License: GNU Lesser General Public License  (http://www.gnu.org/licenses/lgpl-2.1.html)
+
+From: 'JBoss by Red Hat' (http://www.jboss.org)
+  - JBoss Logging 3 (http://www.jboss.org) org.jboss.logging:jboss-logging:jar:3.3.0.Final
+    License: Apache License, version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - JBoss Marshalling OSGi Bundle (http://www.jboss.org/jboss-marshalling-parent/jboss-marshalling-osgi) org.jboss.marshalling:jboss-marshalling-osgi:bundle:2.0.0.Beta3
+    License: Public Domain  (http://repository.jboss.org/licenses/cc0-1.0.txt)
+  - RESTEasy JAX-RS Client (http://rest-easy.org/resteasy-client) org.jboss.resteasy:resteasy-client:jar:3.1.0.Final
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
+  - RESTEasy JAX-RS Implementation (http://rest-easy.org/resteasy-jaxrs) org.jboss.resteasy:resteasy-jaxrs:jar:3.1.0.Final
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
+  - RESTEasy JAX-RS services (http://rest-easy.org/resteasy-jaxrs-services) org.jboss.resteasy:resteasy-jaxrs-services:jar:3.1.0.Final
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
+  - RESTEasy Netty 4 Integration (http://rest-easy.org/resteasy-netty4) org.jboss.resteasy:resteasy-netty4:jar:3.1.0.Final
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Common Annotations 1.2 API (http://www.jboss.org/jboss-annotations-api_1.2_spec) org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec:jar:1.0.0.Final
+    License: CDDL or GPLv2 with exceptions  (https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html)
+  - Java Transaction API (http://www.jboss.org/jboss-transaction-api_1.1_spec) org.jboss.spec.javax.transaction:jboss-transaction-api_1.1_spec:jar:1.0.1.Final
+    License: Common Development and Distribution License  (http://repository.jboss.org/licenses/cddl.txt)    License: GNU General Public License, Version 2 with the Classpath Exception  (http://repository.jboss.org/licenses/gpl-2.0-ce.txt)
+  - JAX-RS 2.0: The Java(TM) API for RESTful Web Services (http://www.jboss.org/jboss-jaxrs-api_2.0_spec) org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec:jar:1.0.1.Beta1
+    License: Common Development and Distribution License  (http://repository.jboss.org/licenses/cddl.txt)    License: GNU General Public License, Version 2 with the Classpath Exception  (http://repository.jboss.org/licenses/gpl-2.0-ce.txt)
+
+From: 'JBoss, a division of Red Hat' (http://www.jboss.org)
+  - Infinispan JDBC CacheStore (http://www.infinispan.org/infinispan-persistence-parent/infinispan-cachestore-jdbc) org.infinispan:infinispan-cachestore-jdbc:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan JPA CacheStore (http://www.infinispan.org/infinispan-persistence-parent/infinispan-cachestore-jpa) org.infinispan:infinispan-cachestore-jpa:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Remote CacheStore (http://www.infinispan.org/infinispan-persistence-parent/infinispan-cachestore-remote) org.infinispan:infinispan-cachestore-remote:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan REST CacheStore (http://www.infinispan.org/infinispan-persistence-parent/infinispan-cachestore-rest) org.infinispan:infinispan-cachestore-rest:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Hot Rod Client (http://www.infinispan.org/infinispan-client-hotrod) org.infinispan:infinispan-client-hotrod:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Commons (http://www.infinispan.org/infinispan-commons) org.infinispan:infinispan-commons:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Core (http://www.infinispan.org/infinispan-core) org.infinispan:infinispan-core:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Directory Provider for Hibernate Search (http://www.infinispan.org/infinispan-lucene-parent/infinispan-directory-provider) org.infinispan:infinispan-directory-provider:jar:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Extended Statistics (http://www.infinispan.org/infinispan-extended-statistics) org.infinispan:infinispan-extended-statistics:jar:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Lucene Directory Implementation (http://www.infinispan.org/infinispan-lucene-parent/infinispan-lucene-directory) org.infinispan:infinispan-lucene-directory:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Object Filtering API (http://www.infinispan.org/infinispan-objectfilter) org.infinispan:infinispan-objectfilter:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Query (http://www.infinispan.org/infinispan-query) org.infinispan:infinispan-query:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Query DSL API (http://www.infinispan.org/infinispan-query-dsl) org.infinispan:infinispan-query-dsl:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Remote Query Client (http://www.infinispan.org/infinispan-remote-query-client) org.infinispan:infinispan-remote-query-client:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Remote Query Server (http://www.infinispan.org/infinispan-remote-query-server) org.infinispan:infinispan-remote-query-server:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Server - Core Components (http://www.infinispan.org/infinispan-server-parent/infinispan-server-core) org.infinispan:infinispan-server-core:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Hot Rod Server (http://www.infinispan.org/infinispan-server-parent/infinispan-server-hotrod) org.infinispan:infinispan-server-hotrod:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Memcached Server (http://www.infinispan.org/infinispan-server-parent/infinispan-server-memcached) org.infinispan:infinispan-server-memcached:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan REST Server (http://www.infinispan.org/infinispan-server-parent/infinispan-server-rest) org.infinispan:infinispan-server-rest:war:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan WebSocket Server (http://www.infinispan.org/infinispan-server-parent/infinispan-server-websocket) org.infinispan:infinispan-server-websocket:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Spring 4 Common module (http://www.infinispan.org/infinispan-spring4-parent/infinispan-spring4-common) org.infinispan:infinispan-spring4-common:jar:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Spring 4 Embedded support (http://www.infinispan.org/infinispan-spring4-parent/infinispan-spring4-embedded) org.infinispan:infinispan-spring4-embedded:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Spring 4 Integration (http://www.infinispan.org/infinispan-spring4-parent/infinispan-spring4-remote) org.infinispan:infinispan-spring4-remote:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - Infinispan Tree API (http://www.infinispan.org/infinispan-tree) org.infinispan:infinispan-tree:bundle:8.2.6.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - ProtoStream - core (http://infinispan.org/protostream) org.infinispan.protostream:protostream:jar:3.0.7.Final
+    License: Apache License  (http://www.apache.org/licenses/LICENSE-2.0)
+  - JGroups (http://www.jgroups.org) org.jgroups:jgroups:bundle:3.6.7.Final
+    License: Apache License 2.0  (http://www.apache.org/licenses/LICENSE-2.0.html)
+
+From: 'LAMP/EPFL' (http://lamp.epfl.ch/)
+  - Scala Library (http://www.scala-lang.org/) org.scala-lang:scala-library:jar:2.11.7
+    License: BSD 3-Clause  (http://www.scala-lang.org/license.html)
+
+From: 'org.scala-lang.modules' (http://www.scala-lang.org/)
+  - scala-xml (http://www.scala-lang.org/) org.scala-lang.modules:scala-xml_2.11:bundle:1.0.2
+    License: BSD 3-clause  (http://opensource.org/licenses/BSD-3-Clause)
+
+From: 'Spring IO' (http://projects.spring.io/spring-framework)
+  - Spring AOP (https://github.com/spring-projects/spring-framework) org.springframework:spring-aop:jar:4.1.0.RELEASE
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Spring Beans (https://github.com/spring-projects/spring-framework) org.springframework:spring-beans:jar:4.1.0.RELEASE
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Spring Context (https://github.com/spring-projects/spring-framework) org.springframework:spring-context:jar:4.1.0.RELEASE
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Spring Core (https://github.com/spring-projects/spring-framework) org.springframework:spring-core:jar:4.1.0.RELEASE
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Spring Expression Language (SpEL) (https://github.com/spring-projects/spring-framework) org.springframework:spring-expression:jar:4.1.0.RELEASE
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'Square, Inc.' (http://squareup.com)
+  - ProtoParser (http://github.com/square/protoparser/) com.squareup:protoparser:jar:3.1.4
+    License: Apache 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'The Apache Software Foundation' (http://www.apache.org/)
+  - Commons CLI (http://commons.apache.org/cli/) commons-cli:commons-cli:jar:1.2
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Commons Codec (http://commons.apache.org/codec/) commons-codec:commons-codec:jar:1.4
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Commons IO (http://jakarta.apache.org/commons/io/) commons-io:commons-io:jar:1.3.2
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache Commons Logging (http://commons.apache.org/proper/commons-logging/) commons-logging:commons-logging:jar:1.2
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Commons Pool (http://commons.apache.org/pool/) commons-pool:commons-pool:jar:1.6
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache Avro (http://avro.apache.org) org.apache.avro:avro:bundle:1.7.6
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Commons Compress (http://commons.apache.org/compress/) org.apache.commons:commons-compress:jar:1.4
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - HttpClient (http://hc.apache.org/httpcomponents-client) org.apache.httpcomponents:httpclient:jar:4.2.4
+    License: Apache License  (LICENSE.txt)
+  - Apache HttpCore (http://hc.apache.org/httpcomponents-core-ga) org.apache.httpcomponents:httpcore:jar:4.4.1
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Lucene Common Analyzers (http://lucene.apache.org/lucene-parent/lucene-analyzers-common) org.apache.lucene:lucene-analyzers-common:jar:5.5.1
+    License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Lucene Memory (http://lucene.apache.org/lucene-parent/lucene-backward-codecs) org.apache.lucene:lucene-backward-codecs:jar:5.5.1
+    License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Lucene Core (http://lucene.apache.org/lucene-parent/lucene-core) org.apache.lucene:lucene-core:jar:5.5.1
+    License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Lucene Facets (http://lucene.apache.org/lucene-parent/lucene-facet) org.apache.lucene:lucene-facet:jar:5.5.1
+    License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Lucene Miscellaneous (http://lucene.apache.org/lucene-parent/lucene-misc) org.apache.lucene:lucene-misc:jar:5.5.1
+    License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Lucene Queries (http://lucene.apache.org/lucene-parent/lucene-queries) org.apache.lucene:lucene-queries:jar:5.5.1
+    License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'The Netty Project' (http://netty.io/)
+  - Netty/All-in-One (http://netty.io/netty-all/) io.netty:netty-all:jar:4.1.5.Final
+    License: Apache License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
+
+
+

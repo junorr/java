@@ -27,8 +27,8 @@ import java.util.Objects;
 
 
 /**
- * Encapsula Metadados sobre uma coleção de cache
- * de registros armazenados no MongoDB.
+ * Encapsula Metadados sobre uma coleção de 
+ * registros armazenados no MongoDB.
  * @author Juno Roesler - f6036477@bb.com.br
  * @version 0.0 - 23/09/2016
  */
