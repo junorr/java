@@ -5,6 +5,8 @@
  */
 package us.pserver.ip;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import us.pserver.tools.StringPad;
 
 
@@ -16,18 +18,24 @@ public class GetIpAddress {
   
   
   public static String header() {
-    return StringPad.of("Index").rpad(" ", 5)
+    return StringPad.of("Index").rpad(" ", 7)
         + StringPad.of("Name").rpad(" ", 12)
-        + StringPad.of("IPv4").lpad(" ", 15)
-        + StringPad.of("IPv6").lpad(" ", 38);
+        + StringPad.of("IPv4").lpad(" ", 17)
+        + StringPad.of("IPv6").lpad(" ", 42)
+        + "\n"
+        + StringPad.of("-----").rpad(" ", 7)
+        + StringPad.of("----------").rpad(" ", 12)
+        + StringPad.of("---------------").lpad(" ", 17)
+        + StringPad.of("----------------------------------------").lpad(" ", 42);
   }
   
   
   public static String format(INet i) {
-    return StringPad.of("#".concat(String.valueOf(i.index()))).rpad(" ", 5)
+    if(i == null) return "";
+    return StringPad.of("#".concat(String.valueOf(i.index()))).rpad(" ", 7)
         + StringPad.of(i.name()).rpad(" ", 12)
-        + StringPad.of(i.ipv4String()).lpad(" ", 15)
-        + StringPad.of(i.ipv6String()).lpad(" ", 38);
+        + StringPad.of(i.ipv4String()).lpad(" ", 17)
+        + StringPad.of((i.ipv6String() != null ? i.ipv6String() : "-")).lpad(" ", 42);
   }
   
   
@@ -35,11 +43,13 @@ public class GetIpAddress {
    * @param args the command line arguments
    */
   public static void main(String[] args) {
-    args = new String[] {};
     INetDiscovery dis = INetDiscovery.create();
     if(args == null || args.length == 0) {
       System.out.println(header());
-      for(INet i : dis.getInterfaces()) {
+      List<INet> ls = dis.getInterfaces().stream()
+          .sorted((a,b)->Integer.compare(a.index(), b.index()))
+          .collect(Collectors.toList());
+      for(INet i : ls) {
         System.out.println(format(i));
       }
     }
