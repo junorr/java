@@ -14,7 +14,7 @@ import us.pserver.tools.StringPad;
  *
  * @author juno
  */
-public class GetIpAddress {
+public class Main {
   
   
   public static String header() {
@@ -23,10 +23,10 @@ public class GetIpAddress {
         + StringPad.of("IPv4").lpad(" ", 17)
         + StringPad.of("IPv6").lpad(" ", 42)
         + "\n"
-        + StringPad.of("-----").rpad(" ", 7)
-        + StringPad.of("----------").rpad(" ", 12)
-        + StringPad.of("---------------").lpad(" ", 17)
-        + StringPad.of("----------------------------------------").lpad(" ", 42);
+        + StringPad.of(StringPad.of("").lpad("-", 5)).rpad(" ", 7)
+        + StringPad.of(StringPad.of("").lpad("-", 10)).rpad(" ", 12)
+        + StringPad.of(StringPad.of("").lpad("-", 15)).lpad(" ", 17)
+        + StringPad.of(StringPad.of("").lpad("-", 40)).lpad(" ", 42);
   }
   
   
@@ -34,7 +34,7 @@ public class GetIpAddress {
     if(i == null) return "";
     return StringPad.of("#".concat(String.valueOf(i.index()))).rpad(" ", 7)
         + StringPad.of(i.name()).rpad(" ", 12)
-        + StringPad.of(i.ipv4String()).lpad(" ", 17)
+        + StringPad.of((i.ipv4String() != null ? i.ipv4String() : "-")).lpad(" ", 17)
         + StringPad.of((i.ipv6String() != null ? i.ipv6String() : "-")).lpad(" ", 42);
   }
   

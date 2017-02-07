@@ -204,3 +204,9 @@
 /inetdis/dist/
 /micro/nbproject/private/
 /micro/build/
+/resource-loader/nbproject/private/
+/resource-loader/build/
+/resource-loader/dist/
+/resource-dep/nbproject/private/
+/resource-dep/build/
+/resource-dep/dist/

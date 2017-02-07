@@ -80,9 +80,6 @@ public interface INet {
       if(name == null) {
         throw new IllegalArgumentException("Bad Null Name");
       }
-      if(index <= 0) {
-        throw new IllegalArgumentException("Bad INet Index ("+ index+ ")");
-      }
       if(ipv4 == null) {
         throw new IllegalArgumentException("Bad Null IPv4 InetAddress");
       }
@@ -126,7 +123,7 @@ public interface INet {
 
     @Override
     public String ipv4String() {
-      return ipv4.getHostAddress();
+      return ipv4 != null ? ipv4.getHostAddress() : null;
     }
 
 

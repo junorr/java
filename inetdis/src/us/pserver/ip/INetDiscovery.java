@@ -48,11 +48,22 @@ public class INetDiscovery {
   }
   
   
+  private INet create(NetworkInterface ni) {
+    if(ni == null) return null;
+    try {
+      return new INetBuilder(ni).build();
+    } catch(RuntimeException e) {
+      return null;
+    }
+  }
+  
+  
   public INetDiscovery discover() throws RuntimeException {
     try {
       Enumeration<NetworkInterface> eis = NetworkInterface.getNetworkInterfaces();
       while(eis.hasMoreElements()) {
-        nifs.add(new INetBuilder(eis.nextElement()).build());
+        INet in = create(eis.nextElement());
+        if(in != null) nifs.add(in);
       }
       return this;
     }
