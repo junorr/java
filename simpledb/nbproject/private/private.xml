@@ -2,12 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/test/TestQuery.java</file>
-            <file>file:/D:/java/simpledb/src/us/pserver/job/query/Query.java</file>
-            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/test/TestNanos.java</file>
-            <file>file:/D:/java/simpledb/src/us/pserver/job/query/QueryBuilder.java</file>
-            <file>file:/D:/java/simpledb/src/us/pserver/job/query/i/QueryResolver.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
