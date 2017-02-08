@@ -24,6 +24,8 @@ package br.com.bb.disec.micros.db;
 import br.com.bb.disec.micro.ResourceLoader;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import redis.clients.jedis.Jedis;
 
@@ -45,6 +47,8 @@ public final class RedisConnectionPool {
   
   private final ReentrantLock lock;
   
+  private final AtomicInteger count;
+  
   
   private RedisConnectionPool() {
     if(instance != null) {
@@ -55,11 +59,22 @@ public final class RedisConnectionPool {
     ).build();
     this.pool = Collections.synchronizedList(new LinkedList<>());
     this.lock = new ReentrantLock();
+    this.count = new AtomicInteger(0);
   }
   
   
-  private Jedis createConnection() {
-    return new Jedis(conf.getHost(), conf.getPort());
+  private void createConnection() {
+    if(count.get() < conf.getMaxConnections()) {
+      pool.add(new Jedis(conf.getHost(), conf.getPort()));
+    }
+  }
+  
+  
+  public Jedis get() {
+    lock.lock();
+    try {
+      if()
+    }
   }
   
 }
