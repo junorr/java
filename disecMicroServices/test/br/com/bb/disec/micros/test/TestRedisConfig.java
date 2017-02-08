@@ -19,32 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.microb.test;
+package br.com.bb.disec.micros.test;
 
-import br.com.bb.disec.micro.client.AuthenticationClient;
-import br.com.bb.disec.micro.client.SimAuthClient;
-import java.io.IOException;
-import us.pserver.timer.Timer;
+import br.com.bb.disec.micro.ResourceLoader;
+import br.com.bb.disec.micros.db.RedisCache;
+import br.com.bb.disec.micros.db.RedisConfig;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/09/2016
+ * @version 0.0 - 08/02/2017
  */
-public class TestSimAuth {
+public class TestRedisConfig {
 
   
-  public static void main(String[] args) throws IOException {
-    SimAuthClient scli = SimAuthClient.ofDefault("f6036477");
-    scli.doAuth();
-    System.out.println("* token: "+ scli.getBBSSOToken());
-    System.out.println("* user.: "+ scli.getUser());
-    AuthenticationClient acli = AuthenticationClient.ofDefault();
-    Timer tm = new Timer.Nanos().start();
-    acli.doAuth(scli.getBBSSOToken());
-    System.out.println("* AuthenticationClient time: "+ tm.lapAndStop());
-    System.out.println("* auth: "+ acli.isAuthenticated());
-    System.out.println("* user: "+ acli.getUser());
+  public static void main(String[] args) {
+    System.out.println(RedisConfig.builder().load(ResourceLoader.of(RedisConfig.class)
+            .loadStream(RedisCache.DSFILE_CONF))
+    );
   }
   
 }

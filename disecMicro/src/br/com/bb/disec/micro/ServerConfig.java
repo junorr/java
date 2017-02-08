@@ -342,7 +342,10 @@ public class ServerConfig {
         + "\n    shutdownHandlerEnabled: " + shutdownHandler
         + "\n    authenticationShield: " + authenticationShield
         + "\n    jwtAuthKey: " + jwtKey
-        + "\n    handlers: " + handlers.toString().replace(", ", "\n      - ") + "\n}";
+        + "\n    handlers: " + handlers.toString()
+            .replace("{", "{\n      - ")
+            .replace(", ", "\n      - ")
+            .replace("}", "\n    }") + "\n}";
   }
   
   
@@ -677,16 +680,15 @@ public class ServerConfig {
             .registerTypeAdapter(Class.class, new JsonClass())
             .create();
         Builder b = gson.fromJson(fr, Builder.class);
-        this.setServerAddress(b.getServerAddress())
-            .setServerPort(b.getServerPort())
+        return this.setAuthenticationShield(b.isAuthenticationShield())
             .setDispatcherEnabled(b.isDispatcherEnabled())
-            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
-            .setAuthenticationShield(b.isAuthenticationShield())
-            .setJwtAuthKey(b.getJwtAuthKey())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
-            .setMaxWorkerThreads(b.getMaxWorkerThreads());
-        return this;
+            .setJwtAuthKey(b.getJwtAuthKey())
+            .setMaxWorkerThreads(b.getMaxWorkerThreads())
+            .setServerAddress(b.getServerAddress())
+            .setServerPort(b.getServerPort())
+            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled());
       }
     }
 
@@ -706,16 +708,15 @@ public class ServerConfig {
             .registerTypeAdapter(Class.class, new JsonClass())
             .create();
         Builder b = gson.fromJson(ir, Builder.class);
-        this.setServerAddress(b.getServerAddress())
-            .setServerPort(b.getServerPort())
+        return this.setAuthenticationShield(b.isAuthenticationShield())
             .setDispatcherEnabled(b.isDispatcherEnabled())
-            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
-            .setAuthenticationShield(b.isAuthenticationShield())
-            .setHandlers(b.getHandlers())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
-            .setMaxWorkerThreads(b.getMaxWorkerThreads());
-        return this;
+            .setJwtAuthKey(b.getJwtAuthKey())
+            .setMaxWorkerThreads(b.getMaxWorkerThreads())
+            .setServerAddress(b.getServerAddress())
+            .setServerPort(b.getServerPort())
+            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled());
       }
     }
 
@@ -731,7 +732,10 @@ public class ServerConfig {
           + "\n    shutdownHandlerEnabled: " + shutdownHandlerEnabled
           + "\n    authenticationShield: " + authenticationShield
           + "\n    jwtAuthKey: " + jwtAuthKey
-          + "\n    handlers: " + handlers + "\n}";
+          + "\n    handlers: " + handlers.toString()
+              .replace("{", "{\n      - ")
+              .replace(", ", "\n      - ")
+              .replace("}", "\n    }") + "\n}";
     }
     
   }

@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.microb.test;
 
+import br.com.bb.disec.micro.ServerConfig;
 import br.com.bb.disec.micro.ServerSetup;
 
 /**
@@ -32,9 +33,10 @@ public class TestServerSetup {
 
   
   public static void main(String[] args) {
-    System.out.println("* auth-exclude: "+ ServerSetup.autoSetup().loader().loadJson("/resources/auth-exclude.json"));
-    System.out.println("* auth-exclude: "+ ServerSetup.instance().loader());
-    System.out.println("* auth-exclude: "+ ServerSetup.instance().loader().loadJson("/resources/auth-exclude.json"));
+    ServerConfig conf = ServerSetup.autoSetup().config();
+    System.out.println(conf);
+    System.out.println("* auth-exclude: "+ ServerSetup.autoSetup().loader().loadStringContent("/resources/auth-exclude.json"));
+    System.out.println("* auth-exclude: "+ ServerSetup.instance().loader().loadStringContent("/resources/auth-exclude.json"));
   }
   
 }

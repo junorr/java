@@ -23,7 +23,7 @@ package br.com.bb.disec.micros.handler;
 
 import br.com.bb.disec.micro.util.StringPostParser;
 import br.com.bb.disec.micro.util.URIParam;
-import br.com.bb.disec.micros.db.Infinispan;
+import br.com.bb.disec.micros.db.RedisCache;
 import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
 import static br.com.bb.disec.micros.util.JsonConstants.NAME;
 import com.google.gson.JsonObject;
@@ -34,7 +34,6 @@ import io.undertow.util.Headers;
 import io.undertow.util.Methods;
 import java.io.IOException;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.digest.DigestUtils;
 
 /**
@@ -44,7 +43,7 @@ import org.apache.commons.codec.digest.DigestUtils;
  */
 public class HashDownloadHandler implements HttpHandler {
   
-  public static final long DEFAULT_DROP_TIMEOUT = 10*60L;
+  public static final int DEFAULT_DROP_TIMEOUT = 10*60;
   
   
   protected String hash;
@@ -80,9 +79,8 @@ public class HashDownloadHandler implements HttpHandler {
   
   private void get(HttpServerExchange hse) throws Exception {
     URIParam ups = new URIParam(hse.getRequestURI());
-    if(ups.length() > 0 && Infinispan.cache()
-        .containsKey(ups.getParam(0))) {
-      json = Infinispan.getAs(ups.getParam(0));
+    if(ups.length() > 0 && RedisCache.cache().contains(ups.getParam(0))) {
+      json = RedisCache.cache().getJson(ups.getParam(0)).getAsJsonObject();
     }
     else {
       throw new IllegalArgumentException("Bad Download Token");
@@ -100,7 +98,7 @@ public class HashDownloadHandler implements HttpHandler {
       json.addProperty(NAME, pars.getParam(1));
     }
     hash = calcHash(hse, json);
-    Infinispan.cache().put(hash, json, DEFAULT_DROP_TIMEOUT, TimeUnit.SECONDS);
+    RedisCache.cache().put(hash, json, DEFAULT_DROP_TIMEOUT);
   }
   
   

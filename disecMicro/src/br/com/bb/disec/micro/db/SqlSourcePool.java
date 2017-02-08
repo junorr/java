@@ -23,13 +23,14 @@ package br.com.bb.disec.micro.db;
 
 import br.com.bb.disec.micro.ResourceLoader;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.commons.codec.digest.DigestUtils;
+
 
 /**
  * Um objeto que pode ser usado para gerenciar um pool de SqlSource.
@@ -49,6 +50,7 @@ public final class SqlSourcePool implements SqlSource {
   
   private final List<SqlSource> srcs;
   
+  
   /**
    * Construtor de inicialização da classe. Inicializa todas as propriedades da
    * classe.
@@ -62,6 +64,7 @@ public final class SqlSourcePool implements SqlSource {
     srcs.add(new DefaultFileSqlSource(ResourceLoader.caller()));
   }
   
+  
   /**
    * Pega uma List com todos os SqlSource do objeto.
    * @return List de SqlSource
@@ -70,16 +73,18 @@ public final class SqlSourcePool implements SqlSource {
     return srcs;
   }
   
+  
   /**
    * Adiciona um SqlSource no pool de sources do objeto.
-   * @param path Caminho onde está o arquivo sql.ini
+   * @param url URL do arquivo sql.ini
    * @return this
    */
-  public SqlSourcePool source(Path path) {
-    Objects.requireNonNull(path, "Bad Null Path");
-    srcs.add(new FileSqlSource(path));
+  public SqlSourcePool source(URL url) {
+    Objects.requireNonNull(url, "Bad Null URL");
+    srcs.add(new FileSqlSource(url));
     return this;
   }
+  
   
   /**
    * Adiciona um SqlSource no pool de sources do objeto.
@@ -91,6 +96,7 @@ public final class SqlSourcePool implements SqlSource {
     srcs.add(src);
     return this;
   }
+  
   
   /**
    * Busca uma SQL na na List de SQL ou no pool de SqlSource.
@@ -113,6 +119,7 @@ public final class SqlSourcePool implements SqlSource {
     }
     return sqls.get(hash);
   }
+  
 
   /**
    * Retorna true se uma SQL existir na List de SQLs ou no pool de SqlSource.
@@ -126,6 +133,7 @@ public final class SqlSourcePool implements SqlSource {
   public boolean containsSql(String group, String name) throws IOException {
     return this.getSql(group, name) != null;
   }
+  
   
   /**
    * Pega o pool de SqlSource do objeto.

@@ -19,25 +19,47 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micros;
+package br.com.bb.disec.micros.db;
 
 import br.com.bb.disec.micro.ResourceLoader;
-import br.com.bb.disec.micro.ServerSetup;
-import br.com.bb.disec.micros.db.RedisCache;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.concurrent.locks.ReentrantLock;
+import redis.clients.jedis.Jedis;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2016
+ * @version 0.0 - 08/02/2017
  */
-public class Main {
+public final class RedisConnectionPool {
 
+  public static final String DSFILE_CONF = "/resources/redis.json";
   
-  public static void main(String[] args) {
-    ServerSetup.autoSetup(ResourceLoader.caller())
-        .createServer()
-        .addStopHook(RedisCache::close)
-        .start();
+  private static final RedisConnectionPool instance = new RedisConnectionPool();
+  
+  
+  private final RedisConfig conf;
+  
+  private final List<Jedis> pool;
+  
+  private final ReentrantLock lock;
+  
+  
+  private RedisConnectionPool() {
+    if(instance != null) {
+      throw new IllegalStateException("RedisConnectionPool is already instantiated");
+    }
+    this.conf = RedisConfig.builder().load(
+        ResourceLoader.caller().loadStream(DSFILE_CONF)
+    ).build();
+    this.pool = Collections.synchronizedList(new LinkedList<>());
+    this.lock = new ReentrantLock();
+  }
+  
+  
+  private Jedis createConnection() {
+    return new Jedis(conf.getHost(), conf.getPort());
   }
   
 }

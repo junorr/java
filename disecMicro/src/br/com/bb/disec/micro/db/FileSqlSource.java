@@ -21,7 +21,9 @@
 
 package br.com.bb.disec.micro.db;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -32,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 
 /**
  * Um objeto que pode ser usado para armazenar as SQLs da aplicação.
@@ -45,32 +48,23 @@ public class FileSqlSource implements SqlSource {
 
   private final Map<String, Map<String,String>> sqls;
   
-  private final Path path;
+  private final URL url;
+  
   
   /**
    * Construtor padrão que encapsula a criação do mapa de sqls.
-   * @param path Objeto utilizado para achar o caminho do arquivo sql.ini
+   * @param url URL do arquivo sql.ini
    */
-  public FileSqlSource(Path path) {
-    if(path == null) {
-      throw new IllegalArgumentException("Bad File Path: "+ path);
+  public FileSqlSource(URL url) {
+    if(url == null) {
+      throw new IllegalArgumentException("Bad Null URL");
     }
-    if(!Files.exists(path)) {
-      throw new IllegalArgumentException("Path Does Not Exists: "+ path);
-    }
-    this.path = path;
+    this.url = url;
     sqls = Collections.synchronizedMap(
         new HashMap<String,Map<String,String>>()
     );
   }
   
-  /**
-   * Cria um FileSqlSource com o Path do arquivo passado por parametro.
-   * @param file Nome do arquivo que deseja pegar o Path
-   */
-  public FileSqlSource(String file) {
-    this(Paths.get(file));
-  }
   
   /**
    * Pega uma SQL a partir do seu grupo e nome.
@@ -91,6 +85,7 @@ public class FileSqlSource implements SqlSource {
     return null;
   }
   
+  
   /**
    * Retorna true se a SQL existir no objeto.
    * @param group Grupo do SQL
@@ -103,6 +98,7 @@ public class FileSqlSource implements SqlSource {
   public boolean containsSql(String group, String name) throws IOException {
     return getSql(group, name) != null;
   }
+  
   
   /**
    * Le o arquivo de SQL e popula o mapa de SQLS com as informações encontradas
@@ -119,12 +115,13 @@ public class FileSqlSource implements SqlSource {
    * @throws IOException 
    */
   private void readSqlFile() throws IOException {
-    Iterator<String> it = Files.lines(path).iterator();
+    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+    String line = null;
     String group = null;
     String key = null;
     StringBuilder value = new StringBuilder();
-    while(it.hasNext()) {
-      String line = it.next().trim();
+    while((line = br.readLine()) != null) {
+      line = line.trim();
       if(line.startsWith("{") && line.endsWith("}")) {
         Map<String,String> map = new HashMap<>();
         if(group != null && key != null && value.length() > 0) {
@@ -149,6 +146,7 @@ public class FileSqlSource implements SqlSource {
       sqls.get(group).put(key, value.toString());
     }
   }
+  
   
   /**
    * Pega o URI de uma URL

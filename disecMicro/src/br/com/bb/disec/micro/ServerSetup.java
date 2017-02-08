@@ -22,6 +22,7 @@
 package br.com.bb.disec.micro;
 
 import br.com.bb.disec.micro.ResourceLoader.ResourceLoadException;
+import br.com.bb.disec.micro.db.PoolFactory;
 import java.io.IOException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -71,7 +72,7 @@ public class ServerSetup {
     this.loader = (rld != null ? rld : ResourceLoader.self());
     try {
       config = ServerConfig.builder().load(
-          loader.loadPath(configPath)
+          loader.loadStream(configPath)
       ).build();
     }
     catch(IOException e) {
@@ -176,7 +177,8 @@ public class ServerSetup {
    * @return servidor criado
    */
   public Server createServer() {
-    return new Server(config);
+    return new Server(config)
+        .addStopHook(PoolFactory::closePools);
   }
   
 }

@@ -21,8 +21,8 @@
 
 package br.com.bb.disec.micros.db.mongo;
 
-import br.com.bb.disec.micros.db.Infinispan;
 import br.com.bb.disec.micros.db.MongoConnectionPool;
+import br.com.bb.disec.micros.db.RedisCache;
 import br.com.bb.disec.micros.db.SqlObjectType;
 import br.com.bb.disec.micros.jiterator.JsonIterator;
 import br.com.bb.disec.micros.jiterator.MongoJsonIterator;
@@ -31,6 +31,7 @@ import static br.com.bb.disec.micros.util.JsonConstants.CACHETTL;
 import static br.com.bb.disec.micros.util.JsonConstants.CREATED;
 import static br.com.bb.disec.micros.util.JsonConstants.DB_MICRO;
 import static br.com.bb.disec.micros.util.JsonConstants.DROPCACHE;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -38,12 +39,12 @@ import com.mongodb.client.model.IndexOptions;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
+import us.pserver.timer.Timer;
 
 /**
  *
@@ -59,6 +60,14 @@ public class MongoCache {
   private final MongoMetaData meta;
   
   private final MongoCollection<Document> collection;
+  
+  
+  private MongoCache() {
+    json = null;
+    colname = null;
+    meta = null;
+    collection = null;
+  }
 
 
   protected MongoCache(
@@ -140,6 +149,8 @@ public class MongoCache {
   
   
   public MongoMetaData doCache(ResultSet rs) throws SQLException {
+    System.out.println("*** Doing Cache ***");
+    Timer tm = new Timer.Nanos().start();
     meta.columns(this.getColumns(rs.getMetaData()));
     meta.columns().forEach(c->collection
         .createIndex(new Document(c, 1))
@@ -149,10 +160,10 @@ public class MongoCache {
       collection.insertOne(createDoc(rs));
       meta.incrementTotal();
     }
-    Infinispan.cache().put(
-        meta.collectionName(), meta, 
-        json.get(CACHETTL).getAsLong(), 
-        TimeUnit.SECONDS
+    RedisCache.cache().put(
+        meta.collectionName(), 
+        new Gson().toJson(meta), 
+        json.get(CACHETTL).getAsInt()
     );
     return meta;
   }
@@ -216,7 +227,10 @@ public class MongoCache {
     
     
     private MongoCache getCached() {
-      MongoMetaData meta = Infinispan.getAs(hash.collectionHash());
+      MongoMetaData meta = new Gson().fromJson(
+          RedisCache.cache().get(hash.collectionHash()), 
+          MongoMetaData.class
+      );
       meta.filterHash(hash.filterHash());
       MongoCollection<Document> col = MongoConnectionPool
           .collection(DB_MICRO, hash.collectionHash());
@@ -242,8 +256,7 @@ public class MongoCache {
     
     public MongoCache build() {
       MongoCache mc;
-      if(Infinispan.cache().containsKey(hash.collectionHash()) 
-          && !json.has(DROPCACHE)) {
+      if(RedisCache.cache().contains(hash.collectionHash()) && !json.has(DROPCACHE)) {
         mc = getCached();
       }
       else {

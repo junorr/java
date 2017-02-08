@@ -73,6 +73,8 @@ public class ServerConfig {
   
   private final boolean shutdownHandler;
   
+  private final boolean authenticationShield;
+  
   private final int maxWorkerThreads;
   
   private final int ioThreads;
@@ -90,6 +92,8 @@ public class ServerConfig {
    * inicialização do servidor (false).
    * @param shutdownHandler Configura se o servidor possuirá
    * uma URI configurada para parar o serviço de rede.
+   * @param authShield Configura se o servidor possuiŕa
+   * controle de acesso aos serviços disponíveis.
    * @param ioThreads Quantidade de threads primárias para
    * atendimento de requisições.
    * @param maxWorkerThreads Quantidade máxima de threads
@@ -102,6 +106,7 @@ public class ServerConfig {
       int port, 
       boolean dispatcherEnabled, 
       boolean shutdownHandler, 
+      boolean authShield,
       int ioThreads, 
       int maxWorkerThreads, 
       Map<String,Class> map
@@ -116,6 +121,7 @@ public class ServerConfig {
     this.port = port;
     this.dispatcherEnabled = dispatcherEnabled;
     this.shutdownHandler = shutdownHandler;
+    this.authenticationShield = authShield;
     this.ioThreads = (ioThreads > 0 
         ? ioThreads 
         : DEFAULT_IO_THREADS
@@ -184,6 +190,18 @@ public class ServerConfig {
    */
   public boolean isShutdownHandlerEnabled() {
     return shutdownHandler;
+  }
+
+
+  /**
+   * Verifica se o servidor possuiŕá controle 
+   * de acesso aos serviços disponíveis.
+   * @return true se o servidor possuiŕá controle 
+   * de acesso aos serviços disponíveis, false
+   * caso contrário.
+   */
+  public boolean isAuthenticationShield() {
+    return authenticationShield;
   }
 
 
@@ -302,6 +320,7 @@ public class ServerConfig {
         + "\n    maxWorkerThreads: " + maxWorkerThreads 
         + "\n    dispatcherEnabled: " + dispatcherEnabled 
         + "\n    shutdownHandlerEnabled: " + shutdownHandler
+        + "\n    authenticationShield: " + authenticationShield
         + "\n    handlers: " + handlers.toString()
             .replace("{", "{\n      - ")
             .replace(", ", "\n      - ")
@@ -323,6 +342,8 @@ public class ServerConfig {
     private int serverPort;
     
     private boolean dispatcherEnabled;
+    
+    private boolean authenticationShield;
     
     private int maxWorkerThreads;
     
@@ -428,6 +449,32 @@ public class ServerConfig {
      */
     public Builder setDispatcherEnabled(boolean useDispatcher) {
       this.dispatcherEnabled = useDispatcher;
+      return this;
+    }
+    
+    
+    /**
+     * Verifica se o servidor possuiŕá controle 
+     * de acesso aos serviços disponíveis.
+     * @return true se o servidor possuiŕá controle 
+     * de acesso aos serviços disponíveis, false
+     * caso contrário.
+     */
+    public boolean isAuthenticationShield() {
+      return authenticationShield;
+    }
+
+
+    /**
+     * Define se o servidor possuiŕá controle 
+     * de acesso aos serviços disponíveis.
+     * @param authenticationShield true se o 
+     * servidor possuiŕá controle de acesso 
+     * aos serviços disponíveis, false caso contrário.
+     * @return Esta instância modificada de Builder.
+     */
+    public Builder setAuthenticationShield(boolean authenticationShield) {
+      this.authenticationShield = authenticationShield;
       return this;
     }
     
@@ -543,6 +590,7 @@ public class ServerConfig {
           serverPort, 
           dispatcherEnabled, 
           shutdownHandlerEnabled, 
+          authenticationShield,
           ioThreads, 
           maxWorkerThreads, 
           handlers
@@ -580,19 +628,19 @@ public class ServerConfig {
      * arquivo.
      */
     public Builder load(Path path) throws IOException {
-      try (FileReader fr = new FileReader(path.toString())) {
+      try (FileReader fr = new FileReader(path.toFile())) {
         Gson gson = new GsonBuilder()
             .registerTypeAdapter(Class.class, new JsonClass())
             .create();
         Builder b = gson.fromJson(fr, Builder.class);
-        this.setServerAddress(b.getServerAddress())
-            .setServerPort(b.getServerPort())
+        return this.setAuthenticationShield(b.isAuthenticationShield())
             .setDispatcherEnabled(b.isDispatcherEnabled())
-            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
-            .setMaxWorkerThreads(b.getMaxWorkerThreads());
-        return this;
+            .setMaxWorkerThreads(b.getMaxWorkerThreads())
+            .setServerAddress(b.getServerAddress())
+            .setServerPort(b.getServerPort())
+            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled());
       }
     }
 
@@ -612,15 +660,14 @@ public class ServerConfig {
             .registerTypeAdapter(Class.class, new JsonClass())
             .create();
         Builder b = gson.fromJson(ir, Builder.class);
-        this.setServerAddress(b.getServerAddress())
-            .setServerPort(b.getServerPort())
+        return this.setAuthenticationShield(b.isAuthenticationShield())
             .setDispatcherEnabled(b.isDispatcherEnabled())
-            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
-            .setHandlers(b.getHandlers())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
-            .setMaxWorkerThreads(b.getMaxWorkerThreads());
-        return this;
+            .setMaxWorkerThreads(b.getMaxWorkerThreads())
+            .setServerAddress(b.getServerAddress())
+            .setServerPort(b.getServerPort())
+            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled());
       }
     }
 
@@ -634,7 +681,11 @@ public class ServerConfig {
           + "\n    ioThreads: " + ioThreads 
           + "\n    maxWorkerThreads: " + maxWorkerThreads 
           + "\n    shutdownHandlerEnabled: " + shutdownHandlerEnabled
-          + "\n    handlers: " + handlers + "\n}";
+          + "\n    authenticationShield: " + authenticationShield
+          + "\n    handlers: " + handlers.toString()
+              .replace("{", "{\n      - ")
+              .replace(", ", "\n      - ")
+              .replace("}", "\n    }") + "\n}";
     }
     
   }

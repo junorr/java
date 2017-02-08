@@ -45,6 +45,11 @@ public class MongoMetaData {
   private boolean filterChanged;
   
   
+  private MongoMetaData() {
+    colname = null;
+  }
+  
+  
   public MongoMetaData(String colname) {
     this(colname, null, false, null, 0);
   }

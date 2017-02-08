@@ -44,11 +44,11 @@ public class TestResourceLoader {
     ResourceLoader other = ResourceLoader.self();
     System.out.println("* tother: "+ tother.stop());
     System.out.println("* Local serverconf.json:");
-    System.out.println(local.loadContentString(resource));
+    System.out.println(local.loadStringContent(resource));
     System.out.println();
     
     System.out.println("* Original serverconf.json:");
-    System.out.println(other.loadContentString(resource));
+    System.out.println(other.loadStringContent(resource));
     
   }
   

@@ -61,6 +61,7 @@ public class PostSqlHandler implements JsonHandler {
       json.addProperty(NAME, pars.getParam(1));
       //System.out.println("* PostSqlHandler parseJson Time: "+ tm.stop());
       //tm.clear().start();
+      System.out.println("*** PostSqlHandler.response ***");
       if(json.has(CACHETTL)) {
         new CachedResponse(json).handleRequest(hse);
       } else {

@@ -27,9 +27,9 @@ import br.com.bb.disec.micro.jwt.JWTKey;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HeaderMap;
 import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
 
@@ -67,9 +67,9 @@ public class JWTShieldHandler implements HttpHandler {
    * @return JSON array das URLs de exclusão
    */
   private JsonArray readExcludes() {
-    return ServerSetup.instance()
+    return new JsonParser().parse(ServerSetup.instance()
         .loader()
-        .loadJson(AUTH_EXCEPTIONS_FILE)
+        .loadStringContent(AUTH_EXCEPTIONS_FILE))
         .getAsJsonArray();
   }
   

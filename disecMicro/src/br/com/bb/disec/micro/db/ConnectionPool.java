@@ -30,6 +30,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
+
 
 /**
  * Esta classe é responsável pelo gerenciamento de conexões com o banco de dados,
@@ -51,6 +53,7 @@ public class ConnectionPool {
   
   private final String dsname;
   
+  
   /**
    * Cria um ConnectionPool padrão com as configurações definidas no arquivo datasource.
    * @param dsname Complemento do nome do arquivo datasource onmde está as configurações
@@ -61,6 +64,7 @@ public class ConnectionPool {
   private ConnectionPool(String dsname) throws ResourceLoadException {
     this(dsname, null);
   }
+  
   
   /**
    * Cria um ConnectionPool a partir de um ResourceLoader com as configurações 
@@ -77,10 +81,15 @@ public class ConnectionPool {
       rld = ResourceLoader.self();
     }
     this.dsname = dsname;
-    this.datasource = new HikariDataSource(
-        new HikariConfig(getFileName(rld))
-    );
+    try {
+      Properties prop = new Properties();
+      prop.load(rld.loadStream(DSFILE_PRE + dsname + DSFILE_EXT));
+      this.datasource = new HikariDataSource(new HikariConfig(prop));
+    } catch(IOException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
   }
+  
   
   /**
    * Instancia um ConnectionPool com as configurações definidadas no datasource
@@ -92,6 +101,7 @@ public class ConnectionPool {
   public static ConnectionPool createPool(String dsname) throws IOException {
     return createPool(dsname, null);
   }
+  
   
   /**
    * Instancia um ConnectionPool a partir de um ResourceLoader com as configurações 
@@ -110,18 +120,6 @@ public class ConnectionPool {
     }
   }
   
-  /**
-   * Pega o caminho completo do arquivo datasource.
-   * @param rld ResourceLoader
-   * @return caminho do arquivo
-   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
-   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
-   */
-  private String getFileName(ResourceLoader rld) throws ResourceLoadException {
-    return rld.loadStringPath(
-        DSFILE_PRE + dsname + DSFILE_EXT
-    );
-  }
   
   /**
    * Pega o objeto datasource do ConnectionPool.
@@ -131,6 +129,7 @@ public class ConnectionPool {
     return datasource;
   }
   
+  
   /**
    * Pega o nome do datasource da ConnectionPool.
    * @return nome do datasource
@@ -138,6 +137,7 @@ public class ConnectionPool {
   public String getDSName() {
     return dsname;
   }
+  
   
   /**
    * Pega a conexão do objeto datasource com o banco de dados.
@@ -148,12 +148,14 @@ public class ConnectionPool {
     return datasource.getConnection();
   }
   
+  
   /**
    * Fecha o DataSource e todas as suas pools associadas.
    */
   public void closeDataSource() {
     datasource.close();
   }
+  
   
   /**
    * Fecha uma conexão com o banco de dados.
@@ -163,6 +165,7 @@ public class ConnectionPool {
     try { if(con != null) con.close(); } 
     catch(SQLException e) {}
   }
+  
   
   /**
    * Fecha uma conexão e statement com o banco de dados.
@@ -175,6 +178,7 @@ public class ConnectionPool {
     try { if(stm != null) stm.close(); } 
     catch(SQLException e) {}
   }
+  
   
   /**
    * Fecha uma conexão, statement e resultset com o banco de dados.

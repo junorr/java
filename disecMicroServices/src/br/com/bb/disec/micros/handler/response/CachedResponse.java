@@ -21,7 +21,7 @@
 
 package br.com.bb.disec.micros.handler.response;
 
-import br.com.bb.disec.micros.db.Infinispan;
+import br.com.bb.disec.micros.db.RedisCache;
 import br.com.bb.disec.micros.db.mongo.MongoCache;
 import br.com.bb.disec.micros.util.JsonHash;
 import com.google.gson.JsonObject;
@@ -29,6 +29,7 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import java.io.OutputStream;
 import org.jboss.logging.Logger;
+import redis.clients.jedis.Jedis;
 import us.pserver.timer.Timer;
 
 /**
@@ -68,7 +69,7 @@ public class CachedResponse extends AbstractResponse {
    */
   @Override
   public CachedResponse setupCache() throws Exception {
-    if(!Infinispan.cache().containsKey(hash.collectionHash())) {
+    if(!RedisCache.cache().contains(hash.collectionHash())) {
       super.handleRequest(null);
       Timer t = new Timer.Nanos().start();
       cache.doCache(query.getResultSet());

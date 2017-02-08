@@ -21,13 +21,10 @@
 
 package br.com.bb.disec.micro;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -35,11 +32,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -136,18 +129,81 @@ public class ResourceLoader {
   
   
   /**
+   * Procura por um recurso de nome específico.
+   * @param resource Nome do recurso a ser carregado
+   * @return URI do recurso procurado
+   * @throws ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
+  private URI getURI(String resource) throws ResourceLoadException {
+    try {
+      return findResource(resource).toURI();
+    } catch(URISyntaxException e) {
+      throw new ResourceLoadException(e);
+    }
+  }
+  
+  
+  /**
+   * Procura todos os recursos com o mesmo nome e seleciona
+   * um de acordo com a classe utilizada para carregar.
+   * @param resource Nome do recurso a ser carregado.
+   * @return URL do recurso procurado.
+   * @throws ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
+  private URL findResource(String resource) throws ResourceLoadException {
+    testResource(resource);
+    String cpath = "/"+ loader.getName().replace(".", "/") + ".class";
+    String def = loader.getResource(cpath).toString().replace(cpath, "");
+    try {
+      ClassLoader cl = (loader.getClassLoader() != null 
+          ? loader.getClassLoader() 
+          : ClassLoader.getSystemClassLoader());
+      Enumeration<URL> en = cl.getResources(
+          (resource.startsWith("/") ? resource.substring(1) : resource)
+      );
+      URL url = null;
+      while(en.hasMoreElements()) {
+        url = en.nextElement();
+        String surl = url.toString();
+        if(surl.contains(def)) break;
+      }
+      if(url == null) {
+        throw new ResourceLoadException("Resource Not Found: "+ resource);
+      }
+      return url;
+    }
+    catch(IOException e) {
+      throw new ResourceLoadException(e);
+    }
+  }
+  
+  
+  /**
+   * Carrega a URL do recurso a partir do informado.
+   * @param resource Nome do recurso procurado.
+   * @return URL do recurso.
+   * @throws ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
+  public URL loadURL(String resource) throws ResourceLoadException {
+    return findResource(resource);
+  }
+  
+  
+  /**
    * Carrega um InputStream a partir do nome do recurso informado.
    * @param resource Nome do recurso procurado.
    * @return InputStream a partir do nome do recurso informado.
-   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * @throws ResourceLoadException 
    * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
    */
   public InputStream loadStream(String resource) throws ResourceLoadException {
     this.testResource(resource);
     try {
-      return loader.getResourceAsStream(resource);
-      //return findResource(resource).openStream();
-    } catch(Exception e) {
+      return findResource(resource).openStream();
+    } catch(IOException e) {
       throw new ResourceLoadException(e);
     }
   }
@@ -157,7 +213,7 @@ public class ResourceLoader {
    * Carrega um BufferedReader a partir do nome do recurso informado.
    * @param resource Nome do recurso procurado.
    * @return BufferedReader a partir do nome do recurso informado.
-   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * @throws ResourceLoadException 
    * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
    */
   public BufferedReader loadReader(String resource) throws ResourceLoadException {
@@ -173,7 +229,7 @@ public class ResourceLoader {
    * Carrega um ReadableByteChannel a partir do nome do recurso informado.
    * @param resource Nome do recurso procurado.
    * @return ReadableByteChannel a partir do nome do recurso informado.
-   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * @throws ResourceLoadException 
    * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
    */
   public ReadableByteChannel loadChannel(String resource) {
@@ -188,10 +244,10 @@ public class ResourceLoader {
    * Carrega o conteúdo de texto a partir do recurso informado.
    * @param resource Nome do recurso procurado.
    * @return String com o conteúdo de texto a partir do recurso informado.
-   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * @throws ResourceLoadException 
    * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
    */
-  public String loadContentString(String resource) throws ResourceLoadException {
+  public String loadStringContent(String resource) throws ResourceLoadException {
     ReadableByteChannel channel = this.loadChannel(resource);
     ByteBuffer buffer = ByteBuffer.allocateDirect(4096);
     StringBuilder builder = new StringBuilder();
@@ -215,23 +271,6 @@ public class ResourceLoader {
   }
   
   
-  /**
-   * Carrega um JSON a partir do recurso informado.
-   * @param resource Nome do recurso procurado
-   * @return JSON carregado
-   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
-   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
-   */
-  public JsonElement loadJson(String resource) throws ResourceLoadException {
-    Reader rd = this.loadReader(resource);
-    try {
-      return new JsonParser().parse(rd);
-    }
-    finally {
-      try { rd.close(); }
-      catch(IOException e) {}
-    }
-  }
   
   
   

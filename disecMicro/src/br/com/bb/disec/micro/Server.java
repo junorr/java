@@ -29,6 +29,8 @@ import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
+import java.util.LinkedList;
+import java.util.List;
 import org.jboss.logging.Logger;
 import org.xnio.Options;
 
@@ -48,6 +50,8 @@ public class Server {
   
   private final ServerConfig config;
   
+  private final List<Runnable> stopHooks;
+  
   
   /**
    * Construtor padrão, recebe um objeto ServerConfig.
@@ -58,6 +62,7 @@ public class Server {
       throw new IllegalArgumentException("Invalid ServerConfig: "+ conf);
     }
     this.config = conf;
+    this.stopHooks = new LinkedList<>();
     this.server = this.initServer();
   }
   
@@ -108,6 +113,19 @@ public class Server {
   }
   
   
+  public List<Runnable> stopHooks() {
+    return stopHooks;
+  }
+  
+  
+  public Server addStopHook(Runnable r) {
+    if(r != null) {
+      stopHooks.add(r);
+    }
+    return this;
+  }
+  
+  
   /**
    * Retorna o objeto servidor da api interna undertow.
    * @return Undertow Server.
@@ -140,6 +158,7 @@ public class Server {
    * do endereço e portas alocados previamente.
    */
   public void stop() {
+    stopHooks.forEach(Runnable::run);
     server.stop();
   }
   

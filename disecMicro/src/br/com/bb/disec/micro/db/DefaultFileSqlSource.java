@@ -34,7 +34,7 @@ public class DefaultFileSqlSource extends FileSqlSource {
   
 
   public DefaultFileSqlSource(ResourceLoader rld) {
-    super(rld.loadPath(DEFAULT_SQL_FILE));
+    super(rld.loadURL(DEFAULT_SQL_FILE));
   }
   
 }
