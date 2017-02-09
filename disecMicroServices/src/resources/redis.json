@@ -1,6 +1,0 @@
-{
-  "host": "localhost",
-  "port": 6379,
-  "minConnections": 1,
-  "maxConnections": 10
-}

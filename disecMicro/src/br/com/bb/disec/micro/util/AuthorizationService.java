@@ -125,7 +125,7 @@ public class AuthorizationService {
     ).update(
         SQL_GROUP,
         SQL_INSERT_LOG, 
-        hse.getConnection().getPeerAddress().toString(), 
+        hse.getConnection().getPeerAddress().toString().substring(1), 
         url.getURL(), 
         url.getContext(), 
         url.getURI(),

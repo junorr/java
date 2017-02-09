@@ -47,9 +47,6 @@ public class SqlExportHandler extends HashDownloadHandler {
       if(Methods.GET.equals(hse.getRequestMethod())) {
         this.execute(hse, this.getJson());
       }
-      else if(Methods.POST.equals(hse.getRequestMethod())) {
-        hse.getResponseSender().send(this.getHash());
-      }
     } 
     catch(Exception e) {
       hse.setStatusCode(400).setReasonPhrase(

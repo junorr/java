@@ -28,11 +28,11 @@ import br.com.bb.disec.micros.handler.response.CachedResponse;
 import br.com.bb.disec.micros.handler.response.DirectResponse;
 import static br.com.bb.disec.micros.util.JsonConstants.CACHETTL;
 import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
+import static br.com.bb.disec.micros.util.JsonConstants.METADATA;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.undertow.server.HttpServerExchange;
 import java.io.IOException;
-import us.pserver.timer.Timer;
 import static br.com.bb.disec.micros.util.JsonConstants.NAME;
 
 /**
@@ -61,8 +61,7 @@ public class PostSqlHandler implements JsonHandler {
       json.addProperty(NAME, pars.getParam(1));
       //System.out.println("* PostSqlHandler parseJson Time: "+ tm.stop());
       //tm.clear().start();
-      System.out.println("*** PostSqlHandler.response ***");
-      if(json.has(CACHETTL)) {
+      if(json.has(CACHETTL) || json.has(METADATA)) {
         new CachedResponse(json).handleRequest(hse);
       } else {
         new DirectResponse(json).handleRequest(hse);

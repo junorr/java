@@ -52,6 +52,7 @@ public class JWTShieldHandler implements HttpHandler {
   
   private final JWTKey jwtKey;
   
+  
   /**
    * Construtor padrão com inicialização dos atributos da classe.
    * @param next Próximo handler a ser chamado no caso de encadeamento de handlers
@@ -61,6 +62,7 @@ public class JWTShieldHandler implements HttpHandler {
     exceptions = readExcludes();
     jwtKey = ServerSetup.instance().config().getJWTKey();
   }
+  
   
   /**
    * Ler o arquivo padrão de exclusão de URLs.
@@ -73,6 +75,7 @@ public class JWTShieldHandler implements HttpHandler {
         .getAsJsonArray();
   }
   
+  
   /**
    * Pega o próximo handler.
    * @return handler
@@ -80,6 +83,7 @@ public class JWTShieldHandler implements HttpHandler {
   public HttpHandler getNext() {
     return next;
   }
+  
   
   /**
    * Valida o token JWT e verifica se a requisição à URL está de acordo com as URLs
@@ -93,64 +97,77 @@ public class JWTShieldHandler implements HttpHandler {
       hse.dispatch(this);
       return;
     }
-    boolean donext = true;
-    if(!isUriExcluded(hse.getRequestMethod(), hse.getRequestURI())) {
-      try {
-        if(!hse.getRequestHeaders().contains(Headers.AUTHORIZATION)) {
-          throw new IllegalStateException("Authorization Header Missing");
-        }
-        String token = hse.getRequestHeaders().getFirst(Headers.AUTHORIZATION);
-        if(token.contains("Bearer ")) {
-          token = token.replace("Bearer ", "");
-        }
-        JWT jwt = JWT.fromBase64(token);
-        //System.out.println("* jwt.verifySign: "+ jwt.verifySign(jwtKey));
-        //System.out.println("* jwt.isExpired.: "+ jwt.isExpired());
-        //System.out.println("* jwt.url.......: "+ jwt.getPayload().get("url"));
-        //System.out.println("* hse.url.......: "+ hse.getRequestURL());
-        boolean urlmatch = false;
-        if(jwt.getPayload().get("url").isJsonArray()) {
-          JsonArray ar = jwt.getPayload().get("url").getAsJsonArray();
-          for(int i = 0; i < ar.size(); i++) {
-            String url = ar.get(i).getAsString();
-            urlmatch = urlmatch 
-                || url.equals(hse.getRequestURL()) 
-                || hse.getRequestURL().startsWith(url);
-            if(urlmatch) break;
-          }
-        }
-        else {
-          String url = jwt.getPayload().get("url").getAsString();
-          urlmatch = urlmatch 
-              || url.equals(hse.getRequestURL()) 
-              || hse.getRequestURL().startsWith(url);
-        }
-        //System.out.println("* urlmatch......: "+ urlmatch);
-        String error = null;
-        if(!jwt.verifySign(jwtKey)) error = "Bad Signature";
-        if(jwt.isExpired()) error = "JWT Expired";
-        if(!urlmatch) error = hse.getRequestURL();
-        if(error != null) {
-          throw new IllegalAccessException(error);
-        }
-      }
-      catch(Exception e) {
-        //e.printStackTrace();
-        //System.out.println("# "+ e.toString());
-        String reason = "Unauthorized";
-        if(e.getMessage() != null && !e.getMessage().isEmpty()) {
-          reason += ": "+ e.getMessage();
-        }
-        hse.setStatusCode(401)
-            .setReasonPhrase(reason)
-            .endExchange();
-        donext = false;
-      }
-    }
-    if(donext && next != null) {
+    if((isUriExcluded(hse.getRequestMethod(), hse.getRequestURI()) 
+        || validateRequest(hse)) && next != null) {
       next.handleRequest(hse);
     }
   }
+  
+  
+  private boolean validateRequest(HttpServerExchange hse) {
+    if(!containsAuth(hse)) {
+      this.unauthorize(hse, "Authorization Missing");
+      return false;
+    }
+    String token = hse.getRequestHeaders()
+        .getFirst(Headers.AUTHORIZATION);
+    if(token.contains("Bearer ")) {
+      token = token.replace("Bearer ", "");
+    }
+    JWT jwt = JWT.fromBase64(token);
+    if(!jwt.verifySign(jwtKey)) {
+      this.unauthorize(hse, "Bad Signature");
+      return false;
+    }
+    if(jwt.isExpired()) {
+      this.unauthorize(hse, "JWT Expired");
+      return false;
+    }
+    if(!isUrlAuth(hse, jwt)) {
+      this.unauthorize(hse, hse.getRequestURL());
+      return false;
+    }
+    return true;
+  }
+  
+  
+  private boolean containsAuth(HttpServerExchange hse) {
+    return hse.getRequestHeaders().contains(Headers.AUTHORIZATION);
+  }
+  
+  
+  private boolean isUrlAuth(HttpServerExchange hse, JWT jwt) {
+    boolean urlauth = false;
+    if(jwt.getPayload().get("url").isJsonArray()) {
+      JsonArray ar = jwt.getPayload().get("url").getAsJsonArray();
+      for(int i = 0; i < ar.size(); i++) {
+        String url = ar.get(i).getAsString();
+        urlauth = urlauth 
+            || url.equals(hse.getRequestURL()) 
+            || hse.getRequestURL().startsWith(url);
+        if(urlauth) break;
+      }
+    }
+    else {
+      String url = jwt.getPayload().get("url").getAsString();
+      urlauth = urlauth 
+          || url.equals(hse.getRequestURL()) 
+          || hse.getRequestURL().startsWith(url);
+    }
+    return urlauth;
+  }
+
+  
+  private void unauthorize(HttpServerExchange hse, String msg) {
+    String reason = "Unauthorized";
+    if(msg != null && msg.trim().isEmpty()) {
+      reason += ": "+ msg;
+    }
+    hse.setStatusCode(401)
+        .setReasonPhrase(reason)
+        .endExchange();
+  }
+  
   
   /**
    * Verifica se a URL da requisição está no arquivo de exclusão (auth-exclude.json).
@@ -178,7 +195,8 @@ public class JWTShieldHandler implements HttpHandler {
     }
     return excluded;
   }
-
+  
+  
   /**
    * Verifica se duas URLs dão match.
    * @param uri URL da requisição

@@ -22,7 +22,7 @@
 package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.ServerSetup;
-import br.com.bb.disec.micro.client.AuthCookieManager;
+import br.com.bb.disec.micro.util.AuthCookieManager;
 import br.com.bb.disec.micro.jwt.JWT;
 import br.com.bb.disec.micro.jwt.JWTHeader;
 import br.com.bb.disec.micro.jwt.JWTKey;
@@ -96,6 +96,7 @@ public class JWTAuthHandler implements JsonHandler {
       hse.getResponseSender().send(jwt.createToken());
     }
     catch(IllegalAccessException e) {
+      e.printStackTrace();
       hse.setStatusCode(401)
           .setReasonPhrase("Unauthorized. "+ e.getMessage());
     }

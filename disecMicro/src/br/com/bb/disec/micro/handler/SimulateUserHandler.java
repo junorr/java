@@ -22,7 +22,7 @@
 package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.ServerSetup;
-import br.com.bb.disec.micro.client.AuthCookieManager;
+import br.com.bb.disec.micro.util.AuthCookieManager;
 import br.com.bb.disec.micro.db.DBUserFactory;
 import br.com.bb.disec.micro.jwt.JWT;
 import br.com.bb.disec.micro.jwt.JWTHeader;

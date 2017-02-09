@@ -21,15 +21,14 @@
 
 package br.com.bb.disec.micros.handler.response;
 
-import br.com.bb.disec.micros.db.RedisCache;
 import br.com.bb.disec.micros.db.mongo.MongoCache;
-import br.com.bb.disec.micros.util.JsonHash;
+import static br.com.bb.disec.micros.util.JsonConstants.METADATA;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import java.io.OutputStream;
 import org.jboss.logging.Logger;
-import redis.clients.jedis.Jedis;
 import us.pserver.timer.Timer;
 
 /**
@@ -41,12 +40,9 @@ public class CachedResponse extends AbstractResponse {
   
   private final MongoCache cache;
   
-  private final JsonHash hash;
-  
   
   public CachedResponse(JsonObject json) {
     super(json);
-    hash = new JsonHash(json);
     this.cache = MongoCache.builder(json).build();
   }
   
@@ -69,7 +65,7 @@ public class CachedResponse extends AbstractResponse {
    */
   @Override
   public CachedResponse setupCache() throws Exception {
-    if(!RedisCache.cache().contains(hash.collectionHash())) {
+    if(!json.has(METADATA)) {
       super.handleRequest(null);
       Timer t = new Timer.Nanos().start();
       cache.doCache(query.getResultSet());
@@ -83,9 +79,7 @@ public class CachedResponse extends AbstractResponse {
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     this.setupCache();
-    //Timer tm = new Timer.Nanos().start();
     this.sendResponse(hse);
-    //System.out.println("* CachedResultHandler sendResponse Time: "+ tm.stop());
   }
   
   

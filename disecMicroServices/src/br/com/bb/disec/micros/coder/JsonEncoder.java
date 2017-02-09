@@ -26,6 +26,7 @@ import br.com.bb.disec.micros.jiterator.JsonIterator;
 import static br.com.bb.disec.micros.util.JsonConstants.COLUMNS;
 import static br.com.bb.disec.micros.util.JsonConstants.COUNT;
 import static br.com.bb.disec.micros.util.JsonConstants.DATA;
+import static br.com.bb.disec.micros.util.JsonConstants.METADATA;
 import static br.com.bb.disec.micros.util.JsonConstants.TOTAL;
 import com.mongodb.util.JSON;
 import java.io.OutputStream;
@@ -38,6 +39,18 @@ import org.bson.Document;
  * @version 0.0 - 08/09/2016
  */
 public class JsonEncoder implements Encoder {
+  
+  private final String metadata;
+  
+  
+  public JsonEncoder() {
+    metadata = null;
+  }
+  
+  
+  public JsonEncoder(String metadata) {
+    this.metadata = metadata;
+  }
 
   
   @Override
@@ -51,6 +64,9 @@ public class JsonEncoder implements Encoder {
     }
     Document doc = jiter.next();
     this.writeColumns(channel, doc);
+    if(metadata != null) {
+      channel.nextElement().put(METADATA, metadata);
+    }
     channel.nextElement()
         .put(TOTAL, jiter.total())
         .nextElement()

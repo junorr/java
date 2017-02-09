@@ -22,7 +22,6 @@
 package br.com.bb.disec.micros.coder;
 
 import br.com.bb.disec.micros.jiterator.JsonIterator;
-import io.undertow.server.HttpServerExchange;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.Objects;

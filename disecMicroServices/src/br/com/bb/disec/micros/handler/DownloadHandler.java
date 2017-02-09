@@ -47,9 +47,6 @@ public class DownloadHandler extends HashDownloadHandler {
       if(Methods.GET.equals(hse.getRequestMethod())) {
         this.get(hse);
       }
-      else if(Methods.POST.equals(hse.getRequestMethod())) {
-        hse.getResponseSender().send(this.getHash());
-      }
       else if(Methods.PUT.equals(hse.getRequestMethod())) {
         this.put(hse);
       }

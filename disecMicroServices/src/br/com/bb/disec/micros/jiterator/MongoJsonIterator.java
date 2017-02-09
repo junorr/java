@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micros.jiterator;
 
+import br.com.bb.disec.micro.jwt.JWT;
 import static br.com.bb.disec.micros.util.JsonConstants.CREATED;
 import static br.com.bb.disec.micros.util.JsonConstants.ID;
 import com.mongodb.client.MongoCursor;

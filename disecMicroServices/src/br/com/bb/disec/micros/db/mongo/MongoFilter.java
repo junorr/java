@@ -48,7 +48,7 @@ public class MongoFilter {
       throw new IllegalArgumentException("Bad Null MongoCache");
     }
     this.cache = cache;
-    this.total = cache.metaData().total();
+    this.total = cache.metadata().total();
   }
   
   
@@ -72,7 +72,7 @@ public class MongoFilter {
   
   private MongoFilter applyFilter(JsonObject json) {
     Document query = this.createFilterQuery(json);
-    if(cache.metaData().isFilterChanged()) {
+    if(cache.metadata().isFilterChanged()) {
       total = cache.collection().count(query);
     }
     filter = cache.collection().find(query);

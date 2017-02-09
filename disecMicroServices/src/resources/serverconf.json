@@ -12,7 +12,7 @@
     "/cache": "br.com.bb.disec.micros.handler.PublicCacheHandler",
     "/download": "br.com.bb.disec.micros.handler.DownloadHandler",
     "/export": "br.com.bb.disec.micros.handler.SqlExportHandler",
-    "/simulate": "br.com.bb.disec.micro.handler.SimulatedUserHandler",
+    "/simulate": "br.com.bb.disec.micro.handler.SimulateUserHandler",
     "/sql": "br.com.bb.disec.micros.handler.SqlHandler",
     "/time": "br.com.bb.disec.micro.handler.TimeHandler",
     "/upload": "br.com.bb.disec.micros.handler.FileUploadHandler"

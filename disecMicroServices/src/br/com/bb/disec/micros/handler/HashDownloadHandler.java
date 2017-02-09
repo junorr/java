@@ -21,20 +21,23 @@
 
 package br.com.bb.disec.micros.handler;
 
+import br.com.bb.disec.micro.ServerSetup;
+import br.com.bb.disec.micro.jwt.JWT;
+import br.com.bb.disec.micro.jwt.JWTHeader;
+import br.com.bb.disec.micro.jwt.JWTKey;
+import br.com.bb.disec.micro.jwt.JWTPayload;
 import br.com.bb.disec.micro.util.StringPostParser;
 import br.com.bb.disec.micro.util.URIParam;
-import br.com.bb.disec.micros.db.RedisCache;
 import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
+import static br.com.bb.disec.micros.util.JsonConstants.METADATA;
 import static br.com.bb.disec.micros.util.JsonConstants.NAME;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
 import io.undertow.util.Methods;
 import java.io.IOException;
-import java.util.Objects;
-import org.apache.commons.codec.digest.DigestUtils;
+import java.net.URLDecoder;
 
 /**
  *
@@ -46,9 +49,14 @@ public class HashDownloadHandler implements HttpHandler {
   public static final int DEFAULT_DROP_TIMEOUT = 10*60;
   
   
-  protected String hash;
-  
   protected JsonObject json;
+  
+  protected JWTKey jwtkey;
+  
+  
+  public HashDownloadHandler() {
+    this.jwtkey = ServerSetup.instance().config().getJWTKey();
+  }
   
   
   @Override
@@ -67,11 +75,6 @@ public class HashDownloadHandler implements HttpHandler {
   }
   
   
-  public String getHash() {
-    return hash;
-  }
-  
-  
   public JsonObject getJson() {
     return json;
   }
@@ -79,8 +82,13 @@ public class HashDownloadHandler implements HttpHandler {
   
   private void get(HttpServerExchange hse) throws Exception {
     URIParam ups = new URIParam(hse.getRequestURI());
-    if(ups.length() > 0 && RedisCache.cache().contains(ups.getParam(0))) {
-      json = RedisCache.cache().getJson(ups.getParam(0)).getAsJsonObject();
+    if(ups.length() > 0) {
+      URLDecoder dec = new URLDecoder();
+      JWT jwt = JWT.fromBase64(dec.decode(ups.getParam(0), "UTF-8"));
+      if(jwt.verifySign(jwtkey) || jwt.isExpired()) {
+        throw new IllegalArgumentException("Bad Download Token");
+      }
+      json = jwt.getPayload().get(METADATA).getAsJsonObject();
     }
     else {
       throw new IllegalArgumentException("Bad Download Token");
@@ -97,30 +105,14 @@ public class HashDownloadHandler implements HttpHandler {
     if(pars.length() >= 2) {
       json.addProperty(NAME, pars.getParam(1));
     }
-    hash = calcHash(hse, json);
-    RedisCache.cache().put(hash, json, DEFAULT_DROP_TIMEOUT);
+    JWTPayload pld = new JWTPayload();
+    pld.setExpiration(DEFAULT_DROP_TIMEOUT);
+    pld.put(METADATA, json);
+    JWT jwt = new JWT(new JWTHeader(), pld, jwtkey);
+    hse.getResponseSender().send(jwt.createToken());
   }
   
   
-  private String calcHash(HttpServerExchange hse, JsonObject json) {
-    StringBuilder sb = new StringBuilder();
-    URIParam pars = new URIParam(hse.getRequestURI());
-    for(int i = 0; i < pars.length(); i++) {
-      sb.append(pars.getParam(i));
-    }
-    if(hse.getRequestHeaders().contains(Headers.AUTHORIZATION)) {
-      sb.append(hse.getRequestHeaders()
-          .getFirst(Headers.AUTHORIZATION)
-      );
-    }
-    json.entrySet().forEach(e->{
-      sb.append(e.getKey())
-          .append(Objects.toString(e.getValue()));
-    });
-    return DigestUtils.md5Hex(sb.toString());
-  }
-
-
   private JsonObject parseJson(HttpServerExchange hse) throws IOException {
     String sjson = new StringPostParser().parseHttp(hse);
     JsonObject json = new JsonObject();

@@ -23,7 +23,6 @@ package br.com.bb.disec.micros;
 
 import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.disec.micro.ServerSetup;
-import br.com.bb.disec.micros.db.RedisCache;
 
 /**
  *
@@ -36,7 +35,6 @@ public class Main {
   public static void main(String[] args) {
     ServerSetup.autoSetup(ResourceLoader.caller())
         .createServer()
-        .addStopHook(RedisCache::close)
         .start();
   }
   

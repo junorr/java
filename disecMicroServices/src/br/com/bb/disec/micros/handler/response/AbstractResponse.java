@@ -35,6 +35,7 @@ import br.com.bb.disec.micros.db.DBSqlSourcePool;
 import static br.com.bb.disec.micros.util.JsonConstants.ARGS;
 import static br.com.bb.disec.micros.util.JsonConstants.FORMAT;
 import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
+import static br.com.bb.disec.micros.util.JsonConstants.METADATA;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -136,7 +137,13 @@ public abstract class AbstractResponse implements HttpHandler {
       case CSV:
         return new CsvEncoder();
       default:
-        return new JsonEncoder();
+        JsonEncoder je;
+        if(json.has(METADATA)) {
+          je = new JsonEncoder(json.get(METADATA).getAsString());
+        } else {
+          je = new JsonEncoder();
+        }
+        return je;
     }
   }
   

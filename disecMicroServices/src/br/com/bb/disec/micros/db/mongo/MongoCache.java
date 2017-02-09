@@ -21,8 +21,11 @@
 
 package br.com.bb.disec.micros.db.mongo;
 
+import br.com.bb.disec.micro.ServerSetup;
+import br.com.bb.disec.micro.jwt.JWT;
+import br.com.bb.disec.micro.jwt.JWTHeader;
+import br.com.bb.disec.micro.jwt.JWTPayload;
 import br.com.bb.disec.micros.db.MongoConnectionPool;
-import br.com.bb.disec.micros.db.RedisCache;
 import br.com.bb.disec.micros.db.SqlObjectType;
 import br.com.bb.disec.micros.jiterator.JsonIterator;
 import br.com.bb.disec.micros.jiterator.MongoJsonIterator;
@@ -31,6 +34,7 @@ import static br.com.bb.disec.micros.util.JsonConstants.CACHETTL;
 import static br.com.bb.disec.micros.util.JsonConstants.CREATED;
 import static br.com.bb.disec.micros.util.JsonConstants.DB_MICRO;
 import static br.com.bb.disec.micros.util.JsonConstants.DROPCACHE;
+import static br.com.bb.disec.micros.util.JsonConstants.METADATA;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
@@ -44,7 +48,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
-import us.pserver.timer.Timer;
 
 /**
  *
@@ -104,8 +107,17 @@ public class MongoCache {
   }
   
   
-  public MongoMetaData metaData() {
+  public MongoMetaData metadata() {
     return meta;
+  }
+  
+  
+  public String metaToken() {
+    JWTPayload pld = new JWTPayload();
+    pld.put(METADATA, new Gson().toJsonTree(meta));
+    JWT jwt = new JWT(new JWTHeader(), pld, 
+        ServerSetup.instance().config().getJWTKey());
+    return jwt.createToken();
   }
   
   
@@ -144,13 +156,12 @@ public class MongoCache {
     MongoFilter filter = new MongoFilter(this);
     MongoCursor<Document> cursor = filter.apply(json).iterator();
     meta.total(filter.total());
+    json.addProperty(METADATA, metaToken());
     return new MongoJsonIterator(cursor, filter.total());
   }
   
   
   public MongoMetaData doCache(ResultSet rs) throws SQLException {
-    System.out.println("*** Doing Cache ***");
-    Timer tm = new Timer.Nanos().start();
     meta.columns(this.getColumns(rs.getMetaData()));
     meta.columns().forEach(c->collection
         .createIndex(new Document(c, 1))
@@ -160,11 +171,7 @@ public class MongoCache {
       collection.insertOne(createDoc(rs));
       meta.incrementTotal();
     }
-    RedisCache.cache().put(
-        meta.collectionName(), 
-        new Gson().toJson(meta), 
-        json.get(CACHETTL).getAsInt()
-    );
+    json.addProperty(METADATA, metaToken());
     return meta;
   }
   
@@ -227,8 +234,9 @@ public class MongoCache {
     
     
     private MongoCache getCached() {
+      JWT jwt = JWT.fromBase64(json.get(METADATA).getAsString());
       MongoMetaData meta = new Gson().fromJson(
-          RedisCache.cache().get(hash.collectionHash()), 
+          jwt.getPayload().get(METADATA),
           MongoMetaData.class
       );
       meta.filterHash(hash.filterHash());
@@ -256,7 +264,7 @@ public class MongoCache {
     
     public MongoCache build() {
       MongoCache mc;
-      if(RedisCache.cache().contains(hash.collectionHash()) && !json.has(DROPCACHE)) {
+      if(json.has(METADATA) && !json.has(DROPCACHE)) {
         mc = getCached();
       }
       else {
