@@ -144,7 +144,8 @@ public class JWTShieldHandler implements HttpHandler {
         String url = ar.get(i).getAsString();
         urlauth = urlauth 
             || url.equals(hse.getRequestURL()) 
-            || hse.getRequestURL().startsWith(url);
+            || hse.getRequestURL().startsWith(url)
+            || url.startsWith(hse.getRequestURL());
         if(urlauth) break;
       }
     }
@@ -152,7 +153,8 @@ public class JWTShieldHandler implements HttpHandler {
       String url = jwt.getPayload().get("url").getAsString();
       urlauth = urlauth 
           || url.equals(hse.getRequestURL()) 
-          || hse.getRequestURL().startsWith(url);
+          || hse.getRequestURL().startsWith(url)
+          || url.startsWith(hse.getRequestURL());
     }
     return urlauth;
   }

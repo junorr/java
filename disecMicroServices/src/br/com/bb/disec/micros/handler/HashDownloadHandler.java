@@ -28,6 +28,7 @@ import br.com.bb.disec.micro.jwt.JWTKey;
 import br.com.bb.disec.micro.jwt.JWTPayload;
 import br.com.bb.disec.micro.util.StringPostParser;
 import br.com.bb.disec.micro.util.URIParam;
+import br.com.bb.disec.micros.util.HexCoder;
 import static br.com.bb.disec.micros.util.JsonConstants.GROUP;
 import static br.com.bb.disec.micros.util.JsonConstants.METADATA;
 import static br.com.bb.disec.micros.util.JsonConstants.NAME;
@@ -83,9 +84,8 @@ public class HashDownloadHandler implements HttpHandler {
   private void get(HttpServerExchange hse) throws Exception {
     URIParam ups = new URIParam(hse.getRequestURI());
     if(ups.length() > 0) {
-      URLDecoder dec = new URLDecoder();
-      JWT jwt = JWT.fromBase64(dec.decode(ups.getParam(0), "UTF-8"));
-      if(jwt.verifySign(jwtkey) || jwt.isExpired()) {
+      JWT jwt = JWT.fromBase64(HexCoder.decodeToString(ups.getParam(0)));
+      if(!jwt.verifySign(jwtkey) || jwt.isExpired()) {
         throw new IllegalArgumentException("Bad Download Token");
       }
       json = jwt.getPayload().get(METADATA).getAsJsonObject();
@@ -109,7 +109,7 @@ public class HashDownloadHandler implements HttpHandler {
     pld.setExpiration(DEFAULT_DROP_TIMEOUT);
     pld.put(METADATA, json);
     JWT jwt = new JWT(new JWTHeader(), pld, jwtkey);
-    hse.getResponseSender().send(jwt.createToken());
+    hse.getResponseSender().send(HexCoder.encode(jwt.createToken()));
   }
   
   

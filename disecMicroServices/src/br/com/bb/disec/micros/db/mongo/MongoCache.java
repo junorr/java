@@ -114,6 +114,7 @@ public class MongoCache {
   
   public String metaToken() {
     JWTPayload pld = new JWTPayload();
+    pld.setExpiration(json.get(CACHETTL).getAsLong());
     pld.put(METADATA, new Gson().toJsonTree(meta));
     JWT jwt = new JWT(new JWTHeader(), pld, 
         ServerSetup.instance().config().getJWTKey());
@@ -235,6 +236,10 @@ public class MongoCache {
     
     private MongoCache getCached() {
       JWT jwt = JWT.fromBase64(json.get(METADATA).getAsString());
+      if(jwt.isExpired()) {
+        json.remove(METADATA);
+        return create();
+      }
       MongoMetaData meta = new Gson().fromJson(
           jwt.getPayload().get(METADATA),
           MongoMetaData.class

@@ -21,16 +21,25 @@
 
 package br.com.bb.disec.micros.handler;
 
-import br.com.bb.disec.micros.handler.response.CachedResponse;
 import br.com.bb.disec.micros.handler.response.DirectResponse;
 import br.com.bb.disec.micros.coder.EncodingFormat;
+import br.com.bb.disec.micros.db.MongoConnectionPool;
+import br.com.bb.disec.micros.handler.response.CacheIteratorResponse;
+import br.com.bb.disec.micros.handler.response.CachedResponse;
+import br.com.bb.disec.micros.jiterator.JsonIterator;
+import br.com.bb.disec.micros.jiterator.MongoJsonIterator;
 import static br.com.bb.disec.micros.util.JsonConstants.CACHETTL;
+import static br.com.bb.disec.micros.util.JsonConstants.CREATED;
+import static br.com.bb.disec.micros.util.JsonConstants.DB_MICRO;
 import static br.com.bb.disec.micros.util.JsonConstants.FORMAT;
 import static br.com.bb.disec.micros.util.JsonConstants.NAME;
+import br.com.bb.disec.micros.util.JsonHash;
 import com.google.gson.JsonObject;
+import com.mongodb.client.MongoCollection;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import io.undertow.util.Methods;
+import org.bson.Document;
 
 /**
  *
@@ -57,12 +66,32 @@ public class SqlExportHandler extends HashDownloadHandler {
   }
   
   
+  private MongoJsonIterator findCache(JsonObject json) {
+    if(json == null) return null;
+    JsonHash hash = new JsonHash(json);
+    MongoCollection<Document> col = MongoConnectionPool
+        .collection(DB_MICRO, hash.collectionHash());
+    Document query = new Document(CREATED, new Document("$exists", true));
+    long count = col.count(query);
+    if(count > 0) {
+      return new MongoJsonIterator(
+          col.find(query).iterator(), count
+      );
+    }
+    return null;
+  }
+  
   
   private void execute(HttpServerExchange hse, JsonObject json) throws Exception {
     this.setContentDisposition(hse, json);
-    if(json.has(CACHETTL)) {
+    JsonIterator jiter = this.findCache(json);
+    if(jiter != null) {
+      new CacheIteratorResponse(json, jiter).handleRequest(hse);
+    }
+    else if(json.has(CACHETTL)) {
       new CachedResponse(json).handleRequest(hse);
-    } else {
+    } 
+    else {
       new DirectResponse(json).handleRequest(hse);
     }
   }
