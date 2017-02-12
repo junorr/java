@@ -112,7 +112,10 @@ public interface CheckBuilder<T> {
     
     
     public DefCheckBuilder(Sane<T> s) {
-      this.sane = Sane.of(s).get(Checkup.isNotNull());
+      if(s == null) {
+        throw new IllegalArgumentException("Bad Null Sane");
+      }
+      this.sane = s;
     }
     
 

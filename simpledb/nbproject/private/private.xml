@@ -2,6 +2,24 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/test/TestQuery.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/test/TestNanos.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/query/op/Operation.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/query/op/DatePredicate.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/query/QueryBuilder.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/test/TestJsonMapping.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/query/Query.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/sdb/filedriver/ByteDriver.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/index/IndexUpdate.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/index/IndexStore.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/index/IndexQuery.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/json/adapter/ByteSearch.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/query/op/StringContains.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/query/op/DoubleEquals.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/query/op/DateOperation.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/query/op/StringOperation.java</file>
+            <file>file:/D:/java/simpledb/src/us/pserver/job/query/op/DoubleBetween.java</file>
+        </group>
     </open-files>
 </project-private>

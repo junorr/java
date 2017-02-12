@@ -23,6 +23,7 @@ package us.pserver.job.query;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import us.pserver.job.query.Query.DefQuery;
 import us.pserver.job.query.op.BooleanEquals;
@@ -62,8 +63,8 @@ import us.pserver.job.query.op.StringStartsWith;
 public interface QueryBuilder {
   
   
-  public static QueryBuilder builder(QueryOp op, String field) {
-    return new DefQueryBuilder(op, field);
+  public static QueryBuilder builder(Function<Query,Query> func, String field) {
+    return new DefQueryBuilder(func, field);
   }
   
   
@@ -210,20 +211,13 @@ public interface QueryBuilder {
   
   
   
-  @FunctionalInterface
-  public static interface QueryOp {
-    public Query op(Query q);
-  }
-
-  
-  
   
   
   public static class DefQueryBuilder implements QueryBuilder {
     
     private final String field;
     
-    private final QueryOp qop;
+    private final Function<Query,Query> func;
     
     
     public DefQueryBuilder() {
@@ -231,9 +225,9 @@ public interface QueryBuilder {
     }
     
     
-    public DefQueryBuilder(QueryOp qop, String field) {
+    public DefQueryBuilder(Function<Query,Query> fnc, String field) {
       this.field = field;
-      this.qop = qop;
+      this.func = fnc;
     }
     
     
@@ -241,37 +235,37 @@ public interface QueryBuilder {
 
     @Override
     public Query arrayContains(int val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->val == n.intValue())));
     }
 
     @Override
     public Query arrayContains(long val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->val == n.longValue())));
     }
 
     @Override
     public Query arrayContains(double val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DoubleEquals(val)));
     }
 
     @Override
     public Query arrayContains(Boolean val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new BooleanEquals(val)));
     }
 
     @Override
     public Query arrayContains(Date val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DateEquals(val)));
     }
 
     @Override
     public Query arrayContains(String val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new StringEquals(val)));
     }
 
@@ -280,25 +274,25 @@ public interface QueryBuilder {
 
     @Override
     public Query between(int val, int val2) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.intValue() >= val && n.intValue() <= val2)));
     }
 
     @Override
     public Query between(long val, long val2) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.longValue() >= val && n.longValue() <= val2)));
     }
 
     @Override
     public Query between(double val, double val2) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DoubleBetween(val, val2)));
     }
 
     @Override
     public Query between(Date val, Date val2) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DateBetween(val, val2)));
     }
 
@@ -307,37 +301,37 @@ public interface QueryBuilder {
 
     @Override
     public Query eq(int val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.intValue() == val)));
     }
 
     @Override
     public Query eq(long val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.longValue() == val)));
     }
 
     @Override
     public Query eq(double val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DoubleEquals(val)));
     }
 
     @Override
     public Query eq(Boolean val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new BooleanEquals(val)));
     }
 
     @Override
     public Query eq(Date val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DateEquals(val)));
     }
 
     @Override
     public Query eq(String val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new StringEquals(val)));
     }
 
@@ -346,25 +340,25 @@ public interface QueryBuilder {
 
     @Override
     public Query ge(int val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.intValue() >= val)));
     }
 
     @Override
     public Query ge(double val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DoubleGreaterEquals(val)));
     }
 
     @Override
     public Query ge(long val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.longValue() >= val)));
     }
 
     @Override
     public Query ge(Date val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DateGreaterEquals(val)));
     }
 
@@ -373,25 +367,25 @@ public interface QueryBuilder {
 
     @Override
     public Query gt(int val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.intValue() > val)));
     }
 
     @Override
     public Query gt(double val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DoubleGreater(val)));
     }
 
     @Override
     public Query gt(long val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.longValue() > val)));
     }
 
     @Override
     public Query gt(Date val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DateGreater(val)));
     }
 
@@ -400,25 +394,25 @@ public interface QueryBuilder {
 
     @Override
     public Query in(Boolean ... vals) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new BooleanInArray(Arrays.asList(vals))));
     }
 
     @Override
     public Query in(Number ... vals) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberInArray(Arrays.asList(vals))));
     }
 
     @Override
     public Query in(String ... vals) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new StringInArray(Arrays.asList(vals))));
     }
 
     @Override
     public Query in(Date ... vals) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DateInArray(Arrays.asList(vals))));
     }
 
@@ -427,25 +421,25 @@ public interface QueryBuilder {
 
     @Override
     public Query le(int val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.intValue() <= val)));
     }
 
     @Override
     public Query le(double val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DoubleLesserEquals(val)));
     }
 
     @Override
     public Query le(long val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.longValue() <= val)));
     }
 
     @Override
     public Query le(Date val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DateLesserEquals(val)));
     }
 
@@ -454,25 +448,25 @@ public interface QueryBuilder {
 
     @Override
     public Query lt(int val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.intValue() < val)));
     }
 
     @Override
     public Query lt(double val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DoubleLesser(val)));
     }
 
     @Override
     public Query lt(long val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.longValue() < val)));
     }
 
     @Override
     public Query lt(Date val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DateLesser(val)));
     }
 
@@ -481,37 +475,37 @@ public interface QueryBuilder {
 
     @Override
     public Query ne(int val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.intValue() != val)));
     }
 
     @Override
     public Query ne(double val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.doubleValue() != val)));
     }
 
     @Override
     public Query ne(long val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(n->n != null && n.longValue() != val)));
     }
 
     @Override
     public Query ne(Boolean val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new BooleanNotEquals(val)));
     }
 
     @Override
     public Query ne(Date val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DatePredicate(d->d != null && !d.equals(val))));
     }
 
     @Override
     public Query ne(String val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new StringPredicate(s->s != null && !s.equals(val))));
     }
 
@@ -520,25 +514,25 @@ public interface QueryBuilder {
 
     @Override
     public Query predicateBool(Predicate<Boolean> pred) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new BooleanPredicate(pred)));
     }
 
     @Override
     public Query predicateDate(Predicate<Date> pred) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new DatePredicate(pred)));
     }
 
     @Override
     public Query predicateNum(Predicate<Number> pred) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new NumberPredicate(pred)));
     }
 
     @Override
     public Query predicateStr(Predicate<String> pred) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new StringPredicate(pred)));
     }
 
@@ -547,31 +541,31 @@ public interface QueryBuilder {
 
     @Override
     public Query contains(String val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new StringContains(val)));
     }
 
     @Override
     public Query endsWith(String val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new StringEndsWith(val)));
     }
 
     @Override
     public Query eqIgnCase(String val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new StringEqualsIgnoreCase(val)));
     }
 
     @Override
     public Query regex(String val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new StringRegex(val)));
     }
 
     @Override
     public Query startsWith(String val) {
-      return qop.op(new DefQuery(field, 
+      return func.apply(new DefQuery(field, 
           new StringStartsWith(val)));
     }
 

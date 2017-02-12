@@ -19,17 +19,18 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.job.query.i;
+package us.pserver.job.json;
+
+import java.nio.ByteBuffer;
+import java.util.Map;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/01/2017
+ * @version 0.0 - 11/02/2017
  */
-public interface QueryLimit {
+public interface JsonWriter {
 
-  public QueryLimit skip(int n);
-  
-  public QueryLimit limit(int len);
+  public int write(Map<String,Object> obj, ByteBuffer buf);
   
 }

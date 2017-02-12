@@ -68,6 +68,8 @@ public interface Query {
   
   
   
+  
+  
   public static class DefQuery implements Query {
     
     private final String name;

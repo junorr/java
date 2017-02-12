@@ -47,6 +47,15 @@ public class CachedResponse extends AbstractResponse {
   }
   
   
+  public CachedResponse(MongoCache cache, JsonObject json) {
+    super(json);
+    if(cache == null) {
+      throw new IllegalArgumentException("Bad Null MongoCache");
+    }
+    this.cache = cache;
+  }
+  
+  
   public MongoCache cache() {
     return cache;
   }

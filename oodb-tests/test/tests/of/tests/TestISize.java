@@ -52,6 +52,23 @@ public class TestISize {
     System.out.println("unit="+ size.unit());
     System.out.println(size.unit().prev() + " < " + size.unit() + " > " + size.unit().next());
     System.out.println(size);
+    
+    System.out.println(" ----------------- ");
+
+    FSize free = FSize.of(Runtime.getRuntime().freeMemory());
+    FSize max = FSize.of(Runtime.getRuntime().maxMemory());
+    FSize total = FSize.of(Runtime.getRuntime().totalMemory());
+    System.out.println("* free......: "+ free);
+    System.out.println("* free.bytes: "+ free.bytes());
+    System.out.println("* free.unit.: "+ free.unit());
+    System.out.println();
+    System.out.println("* max......: "+ max);
+    System.out.println("* max.bytes: "+ max.bytes());
+    System.out.println("* max.unit.: "+ max.unit());
+    System.out.println();
+    System.out.println("* total......: "+ total);
+    System.out.println("* total.bytes: "+ total.bytes());
+    System.out.println("* total.unit.: "+ total.unit());
   }
   
 }

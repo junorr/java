@@ -73,7 +73,7 @@ public class MongoCache {
   }
 
 
-  protected MongoCache(
+  public MongoCache(
       JsonObject json, 
       String colname, 
       MongoMetaData meta, 

@@ -19,30 +19,18 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.job.query.op;
+package us.pserver.job.json;
+
+import java.nio.ByteBuffer;
+import java.util.Map;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/01/2017
+ * @version 0.0 - 11/02/2017
  */
-public abstract class BooleanOperation extends Operation<Boolean> {
+public interface JsonReader {
 
-  final Boolean value;
+  public Map<String,Object> read(ByteBuffer buf);
   
-  public BooleanOperation() {
-    value = Boolean.FALSE;
-  }
-  
-  public BooleanOperation(Boolean b) {
-    if(b == null) {
-      throw new IllegalArgumentException("Bad Null Boolean");
-    }
-    this.value = b;
-  }
-
-  @Override Boolean value() {
-    return value;
-  }
-
 }

@@ -24,10 +24,9 @@ package us.pserver.sdb.filedriver.test;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 import java.io.IOException;
-import us.pserver.job.query.op.Operations;
 import us.pserver.job.query.Query;
 import us.pserver.job.query.Query.DefQuery;
-import us.pserver.job.query.i.QueryResolver;
+import us.pserver.job.query.QueryResolver;
 
 /**
  *

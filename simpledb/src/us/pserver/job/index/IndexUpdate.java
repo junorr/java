@@ -21,7 +21,7 @@
 
 package us.pserver.job.index;
 
-import us.pserver.job.query.i.QueryLimit;
+import us.pserver.job.query.QueryLimit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

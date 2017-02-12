@@ -22,18 +22,21 @@
 package us.pserver.sdb.filedriver.test;
 
 import com.cedarsoftware.util.io.JsonReader;
-import com.cedarsoftware.util.io.JsonWriter;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 import com.jsoniter.output.JsonStream;
 import com.jsoniter.spi.Decoder;
 import com.jsoniter.spi.Encoder;
 import com.jsoniter.spi.JsoniterSpi;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import us.pserver.job.json.adapter.JsoniterReader;
 import us.pserver.tools.UTF8String;
 import us.pserver.tools.timer.Timer;
 
@@ -193,6 +196,10 @@ public class TestJsonMapping {
     JsoniterSpi.registerTypeDecoder(Class.class, cc);
     Conf conf = new Conf(new Host("127.0.0.1", 80), 512, String.class);
     String json = JsonStream.serialize(conf);
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    JsonStream.serialize(conf, bos);
+    System.out.println("* array: "+ Arrays.toString(bos.toByteArray()));
+    System.out.println("* isString: '"+ UTF8String.from(bos.toByteArray())+ "'");
     
     //ByteBuffer buf = ByteBuffer.allocate(512);
     //buf.put(UTF8String.from(json).getBytes());
@@ -209,6 +216,32 @@ public class TestJsonMapping {
     tm.stop();
     System.out.println(tm.stop());
     System.out.println(conf);
+  }
+  
+  
+  public static void jsoniterReader() {
+    System.out.println("- step 0");
+    JsoniterReader jr = new JsoniterReader();
+    ClassCoder cc = new ClassCoder();
+    JsoniterSpi.registerTypeEncoder(Class.class, cc);
+    JsoniterSpi.registerTypeDecoder(Class.class, cc);
+    System.out.println("- step 2");
+    Conf conf = new Conf(new Host("127.0.0.1", 80), 512, String.class);
+    System.out.println("- step 3");
+    Timer tm = new Timer.Nanos().start();
+    String json = JsonStream.serialize(conf);
+    tm.stop();
+    System.out.println("* json="+ json);
+    System.out.println("* "+ tm);
+    byte[] bs = new UTF8String(json).getBytes();
+    ByteBuffer buf = ByteBuffer.allocate(bs.length);
+    buf.put(bs);
+    buf.flip();
+    tm.clear().start();
+    Map<String,Object> map = jr.read(buf);
+    tm.stop();
+    System.out.println("* map="+ map);
+    System.out.println("* "+ tm);
   }
 
   
@@ -230,6 +263,8 @@ public class TestJsonMapping {
     jsonio();
     System.out.println("--------------------------------");
     jsoniter();
+    System.out.println("--------------------------------");
+    jsoniterReader();
   }
   
 }

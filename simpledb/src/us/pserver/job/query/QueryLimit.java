@@ -19,30 +19,17 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.job.query.op;
+package us.pserver.job.query;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/01/2017
+ * @version 0.0 - 27/01/2017
  */
-public abstract class BooleanOperation extends Operation<Boolean> {
+public interface QueryLimit {
 
-  final Boolean value;
+  public QueryLimit skip(int n);
   
-  public BooleanOperation() {
-    value = Boolean.FALSE;
-  }
+  public QueryLimit limit(int len);
   
-  public BooleanOperation(Boolean b) {
-    if(b == null) {
-      throw new IllegalArgumentException("Bad Null Boolean");
-    }
-    this.value = b;
-  }
-
-  @Override Boolean value() {
-    return value;
-  }
-
 }
