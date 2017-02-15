@@ -21,11 +21,13 @@
 
 package br.com.bb.disec.micro.handler;
 
+import br.com.bb.disec.micro.ServerSetup;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderMap;
 import io.undertow.util.HttpString;
 import io.undertow.util.Methods;
+import java.util.Collection;
 
 /**
  * Um handler que pode ser usado para fazer o tratamento dos headers da requisição
@@ -68,10 +70,12 @@ public class CorsHandler implements HttpHandler {
    */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
+    System.out.println(hse.getRequestURI());
+    this.printRequest(hse);
     HeaderMap hds = hse.getRequestHeaders();
     if(hds.contains(HEADER_ORIGIN)) {
       hse.getResponseHeaders().put(
-          new HttpString(AC_ALLOW_ORIGIN), hds.getFirst(HEADER_ORIGIN)
+          new HttpString(AC_ALLOW_ORIGIN), "*"
       );
     }
     hse.getResponseHeaders().put(
@@ -91,12 +95,44 @@ public class CorsHandler implements HttpHandler {
               : hds.getFirst(AC_REQUEST_HEADERS))
       );
     }
+    this.printResponse(hse);
     
     if(Methods.OPTIONS.equals(hse.getRequestMethod())) {
       hse.endExchange();
     }
     else if(next != null) {
       next.handleRequest(hse);
+    }
+  }
+  
+  
+  private void printRequest(HttpServerExchange hse) {
+    if(!ServerSetup.instance().config().isDebugHeaders()) {
+      return;
+    }
+    HeaderMap hds = hse.getRequestHeaders();
+    Collection<HttpString> hdnames = hds.getHeaderNames();
+    System.out.println("<<<--- Request ------");
+    System.out.println("  "+ hse.getRequestMethod() + " " + hse.getRequestPath() + " " + hse.getRequestScheme());
+    for(HttpString name : hdnames) {
+      System.out.print("  "+ name+ ": ");
+      hds.get(name).forEach(s->System.out.print(s+ ","));
+      System.out.println();
+    }
+  }
+
+  
+  private void printResponse(HttpServerExchange hse) {
+    if(!ServerSetup.instance().config().isDebugHeaders()) {
+      return;
+    }
+    System.out.println("------ Response --->>>");
+    HeaderMap hds = hse.getResponseHeaders();
+    Collection<HttpString> hdnames = hds.getHeaderNames();
+    for(HttpString name : hdnames) {
+      System.out.print("  "+ name+ ": ");
+      hds.get(name).forEach(s->System.out.print(s+ ","));
+      System.out.println();
     }
   }
 

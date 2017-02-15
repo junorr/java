@@ -25,6 +25,7 @@ import br.com.bb.disec.micro.handler.CorsHandler;
 import br.com.bb.disec.micro.handler.DispatcherHandler;
 import br.com.bb.disec.micro.handler.JWTShieldHandler;
 import br.com.bb.disec.micro.handler.ShutdownHandler;
+import br.com.bb.disec.micro.handler.URIHitsCounter;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
@@ -77,18 +78,26 @@ public class Server {
     HttpHandler root = null;
     PathHandler ph = this.initPathHandler();
     if(config.isAuthenticationShield()) {
-      root = new CorsHandler(new JWTShieldHandler(ph));
+      root = new CorsHandler(new URIHitsCounter(new JWTShieldHandler(ph)));
     } else {
-      root = new CorsHandler(ph);
+      root = new CorsHandler(new URIHitsCounter(ph));
     }
     if(config.isShutdownHandlerEnabled()) {
       ph.addExactPath("/shutdown", new ShutdownHandler(this));
     }
-    return Undertow.builder()
+    Undertow.Builder bld = Undertow.builder()
         .setIoThreads(config.getIoThreads())
         .setWorkerOption(Options.WORKER_TASK_MAX_THREADS, config.getMaxWorkerThreads())
-        .addHttpListener(config.getPort(), config.getAddress(), root)
-        .build();
+        .addHttpListener(config.getPort(), config.getAddress(), root);
+    if(config.getSSLConfig().isEnabled()) {
+      bld.addHttpsListener(
+          config.getSSLConfig().getPort(), 
+          config.getSSLConfig().getAddress(), 
+          config.getSSLConfig().createSSLContext(), 
+          root
+      );
+    }
+    return bld.build();
   }
   
   

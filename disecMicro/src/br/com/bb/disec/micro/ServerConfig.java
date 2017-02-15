@@ -70,6 +70,8 @@ public class ServerConfig {
   
   private final int port;
   
+  private final boolean debugHeaders;
+  
   private final boolean dispatcherEnabled;
   
   private final boolean shutdownHandler;
@@ -84,12 +86,16 @@ public class ServerConfig {
   
   private final Map<String,Class> handlers;
   
+  private final SSLConfig sslConfig;
+  
   
   /**
    * Construtor padrão, recebe todas as 
    * informações necessárias para o servidor.
    * @param address Endereço de escuta do serviço de rede.
    * @param port Porta de escuta do serviço de rede.
+   * @param debugHeaders Ativa/Desativa log dos cabeçalhos 
+   * de requisição e resposta para debug.
    * @param dispatcherEnabled Configura se os HttpHandler's 
    * serão criados sob demanda (true) ou apenas na 
    * inicialização do servidor (false).
@@ -105,17 +111,20 @@ public class ServerConfig {
    * secundárias para executar trabalhos "blocantes".
    * @param map Mapa com as classes dos HttpHandler's e 
    * respectivas URIs às quais estão associados.
+   * @param sslConfig Configuração SSL para o protocolo HTTPS.
    */
   public ServerConfig(
       String address, 
       int port, 
+      boolean debugHeaders,
       boolean dispatcherEnabled, 
       boolean shutdownHandler, 
       boolean authShield,
       JWTKey jwtKey,
       int ioThreads, 
       int maxWorkerThreads, 
-      Map<String,Class> map
+      Map<String,Class> map,
+      SSLConfig sslConfig
   ) {
     if(address == null || address.trim().isEmpty()) {
       throw new IllegalArgumentException("Invalid Address: "+ address);
@@ -126,12 +135,17 @@ public class ServerConfig {
     if(jwtKey == null) {
       throw new IllegalArgumentException("Bad Null Auth JWTKey");
     }
+    if(sslConfig == null) {
+      throw new IllegalArgumentException("Bad Null SSLConfig");
+    }
     this.address = address;
     this.port = port;
     this.jwtKey = jwtKey;
+    this.debugHeaders = debugHeaders;
     this.dispatcherEnabled = dispatcherEnabled;
     this.shutdownHandler = shutdownHandler;
     this.authenticationShield = authShield;
+    this.sslConfig = sslConfig;
     this.ioThreads = (ioThreads > 0 
         ? ioThreads 
         : DEFAULT_IO_THREADS
@@ -185,6 +199,17 @@ public class ServerConfig {
    */
   public JWTKey getJWTKey() {
     return jwtKey;
+  }
+
+
+  /**
+   * Verifica se o log dos cabeçalhos de resquisição 
+   * e resposta está ativado.
+   * @return {boolean} [true] se o log dos cabeçalhos de 
+   * requisição e resposta está ativado, [false] caso contrário.
+   */
+  public boolean isDebugHeaders() {
+    return debugHeaders;
   }
 
 
@@ -249,6 +274,11 @@ public class ServerConfig {
   }
 
 
+  public SSLConfig getSSLConfig() {
+    return sslConfig;
+  }
+  
+  
   /**
    * Mapa com as classes dos HttpHandler's e 
    * respectivas URIs às quais estão associados.
@@ -305,10 +335,7 @@ public class ServerConfig {
     if (!Objects.equals(this.address, other.address)) {
       return false;
     }
-    if (!Objects.equals(this.handlers, other.handlers)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(this.handlers, other.handlers);
   }
   
   
@@ -338,6 +365,7 @@ public class ServerConfig {
         + "\n    port: " + port 
         + "\n    ioThreads: " + ioThreads 
         + "\n    maxWorkerThreads: " + maxWorkerThreads 
+        + "\n    debugHeaders: " + debugHeaders 
         + "\n    dispatcherEnabled: " + dispatcherEnabled 
         + "\n    shutdownHandlerEnabled: " + shutdownHandler
         + "\n    authenticationShield: " + authenticationShield
@@ -345,7 +373,8 @@ public class ServerConfig {
         + "\n    handlers: " + handlers.toString()
             .replace("{", "{\n      - ")
             .replace(", ", "\n      - ")
-            .replace("}", "\n    }") + "\n}";
+            .replace("}", "\n    }") + "\n}\n"
+        + sslConfig.toString();
   }
   
   
@@ -362,6 +391,8 @@ public class ServerConfig {
     
     private int serverPort;
     
+    private boolean debugHeaders;
+    
     private boolean dispatcherEnabled;
     
     private boolean authenticationShield;
@@ -375,6 +406,8 @@ public class ServerConfig {
     private boolean shutdownHandlerEnabled;
     
     private Map<String,Class> handlers;
+    
+    private SSLConfig sslContext;
     
     
     /**
@@ -467,6 +500,30 @@ public class ServerConfig {
      */
     public Builder setJwtAuthKey(String jwtAuthKey) {
       this.jwtAuthKey = jwtAuthKey;
+      return this;
+    }
+
+
+    /**
+     * Verifica se o log dos cabeçalhos de resquisição 
+     * e resposta está ativado.
+     * @return {boolean} [true] se o log dos cabeçalhos de 
+     * requisição e resposta está ativado, [false] caso contrário.
+     */
+    public boolean isDebugHeaders() {
+      return debugHeaders;
+    }
+
+
+    /**
+     * Ativa/Desativa o log dos cabeçalhos de resquisição 
+     * e resposta para debug.
+     * @param debugHeaders {boolean} [true] se o log dos cabeçalhos de 
+     * requisição e resposta está ativado, [false] caso contrário.
+     * @return Esta instância modificada de Builder.
+     */
+    public Builder setDebugHeaders(boolean debugHeaders) {
+      this.debugHeaders = debugHeaders;
       return this;
     }
 
@@ -623,6 +680,17 @@ public class ServerConfig {
       this.ioThreads = ioThreads;
       return this;
     }
+
+
+    public SSLConfig getSslContext() {
+      return sslContext;
+    }
+
+
+    public Builder setSslContext(SSLConfig sslContext) {
+      this.sslContext = sslContext;
+      return this;
+    }
     
     
     /**
@@ -634,13 +702,15 @@ public class ServerConfig {
       return new ServerConfig(
           serverAddress, 
           serverPort, 
+          debugHeaders, 
           dispatcherEnabled, 
           shutdownHandlerEnabled, 
           authenticationShield,
           JWTKey.fromPlainString(jwtAuthKey),
           ioThreads, 
           maxWorkerThreads, 
-          handlers
+          handlers,
+          sslContext
       );
     }
     
@@ -681,6 +751,7 @@ public class ServerConfig {
             .create();
         Builder b = gson.fromJson(fr, Builder.class);
         return this.setAuthenticationShield(b.isAuthenticationShield())
+            .setDebugHeaders(b.isDebugHeaders())
             .setDispatcherEnabled(b.isDispatcherEnabled())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
@@ -688,7 +759,8 @@ public class ServerConfig {
             .setMaxWorkerThreads(b.getMaxWorkerThreads())
             .setServerAddress(b.getServerAddress())
             .setServerPort(b.getServerPort())
-            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled());
+            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
+            .setSslContext(b.getSslContext());
       }
     }
 
@@ -709,6 +781,7 @@ public class ServerConfig {
             .create();
         Builder b = gson.fromJson(ir, Builder.class);
         return this.setAuthenticationShield(b.isAuthenticationShield())
+            .setDebugHeaders(b.isDebugHeaders())
             .setDispatcherEnabled(b.isDispatcherEnabled())
             .setHandlers(b.getHandlers())
             .setIoThreads(b.getIoThreads())
@@ -716,7 +789,8 @@ public class ServerConfig {
             .setMaxWorkerThreads(b.getMaxWorkerThreads())
             .setServerAddress(b.getServerAddress())
             .setServerPort(b.getServerPort())
-            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled());
+            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
+            .setSslContext(b.getSslContext());
       }
     }
 
@@ -726,6 +800,7 @@ public class ServerConfig {
       return "ServerConfig.Builder{\n    " 
           + "address: " + serverAddress 
           + "\n    port: " + serverPort 
+          + "\n    debugHeaders: " + dispatcherEnabled 
           + "\n    dispatcherEnabled: " + dispatcherEnabled 
           + "\n    ioThreads: " + ioThreads 
           + "\n    maxWorkerThreads: " + maxWorkerThreads 
