@@ -88,7 +88,7 @@ public class URIHitsCounter implements HttpHandler {
       System.out.println(">>>> recording...");
       preSecs.set(secs);
       Optional<Entry<String,Integer>> opt = uriHits.entrySet()
-          .stream().max((a,b)->a.getValue()+b.getValue());
+          .stream().max((a,b)->a.getValue()-b.getValue());
       if(opt.isPresent()) {
         new SqlQuery(
             PoolFactory.getDefaultPool().getConnection(), 
