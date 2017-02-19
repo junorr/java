@@ -19,23 +19,68 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.job.query.op;
+package us.pserver.sdb.filedriver.test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.DecimalFormat;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/01/2017
+ * @version 0.0 - 06/12/2016
  */
-public abstract class Operation<T> {
-  
-  abstract T value();
+public class FSize implements IFSize {
 
-  public abstract boolean apply(T other);
+  private final long bytes;
+  
+  
+  public FSize(long bytes) {
+    this.bytes = bytes;
+  }
+  
+  
+  public FSize(IFSize size) {
+    this.bytes = size.bytes();
+  }
+  
+  
+  @Override
+  public long bytes() {
+    return bytes;
+  }
+
+
+  @Override
+  public double value() {
+    Unit unit = Unit.from(bytes);
+    return Long.valueOf(bytes).doubleValue() / unit.bytes();
+  }
+
+
+  @Override
+  public Unit unit() {
+    return Unit.from(bytes);
+  }
   
   
   @Override
   public String toString() {
-    return this.getClass().getSimpleName()+ "["+ value()+ "]";
+    return new DecimalFormat("0.00").format(value())+ " "+ unit().name();
+  }
+  
+  
+  public static FSize of(long bytes) {
+    return new FSize(bytes);
+  }
+  
+  
+  public static FSize of(Path path) {
+    FSize size = of(Long.MIN_VALUE);
+    try { size = of(Files.size(path)); } 
+    catch(IOException e) {}
+    return size;
   }
   
 }

@@ -61,7 +61,7 @@ public class ByteSearch {
       }
       else idx = 0;
     }
-    return (idx != value.length ? -1 : count);
+    return (idx != value.length ? -1 : count - idx);
   }
   
   
@@ -95,7 +95,7 @@ public class ByteSearch {
     Timer tm = new Timer.Nanos().start();
     int count = bs.search(buf);
     tm.stop();
-    System.out.println("* found after: "+ count);
+    System.out.println("* found on index: "+ count);
     System.out.println("* bs.found="+ UTF8String.from(bs.found));
     System.out.println("* str.indexOf('"+ src+ "'): "+ str.indexOf(src));
     System.out.println(tm);

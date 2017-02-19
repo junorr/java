@@ -24,6 +24,7 @@ package us.pserver.job.query;
 import com.jsoniter.ValueType;
 import com.jsoniter.any.Any;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import us.pserver.job.query.Query;
 
@@ -74,34 +75,26 @@ public interface QueryResolver {
 
     private boolean resolveArray(Query query, Any any) {
       boolean result = any.asList().stream().anyMatch(e->resolve(query, e));
-      if(debug) {
-        System.err.println("resolveArray( "+ any+ " ): "+ result);
-      }
+      debug(query, any, result);
       return result;
     }
 
     private boolean resolveBoolean(Query query, Any any) {
       boolean result = query.operation().apply(any.toBoolean());
-      if(debug) {
-        System.err.println(query.operation()+ ".( "+ any+ " ): "+ result);
-      }
+      debug(query, any, result);
       return result;
     }
 
     private boolean resolveNumber(Query query, Any any) {
       boolean result = query.operation().apply((isDouble(any) 
           ? any.toDouble() : any.toLong()));
-      if(debug) {
-        System.err.println(query.operation()+ ".( "+ any+ " ): "+ result);
-      }
+      debug(query, any, result);
       return result;
     }
 
     private boolean resolveString(Query query, Any any) {
       boolean result = query.operation().apply(any.toString());
-      if(debug) {
-        System.err.println(query.operation()+ ".( "+ any+ " ): "+ result);
-      }
+      debug(query, any, result);
       return result;
     }
 
@@ -144,9 +137,7 @@ public interface QueryResolver {
       boolean result;
       if(any.keys().isEmpty()) {
         result = query.operation().apply(any.object());
-        if(debug) {
-          System.err.println(query.operation()+ ".( "+ any+ " ): "+ result);
-        }
+        debug(query, any, result);
       } 
       else {
         result = resolveList(query.ands(), any, true)
@@ -154,6 +145,18 @@ public interface QueryResolver {
             || resolveList(query.ors(), any, false);
       }
       return result;
+    }
+    
+    
+    private void debug(Query query, Any any, Object result) {
+      if(debug) {
+        System.err.println(query.operation()
+            + ".apply( "
+            + Objects.toString(any).trim()
+            + " ): "
+            + result
+        );
+      }
     }
   
   }

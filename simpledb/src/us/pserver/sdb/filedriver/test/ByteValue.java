@@ -19,23 +19,15 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.job.query.op;
+package us.pserver.sdb.filedriver.test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/01/2017
+ * @version 0.0 - 06/12/2016
  */
-public abstract class Operation<T> {
-  
-  abstract T value();
+public interface ByteValue {
 
-  public abstract boolean apply(T other);
-  
-  
-  @Override
-  public String toString() {
-    return this.getClass().getSimpleName()+ "["+ value()+ "]";
-  }
+  public long bytes();
   
 }
