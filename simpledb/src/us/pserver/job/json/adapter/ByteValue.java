@@ -28,16 +28,37 @@ package us.pserver.job.json.adapter;
  */
 public class ByteValue {
 
-  public static final byte START_OBJECT = 123;
-  public static final byte END_OBJECT = 125;
-  public static final byte START_ARRAY = 91;
-  public static final byte END_ARRAY = 93;
-  public static final byte[] NUMBERS = {48, 49, 50, 51, 52, 53, 54, 55, 56, 57};
-  public static final byte BOOL_TRUE = 116;
-  public static final byte BOOL_FALSE = 102;
-  public static final byte STRING = 34;
-  public static final byte VALUE = 58;
-  public static final byte FIELD = 44;
-  public static final byte IGNORE = 32;
+  public static final byte START_OBJECT = 123; //'{'
+  public static final byte END_OBJECT = 125; //'}'
+  public static final byte START_ARRAY = 91; //'['
+  public static final byte END_ARRAY = 93; //']'
+  public static final byte NUM0 = 48; //'0'
+  public static final byte NUM1 = 49; //'1'
+  public static final byte NUM2 = 50; //'2'
+  public static final byte NUM3 = 51; //'3'
+  public static final byte NUM4 = 52; //'4'
+  public static final byte NUM5 = 53; //'5'
+  public static final byte NUM6 = 54; //'6'
+  public static final byte NUM7 = 55; //'7'
+  public static final byte NUM8 = 56; //'8'
+  public static final byte NUM9 = 57; //'9'
+  public static final byte NULL = 110; //'n'
+  public static final byte UNULL = 78; //'n'
+  public static final byte BOOL_TRUE = 116; //true
+  public static final byte BOOL_UTRUE = 84; //true
+  public static final byte BOOL_FALSE = 102; //false
+  public static final byte BOOL_UFALSE = 70; //false
+  public static final byte STRING = 34; //'"'
+  public static final byte VALUE = 58; //':'
+  public static final byte FIELD = 44; //','
+  public static final byte IGNORE = 32; //' '
+  public static final byte MINUS = 45; //'-'
+  
+  
+  public static void main(String[] args) {
+    System.out.println("FIELD : "+ FIELD+ " : "+ ((char)FIELD));
+    System.out.println("VALUE : "+ VALUE+ " : "+ ((char)VALUE));
+    System.out.println("N = "+ ((byte)'N'));
+  }
   
 }

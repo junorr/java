@@ -28,9 +28,7 @@ package us.pserver.job.json.adapter;
  */
 public enum ByteToken {
 
-  BOOL_FALSE(ByteValue.BOOL_FALSE),
-  
-  BOOL_TRUE(ByteValue.BOOL_TRUE),
+  BOOLEAN(ByteValue.BOOL_FALSE),
   
   END_ARRAY(ByteValue.END_ARRAY),
   
@@ -50,25 +48,9 @@ public enum ByteToken {
   
   VALUE(ByteValue.VALUE),
   
-  NUM0(ByteValue.NUMBERS[0]),
+  NULL(ByteValue.NULL),
   
-  NUM1(ByteValue.NUMBERS[1]),
-  
-  NUM2(ByteValue.NUMBERS[2]),
-  
-  NUM3(ByteValue.NUMBERS[3]),
-  
-  NUM4(ByteValue.NUMBERS[4]),
-  
-  NUM5(ByteValue.NUMBERS[5]),
-  
-  NUM6(ByteValue.NUMBERS[6]),
-  
-  NUM7(ByteValue.NUMBERS[7]),
-  
-  NUM8(ByteValue.NUMBERS[8]),
-  
-  NUM9(ByteValue.NUMBERS[9]);
+  UNKNOWN(Byte.MIN_VALUE);
   
   
   public byte value() {
@@ -84,5 +66,59 @@ public enum ByteToken {
   }
   
   private final byte value;
+  
+  
+  public static ByteToken of(byte b) {
+    switch(b) {
+      case ByteValue.BOOL_FALSE:
+      case ByteValue.BOOL_UFALSE:
+      case ByteValue.BOOL_TRUE:
+      case ByteValue.BOOL_UTRUE:
+        return BOOLEAN;
+      case ByteValue.END_ARRAY:
+        return END_ARRAY;
+      case ByteValue.END_OBJECT:
+        return END_OBJECT;
+      case ByteValue.FIELD:
+        return FIELD;
+      case ByteValue.IGNORE:
+        return IGNORE;
+      case ByteValue.START_ARRAY:
+        return START_ARRAY;
+      case ByteValue.START_OBJECT:
+        return START_OBJECT;
+      case ByteValue.STRING:
+        return STRING;
+      case ByteValue.VALUE:
+        return VALUE;
+      case ByteValue.NUM0:
+        return NUMBER;
+      case ByteValue.NUM1:
+        return NUMBER;
+      case ByteValue.NUM2:
+        return NUMBER;
+      case ByteValue.NUM3:
+        return NUMBER;
+      case ByteValue.NUM4:
+        return NUMBER;
+      case ByteValue.NUM5:
+        return NUMBER;
+      case ByteValue.NUM6:
+        return NUMBER;
+      case ByteValue.NUM7:
+        return NUMBER;
+      case ByteValue.NUM8:
+        return NUMBER;
+      case ByteValue.NUM9:
+        return NUMBER;
+      case ByteValue.MINUS:
+        return NUMBER;
+      case ByteValue.NULL:
+      case ByteValue.UNULL:
+        return NULL;
+      default:
+        return UNKNOWN;
+    }
+  }
   
 }
