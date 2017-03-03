@@ -21,11 +21,11 @@
 
 package us.pserver.sdb.filedriver.test;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.ValueType;
-import java.io.ByteArrayInputStream;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import static com.fasterxml.jackson.core.JsonToken.VALUE_EMBEDDED_OBJECT;
 import java.io.IOException;
-import us.pserver.tools.UTF8String;
 import us.pserver.tools.timer.Timer;
 
 /**
@@ -33,7 +33,7 @@ import us.pserver.tools.timer.Timer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/02/2017
  */
-public class TestAnyParse {
+public class TestJacksonParse {
 
   public static long calcMem() {
     for(int i = 0; i < 10; i++) {
@@ -43,51 +43,49 @@ public class TestAnyParse {
   }
   
   
-  public static void parseObject(JsonIterator iter) throws IOException {
-    boolean b = false;
-    String s = null;
-    double d = 0;
+  public static void parseObject(JsonParser par) throws IOException {
+    System.out.println("---- OBJECT ----");
     Object o = null;
-    for(String fld = iter.readObject(); fld != null; fld = iter.readObject()) {
-      System.out.print(" - "+ fld+ "=");
-      ValueType type = iter.whatIsNext();
-      switch(type) {
-        case ARRAY:
-          //while(iter.readArray()) {
-            //o = iter.read();
-          //}
-          System.out.println(iter.readAny());
-          System.out.println("ARRAY");
+    String s = null;
+    Number n = null;
+    Boolean b = null;
+    JsonToken t = null;
+    while((t = par.nextToken()) != JsonToken.END_OBJECT) {
+      switch(t) {
+        case START_ARRAY:
+          System.out.print("[");
+          while(par.nextToken() != JsonToken.END_ARRAY) {
+            o = par.getCurrentValue();
+            System.out.print(o + ", ");
+          }
+          System.out.println("]");
           break;
-        case BOOLEAN:
-          //b = iter.readBoolean();
-          System.out.println(iter.readBoolean());
-          System.out.println("BOOLEAN");
+        case FIELD_NAME:
+          s = par.getCurrentName();
+          System.out.print(" - "+ s+ "=");
           break;
-        case INVALID:
-          System.out.println("INVALID");
+        case VALUE_TRUE:
+        case VALUE_FALSE:
+          b = par.getBooleanValue();
+          System.out.println(b);
           break;
-        case NULL:
-          //o = iter.read();
-          System.out.println(iter.read());
-          System.out.println("NULL");
+        case VALUE_EMBEDDED_OBJECT:
+          System.out.println(VALUE_EMBEDDED_OBJECT);
+          parseObject(par);
           break;
-        case NUMBER:
-          //d = iter.readDouble();
-          System.out.println(iter.readDouble());
-          System.out.println("NUMBER");
+        case VALUE_NUMBER_FLOAT:
+        case VALUE_NUMBER_INT:
+          n = par.getNumberValue();
+          System.out.println(n);
           break;
-        case OBJECT:
-          System.out.println("OBJECT");
-          parseObject(iter);
+        case VALUE_STRING:
+          s = par.getValueAsString();
+          System.out.println(s);
           break;
-        case STRING:
-          //s = iter.readString();
-          System.out.println(iter.readString());
-          System.out.println("STRING");
+        case VALUE_NULL:
+          o = par.getCurrentValue();
+          System.out.println(o);
           break;
-        default:
-          throw new RuntimeException("ValueType switch default?");
       }
     }
   }
@@ -95,10 +93,6 @@ public class TestAnyParse {
   
   public static void main(String[] args) throws IOException {
     Timer tm = new Timer.Nanos();
-    //ByteArrayInputStream bis = new ByteArrayInputStream(
-        //UTF8String.from(new JsonCreator()
-            //.withDepth(4).create()).getBytes()
-    //);
     String str = "{" +
 "\"serverAddress\": \"0.0.0.0\"," +
 "\"serverPort\": 9088," +
@@ -136,9 +130,11 @@ public class TestAnyParse {
     long mem = calcMem();
     System.out.println("* free: "+ new FSize(mem));
     tm.start();
-    JsonIterator iter = JsonIterator.parse(str);
-    parseObject(iter);
-//    
+    
+    JsonFactory fac = new JsonFactory();
+    JsonParser par = fac.createParser(str);
+    parseObject(par);
+    
     tm.stop();
     long mem2 = calcMem();
     System.out.println("* free: "+ new FSize(mem2));
