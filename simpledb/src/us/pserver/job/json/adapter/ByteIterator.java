@@ -339,6 +339,10 @@ public interface ByteIterator extends Iterator<ByteToken> {
     @Override
     public String readString() throws ByteIteratorException {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      ByteToken tk = ByteToken.of(current);
+      if(tk == ByteToken.BOOLEAN || tk == ByteToken.NUMBER) {
+        bos.write(current);
+      }
       int read;
       while((read = get()) != -1 
           && (current = (byte)read) != ByteValue.FIELD
@@ -348,7 +352,7 @@ public interface ByteIterator extends Iterator<ByteToken> {
             || current == ByteValue.STRING) continue;
         bos.write(current);
       }
-      if(bos.size() < 1) throw new ByteIteratorException("Can not read String value");
+      if(bos.size() < 1) throw new ByteIteratorException("Can not read value");
       unreadByte();
       return UTF8String.from(bos.toByteArray()).toString();
     }
@@ -356,43 +360,13 @@ public interface ByteIterator extends Iterator<ByteToken> {
 
     @Override
     public boolean readBoolean() throws ByteIteratorException {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      ByteToken tk = ByteToken.of(current);
-      if(tk == ByteToken.BOOLEAN) {
-        bos.write(current);
-      }
-      int read;
-      while((read = get()) != -1 
-          && (current = (byte)read) != ByteValue.FIELD
-          && current != ByteValue.END_ARRAY
-          && current != ByteValue.END_OBJECT) {
-        if(current == ByteValue.IGNORE) continue;
-        bos.write(current);
-      }
-      if(bos.size() < 1) throw new ByteIteratorException("Can not read boolean value");
-      unreadByte();
-      return Boolean.parseBoolean(UTF8String.from(bos.toByteArray()).toString());
+      return Boolean.parseBoolean(readString());
     }
 
 
     @Override
     public Number readNumber() throws ByteIteratorException {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      ByteToken tk = ByteToken.of(current);
-      if(tk == ByteToken.NUMBER) {
-        bos.write(current);
-      }
-      int read;
-      while((read = get()) != -1 
-          && (current = (byte)read) != ByteValue.FIELD
-          && current != ByteValue.END_ARRAY
-          && current != ByteValue.END_OBJECT) {
-        if(current == ByteValue.IGNORE) continue;
-        bos.write(current);
-      }
-      if(bos.size() < 1) throw new ByteIteratorException("Can not read number value");
-      unreadByte();
-      String str = UTF8String.from(bos.toByteArray()).toString();
+      String str = readString();
       if(str.contains(".")) {
         return Double.valueOf(str);
       } else {

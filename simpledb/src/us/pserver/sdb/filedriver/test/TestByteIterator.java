@@ -81,13 +81,9 @@ public class TestByteIterator {
     while(bi.hasNext()) {
       ByteToken tk = bi.next();
       switch(tk) {
-        case BOOLEAN:
-          Boolean b = bi.readBoolean();
-          System.out.println(b + " ("+ b.getClass().getSimpleName()+ ")");
-          break;
         case START_OBJECT:
           ident += "  ";
-          System.out.println();
+          System.out.println("{");
         case FIELD:
           String f = bi.readField();
           System.out.print(ident+ "- "+ f+ " = ");
@@ -96,17 +92,40 @@ public class TestByteIterator {
           if(ident.length() > 2)
             ident = ident.substring(0, ident.length()-2);
           break;
+        case END_ARRAY:
+          System.out.println();
+          break;
+        case BOOLEAN:
+          Boolean b = bi.readBoolean();
+          if(bi.isInsideArray()) {
+            System.out.print(b+ ", ");
+          } else {
+            System.out.println(b + " ("+ b.getClass().getSimpleName()+ ")");
+          }
+          break;
         case NUMBER:
           Number n = bi.readNumber();
-          System.out.println(n+ " ("+ n.getClass().getSimpleName()+ ")");
+          if(bi.isInsideArray()) {
+            System.out.print(n+ ", ");
+          } else {
+            System.out.println(n+ " ("+ n.getClass().getSimpleName()+ ")");
+          }
           break;
         case STRING:
           String s = bi.readString();
-          System.out.println(s+ " (String)");
+          if(bi.isInsideArray()) {
+            System.out.print(s+ ", ");
+          } else {
+            System.out.println(s+ " (String)");
+          }
           break;
         case NULL:
           Object nill = bi.readNull();
-          System.out.println(nill+ " (null)");
+          if(bi.isInsideArray()) {
+            System.out.print(nill+ ", ");
+          } else {
+            System.out.println(nill+ " (null)");
+          }
           break;
       }
     }

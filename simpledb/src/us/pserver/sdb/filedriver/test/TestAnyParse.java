@@ -57,34 +57,34 @@ public class TestAnyParse {
             //o = iter.read();
           //}
           System.out.println(iter.readAny());
-          System.out.println("ARRAY");
+          //System.out.println("ARRAY");
           break;
         case BOOLEAN:
           //b = iter.readBoolean();
           System.out.println(iter.readBoolean());
-          System.out.println("BOOLEAN");
+          //System.out.println("BOOLEAN");
           break;
         case INVALID:
-          System.out.println("INVALID");
+          //System.out.println("INVALID");
           break;
         case NULL:
           //o = iter.read();
           System.out.println(iter.read());
-          System.out.println("NULL");
+          //System.out.println("NULL");
           break;
         case NUMBER:
           //d = iter.readDouble();
           System.out.println(iter.readDouble());
-          System.out.println("NUMBER");
+          //System.out.println("NUMBER");
           break;
         case OBJECT:
-          System.out.println("OBJECT");
+          //System.out.println("OBJECT");
           parseObject(iter);
           break;
         case STRING:
           //s = iter.readString();
           System.out.println(iter.readString());
-          System.out.println("STRING");
+          //System.out.println("STRING");
           break;
         default:
           throw new RuntimeException("ValueType switch default?");

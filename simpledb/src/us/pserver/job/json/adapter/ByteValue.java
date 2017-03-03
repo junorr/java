@@ -26,7 +26,7 @@ package us.pserver.job.json.adapter;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 24/02/2017
  */
-public class ByteValue {
+public abstract class ByteValue {
 
   public static final byte START_OBJECT = 123; //'{'
   public static final byte END_OBJECT = 125; //'}'
@@ -43,22 +43,15 @@ public class ByteValue {
   public static final byte NUM8 = 56; //'8'
   public static final byte NUM9 = 57; //'9'
   public static final byte NULL = 110; //'n'
-  public static final byte UNULL = 78; //'n'
-  public static final byte BOOL_TRUE = 116; //true
-  public static final byte BOOL_UTRUE = 84; //true
-  public static final byte BOOL_FALSE = 102; //false
-  public static final byte BOOL_UFALSE = 70; //false
+  public static final byte UNULL = 78; //'N'
+  public static final byte BOOL_TRUE = 116; //'t'
+  public static final byte BOOL_UTRUE = 84; //'T'
+  public static final byte BOOL_FALSE = 102; //'f'
+  public static final byte BOOL_UFALSE = 70; //'F'
   public static final byte STRING = 34; //'"'
   public static final byte VALUE = 58; //':'
   public static final byte FIELD = 44; //','
   public static final byte IGNORE = 32; //' '
   public static final byte MINUS = 45; //'-'
-  
-  
-  public static void main(String[] args) {
-    System.out.println("FIELD : "+ FIELD+ " : "+ ((char)FIELD));
-    System.out.println("VALUE : "+ VALUE+ " : "+ ((char)VALUE));
-    System.out.println("N = "+ ((byte)'N'));
-  }
   
 }
