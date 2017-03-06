@@ -19,13 +19,61 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.job.json.adapter;
+package us.pserver.job.json.iterator;
+
+import us.pserver.job.json.adapter.ByteIterator;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/02/2017
+ * @version 0.0 - 06/03/2017
  */
-public class JsoniterAdapter {
+public abstract class AbstractIterator implements ByteIterator {
+
+  protected byte current;
+
+  protected int arraylvl;
+
+  protected int objectlvl;
+
+  protected String curfld;
+
+
+  protected AbstractIterator() {
+    current = Byte.MIN_VALUE;
+    arraylvl = 0;
+    objectlvl = 0;
+    curfld = null;
+  }
+
+
+  @Override
+  public byte getCurrentByte() {
+    return current;
+  }
+
+
+  @Override
+  public boolean isInsideArray() {
+    return arraylvl > 0;
+  }
+
+
+  @Override
+  public int getObjectLevel() {
+    return objectlvl;
+  }
+
+
+  @Override
+  public int getArrayLevel() {
+    return arraylvl;
+  }
+
+
+  @Override
+  public String getCurrentField() {
+    return curfld;
+  }
 
 }

@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import us.pserver.job.json.adapter.ByteIterator;
+import us.pserver.job.json.adapter.ByteIteratorFactory;
 import us.pserver.job.json.adapter.ByteToken;
 import us.pserver.tools.UTF8String;
 import us.pserver.tools.timer.Timer;
@@ -74,8 +75,8 @@ public class TestByteIterator {
 "}" +
 "}";
     /**/
-    ByteIterator bi = ByteIterator.of(json);
-    //ByteIterator bi = ByteIterator.of(toStream(json));
+    //ByteIterator bi = ByteIteratorFactory.of(json);
+    ByteIterator bi = ByteIteratorFactory.of(toStream(json));
     Timer tm = new Timer.Nanos().start();
     String ident = "";
     while(bi.hasNext()) {

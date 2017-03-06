@@ -52,7 +52,7 @@ public interface Region extends Writable, Serializable {
     Sane.of(buf)
         .with(Checkup.isNotNull())
         .and(b->b.capacity()>=16)
-        .with("Bad Buffer: "+ (buf != null ? "capacity < 16 bytes" : "null"))
+        .with("Bad ByteBuffer: "+ (buf != null ? "capacity < 16 bytes" : "null"))
         .check();
     return new DefRegion(buf.getLong(), buf.getLong());
   }
