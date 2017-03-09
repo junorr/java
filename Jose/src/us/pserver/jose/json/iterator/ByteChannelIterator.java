@@ -19,15 +19,13 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.job.json.iterator;
+package us.pserver.jose.json.iterator;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
-import us.pserver.job.json.adapter.ByteIterator;
-import us.pserver.job.json.adapter.ByteIteratorException;
-import us.pserver.job.json.adapter.JsonToken;
-import us.pserver.job.json.adapter.JsonValue;
+import us.pserver.jose.json.JsonType;
+import us.pserver.jose.json.JsonValue;
 
 /**
  *
@@ -159,8 +157,14 @@ public class ByteChannelIterator extends AbstractIterator {
 
 
   @Override
-  public JsonValue readValue() {
-    return this.fillBuffer().readValue();
+  public JsonValue read(JsonType tkn) {
+    return this.fillBuffer().read(tkn);
+  }
+
+
+  @Override
+  public JsonValue readNext() {
+    return this.fillBuffer().readNext();
   }
 
 
@@ -174,11 +178,11 @@ public class ByteChannelIterator extends AbstractIterator {
   public boolean hasNext() {
     return this.fillBuffer().hasNext();
   }
-
-
+  
+  
   @Override
-  public JsonToken next() {
+  public JsonType next() {
     return this.fillBuffer().next();
   }
-
+  
 }

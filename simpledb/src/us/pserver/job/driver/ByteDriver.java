@@ -19,39 +19,29 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.job.json.adapter;
+package us.pserver.job.driver;
 
-import java.util.Iterator;
+import java.nio.ByteBuffer;
+import us.pserver.job.Region;
+import us.pserver.job.json.adapter.ByteIterator;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 24/02/2017
+ * @version 0.0 - 07/03/2017
  */
-public interface ByteIterator extends Iterator<JsonToken> {
+public interface ByteDriver {
 
-  public String readString();
+  public ByteBuffer getBuffer();
   
-  public boolean readBoolean();
+  public ByteBuffer get(Region r);
   
-  public Number readNumber();
+  public ByteIterator iterator(Region r);
   
-  public Object readNull();
+  public int search(Region r, byte[] val);
   
-  public String readField();
+  public ByteDriver put(int pos, ByteBuffer buf);
   
-  public JsonValue readValue();
-  
-  public void skip();
-  
-  public boolean isInsideArray();
-  
-  public int getObjectLevel();
-  
-  public int getArrayLevel();
-  
-  public String getCurrentField();
-  
-  public byte getCurrentByte();
+  public ByteDriver put(int pos, byte[] bs);
   
 }

@@ -19,39 +19,60 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.job.json.adapter;
+package us.pserver.jose.json.iterator;
 
-import java.util.Iterator;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 24/02/2017
+ * @version 0.0 - 06/03/2017
  */
-public interface ByteIterator extends Iterator<JsonToken> {
+public abstract class AbstractIterator implements ByteIterator {
 
-  public String readString();
-  
-  public boolean readBoolean();
-  
-  public Number readNumber();
-  
-  public Object readNull();
-  
-  public String readField();
-  
-  public JsonValue readValue();
-  
-  public void skip();
-  
-  public boolean isInsideArray();
-  
-  public int getObjectLevel();
-  
-  public int getArrayLevel();
-  
-  public String getCurrentField();
-  
-  public byte getCurrentByte();
-  
+  protected byte current;
+
+  protected int arraylvl;
+
+  protected int objectlvl;
+
+  protected String curfld;
+
+
+  protected AbstractIterator() {
+    current = Byte.MIN_VALUE;
+    arraylvl = 0;
+    objectlvl = 0;
+    curfld = null;
+  }
+
+
+  @Override
+  public byte getCurrentByte() {
+    return current;
+  }
+
+
+  @Override
+  public boolean isInsideArray() {
+    return arraylvl > 0;
+  }
+
+
+  @Override
+  public int getObjectLevel() {
+    return objectlvl;
+  }
+
+
+  @Override
+  public int getArrayLevel() {
+    return arraylvl;
+  }
+
+
+  @Override
+  public String getCurrentField() {
+    return curfld;
+  }
+
 }

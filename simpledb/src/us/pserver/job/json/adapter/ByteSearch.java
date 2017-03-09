@@ -32,6 +32,12 @@ import us.pserver.tools.timer.Timer;
  * @version 0.0 - 11/02/2017
  */
 public class ByteSearch {
+  
+  public int search(byte[] val);
+  
+  
+  public static ByteSearch of(byte )
+  
 
   private final byte[] value;
   

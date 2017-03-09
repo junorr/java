@@ -19,14 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.job.json.iterator;
+package us.pserver.jose.json.iterator;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
-import us.pserver.job.json.adapter.ByteIteratorException;
-import us.pserver.job.json.adapter.JsonToken;
-import us.pserver.job.json.adapter.ByteType;
-import us.pserver.job.json.adapter.JsonValue;
+import us.pserver.jose.json.ByteType;
+import us.pserver.jose.json.JsonType;
+import static us.pserver.jose.json.JsonType.END_ARRAY;
+import static us.pserver.jose.json.JsonType.END_OBJECT;
+import static us.pserver.jose.json.JsonType.FIELD;
+import static us.pserver.jose.json.JsonType.IGNORE;
+import static us.pserver.jose.json.JsonType.START_ARRAY;
+import static us.pserver.jose.json.JsonType.START_OBJECT;
+import us.pserver.jose.json.JsonValue;
 import us.pserver.tools.UTF8String;
 
 /**
@@ -37,6 +42,8 @@ import us.pserver.tools.UTF8String;
 public class ByteBufferIterator extends AbstractIterator {
 
   private final ByteBuffer src;
+  
+  private final ByteArrayOutputStream buffer;
 
 
   public ByteBufferIterator(ByteBuffer buf) {
@@ -74,8 +81,8 @@ public class ByteBufferIterator extends AbstractIterator {
   @Override
   public String readString() throws ByteIteratorException {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    JsonToken tk = JsonToken.of(current);
-    if(tk == JsonToken.NUMBER || tk == JsonToken.BOOLEAN) {
+    JsonType tk = JsonType.of(current);
+    if(tk == JsonType.NUMBER || tk == JsonType.BOOLEAN || tk == JsonType.NULL) {
       bos.write(current);
     }
     while((current = src.get()) != ByteType.FIELD
@@ -115,10 +122,22 @@ public class ByteBufferIterator extends AbstractIterator {
     return null;
   }
   
-  
+
   @Override
-  public JsonValue readValue() {
-    return JsonValue.of(next(), readString());
+  public JsonValue read(JsonType tkn) {
+    return JsonValue.of(tkn, readString());
+  }
+
+
+  @Override
+  public JsonValue readNext() {
+    JsonType tp = next();
+    switch(tp) {
+      case VALUE:
+      case IGNORE:
+        tp = next();
+    }
+    return read(tp);
   }
 
 
@@ -135,9 +154,9 @@ public class ByteBufferIterator extends AbstractIterator {
 
 
   @Override
-  public JsonToken next() {
+  public JsonType next() {
     current = src.get();
-    JsonToken tk = JsonToken.of(current);
+    JsonType tk = JsonType.of(current);
     switch(tk) {
       case START_ARRAY:
         arraylvl++;
@@ -159,5 +178,5 @@ public class ByteBufferIterator extends AbstractIterator {
     }
     return tk;
   }
-
+  
 }

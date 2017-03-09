@@ -19,14 +19,17 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.sdb.filedriver.test;
+package us.pserver.jose.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import us.pserver.job.json.adapter.ByteIterator;
-import us.pserver.job.json.adapter.ByteIteratorFactory;
-import us.pserver.job.json.adapter.JsonToken;
+import us.pserver.jose.json.JsonType;
+import static us.pserver.jose.json.JsonType.BOOLEAN;
+import static us.pserver.jose.json.JsonType.NUMBER;
+import us.pserver.jose.json.JsonValue;
+import us.pserver.jose.json.iterator.ByteIterator;
+import us.pserver.jose.json.iterator.ByteIteratorFactory;
 import us.pserver.tools.UTF8String;
 import us.pserver.tools.timer.Timer;
 
@@ -80,21 +83,24 @@ public class TestByteIterator {
     Timer tm = new Timer.Nanos().start();
     String ident = "";
     while(bi.hasNext()) {
-      JsonToken tk = bi.next();
+      JsonType tk = bi.next();
       switch(tk) {
         case START_OBJECT:
           ident += "  ";
           System.out.println("{");
         case FIELD:
           String f = bi.readField();
-          System.out.print(ident+ "- "+ f+ " = ");
+          System.out.print(ident+ "- "+ f);
           break;
         case END_OBJECT:
           if(ident.length() > 2)
             ident = ident.substring(0, ident.length()-2);
           break;
         case END_ARRAY:
-          System.out.println();
+          System.out.println("]");
+          break;
+        case START_ARRAY:
+          System.out.print("[ ");
           break;
         case BOOLEAN:
           Boolean b = bi.readBoolean();
@@ -105,11 +111,11 @@ public class TestByteIterator {
           }
           break;
         case NUMBER:
-          Number n = bi.readNumber();
+          JsonValue val = bi.read(tk);
           if(bi.isInsideArray()) {
-            System.out.print(n+ ", ");
+            System.out.print(val.getAsNumber()+ "("+ val.getNumberType()+ "), ");
           } else {
-            System.out.println(n+ " ("+ n.getClass().getSimpleName()+ ")");
+            System.out.println(val);
           }
           break;
         case STRING:
@@ -129,7 +135,8 @@ public class TestByteIterator {
           }
           break;
         case VALUE:
-          System.out.println("VALUE");
+          System.out.print(" = ");
+          break;
       }
     }
     System.out.println(tm.stop());

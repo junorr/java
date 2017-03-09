@@ -19,16 +19,18 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.job.json.adapter;
+package us.pserver.jose.json.iterator;
 
 import java.util.Iterator;
+import us.pserver.jose.json.JsonType;
+import us.pserver.jose.json.JsonValue;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 24/02/2017
  */
-public interface ByteIterator extends Iterator<JsonToken> {
+public interface ByteIterator extends Iterator<JsonType> {
 
   public String readString();
   
@@ -40,7 +42,9 @@ public interface ByteIterator extends Iterator<JsonToken> {
   
   public String readField();
   
-  public JsonValue readValue();
+  public JsonValue read(JsonType tkn);
+  
+  public JsonValue readNext();
   
   public void skip();
   
