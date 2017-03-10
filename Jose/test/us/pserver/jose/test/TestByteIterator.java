@@ -78,8 +78,8 @@ public class TestByteIterator {
 "}" +
 "}";
     /**/
-    //ByteIterator bi = ByteIteratorFactory.of(json);
-    ByteIterator bi = ByteIteratorFactory.of(toStream(json));
+    ByteIterator bi = ByteIteratorFactory.of(json);
+    //ByteIterator bi = ByteIteratorFactory.of(toStream(json));
     Timer tm = new Timer.Nanos().start();
     String ident = "";
     while(bi.hasNext()) {

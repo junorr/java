@@ -73,16 +73,30 @@ public class TestByteDriver {
     );
     String fld = null;
     JsonValue val = null;
+    String sval = null;
     ByteIterator bi = null;
+    System.out.println("* find with ByteIterator:");
     Timer tm = new Timer.Nanos().start();
     drv.search("sslPort");
     bi = drv.iterator();
-    //fld = bi.readField();
-    //val = bi.readNext();
+    fld = bi.readField();
+    val = bi.readNext();
     tm.stop();
-    System.out.println("* fld: "+ fld);
-    //System.out.println("* val: "+ val.get());
-    System.out.println(tm);
+    System.out.println("  fld: "+ fld);
+    System.out.println("  val: "+ val.get());
+    System.out.println("  "+ tm);
+    System.out.println("------------------------");
+    
+    drv.seek(0);
+    System.out.println("* find with readUntil:");
+    tm.clear().start();
+    fld = drv.readStringUntil("\"");
+    sval = drv.readStringBetween(":", ",").substring(1).trim();
+    tm.stop();
+    System.out.println("  fld: "+ fld);
+    System.out.println("  val: "+ sval);
+    System.out.println("  "+ tm);
+    System.out.println("------------------------");
   }
   
 }

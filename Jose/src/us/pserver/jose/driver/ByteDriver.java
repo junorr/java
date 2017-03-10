@@ -21,7 +21,9 @@
 
 package us.pserver.jose.driver;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import us.pserver.jose.Region;
 import us.pserver.jose.json.iterator.ByteIterator;
 import us.pserver.jose.json.iterator.ByteIteratorFactory;
@@ -50,6 +52,14 @@ public interface ByteDriver {
   public int search(Region reg, String val);
   
   public int search(String val);
+  
+  public ByteBuffer readUntil(byte[] val);
+  
+  public ByteBuffer readBetween(byte[] start, byte[] end);
+  
+  public String readStringUntil(String val);
+  
+  public String readStringBetween(String start, String end);
   
   public ByteDriver seek(int pos);
   
@@ -196,6 +206,54 @@ public interface ByteDriver {
       check(val);
       buffer.put(val);
       return this;
+    }
+
+
+    @Override
+    public ByteBuffer readUntil(byte[] val) {
+      if(val == null || val.length < 1) {
+        return ByteBuffer.wrap(new byte[0]);
+      }
+      int pos = this.buffer.position();
+      int idx = this.search(val);
+      if(idx < pos) {
+        ByteBuffer.wrap(new byte[0]);
+      }
+      return get(Region.of(pos, idx-pos));
+    }
+
+
+    @Override
+    public ByteBuffer readBetween(byte[] start, byte[] end) {
+      if(end == null || end.length < 1
+          || end == null || end.length < 1) {
+        return ByteBuffer.wrap(new byte[0]);
+      }
+      int pos = this.search(start);
+      int idx = this.search(end);
+      if(pos < 0 || idx < pos) {
+        ByteBuffer.wrap(new byte[0]);
+      }
+      return get(Region.of(pos, idx-pos));
+    }
+
+
+    @Override
+    public String readStringUntil(String val) {
+      ByteBuffer bb = readUntil(UTF8String.from(val).getBytes());
+      if(!bb.hasRemaining()) return "";
+      return StandardCharsets.UTF_8.decode(bb).toString();
+    }
+
+
+    @Override
+    public String readStringBetween(String start, String end) {
+      ByteBuffer bb = readBetween(
+          UTF8String.from(start).getBytes(),
+          UTF8String.from(end).getBytes()
+      );
+      if(!bb.hasRemaining()) return "";
+      return StandardCharsets.UTF_8.decode(bb).toString();
     }
     
   }

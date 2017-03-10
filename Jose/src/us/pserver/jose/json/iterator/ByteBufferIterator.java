@@ -42,8 +42,6 @@ import us.pserver.tools.UTF8String;
 public class ByteBufferIterator extends AbstractIterator {
 
   private final ByteBuffer src;
-  
-  private final ByteArrayOutputStream buffer;
 
 
   public ByteBufferIterator(ByteBuffer buf) {
