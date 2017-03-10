@@ -21,21 +21,17 @@
 
 package us.pserver.jose.test;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import us.pserver.jose.driver.ByteDriver;
-import us.pserver.jose.driver.ByteDriver.DefByteDriver;
-import us.pserver.jose.json.JsonValue;
 import us.pserver.jose.json.iterator.ByteIterator;
-import us.pserver.tools.UTF8String;
 import us.pserver.tools.timer.Timer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 09/03/2017
+ * @version 0.0 - 10/03/2017
  */
-public class TestByteDriver {
+public class TestObjectCreation {
 
   
   public static void main(String[] args) {
@@ -67,43 +63,10 @@ public class TestByteDriver {
       "\"keystorePass\": \"32132155\"" +
       "}" +
       "}";
-    System.out.println(json);
-    System.out.println();
-    ByteDriver drv = new DefByteDriver(ByteBuffer.wrap(
-        UTF8String.from(json).getBytes())
-    );
-    String fld = null;
-    JsonValue val = null;
-    String sval = null;
-    ByteIterator bi = null;
-    
-    System.out.println("* find with readUntil:");
-    Timer tm = new Timer.Nanos().start();
-    drv.seek(0).search(UTF8String.from("sslPort").getBytes());
-    fld = StandardCharsets.UTF_8.decode(
-        drv.getUntil(new byte[]{'"'})
-    ).toString();
-    val = JsonValue.of(StandardCharsets.UTF_8.decode(
-        drv.getBetween(new byte[]{':'}, new byte[]{','})
-    ).toString().substring(1).trim());
-    tm.stop();
-    System.out.println("  fld: "+ fld);
-    System.out.println("  val: "+ val);
-    System.out.println("  "+ tm);
-    System.out.println("------------------------");
-    
-    System.out.println("* find with ByteIterator:");
-    drv.seek(0).search(UTF8String.from("sslPort").getBytes());
-    bi = drv.iterator();
-    tm.clear().start();
-    fld = bi.readField();
-    val = bi.readNext();
-    tm.stop();
-    System.out.println("  fld: "+ fld);
-    System.out.println("  val: "+ val.get());
-    System.out.println("  "+ tm);
-    System.out.println("------------------------");
-
+    ByteDriver drv = ByteDriver.of(StandardCharsets.UTF_8.encode(json));
+    Timer tm  = new Timer.Nanos().start();
+    ByteIterator bi = drv.iterator();
+    System.out.println(tm.stop());
   }
   
 }
