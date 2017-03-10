@@ -21,13 +21,10 @@
 
 package us.pserver.jose.driver;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import us.pserver.jose.Region;
 import us.pserver.jose.json.iterator.ByteIterator;
 import us.pserver.jose.json.iterator.ByteIteratorFactory;
-import us.pserver.tools.UTF8String;
 
 
 /**
@@ -41,25 +38,15 @@ public interface ByteDriver {
   
   public ByteBuffer get(Region reg);
   
+  public ByteBuffer getCopy(Region reg);
+  
+  public ByteBuffer getUntil(byte[] val);
+  
+  public ByteBuffer getBetween(byte[] start, byte[] end);
+  
   public ByteIterator iterator(Region reg);
   
   public ByteIterator iterator();
-  
-  public int search(Region reg, byte[] val);
-  
-  public int search(byte[] val);
-  
-  public int search(Region reg, String val);
-  
-  public int search(String val);
-  
-  public ByteBuffer readUntil(byte[] val);
-  
-  public ByteBuffer readBetween(byte[] start, byte[] end);
-  
-  public String readStringUntil(String val);
-  
-  public String readStringBetween(String start, String end);
   
   public ByteDriver seek(int pos);
   
@@ -67,6 +54,11 @@ public interface ByteDriver {
   
   public ByteDriver put(byte[] bts);
   
+  public int search(Region reg, byte[] val);
+  
+  public int search(byte[] val);
+  
+
   
   public static ByteDriver of(ByteBuffer buf) {
     return new DefByteDriver(buf);
@@ -129,6 +121,18 @@ public interface ByteDriver {
 
 
     @Override
+    public ByteBuffer getCopy(Region reg) {
+      check(reg);
+      byte[] bb = new byte[reg.length()];
+      int pos = buffer.position();
+      buffer.position(reg.start());
+      buffer.get(bb);
+      buffer.position(pos);
+      return ByteBuffer.wrap(bb);
+    }
+
+
+    @Override
     public ByteIterator iterator(Region reg) {
       return ByteIteratorFactory.of(this.get(reg));
     }
@@ -173,22 +177,11 @@ public interface ByteDriver {
     
     
     @Override
-    public int search(String val) {
-      return search(UTF8String.from(val).getBytes());
-    }
-
-
-    @Override
-    public int search(Region reg, String val) {
-      return search(reg, UTF8String.from(val).getBytes());
-    }
-
-
-    @Override
     public ByteDriver seek(int pos) {
       if(pos < 0 || pos > buffer.capacity()) {
         throw new IllegalArgumentException("Bad Position: "+ pos);
       }
+      this.buffer.position(pos);
       return this;
     }
 
@@ -210,7 +203,7 @@ public interface ByteDriver {
 
 
     @Override
-    public ByteBuffer readUntil(byte[] val) {
+    public ByteBuffer getUntil(byte[] val) {
       if(val == null || val.length < 1) {
         return ByteBuffer.wrap(new byte[0]);
       }
@@ -224,7 +217,7 @@ public interface ByteDriver {
 
 
     @Override
-    public ByteBuffer readBetween(byte[] start, byte[] end) {
+    public ByteBuffer getBetween(byte[] start, byte[] end) {
       if(end == null || end.length < 1
           || end == null || end.length < 1) {
         return ByteBuffer.wrap(new byte[0]);
@@ -237,25 +230,6 @@ public interface ByteDriver {
       return get(Region.of(pos, idx-pos));
     }
 
-
-    @Override
-    public String readStringUntil(String val) {
-      ByteBuffer bb = readUntil(UTF8String.from(val).getBytes());
-      if(!bb.hasRemaining()) return "";
-      return StandardCharsets.UTF_8.decode(bb).toString();
-    }
-
-
-    @Override
-    public String readStringBetween(String start, String end) {
-      ByteBuffer bb = readBetween(
-          UTF8String.from(start).getBytes(),
-          UTF8String.from(end).getBytes()
-      );
-      if(!bb.hasRemaining()) return "";
-      return StandardCharsets.UTF_8.decode(bb).toString();
-    }
-    
   }
   
 }

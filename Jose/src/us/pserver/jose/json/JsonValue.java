@@ -50,9 +50,19 @@ public interface JsonValue {
   
   public <T> T get();
   
+
   
   public static JsonValue of(JsonType tkn, String val) {
     return new DefJsonValue(tkn, val);
+  }
+
+  
+  public static JsonValue of(String val) {
+    if(val == null || val.trim().isEmpty()) {
+      throw new IllegalArgumentException("Bad Null String value");
+    }
+    byte f = (byte) val.trim().charAt(0);
+    return new DefJsonValue(JsonType.of(f), val.trim());
   }
   
   
