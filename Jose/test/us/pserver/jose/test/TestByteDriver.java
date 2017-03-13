@@ -23,8 +23,11 @@ package us.pserver.jose.test;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import us.pserver.jose.Region;
 import us.pserver.jose.driver.ByteDriver;
-import us.pserver.jose.driver.ByteDriver.DefByteDriver;
+import us.pserver.jose.driver.ByteDriver.ByteDriverImpl;
+import us.pserver.jose.driver.ReadLockedBuffer;
+import us.pserver.jose.driver.StringByteReader;
 import us.pserver.jose.json.JsonValue;
 import us.pserver.jose.json.iterator.ByteIterator;
 import us.pserver.tools.UTF8String;
@@ -69,7 +72,7 @@ public class TestByteDriver {
       "}";
     System.out.println(json);
     System.out.println();
-    ByteDriver drv = new DefByteDriver(ByteBuffer.wrap(
+    ByteDriver drv = new ByteDriverImpl(ByteBuffer.wrap(
         UTF8String.from(json).getBytes())
     );
     String fld = null;
@@ -79,28 +82,36 @@ public class TestByteDriver {
     
     System.out.println("* find with readUntil:");
     Timer tm = new Timer.Nanos().start();
-    drv.seek(0).indexOf(UTF8String.from("sslPort").getBytes());
-    fld = StandardCharsets.UTF_8.decode(
-        drv.getUntil(new byte[]{'"'})
-    ).toString();
-    val = JsonValue.of(StandardCharsets.UTF_8.decode(
-        drv.getBetween(new byte[]{':'}, new byte[]{','})
-    ).toString().substring(1).trim());
-    tm.stop();
+    /**/
+    try (ReadLockedBuffer read = drv.getReadLock()) {
+      read.reset();
+      StringByteReader sr = StringByteReader.of(read.getReader());
+      tm.lap();
+      int idx = sr.indexOf("sslPort");
+      fld = sr.read(Region.of(idx, sr.indexOf("\"")-idx));
+      String sv = sr.read(sr.regionOf(":", ","));
+      val = JsonValue.of(sv.substring(1).trim());
+      tm.stop();
+    }
     System.out.println("  fld: "+ fld);
     System.out.println("  val: "+ val);
     System.out.println("  "+ tm);
     System.out.println("------------------------");
-    
+    /**/
     System.out.println("* find with ByteIterator:");
-    drv.seek(0).indexOf(UTF8String.from("sslPort").getBytes());
-    bi = drv.iterator();
     tm.clear().start();
-    fld = bi.readField();
-    val = bi.readNext();
-    tm.stop();
+    try (ReadLockedBuffer read = drv.getReadLock()) {
+      read.reset();
+      StringByteReader sr = StringByteReader.of(read.getReader());
+      sr.indexOf("sslPort");
+      tm.lap();
+      bi = sr.iterator();
+      fld = bi.readField();
+      val = bi.readNext();
+      tm.stop();
+    }
     System.out.println("  fld: "+ fld);
-    System.out.println("  val: "+ val.get());
+    System.out.println("  val: "+ val);
     System.out.println("  "+ tm);
     System.out.println("------------------------");
 

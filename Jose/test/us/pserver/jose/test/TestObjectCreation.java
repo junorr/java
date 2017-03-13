@@ -64,9 +64,13 @@ public class TestObjectCreation {
       "}" +
       "}";
     ByteDriver drv = ByteDriver.of(StandardCharsets.UTF_8.encode(json));
+    
     Timer tm  = new Timer.Nanos().start();
+    long start = System.currentTimeMillis();
     ByteIterator bi = drv.iterator();
+    long end = System.currentTimeMillis();
     System.out.println(tm.stop());
+    System.out.println(end-start);
   }
   
 }

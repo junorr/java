@@ -21,7 +21,6 @@
 
 package us.pserver.jose.driver;
 
-import java.io.Closeable;
 import java.nio.ByteBuffer;
 import java.util.concurrent.locks.Lock;
 
@@ -30,63 +29,33 @@ import java.util.concurrent.locks.Lock;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/03/2017
  */
-public interface LockedBuffer extends Closeable {
+public interface WriteLockedBuffer extends ReadLockedBuffer {
 
-  public ByteBuffer getBuffer();
-  
-  public LockedBuffer reset();
-  
-  public void unlock();
-  
-  @Override public void close();
+  public ByteWriter<byte[]> getWriter();
   
   
   
+  public static WriteLockedBuffer of(ByteBuffer buf, Lock lok) {
+    return new WriteLockedBufferImpl(buf, lok);
+  }
   
   
-  public static abstract class LockedBufferImpl implements LockedBuffer {
-    
-    protected final ByteBuffer buffer;
-    
-    protected final Lock lock;
+  
+  
+  
+  public static class WriteLockedBufferImpl extends ReadLockedBufferImpl implements WriteLockedBuffer {
     
     
-    protected LockedBufferImpl(ByteBuffer buf, Lock lok) {
-      if(buf == null) {
-        throw new IllegalArgumentException("Bad Null ByteBuffer");
-      }
-      if(lok == null) {
-        throw new IllegalArgumentException("Bad Null Lock");
-      }
-      this.buffer = buf;
-      this.lock = lok;
-    }
-    
-    
-    @Override
-    public LockedBuffer reset() {
-      buffer.position(0);
-      return this;
+    public WriteLockedBufferImpl(ByteBuffer buf, Lock lok) {
+      super(buf, lok);
     }
 
 
     @Override
-    public ByteBuffer getBuffer() {
-      return this.buffer;
+    public ByteWriter<byte[]> getWriter() {
+      return ByteWriter.of(getBuffer());
     }
 
-
-    @Override
-    public void unlock() {
-      lock.unlock();
-    }
-
-
-    @Override
-    public void close() {
-      lock.unlock();
-    }
-    
   }
   
 }

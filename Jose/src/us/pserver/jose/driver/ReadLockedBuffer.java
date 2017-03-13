@@ -21,72 +21,44 @@
 
 package us.pserver.jose.driver;
 
-import java.io.Closeable;
 import java.nio.ByteBuffer;
 import java.util.concurrent.locks.Lock;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 13/03/2017
+ * @version 0.0 - 12/03/2017
  */
-public interface LockedBuffer extends Closeable {
+public interface ReadLockedBuffer extends LockedBuffer {
 
-  public ByteBuffer getBuffer();
-  
-  public LockedBuffer reset();
-  
-  public void unlock();
-  
-  @Override public void close();
+  public ByteReader<byte[]> getReader();
   
   
   
+  public static ReadLockedBuffer of(ByteBuffer buf, Lock lock) {
+    return new ReadLockedBufferImpl(buf, lock);
+  }
   
   
-  public static abstract class LockedBufferImpl implements LockedBuffer {
+  
+  
+  
+  public static class ReadLockedBufferImpl extends LockedBufferImpl implements ReadLockedBuffer {
     
-    protected final ByteBuffer buffer;
-    
-    protected final Lock lock;
+    private final ByteReader<byte[]> reader;
     
     
-    protected LockedBufferImpl(ByteBuffer buf, Lock lok) {
-      if(buf == null) {
-        throw new IllegalArgumentException("Bad Null ByteBuffer");
-      }
-      if(lok == null) {
-        throw new IllegalArgumentException("Bad Null Lock");
-      }
-      this.buffer = buf;
-      this.lock = lok;
-    }
-    
-    
-    @Override
-    public LockedBuffer reset() {
-      buffer.position(0);
-      return this;
+    public ReadLockedBufferImpl(ByteBuffer buf, Lock lok) {
+      super(buf, lok);
+      this.reader = ByteReader.of(buffer);
     }
 
 
     @Override
-    public ByteBuffer getBuffer() {
-      return this.buffer;
+    public ByteReader<byte[]> getReader() {
+      return reader;
     }
 
-
-    @Override
-    public void unlock() {
-      lock.unlock();
-    }
-
-
-    @Override
-    public void close() {
-      lock.unlock();
-    }
-    
   }
   
 }

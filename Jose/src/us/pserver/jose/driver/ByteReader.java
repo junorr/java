@@ -36,6 +36,8 @@ import us.pserver.jose.json.iterator.ByteIteratorFactory;
  * @version 0.0 - 12/03/2017
  */
 public interface ByteReader<T> {
+  
+  public ByteBuffer getBuffer();
 
   public ByteIterator iterator();
   
@@ -49,8 +51,8 @@ public interface ByteReader<T> {
   
   
   
-  public static ByteReader of(ByteBuffer buf) {
-    return null;
+  public static ByteReader<byte[]> of(ByteBuffer buf) {
+    return new ByteReaderImpl(buf);
   }
   
   
@@ -73,14 +75,14 @@ public interface ByteReader<T> {
     }
     
     
-    private void resetBuffer() {
-      buffer.position(0);
+    @Override
+    public ByteBuffer getBuffer() {
+      return buffer;
     }
     
-
+    
     @Override
     public ByteIterator iterator() {
-      this.resetBuffer();
       return iter;
     }
 

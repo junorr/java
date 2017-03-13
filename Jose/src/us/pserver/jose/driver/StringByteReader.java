@@ -21,6 +21,7 @@
 
 package us.pserver.jose.driver;
 
+import java.nio.ByteBuffer;
 import java.util.stream.Stream;
 import us.pserver.jose.Region;
 import us.pserver.jose.json.JsonType;
@@ -43,8 +44,8 @@ public interface StringByteReader extends ByteReader<String> {
   
   
   
-  public static StringByteReader of(ByteReader rdr) {
-    return null;
+  public static StringByteReader of(ByteReader<byte[]> rdr) {
+    return new StringByteReaderImpl(rdr);
   }
   
   
@@ -61,6 +62,12 @@ public interface StringByteReader extends ByteReader<String> {
         throw new IllegalArgumentException("Bad Null ByteReader");
       }
       this.reader = rdr;
+    }
+    
+    
+    @Override
+    public ByteBuffer getBuffer() {
+      return this.reader.getBuffer();
     }
 
 

@@ -19,16 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jose.json.iterator;
+package us.pserver.jose.query.op;
 
-import java.util.Spliterator;
-import us.pserver.jose.json.JsonType;
+import java.util.function.Predicate;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/03/2017
+ * @version 0.0 - 31/01/2017
  */
-public class ByteSpliterator {
+public final class BooleanPredicate extends BooleanOperation {
+  
+  final Predicate<Boolean> pred;
+  
+  public BooleanPredicate() { 
+    super(); 
+    this.pred = d->false;
+  }
+  
+  public BooleanPredicate(Predicate<Boolean> pred) {
+    super(); 
+    if(pred == null) {
+      throw new IllegalArgumentException("Bad Null Predicate");
+    }
+    this.pred = pred;
+  }
+
+  @Override
+  public boolean apply(Boolean other) {
+    return pred.test(other);
+  }
 
 }

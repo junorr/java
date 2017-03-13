@@ -21,72 +21,60 @@
 
 package us.pserver.jose.driver;
 
-import java.io.Closeable;
 import java.nio.ByteBuffer;
-import java.util.concurrent.locks.Lock;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/03/2017
  */
-public interface LockedBuffer extends Closeable {
+public interface ByteWriter<T> extends ByteReader<T> {
+  
+  public ByteWriter<T> seek(int pos);
+  
+  public ByteWriter<T> write(byte[] bs, int off, int len);
 
-  public ByteBuffer getBuffer();
-  
-  public LockedBuffer reset();
-  
-  public void unlock();
-  
-  @Override public void close();
+  public ByteWriter<T> write(T t);
   
   
   
+  public static ByteWriter<byte[]> of(ByteBuffer buf) {
+    return new ByteWriterImpl(buf);
+  }
   
   
-  public static abstract class LockedBufferImpl implements LockedBuffer {
-    
-    protected final ByteBuffer buffer;
-    
-    protected final Lock lock;
+  
+  
+  
+  public static class ByteWriterImpl extends ByteReaderImpl implements ByteWriter<byte[]> {
     
     
-    protected LockedBufferImpl(ByteBuffer buf, Lock lok) {
-      if(buf == null) {
-        throw new IllegalArgumentException("Bad Null ByteBuffer");
-      }
-      if(lok == null) {
-        throw new IllegalArgumentException("Bad Null Lock");
-      }
-      this.buffer = buf;
-      this.lock = lok;
+    public ByteWriterImpl(ByteBuffer buf) {
+      super(buf);
     }
-    
-    
+
+
     @Override
-    public LockedBuffer reset() {
-      buffer.position(0);
+    public ByteWriter<byte[]> seek(int pos) {
+      getBuffer().position(pos);
       return this;
     }
 
 
     @Override
-    public ByteBuffer getBuffer() {
-      return this.buffer;
+    public ByteWriter<byte[]> write(byte[] bs, int off, int len) {
+      if(bs != null && off >= 0 && off+len < bs.length) {
+        getBuffer().put(bs, off, len);
+      }
+      return this;
     }
 
 
     @Override
-    public void unlock() {
-      lock.unlock();
+    public ByteWriter<byte[]> write(byte[] t) {
+      return this.write(t, 0, (t != null ? t.length : 0));
     }
 
-
-    @Override
-    public void close() {
-      lock.unlock();
-    }
-    
   }
   
 }

@@ -21,10 +21,15 @@
 
 package us.pserver.jose.driver;
 
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import us.pserver.jose.Region;
-import us.pserver.jose.json.iterator.ByteIterator;
-import us.pserver.jose.json.iterator.ByteIteratorFactory;
 
 
 /**
@@ -33,218 +38,104 @@ import us.pserver.jose.json.iterator.ByteIteratorFactory;
  * @version 0.0 - 07/03/2017
  */
 public interface ByteDriver {
-
-  public ByteBuffer getBuffer();
   
-  public ByteBuffer get(Region reg);
+  public ReadLockedBuffer getReadLock(Region reg);
+  
+  public WriteLockedBuffer getWriteLock(Region reg);
+  
+  public ReadLockedBuffer getReadLock();
+  
+  public WriteLockedBuffer getWriteLock();
   
   public ByteBuffer getCopy(Region reg);
-  
-  public ByteBuffer getUntil(byte[] val);
-  
-  public ByteBuffer getBetween(byte[] start, byte[] end);
-  
-  public ByteIterator iterator(Region reg);
-  
-  public ByteIterator iterator();
-  
-  public ByteDriver put(ByteBuffer buf);
-  
-  public ByteDriver put(byte[] bts);
-  
-  public int indexOf(Region reg, byte[] val);
-  
-  public Region indexOf(byte[] start, byte[] end);
-  
-  public int indexOf(byte[] val);
-  
-  public ByteDriver seek(int pos);
   
 
   
   public static ByteDriver of(ByteBuffer buf) {
-    return new DefByteDriver(buf);
+    return new ByteDriverImpl(buf);
   }
   
   
   
   
   
-  public static class DefByteDriver implements ByteDriver {
+  public static class ByteDriverImpl implements ByteDriver {
+    
+    private final Map<Region,ReentrantReadWriteLock> regions;
     
     private final ByteBuffer buffer;
     
     
-    private static void check(ByteBuffer buf) {
-      if(buf == null || !buf.hasRemaining()) {
-        throw new IllegalArgumentException("Bad Null/Empty ByteBuffer");
+    public ByteDriverImpl(ByteBuffer buf) {
+      if(buf == null) {
+        throw new IllegalArgumentException("Bad Null ByteBuffer");
       }
-    }
-    
-    
-    private static void check(byte[] val) {
-      if(val == null || val.length < 1) {
-        throw new IllegalArgumentException("Bad Null/Empty byte array");
-      }
-    }
-    
-    
-    private static void check(Region reg) {
-      if(reg == null || reg.start() < 0) {
-        throw new IllegalArgumentException("Bad Region: "+ reg);
-      }
-    }
-    
-    
-    public DefByteDriver(ByteBuffer buf) {
-      check(buf);
+      this.regions = Collections.synchronizedMap(new HashMap<>());
       this.buffer = buf;
     }
 
 
     @Override
-    public ByteBuffer getBuffer() {
-      return buffer;
+    public ReadLockedBuffer getReadLock(Region reg) {
+      if(reg == null) {
+        return getReadLock();
+      }
+      ReentrantReadWriteLock lock = regions.get(reg);
+      if(lock == null) {
+        lock = new ReentrantReadWriteLock();
+        regions.put(reg, lock);
+      }
+      ReadLock rlok = lock.readLock();
+      rlok.lock();
+      return ReadLockedBuffer.of(buffer, rlok);
     }
 
 
     @Override
-    public ByteBuffer get(Region reg) {
-      check(reg);
-      int pos = buffer.position();
-      buffer.position(reg.start());
-      ByteBuffer bb = buffer.slice();
-      if(reg.length() > 0) {
-        bb.limit(reg.length());
+    public WriteLockedBuffer getWriteLock(Region reg) {
+      if(reg == null) {
+        return getWriteLock();
       }
-      buffer.position(pos);
-      return bb;
+      ReentrantReadWriteLock lock = regions.get(reg);
+      if(lock == null) {
+        lock = new ReentrantReadWriteLock();
+        regions.put(reg, lock);
+      }
+      WriteLock wlok = lock.writeLock();
+      wlok.lock();
+      return WriteLockedBuffer.of(buffer, wlok);
+    }
+    
+    
+    @Override
+    public ReadLockedBuffer getReadLock() {
+      return getReadLock(Region.of(0, buffer.capacity()));
+    }
+
+
+    @Override
+    public WriteLockedBuffer getWriteLock() {
+      return getWriteLock(Region.of(0, buffer.capacity()));
     }
 
 
     @Override
     public ByteBuffer getCopy(Region reg) {
-      check(reg);
-      byte[] bb = new byte[reg.length()];
+      if(reg == null || !reg.isValid()) {
+        throw new IllegalArgumentException("Bad Region: "+ reg);
+      }
       int pos = buffer.position();
       buffer.position(reg.start());
-      buffer.get(bb);
+      if(reg.length() > buffer.remaining()) {
+        buffer.position(pos);
+        throw new BufferUnderflowException();
+      }
+      byte[] bs = new byte[reg.length()];
+      buffer.get(bs);
       buffer.position(pos);
-      return ByteBuffer.wrap(bb);
-    }
-
-
-    @Override
-    public ByteIterator iterator(Region reg) {
-      return ByteIteratorFactory.of(this.get(reg));
-    }
-
-
-    @Override
-    public ByteIterator iterator() {
-      return iterator(Region.of(buffer.position(), 0));
-    }
-
-
-    @Override
-    public Region indexOf(byte[] start, byte[] end) {
-      check(start);
-      check(end);
-      int is = this.indexOf(start);
-      int ie = this.indexOf(end);
-      if(is < 0 || ie < is) {
-        return Region.of(-1, -1);
-      }
-      return Region.of(is, ie-is);
-    }
-
-
-    @Override
-    public int indexOf(Region reg, byte[] val) {
-      check(reg);
-      check(val);
-      int lim = buffer.limit();
-      buffer.position(reg.start()).limit(reg.start() + reg.length());
-      int idx = this.indexOf(val);
-      buffer.limit(lim);
-      return idx;
-    }
-
-
-    @Override
-    public int indexOf(byte[] val) {
-      check(val);
-      int idx = 0;
-      while(idx < val.length && buffer.hasRemaining()) {
-        byte b = buffer.get();
-        if(b == val[idx]) {
-          idx++;
-        }
-        else idx = 0;
-      }
-      if(idx != val.length) {
-        return -1;
-      } else {
-        buffer.position(buffer.position() - idx);
-        return buffer.position();
-      }
+      return ByteBuffer.wrap(bs);
     }
     
-    
-    @Override
-    public ByteDriver seek(int pos) {
-      if(pos < 0 || pos > buffer.capacity()) {
-        throw new IllegalArgumentException("Bad Position: "+ pos);
-      }
-      this.buffer.position(pos);
-      return this;
-    }
-
-
-    @Override
-    public ByteDriver put(ByteBuffer buf) {
-      check(buf);
-      buffer.put(buf);
-      return this;
-    }
-
-
-    @Override
-    public ByteDriver put(byte[] val) {
-      check(val);
-      buffer.put(val);
-      return this;
-    }
-
-
-    @Override
-    public ByteBuffer getUntil(byte[] val) {
-      if(val == null || val.length < 1) {
-        return ByteBuffer.wrap(new byte[0]);
-      }
-      int pos = this.buffer.position();
-      int idx = this.indexOf(val);
-      if(idx < pos) {
-        ByteBuffer.wrap(new byte[0]);
-      }
-      return get(Region.of(pos, idx-pos));
-    }
-
-
-    @Override
-    public ByteBuffer getBetween(byte[] start, byte[] end) {
-      if(end == null || end.length < 1
-          || end == null || end.length < 1) {
-        return ByteBuffer.wrap(new byte[0]);
-      }
-      int pos = this.indexOf(start);
-      int idx = this.indexOf(end);
-      if(pos < 0 || idx < pos) {
-        ByteBuffer.wrap(new byte[0]);
-      }
-      return get(Region.of(pos, idx-pos));
-    }
-
   }
-  
+    
 }
