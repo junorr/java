@@ -19,17 +19,16 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jose.driver;
+package us.pserver.jose.json.iterator;
 
-import java.nio.ByteBuffer;
+import java.util.Spliterator;
+import us.pserver.jose.json.JsonType;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 15/12/2016
+ * @version 0.0 - 12/03/2017
  */
-public interface Writable {
+public class ByteSpliterator {
 
-  public Writable write(ByteBuffer buf);
-  
 }

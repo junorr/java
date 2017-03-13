@@ -61,8 +61,9 @@ public interface JsonValue {
     if(val == null || val.trim().isEmpty()) {
       throw new IllegalArgumentException("Bad Null String value");
     }
-    byte f = (byte) val.trim().charAt(0);
-    return new DefJsonValue(JsonType.of(f), val.trim());
+    String str = val.trim();
+    byte f = (byte) str.charAt(0);
+    return new DefJsonValue(JsonType.of(f), str);
   }
   
   

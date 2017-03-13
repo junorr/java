@@ -48,15 +48,17 @@ public interface ByteDriver {
   
   public ByteIterator iterator();
   
-  public ByteDriver seek(int pos);
-  
   public ByteDriver put(ByteBuffer buf);
   
   public ByteDriver put(byte[] bts);
   
-  public int search(Region reg, byte[] val);
+  public int indexOf(Region reg, byte[] val);
   
-  public int search(byte[] val);
+  public Region indexOf(byte[] start, byte[] end);
+  
+  public int indexOf(byte[] val);
+  
+  public ByteDriver seek(int pos);
   
 
   
@@ -145,19 +147,32 @@ public interface ByteDriver {
 
 
     @Override
-    public int search(Region reg, byte[] val) {
+    public Region indexOf(byte[] start, byte[] end) {
+      check(start);
+      check(end);
+      int is = this.indexOf(start);
+      int ie = this.indexOf(end);
+      if(is < 0 || ie < is) {
+        return Region.of(-1, -1);
+      }
+      return Region.of(is, ie-is);
+    }
+
+
+    @Override
+    public int indexOf(Region reg, byte[] val) {
       check(reg);
       check(val);
       int lim = buffer.limit();
       buffer.position(reg.start()).limit(reg.start() + reg.length());
-      int idx = this.search(val);
+      int idx = this.indexOf(val);
       buffer.limit(lim);
       return idx;
     }
 
 
     @Override
-    public int search(byte[] val) {
+    public int indexOf(byte[] val) {
       check(val);
       int idx = 0;
       while(idx < val.length && buffer.hasRemaining()) {
@@ -208,7 +223,7 @@ public interface ByteDriver {
         return ByteBuffer.wrap(new byte[0]);
       }
       int pos = this.buffer.position();
-      int idx = this.search(val);
+      int idx = this.indexOf(val);
       if(idx < pos) {
         ByteBuffer.wrap(new byte[0]);
       }
@@ -222,8 +237,8 @@ public interface ByteDriver {
           || end == null || end.length < 1) {
         return ByteBuffer.wrap(new byte[0]);
       }
-      int pos = this.search(start);
-      int idx = this.search(end);
+      int pos = this.indexOf(start);
+      int idx = this.indexOf(end);
       if(pos < 0 || idx < pos) {
         ByteBuffer.wrap(new byte[0]);
       }

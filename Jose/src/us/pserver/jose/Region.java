@@ -21,16 +21,17 @@
 
 package us.pserver.jose;
 
-import us.pserver.jose.driver.Writable;
 import java.io.Serializable;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import us.pserver.jose.driver.Writeable;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 15/12/2016
  */
-public interface Region extends Writable, Serializable {
+public interface Region extends Writeable, Serializable {
 
   public int start();
   
@@ -102,13 +103,15 @@ public interface Region extends Writable, Serializable {
 
 
     @Override
-    public Region write(ByteBuffer buf) {
-      if(buf == null || buf.capacity() < 16) {
-        throw new IllegalArgumentException("Bad Null/Empty ByteBuffer");
+    public void writeTo(ByteBuffer buf) {
+      if(buf == null) {
+        throw new IllegalArgumentException("Bad Null ByteBuffer");
+      }
+      if(buf.capacity() < 16) {
+        throw new BufferOverflowException();
       }
       buf.putLong(start);
       buf.putLong(length);
-      return this;
     }
 
 

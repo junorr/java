@@ -79,7 +79,7 @@ public class TestByteDriver {
     
     System.out.println("* find with readUntil:");
     Timer tm = new Timer.Nanos().start();
-    drv.seek(0).search(UTF8String.from("sslPort").getBytes());
+    drv.seek(0).indexOf(UTF8String.from("sslPort").getBytes());
     fld = StandardCharsets.UTF_8.decode(
         drv.getUntil(new byte[]{'"'})
     ).toString();
@@ -93,7 +93,7 @@ public class TestByteDriver {
     System.out.println("------------------------");
     
     System.out.println("* find with ByteIterator:");
-    drv.seek(0).search(UTF8String.from("sslPort").getBytes());
+    drv.seek(0).indexOf(UTF8String.from("sslPort").getBytes());
     bi = drv.iterator();
     tm.clear().start();
     fld = bi.readField();
