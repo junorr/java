@@ -46,6 +46,7 @@ import us.pserver.jose.query.op.DoubleLesser;
 import us.pserver.jose.query.op.DoubleLesserEquals;
 import us.pserver.jose.query.op.NumberInArray;
 import us.pserver.jose.query.op.NumberPredicate;
+import us.pserver.jose.query.op.ObjectOperation;
 import us.pserver.jose.query.op.StringContains;
 import us.pserver.jose.query.op.StringEndsWith;
 import us.pserver.jose.query.op.StringEquals;
@@ -54,6 +55,7 @@ import us.pserver.jose.query.op.StringInArray;
 import us.pserver.jose.query.op.StringPredicate;
 import us.pserver.jose.query.op.StringRegex;
 import us.pserver.jose.query.op.StringStartsWith;
+
 
 /**
  *
@@ -86,6 +88,8 @@ public interface QueryBuilder {
   public Query arrayContains(Date val);
   
   public Query arrayContains(String val);
+  
+  public Query arrayContains(Query val);
   
   
   //// between ////
@@ -262,11 +266,17 @@ public interface QueryBuilder {
       return func.apply(new QueryImpl(field, 
           new DateEquals(val)));
     }
-
+    
     @Override
     public Query arrayContains(String val) {
       return func.apply(new QueryImpl(field, 
           new StringEquals(val)));
+    }
+    
+    @Override
+    public Query arrayContains(Query qry) {
+      return func.apply(new QueryImpl(field, 
+          new ObjectOperation(qry)));
     }
 
 

@@ -26,7 +26,7 @@ import java.nio.charset.StandardCharsets;
 import us.pserver.jose.Region;
 import us.pserver.jose.driver.ByteDriver;
 import us.pserver.jose.driver.ByteDriver.ByteDriverImpl;
-import us.pserver.jose.driver.ReadLockedBuffer;
+import us.pserver.jose.driver.LockedBuffer;
 import us.pserver.jose.driver.StringByteReader;
 import us.pserver.jose.json.JsonValue;
 import us.pserver.jose.json.iterator.ByteIterator;
@@ -83,7 +83,7 @@ public class TestByteDriver {
     System.out.println("* find with readUntil:");
     Timer tm = new Timer.Nanos().start();
     /**/
-    try (ReadLockedBuffer read = drv.getReadLock()) {
+    try (LockedBuffer read = drv.getReadLock()) {
       read.reset();
       StringByteReader sr = StringByteReader.of(read.getReader());
       tm.lap();
@@ -100,7 +100,7 @@ public class TestByteDriver {
     /**/
     System.out.println("* find with ByteIterator:");
     tm.clear().start();
-    try (ReadLockedBuffer read = drv.getReadLock()) {
+    try (LockedBuffer read = drv.getReadLock()) {
       read.reset();
       StringByteReader sr = StringByteReader.of(read.getReader());
       sr.indexOf("sslPort");

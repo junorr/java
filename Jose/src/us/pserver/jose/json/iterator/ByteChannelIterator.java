@@ -91,10 +91,12 @@ public class ByteChannelIterator extends AbstractIterator {
   }
 
 
-  protected void unreadByte() {
+  @Override
+  public ByteIterator unreadByte() {
     if(buffer.position() > 0) {
       buffer.position(buffer.position() -1);
     }
+    return this;
   }
 
 
@@ -169,14 +171,21 @@ public class ByteChannelIterator extends AbstractIterator {
 
 
   @Override
-  public void skip() {
+  public ByteIterator skip() {
     this.fillBuffer().skip();
+    return this;
   }
 
 
   @Override
   public boolean hasNext() {
     return this.fillBuffer().hasNext();
+  }
+  
+  
+  @Override
+  public JsonType nextValueType() {
+    return this.fillBuffer().nextValueType();
   }
   
   

@@ -43,6 +43,8 @@ public interface ByteReader<T> {
   
   public Stream<JsonType> stream();
   
+  public ByteReader<T> reset();
+  
   public int indexOf(byte[] val);
   
   public Region regionOf(byte[] off, byte[] until);
@@ -78,6 +80,13 @@ public interface ByteReader<T> {
     @Override
     public ByteBuffer getBuffer() {
       return buffer;
+    }
+    
+    
+    @Override
+    public ByteReader<byte[]> reset() {
+      this.buffer.position(0);
+      return this;
     }
     
     
@@ -126,7 +135,7 @@ public interface ByteReader<T> {
       if(is < 0 || ie < is) {
         return Region.of(-1, -1);
       }
-      return Region.of(is, ie-is);
+      return Region.of(is, ie-is+1);
     }
 
 
@@ -135,10 +144,10 @@ public interface ByteReader<T> {
       if(reg == null || !reg.isValid()) {
         return new byte[0];
       }
-      int len = Math.min(buffer.remaining(), reg.length());
-      byte[] bs = new byte[len];
       int pos = buffer.position();
       buffer.position(reg.start());
+      int len = Math.min(buffer.remaining(), reg.length());
+      byte[] bs = new byte[len];
       buffer.get(bs);
       buffer.position(pos);
       return bs;

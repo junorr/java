@@ -40,6 +40,11 @@ import us.pserver.tools.UTF8String;
  * @version 0.0 - 06/03/2017
  */
 public class ByteBufferIterator extends AbstractIterator {
+  
+  public static final int FIELD_BUFFER_SIZE = 512;
+  
+  
+  private final ByteBuffer buf;
 
   private final ByteBuffer src;
 
@@ -50,38 +55,42 @@ public class ByteBufferIterator extends AbstractIterator {
       throw new IllegalArgumentException("Bad Null/Empty ByteBuffer");
     }
     this.src = buf;
+    this.buf = ByteBuffer.allocate(FIELD_BUFFER_SIZE);
   }
 
 
-  protected void unreadByte() {
+  @Override
+  public ByteIterator unreadByte() {
     if(src.position() > 0) {
       src.position(src.position() -1);
     }
+    return this;
   }
 
 
   @Override
   public String readField() throws ByteIteratorException {
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    buf.clear();
     while((current = src.get()) != ByteType.VALUE
         && src.hasRemaining()) {
       if(current == ByteType.IGNORE 
           || current == ByteType.STRING) continue;
-      bos.write(current);
+      buf.put(current);
     }
-    if(bos.size() < 1) throw new ByteIteratorException("Can not read field");
+    buf.flip();
+    if(!buf.hasRemaining()) throw new ByteIteratorException("Can not read field");
     unreadByte();
-    curfld = UTF8String.from(bos.toByteArray()).toString();
+    curfld = UTF8String.from(buf.array(), 0, buf.limit()).toString();
     return curfld;
   }
 
 
   @Override
   public String readString() throws ByteIteratorException {
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    buf.clear();
     JsonType tk = JsonType.of(current);
     if(tk == JsonType.NUMBER || tk == JsonType.BOOLEAN || tk == JsonType.NULL) {
-      bos.write(current);
+      buf.put(current);
     }
     while((current = src.get()) != ByteType.FIELD
         && current != ByteType.END_ARRAY
@@ -89,11 +98,12 @@ public class ByteBufferIterator extends AbstractIterator {
         && src.hasRemaining()) {
       if(current == ByteType.IGNORE 
           || current == ByteType.STRING) continue;
-      bos.write(current);
+      buf.put(current);
     }
-    if(bos.size() < 1) throw new ByteIteratorException("Can not read value");
+    buf.flip();
+    if(!buf.hasRemaining()) throw new ByteIteratorException("Can not read value");
     unreadByte();
-    return UTF8String.from(bos.toByteArray()).toString();
+    return UTF8String.from(buf.array(), 0, buf.limit()).toString();
   }
 
 
@@ -129,25 +139,44 @@ public class ByteBufferIterator extends AbstractIterator {
 
   @Override
   public JsonValue readNext() {
-    JsonType tp = next();
-    switch(tp) {
-      case VALUE:
-      case IGNORE:
-        tp = next();
-    }
+    JsonType tp = nextValueType();
     return read(tp);
   }
 
 
   @Override
-  public void skip() {
-    readString();
+  public ByteIterator skip() {
+    JsonType tk = next();
+    while(hasNext() && tk != null) {
+      switch(tk) {
+        case END_ARRAY:
+        case END_OBJECT:
+        case FIELD:
+        case VALUE:
+          tk = null;
+          break;
+        default:
+          tk = next();
+      }
+    }
+    return this;
   }
 
 
   @Override
   public boolean hasNext() {
     return src.hasRemaining();
+  }
+  
+  
+  @Override
+  public JsonType nextValueType() {
+    JsonType tk = next();
+    switch(tk) {
+      case VALUE:
+        tk = next();
+    }
+    return tk;
   }
 
 

@@ -34,6 +34,8 @@ public interface LockedBuffer extends Closeable {
 
   public ByteBuffer getBuffer();
   
+  public ByteReader<byte[]> getReader();
+  
   public LockedBuffer reset();
   
   public void unlock();
@@ -42,11 +44,19 @@ public interface LockedBuffer extends Closeable {
   
   
   
+  public static LockedBuffer of(ByteBuffer buf, Lock lok) {
+    return new LockedBufferImpl(buf, lok);
+  }
   
   
-  public static abstract class LockedBufferImpl implements LockedBuffer {
+  
+  
+  
+  public static class LockedBufferImpl implements LockedBuffer {
     
     protected final ByteBuffer buffer;
+    
+    private final ByteReader<byte[]> reader;
     
     protected final Lock lock;
     
@@ -60,6 +70,7 @@ public interface LockedBuffer extends Closeable {
       }
       this.buffer = buf;
       this.lock = lok;
+      this.reader = ByteReader.of(buffer);
     }
     
     
@@ -67,6 +78,12 @@ public interface LockedBuffer extends Closeable {
     public LockedBuffer reset() {
       buffer.position(0);
       return this;
+    }
+
+
+    @Override
+    public ByteReader<byte[]> getReader() {
+      return reader;
     }
 
 

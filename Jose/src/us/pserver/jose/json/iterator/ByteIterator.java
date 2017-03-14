@@ -46,7 +46,11 @@ public interface ByteIterator extends Iterator<JsonType> {
   
   public JsonValue readNext();
   
-  public void skip();
+  public ByteIterator unreadByte();
+  
+  public JsonType nextValueType();
+  
+  public ByteIterator skip();
   
   public boolean isInsideArray();
   

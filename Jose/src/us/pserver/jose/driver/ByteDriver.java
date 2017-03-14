@@ -39,13 +39,13 @@ import us.pserver.jose.Region;
  */
 public interface ByteDriver {
   
-  public ReadLockedBuffer getReadLock(Region reg);
+  public LockedBuffer getReadLock(Region reg);
   
-  public WriteLockedBuffer getWriteLock(Region reg);
+  public LockedBuffer getWriteLock(Region reg);
   
-  public ReadLockedBuffer getReadLock();
+  public LockedBuffer getReadLock();
   
-  public WriteLockedBuffer getWriteLock();
+  public LockedBuffer getWriteLock();
   
   public ByteBuffer getCopy(Region reg);
   
@@ -73,11 +73,19 @@ public interface ByteDriver {
       this.regions = Collections.synchronizedMap(new HashMap<>());
       this.buffer = buf;
     }
+    
+    
+    private ByteBuffer get(Region reg) {
+      this.buffer.position(reg.start());
+      ByteBuffer buf = this.buffer.slice();
+      buf.limit(reg.start() + reg.length());
+      return buf;
+    }
 
 
     @Override
-    public ReadLockedBuffer getReadLock(Region reg) {
-      if(reg == null) {
+    public LockedBuffer getReadLock(Region reg) {
+      if(reg == null || !reg.isValid()) {
         return getReadLock();
       }
       ReentrantReadWriteLock lock = regions.get(reg);
@@ -87,13 +95,13 @@ public interface ByteDriver {
       }
       ReadLock rlok = lock.readLock();
       rlok.lock();
-      return ReadLockedBuffer.of(buffer, rlok);
+      return LockedBuffer.of(get(reg), rlok);
     }
 
 
     @Override
-    public WriteLockedBuffer getWriteLock(Region reg) {
-      if(reg == null) {
+    public LockedBuffer getWriteLock(Region reg) {
+      if(reg == null || !reg.isValid()) {
         return getWriteLock();
       }
       ReentrantReadWriteLock lock = regions.get(reg);
@@ -103,18 +111,18 @@ public interface ByteDriver {
       }
       WriteLock wlok = lock.writeLock();
       wlok.lock();
-      return WriteLockedBuffer.of(buffer, wlok);
+      return LockedBuffer.of(get(reg), wlok);
     }
     
     
     @Override
-    public ReadLockedBuffer getReadLock() {
+    public LockedBuffer getReadLock() {
       return getReadLock(Region.of(0, buffer.capacity()));
     }
 
 
     @Override
-    public WriteLockedBuffer getWriteLock() {
+    public LockedBuffer getWriteLock() {
       return getWriteLock(Region.of(0, buffer.capacity()));
     }
 

@@ -35,6 +35,8 @@ import us.pserver.tools.UTF8String;
  */
 public interface StringByteReader extends ByteReader<String> {
 
+  public ByteReader<byte[]> getByteReader();
+  
   public int indexOf(String str);
   
   public Region regionOf(String off, String until);
@@ -66,6 +68,12 @@ public interface StringByteReader extends ByteReader<String> {
     
     
     @Override
+    public ByteReader<byte[]> getByteReader() {
+      return reader;
+    }
+    
+    
+    @Override
     public ByteBuffer getBuffer() {
       return this.reader.getBuffer();
     }
@@ -89,6 +97,13 @@ public interface StringByteReader extends ByteReader<String> {
     @Override
     public String read(Region reg) {
       return UTF8String.from(reader.read(reg)).toString();
+    }
+    
+    
+    @Override
+    public StringByteReader reset() {
+      reader.reset();
+      return this;
     }
 
 

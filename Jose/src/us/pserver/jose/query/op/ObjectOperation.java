@@ -19,46 +19,39 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jose.driver;
+package us.pserver.jose.query.op;
 
-import java.nio.ByteBuffer;
-import java.util.concurrent.locks.Lock;
+import us.pserver.jose.driver.ByteReader;
+import us.pserver.jose.query.Query;
+import us.pserver.jose.query.QueryResolver;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/03/2017
+ * @version 0.0 - 14/03/2017
  */
-public interface ReadLockedBuffer extends LockedBuffer {
+public class ObjectOperation extends Operation<ByteReader<byte[]>> {
 
-  public ByteReader<byte[]> getReader();
+  private final Query query;
   
   
-  
-  public static ReadLockedBuffer of(ByteBuffer buf, Lock lock) {
-    return new ReadLockedBufferImpl(buf, lock);
+  public ObjectOperation(Query qry) {
+    if(qry == null) {
+      throw new IllegalArgumentException("Bad Null Query");
+    }
+    this.query = qry;
   }
-  
-  
-  
-  
-  
-  public static class ReadLockedBufferImpl extends LockedBufferImpl implements ReadLockedBuffer {
-    
-    private final ByteReader<byte[]> reader;
-    
-    
-    public ReadLockedBufferImpl(ByteBuffer buf, Lock lok) {
-      super(buf, lok);
-      this.reader = ByteReader.of(buffer);
-    }
 
 
-    @Override
-    public ByteReader<byte[]> getReader() {
-      return reader;
-    }
+  @Override
+  ByteReader<byte[]> value() {
+    return null;
+  }
 
+
+  @Override
+  public boolean apply(ByteReader<byte[]> rdr) {
+    return QueryResolver.resolved(query, rdr);
   }
   
 }
