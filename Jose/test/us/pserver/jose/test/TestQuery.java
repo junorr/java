@@ -60,7 +60,8 @@ public class TestQuery {
     ByteReader<byte[]> rdr = ByteReader.of(ByteBuffer.wrap(UTF8String.from(json).getBytes()));
     
     Query query = new QueryImpl("us.pserver.Test");
-    Query sub = new QueryImpl("n").filter("n").gt(500);
+    Query sub = new QueryImpl("n").filter("n").eq(500.2);
+    Query sub2 = new QueryImpl("n").filter("n").gt(500.1);
     query.filter("num").in(200, 300, 400, 500, 600)
         .and("str2").endsWith("ld")
         .and("array").arrayContains(2)
@@ -69,7 +70,8 @@ public class TestQuery {
     query.descend("child2")
         .filter("bool").ne(false)
         .and("world").startsWith("h")
-        .and("sub").arrayContains(sub);
+        .and("sub").arrayContains(sub)
+        .and("sub").arrayContains(sub2)
         ;
     Timer tm = new Timer.Nanos().start();
     boolean compare = QueryResolver.resolved(query, rdr);

@@ -178,13 +178,13 @@ public interface QueryResolver {
       boolean res = false;
       while(!res && (type = JsonType.of(sbr.iterator().getCurrentByte())) != JsonType.END_ARRAY) {
         if(ObjectOperation.class.isAssignableFrom(query.operation().getClass())) {
-          System.out.println("ObjectOperation");
           ObjectOperation op = (ObjectOperation) query.operation();
           res = res || op.apply(sbr.getByteReader());
+          sbr.iterator().skip().nextValueType();
         } else {
           res = res || resolveType(query, sbr);
         }
-        System.out.println(" - resolveArrayItem: "+ query+ ": "+ res);
+        System.out.println(" - resolveArrayItem( type="+ type+ " ): "+ query+ ": "+ res);
       }
       return res;
     }
@@ -210,8 +210,9 @@ public interface QueryResolver {
           return bool;
         case NUMBER:
           val = sbr.iterator().readNumber();
-          System.out.println("* resolveNumber");
+          System.out.println("* resolveNumber: "+ val+ " : "+ query.operation());
           bool = query.operation().apply(val);
+          System.out.println("* after resolveNumber");
           debug(query, val, bool);
           return bool;
         case START_OBJECT:
@@ -230,7 +231,7 @@ public interface QueryResolver {
       if(lst == null || lst.isEmpty()) return false;
       System.out.println("* resolveList: "+ lst);
       int pos = sbr.getBuffer().position();
-      System.out.println("* resolveList.position: "+ pos);
+      //System.out.println("* resolveList.position: "+ pos);
       boolean res = and;
       for(Query q : lst) {
         boolean bool = resolve(q, sbr);
