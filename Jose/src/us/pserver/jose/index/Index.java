@@ -34,16 +34,16 @@ import us.pserver.jose.Region;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/12/2016
  */
-public interface Index<T> {
+public interface Index {
 
   public String getName();
   
-  public T getValue();
+  public Object getValue();
   
   public List<Region> regions();
   
   
-  public static <U> Index<U> of(String name, U value, List<Region> regions) {
+  public static Index of(String name, Object value, List<Region> regions) {
     return new IndexImpl(name, value, regions);
   }
   
@@ -51,11 +51,11 @@ public interface Index<T> {
   
   
   
-  public static class IndexImpl<T> implements Index<T> {
+  public static class IndexImpl implements Index {
     
     private final String name;
     
-    private final T value;
+    private final Object value;
     
     private final List<Region> regions;
     
@@ -67,12 +67,12 @@ public interface Index<T> {
     }
     
     
-    public IndexImpl(String name, T value) {
+    public IndexImpl(String name, Object value) {
       this(name, value, new ArrayList<>());
     }
     
     
-    public IndexImpl(String name, T value, List<Region> regs) {
+    public IndexImpl(String name, Object value, List<Region> regs) {
       this.name = Sane.of(name)
           .with("Bad Name: "+ name)
           .get(Checkup.isNotEmpty());
@@ -96,7 +96,7 @@ public interface Index<T> {
 
 
     @Override
-    public T getValue() {
+    public Object getValue() {
       return value;
     }
     
@@ -127,11 +127,11 @@ public interface Index<T> {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      final IndexImpl<?> other = (IndexImpl<?>) obj;
-      if (!Objects.equals(this.name, other.name)) {
+      final Index other = (Index) obj;
+      if (!Objects.equals(this.name, other.getName())) {
         return false;
       }
-      return Objects.equals(this.value, other.value);
+      return Objects.equals(this.value, other.getValue());
     }
 
 

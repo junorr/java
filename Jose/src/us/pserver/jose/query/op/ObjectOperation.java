@@ -30,7 +30,7 @@ import us.pserver.jose.query.QueryResolver;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/03/2017
  */
-public class ObjectOperation extends Operation<ByteReader<byte[]>> {
+public class ObjectOperation extends Operation<ByteReader> {
 
   private final Query query;
   
@@ -44,13 +44,13 @@ public class ObjectOperation extends Operation<ByteReader<byte[]>> {
 
 
   @Override
-  ByteReader<byte[]> value() {
+  ByteReader value() {
     return null;
   }
 
 
   @Override
-  public boolean apply(ByteReader<byte[]> rdr) {
+  public boolean apply(ByteReader rdr) {
     return QueryResolver.resolved(query, rdr);
   }
   

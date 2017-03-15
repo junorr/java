@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
+import us.pserver.jose.query.Query;
 import us.pserver.jose.query.QueryLimit;
 
 /**
@@ -36,18 +37,20 @@ import us.pserver.jose.query.QueryLimit;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/12/2016
  */
-public interface IndexQuery<T> extends QueryLimit {
+public interface IndexQuery extends QueryLimit {
 
-  public List<Index<T>> find(String name, Predicate<T> prd);
+  public List<Index> find(String name, Predicate prd);
   
-  public List<Index<T>> find(Predicate<Index<T>> prd);
+  public List<Index> find(Predicate<Index> prd);
   
-  @Override public IndexQuery<T> skip(int n);
+  public List<Index> find(Query query);
   
-  @Override public IndexQuery<T> limit(int len);
+  @Override public IndexQuery skip(int n);
+  
+  @Override public IndexQuery limit(int len);
   
   
-  static <U> IndexQuery<U> of(Map<String, List<Index<U>>> store, ReentrantLock lock) {
+  static <U> IndexQuery of(Map<String, List<Index>> store, ReentrantLock lock) {
     return new IndexQueryImpl(store, lock);
   }
   
@@ -55,9 +58,9 @@ public interface IndexQuery<T> extends QueryLimit {
   
   
   
-  public static class IndexQueryImpl<T> implements IndexQuery<T> {
+  public static class IndexQueryImpl implements IndexQuery {
     
-    private final Map<String, List<Index<T>>> store;
+    private final Map<String, List<Index>> store;
     
     private final ReentrantLock lock;
     
@@ -66,12 +69,12 @@ public interface IndexQuery<T> extends QueryLimit {
     private final int limit;
     
     
-    public IndexQueryImpl(Map<String, List<Index<T>>> store, ReentrantLock lock) {
+    public IndexQueryImpl(Map<String, List<Index>> store, ReentrantLock lock) {
       this(store, lock, 0, Integer.MAX_VALUE);
     }
     
 
-    public IndexQueryImpl(Map<String, List<Index<T>>> store, ReentrantLock lock, int skip, int limit) {
+    public IndexQueryImpl(Map<String, List<Index>> store, ReentrantLock lock, int skip, int limit) {
       this.store = Sane.of(store)
           .with("Bad Null Map")
           .get(Checkup.isNotNull());
@@ -84,7 +87,7 @@ public interface IndexQuery<T> extends QueryLimit {
     
 
     @Override
-    public List<Index<T>> find(String name, Predicate<T> prd) {
+    public List<Index> find(String name, Predicate prd) {
       if(name == null || name.isEmpty() 
           || !store.containsKey(name)
           || prd == null) {
@@ -105,7 +108,7 @@ public interface IndexQuery<T> extends QueryLimit {
 
 
     @Override
-    public List<Index<T>> find(Predicate<Index<T>> prd) {
+    public List<Index> find(Predicate<Index> prd) {
       if(prd == null) {
         return Collections.EMPTY_LIST;
       }
@@ -125,13 +128,29 @@ public interface IndexQuery<T> extends QueryLimit {
     
 
     @Override
-    public IndexQuery<T> skip(int skip) {
+    public List<Index> find(Query query) {
+      if(query == null || query.name() == null) {
+        return Collections.EMPTY_LIST;
+      }
+      List<Index> idx = store.get(query.name());
+      if(idx == null || idx.isEmpty()) {
+        return Collections.EMPTY_LIST;
+      }
+      List<Index> res = idx.stream().filter(
+          i->query.operation().apply(i.getValue())
+      ).collect(Collectors.toList());
+      return res;
+    }
+  
+  
+    @Override
+    public IndexQuery skip(int skip) {
       return new IndexQueryImpl(store, lock, skip, limit);
     }
 
 
     @Override
-    public IndexQuery<T> limit(int limit) {
+    public IndexQuery limit(int limit) {
       return new IndexQueryImpl(store, lock, skip, limit);
     }
     

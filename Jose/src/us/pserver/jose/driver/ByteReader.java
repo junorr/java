@@ -35,7 +35,7 @@ import us.pserver.jose.json.iterator.ByteIteratorFactory;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/03/2017
  */
-public interface ByteReader<T> {
+public interface ByteReader {
   
   public ByteBuffer getBuffer();
 
@@ -43,17 +43,17 @@ public interface ByteReader<T> {
   
   public Stream<JsonType> stream();
   
-  public ByteReader<T> reset();
+  public ByteReader reset();
   
   public int indexOf(byte[] val);
   
   public Region regionOf(byte[] off, byte[] until);
   
-  public T read(Region reg);
+  public byte[] read(Region reg);
   
   
   
-  public static ByteReader<byte[]> of(ByteBuffer buf) {
+  public static ByteReader of(ByteBuffer buf) {
     return new ByteReaderImpl(buf);
   }
   
@@ -61,7 +61,7 @@ public interface ByteReader<T> {
   
   
   
-  public static class ByteReaderImpl implements ByteReader<byte[]> {
+  public static class ByteReaderImpl implements ByteReader {
     
     private final ByteBuffer buffer;
     
@@ -84,7 +84,7 @@ public interface ByteReader<T> {
     
     
     @Override
-    public ByteReader<byte[]> reset() {
+    public ByteReader reset() {
       this.buffer.position(0);
       return this;
     }

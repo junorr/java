@@ -33,20 +33,17 @@ import us.pserver.tools.UTF8String;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/03/2017
  */
-public interface StringByteReader extends ByteReader<String> {
+public interface StringByteReader extends ByteReader {
 
-  public ByteReader<byte[]> getByteReader();
-  
   public int indexOf(String str);
   
   public Region regionOf(String off, String until);
   
-  @Override
-  public String read(Region reg);
+  public String readString(Region reg);
   
   
   
-  public static StringByteReader of(ByteReader<byte[]> rdr) {
+  public static StringByteReader of(ByteReader rdr) {
     return new StringByteReaderImpl(rdr);
   }
   
@@ -56,20 +53,14 @@ public interface StringByteReader extends ByteReader<String> {
   
   public static final class StringByteReaderImpl implements StringByteReader {
     
-    private final ByteReader<byte[]> reader;
+    private final ByteReader reader;
     
     
-    public StringByteReaderImpl(ByteReader<byte[]> rdr) {
+    public StringByteReaderImpl(ByteReader rdr) {
       if(rdr == null) {
         throw new IllegalArgumentException("Bad Null ByteReader");
       }
       this.reader = rdr;
-    }
-    
-    
-    @Override
-    public ByteReader<byte[]> getByteReader() {
-      return reader;
     }
     
     
@@ -92,10 +83,15 @@ public interface StringByteReader extends ByteReader<String> {
           UTF8String.from(until).getBytes()
       );
     }
-
-
+    
+    
     @Override
-    public String read(Region reg) {
+    public byte[] read(Region reg) {
+      return reader.read(reg);
+    }
+
+
+    public String readString(Region reg) {
       return UTF8String.from(reader.read(reg)).toString();
     }
     

@@ -34,7 +34,7 @@ public interface LockedBuffer extends Closeable {
 
   public ByteBuffer getBuffer();
   
-  public ByteReader<byte[]> getReader();
+  public ByteReader getReader();
   
   public LockedBuffer reset();
   
@@ -56,7 +56,7 @@ public interface LockedBuffer extends Closeable {
     
     protected final ByteBuffer buffer;
     
-    private final ByteReader<byte[]> reader;
+    private final ByteReader reader;
     
     protected final Lock lock;
     
@@ -82,7 +82,7 @@ public interface LockedBuffer extends Closeable {
 
 
     @Override
-    public ByteReader<byte[]> getReader() {
+    public ByteReader getReader() {
       return reader;
     }
 

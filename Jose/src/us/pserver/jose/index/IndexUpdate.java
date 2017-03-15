@@ -29,6 +29,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
+import us.pserver.jose.query.Query;
 import us.pserver.jose.query.QueryLimit;
 
 /**
@@ -36,22 +37,26 @@ import us.pserver.jose.query.QueryLimit;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/12/2016
  */
-public interface IndexUpdate<T> extends QueryLimit {
+public interface IndexUpdate extends QueryLimit {
 
-  public int update(String name, Predicate<T> prd, T newValue);
+  public int update(String name, Predicate prd, Object newValue);
   
-  public int update(Predicate<Index<T>> prd, Index<T> newIndex);
+  public int update(Predicate<Index> prd, Index newIndex);
   
-  public List<Index<T>> remove(String name, Predicate<T> prd);
+  public int update(Query query, Index newIndex);
   
-  public List<Index<T>> remove(Predicate<Index<T>> prd);
+  public List<Index> remove(String name, Predicate prd);
   
-  @Override public IndexUpdate<T> skip(int n);
+  public List<Index> remove(Predicate<Index> prd);
   
-  @Override public IndexUpdate<T> limit(int len);
+  public List<Index> remove(Query query);
+  
+  @Override public IndexUpdate skip(int n);
+  
+  @Override public IndexUpdate limit(int len);
   
   
-  static <U> IndexUpdate<U> of(Map<String, List<Index<U>>> store, ReentrantLock lock) {
+  static IndexUpdate of(Map<String, List<Index>> store, ReentrantLock lock) {
     return new DefIndexUpdate(store, lock);
   }
   
@@ -59,20 +64,20 @@ public interface IndexUpdate<T> extends QueryLimit {
   
   
   
-  public static class DefIndexUpdate<T> implements IndexUpdate<T> {
+  public static class DefIndexUpdate implements IndexUpdate {
     
-    private final Map<String, List<Index<T>>> store;
+    private final Map<String, List<Index>> store;
     
     private final ReentrantLock lock;
     
-    private final IndexQuery<T> query;
+    private final IndexQuery query;
     
     private final int skip;
     
     private final int limit;
     
     
-    public DefIndexUpdate(Map<String, List<Index<T>>> store, ReentrantLock lock, int skip, int limit) {
+    public DefIndexUpdate(Map<String, List<Index>> store, ReentrantLock lock, int skip, int limit) {
       this.store = Sane.of(store)
           .with("Bad Null Map")
           .get(Checkup.isNotNull());
@@ -85,13 +90,13 @@ public interface IndexUpdate<T> extends QueryLimit {
     }
     
     
-    public DefIndexUpdate(Map<String, List<Index<T>>> store, ReentrantLock lock) {
+    public DefIndexUpdate(Map<String, List<Index>> store, ReentrantLock lock) {
       this(store, lock, 0, Integer.MAX_VALUE);
     }
 
 
     @Override
-    public int update(String name, Predicate<T> prd, T newValue) {
+    public int update(String name, Predicate prd, Object newValue) {
       if(name == null || name.isEmpty() 
           || prd == null 
           || newValue == null 
@@ -100,7 +105,7 @@ public interface IndexUpdate<T> extends QueryLimit {
       }
       lock.lock();
       try {
-        List<Index<T>> ls = query.skip(skip).limit(limit).find(name, prd);
+        List<Index> ls = query.skip(skip).limit(limit).find(name, prd);
         ls.forEach(i->{
           store.get(name).remove(i);
           store.get(name).add(
@@ -116,13 +121,13 @@ public interface IndexUpdate<T> extends QueryLimit {
 
 
     @Override
-    public int update(Predicate<Index<T>> prd, Index<T> newIndex) {
+    public int update(Predicate<Index> prd, Index newIndex) {
       if(prd == null || newIndex == null) {
         return -1;
       }
       lock.lock();
       try {
-        List<Index<T>> ls = query.skip(skip).limit(limit).find(prd);
+        List<Index> ls = query.skip(skip).limit(limit).find(prd);
         ls.forEach(i->{
           store.get(i.getName()).remove(i);
           if(!store.containsKey(newIndex.getName())) {
@@ -139,13 +144,36 @@ public interface IndexUpdate<T> extends QueryLimit {
 
 
     @Override
-    public List<Index<T>> remove(String name, Predicate<T> prd) {
+    public int update(Query qry, Index newIndex) {
+      if(qry == null || newIndex == null) {
+        return -1;
+      }
+      lock.lock();
+      try {
+        List<Index> ls = query.skip(skip).limit(limit).find(qry);
+        ls.forEach(i->{
+          store.get(i.getName()).remove(i);
+          if(!store.containsKey(newIndex.getName())) {
+            store.put(newIndex.getName(), new ArrayList<>());
+          }
+          store.get(newIndex.getName()).add(newIndex);
+        });
+        return ls.size();
+      }
+      finally {
+        lock.unlock();
+      }
+    }
+
+
+    @Override
+    public List<Index> remove(String name, Predicate prd) {
       if(name == null || name.isEmpty() || prd == null) {
         return Collections.EMPTY_LIST;
       }
       lock.lock();
       try {
-        List<Index<T>> res = query.skip(skip).limit(limit).find(name, prd);
+        List<Index> res = query.skip(skip).limit(limit).find(name, prd);
         if(!res.isEmpty()) {
           store.get(name).removeAll(res);
         }
@@ -158,13 +186,13 @@ public interface IndexUpdate<T> extends QueryLimit {
 
 
     @Override
-    public List<Index<T>> remove(Predicate<Index<T>> prd) {
+    public List<Index> remove(Predicate<Index> prd) {
       if(prd == null) {
         return Collections.EMPTY_LIST;
       }
       lock.lock();
       try {
-        List<Index<T>> res = query.skip(skip).limit(limit).find(prd);
+        List<Index> res = query.skip(skip).limit(limit).find(prd);
         res.forEach(i->store.get(i.getName()).remove(i));
         return res;
       }
@@ -175,13 +203,30 @@ public interface IndexUpdate<T> extends QueryLimit {
 
 
     @Override
-    public IndexUpdate<T> skip(int skip) {
+    public List<Index> remove(Query qry) {
+      if(qry == null) {
+        return Collections.EMPTY_LIST;
+      }
+      lock.lock();
+      try {
+        List<Index> res = query.skip(skip).limit(limit).find(qry);
+        res.forEach(i->store.get(i.getName()).remove(i));
+        return res;
+      }
+      finally {
+        lock.unlock();
+      }
+    }
+
+
+    @Override
+    public IndexUpdate skip(int skip) {
       return new DefIndexUpdate(store, lock, skip, limit);
     }
 
 
     @Override
-    public IndexUpdate<T> limit(int limit) {
+    public IndexUpdate limit(int limit) {
       return new DefIndexUpdate(store, lock, skip, limit);
     }
     

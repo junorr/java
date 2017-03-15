@@ -57,7 +57,7 @@ public class TestQuery {
         + "}").replace("'", "\"");
     System.out.println("* json: "+ json);
     Class cls = us.pserver.jose.query.op.BooleanOperation.class;
-    ByteReader<byte[]> rdr = ByteReader.of(ByteBuffer.wrap(UTF8String.from(json).getBytes()));
+    ByteReader rdr = ByteReader.of(ByteBuffer.wrap(UTF8String.from(json).getBytes()));
     
     Query query = new QueryImpl("us.pserver.Test");
     Query sub = new QueryImpl("n").filter("n").eq(500.2);

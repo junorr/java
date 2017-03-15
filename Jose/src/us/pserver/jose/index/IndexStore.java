@@ -39,22 +39,22 @@ import us.pserver.jose.index.Index.IndexImpl;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/12/2016
  */
-public interface IndexStore<T> {
+public interface IndexStore {
 
-  public List<Index<T>> getStore(String name);
+  public List<Index> getStore(String name);
   
-  public IndexQuery<T> query();
+  public IndexQuery query();
   
-  public IndexUpdate<T> update();
+  public IndexUpdate update();
   
-  public IndexStore<T> insert(Index<T> idx);
+  public IndexStore insert(Index idx);
   
-  public int insertMany(Index<T> ... idxs);
+  public int insertMany(Index ... idxs);
   
-  public IndexBuilder<T> newIndex();
+  public IndexBuilder newIndex();
   
   
-  public static <U> IndexStore<U> newStore() {
+  public static IndexStore newStore() {
     return new IndexStoreImpl();
   }
   
@@ -62,18 +62,18 @@ public interface IndexStore<T> {
   
   
   
-  public static final class IndexBuilder<T> {
+  public static final class IndexBuilder {
     
-    private final IndexStore<T> store;
+    private final IndexStore store;
     
     private final List<Region> regions;
     
     private String name;
     
-    private T value;
+    private Object value;
     
     
-    public IndexBuilder(IndexStore<T> store) {
+    public IndexBuilder(IndexStore store) {
       this.store = Sane.of(store)
           .with("Bad Null IndexStore")
           .get(Checkup.isNotNull());
@@ -81,19 +81,19 @@ public interface IndexStore<T> {
     }
     
     
-    public IndexBuilder<T> withName(String name) {
+    public IndexBuilder withName(String name) {
       this.name = name;
       return this;
     }
     
     
-    public IndexBuilder<T> withValue(T value) {
+    public IndexBuilder withValue(Object value) {
       this.value = value;
       return this;
     }
     
     
-    public IndexBuilder<T> addRegion(Region r) {
+    public IndexBuilder addRegion(Region r) {
       if(r != null) {
         regions.add(r);
       }
@@ -101,7 +101,7 @@ public interface IndexStore<T> {
     }
     
     
-    public IndexBuilder<T> addAll(Collection<Region> cs) {
+    public IndexBuilder addAll(Collection<Region> cs) {
       if(cs != null) {
         regions.addAll(cs);
       }
@@ -109,8 +109,8 @@ public interface IndexStore<T> {
     }
     
     
-    public IndexStore<T> insert() {
-      return store.insert(new IndexImpl<>(name, value, regions));
+    public IndexStore insert() {
+      return store.insert(new IndexImpl(name, value, regions));
     }
     
   }
@@ -119,9 +119,9 @@ public interface IndexStore<T> {
   
   
   
-  public static class IndexStoreImpl<T> implements IndexStore<T> {
+  public static class IndexStoreImpl implements IndexStore {
     
-    private final Map<String, List<Index<T>>> store;
+    private final Map<String, List<Index>> store;
     
     private final ReentrantLock lock;
     
@@ -133,7 +133,7 @@ public interface IndexStore<T> {
     
 
     @Override
-    public List<Index<T>> getStore(String name) {
+    public List<Index> getStore(String name) {
       if(name == null || name.isEmpty()) {
         return Collections.EMPTY_LIST;
       }
@@ -142,41 +142,41 @@ public interface IndexStore<T> {
     
     
     @Override
-    public IndexQuery<T> query() {
+    public IndexQuery query() {
       return IndexQuery.of(store, lock);
     }
     
     
     @Override
-    public IndexUpdate<T> update() {
+    public IndexUpdate update() {
       return IndexUpdate.of(store, lock);
     }
 
 
     @Override
-    public IndexStore<T> insert(Index<T> idx) {
+    public IndexStore insert(Index idx) {
       this.insertMany(idx);
       return this;
     }
     
     
     @Override
-    public IndexBuilder<T> newIndex() {
-      return new IndexBuilder<>(this);
+    public IndexBuilder newIndex() {
+      return new IndexBuilder(this);
     }
 
 
     @Override
-    public int insertMany(Index<T>... idxs) {
+    public int insertMany(Index... idxs) {
       int count = 0;
       if(idxs == null || idxs.length < 1) {
         return count;
       }
       lock.lock();
       try {
-        for(Index<T> i : idxs) {
+        for(Index i : idxs) {
           if(i != null && i.getName() != null) {
-            List<Index<T>> lst = (store.containsKey(i.getName()) 
+            List<Index> lst = (store.containsKey(i.getName()) 
                 ? store.get(i.getName()) 
                 : new ArrayList<>()
             );
@@ -203,7 +203,7 @@ public interface IndexStore<T> {
         String s = "   ";
         StringBuilder sb = new StringBuilder("IndexStore{ size=")
             .append(store.size());
-        for(Entry<String, List<Index<T>>> e : store.entrySet()) {
+        for(Entry<String, List<Index>> e : store.entrySet()) {
           sb.append(n)
               .append(s)
               .append(q)

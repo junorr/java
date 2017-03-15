@@ -22,7 +22,6 @@
 package us.pserver.jose.test;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import us.pserver.jose.Region;
 import us.pserver.jose.driver.ByteDriver;
 import us.pserver.jose.driver.ByteDriver.ByteDriverImpl;
@@ -88,8 +87,8 @@ public class TestByteDriver {
       StringByteReader sr = StringByteReader.of(read.getReader());
       tm.lap();
       int idx = sr.indexOf("sslPort");
-      fld = sr.read(Region.of(idx, sr.indexOf("\"")-idx));
-      String sv = sr.read(sr.regionOf(":", ","));
+      fld = sr.readString(Region.of(idx, sr.indexOf("\"")-idx));
+      String sv = sr.readString(sr.regionOf(":", ","));
       val = JsonValue.of(sv.substring(1).trim());
       tm.stop();
     }
@@ -97,6 +96,7 @@ public class TestByteDriver {
     System.out.println("  val: "+ val);
     System.out.println("  "+ tm);
     System.out.println("------------------------");
+    /**/
     /**/
     System.out.println("* find with ByteIterator:");
     tm.clear().start();
@@ -110,6 +110,7 @@ public class TestByteDriver {
       val = bi.readNext();
       tm.stop();
     }
+    /**/
     System.out.println("  fld: "+ fld);
     System.out.println("  val: "+ val);
     System.out.println("  "+ tm);
