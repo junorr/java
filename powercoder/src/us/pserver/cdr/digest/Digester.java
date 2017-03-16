@@ -20,7 +20,7 @@
  *
 */
 
-package us.pserver.cdr.crypt;
+package us.pserver.cdr.digest;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

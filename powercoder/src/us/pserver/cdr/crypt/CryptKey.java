@@ -22,6 +22,7 @@
 
 package us.pserver.cdr.crypt;
 
+import us.pserver.cdr.digest.Digester;
 import us.pserver.cdr.crypt.iv.SecureRandomIV;
 import java.util.Arrays;
 import javax.crypto.spec.SecretKeySpec;

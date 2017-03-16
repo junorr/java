@@ -23,7 +23,7 @@ package us.pserver.cdr.crypt.iv;
 
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptUtils;
-import us.pserver.cdr.crypt.Digester;
+import us.pserver.cdr.digest.Digester;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
 

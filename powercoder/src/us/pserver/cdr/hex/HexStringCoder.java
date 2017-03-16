@@ -24,8 +24,8 @@ package us.pserver.cdr.hex;
 
 import us.pserver.cdr.Coder;
 import us.pserver.cdr.StringByteConverter;
-import us.pserver.cdr.crypt.DigestAlgorithm;
-import us.pserver.cdr.crypt.Digester;
+import us.pserver.cdr.digest.DigestAlgorithm;
+import us.pserver.cdr.digest.Digester;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
 
