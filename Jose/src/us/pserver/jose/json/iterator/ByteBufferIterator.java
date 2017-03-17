@@ -172,6 +172,7 @@ public class ByteBufferIterator extends AbstractIterator {
   @Override
   public JsonType nextValueType() {
     JsonType tk = next();
+    if(tk == null) return null;
     switch(tk) {
       case VALUE:
         tk = next();
@@ -182,6 +183,9 @@ public class ByteBufferIterator extends AbstractIterator {
 
   @Override
   public JsonType next() {
+    if(!src.hasRemaining()) {
+      return null;
+    }
     current = src.get();
     JsonType tk = JsonType.of(current);
     switch(tk) {

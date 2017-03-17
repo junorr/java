@@ -25,7 +25,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import static us.pserver.jose.driver.UID.of;
+import us.pserver.jose.store.UID;
+import us.pserver.tools.timer.Timer;
 
 /**
  *
@@ -43,13 +44,37 @@ public class TestUID {
     ls.add(new Date((time += 300000)));
     ls.add(new Date((time += 300000)));
     System.out.println(ls);
-    System.out.println(of(ls));
+    Timer tm = new Timer.Nanos().start();
+    UID uid = UID.of(ls);
+    System.out.println(uid);
+    System.out.println(tm.stop());
+    
+    System.out.println("------------------------");
+    
+    ls.set(2, new Date((time += 600000)));
+    System.out.println(ls);
+    tm.clear().start();
+    uid = UID.of(ls);
+    System.out.println(uid);
+    System.out.println(tm.stop());
     
     System.out.println("------------------------");
     
     Date d = new Date(1489686824174L);
     System.out.println(Objects.toString(d));
-    System.out.println(of(d));
+    tm.clear().start();
+    uid = UID.of(d);
+    System.out.println(uid);
+    System.out.println(tm.stop());
+    
+    System.out.println("------------------------");
+    
+    int i = 5;
+    System.out.println(Objects.toString(5));
+    tm.clear().start();
+    uid = UID.of(i);
+    System.out.println(uid);
+    System.out.println(tm.stop());
   }
   
 }

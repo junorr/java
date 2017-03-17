@@ -19,14 +19,14 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jose.driver;
+package us.pserver.jose.store;
 
-import us.pserver.jose.util.GrowableBuffer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
 import us.pserver.cdr.digest.Digester;
 import us.pserver.cdr.hex.HexCoder;
+import us.pserver.jose.util.Buffer;
 import us.pserver.tools.UTF8String;
 import us.pserver.tools.rfl.Reflector;
 
@@ -46,21 +46,25 @@ public interface UID {
     if(obj == null) {
       throw new IllegalArgumentException("Bad Null Object");
     }
-    GrowableBuffer buf = new GrowableBuffer()
-        .put(obj.getClass().getName());
+    Buffer buf = Buffer.create();
+    buf.writeUTF8(obj.getClass().getName());
+    buf.writeUTF8(Objects.toString(obj));
+    buf.writeUTF8(Objects.toString(obj.hashCode()));
     Reflector ref = Reflector.of(obj);
     Field[] fls = ref.fields();
     for(Field f : fls) {
       if(Modifier.isStatic(f.getModifiers())) continue;
       //System.out.println("* put( "+ f.getName()+ " )");
-      buf.put(f.getName());
+      buf.writeUTF8(f.getName());
       //System.out.println("* put( "+ f.getType().getName()+ " )");
-      buf.put(f.getType().getName());
+      buf.writeUTF8(f.getType().getName());
       //System.out.println("* put( "+ Objects.toString(ref.selectField(f.getName()).get())+ " )");
-      buf.put(Objects.toString(ref.selectField(f.getName()).get()));
+      buf.writeUTF8(Objects.toString(ref.selectField(f.getName()).get()));
     }
+    byte[] bs = buf.toBytes();
+    System.out.println(UTF8String.from(bs).toString());
     return new UIDImpl(HexCoder.toHexString(
-        Digester.toSHA1(buf.getBytes())
+        Digester.toSHA1(bs)
     ).toUpperCase());
   }
   

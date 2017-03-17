@@ -19,8 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jose.driver;
+package us.pserver.jose.store;
 
+import java.util.Objects;
 import us.pserver.jose.Region;
 
 /**
@@ -155,6 +156,30 @@ public interface Box<T> {
     @Override
     public Box<T> withNextBox(Region r) {
       return new BoxImpl(content, uid, region, r);
+    }
+
+
+    @Override
+    public int hashCode() {
+      int hash = 3;
+      hash = 43 * hash + Objects.hashCode(this.uid);
+      return hash;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      final BoxImpl<?> other = (BoxImpl<?>) obj;
+      return Objects.equals(this.uid, other.uid);
     }
     
   }
