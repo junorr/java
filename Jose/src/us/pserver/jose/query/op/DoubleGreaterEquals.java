@@ -38,4 +38,10 @@ public final class DoubleGreaterEquals extends NumberOperation {
         && other.doubleValue() >= value().doubleValue();
   }
 
+
+  @Override
+  public String toString() {
+    return " >= "+ value+ " : ";
+  }
+
 }

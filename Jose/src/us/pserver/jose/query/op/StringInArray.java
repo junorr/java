@@ -56,4 +56,10 @@ public final class StringInArray extends StringOperation {
         && array.stream().anyMatch(s->other.equals(s));
   }
 
+
+   @Override
+  public String toString() {
+    return ".in( "+ array+ ") :";
+  }
+
 }

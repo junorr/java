@@ -38,4 +38,10 @@ public final class StringEquals extends StringOperation {
         && other.equals(value);
   }
 
+
+  @Override
+  public String toString() {
+    return "'" + value + "' == ";
+  }
+
 }

@@ -38,4 +38,10 @@ public final class StringStartsWith extends StringOperation {
         && other.startsWith(value);
   }
 
+
+  @Override
+  public String toString() {
+    return ".startsWith( '"+ value+ "' ): ";
+  }
+
 }

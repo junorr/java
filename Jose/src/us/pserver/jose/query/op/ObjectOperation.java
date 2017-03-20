@@ -51,7 +51,7 @@ public class ObjectOperation extends Operation<ByteReader> {
 
   @Override
   public boolean apply(ByteReader rdr) {
-    return QueryResolver.resolved(query, rdr);
+    return QueryResolver.resolve(query, rdr);
   }
   
 }

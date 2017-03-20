@@ -57,4 +57,10 @@ public final class DateInArray extends DateOperation {
         && array.stream().anyMatch(d->other.equals(d));
   }
 
+
+  @Override
+  public String toString() {
+    return ".in( "+ array+ " ): ";
+  }
+
 }

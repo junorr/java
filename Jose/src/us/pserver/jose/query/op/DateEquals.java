@@ -40,4 +40,10 @@ public final class DateEquals extends DateOperation {
         && other.equals(value);
   }
 
+
+  @Override
+  public String toString() {
+    return " == "+ value+ " : ";
+  }
+
 }

@@ -40,4 +40,10 @@ public final class DateLesser extends DateOperation {
         && other.before(value);
   }
 
+
+  @Override
+  public String toString() {
+    return " < "+ value+ " : ";
+  }
+
 }

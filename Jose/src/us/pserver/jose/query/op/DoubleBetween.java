@@ -55,4 +55,9 @@ public final class DoubleBetween extends NumberOperation {
         && other.doubleValue() <= value2().doubleValue();
   }
 
+  @Override
+  public String toString() {
+    return ".isBetween( " + value + ", " + value2 + " ): ";
+  }
+
 }

@@ -40,4 +40,9 @@ public final class DoubleEquals extends NumberOperation {
         && other.doubleValue() == value.doubleValue();
   }
 
+  @Override
+  public String toString() {
+    return " == "+ value+ " : ";
+  }
+
 }

@@ -21,7 +21,6 @@
 
 package us.pserver.jose.json.iterator;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import us.pserver.jose.json.ByteType;
 import us.pserver.jose.json.JsonType;
@@ -172,7 +171,6 @@ public class ByteBufferIterator extends AbstractIterator {
   @Override
   public JsonType nextValueType() {
     JsonType tk = next();
-    if(tk == null) return null;
     switch(tk) {
       case VALUE:
         tk = next();
@@ -184,7 +182,7 @@ public class ByteBufferIterator extends AbstractIterator {
   @Override
   public JsonType next() {
     if(!src.hasRemaining()) {
-      return null;
+      return JsonType.UNKNOWN;
     }
     current = src.get();
     JsonType tk = JsonType.of(current);

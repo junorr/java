@@ -58,4 +58,10 @@ public class BooleanAndCompare extends BooleanOperation {
         : value || other);
   }
 
+
+  @Override
+  public String toString() {
+    return (and ? " && " : " || ") + value+ " : ";
+  }
+
 }

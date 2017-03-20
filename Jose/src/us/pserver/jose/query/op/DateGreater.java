@@ -40,4 +40,10 @@ public final class DateGreater extends DateOperation {
         && other.after(value);
   }
 
+
+  @Override
+  public String toString() {
+    return " > "+ value+ " : ";
+  }
+
 }

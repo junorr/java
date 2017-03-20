@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import us.pserver.jose.json.iterator.ByteIterator;
 
 /**
@@ -32,44 +33,36 @@ import us.pserver.jose.json.iterator.ByteIterator;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 17/03/2017
  */
-public interface JsonMapReader {
+public interface JsonMapFunction extends Function<ByteIterator,Map<String,Object>> {
 
-  public Map<String,Object> readMap();
+  @Override 
+  public Map<String,Object> apply(ByteIterator biter);
   
   
   
-  public static JsonMapReader of(ByteIterator bi) {
-    return new JsonMapReaderImpl(bi);
+  public static JsonMapFunction get() {
+    return new JsonMapReaderImpl();
   }
   
   
   
   
   
-  static class JsonMapReaderImpl implements JsonMapReader {
+  static class JsonMapReaderImpl implements JsonMapFunction {
+
     
-    private final ByteIterator biter;
-    
-    
-    private JsonMapReaderImpl(ByteIterator bi) {
-      if(bi == null) {
-        throw new IllegalArgumentException("Bad Null ByteIterator");
-      }
-      this.biter = bi;
-    }
-    
-    
-    private List readArray() {
+    private List readArray(ByteIterator biter) {
       List array = new ArrayList();
       JsonType type;
-      while((type = biter.nextValueType()) != null && type != JsonType.END_ARRAY) {
-        array.add(readValue(type));
+      while((type = biter.nextValueType()) != JsonType.UNKNOWN 
+          && type != JsonType.END_ARRAY) {
+        array.add(readValue(type, biter));
       }
       return array;
     }
     
     
-    private Object readValue(JsonType type) {
+    private Object readValue(JsonType type, ByteIterator biter) {
       switch(type) {
           case BOOLEAN:
             return biter.readBoolean();
@@ -78,9 +71,9 @@ public interface JsonMapReader {
           case NUMBER:
             return biter.readNumber();
           case START_ARRAY:
-            return readArray();
+            return readArray(biter);
           case START_OBJECT:
-            return readMap();
+            return apply(biter);
           case STRING:
             return biter.readString();
           default:
@@ -89,7 +82,8 @@ public interface JsonMapReader {
     }
     
     
-    public Map<String,Object> readMap() {
+    @Override
+    public Map<String,Object> apply(ByteIterator biter) {
       Map<String,Object> map = new HashMap<>();
       String fld = null;
       while(biter.hasNext()) {
@@ -98,7 +92,8 @@ public interface JsonMapReader {
           fld = biter.readField();
           type = biter.next();
         }
-        if(type == null || type == JsonType.END_OBJECT) {
+        if(type == JsonType.UNKNOWN 
+            || type == JsonType.END_OBJECT) {
           break;
         }
         switch(type) {
@@ -112,7 +107,7 @@ public interface JsonMapReader {
           case START_OBJECT:
           case STRING:
             if(fld != null) {
-              map.put(fld, readValue(type));
+              map.put(fld, readValue(type, biter));
             }
             break;
         }

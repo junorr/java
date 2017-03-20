@@ -56,4 +56,10 @@ public final class NumberInArray extends NumberOperation {
         && array.stream().anyMatch(n->other.doubleValue() == n.doubleValue());
   }
 
+
+  @Override
+  public String toString() {
+    return ".in( "+ array+ " ): ";
+  }
+
 }

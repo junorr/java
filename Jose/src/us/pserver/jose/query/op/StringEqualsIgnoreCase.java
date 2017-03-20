@@ -38,4 +38,10 @@ public final class StringEqualsIgnoreCase extends StringOperation {
         && other.equalsIgnoreCase(value);
   }
 
+
+  @Override
+  public String toString() {
+    return ".equalsIgnoreCase( '"+ value+ "') :";
+  }
+
 }

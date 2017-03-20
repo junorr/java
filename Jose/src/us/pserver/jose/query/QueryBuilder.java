@@ -27,7 +27,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import us.pserver.jose.query.Query.QueryImpl;
 import us.pserver.jose.query.op.BooleanEquals;
-import us.pserver.jose.query.op.BooleanInArray;
 import us.pserver.jose.query.op.BooleanNotEquals;
 import us.pserver.jose.query.op.BooleanPredicate;
 import us.pserver.jose.query.op.DateBetween;
@@ -141,8 +140,6 @@ public interface QueryBuilder {
 
   
   //// in ////
-  
-  public Query in(Boolean ... vals);
   
   public Query in(Number ... vals);
   
@@ -401,12 +398,6 @@ public interface QueryBuilder {
 
 
     //// in ////
-
-    @Override
-    public Query in(Boolean ... vals) {
-      return func.apply(new QueryImpl(field, 
-          new BooleanInArray(Arrays.asList(vals))));
-    }
 
     @Override
     public Query in(Number ... vals) {

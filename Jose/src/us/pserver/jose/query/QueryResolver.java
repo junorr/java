@@ -23,6 +23,7 @@ package us.pserver.jose.query;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import us.pserver.jose.driver.ByteReader;
 import us.pserver.jose.driver.StringByteReader;
 import us.pserver.jose.json.JsonType;
@@ -33,12 +34,13 @@ import us.pserver.jose.query.op.ObjectOperation;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/02/2017
  */
-public interface QueryResolver {
+public interface QueryResolver extends BiFunction<Query, ByteReader, Boolean> {
 
-  public boolean resolve(Query query, ByteReader reader);
+  @Override
+  public Boolean apply(Query query, ByteReader reader);
   
   
-  public static QueryResolver instance() {
+  public static QueryResolver get() {
     return new QueryResolverImpl();
   }
   
@@ -48,8 +50,8 @@ public interface QueryResolver {
   }
   
   
-  public static boolean resolved(Query query, ByteReader reader) {
-    return new QueryResolverImpl().resolve(query, reader);
+  public static boolean resolve(Query query, ByteReader reader) {
+    return get().apply(query, reader);
   }
   
   
@@ -80,21 +82,18 @@ public interface QueryResolver {
         } else {
           res = res || resolveType(query, sbr);
         }
-        //System.out.println(" - resolveArrayItem( type="+ type+ " ): "+ query+ ": "+ res);
       }
       return res;
     }
     
     
     private boolean resolveType(Query query, StringByteReader sbr) {
-      //System.out.println("* resolveType");
       JsonType type = sbr.iterator().nextValueType();
       Object val = null;
       boolean bool = false;
       switch(type) {
         case STRING:
           val = sbr.iterator().readString();
-          //System.out.println("* resolveString");
           bool = query.operation().apply(val);
           debug(query, val, bool);
           return bool;
@@ -125,13 +124,10 @@ public interface QueryResolver {
     
     private boolean resolveList(List<Query> lst, StringByteReader sbr, boolean and) {
       if(lst == null || lst.isEmpty()) return false;
-      //System.out.println("* resolveList: "+ lst);
       int pos = sbr.getBuffer().position();
-      //System.out.println("* resolveList.position: "+ pos);
       boolean res = and;
       for(Query q : lst) {
         boolean bool = resolve(q, sbr);
-        //System.out.println(" - resolveItem: "+ q+ ": "+ bool);
         res = and ? res && bool : res || bool;
         sbr.getBuffer().position(pos);
       }
@@ -139,39 +135,56 @@ public interface QueryResolver {
     }
     
     
-    private boolean resolve(Query query, StringByteReader sbr) {
-      //System.out.println("* resolve: "+ query);
-      if(!query.ands().isEmpty()
-          || !query.childs().isEmpty()
-          || !query.ors().isEmpty()) {
-        int pos = sbr.getBuffer().position();
-        if(sbr.indexOf(query.name()) < 0) {
-          sbr.getBuffer().position(pos);
-        } else {
-          pos = sbr.getBuffer().position();
-        }
-        //System.out.println("* resolve.position: "+ pos);
-        boolean ands = query.ands().isEmpty() 
-            || resolveList(query.ands(), sbr, true);
+    private boolean hasChildren(Query q) {
+      return !q.ands().isEmpty()
+          || !q.childs().isEmpty()
+          || !q.ors().isEmpty();
+    }
+    
+    
+    private int setFieldPosition(Query q, StringByteReader sbr) {
+      int pos = sbr.getBuffer().position();
+      if(sbr.indexOf(q.name()) < 0) {
         sbr.getBuffer().position(pos);
-        boolean childs = query.childs().isEmpty() 
-            || resolveList(query.childs(), sbr, true);
+      } else {
+        pos = sbr.getBuffer().position();
+      }
+      return pos;
+    }
+    
+    
+    private boolean resolveChildren(Query q, StringByteReader sbr) {
+        int pos = setFieldPosition(q, sbr);
+        boolean ands = q.ands().isEmpty() 
+            || resolveList(q.ands(), sbr, true);
         sbr.getBuffer().position(pos);
-        boolean ors = resolveList(query.ors(), sbr, false);
-        //System.out.println("* resolve: ands("+ ands+ ") && childs("+ childs+ ") || ors("+ ors+ ") = "+ ((ands && childs) || ors));
+        boolean childs = q.childs().isEmpty() 
+            || resolveList(q.childs(), sbr, true);
+        sbr.getBuffer().position(pos);
+        boolean ors = resolveList(q.ors(), sbr, false);
         return (ands && childs) || ors;
+    }
+    
+    
+    private boolean resolve(Query query, StringByteReader sbr) {
+      boolean resolve = false;
+      if(hasChildren(query)) {
+        resolve = resolveChildren(query, sbr);
+      }
+      else if(sbr.indexOf(query.name()) < 0) {
+        resolve = false;
       }
       else {
-        if(sbr.indexOf(query.name()) < 0) return false;
         // skip field name
         sbr.iterator().skip();
-        return resolveType(query, sbr);
+        resolve = resolveType(query, sbr);
       }
+      return resolve;
     }
     
 
     @Override
-    public boolean resolve(Query query, ByteReader rdr) {
+    public Boolean apply(Query query, ByteReader rdr) {
       if(query == null || query.name() == null || rdr == null) {
         return false;
       }
@@ -181,12 +194,11 @@ public interface QueryResolver {
     
     private void debug(Query query, Object val, Object result) {
       if(debug) {
-        System.err.println(query.operation()
-            + ".apply( "
+        String msg = query.name() + " -> "
             + Objects.toString(val).trim()
-            + " ): "
-            + result
-        );
+            + (query.operation() == null ? "" : query.operation())
+            + result;
+        System.err.println(msg);
       }
     }
   

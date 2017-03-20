@@ -50,8 +50,6 @@ public enum JsonType {
   
   NULL(ByteType.NULL),
   
-  NO_MORE_DATA(),
-  
   UNKNOWN(Byte.MIN_VALUE);
   
   

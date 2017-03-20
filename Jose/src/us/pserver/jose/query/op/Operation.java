@@ -35,7 +35,7 @@ public abstract class Operation<T> {
   
   @Override
   public String toString() {
-    return this.getClass().getSimpleName()+ "["+ value()+ "]";
+    return "." + this.getClass().getSimpleName()+ "( "+ value() + " ): ";
   }
   
 }

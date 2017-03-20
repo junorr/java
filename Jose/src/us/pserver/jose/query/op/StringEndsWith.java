@@ -38,4 +38,10 @@ public final class StringEndsWith extends StringOperation {
         && other.endsWith(value);
   }
 
+
+  @Override
+  public String toString() {
+    return ".endsWith( '"+ value+ "' ): ";
+  }
+
 }

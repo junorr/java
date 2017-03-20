@@ -47,4 +47,10 @@ public abstract class DateOperation extends Operation<Date> {
     return value;
   }
   
+
+  @Override
+  public String toString() {
+    return " ? "+ value+ " : ";
+  }
+
 }

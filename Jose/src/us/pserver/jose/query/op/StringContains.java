@@ -38,4 +38,10 @@ public final class StringContains extends StringOperation {
         && other.contains(value);
   }
 
+
+  @Override
+  public String toString() {
+    return ".contains( '"+ value+ "' ): ";
+  }
+
 }

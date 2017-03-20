@@ -38,4 +38,10 @@ public final class StringRegex extends StringOperation {
         && other.matches(value);
   }
 
+
+  @Override
+  public String toString() {
+    return ".match( '"+ value+ "' ): ";
+  }
+
 }

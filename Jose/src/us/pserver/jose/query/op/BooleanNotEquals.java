@@ -38,4 +38,10 @@ public final class BooleanNotEquals extends BooleanOperation {
         && !other.equals(value);
   }
 
+
+  @Override
+  public String toString() {
+    return " != "+ value+ " : ";
+  }
+
 }

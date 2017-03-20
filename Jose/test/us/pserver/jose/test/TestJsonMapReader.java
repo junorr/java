@@ -23,10 +23,10 @@ package us.pserver.jose.test;
 
 import com.jsoniter.output.JsonStream;
 import java.util.Map;
-import us.pserver.jose.json.JsonMapReader;
 import us.pserver.jose.json.iterator.ByteIterator;
 import us.pserver.jose.json.iterator.ByteIteratorFactory;
 import us.pserver.tools.timer.Timer;
+import us.pserver.jose.json.JsonMapFunction;
 
 /**
  *
@@ -89,9 +89,8 @@ public class TestJsonMapReader {
     System.out.println(json);
     /**/
     ByteIterator bi = ByteIteratorFactory.of(json);
-    JsonMapReader rdr = JsonMapReader.of(bi);
     Timer tm = new Timer.Nanos().start();
-    Map<String,Object> map = rdr.readMap();
+    Map<String,Object> map = JsonMapFunction.get().apply(bi);
     tm.stop();
     System.out.println(map);
     System.out.println(tm);

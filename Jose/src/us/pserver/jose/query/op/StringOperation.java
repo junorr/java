@@ -45,4 +45,10 @@ public abstract class StringOperation extends Operation<String> {
     return value;
   }
 
+
+  @Override
+  public String toString() {
+    return " ? "+ value+ " : ";
+  }
+
 }

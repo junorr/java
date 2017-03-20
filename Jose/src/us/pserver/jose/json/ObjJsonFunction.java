@@ -32,7 +32,7 @@ import us.pserver.tools.UTF8String;
  * @version 0.0 - 17/03/2017
  */
 @FunctionalInterface
-public interface JsonTo extends Function<Object,String> {
+public interface ObjJsonFunction extends Function<Object,String> {
 
   @Override public String apply(Object o);
   
@@ -42,7 +42,7 @@ public interface JsonTo extends Function<Object,String> {
   
   
   
-  public static JsonTo getDefault() {
+  public static ObjJsonFunction get() {
     return new JsonToImpl();
   }
   
@@ -50,7 +50,7 @@ public interface JsonTo extends Function<Object,String> {
   
   
   
-  static class JsonToImpl implements JsonTo {
+  static class JsonToImpl implements ObjJsonFunction {
 
     @Override
     public String apply(Object o) {

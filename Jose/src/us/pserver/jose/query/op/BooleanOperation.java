@@ -45,4 +45,10 @@ public abstract class BooleanOperation extends Operation<Boolean> {
     return value;
   }
 
+
+  @Override
+  public String toString() {
+    return " ? "+ value+ " : ";
+  }
+
 }

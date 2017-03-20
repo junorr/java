@@ -56,12 +56,11 @@ public class TestQuery {
           + "}"
         + "}").replace("'", "\"");
     System.out.println("* json: "+ json);
-    Class cls = us.pserver.jose.query.op.BooleanOperation.class;
     ByteReader rdr = ByteReader.of(ByteBuffer.wrap(UTF8String.from(json).getBytes()));
     
     Query query = new QueryImpl("us.pserver.Test");
-    Query sub = new QueryImpl("n").filter("n").eq(500.2);
-    Query sub2 = new QueryImpl("n").filter("n").gt(500.1);
+    Query sub = new QueryImpl("sub").filter("n").eq(500.2);
+    Query sub2 = new QueryImpl("sub").filter("n").gt(500.1);
     query.filter("num").in(200, 300, 400, 500, 600)
         .and("str2").endsWith("ld")
         .and("array").arrayContains(2)
@@ -74,10 +73,10 @@ public class TestQuery {
         .and("sub").arrayContains(sub2)
         ;
     Timer tm = new Timer.Nanos().start();
-    boolean compare = QueryResolver.resolved(query, rdr);
-    //boolean compare = QueryResolver.debug().resolve(query, rdr);
+    //boolean compare = QueryResolver.resolve(query, rdr);
+    boolean compare = QueryResolver.debug().apply(query, rdr);
     tm.stop();
-    //boolean compare = QueryResolver.resolved(query, any);
+    //boolean compare = QueryResolver.resolve(query, any);
     System.out.println("resolve(query, reader): "+ compare);
     System.out.println(tm);
   }

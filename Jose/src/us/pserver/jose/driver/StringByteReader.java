@@ -58,7 +58,7 @@ public interface StringByteReader extends ByteReader {
     
     public StringByteReaderImpl(ByteReader rdr) {
       if(rdr == null) {
-        throw new IllegalArgumentException("Bad Null ByteReader");
+        throw new IllegalArgumentException("Bad null ByteReader");
       }
       this.reader = rdr;
     }
@@ -79,7 +79,7 @@ public interface StringByteReader extends ByteReader {
     @Override
     public Region regionOf(String off, String until) {
       return reader.regionOf(
-          UTF8String.from(off).getBytes(), 
+          UTF8String.from(off).getBytes(),
           UTF8String.from(until).getBytes()
       );
     }
@@ -91,6 +91,7 @@ public interface StringByteReader extends ByteReader {
     }
 
 
+    @Override
     public String readString(Region reg) {
       return UTF8String.from(reader.read(reg)).toString();
     }

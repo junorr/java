@@ -19,41 +19,45 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jose.query.op;
+package us.pserver.jose.json;
 
-import java.util.Collections;
-import java.util.List;
+import com.jsoniter.JsonIterator;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.function.BiFunction;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/01/2017
+ * @version 0.0 - 17/03/2017
  */
-public final class BooleanInArray extends BooleanOperation {
+@FunctionalInterface
+public interface JsonObjFunction extends BiFunction<String,Class,Object> {
+
+  @Override public Object apply(String s, Class c);
   
-  final List<Boolean> array;
-  
-  public BooleanInArray() { 
-    super(); 
-    this.array = Collections.EMPTY_LIST;
+  public default Object fromJsonBytes(ByteBuffer buf, Class c) {
+    return apply(StandardCharsets.UTF_8.decode(buf).toString(), c);
   }
   
-  public BooleanInArray(List<Boolean> array) { 
-    super(); 
-    if(array == null) {
-      throw new IllegalArgumentException("Bad Null Array");
+  
+  
+  public static JsonObjFunction get() {
+    return new JsonFromImpl();
+  }
+  
+  
+  
+  
+  
+  static class JsonFromImpl implements JsonObjFunction {
+
+    @Override
+    public Object apply(String s, Class c) {
+      if(s == null) return null;
+      return JsonIterator.deserialize(s, c);
     }
-    this.array = array;
+    
   }
-
-  public List<Boolean> array() {
-    return array;
-  }
-
-  @Override
-  public boolean apply(Boolean other) {
-    return other != null 
-        && array.stream().anyMatch(b->other.booleanValue() == b.booleanValue());
-  }
-
+  
 }

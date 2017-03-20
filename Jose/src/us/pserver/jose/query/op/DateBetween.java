@@ -62,4 +62,10 @@ public final class DateBetween extends DateOperation {
         || other.equals(value2));
   }
 
+
+  @Override
+  public String toString() {
+    return ".isBetween( " + value + ", " + value2 + " ): ";
+  }
+
 }
