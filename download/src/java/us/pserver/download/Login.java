@@ -77,14 +77,12 @@ public class Login extends Base {
   
   public String get(HttpServletRequest req, HttpServletResponse res) throws Exception {
     URIParam par = new URIParam(req.getRequestURI());
-    if(par.length() > 1) {
-      String name = par.getParam(1);
-      Object ouser = req.getSession().getAttribute("duser");
-      if(ouser != null && ((User)ouser).getName().equals(name)) {
-        return null;
-      }
+    HttpSession ses = req.getSession();
+    if(ses.getAttribute("duser") != null) {
+      User user = (User) ses.getAttribute("duser");
+      res.getWriter().write("\""+ user.getName()+ "\"");
+      res.flushBuffer();
     }
-    badRequest(res, null);
     return null;
   }
   

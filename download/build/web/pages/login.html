@@ -20,6 +20,11 @@
         <span class="input-group-addon"><i class="fa fa-lock"></i></span>
         <input class="form-control" type="password" id="ipass" placeholder="Password"/>
       </div>
+      
+      <br/>
+      <div class="alert-danger" style="display: none;">
+        Bad Username/Password
+      </div>
 
       <div style="text-align: center; margin-top: 10px;">
         <a href="#" class="btn btn-default" onclick="doLogin();">
@@ -49,13 +54,16 @@
       $("#ipass").focus().css("box-shadow", "0 0 4 red");
       return;
     }
+    $(".alert-danger").hide();
     $.post("login/", {
       user: user,
       pass: btoa(pass)
     }, function(data) {
       console.log(data);
-      login.loggedUser = data.toUpperCase();
-    }, "json");
+      login.rawUser = data;
+    }, "json").fail(function() {
+      $(".alert-danger").show();
+    });
   }
   
 </script>
