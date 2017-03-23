@@ -22,7 +22,7 @@
       </div>
 
       <div style="text-align: center; margin-top: 10px;">
-        <a href="#" class="btn btn-primary">
+        <a href="#" class="btn btn-default" onclick="doLogin();">
           <i class="fa fa-sign-in"></i>&nbsp;
           Login
         </a>
@@ -31,4 +31,31 @@
 
   </div>
 
-</div>      
+</div>
+
+
+<script>
+  
+  function doLogin() {
+    var user = $("#iuser").val();
+    var pass = $("#ipass").val();
+    if(!user || user.length < 1) {
+      alert("Please, insert your username.");
+      $("#iuser").focus().css("box-shadow", "0 0 4 red");
+      return;
+    }
+    if(!pass || pass.length < 1) {
+      alert("Please, insert your password.");
+      $("#ipass").focus().css("box-shadow", "0 0 4 red");
+      return;
+    }
+    $.post("login/", {
+      user: user,
+      pass: btoa(pass)
+    }, function(data) {
+      console.log(data);
+      login.loggedUser = data.toUpperCase();
+    }, "json");
+  }
+  
+</script>

@@ -21,20 +21,20 @@
 
 package br.com.bb.disec.micros.test;
 
-import br.com.bb.disec.micros.conf.FileUploadConfig;
+import br.com.bb.disec.micros.util.BashProcExecutor;
 import java.io.IOException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 21/09/2016
+ * @version 0.0 - 20/03/2017
  */
-public class TestFileUploadConfig {
+public class TestBashProcExecutor {
 
   
   public static void main(String[] args) throws IOException {
-    FileUploadConfig fuck = FileUploadConfig.builder().load("disecMicro", "").build();
-    System.out.println(fuck);
+    BashProcExecutor prc = new BashProcExecutor("ls -lh /storage");
+    prc.start().transferOutput(System.out);
   }
   
 }

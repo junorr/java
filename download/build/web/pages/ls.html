@@ -3,11 +3,11 @@
 <br/>
 <br/>
 <div class="row">
-  <div class="col-lg-3"></div>
+  <div class="col-lg-1"></div>
 
-  <div class="col-lg-6 panel panel-default">
+  <div class="col-lg-10 panel panel-default">
     <div class="panel-heading">
-      <h4><strong><i class="fa fa-user"></i>&nbsp;&nbsp; Login</strong></h4>
+      <h4><strong><i class="fa fa-folder-open _2"></i> </strong></h4>
     </div>
 
     <div class="panel-body">
@@ -35,27 +35,5 @@
 
 
 <script>
-  
-  function doLogin() {
-    var user = $("#iuser").val();
-    var pass = $("#ipass").val();
-    if(!user || user.length < 1) {
-      alert("Please, insert your username.");
-      $("#iuser").focus().css("box-shadow", "0 0 4 red");
-      return;
-    }
-    if(!pass || pass.length < 1) {
-      alert("Please, insert your password.");
-      $("#ipass").focus().css("box-shadow", "0 0 4 red");
-      return;
-    }
-    $.post("login/", {
-      user: user,
-      pass: btoa(pass)
-    }, function(data) {
-      console.log(data);
-      login.loggedUser = data.toUpperCase();
-    }, "json");
-  }
   
 </script>

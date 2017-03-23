@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +44,7 @@ import us.pserver.download.util.Users;
 @WebServlet("/login/*")
 public class Login extends Base {
   
-  public static final String SUCCESS_PAGE = "/ls.html";
+  public static final String SUCCESS_PAGE = "/pages/ls.html";
   
   public static final String USERS_FILE = "/resources/users.json";
   
@@ -95,14 +96,19 @@ public class Login extends Base {
       Users users = gson.fromJson(new InputStreamReader(
           getClass().getResourceAsStream(USERS_FILE)), Users.class
       );
-      User user = users.users().stream()
+      System.out.println("* users: "+ users.users());
+      System.out.println("* map.get(\"user\")[0]: "+ map.get("user")[0]);
+      Optional<User> user = users.users().stream()
           .filter(u->u.getName().equals(map.get("user")[0]))
-          .findFirst().get();
-      if(user.getPass().equals(new String(
+          .findFirst();
+      System.out.println("* user: "+ user);
+      if(user.isPresent() && user.get().getPass().equals(new String(
           Base64.getDecoder().decode(map.get("pass")[0]), 
           StandardCharsets.UTF_8))) {
-        ses.setAttribute("duser", user);
-        return SUCCESS_PAGE;
+        System.out.println("* Logged User: "+ user);
+        ses.setAttribute("duser", user.get());
+        res.getWriter().write("\""+ user.get().getName()+ "\"");
+        res.getWriter().flush();
       }
     }
     badRequest(res, "Invalid user");

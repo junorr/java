@@ -54,8 +54,7 @@ public class AccessFilter implements Filter {
     System.out.println("* Filter.uri: "+ uri);
     if(!access.isBlocked(uri)) {
       if(access.isOpen(uri) 
-          || (access.isSecure(uri) 
-          && ses.getAttribute("duser") != null)) {
+          || ses.getAttribute("duser") != null) {
         fc.doFilter(sr, sr1);
       }
     }

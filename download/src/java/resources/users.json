@@ -1,6 +1,6 @@
 {
   "users": [
-    {"user": "juno", "pass": "32132155"},
-    {"user": "tania", "pass": "japaninja"}
+    {"name": "juno", "pass": "32132155"},
+    {"name": "tania", "pass": "japaninja"}
   ]
 }

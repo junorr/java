@@ -21,20 +21,37 @@
 
 package br.com.bb.disec.micros.test;
 
-import br.com.bb.disec.micros.conf.FileUploadConfig;
+import br.com.bb.disec.micros.util.Buffer;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 21/09/2016
+ * @version 0.0 - 20/03/2017
  */
-public class TestFileUploadConfig {
+public class TestProcess {
 
   
-  public static void main(String[] args) throws IOException {
-    FileUploadConfig fuck = FileUploadConfig.builder().load("disecMicro", "").build();
-    System.out.println(fuck);
+  public static void main(String[] args) throws IOException, InterruptedException {
+    //ProcessBuilder pb = new ProcessBuilder("/bin/bash", "-c", "ls -lh /storage");
+    //ProcessBuilder pb = new ProcessBuilder("ls", "-lh", "/storage");
+    ProcessBuilder pb = new ProcessBuilder("ss", "-tl", "-np");
+    System.out.println("* execute: "+ pb.command());
+    pb.redirectError(pb.redirectOutput());
+    Process p = pb.start();
+    Buffer b = Buffer.create();
+    InputStream in = p.getInputStream();
+    int i  = 0;
+    while((i = in.read()) != -1) {
+      b.write((byte)i);
+    }
+    p.waitFor();
+    System.out.println("* process output:");
+    System.out.println("-------------------------");
+    System.out.println(new String(b.toBytes(), StandardCharsets.UTF_8));
+    System.out.println("-------------------------");
   }
   
 }
