@@ -257,13 +257,17 @@ public class FileUploadConfig {
     /**
      * Carrega informações do banco de dados 
      * no objeto Builder.
-     * @param aplicName Nome
+     * @param group Nome do grupo de upload
+     * @param name Nome do upload
      * @return
      * @throws IOException 
      */
-    public Builder load(String aplicName) throws IOException {
-      if(aplicName == null) {
-        throw new IllegalArgumentException("Bad Aplic Name: "+ aplicName);
+    public Builder load(String group, String name) throws IOException {
+      if(group == null) {
+        throw new IllegalArgumentException("Bad upload group: "+ group);
+      }
+      if(name == null) {
+        throw new IllegalArgumentException("Bad upload name: "+ name);
       }
       try {
         SqlQuery query = new SqlQuery(
@@ -271,11 +275,11 @@ public class FileUploadConfig {
             new DefaultFileSqlSource(ResourceLoader.caller())
         );
         JsonObject json = readJson(query.execResultSet(
-            SQL_GROUP, SQL_FIND_UPLOAD, aplicName)
+            SQL_GROUP, SQL_FIND_UPLOAD, group, name)
         );
         query.close();
         if(json.size() == 0) {
-          throw new IOException("Config Not Found For Aplic Name: "+ aplicName);
+          throw new IOException("Config Not Found For Aplic Name: "+ group);
         }
         if(json.get("allowed_ext") != null) {
           this.allowedExtensions = Arrays.asList(

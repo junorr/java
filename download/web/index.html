@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+  
+  <head>
+    <title>Floating Files</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"/>
+    <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
+    
+    <style type="text/css">
+      
+      #page-head {
+        height: 150px;
+        width: 100%;
+        padding: 50px;
+        color: white;
+        background-color: black;
+      }
+      
+      .top--10 {
+        position: relative;
+        top: -10px;
+      }
+      
+      .top--20 {
+        position: relative;
+        top: -20px;
+      }
+      
+      body {
+        background-color: rgb(220,220,220);
+      }
+      
+      .panel {
+        box-shadow: 8px 8px 20px rgba(60,60,60,0.6);
+        padding: 0px;
+      }
+      
+      ._2:after {
+        content:"\00A0\00A0";
+      }
+      
+    </style>
+  </head>
+  
+  <body>
+    
+    <div id="page-head" class="container">
+      <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-5 top--20">
+          <h2>
+            <i class="fa fa-download fa-2x _2"></i>
+            <span>Floating Files</span>
+          </h2>
+        </div>
+      </div>
+    </div>
+    
+    <div id="page-body" class="container">
+      
+    </div>
+    
+    <script>
+      $("#page-body").load("nav/login.html");
+    </script>
+    
+  </body>
+  
+</html>

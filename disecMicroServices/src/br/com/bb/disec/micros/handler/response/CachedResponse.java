@@ -23,7 +23,6 @@ package br.com.bb.disec.micros.handler.response;
 
 import br.com.bb.disec.micros.db.mongo.MongoCache;
 import static br.com.bb.disec.micros.util.JsonConstants.METADATA;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;

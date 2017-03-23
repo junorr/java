@@ -181,9 +181,9 @@ public class MongoCache {
     ResultSetMetaData meta = rs.getMetaData();
     int cols = meta.getColumnCount();
     Document doc = new Document().append(CREATED, new Date());
-    SqlObjectType jt = new SqlObjectType();
+    SqlObjectType sot = new SqlObjectType();
     for(int i = 1; i <= cols; i++) {
-      doc.append(meta.getColumnLabel(i), jt.getObject(rs, i));
+      doc.append(meta.getColumnLabel(i), sot.getObject(rs, i));
     }
     return doc;
   }

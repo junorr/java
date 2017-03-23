@@ -24,7 +24,6 @@ package br.com.bb.disec.micros.handler;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Methods;
-import us.pserver.timer.Timer;
 
 /**
  *

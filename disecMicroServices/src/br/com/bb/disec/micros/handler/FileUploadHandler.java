@@ -104,7 +104,7 @@ public class FileUploadHandler implements JsonHandler {
     }
     FileUploadConfig fuc = FileUploadConfig
         .builder()
-        .load(pars.getParam(0))
+        .load(pars.getParam(0), pars.getParam(1))
         .build();
     return fuc;
   }

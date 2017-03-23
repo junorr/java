@@ -21,7 +21,6 @@
 
 package br.com.bb.disec.micros.util;
 
-import br.com.bb.disec.micros.util.DateParser;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

@@ -1,0 +1,5 @@
+{
+  "block": [],
+  "open": ["*/download/", "/download/css/*", "/download/js/*", "/download/fonts/*", "/download/images/*", "*login.html"],
+  "secure": ["/download/nav/*", "/download/get/*", "/download/ls/*"]
+}

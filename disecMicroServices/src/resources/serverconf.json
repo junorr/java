@@ -3,7 +3,7 @@
   "serverPort": 9088,
   "ioThreads": 4,
   "maxWorkerThreads": 10,
-  "debugHeaders": true,
+  "debugHeaders": false,
   "dispatcherEnabled": false,
   "shutdownHandlerEnabled": true,
   "authenticationShield": true,
@@ -16,7 +16,8 @@
     "/download": "br.com.bb.disec.micros.handler.DownloadHandler",
     "/export": "br.com.bb.disec.micros.handler.SqlExportHandler",
     "/sql": "br.com.bb.disec.micros.handler.SqlHandler",
-    "/upload": "br.com.bb.disec.micros.handler.FileUploadHandler"
+    "/upload": "br.com.bb.disec.micros.handler.FileUploadHandler",
+    "/execute": "br.com.bb.disec.micros.handler.ProcExecutorHandler"
   },
   "sslContext": {
     "sslEnabled": true,
