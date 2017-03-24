@@ -23,12 +23,12 @@ package us.pserver.download;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,25 +60,35 @@ public class Ls extends Base {
         && path.startsWith(parent);
   }
   
+  
+  private List<IFPath> ls(Path path) throws IOException {
+    return Files.walk(path, 1)
+        .map(p->IFPath.from(p))
+        .collect(Collectors.toList());
+  }
+  
+  
   @Override
   public String request(HttpServletRequest req, HttpServletResponse res) throws Exception {
     URIParam par = new URIParam(req.getRequestURI());
     HttpSession ses = req.getSession();
     Object opath = ses.getAttribute(CUR_PATH);
     Path path = (opath != null ? (Path)opath : Paths.get(DEFAULT_PATH));
-    List<IFPath> ls = new ArrayList<>();
-    Files.walk(path, 1).forEach(p->ls.add(IFPath.from(p)));
+    List<IFPath> ls = ls(path);
     if(par.length() > 1) {
       Path np = path.resolve(par.getParam(1));
-      if(isParent(path, np) && Files.exists(path) && Files.isDirectory(np)) {
-        path = np;
-        ls.clear();
-        Files.walk(path, 1).forEach(p->ls.add(IFPath.from(p)));
-        ses.setAttribute(CUR_PATH, path);
+      if(isParent(path, np) && Files.exists(np)) {
+        if(Files.isDirectory(np)) {
+          ls = ls(np);
+          ses.setAttribute(CUR_PATH, np);
+        }
+        else {
+          new Get().request(req, res);
+        }
       }
     }
     else {
-      res.getWriter().write("\""+ path.toString()+ "\"");
+      res.getWriter().write(gson.toJson(IFPath.from(path)));
       res.flushBuffer();
       return null;
     }

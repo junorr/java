@@ -49,6 +49,31 @@ and open the template in the editor.
         content:"\00A0\00A0";
       }
       
+      .link {
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-top: 2px;
+        border-bottom: solid thin rgba(240,240,255,0.3);
+        border-radius: 3px;
+      }
+      
+      .link:hover {
+        color: white;
+        text-decoration: none;
+        box-shadow: 2px 3px 8px rgba(240,240,255,0.8);
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-top: 2px;
+      }
+      
+      .top-plus-30 {
+        position: relative;
+        top: 32px;
+      }
+      
     </style>
   </head>
   
@@ -59,11 +84,16 @@ and open the template in the editor.
         <div class="col-lg-1"></div>
         <div class="col-lg-5 top--20">
           <h2>
-            <i class="fa fa-object-ungroup fa-2x _2"></i>
-            <span>Boxed Elements</span>
+            <i class="fa fa-download fa-2x _2"></i>
+            <span>Floating Files</span>
           </h2>
         </div>
-        <div class="col-lg-5"></div>
+        <div class="col-lg-5">
+          <a href="#" class="link top-plus-30" style="color: white;" onclick="$('#page-body').load('nav/ls.html');">
+            <i class="fa fa-folder-o"></i>&nbsp;
+            <span style="font-family: monospace;">ls</span>
+          </a>
+        </div>
         <div class="col-lg-1">
           <strong id="loggedUser" class="text-danger">{{user}}</strong>
         </div>

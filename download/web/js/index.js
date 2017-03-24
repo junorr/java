@@ -1,15 +1,8 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 
 var login = new Vue({
   el: "#loggedUser",
   data: {
-    rawUser: "",
-    isLogged: false
+    rawUser: ""
   },
   computed: {
     user: function() {
@@ -21,6 +14,8 @@ var login = new Vue({
   }
 });
 
+
 $.get("login", function(data) {
   login.rawUser = data;
 }, "json");
+

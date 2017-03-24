@@ -61,9 +61,13 @@
     }, function(data) {
       console.log(data);
       login.rawUser = data;
+      if(login.isLogged) {
+        $("#page-body").load("nav/ls.html");
+      }
     }, "json").fail(function() {
       $(".alert-danger").show();
     });
   }
+  
   
 </script>
