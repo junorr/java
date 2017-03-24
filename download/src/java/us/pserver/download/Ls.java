@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,6 +76,11 @@ public class Ls extends Base {
         Files.walk(path, 1).forEach(p->ls.add(IFPath.from(p)));
         ses.setAttribute(CUR_PATH, path);
       }
+    }
+    else {
+      res.getWriter().write("\""+ path.toString()+ "\"");
+      res.flushBuffer();
+      return null;
     }
     ls.remove(0);
     res.getWriter().write(gson.toJson(ls));
