@@ -1,0 +1,11 @@
+{
+  "elements": {},
+  "attributes": {
+    "v-vind:onclick": {},
+    "v-if": {
+      "context": "div"
+    },
+    "v-else": {},
+    "v-for": {}
+  }
+}

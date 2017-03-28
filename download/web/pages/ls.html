@@ -1,48 +1,101 @@
-<br/>
-<div class="row">
-  <div class="col-lg-1"></div>
+<link type="text/css" rel="stylesheet" href="css/ls.css"/>
 
-  <div id="current-dir" class="col-lg-10 panel panel-default">
-    <div class="panel-heading">
-      <h4><strong><i class="fa fa-folder-open _2"></i>{{dir.path}}</strong></h4>
-    </div>
-    <div class="panel-body container">
-      <div class="row">
-        <div class="col-lg-2"></div>
-        <div class="col-lg-2">
-          <ul class="list-group">
-            <li class="list-group-item" style="padding-left: 15px;">
-              <i class="fa fa-database _2"></i>{{size}}
-            </li>
-            <li class="list-group-item" style="padding-left: 15px;">
-              <i class="fa fa-user _2"></i>{{dir.owner}}
-            </li>
-            <li class="list-group-item" style="padding-left: 15px;">
-              <i class="fa fa-users _2"></i>{{dir.group}}
-            </li>
-            <li class="list-group-item" style="padding-left: 15px;">
-              <i class="fa fa-lock _2"></i>{{dir.perms}}
-            </li>
-          </ul>
+<br/>
+
+<div id="current-dir">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4><strong><i class="fa fa-folder-open _2"></i>{{dir.path}}</strong></h4>
         </div>
-        <div class="col-lg-1"></div>
-        <div class="col-lg-3">
-          <ul class="list-group">
-            <li class="list-group-item" style="padding-left: 15px;">
-              <i class="fa fa-calendar _2"></i>{{modTime}}
-            </li>
-            <li class="list-group-item" style="padding-left: 15px;">
-              <i class="fa fa-calendar-plus-o _2"></i>{{creTime}}
-            </li>
-            <li class="list-group-item" style="padding-left: 15px;">
-              <i class="fa fa-calendar-check-o _2"></i>{{acsTime}}
-            </li>
-          </ul>
+        <div class="panel-body container">
+          <div class="row">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-2">
+              <ul class="list-group">
+                <li title="Size" class="list-group-item pad-left-15">
+                  <i class="fa fa-database _2"></i>{{getSize(dir)}}
+                </li>
+                <li title="Permissions" class="list-group-item pad-left-15">
+                  <i class="fa fa-lock _2"></i>{{dir.perms}}
+                </li>
+              </ul>
+            </div>
+            <div class="col-lg-2">
+              <ul class="list-group">
+                <li title="Owner" class="list-group-item pad-left-15">
+                  <i class="fa fa-user _2"></i>{{dir.owner}}
+                </li>
+                <li title="Group" class="list-group-item pad-left-15">
+                  <i class="fa fa-users _2"></i>{{dir.group}}
+                </li>
+              </ul>
+            </div>
+            <div class="col-lg-3">
+              <ul class="list-group">
+                <li title="Modification Time" class="list-group-item pad-left-15">
+                  <i class="fa fa-calendar _2"></i>{{getTime(dir.time.modified.seconds)}}
+                </li>
+                <li title="Creation Time" class="list-group-item pad-left-15">
+                  <i class="fa fa-calendar-plus-o _2"></i>{{getTime(dir.time.create.seconds)}}
+                </li>
+              </ul>
+            </div>
+            <div class="col-lg-3">
+              <ul class="list-group">
+                <li title="Last Access Time" class="list-group-item pad-left-15">
+                  <i class="fa fa-calendar-check-o _2"></i>{{getTime(dir.time.access.seconds)}}
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <div class="row row-file">
+    <div class="col-lg-12 container">
+      <div class="row">
+        <div class="col-lg-4"><strong>Path</strong></div>
+        <div class="col-lg-2"><strong><i class="fa fa-database _2"></i>Size</strong></div>
+        <div class="col-lg-2"><strong><i class="fa fa-lock _2"></i>Perms</strong></div>
+        <div class="col-lg-2"><strong><i class="fa fa-user _2"></i>Owner/Group</strong></div>
+        <div class="col-lg-2"><strong><i class="fa fa-calendar _2"></i>Modified Time</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-file" v-for="file in ls">
+    <div class="col-lg-12 container">
+      <a href="#">
+        <div class="row">
+          <div class="col-lg-4">
+            <i class="fa fa-folder _2" v-if="file.isdir"></i>
+            <i class="fa fa-file-text-o _2" v-else></i>
+            {{file.path}}
+          </div>
+          <div class="col-lg-2">
+            {{getSize(file)}}
+          </div>
+          <div class="col-lg-2">
+            {{file.perms}}
+          </div>
+          <div class="col-lg-2">
+            {{file.owner}}/{{file.group}}
+          </div>
+          <div class="col-lg-2">
+            {{getTime(file.time.modified.seconds)}}
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <br/>
+  <br/>
+  
 </div>
 
 

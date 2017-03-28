@@ -41,8 +41,8 @@ import us.pserver.download.util.URIParam;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/03/2017
  */
-@WebServlet("/ls/*")
-public class Ls extends Base {
+@WebServlet("/ls-file/*")
+public class LsFile extends Base {
   
   public static final String DEFAULT_PATH = "/storage/";
   
@@ -51,7 +51,7 @@ public class Ls extends Base {
   private final Gson gson;
   
   
-  public Ls() {
+  public LsFile() {
     gson = new GsonBuilder().setPrettyPrinting().create();
   }
 
@@ -74,20 +74,11 @@ public class Ls extends Base {
     HttpSession ses = req.getSession();
     Object opath = ses.getAttribute(CUR_PATH);
     Path path = (opath != null ? (Path)opath : Paths.get(DEFAULT_PATH));
-    List<IFPath> ls = ls(path);
     if(par.length() > 1) {
       Path np = path.resolve(par.getParam(1));
-      if(isParent(path, np) && Files.exists(np)) {
-        if(Files.isDirectory(np)) {
-          ls = ls(np);
-          ses.setAttribute(CUR_PATH, np);
-        }
-        else {
-          new Get().request(req, res);
-        }
-      }
     }
-    res.getWriter().write(gson.toJson(ls));
+    res.getWriter().write(gson.toJson(IFPath.from(path)));
+    res.flushBuffer();
     return null;
   }
 

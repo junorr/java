@@ -6,7 +6,7 @@ var login = new Vue({
   },
   computed: {
     user: function() {
-      return this.rawUser.toUpperCase();
+      return "Welcome " + this.rawUser.toUpperCase() + "!";
     },
     isLogged: function() {
       return this.rawUser && this.rawUser.length > 0;
@@ -19,3 +19,5 @@ $.get("login", function(data) {
   login.rawUser = data;
 }, "json");
 
+
+$("#page-body").load("nav/login.html");

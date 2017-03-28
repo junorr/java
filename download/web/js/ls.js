@@ -91,35 +91,45 @@ function FSize(size) {
 }
 
 
+function getSize(file) {
+  console.log("file.size.bytes: "+ file.size.bytes);
+  if(!file || typeof file.size.bytes === 'undefined') {
+    return new FSize(0).toString();
+  }
+  return new FSize(file.size.bytes).toString();
+}
+
+
+function getTime(seconds) {
+  if(!seconds || seconds < 1) {
+    return new FSize(0).toString();
+  }
+  var t = new Date(1970, 0, 1); // Epoch
+  t.setSeconds(seconds);
+  return t.toLocaleString();
+}
+
+
+function get(path) {
+  url = "ls/"+ path;
+  if(!path) {
+    url = "ls";
+  }
+  $.get(url, function(data) {
+    curdir.dir = data[0];
+    data.shift();
+    curdir.ls = data;
+  }, "json");
+}
+
 
 var curdir = new Vue({
   el: "#current-dir",
   data: {
-    dir: false
-  },
-  computed: {
-    size: function() {
-      return new FSize(this.dir.size.bytes).toString();
-    },
-    modTime: function() {
-      var t = new Date(1970, 0, 1); // Epoch
-      t.setSeconds(this.dir.time.modified.seconds);
-      return t.toLocaleString();
-    },
-    creTime: function() {
-      var t = new Date(1970, 0, 1); // Epoch
-      t.setSeconds(this.dir.time.modified.seconds);
-      return t.toLocaleString();
-    },
-    acsTime: function() {
-      var t = new Date(1970, 0, 1); // Epoch
-      t.setSeconds(this.dir.time.modified.seconds);
-      return t.toLocaleString();
-    }
+    dir: false,
+    ls: false
   }
 });
 
 
-$.get("ls", function(data) {
-  curdir.dir = data;
-}, "json");
+get();

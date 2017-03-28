@@ -13,88 +13,28 @@ and open the template in the editor.
     
     <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
     <link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"/>
+    <link type="text/css" rel="stylesheet" href="css/index.css"/>
     <script type="text/javascript" src="js/jquery-3.2.0.min.js"></script>
     <script type="text/javascript" src="js/vue.min.js"></script>
     
-    <style type="text/css">
-      
-      #page-head {
-        height: 150px;
-        width: 100%;
-        padding: 50px;
-        color: white;
-        background-color: black;
-      }
-      
-      .top--10 {
-        position: relative;
-        top: -10px;
-      }
-      
-      .top--20 {
-        position: relative;
-        top: -20px;
-      }
-      
-      body {
-        background-color: rgb(220,220,220);
-      }
-      
-      .panel {
-        box-shadow: 8px 8px 20px rgba(60,60,60,0.6);
-        padding: 0px;
-      }
-      
-      ._2:after {
-        content:"\00A0\00A0";
-      }
-      
-      .link {
-        color: white;
-        font-weight: bold;
-        font-size: 18px;
-        padding-left: 8px;
-        padding-right: 8px;
-        padding-top: 2px;
-        border-bottom: solid thin rgba(240,240,255,0.3);
-        border-radius: 3px;
-      }
-      
-      .link:hover {
-        color: white;
-        text-decoration: none;
-        box-shadow: 2px 3px 8px rgba(240,240,255,0.8);
-        padding-left: 8px;
-        padding-right: 8px;
-        padding-top: 2px;
-      }
-      
-      .top-plus-30 {
-        position: relative;
-        top: 32px;
-      }
-      
-    </style>
   </head>
   
   <body>
     
     <div id="page-head" class="container">
       <div class="row">
-        <div class="col-lg-1"></div>
-        <div class="col-lg-5 top--20">
+        <div class="col-lg-6 top--50">
           <h2>
             <i class="fa fa-download fa-2x _2"></i>
             <span>Floating Files</span>
           </h2>
         </div>
-        <div class="col-lg-5">
-          <a href="#" class="link top-plus-30" style="color: white;" onclick="$('#page-body').load('nav/ls.html');">
-            <i class="fa fa-folder-o"></i>&nbsp;
-            <span style="font-family: monospace;">ls</span>
+        <div class="col-lg-3"></div>
+        <div class="col-lg-3 top-plus-10">
+          <a href="#" class="link" style="color: white;" onclick="$('#page-body').load('nav/ls.html');">
+            <i class="fa fa-folder-open _2"></i>
+            <span>List Files</span>
           </a>
-        </div>
-        <div class="col-lg-1">
           <strong id="loggedUser" class="text-danger">{{user}}</strong>
         </div>
       </div>
@@ -104,13 +44,7 @@ and open the template in the editor.
       
     </div>
     
-    
     <script type="text/javascript" src="js/index.js"></script>
-    
-    <script>
-      var loggedUser = null;
-      $("#page-body").load("nav/login.html");
-    </script>
     
   </body>
   
