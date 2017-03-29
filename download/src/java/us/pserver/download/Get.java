@@ -22,9 +22,10 @@
 package us.pserver.download;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.nio.channels.SeekableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -65,7 +66,7 @@ public class Get extends Base {
   }
   
   
-  private void transfer(Path pth, OutputStream out, long off, long len) throws IOException {
+  private void transfer(Path pth, WritableByteChannel out, long off, long len) throws IOException {
     SeekableByteChannel ch = Files.newByteChannel(pth, StandardOpenOption.READ);
     ch.position(off);
     long nlen = len;
@@ -73,12 +74,18 @@ public class Get extends Base {
     buf.limit((int) Math.min(len, buf.capacity()));
     int read = 0;
     while((read = ch.read(buf)) > 0 && nlen > 0) {
+      //System.out.println("#### buf.remaining()="+ buf.remaining());
       buf.flip();
-      out.write(buf.array(), buf.position(), buf.limit());
+      out.write(buf);
+      //System.out.println("#### buf.flip().remaining()="+ buf.remaining());
       buf.compact();
       nlen -= read;
+      //System.out.println("#### buf.compact().remaining()="+ buf.remaining());
+      //System.out.println("#### nlen="+ nlen+ ", lim="+ buf.remaining());
+      if(nlen > 0) {
+        buf.limit((int) Math.min(nlen, buf.capacity()));
+      }
     }
-    out.flush();
   }
   
 
@@ -87,10 +94,12 @@ public class Get extends Base {
     HttpSession ses = req.getSession();
     URIParam par = new URIParam(req.getRequestURI());
     Object opath = ses.getAttribute(Ls.CUR_PATH);
+    System.out.println("#### opath: "+ opath);
     if(par.length() > 1 && opath != null) {
       Path path = (Path) opath;
       String spath = new String(Base64.getDecoder().decode(par.getParam(1)), StandardCharsets.UTF_8);
       Path np = path.resolve(spath);
+      System.out.println("#### path: "+ np);
       if(Files.exists(np) && Files.isRegularFile(np) && isParent(path, np)) {
         long[] range = getRange(req);
         long total = Files.size(np);
@@ -103,7 +112,7 @@ public class Get extends Base {
         resp.setHeader("Accept-Ranges", "bytes");
         resp.setHeader("Content-Range", "bytes "
             + range[0]+ "-"+ (range[0]+length)+ "/"+ total);
-        transfer(np, resp.getOutputStream(), range[0], length);
+        transfer(np, Channels.newChannel(resp.getOutputStream()), range[0], length);
         resp.flushBuffer();
       }
       else {

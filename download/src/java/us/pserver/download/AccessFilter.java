@@ -51,7 +51,7 @@ public class AccessFilter implements Filter {
     HttpServletResponse res = (HttpServletResponse) sr1;
     HttpSession ses = req.getSession();
     String uri = req.getRequestURI();
-    System.out.println("* Filter.uri: "+ uri);
+    //System.out.println("* Filter.uri: "+ uri);
     if(!access.isBlocked(uri)) {
       if(access.isOpen(uri) 
           || ses.getAttribute("duser") != null) {

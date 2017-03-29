@@ -87,13 +87,14 @@ public class Ls extends Base {
       if(isParent(path, np) || isParent(np, path) && Files.exists(np)) {
         if(Files.isDirectory(np)) {
           ls = ls(np);
-          ses.setAttribute(CUR_PATH, np);
+          path = np;
         }
         else {
           new Get().request(req, res);
         }
       }
     }
+    ses.setAttribute(CUR_PATH, path);
     res.getWriter().write(gson.toJson(ls));
     return null;
   }

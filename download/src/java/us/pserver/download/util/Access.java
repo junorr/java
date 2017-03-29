@@ -67,21 +67,21 @@ public class Access {
   
   public boolean isBlocked(String uri) {
     boolean in = in(uri, block);
-    System.out.println("* Access.isBlocked( "+ uri+ " ): "+ in);
+    //System.out.println("* Access.isBlocked( "+ uri+ " ): "+ in);
     return in;
   }
   
   
   public boolean isOpen(String uri) {
     boolean in = in(uri, open);
-    System.out.println("* Access.isOpen( "+ uri+ " ): "+ in);
+    //System.out.println("* Access.isOpen( "+ uri+ " ): "+ in);
     return in;
   }
   
   
   public boolean isSecure(String uri) {
     boolean in = in(uri, secure);
-    System.out.println("* Access.isSecure( "+ uri+ " ): "+ in);
+    //System.out.println("* Access.isSecure( "+ uri+ " ): "+ in);
     return in;
   }
   
