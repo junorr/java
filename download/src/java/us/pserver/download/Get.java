@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Base64;
+import java.util.Enumeration;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -94,6 +95,7 @@ public class Get extends Base {
         long[] range = getRange(req);
         long total = Files.size(np);
         long length = range[0] - range[1] == 0 ? total : range[0] - range[1];
+        System.out.println("##### length: "+ length);
         resp.setContentType("application/octet-stream");
         resp.setContentLengthLong(length);
         resp.setHeader("Content-Disposition:", 
@@ -108,7 +110,19 @@ public class Get extends Base {
         badRequest(resp, "File does not exist");
       }
     }
+    printHeaders(req);
     return null;
+  }
+  
+  
+  private void printHeaders(HttpServletRequest req) {
+    System.out.println(req.getRequestURI());
+    Enumeration<String> en = req.getHeaderNames();
+    while(en.hasMoreElements()) {
+      String hd = en.nextElement();
+      System.out.println(hd+ ": "+ req.getHeader(hd));
+    }
+    System.out.println("----- Request ------");
   }
   
 }
