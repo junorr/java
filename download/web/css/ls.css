@@ -25,3 +25,10 @@ a:hover {
   text-decoration: none;
 }
 
+.tr-colored {
+  background-color: white;
+}
+
+.tr-colored:hover {
+  background-color: rgb(100,100,100);
+}

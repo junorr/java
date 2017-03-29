@@ -24,9 +24,11 @@ package us.pserver.download;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
@@ -57,7 +59,7 @@ public class Ls extends Base {
 
   private boolean isParent(Path parent, Path path) {
     return parent != null && path != null
-        && path.startsWith(parent);
+        && (path.startsWith(parent) || path.equals(parent));
   }
   
   
@@ -76,8 +78,13 @@ public class Ls extends Base {
     Path path = (opath != null ? (Path)opath : Paths.get(DEFAULT_PATH));
     List<IFPath> ls = ls(path);
     if(par.length() > 1) {
-      Path np = path.resolve(par.getParam(1));
-      if(isParent(path, np) && Files.exists(np)) {
+      String spath = new String(Base64.getDecoder().decode(par.getParam(1)), StandardCharsets.UTF_8);
+      Path np = spath.equals("..") && path.getParent() != null 
+          ? path.getParent() : path.resolve(spath);
+      System.out.println("* ls.path: "+ path);
+      System.out.println("* ls.np: "+ np);
+      System.out.println("* ls.isParent: "+ isParent(path, np));
+      if(isParent(path, np) || isParent(np, path) && Files.exists(np)) {
         if(Files.isDirectory(np)) {
           ls = ls(np);
           ses.setAttribute(CUR_PATH, np);

@@ -22,8 +22,14 @@
 package us.pserver.download;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Base64;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +48,38 @@ public class Get extends Base {
     return parent != null && path != null
         && path.startsWith(parent);
   }
+  
+  
+  private long[] getRange(HttpServletRequest req) {
+    String hrange = req.getHeader("Range");
+    long[] range = new long[]{0L,0L};
+    if(hrange != null && !hrange.trim().isEmpty()) {
+      String[] srange = hrange.replace("bytes=", "").split("-");
+      try {
+        range[0] = Long.parseLong(srange[0]);
+        range[1] = Long.parseLong(srange[1]);
+      } catch(Exception e) {}
+    }
+    return range;
+  }
+  
+  
+  private void transfer(Path pth, OutputStream out, long off, long len) throws IOException {
+    SeekableByteChannel ch = Files.newByteChannel(pth, StandardOpenOption.READ);
+    ch.position(off);
+    long nlen = len;
+    ByteBuffer buf = ByteBuffer.allocate(4096);
+    buf.limit((int) Math.min(len, buf.capacity()));
+    int read = 0;
+    while((read = ch.read(buf)) > 0 && nlen > 0) {
+      buf.flip();
+      out.write(buf.array(), buf.position(), buf.limit());
+      buf.compact();
+      nlen -= read;
+    }
+    out.flush();
+  }
+  
 
   @Override
   public String request(HttpServletRequest req, HttpServletResponse resp) throws Exception {
@@ -50,13 +88,20 @@ public class Get extends Base {
     Object opath = ses.getAttribute(Ls.CUR_PATH);
     if(par.length() > 1 && opath != null) {
       Path path = (Path) opath;
-      Path np = path.resolve(par.getParam(1));
+      String spath = new String(Base64.getDecoder().decode(par.getParam(1)), StandardCharsets.UTF_8);
+      Path np = path.resolve(spath);
       if(Files.exists(np) && Files.isRegularFile(np) && isParent(path, np)) {
+        long[] range = getRange(req);
+        long total = Files.size(np);
+        long length = range[0] - range[1] == 0 ? total : range[0] - range[1];
         resp.setContentType("application/octet-stream");
-        resp.setContentLengthLong(Files.size(np));
+        resp.setContentLengthLong(length);
         resp.setHeader("Content-Disposition:", 
             "attachment; filename=\""+ np.getFileName().toString()+ "\"");
-        Files.copy(np, resp.getOutputStream());
+        resp.setHeader("Accept-Ranges", "bytes");
+        resp.setHeader("Content-Range", "bytes "
+            + range[0]+ "-"+ (range[0]+length)+ "/"+ total);
+        transfer(np, resp.getOutputStream(), range[0], length);
         resp.flushBuffer();
       }
       else {

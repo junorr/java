@@ -6,7 +6,8 @@ var login = new Vue({
   },
   computed: {
     user: function() {
-      return "Welcome " + this.rawUser.toUpperCase() + "!";
+      return this.isLogged ? "Welcome " 
+          + this.rawUser.toUpperCase() + "!" : "";
     },
     isLogged: function() {
       return this.rawUser && this.rawUser.length > 0;

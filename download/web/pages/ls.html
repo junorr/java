@@ -1,4 +1,17 @@
-<link type="text/css" rel="stylesheet" href="css/ls.css"/>
+<link type="text/css" href="css/ls.css" rel="stylesheet" />
+
+<style type="text/css">
+  
+  .tr-colored {
+    background-color: white;
+  }
+
+  .tr-colored:hover {
+    background-color: rgb(245,245,245);
+  }
+
+</style>
+
 
 <br/>
 
@@ -9,6 +22,20 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4><strong><i class="fa fa-folder-open _2"></i>{{dir.path}}</strong></h4>
+          <div style="float: right; margin-right: 10px; margin-top: -36px;">
+            <button title="Parent" type="button" class="btn btn-default" onclick="get('..');">
+              <i class="fa fa-arrow-circle-o-up"></i>
+            </button>
+            <button title="Delete" type="button" class="btn btn-default">
+              <i class="fa fa-trash-o"></i>
+            </button>
+            <button title="Create Dir" type="button" class="btn btn-default">
+              <i class="fa fa-plus"></i>
+            </button>
+            <button title="Upload" type="button" class="btn btn-default">
+              <i class="fa fa-cloud-upload"></i>
+            </button>
+            </div>
         </div>
         <div class="panel-body container">
           <div class="row">
@@ -52,11 +79,37 @@
             </div>
           </div>
         </div>
+        
+        <table class="table">
+          <thead>
+          <th><i class="fa fa-square-o _2"></i></th>
+          <th><i class="fa fa-exchange _2"></i>Path</th>
+          <th><i class="fa fa-database _2"></i>Size</th>
+          <th><i class="fa fa-lock _2"></i>Perms</th>
+          <th><i class="fa fa-user _2"></i>Owner/Group</th>
+          <th><i class="fa fa-calendar _2"></i>Modified Time</th>
+          </thead>
+          <tbody>
+            <tr class="tr-colored" v-for="file in ls" v-on:click="file.isdir ? get(file.path) : download(file.path)">
+              <td><input type="checkbox" class="form-control"/></td>
+              <td>
+                <i class="fa fa-folder _2" style="color: rgb(240,230,130);" v-if="file.isdir"></i>
+                <i class="fa _2" v-else v-bind:class="findIcon(file.path)"></i>
+                {{file.path}}
+              </td>
+              <td>{{getSize(file)}}</td>
+              <td>{{file.perms}}</td>
+              <td>{{file.owner}}/{{file.group}}</td>
+              <td>{{getTime(file.time.modified.seconds)}}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <div class="row row-file">
+  
+  <!-- div class="row row-file">
     <div class="col-lg-12 container">
       <div class="row">
         <div class="col-lg-4"><strong>Path</strong></div>
@@ -66,15 +119,17 @@
         <div class="col-lg-2"><strong><i class="fa fa-calendar _2"></i>Modified Time</strong></div>
       </div>
     </div>
-  </div>
+  </div -->
+  
+  
 
-  <div class="row row-file" v-for="file in ls">
+  <!--div class="row row-file" v-for="file in ls">
     <div class="col-lg-12 container">
-      <a href="#">
+      <a href="#" v-on:click="file.isdir ? get(file.path) : download(file.path)">
         <div class="row">
           <div class="col-lg-4">
             <i class="fa fa-folder _2" v-if="file.isdir"></i>
-            <i class="fa fa-file-text-o _2" v-else></i>
+            <i class="fa fa-file-text _2" v-else></i>
             {{file.path}}
           </div>
           <div class="col-lg-2">
@@ -92,7 +147,7 @@
         </div>
       </a>
     </div>
-  </div>
+  </div-->
   <br/>
   <br/>
   

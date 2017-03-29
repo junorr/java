@@ -2,10 +2,9 @@
   "elements": {},
   "attributes": {
     "v-vind:onclick": {},
-    "v-if": {
-      "context": "div"
-    },
+    "v-if": {},
     "v-else": {},
-    "v-for": {}
+    "v-for": {},
+    "v-bind:data-path": {}
   }
 }

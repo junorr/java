@@ -41,6 +41,18 @@
 
 <script>
   
+  $("#iuser").on("keydown", function(evt) {
+    if(evt.which === 13) {
+      $("#ipass").focus();
+    }
+  });
+  $("#ipass").on("keydown", function(evt) {
+    if(evt.which === 13) {
+      doLogin();
+    }
+  });
+  
+  
   function doLogin() {
     var user = $("#iuser").val();
     var pass = $("#ipass").val();
@@ -59,7 +71,6 @@
       user: user,
       pass: btoa(pass)
     }, function(data) {
-      console.log(data);
       login.rawUser = data;
       if(login.isLogged) {
         $("#page-body").load("nav/ls.html");
@@ -69,5 +80,12 @@
     });
   }
   
+  
+  $()
+  
+  
+  if(login.isLogged) {
+    $("#page-body").load("nav/ls.html");
+  }
   
 </script>

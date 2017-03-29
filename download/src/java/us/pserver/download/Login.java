@@ -90,27 +90,36 @@ public class Login extends Base {
   public String post(HttpServletRequest req, HttpServletResponse res) throws Exception {
     HttpSession ses = req.getSession();
     Map<String, String[]> map = req.getParameterMap();
-    if(map.containsKey("user") && map.containsKey("pass")) {
-      Users users = gson.fromJson(new InputStreamReader(
-          getClass().getResourceAsStream(USERS_FILE)), Users.class
-      );
-      System.out.println("* users: "+ users.users());
-      System.out.println("* map.get(\"user\")[0]: "+ map.get("user")[0]);
-      Optional<User> user = users.users().stream()
-          .filter(u->u.getName().equals(map.get("user")[0]))
-          .findFirst();
-      System.out.println("* user: "+ user);
-      if(user.isPresent() && user.get().getPass().equals(new String(
-          Base64.getDecoder().decode(map.get("pass")[0]), 
-          StandardCharsets.UTF_8))) {
-        System.out.println("* Logged User: "+ user);
-        ses.setAttribute("duser", user.get());
-        res.getWriter().write("\""+ user.get().getName()+ "\"");
-        res.getWriter().flush();
-      }
+    Users users = gson.fromJson(new InputStreamReader(
+        getClass().getResourceAsStream(USERS_FILE)), Users.class
+    );
+    User usr = authUser(users, map);
+    if(usr != null) {
+      //System.out.println("* Logged User: "+ usr);
+      ses.setAttribute("duser", usr);
+      res.getWriter().write("\""+ usr.getName()+ "\"");
+      res.getWriter().flush();
     }
-    badRequest(res, "Invalid user");
+    else {
+      badRequest(res, "Invalid user");
+    }
     return null;
+  }
+  
+  
+  private User authUser(Users us, Map<String,String[]> rmap) {
+    if(us == null || us.users().isEmpty() 
+        || rmap == null || !rmap.containsKey("user") 
+        || !rmap.containsKey("pass")) {
+      return null;
+    }
+    String usr = rmap.get("user")[0];
+    String pass = new String(Base64.getDecoder().decode(
+        rmap.get("pass")[0]), StandardCharsets.UTF_8
+    );
+    Optional<User> user = us.users().stream()
+        .filter(u->u.getName().equals(usr)).findAny();
+    return user.isPresent() && user.get().auth(pass) ? user.get() : null;
   }
 
 }

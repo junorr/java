@@ -56,8 +56,9 @@ public class User {
   }
 
 
-  public String getPass() {
-    return pass;
+  public boolean auth(String password) {
+    return pass != null && password != null 
+        && pass.equals(password);
   }
 
 
