@@ -54,6 +54,7 @@ public class Get extends Base {
   
   private long[] getRange(HttpServletRequest req) {
     String hrange = req.getHeader("Range");
+    System.out.println("#### getHeader(Range): "+ hrange);
     long[] range = new long[]{0L,0L};
     if(hrange != null && !hrange.trim().isEmpty()) {
       String[] srange = hrange.replace("bytes=", "").split("-");
@@ -91,20 +92,18 @@ public class Get extends Base {
 
   @Override
   public String request(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    printHeaders(req);
     HttpSession ses = req.getSession();
     URIParam par = new URIParam(req.getRequestURI());
     Object opath = ses.getAttribute(Ls.CUR_PATH);
-    System.out.println("#### opath: "+ opath);
     if(par.length() > 1 && opath != null) {
       Path path = (Path) opath;
       String spath = new String(Base64.getDecoder().decode(par.getParam(1)), StandardCharsets.UTF_8);
       Path np = path.resolve(spath);
-      System.out.println("#### path: "+ np);
       if(Files.exists(np) && Files.isRegularFile(np) && isParent(path, np)) {
         long[] range = getRange(req);
         long total = Files.size(np);
         long length = range[0] - range[1] == 0 ? total : range[0] - range[1];
-        System.out.println("##### length: "+ length);
         resp.setContentType("application/octet-stream");
         resp.setContentLengthLong(length);
         resp.setHeader("Content-Disposition:", 
@@ -119,7 +118,6 @@ public class Get extends Base {
         badRequest(resp, "File does not exist");
       }
     }
-    printHeaders(req);
     return null;
   }
   
