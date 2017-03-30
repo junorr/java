@@ -227,16 +227,28 @@ function fileName(path) {
     rpath = path.substring(
       path.lastIndexOf("/")+1, path.length);
   }
-  return btoa(rpath);
+  return encodeURI(rpath);
 }
 
 
 function get(path) {
+  console.log("* get: "+ path);
   url = "ls/"+ fileName(path);
   if(!path) {
     url = "ls";
   }
+  console.log("* get.url: "+ url);
   $.get(url, function(data) {
+    console.log("* get.data: "+ data);
+    curdir.dir = data[0];
+    data.shift();
+    curdir.ls = data;
+  }, "json");
+}
+
+
+function parent() {
+  $.get("ls-up", function(data) {
     curdir.dir = data[0];
     data.shift();
     curdir.ls = data;
@@ -248,7 +260,7 @@ function download(path) {
   if(!path || typeof path !== 'string') {
     return;
   }
-  window.open("get/"+fileName(path), "_blank");
+  return "get/"+encodeURI(btoa(path));
 }
 
 

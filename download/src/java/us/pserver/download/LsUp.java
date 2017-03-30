@@ -24,12 +24,9 @@ package us.pserver.download;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
@@ -37,15 +34,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import us.pserver.download.file.IFPath;
-import us.pserver.download.util.URIParam;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/03/2017
  */
-@WebServlet("/ls/*")
-public class Ls extends Base {
+@WebServlet("/ls-up/*")
+public class LsUp extends Base {
   
   public static final String DEFAULT_PATH = "/storage/";
   
@@ -54,7 +50,7 @@ public class Ls extends Base {
   private final Gson gson;
   
   
-  public Ls() {
+  public LsUp() {
     gson = new GsonBuilder().setPrettyPrinting().create();
   }
 
@@ -73,24 +69,17 @@ public class Ls extends Base {
   
   @Override
   public String request(HttpServletRequest req, HttpServletResponse res) throws Exception {
-    URIParam par = new URIParam(req.getRequestURI());
     HttpSession ses = req.getSession();
     Object opath = ses.getAttribute(CUR_PATH);
     Path path = (opath != null ? (Path)opath : Paths.get(DEFAULT_PATH));
-    List<IFPath> ls = ls(path);
-    if(par.length() > 1) {
-      String spath = URLDecoder.decode(par.getParam(1), "UTF-8");
-      Path np = path.resolve(spath);
-      if(isParent(path, np) || isParent(np, path) && Files.exists(np)) {
-        if(Files.isDirectory(np)) {
-          ls = ls(np);
-          path = np;
-        }
-        else {
-          new Get().request(req, res);
-        }
-      }
+    Path np = path.getParent() != null ? path.getParent() : path;
+    Path def = Paths.get(DEFAULT_PATH);
+    if(isParent(np, def) && !np.equals(def)) {
+      res.sendError(403);
+      return null;
     }
+    List<IFPath> ls = ls(np);
+    path = np;
     ses.setAttribute(CUR_PATH, path);
     res.getWriter().write(gson.toJson(ls));
     return null;

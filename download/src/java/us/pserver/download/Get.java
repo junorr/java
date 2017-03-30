@@ -43,7 +43,7 @@ import us.pserver.download.util.URIParam;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/03/2017
  */
-@WebServlet("/get/*")
+@WebServlet("/get_old/*")
 public class Get extends Base {
   
   private boolean isParent(Path parent, Path path) {
