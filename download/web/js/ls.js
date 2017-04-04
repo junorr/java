@@ -198,7 +198,7 @@ function findIcon(path) {
 
 
 function getSize(file) {
-  console.log("file.size.bytes: "+ file.size.bytes);
+  //console.log("file.size.bytes: "+ file.size.bytes);
   if(!file || typeof file.size.bytes === 'undefined') {
     return new FSize(0).toString();
   }
@@ -232,14 +232,14 @@ function fileName(path) {
 
 
 function get(path) {
-  console.log("* get: "+ path);
+  //console.log("* get: "+ path);
   url = "ls/"+ fileName(path);
   if(!path) {
     url = "ls";
   }
-  console.log("* get.url: "+ url);
+  //console.log("* get.url: "+ url);
   $.get(url, function(data) {
-    console.log("* get.data: "+ data);
+    //console.log("* get.data: "+ data);
     curdir.dir = data[0];
     data.shift();
     curdir.ls = data;
@@ -260,7 +260,7 @@ function download(path) {
   if(!path || typeof path !== 'string') {
     return;
   }
-  return "get/"+encodeURI(btoa(path));
+  return "get/"+btoa(path);
 }
 
 

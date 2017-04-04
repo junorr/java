@@ -36,8 +36,8 @@
         <div class="panel-heading">
           <h4><strong><i class="fa fa-folder-open _2"></i>{{dir.path}}</strong></h4>
           <div style="float: right; margin-right: 10px; margin-top: -36px;">
-            <button title="Parent" type="button" class="btn btn-default" onclick="parent();">
-              <i class="fa fa-arrow-circle-o-up"></i>
+            <button title="Parent Folder" type="button" class="btn btn-default" onclick="parent();">
+              <i class="fa fa-level-up"></i>
             </button>
             <button title="Delete" type="button" class="btn btn-default">
               <i class="fa fa-trash-o"></i>
@@ -96,7 +96,7 @@
         <table id="table-files" class="table">
           <thead>
           <th><i class="fa fa-square-o _2"></i></th>
-          <th><i class="fa fa-exchange _2"></i>Path</th>
+          <th><i class="fa fa-folder-open-o _2"></i>File</th>
           <th><i class="fa fa-database _2"></i>Size</th>
           <th><i class="fa fa-lock _2"></i>Perms</th>
           <th><i class="fa fa-user _2"></i>Owner/Group</th>
@@ -106,7 +106,7 @@
             <tr class="tr-colored" v-for="file in ls">
               <td><input type="checkbox" class="form-control"/></td>
               <td>
-                <a v-bind:href="download(file.path)" v-if="!file.isdir" class="f-link">
+                <a v-bind:href="download(file.path)" v-if="!file.isdir" class="f-link" target="_blank">
                   <i class="fa fa-folder _2" style="color: rgb(240,230,130);" v-if="file.isdir"></i>
                   <i class="fa _2" v-else v-bind:class="findIcon(file.path)"></i>
                   {{file.path}}
