@@ -124,27 +124,16 @@ public class Download extends HttpServlet {
           response.sendError(404, "NoFileDef");
           return;
         }
-        
-        byte[] bs = Base64.getDecoder().decode(
-            URLDecoder.decode(par.getParam(1), "UTF-8")
+        String spath = new String(
+            Base64.getDecoder().decode(par.getParam(1)), 
+            StandardCharsets.UTF_8
         );
-        Path path = Paths.get(new String(bs, StandardCharsets.UTF_8));
+        Path path = Paths.get(spath);
         if(!Files.exists(path)) {
           response.sendError(404, "File Not Found: "+ path);
           return;
         }
 
-        // Get requested file by path info.
-        String requestedFile = request.getPathInfo();
-
-        // Check if file is actually supplied to the request URL.
-        if (requestedFile == null) {
-            // Do your thing if the file is not supplied to the request URL.
-            // Throw an exception, or send 404, or show default/warning page, or just ignore it.
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-        
         // Prepare some variables. The ETag is an unique identifier of the file.
         String fileName = path.getFileName().toString();
         long length = Files.size(path);
