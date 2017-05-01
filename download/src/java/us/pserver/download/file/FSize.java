@@ -35,14 +35,18 @@ public class FSize implements IFSize {
 
   private final long bytes;
   
+  private final String formatted;
+  
   
   public FSize(long bytes) {
     this.bytes = bytes;
+    this.formatted = this.toString();
   }
   
   
   public FSize(IFSize size) {
     this.bytes = size.bytes();
+    this.formatted = this.toString();
   }
   
   

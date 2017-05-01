@@ -1,6 +1,6 @@
 <link type="text/css" href="css/ls.css" rel="stylesheet" />
 
-<style type="text/css">
+<!-- style type="text/css">
   
   .tr-colored {
     background-color: white;
@@ -23,7 +23,7 @@
     color: rgb(100,100,100);
   }
   
-</style>
+</style -->
 
 
 <br/>
@@ -96,7 +96,17 @@
         <table id="table-files" class="table">
           <thead>
           <th><i class="fa fa-square-o _2"></i></th>
-          <th><i class="fa fa-folder-open-o _2"></i>File</th>
+          <th>
+            <span class="_2 float-left th-file">
+              <i class="fa fa-folder-open-o _2"></i>File
+            </span>
+            <div class="float-left">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                <input class="form-control w220" type="text" id="iuser" placeholder="Filter"/>
+              </div>
+            </div>
+          </th>
           <th><i class="fa fa-database _2"></i>Size</th>
           <th><i class="fa fa-lock _2"></i>Perms</th>
           <th><i class="fa fa-user _2"></i>Owner/Group</th>
@@ -117,7 +127,7 @@
                   {{file.path}}
                 </a>
               </td>
-              <td>{{getSize(file)}}</td>
+              <td>{{file.size.formatted}}</td>
               <td>{{file.perms}}</td>
               <td>{{file.owner}}/{{file.group}}</td>
               <td>{{getTime(file.time.modified.seconds)}}</td>
@@ -128,51 +138,11 @@
     </div>
   </div>
 
-  
-  <!-- div class="row row-file">
-    <div class="col-lg-12 container">
-      <div class="row">
-        <div class="col-lg-4"><strong>Path</strong></div>
-        <div class="col-lg-2"><strong><i class="fa fa-database _2"></i>Size</strong></div>
-        <div class="col-lg-2"><strong><i class="fa fa-lock _2"></i>Perms</strong></div>
-        <div class="col-lg-2"><strong><i class="fa fa-user _2"></i>Owner/Group</strong></div>
-        <div class="col-lg-2"><strong><i class="fa fa-calendar _2"></i>Modified Time</strong></div>
-      </div>
-    </div>
-  </div -->
-  
-  
-
-  <!--div class="row row-file" v-for="file in ls">
-    <div class="col-lg-12 container">
-      <a href="#" v-on:click="file.isdir ? get(file.path) : download(file.path)">
-        <div class="row">
-          <div class="col-lg-4">
-            <i class="fa fa-folder _2" v-if="file.isdir"></i>
-            <i class="fa fa-file-text _2" v-else></i>
-            {{file.path}}
-          </div>
-          <div class="col-lg-2">
-            {{getSize(file)}}
-          </div>
-          <div class="col-lg-2">
-            {{file.perms}}
-          </div>
-          <div class="col-lg-2">
-            {{file.owner}}/{{file.group}}
-          </div>
-          <div class="col-lg-2">
-            {{getTime(file.time.modified.seconds)}}
-          </div>
-        </div>
-      </a>
-    </div>
-  </div-->
   <br/>
   <br/>
-  
 </div>
 
 
+<script type="text/javascript" src="js/extensions.js"></script>
 <script type="text/javascript" src="js/ls.js"></script>
 

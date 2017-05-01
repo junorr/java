@@ -81,17 +81,22 @@ public class Ls extends Base {
     if(par.length() > 1) {
       String spath = URLDecoder.decode(par.getParam(1), "UTF-8");
       Path np = path.resolve(spath);
-      if(isParent(path, np) || isParent(np, path) && Files.exists(np)) {
+      System.out.println("* "+ par.getURI()+ ": "+ np.toString());
+      if((isParent(path, np) || isParent(np, path)) && Files.exists(np)) {
         if(Files.isDirectory(np)) {
           ls = ls(np);
+          System.out.println("* ls( "+ ls.size()+ " ): ");
+          ls.forEach(p->System.out.println("  - "+ p));
           path = np;
         }
         else {
-          new Get().request(req, res);
+          new Download().doGet(req, res);
         }
       }
     }
     ses.setAttribute(CUR_PATH, path);
+    //res.setCharacterEncoding("ISO-8859-1");
+    res.setCharacterEncoding("UTF-8");
     res.getWriter().write(gson.toJson(ls));
     return null;
   }

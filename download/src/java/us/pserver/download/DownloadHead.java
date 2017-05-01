@@ -68,16 +68,33 @@ public class DownloadHead extends HttpServlet {
     }
   }
   
+  
+  protected Path decodePathUTF8(String enc) {
+    String spath = new String(
+        Base64.getDecoder().decode(enc), 
+        StandardCharsets.UTF_8
+    );
+    return Paths.get(spath);
+  }
+  
+
+  protected Path decodePathISO88591(String enc) {
+    String spath = new String(
+        Base64.getDecoder().decode(enc), 
+        StandardCharsets.ISO_8859_1
+    );
+    return Paths.get(spath);
+  }
+  
 
   protected Path getFilePath(HttpServletRequest req) {
     Path path = null;
     URIParam par = new URIParam(req.getRequestURI());
     if(par.length() > 1) {
-      String spath = new String(
-          Base64.getDecoder().decode(par.getParam(1)), 
-          StandardCharsets.UTF_8
-      );
-      path = Paths.get(spath);
+      path = decodePathUTF8(par.getParam(1));
+      if(!Files.exists(path)) {
+        path = decodePathISO88591(par.getParam(1));
+      }
     }
     return path != null && Files.exists(path) ? path : null;
   }

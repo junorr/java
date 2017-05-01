@@ -2,23 +2,26 @@
 var login = new Vue({
   el: "#loggedUser",
   data: {
-    rawUser: ""
+    user: ""
   },
   computed: {
-    user: function() {
+    userName: function() {
       return this.isLogged ? "Welcome " 
-          + this.rawUser.toUpperCase() + "!" : "";
+          + this.user.toUpperCase() + "!" : "";
     },
     isLogged: function() {
-      return this.rawUser && this.rawUser.length > 0;
+      return this.user && this.user.length > 0;
     }
   }
 });
 
 
 $.get("login", function(data) {
-  login.rawUser = data;
-}, "json");
-
+  if(typeof data === 'string') {
+    login.user = data;
+  }
+}, "json").fail(function(data) {
+  console.log("# fail on login: "+ data);
+});
 
 $("#page-body").load("nav/login.html");

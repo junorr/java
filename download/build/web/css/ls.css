@@ -39,3 +39,18 @@
 .flink:visited {
   text-decoration: darkslategray;
 }
+
+.float-left {
+  display: block; 
+  float: left;
+}
+
+.th-file {
+  margin-top: 7px; 
+  display: block; 
+  float: left;
+}
+
+.w220 {
+  width: 220px;
+}

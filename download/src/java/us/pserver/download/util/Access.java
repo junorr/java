@@ -24,6 +24,7 @@ package us.pserver.download.util;
 import com.google.gson.Gson;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,9 +45,9 @@ public class Access {
   
   
   private Access() {
-    block = new ArrayList<>();
-    open = new ArrayList<>();
-    secure = new ArrayList<>();
+    block = Collections.synchronizedList(new ArrayList<>());
+    open = Collections.synchronizedList(new ArrayList<>());
+    secure = Collections.synchronizedList(new ArrayList<>());
   }
   
   
@@ -86,7 +87,7 @@ public class Access {
   }
   
   
-  private boolean in(String uri, List<String> ls) {
+  private synchronized boolean in(String uri, List<String> ls) {
     if(uri == null) return false;
     for(String s : ls) {
       if(s.startsWith("*") && uri.endsWith(s.substring(1))) {

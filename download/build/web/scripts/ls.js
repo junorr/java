@@ -1,4 +1,6 @@
 
+requirejs(["extensions.js"]);
+
 
 function ext(path) {
   return path.substring(
@@ -58,7 +60,7 @@ function get(path) {
   }
   //console.log("* get.url: "+ url);
   $.get(url, function(data) {
-    console.log("* get.data: "+ JSON.stringify(data));
+    //console.log("* get.data: "+ data);
     curdir.dir = data[0];
     data.shift();
     curdir.ls = data;

@@ -55,40 +55,56 @@ public class Download extends DownloadHead {
   protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     if(head(req, res)) return;
     printHeaders(req);
+    System.out.println("* get: "+ path.toString());
+    System.out.println("* get: "+ path.toString());
+    System.out.println("* get: "+ path.toString());
     long length = Files.size(path);
     List<Range> ranges = getRanges(req, res);
     Range full = new Range(0, length - 1, length);
-
+    if(ranges.isEmpty()) {
+      this.copyFull(req, res, full);
+    } 
+    else {
+      this.copyMultipart(req, res, ranges);
+    }
+  }
+  
+  
+  private void copyFull(HttpServletRequest req, HttpServletResponse res, Range full) throws ServletException, IOException {
+    res.setContentLengthLong(full.length);
+    res.setHeader("Content-Range", "bytes " + full.start + "-" + full.end + "/" + full.total);
+    res.setContentType(this.getContentType(req));
+    res.flushBuffer();
+    printHeaders(res);
     try (
-        RandomAccessFile input = new RandomAccessFile(path.toFile(), "r");
-        OutputStream output = res.getOutputStream();
+          RandomAccessFile input = new RandomAccessFile(path.toFile(), "r");
+          OutputStream output = res.getOutputStream();
         ) {
-      
-      String contype = this.getContentType(req);
-      if(ranges.isEmpty()) {
-        res.setContentLengthLong(full.length);
-        res.setHeader("Content-Range", "bytes " + full.start + "-" + full.end + "/" + full.total);
-        res.setContentType(contype);
-        res.flushBuffer();
-        printHeaders(res);
-        copy(input, output, full.start, full.length);
-      } 
-      else {
-        res.setStatus(206); // partial content
-        res.setContentType("multipart/byteranges; boundary=" + MULTIPART_BOUNDARY);
-        res.flushBuffer();
-        printHeaders(res);
-        ServletOutputStream sos = (ServletOutputStream) output;
-        for (Range r : ranges) {
-          sos.println();
-          sos.println("--" + MULTIPART_BOUNDARY);
-          sos.println("Content-Type: " + contype);
-          sos.println("Content-Range: bytes " + r.start + "-" + r.end + "/" + r.total);
-          copy(input, output, r.start, r.length);
-        }
+      copy(input, output, full.start, full.length);
+    }
+  }
+
+    
+  private void copyMultipart(HttpServletRequest req, HttpServletResponse res, List<Range> ranges) throws ServletException, IOException {
+    res.setStatus(206); // partial content
+    res.setContentType("multipart/byteranges; boundary=" + MULTIPART_BOUNDARY);
+    res.flushBuffer();
+    printHeaders(res);
+    String contype = this.getContentType(req);
+    try (
+          RandomAccessFile input = new RandomAccessFile(path.toFile(), "r");
+          OutputStream output = res.getOutputStream();
+        ) {
+      ServletOutputStream sos = (ServletOutputStream) output;
+      for (Range r : ranges) {
         sos.println();
-        sos.println("--" + MULTIPART_BOUNDARY + "--");
+        sos.println("--" + MULTIPART_BOUNDARY);
+        sos.println("Content-Type: " + contype);
+        sos.println("Content-Range: bytes " + r.start + "-" + r.end + "/" + r.total);
+        copy(input, output, r.start, r.length);
       }
+      sos.println();
+      sos.println("--" + MULTIPART_BOUNDARY + "--");
     }
   }
 
