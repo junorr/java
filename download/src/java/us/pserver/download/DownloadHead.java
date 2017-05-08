@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import us.pserver.download.util.URIParam;
+import us.pserver.download.util.URIPath;
 
 /**
  *
@@ -66,37 +67,6 @@ public class DownloadHead extends HttpServlet {
     for(String hd : en) {
       System.out.println(hd+ ": "+ res.getHeader(hd));
     }
-  }
-  
-  
-  protected Path decodePathUTF8(String enc) {
-    String spath = new String(
-        Base64.getDecoder().decode(enc), 
-        StandardCharsets.UTF_8
-    );
-    return Paths.get(spath);
-  }
-  
-
-  protected Path decodePathISO88591(String enc) {
-    String spath = new String(
-        Base64.getDecoder().decode(enc), 
-        StandardCharsets.ISO_8859_1
-    );
-    return Paths.get(spath);
-  }
-  
-
-  protected Path getFilePath(HttpServletRequest req) {
-    Path path = null;
-    URIParam par = new URIParam(req.getRequestURI());
-    if(par.length() > 1) {
-      path = decodePathUTF8(par.getParam(1));
-      if(!Files.exists(path)) {
-        path = decodePathISO88591(par.getParam(1));
-      }
-    }
-    return path != null && Files.exists(path) ? path : null;
   }
   
   
@@ -226,7 +196,9 @@ public class DownloadHead extends HttpServlet {
   
   protected boolean head(HttpServletRequest req, HttpServletResponse res) throws IOException {
     //printHeaders(req);
-    path = getFilePath(req);
+    path = URIPath.of(
+        new URIParam(req.getRequestURI())
+    ).getPath().toPath();
     boolean head = true;
     if(path == null) {
       res.sendError(404, "NoFileDef");

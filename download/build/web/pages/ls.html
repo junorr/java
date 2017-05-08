@@ -39,10 +39,10 @@
             <button title="Parent Folder" type="button" class="btn btn-default" onclick="parent();">
               <i class="fa fa-level-up"></i>
             </button>
-            <button title="Delete" type="button" class="btn btn-default">
+            <button title="Delete" type="button" class="btn btn-default" onclick="rm();">
               <i class="fa fa-trash-o"></i>
             </button>
-            <button title="Create Dir" type="button" class="btn btn-default">
+            <button title="Create Dir" type="button" class="btn btn-default" onclick="mkdir();">
               <i class="fa fa-plus"></i>
             </button>
             <button title="Upload" type="button" class="btn btn-default">
@@ -114,7 +114,7 @@
           </thead>
           <tbody>
             <tr class="tr-colored" v-for="file in ls">
-              <td><input type="checkbox" class="form-control"/></td>
+              <td><input type="checkbox" class="form-control" v-on:click="select(file.path)"/></td>
               <td>
                 <a v-bind:href="download(file.path)" v-if="!file.isdir" class="f-link" target="_blank">
                   <i class="fa fa-folder _2" style="color: rgb(240,230,130);" v-if="file.isdir"></i>

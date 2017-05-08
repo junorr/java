@@ -55,9 +55,9 @@ public class Download extends DownloadHead {
   protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     if(head(req, res)) return;
     printHeaders(req);
-    System.out.println("* get: "+ path.toString());
-    System.out.println("* get: "+ path.toString());
-    System.out.println("* get: "+ path.toString());
+    //System.out.println("* get: "+ path.toString());
+    //System.out.println("* get: "+ path.toString());
+    //System.out.println("* get: "+ path.toString());
     long length = Files.size(path);
     List<Range> ranges = getRanges(req, res);
     Range full = new Range(0, length - 1, length);
@@ -72,7 +72,11 @@ public class Download extends DownloadHead {
   
   private void copyFull(HttpServletRequest req, HttpServletResponse res, Range full) throws ServletException, IOException {
     res.setContentLengthLong(full.length);
-    res.setHeader("Content-Range", "bytes " + full.start + "-" + full.end + "/" + full.total);
+    res.setHeader("Content-Range", "bytes " 
+        + full.start + "-" 
+        + full.end + "/" 
+        + full.total
+    );
     res.setContentType(this.getContentType(req));
     res.flushBuffer();
     printHeaders(res);
@@ -100,7 +104,11 @@ public class Download extends DownloadHead {
         sos.println();
         sos.println("--" + MULTIPART_BOUNDARY);
         sos.println("Content-Type: " + contype);
-        sos.println("Content-Range: bytes " + r.start + "-" + r.end + "/" + r.total);
+        sos.println("Content-Range: bytes " 
+            + r.start + "-" 
+            + r.end + "/" 
+            + r.total
+        );
         copy(input, output, r.start, r.length);
       }
       sos.println();

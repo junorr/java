@@ -83,6 +83,26 @@ function download(path) {
 }
 
 
+function rm() {
+  
+}
+
+
+var selections = [];
+
+
+function select(path) {
+  var idx = selections.indexOf(path);
+  console.log(path + ": "+ idx);
+  if(idx < 0) {
+    selections.push(path);
+  }
+  else {
+    selections.splice(idx, 1);
+  }
+}
+
+
 var curdir = new Vue({
   el: "#current-dir",
   data: {

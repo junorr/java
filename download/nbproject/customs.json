@@ -3,8 +3,11 @@
   "attributes": {
     "v-vind:onclick": {},
     "v-if": {},
+    "v-bind:select": {},
+    "v-bind:data-path": {},
+    "v-on:click": {},
     "v-else": {},
     "v-for": {},
-    "v-bind:data-path": {}
+    "v-on:select": {}
   }
 }

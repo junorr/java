@@ -81,12 +81,12 @@ public class Ls extends Base {
     if(par.length() > 1) {
       String spath = URLDecoder.decode(par.getParam(1), "UTF-8");
       Path np = path.resolve(spath);
-      System.out.println("* "+ par.getURI()+ ": "+ np.toString());
+      //System.out.println("* "+ par.getURI()+ ": "+ np.toString());
       if((isParent(path, np) || isParent(np, path)) && Files.exists(np)) {
         if(Files.isDirectory(np)) {
           ls = ls(np);
-          System.out.println("* ls( "+ ls.size()+ " ): ");
-          ls.forEach(p->System.out.println("  - "+ p));
+          //System.out.println("* ls( "+ ls.size()+ " ): ");
+          //ls.forEach(p->System.out.println("  - "+ p));
           path = np;
         }
         else {
