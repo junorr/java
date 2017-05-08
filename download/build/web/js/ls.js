@@ -83,12 +83,12 @@ function download(path) {
 }
 
 
+var selections = [];
+
+
 function rm() {
   
 }
-
-
-var selections = [];
 
 
 function select(path) {

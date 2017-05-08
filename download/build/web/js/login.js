@@ -53,16 +53,6 @@ function doLogin() {
 }
 
 
-console.log("typeof login: "+ typeof login);
-//console.log("typeof stringify(login): "+ JSON.stringify(login));
-console.log("typeof login.user: "+ typeof login.user);
-console.log("typeof stringify(login.user): "+ JSON.stringify(login.user));
-console.log("typeof login.userName: "+ typeof login.userName);
-console.log("typeof stringify(login.userName): "+ JSON.stringify(login.userName));
-console.log("typeof login.isLogged: "+ typeof login.isLogged);
-console.log("typeof stringify(login.isLogged): "+ JSON.stringify(login.isLogged));
-
-
 if(typeof login.isLogged === 'boolean' && login.isLogged) {
   $("#page-body").load("nav/ls.html");
 }
