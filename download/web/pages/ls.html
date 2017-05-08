@@ -28,6 +28,26 @@
 
 <br/>
 
+<div id="second-buttons" class="list-group" style="position: fixed; top: 210px; left: auto; right: 10px; z-index: 10; box-shadow: 0px 0px 10px rgba(60,60,60,0.6); display: none; border-radius: 5px;">
+  <button title="Parent Folder" type="button" class="btn btn-default" onclick="parent();" style="width: 41px;">
+    <i class="fa fa-level-up"></i>
+  </button>
+  </br>
+  <button title="Delete" type="button" class="btn btn-default" onclick="rmDialog();" style="width: 41px;">
+    <i class="fa fa-trash-o"></i>
+  </button>
+  </br>
+  <button title="Create Dir" type="button" class="btn btn-default" onclick="mkdirDialog();" style="width: 41px;">
+    <i class="fa fa-plus"></i>
+  </button>
+  </br>
+  <button title="Upload" type="button" class="btn btn-default" style="width: 41px;">
+    <i class="fa fa-cloud-upload"></i>
+  </button>
+</div>
+
+
+
 <div id="current-dir">
 
   <div class="row">
@@ -35,14 +55,14 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4><strong><i class="fa fa-folder-open _2"></i>{{dir.path}}</strong></h4>
-          <div style="float: right; margin-right: 10px; margin-top: -36px;">
+          <div id="main-buttons" style="float: right; margin-right: 10px; margin-top: -36px;">
             <button title="Parent Folder" type="button" class="btn btn-default" onclick="parent();">
               <i class="fa fa-level-up"></i>
             </button>
-            <button title="Delete" type="button" class="btn btn-default" onclick="rm();">
+            <button title="Delete" type="button" class="btn btn-default" onclick="rmDialog();">
               <i class="fa fa-trash-o"></i>
             </button>
-            <button title="Create Dir" type="button" class="btn btn-default" onclick="mkdir();">
+            <button title="Create Dir" type="button" class="btn btn-default" onclick="mkdirDialog();">
               <i class="fa fa-plus"></i>
             </button>
             <button title="Upload" type="button" class="btn btn-default">
@@ -103,7 +123,7 @@
             <div class="float-left">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-search"></i></span>
-                <input class="form-control w220" type="text" id="iuser" placeholder="Filter"/>
+                <input class="form-control w220" type="text" id="iuser" placeholder="Filter" onkeyup="search('#table-files', this);"/>
               </div>
             </div>
           </th>
@@ -114,7 +134,7 @@
           </thead>
           <tbody>
             <tr class="tr-colored" v-for="file in ls">
-              <td><input type="checkbox" class="form-control" v-on:click="select(file.path)"/></td>
+              <td><input class="select-file" type="checkbox" class="form-control" v-on:click="select(file)"/></td>
               <td>
                 <a v-bind:href="download(file.path)" v-if="!file.isdir" class="f-link" target="_blank">
                   <i class="fa fa-folder _2" style="color: rgb(240,230,130);" v-if="file.isdir"></i>
@@ -143,7 +163,8 @@
 </div>
 
 
-
+<div id="mkdir"></div>
+<div id="rm"></div>
 
 
 <script type="text/javascript" src="js/extensions.js"></script>

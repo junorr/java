@@ -22,13 +22,16 @@
 package us.pserver.download;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import us.pserver.download.file.IFPath;
+import static us.pserver.download.Ls.CUR_PATH;
+import static us.pserver.download.Ls.DEFAULT_PATH;
 import us.pserver.download.util.URIParam;
-import us.pserver.download.util.URIPath;
 
 /**
  *
@@ -36,7 +39,7 @@ import us.pserver.download.util.URIPath;
  * @version 0.0 - 22/03/2017
  */
 @WebServlet({"/md/*", "/mkdir/*"})
-public class MkDir extends Base {
+public class MkDir extends Ls {
   
   public MkDir() {}
 
@@ -44,15 +47,23 @@ public class MkDir extends Base {
   @Override
   public String request(HttpServletRequest req, HttpServletResponse res) throws Exception {
     URIParam par = new URIParam(req.getRequestURI());
-    IFPath path = URIPath.of(par).getPath();
-    try {
-      Files.createDirectories(path.toPath());
-    }
-    catch(SecurityException e) {
-      res.sendError(403, e.toString());
-    }
-    catch(IOException e) {
-      res.sendError(400, e.toString());
+    //IFPath path = URIPath.of(par).getPath();
+    Object opath = req.getSession().getAttribute(CUR_PATH);
+    Path path = (opath != null ? (Path)opath : Paths.get(DEFAULT_PATH));
+    if(par.length() > 1) {
+      String spath = URLDecoder.decode(par.getParam(1), "UTF-8");
+      Path np = path.resolve(spath);
+      if(isParent(path, np) && !Files.exists(np)) {
+        try {
+          Files.createDirectories(np);
+        }
+        catch(SecurityException e) {
+          res.sendError(403, e.toString());
+        }
+        catch(IOException e) {
+          res.sendError(400, e.toString());
+        }
+      }
     }
     return null;
   }

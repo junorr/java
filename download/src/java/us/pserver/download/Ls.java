@@ -58,7 +58,7 @@ public class Ls extends Base {
     gson = new GsonBuilder().setPrettyPrinting().create();
   }
 
-  private boolean isParent(Path parent, Path path) {
+  protected boolean isParent(Path parent, Path path) {
     return parent != null && path != null
         && (path.startsWith(parent) || path.equals(parent));
   }

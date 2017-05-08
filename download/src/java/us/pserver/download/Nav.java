@@ -37,6 +37,7 @@ public class Nav extends Base {
   @Override
   public String request(HttpServletRequest req, HttpServletResponse resp) throws Exception {
     URIParam par = new URIParam(req.getRequestURI());
+    System.out.println("* Nav: "+ par.getParam(1));
     return (par.length() > 1 ? "/pages/"+par.getParam(1) : null);
   }
 

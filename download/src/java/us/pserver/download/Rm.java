@@ -21,7 +21,9 @@
 
 package us.pserver.download;
 
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +40,32 @@ import us.pserver.download.util.URIPath;
 public class Rm extends Base {
   
   public Rm() {}
+  
+  
+  private void delete(Path path) {
+    if(Files.isDirectory(path)) {
+      deleteDirContent(path);
+    }
+    try {
+      Files.delete(path);
+    }
+    catch(IOException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
+  
+  
+  private void deleteDirContent(Path path) {
+    if(!Files.isDirectory(path)) {
+      return;
+    }
+    try {
+      Files.walk(path).skip(1).forEach(p->delete(p));
+    }
+    catch(IOException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
 
   
   @Override
@@ -45,7 +73,7 @@ public class Rm extends Base {
     URIParam par = new URIParam(req.getRequestURI());
     IFPath path = URIPath.of(par).getPath();
     if(Files.exists(path.toPath())) {
-      Files.delete(path.toPath());
+      delete(path.toPath());
     }
     else {
       res.sendError(404, "File does not exists.");

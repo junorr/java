@@ -1,3 +1,10 @@
+function isScrolledIntoView(elem) {
+  var docViewTop = $(window).scrollTop();
+  var docViewBottom = docViewTop + $(window).height();
+  var elemTop = $(elem).offset().top;
+  var elemBottom = elemTop + $(elem).height();
+  return ((elemBottom >= docViewTop) && (elemTop <= docViewBottom) && (elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+}
 
 
 function ext(path) {
@@ -50,7 +57,7 @@ function fileName(path) {
 }
 
 
-function get(path) {
+function get(path, complete) {
   //console.log("* get: "+ path);
   url = "ls/"+ fileName(path);
   if(!path) {
@@ -58,10 +65,16 @@ function get(path) {
   }
   //console.log("* get.url: "+ url);
   $.get(url, function(data) {
-    console.log("* get.data: "+ JSON.stringify(data));
+    //console.log("* get.data: "+ JSON.stringify(data));
     curdir.dir = data[0];
     data.shift();
     curdir.ls = data;
+    if(typeof path === 'function') {
+      complete = path;
+    }
+    if(typeof complete === 'function') {
+      complete();
+    }
   }, "json");
 }
 
@@ -83,22 +96,107 @@ function download(path) {
 }
 
 
-var selections = [];
-
-
-function rm() {
-  
+function mkdirDialog() {
+  $("#mkdir").load("nav/mkdir.html", function() {
+    $("#modal-mkdir").modal("show");
+    $("#idir").on("keyup", function(evt) {
+      if(evt.which === 13) {
+        mkdir($("#idir").val());
+      }
+    }).focus();
+    $("#idir").focus();
+  }).focus();
 }
 
 
-function select(path) {
-  var idx = selections.indexOf(path);
-  console.log(path + ": "+ idx);
+function mkdir(dirname) {
+  if(!dirname || typeof dirname !== 'string' || dirname.length < 1) {
+    alert("Bad File Name: '"+ dirname+ "'");
+    $("#modal-mkdir").modal("hide");
+    return;
+  }
+  $.get("mkdir/"+ encodeURI(dirname), function() {
+    $("#modal-mkdir").modal("hide");
+    get();
+  }, "text");
+}
+
+
+var selections = [];
+
+
+function rmDialog() {
+  if(selections.length < 1) {
+    return;
+  }
+  $("#rm").load("nav/rm.html", function() {
+    var selects = new Vue({
+      el: "#rmlist",
+      computed: {
+        files: function() {
+          return selections;
+        }
+      }
+    });
+    $("#modal-rm").modal("show");
+  });
+}
+
+
+function rm() {
+  if(selections.length < 1) {
+    return;
+  }
+  for(var i = 0; i < selections.length; i++) {
+    $.ajax({
+      method: "GET",
+      async: false,
+      url: "rm/"+ btoa(selections[i].path),
+      dataType: false
+    });
+  }
+  $(".select-file").prop("checked", false);
+  $("#modal-rm").modal("hide");
+  selections = [];
+  get();
+}
+
+
+function select(file) {
+  var idx = selections.indexOf(file);
   if(idx < 0) {
-    selections.push(path);
+    selections.push(file);
   }
   else {
     selections.splice(idx, 1);
+  }
+}
+
+
+function search(table, input) {
+  $(table).find("tbody tr").each(function(idx, elt) {
+    $(elt).show();
+  });
+  var val = $(input).val();
+  if(!val || val === '') {
+    return;
+  }
+  var regex = new RegExp(val, 'i');
+  $(table).find("tbody tr").filter(":visible").each(function(idx, elt) {
+    if(!regex.test($(elt).text())) {
+      $(elt).closest("tr").hide();
+    }
+  });
+}
+
+
+function toggleSecondButtons() {
+  if(isScrolledIntoView("#main-buttons")) {
+    $("#second-buttons").hide();
+  }
+  else {
+    $("#second-buttons").css("top", $(window).height() / 2 - 130);
+    $("#second-buttons").show();
   }
 }
 
@@ -113,3 +211,9 @@ var curdir = new Vue({
 
 
 get();
+
+
+$(window).scroll(function() {
+  toggleSecondButtons();
+});
+
