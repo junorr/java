@@ -40,10 +40,11 @@ import us.pserver.download.file.IFPath;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/03/2017
  */
-@WebServlet("/ls-up/*")
+@WebServlet("/up/*")
 public class LsUp extends Base {
   
-  public static final String DEFAULT_PATH = "/storage/";
+  //public static final String DEFAULT_PATH = "/storage/";
+  public static final String DEFAULT_PATH = "D:/";
   
   public static final String CUR_PATH = "cur_path";
   

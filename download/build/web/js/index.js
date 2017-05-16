@@ -20,8 +20,8 @@ $.get("login", function(data) {
   if(typeof data === 'string') {
     login.user = data;
   }
-}, "json").fail(function(data) {
-  console.log("# fail on login: "+ data);
-});
+}, "json")/*.fail(function(data) {
+  console.log("# fail on login: "+ JSON.stringify(data));
+})*/;
 
 $("#page-body").load("nav/login.html");

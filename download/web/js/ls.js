@@ -48,10 +48,11 @@ function fileName(path) {
     return path;
   }
   var i = path.lastIndexOf("/");
+  if(i < 0) i = path.lastIndexOf("\\");
   var rpath = path;
   if(i >= 0) {
     rpath = path.substring(
-      path.lastIndexOf("/")+1, path.length);
+      i+1, path.length);
   }
   return encodeURI(rpath);
 }
@@ -65,7 +66,7 @@ function get(path, complete) {
   }
   //console.log("* get.url: "+ url);
   $.get(url, function(data) {
-    //console.log("* get.data: "+ JSON.stringify(data));
+    console.log("* get.data: "+ JSON.stringify(data));
     curdir.dir = data[0];
     data.shift();
     curdir.ls = data;
@@ -80,7 +81,7 @@ function get(path, complete) {
 
 
 function parent() {
-  $.get("ls-up", function(data) {
+  $.get("up", function(data) {
     curdir.dir = data[0];
     data.shift();
     curdir.ls = data;

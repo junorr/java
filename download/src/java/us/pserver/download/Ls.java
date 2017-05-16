@@ -24,12 +24,11 @@ package us.pserver.download;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
@@ -47,9 +46,12 @@ import us.pserver.download.util.URIParam;
 @WebServlet("/ls/*")
 public class Ls extends Base {
   
-  public static final String DEFAULT_PATH = "/storage/";
+  //public static final String DEFAULT_PATH = "/storage/";
+  public static final String DEFAULT_PATH = "D:/";
   
   public static final String CUR_PATH = "cur_path";
+  
+  public static final String DIR_UP = "..";
   
   private final Gson gson;
   
@@ -78,20 +80,17 @@ public class Ls extends Base {
     Object opath = ses.getAttribute(CUR_PATH);
     Path path = (opath != null ? (Path)opath : Paths.get(DEFAULT_PATH));
     List<IFPath> ls = ls(path);
-    if(par.length() > 1) {
-      String spath = URLDecoder.decode(par.getParam(1), "UTF-8");
-      Path np = path.resolve(spath);
-      //System.out.println("* "+ par.getURI()+ ": "+ np.toString());
-      if((isParent(path, np) || isParent(np, path)) && Files.exists(np)) {
-        if(Files.isDirectory(np)) {
-          ls = ls(np);
-          //System.out.println("* ls( "+ ls.size()+ " ): ");
-          //ls.forEach(p->System.out.println("  - "+ p));
-          path = np;
-        }
-        else {
-          new Download().doGet(req, res);
-        }
+    Path np = this.resolve(path, par);
+    //System.out.println("* ls.np = "+ np);
+    if(isValid(path, np)) {
+      if(Files.isDirectory(np)) {
+        ls = ls(np);
+        //System.out.println("* ls( "+ ls.size()+ " ): ");
+        //ls.forEach(p->System.out.println("  - "+ p));
+        path = np;
+      }
+      else {
+        new Download().doGet(req, res);
       }
     }
     ses.setAttribute(CUR_PATH, path);
@@ -99,6 +98,24 @@ public class Ls extends Base {
     res.setCharacterEncoding("UTF-8");
     res.getWriter().write(gson.toJson(ls));
     return null;
+  }
+  
+  
+  private boolean isValid(Path path, Path other) {
+    return other != null 
+        && (isParent(path, other) 
+        || isParent(other, path)) 
+        && Files.exists(other);
+  }
+  
+  
+  private Path resolve(Path path, URIParam par) throws UnsupportedEncodingException {
+    if(par.length() < 2) return null;
+    String spath = URLDecoder.decode(par.getParam(1), "UTF-8");
+    //System.out.println("* ls.spath = "+ spath);
+    return DIR_UP.equals(spath)
+        ? path.getParent()
+        : path.resolve(spath);
   }
 
 }

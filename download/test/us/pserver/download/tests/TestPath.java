@@ -21,6 +21,7 @@
 
 package us.pserver.download.tests;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -36,7 +37,7 @@ public class TestPath {
     Path p = Paths.get("/storage/apps");
     System.out.println(p);
     System.out.println(p.resolve(".."));
-    
+    System.out.println("* File.exists( "+ p.resolve("..")+ " ): "+ Files.exists(p.resolve("..")));
   }
   
 }
