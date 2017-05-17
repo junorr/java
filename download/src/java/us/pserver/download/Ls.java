@@ -28,13 +28,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import static us.pserver.download.AppSetup.CURRENT_PATH;
 import us.pserver.download.file.IFPath;
 import us.pserver.download.util.URIParam;
 
@@ -45,13 +45,6 @@ import us.pserver.download.util.URIParam;
  */
 @WebServlet("/ls/*")
 public class Ls extends Base {
-  
-  //public static final String DEFAULT_PATH = "/storage/";
-  public static final String DEFAULT_PATH = "D:/";
-  
-  public static final String CUR_PATH = "cur_path";
-  
-  public static final String DIR_UP = "..";
   
   private final Gson gson;
   
@@ -77,8 +70,7 @@ public class Ls extends Base {
   public String request(HttpServletRequest req, HttpServletResponse res) throws Exception {
     URIParam par = new URIParam(req.getRequestURI());
     HttpSession ses = req.getSession();
-    Object opath = ses.getAttribute(CUR_PATH);
-    Path path = (opath != null ? (Path)opath : Paths.get(DEFAULT_PATH));
+    Path path = AppSetup.getAppSetup().getCurrentDir(ses);
     List<IFPath> ls = ls(path);
     Path np = this.resolve(path, par);
     //System.out.println("* ls.np = "+ np);
@@ -93,7 +85,7 @@ public class Ls extends Base {
         new Download().doGet(req, res);
       }
     }
-    ses.setAttribute(CUR_PATH, path);
+    ses.setAttribute(CURRENT_PATH, path);
     //res.setCharacterEncoding("ISO-8859-1");
     res.setCharacterEncoding("UTF-8");
     res.getWriter().write(gson.toJson(ls));
@@ -108,14 +100,11 @@ public class Ls extends Base {
         && Files.exists(other);
   }
   
-  
   private Path resolve(Path path, URIParam par) throws UnsupportedEncodingException {
     if(par.length() < 2) return null;
     String spath = URLDecoder.decode(par.getParam(1), "UTF-8");
     //System.out.println("* ls.spath = "+ spath);
-    return DIR_UP.equals(spath)
-        ? path.getParent()
-        : path.resolve(spath);
+    return path.resolve(spath);
   }
 
 }

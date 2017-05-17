@@ -42,18 +42,16 @@ import us.pserver.download.util.Access;
 @WebFilter("/*")
 public class AccessFilter implements Filter {
   
-  private static final Access access = Access.load();
-  
-
   @Override
   public void doFilter(ServletRequest sr, ServletResponse sr1, FilterChain fc) throws IOException, ServletException {
     HttpServletRequest req = (HttpServletRequest) sr;
     HttpServletResponse res = (HttpServletResponse) sr1;
     HttpSession ses = req.getSession();
     String uri = req.getRequestURI();
+    Access acs = AppSetup.getAppSetup().getAccess();
     //System.out.println("* Filter.uri: "+ uri);
-    if(!access.isBlocked(uri)) {
-      if(access.isOpen(uri) 
+    if(!acs.isBlocked(uri)) {
+      if(acs.isOpen(uri) 
           || ses.getAttribute("duser") != null) {
         fc.doFilter(sr, sr1);
       }

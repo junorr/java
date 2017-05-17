@@ -19,28 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.download.util;
+package us.pserver.download.tests;
 
-import java.util.ArrayList;
-import java.util.List;
+import us.pserver.download.AppSetup;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 22/03/2017
+ * @version 0.0 - 16/05/2017
  */
-public class Users {
+public class TestAppSeyup {
 
-  private final List<User> users;
   
-  
-  public Users() {
-    users = new ArrayList<>();
-  }
-  
-  
-  public List<User> users() {
-    return users;
+  public static void main(String[] args) {
+    AppSetup app = AppSetup.getAppSetup();
+    System.out.println("* access.: "+ app.getAccess());
+    System.out.println("* users..: "+ app.getUsers());
+    System.out.println("* basedir: "+ app.getBaseDir());
   }
   
 }

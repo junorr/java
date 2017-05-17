@@ -1,0 +1,20 @@
+{
+  "access": {
+    "block": [],
+    "open": [
+      "*/download/", 
+      "/download/css/*", 
+      "/download/js/*", 
+      "/download/fonts/*", 
+      "/download/images/*", 
+      "*login.html", 
+      "/download/login/*"
+    ],
+    "secure": []
+  },
+  "users": [
+    {"name": "juno", "pass": "32132155"},
+    {"name": "tania", "pass": "japaninja"}
+  ],
+  "basedir": "D:/"
+}

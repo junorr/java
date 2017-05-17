@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class Access {
   
-  public static final String RES_ACCESS_JSON = "/resources/access.json";
+  public static final String RES_ACCESS_JSON = "/resources/app.json";
   
 
   private final List<String> block;

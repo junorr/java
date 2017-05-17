@@ -23,9 +23,9 @@ package us.pserver.download;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import us.pserver.download.util.URIParam;
 import us.pserver.download.util.User;
-import us.pserver.download.util.Users;
 
 /**
  *
@@ -46,7 +45,11 @@ public class Login extends Base {
   
   public static final String SUCCESS_PAGE = "/pages/ls.html";
   
-  public static final String USERS_FILE = "/resources/users.json";
+  public static final String CURRENT_USER = "current_user";
+  
+  public static final String USER = "user";
+  
+  public static final String PASS = "pass";
   
   
   private final Gson gson;
@@ -78,8 +81,8 @@ public class Login extends Base {
   public String get(HttpServletRequest req, HttpServletResponse res) throws Exception {
     URIParam par = new URIParam(req.getRequestURI());
     HttpSession ses = req.getSession();
-    if(ses.getAttribute("duser") != null) {
-      User user = (User) ses.getAttribute("duser");
+    if(ses.getAttribute(CURRENT_USER) != null) {
+      User user = (User) ses.getAttribute(CURRENT_USER);
       res.getWriter().write("\""+ user.getName()+ "\"");
       res.flushBuffer();
     }
@@ -89,14 +92,11 @@ public class Login extends Base {
   
   public String post(HttpServletRequest req, HttpServletResponse res) throws Exception {
     HttpSession ses = req.getSession();
-    Map<String, String[]> map = req.getParameterMap();
-    Users users = gson.fromJson(new InputStreamReader(
-        getClass().getResourceAsStream(USERS_FILE)), Users.class
-    );
-    User usr = authUser(users, map);
+    List<User> users = AppSetup.getAppSetup().getUsers();
+    User usr = authUser(users, req.getParameterMap());
     if(usr != null) {
       //System.out.println("* Logged User: "+ usr);
-      ses.setAttribute("duser", usr);
+      ses.setAttribute(CURRENT_USER, usr);
       res.getWriter().write("\""+ usr.getName()+ "\"");
       res.getWriter().flush();
     }
@@ -107,17 +107,17 @@ public class Login extends Base {
   }
   
   
-  private User authUser(Users us, Map<String,String[]> rmap) {
-    if(us == null || us.users().isEmpty() 
-        || rmap == null || !rmap.containsKey("user") 
-        || !rmap.containsKey("pass")) {
+  private User authUser(List<User> users, Map<String,String[]> rmap) {
+    if(users == null || users.isEmpty() 
+        || rmap == null || !rmap.containsKey(USER) 
+        || !rmap.containsKey(PASS)) {
       return null;
     }
-    String usr = rmap.get("user")[0];
+    String usr = rmap.get(USER)[0];
     String pass = new String(Base64.getDecoder().decode(
-        rmap.get("pass")[0]), StandardCharsets.UTF_8
+        rmap.get(PASS)[0]), StandardCharsets.UTF_8
     );
-    Optional<User> user = us.users().stream()
+    Optional<User> user = users.stream()
         .filter(u->u.getName().equals(usr)).findAny();
     return user.isPresent() && user.get().auth(pass) ? user.get() : null;
   }

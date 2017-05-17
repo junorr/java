@@ -26,13 +26,13 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import static us.pserver.download.AppSetup.CURRENT_PATH;
 import us.pserver.download.file.IFPath;
 
 /**
@@ -43,11 +43,6 @@ import us.pserver.download.file.IFPath;
 @WebServlet("/up/*")
 public class LsUp extends Base {
   
-  //public static final String DEFAULT_PATH = "/storage/";
-  public static final String DEFAULT_PATH = "D:/";
-  
-  public static final String CUR_PATH = "cur_path";
-  
   private final Gson gson;
   
   
@@ -55,12 +50,7 @@ public class LsUp extends Base {
     gson = new GsonBuilder().setPrettyPrinting().create();
   }
 
-  private boolean isParent(Path parent, Path path) {
-    return parent != null && path != null
-        && (path.startsWith(parent) || path.equals(parent));
-  }
-  
-  
+
   private List<IFPath> ls(Path path) throws IOException {
     return Files.walk(path, 1)
         .map(p->IFPath.from(p))
@@ -71,17 +61,15 @@ public class LsUp extends Base {
   @Override
   public String request(HttpServletRequest req, HttpServletResponse res) throws Exception {
     HttpSession ses = req.getSession();
-    Object opath = ses.getAttribute(CUR_PATH);
-    Path path = (opath != null ? (Path)opath : Paths.get(DEFAULT_PATH));
-    Path np = path.getParent() != null ? path.getParent() : path;
-    Path def = Paths.get(DEFAULT_PATH);
-    if(isParent(np, def) && !np.equals(def)) {
+    Path path = AppSetup.getAppSetup().getCurrentDir(ses);
+    Path np = path.getParent();
+    if(np == null) {
       res.sendError(403);
       return null;
     }
     List<IFPath> ls = ls(np);
     path = np;
-    ses.setAttribute(CUR_PATH, path);
+    ses.setAttribute(CURRENT_PATH, path);
     res.getWriter().write(gson.toJson(ls));
     return null;
   }
