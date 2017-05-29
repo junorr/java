@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+  <head>
+    <title>Test dom.js</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+      .mgtop {
+        display: inline-block;
+        margin-top: 15px;
+      }
+      .bg_red {
+        background-color: navy;
+        color: white;
+        padding: 4px 6px;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+    </style>
+    <script type="text/javascript" src="js/html.js"></script>
+  </head>
+  <body>
+    <div id="test"></div>
+  
+    <script type="text/javascript">
+      new Input()
+          .id("i1")
+          .value("hello")
+          .event("keyup", function(evt) {
+            console.log(evt.which);
+          })
+          .insert("#test");
+      new Br().insert("#test");
+      new Span()
+          .id("sp1")
+          .addClass(["bg_red", "mgtop"])
+          .text("Hello World!")
+          .event("click", function() {
+            console.log(this.innerText);
+          }).insert("#test");
+      new Ul().append(
+          new Li().text("hello")
+        ).append(
+          new Li().text("world")
+        ).insert("#test");
+    </script>
+    
+  </body>
+</html>
