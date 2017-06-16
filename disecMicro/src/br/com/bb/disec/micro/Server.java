@@ -25,7 +25,6 @@ import br.com.bb.disec.micro.handler.CorsHandler;
 import br.com.bb.disec.micro.handler.DispatcherHandler;
 import br.com.bb.disec.micro.handler.JWTShieldHandler;
 import br.com.bb.disec.micro.handler.ShutdownHandler;
-import br.com.bb.disec.micro.handler.URIHitsCounter;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
@@ -78,9 +77,9 @@ public class Server {
     HttpHandler root = null;
     PathHandler ph = this.initPathHandler();
     if(config.isAuthenticationShield()) {
-      root = new CorsHandler(new URIHitsCounter(new JWTShieldHandler(ph)));
+      root = new CorsHandler(new JWTShieldHandler(ph));
     } else {
-      root = new CorsHandler(new URIHitsCounter(ph));
+      root = new CorsHandler(ph);
     }
     if(config.isShutdownHandlerEnabled()) {
       ph.addExactPath("/shutdown", new ShutdownHandler(this));
