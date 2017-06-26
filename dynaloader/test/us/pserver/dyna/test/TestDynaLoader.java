@@ -45,6 +45,8 @@ public class TestDynaLoader {
     System.out.println("* main: "+ main);
     String conf = dyna.getResourceLoader(cls).loadStringContent("resources/serverconf.json");
     System.out.println("* resource: "+ conf);
+    Reflector ref = new Reflector(main);
+    ref.selectMethod("main").invoke((Object) new String[]{});
   }
   
 }
