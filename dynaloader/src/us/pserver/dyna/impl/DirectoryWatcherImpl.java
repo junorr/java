@@ -54,7 +54,7 @@ public class DirectoryWatcherImpl implements DirectoryWatcher, Runnable {
     this.running = new AtomicBoolean(false);
     this.dyna = new DynaLoaderInstance().register(path);
     System.out.println("* Paths registered:");
-    dyna.listJars().stream().forEach(System.out::println);
+    dyna.listJars().stream().distinct().forEach(System.out::println);
     System.out.println("----------------------------");
   }
   
@@ -78,11 +78,7 @@ public class DirectoryWatcherImpl implements DirectoryWatcher, Runnable {
       );
       while(this.running.get()) {
         WatchKey key = ws.take();
-        System.out.println("* Event taked!");
         dyna.register(dir);
-        System.out.println("* Paths registered:");
-        dyna.listJars().stream().forEach(System.out::println);
-        System.out.println("----------------------------");
       }
     } 
     catch(Exception ex) {

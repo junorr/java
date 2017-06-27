@@ -69,7 +69,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
 
   @Override
   public LoaderRegistry unregister(Path path) {
-    if(path != null && contains(path)) {
+    if(path != null && isRegistered(path)) {
       this.listContent(path)
           .forEach(registry::remove);
     }
@@ -79,7 +79,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
   
   @Override
   public LoaderRegistry register(Path path) {
-    if(path != null && !contains(path)) {
+    if(path != null) {
       if(Files.isDirectory(path)) {
         this.registerDir(path);
       }
@@ -91,17 +91,12 @@ public class LoaderRegistryImpl implements LoaderRegistry {
   }
   
   
-  private boolean contains(Path path) {
-    return registry.values().contains(path);
-  }
-
-
   private LoaderRegistry registerDir(Path path) {
     if(!Files.isDirectory(path)) {
       throw new IllegalArgumentException("Invalid directory: "+ path);
     }
     try {
-      Files.list(path).forEach(this::register);
+      Files.list(path).sorted().forEach(this::register);
     }
     catch(IOException e) {
       throw new RuntimeException(e.toString(), e);
