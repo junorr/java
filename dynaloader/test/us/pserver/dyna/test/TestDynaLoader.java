@@ -35,7 +35,7 @@ import us.pserver.tools.rfl.Reflector;
 public class TestDynaLoader {
 
   
-  public static void main(String[] args) {
+  public static void main(String[] args) throws ClassNotFoundException {
     Path jar = Paths.get("/storage/java/micro/dist/");
     String cls = "br.com.bb.disec.micro.Main";
     DynaLoader dyna = new DynaLoaderInstance();
@@ -45,6 +45,9 @@ public class TestDynaLoader {
     System.out.println("* main: "+ main);
     String conf = dyna.getResourceLoader(cls).loadStringContent("resources/serverconf.json");
     System.out.println("* resource: "+ conf);
+    Class c = dyna.getClassLoader().loadClass(cls);
+    c = dyna.getClassLoader().loadClass(cls);
+    c = dyna.getClassLoader().loadClass(cls);
     //Reflector ref = new Reflector(main);
     //ref.selectMethod("main").invoke((Object) new String[]{});
   }

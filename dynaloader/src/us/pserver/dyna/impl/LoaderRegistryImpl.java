@@ -109,7 +109,6 @@ public class LoaderRegistryImpl implements LoaderRegistry {
     if(!Files.isRegularFile(path)) {
       throw new IllegalArgumentException("Invalid file: "+ path);
     }
-    System.out.println("* registerJar( '"+ path+ "' ) | isRegistered: "+ this.isRegistered(path));
     try {
       JarFile jf = new JarFile(path.toFile());
       jf.stream().filter(e->!e.isDirectory())

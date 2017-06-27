@@ -53,11 +53,13 @@ public class DynaLoaderImpl implements DynaLoader {
   
   
   private URLClassLoader create() {
+    ClassLoader cl = DynaLoader.class.getClassLoader();
+    cl = (cl != null ? cl : ClassLoader.getSystemClassLoader());
     if(registry.listJars().isEmpty()) {
-      return (URLClassLoader) DynaLoader.class.getClassLoader();
+      return (URLClassLoader) cl;
     }
     else {
-      return new URLClassLoader(registry.listURLs(), loader);
+      return new URLClassLoader(registry.listURLs(), cl);
     }
   }
   
