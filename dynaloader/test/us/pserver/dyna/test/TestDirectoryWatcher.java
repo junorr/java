@@ -21,32 +21,26 @@
 
 package us.pserver.dyna.test;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import us.pserver.dyna.DynaLoader;
-import us.pserver.dyna.DynaLoaderInstance;
-import us.pserver.tools.rfl.Reflector;
+import us.pserver.dyna.DirectoryWatcher;
+import us.pserver.dyna.impl.DirectoryWatcherImpl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/06/2017
  */
-public class TestDynaLoader {
+public class TestDirectoryWatcher {
 
-  
-  public static void main(String[] args) {
-    Path jar = Paths.get("/storage/java/micro/dist/");
-    String cls = "br.com.bb.disec.micro.Main";
-    DynaLoader dyna = new DynaLoaderInstance();
-    dyna.register(jar);
-    System.out.println("* isRegistered("+ jar+ "): "+ dyna.isRegistered(jar));
-    Object main = dyna.loadAndCreate(cls);
-    System.out.println("* main: "+ main);
-    String conf = dyna.getResourceLoader(cls).loadStringContent("resources/serverconf.json");
-    System.out.println("* resource: "+ conf);
-    //Reflector ref = new Reflector(main);
-    //ref.selectMethod("main").invoke((Object) new String[]{});
+  public static void main(String[] args) throws InterruptedException {
+    DirectoryWatcher dw = new DirectoryWatcherImpl(Paths.get("/home/juno/watch"));
+    System.out.println("* starting DirectoryWatcher...");
+    dw.start();
+    System.out.println("  [OK]");
+    Thread.sleep(10000);
+    System.out.println("* stopping DirectoryWatcher...");
+    dw.stop();
+    System.out.println("  [OK]");
   }
-  
+
 }

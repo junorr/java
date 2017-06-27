@@ -60,6 +60,12 @@ public final class DynaLoaderInstance implements DynaLoader {
   public List<Class> listLoaded() {
     return instance.listLoaded();
   }
+  
+  
+  @Override
+  public List<Path> listJars() {
+    return instance.listJars();
+  }
 
 
   @Override

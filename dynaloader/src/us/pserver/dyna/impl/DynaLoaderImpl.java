@@ -42,7 +42,7 @@ public class DynaLoaderImpl implements DynaLoader {
   
   private final List<Class> loaded;
   
-  private ClassLoader loader;
+  private URLClassLoader loader;
   
   
   public DynaLoaderImpl() {
@@ -52,9 +52,9 @@ public class DynaLoaderImpl implements DynaLoader {
   }
   
   
-  private ClassLoader create() {
+  private URLClassLoader create() {
     if(registry.listJars().isEmpty()) {
-      return this.getClassLoader();
+      return (URLClassLoader) DynaLoader.class.getClassLoader();
     }
     else {
       return new URLClassLoader(registry.listURLs(), loader);
@@ -91,6 +91,12 @@ public class DynaLoaderImpl implements DynaLoader {
   @Override
   public List<Class> listLoaded() {
     return Collections.unmodifiableList(loaded);
+  }
+  
+  
+  @Override
+  public List<Path> listJars() {
+    return registry.listJars();
   }
 
 

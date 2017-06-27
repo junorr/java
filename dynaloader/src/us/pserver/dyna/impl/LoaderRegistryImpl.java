@@ -45,7 +45,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
   
   
   public LoaderRegistryImpl() {
-    this.registry = new TreeMap<>();
+    this.registry = Collections.synchronizedMap(new TreeMap<>());
   }
   
 
@@ -83,7 +83,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
       if(Files.isDirectory(path)) {
         this.registerDir(path);
       }
-      else {
+      else if(path.toString().endsWith(".jar") && !isRegistered(path)) {
         this.registerJar(path);
       }
     }
@@ -101,10 +101,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
       throw new IllegalArgumentException("Invalid directory: "+ path);
     }
     try {
-      Files.list(path).filter(
-          p->Files.isRegularFile(path) 
-              && p.getFileName().endsWith(".jar")
-      ).forEach(this::registerJar);
+      Files.list(path).forEach(this::register);
     }
     catch(IOException e) {
       throw new RuntimeException(e.toString(), e);
@@ -117,6 +114,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
     if(!Files.isRegularFile(path)) {
       throw new IllegalArgumentException("Invalid file: "+ path);
     }
+    System.out.println("* registerJar( '"+ path+ "' ) | isRegistered: "+ this.isRegistered(path));
     try {
       JarFile jf = new JarFile(path.toFile());
       jf.stream().filter(e->!e.isDirectory())

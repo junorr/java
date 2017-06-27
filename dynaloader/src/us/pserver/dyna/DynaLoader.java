@@ -39,6 +39,8 @@ public interface DynaLoader {
   
   public List<Class> listLoaded();
   
+  public List<Path> listJars();
+  
   public Class<?> load(String cls);
   
   public Object loadAndCreate(String cls);

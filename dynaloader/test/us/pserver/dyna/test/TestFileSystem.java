@@ -21,32 +21,34 @@
 
 package us.pserver.dyna.test;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import us.pserver.dyna.DynaLoader;
-import us.pserver.dyna.DynaLoaderInstance;
-import us.pserver.tools.rfl.Reflector;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/06/2017
  */
-public class TestDynaLoader {
+public class TestFileSystem {
 
   
-  public static void main(String[] args) {
-    Path jar = Paths.get("/storage/java/micro/dist/");
-    String cls = "br.com.bb.disec.micro.Main";
-    DynaLoader dyna = new DynaLoaderInstance();
-    dyna.register(jar);
-    System.out.println("* isRegistered("+ jar+ "): "+ dyna.isRegistered(jar));
-    Object main = dyna.loadAndCreate(cls);
-    System.out.println("* main: "+ main);
-    String conf = dyna.getResourceLoader(cls).loadStringContent("resources/serverconf.json");
-    System.out.println("* resource: "+ conf);
-    //Reflector ref = new Reflector(main);
-    //ref.selectMethod("main").invoke((Object) new String[]{});
+  public static void main(String[] args) throws IOException, InterruptedException {
+    Path path = Paths.get("/home/juno/watch");
+    WatchService ws = path.getFileSystem().newWatchService();
+    path.register(ws, 
+        StandardWatchEventKinds.ENTRY_CREATE,
+        StandardWatchEventKinds.ENTRY_DELETE,
+        StandardWatchEventKinds.ENTRY_MODIFY,
+        StandardWatchEventKinds.OVERFLOW
+    );
+    WatchKey key = ws.take();
+    System.out.println("* WatchKey taked!");
+    key.pollEvents().forEach(e->System.out.println(e.kind()));
   }
   
 }
