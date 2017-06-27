@@ -22,6 +22,7 @@
 package us.pserver.dyna.impl;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -167,6 +168,32 @@ public class ResourceLoaderImpl implements ResourceLoader {
     this.testResource(resource);
     try {
       return findResource(resource).openStream();
+    } catch(IOException e) {
+      throw new ResourceLoadException(e);
+    }
+  }
+  
+  
+  /**
+   * Carrega um byte array com o conteúdo do recurso informado.
+   * @param resource Nome do recurso procurado.
+   * @return byte array com o conteúdo do recurso informado.
+   * @throws ResourceLoadException Se nenhum recurso for encontrado 
+   * ou se ocorrer um erro na busca.
+   */
+  @Override
+  public byte[] loadBytes(String resource) throws ResourceLoadException {
+    this.testResource(resource);
+    try (
+        InputStream ins = findResource(resource).openStream();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      ) {
+      byte[] buf = new byte[4096];
+      int read = -1;
+      while((read = ins.read(buf)) > 0) {
+        bos.write(buf, 0, read);
+      }
+      return bos.toByteArray();
     } catch(IOException e) {
       throw new ResourceLoadException(e);
     }

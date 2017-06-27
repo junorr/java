@@ -21,13 +21,17 @@
 
 package us.pserver.dyna.impl;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import us.pserver.dyna.DynaLoader;
-import us.pserver.dyna.LoaderRegistry;
 import us.pserver.dyna.ResourceLoader;
 import us.pserver.tools.rfl.Reflector;
 
@@ -38,16 +42,13 @@ import us.pserver.tools.rfl.Reflector;
  */
 public class DynaLoaderImpl implements DynaLoader {
   
-  private final LoaderRegistry registry;
-  
-  private final List<Class> loaded;
+  private final List<Path> jars;
   
   private URLClassLoader loader;
   
   
   public DynaLoaderImpl() {
-    this.registry = new LoaderRegistryImpl();
-    this.loaded = Collections.synchronizedList(new ArrayList<>());
+    this.jars = Collections.synchronizedList(new ArrayList<>());
     this.loader = this.create();
   }
   
@@ -55,65 +56,42 @@ public class DynaLoaderImpl implements DynaLoader {
   private URLClassLoader create() {
     ClassLoader cl = DynaLoader.class.getClassLoader();
     cl = (cl != null ? cl : ClassLoader.getSystemClassLoader());
-    if(registry.listJars().isEmpty()) {
+    if(jars.isEmpty()) {
       return (URLClassLoader) cl;
     }
     else {
-      return new URLClassLoader(registry.listURLs(), cl);
+      return new URLClassLoader(this.listURLs(), cl);
     }
-  }
-  
-  
-  @Override
-  public boolean isLoaded(String cls) {
-    return loaded.stream()
-        .map(c->c.toString())
-        .anyMatch(s->s.equals(cls));
-  }
-
-
-  @Override
-  public boolean isLoaded(Class cls) {
-    return loaded.contains(cls);
-  }
-  
-  
-  @Override
-  public synchronized Class<?> getLoaded(String cls) {
-    Class cl = null;
-    if(isLoaded(cls)) {
-      cl = loaded.stream()
-        .filter(c->c.toString().equals(cls))
-        .findAny().orElse(null);
-    }
-    return cl;
-  }
-  
-  
-  @Override
-  public List<Class> listLoaded() {
-    return Collections.unmodifiableList(loaded);
   }
   
   
   @Override
   public List<Path> listJars() {
-    return registry.listJars();
+    return Collections.unmodifiableList(jars);
+  }
+  
+  
+  @Override
+  public URL[] listURLs() {
+    Function<Path,URL> fn = p->{
+      try { return p.toUri().toURL(); }
+      catch(MalformedURLException e) {
+        return null;
+      }
+    };
+    List<URL> urls = new ArrayList<>(jars.size());
+    jars.stream().map(fn).forEach(urls::add);
+    return urls.toArray(new URL[urls.size()]);
   }
 
 
   @Override
-  public synchronized Class<?> load(String cls) {
+  public Class<?> load(String cls) {
     if(cls == null || cls.trim().isEmpty()) {
       throw new IllegalArgumentException("Invalid class name: "+ cls);
     }
-    if(isLoaded(cls)) {
-      return getLoaded(cls);
-    }
     try {
-      Class c = this.loader.loadClass(cls);
-      this.loaded.add(c);
-      return c;
+      return this.loader.loadClass(cls);
     }
     catch(ClassNotFoundException e) {
       throw new RuntimeException(e.toString(), e);
@@ -121,16 +99,35 @@ public class DynaLoaderImpl implements DynaLoader {
   }
 
 
+  public Class<?> load(String cls, Path jar) {
+    if(cls == null || cls.trim().isEmpty()) {
+      throw new IllegalArgumentException("Invalid class name: "+ cls);
+    }
+    if(jar == null || !Files.isRegularFile(jar) 
+        || !jar.toString().endsWith(".jar")) {
+      throw new IllegalArgumentException("Invalid jar: "+ jar);
+    }
+    try {
+      URLClassLoader ucl = new URLClassLoader(
+          new URL[]{jar.toUri().toURL()}, this.loader
+      );
+      return ucl.loadClass(cls);
+    }
+    catch(ClassNotFoundException | MalformedURLException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
+  
+  
   @Override
-  public synchronized Object loadAndCreate(String cls) {
+  public Object loadAndCreate(String cls) {
     return new Reflector(this.load(cls)).create();
   }
 
 
   @Override
   public ResourceLoader getResourceLoader(String cls) {
-    Class c = isLoaded(cls) ? getLoaded(cls) : load(cls);
-    return ResourceLoader.of(c);
+    return ResourceLoader.of(load(cls));
   }
 
 
@@ -147,28 +144,81 @@ public class DynaLoaderImpl implements DynaLoader {
   
   
   @Override
-  public synchronized boolean isRegistered(Path path) {
-    return registry.isRegistered(path);
+  public boolean isRegistered(Path path) {
+    return jars.contains(path);
   }
 
 
   @Override
-  public synchronized DynaLoader register(Path path) {
+  public DynaLoader register(Path path) {
     if(path != null) {
-      registry.register(path);
+      if(Files.isDirectory(path)) {
+        this.registerDir(path);
+      }
+      else if(path.toString().endsWith(".jar") 
+          && !isRegistered(path)) {
+        this.registerJar(path);
+      }
+      this.close();
       this.loader = create();
+      System.out.println("* DynaLoader.register finished!");
+    }
+    return this;
+  }
+  
+  
+  private DynaLoader registerDir(Path path) {
+    if(!Files.isDirectory(path)) {
+      throw new IllegalArgumentException("Invalid directory: "+ path);
+    }
+    try {
+      Files.list(path).sorted().forEach(this::register);
+    }
+    catch(IOException e) {
+      throw new RuntimeException(e.toString(), e);
     }
     return this;
   }
 
 
+  private DynaLoader registerJar(Path path) {
+    if(!Files.isRegularFile(path)) {
+      throw new IllegalArgumentException("Invalid file: "+ path);
+    }
+    jars.add(path);
+    return this;
+  }
+  
+  
   @Override
-  public synchronized DynaLoader unregister(Path path) {
+  public DynaLoader unregister(Path path) {
     if(path != null) {
-      registry.unregister(path);
+      jars.remove(path);
+      this.close();
       this.loader = create();
     }
     return this;
   }
 
+  
+  @Override
+  public void close() {
+    if(this.loader != null) {
+      try { this.loader.close(); } 
+      catch(IOException e) {}
+    }
+  }
+  
+  
+  @Override
+  public DynaLoader reset() {
+    jars.clear();
+    this.close();
+    this.loader = null;
+    for(int i = 0; i < 3; i++) {
+      System.gc();
+    }
+    return this;
+  }
+  
 }

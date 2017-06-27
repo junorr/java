@@ -33,11 +33,17 @@ import us.pserver.dyna.impl.DirectoryWatcherImpl;
 public class TestDirectoryWatcher {
 
   public static void main(String[] args) throws InterruptedException {
-    DirectoryWatcher dw = new DirectoryWatcherImpl(Paths.get("/home/juno/watch"));
+    DirectoryWatcher dw = new DirectoryWatcherImpl(Paths.get("/storage/java/micro/dist"));
     System.out.println("* starting DirectoryWatcher...");
     dw.start();
     System.out.println("  [OK]");
-    Thread.sleep(10000);
+    String cls = "br.com.bb.disec.micro.Main";
+    System.out.println("* Creating "+ cls);
+    Class cl = dw.getDynaLoader().load(cls);
+    System.out.println("* Sleeping for 10s...");
+    Thread.sleep(15000);
+    System.out.println("* Creating "+ cls);
+    cl = dw.getDynaLoader().load(cls);
     System.out.println("* stopping DirectoryWatcher...");
     dw.stop();
     System.out.println("  [OK]");

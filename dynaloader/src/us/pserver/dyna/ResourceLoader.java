@@ -22,17 +22,9 @@
 package us.pserver.dyna;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
 import us.pserver.dyna.impl.ResourceLoaderImpl;
 
 
@@ -107,6 +99,16 @@ public interface ResourceLoader {
    * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
    */
   public URL loadURL(String resource) throws ResourceLoadException;
+  
+  
+  /**
+   * Carrega um byte array com o conteúdo do recurso informado.
+   * @param resource Nome do recurso procurado.
+   * @return byte array com o conteúdo do recurso informado.
+   * @throws ResourceLoadException Se nenhum recurso for encontrado 
+   * ou se ocorrer um erro na busca.
+   */
+  public byte[] loadBytes(String resource) throws ResourceLoadException;
   
   
   /**

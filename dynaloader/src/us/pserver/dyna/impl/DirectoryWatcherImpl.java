@@ -21,6 +21,7 @@
 
 package us.pserver.dyna.impl;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
@@ -53,9 +54,6 @@ public class DirectoryWatcherImpl implements DirectoryWatcher, Runnable {
     this.dir = path;
     this.running = new AtomicBoolean(false);
     this.dyna = new DynaLoaderInstance().register(path);
-    System.out.println("* Paths registered:");
-    dyna.listJars().stream().distinct().forEach(System.out::println);
-    System.out.println("----------------------------");
   }
   
 
@@ -78,10 +76,11 @@ public class DirectoryWatcherImpl implements DirectoryWatcher, Runnable {
       );
       while(this.running.get()) {
         WatchKey key = ws.take();
-        dyna.register(dir);
+        System.out.println("* Changes detected. Reloading jar files...");
+        dyna.reset().register(dir);
       }
     } 
-    catch(Exception ex) {
+    catch(IOException | InterruptedException ex) {
       throw new RuntimeException(ex.toString(), ex);
     }
   }
@@ -95,7 +94,7 @@ public class DirectoryWatcherImpl implements DirectoryWatcher, Runnable {
 
 
   @Override
-  public DynaLoader getLoader() {
+  public DynaLoader getDynaLoader() {
     return dyna;
   }
 

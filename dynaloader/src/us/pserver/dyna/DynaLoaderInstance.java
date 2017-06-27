@@ -21,12 +21,14 @@
 
 package us.pserver.dyna;
 
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 import us.pserver.dyna.impl.DynaLoaderImpl;
 
 /**
- *
+ * A singletone version of DynaLoader.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/06/2017
  */
@@ -34,85 +36,71 @@ public final class DynaLoaderInstance implements DynaLoader {
   
   private static final DynaLoader instance = new DynaLoaderImpl();
   
-  
   public DynaLoaderInstance() {}
-
-
-  @Override
-  public boolean isLoaded(String cls) {
-    return instance.isLoaded(cls);
-  }
-
-
-  @Override
-  public boolean isLoaded(Class cls) {
-    return instance.isLoaded(cls);
-  }
-
-
-  @Override
-  public Class getLoaded(String cls) {
-    return instance.getLoaded(cls);
-  }
-
-
-  @Override
-  public List<Class> listLoaded() {
-    return instance.listLoaded();
-  }
-  
   
   @Override
   public List<Path> listJars() {
     return instance.listJars();
   }
 
+  @Override
+  public URL[] listURLs() {
+    return instance.listURLs();
+  }
 
   @Override
   public Class<?> load(String cls) {
     return instance.load(cls);
   }
-
+  
+  @Override
+  public Class<?> load(String cls, Path jar) {
+    return instance.load(cls, jar);
+  }
 
   @Override
   public Object loadAndCreate(String cls) {
     return instance.loadAndCreate(cls);
   }
 
-
   @Override
   public ResourceLoader getResourceLoader(String cls) {
     return instance.getResourceLoader(cls);
   }
-
 
   @Override
   public ResourceLoader getResourceLoader(Class cls) {
     return instance.getResourceLoader(cls);
   }
 
-
   @Override
   public ClassLoader getClassLoader() {
     return instance.getClassLoader();
   }
-
 
   @Override
   public boolean isRegistered(Path path) {
     return instance.isRegistered(path);
   }
 
-
   @Override
   public DynaLoader register(Path path) {
     return instance.register(path);
   }
 
-
   @Override
   public DynaLoader unregister(Path path) {
-    return instance.unregister(path);
+    return instance.register(path);
+  }
+
+  @Override
+  public void close() throws IOException {
+    instance.close();
   }
   
+  @Override
+  public DynaLoader reset() {
+    return instance.reset();
+  }
+
 }

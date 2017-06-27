@@ -38,6 +38,10 @@ public class TestJarFile {
     Path p = Paths.get("/storage/java/jxl-2.6.12.jar");
     JarFile jf = new JarFile(p.toFile());
     jf.stream().forEach(System.out::println);
+    
+    String cls = "us.pserver.dyna.DynaLoader";
+    System.out.println("* cls: "+ cls);
+    System.out.println("* "+ cls.replace(".", "/").concat(".class"));
   }
   
 }

@@ -24,18 +24,37 @@ package us.pserver.dyna;
 import java.nio.file.Path;
 
 /**
- *
+ * Directory change watching engine. DirectoryWatcher
+ * listen for jar files changes in some directory structure,
+ * automaticaly updating DynaLoader.
+ * @see us.pserver.dyna.DynaLoader
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/06/2017
  */
 public interface DirectoryWatcher {
   
+  /**
+   * Starts the directory watching service.
+   * @return this instance of DirectoryWatcher;
+   */
   public DirectoryWatcher start();
 
+  /**
+   * Stops the directory watching service.
+   * @return this instance of DirectoryWatcher;
+   */
   public DirectoryWatcher stop();
   
+  /**
+   * Return the directory path under watch.
+   * @return The directory path under watch.
+   */
   public Path getDirectory();
 
-  public DynaLoader getLoader();
+  /**
+   * Return the DynaLoader binded to the directory.
+   * @return The DynaLoader binded to the directory.
+   */
+  public DynaLoader getDynaLoader();
   
 }
