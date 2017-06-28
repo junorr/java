@@ -27,8 +27,12 @@ import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import us.pserver.dyna.DirectoryWatcher;
 import us.pserver.dyna.DynaLoader;
 import us.pserver.dyna.DynaLoaderInstance;
@@ -46,6 +50,8 @@ public class DirectoryWatcherImpl implements DirectoryWatcher, Runnable {
   
   private final DynaLoader dyna;
   
+  private final List<Consumer<DynaLoader>> listeners;
+  
   
   public DirectoryWatcherImpl(Path path) {
     if(path == null || !Files.exists(path) || !Files.isDirectory(path)) {
@@ -54,6 +60,7 @@ public class DirectoryWatcherImpl implements DirectoryWatcher, Runnable {
     this.dir = path;
     this.running = new AtomicBoolean(false);
     this.dyna = new DynaLoaderInstance().register(path);
+    this.listeners = Collections.synchronizedList(new ArrayList<>());
   }
   
 
@@ -76,8 +83,8 @@ public class DirectoryWatcherImpl implements DirectoryWatcher, Runnable {
       );
       while(this.running.get()) {
         WatchKey key = ws.take();
-        System.out.println("* Changes detected. Reloading jar files...");
         dyna.reset().register(dir);
+        this.listeners.forEach(l->l.accept(dyna));
       }
     } 
     catch(IOException | InterruptedException ex) {
@@ -103,5 +110,30 @@ public class DirectoryWatcherImpl implements DirectoryWatcher, Runnable {
   public Path getDirectory() {
     return dir;
   }
-
+  
+  
+  @Override
+  public DirectoryWatcher addChangeListener(Consumer<DynaLoader> lst) {
+    if(lst != null) {
+      this.listeners.add(lst);
+    }
+    return this;
+  }
+  
+  
+  @Override
+  public DirectoryWatcher rmChangeListener(Consumer<DynaLoader> lst) {
+    if(lst != null) {
+      this.listeners.remove(lst);
+    }
+    return this;
+  }
+  
+  
+  @Override
+  public DirectoryWatcher clearChangeListeners() {
+    this.listeners.clear();
+    return this;
+  }
+  
 }

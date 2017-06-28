@@ -24,6 +24,7 @@ package us.pserver.dyna.test;
 import java.nio.file.Paths;
 import us.pserver.dyna.DirectoryWatcher;
 import us.pserver.dyna.impl.DirectoryWatcherImpl;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
@@ -33,17 +34,26 @@ import us.pserver.dyna.impl.DirectoryWatcherImpl;
 public class TestDirectoryWatcher {
 
   public static void main(String[] args) throws InterruptedException {
-    DirectoryWatcher dw = new DirectoryWatcherImpl(Paths.get("/storage/java/micro/dist"));
+    Reflector ref = new Reflector(Object.class);
+    DirectoryWatcher dw = new DirectoryWatcherImpl(Paths.get("/home/juno/watch/"));
+    dw.addChangeListener(d->System.out.println("* Classpath updated!"));
     System.out.println("* starting DirectoryWatcher...");
     dw.start();
     System.out.println("  [OK]");
     String cls = "br.com.bb.disec.micro.Main";
     System.out.println("* Creating "+ cls);
     Class cl = dw.getDynaLoader().load(cls);
-    System.out.println("* Sleeping for 10s...");
+    ref = new Reflector(cl);
+    Object uid = ref.selectField("serialVersionUID").get();
+    System.out.println("* cls: "+ cls+ ", serialVersionUID: "+ uid);
+    cl = null;
+    System.out.println("* Sleeping for 15s...");
     Thread.sleep(15000);
     System.out.println("* Creating "+ cls);
     cl = dw.getDynaLoader().load(cls);
+    ref = new Reflector(cl);
+    uid = ref.selectField("serialVersionUID").get();
+    System.out.println("* cls: "+ cls+ ", serialVersionUID: "+ uid);
     System.out.println("* stopping DirectoryWatcher...");
     dw.stop();
     System.out.println("  [OK]");

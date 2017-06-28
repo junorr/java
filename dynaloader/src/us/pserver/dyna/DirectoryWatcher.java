@@ -22,6 +22,7 @@
 package us.pserver.dyna;
 
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 /**
  * Directory change watching engine. DirectoryWatcher
@@ -56,5 +57,25 @@ public interface DirectoryWatcher {
    * @return The DynaLoader binded to the directory.
    */
   public DynaLoader getDynaLoader();
+  
+  /**
+   * Adds a listener for classpath changes.
+   * @param lst The listener.
+   * @return This DirectoryWatcher instance.
+   */
+  public DirectoryWatcher addChangeListener(Consumer<DynaLoader> lst);
+  
+  /**
+   * Removes a classpath change listener.
+   * @param lst The listener to be removed.
+   * @return This DirectoryWatcher instance.
+   */
+  public DirectoryWatcher rmChangeListener(Consumer<DynaLoader> lst);
+  
+  /**
+   * Clear all classpath change listeners.
+   * @return This DirectoryWatcher instance.
+   */
+  public DirectoryWatcher clearChangeListeners();
   
 }

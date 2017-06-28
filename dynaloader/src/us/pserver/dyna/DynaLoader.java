@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * DynaLoader is a jar files registry for
- * loading Classes and resources dinamically.
+ * loading classes and resources dinamically.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/06/2017
  */
@@ -54,7 +54,7 @@ public interface DynaLoader extends Closeable {
   public Class<?> load(String cls);
   
   /**
-   * Load a class from the specific given jar file path.
+   * Load a class from the given jar file path.
    * @param cls Class name to load.
    * @param jar The jar file path from the class will be loaded.
    * @return The loaded Class.
@@ -101,8 +101,8 @@ public interface DynaLoader extends Closeable {
   
   /**
    * Register a path in DynaLoader. The path may be 
-   * from a jar file or a directory, in this case 
-   * scanning it for jar files.
+   * from file or directory. Directories will be scanned
+   * recursively for jar files.
    * @param path The path to be registered.
    * @return This instance of DynaLoader.
    */

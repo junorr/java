@@ -28,7 +28,7 @@ package br.com.bb.disec.micro;
  */
 public class Main {
   
-  public static final long serialVersionUID = 512;
+  public static final long serialVersionUID = 5122;
 
   public static void main(String[] args) {
     ServerSetup.autoSetup(ResourceLoader.self())

@@ -159,7 +159,6 @@ public class DynaLoaderImpl implements DynaLoader {
           && !isRegistered(path)) {
         this.registerJar(path);
       }
-      this.close();
       this.loader = create();
       System.out.println("* DynaLoader.register finished!");
     }

@@ -3,6 +3,7 @@ package us.pserver.tools.rfl;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -371,12 +372,17 @@ public class Reflector {
 	 * @return Valor contido no campo.
 	 */
 	public Object get() {
-    Sane.of(obj).check(Checkup.isNotNull());
     Sane.of(fld).check(Checkup.isNotNull());
 		try {
   		if(!fld.isAccessible())
     		fld.setAccessible(true);
-      return fld.get(obj);
+      if(Modifier.isStatic(fld.getModifiers())) {
+        return fld.get(null);
+      }
+      else {
+        Sane.of(obj).check(Checkup.isNotNull());
+        return fld.get(obj);
+      }
 		} catch(Exception ex) {
   		throw new ReflectorException(ex);
 		}
