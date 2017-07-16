@@ -21,6 +21,11 @@
 
 package br.com.bb.disec.micro.refl;
 
+import br.com.bb.disec.micro.refl.impl.OperationImpl;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -28,4 +33,136 @@ package br.com.bb.disec.micro.refl;
  */
 public class OperationBuilder {
 
+  private final List<String> argtypes;
+  
+  private final List args;
+  
+  private String name;
+  
+  private final OperationType optype;
+  
+  private String className;
+  
+  private OperationBuilder parent;
+  
+  private OperationBuilder next;
+  
+  
+  public OperationBuilder(OperationType type) {
+    if(type == null) {
+      throw new IllegalArgumentException("Bad null OperationType");
+    }
+    this.argtypes = new ArrayList<>();
+    this.args = new ArrayList();
+    this.name = null;
+    this.optype = type;
+    this.className = null;
+    this.parent = null;
+    this.next = null;
+  }
+  
+  
+  protected OperationBuilder(OperationType type, OperationBuilder parent) {
+    this.argtypes = new ArrayList<>();
+    this.args = new ArrayList();
+    this.name = null;
+    this.optype = type;
+    this.className = null;
+    this.parent = parent;
+    this.next = null;
+  }
+  
+  
+  public OperationBuilder addArgType(String cls) {
+    if(cls != null) {
+      argtypes.add(cls);
+    }
+    return this;
+  }
+  
+  
+  public OperationBuilder addArgClass(Object arg) {
+    if(arg != null) {
+      args.add(arg);
+      argtypes.add(arg.getClass().getName());
+    }
+    return this;
+  }
+  
+  
+  public OperationBuilder addArg(Object arg) {
+    if(arg != null) {
+      args.add(arg);
+      argtypes.add(arg.getClass().getName());
+    }
+    return this;
+  }
+  
+  
+  public List<String> argsTypes() {
+    return argtypes;
+  }
+  
+  
+  public List arguments() {
+    return args;
+  }
+  
+  
+  public OperationType operationType() {
+    return optype;
+  }
+  
+  
+  public OperationBuilder next(OperationType type) {
+    this.next = new OperationBuilder(type, this);
+    return next;
+  }
+  
+  
+  public OperationBuilder parent() {
+    return parent;
+  }
+  
+  
+  public String className() {
+    return className;
+  }
+  
+  
+  public OperationBuilder className(String cls) {
+    if(cls != null) {
+      this.className = cls;
+    }
+    return this;
+  }
+  
+  
+  public String name() {
+    return name;
+  }
+  
+  
+  public OperationBuilder name(String name) {
+    if(name != null) {
+      this.name = name;
+    }
+    return this;
+  }
+  
+  
+  public Operation build() {
+    if(this.name == null) {
+      throw new IllegalStateException("Bad null op name");
+    }
+    return new OperationImpl(
+        name, 
+        optype, 
+        Collections.unmodifiableList(args), 
+        Collections.unmodifiableList(argtypes), 
+        className, 
+        next != null ? next.build() : null
+    );
+  }
+  
 }

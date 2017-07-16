@@ -38,7 +38,7 @@ public interface OperationResult {
   
   public Optional<Object> getReturnValue();
   
-  public Optional<Throwable> getThrowedException();
+  public Optional<Throwable> getThrownException();
   
   public List<StackTraceElement> getStackTrace();
   

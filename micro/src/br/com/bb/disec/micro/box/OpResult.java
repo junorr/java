@@ -19,9 +19,10 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.refl.impl;
+package br.com.bb.disec.micro.box;
 
-import br.com.bb.disec.micro.refl.OperationResult;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,46 +31,31 @@ import java.util.Optional;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/06/2017
  */
-public class OperationResultImpl implements OperationResult {
+public interface OpResult {
   
-  private final boolean successful;
+  public boolean isSuccessful();
   
-  private final Object retval;
+  public Optional<Object> getReturnValue();
   
-  private final Throwable thrown;
+  public Optional<Throwable> getThrownException();
   
-  private final List<StackTraceElement> stackTrace;
+  public List<StackTraceElement> getStackTrace();
   
   
-  public OperationResultImpl(boolean successful, Object returnValue, Throwable ex, List<StackTraceElement> stack) {
-    this.successful = successful;
-    this.retval = returnValue;
-    this.thrown = ex;
-    this.stackTrace = stack;
+  public static OpResult of(Throwable th) {
+    if(th == null) throw new IllegalArgumentException("Invalid null throwable");
+    return new OpResultImpl(false, null, th, Arrays.asList(th.getStackTrace()));
   }
   
-
-  @Override
-  public boolean isSuccessful() {
-    return successful;
+  
+  public static OpResult of(Object returnValue) {
+    if(returnValue == null) throw new IllegalArgumentException("Invalid null return value");
+    return new OpResultImpl(true, returnValue, null, Collections.EMPTY_LIST);
   }
-
-
-  @Override
-  public Optional<Object> getReturnValue() {
-    return Optional.ofNullable(retval);
+  
+  
+  public static OpResult successful() {
+    return new OpResultImpl(true, null, null, Collections.EMPTY_LIST);
   }
-
-
-  @Override
-  public Optional<Throwable> getThrownException() {
-    return Optional.ofNullable(thrown);
-  }
-
-
-  @Override
-  public List<StackTraceElement> getStackTrace() {
-    return stackTrace;
-  }
-
+  
 }

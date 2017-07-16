@@ -19,57 +19,54 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.refl.impl;
+package br.com.bb.disec.micro.box;
 
-import br.com.bb.disec.micro.refl.OperationResult;
 import java.util.List;
-import java.util.Optional;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/06/2017
+ * @version 0.0 - 16/07/2017
  */
-public class OperationResultImpl implements OperationResult {
+public class ConstructorOp extends MethodOp<Class> {
   
-  private final boolean successful;
-  
-  private final Object retval;
-  
-  private final Throwable thrown;
-  
-  private final List<StackTraceElement> stackTrace;
-  
-  
-  public OperationResultImpl(boolean successful, Object returnValue, Throwable ex, List<StackTraceElement> stack) {
-    this.successful = successful;
-    this.retval = returnValue;
-    this.thrown = ex;
-    this.stackTrace = stack;
+  public ConstructorOp(Operation<?> next, List<Class> types, List args) {
+    super("constructor", next, types, args);
   }
   
-
-  @Override
-  public boolean isSuccessful() {
-    return successful;
+  public ConstructorOp(List<Class> types, List args) {
+    this(null, types, args);
   }
-
-
+  
   @Override
-  public Optional<Object> getReturnValue() {
-    return Optional.ofNullable(retval);
-  }
-
-
-  @Override
-  public Optional<Throwable> getThrownException() {
-    return Optional.ofNullable(thrown);
-  }
-
-
-  @Override
-  public List<StackTraceElement> getStackTrace() {
-    return stackTrace;
+  public Operation execute(Class cls) {
+    if(cls == null) {
+      throw new IllegalArgumentException("Bad null argument");
+    }
+    lock.lock();
+    try {
+      Reflector ref = new Reflector(cls);
+      Object ret = null;
+      if(argtypes.isEmpty()) {
+        ref.selectConstructor();
+        ret = ref.create();
+      }
+      else {
+        ref.selectConstructor(argtypes.toArray(
+            new Class[argtypes.size()])
+        );
+        ret = ref.create(args.toArray());
+      }
+      result = (ret == null ? OpResult.successful() : OpResult.of(ret));
+    }
+    catch(Throwable th) {
+      result = OpResult.of(th);
+    }
+    finally {
+      lock.unlock();
+    }
+    return this;
   }
 
 }

@@ -19,57 +19,54 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.refl.impl;
+package br.com.bb.disec.micro.box;
 
-import br.com.bb.disec.micro.refl.OperationResult;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/06/2017
+ * @version 0.0 - 16/07/2017
  */
-public class OperationResultImpl implements OperationResult {
+public abstract class BasicOp<T> implements Operation<T> { 
+
+  final String name;
   
-  private final boolean successful;
+  final Operation<?> next;
   
-  private final Object retval;
+  final ReentrantLock lock;
   
-  private final Throwable thrown;
-  
-  private final List<StackTraceElement> stackTrace;
+  OpResult result;
   
   
-  public OperationResultImpl(boolean successful, Object returnValue, Throwable ex, List<StackTraceElement> stack) {
-    this.successful = successful;
-    this.retval = returnValue;
-    this.thrown = ex;
-    this.stackTrace = stack;
+  BasicOp(String name, Operation<?> next) {
+    if(name == null) {
+      throw new IllegalArgumentException("Bad null name");
+    }
+    this.name = name;
+    this.result = null;
+    this.next = next;
+    this.lock = new ReentrantLock();
   }
   
-
+  
   @Override
-  public boolean isSuccessful() {
-    return successful;
+  public String getName() {
+    return name;
   }
-
-
+  
+  
   @Override
-  public Optional<Object> getReturnValue() {
-    return Optional.ofNullable(retval);
+  public OpResult getOpResult() {
+    return result;
   }
-
-
+  
+  
   @Override
-  public Optional<Throwable> getThrownException() {
-    return Optional.ofNullable(thrown);
+  public Optional<Operation<?>> next() {
+    return Optional.ofNullable(next);
   }
-
-
-  @Override
-  public List<StackTraceElement> getStackTrace() {
-    return stackTrace;
-  }
-
+  
 }

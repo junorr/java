@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import us.pserver.dyna.DynaLoader;
 import us.pserver.dyna.DynaLoaderInstance;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
@@ -47,8 +48,8 @@ public class TestDynaLoader {
     Class c = dyna.getClassLoader().loadClass(cls);
     c = dyna.getClassLoader().loadClass(cls);
     c = dyna.getClassLoader().loadClass(cls);
-    //Reflector ref = new Reflector(main);
-    //ref.selectMethod("main").invoke((Object) new String[]{});
+    Reflector ref = new Reflector(main);
+    ref.selectMethod("main").invoke((Object) new String[]{});
   }
   
 }

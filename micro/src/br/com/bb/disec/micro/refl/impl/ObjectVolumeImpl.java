@@ -54,7 +54,10 @@ public class ObjectVolumeImpl implements ObjectVolume {
   
   @Override
   public OperationResult execute(Operation op) {
-    if(op == null || op.getName() == null) {
+    if(op == null 
+        || op.getName() == null 
+        || op.getType() == null) 
+    {
       throw new IllegalArgumentException("Invalid Operation");
     }
     lock.lock();
@@ -86,11 +89,11 @@ public class ObjectVolumeImpl implements ObjectVolume {
   
   
   private OperationResult setField(Operation op) throws Exception {
-    if(op.getArguments().isEmpty()) {
-      throw new IllegalArgumentException("Invalid null argument");
-    }
+    Object arg = (op.getArguments().isEmpty() 
+        ? null : op.getArguments().get(0)
+    );
     Reflector ref = new Reflector(obj);
-    ref.selectField(op.getName()).set(op.getArguments().get(0));
+    ref.selectField(op.getName()).set(arg);
     return OperationResult.successful();
   }
   

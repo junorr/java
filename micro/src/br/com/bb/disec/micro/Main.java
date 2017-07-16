@@ -28,6 +28,8 @@ package br.com.bb.disec.micro;
  */
 public class Main {
   
+  public static final long serialVersionUID = 1000;
+  
   public static void main(String[] args) {
     ServerSetup.autoSetup(ResourceLoader.self())
         .createServer().start();

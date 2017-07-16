@@ -19,57 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.refl.impl;
+package br.com.bb.disec.micro.box;
 
-import br.com.bb.disec.micro.refl.OperationResult;
-import java.util.List;
 import java.util.Optional;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/06/2017
+ * @version 0.0 - 16/07/2017
  */
-public class OperationResultImpl implements OperationResult {
+public interface Operation<T> {
   
-  private final boolean successful;
+  public String getName();
+
+  public Operation execute(T obj);
   
-  private final Object retval;
+  public OpResult getOpResult();
   
-  private final Throwable thrown;
+  public Optional<Operation<?>> next();
   
-  private final List<StackTraceElement> stackTrace;
-  
-  
-  public OperationResultImpl(boolean successful, Object returnValue, Throwable ex, List<StackTraceElement> stack) {
-    this.successful = successful;
-    this.retval = returnValue;
-    this.thrown = ex;
-    this.stackTrace = stack;
-  }
-  
-
-  @Override
-  public boolean isSuccessful() {
-    return successful;
-  }
-
-
-  @Override
-  public Optional<Object> getReturnValue() {
-    return Optional.ofNullable(retval);
-  }
-
-
-  @Override
-  public Optional<Throwable> getThrownException() {
-    return Optional.ofNullable(thrown);
-  }
-
-
-  @Override
-  public List<StackTraceElement> getStackTrace() {
-    return stackTrace;
-  }
-
 }

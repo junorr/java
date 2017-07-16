@@ -19,57 +19,46 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.refl.impl;
+package br.com.bb.disec.micro.box;
 
-import br.com.bb.disec.micro.refl.OperationResult;
-import java.util.List;
-import java.util.Optional;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/06/2017
+ * @version 0.0 - 16/07/2017
  */
-public class OperationResultImpl implements OperationResult {
-  
-  private final boolean successful;
-  
-  private final Object retval;
-  
-  private final Throwable thrown;
-  
-  private final List<StackTraceElement> stackTrace;
+public class GetFieldOp<T> extends BasicOp<T> {
   
   
-  public OperationResultImpl(boolean successful, Object returnValue, Throwable ex, List<StackTraceElement> stack) {
-    this.successful = successful;
-    this.retval = returnValue;
-    this.thrown = ex;
-    this.stackTrace = stack;
+  public GetFieldOp(String name, Operation<?> next) {
+    super(name, next);
   }
-  
 
-  @Override
-  public boolean isSuccessful() {
-    return successful;
+
+  public GetFieldOp(String name) {
+    this(name, null);
   }
 
 
   @Override
-  public Optional<Object> getReturnValue() {
-    return Optional.ofNullable(retval);
+  public Operation execute(T obj) {
+    if(obj == null) {
+      throw new IllegalArgumentException("Bad null argument");
+    }
+    lock.lock();
+    try {
+      Reflector ref = new Reflector(obj);
+      ref.selectField(name);
+      result = OpResult.of(ref.get());
+    }
+    catch(Throwable th) {
+      result = OpResult.of(th);
+    }
+    finally {
+      lock.unlock();
+    }
+    return this;
   }
-
-
-  @Override
-  public Optional<Throwable> getThrownException() {
-    return Optional.ofNullable(thrown);
-  }
-
-
-  @Override
-  public List<StackTraceElement> getStackTrace() {
-    return stackTrace;
-  }
-
+  
 }

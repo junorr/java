@@ -19,57 +19,53 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.refl.impl;
+package br.com.bb.disec.micro.box;
 
-import br.com.bb.disec.micro.refl.OperationResult;
-import java.util.List;
-import java.util.Optional;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/06/2017
+ * @version 0.0 - 16/07/2017
  */
-public class OperationResultImpl implements OperationResult {
+public class SetFieldOp<T> extends BasicOp<T> {
   
-  private final boolean successful;
-  
-  private final Object retval;
-  
-  private final Throwable thrown;
-  
-  private final List<StackTraceElement> stackTrace;
-  
-  
-  public OperationResultImpl(boolean successful, Object returnValue, Throwable ex, List<StackTraceElement> stack) {
-    this.successful = successful;
-    this.retval = returnValue;
-    this.thrown = ex;
-    this.stackTrace = stack;
-  }
-  
+  private final Object arg;
 
-  @Override
-  public boolean isSuccessful() {
-    return successful;
+  
+  public SetFieldOp(String name, Operation<?> next, Object arg) {
+    super(name, next);
+    if(arg == null) {
+      throw new IllegalArgumentException("Bad null argument");
+    }
+    this.arg = arg;
+  }
+
+
+  public SetFieldOp(String name, Object arg) {
+    this(name, null, arg);
   }
 
 
   @Override
-  public Optional<Object> getReturnValue() {
-    return Optional.ofNullable(retval);
+  public Operation execute(T obj) {
+    if(obj == null) {
+      throw new IllegalArgumentException("Bad null argument");
+    }
+    lock.lock();
+    try {
+      Reflector ref = new Reflector(obj);
+      ref.selectField(name);
+      ref.set(arg);
+      result = OpResult.of(obj);
+    }
+    catch(Throwable th) {
+      result = OpResult.of(th);
+    }
+    finally {
+      lock.unlock();
+    }
+    return this;
   }
-
-
-  @Override
-  public Optional<Throwable> getThrownException() {
-    return Optional.ofNullable(thrown);
-  }
-
-
-  @Override
-  public List<StackTraceElement> getStackTrace() {
-    return stackTrace;
-  }
-
+  
 }

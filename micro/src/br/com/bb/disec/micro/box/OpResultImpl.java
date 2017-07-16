@@ -19,9 +19,8 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.refl.impl;
+package br.com.bb.disec.micro.box;
 
-import br.com.bb.disec.micro.refl.OperationResult;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +29,7 @@ import java.util.Optional;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/06/2017
  */
-public class OperationResultImpl implements OperationResult {
+public class OpResultImpl implements OpResult {
   
   private final boolean successful;
   
@@ -41,7 +40,7 @@ public class OperationResultImpl implements OperationResult {
   private final List<StackTraceElement> stackTrace;
   
   
-  public OperationResultImpl(boolean successful, Object returnValue, Throwable ex, List<StackTraceElement> stack) {
+  public OpResultImpl(boolean successful, Object returnValue, Throwable ex, List<StackTraceElement> stack) {
     this.successful = successful;
     this.retval = returnValue;
     this.thrown = ex;
