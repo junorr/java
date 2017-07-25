@@ -21,52 +21,35 @@
 
 package br.com.bb.disec.micro.box;
 
-import java.util.List;
-import us.pserver.tools.rfl.Reflector;
+import java.util.Optional;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 16/07/2017
+ * @version 0.0 - 25/07/2017
  */
-public class ConstructorOp extends MethodOp<Class> {
+public class ChainOp<T> extends BasicOp<T> {
   
-  public ConstructorOp(Operation<?> next, List<Class> types, List args) {
-    super("constructor", next, types, args);
+  private final Operation<T> op;
+  
+  public ChainOp(Operation<T> op) {
+    super(op.getName(), null);
+    this.op = op;
   }
-  
-  public ConstructorOp(List<Class> types, List args) {
-    this(null, types, args);
-  }
-  
+
   @Override
-  public Operation execute(Class cls) {
-    if(cls == null) {
-      throw new IllegalArgumentException("Bad null argument");
-    }
-    lock.lock();
-    try {
-      Reflector ref = new Reflector(cls);
-      Object ret = null;
-      if(argtypes.isEmpty()) {
-        ref.selectConstructor();
-        ret = ref.create();
-      }
-      else {
-        ref.selectConstructor(argtypes.toArray(
-            new Class[argtypes.size()])
-        );
-        ret = ref.create(args.toArray());
-      }
-      result = OpResult.of(ret);
-    }
-    catch(Throwable th) {
-      result = OpResult.of(th);
-    }
-    finally {
-      lock.unlock();
-    }
-    return this;
+  public Operation<?> execute(T obj) {
+    return op.execute(obj);
   }
+  
+  
+  public OpResult executeAll(T obj) {
+    OpResult res = op.execute(obj).getOpResult();
+    Optional<Operation<?>> o = op.next();
+    while(res.isSuccessful() && res.getReturnValue().isPresent() && o.isPresent()) {
+      Object val = res.getReturnValue().get();
+      o.get().execute(val);
+    }
+  } 
 
 }
