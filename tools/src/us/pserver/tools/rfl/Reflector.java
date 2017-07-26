@@ -29,30 +29,20 @@ public class Reflector {
 	private Constructor cct;
 	
 	
-	/**
-	 * Construtor padrão.
-	 */
-	public Reflector(Class cls) {
-		if(cls == null) {
-			throw new IllegalArgumentException(
-					"Class must be not null"
-			);
-		}
-		this.cls = cls;
-		obj = null;
-		mth = null;
-		cct = null;
-	}
-	
-	
 	public Reflector(Object obj) {
 		if(obj == null) {
 			throw new IllegalArgumentException(
 					"Object must be not null"
 			);
 		}
-		this.cls = obj.getClass();
-		this.obj = obj;
+    if(obj instanceof Class) {
+      this.cls = (Class) obj;
+      this.obj = null;
+    }
+    else {
+      this.cls = obj.getClass();
+      this.obj = obj;
+    }
 	}
 	
 	
@@ -170,9 +160,7 @@ public class Reflector {
 	 * @return O objeto de retorno do método invocado.
 	 */
 	public Object invoke(Object ... args) {
- 		if(mth == null || obj == null)
-   		return null;
-
+ 		if(mth == null) throw new ReflectorException("No method selected");
     if(args == null) 
       args = new Object[0];
 		try {
@@ -352,9 +340,8 @@ public class Reflector {
 	 * informado.
 	 * @param value Novo a ser definido para o campo.
 	 */
-	public void set(Object value) {
-		if(fld == null || obj == null) 
-      return;
+	public Reflector set(Object value) {
+		if(fld == null) throw new ReflectorException("No field selected");
   	try {
     	if(!fld.isAccessible())
       	fld.setAccessible(true);
@@ -362,6 +349,7 @@ public class Reflector {
   	} catch(Exception ex) {
     	throw new ReflectorException(ex);
 		}
+    return this;
 	}
 	
 	
