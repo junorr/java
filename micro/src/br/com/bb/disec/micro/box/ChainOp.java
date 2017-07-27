@@ -28,28 +28,30 @@ import java.util.Optional;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 25/07/2017
  */
-public class ChainOp<T> extends BasicOp<T> {
+public class ChainOp extends SyncOp {
   
-  private final Operation<T> op;
+  private final Operation op;
+
   
-  public ChainOp(Operation<T> op) {
+  public ChainOp(Operation op) {
     super(op.getName(), null);
     this.op = op;
   }
 
   @Override
-  public Operation<?> execute(T obj) {
+  public Operation execute(Object obj) {
     return op.execute(obj);
   }
   
   
-  public OpResult executeAll(T obj) {
-    OpResult res = op.execute(obj).getOpResult();
-    Optional<Operation<?>> o = op.next();
-    while(res.isSuccessful() && res.getReturnValue().isPresent() && o.isPresent()) {
-      Object val = res.getReturnValue().get();
-      o.get().execute(val);
+  public OpResult executeAll(Object obj) {
+    OpResult res = OpResult.of(obj);
+    Optional<Operation> opr = Optional.of(op);
+    while(opr.isPresent() && res.getReturnValue().isPresent()) {
+      res = opr.get().execute(res.getReturnValue().get()).getOpResult();
+      opr = opr.get().next();
     }
+    return res;
   } 
 
 }

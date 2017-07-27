@@ -29,9 +29,9 @@ import us.pserver.tools.rfl.Reflector;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/07/2017
  */
-public class ConstructorOp extends MethodOp<Class> {
+public class ConstructorOp extends MethodOp {
   
-  public ConstructorOp(Operation<?> next, List<Class> types, List args) {
+  public ConstructorOp(Operation next, List<Class> types, List args) {
     super("constructor", next, types, args);
   }
   
@@ -39,34 +39,24 @@ public class ConstructorOp extends MethodOp<Class> {
     this(null, types, args);
   }
   
+  public ConstructorOp(Operation next) {
+    this(next, null, null);
+  }
+  
+  public ConstructorOp() {
+    this(null, null, null);
+  }
+  
   @Override
+  public Operation execute(Object obj) {
+    return lockedCall(()->{ return argtypes.isEmpty() 
+        ? Reflector.of(obj).create()
+        : Reflector.of(obj).selectConstructor(getTypes()).create(args.toArray());
+    });
+  }
+  
   public Operation execute(Class cls) {
-    if(cls == null) {
-      throw new IllegalArgumentException("Bad null argument");
-    }
-    lock.lock();
-    try {
-      Reflector ref = new Reflector(cls);
-      Object ret = null;
-      if(argtypes.isEmpty()) {
-        ref.selectConstructor();
-        ret = ref.create();
-      }
-      else {
-        ref.selectConstructor(argtypes.toArray(
-            new Class[argtypes.size()])
-        );
-        ret = ref.create(args.toArray());
-      }
-      result = OpResult.of(ret);
-    }
-    catch(Throwable th) {
-      result = OpResult.of(th);
-    }
-    finally {
-      lock.unlock();
-    }
-    return this;
+    return execute((Object)cls);
   }
 
 }

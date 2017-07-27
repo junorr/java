@@ -19,45 +19,47 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.box;
+package br.com.bb.disec.microb.test;
 
-import us.pserver.tools.rfl.Reflector;
+import br.com.bb.disec.micro.box.ChainOp;
+import br.com.bb.disec.micro.box.OpBuilder;
+import br.com.bb.disec.micro.box.Operation;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 16/07/2017
+ * @version 0.0 - 26/07/2017
  */
-public class SetFieldOp extends SyncOp {
+public class TestOpBuilder {
   
-  private final Object arg;
-
+  private String msg;
   
-  public SetFieldOp(String name, Operation next, Object arg) {
-    super(name, next);
-    if(arg == null) {
-      throw new IllegalArgumentException("Bad null argument");
-    }
-    this.arg = arg;
-  }
-
-  public SetFieldOp(String name, Object arg) {
-    this(name, null, arg);
-  }
-
-
-  @Override
-  public Operation execute(Object obj) {
-    return lockedCall(()->Reflector.of(obj).selectField(name).set(arg).getTarget());
+  public TestOpBuilder(String message) {
+    this.msg = message;
   }
   
+  public TestOpBuilder setMessage(String message) {
+    this.msg = message;
+    return this;
+  }
   
-  @Override
-  public String toString() {
-    return this.getClass().getSimpleName() + "{\n"
-        + "  name="+ name+ ",\n"
-        + "  arg="+ arg+ "\n}"
-        + (next().isPresent() ? next.toString() + "\n" : "");
+  public TestOpBuilder say() {
+    System.out.println("--> "+ msg+ "!");
+    return this;
   }
 
+  
+  public static void main(String[] args) {
+    Operation op = new OpBuilder().withTypes(String.class).withArgs("hello").constructor()
+        .method("say")
+        .set("msg", "world")
+        .method("say")
+        .method("setMessage", "oh, boy")
+        .method("say")
+        .get("msg")
+        .build();
+    System.out.println(op.toString());
+    System.out.println(new ChainOp(op).executeAll(TestOpBuilder.class));
+  }
+  
 }

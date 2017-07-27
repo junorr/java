@@ -28,14 +28,14 @@ import java.util.Optional;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/07/2017
  */
-public interface Operation<T> {
+public interface Operation {
   
   public String getName();
 
-  public Operation execute(T obj);
+  public Operation execute(Object obj);
   
   public OpResult getOpResult();
   
-  public Optional<Operation<?>> next();
+  public Optional<Operation> next();
   
 }

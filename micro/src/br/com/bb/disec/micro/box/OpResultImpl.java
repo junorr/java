@@ -71,4 +71,10 @@ public class OpResultImpl implements OpResult {
     return stackTrace;
   }
 
+
+  @Override
+  public String toString() {
+    return "OpResultImpl{\n" + "  successful=" + successful + ",\n  retval=" + retval + ",\n  thrown=" + thrown + "\n}";
+  }
+
 }

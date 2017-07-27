@@ -30,53 +30,60 @@ import us.pserver.tools.rfl.Reflector;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/07/2017
  */
-public class MethodOp<T> extends BasicOp<T> { 
+public class MethodOp extends SyncOp { 
 
   final List<Class> argtypes;
   
   final List args;
   
   
-  public MethodOp(String name, Operation<?> next, List<Class> types, List args) {
+  public MethodOp(String name, Operation next, List<Class> types, List args) {
     super(name, next);
     this.argtypes = (types == null ? Collections.EMPTY_LIST : types);
     this.args = (args == null ? Collections.EMPTY_LIST : args);
   }
   
-  
   public MethodOp(String name, List<Class> types, List args) {
     this(name, null, types, args);
   }
   
+  public MethodOp(String name, Operation next) {
+    this(name, next, null, null);
+  }
+  
+  public MethodOp(String name) {
+    this(name, null, null, null);
+  }
+  
+  
+  Class[] getTypes() {
+    return argtypes.toArray(new Class[argtypes.size()]);
+  }
+  
 
   @Override
-  public Operation<T> execute(T obj) {
-    if(obj == null) {
-      throw new IllegalArgumentException("Bad null argument");
+  public Operation execute(Object obj) {
+    return lockedCall(()->{ return argtypes.isEmpty() 
+        ? Reflector.of(obj).selectMethod(name).invoke() 
+        : Reflector.of(obj).selectMethod(name, getTypes()).invoke(args.toArray());
+    });
+  }
+
+  
+  @Override
+  public String toString() {
+    if(argtypes.isEmpty()) {
+      return this.getClass().getSimpleName() + "{\n"
+        + "  name="+ name+ "\n}"
+        + (next().isPresent() ? next.toString() + "\n" : "");
     }
-    lock.lock();
-    try {
-      Reflector ref = new Reflector(obj);
-      Object ret = null;
-      if(argtypes.isEmpty()) {
-        ref.selectMethod(name);
-        ret = ref.invoke();
-      }
-      else {
-        ref.selectMethod(name, argtypes.toArray(
-            new Class[argtypes.size()])
-        );
-        ret = ref.invoke(args.toArray());
-      }
-      result = (ret == null ? OpResult.successful() : OpResult.of(ret));
+    else {
+      return this.getClass().getSimpleName() + "{\n"
+        + "  name="+ name+ ",\n"
+        + "  types="+ argtypes+ ",\n"
+        + "  args="+ args+ "\n}"
+        + (next().isPresent() ? next.toString() + "\n" : "");
     }
-    catch(Throwable th) {
-      result = OpResult.of(th);
-    }
-    finally {
-      lock.unlock();
-    }
-    return this;
   }
 
 }

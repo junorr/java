@@ -21,43 +21,30 @@
 
 package br.com.bb.disec.micro.box;
 
-import us.pserver.tools.rfl.Reflector;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 16/07/2017
+ * @version 0.0 - 26/07/2017
  */
-public class SetFieldOp extends SyncOp {
+public class NextOp extends SyncOp {
   
-  private final Object arg;
-
+  private final Operation opr;
   
-  public SetFieldOp(String name, Operation next, Object arg) {
-    super(name, next);
-    if(arg == null) {
-      throw new IllegalArgumentException("Bad null argument");
-    }
-    this.arg = arg;
+  public NextOp(Operation opr, Operation next) {
+    super(opr.getName(), next);
+    this.opr = opr;
   }
-
-  public SetFieldOp(String name, Object arg) {
-    this(name, null, arg);
-  }
-
-
+  
   @Override
   public Operation execute(Object obj) {
-    return lockedCall(()->Reflector.of(obj).selectField(name).set(arg).getTarget());
+    return opr.execute(obj);
   }
-  
-  
+
+
   @Override
   public String toString() {
-    return this.getClass().getSimpleName() + "{\n"
-        + "  name="+ name+ ",\n"
-        + "  arg="+ arg+ "\n}"
-        + (next().isPresent() ? next.toString() + "\n" : "");
+    return opr.toString()+ "\n"
+        + (next().isPresent() ? next.toString() : "");
   }
 
 }

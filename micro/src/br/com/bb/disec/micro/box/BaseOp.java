@@ -21,52 +21,55 @@
 
 package br.com.bb.disec.micro.box;
 
-import java.util.List;
+import br.com.bb.disec.micro.util.JsonClass;
+import com.google.gson.GsonBuilder;
 import java.util.Optional;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 16/07/2017
+ * @version 0.0 - 26/07/2017
  */
-public abstract class BasicOp<T> implements Operation<T> { 
-
+public abstract class BaseOp implements Operation {
+  
   final String name;
   
-  final Operation<?> next;
-  
-  final ReentrantLock lock;
-  
-  OpResult result;
+  final Operation next;
   
   
-  BasicOp(String name, Operation<?> next) {
+  BaseOp(String name, Operation next) {
     if(name == null) {
       throw new IllegalArgumentException("Bad null name");
     }
     this.name = name;
-    this.result = null;
     this.next = next;
-    this.lock = new ReentrantLock();
   }
   
   
+  BaseOp(String name) {
+    this(name, null);
+  }
+  
+
   @Override
   public String getName() {
     return name;
   }
-  
-  
+
+
   @Override
-  public OpResult getOpResult() {
-    return result;
-  }
-  
-  
-  @Override
-  public Optional<Operation<?>> next() {
+  public Optional<Operation> next() {
     return Optional.ofNullable(next);
   }
   
+  
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName() 
+        + "{ name="+ name+ " }" 
+        + (next().isPresent() 
+        ? next.toString() + "\n" 
+        : "");
+  }
+
 }

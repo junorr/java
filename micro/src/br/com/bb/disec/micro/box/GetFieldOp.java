@@ -28,37 +28,21 @@ import us.pserver.tools.rfl.Reflector;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/07/2017
  */
-public class GetFieldOp<T> extends BasicOp<T> {
+public class GetFieldOp extends SyncOp {
   
   
-  public GetFieldOp(String name, Operation<?> next) {
+  public GetFieldOp(String name, Operation next) {
     super(name, next);
   }
 
-
   public GetFieldOp(String name) {
-    this(name, null);
+    super(name);
   }
-
-
+  
+  
   @Override
-  public Operation execute(T obj) {
-    if(obj == null) {
-      throw new IllegalArgumentException("Bad null argument");
-    }
-    lock.lock();
-    try {
-      Reflector ref = new Reflector(obj);
-      ref.selectField(name);
-      result = OpResult.of(ref.get());
-    }
-    catch(Throwable th) {
-      result = OpResult.of(th);
-    }
-    finally {
-      lock.unlock();
-    }
-    return this;
+  public Operation execute(Object obj) {
+    return lockedCall(Reflector.of(obj).selectField(name)::get);
   }
   
 }

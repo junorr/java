@@ -54,6 +54,11 @@ public class Reflector {
 	public static Reflector of(Object obj) {
 		return new Reflector(obj);
 	}
+  
+  
+  public Object getTarget() {
+    return (obj == null ? cls : obj);
+  }
 	
 	
 	/**
@@ -347,6 +352,7 @@ public class Reflector {
       	fld.setAccessible(true);
 			fld.set(obj, value);
   	} catch(Exception ex) {
+      ex.printStackTrace();
     	throw new ReflectorException(ex);
 		}
     return this;

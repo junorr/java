@@ -48,9 +48,10 @@ public interface OpResult {
   }
   
   
-  public static OpResult of(Object returnValue) {
-    if(returnValue == null) throw new IllegalArgumentException("Invalid null return value");
-    return new OpResultImpl(true, returnValue, null, Collections.EMPTY_LIST);
+  public static OpResult of(Object retVal) {
+    return retVal == null 
+        ? successful() 
+        : new OpResultImpl(true, retVal, null, Collections.EMPTY_LIST);
   }
   
   
