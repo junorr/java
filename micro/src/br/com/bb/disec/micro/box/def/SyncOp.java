@@ -19,47 +19,66 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.microb.test;
+package br.com.bb.disec.micro.box.def;
 
-import br.com.bb.disec.micro.box.def.ChainOp;
-import br.com.bb.disec.micro.box.OpBuilder;
+import br.com.bb.disec.micro.box.OpResult;
 import br.com.bb.disec.micro.box.Operation;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 26/07/2017
+ * @version 0.0 - 16/07/2017
  */
-public class TestOpBuilder {
-  
-  private String msg;
-  
-  public TestOpBuilder(String message) {
-    this.msg = message;
-  }
-  
-  public TestOpBuilder setMessage(String message) {
-    this.msg = message;
-    return this;
-  }
-  
-  public TestOpBuilder say() {
-    System.out.println("--> "+ msg+ "!");
-    return this;
-  }
+public abstract class SyncOp extends BaseOp { 
 
+  transient final ReentrantLock lock;
   
-  public static void main(String[] args) {
-    Operation op = new OpBuilder().withArgs("hello").constructor()
-        .method("say")
-        .set("msg", "world")
-        .method("say")
-        .method("setMessage", "oh, boy")
-        .method("say")
-        .get("msg")
-        .build();
-    System.out.println(op.toString());
-    System.out.println(new ChainOp(op).execute(TestOpBuilder.class));
+  
+  SyncOp(String name, Operation next) {
+    super(name, next);
+    this.lock = new ReentrantLock();
+  }
+  
+  
+  SyncOp(String name) {
+    this(name, null);
+  }
+  
+  
+  OpResult lockedCall(Supplier<Object> exe) {
+    if(exe == null) {
+      throw new IllegalArgumentException("Bad null exe method");
+    }
+    lock.lock();
+    try {
+      return OpResult.of(exe.get());
+    }
+    catch(Throwable th) {
+      return OpResult.of(th);
+    }
+    finally {
+      lock.unlock();
+    }
+  }
+  
+  
+  OpResult lockedCall(Runnable exe) {
+    if(exe == null) {
+      throw new IllegalArgumentException("Bad null exe method");
+    }
+    lock.lock();
+    try {
+      exe.run();
+      return OpResult.successful();
+    }
+    catch(Throwable th) {
+      return OpResult.of(th);
+    }
+    finally {
+      lock.unlock();
+    }
   }
   
 }

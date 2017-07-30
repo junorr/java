@@ -66,7 +66,7 @@ public class NotNull<T> {
   
   public void fail() throws NullPointerException {
     if(obj == null) {
-      throw new NullPointerException("Bad Null "+ obj.getClass().getSimpleName());
+      throw new NullPointerException("Bad Null Value");
     }
   }
   

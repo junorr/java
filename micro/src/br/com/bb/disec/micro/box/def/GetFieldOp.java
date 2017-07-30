@@ -19,34 +19,32 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.microb.test;
+package br.com.bb.disec.micro.box.def;
 
-import br.com.bb.disec.micro.box.ObjectBox;
-import br.com.bb.disec.micro.box.OpBuilder;
+import br.com.bb.disec.micro.box.OpResult;
 import br.com.bb.disec.micro.box.Operation;
-import br.com.bb.disec.micro.box.def.ChainOp;
-import java.nio.file.Paths;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 30/07/2017
+ * @version 0.0 - 16/07/2017
  */
-public class TestObjectBox {
-
+public class GetFieldOp extends SyncOp {
   
-  public static void main(String[] args) {
-    ObjectBox box = ObjectBox.of(Paths.get("D:/java/testObjectBox/dist/"));
-    Operation op = new OpBuilder()
-        .withArgs("Hello World").constructor()
-        .method("say")
-        .build();
-    Operation op2 = new OpBuilder()
-        .method("setMessage", "Oh, Boy")
-        .method("say")
-        .build();
-    box.execute(new ChainOp("testobjectbox.Message", op));
-    box.execute(new ChainOp("testobjectbox.Message", op2));
+  
+  public GetFieldOp(String name, Operation next) {
+    super(name, next);
+  }
+
+  public GetFieldOp(String name) {
+    super(name);
+  }
+  
+  
+  @Override
+  public OpResult execute(Object obj) {
+    return lockedCall(Reflector.of(obj).selectField(name)::get);
   }
   
 }

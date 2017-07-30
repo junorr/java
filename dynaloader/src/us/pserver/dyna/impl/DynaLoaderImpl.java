@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import us.pserver.dyna.DynaLoader;
 import us.pserver.dyna.ResourceLoader;
@@ -46,10 +47,13 @@ public class DynaLoaderImpl implements DynaLoader {
   
   private URLClassLoader loader;
   
+  private final ReentrantLock lock;
+  
   
   public DynaLoaderImpl() {
     this.jars = Collections.synchronizedList(new ArrayList<>());
     this.loader = this.create();
+    this.lock = new ReentrantLock();
   }
   
   
@@ -90,11 +94,15 @@ public class DynaLoaderImpl implements DynaLoader {
     if(cls == null || cls.trim().isEmpty()) {
       throw new IllegalArgumentException("Invalid class name: "+ cls);
     }
+    lock.lock();
     try {
       return this.loader.loadClass(cls);
     }
     catch(ClassNotFoundException e) {
       throw new RuntimeException(e.toString(), e);
+    }
+    finally {
+      lock.unlock();
     }
   }
 
@@ -107,6 +115,7 @@ public class DynaLoaderImpl implements DynaLoader {
         || !jar.toString().endsWith(".jar")) {
       throw new IllegalArgumentException("Invalid jar: "+ jar);
     }
+    lock.lock();
     try {
       URLClassLoader ucl = new URLClassLoader(
           new URL[]{jar.toUri().toURL()}, this.loader
@@ -115,6 +124,9 @@ public class DynaLoaderImpl implements DynaLoader {
     }
     catch(ClassNotFoundException | MalformedURLException e) {
       throw new RuntimeException(e.toString(), e);
+    }
+    finally {
+      lock.unlock();
     }
   }
   
@@ -152,15 +164,21 @@ public class DynaLoaderImpl implements DynaLoader {
   @Override
   public DynaLoader register(Path path) {
     if(path != null) {
-      if(Files.isDirectory(path)) {
-        this.registerDir(path);
+      lock.lock();
+      try {
+        if(Files.isDirectory(path)) {
+          this.registerDir(path);
+        }
+        else if(path.toString().endsWith(".jar") 
+            && !isRegistered(path)) {
+          this.registerJar(path);
+        }
+        this.loader = create();
+        //System.out.println("* DynaLoader.register finished!");
       }
-      else if(path.toString().endsWith(".jar") 
-          && !isRegistered(path)) {
-        this.registerJar(path);
+      finally {
+        lock.unlock();
       }
-      this.loader = create();
-      //System.out.println("* DynaLoader.register finished!");
     }
     return this;
   }
@@ -192,9 +210,15 @@ public class DynaLoaderImpl implements DynaLoader {
   @Override
   public DynaLoader unregister(Path path) {
     if(path != null) {
-      jars.remove(path);
-      this.close();
-      this.loader = create();
+      lock.lock();
+      try {
+        jars.remove(path);
+        this.close();
+        this.loader = create();
+      }
+      finally {
+        lock.unlock();
+      }
     }
     return this;
   }
@@ -203,19 +227,25 @@ public class DynaLoaderImpl implements DynaLoader {
   @Override
   public void close() {
     if(this.loader != null) {
+      lock.lock();
       try { this.loader.close(); } 
       catch(IOException e) {}
+      finally { lock.unlock(); }
     }
   }
   
   
   @Override
   public DynaLoader reset() {
-    jars.clear();
-    this.close();
-    this.loader = null;
-    for(int i = 0; i < 3; i++) {
+    lock.lock();
+    try {
+      jars.clear();
+      this.close();
+      this.loader = null;
       System.gc();
+    }
+    finally {
+      lock.unlock();
     }
     return this;
   }

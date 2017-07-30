@@ -19,34 +19,38 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.microb.test;
+package br.com.bb.disec.micro.box;
 
-import br.com.bb.disec.micro.box.ObjectBox;
-import br.com.bb.disec.micro.box.OpBuilder;
-import br.com.bb.disec.micro.box.Operation;
-import br.com.bb.disec.micro.box.def.ChainOp;
-import java.nio.file.Paths;
+import br.com.bb.disec.micro.box.def.DefaultObjectBox;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 30/07/2017
  */
-public class TestObjectBox {
+public interface ObjectBox {
 
+  public static interface CachedObject extends Comparable<CachedObject> {
+    public Object getObject();
+    public Instant getInstant();
+  }
   
-  public static void main(String[] args) {
-    ObjectBox box = ObjectBox.of(Paths.get("D:/java/testObjectBox/dist/"));
-    Operation op = new OpBuilder()
-        .withArgs("Hello World").constructor()
-        .method("say")
-        .build();
-    Operation op2 = new OpBuilder()
-        .method("setMessage", "Oh, Boy")
-        .method("say")
-        .build();
-    box.execute(new ChainOp("testobjectbox.Message", op));
-    box.execute(new ChainOp("testobjectbox.Message", op2));
+  public List<String> listClasses() throws IOException;
+  
+  public List<String> listJars();
+  
+  public Map<String,CachedObject> cache();
+  
+  public OpResult execute(Operation op);
+  
+  
+  public static ObjectBox of(Path classpath) {
+    return new DefaultObjectBox(classpath);
   }
   
 }

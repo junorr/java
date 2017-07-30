@@ -32,9 +32,7 @@ public interface Operation {
   
   public String getName();
 
-  public Operation execute(Object obj);
-  
-  public OpResult getOpResult();
+  public OpResult execute(Object obj);
   
   public Optional<Operation> next();
   

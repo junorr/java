@@ -19,45 +19,63 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.box;
+package br.com.bb.disec.micro.box.def;
 
-import br.com.bb.disec.micro.box.def.DefaultOpResult;
-import java.util.Arrays;
-import java.util.Collections;
+import br.com.bb.disec.micro.box.OpResult;
 import java.util.List;
 import java.util.Optional;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/06/2017
+ * @version 0.0 - 30/07/2017
  */
-public interface OpResult {
+public class DefaultOpResult implements OpResult {
   
-  public boolean isSuccessful();
+  private final boolean successful;
   
-  public Optional<Object> getReturnValue();
+  private final Object retval;
   
-  public Optional<Throwable> getThrownException();
+  private final Throwable thrown;
   
-  public List<StackTraceElement> getStackTrace();
+  private final List<StackTraceElement> stackTrace;
   
   
-  public static OpResult of(Throwable th) {
-    if(th == null) throw new IllegalArgumentException("Invalid null throwable");
-    return new DefaultOpResult(false, null, th, Arrays.asList(th.getStackTrace()));
+  public DefaultOpResult(boolean successful, Object returnValue, Throwable ex, List<StackTraceElement> stack) {
+    this.successful = successful;
+    this.retval = returnValue;
+    this.thrown = ex;
+    this.stackTrace = stack;
   }
   
-  
-  public static OpResult of(Object retVal) {
-    return retVal == null 
-        ? successful() 
-        : new DefaultOpResult(true, retVal, null, Collections.EMPTY_LIST);
+
+  @Override
+  public boolean isSuccessful() {
+    return successful;
   }
-  
-  
-  public static OpResult successful() {
-    return new DefaultOpResult(true, null, null, Collections.EMPTY_LIST);
+
+
+  @Override
+  public Optional<Object> getReturnValue() {
+    return Optional.ofNullable(retval);
   }
-  
+
+
+  @Override
+  public Optional<Throwable> getThrownException() {
+    return Optional.ofNullable(thrown);
+  }
+
+
+  @Override
+  public List<StackTraceElement> getStackTrace() {
+    return stackTrace;
+  }
+
+
+  @Override
+  public String toString() {
+    return "OpResult{\n" + "  successful=" + successful + ",\n  retval=" + retval + ",\n  thrown=" + thrown + "\n}";
+  }
+
 }

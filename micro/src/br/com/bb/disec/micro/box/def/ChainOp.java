@@ -19,34 +19,42 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.microb.test;
+package br.com.bb.disec.micro.box.def;
 
-import br.com.bb.disec.micro.box.ObjectBox;
-import br.com.bb.disec.micro.box.OpBuilder;
+import br.com.bb.disec.micro.box.OpResult;
 import br.com.bb.disec.micro.box.Operation;
-import br.com.bb.disec.micro.box.def.ChainOp;
-import java.nio.file.Paths;
+import java.util.Optional;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 30/07/2017
+ * @version 0.0 - 25/07/2017
  */
-public class TestObjectBox {
+public class ChainOp extends SyncOp {
+  
+  private final Operation op;
 
   
-  public static void main(String[] args) {
-    ObjectBox box = ObjectBox.of(Paths.get("D:/java/testObjectBox/dist/"));
-    Operation op = new OpBuilder()
-        .withArgs("Hello World").constructor()
-        .method("say")
-        .build();
-    Operation op2 = new OpBuilder()
-        .method("setMessage", "Oh, Boy")
-        .method("say")
-        .build();
-    box.execute(new ChainOp("testobjectbox.Message", op));
-    box.execute(new ChainOp("testobjectbox.Message", op2));
+  public ChainOp(String name, Operation op) {
+    super(name, null);
+    this.op = op;
   }
   
+  
+  public ChainOp(Operation op) {
+    this(op.getName(), op);
+  }
+  
+  
+  @Override
+  public OpResult execute(Object obj) {
+    OpResult res = OpResult.of(obj);
+    Optional<Operation> opr = Optional.of(op);
+    while(opr.isPresent() && res.getReturnValue().isPresent()) {
+      res = opr.get().execute(res.getReturnValue().get());
+      opr = opr.get().next();
+    }
+    return res;
+  } 
+
 }

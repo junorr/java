@@ -21,32 +21,45 @@
 
 package br.com.bb.disec.microb.test;
 
-import br.com.bb.disec.micro.box.ObjectBox;
-import br.com.bb.disec.micro.box.OpBuilder;
-import br.com.bb.disec.micro.box.Operation;
 import br.com.bb.disec.micro.box.def.ChainOp;
-import java.nio.file.Paths;
+import br.com.bb.disec.micro.box.json.JsonOpBuilder;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 30/07/2017
  */
-public class TestObjectBox {
+public class TestJsonOpBuilder {
+  
+  private String msg;
+  
+  public TestJsonOpBuilder(String message) {
+    this.msg = message;
+  }
+  
+  public TestJsonOpBuilder setMessage(String message) {
+    this.msg = message;
+    return this;
+  }
+  
+  public TestJsonOpBuilder say() {
+    System.out.println("--> "+ msg+ "!");
+    return this;
+  }
 
   
   public static void main(String[] args) {
-    ObjectBox box = ObjectBox.of(Paths.get("D:/java/testObjectBox/dist/"));
-    Operation op = new OpBuilder()
-        .withArgs("Hello World").constructor()
+    String json = new JsonOpBuilder().withArgs("hello").constructor()
         .method("say")
-        .build();
-    Operation op2 = new OpBuilder()
-        .method("setMessage", "Oh, Boy")
+        .set("msg", "world")
         .method("say")
-        .build();
-    box.execute(new ChainOp("testobjectbox.Message", op));
-    box.execute(new ChainOp("testobjectbox.Message", op2));
+        .method("setMessage", "oh, boy")
+        .method("say")
+        .get("msg")
+        .buildJson();
+    System.out.println(json);
+    System.out.println(new ChainOp(JsonOpBuilder.fromJson(json).build())
+        .execute(TestJsonOpBuilder.class));
   }
   
 }
