@@ -133,7 +133,14 @@ public class DefaultObjectBox implements ObjectBox {
     }
     else {
       try {
-        return op.execute(watcher.getDynaLoader().load(target));
+        OpResult res = op.execute(watcher.getDynaLoader().load(target));
+        if(res.getReturnValue().isPresent()) {
+          cache(
+              res.getReturnValue().get().getClass().getName(), 
+              res.getReturnValue().get()
+          );
+        }
+        return res;
       } catch(Exception e) {
         return OpResult.of(e);
       }
