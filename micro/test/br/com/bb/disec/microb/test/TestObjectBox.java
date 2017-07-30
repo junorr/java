@@ -46,7 +46,7 @@ public class TestObjectBox {
         .method("say")
         .build();
     box.execute(new ChainOp("testobjectbox.Message", op));
-    box.execute(new ChainOp("testobjectbox.Message", op2));
+    System.out.println(box.execute(new ChainOp("testobjectbox.Message", op2)));
   }
   
 }
