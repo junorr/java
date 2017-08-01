@@ -22,24 +22,32 @@
 package br.com.bb.disec.micro.handler;
 
 import io.undertow.server.HttpServerExchange;
-import java.time.Instant;
+import io.undertow.util.Methods;
 
 /**
- * Retorna a hora local do servidor.
+ * 
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/08/2016
  */
-public class TimeHandler implements JsonHandler {
+public class JmiHandler implements JsonHandler {
   
   /**
-   * Envia a hora local do servidor.
+   * 
    * @param hse Exchanger de resquisição e resposta do servidor
    * @throws Exception 
    */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    hse.getResponseSender().send(Instant.now().toString());
-    hse.endExchange();
+    if(hse.isInIoThread()) {
+      hse.dispatch(this);
+      return;
+    }
+    if(Methods.GET.equals(hse.getRequestMethod())) {
+      new JmiGetHandler().handleRequest(hse);
+    }
+    else {
+      
+    }
   }
   
 }

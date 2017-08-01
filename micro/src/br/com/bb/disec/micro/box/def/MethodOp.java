@@ -32,7 +32,7 @@ import us.pserver.tools.rfl.Reflector;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/07/2017
  */
-public class MethodOp extends SyncOp { 
+public class MethodOp extends BaseOp { 
 
   final List<Class> argtypes;
   
@@ -65,10 +65,14 @@ public class MethodOp extends SyncOp {
 
   @Override
   public OpResult execute(Object obj) {
-    return lockedCall(()->{ return argtypes.isEmpty() 
-        ? Reflector.of(obj).selectMethod(name).invoke() 
-        : Reflector.of(obj).selectMethod(name, getTypes()).invoke(args.toArray());
-    });
+    try {
+      return argtypes.isEmpty() 
+        ? OpResult.of(Reflector.of(obj).selectMethod(name).invoke())
+        : OpResult.of(Reflector.of(obj).selectMethod(name, getTypes()).invoke(args.toArray()));
+    }
+    catch(Exception e) {
+      return OpResult.of(e);
+    }
   }
 
   

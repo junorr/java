@@ -22,11 +22,14 @@
 package br.com.bb.disec.micro.box.json;
 
 import br.com.bb.disec.micro.box.*;
+import br.com.bb.disec.micro.box.def.ChainOp;
 import br.com.bb.disec.micro.box.def.NextOp;
 import br.com.bb.disec.micro.util.JsonClass;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,58 +44,58 @@ public class JsonOpBuilder {
 
   private final List<JsonOp> ops;
   
-  private String name;
+  private final String name;
   
-  private Class[] types;
+  private final String className;
   
-  private Object[] args;
+  private final Class[] types;
+  
+  private final Object[] args;
+
+
+  public JsonOpBuilder(List<JsonOp> ops, String name, String className, Class[] types, Object[] args) {
+    this.ops = ops;
+    this.name = name;
+    this.className = className;
+    this.types = types;
+    this.args = args;
+  }
   
   
   public JsonOpBuilder() {
-    this(new ArrayList<>());
+    this(new ArrayList<>(), null, null, null, null);
   }
   
   
   private JsonOpBuilder(List<JsonOp> ops) {
-    this.ops = ops;
+    this(ops, null, null, null, null);
   }
   
   
   public JsonOpBuilder withName(String name) {
-    this.name = name;
-    return this;
+    return new JsonOpBuilder(ops, name, className, types, args);
+  }
+  
+  
+  public JsonOpBuilder onClass(String className) {
+    return new JsonOpBuilder(ops, name, className, types, args);
   }
   
   
   public JsonOpBuilder withTypes(Class ... cls) {
-    this.types = cls;
-    return this;
+    return new JsonOpBuilder(ops, name, className, cls, args);
   }
   
   
   public JsonOpBuilder withArgs(Object ... args) {
-    this.args = args;
+    Class[] types = this.types;
     if(types == null && args != null) {
       types = new Class[args.length];
       for(int i = 0; i < args.length; i++) {
         types[i] = args[i].getClass();
       }
     }
-    return this;
-  }
-  
-  
-  private JsonOpBuilder clearVars() {
-    name = null;
-    types = null;
-    args = null;
-    return this;
-  }
-  
-  
-  public JsonOpBuilder reset() {
-    ops.clear();
-    return this.clearVars();
+    return new JsonOpBuilder(ops, name, className, types, args);
   }
   
   
@@ -105,9 +108,8 @@ public class JsonOpBuilder {
   
   
   public JsonOpBuilder get() {
-    JsonOp op = new JsonOp(name, JsonOp.OpType.GET);
-    ops.add(op);
-    return this.clearVars();
+    ops.add(new JsonOp(name, JsonOp.OpType.GET));
+    return new JsonOpBuilder(ops, null, className, null, null);
   }
   
   
@@ -117,9 +119,8 @@ public class JsonOpBuilder {
   
   
   public JsonOpBuilder set() {
-    JsonOp op = new JsonOp(checkName(), Arrays.asList(args), JsonOp.OpType.SET);
-    ops.add(op);
-    return this.clearVars();
+    ops.add(new JsonOp(checkName(), Arrays.asList(args), JsonOp.OpType.SET));
+    return new JsonOpBuilder(ops, null, className, null, null);
   }
   
   
@@ -130,18 +131,16 @@ public class JsonOpBuilder {
   
   public JsonOpBuilder method() {
     if(types == null || types.length < 1) {
-      JsonOp op = new JsonOp(name, JsonOp.OpType.METHOD);
-      ops.add(op);
+      ops.add(new JsonOp(name, JsonOp.OpType.METHOD));
     }
     else {
-      JsonOp op = new JsonOp(name, 
+      ops.add(new JsonOp(name, 
           Arrays.asList(types), 
           Arrays.asList(args), 
-          JsonOp.OpType.METHOD, null
+          JsonOp.OpType.METHOD, null)
       );
-      ops.add(op);
     }
-    return this.clearVars();
+    return new JsonOpBuilder(ops, null, className, null, null);
   }
   
   
@@ -157,18 +156,16 @@ public class JsonOpBuilder {
   
   public JsonOpBuilder constructor() {
     if(types == null || types.length < 1) {
-      JsonOp op = new JsonOp(name, JsonOp.OpType.CONSTRUCTOR);
-      ops.add(op);
+      ops.add(new JsonOp(name, JsonOp.OpType.CONSTRUCTOR));
     }
     else {
-      JsonOp op = new JsonOp("constructor", 
+      ops.add(new JsonOp("constructor", 
           Arrays.asList(types), 
           Arrays.asList(args), 
-          JsonOp.OpType.CONSTRUCTOR, null
+          JsonOp.OpType.CONSTRUCTOR, null)
       );
-      ops.add(op);
     }
-    return this.clearVars();
+    return new JsonOpBuilder(ops, null, className, null, null);
   }
   
   
@@ -180,7 +177,7 @@ public class JsonOpBuilder {
     for(int i = ops.size()-2; i >= 0; i--) {
       op = new NextOp(ops.get(i), op);
     }
-    return op;
+    return (className != null ? new ChainOp(className, op) : op);
   }
   
   
@@ -188,11 +185,14 @@ public class JsonOpBuilder {
     if(ops.isEmpty()) {
       throw new IllegalStateException("JsonOpBuilder is not configured");
     }
-    return new GsonBuilder()
+    Gson gson = new GsonBuilder()
         .registerTypeAdapter(Class.class, new JsonClass())
         .setPrettyPrinting()
-        .create()
-        .toJson(ops);
+        .create();
+    JsonObject obj = new JsonObject();
+    obj.addProperty("class", className);
+    obj.add("ops", gson.toJsonTree(ops));
+    return gson.toJson(obj);
   }
   
   
@@ -202,11 +202,14 @@ public class JsonOpBuilder {
         .create();
     List<JsonOp> ops = new ArrayList<>();
     JsonParser par = new JsonParser();
-    JsonArray array = (JsonArray) par.parse(json);
+    JsonObject obj = (JsonObject) par.parse(json);
+    String className = (obj.get("class") != null 
+        ? obj.get("class").getAsString() : null);
+    JsonArray array = obj.getAsJsonArray("ops");
     for(int i = 0; i < array.size(); i++) {
       ops.add(gson.fromJson(array.get(i), JsonOp.class));
     }
-    return new JsonOpBuilder(ops);
+    return new JsonOpBuilder(ops, null, className, null, null);
   }
   
 }

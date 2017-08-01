@@ -30,7 +30,7 @@ import us.pserver.tools.rfl.Reflector;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/07/2017
  */
-public class SetFieldOp extends SyncOp {
+public class SetFieldOp extends BaseOp {
   
   private final Object arg;
 
@@ -50,7 +50,12 @@ public class SetFieldOp extends SyncOp {
 
   @Override
   public OpResult execute(Object obj) {
-    return lockedCall(()->Reflector.of(obj).selectField(name).set(arg).getTarget());
+    try {
+      return OpResult.of(Reflector.of(obj).selectField(name).set(arg).getTarget());
+    }
+    catch(Exception e) {
+      return OpResult.of(e);
+    }
   }
   
   

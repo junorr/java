@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro.box;
 
+import br.com.bb.disec.micro.box.def.ChainOp;
 import br.com.bb.disec.micro.box.def.SetFieldOp;
 import br.com.bb.disec.micro.box.def.NextOp;
 import br.com.bb.disec.micro.box.def.MethodOp;
@@ -39,53 +40,53 @@ public class OpBuilder {
 
   private final List<Operation> ops;
   
-  private String name;
+  private final String name;
   
-  private Class[] types;
+  private final String className;
   
-  private Object[] args;
+  private final Class[] types;
+  
+  private final Object[] args;
+
+
+  private OpBuilder(List<Operation> ops, String name, String className, Class[] types, Object[] args) {
+    this.ops = ops;
+    this.name = name;
+    this.className = className;
+    this.types = types;
+    this.args = args;
+  }
   
   
   public OpBuilder() {
-    this.ops = new ArrayList<>();
+    this(new ArrayList<>(), null, null, null, null);
   }
   
   
   public OpBuilder withName(String name) {
-    this.name = name;
-    return this;
+    return new OpBuilder(ops, name, className, types, args);
+  }
+  
+  
+  public OpBuilder onClass(String cls) {
+    return new OpBuilder(ops, name, cls, types, args);
   }
   
   
   public OpBuilder withTypes(Class ... cls) {
-    this.types = cls;
-    return this;
+    return new OpBuilder(ops, name, className, cls, args);
   }
   
   
   public OpBuilder withArgs(Object ... args) {
-    this.args = args;
+    Class[] types = this.types;
     if(types == null && args != null) {
       types = new Class[args.length];
       for(int i = 0; i < args.length; i++) {
         types[i] = args[i].getClass();
       }
     }
-    return this;
-  }
-  
-  
-  private OpBuilder clearVars() {
-    name = null;
-    types = null;
-    args = null;
-    return this;
-  }
-  
-  
-  public OpBuilder reset() {
-    ops.clear();
-    return this.clearVars();
+    return new OpBuilder(ops, name, className, types, args);
   }
   
   
@@ -99,7 +100,7 @@ public class OpBuilder {
   
   public OpBuilder get() {
     ops.add(new GetFieldOp(checkName()));
-    return this.clearVars();
+    return new OpBuilder(ops, null, className, null, null);
   }
   
   
@@ -110,7 +111,7 @@ public class OpBuilder {
   
   public OpBuilder set() {
     ops.add(new SetFieldOp(checkName(), args == null || args.length < 1 ? null : args[0]));
-    return this.clearVars();
+    return new OpBuilder(ops, null, className, null, null);
   }
   
   
@@ -129,7 +130,7 @@ public class OpBuilder {
           Arrays.asList(args))
       );
     }
-    return this.clearVars();
+    return new OpBuilder(ops, null, className, null, null);
   }
   
   
@@ -144,6 +145,9 @@ public class OpBuilder {
   
   
   public OpBuilder constructor() {
+    System.out.println("* constructor:");
+    System.out.println(" - "+ Arrays.toString(types));
+    System.out.println(" - "+ Arrays.toString(args));
     if(types == null || types.length < 1) {
       ops.add(new ConstructorOp());
     }
@@ -153,7 +157,7 @@ public class OpBuilder {
           Arrays.asList(args))
       );
     }
-    return this.clearVars();
+    return new OpBuilder(ops, null, className, null, null);
   }
   
   
@@ -165,7 +169,7 @@ public class OpBuilder {
     for(int i = ops.size()-2; i >= 0; i--) {
       op = new NextOp(ops.get(i), op);
     }
-    return op;
+    return (className != null ? new ChainOp(className, op) : op);
   }
   
 }

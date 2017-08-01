@@ -22,7 +22,6 @@
 package br.com.bb.disec.micro.box.def;
 
 import br.com.bb.disec.micro.box.OpResult;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -38,14 +37,11 @@ public class DefaultOpResult implements OpResult {
   
   private final Throwable thrown;
   
-  private final List<StackTraceElement> stackTrace;
   
-  
-  public DefaultOpResult(boolean successful, Object returnValue, Throwable ex, List<StackTraceElement> stack) {
+  public DefaultOpResult(boolean successful, Object returnValue, Throwable ex) {
     this.successful = successful;
     this.retval = returnValue;
     this.thrown = ex;
-    this.stackTrace = stack;
   }
   
 
@@ -64,12 +60,6 @@ public class DefaultOpResult implements OpResult {
   @Override
   public Optional<Throwable> getThrownException() {
     return Optional.ofNullable(thrown);
-  }
-
-
-  @Override
-  public List<StackTraceElement> getStackTrace() {
-    return stackTrace;
   }
 
 

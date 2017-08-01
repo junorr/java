@@ -30,7 +30,7 @@ import us.pserver.tools.rfl.Reflector;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/07/2017
  */
-public class GetFieldOp extends SyncOp {
+public class GetFieldOp extends BaseOp {
   
   
   public GetFieldOp(String name, Operation next) {
@@ -44,7 +44,12 @@ public class GetFieldOp extends SyncOp {
   
   @Override
   public OpResult execute(Object obj) {
-    return lockedCall(Reflector.of(obj).selectField(name)::get);
+    try {
+      return OpResult.of(Reflector.of(obj).selectField(name).get());
+    }
+    catch(Exception e) {
+      return OpResult.of(e);
+    }
   }
   
 }

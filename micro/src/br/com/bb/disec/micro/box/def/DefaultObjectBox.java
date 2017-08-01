@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import us.pserver.dyna.DirectoryWatcher;
@@ -52,20 +53,25 @@ public class DefaultObjectBox implements ObjectBox {
   
   private final Map<String,CachedObject> cache;
   
+  private final ReentrantLock lock;
+  
   
   public DefaultObjectBox(Path classpath) {
     watcher = new DirectoryWatcherImpl(classpath).start();
     cache = Collections.synchronizedMap(new TreeMap<>());
+    lock = new ReentrantLock();
   }
   
 
   @Override
-  public List<String> listClasses() throws IOException {
+  public List<String> listClasses(String jar) throws IOException {
     List<String> ls = new ArrayList<>();
     List<Path> jars = watcher.getDynaLoader().listJars();
     for(Path p : jars) {
-      JarFile jf = new JarFile(p.toFile());
-      jf.stream().map(e->e.getName()).forEach(ls::add);
+      if(p.getFileName().toString().equals(jar)) {
+        JarFile jf = new JarFile(p.toFile());
+        jf.stream().filter(e->!e.isDirectory()).map(e->e.getName()).forEach(ls::add);
+      }
     }
     return ls;
   }
@@ -78,28 +84,36 @@ public class DefaultObjectBox implements ObjectBox {
         .map(p->p.toAbsolutePath().toString())
         .collect(Collectors.toList());
   }
+  
+  
+  @Override
+  public Class load(String className) {
+    return watcher.getDynaLoader().load(className);
+  }
 
 
   @Override
   public Map<String, CachedObject> cache() {
-    return cache;
+    return Collections.unmodifiableMap(cache);
   }
   
   
   private void cache(String name, Object obj) {
-    if(cache.size() < DEFATUL_CACHE_SIZE) {
+    lock.lock();
+    try {
+      if(cache.size() >= DEFATUL_CACHE_SIZE) {
+        Optional<Entry<String,CachedObject>> entry = cache.entrySet()
+            .stream()
+            .sorted((a,b)->a.getValue().compareTo(b.getValue()))
+            .findFirst();
+        if(entry.isPresent()) {
+          cache.remove(entry.get().getKey());
+        }
+      }
       cache.put(name, new DefaultCachedObject(obj));
     }
-    else {
-      Optional<CachedObject> opt = cache.values().stream().sorted().findFirst();
-      Optional<Entry<String,CachedObject>> entry = cache.entrySet()
-          .stream()
-          .filter(e->e.getValue().equals(opt.get()))
-          .findFirst();
-      if(entry.isPresent()) {
-        cache.remove(entry.get().getKey());
-      }
-      cache(name, obj);
+    finally {
+      lock.unlock();
     }
   }
   
@@ -116,23 +130,29 @@ public class DefaultObjectBox implements ObjectBox {
 
   @Override
   public OpResult execute(Operation op) {
-    if(cache.containsKey(op.getName())) {
-      return op.execute(cache.get(op.getName()).getObject());
-    }
-    else {
-      return execute(op.getName(), op);
+    lock.lock();
+    try {
+     if(cache.containsKey(op.getName())) {
+        return op.execute(cache.get(op.getName()).getObject());
+      }
+      else {
+        return execute(op.getName(), op);
+      } 
+    } finally {
+      lock.unlock();
     }
   }
   
   
   private OpResult execute(String target, Operation op) {
-    Optional opt = tryCreate(target);
-    if(opt.isPresent()) {
-      cache(target, opt.get());
-      return op.execute(opt.get());
-    }
-    else {
-      try {
+    lock.lock();
+    try {
+      Optional opt = tryCreate(target);
+      if(opt.isPresent()) {
+        cache(target, opt.get());
+        return op.execute(opt.get());
+      }
+      else {
         OpResult res = op.execute(watcher.getDynaLoader().load(target));
         if(res.getReturnValue().isPresent()) {
           cache(
@@ -141,9 +161,13 @@ public class DefaultObjectBox implements ObjectBox {
           );
         }
         return res;
-      } catch(Exception e) {
-        return OpResult.of(e);
       }
+    } 
+    catch(Exception e) {
+      return OpResult.of(e);
+    }
+    finally {
+      lock.unlock();
     }
   }
 

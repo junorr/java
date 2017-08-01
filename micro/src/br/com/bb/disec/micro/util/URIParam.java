@@ -36,6 +36,17 @@ public class URIParam {
   private final List<String> params;
   
   
+  private URIParam(List<String> params) {
+    if(params == null || params.isEmpty()) {
+      throw new IllegalArgumentException("Bad list params: "+ params);
+    }
+    this.params = params;
+    StringBuilder uri = new StringBuilder("/");
+    params.forEach(s->uri.append(s).append("/"));
+    this.uri = uri.toString();
+  }
+  
+  
   public URIParam(String uri) {
     if(uri == null || uri.trim().isEmpty() 
         || !uri.trim().contains("/")) {
@@ -114,6 +125,14 @@ public class URIParam {
       args[i] = this.getObject(i);
     }
     return args;
+  }
+  
+  
+  public URIParam shift(int pars) {
+    for(int i = 1; i < pars && i < params.size(); i++) {
+      params.remove(i);
+    }
+    return new URIParam(params);
   }
   
 }

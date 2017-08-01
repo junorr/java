@@ -30,7 +30,7 @@ import java.util.Optional;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 25/07/2017
  */
-public class ChainOp extends SyncOp {
+public class ChainOp extends BaseOp {
   
   private final Operation op;
 

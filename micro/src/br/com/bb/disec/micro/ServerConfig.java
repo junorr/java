@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,12 +82,16 @@ public class ServerConfig {
   
   private final Map<String,Class> handlers;
   
+  private final String classpathDir;
+  
   
   /**
    * Construtor padrão, recebe todas as 
    * informações necessárias para o servidor.
    * @param address Endereço de escuta do serviço de rede.
    * @param port Porta de escuta do serviço de rede.
+   * @param classpathDir Diretório de pacotes jar com as
+   * classes utilizadas por RMI.
    * @param dispatcherEnabled Configura se os HttpHandler's 
    * serão criados sob demanda (true) ou apenas na 
    * inicialização do servidor (false).
@@ -104,6 +109,7 @@ public class ServerConfig {
   public ServerConfig(
       String address, 
       int port, 
+      String classpathDir,
       boolean dispatcherEnabled, 
       boolean shutdownHandler, 
       boolean authShield,
@@ -119,6 +125,7 @@ public class ServerConfig {
     }
     this.address = address;
     this.port = port;
+    this.classpathDir = classpathDir;
     this.dispatcherEnabled = dispatcherEnabled;
     this.shutdownHandler = shutdownHandler;
     this.authenticationShield = authShield;
@@ -165,6 +172,11 @@ public class ServerConfig {
    */
   public int getPort() {
     return port;
+  }
+  
+  
+  public Path getClasspathDir() {
+    return Paths.get(classpathDir);
   }
   
   
@@ -313,8 +325,9 @@ public class ServerConfig {
 
   @Override
   public String toString() {
-    return "ServerConfig{\n    " 
-        + "address: " + address 
+    return "ServerConfig{" 
+        + "\n    address: " + address 
+        + "\n    classpath: " + classpathDir 
         + "\n    port: " + port 
         + "\n    ioThreads: " + ioThreads 
         + "\n    maxWorkerThreads: " + maxWorkerThreads 
@@ -340,6 +353,8 @@ public class ServerConfig {
     private String serverAddress;
     
     private int serverPort;
+    
+    private String classpathDir;
     
     private boolean dispatcherEnabled;
     
@@ -421,6 +436,17 @@ public class ServerConfig {
      */
     public Builder setServerPort(int serverPort) {
       this.serverPort = serverPort;
+      return this;
+    }
+
+
+    public String getClasspathDir() {
+      return classpathDir;
+    }
+
+
+    public Builder setClasspathDir(String classpathDir) {
+      this.classpathDir = classpathDir;
       return this;
     }
 
@@ -588,6 +614,7 @@ public class ServerConfig {
       return new ServerConfig(
           serverAddress, 
           serverPort, 
+          classpathDir,
           dispatcherEnabled, 
           shutdownHandlerEnabled, 
           authenticationShield,
@@ -640,6 +667,7 @@ public class ServerConfig {
             .setMaxWorkerThreads(b.getMaxWorkerThreads())
             .setServerAddress(b.getServerAddress())
             .setServerPort(b.getServerPort())
+            .setClasspathDir(b.getClasspathDir())
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled());
       }
     }
@@ -667,6 +695,7 @@ public class ServerConfig {
             .setMaxWorkerThreads(b.getMaxWorkerThreads())
             .setServerAddress(b.getServerAddress())
             .setServerPort(b.getServerPort())
+            .setClasspathDir(b.getClasspathDir())
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled());
       }
     }
@@ -674,9 +703,10 @@ public class ServerConfig {
 
     @Override
     public String toString() {
-      return "ServerConfig.Builder{\n    " 
-          + "address: " + serverAddress 
+      return "ServerConfig.Builder{" 
+          + "\n    address: " + serverAddress 
           + "\n    port: " + serverPort 
+          + "\n    classpath: " + classpathDir 
           + "\n    dispatcherEnabled: " + dispatcherEnabled 
           + "\n    ioThreads: " + ioThreads 
           + "\n    maxWorkerThreads: " + maxWorkerThreads 

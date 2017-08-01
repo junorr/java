@@ -49,7 +49,9 @@ public class TestJsonOpBuilder {
 
   
   public static void main(String[] args) {
-    String json = new JsonOpBuilder().withArgs("hello").constructor()
+    String json = new JsonOpBuilder()
+        .onClass(TestJsonOpBuilder.class.getName())
+        .withArgs("hello").constructor()
         .method("say")
         .set("msg", "world")
         .method("say")

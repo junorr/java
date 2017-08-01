@@ -40,11 +40,13 @@ public interface ObjectBox {
     public Instant getInstant();
   }
   
-  public List<String> listClasses() throws IOException;
+  public List<String> listClasses(String jar) throws IOException;
   
   public List<String> listJars();
   
   public Map<String,CachedObject> cache();
+  
+  public Class load(String className);
   
   public OpResult execute(Operation op);
   

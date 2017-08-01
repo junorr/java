@@ -1,0 +1,94 @@
+/*
+ * Direitos Autorais Reservados (c) 2011 Juno Roesler
+ * Contato: juno.rr@gmail.com
+ * 
+ * Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os
+ * termos da Licença Pública Geral Menor do GNU conforme publicada pela Free
+ * Software Foundation; tanto a versão 2.1 da Licença, ou qualquer
+ * versão posterior.
+ * 
+ * Esta biblioteca é distribuída na expectativa de que seja útil, porém, SEM
+ * NENHUMA GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE
+ * OU ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA. Consulte a Licença Pública
+ * Geral Menor do GNU para mais detalhes.
+ * 
+ * Você deve ter recebido uma cópia da Licença Pública Geral Menor do GNU junto
+ * com esta biblioteca; se não, acesse 
+ * http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html, 
+ * ou escreva para a Free Software Foundation, Inc., no
+ * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
+ */
+
+package br.com.bb.disec.micro;
+
+import br.com.bb.disec.micro.ResourceLoader.ResourceLoadException;
+import br.com.bb.disec.micro.box.ObjectBox;
+import java.io.IOException;
+
+
+/**
+ *
+ * @author Juno Roesler - juno.roesler@bb.com.br
+ * @version 1.0.201609
+ */
+public enum ServerSetupEnum {
+  
+  INSTANCE(ResourceLoader.self());
+  
+  public static final String DEFAULT_CONFIG = "/resources/serverconf.json";
+  
+  private final ResourceLoader loader;
+  
+  private final ServerConfig config;
+  
+  private final ObjectBox box;
+  
+  /**
+   * Construtor para a configuração do servidor. O servidor é configurado com
+   * as configurações padrões.
+   * @param rld
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
+  private ServerSetupEnum(ResourceLoader rld) throws ResourceLoadException {
+    this.loader = rld;
+    try {
+      config = ServerConfig.builder().load(
+          loader.loadStream(DEFAULT_CONFIG)
+      ).build();
+      this.box = ObjectBox.of(config.getClasspathDir());
+    }
+    catch(IOException e) {
+      throw new ResourceLoadException(e);
+    }
+  }
+  
+  /**
+   * Pega a configuração de servidor existente na classe.
+   * @return configuração existente
+   */
+  public ServerConfig config() {
+    return config;
+  }
+  
+  /**
+   * Pega o carregador de recursos existente na classe.
+   * @return carregador de recursos
+   */
+  public ResourceLoader loader() {
+    return loader;
+  }
+  
+  public ObjectBox objectBox() {
+    return box;
+  }
+  
+  /**
+   * Cria o servidor com as configurações existentes na classe.
+   * @return servidor criado
+   */
+  public Server createServer() {
+    return new Server(config);
+  }
+  
+}

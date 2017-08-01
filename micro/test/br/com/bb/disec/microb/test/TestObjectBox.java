@@ -36,17 +36,20 @@ public class TestObjectBox {
 
   
   public static void main(String[] args) {
-    ObjectBox box = ObjectBox.of(Paths.get("D:/java/testObjectBox/dist/"));
+    //ObjectBox box = ObjectBox.of(Paths.get("D:/java/testObjectBox/dist/"));
+    ObjectBox box = ObjectBox.of(Paths.get("/storage/java/testObjectBox/dist/"));
     Operation op = new OpBuilder()
+        .onClass("testobjectbox.Message")
         .withArgs("Hello World").constructor()
         .method("say")
         .build();
     Operation op2 = new OpBuilder()
+        .onClass("testobjectbox.Message")
         .method("setMessage", "Oh, Boy")
         .method("say")
         .build();
-    System.out.println(box.execute(new ChainOp("testobjectbox.Message", op)));
-    System.out.println(box.execute(new ChainOp("testobjectbox.Message", op2)));
+    System.out.println(box.execute(op));
+    System.out.println(box.execute(op2));
   }
   
 }

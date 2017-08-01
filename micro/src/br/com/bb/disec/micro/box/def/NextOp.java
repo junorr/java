@@ -29,7 +29,7 @@ import br.com.bb.disec.micro.box.Operation;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/07/2017
  */
-public class NextOp extends SyncOp {
+public class NextOp extends BaseOp {
   
   private final Operation operation;
   

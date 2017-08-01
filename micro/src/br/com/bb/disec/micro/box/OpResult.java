@@ -40,24 +40,22 @@ public interface OpResult {
   
   public Optional<Throwable> getThrownException();
   
-  public List<StackTraceElement> getStackTrace();
-  
   
   public static OpResult of(Throwable th) {
     if(th == null) throw new IllegalArgumentException("Invalid null throwable");
-    return new DefaultOpResult(false, null, th, Arrays.asList(th.getStackTrace()));
+    return new DefaultOpResult(false, null, th);
   }
   
   
   public static OpResult of(Object retVal) {
     return retVal == null 
         ? successful() 
-        : new DefaultOpResult(true, retVal, null, Collections.EMPTY_LIST);
+        : new DefaultOpResult(true, retVal, null);
   }
   
   
   public static OpResult successful() {
-    return new DefaultOpResult(true, null, null, Collections.EMPTY_LIST);
+    return new DefaultOpResult(true, null, null);
   }
   
 }

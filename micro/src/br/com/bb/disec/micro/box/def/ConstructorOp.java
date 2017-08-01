@@ -51,10 +51,14 @@ public class ConstructorOp extends MethodOp {
   
   @Override
   public OpResult execute(Object obj) {
-    return lockedCall(()->{ return argtypes.isEmpty() 
-        ? Reflector.of(obj).create()
-        : Reflector.of(obj).selectConstructor(getTypes()).create(args.toArray());
-    });
+    try {
+      return argtypes.isEmpty() 
+        ? OpResult.of(Reflector.of(obj).create())
+        : OpResult.of(Reflector.of(obj).selectConstructor(getTypes()).create(args.toArray()));
+    }
+    catch(Exception e) {
+      return OpResult.of(e);
+    }
   }
   
 }
