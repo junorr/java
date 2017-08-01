@@ -124,7 +124,7 @@ public class JmiGetHandler implements JsonHandler {
         for(Constructor c : cts) {
           if(c.getParameterCount() == pars.length() -2) {
             Class[] types = c.getParameterTypes();
-            args = new JsonParam(types, pars).getParams();
+            args = new JsonParam(types, pars.shift(2)).getParams();
           }
         }
         System.out.println("* args["+ args.length+ "]:");

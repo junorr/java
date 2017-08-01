@@ -44,52 +44,52 @@ public class JsonParam {
   
   public Object[] getParams() {
     Object[] args = new Object[types.length];
-    for(int i = 0; i < types.length && i < pars.length()-2; i++) {
+    for(int i = 0; i < types.length && i < pars.length(); i++) {
       if(char.class.isAssignableFrom(types[i])
           || Character.class.isAssignableFrom(types[i])) {
-        args[i] = pars.getParam(i+2).charAt(0);
+        args[i] = pars.getParam(i).charAt(0);
       }
       else if(short.class.isAssignableFrom(types[i])
           || Short.class.isAssignableFrom(types[i])) {
-        args[i] = pars.getNumber(i+2).shortValue();
+        args[i] = pars.getNumber(i).shortValue();
       }
       else if(int.class.isAssignableFrom(types[i])
           || Integer.class.isAssignableFrom(types[i])) {
-        args[i] = pars.getNumber(i+2).intValue();
+        args[i] = pars.getNumber(i).intValue();
       }
       else if(long.class.isAssignableFrom(types[i])
           || Long.class.isAssignableFrom(types[i])) {
-        args[i] = pars.getNumber(i+2).longValue();
+        args[i] = pars.getNumber(i).longValue();
       }
       else if(double.class.isAssignableFrom(types[i])
           || Double.class.isAssignableFrom(types[i])) {
-        args[i] = pars.getNumber(i+2).doubleValue();
+        args[i] = pars.getNumber(i).doubleValue();
       }
       else if(float.class.isAssignableFrom(types[i])
           || Float.class.isAssignableFrom(types[i])) {
-        args[i] = pars.getNumber(i+2).floatValue();
+        args[i] = pars.getNumber(i).floatValue();
       }
       else if(boolean.class.isAssignableFrom(types[i])
           || Boolean.class.isAssignableFrom(types[i])) {
-        args[i] = pars.getBoolean(i+2);
+        args[i] = pars.getBoolean(i);
       }
       else if(String.class.isAssignableFrom(types[i])) {
-        args[i] = pars.getParam(i+2);
+        args[i] = pars.getParam(i);
       }
       else if(List.class.isAssignableFrom(types[i])
           || Object[].class.isAssignableFrom(types[i])) {
         Object[] objs = pars.getObjectArgs();
-        List ls = new ArrayList(objs.length-2);
-        for(int j = 0; j < pars.length()-2; j++) {
-          ls.add(objs[j+2]);
+        List ls = new ArrayList(objs.length);
+        for(int j = 0; j < pars.length(); j++) {
+          ls.add(objs[j]);
         }
         args[i] = (List.class.isAssignableFrom(types[i]) ? ls : ls.toArray());
       }
       else if(String[].class.isAssignableFrom(types[i])) {
         Object[] objs = pars.getObjectArgs();
-        List ls = new ArrayList(objs.length-2);
-        for(int j = 0; j < pars.length()-2; j++) {
-          ls.add(objs[j+2]);
+        List ls = new ArrayList(objs.length);
+        for(int j = 0; j < pars.length(); j++) {
+          ls.add(objs[j]);
         }
         args[i] = ls.toArray(new String[ls.size()]);
       }
