@@ -145,9 +145,6 @@ public class OpBuilder {
   
   
   public OpBuilder constructor() {
-    System.out.println("* constructor:");
-    System.out.println(" - "+ Arrays.toString(types));
-    System.out.println(" - "+ Arrays.toString(args));
     if(types == null || types.length < 1) {
       ops.add(new ConstructorOp());
     }

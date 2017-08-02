@@ -37,11 +37,20 @@ public class DefaultOpResult implements OpResult {
   
   private final Throwable thrown;
   
+  private final String thrownClass;
+  
   
   public DefaultOpResult(boolean successful, Object returnValue, Throwable ex) {
     this.successful = successful;
     this.retval = returnValue;
+    String thcls = null;
+    if(ex != null) {
+      ex.getStackTrace();
+      ex.printStackTrace();
+      thcls = ex.getClass().getName();
+    }
     this.thrown = ex;
+    this.thrownClass = thcls;
   }
   
 

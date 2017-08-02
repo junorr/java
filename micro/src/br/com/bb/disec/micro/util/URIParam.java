@@ -21,6 +21,8 @@
 
 package br.com.bb.disec.micro.util;
 
+import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,10 +55,11 @@ public class URIParam {
       throw new IllegalArgumentException("Bad URI: "+ uri);
     }
     this.uri = uri;
-    params = Arrays.asList(this.uri.startsWith("/") 
+    this.params = new ArrayList<>();
+    params.addAll(Arrays.asList(this.uri.startsWith("/") 
         ? this.uri.substring(1).split("/") 
         : this.uri.split("/")
-    );
+    ));
   }
   
   
@@ -79,7 +82,7 @@ public class URIParam {
     if(index < 0 || index > params.size() -2) {
       return null;
     }
-    return params.get(index+1);
+    return URLDecoder.decode(params.get(index+1));
   }
   
   
@@ -129,10 +132,12 @@ public class URIParam {
   
   
   public URIParam shift(int pars) {
-    for(int i = 1; i < pars && i < params.size(); i++) {
-      params.remove(i);
+    List<String> ls = new ArrayList<>();
+    ls.addAll(params);
+    for(int i = 1; i <= pars && ls.size() > 0; i++) {
+      ls.remove(1);;
     }
-    return new URIParam(params);
+    return new URIParam(ls);
   }
   
 }

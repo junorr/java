@@ -127,10 +127,6 @@ public class JmiGetHandler implements JsonHandler {
             args = new JsonParam(types, pars.shift(2)).getParams();
           }
         }
-        System.out.println("* args["+ args.length+ "]:");
-        for(Object o : args) {
-          System.out.println("  - "+ o.getClass().getSimpleName()+ " : "+ o.toString());
-        }
         bld = bld.withArgs(args);
       }
       return ServerSetupEnum.INSTANCE.objectBox().execute(bld.constructor().build());
@@ -153,10 +149,12 @@ public class JmiGetHandler implements JsonHandler {
         Class cls = ServerSetupEnum.INSTANCE.objectBox().load(pars.getParam(1));
         Method[] mts = Reflector.of(cls).methods();
         Object[] args = null;
+        int npar = pars.length() - 3;
+        String name = pars.getParam(2);
         for(Method m : mts) {
-          if(m.getParameterCount() == pars.length() -2) {
+          if(m.getParameterCount() == npar && m.getName().equals(name)) {
             Class[] types = m.getParameterTypes();
-            args = new JsonParam(types, pars).getParams();
+            args = new JsonParam(types, pars.shift(3)).getParams();
           }
         }
         bld = bld.withArgs(args);
@@ -180,7 +178,7 @@ public class JmiGetHandler implements JsonHandler {
       Class cls = ServerSetupEnum.INSTANCE.objectBox().load(pars.getParam(1));
       Field fld = Reflector.of(cls).selectField(pars.getParam(2)).field();
       Class[] types = new Class[] {fld.getType()};
-      Object[] args = new JsonParam(types, pars).getParams();
+      Object[] args = new JsonParam(types, pars.shift(3)).getParams();
       bld = bld.withArgs(args);
       return ServerSetupEnum.INSTANCE.objectBox().execute(bld.set().build());
     }
