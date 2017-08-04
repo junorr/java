@@ -24,6 +24,7 @@ package br.com.bb.disec.micro.box.json;
 import br.com.bb.disec.micro.box.OpBuilder;
 import br.com.bb.disec.micro.box.OpResult;
 import br.com.bb.disec.micro.box.Operation;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -94,22 +95,27 @@ public class JsonOp implements Operation {
   
   
   private Class[] getTypes() {
-    return (argtypes.isEmpty() 
-        ? null 
-        : argtypes.toArray(
-            new Class[argtypes.size()])
-        );
+    List<Class> types = (argtypes == null || argtypes.isEmpty() 
+        ? new ArrayList<>() : argtypes
+    );
+    if(types.isEmpty() && arguments != null && !arguments.isEmpty()) {
+      arguments.stream().forEach(o->types.add(o.getClass()));
+    }
+    return (types.isEmpty() ? null 
+        : types.toArray(new Class[types.size()])
+    );
   }
 
 
   @Override
   public OpResult execute(Object obj) {
     Sane.of(obj).checkup().isNotNull().with("Bad null object").check();
+    Class[] types = getTypes();
     switch(optype) {
       case CONSTRUCTOR:
         return new OpBuilder()
             .withTypes(getTypes())
-            .withArgs(arguments.toArray())
+            .withArgs(arguments != null ? arguments.toArray() : null)
             .constructor()
             .build().execute(obj);
       case GET:
@@ -119,13 +125,13 @@ public class JsonOp implements Operation {
       case METHOD:
         return new OpBuilder()
             .withTypes(getTypes())
-            .withArgs(arguments.toArray())
+            .withArgs(arguments != null ? arguments.toArray() : null)
             .method(name)
             .build().execute(obj);
       case SET:
         return new OpBuilder()
             .withName(name)
-            .withArgs(arguments.toArray())
+            .withArgs(arguments != null ? arguments.toArray() : null)
             .set()
             .build().execute(obj);
       default:

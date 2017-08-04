@@ -19,8 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler;
+package br.com.bb.disec.micro.handler.jmi;
 
+import br.com.bb.disec.micro.handler.JsonHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Methods;
 
@@ -43,10 +44,10 @@ public class JmiHandler implements JsonHandler {
       return;
     }
     if(Methods.GET.equals(hse.getRequestMethod())) {
-      new JmiGetHandler().handleRequest(hse);
+      new JmiUriHandler().handleRequest(hse);
     }
     else {
-      
+      new JmiPostHandler().handleRequest(hse);
     }
   }
   

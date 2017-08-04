@@ -19,40 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.box;
+package br.com.bb.disec.micro.handler.jmi;
 
-import br.com.bb.disec.micro.box.def.DefaultOpResult;
-import java.util.Optional;
+import br.com.bb.disec.micro.ServerSetupEnum;
+import br.com.bb.disec.micro.box.OpResult;
+import br.com.bb.disec.micro.box.json.JsonOpBuilder;
+import br.com.bb.disec.micro.util.StringPostParser;
+import io.undertow.server.HttpServerExchange;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/06/2017
+ * @version 0.0 - 02/08/2017
  */
-public interface OpResult {
-  
-  public boolean isSuccessful();
-  
-  public Optional<Object> getReturnValue();
-  
-  public Optional<Throwable> getThrownException();
-  
-  
-  public static OpResult of(Throwable th) {
-    if(th == null) throw new IllegalArgumentException("Invalid null throwable");
-    return new DefaultOpResult(false, null, th);
+public class JmiPostHandler extends JsonSendHandler {
+
+  @Override
+  public void handleRequest(HttpServerExchange hse) throws Exception {
+    try {
+      String post = new StringPostParser().parseHttp(hse);
+      if(post == null) {
+        throw new IllegalStateException("No post data");
+      }
+      JsonOpBuilder op = JsonOpBuilder.fromJson(post);
+      send(hse, ServerSetupEnum.INSTANCE.objectBox().execute(op.build()));
+    }
+    catch(Exception e) {
+      send(hse, OpResult.of(e));
+    }
   }
-  
-  
-  public static OpResult of(Object retVal) {
-    return retVal == null 
-        ? successful() 
-        : new DefaultOpResult(true, retVal, null);
-  }
-  
-  
-  public static OpResult successful() {
-    return new DefaultOpResult(true, null, null);
-  }
-  
+
 }

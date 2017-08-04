@@ -19,19 +19,16 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler;
+package br.com.bb.disec.micro.handler.jmi;
 
 import br.com.bb.disec.micro.ServerSetupEnum;
-import br.com.bb.disec.micro.box.OpBuilder;
 import br.com.bb.disec.micro.box.OpResult;
+import br.com.bb.disec.micro.handler.JsonHandler;
 import br.com.bb.disec.micro.util.JsonClass;
-import br.com.bb.disec.micro.util.JsonParam;
 import br.com.bb.disec.micro.util.URIParam;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpServerExchange;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,15 +40,7 @@ import us.pserver.tools.rfl.Reflector;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/08/2016
  */
-public class JmiGetHandler implements JsonHandler {
-  
-  public static final String CREATE = "create";
-  
-  public static final String GET = "get";
-  
-  public static final String SET = "set";
-  
-  public static final String METHOD = "method";
+public class JmiBoxHandler extends JsonSendHandler {
   
   public static final String LS_METH = "lsmeth";
   
@@ -79,12 +68,6 @@ public class JmiGetHandler implements JsonHandler {
         .create();
     OpResult response = null;
     switch(pars.getParam(0)) {
-      case CREATE:
-        response = create(pars);
-        break;
-      case GET:
-        response = get(pars);
-        break;
       case LS_CACHE:
         response = lscache(pars);
         break;
@@ -97,110 +80,12 @@ public class JmiGetHandler implements JsonHandler {
       case LS_METH:
         response = lsmeth(pars);
         break;
-      case METHOD:
-        response = method(pars);
-        break;
-      case SET:
-        response = set(pars);
-        break;
       default:
         response = OpResult.of(new UnsupportedOperationException(pars.getParam(0)));
     }
     this.putJsonHeader(hse);
     hse.getResponseSender().send(gson.toJson(response));
     hse.endExchange();
-  }
-  
-  private OpResult create(URIParam pars) throws Exception {
-    try {
-      if(pars.length() < 2) {
-        throw new IllegalArgumentException("Missing target class (/jmi/create/<class>/[args])");
-      }
-      OpBuilder bld = new OpBuilder().onClass(pars.getParam(1));
-      if(pars.length() > 2) {
-        Class cls = ServerSetupEnum.INSTANCE.objectBox().load(pars.getParam(1));
-        Constructor[] cts = Reflector.of(cls).constructors();
-        Object[] args = null;
-        for(Constructor c : cts) {
-          if(c.getParameterCount() == pars.length() -2) {
-            Class[] types = c.getParameterTypes();
-            args = new JsonParam(types, pars.shift(2)).getParams();
-          }
-        }
-        bld = bld.withArgs(args);
-      }
-      return ServerSetupEnum.INSTANCE.objectBox().execute(bld.constructor().build());
-    }
-    catch(Exception e) {
-      return OpResult.of(e);
-    }
-  }
-  
-  
-  private OpResult method(URIParam pars) throws Exception {
-    try {
-      if(pars.length() < 3) {
-        throw new IllegalArgumentException("Missing target class and method name (/jmi/method/<class>/<name>/[args])");
-      }
-      OpBuilder bld = new OpBuilder()
-          .onClass(pars.getParam(1))
-          .withName(pars.getParam(2));
-      if(pars.length() > 3) {
-        Class cls = ServerSetupEnum.INSTANCE.objectBox().load(pars.getParam(1));
-        Method[] mts = Reflector.of(cls).methods();
-        Object[] args = null;
-        int npar = pars.length() - 3;
-        String name = pars.getParam(2);
-        for(Method m : mts) {
-          if(m.getParameterCount() == npar && m.getName().equals(name)) {
-            Class[] types = m.getParameterTypes();
-            args = new JsonParam(types, pars.shift(3)).getParams();
-          }
-        }
-        bld = bld.withArgs(args);
-      }
-      return ServerSetupEnum.INSTANCE.objectBox().execute(bld.method().build());
-    }
-    catch(Exception e) {
-      return OpResult.of(e);
-    }
-  }
-  
-  
-  private OpResult set(URIParam pars) throws Exception {
-    try {
-      if(pars.length() < 4) {
-        throw new IllegalArgumentException("Missing target class, field name and argument (/jmi/set/<class>/<name>/<arg>)");
-      }
-      OpBuilder bld = new OpBuilder()
-          .onClass(pars.getParam(1))
-          .withName(pars.getParam(2));
-      Class cls = ServerSetupEnum.INSTANCE.objectBox().load(pars.getParam(1));
-      Field fld = Reflector.of(cls).selectField(pars.getParam(2)).field();
-      Class[] types = new Class[] {fld.getType()};
-      Object[] args = new JsonParam(types, pars.shift(3)).getParams();
-      bld = bld.withArgs(args);
-      return ServerSetupEnum.INSTANCE.objectBox().execute(bld.set().build());
-    }
-    catch(Exception e) {
-      return OpResult.of(e);
-    }
-  }
-  
-  
-  private OpResult get(URIParam pars) throws Exception {
-    try {
-      if(pars.length() < 3) {
-        throw new IllegalArgumentException("Missing target class and field name (/jmi/get/<class>/<name>)");
-      }
-      OpBuilder bld = new OpBuilder()
-          .onClass(pars.getParam(1))
-          .withName(pars.getParam(2));
-      return ServerSetupEnum.INSTANCE.objectBox().execute(bld.get().build());
-    }
-    catch(Exception e) {
-      return OpResult.of(e);
-    }
   }
   
   

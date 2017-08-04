@@ -46,7 +46,6 @@ public class DefaultOpResult implements OpResult {
     String thcls = null;
     if(ex != null) {
       ex.getStackTrace();
-      ex.printStackTrace();
       thcls = ex.getClass().getName();
     }
     this.thrown = ex;

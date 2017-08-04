@@ -9,7 +9,7 @@
     "/cache": "br.com.bb.disec.micro.handler.CacheHandler",
     "/net": "br.com.bb.disec.micro.handler.INetHandler",
     "/time": "br.com.bb.disec.micro.handler.TimeHandler",
-    "/jmi": "br.com.bb.disec.micro.handler.JmiHandler"
+    "/jmi": "br.com.bb.disec.micro.handler.jmi.JmiHandler"
   },
   "classpathDir": "/storage/java/testObjectBox/dist/"
 }
