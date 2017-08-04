@@ -70,15 +70,16 @@ public class JmiMethodHandler extends JsonSendHandler {
       Class cls = ServerSetupEnum.INSTANCE.objectBox().load(pars.getParam(1));
       Method[] mts = Reflector.of(cls).methods();
       Object[] args = null;
+      Class[] types = null;
       int npar = pars.length() - 3;
       String name = pars.getParam(2);
       for(Method m : mts) {
         if(m.getParameterCount() == npar && m.getName().equals(name)) {
-          Class[] types = m.getParameterTypes();
+          types = m.getParameterTypes();
           args = new JsonParam(types, pars.shift(3)).getParams();
         }
       }
-      return bld.withArgs(args);
+      return bld.withTypes(types).withArgs(args);
     }
     return bld;
   }

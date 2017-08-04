@@ -1,9 +1,13 @@
 
 const OpType = {
-  CONSTRUCTOR: "CONSTRUCTOR",
-  GET: "GET",
-  SET: "SET",
-  METHOD: "METHOD"
+  CREATE: "create",
+  GET: "get",
+  SET: "set",
+  METHOD: "method",
+  LS_JARS: "lsjars",
+  LS_CLASS: "lsclass",
+  LS_METH: "lsmeth",
+  LS_CACHE: "lscache"
 };
 
 const ArgType = {
@@ -29,15 +33,11 @@ class JsonOpBuilder {
     this.optype = null;
     this.class = null;
     this.ops = new Array();
+    this.baseUrl = "http://localhost:9085/jmi/";
   }
  
   withName(name) {
     this.name = name;
-    return this;
-  }
- 
-  withTypes(types) {
-    this.argtypes = types;
     return this;
   }
  
@@ -66,13 +66,8 @@ class JsonOpBuilder {
     if(!this.name || typeof this.name !== "string") {
       throw "Bad null op name";
     }
-    var op = {
-      optype: OpType.GET,
-      name: this.name,
-      argtypes: this.argtypes,
-      arguments: this.arguments
-    };
-    this.ops.push(op);
+    var url = this.baseUrl + OpType.GET + "/" + this.class + "/" + this.name;
+    this.ops.push(url);
     return this.clearVars();
   }
  
@@ -89,13 +84,11 @@ class JsonOpBuilder {
     if(this.arguments.length < 1) {
       throw "Bad null arguments";
     }
-    var op = {
-      optype: OpType.SET,
-      name: this.name,
-      argtypes: this.argtypes,
-      arguments: this.arguments
-    };
-    this.ops.push(op);
+    var url = this.baseUrl + OpType.SET + "/" + this.class + "/" + this.name;
+    for(i = 0; i < this.arguments.length; i++) {
+      url += "/" + encodeURIComponent(this.arguments[i]);
+    }
+    this.ops.push(url);
     return this.clearVars();
   }
  
@@ -109,13 +102,11 @@ class JsonOpBuilder {
     if(!this.name || typeof this.name !== "string") {
       throw "Bad null op name";
     }
-    var op = {
-      optype: OpType.METHOD,
-      name: this.name,
-      argtypes: this.argtypes,
-      arguments: this.arguments
-    };
-    this.ops.push(op);
+    var url = this.baseUrl + OpType.METHOD + "/" + this.class + "/" + this.name;
+    for(i = 0; i < this.arguments.length; i++) {
+      url += "/" + encodeURIComponent(this.arguments[i]);
+    }
+    this.ops.push(url);
     return this.clearVars();
   }
  
@@ -123,21 +114,16 @@ class JsonOpBuilder {
     if(typeof args !== "undefined") {
       this.withArgs(args);
     }
-    var op = {
-      optype: OpType.CONSTRUCTOR,
-      name: "constructor",
-      argtypes: this.argtypes,
-      arguments: this.arguments
-    };
-    this.ops.push(op);
+    var url = this.baseUrl + OpType.CREATE + "/" + this.class;
+    for(i = 0; i < this.arguments.length; i++) {
+      url += "/" + encodeURIComponent(this.arguments[i]);
+    }
+    this.ops.push(url);
     return this.clearVars();
   }
  
   build() {
-    return {
-      "class": this.class,
-      ops: this.ops
-    };
+    this.ops;
   }
  
   showBuild() {

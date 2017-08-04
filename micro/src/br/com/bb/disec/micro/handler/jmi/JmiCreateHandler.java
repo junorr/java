@@ -24,12 +24,8 @@ package br.com.bb.disec.micro.handler.jmi;
 import br.com.bb.disec.micro.ServerSetupEnum;
 import br.com.bb.disec.micro.box.OpBuilder;
 import br.com.bb.disec.micro.box.OpResult;
-import br.com.bb.disec.micro.handler.JsonHandler;
-import br.com.bb.disec.micro.util.JsonClass;
 import br.com.bb.disec.micro.util.JsonParam;
 import br.com.bb.disec.micro.util.URIParam;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpServerExchange;
 import java.lang.reflect.Constructor;
 import us.pserver.tools.rfl.Reflector;
@@ -75,13 +71,14 @@ public class JmiCreateHandler extends JsonSendHandler {
       Class cls = ServerSetupEnum.INSTANCE.objectBox().load(pars.getParam(1));
       Constructor[] cts = Reflector.of(cls).constructors();
       Object[] args = null;
+      Class[] types = null;
       for(Constructor c : cts) {
         if(c.getParameterCount() == pars.length() -2) {
-          Class[] types = c.getParameterTypes();
+          types = c.getParameterTypes();
           args = new JsonParam(types, pars.shift(2)).getParams();
         }
       }
-      return bld.withArgs(args);
+      return bld.withTypes(types).withArgs(args);
     }
     return bld;
   }

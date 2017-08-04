@@ -18,8 +18,17 @@ public class Message {
     this.msg = message;
   }
   
+  public String getMessage() {
+    return this.msg;
+  }
+  
   public Message setMessage(String message) {
     this.msg = message;
+    return this;
+  }
+  
+  public Message setMessage(String message, boolean upper) {
+    this.msg = (upper ? message.toUpperCase() : message);
     return this;
   }
   
