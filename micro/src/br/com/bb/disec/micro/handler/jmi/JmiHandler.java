@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro.handler.jmi;
 
+import br.com.bb.disec.micro.handler.jmi.post.JmiPostHandler;
 import br.com.bb.disec.micro.handler.JsonHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Methods;

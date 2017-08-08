@@ -19,23 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.jmi;
+package br.com.bb.disec.micro.handler.jmi.get;
 
 import br.com.bb.disec.micro.ServerSetupEnum;
-import br.com.bb.disec.micro.box.OpBuilder;
 import br.com.bb.disec.micro.box.OpResult;
-import br.com.bb.disec.micro.util.JsonParam;
-import br.com.bb.disec.micro.util.URIParam;
+import br.com.bb.disec.micro.handler.jmi.JsonSendHandler;
 import io.undertow.server.HttpServerExchange;
-import java.lang.reflect.Method;
-import us.pserver.tools.rfl.Reflector;
 
 /**
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/08/2016
  */
-public class JmiMethodHandler extends JsonSendHandler {
+public class JmiLsJarsHandler extends JsonSendHandler {
   
   /**
    * 
@@ -48,40 +44,14 @@ public class JmiMethodHandler extends JsonSendHandler {
       hse.dispatch(this);
       return;
     }
-    URIParam pars = new URIParam(hse.getRequestURI());
     try {
-      if(pars.length() < 3) {
-        throw new IllegalArgumentException("Missing target class and method name (/jmi/method/<class>/<name>/[args])");
-      }
-      OpBuilder bld = parseArgs(new OpBuilder()
-          .onClass(pars.getParam(1))
-          .withName(pars.getParam(2)
-      ), pars);
-      send(hse, ServerSetupEnum.INSTANCE.objectBox().execute(bld.method().build()));
+      send(hse, OpResult.of(
+          ServerSetupEnum.INSTANCE.objectBox().listJars())
+      );
     }
     catch(Exception e) {
       send(hse, OpResult.of(e));
     }
-  }
-  
-  
-  private OpBuilder parseArgs(OpBuilder bld, URIParam pars) {
-    if(pars.length() > 3) {
-      Class cls = ServerSetupEnum.INSTANCE.objectBox().load(pars.getParam(1));
-      Method[] mts = Reflector.of(cls).methods();
-      Object[] args = null;
-      Class[] types = null;
-      int npar = pars.length() - 3;
-      String name = pars.getParam(2);
-      for(Method m : mts) {
-        if(m.getParameterCount() == npar && m.getName().equals(name)) {
-          types = m.getParameterTypes();
-          args = new JsonParam(types, pars.shift(3)).getParams();
-        }
-      }
-      return bld.withTypes(types).withArgs(args);
-    }
-    return bld;
   }
   
 }

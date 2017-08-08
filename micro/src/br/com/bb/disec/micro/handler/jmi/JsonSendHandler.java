@@ -50,6 +50,7 @@ public abstract class JsonSendHandler implements JsonHandler {
   public void send(HttpServerExchange hse, Object obj) throws Exception {
     if(obj == null) return;
     this.putJsonHeader(hse);
+    hse.setStatusCode(500);
     hse.getResponseSender().send(gson.toJson(obj));
     hse.endExchange();
   }

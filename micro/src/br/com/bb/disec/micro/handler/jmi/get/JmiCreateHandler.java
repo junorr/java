@@ -19,18 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.jmi;
+package br.com.bb.disec.micro.handler.jmi.get;
 
 import br.com.bb.disec.micro.ServerSetupEnum;
+import br.com.bb.disec.micro.box.OpBuilder;
 import br.com.bb.disec.micro.box.OpResult;
+import br.com.bb.disec.micro.handler.jmi.JsonSendHandler;
+import br.com.bb.disec.micro.util.JsonParam;
+import br.com.bb.disec.micro.util.URIParam;
 import io.undertow.server.HttpServerExchange;
+import java.lang.reflect.Constructor;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/08/2016
  */
-public class JmiLsCacheHandler extends JsonSendHandler {
+public class JmiCreateHandler extends JsonSendHandler {
   
   /**
    * 
@@ -43,12 +49,39 @@ public class JmiLsCacheHandler extends JsonSendHandler {
       hse.dispatch(this);
       return;
     }
+    URIParam pars = new URIParam(hse.getRequestURI());
     try {
-      send(hse, OpResult.of(ServerSetupEnum.INSTANCE.objectBox().cache()));
+      if(pars.length() < 2) {
+        throw new IllegalArgumentException("Missing target class (/jmi/create/<class>/[args])");
+      }
+      OpBuilder bld = parseArgs(
+          new OpBuilder().onClass(pars.getParam(1)), pars
+      );
+      send(hse, ServerSetupEnum.INSTANCE.objectBox()
+          .execute(bld.constructor().build())
+      );
     }
     catch(Exception e) {
       send(hse, OpResult.of(e));
     }
+  }
+  
+  
+  private OpBuilder parseArgs(OpBuilder bld, URIParam pars) {
+    if(pars.length() > 2) {
+      Class cls = ServerSetupEnum.INSTANCE.objectBox().load(pars.getParam(1));
+      Constructor[] cts = Reflector.of(cls).constructors();
+      Object[] args = null;
+      Class[] types = null;
+      for(Constructor c : cts) {
+        if(c.getParameterCount() == pars.length() -2) {
+          types = c.getParameterTypes();
+          args = new JsonParam(types, pars.shift(2)).getParams();
+        }
+      }
+      return bld.withTypes(types).withArgs(args);
+    }
+    return bld;
   }
   
 }

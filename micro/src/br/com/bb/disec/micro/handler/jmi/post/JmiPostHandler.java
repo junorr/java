@@ -19,11 +19,12 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.jmi;
+package br.com.bb.disec.micro.handler.jmi.post;
 
 import br.com.bb.disec.micro.ServerSetupEnum;
 import br.com.bb.disec.micro.box.OpResult;
 import br.com.bb.disec.micro.box.json.JsonOpBuilder;
+import br.com.bb.disec.micro.handler.jmi.JsonSendHandler;
 import br.com.bb.disec.micro.util.StringPostParser;
 import io.undertow.server.HttpServerExchange;
 

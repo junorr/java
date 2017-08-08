@@ -21,6 +21,14 @@
 
 package br.com.bb.disec.micro.handler.jmi;
 
+import br.com.bb.disec.micro.handler.jmi.get.JmiLsClassHandler;
+import br.com.bb.disec.micro.handler.jmi.get.JmiLsJarsHandler;
+import br.com.bb.disec.micro.handler.jmi.get.JmiCreateHandler;
+import br.com.bb.disec.micro.handler.jmi.get.JmiLsCacheHandler;
+import br.com.bb.disec.micro.handler.jmi.get.JmiSetHandler;
+import br.com.bb.disec.micro.handler.jmi.get.JmiMethodHandler;
+import br.com.bb.disec.micro.handler.jmi.get.JmiLsMethHandler;
+import br.com.bb.disec.micro.handler.jmi.get.JmiGetHandler;
 import br.com.bb.disec.micro.box.OpResult;
 import br.com.bb.disec.micro.handler.JsonHandler;
 import br.com.bb.disec.micro.util.URIParam;

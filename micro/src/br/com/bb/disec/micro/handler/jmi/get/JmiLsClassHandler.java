@@ -19,16 +19,12 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.jmi;
+package br.com.bb.disec.micro.handler.jmi.get;
 
 import br.com.bb.disec.micro.ServerSetupEnum;
-import br.com.bb.disec.micro.box.OpBuilder;
 import br.com.bb.disec.micro.box.OpResult;
-import br.com.bb.disec.micro.handler.JsonHandler;
-import br.com.bb.disec.micro.util.JsonClass;
+import br.com.bb.disec.micro.handler.jmi.JsonSendHandler;
 import br.com.bb.disec.micro.util.URIParam;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpServerExchange;
 
 /**
@@ -36,7 +32,7 @@ import io.undertow.server.HttpServerExchange;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/08/2016
  */
-public class JmiGetHandler extends JsonSendHandler {
+public class JmiLsClassHandler extends JsonSendHandler {
   
   /**
    * 
@@ -51,13 +47,12 @@ public class JmiGetHandler extends JsonSendHandler {
     }
     URIParam pars = new URIParam(hse.getRequestURI());
     try {
-      if(pars.length() < 3) {
-        throw new IllegalArgumentException("Missing target class and field name (/jmi/get/<class>/<name>)");
+      if(pars.length() < 2) {
+        throw new IllegalArgumentException("Missing jar file name (/jmi/lsclass/<jar>)");
       }
-      OpBuilder bld = new OpBuilder()
-          .onClass(pars.getParam(1))
-          .withName(pars.getParam(2));
-      send(hse, ServerSetupEnum.INSTANCE.objectBox().execute(bld.get().build()));
+      send(hse, OpResult.of(ServerSetupEnum.INSTANCE
+          .objectBox().listClasses(pars.getParam(1)))
+      );
     }
     catch(Exception e) {
       send(hse, OpResult.of(e));

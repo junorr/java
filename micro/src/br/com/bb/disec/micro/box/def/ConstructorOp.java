@@ -23,8 +23,12 @@ package br.com.bb.disec.micro.box.def;
 
 import br.com.bb.disec.micro.box.OpResult;
 import br.com.bb.disec.micro.box.Operation;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import us.pserver.tools.rfl.Reflector;
+import us.pserver.tools.rfl.ReflectorException;
 
 /**
  *
@@ -48,13 +52,34 @@ public class ConstructorOp extends MethodOp {
   public ConstructorOp() {
     this(null, null, null);
   }
+
   
+  @Override
+  Class[] getTypes(Object obj) {
+    if(argtypes.isEmpty() && !args.isEmpty()) {
+      Optional<Method> opt = Arrays.asList(Reflector.of(obj).methods())
+          .stream()
+          .filter(m->m.getParameterCount() == args.size())
+          .findAny();
+      if(opt.isPresent()) {
+        return opt.get().getParameterTypes();
+      }
+      else {
+        throw new ReflectorException("Method not found: "+ name);
+      }
+    }
+    else {
+      return argtypes.toArray(new Class[argtypes.size()]);
+    }
+  }
+  
+
   @Override
   public OpResult execute(Object obj) {
     try {
       return argtypes.isEmpty() 
         ? OpResult.of(Reflector.of(obj).create())
-        : OpResult.of(Reflector.of(obj).selectConstructor(getTypes()).create(args.toArray()));
+        : OpResult.of(Reflector.of(obj).selectConstructor(getTypes(obj)).create(args.toArray()));
     }
     catch(Exception e) {
       return OpResult.of(e);

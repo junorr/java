@@ -19,20 +19,16 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.jmi;
+package br.com.bb.disec.micro.handler.jmi.get;
 
 import br.com.bb.disec.micro.ServerSetupEnum;
+import br.com.bb.disec.micro.box.OpBuilder;
 import br.com.bb.disec.micro.box.OpResult;
-import br.com.bb.disec.micro.handler.JsonHandler;
-import br.com.bb.disec.micro.util.JsonClass;
+import br.com.bb.disec.micro.handler.jmi.JsonSendHandler;
+import br.com.bb.disec.micro.util.JsonParam;
 import br.com.bb.disec.micro.util.URIParam;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpServerExchange;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import us.pserver.tools.rfl.Reflector;
 
 /**
@@ -40,7 +36,7 @@ import us.pserver.tools.rfl.Reflector;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/08/2016
  */
-public class JmiLsMethHandler extends JsonSendHandler {
+public class JmiMethodHandler extends JsonSendHandler {
   
   /**
    * 
@@ -54,43 +50,39 @@ public class JmiLsMethHandler extends JsonSendHandler {
       return;
     }
     URIParam pars = new URIParam(hse.getRequestURI());
-    Gson gson = new GsonBuilder()
-        .registerTypeHierarchyAdapter(Class.class, new JsonClass())
-        .setPrettyPrinting()
-        .create();
-    OpResult response = null;
     try {
-      if(pars.length() < 2) {
-        throw new IllegalArgumentException("Missing target class (/jmi/lsmeth/<class>)");
+      if(pars.length() < 3) {
+        throw new IllegalArgumentException("Missing target class and method name (/jmi/method/<class>/<name>/[args])");
       }
-      Class cls = ServerSetupEnum.INSTANCE.objectBox().load(pars.getParam(1));
-      List<String> lsmeth = new ArrayList<>();
-      Method[] mts = Reflector.of(cls).methods();
-      Method[] cmt = Reflector.of(Class.class).methods();
-      for(Method m : mts) {
-        if(Arrays.asList(cmt).stream().allMatch(
-            c->!c.getName().equals(m.getName()))) {
-          Class[] types = m.getParameterTypes();
-          StringBuilder sb = new StringBuilder()
-              .append(m.getName())
-              .append("(");
-          for(Class c : types) {
-            sb.append(c.getSimpleName()).append(", ");
-          }
-          if(types.length > 0) {
-            sb.delete(sb.length()-2, sb.length());
-          }
-          lsmeth.add(sb.append(")").toString());
-        }
-      }
-      response = OpResult.of(lsmeth);
+      OpBuilder bld = parseArgs(new OpBuilder()
+          .onClass(pars.getParam(1))
+          .withName(pars.getParam(2)
+      ), pars);
+      send(hse, ServerSetupEnum.INSTANCE.objectBox().execute(bld.method().build()));
     }
     catch(Exception e) {
-      response = OpResult.of(e);
+      send(hse, OpResult.of(e));
     }
-    finally {
-      send(hse, response);
+  }
+  
+  
+  private OpBuilder parseArgs(OpBuilder bld, URIParam pars) {
+    if(pars.length() > 3) {
+      Class cls = ServerSetupEnum.INSTANCE.objectBox().load(pars.getParam(1));
+      Method[] mts = Reflector.of(cls).methods();
+      Object[] args = null;
+      Class[] types = null;
+      int npar = pars.length() - 3;
+      String name = pars.getParam(2);
+      for(Method m : mts) {
+        if(m.getParameterCount() == npar && m.getName().equals(name)) {
+          types = m.getParameterTypes();
+          args = new JsonParam(types, pars.shift(3)).getParams();
+        }
+      }
+      return bld.withTypes(types).withArgs(args);
     }
+    return bld;
   }
   
 }

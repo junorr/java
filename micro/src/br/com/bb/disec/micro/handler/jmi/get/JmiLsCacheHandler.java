@@ -19,23 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package br.com.bb.disec.micro.handler.jmi;
+package br.com.bb.disec.micro.handler.jmi.get;
 
 import br.com.bb.disec.micro.ServerSetupEnum;
-import br.com.bb.disec.micro.box.OpBuilder;
 import br.com.bb.disec.micro.box.OpResult;
-import br.com.bb.disec.micro.util.JsonParam;
-import br.com.bb.disec.micro.util.URIParam;
+import br.com.bb.disec.micro.handler.jmi.JsonSendHandler;
 import io.undertow.server.HttpServerExchange;
-import java.lang.reflect.Field;
-import us.pserver.tools.rfl.Reflector;
 
 /**
  * 
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/08/2016
  */
-public class JmiSetHandler extends JsonSendHandler {
+public class JmiLsCacheHandler extends JsonSendHandler {
   
   /**
    * 
@@ -48,22 +44,8 @@ public class JmiSetHandler extends JsonSendHandler {
       hse.dispatch(this);
       return;
     }
-    URIParam pars = new URIParam(hse.getRequestURI());
     try {
-      if(pars.length() < 4) {
-        throw new IllegalArgumentException("Missing target class, field name and argument (/jmi/set/<class>/<name>/<arg>)");
-      }
-      OpBuilder bld = new OpBuilder()
-          .onClass(pars.getParam(1))
-          .withName(pars.getParam(2));
-      Class cls = ServerSetupEnum.INSTANCE.objectBox().load(pars.getParam(1));
-      Field fld = Reflector.of(cls).selectField(pars.getParam(2)).field();
-      Class[] types = new Class[] {fld.getType()};
-      Object[] args = new JsonParam(types, pars.shift(3)).getParams();
-      bld = bld.withTypes(types).withArgs(args);
-      send(hse, ServerSetupEnum.INSTANCE.objectBox()
-          .execute(bld.set().build())
-      );
+      send(hse, OpResult.of(ServerSetupEnum.INSTANCE.objectBox().cache()));
     }
     catch(Exception e) {
       send(hse, OpResult.of(e));

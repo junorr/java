@@ -23,9 +23,13 @@ package br.com.bb.disec.micro.box.def;
 
 import br.com.bb.disec.micro.box.OpResult;
 import br.com.bb.disec.micro.box.Operation;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import us.pserver.tools.rfl.Reflector;
+import us.pserver.tools.rfl.ReflectorException;
 
 /**
  *
@@ -58,17 +62,32 @@ public class MethodOp extends BaseOp {
   }
   
   
-  Class[] getTypes() {
-    return argtypes.toArray(new Class[argtypes.size()]);
+  Class[] getTypes(Object obj) {
+    if(argtypes.isEmpty() && !args.isEmpty()) {
+      Optional<Method> opt = Arrays.asList(Reflector.of(obj).methods())
+          .stream()
+          .filter(m->m.getName().equals(name) 
+              && m.getParameterCount() == args.size())
+          .findAny();
+      if(opt.isPresent()) {
+        return opt.get().getParameterTypes();
+      }
+      else {
+        throw new ReflectorException("Method not found: "+ name);
+      }
+    }
+    else {
+      return argtypes.toArray(new Class[argtypes.size()]);
+    }
   }
   
 
   @Override
   public OpResult execute(Object obj) {
     try {
-      return argtypes.isEmpty() 
+      return args.isEmpty() 
         ? OpResult.of(Reflector.of(obj).selectMethod(name).invoke())
-        : OpResult.of(Reflector.of(obj).selectMethod(name, getTypes()).invoke(args.toArray()));
+        : OpResult.of(Reflector.of(obj).selectMethod(name, getTypes(obj)).invoke(args.toArray()));
     }
     catch(Exception e) {
       return OpResult.of(e);
