@@ -19,29 +19,59 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.morphia.test.bean;
+package us.pserver.neo4j.test.bean;
+
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/08/2017
  */
-public enum Permission implements Transaction {
+public class AccessBuilder {
 
-  METHOD,
+  private final UserBuilder builder;
   
-  SET_FIELD,
+  private final String name;
   
-  GET_FIELD,
+  private final Transaction perm;
   
-  CREATE,
+  private final boolean auth;
   
-  PACKAGE,
+
+  private AccessBuilder(UserBuilder builder, String name, Transaction perm, boolean auth) {
+    this.builder = builder;
+    this.name = name;
+    this.perm = perm;
+    this.auth = auth;
+  }
   
-  CLASS,
   
-  JAR,
+  public AccessBuilder(UserBuilder builder) {
+    this.builder = NotNull.of(builder).getOrFail("UserBuilder");
+    this.name = null;
+    this.perm = null;
+    this.auth = false;
+  }
   
-  FULL;
+  
+  public AccessBuilder withName(String name) {
+    return new AccessBuilder(builder, name, perm, auth);
+  }
+  
+  
+  public AccessBuilder authorize(Transaction trc) {
+    return new AccessBuilder(builder, name, trc, true);
+  }
+  
+  
+  public AccessBuilder deny(Transaction trc) {
+    return new AccessBuilder(builder, name, trc, false);
+  }
+  
+  
+  public UserBuilder insert() {
+    return builder.addAccess(new Access(name, perm, auth));
+  }
   
 }

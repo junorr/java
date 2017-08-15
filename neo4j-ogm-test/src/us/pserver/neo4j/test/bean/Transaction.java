@@ -19,14 +19,14 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.morphia.test.bean;
+package us.pserver.neo4j.test.bean;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/08/2017
  */
-public enum Deny implements Transaction {
+public enum Transaction {
 
   METHOD,
   
@@ -40,6 +40,8 @@ public enum Deny implements Transaction {
   
   CLASS,
   
-  JAR;
+  JAR,
+  
+  FULL;
   
 }

@@ -19,28 +19,66 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.morphia.test.bean;
+package us.pserver.neo4j.test.bean;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.bson.types.ObjectId;
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/08/2017
  */
-public interface User {
+public class UserBuilder {
 
-  public ObjectId getID();
+  private final String name;
   
-  public String getName();
+  private final Hash hash;
   
-  public String getHash();
+  private final List<Access> access;
+
+
+  private UserBuilder(String name, Hash hash, List<Access> access) {
+    this.name = name;
+    this.hash = hash;
+    this.access = access;
+  }
   
-  public List<Access> access();
   
-  public boolean tryValidation(User another);
+  public UserBuilder() {
+    this(null, null, new ArrayList<>());
+  }
   
-  public void validate(User another) throws IllegalAccessException;
+  
+  public UserBuilder withName(String name) {
+    return new UserBuilder(name, hash, access);
+  }
+  
+  
+  public UserBuilder withPassword(String pass) {
+    return new UserBuilder(name, Hash.of(pass), access);
+  }
+  
+  
+  public AccessBuilder newAccess(String name) {
+    return new AccessBuilder(this).withName(name);
+  }
+  
+  
+  public AccessBuilder newAccess() {
+    return new AccessBuilder(this);
+  }
+  
+  
+  public UserBuilder addAccess(Access acs) {
+    this.access.add(NotNull.of(acs).getOrFail("Bad null Access"));
+    return this;
+  }
+  
+  
+  public User create() {
+    return new User(name, hash, access);
+  }
   
 }

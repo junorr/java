@@ -19,14 +19,11 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.morphia.test.bean;
+package us.pserver.neo4j.test.bean;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
+import java.util.Objects;
 import us.pserver.tools.NotNull;
 
 /**
@@ -34,55 +31,74 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/08/2017
  */
-@Entity
-public class DefUser implements User {
+public class User {
 
-  @Id private final ObjectId id;
-  
   private final String name;
   
-  private final String hash;
+  private final Hash hash;
   
-  @Embedded
   private final List<Access> access;
   
   
-  private DefUser() {
-    this.id = null;
+  private User() {
     this.name = null;
     this.hash = null;
     this.access = null;
   }
   
   
-  public DefUser(String name, String hash) {
+  public User(String name, Hash hash) {
     this(name, hash, new ArrayList<>());
   } 
   
   
-  public DefUser(String name, String hash, List<Access> acs) {
+  public User(String name, Hash hash, List<Access> acs) {
     this.name = NotNull.of(name).getOrFail("Bad null name");
     this.hash = NotNull.of(hash).getOrFail("Bad null hash");
     this.access = NotNull.of(acs).getOrFail("Bad null Access list");
-    this.id = null;
   }
   
   
-  @Override
-  public ObjectId getID() {
-    return id;
-  }
-  
-  
-  @Override
   public String getName() {
     return name;
   }
   
   
-  @Override
+  public Hash getHash() {
+    return hash;
+  }
+  
+  
   public List<Access> access() {
     return access;
+  }
+
+
+  @Override
+  public int hashCode() {
+    int hash = 5;
+    hash = 23 * hash + Objects.hashCode(this.name);
+    hash = 23 * hash + Objects.hashCode(this.hash);
+    return hash;
+  }
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final User other = (User) obj;
+    if (!Objects.equals(this.name, other.name)) {
+      return false;
+    }
+    return Objects.equals(this.hash, other.hash);
   }
   
   
@@ -94,12 +110,22 @@ public class DefUser implements User {
   
   
   public void validate(User another) throws IllegalAccessException {
+    boolean name = this.name.equals(NotNull.of(another).getOrFail("Bad null User").getName());
+    boolean hash = this.hash.equals(another.getHash());
+    boolean acss = another.access().stream().allMatch(a->access.stream().anyMatch(ac->ac.tryGrant(a)));
+    String msg = null;
+    if(!name) msg = "Name do not match";
+    if(!hash) msg = "Hash do not match";
+    if(!acss) msg = "Access denied";
     if(!tryValidation(another)) {
-      throw new IllegalAccessException();
+      throw new IllegalAccessException(msg);
     }
   }
-  
-  
-  public static User
+
+
+  @Override
+  public String toString() {
+    return "User{" + "name:" + name + ", hash:" + hash + ", access:" + access + '}';
+  }
   
 }
