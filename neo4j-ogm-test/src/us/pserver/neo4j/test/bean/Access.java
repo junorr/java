@@ -22,6 +22,9 @@
 package us.pserver.neo4j.test.bean;
 
 import java.util.Objects;
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Index;
+import org.neo4j.ogm.annotation.NodeEntity;
 import us.pserver.tools.NotNull;
 
 /**
@@ -29,13 +32,16 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/08/2017
  */
+@NodeEntity
 public class Access {
+  
+  @GraphId private Long id;
   
   private final String name;
   
-  private final Transaction tran;
+  @Index private final Role role;
   
-  private final boolean authorized;
+  private final boolean auth;
   
   
   private Access() {
@@ -48,25 +54,36 @@ public class Access {
   }
   
   
-  public Access(String name, Transaction tran, boolean authorized) {
-    this.name = name != null ? name : "";
-    this.tran = tran;
-    this.authorized = authorized;
+  public Access(String name, Role role, boolean auth) {
+    this(0, name, role, auth);
   }
   
   
-  public Transaction transaction() {
-    return tran;
+  public Access(long id, String name, Role role, boolean auth) {
+    this.id = id;
+    this.name = name != null ? name : "";
+    this.role = role;
+    this.auth = auth;
+  }
+  
+  
+  public long getId() {
+    return id;
+  }
+  
+  
+  public Role getRole() {
+    return role;
   }
   
   
   public boolean isAuthorized() {
-    return authorized;
+    return auth;
   }
   
   
   public boolean isDenied() {
-    return !authorized;
+    return !auth;
   }
   
   
@@ -77,7 +94,7 @@ public class Access {
   
   public boolean tryGrant(Access acs) {
     return this.name.equals(NotNull.of(acs).getOrFail("Access").name) 
-        && tran == acs.tran
+        && role == acs.role
         && isAuthorized();
   }
   
@@ -93,8 +110,8 @@ public class Access {
   public int hashCode() {
     int hash = 3;
     hash = 97 * hash + Objects.hashCode(this.name);
-    hash = 97 * hash + Objects.hashCode(this.tran);
-    hash = 97 * hash + Objects.hashCode(this.authorized);
+    hash = 97 * hash + Objects.hashCode(this.role);
+    hash = 97 * hash + Objects.hashCode(this.auth);
     return hash;
   }
 
@@ -114,13 +131,13 @@ public class Access {
     if (!Objects.equals(this.name, other.name)) {
       return false;
     }
-    return tran == other.tran && this.authorized == other.authorized;
+    return role == other.role && this.auth == other.auth;
   }
 
 
   @Override
   public String toString() {
-    return "{" + "name:" + name + ", transaction:" + tran + ", authorized:" + authorized + '}';
+    return "{" + "name:" + name + ", role:" + role + ", auth:" + auth + '}';
   }
   
 }

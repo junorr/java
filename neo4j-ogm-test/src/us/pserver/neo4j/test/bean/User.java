@@ -24,6 +24,10 @@ package us.pserver.neo4j.test.bean;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Index;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 import us.pserver.tools.NotNull;
 
 /**
@@ -31,31 +35,58 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/08/2017
  */
+@NodeEntity
 public class User {
 
-  private final String name;
+  @GraphId private Long id;
   
-  private final Hash hash;
+  @Index private final String name;
   
-  private final List<Access> access;
+  private final String hash;
+  
+  @Relationship(type = "HAS")
+  private final List<Access> accesses;
   
   
   private User() {
+    this.id = 0L;
     this.name = null;
     this.hash = null;
-    this.access = null;
+    this.accesses = null;
   }
   
   
-  public User(String name, Hash hash) {
+  public User(String name, String hash) {
     this(name, hash, new ArrayList<>());
   } 
   
   
-  public User(String name, Hash hash, List<Access> acs) {
+  public User(String name, String hash, List<Access> acss) {
+    this(0, name, hash, acss);
+  }
+  
+  
+  public User(long id, String name, String hash, List<Access> acss) {
+    this.id = id;
     this.name = NotNull.of(name).getOrFail("Bad null name");
     this.hash = NotNull.of(hash).getOrFail("Bad null hash");
-    this.access = NotNull.of(acs).getOrFail("Bad null Access list");
+    this.accesses = NotNull.of(acss).getOrFail("Bad null Access list");
+  }
+  
+  
+  @Override
+  public User clone() {
+    return new User(id, name, hash, accesses);
+  }
+  
+  
+  public User clone(long id) {
+    return new User(id, name, hash, accesses);
+  }
+  
+  
+  public long getId() {
+    return id;
   }
   
   
@@ -64,13 +95,13 @@ public class User {
   }
   
   
-  public Hash getHash() {
+  public String getHash() {
     return hash;
   }
   
   
-  public List<Access> access() {
-    return access;
+  public List<Access> accesses() {
+    return accesses;
   }
 
 
@@ -105,14 +136,14 @@ public class User {
   public boolean tryValidation(User another) {
     return this.name.equals(NotNull.of(another).getOrFail("Bad null User").getName())
         && this.hash.equals(another.getHash())
-        && another.access().stream().allMatch(a->access.stream().anyMatch(ac->ac.tryGrant(a)));
+        && another.accesses().stream().allMatch(a->accesses.stream().anyMatch(ac->ac.tryGrant(a)));
   }
   
   
   public void validate(User another) throws IllegalAccessException {
     boolean name = this.name.equals(NotNull.of(another).getOrFail("Bad null User").getName());
     boolean hash = this.hash.equals(another.getHash());
-    boolean acss = another.access().stream().allMatch(a->access.stream().anyMatch(ac->ac.tryGrant(a)));
+    boolean acss = another.accesses().stream().allMatch(a->accesses.stream().anyMatch(ac->ac.tryGrant(a)));
     String msg = null;
     if(!name) msg = "Name do not match";
     if(!hash) msg = "Hash do not match";
@@ -125,7 +156,7 @@ public class User {
 
   @Override
   public String toString() {
-    return "User{" + "name:" + name + ", hash:" + hash + ", access:" + access + '}';
+    return "User{" + "name:" + name + ", hash:" + hash + ", accesses:" + accesses + '}';
   }
   
 }

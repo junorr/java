@@ -34,15 +34,15 @@ public class UserBuilder {
 
   private final String name;
   
-  private final Hash hash;
+  private final String hash;
   
-  private final List<Access> access;
+  private final List<Access> accesses;
 
 
-  private UserBuilder(String name, Hash hash, List<Access> access) {
+  private UserBuilder(String name, String hash, List<Access> acss) {
     this.name = name;
     this.hash = hash;
-    this.access = access;
+    this.accesses = acss;
   }
   
   
@@ -52,12 +52,12 @@ public class UserBuilder {
   
   
   public UserBuilder withName(String name) {
-    return new UserBuilder(name, hash, access);
+    return new UserBuilder(name, hash, accesses);
   }
   
   
   public UserBuilder withPassword(String pass) {
-    return new UserBuilder(name, Hash.of(pass), access);
+    return new UserBuilder(name, Hash.of(pass), accesses);
   }
   
   
@@ -71,14 +71,14 @@ public class UserBuilder {
   }
   
   
-  public UserBuilder addAccess(Access acs) {
-    this.access.add(NotNull.of(acs).getOrFail("Bad null Access"));
+  public UserBuilder add(Access acs) {
+    this.accesses.add(NotNull.of(acs).getOrFail("Bad null Access"));
     return this;
   }
   
   
   public User create() {
-    return new User(name, hash, access);
+    return new User(name, hash, accesses);
   }
   
 }

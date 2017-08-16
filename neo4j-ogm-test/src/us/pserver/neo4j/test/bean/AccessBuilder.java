@@ -34,12 +34,12 @@ public class AccessBuilder {
   
   private final String name;
   
-  private final Transaction perm;
+  private final Role perm;
   
   private final boolean auth;
   
 
-  private AccessBuilder(UserBuilder builder, String name, Transaction perm, boolean auth) {
+  private AccessBuilder(UserBuilder builder, String name, Role perm, boolean auth) {
     this.builder = builder;
     this.name = name;
     this.perm = perm;
@@ -60,18 +60,18 @@ public class AccessBuilder {
   }
   
   
-  public AccessBuilder authorize(Transaction trc) {
-    return new AccessBuilder(builder, name, trc, true);
+  public AccessBuilder authorize(Role role) {
+    return new AccessBuilder(builder, name, role, true);
   }
   
   
-  public AccessBuilder deny(Transaction trc) {
-    return new AccessBuilder(builder, name, trc, false);
+  public AccessBuilder deny(Role role) {
+    return new AccessBuilder(builder, name, role, false);
   }
   
   
   public UserBuilder insert() {
-    return builder.addAccess(new Access(name, perm, auth));
+    return builder.add(new Access(name, perm, auth));
   }
   
 }

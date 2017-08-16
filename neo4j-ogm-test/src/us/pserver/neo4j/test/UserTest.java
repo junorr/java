@@ -21,7 +21,7 @@
 
 package us.pserver.neo4j.test;
 
-import us.pserver.neo4j.test.bean.Transaction;
+import us.pserver.neo4j.test.bean.Role;
 import us.pserver.neo4j.test.bean.User;
 import us.pserver.neo4j.test.bean.UserBuilder;
 
@@ -38,13 +38,13 @@ public class UserTest {
         .withName("Juno")
         .withPassword("32132155")
         .newAccess("testObjectBox.jar")
-        .authorize(Transaction.JAR)
+        .authorize(Role.JAR)
         .insert()
         .newAccess("testobjectbox.Message")
-        .authorize(Transaction.CLASS)
+        .authorize(Role.CLASS)
         .insert()
         .newAccess()
-        .deny(Transaction.METHOD)
+        .deny(Role.METHOD)
         .insert()
         .create();
     System.out.println(usr);
@@ -52,13 +52,13 @@ public class UserTest {
         .withName("Juno")
         .withPassword("32132155")
         .newAccess("testObjectBox.jar")
-        .authorize(Transaction.JAR)
+        .authorize(Role.JAR)
         .insert()
         .newAccess("testobjectbox.Message")
-        .authorize(Transaction.CLASS)
+        .authorize(Role.CLASS)
         .insert()
         .newAccess()
-        .authorize(Transaction.METHOD)
+        .authorize(Role.METHOD)
         .insert()
         .create();
     System.out.println(request);
