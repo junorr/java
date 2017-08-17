@@ -35,17 +35,16 @@ import us.pserver.tools.NotNull;
 @NodeEntity
 public class Access {
   
-  @GraphId private Long id;
+  private Long id;
   
-  private final String name;
+  private String name;
   
-  @Index private final Role role;
+  private Role role;
   
-  private final boolean auth;
+  private boolean auth;
   
   
   private Access() {
-    this(null, null, false);
   }
   
   
@@ -55,19 +54,13 @@ public class Access {
   
   
   public Access(String name, Role role, boolean auth) {
-    this(0, name, role, auth);
-  }
-  
-  
-  public Access(long id, String name, Role role, boolean auth) {
-    this.id = id;
     this.name = name != null ? name : "";
     this.role = role;
     this.auth = auth;
   }
   
   
-  public long getId() {
+  public Long getId() {
     return id;
   }
   

@@ -21,11 +21,9 @@
 
 package us.pserver.neo4j.test.bean;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.Index;
+import java.util.Set;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import us.pserver.tools.NotNull;
@@ -38,18 +36,17 @@ import us.pserver.tools.NotNull;
 @NodeEntity
 public class User {
 
-  @GraphId private Long id;
+  private Long id;
   
-  @Index private final String name;
+  private String name;
   
-  private final String hash;
+  private String hash;
   
-  @Relationship(type = "HAS")
-  private final List<Access> accesses;
+  @Relationship(type = "HAS", direction = Relationship.OUTGOING)
+  private final Set<Access> accesses;
   
   
   private User() {
-    this.id = 0L;
     this.name = null;
     this.hash = null;
     this.accesses = null;
@@ -57,16 +54,16 @@ public class User {
   
   
   public User(String name, String hash) {
-    this(name, hash, new ArrayList<>());
+    this(name, hash, new HashSet<>());
   } 
   
   
-  public User(String name, String hash, List<Access> acss) {
-    this(0, name, hash, acss);
+  public User(String name, String hash, Set<Access> acss) {
+    this(null, name, hash, acss);
   }
   
   
-  public User(long id, String name, String hash, List<Access> acss) {
+  public User(Long id, String name, String hash, Set<Access> acss) {
     this.id = id;
     this.name = NotNull.of(name).getOrFail("Bad null name");
     this.hash = NotNull.of(hash).getOrFail("Bad null hash");
@@ -85,7 +82,7 @@ public class User {
   }
   
   
-  public long getId() {
+  public Long getId() {
     return id;
   }
   
@@ -100,7 +97,7 @@ public class User {
   }
   
   
-  public List<Access> accesses() {
+  public Set<Access> accesses() {
     return accesses;
   }
 

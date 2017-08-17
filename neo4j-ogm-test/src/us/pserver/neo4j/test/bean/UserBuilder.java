@@ -22,7 +22,9 @@
 package us.pserver.neo4j.test.bean;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import us.pserver.tools.NotNull;
 
 /**
@@ -78,7 +80,9 @@ public class UserBuilder {
   
   
   public User create() {
-    return new User(name, hash, accesses);
+    Set<Access> acs = new HashSet<>();
+    acs.addAll(accesses);
+    return new User(name, hash, acs);
   }
   
 }
