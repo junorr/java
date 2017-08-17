@@ -36,5 +36,10 @@ public class NumberValue extends AbstractValue<Number> {
   public boolean isNumber() {
     return true;
   }
+  
+  @Override
+  public boolean isPrimitive() {
+    return true;
+  }
 
 }

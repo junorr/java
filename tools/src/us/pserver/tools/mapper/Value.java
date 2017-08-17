@@ -21,6 +21,9 @@
 
 package us.pserver.tools.mapper;
 
+import java.util.Objects;
+import us.pserver.tools.NotNull;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -28,16 +31,62 @@ package us.pserver.tools.mapper;
  */
 public interface Value<T> {
 
-  public boolean isNumber();
-  
-  public boolean isString();
-  
-  public boolean isBoolean();
-  
-  public boolean isArray();
-  
-  public boolean isPrimitive();
+  public FieldMetaData getMetaData();
   
   public T get();
+  
+  
+  public static <U> Value of(U value) {
+    return new ValueImpl(value);
+  }
+  
+  
+  
+  
+  
+  public class ValueImpl<T> implements Value {
+
+    protected final T value;
+
+    protected final FieldMetaData meta;
+
+    protected ValueImpl(T value) {
+      this.value = NotNull.of(value).getOrFail("Bad null value");
+      this.meta = FieldMetaData.of(value.getClass());
+    }
+
+    @Override
+    public T get() {
+      return value;
+    }
+
+    @Override
+    public FieldMetaData getMetaData() {
+      return meta;
+    }
+
+    @Override
+    public int hashCode() {
+      int hash = 7;
+      hash = 29 * hash + Objects.hashCode(this.value);
+      return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      final AbstractValue<?> other = (AbstractValue<?>) obj;
+      return Objects.equals(this.value, other.value);
+    }
+
+  }
   
 }

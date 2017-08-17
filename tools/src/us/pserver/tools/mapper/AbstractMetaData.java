@@ -21,7 +21,6 @@
 
 package us.pserver.tools.mapper;
 
-import java.util.Objects;
 import us.pserver.tools.NotNull;
 
 /**
@@ -29,47 +28,49 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 17/08/2017
  */
-public abstract class AbstractValue<T> implements Value {
+public class AbstractMetaData implements FieldMetaData {
   
-  protected final T value;
+  protected final Class type;
   
-  protected final FieldMetaData meta;
+  protected AbstractMetaData(Class type) {
+    this.type = NotNull.of(type).getOrFail("Bad null Class");
+  }
   
-  protected AbstractValue(T value) {
-    this.value = NotNull.of(value).getOrFail("Bad null value");
-    this.meta = FieldMetaData.of(value.getClass());
+  @Override
+  public boolean isNumber() {
+    return Number.class.isAssignableFrom(type)
+        || byte.class.isAssignableFrom(type)
+        || short.class.isAssignableFrom(type)
+        || int.class.isAssignableFrom(type)
+        || long.class.isAssignableFrom(type)
+        || float.class.isAssignableFrom(type)
+        || double.class.isAssignableFrom(type);
+  }
+  
+  @Override
+  public boolean isPrimitive() {
+    return type.isPrimitive();
   }
 
   @Override
-  public T get() {
-    return value;
-  }
-  
-  @Override
-  public FieldMetaData getMetaData() {
-    return meta;
+  public boolean isString() {
+    return String.class.isAssignableFrom(type);
   }
 
   @Override
-  public int hashCode() {
-    int hash = 7;
-    hash = 29 * hash + Objects.hashCode(this.value);
-    return hash;
+  public boolean isBoolean() {
+    return Boolean.class.isAssignableFrom(type) 
+        || boolean.class.isAssignableFrom(type);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final AbstractValue<?> other = (AbstractValue<?>) obj;
-    return Objects.equals(this.value, other.value);
+  public boolean isArray() {
+    return type.isArray();
+  }
+
+  @Override
+  public Class getType() {
+    return type;
   }
 
 }

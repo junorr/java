@@ -26,10 +26,20 @@ package us.pserver.tools.mapper;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 17/08/2017
  */
-public class StringValue extends AbstractValue<String> {
+public class NumberMetaData extends AbstractValue<Number> {
   
-  public StringValue(String value) {
+  public NumberMetaData(Number value) {
     super(value);
   }
   
+  @Override
+  public boolean isNumber() {
+    return true;
+  }
+  
+  @Override
+  public boolean isPrimitive() {
+    return true;
+  }
+
 }
