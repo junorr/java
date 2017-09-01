@@ -21,56 +21,27 @@
 
 package us.pserver.tools.mapper;
 
-import us.pserver.tools.NotNull;
+import java.util.function.Function;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/08/2017
+ * @version 0.0 - 01/09/2017
  */
-public class AbstractMetaData implements FieldMetaData {
+public class BooleanMapper extends AbstractMapper<Boolean,Boolean> {
   
-  protected final Class type;
-  
-  protected AbstractMetaData(Class type) {
-    this.type = NotNull.of(type).getOrFail("Bad null Class");
-  }
-  
-  @Override
-  public boolean isNumber() {
-    return Number.class.isAssignableFrom(type)
-        || byte.class.isAssignableFrom(type)
-        || short.class.isAssignableFrom(type)
-        || int.class.isAssignableFrom(type)
-        || long.class.isAssignableFrom(type)
-        || float.class.isAssignableFrom(type)
-        || double.class.isAssignableFrom(type);
-  }
-  
-  @Override
-  public boolean isPrimitive() {
-    return type.isPrimitive();
+  public BooleanMapper() {
+    super(Boolean.class, boolean.class);
   }
 
   @Override
-  public boolean isString() {
-    return String.class.isAssignableFrom(type);
+  public Function<Boolean, Boolean> mapping() {
+    return b->b;
   }
 
   @Override
-  public boolean isBoolean() {
-    return Boolean.class.isAssignableFrom(type) 
-        || boolean.class.isAssignableFrom(type);
-  }
-
-  @Override
-  public boolean isArray() {
-    return type.isArray();
-  }
-
-  @Override
-  public Class getType() {
-    return type;
+  public Function<Boolean, Boolean> unmapping() {
+    return b->b;
   }
 
 }

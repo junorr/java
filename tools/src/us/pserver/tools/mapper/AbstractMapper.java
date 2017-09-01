@@ -21,25 +21,26 @@
 
 package us.pserver.tools.mapper;
 
+import java.util.Arrays;
+import java.util.List;
+import us.pserver.tools.NotNull;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/08/2017
+ * @version 0.0 - 23/08/2017
  */
-public class NumberMetaData extends AbstractValue<Number> {
+public abstract class AbstractMapper<T,U> implements Mapper<T,U> {
   
-  public NumberMetaData(Number value) {
-    super(value);
+  List<Class> types;
+  
+  AbstractMapper(Class ... canMap) {
+    this.types = Arrays.asList(NotNull.of(canMap).getOrFail("Bad null class array"));
   }
   
   @Override
-  public boolean isNumber() {
-    return true;
-  }
-  
-  @Override
-  public boolean isPrimitive() {
-    return true;
+  public boolean canMap(Class cls) {
+    return types.stream().anyMatch(c->c.isAssignableFrom(cls));
   }
 
 }

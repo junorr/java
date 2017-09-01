@@ -108,7 +108,7 @@ public class MapSorter<T> {
   
   
   /**
-   * Return a new sorted map by its key type.
+   * Return a new map sorted by key.
    * @param map The map to sort.
    * @param <V> The type of the map values.
    * @return a new sorted map by its key type.

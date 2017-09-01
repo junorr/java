@@ -132,7 +132,7 @@ public class DynamicBuffer implements Closeable {
   
   
   public DynamicBuffer rewind() {
-    pages.forEach(b->b.rewind());
+    pages.forEach(ByteBuffer::rewind);
     return positionStart();
   }
   

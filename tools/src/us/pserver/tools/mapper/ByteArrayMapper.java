@@ -21,55 +21,28 @@
 
 package us.pserver.tools.mapper;
 
-import java.util.Objects;
-import us.pserver.tools.NotNull;
+import java.util.Base64;
+import java.util.function.Function;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/08/2017
+ * @version 0.0 - 01/09/2017
  */
-public abstract class AbstractValue<T> implements Value {
-  
-  protected final T value;
-  
-  protected final FieldMetaData meta;
-  
-  protected AbstractValue(T value) {
-    this.value = NotNull.of(value).getOrFail("Bad null value");
-    this.meta = FieldMetaData.of(value.getClass());
+public class ByteArrayMapper extends AbstractMapper<byte[],String> {
+
+  public ByteArrayMapper() {
+    super(byte[].class);
   }
 
   @Override
-  public T get() {
-    return value;
-  }
-  
-  @Override
-  public FieldMetaData getMetaData() {
-    return meta;
+  public Function<byte[], String> mapping() {
+    return Base64.getEncoder()::encodeToString;
   }
 
   @Override
-  public int hashCode() {
-    int hash = 7;
-    hash = 29 * hash + Objects.hashCode(this.value);
-    return hash;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final AbstractValue<?> other = (AbstractValue<?>) obj;
-    return Objects.equals(this.value, other.value);
+  public Function<String, byte[]> unmapping() {
+    return Base64.getDecoder()::decode;
   }
 
 }

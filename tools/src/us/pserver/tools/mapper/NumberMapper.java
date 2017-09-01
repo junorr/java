@@ -21,25 +21,31 @@
 
 package us.pserver.tools.mapper;
 
+import java.util.function.Function;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/08/2017
+ * @version 0.0 - 01/09/2017
  */
-public class NumberValue extends AbstractValue<Number> {
-  
-  public NumberValue(Number value) {
-    super(value);
+public class NumberMapper extends AbstractMapper<Number,Number> {
+
+  public NumberMapper() {
+    super(Number.class, 
+        byte.class, short.class, 
+        int.class, long.class, 
+        float.class, double.class
+    );
   }
-  
+
   @Override
-  public boolean isNumber() {
-    return true;
+  public Function<Number, Number> mapping() {
+    return n->n;
   }
-  
+
   @Override
-  public boolean isPrimitive() {
-    return true;
+  public Function<Number, Number> unmapping() {
+    return n->n;
   }
 
 }

@@ -21,15 +21,28 @@
 
 package us.pserver.tools.mapper;
 
+import java.util.Objects;
+import java.util.function.Function;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/08/2017
+ * @version 0.0 - 01/09/2017
  */
-public class StringValue extends AbstractValue<String> {
-  
-  public StringValue(String value) {
-    super(value);
+public class StringMapper extends AbstractMapper<Object,String> {
+
+  public StringMapper() {
+    super(String.class, CharSequence.class, Character.class, char.class, char[].class);
   }
-  
+
+  @Override
+  public Function<Object, String> mapping() {
+    return Objects::toString;
+  }
+
+  @Override
+  public Function<String, Object> unmapping() {
+    return String::toString;
+  }
+
 }

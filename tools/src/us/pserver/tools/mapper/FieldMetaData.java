@@ -32,6 +32,8 @@ public interface FieldMetaData {
 
   public boolean isNumber();
   
+  public boolean isDecimal();
+  
   public boolean isString();
   
   public boolean isBoolean();
@@ -67,6 +69,14 @@ public interface FieldMetaData {
           || long.class.isAssignableFrom(type)
           || float.class.isAssignableFrom(type)
           || double.class.isAssignableFrom(type);
+    }
+
+    @Override
+    public boolean isDecimal() {
+      return float.class.isAssignableFrom(type)
+          || Float.class.isAssignableFrom(type)
+          || double.class.isAssignableFrom(type)
+          || Double.class.isAssignableFrom(type);
     }
 
     @Override

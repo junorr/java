@@ -21,25 +21,35 @@
 
 package us.pserver.tools.mapper;
 
+import java.nio.ByteBuffer;
+import java.util.Base64;
+import java.util.function.Function;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/08/2017
+ * @version 0.0 - 01/09/2017
  */
-public class BooleanValue extends AbstractValue<Boolean> {
+public class ByteBufferMapper extends AbstractMapper<ByteBuffer,String> {
+
+  public ByteBufferMapper() {
+    super(byte[].class);
+  }
+
+  @Override
+  public Function<ByteBuffer, String> mapping() {
+    return this::bb2str;
+  }
   
-  public BooleanValue(Boolean value) {
-    super(value);
+  private String bb2str(ByteBuffer bb) {
+    byte[] bs = new byte[bb.remaining()];
+    bb.get(bs);
+    return Base64.getEncoder().encodeToString(bs);
   }
   
   @Override
-  public boolean isBoolean() {
-    return true;
-  }
-  
-  @Override
-  public boolean isPrimitive() {
-    return true;
+  public Function<String, ByteBuffer> unmapping() {
+    return s->ByteBuffer.wrap(Base64.getDecoder().decode(s));
   }
 
 }

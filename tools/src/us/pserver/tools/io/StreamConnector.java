@@ -85,7 +85,7 @@ public class StreamConnector implements Closeable {
     WritableByteChannel cout = Channels.newChannel(out);
     int read = 0;
     while(true) {
-      buffer.clear();
+      buffer.compact();
       read = cin.read(buffer);
       if(read < 1) break;
       buffer.flip();

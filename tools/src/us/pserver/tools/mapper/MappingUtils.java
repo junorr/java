@@ -21,19 +21,25 @@
 
 package us.pserver.tools.mapper;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/08/2017
+ * @version 0.0 - 23/08/2017
  */
-public interface MetaValue {
+public abstract class MappingUtils {
 
-  public String getName();
+  public static final String KEY_TYPE = "@type";
   
-  public Class getType();
+  public static final String KEY_VALUE = "@value";
   
-  public boolean isPrimitive();
   
-  public boolean isArray();
+  public static <T> Map<String,Object> newMapType(T t) {
+    Map<String,Object> map = new HashMap<>();
+    map.put(KEY_TYPE, t.getClass().getName());
+    return map;
+  }
   
 }

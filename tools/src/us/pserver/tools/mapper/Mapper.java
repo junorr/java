@@ -21,22 +21,19 @@
 
 package us.pserver.tools.mapper;
 
-import java.util.List;
+import java.util.function.Function;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/08/2017
+ * @version 0.0 - 23/08/2017
  */
-public class ArrayValue extends AbstractValue<List> {
-  
-  public ArrayValue(List value) {
-    super(value);
-  }
-  
-  @Override
-  public boolean isArray() {
-    return true;
-  }
+public interface Mapper<T,U> {
 
+  public boolean canMap(Class cls);
+  
+  public Function<T,U> mapping();
+  
+  public Function<U,T> unmapping();
+  
 }
