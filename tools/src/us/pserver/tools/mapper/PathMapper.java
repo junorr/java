@@ -21,33 +21,25 @@
 
 package us.pserver.tools.mapper;
 
-import java.util.Base64;
+import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/09/2017
+ * @version 0.0 - 02/09/2017
  */
-public class ByteArrayMapper extends AbstractMapper<String> {
-
-  public ByteArrayMapper() {
-    super(byte[].class);
-  }
+public class PathMapper extends AbstractMapper<String> {
 
   @Override
   public Function<Object,String> mapping() {
-    return this::array2str;
-  }
-  
-  private String array2str(Object o) {
-    byte[] bs = (byte[])o;
-    return Base64.getEncoder().encodeToString(bs);
+    return Objects::toString;
   }
 
   @Override
   public Function<String,Object> unmapping() {
-    return Base64.getDecoder()::decode;
+    return Paths::get;
   }
 
 }

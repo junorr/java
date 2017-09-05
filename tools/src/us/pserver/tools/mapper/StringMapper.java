@@ -29,7 +29,7 @@ import java.util.function.Function;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/09/2017
  */
-public class StringMapper extends AbstractMapper<Object,String> {
+public class StringMapper extends AbstractMapper<String> {
 
   public StringMapper() {
     super(String.class, CharSequence.class, Character.class, char.class, char[].class);

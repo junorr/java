@@ -28,19 +28,19 @@ import java.util.function.Function;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/09/2017
  */
-public class BooleanMapper extends AbstractMapper<Boolean,Boolean> {
+public class BooleanMapper extends AbstractMapper<Boolean> {
   
   public BooleanMapper() {
     super(Boolean.class, boolean.class);
   }
 
   @Override
-  public Function<Boolean, Boolean> mapping() {
-    return b->b;
+  public Function<Object,Boolean> mapping() {
+    return o->(Boolean)o;
   }
 
   @Override
-  public Function<Boolean, Boolean> unmapping() {
+  public Function<Boolean,Object> unmapping() {
     return b->b;
   }
 

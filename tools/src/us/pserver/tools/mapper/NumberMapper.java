@@ -28,7 +28,7 @@ import java.util.function.Function;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/09/2017
  */
-public class NumberMapper extends AbstractMapper<Number,Number> {
+public class NumberMapper extends AbstractMapper<Number> {
 
   public NumberMapper() {
     super(Number.class, 
@@ -39,12 +39,12 @@ public class NumberMapper extends AbstractMapper<Number,Number> {
   }
 
   @Override
-  public Function<Number, Number> mapping() {
-    return n->n;
+  public Function<Object,Number> mapping() {
+    return o->(Number)o;
   }
 
   @Override
-  public Function<Number, Number> unmapping() {
+  public Function<Number,Object> unmapping() {
     return n->n;
   }
 

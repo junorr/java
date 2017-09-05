@@ -28,12 +28,12 @@ import java.util.function.Function;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 23/08/2017
  */
-public interface Mapper<T,U> {
+public interface Mapper<T> {
 
   public boolean canMap(Class cls);
   
-  public Function<T,U> mapping();
+  public Function<Object,T> mapping();
   
-  public Function<U,T> unmapping();
+  public Function<T,Object> unmapping();
   
 }

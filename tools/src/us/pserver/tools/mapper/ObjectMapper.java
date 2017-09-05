@@ -21,33 +21,27 @@
 
 package us.pserver.tools.mapper;
 
-import java.util.Base64;
 import java.util.function.Function;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/09/2017
+ * @version 0.0 - 02/09/2017
  */
-public class ByteArrayMapper extends AbstractMapper<String> {
+public class ObjectMapper extends AbstractMapper {
 
-  public ByteArrayMapper() {
-    super(byte[].class);
+  public ObjectMapper() {
+    super(Object.class);
   }
 
   @Override
-  public Function<Object,String> mapping() {
-    return this::array2str;
-  }
-  
-  private String array2str(Object o) {
-    byte[] bs = (byte[])o;
-    return Base64.getEncoder().encodeToString(bs);
+  public Function mapping() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
-  public Function<String,Object> unmapping() {
-    return Base64.getDecoder()::decode;
+  public Function unmapping() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
 }

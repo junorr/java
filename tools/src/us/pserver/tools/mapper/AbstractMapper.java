@@ -30,7 +30,7 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 23/08/2017
  */
-public abstract class AbstractMapper<T,U> implements Mapper<T,U> {
+public abstract class AbstractMapper<T> implements Mapper<T> {
   
   List<Class> types;
   

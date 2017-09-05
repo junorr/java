@@ -30,25 +30,26 @@ import java.util.function.Function;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/09/2017
  */
-public class ByteBufferMapper extends AbstractMapper<ByteBuffer,String> {
+public class ByteBufferMapper extends AbstractMapper<String> {
 
   public ByteBufferMapper() {
-    super(byte[].class);
+    super(ByteBuffer.class);
   }
 
   @Override
-  public Function<ByteBuffer, String> mapping() {
+  public Function<Object,String> mapping() {
     return this::bb2str;
   }
   
-  private String bb2str(ByteBuffer bb) {
+  private String bb2str(Object o) {
+    ByteBuffer bb = (ByteBuffer)o;
     byte[] bs = new byte[bb.remaining()];
     bb.get(bs);
     return Base64.getEncoder().encodeToString(bs);
   }
   
   @Override
-  public Function<String, ByteBuffer> unmapping() {
+  public Function<String,Object> unmapping() {
     return s->ByteBuffer.wrap(Base64.getDecoder().decode(s));
   }
 
