@@ -35,48 +35,45 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/09/2017
  */
-public class ArrayMapper extends AbstractMapper<List> {
+public class ArrayMapper extends AbstractMapper {
 
   private final ObjectMapper mapper;
   
   public ArrayMapper(ObjectMapper omp) {
-    super(null);
+    super(Object.class);
     this.mapper = NotNull.of(omp).getOrFail("Bad null ObjectMapper");
   }
   
   public boolean canMap(Class cls) {
-    return cls != null && (cls.isArray() || Collection.class.isAssignableFrom(cls));
+    return cls != null && (cls.isArray());
   }
 
   @Override
-  public Function<Object,List> mapping() {
-    return this::obj2list;
+  public Function mapping() {
+    return this::array2list;
   }
   
-  private List obj2list(Object o) {
-    return o.getClass().isArray() 
-        ? array2list(o) 
-        : coll2list(o);
+  private Object obj2array(Object o) {
+    List ls = (List) o;
+    Object[] array = new Object[ls.size()];
+    for(int i = 0; i < ls.size(); i++) {
+      array[i] = mapper.unmapping().apply(ls.get(i));
+    }
+    return array;
   }
   
   private List array2list(Object o) {
     int len = Array.getLength(o);
     List ls = new ArrayList();
-    ls.add(o.getClass());
     for(int i = 0; i < len; i++) {
       ls.add(mapper.mapping().apply(Array.get(o, i)));
     }
     return ls;
   }
   
-  private List coll2list(Object o) {
-    Collection col = (Collection)o;
-    return col.stream().map(mapper::mapping).collect(Collectors.toList());
-  }
-
   @Override
-  public Function<List,Object> unmapping() {
-    
+  public Function unmapping() {
+    return this::obj2array;
   }
 
 }

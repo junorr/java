@@ -21,6 +21,7 @@
 
 package us.pserver.tools.mapper;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.function.Function;
@@ -30,16 +31,16 @@ import java.util.function.Function;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/09/2017
  */
-public class PathMapper extends AbstractMapper<String> {
+public class PathMapper extends AbstractMapper<Path> {
 
   @Override
-  public Function<Object,String> mapping() {
-    return Objects::toString;
+  public Function<Path,Object> mapping() {
+    return Path::toString;
   }
 
   @Override
-  public Function<String,Object> unmapping() {
-    return Paths::get;
+  public Function<Object,Path> unmapping() {
+    return o->Paths.get(Objects.toString(o));
   }
 
 }

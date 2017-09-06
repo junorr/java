@@ -19,42 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.mapper;
-
-import java.nio.ByteBuffer;
-import java.util.Base64;
-import java.util.Objects;
-import java.util.function.Function;
+package us.pserver.tools.test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/09/2017
+ * @version 0.0 - 06/09/2017
  */
-public class ByteBufferMapper extends AbstractMapper<ByteBuffer> {
+public class TestNumberCast {
 
-  public ByteBufferMapper() {
-    super(ByteBuffer.class);
-  }
-
-  @Override
-  public Function<ByteBuffer,Object> mapping() {
-    return this::bb2str;
+  
+  public static void main(String[] args) {
+    int i = 5;
+    System.out.printf("* %s%n", i);
+    Object o = i;
+    System.out.printf("* %s (%s)%n", o, o.getClass().getName());
+    Number n = (Number) o;
+    System.out.printf("* %s (%s)%n", n, n.getClass().getName());
   }
   
-  private String bb2str(Object o) {
-    ByteBuffer bb = (ByteBuffer)o;
-    byte[] bs = new byte[bb.remaining()];
-    bb.get(bs);
-    return Base64.getEncoder().encodeToString(bs);
-  }
-  
-  @Override
-  public Function<Object,ByteBuffer> unmapping() {
-    return o->ByteBuffer.wrap(
-        Base64.getDecoder().decode(
-            Objects.toString(o))
-    );
-  }
-
 }

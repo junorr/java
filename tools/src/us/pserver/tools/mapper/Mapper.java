@@ -32,8 +32,8 @@ public interface Mapper<T> {
 
   public boolean canMap(Class cls);
   
-  public Function<Object,T> mapping();
+  public Function<T,Object> mapping();
   
-  public Function<T,Object> unmapping();
+  public Function<Object,T> unmapping();
   
 }

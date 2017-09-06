@@ -21,40 +21,36 @@
 
 package us.pserver.tools.mapper;
 
-import java.nio.ByteBuffer;
-import java.util.Base64;
 import java.util.Objects;
 import java.util.function.Function;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/09/2017
+ * @version 0.0 - 06/09/2017
  */
-public class ByteBufferMapper extends AbstractMapper<ByteBuffer> {
-
-  public ByteBufferMapper() {
-    super(ByteBuffer.class);
+public class ClassMapper extends AbstractMapper<Class> {
+  
+  public ClassMapper() {
+    super(Class.class);
   }
 
   @Override
-  public Function<ByteBuffer,Object> mapping() {
-    return this::bb2str;
+  public Function<Class,Object> mapping() {
+    return o->((Class)o).getName();
   }
   
-  private String bb2str(Object o) {
-    ByteBuffer bb = (ByteBuffer)o;
-    byte[] bs = new byte[bb.remaining()];
-    bb.get(bs);
-    return Base64.getEncoder().encodeToString(bs);
+  private Class obj2class(Object o) {
+    try {
+      return Class.forName(Objects.toString(o));
+    } catch(ClassNotFoundException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
   }
-  
+
   @Override
-  public Function<Object,ByteBuffer> unmapping() {
-    return o->ByteBuffer.wrap(
-        Base64.getDecoder().decode(
-            Objects.toString(o))
-    );
+  public Function<Object,Class> unmapping() {
+    return this::obj2class;
   }
 
 }

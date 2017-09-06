@@ -36,13 +36,13 @@ public class StringMapper extends AbstractMapper<String> {
   }
 
   @Override
-  public Function<Object, String> mapping() {
-    return Objects::toString;
+  public Function<String,Object> mapping() {
+    return String::toString;
   }
 
   @Override
-  public Function<String, Object> unmapping() {
-    return String::toString;
+  public Function<Object,String> unmapping() {
+    return Objects::toString;
   }
 
 }

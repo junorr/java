@@ -35,13 +35,13 @@ public class BooleanMapper extends AbstractMapper<Boolean> {
   }
 
   @Override
-  public Function<Object,Boolean> mapping() {
-    return o->(Boolean)o;
+  public Function<Boolean,Object> mapping() {
+    return b->b;
   }
 
   @Override
-  public Function<Boolean,Object> unmapping() {
-    return b->b;
+  public Function<Object,Boolean> unmapping() {
+    return o->(Boolean)o;
   }
 
 }

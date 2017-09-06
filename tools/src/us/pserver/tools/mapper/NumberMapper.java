@@ -39,13 +39,13 @@ public class NumberMapper extends AbstractMapper<Number> {
   }
 
   @Override
-  public Function<Object,Number> mapping() {
-    return o->(Number)o;
+  public Function<Number,Object> mapping() {
+    return n->n;
   }
 
   @Override
-  public Function<Number,Object> unmapping() {
-    return n->n;
+  public Function<Object,Number> unmapping() {
+    return o->(Number)o;
   }
 
 }

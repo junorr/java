@@ -21,40 +21,33 @@
 
 package us.pserver.tools.mapper;
 
-import java.nio.ByteBuffer;
-import java.util.Base64;
-import java.util.Objects;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/09/2017
+ * @version 0.0 - 06/09/2017
  */
-public class ByteBufferMapper extends AbstractMapper<ByteBuffer> {
+public class ListMapper extends AbstractMapper<List> {
 
-  public ByteBufferMapper() {
-    super(ByteBuffer.class);
+  private final ObjectMapper mapper;
+  
+  public ListMapper(ObjectMapper omp) {
+    super(List.class);
+    this.mapper = NotNull.of(omp).getOrFail("Bad null ObjectMapper");
   }
 
   @Override
-  public Function<ByteBuffer,Object> mapping() {
-    return this::bb2str;
-  }
-  
-  private String bb2str(Object o) {
-    ByteBuffer bb = (ByteBuffer)o;
-    byte[] bs = new byte[bb.remaining()];
-    bb.get(bs);
-    return Base64.getEncoder().encodeToString(bs);
+  public Function<List, Object> mapping() {
+    return l->l.stream().map(mapper::mapping).collect(Collectors.toList());
   }
   
   @Override
-  public Function<Object,ByteBuffer> unmapping() {
-    return o->ByteBuffer.wrap(
-        Base64.getDecoder().decode(
-            Objects.toString(o))
-    );
+  public Function<Object, List> unmapping() {
+    return o->((List)o).stream().map(mapper::unmapping).collect(Collectors.toList());
   }
-
+  
 }
