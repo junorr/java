@@ -21,8 +21,6 @@
 
 package us.pserver.tools.mapper;
 
-import java.util.function.Function;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -32,8 +30,8 @@ public interface Mapper<T> {
 
   public boolean canMap(Class cls);
   
-  public Function<T,Object> mapping();
+  public Object map(T obj);
   
-  public Function<Object,T> unmapping();
+  public T unmap(Class cls, Object obj);
   
 }

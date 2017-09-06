@@ -21,54 +21,41 @@
 
 package us.pserver.tools.mapper;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/09/2017
+ * @version 0.0 - 06/09/2017
  */
-public class ArrayMapper extends AbstractMapper {
-
-  private final ObjectMapper mapper;
+public class ObjectClassMapper extends ObjectMapper {
   
-  public ArrayMapper(ObjectMapper omp) {
-    super(Object.class);
-    this.mapper = NotNull.of(omp).getOrFail("Bad null ObjectMapper");
+  public static final String KEY_TYPE = "@type";
+
+  public ObjectClassMapper() {
+    super();
   }
   
-  @Override
-  public boolean canMap(Class cls) {
-    return cls != null && (cls.isArray());
-  }
-
-
   @Override
   public Object map(Object obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    int len = Array.getLength(obj);
-    List ls = new ArrayList();
-    for(int i = 0; i < len; i++) {
-      ls.add(mapper.map(Array.get(obj, i)));
+    Object mop = super.map(obj);
+    if(Map.class.isAssignableFrom(mop.getClass())) {
+      ((Map)mop).put(KEY_TYPE, obj.getClass().getName());
     }
-    return ls;
+    return mop;
   }
-
-
-  @Override
-  public Object unmap(Class cls, Object obj) {
-    NotNull.of(cls).failIfNull("Bad null Class");
+  
+  public <T> T unmap(Object obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    Class elt = cls.getComponentType();
-    List ls = (List) obj;
-    Object array = Array.newInstance(elt, ls.size());
-    for(int i = 0; i < ls.size(); i++) {
-      Array.set(array, i, mapper.unmap(elt, ls.get(i)));
+    if(Map.class.isAssignableFrom(obj.getClass())) {
+      Class cls = (Class) super.unmap(Class.class, ((Map)obj).get(KEY_TYPE));
+      return (T) super.unmap(cls, obj);
     }
-    return array;
+    else {
+      return (T) super.unmap(obj.getClass(), obj);
+    }
   }
-
+  
 }

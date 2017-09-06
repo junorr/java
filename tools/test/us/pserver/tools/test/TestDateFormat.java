@@ -19,34 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.mapper;
+package us.pserver.tools.test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import us.pserver.date.DateTime;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 23/08/2017
+ * @version 0.0 - 06/09/2017
  */
-public abstract class MappingUtils {
+public class TestDateFormat {
 
-  public static final String KEY_TYPE = "@type";
   
-  public static final String KEY_VALUE = "@value";
-  
-  
-  public static <T> Map<String,Object> newMap(Class cls, Object val) {
-    Map<String,Object> map = new HashMap<>();
-    map.put(KEY_TYPE, cls.getName());
-    map.put(KEY_VALUE, val);
-    return map;
-  }
-  
-  public static <T> Map<String,Object> newMapType(Class cls) {
-    Map<String,Object> map = new HashMap<>();
-    map.put(KEY_TYPE, cls.getName());
-    return map;
+  public static void main(String[] args) {
+    System.out.println(Instant.now());
+    System.out.println(DateTime.now().toLocalDT());
+    System.out.println(DateTime.now().toZonedDT());
+    Date dt = new Date();
+    Instant now = Instant.now();
+    System.out.println(DateTime.of(dt).toInstant());
+    System.out.println(DateTime.of(dt).toZonedDT().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+    System.out.println(DateTime.of(DateTime.of(dt).toInstant()).format("yyyy-MM-dd'T'HH:mm:ss.SSS"));
   }
   
 }

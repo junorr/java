@@ -40,7 +40,8 @@ public abstract class AbstractMapper<T> implements Mapper<T> {
   
   @Override
   public boolean canMap(Class cls) {
-    return types.stream().anyMatch(c->c.isAssignableFrom(cls));
+    return cls != null && types.stream()
+        .anyMatch(c->c.isAssignableFrom(cls));
   }
 
 }

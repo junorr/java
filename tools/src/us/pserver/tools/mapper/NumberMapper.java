@@ -22,6 +22,7 @@
 package us.pserver.tools.mapper;
 
 import java.util.function.Function;
+import us.pserver.tools.NotNull;
 
 /**
  *
@@ -38,14 +39,35 @@ public class NumberMapper extends AbstractMapper<Number> {
     );
   }
 
-  @Override
-  public Function<Number,Object> mapping() {
-    return n->n;
-  }
 
   @Override
-  public Function<Object,Number> unmapping() {
-    return o->(Number)o;
+  public Object map(Number t) {
+    return t;
+  }
+
+
+  @Override
+  public Number unmap(Class cls, Object o) {
+    NotNull.of(cls).failIfNull("Bad null Class");
+    Number n = (Number) NotNull.of(o).getOrFail("Bad null object");
+    if(short.class.isAssignableFrom(cls) || Short.class.isAssignableFrom(cls)) {
+      return n.shortValue();
+    }
+    else if(byte.class.isAssignableFrom(cls) || Byte.class.isAssignableFrom(cls)) {
+      return n.byteValue();
+    }
+    else if(long.class.isAssignableFrom(cls) || Long.class.isAssignableFrom(cls)) {
+      return n.longValue();
+    }
+    else if(float.class.isAssignableFrom(cls) || Float.class.isAssignableFrom(cls)) {
+      return n.floatValue();
+    }
+    else if(double.class.isAssignableFrom(cls) || Double.class.isAssignableFrom(cls)) {
+      return n.doubleValue();
+    }
+    else {
+      return n.intValue();
+    }
   }
 
 }

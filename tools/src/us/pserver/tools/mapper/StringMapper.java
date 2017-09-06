@@ -22,27 +22,41 @@
 package us.pserver.tools.mapper;
 
 import java.util.Objects;
-import java.util.function.Function;
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/09/2017
  */
-public class StringMapper extends AbstractMapper<String> {
+public class StringMapper extends AbstractMapper {
 
   public StringMapper() {
     super(String.class, CharSequence.class, Character.class, char.class, char[].class);
   }
 
-  @Override
-  public Function<String,Object> mapping() {
-    return String::toString;
-  }
 
   @Override
-  public Function<Object,String> unmapping() {
-    return Objects::toString;
+  public Object map(Object t) {
+    NotNull.of(t).failIfNull("Bad null object");
+    return t.getClass().isArray() 
+        ? String.copyValueOf((char[])t) 
+        : Objects.toString(t);
+  }
+
+
+  @Override
+  public Object unmap(Class cls, Object obj) {
+    NotNull.of(cls).failIfNull("Bad null Class");
+    NotNull.of(obj).failIfNull("Bad null object");
+    String s = Objects.toString(obj);
+    if(CharSequence.class.isAssignableFrom(cls)) {
+      return s;
+    }
+    else if(cls.isArray()) {
+      return s.toCharArray();
+    }
+    else return s.charAt(0);
   }
 
 }

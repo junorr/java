@@ -21,54 +21,49 @@
 
 package us.pserver.tools.mapper;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/09/2017
+ * @version 0.0 - 06/09/2017
  */
-public class ArrayMapper extends AbstractMapper {
+public class MapMapper extends AbstractMapper<Map> {
 
   private final ObjectMapper mapper;
   
-  public ArrayMapper(ObjectMapper omp) {
-    super(Object.class);
+  public MapMapper(ObjectMapper omp) {
+    super(Map.class);
     this.mapper = NotNull.of(omp).getOrFail("Bad null ObjectMapper");
   }
-  
-  @Override
-  public boolean canMap(Class cls) {
-    return cls != null && (cls.isArray());
-  }
 
 
   @Override
-  public Object map(Object obj) {
+  public Object map(Map obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    int len = Array.getLength(obj);
-    List ls = new ArrayList();
-    for(int i = 0; i < len; i++) {
-      ls.add(mapper.map(Array.get(obj, i)));
-    }
-    return ls;
+    Map<String,Object> nmp = new HashMap();
+    obj.keySet().forEach(o->nmp.put(
+        Objects.toString(o), 
+        mapper.map(obj.get(o)))
+    );
+    return nmp;
   }
 
 
   @Override
-  public Object unmap(Class cls, Object obj) {
+  public Map unmap(Class cls, Object obj) {
     NotNull.of(cls).failIfNull("Bad null Class");
     NotNull.of(obj).failIfNull("Bad null object");
-    Class elt = cls.getComponentType();
-    List ls = (List) obj;
-    Object array = Array.newInstance(elt, ls.size());
-    for(int i = 0; i < ls.size(); i++) {
-      Array.set(array, i, mapper.unmap(elt, ls.get(i)));
-    }
-    return array;
+    Map map = (Map) obj;
+    Map nmp = new HashMap();
+    map.keySet().forEach(k->nmp.put(k, 
+        mapper.unmap(map.get(k).getClass(), map.get(k)))
+    );
+    return nmp;
   }
-
+  
 }

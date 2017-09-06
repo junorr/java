@@ -59,12 +59,12 @@ public class NotNull<T> {
   
   
   public T getOrFail() throws NullPointerException {
-    fail();
+    failIfNull();
     return obj;
   }
   
   
-  public void fail() throws NullPointerException {
+  public void failIfNull() throws NullPointerException {
     if(obj == null) {
       throw new NullPointerException("Bad Null Value");
     }
@@ -72,12 +72,12 @@ public class NotNull<T> {
   
   
   public T getOrFail(String msg) throws NullPointerException {
-    fail(msg);
+    NotNull.this.failIfNull(msg);
     return obj;
   }
   
   
-  public void fail(String msg) throws NullPointerException {
+  public void failIfNull(String msg) throws NullPointerException {
     if(obj == null) {
       throw new NullPointerException(msg);
     }

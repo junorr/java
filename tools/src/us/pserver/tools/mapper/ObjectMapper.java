@@ -21,7 +21,13 @@
 
 package us.pserver.tools.mapper;
 
-import java.util.function.Function;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import us.pserver.tools.NotNull;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
@@ -29,19 +35,83 @@ import java.util.function.Function;
  * @version 0.0 - 02/09/2017
  */
 public class ObjectMapper extends AbstractMapper {
-
+  
+  private final List<Mapper> maps;
+  
   public ObjectMapper() {
     super(Object.class);
+    this.maps = new ArrayList<>();
+    maps.add(new StringMapper());
+    maps.add(new NumberMapper());
+    maps.add(new BooleanMapper());
+    maps.add(new DateMapper());
+    maps.add(new InstantMapper());
+    maps.add(new LocalDateTimeMapper());
+    maps.add(new ZonedDateTimeMapper());
+    maps.add(new PathMapper());
+    maps.add(new ClassMapper());
+    maps.add(new ByteArrayMapper());
+    maps.add(new ByteBufferMapper());
+    maps.add(new ArrayMapper(this));
+    maps.add(new ListMapper(this));
+    maps.add(new SetMapper(this));
+  }
+  
+  public List<Mapper> mappers() {
+    return maps;
+  }
+  
+  @Override
+  public boolean canMap(Class cls) {
+    return maps.stream().anyMatch(m->m.canMap(cls));
+  }
+  
+  public Map<String,Object> toMap(Object o) {
+    return (Map) map(o);
   }
 
   @Override
-  public Function mapping() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public Object map(Object obj) {
+    NotNull.of(obj).failIfNull("Bad null object");
+    if(maps.stream().anyMatch(m->m.canMap(obj.getClass()))) {
+      //System.out.println(" - "+ o +" - mapper: "+ maps.stream().filter(m->m.canMap(o.getClass())).findFirst());
+      return maps.stream().filter(m->m.canMap(obj.getClass())).findFirst().get().map(obj);
+    }
+    else {
+      Map<String,Object> map = new HashMap<>();
+      Field[] fs = Reflector.of(obj).fields();
+      for(Field f : fs) {
+        Object of = Reflector.of(obj).selectField(f.getName()).get();
+        if(of != null) {
+          map.put(f.getName(), map(of));
+        }
+      }
+      return map;
+    }
   }
-
+  
   @Override
-  public Function unmapping() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public Object unmap(Class cls, Object obj) {
+    NotNull.of(cls).failIfNull("Bad null Class");
+    NotNull.of(obj).failIfNull("Bad null object");
+    if(maps.stream().anyMatch(m->m.canMap(cls))) {
+      //System.out.println(" - "+ o +" - unmapper: "+ maps.stream().filter(m->m.canMap(cls)).findFirst());
+      return maps.stream().filter(m->m.canMap(cls)).findFirst().get().unmap(cls, obj);
+    }
+    else {
+      Map map = (Map) obj;
+      Object cob = Reflector.of(cls).create();
+      Field[] fs = Reflector.of(cls).fields();
+      for(Field f : fs) {
+        if(map.containsKey(f.getName())) {
+          Object of = map.get(f.getName());
+          //System.out.println(" - set: "+ f.getName()+ " = "+ of.getClass());
+          //System.out.println(" - field.unmapped: "+ unmap(f.getType(), of));
+          Reflector.of(cob).selectField(f.getName()).set(unmap(f.getType(), of));
+        }
+      }
+      return cob;
+    }
   }
-
+  
 }

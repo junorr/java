@@ -21,54 +21,37 @@
 
 package us.pserver.tools.mapper;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import us.pserver.date.DateTime;
 import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/09/2017
+ * @version 0.0 - 06/09/2017
  */
-public class ArrayMapper extends AbstractMapper {
-
-  private final ObjectMapper mapper;
+public class InstantMapper extends AbstractMapper<Instant> {
   
-  public ArrayMapper(ObjectMapper omp) {
-    super(Object.class);
-    this.mapper = NotNull.of(omp).getOrFail("Bad null ObjectMapper");
-  }
-  
-  @Override
-  public boolean canMap(Class cls) {
-    return cls != null && (cls.isArray());
+  public InstantMapper() {
+    super(Instant.class);
   }
 
 
   @Override
-  public Object map(Object obj) {
+  public Object map(Instant obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    int len = Array.getLength(obj);
-    List ls = new ArrayList();
-    for(int i = 0; i < len; i++) {
-      ls.add(mapper.map(Array.get(obj, i)));
-    }
-    return ls;
+    return DateTime.of(obj).toZonedDT().format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
   }
 
 
   @Override
-  public Object unmap(Class cls, Object obj) {
+  public Instant unmap(Class cls, Object obj) {
     NotNull.of(cls).failIfNull("Bad null Class");
     NotNull.of(obj).failIfNull("Bad null object");
-    Class elt = cls.getComponentType();
-    List ls = (List) obj;
-    Object array = Array.newInstance(elt, ls.size());
-    for(int i = 0; i < ls.size(); i++) {
-      Array.set(array, i, mapper.unmap(elt, ls.get(i)));
-    }
-    return array;
+    return DateTime.of(ZonedDateTime.parse(Objects.toString(obj))).toInstant();
   }
 
 }

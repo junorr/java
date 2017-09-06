@@ -21,54 +21,56 @@
 
 package us.pserver.tools.mapper;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import us.pserver.tools.NotNull;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/09/2017
+ * @version 0.0 - 06/09/2017
  */
-public class ArrayMapper extends AbstractMapper {
+public class SetMapper extends AbstractMapper<Set> {
 
   private final ObjectMapper mapper;
   
-  public ArrayMapper(ObjectMapper omp) {
-    super(Object.class);
+  public SetMapper(ObjectMapper omp) {
+    super(Set.class);
     this.mapper = NotNull.of(omp).getOrFail("Bad null ObjectMapper");
   }
-  
-  @Override
-  public boolean canMap(Class cls) {
-    return cls != null && (cls.isArray());
-  }
 
 
   @Override
-  public Object map(Object obj) {
+  public Object map(Set obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    int len = Array.getLength(obj);
-    List ls = new ArrayList();
-    for(int i = 0; i < len; i++) {
-      ls.add(mapper.map(Array.get(obj, i)));
+    return obj.stream()
+        .map(mapper::map)
+        .collect(Collectors.toList());
+  }
+
+
+  private Set newSet(Class cls) {
+    try {
+      return (Set) Reflector.of(cls).create();
+    } catch(Exception e) {
+      return new HashSet();
     }
-    return ls;
   }
 
 
   @Override
-  public Object unmap(Class cls, Object obj) {
+  public Set unmap(Class cls, Object obj) {
     NotNull.of(cls).failIfNull("Bad null Class");
     NotNull.of(obj).failIfNull("Bad null object");
-    Class elt = cls.getComponentType();
     List ls = (List) obj;
-    Object array = Array.newInstance(elt, ls.size());
-    for(int i = 0; i < ls.size(); i++) {
-      Array.set(array, i, mapper.unmap(elt, ls.get(i)));
-    }
-    return array;
+    Set nl = newSet(cls);
+    ls.stream()
+        .map(o->mapper.unmap(o.getClass(), o))
+        .forEach(nl::add);
+    return nl;
   }
-
+  
 }

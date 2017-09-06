@@ -22,6 +22,7 @@
 package us.pserver.tools.mapper;
 
 import java.util.function.Function;
+import us.pserver.tools.NotNull;
 
 /**
  *
@@ -34,14 +35,19 @@ public class BooleanMapper extends AbstractMapper<Boolean> {
     super(Boolean.class, boolean.class);
   }
 
-  @Override
-  public Function<Boolean,Object> mapping() {
-    return b->b;
-  }
 
   @Override
-  public Function<Object,Boolean> unmapping() {
-    return o->(Boolean)o;
+  public Object map(Boolean obj) {
+    NotNull.of(obj).failIfNull("Bad null object");
+    return obj;
+  }
+
+
+  @Override
+  public Boolean unmap(Class cls, Object obj) {
+    NotNull.of(cls).failIfNull("Bad null Class");
+    NotNull.of(obj).failIfNull("Bad null object");
+    return (Boolean) obj;
   }
 
 }

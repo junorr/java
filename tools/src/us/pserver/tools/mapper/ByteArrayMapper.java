@@ -24,6 +24,7 @@ package us.pserver.tools.mapper;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.function.Function;
+import us.pserver.tools.NotNull;
 
 /**
  *
@@ -36,14 +37,19 @@ public class ByteArrayMapper extends AbstractMapper<byte[]> {
     super(byte[].class);
   }
 
+
   @Override
-  public Function<byte[],Object> mapping() {
-    return bs->Base64.getEncoder().encodeToString(bs);
+  public Object map(byte[] obj) {
+    NotNull.of(obj).failIfNull("Bad null object");
+    return Base64.getEncoder().encodeToString(obj);
   }
-  
+
+
   @Override
-  public Function<Object,byte[]> unmapping() {
-    return o->Base64.getDecoder().decode(Objects.toString(o));
+  public byte[] unmap(Class cls, Object obj) {
+    NotNull.of(cls).failIfNull("Bad null Class");
+    NotNull.of(obj).failIfNull("Bad null object");
+    return Base64.getDecoder().decode(Objects.toString(obj));
   }
 
 }

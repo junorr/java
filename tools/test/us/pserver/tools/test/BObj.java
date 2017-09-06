@@ -19,44 +19,72 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.mapper;
+package us.pserver.tools.test;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
-import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 06/09/2017
  */
-public class ClassMapper extends AbstractMapper<Class> {
+public class BObj {
   
-  public ClassMapper() {
-    super(Class.class);
+  private final String name;
+  
+  private AObj a;
+  
+  private final LinkedList<Integer> list;
+  
+
+  public BObj() {
+    this(null, null, null);
+  }
+  
+  
+  public BObj(String name, AObj a, LinkedList<Integer> list) {
+    this.name = name;
+    this.a = a;
+    this.list = list;
   }
 
-  private Class obj2class(Object o) {
-    try {
-      return Class.forName(Objects.toString(o));
-    } catch(ClassNotFoundException e) {
-      throw new RuntimeException(e.toString(), e);
+
+  @Override
+  public int hashCode() {
+    int hash = 3;
+    hash = 41 * hash + Objects.hashCode(this.name);
+    hash = 41 * hash + Objects.hashCode(this.a);
+    return hash;
+  }
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final BObj other = (BObj) obj;
+    if (!Objects.equals(this.name, other.name)) {
+      return false;
+    }
+    if (!Objects.equals(this.a, other.a)) {
+      return false;
+    }
+    return true;
   }
 
 
   @Override
-  public Object map(Class obj) {
-    NotNull.of(obj).failIfNull("Bad null object");
-    return obj.getName();
-  }
-
-
-  @Override
-  public Class unmap(Class cls, Object obj) {
-    NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    return obj2class(obj);
+  public String toString() {
+    return "BObj{" + "name=" + name + ", a=" + a + ", list=" + list + '}';
   }
 
 }

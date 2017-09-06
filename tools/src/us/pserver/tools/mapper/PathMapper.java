@@ -24,7 +24,7 @@ package us.pserver.tools.mapper;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.function.Function;
+import us.pserver.tools.NotNull;
 
 /**
  *
@@ -32,15 +32,22 @@ import java.util.function.Function;
  * @version 0.0 - 02/09/2017
  */
 public class PathMapper extends AbstractMapper<Path> {
-
-  @Override
-  public Function<Path,Object> mapping() {
-    return Path::toString;
+  
+  public PathMapper() {
+    super(Path.class);
   }
 
   @Override
-  public Function<Object,Path> unmapping() {
-    return o->Paths.get(Objects.toString(o));
+  public Object map(Path obj) {
+    NotNull.of(obj).failIfNull("Bad null object");
+    return obj.toAbsolutePath().toString();
+  }
+
+  @Override
+  public Path unmap(Class cls, Object obj) {
+    NotNull.of(cls).failIfNull("Bad null Class");
+    NotNull.of(obj).failIfNull("Bad null object");
+    return Paths.get(Objects.toString(obj));
   }
 
 }

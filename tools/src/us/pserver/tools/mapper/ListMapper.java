@@ -21,10 +21,11 @@
 
 package us.pserver.tools.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import us.pserver.tools.NotNull;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
@@ -40,14 +41,35 @@ public class ListMapper extends AbstractMapper<List> {
     this.mapper = NotNull.of(omp).getOrFail("Bad null ObjectMapper");
   }
 
+
   @Override
-  public Function<List, Object> mapping() {
-    return l->l.stream().map(mapper::mapping).collect(Collectors.toList());
+  public Object map(List obj) {
+    NotNull.of(obj).failIfNull("Bad null object");
+    return obj.stream()
+        .map(mapper::map)
+        .collect(Collectors.toList());
   }
   
+  
+  private List newList(Class cls) {
+    try {
+      return (List) Reflector.of(cls).create();
+    } catch(Exception e) {
+      return new ArrayList();
+    }
+  }
+
+
   @Override
-  public Function<Object, List> unmapping() {
-    return o->((List)o).stream().map(mapper::unmapping).collect(Collectors.toList());
+  public List unmap(Class cls, Object obj) {
+    NotNull.of(cls).failIfNull("Bad null Class");
+    NotNull.of(obj).failIfNull("Bad null object");
+    List ls = (List) obj;
+    List nl = newList(cls);
+    ls.stream()
+        .map(o->mapper.unmap(o.getClass(), o))
+        .forEach(nl::add);
+    return nl;
   }
   
 }
