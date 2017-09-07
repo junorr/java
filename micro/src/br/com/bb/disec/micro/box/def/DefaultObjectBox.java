@@ -47,7 +47,7 @@ import us.pserver.tools.rfl.ReflectorException;
  */
 public class DefaultObjectBox implements ObjectBox {
   
-  public static final int DEFATUL_CACHE_SIZE = 64;
+  public static final int DEFATUL_CACHE_SIZE = 128;
   
   private final DirectoryWatcher watcher;
   

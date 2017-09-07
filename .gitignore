@@ -232,3 +232,5 @@
 /morphia-test/build/
 /neo4j-ogm-test/nbproject/private/
 /neo4j-ogm-test/build/
+/test-nitrite/nbproject/private/
+/test-nitrite/build/

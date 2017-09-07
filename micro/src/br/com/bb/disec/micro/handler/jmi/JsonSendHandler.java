@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micro.handler.jmi;
 
+import br.com.bb.disec.micro.box.OpResult;
 import br.com.bb.disec.micro.handler.JsonHandler;
 import br.com.bb.disec.micro.util.JsonClass;
 import com.google.gson.Gson;
@@ -47,11 +48,14 @@ public abstract class JsonSendHandler implements JsonHandler {
     return gson;
   }
   
-  public void send(HttpServerExchange hse, Object obj) throws Exception {
-    if(obj == null) return;
+  public void send(HttpServerExchange hse, OpResult res) throws Exception {
+    if(res == null) {
+      hse.endExchange();
+      return;
+    }
+    hse.setStatusCode(res.isSuccessful() ? 200 : 500);
     this.putJsonHeader(hse);
-    hse.setStatusCode(500);
-    hse.getResponseSender().send(gson.toJson(obj));
+    hse.getResponseSender().send(gson.toJson(res));
     hse.endExchange();
   }
   

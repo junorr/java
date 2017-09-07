@@ -90,6 +90,7 @@ public class MethodOp extends BaseOp {
         : OpResult.of(Reflector.of(obj).selectMethod(name, getTypes(obj)).invoke(args.toArray()));
     }
     catch(Exception e) {
+      e.printStackTrace();
       return OpResult.of(e);
     }
   }
