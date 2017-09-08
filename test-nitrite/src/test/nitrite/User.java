@@ -34,9 +34,9 @@ import us.pserver.tools.NotNull;
  */
 public class User {
   @Id
-  private String name;
+  private final String name;
   
-  private String hash;
+  private final String hash;
   
   private final Set<Access> accesses;
   

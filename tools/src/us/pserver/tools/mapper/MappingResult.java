@@ -21,48 +21,52 @@
 
 package us.pserver.tools.mapper;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/09/2017
+ * @version 0.0 - 08/09/2017
  */
-public class MapMapper extends AbstractMapper<Map> {
+public interface MappingResult {
 
-  private final ObjectMapper mapper;
+  public String getUID();
   
-  public MapMapper(ObjectMapper omp) {
-    super(Map.class);
-    this.mapper = NotNull.of(omp).getOrFail("Bad null ObjectMapper");
+  public ObjectStore getMapper();
+  
+  
+  public static MappingResult of(String uid, ObjectStore dmp) {
+    return new MappingResultImpl(uid, dmp);
   }
-
-
-  @Override
-  public Object map(Map obj) {
-    NotNull.of(obj).failIfNull("Bad null object");
-    Map<String,Object> nmp = new HashMap();
-    obj.keySet().forEach(o->nmp.put(
-        Objects.toString(o), 
-        mapper.map(obj.get(o)))
-    );
-    return nmp;
-  }
-
-
-  @Override
-  public Map unmap(Class cls, Object obj) {
-    NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    Map map = (Map) obj;
-    Map nmp = new HashMap();
-    map.keySet().forEach(k->nmp.put(k, 
-        mapper.unmap(map.get(k).getClass(), map.get(k)))
-    );
-    return nmp;
+  
+  
+  
+  
+  
+  public static class MappingResultImpl implements MappingResult {
+    
+    private final String uid;
+    
+    private final ObjectStore mapper;
+    
+    
+    public MappingResultImpl(String uid, ObjectStore dmp) {
+      this.uid = NotNull.of(uid).getOrFail("Bad null string uid");
+      this.mapper = NotNull.of(dmp).getOrFail("Bad null DistributedMapper");
+    }
+    
+    
+    @Override
+    public String getUID() {
+      return this.uid;
+    }
+    
+    
+    @Override
+    public ObjectStore getMapper() {
+      return mapper;
+    }
+    
   }
   
 }

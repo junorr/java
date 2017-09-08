@@ -22,9 +22,7 @@
 package us.pserver.tools.mapper;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.rfl.Reflector;
@@ -34,59 +32,41 @@ import us.pserver.tools.rfl.Reflector;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/09/2017
  */
-public class ObjectMapper extends AbstractMapper {
+public class ObjectStore {
   
-  protected final List<Mapper> maps;
+  private final MapProvider mprov;
   
-  public ObjectMapper() {
-    super(Object.class);
-    this.maps = new ArrayList<>();
-    maps.add(new StringMapper());
-    maps.add(new NumberMapper());
-    maps.add(new BooleanMapper());
-    maps.add(new DateMapper());
-    maps.add(new InstantMapper());
-    maps.add(new LocalDateTimeMapper());
-    maps.add(new ZonedDateTimeMapper());
-    maps.add(new PathMapper());
-    maps.add(new ClassMapper());
-    maps.add(new ByteArrayMapper());
-    maps.add(new ByteBufferMapper());
-    maps.add(new ArrayMapper(this));
-    maps.add(new ListMapper(this));
-    maps.add(new SetMapper(this));
+  private final ObjectMapper mapper;
+  
+  
+  public ObjectStore(MapProvider mpv) {
+    this.mprov = NotNull.of(mpv).getOrFail("Bad null MapProvider");
+    this.mapper = new ObjectMapper();
   }
   
-  public List<Mapper> mappers() {
-    return maps;
+  
+  public MapProvider getMapProvider() {
+    return mprov;
   }
   
-  @Override
-  public boolean canMap(Class cls) {
-    return true;
-  }
   
-  public Map<String,Object> toMap(Object o) {
-    return (Map) map(o);
-  }
-
-  @Override
-  public Object map(Object obj) {
+  public ObjectUID store(Object obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    if(MappingUtils.isNativeSupported(obj.getClass())) {
-      //System.out.println(" - "+ o +" - mapper: "+ maps.stream().filter(m->m.canMap(o.getClass())).findFirst());
-      return maps.stream().filter(m->m.canMap(obj.getClass())).findFirst().get().map(obj);
+    Class cls = obj.getClass();
+    if(MappingUtils.isNativeSupported(cls)) {
+      throw new IllegalArgumentException("Object must be a POJO");
     }
     else {
-      Map<String,Object> map = new HashMap<>();
+      ObjectUID uid = ObjectUID.of(obj);
+      mprov.apply("uid-class").put(uid.getUID(), cls.getName());
       Field[] fs = Reflector.of(obj).fields();
       for(Field f : fs) {
         Object of = Reflector.of(obj).selectField(f.getName()).get();
         if(of != null) {
-          map.put(f.getName(), map(of));
+          mprov.get(f).put(mapper.map(of), uid);
         }
       }
-      return map;
+      return uid;
     }
   }
   

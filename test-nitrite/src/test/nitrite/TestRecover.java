@@ -24,6 +24,7 @@ package test.nitrite;
 import org.dizitart.no2.Nitrite;
 import org.dizitart.no2.objects.ObjectRepository;
 import org.dizitart.no2.objects.filters.ObjectFilters;
+import us.pserver.tools.timer.Timer;
 
 /**
  *
@@ -34,14 +35,20 @@ public class TestRecover {
 
   
   public static void main(String[] args) {
+    Timer tm = new Timer.Nanos().start();
     Nitrite db = Nitrite.builder()
         .filePath("/storage/java/nitrite.db")
         .openOrCreate("hello", "world");
+    System.out.println("* Open db time: "+ tm.lapAndStop());
+    tm = new Timer.Nanos().start();
     ObjectRepository<User> repo = db.getRepository(User.class);
+    System.out.println("* Open repo time: "+ tm.lapAndStop());
+    tm = new Timer.Nanos().start();
     User user = repo.find(ObjectFilters.eq("name", "juno")).firstOrDefault();
+    System.out.println("* find id time: "+ tm.lapAndStop());
     System.out.println(user);
-    repo.close();
     db.commit();
+    repo.close();
     db.compact();
     db.close();
   }

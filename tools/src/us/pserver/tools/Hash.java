@@ -84,6 +84,32 @@ public class Hash {
   }
   
   
+  public Hash put(String str) {
+    if(str != null && !str.isEmpty()) {
+      digest.update(UTF8String.from(str).getBytes());
+    }
+    return this;
+  }
+  
+  
+  public Hash put(byte[] bs) {
+    if(bs != null && bs.length > 0) {
+      digest.update(bs);
+    }
+    return this;
+  }
+  
+  
+  public String get() {
+    return bytesToHex(digest.digest());
+  }
+  
+  
+  public byte[] getBytes() {
+    return digest.digest();
+  }
+  
+  
   private static MessageDigest getMessageDigest(String algorithm) {
     try {
       return MessageDigest.getInstance(algorithm);

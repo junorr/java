@@ -35,8 +35,8 @@ public class TestNitrite {
     System.out.println(repo.insert(user));
     user = repo.find(ObjectFilters.eq("name", "juno")).firstOrDefault();
     System.out.println(user);
-    repo.close();
     db.commit();
+    repo.close();
     db.compact();
     db.close();
   }

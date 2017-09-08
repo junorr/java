@@ -21,48 +21,61 @@
 
 package us.pserver.tools.mapper;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import java.util.function.Function;
 import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/09/2017
+ * @version 0.0 - 08/09/2017
  */
-public class MapMapper extends AbstractMapper<Map> {
-
-  private final ObjectMapper mapper;
+public interface MapProvider extends Function<String,Map> {
   
-  public MapMapper(ObjectMapper omp) {
-    super(Map.class);
-    this.mapper = NotNull.of(omp).getOrFail("Bad null ObjectMapper");
-  }
-
-
-  @Override
-  public Object map(Map obj) {
-    NotNull.of(obj).failIfNull("Bad null object");
-    Map<String,Object> nmp = new HashMap();
-    obj.keySet().forEach(o->nmp.put(
-        Objects.toString(o), 
-        mapper.map(obj.get(o)))
+  public default Map get(Class cls) {
+    return this.apply(NotNull.of(cls)
+        .getOrFail("Bad null Class")
+        .getName()
     );
-    return nmp;
   }
+  
+  public default Map get(Field fld) {
+    NotNull.of(fld).failIfNull("Bad null Field");
+    return this.apply(fld.getDeclaringClass().getName() + "|" + fld.getName());
+  }
+  
+  
+  public static MapProvider defaultMapProvider() {
+    return new Default();
+  }
+  
+  
+  
 
-
-  @Override
-  public Map unmap(Class cls, Object obj) {
-    NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    Map map = (Map) obj;
-    Map nmp = new HashMap();
-    map.keySet().forEach(k->nmp.put(k, 
-        mapper.unmap(map.get(k).getClass(), map.get(k)))
-    );
-    return nmp;
+  
+  public static class Default implements MapProvider {
+    
+    private final Map<String,Map> root;
+    
+    public Default() {
+      root = new HashMap<>();
+    }
+    
+    @Override
+    public Map apply(String name) {
+      String key = NotNull.of(name).getOrFail("Bad null map name");
+      if(!root.containsKey(key)) {
+        Map map = new HashMap();
+        root.put(key, map);
+        return map;
+      }
+      else {
+        return root.get(key);
+      }
+    }
+    
   }
   
 }

@@ -21,6 +21,8 @@
 
 package us.pserver.tools.mapper;
 
+import java.util.List;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -29,6 +31,8 @@ package us.pserver.tools.mapper;
 public interface Mapper<T> {
 
   public boolean canMap(Class cls);
+  
+  public List<Class> getSupportedClasses();
   
   public Object map(T obj);
   

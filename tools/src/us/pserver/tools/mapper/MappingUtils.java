@@ -21,8 +21,17 @@
 
 package us.pserver.tools.mapper;
 
+import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  *
@@ -35,18 +44,56 @@ public abstract class MappingUtils {
   
   public static final String KEY_VALUE = "@value";
   
+  public static final List<Predicate<Class>> NATIVE_SUPPORT = createNatives();
   
-  public static <T> Map<String,Object> newMap(Class cls, Object val) {
+  
+  private static List<Predicate<Class>> createNatives() {
+    ObjectMapper root = new ObjectMapper();
+    List<Predicate<Class>> maps = new ArrayList<>();
+    maps.add(c->CharSequence.class.isAssignableFrom(c) 
+        || Character.class.isAssignableFrom(c) 
+        || char.class == c || char[].class == c
+    );
+    maps.add(c->Number.class.isAssignableFrom(c) 
+        || byte.class == c
+        || short.class == c
+        || int.class == c
+        || long.class == c
+        || float.class == c
+        || double.class == c
+    );
+    maps.add(c->Boolean.class.isAssignableFrom(c) || boolean.class == c);
+    maps.add(Date.class::isAssignableFrom);
+    maps.add(Instant.class::isAssignableFrom);
+    maps.add(LocalDateTime.class::isAssignableFrom);
+    maps.add(ZonedDateTime.class::isAssignableFrom);
+    maps.add(byte[].class::isAssignableFrom);
+    maps.add(Class.class::isAssignableFrom);
+    maps.add(ByteBuffer.class::isAssignableFrom);
+    maps.add(List.class::isAssignableFrom);
+    maps.add(Set.class::isAssignableFrom);
+    maps.add(Map.class::isAssignableFrom);
+    maps.add(Class::isArray);
+    return maps;
+  }
+  
+  
+  public static Map<String,Object> newMap(Class cls, Object val) {
     Map<String,Object> map = new HashMap<>();
     map.put(KEY_TYPE, cls.getName());
     map.put(KEY_VALUE, val);
     return map;
   }
   
-  public static <T> Map<String,Object> newMapType(Class cls) {
+  public static Map<String,Object> newMapType(Class cls) {
     Map<String,Object> map = new HashMap<>();
     map.put(KEY_TYPE, cls.getName());
     return map;
+  }
+  
+  public static boolean isNativeSupported(Class cls) {
+    return cls != null && NATIVE_SUPPORT.stream()
+        .anyMatch(p->p.test(cls));
   }
   
 }
