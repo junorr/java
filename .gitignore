@@ -234,3 +234,5 @@
 /neo4j-ogm-test/build/
 /test-nitrite/nbproject/private/
 /test-nitrite/build/
+/dbone/nbproject/private/
+/dbone/build/

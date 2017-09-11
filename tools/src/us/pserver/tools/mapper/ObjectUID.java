@@ -66,6 +66,7 @@ public class ObjectUID {
       hash.put(Objects.toString(obj));
     }
     else {
+      hash.put(obj.getClass().getName());
       Field[] fs = Reflector.of(obj).fields();
       for(Field f : fs) {
         Object of = Reflector.of(obj).selectField(f.getName()).get();

@@ -78,7 +78,7 @@ public class ObjectMapper extends AbstractMapper {
       return maps.stream().filter(m->m.canMap(obj.getClass())).findFirst().get().map(obj);
     }
     else {
-      Map<String,Object> map = new HashMap<>();
+      Map<String,Object> map = new SerializableMap<>();
       Field[] fs = Reflector.of(obj).fields();
       for(Field f : fs) {
         Object of = Reflector.of(obj).selectField(f.getName()).get();
