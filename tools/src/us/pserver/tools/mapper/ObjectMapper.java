@@ -23,9 +23,9 @@ package us.pserver.tools.mapper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.rfl.Reflector;
 
@@ -63,22 +63,23 @@ public class ObjectMapper extends AbstractMapper {
   
   @Override
   public boolean canMap(Class cls) {
-    return true;
+    return maps.stream().anyMatch(m->m.canMap(cls));
   }
   
-  public Map<String,Object> toMap(Object o) {
-    return (Map) map(o);
+  private Optional<Mapper> getMapper(Class cls) {
+    return maps.stream().filter(m->m.canMap(cls)).findFirst();
   }
-
+  
   @Override
-  public Object map(Object obj) {
+  public MappedValue map(Object obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    if(MappingUtils.isNativeSupported(obj.getClass())) {
+    Optional<Mapper> mapper = getMapper(obj.getClass());
+    if(mapper.isPresent()) {
       //System.out.println(" - "+ o +" - mapper: "+ maps.stream().filter(m->m.canMap(o.getClass())).findFirst());
-      return maps.stream().filter(m->m.canMap(obj.getClass())).findFirst().get().map(obj);
+      return mapper.get().map(obj);
     }
     else {
-      Map<String,Object> map = new SerializableMap<>();
+      Map<String,MappedValue> map = new SerializableHashMap<>();
       Field[] fs = Reflector.of(obj).fields();
       for(Field f : fs) {
         Object of = Reflector.of(obj).selectField(f.getName()).get();
@@ -86,20 +87,21 @@ public class ObjectMapper extends AbstractMapper {
           map.put(f.getName(), map(of));
         }
       }
-      return map;
+      return MappedValue.of(map);
     }
   }
   
   @Override
-  public Object unmap(Class cls, Object obj) {
+  public Object unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    if(MappingUtils.isNativeSupported(cls)) {
+    NotNull.of(value).failIfNull("Bad null value");
+    Optional<Mapper> mapper = this.getMapper(cls);
+    if(mapper.isPresent()) {
       //System.out.println(" - "+ o +" - unmapper: "+ maps.stream().filter(m->m.canMap(cls)).findFirst());
-      return maps.stream().filter(m->m.canMap(cls)).findFirst().get().unmap(cls, obj);
+      return mapper.get().unmap(cls, value);
     }
     else {
-      Map map = (Map) obj;
+      Map<String,MappedValue> map = value.asMap();
       Object cob = Reflector.of(cls).create();
       Field[] fs = Reflector.of(cls).fields();
       for(Field f : fs) {
@@ -107,7 +109,7 @@ public class ObjectMapper extends AbstractMapper {
           Object of = map.get(f.getName());
           //System.out.println(" - set: "+ f.getName()+ " = "+ of.getClass());
           //System.out.println(" - field.unmapped: "+ unmap(f.getType(), of));
-          Reflector.of(cob).selectField(f.getName()).set(unmap(f.getType(), of));
+          Reflector.of(cob).selectField(f.getName()).set(unmap(f.getType(), MappedValue.of(of)));
         }
       }
       return cob;

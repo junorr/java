@@ -41,17 +41,19 @@ public class InstantMapper extends AbstractMapper<Instant> {
 
 
   @Override
-  public Object map(Instant obj) {
+  public MappedString map(Instant obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return DateTime.of(obj).toZonedDT().format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
+    return new MappedString(DateTime.of(obj).toZonedDT()
+        .format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+    );
   }
 
 
   @Override
-  public Instant unmap(Class cls, Object obj) {
+  public Instant unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    return DateTime.of(ZonedDateTime.parse(Objects.toString(obj))).toInstant();
+    NotNull.of(value).failIfNull("Bad null value");
+    return DateTime.of(ZonedDateTime.parse(Objects.toString(value))).toInstant();
   }
 
 }

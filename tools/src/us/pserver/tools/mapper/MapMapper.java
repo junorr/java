@@ -42,22 +42,22 @@ public class MapMapper extends AbstractMapper<Map> {
 
 
   @Override
-  public Object map(Map obj) {
+  public MappedValue map(Map obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    Map<String,Object> nmp = new HashMap();
+    Map<String,MappedValue> nmp = new HashMap();
     obj.keySet().forEach(o->nmp.put(
         Objects.toString(o), 
         mapper.map(obj.get(o)))
     );
-    return nmp;
+    return new MappedMap(nmp);
   }
 
 
   @Override
-  public Map unmap(Class cls, Object obj) {
+  public Map unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    Map map = (Map) obj;
+    NotNull.of(value).failIfNull("Bad null value");
+    Map<String,MappedValue> map = value.asMap();
     Map nmp = new HashMap();
     map.keySet().forEach(k->nmp.put(k, 
         mapper.unmap(map.get(k).getClass(), map.get(k)))

@@ -23,7 +23,6 @@ package us.pserver.tools.mapper;
 
 import java.nio.ByteBuffer;
 import java.util.Base64;
-import java.util.Objects;
 import us.pserver.tools.NotNull;
 
 /**
@@ -39,22 +38,19 @@ public class ByteBufferMapper extends AbstractMapper<ByteBuffer> {
 
 
   @Override
-  public Object map(ByteBuffer obj) {
+  public MappedString map(ByteBuffer obj) {
     NotNull.of(obj).failIfNull("Bad null object");
     byte[] bs = new byte[obj.remaining()];
     obj.get(bs);
-    return Base64.getEncoder().encodeToString(bs);
+    return new MappedString(Base64.getEncoder().encodeToString(bs));
   }
 
 
   @Override
-  public ByteBuffer unmap(Class cls, Object obj) {
+  public ByteBuffer unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    return ByteBuffer.wrap(
-        Base64.getDecoder().decode(
-            Objects.toString(obj))
-    );
+    NotNull.of(value).failIfNull("Bad null object");
+    return ByteBuffer.wrap(Base64.getDecoder().decode(value.asString()));
   }
 
 }

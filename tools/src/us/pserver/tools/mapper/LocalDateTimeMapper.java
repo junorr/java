@@ -41,17 +41,17 @@ public class LocalDateTimeMapper extends AbstractMapper<LocalDateTime> {
 
 
   @Override
-  public Object map(LocalDateTime obj) {
+  public MappedString map(LocalDateTime obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return DateTime.of(obj).toZonedDT().format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
+    return new MappedString(DateTime.of(obj).toZonedDT().format(DateTimeFormatter.ISO_ZONED_DATE_TIME));
   }
 
 
   @Override
-  public LocalDateTime unmap(Class cls, Object obj) {
+  public LocalDateTime unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    return DateTime.of(ZonedDateTime.parse(Objects.toString(obj))).toLocalDT();
+    NotNull.of(value).failIfNull("Bad null value");
+    return DateTime.of(ZonedDateTime.parse(Objects.toString(value))).toLocalDT();
   }
 
 }

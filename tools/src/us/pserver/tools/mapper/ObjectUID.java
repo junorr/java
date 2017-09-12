@@ -21,6 +21,7 @@
 
 package us.pserver.tools.mapper;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Objects;
 import us.pserver.tools.Hash;
@@ -32,18 +33,21 @@ import us.pserver.tools.rfl.Reflector;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 08/09/2017
  */
-public class ObjectUID {
+public class ObjectUID implements Serializable {
 
   private final String uid;
   
   private final Object obj;
   
-  private final Hash hash;
+  private String className;
+  
+  private final transient Hash hash;
   
   
   public ObjectUID(Hash hash, Object obj) {
     this.hash = NotNull.of(hash).getOrFail("Bad null Hash");
     this.obj = NotNull.of(obj).getOrFail("Bad null object");
+    this.className = obj.getClass().getName();
     this.calcUID(obj);
     this.uid = hash.get();
   }
@@ -53,11 +57,15 @@ public class ObjectUID {
   }
   
   public String getUID() {
-    return uid;
+    return this.uid;
   }
   
   public Object getObject() {
-    return obj;
+    return this.obj;
+  }
+  
+  public String getClassName() {
+    return this.className;
   }
   
   private void calcUID(Object obj) {

@@ -25,7 +25,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Objects;
 import us.pserver.date.DateTime;
@@ -48,18 +47,18 @@ public class DateMapper extends AbstractMapper<Date> {
   }
 
   @Override
-  public Object map(Date obj) {
+  public MappedString map(Date obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return DateTime.of(obj).toZonedDT()
-        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    return new MappedString(DateTime.of(obj).toZonedDT()
+        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
   }
 
 
   @Override
-  public Date unmap(Class cls, Object obj) {
+  public Date unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    return DateTime.of(ZonedDateTime.parse(Objects.toString(obj))).toDate();
+    NotNull.of(value).failIfNull("Bad null value");
+    return DateTime.of(ZonedDateTime.parse(Objects.toString(value))).toDate();
   }
 
 }

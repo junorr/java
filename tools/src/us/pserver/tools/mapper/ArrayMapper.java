@@ -22,8 +22,6 @@
 package us.pserver.tools.mapper;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
 import us.pserver.tools.NotNull;
 
 /**
@@ -47,28 +45,28 @@ public class ArrayMapper extends AbstractMapper {
 
 
   @Override
-  public Object map(Object obj) {
+  public MappedArray map(Object obj) {
     NotNull.of(obj).failIfNull("Bad null object");
     int len = Array.getLength(obj);
-    List ls = new ArrayList();
+    MappedValue[] vals = new MappedValue[len];
     for(int i = 0; i < len; i++) {
-      ls.add(mapper.map(Array.get(obj, i)));
+      vals[i] = MappedValue.of(Array.get(obj, i));
     }
-    return ls;
+    return new MappedArray(vals);
   }
 
 
   @Override
-  public Object unmap(Class cls, Object obj) {
+  public Object unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
+    NotNull.of(value).failIfNull("Bad null value");
     Class elt = cls.getComponentType();
-    List ls = (List) obj;
-    Object array = Array.newInstance(elt, ls.size());
-    for(int i = 0; i < ls.size(); i++) {
-      Array.set(array, i, mapper.unmap(elt, ls.get(i)));
+    int len = value.asArray().length;
+    Object[] objs = new Object[len];
+    for(int i = 0; i < len; i++) {
+      objs[i] = value.asArray()[i].get();
     }
-    return array;
+    return objs;
   }
 
 }

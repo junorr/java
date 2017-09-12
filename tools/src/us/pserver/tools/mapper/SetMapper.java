@@ -21,6 +21,7 @@
 
 package us.pserver.tools.mapper;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,11 +45,14 @@ public class SetMapper extends AbstractMapper<Set> {
 
 
   @Override
-  public Object map(Set obj) {
+  public MappedArray map(Set obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return obj.stream()
-        .map(mapper::map)
-        .collect(Collectors.toList());
+    MappedValue[] vals = new MappedValue[obj.size()];
+    Object[] objs = obj.toArray();
+    for(int i = 0; i < objs.length; i++) {
+      vals[i] = mapper.map(objs[i]);
+    }
+    return new MappedArray(vals);
   }
 
 
@@ -62,15 +66,13 @@ public class SetMapper extends AbstractMapper<Set> {
 
 
   @Override
-  public Set unmap(Class cls, Object obj) {
+  public Set unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    List ls = (List) obj;
-    Set nl = newSet(cls);
-    ls.stream()
-        .map(o->mapper.unmap(o.getClass(), o))
-        .forEach(nl::add);
-    return nl;
+    NotNull.of(value).failIfNull("Bad null value");
+    return Arrays.asList(value.asArray())
+        .stream()
+        .map(m->mapper.unmap(m.get().getClass(), m))
+        .collect(Collectors.toSet());
   }
   
 }

@@ -40,17 +40,18 @@ public class ZonedDateTimeMapper extends AbstractMapper<ZonedDateTime> {
 
 
   @Override
-  public Object map(ZonedDateTime obj) {
+  public MappedString map(ZonedDateTime obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return DateTime.of(obj).toZonedDT().format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
+    return new MappedString(DateTime.of(obj).toZonedDT()
+        .format(DateTimeFormatter.ISO_ZONED_DATE_TIME));
   }
 
 
   @Override
-  public ZonedDateTime unmap(Class cls, Object obj) {
+  public ZonedDateTime unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    return DateTime.of(ZonedDateTime.parse(Objects.toString(obj))).toZonedDT();
+    NotNull.of(value).failIfNull("Bad null value");
+    return DateTime.of(ZonedDateTime.parse(Objects.toString(value))).toZonedDT();
   }
 
 }

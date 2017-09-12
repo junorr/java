@@ -37,19 +37,20 @@ public class StringMapper extends AbstractMapper {
 
 
   @Override
-  public Object map(Object t) {
+  public MappedString map(Object t) {
     NotNull.of(t).failIfNull("Bad null object");
-    return t.getClass().isArray() 
+    return new MappedString(t.getClass().isArray() 
         ? String.copyValueOf((char[])t) 
-        : Objects.toString(t);
+        : Objects.toString(t)
+    );
   }
 
 
   @Override
-  public Object unmap(Class cls, Object obj) {
+  public Object unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    String s = Objects.toString(obj);
+    NotNull.of(value).failIfNull("Bad null value");
+    String s = Objects.toString(value);
     if(CharSequence.class.isAssignableFrom(cls)) {
       return s;
     }

@@ -21,9 +21,11 @@
 
 package us.pserver.dbone.test;
 
+import java.util.Arrays;
 import java.util.Date;
 import org.h2.mvstore.MVMap;
 import org.h2.mvstore.MVStore;
+import us.pserver.tools.mapper.ObjectMapper;
 import us.pserver.tools.mapper.ObjectUID;
 
 /**
@@ -38,12 +40,13 @@ public class TestMVStore {
     MVStore store = new MVStore.Builder().fileName("/storage/java/store.mvs").open();
     MVMap map = store.openMap("aobj");
     AObj a = new AObj("hello", new Date());
-    AObj b = new AObj("hello", 5, null, null, new Date());
+    AObj aa = new AObj("hello", 5, null, null, new Date());
+    BObj b = new BObj("world", aa, Arrays.asList(1, 2, 3, 4, 5));
     System.out.println("* a: "+ a);
     System.out.println("* b: "+ b);
     System.out.println("* ObjectUID.of(a): "+ ObjectUID.of(a).getUID());
-    System.out.println("* ObjectUID.of(a): "+ ObjectUID.of(a).getUID());
     System.out.println("* ObjectUID.of(b): "+ ObjectUID.of(b).getUID());
+    map.put(ObjectUID.of(b), new ObjectMapper().map(b));
   }
   
 }

@@ -38,16 +38,16 @@ public class PathMapper extends AbstractMapper<Path> {
   }
 
   @Override
-  public Object map(Path obj) {
+  public MappedString map(Path obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return obj.toAbsolutePath().toString();
+    return new MappedString(obj.toAbsolutePath().toString());
   }
 
   @Override
-  public Path unmap(Class cls, Object obj) {
+  public Path unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    return Paths.get(Objects.toString(obj));
+    NotNull.of(value).failIfNull("Bad null value");
+    return Paths.get(Objects.toString(value));
   }
 
 }

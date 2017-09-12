@@ -22,7 +22,6 @@
 package us.pserver.tools.mapper;
 
 import java.util.Objects;
-import java.util.function.Function;
 import us.pserver.tools.NotNull;
 
 /**
@@ -36,9 +35,9 @@ public class ClassMapper extends AbstractMapper<Class> {
     super(Class.class);
   }
 
-  private Class obj2class(Object o) {
+  private Class obj2class(String str) {
     try {
-      return Class.forName(Objects.toString(o));
+      return Class.forName(str);
     } catch(ClassNotFoundException e) {
       throw new RuntimeException(e.toString(), e);
     }
@@ -46,17 +45,17 @@ public class ClassMapper extends AbstractMapper<Class> {
 
 
   @Override
-  public Object map(Class obj) {
+  public MappedString map(Class obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return obj.getName();
+    return new MappedString(obj.getName());
   }
 
 
   @Override
-  public Class unmap(Class cls, Object obj) {
+  public Class unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    return obj2class(obj);
+    NotNull.of(value).failIfNull("Bad null value");
+    return obj2class(value.asString());
   }
 
 }

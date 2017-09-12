@@ -34,8 +34,8 @@ public interface Mapper<T> {
   
   public List<Class> getSupportedClasses();
   
-  public Object map(T obj);
+  public MappedValue map(T obj);
   
-  public T unmap(Class cls, Object obj);
+  public T unmap(Class cls, MappedValue obj);
   
 }

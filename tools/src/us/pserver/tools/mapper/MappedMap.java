@@ -21,33 +21,28 @@
 
 package us.pserver.tools.mapper;
 
-import us.pserver.tools.NotNull;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/09/2017
+ * @version 0.0 - 11/09/2017
  */
-public class BooleanMapper extends AbstractMapper<Boolean> {
-  
-  public BooleanMapper() {
-    super(Boolean.class, boolean.class);
+public class MappedMap extends AbstractMappedValue<Map<String,MappedValue>> {
+
+  public MappedMap(Map<String,MappedValue> value) {
+    super(value, Type.MAP);
   }
 
-
   @Override
-  public MappedBoolean map(Boolean obj) {
-    return new MappedBoolean(
-        NotNull.of(obj).getOrFail("Bad null Boolean")
-    );
+  public Map<String,MappedValue> asMap() {
+    return this.get();
   }
 
-
   @Override
-  public Boolean unmap(Class cls, MappedValue obj) {
-    NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(obj).failIfNull("Bad null object");
-    return obj.asBoolean();
+  public void ifMap(Consumer<Map<String,MappedValue>> exec) {
+    exec.accept(this.get());
   }
 
 }

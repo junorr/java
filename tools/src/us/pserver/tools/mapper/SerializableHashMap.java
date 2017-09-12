@@ -22,53 +22,18 @@
 package us.pserver.tools.mapper;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/09/2017
  */
-public class SerializableMap<K,V> implements Map<K,V>, Serializable {
+public class SerializableHashMap<K,V> extends HashMap<K,V> implements Serializable {
   
-  private final HashMap<K,V> map;
-  
-  public SerializableMap() {
-    this.map = new HashMap<>();
+  public SerializableHashMap() {
+    super();
   }
-
-  @Override
-  public int size() {
-    return map.size();
-  }
-
-
-  @Override
-  public boolean isEmpty() {
-    return map.isEmpty();
-  }
-
-
-  @Override
-  public boolean containsKey(Object key) {
-    return map.containsKey(key);
-  }
-
-
-  @Override
-  public boolean containsValue(Object value) {
-    return map.containsValue(value);
-  }
-
-
-  @Override
-  public V get(Object key) {
-    return map.get(key);
-  }
-
 
   @Override
   public V put(K key, V value) {
@@ -78,43 +43,7 @@ public class SerializableMap<K,V> implements Map<K,V>, Serializable {
     if(key != null && !Serializable.class.isAssignableFrom(key.getClass())) {
       throw new IllegalArgumentException("Key object should implement Serializable");
     }
-    return map.put(key, value);
-  }
-
-
-  @Override
-  public V remove(Object key) {
-    return map.remove(key);
-  }
-
-
-  @Override
-  public void putAll(Map<? extends K, ? extends V> m) {
-    map.putAll(m);
-  }
-
-
-  @Override
-  public void clear() {
-    map.clear();
-  }
-
-
-  @Override
-  public Set<K> keySet() {
-    return map.keySet();
-  }
-
-
-  @Override
-  public Collection<V> values() {
-    return map.values();
-  }
-
-
-  @Override
-  public Set<Entry<K, V>> entrySet() {
-    return map.entrySet();
+    return super.put(key, value);
   }
 
 }
