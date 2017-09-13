@@ -45,14 +45,14 @@ public class SetMapper extends AbstractMapper<Set> {
 
 
   @Override
-  public MappedArray map(Set obj) {
-    NotNull.of(obj).failIfNull("Bad null object");
-    MappedValue[] vals = new MappedValue[obj.size()];
-    Object[] objs = obj.toArray();
+  public ArrayValue map(Set set) {
+    NotNull.of(set).failIfNull("Bad null object");
+    MappedValue[] vals = new MappedValue[set.size()];
+    Object[] objs = set.toArray();
     for(int i = 0; i < objs.length; i++) {
       vals[i] = mapper.map(objs[i]);
     }
-    return new MappedArray(vals);
+    return new ArrayValue(vals);
   }
 
 
@@ -71,7 +71,7 @@ public class SetMapper extends AbstractMapper<Set> {
     NotNull.of(value).failIfNull("Bad null value");
     return Arrays.asList(value.asArray())
         .stream()
-        .map(m->mapper.unmap(m.get().getClass(), m))
+        .map(v->mapper.unmap(MappingUtils.getMapperType(v.getType()), v))
         .collect(Collectors.toSet());
   }
   

@@ -38,11 +38,11 @@ public class ByteBufferMapper extends AbstractMapper<ByteBuffer> {
 
 
   @Override
-  public MappedString map(ByteBuffer obj) {
+  public StringValue map(ByteBuffer obj) {
     NotNull.of(obj).failIfNull("Bad null object");
     byte[] bs = new byte[obj.remaining()];
     obj.get(bs);
-    return new MappedString(Base64.getEncoder().encodeToString(bs));
+    return new StringValue(Base64.getEncoder().encodeToString(bs));
   }
 
 

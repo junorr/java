@@ -37,9 +37,9 @@ public class StringMapper extends AbstractMapper {
 
 
   @Override
-  public MappedString map(Object t) {
+  public StringValue map(Object t) {
     NotNull.of(t).failIfNull("Bad null object");
-    return new MappedString(t.getClass().isArray() 
+    return new StringValue(t.getClass().isArray() 
         ? String.copyValueOf((char[])t) 
         : Objects.toString(t)
     );

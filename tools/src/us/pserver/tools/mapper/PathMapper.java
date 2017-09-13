@@ -38,9 +38,9 @@ public class PathMapper extends AbstractMapper<Path> {
   }
 
   @Override
-  public MappedString map(Path obj) {
+  public StringValue map(Path obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return new MappedString(obj.toAbsolutePath().toString());
+    return new StringValue(obj.toAbsolutePath().toString());
   }
 
   @Override

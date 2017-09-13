@@ -45,9 +45,9 @@ public class ClassMapper extends AbstractMapper<Class> {
 
 
   @Override
-  public MappedString map(Class obj) {
+  public StringValue map(Class obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return new MappedString(obj.getName());
+    return new StringValue(obj.getName());
   }
 
 

@@ -40,9 +40,9 @@ public class ZonedDateTimeMapper extends AbstractMapper<ZonedDateTime> {
 
 
   @Override
-  public MappedString map(ZonedDateTime obj) {
+  public StringValue map(ZonedDateTime obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return new MappedString(DateTime.of(obj).toZonedDT()
+    return new StringValue(DateTime.of(obj).toZonedDT()
         .format(DateTimeFormatter.ISO_ZONED_DATE_TIME));
   }
 

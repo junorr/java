@@ -28,20 +28,21 @@ import java.util.function.Consumer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/09/2017
  */
-public class MappedBoolean extends AbstractMappedValue<Boolean> {
+public class StringValue extends AbstractMappedValue<String> {
 
-  public MappedBoolean(Boolean value) {
-    super(value, Type.BOOLEAN);
+  
+  public StringValue(String value) {
+    super(value, Type.STRING);
   }
 
   @Override
-  public Boolean asBoolean() {
+  public String asString() {
     return this.get();
   }
 
   @Override
-  public void ifBoolean(Consumer<Boolean> exec) {
-    exec.accept(this.get());
+  public void ifString(Consumer<String> exec) {
+    exec.accept(asString());
   }
 
 }

@@ -40,8 +40,8 @@ public class NumberMapper extends AbstractMapper<Number> {
 
 
   @Override
-  public MappedNumber map(Number t) {
-    return new MappedNumber(t);
+  public NumberValue map(Number t) {
+    return new NumberValue(t);
   }
 
 

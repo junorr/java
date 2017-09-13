@@ -96,4 +96,21 @@ public abstract class MappingUtils {
         .anyMatch(p->p.test(cls));
   }
   
+  public static Class getMapperType(MappedValue.Type type) {
+    switch(type) {
+      case ARRAY:
+        return Object[].class;
+      case BOOLEAN:
+        return Boolean.class;
+      case MAP:
+        return SerializableHashMap.class;
+      case NUMBER:
+        return Number.class;
+      case STRING:
+        return String.class;
+      default:
+        throw new UnsupportedOperationException("Unknown Type: "+ type);
+    }
+  }
+  
 }

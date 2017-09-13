@@ -51,7 +51,7 @@ public abstract class AbstractMappedValue<T> implements MappedValue<T> {
   public Type getType() {
     return this.type;
   }
-
+  
   @Override
   public String asString() {
     throw new UnsupportedOperationException("Not a String");

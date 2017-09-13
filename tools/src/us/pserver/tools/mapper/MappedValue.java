@@ -40,7 +40,7 @@ public interface MappedValue<T> extends Serializable {
   public T get();
   
   public Type getType();
-
+  
   public String asString();
   
   public MappedValue[] asArray();
@@ -65,19 +65,19 @@ public interface MappedValue<T> extends Serializable {
   public static MappedValue of(Object obj) {
     NotNull.of(obj).failIfNull();
     if(obj.getClass().isArray()) {
-      return new MappedArray((MappedValue[]) obj);
+      return new ArrayValue((MappedValue[]) obj);
     }
     else if(Boolean.class.isAssignableFrom(obj.getClass())) {
-      return new MappedBoolean((Boolean) obj);
+      return new BooleanValue((Boolean) obj);
     }
     else if(SerializableHashMap.class.isAssignableFrom(obj.getClass())) {
-      return new MappedMap((Map<String,MappedValue>) obj);
+      return new MapValue((Map<String,MappedValue>) obj);
     }
     else if(Number.class.isAssignableFrom(obj.getClass())) {
-      return new MappedNumber((Number) obj);
+      return new NumberValue((Number) obj);
     }
     else if(String.class.isAssignableFrom(obj.getClass())) {
-      return new MappedString((String) obj);
+      return new StringValue((String) obj);
     }
     else {
       throw new UnsupportedOperationException("Not supported object type");

@@ -41,9 +41,9 @@ public class LocalDateTimeMapper extends AbstractMapper<LocalDateTime> {
 
 
   @Override
-  public MappedString map(LocalDateTime obj) {
+  public StringValue map(LocalDateTime obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return new MappedString(DateTime.of(obj).toZonedDT().format(DateTimeFormatter.ISO_ZONED_DATE_TIME));
+    return new StringValue(DateTime.of(obj).toZonedDT().format(DateTimeFormatter.ISO_ZONED_DATE_TIME));
   }
 
 

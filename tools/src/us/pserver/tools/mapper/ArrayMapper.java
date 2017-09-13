@@ -45,14 +45,14 @@ public class ArrayMapper extends AbstractMapper {
 
 
   @Override
-  public MappedArray map(Object obj) {
+  public ArrayValue map(Object obj) {
     NotNull.of(obj).failIfNull("Bad null object");
     int len = Array.getLength(obj);
     MappedValue[] vals = new MappedValue[len];
     for(int i = 0; i < len; i++) {
       vals[i] = MappedValue.of(Array.get(obj, i));
     }
-    return new MappedArray(vals);
+    return new ArrayValue(vals);
   }
 
 

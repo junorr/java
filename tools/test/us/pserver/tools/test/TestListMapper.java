@@ -19,29 +19,39 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.mapper;
+package us.pserver.tools.test;
 
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import us.pserver.tools.mapper.MappedValue;
+import us.pserver.tools.mapper.ObjectMapper;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/09/2017
+ * @version 0.0 - 13/09/2017
  */
-public class MappedArray extends AbstractMappedValue<MappedValue[]> {
+public class TestListMapper {
 
-  public MappedArray(MappedValue[] value) {
-    super(value, Type.ARRAY);
+  public static List<Long> randoms() {
+    List<Long> rds = new ArrayList<>();
+    for(int i = 0; i < 10; i++) {
+      rds.add((long) (Math.random() * 1000L));
+    }
+    return rds;
   }
-
-  @Override
-  public MappedValue[] asArray() {
-    return this.get();
+  
+  public static void main(String[] args) {
+    List<Long> ls = randoms();
+    System.out.println(ls);
+    ObjectMapper mp = new ObjectMapper();
+    MappedValue val = mp.map(ls);
+    System.out.println(val);
+    System.out.println(val.getClass().getSimpleName());
+    System.out.println(Arrays.toString(val.asArray()));
+    ls = (List<Long>) mp.unmap(ArrayList.class, val);
+    System.out.println(ls);
   }
-
-  @Override
-  public void ifArray(Consumer<MappedValue[]> exec) {
-    exec.accept(this.get());
-  }
-
+  
 }

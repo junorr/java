@@ -41,9 +41,9 @@ public class InstantMapper extends AbstractMapper<Instant> {
 
 
   @Override
-  public MappedString map(Instant obj) {
+  public StringValue map(Instant obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return new MappedString(DateTime.of(obj).toZonedDT()
+    return new StringValue(DateTime.of(obj).toZonedDT()
         .format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
     );
   }

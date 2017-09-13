@@ -21,7 +21,6 @@
 
 package us.pserver.tools.mapper;
 
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -29,21 +28,20 @@ import java.util.function.Consumer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/09/2017
  */
-public class MappedString extends AbstractMappedValue<String> {
+public class NumberValue extends AbstractMappedValue<Number> {
 
-  
-  public MappedString(String value) {
-    super(value, Type.STRING);
+  public NumberValue(Number value) {
+    super(value, Type.NUMBER);
   }
 
   @Override
-  public String asString() {
+  public Number asNumber() {
     return this.get();
   }
 
   @Override
-  public void ifString(Consumer<String> exec) {
-    exec.accept(asString());
+  public void ifNumber(Consumer<Number> exec) {
+    exec.accept(asNumber());
   }
 
 }

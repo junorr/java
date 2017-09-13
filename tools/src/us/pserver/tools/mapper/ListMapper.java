@@ -44,13 +44,13 @@ public class ListMapper extends AbstractMapper<List> {
 
 
   @Override
-  public MappedArray map(List obj) {
-    NotNull.of(obj).failIfNull("Bad null object");
-    MappedValue[] vals = new MappedValue[obj.size()];
-    for(int i = 0; i < obj.size(); i++) {
-      vals[i] = MappedValue.of(mapper.map(obj.get(i)));
+  public ArrayValue map(List list) {
+    NotNull.of(list).failIfNull("Bad null object");
+    MappedValue[] vals = new MappedValue[list.size()];
+    for(int i = 0; i < list.size(); i++) {
+      vals[i] = mapper.map(list.get(i));
     }
-    return new MappedArray(vals);
+    return new ArrayValue(vals);
   }
   
   
@@ -67,9 +67,10 @@ public class ListMapper extends AbstractMapper<List> {
   public List unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
     NotNull.of(value).failIfNull("Bad null value");
+    System.out.println("* value: "+ value+ ", class: "+ value.getClass().getSimpleName());
     return Arrays.asList(value.asArray())
         .stream()
-        .map(o->mapper.unmap(cls, o.get()))
+        .map(v->mapper.unmap(MappingUtils.getMapperType(v.getType()), v))
         .collect(Collectors.toList());
   }
   

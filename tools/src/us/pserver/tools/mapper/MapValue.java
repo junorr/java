@@ -29,9 +29,9 @@ import java.util.function.Consumer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/09/2017
  */
-public class MappedMap extends AbstractMappedValue<Map<String,MappedValue>> {
+public class MapValue extends AbstractMappedValue<Map<String,MappedValue>> {
 
-  public MappedMap(Map<String,MappedValue> value) {
+  public MapValue(Map<String,MappedValue> value) {
     super(value, Type.MAP);
   }
 

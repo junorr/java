@@ -21,33 +21,27 @@
 
 package us.pserver.tools.mapper;
 
-import java.util.Base64;
-import us.pserver.tools.NotNull;
+import java.util.function.Consumer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/09/2017
+ * @version 0.0 - 11/09/2017
  */
-public class ByteArrayMapper extends AbstractMapper<byte[]> {
+public class ArrayValue extends AbstractMappedValue<MappedValue[]> {
 
-  public ByteArrayMapper() {
-    super(byte[].class);
+  public ArrayValue(MappedValue[] value) {
+    super(value, Type.ARRAY);
   }
 
-
   @Override
-  public StringValue map(byte[] obj) {
-    NotNull.of(obj).failIfNull("Bad null object");
-    return new StringValue(Base64.getEncoder().encodeToString(obj));
+  public MappedValue[] asArray() {
+    return this.get();
   }
 
-
   @Override
-  public byte[] unmap(Class cls, MappedValue value) {
-    NotNull.of(cls).failIfNull("Bad null Class");
-    NotNull.of(value).failIfNull("Bad null value");
-    return Base64.getDecoder().decode(value.asString());
+  public void ifArray(Consumer<MappedValue[]> exec) {
+    exec.accept(this.get());
   }
 
 }

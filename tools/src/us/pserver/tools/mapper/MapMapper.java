@@ -23,7 +23,9 @@ package us.pserver.tools.mapper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import us.pserver.tools.NotNull;
 
 /**
@@ -42,14 +44,14 @@ public class MapMapper extends AbstractMapper<Map> {
 
 
   @Override
-  public MappedValue map(Map obj) {
+  public MapValue map(Map obj) {
     NotNull.of(obj).failIfNull("Bad null object");
     Map<String,MappedValue> nmp = new HashMap();
     obj.keySet().forEach(o->nmp.put(
         Objects.toString(o), 
         mapper.map(obj.get(o)))
     );
-    return new MappedMap(nmp);
+    return new MapValue(nmp);
   }
 
 
@@ -59,9 +61,13 @@ public class MapMapper extends AbstractMapper<Map> {
     NotNull.of(value).failIfNull("Bad null value");
     Map<String,MappedValue> map = value.asMap();
     Map nmp = new HashMap();
-    map.keySet().forEach(k->nmp.put(k, 
-        mapper.unmap(map.get(k).getClass(), map.get(k)))
-    );
+    Set<Entry<String,MappedValue>> ets = map.entrySet();
+    for(Entry<String,MappedValue> e : ets) {
+      nmp.put(e.getKey(), mapper.unmap(
+          MappingUtils.getMapperType(e.getValue().getType()), 
+          e.getValue())
+      );
+    }
     return nmp;
   }
   

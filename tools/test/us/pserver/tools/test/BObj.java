@@ -36,7 +36,7 @@ public class BObj {
   
   private AObj a;
   
-  private final LinkedList<Integer> list;
+  private final List<Integer> list;
   
 
   public BObj() {

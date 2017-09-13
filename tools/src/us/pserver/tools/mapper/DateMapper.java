@@ -47,9 +47,9 @@ public class DateMapper extends AbstractMapper<Date> {
   }
 
   @Override
-  public MappedString map(Date obj) {
+  public StringValue map(Date obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    return new MappedString(DateTime.of(obj).toZonedDT()
+    return new StringValue(DateTime.of(obj).toZonedDT()
         .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
   }
 

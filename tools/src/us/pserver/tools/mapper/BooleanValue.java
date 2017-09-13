@@ -21,7 +21,6 @@
 
 package us.pserver.tools.mapper;
 
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -29,20 +28,20 @@ import java.util.function.Consumer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/09/2017
  */
-public class MappedNumber extends AbstractMappedValue<Number> {
+public class BooleanValue extends AbstractMappedValue<Boolean> {
 
-  public MappedNumber(Number value) {
-    super(value, Type.NUMBER);
+  public BooleanValue(Boolean value) {
+    super(value, Type.BOOLEAN);
   }
 
   @Override
-  public Number asNumber() {
+  public Boolean asBoolean() {
     return this.get();
   }
 
   @Override
-  public void ifNumber(Consumer<Number> exec) {
-    exec.accept(asNumber());
+  public void ifBoolean(Consumer<Boolean> exec) {
+    exec.accept(this.get());
   }
 
 }

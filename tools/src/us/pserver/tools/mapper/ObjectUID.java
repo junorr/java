@@ -37,9 +37,9 @@ public class ObjectUID implements Serializable {
 
   private final String uid;
   
-  private final Object obj;
-  
   private String className;
+  
+  private final transient Object obj;
   
   private final transient Hash hash;
   

@@ -36,8 +36,8 @@ public class BooleanMapper extends AbstractMapper<Boolean> {
 
 
   @Override
-  public MappedBoolean map(Boolean obj) {
-    return new MappedBoolean(
+  public BooleanValue map(Boolean obj) {
+    return new BooleanValue(
         NotNull.of(obj).getOrFail("Bad null Boolean")
     );
   }

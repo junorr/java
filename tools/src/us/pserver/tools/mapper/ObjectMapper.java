@@ -106,10 +106,10 @@ public class ObjectMapper extends AbstractMapper {
       Field[] fs = Reflector.of(cls).fields();
       for(Field f : fs) {
         if(map.containsKey(f.getName())) {
-          Object of = map.get(f.getName());
+          MappedValue val = map.get(f.getName());
           //System.out.println(" - set: "+ f.getName()+ " = "+ of.getClass());
           //System.out.println(" - field.unmapped: "+ unmap(f.getType(), of));
-          Reflector.of(cob).selectField(f.getName()).set(unmap(f.getType(), MappedValue.of(of)));
+          Reflector.of(cob).selectField(f.getName()).set(unmap(f.getType(), val));
         }
       }
       return cob;
