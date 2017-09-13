@@ -67,11 +67,11 @@ public class ListMapper extends AbstractMapper<List> {
   public List unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
     NotNull.of(value).failIfNull("Bad null value");
-    System.out.println("* value: "+ value+ ", class: "+ value.getClass().getSimpleName());
+    List list = newList(cls);
     return Arrays.asList(value.asArray())
         .stream()
         .map(v->mapper.unmap(MappingUtils.getMapperType(v.getType()), v))
-        .collect(Collectors.toList());
+        .forEach(o->list.add(o));
   }
   
 }
