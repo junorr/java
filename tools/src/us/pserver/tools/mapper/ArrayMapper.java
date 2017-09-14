@@ -50,7 +50,7 @@ public class ArrayMapper extends AbstractMapper {
     int len = Array.getLength(obj);
     MappedValue[] vals = new MappedValue[len];
     for(int i = 0; i < len; i++) {
-      vals[i] = MappedValue.of(Array.get(obj, i));
+      vals[i] = mapper.map(Array.get(obj, i));
     }
     return new ArrayValue(vals);
   }
@@ -60,13 +60,13 @@ public class ArrayMapper extends AbstractMapper {
   public Object unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
     NotNull.of(value).failIfNull("Bad null value");
+    MappedValue[] vals = value.asArray();
     Class elt = cls.getComponentType();
-    int len = value.asArray().length;
-    Object[] objs = new Object[len];
-    for(int i = 0; i < len; i++) {
-      objs[i] = value.asArray()[i].get();
+    Object array = Array.newInstance(elt, vals.length);
+    for(int i = 0; i < vals.length; i++) {
+      Array.set(array, i, mapper.unmap(elt, vals[i]));
     }
-    return objs;
+    return array;
   }
 
 }

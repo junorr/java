@@ -36,7 +36,7 @@ public class BObj {
   
   private AObj a;
   
-  private final List<Integer> list;
+  private final LinkedList<Integer> list;
   
 
   public BObj() {
@@ -48,6 +48,11 @@ public class BObj {
     this.name = name;
     this.a = a;
     this.list = list;
+  }
+  
+  
+  public AObj getA() {
+    return a;
   }
 
 

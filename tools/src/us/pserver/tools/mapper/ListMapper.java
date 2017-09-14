@@ -24,7 +24,6 @@ package us.pserver.tools.mapper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.rfl.Reflector;
 
@@ -68,10 +67,12 @@ public class ListMapper extends AbstractMapper<List> {
     NotNull.of(cls).failIfNull("Bad null Class");
     NotNull.of(value).failIfNull("Bad null value");
     List list = newList(cls);
-    return Arrays.asList(value.asArray())
+    Arrays.asList(value.asArray())
         .stream()
-        .map(v->mapper.unmap(MappingUtils.getMapperType(v.getType()), v))
-        .forEach(o->list.add(o));
+        .map(v->mapper.unmap(
+            MappingUtils.getMapperType(v.getType()), v))
+        .forEach(list::add);
+    return list;
   }
   
 }

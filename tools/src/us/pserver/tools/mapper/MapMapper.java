@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import us.pserver.tools.NotNull;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
@@ -53,6 +54,15 @@ public class MapMapper extends AbstractMapper<Map> {
     );
     return new MapValue(nmp);
   }
+  
+  
+  private Map newMap(Class cls) {
+    try {
+      return (Map) Reflector.of(cls).create();
+    } catch(Exception e) {
+      return new HashMap();
+    }
+  }
 
 
   @Override
@@ -60,14 +70,12 @@ public class MapMapper extends AbstractMapper<Map> {
     NotNull.of(cls).failIfNull("Bad null Class");
     NotNull.of(value).failIfNull("Bad null value");
     Map<String,MappedValue> map = value.asMap();
-    Map nmp = new HashMap();
-    Set<Entry<String,MappedValue>> ets = map.entrySet();
-    for(Entry<String,MappedValue> e : ets) {
-      nmp.put(e.getKey(), mapper.unmap(
-          MappingUtils.getMapperType(e.getValue().getType()), 
-          e.getValue())
-      );
-    }
+    Map nmp = newMap(cls);
+    map.entrySet().forEach(e->nmp.put(
+        e.getKey(), mapper.unmap(
+            MappingUtils.getMapperType(e.getValue().getType()), 
+            e.getValue())
+    ));
     return nmp;
   }
   

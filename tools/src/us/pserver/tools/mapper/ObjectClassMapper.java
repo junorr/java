@@ -38,23 +38,24 @@ public class ObjectClassMapper extends ObjectMapper {
   }
   
   @Override
-  public Object map(Object obj) {
+  public MappedValue map(Object obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    Object mop = super.map(obj);
-    if(Map.class.isAssignableFrom(mop.getClass())) {
-      ((Map)mop).put(KEY_TYPE, obj.getClass().getName());
+    MappedValue mop = super.map(obj);
+    if(MappedValue.Type.MAP == mop.getType()) {
+      mop.asMap().put(KEY_TYPE, super.map(obj.getClass()));
     }
     return mop;
   }
   
-  public <T> T unmap(Object obj) {
-    NotNull.of(obj).failIfNull("Bad null object");
-    if(Map.class.isAssignableFrom(obj.getClass())) {
-      Class cls = (Class) super.unmap(Class.class, ((Map)obj).get(KEY_TYPE));
-      return (T) super.unmap(cls, obj);
+  public <T> T unmap(MappedValue value) {
+    NotNull.of(value).failIfNull("Bad null value");
+    if(MappedValue.Type.MAP == value.getType()) {
+      Map<String,MappedValue> map = value.asMap();
+      Class cls = (Class) super.unmap(Class.class, map.get(KEY_TYPE));
+      return (T) super.unmap(cls, value);
     }
     else {
-      return (T) super.unmap(obj.getClass(), obj);
+      return (T) super.unmap(value.get().getClass(), value);
     }
   }
   

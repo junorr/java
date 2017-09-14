@@ -21,10 +21,14 @@
 
 package us.pserver.tools.test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.Date;
 import java.util.LinkedList;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectMapper;
+import us.pserver.tools.timer.Timer;
 
 /**
  *
@@ -32,12 +36,13 @@ import us.pserver.tools.mapper.ObjectMapper;
  * @version 0.0 - 06/09/2017
  */
 public class TestObjectMapper {
-
   
-  public static void main(String[] args) {
-    ObjectMapper mapper = new ObjectMapper();
-    //AObj a = new AObj("hello", 5, new int[] {5,4,3,2,1,0}, new char[] {'a', 'b', 'c', 'd'}, new Date());
-    AObj a = new AObj("hello", new Date());
+  public static AObj a() {
+    return new AObj("hello", 5, new int[] {5,4,3,2,1,0}, new char[] {'a', 'b', 'c', 'd'}, new Date());
+  }
+  
+  
+  public static BObj b() {
     LinkedList<Integer> ls = new LinkedList<>();
     ls.add(10);
     ls.add(9);
@@ -45,17 +50,69 @@ public class TestObjectMapper {
     ls.add(7);
     ls.add(6);
     ls.add(5);
-    BObj b = new BObj("world", a, ls);
-    System.out.println("* a: "+ a);
-    System.out.println("* b: "+ b);
+    return new BObj("world", a(), ls);
+  }
+  
+  
+  public static void exec(BObj b) {
+    Timer tm = new Timer.Nanos().start();
+    ObjectMapper mapper = new ObjectMapper();
+    System.out.println("-- time to create ObjectMapper -- "+ tm.stop());
+    AObj a = b.getA();
+    tm.clear().start();
     MappedValue omp = mapper.map(a);
+    System.out.println("-- time to map 'a' -- "+ tm.stop());
     System.out.println("* a.mapped  : "+ omp);
+    tm.clear().start();
     a = (AObj) mapper.unmap(AObj.class, omp);
+    System.out.println("-- time to UNmap 'a' -- "+ tm.stop());
     System.out.println("* a.unmapped: "+ a);
+    tm.clear().start();
     omp = mapper.map(b);
+    System.out.println("-- time to map 'b' -- "+ tm.stop());
     System.out.println("* b.mapped  : "+ omp);
+    tm.clear().start();
     b = (BObj) mapper.unmap(BObj.class, omp);
+    System.out.println("-- time to UNmap 'b' -- "+ tm.stop());
     System.out.println("* b.unmapped: "+ b);
+  }
+  
+  
+  public static final PrintStream stdout = System.out;
+  
+  public static final PrintStream nullout = createNullOut();
+  
+  
+  public static PrintStream createNullOut() {
+    try {
+      return new PrintStream(new File("/dev/null"));
+    } catch(FileNotFoundException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
+  
+  
+  public static void disableOut() {
+    System.out.flush();
+    System.setOut(nullout);
+  }
+
+  
+  public static void enableOut() {
+    System.out.flush();
+    System.setOut(stdout);
+  }
+
+  
+  public static void main(String[] args) throws FileNotFoundException {
+    System.out.println("* wariming up 10x...");
+    disableOut();
+    BObj b = b();
+    for(int i = 0; i < 10; i++) {
+      exec(b);
+    }
+    enableOut();
+    exec(b);
   }
   
 }

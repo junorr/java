@@ -69,10 +69,12 @@ public class SetMapper extends AbstractMapper<Set> {
   public Set unmap(Class cls, MappedValue value) {
     NotNull.of(cls).failIfNull("Bad null Class");
     NotNull.of(value).failIfNull("Bad null value");
-    return Arrays.asList(value.asArray())
+    Set set = newSet(cls);
+    Arrays.asList(value.asArray())
         .stream()
         .map(v->mapper.unmap(MappingUtils.getMapperType(v.getType()), v))
-        .collect(Collectors.toSet());
+        .forEach(set::add);
+    return set;
   }
   
 }

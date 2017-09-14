@@ -107,8 +107,8 @@ public class ObjectMapper extends AbstractMapper {
       for(Field f : fs) {
         if(map.containsKey(f.getName())) {
           MappedValue val = map.get(f.getName());
-          //System.out.println(" - set: "+ f.getName()+ " = "+ of.getClass());
-          //System.out.println(" - field.unmapped: "+ unmap(f.getType(), of));
+          //System.out.println(" - set: "+ f.getName()+ " = "+ val.getClass());
+          //System.out.println(" - field.unmapped: "+ unmap(f.getType(), val));
           Reflector.of(cob).selectField(f.getName()).set(unmap(f.getType(), val));
         }
       }

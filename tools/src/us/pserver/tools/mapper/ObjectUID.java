@@ -37,16 +37,14 @@ public class ObjectUID implements Serializable {
 
   private final String uid;
   
-  private String className;
-  
-  private final transient Object obj;
+  private final String className;
   
   private final transient Hash hash;
   
   
   public ObjectUID(Hash hash, Object obj) {
+    NotNull.of(obj).failIfNull("Bad null object");
     this.hash = NotNull.of(hash).getOrFail("Bad null Hash");
-    this.obj = NotNull.of(obj).getOrFail("Bad null object");
     this.className = obj.getClass().getName();
     this.calcUID(obj);
     this.uid = hash.get();
@@ -58,10 +56,6 @@ public class ObjectUID implements Serializable {
   
   public String getUID() {
     return this.uid;
-  }
-  
-  public Object getObject() {
-    return this.obj;
   }
   
   public String getClassName() {

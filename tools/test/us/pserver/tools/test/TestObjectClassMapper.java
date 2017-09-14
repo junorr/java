@@ -23,6 +23,7 @@ package us.pserver.tools.test;
 
 import java.util.Date;
 import java.util.LinkedList;
+import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectClassMapper;
 
 /**
@@ -47,7 +48,7 @@ public class TestObjectClassMapper {
     BObj b = new BObj("world", a, ls);
     System.out.println("* a: "+ a);
     System.out.println("* b: "+ b);
-    Object omp = mapper.map(a);
+    MappedValue omp = mapper.map(a);
     System.out.println("* a.mapped  : "+ omp);
     a = mapper.unmap(omp);
     System.out.println("* a.unmapped: "+ a);
