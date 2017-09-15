@@ -36,8 +36,6 @@ public interface Storage {
   
   public void put(Block blk) throws StoreException;
   
-  public void compact() throws StoreException;
-  
   public List<Region> freeBlocks();
   
   public long getBlockSize();

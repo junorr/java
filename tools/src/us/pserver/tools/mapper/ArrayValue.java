@@ -21,6 +21,7 @@
 
 package us.pserver.tools.mapper;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
@@ -42,6 +43,12 @@ public class ArrayValue extends AbstractMappedValue<MappedValue[]> {
   @Override
   public void ifArray(Consumer<MappedValue[]> exec) {
     exec.accept(this.get());
+  }
+  
+  
+  @Override
+  public String toString() {
+    return Arrays.toString(asArray());
   }
 
 }

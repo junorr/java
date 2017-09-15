@@ -36,6 +36,10 @@ public interface Region extends Comparable, Writable, Serializable {
   
   public long length();
   
+  public int intOffset();
+  
+  public int intLength();
+  
   @Override
   public default int compareTo(Object r) {
     NotNull.of(r).failIfNull();
@@ -71,6 +75,16 @@ public interface Region extends Comparable, Writable, Serializable {
     @Override
     public long length() {
       return this.length;
+    }
+    
+    @Override
+    public int intOffset() {
+      return (int) this.offset;
+    }
+
+    @Override
+    public int intLength() {
+      return (int) this.length;
     }
     
     @Override

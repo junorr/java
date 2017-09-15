@@ -29,7 +29,7 @@ import us.pserver.tools.mapper.ObjectUID;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2017
  */
-public interface StoreIndex extends Comparable, Serializable {
+public interface Index extends Comparable, Serializable {
 
   public String getName();
   

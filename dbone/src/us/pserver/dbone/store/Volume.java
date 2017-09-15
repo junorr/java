@@ -22,6 +22,7 @@
 package us.pserver.dbone.store;
 
 import us.pserver.tools.mapper.MappedValue;
+import us.pserver.tools.mapper.ObjectUID;
 
 /**
  *
@@ -30,10 +31,10 @@ import us.pserver.tools.mapper.MappedValue;
  */
 public interface Volume {
 
-  public StoreIndex put(StoreUnit unit) throws StoreException;
+  public Index put(StoreUnit unit) throws StoreException;
   
-  public StoreIndex put(MappedValue val) throws StoreException;
+  public Index put(ObjectUID uid, MappedValue val) throws StoreException;
   
-  public MappedValue get(StoreIndex idx) throws StoreException;
+  public StoreUnit get(Index idx) throws StoreException;
   
 }
