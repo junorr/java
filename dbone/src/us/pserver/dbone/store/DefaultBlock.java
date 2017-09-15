@@ -28,43 +28,53 @@ import us.pserver.tools.NotNull;
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 15/09/2017
  */
-public interface Block {
+public class DefaultBlock implements Block {
+  
+  protected final ByteBuffer buffer;
+  
+  protected final Region region;
+  
+  
+  public DefaultBlock(Region r, ByteBuffer b) {
+    this.region = NotNull.of(r).getOrFail("Bad null Region");
+    this.buffer = NotNull.of(b).getOrFail("Bad null ByteBuffer");
+  }
 
-  public Region getRegion();
+  @Override
+  public Region getRegion() {
+    return this.region;
+  }
+
+
+  @Override
+  public ByteBuffer getBuffer() {
+    return this.buffer;
+  }
+
+
+  @Override
+  public Optional<Region> next() {
+    int pos = buffer.position();
+    buffer.position(buffer.limit() - 16);
+    long off = buffer.getLong();
+    long len = buffer.getLong();
+    buffer.position(pos);
+    return Optional.ofNullable(off >= 0 && len >= 1 
+        ? Region.of(off, len) : null);
+  }
   
-  public ByteBuffer getBuffer();
   
-  public Optional<Region> next();
-  
-  public Block setNext(Region r);
-  
-  
-  public static Block direct(Region r) throws BlockAllocationException {
+  @Override
+  public DefaultBlock setNext(Region r) {
     NotNull.of(r).failIfNull("Bad null Region");
-    if(r.length() < 1) {
-      throw new BlockAllocationException("Bad region length: "+ r.length());
-    }
-    return new DefaultBlock(r, 
-        ByteBuffer.allocateDirect((int) r.length())
-    );
+    int pos = buffer.position();
+    buffer.position(buffer.limit() - 16);
+    buffer.putLong(r.offset());
+    buffer.putLong(r.length());
+    buffer.position(pos);
+    return this;
   }
-  
-  
-  public static Block heap(Region r) throws BlockAllocationException {
-    NotNull.of(r).failIfNull("Bad null Region");
-    if(r.length() < 1) {
-      throw new BlockAllocationException("Bad region length: "+ r.length());
-    }
-    return new DefaultBlock(r, 
-        ByteBuffer.allocate((int) r.length())
-    );
-  }
-  
-  
-  public static Block of(Region r, ByteBuffer b) {
-    return new DefaultBlock(r, b);
-  }
-  
+
 }

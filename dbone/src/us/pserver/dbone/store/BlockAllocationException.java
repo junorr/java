@@ -21,25 +21,26 @@
 
 package us.pserver.dbone.store;
 
-import java.util.List;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 15/09/2017
  */
-public interface Storage {
+public class BlockAllocationException extends StoreException {
 
-  public Block allocate() throws BlockAllocationException;
-  
-  public Block get(Region r) throws BlockAllocationException;
-  
-  public void put(Block blk) throws StoreException;
-  
-  public void compact() throws StoreException;
-  
-  public List<Region> freeBlocks();
-  
-  public long getBlockSize();
-  
+  public BlockAllocationException() {
+  }
+
+  public BlockAllocationException(String message) {
+    super(message);
+  }
+
+  public BlockAllocationException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public BlockAllocationException(Throwable cause) {
+    super(cause);
+  }
+
 }

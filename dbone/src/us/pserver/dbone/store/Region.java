@@ -44,6 +44,11 @@ public interface Region extends Comparable, Writable, Serializable {
   }
   
   
+  public static Region of(long offset, long length) {
+    return new RegionImpl(offset, length);
+  }
+  
+  
   
   
   

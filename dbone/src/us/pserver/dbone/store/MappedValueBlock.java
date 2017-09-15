@@ -21,25 +21,17 @@
 
 package us.pserver.dbone.store;
 
-import java.util.List;
+import java.nio.ByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 15/09/2017
  */
-public interface Storage {
+public class MappedValueBlock extends DefaultBlock {
 
-  public Block allocate() throws BlockAllocationException;
-  
-  public Block get(Region r) throws BlockAllocationException;
-  
-  public void put(Block blk) throws StoreException;
-  
-  public void compact() throws StoreException;
-  
-  public List<Region> freeBlocks();
-  
-  public long getBlockSize();
+  public MappedValueBlock(Region r, ByteBuffer b) {
+    super(r, b);
+  }
   
 }
