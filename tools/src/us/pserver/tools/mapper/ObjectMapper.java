@@ -83,6 +83,7 @@ public class ObjectMapper extends AbstractMapper {
       for(Field f : fs) {
         Object of = Reflector.of(obj).selectField(f.getName()).get();
         if(of != null) {
+          //HERE, OBJECT_STORE QUEUE<STORE_UNIT>
           map.put(f.getName(), map(of));
         }
       }

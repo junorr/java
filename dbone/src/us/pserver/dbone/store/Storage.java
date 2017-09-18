@@ -32,7 +32,7 @@ public interface Storage {
 
   public Block allocate() throws BlockAllocationException;
   
-  public Block get(Region r) throws BlockAllocationException;
+  public Block get(Region reg) throws BlockAllocationException;
   
   public void put(Block blk) throws StoreException;
   
