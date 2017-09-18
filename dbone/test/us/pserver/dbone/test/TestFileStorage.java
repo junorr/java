@@ -21,32 +21,25 @@
 
 package us.pserver.dbone.test;
 
-import java.util.Arrays;
-import java.util.Date;
-import org.h2.mvstore.MVMap;
-import org.h2.mvstore.MVStore;
-import us.pserver.tools.mapper.ObjectMapper;
-import us.pserver.tools.mapper.ObjectUID;
+import java.io.IOException;
+import us.pserver.dbone.store.Block;
+import us.pserver.dbone.store.FileStorage;
+import us.pserver.dbone.store.StorageFactory;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/09/2017
+ * @version 0.0 - 18/09/2017
  */
-public class TestMVStore {
+public class TestFileStorage {
 
   
-  public static void main(String[] args) {
-    MVStore store = new MVStore.Builder().fileName("/storage/java/store.mvs").open();
-    MVMap map = store.openMap("aobj");
-    AObj a = new AObj("hello", new Date());
-    AObj aa = new AObj("hello", 5, null, null, new Date());
-    BObj b = new BObj("world", aa, Arrays.asList(1, 2, 3, 4, 5));
-    System.out.println("* a: "+ a);
-    System.out.println("* b: "+ b);
-    System.out.println("* ObjectUID.of(a): "+ ObjectUID.of(a).getUID());
-    System.out.println("* ObjectUID.of(b): "+ ObjectUID.of(b).getUID());
-    map.put(ObjectUID.of(b), new ObjectMapper().map(b));
+  public static void main(String[] args) throws IOException {
+    FileStorage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").create();
+    //FileStorage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").setOpenForced().create();
+    Block blk = fs.allocate();
+    System.out.println(blk);
+    fs.close();
   }
   
 }

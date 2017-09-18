@@ -21,23 +21,47 @@
 
 package us.pserver.dbone.store;
 
-import java.io.Closeable;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.nio.ByteBuffer;
+import us.pserver.tools.io.ByteBufferInputStream;
+import us.pserver.tools.io.ByteBufferOutputStream;
 import us.pserver.tools.mapper.MappedValue;
-import us.pserver.tools.mapper.ObjectUID;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 18/09/2017
  */
-public interface Volume extends Closeable {
+public class SerializationService {
 
-  public Index put(StoreUnit unit) throws StoreException;
+  public SerializationService() {}
   
-  public Index put(ObjectUID uid, MappedValue val) throws StoreException;
   
-  public StoreUnit get(Index idx) throws StoreException;
+  public ByteBuffer serialize(MappedValue val) throws StoreException {
+    try (
+        ByteBufferOutputStream bos = new ByteBufferOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+    ) {
+      oos.writeObject(val);
+      return bos.toByteBuffer();
+    }
+    catch(IOException e) {
+      throw new StoreException(e.toString(), e);
+    }
+  }
   
-  @Override public void close() throws StoreException;
+  public MappedValue deserialize(ByteBuffer buf) throws StoreException {
+    try (
+        ByteBufferInputStream bis = new ByteBufferInputStream(buf);
+        ObjectInputStream ois = new ObjectInputStream(bis);
+        ) {
+      return (MappedValue) ois.readObject();
+    }
+    catch(ClassNotFoundException | IOException e) {
+      throw new StoreException(e.toString(), e);
+    }
+  }
   
 }

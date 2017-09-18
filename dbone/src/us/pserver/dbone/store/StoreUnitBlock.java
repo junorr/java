@@ -69,19 +69,19 @@ public class StoreUnitBlock extends DefaultBlock {
   }
   
   public StoreUnitBlock setStoreUnit(StoreUnit unit) throws StoreException {
-    NotNull.of(unit).failIfNull("Bad null StoreUnit");
-    this.buffer.position(REGION_CLASS.intOffset());
-    this.buffer.put(UTF8String.from(unit.getUID().getClassName()).getBytes());
-    this.buffer.position(REGION_UID.intOffset());
-    this.buffer.put(UTF8String.from(unit.getUID().getUID()).getBytes());
-    byte[] bs = 
-    
-    byte[] bs = UTF8String.from(unit.getValue().toString()).getBytes();
-    this.buffer.position(REGION_UID.intOffset() + REGION_UID.intLength());
-    if(bs.length > this.buffer.remaining()-16) {
-      throw new StoreException("StoreUnit length exceeds ByteBuffer capacity");
-    }
-    this.buffer.put(bs);
+    //NotNull.of(unit).failIfNull("Bad null StoreUnit");
+    //this.buffer.position(REGION_CLASS.intOffset());
+    //this.buffer.put(UTF8String.from(unit.getUID().getClassName()).getBytes());
+    //this.buffer.position(REGION_UID.intOffset());
+    //this.buffer.put(UTF8String.from(unit.getUID().getUID()).getBytes());
+    //byte[] bs = 
+//    
+    //byte[] bs = UTF8String.from(unit.getValue().toString()).getBytes();
+    //this.buffer.position(REGION_UID.intOffset() + REGION_UID.intLength());
+    //if(bs.length > this.buffer.remaining()-16) {
+      //throw new StoreException("StoreUnit length exceeds ByteBuffer capacity");
+    //}
+    //this.buffer.put(bs);
     return this;
   }
   

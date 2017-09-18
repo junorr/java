@@ -77,4 +77,10 @@ public class DefaultBlock implements Block {
     return this;
   }
 
+
+  @Override
+  public String toString() {
+    return "Block{" + region + '}';
+  }
+
 }
