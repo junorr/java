@@ -23,9 +23,7 @@ package us.pserver.tools.mapper;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Set;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.rfl.Reflector;
 
@@ -47,7 +45,7 @@ public class MapMapper extends AbstractMapper<Map> {
   @Override
   public MapValue map(Map obj) {
     NotNull.of(obj).failIfNull("Bad null object");
-    Map<String,MappedValue> nmp = new HashMap();
+    Map<String,MappedValue> nmp = new SerializableHashMap<>();
     obj.keySet().forEach(o->nmp.put(
         Objects.toString(o), 
         mapper.map(obj.get(o)))

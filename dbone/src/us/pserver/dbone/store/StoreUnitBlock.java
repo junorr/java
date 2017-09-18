@@ -74,6 +74,8 @@ public class StoreUnitBlock extends DefaultBlock {
     this.buffer.put(UTF8String.from(unit.getUID().getClassName()).getBytes());
     this.buffer.position(REGION_UID.intOffset());
     this.buffer.put(UTF8String.from(unit.getUID().getUID()).getBytes());
+    byte[] bs = 
+    
     byte[] bs = UTF8String.from(unit.getValue().toString()).getBytes();
     this.buffer.position(REGION_UID.intOffset() + REGION_UID.intLength());
     if(bs.length > this.buffer.remaining()-16) {

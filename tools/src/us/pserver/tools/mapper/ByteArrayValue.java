@@ -21,33 +21,27 @@
 
 package us.pserver.tools.mapper;
 
-import java.lang.reflect.Array;
-import java.util.Objects;
-import us.pserver.tools.NotNull;
+import java.util.function.Consumer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/09/2017
+ * @version 0.0 - 15/09/2017
  */
-public class ByteArrayMapper extends AbstractMapper {
+public class ByteArrayValue extends AbstractMappedValue<byte[]> {
 
-  public ByteArrayMapper() {
-    super(byte[].class);
+  public ByteArrayValue(byte[] value) {
+    super(value, Type.BYTE_ARRAY);
   }
-
-
+  
   @Override
-  public ByteArrayValue map(Object t) {
-    NotNull.of(t).failIfNull("Bad null object");
-    return new ByteArrayValue((byte[]) t);
+  public byte[] asByteArray() {
+    return this.get();
   }
-
-
+  
   @Override
-  public Object unmap(Class cls, MappedValue value) {
-    NotNull.of(value).failIfNull("Bad null value");
-    return value.asByteArray();
+  public void ifByteArray(Consumer<byte[]> exec) {
+    exec.accept(asByteArray());
   }
 
 }

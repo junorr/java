@@ -36,7 +36,7 @@ import us.pserver.tools.Bean;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 16/06/2015
  */
-public class DynamicBuffer implements Closeable {
+public class SyncDynamicBuffer implements Closeable {
   
   public static final Integer DEFAULT_PAGE_SIZE = 16 * 1024;
   
@@ -52,7 +52,7 @@ public class DynamicBuffer implements Closeable {
   private Bean<Boolean> read;
   
   
-  public DynamicBuffer() {
+  public SyncDynamicBuffer() {
     pages = Collections.synchronizedList(new ArrayList<ByteBuffer>());
     index = 0;
     read = new Bean<>(false);
@@ -61,7 +61,7 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  public DynamicBuffer(int pageSize) {
+  public SyncDynamicBuffer(int pageSize) {
     this();
     if(pageSize > 0) {
       this.pageSize = pageSize;
@@ -69,10 +69,12 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  private DynamicBuffer appendNew() {
-    pages.add(ByteBuffer.allocate(pageSize));
-    index = pages.size() -1;
-    return this;
+  private SyncDynamicBuffer appendNew() {
+    synchronized(DEFAULT_PAGE_SIZE) {
+      pages.add(ByteBuffer.allocateDirect(pageSize));
+      index = pages.size() -1;
+      return this;
+    }
   }
   
   
@@ -107,7 +109,7 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  public DynamicBuffer setPageSize(int pg) {
+  public SyncDynamicBuffer setPageSize(int pg) {
     if(pg > 0)
       pageSize = pg;
     return this;
@@ -129,7 +131,7 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  public DynamicBuffer rewind() {
+  public SyncDynamicBuffer rewind() {
     pages.forEach(ByteBuffer::rewind);
     return positionStart();
   }
@@ -147,7 +149,7 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  public DynamicBuffer reset() {
+  public SyncDynamicBuffer reset() {
     read.set(false);
     pages.forEach(b->b.clear());
     size.set(0L);
@@ -155,33 +157,39 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  public DynamicBuffer flip() {
-    read.negate();
-    pages.forEach(b->b.flip());
-    return this;
+  public SyncDynamicBuffer flip() {
+    synchronized(DEFAULT_PAGE_SIZE) {
+      read.negate();
+      pages.forEach(b->b.flip());
+      return this;
+    }
   }
   
   
-  public DynamicBuffer positionEnd() {
+  public SyncDynamicBuffer positionEnd() {
     if(!pages.isEmpty())
-      index = pages.size() -1;
+      synchronized(DEFAULT_PAGE_SIZE) {
+        index = pages.size() -1;
+      }
     return this;
   }
   
   
-  public DynamicBuffer positionStart() {
-    index = 0;
+  public SyncDynamicBuffer positionStart() {
+    synchronized(DEFAULT_PAGE_SIZE) {
+      index = 0;
+    }
     return this;
   }
   
   
-  public DynamicBuffer setWriting() {
+  public SyncDynamicBuffer setWriting() {
     if(read.isTrue()) flip();
     return this;
   }
   
   
-  public DynamicBuffer setReading() {
+  public SyncDynamicBuffer setReading() {
     if(!read.isTrue()) {
       flip();
       positionStart();
@@ -190,14 +198,16 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  public OutputStream getOutputStream() {
+  public OutputStream getSyncOutputStream() {
     return new OutputStream() {
       @Override
       public void write(int b) throws IOException {
-        setWriting();
-        ByteBuffer buf = nextPage();
-        buf.put((byte) b);
-        size.plus(1);
+        synchronized(DEFAULT_PAGE_SIZE) {
+          setWriting();
+          ByteBuffer buf = nextPage();
+          buf.put((byte) b);
+          size.plus(1);
+        }
       }
       @Override
       public void write(byte[] bs, int off, int len) throws IOException {
@@ -214,15 +224,17 @@ public class DynamicBuffer implements Closeable {
           throw new IllegalArgumentException(
               "Invalid length: "+ len);
         
-        setWriting();
-        ByteBuffer buf = nextPage();
-        int nlen = Math.min(buf.remaining(), len);
-        buf.put(bs, off, nlen);
-        off += nlen;
-        len -= nlen;
-        size.plus(nlen);
-        if(len > 0) {
-          write(bs, off, len);
+        synchronized(DEFAULT_PAGE_SIZE) {
+          setWriting();
+          ByteBuffer buf = nextPage();
+          int nlen = Math.min(buf.remaining(), len);
+          buf.put(bs, off, nlen);
+          off += nlen;
+          len -= nlen;
+          size.plus(nlen);
+          if(len > 0) {
+            write(bs, off, len);
+          }
         }
       }
       @Override
@@ -235,10 +247,11 @@ public class DynamicBuffer implements Closeable {
   }
   
   
-  public InputStream getInputStream() {
+  public InputStream getSyncInputStream() {
     return new InputStream() {
       @Override
       public int read() throws IOException {
+        synchronized(DEFAULT_PAGE_SIZE) {
         setReading();
         int read = -1;
         if(pages.isEmpty() || index >= pages.size()) {
@@ -253,6 +266,7 @@ public class DynamicBuffer implements Closeable {
           read = buf.get();
         }
         return read;
+        }
       }
       @Override
       public int read(byte[] bs, int off, int len) throws IOException {
@@ -266,6 +280,7 @@ public class DynamicBuffer implements Closeable {
           throw new IllegalArgumentException(
               "Invalid length: "+ len);
         
+        synchronized(DEFAULT_PAGE_SIZE) {
         setReading();
         if(pages.isEmpty() || index >= pages.size()) 
           return -1;
@@ -284,6 +299,7 @@ public class DynamicBuffer implements Closeable {
           nlen += (nextRead < 0 ? 0 : nextRead);
         }
         return nlen;
+        }
       }
       @Override
       public int read(byte[] bs) throws IOException {

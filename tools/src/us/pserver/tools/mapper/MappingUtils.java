@@ -78,19 +78,6 @@ public abstract class MappingUtils {
   }
   
   
-  public static Map<String,Object> newMap(Class cls, Object val) {
-    Map<String,Object> map = new HashMap<>();
-    map.put(KEY_TYPE, cls.getName());
-    map.put(KEY_VALUE, val);
-    return map;
-  }
-  
-  public static Map<String,Object> newMapType(Class cls) {
-    Map<String,Object> map = new HashMap<>();
-    map.put(KEY_TYPE, cls.getName());
-    return map;
-  }
-  
   public static boolean isNativeSupported(Class cls) {
     return cls != null && NATIVE_SUPPORT.stream()
         .anyMatch(p->p.test(cls));

@@ -71,6 +71,11 @@ public abstract class AbstractMappedValue<T> implements MappedValue<T> {
   public Number asNumber() {
     throw new UnsupportedOperationException("Not a Number");
   }
+  
+  @Override
+  public byte[] asByteArray() {
+    throw new UnsupportedOperationException("Not a byte[] array");
+  }
 
   @Override
   public Map<String, MappedValue> asMap() {
@@ -118,7 +123,9 @@ public abstract class AbstractMappedValue<T> implements MappedValue<T> {
   @Override public void ifBoolean(Consumer<Boolean> exec) {}
 
   @Override public void ifNumber(Consumer<Number> exec) {}
-
+  
+  @Override public void ifByteArray(Consumer<byte[]> exec) {}
+  
   @Override public void ifMap(Consumer<Map<String, MappedValue>> exec) {}
   
 }

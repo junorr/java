@@ -19,35 +19,55 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.mapper;
+package us.pserver.tools.io;
 
-import java.lang.reflect.Array;
-import java.util.Objects;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/09/2017
+ * @version 0.0 - 16/09/2017
  */
-public class ByteArrayMapper extends AbstractMapper {
+public class ByteBufferInputStream extends InputStream {
 
-  public ByteArrayMapper() {
-    super(byte[].class);
+  private final ByteBuffer buffer;
+  
+  
+  public ByteBufferInputStream(ByteBuffer buf) {
+    this.buffer = NotNull.of(buf).getOrFail("Bad null buffer");
+    if(buffer.remaining() < 1) {
+      throw new IllegalArgumentException("No remaining bytes to read");
+    }
+  }
+  
+  
+  public int size() {
+    return this.buffer.remaining();
   }
 
 
   @Override
-  public ByteArrayValue map(Object t) {
-    NotNull.of(t).failIfNull("Bad null object");
-    return new ByteArrayValue((byte[]) t);
+  public int read() {
+    return this.size() < 1 ? -1 : this.buffer.get();
   }
-
-
+  
+  
   @Override
-  public Object unmap(Class cls, MappedValue value) {
-    NotNull.of(value).failIfNull("Bad null value");
-    return value.asByteArray();
+  public int read(byte[] bs, int off, int len) {
+    int size = Math.min(len, this.size());
+    if(size < 1) {
+      return -1;
+    }
+    this.buffer.get(bs, off, size);
+    return size;
   }
-
+  
+  
+  @Override
+  public int read(byte[] bs) {
+    return this.read(bs, 0, bs.length);
+  }
+  
 }

@@ -34,7 +34,7 @@ import us.pserver.tools.NotNull;
 public interface MappedValue<T> extends Serializable {
   
   public static enum Type {
-    NUMBER, STRING, ARRAY, BOOLEAN, MAP
+    NUMBER, STRING, ARRAY, BOOLEAN, MAP, BYTE_ARRAY
   }
   
   public T get();
@@ -49,6 +49,8 @@ public interface MappedValue<T> extends Serializable {
   
   public Number asNumber();
   
+  public byte[] asByteArray();
+  
   public Map<String,MappedValue> asMap();
   
   public void ifString(Consumer<String> exec);
@@ -60,6 +62,8 @@ public interface MappedValue<T> extends Serializable {
   public void ifNumber(Consumer<Number> exec);
   
   public void ifMap(Consumer<Map<String,MappedValue>> exec);
+  
+  public void ifByteArray(Consumer<byte[]> exec);
   
   
   public static MappedValue of(Object obj) {
@@ -78,6 +82,9 @@ public interface MappedValue<T> extends Serializable {
     }
     else if(String.class.isAssignableFrom(obj.getClass())) {
       return new StringValue((String) obj);
+    }
+    else if(byte[].class.isAssignableFrom(obj.getClass())) {
+      return new ByteArrayValue((byte[]) obj);
     }
     else {
       throw new UnsupportedOperationException("Not supported object type");

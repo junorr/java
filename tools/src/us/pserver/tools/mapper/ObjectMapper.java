@@ -50,7 +50,6 @@ public class ObjectMapper extends AbstractMapper {
     maps.add(new ZonedDateTimeMapper());
     maps.add(new PathMapper());
     maps.add(new ClassMapper());
-    maps.add(new ByteArrayMapper());
     maps.add(new ByteBufferMapper());
     maps.add(new ArrayMapper(this));
     maps.add(new ListMapper(this));

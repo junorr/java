@@ -21,11 +21,20 @@
 
 package us.pserver.tools.test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintStream;
+import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.LinkedList;
+import us.pserver.tools.io.ByteBufferInputStream;
+import us.pserver.tools.io.ByteBufferOutputStream;
+import us.pserver.tools.io.DynamicBuffer;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectMapper;
 import us.pserver.tools.timer.Timer;
@@ -54,7 +63,7 @@ public class TestObjectMapper {
   }
   
   
-  public static void exec(BObj b) {
+  public static void exec(BObj b) throws IOException, ClassNotFoundException {
     Timer tm = new Timer.Nanos().start();
     ObjectMapper mapper = new ObjectMapper();
     System.out.println("-- time to create ObjectMapper -- "+ tm.stop());
@@ -75,6 +84,61 @@ public class TestObjectMapper {
     b = (BObj) mapper.unmap(BObj.class, omp);
     System.out.println("-- time to UNmap 'b' -- "+ tm.stop());
     System.out.println("* b.unmapped: "+ b);
+    
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    ObjectOutputStream out = new ObjectOutputStream(bos);
+    tm.clear().start();
+    out.writeObject(omp);
+    System.out.println("-- time to serialize MappedValue -- "+ tm.stop());
+    out.close();
+    
+    tm.clear().start();
+    byte[] bs = bos.toByteArray();
+    //System.out.println("-- time ByteArrayOut.toByteArray() -- "+ tm.stop());
+    
+    ByteArrayInputStream bis = new ByteArrayInputStream(bs);
+    ObjectInputStream oin = new ObjectInputStream(bis);
+    tm.clear().start();
+    omp = (MappedValue) oin.readObject();
+    System.out.println("-- time to DEserialize MappedValue -- "+ tm.stop());
+    System.out.println("* MappedValue.deserialized: "+ omp);
+    oin.close();
+    
+    
+    DynamicBuffer dyn = new DynamicBuffer();
+    dyn.setWriting();
+    out = new ObjectOutputStream(dyn.getOutputStream());
+    tm.clear().start();
+    out.writeObject(omp);
+    System.out.println("-- time to serialize DynamicBuffer MappedValue -- "+ tm.stop());
+    out.close();
+    
+    dyn.setReading();
+    oin = new ObjectInputStream(dyn.getInputStream());
+    tm.clear().start();
+    omp = (MappedValue) oin.readObject();
+    System.out.println("-- time to DEserialize DynamicBuffer MappedValue -- "+ tm.stop());
+    System.out.println("* MappedValue.deserialized: "+ omp);
+    oin.close();
+    
+    ByteBufferOutputStream bbo = new ByteBufferOutputStream(ByteBufferOutputStream.ALLOC_POLICY_HEAP);
+    out = new ObjectOutputStream(bbo);
+    tm.clear().start();
+    out.writeObject(omp);
+    System.out.println("-- time to serialize ByteBufferOutputStream MappedValue -- "+ tm.stop());
+    System.out.println("* MappedValue.serialized: "+ bbo.size()+ ", pages: "+ bbo.pages());
+    out.close();
+    
+    tm.clear().start();
+    ByteBuffer buf = bbo.toByteBuffer();
+    //System.out.println("-- time ByteBufferOut.toByteBuffer() -- "+ tm.stop());
+    
+    oin = new ObjectInputStream(new ByteBufferInputStream(buf));
+    tm.clear().start();
+    omp = (MappedValue) oin.readObject();
+    System.out.println("-- time to DEserialize ByteBufferInputStream MappedValue -- "+ tm.stop());
+    System.out.println("* MappedValue.deserialized: "+ omp);
+    oin.close();
   }
   
   
@@ -104,8 +168,8 @@ public class TestObjectMapper {
   }
 
   
-  public static void main(String[] args) throws FileNotFoundException {
-    System.out.println("* wariming up 10x...");
+  public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
+    System.out.println("* warming up 10x...");
     disableOut();
     BObj b = b();
     for(int i = 0; i < 10; i++) {
