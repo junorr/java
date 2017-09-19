@@ -28,10 +28,10 @@ import us.pserver.dbone.store.Block;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public interface TxLog {
+public interface TxLog<T> {
 
   public Block block();
   
-  public void rollback();
+  public T execute();
   
 }

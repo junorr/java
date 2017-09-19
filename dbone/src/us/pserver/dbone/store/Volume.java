@@ -22,6 +22,7 @@
 package us.pserver.dbone.store;
 
 import java.io.Closeable;
+import us.pserver.dbone.store.tx.Transaction;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
 
@@ -32,13 +33,13 @@ import us.pserver.tools.mapper.ObjectUID;
  */
 public interface Volume extends Closeable {
 
-  public Index put(StoreUnit unit) throws StoreException;
+  public Transaction<Index> put(StoreUnit unit);
   
-  public Index put(ObjectUID uid, MappedValue val) throws StoreException;
+  public Transaction<Index> put(ObjectUID uid, MappedValue val);
   
-  public StoreUnit get(Index idx) throws StoreException;
+  public Transaction<StoreUnit> get(Index idx);
   
-  public ObjectUID getUID(Index idx) throws StoreException;
+  public Transaction<ObjectUID> getUID(Index idx);
   
   @Override public void close() throws StoreException;
   

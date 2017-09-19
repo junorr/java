@@ -34,8 +34,10 @@ public interface Transaction<T> {
   
   public Optional<Throwable> getError();
   
-  public Optional<T> get();
+  public Optional<T> value();
   
   public void rollback();
+  
+  public void commit();
   
 }

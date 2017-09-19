@@ -29,14 +29,16 @@ import us.pserver.dbone.store.Storage;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public abstract class AbstractStoreLog implements TxLog {
+public abstract class AbstractTxLog<T> implements TxLog<T> {
+  
+  public static final Void VOID = (Void) new Object();
   
   protected final Block block;
   
   protected final Storage storage;
   
   
-  protected AbstractStoreLog(Block blk, Storage stg) {
+  protected AbstractTxLog(Block blk, Storage stg) {
     this.block = blk;
     this.storage = stg;
   }

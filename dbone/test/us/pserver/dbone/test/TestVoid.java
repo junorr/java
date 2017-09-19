@@ -19,49 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store.tx;
-
-import java.util.List;
-import java.util.Optional;
-import us.pserver.tools.NotNull;
+package us.pserver.dbone.test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public abstract class AbstractTransaction<T> implements Transaction<T> {
+public class TestVoid {
   
-  protected final Throwable error;
   
-  protected final List<TxLog> log;
+  public static <T> T exec(T t) {
+    return t;
+  }
   
-  protected final T obj;
   
-  public AbstractTransaction(Throwable err, T obj, List<TxLog> log) {
-    this.error = err;
-    this.obj = obj;
-    this.log = NotNull.of(log).getOrFail("Bad null log list");
+  public static Void exec2() {
+    return (Void) new Object();
   }
 
-  @Override
-  public boolean isSuccessful() {
-    return error == null;
-  }
-
-  @Override
-  public Optional<Throwable> getError() {
-    return Optional.ofNullable(error);
+  
+  public static void main(String[] args) {
+    Void v = null;
+    int i = exec(5);
+    v = exec2();
   }
   
-  @Override
-  public Optional<T> value() {
-    return Optional.ofNullable(obj);
-  }
-
-  @Override
-  public void rollback() {
-    log.forEach(TxLog::rollback);
-  }
-
 }

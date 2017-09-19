@@ -29,15 +29,16 @@ import us.pserver.dbone.store.Storage;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public class StoreDeallocationLog extends AbstractStoreLog {
+public class CommitStorePutLog extends AbstractTxLog<Void> {
 
-  public StoreDeallocationLog(Block blk, Storage stg) {
+  public CommitStorePutLog(Block blk, Storage stg) {
     super(blk, stg);
   }
-  
+
   @Override
-  public void rollback() {
-    this.storage.reallocate(this.block);
+  public Void execute() {
+    storage.put(block);
+    return null;
   }
 
 }

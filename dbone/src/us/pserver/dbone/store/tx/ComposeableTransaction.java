@@ -19,17 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.store.tx;
 
-import java.nio.ByteBuffer;
+import java.util.List;
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 19/09/2017
  */
-public interface Writable {
+public class ComposeableTransaction<T> extends DefaultTransaction<T> {
 
-  public void writeTo(ByteBuffer buf);
+  private final Transaction<?> inner;
+  
+  
+  public ComposeableTransaction(Throwable err, T obj, Transaction<?> inner, List<TxLog> log) {
+    super(err, obj, log);
+    this.inner = NotNull.of(inner).getOrFail("Bad null inner Transaction");
+  }
+  
+  
+  public ComposeableTransaction(Throwable err, T obj, Transaction<?> inner) {
+    super(err, obj);
+    this.inner = NotNull.of(inner).getOrFail("Bad null inner Transaction");
+  }
+  
+  
+  @Override
+  public void rollback() {
+    inner.rollback();
+    super.rollback();
+  }
   
 }

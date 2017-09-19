@@ -73,6 +73,7 @@ public abstract class MappingUtils {
     maps.add(List.class::isAssignableFrom);
     maps.add(Set.class::isAssignableFrom);
     maps.add(Map.class::isAssignableFrom);
+    maps.add(MappedValue.class::isAssignableFrom);
     maps.add(Class::isArray);
     return maps;
   }

@@ -23,6 +23,9 @@ package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
+import us.pserver.dbone.store.tx.ComposeableTransaction;
+import us.pserver.dbone.store.tx.DefaultTransaction;
+import us.pserver.dbone.store.tx.Transaction;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.UTF8String;
 import us.pserver.tools.io.ByteBufferOutputStream;
@@ -48,25 +51,37 @@ public class DefaultVolume implements Volume {
   
 
   @Override
-  public Index put(StoreUnit unit) throws StoreException {
+  public Transaction<Index> put(StoreUnit unit) {
     NotNull.of(unit).failIfNull("Bad null StoreUnit");
     ByteBuffer sbuf = serial.serialize(unit.getValue());
-    Block blk = storage.allocate();
+    Transaction<Block> tx = storage.allocate();
+    //System.out.println("* Volume.put: success="+ tx.isSuccessful()+ ", error="+ tx.getError()+ ", value="+ tx.value());
+    if(!tx.isSuccessful()) {
+      return new ComposeableTransaction(tx.getError().get(), null, tx);
+    }
+    Block blk = tx.value().get();
     Index idx = Index.of(
         unit.getUID().getHash(), 
         blk.region(), 
         unit.getUID()
     );
     this.put(unit.getUID(), blk);
-    this.put(sbuf, blk);
-    return idx;
+    Transaction<Block> tx2 = this.put(sbuf, blk);
+    if(!tx2.isSuccessful()) {
+      return new ComposeableTransaction(tx2.getError().get(), idx, tx2);
+    }
+    else {
+      return new ComposeableTransaction(null, idx, tx);
+    }
   }
   
   
-  private void put(ByteBuffer sbuf, Block blk) {
+  private Transaction<Block> put(ByteBuffer sbuf, Block blk) {
     copy(sbuf, blk.buffer());
     while(sbuf.hasRemaining()) {
-      Block b2 = storage.allocate();
+      Transaction<Block> tx = storage.allocate();
+      if(!tx.isSuccessful()) return tx;
+      Block b2 = tx.value().get();
       blk.setNext(b2.region());
       blk.buffer().flip();
       storage.put(blk);
@@ -75,6 +90,7 @@ public class DefaultVolume implements Volume {
     }
     this.zeroFill(blk.buffer());
     storage.put(blk);
+    return new DefaultTransaction(null, null);
   }
   
   
@@ -103,6 +119,7 @@ public class DefaultVolume implements Volume {
           from.arrayOffset(), 
           minLen
       );
+      from.position(from.position() + minLen);
     }
     else {
       byte[] bs = new byte[minLen];
@@ -113,15 +130,18 @@ public class DefaultVolume implements Volume {
 
 
   @Override
-  public Index put(ObjectUID uid, MappedValue val) throws StoreException {
+  public Transaction<Index> put(ObjectUID uid, MappedValue val) {
     return this.put(StoreUnit.of(uid, val));
   }
   
   
   @Override
-  public ObjectUID getUID(Index idx) throws StoreException {
-    NotNull.of(idx).failIfNull("Bad null Index");
-    return this.getUID(storage.get(idx.getRegion()));
+  public Transaction<ObjectUID> getUID(Index idx) {
+    try {
+      return new DefaultTransaction(null, this.getUID(storage.get(idx.getRegion())));
+    } catch(Exception e) {
+      return new DefaultTransaction(e, null);
+    }
   }
   
   
@@ -140,11 +160,14 @@ public class DefaultVolume implements Volume {
 
 
   @Override
-  public StoreUnit get(Index idx) throws StoreException {
-    NotNull.of(idx).failIfNull("Bad null Index");
-    Block blk = storage.get(idx.getRegion());
-    ObjectUID uid = this.getUID(blk);
-    return StoreUnit.of(uid, this.getValue(blk));
+  public Transaction<StoreUnit> get(Index idx) {
+    try {
+      Block blk = storage.get(idx.getRegion());
+      ObjectUID uid = this.getUID(blk);
+      return new DefaultTransaction(null, StoreUnit.of(uid, this.getValue(blk)));
+    } catch(Exception e) {
+      return new DefaultTransaction(e, null);
+    }
   }
   
   

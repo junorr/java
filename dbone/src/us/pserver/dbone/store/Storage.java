@@ -23,7 +23,6 @@ package us.pserver.dbone.store;
 
 import java.io.Closeable;
 import java.nio.ByteBuffer;
-import java.util.List;
 import java.util.function.IntFunction;
 import us.pserver.dbone.store.tx.Transaction;
 
@@ -36,15 +35,13 @@ public interface Storage extends Closeable {
 
   public Transaction<Block> allocate();
   
-  public void reallocate(Block blk) throws BlockAllocationException;
-  
-  public void deallocate(Block blk) throws BlockAllocationException;
-  
-  public Transaction<Block> get(Region reg);
+  public Transaction<Block> get(Region reg) throws StoreException;
   
   public Transaction<Void> put(Block blk);
   
-  public List<Region> freeBlocks();
+  public void reallocate(Block blk) throws BlockAllocationException;
+  
+  public void deallocate(Block blk) throws BlockAllocationException;
   
   public int getBlockSize();
   

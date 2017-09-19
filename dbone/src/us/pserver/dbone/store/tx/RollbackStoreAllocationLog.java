@@ -21,47 +21,24 @@
 
 package us.pserver.dbone.store.tx;
 
-import java.util.List;
-import java.util.Optional;
-import us.pserver.tools.NotNull;
+import us.pserver.dbone.store.Block;
+import us.pserver.dbone.store.Storage;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public abstract class AbstractTransaction<T> implements Transaction<T> {
-  
-  protected final Throwable error;
-  
-  protected final List<TxLog> log;
-  
-  protected final T obj;
-  
-  public AbstractTransaction(Throwable err, T obj, List<TxLog> log) {
-    this.error = err;
-    this.obj = obj;
-    this.log = NotNull.of(log).getOrFail("Bad null log list");
-  }
+public class RollbackStoreAllocationLog extends AbstractTxLog<Void> {
 
-  @Override
-  public boolean isSuccessful() {
-    return error == null;
-  }
-
-  @Override
-  public Optional<Throwable> getError() {
-    return Optional.ofNullable(error);
+  public RollbackStoreAllocationLog(Block blk, Storage stg) {
+    super(blk, stg);
   }
   
   @Override
-  public Optional<T> value() {
-    return Optional.ofNullable(obj);
-  }
-
-  @Override
-  public void rollback() {
-    log.forEach(TxLog::rollback);
+  public Void execute() {
+    this.storage.deallocate(this.block);
+    return null;
   }
 
 }

@@ -55,6 +55,40 @@ public class ObjectUID implements Serializable {
   public String getClassName() {
     return this.className;
   }
+
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 97 * hash + Objects.hashCode(this.uid);
+    hash = 97 * hash + Objects.hashCode(this.className);
+    return hash;
+  }
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final ObjectUID other = (ObjectUID) obj;
+    if (!Objects.equals(this.uid, other.uid)) {
+      return false;
+    }
+    return Objects.equals(this.className, other.className);
+  }
+
+
+  @Override
+  public String toString() {
+    return "ObjectUID{" + "uid=" + uid + ", cls=" + className + '}';
+  }
   
   
   public static Builder builder() {

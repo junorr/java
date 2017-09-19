@@ -25,9 +25,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.IntFunction;
 import us.pserver.dbone.store.tx.DefaultTransaction;
-import us.pserver.dbone.store.tx.StoreAllocationLog;
+import us.pserver.dbone.store.tx.RollbackStoreAllocationLog;
 import us.pserver.dbone.store.tx.Transaction;
 import us.pserver.tools.NotNull;
 
@@ -38,9 +39,11 @@ import us.pserver.tools.NotNull;
  */
 public class FileStorage implements Storage {
   
-  public static final IntFunction<ByteBuffer> ALLOC_POLICY_DIRECT = ByteBuffer::allocateDirect;
+  public static final BiFunction<ByteBuffer,Integer,ByteBuffer> ALLOC_POLICY_SHARED = (b,i)->b.slice();
   
-  public static final IntFunction<ByteBuffer> ALLOC_POLICY_HEAP = ByteBuffer::allocateDirect;
+  public static final BiFunction<ByteBuffer,Integer,ByteBuffer> ALLOC_POLICY_DIRECT = (b,i)->ByteBuffer.allocateDirect(i);
+  
+  public static final BiFunction<ByteBuffer,Integer,ByteBuffer> ALLOC_POLICY_HEAP = (b,i)->ByteBuffer.allocate(i);
   
   public static final int MINIMUM_BLOCK_SIZE = 1024;
   
@@ -53,12 +56,12 @@ public class FileStorage implements Storage {
   
   private final List<Region> frees;
   
-  private final IntFunction<ByteBuffer> malloc;
+  private final BiFunction<ByteBuffer,Integer,ByteBuffer> malloc;
   
   private final int blockSize;
   
   
-  protected FileStorage(FileChannel channel, IntFunction<ByteBuffer> allocPolicy, List<Region> freeBlocks, int blockSize) {
+  protected FileStorage(FileChannel channel, BiFunction<ByteBuffer,Integer,ByteBuffer> allocPolicy, List<Region> freeBlocks, int blockSize) {
     this.channel = NotNull.of(channel).getOrFail("Bad null FileChannel");
     this.malloc = NotNull.of(allocPolicy).getOrFail("Bad null alloc policy");
     this.frees = NotNull.of(freeBlocks).getOrFail("Bad null free blocks list");
@@ -85,7 +88,7 @@ public class FileStorage implements Storage {
   
   @Override
   public Transaction<Block> allocate() {
-    ByteBuffer buf = malloc.apply(blockSize);
+    ByteBuffer buf = malloc.apply(null, blockSize);
     Region reg = null;
     if(this.frees.isEmpty()) {
       reg = this.nextRegion();
@@ -95,7 +98,8 @@ public class FileStorage implements Storage {
     }
     Block blk = new DefaultBlock(reg, buf).setNext(Region.of(0, 0));
     DefaultTransaction<Block> tx = new DefaultTransaction(null, blk);
-    tx.logs().add(new StoreAllocationLog(blk, this));
+    tx.logs().add(new RollbackStoreAllocationLog(blk, this));
+    System.out.println("* Storage.allocate: success="+ tx.isSuccessful()+ ", error="+ tx.getError()+ ", value="+ tx.value());
     return tx;
   }
 
@@ -109,19 +113,15 @@ public class FileStorage implements Storage {
   @Override
   public void deallocate(Block blk) throws BlockAllocationException {
     NotNull.of(blk).failIfNull("Bad null Block");
-    this.frees.add(blk.region());
-  }
-
-
-  @Override
-  public Block get(Region reg) throws BlockAllocationException {
-    NotNull.of(reg).failIfNull("Bad null Region");
     try {
-      channel.position(reg.offset());
-      ByteBuffer buf = malloc.apply(reg.intLength());
-      int read = channel.read(buf);
-      if(read > 0) buf.flip();
-      return new DefaultBlock(reg, buf);
+      if(blk.region().offset() + blk.region().length() >= channel.size()) {
+        //System.out.println("* Storage.deallocate: channel.truncate => "+ blk.region());
+        channel.truncate(blk.region().offset());
+      }
+      else {
+        //System.out.println("* Storage.deallocate: frees.add => "+ blk.region());
+        this.frees.add(blk.region());
+      }
     }
     catch(IOException e) {
       throw new BlockAllocationException(e.toString(), e);
@@ -130,22 +130,41 @@ public class FileStorage implements Storage {
 
 
   @Override
-  public void put(Block blk) throws StoreException {
+  public Transaction<Block> get(Region reg) {
+    NotNull.of(reg).failIfNull("Bad null Region");
+    try {
+      channel.position(reg.offset());
+      ByteBuffer buf = malloc.apply(null, reg.intLength());
+      int read = channel.read(buf);
+      if(read > 0) buf.flip();
+      return new DefaultTransaction(null, new DefaultBlock(reg, buf));
+    }
+    catch(IOException e) {
+      return new DefaultTransaction(e, null);
+    }
+  }
+
+
+  @Override
+  public Transaction<Void> put(Block blk) throws StoreException {
     NotNull.of(blk).failIfNull("Bad null Block");
     try {
       blk.buffer().position(0);
       blk.buffer().limit(blk.buffer().capacity());
       channel.position(blk.region().offset());
       channel.write(blk.buffer());
+      DefaultTransaction<Void> tx = new DefaultTransaction<>(null, null);
+      tx.logs().add(new RollbackStoreAllocationLog(blk, this));
+      return tx;
     }
     catch(IOException e) {
-      throw new BlockAllocationException(e.toString(), e);
+      return new DefaultTransaction<>(e, null);
     }
   }
 
 
   @Override
-  public List<Region> freeBlocks() {
+  public List<Region> getFreeBlocks() {
     return this.frees;
   }
 

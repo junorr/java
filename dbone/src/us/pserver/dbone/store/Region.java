@@ -22,7 +22,6 @@
 package us.pserver.dbone.store;
 
 import java.io.Serializable;
-import java.nio.ByteBuffer;
 import us.pserver.tools.NotNull;
 
 /**
@@ -30,7 +29,7 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2017
  */
-public interface Region extends Comparable, Writable, Serializable {
+public interface Region extends Comparable, Serializable {
   
   public static final int BYTES = Long.BYTES * 2;
 
@@ -89,16 +88,6 @@ public interface Region extends Comparable, Writable, Serializable {
       return (int) this.length;
     }
     
-    @Override
-    public void writeTo(ByteBuffer buf) {
-      NotNull.of(buf).failIfNull("Bad null ByteBuffer");
-      if(buf.remaining() < 16) {
-        throw new IllegalStateException("Insuficient size remaining");
-      }
-      buf.putLong(offset);
-      buf.putLong(length);
-    }
-
     @Override
     public int hashCode() {
       int hash = 7;

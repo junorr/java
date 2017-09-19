@@ -58,12 +58,12 @@ public class DefaultBlock implements Block {
   public Optional<Region> next() {
     int pos = buffer.position();
     int lim = buffer.limit();
-    buffer.limit(buffer.capacity() - 16);
-    buffer.position(buffer.limit() - 16);
+    buffer.limit(buffer.capacity());
+    buffer.position(buffer.limit() - Region.BYTES);
     long off = buffer.getLong();
     long len = buffer.getLong();
-    buffer.position(pos);
     buffer.limit(lim);
+    buffer.position(pos);
     return Optional.ofNullable(off >= 0 && len >= 1 
         ? Region.of(off, len) : null);
   }
