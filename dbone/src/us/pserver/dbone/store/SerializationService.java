@@ -24,7 +24,10 @@ package us.pserver.dbone.store;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import us.pserver.tools.io.ByteBufferInputStream;
 import us.pserver.tools.io.ByteBufferOutputStream;
 import us.pserver.tools.mapper.MappedValue;
@@ -38,13 +41,12 @@ public class SerializationService {
 
   public SerializationService() {}
   
-  
-  public ByteBuffer serialize(MappedValue val) throws StoreException {
+  public ByteBuffer serialize(Serializable slz) throws StoreException {
     try (
         ByteBufferOutputStream bos = new ByteBufferOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
     ) {
-      oos.writeObject(val);
+      oos.writeObject(slz);
       return bos.toByteBuffer();
     }
     catch(IOException e) {
@@ -52,12 +54,12 @@ public class SerializationService {
     }
   }
   
-  public MappedValue deserialize(ByteBuffer buf) throws StoreException {
+  public Object deserialize(ByteBuffer buf) throws StoreException {
     try (
         ByteBufferInputStream bis = new ByteBufferInputStream(buf);
         ObjectInputStream ois = new ObjectInputStream(bis);
         ) {
-      return (MappedValue) ois.readObject();
+      return ois.readObject();
     }
     catch(ClassNotFoundException | IOException e) {
       throw new StoreException(e.toString(), e);

@@ -89,10 +89,9 @@ public class DefaultVolume implements Volume {
   
   
   private void zeroFill(ByteBuffer buf) {
+    if(buf.hasArray()) return;
     byte[] bs = new byte[buf.remaining()];
     buf.put(bs);
-    buf.position(0);
-    buf.limit(buf.capacity());
   }
   
   
@@ -158,7 +157,7 @@ public class DefaultVolume implements Volume {
       bos.write(blk.buffer());
       next = blk.next();
     }
-    return serial.deserialize(bos.toByteBuffer());
+    return (MappedValue) serial.deserialize(bos.toByteBuffer());
   }
 
 

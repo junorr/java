@@ -26,6 +26,9 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.List;
 import java.util.function.IntFunction;
+import us.pserver.dbone.store.tx.DefaultTransaction;
+import us.pserver.dbone.store.tx.StoreAllocationLog;
+import us.pserver.dbone.store.tx.Transaction;
 import us.pserver.tools.NotNull;
 
 /**
@@ -81,7 +84,7 @@ public class FileStorage implements Storage {
   
   
   @Override
-  public Block allocate() throws BlockAllocationException {
+  public Transaction<Block> allocate() {
     ByteBuffer buf = malloc.apply(blockSize);
     Region reg = null;
     if(this.frees.isEmpty()) {
@@ -90,8 +93,16 @@ public class FileStorage implements Storage {
     else {
       reg = this.frees.remove(0);
     }
-    return new DefaultBlock(reg, buf)
-        .setNext(Region.of(0, 0));
+    Block blk = new DefaultBlock(reg, buf).setNext(Region.of(0, 0));
+    DefaultTransaction<Block> tx = new DefaultTransaction(null, blk);
+    tx.logs().add(new StoreAllocationLog(blk, this));
+    return tx;
+  }
+
+
+  @Override
+  public void reallocate(Block blk) throws BlockAllocationException {
+    this.frees.remove(blk.region());
   }
 
 
@@ -122,6 +133,8 @@ public class FileStorage implements Storage {
   public void put(Block blk) throws StoreException {
     NotNull.of(blk).failIfNull("Bad null Block");
     try {
+      blk.buffer().position(0);
+      blk.buffer().limit(blk.buffer().capacity());
       channel.position(blk.region().offset());
       channel.write(blk.buffer());
     }

@@ -19,37 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.store.tx;
 
-import java.io.Closeable;
-import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.function.IntFunction;
-import us.pserver.dbone.store.tx.Transaction;
+import java.util.Optional;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 19/09/2017
  */
-public interface Storage extends Closeable {
+public interface Transaction<T> {
 
-  public Transaction<Block> allocate();
+  public boolean isSuccessful();
   
-  public void reallocate(Block blk) throws BlockAllocationException;
+  public Optional<Throwable> getError();
   
-  public void deallocate(Block blk) throws BlockAllocationException;
+  public Optional<T> get();
   
-  public Transaction<Block> get(Region reg);
-  
-  public Transaction<Void> put(Block blk);
-  
-  public List<Region> freeBlocks();
-  
-  public int getBlockSize();
-  
-  public IntFunction<ByteBuffer> getAllocationPolicy();
-  
-  @Override public void close() throws StoreException;
+  public void rollback();
   
 }

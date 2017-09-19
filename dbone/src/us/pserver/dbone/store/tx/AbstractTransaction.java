@@ -19,37 +19,49 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.store.tx;
 
-import java.io.Closeable;
-import java.nio.ByteBuffer;
 import java.util.List;
-import java.util.function.IntFunction;
-import us.pserver.dbone.store.tx.Transaction;
+import java.util.Optional;
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 19/09/2017
  */
-public interface Storage extends Closeable {
+public abstract class AbstractTransaction<T> implements Transaction<T> {
+  
+  protected final Throwable error;
+  
+  protected final List<TxLog> log;
+  
+  protected final T obj;
+  
+  public AbstractTransaction(Throwable err, T obj, List<TxLog> log) {
+    this.error = err;
+    this.obj = obj;
+    this.log = NotNull.of(log).getOrFail("Bad null log list");
+  }
 
-  public Transaction<Block> allocate();
+  @Override
+  public boolean isSuccessful() {
+    return error != null;
+  }
+
+  @Override
+  public Optional<Throwable> getError() {
+    return Optional.ofNullable(error);
+  }
   
-  public void reallocate(Block blk) throws BlockAllocationException;
-  
-  public void deallocate(Block blk) throws BlockAllocationException;
-  
-  public Transaction<Block> get(Region reg);
-  
-  public Transaction<Void> put(Block blk);
-  
-  public List<Region> freeBlocks();
-  
-  public int getBlockSize();
-  
-  public IntFunction<ByteBuffer> getAllocationPolicy();
-  
-  @Override public void close() throws StoreException;
-  
+  @Override
+  public Optional<T> get() {
+    return Optional.ofNullable(obj);
+  }
+
+  @Override
+  public void rollback() {
+    log.forEach(TxLog::rollback);
+  }
+
 }
