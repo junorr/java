@@ -31,6 +31,8 @@ import us.pserver.tools.NotNull;
  * @version 0.0 - 14/09/2017
  */
 public interface Region extends Comparable, Writable, Serializable {
+  
+  public static final int BYTES = Long.BYTES * 2;
 
   public long offset();
   

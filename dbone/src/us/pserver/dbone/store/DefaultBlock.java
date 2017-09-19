@@ -43,13 +43,13 @@ public class DefaultBlock implements Block {
   }
 
   @Override
-  public Region getRegion() {
+  public Region region() {
     return this.region;
   }
 
 
   @Override
-  public ByteBuffer getBuffer() {
+  public ByteBuffer buffer() {
     return this.buffer;
   }
 
@@ -57,10 +57,13 @@ public class DefaultBlock implements Block {
   @Override
   public Optional<Region> next() {
     int pos = buffer.position();
+    int lim = buffer.limit();
+    buffer.limit(buffer.capacity() - 16);
     buffer.position(buffer.limit() - 16);
     long off = buffer.getLong();
     long len = buffer.getLong();
     buffer.position(pos);
+    buffer.limit(lim);
     return Optional.ofNullable(off >= 0 && len >= 1 
         ? Region.of(off, len) : null);
   }
@@ -70,10 +73,13 @@ public class DefaultBlock implements Block {
   public DefaultBlock setNext(Region r) {
     NotNull.of(r).failIfNull("Bad null Region");
     int pos = buffer.position();
-    buffer.position(buffer.limit() - 16);
+    int nlim = buffer.capacity() - Region.BYTES;
+    buffer.limit(buffer.capacity());
+    buffer.position(nlim);
     buffer.putLong(r.offset());
     buffer.putLong(r.length());
     buffer.position(pos);
+    buffer.limit(nlim);
     return this;
   }
 

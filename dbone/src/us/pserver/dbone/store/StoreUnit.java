@@ -21,6 +21,8 @@
 
 package us.pserver.dbone.store;
 
+import java.util.Objects;
+import us.pserver.tools.NotNull;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
 
@@ -29,10 +31,76 @@ import us.pserver.tools.mapper.ObjectUID;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2017
  */
-public interface StoreUnit extends Writable {
+public interface StoreUnit {
 
   public ObjectUID getUID();
   
   public MappedValue getValue();
+  
+  
+  public static StoreUnit of(ObjectUID uid, MappedValue val) {
+    return new StoreUnitImpl(uid, val);
+  }
+  
+  
+  
+  
+  
+  public static class StoreUnitImpl implements StoreUnit {
+    
+    private final ObjectUID uid;
+    
+    private final MappedValue value;
+    
+    public StoreUnitImpl(ObjectUID uid, MappedValue val) {
+      this.uid = NotNull.of(uid).getOrFail("Bad null ObjectUID");
+      this.value = NotNull.of(val).getOrFail("Bad null MappedValue");
+    }
+    
+    @Override
+    public ObjectUID getUID() {
+      return this.uid;
+    }
+    
+    @Override
+    public MappedValue getValue() {
+      return this.value;
+    }
+
+    @Override
+    public int hashCode() {
+      int hash = 7;
+      hash = 71 * hash + Objects.hashCode(this.uid);
+      hash = 71 * hash + Objects.hashCode(this.value);
+      return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      final StoreUnitImpl other = (StoreUnitImpl) obj;
+      if (!Objects.equals(this.uid, other.uid)) {
+        return false;
+      }
+      if (!Objects.equals(this.value, other.value)) {
+        return false;
+      }
+      return true;
+    }
+
+    @Override
+    public String toString() {
+      return "StoreUnit{" + "uid=" + uid + ", value=" + value + '}';
+    }
+    
+  }
   
 }

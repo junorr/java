@@ -90,14 +90,15 @@ public class FileStorage implements Storage {
     else {
       reg = this.frees.remove(0);
     }
-    return new DefaultBlock(reg, buf);
+    return new DefaultBlock(reg, buf)
+        .setNext(Region.of(0, 0));
   }
 
 
   @Override
   public void deallocate(Block blk) throws BlockAllocationException {
     NotNull.of(blk).failIfNull("Bad null Block");
-    this.frees.add(blk.getRegion());
+    this.frees.add(blk.region());
   }
 
 
@@ -121,8 +122,8 @@ public class FileStorage implements Storage {
   public void put(Block blk) throws StoreException {
     NotNull.of(blk).failIfNull("Bad null Block");
     try {
-      channel.position(blk.getRegion().offset());
-      channel.write(blk.getBuffer());
+      channel.position(blk.region().offset());
+      channel.write(blk.buffer());
     }
     catch(IOException e) {
       throw new BlockAllocationException(e.toString(), e);
@@ -143,10 +144,16 @@ public class FileStorage implements Storage {
   
   
   @Override
+  public IntFunction<ByteBuffer> getAllocationPolicy() {
+    return this.malloc;
+  }
+  
+  
+  @Override
   public void close() throws StoreException {
     try {
       Block blk = this.get(HEADER_REGION);
-      ByteBuffer buf = blk.getBuffer();
+      ByteBuffer buf = blk.buffer();
       //System.out.println("FileStorage.get: remaining="+ buf.remaining()+ ", capacity="+ buf.capacity());
       buf.putShort((short)0);
       buf.putInt(blockSize);
@@ -158,7 +165,7 @@ public class FileStorage implements Storage {
         buf.putLong(0l);
       }
       buf.flip();
-      channel.position(blk.getRegion().offset());
+      channel.position(blk.region().offset());
       channel.write(buf);
     }
     catch(IOException e) {

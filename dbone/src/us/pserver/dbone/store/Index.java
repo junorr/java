@@ -22,6 +22,8 @@
 package us.pserver.dbone.store;
 
 import java.io.Serializable;
+import java.util.Objects;
+import us.pserver.tools.NotNull;
 import us.pserver.tools.mapper.ObjectUID;
 
 /**
@@ -29,12 +31,92 @@ import us.pserver.tools.mapper.ObjectUID;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2017
  */
-public interface Index extends Comparable, Serializable {
+public interface Index extends Comparable<Index>, Serializable {
 
   public String getName();
   
   public Region getRegion();
   
   public ObjectUID getUID();
+  
+  @Override
+  public default int compareTo(Index idx) {
+    return 0;
+  }
+  
+  
+  public static Index of(String name, Region r, ObjectUID uid) {
+    return new IndexImpl(name, r, uid);
+  }
+  
+  
+  
+  
+  
+  public static class IndexImpl implements Index {
+  
+    private final String name;
+
+    private final Region region;
+
+    private final ObjectUID uid;
+
+    public IndexImpl(String name, Region reg, ObjectUID uid) {
+      this.name = NotNull.of(name).getOrFail("Bad null name");
+      this.region = NotNull.of(reg).getOrFail("Bad null Region");
+      this.uid = NotNull.of(uid).getOrFail("Bad null ObjectUID");
+    }
+
+    @Override
+    public String getName() {
+      return this.name;
+    }
+
+    @Override
+    public Region getRegion() {
+      return this.region;
+    }
+
+    @Override
+    public ObjectUID getUID() {
+      return this.uid;
+    }
+
+    @Override
+    public int hashCode() {
+      int hash = 7;
+      hash = 83 * hash + Objects.hashCode(this.region);
+      hash = 83 * hash + Objects.hashCode(this.uid);
+      return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      final IndexImpl other = (IndexImpl) obj;
+      if (!Objects.equals(this.region, other.region)) {
+        return false;
+      }
+      if (!Objects.equals(this.uid, other.uid)) {
+        return false;
+      }
+      return true;
+    }
+
+    @Override
+    public String toString() {
+      return "Index{" + "name=" + name + ", region=" + region + ", uid=" + uid + '}';
+    }
+
+  }
+
   
 }

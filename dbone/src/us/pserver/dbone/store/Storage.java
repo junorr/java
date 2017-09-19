@@ -22,7 +22,9 @@
 package us.pserver.dbone.store;
 
 import java.io.Closeable;
+import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.function.IntFunction;
 
 /**
  *
@@ -42,6 +44,8 @@ public interface Storage extends Closeable {
   public List<Region> freeBlocks();
   
   public int getBlockSize();
+  
+  public IntFunction<ByteBuffer> getAllocationPolicy();
   
   @Override public void close() throws StoreException;
   

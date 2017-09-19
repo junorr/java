@@ -22,7 +22,10 @@
 package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
+import java.util.Optional;
 import us.pserver.tools.NotNull;
+import us.pserver.tools.UTF8String;
+import us.pserver.tools.io.ByteBufferOutputStream;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
 
@@ -49,27 +52,119 @@ public class DefaultVolume implements Volume {
     NotNull.of(unit).failIfNull("Bad null StoreUnit");
     ByteBuffer sbuf = serial.serialize(unit.getValue());
     Block blk = storage.allocate();
-    while(sbuf.remaining() > blk.getBuffer().remaining()) {
-      
+    Index idx = Index.of(
+        unit.getUID().getHash(), 
+        blk.region(), 
+        unit.getUID()
+    );
+    this.put(unit.getUID(), blk);
+    this.put(sbuf, blk);
+    return idx;
+  }
+  
+  
+  private void put(ByteBuffer sbuf, Block blk) {
+    copy(sbuf, blk.buffer());
+    while(sbuf.hasRemaining()) {
+      Block b2 = storage.allocate();
+      blk.setNext(b2.region());
+      blk.buffer().flip();
+      storage.put(blk);
+      copy(sbuf, b2.buffer());
+      blk = b2;
+    }
+    this.zeroFill(blk.buffer());
+    storage.put(blk);
+  }
+  
+  
+  private void put(ObjectUID uid, Block blk) {
+    byte[] buid = UTF8String.from(uid.getHash()).getBytes();
+    byte[] bcls = UTF8String.from(uid.getClassName()).getBytes();
+    blk.buffer().putInt(buid.length);
+    blk.buffer().putInt(bcls.length);
+    blk.buffer().put(buid);
+    blk.buffer().put(bcls);
+  }
+  
+  
+  private void zeroFill(ByteBuffer buf) {
+    byte[] bs = new byte[buf.remaining()];
+    buf.put(bs);
+    buf.position(0);
+    buf.limit(buf.capacity());
+  }
+  
+  
+  private void copy(ByteBuffer from, ByteBuffer to) {
+    int minLen = Math.min(from.remaining(), to.remaining());
+    if(from.hasArray()) {
+      to.put(
+          from.array(), 
+          from.arrayOffset(), 
+          minLen
+      );
+    }
+    else {
+      byte[] bs = new byte[minLen];
+      from.get(bs);
+      to.put(bs);
     }
   }
 
 
   @Override
   public Index put(ObjectUID uid, MappedValue val) throws StoreException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return this.put(StoreUnit.of(uid, val));
+  }
+  
+  
+  @Override
+  public ObjectUID getUID(Index idx) throws StoreException {
+    NotNull.of(idx).failIfNull("Bad null Index");
+    return this.getUID(storage.get(idx.getRegion()));
+  }
+  
+  
+  private ObjectUID getUID(Block blk) {
+    int uidLen = blk.buffer().getInt();
+    int clsLen = blk.buffer().getInt();
+    byte[] buid = new byte[uidLen];
+    byte[] bcls = new byte[clsLen];
+    blk.buffer().get(buid);
+    blk.buffer().get(bcls);
+    return ObjectUID.builder()
+        .withHash(UTF8String.from(buid).toString())
+        .withClassName(UTF8String.from(bcls).toString())
+        .build();
   }
 
 
   @Override
   public StoreUnit get(Index idx) throws StoreException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    NotNull.of(idx).failIfNull("Bad null Index");
+    Block blk = storage.get(idx.getRegion());
+    ObjectUID uid = this.getUID(blk);
+    return StoreUnit.of(uid, this.getValue(blk));
+  }
+  
+  
+  private MappedValue getValue(Block blk) {
+    ByteBufferOutputStream bos = new ByteBufferOutputStream(storage.getAllocationPolicy());
+    bos.write(blk.buffer());
+    Optional<Region> next = blk.next();
+    while(next.isPresent()) {
+      blk = storage.get(next.get());
+      bos.write(blk.buffer());
+      next = blk.next();
+    }
+    return serial.deserialize(bos.toByteBuffer());
   }
 
 
   @Override
   public void close() throws StoreException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    storage.close();
   }
 
 }

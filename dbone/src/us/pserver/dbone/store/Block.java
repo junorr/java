@@ -32,9 +32,9 @@ import us.pserver.tools.NotNull;
  */
 public interface Block {
 
-  public Region getRegion();
+  public Region region();
   
-  public ByteBuffer getBuffer();
+  public ByteBuffer buffer();
   
   public Optional<Region> next();
   

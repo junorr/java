@@ -48,7 +48,7 @@ public class ObjectUID implements Serializable {
     this.className = cname;
   }
   
-  public String getUID() {
+  public String getHash() {
     return this.uid;
   }
   
@@ -80,7 +80,7 @@ public class ObjectUID implements Serializable {
     }
     
     
-    public Builder withUID(String uid) {
+    public Builder withHash(String uid) {
       return new Builder(NotNull.of(uid).getOrFail("Bad null UID"), this.className);
     }
     
@@ -99,7 +99,7 @@ public class ObjectUID implements Serializable {
       NotNull.of(obj).failIfNull();
       Hash hash = DEFAULT_HASH_SHA1.get();
       calcUID(hash, obj);
-      return withClass(obj.getClass()).withUID(hash.get());
+      return withClass(obj.getClass()).withHash(hash.get());
     }
     
     
@@ -107,21 +107,21 @@ public class ObjectUID implements Serializable {
       NotNull.of(map).failIfNull();
       Hash hash = DEFAULT_HASH_SHA1.get();
       calcUID(hash, map);
-      return withClassName(className).withUID(hash.get());
+      return withClassName(className).withHash(hash.get());
     }
     
     
     public Builder of(Hash hash, Object obj) {
       NotNull.of(obj).failIfNull();
       calcUID(NotNull.of(hash).getOrFail("Bad null Hash"), obj);
-      return withClass(obj.getClass()).withUID(hash.get());
+      return withClass(obj.getClass()).withHash(hash.get());
     }
     
     
     public Builder of(Hash hash, String className, Map<String,MappedValue> map) {
       NotNull.of(map).failIfNull();
       calcUID(NotNull.of(hash).getOrFail("Bad null Hash"), map);
-      return withClassName(className).withUID(hash.get());
+      return withClassName(className).withHash(hash.get());
     }
     
     

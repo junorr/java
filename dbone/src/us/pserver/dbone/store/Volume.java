@@ -38,6 +38,8 @@ public interface Volume extends Closeable {
   
   public StoreUnit get(Index idx) throws StoreException;
   
+  public ObjectUID getUID(Index idx) throws StoreException;
+  
   @Override public void close() throws StoreException;
   
 }

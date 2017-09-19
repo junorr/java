@@ -32,12 +32,25 @@ import us.pserver.dbone.store.StorageFactory;
  * @version 0.0 - 18/09/2017
  */
 public class TestFileStorage {
+  
+  
+  public static void fill(Block blk) {
+    int len = (int) (blk.buffer().remaining() * (2.0/3.0));
+    for(int i = 0; i < len; i++) {
+      blk.buffer().put((byte) i);
+    }
+  }
 
   
   public static void main(String[] args) throws IOException {
     FileStorage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").create();
     //FileStorage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").setOpenForced().create();
     Block blk = fs.allocate();
+    System.out.println(blk);
+    fill(blk);
+    blk.buffer().flip();
+    fs.put(blk);
+    blk = fs.allocate();
     System.out.println(blk);
     fs.close();
   }
