@@ -109,7 +109,7 @@ public class StorageFactory {
   }
   
   
-  public FileStorage create() throws IOException {
+  public FileChannelStorage create() throws IOException {
     NotNull.of(this.path).failIfNull("Bad null file path");
     if(this.blockSize < MINIMUM_BLOCK_SIZE) {
       throw new StorageException("Bad block size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
@@ -132,27 +132,27 @@ public class StorageFactory {
   }
   
   
-  private FileStorage create(FileChannel ch) throws IOException {
-    ByteBuffer buf = this.malloc.apply(FileStorage.HEADER_REGION.intLength());
+  private FileChannelStorage create(FileChannel ch) throws IOException {
+    ByteBuffer buf = this.malloc.apply(FileChannelStorage.HEADER_REGION.intLength());
     buf.putShort((short)1);
     buf.putInt(this.blockSize);
     while(buf.remaining() >= Long.BYTES) {
       buf.putLong(0l);
     }
     buf.flip();
-    ch.position(FileStorage.HEADER_REGION.offset());
+    ch.position(FileChannelStorage.HEADER_REGION.offset());
     ch.write(buf);
-    return new FileStorage(ch, this.malloc, new LinkedList<>(), this.blockSize);
+    return new FileChannelStorage(ch, this.malloc, new LinkedList<>(), this.blockSize);
   }
   
   
-  private FileStorage open(FileChannel ch) throws IOException {
+  private FileChannelStorage open(FileChannel ch) throws IOException {
     if(this.blockSize != DEFAULT_BLOCK_SIZE) {
       throw new IOException("Can not set block size for an existent storage");
     }
     LinkedList<Region> freeblks = new LinkedList<>();
-    ByteBuffer buf = this.malloc.apply(FileStorage.HEADER_REGION.intLength());
-    ch.position(FileStorage.HEADER_REGION.offset());
+    ByteBuffer buf = this.malloc.apply(FileChannelStorage.HEADER_REGION.intLength());
+    ch.position(FileChannelStorage.HEADER_REGION.offset());
     ch.read(buf);
     buf.flip();
     if(buf.getShort() == 1 && !this.openForced) {
@@ -165,7 +165,7 @@ public class StorageFactory {
         freeblks.add(r);
       }
     }
-    return new FileStorage(ch, this.malloc, freeblks, blksize);
+    return new FileChannelStorage(ch, this.malloc, freeblks, blksize);
   }
   
 }

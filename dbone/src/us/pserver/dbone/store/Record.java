@@ -31,21 +31,19 @@ import us.pserver.tools.mapper.ObjectUID;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2017
  */
-public interface Index extends Comparable<Index>, Serializable {
+public interface Record extends Comparable<Record>, Serializable {
 
-  public String getName();
-  
   public Region getRegion();
   
   public ObjectUID getUID();
   
   @Override
-  public default int compareTo(Index idx) {
+  public default int compareTo(Record idx) {
     return 0;
   }
   
   
-  public static Index of(String name, Region r, ObjectUID uid) {
+  public static Record of(String name, Region r, ObjectUID uid) {
     return new IndexImpl(name, r, uid);
   }
   
@@ -53,23 +51,15 @@ public interface Index extends Comparable<Index>, Serializable {
   
   
   
-  public static class IndexImpl implements Index {
+  public static class IndexImpl implements Record {
   
-    private final String name;
-
     private final Region region;
 
     private final ObjectUID uid;
 
     public IndexImpl(String name, Region reg, ObjectUID uid) {
-      this.name = NotNull.of(name).getOrFail("Bad null name");
       this.region = NotNull.of(reg).getOrFail("Bad null Region");
       this.uid = NotNull.of(uid).getOrFail("Bad null ObjectUID");
-    }
-
-    @Override
-    public String getName() {
-      return this.name;
     }
 
     @Override
@@ -113,7 +103,7 @@ public interface Index extends Comparable<Index>, Serializable {
 
     @Override
     public String toString() {
-      return "Index{" + "name=" + name + ", region=" + region + ", uid=" + uid + '}';
+      return "Index{" + "region=" + region + ", uid=" + uid + '}';
     }
 
   }

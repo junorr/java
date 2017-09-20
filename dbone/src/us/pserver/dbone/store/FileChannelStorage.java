@@ -33,7 +33,7 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 18/09/2017
  */
-public class FileStorage implements Storage {
+public class FileChannelStorage implements Storage {
   
   public static final IntFunction<ByteBuffer> ALLOC_POLICY_DIRECT = ByteBuffer::allocateDirect;
   
@@ -56,7 +56,7 @@ public class FileStorage implements Storage {
   private final int blockSize;
   
   
-  protected FileStorage(FileChannel channel, IntFunction<ByteBuffer> allocPolicy, LinkedList<Region> freeBlocks, int blockSize) {
+  protected FileChannelStorage(FileChannel channel, IntFunction<ByteBuffer> allocPolicy, LinkedList<Region> freeBlocks, int blockSize) {
     this.channel = NotNull.of(channel).getOrFail("Bad null FileChannel");
     this.malloc = NotNull.of(allocPolicy).getOrFail("Bad null alloc policy");
     this.frees = NotNull.of(freeBlocks).getOrFail("Bad null free blocks list");
@@ -171,7 +171,7 @@ public class FileStorage implements Storage {
     try {
       Block blk = this.get(HEADER_REGION);
       ByteBuffer buf = blk.buffer();
-      //System.out.println("FileStorage.get: remaining="+ buf.remaining()+ ", capacity="+ buf.capacity());
+      //System.out.println("FileChannelStorage.get: remaining="+ buf.remaining()+ ", capacity="+ buf.capacity());
       buf.putShort((short)0);
       buf.putInt(blockSize);
       for(Region r : frees) {

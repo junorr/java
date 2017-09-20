@@ -22,13 +22,13 @@
 package us.pserver.dbone.test;
 
 import us.pserver.dbone.store.DefaultVolume;
-import us.pserver.dbone.store.FileStorage;
-import us.pserver.dbone.store.Index;
+import us.pserver.dbone.store.FileChannelStorage;
 import us.pserver.dbone.store.StorageFactory;
 import us.pserver.dbone.store.Volume;
 import us.pserver.dbone.store.VolumeTransaction;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
+import us.pserver.dbone.store.Record;
 
 /**
  *
@@ -39,11 +39,11 @@ public class TestVolume {
 
   
   public static void main(String[] args) throws Throwable {
-    FileStorage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").setOpenForced().create();
+    FileChannelStorage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").setOpenForced().create();
     Volume volume = new DefaultVolume(fs);
     MappedValue val = MappedValue.of(5);
     ObjectUID uid = ObjectUID.builder().of(val).build();
-    Index idx = volume.put(uid, val);
+    Record idx = volume.put(uid, val);
     System.out.println(idx);
     System.out.println(volume.get(idx));
     

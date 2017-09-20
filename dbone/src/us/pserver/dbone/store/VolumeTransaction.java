@@ -46,25 +46,25 @@ public class VolumeTransaction implements Volume, Transaction {
 
 
   @Override
-  public Index put(StoreUnit unit) throws StorageException {
+  public Record put(StoreUnit unit) throws StorageException {
     return this.volume.put(unit);
   }
 
 
   @Override
-  public Index put(ObjectUID uid, MappedValue val) throws StorageException {
+  public Record put(ObjectUID uid, MappedValue val) throws StorageException {
     return this.volume.put(uid, val);
   }
 
 
   @Override
-  public StoreUnit get(Index idx) throws StorageException {
+  public StoreUnit get(Record idx) throws StorageException {
     return this.volume.get(idx);
   }
 
 
   @Override
-  public ObjectUID getUID(Index idx) throws StorageException {
+  public ObjectUID getUID(Record idx) throws StorageException {
     return this.volume.getUID(idx);
   }
 

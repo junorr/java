@@ -32,13 +32,13 @@ import us.pserver.tools.mapper.ObjectUID;
  */
 public interface Volume extends Closeable {
 
-  public Index put(StoreUnit unit) throws StorageException;
+  public Record put(StoreUnit unit) throws StorageException;
   
-  public Index put(ObjectUID uid, MappedValue val) throws StorageException;
+  public Record put(ObjectUID uid, MappedValue val) throws StorageException;
   
-  public StoreUnit get(Index idx) throws StorageException;
+  public StoreUnit get(Record idx) throws StorageException;
   
-  public ObjectUID getUID(Index idx) throws StorageException;
+  public ObjectUID getUID(Record idx) throws StorageException;
   
   @Override public void close() throws StorageException;
   

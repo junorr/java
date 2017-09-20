@@ -48,11 +48,11 @@ public class DefaultVolume implements Volume {
   
 
   @Override
-  public Index put(StoreUnit unit) throws StorageException {
+  public Record put(StoreUnit unit) throws StorageException {
     NotNull.of(unit).failIfNull("Bad null StoreUnit");
     ByteBuffer sbuf = serial.serialize(unit.getValue());
     Block blk = storage.allocate();
-    Index idx = Index.of(
+    Record idx = Record.of(
         unit.getUID().getHash(), 
         blk.region(), 
         unit.getUID()
@@ -114,13 +114,13 @@ public class DefaultVolume implements Volume {
 
 
   @Override
-  public Index put(ObjectUID uid, MappedValue val) {
+  public Record put(ObjectUID uid, MappedValue val) {
     return this.put(StoreUnit.of(uid, val));
   }
   
   
   @Override
-  public ObjectUID getUID(Index idx) throws StorageException {
+  public ObjectUID getUID(Record idx) throws StorageException {
     return this.getUID(storage.get(idx.getRegion()));
   }
   
@@ -140,7 +140,7 @@ public class DefaultVolume implements Volume {
 
 
   @Override
-  public StoreUnit get(Index idx) throws StorageException {
+  public StoreUnit get(Record idx) throws StorageException {
     Block blk = storage.get(idx.getRegion());
     ObjectUID uid = this.getUID(blk);
     return StoreUnit.of(uid, this.getValue(blk));

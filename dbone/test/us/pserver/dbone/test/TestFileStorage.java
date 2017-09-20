@@ -23,7 +23,7 @@ package us.pserver.dbone.test;
 
 import java.io.IOException;
 import us.pserver.dbone.store.Block;
-import us.pserver.dbone.store.FileStorage;
+import us.pserver.dbone.store.FileChannelStorage;
 import us.pserver.dbone.store.StorageFactory;
 import us.pserver.dbone.store.StorageTransaction;
 
@@ -44,7 +44,7 @@ public class TestFileStorage {
 
   
   public static void main(String[] args) throws IOException {
-    FileStorage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").create();
+    FileChannelStorage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").create();
     //FileStorage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").setOpenForced().create();
     Block blk = fs.allocate();
     fill(blk);

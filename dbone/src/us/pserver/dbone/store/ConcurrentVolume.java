@@ -48,7 +48,7 @@ public class ConcurrentVolume implements Volume {
 
 
   @Override
-  public Index put(StoreUnit unit) throws StorageException {
+  public Record put(StoreUnit unit) throws StorageException {
     lock.writeLock().lock();
     try {
       return volume.put(unit);
@@ -59,7 +59,7 @@ public class ConcurrentVolume implements Volume {
 
 
   @Override
-  public Index put(ObjectUID uid, MappedValue val) throws StorageException {
+  public Record put(ObjectUID uid, MappedValue val) throws StorageException {
     lock.writeLock().lock();
     try {
       return volume.put(uid, val);
@@ -70,7 +70,7 @@ public class ConcurrentVolume implements Volume {
 
 
   @Override
-  public StoreUnit get(Index idx) throws StorageException {
+  public StoreUnit get(Record idx) throws StorageException {
     lock.readLock().lock();
     try {
       return volume.get(idx);
@@ -81,7 +81,7 @@ public class ConcurrentVolume implements Volume {
 
 
   @Override
-  public ObjectUID getUID(Index idx) throws StorageException {
+  public ObjectUID getUID(Record idx) throws StorageException {
     lock.readLock().lock();
     try {
       return volume.getUID(idx);
