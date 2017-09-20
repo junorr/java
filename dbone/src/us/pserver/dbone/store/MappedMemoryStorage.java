@@ -100,8 +100,6 @@ public class MappedMemoryStorage extends AbstractStorage {
     buffer.limit(reg.intLength() + reg.intOffset());
     buffer.position(reg.intOffset());
     ByteBuffer buf = buffer.slice();
-    //System.out.println("* Storage.get: slice.equals( buffer ): "+ buf.equals(buffer));
-    //System.out.println("* Storage.get: buffer.equals( slice ): "+ buffer.equals(buf));
     return new DefaultBlock(reg, buffer.slice());
   }
   
@@ -128,7 +126,6 @@ public class MappedMemoryStorage extends AbstractStorage {
   public void close() throws StorageException {
     Block blk = this.get(HEADER_REGION);
     ByteBuffer buf = blk.buffer();
-    //System.out.println("FileChannelStorage.get: remaining="+ buf.remaining()+ ", capacity="+ buf.capacity());
     buf.putShort((short)0);
     buf.putInt(blockSize);
     for(Region r : frees) {

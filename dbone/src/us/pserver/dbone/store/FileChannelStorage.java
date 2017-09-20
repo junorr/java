@@ -86,7 +86,6 @@ public class FileChannelStorage extends AbstractStorage {
   public void close() throws StorageException {
     Block blk = this.get(HEADER_REGION);
     ByteBuffer buf = blk.buffer();
-    //System.out.println("FileChannelStorage.get: remaining="+ buf.remaining()+ ", capacity="+ buf.capacity());
     buf.putShort((short)0);
     buf.putInt(blockSize);
     for(Region r : frees) {
