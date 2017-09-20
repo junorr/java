@@ -25,7 +25,7 @@ import java.io.IOException;
 import us.pserver.dbone.store.Block;
 import us.pserver.dbone.store.FileStorage;
 import us.pserver.dbone.store.StorageFactory;
-import us.pserver.dbone.store.tx.Transaction;
+import us.pserver.dbone.store.StorageTransaction;
 
 /**
  *
@@ -46,24 +46,26 @@ public class TestFileStorage {
   public static void main(String[] args) throws IOException {
     FileStorage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").create();
     //FileStorage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").setOpenForced().create();
-    Transaction<Block> tx = fs.allocate();
-    fill(tx.value().get());
-    tx.value().get().buffer().flip();
-    fs.put(tx.value().get());
-    System.out.println(tx.value());
+    Block blk = fs.allocate();
+    fill(blk);
+    blk.buffer().flip();
+    fs.put(blk);
+    System.out.println(blk);
     
-    tx = fs.allocate();
-    fill(tx.value().get());
-    tx.value().get().buffer().flip();
-    fs.put(tx.value().get());
-    System.out.println(tx.value());
-    tx.rollback();
+    StorageTransaction stx = fs.startTransaction();
+    blk = stx.allocate();
+    fill(blk);
+    blk.buffer().flip();
+    stx.put(blk);
+    System.out.println(blk);
+    stx.rollback();
     
-    tx = fs.allocate();
-    fill(tx.value().get());
-    tx.value().get().buffer().flip();
-    fs.put(tx.value().get());
-    System.out.println(tx.value());
+    blk = fs.allocate();
+    fill(blk);
+    blk.buffer().flip();
+    fs.put(blk);
+    System.out.println(blk);
+    
     fs.close();
   }
   

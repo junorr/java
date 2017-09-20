@@ -29,24 +29,15 @@ import us.pserver.dbone.store.Storage;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public abstract class AbstractTxLog<T> implements TxLog<T> {
+public class RollbackDeallocationLog extends StorageBlockLog {
   
-  public static final Void VOID = (Void) new Object();
-  
-  protected final Block block;
-  
-  protected final Storage storage;
-  
-  
-  protected AbstractTxLog(Block blk, Storage stg) {
-    this.block = blk;
-    this.storage = stg;
+  public RollbackDeallocationLog(Storage stg, Block blk) {
+    super(stg, blk);
   }
   
-  
   @Override
-  public Block block() {
-    return this.block;
+  public void rollback() throws TransactionException {
+    storage.reallocate(block);
   }
 
 }

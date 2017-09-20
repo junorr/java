@@ -21,23 +21,15 @@
 
 package us.pserver.dbone.store.tx;
 
-import java.util.Optional;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public interface Transaction<T> {
-
-  public boolean isSuccessful();
+public interface Transaction {
   
-  public Optional<Throwable> getError();
+  public void rollback() throws TransactionException;
   
-  public Optional<T> value();
-  
-  public void rollback();
-  
-  public void commit();
+  public void commit() throws TransactionException;
   
 }

@@ -28,7 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.function.IntFunction;
 import us.pserver.tools.NotNull;
 
@@ -45,7 +45,7 @@ public class StorageFactory {
   
   public static final int MINIMUM_BLOCK_SIZE = 1024;
   
-  public static final int DEFAULT_BLOCK_SIZE = 4096;
+  public static final int DEFAULT_BLOCK_SIZE = 2048;
   
 
   private final Path path;
@@ -93,7 +93,7 @@ public class StorageFactory {
   }
   
   
-  public StorageFactory setAllocPolicy(IntFunction<ByteBuffer> malloc) {
+  public StorageFactory setAllocationPolicy(IntFunction<ByteBuffer> malloc) {
     return new StorageFactory(
         this.path, this.blockSize, 
         NotNull.of(malloc).getOrFail("Bad null allocation policy"), 
@@ -112,7 +112,7 @@ public class StorageFactory {
   public FileStorage create() throws IOException {
     NotNull.of(this.path).failIfNull("Bad null file path");
     if(this.blockSize < MINIMUM_BLOCK_SIZE) {
-      throw new StoreException("Bad block size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
+      throw new StorageException("Bad block size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
     }
     FileChannel ch = FileChannel.open(path, 
         StandardOpenOption.CREATE, 
@@ -136,13 +136,13 @@ public class StorageFactory {
     ByteBuffer buf = this.malloc.apply(FileStorage.HEADER_REGION.intLength());
     buf.putShort((short)1);
     buf.putInt(this.blockSize);
-    while(buf.remaining() >= 8) {
+    while(buf.remaining() >= Long.BYTES) {
       buf.putLong(0l);
     }
     buf.flip();
     ch.position(FileStorage.HEADER_REGION.offset());
     ch.write(buf);
-    return new FileStorage(ch, this.malloc, new ArrayList<>(), this.blockSize);
+    return new FileStorage(ch, this.malloc, new LinkedList<>(), this.blockSize);
   }
   
   
@@ -150,7 +150,7 @@ public class StorageFactory {
     if(this.blockSize != DEFAULT_BLOCK_SIZE) {
       throw new IOException("Can not set block size for an existent storage");
     }
-    List<Region> freeblks = new ArrayList<>(63);
+    LinkedList<Region> freeblks = new LinkedList<>();
     ByteBuffer buf = this.malloc.apply(FileStorage.HEADER_REGION.intLength());
     ch.position(FileStorage.HEADER_REGION.offset());
     ch.read(buf);
@@ -159,7 +159,7 @@ public class StorageFactory {
       throw new IOException("File storage is locked by another process");
     }
     int blksize = buf.getInt();
-    while(buf.remaining() >= 16) {
+    while(buf.remaining() >= Region.BYTES) {
       Region r = Region.of(buf.getLong(), buf.getLong());
       if(r.offset() + r.length() > 0) {
         freeblks.add(r);

@@ -19,26 +19,28 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store.tx;
-
-import us.pserver.dbone.store.Block;
-import us.pserver.dbone.store.Storage;
+package us.pserver.dbone.store;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/09/2017
+ * @version 0.0 - 14/09/2017
  */
-public class CommitStorePutLog extends AbstractTxLog<Void> {
+public class StorageException extends RuntimeException {
 
-  public CommitStorePutLog(Block blk, Storage stg) {
-    super(blk, stg);
+  public StorageException() {}
+  
+
+  public StorageException(String message) {
+    super(message);
   }
 
-  @Override
-  public Void execute() {
-    storage.put(block);
-    return null;
+  public StorageException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public StorageException(Throwable cause) {
+    super(cause);
   }
 
 }

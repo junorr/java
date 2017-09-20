@@ -21,27 +21,13 @@
 
 package us.pserver.dbone.store.tx;
 
-import java.util.ArrayList;
-import java.util.List;
-import us.pserver.dbone.store.Block;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public class DefaultTransaction<T> extends AbstractTransaction<T> {
+public interface RollbackLog<T> {
 
-  public DefaultTransaction(Throwable err, T obj, List<TxLog> log) {
-    super(err, obj, log);
-  }
-
-  public DefaultTransaction(Throwable err, T obj) {
-    super(err, obj, new ArrayList<>());
-  }
+  public void rollback() throws TransactionException;
   
-  public List<TxLog> logs() {
-    return this.log;
-  }
-
 }

@@ -24,7 +24,6 @@ package us.pserver.dbone.store;
 import java.io.Closeable;
 import java.nio.ByteBuffer;
 import java.util.function.IntFunction;
-import us.pserver.dbone.store.tx.Transaction;
 
 /**
  *
@@ -33,20 +32,22 @@ import us.pserver.dbone.store.tx.Transaction;
  */
 public interface Storage extends Closeable {
 
-  public Transaction<Block> allocate();
+  public Block get(Region reg) throws StorageException;
   
-  public Transaction<Block> get(Region reg) throws StoreException;
+  public void put(Block blk) throws StorageException;
   
-  public Transaction<Void> put(Block blk);
+  public Block allocate();
   
-  public void reallocate(Block blk) throws BlockAllocationException;
+  public void reallocate(Block blk) throws StorageException;
   
-  public void deallocate(Block blk) throws BlockAllocationException;
+  public void deallocate(Block blk) throws StorageException;
   
   public int getBlockSize();
   
   public IntFunction<ByteBuffer> getAllocationPolicy();
   
-  @Override public void close() throws StoreException;
+  @Override public void close() throws StorageException;
+  
+  public StorageTransaction startTransaction();
   
 }

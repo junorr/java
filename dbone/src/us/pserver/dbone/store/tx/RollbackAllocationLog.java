@@ -21,35 +21,23 @@
 
 package us.pserver.dbone.store.tx;
 
-import java.util.List;
-import us.pserver.tools.NotNull;
+import us.pserver.dbone.store.Block;
+import us.pserver.dbone.store.Storage;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public class ComposeableTransaction<T> extends DefaultTransaction<T> {
-
-  private final Transaction<?> inner;
+public class RollbackAllocationLog extends StorageBlockLog {
   
-  
-  public ComposeableTransaction(Throwable err, T obj, Transaction<?> inner, List<TxLog> log) {
-    super(err, obj, log);
-    this.inner = NotNull.of(inner).getOrFail("Bad null inner Transaction");
+  public RollbackAllocationLog(Storage stg, Block blk) {
+    super(stg, blk);
   }
-  
-  
-  public ComposeableTransaction(Throwable err, T obj, Transaction<?> inner) {
-    super(err, obj);
-    this.inner = NotNull.of(inner).getOrFail("Bad null inner Transaction");
-  }
-  
   
   @Override
-  public void rollback() {
-    inner.rollback();
-    super.rollback();
+  public void rollback() throws TransactionException {
+    storage.deallocate(block);
   }
-  
+
 }

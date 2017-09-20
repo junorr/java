@@ -41,7 +41,7 @@ public class TestVoid {
   
   public static void main(String[] args) {
     Void v = null;
-    int i = exec(5);
+    int i = TestVoid.exec(5);
     v = exec2();
   }
   

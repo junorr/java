@@ -23,7 +23,6 @@ package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
-import us.pserver.tools.NotNull;
 
 /**
  *
@@ -39,32 +38,5 @@ public interface Block {
   public Optional<Region> next();
   
   public Block setNext(Region r);
-  
-  
-  public static Block direct(Region r) throws BlockAllocationException {
-    NotNull.of(r).failIfNull("Bad null Region");
-    if(r.length() < 1) {
-      throw new BlockAllocationException("Bad region length: "+ r.length());
-    }
-    return new DefaultBlock(r, 
-        ByteBuffer.allocateDirect((int) r.length())
-    );
-  }
-  
-  
-  public static Block heap(Region r) throws BlockAllocationException {
-    NotNull.of(r).failIfNull("Bad null Region");
-    if(r.length() < 1) {
-      throw new BlockAllocationException("Bad region length: "+ r.length());
-    }
-    return new DefaultBlock(r, 
-        ByteBuffer.allocate((int) r.length())
-    );
-  }
-  
-  
-  public static Block of(Region r, ByteBuffer b) {
-    return new DefaultBlock(r, b);
-  }
   
 }

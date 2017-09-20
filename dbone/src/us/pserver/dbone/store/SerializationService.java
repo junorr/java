@@ -41,7 +41,7 @@ public class SerializationService {
 
   public SerializationService() {}
   
-  public ByteBuffer serialize(Serializable slz) throws StoreException {
+  public ByteBuffer serialize(Serializable slz) throws StorageException {
     try (
         ByteBufferOutputStream bos = new ByteBufferOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -50,11 +50,11 @@ public class SerializationService {
       return bos.toByteBuffer();
     }
     catch(IOException e) {
-      throw new StoreException(e.toString(), e);
+      throw new StorageException(e.toString(), e);
     }
   }
   
-  public Object deserialize(ByteBuffer buf) throws StoreException {
+  public Object deserialize(ByteBuffer buf) throws StorageException {
     try (
         ByteBufferInputStream bis = new ByteBufferInputStream(buf);
         ObjectInputStream ois = new ObjectInputStream(bis);
@@ -62,7 +62,7 @@ public class SerializationService {
       return ois.readObject();
     }
     catch(ClassNotFoundException | IOException e) {
-      throw new StoreException(e.toString(), e);
+      throw new StorageException(e.toString(), e);
     }
   }
   

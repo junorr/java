@@ -25,9 +25,8 @@ import us.pserver.dbone.store.DefaultVolume;
 import us.pserver.dbone.store.FileStorage;
 import us.pserver.dbone.store.Index;
 import us.pserver.dbone.store.StorageFactory;
-import us.pserver.dbone.store.StoreUnit;
 import us.pserver.dbone.store.Volume;
-import us.pserver.dbone.store.tx.Transaction;
+import us.pserver.dbone.store.VolumeTransaction;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
 
@@ -44,38 +43,23 @@ public class TestVolume {
     Volume volume = new DefaultVolume(fs);
     MappedValue val = MappedValue.of(5);
     ObjectUID uid = ObjectUID.builder().of(val).build();
-    Transaction<Index> tx = volume.put(uid, val);
-    if(!tx.isSuccessful()) {
-      tx.rollback();
-      throw tx.getError().get();
-    }
-    System.out.println(tx.value());
+    Index idx = volume.put(uid, val);
+    System.out.println(idx);
+    System.out.println(volume.get(idx));
     
+    VolumeTransaction vtx = volume.startTransaction();
     val = MappedValue.of(8);
     uid = ObjectUID.builder().of(val).build();
-    tx = volume.put(uid, val);
-    if(!tx.isSuccessful()) {
-      tx.rollback();
-      throw tx.getError().get();
-    }
-    System.out.println(tx.value());
-    tx.rollback();
+    idx = vtx.put(uid, val);
+    System.out.println(idx);
+    System.out.println(vtx.get(idx));
+    vtx.rollback();
     
     val = MappedValue.of(2);
     uid = ObjectUID.builder().of(val).build();
-    tx = volume.put(uid, val);
-    if(!tx.isSuccessful()) {
-      tx.rollback();
-      throw tx.getError().get();
-    }
-    System.out.println(tx.value());
-    
-    Transaction<StoreUnit> txs = volume.get(tx.value().get());
-    if(!txs.isSuccessful()) {
-      txs.rollback();
-      throw txs.getError().get();
-    }
-    System.out.println(txs.value());
+    idx = volume.put(uid, val);
+    System.out.println(idx);
+    System.out.println(volume.get(idx));
     
     volume.close();
   }
