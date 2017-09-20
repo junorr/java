@@ -70,6 +70,12 @@ public class StorageTransaction implements Storage, Transaction {
 
 
   @Override
+  public long size() {
+    return storage.size();
+  }
+
+
+  @Override
   public Block allocate() {
     Block blk = storage.allocate();
     log.push(new RollbackAllocationLog(storage, blk));

@@ -64,13 +64,13 @@ public class DefaultVolume implements Volume {
   
   
   private void put(ByteBuffer sbuf, Block blk) throws StorageException {
-    copy(sbuf, blk.buffer());
+    Block.copy(sbuf, blk.buffer());
     while(sbuf.hasRemaining()) {
       Block b2 = storage.allocate();
       blk.setNext(b2.region());
       blk.buffer().flip();
       storage.put(blk);
-      copy(sbuf, b2.buffer());
+      Block.copy(sbuf, b2.buffer());
       blk = b2;
     }
     this.zeroFill(blk.buffer());
@@ -95,24 +95,6 @@ public class DefaultVolume implements Volume {
   }
   
   
-  private void copy(ByteBuffer from, ByteBuffer to) {
-    int minLen = Math.min(from.remaining(), to.remaining());
-    if(from.hasArray()) {
-      to.put(
-          from.array(), 
-          from.arrayOffset(), 
-          minLen
-      );
-      from.position(from.position() + minLen);
-    }
-    else {
-      byte[] bs = new byte[minLen];
-      from.get(bs);
-      to.put(bs);
-    }
-  }
-
-
   @Override
   public Record put(ObjectUID uid, MappedValue val) {
     return this.put(StoreUnit.of(uid, val));

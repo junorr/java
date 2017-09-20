@@ -21,6 +21,11 @@
 
 package us.pserver.dbone.store.tx;
 
+import us.pserver.dbone.store.fun.ThrowableConsumer;
+import us.pserver.dbone.store.fun.ThrowableFunction;
+import us.pserver.dbone.store.fun.ThrowableSupplier;
+import us.pserver.dbone.store.fun.ThrowableTask;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -81,33 +86,6 @@ public class TransactionException extends RuntimeException {
     catch(Exception e) {
       throw new TransactionException(e.toString(), e);
     }
-  }
-  
-  
-  
-  
-  
-  @FunctionalInterface
-  public static interface ThrowableFunction<T,R> {
-    public R apply(T t) throws Exception;
-  }
-  
-  
-  @FunctionalInterface
-  public static interface ThrowableConsumer<T> {
-    public void accept(T t) throws Exception;
-  }
-  
-  
-  @FunctionalInterface
-  public static interface ThrowableSupplier<T> {
-    public T supply() throws Exception;
-  }
-  
-  
-  @FunctionalInterface
-  public static interface ThrowableTask {
-    public void exec() throws Exception;
   }
   
 }

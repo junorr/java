@@ -21,64 +21,86 @@
 
 package us.pserver.dbone.store;
 
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.LinkedList;
-import java.util.function.IntFunction;
 import us.pserver.tools.NotNull;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 18/09/2017
  */
-public class FileChannelStorage extends AbstractStorage {
+public class DirectMemoryStorage extends AbstractStorage {
   
-  private final FileChannel channel;
+  private final ByteBuffer buffer;
   
   
-  protected FileChannelStorage(FileChannel channel, LinkedList<Region> freeBlocks, IntFunction<ByteBuffer> allocPolicy, int blockSize) {
-    super(freeBlocks, allocPolicy, blockSize);
-    this.channel = NotNull.of(channel).getOrFail("Bad null FileChannel");
+  protected DirectMemoryStorage(int size, LinkedList<Region> freeBlocks, int blockSize) {
+    super(freeBlocks, ALLOC_POLICY_DIRECT, blockSize);
+    if(size <= HEADER_REGION.length() + blockSize*2) {
+      throw new IllegalArgumentException("To small memory size: "+ size);
+    }
+    this.buffer = ALLOC_POLICY_DIRECT.apply(size);
   }
   
   
   @Override
-  public void deallocate(Block blk) throws StorageException {
+  public long size() {
+    return buffer.capacity();
+  }
+  
+  
+  @Override
+  protected Region nextRegion() {
+    Region reg = super.nextRegion();
+    if(reg.length() + reg.offset() > size()) {
+      throw new BufferOverflowException();
+    }
+    return reg;
+  }
+  
+  
+  @Override
+  public Block allocate() {
+    Region reg = frees.isEmpty() ? nextRegion() : frees.pop();
+    return get(reg);
+  }
+
+
+  @Override
+  public void deallocate(Block blk) {
     NotNull.of(blk).failIfNull("Bad null Block");
-    if(blk.region().offset() + blk.region().length() >= size()) {
-      StorageException.rethrow(()->channel.truncate(blk.region().offset()));
-    }
-    else {
-      this.frees.push(blk.region());
-    }
-  }
-  
-  
-  @Override
-  public long size() throws StorageException {
-    return StorageException.rethrow(channel::size);
+    this.frees.push(blk.region());
   }
 
 
   @Override
-  public Block get(Region reg) throws StorageException {
+  public Block get(Region reg) {
     NotNull.of(reg).failIfNull("Bad null Region");
-    StorageException.rethrow(()->channel.position(reg.offset()));
-    ByteBuffer buf = malloc.apply(reg.intLength());
-    int read = StorageException.rethrow(()->channel.read(buf));
-    if(read > 0) buf.flip();
-    return new DefaultBlock(reg, buf);
+    buffer.limit(reg.intLength() + reg.intOffset());
+    buffer.position(reg.intOffset());
+    ByteBuffer buf = buffer.slice();
+    return new DefaultBlock(reg, buffer.slice());
+  }
+  
+  
+  public boolean isSharedBuffer(ByteBuffer shared) {
+    Object att = Reflector.of(shared).selectField("att").get();
+    return att != null && att.equals(buffer);
   }
 
 
   @Override
   public void put(Block blk) throws StorageException {
     NotNull.of(blk).failIfNull("Bad null Block");
-    blk.buffer().position(0);
-    blk.buffer().limit(blk.buffer().capacity());
-    StorageException.rethrow(()->channel.position(blk.region().offset()));
-    StorageException.rethrow(()->channel.write(blk.buffer()));
+    if(isSharedBuffer(blk.buffer())) {
+      return;
+    }
+    buffer.limit(blk.region().intLength() + blk.region().intOffset());
+    buffer.position(blk.region().intOffset());
+    Block.copy(blk.buffer(), buffer);
   }
 
 
@@ -86,7 +108,6 @@ public class FileChannelStorage extends AbstractStorage {
   public void close() throws StorageException {
     Block blk = this.get(HEADER_REGION);
     ByteBuffer buf = blk.buffer();
-    //System.out.println("FileChannelStorage.get: remaining="+ buf.remaining()+ ", capacity="+ buf.capacity());
     buf.putShort((short)0);
     buf.putInt(blockSize);
     for(Region r : frees) {
@@ -96,10 +117,13 @@ public class FileChannelStorage extends AbstractStorage {
     while(buf.remaining() >= Long.BYTES) {
       buf.putLong(0l);
     }
-    buf.flip();
-    StorageException.rethrow(()->channel.position(blk.region().offset()));
-    StorageException.rethrow(()->channel.write(buf));
-    StorageException.rethrow(channel::close);
+    this.put(blk);
+  }
+  
+  
+  @Override
+  public StorageTransaction startTransaction() {
+    return new StorageTransaction(this);
   }
   
 }

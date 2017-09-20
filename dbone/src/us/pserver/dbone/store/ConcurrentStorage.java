@@ -42,6 +42,12 @@ public class ConcurrentStorage implements Storage {
     this.storage = NotNull.of(stg).getOrFail("Bad null Storage");
     this.lock = new ReentrantReadWriteLock();
   }
+  
+  
+  @Override
+  public long size() {
+    return storage.size();
+  }
 
 
   @Override

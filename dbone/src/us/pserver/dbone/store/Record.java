@@ -44,20 +44,20 @@ public interface Record extends Comparable<Record>, Serializable {
   
   
   public static Record of(String name, Region r, ObjectUID uid) {
-    return new IndexImpl(name, r, uid);
+    return new RecordImpl(name, r, uid);
   }
   
   
   
   
   
-  public static class IndexImpl implements Record {
+  public static class RecordImpl implements Record {
   
     private final Region region;
 
     private final ObjectUID uid;
 
-    public IndexImpl(String name, Region reg, ObjectUID uid) {
+    public RecordImpl(String name, Region reg, ObjectUID uid) {
       this.region = NotNull.of(reg).getOrFail("Bad null Region");
       this.uid = NotNull.of(uid).getOrFail("Bad null ObjectUID");
     }
@@ -91,7 +91,7 @@ public interface Record extends Comparable<Record>, Serializable {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      final IndexImpl other = (IndexImpl) obj;
+      final RecordImpl other = (RecordImpl) obj;
       if (!Objects.equals(this.region, other.region)) {
         return false;
       }

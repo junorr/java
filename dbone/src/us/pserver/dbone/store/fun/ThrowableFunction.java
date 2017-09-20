@@ -19,42 +19,14 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
-
-import java.nio.ByteBuffer;
-import java.util.Optional;
+package us.pserver.dbone.store.fun;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 20/09/2017
  */
-public interface Block {
-
-  public Region region();
-  
-  public ByteBuffer buffer();
-  
-  public Optional<Region> next();
-  
-  public Block setNext(Region r);
-
-  
-  public static void copy(ByteBuffer from, ByteBuffer to) {
-    int minLen = Math.min(from.remaining(), to.remaining());
-    if(from.hasArray()) {
-      to.put(
-          from.array(), 
-          from.arrayOffset(), 
-          minLen
-      );
-      from.position(from.position() + minLen);
-    }
-    else {
-      byte[] bs = new byte[minLen];
-      from.get(bs);
-      to.put(bs);
-    }
-  }
-
+@FunctionalInterface
+public interface ThrowableFunction<T,R> {
+  public R apply(T t) throws Exception;
 }

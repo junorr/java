@@ -22,39 +22,47 @@
 package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
-import java.util.Optional;
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 20/09/2017
  */
-public interface Block {
+public class MappedReadWriteLock {
 
-  public Region region();
+  public static final short STATE_LOCKED = 1;
   
-  public ByteBuffer buffer();
+  public static final short STATE_FREE = 0;
   
-  public Optional<Region> next();
   
-  public Block setNext(Region r);
-
+  private final ByteBuffer buffer;
   
-  public static void copy(ByteBuffer from, ByteBuffer to) {
-    int minLen = Math.min(from.remaining(), to.remaining());
-    if(from.hasArray()) {
-      to.put(
-          from.array(), 
-          from.arrayOffset(), 
-          minLen
-      );
-      from.position(from.position() + minLen);
-    }
-    else {
-      byte[] bs = new byte[minLen];
-      from.get(bs);
-      to.put(bs);
-    }
+  private boolean holdsLock;
+  
+  
+  public MappedReadWriteLock(ByteBuffer buf) {
+    this.buffer = NotNull.of(buf).getOrFail("Bad null ByteBuffer");
+    this.holdsLock = false;
   }
-
+  
+  
+  private short peekState() {
+    buffer.position(0);
+    return buffer.getShort();
+  }
+  
+  
+  public boolean isWriteLocked() {
+    return peekState() == STATE_LOCKED;
+  }
+  
+  
+  public boolean holdsWriteLock() {
+    return holdsLock;
+  }
+  
+  
+  
+  
 }

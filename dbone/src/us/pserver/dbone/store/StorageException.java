@@ -21,15 +21,21 @@
 
 package us.pserver.dbone.store;
 
+import us.pserver.dbone.store.fun.ThrowableConsumer;
+import us.pserver.dbone.store.fun.ThrowableFunction;
+import us.pserver.dbone.store.fun.ThrowableSupplier;
+import us.pserver.dbone.store.fun.ThrowableTask;
+
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 19/09/2017
  */
 public class StorageException extends RuntimeException {
 
-  public StorageException() {}
-  
+  public StorageException() {
+  }
 
   public StorageException(String message) {
     super(message);
@@ -42,5 +48,45 @@ public class StorageException extends RuntimeException {
   public StorageException(Throwable cause) {
     super(cause);
   }
-
+  
+  
+  public static <T,R> R rethrow(ThrowableFunction<T,R> fn, T t) {
+    try {
+      return fn.apply(t);
+    }
+    catch(Exception e) {
+      throw new StorageException(e.toString(), e);
+    }
+  }
+  
+  
+  public static <T> void rethrow(ThrowableConsumer<T> fn, T t) {
+    try {
+      fn.accept(t);
+    }
+    catch(Exception e) {
+      throw new StorageException(e.toString(), e);
+    }
+  }
+  
+  
+  public static <T> T rethrow(ThrowableSupplier<T> fn) {
+    try {
+      return fn.supply();
+    }
+    catch(Exception e) {
+      throw new StorageException(e.toString(), e);
+    }
+  }
+  
+  
+  public static void rethrow(ThrowableTask fn) {
+    try {
+      fn.exec();
+    }
+    catch(Exception e) {
+      throw new StorageException(e.toString(), e);
+    }
+  }
+  
 }

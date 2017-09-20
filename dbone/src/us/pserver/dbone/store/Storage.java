@@ -44,6 +44,8 @@ public interface Storage extends Closeable {
   
   public int getBlockSize();
   
+  public long size();
+  
   public IntFunction<ByteBuffer> getAllocationPolicy();
   
   @Override public void close() throws StorageException;

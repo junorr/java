@@ -27,9 +27,9 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.function.IntFunction;
+import static us.pserver.dbone.store.AbstractStorage.HEADER_REGION;
 import us.pserver.tools.NotNull;
 
 /**
@@ -109,7 +109,18 @@ public class StorageFactory {
   }
   
   
-  public FileChannelStorage create() throws IOException {
+  public Storage createDirect(int size) {
+    LinkedList<Region> frees = new LinkedList<>();
+    int offset = HEADER_REGION.intLength();
+    while(offset < size) {
+      frees.add(Region.of(offset, blockSize));
+      offset += blockSize;
+    }
+    return new DirectMemoryStorage(size, frees, this.blockSize);
+  }
+  
+  
+  public Storage create() throws IOException {
     NotNull.of(this.path).failIfNull("Bad null file path");
     if(this.blockSize < MINIMUM_BLOCK_SIZE) {
       throw new StorageException("Bad block size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
@@ -142,7 +153,7 @@ public class StorageFactory {
     buf.flip();
     ch.position(FileChannelStorage.HEADER_REGION.offset());
     ch.write(buf);
-    return new FileChannelStorage(ch, this.malloc, new LinkedList<>(), this.blockSize);
+    return new FileChannelStorage(ch, new LinkedList<>(), this.malloc, this.blockSize);
   }
   
   
@@ -165,7 +176,7 @@ public class StorageFactory {
         freeblks.add(r);
       }
     }
-    return new FileChannelStorage(ch, this.malloc, freeblks, blksize);
+    return new FileChannelStorage(ch, freeblks, this.malloc, blksize);
   }
   
 }

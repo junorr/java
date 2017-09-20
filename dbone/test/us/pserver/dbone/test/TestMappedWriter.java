@@ -19,42 +19,41 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.test;
 
-import java.nio.ByteBuffer;
-import java.util.Optional;
+import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.time.Instant;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 20/09/2017
  */
-public interface Block {
-
-  public Region region();
-  
-  public ByteBuffer buffer();
-  
-  public Optional<Region> next();
-  
-  public Block setNext(Region r);
+public class TestMappedWriter {
 
   
-  public static void copy(ByteBuffer from, ByteBuffer to) {
-    int minLen = Math.min(from.remaining(), to.remaining());
-    if(from.hasArray()) {
-      to.put(
-          from.array(), 
-          from.arrayOffset(), 
-          minLen
-      );
-      from.position(from.position() + minLen);
-    }
-    else {
-      byte[] bs = new byte[minLen];
-      from.get(bs);
-      to.put(bs);
+  public static void main(String[] args) throws IOException, InterruptedException {
+    FileChannel ch = FileChannel.open(
+        Paths.get("/storage/mappedfile.dat"), 
+        StandardOpenOption.CREATE, 
+        StandardOpenOption.READ, 
+        StandardOpenOption.WRITE
+    );
+    MappedByteBuffer buffer = ch.map(FileChannel.MapMode.READ_WRITE, 0, Integer.MAX_VALUE);
+    ch.close();
+    double inc = 0.001;
+    double ori = 0.543;
+    while(true) {
+      ori += inc;
+      System.out.println("* writing ["+ ori+ "] at "+ Instant.now());
+      buffer.putDouble(ori);
+      buffer.position(0);
+      Thread.sleep(2000);
     }
   }
-
+  
 }
