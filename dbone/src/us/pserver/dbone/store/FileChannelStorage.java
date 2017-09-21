@@ -23,6 +23,7 @@ package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.LinkedList;
 import java.util.function.IntFunction;
 import us.pserver.tools.NotNull;
@@ -44,18 +45,6 @@ public class FileChannelStorage extends AbstractStorage {
   
   
   @Override
-  public void deallocate(Block blk) throws StorageException {
-    NotNull.of(blk).failIfNull("Bad null Block");
-    if(blk.region().offset() + blk.region().length() >= size()) {
-      StorageException.rethrow(()->channel.truncate(blk.region().offset()));
-    }
-    else {
-      this.frees.push(blk.region());
-    }
-  }
-  
-  
-  @Override
   public long size() throws StorageException {
     return StorageException.rethrow(channel::size);
   }
@@ -66,8 +55,10 @@ public class FileChannelStorage extends AbstractStorage {
     NotNull.of(reg).failIfNull("Bad null Region");
     StorageException.rethrow(()->channel.position(reg.offset()));
     ByteBuffer buf = malloc.apply(reg.intLength());
+    FileLock lock = StorageException.rethrow(()->channel.lock(reg.offset(), reg.length(), true));
     int read = StorageException.rethrow(()->channel.read(buf));
     if(read > 0) buf.flip();
+    StorageException.rethrow(lock::release);
     return new DefaultBlock(reg, buf);
   }
 
@@ -77,8 +68,12 @@ public class FileChannelStorage extends AbstractStorage {
     NotNull.of(blk).failIfNull("Bad null Block");
     blk.buffer().position(0);
     blk.buffer().limit(blk.buffer().capacity());
+    FileLock lock = StorageException.rethrow(()->
+        channel.lock(blk.region().offset(), blk.region().length(), false)
+    );
     StorageException.rethrow(()->channel.position(blk.region().offset()));
     StorageException.rethrow(()->channel.write(blk.buffer()));
+    StorageException.rethrow(lock::release);
   }
 
 
@@ -88,7 +83,8 @@ public class FileChannelStorage extends AbstractStorage {
     ByteBuffer buf = blk.buffer();
     buf.putShort((short)0);
     buf.putInt(blockSize);
-    for(Region r : frees) {
+    while(!frees.isEmpty() && buf.remaining() > Region.BYTES) {
+      Region r = frees.pop();
       buf.putLong(r.offset());
       buf.putLong(r.length());
     }
@@ -96,8 +92,12 @@ public class FileChannelStorage extends AbstractStorage {
       buf.putLong(0l);
     }
     buf.flip();
+    FileLock lock = StorageException.rethrow(()->
+        channel.lock(blk.region().offset(), blk.region().length(), false)
+    );
     StorageException.rethrow(()->channel.position(blk.region().offset()));
     StorageException.rethrow(()->channel.write(buf));
+    StorageException.rethrow(lock::release);
     StorageException.rethrow(channel::close);
   }
   

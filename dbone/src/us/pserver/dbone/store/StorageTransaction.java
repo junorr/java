@@ -23,6 +23,7 @@ package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.function.IntFunction;
 import us.pserver.dbone.store.tx.RollbackAllocationLog;
 import us.pserver.dbone.store.tx.RollbackDeallocationLog;
@@ -77,8 +78,11 @@ public class StorageTransaction implements Storage, Transaction {
 
   @Override
   public Block allocate() {
+    boolean isFreeRegion = !storage.getFreeRegions().isEmpty();
     Block blk = storage.allocate();
-    log.push(new RollbackAllocationLog(storage, blk));
+    if(isFreeRegion) {
+      log.push(new RollbackAllocationLog(storage, blk));
+    }
     return blk;
   }
 
@@ -113,6 +117,12 @@ public class StorageTransaction implements Storage, Transaction {
   @Override
   public int getBlockSize() {
     return storage.getBlockSize();
+  }
+  
+  
+  @Override
+  public List<Region> getFreeRegions() {
+    return storage.getFreeRegions();
   }
 
 

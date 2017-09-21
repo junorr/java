@@ -21,9 +21,10 @@
 
 package us.pserver.dbone.store;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.function.IntFunction;
 import us.pserver.tools.NotNull;
 
@@ -38,7 +39,7 @@ public abstract class AbstractStorage implements Storage {
   
   public static final IntFunction<ByteBuffer> ALLOC_POLICY_HEAP = ByteBuffer::allocate;
   
-  public static final Region HEADER_REGION = Region.of(0, 1024);
+  public static final Region HEADER_REGION = Region.of(0, 2048);
   
   
   protected final LinkedList<Region> frees;
@@ -87,8 +88,21 @@ public abstract class AbstractStorage implements Storage {
 
 
   @Override
+  public void deallocate(Block blk) {
+    NotNull.of(blk).failIfNull("Bad null Block");
+    if(!frees.contains(blk.region())) frees.push(blk.region());
+  }
+
+
+  @Override
   public int getBlockSize() {
     return this.blockSize;
+  }
+  
+  
+  @Override
+  public List<Region> getFreeRegions() {
+    return Collections.unmodifiableList(frees);
   }
   
   

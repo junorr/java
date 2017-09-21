@@ -82,11 +82,22 @@ public class DefaultBlock implements Block {
     buffer.limit(nlim);
     return this;
   }
-
-
+  
+  
   @Override
   public String toString() {
     return "Block{" + region + '}';
   }
-
+  
+  
+  @Override public Block writeLock() throws StorageException {return this;}
+  
+  @Override public Block readLock() throws StorageException {return this;}
+  
+  @Override public Block releaseLock() throws StorageException {return this;}
+  
+  @Override public boolean isWriteLocked() throws StorageException {
+    return false;
+  }
+  
 }

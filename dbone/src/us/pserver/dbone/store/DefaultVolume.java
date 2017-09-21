@@ -53,12 +53,13 @@ public class DefaultVolume implements Volume {
     ByteBuffer sbuf = serial.serialize(unit.getValue());
     Block blk = storage.allocate();
     Record idx = Record.of(
-        unit.getUID().getHash(), 
         blk.region(), 
         unit.getUID()
     );
+    blk.writeLock();
     this.put(unit.getUID(), blk);
     this.put(sbuf, blk);
+    blk.releaseLock();
     return idx;
   }
   
@@ -79,10 +80,11 @@ public class DefaultVolume implements Volume {
   
   
   private void put(ObjectUID uid, Block blk) {
+    blk.buffer().position(0);
     byte[] buid = UTF8String.from(uid.getHash()).getBytes();
     byte[] bcls = UTF8String.from(uid.getClassName()).getBytes();
-    blk.buffer().putInt(buid.length);
-    blk.buffer().putInt(bcls.length);
+    blk.buffer().putShort((short)buid.length);
+    blk.buffer().putShort((short)bcls.length);
     blk.buffer().put(buid);
     blk.buffer().put(bcls);
   }
@@ -108,12 +110,14 @@ public class DefaultVolume implements Volume {
   
   
   private ObjectUID getUID(Block blk) {
-    int uidLen = blk.buffer().getInt();
-    int clsLen = blk.buffer().getInt();
+    blk.buffer().position(0);
+    int uidLen = blk.buffer().getShort();
+    int clsLen = blk.buffer().getShort();
     byte[] buid = new byte[uidLen];
     byte[] bcls = new byte[clsLen];
     blk.buffer().get(buid);
     blk.buffer().get(bcls);
+    blk.releaseLock();
     return ObjectUID.builder()
         .withHash(UTF8String.from(buid).toString())
         .withClassName(UTF8String.from(bcls).toString())
@@ -124,13 +128,18 @@ public class DefaultVolume implements Volume {
   @Override
   public StoreUnit get(Record idx) throws StorageException {
     Block blk = storage.get(idx.getRegion());
+    MappedValue val = this.getValue(blk);
     ObjectUID uid = this.getUID(blk);
-    return StoreUnit.of(uid, this.getValue(blk));
+    return StoreUnit.of(uid, val);
   }
   
   
   private MappedValue getValue(Block blk) throws StorageException {
     ByteBufferOutputStream bos = new ByteBufferOutputStream(storage.getAllocationPolicy());
+    blk.buffer().position(0);
+    int uidLen = blk.buffer().getShort();
+    int clsLen = blk.buffer().getShort();
+    blk.buffer().position(Short.BYTES * 2 + uidLen + clsLen);
     bos.write(blk.buffer());
     Optional<Region> next = blk.next();
     while(next.isPresent()) {

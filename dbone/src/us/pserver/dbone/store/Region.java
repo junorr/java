@@ -37,9 +37,15 @@ public interface Region extends Comparable, Serializable {
   
   public long length();
   
+  public long end();
+  
   public int intOffset();
   
   public int intLength();
+  
+  public int intEnd();
+  
+  public boolean contains(Region r);
   
   @Override
   public default int compareTo(Object r) {
@@ -79,6 +85,11 @@ public interface Region extends Comparable, Serializable {
     }
     
     @Override
+    public long end() {
+      return this.offset + this.length;
+    }
+    
+    @Override
     public int intOffset() {
       return (int) this.offset;
     }
@@ -86,6 +97,16 @@ public interface Region extends Comparable, Serializable {
     @Override
     public int intLength() {
       return (int) this.length;
+    }
+    
+    @Override
+    public int intEnd() {
+      return this.intOffset() + this.intLength();
+    }
+    
+    @Override
+    public boolean contains(Region r) {
+      return this.offset <= r.offset() && this.end() >= r.end();
     }
     
     @Override

@@ -43,8 +43,8 @@ public interface Record extends Comparable<Record>, Serializable {
   }
   
   
-  public static Record of(String name, Region r, ObjectUID uid) {
-    return new RecordImpl(name, r, uid);
+  public static Record of(Region r, ObjectUID uid) {
+    return new RecordImpl(r, uid);
   }
   
   
@@ -57,7 +57,7 @@ public interface Record extends Comparable<Record>, Serializable {
 
     private final ObjectUID uid;
 
-    public RecordImpl(String name, Region reg, ObjectUID uid) {
+    public RecordImpl(Region reg, ObjectUID uid) {
       this.region = NotNull.of(reg).getOrFail("Bad null Region");
       this.uid = NotNull.of(uid).getOrFail("Bad null ObjectUID");
     }

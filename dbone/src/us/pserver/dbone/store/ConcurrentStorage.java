@@ -22,6 +22,7 @@
 package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.IntFunction;
 import us.pserver.tools.NotNull;
@@ -103,6 +104,12 @@ public class ConcurrentStorage implements Storage {
   @Override
   public int getBlockSize() {
     return storage.getBlockSize();
+  }
+
+
+  @Override
+  public List<Region> getFreeRegions() {
+    return storage.getFreeRegions();
   }
 
 

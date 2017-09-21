@@ -39,7 +39,7 @@ public class DirectMemoryStorage extends AbstractStorage {
   
   protected DirectMemoryStorage(int size, LinkedList<Region> freeBlocks, int blockSize) {
     super(freeBlocks, ALLOC_POLICY_DIRECT, blockSize);
-    if(size <= HEADER_REGION.length() + blockSize*2) {
+    if(size <= blockSize*2) {
       throw new IllegalArgumentException("To small memory size: "+ size);
     }
     this.buffer = ALLOC_POLICY_DIRECT.apply(size);
@@ -66,13 +66,6 @@ public class DirectMemoryStorage extends AbstractStorage {
   public Block allocate() {
     Region reg = frees.isEmpty() ? nextRegion() : frees.pop();
     return get(reg);
-  }
-
-
-  @Override
-  public void deallocate(Block blk) {
-    NotNull.of(blk).failIfNull("Bad null Block");
-    this.frees.push(blk.region());
   }
 
 
@@ -105,19 +98,8 @@ public class DirectMemoryStorage extends AbstractStorage {
 
 
   @Override
-  public void close() throws StorageException {
-    Block blk = this.get(HEADER_REGION);
-    ByteBuffer buf = blk.buffer();
-    buf.putShort((short)0);
-    buf.putInt(blockSize);
-    for(Region r : frees) {
-      buf.putLong(r.offset());
-      buf.putLong(r.length());
-    }
-    while(buf.remaining() >= Long.BYTES) {
-      buf.putLong(0l);
-    }
-    this.put(blk);
+  public void close() {
+    buffer.clear();
   }
   
   

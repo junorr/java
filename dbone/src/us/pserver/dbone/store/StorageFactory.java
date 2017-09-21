@@ -24,6 +24,7 @@ package us.pserver.dbone.store;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -109,9 +110,21 @@ public class StorageFactory {
   }
   
   
+  public Storage createMapped() throws IOException {
+    FileChannel ch = createChannel();
+    return ch.size() >= HEADER_REGION.length() ? openMMStorage(ch) : createMMStorage(ch);
+  }
+  
+  
   public Storage createDirect(int size) {
+    if(this.blockSize < MINIMUM_BLOCK_SIZE) {
+      throw new StorageException("Bad block size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
+    }
+    if(size < MINIMUM_BLOCK_SIZE) {
+      throw new StorageException("Bad size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
+    }
     LinkedList<Region> frees = new LinkedList<>();
-    int offset = HEADER_REGION.intLength();
+    int offset = 0;
     while(offset < size) {
       frees.add(Region.of(offset, blockSize));
       offset += blockSize;
@@ -120,55 +133,48 @@ public class StorageFactory {
   }
   
   
-  public Storage create() throws IOException {
+  private FileChannel createChannel() throws IOException {
     NotNull.of(this.path).failIfNull("Bad null file path");
-    if(this.blockSize < MINIMUM_BLOCK_SIZE) {
-      throw new StorageException("Bad block size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
-    }
-    FileChannel ch = FileChannel.open(path, 
+    return FileChannel.open(path, 
         StandardOpenOption.CREATE, 
         StandardOpenOption.READ, 
         StandardOpenOption.WRITE
     );
-    long size = ch.size();
-    if(size > 0) {
-      if(this.blockSize != DEFAULT_BLOCK_SIZE) {
-        throw new IOException("Can not set block size for an existent storage");
-      }
-      return this.open(ch);
-    }
-    else {
-      return this.create(ch);
-    }
   }
   
   
-  private FileChannelStorage create(FileChannel ch) throws IOException {
-    ByteBuffer buf = this.malloc.apply(FileChannelStorage.HEADER_REGION.intLength());
-    buf.putShort((short)1);
-    buf.putInt(this.blockSize);
-    while(buf.remaining() >= Long.BYTES) {
-      buf.putLong(0l);
+  public Storage create() throws IOException {
+    if(this.blockSize < MINIMUM_BLOCK_SIZE) {
+      throw new StorageException("Bad block size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
     }
-    buf.flip();
-    ch.position(FileChannelStorage.HEADER_REGION.offset());
-    ch.write(buf);
+    FileChannel ch = createChannel();
+    return ch.size() >= HEADER_REGION.length() ? openFCStorage(ch) : createFCStorage(ch);
+  }
+  
+  
+  private FileChannelStorage createFCStorage(FileChannel ch) throws IOException {
     return new FileChannelStorage(ch, new LinkedList<>(), this.malloc, this.blockSize);
   }
   
   
-  private FileChannelStorage open(FileChannel ch) throws IOException {
+  private MappedMemoryStorage createMMStorage(FileChannel ch) throws IOException {
+    System.out.println("* StorageFactory.createMMStorage: blksize="+ this.blockSize);
+    return new MappedMemoryStorage(ch, new LinkedList<>(), this.blockSize);
+  }
+  
+  
+  private FileChannelStorage openFCStorage(FileChannel ch) throws IOException {
     if(this.blockSize != DEFAULT_BLOCK_SIZE) {
       throw new IOException("Can not set block size for an existent storage");
     }
     LinkedList<Region> freeblks = new LinkedList<>();
     ByteBuffer buf = this.malloc.apply(FileChannelStorage.HEADER_REGION.intLength());
+    FileLock lock = ch.lock(HEADER_REGION.offset(), HEADER_REGION.length(), true);
     ch.position(FileChannelStorage.HEADER_REGION.offset());
     ch.read(buf);
+    lock.release();
     buf.flip();
-    if(buf.getShort() == 1 && !this.openForced) {
-      throw new IOException("File storage is locked by another process");
-    }
+    buf.getShort();
     int blksize = buf.getInt();
     while(buf.remaining() >= Region.BYTES) {
       Region r = Region.of(buf.getLong(), buf.getLong());
@@ -177,6 +183,31 @@ public class StorageFactory {
       }
     }
     return new FileChannelStorage(ch, freeblks, this.malloc, blksize);
+  }
+  
+  
+  private MappedMemoryStorage openMMStorage(FileChannel ch) throws IOException {
+    System.out.println("* StorageFactory.openMMStorage: blksize="+ this.blockSize);
+    if(this.blockSize != DEFAULT_BLOCK_SIZE) {
+      throw new IOException("Can not set block size for an existent storage");
+    }
+    LinkedList<Region> freeblks = new LinkedList<>();
+    ByteBuffer buf = this.malloc.apply(FileChannelStorage.HEADER_REGION.intLength());
+    FileLock lock = ch.lock();
+    ch.position(FileChannelStorage.HEADER_REGION.offset());
+    ch.read(buf);
+    buf.flip();
+    buf.getShort();
+    int blksize = buf.getInt();
+    while(buf.remaining() >= Region.BYTES) {
+      Region r = Region.of(buf.getLong(), buf.getLong());
+      if(r.offset() + r.length() > 0) {
+        freeblks.add(r);
+      }
+    }
+    MappedMemoryStorage stg = new MappedMemoryStorage(ch, freeblks, blksize);
+    lock.release();
+    return stg;
   }
   
 }

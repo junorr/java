@@ -48,10 +48,11 @@ public class TestFileStorage {
   
   public static void main(String[] args) throws IOException {
     //Storage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").create();
-    Storage fs = StorageFactory.newFactory().createDirect(32*1024);
-    //FileStorage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").setOpenForced().create();
+    Storage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").createMapped();
+    //Storage fs = StorageFactory.newFactory().createDirect(32*1024);
     System.out.println("* storage.size(): "+ fs.size());
     Block blk = fs.allocate();
+    System.out.println(" 1 allocate: "+ blk);
     
     fill(blk);
     blk.buffer().flip();

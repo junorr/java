@@ -29,6 +29,8 @@ import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
 import us.pserver.dbone.store.Record;
 import us.pserver.dbone.store.Storage;
+import us.pserver.dbone.store.StoreUnit;
+import us.pserver.tools.timer.Timer;
 
 /**
  *
@@ -40,27 +42,46 @@ public class TestVolume {
   
   public static void main(String[] args) throws Throwable {
     //Storage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").setOpenForced().create();
-    Storage fs = StorageFactory.newFactory().createDirect(32*1024);
+    Storage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").createMapped();
+    //Storage fs = StorageFactory.newFactory().createDirect(32*1024);
+    
     Volume volume = new DefaultVolume(fs);
     MappedValue val = MappedValue.of(5);
     ObjectUID uid = ObjectUID.builder().of(val).build();
+    Timer tm = new Timer.Nanos().start();
     Record rec = volume.put(uid, val);
+    System.out.println("-- time to volume.put "+ tm.stop()+ " --");
     System.out.println(rec);
-    System.out.println(volume.get(rec));
+    tm.clear().start();
+    StoreUnit unit = volume.get(rec);
+    System.out.println("-- time to volume.get "+ tm.stop()+ " --");
+    System.out.println(unit);
     
     VolumeTransaction vtx = volume.startTransaction();
     val = MappedValue.of(8);
     uid = ObjectUID.builder().of(val).build();
+    tm.clear().start();
     rec = vtx.put(uid, val);
+    System.out.println("-- time to volume.put "+ tm.stop()+ " --");
     System.out.println(rec);
-    System.out.println(vtx.get(rec));
+    tm.clear().start();
+    unit = volume.get(rec);
+    System.out.println("-- time to volume.get "+ tm.stop()+ " --");
+    System.out.println(unit);
+    tm.clear().start();
     vtx.rollback();
+    System.out.println("-- time to volume.rollback "+ tm.stop()+ " --");
     
     val = MappedValue.of(2);
     uid = ObjectUID.builder().of(val).build();
+    tm.clear().start();
     rec = volume.put(uid, val);
+    System.out.println("-- time to volume.put "+ tm.stop()+ " --");
     System.out.println(rec);
-    System.out.println(volume.get(rec));
+    tm.clear().start();
+    unit = volume.get(rec);
+    System.out.println("-- time to volume.get "+ tm.stop()+ " --");
+    System.out.println(unit);
     
     volume.close();
   }

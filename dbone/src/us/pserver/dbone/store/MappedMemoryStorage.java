@@ -21,10 +21,10 @@
 
 package us.pserver.dbone.store;
 
-import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Collections;
 import java.util.LinkedList;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.rfl.Reflector;
@@ -36,47 +36,45 @@ import us.pserver.tools.rfl.Reflector;
  */
 public class MappedMemoryStorage extends AbstractStorage {
   
+  public static final int MEMORY_ALLOC_SIZE = 32*1024;
+  
   private final FileChannel channel;
   
-  private final MappedByteBuffer buffer;
+  private MappedByteBuffer buffer;
   
-  private Region mapregion;
+  private Region mapreg;
   
   
   protected MappedMemoryStorage(FileChannel ch, LinkedList<Region> freeBlocks, int blockSize) throws StorageException {
     super(freeBlocks, ALLOC_POLICY_DIRECT, blockSize);
     this.channel = NotNull.of(ch).getOrFail("Bad null FileChannel");
-    this.mapregion = Region.of(0, Math.min(Integer.MAX_VALUE, getFileSize()));
-    this.buffer = this.createMappedMemory();
+    mapreg = Region.of(0, 1);
+    this.remapMemory(Region.of(0, Math.max(size(), MEMORY_ALLOC_SIZE)));
   }
   
   
-  private MappedByteBuffer createMappedMemory() throws StorageException {
-    return StorageException.rethrow(()->channel.map(
+  private void remapMemory(Region r) throws StorageException {
+    if(mapreg.contains(r)) return;
+    long off = Math.min(mapreg.offset(), r.offset());
+    mapreg = Region.of(off, Math.min(r.end(), Integer.MAX_VALUE));
+    if(size() < mapreg.end()) {
+      Region next = super.nextRegion();
+      while(next.end() < mapreg.end()) {
+        frees.push(next);
+        next = Region.of(next.end(), next.length());
+      }
+      Collections.sort(frees);
+    }
+    this.buffer = StorageException.rethrow(()->channel.map(
         FileChannel.MapMode.READ_WRITE, 
-        mapregion.offset(), mapregion.length())
+        mapreg.offset(), mapreg.length())
     );
   }
   
   
   @Override
-  public long size() {
-    return buffer.capacity();
-  }
-  
-  
-  public final long getFileSize() throws StorageException {
+  public long size() throws StorageException {
     return StorageException.rethrow(channel::size);
-  }
-  
-  
-  @Override
-  protected Region nextRegion() {
-    Region reg = super.nextRegion();
-    if(reg.length() + reg.offset() > size()) {
-      throw new BufferOverflowException();
-    }
-    return reg;
   }
   
   
@@ -88,19 +86,13 @@ public class MappedMemoryStorage extends AbstractStorage {
 
 
   @Override
-  public void deallocate(Block blk) {
-    NotNull.of(blk).failIfNull("Bad null Block");
-    this.frees.push(blk.region());
-  }
-
-
-  @Override
   public Block get(Region reg) {
     NotNull.of(reg).failIfNull("Bad null Region");
+    this.remapMemory(reg);
     buffer.limit(reg.intLength() + reg.intOffset());
     buffer.position(reg.intOffset());
     ByteBuffer buf = buffer.slice();
-    return new DefaultBlock(reg, buffer.slice());
+    return new SharedBlock(channel, reg, buffer.slice()).readLock();
   }
   
   
@@ -114,21 +106,25 @@ public class MappedMemoryStorage extends AbstractStorage {
   public void put(Block blk) throws StorageException {
     NotNull.of(blk).failIfNull("Bad null Block");
     if(isSharedBuffer(blk.buffer())) {
+      blk.releaseLock();
       return;
     }
+    if(!blk.isWriteLocked()) blk.writeLock();
     buffer.limit(blk.region().intLength() + blk.region().intOffset());
     buffer.position(blk.region().intOffset());
     Block.copy(blk.buffer(), buffer);
+    blk.releaseLock();
   }
 
 
   @Override
   public void close() throws StorageException {
-    Block blk = this.get(HEADER_REGION);
+    Block blk = this.get(HEADER_REGION).writeLock();
     ByteBuffer buf = blk.buffer();
     buf.putShort((short)0);
     buf.putInt(blockSize);
-    for(Region r : frees) {
+    while(!frees.isEmpty() && buf.remaining() > Region.BYTES) {
+      Region r = frees.pop();
       buf.putLong(r.offset());
       buf.putLong(r.length());
     }
