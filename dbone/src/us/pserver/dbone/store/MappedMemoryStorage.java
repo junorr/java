@@ -36,7 +36,7 @@ import us.pserver.tools.rfl.Reflector;
  */
 public class MappedMemoryStorage extends AbstractStorage {
   
-  public static final int MEMORY_ALLOC_SIZE = 512*1024*1024;
+  public static final int MEMORY_ALLOC_SIZE = 32*1024;
   
   private final FileChannel channel;
   

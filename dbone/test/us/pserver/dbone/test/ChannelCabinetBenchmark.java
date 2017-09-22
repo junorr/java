@@ -93,7 +93,7 @@ public class ChannelCabinetBenchmark {
   
   public static void main(String[] args) throws IOException {
     Storage stg = StorageFactory.newFactory()
-        .setFile("/home/juno/dbone-channel.dat")
+        .setFile("/storage/dbone-channel.dat")
         .setBlockSize(512)
         .create();
     Volume vol = new DefaultVolume(stg);

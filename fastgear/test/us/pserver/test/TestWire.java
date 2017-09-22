@@ -36,25 +36,25 @@ public interface TestWire<T> {
   public static void main(String[] args) throws InterruptedException {
     final Wire<Integer> wire = Wire.defaultWire();
     new Thread(() -> {
-      System.out.printf("* %s pulling wire for 5 seconds...%n", Thread.currentThread().getName());
+      System.out.printf("*A* %s pulling wire for 5 seconds...%n", Thread.currentThread().getName());
       Instant start = Instant.now();
       Optional<Integer> opt = wire.pull(5000);
       Instant end = Instant.now();
       Duration dur = Duration.between(start, end);
-      System.out.printf("* %s Finally got the value after %s%n", Thread.currentThread().getName(), dur.toString().substring(2));
-      System.out.printf("* %s value is: %s%n", Thread.currentThread().getName(), opt);
-      System.out.printf("* %s is done!%n", Thread.currentThread().getName());
+      System.out.printf("*A* %s Finally got the value after %s%n", Thread.currentThread().getName(), dur.toString().substring(2));
+      System.out.printf("*A* %s value is: %s%n", Thread.currentThread().getName(), opt);
+      System.out.printf("*A* %s is done!%n", Thread.currentThread().getName());
     }).start();
     new Thread(() -> {
-      System.out.printf("* %s assigning a consumer to wire...%n", Thread.currentThread().getName());
+      System.out.printf("*B* %s assigning a consumer to wire...%n", Thread.currentThread().getName());
       Instant start = Instant.now();
       wire.onAvailable(t -> {
         Instant end = Instant.now();
         Duration dur = Duration.between(start, end);
-        System.out.printf("* %s Finally got the value after %s%n", Thread.currentThread().getName(), dur.toString().substring(2));
-        System.out.printf("* %s value is: %d%n", Thread.currentThread().getName(), t);
+        System.out.printf("*B* %s Finally got the value after %s%n", Thread.currentThread().getName(), dur.toString().substring(2));
+        System.out.printf("*B* %s value is: %d%n", Thread.currentThread().getName(), t);
       });
-      System.out.printf("* %s is done!%n", Thread.currentThread().getName());
+      System.out.printf("*B* %s is done!%n", Thread.currentThread().getName());
     }).start();
     System.out.println("- Sleeping for 3 seconds...");
     Thread.sleep(3000);
@@ -63,7 +63,7 @@ public interface TestWire<T> {
     wire.push(32);
     System.out.print("- Trying to get a value: wire.pull(1000)=");
     System.out.println(wire.pull(1000));
-    System.out.printf("- available_processors="+ Runtime.getRuntime().availableProcessors());
+    System.out.printf("- available_processors=%d%n", Runtime.getRuntime().availableProcessors());
     System.out.println("- Alright, finishing up here!");
   }
   

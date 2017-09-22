@@ -93,7 +93,7 @@ public class MappedNoLockCabinetBenchmark {
   
   public static void main(String[] args) throws IOException {
     Storage stg = StorageFactory.newFactory()
-        .setFile("/home/juno/mapped-nolock-dbone-512M.dat")
+        .setFile("/storage/mapped-nolock-dbone-32K.dat")
         .setBlockSize(512).createMappedNoLock();
     Volume vol = new DefaultVolume(stg);
     

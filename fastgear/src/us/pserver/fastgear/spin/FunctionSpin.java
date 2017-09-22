@@ -49,7 +49,7 @@ public interface FunctionSpin<I,O,E extends Exception> extends RunningSpin<I,O> 
           }
         }
         else synchronized(this) {
-          this.wait(10);
+          this.wait(5);
         }
       }
       catch(Exception e) {

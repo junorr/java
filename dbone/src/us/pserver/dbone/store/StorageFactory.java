@@ -23,14 +23,17 @@ package us.pserver.dbone.store;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
+import java.util.concurrent.Future;
 import java.util.function.IntFunction;
 import static us.pserver.dbone.store.AbstractStorage.HEADER_REGION;
+import us.pserver.dbone.store.fun.ConsumerHandler;
 import us.pserver.tools.NotNull;
 
 /**
@@ -149,6 +152,16 @@ public class StorageFactory {
   }
   
   
+  private AsynchronousFileChannel createAsyncChannel() throws IOException {
+    NotNull.of(this.path).failIfNull("Bad null file path");
+    return AsynchronousFileChannel.open(path, 
+        StandardOpenOption.CREATE, 
+        StandardOpenOption.READ, 
+        StandardOpenOption.WRITE
+    );
+  }
+  
+  
   public Storage create() throws IOException {
     if(this.blockSize < MINIMUM_BLOCK_SIZE) {
       throw new StorageException("Bad block size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
@@ -158,8 +171,22 @@ public class StorageFactory {
   }
   
   
+  public Storage createAsync() throws IOException {
+    if(this.blockSize < MINIMUM_BLOCK_SIZE) {
+      throw new StorageException("Bad block size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
+    }
+    AsynchronousFileChannel ch = createAsyncChannel();
+    return ch.size() >= HEADER_REGION.length() ? openAsyncFCStorage(ch) : createAsyncFCStorage(ch);
+  }
+  
+  
   private FileChannelStorage createFCStorage(FileChannel ch) throws IOException {
     return new FileChannelStorage(ch, new LinkedList<>(), this.malloc, this.blockSize);
+  }
+  
+  
+  private AsyncFileChannelStorage createAsyncFCStorage(AsynchronousFileChannel ch) throws IOException {
+    return new AsyncFileChannelStorage(ch, new LinkedList<>(), this.malloc, this.blockSize);
   }
   
   
@@ -195,6 +222,29 @@ public class StorageFactory {
       }
     }
     return new FileChannelStorage(ch, freeblks, this.malloc, blksize);
+  }
+  
+  
+  private AsyncFileChannelStorage openAsyncFCStorage(AsynchronousFileChannel ch) throws IOException {
+    if(this.blockSize != DEFAULT_BLOCK_SIZE) {
+      throw new IOException("Can not set block size for an existent storage");
+    }
+    LinkedList<Region> freeblks = new LinkedList<>();
+    ByteBuffer buf = this.malloc.apply(FileChannelStorage.HEADER_REGION.intLength());
+    Block blk = new DefaultBlock(HEADER_REGION, buf);
+    ConsumerHandler<Block> csh = new <Block>ConsumerHandler(blk);
+    Future<Integer> fut = ch.read(buf, HEADER_REGION.offset());
+    StorageException.rethrow(()->fut.get());
+    buf.flip();
+    buf.getShort();
+    int blksize = buf.getInt();
+    while(buf.remaining() >= Region.BYTES) {
+      Region r = Region.of(buf.getLong(), buf.getLong());
+      if(r.offset() + r.length() > 0) {
+        freeblks.add(r);
+      }
+    }
+    return new AsyncFileChannelStorage(ch, freeblks, this.malloc, blksize);
   }
   
   

@@ -25,11 +25,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import us.pserver.dbone.store.DefaultVolume;
+import us.pserver.dbone.store.AsyncFileChannelStorage;
+import us.pserver.dbone.store.AsyncVolume;
 import us.pserver.dbone.store.Record;
-import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageFactory;
-import us.pserver.dbone.store.Volume;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
 import us.pserver.tools.timer.Timer;
@@ -39,12 +38,12 @@ import us.pserver.tools.timer.Timer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 21/09/2017
  */
-public class MappedCabinetBenchmark {
+public class AsyncChannelCabinetBenchmark {
 
   
   public static List<MappedValue> genValues() {
     Timer tm = new Timer.Nanos().start();
-    ArrayList<MappedValue> vals = new ArrayList<>(1_000_000);
+    List<MappedValue> vals = Collections.synchronizedList(new ArrayList<>(1_000_000));
     for(int i = 0; i < 1_000_000; i++) {
       vals.add(MappedValue.of(Math.random() * 1_000_000));
     }
@@ -54,13 +53,13 @@ public class MappedCabinetBenchmark {
   }
   
   
-  public static List<Record> putValues(Volume vol, List<MappedValue> lst) {
-    ArrayList<Record> recs = new ArrayList<>(1_000_000);
+  public static List<Record> putValues(AsyncVolume vol, List<MappedValue> lst) {
+    List<Record> recs = Collections.synchronizedList(new ArrayList<>(1_000_000));
     Timer tm = new Timer.Nanos().start();
-    while(!lst.isEmpty()) {
-      MappedValue val = lst.remove(0);
-      ObjectUID uid = ObjectUID.builder().of(val).build();
-      recs.add(vol.put(uid, val));
+    for(MappedValue v : lst) {
+      ObjectUID uid = ObjectUID.builder().of(v).build();
+      recs.add(vol.put(uid, v));
+      recs.add(vol.put(uid, v));
     }
     tm.stop();
     System.out.println("-- time to put "+ recs.size()+ " elements "+ tm+ " --");
@@ -68,23 +67,23 @@ public class MappedCabinetBenchmark {
   }
   
   
-  public static void getOrdered(Volume vol, List<Record> recs) {
+  public static void getOrdered(AsyncVolume vol, List<Record> recs) {
     int size = recs.size();
     Timer tm = new Timer.Nanos().start();
     for(Record r : recs) {
-      vol.get(r);
+      vol.get(r, su->{});
     }
     tm.stop();
     System.out.println("-- time to get ordered "+ size+ " elements "+ tm+ " --");
   }
   
   
-  public static void getShuffled(Volume vol, List<Record> recs) {
+  public static void getShuffled(AsyncVolume vol, List<Record> recs) {
     int size = recs.size();
     Collections.shuffle(recs);
     Timer tm = new Timer.Nanos().start();
     for(Record r : recs) {
-      vol.get(r);
+      vol.get(r, su->{});
     }
     tm.stop();
     System.out.println("-- time to get shuffled"+ size+ " elements "+ tm+ " --");
@@ -92,10 +91,11 @@ public class MappedCabinetBenchmark {
   
   
   public static void main(String[] args) throws IOException {
-    Storage stg = StorageFactory.newFactory()
-        .setFile("/storage/mapped-dbone-512M.dat")
-        .setBlockSize(512).createMapped();
-    Volume vol = new DefaultVolume(stg);
+    AsyncFileChannelStorage stg = (AsyncFileChannelStorage) StorageFactory.newFactory()
+        .setFile("/storage/dbone-async-channel.dat")
+        .setBlockSize(512)
+        .createAsync();
+    AsyncVolume vol = new AsyncVolume(stg);
     
     List<Record> recs = putValues(vol, genValues());
     getOrdered(vol, recs);

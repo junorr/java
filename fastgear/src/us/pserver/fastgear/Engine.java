@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
@@ -58,8 +59,7 @@ public final class Engine {
     pool.execute(() -> {
       while(!shutdown.get()) {
         if(gears.isEmpty()) synchronized(this) {
-          try { this.wait(10); }
-          catch(InterruptedException e) {}
+          LockSupport.parkNanos(500);
         }
         else {
           gears.stream().filter(Gear::isReady).forEach(pool::execute);

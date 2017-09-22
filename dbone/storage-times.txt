@@ -58,11 +58,26 @@ StoreUnit{uid=ObjectUID{uid=B11555653CD7FEE01059B581EBEC4660F7DB060A, cls=us.pse
 -- time to get shuffled1000000 elements Timer{ elapsed: 17881,1703ms, laps: 1, min-max: 17881,1703ms-17881,1703ms, average: 17881,1703ms } --
 
 
+*** MAPPED STORAGE (32K) XEON ***
+* StorageFactory.createMMNoLockStorage: blksize=512
+-- time to generate 1000000 elements Timer{ elapsed: 47,8138ms, laps: 1, min-max: 47,8138ms-47,8138ms, average: 47,8138ms } --
+-- time to put 1000000 elements Timer{ elapsed: 102790,1985ms, laps: 1, min-max: 102790,1985ms-102790,1985ms, average: 102790,1985ms } --
+-- time to get ordered 1000000 elements Timer{ elapsed: 24712,0453ms, laps: 1, min-max: 24712,0453ms-24712,0453ms, average: 24712,0453ms } --
+-- time to get shuffled1000000 elements Timer{ elapsed: 24546,2236ms, laps: 1, min-max: 24546,2236ms-24546,2236ms, average: 24546,2236ms } --
+
+
 *** CHANNEL STORAGE ***
 -- time to generate 1000000 elements Timer{ elapsed: 49,791ms, laps: 1, min-max: 49,791ms-49,791ms, average: 49,791ms } --
 -- time to put 1000000 elements Timer{ elapsed: 142479,7289ms, laps: 1, min-max: 142479,7289ms-142479,7289ms, average: 142479,7289ms } --
 -- time to get ordered 1000000 elements Timer{ elapsed: 20094,1512ms, laps: 1, min-max: 20094,1512ms-20094,1512ms, average: 20094,1512ms } --
 -- time to get shuffled1000000 elements Timer{ elapsed: 20135,3587ms, laps: 1, min-max: 20135,3587ms-20135,3587ms, average: 20135,3587ms } --
+
+
+*** CHANNEL STORAGE XEON ***
+-- time to generate 1000000 elements Timer{ elapsed: 45,3763ms, laps: 1, min-max: 45,3763ms-45,3763ms, average: 45,3763ms } --
+-- time to put 1000000 elements Timer{ elapsed: 166102,1577ms, laps: 1, min-max: 166102,1577ms-166102,1577ms, average: 166102,1577ms } --
+-- time to get ordered 1000000 elements Timer{ elapsed: 35544,9342ms, laps: 1, min-max: 35544,9342ms-35544,9342ms, average: 35544,9342ms } --
+-- time to get shuffled1000000 elements Timer{ elapsed: 30475,9436ms, laps: 1, min-max: 30475,9436ms-30475,9436ms, average: 30475,9436ms } --
 
 
 *** MAPPED STORAGE (512M) ***
@@ -71,6 +86,14 @@ StoreUnit{uid=ObjectUID{uid=B11555653CD7FEE01059B581EBEC4660F7DB060A, cls=us.pse
 -- time to put 1000000 elements Timer{ elapsed: 119749,5178ms, laps: 1, min-max: 119749,5178ms-119749,5178ms, average: 119749,5178ms } --
 -- time to get ordered 1000000 elements Timer{ elapsed: 19012,7714ms, laps: 1, min-max: 19012,7714ms-19012,7714ms, average: 19012,7714ms } --
 -- time to get shuffled1000000 elements Timer{ elapsed: 19261,1068ms, laps: 1, min-max: 19261,1068ms-19261,1068ms, average: 19261,1068ms } --
+
+
+*** MAPPED STORAGE (512M) XEON ***
+* StorageFactory.createMMStorage: blksize=512
+-- time to generate 1000000 elements Timer{ elapsed: 44,9016ms, laps: 1, min-max: 44,9016ms-44,9016ms, average: 44,9016ms } --
+-- time to put 1000000 elements Timer{ elapsed: 107183,0467ms, laps: 1, min-max: 107183,0467ms-107183,0467ms, average: 107183,0467ms } --
+-- time to get ordered 1000000 elements Timer{ elapsed: 27671,2835ms, laps: 1, min-max: 27671,2835ms-27671,2835ms, average: 27671,2835ms } --
+-- time to get shuffled1000000 elements Timer{ elapsed: 27489,1681ms, laps: 1, min-max: 27489,1681ms-27489,1681ms, average: 27489,1681ms } --
 
 
 *** MAPPED NO LOCK STORAGE (512M) ***
@@ -86,6 +109,15 @@ StoreUnit{uid=ObjectUID{uid=B11555653CD7FEE01059B581EBEC4660F7DB060A, cls=us.pse
 -- time to put 1000000 elements Timer{ elapsed: 119537,0252ms, laps: 1, min-max: 119537,0252ms-119537,0252ms, average: 119537,0252ms } --
 -- time to get ordered 1000000 elements Timer{ elapsed: 17427,549ms, laps: 1, min-max: 17427,549ms-17427,549ms, average: 17427,549ms } --
 -- time to get shuffled1000000 elements Timer{ elapsed: 16833,6494ms, laps: 1, min-max: 16833,6494ms-16833,6494ms, average: 16833,6494ms } --
+
+
+*** MEMORY STORAGE XEON ***
+-- time to generate 1000000 elements Timer{ elapsed: 243,694ms, laps: 1, min-max: 243,694ms-243,694ms, average: 243,694ms } --
+-- time to put 1000000 elements Timer{ elapsed: 104848,8095ms, laps: 1, min-max: 104848,8095ms-104848,8095ms, average: 104848,8095ms } --
+-- time to get ordered 1000000 elements Timer{ elapsed: 25275,086ms, laps: 1, min-max: 25275,086ms-25275,086ms, average: 25275,086ms } --
+-- time to get shuffled1000000 elements Timer{ elapsed: 25175,1843ms, laps: 1, min-max: 25175,1843ms-25175,1843ms, average: 25175,1843ms } --
+
+
 
 
 

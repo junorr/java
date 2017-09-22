@@ -112,8 +112,6 @@ public class TestVolume {
     System.out.println("  Done!");
     execute(vol);
     
-    Collections.sh
-    
     vol.close();
   }
   
