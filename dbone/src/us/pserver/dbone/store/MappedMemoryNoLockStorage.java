@@ -34,7 +34,7 @@ import us.pserver.tools.rfl.Reflector;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 18/09/2017
  */
-public class MappedMemoryStorage extends AbstractStorage {
+public class MappedMemoryNoLockStorage extends AbstractStorage {
   
   public static final int MEMORY_ALLOC_SIZE = 512*1024*1024;
   
@@ -45,7 +45,7 @@ public class MappedMemoryStorage extends AbstractStorage {
   private Region mapreg;
   
   
-  protected MappedMemoryStorage(FileChannel ch, LinkedList<Region> freeBlocks, int blockSize) throws StorageException {
+  protected MappedMemoryNoLockStorage(FileChannel ch, LinkedList<Region> freeBlocks, int blockSize) throws StorageException {
     super(freeBlocks, ALLOC_POLICY_DIRECT, blockSize);
     this.channel = NotNull.of(ch).getOrFail("Bad null FileChannel");
     mapreg = Region.of(0, 1);
@@ -92,7 +92,7 @@ public class MappedMemoryStorage extends AbstractStorage {
     buffer.limit(reg.intLength() + reg.intOffset());
     buffer.position(reg.intOffset());
     ByteBuffer buf = buffer.slice();
-    return new SharedBlock(channel, reg, buffer.slice()).readLock();
+    return new DefaultBlock(reg, buffer.slice());
   }
   
   
@@ -105,15 +105,9 @@ public class MappedMemoryStorage extends AbstractStorage {
   @Override
   public void put(Block blk) throws StorageException {
     NotNull.of(blk).failIfNull("Bad null Block");
-    if(isSharedBuffer(blk.buffer())) {
-      blk.releaseLock();
-      return;
-    }
-    if(!blk.isWriteLocked()) blk.writeLock();
-    buffer.limit(blk.region().intLength() + blk.region().intOffset());
+    buffer.limit(blk.region().intEnd());
     buffer.position(blk.region().intOffset());
     Block.copy(blk.buffer(), buffer);
-    blk.releaseLock();
   }
 
 

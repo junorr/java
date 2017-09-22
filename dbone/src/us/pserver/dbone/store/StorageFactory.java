@@ -44,7 +44,7 @@ public class StorageFactory {
   
   public static final IntFunction<ByteBuffer> ALLOC_POLICY_HEAP = ByteBuffer::allocateDirect;
   
-  public static final int MINIMUM_BLOCK_SIZE = 1024;
+  public static final int MINIMUM_BLOCK_SIZE = 256;
   
   public static final int DEFAULT_BLOCK_SIZE = 2048;
   
@@ -116,6 +116,12 @@ public class StorageFactory {
   }
   
   
+  public Storage createMappedNoLock() throws IOException {
+    FileChannel ch = createChannel();
+    return ch.size() >= HEADER_REGION.length() ? openMMNoLockStorage(ch) : createMMNoLockStorage(ch);
+  }
+  
+  
   public Storage createDirect(int size) {
     if(this.blockSize < MINIMUM_BLOCK_SIZE) {
       throw new StorageException("Bad block size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
@@ -163,6 +169,12 @@ public class StorageFactory {
   }
   
   
+  private MappedMemoryNoLockStorage createMMNoLockStorage(FileChannel ch) throws IOException {
+    System.out.println("* StorageFactory.createMMNoLockStorage: blksize="+ this.blockSize);
+    return new MappedMemoryNoLockStorage(ch, new LinkedList<>(), this.blockSize);
+  }
+  
+  
   private FileChannelStorage openFCStorage(FileChannel ch) throws IOException {
     if(this.blockSize != DEFAULT_BLOCK_SIZE) {
       throw new IOException("Can not set block size for an existent storage");
@@ -207,6 +219,29 @@ public class StorageFactory {
     }
     MappedMemoryStorage stg = new MappedMemoryStorage(ch, freeblks, blksize);
     lock.release();
+    return stg;
+  }
+  
+  
+  private MappedMemoryNoLockStorage openMMNoLockStorage(FileChannel ch) throws IOException {
+    System.out.println("* StorageFactory.openMMStorage: blksize="+ this.blockSize);
+    if(this.blockSize != DEFAULT_BLOCK_SIZE) {
+      throw new IOException("Can not set block size for an existent storage");
+    }
+    LinkedList<Region> freeblks = new LinkedList<>();
+    ByteBuffer buf = this.malloc.apply(FileChannelStorage.HEADER_REGION.intLength());
+    ch.position(FileChannelStorage.HEADER_REGION.offset());
+    ch.read(buf);
+    buf.flip();
+    buf.getShort();
+    int blksize = buf.getInt();
+    while(buf.remaining() >= Region.BYTES) {
+      Region r = Region.of(buf.getLong(), buf.getLong());
+      if(r.offset() + r.length() > 0) {
+        freeblks.add(r);
+      }
+    }
+    MappedMemoryNoLockStorage stg = new MappedMemoryNoLockStorage(ch, freeblks, blksize);
     return stg;
   }
   

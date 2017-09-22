@@ -21,6 +21,7 @@
 
 package us.pserver.dbone.test;
 
+import java.io.PrintStream;
 import us.pserver.dbone.store.DefaultVolume;
 import us.pserver.dbone.store.StorageFactory;
 import us.pserver.dbone.store.Volume;
@@ -29,6 +30,7 @@ import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
 import us.pserver.dbone.store.Record;
 import us.pserver.dbone.store.Storage;
+import us.pserver.dbone.store.StorageException;
 import us.pserver.dbone.store.StoreUnit;
 import us.pserver.tools.timer.Timer;
 
@@ -38,14 +40,23 @@ import us.pserver.tools.timer.Timer;
  * @version 0.0 - 19/09/2017
  */
 public class TestVolume {
+  
+  public static final PrintStream STDOUT = System.out;
+  
+  public static final PrintStream DEVNULL = StorageException.rethrow(()->new PrintStream("/dev/null"));
+  
+  
+  public static void enableStdOut() {
+    System.setOut(STDOUT);
+  }
 
   
-  public static void main(String[] args) throws Throwable {
-    //Storage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").setOpenForced().create();
-    Storage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").createMapped();
-    //Storage fs = StorageFactory.newFactory().createDirect(32*1024);
-    
-    Volume volume = new DefaultVolume(fs);
+  public static void disableStdOut() {
+    System.setOut(DEVNULL);
+  }
+  
+  
+  public static void execute(Volume volume) {
     MappedValue val = MappedValue.of(5);
     ObjectUID uid = ObjectUID.builder().of(val).build();
     Timer tm = new Timer.Nanos().start();
@@ -82,8 +93,28 @@ public class TestVolume {
     unit = volume.get(rec);
     System.out.println("-- time to volume.get "+ tm.stop()+ " --");
     System.out.println(unit);
+  }
+
+  
+  public static void main(String[] args) throws Throwable {
+    //Storage fs = StorageFactory.newFactory().setFile("/storage/channelDBone.bin").create();
+    //Storage fs = StorageFactory.newFactory().setFile("/storage/mappedDBone.bin").createMapped();
+    Storage fs = StorageFactory.newFactory().createDirect(64*1024);
     
-    volume.close();
+    Volume vol = new DefaultVolume(fs);
+    
+    System.out.println("* warming up 15x...");
+    disableStdOut();
+    for(int i = 0; i < 15; i++) {
+      execute(vol);
+    }
+    enableStdOut();
+    System.out.println("  Done!");
+    execute(vol);
+    
+    Collections.sh
+    
+    vol.close();
   }
   
 }

@@ -38,8 +38,8 @@ public interface Record extends Comparable<Record>, Serializable {
   public ObjectUID getUID();
   
   @Override
-  public default int compareTo(Record idx) {
-    return 0;
+  public default int compareTo(Record rec) {
+    return this.getRegion().compareTo(rec.getRegion());
   }
   
   
@@ -103,7 +103,7 @@ public interface Record extends Comparable<Record>, Serializable {
 
     @Override
     public String toString() {
-      return "Index{" + "region=" + region + ", uid=" + uid + '}';
+      return "Record{" + "region=" + region + ", uid=" + uid + '}';
     }
 
   }

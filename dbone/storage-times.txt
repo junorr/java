@@ -1,0 +1,91 @@
+*** MAPPED ***
+-- time to volume.put Timer{ elapsed: 0,4108ms, laps: 1, min-max: 0,4108ms-0,4108ms, average: 0,4108ms } --
+Record{region=Region{offset=65536, length=2048}, uid=ObjectUID{uid=6B80A6B1889DB2030D2580D63C5849C704313332, cls=us.pserver.tools.mapper.NumberValue}}
+-- time to volume.get Timer{ elapsed: 0,2977ms, laps: 1, min-max: 0,2977ms-0,2977ms, average: 0,2977ms } --
+StoreUnit{uid=ObjectUID{uid=6B80A6B1889DB2030D2580D63C5849C704313332, cls=us.pserver.tools.mapper.NumberValue}, value=5}
+-- time to volume.put Timer{ elapsed: 0,4085ms, laps: 1, min-max: 0,4085ms-0,4085ms, average: 0,4085ms } --
+Record{region=Region{offset=67584, length=2048}, uid=ObjectUID{uid=817A482454DAA5BB6DBCF7A18A039093259BC588, cls=us.pserver.tools.mapper.NumberValue}}
+-- time to volume.get Timer{ elapsed: 0,2993ms, laps: 1, min-max: 0,2993ms-0,2993ms, average: 0,2993ms } --
+StoreUnit{uid=ObjectUID{uid=817A482454DAA5BB6DBCF7A18A039093259BC588, cls=us.pserver.tools.mapper.NumberValue}, value=8}
+-- time to volume.rollback Timer{ elapsed: 0,0063ms, laps: 1, min-max: 0,0063ms-0,0063ms, average: 0,0063ms } --
+-- time to volume.put Timer{ elapsed: 0,1481ms, laps: 1, min-max: 0,1481ms-0,1481ms, average: 0,1481ms } --
+Record{region=Region{offset=67584, length=2048}, uid=ObjectUID{uid=B11555653CD7FEE01059B581EBEC4660F7DB060A, cls=us.pserver.tools.mapper.NumberValue}}
+-- time to volume.get Timer{ elapsed: 0,2696ms, laps: 1, min-max: 0,2696ms-0,2696ms, average: 0,2696ms } --
+StoreUnit{uid=ObjectUID{uid=B11555653CD7FEE01059B581EBEC4660F7DB060A, cls=us.pserver.tools.mapper.NumberValue}, value=2}
+
+
+*** CHANNEL ***
+-- time to volume.put Timer{ elapsed: 0,2677ms, laps: 1, min-max: 0,2677ms-0,2677ms, average: 0,2677ms } --
+Record{region=Region{offset=63488, length=2048}, uid=ObjectUID{uid=6B80A6B1889DB2030D2580D63C5849C704313332, cls=us.pserver.tools.mapper.NumberValue}}
+-- time to volume.get Timer{ elapsed: 0,3467ms, laps: 1, min-max: 0,3467ms-0,3467ms, average: 0,3467ms } --
+StoreUnit{uid=ObjectUID{uid=6B80A6B1889DB2030D2580D63C5849C704313332, cls=us.pserver.tools.mapper.NumberValue}, value=5}
+-- time to volume.put Timer{ elapsed: 0,2769ms, laps: 1, min-max: 0,2769ms-0,2769ms, average: 0,2769ms } --
+Record{region=Region{offset=65536, length=2048}, uid=ObjectUID{uid=817A482454DAA5BB6DBCF7A18A039093259BC588, cls=us.pserver.tools.mapper.NumberValue}}
+-- time to volume.get Timer{ elapsed: 0,3396ms, laps: 1, min-max: 0,3396ms-0,3396ms, average: 0,3396ms } --
+StoreUnit{uid=ObjectUID{uid=817A482454DAA5BB6DBCF7A18A039093259BC588, cls=us.pserver.tools.mapper.NumberValue}, value=8}
+-- time to volume.rollback Timer{ elapsed: 0,0064ms, laps: 1, min-max: 0,0064ms-0,0064ms, average: 0,0064ms } --
+-- time to volume.put Timer{ elapsed: 0,2544ms, laps: 1, min-max: 0,2544ms-0,2544ms, average: 0,2544ms } --
+Record{region=Region{offset=65536, length=2048}, uid=ObjectUID{uid=B11555653CD7FEE01059B581EBEC4660F7DB060A, cls=us.pserver.tools.mapper.NumberValue}}
+-- time to volume.get Timer{ elapsed: 0,3223ms, laps: 1, min-max: 0,3223ms-0,3223ms, average: 0,3223ms } --
+StoreUnit{uid=ObjectUID{uid=B11555653CD7FEE01059B581EBEC4660F7DB060A, cls=us.pserver.tools.mapper.NumberValue}, value=2}
+
+
+*** MEMORY ***
+-- time to volume.put Timer{ elapsed: 0,1681ms, laps: 1, min-max: 0,1681ms-0,1681ms, average: 0,1681ms } --
+Record{region=Region{offset=61440, length=2048}, uid=ObjectUID{uid=6B80A6B1889DB2030D2580D63C5849C704313332, cls=us.pserver.tools.mapper.NumberValue}}
+-- time to volume.get Timer{ elapsed: 0,2655ms, laps: 1, min-max: 0,2655ms-0,2655ms, average: 0,2655ms } --
+StoreUnit{uid=ObjectUID{uid=6B80A6B1889DB2030D2580D63C5849C704313332, cls=us.pserver.tools.mapper.NumberValue}, value=5}
+-- time to volume.put Timer{ elapsed: 0,1301ms, laps: 1, min-max: 0,1301ms-0,1301ms, average: 0,1301ms } --
+Record{region=Region{offset=63488, length=2048}, uid=ObjectUID{uid=817A482454DAA5BB6DBCF7A18A039093259BC588, cls=us.pserver.tools.mapper.NumberValue}}
+-- time to volume.get Timer{ elapsed: 0,2504ms, laps: 1, min-max: 0,2504ms-0,2504ms, average: 0,2504ms } --
+StoreUnit{uid=ObjectUID{uid=817A482454DAA5BB6DBCF7A18A039093259BC588, cls=us.pserver.tools.mapper.NumberValue}, value=8}
+-- time to volume.rollback Timer{ elapsed: 0,0086ms, laps: 1, min-max: 0,0086ms-0,0086ms, average: 0,0086ms } --
+-- time to volume.put Timer{ elapsed: 0,1207ms, laps: 1, min-max: 0,1207ms-0,1207ms, average: 0,1207ms } --
+Record{region=Region{offset=63488, length=2048}, uid=ObjectUID{uid=B11555653CD7FEE01059B581EBEC4660F7DB060A, cls=us.pserver.tools.mapper.NumberValue}}
+-- time to volume.get Timer{ elapsed: 0,2424ms, laps: 1, min-max: 0,2424ms-0,2424ms, average: 0,2424ms } --
+StoreUnit{uid=ObjectUID{uid=B11555653CD7FEE01059B581EBEC4660F7DB060A, cls=us.pserver.tools.mapper.NumberValue}, value=2}
+
+
+
+=== === CABINET BENCHMARK === ===
+
+
+*** MAPPED STORAGE (32K) ***
+* StorageFactory.createMMStorage: blksize=512
+-- time to generate 1000000 elements Timer{ elapsed: 50,7766ms, laps: 1, min-max: 50,7766ms-50,7766ms, average: 50,7766ms } --
+-- time to put 1000000 elements Timer{ elapsed: 158555,3096ms, laps: 1, min-max: 158555,3096ms-158555,3096ms, average: 158555,3096ms } --
+-- time to get ordered 1000000 elements Timer{ elapsed: 18422,8616ms, laps: 1, min-max: 18422,8616ms-18422,8616ms, average: 18422,8616ms } --
+-- time to get shuffled1000000 elements Timer{ elapsed: 17881,1703ms, laps: 1, min-max: 17881,1703ms-17881,1703ms, average: 17881,1703ms } --
+
+
+*** CHANNEL STORAGE ***
+-- time to generate 1000000 elements Timer{ elapsed: 49,791ms, laps: 1, min-max: 49,791ms-49,791ms, average: 49,791ms } --
+-- time to put 1000000 elements Timer{ elapsed: 142479,7289ms, laps: 1, min-max: 142479,7289ms-142479,7289ms, average: 142479,7289ms } --
+-- time to get ordered 1000000 elements Timer{ elapsed: 20094,1512ms, laps: 1, min-max: 20094,1512ms-20094,1512ms, average: 20094,1512ms } --
+-- time to get shuffled1000000 elements Timer{ elapsed: 20135,3587ms, laps: 1, min-max: 20135,3587ms-20135,3587ms, average: 20135,3587ms } --
+
+
+*** MAPPED STORAGE (512M) ***
+* StorageFactory.createMMStorage: blksize=512
+-- time to generate 1000000 elements Timer{ elapsed: 47,2468ms, laps: 1, min-max: 47,2468ms-47,2468ms, average: 47,2468ms } --
+-- time to put 1000000 elements Timer{ elapsed: 119749,5178ms, laps: 1, min-max: 119749,5178ms-119749,5178ms, average: 119749,5178ms } --
+-- time to get ordered 1000000 elements Timer{ elapsed: 19012,7714ms, laps: 1, min-max: 19012,7714ms-19012,7714ms, average: 19012,7714ms } --
+-- time to get shuffled1000000 elements Timer{ elapsed: 19261,1068ms, laps: 1, min-max: 19261,1068ms-19261,1068ms, average: 19261,1068ms } --
+
+
+*** MAPPED NO LOCK STORAGE (512M) ***
+* StorageFactory.createMMNoLockStorage: blksize=512
+-- time to generate 1000000 elements Timer{ elapsed: 46,3188ms, laps: 1, min-max: 46,3188ms-46,3188ms, average: 46,3188ms } --
+-- time to put 1000000 elements Timer{ elapsed: 123662,8602ms, laps: 1, min-max: 123662,8602ms-123662,8602ms, average: 123662,8602ms } --
+-- time to get ordered 1000000 elements Timer{ elapsed: 18703,792ms, laps: 1, min-max: 18703,792ms-18703,792ms, average: 18703,792ms } --
+-- time to get shuffled1000000 elements Timer{ elapsed: 18043,5801ms, laps: 1, min-max: 18043,5801ms-18043,5801ms, average: 18043,5801ms } --
+
+
+*** MEMORY STORAGE ***
+-- time to generate 1000000 elements Timer{ elapsed: 225,4796ms, laps: 1, min-max: 225,4796ms-225,4796ms, average: 225,4796ms } --
+-- time to put 1000000 elements Timer{ elapsed: 119537,0252ms, laps: 1, min-max: 119537,0252ms-119537,0252ms, average: 119537,0252ms } --
+-- time to get ordered 1000000 elements Timer{ elapsed: 17427,549ms, laps: 1, min-max: 17427,549ms-17427,549ms, average: 17427,549ms } --
+-- time to get shuffled1000000 elements Timer{ elapsed: 16833,6494ms, laps: 1, min-max: 16833,6494ms-16833,6494ms, average: 16833,6494ms } --
+
+
+
