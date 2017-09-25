@@ -58,14 +58,14 @@ public class StorageFactory {
   
   private final IntFunction<ByteBuffer> malloc;
   
-  private final boolean openForced;
+  private final boolean concurrent;
   
   
-  private StorageFactory(Path path, int blockSize, IntFunction<ByteBuffer> malloc, boolean openForced) {
+  private StorageFactory(Path path, int blockSize, IntFunction<ByteBuffer> malloc, boolean concurrent) {
     this.path = path;
     this.blockSize = blockSize;
     this.malloc = malloc;
-    this.openForced = openForced;
+    this.concurrent = concurrent;
   }
   
   
@@ -77,7 +77,7 @@ public class StorageFactory {
   public StorageFactory setFile(String file) {
     return new StorageFactory(
         Paths.get(NotNull.of(file).getOrFail("Bad null file name")), 
-        this.blockSize, this.malloc, this.openForced
+        this.blockSize, this.malloc, this.concurrent
     );
   }
   
@@ -85,12 +85,12 @@ public class StorageFactory {
   public StorageFactory setFile(Path file) {
     return new StorageFactory(
         NotNull.of(file).getOrFail("Bad null file path"), 
-        this.blockSize, this.malloc, this.openForced
+        this.blockSize, this.malloc, this.concurrent
     );
   }
   
   
-  public StorageFactory setOpenForced() {
+  public StorageFactory concurrent() {
     return new StorageFactory(
         this.path, this.blockSize, this.malloc, true
     );
@@ -101,27 +101,33 @@ public class StorageFactory {
     return new StorageFactory(
         this.path, this.blockSize, 
         NotNull.of(malloc).getOrFail("Bad null allocation policy"), 
-        this.openForced
+        this.concurrent
     );
   }
   
   
   public StorageFactory setBlockSize(int blockSize) {
     return new StorageFactory(
-        this.path, blockSize, this.malloc, this.openForced
+        this.path, blockSize, this.malloc, this.concurrent
     );
   }
   
   
   public Storage createMapped() throws IOException {
     FileChannel ch = createChannel();
-    return ch.size() >= HEADER_REGION.length() ? openMMStorage(ch) : createMMStorage(ch);
+    Storage stg = ch.size() >= HEADER_REGION.length() 
+        ? openMMStorage(ch) 
+        : createMMStorage(ch);
+    return concurrent ? new  ConcurrentStorage(stg) : stg;
   }
   
   
   public Storage createMappedNoLock() throws IOException {
     FileChannel ch = createChannel();
-    return ch.size() >= HEADER_REGION.length() ? openMMNoLockStorage(ch) : createMMNoLockStorage(ch);
+    Storage stg = ch.size() >= HEADER_REGION.length() 
+        ? openMMNoLockStorage(ch) 
+        : createMMNoLockStorage(ch);
+    return concurrent ? new ConcurrentStorage(stg) : stg;
   }
   
   
@@ -138,7 +144,8 @@ public class StorageFactory {
       frees.add(Region.of(offset, blockSize));
       offset += blockSize;
     }
-    return new DirectMemoryStorage(size, frees, this.blockSize);
+    Storage stg = new DirectMemoryStorage(size, frees, this.blockSize);
+    return concurrent ? new ConcurrentStorage(stg) : stg;
   }
   
   
@@ -167,7 +174,22 @@ public class StorageFactory {
       throw new StorageException("Bad block size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
     }
     FileChannel ch = createChannel();
-    return ch.size() >= HEADER_REGION.length() ? openFCStorage(ch) : createFCStorage(ch);
+    Storage stg = ch.size() >= HEADER_REGION.length() 
+        ? openFCStorage(ch) 
+        : createFCStorage(ch);
+    return concurrent ? new ConcurrentStorage(stg) : stg;
+  }
+  
+  
+  public Storage createNoLock() throws IOException {
+    if(this.blockSize < MINIMUM_BLOCK_SIZE) {
+      throw new StorageException("Bad block size. Minimum allowed: "+ MINIMUM_BLOCK_SIZE);
+    }
+    FileChannel ch = createChannel();
+    Storage stg = ch.size() >= HEADER_REGION.length() 
+        ? openNoLockFCStorage(ch) 
+        : createNoLockFCStorage(ch);
+    return concurrent ? new ConcurrentStorage(stg) : stg;
   }
   
   
@@ -182,6 +204,11 @@ public class StorageFactory {
   
   private FileChannelStorage createFCStorage(FileChannel ch) throws IOException {
     return new FileChannelStorage(ch, new LinkedList<>(), this.malloc, this.blockSize);
+  }
+  
+  
+  private NoLockFileChannelStorage createNoLockFCStorage(FileChannel ch) throws IOException {
+    return new NoLockFileChannelStorage(ch, new LinkedList<>(), this.malloc, this.blockSize);
   }
   
   
@@ -222,6 +249,29 @@ public class StorageFactory {
       }
     }
     return new FileChannelStorage(ch, freeblks, this.malloc, blksize);
+  }
+  
+  
+  private NoLockFileChannelStorage openNoLockFCStorage(FileChannel ch) throws IOException {
+    if(this.blockSize != DEFAULT_BLOCK_SIZE) {
+      throw new IOException("Can not set block size for an existent storage");
+    }
+    LinkedList<Region> freeblks = new LinkedList<>();
+    ByteBuffer buf = this.malloc.apply(FileChannelStorage.HEADER_REGION.intLength());
+    FileLock lock = ch.lock(HEADER_REGION.offset(), HEADER_REGION.length(), true);
+    ch.position(FileChannelStorage.HEADER_REGION.offset());
+    ch.read(buf);
+    lock.release();
+    buf.flip();
+    buf.getShort();
+    int blksize = buf.getInt();
+    while(buf.remaining() >= Region.BYTES) {
+      Region r = Region.of(buf.getLong(), buf.getLong());
+      if(r.offset() + r.length() > 0) {
+        freeblks.add(r);
+      }
+    }
+    return new NoLockFileChannelStorage(ch, freeblks, this.malloc, blksize);
   }
   
   

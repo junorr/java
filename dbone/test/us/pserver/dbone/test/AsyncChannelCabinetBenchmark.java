@@ -22,13 +22,18 @@
 package us.pserver.dbone.test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import us.pserver.dbone.store.AsyncFileChannelStorage;
-import us.pserver.dbone.store.AsyncVolume;
+import us.pserver.dbone.store.AsyncVolume2;
 import us.pserver.dbone.store.Record;
+import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageFactory;
+import us.pserver.fastgear.Engine;
+import us.pserver.tools.ConcurrentList;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
 import us.pserver.tools.timer.Timer;
@@ -43,7 +48,8 @@ public class AsyncChannelCabinetBenchmark {
   
   public static List<MappedValue> genValues() {
     Timer tm = new Timer.Nanos().start();
-    List<MappedValue> vals = Collections.synchronizedList(new ArrayList<>(1_000_000));
+    //List<MappedValue> vals = Collections.synchronizedList(new ArrayList<>(1_000_000));
+    List<MappedValue> vals = new ArrayList<>(1_000_000);
     for(int i = 0; i < 1_000_000; i++) {
       vals.add(MappedValue.of(Math.random() * 1_000_000));
     }
@@ -53,12 +59,13 @@ public class AsyncChannelCabinetBenchmark {
   }
   
   
-  public static List<Record> putValues(AsyncVolume vol, List<MappedValue> lst) {
-    List<Record> recs = Collections.synchronizedList(new ArrayList<>(1_000_000));
+  public static List<Record> putValues(AsyncVolume2 vol, List<MappedValue> lst) {
+    //List<Record> recs = Collections.synchronizedList(new ArrayList<>(1_000_000));
+    //List<Record> recs = new ArrayList<>(1_000_000);
+    List<Record> recs = new ConcurrentList<>();
     Timer tm = new Timer.Nanos().start();
     for(MappedValue v : lst) {
       ObjectUID uid = ObjectUID.builder().of(v).build();
-      recs.add(vol.put(uid, v));
       recs.add(vol.put(uid, v));
     }
     tm.stop();
@@ -67,40 +74,51 @@ public class AsyncChannelCabinetBenchmark {
   }
   
   
-  public static void getOrdered(AsyncVolume vol, List<Record> recs) {
+  public static void getOrdered(AsyncVolume2 vol, List<Record> recs) {
     int size = recs.size();
     Timer tm = new Timer.Nanos().start();
     for(Record r : recs) {
-      vol.get(r, su->{});
+      vol.get(r, s->{});
     }
     tm.stop();
-    System.out.println("-- time to get ordered "+ size+ " elements "+ tm+ " --");
+    System.out.println("-- time to get ordered  "+ size+ " elements "+ tm+ " --");
   }
   
   
-  public static void getShuffled(AsyncVolume vol, List<Record> recs) {
+  public static void getShuffled(AsyncVolume2 vol, List<Record> recs) {
     int size = recs.size();
     Collections.shuffle(recs);
     Timer tm = new Timer.Nanos().start();
     for(Record r : recs) {
-      vol.get(r, su->{});
+      vol.get(r, s->{});
     }
     tm.stop();
-    System.out.println("-- time to get shuffled"+ size+ " elements "+ tm+ " --");
+    System.out.println("-- time to get shuffled "+ size+ " elements "+ tm+ " --");
   }
   
   
-  public static void main(String[] args) throws IOException {
-    AsyncFileChannelStorage stg = (AsyncFileChannelStorage) StorageFactory.newFactory()
-        .setFile("/storage/dbone-async-channel.dat")
+  public static void main(String[] args) throws IOException, InterruptedException {
+    Path dbpath = Paths.get("/home/juno/dbone-async-channel.dat");
+    Storage stg = StorageFactory.newFactory()
+        //.setFile("/storage/dbone-async-channel.dat")
+        .setFile(dbpath)
         .setBlockSize(512)
-        .createAsync();
-    AsyncVolume vol = new AsyncVolume(stg);
+        .concurrent()
+        //.createMappedNoLock();
+        .createNoLock();
+    AsyncVolume2 vol = new AsyncVolume2(stg);
     
     List<Record> recs = putValues(vol, genValues());
+    Thread.sleep(2000);
     getOrdered(vol, recs);
     getShuffled(vol, recs);
+    Timer tm = new Timer.Nanos().start();
+    //Engine.get().safeShutdown();
+    Engine.get().waitShutdown();
+    tm.stop();
+    System.out.println("-- time to wait shutdown "+ tm+ " --");
     vol.close();
+    Files.delete(dbpath);
   }
   
 }

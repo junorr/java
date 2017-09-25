@@ -22,6 +22,7 @@
 package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Consumer;
 import us.pserver.fastgear.Gear;
@@ -58,7 +59,10 @@ public class AsyncVolume2 implements Volume {
         blk.region(), 
         unit.getUID()
     );
-    Gear.of(()->{put(unit.getUID(), blk); put(sbuf, blk);}).start();
+    Gear.of(()->{
+      put(unit.getUID(), blk); 
+      put(sbuf, blk);
+    }).start();
     return rec;
   }
   
@@ -78,7 +82,7 @@ public class AsyncVolume2 implements Volume {
   }
   
   
-  private void put(ObjectUID uid, Block blk) {
+  private synchronized void put(ObjectUID uid, Block blk) {
     blk.buffer().position(0);
     byte[] buid = UTF8String.from(uid.getHash()).getBytes();
     byte[] bcls = UTF8String.from(uid.getClassName()).getBytes();
@@ -116,7 +120,7 @@ public class AsyncVolume2 implements Volume {
   }
   
   
-  private ObjectUID getUID(Block blk) {
+  private synchronized ObjectUID getUID(Block blk) {
     blk.buffer().position(0);
     int uidLen = blk.buffer().getShort();
     int clsLen = blk.buffer().getShort();
@@ -124,7 +128,6 @@ public class AsyncVolume2 implements Volume {
     byte[] bcls = new byte[clsLen];
     blk.buffer().get(buid);
     blk.buffer().get(bcls);
-    blk.releaseLock();
     return ObjectUID.builder()
         .withHash(UTF8String.from(buid).toString())
         .withClassName(UTF8String.from(bcls).toString())
@@ -142,7 +145,10 @@ public class AsyncVolume2 implements Volume {
   
   
   public void get(Record rec, Consumer<StoreUnit> cs) throws StorageException {
-    
+    Gear.of(()->{
+      Block blk = storage.get(rec.getRegion());
+      return StoreUnit.of(getUID(blk), getValue(blk));
+    }).start().input().onAvailable(cs);
   }
   
   

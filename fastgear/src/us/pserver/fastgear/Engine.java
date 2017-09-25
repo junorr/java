@@ -58,8 +58,9 @@ public final class Engine {
     gears = Collections.synchronizedList(new ArrayList<Gear<?,?>>());
     pool.execute(() -> {
       while(!shutdown.get()) {
-        if(gears.isEmpty()) synchronized(this) {
+        if(gears.isEmpty()) synchronized(pool) {
           LockSupport.parkNanos(500);
+          pool.notifyAll();
         }
         else {
           gears.stream().filter(Gear::isReady).forEach(pool::execute);
@@ -89,7 +90,34 @@ public final class Engine {
   public void shutdown() {
     shutdown.set(true);
     gears.clear();
+    pool.shutdown();
+  }
+  
+  
+  public void waitShutdown() throws InterruptedException {
+    shutdown.set(true);
+    gears.clear();
+    pool.shutdown();
+    synchronized(pool) {
+      pool.wait();
+    }
+  }
+  
+  
+  public void shutdownNow() {
+    shutdown.set(true);
+    gears.clear();
     pool.shutdownNow();
+  }
+  
+  
+  public void safeShutdown() {
+    try {
+      this.shutdown();
+      this.waitShutdown();
+    } catch(InterruptedException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
   }
   
   

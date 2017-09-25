@@ -22,6 +22,9 @@
 package us.pserver.dbone.test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -92,8 +95,10 @@ public class ChannelCabinetBenchmark {
   
   
   public static void main(String[] args) throws IOException {
+    Path dbpath = Paths.get("/home/juno/dbone-channel.dat");
     Storage stg = StorageFactory.newFactory()
-        .setFile("/storage/dbone-channel.dat")
+        //.setFile("/storage/dbone-channel.dat")
+        .setFile(dbpath)
         .setBlockSize(512)
         .create();
     Volume vol = new DefaultVolume(stg);
@@ -102,6 +107,7 @@ public class ChannelCabinetBenchmark {
     getOrdered(vol, recs);
     getShuffled(vol, recs);
     vol.close();
+    Files.delete(dbpath);
   }
   
 }

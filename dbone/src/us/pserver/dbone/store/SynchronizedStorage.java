@@ -23,7 +23,6 @@ package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.IntFunction;
 import us.pserver.tools.NotNull;
 
@@ -32,16 +31,13 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/09/2017
  */
-public class ConcurrentStorage implements Storage {
+public class SynchronizedStorage implements Storage {
 
   private final Storage storage;
   
-  private final ReentrantReadWriteLock lock;
   
-  
-  public ConcurrentStorage(Storage stg) {
+  public SynchronizedStorage(Storage stg) {
     this.storage = NotNull.of(stg).getOrFail("Bad null Storage");
-    this.lock = new ReentrantReadWriteLock();
   }
   
   
@@ -52,24 +48,14 @@ public class ConcurrentStorage implements Storage {
 
 
   @Override
-  public Block get(Region reg) throws StorageException {
-    lock.writeLock().lock();
-    try {
-      return storage.get(reg);
-    } finally {
-      lock.writeLock().unlock();
-    }
+  public synchronized Block get(Region reg) throws StorageException {
+    return storage.get(reg);
   }
 
 
   @Override
-  public void put(Block blk) throws StorageException {
-    lock.writeLock().lock();
-    try {
-      storage.put(blk);
-    } finally {
-      lock.writeLock().unlock();
-    }
+  public synchronized void put(Block blk) throws StorageException {
+    storage.put(blk);
   }
 
 
@@ -80,24 +66,14 @@ public class ConcurrentStorage implements Storage {
 
 
   @Override
-  public void reallocate(Block blk) throws StorageException {
-    lock.writeLock().lock();
-    try {
-      storage.reallocate(blk);
-    } finally {
-      lock.writeLock().unlock();
-    }
+  public synchronized void reallocate(Block blk) throws StorageException {
+    storage.reallocate(blk);
   }
 
 
   @Override
-  public void deallocate(Block blk) throws StorageException {
-    lock.writeLock().lock();
-    try {
-      storage.deallocate(blk);
-    } finally {
-      lock.writeLock().unlock();
-    }
+  public synchronized void deallocate(Block blk) throws StorageException {
+    storage.deallocate(blk);
   }
 
 
