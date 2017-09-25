@@ -54,7 +54,8 @@ public final class Engine {
     if(instance != null) {
       throw new IllegalStateException("Engine is already created");
     }
-    pool = new ForkJoinPool(Runtime.getRuntime().availableProcessors() + 1);
+    int numThreads = Runtime.getRuntime().availableProcessors() + 2;
+    pool = new ForkJoinPool(numThreads);
     gears = Collections.synchronizedList(new ArrayList<Gear<?,?>>());
     pool.execute(() -> {
       while(!shutdown.get()) {
@@ -131,9 +132,9 @@ public final class Engine {
   }
   
   
-  public int parallelism() {
-    return pool.getParallelism();
-  }
+  //public int parallelism() {
+    //return pool.getParallelism();
+  //}
   
   
   public void engage(Gear<?,?> gear) {

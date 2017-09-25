@@ -21,7 +21,11 @@
 
 package us.pserver.dbone.test;
 
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import us.pserver.dbone.store.DefaultVolume;
 import us.pserver.dbone.store.StorageFactory;
 import us.pserver.dbone.store.Volume;
@@ -96,23 +100,33 @@ public class TestVolume {
   }
 
   
-  public static void main(String[] args) throws Throwable {
-    //Storage fs = StorageFactory.newFactory().setFile("/storage/channelDBone.bin").create();
-    //Storage fs = StorageFactory.newFactory().setFile("/storage/mappedDBone.bin").createMapped();
-    Storage fs = StorageFactory.newFactory().createDirect(64*1024);
-    
-    Volume vol = new DefaultVolume(fs);
-    
-    System.out.println("* warming up 15x...");
-    disableStdOut();
-    for(int i = 0; i < 15; i++) {
+  public static void main(String[] args) throws IOException {
+    Path dbpath = Paths.get("/home/juno/dbone-channel.dat");
+    try {
+      //Storage fs = StorageFactory.newFactory().setFile("/storage/channelDBone.bin").create();
+      //Storage fs = StorageFactory.newFactory().setFile("/storage/mappedDBone.bin").createMapped();
+      Storage fs = StorageFactory.newFactory()
+          .setBlockSize(1024)
+          .setFile(dbpath)
+          .concurrent()
+          .createNoLock();
+
+      Volume vol = new DefaultVolume(fs);
+
+      System.out.println("* warming up 15x...");
+      //disableStdOut();
+      for(int i = 0; i < 15; i++) {
+        execute(vol);
+      }
+      enableStdOut();
+      System.out.println("  Done!");
       execute(vol);
+
+      vol.close();
     }
-    enableStdOut();
-    System.out.println("  Done!");
-    execute(vol);
-    
-    vol.close();
+    finally {
+      Files.delete(dbpath);
+    }
   }
   
 }

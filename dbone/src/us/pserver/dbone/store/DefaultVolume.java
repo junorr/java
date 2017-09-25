@@ -28,6 +28,7 @@ import us.pserver.tools.UTF8String;
 import us.pserver.tools.io.ByteBufferOutputStream;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
+import us.pserver.tools.timer.Timer;
 
 /**
  *
@@ -49,18 +50,31 @@ public class DefaultVolume implements Volume {
 
   @Override
   public Record put(StoreUnit unit) throws StorageException {
+    Timer total = new Timer.Nanos().start();
     NotNull.of(unit).failIfNull("Bad null StoreUnit");
+    Timer tm = new Timer.Nanos().start();
     ByteBuffer sbuf = serial.serialize(unit.getValue());
+    tm.stop();
+    Timer tm1 = new Timer.Nanos().start();
     Block blk = storage.allocate();
-    Record idx = Record.of(
+    tm1.stop();
+    Record rec = Record.of(
         blk.region(), 
         unit.getUID()
     );
-    blk.writeLock();
+    Timer tm2 = new Timer.Nanos().start();
     this.put(unit.getUID(), blk);
+    tm2.stop();
+    Timer tm3 = new Timer.Nanos().start();
     this.put(sbuf, blk);
-    blk.releaseLock();
-    return idx;
+    tm3.stop();
+    total.stop();
+    //System.out.println("-- time to serialize value "+ tm+ " --");
+    //System.out.println("-- time to allocate block "+ tm1+ " --");
+    //System.out.println("-- time to put UID "+ tm2+ " --");
+    //System.out.println("-- time to put MappedValue "+ tm3+ " --");
+    //System.out.println("-- total Volume.put() time "+ total+ " --");
+    return rec;
   }
   
   
@@ -80,11 +94,12 @@ public class DefaultVolume implements Volume {
   
   
   private void put(ObjectUID uid, Block blk) {
-    blk.buffer().position(0);
     byte[] buid = UTF8String.from(uid.getHash()).getBytes();
     byte[] bcls = UTF8String.from(uid.getClassName()).getBytes();
-    blk.buffer().putShort((short)buid.length);
-    blk.buffer().putShort((short)bcls.length);
+    //System.out.println("* Volume.putUID: uidLen="+ buid.length+ ", clsLen="+ bcls.length+ ", block="+ blk);
+    blk.buffer().position(0);
+    blk.buffer().putInt((short)buid.length);
+    blk.buffer().putInt((short)bcls.length);
     blk.buffer().put(buid);
     blk.buffer().put(bcls);
   }
@@ -111,13 +126,13 @@ public class DefaultVolume implements Volume {
   
   private ObjectUID getUID(Block blk) {
     blk.buffer().position(0);
-    int uidLen = blk.buffer().getShort();
-    int clsLen = blk.buffer().getShort();
+    int uidLen = blk.buffer().getInt();
+    int clsLen = blk.buffer().getInt();
+    //System.out.println("* Volume.getUID: uidLen="+ uidLen+ ", clsLen="+ clsLen+ ", block="+ blk);
     byte[] buid = new byte[uidLen];
     byte[] bcls = new byte[clsLen];
     blk.buffer().get(buid);
     blk.buffer().get(bcls);
-    blk.releaseLock();
     return ObjectUID.builder()
         .withHash(UTF8String.from(buid).toString())
         .withClassName(UTF8String.from(bcls).toString())
@@ -128,18 +143,18 @@ public class DefaultVolume implements Volume {
   @Override
   public StoreUnit get(Record idx) throws StorageException {
     Block blk = storage.get(idx.getRegion());
-    MappedValue val = this.getValue(blk);
     ObjectUID uid = this.getUID(blk);
+    MappedValue val = this.getValue(blk);
     return StoreUnit.of(uid, val);
   }
   
   
   private MappedValue getValue(Block blk) throws StorageException {
     ByteBufferOutputStream bos = new ByteBufferOutputStream(storage.getAllocationPolicy());
-    blk.buffer().position(0);
-    int uidLen = blk.buffer().getShort();
-    int clsLen = blk.buffer().getShort();
-    blk.buffer().position(Short.BYTES * 2 + uidLen + clsLen);
+    //blk.buffer().position(0);
+    //int uidLen = blk.buffer().getShort();
+    //int clsLen = blk.buffer().getShort();
+    //blk.buffer().position(Short.BYTES * 2 + uidLen + clsLen);
     bos.write(blk.buffer());
     Optional<Region> next = blk.next();
     while(next.isPresent()) {

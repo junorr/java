@@ -102,7 +102,7 @@ public class AsyncChannelCabinetBenchmark {
     Storage stg = StorageFactory.newFactory()
         //.setFile("/storage/dbone-async-channel.dat")
         .setFile(dbpath)
-        .setBlockSize(512)
+        .setBlockSize(1024)
         .concurrent()
         //.createMappedNoLock();
         .createNoLock();
@@ -114,7 +114,7 @@ public class AsyncChannelCabinetBenchmark {
     getShuffled(vol, recs);
     Timer tm = new Timer.Nanos().start();
     //Engine.get().safeShutdown();
-    Engine.get().waitShutdown();
+    Engine.get().shutdownNow();
     tm.stop();
     System.out.println("-- time to wait shutdown "+ tm+ " --");
     vol.close();

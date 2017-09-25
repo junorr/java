@@ -28,11 +28,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import us.pserver.dbone.store.AsyncVolume2;
 import us.pserver.dbone.store.DefaultVolume;
 import us.pserver.dbone.store.Record;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageFactory;
 import us.pserver.dbone.store.Volume;
+import us.pserver.fastgear.Engine;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
 import us.pserver.tools.timer.Timer;
@@ -57,6 +59,7 @@ public class ChannelCabinetBenchmark {
   }
   
   
+  //public static List<Record> putValues(AsyncVolume2 vol, List<MappedValue> lst) {
   public static List<Record> putValues(Volume vol, List<MappedValue> lst) {
     ArrayList<Record> recs = new ArrayList<>(1_000_000);
     Timer tm = new Timer.Nanos().start();
@@ -71,6 +74,7 @@ public class ChannelCabinetBenchmark {
   }
   
   
+  //public static void getOrdered(AsyncVolume2 vol, List<Record> recs) {
   public static void getOrdered(Volume vol, List<Record> recs) {
     int size = recs.size();
     Timer tm = new Timer.Nanos().start();
@@ -82,6 +86,7 @@ public class ChannelCabinetBenchmark {
   }
   
   
+  //public static void getShuffled(AsyncVolume2 vol, List<Record> recs) {
   public static void getShuffled(Volume vol, List<Record> recs) {
     int size = recs.size();
     Collections.shuffle(recs);
@@ -94,19 +99,22 @@ public class ChannelCabinetBenchmark {
   }
   
   
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, InterruptedException {
     Path dbpath = Paths.get("/home/juno/dbone-channel.dat");
     Storage stg = StorageFactory.newFactory()
         //.setFile("/storage/dbone-channel.dat")
         .setFile(dbpath)
-        .setBlockSize(512)
-        .create();
+        .setBlockSize(1024)
+        .createNoLock();
+    //AsyncVolume2 vol = new AsyncVolume2(stg);
     Volume vol = new DefaultVolume(stg);
     
     List<Record> recs = putValues(vol, genValues());
+    //Thread.sleep(2000);
     getOrdered(vol, recs);
     getShuffled(vol, recs);
     vol.close();
+    //Engine.get().waitShutdown();
     Files.delete(dbpath);
   }
   
