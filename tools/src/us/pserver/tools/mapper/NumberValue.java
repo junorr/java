@@ -30,6 +30,10 @@ import java.util.function.Consumer;
  */
 public class NumberValue extends AbstractMappedValue<Number> {
 
+  public NumberValue() {
+    super();
+  }
+  
   public NumberValue(Number value) {
     super(value, Type.NUMBER);
   }

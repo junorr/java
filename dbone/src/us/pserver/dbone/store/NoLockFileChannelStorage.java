@@ -23,7 +23,6 @@ package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
 import java.util.LinkedList;
 import java.util.function.IntFunction;
 import us.pserver.tools.NotNull;
@@ -53,9 +52,10 @@ public class NoLockFileChannelStorage extends AbstractStorage {
   @Override
   public Block get(Region reg) throws StorageException {
     NotNull.of(reg).failIfNull("Bad null Region");
-    StorageException.rethrow(()->channel.position(reg.offset()));
     ByteBuffer buf = malloc.apply(reg.intLength());
+    StorageException.rethrow(()->channel.position(reg.offset()));
     int read = StorageException.rethrow(()->channel.read(buf));
+    //System.out.printf("* FileChannelStorage.get( %s ): %d%n", reg, read);
     if(read > 0) buf.flip();
     return new DefaultBlock(reg, buf);
   }
@@ -66,7 +66,9 @@ public class NoLockFileChannelStorage extends AbstractStorage {
     NotNull.of(blk).failIfNull("Bad null Block");
     blk.buffer().position(0);
     blk.buffer().limit(blk.buffer().capacity());
-    StorageException.rethrow(()->channel.write(blk.buffer()));
+    StorageException.rethrow(()->channel.position(blk.region().offset()));
+    int write = StorageException.rethrow(()->channel.write(blk.buffer()));
+    //System.out.printf("* FileChannelStorage.put( %s ): %d%n", blk.region(), write);
   }
 
 

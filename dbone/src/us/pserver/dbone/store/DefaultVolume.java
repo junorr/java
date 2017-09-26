@@ -39,12 +39,17 @@ public class DefaultVolume implements Volume {
   
   private final Storage storage;
   
-  private final SerializationService serial;
+  private final ISerializationService serial;
   
   
   public DefaultVolume(Storage stg) {
+    this(stg, new JavaSerializationService());
+  }
+  
+
+  public DefaultVolume(Storage stg, ISerializationService serial) {
     this.storage = NotNull.of(stg).getOrFail("Bad null Storage");
-    this.serial = new SerializationService();
+    this.serial = NotNull.of(serial).getOrFail("Bad null SerializationService");
   }
   
 
@@ -69,11 +74,11 @@ public class DefaultVolume implements Volume {
     this.put(sbuf, blk);
     tm3.stop();
     total.stop();
-    //System.out.println("-- time to serialize value "+ tm+ " --");
-    //System.out.println("-- time to allocate block "+ tm1+ " --");
-    //System.out.println("-- time to put UID "+ tm2+ " --");
-    //System.out.println("-- time to put MappedValue "+ tm3+ " --");
-    //System.out.println("-- total Volume.put() time "+ total+ " --");
+    System.out.println("-- time to serialize value "+ tm+ " --");
+    System.out.println("-- time to allocate block "+ tm1+ " --");
+    System.out.println("-- time to put UID "+ tm2+ " --");
+    System.out.println("-- time to put MappedValue "+ tm3+ " --");
+    System.out.println("-- total Volume.put() time "+ total+ " --");
     return rec;
   }
   

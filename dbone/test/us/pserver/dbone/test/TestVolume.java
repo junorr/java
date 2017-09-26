@@ -27,9 +27,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import us.pserver.dbone.store.DefaultVolume;
+import us.pserver.dbone.store.JsoniterSerializationService;
 import us.pserver.dbone.store.StorageFactory;
 import us.pserver.dbone.store.Volume;
-import us.pserver.dbone.store.VolumeTransaction;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
 import us.pserver.dbone.store.Record;
@@ -72,20 +72,16 @@ public class TestVolume {
     System.out.println("-- time to volume.get "+ tm.stop()+ " --");
     System.out.println(unit);
     
-    VolumeTransaction vtx = volume.startTransaction();
     val = MappedValue.of(8);
     uid = ObjectUID.builder().of(val).build();
     tm.clear().start();
-    rec = vtx.put(uid, val);
+    rec = volume.put(uid, val);
     System.out.println("-- time to volume.put "+ tm.stop()+ " --");
     System.out.println(rec);
     tm.clear().start();
     unit = volume.get(rec);
     System.out.println("-- time to volume.get "+ tm.stop()+ " --");
     System.out.println(unit);
-    tm.clear().start();
-    vtx.rollback();
-    System.out.println("-- time to volume.rollback "+ tm.stop()+ " --");
     
     val = MappedValue.of(2);
     uid = ObjectUID.builder().of(val).build();
@@ -111,7 +107,9 @@ public class TestVolume {
           .concurrent()
           .createNoLock();
 
-      Volume vol = new DefaultVolume(fs);
+      //Volume vol = new DefaultVolume(fs, new JavaSerializationService());
+      //Volume vol = new DefaultVolume(fs, new GsonSerializationService());
+      Volume vol = new DefaultVolume(fs, new JsoniterSerializationService());
 
       System.out.println("* warming up 15x...");
       //disableStdOut();

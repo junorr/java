@@ -30,6 +30,9 @@ import java.util.function.Consumer;
  */
 public class StringValue extends AbstractMappedValue<String> {
 
+  public StringValue() {
+    super();
+  }
   
   public StringValue(String value) {
     super(value, Type.STRING);

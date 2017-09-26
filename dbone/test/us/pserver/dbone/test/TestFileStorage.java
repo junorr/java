@@ -22,13 +22,14 @@
 package us.pserver.dbone.test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import us.pserver.dbone.store.Block;
-import us.pserver.dbone.store.DirectMemoryStorage;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageFactory;
 import us.pserver.dbone.store.StorageTransaction;
-import us.pserver.tools.rfl.Reflector;
 
 /**
  *
@@ -41,39 +42,66 @@ public class TestFileStorage {
   public static void fill(Block blk) {
     int len = (int) (blk.buffer().remaining() * (2.0/3.0));
     for(int i = 0; i < len; i++) {
-      blk.buffer().put((byte) i);
+      blk.buffer().put((byte)(Math.random() * 10000));
     }
+  }
+  
+  
+  public static void print15bytes(Block blk) {
+    int pos = blk.buffer().position();
+    int lim = blk.buffer().limit();
+    byte[] bs = new byte[15];
+    blk.buffer().position(0);
+    blk.buffer().limit(15);
+    blk.buffer().get(bs);
+    System.out.println(blk+ ", "+ Arrays.toString(bs));
+    blk.buffer().limit(lim);
+    blk.buffer().position(pos);
   }
 
   
   public static void main(String[] args) throws IOException {
-    //Storage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").create();
-    Storage fs = StorageFactory.newFactory().setFile("/home/juno/dbone-channel.dat").createMapped();
-    //Storage fs = StorageFactory.newFactory().createDirect(32*1024);
-    System.out.println("* storage.size(): "+ fs.size());
-    Block blk = fs.allocate();
-    System.out.println(" 1 allocate: "+ blk);
-    
-    fill(blk);
-    blk.buffer().flip();
-    fs.put(blk);
-    System.out.println(blk);
-    
-    StorageTransaction stx = fs.startTransaction();
-    blk = stx.allocate();
-    fill(blk);
-    blk.buffer().flip();
-    stx.put(blk);
-    System.out.println(blk);
-    stx.rollback();
-    
-    blk = fs.allocate();
-    fill(blk);
-    blk.buffer().flip();
-    fs.put(blk);
-    System.out.println(blk);
-    
-    fs.close();
+    Path dbpath = Paths.get("/home/juno/dbone-channel.dat");
+    try {
+      //Storage fs = StorageFactory.newFactory().setFile("/storage/dbone.dat").create();
+      Storage fs = StorageFactory.newFactory().setFile(dbpath).createNoLock();
+      //Storage fs = StorageFactory.newFactory().createDirect(32*1024);
+      System.out.println("* storage.size(): "+ fs.size());
+      Block blk = fs.allocate();
+      System.out.println(" 1 allocate: "+ blk);
+      blk = fs.allocate();
+      System.out.println(" 2 allocate: "+ blk);
+      blk = fs.allocate();
+      System.out.println(" 3 allocate: "+ blk);
+
+      fill(blk);
+      print15bytes(blk);
+      blk.buffer().flip();
+      fs.put(blk);
+      blk = fs.get(blk.region());
+      print15bytes(blk);
+
+      StorageTransaction stx = fs.startTransaction();
+      blk = stx.allocate();
+      fill(blk);
+      blk.buffer().flip();
+      stx.put(blk);
+      System.out.println(blk);
+      stx.rollback();
+
+      blk = fs.allocate();
+      fill(blk);
+      print15bytes(blk);
+      blk.buffer().flip();
+      fs.put(blk);
+      blk = fs.get(blk.region());
+      print15bytes(blk);
+
+      fs.close();
+    }
+    finally {
+      Files.delete(dbpath);
+    }
   }
   
 }

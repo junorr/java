@@ -22,7 +22,6 @@
 package us.pserver.tools.mapper;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -32,11 +31,10 @@ import java.util.function.Consumer;
  */
 public class MapValue extends AbstractMappedValue<Map<String,MappedValue>> {
   
-  public static final String CRLF = "\r\n";
+  public MapValue() {
+    super();
+  }
   
-  public static final String BOUNDARY = "::";
-  
-
   public MapValue(Map<String,MappedValue> value) {
     super(value, Type.MAP);
   }

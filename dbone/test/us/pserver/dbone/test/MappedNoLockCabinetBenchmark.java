@@ -25,11 +25,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import us.pserver.dbone.store.AsyncVolume2;
 import us.pserver.dbone.store.DefaultVolume;
 import us.pserver.dbone.store.Record;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageFactory;
 import us.pserver.dbone.store.Volume;
+import us.pserver.fastgear.Engine;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
 import us.pserver.tools.timer.Timer;
@@ -55,6 +57,7 @@ public class MappedNoLockCabinetBenchmark {
   
   
   public static List<Record> putValues(Volume vol, List<MappedValue> lst) {
+  //public static List<Record> putValues(AsyncVolume2 vol, List<MappedValue> lst) {
     ArrayList<Record> recs = new ArrayList<>(1_000_000);
     Timer tm = new Timer.Nanos().start();
     while(!lst.isEmpty()) {
@@ -69,37 +72,40 @@ public class MappedNoLockCabinetBenchmark {
   
   
   public static void getOrdered(Volume vol, List<Record> recs) {
+  //public static void getOrdered(AsyncVolume2 vol, List<Record> recs) {
     int size = recs.size();
     Timer tm = new Timer.Nanos().start();
-    for(Record r : recs) {
-      vol.get(r);
-    }
+    recs.forEach(r->vol.get(r));
     tm.stop();
     System.out.println("-- time to get ordered "+ size+ " elements "+ tm+ " --");
   }
   
   
   public static void getShuffled(Volume vol, List<Record> recs) {
+  //public static void getShuffled(AsyncVolume2 vol, List<Record> recs) {
     int size = recs.size();
     Collections.shuffle(recs);
     Timer tm = new Timer.Nanos().start();
-    for(Record r : recs) {
-      vol.get(r);
-    }
+    recs.forEach(r->vol.get(r));
+    //recs.forEach(r->vol.get(r, s->{}));
     tm.stop();
     System.out.println("-- time to get shuffled"+ size+ " elements "+ tm+ " --");
   }
   
   
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, InterruptedException {
     Storage stg = StorageFactory.newFactory()
-        .setFile("/storage/mapped-nolock-dbone-32K.dat")
-        .setBlockSize(512).createMappedNoLock();
+        .setFile("/home/juno/dbone-mapped-nolock-512k.dat")
+        .setBlockSize(1024)
+        .createMappedNoLock();
     Volume vol = new DefaultVolume(stg);
+    //AsyncVolume2 vol = new AsyncVolume2(stg);
     
     List<Record> recs = putValues(vol, genValues());
+    Thread.sleep(2000);
     getOrdered(vol, recs);
     getShuffled(vol, recs);
+    Engine.get().waitShutdown();
     vol.close();
   }
   

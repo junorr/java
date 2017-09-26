@@ -37,6 +37,11 @@ public abstract class AbstractMappedValue<T> implements MappedValue<T> {
   
   private final Type type;
   
+  public AbstractMappedValue() {
+    value = null;
+    type = null;
+  }
+  
   protected AbstractMappedValue(T value, Type type) {
     this.value = NotNull.of(value).getOrFail();
     this.type = NotNull.of(type).getOrFail();

@@ -30,6 +30,10 @@ import java.util.function.Consumer;
  */
 public class ByteArrayValue extends AbstractMappedValue<byte[]> {
 
+  public ByteArrayValue() {
+    super();
+  }
+  
   public ByteArrayValue(byte[] value) {
     super(value, Type.BYTE_ARRAY);
   }

@@ -30,6 +30,10 @@ import java.util.function.Consumer;
  */
 public class BooleanValue extends AbstractMappedValue<Boolean> {
 
+  public BooleanValue() {
+    super();
+  }
+  
   public BooleanValue(Boolean value) {
     super(value, Type.BOOLEAN);
   }

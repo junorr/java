@@ -24,29 +24,24 @@ package us.pserver.dbone.store;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import us.pserver.tools.io.ByteBufferInputStream;
 import us.pserver.tools.io.ByteBufferOutputStream;
-import us.pserver.tools.mapper.MappedValue;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 18/09/2017
  */
-public class SerializationService {
+public class JavaSerializationService implements ISerializationService {
 
-  public SerializationService() {}
-  
-  public ByteBuffer serialize(Serializable slz) throws StorageException {
+  @Override
+  public ByteBuffer serialize(Object obj) throws StorageException {
     try (
         ByteBufferOutputStream bos = new ByteBufferOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
     ) {
-      oos.writeObject(slz);
+      oos.writeObject(obj);
       return bos.toByteBuffer();
     }
     catch(IOException e) {
@@ -54,6 +49,7 @@ public class SerializationService {
     }
   }
   
+  @Override
   public Object deserialize(ByteBuffer buf) throws StorageException {
     try (
         ByteBufferInputStream bis = new ByteBufferInputStream(buf);

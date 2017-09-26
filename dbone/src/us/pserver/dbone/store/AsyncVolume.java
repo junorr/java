@@ -39,12 +39,12 @@ public class AsyncVolume implements Volume {
   
   private final AsyncFileChannelStorage storage;
   
-  private final SerializationService serial;
+  private final JavaSerializationService serial;
   
   
   public AsyncVolume(AsyncFileChannelStorage stg) {
     this.storage = NotNull.of(stg).getOrFail("Bad null Storage");
-    this.serial = new SerializationService();
+    this.serial = new JavaSerializationService();
   }
   
 

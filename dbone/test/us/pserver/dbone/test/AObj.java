@@ -34,16 +34,16 @@ public class AObj {
 
   private final String name;
   
-  private int age;
+  private final int age;
   
-  private int[] magic;
+  private final int[] magic;
   
-  private char[] chars;
+  private final char[] chars;
   
   private final Date date;
 
 
-  public AObj() {
+  private AObj() {
     this(null, 0, null, null, null);
   }
 
@@ -58,8 +58,7 @@ public class AObj {
 
 
   public AObj(String name, Date dt) {
-    this.name = name;
-    this.date = dt;
+    this(name, 0, null, null, dt);
   }
 
 

@@ -31,6 +31,10 @@ import java.util.function.Consumer;
  */
 public class ArrayValue extends AbstractMappedValue<MappedValue[]> {
 
+  public ArrayValue() {
+    super();
+  }
+  
   public ArrayValue(MappedValue[] value) {
     super(value, Type.ARRAY);
   }
