@@ -78,7 +78,7 @@ public class AsyncChannelCabinetBenchmark {
     int size = recs.size();
     Timer tm = new Timer.Nanos().start();
     for(Record r : recs) {
-      vol.get(r, s->{});
+      vol.get(r);
     }
     tm.stop();
     System.out.println("-- time to get ordered  "+ size+ " elements "+ tm+ " --");
@@ -113,8 +113,8 @@ public class AsyncChannelCabinetBenchmark {
     getOrdered(vol, recs);
     getShuffled(vol, recs);
     Timer tm = new Timer.Nanos().start();
-    //Engine.get().safeShutdown();
-    Engine.get().shutdownNow();
+    Engine.get().safeShutdown();
+    //Engine.get().shutdownNow();
     tm.stop();
     System.out.println("-- time to wait shutdown "+ tm+ " --");
     vol.close();

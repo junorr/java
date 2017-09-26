@@ -21,8 +21,6 @@
 
 package us.pserver.fastgear;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.locks.Lock;
@@ -30,6 +28,7 @@ import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
+import us.pserver.tools.ConcurrentList;
 
 /**
  *
@@ -54,9 +53,11 @@ public final class Engine {
     if(instance != null) {
       throw new IllegalStateException("Engine is already created");
     }
-    int numThreads = Runtime.getRuntime().availableProcessors() + 2;
+    int numThreads = Runtime.getRuntime().availableProcessors() * 4;
+    System.out.println("* Engine.numThreads="+ numThreads);
     pool = new ForkJoinPool(numThreads);
-    gears = Collections.synchronizedList(new ArrayList<Gear<?,?>>());
+    //gears = Collections.synchronizedList(new ArrayList<Gear<?,?>>());
+    gears = new ConcurrentList<>();
     pool.execute(() -> {
       while(!shutdown.get()) {
         if(gears.isEmpty()) synchronized(pool) {
