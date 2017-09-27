@@ -28,13 +28,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import us.pserver.dbone.store.AsyncVolume2;
 import us.pserver.dbone.store.DefaultVolume;
+import us.pserver.dbone.store.JsonIoSerializationService;
 import us.pserver.dbone.store.Record;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageFactory;
 import us.pserver.dbone.store.Volume;
-import us.pserver.fastgear.Engine;
 import us.pserver.tools.mapper.MappedValue;
 import us.pserver.tools.mapper.ObjectUID;
 import us.pserver.tools.timer.Timer;
@@ -107,14 +106,16 @@ public class ChannelCabinetBenchmark {
         .setBlockSize(1024)
         .createNoLock();
     //AsyncVolume2 vol = new AsyncVolume2(stg);
-    Volume vol = new DefaultVolume(stg);
+    //Volume vol = new DefaultVolume(stg, new JavaSerializationService());
+    //Volume vol = new DefaultVolume(stg, new GsonSerializationService());
+    Volume vol = new DefaultVolume(stg, new JsonIoSerializationService());
     
     List<Record> recs = putValues(vol, genValues());
     //Thread.sleep(2000);
     getOrdered(vol, recs);
     getShuffled(vol, recs);
-    vol.close();
     //Engine.get().waitShutdown();
+    vol.close();
     Files.delete(dbpath);
   }
   

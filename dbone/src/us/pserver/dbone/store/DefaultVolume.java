@@ -55,30 +55,30 @@ public class DefaultVolume implements Volume {
 
   @Override
   public Record put(StoreUnit unit) throws StorageException {
-    Timer total = new Timer.Nanos().start();
+    //Timer total = new Timer.Nanos().start();
     NotNull.of(unit).failIfNull("Bad null StoreUnit");
-    Timer tm = new Timer.Nanos().start();
+    //Timer tm = new Timer.Nanos().start();
     ByteBuffer sbuf = serial.serialize(unit.getValue());
-    tm.stop();
-    Timer tm1 = new Timer.Nanos().start();
+    //tm.stop();
+    //Timer tm1 = new Timer.Nanos().start();
     Block blk = storage.allocate();
-    tm1.stop();
+    //tm1.stop();
     Record rec = Record.of(
         blk.region(), 
         unit.getUID()
     );
-    Timer tm2 = new Timer.Nanos().start();
+    //Timer tm2 = new Timer.Nanos().start();
     this.put(unit.getUID(), blk);
-    tm2.stop();
-    Timer tm3 = new Timer.Nanos().start();
+    //tm2.stop();
+    //Timer tm3 = new Timer.Nanos().start();
     this.put(sbuf, blk);
-    tm3.stop();
-    total.stop();
-    System.out.println("-- time to serialize value "+ tm+ " --");
-    System.out.println("-- time to allocate block "+ tm1+ " --");
-    System.out.println("-- time to put UID "+ tm2+ " --");
-    System.out.println("-- time to put MappedValue "+ tm3+ " --");
-    System.out.println("-- total Volume.put() time "+ total+ " --");
+    //tm3.stop();
+    //total.stop();
+    //System.out.println("-- time to serialize value "+ tm+ " --");
+    //System.out.println("-- time to allocate block "+ tm1+ " --");
+    //System.out.println("-- time to put UID "+ tm2+ " --");
+    //System.out.println("-- time to put MappedValue "+ tm3+ " --");
+    //System.out.println("-- total Volume.put() time "+ total+ " --");
     return rec;
   }
   

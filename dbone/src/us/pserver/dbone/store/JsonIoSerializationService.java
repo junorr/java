@@ -21,8 +21,8 @@
 
 package us.pserver.dbone.store;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.output.JsonStream;
+import com.cedarsoftware.util.io.JsonReader;
+import com.cedarsoftware.util.io.JsonWriter;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import us.pserver.tools.UTF8String;
@@ -32,17 +32,13 @@ import us.pserver.tools.UTF8String;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/09/2017
  */
-public class JsoniterSerializationService implements ISerializationService {
+public class JsonIoSerializationService implements ISerializationService {
   
   @Override
   public ByteBuffer serialize(Object obj) {
-    //System.out.println("* GsonSerializationService.serialize *");
-    byte[] bcls = UTF8String.from(obj.getClass().getName()).getBytes();
-    byte[] bobj = UTF8String.from(JsonStream.serialize(obj)).getBytes();
-    ByteBuffer buf = ByteBuffer.allocate(bcls.length + bobj.length + Short.BYTES * 2);
-    buf.putShort((short) bcls.length);
+    byte[] bobj = UTF8String.from(JsonWriter.objectToJson(obj)).getBytes();
+    ByteBuffer buf = ByteBuffer.allocate(bobj.length + Short.BYTES);
     buf.putShort((short) bobj.length);
-    buf.put(bcls);
     buf.put(bobj);
     //System.out.print("=>>   serialize: ");
     //print15bytes(buf);
@@ -66,21 +62,11 @@ public class JsoniterSerializationService implements ISerializationService {
   public Object deserialize(ByteBuffer buf) {
     //System.out.print("<<= deserialize: ");
     //print15bytes(buf);
-    short icls = buf.getShort();
     short iobj = buf.getShort();
     //System.out.println("* GsonSerializationService.deserialize: buf.getShort()="+ icls+ ", buf.position()="+ buf.position());
-    byte[] bcls = new byte[icls];
-    buf.get(bcls);
     byte[] bobj = new byte[iobj];
     buf.get(bobj);
-    try {
-      Class cls = Class.forName(UTF8String.from(bcls).toString());
-      System.out.println("* JsoniterSerializationService.deserialize: json: '"+ UTF8String.from(bobj).toString().trim()+ "', class="+ cls.getName());
-      return JsonIterator.deserialize(UTF8String.from(bobj).toString().trim(), cls);
-    }
-    catch(ClassNotFoundException e) {
-      throw new RuntimeException(e.toString(), e);
-    }
+    return JsonReader.jsonToJava(UTF8String.from(bobj).toString().trim());
   }
 
 }

@@ -27,7 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import us.pserver.dbone.store.DefaultVolume;
-import us.pserver.dbone.store.JsoniterSerializationService;
+import us.pserver.dbone.store.JsonIoSerializationService;
 import us.pserver.dbone.store.StorageFactory;
 import us.pserver.dbone.store.Volume;
 import us.pserver.tools.mapper.MappedValue;
@@ -109,10 +109,10 @@ public class TestVolume {
 
       //Volume vol = new DefaultVolume(fs, new JavaSerializationService());
       //Volume vol = new DefaultVolume(fs, new GsonSerializationService());
-      Volume vol = new DefaultVolume(fs, new JsoniterSerializationService());
+      Volume vol = new DefaultVolume(fs, new JsonIoSerializationService());
 
       System.out.println("* warming up 15x...");
-      //disableStdOut();
+      disableStdOut();
       for(int i = 0; i < 15; i++) {
         execute(vol);
       }
