@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import us.pserver.dbone.store.DefaultVolume;
+import us.pserver.dbone.store.FSTSerializationService;
+import us.pserver.dbone.store.GsonSerializationService;
+import us.pserver.dbone.store.JavaSerializationService;
 import us.pserver.dbone.store.JsonIoSerializationService;
 import us.pserver.dbone.store.Record;
 import us.pserver.dbone.store.Storage;
@@ -107,8 +110,9 @@ public class ChannelCabinetBenchmark {
         .createNoLock();
     //AsyncVolume2 vol = new AsyncVolume2(stg);
     //Volume vol = new DefaultVolume(stg, new JavaSerializationService());
+    Volume vol = new DefaultVolume(stg, new FSTSerializationService());
     //Volume vol = new DefaultVolume(stg, new GsonSerializationService());
-    Volume vol = new DefaultVolume(stg, new JsonIoSerializationService());
+    //Volume vol = new DefaultVolume(stg, new JsonIoSerializationService());
     
     List<Record> recs = putValues(vol, genValues());
     //Thread.sleep(2000);

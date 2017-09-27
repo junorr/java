@@ -21,10 +21,9 @@
 
 package us.pserver.dbone.test;
 
-import com.cedarsoftware.util.io.JsonReader;
-import com.cedarsoftware.util.io.JsonWriter;
 import java.io.IOException;
 import java.util.Date;
+import org.nustaq.serialization.FSTConfiguration;
 import us.pserver.tools.mapper.MappedValue;
 
 /**
@@ -32,25 +31,26 @@ import us.pserver.tools.mapper.MappedValue;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/09/2017
  */
-public class TestJoddJson {
+public class TestFST {
 
   
   public static void main(String[] args) throws IOException {
+    FSTConfiguration conf = FSTConfiguration.createDefaultConfiguration();
     MappedValue val1 = MappedValue.of("Hello");
     MappedValue val2 = MappedValue.of(11);
     AObj a = new AObj("Hello", 11, new int[]{0,1,2,3,4}, null, new Date());
     System.out.println("* val1: "+ val1);
     System.out.println("* val2: "+ val2);
     System.out.println("* a   : "+ a);
-    String js1 = JsonWriter.objectToJson(val1);
-    String js2 = JsonWriter.objectToJson(val2);
-    String jsa = JsonWriter.objectToJson(a);
-    System.out.println("* js1: "+ js1);
-    System.out.println("* js2: "+ js2);
-    System.out.println("* jsa: "+ jsa);
-    val1 = (MappedValue) JsonReader.jsonToJava(js1);
-    val2 = (MappedValue) JsonReader.jsonToJava(js2);
-    a = (AObj) JsonReader.jsonToJava(jsa);
+    byte[] bs1 = conf.asByteArray(val1);
+    byte[] bs2 = conf.asByteArray(val2);
+    byte[] bsa = conf.asByteArray(a);
+    System.out.println("* bs1.length: "+ bs1.length);
+    System.out.println("* bs2.length: "+ bs2.length);
+    System.out.println("* bsa.length: "+ bsa.length);
+    val1 = (MappedValue) conf.asObject(bs1);
+    val2 = (MappedValue) conf.asObject(bs2);
+    a = (AObj) conf.asObject(bsa);
     System.out.println("* val1: "+ val1);
     System.out.println("* val2: "+ val2);
     System.out.println("* a   : "+ a);
