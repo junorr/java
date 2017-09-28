@@ -19,32 +19,33 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store.tx;
+package us.pserver.ironbit;
 
 import us.pserver.fun.ThrowableConsumer;
 import us.pserver.fun.ThrowableFunction;
 import us.pserver.fun.ThrowableSupplier;
 import us.pserver.fun.ThrowableTask;
 
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public class TransactionException extends RuntimeException {
+public class SerialException extends RuntimeException {
 
-  public TransactionException() {
+  public SerialException() {
   }
 
-  public TransactionException(String message) {
+  public SerialException(String message) {
     super(message);
   }
 
-  public TransactionException(String message, Throwable cause) {
+  public SerialException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public TransactionException(Throwable cause) {
+  public SerialException(Throwable cause) {
     super(cause);
   }
   
@@ -54,7 +55,7 @@ public class TransactionException extends RuntimeException {
       return fn.apply(t);
     }
     catch(Exception e) {
-      throw new TransactionException(e.toString(), e);
+      throw new SerialException(e.toString(), e);
     }
   }
   
@@ -64,7 +65,7 @@ public class TransactionException extends RuntimeException {
       fn.accept(t);
     }
     catch(Exception e) {
-      throw new TransactionException(e.toString(), e);
+      throw new SerialException(e.toString(), e);
     }
   }
   
@@ -74,7 +75,7 @@ public class TransactionException extends RuntimeException {
       return fn.supply();
     }
     catch(Exception e) {
-      throw new TransactionException(e.toString(), e);
+      throw new SerialException(e.toString(), e);
     }
   }
   
@@ -84,7 +85,7 @@ public class TransactionException extends RuntimeException {
       fn.exec();
     }
     catch(Exception e) {
-      throw new TransactionException(e.toString(), e);
+      throw new SerialException(e.toString(), e);
     }
   }
   

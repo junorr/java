@@ -21,10 +21,10 @@
 
 package us.pserver.dbone.store;
 
-import us.pserver.dbone.store.fun.ThrowableConsumer;
-import us.pserver.dbone.store.fun.ThrowableFunction;
-import us.pserver.dbone.store.fun.ThrowableSupplier;
-import us.pserver.dbone.store.fun.ThrowableTask;
+import us.pserver.fun.ThrowableConsumer;
+import us.pserver.fun.ThrowableFunction;
+import us.pserver.fun.ThrowableSupplier;
+import us.pserver.fun.ThrowableTask;
 
 
 /**

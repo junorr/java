@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store.fun;
+package us.pserver.fun;
 
 /**
  *
@@ -27,6 +27,6 @@ package us.pserver.dbone.store.fun;
  * @version 0.0 - 20/09/2017
  */
 @FunctionalInterface
-public interface ThrowableTask {
-  public void exec() throws Exception;
+public interface ThrowableFunction<T,R> {
+  public R apply(T t) throws Exception;
 }

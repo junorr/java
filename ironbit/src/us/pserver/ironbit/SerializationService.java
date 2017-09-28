@@ -19,14 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store.fun;
+package us.pserver.ironbit;
+
+import java.nio.ByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2017
+ * @version 0.0 - 26/09/2017
  */
-@FunctionalInterface
-public interface ThrowableFunction<T,R> {
-  public R apply(T t) throws Exception;
+public interface SerializationService<T> {
+
+  public ByteBuffer serialize(T obj);
+  
+  public T deserialize(ByteBuffer buf);
+  
 }

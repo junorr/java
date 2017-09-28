@@ -26,7 +26,7 @@ import java.nio.channels.AsynchronousFileChannel;
 import java.util.LinkedList;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
-import us.pserver.dbone.store.fun.ConsumerHandler;
+import us.pserver.fun.ConsumerHandler;
 import us.pserver.tools.NotNull;
 
 /**

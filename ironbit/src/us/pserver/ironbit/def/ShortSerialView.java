@@ -19,14 +19,31 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store.fun;
+package us.pserver.ironbit.def;
+
+import java.nio.ByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2017
+ * @version 0.0 - 28/09/2017
  */
-@FunctionalInterface
-public interface ThrowableConsumer<T> {
-  public void accept(T t) throws Exception;
+public class ShortSerialView extends AbstractSerialView<Short> {
+
+  public ShortSerialView(ByteBuffer buf) {
+    super(buf);
+  }
+  
+  /* Serialized Objects format
+   * classID : int | length : int | nameSize : short | name : String | [value : bytes]
+   */
+  
+  @Override
+  public Short getValue() {
+    this.buffer.position(Integer.BYTES * 2);
+    short nsize = buffer.getShort();
+    this.buffer.position(Integer.BYTES * 2 + Short.BYTES + nsize);
+    return buffer.getShort();
+  }
+
 }
