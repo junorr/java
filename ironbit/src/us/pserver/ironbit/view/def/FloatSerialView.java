@@ -19,36 +19,31 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.def;
+package us.pserver.ironbit.view.def;
 
 import java.nio.ByteBuffer;
-import java.util.List;
-import us.pserver.ironbit.SerialView;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/09/2017
  */
-public class ComposeableSerialView extends AbstractSerialView<List<SerialView<?>>> {
-  
-  public ComposeableSerialView(ByteBuffer buf) {
+public class FloatSerialView extends AbstractSerialView<Float> {
+
+  public FloatSerialView(ByteBuffer buf) {
     super(buf);
   }
-
+  
   /* Serialized Objects format
    * classID : int | length : int | nameSize : short | name : String | [value : bytes]
    */
   
   @Override
-  public List<SerialView<?>> getValue() {
-    int headerSize = Integer.BYTES * 2;
-    this.buffer.position(headerSize);
-    headerSize += buffer.getShort() + Short.BYTES;
-    int size = this.length() - headerSize;
-    this.buffer.position(headerSize);
-    this.buffer.limit(headerSize + size);
-    
+  public Float getValue() {
+    this.buffer.position(Integer.BYTES * 2);
+    short nsize = buffer.getShort();
+    this.buffer.position(Integer.BYTES * 2 + Short.BYTES + nsize);
+    return buffer.getFloat();
   }
 
 }

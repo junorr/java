@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.def;
+package us.pserver.ironbit.view.def;
 
 import java.nio.ByteBuffer;
 
@@ -28,9 +28,9 @@ import java.nio.ByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/09/2017
  */
-public class LongSerialView extends AbstractSerialView<Long> {
+public class BooleanSerialView extends AbstractSerialView<Boolean> {
 
-  public LongSerialView(ByteBuffer buf) {
+  public BooleanSerialView(ByteBuffer buf) {
     super(buf);
   }
   
@@ -39,11 +39,11 @@ public class LongSerialView extends AbstractSerialView<Long> {
    */
   
   @Override
-  public Long getValue() {
+  public Boolean getValue() {
     this.buffer.position(Integer.BYTES * 2);
     short nsize = buffer.getShort();
     this.buffer.position(Integer.BYTES * 2 + Short.BYTES + nsize);
-    return buffer.getLong();
+    return buffer.get() == 1;
   }
 
 }

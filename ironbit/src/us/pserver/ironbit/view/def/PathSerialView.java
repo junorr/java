@@ -19,18 +19,21 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.def;
+package us.pserver.ironbit.view.def;
 
 import java.nio.ByteBuffer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import us.pserver.tools.UTF8String;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/09/2017
  */
-public class DoubleSerialView extends AbstractSerialView<Double> {
-
-  public DoubleSerialView(ByteBuffer buf) {
+public class PathSerialView extends AbstractSerialView<Path> {
+  
+  public PathSerialView(ByteBuffer buf) {
     super(buf);
   }
   
@@ -39,11 +42,16 @@ public class DoubleSerialView extends AbstractSerialView<Double> {
    */
   
   @Override
-  public Double getValue() {
-    this.buffer.position(Integer.BYTES * 2);
-    short nsize = buffer.getShort();
-    this.buffer.position(Integer.BYTES * 2 + Short.BYTES + nsize);
-    return buffer.getDouble();
+  public Path getValue() {
+    int headerSize = Integer.BYTES * 2;
+    this.buffer.position(headerSize);
+    headerSize += buffer.getShort() + Short.BYTES;
+    int size = this.length() - headerSize;
+    byte[] bs = new byte[size];
+    this.buffer.position(headerSize);
+    this.buffer.get(bs);
+    String str = UTF8String.from(bs).toString();
+    return Paths.get(str);
   }
 
 }
