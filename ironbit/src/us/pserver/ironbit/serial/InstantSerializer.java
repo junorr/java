@@ -19,40 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.view.def;
+package us.pserver.ironbit.serial;
 
-import java.nio.ByteBuffer;
+import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 import us.pserver.date.DateTime;
 import us.pserver.tools.UTF8String;
+import us.pserver.ironbit.Serializer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/09/2017
+ * @version 0.0 - 03/10/2017
  */
-public class DateSerialView extends AbstractSerialView<Date> {
-  
-  public DateSerialView(ByteBuffer buf) {
-    super(buf);
-  }
-  
-  /* Serialized Objects format
-   * classID : int | length : int | nameSize : short | name : String | [value : bytes]
-   */
-  
+public class InstantSerializer implements Serializer<Instant> {
+
   @Override
-  public Date getValue() {
-    int headerSize = Integer.BYTES * 2;
-    this.buffer.position(headerSize);
-    headerSize += buffer.getShort() + Short.BYTES;
-    int size = this.length() - headerSize;
-    byte[] bs = new byte[size];
-    this.buffer.position(headerSize);
-    this.buffer.get(bs);
-    String str = UTF8String.from(bs).toString();
-    return DateTime.of(ZonedDateTime.parse(str)).toDate();
+  public byte[] serialize(Instant obj) {
+    return UTF8String.from(DateTime.of(obj).toZonedDT()
+        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)).getBytes();
+  }
+
+  @Override
+  public Instant deserialize(byte[] bs) {
+    return DateTime.of(ZonedDateTime.parse(
+        UTF8String.from(bs).toString().trim(), 
+        DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+    ).toInstant();
   }
 
 }

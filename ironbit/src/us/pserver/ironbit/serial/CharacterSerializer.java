@@ -19,31 +19,27 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.view.def;
+package us.pserver.ironbit.serial;
 
 import java.nio.ByteBuffer;
+import us.pserver.ironbit.Serializer;
+import us.pserver.tools.UTF8String;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/09/2017
+ * @version 0.0 - 03/10/2017
  */
-public class FloatSerialView extends AbstractSerialView<Float> {
+public class CharacterSerializer implements Serializer<Character> {
 
-  public FloatSerialView(ByteBuffer buf) {
-    super(buf);
-  }
-  
-  /* Serialized Objects format
-   * classID : int | length : int | nameSize : short | name : String | [value : bytes]
-   */
-  
   @Override
-  public Float getValue() {
-    this.buffer.position(Integer.BYTES * 2);
-    short nsize = buffer.getShort();
-    this.buffer.position(Integer.BYTES * 2 + Short.BYTES + nsize);
-    return buffer.getFloat();
+  public byte[] serialize(Character obj) {
+    return UTF8String.from(String.valueOf(obj)).getBytes();
+  }
+
+  @Override
+  public Character deserialize(byte[] bs) {
+    return UTF8String.from(bs).toString().trim().charAt(0);
   }
 
 }

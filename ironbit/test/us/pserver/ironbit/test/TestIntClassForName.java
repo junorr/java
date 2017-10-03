@@ -19,36 +19,20 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.view.def;
-
-import java.nio.ByteBuffer;
-import java.util.List;
-import us.pserver.ironbit.SerialView;
+package us.pserver.ironbit.test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/09/2017
+ * @version 0.0 - 03/10/2017
  */
-public class ComposeableSerialView extends AbstractSerialView<List<SerialView<?>>> {
-  
-  public ComposeableSerialView(ByteBuffer buf) {
-    super(buf);
-  }
+public class TestIntClassForName {
 
-  /* Serialized Objects format
-   * classID : int | length : int | nameSize : short | name : String | [value : bytes]
-   */
   
-  @Override
-  public List<SerialView<?>> getValue() {
-    int headerSize = Integer.BYTES * 2;
-    this.buffer.position(headerSize);
-    headerSize += buffer.getShort() + Short.BYTES;
-    int size = this.length() - headerSize;
-    this.buffer.position(headerSize);
-    this.buffer.limit(headerSize + size);
-    
+  public static void main(String[] args) throws ClassNotFoundException {
+    Class cls = int.class;
+    System.out.println("* cls="+ cls);
+    System.out.println(Class.forName(cls.getName()));
   }
-
+  
 }

@@ -93,15 +93,14 @@ public class ByteBufferOutputStream extends OutputStream {
   
   
   private ByteBuffer getBuffer(int writeSize) {
-    if(this.buffers.get(current).remaining() < writeSize) {
-      this.buffers.add(alloc.apply(
+    if(this.buffers.get(current).remaining() < writeSize
+        && (this.buffers.size() < current + 1 
+        ||  this.buffers.get(current + 1).remaining() < writeSize)) {
+      this.buffers.set(++current, alloc.apply(
           Math.max(bufsize, writeSize))
       );
-      return this.buffers.get(++current);
     }
-    else {
-      return this.buffers.get(current);
-    }
+    return this.buffers.get(current);
   }
   
   
@@ -125,6 +124,13 @@ public class ByteBufferOutputStream extends OutputStream {
   
   public void write(ByteBuffer buf) {
     this.getBuffer(buf.remaining()).put(buf);
+  }
+  
+  
+  public ByteBufferOutputStream clear() {
+    buffers.forEach(ByteBuffer::clear);
+    current = 0;
+    return this;
   }
   
   

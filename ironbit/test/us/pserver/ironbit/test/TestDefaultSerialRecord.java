@@ -19,31 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.view.def;
+package us.pserver.ironbit.test;
 
-import java.nio.ByteBuffer;
+import java.util.Arrays;
+import us.pserver.ironbit.record.DefaultSerialRecord;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/09/2017
+ * @version 0.0 - 03/10/2017
  */
-public class CharSerialView extends AbstractSerialView<Character> {
+public class TestDefaultSerialRecord {
 
-  public CharSerialView(ByteBuffer buf) {
-    super(buf);
+  
+  public static void main(String[] args) {
+    DefaultSerialRecord<Integer> sr = new DefaultSerialRecord("int", 5);
+    System.out.println(Arrays.toString(sr.getBytes()));
+    System.out.println(sr.getClassID());
+    System.out.println(sr.getName());
+    System.out.println(sr.getValue());
   }
   
-  /* Serialized Objects format
-   * classID : int | length : int | nameSize : short | name : String | [value : bytes]
-   */
-  
-  @Override
-  public Character getValue() {
-    this.buffer.position(Integer.BYTES * 2);
-    short nsize = buffer.getShort();
-    this.buffer.position(Integer.BYTES * 2 + Short.BYTES + nsize);
-    return buffer.getChar();
-  }
-
 }

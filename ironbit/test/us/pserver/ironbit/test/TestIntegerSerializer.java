@@ -19,39 +19,27 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.view.def;
+package us.pserver.ironbit.test;
 
-import java.nio.ByteBuffer;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import us.pserver.tools.UTF8String;
+import java.util.Arrays;
+import us.pserver.ironbit.serial.IntegerSerializer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/09/2017
+ * @version 0.0 - 03/10/2017
  */
-public class PathSerialView extends AbstractSerialView<Path> {
-  
-  public PathSerialView(ByteBuffer buf) {
-    super(buf);
-  }
-  
-  /* Serialized Objects format
-   * classID : int | length : int | nameSize : short | name : String | [value : bytes]
-   */
-  
-  @Override
-  public Path getValue() {
-    int headerSize = Integer.BYTES * 2;
-    this.buffer.position(headerSize);
-    headerSize += buffer.getShort() + Short.BYTES;
-    int size = this.length() - headerSize;
-    byte[] bs = new byte[size];
-    this.buffer.position(headerSize);
-    this.buffer.get(bs);
-    String str = UTF8String.from(bs).toString();
-    return Paths.get(str);
-  }
+public class TestIntegerSerializer {
 
+  
+  public static void main(String[] args) {
+    IntegerSerializer ints = new IntegerSerializer();
+    int i = 10005;
+    System.out.println("* int="+ i);
+    byte[] bs = ints.serialize(i);
+    System.out.println("* byte[]="+ Arrays.toString(bs));
+    i = ints.deserialize(bs);
+    System.out.println("* int="+ i);
+  }
+  
 }

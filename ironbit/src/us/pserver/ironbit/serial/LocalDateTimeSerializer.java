@@ -19,31 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.view.def;
+package us.pserver.ironbit.serial;
 
-import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import us.pserver.date.DateTime;
+import us.pserver.tools.UTF8String;
+import us.pserver.ironbit.Serializer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/09/2017
+ * @version 0.0 - 03/10/2017
  */
-public class ShortSerialView extends AbstractSerialView<Short> {
+public class LocalDateTimeSerializer implements Serializer<LocalDateTime> {
 
-  public ShortSerialView(ByteBuffer buf) {
-    super(buf);
-  }
-  
-  /* Serialized Objects format
-   * classID : int | length : int | nameSize : short | name : String | [value : bytes]
-   */
-  
   @Override
-  public Short getValue() {
-    this.buffer.position(Integer.BYTES * 2);
-    short nsize = buffer.getShort();
-    this.buffer.position(Integer.BYTES * 2 + Short.BYTES + nsize);
-    return buffer.getShort();
+  public byte[] serialize(LocalDateTime obj) {
+    return UTF8String.from(DateTime.of(obj).toZonedDT()
+        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)).getBytes();
+  }
+
+  @Override
+  public LocalDateTime deserialize(byte[] bs) {
+    return DateTime.of(ZonedDateTime.parse(
+        UTF8String.from(bs).toString().trim(), 
+        DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+    ).toLocalDT();
   }
 
 }

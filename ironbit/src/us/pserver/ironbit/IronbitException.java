@@ -32,20 +32,20 @@ import us.pserver.fun.ThrowableTask;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public class SerialException extends RuntimeException {
+public class IronbitException extends RuntimeException {
 
-  public SerialException() {
+  public IronbitException() {
   }
 
-  public SerialException(String message) {
+  public IronbitException(String message) {
     super(message);
   }
 
-  public SerialException(String message, Throwable cause) {
+  public IronbitException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public SerialException(Throwable cause) {
+  public IronbitException(Throwable cause) {
     super(cause);
   }
   
@@ -55,7 +55,7 @@ public class SerialException extends RuntimeException {
       return fn.apply(t);
     }
     catch(Exception e) {
-      throw new SerialException(e.toString(), e);
+      throw new IronbitException(e.toString(), e);
     }
   }
   
@@ -65,7 +65,7 @@ public class SerialException extends RuntimeException {
       fn.accept(t);
     }
     catch(Exception e) {
-      throw new SerialException(e.toString(), e);
+      throw new IronbitException(e.toString(), e);
     }
   }
   
@@ -75,7 +75,7 @@ public class SerialException extends RuntimeException {
       return fn.supply();
     }
     catch(Exception e) {
-      throw new SerialException(e.toString(), e);
+      throw new IronbitException(e.toString(), e);
     }
   }
   
@@ -85,7 +85,7 @@ public class SerialException extends RuntimeException {
       fn.exec();
     }
     catch(Exception e) {
-      throw new SerialException(e.toString(), e);
+      throw new IronbitException(e.toString(), e);
     }
   }
   
