@@ -68,7 +68,7 @@ public abstract class IronbitConfiguration {
   private IronbitConfiguration() {
     this.classes = new SortedList<>(new ConcurrentList<>(), ClassID.idComparator());
     this.serials = Collections.synchronizedMap(new TreeMap<>());
-    this.curid = new AtomicInteger(1);
+    this.curid = new AtomicInteger(0);
     this.registerDefaults();
   }
   
@@ -126,7 +126,7 @@ public abstract class IronbitConfiguration {
   }
   
   
-  public static IronbitConfiguration instance() {
+  public static IronbitConfiguration get() {
     return instance;
   }
   
@@ -209,8 +209,7 @@ public abstract class IronbitConfiguration {
   
   
   public Optional<ClassID> findClassID(int id) {
-    return classes.parallelStream()
-        .filter(c->c.getID() == id).findAny();
+    return Optional.ofNullable(classes.get(id));
   }
   
 }

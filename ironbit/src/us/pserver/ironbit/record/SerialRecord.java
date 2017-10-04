@@ -19,23 +19,42 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit;
+package us.pserver.ironbit.record;
 
-import us.pserver.tools.io.ByteBufferOutputStream;
+import java.util.Optional;
+import us.pserver.ironbit.ClassID;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 03/10/2017
+ * @version 0.0 - 28/09/2017
  */
-public class SerialRecordFactory {
+public interface SerialRecord<T> {
   
-  private final ByteBufferOutputStream bos;
-
-  public SerialRecordFactory() {
-    bos = new ByteBufferOutputStream();
+  public static final int HEADER_SIZE = Integer.BYTES * 2 + Short.BYTES;
+  
+  /* Serialized Objects format
+   * classID : int | length : int | nameSize : short | name : String | [value : bytes]
+   */
+  
+  public ClassID getClassID();
+  
+  public byte[] getBytes();
+  
+  public int length();
+  
+  public T getValue();
+  
+  public Optional<String> getName();
+  
+  
+  public static <U> SerialRecord<U> of(U obj) {
+    return null;
   }
   
   
+  public static <U> SerialRecord<U> of(byte[] bs) {
+    return null;
+  }
   
 }

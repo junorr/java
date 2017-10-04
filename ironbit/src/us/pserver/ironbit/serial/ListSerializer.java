@@ -19,40 +19,13 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.record;
-
-import java.nio.ByteBuffer;
-import java.util.List;
-import us.pserver.ironbit.SerialRecord;
+package us.pserver.ironbit.serial;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/09/2017
+ * @version 0.0 - 03/10/2017
  */
-public class ComposeableRecord extends DefaultSerialRecord<List<SerialRecord<?>>> {
-  
-  public ComposeableRecord(ByteBuffer buf) {
-    super(buf);
-  }
-
-  /* Serialized Objects format
-   * classID : int | length : int | nameSize : short | name : String | [value : bytes]
-   */
-  
-  @Override
-  public List<SerialRecord<?>> getValue() {
-    int headerSize = Integer.BYTES * 2;
-    this.buffer.position(headerSize);
-    headerSize += buffer.getShort() + Short.BYTES;
-    int size = this.length() - headerSize;
-    this.buffer.position(headerSize);
-    this.buffer.limit(headerSize + size);
-    
-  }
-  
-  private SerialRecord<?> readNext() {
-    
-  }
+public class ListSerializer implements {
 
 }

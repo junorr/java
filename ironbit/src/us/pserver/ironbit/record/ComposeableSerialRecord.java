@@ -22,6 +22,7 @@
 package us.pserver.ironbit.record;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.Optional;
 import us.pserver.ironbit.ClassID;
 import us.pserver.ironbit.IronbitConfiguration;
@@ -38,7 +39,7 @@ import us.pserver.tools.io.ByteBufferOutputStream;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/09/2017
  */
-public class DefaultSerialRecord<T> implements SerialRecord<T> {
+public class ComposeableSerialRecord<T> implements SerialRecord<List<SerialRecord<?>> {
   
   protected final IntegerSerializer ints;
   
@@ -46,12 +47,10 @@ public class DefaultSerialRecord<T> implements SerialRecord<T> {
   
   protected final StringSerializer strings;
   
-  protected final Serializer<T> serial;
-  
   protected final byte[] bytes;
   
   
-  public DefaultSerialRecord(byte[] bs) {
+  public ComposeableSerialRecord(byte[] bs) {
     ints = new IntegerSerializer();
     shorts = new ShortSerializer();
     strings = new StringSerializer();
@@ -60,11 +59,12 @@ public class DefaultSerialRecord<T> implements SerialRecord<T> {
   }
   
   
-  public DefaultSerialRecord(String name, T obj) {
+  public ComposeableSerialRecord(String name, T obj) {
     NotNull.of(obj).failIfNull("Bad null object");
     ints = new IntegerSerializer();
     shorts = new ShortSerializer();
     strings = new StringSerializer();
+    
     Optional<Serializer> opt = IronbitConfiguration.get().findSerializer(obj.getClass());
     if(!opt.isPresent()) {
       throw new IronbitException("Serializer not found for: "+ obj.getClass().getName());
