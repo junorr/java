@@ -19,43 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.record;
+package us.pserver.ironbit.test;
 
-import java.util.Optional;
-import us.pserver.ironbit.ClassID;
+import java.util.Arrays;
+import java.util.List;
+import us.pserver.ironbit.record.ComposeableSerialRecord;
+import us.pserver.ironbit.record.DefaultSerialRecord;
+import us.pserver.ironbit.record.SerialRecord;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/09/2017
+ * @version 0.0 - 04/10/2017
  */
-public interface SerialRecord<T> {
+public class TestComposeableSerialRecord {
+
   
-  public static final int HEADER_SIZE = Integer.BYTES * 2 + Short.BYTES;
-  
-  /* Serialized Objects format
-   * classID : int | length : int | nameSize : short | name : String | [value : bytes]
-   */
-  
-  public ClassID getClassID();
-  
-  public byte[] toByteArray();
-  
-  public int length();
-  
-  public T getValue();
-  
-  public Optional<String> getName();
-  
-  
-  public static <U> SerialRecord<U> of(U obj) {
-    
-    return null;
-  }
-  
-  
-  public static <U> SerialRecord<U> of(byte[] bs) {
-    return null;
+  public static void main(String[] args) {
+    SerialRecord<Integer> sr1 = new DefaultSerialRecord("i1", 1);
+    SerialRecord<Integer> sr2 = new DefaultSerialRecord("i2", 2);
+    ComposeableSerialRecord<List<SerialRecord<Integer>>> comp = 
+        new ComposeableSerialRecord("compose", Arrays.asList(sr1, sr2));
+    System.out.println(sr1);
+    System.out.println(Arrays.toString(sr1.toByteArray()));
+    System.out.println(sr2);
+    System.out.println(Arrays.toString(sr2.toByteArray()));
+    System.out.println(comp);
+    System.out.println(Arrays.toString(comp.toByteArray()));
+    System.out.println(comp.getValue());
   }
   
 }

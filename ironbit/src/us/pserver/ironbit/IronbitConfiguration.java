@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import us.pserver.dyna.ResourceLoader;
 import us.pserver.ironbit.serial.BooleanSerializer;
 import us.pserver.ironbit.serial.CharacterSerializer;
 import us.pserver.ironbit.serial.ClassSerializer;
@@ -64,11 +66,14 @@ public abstract class IronbitConfiguration {
   
   private final Map<Integer,Serializer> serials;
   
+  private final AtomicReference<ResourceLoader> refload;
+  
   
   private IronbitConfiguration() {
     this.classes = new SortedList<>(new ConcurrentList<>(), ClassID.idComparator());
     this.serials = Collections.synchronizedMap(new TreeMap<>());
     this.curid = new AtomicInteger(0);
+    this.refload = new AtomicReference(ResourceLoader.caller());
     this.registerDefaults();
   }
   
@@ -146,20 +151,16 @@ public abstract class IronbitConfiguration {
   }
   
   
-  public ClassID registerClassID(String cls) {
-    NotNull.of(cls).failIfNull("Bad null Class name");
-    Optional<ClassID> opt = this.findClassID(cls);
-    if(opt.isPresent()) return opt.get();
-    ClassID cid = ClassID.of(nextID(), cls);
-    classes.put(cid);
-    return cid;
-  }
-  
-  
   public ClassID registerSerializer(Class cls, Serializer serial) {
     ClassID cid = this.registerClassID(NotNull.of(cls).getOrFail("Bad null Class"));
     serials.put(cid.getID(), NotNull.of(serial).getOrFail("Bad null Serializer"));
     return cid;
+  }
+  
+  
+  public IronbitConfiguration setResourceLoader(ResourceLoader ldr) {
+    refload.set(NotNull.of(ldr).getOrFail("Bad null ResourceLoader"));
+    return this;
   }
   
   

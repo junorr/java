@@ -22,8 +22,8 @@
 package us.pserver.ironbit.serial;
 
 import java.nio.ByteBuffer;
-import us.pserver.ironbit.Serializer;
 import us.pserver.tools.UTF8String;
+import us.pserver.ironbit.Serializer;
 
 /**
  *

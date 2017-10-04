@@ -19,43 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.record;
+package us.pserver.ironbit.test;
 
-import java.util.Optional;
-import us.pserver.ironbit.ClassID;
+import java.util.Arrays;
+import us.pserver.ironbit.SerialCommons;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/09/2017
+ * @version 0.0 - 04/10/2017
  */
-public interface SerialRecord<T> {
+public class TestSerialCommons {
+
   
-  public static final int HEADER_SIZE = Integer.BYTES * 2 + Short.BYTES;
-  
-  /* Serialized Objects format
-   * classID : int | length : int | nameSize : short | name : String | [value : bytes]
-   */
-  
-  public ClassID getClassID();
-  
-  public byte[] toByteArray();
-  
-  public int length();
-  
-  public T getValue();
-  
-  public Optional<String> getName();
-  
-  
-  public static <U> SerialRecord<U> of(U obj) {
+  public static void main(String[] args) {
+    int val = 2;
+    byte[] bar = new byte[Integer.BYTES];
+    System.out.println("* val="+ val);
+    SerialCommons.writeInt(val, bar, 0);
+    System.out.println("* bar="+ Arrays.toString(bar));
+    val = SerialCommons.readInt(bar, 0);
+    System.out.println("* val="+ val);
     
-    return null;
-  }
-  
-  
-  public static <U> SerialRecord<U> of(byte[] bs) {
-    return null;
+    val = 2001;
+    System.out.println("* val="+ val);
+    SerialCommons.writeInt(val, bar, 0);
+    System.out.println("* bar="+ Arrays.toString(bar));
+    val = SerialCommons.readInt(bar, 0);
+    System.out.println("* val="+ val);
   }
   
 }

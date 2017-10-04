@@ -27,11 +27,11 @@ import us.pserver.ironbit.ClassID;
 import us.pserver.ironbit.IronbitConfiguration;
 import us.pserver.ironbit.IronbitException;
 import us.pserver.tools.NotNull;
-import us.pserver.ironbit.Serializer;
 import us.pserver.ironbit.serial.IntegerSerializer;
 import us.pserver.ironbit.serial.ShortSerializer;
 import us.pserver.ironbit.serial.StringSerializer;
 import us.pserver.tools.io.ByteBufferOutputStream;
+import us.pserver.ironbit.Serializer;
 
 /**
  *
@@ -57,6 +57,16 @@ public class DefaultSerialRecord<T> implements SerialRecord<T> {
     strings = new StringSerializer();
     bytes = NotNull.of(bs).getOrFail("Bad null byte[] array");
     serial = IronbitConfiguration.get().serializers().get(ints.deserialize(bytes));
+  }
+  
+  
+  public DefaultSerialRecord(ClassID cid, String name, byte[] bs) {
+    ints = new IntegerSerializer();
+    shorts = new ShortSerializer();
+    strings = new StringSerializer();
+    short nmlen = (short) (name == null ? 0 : name.length());
+    bytes = new byte[HEADER_SIZE + nmlen + bs.length];
+    
   }
   
   
@@ -160,8 +170,14 @@ public class DefaultSerialRecord<T> implements SerialRecord<T> {
   
   
   @Override
-  public byte[] getBytes() {
+  public byte[] toByteArray() {
     return bytes;
+  }
+  
+  
+  @Override
+  public String toString() {
+    return String.format("SerialRecord{cid=%d, len=%d, name=%s}", this.getClassID().getID(), this.length(), this.getName());
   }
   
 }

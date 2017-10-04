@@ -19,43 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.record;
+package us.pserver.ironbit;
 
-import java.util.Optional;
-import us.pserver.ironbit.ClassID;
+import us.pserver.ironbit.record.SerialRecord;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/09/2017
+ * @version 0.0 - 04/10/2017
  */
-public interface SerialRecord<T> {
+public interface SerialService<T> {
+
+  public SerialRecord<T> serialize(T obj);
   
-  public static final int HEADER_SIZE = Integer.BYTES * 2 + Short.BYTES;
-  
-  /* Serialized Objects format
-   * classID : int | length : int | nameSize : short | name : String | [value : bytes]
-   */
-  
-  public ClassID getClassID();
-  
-  public byte[] toByteArray();
-  
-  public int length();
-  
-  public T getValue();
-  
-  public Optional<String> getName();
-  
-  
-  public static <U> SerialRecord<U> of(U obj) {
-    
-    return null;
-  }
-  
-  
-  public static <U> SerialRecord<U> of(byte[] bs) {
-    return null;
-  }
+  public T deserialize(SerialRecord<T> rec);
   
 }

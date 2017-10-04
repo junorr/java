@@ -36,14 +36,11 @@ public interface ClassID extends Comparable<ClassID> {
   
   public String getClassName();
   
-  
-  public static ClassID of(int id, String cls) {
-    return new DefClassID(id, cls);
-  }
+  public Class getReferredClass();
   
   
   public static ClassID of(int id, Class cls) {
-    return new DefClassID(id, NotNull.of(cls).getOrFail("Bad null Class").getName());
+    return new DefClassID(id, cls);
   }
   
   
@@ -64,11 +61,11 @@ public interface ClassID extends Comparable<ClassID> {
     
     private final int id;
     
-    private final String clsName;
+    private final Class cls;
     
-    public DefClassID(int id, String clsName) {
+    public DefClassID(int id, Class cls) {
       this.id = id;
-      this.clsName = NotNull.of(clsName).getOrFail("Bad null class name");
+      this.cls = NotNull.of(cls).getOrFail("Bad null Class");
     }
 
     @Override
@@ -78,7 +75,12 @@ public interface ClassID extends Comparable<ClassID> {
 
     @Override
     public String getClassName() {
-      return clsName;
+      return cls.getName();
+    }
+    
+    @Override
+    public Class getReferredClass() {
+      return cls;
     }
 
     @Override
@@ -90,7 +92,7 @@ public interface ClassID extends Comparable<ClassID> {
     public int hashCode() {
       int hash = 5;
       hash = 59 * hash + this.id;
-      hash = 59 * hash + Objects.hashCode(this.clsName);
+      hash = 59 * hash + Objects.hashCode(this.cls);
       return hash;
     }
 
@@ -109,12 +111,12 @@ public interface ClassID extends Comparable<ClassID> {
       if (this.id != other.id) {
         return false;
       }
-      return Objects.equals(this.clsName, other.clsName);
+      return Objects.equals(this.cls, other.cls);
     }
     
     @Override
     public String toString() {
-      return "ClassID: ("+ id+ ") "+ clsName;
+      return "ClassID: ("+ id+ ") "+ getClassName();
     }
     
   }

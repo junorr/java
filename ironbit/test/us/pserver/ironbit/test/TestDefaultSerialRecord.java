@@ -22,7 +22,6 @@
 package us.pserver.ironbit.test;
 
 import java.util.Arrays;
-import us.pserver.ironbit.IronbitConfiguration;
 import us.pserver.ironbit.record.DefaultSerialRecord;
 
 /**
@@ -35,7 +34,7 @@ public class TestDefaultSerialRecord {
   
   public static void main(String[] args) {
     DefaultSerialRecord<Integer> sr = new DefaultSerialRecord("int", 5);
-    System.out.println(Arrays.toString(sr.getBytes()));
+    System.out.println(Arrays.toString(sr.toByteArray()));
     System.out.println(sr.getClassID());
     System.out.println(sr.length());
     System.out.println(sr.getName());

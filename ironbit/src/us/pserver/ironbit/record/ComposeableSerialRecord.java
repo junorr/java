@@ -22,13 +22,13 @@
 package us.pserver.ironbit.record;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import us.pserver.ironbit.ClassID;
 import us.pserver.ironbit.IronbitConfiguration;
 import us.pserver.ironbit.IronbitException;
 import us.pserver.tools.NotNull;
-import us.pserver.ironbit.Serializer;
 import us.pserver.ironbit.serial.IntegerSerializer;
 import us.pserver.ironbit.serial.ShortSerializer;
 import us.pserver.ironbit.serial.StringSerializer;
@@ -39,7 +39,7 @@ import us.pserver.tools.io.ByteBufferOutputStream;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/09/2017
  */
-public class ComposeableSerialRecord<T> implements SerialRecord<List<SerialRecord<?>> {
+public class ComposeableSerialRecord<T> implements SerialRecord<List<SerialRecord<?>>> {
   
   protected final IntegerSerializer ints;
   
@@ -55,39 +55,35 @@ public class ComposeableSerialRecord<T> implements SerialRecord<List<SerialRecor
     shorts = new ShortSerializer();
     strings = new StringSerializer();
     bytes = NotNull.of(bs).getOrFail("Bad null byte[] array");
-    serial = IronbitConfiguration.get().serializers().get(ints.deserialize(bytes));
   }
   
   
-  public ComposeableSerialRecord(String name, T obj) {
-    NotNull.of(obj).failIfNull("Bad null object");
+  public ComposeableSerialRecord(String name, List<SerialRecord<?>> recs) {
+    NotNull.of(recs).failIfNull("Bad null List<SerialRecord>");
     ints = new IntegerSerializer();
     shorts = new ShortSerializer();
     strings = new StringSerializer();
-    
-    Optional<Serializer> opt = IronbitConfiguration.get().findSerializer(obj.getClass());
-    if(!opt.isPresent()) {
-      throw new IronbitException("Serializer not found for: "+ obj.getClass().getName());
-    }
-    serial = opt.get();
     ByteBufferOutputStream bos = new ByteBufferOutputStream(1024);
-    ClassID cid = IronbitConfiguration.get().registerClassID(obj.getClass());
-    byte[] bobj = serial.serialize(obj);
+    ClassID cid = IronbitConfiguration.get().registerClassID(recs.getClass());
     short nameSize = 0;
     byte[] bname = new byte[0];
     if(name != null) {
       bname = strings.serialize(name);
       nameSize = (short) bname.length;
     }
-    int length = offsetName() + nameSize + bobj.length;
+    int length = offsetName() + nameSize;
     bos.write(ints.serialize(cid.getID()));
     bos.write(ints.serialize(length));
     bos.write(shorts.serialize(nameSize));
     bos.write(bname);
-    bos.write(bobj);
+    for(SerialRecord<?> sr : recs) {
+      bos.write(sr.toByteArray());
+    }
     ByteBuffer buf = bos.toByteBuffer();
     this.bytes = new byte[buf.remaining()];
-    buf.get(this.bytes);
+    buf.get(bytes);
+    byte[] blen = ints.serialize(bytes.length);
+    System.arraycopy(blen, 0, bytes, Integer.BYTES, blen.length);
   }
   
   /* Serialized Objects format
@@ -125,10 +121,20 @@ public class ComposeableSerialRecord<T> implements SerialRecord<List<SerialRecor
   
   
   @Override
-  public T getValue() {
-    byte[] bs = new byte[valueSize()];
-    System.arraycopy(bytes, offsetValue(), bs, 0, bs.length);
-    return serial.deserialize(bs);
+  public List<SerialRecord<?>> getValue() {
+    List<SerialRecord<?>> recs = new ArrayList<>();
+    int idx = offsetValue();
+    byte[] blen = new byte[Integer.BYTES];
+    int len;
+    while((idx + 1) < bytes.length) {
+      System.arraycopy(bytes, idx + Integer.BYTES, blen, 0, blen.length);
+      len = ints.deserialize(blen);
+      byte[] bsr = new byte[len];
+      System.arraycopy(bytes, idx, bsr, 0, bsr.length);
+      recs.add(SerialRecord.of(bsr));
+      idx += len;
+    }
+    return recs;
   }
   
   
@@ -160,8 +166,14 @@ public class ComposeableSerialRecord<T> implements SerialRecord<List<SerialRecor
   
   
   @Override
-  public byte[] getBytes() {
+  public byte[] toByteArray() {
     return bytes;
+  }
+  
+  
+  @Override
+  public String toString() {
+    return String.format("SerialRecord{cid=%d, len=%d, name=%s}", this.getClassID().getID(), this.length(), this.getName());
   }
   
 }
