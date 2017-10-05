@@ -150,4 +150,20 @@ public class ByteBufferOutputStream extends OutputStream {
     return this.toByteBuffer(this.alloc);
   }
 
+  
+  public byte[] toByteArray() {
+    this.buffers.forEach(ByteBuffer::flip);
+    int size = this.buffers.stream()
+        .mapToInt(ByteBuffer::remaining)
+        .reduce(0, (i,s)->i+s);
+    byte[] buf = new byte[size];
+    int idx = 0;
+    for(ByteBuffer b : buffers) {
+      int rem = b.remaining();
+      b.get(buf, idx, rem);
+      idx += rem;
+    }
+    return buf;
+  }
+  
 }

@@ -19,23 +19,36 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit;
+package us.pserver.ironbit.serial;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import us.pserver.ironbit.IronbitConfiguration;
+import us.pserver.ironbit.SerialCommons;
+import us.pserver.ironbit.SerialService;
+import us.pserver.ironbit.record.DefaultSerialRecord;
 import us.pserver.ironbit.record.SerialRecord;
+import us.pserver.tools.UTF8String;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 04/10/2017
+ * @version 0.0 - 03/10/2017
  */
-public interface SerialService<T> {
+public class PathSerialService implements SerialService<Path> {
 
-  public SerialRecord serialize(String name, T obj);
-  
-  public default SerialRecord serialize(T obj) {
-    return serialize("", obj);
+  @Override
+  public SerialRecord serialize(String name, Path obj) {
+    return new DefaultSerialRecord(
+        IronbitConfiguration.get().registerClassID(obj.getClass()), 
+        name, 
+        UTF8String.from(obj.toAbsolutePath().toString()).getBytes()
+    );
   }
-  
-  public T deserialize(SerialRecord rec);
-  
+
+  @Override
+  public Path deserialize(SerialRecord rec) {
+    return Paths.get(SerialCommons.readString(rec.getValue(), 0));
+  }
+
 }

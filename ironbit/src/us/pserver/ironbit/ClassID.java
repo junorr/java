@@ -36,11 +36,16 @@ public interface ClassID extends Comparable<ClassID> {
   
   public String getClassName();
   
-  public Class getReferredClass();
+  public Class getClazz();
   
   
   public static ClassID of(int id, Class cls) {
     return new DefClassID(id, cls);
+  }
+  
+  
+  public static ClassID of(int id, String cls) {
+    return new DefClassID(id, IronbitConfiguration.get().loader().loadClass(cls));
   }
   
   
@@ -61,11 +66,14 @@ public interface ClassID extends Comparable<ClassID> {
     
     private final int id;
     
-    private final Class cls;
+    private final String cname;
+    
+    private final Class clazz;
     
     public DefClassID(int id, Class cls) {
       this.id = id;
-      this.cls = NotNull.of(cls).getOrFail("Bad null Class");
+      this.clazz = NotNull.of(cls).getOrFail("Bad null Class");
+      this.cname = clazz.getName();
     }
 
     @Override
@@ -75,14 +83,14 @@ public interface ClassID extends Comparable<ClassID> {
 
     @Override
     public String getClassName() {
-      return cls.getName();
+      return cname;
     }
     
     @Override
-    public Class getReferredClass() {
-      return cls;
+    public Class getClazz() {
+      return clazz;
     }
-
+    
     @Override
     public int compareTo(ClassID o) {
       return Integer.compare(this.id, o.getID());
@@ -92,7 +100,7 @@ public interface ClassID extends Comparable<ClassID> {
     public int hashCode() {
       int hash = 5;
       hash = 59 * hash + this.id;
-      hash = 59 * hash + Objects.hashCode(this.cls);
+      hash = 59 * hash + Objects.hashCode(this.cname);
       return hash;
     }
 
@@ -111,7 +119,7 @@ public interface ClassID extends Comparable<ClassID> {
       if (this.id != other.id) {
         return false;
       }
-      return Objects.equals(this.cls, other.cls);
+      return Objects.equals(this.cname, other.cname);
     }
     
     @Override

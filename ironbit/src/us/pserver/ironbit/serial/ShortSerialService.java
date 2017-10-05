@@ -19,23 +19,31 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit;
+package us.pserver.ironbit.serial;
 
+import us.pserver.ironbit.IronbitConfiguration;
+import us.pserver.ironbit.SerialCommons;
+import us.pserver.ironbit.SerialService;
+import us.pserver.ironbit.record.DefaultSerialRecord;
 import us.pserver.ironbit.record.SerialRecord;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 04/10/2017
+ * @version 0.0 - 03/10/2017
  */
-public interface SerialService<T> {
+public class ShortSerialService implements SerialService<Short> {
 
-  public SerialRecord serialize(String name, T obj);
-  
-  public default SerialRecord serialize(T obj) {
-    return serialize("", obj);
+  @Override
+  public SerialRecord serialize(String name, Short obj) {
+    byte[] bs = new byte[Short.BYTES];
+    SerialCommons.writeShort(obj, bs, 0);
+    return new DefaultSerialRecord(IronbitConfiguration.get().registerClassID(obj.getClass()), name, bs);
   }
-  
-  public T deserialize(SerialRecord rec);
-  
+
+  @Override
+  public Short deserialize(SerialRecord rec) {
+    return SerialCommons.readShort(rec.getValue(), 0);
+  }
+
 }

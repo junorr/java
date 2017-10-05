@@ -85,10 +85,19 @@ public interface ResourceLoader {
   
   
   /**
-   * Pega a classe utilizada para carregar recursos.
+   * Retorna a classe utilizada para carregar recursos.
    * @return classe utilizada para carregar recursos.
    */
-  public Class loader();
+  public ClassLoader loader();
+  
+  
+  /**
+   * Carrega uma classe pelo nome.
+   * @param cname Nome da classe.
+   * @return Class
+   * @throws us.pserver.dyna.ResourceLoader.ResourceLoadException 
+   */
+  public Class loadClass(String cname) throws ResourceLoadException;
   
   
   /**

@@ -21,7 +21,7 @@
 
 package us.pserver.ironbit.record;
 
-import java.util.Optional;
+import java.nio.ByteBuffer;
 import us.pserver.ironbit.ClassID;
 
 /**
@@ -29,7 +29,7 @@ import us.pserver.ironbit.ClassID;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/09/2017
  */
-public interface SerialRecord<T> {
+public interface SerialRecord {
   
   public static final int HEADER_SIZE = Integer.BYTES * 2 + Short.BYTES;
   
@@ -41,21 +41,12 @@ public interface SerialRecord<T> {
   
   public byte[] toByteArray();
   
+  public ByteBuffer toByteBuffer();
+  
   public int length();
   
-  public T getValue();
+  public String getName();
   
-  public Optional<String> getName();
-  
-  
-  public static <U> SerialRecord<U> of(U obj) {
-    
-    return null;
-  }
-  
-  
-  public static <U> SerialRecord<U> of(byte[] bs) {
-    return null;
-  }
+  public byte[] getValue();
   
 }

@@ -27,26 +27,28 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import us.pserver.dyna.ResourceLoader;
-import us.pserver.ironbit.serial.BooleanSerializer;
-import us.pserver.ironbit.serial.CharacterSerializer;
-import us.pserver.ironbit.serial.ClassSerializer;
-import us.pserver.ironbit.serial.DateSerializer;
-import us.pserver.ironbit.serial.DoubleSerializer;
-import us.pserver.ironbit.serial.FloatSerializer;
-import us.pserver.ironbit.serial.InstantSerializer;
-import us.pserver.ironbit.serial.IntegerSerializer;
-import us.pserver.ironbit.serial.LocalDateTimeSerializer;
-import us.pserver.ironbit.serial.LongSerializer;
-import us.pserver.ironbit.serial.PathSerializer;
-import us.pserver.ironbit.serial.ShortSerializer;
-import us.pserver.ironbit.serial.StringSerializer;
-import us.pserver.ironbit.serial.ZonedDateTimeSerializer;
+import us.pserver.ironbit.serial.BooleanSerialService;
+import us.pserver.ironbit.serial.CharSerialService;
+import us.pserver.ironbit.serial.ClassSerialService;
+import us.pserver.ironbit.serial.DateSerialService;
+import us.pserver.ironbit.serial.DoubleSerialService;
+import us.pserver.ironbit.serial.FloatSerialService;
+import us.pserver.ironbit.serial.InstantSerialService;
+import us.pserver.ironbit.serial.IntegerSerialService;
+import us.pserver.ironbit.serial.ListSerialService;
+import us.pserver.ironbit.serial.LocalDateTimeSerialService;
+import us.pserver.ironbit.serial.LongSerialService;
+import us.pserver.ironbit.serial.PathSerialService;
+import us.pserver.ironbit.serial.ShortSerialService;
+import us.pserver.ironbit.serial.StringSerialService;
+import us.pserver.ironbit.serial.ZonedDateTimeSerialService;
 import us.pserver.tools.ConcurrentList;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.SortedList;
@@ -64,7 +66,7 @@ public abstract class IronbitConfiguration {
   
   private final SortedList<ClassID> classes;
   
-  private final Map<Integer,Serializer> serials;
+  private final Map<ClassID,SerialService> serials;
   
   private final AtomicReference<ResourceLoader> refload;
   
@@ -80,54 +82,56 @@ public abstract class IronbitConfiguration {
   
   private void registerDefaults() {
     ClassID cid = this.registerClassID(int.class);
-    Serializer<?> ser = new IntegerSerializer();
-    serials.put(cid.getID(), ser);
+    SerialService ser = new IntegerSerialService();
+    serials.put(cid, ser);
     cid = this.registerClassID(Integer.class);
-    serials.put(cid.getID(), ser);
-    ser = new LongSerializer();
+    serials.put(cid, ser);
+    ser = new LongSerialService();
     cid = this.registerClassID(Long.class);
-    serials.put(cid.getID(), ser);
+    serials.put(cid, ser);
     cid = this.registerClassID(long.class);
-    serials.put(cid.getID(), ser);
-    ser = new FloatSerializer();
+    serials.put(cid, ser);
+    ser = new FloatSerialService();
     cid = this.registerClassID(Float.class);
-    serials.put(cid.getID(), ser);
+    serials.put(cid, ser);
     cid = this.registerClassID(float.class);
-    serials.put(cid.getID(), ser);
-    ser = new DoubleSerializer();
+    serials.put(cid, ser);
+    ser = new DoubleSerialService();
     cid = this.registerClassID(Double.class);
-    serials.put(cid.getID(), ser);
+    serials.put(cid, ser);
     cid = this.registerClassID(double.class);
-    serials.put(cid.getID(), ser);
-    ser = new ShortSerializer();
+    serials.put(cid, ser);
+    ser = new ShortSerialService();
     cid = this.registerClassID(Short.class);
-    serials.put(cid.getID(), ser);
+    serials.put(cid, ser);
     cid = this.registerClassID(short.class);
-    serials.put(cid.getID(), ser);
-    ser = new BooleanSerializer();
+    serials.put(cid, ser);
+    ser = new BooleanSerialService();
     cid = this.registerClassID(Boolean.class);
-    serials.put(cid.getID(), ser);
+    serials.put(cid, ser);
     cid = this.registerClassID(boolean.class);
-    serials.put(cid.getID(), ser);
-    ser = new CharacterSerializer();
+    serials.put(cid, ser);
+    ser = new CharSerialService();
     cid = this.registerClassID(Character.class);
-    serials.put(cid.getID(), ser);
+    serials.put(cid, ser);
     cid = this.registerClassID(char.class);
-    serials.put(cid.getID(), ser);
+    serials.put(cid, ser);
     cid = this.registerClassID(String.class);
-    serials.put(cid.getID(), new StringSerializer());
+    serials.put(cid, new StringSerialService());
     cid = this.registerClassID(Date.class);
-    serials.put(cid.getID(), new DateSerializer());
+    serials.put(cid, new DateSerialService());
     cid = this.registerClassID(LocalDateTime.class);
-    serials.put(cid.getID(), new LocalDateTimeSerializer());
+    serials.put(cid, new LocalDateTimeSerialService());
     cid = this.registerClassID(ZonedDateTime.class);
-    serials.put(cid.getID(), new ZonedDateTimeSerializer());
+    serials.put(cid, new ZonedDateTimeSerialService());
     cid = this.registerClassID(Instant.class);
-    serials.put(cid.getID(), new InstantSerializer());
+    serials.put(cid, new InstantSerialService());
     cid = this.registerClassID(Class.class);
-    serials.put(cid.getID(), new ClassSerializer());
+    serials.put(cid, new ClassSerialService());
     cid = this.registerClassID(Path.class);
-    serials.put(cid.getID(), new PathSerializer());
+    serials.put(cid, new PathSerialService());
+    cid = this.registerClassID(List.class);
+    serials.put(cid, new ListSerialService());
   }
   
   
@@ -151,9 +155,8 @@ public abstract class IronbitConfiguration {
   }
   
   
-  public ClassID registerSerializer(Class cls, Serializer serial) {
-    ClassID cid = this.registerClassID(NotNull.of(cls).getOrFail("Bad null Class"));
-    serials.put(cid.getID(), NotNull.of(serial).getOrFail("Bad null Serializer"));
+  public ClassID registerSerialService(ClassID cid, SerialService serial) {
+    serials.put(cid, NotNull.of(serial).getOrFail("Bad null Serializer"));
     return cid;
   }
   
@@ -164,17 +167,37 @@ public abstract class IronbitConfiguration {
   }
   
   
-  public Optional<Serializer> findSerializer(Class cls) {
-    Optional<ClassID> opt = findClassID(cls);
-    Optional<Serializer> ser = Optional.empty();
-    if(opt.isPresent()) {
-      ser = Optional.of(serials.get(opt.get().getID()));
-    }
-    return ser;
+  public ResourceLoader loader() {
+    return refload.get();
   }
   
   
-  public Map<Integer,Serializer> serializers() {
+  public Class loadClass(ClassID cid) {
+    return IronbitException.rethrow(()->
+        refload.get().loadClass(cid.getClassName())
+    );
+  }
+  
+  
+  public <T> Optional<SerialService<T>> findSerialService(Class cls) {
+    Optional<ClassID> opt = serials.keySet()
+        .parallelStream()
+        .filter(c->c.getClazz().isAssignableFrom(cls))
+        .findAny();
+    return Optional.ofNullable(opt.isPresent() ? serials.get(opt.get()) : null);
+  }
+  
+  
+  public <T> Optional<SerialService<T>> findSerialService(ClassID cls) {
+    Optional<ClassID> opt = serials.keySet()
+        .parallelStream()
+        .filter(c->c.getClazz().isAssignableFrom(cls.getClazz()))
+        .findAny();
+    return Optional.ofNullable(opt.isPresent() ? serials.get(opt.get()) : null);
+  }
+  
+  
+  public Map<ClassID,SerialService> serialServices() {
     return serials;
   }
   

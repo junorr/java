@@ -21,52 +21,32 @@
 
 package us.pserver.ironbit.serial;
 
-import java.util.ArrayList;
-import java.util.List;
+import us.pserver.ironbit.IronbitConfiguration;
+import us.pserver.ironbit.SerialCommons;
+import us.pserver.ironbit.SerialService;
 import us.pserver.ironbit.record.DefaultSerialRecord;
 import us.pserver.ironbit.record.SerialRecord;
-import us.pserver.ironbit.Serializer;
+import us.pserver.tools.UTF8String;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 03/10/2017
  */
-public class ListSerializer implements Serializer<List<?>> {
+public class StringSerialService implements SerialService<String> {
 
   @Override
-  public byte[] serialize(List<?> t) {
-    List<SerialRecord<?>> recs = new ArrayList<>();
-    for(Object o : t) {
-      recs.add(new DefaultSerialRecord(null, o));
-    }
-    int size = recs.stream().map(SerialRecord::length).reduce(0, (l,s)->l+s);
-    byte[] bs = new byte[size];
-    int idx = 0;
-    for(SerialRecord<?> s : recs) {
-      byte[] br = s.toByteArray();
-      System.arraycopy(br, 0, bs, idx, br.length);
-      idx += br.length;
-    }
-    return bs;
+  public SerialRecord serialize(String name, String obj) {
+    return new DefaultSerialRecord(
+        IronbitConfiguration.get().registerClassID(obj.getClass()), 
+        name, 
+        UTF8String.from(obj).getBytes()
+    );
   }
 
   @Override
-  public List<?> deserialize(byte[] bs) {
-    List<?> list = new ArrayList<>();
-    List<SerialRecord<?>> recs = new ArrayList<>();
-    int idx = 0;
-    byte[] blen = new byte[Integer.BYTES];
-    int len;
-    while((idx + 1) < bytes.length) {
-      System.arraycopy(bytes, idx + Integer.BYTES, blen, 0, blen.length);
-      len = ints.deserialize(blen);
-      byte[] bsr = new byte[len];
-      System.arraycopy(bytes, idx, bsr, 0, bsr.length);
-      recs.add(SerialRecord.of(bsr));
-      idx += len;
-    }
-    return recs;
+  public String deserialize(SerialRecord rec) {
+    return SerialCommons.readString(rec.getValue(), 0);
   }
 
 }

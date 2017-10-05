@@ -21,32 +21,40 @@
 
 package us.pserver.ironbit.serial;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import us.pserver.date.DateTime;
+import us.pserver.ironbit.IronbitConfiguration;
+import us.pserver.ironbit.SerialCommons;
+import us.pserver.ironbit.SerialService;
+import us.pserver.ironbit.record.DefaultSerialRecord;
 import us.pserver.tools.UTF8String;
-import us.pserver.ironbit.Serializer;
+import us.pserver.ironbit.record.SerialRecord;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 03/10/2017
  */
-public class LocalDateTimeSerializer implements Serializer<LocalDateTime> {
-
+public class DateSerialService implements SerialService<Date> {
+  
   @Override
-  public byte[] serialize(LocalDateTime obj) {
-    return UTF8String.from(DateTime.of(obj).toZonedDT()
+  public SerialRecord serialize(String name, Date obj) {
+    byte[] bs = UTF8String.from(DateTime.of(obj).toZonedDT()
         .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)).getBytes();
+    return new DefaultSerialRecord(
+        IronbitConfiguration.get().registerClassID(obj.getClass()), 
+        name, bs
+    );
   }
 
   @Override
-  public LocalDateTime deserialize(byte[] bs) {
-    return DateTime.of(ZonedDateTime.parse(
-        UTF8String.from(bs).toString().trim(), 
+  public Date deserialize(SerialRecord rec) {
+    String sdt = SerialCommons.readString(rec.getValue(), 0);
+    return DateTime.of(ZonedDateTime.parse(sdt.trim(), 
         DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-    ).toLocalDT();
+    ).toDate();
   }
 
 }

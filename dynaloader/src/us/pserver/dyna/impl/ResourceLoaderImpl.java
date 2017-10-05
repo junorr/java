@@ -53,7 +53,7 @@ import us.pserver.dyna.ResourceLoader;
  */
 public class ResourceLoaderImpl implements ResourceLoader {
   
-  private final Class loader;
+  private final Class refClass;
   
   
   /**
@@ -66,7 +66,7 @@ public class ResourceLoaderImpl implements ResourceLoader {
     if(cls == null) {
       throw new IllegalArgumentException("Bad Null Class");
     }
-    this.loader = cls;
+    this.refClass = cls;
   }
   
   
@@ -75,8 +75,10 @@ public class ResourceLoaderImpl implements ResourceLoader {
    * @return classe utilizada para carregar recursos.
    */
   @Override
-  public Class loader() {
-    return loader;
+  public ClassLoader loader() {
+    return (refClass.getClassLoader() != null 
+        ? refClass.getClassLoader() 
+        : ClassLoader.getSystemClassLoader());
   }
   
   
@@ -117,13 +119,10 @@ public class ResourceLoaderImpl implements ResourceLoader {
    */
   private URL findResource(String resource) throws ResourceLoadException {
     testResource(resource);
-    String cpath = "/"+ loader.getName().replace(".", "/") + ".class";
-    String def = loader.getResource(cpath).toString().replace(cpath, "");
+    String cpath = "/"+ refClass.getName().replace(".", "/") + ".class";
+    String def = refClass.getResource(cpath).toString().replace(cpath, "");
     try {
-      ClassLoader cl = (loader.getClassLoader() != null 
-          ? loader.getClassLoader() 
-          : ClassLoader.getSystemClassLoader());
-      Enumeration<URL> en = cl.getResources(
+      Enumeration<URL> en = loader().getResources(
           (resource.startsWith("/") ? resource.substring(1) : resource)
       );
       URL url = null;
@@ -139,6 +138,17 @@ public class ResourceLoaderImpl implements ResourceLoader {
     }
     catch(IOException e) {
       throw new ResourceLoadException(e);
+    }
+  }
+  
+  
+  @Override
+  public Class loadClass(String cname) throws ResourceLoadException {
+    try {
+      return loader().loadClass(cname);
+    } 
+    catch(ClassNotFoundException e) {
+      throw new ResourceLoadException(e.toString(), e);
     }
   }
   

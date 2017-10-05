@@ -19,34 +19,31 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.test;
+package us.pserver.ironbit.serial;
 
-import java.util.Arrays;
-import java.util.List;
-import us.pserver.ironbit.record.ComposeableSerialRecord;
+import us.pserver.ironbit.IronbitConfiguration;
+import us.pserver.ironbit.SerialCommons;
+import us.pserver.ironbit.SerialService;
 import us.pserver.ironbit.record.DefaultSerialRecord;
 import us.pserver.ironbit.record.SerialRecord;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 04/10/2017
+ * @version 0.0 - 03/10/2017
  */
-public class TestComposeableSerialRecord {
+public class CharSerialService implements SerialService<Character> {
 
-  
-  public static void main(String[] args) {
-    SerialRecord<Integer> sr1 = new DefaultSerialRecord("i1", 1);
-    SerialRecord<Integer> sr2 = new DefaultSerialRecord("i2", 2);
-    ComposeableSerialRecord<List<SerialRecord<Integer>>> comp = 
-        new ComposeableSerialRecord("compose", Arrays.asList(sr1, sr2));
-    System.out.println(sr1);
-    System.out.println(Arrays.toString(sr1.toByteArray()));
-    System.out.println(sr2);
-    System.out.println(Arrays.toString(sr2.toByteArray()));
-    System.out.println(comp);
-    System.out.println(Arrays.toString(comp.toByteArray()));
-    System.out.println(comp.getValue());
+  @Override
+  public SerialRecord serialize(String name, Character obj) {
+    byte[] bs = new byte[1];
+    SerialCommons.writeChar(obj, bs, 0);
+    return new DefaultSerialRecord(IronbitConfiguration.get().registerClassID(obj.getClass()), name, bs);
   }
-  
+
+  @Override
+  public Character deserialize(SerialRecord rec) {
+    return SerialCommons.readChar(rec.getValue(), 0);
+  }
+
 }

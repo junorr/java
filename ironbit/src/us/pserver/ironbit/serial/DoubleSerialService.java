@@ -19,26 +19,31 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit.test;
+package us.pserver.ironbit.serial;
 
-import java.util.Arrays;
+import us.pserver.ironbit.IronbitConfiguration;
+import us.pserver.ironbit.SerialCommons;
+import us.pserver.ironbit.SerialService;
 import us.pserver.ironbit.record.DefaultSerialRecord;
+import us.pserver.ironbit.record.SerialRecord;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 03/10/2017
  */
-public class TestDefaultSerialRecord {
+public class DoubleSerialService implements SerialService<Double> {
 
-  
-  public static void main(String[] args) {
-    DefaultSerialRecord<Integer> sr = new DefaultSerialRecord("int", 5);
-    System.out.println(Arrays.toString(sr.toByteArray()));
-    System.out.println(sr.getClassID());
-    System.out.println(sr.length());
-    System.out.println(sr.getName());
-    System.out.println(sr.getValue());
+  @Override
+  public SerialRecord serialize(String name, Double obj) {
+    byte[] bs = new byte[Double.BYTES];
+    SerialCommons.writeDouble(obj, bs, 0);
+    return new DefaultSerialRecord(IronbitConfiguration.get().registerClassID(obj.getClass()), name, bs);
   }
-  
+
+  @Override
+  public Double deserialize(SerialRecord rec) {
+    return SerialCommons.readDouble(rec.getValue(), 0);
+  }
+
 }

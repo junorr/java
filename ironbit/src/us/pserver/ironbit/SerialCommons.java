@@ -39,11 +39,13 @@ public abstract class SerialCommons {
   }
   
   public static int readInt(byte[] bar, int pos) {
+    //System.out.print("* readInt( "+ bar.length+ ", "+ pos+" ): ");
     int result = 0;
-    for(int i = pos; i < Integer.BYTES; i++) {
+    for(int i = pos; i < Integer.BYTES + pos; i++) {
       result <<= Integer.BYTES;
       result |= (bar[i] & 0xFF);
     }
+    //System.out.println(result);
     return result;
   }
   
@@ -58,7 +60,7 @@ public abstract class SerialCommons {
   
   public static long readLong(byte[] bar, int pos) {
     long result = 0;
-    for(int i = pos; i < Long.BYTES; i++) {
+    for(int i = pos; i < Long.BYTES + pos; i++) {
       result <<= Long.BYTES;
       result |= (bar[i] & 0xFF);
     }
@@ -76,7 +78,7 @@ public abstract class SerialCommons {
   
   public static short readShort(byte[] bar, int pos) {
     short result = 0;
-    for(int i = pos; i < Short.BYTES; i++) {
+    for(int i = pos; i < Short.BYTES + pos; i++) {
       result <<= Short.BYTES;
       result |= (bar[i] & 0xFF);
     }
@@ -84,7 +86,7 @@ public abstract class SerialCommons {
   }
   
 
-  public static void writeFload(float val, byte[] bar, int pos) {
+  public static void writeFloat(float val, byte[] bar, int pos) {
     writeInt(Float.floatToIntBits(val), bar, pos);
   }
   
@@ -109,6 +111,10 @@ public abstract class SerialCommons {
   
   public static String readString(byte[] bar, int pos, int len) {
     return UTF8String.from(bar, pos, len).toString();
+  }
+  
+  public static String readString(byte[] bar, int pos) {
+    return UTF8String.from(bar, pos, bar.length - pos).toString();
   }
   
 

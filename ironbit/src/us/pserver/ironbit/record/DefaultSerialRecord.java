@@ -26,79 +26,47 @@ import java.util.Optional;
 import us.pserver.ironbit.ClassID;
 import us.pserver.ironbit.IronbitConfiguration;
 import us.pserver.ironbit.IronbitException;
-import us.pserver.tools.NotNull;
-import us.pserver.ironbit.serial.IntegerSerializer;
-import us.pserver.ironbit.serial.ShortSerializer;
-import us.pserver.ironbit.serial.StringSerializer;
-import us.pserver.tools.io.ByteBufferOutputStream;
-import us.pserver.ironbit.Serializer;
+import us.pserver.ironbit.SerialCommons;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 28/09/2017
  */
-public class DefaultSerialRecord<T> implements SerialRecord<T> {
-  
-  protected final IntegerSerializer ints;
-  
-  protected final ShortSerializer shorts;
-  
-  protected final StringSerializer strings;
-  
-  protected final Serializer<T> serial;
+public class DefaultSerialRecord implements SerialRecord {
   
   protected final byte[] bytes;
   
   
-  public DefaultSerialRecord(byte[] bs) {
-    ints = new IntegerSerializer();
-    shorts = new ShortSerializer();
-    strings = new StringSerializer();
-    bytes = NotNull.of(bs).getOrFail("Bad null byte[] array");
-    serial = IronbitConfiguration.get().serializers().get(ints.deserialize(bytes));
+  public DefaultSerialRecord(byte[] bts) {
+    this.bytes = bts;
   }
   
   
-  public DefaultSerialRecord(ClassID cid, String name, byte[] bs) {
-    ints = new IntegerSerializer();
-    shorts = new ShortSerializer();
-    strings = new StringSerializer();
+  public DefaultSerialRecord(byte[] bts, int off, int len) {
+    this.bytes = new byte[len];
+    System.arraycopy(bts, off, bytes, 0, len);
+    //System.out.println("* DefaultSerialRecord.bytes.len="+ bytes.length);
+  }
+  
+  
+  public DefaultSerialRecord(ClassID cid, String name, byte[] val) {
     short nmlen = (short) (name == null ? 0 : name.length());
-    bytes = new byte[HEADER_SIZE + nmlen + bs.length];
-    
+    bytes = new byte[HEADER_SIZE + nmlen + val.length];
+    int idx = 0;
+    SerialCommons.writeInt(cid.getID(), bytes, idx);
+    idx += Integer.BYTES;
+    SerialCommons.writeInt(bytes.length, bytes, idx);
+    idx += Integer.BYTES;
+    SerialCommons.writeShort(nmlen, bytes, idx);
+    idx += Short.BYTES;
+    if(nmlen > 0) {
+      SerialCommons.writeString(name, bytes, idx);
+    }
+    idx += nmlen;
+    System.arraycopy(val, 0, bytes, idx, val.length);
   }
   
-  
-  public DefaultSerialRecord(String name, T obj) {
-    NotNull.of(obj).failIfNull("Bad null object");
-    ints = new IntegerSerializer();
-    shorts = new ShortSerializer();
-    strings = new StringSerializer();
-    Optional<Serializer> opt = IronbitConfiguration.get().findSerializer(obj.getClass());
-    if(!opt.isPresent()) {
-      throw new IronbitException("Serializer not found for: "+ obj.getClass().getName());
-    }
-    serial = opt.get();
-    ByteBufferOutputStream bos = new ByteBufferOutputStream(1024);
-    ClassID cid = IronbitConfiguration.get().registerClassID(obj.getClass());
-    byte[] bobj = serial.serialize(obj);
-    short nameSize = 0;
-    byte[] bname = new byte[0];
-    if(name != null) {
-      bname = strings.serialize(name);
-      nameSize = (short) bname.length;
-    }
-    int length = offsetName() + nameSize + bobj.length;
-    bos.write(ints.serialize(cid.getID()));
-    bos.write(ints.serialize(length));
-    bos.write(shorts.serialize(nameSize));
-    bos.write(bname);
-    bos.write(bobj);
-    ByteBuffer buf = bos.toByteBuffer();
-    this.bytes = new byte[buf.remaining()];
-    buf.get(this.bytes);
-  }
   
   /* Serialized Objects format
    * classID : int | length : int | nameSize : short | name : String | [value : bytes]
@@ -106,7 +74,7 @@ public class DefaultSerialRecord<T> implements SerialRecord<T> {
   
   @Override
   public ClassID getClassID() {
-    int id = ints.deserialize(bytes);
+    int id = SerialCommons.readInt(bytes, 0);
     Optional<ClassID> opt = IronbitConfiguration.get().findClassID(id);
     if(!opt.isPresent()) {
       throw new IronbitException("ClassID( "+ id+ " ) not found");
@@ -122,23 +90,21 @@ public class DefaultSerialRecord<T> implements SerialRecord<T> {
   
   
   @Override
-  public Optional<String> getName() {
-    Optional<String> opt = Optional.empty();
+  public String getName() {
+    String str = "";
     int nameSize = nameSize();
     if(nameSize > 0) {
-      byte[] bs = new byte[nameSize];
-      System.arraycopy(bytes, offsetName(), bs, 0, bs.length);
-      opt = Optional.of(strings.deserialize(bs));
+      str = SerialCommons.readString(bytes, offsetName(), nameSize);
     }
-    return opt;
+    return str;
   }
   
   
   @Override
-  public T getValue() {
+  public byte[] getValue() {
     byte[] bs = new byte[valueSize()];
     System.arraycopy(bytes, offsetValue(), bs, 0, bs.length);
-    return serial.deserialize(bs);
+    return bs;
   }
   
   
@@ -148,9 +114,7 @@ public class DefaultSerialRecord<T> implements SerialRecord<T> {
   
   
   protected int nameSize() {
-    byte[] bs = new byte[Short.BYTES];
-    System.arraycopy(bytes, offsetNameSize(), bs, 0, bs.length);
-    return shorts.deserialize(bs);
+    return SerialCommons.readShort(bytes, offsetNameSize());
   }
   
   
@@ -172,6 +136,12 @@ public class DefaultSerialRecord<T> implements SerialRecord<T> {
   @Override
   public byte[] toByteArray() {
     return bytes;
+  }
+  
+  
+  @Override
+  public ByteBuffer toByteBuffer() {
+    return ByteBuffer.wrap(bytes);
   }
   
   

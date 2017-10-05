@@ -19,23 +19,20 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.ironbit;
+package us.pserver.tools;
 
-import us.pserver.ironbit.record.SerialRecord;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 04/10/2017
+ * @version 0.0 - 24/09/2017
  */
-public interface SerialService<T> {
+public class SerializableList<T> extends ArrayList<T> implements Serializable {
 
-  public SerialRecord serialize(String name, T obj);
-  
-  public default SerialRecord serialize(T obj) {
-    return serialize("", obj);
+  public SerializableList() {
+    super();
   }
-  
-  public T deserialize(SerialRecord rec);
-  
+
 }
