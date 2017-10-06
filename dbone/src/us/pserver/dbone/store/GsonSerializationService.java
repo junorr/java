@@ -32,7 +32,7 @@ import us.pserver.tools.UTF8String;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/09/2017
  */
-public class GsonSerializationService implements ISerializationService {
+public class GsonSerializationService implements SerializationService {
   
   private final Gson gson;
   

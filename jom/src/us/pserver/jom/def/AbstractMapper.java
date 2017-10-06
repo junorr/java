@@ -19,72 +19,35 @@
  * endere�o 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.test;
+package us.pserver.jom.def;
 
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import us.pserver.jom.Mapper;
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/09/2017
+ * @version 0.0 - 23/08/2017
  */
-public class BObj {
+public abstract class AbstractMapper<T> implements Mapper<T> {
   
-  private final String name;
+  List<Class> types;
   
-  private AObj a;
-  
-  private final List<Integer> list;
-  
-
-  public BObj() {
-    this(null, null, null);
+  AbstractMapper(Class ... canMap) {
+    this.types = Arrays.asList(NotNull.of(canMap).getOrFail("Bad null class array"));
   }
   
-  
-  public BObj(String name, AObj a, List<Integer> list) {
-    this.name = name;
-    this.a = a;
-    this.list = list;
-  }
-
-
   @Override
-  public int hashCode() {
-    int hash = 3;
-    hash = 41 * hash + Objects.hashCode(this.name);
-    hash = 41 * hash + Objects.hashCode(this.a);
-    return hash;
+  public List<Class> getSupportedClasses() {
+    return types;
   }
-
-
+  
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final BObj other = (BObj) obj;
-    if (!Objects.equals(this.name, other.name)) {
-      return false;
-    }
-    if (!Objects.equals(this.a, other.a)) {
-      return false;
-    }
-    return true;
-  }
-
-
-  @Override
-  public String toString() {
-    return "BObj{" + "name=" + name + ", a=" + a + ", list=" + list + '}';
+  public boolean canMap(Class cls) {
+    return cls != null && types.stream()
+        .anyMatch(c->c.isAssignableFrom(cls));
   }
 
 }

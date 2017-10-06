@@ -19,72 +19,43 @@
  * endere�o 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.test;
+package us.pserver.jom.def;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import us.pserver.jom.MappedValue;
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 06/09/2017
  */
-public class BObj {
+public class ClassMapper extends AbstractMapper<Class> {
   
-  private final String name;
-  
-  private AObj a;
-  
-  private final List<Integer> list;
-  
-
-  public BObj() {
-    this(null, null, null);
+  public ClassMapper() {
+    super(Class.class);
   }
-  
-  
-  public BObj(String name, AObj a, List<Integer> list) {
-    this.name = name;
-    this.a = a;
-    this.list = list;
+
+  private Class obj2class(String str) {
+    try {
+      return Class.forName(str);
+    } catch(ClassNotFoundException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
   }
 
 
   @Override
-  public int hashCode() {
-    int hash = 3;
-    hash = 41 * hash + Objects.hashCode(this.name);
-    hash = 41 * hash + Objects.hashCode(this.a);
-    return hash;
+  public StringValue map(Class obj) {
+    NotNull.of(obj).failIfNull("Bad null object");
+    return new StringValue(obj.getName());
   }
 
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final BObj other = (BObj) obj;
-    if (!Objects.equals(this.name, other.name)) {
-      return false;
-    }
-    if (!Objects.equals(this.a, other.a)) {
-      return false;
-    }
-    return true;
-  }
-
-
-  @Override
-  public String toString() {
-    return "BObj{" + "name=" + name + ", a=" + a + ", list=" + list + '}';
+  public Class unmap(Class cls, MappedValue value) {
+    NotNull.of(cls).failIfNull("Bad null Class");
+    NotNull.of(value).failIfNull("Bad null value");
+    return obj2class(value.asString());
   }
 
 }

@@ -19,9 +19,8 @@
  * endere�o 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.test;
+package us.pserver.jom.test;
 
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
@@ -35,16 +34,16 @@ public class AObj {
 
   private final String name;
   
-  private final int age;
+  private int age;
   
-  private final int[] magic;
+  private int[] magic;
   
-  private final char[] chars;
+  private char[] chars;
   
   private final Date date;
 
 
-  private AObj() {
+  public AObj() {
     this(null, 0, null, null, null);
   }
 
@@ -59,7 +58,8 @@ public class AObj {
 
 
   public AObj(String name, Date dt) {
-    this(name, 0, null, null, dt);
+    this.name = name;
+    this.date = dt;
   }
 
 

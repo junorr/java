@@ -19,72 +19,43 @@
  * endere�o 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.test;
+package us.pserver.jom.test;
 
+import java.util.Date;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import us.pserver.jom.MappedValue;
+import us.pserver.jom.def.ObjectClassMapper;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 06/09/2017
  */
-public class BObj {
-  
-  private final String name;
-  
-  private AObj a;
-  
-  private final List<Integer> list;
-  
+public class TestObjectClassMapper {
 
-  public BObj() {
-    this(null, null, null);
+  
+  public static void main(String[] args) {
+    ObjectClassMapper mapper = new ObjectClassMapper();
+    //AObj a = new AObj("hello", 5, new int[] {5,4,3,2,1,0}, new char[] {'a', 'b', 'c', 'd'}, new Date());
+    AObj a = new AObj("hello", new Date());
+    LinkedList<Integer> ls = new LinkedList<>();
+    ls.add(10);
+    ls.add(9);
+    ls.add(8);
+    ls.add(7);
+    ls.add(6);
+    ls.add(5);
+    BObj b = new BObj("world", a, ls);
+    System.out.println("* a: "+ a);
+    System.out.println("* b: "+ b);
+    MappedValue omp = mapper.map(a);
+    System.out.println("* a.mapped  : "+ omp);
+    a = mapper.unmap(omp);
+    System.out.println("* a.unmapped: "+ a);
+    omp = mapper.map(b);
+    System.out.println("* b.mapped  : "+ omp);
+    b = mapper.unmap(omp);
+    System.out.println("* b.unmapped: "+ b);
   }
   
-  
-  public BObj(String name, AObj a, List<Integer> list) {
-    this.name = name;
-    this.a = a;
-    this.list = list;
-  }
-
-
-  @Override
-  public int hashCode() {
-    int hash = 3;
-    hash = 41 * hash + Objects.hashCode(this.name);
-    hash = 41 * hash + Objects.hashCode(this.a);
-    return hash;
-  }
-
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final BObj other = (BObj) obj;
-    if (!Objects.equals(this.name, other.name)) {
-      return false;
-    }
-    if (!Objects.equals(this.a, other.a)) {
-      return false;
-    }
-    return true;
-  }
-
-
-  @Override
-  public String toString() {
-    return "BObj{" + "name=" + name + ", a=" + a + ", list=" + list + '}';
-  }
-
 }

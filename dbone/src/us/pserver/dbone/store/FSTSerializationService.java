@@ -32,7 +32,7 @@ import us.pserver.tools.io.ByteBufferOutputStream;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 18/09/2017
  */
-public class FSTSerializationService implements ISerializationService {
+public class FSTSerializationService implements SerializationService {
   
   private final FSTConfiguration conf;
   

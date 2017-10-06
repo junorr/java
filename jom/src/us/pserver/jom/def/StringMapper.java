@@ -19,72 +19,46 @@
  * endere�o 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.test;
+package us.pserver.jom.def;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
+import us.pserver.jom.MappedValue;
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/09/2017
+ * @version 0.0 - 01/09/2017
  */
-public class BObj {
-  
-  private final String name;
-  
-  private AObj a;
-  
-  private final List<Integer> list;
-  
+public class StringMapper extends AbstractMapper {
 
-  public BObj() {
-    this(null, null, null);
-  }
-  
-  
-  public BObj(String name, AObj a, List<Integer> list) {
-    this.name = name;
-    this.a = a;
-    this.list = list;
+  public StringMapper() {
+    super(String.class, CharSequence.class, Character.class, char.class, char[].class);
   }
 
 
   @Override
-  public int hashCode() {
-    int hash = 3;
-    hash = 41 * hash + Objects.hashCode(this.name);
-    hash = 41 * hash + Objects.hashCode(this.a);
-    return hash;
+  public StringValue map(Object t) {
+    NotNull.of(t).failIfNull("Bad null object");
+    return new StringValue(t.getClass().isArray() 
+        ? String.copyValueOf((char[])t) 
+        : Objects.toString(t)
+    );
   }
 
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
+  public Object unmap(Class cls, MappedValue value) {
+    NotNull.of(cls).failIfNull("Bad null Class");
+    NotNull.of(value).failIfNull("Bad null value");
+    String s = Objects.toString(value);
+    if(CharSequence.class.isAssignableFrom(cls)) {
+      return s;
     }
-    if (obj == null) {
-      return false;
+    else if(cls.isArray()) {
+      return s.toCharArray();
     }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final BObj other = (BObj) obj;
-    if (!Objects.equals(this.name, other.name)) {
-      return false;
-    }
-    if (!Objects.equals(this.a, other.a)) {
-      return false;
-    }
-    return true;
-  }
-
-
-  @Override
-  public String toString() {
-    return "BObj{" + "name=" + name + ", a=" + a + ", list=" + list + '}';
+    else return s.charAt(0);
   }
 
 }

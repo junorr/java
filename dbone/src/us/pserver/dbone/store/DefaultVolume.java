@@ -39,7 +39,7 @@ public class DefaultVolume implements Volume {
   
   private final Storage storage;
   
-  private final ISerializationService serial;
+  private final SerializationService serial;
   
   
   public DefaultVolume(Storage stg) {
@@ -47,7 +47,7 @@ public class DefaultVolume implements Volume {
   }
   
 
-  public DefaultVolume(Storage stg, ISerializationService serial) {
+  public DefaultVolume(Storage stg, SerializationService serial) {
     this.storage = NotNull.of(stg).getOrFail("Bad null Storage");
     this.serial = NotNull.of(serial).getOrFail("Bad null SerializationService");
   }

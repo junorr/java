@@ -32,7 +32,7 @@ import us.pserver.tools.UTF8String;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/09/2017
  */
-public class JsonIoSerializationService implements ISerializationService {
+public class JsonIoSerializationService implements SerializationService {
   
   @Override
   public ByteBuffer serialize(Object obj) {

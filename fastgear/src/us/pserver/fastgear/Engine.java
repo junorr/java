@@ -23,6 +23,7 @@ package us.pserver.fastgear;
 
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
@@ -41,7 +42,7 @@ public final class Engine {
   
   private static final Lock get = new ReentrantLock(true);
   
-  private static final Holder<Boolean> shutdown = Holder.sync(false);
+  private static final AtomicBoolean shutdown = new AtomicBoolean(false);
   
   
   private final ForkJoinPool pool;

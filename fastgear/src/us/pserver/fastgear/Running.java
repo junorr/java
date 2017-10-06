@@ -24,6 +24,7 @@ package us.pserver.fastgear;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
@@ -86,7 +87,7 @@ public interface Running<I,O> {
     
     private final List<Consumer<Running<I,O>>> complete;
     
-    private final Holder<Boolean> completed;
+    private final AtomicBoolean completed;
     
     
     public DefRunning(Gear<O,I> gear) {
@@ -104,7 +105,7 @@ public interface Running<I,O> {
       this.complete = Collections.synchronizedList(
           new ArrayList<Consumer<Running<I,O>>>()
       );
-      this.completed = Holder.sync(false);
+      this.completed = new AtomicBoolean(false);
     }
     
     

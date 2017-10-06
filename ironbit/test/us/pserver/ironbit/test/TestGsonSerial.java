@@ -21,14 +21,13 @@
 
 package us.pserver.ironbit.test;
 
+import com.google.gson.Gson;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-import us.pserver.ironbit.IronbitConfiguration;
 import us.pserver.ironbit.IronbitException;
-import us.pserver.ironbit.SerialService;
-import us.pserver.ironbit.record.SerialRecord;
+import us.pserver.tools.UTF8String;
 import us.pserver.tools.timer.Timer;
 
 /**
@@ -36,11 +35,11 @@ import us.pserver.tools.timer.Timer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 05/10/2017
  */
-public class TestSerialService {
+public class TestGsonSerial {
   
   
   public static List<Integer> getList(int size) {
-    List<Integer> ls = new ArrayList<>();
+    List<Integer> ls = new LinkedList<>();
     for(int i = 0; i < size; i++) {
       ls.add((int)(Math.random() * 100 + i));
     }
@@ -48,26 +47,16 @@ public class TestSerialService {
   }
   
   
-  public static List<Integer> exec(List<Integer> list, SerialService<List> ser) {
+  public static List<Integer> exec(List<Integer> list) throws IOException, ClassNotFoundException {
+    Gson gson = new Gson();
     Timer tm = new Timer.Nanos().start();
-    SerialRecord rec = ser.serialize(list);
+    byte[] bs = UTF8String.from(gson.toJson(list)).getBytes();
     System.out.printf("-- time to   serialize list of %d: %s --%n", list.size(), tm.stop());
+    System.out.println("* serialSize="+ bs.length);
     tm.clear().start();
-    List<Integer> l = ser.deserialize(rec);
+    List<Integer> l = (List<Integer>) gson.fromJson(UTF8String.from(bs).toString(), List.class);
     System.out.printf("-- time to DEserialize list of %d: %s --%n", l.size(), tm.stop());
-    return l;
-  }
-
-  
-  public static List<Integer> exec(List<Integer> list) {
-    Timer tm = new Timer.Nanos().start();
-    Optional<SerialService<List>> op = IronbitConfiguration.get().findSerialService(list.getClass());
-    SerialRecord rec = op.get().serialize(list);
-    System.out.printf("-- time to   serialize list of %d: %s --%n", list.size(), tm.stop());
-    System.out.println(rec);
-    tm.clear().start();
-    List<Integer> l = op.get().deserialize(rec);
-    System.out.printf("-- time to DEserialize list of %d: %s --%n", l.size(), tm.stop());
+    System.out.println(l);
     return l;
   }
   
@@ -87,7 +76,7 @@ public class TestSerialService {
   }
   
   
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException, ClassNotFoundException {
     List ls = getList(20000);
     System.out.println("* warming up 100x...");
     disableStdOut();
@@ -97,18 +86,6 @@ public class TestSerialService {
     enableStdOut();
     for(int i = 0; i < 5; i++) {
       exec(ls);
-    }
-    
-    Optional<SerialService<List>> op = IronbitConfiguration.get().findSerialService(ls.getClass());
-    System.out.println();
-    System.out.println("* warming up 100x...");
-    disableStdOut();
-    for(int i = 0; i < 10; i++) {
-      exec(ls, op.get());
-    }
-    enableStdOut();
-    for(int i = 0; i < 5; i++) {
-      exec(ls, op.get());
     }
   }
   

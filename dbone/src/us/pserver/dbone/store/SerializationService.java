@@ -21,45 +21,17 @@
 
 package us.pserver.dbone.store;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
-import us.pserver.tools.io.ByteBufferInputStream;
-import us.pserver.tools.io.ByteBufferOutputStream;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 18/09/2017
+ * @version 0.0 - 26/09/2017
  */
-public class JavaSerializationService implements SerializationService {
+public interface SerializationService {
 
-  @Override
-  public ByteBuffer serialize(Object obj) throws StorageException {
-    try (
-        ByteBufferOutputStream bos = new ByteBufferOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(bos);
-    ) {
-      oos.writeObject(obj);
-      return bos.toByteBuffer();
-    }
-    catch(IOException e) {
-      throw new StorageException(e.toString(), e);
-    }
-  }
+  public ByteBuffer serialize(Object obj);
   
-  @Override
-  public Object deserialize(ByteBuffer buf) throws StorageException {
-    try (
-        ByteBufferInputStream bis = new ByteBufferInputStream(buf);
-        ObjectInputStream ois = new ObjectInputStream(bis);
-        ) {
-      return ois.readObject();
-    }
-    catch(ClassNotFoundException | IOException e) {
-      throw new StorageException(e.toString(), e);
-    }
-  }
+  public Object deserialize(ByteBuffer buf);
   
 }

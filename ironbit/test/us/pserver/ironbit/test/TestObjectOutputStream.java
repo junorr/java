@@ -25,14 +25,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
+import java.nio.ByteBuffer;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-import us.pserver.ironbit.IronbitConfiguration;
 import us.pserver.ironbit.IronbitException;
-import us.pserver.ironbit.SerialService;
-import us.pserver.tools.SerializableList;
 import us.pserver.tools.io.ByteBufferInputStream;
 import us.pserver.tools.io.ByteBufferOutputStream;
+import us.pserver.tools.mapper.MappedValue;
+import us.pserver.tools.mapper.ObjectMapper;
 import us.pserver.tools.timer.Timer;
 
 /**
@@ -44,7 +44,7 @@ public class TestObjectOutputStream {
   
   
   public static List<Integer> getList(int size) {
-    List<Integer> ls = new SerializableList<>();
+    List<Integer> ls = new LinkedList<>();
     for(int i = 0; i < size; i++) {
       ls.add((int)(Math.random() * 100 + i));
     }
@@ -53,13 +53,21 @@ public class TestObjectOutputStream {
   
   
   public static List<Integer> exec(List<Integer> list) throws IOException, ClassNotFoundException {
+    ObjectMapper mpr = new ObjectMapper();
+    Timer tm1 = new Timer.Nanos().start();
     Timer tm = new Timer.Nanos().start();
+    MappedValue val = mpr.map(list);
+    System.out.printf("-- time to     map     list of %d: %s --%n", list.size(), tm.stop());
+    tm.clear().start();
     ByteBufferOutputStream bos = new ByteBufferOutputStream();
     ObjectOutputStream oos = new ObjectOutputStream(bos);
     oos.writeObject(list);
+    ByteBuffer bb = bos.toByteBuffer();
     System.out.printf("-- time to   serialize list of %d: %s --%n", list.size(), tm.stop());
+    System.out.printf("-- time to   serialize list of %d: %s --%n", list.size(), tm1.stop());
+    System.out.println("* serialSize="+ bb.remaining());
     tm.clear().start();
-    ByteBufferInputStream bis = new ByteBufferInputStream(bos.toByteBuffer());
+    ByteBufferInputStream bis = new ByteBufferInputStream(bb);
     ObjectInputStream ois = new ObjectInputStream(bis);
     List<Integer> l = (List<Integer>) ois.readObject();
     System.out.printf("-- time to DEserialize list of %d: %s --%n", l.size(), tm.stop());
@@ -84,10 +92,10 @@ public class TestObjectOutputStream {
   
   
   public static void main(String[] args) throws IOException, ClassNotFoundException {
-    List ls = getList(200);
+    List ls = getList(20000);
     System.out.println("* warming up 100x...");
     disableStdOut();
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < 10; i++) {
       exec(ls);
     }
     enableStdOut();
