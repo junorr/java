@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import us.pserver.dbone.store.AsyncVolume2;
-import us.pserver.dbone.store.Record;
+import us.pserver.dbone.volume.Record;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageFactory;
 import us.pserver.fastgear.Engine;

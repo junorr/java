@@ -21,10 +21,10 @@
 
 package us.pserver.dbone.store;
 
+import java.nio.ByteBuffer;
+import us.pserver.dbone.ObjectUID;
 import java.util.Objects;
 import us.pserver.tools.NotNull;
-import us.pserver.tools.mapper.MappedValue;
-import us.pserver.tools.mapper.ObjectUID;
 
 /**
  *
@@ -33,12 +33,12 @@ import us.pserver.tools.mapper.ObjectUID;
  */
 public interface StoreUnit {
 
-  public ObjectUID getUID();
+  public ObjectUID objectUID();
   
-  public MappedValue getValue();
+  public ByteBuffer value();
   
   
-  public static StoreUnit of(ObjectUID uid, MappedValue val) {
+  public static StoreUnit of(ObjectUID uid, ByteBuffer val) {
     return new StoreUnitImpl(uid, val);
   }
   
@@ -50,20 +50,21 @@ public interface StoreUnit {
     
     private final ObjectUID uid;
     
-    private final MappedValue value;
+    private final ByteBuffer value;
     
-    public StoreUnitImpl(ObjectUID uid, MappedValue val) {
+    
+    public StoreUnitImpl(ObjectUID uid, ByteBuffer val) {
       this.uid = NotNull.of(uid).getOrFail("Bad null ObjectUID");
       this.value = NotNull.of(val).getOrFail("Bad null MappedValue");
     }
     
     @Override
-    public ObjectUID getUID() {
+    public ObjectUID objectUID() {
       return this.uid;
     }
     
     @Override
-    public MappedValue getValue() {
+    public ByteBuffer value() {
       return this.value;
     }
 
@@ -71,7 +72,6 @@ public interface StoreUnit {
     public int hashCode() {
       int hash = 7;
       hash = 71 * hash + Objects.hashCode(this.uid);
-      hash = 71 * hash + Objects.hashCode(this.value);
       return hash;
     }
 
@@ -87,18 +87,12 @@ public interface StoreUnit {
         return false;
       }
       final StoreUnitImpl other = (StoreUnitImpl) obj;
-      if (!Objects.equals(this.uid, other.uid)) {
-        return false;
-      }
-      if (!Objects.equals(this.value, other.value)) {
-        return false;
-      }
-      return true;
+      return Objects.equals(this.uid, other.uid);
     }
 
     @Override
     public String toString() {
-      return "StoreUnit{" + "uid=" + uid + ", value=" + value + '}';
+      return "StoreUnit{" + "uid=" + uid + ", length=" + value.remaining() + '}';
     }
     
   }

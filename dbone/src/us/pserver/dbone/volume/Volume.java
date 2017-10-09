@@ -19,11 +19,12 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.volume;
 
 import java.io.Closeable;
-import us.pserver.tools.mapper.MappedValue;
-import us.pserver.tools.mapper.ObjectUID;
+import us.pserver.dbone.ObjectUID;
+import us.pserver.dbone.store.StorageException;
+import us.pserver.dbone.store.StoreUnit;
 
 /**
  *
@@ -33,8 +34,6 @@ import us.pserver.tools.mapper.ObjectUID;
 public interface Volume extends Closeable {
 
   public Record put(StoreUnit unit) throws StorageException;
-  
-  public Record put(ObjectUID uid, MappedValue val) throws StorageException;
   
   public StoreUnit get(Record idx) throws StorageException;
   

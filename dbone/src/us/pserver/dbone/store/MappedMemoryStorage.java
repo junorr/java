@@ -92,7 +92,7 @@ public class MappedMemoryStorage extends AbstractStorage {
     buffer.limit(reg.intLength() + reg.intOffset());
     buffer.position(reg.intOffset());
     ByteBuffer buf = buffer.slice();
-    return new SharedBlock(channel, reg, buffer.slice()).readLock();
+    return new DefaultBlock(reg, buffer.slice());
   }
   
   
@@ -105,21 +105,17 @@ public class MappedMemoryStorage extends AbstractStorage {
   @Override
   public void put(Block blk) throws StorageException {
     NotNull.of(blk).failIfNull("Bad null Block");
-    if(isSharedBuffer(blk.buffer())) {
-      blk.releaseLock();
-      return;
+    if(!isSharedBuffer(blk.buffer())) {
+      buffer.limit(blk.region().intLength() + blk.region().intOffset());
+      buffer.position(blk.region().intOffset());
+      Block.copy(blk.buffer(), buffer);
     }
-    if(!blk.isWriteLocked()) blk.writeLock();
-    buffer.limit(blk.region().intLength() + blk.region().intOffset());
-    buffer.position(blk.region().intOffset());
-    Block.copy(blk.buffer(), buffer);
-    blk.releaseLock();
   }
 
 
   @Override
   public void close() throws StorageException {
-    Block blk = this.get(HEADER_REGION).writeLock();
+    Block blk = this.get(HEADER_REGION);
     ByteBuffer buf = blk.buffer();
     buf.putShort((short)0);
     buf.putInt(blockSize);

@@ -39,14 +39,6 @@ public interface Block {
   
   public Block setNext(Region r);
   
-  public Block writeLock() throws StorageException;
-  
-  public Block readLock() throws StorageException;
-  
-  public Block releaseLock() throws StorageException;
-  
-  public boolean isWriteLocked();
-  
   
   public static void copy(ByteBuffer from, ByteBuffer to) {
     int minLen = Math.min(from.remaining(), to.remaining());

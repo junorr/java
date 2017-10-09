@@ -19,73 +19,66 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.volume;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
-import java.util.function.Consumer;
+import us.pserver.dbone.store.Block;
+import us.pserver.dbone.ObjectUID;
+import us.pserver.dbone.store.Region;
+import us.pserver.dbone.store.Storage;
+import us.pserver.dbone.store.StorageException;
+import us.pserver.dbone.store.StoreUnit;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.UTF8String;
 import us.pserver.tools.io.ByteBufferOutputStream;
-import us.pserver.tools.mapper.MappedValue;
-import us.pserver.tools.mapper.ObjectUID;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 18/09/2017
  */
-public class AsyncVolume implements Volume {
+public class DefaultVolume implements Volume {
   
-  private final AsyncFileChannelStorage storage;
-  
-  private final JavaSerializationService serial;
+  private final Storage storage;
   
   
-  public AsyncVolume(AsyncFileChannelStorage stg) {
+  public DefaultVolume(Storage stg) {
     this.storage = NotNull.of(stg).getOrFail("Bad null Storage");
-    this.serial = new JavaSerializationService();
+  }
+  
+  
+  @Override
+  public Record put(StoreUnit unit) throws StorageException {
+    Block block = storage.allocate();
+    put(unit.objectUID(), block);
+    put(unit.value(), block);
+    return Record.of(block.region(), unit.objectUID());
   }
   
 
-  @Override
-  public Record put(StoreUnit unit) throws StorageException {
-    NotNull.of(unit).failIfNull("Bad null StoreUnit");
-    ByteBuffer sbuf = serial.serialize(unit.getValue());
-    Block blk = storage.allocate();
-    Record idx = Record.of(
-        blk.region(), 
-        unit.getUID()
-    );
-    blk.writeLock();
-    this.put(unit.getUID(), blk);
-    this.put(sbuf, blk);
-    blk.releaseLock();
-    return idx;
-  }
-  
-  
   private void put(ByteBuffer sbuf, Block blk) throws StorageException {
     Block.copy(sbuf, blk.buffer());
     while(sbuf.hasRemaining()) {
       Block b2 = storage.allocate();
       blk.setNext(b2.region());
       blk.buffer().flip();
-      storage.put(blk, s->{});
+      storage.put(blk);
       Block.copy(sbuf, b2.buffer());
       blk = b2;
     }
     this.zeroFill(blk.buffer());
-    storage.put(blk, s->{});
+    storage.put(blk);
   }
   
   
-  private void put(ObjectUID uid, Block blk) {
+  private void put(ObjectUID ouid, Block blk) {
+    byte[] buid = UTF8String.from(ouid.getUID()).getBytes();
+    byte[] bcls = UTF8String.from(ouid.getClassName()).getBytes();
+    //System.out.println("* Volume.putUID: uidLen="+ buid.length+ ", clsLen="+ bcls.length+ ", block="+ blk);
     blk.buffer().position(0);
-    byte[] buid = UTF8String.from(uid.getHash()).getBytes();
-    byte[] bcls = UTF8String.from(uid.getClassName()).getBytes();
-    blk.buffer().putShort((short)buid.length);
-    blk.buffer().putShort((short)bcls.length);
+    blk.buffer().putInt(buid.length);
+    blk.buffer().putInt(bcls.length);
     blk.buffer().put(buid);
     blk.buffer().put(bcls);
   }
@@ -99,60 +92,36 @@ public class AsyncVolume implements Volume {
   
   
   @Override
-  public Record put(ObjectUID uid, MappedValue val) {
-    return this.put(StoreUnit.of(uid, val));
-  }
-  
-  
-  @Override
   public ObjectUID getUID(Record idx) throws StorageException {
-    return this.getUID(storage.get(idx.getRegion()));
-  }
-  
-  
-  public void getUID(Record rec, Consumer<ObjectUID> cs) throws StorageException {
-    storage.get(rec.getRegion(), b->cs.accept(getUID(b)));
+    Block blk = storage.get(idx.getRegion());
+    return this.getUID(blk);
   }
   
   
   private ObjectUID getUID(Block blk) {
-    blk.buffer().position(0);
-    int uidLen = blk.buffer().getShort();
-    int clsLen = blk.buffer().getShort();
+    int uidLen = blk.buffer().getInt();
+    int clsLen = blk.buffer().getInt();
+    //System.out.println("* Volume.objectUID: uidLen="+ uidLen+ ", clsLen="+ clsLen+ ", block="+ blk);
     byte[] buid = new byte[uidLen];
     byte[] bcls = new byte[clsLen];
     blk.buffer().get(buid);
     blk.buffer().get(bcls);
-    blk.releaseLock();
-    return ObjectUID.builder()
-        .withHash(UTF8String.from(buid).toString())
-        .withClassName(UTF8String.from(bcls).toString())
-        .build();
+    return ObjectUID.of(
+        UTF8String.from(buid).toString(), 
+        UTF8String.from(bcls).toString()
+    );
   }
 
 
   @Override
   public StoreUnit get(Record idx) throws StorageException {
     Block blk = storage.get(idx.getRegion());
-    MappedValue val = this.getValue(blk);
-    ObjectUID uid = this.getUID(blk);
-    return StoreUnit.of(uid, val);
+    return StoreUnit.of(getUID(blk), getValue(blk));
   }
   
   
-  public void get(Record rec, Consumer<StoreUnit> cs) throws StorageException {
-    storage.get(rec.getRegion(), b->{
-      cs.accept(StoreUnit.of(getUID(b), getValue(b)));
-    });
-  }
-  
-  
-  private MappedValue getValue(Block blk) throws StorageException {
+  private ByteBuffer getValue(Block blk) throws StorageException {
     ByteBufferOutputStream bos = new ByteBufferOutputStream(storage.getAllocationPolicy());
-    blk.buffer().position(0);
-    int uidLen = blk.buffer().getShort();
-    int clsLen = blk.buffer().getShort();
-    blk.buffer().position(Short.BYTES * 2 + uidLen + clsLen);
     bos.write(blk.buffer());
     Optional<Region> next = blk.next();
     while(next.isPresent()) {
@@ -160,7 +129,7 @@ public class AsyncVolume implements Volume {
       bos.write(blk.buffer());
       next = blk.next();
     }
-    return (MappedValue) serial.deserialize(bos.toByteBuffer());
+    return bos.toByteBuffer();
   }
 
 

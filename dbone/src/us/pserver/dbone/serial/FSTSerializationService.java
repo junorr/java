@@ -19,11 +19,12 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.serial;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import org.nustaq.serialization.FSTConfiguration;
+import us.pserver.dbone.store.StorageException;
 import us.pserver.tools.io.ByteBufferInputStream;
 import us.pserver.tools.io.ByteBufferOutputStream;
 

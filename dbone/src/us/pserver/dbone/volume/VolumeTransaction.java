@@ -19,13 +19,15 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.volume;
 
+import us.pserver.dbone.ObjectUID;
+import us.pserver.dbone.store.StorageException;
+import us.pserver.dbone.store.StorageTransaction;
+import us.pserver.dbone.store.StoreUnit;
 import us.pserver.dbone.store.tx.Transaction;
 import us.pserver.dbone.store.tx.TransactionException;
 import us.pserver.tools.NotNull;
-import us.pserver.tools.mapper.MappedValue;
-import us.pserver.tools.mapper.ObjectUID;
 
 /**
  *
@@ -48,12 +50,6 @@ public class VolumeTransaction implements Volume, Transaction {
   @Override
   public Record put(StoreUnit unit) throws StorageException {
     return this.volume.put(unit);
-  }
-
-
-  @Override
-  public Record put(ObjectUID uid, MappedValue val) throws StorageException {
-    return this.volume.put(uid, val);
   }
 
 

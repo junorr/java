@@ -74,8 +74,13 @@ public class ConcurrentStorage implements Storage {
 
 
   @Override
-  public synchronized Block allocate() {
-    return storage.allocate();
+  public Block allocate() {
+    lock.writeLock().lock();
+    try {
+      return storage.allocate();
+    } finally {
+      lock.writeLock().unlock();
+    }
   }
 
 

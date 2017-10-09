@@ -19,12 +19,14 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.volume;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Supplier;
+import us.pserver.dbone.ObjectUID;
+import us.pserver.dbone.store.StorageException;
+import us.pserver.dbone.store.StoreUnit;
 import us.pserver.tools.NotNull;
-import us.pserver.tools.mapper.MappedValue;
-import us.pserver.tools.mapper.ObjectUID;
 
 /**
  *
@@ -33,78 +35,77 @@ import us.pserver.tools.mapper.ObjectUID;
  */
 public class ConcurrentVolume implements Volume {
 
-  private final Storage storage;
-  
   private final Volume volume;
   
   private final ReentrantReadWriteLock lock;
   
   
-  public ConcurrentVolume(Storage stg) {
-    this.storage = NotNull.of(stg).getOrFail("Bad null Storage");
-    this.volume = new DefaultVolume(storage);
+  public ConcurrentVolume(Volume vol) {
+    this.volume = NotNull.of(vol).getOrFail("Bad null Volume");
     this.lock = new ReentrantReadWriteLock();
   }
 
 
-  @Override
-  public Record put(StoreUnit unit) throws StorageException {
-    lock.writeLock().lock();
+  private void writeLocked(Runnable run) {
+    this.lock.writeLock().lock();
     try {
-      return volume.put(unit);
-    } finally {
-      lock.writeLock().unlock();
+      run.run();
+    }
+    finally {
+      this.lock.writeLock().unlock();
     }
   }
-
-
-  @Override
-  public Record put(ObjectUID uid, MappedValue val) throws StorageException {
-    lock.writeLock().lock();
+  
+  
+  private <T> T readLocked(Supplier<T> sup) {
+    this.lock.readLock().lock();
     try {
-      return volume.put(uid, val);
-    } finally {
-      lock.writeLock().unlock();
+      return sup.get();
     }
+    finally {
+      this.lock.readLock().unlock();
+    }
+  }
+  
+  
+  private <T> T writeLocked(Supplier<T> sup) {
+    this.lock.writeLock().lock();
+    try {
+      return sup.get();
+    }
+    finally {
+      this.lock.writeLock().unlock();
+    }
+  }
+  
+  
+  @Override
+  public Record put(StoreUnit unit) throws StorageException {
+    return writeLocked(()->volume.put(unit));
   }
 
 
   @Override
   public StoreUnit get(Record idx) throws StorageException {
-    lock.readLock().lock();
-    try {
-      return volume.get(idx);
-    } finally {
-      lock.readLock().unlock();
-    }
+    return readLocked(()->volume.get(idx));
   }
 
 
   @Override
   public ObjectUID getUID(Record idx) throws StorageException {
-    lock.readLock().lock();
-    try {
-      return volume.getUID(idx);
-    } finally {
-      lock.readLock().unlock();
-    }
+    return readLocked(()->volume.getUID(idx));
   }
 
 
   @Override
   public void close() throws StorageException {
-    lock.writeLock().lock();
-    try {
-      volume.close();
-    } finally {
-      lock.writeLock().unlock();
-    }
+    writeLocked(volume::close);
   }
 
 
   @Override
   public VolumeTransaction startTransaction() {
-    return new VolumeTransaction(storage.startTransaction());
+    return volume.startTransaction();
   }
   
 }

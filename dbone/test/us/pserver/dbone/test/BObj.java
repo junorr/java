@@ -21,7 +21,7 @@
 
 package us.pserver.dbone.test;
 
-import java.util.LinkedList;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,7 +30,7 @@ import java.util.Objects;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 06/09/2017
  */
-public class BObj {
+public class BObj implements Serializable {
   
   private final String name;
   

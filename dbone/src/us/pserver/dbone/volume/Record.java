@@ -19,12 +19,13 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.volume;
 
+import us.pserver.dbone.ObjectUID;
 import java.io.Serializable;
 import java.util.Objects;
+import us.pserver.dbone.store.Region;
 import us.pserver.tools.NotNull;
-import us.pserver.tools.mapper.ObjectUID;
 
 /**
  *
