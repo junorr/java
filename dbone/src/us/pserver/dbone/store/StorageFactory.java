@@ -23,17 +23,14 @@ package us.pserver.dbone.store;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
-import java.util.concurrent.Future;
 import java.util.function.IntFunction;
 import static us.pserver.dbone.store.AbstractStorage.HEADER_REGION;
-import us.pserver.dbone.store.fun.ConsumerHandler;
 import us.pserver.tools.NotNull;
 
 /**
@@ -163,7 +160,12 @@ public class StorageFactory {
   
   
   private FileChannelStorage createFCStorage(FileChannel ch) throws IOException {
-    return new FileChannelStorage(ch, new LinkedList<>(), this.malloc, this.blockSize);
+    RegionAllocPolicy ralloc = FileSizeAllocPolicy.builder()
+        .setFile(path)
+        .setRegionLength(blockSize)
+        .setStartPosition(HEADER_REGION.end())
+        .build();
+    return new FileChannelStorage(ch, blockSize, this.malloc, ralloc);
   }
   
   
@@ -177,22 +179,21 @@ public class StorageFactory {
     if(this.blockSize != DEFAULT_BLOCK_SIZE) {
       throw new IOException("Can not set block size for an existent storage");
     }
-    LinkedList<Region> freeblks = new LinkedList<>();
     ByteBuffer buf = this.malloc.apply(FileChannelStorage.HEADER_REGION.intLength());
-    FileLock lock = ch.lock(HEADER_REGION.offset(), HEADER_REGION.length(), true);
     ch.position(FileChannelStorage.HEADER_REGION.offset());
     ch.read(buf);
-    lock.release();
     buf.flip();
     buf.getShort();
     int blksize = buf.getInt();
+    RegionAllocPolicy ralloc = FileSizeAllocPolicy.builder()
+        .setFile(path)
+        .setRegionLength(blksize)
+        .setStartPosition(HEADER_REGION.end())
+        .build();
     while(buf.remaining() >= Region.BYTES) {
-      Region r = Region.of(buf.getLong(), buf.getLong());
-      if(r.offset() + r.length() > 0) {
-        freeblks.add(r);
-      }
+      ralloc.offer(Region.of(buf.getLong(), buf.getLong()));
     }
-    return new FileChannelStorage(ch, freeblks, this.malloc, blksize);
+    return new FileChannelStorage(ch, blksize, this.malloc, ralloc);
   }
   
   

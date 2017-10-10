@@ -78,11 +78,8 @@ public class StorageTransaction implements Storage, Transaction {
 
   @Override
   public Block allocate() {
-    boolean isFreeRegion = !storage.getFreeRegions().isEmpty();
     Block blk = storage.allocate();
-    if(isFreeRegion) {
-      log.push(new RollbackAllocationLog(storage, blk));
-    }
+    log.push(new RollbackAllocationLog(storage, blk));
     return blk;
   }
 
@@ -120,18 +117,6 @@ public class StorageTransaction implements Storage, Transaction {
   }
   
   
-  @Override
-  public List<Region> getFreeRegions() {
-    return storage.getFreeRegions();
-  }
-
-
-  @Override
-  public IntFunction<ByteBuffer> getAllocationPolicy() {
-    return storage.getAllocationPolicy();
-  }
-
-
   @Override
   public void close() throws StorageException {
     storage.close();

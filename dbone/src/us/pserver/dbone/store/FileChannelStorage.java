@@ -23,7 +23,7 @@ package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.function.IntFunction;
 import us.pserver.tools.NotNull;
 
@@ -37,8 +37,8 @@ public class FileChannelStorage extends AbstractStorage {
   private final FileChannel channel;
   
   
-  protected FileChannelStorage(FileChannel channel, LinkedList<Region> freeBlocks, IntFunction<ByteBuffer> allocPolicy, int blockSize) {
-    super(freeBlocks, allocPolicy, blockSize);
+  protected FileChannelStorage(FileChannel channel, int blockSize, IntFunction<ByteBuffer> allocPolicy, RegionAllocPolicy ralloc) {
+    super(blockSize, allocPolicy, ralloc);
     this.channel = NotNull.of(channel).getOrFail("Bad null FileChannel");
   }
   
@@ -76,8 +76,9 @@ public class FileChannelStorage extends AbstractStorage {
     ByteBuffer buf = blk.buffer();
     buf.putShort((short)0);
     buf.putInt(blockSize);
-    while(!frees.isEmpty() && buf.remaining() > Region.BYTES) {
-      Region r = frees.pop();
+    List<Region> regs = ralloc.freeRegions();
+    for(Region r : regs) {
+      if(buf.remaining() < Region.BYTES) break;
       buf.putLong(r.offset());
       buf.putLong(r.length());
     }

@@ -31,18 +31,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import us.pserver.dbone.ObjectUID;
-import us.pserver.dbone.serial.FSTSerializationService;
-import us.pserver.dbone.serial.GsonSerializationService;
 import us.pserver.dbone.serial.JavaSerializationService;
-import us.pserver.dbone.serial.JsonIoSerializationService;
 import us.pserver.dbone.volume.DefaultVolume;
 import us.pserver.dbone.serial.SerializationService;
 import us.pserver.dbone.store.StorageFactory;
-import us.pserver.dbone.volume.Volume;
 import us.pserver.dbone.volume.Record;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.dbone.volume.StoreUnit;
+import us.pserver.dbone.volume.AsyncVolume;
+import us.pserver.fun.Rethrow;
+import us.pserver.tools.Sleeper;
 import us.pserver.tools.timer.Timer;
 
 /**
@@ -50,7 +49,7 @@ import us.pserver.tools.timer.Timer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public class TestVolume {
+public class TestAsyncVolume {
   
   public static final PrintStream STDOUT = System.out;
   
@@ -80,6 +79,22 @@ public class TestVolume {
   public static final char[] upperConsonant = {
     'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Z'
   };
+  
+  
+  public static final Path dbpath = Paths.get("/home/juno/dbone-channel.dat");
+  
+  
+  public static final AsyncVolume volume = createVolume();
+  
+  
+  public static AsyncVolume createVolume() {
+    StorageFactory fact = StorageFactory.newFactory()
+        //.setBlockSize(1024)
+        .setFile(dbpath)
+        .concurrent();
+    Storage fs = Rethrow.unckecked().apply(()->fact.create());
+    return new AsyncVolume(new DefaultVolume(fs));
+  }
   
   
   public static void enableStdOut() {
@@ -146,68 +161,54 @@ public class TestVolume {
   }
   
   
-  public static void execute(Volume volume, SerializationService serial) {
+  public static void putCallback(Timer tm, Record rc) {
+    System.out.println("-- time to volume.put "+ tm.stop()+ " --");
+    System.out.println(rc);
+    Timer t2 = new Timer.Nanos().start();
+    volume.getAsync(rc, t2, TestAsyncVolume::getCallback);
+  }
+  
+  
+  public static void getCallback(Timer tm, StoreUnit su) {
+    System.out.println("-- time to volume.get "+ tm.stop()+ " --");
+    //System.out.println(su);
+  }
+  
+  
+  public static void execute(SerializationService serial) {
     StoreUnit unit = storeUnit(serial);
     Timer tm = new Timer.Nanos().start();
-    Record rec = volume.put(unit);
-    System.out.println("-- time to volume.put "+ tm.stop()+ " --");
-    System.out.println(rec);
-    tm.clear().start();
-    unit = volume.get(rec);
-    System.out.println("-- time to volume.get "+ tm.stop()+ " --");
-    System.out.println(unit);
+    volume.putAsync(unit, tm, TestAsyncVolume::putCallback);
     
     unit = storeUnit(serial);
-    tm.clear().start();
-    rec = volume.put(unit);
-    System.out.println("-- time to volume.put "+ tm.stop()+ " --");
-    System.out.println(rec);
-    tm.clear().start();
-    unit = volume.get(rec);
-    System.out.println("-- time to volume.get "+ tm.stop()+ " --");
-    System.out.println(unit);
+    Timer t2 = new Timer.Nanos().start();
+    volume.putAsync(unit, t2, TestAsyncVolume::putCallback);
     
     unit = storeUnit(serial);
-    tm.clear().start();
-    rec = volume.put(unit);
-    System.out.println("-- time to volume.put "+ tm.stop()+ " --");
-    System.out.println(rec);
-    tm.clear().start();
-    unit = volume.get(rec);
-    System.out.println("-- time to volume.get "+ tm.stop()+ " --");
-    System.out.println(unit);
+    Timer t3 = new Timer.Nanos().start();
+    volume.putAsync(unit, t3, TestAsyncVolume::putCallback);
   }
 
   
   public static void main(String[] args) throws IOException, InterruptedException {
-    Path dbpath = Paths.get("/home/juno/dbone-channel.dat");
     try {
-      //Storage fs = StorageFactory.newFactory().setFile("/storage/channelDBone.bin").create();
-      //Storage fs = StorageFactory.newFactory().setFile("/storage/mappedDBone.bin").createMapped();
-      Storage fs = StorageFactory.newFactory()
-          //.setBlockSize(1024)
-          .setFile(dbpath)
-          //.concurrent()
-          .create();
-
       SerializationService serial = new JavaSerializationService();
       //SerializationService serial = new FSTSerializationService();
       //SerializationService serial = new GsonSerializationService();
       //SerializationService serial = new JsonIoSerializationService();
-      DefaultVolume vol = new DefaultVolume(fs);
       
       System.out.println("* warming up 20x...");
       disableStdOut();
       for(int i = 0; i < 20; i++) {
-        execute(vol, serial);
+        execute(serial);
       }
       enableStdOut();
       System.out.println("  Done!");
-      execute(vol, serial);
-
-      vol.close();
+      execute(serial);
     }
     finally {
+      //Sleeper.of(1000).sleep();
+      volume.close();
       Files.delete(dbpath);
     }
   }

@@ -134,9 +134,9 @@ public final class Engine {
   }
   
   
-  //public int parallelism() {
-    //return pool.getParallelism();
-  //}
+  public int parallelism() {
+    return pool.getParallelism();
+  }
   
   
   public void engage(Gear<?,?> gear) {

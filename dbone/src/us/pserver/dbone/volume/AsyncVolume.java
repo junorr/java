@@ -21,84 +21,87 @@
 
 package us.pserver.dbone.volume;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Supplier;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.store.StorageException;
+import us.pserver.fastgear.Engine;
+import us.pserver.fastgear.Gear;
+import us.pserver.fastgear.Wire;
 import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2017
+ * @version 0.0 - 10/10/2017
  */
-public class ConcurrentVolume implements Volume {
-
+public class AsyncVolume implements Volume {
+  
   private final Volume volume;
   
-  private final ReentrantReadWriteLock lock;
-  
-  
-  public ConcurrentVolume(Volume vol) {
+  public AsyncVolume(Volume vol) {
     this.volume = NotNull.of(vol).getOrFail("Bad null Volume");
-    this.lock = new ReentrantReadWriteLock();
   }
+  
+  
+  public void putAsync(StoreUnit unit, Consumer<Record> cs) {
+    Gear.of(()->volume.put(unit)).start().input().onAvailable(cs);
+  }
+  
+  
+  public Wire<Record> putAsync(StoreUnit unit) {
+    return Gear.of(()->volume.put(unit)).start().input();
+  }
+  
+  
+  public <T> void putAsync(StoreUnit unit, T attachment, BiConsumer<T,Record> bic) {
+    Gear.of(()->{
+      Record r = volume.put(unit);
+      bic.accept(attachment, r);
+    }).start();
+  }
+  
 
-
-  private void writeLocked(Runnable run) {
-    this.lock.writeLock().lock();
-    try {
-      run.run();
-    }
-    finally {
-      this.lock.writeLock().unlock();
-    }
-  }
-  
-  
-  private <T> T readLocked(Supplier<T> sup) {
-    this.lock.readLock().lock();
-    try {
-      return sup.get();
-    }
-    finally {
-      this.lock.readLock().unlock();
-    }
-  }
-  
-  
-  private <T> T writeLocked(Supplier<T> sup) {
-    this.lock.writeLock().lock();
-    try {
-      return sup.get();
-    }
-    finally {
-      this.lock.writeLock().unlock();
-    }
-  }
-  
-  
   @Override
   public Record put(StoreUnit unit) throws StorageException {
-    return writeLocked(()->volume.put(unit));
+    return volume.put(unit);
+  }
+  
+  
+  public void getAsync(Record rec, Consumer<StoreUnit> cs) {
+    Gear.of(()->volume.get(rec)).start().input().onAvailable(cs);
+  }
+  
+  
+  public Wire<StoreUnit> getAsync(Record rec) {
+    return Gear.of(()->volume.get(rec)).start().input();
   }
 
+
+  public <T> void getAsync(Record rec, T attachment, BiConsumer<T,StoreUnit> bic) {
+    Gear.of(()->{
+      StoreUnit s = volume.get(rec);
+      bic.accept(attachment, s);
+    }).start();
+  }
+  
 
   @Override
   public StoreUnit get(Record idx) throws StorageException {
-    return readLocked(()->volume.get(idx));
+    return volume.get(idx);
   }
 
 
   @Override
   public ObjectUID getUID(Record idx) throws StorageException {
-    return readLocked(()->volume.getUID(idx));
+    return volume.getUID(idx);
   }
 
 
   @Override
-  public void close() throws StorageException {
-    writeLocked(volume::close);
+  public void close() {
+    Engine.get().safeShutdown();
+    volume.close();
   }
 
 
@@ -106,5 +109,5 @@ public class ConcurrentVolume implements Volume {
   public VolumeTransaction startTransaction() {
     return volume.startTransaction();
   }
-  
+
 }

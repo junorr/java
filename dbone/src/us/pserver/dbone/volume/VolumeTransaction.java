@@ -24,7 +24,6 @@ package us.pserver.dbone.volume;
 import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.dbone.store.StorageTransaction;
-import us.pserver.dbone.store.StoreUnit;
 import us.pserver.dbone.store.tx.Transaction;
 import us.pserver.dbone.store.tx.TransactionException;
 import us.pserver.tools.NotNull;

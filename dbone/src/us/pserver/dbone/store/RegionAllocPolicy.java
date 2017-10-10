@@ -21,31 +21,23 @@
 
 package us.pserver.dbone.store;
 
-import java.io.Closeable;
+import java.util.List;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 10/10/2017
  */
-public interface Storage extends Closeable {
-
-  public Block get(Region reg) throws StorageException;
+public interface RegionAllocPolicy {
   
-  public void put(Block blk) throws StorageException;
+  public boolean offer(Region reg);
   
-  public Block allocate();
+  public boolean discard(Region reg);
   
-  public void reallocate(Block blk) throws StorageException;
+  public Region next();
   
-  public void deallocate(Block blk) throws StorageException;
+  public Region peekNext();
   
-  public int getBlockSize();
-  
-  public long size();
-  
-  @Override public void close() throws StorageException;
-  
-  public StorageTransaction startTransaction();
+  public List<Region> freeRegions();
   
 }

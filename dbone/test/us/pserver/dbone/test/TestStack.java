@@ -19,33 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.test;
 
-import java.io.Closeable;
+import us.pserver.tools.ConcurrentList;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 10/10/2017
  */
-public interface Storage extends Closeable {
+public class TestStack {
 
-  public Block get(Region reg) throws StorageException;
   
-  public void put(Block blk) throws StorageException;
-  
-  public Block allocate();
-  
-  public void reallocate(Block blk) throws StorageException;
-  
-  public void deallocate(Block blk) throws StorageException;
-  
-  public int getBlockSize();
-  
-  public long size();
-  
-  @Override public void close() throws StorageException;
-  
-  public StorageTransaction startTransaction();
+  public static void main(String[] args) {
+    ConcurrentList<Integer> ls = new ConcurrentList<>();
+    for(int i = 0; i < 10; i++) {
+      ls.push(i);
+    }
+    while(!ls.isEmpty()) {
+      System.out.println(ls.pollLast());
+    }
+  }
   
 }

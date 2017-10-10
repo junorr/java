@@ -113,18 +113,6 @@ public class ConcurrentStorage implements Storage {
 
 
   @Override
-  public List<Region> getFreeRegions() {
-    return storage.getFreeRegions();
-  }
-
-
-  @Override
-  public IntFunction<ByteBuffer> getAllocationPolicy() {
-    return storage.getAllocationPolicy();
-  }
-
-
-  @Override
   public void close() throws StorageException {
     storage.close();
   }

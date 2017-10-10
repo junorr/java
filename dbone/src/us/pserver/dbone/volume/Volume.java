@@ -24,7 +24,6 @@ package us.pserver.dbone.volume;
 import java.io.Closeable;
 import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.store.StorageException;
-import us.pserver.dbone.store.StoreUnit;
 
 /**
  *

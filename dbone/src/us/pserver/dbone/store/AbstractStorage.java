@@ -22,9 +22,6 @@
 package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.function.IntFunction;
 import us.pserver.tools.NotNull;
 
@@ -42,46 +39,31 @@ public abstract class AbstractStorage implements Storage {
   public static final Region HEADER_REGION = Region.of(0, 2048);
   
   
-  protected final LinkedList<Region> frees;
-  
   protected final IntFunction<ByteBuffer> malloc;
+  
+  protected final RegionAllocPolicy ralloc;
   
   protected final int blockSize;
   
   
-  protected AbstractStorage(LinkedList<Region> freeBlocks, IntFunction<ByteBuffer> allocPolicy, int blockSize) {
-    this.malloc = NotNull.of(allocPolicy).getOrFail("Bad null alloc policy");
-    this.frees = NotNull.of(freeBlocks).getOrFail("Bad null free blocks list");
+  protected AbstractStorage(int blockSize, IntFunction<ByteBuffer> allocPolicy, RegionAllocPolicy ralloc) {
     this.blockSize = blockSize;
-  }
-  
-  
-  protected Region nextRegion() throws StorageException {
-    long len = size();
-    if(len < HEADER_REGION.length()) {
-      len = HEADER_REGION.length();
-    }
-    else if(len > HEADER_REGION.length() 
-        && (len-HEADER_REGION.length()) % this.blockSize > 0) {
-      len = ((len / this.blockSize + 1) * this.blockSize);
-    }
-    return Region.of(len, this.blockSize);
+    this.malloc = NotNull.of(allocPolicy).getOrFail("Bad null alloc policy");
+    this.ralloc = NotNull.of(ralloc).getOrFail("Bad null RegionAllocPolicy");
   }
   
   
   @Override
   public Block allocate() {
-    ByteBuffer buf = malloc.apply(blockSize);
-    Region reg = frees.isEmpty() ? nextRegion() : frees.pop();
+    Region reg = ralloc.next();
+    ByteBuffer buf = malloc.apply(reg.intLength());
     return new DefaultBlock(reg, buf).setNext(Region.of(0, 0));
   }
 
 
   @Override
   public void reallocate(Block blk) throws StorageException {
-    this.frees.remove(blk.region());
-    if(size() <= blk.region().offset() 
-        && blk.buffer().hasRemaining()) {
+    if(ralloc.discard(blk.region()) && blk.buffer().hasRemaining()) {
       this.put(blk);
     }
   }
@@ -90,28 +72,16 @@ public abstract class AbstractStorage implements Storage {
   @Override
   public void deallocate(Block blk) {
     NotNull.of(blk).failIfNull("Bad null Block");
-    if(!frees.contains(blk.region())) frees.push(blk.region());
+    ralloc.offer(blk.region());
   }
-
-
+  
+  
   @Override
   public int getBlockSize() {
     return this.blockSize;
   }
-  
-  
-  @Override
-  public List<Region> getFreeRegions() {
-    return Collections.unmodifiableList(frees);
-  }
-  
-  
-  @Override
-  public IntFunction<ByteBuffer> getAllocationPolicy() {
-    return this.malloc;
-  }
-  
-  
+
+
   @Override
   public StorageTransaction startTransaction() {
     return new StorageTransaction(this);

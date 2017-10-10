@@ -28,7 +28,6 @@ import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.store.Region;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageException;
-import us.pserver.dbone.store.StoreUnit;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.UTF8String;
 import us.pserver.tools.io.ByteBufferOutputStream;
@@ -121,7 +120,7 @@ public class DefaultVolume implements Volume {
   
   
   private ByteBuffer getValue(Block blk) throws StorageException {
-    ByteBufferOutputStream bos = new ByteBufferOutputStream(storage.getAllocationPolicy());
+    ByteBufferOutputStream bos = new ByteBufferOutputStream();
     bos.write(blk.buffer());
     Optional<Region> next = blk.next();
     while(next.isPresent()) {
