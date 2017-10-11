@@ -32,7 +32,7 @@ public class TestRandomString {
 
   
   public static void main(String[] args) {
-    RandomString rs = RandomString.of(5, RandomString.StringCase.UPPER);
+    RandomString rs = RandomString.of(5, RandomString.StringCase.FIRST_UPPER);
     for(int i = 0; i < 5; i++) {
       System.out.println(rs.generate());
     }

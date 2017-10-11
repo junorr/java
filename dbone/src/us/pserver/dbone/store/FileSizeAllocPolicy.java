@@ -62,12 +62,9 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   private void fillRegions() {
     if(regions.size() <= minRegionCount 
         && regions.size() < maxRegionCount) {
-      long start = startPosition;
-      if(start < 0) {
-        long flen = StorageException.rethrow(()->Files.size(file));
-        long regcount = flen / regionLength + (flen % regionLength > 0 ? 1 : 0);
-        start = regcount * regionLength;
-      }
+      long flen = StorageException.rethrow(()->Files.size(file));
+      long regcount = flen / regionLength + (flen % regionLength > 0 ? 1 : 0);
+      long start = Math.max(regcount * regionLength, startPosition);
       while(regions.size() < maxRegionCount) {
         regions.push(Region.of(start, regionLength));
         start += regionLength;
