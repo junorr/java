@@ -140,7 +140,8 @@ public final class Engine {
   
   
   public void engage(Gear<?,?> gear) {
-    pool.execute(Sane.of(gear).get(Checkup.isNotNull()));
+    //pool.execute(Sane.of(gear).get(Checkup.isNotNull()));
+    gears.add(gear);
   }
   
   
