@@ -21,6 +21,8 @@
 
 package us.pserver.fun;
 
+import java.util.function.Consumer;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -28,5 +30,12 @@ package us.pserver.fun;
  */
 @FunctionalInterface
 public interface ThrowableConsumer<T> {
+  
   public void accept(T t) throws Exception;
+  
+  
+  public static <U> ThrowableConsumer<U> of(Consumer<U> cs) {
+    return u->cs.accept(u);
+  }
+  
 }

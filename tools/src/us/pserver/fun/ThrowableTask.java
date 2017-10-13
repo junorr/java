@@ -28,5 +28,12 @@ package us.pserver.fun;
  */
 @FunctionalInterface
 public interface ThrowableTask {
+  
   public void exec() throws Exception;
+  
+  
+  public static ThrowableTask of(Runnable r) {
+    return r::run;
+  }
+  
 }

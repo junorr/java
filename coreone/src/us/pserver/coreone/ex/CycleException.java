@@ -19,22 +19,29 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.fun;
-
-import java.util.function.Function;
+package us.pserver.coreone.ex;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2017
+ * @version 0.0 - 13/10/2017
  */
-@FunctionalInterface
-public interface ThrowableFunction<T,R> {
-  
-  public R apply(T t) throws Exception;
-  
-  
-  public static <I,O> ThrowableFunction<I,O> of(Function<I,O> fun) {
-    return i->fun.apply(i);
+public class CycleException extends RuntimeException {
+
+  public CycleException() {
+    super();
   }
+
+  public CycleException(String message) {
+    super(message);
+  }
+
+  public CycleException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public CycleException(Throwable cause) {
+    super(cause);
+  }
+
 }

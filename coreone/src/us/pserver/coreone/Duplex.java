@@ -19,22 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.fun;
-
-import java.util.function.Function;
+package us.pserver.coreone;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2017
+ * @version 0.0 - 13/10/2017
  */
-@FunctionalInterface
-public interface ThrowableFunction<T,R> {
+public interface Duplex<I,O> {
+
+  public Pipe<I> input();
   
-  public R apply(T t) throws Exception;
+  public Pipe<O> output();
   
+  public Cycle<O,I> cycle();
   
-  public static <I,O> ThrowableFunction<I,O> of(Function<I,O> fun) {
-    return i->fun.apply(i);
-  }
 }

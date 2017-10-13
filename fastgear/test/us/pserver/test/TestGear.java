@@ -24,6 +24,7 @@ package us.pserver.test;
 import java.util.function.Function;
 import us.pserver.fastgear.Gear;
 import us.pserver.fastgear.Running;
+import us.pserver.tools.Sleeper;
 
 /**
  *
@@ -41,8 +42,7 @@ public class TestGear {
     for(int i = 0; i < 5; i++) {
       System.out.println("* writing: "+ i);
       run.output().push(i);
-      try { Thread.sleep(1000); }
-      catch(InterruptedException e) {}
+      Sleeper.of(1000).sleep();
     }
     System.out.println("* run.suspend(2000)...");
     run.gear().suspend(2000);

@@ -124,7 +124,7 @@ public interface ObjectUID {
 
     @Override
     public String toString() {
-      return "ObjectUID{" + "uid=" + uid + ", class=" + cname + '}';
+      return "ObjectUID(" + uid + ", " + cname + ')';
     }
 
   }

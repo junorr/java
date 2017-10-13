@@ -19,22 +19,27 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.fun;
+package us.pserver.coreone.test;
 
-import java.util.function.Function;
+import us.pserver.coreone.Cycle;
+import us.pserver.coreone.Duplex;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2017
+ * @version 0.0 - 13/10/2017
  */
-@FunctionalInterface
-public interface ThrowableFunction<T,R> {
+public class TestIOCycle {
+
   
-  public R apply(T t) throws Exception;
-  
-  
-  public static <I,O> ThrowableFunction<I,O> of(Function<I,O> fun) {
-    return i->fun.apply(i);
+  public static void main(String[] args) {
+    Duplex<String,Object> du1 = Cycle.of(i->{return String.format("1>>> %d <<<1", i);}).start();
+    Duplex<String,Object> du2 = Cycle.of(i->{return String.format("2>>> %d <<<2", i);}).start();
+    
+    du1.
+    for(int i = 0; i < 5; i++) {
+      
+    }
   }
+  
 }

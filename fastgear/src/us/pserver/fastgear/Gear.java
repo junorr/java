@@ -21,6 +21,7 @@
 
 package us.pserver.fastgear;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -34,6 +35,9 @@ import us.pserver.fastgear.spin.FunctionSpin;
 import us.pserver.fastgear.spin.ConsumerSpin;
 import us.pserver.fastgear.spin.RunningSpin;
 import us.pserver.fastgear.spin.Spin;
+import us.pserver.fun.Rethrow;
+import us.pserver.fun.ThrowableTask;
+import us.pserver.tools.NotNull;
 
 /**
  *
@@ -108,11 +112,22 @@ public interface Gear<I,O> extends Runnable {
     
     
     public DefGear(RunningSpin<I,O> spin, Running.Builder<O,I> build) {
-      this.spin = Sane.of(spin).get(Checkup.isNotNull());
-      this.running = Sane.of(build).get(Checkup.isNotNull()).build(this);
+      this.spin = NotNull.of(spin).getOrFail("Bad null Spin");
+      this.running = NotNull.of(build).getOrFail("Bad null Running.Builder").build(this);
       ready = true;
       lock = new ReentrantLock();
       join = lock.newCondition();
+    }
+    
+    
+    private void locked(ThrowableTask task) {
+      lock.lock();
+      try {
+        Rethrow.unckecked().apply(task);
+      }
+      finally {
+        lock.unlock();
+      }
     }
     
     
@@ -142,25 +157,13 @@ public interface Gear<I,O> extends Runnable {
     
     @Override
     public void join() throws InterruptedException {
-      lock.lock();
-      try {
-        join.await();
-      }
-      finally {
-        lock.unlock();
-      }
+      locked(join::await);
     }
     
     
     @Override
     public void signal() {
-      lock.lock();
-      try {
-        join.signalAll();
-      }
-      finally {
-        lock.unlock();
-      }
+      locked(join::signalAll);
     }
     
     

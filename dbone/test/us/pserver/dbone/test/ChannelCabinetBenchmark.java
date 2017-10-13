@@ -22,23 +22,25 @@
 package us.pserver.dbone.test;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import us.pserver.dbone.volume.DefaultVolume;
+import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.serial.FSTSerializationService;
 import us.pserver.dbone.serial.GsonSerializationService;
+import us.pserver.dbone.volume.DefaultVolume;
 import us.pserver.dbone.serial.JavaSerializationService;
 import us.pserver.dbone.serial.JsonIoSerializationService;
+import us.pserver.dbone.serial.SerializationService;
 import us.pserver.dbone.volume.Record;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageFactory;
+import us.pserver.dbone.volume.StoreUnit;
 import us.pserver.dbone.volume.Volume;
-import us.pserver.tools.mapper.MappedValue;
-import us.pserver.tools.mapper.ObjectUID;
 import us.pserver.tools.timer.Timer;
 
 /**
@@ -49,11 +51,12 @@ import us.pserver.tools.timer.Timer;
 public class ChannelCabinetBenchmark {
 
   
-  public static List<MappedValue> genValues() {
+  public static List<StoreUnit> genValues(SerializationService serial) {
     Timer tm = new Timer.Nanos().start();
-    ArrayList<MappedValue> vals = new ArrayList<>(1_000_000);
+    ArrayList<StoreUnit> vals = new ArrayList<>(1_000_000);
     for(int i = 0; i < 1_000_000; i++) {
-      vals.add(MappedValue.of(Math.random() * 1_000_000));
+      ByteBuffer buf = serial.serialize((Math.random() * 1_000_000));
+      vals.add(StoreUnit.of(ObjectUID.of(buf, Double.class.getName()), buf));
     }
     tm.stop();
     System.out.println("-- time to generate "+ vals.size()+ " elements "+ tm+ " --");
@@ -62,13 +65,12 @@ public class ChannelCabinetBenchmark {
   
   
   //public static List<Record> putValues(AsyncVolume2 vol, List<MappedValue> lst) {
-  public static List<Record> putValues(Volume vol, List<MappedValue> lst) {
+  public static List<Record> putValues(Volume vol, List<StoreUnit> lst) {
     ArrayList<Record> recs = new ArrayList<>(1_000_000);
     Timer tm = new Timer.Nanos().start();
     while(!lst.isEmpty()) {
-      MappedValue val = lst.remove(0);
-      ObjectUID uid = ObjectUID.builder().of(val).build();
-      recs.add(vol.put(uid, val));
+      StoreUnit val = lst.remove(0);
+      recs.add(vol.put(val));
     }
     tm.stop();
     System.out.println("-- time to put "+ recs.size()+ " elements "+ tm+ " --");
@@ -107,14 +109,17 @@ public class ChannelCabinetBenchmark {
         //.setFile("/storage/dbone-channel.dat")
         .setFile(dbpath)
         .setBlockSize(1024)
-        .createNoLock();
-    //AsyncVolume2 vol = new AsyncVolume2(stg);
-    //Volume vol = new DefaultVolume(stg, new JavaSerializationService());
-    Volume vol = new DefaultVolume(stg, new FSTSerializationService());
-    //Volume vol = new DefaultVolume(stg, new GsonSerializationService());
-    //Volume vol = new DefaultVolume(stg, new JsonIoSerializationService());
+        .create();
     
-    List<Record> recs = putValues(vol, genValues());
+    SerializationService serial = new JavaSerializationService();
+    //SerializationService serial = new FSTSerializationService();
+    //SerializationService serial = new GsonSerializationService();
+    //SerializationService serial = new JsonIoSerializationService();
+    
+    //AsyncVolume vol = new AsyncVolume(stg);
+    Volume vol = new DefaultVolume(stg);
+    
+    List<Record> recs = putValues(vol, genValues(serial));
     //Thread.sleep(2000);
     getOrdered(vol, recs);
     getShuffled(vol, recs);

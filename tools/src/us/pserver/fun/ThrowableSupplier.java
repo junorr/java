@@ -21,6 +21,8 @@
 
 package us.pserver.fun;
 
+import java.util.function.Supplier;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -28,5 +30,12 @@ package us.pserver.fun;
  */
 @FunctionalInterface
 public interface ThrowableSupplier<T> {
+  
   public T supply() throws Exception;
+  
+  
+  public static <U> ThrowableSupplier<U> of(Supplier<U> fun) {
+    return fun::get;
+  }
+  
 }

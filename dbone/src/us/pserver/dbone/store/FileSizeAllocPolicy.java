@@ -23,10 +23,10 @@ package us.pserver.dbone.store;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import us.pserver.tools.ConcurrentList;
 import us.pserver.tools.NotNull;
 
 /**
@@ -36,7 +36,7 @@ import us.pserver.tools.NotNull;
  */
 public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
-  private final ConcurrentList<Region> regions;
+  private final List<Region> regions;
   
   private final Path file;
   
@@ -50,8 +50,17 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
   
   public FileSizeAllocPolicy(Path dbfile, long startPosition, int regionLength, int minRegionCount, int maxRegionCount) {
-    regions = new ConcurrentList<>();
+    regions = Collections.synchronizedList(new ArrayList<>());
     this.file = NotNull.of(dbfile).getOrFail("Bad null file Path");
+    if(startPosition < 0) {
+      throw new IllegalArgumentException("Bad start position (< 0)");
+    }
+    if(regionLength <= 0) {
+      throw new IllegalArgumentException("Bad region length (<= 0)");
+    }
+    if(maxRegionCount < minRegionCount) {
+      throw new IllegalArgumentException("Bad max region count (< minRegionCount)");
+    }
     this.startPosition = startPosition;
     this.regionLength = regionLength;
     this.minRegionCount = minRegionCount;
@@ -66,7 +75,7 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
       long regcount = flen / regionLength + (flen % regionLength > 0 ? 1 : 0);
       long start = Math.max(regcount * regionLength, startPosition);
       while(regions.size() < maxRegionCount) {
-        regions.push(Region.of(start, regionLength));
+        regions.add(Region.of(start, regionLength));
         start += regionLength;
       }
     }
@@ -86,7 +95,7 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   @Override
   public boolean offer(Region reg) {
     if(reg != null && !regions.contains(reg)) {
-      regions.push(reg);
+      regions.add(reg);
       return true;
     }
     return false;
@@ -96,14 +105,14 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   @Override
   public Region next() {
     fillRegions();
-    return regions.pollLast();
+    return regions.remove(0);
   }
   
   
   @Override
   public Region peekNext() {
     fillRegions();
-    return regions.peekLast();
+    return regions.get(0);
   }
   
   

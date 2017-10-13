@@ -194,12 +194,12 @@ public class TestVolume {
       DefaultVolume vol = new DefaultVolume(fs);
       
       System.out.println("* warming up 20x...");
-      disableStdOut();
-      for(int i = 0; i < 20; i++) {
-        execute(vol, serial);
-      }
-      enableStdOut();
-      System.out.println("  Done!");
+      //disableStdOut();
+      //for(int i = 0; i < 20; i++) {
+        //execute(vol, serial);
+      //}
+      //enableStdOut();
+      //System.out.println("  Done!");
       execute(vol, serial);
 
       vol.close();

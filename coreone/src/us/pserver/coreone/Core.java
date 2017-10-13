@@ -19,22 +19,59 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.fun;
+package us.pserver.coreone;
 
-import java.util.function.Function;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2017
+ * @version 0.0 - 13/10/2017
  */
-@FunctionalInterface
-public interface ThrowableFunction<T,R> {
+public class Core {
+
+  public static final Core instance = new Core();
   
-  public R apply(T t) throws Exception;
+  
+  private final AtomicBoolean running;
+  
+  private final ForkJoinPool pool;
   
   
-  public static <I,O> ThrowableFunction<I,O> of(Function<I,O> fun) {
-    return i->fun.apply(i);
+  private Core() {
+    running = new AtomicBoolean(true);
+    int cores = Runtime.getRuntime().availableProcessors() * 4;
+    pool = new ForkJoinPool(cores);
   }
+  
+  
+  public <I,O> void execute(Cycle<I,O> cycle) {
+    if(running.get()) {
+      pool.execute(cycle);
+    }
+  }
+  
+  
+  public int parallelism() {
+    return pool.getParallelism();
+  }
+  
+  
+  public void waitShutdown() {
+    running.set(false);
+    pool.shutdown();
+  }
+  
+  
+  public void shutdownNow() {
+    running.set(false);
+    pool.shutdownNow();
+  }
+  
+  
+  public static Core get() {
+    return instance;
+  }
+  
 }

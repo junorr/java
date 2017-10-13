@@ -21,15 +21,19 @@
 
 package us.pserver.fastgear;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
+import us.pserver.fun.Rethrow;
+import us.pserver.fun.ThrowableTask;
 import us.pserver.insane.Checkup;
 import us.pserver.insane.Sane;
-import us.pserver.tools.ConcurrentList;
 
 /**
  *
@@ -38,16 +42,18 @@ import us.pserver.tools.ConcurrentList;
  */
 public final class Engine {
 
-  private static Engine instance;
-  
-  private static final Lock get = new ReentrantLock(true);
-  
-  private static final AtomicBoolean shutdown = new AtomicBoolean(false);
+  private static final Engine instance = new Engine();
   
   
   private final ForkJoinPool pool;
   
   private final List<Gear<?,?>> gears;
+  
+  private final AtomicBoolean running;
+  
+  private final Lock lock;
+  
+  private final Condition waitShutdown;
   
   
   private Engine() {
@@ -55,82 +61,77 @@ public final class Engine {
       throw new IllegalStateException("Engine is already created");
     }
     int numThreads = Runtime.getRuntime().availableProcessors() * 4;
-    System.out.println("* Engine.numThreads="+ numThreads);
+    //System.out.println("* Engine.numThreads="+ numThreads);
+    running = new AtomicBoolean(false);
+    lock = new ReentrantLock(true);
+    waitShutdown = lock.newCondition();
     pool = new ForkJoinPool(numThreads);
-    //gears = Collections.synchronizedList(new ArrayList<Gear<?,?>>());
-    gears = new ConcurrentList<>();
-    pool.execute(() -> {
-      while(!shutdown.get()) {
-        if(gears.isEmpty()) synchronized(pool) {
-          LockSupport.parkNanos(500);
-          pool.notifyAll();
-        }
-        else {
-          gears.stream().filter(Gear::isReady).forEach(pool::execute);
-        }
+    gears = Collections.synchronizedList(new ArrayList<Gear<?,?>>());
+    pool.execute(this::scanGear);
+  }
+  
+  
+  private void locked(ThrowableTask task) {
+    lock.lock();
+    try { 
+      Rethrow.unckecked().apply(task);
+    }
+    finally {
+      lock.unlock();
+    }
+  }
+  
+  
+  private void scanGears() {
+    running.set(true);
+    while(!gears.isEmpty() && running.get()) {
+      Gear<?,?> gear = gears.remove(0);
+      pool.execute(gear);
+    }
+    running.set(false);
+    locked(waitShutdown::signalAll);
+  }
+  
+  
+  private void scanGear() {
+    running.set(true);
+    while(running.get()) {
+      if(gears.isEmpty()) {
+        LockSupport.parkNanos(1000);
+        locked(waitShutdown::signalAll);
       }
-    });
+      else {
+        Gear<?,?> gear = gears.remove(0);
+        pool.execute(gear);
+      }
+    }
+    locked(waitShutdown::signalAll);
   }
   
   
   public static Engine get() {
-    if(instance == null) {
-      get.lock();
-      try {
-        if(instance == null) {
-          instance = new Engine();
-          shutdown.set(false);
-        }
-      }
-      finally {
-        get.unlock();
-      }
-    }
     return instance;
   }
   
   
   public void shutdown() {
-    shutdown.set(true);
+    running.set(true);
     gears.clear();
     pool.shutdown();
   }
   
   
-  public void waitShutdown() throws InterruptedException {
-    shutdown.set(true);
-    gears.clear();
+  public void waitShutdown() {
+    locked(waitShutdown::await);
+    running.set(false);
     pool.shutdown();
-    synchronized(pool) {
-      pool.wait();
-    }
   }
   
   
   public void shutdownNow() {
-    shutdown.set(true);
+    running.set(false);
     gears.clear();
     pool.shutdownNow();
-  }
-  
-  
-  public void safeShutdown() {
-    try {
-      this.shutdown();
-      this.waitShutdown();
-    } catch(InterruptedException e) {
-      throw new RuntimeException(e.toString(), e);
-    }
-  }
-  
-  
-  public Engine reset() {
-    if(!shutdown.get()) {
-      this.shutdown();
-    }
-    instance = null;
-    gears.clear();
-    return get();
   }
   
   
@@ -140,13 +141,15 @@ public final class Engine {
   
   
   public void engage(Gear<?,?> gear) {
+    if(running.get()) gears.add(gear);
     //pool.execute(Sane.of(gear).get(Checkup.isNotNull()));
-    gears.add(gear);
+    //gears.add(gear);
+    //if(!running.get()) pool.execute(this::scanGears);
   }
   
   
   public void cancel(Gear<?,?> gear) {
-    gears.remove(Sane.of(gear).get(Checkup.isNotNull()));
+    gears.remove(gear);
   }
   
 }

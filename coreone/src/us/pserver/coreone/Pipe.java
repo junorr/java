@@ -19,22 +19,29 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.fun;
+package us.pserver.coreone;
 
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2017
+ * @version 0.0 - 13/10/2017
  */
-@FunctionalInterface
-public interface ThrowableFunction<T,R> {
+public interface Pipe<T> {
+
+  public void onAvailable(Consumer<T> cs);
   
-  public R apply(T t) throws Exception;
+  public void onError(Consumer<? extends Throwable> cs);
   
+  public T pull(long timeout) throws InterruptedException;
   
-  public static <I,O> ThrowableFunction<I,O> of(Function<I,O> fun) {
-    return i->fun.apply(i);
-  }
+  public T pull();
+  
+  public void push(T val);
+  
+  public void error(Throwable th);
+  
+  public boolean available();
+  
 }

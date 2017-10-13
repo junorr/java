@@ -100,7 +100,7 @@ public class AsyncVolume implements Volume {
 
   @Override
   public void close() {
-    Engine.get().safeShutdown();
+    Engine.get().waitShutdown();
     volume.close();
   }
 
