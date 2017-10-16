@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.coreone.imple;
+package us.pserver.coreone.impl;
 
 import java.util.function.Consumer;
 import us.pserver.coreone.Pipe;
@@ -33,7 +33,7 @@ public class DummyPipe implements Pipe<Void> {
   
   @Override public void onAvailable(Consumer<Void> cs) {}
   
-  @Override public void onError(Consumer<? extends Throwable> cs) {}
+  @Override public void onError(Consumer<Throwable> cs) {}
   
   @Override
   public Void pull(long timeout) throws InterruptedException {
@@ -45,10 +45,14 @@ public class DummyPipe implements Pipe<Void> {
     return null;
   }
   
-  @Override public void push(Void val) {}
+  @Override public boolean push(Void val) { return false; }
   
   @Override public void error(Throwable th) {}
   
   @Override public boolean available() {return false;}
+
+  @Override public boolean isClosed() { return true; }
+
+  @Override public void close() {}
   
 }

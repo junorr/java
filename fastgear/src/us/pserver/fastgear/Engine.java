@@ -74,7 +74,7 @@ public final class Engine {
   private void locked(ThrowableTask task) {
     lock.lock();
     try { 
-      Rethrow.unckecked().apply(task);
+      Rethrow.unchecked().apply(task);
     }
     finally {
       lock.unlock();

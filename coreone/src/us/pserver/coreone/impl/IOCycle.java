@@ -19,10 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.coreone.imple;
+package us.pserver.coreone.impl;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import us.pserver.coreone.Core;
@@ -31,7 +30,6 @@ import us.pserver.coreone.Duplex;
 import us.pserver.coreone.ex.CycleException;
 import us.pserver.fun.Rethrow;
 import us.pserver.fun.ThrowableFunction;
-import us.pserver.fun.ThrowableSupplier;
 import us.pserver.fun.ThrowableTask;
 import us.pserver.tools.NotNull;
 
@@ -40,28 +38,25 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public class TaskCycle implements Cycle<Void,Void> {
+public class IOCycle<O,I> implements Cycle<O,I> {
   
-  private final Duplex<Void,Void> duplex;
+  private final Duplex<I,O> duplex;
   
-  private final ThrowableTask fun;
+  private final ThrowableFunction<O,I> fun;
   
   private final ReentrantLock lock;
   
-  private final Condition suspend;
-  
   private final Condition join;
   
-  private final AtomicLong timeout;
+  private final AtomicReference<Suspendable> suspend;
   
   
-  public TaskCycle(ThrowableTask fn) {
-    this.duplex = new InputOnlyDuplex(new DefaultPipe(), this);
-    this.fun = NotNull.of(fn).getOrFail("Bad null ThrowableTask");
+  public IOCycle(ThrowableFunction<O,I> fn) {
+    this.duplex = new DefaultDuplex(new DefaultPipe(), new DefaultPipe(), this);
+    this.fun = NotNull.of(fn).getOrFail("Bad null ThrowableFunction");
     this.lock = new ReentrantLock();
-    this.suspend = lock.newCondition();
     this.join = lock.newCondition();
-    this.timeout = new AtomicLong(-1L);
+    this.suspend = new AtomicReference<>(new Suspendable());
   }
   
   
@@ -77,7 +72,7 @@ public class TaskCycle implements Cycle<Void,Void> {
   
 
   @Override
-  public Duplex<Void,Void> start() {
+  public Duplex<I,O> start() {
     Core.get().execute(this);
     return duplex;
   }
@@ -85,13 +80,13 @@ public class TaskCycle implements Cycle<Void,Void> {
 
   @Override
   public void suspend(long timeout) {
-    this.timeout.compareAndSet(-1, timeout);
+    this.suspend.set(new Suspendable(timeout));
   }
 
 
   @Override
   public void resume() {
-    locked(suspend::signalAll);
+    suspend.get().resume();
   }
 
 
@@ -99,19 +94,24 @@ public class TaskCycle implements Cycle<Void,Void> {
   public void join() {
     locked(join::await);
   }
-
-
+  
+  
   @Override
   public void run() {
     try {
-      if(timeout.get() >= 0) {
-        long tm = timeout.getAndSet(-1L);
-        if(tm > 0) locked(()->suspend.await(tm, TimeUnit.MILLISECONDS));
-        else locked(suspend::await);
+      while(!duplex.output().isClosed() && !duplex.input().isClosed()) {
+        O in = duplex.output().pull();
+        suspend.get().suspend();
+        I out = fun.apply(in); 
+        duplex.input().push(out);
       }
-      fun.exec();
-    } catch(Exception e) {
+    }
+    catch(Exception e) {
+      e.printStackTrace();
       duplex.input().error(e);
+    }
+    finally {
+      locked(join::signalAll);
     }
   }
 

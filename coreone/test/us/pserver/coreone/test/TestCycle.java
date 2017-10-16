@@ -19,20 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.coreone.imple;
+package us.pserver.coreone.test;
 
 import us.pserver.coreone.Cycle;
-import us.pserver.coreone.Pipe;
+import us.pserver.coreone.Duplex;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 13/10/2017
+ * @version 0.0 - 16/10/2017
  */
-public class OutputOnlyDuplex<O> extends DefaultDuplex<Void,O> {
+public class TestCycle {
+
   
-  public OutputOnlyDuplex(Pipe<O> output, Cycle<O,Void> cycle) {
-    super(new DummyPipe(), output, cycle);
+  public static void main(String[] args) {
+    Duplex<String,Object> da = Cycle.of(s->{return String.format("%s: >>> %s <<<", Thread.currentThread().getName(), s);}).start();
+    Duplex<String,Object> db = Cycle.of(s->{return String.format("%s: >>> %s <<<", Thread.currentThread().getName(), s);}).start();
+    
+    da.cycle().suspend(1000);
+    da.input().onAvailable(System.out::println);
+    da.input().onError(System.err::println);
+    db.input().onAvailable(System.out::println);
+    db.input().onError(System.err::println);
+    for(int i = 1; i <= 20; i++) {
+      System.out.println("- da.output.push: "+ i+ " - "+ da.output().push(i));
+      System.out.println("- db.output.push: "+ i+ " - "+ db.output().push(i));
+    }
+    da.close();
+    db.close();
   }
   
 }

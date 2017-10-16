@@ -21,27 +21,44 @@
 
 package us.pserver.coreone;
 
+import java.io.Closeable;
 import java.util.function.Consumer;
+import us.pserver.coreone.impl.DefaultPipe;
+import us.pserver.coreone.impl.DummyPipe;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public interface Pipe<T> {
+public interface Pipe<T> extends AutoCloseable, Closeable {
 
   public void onAvailable(Consumer<T> cs);
   
-  public void onError(Consumer<? extends Throwable> cs);
+  public void onError(Consumer<Throwable> cs);
   
   public T pull(long timeout) throws InterruptedException;
   
   public T pull();
   
-  public void push(T val);
+  public boolean push(T val);
   
   public void error(Throwable th);
   
   public boolean available();
+  
+  @Override public void close();
+  
+  public boolean isClosed();
+  
+  
+  
+  public static <U> Pipe<U> newPipe() {
+    return new DefaultPipe<>();
+  }
+  
+  public static Pipe<Void> newVoidPipe() {
+    return new DummyPipe();
+  }
   
 }

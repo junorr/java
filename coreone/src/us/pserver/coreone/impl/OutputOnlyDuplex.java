@@ -19,19 +19,20 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.coreone.imple;
+package us.pserver.coreone.impl;
 
 import us.pserver.coreone.Cycle;
+import us.pserver.coreone.Pipe;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public class DummyDuplex extends DefaultDuplex<Void,Void> {
+public class OutputOnlyDuplex<O> extends DefaultDuplex<Void,O> {
   
-  public DummyDuplex(Cycle<Void,Void> cycle) {
-    super(new DummyPipe(), new DummyPipe(), cycle);
+  public OutputOnlyDuplex(Pipe<O> output, Cycle<O,Void> cycle) {
+    super(new DummyPipe(), output, cycle);
   }
-
+  
 }

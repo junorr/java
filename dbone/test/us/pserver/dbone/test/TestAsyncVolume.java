@@ -92,7 +92,7 @@ public class TestAsyncVolume {
         //.setBlockSize(1024)
         .setFile(dbpath)
         .concurrent();
-    Storage fs = Rethrow.unckecked().apply(()->fact.create());
+    Storage fs = Rethrow.unchecked().apply(()->fact.create());
     return new AsyncVolume(new DefaultVolume(fs));
   }
   

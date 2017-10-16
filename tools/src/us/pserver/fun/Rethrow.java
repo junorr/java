@@ -93,7 +93,7 @@ public class Rethrow<E extends Throwable> {
     return new Rethrow(cls);
   }
   
-  public static Rethrow<RuntimeException> unckecked() {
+  public static Rethrow<RuntimeException> unchecked() {
     return new Rethrow(RuntimeException.class);
   }
   

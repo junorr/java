@@ -19,28 +19,28 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.coreone;
+package us.pserver.coreone.test;
+
+import java.util.concurrent.atomic.AtomicInteger;
+import us.pserver.coreone.Cycle;
+import us.pserver.coreone.Duplex;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 13/10/2017
+ * @version 0.0 - 16/10/2017
  */
-public interface Duplex<I,O> extends AutoCloseable {
+public class TestRepeatableSupplier {
 
-  public Pipe<I> input();
   
-  public Pipe<O> output();
-  
-  public Cycle<O,I> cycle();
-  
-  @Override
-  public default void close() {
-    input().close(); output().close();
-  }
-  
-  public default boolean isClosed() {
-    return input().isClosed() && output().isClosed();
+  public static void main(String[] args) {
+    final AtomicInteger ai = new AtomicInteger(1);
+    Duplex<Integer,Void> da = Cycle.repeatable(ai::getAndIncrement, 20).start();
+    
+    for(int i = 0; i < 20; i++) {
+      System.out.printf(">>> %d <<<%n", da.input().pull());
+    }
+    da.close();
   }
   
 }

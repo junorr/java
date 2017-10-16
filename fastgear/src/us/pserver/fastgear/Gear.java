@@ -123,7 +123,7 @@ public interface Gear<I,O> extends Runnable {
     private void locked(ThrowableTask task) {
       lock.lock();
       try {
-        Rethrow.unckecked().apply(task);
+        Rethrow.unchecked().apply(task);
       }
       finally {
         lock.unlock();

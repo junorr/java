@@ -19,20 +19,47 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.coreone.imple;
+package us.pserver.coreone.impl;
 
 import us.pserver.coreone.Cycle;
+import us.pserver.coreone.Duplex;
 import us.pserver.coreone.Pipe;
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public class InputOnlyDuplex<I> extends DefaultDuplex<I,Void> {
+public class DefaultDuplex<I,O> implements Duplex<I,O> {
   
-  public InputOnlyDuplex(Pipe<I> input, Cycle<Void,I> cycle) {
-    super(input, new DummyPipe(), cycle);
+  private final Pipe<I> input;
+  
+  private final Pipe<O> output;
+  
+  private final Cycle<O,I> cycle;
+  
+  
+  public DefaultDuplex(Pipe<I> input, Pipe<O> output, Cycle<O,I> cycle) {
+    this.input = NotNull.of(input).getOrFail("Bad null input Pipe");
+    this.output = NotNull.of(output).getOrFail("Bad null output Pipe");
+    this.cycle = NotNull.of(cycle).getOrFail("Bad null Cycle");
+  }
+
+  @Override
+  public Pipe<I> input() {
+    return input;
+  }
+
+  @Override
+  public Pipe<O> output() {
+    return output;
+  }
+  
+  
+  @Override
+  public Cycle<O,I> cycle() {
+    return cycle;
   }
 
 }

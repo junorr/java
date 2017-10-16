@@ -19,10 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.coreone.imple;
+package us.pserver.coreone.impl;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import us.pserver.coreone.Core;
@@ -30,8 +29,7 @@ import us.pserver.coreone.Cycle;
 import us.pserver.coreone.Duplex;
 import us.pserver.coreone.ex.CycleException;
 import us.pserver.fun.Rethrow;
-import us.pserver.fun.ThrowableFunction;
-import us.pserver.fun.ThrowableSupplier;
+import us.pserver.fun.ThrowableConsumer;
 import us.pserver.fun.ThrowableTask;
 import us.pserver.tools.NotNull;
 
@@ -40,28 +38,25 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public class SupplierCycle<I> implements Cycle<Void,I> {
+public class ConsumerCycle<O> implements Cycle<O,Void> {
   
-  private final Duplex<I,Void> duplex;
+  private final Duplex<Void,O> duplex;
   
-  private final ThrowableSupplier<I> fun;
+  private final ThrowableConsumer<O> fun;
   
   private final ReentrantLock lock;
   
-  private final Condition suspend;
-  
   private final Condition join;
   
-  private final AtomicLong timeout;
+  private final AtomicReference<Suspendable> suspend;
   
   
-  public SupplierCycle(ThrowableSupplier<I> fn) {
-    this.duplex = new InputOnlyDuplex(new DefaultPipe(), this);
+  public ConsumerCycle(ThrowableConsumer<O> fn) {
+    this.duplex = new OutputOnlyDuplex(new DefaultPipe(), this);
     this.fun = NotNull.of(fn).getOrFail("Bad null ThrowableFunction");
     this.lock = new ReentrantLock();
-    this.suspend = lock.newCondition();
     this.join = lock.newCondition();
-    this.timeout = new AtomicLong(-1L);
+    this.suspend = new AtomicReference<>(new Suspendable());
   }
   
   
@@ -77,7 +72,7 @@ public class SupplierCycle<I> implements Cycle<Void,I> {
   
 
   @Override
-  public Duplex<I,Void> start() {
+  public Duplex<Void,O> start() {
     Core.get().execute(this);
     return duplex;
   }
@@ -85,13 +80,13 @@ public class SupplierCycle<I> implements Cycle<Void,I> {
 
   @Override
   public void suspend(long timeout) {
-    this.timeout.compareAndSet(-1, timeout);
+    suspend.set(new Suspendable(timeout));
   }
 
 
   @Override
   public void resume() {
-    locked(suspend::signalAll);
+    suspend.get().resume();
   }
 
 
@@ -104,14 +99,15 @@ public class SupplierCycle<I> implements Cycle<Void,I> {
   @Override
   public void run() {
     try {
-      if(timeout.get() >= 0) {
-        long tm = timeout.getAndSet(-1L);
-        if(tm > 0) locked(()->suspend.await(tm, TimeUnit.MILLISECONDS));
-        else locked(suspend::await);
-      }
-      duplex.input().push(fun.supply());
-    } catch(Exception e) {
-      duplex.input().error(e);
+      suspend.get().suspend();
+      fun.accept(duplex.output().pull());
+    } 
+    catch(Exception e) {
+      e.printStackTrace();
+      duplex.output().error(e);
+    }
+    finally {
+      locked(join::signalAll);
     }
   }
 

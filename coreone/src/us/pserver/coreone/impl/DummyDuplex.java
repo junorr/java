@@ -19,28 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.coreone;
+package us.pserver.coreone.impl;
+
+import us.pserver.coreone.Cycle;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public interface Duplex<I,O> extends AutoCloseable {
+public class DummyDuplex extends DefaultDuplex<Void,Void> {
+  
+  public DummyDuplex(Cycle<Void,Void> cycle) {
+    super(new DummyPipe(), new DummyPipe(), cycle);
+  }
 
-  public Pipe<I> input();
-  
-  public Pipe<O> output();
-  
-  public Cycle<O,I> cycle();
-  
-  @Override
-  public default void close() {
-    input().close(); output().close();
-  }
-  
-  public default boolean isClosed() {
-    return input().isClosed() && output().isClosed();
-  }
-  
 }

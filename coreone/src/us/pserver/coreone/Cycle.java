@@ -21,13 +21,15 @@
 
 package us.pserver.coreone;
 
-import java.util.function.Consumer;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import us.pserver.coreone.imple.ConsumerCycle;
-import us.pserver.coreone.imple.IOCycle;
-import us.pserver.coreone.imple.SupplierCycle;
-import us.pserver.coreone.imple.TaskCycle;
+import us.pserver.coreone.impl.ConsumerCycle;
+import us.pserver.coreone.impl.IOCycle;
+import us.pserver.coreone.impl.RepeatableConsumerCycle;
+import us.pserver.coreone.impl.RepeatableSupplierCycle;
+import us.pserver.coreone.impl.RepeatableTaskCycle;
+import us.pserver.coreone.impl.SupplierCycle;
+import us.pserver.coreone.impl.TaskCycle;
 import us.pserver.fun.ThrowableConsumer;
 import us.pserver.fun.ThrowableFunction;
 import us.pserver.fun.ThrowableSupplier;
@@ -38,9 +40,9 @@ import us.pserver.fun.ThrowableTask;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public interface Cycle<I,O> extends Runnable {
+public interface Cycle<O,I> extends Runnable {
 
-  public Duplex<O,I> start();
+  public Duplex<I,O> start();
   
   public void suspend(long timeout);
   
@@ -50,39 +52,66 @@ public interface Cycle<I,O> extends Runnable {
   
   
   
-  public static <A,B> Cycle<A,B> of(ThrowableFunction<A,B> fun) {
+  public static <A,B> Cycle<B,A> of(ThrowableFunction<B,A> fun) {
     return new IOCycle(fun);
   }
-  
-  //public static <A,B> Cycle<B,A> of(Function<A,B> fun) {
-    //return of(ThrowableFunction.of(fun));
-  //}
-  
   
   public static <A> Cycle<Void,A> of(ThrowableSupplier<A> sup) {
     return new SupplierCycle(sup);
   }
   
-  //public static <A> Cycle<Void,A> of(Supplier<A> sup) {
-    //return of(ThrowableSupplier.of(sup));
-  //}
-  
-  
   public static <B> Cycle<B,Void> of(ThrowableConsumer<B> cs) {
     return new ConsumerCycle(cs);
   }
-  
-  //public static <B> Cycle<B,Void> of(Consumer<B> cs) {
-    //return of(ThrowableConsumer.of(cs));
-  //}
-  
   
   public static Cycle<Void,Void> of(ThrowableTask tsk) {
     return new TaskCycle(tsk);
   }
   
-  //public static Cycle<Void,Void> of(Runnable run) {
-    //return of(ThrowableTask.of(run));
-  //}
+  
+  
+  public static <A> Cycle<Void,A> repeatable(ThrowableSupplier<A> sup, Function<Duplex<A,Void>,Boolean> until) {
+    return new RepeatableSupplierCycle(sup, until);
+  }
+  
+  public static <A> Cycle<Void,A> repeatable(ThrowableSupplier<A> sup, final int repeatCount) {
+    Function<Duplex<A,Void>,Boolean> until = new Function<Duplex<A,Void>,Boolean>() {
+      private final AtomicInteger count = new AtomicInteger(0);
+      @Override public Boolean apply(Duplex<A,Void> duplex) {
+        return count.getAndIncrement() < repeatCount;
+      }
+    };
+    return new RepeatableSupplierCycle(sup, until);
+  }
+  
+  
+  public static <B> Cycle<B,Void> repeatable(ThrowableConsumer<B> cs, Function<Duplex<Void,B>,Boolean> until) {
+    return new RepeatableConsumerCycle(cs, until);
+  }
+  
+  public static <B> Cycle<B,Void> repeatable(ThrowableConsumer<B> cs, final int repeatCount) {
+    Function<Duplex<Void,B>,Boolean> until = new Function<Duplex<Void,B>,Boolean>() {
+      private final AtomicInteger count = new AtomicInteger(0);
+      @Override public Boolean apply(Duplex<Void,B> duplex) {
+        return count.getAndIncrement() < repeatCount;
+      }
+    };
+    return new RepeatableConsumerCycle(cs, until);
+  }
+  
+  
+  public static Cycle<Void,Void> repeatable(ThrowableTask tsk, Function<Duplex<Void,Void>,Boolean> until) {
+    return new RepeatableTaskCycle(tsk, until);
+  }
+  
+  public static Cycle<Void,Void> repeatable(ThrowableTask tsk, final int repeatCount) {
+    Function<Duplex<Void,Void>,Boolean> until = new Function<Duplex<Void,Void>,Boolean>() {
+      private final AtomicInteger count = new AtomicInteger(0);
+      @Override public Boolean apply(Duplex<Void,Void> duplex) {
+        return count.getAndIncrement() < repeatCount;
+      }
+    };
+    return new RepeatableTaskCycle(tsk, until);
+  }
   
 }

@@ -19,18 +19,17 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.coreone.imple;
+package us.pserver.coreone.impl;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 import us.pserver.coreone.Core;
 import us.pserver.coreone.Cycle;
 import us.pserver.coreone.Duplex;
 import us.pserver.coreone.ex.CycleException;
 import us.pserver.fun.Rethrow;
-import us.pserver.fun.ThrowableConsumer;
 import us.pserver.fun.ThrowableTask;
 import us.pserver.tools.NotNull;
 
@@ -39,28 +38,28 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public class ConsumerCycle<O> implements Cycle<O,Void> {
+public class RepeatableTaskCycle implements Cycle<Void,Void> {
   
-  private final Duplex<Void,O> duplex;
+  private final Duplex<Void,Void> duplex;
   
-  private final ThrowableConsumer<O> fun;
+  private final ThrowableTask fun;
   
   private final ReentrantLock lock;
   
-  private final Condition suspend;
-  
   private final Condition join;
   
-  private final AtomicLong timeout;
+  private final Function<Duplex<Void,Void>,Boolean> until;
+  
+  private final AtomicReference<Suspendable> suspend;
   
   
-  public ConsumerCycle(ThrowableConsumer<O> fn) {
-    this.duplex = new OutputOnlyDuplex(new DefaultPipe(), this);
+  public RepeatableTaskCycle(ThrowableTask fn, Function<Duplex<Void,Void>,Boolean> until) {
+    this.duplex = new InputOnlyDuplex(new DefaultPipe(), this);
     this.fun = NotNull.of(fn).getOrFail("Bad null ThrowableFunction");
     this.lock = new ReentrantLock();
-    this.suspend = lock.newCondition();
     this.join = lock.newCondition();
-    this.timeout = new AtomicLong(-1L);
+    this.suspend = new AtomicReference(new Suspendable());
+    this.until = NotNull.of(until).getOrFail("Bad null repeat condition Function<Duplex,Boolean>");
   }
   
   
@@ -76,7 +75,7 @@ public class ConsumerCycle<O> implements Cycle<O,Void> {
   
 
   @Override
-  public Duplex<Void,O> start() {
+  public Duplex<Void,Void> start() {
     Core.get().execute(this);
     return duplex;
   }
@@ -84,13 +83,13 @@ public class ConsumerCycle<O> implements Cycle<O,Void> {
 
   @Override
   public void suspend(long timeout) {
-    this.timeout.compareAndSet(-1, timeout);
+    suspend.set(new Suspendable(timeout));
   }
 
 
   @Override
   public void resume() {
-    locked(suspend::signalAll);
+    suspend.get().resume();
   }
 
 
@@ -102,21 +101,19 @@ public class ConsumerCycle<O> implements Cycle<O,Void> {
 
   @Override
   public void run() {
-    while(true) {
-      O arg = duplex.output().pull();
-      try {
-        if(timeout.get() >= 0) {
-          long tm = timeout.getAndSet(-1L);
-          if(tm > 0) locked(()->suspend.await(tm, TimeUnit.MILLISECONDS));
-          else locked(suspend::await);
-        }
-        fun.accept(arg);
-      } catch(Exception e) {
-        duplex.input().error(e);
+    try {
+      while(!duplex.isClosed() && until.apply(duplex)) {
+        suspend.get().suspend();
+        fun.exec();
       }
-      if(!duplex.output().available()) break;
+    } 
+    catch(Exception e) {
+      e.printStackTrace();
+      duplex.input().error(e);
     }
-    locked(join::signalAll);
+    finally {
+      locked(join::signalAll);
+    }
   }
 
 }
