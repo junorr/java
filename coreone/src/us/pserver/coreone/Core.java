@@ -21,8 +21,12 @@
 
 package us.pserver.coreone;
 
+import java.lang.ref.PhantomReference;
+import java.lang.ref.ReferenceQueue;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import us.pserver.coreone.ex.CycleException;
 
 /**
  *
@@ -38,16 +42,26 @@ public class Core {
   
   private final ForkJoinPool pool;
   
+  private final ReferenceQueue references;
+  
+  private final AtomicInteger refcount;
+  
+  private PhantomReference<Cycle<?,?>> ref;
+  
   
   private Core() {
     running = new AtomicBoolean(true);
     int cores = Runtime.getRuntime().availableProcessors() * 4;
     pool = new ForkJoinPool(cores);
+    references = new ReferenceQueue();
+    refcount = new AtomicInteger(0);
   }
   
   
   public <I,O> void execute(Cycle<I,O> cycle) {
     if(running.get()) {
+      refcount.incrementAndGet();
+      ref = new PhantomReference(cycle, references);
       pool.execute(cycle);
     }
   }
@@ -58,9 +72,25 @@ public class Core {
   }
   
   
+  private void dereference() {
+    try {
+      if(references.remove(100) != null) {
+        System.out.printf("* dereference( %d )%n", refcount.decrementAndGet());
+      }
+    }
+    catch(InterruptedException e) {
+      throw new CycleException(e.toString(), e);
+    }
+  }
+  
+  
   public void waitShutdown() {
     running.set(false);
     pool.shutdown();
+    while(refcount.get() > 0) {
+      dereference();
+    }
+    pool.shutdownNow();
   }
   
   

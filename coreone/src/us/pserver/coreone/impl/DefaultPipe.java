@@ -26,9 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import us.pserver.coreone.Cycle;
 import us.pserver.coreone.Pipe;
 import us.pserver.coreone.ex.PipeOperationException;
 
@@ -41,6 +39,8 @@ public class DefaultPipe<T> implements Pipe<T> {
   
   public static final int DEFAULT_PULL_TIMEOUT = 100;
   
+  public static final int DEFAULT_PIPE_SIZE = 50;
+  
 
   private final LinkedBlockingDeque<T> queue;
   
@@ -51,11 +51,19 @@ public class DefaultPipe<T> implements Pipe<T> {
   private final List<Consumer<T>> consumers;
   
   
-  public DefaultPipe() {
-    queue = new LinkedBlockingDeque<>(15);
+  public DefaultPipe(int pipeSize) {
+    if(pipeSize < 1) {
+      throw new IllegalArgumentException("Bad pipe size (< 1)");
+    }
+    queue = new LinkedBlockingDeque<>(pipeSize);
     closed = new AtomicBoolean(false);
     this.errors = new CopyOnWriteArrayList<>();
     this.consumers = new CopyOnWriteArrayList<>();
+  }
+  
+  
+  public DefaultPipe() {
+    this(DEFAULT_PIPE_SIZE);
   }
 
 

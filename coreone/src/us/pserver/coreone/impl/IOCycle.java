@@ -99,10 +99,12 @@ public class IOCycle<O,I> implements Cycle<O,I> {
   @Override
   public void run() {
     try {
-      while(!duplex.output().isClosed() && !duplex.input().isClosed()) {
+      while(true) {
+        if(duplex.output().isClosed()) break;
         O in = duplex.output().pull();
         suspend.get().suspend();
         I out = fun.apply(in); 
+        if(duplex.output().isClosed()) break;
         duplex.input().push(out);
       }
     }
@@ -112,6 +114,7 @@ public class IOCycle<O,I> implements Cycle<O,I> {
     }
     finally {
       locked(join::signalAll);
+      System.out.println("* IOCycle.out");
     }
   }
 

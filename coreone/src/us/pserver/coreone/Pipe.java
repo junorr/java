@@ -57,6 +57,10 @@ public interface Pipe<T> extends AutoCloseable, Closeable {
     return new DefaultPipe<>();
   }
   
+  public static <U> Pipe<U> newPipe(int pipeSize) {
+    return new DefaultPipe<>(pipeSize);
+  }
+  
   public static Pipe<Void> newVoidPipe() {
     return new DummyPipe();
   }

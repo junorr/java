@@ -21,6 +21,7 @@
 
 package us.pserver.coreone.test;
 
+import us.pserver.coreone.Core;
 import us.pserver.coreone.Cycle;
 import us.pserver.coreone.Duplex;
 
@@ -42,11 +43,12 @@ public class TestCycle {
     db.input().onAvailable(System.out::println);
     db.input().onError(System.err::println);
     for(int i = 1; i <= 20; i++) {
-      System.out.println("- da.output.push: "+ i+ " - "+ da.output().push(i));
-      System.out.println("- db.output.push: "+ i+ " - "+ db.output().push(i));
+      System.out.println("- pushing: "+ i+ " - "+ da.output().push(i)+ " -");
+      db.output().push(i);
     }
     da.close();
     db.close();
+    Core.get().waitShutdown();
   }
   
 }
