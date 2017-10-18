@@ -22,7 +22,6 @@
 package us.pserver.coreone.test;
 
 import us.pserver.coreone.Core;
-import us.pserver.coreone.Cycle;
 import us.pserver.coreone.Duplex;
 
 /**
@@ -33,22 +32,23 @@ import us.pserver.coreone.Duplex;
 public class TestCycle {
 
   
-  public static void main(String[] args) {
-    Duplex<String,Object> da = Cycle.of(s->{return String.format("%s: >>> %s <<<", Thread.currentThread().getName(), s);}).start();
-    Duplex<String,Object> db = Cycle.of(s->{return String.format("%s: >>> %s <<<", Thread.currentThread().getName(), s);}).start();
+  public static void main(String[] args) throws InterruptedException {
+    Duplex<String,Object> da = Core.cycle(s->{return String.format("%s: >>> %s <<<", Thread.currentThread().getName(), s);}).start();
+    Duplex<String,Object> db = Core.cycle(s->{return String.format("%s: >>> %s <<<", Thread.currentThread().getName(), s);}).start();
     
-    da.cycle().suspend(1000);
+    da.cycle().suspend();
     da.input().onAvailable(System.out::println);
     da.input().onError(System.err::println);
     db.input().onAvailable(System.out::println);
     db.input().onError(System.err::println);
     for(int i = 1; i <= 20; i++) {
-      System.out.println("- pushing: "+ i+ " - "+ da.output().push(i)+ " -");
-      db.output().push(i);
+      System.out.println("- pushing: "+ i+ "  -  ("+ da.output().push(i)+ ","+ db.output().push(i)+ ")");
     }
-    da.close();
-    db.close();
-    Core.get().waitShutdown();
+    da.closeOnEmpty();
+    db.closeOnEmpty();
+    Thread.sleep(1000);
+    da.cycle().resume();
+    Core.INSTANCE.waitShutdown();
   }
   
 }

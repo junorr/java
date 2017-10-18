@@ -21,47 +21,64 @@
 
 package us.pserver.coreone;
 
-import java.lang.ref.PhantomReference;
-import java.lang.ref.ReferenceQueue;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Phaser;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import us.pserver.coreone.ex.CycleException;
+import java.util.function.Function;
+import us.pserver.coreone.impl.ConsumerCycle;
+import us.pserver.coreone.impl.DefaultPipe;
+import us.pserver.coreone.impl.IOCycle;
+import us.pserver.coreone.impl.RepeatableConsumerCycle;
+import us.pserver.coreone.impl.RepeatableSupplierCycle;
+import us.pserver.coreone.impl.RepeatableTaskCycle;
+import us.pserver.coreone.impl.SupplierCycle;
+import us.pserver.coreone.impl.TaskCycle;
+import us.pserver.fun.ThrowableConsumer;
+import us.pserver.fun.ThrowableFunction;
+import us.pserver.fun.ThrowableSupplier;
+import us.pserver.fun.ThrowableTask;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public class Core {
+public enum Core {
+  
+  INSTANCE;
 
-  public static final Core instance = new Core();
-  
-  
   private final AtomicBoolean running;
   
   private final ForkJoinPool pool;
   
-  private final ReferenceQueue references;
+  private final Phaser phaser;
   
-  private final AtomicInteger refcount;
-  
-  private PhantomReference<Cycle<?,?>> ref;
+  private final AtomicInteger pipeSize;
   
   
   private Core() {
     running = new AtomicBoolean(true);
     int cores = Runtime.getRuntime().availableProcessors() * 4;
     pool = new ForkJoinPool(cores);
-    references = new ReferenceQueue();
-    refcount = new AtomicInteger(0);
+    phaser = new Phaser(1);
+    pipeSize = new AtomicInteger(DefaultPipe.DEFAULT_PIPE_SIZE);
+  }
+  
+  
+  public Core setPipeSize(int newSize) {
+    pipeSize.set(newSize);
+    return INSTANCE;
+  }
+  
+  
+  public int getPipeSize() {
+    return pipeSize.get();
   }
   
   
   public <I,O> void execute(Cycle<I,O> cycle) {
     if(running.get()) {
-      refcount.incrementAndGet();
-      ref = new PhantomReference(cycle, references);
       pool.execute(cycle);
     }
   }
@@ -72,25 +89,10 @@ public class Core {
   }
   
   
-  private void dereference() {
-    try {
-      if(references.remove(100) != null) {
-        System.out.printf("* dereference( %d )%n", refcount.decrementAndGet());
-      }
-    }
-    catch(InterruptedException e) {
-      throw new CycleException(e.toString(), e);
-    }
-  }
-  
-  
   public void waitShutdown() {
     running.set(false);
     pool.shutdown();
-    while(refcount.get() > 0) {
-      dereference();
-    }
-    pool.shutdownNow();
+    phaser.arriveAndAwaitAdvance();
   }
   
   
@@ -100,8 +102,69 @@ public class Core {
   }
   
   
-  public static Core get() {
-    return instance;
+  
+  
+  
+  public static <A,B> Cycle<B,A> cycle(ThrowableFunction<B,A> fun) {
+    return new IOCycle(fun, INSTANCE.phaser);
+  }
+  
+  public static <A> Cycle<Void,A> cycle(ThrowableSupplier<A> sup) {
+    return new SupplierCycle(sup, INSTANCE.phaser);
+  }
+  
+  public static <B> Cycle<B,Void> cycle(ThrowableConsumer<B> cs) {
+    return new ConsumerCycle(cs, INSTANCE.phaser);
+  }
+  
+  public static Cycle<Void,Void> cycle(ThrowableTask tsk) {
+    return new TaskCycle(tsk, INSTANCE.phaser);
+  }
+  
+  
+  
+  public static <A> Cycle<Void,A> repeatableCycle(ThrowableSupplier<A> sup, Function<Duplex<A,Void>,Boolean> until) {
+    return new RepeatableSupplierCycle(sup, until, INSTANCE.phaser);
+  }
+  
+  public static <A> Cycle<Void,A> repeatableCycle(ThrowableSupplier<A> sup, final int repeatCount) {
+    Function<Duplex<A,Void>,Boolean> until = new Function<Duplex<A,Void>,Boolean>() {
+      private final AtomicInteger count = new AtomicInteger(0);
+      @Override public Boolean apply(Duplex<A,Void> duplex) {
+        return count.getAndIncrement() < repeatCount;
+      }
+    };
+    return new RepeatableSupplierCycle(sup, until, INSTANCE.phaser);
+  }
+  
+  
+  public static <B> Cycle<B,Void> repeatableCycle(ThrowableConsumer<B> cs, Function<Duplex<Void,B>,Boolean> until) {
+    return new RepeatableConsumerCycle(cs, until, INSTANCE.phaser);
+  }
+  
+  public static <B> Cycle<B,Void> repeatableCycle(ThrowableConsumer<B> cs, final int repeatCount) {
+    Function<Duplex<Void,B>,Boolean> until = new Function<Duplex<Void,B>,Boolean>() {
+      private final AtomicInteger count = new AtomicInteger(0);
+      @Override public Boolean apply(Duplex<Void,B> duplex) {
+        return count.getAndIncrement() < repeatCount;
+      }
+    };
+    return new RepeatableConsumerCycle(cs, until, INSTANCE.phaser);
+  }
+  
+  
+  public static Cycle<Void,Void> repeatableCycle(ThrowableTask tsk, Function<Duplex<Void,Void>,Boolean> until) {
+    return new RepeatableTaskCycle(tsk, until, INSTANCE.phaser);
+  }
+  
+  public static Cycle<Void,Void> repeatableCycle(ThrowableTask tsk, final int repeatCount) {
+    Function<Duplex<Void,Void>,Boolean> until = new Function<Duplex<Void,Void>,Boolean>() {
+      private final AtomicInteger count = new AtomicInteger(0);
+      @Override public Boolean apply(Duplex<Void,Void> duplex) {
+        return count.getAndIncrement() < repeatCount;
+      }
+    };
+    return new RepeatableTaskCycle(tsk, until, INSTANCE.phaser);
   }
   
 }

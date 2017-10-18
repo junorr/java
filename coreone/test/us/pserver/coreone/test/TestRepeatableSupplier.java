@@ -22,7 +22,7 @@
 package us.pserver.coreone.test;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import us.pserver.coreone.Cycle;
+import us.pserver.coreone.Core;
 import us.pserver.coreone.Duplex;
 
 /**
@@ -35,7 +35,7 @@ public class TestRepeatableSupplier {
   
   public static void main(String[] args) {
     final AtomicInteger ai = new AtomicInteger(1);
-    Duplex<Integer,Void> da = Cycle.repeatable(ai::getAndIncrement, 20).start();
+    Duplex<Integer,Void> da = Core.repeatableCycle(ai::getAndIncrement, 20).start();
     
     for(int i = 0; i < 20; i++) {
       System.out.printf(">>> %d <<<%n", da.input().pull());

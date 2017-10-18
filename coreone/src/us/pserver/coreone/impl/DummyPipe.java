@@ -55,4 +55,6 @@ public class DummyPipe implements Pipe<Void> {
 
   @Override public void close() {}
   
+  @Override public void closeOnEmpty() {}
+  
 }

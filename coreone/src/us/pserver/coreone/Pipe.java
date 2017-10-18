@@ -49,20 +49,8 @@ public interface Pipe<T> extends AutoCloseable, Closeable {
   
   @Override public void close();
   
+  public void closeOnEmpty();
+  
   public boolean isClosed();
-  
-  
-  
-  public static <U> Pipe<U> newPipe() {
-    return new DefaultPipe<>();
-  }
-  
-  public static <U> Pipe<U> newPipe(int pipeSize) {
-    return new DefaultPipe<>(pipeSize);
-  }
-  
-  public static Pipe<Void> newVoidPipe() {
-    return new DummyPipe();
-  }
   
 }

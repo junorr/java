@@ -39,6 +39,11 @@ public interface Duplex<I,O> extends AutoCloseable {
     input().close(); output().close();
   }
   
+  public default void closeOnEmpty() {
+    input().closeOnEmpty(); 
+    output().closeOnEmpty();
+  }
+  
   public default boolean isClosed() {
     return input().isClosed() && output().isClosed();
   }

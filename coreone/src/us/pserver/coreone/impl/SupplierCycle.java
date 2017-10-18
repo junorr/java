@@ -21,16 +21,10 @@
 
 package us.pserver.coreone.impl;
 
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.Phaser;
 import us.pserver.coreone.Core;
-import us.pserver.coreone.Cycle;
 import us.pserver.coreone.Duplex;
-import us.pserver.coreone.ex.CycleException;
-import us.pserver.fun.Rethrow;
 import us.pserver.fun.ThrowableSupplier;
-import us.pserver.fun.ThrowableTask;
 import us.pserver.tools.NotNull;
 
 /**
@@ -38,61 +32,25 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public class SupplierCycle<I> implements Cycle<Void,I> {
+public class SupplierCycle<I> extends AbstractCycle<Void,I> {
   
   private final Duplex<I,Void> duplex;
   
   private final ThrowableSupplier<I> fun;
   
-  private final ReentrantLock lock;
   
-  private final Condition join;
-  
-  private final AtomicReference<Suspendable> suspend;
-  
-  
-  public SupplierCycle(ThrowableSupplier<I> fn) {
+  public SupplierCycle(ThrowableSupplier<I> fn, Phaser ph) {
+    super(ph);
     this.duplex = new InputOnlyDuplex(new DefaultPipe(), this);
     this.fun = NotNull.of(fn).getOrFail("Bad null ThrowableFunction");
-    this.lock = new ReentrantLock();
-    this.join = lock.newCondition();
-    this.suspend = new AtomicReference<>(new Suspendable());
   }
   
   
-  private void locked(ThrowableTask task) {
-    lock.lock();
-    try {
-      Rethrow.of(CycleException.class).apply(task);
-    }
-    finally {
-      lock.unlock();
-    }
-  }
-  
-
   @Override
   public Duplex<I,Void> start() {
-    Core.get().execute(this);
+    this.phaser.register();
+    Core.INSTANCE.execute(this);
     return duplex;
-  }
-
-
-  @Override
-  public void suspend(long timeout) {
-    suspend.set(new Suspendable(timeout));
-  }
-
-
-  @Override
-  public void resume() {
-    suspend.get().resume();
-  }
-
-
-  @Override
-  public void join() {
-    locked(join::await);
   }
 
 
@@ -108,6 +66,7 @@ public class SupplierCycle<I> implements Cycle<Void,I> {
     }
     finally {
       locked(join::signalAll);
+      this.phaser.arriveAndDeregister();
     }
   }
 

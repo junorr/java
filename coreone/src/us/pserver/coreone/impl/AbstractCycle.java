@@ -22,58 +22,74 @@
 package us.pserver.coreone.impl;
 
 import java.util.concurrent.Phaser;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import us.pserver.coreone.Core;
+import us.pserver.coreone.Cycle;
 import us.pserver.coreone.Duplex;
-import us.pserver.fun.ThrowableFunction;
+import us.pserver.coreone.ex.CycleException;
+import us.pserver.fun.Rethrow;
+import us.pserver.fun.ThrowableTask;
 import us.pserver.tools.NotNull;
+
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public class IOCycle<O,I> extends AbstractCycle<O,I> {
+public abstract class AbstractCycle<O,I> implements Cycle<O,I> {
   
-  private final Duplex<I,O> duplex;
+  protected final ReentrantLock lock;
   
-  private final ThrowableFunction<O,I> fun;
+  protected final Condition join;
+  
+  protected final AtomicReference<Suspendable> suspend;
+  
+  protected final Phaser phaser;
   
   
-  public IOCycle(ThrowableFunction<O,I> fn, Phaser ph) {
-    super(ph);
-    this.duplex = new DefaultDuplex(new DefaultPipe(), new DefaultPipe(), this);
-    this.fun = NotNull.of(fn).getOrFail("Bad null ThrowableFunction");
+  protected AbstractCycle(Phaser ph) {
+    this.phaser = NotNull.of(ph).getOrFail("Bad null Phaser");
+    this.lock = new ReentrantLock();
+    this.join = lock.newCondition();
+    this.suspend = new AtomicReference<>(new Suspendable());
   }
   
   
-  @Override
-  public Duplex<I,O> start() {
-    phaser.register();
-    Core.INSTANCE.execute(this);
-    return duplex;
-  }
-
-
-  @Override
-  public void run() {
+  protected void locked(ThrowableTask task) {
+    lock.lock();
     try {
-      while(true) {
-        if(duplex.output().isClosed()) break;
-        O in = duplex.output().pull();
-        suspend.get().suspend();
-        I out = fun.apply(in); 
-        if(duplex.input().isClosed()) break;
-        duplex.input().push(out);
-      }
-    }
-    catch(Exception e) {
-      e.printStackTrace();
-      duplex.input().error(e);
+      Rethrow.of(CycleException.class).apply(task);
     }
     finally {
-      locked(join::signalAll);
-      phaser.arriveAndDeregister();
+      lock.unlock();
     }
+  }
+  
+
+  @Override
+  public void join() {
+    locked(join::await);
+  }
+  
+
+  @Override
+  public void suspend(long timeout) {
+    this.suspend.set(new Suspendable(timeout));
+  }
+
+
+  @Override
+  public void suspend() {
+    this.suspend(0);
+  }
+
+
+  @Override
+  public void resume() {
+    suspend.get().resume();
   }
 
 }

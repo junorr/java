@@ -46,6 +46,8 @@ public class DefaultPipe<T> implements Pipe<T> {
   
   private final AtomicBoolean closed;
   
+  private final AtomicBoolean closeOnEmpty;
+  
   private final List<Consumer<Throwable>> errors;
   
   private final List<Consumer<T>> consumers;
@@ -57,6 +59,7 @@ public class DefaultPipe<T> implements Pipe<T> {
     }
     queue = new LinkedBlockingDeque<>(pipeSize);
     closed = new AtomicBoolean(false);
+    closeOnEmpty = new AtomicBoolean(false);
     this.errors = new CopyOnWriteArrayList<>();
     this.consumers = new CopyOnWriteArrayList<>();
   }
@@ -96,16 +99,25 @@ public class DefaultPipe<T> implements Pipe<T> {
       throw new PipeOperationException("Pipe is closed");
     }
   }
+  
+  
+  private boolean canClose() {
+    return closeOnEmpty.get() && !available();
+  }
 
 
   @Override
   public T pull() {
-    this.checkClosed();
+    checkClosed();
     T polled = null;
     try {
-      while(polled == null && !closed.get()) {
-        polled = queue.pollFirst(DEFAULT_PULL_TIMEOUT, TimeUnit.MILLISECONDS);
+      while(polled == null && !isClosed() && !canClose()) {
+        polled = queue.pollFirst(
+            DEFAULT_PULL_TIMEOUT, 
+            TimeUnit.MILLISECONDS
+        );
       }
+      if(canClose()) close();
       return polled;
     } 
     catch(InterruptedException e) {
@@ -116,12 +128,17 @@ public class DefaultPipe<T> implements Pipe<T> {
 
   @Override
   public boolean push(T val) {
-    this.checkClosed();
+    if(isClosed()) {
+      throw new PipeOperationException("Pipe is closed");
+    }
     try {
       boolean offerOk = !consumers.isEmpty();
       if(offerOk) consumers.forEach(c->c.accept(val));
       while(!closed.get() && !offerOk) {
-        offerOk = queue.offerLast(val, DEFAULT_PULL_TIMEOUT, TimeUnit.MILLISECONDS);
+        offerOk = queue.offerLast(val, 
+            DEFAULT_PULL_TIMEOUT, 
+            TimeUnit.MILLISECONDS
+        );
       }
       return offerOk;
     } 
@@ -146,6 +163,12 @@ public class DefaultPipe<T> implements Pipe<T> {
   @Override
   public void close() {
     closed.set(true);
+  }
+  
+  
+  @Override
+  public void closeOnEmpty() {
+    closeOnEmpty.set(true);
   }
   
   

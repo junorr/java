@@ -21,15 +21,10 @@
 
 package us.pserver.coreone.impl;
 
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.Phaser;
 import java.util.function.Function;
 import us.pserver.coreone.Core;
-import us.pserver.coreone.Cycle;
 import us.pserver.coreone.Duplex;
-import us.pserver.coreone.ex.CycleException;
-import us.pserver.fun.Rethrow;
 import us.pserver.fun.ThrowableTask;
 import us.pserver.tools.NotNull;
 
@@ -38,64 +33,28 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public class RepeatableTaskCycle implements Cycle<Void,Void> {
+public class RepeatableTaskCycle extends AbstractCycle<Void,Void> {
   
   private final Duplex<Void,Void> duplex;
   
   private final ThrowableTask fun;
   
-  private final ReentrantLock lock;
-  
-  private final Condition join;
-  
   private final Function<Duplex<Void,Void>,Boolean> until;
   
-  private final AtomicReference<Suspendable> suspend;
   
-  
-  public RepeatableTaskCycle(ThrowableTask fn, Function<Duplex<Void,Void>,Boolean> until) {
+  public RepeatableTaskCycle(ThrowableTask fn, Function<Duplex<Void,Void>,Boolean> until, Phaser ph) {
+    super(ph);
     this.duplex = new InputOnlyDuplex(new DefaultPipe(), this);
     this.fun = NotNull.of(fn).getOrFail("Bad null ThrowableFunction");
-    this.lock = new ReentrantLock();
-    this.join = lock.newCondition();
-    this.suspend = new AtomicReference(new Suspendable());
     this.until = NotNull.of(until).getOrFail("Bad null repeat condition Function<Duplex,Boolean>");
   }
   
   
-  private void locked(ThrowableTask task) {
-    lock.lock();
-    try {
-      Rethrow.of(CycleException.class).apply(task);
-    }
-    finally {
-      lock.unlock();
-    }
-  }
-  
-
   @Override
   public Duplex<Void,Void> start() {
-    Core.get().execute(this);
+    this.phaser.register();
+    Core.INSTANCE.execute(this);
     return duplex;
-  }
-
-
-  @Override
-  public void suspend(long timeout) {
-    suspend.set(new Suspendable(timeout));
-  }
-
-
-  @Override
-  public void resume() {
-    suspend.get().resume();
-  }
-
-
-  @Override
-  public void join() {
-    locked(join::await);
   }
 
 
@@ -113,6 +72,7 @@ public class RepeatableTaskCycle implements Cycle<Void,Void> {
     }
     finally {
       locked(join::signalAll);
+      this.phaser.arriveAndDeregister();
     }
   }
 
