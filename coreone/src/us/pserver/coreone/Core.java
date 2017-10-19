@@ -123,18 +123,25 @@ public enum Core {
   
   
   
+  
+  private static Function<Duplex<?,?>,Boolean> getRepeatCountFunction(final int repeatCount) {
+    return new Function<Duplex<?,?>,Boolean>() {
+      private final AtomicInteger count = new AtomicInteger(0);
+      @Override public Boolean apply(Duplex<?,?> duplex) {
+        return count.getAndIncrement() < repeatCount;
+      }
+    };
+  }
+  
   public static <A> Cycle<Void,A> repeatableCycle(ThrowableSupplier<A> sup, Function<Duplex<A,Void>,Boolean> until) {
     return new RepeatableSupplierCycle(sup, until, INSTANCE.phaser);
   }
   
   public static <A> Cycle<Void,A> repeatableCycle(ThrowableSupplier<A> sup, final int repeatCount) {
-    Function<Duplex<A,Void>,Boolean> until = new Function<Duplex<A,Void>,Boolean>() {
-      private final AtomicInteger count = new AtomicInteger(0);
-      @Override public Boolean apply(Duplex<A,Void> duplex) {
-        return count.getAndIncrement() < repeatCount;
-      }
-    };
-    return new RepeatableSupplierCycle(sup, until, INSTANCE.phaser);
+    return new RepeatableSupplierCycle(sup, 
+        getRepeatCountFunction(repeatCount), 
+        INSTANCE.phaser
+    );
   }
   
   
@@ -143,13 +150,10 @@ public enum Core {
   }
   
   public static <B> Cycle<B,Void> repeatableCycle(ThrowableConsumer<B> cs, final int repeatCount) {
-    Function<Duplex<Void,B>,Boolean> until = new Function<Duplex<Void,B>,Boolean>() {
-      private final AtomicInteger count = new AtomicInteger(0);
-      @Override public Boolean apply(Duplex<Void,B> duplex) {
-        return count.getAndIncrement() < repeatCount;
-      }
-    };
-    return new RepeatableConsumerCycle(cs, until, INSTANCE.phaser);
+    return new RepeatableConsumerCycle(cs, 
+        getRepeatCountFunction(repeatCount), 
+        INSTANCE.phaser
+    );
   }
   
   

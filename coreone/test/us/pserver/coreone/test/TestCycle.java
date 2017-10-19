@@ -44,10 +44,10 @@ public class TestCycle {
     for(int i = 1; i <= 20; i++) {
       System.out.println("- pushing: "+ i+ "  -  ("+ da.output().push(i)+ ","+ db.output().push(i)+ ")");
     }
+    Thread.sleep(2000);
+    da.cycle().resume();
     da.closeOnEmpty();
     db.closeOnEmpty();
-    Thread.sleep(1000);
-    da.cycle().resume();
     Core.INSTANCE.waitShutdown();
   }
   

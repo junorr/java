@@ -41,7 +41,7 @@ public class IOCycle<O,I> extends AbstractCycle<O,I> {
   
   public IOCycle(ThrowableFunction<O,I> fn, Phaser ph) {
     super(ph);
-    this.duplex = new DefaultDuplex(new DefaultPipe(), new DefaultPipe(), this);
+    this.duplex = new IODuplex(new DefaultPipe(), new DefaultPipe(), this);
     this.fun = NotNull.of(fn).getOrFail("Bad null ThrowableFunction");
   }
   

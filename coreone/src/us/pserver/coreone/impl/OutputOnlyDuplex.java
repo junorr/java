@@ -29,7 +29,7 @@ import us.pserver.coreone.Pipe;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public class OutputOnlyDuplex<O> extends DefaultDuplex<Void,O> {
+public class OutputOnlyDuplex<O> extends IODuplex<Void,O> {
   
   public OutputOnlyDuplex(Pipe<O> output, Cycle<O,Void> cycle) {
     super(new DummyPipe(), output, cycle);

@@ -28,7 +28,7 @@ import us.pserver.coreone.Cycle;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public class DummyDuplex extends DefaultDuplex<Void,Void> {
+public class DummyDuplex extends IODuplex<Void,Void> {
   
   public DummyDuplex(Cycle<Void,Void> cycle) {
     super(new DummyPipe(), new DummyPipe(), cycle);
