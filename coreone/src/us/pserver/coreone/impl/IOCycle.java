@@ -57,6 +57,7 @@ public class IOCycle<O,I> extends AbstractCycle<O,I> {
   @Override
   public void run() {
     try {
+      System.out.println(">>> IOCycle.entering while");
       while(true) {
         if(duplex.output().isClosed()) break;
         O in = duplex.output().pull();
@@ -65,6 +66,7 @@ public class IOCycle<O,I> extends AbstractCycle<O,I> {
         if(duplex.input().isClosed()) break;
         duplex.input().push(out);
       }
+      System.out.println(">>> IOCycle.done while!");
     }
     catch(Exception e) {
       e.printStackTrace();
@@ -73,6 +75,7 @@ public class IOCycle<O,I> extends AbstractCycle<O,I> {
     finally {
       locked(join::signalAll);
       phaser.arriveAndDeregister();
+      System.out.println(">>> IOCycle.finished: "+ phaser.getUnarrivedParties());
     }
   }
 

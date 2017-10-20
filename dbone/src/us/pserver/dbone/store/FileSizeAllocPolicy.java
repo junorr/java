@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 import us.pserver.tools.NotNull;
 
 /**
@@ -50,7 +51,7 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
   
   public FileSizeAllocPolicy(Path dbfile, long startPosition, int regionLength, int minRegionCount, int maxRegionCount) {
-    regions = Collections.synchronizedList(new ArrayList<>());
+    regions = new CopyOnWriteArrayList<>();
     this.file = NotNull.of(dbfile).getOrFail("Bad null file Path");
     if(startPosition < 0) {
       throw new IllegalArgumentException("Bad start position (< 0)");
@@ -83,7 +84,7 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
   
   @Override
-  public boolean discard(Region reg) {
+  public synchronized boolean discard(Region reg) {
     if(reg != null && regions.contains(reg)) {
       regions.remove(reg);
       return true;
@@ -93,7 +94,7 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
   
   @Override
-  public boolean offer(Region reg) {
+  public synchronized boolean offer(Region reg) {
     if(reg != null && !regions.contains(reg)) {
       regions.add(reg);
       return true;
@@ -103,7 +104,7 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
   
   @Override
-  public Region next() {
+  public synchronized Region next() {
     fillRegions();
     return regions.remove(0);
   }

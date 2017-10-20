@@ -66,7 +66,9 @@ public class TaskCycle extends AbstractCycle<Void,Void> {
     }
     finally {
       locked(join::signalAll);
+      //System.out.printf(">>> [%s] TaskCycle.unarrivedParties: %d%n", Thread.currentThread().getName(), phaser.getUnarrivedParties());
       this.phaser.arriveAndDeregister();
+      //System.out.printf(">>> [%s] TaskCycle.finished: %d%n", Thread.currentThread().getName(), phaser.getUnarrivedParties());
     }
   }
 

@@ -78,8 +78,9 @@ public enum Core {
   
   
   public <I,O> void execute(Cycle<I,O> cycle) {
-    if(running.get()) {
+      //System.out.println(">>> Core.execute( "+ cycle.getClass().getSimpleName()+ " )");
       pool.execute(cycle);
+    if(running.get()) {
     }
   }
   
@@ -89,10 +90,15 @@ public enum Core {
   }
   
   
+  public void waitRunningCycles() {
+    phaser.arriveAndAwaitAdvance();
+  }
+  
+  
   public void waitShutdown() {
     running.set(false);
-    pool.shutdown();
     phaser.arriveAndAwaitAdvance();
+    pool.shutdown();
   }
   
   

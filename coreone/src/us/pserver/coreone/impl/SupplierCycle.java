@@ -57,7 +57,9 @@ public class SupplierCycle<I> extends AbstractCycle<Void,I> {
   @Override
   public void run() {
     try {
+      //System.out.println(">>> SupplierCycle.suspending...");
       suspend.get().suspend();
+      //System.out.println(">>> SupplierCycle.resumed and pushing result");
       duplex.input().push(fun.supply());
     } 
     catch(Exception e) {
@@ -67,6 +69,7 @@ public class SupplierCycle<I> extends AbstractCycle<Void,I> {
     finally {
       locked(join::signalAll);
       this.phaser.arriveAndDeregister();
+      //System.out.println(">>> SupplierCycle.finished: "+ phaser.getUnarrivedParties());
     }
   }
 

@@ -57,7 +57,9 @@ public class ConsumerCycle<O> extends AbstractCycle<O,Void> {
   @Override
   public void run() {
     try {
+      //System.out.println(">>> ConsumerCycle.suspending...");
       suspend.get().suspend();
+      //System.out.println(">>> ConsumerCycle.resumed");
       fun.accept(duplex.output().pull());
     } 
     catch(Exception e) {
@@ -67,6 +69,7 @@ public class ConsumerCycle<O> extends AbstractCycle<O,Void> {
     finally {
       locked(join::signalAll);
       this.phaser.arriveAndDeregister();
+      //System.out.println(">>> ConsumerCycle.finished: "+ phaser.getUnarrivedParties());
     }
   }
 
