@@ -21,7 +21,6 @@
 
 package us.pserver.coreone.impl;
 
-import java.util.concurrent.Phaser;
 import us.pserver.coreone.Core;
 import us.pserver.coreone.Duplex;
 import us.pserver.fun.ThrowableTask;
@@ -39,8 +38,8 @@ public class TaskCycle extends AbstractCycle<Void,Void> {
   private final ThrowableTask fun;
   
   
-  public TaskCycle(ThrowableTask fn, Phaser ph) {
-    super(ph);
+  public TaskCycle(ThrowableTask fn, CountDown cd) {
+    super(cd);
     this.duplex = new InputOnlyDuplex(new DefaultPipe(), this);
     this.fun = NotNull.of(fn).getOrFail("Bad null ThrowableTask");
   }
@@ -48,7 +47,7 @@ public class TaskCycle extends AbstractCycle<Void,Void> {
   
   @Override
   public Duplex<Void,Void> start() {
-    this.phaser.register();
+    countDown.increment();
     Core.INSTANCE.execute(this);
     return duplex;
   }
@@ -66,9 +65,8 @@ public class TaskCycle extends AbstractCycle<Void,Void> {
     }
     finally {
       locked(join::signalAll);
-      //System.out.printf(">>> [%s] TaskCycle.unarrivedParties: %d%n", Thread.currentThread().getName(), phaser.getUnarrivedParties());
-      this.phaser.arriveAndDeregister();
-      //System.out.printf(">>> [%s] TaskCycle.finished: %d%n", Thread.currentThread().getName(), phaser.getUnarrivedParties());
+      countDown.decrement();
+      //System.out.printf(">>> [%s] TaskCycle.finished: %d%n", Thread.currentThread().getName(), countDown.decrement());
     }
   }
 

@@ -66,7 +66,6 @@ public class AsyncVolume2 implements Volume {
     while(sbuf.hasRemaining()) {
       Block b2 = storage.allocate();
       blk.setNext(b2.region());
-      blk.buffer().flip();
       storage.put(blk);
       Block.copy(sbuf, b2.buffer());
       blk = b2;
@@ -105,7 +104,14 @@ public class AsyncVolume2 implements Volume {
   private ObjectUID getUID(Block blk) {
     int uidLen = blk.buffer().getInt();
     int clsLen = blk.buffer().getInt();
-    //System.out.println("* Volume.objectUID: uidLen="+ uidLen+ ", clsLen="+ clsLen+ ", block="+ blk);
+    System.out.println("* Volume.objectUID: uidLen="+ uidLen+ ", clsLen="+ clsLen+ ", block="+ blk);
+    if(uidLen == 0) {
+      blk = storage.get(blk.region());
+      blk.buffer().position(0);
+      uidLen = blk.buffer().getInt();
+      clsLen = blk.buffer().getInt();
+      System.out.println("* Volume.objectUID: uidLen="+ uidLen+ ", clsLen="+ clsLen+ ", block="+ blk);
+    }
     byte[] buid = new byte[uidLen];
     byte[] bcls = new byte[clsLen];
     blk.buffer().get(buid);

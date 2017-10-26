@@ -19,43 +19,52 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.coreone.impl;
 
-import java.nio.ByteBuffer;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 26/10/2017
  */
-public interface Block {
-
-  public Region region();
+public class CountDown {
   
-  public ByteBuffer buffer();
+  private final AtomicLong count;
   
-  public Optional<Region> next();
-  
-  public Block setNext(Region r);
+  private final Suspendable susp;
   
   
-  public static void copy(ByteBuffer from, ByteBuffer to) {
-    int minLen = Math.min(from.remaining(), to.remaining());
-    if(from.hasArray()) {
-      to.put(
-          from.array(), 
-          from.arrayOffset(), 
-          minLen
-      );
-      if(minLen < 1) throw new RuntimeException("BOOOMM!!");
-      from.position(from.position() + minLen);
-    }
-    else {
-      byte[] bs = new byte[minLen];
-      from.get(bs);
-      to.put(bs);
-    }
+  public CountDown(long value) {
+    count = new AtomicLong(value);
+    susp = new Suspendable(0);
+  }
+  
+  
+  public CountDown() {
+    this(0);
+  }
+  
+  
+  public boolean isFinished() {
+    return count.get() == 0;
+  }
+  
+  
+  public long increment() {
+    return count.incrementAndGet();
+  }
+  
+  
+  public long decrement() {
+    long l = count.decrementAndGet();
+    if(l == 0) susp.resume();
+    return l;
+  }
+  
+  
+  public void waitCountDown() {
+    susp.suspend();
   }
 
 }

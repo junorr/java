@@ -21,7 +21,6 @@
 
 package us.pserver.coreone.impl;
 
-import java.util.concurrent.Phaser;
 import us.pserver.coreone.Core;
 import us.pserver.coreone.Duplex;
 import us.pserver.fun.ThrowableFunction;
@@ -39,8 +38,8 @@ public class IOCycle<O,I> extends AbstractCycle<O,I> {
   private final ThrowableFunction<O,I> fun;
   
   
-  public IOCycle(ThrowableFunction<O,I> fn, Phaser ph) {
-    super(ph);
+  public IOCycle(ThrowableFunction<O,I> fn, CountDown cd) {
+    super(cd);
     this.duplex = new IODuplex(new DefaultPipe(), new DefaultPipe(), this);
     this.fun = NotNull.of(fn).getOrFail("Bad null ThrowableFunction");
   }
@@ -48,7 +47,7 @@ public class IOCycle<O,I> extends AbstractCycle<O,I> {
   
   @Override
   public Duplex<I,O> start() {
-    phaser.register();
+    countDown.increment();
     Core.INSTANCE.execute(this);
     return duplex;
   }
@@ -57,7 +56,7 @@ public class IOCycle<O,I> extends AbstractCycle<O,I> {
   @Override
   public void run() {
     try {
-      System.out.println(">>> IOCycle.entering while");
+      //System.out.println(">>> IOCycle.entering while");
       while(true) {
         if(duplex.output().isClosed()) break;
         O in = duplex.output().pull();
@@ -66,7 +65,7 @@ public class IOCycle<O,I> extends AbstractCycle<O,I> {
         if(duplex.input().isClosed()) break;
         duplex.input().push(out);
       }
-      System.out.println(">>> IOCycle.done while!");
+      //System.out.println(">>> IOCycle.done while!");
     }
     catch(Exception e) {
       e.printStackTrace();
@@ -74,8 +73,8 @@ public class IOCycle<O,I> extends AbstractCycle<O,I> {
     }
     finally {
       locked(join::signalAll);
-      phaser.arriveAndDeregister();
-      System.out.println(">>> IOCycle.finished: "+ phaser.getUnarrivedParties());
+      countDown.decrement();
+      //System.out.println(">>> IOCycle.finished: "+ countDown.decrement());
     }
   }
 

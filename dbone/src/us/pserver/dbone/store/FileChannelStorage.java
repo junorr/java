@@ -23,8 +23,11 @@ package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.IntFunction;
+import static us.pserver.dbone.store.AbstractStorage.HEADER_REGION;
 import us.pserver.tools.NotNull;
 
 /**
@@ -32,14 +35,28 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 18/09/2017
  */
-public class FileChannelStorage extends AbstractStorage {
+public class FileChannelStorage implements Storage {
   
-  private final FileChannel channel;
+  public final String FREE_REGIONS_FILE = "freeblocks.dat";
+  
+  public final String STORE_FILE = "store.dat";
   
   
-  protected FileChannelStorage(FileChannel channel, int blockSize, IntFunction<ByteBuffer> allocPolicy, RegionAllocPolicy ralloc) {
-    super(blockSize, allocPolicy, ralloc);
-    this.channel = NotNull.of(channel).getOrFail("Bad null FileChannel");
+  private final Path storedir;
+  
+  private final List<Region> freeblocks;
+  
+  private FileChannel channel;
+  
+  private FileChannel freech;
+  
+  
+  protected FileChannelStorage(Path dir) {
+    if(dir == null || !Files.isDirectory(dir)) {
+      throw new IllegalArgumentException("Bad directory Path");
+    }
+    this.storedir = dir;
+    freeblocks = new ArrayList<>();
   }
   
   

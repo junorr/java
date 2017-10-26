@@ -19,43 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.coreone.test;
 
-import java.nio.ByteBuffer;
-import java.util.Optional;
+import us.pserver.coreone.impl.CountDown;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 26/10/2017
  */
-public interface Block {
+public class TestCountDown {
 
-  public Region region();
-  
-  public ByteBuffer buffer();
-  
-  public Optional<Region> next();
-  
-  public Block setNext(Region r);
-  
-  
-  public static void copy(ByteBuffer from, ByteBuffer to) {
-    int minLen = Math.min(from.remaining(), to.remaining());
-    if(from.hasArray()) {
-      to.put(
-          from.array(), 
-          from.arrayOffset(), 
-          minLen
-      );
-      if(minLen < 1) throw new RuntimeException("BOOOMM!!");
-      from.position(from.position() + minLen);
-    }
-    else {
-      byte[] bs = new byte[minLen];
-      from.get(bs);
-      to.put(bs);
-    }
+  public static void main(String[] args) {
+    CountDown cd = new CountDown(500);
+    new Thread(()->{
+      long l = 0;
+      while((l = cd.decrement()) > 0) {
+        //System.out.printf("- decrement: %d%n", l);
+        try { Thread.sleep(10); }
+        catch(InterruptedException e) {}
+      }
+    }).start();
+    System.out.println("* wait count down...");
+    cd.waitCountDown();
+    System.out.println("* done!");
   }
-
+  
 }

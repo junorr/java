@@ -22,11 +22,11 @@
 package us.pserver.coreone;
 
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.Phaser;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import us.pserver.coreone.impl.ConsumerCycle;
+import us.pserver.coreone.impl.CountDown;
 import us.pserver.coreone.impl.DefaultPipe;
 import us.pserver.coreone.impl.IOCycle;
 import us.pserver.coreone.impl.RepeatableConsumerCycle;
@@ -52,7 +52,7 @@ public enum Core {
   
   private final ForkJoinPool pool;
   
-  private final Phaser phaser;
+  private final CountDown countDown;
   
   private final AtomicInteger pipeSize;
   
@@ -61,7 +61,7 @@ public enum Core {
     running = new AtomicBoolean(true);
     int cores = Runtime.getRuntime().availableProcessors() * 4;
     pool = new ForkJoinPool(cores);
-    phaser = new Phaser(1);
+    countDown = new CountDown();
     pipeSize = new AtomicInteger(DefaultPipe.DEFAULT_PIPE_SIZE);
   }
   
@@ -91,13 +91,13 @@ public enum Core {
   
   
   public void waitRunningCycles() {
-    phaser.arriveAndAwaitAdvance();
+    countDown.waitCountDown();
   }
   
   
   public void waitShutdown() {
     running.set(false);
-    phaser.arriveAndAwaitAdvance();
+    countDown.waitCountDown();
     pool.shutdown();
   }
   
@@ -112,19 +112,19 @@ public enum Core {
   
   
   public static <A,B> Cycle<B,A> cycle(ThrowableFunction<B,A> fun) {
-    return new IOCycle(fun, INSTANCE.phaser);
+    return new IOCycle(fun, INSTANCE.countDown);
   }
   
   public static <A> Cycle<Void,A> cycle(ThrowableSupplier<A> sup) {
-    return new SupplierCycle(sup, INSTANCE.phaser);
+    return new SupplierCycle(sup, INSTANCE.countDown);
   }
   
   public static <B> Cycle<B,Void> cycle(ThrowableConsumer<B> cs) {
-    return new ConsumerCycle(cs, INSTANCE.phaser);
+    return new ConsumerCycle(cs, INSTANCE.countDown);
   }
   
   public static Cycle<Void,Void> cycle(ThrowableTask tsk) {
-    return new TaskCycle(tsk, INSTANCE.phaser);
+    return new TaskCycle(tsk, INSTANCE.countDown);
   }
   
   
@@ -140,31 +140,31 @@ public enum Core {
   }
   
   public static <A> Cycle<Void,A> repeatableCycle(ThrowableSupplier<A> sup, Function<Duplex<A,Void>,Boolean> until) {
-    return new RepeatableSupplierCycle(sup, until, INSTANCE.phaser);
+    return new RepeatableSupplierCycle(sup, until, INSTANCE.countDown);
   }
   
   public static <A> Cycle<Void,A> repeatableCycle(ThrowableSupplier<A> sup, final int repeatCount) {
     return new RepeatableSupplierCycle(sup, 
         getRepeatCountFunction(repeatCount), 
-        INSTANCE.phaser
+        INSTANCE.countDown
     );
   }
   
   
   public static <B> Cycle<B,Void> repeatableCycle(ThrowableConsumer<B> cs, Function<Duplex<Void,B>,Boolean> until) {
-    return new RepeatableConsumerCycle(cs, until, INSTANCE.phaser);
+    return new RepeatableConsumerCycle(cs, until, INSTANCE.countDown);
   }
   
   public static <B> Cycle<B,Void> repeatableCycle(ThrowableConsumer<B> cs, final int repeatCount) {
     return new RepeatableConsumerCycle(cs, 
         getRepeatCountFunction(repeatCount), 
-        INSTANCE.phaser
+        INSTANCE.countDown
     );
   }
   
   
   public static Cycle<Void,Void> repeatableCycle(ThrowableTask tsk, Function<Duplex<Void,Void>,Boolean> until) {
-    return new RepeatableTaskCycle(tsk, until, INSTANCE.phaser);
+    return new RepeatableTaskCycle(tsk, until, INSTANCE.countDown);
   }
   
   public static Cycle<Void,Void> repeatableCycle(ThrowableTask tsk, final int repeatCount) {
@@ -174,7 +174,7 @@ public enum Core {
         return count.getAndIncrement() < repeatCount;
       }
     };
-    return new RepeatableTaskCycle(tsk, until, INSTANCE.phaser);
+    return new RepeatableTaskCycle(tsk, until, INSTANCE.countDown);
   }
   
 }

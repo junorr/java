@@ -47,11 +47,11 @@ public abstract class AbstractCycle<O,I> implements Cycle<O,I> {
   
   protected final AtomicReference<Suspendable> suspend;
   
-  protected final Phaser phaser;
+  protected final CountDown countDown;
   
   
-  protected AbstractCycle(Phaser ph) {
-    this.phaser = NotNull.of(ph).getOrFail("Bad null Phaser");
+  protected AbstractCycle(CountDown cd) {
+    this.countDown = NotNull.of(cd).getOrFail("Bad null CountDown");
     this.lock = new ReentrantLock();
     this.join = lock.newCondition();
     this.suspend = new AtomicReference<>(new Suspendable());

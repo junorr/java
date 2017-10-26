@@ -19,43 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.coreone.test;
 
-import java.nio.ByteBuffer;
-import java.util.Optional;
+import java.text.DecimalFormat;
+import java.util.concurrent.locks.LockSupport;
+import us.pserver.tools.timer.Timer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 26/10/2017
  */
-public interface Block {
+public class TestParkNanos {
 
-  public Region region();
   
-  public ByteBuffer buffer();
-  
-  public Optional<Region> next();
-  
-  public Block setNext(Region r);
-  
-  
-  public static void copy(ByteBuffer from, ByteBuffer to) {
-    int minLen = Math.min(from.remaining(), to.remaining());
-    if(from.hasArray()) {
-      to.put(
-          from.array(), 
-          from.arrayOffset(), 
-          minLen
-      );
-      if(minLen < 1) throw new RuntimeException("BOOOMM!!");
-      from.position(from.position() + minLen);
-    }
-    else {
-      byte[] bs = new byte[minLen];
-      from.get(bs);
-      to.put(bs);
-    }
+  public static void main(String[] args) {
+    DecimalFormat df = new DecimalFormat("0,000");
+    long nanos = 10_000_000;
+    Timer tm = new Timer.Nanos().start();
+    LockSupport.parkNanos(nanos);
+    System.out.println("-- time to park "+ df.format(nanos)+ " nanos "+ tm.stop()+ " --");
   }
-
+  
 }

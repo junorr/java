@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import us.pserver.coreone.Core;
 import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.volume.DefaultVolume;
 import us.pserver.dbone.serial.JavaSerializationService;
@@ -65,14 +66,18 @@ public class AsyncChannelCabinetBenchmark {
   
   //public static List<Record> putValues(AsyncVolume2 vol, List<MappedValue> lst) {
   public static List<Record> putValues(AsyncVolume2 vol, List<StoreUnit> lst) {
-    List<Record> recs = new CopyOnWriteArrayList<>();
+    List<Record> recs = new ArrayList<>(1_000_000);
     Timer tm = new Timer.Nanos().start();
-    while(!lst.isEmpty()) {
-      StoreUnit val = lst.remove(0);
-      recs.add(vol.put(val));
+    Timer t = new Timer.Nanos().start();
+    for(StoreUnit su : lst) {
+      recs.add(vol.put(su));
+      tm.lap();
     }
     tm.stop();
     System.out.println("-- time to put "+ recs.size()+ " elements "+ tm+ " --");
+    tm.clear().start();
+    Core.INSTANCE.waitRunningCycles();
+    System.out.println("-- time waiting running cycles "+ tm.stop()+ " --");
     return recs;
   }
   

@@ -39,8 +39,8 @@ public class ConsumerCycle<O> extends AbstractCycle<O,Void> {
   private final ThrowableConsumer<O> fun;
   
   
-  public ConsumerCycle(ThrowableConsumer<O> fn, Phaser ph) {
-    super(ph);
+  public ConsumerCycle(ThrowableConsumer<O> fn, CountDown cd) {
+    super(cd);
     this.duplex = new OutputOnlyDuplex(new DefaultPipe(), this);
     this.fun = NotNull.of(fn).getOrFail("Bad null ThrowableFunction");
   }
@@ -48,7 +48,7 @@ public class ConsumerCycle<O> extends AbstractCycle<O,Void> {
   
   @Override
   public Duplex<Void,O> start() {
-    this.phaser.register();
+    countDown.increment();
     Core.INSTANCE.execute(this);
     return duplex;
   }
@@ -68,8 +68,8 @@ public class ConsumerCycle<O> extends AbstractCycle<O,Void> {
     }
     finally {
       locked(join::signalAll);
-      this.phaser.arriveAndDeregister();
-      //System.out.println(">>> ConsumerCycle.finished: "+ phaser.getUnarrivedParties());
+      countDown.decrement();
+      //System.out.println(">>> ConsumerCycle.finished: "+ countDown.decrement());
     }
   }
 

@@ -21,7 +21,6 @@
 
 package us.pserver.coreone.impl;
 
-import java.util.concurrent.Phaser;
 import us.pserver.coreone.Core;
 import us.pserver.coreone.Duplex;
 import us.pserver.fun.ThrowableSupplier;
@@ -39,8 +38,8 @@ public class SupplierCycle<I> extends AbstractCycle<Void,I> {
   private final ThrowableSupplier<I> fun;
   
   
-  public SupplierCycle(ThrowableSupplier<I> fn, Phaser ph) {
-    super(ph);
+  public SupplierCycle(ThrowableSupplier<I> fn, CountDown cd) {
+    super(cd);
     this.duplex = new InputOnlyDuplex(new DefaultPipe(), this);
     this.fun = NotNull.of(fn).getOrFail("Bad null ThrowableFunction");
   }
@@ -48,7 +47,7 @@ public class SupplierCycle<I> extends AbstractCycle<Void,I> {
   
   @Override
   public Duplex<I,Void> start() {
-    this.phaser.register();
+    countDown.increment();
     Core.INSTANCE.execute(this);
     return duplex;
   }
@@ -68,8 +67,8 @@ public class SupplierCycle<I> extends AbstractCycle<Void,I> {
     }
     finally {
       locked(join::signalAll);
-      this.phaser.arriveAndDeregister();
-      //System.out.println(">>> SupplierCycle.finished: "+ phaser.getUnarrivedParties());
+      countDown.decrement();
+      //System.out.println(">>> SupplierCycle.finished: "+ countDown.decrement());
     }
   }
 
