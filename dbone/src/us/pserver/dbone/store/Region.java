@@ -22,6 +22,7 @@
 package us.pserver.dbone.store;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import us.pserver.tools.NotNull;
 
 /**
@@ -46,6 +47,8 @@ public interface Region extends Comparable, Serializable {
   public int intEnd();
   
   public boolean contains(Region r);
+  
+  public ByteBuffer toByteBuffer();
   
   @Override
   public default int compareTo(Object r) {
@@ -107,6 +110,15 @@ public interface Region extends Comparable, Serializable {
     @Override
     public boolean contains(Region r) {
       return this.offset <= r.offset() && this.end() >= r.end();
+    }
+    
+    @Override
+    public ByteBuffer toByteBuffer() {
+      ByteBuffer buf = ByteBuffer.allocate(BYTES);
+      buf.putLong(offset);
+      buf.putLong(length);
+      buf.flip();
+      return buf;
     }
     
     @Override

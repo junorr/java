@@ -198,7 +198,7 @@ public class TestAsyncVolume {
       
       System.out.println("* warming up 20x...");
       disableStdOut();
-      for(int i = 0; i < 20; i++) {
+      for(int i = 0; i < 10_000; i++) {
         execute(serial);
       }
       enableStdOut();

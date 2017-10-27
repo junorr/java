@@ -21,21 +21,21 @@
 
 package us.pserver.dbone.store;
 
-import java.util.Iterator;
+import java.nio.ByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/10/2017
+ * @version 0.0 - 27/10/2017
  */
-public interface RegionAllocPolicy {
+public interface NStorage {
+
+  public Region put(ByteBuffer buf) throws StorageException;
   
-  public boolean offer(Region reg);
+  public ByteBuffer get(Region reg) throws StorageException;
   
-  public boolean discard(Region reg);
+  public long size() throws StorageException;
   
-  public Region next();
-  
-  public Iterator<Region> freeRegions();
+  public void close() throws StorageException;
   
 }

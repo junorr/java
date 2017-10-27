@@ -34,6 +34,14 @@ public interface Storage extends Closeable {
   
   public void put(Block blk) throws StorageException;
   
+  public Block allocate();
+  
+  public void reallocate(Block blk) throws StorageException;
+  
+  public void deallocate(Block blk) throws StorageException;
+  
+  public int getBlockSize();
+  
   public long size();
   
   @Override public void close() throws StorageException;

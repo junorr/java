@@ -23,11 +23,8 @@ package us.pserver.dbone.store;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import static us.pserver.dbone.store.AbstractStorage.HEADER_REGION;
+import java.util.Iterator;
+import java.util.function.IntFunction;
 import us.pserver.tools.NotNull;
 
 /**
@@ -35,28 +32,25 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 18/09/2017
  */
-public class FileChannelStorage implements Storage {
+public class FileChannelStorage extends AbstractStorage {
   
-  public final String FREE_REGIONS_FILE = "freeblocks.dat";
-  
-  public final String STORE_FILE = "store.dat";
+  private final FileChannel channel;
   
   
-  private final Path storedir;
-  
-  private final List<Region> freeblocks;
-  
-  private FileChannel channel;
-  
-  private FileChannel freech;
+  protected FileChannelStorage(FileChannel channel, int blockSize, IntFunction<ByteBuffer> allocPolicy, RegionAllocPolicy ralloc) {
+    super(blockSize, allocPolicy, ralloc);
+    this.channel = NotNull.of(channel).getOrFail("Bad null FileChannel");
+  }
   
   
-  protected FileChannelStorage(Path dir) {
-    if(dir == null || !Files.isDirectory(dir)) {
-      throw new IllegalArgumentException("Bad directory Path");
+  @Override
+  public synchronized Block allocate() {
+    Block blk = super.allocate();
+    if(blk.region().end() > size()) {
+      StorageException.rethrow(()->channel.write(blk.buffer(), blk.region().offset()));
     }
-    this.storedir = dir;
-    freeblocks = new ArrayList<>();
+    blk.buffer().position(0);
+    return blk;
   }
   
   
@@ -93,9 +87,11 @@ public class FileChannelStorage implements Storage {
     ByteBuffer buf = blk.buffer();
     buf.putShort((short)0);
     buf.putInt(blockSize);
-    List<Region> regs = ralloc.freeRegions();
-    for(Region r : regs) {
+    
+    Iterator<Region> regs = ralloc.freeRegions();
+    while(regs.hasNext()) {
       if(buf.remaining() < Region.BYTES) break;
+      Region r = regs.next();
       buf.putLong(r.offset());
       buf.putLong(r.length());
     }

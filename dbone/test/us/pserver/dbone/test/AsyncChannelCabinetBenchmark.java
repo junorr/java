@@ -29,10 +29,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import us.pserver.coreone.Core;
 import us.pserver.dbone.ObjectUID;
-import us.pserver.dbone.volume.DefaultVolume;
 import us.pserver.dbone.serial.JavaSerializationService;
 import us.pserver.dbone.serial.SerializationService;
 import us.pserver.dbone.volume.Record;
@@ -41,6 +39,7 @@ import us.pserver.dbone.store.StorageFactory;
 import us.pserver.dbone.volume.AsyncVolume2;
 import us.pserver.dbone.volume.StoreUnit;
 import us.pserver.dbone.volume.Volume;
+import us.pserver.tools.Sleeper;
 import us.pserver.tools.timer.Timer;
 
 /**
@@ -78,6 +77,7 @@ public class AsyncChannelCabinetBenchmark {
     tm.clear().start();
     Core.INSTANCE.waitRunningCycles();
     System.out.println("-- time waiting running cycles "+ tm.stop()+ " --");
+    Sleeper.of(5000).sleep();
     return recs;
   }
   
@@ -109,27 +109,32 @@ public class AsyncChannelCabinetBenchmark {
   
   public static void main(String[] args) throws IOException, InterruptedException {
     Path dbpath = Paths.get("/home/juno/dbone-channel.dat");
-    Storage stg = StorageFactory.newFactory()
-        //.setFile("/storage/dbone-channel.dat")
-        .setFile(dbpath)
-        .setBlockSize(1024)
-        .create();
-    
-    SerializationService serial = new JavaSerializationService();
-    //SerializationService serial = new FSTSerializationService();
-    //SerializationService serial = new GsonSerializationService();
-    //SerializationService serial = new JsonIoSerializationService();
-    
-    //AsyncVolume vol = new AsyncVolume(stg);
-    AsyncVolume2 vol = new AsyncVolume2(stg);
-    
-    List<Record> recs = putValues(vol, genValues(serial));
-    //Thread.sleep(2000);
-    getOrdered(vol, recs);
-    getShuffled(vol, recs);
-    //Engine.get().waitShutdown();
-    vol.close();
-    Files.delete(dbpath);
+    try {
+      Storage stg = StorageFactory.newFactory()
+          //.setFile("/storage/dbone-channel.dat")
+          .setFile(dbpath)
+          .setBlockSize(1024)
+          .create();
+
+      SerializationService serial = new JavaSerializationService();
+      //SerializationService serial = new FSTSerializationService();
+      //SerializationService serial = new GsonSerializationService();
+      //SerializationService serial = new JsonIoSerializationService();
+
+      //AsyncVolume vol = new AsyncVolume(stg);
+      AsyncVolume2 vol = new AsyncVolume2(stg);
+
+      List<Record> recs = putValues(vol, genValues(serial));
+      //Thread.sleep(10000);
+      System.out.println("* reading...");
+      getOrdered(vol, recs);
+      getShuffled(vol, recs);
+      //Engine.get().waitShutdown();
+      vol.close();
+    }
+    finally {
+      Files.delete(dbpath);
+    }
   }
   
 }

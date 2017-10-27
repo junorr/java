@@ -56,12 +56,13 @@ public class AsyncVolume2 implements Volume {
     Core.cycle(()->{
       put(unit.objectUID(), block);
       put(unit.value(), block);
+      getUID(block);
     }).start();
     return Record.of(block.region(), unit.objectUID());
   }
   
 
-  private void put(ByteBuffer sbuf, Block blk) throws StorageException {
+  private void put2(ByteBuffer sbuf, Block blk) throws StorageException {
     Block.copy(sbuf, blk.buffer());
     while(sbuf.hasRemaining()) {
       Block b2 = storage.allocate();
@@ -71,6 +72,19 @@ public class AsyncVolume2 implements Volume {
       blk = b2;
     }
     this.zeroFill(blk.buffer());
+    storage.put(blk);
+  }
+  
+  
+  private void put(ByteBuffer sbuf, Block blk) throws StorageException {
+    if(!sbuf.hasRemaining()) return;
+    Block.copy(sbuf, blk.buffer());
+    this.zeroFill(sbuf);
+    if(sbuf.hasRemaining()) {
+      Block b2 = storage.allocate();
+      blk.setNext(b2.region());
+      put2(sbuf, b2);
+    }
     storage.put(blk);
   }
   
@@ -88,7 +102,6 @@ public class AsyncVolume2 implements Volume {
   
   
   private void zeroFill(ByteBuffer buf) {
-    if(buf.hasArray()) return;
     byte[] bs = new byte[buf.remaining()];
     buf.put(bs);
   }
@@ -102,16 +115,17 @@ public class AsyncVolume2 implements Volume {
   
   
   private ObjectUID getUID(Block blk) {
+    blk.buffer().position(0);
     int uidLen = blk.buffer().getInt();
     int clsLen = blk.buffer().getInt();
-    System.out.println("* Volume.objectUID: uidLen="+ uidLen+ ", clsLen="+ clsLen+ ", block="+ blk);
-    if(uidLen == 0) {
-      blk = storage.get(blk.region());
-      blk.buffer().position(0);
-      uidLen = blk.buffer().getInt();
-      clsLen = blk.buffer().getInt();
-      System.out.println("* Volume.objectUID: uidLen="+ uidLen+ ", clsLen="+ clsLen+ ", block="+ blk);
-    }
+    //System.out.println("* Volume.objectUID: uidLen="+ uidLen+ ", clsLen="+ clsLen+ ", block="+ blk);
+    //if(uidLen == 0) {
+      //blk = storage.get(blk.region());
+      //blk.buffer().position(0);
+      //uidLen = blk.buffer().getInt();
+      //clsLen = blk.buffer().getInt();
+      //System.out.println("* Volume.objectUID: uidLen="+ uidLen+ ", clsLen="+ clsLen+ ", block="+ blk);
+    //}
     byte[] buid = new byte[uidLen];
     byte[] bcls = new byte[clsLen];
     blk.buffer().get(buid);
