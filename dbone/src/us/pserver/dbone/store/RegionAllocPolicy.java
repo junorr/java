@@ -21,7 +21,7 @@
 
 package us.pserver.dbone.store;
 
-import java.util.List;
+import java.util.Iterator;
 
 /**
  *
@@ -36,8 +36,6 @@ public interface RegionAllocPolicy {
   
   public Region next();
   
-  public Region peekNext();
-  
-  public List<Region> freeRegions();
+  public Iterator<Region> freeRegions();
   
 }

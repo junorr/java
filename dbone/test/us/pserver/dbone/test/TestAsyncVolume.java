@@ -92,7 +92,7 @@ public class TestAsyncVolume {
         //.setBlockSize(1024)
         .setFile(dbpath)
         .concurrent();
-    Storage fs = Rethrow.unckecked().apply(()->fact.create());
+    Storage fs = Rethrow.unchecked().apply(()->fact.create());
     return new AsyncVolume(new DefaultVolume(fs));
   }
   
@@ -164,14 +164,13 @@ public class TestAsyncVolume {
   public static void putCallback(Timer tm, Record rc) {
     System.out.println("-- time to volume.put "+ tm.stop()+ " --");
     System.out.println(rc);
-    Timer t2 = new Timer.Nanos().start();
-    volume.getAsync(rc, t2, TestAsyncVolume::getCallback);
+    volume.getAsync(rc, new Timer.Nanos().start(), TestAsyncVolume::getCallback);
   }
   
   
   public static void getCallback(Timer tm, StoreUnit su) {
     System.out.println("-- time to volume.get "+ tm.stop()+ " --");
-    //System.out.println(su);
+    System.out.println(su);
   }
   
   
@@ -199,7 +198,7 @@ public class TestAsyncVolume {
       
       System.out.println("* warming up 20x...");
       disableStdOut();
-      for(int i = 0; i < 20; i++) {
+      for(int i = 0; i < 10_000; i++) {
         execute(serial);
       }
       enableStdOut();

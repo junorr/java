@@ -40,18 +40,17 @@ public interface Block {
   public Block setNext(Region r);
   
   
-  public static void copy(ByteBuffer from, ByteBuffer to) {
-    int minLen = Math.min(from.remaining(), to.remaining());
+  public static void copy(ByteBuffer from, ByteBuffer to, int len) {
     if(from.hasArray()) {
       to.put(
           from.array(), 
           from.arrayOffset(), 
-          minLen
+          len
       );
-      from.position(from.position() + minLen);
+      from.position(from.position() + len);
     }
     else {
-      byte[] bs = new byte[minLen];
+      byte[] bs = new byte[len];
       from.get(bs);
       to.put(bs);
     }

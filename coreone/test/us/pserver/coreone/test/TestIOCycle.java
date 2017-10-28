@@ -21,8 +21,9 @@
 
 package us.pserver.coreone.test;
 
-import us.pserver.coreone.Cycle;
+import us.pserver.coreone.Core;
 import us.pserver.coreone.Duplex;
+import us.pserver.tools.Sleeper;
 
 /**
  *
@@ -33,12 +34,16 @@ public class TestIOCycle {
 
   
   public static void main(String[] args) {
-    Duplex<String,Object> du1 = Cycle.of(i->{return String.format("1>>> %d <<<1", i);}).start();
-    Duplex<String,Object> du2 = Cycle.of(i->{return String.format("2>>> %d <<<2", i);}).start();
+    Duplex<String,Object> du1 = Core.cycle(i->{return String.format("1>>> %d <<<1", i);}).start();
+    Duplex<String,Object> du2 = Core.cycle(i->{return String.format("2>>> %d <<<2", i);}).start();
     
-    du1.
+    du1.cycle().suspend(2000);
     for(int i = 0; i < 5; i++) {
-      
+      du1.output().push(i);
+      du2.output().push(i);
+      System.out.println(du1.input().pull());
+      System.out.println(du2.input().pull());
+      Sleeper.of(1000).sleep();
     }
   }
   

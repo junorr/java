@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+
 #
 # Start-up script for ProGuard -- free class file shrinker, optimizer,
 # obfuscator, and preverifier for Java bytecode.

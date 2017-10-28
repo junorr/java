@@ -21,68 +21,21 @@
 
 package us.pserver.coreone;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import us.pserver.coreone.imple.ConsumerCycle;
-import us.pserver.coreone.imple.IOCycle;
-import us.pserver.coreone.imple.SupplierCycle;
-import us.pserver.coreone.imple.TaskCycle;
-import us.pserver.fun.ThrowableConsumer;
-import us.pserver.fun.ThrowableFunction;
-import us.pserver.fun.ThrowableSupplier;
-import us.pserver.fun.ThrowableTask;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public interface Cycle<I,O> extends Runnable {
+public interface Cycle<O,I> extends Runnable {
 
-  public Duplex<O,I> start();
+  public Duplex<I,O> start();
   
   public void suspend(long timeout);
+  
+  public void suspend();
   
   public void resume();
   
   public void join();
-  
-  
-  
-  public static <A,B> Cycle<A,B> of(ThrowableFunction<A,B> fun) {
-    return new IOCycle(fun);
-  }
-  
-  //public static <A,B> Cycle<B,A> of(Function<A,B> fun) {
-    //return of(ThrowableFunction.of(fun));
-  //}
-  
-  
-  public static <A> Cycle<Void,A> of(ThrowableSupplier<A> sup) {
-    return new SupplierCycle(sup);
-  }
-  
-  //public static <A> Cycle<Void,A> of(Supplier<A> sup) {
-    //return of(ThrowableSupplier.of(sup));
-  //}
-  
-  
-  public static <B> Cycle<B,Void> of(ThrowableConsumer<B> cs) {
-    return new ConsumerCycle(cs);
-  }
-  
-  //public static <B> Cycle<B,Void> of(Consumer<B> cs) {
-    //return of(ThrowableConsumer.of(cs));
-  //}
-  
-  
-  public static Cycle<Void,Void> of(ThrowableTask tsk) {
-    return new TaskCycle(tsk);
-  }
-  
-  //public static Cycle<Void,Void> of(Runnable run) {
-    //return of(ThrowableTask.of(run));
-  //}
   
 }

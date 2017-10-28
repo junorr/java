@@ -23,10 +23,9 @@ package us.pserver.dbone.store;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.concurrent.LinkedBlockingDeque;
 import us.pserver.tools.NotNull;
 
 /**
@@ -36,7 +35,7 @@ import us.pserver.tools.NotNull;
  */
 public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
-  private final List<Region> regions;
+  private final LinkedBlockingDeque<Region> regions;
   
   private final Path file;
   
@@ -50,7 +49,7 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
   
   public FileSizeAllocPolicy(Path dbfile, long startPosition, int regionLength, int minRegionCount, int maxRegionCount) {
-    regions = Collections.synchronizedList(new ArrayList<>());
+    regions = new LinkedBlockingDeque<>(maxRegionCount);
     this.file = NotNull.of(dbfile).getOrFail("Bad null file Path");
     if(startPosition < 0) {
       throw new IllegalArgumentException("Bad start position (< 0)");
@@ -83,7 +82,7 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
   
   @Override
-  public boolean discard(Region reg) {
+  public synchronized boolean discard(Region reg) {
     if(reg != null && regions.contains(reg)) {
       regions.remove(reg);
       return true;
@@ -93,7 +92,7 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
   
   @Override
-  public boolean offer(Region reg) {
+  public synchronized boolean offer(Region reg) {
     if(reg != null && !regions.contains(reg)) {
       regions.add(reg);
       return true;
@@ -103,22 +102,15 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
   
   @Override
-  public Region next() {
+  public synchronized Region next() {
     fillRegions();
-    return regions.remove(0);
+    return StorageException.rethrow(regions::takeFirst);
   }
   
   
   @Override
-  public Region peekNext() {
-    fillRegions();
-    return regions.get(0);
-  }
-  
-  
-  @Override
-  public List<Region> freeRegions() {
-    return Collections.unmodifiableList(regions);
+  public Iterator<Region> freeRegions() {
+    return regions.iterator();
   }
   
   
@@ -173,9 +165,9 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
   public static class Builder {
     
-    public static final int DEFAULT_MIN_REGION_COUNT = 1;
+    public static final int DEFAULT_MIN_REGION_COUNT = 2;
     
-    public static final int DEFAULT_MAX_REGION_COUNT = 20;
+    public static final int DEFAULT_MAX_REGION_COUNT = 128;
     
     public static final int DEFAULT_REGION_LENGTH = 2048;
     

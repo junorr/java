@@ -23,11 +23,10 @@ package us.pserver.dbone.volume;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import us.pserver.coreone.Core;
+import us.pserver.coreone.Pipe;
 import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.store.StorageException;
-import us.pserver.fastgear.Engine;
-import us.pserver.fastgear.Gear;
-import us.pserver.fastgear.Wire;
 import us.pserver.tools.NotNull;
 
 /**
@@ -39,25 +38,28 @@ public class AsyncVolume implements Volume {
   
   private final Volume volume;
   
+  
   public AsyncVolume(Volume vol) {
     this.volume = NotNull.of(vol).getOrFail("Bad null Volume");
   }
   
   
   public void putAsync(StoreUnit unit, Consumer<Record> cs) {
-    Gear.of(()->volume.put(unit)).start().input().onAvailable(cs);
+    Core.cycle(()->volume.put(unit)).start().input().onAvailable(cs);
   }
   
   
-  public Wire<Record> putAsync(StoreUnit unit) {
-    return Gear.of(()->volume.put(unit)).start().input();
+  public Pipe<Record> putAsync(StoreUnit unit) {
+    return Core.cycle(()->volume.put(unit)).start().input();
   }
   
   
   public <T> void putAsync(StoreUnit unit, T attachment, BiConsumer<T,Record> bic) {
-    Gear.of(()->{
+    //System.out.printf("!!! AsyncVolume.putAsync: %s%n", Core.cycle(()->{
+    Core.cycle(()->{
       Record r = volume.put(unit);
       bic.accept(attachment, r);
+    //}).start().getClass().getName());
     }).start();
   }
   
@@ -69,19 +71,21 @@ public class AsyncVolume implements Volume {
   
   
   public void getAsync(Record rec, Consumer<StoreUnit> cs) {
-    Gear.of(()->volume.get(rec)).start().input().onAvailable(cs);
+    Core.cycle(()->volume.get(rec)).start().input().onAvailable(cs);
   }
   
   
-  public Wire<StoreUnit> getAsync(Record rec) {
-    return Gear.of(()->volume.get(rec)).start().input();
+  public Pipe<StoreUnit> getAsync(Record rec) {
+    return Core.cycle(()->volume.get(rec)).start().input();
   }
 
 
   public <T> void getAsync(Record rec, T attachment, BiConsumer<T,StoreUnit> bic) {
-    Gear.of(()->{
+    //System.out.printf("!!! AsyncVolume.getAsync: %s%n", Core.cycle(()->{
+    Core.cycle(()->{
       StoreUnit s = volume.get(rec);
       bic.accept(attachment, s);
+    //}).start().getClass().getName());
     }).start();
   }
   
@@ -100,7 +104,7 @@ public class AsyncVolume implements Volume {
 
   @Override
   public void close() {
-    Engine.get().waitShutdown();
+    Core.INSTANCE.waitShutdown();
     volume.close();
   }
 

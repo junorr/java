@@ -26,12 +26,26 @@ package us.pserver.coreone;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/10/2017
  */
-public interface Duplex<I,O> {
+public interface Duplex<I,O> extends AutoCloseable {
 
   public Pipe<I> input();
   
   public Pipe<O> output();
   
   public Cycle<O,I> cycle();
+  
+  @Override
+  public default void close() {
+    input().close(); output().close();
+  }
+  
+  public default void closeOnEmpty() {
+    input().closeOnEmpty(); 
+    output().closeOnEmpty();
+  }
+  
+  public default boolean isClosed() {
+    return input().isClosed() && output().isClosed();
+  }
   
 }
