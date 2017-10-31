@@ -22,7 +22,6 @@
 package us.pserver.dbone.serial;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.nio.ByteBuffer;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.UTF8String;

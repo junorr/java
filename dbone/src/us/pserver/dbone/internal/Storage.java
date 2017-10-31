@@ -33,6 +33,8 @@ public interface Storage extends AutoCloseable {
 
   public Region put(ByteBuffer buf) throws StorageException;
   
+  public Region put(ByteBuffer ... buf) throws Exception;
+  
   public ByteBuffer get(Region reg) throws StorageException;
   
   public long size() throws StorageException;

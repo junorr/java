@@ -133,6 +133,33 @@ public class FileStorage implements Storage {
   
   
   @Override
+  public Region put(ByteBuffer ... bufs) throws Exception {
+    if(bufs == null || bufs.length < 1) return Region.of(-1, -1);
+    Region reg = ralloc.next();
+    Region cur = reg;
+    for(ByteBuffer buf : bufs) {
+      while(buf.hasRemaining()) {
+        int len = Math.min(writelenght, buf.remaining());
+        int lim = buf.limit();
+        buf.limit(buf.position() + len);
+        channel.position(cur.offset());
+        channel.write(buf);
+        buf.limit(lim);
+        if(buf.hasRemaining()) {
+          cur = ralloc.next();
+          channel.write(cur.toByteBuffer());
+        }
+        else {
+          channel.write(ByteBuffer.allocate(writelenght - len));
+        }
+      }//while
+      
+    }//for
+    return reg;
+  }
+  
+  
+  @Override
   public Region put(ByteBuffer buf) throws StorageException {
     if(!buf.hasRemaining()) return Region.of(-1, -1);
     Region reg = ralloc.next();
