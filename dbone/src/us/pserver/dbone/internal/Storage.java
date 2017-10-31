@@ -19,28 +19,27 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone;
+package us.pserver.dbone.internal;
 
-import java.util.List;
-import java.util.function.Predicate;
+import java.nio.ByteBuffer;
+import us.pserver.dbone.store.StorageException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/09/2017
+ * @version 0.0 - 27/10/2017
  */
-public interface DBOne {
+public interface Storage extends AutoCloseable {
 
-  public ObjectUID store(Object obj);
+  public Region put(ByteBuffer buf) throws StorageException;
   
-  public List<ObjectUID> store(Object ... objs);
+  public ByteBuffer get(Region reg) throws StorageException;
   
-  public boolean remove(ObjectUID uid);
+  public long size() throws StorageException;
   
-  public boolean update(ObjectUID uid, Object obj);
+  @Override 
+  public void close() throws StorageException;
   
-  public <T> T get(ObjectUID uid);
-  
-  public List<ObjectUID> select(Predicate prd);
+  public ByteBuffer allocateBuffer(int size);
   
 }

@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 import us.pserver.coreone.Core;
 import us.pserver.dbone.store.Block;
 import us.pserver.dbone.ObjectUID;
-import us.pserver.dbone.store.Region;
+import us.pserver.dbone.internal.Region;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.tools.NotNull;

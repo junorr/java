@@ -19,28 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone;
+package us.pserver.dbone.internal;
 
-import java.util.List;
-import java.util.function.Predicate;
+import java.util.Iterator;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/09/2017
+ * @version 0.0 - 10/10/2017
  */
-public interface DBOne {
-
-  public ObjectUID store(Object obj);
+public interface RegionAllocPolicy {
   
-  public List<ObjectUID> store(Object ... objs);
+  public boolean offer(Region reg);
   
-  public boolean remove(ObjectUID uid);
+  public boolean discard(Region reg);
   
-  public boolean update(ObjectUID uid, Object obj);
+  public Region next();
   
-  public <T> T get(ObjectUID uid);
-  
-  public List<ObjectUID> select(Predicate prd);
+  public Iterator<Region> freeRegions();
   
 }

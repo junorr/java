@@ -21,6 +21,7 @@
 
 package us.pserver.dbone.store;
 
+import us.pserver.dbone.internal.Region;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;

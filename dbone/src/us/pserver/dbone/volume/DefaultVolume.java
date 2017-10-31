@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 import us.pserver.dbone.store.Block;
 import us.pserver.dbone.ObjectUID;
-import us.pserver.dbone.store.Region;
+import us.pserver.dbone.internal.Region;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.tools.NotNull;

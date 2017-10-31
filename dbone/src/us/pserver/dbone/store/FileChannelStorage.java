@@ -21,6 +21,8 @@
 
 package us.pserver.dbone.store;
 
+import us.pserver.dbone.internal.Region;
+import us.pserver.dbone.internal.RegionAllocPolicy;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Iterator;

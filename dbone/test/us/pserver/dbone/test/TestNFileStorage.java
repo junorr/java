@@ -19,50 +19,48 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.serial;
+package us.pserver.dbone.test;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import org.nustaq.serialization.FSTConfiguration;
-import us.pserver.dbone.store.StorageException;
-import us.pserver.tools.io.ByteBufferInputStream;
-import us.pserver.tools.io.ByteBufferOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import us.pserver.dbone.internal.FileStorage;
+import us.pserver.dbone.internal.Region;
+import us.pserver.dbone.store.StorageFactory;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 18/09/2017
+ * @version 0.0 - 30/10/2017
  */
-public class FSTSerializationService implements SerializationService {
-  
-  private final FSTConfiguration conf;
-  
-  public FSTSerializationService() {
-    this.conf = FSTConfiguration.createDefaultConfiguration();
-  }
+public class TestNFileStorage {
 
-  @Override
-  public byte[] serialize(Object obj) throws StorageException {
-    try (
-        ByteBufferOutputStream bos = new ByteBufferOutputStream();
-    ) {
-      conf.encodeToStream(bos, obj);
-      return bos.toByteArray();
-    }
-    catch(IOException e) {
-      throw new StorageException(e.toString(), e);
-    }
-  }
   
-  @Override
-  public Object deserialize(byte[] buf) throws StorageException {
+  public static void main(String[] args) throws IOException {
+    Path path = Paths.get("/home/juno/dbone/");
+    Path dbfile = path.resolve("storage.dat");
     try (
-        ByteBufferInputStream bis = new ByteBufferInputStream(ByteBuffer.wrap(buf));
+        FileStorage store = new FileStorage(path, 26, StorageFactory.ALLOC_POLICY_HEAP);
         ) {
-      return conf.decodeFromStream(bis);
-    }
-    catch(Exception e) {
-      throw new StorageException(e.toString(), e);
+      ByteBuffer buf = ByteBuffer.allocate(25);
+      for(int i = 0; i < 25; i++) {
+        buf.put((byte) i);
+      }
+      buf.flip();
+      Region r = store.put(buf);
+      System.out.println("* store.put(buf): "+ r);
+      r = Region.of(r.offset(), 2);
+      buf = store.get(r);
+      System.out.print("* store.get(r): ");
+      while(buf.hasRemaining()) {
+        System.out.printf(" %d", buf.get());
+      }
+      System.out.println();
+    } 
+    finally {
+      //Files.delete(dbfile);
     }
   }
   

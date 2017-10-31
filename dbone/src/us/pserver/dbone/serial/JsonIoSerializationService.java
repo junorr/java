@@ -35,38 +35,13 @@ import us.pserver.tools.UTF8String;
 public class JsonIoSerializationService implements SerializationService {
   
   @Override
-  public ByteBuffer serialize(Object obj) {
-    byte[] bobj = UTF8String.from(JsonWriter.objectToJson(obj)).getBytes();
-    ByteBuffer buf = ByteBuffer.allocate(bobj.length + Short.BYTES);
-    buf.putShort((short) bobj.length);
-    buf.put(bobj);
-    //System.out.print("=>>   serialize: ");
-    //print15bytes(buf);
-    buf.flip();
-    return buf;
+  public byte[] serialize(Object obj) {
+    return UTF8String.from(JsonWriter.objectToJson(obj)).getBytes();
   }
 
-  public static void print15bytes(ByteBuffer buf) {
-    int pos = buf.position();
-    int lim = buf.limit();
-    byte[] bs = new byte[15];
-    buf.position(0);
-    buf.limit(15);
-    buf.get(bs);
-    System.out.println(Arrays.toString(bs));
-    buf.limit(lim);
-    buf.position(pos);
-  }
-  
   @Override
-  public Object deserialize(ByteBuffer buf) {
-    //System.out.print("<<= deserialize: ");
-    //print15bytes(buf);
-    short iobj = buf.getShort();
-    //System.out.println("* GsonSerializationService.deserialize: buf.getShort()="+ icls+ ", buf.position()="+ buf.position());
-    byte[] bobj = new byte[iobj];
-    buf.get(bobj);
-    return JsonReader.jsonToJava(UTF8String.from(bobj).toString().trim());
+  public Object deserialize(byte[] buf) {
+    return JsonReader.jsonToJava(UTF8String.from(buf).toString().trim());
   }
 
 }

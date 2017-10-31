@@ -24,7 +24,7 @@ package us.pserver.dbone.volume;
 import us.pserver.dbone.ObjectUID;
 import java.io.Serializable;
 import java.util.Objects;
-import us.pserver.dbone.store.Region;
+import us.pserver.dbone.internal.Region;
 import us.pserver.tools.NotNull;
 
 /**

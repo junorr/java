@@ -19,28 +19,22 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone;
+package us.pserver.dbone.internal;
 
-import java.util.List;
-import java.util.function.Predicate;
+import us.pserver.dbone.store.StorageException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/09/2017
+ * @version 0.0 - 30/10/2017
  */
-public interface DBOne {
+public interface Volume extends AutoCloseable {
 
-  public ObjectUID store(Object obj);
+  public Region put(StoreUnit unit) throws StorageException;
   
-  public List<ObjectUID> store(Object ... objs);
+  public StoreUnit get(Region reg) throws StorageException;
   
-  public boolean remove(ObjectUID uid);
-  
-  public boolean update(ObjectUID uid, Object obj);
-  
-  public <T> T get(ObjectUID uid);
-  
-  public List<ObjectUID> select(Predicate prd);
+  @Override
+  public void close() throws StorageException;
   
 }

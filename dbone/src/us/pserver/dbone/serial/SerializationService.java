@@ -21,8 +21,6 @@
 
 package us.pserver.dbone.serial;
 
-import java.nio.ByteBuffer;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -30,8 +28,8 @@ import java.nio.ByteBuffer;
  */
 public interface SerializationService {
 
-  public ByteBuffer serialize(Object obj);
+  public byte[] serialize(Object obj);
   
-  public Object deserialize(ByteBuffer buf);
+  public Object deserialize(byte[] buf);
   
 }

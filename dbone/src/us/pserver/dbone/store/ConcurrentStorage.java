@@ -21,6 +21,7 @@
 
 package us.pserver.dbone.store;
 
+import us.pserver.dbone.internal.Region;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;

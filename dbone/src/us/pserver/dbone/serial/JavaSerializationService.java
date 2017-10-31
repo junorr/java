@@ -37,13 +37,13 @@ import us.pserver.tools.io.ByteBufferOutputStream;
 public class JavaSerializationService implements SerializationService {
 
   @Override
-  public ByteBuffer serialize(Object obj) throws StorageException {
+  public byte[] serialize(Object obj) throws StorageException {
     try (
         ByteBufferOutputStream bos = new ByteBufferOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
     ) {
       oos.writeObject(obj);
-      return bos.toByteBuffer();
+      return bos.toByteArray();
     }
     catch(IOException e) {
       throw new StorageException(e.toString(), e);
@@ -51,9 +51,9 @@ public class JavaSerializationService implements SerializationService {
   }
   
   @Override
-  public Object deserialize(ByteBuffer buf) throws StorageException {
+  public Object deserialize(byte[] buf) throws StorageException {
     try (
-        ByteBufferInputStream bis = new ByteBufferInputStream(buf);
+        ByteBufferInputStream bis = new ByteBufferInputStream(ByteBuffer.wrap(buf));
         ObjectInputStream ois = new ObjectInputStream(bis);
         ) {
       return ois.readObject();

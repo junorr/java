@@ -24,7 +24,7 @@ package us.pserver.dbone.serial;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
+import us.pserver.tools.NotNull;
 import us.pserver.tools.UTF8String;
 
 /**
@@ -37,50 +37,37 @@ public class GsonSerializationService implements SerializationService {
   private final Gson gson;
   
   public GsonSerializationService() {
-    gson = new GsonBuilder().create();
-  }
-
-  @Override
-  public ByteBuffer serialize(Object obj) {
-    //System.out.println("* GsonSerializationService.serialize *");
-    byte[] bcls = UTF8String.from(obj.getClass().getName()).getBytes();
-    byte[] bobj = UTF8String.from(gson.toJson(obj)).getBytes();
-    ByteBuffer buf = ByteBuffer.allocate(bcls.length + bobj.length + Short.BYTES);
-    buf.putShort((short) bcls.length);
-    buf.put(bcls);
-    buf.put(bobj);
-    //System.out.print("=>>   serialize: ");
-    //print15bytes(buf);
-    buf.flip();
-    return buf;
-  }
-
-  public static void print15bytes(ByteBuffer buf) {
-    int pos = buf.position();
-    int lim = buf.limit();
-    byte[] bs = new byte[15];
-    buf.position(0);
-    buf.limit(15);
-    buf.get(bs);
-    System.out.println(Arrays.toString(bs));
-    buf.limit(lim);
-    buf.position(pos);
+    this(new Gson());
   }
   
+  public GsonSerializationService(Gson gson) {
+    this.gson = NotNull.of(gson).getOrFail("Bad null Gson");
+  }
+
   @Override
-  public Object deserialize(ByteBuffer buf) {
-    //System.out.print("<<= deserialize: ");
-    //print15bytes(buf);
-    short icls = buf.getShort();
-    //System.out.println("* GsonSerializationService.deserialize: buf.getShort()="+ icls+ ", buf.position()="+ buf.position());
-    byte[] bcls = new byte[icls];
-    buf.get(bcls);
-    byte[] bobj = new byte[buf.remaining()];
-    buf.get(bobj);
+  public byte[] serialize(Object obj) {
+    byte[] bob = UTF8String.from(gson.toJson(obj)).getBytes();
+    byte[] cls = UTF8String.from(obj.getClass().getName()).getBytes();
+    ByteBuffer buf = ByteBuffer.allocate(cls.length + bob.length + Short.BYTES);
+    buf.putShort((short) cls.length);
+    buf.put(cls);
+    buf.put(bob);
+    return buf.array();
+  }
+
+  @Override
+  public Object deserialize(byte[] bs) {
+    ByteBuffer buf = ByteBuffer.wrap(bs);
+    short clen = buf.getShort();
+    byte[] cls = new byte[clen];
+    buf.get(cls);
+    byte[] bob = new byte[buf.remaining()];
+    buf.get(bob);
     try {
-      //System.out.println("* GsonSerializationService.deserialize: json: '"+ UTF8String.from(bobj).toString().trim()+ "'");
-      Class cls = Class.forName(UTF8String.from(bcls).toString());
-      return gson.fromJson(UTF8String.from(bobj).toString().trim(), cls);
+      return gson.fromJson(
+          UTF8String.from(bob).toString().trim(), 
+          Class.forName(UTF8String.from(cls).toString())
+      );
     }
     catch(ClassNotFoundException e) {
       throw new RuntimeException(e.toString(), e);

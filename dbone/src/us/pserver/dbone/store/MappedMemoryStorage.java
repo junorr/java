@@ -21,6 +21,7 @@
 
 package us.pserver.dbone.store;
 
+import us.pserver.dbone.internal.Region;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;

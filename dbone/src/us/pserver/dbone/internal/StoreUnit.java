@@ -19,28 +19,52 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone;
+package us.pserver.dbone.internal;
 
-import java.util.List;
-import java.util.function.Predicate;
+import us.pserver.dbone.ObjectUID;
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/09/2017
+ * @version 0.0 - 30/10/2017
  */
-public interface DBOne {
+public interface StoreUnit {
 
-  public ObjectUID store(Object obj);
+  public ObjectUID getUID();
   
-  public List<ObjectUID> store(Object ... objs);
+  public Object getObject();
   
-  public boolean remove(ObjectUID uid);
   
-  public boolean update(ObjectUID uid, Object obj);
+  public static StoreUnit of(ObjectUID uid, Object obj) {
+    return new DefStoreUnit(uid, obj);
+  }
   
-  public <T> T get(ObjectUID uid);
   
-  public List<ObjectUID> select(Predicate prd);
+  
+  
+  
+  public static class DefStoreUnit implements StoreUnit {
+    
+    private final Object obj;
+    
+    private final ObjectUID ouid;
+    
+    public DefStoreUnit(ObjectUID ouid, Object obj) {
+      this.ouid = NotNull.of(ouid).getOrFail("Bad null ObjectUID");
+      this.obj = NotNull.of(obj).getOrFail("Bad null Object");
+    }
+
+    @Override
+    public ObjectUID getUID() {
+      return ouid;
+    }
+
+    @Override
+    public Object getObject() {
+      return obj;
+    }
+  
+  }
   
 }

@@ -21,6 +21,7 @@
 
 package us.pserver.dbone.store;
 
+import us.pserver.dbone.internal.Region;
 import java.io.Closeable;
 
 /**
