@@ -137,24 +137,30 @@ public class FileStorage implements Storage {
     if(bufs == null || bufs.length < 1) return Region.of(-1, -1);
     Region reg = ralloc.next();
     Region cur = reg;
-    for(ByteBuffer buf : bufs) {
-      while(buf.hasRemaining()) {
-        int len = Math.min(writelenght, buf.remaining());
-        int lim = buf.limit();
-        buf.limit(buf.position() + len);
-        channel.position(cur.offset());
-        channel.write(buf);
-        buf.limit(lim);
-        if(buf.hasRemaining()) {
+    channel.position(cur.offset());
+    int remaining = writelenght;
+    int index = 0;
+    ByteBuffer buf = bufs[index];
+    
+    while(buf.hasRemaining()) {
+      int len = Math.min(remaining, buf.remaining());
+      int lim = buf.limit();
+      buf.limit(buf.position() + len);
+      channel.write(buf);
+      buf.limit(lim);
+      remaining = remaining - len;
+      if((index + 1) < bufs.length) {
+        if(remaining <= 0) {
           cur = ralloc.next();
           channel.write(cur.toByteBuffer());
+          channel.position(cur.offset());
+          remaining = writelenght;
         }
         else {
-          channel.write(ByteBuffer.allocate(writelenght - len));
+          buf = bufs[++index];
         }
-      }//while
-      
-    }//for
+      }
+    }
     return reg;
   }
   
