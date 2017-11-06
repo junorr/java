@@ -21,57 +21,57 @@
 
 package us.pserver.tools.io;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SeekableByteChannel;
-import java.util.LinkedList;
-import java.util.Queue;
-import us.pserver.tools.NotNull;
+import java.util.Arrays;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/11/2017
+ * @version 0.0 - 06/11/2017
  */
-public class BufferQueueChannel {
+public abstract class AbstractByteableNumber implements ByteableNumber {
 
-  private final Queue<ByteBuffer> queue;
+  protected final byte[] bytes;
   
-  private final SeekableByteChannel channel;
-  
-  
-  public BufferQueueChannel(SeekableByteChannel channel) {
-    this(channel, new LinkedList<>());
+  protected AbstractByteableNumber(int bytes) {
+    this.bytes = new byte[bytes];
   }
   
-  
-  public BufferQueueChannel(SeekableByteChannel channel, Queue<ByteBuffer> queue) {
-    this.channel = NotNull.of(channel).getOrFail("Bad null SeekableByteChannel");
-    this.queue = NotNull.of(queue).getOrFail("Bad null Queue");
+  @Override
+  public byte[] getBytes() {
+    return bytes;
   }
   
-  
-  public BufferQueueChannel add(ByteBuffer buf) {
-    if(buf != null && buf.hasRemaining()) {
-      queue.add(buf);
+  @Override
+  public ByteBuffer toByteBuffer() {
+    return ByteBuffer.wrap(bytes);
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 79 * hash + Arrays.hashCode(this.bytes);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
-    return this;
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final AbstractByteableNumber other = (AbstractByteableNumber) obj;
+    return Arrays.equals(this.bytes, other.bytes);
   }
   
-  
-  public int size() {
-    return queue.size();
-  }
-  
-  
-  public BufferQueueChannel clear() {
-    queue.clear();
-    return this;
-  }
-  
-  
-  public long write() throws IOException {
-    return 0;
+  @Override
+  public String toString() {
+    return getNumber().toString();
   }
   
 }

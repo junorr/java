@@ -33,6 +33,7 @@ import java.util.function.IntFunction;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.io.ByteBufferOutputStream;
+import us.pserver.tools.io.ByteableNumber;
 
 /**
  *
@@ -45,7 +46,7 @@ public class FileStorage implements Storage {
   
   public static final Path FILE_FREE_BLOCKS = Paths.get("./freeblocks.dat");
   
-  public final int MIN_BLOCK_SIZE = 10;
+  public final int MIN_BLOCK_SIZE = Region.BYTES + Integer.BYTES + 1;
   
   public final int BUFFER_SIZE = 4096;
   
@@ -73,7 +74,7 @@ public class FileStorage implements Storage {
       );
     }
     this.blksize = blockSize;
-    this.writelenght = blksize - Region.BYTES;
+    this.writelenght = blksize - Region.BYTES - Integer.BYTES;
     this.allocPolicy = NotNull.of(allocPolicy).getOrFail("Bad null IntFunction<ByteBuffer> alloc policy");
     this.ralloc = new FileSizeAllocPolicy(directory.resolve(FILE_STORAGE), 0, blksize, 2, 200);
     this.channel = openRW(directory.resolve(FILE_STORAGE));
@@ -133,7 +134,7 @@ public class FileStorage implements Storage {
   
   
   @Override
-  public Region put(ByteBuffer ... bufs) throws Exception {
+  public Region put(ByteBuffer ... bufs) throws IOException {
     if(bufs == null || bufs.length < 1) return Region.of(-1, -1);
     Region reg = ralloc.next();
     Region cur = reg;
@@ -142,7 +143,7 @@ public class FileStorage implements Storage {
     int index = 0;
     ByteBuffer buf = bufs[index];
     
-    while(buf.hasRemaining()) {
+    while(buf.hasRemaining() && index < bufs.length) {
       int len = Math.min(remaining, buf.remaining());
       int lim = buf.limit();
       buf.limit(buf.position() + len);
@@ -162,6 +163,19 @@ public class FileStorage implements Storage {
       }
     }
     return reg;
+  }
+
+
+  public void put(ByteBuffer buf, long off, int len) throws IOException {
+    if(!buf.hasRemaining()) return;
+    if(channel.position() != off) {
+      channel.position(off);
+    }
+    int size = Math.min(len, buf.remaining());
+    int lim = buf.limit();
+    buf.limit(buf.position() + size);
+    channel.write(buf);
+    buf.limit(lim);
   }
   
   
@@ -187,11 +201,10 @@ public class FileStorage implements Storage {
   
   
   private void putSmallerThanBlockSize(ByteBuffer buf, Region reg) {
-    ByteBuffer dif = ByteBuffer.allocate(blksize - buf.remaining());
     StorageException.rethrow(()->{
       channel.position(reg.offset());
+      channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
       channel.write(buf);
-      channel.write(dif);
     });
   }
   
@@ -202,6 +215,7 @@ public class FileStorage implements Storage {
     Region next = ralloc.next();
     StorageException.rethrow(()->{
       channel.position(reg.offset());
+      channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
       channel.write(buf);
       channel.write(next.toByteBuffer());
     });
@@ -226,11 +240,12 @@ public class FileStorage implements Storage {
     b.clear();
     StorageException.rethrow(()->{
       channel.position(r.offset());
-      while(channel.read(b) >= 0 && b.hasRemaining());
+      channel.read(b);
     });
     b.flip();
     if(!b.hasRemaining()) return;
-    b.limit(writelenght); //exclude next region info
+    int size = b.getInt();
+    b.limit(b.position() + size); 
     s.write(b);
     Region next = readNextRegion(b);
     if(next.isValid()) get(next, b, s);
@@ -239,7 +254,7 @@ public class FileStorage implements Storage {
   
   private Region readNextRegion(ByteBuffer b) {
     b.limit(blksize);
-    b.position(writelenght);
+    b.position(Integer.BYTES + writelenght);
     return Region.of(b.getLong(), b.getLong());
   }
 
