@@ -22,6 +22,7 @@
 package us.pserver.dbone.internal;
 
 import java.nio.ByteBuffer;
+import java.util.function.IntFunction;
 import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.serial.SerializationService;
 import us.pserver.dbone.store.StorageException;
@@ -39,10 +40,13 @@ public class DefaultVolume implements Volume {
   
   private final Storage storage;
   
+  private final IntFunction<ByteBuffer> alloc;
   
-  public DefaultVolume(Storage storage, SerializationService serial) {
+  
+  public DefaultVolume(Storage storage, SerializationService serial, IntFunction<ByteBuffer> alloc) {
     this.storage = NotNull.of(storage).getOrFail("Bad null Storage");
     this.serial = NotNull.of(serial).getOrFail("Bad null SerializationService");
+    this.alloc = NotNull.of(alloc).getOrFail("Bad null ByteBuffer alloc function");
   }
   
   
@@ -56,7 +60,7 @@ public class DefaultVolume implements Volume {
         + Integer.BYTES * 2 
         + bcls.length 
         + buid.length;
-    ByteBuffer buf = storage.allocateBuffer(total);
+    ByteBuffer buf = alloc.apply(total);
     buf.putInt(bcls.length);
     buf.putInt(buid.length);
     buf.put(bcls);

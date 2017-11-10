@@ -19,25 +19,20 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.internal;
-
-import java.nio.ByteBuffer;
-import us.pserver.dbone.store.StorageException;
+package us.pserver.dbone.test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/10/2017
+ * @version 0.0 - 10/11/2017
  */
-public interface Storage extends AutoCloseable {
+public class TestStringFormat {
 
-  public Region put(ByteBuffer buf) throws StorageException;
   
-  public ByteBuffer get(Region reg) throws StorageException;
-  
-  public long size() throws StorageException;
-  
-  @Override 
-  public void close() throws StorageException;
+  public static void main(String[] args) {
+    String fmt = "double: %.2f";
+    Double d = 5222.2225;
+    System.out.println(String.format(fmt, d));
+  }
   
 }

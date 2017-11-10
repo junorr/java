@@ -42,7 +42,7 @@ public class TestNFileStorage {
     Path path = Paths.get("/home/juno/dbone/");
     Path dbfile = path.resolve("storage.dat");
     try (
-        FileStorage store = new FileStorage(path, 26, StorageFactory.ALLOC_POLICY_HEAP);
+        FileStorage store = new FileStorage(path, 30, StorageFactory.ALLOC_POLICY_HEAP);
         ) {
       ByteBuffer buf = ByteBuffer.allocate(25);
       for(int i = 0; i < 25; i++) {

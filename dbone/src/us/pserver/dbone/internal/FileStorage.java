@@ -133,49 +133,44 @@ public class FileStorage implements Storage {
   }
   
   
-  @Override
-  public Region put(ByteBuffer ... bufs) throws IOException {
-    if(bufs == null || bufs.length < 1) return Region.of(-1, -1);
+  private void print(ByteBuffer buf) {
+    System.out.printf("-- %s --%n", buf);
+    int pos = buf.position();
+    while(buf.hasRemaining()) {
+      System.out.printf(" %d", buf.get());
+    }
+    System.out.println();
+    buf.position(pos);
+  }
+  
+  
+  public Region put(ByteBuffer ... bfs) throws IOException {
     Region reg = ralloc.next();
     Region cur = reg;
-    channel.position(cur.offset());
-    int remaining = writelenght;
-    int index = 0;
-    ByteBuffer buf = bufs[index];
-    
-    while(buf.hasRemaining() && index < bufs.length) {
-      int len = Math.min(remaining, buf.remaining());
-      int lim = buf.limit();
-      buf.limit(buf.position() + len);
-      channel.write(buf);
-      buf.limit(lim);
-      remaining = remaining - len;
-      if((index + 1) < bufs.length) {
-        if(remaining <= 0) {
-          cur = ralloc.next();
-          channel.write(cur.toByteBuffer());
-          channel.position(cur.offset());
-          remaining = writelenght;
-        }
-        else {
-          buf = bufs[++index];
-        }
+    for(int i = 0; i < bfs.length; i++) {
+      ByteBuffer b = bfs[i];
+      while(b.remaining() > writelenght) {
+        cur = putLargestThanBlockSize(b, cur);
+      }
+      if(b.hasRemaining()) {
+        putSmallerThanBlockSize(b, cur);
+      }
+      if(i+1 < bfs.length) {
+        Region next = ralloc.next();
+        putNextRegion(cur, next);
+        cur = next;
       }
     }
+    putNextRegion(cur, Region.of(-1, -1));
     return reg;
   }
-
-
-  public void put(ByteBuffer buf, long off, int len) throws IOException {
-    if(!buf.hasRemaining()) return;
-    if(channel.position() != off) {
-      channel.position(off);
-    }
-    int size = Math.min(len, buf.remaining());
-    int lim = buf.limit();
-    buf.limit(buf.position() + size);
-    channel.write(buf);
-    buf.limit(lim);
+  
+  
+  private void putNextRegion(Region cur, Region next) {
+    StorageException.rethrow(()->{
+      channel.position(cur.end() - Region.BYTES);
+      channel.write(next.toByteBuffer());
+    });
   }
   
   
@@ -201,17 +196,22 @@ public class FileStorage implements Storage {
   
   
   private void putSmallerThanBlockSize(ByteBuffer buf, Region reg) {
+    System.out.println("* putSmallerThanBlockSize < blksize");
+    print(buf);
     StorageException.rethrow(()->{
       channel.position(reg.offset());
       channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
       channel.write(buf);
+      channel.write(Region.of(-1, -1).toByteBuffer());
     });
   }
   
   
   private Region putLargestThanBlockSize(ByteBuffer buf, Region reg) {
+    System.out.println("* putLargestThanBlockSize > blksize");
     int lim = buf.limit();
     buf.limit(buf.position() + writelenght);
+    print(buf);
     Region next = ralloc.next();
     StorageException.rethrow(()->{
       channel.position(reg.offset());
@@ -237,6 +237,7 @@ public class FileStorage implements Storage {
   
   
   private void get(Region r, ByteBuffer b, ByteBufferOutputStream s) {
+    System.out.print("* get( r, b, s ): ");
     b.clear();
     StorageException.rethrow(()->{
       channel.position(r.offset());
@@ -248,6 +249,7 @@ public class FileStorage implements Storage {
     b.limit(b.position() + size); 
     s.write(b);
     Region next = readNextRegion(b);
+    System.out.printf("size=%d, next=%s%n", size, next);
     if(next.isValid()) get(next, b, s);
   }
   
@@ -265,12 +267,6 @@ public class FileStorage implements Storage {
   }
   
   
-  @Override
-  public ByteBuffer allocateBuffer(int size) {
-    return allocPolicy.apply(size);
-  }
-
-
   @Override
   public void close() throws StorageException {
     try (
