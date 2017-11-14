@@ -144,7 +144,8 @@ public class FileStorage implements Storage {
   }
   
   
-  public Region put(ByteBuffer ... bfs) throws IOException {
+  @Override
+  public Region put(ByteBuffer ... bfs) throws StorageException {
     Region reg = ralloc.next();
     Region cur = reg;
     for(int i = 0; i < bfs.length; i++) {
@@ -202,8 +203,8 @@ public class FileStorage implements Storage {
       channel.position(reg.offset());
       channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
       channel.write(buf);
-      channel.write(Region.of(-1, -1).toByteBuffer());
     });
+    this.putNextRegion(reg, Region.of(-1, -1));
   }
   
   

@@ -21,6 +21,9 @@
 
 package us.pserver.dbone.test;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -28,11 +31,11 @@ package us.pserver.dbone.test;
  */
 public class TestStringFormat {
 
-  
-  public static void main(String[] args) {
-    String fmt = "double: %.2f";
+  @Test
+  public void decimalStringFormat() {
+    String fmt = "%.2f";
     Double d = 5222.2225;
-    System.out.println(String.format(fmt, d));
+    Assert.assertEquals("5222,22", String.format(fmt, d));
   }
   
 }
