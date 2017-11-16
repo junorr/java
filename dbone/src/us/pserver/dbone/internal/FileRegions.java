@@ -21,8 +21,12 @@
 
 package us.pserver.dbone.internal;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -34,7 +38,10 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 10/10/2017
  */
-public class FileSizeAllocPolicy implements RegionAllocPolicy {
+public class FileRegions implements Regions {
+  
+  public static final int BUFFER_SIZE = 4096;
+  
   
   private final LinkedBlockingDeque<Region> regions;
   
@@ -49,7 +56,7 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   private final int maxRegionCount;
   
   
-  public FileSizeAllocPolicy(Path dbfile, long startPosition, int regionLength, int minRegionCount, int maxRegionCount) {
+  public FileRegions(Path dbfile, long startPosition, int regionLength, int minRegionCount, int maxRegionCount) {
     regions = new LinkedBlockingDeque<>(maxRegionCount);
     this.file = NotNull.of(dbfile).getOrFail("Bad null file Path");
     if(startPosition < 0) {
@@ -82,6 +89,52 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   }
   
   
+  public FileRegions readFrom(Path path) throws IOException {
+    if(path == null || !Files.exists(path)) {
+      throw new IllegalArgumentException("Bad file path: "+ path);
+    }
+    try (
+        FileChannel ch = FileChannel.open(path, StandardOpenOption.READ);
+        ) {
+      ByteBuffer bb = ByteBuffer.allocate(BUFFER_SIZE);
+      while(ch.read(bb) != -1) {
+        bb.flip();
+        while(bb.remaining() >= Long.BYTES * 2) {
+          this.offer(Region.of(bb.getLong(), bb.getLong()));
+        }
+        bb.compact();
+      }
+    }
+    return this;
+  }
+  
+  
+  public FileRegions writeTo(Path path) throws IOException {
+    if(path == null) {
+      throw new IllegalArgumentException("Bad file path: "+ path);
+    }
+    try (
+        FileChannel ch = FileChannel.open(path, 
+            StandardOpenOption.CREATE, 
+            StandardOpenOption.WRITE);
+        ) {
+      ByteBuffer bb = ByteBuffer.allocate(BUFFER_SIZE);
+      Iterator<Region> it = this.freeRegions();
+      while(it.hasNext()) {
+        Region r = it.next();
+        while(bb.remaining() > Region.BYTES) {
+          bb.putLong(r.offset());
+          bb.putLong(r.length());
+        }
+        bb.flip();
+        ch.write(bb);
+        bb.compact();
+      }
+    }
+    return this;
+  }
+  
+  
   @Override
   public synchronized boolean discard(Region reg) {
     if(reg != null && regions.contains(reg)) {
@@ -103,7 +156,7 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   
   
   @Override
-  public synchronized Region next() {
+  public synchronized Region allocate() {
     fillRegions();
     return StorageException.rethrow(regions::takeFirst);
   }
@@ -133,7 +186,7 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final FileSizeAllocPolicy other = (FileSizeAllocPolicy) obj;
+    final FileRegions other = (FileRegions) obj;
     if (this.regionLength != other.regionLength) {
       return false;
     }
@@ -150,108 +203,6 @@ public class FileSizeAllocPolicy implements RegionAllocPolicy {
   @Override
   public String toString() {
     return "FileSizeRegionAllocPolicy{" + "file=" + file + ", regionLength=" + regionLength + ", minRegionCount=" + minRegionCount + ", maxRegionCount=" + maxRegionCount + '}';
-  }
-  
-  
-  public static Builder builder() {
-    return new Builder();
-  }
-  
-  
-  
-  
-  
-  
-  
-  
-  public static class Builder {
-    
-    public static final int DEFAULT_MIN_REGION_COUNT = 2;
-    
-    public static final int DEFAULT_MAX_REGION_COUNT = 128;
-    
-    public static final int DEFAULT_REGION_LENGTH = 2048;
-    
-    
-    private Path file;
-    
-    private long startPosition;
-    
-    private int minRegionCount;
-    
-    private int maxRegionCount;
-    
-    private int regionLength;
-    
-    
-    public Builder() {
-      file = null;
-      startPosition = -1;
-      minRegionCount = DEFAULT_MIN_REGION_COUNT;
-      maxRegionCount = DEFAULT_MAX_REGION_COUNT;
-      regionLength = DEFAULT_REGION_LENGTH;
-    }
-    
-    
-    public Path getFile() {
-      return file;
-    }
-    
-    
-    public Builder setFile(Path file) {
-      this.file = file;
-      return this;
-    }
-
-
-    public long getStartPosition() {
-      return startPosition;
-    }
-
-
-    public Builder setStartPosition(long startPosition) {
-      this.startPosition = startPosition;
-      return this;
-    }
-    
-    
-    public int getMinRegionCount() {
-      return minRegionCount;
-    }
-    
-    
-    public Builder setMinRegionCount(int minRegionCount) {
-      this.minRegionCount = minRegionCount;
-      return this;
-    }
-    
-    
-    public int getMaxRegionCount() {
-      return maxRegionCount;
-    }
-    
-    
-    public Builder setMaxRegionCount(int maxRegionCount) {
-      this.maxRegionCount = maxRegionCount;
-      return this;
-    }
-    
-    
-    public int getRegionLength() {
-      return regionLength;
-    }
-    
-    
-    public Builder setRegionLength(int regionLength) {
-      this.regionLength = regionLength;
-      return this;
-    }
-    
-    
-    public FileSizeAllocPolicy build() {
-      return new FileSizeAllocPolicy(file, startPosition, regionLength, minRegionCount, maxRegionCount);
-    }
-    
   }
   
 }

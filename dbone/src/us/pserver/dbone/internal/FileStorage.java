@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Iterator;
 import java.util.function.IntFunction;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.tools.NotNull;
@@ -48,7 +47,9 @@ public class FileStorage implements Storage {
   
   public final int MIN_BLOCK_SIZE = Region.BYTES + Integer.BYTES + 1;
   
-  public final int BUFFER_SIZE = 4096;
+  public final int MIN_REGION_COUNT = 2;
+  
+  public final int MAX_REGION_COUNT = 200;
   
   
   private final int blksize;
@@ -57,11 +58,13 @@ public class FileStorage implements Storage {
   
   private final IntFunction<ByteBuffer> allocPolicy;
   
-  private final RegionAllocPolicy ralloc;
+  private final FileRegions regions;
   
   private final FileChannel channel;
   
   private final Path freepath;
+  
+  private final Path storepath;
   
   
   public FileStorage(Path directory, int blockSize, IntFunction<ByteBuffer> allocPolicy) {
@@ -73,13 +76,19 @@ public class FileStorage implements Storage {
           String.format("Bad block size (<%d)", MIN_BLOCK_SIZE)
       );
     }
+    this.freepath = directory.resolve(FILE_FREE_BLOCKS);
+    this.storepath = directory.resolve(FILE_STORAGE);
     this.blksize = blockSize;
     this.writelenght = blksize - Region.BYTES - Integer.BYTES;
-    this.allocPolicy = NotNull.of(allocPolicy).getOrFail("Bad null IntFunction<ByteBuffer> alloc policy");
-    this.ralloc = new FileSizeAllocPolicy(directory.resolve(FILE_STORAGE), 0, blksize, 2, 200);
-    this.channel = openRW(directory.resolve(FILE_STORAGE));
-    this.freepath = directory.resolve(FILE_FREE_BLOCKS);
-    this.readFreeBlocks();
+    this.allocPolicy = NotNull.of(allocPolicy).getOrFail("Bad null alloc policy");
+    this.channel = openRW(storepath);
+    this.regions = new FileRegions(
+        storepath, 0, blksize, 
+        MIN_REGION_COUNT, MAX_REGION_COUNT
+    );
+    if(Files.exists(freepath)) {
+      StorageException.rethrow(()->regions.readFrom(freepath));
+    }
   }
   
   
@@ -98,41 +107,6 @@ public class FileStorage implements Storage {
   }
   
   
-  private FileChannel openR(Path path) {
-    try {
-      return FileChannel.open(path, 
-          StandardOpenOption.READ
-      );
-    }
-    catch(IOException e) {
-      throw new StorageException(e.toString(), e);
-    }
-  }
-  
-  
-  private void readFreeBlocks() {
-    if(!Files.exists(freepath)) return;
-    try (
-        FileChannel ch = openR(freepath);
-        ) {
-      ByteBuffer bb = allocPolicy.apply(BUFFER_SIZE);
-      while(ch.read(bb) != -1) {
-        bb.flip();
-        while(bb.remaining() >= Long.BYTES * 2) {
-          ralloc.offer(Region.of(bb.getLong(), bb.getLong()));
-        }
-        bb.compact();
-      }
-    }
-    catch(IOException e) {
-      throw new StorageException(e.toString(), e);
-    }
-    finally {
-      StorageException.rethrow(()->Files.delete(freepath));
-    }
-  }
-  
-  
   private void print(ByteBuffer buf) {
     System.out.printf("-- %s --%n", buf);
     int pos = buf.position();
@@ -146,7 +120,7 @@ public class FileStorage implements Storage {
   
   @Override
   public Region put(ByteBuffer ... bfs) throws StorageException {
-    Region reg = ralloc.next();
+    Region reg = regions.allocate();
     Region cur = reg;
     for(int i = 0; i < bfs.length; i++) {
       ByteBuffer b = bfs[i];
@@ -157,7 +131,7 @@ public class FileStorage implements Storage {
         putSmallerThanBlockSize(b, cur);
       }
       if(i+1 < bfs.length) {
-        Region next = ralloc.next();
+        Region next = regions.allocate();
         putNextRegion(cur, next);
         cur = next;
       }
@@ -167,18 +141,10 @@ public class FileStorage implements Storage {
   }
   
   
-  private void putNextRegion(Region cur, Region next) {
-    StorageException.rethrow(()->{
-      channel.position(cur.end() - Region.BYTES);
-      channel.write(next.toByteBuffer());
-    });
-  }
-  
-  
   @Override
   public Region put(ByteBuffer buf) throws StorageException {
     if(!buf.hasRemaining()) return Region.of(-1, -1);
-    Region reg = ralloc.next();
+    Region reg = regions.allocate();
     put(buf, reg);
     return reg;
   }
@@ -213,7 +179,7 @@ public class FileStorage implements Storage {
     int lim = buf.limit();
     buf.limit(buf.position() + writelenght);
     print(buf);
-    Region next = ralloc.next();
+    Region next = regions.allocate();
     StorageException.rethrow(()->{
       channel.position(reg.offset());
       channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
@@ -238,7 +204,6 @@ public class FileStorage implements Storage {
   
   
   private void get(Region r, ByteBuffer b, ByteBufferOutputStream s) {
-    System.out.print("* get( r, b, s ): ");
     b.clear();
     StorageException.rethrow(()->{
       channel.position(r.offset());
@@ -250,18 +215,25 @@ public class FileStorage implements Storage {
     b.limit(b.position() + size); 
     s.write(b);
     Region next = readNextRegion(b);
-    System.out.printf("size=%d, next=%s%n", size, next);
     if(next.isValid()) get(next, b, s);
   }
   
   
   private Region readNextRegion(ByteBuffer b) {
     b.limit(blksize);
-    b.position(Integer.BYTES + writelenght);
+    b.position(blksize - Region.BYTES);
     return Region.of(b.getLong(), b.getLong());
   }
 
 
+  private void putNextRegion(Region cur, Region next) {
+    StorageException.rethrow(()->{
+      channel.position(cur.end() - Region.BYTES);
+      channel.write(next.toByteBuffer());
+    });
+  }
+  
+  
   @Override
   public long size() throws StorageException {
     return StorageException.rethrow(channel::size);
@@ -270,26 +242,9 @@ public class FileStorage implements Storage {
   
   @Override
   public void close() throws StorageException {
-    try (
-        FileChannel ch = openRW(freepath);
-        ) {
+    try {
       channel.close();
-      ByteBuffer buf = allocPolicy.apply(BUFFER_SIZE);
-      Iterator<Region> regs = ralloc.freeRegions();
-      while(regs.hasNext()) {
-        Region r = regs.next();
-        buf.putLong(r.offset());
-        buf.putLong(r.length());
-        if(buf.remaining() < Region.BYTES) {
-          buf.flip();
-          ch.write(buf);
-          buf.compact();
-        }
-      }
-      buf.flip();
-      if(buf.hasRemaining()) {
-        ch.write(buf);
-      }
+      regions.writeTo(freepath);
     }
     catch(IOException e) {
       throw new StorageException(e.toString(), e);

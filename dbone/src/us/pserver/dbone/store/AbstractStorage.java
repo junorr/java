@@ -22,10 +22,10 @@
 package us.pserver.dbone.store;
 
 import us.pserver.dbone.internal.Region;
-import us.pserver.dbone.internal.RegionAllocPolicy;
 import java.nio.ByteBuffer;
 import java.util.function.IntFunction;
 import us.pserver.tools.NotNull;
+import us.pserver.dbone.internal.Regions;
 
 /**
  *
@@ -43,12 +43,12 @@ public abstract class AbstractStorage implements Storage {
   
   protected final IntFunction<ByteBuffer> malloc;
   
-  protected final RegionAllocPolicy ralloc;
+  protected final Regions ralloc;
   
   protected final int blockSize;
   
   
-  protected AbstractStorage(int blockSize, IntFunction<ByteBuffer> allocPolicy, RegionAllocPolicy ralloc) {
+  protected AbstractStorage(int blockSize, IntFunction<ByteBuffer> allocPolicy, Regions ralloc) {
     this.blockSize = blockSize;
     this.malloc = NotNull.of(allocPolicy).getOrFail("Bad null alloc policy");
     this.ralloc = NotNull.of(ralloc).getOrFail("Bad null RegionAllocPolicy");
@@ -57,7 +57,7 @@ public abstract class AbstractStorage implements Storage {
   
   @Override
   public Block allocate() {
-    Region reg = ralloc.next();
+    Region reg = ralloc.allocate();
     ByteBuffer buf = malloc.apply(reg.intLength());
     return new DefaultBlock(reg, buf).setNext(Region.of(0, 0));
   }

@@ -22,8 +22,7 @@
 package us.pserver.dbone.store;
 
 import us.pserver.dbone.internal.Region;
-import us.pserver.dbone.internal.FileSizeAllocPolicy;
-import us.pserver.dbone.internal.RegionAllocPolicy;
+import us.pserver.dbone.internal.FileRegions;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -35,6 +34,7 @@ import java.util.LinkedList;
 import java.util.function.IntFunction;
 import static us.pserver.dbone.store.AbstractStorage.HEADER_REGION;
 import us.pserver.tools.NotNull;
+import us.pserver.dbone.internal.Regions;
 
 /**
  *
@@ -163,7 +163,7 @@ public class StorageFactory {
   
   
   private FileChannelStorage createFCStorage(FileChannel ch) throws IOException {
-    RegionAllocPolicy ralloc = FileSizeAllocPolicy.builder()
+    Regions ralloc = FileRegions.factory()
         .setFile(path)
         .setRegionLength(blockSize)
         .setStartPosition(HEADER_REGION.end())
@@ -188,7 +188,7 @@ public class StorageFactory {
     buf.flip();
     buf.getShort();
     int blksize = buf.getInt();
-    RegionAllocPolicy ralloc = FileSizeAllocPolicy.builder()
+    Regions ralloc = FileRegions.factory()
         .setFile(path)
         .setRegionLength(blksize)
         .setStartPosition(HEADER_REGION.end())

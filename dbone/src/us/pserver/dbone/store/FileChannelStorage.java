@@ -22,12 +22,12 @@
 package us.pserver.dbone.store;
 
 import us.pserver.dbone.internal.Region;
-import us.pserver.dbone.internal.RegionAllocPolicy;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Iterator;
 import java.util.function.IntFunction;
 import us.pserver.tools.NotNull;
+import us.pserver.dbone.internal.Regions;
 
 /**
  *
@@ -39,7 +39,7 @@ public class FileChannelStorage extends AbstractStorage {
   private final FileChannel channel;
   
   
-  protected FileChannelStorage(FileChannel channel, int blockSize, IntFunction<ByteBuffer> allocPolicy, RegionAllocPolicy ralloc) {
+  protected FileChannelStorage(FileChannel channel, int blockSize, IntFunction<ByteBuffer> allocPolicy, Regions ralloc) {
     super(blockSize, allocPolicy, ralloc);
     this.channel = NotNull.of(channel).getOrFail("Bad null FileChannel");
   }

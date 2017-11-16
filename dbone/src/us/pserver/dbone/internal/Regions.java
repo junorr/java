@@ -28,13 +28,13 @@ import java.util.Iterator;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 10/10/2017
  */
-public interface RegionAllocPolicy {
+public interface Regions {
   
   public boolean offer(Region reg);
   
   public boolean discard(Region reg);
   
-  public Region next();
+  public Region allocate();
   
   public Iterator<Region> freeRegions();
   
