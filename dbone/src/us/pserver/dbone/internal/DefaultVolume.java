@@ -23,11 +23,11 @@ package us.pserver.dbone.internal;
 
 import java.nio.ByteBuffer;
 import java.util.function.IntFunction;
-import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.serial.SerializationService;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.UTF8String;
+import us.pserver.dbone.OUID;
 
 /**
  *
@@ -54,37 +54,52 @@ public class DefaultVolume implements Volume {
   public Region put(StoreUnit unit) throws StorageException {
     NotNull.of(unit).failIfNull("Bad null StoreUnit");
     byte[] data = serial.serialize(unit.getObject());
-    byte[] bcls = UTF8String.from(unit.getUID().getClassName()).getBytes();
-    byte[] buid = UTF8String.from(unit.getUID().getUID()).getBytes();
     int total = data.length
         + Integer.BYTES * 2 
-        + bcls.length 
-        + buid.length;
+        + unit.getOUID().getClassName().length()
+        + unit.getOUID().getHash().length();
     ByteBuffer buf = alloc.apply(total);
-    buf.putInt(bcls.length);
-    buf.putInt(buid.length);
-    buf.put(bcls);
-    buf.put(buid);
+    put(buf, unit.getOUID());
     buf.put(data);
     return storage.put(buf);
   }
   
   
+  private void put(ByteBuffer buf, OUID uid) throws StorageException {
+    byte[] bcls = UTF8String.from(uid.getClassName()).getBytes();
+    byte[] buid = UTF8String.from(uid.getHash()).getBytes();
+    buf.putInt(bcls.length);
+    buf.putInt(buid.length);
+    buf.put(bcls);
+    buf.put(buid);
+  }
+  
+  
   @Override
   public StoreUnit get(Region reg) throws StorageException {
-    NotNull.of(reg).failIfNull("Bad null Region");
     ByteBuffer buf = storage.get(reg);
+    OUID uid = getOUID(buf);
+    byte[] data = new byte[buf.remaining()];
+    return StoreUnit.of(uid, serial.deserialize(data));
+  }
+  
+  
+  @Override
+  public OUID getOUID(Region reg) throws StorageException {
+    NotNull.of(reg).failIfNull("Bad null Region");
+    return getOUID(storage.get(reg));
+  }
+  
+  
+  private OUID getOUID(ByteBuffer buf) throws StorageException {
     byte[] bcls = new byte[buf.getInt()];
     byte[] buid = new byte[buf.getInt()];
     buf.get(bcls);
     buf.get(buid);
-    byte[] data = new byte[buf.remaining()];
-    buf.get(data);
-    ObjectUID uid = ObjectUID.of(
+    return OUID.of(
         UTF8String.from(buid).toString(), 
         UTF8String.from(bcls).toString()
     );
-    return StoreUnit.of(uid, serial.deserialize(data));
   }
   
   

@@ -19,23 +19,41 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.test;
+package us.pserver.dbone;
 
-import org.junit.Assert;
-import org.junit.Test;
+import java.lang.reflect.Field;
+import java.util.Objects;
+import us.pserver.tools.Hash;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/11/2017
+ * @version 0.0 - 20/11/2017
  */
-public class TestStringFormat {
+public class OUIDFactory {
 
-  @Test
-  public void decimalStringFormat() {
-    String fmt = "%.2f";
-    Double d = 5222.2225;
-    Assert.assertEquals("5222,22", String.format(fmt, d));
+  
+  public static OUID create(Object obj) {
+    Class cls = obj.getClass();
+    Field[] fls = cls.getDeclaredFields();
+    Hash hash = Hash.sha1();
+    hash.put(cls.getName());
+    for(Field f : fls) {
+      if(!f.isAccessible()) {
+        f.setAccessible(true);
+      }
+      hash.put(get(f, obj));
+    }
+    return OUID.of(hash.get(), cls.getName());
+  }
+  
+  
+  private static String get(Field f, Object owner) {
+    try {
+      return Objects.toString(f.get(owner));
+    } catch(IllegalAccessException | IllegalArgumentException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
   }
   
 }

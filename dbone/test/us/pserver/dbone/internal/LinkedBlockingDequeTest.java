@@ -19,28 +19,33 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone;
+package us.pserver.dbone.internal;
 
-import java.util.List;
-import java.util.function.Predicate;
+import java.util.concurrent.LinkedBlockingDeque;
+import junit.framework.Assert;
+import org.junit.Test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/09/2017
+ * @version 0.0 - 17/11/2017
  */
-public interface DBOne {
+public class LinkedBlockingDequeTest {
 
-  public OUID store(Object obj);
+  private final LinkedBlockingDeque<Integer> deque = new LinkedBlockingDeque<>();
   
-  public List<OUID> store(Object ... objs);
   
-  public boolean remove(OUID uid);
-  
-  public boolean update(OUID uid, Object obj);
-  
-  public <T> T get(OUID uid);
-  
-  public List<OUID> select(Predicate prd);
+  @Test
+  public void addAndTakeFirstTest() throws InterruptedException {
+    int cur = 1024;
+    int inc = 1024;
+    for(int i = 0; i < 10; i++) {
+      deque.add(cur);
+      cur += inc;
+    }
+    Assert.assertEquals(Integer.valueOf(1024), deque.takeFirst());
+    Assert.assertEquals(Integer.valueOf(2048), deque.takeFirst());
+    Assert.assertEquals(Integer.valueOf(cur-inc), deque.takeLast());
+  }
   
 }

@@ -21,6 +21,7 @@
 
 package us.pserver.dbone.internal;
 
+import us.pserver.dbone.OUID;
 import us.pserver.dbone.store.StorageException;
 
 /**
@@ -33,6 +34,8 @@ public interface Volume extends AutoCloseable {
   public Region put(StoreUnit unit) throws StorageException;
   
   public StoreUnit get(Region reg) throws StorageException;
+  
+  public OUID getOUID(Region reg) throws StorageException;
   
   @Override
   public void close() throws StorageException;

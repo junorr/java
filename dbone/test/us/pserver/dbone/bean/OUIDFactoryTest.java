@@ -19,26 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.test;
+package us.pserver.dbone.bean;
 
-import us.pserver.tools.ConcurrentList;
+import java.util.Date;
+import junit.framework.Assert;
+import org.junit.Test;
+import us.pserver.dbone.OUID;
+import us.pserver.dbone.OUIDFactory;
+import us.pserver.tools.timer.Timer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/10/2017
+ * @version 0.0 - 20/11/2017
  */
-public class TestStack {
+public class OUIDFactoryTest {
 
+  private final AObj a = new AObj("hello", 37, new int[]{1, 2, 3}, new char[]{'a', 'b', 'c'}, new Date());
   
-  public static void main(String[] args) {
-    ConcurrentList<Integer> ls = new ConcurrentList<>();
-    for(int i = 0; i < 10; i++) {
-      ls.push(i);
+  private final OUID auid = OUIDFactory.create(a);
+  
+  private final int times = 10_000;
+  
+  
+  @Test
+  public void sameOUIDcalculation() {
+    Timer tm = new Timer.Nanos().start();
+    for(int i = 0; i < times; i++) {
+      Assert.assertEquals(auid, OUIDFactory.create(a));
+      tm.lap();
     }
-    while(!ls.isEmpty()) {
-      System.out.println(ls.pollLast());
-    }
+    System.out.printf("sameOUIDcalculation: "+ tm.stop());
   }
   
 }

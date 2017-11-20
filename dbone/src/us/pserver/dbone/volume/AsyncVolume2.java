@@ -27,13 +27,13 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import us.pserver.coreone.Core;
 import us.pserver.dbone.store.Block;
-import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.internal.Region;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.UTF8String;
 import us.pserver.tools.io.ByteBufferOutputStream;
+import us.pserver.dbone.OUID;
 
 /**
  *
@@ -89,8 +89,8 @@ public class AsyncVolume2 implements Volume {
   }
   
   
-  private void put(ObjectUID ouid, Block blk) {
-    byte[] buid = UTF8String.from(ouid.getUID()).getBytes();
+  private void put(OUID ouid, Block blk) {
+    byte[] buid = UTF8String.from(ouid.getHash()).getBytes();
     byte[] bcls = UTF8String.from(ouid.getClassName()).getBytes();
     //System.out.println("* Volume.putUID: uidLen="+ buid.length+ ", clsLen="+ bcls.length+ ", block="+ blk);
     blk.buffer().position(0);
@@ -108,13 +108,13 @@ public class AsyncVolume2 implements Volume {
   
   
   @Override
-  public ObjectUID getUID(Record idx) throws StorageException {
+  public OUID getUID(Record idx) throws StorageException {
     Block blk = storage.get(idx.getRegion());
     return this.getUID(blk);
   }
   
   
-  private ObjectUID getUID(Block blk) {
+  private OUID getUID(Block blk) {
     blk.buffer().position(0);
     int uidLen = blk.buffer().getInt();
     int clsLen = blk.buffer().getInt();
@@ -130,7 +130,7 @@ public class AsyncVolume2 implements Volume {
     byte[] bcls = new byte[clsLen];
     blk.buffer().get(buid);
     blk.buffer().get(bcls);
-    return ObjectUID.of(
+    return OUID.of(
         UTF8String.from(buid).toString(), 
         UTF8String.from(bcls).toString()
     );

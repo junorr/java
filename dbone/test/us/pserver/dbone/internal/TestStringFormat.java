@@ -19,30 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.test;
+package us.pserver.dbone.internal;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/09/2017
+ * @version 0.0 - 10/11/2017
  */
-public class TestVoid {
-  
-  
-  public static <T> T exec(T t) {
-    return t;
-  }
-  
-  
-  public static Void exec2() {
-    return (Void) new Object();
-  }
+public class TestStringFormat {
 
-  
-  public static void main(String[] args) {
-    Void v = null;
-    int i = TestVoid.exec(5);
-    v = exec2();
+  @Test
+  public void decimalStringFormat() {
+    String fmt = "%.2f";
+    Double d = 5222.2225;
+    Assert.assertEquals("5222,22", String.format(fmt, d));
   }
   
 }

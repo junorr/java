@@ -22,8 +22,8 @@
 package us.pserver.dbone.volume;
 
 import java.io.Closeable;
-import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.store.StorageException;
+import us.pserver.dbone.OUID;
 
 /**
  *
@@ -36,7 +36,7 @@ public interface Volume extends Closeable {
   
   public StoreUnit get(Record idx) throws StorageException;
   
-  public ObjectUID getUID(Record idx) throws StorageException;
+  public OUID getUID(Record idx) throws StorageException;
   
   @Override public void close() throws StorageException;
   

@@ -65,6 +65,11 @@ public interface Region extends Comparable, Serializable {
   }
   
   
+  public static Region invalid() {
+    return of(-1, -1);
+  }
+  
+  
   
   
   

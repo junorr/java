@@ -82,7 +82,10 @@ public class FileRegions implements Regions {
       long regcount = flen / regionLength + (flen % regionLength > 0 ? 1 : 0);
       long start = Math.max(regcount * regionLength, startPosition);
       while(regions.size() < maxRegionCount) {
-        regions.add(Region.of(start, regionLength));
+        Region r = Region.of(start, regionLength);
+        if(!regions.contains(r)) {
+          regions.add(r);
+        }
         start += regionLength;
       }
     }
@@ -137,6 +140,7 @@ public class FileRegions implements Regions {
   
   @Override
   public synchronized boolean discard(Region reg) {
+    fillRegions();
     if(reg != null && regions.contains(reg)) {
       regions.remove(reg);
       return true;
@@ -147,6 +151,7 @@ public class FileRegions implements Regions {
   
   @Override
   public synchronized boolean offer(Region reg) {
+    fillRegions();
     if(reg != null && !regions.contains(reg)) {
       regions.add(reg);
       return true;

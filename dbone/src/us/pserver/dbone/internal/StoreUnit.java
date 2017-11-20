@@ -21,8 +21,8 @@
 
 package us.pserver.dbone.internal;
 
-import us.pserver.dbone.ObjectUID;
 import us.pserver.tools.NotNull;
+import us.pserver.dbone.OUID;
 
 /**
  *
@@ -31,12 +31,12 @@ import us.pserver.tools.NotNull;
  */
 public interface StoreUnit {
 
-  public ObjectUID getUID();
+  public OUID getOUID();
   
   public Object getObject();
   
   
-  public static StoreUnit of(ObjectUID uid, Object obj) {
+  public static StoreUnit of(OUID uid, Object obj) {
     return new DefStoreUnit(uid, obj);
   }
   
@@ -48,15 +48,15 @@ public interface StoreUnit {
     
     private final Object obj;
     
-    private final ObjectUID ouid;
+    private final OUID ouid;
     
-    public DefStoreUnit(ObjectUID ouid, Object obj) {
+    public DefStoreUnit(OUID ouid, Object obj) {
       this.ouid = NotNull.of(ouid).getOrFail("Bad null ObjectUID");
       this.obj = NotNull.of(obj).getOrFail("Bad null Object");
     }
 
     @Override
-    public ObjectUID getUID() {
+    public OUID getOUID() {
       return ouid;
     }
 

@@ -19,49 +19,49 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.test;
+package us.pserver.dbone.internal;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import us.pserver.dbone.internal.FileStorage;
-import us.pserver.dbone.internal.Region;
-import us.pserver.dbone.store.StorageFactory;
+import org.junit.Test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 30/10/2017
+ * @version 0.0 - 20/11/2017
  */
-public class TestNFileStorage {
+public class FileStorageTest {
 
+  private final Path path = Paths.get("/home/juno/dbone/");
   
-  public static void main(String[] args) throws IOException {
-    Path path = Paths.get("/home/juno/dbone/");
-    Path dbfile = path.resolve("storage.dat");
-    try (
-        FileStorage store = new FileStorage(path, 30, StorageFactory.ALLOC_POLICY_HEAP);
-        ) {
-      ByteBuffer buf = ByteBuffer.allocate(25);
-      for(int i = 0; i < 25; i++) {
-        buf.put((byte) i);
-      }
-      buf.flip();
-      Region r = store.put(buf);
-      System.out.println("* store.put(buf): "+ r);
-      r = Region.of(r.offset(), 2);
-      buf = store.get(r);
-      System.out.print("* store.get(r): ");
-      while(buf.hasRemaining()) {
-        System.out.printf(" %d", buf.get());
-      }
-      System.out.println();
-    } 
-    finally {
-      //Files.delete(dbfile);
+  private final Storage store = new FileStorage(path, 30, ByteBuffer::allocateDirect);
+  
+  
+  private ByteBuffer createSequenceBuffer(int size) {
+    ByteBuffer buf = ByteBuffer.allocate(25);
+    for(int i = 0; i < 25; i++) {
+      buf.put((byte) i);
     }
+    buf.flip();
+    return buf;
+  }
+  
+  
+  private int[] bytesToIntArray(ByteBuffer buf) {
+    int[] ints = new int[buf.remaining()];
+    int idx = 0;
+    while(buf.hasRemaining()) {
+      ints[idx++] = buf.get();
+    }
+    return ints;
+  }
+  
+  
+  @Test
+  public void bytesToArraySequencePreservation() {
+    ByteBuffer buf = createSequenceBuffer(25);
+    int[] ints = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
   }
   
 }

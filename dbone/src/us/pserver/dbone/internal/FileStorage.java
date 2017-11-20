@@ -119,29 +119,6 @@ public class FileStorage implements Storage {
   
   
   @Override
-  public Region put(ByteBuffer ... bfs) throws StorageException {
-    Region reg = regions.allocate();
-    Region cur = reg;
-    for(int i = 0; i < bfs.length; i++) {
-      ByteBuffer b = bfs[i];
-      while(b.remaining() > writelenght) {
-        cur = putLargestThanBlockSize(b, cur);
-      }
-      if(b.hasRemaining()) {
-        putSmallerThanBlockSize(b, cur);
-      }
-      if(i+1 < bfs.length) {
-        Region next = regions.allocate();
-        putNextRegion(cur, next);
-        cur = next;
-      }
-    }
-    putNextRegion(cur, Region.of(-1, -1));
-    return reg;
-  }
-  
-  
-  @Override
   public Region put(ByteBuffer buf) throws StorageException {
     if(!buf.hasRemaining()) return Region.of(-1, -1);
     Region reg = regions.allocate();
@@ -163,7 +140,6 @@ public class FileStorage implements Storage {
   
   
   private void putSmallerThanBlockSize(ByteBuffer buf, Region reg) {
-    System.out.println("* putSmallerThanBlockSize < blksize");
     print(buf);
     StorageException.rethrow(()->{
       channel.position(reg.offset());
@@ -175,7 +151,6 @@ public class FileStorage implements Storage {
   
   
   private Region putLargestThanBlockSize(ByteBuffer buf, Region reg) {
-    System.out.println("* putLargestThanBlockSize > blksize");
     int lim = buf.limit();
     buf.limit(buf.position() + writelenght);
     print(buf);

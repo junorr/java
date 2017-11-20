@@ -23,9 +23,9 @@ package us.pserver.dbone.volume;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
-import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.tools.NotNull;
+import us.pserver.dbone.OUID;
 
 /**
  *
@@ -91,7 +91,7 @@ public class ConcurrentVolume implements Volume {
 
 
   @Override
-  public ObjectUID getUID(Record idx) throws StorageException {
+  public OUID getUID(Record idx) throws StorageException {
     return readLocked(()->volume.getUID(idx));
   }
 

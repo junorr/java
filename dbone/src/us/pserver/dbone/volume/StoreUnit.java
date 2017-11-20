@@ -22,9 +22,9 @@
 package us.pserver.dbone.volume;
 
 import java.nio.ByteBuffer;
-import us.pserver.dbone.ObjectUID;
 import java.util.Objects;
 import us.pserver.tools.NotNull;
+import us.pserver.dbone.OUID;
 
 /**
  *
@@ -33,12 +33,12 @@ import us.pserver.tools.NotNull;
  */
 public interface StoreUnit {
 
-  public ObjectUID objectUID();
+  public OUID objectUID();
   
   public ByteBuffer value();
   
   
-  public static StoreUnit of(ObjectUID uid, ByteBuffer val) {
+  public static StoreUnit of(OUID uid, ByteBuffer val) {
     return new StoreUnitImpl(uid, val);
   }
   
@@ -48,18 +48,18 @@ public interface StoreUnit {
   
   public static class StoreUnitImpl implements StoreUnit {
     
-    private final ObjectUID uid;
+    private final OUID uid;
     
     private final ByteBuffer value;
     
     
-    public StoreUnitImpl(ObjectUID uid, ByteBuffer val) {
+    public StoreUnitImpl(OUID uid, ByteBuffer val) {
       this.uid = NotNull.of(uid).getOrFail("Bad null ObjectUID");
       this.value = NotNull.of(val).getOrFail("Bad null MappedValue");
     }
     
     @Override
-    public ObjectUID objectUID() {
+    public OUID objectUID() {
       return this.uid;
     }
     

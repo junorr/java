@@ -25,9 +25,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import us.pserver.coreone.Core;
 import us.pserver.coreone.Pipe;
-import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.tools.NotNull;
+import us.pserver.dbone.OUID;
 
 /**
  *
@@ -97,7 +97,7 @@ public class AsyncVolume implements Volume {
 
 
   @Override
-  public ObjectUID getUID(Record idx) throws StorageException {
+  public OUID getUID(Record idx) throws StorageException {
     return volume.getUID(idx);
   }
 

@@ -21,12 +21,12 @@
 
 package us.pserver.dbone.volume;
 
-import us.pserver.dbone.ObjectUID;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.dbone.store.StorageTransaction;
 import us.pserver.dbone.store.tx.Transaction;
 import us.pserver.dbone.store.tx.TransactionException;
 import us.pserver.tools.NotNull;
+import us.pserver.dbone.OUID;
 
 /**
  *
@@ -59,7 +59,7 @@ public class VolumeTransaction implements Volume, Transaction {
 
 
   @Override
-  public ObjectUID getUID(Record idx) throws StorageException {
+  public OUID getUID(Record idx) throws StorageException {
     return this.volume.getUID(idx);
   }
 

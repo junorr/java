@@ -31,19 +31,24 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 09/10/2017
  */
-public interface ObjectUID {
+public interface OUID extends Comparable<OUID> {
   
-  public String getUID();
+  public String getHash();
   
   public String getClassName();
   
+  @Override
+  public default int compareTo(OUID other) {
+    return this.getHash().compareTo(other.getHash());
+  }
   
-  public static ObjectUID of(String uid, String className) {
+  
+  public static OUID of(String uid, String className) {
     return new DefObjectUID(uid, className);
   }
   
   
-  public static ObjectUID of(ByteBuffer buf, String className) {
+  public static OUID of(ByteBuffer buf, String className) {
     Hash h = Hash.sha1();
     h.put(className);
     if(buf.hasArray()) {
@@ -69,7 +74,7 @@ public interface ObjectUID {
   
   
   
-  public static class DefObjectUID implements ObjectUID {
+  public static class DefObjectUID implements OUID {
     
     private final String uid;
     
@@ -83,7 +88,7 @@ public interface ObjectUID {
     
     
     @Override
-    public String getUID() {
+    public String getHash() {
       return uid;
     }
     

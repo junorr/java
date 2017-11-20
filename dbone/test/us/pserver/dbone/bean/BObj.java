@@ -19,11 +19,10 @@
  * endere�o 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.test;
+package us.pserver.dbone.bean;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -31,44 +30,32 @@ import java.util.Objects;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 06/09/2017
  */
-public class AObj implements Serializable {
-
+public class BObj implements Serializable {
+  
   private final String name;
   
-  private final int age;
+  private AObj a;
   
-  private final int[] magic;
+  private final List<Integer> list;
   
-  private final char[] chars;
-  
-  private final Date date;
 
-
-  private AObj() {
-    this(null, 0, null, null, null);
+  public BObj() {
+    this(null, null, null);
   }
-
-
-  public AObj(String name, int age, int[] magic, char[] cs, Date dt) {
+  
+  
+  public BObj(String name, AObj a, List<Integer> list) {
     this.name = name;
-    this.age = age;
-    this.magic = magic;
-    this.chars = cs;
-    this.date = dt;
-  }
-
-
-  public AObj(String name, Date dt) {
-    this(name, 0, null, null, dt);
+    this.a = a;
+    this.list = list;
   }
 
 
   @Override
   public int hashCode() {
-    int hash = 7;
-    hash = 53 * hash + Objects.hashCode(this.name);
-    hash = 53 * hash + this.age;
-    hash = 53 * hash + Arrays.hashCode(this.magic);
+    int hash = 3;
+    hash = 41 * hash + Objects.hashCode(this.name);
+    hash = 41 * hash + Objects.hashCode(this.a);
     return hash;
   }
 
@@ -84,14 +71,11 @@ public class AObj implements Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final AObj other = (AObj) obj;
-    if (this.age != other.age) {
-      return false;
-    }
+    final BObj other = (BObj) obj;
     if (!Objects.equals(this.name, other.name)) {
       return false;
     }
-    if (!Arrays.equals(this.magic, other.magic)) {
+    if (!Objects.equals(this.a, other.a)) {
       return false;
     }
     return true;
@@ -100,7 +84,7 @@ public class AObj implements Serializable {
 
   @Override
   public String toString() {
-    return "AObj{" + "name=" + name + ", age=" + age + ", magic=" + magic + ", chars=" + chars + ", date=" + date + '}';
+    return "BObj{" + "name=" + name + ", a=" + a + ", list=" + list + '}';
   }
 
 }

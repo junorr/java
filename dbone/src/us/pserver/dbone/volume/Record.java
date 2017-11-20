@@ -21,11 +21,11 @@
 
 package us.pserver.dbone.volume;
 
-import us.pserver.dbone.ObjectUID;
 import java.io.Serializable;
 import java.util.Objects;
 import us.pserver.dbone.internal.Region;
 import us.pserver.tools.NotNull;
+import us.pserver.dbone.OUID;
 
 /**
  *
@@ -36,7 +36,7 @@ public interface Record extends Comparable<Record>, Serializable {
 
   public Region getRegion();
   
-  public ObjectUID getUID();
+  public OUID getUID();
   
   @Override
   public default int compareTo(Record rec) {
@@ -44,7 +44,7 @@ public interface Record extends Comparable<Record>, Serializable {
   }
   
   
-  public static Record of(Region r, ObjectUID uid) {
+  public static Record of(Region r, OUID uid) {
     return new RecordImpl(r, uid);
   }
   
@@ -56,9 +56,9 @@ public interface Record extends Comparable<Record>, Serializable {
   
     private final Region region;
 
-    private final ObjectUID uid;
+    private final OUID uid;
 
-    public RecordImpl(Region reg, ObjectUID uid) {
+    public RecordImpl(Region reg, OUID uid) {
       this.region = NotNull.of(reg).getOrFail("Bad null Region");
       this.uid = NotNull.of(uid).getOrFail("Bad null ObjectUID");
     }
@@ -69,7 +69,7 @@ public interface Record extends Comparable<Record>, Serializable {
     }
 
     @Override
-    public ObjectUID getUID() {
+    public OUID getUID() {
       return this.uid;
     }
 

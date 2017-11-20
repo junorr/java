@@ -19,28 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone;
+package us.pserver.dbone.internal;
 
-import java.util.List;
-import java.util.function.Predicate;
+import us.pserver.tools.ConcurrentList;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/09/2017
+ * @version 0.0 - 10/10/2017
  */
-public interface DBOne {
+public class TestStack {
 
-  public OUID store(Object obj);
   
-  public List<OUID> store(Object ... objs);
-  
-  public boolean remove(OUID uid);
-  
-  public boolean update(OUID uid, Object obj);
-  
-  public <T> T get(OUID uid);
-  
-  public List<OUID> select(Predicate prd);
+  public static void main(String[] args) {
+    ConcurrentList<Integer> ls = new ConcurrentList<>();
+    for(int i = 0; i < 10; i++) {
+      ls.push(i);
+    }
+    while(!ls.isEmpty()) {
+      System.out.println(ls.pollLast());
+    }
+  }
   
 }
