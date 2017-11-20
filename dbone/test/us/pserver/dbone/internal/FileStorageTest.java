@@ -24,6 +24,7 @@ package us.pserver.dbone.internal;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -59,9 +60,21 @@ public class FileStorageTest {
   
   
   @Test
-  public void bytesToArraySequencePreservation() {
+  public void bytesToIntArraySequencePreservation() {
     ByteBuffer buf = createSequenceBuffer(25);
     int[] ints = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
+    Assert.assertArrayEquals(ints, bytesToIntArray(buf));
+  }
+  
+  
+  @Test
+  public void storageByteSequencePreservation() {
+    ByteBuffer put = createSequenceBuffer(25);
+    int[] sequence = bytesToIntArray(put);
+    put.flip();
+    Region reg = store.put(put);
+    ByteBuffer get = store.get(reg);
+    Assert.assertArrayEquals(sequence, bytesToIntArray(get));
   }
   
 }
