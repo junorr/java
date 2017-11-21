@@ -39,7 +39,7 @@ public class OUIDFactoryTest {
   
   private final OUID auid = OUIDFactory.create(a);
   
-  private final int times = 10_000;
+  private final int times = 1_000_000;
   
   
   @Test
@@ -49,7 +49,7 @@ public class OUIDFactoryTest {
       Assert.assertEquals(auid, OUIDFactory.create(a));
       tm.lap();
     }
-    System.out.printf("sameOUIDcalculation: "+ tm.stop());
+    System.out.printf("sameOUIDcalculation( %s ): %s%n", auid, tm.stop());
   }
   
 }

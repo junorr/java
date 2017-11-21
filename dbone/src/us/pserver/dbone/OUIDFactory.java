@@ -22,6 +22,8 @@
 package us.pserver.dbone;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Objects;
 import us.pserver.tools.Hash;
 
@@ -38,13 +40,24 @@ public class OUIDFactory {
     Field[] fls = cls.getDeclaredFields();
     Hash hash = Hash.sha1();
     hash.put(cls.getName());
-    for(Field f : fls) {
-      if(!f.isAccessible()) {
-        f.setAccessible(true);
-      }
-      hash.put(get(f, obj));
-    }
+    Arrays.asList(fls).stream()
+        .filter(OUIDFactory::take)
+        .forEach(f->calcHash(obj, f, hash));
     return OUID.of(hash.get(), cls.getName());
+  }
+  
+  
+  private static void calcHash(Object o, Field f, Hash h) {
+    if(!f.isAccessible()) {
+      f.setAccessible(true);
+    }
+    h.put(get(f, o));
+  }
+  
+  
+  private static boolean take(Field f) {
+    return !Modifier.isStatic(f.getModifiers()) 
+        && !Modifier.isTransient(f.getModifiers());
   }
   
   

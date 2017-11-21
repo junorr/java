@@ -21,11 +21,15 @@
 
 package us.pserver.dbone.handle;
 
+import com.esotericsoftware.reflectasm.MethodAccess;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Date;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -39,9 +43,7 @@ import us.pserver.tools.timer.Timer;
  */
 public class MethodHandleTest {
   
-  private Object rec;
-  
-  private final int times = 100_000;
+  private final int times = 1_000_000;
   
   private final PrintStream ps = printStream("/dev/null");
 
@@ -69,11 +71,7 @@ public class MethodHandleTest {
       ps.print(ret);
       Assert.assertEquals(37, ret);
     }
-    System.out.printf("UNreflectGetterOnAObj: %s%n", tm.stop());
-  }
-  
-  public void receive(Object obj) {
-    rec = obj;
+    System.out.printf(". UNreflectGetterOnAObj: %s%n", tm.stop());
   }
   
   @Test
@@ -86,7 +84,85 @@ public class MethodHandleTest {
       ps.print(ret);
       Assert.assertEquals(37, ret);
     }
-    System.out.printf("reflectGetterOnAObj: %s%n", tm.stop());
+    System.out.printf(". reflectGetterOnAObj: %s%n", tm.stop());
+  }
+  
+  @Test
+  public void mhExactHashCode() throws Throwable {
+    Method[] mts = AObj.class.getDeclaredMethods();
+    Method hashCode = Arrays.asList(mts).stream().filter(m->m.getName().equals("hashCode")).findFirst().get();
+    MethodHandle mh = MethodHandles.lookup().findVirtual(
+        hashCode.getDeclaringClass(), 
+        hashCode.getName(), 
+        MethodType.methodType(hashCode.getReturnType())
+    );
+    System.out.println("-> mhExactHashCode.toString: "+ mh.toString());
+    System.out.println("-> mhExactHashCode.type: "+ mh.type());
+    int expectedHash = -624836825;
+    long result = 0;
+    Timer tm = new Timer.Nanos().start();
+    for(int i = 0; i < times; i++) {
+      int hash = (int) mh.invokeExact(a);
+      Assert.assertEquals(expectedHash, hash);
+      result -= hash;
+    }
+    System.out.println("-> mhExactHashCode: "+ tm.stop());
+    System.out.println(result);
+  }
+  
+  @Test
+  public void refAsmHashCode() throws Throwable {
+    Method[] mts = AObj.class.getDeclaredMethods();
+    Method hashCode = Arrays.asList(mts).stream().filter(m->m.getName().equals("hashCode")).findFirst().get();
+    MethodAccess mac = MethodAccess.get(hashCode.getDeclaringClass());
+    int hci = mac.getIndex("hashCode");
+    int expectedHash = -624836825;
+    long result = 0;
+    Timer tm = new Timer.Nanos().start();
+    for(int i = 0; i < times; i++) {
+      int hash = (int) mac.invoke(a, hci, null);
+      Assert.assertEquals(expectedHash, hash);
+      result -= hash;
+    }
+    System.out.println("-> refAsmHashCode: "+ tm.stop());
+    System.out.println(result);
+  }
+  
+  @Test
+  public void mhVirtualHashCode() throws Throwable {
+    Method[] mts = AObj.class.getDeclaredMethods();
+    Method hashCode = Arrays.asList(mts).stream().filter(m->m.getName().equals("hashCode")).findFirst().get();
+    MethodHandle mh = MethodHandles.lookup().findVirtual(
+        hashCode.getDeclaringClass(), 
+        hashCode.getName(), 
+        MethodType.methodType(hashCode.getReturnType())
+    );
+    int expectedHash = -624836825;
+    long result = 0;
+    Timer tm = new Timer.Nanos().start();
+    for(int i = 0; i < times; i++) {
+      Object hash = mh.invoke(a);
+      Assert.assertEquals(expectedHash, hash);
+      result -= (int) hash;
+    }
+    System.out.println("-> mhVirtualHashCode: "+ tm.stop());
+    System.out.println(result);
+  }
+  
+  @Test
+  public void reflectHashCode() throws Throwable {
+    Method[] mts = AObj.class.getDeclaredMethods();
+    Method hashCode = Arrays.asList(mts).stream().filter(m->m.getName().equals("hashCode")).findFirst().get();
+    Integer expectedHash = -624836825;
+    long result = 0;
+    Timer tm = new Timer.Nanos().start();
+    for(int i = 0; i < times; i++) {
+      Object hash = hashCode.invoke(a, null);
+      Assert.assertEquals(expectedHash, hash);
+      //result -= hash;
+    }
+    System.out.println("-> reflectHashCode: "+ tm.stop());
+    System.out.println(result);
   }
   
 }

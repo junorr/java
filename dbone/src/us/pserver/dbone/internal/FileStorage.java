@@ -47,9 +47,9 @@ public class FileStorage implements Storage {
   
   public final int MIN_BLOCK_SIZE = Region.BYTES + Integer.BYTES + 1;
   
-  public final int MIN_REGION_COUNT = 2;
+  public final int MIN_REGION_COUNT = 5;
   
-  public final int MAX_REGION_COUNT = 200;
+  public final int MAX_REGION_COUNT = 50;
   
   
   private final int blksize;
@@ -120,7 +120,7 @@ public class FileStorage implements Storage {
   
   @Override
   public Region put(ByteBuffer buf) throws StorageException {
-    if(!buf.hasRemaining()) return Region.of(-1, -1);
+    if(!buf.hasRemaining()) return Region.invalid();
     Region reg = regions.allocate();
     put(buf, reg);
     return reg;
@@ -168,7 +168,7 @@ public class FileStorage implements Storage {
 
   @Override
   public ByteBuffer get(Region reg) throws StorageException {
-    if(reg == null || reg.offset() < 0 || reg.length() < 1) {
+    if(reg == null || !reg.isValid()) {
       throw new IllegalArgumentException("Bad Region: "+ reg);
     }
     ByteBufferOutputStream bos = new ByteBufferOutputStream(allocPolicy);

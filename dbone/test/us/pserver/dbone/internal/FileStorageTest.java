@@ -24,6 +24,7 @@ package us.pserver.dbone.internal;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,9 +35,9 @@ import org.junit.Test;
  */
 public class FileStorageTest {
 
-  private final Path path = Paths.get("/home/juno/dbone/");
+  private static final Path path = Paths.get("/home/juno/dbone/");
   
-  private final Storage store = new FileStorage(path, 30, ByteBuffer::allocateDirect);
+  private static final Storage store = new FileStorage(path, 30, ByteBuffer::allocateDirect);
   
   
   private ByteBuffer createSequenceBuffer(int size) {
@@ -73,8 +74,14 @@ public class FileStorageTest {
     int[] sequence = bytesToIntArray(put);
     put.flip();
     Region reg = store.put(put);
+    System.out.printf("* storageByteSequencePreservation.put: %s%n", reg);
     ByteBuffer get = store.get(reg);
     Assert.assertArrayEquals(sequence, bytesToIntArray(get));
+  }
+  
+  @AfterClass
+  public static void closeStorage() {
+    store.close();
   }
   
 }

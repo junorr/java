@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingDeque;
 import us.pserver.dbone.store.StorageException;
+import us.pserver.tools.Iterate;
 import us.pserver.tools.NotNull;
 
 /**
@@ -57,8 +58,6 @@ public class FileRegions implements Regions {
   
   
   public FileRegions(Path dbfile, long startPosition, int regionLength, int minRegionCount, int maxRegionCount) {
-    regions = new LinkedBlockingDeque<>(maxRegionCount);
-    this.file = NotNull.of(dbfile).getOrFail("Bad null file Path");
     if(startPosition < 0) {
       throw new IllegalArgumentException("Bad start position (< 0)");
     }
@@ -68,6 +67,8 @@ public class FileRegions implements Regions {
     if(maxRegionCount < minRegionCount) {
       throw new IllegalArgumentException("Bad max region count (< minRegionCount)");
     }
+    this.file = NotNull.of(dbfile).getOrFail("Bad null file Path");
+    this.regions = new LinkedBlockingDeque<>();
     this.startPosition = startPosition;
     this.regionLength = regionLength;
     this.minRegionCount = minRegionCount;
@@ -76,8 +77,7 @@ public class FileRegions implements Regions {
   
   
   private void fillRegions() {
-    if(regions.size() <= minRegionCount 
-        && regions.size() < maxRegionCount) {
+    if(regions.size() <= minRegionCount) {
       long flen = StorageException.rethrow(()->Files.size(file));
       long regcount = flen / regionLength + (flen % regionLength > 0 ? 1 : 0);
       long start = Math.max(regcount * regionLength, startPosition);
@@ -96,14 +96,19 @@ public class FileRegions implements Regions {
     if(path == null || !Files.exists(path)) {
       throw new IllegalArgumentException("Bad file path: "+ path);
     }
+    this.regions.clear();
     try (
         FileChannel ch = FileChannel.open(path, StandardOpenOption.READ);
         ) {
       ByteBuffer bb = ByteBuffer.allocate(BUFFER_SIZE);
+      int minRem = Region.BYTES * 2;
+      int count = 0;
       while(ch.read(bb) != -1) {
         bb.flip();
-        while(bb.remaining() >= Long.BYTES * 2) {
-          this.offer(Region.of(bb.getLong(), bb.getLong()));
+        while(bb.remaining() >= minRem) {
+          count++;
+          Region r = Region.of(bb.getLong(), bb.getLong());
+          if(!regions.contains(r)) regions.add(r);
         }
         bb.compact();
       }
@@ -119,20 +124,18 @@ public class FileRegions implements Regions {
     try (
         FileChannel ch = FileChannel.open(path, 
             StandardOpenOption.CREATE, 
-            StandardOpenOption.WRITE);
+            StandardOpenOption.WRITE,
+            StandardOpenOption.TRUNCATE_EXISTING);
         ) {
-      ByteBuffer bb = ByteBuffer.allocate(BUFFER_SIZE);
+      ByteBuffer bb = ByteBuffer.allocate(regions.size() * Region.BYTES);
       Iterator<Region> it = this.freeRegions();
       while(it.hasNext()) {
         Region r = it.next();
-        while(bb.remaining() > Region.BYTES) {
-          bb.putLong(r.offset());
-          bb.putLong(r.length());
-        }
-        bb.flip();
-        ch.write(bb);
-        bb.compact();
+        bb.putLong(r.offset());
+        bb.putLong(r.length());
       }
+      bb.flip();
+      ch.write(bb);
     }
     return this;
   }
