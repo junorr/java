@@ -27,7 +27,6 @@ import us.pserver.dbone.serial.SerializationService;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.UTF8String;
-import us.pserver.dbone.OUID;
 
 /**
  *
@@ -53,53 +52,40 @@ public class DefaultVolume implements Volume {
   @Override
   public Region put(StoreUnit unit) throws StorageException {
     NotNull.of(unit).failIfNull("Bad null StoreUnit");
+    byte[] buid = UTF8String.from(unit.getObjectUID()).getBytes();
     byte[] data = serial.serialize(unit.getObject());
-    int total = data.length
-        + Integer.BYTES * 2 
-        + unit.getOUID().getClassName().length()
-        + unit.getOUID().getHash().length();
-    ByteBuffer buf = alloc.apply(total);
-    put(buf, unit.getOUID());
-    buf.put(data);
-    return storage.put(buf);
-  }
-  
-  
-  private void put(ByteBuffer buf, OUID uid) throws StorageException {
-    byte[] bcls = UTF8String.from(uid.getClassName()).getBytes();
-    byte[] buid = UTF8String.from(uid.getHash()).getBytes();
-    buf.putInt(bcls.length);
-    buf.putInt(buid.length);
-    buf.put(bcls);
+    ByteBuffer buf = alloc.apply(
+        Short.BYTES + buid.length + data.length
+    );
+    buf.putShort((short)buid.length);
     buf.put(buid);
+    buf.put(data);
+    buf.flip();
+    return storage.put(buf);
   }
   
   
   @Override
   public StoreUnit get(Region reg) throws StorageException {
     ByteBuffer buf = storage.get(reg);
-    OUID uid = getOUID(buf);
+    String uid = this.getObjectUID(buf);
     byte[] data = new byte[buf.remaining()];
+    buf.get(data);
     return StoreUnit.of(uid, serial.deserialize(data));
   }
   
   
   @Override
-  public OUID getOUID(Region reg) throws StorageException {
+  public String getObjectUID(Region reg) throws StorageException {
     NotNull.of(reg).failIfNull("Bad null Region");
-    return getOUID(storage.get(reg));
+    return DefaultVolume.this.getObjectUID(storage.get(reg));
   }
   
   
-  private OUID getOUID(ByteBuffer buf) throws StorageException {
-    byte[] bcls = new byte[buf.getInt()];
-    byte[] buid = new byte[buf.getInt()];
-    buf.get(bcls);
+  private String getObjectUID(ByteBuffer buf) throws StorageException {
+    byte[] buid = new byte[buf.getShort()];
     buf.get(buid);
-    return OUID.of(
-        UTF8String.from(buid).toString(), 
-        UTF8String.from(bcls).toString()
-    );
+    return UTF8String.from(buid).toString();
   }
   
   

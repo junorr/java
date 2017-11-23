@@ -22,6 +22,8 @@
 package us.pserver.dbone.handle;
 
 import com.esotericsoftware.reflectasm.MethodAccess;
+import com.hervian.lambda.Lambda;
+import com.hervian.lambda.LambdaFactory;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.lang.invoke.MethodHandle;
@@ -45,8 +47,6 @@ public class MethodHandleTest {
   
   private final int times = 1_000_000;
   
-  private final PrintStream ps = printStream("/dev/null");
-
   private final AObj a = new AObj("hello", 37, new int[]{1, 2, 3}, new char[]{'a', 'b', 'c'}, new Date());
   
   
@@ -68,7 +68,6 @@ public class MethodHandleTest {
     Timer tm = new Timer.Nanos().start();
     for(int i = 0; i < times; i++) {
       int ret = (int)mh.invokeExact(a);
-      ps.print(ret);
       Assert.assertEquals(37, ret);
     }
     System.out.printf(". UNreflectGetterOnAObj: %s%n", tm.stop());
@@ -81,7 +80,6 @@ public class MethodHandleTest {
     Timer tm = new Timer.Nanos().start();
     for(int i = 0; i < times; i++) {
       Object ret = f.get(a);
-      ps.print(ret);
       Assert.assertEquals(37, ret);
     }
     System.out.printf(". reflectGetterOnAObj: %s%n", tm.stop());
@@ -104,7 +102,7 @@ public class MethodHandleTest {
     for(int i = 0; i < times; i++) {
       int hash = (int) mh.invokeExact(a);
       Assert.assertEquals(expectedHash, hash);
-      result -= hash;
+      result += hash;
     }
     System.out.println("-> mhExactHashCode: "+ tm.stop());
     System.out.println(result);
@@ -122,7 +120,7 @@ public class MethodHandleTest {
     for(int i = 0; i < times; i++) {
       int hash = (int) mac.invoke(a, hci, null);
       Assert.assertEquals(expectedHash, hash);
-      result -= hash;
+      result += hash;
     }
     System.out.println("-> refAsmHashCode: "+ tm.stop());
     System.out.println(result);
@@ -143,7 +141,7 @@ public class MethodHandleTest {
     for(int i = 0; i < times; i++) {
       Object hash = mh.invoke(a);
       Assert.assertEquals(expectedHash, hash);
-      result -= (int) hash;
+      result += (int) hash;
     }
     System.out.println("-> mhVirtualHashCode: "+ tm.stop());
     System.out.println(result);
@@ -153,15 +151,32 @@ public class MethodHandleTest {
   public void reflectHashCode() throws Throwable {
     Method[] mts = AObj.class.getDeclaredMethods();
     Method hashCode = Arrays.asList(mts).stream().filter(m->m.getName().equals("hashCode")).findFirst().get();
-    Integer expectedHash = -624836825;
+    int expectedHash = -624836825;
     long result = 0;
     Timer tm = new Timer.Nanos().start();
     for(int i = 0; i < times; i++) {
       Object hash = hashCode.invoke(a, null);
       Assert.assertEquals(expectedHash, hash);
-      //result -= hash;
+      //result += hash;
     }
     System.out.println("-> reflectHashCode: "+ tm.stop());
+    System.out.println(result);
+  }
+  
+  @Test
+  public void lambdaHashCode() throws Throwable {
+    Method[] mts = AObj.class.getDeclaredMethods();
+    Method hashCode = Arrays.asList(mts).stream().filter(m->m.getName().equals("hashCode")).findFirst().get();
+    Lambda lm = LambdaFactory.create(hashCode);
+    int expectedHash = -624836825;
+    long result = 0;
+    Timer tm = new Timer.Nanos().start();
+    for(int i = 0; i < times; i++) {
+      int hash = lm.invoke_for_int(a);
+      Assert.assertEquals(expectedHash, hash);
+      result += hash;
+    }
+    System.out.println("-> lamdaHashCode: "+ tm.stop());
     System.out.println(result);
   }
   

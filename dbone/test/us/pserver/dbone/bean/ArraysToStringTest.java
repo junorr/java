@@ -21,34 +21,22 @@
 
 package us.pserver.dbone.bean;
 
-import java.util.Date;
-import junit.framework.Assert;
+import java.util.Objects;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import us.pserver.dbone.ObjectUIDFactory;
-import us.pserver.tools.timer.Timer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/11/2017
+ * @version 0.0 - 23/11/2017
  */
-public class OUIDFactoryTest {
+public class ArraysToStringTest {
 
-  private final AObj a = new AObj("hello", 37, new int[]{1, 2, 3}, new char[]{'a', 'b', 'c'}, new Date());
-  
-  private final String auid = ObjectUIDFactory.create(a);
-  
-  private final int times = 1;
-  
-  
   @Test
-  public void sameOUIDcalculation() {
-    Timer tm = new Timer.Nanos().start();
-    for(int i = 0; i < times; i++) {
-      Assert.assertEquals(auid, ObjectUIDFactory.create(a));
-      tm.lap();
-    }
-    System.out.printf("sameOUIDcalculation( %s ): %s%n", auid, tm.stop());
+  public void toStringConsistency() {
+    int[] is = {1,2,3};
+    int[] is2 = {1,2,3};
+    assertEquals(Objects.toString(is), Objects.toString(is2));
   }
   
 }

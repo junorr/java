@@ -23,6 +23,7 @@ package us.pserver.tools;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 /**
  *
@@ -81,6 +82,12 @@ public class Hash {
     return bytesToHex(digest.digest(
         NotNull.of(bs).getOrFail("Bad null byte array"))
     );
+  }
+  
+  
+  public String of(byte[] bs, int off, int len) {
+    digest.update(NotNull.of(bs).getOrFail("Bad null byte array"), off, len);
+    return bytesToHex(digest.digest());
   }
   
   

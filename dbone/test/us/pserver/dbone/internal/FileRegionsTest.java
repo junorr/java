@@ -21,6 +21,7 @@
 
 package us.pserver.dbone.internal;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.Assert;
@@ -32,6 +33,8 @@ import org.junit.Test;
  * @version 0.0 - 17/11/2017
  */
 public class FileRegionsTest {
+  
+  private final Path storeFile = Paths.get("/home/juno/dbone/fileRegionsStorageTest.dat");
   
   private final Path regionsFile = Paths.get("/home/juno/dbone/fileRegionsTest.dat");
   
@@ -46,7 +49,7 @@ public class FileRegionsTest {
 
   @Test
   public void calculateFileRegions() {
-    FileRegions fr = new FileRegions(regionsFile, startPos, blockSize, minRegions, maxRegions);
+    FileRegions fr = new FileRegions(storeFile, startPos, blockSize, minRegions, maxRegions);
     long pos = startPos;
     String msg = "[%d] Region(%s - %s)";
     for(int i = 0; i < maxRegions; i++) {
@@ -58,7 +61,7 @@ public class FileRegionsTest {
   
   @Test
   public void allocateAllAndOfferFirst() {
-    FileRegions fr = new FileRegions(regionsFile, startPos, blockSize, minRegions, maxRegions);
+    FileRegions fr = new FileRegions(storeFile, startPos, blockSize, minRegions, maxRegions);
     Region first = fr.allocate();
     Assert.assertEquals(Region.of(0, 1024), first);
     Assert.assertTrue(fr.offer(first));
@@ -75,7 +78,7 @@ public class FileRegionsTest {
   
   @Test
   public void discardFirstAndAllocateAll() {
-    FileRegions fr = new FileRegions(regionsFile, startPos, blockSize, minRegions, maxRegions);
+    FileRegions fr = new FileRegions(storeFile, startPos, blockSize, minRegions, maxRegions);
     Region first = Region.of(0, 1024);
     Assert.assertTrue(fr.discard(first));
     long pos = blockSize;
@@ -85,6 +88,17 @@ public class FileRegionsTest {
       Assert.assertEquals(String.format(msg, i, pos, blockSize), Region.of(pos, blockSize), r);
       pos += blockSize;
     }
+  }
+  
+  @Test
+  public void fileWriteReadConsistency() throws IOException {
+    FileRegions fr = new FileRegions(storeFile, startPos, blockSize, minRegions, maxRegions);
+    //discard first
+    fr.allocate();
+    fr.writeTo(regionsFile);
+    fr.readFrom(regionsFile);
+    Region expected = Region.of(blockSize, blockSize);
+    Assert.assertEquals(expected, fr.allocate());
   }
   
 }

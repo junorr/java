@@ -21,22 +21,65 @@
 
 package us.pserver.dbone.internal;
 
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 import us.pserver.dbone.store.StorageException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 30/10/2017
+ * @version 0.0 - 23/11/2017
  */
-public interface Volume extends AutoCloseable {
+public class MockStorage implements Storage {
+  
+  private final Map<Region,ByteBuffer> map;
+  
+  private final int blockSize;
+  
+  private int index;
+  
+  
+  public MockStorage(int blockSize) {
+    if(blockSize < 1) {
+      throw new IllegalArgumentException("Bad block size: "+ blockSize);
+    }
+    map = new HashMap<>();
+    this.blockSize = blockSize;
+    index = 0;
+  }
+  
+  
+  private Region region() {
+    Region r = Region.of(index, blockSize);
+    index += blockSize;
+    return r;
+  }
+  
 
-  public Region put(StoreUnit unit) throws StorageException;
-  
-  public StoreUnit get(Region reg) throws StorageException;
-  
-  public String getObjectUID(Region reg) throws StorageException;
-  
   @Override
-  public void close() throws StorageException;
-  
+  public Region put(ByteBuffer buf) throws StorageException {
+    Region reg = region();
+    map.put(reg, buf);
+    return reg;
+  }
+
+
+  @Override
+  public ByteBuffer get(Region reg) throws StorageException {
+    return map.get(reg);
+  }
+
+
+  @Override
+  public long size() throws StorageException {
+    return map.entrySet().stream()
+        .map(e->e.getValue().remaining())
+        .reduce(0, (t,r)->t+r);
+  }
+
+
+  @Override
+  public void close() throws StorageException {}
+
 }

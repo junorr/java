@@ -102,11 +102,9 @@ public class FileRegions implements Regions {
         ) {
       ByteBuffer bb = ByteBuffer.allocate(BUFFER_SIZE);
       int minRem = Region.BYTES * 2;
-      int count = 0;
       while(ch.read(bb) != -1) {
         bb.flip();
         while(bb.remaining() >= minRem) {
-          count++;
           Region r = Region.of(bb.getLong(), bb.getLong());
           if(!regions.contains(r)) regions.add(r);
         }

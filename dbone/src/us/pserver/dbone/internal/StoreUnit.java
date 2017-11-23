@@ -21,8 +21,8 @@
 
 package us.pserver.dbone.internal;
 
+import java.util.Objects;
 import us.pserver.tools.NotNull;
-import us.pserver.dbone.OUID;
 
 /**
  *
@@ -31,12 +31,12 @@ import us.pserver.dbone.OUID;
  */
 public interface StoreUnit {
 
-  public OUID getOUID();
+  public String getObjectUID();
   
   public Object getObject();
   
   
-  public static StoreUnit of(OUID uid, Object obj) {
+  public static StoreUnit of(String uid, Object obj) {
     return new DefStoreUnit(uid, obj);
   }
   
@@ -48,21 +48,55 @@ public interface StoreUnit {
     
     private final Object obj;
     
-    private final OUID ouid;
+    private final String uid;
     
-    public DefStoreUnit(OUID ouid, Object obj) {
-      this.ouid = NotNull.of(ouid).getOrFail("Bad null ObjectUID");
+    public DefStoreUnit(String uid, Object obj) {
+      this.uid = NotNull.of(uid).getOrFail("Bad null ObjectUID");
       this.obj = NotNull.of(obj).getOrFail("Bad null Object");
     }
 
     @Override
-    public OUID getOUID() {
-      return ouid;
+    public String getObjectUID() {
+      return uid;
     }
 
     @Override
     public Object getObject() {
       return obj;
+    }
+
+
+    @Override
+    public int hashCode() {
+      int hash = 7;
+      hash = 47 * hash + Objects.hashCode(this.obj);
+      hash = 47 * hash + Objects.hashCode(this.uid);
+      return hash;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      final DefStoreUnit other = (DefStoreUnit) obj;
+      if (!Objects.equals(this.uid, other.uid)) {
+        return false;
+      }
+      return Objects.equals(this.obj, other.obj);
+    }
+
+
+    @Override
+    public String toString() {
+      return "StoreUnit{uid="+ uid + ", obj=" + obj + '}';
     }
   
   }
