@@ -21,10 +21,12 @@
 
 package us.pserver.dbone.internal;
 
+import us.pserver.dbone.store.Storage;
 import java.nio.ByteBuffer;
 import java.util.function.IntFunction;
 import us.pserver.dbone.serial.SerializationService;
 import us.pserver.dbone.store.StorageException;
+import us.pserver.tools.Hash;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.UTF8String;
 
@@ -50,10 +52,10 @@ public class DefaultVolume implements Volume {
   
   
   @Override
-  public Region put(StoreUnit unit) throws StorageException {
-    NotNull.of(unit).failIfNull("Bad null StoreUnit");
-    byte[] buid = UTF8String.from(unit.getObjectUID()).getBytes();
-    byte[] data = serial.serialize(unit.getObject());
+  public Record put(Object obj) throws StorageException {
+    NotNull.of(obj).failIfNull("Bad null Object");
+    byte[] data = serial.serialize(obj);
+    byte[] buid = UTF8String.from(Hash.sha1().of(data)).getBytes();
     ByteBuffer buf = alloc.apply(
         Short.BYTES + buid.length + data.length
     );
@@ -61,31 +63,31 @@ public class DefaultVolume implements Volume {
     buf.put(buid);
     buf.put(data);
     buf.flip();
-    return storage.put(buf);
+    return Record.of(
+        UTF8String.from(buid).toString(), 
+        storage.put(buf)
+    );
+  }
+  
+  
+  @Override
+  public StoreUnit get(Record id) throws StorageException {
+    return get(NotNull.of(id).getOrFail("Bad null VolumeID").region());
   }
   
   
   @Override
   public StoreUnit get(Region reg) throws StorageException {
-    ByteBuffer buf = storage.get(reg);
-    String uid = this.getObjectUID(buf);
-    byte[] data = new byte[buf.remaining()];
-    buf.get(data);
-    return StoreUnit.of(uid, serial.deserialize(data));
-  }
-  
-  
-  @Override
-  public String getObjectUID(Region reg) throws StorageException {
     NotNull.of(reg).failIfNull("Bad null Region");
-    return DefaultVolume.this.getObjectUID(storage.get(reg));
-  }
-  
-  
-  private String getObjectUID(ByteBuffer buf) throws StorageException {
+    ByteBuffer buf = storage.get(reg);
     byte[] buid = new byte[buf.getShort()];
     buf.get(buid);
-    return UTF8String.from(buid).toString();
+    byte[] data = new byte[buf.remaining()];
+    buf.get(data);
+    return StoreUnit.of(
+        UTF8String.from(buid).toString(), 
+        serial.deserialize(data)
+    );
   }
   
   

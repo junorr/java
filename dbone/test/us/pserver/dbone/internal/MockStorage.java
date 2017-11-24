@@ -21,6 +21,7 @@
 
 package us.pserver.dbone.internal;
 
+import us.pserver.dbone.store.Storage;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;

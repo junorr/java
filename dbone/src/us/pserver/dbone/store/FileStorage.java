@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.internal;
+package us.pserver.dbone.store;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -29,6 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.function.IntFunction;
+import us.pserver.dbone.internal.FileRegionControl;
+import us.pserver.dbone.internal.Region;
 import us.pserver.dbone.store.StorageException;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.io.ByteBufferOutputStream;
@@ -58,7 +60,7 @@ public class FileStorage implements Storage {
   
   private final IntFunction<ByteBuffer> allocPolicy;
   
-  private final FileRegions regions;
+  private final FileRegionControl regions;
   
   private final FileChannel channel;
   
@@ -82,7 +84,7 @@ public class FileStorage implements Storage {
     this.writelenght = blksize - Region.BYTES - Integer.BYTES;
     this.allocPolicy = NotNull.of(allocPolicy).getOrFail("Bad null alloc policy");
     this.channel = openRW(storepath);
-    this.regions = new FileRegions(
+    this.regions = new FileRegionControl(
         storepath, 0, blksize, 
         MIN_REGION_COUNT, MAX_REGION_COUNT
     );

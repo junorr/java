@@ -21,23 +21,23 @@
 
 package us.pserver.dbone.store.tx;
 
-import us.pserver.dbone.store.Block;
-import us.pserver.dbone.store.Storage;
+import us.pserver.dbone.internal.Region;
+import us.pserver.dbone.internal.RegionControl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public class RollbackAllocationLog extends StorageBlockLog {
+public class RollbackAllocationLog extends AbstractRollbackLog {
   
-  public RollbackAllocationLog(Storage stg, Block blk) {
-    super(stg, blk);
+  public RollbackAllocationLog(RegionControl rgs, Region reg) {
+    super(rgs, reg);
   }
   
   @Override
   public void rollback() throws TransactionException {
-    storage.deallocate(block);
+    this.regions.offer(region);
   }
 
 }

@@ -21,6 +21,8 @@
 
 package us.pserver.dbone.internal;
 
+import us.pserver.dbone.store.Storage;
+import us.pserver.dbone.store.FileStorage;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;

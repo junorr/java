@@ -21,15 +21,16 @@
 
 package us.pserver.dbone.internal;
 
+import us.pserver.dbone.store.Storage;
+import us.pserver.dbone.store.FileStorage;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Date;
 import junit.framework.Assert;
 import org.junit.AfterClass;
 import org.junit.Test;
-import us.pserver.dbone.ObjectUIDFactory;
+import us.pserver.date.SimpleDate;
 import us.pserver.dbone.bean.AObj;
 import us.pserver.dbone.bean.BObj;
 import us.pserver.dbone.serial.GsonSerializationService;
@@ -41,7 +42,7 @@ import us.pserver.dbone.serial.GsonSerializationService;
  */
 public class DefaultVolumeTest {
 
-  private static final AObj a = new AObj("Aobj", 123, new int[]{1,2,3}, new char[]{'a','b','c'}, new Date());
+  private static final AObj a = new AObj("Aobj", 123, new int[]{1,2,3}, new char[]{'a','b','c'}, SimpleDate.parseDate("24/11/2017 13:27:00"));
   
   private static final BObj b = new BObj("Bobj", a, Arrays.asList(1,2,3));
   
@@ -53,8 +54,6 @@ public class DefaultVolumeTest {
   
   private static final Volume vol = new DefaultVolume(store, new GsonSerializationService(), ByteBuffer::allocateDirect);
   
-  private final StoreUnit storeUnit = StoreUnit.of(ObjectUIDFactory.create(b), b);
-  
   
   @AfterClass
   public static void closeVolume() {
@@ -64,11 +63,13 @@ public class DefaultVolumeTest {
   
   @Test
   public void writeReadConsistency() {
-    Region r = vol.put(storeUnit);
-    System.out.printf("writeReadConsistency.put: %s%n", r);
-    StoreUnit readUnit = vol.get(r);
-    System.out.printf("writeReadConsistency.get: %s%n", readUnit);
-    Assert.assertEquals(storeUnit, readUnit);
+    Record vid = vol.put(a);
+    StoreUnit putUnit = StoreUnit.of(vid.uid(), a);
+    System.out.printf("writeReadConsistency.put: %s%n", vid);
+    System.out.printf("writeReadConsistency.put: %s%n", putUnit);
+    StoreUnit getUnit = vol.get(vid);
+    System.out.printf("writeReadConsistency.get: %s%n", getUnit);
+    Assert.assertEquals(putUnit, getUnit);
   }
   
 }

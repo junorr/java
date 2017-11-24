@@ -39,7 +39,7 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 10/10/2017
  */
-public class FileRegions implements Regions {
+public class FileRegionControl implements RegionControl {
   
   public static final int BUFFER_SIZE = 4096;
   
@@ -57,7 +57,7 @@ public class FileRegions implements Regions {
   private final int maxRegionCount;
   
   
-  public FileRegions(Path dbfile, long startPosition, int regionLength, int minRegionCount, int maxRegionCount) {
+  public FileRegionControl(Path dbfile, long startPosition, int regionLength, int minRegionCount, int maxRegionCount) {
     if(startPosition < 0) {
       throw new IllegalArgumentException("Bad start position (< 0)");
     }
@@ -92,7 +92,7 @@ public class FileRegions implements Regions {
   }
   
   
-  public FileRegions readFrom(Path path) throws IOException {
+  public FileRegionControl readFrom(Path path) throws IOException {
     if(path == null || !Files.exists(path)) {
       throw new IllegalArgumentException("Bad file path: "+ path);
     }
@@ -115,7 +115,7 @@ public class FileRegions implements Regions {
   }
   
   
-  public FileRegions writeTo(Path path) throws IOException {
+  public FileRegionControl writeTo(Path path) throws IOException {
     if(path == null) {
       throw new IllegalArgumentException("Bad file path: "+ path);
     }
@@ -192,7 +192,7 @@ public class FileRegions implements Regions {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final FileRegions other = (FileRegions) obj;
+    final FileRegionControl other = (FileRegionControl) obj;
     if (this.regionLength != other.regionLength) {
       return false;
     }

@@ -21,24 +21,24 @@
 
 package us.pserver.dbone.store.tx;
 
-import us.pserver.dbone.store.Block;
-import us.pserver.dbone.store.Storage;
+import us.pserver.dbone.internal.Region;
 import us.pserver.tools.NotNull;
+import us.pserver.dbone.internal.RegionControl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public abstract class StorageBlockLog implements RollbackLog {
+public abstract class AbstractRollbackLog implements RollbackLog {
   
-  protected final Storage storage;
+  protected final RegionControl regions;
   
-  protected final Block block;
-
-  protected StorageBlockLog(Storage stg, Block blk) {
-    this.storage = NotNull.of(stg).getOrFail("Bad null Storage");
-    this.block = NotNull.of(blk).getOrFail("Bad null Block");
+  protected final Region region;
+  
+  protected AbstractRollbackLog(RegionControl rgs, Region reg) {
+    this.regions = NotNull.of(rgs).getOrFail("Bad null Regions");
+    this.region = NotNull.of(reg).getOrFail("Bad null Region");
   }
   
 }

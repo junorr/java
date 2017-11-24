@@ -21,32 +21,24 @@
 
 package us.pserver.dbone.store;
 
+import java.nio.ByteBuffer;
 import us.pserver.dbone.internal.Region;
-import java.io.Closeable;
+import us.pserver.dbone.store.StorageException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 27/10/2017
  */
-public interface Storage extends Closeable {
+public interface Storage extends AutoCloseable {
 
-  public Block get(Region reg) throws StorageException;
+  public Region put(ByteBuffer buf) throws StorageException;
   
-  public void put(Block blk) throws StorageException;
+  public ByteBuffer get(Region reg) throws StorageException;
   
-  public Block allocate();
+  public long size() throws StorageException;
   
-  public void reallocate(Block blk) throws StorageException;
-  
-  public void deallocate(Block blk) throws StorageException;
-  
-  public int getBlockSize();
-  
-  public long size();
-  
-  @Override public void close() throws StorageException;
-  
-  public StorageTransaction startTransaction();
+  @Override 
+  public void close() throws StorageException;
   
 }
