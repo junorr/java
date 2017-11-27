@@ -19,25 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.internal;
+package us.pserver.dbone.config;
 
-import java.util.Iterator;
+import java.nio.ByteBuffer;
+import java.util.function.IntFunction;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/10/2017
+ * @version 0.0 - 24/11/2017
  */
-public interface RegionControl {
-  
-  public boolean offer(Region reg);
-  
-  public boolean discard(Region reg);
-  
-  public Region allocate();
-  
-  public Iterator<Region> freeRegions();
-  
-  public int size();
-  
-}
+  public enum BufferAllocPolicy {
+    
+    ALLOCATE_HEAP(ByteBuffer::allocate), 
+    
+    ALLOCATE_DIRECT(ByteBuffer::allocateDirect);
+    
+    private final IntFunction<ByteBuffer> allocPolicy;
+    
+    private BufferAllocPolicy(IntFunction<ByteBuffer> alloc) {
+      this.allocPolicy = alloc;
+    }
+    
+    public IntFunction<ByteBuffer> getAllocFunction() {
+      return allocPolicy;
+    }
+    
+  }

@@ -49,7 +49,7 @@ public class FileRegionsTest {
 
   @Test
   public void calculateFileRegions() {
-    FileRegionControl fr = new FileRegionControl(storeFile, startPos, blockSize, minRegions, maxRegions);
+    FileSizeRegionControl fr = new FileSizeRegionControl(storeFile, startPos, blockSize, minRegions, maxRegions);
     long pos = startPos;
     String msg = "[%d] Region(%s - %s)";
     for(int i = 0; i < maxRegions; i++) {
@@ -61,7 +61,7 @@ public class FileRegionsTest {
   
   @Test
   public void allocateAllAndOfferFirst() {
-    FileRegionControl fr = new FileRegionControl(storeFile, startPos, blockSize, minRegions, maxRegions);
+    FileSizeRegionControl fr = new FileSizeRegionControl(storeFile, startPos, blockSize, minRegions, maxRegions);
     Region first = fr.allocate();
     Assert.assertEquals(Region.of(0, 1024), first);
     Assert.assertTrue(fr.offer(first));
@@ -78,7 +78,7 @@ public class FileRegionsTest {
   
   @Test
   public void discardFirstAndAllocateAll() {
-    FileRegionControl fr = new FileRegionControl(storeFile, startPos, blockSize, minRegions, maxRegions);
+    FileSizeRegionControl fr = new FileSizeRegionControl(storeFile, startPos, blockSize, minRegions, maxRegions);
     Region first = Region.of(0, 1024);
     Assert.assertTrue(fr.discard(first));
     long pos = blockSize;
@@ -92,7 +92,7 @@ public class FileRegionsTest {
   
   @Test
   public void fileWriteReadConsistency() throws IOException {
-    FileRegionControl fr = new FileRegionControl(storeFile, startPos, blockSize, minRegions, maxRegions);
+    FileSizeRegionControl fr = new FileSizeRegionControl(storeFile, startPos, blockSize, minRegions, maxRegions);
     //discard first
     fr.allocate();
     fr.writeTo(regionsFile);

@@ -21,17 +21,12 @@
 
 package us.pserver.dbone.internal;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingDeque;
 import us.pserver.dbone.store.StorageException;
-import us.pserver.tools.Iterate;
 import us.pserver.tools.NotNull;
 
 /**
@@ -39,10 +34,7 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 10/10/2017
  */
-public class FileRegionControl implements RegionControl {
-  
-  public static final int BUFFER_SIZE = 4096;
-  
+public class FileSizeRegionControl implements RegionControl {
   
   private final LinkedBlockingDeque<Region> regions;
   
@@ -57,7 +49,7 @@ public class FileRegionControl implements RegionControl {
   private final int maxRegionCount;
   
   
-  public FileRegionControl(Path dbfile, long startPosition, int regionLength, int minRegionCount, int maxRegionCount) {
+  public FileSizeRegionControl(Path dbfile, long startPosition, int regionLength, int minRegionCount, int maxRegionCount) {
     if(startPosition < 0) {
       throw new IllegalArgumentException("Bad start position (< 0)");
     }
@@ -92,56 +84,8 @@ public class FileRegionControl implements RegionControl {
   }
   
   
-  public FileRegionControl readFrom(Path path) throws IOException {
-    if(path == null || !Files.exists(path)) {
-      throw new IllegalArgumentException("Bad file path: "+ path);
-    }
-    this.regions.clear();
-    try (
-        FileChannel ch = FileChannel.open(path, StandardOpenOption.READ);
-        ) {
-      ByteBuffer bb = ByteBuffer.allocate(BUFFER_SIZE);
-      int minRem = Region.BYTES * 2;
-      while(ch.read(bb) != -1) {
-        bb.flip();
-        while(bb.remaining() >= minRem) {
-          Region r = Region.of(bb.getLong(), bb.getLong());
-          if(!regions.contains(r)) regions.add(r);
-        }
-        bb.compact();
-      }
-    }
-    return this;
-  }
-  
-  
-  public FileRegionControl writeTo(Path path) throws IOException {
-    if(path == null) {
-      throw new IllegalArgumentException("Bad file path: "+ path);
-    }
-    try (
-        FileChannel ch = FileChannel.open(path, 
-            StandardOpenOption.CREATE, 
-            StandardOpenOption.WRITE,
-            StandardOpenOption.TRUNCATE_EXISTING);
-        ) {
-      ByteBuffer bb = ByteBuffer.allocate(regions.size() * Region.BYTES);
-      Iterator<Region> it = this.freeRegions();
-      while(it.hasNext()) {
-        Region r = it.next();
-        bb.putLong(r.offset());
-        bb.putLong(r.length());
-      }
-      bb.flip();
-      ch.write(bb);
-    }
-    return this;
-  }
-  
-  
   @Override
   public synchronized boolean discard(Region reg) {
-    fillRegions();
     if(reg != null && regions.contains(reg)) {
       regions.remove(reg);
       return true;
@@ -152,7 +96,6 @@ public class FileRegionControl implements RegionControl {
   
   @Override
   public synchronized boolean offer(Region reg) {
-    fillRegions();
     if(reg != null && !regions.contains(reg)) {
       regions.add(reg);
       return true;
@@ -175,6 +118,12 @@ public class FileRegionControl implements RegionControl {
   
   
   @Override
+  public int size() {
+    return regions.size();
+  }
+  
+  
+  @Override
   public int hashCode() {
     int hash = 5;
     return hash;
@@ -192,7 +141,7 @@ public class FileRegionControl implements RegionControl {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final FileRegionControl other = (FileRegionControl) obj;
+    final FileSizeRegionControl other = (FileSizeRegionControl) obj;
     if (this.regionLength != other.regionLength) {
       return false;
     }

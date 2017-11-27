@@ -29,9 +29,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.function.IntFunction;
-import us.pserver.dbone.internal.FileRegionControl;
+import static us.pserver.dbone.config.DBOneConfiguration.MIN_BLOCK_SIZE;
+import us.pserver.dbone.internal.FileSizeRegionControl;
 import us.pserver.dbone.internal.Region;
-import us.pserver.dbone.store.StorageException;
+import us.pserver.dbone.internal.ByteableRegionControl;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.io.ByteBufferOutputStream;
 import us.pserver.tools.io.ByteableNumber;
@@ -47,11 +48,9 @@ public class FileStorage implements Storage {
   
   public static final Path FILE_FREE_BLOCKS = Paths.get("./freeblocks.dat");
   
-  public final int MIN_BLOCK_SIZE = Region.BYTES + Integer.BYTES + 1;
+  public static final int MIN_REGION_COUNT = 5;
   
-  public final int MIN_REGION_COUNT = 5;
-  
-  public final int MAX_REGION_COUNT = 50;
+  public static final int MAX_REGION_COUNT = 50;
   
   
   private final int blksize;
@@ -60,7 +59,7 @@ public class FileStorage implements Storage {
   
   private final IntFunction<ByteBuffer> allocPolicy;
   
-  private final FileRegionControl regions;
+  private final ByteableRegionControl regions;
   
   private final FileChannel channel;
   
@@ -70,6 +69,18 @@ public class FileStorage implements Storage {
   
   
   public FileStorage(Path directory, int blockSize, IntFunction<ByteBuffer> allocPolicy) {
+    this(directory, blockSize, allocPolicy, new ByteableRegionControl(new FileSizeRegionControl(
+        directory.resolve(FILE_STORAGE), 0, 
+        blockSize, MIN_REGION_COUNT, 
+        MAX_REGION_COUNT)
+    ));
+    if(Files.exists(freepath)) {
+      StorageException.rethrow(()->regions.readFrom(freepath));
+    }
+  }
+  
+  
+  public FileStorage(Path directory, int blockSize, IntFunction<ByteBuffer> allocPolicy, ByteableRegionControl rgc) {
     if(directory == null || !Files.isDirectory(directory)) {
       throw new IllegalArgumentException("Bad directory Path");
     }
@@ -83,14 +94,8 @@ public class FileStorage implements Storage {
     this.blksize = blockSize;
     this.writelenght = blksize - Region.BYTES - Integer.BYTES;
     this.allocPolicy = NotNull.of(allocPolicy).getOrFail("Bad null alloc policy");
+    this.regions = NotNull.of(rgc).getOrFail("Bad null RegionControl");
     this.channel = openRW(storepath);
-    this.regions = new FileRegionControl(
-        storepath, 0, blksize, 
-        MIN_REGION_COUNT, MAX_REGION_COUNT
-    );
-    if(Files.exists(freepath)) {
-      StorageException.rethrow(()->regions.readFrom(freepath));
-    }
   }
   
   

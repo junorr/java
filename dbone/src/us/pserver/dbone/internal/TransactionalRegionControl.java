@@ -83,6 +83,12 @@ public class TransactionalRegionControl implements RegionControl, Transaction {
   public Iterator<Region> freeRegions() {
     return regions.freeRegions();
   }
+  
+  
+  @Override
+  public int size() {
+    return regions.size();
+  }
 
 
   @Override
