@@ -105,10 +105,7 @@ public class ByteableRegionControl implements RegionControl {
     NotNull.of(channel).failIfNull("Bad null Channel");
     try {
       ByteBuffer bb = ByteBuffer.allocate(control.size() * Region.BYTES);
-      Iterate.on(control.freeRegions()).go(r->{
-        bb.putLong(r.offset());
-        bb.putLong(r.length());
-      });
+      Iterate.on(control.freeRegions()).go(r->r.writeTo(bb));
       bb.flip();
       channel.write(bb);
     }
@@ -123,11 +120,10 @@ public class ByteableRegionControl implements RegionControl {
     NotNull.of(channel).failIfNull("Bad null Channel");
     try {
       ByteBuffer bb = ByteBuffer.allocate(BUFFER_SIZE);
-      int minRem = Region.BYTES * 2;
       while(channel.read(bb) != -1) {
         bb.flip();
-        while(bb.remaining() >= minRem) {
-          control.offer(Region.of(bb.getLong(), bb.getLong()));
+        while(bb.remaining() >= Region.BYTES) {
+          control.offer(Region.of(bb));
         }
         bb.compact();
       }

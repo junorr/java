@@ -30,20 +30,27 @@ import us.pserver.tools.NotNull;
  * @version 0.0 - 24/11/2017
  */
 public interface Record extends Comparable<Record> {
+  
+  public int storeID();
 
-  public String uid();
+  public String objectUID();
   
   public Region region();
   
   @Override
   public default int compareTo(Record other) {
     NotNull.of(other).failIfNull("Bad null VolumeID");
-    return uid().compareTo(other.uid());
+    return objectUID().compareTo(other.objectUID());
   }
   
   
   public static Record of(String uid, Region reg) {
-    return new DefaultRecord(uid, reg);
+    return new DefaultRecord(0, uid, reg);
+  }
+  
+  
+  public static Record of(int sid, String uid, Region reg) {
+    return new DefaultRecord(0, uid, reg);
   }
   
   
@@ -52,19 +59,28 @@ public interface Record extends Comparable<Record> {
   
   public static class DefaultRecord implements Record {
     
+    private final int sid;
+    
     private final String uid;
     
     private final Region reg;
     
     
-    public DefaultRecord(String uid, Region reg) {
+    public DefaultRecord(int storeID, String uid, Region reg) {
+      this.sid = storeID;
       this.uid = NotNull.of(uid).getOrFail("Bad null UID");
       this.reg = NotNull.of(reg).getOrFail("Bad null Region");
     }
     
+    
+    @Override
+    public int storeID() {
+      return sid;
+    }
+    
 
     @Override
-    public String uid() {
+    public String objectUID() {
       return uid;
     }
 
@@ -77,9 +93,10 @@ public interface Record extends Comparable<Record> {
 
     @Override
     public int hashCode() {
-      int hash = 5;
-      hash = 11 * hash + Objects.hashCode(this.uid);
-      hash = 11 * hash + Objects.hashCode(this.reg);
+      int hash = 7;
+      hash = 79 * hash + this.sid;
+      hash = 79 * hash + Objects.hashCode(this.uid);
+      hash = 79 * hash + Objects.hashCode(this.reg);
       return hash;
     }
 
@@ -96,6 +113,9 @@ public interface Record extends Comparable<Record> {
         return false;
       }
       final DefaultRecord other = (DefaultRecord) obj;
+      if (this.sid != other.sid) {
+        return false;
+      }
       if (!Objects.equals(this.uid, other.uid)) {
         return false;
       }
@@ -105,7 +125,7 @@ public interface Record extends Comparable<Record> {
 
     @Override
     public String toString() {
-      return "Record{" + "uid=" + uid + ", reg=" + reg + '}';
+      return "Record{" + "sid=" + sid + ", uid=" + uid + ", reg=" + reg + '}';
     }
     
   }

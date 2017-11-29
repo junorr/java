@@ -126,7 +126,7 @@ public class FileStorage implements Storage {
   
   
   @Override
-  public Region put(ByteBuffer buf) throws StorageException {
+  public Region put(ByteBuffer buf) throws IOException {
     if(!buf.hasRemaining()) return Region.invalid();
     Region reg = regions.allocate();
     put(buf, reg);
@@ -134,7 +134,7 @@ public class FileStorage implements Storage {
   }
   
   
-  private void put(ByteBuffer buf, Region reg) throws StorageException {
+  private void put(ByteBuffer buf, Region reg) throws IOException {
     if(!buf.hasRemaining()) return;
     if(buf.remaining() > writelenght) {
       Region next = putLargestThanBlockSize(buf, reg);
@@ -146,35 +146,31 @@ public class FileStorage implements Storage {
   }
   
   
-  private void putSmallerThanBlockSize(ByteBuffer buf, Region reg) {
+  private void putSmallerThanBlockSize(ByteBuffer buf, Region reg) throws IOException {
     print(buf);
-    StorageException.rethrow(()->{
-      channel.position(reg.offset());
-      channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
-      channel.write(buf);
-    });
+    channel.position(reg.offset());
+    channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
+    channel.write(buf);
     this.putNextRegion(reg, Region.of(-1, -1));
   }
   
   
-  private Region putLargestThanBlockSize(ByteBuffer buf, Region reg) {
+  private Region putLargestThanBlockSize(ByteBuffer buf, Region reg) throws IOException {
     int lim = buf.limit();
     buf.limit(buf.position() + writelenght);
     print(buf);
     Region next = regions.allocate();
-    StorageException.rethrow(()->{
-      channel.position(reg.offset());
-      channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
-      channel.write(buf);
-      channel.write(next.toByteBuffer());
-    });
+    channel.position(reg.offset());
+    channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
+    channel.write(buf);
+    channel.write(next.toByteBuffer());
     buf.limit(lim);
     return next;
   }
 
 
   @Override
-  public ByteBuffer get(Region reg) throws StorageException {
+  public ByteBuffer get(Region reg) throws IOException {
     if(reg == null || !reg.isValid()) {
       throw new IllegalArgumentException("Bad Region: "+ reg);
     }
@@ -185,7 +181,7 @@ public class FileStorage implements Storage {
   }
   
   
-  private void get(Region r, ByteBuffer b, ByteBufferOutputStream s) {
+  private void get(Region r, ByteBuffer b, ByteBufferOutputStream s) throws IOException {
     b.clear();
     StorageException.rethrow(()->{
       channel.position(r.offset());
@@ -204,7 +200,7 @@ public class FileStorage implements Storage {
   private Region readNextRegion(ByteBuffer b) {
     b.limit(blksize);
     b.position(blksize - Region.BYTES);
-    return Region.of(b.getLong(), b.getLong());
+    return Region.of(b);
   }
 
 
@@ -223,14 +219,9 @@ public class FileStorage implements Storage {
   
   
   @Override
-  public void close() throws StorageException {
-    try {
-      channel.close();
-      regions.writeTo(freepath);
-    }
-    catch(IOException e) {
-      throw new StorageException(e.toString(), e);
-    }
+  public void close() throws IOException {
+    channel.close();
+    regions.writeTo(freepath);
   }
   
 }

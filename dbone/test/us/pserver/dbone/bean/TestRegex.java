@@ -19,23 +19,28 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.bean;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import us.pserver.dbone.internal.Region;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/10/2017
+ * @version 0.0 - 29/11/2017
  */
-public interface Storage extends AutoCloseable {
+public class TestRegex {
 
-  public Region put(ByteBuffer buf) throws IOException;
   
-  public ByteBuffer get(Region reg) throws IOException;
-  
-  public long size() throws IOException;
+  public static void main(String[] args) {
+    String url1 = "http://localhost.bb.com.br:8086/fale/exiba?cmdo=fale.indexCESUP&ogm=CESUP";
+    String url2 = "http://localhost.bb.com.br:8086/fale/exiba?cmdo=fale.FiltroMsgGestao";
+    String rgx = "cmdo=fale.index*";
+    Pattern pt = Pattern.compile(rgx);
+    Matcher mt = pt.matcher(url1);
+    while(mt.find()) {
+      System.out.println(url1.substring(mt.start(), mt.end()));
+    }
+  }
   
 }

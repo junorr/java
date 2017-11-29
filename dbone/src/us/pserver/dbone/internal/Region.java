@@ -32,7 +32,9 @@ import us.pserver.tools.NotNull;
  */
 public interface Region extends Comparable, Serializable {
   
-  public static final int BYTES = Long.BYTES * 2;
+  public static final int BYTES = Long.BYTES * 2 + Integer.BYTES;
+  
+  public int storeID();
 
   public long offset();
   
@@ -52,6 +54,8 @@ public interface Region extends Comparable, Serializable {
   
   public ByteBuffer toByteBuffer();
   
+  public void writeTo(ByteBuffer buf);
+  
   @Override
   public default int compareTo(Object r) {
     NotNull.of(r).failIfNull();
@@ -62,6 +66,16 @@ public interface Region extends Comparable, Serializable {
   
   public static Region of(long offset, long length) {
     return new RegionImpl(offset, length);
+  }
+  
+  
+  public static Region of(int storeID, long offset, long length) {
+    return new RegionImpl(storeID, offset, length);
+  }
+  
+  
+  public static Region of(ByteBuffer buf) {
+    return Region.of(buf.getInt(), buf.getLong(), buf.getLong());
   }
   
   
@@ -79,16 +93,29 @@ public interface Region extends Comparable, Serializable {
     
     private final long length;
     
+    private final int storeID;
+    
+    
     public RegionImpl(long ofs, long len) {
+      this(0, ofs, len);
+    }
+    
+    public RegionImpl(int storeID, long ofs, long len) {
+      this.storeID = storeID;
       this.offset = ofs;
       this.length = len;
     }
-
+    
+    @Override
+    public int storeID() {
+      return storeID;
+    }
+    
     @Override
     public long offset() {
       return this.offset;
     }
-
+    
     @Override
     public long length() {
       return this.length;
@@ -103,7 +130,7 @@ public interface Region extends Comparable, Serializable {
     public int intOffset() {
       return (int) this.offset;
     }
-
+    
     @Override
     public int intLength() {
       return (int) this.length;
@@ -127,21 +154,27 @@ public interface Region extends Comparable, Serializable {
     @Override
     public ByteBuffer toByteBuffer() {
       ByteBuffer buf = ByteBuffer.allocate(BYTES);
-      buf.putLong(offset);
-      buf.putLong(length);
+      this.writeTo(buf);
       buf.flip();
       return buf;
     }
     
     @Override
+    public void writeTo(ByteBuffer buf) {
+      buf.putInt(storeID);
+      buf.putLong(offset);
+      buf.putLong(length);
+    }
+    
+    @Override
     public int hashCode() {
       int hash = 7;
+      hash = 89 * hash + (int) (this.storeID ^ (this.storeID >>> 16));
       hash = 89 * hash + (int) (this.offset ^ (this.offset >>> 32));
       hash = 89 * hash + (int) (this.length ^ (this.length >>> 32));
       return hash;
     }
-
-
+    
     @Override
     public boolean equals(Object obj) {
       if (this == obj) {
@@ -150,20 +183,22 @@ public interface Region extends Comparable, Serializable {
       if (obj == null) {
         return false;
       }
-      if (getClass() != obj.getClass()) {
+      if (Region.class != obj.getClass()) {
         return false;
       }
-      final RegionImpl other = (RegionImpl) obj;
-      if (this.offset != other.offset) {
+      final Region other = (Region) obj;
+      if (this.offset != other.offset()) {
         return false;
       }
-      return this.length == other.length;
+      if (this.storeID != other.storeID()) {
+        return false;
+      }
+      return this.length == other.length();
     }
-
-
+    
     @Override
     public String toString() {
-      return "Region{" + "offset=" + offset + ", length=" + length + '}';
+      return String.format("Region{storeID=%d, offset=%d, length=%d}", storeID, offset, length);
     }
     
   }

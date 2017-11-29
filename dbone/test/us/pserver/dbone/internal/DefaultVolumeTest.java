@@ -64,7 +64,7 @@ public class DefaultVolumeTest {
   @Test
   public void writeReadConsistency() {
     Record vid = vol.put(a);
-    StoreUnit putUnit = StoreUnit.of(vid.uid(), a);
+    StoreUnit putUnit = StoreUnit.of(vid.objectUID(), a);
     System.out.printf("writeReadConsistency.put: %s%n", vid);
     System.out.printf("writeReadConsistency.put: %s%n", putUnit);
     StoreUnit getUnit = vol.get(vid);
