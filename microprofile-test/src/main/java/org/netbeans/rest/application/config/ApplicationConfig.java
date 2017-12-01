@@ -19,25 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store.tx;
+package org.netbeans.rest.application.config;
 
-import us.pserver.dbone.internal.Region;
-import us.pserver.dbone.internal.RegionControl;
+import java.util.Set;
+import javax.ws.rs.core.Application;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/09/2017
+ * @version 0.0 - 30/11/2017
  */
-public class RollbackAllocationLog extends AbstractRollbackLog {
-  
-  public RollbackAllocationLog(RegionControl rgs, Region reg) {
-    super(rgs, reg);
-  }
-  
+@javax.ws.rs.ApplicationPath("webresources")
+public class ApplicationConfig extends Application {
+
   @Override
-  public void rollback() throws TransactionException {
-    this.regions.offer(region);
+  public Set<Class<?>> getClasses() {
+    Set<Class<?>> resources = new java.util.HashSet<>();
+    addRestResourceClasses(resources);
+    return resources;
+  }
+
+
+  /**
+   * Do not modify addRestResourceClasses() method.
+   * It is automatically populated with
+   * all resources defined in the project.
+   * If required, comment out calling this method in getClasses().
+   */
+  private void addRestResourceClasses(Set<Class<?>> resources) {
+    resources.add(us.pserver.microprofile.test.HelloWorldEndpoint.class);
   }
 
 }

@@ -37,9 +37,10 @@ import us.pserver.tools.NotNull;
 import us.pserver.tools.io.ByteBufferOutputStream;
 import us.pserver.tools.io.ByteableNumber;
 
+
 /**
  *
- * @author Juno Roesler - juno@pserver.us
+ * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 27/10/2017
  */
 public class FileStorage implements Storage {
@@ -55,7 +56,7 @@ public class FileStorage implements Storage {
   
   private final int blksize;
   
-  private final int writelenght;
+  private final int writelength;
   
   private final IntFunction<ByteBuffer> allocPolicy;
   
@@ -92,7 +93,7 @@ public class FileStorage implements Storage {
     this.freepath = directory.resolve(FILE_FREE_BLOCKS);
     this.storepath = directory.resolve(FILE_STORAGE);
     this.blksize = blockSize;
-    this.writelenght = blksize - Region.BYTES - Integer.BYTES;
+    this.writelength = blksize - Region.BYTES - Integer.BYTES;
     this.allocPolicy = NotNull.of(allocPolicy).getOrFail("Bad null alloc policy");
     this.regions = NotNull.of(rgc).getOrFail("Bad null RegionControl");
     this.channel = openRW(storepath);
@@ -136,7 +137,7 @@ public class FileStorage implements Storage {
   
   private void put(ByteBuffer buf, Region reg) throws IOException {
     if(!buf.hasRemaining()) return;
-    if(buf.remaining() > writelenght) {
+    if(buf.remaining() > writelength) {
       Region next = putLargestThanBlockSize(buf, reg);
       put(buf, next);
     }
@@ -157,7 +158,7 @@ public class FileStorage implements Storage {
   
   private Region putLargestThanBlockSize(ByteBuffer buf, Region reg) throws IOException {
     int lim = buf.limit();
-    buf.limit(buf.position() + writelenght);
+    buf.limit(buf.position() + writelength);
     print(buf);
     Region next = regions.allocate();
     channel.position(reg.offset());

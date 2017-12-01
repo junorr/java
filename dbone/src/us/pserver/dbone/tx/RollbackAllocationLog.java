@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store.tx;
+package us.pserver.dbone.tx;
 
 import us.pserver.dbone.internal.Region;
 import us.pserver.dbone.internal.RegionControl;
@@ -29,15 +29,15 @@ import us.pserver.dbone.internal.RegionControl;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public class RollbackDeallocationLog extends AbstractRollbackLog {
+public class RollbackAllocationLog extends AbstractRollbackLog {
   
-  public RollbackDeallocationLog(RegionControl rgs, Region reg) {
+  public RollbackAllocationLog(RegionControl rgs, Region reg) {
     super(rgs, reg);
   }
   
   @Override
   public void rollback() throws TransactionException {
-    this.regions.discard(region);
+    this.regions.offer(region);
   }
 
 }

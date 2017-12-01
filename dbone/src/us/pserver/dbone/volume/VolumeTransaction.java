@@ -23,8 +23,8 @@ package us.pserver.dbone.volume;
 
 import us.pserver.dbone.store.StorageException;
 import us.pserver.dbone.store.StorageTransaction;
-import us.pserver.dbone.store.tx.Transaction;
-import us.pserver.dbone.store.tx.TransactionException;
+import us.pserver.dbone.tx.Transaction;
+import us.pserver.dbone.tx.TransactionException;
 import us.pserver.tools.NotNull;
 import us.pserver.dbone.OUID;
 

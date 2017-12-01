@@ -19,17 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store.tx;
+package us.pserver.dbone.tx;
+
+import us.pserver.dbone.internal.Region;
+import us.pserver.tools.NotNull;
+import us.pserver.dbone.internal.RegionControl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2017
  */
-public interface Transaction {
+public abstract class AbstractRollbackLog implements RollbackLog {
   
-  public void rollback() throws TransactionException;
+  protected final RegionControl regions;
   
-  public void commit() throws TransactionException;
+  protected final Region region;
+  
+  protected AbstractRollbackLog(RegionControl rgs, Region reg) {
+    this.regions = NotNull.of(rgs).getOrFail("Bad null Regions");
+    this.region = NotNull.of(reg).getOrFail("Bad null Region");
+  }
   
 }

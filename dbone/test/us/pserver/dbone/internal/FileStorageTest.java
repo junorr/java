@@ -37,7 +37,8 @@ import org.junit.Test;
  */
 public class FileStorageTest {
 
-  private static final Path path = Paths.get("/home/juno/dbone/");
+  //private static final Path path = Paths.get("/home/juno/dbone/");
+  private static final Path path = Paths.get("D:/dbone/");
   
   private static final Storage store = new FileStorage(path, 30, ByteBuffer::allocateDirect);
   
