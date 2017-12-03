@@ -22,6 +22,7 @@
 package us.pserver.dbone;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import us.pserver.dbone.internal.Index;
 
@@ -32,19 +33,27 @@ import us.pserver.dbone.internal.Index;
  */
 public interface DBOne extends AutoCloseable {
 
-  public Index<String> store(Object obj) throws DBOneException;
+  public Index<String> store( Object obj ) throws DBOneException;
   
-  public List<Index<String>> store(Object ... objs) throws DBOneException;
+  public List< Index<String> > store( Object ... objs ) throws DBOneException;
   
-  public boolean remove(Index<String> idx) throws DBOneException;
+  public <T> T remove( Index idx ) throws DBOneException;
   
-  public Index<String> update(Index<String> idx, Object obj) throws DBOneException;
+  public Index<String> update( Index idx, Object obj ) throws DBOneException;
   
-  public <T> T get(Index<String> idx) throws DBOneException;
+  public <T> T get( Index idx ) throws DBOneException;
   
-  public <T> List<Selected<T>> select(Class<T> cls, Predicate<T> prd) throws DBOneException;
+  public <T> List< Selected<T,String> > select( Class<T> cls, Predicate<T> prd ) throws DBOneException;
   
-  public <T,V> List<Selected<T>> selectIndexed(Class<T> cls, String name, V value) throws DBOneException;
+  public < T, V extends Comparable<V> >  List< Selected<T,V> > selectIndexed( 
+      String name, Class<T> cls, V value 
+  ) throws DBOneException;
+  
+  public < T, V extends Comparable<V> > DBOne createIndex(
+      String name, Class<T> cls, Function<T, V> acessor 
+  ) throws DBOneException;
+  
+  public boolean removeIndex( String name, Class cls );
   
   @Override
   public void close() throws DBOneException;

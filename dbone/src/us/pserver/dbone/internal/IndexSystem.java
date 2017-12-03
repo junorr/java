@@ -23,10 +23,10 @@ import java.util.stream.Stream;
  */
 public interface IndexSystem {
 
-  public <T extends Comparable<T>> void put(Class cls, Index<T> idx);
+  public < V extends Comparable<V> > void put( Class cls, Index<V> idx );
   
-  public <T extends Comparable<T>> Stream<Index<T>> getAll(Class cls);
+  public Stream< Index<String> > getAll( Class cls );
   
-  public <T extends Comparable<T>> Stream<Index<T>> get(Class cls, T value);
+  public < V extends Comparable<V> >  Stream< Index<V> > get( String name, Class cls, V value );
   
 }

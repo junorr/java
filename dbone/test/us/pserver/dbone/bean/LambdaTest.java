@@ -12,17 +12,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.*
  ************************************************************************/
 
-package us.pserver.dbone;
+package us.pserver.dbone.bean;
 
-import us.pserver.dbone.internal.Index;
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import org.junit.Test;
 
 /**
  *
  * @author Juno Roesler - juno.rr@gmail.com
- * @version 0.0 - 02/12/2017
+ * @version 0.0 - 03/12/2017
  */
-public interface IndexBuilder< T , V extends Comparable<V> > {
-  
-  public Index<V> build(T object);
+public class LambdaTest {
 
+  public static class One {
+    private final int num;
+    public One(int i) {
+      num = i;
+    }
+    public String toString() {
+      return String.format("One{%d}", num);
+    }
+    public static One of(int i) {
+      return new One(i);
+    }
+  }
+  
+  @Test
+  public void applicableLambda() {
+    Arrays.asList(One.of(1), One.of(2), One.of(3)).stream().map(One::toString);
+    One one = One.of(1);
+    Function<One,String> fun = One::toString;
+    Supplier<String> sup = one::toString;
+    
+  }
+  
 }

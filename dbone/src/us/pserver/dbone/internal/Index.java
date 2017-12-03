@@ -15,6 +15,7 @@
 package us.pserver.dbone.internal;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 import us.pserver.tools.NotNull;
 
 /**
@@ -22,7 +23,7 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 02/12/2017
  */
-public interface Index<T extends Comparable<T>> extends Comparable<Index<T>> {
+public interface Index< T extends Comparable<T> > extends Comparable< Index<T> > {
   
   public String name();
   
@@ -31,7 +32,7 @@ public interface Index<T extends Comparable<T>> extends Comparable<Index<T>> {
   public Record record();
   
   @Override
-  public default int compareTo(Index<T> other) {
+  public default int compareTo( Index<T> other ) {
     NotNull.of(other).failIfNull("Bad null Index");
     int cmp = name().compareTo(other.name());
     if(cmp == 0) {
@@ -41,7 +42,7 @@ public interface Index<T extends Comparable<T>> extends Comparable<Index<T>> {
   }
   
   
-  public static <U extends Comparable<U>> Index<U> of(String name, U value, Record rec) {
+  public static < U extends Comparable<U> > Index<U> of( String name, U value, Record rec ) {
     return new DefIndex<>(name, value, rec);
   }
   
@@ -49,7 +50,7 @@ public interface Index<T extends Comparable<T>> extends Comparable<Index<T>> {
   
   
   
-  public static class DefIndex<T extends Comparable<T>> implements Index<T> {
+  public static class DefIndex< T extends Comparable<T> > implements Index<T> {
     
     private final String name;
     
@@ -78,7 +79,6 @@ public interface Index<T extends Comparable<T>> extends Comparable<Index<T>> {
       return record;
     }
 
-
     @Override
     public int hashCode() {
       int hash = 3;
@@ -87,7 +87,6 @@ public interface Index<T extends Comparable<T>> extends Comparable<Index<T>> {
       hash = 97 * hash + Objects.hashCode(this.record);
       return hash;
     }
-
 
     @Override
     public boolean equals(Object obj) {

@@ -23,14 +23,14 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 02/12/2017
  */
-public interface Selected<T> {
+public interface Selected< T, V extends Comparable<V> > {
 
   public T get();
   
-  public Index<String> index();
+  public Index<V> index();
   
   
-  public static <U> Selected<U> of(U value, Index<String> idx) {
+  public static < U, X extends Comparable<X> > Selected<U, X> of(U value, Index<X> idx) {
     return new DefSelected(value, idx);
   }
   
@@ -38,13 +38,13 @@ public interface Selected<T> {
   
   
   
-  public static class DefSelected<T> implements Selected<T> {
+  public static class DefSelected< T, V extends Comparable<V> > implements Selected<T, V> {
     
     private final T value;
     
-    private final Index<String> idx;
+    private final Index<V> idx;
     
-    public DefSelected(T value, Index<String> idx) {
+    public DefSelected(T value, Index<V> idx) {
       this.value = NotNull.of(value).getOrFail("Bad null value");
       this.idx = NotNull.of(idx).getOrFail("Bad null Index");
     }
@@ -55,7 +55,7 @@ public interface Selected<T> {
     }
 
     @Override
-    public Index<String> index() {
+    public Index<V> index() {
       return idx;
     }
 
@@ -78,7 +78,7 @@ public interface Selected<T> {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      final DefSelected<?> other = (DefSelected<?>) obj;
+      final DefSelected<?, ?> other = (DefSelected<?, ?>) obj;
       if (!Objects.equals(this.value, other.value)) {
         return false;
       }
