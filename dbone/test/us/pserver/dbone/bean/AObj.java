@@ -100,7 +100,7 @@ public class AObj implements Serializable {
 
   @Override
   public String toString() {
-    return "AObj{" + "name=" + name + ", age=" + age + ", magic=" + magic + ", chars=" + chars + ", date=" + date + '}';
+    return "AObj{" + "name=" + name + ", age=" + age + ", magic=" + Arrays.toString(magic) + ", chars=" + Arrays.toString(chars) + ", date=" + date + '}';
   }
 
 }

@@ -93,7 +93,7 @@ public class ByteableRegionControl implements RegionControl {
     if(path == null) {
       throw new IllegalArgumentException("Bad file path: "+ path);
     }
-    return readFrom(FileChannel.open(path, 
+    return writeTo(FileChannel.open(path, 
         StandardOpenOption.CREATE, 
         StandardOpenOption.WRITE,
         StandardOpenOption.TRUNCATE_EXISTING

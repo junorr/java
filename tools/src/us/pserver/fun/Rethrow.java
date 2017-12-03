@@ -84,7 +84,7 @@ public class Rethrow<E extends Throwable> {
   
   
   public void apply(ThrowableTask fn) throws E {
-    try { fn.exec(); }
+    try { fn.run(); }
     catch(Exception e) { throw createE(e); }
   }
   

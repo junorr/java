@@ -1,7 +1,8 @@
+
 var ELT = $("#msg");
 
 function finalMsg() {
-  ELT.html("KumuluzEE Hello Successful with static Resources!");
+  ELT.html("KumuluzEE HelloWorld Successful with static Resources!");
 }
 
 var COUNT = 5;

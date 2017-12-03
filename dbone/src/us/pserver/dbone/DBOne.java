@@ -23,24 +23,30 @@ package us.pserver.dbone;
 
 import java.util.List;
 import java.util.function.Predicate;
+import us.pserver.dbone.internal.Index;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/09/2017
  */
-public interface DBOne {
+public interface DBOne extends AutoCloseable {
 
-  public OUID store(Object obj);
+  public Index<String> store(Object obj) throws DBOneException;
   
-  public List<OUID> store(Object ... objs);
+  public List<Index<String>> store(Object ... objs) throws DBOneException;
   
-  public boolean remove(OUID uid);
+  public boolean remove(Index<String> idx) throws DBOneException;
   
-  public boolean update(OUID uid, Object obj);
+  public Index<String> update(Index<String> idx, Object obj) throws DBOneException;
   
-  public <T> T get(OUID uid);
+  public <T> T get(Index<String> idx) throws DBOneException;
   
-  public List<OUID> select(Predicate prd);
+  public <T> List<Selected<T>> select(Class<T> cls, Predicate<T> prd) throws DBOneException;
+  
+  public <T,V> List<Selected<T>> selectIndexed(Class<T> cls, String name, V value) throws DBOneException;
+  
+  @Override
+  public void close() throws DBOneException;
   
 }

@@ -21,7 +21,7 @@
 
 package us.pserver.dbone.internal;
 
-import us.pserver.dbone.store.StorageException;
+import java.io.IOException;
 
 /**
  *
@@ -30,12 +30,13 @@ import us.pserver.dbone.store.StorageException;
  */
 public interface Volume extends AutoCloseable {
 
-  public Record put(Object obj) throws StorageException;
+  public Record put(Object obj) throws IOException;
   
-  public StoreUnit get(Record id) throws StorageException;
+  public Object get(Record id) throws IOException;
   
-  public StoreUnit get(Region reg) throws StorageException;
+  public Object get(Region reg) throws IOException;
   
-  @Override public void close() throws StorageException;
+  @Override
+  public void close() throws IOException;
   
 }

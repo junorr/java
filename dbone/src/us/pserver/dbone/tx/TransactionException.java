@@ -81,7 +81,7 @@ public class TransactionException extends RuntimeException {
   
   public static void rethrow(ThrowableTask fn) {
     try {
-      fn.exec();
+      fn.run();
     }
     catch(Exception e) {
       throw new TransactionException(e.toString(), e);

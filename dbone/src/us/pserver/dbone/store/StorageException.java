@@ -90,7 +90,7 @@ public class StorageException extends RuntimeException {
   
   public static void rethrow(ThrowableTask fn) {
     try {
-      fn.exec();
+      fn.run();
     }
     catch(Exception e) {
       throw new StorageException(e.toString(), e);

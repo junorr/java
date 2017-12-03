@@ -21,11 +21,11 @@
 
 package us.pserver.dbone.internal;
 
+import java.io.IOException;
 import us.pserver.dbone.store.Storage;
 import java.nio.ByteBuffer;
 import java.util.function.IntFunction;
 import us.pserver.dbone.serial.SerializationService;
-import us.pserver.dbone.store.StorageException;
 import us.pserver.tools.Hash;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.UTF8String;
@@ -52,47 +52,34 @@ public class DefaultVolume implements Volume {
   
   
   @Override
-  public Record put(Object obj) throws StorageException {
+  public Record put(Object obj) throws IOException {
     NotNull.of(obj).failIfNull("Bad null Object");
     byte[] data = serial.serialize(obj);
-    byte[] buid = UTF8String.from(Hash.sha1().of(data)).getBytes();
-    ByteBuffer buf = alloc.apply(
-        Short.BYTES + buid.length + data.length
-    );
-    buf.putShort((short)buid.length);
-    buf.put(buid);
-    buf.put(data);
-    buf.flip();
     return Record.of(
-        UTF8String.from(buid).toString(), 
-        storage.put(buf)
+        UTF8String.from(Hash.sha1().of(data)).toString(), 
+        storage.put(ByteBuffer.wrap(data))
     );
   }
   
   
   @Override
-  public StoreUnit get(Record id) throws StorageException {
+  public Object get(Record id) throws IOException {
     return get(NotNull.of(id).getOrFail("Bad null VolumeID").region());
   }
   
   
   @Override
-  public StoreUnit get(Region reg) throws StorageException {
+  public Object get(Region reg) throws IOException {
     NotNull.of(reg).failIfNull("Bad null Region");
     ByteBuffer buf = storage.get(reg);
-    byte[] buid = new byte[buf.getShort()];
-    buf.get(buid);
     byte[] data = new byte[buf.remaining()];
     buf.get(data);
-    return StoreUnit.of(
-        UTF8String.from(buid).toString(), 
-        serial.deserialize(data)
-    );
+    return serial.deserialize(data);
   }
   
   
   @Override
-  public void close() throws StorageException {
+  public void close() throws IOException {
     storage.close();
   }
   

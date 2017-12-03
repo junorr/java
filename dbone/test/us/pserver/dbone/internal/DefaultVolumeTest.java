@@ -21,6 +21,7 @@
 
 package us.pserver.dbone.internal;
 
+import java.io.IOException;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.FileStorage;
 import java.nio.ByteBuffer;
@@ -56,20 +57,19 @@ public class DefaultVolumeTest {
   
   
   @AfterClass
-  public static void closeVolume() {
+  public static void closeVolume() throws IOException {
     vol.close();
   }
   
   
   @Test
-  public void writeReadConsistency() {
+  public void writeReadConsistency() throws IOException {
     Record vid = vol.put(a);
-    StoreUnit putUnit = StoreUnit.of(vid.objectUID(), a);
     System.out.printf("writeReadConsistency.put: %s%n", vid);
-    System.out.printf("writeReadConsistency.put: %s%n", putUnit);
-    StoreUnit getUnit = vol.get(vid);
-    System.out.printf("writeReadConsistency.get: %s%n", getUnit);
-    Assert.assertEquals(putUnit, getUnit);
+    System.out.printf("writeReadConsistency.put: %s%n", a);
+    AObj aget = (AObj) vol.get(vid);
+    System.out.printf("writeReadConsistency.get: %s%n", aget);
+    Assert.assertEquals(a, aget);
   }
   
 }

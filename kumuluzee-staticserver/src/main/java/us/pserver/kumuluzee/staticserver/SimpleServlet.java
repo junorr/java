@@ -19,35 +19,28 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package org.netbeans.rest.application.config;
+package us.pserver.kumuluzee.staticserver;
 
-import java.util.Set;
-import javax.ws.rs.core.Application;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 30/11/2017
+ * @version 0.0 - 01/12/2017
  */
-@javax.ws.rs.ApplicationPath("webresources")
-public class ApplicationConfig extends Application {
+@WebServlet("/servlet")
+public class SimpleServlet extends HttpServlet {
 
-  @Override
-  public Set<Class<?>> getClasses() {
-    Set<Class<?>> resources = new java.util.HashSet<>();
-    addRestResourceClasses(resources);
-    return resources;
-  }
-
-
-  /**
-   * Do not modify addRestResourceClasses() method.
-   * It is automatically populated with
-   * all resources defined in the project.
-   * If required, comment out calling this method in getClasses().
-   */
-  private void addRestResourceClasses(Set<Class<?>> resources) {
-    resources.add(us.pserver.microprofile.test.HelloWorldEndpoint.class);
-  }
-
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/plain");
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println("Simple servlet");
+    }
 }

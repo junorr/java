@@ -24,15 +24,12 @@ package us.pserver.kumuluzee.hello2;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
@@ -50,26 +47,19 @@ public class WebResource {
   
   public static final String DEFAULT_RESOURCE = "index.html";
   
-  
   public static final String HEADER_CONTENT_LENGTH = "Content-Length";
   
   public static final String HEADER_CONTENT_TYPE = "Content-Type";
   
-  public static final String MEDIA_TYPE_JAVASCRIPT = "application/javascript";
-  
-  public static final String MEDIA_TYPE_STYLESHEET = "text/css";
-  
-  public static final String EXT_JS = ".js";
-  
-  public static final String EXT_CSS = ".css";
-  
-  public static final String EXT_HTML = ".html";
-  
   
   private final java.nio.file.Path basePath;
   
+  private final FileMimeType mimeType;
+  
+  
   public WebResource() {
     this.basePath = DEV_WEBAPP_PATH;
+    this.mimeType = new FileMimeType();
   }
   
   
@@ -87,27 +77,14 @@ public class WebResource {
       resource = basePath.resolve(resource);
     }
     if(Files.exists(resource)) {
-      return setContentHeaders(Response.ok(
-          Files.newInputStream(resource, StandardOpenOption.READ)), resource
-      ).build();
+      return Response.ok(resource.toFile())
+          .header(HEADER_CONTENT_LENGTH, Files.size(resource))
+          .header(HEADER_CONTENT_TYPE, mimeType.getContentType(resource))
+          .build();
     }
     else {
       return Response.status(Status.NOT_FOUND).build();
     }
-  }
-  
-  
-  private ResponseBuilder setContentHeaders(ResponseBuilder res, java.nio.file.Path resource) throws IOException {
-    res.header(HEADER_CONTENT_LENGTH, Files.size(resource));
-    String type = MediaType.APPLICATION_OCTET_STREAM;
-    if(resource.toString().endsWith(EXT_HTML)) {
-      type = MediaType.TEXT_HTML;
-    } else if(resource.toString().endsWith(EXT_CSS)) {
-      type = MEDIA_TYPE_STYLESHEET;
-    } else if(resource.toString().endsWith(EXT_JS)) {
-      type = MEDIA_TYPE_JAVASCRIPT;
-    }
-    return res.header(HEADER_CONTENT_TYPE, type);
   }
   
   

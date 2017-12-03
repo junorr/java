@@ -38,4 +38,7 @@ public interface Storage extends AutoCloseable {
   
   public long size() throws IOException;
   
+  @Override
+  public void close() throws IOException;
+  
 }
