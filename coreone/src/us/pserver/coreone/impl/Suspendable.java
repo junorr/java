@@ -68,7 +68,7 @@ public class Suspendable {
   private void locked(ThrowableTask tsk) {
     lock.lock();
     try {
-      tsk.exec();
+      tsk.run();
     } 
     catch(Exception e) {
       throw new RuntimeException(e.toString(), e);

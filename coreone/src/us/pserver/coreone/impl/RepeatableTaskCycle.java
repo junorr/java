@@ -62,7 +62,7 @@ public class RepeatableTaskCycle extends AbstractCycle<Void,Void> {
     try {
       while(!duplex.isClosed() && until.apply(duplex)) {
         suspend.get().suspend();
-        fun.exec();
+        fun.run();
       }
     } 
     catch(Exception e) {

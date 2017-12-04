@@ -57,7 +57,7 @@ public class TaskCycle extends AbstractCycle<Void,Void> {
   public void run() {
     try {
       suspend.get().suspend();
-      fun.exec();
+      fun.run();
     } 
     catch(Exception e) {
       e.printStackTrace();

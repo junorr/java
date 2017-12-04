@@ -14,7 +14,10 @@
 
 package us.pserver.dbone;
 
+import java.util.function.Function;
 import us.pserver.dbone.internal.Index;
+import us.pserver.dbone.internal.Record;
+import us.pserver.tools.NotNull;
 
 /**
  *
@@ -23,6 +26,40 @@ import us.pserver.dbone.internal.Index;
  */
 public interface IndexBuilder< T , V extends Comparable<V> > {
   
-  public Index<V> build(T object);
+  public Index<V> build(T object, Record rec);
+  
+  public String name();
+  
+  
+  public static < U, S extends Comparable<S> > IndexBuilder<U,S> of(String name, Function<U,S> acessor) {
+    return new DefIndexBuilder(name, acessor);
+  }
+  
+  
+  
+  
+  
+  public static class DefIndexBuilder< T , V extends Comparable<V> > implements IndexBuilder<T, V> {
+    
+    private final String name;
+    
+    private final Function<T, V> acessor;
+    
+    public DefIndexBuilder(String name, Function<T, V> acessor) {
+      this.name = NotNull.of(name).getOrFail("Bad null name");
+      this.acessor = NotNull.of(acessor).getOrFail("Bad null acessor Function");
+    }
 
+    @Override
+    public Index<V> build(T object, Record rec) {
+      return Index.of(name, acessor.apply(object), rec);
+    }
+    
+    @Override
+    public String name() {
+      return name;
+    }
+    
+  }
+  
 }
