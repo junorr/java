@@ -23,13 +23,18 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 02/12/2017
  */
-public interface Index< T extends Comparable<T> > extends Comparable< Index<T> > {
+public interface Index< T extends Comparable<T> > extends Comparable< Index<T> >, Predicate<T> {
   
   public String name();
   
   public T value();
   
   public Record record();
+  
+  @Override
+  public default boolean test(T val) {
+    return value().equals(val);
+  }
   
   @Override
   public default int compareTo( Index<T> other ) {

@@ -14,7 +14,11 @@
 
 package us.pserver.dbone.internal;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.Stream;
+import us.pserver.tools.NotNull;
 
 /**
  *
@@ -25,8 +29,41 @@ public interface IndexSystem {
 
   public < V extends Comparable<V> > void put( Class cls, Index<V> idx );
   
-  public Stream< Index<String> > getAll( Class cls );
+  public Stream< Index<String> > getAllUID( Class cls );
   
   public < V extends Comparable<V> >  Stream< Index<V> > get( String name, Class cls, V value );
+  
+  
+  
+  
+  
+  public static class DefIndexSystem implements IndexSystem {
+    
+    private final Map<String, List< Index<?> >> indexes;
+    
+    public DefIndexSystem() {
+      indexes = new ConcurrentSkipListMap<>();
+    }
+
+    @Override
+    public < V extends Comparable<V> > void put( Class cls, Index<V> idx ) {
+      NotNull.of(cls).failIfNull("Bad null Class");
+      NotNull.of(idx).failIfNull("Bad null Index");
+      indexes.put(cls.getName().concat(".").concat(idx.name()), (List<Index<?>>) idx);
+    }
+
+
+    @Override
+    public Stream< Index<String> > getAllUID( Class cls ) {
+      return (Stream< Index<String> >) indexes.get(cls.getName().concat(".uid")).stream();
+    }
+
+
+    @Override
+    public < V extends Comparable<V> >  Stream< Index<V> > get( String name, Class cls, V value ) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+  }
   
 }
