@@ -21,126 +21,67 @@
 
 package us.pserver.dbone.volume;
 
-import java.nio.ByteBuffer;
-import java.util.Optional;
-import us.pserver.dbone.store.Block;
-import us.pserver.dbone.internal.Region;
+import us.pserver.dbone.store.Region;
+import java.io.IOException;
 import us.pserver.dbone.store.Storage;
-import us.pserver.dbone.store.StorageException;
+import java.nio.ByteBuffer;
+import java.util.function.IntFunction;
+import us.pserver.dbone.serial.SerializationService;
+import us.pserver.tools.Hash;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.UTF8String;
-import us.pserver.tools.io.ByteBufferOutputStream;
-import us.pserver.dbone.OUID;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 18/09/2017
+ * @version 0.0 - 30/10/2017
  */
 public class DefaultVolume implements Volume {
   
+  private final SerializationService serial;
+  
   private final Storage storage;
   
+  private final IntFunction<ByteBuffer> alloc;
   
-  public DefaultVolume(Storage stg) {
-    this.storage = NotNull.of(stg).getOrFail("Bad null Storage");
+  
+  public DefaultVolume(Storage storage, SerializationService serial, IntFunction<ByteBuffer> alloc) {
+    this.storage = NotNull.of(storage).getOrFail("Bad null Storage");
+    this.serial = NotNull.of(serial).getOrFail("Bad null SerializationService");
+    this.alloc = NotNull.of(alloc).getOrFail("Bad null ByteBuffer alloc function");
   }
   
   
   @Override
-  public Record put(StoreUnit unit) throws StorageException {
-    Block block = storage.allocate();
-    put(unit.objectUID(), block);
-    put(unit.value(), block);
-    return Record.of(block.region(), unit.objectUID());
-  }
-  
-
-  private void put(ByteBuffer sbuf, Block blk) throws StorageException {
-    Block.copy(sbuf, blk.buffer());
-    while(sbuf.hasRemaining()) {
-      Block b2 = storage.allocate();
-      blk.setNext(b2.region());
-      blk.buffer().flip();
-      storage.put(blk);
-      Block.copy(sbuf, b2.buffer());
-      blk = b2;
-    }
-    this.zeroFill(blk.buffer());
-    storage.put(blk);
-  }
-  
-  
-  private void put(OUID ouid, Block blk) {
-    byte[] buid = UTF8String.from(ouid.getHash()).getBytes();
-    byte[] bcls = UTF8String.from(ouid.getClassName()).getBytes();
-    //System.out.println("* Volume.putUID: uidLen="+ buid.length+ ", clsLen="+ bcls.length+ ", block="+ blk);
-    blk.buffer().position(0);
-    blk.buffer().putInt(buid.length);
-    blk.buffer().putInt(bcls.length);
-    blk.buffer().put(buid);
-    blk.buffer().put(bcls);
-  }
-  
-  
-  private void zeroFill(ByteBuffer buf) {
-    if(buf.hasArray()) return;
-    byte[] bs = new byte[buf.remaining()];
-    buf.put(bs);
-  }
-  
-  
-  @Override
-  public OUID getUID(Record idx) throws StorageException {
-    Block blk = storage.get(idx.getRegion());
-    return this.getUID(blk);
-  }
-  
-  
-  private OUID getUID(Block blk) {
-    int uidLen = blk.buffer().getInt();
-    int clsLen = blk.buffer().getInt();
-    //System.out.println("* Volume.objectUID: uidLen="+ uidLen+ ", clsLen="+ clsLen+ ", block="+ blk);
-    byte[] buid = new byte[uidLen];
-    byte[] bcls = new byte[clsLen];
-    blk.buffer().get(buid);
-    blk.buffer().get(bcls);
-    return OUID.of(
-        UTF8String.from(buid).toString(), 
-        UTF8String.from(bcls).toString()
+  public Record put(Object obj) throws IOException {
+    NotNull.of(obj).failIfNull("Bad null Object");
+    byte[] data = serial.serialize(obj);
+    return Record.of(
+        UTF8String.from(Hash.sha1().of(data)).toString(), 
+        storage.put(ByteBuffer.wrap(data))
     );
   }
-
-
+  
+  
   @Override
-  public StoreUnit get(Record idx) throws StorageException {
-    Block blk = storage.get(idx.getRegion());
-    return StoreUnit.of(getUID(blk), getValue(blk));
+  public Object get(Record id) throws IOException {
+    return get(NotNull.of(id).getOrFail("Bad null VolumeID").region());
   }
   
   
-  private ByteBuffer getValue(Block blk) throws StorageException {
-    ByteBufferOutputStream bos = new ByteBufferOutputStream();
-    bos.write(blk.buffer());
-    Optional<Region> next = blk.next();
-    while(next.isPresent()) {
-      blk = storage.get(next.get());
-      bos.write(blk.buffer());
-      next = blk.next();
-    }
-    return bos.toByteBuffer();
-  }
-
-
   @Override
-  public void close() throws StorageException {
+  public Object get(Region reg) throws IOException {
+    NotNull.of(reg).failIfNull("Bad null Region");
+    ByteBuffer buf = storage.get(reg);
+    byte[] data = new byte[buf.remaining()];
+    buf.get(data);
+    return serial.deserialize(data);
+  }
+  
+  
+  @Override
+  public void close() throws IOException {
     storage.close();
   }
   
-  
-  @Override
-  public VolumeTransaction startTransaction() {
-    return new VolumeTransaction(this.storage.startTransaction());
-  }
-
 }

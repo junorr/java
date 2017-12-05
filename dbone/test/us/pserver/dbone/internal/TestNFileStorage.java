@@ -27,7 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import us.pserver.dbone.store.FileStorage;
-import us.pserver.dbone.internal.Region;
+import us.pserver.dbone.store.Region;
 import us.pserver.dbone.store.StorageFactory;
 
 /**

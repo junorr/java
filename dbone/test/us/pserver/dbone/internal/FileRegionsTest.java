@@ -21,6 +21,8 @@
 
 package us.pserver.dbone.internal;
 
+import us.pserver.dbone.store.Region;
+import us.pserver.dbone.store.FileSizeRegionControl;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;

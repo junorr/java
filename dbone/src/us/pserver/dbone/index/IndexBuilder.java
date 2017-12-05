@@ -12,11 +12,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.*
  ************************************************************************/
 
-package us.pserver.dbone;
+package us.pserver.dbone.index;
 
 import java.util.function.Function;
-import us.pserver.dbone.internal.Index;
-import us.pserver.dbone.internal.Record;
+import us.pserver.dbone.volume.Record;
 import us.pserver.tools.NotNull;
 
 /**

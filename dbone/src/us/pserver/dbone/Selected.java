@@ -15,7 +15,7 @@
 package us.pserver.dbone;
 
 import java.util.Objects;
-import us.pserver.dbone.internal.Index;
+import us.pserver.dbone.index.Index;
 import us.pserver.tools.NotNull;
 
 /**

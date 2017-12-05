@@ -19,24 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.internal;
+package us.pserver.dbone.store;
 
-import java.io.IOException;
+import java.util.Iterator;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 30/10/2017
+ * @version 0.0 - 10/10/2017
  */
-public interface Volume extends AutoCloseable {
-
-  public Record put(Object obj) throws IOException;
+public interface RegionControl {
   
-  public Object get(Record id) throws IOException;
+  public boolean offer(Region reg);
   
-  public Object get(Region reg) throws IOException;
+  public boolean discard(Region reg);
   
-  @Override
-  public void close() throws IOException;
+  public Region allocate();
+  
+  public Iterator<Region> freeRegions();
+  
+  public int size();
   
 }

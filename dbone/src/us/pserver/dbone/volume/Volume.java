@@ -21,25 +21,23 @@
 
 package us.pserver.dbone.volume;
 
-import java.io.Closeable;
-import us.pserver.dbone.store.StorageException;
-import us.pserver.dbone.OUID;
+import us.pserver.dbone.store.Region;
+import java.io.IOException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2017
+ * @version 0.0 - 30/10/2017
  */
-public interface Volume extends Closeable {
+public interface Volume extends AutoCloseable {
 
-  public Record put(StoreUnit unit) throws StorageException;
+  public Record put(Object obj) throws IOException;
   
-  public StoreUnit get(Record idx) throws StorageException;
+  public Object get(Record id) throws IOException;
   
-  public OUID getUID(Record idx) throws StorageException;
+  public Object get(Region reg) throws IOException;
   
-  @Override public void close() throws StorageException;
-  
-  public VolumeTransaction startTransaction();
+  @Override
+  public void close() throws IOException;
   
 }

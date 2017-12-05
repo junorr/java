@@ -21,6 +21,9 @@
 
 package us.pserver.dbone.internal;
 
+import us.pserver.dbone.volume.DefaultVolume;
+import us.pserver.dbone.volume.Record;
+import us.pserver.dbone.volume.Volume;
 import java.io.IOException;
 import us.pserver.dbone.store.Storage;
 import us.pserver.dbone.store.FileStorage;

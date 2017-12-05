@@ -12,7 +12,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.*
  ************************************************************************/
 
-package us.pserver.dbone.internal;
+package us.pserver.dbone.index;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +22,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import us.pserver.dbone.IndexBuilder;
+import us.pserver.dbone.index.IndexBuilder;
+import us.pserver.dbone.volume.Record;
+import us.pserver.dbone.store.Region;
 import us.pserver.tools.NotNull;
 
 /**
@@ -34,19 +36,23 @@ public interface IndexSystem {
 
   public void putIndex( Class cls, Index idx );
   
-  public Stream<Index> getIndex( String name, Class cls, Object value );
+  public Stream<Index> getIndex( Class cls, String name, Object value );
   
-  public void createIndex(Object obj, Record rec);
+  public Stream<Index> getIndex( Class cls, Region reg );
   
-  public List<Index> removeIndex( String name, Class cls, Object value );
+  public void createIndex( Object obj, Record rec );
   
-  public List<Index> removeIndex( String name, Class cls );
+  public List<Index> removeIndex( Class cls, String name, Object value );
+  
+  public List<Index> removeIndex( Class cls, String name );
+  
+  public List<Index> removeIndex( Class cls, Region reg );
   
   public Stream< Index<String> > getUIDIndexes( Class cls );
   
-  public void createIndexBuilder(String name, Class cls, Function acessor);
+  public void createIndexBuilder( Class cls, String name, Function acessor );
   
-  public IndexBuilder removeIndexBuilder(String name, Class cls);
+  public IndexBuilder removeIndexBuilder( Class cls, String name );
   
   
   

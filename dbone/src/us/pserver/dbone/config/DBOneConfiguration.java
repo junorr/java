@@ -22,7 +22,7 @@
 package us.pserver.dbone.config;
 
 import java.io.IOException;
-import us.pserver.dbone.internal.Region;
+import us.pserver.dbone.store.Region;
 
 /**
  *
