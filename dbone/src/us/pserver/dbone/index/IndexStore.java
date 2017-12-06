@@ -53,6 +53,10 @@ public interface IndexStore {
   
   public IndexStore appendIndexBuilder( Class cls, String name, Function acessor );
   
+  public IndexStore appendReflectIndexBuilder( Class cls, String name );
+  
+  public IndexStore appendAnnotatedIndexBuilder( Class cls );
+  
   public IndexBuilder removeIndexBuilder( Class cls, String name );
   
   
@@ -171,7 +175,7 @@ public interface IndexStore {
       if(!builders.containsKey(cls.getName())) {
         builders.put(cls.getName(), new CopyOnWriteArrayList<>());
       }
-      builders.get(cls.getName()).add(IndexBuilder.of(name, acessor));
+      builders.get(cls.getName()).add(new AcessorIndexBuilder(name, acessor));
       return this;
     }
     

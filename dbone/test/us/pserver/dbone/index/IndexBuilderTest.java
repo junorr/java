@@ -44,7 +44,7 @@ public class IndexBuilderTest {
 
   @Test
   public void storeTestAObj() {
-    Function<AObj,Integer> fn = AObj::getAge;
+    Function<AObj,Integer> fn = AObj::age;
     store.appendIndexBuilder(AObj.class, "age", fn);
     store.createIndex(a, Record.of("A1", Region.of(0, 512)));
     store.createIndex(aa, Record.of("A2", Region.of(512, 512)));

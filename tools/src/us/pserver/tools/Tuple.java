@@ -81,7 +81,7 @@ public class Tuple<T,U> {
 
   @Override
   public String toString() {
-    return "Tuple{" + "key=" + key + ", value=" + value + '}';
+    return "Tuple{" + key + "=" + value + '}';
   }
   
 }

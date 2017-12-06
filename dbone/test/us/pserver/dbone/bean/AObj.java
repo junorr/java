@@ -62,11 +62,11 @@ public class AObj implements Serializable {
     this(name, 0, null, null, dt);
   }
 
-  public String getName() {
+  public String name() {
     return name;
   }
 
-  public int getAge() {
+  public int age() {
     return age;
   }
 
