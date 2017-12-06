@@ -62,6 +62,25 @@ public class AObj implements Serializable {
     this(name, 0, null, null, dt);
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public int getAge() {
+    return age;
+  }
+
+  public int[] getMagic() {
+    return magic;
+  }
+
+  public char[] getChars() {
+    return chars;
+  }
+
+  public Date getDate() {
+    return date;
+  }
 
   @Override
   public int hashCode() {

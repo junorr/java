@@ -22,7 +22,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import us.pserver.dbone.index.IndexBuilder;
 import us.pserver.dbone.volume.Record;
 import us.pserver.dbone.store.Region;
 import us.pserver.tools.NotNull;
@@ -32,25 +31,27 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 02/12/2017
  */
-public interface IndexSystem {
-
+public interface IndexStore {
+  
   public void putIndex( Class cls, Index idx );
   
-  public Stream<Index> getIndex( Class cls, String name, Object value );
+  public <V extends Comparable<V>> Stream<Index<V>> getIndex( Class cls, String name, V value );
   
   public Stream<Index> getIndex( Class cls, Region reg );
   
-  public void createIndex( Object obj, Record rec );
+  public Stream<Index> getIndex( Class cls, String name );
   
-  public List<Index> removeIndex( Class cls, String name, Object value );
+  public IndexStore createIndex( Object obj, Record rec );
+  
+  public <V extends Comparable<V>> List<Index<V>> removeIndex( Class cls, String name, V value );
   
   public List<Index> removeIndex( Class cls, String name );
   
   public List<Index> removeIndex( Class cls, Region reg );
   
-  public Stream< Index<String> > getUIDIndexes( Class cls );
+  public Stream<Index<String>> getUIDIndexes( Class cls );
   
-  public void createIndexBuilder( Class cls, String name, Function acessor );
+  public IndexStore appendIndexBuilder( Class cls, String name, Function acessor );
   
   public IndexBuilder removeIndexBuilder( Class cls, String name );
   
@@ -58,23 +59,27 @@ public interface IndexSystem {
   
   
   
-  public static class DefIndexSystem implements IndexSystem {
+  public static class DefIndexStore implements IndexStore {
     
     private final Map< String, List<Index> > indexes;
     
     private final Map< String, List<IndexBuilder> > builders;
     
     
-    public DefIndexSystem() {
+    public DefIndexStore() {
       indexes = new ConcurrentSkipListMap<>();
       builders = new ConcurrentSkipListMap<>();
+    }
+    
+    private String getKey(Class cls, String name) {
+      return cls.getName().concat(".").concat(name);
     }
     
     @Override
     public void putIndex( Class cls, Index idx ) {
       NotNull.of(cls).failIfNull("Bad null Class");
       NotNull.of(idx).failIfNull("Bad null Index");
-      String key = cls.getName().concat(".").concat(idx.name());
+      String key = getKey(cls, idx.name());
       if(!indexes.containsKey(key)) {
         indexes.put(key, new CopyOnWriteArrayList<>());
       }
@@ -82,13 +87,34 @@ public interface IndexSystem {
     }
     
     @Override
-    public Stream<Index> getIndex( String name, Class cls, Object value ) {
-      return indexes.get(cls.getName().concat(".").concat(name))
-          .stream().filter(i->i.test(value));
+    public <V extends Comparable<V>> Stream<Index<V>> getIndex( Class cls, String name, V value ) {
+      return indexes.get(getKey(cls, name))
+          .stream().filter(i->i.test(value)).map(i->(Index<V>)i);
     }
     
     @Override
-    public void createIndex(Object obj, Record rec) {
+    public Stream<Index> getIndex(Class cls, Region reg) {
+      NotNull.of(cls).failIfNull("Bad null Class");
+      NotNull.of(reg).failIfNull("Bad null Region");
+      return indexes.keySet().stream()
+          .filter(k->k.startsWith(cls.getName()))
+          .flatMap(k->indexes.get(k).stream())
+          .filter(i->i.record().region().contains(reg));
+    }
+
+    @Override
+    public Stream<Index> getIndex(Class cls, String name) {
+      NotNull.of(cls).failIfNull("Bad null Class");
+      NotNull.of(name).failIfNull("Bad null Name");
+      String key = getKey(cls, name);
+      if(!indexes.containsKey(key)) {
+        return Stream.empty();
+      }
+      return indexes.get(key).stream();
+    }
+
+    @Override
+    public IndexStore createIndex(Object obj, Record rec) {
       NotNull.of(obj).failIfNull("Bad null Object");
       NotNull.of(rec).failIfNull("Bad null Record");
       String cname = obj.getClass().getName();
@@ -100,25 +126,45 @@ public interface IndexSystem {
           .map(i->i.build(obj, rec))
           .collect(Collectors.toList())
           .forEach(i->putIndex(obj.getClass(), i));
+      return this;
     }
     
     @Override
-    public <V extends Comparable<V>> List<Index> removeIndex( String name, Class cls, V value ) {
+    public <V extends Comparable<V>> List<Index<V>> removeIndex( Class cls, String name, V value ) {
       NotNull.of(name).failIfNull("Bad null name");
       NotNull.of(cls).failIfNull("Bad null Class");
       NotNull.of(value).failIfNull("Bad null Object");
-      String key = cls.getName().concat(".").concat(name);
+      String key = getKey(cls, name);
       List<Index> ids = indexes.get(key);
       if(ids == null || ids.isEmpty()) {
         return Collections.EMPTY_LIST;
       }
-      List<Index> rms = ids.stream().filter(i->i.test(value)).collect(Collectors.toList());
+      List<Index<V>> rms = getIndex(cls, name, value)
+          .collect(Collectors.toList());
       ids.removeAll(rms);
+      return rms;
+    }
+
+    @Override
+    public List<Index> removeIndex(Class cls, String name) {
+      List<Index> rms = getIndex(cls, name).collect(Collectors.toList());
+      if(!rms.isEmpty()) {
+        indexes.get(getKey(cls, name)).removeAll(rms);
+      }
+      return rms;
+    }
+
+    @Override
+    public List<Index> removeIndex(Class cls, Region reg) {
+      List<Index> rms = getIndex(cls, reg).collect(Collectors.toList());
+      if(!rms.isEmpty()) {
+        rms.forEach(i->indexes.get(getKey(cls, i.name())).remove(i));
+      }
       return rms;
     }
     
     @Override
-    public void createIndexBuilder(String name, Class cls, Function acessor) {
+    public IndexStore appendIndexBuilder(Class cls, String name, Function acessor) {
       NotNull.of(name).failIfNull("Bad null name");
       NotNull.of(cls).failIfNull("Bad null Class");
       NotNull.of(acessor).failIfNull("Bad null acessor Function");
@@ -126,10 +172,11 @@ public interface IndexSystem {
         builders.put(cls.getName(), new CopyOnWriteArrayList<>());
       }
       builders.get(cls.getName()).add(IndexBuilder.of(name, acessor));
+      return this;
     }
     
     @Override
-    public IndexBuilder removeIndexBuilder(String name, Class cls) {
+    public IndexBuilder removeIndexBuilder(Class cls, String name) {
       if(!builders.containsKey(cls.getName())
           || builders.get(cls.getName()).isEmpty()) {
         return null;
@@ -140,11 +187,10 @@ public interface IndexSystem {
     }
     
     @Override
-    public Stream< Index<String> > getUIDIndexes( Class cls ) {
-      return indexes.get(cls.getName().concat(".uid")).stream().map(i->(Index<String>)i);
+    public Stream<Index<String>> getUIDIndexes( Class cls ) {
+      return indexes.get(getKey(cls, "uid")).stream().map(i->(Index<String>)i);
     }
-    
-    
+
   }
   
 }

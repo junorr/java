@@ -119,14 +119,14 @@ public interface Record extends Comparable<Record> {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      final DefaultRecord other = (DefaultRecord) obj;
-      if (this.rid != other.rid) {
+      final Record other = (Record) obj;
+      if (this.rid != other.recordID()) {
         return false;
       }
-      if (!Objects.equals(this.uid, other.uid)) {
+      if (!Objects.equals(this.uid, other.objectUID())) {
         return false;
       }
-      return Objects.equals(this.reg, other.reg);
+      return Objects.equals(this.reg, other.region());
     }
 
 

@@ -50,6 +50,17 @@ public class BObj implements Serializable {
     this.list = list;
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public AObj getA() {
+    return a;
+  }
+
+  public List<Integer> getList() {
+    return list;
+  }
 
   @Override
   public int hashCode() {
