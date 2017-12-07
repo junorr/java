@@ -21,8 +21,6 @@
 
 package us.pserver.dbone.index;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Function;
 import us.pserver.dbone.volume.Record;
 import us.pserver.tools.NotNull;
@@ -44,8 +42,8 @@ public class AcessorIndexBuilder<T, V extends Comparable<V>> implements IndexBui
   }
 
   @Override
-  public List<Index<V>> build(T object, Record rec) {
-    return Arrays.asList(Index.of(name, acessor.apply(object), rec));
+  public Index<V> build(T object, Record rec) {
+    return Index.of(name, acessor.apply(object), rec);
   }
 
   @Override

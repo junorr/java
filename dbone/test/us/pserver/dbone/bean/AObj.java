@@ -45,16 +45,21 @@ public class AObj implements Serializable {
 
 
   private AObj() {
-    this(null, 0, null, null, null);
+    System.out.println("--- AObj using empty constructor");
+    this.name = null;
+    this.age = 0;
+    this.magic = null;
+    this.chars = null;
+    this.date = null;
   }
 
 
-  public AObj(String name, int age, int[] magic, char[] cs, Date dt) {
+  public AObj(String name, int age, int[] magic, char[] chars, Date date) {
     this.name = name;
     this.age = age;
     this.magic = magic;
-    this.chars = cs;
-    this.date = dt;
+    this.chars = chars;
+    this.date = date;
   }
 
 
@@ -67,6 +72,7 @@ public class AObj implements Serializable {
   }
 
   public int age() {
+    System.out.println("AObj.age():int method invoked!");
     return age;
   }
 
@@ -79,6 +85,7 @@ public class AObj implements Serializable {
   }
 
   public Date getDate() {
+    System.out.println("AObj.getDate():Date method invoked!");
     return date;
   }
 

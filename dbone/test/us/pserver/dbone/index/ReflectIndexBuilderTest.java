@@ -21,6 +21,16 @@
 
 package us.pserver.dbone.index;
 
+import java.lang.reflect.Method;
+import java.util.Date;
+import junit.framework.Assert;
+import org.junit.Test;
+import us.pserver.date.SimpleDate;
+import us.pserver.dbone.bean.AObj;
+import us.pserver.dbone.store.Region;
+import us.pserver.dbone.volume.Record;
+import us.pserver.tools.rfl.Reflector;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -28,8 +38,30 @@ package us.pserver.dbone.index;
  */
 public class ReflectIndexBuilderTest {
 
-  private final IndexBuilder builder = new ReflectIndexBuilder("age");
+  private final IndexBuilder ageBuilder = new ReflectIndexBuilder("age");
   
-  private final AObj
+  private final IndexBuilder dateBuilder = new ReflectIndexBuilder("date");
+  
+  private final Date date = SimpleDate.parseDate("07/12/2017 14:00:00");
+  
+  private final AObj a = new AObj("Aobj", 37, new int[]{3,5,7}, new char[]{'w','a','r'}, date);
+  
+  
+  @Test
+  public void ageIndexBuilding() {
+    Index idx = ageBuilder.build(a, Record.of("A1", Region.of(0, 512)));
+    Assert.assertEquals(37, idx.value());
+    System.out.println("ageIndexBuilding : "+ idx);
+    Assert.assertTrue(idx.test(37));
+  }
+  
+  
+  @Test
+  public void dateIndexBuilding() {
+    Index idx = dateBuilder.build(a, Record.of("A1", Region.of(512, 512)));
+    Assert.assertEquals(date, idx.value());
+    System.out.println("dateIndexBuilding: "+ idx);
+    Assert.assertTrue(idx.test(date));
+  }
   
 }

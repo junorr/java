@@ -39,13 +39,14 @@ import us.pserver.tools.rfl.Reflector;
 public class AnnotatedIndexBuilder implements IndexBuilder {
   
   @Override
-  public List<Index> build(Object obj, Record rec) {
+  public Index build(Object obj, Record rec) {
     List<Tuple<String,Comparable>> ls = new LinkedList<>();
     invokeMethod(obj, ls);
     getField(obj, ls);
     if(ls.isEmpty()) {
       throw new IllegalArgumentException("Annotated @Indexed value not found");
     }
+    
     return (List<Index>) ls.stream()
         .map(t->Index.of(t.getKey(), t.getValue(), rec))
         .collect(Collectors.toList());

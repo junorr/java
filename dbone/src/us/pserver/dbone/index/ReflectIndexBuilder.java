@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import us.pserver.dbone.volume.Record;
 import us.pserver.tools.NotNull;
 import us.pserver.tools.rfl.Reflector;
@@ -46,48 +45,61 @@ public class ReflectIndexBuilder implements IndexBuilder {
   }
 
   @Override
-  public List<Index> build(Object obj, Record rec) {
-    List ls = new LinkedList<>();
-    invokeMethod(obj, ls);
-    getField(obj, ls);
-    if(ls.isEmpty()) {
+  public Index build(Object obj, Record rec) {
+    Optional<Comparable> val = invokeMethod(obj);
+    if(!val.isPresent()) {
+      val = getField(obj);
+    }
+    if(!val.isPresent()) {
       throw new IllegalArgumentException(String.format(
           "Comparable Object value (%s.%s) not found", 
           obj.getClass().getSimpleName(), name)
       );
     }
-    return (List<Index>) ls.stream()
-        .map(o->Index.of(name, (Comparable)o, rec))
-        .collect(Collectors.toList());
+    return Index.of(name, val.get(), rec);
   }
   
   private Optional<Method> findMethod(Object obj) {
     return Arrays.asList(Reflector.of(obj).methods())
         .stream().filter(m->m.getName().equals(name) 
             && m.getParameterCount() == 0 
-            && Comparable.class.isAssignableFrom(m.getReturnType()))
+            && (m.getReturnType().isPrimitive()
+            || Comparable.class.isAssignableFrom(m.getReturnType())))
         .findAny();
   }
 
   private Optional<Field> findField(Object obj) {
     return Arrays.asList(Reflector.of(obj).fields())
         .stream().filter(f->f.getName().equals(name) 
-            && Comparable.class.isAssignableFrom(f.getType()))
+            && (f.getType().isPrimitive()
+            || Comparable.class.isAssignableFrom(f.getType())))
         .findAny();
   }
   
-  private void invokeMethod(Object o, List ls) {
+  private Optional invokeMethod(Object o) {
+    Optional ret = Optional.empty();
     try {
       Optional<Method> om = findMethod(o);
-      if(om.isPresent()) ls.add(om.get().invoke(o, null));
+      if(om.isPresent()) {
+        ret = Optional.ofNullable(
+            Reflector.of(o).selectMethod(om.get()).invoke()
+        );
+      }
     } catch(Exception e) {}
+    return ret;
   }
   
-  private void getField(Object o, List ls) {
+  private Optional getField(Object o) {
+    Optional ret = Optional.empty();
     try {
       Optional<Field> of = findField(o);
-      if(of.isPresent()) ls.add(of.get().get(o));
+      if(of.isPresent()) {
+        ret = Optional.ofNullable(
+            Reflector.of(o).selectField(name).get()
+        );
+      }
     } catch(Exception e) {}
+    return ret;
   }
   
   @Override
