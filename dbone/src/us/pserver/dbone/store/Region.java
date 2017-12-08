@@ -162,14 +162,12 @@ public interface Region extends Comparable<Region>, Serializable {
       if (obj == null) {
         return false;
       }
-      if (Region.class != obj.getClass()) {
+      if (!Region.class.isAssignableFrom(obj.getClass())) {
         return false;
       }
       final Region other = (Region) obj;
-      if (this.offset != other.offset()) {
-        return false;
-      }
-      return this.length == other.length();
+      return this.offset == other.offset() 
+          && this.length == other.length();
     }
     
     @Override

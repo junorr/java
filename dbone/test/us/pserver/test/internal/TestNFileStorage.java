@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.internal;
+package us.pserver.test.internal;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -35,7 +35,7 @@ import us.pserver.dbone.store.StorageFactory;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 30/10/2017
  */
-public class TestNFileStorage2 {
+public class TestNFileStorage {
 
   
   public static void main(String[] args) throws IOException {
@@ -44,26 +44,15 @@ public class TestNFileStorage2 {
     try (
         FileStorage store = new FileStorage(path, 30, StorageFactory.ALLOC_POLICY_HEAP);
         ) {
-      ByteBuffer[] bfs = new ByteBuffer[4];
-      byte val = 0;
-      for(int i = 0; i < bfs.length; i++) {
-        bfs[i] = ByteBuffer.allocate(15);
-        while(bfs[i].hasRemaining()) {
-          bfs[i].put(val++);
-        }
-        bfs[i].flip();
+      ByteBuffer buf = ByteBuffer.allocate(25);
+      for(int i = 0; i < 25; i++) {
+        buf.put((byte) i);
       }
-      for(ByteBuffer b : bfs) {
-        while(b.hasRemaining()) {
-          System.out.printf(" %d", b.get());
-        }
-        b.flip();
-      }
-      System.out.println();
-      Region r = store.put(bfs);
+      buf.flip();
+      Region r = store.put(buf);
       System.out.println("* store.put(buf): "+ r);
       r = Region.of(r.offset(), 2);
-      ByteBuffer buf = store.get(r);
+      buf = store.get(r);
       System.out.print("* store.get(r): ");
       while(buf.hasRemaining()) {
         System.out.printf(" %d", buf.get());

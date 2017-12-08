@@ -19,28 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.bean;
+package us.pserver.test.internal;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 29/11/2017
+ * @version 0.0 - 10/11/2017
  */
-public class TestRegex {
+public class TestStringFormat {
 
-  
-  public static void main(String[] args) {
-    String url1 = "http://localhost.bb.com.br:8086/fale/exiba?cmdo=fale.indexCESUP&ogm=CESUP";
-    String url2 = "http://localhost.bb.com.br:8086/fale/exiba?cmdo=fale.FiltroMsgGestao";
-    String rgx = "cmdo=fale.index*";
-    Pattern pt = Pattern.compile(rgx);
-    Matcher mt = pt.matcher(url1);
-    while(mt.find()) {
-      System.out.println(url1.substring(mt.start(), mt.end()));
-    }
+  @Test
+  public void decimalStringFormat() {
+    String fmt = "%.2f";
+    Double d = 5222.2225;
+    Assert.assertEquals("5222,22", String.format(fmt, d));
   }
   
 }

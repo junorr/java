@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.handle;
+package us.pserver.test.handle;
 
 import com.esotericsoftware.reflectasm.MethodAccess;
 import com.hervian.lambda.Lambda;
@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.Date;
 import junit.framework.Assert;
 import org.junit.Test;
-import us.pserver.dbone.bean.AObj;
+import us.pserver.test.bean.AObj;
 import us.pserver.tools.timer.Timer;
 
 /**
@@ -60,7 +60,7 @@ public class MethodHandleTest {
   }
   
   
-  @Test
+  //@Test
   public void UNreflectGetterOnAObj() throws Throwable {
     Field f = AObj.class.getDeclaredField("age");
     f.setAccessible(true);
@@ -73,7 +73,7 @@ public class MethodHandleTest {
     System.out.printf(". UNreflectGetterOnAObj: %s%n", tm.stop());
   }
   
-  @Test
+  //@Test
   public void reflectGetterOnAObj() throws Throwable {
     Field f = AObj.class.getDeclaredField("age");
     f.setAccessible(true);
@@ -144,6 +144,23 @@ public class MethodHandleTest {
       result += (int) hash;
     }
     System.out.println("-> mhVirtualHashCode: "+ tm.stop());
+    System.out.println(result);
+  }
+  
+  @Test
+  public void mhUnreflectHashCode() throws Throwable {
+    Method[] mts = AObj.class.getDeclaredMethods();
+    Method hashCode = Arrays.asList(mts).stream().filter(m->m.getName().equals("hashCode")).findFirst().get();
+    MethodHandle mh = MethodHandles.lookup().unreflect(hashCode);
+    int expectedHash = -624836825;
+    long result = 0;
+    Timer tm = new Timer.Nanos().start();
+    for(int i = 0; i < times; i++) {
+      Object hash = mh.invoke(a);
+      Assert.assertEquals(expectedHash, hash);
+      result += (int) hash;
+    }
+    System.out.println("-> mhUnreflectHashCode: "+ tm.stop());
     System.out.println(result);
   }
   

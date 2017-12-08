@@ -12,15 +12,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.*
  ************************************************************************/
 
-package us.pserver.dbone.index;
+package us.pserver.test.index;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Function;
 import junit.framework.Assert;
 import org.junit.Test;
-import us.pserver.dbone.bean.AObj;
-import us.pserver.dbone.bean.BObj;
+import us.pserver.dbone.index.IndexStore;
+import us.pserver.test.bean.AObj;
+import us.pserver.test.bean.BObj;
 import us.pserver.dbone.index.IndexStore.DefIndexStore;
 import us.pserver.dbone.store.Region;
 import us.pserver.dbone.volume.Record;
@@ -46,8 +47,8 @@ public class IndexBuilderTest {
   public void storeTestAObj() {
     Function<AObj,Integer> fn = AObj::age;
     store.appendIndexBuilder(AObj.class, "age", fn);
-    store.createIndex(a, Record.of("A1", Region.of(0, 512)));
-    store.createIndex(aa, Record.of("A2", Region.of(512, 512)));
+    store.putIndex(a, Record.of("A1", Region.of(0, 512)));
+    store.putIndex(aa, Record.of("A2", Region.of(512, 512)));
     Assert.assertEquals(1, store.getIndex(AObj.class, Region.of(0, 512)).count());
     Assert.assertEquals(1, store.getIndex(AObj.class, Region.of(512, 512)).count());
     Assert.assertEquals(0, store.getIndex(AObj.class, Region.of(256, 512)).count());
@@ -64,8 +65,8 @@ public class IndexBuilderTest {
   public void storeTestBObj() {
     Function<BObj,String> fn = BObj::getName;
     store.appendIndexBuilder(BObj.class, "name", fn);
-    store.createIndex(b, Record.of("B1", Region.of(0, 512)));
-    store.createIndex(bb, Record.of("B2", Region.of(512, 512)));
+    store.putIndex(b, Record.of("B1", Region.of(0, 512)));
+    store.putIndex(bb, Record.of("B2", Region.of(512, 512)));
     Assert.assertEquals(1, store.getIndex(BObj.class, Region.of(0, 512)).count());
     Assert.assertEquals(1, store.getIndex(BObj.class, Region.of(512, 512)).count());
     Assert.assertEquals(0, store.getIndex(BObj.class, Region.of(256, 512)).count());

@@ -19,11 +19,10 @@
  * endere�o 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.bean;
+package us.pserver.test.bean;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -31,70 +30,43 @@ import java.util.Objects;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 06/09/2017
  */
-public class AObj implements Serializable {
-
+public class BObj implements Serializable {
+  
   private final String name;
   
-  private final int age;
+  private AObj a;
   
-  private final int[] magic;
+  private final List<Integer> list;
   
-  private final char[] chars;
-  
-  private final Date date;
 
-
-  private AObj() {
-    System.out.println("--- AObj using empty constructor");
-    this.name = null;
-    this.age = 0;
-    this.magic = null;
-    this.chars = null;
-    this.date = null;
+  public BObj() {
+    this(null, null, null);
   }
-
-
-  public AObj(String name, int age, int[] magic, char[] chars, Date date) {
+  
+  
+  public BObj(String name, AObj a, List<Integer> list) {
     this.name = name;
-    this.age = age;
-    this.magic = magic;
-    this.chars = chars;
-    this.date = date;
+    this.a = a;
+    this.list = list;
   }
 
-
-  public AObj(String name, Date dt) {
-    this(name, 0, null, null, dt);
-  }
-
-  public String name() {
+  public String getName() {
     return name;
   }
 
-  public int age() {
-    System.out.println("AObj.age():int method invoked!");
-    return age;
+  public AObj getA() {
+    return a;
   }
 
-  public int[] getMagic() {
-    return magic;
-  }
-
-  public char[] getChars() {
-    return chars;
-  }
-
-  public Date getDate() {
-    System.out.println("AObj.getDate():Date method invoked!");
-    return date;
+  public List<Integer> getList() {
+    return list;
   }
 
   @Override
   public int hashCode() {
-    int hash = 7;
-    hash = 53 * hash + Objects.hashCode(this.name);
-    hash = 53 * hash + this.age;
-    hash = 53 * hash + Arrays.hashCode(this.magic);
+    int hash = 3;
+    hash = 41 * hash + Objects.hashCode(this.name);
+    hash = 41 * hash + Objects.hashCode(this.a);
     return hash;
   }
 
@@ -110,14 +82,11 @@ public class AObj implements Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final AObj other = (AObj) obj;
-    if (this.age != other.age) {
-      return false;
-    }
+    final BObj other = (BObj) obj;
     if (!Objects.equals(this.name, other.name)) {
       return false;
     }
-    if (!Arrays.equals(this.magic, other.magic)) {
+    if (!Objects.equals(this.a, other.a)) {
       return false;
     }
     return true;
@@ -126,7 +95,7 @@ public class AObj implements Serializable {
 
   @Override
   public String toString() {
-    return "AObj{" + "name=" + name + ", age=" + age + ", magic=" + Arrays.toString(magic) + ", chars=" + Arrays.toString(chars) + ", date=" + date + '}';
+    return "BObj{" + "name=" + name + ", a=" + a + ", list=" + list + '}';
   }
 
 }

@@ -21,20 +21,32 @@
 
 package us.pserver.dbone.index;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.invoke.MethodHandle;
+import java.util.function.Function;
+import us.pserver.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/12/2017
+ * @version 0.0 - 08/12/2017
  */
-@Target({ElementType.FIELD, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Indexed {
-
-  String value() default "";
+public class MethodHandleAcessor implements Function<Object,Comparable> {
   
+  private final MethodHandle handle;
+  
+  public MethodHandleAcessor(MethodHandle mh) {
+    this.handle = NotNull.of(mh).getOrFail("Bad null MethodHandle");
+  }
+
+  @Override
+  public Comparable apply(Object t) {
+    System.out.printf("-> MethodHandleAcessor.apply( %s )%n", t);
+    try {
+      return (Comparable) handle.bindTo(t).invoke();
+    }
+    catch(Throwable e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
+
 }

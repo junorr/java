@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.internal;
+package us.pserver.test.internal;
 
 import us.pserver.dbone.volume.DefaultVolume;
 import us.pserver.dbone.volume.Record;
@@ -35,8 +35,8 @@ import junit.framework.Assert;
 import org.junit.AfterClass;
 import org.junit.Test;
 import us.pserver.date.SimpleDate;
-import us.pserver.dbone.bean.AObj;
-import us.pserver.dbone.bean.BObj;
+import us.pserver.test.bean.AObj;
+import us.pserver.test.bean.BObj;
 import us.pserver.dbone.serial.GsonSerializationService;
 
 /**

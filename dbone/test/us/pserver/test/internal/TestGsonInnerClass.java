@@ -19,23 +19,36 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.internal;
+package us.pserver.test.internal;
 
-import org.junit.Assert;
-import org.junit.Test;
+import us.pserver.test.bean.AObj;
+import us.pserver.test.bean.BObj;
+import com.google.gson.Gson;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/11/2017
+ * @version 0.0 - 06/10/2017
  */
-public class TestStringFormat {
+public class TestGsonInnerClass {
 
-  @Test
-  public void decimalStringFormat() {
-    String fmt = "%.2f";
-    Double d = 5222.2225;
-    Assert.assertEquals("5222,22", String.format(fmt, d));
+  
+  public static void main(String[] args) {
+    AObj a = new AObj("hello", 30, new int[]{1,2,3}, new char[]{'a','b','c'}, new Date());
+    List<Integer> lst = new LinkedList<>();
+    lst.add(3);
+    lst.add(2);
+    lst.add(1);
+    BObj b = new BObj("world", a, lst);
+    System.out.println(b);
+    Gson gson = new Gson();
+    String json = gson.toJson(b);
+    System.out.println(json);
+    b = gson.fromJson(json, BObj.class);
+    System.out.println(b);
   }
   
 }
