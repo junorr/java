@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.index;
+package us.pserver.finalson;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -29,8 +29,10 @@ import java.lang.annotation.Target;
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/12/2017
+ * @version 0.0 - 09/12/2017
  */
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Indexed {}
+public @interface Property {
+  String value() default "";
+}

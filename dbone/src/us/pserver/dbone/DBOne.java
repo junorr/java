@@ -21,6 +21,7 @@
 
 package us.pserver.dbone;
 
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -46,11 +47,15 @@ public interface DBOne extends AutoCloseable {
   public <T> List<Selected<T,String>> select( Class<T> cls, Predicate<T> prd ) throws DBOneException;
   
   public <T, V extends Comparable<V>>  List<Selected<T,V>> selectIndexed( 
-      String name, Class<T> cls, V value 
+      Class<T> cls, String name, V value 
   ) throws DBOneException;
   
   public <T, V extends Comparable<V>> DBOne createIndex(
-      String name, Class<T> cls, Function<T,V> acessor 
+      Class<T> cls, String name, Function<T,V> acessor 
+  ) throws DBOneException;
+  
+  public <T> DBOne createReflectiveIndex(
+      Class<T> cls, String name, MethodHandles.Lookup lookup
   ) throws DBOneException;
   
   public boolean removeIndex( String name, Class cls );

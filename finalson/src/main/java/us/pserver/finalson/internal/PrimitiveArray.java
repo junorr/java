@@ -19,18 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.index;
+package us.pserver.finalson.internal;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import java.lang.reflect.Array;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/12/2017
+ * @version 0.0 - 10/12/2017
  */
-@Target({ElementType.FIELD, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Indexed {}
+public class PrimitiveArray implements Primitive {
+  
+  @Override
+  public boolean is(Class cls) {
+    return cls.isArray() && JavaPrimitive.isJavaPrimitive(cls.getComponentType());
+  }
+  
+  @Override
+  public JsonElement toJsonElement(Object obj) {
+    if(!is(obj.getClass())) {
+      throw new IllegalArgumentException("Not a primitive array");
+    }
+    JsonArray array = new JsonArray();
+    int len = Array.getLength(obj);
+    for(int i = 0; i < len; i++) {
+      array.add(JavaPrimitive.primitiveToJson(Array.get(obj, i)));
+    }
+    return array;
+  }
+  
+}

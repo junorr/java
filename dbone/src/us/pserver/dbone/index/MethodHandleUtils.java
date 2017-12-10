@@ -69,15 +69,25 @@ public class MethodHandleUtils {
               || Comparable.class.isAssignableFrom(f.getType())));
     }
     
-    public static Stream<MethodHandle> getAnnotatedMethodHandles(Class cls, Class annotation, MethodHandles.Lookup lookup) throws IllegalAccessException {
+    public static Stream<MethodHandle> getAnnotatedMethodHandles(Class cls, Class annotation, MethodHandles.Lookup lookup) {
       return Stream.concat(
           getAnnotatedComparableMethods(cls, annotation).map(m->unreflect(lookup, m)),
           getAnnotatedComparableFields(cls, annotation).map(m->unreflect(lookup, m))
       );
     }
     
+    public static Stream<Tuple<String,MethodHandle>> getAnnotatedMethodHandlesWithName(Class cls, Class annotation, MethodHandles.Lookup lookup) {
+      return Stream.concat(
+          getAnnotatedComparableMethods(cls, annotation).map(m->new Tuple<>(m.getName(), unreflect(lookup, m))),
+          getAnnotatedComparableFields(cls, annotation).map(f->new Tuple<>(f.getName(), unreflect(lookup, f)))
+      );
+    }
+    
     public static MethodHandle unreflect(MethodHandles.Lookup lookup, Method meth) {
       try {
+        if(!meth.isAccessible()) {
+          meth.setAccessible(true);
+        }
         return lookup.unreflect(meth);
       }
       catch(IllegalAccessException e) {
@@ -87,6 +97,9 @@ public class MethodHandleUtils {
     
     public static MethodHandle unreflect(MethodHandles.Lookup lookup, Field field) {
       try {
+        if(!field.isAccessible()) {
+          field.setAccessible(true);
+        }
         return lookup.unreflectGetter(field);
       }
       catch(IllegalAccessException e) {
@@ -94,44 +107,37 @@ public class MethodHandleUtils {
       }
     }
     
-    public static Stream<Tuple<String,MethodHandle>> getAnnotatedMethodHandlesWithName(Class cls, Class annotation, MethodHandles.Lookup lookup) throws IllegalAccessException {
-      return Stream.concat(
-          getAnnotatedComparableMethods(cls, annotation).map(m->unreflect(lookup, m)),
-          getAnnotatedComparableFields(cls, annotation).map(m->unreflect(lookup, m))
-      );
-    }
-    
-    public static Optional<MethodHandle> getAnnotatedMethodHandle(Class cls, Class annotation, MethodHandles.Lookup lookup) throws IllegalAccessException {
+    public static Optional<MethodHandle> getAnnotatedMethodHandle(Class cls, Class annotation, MethodHandles.Lookup lookup) {
       Optional<Method> oh = getAnnotatedComparableMethod(cls, annotation);
       Optional<MethodHandle> opt = Optional.empty();
       if(oh.isPresent()) {
-        opt = Optional.of(lookup.unreflect(oh.get()));
+        opt = Optional.of(unreflect(lookup, oh.get()));
       }
       else {
         Optional<Field> of = getAnnotatedComparableField(cls, annotation);
         if(of.isPresent()) {
-          opt = Optional.of(lookup.unreflectGetter(of.get()));
+          opt = Optional.of(unreflect(lookup, of.get()));
         }
       }
       return opt;
     }
     
-    public static Optional<Tuple<String,MethodHandle>> getAnnotatedMethodHandleWithName(Class cls, Class annotation, MethodHandles.Lookup lookup) throws IllegalAccessException {
+    public static Optional<Tuple<String,MethodHandle>> getAnnotatedMethodHandleWithName(Class cls, Class annotation, MethodHandles.Lookup lookup) {
       Optional<Method> oh = getAnnotatedComparableMethod(cls, annotation);
       Optional<Tuple<String,MethodHandle>> opt = Optional.empty();
       if(oh.isPresent()) {
-        opt = Optional.of(new Tuple<>(oh.get().getName(), lookup.unreflect(oh.get())));
+        opt = Optional.of(new Tuple<>(oh.get().getName(), unreflect(lookup, oh.get())));
       }
       else {
         Optional<Field> of = getAnnotatedComparableField(cls, annotation);
         if(of.isPresent()) {
-          opt = Optional.of(new Tuple<>(of.get().getName(), lookup.unreflectGetter(of.get())));
+          opt = Optional.of(new Tuple<>(of.get().getName(), unreflect(lookup, of.get())));
         }
       }
       return opt;
     }
     
-    public static Optional<MethodHandle> getComparableMethodHandle(Class cls, String name, MethodHandles.Lookup lookup) throws IllegalAccessException {
+    public static Optional<MethodHandle> getComparableMethodHandle(Class cls, String name, MethodHandles.Lookup lookup) {
       Optional<Method> om = Arrays.asList(cls.getDeclaredMethods())
           .stream().filter(m->m.getName().equals(name) 
               && m.getParameterCount() == 0 
@@ -140,12 +146,12 @@ public class MethodHandleUtils {
           .findAny();
       Optional<MethodHandle> opt = Optional.empty();
       if(om.isPresent()) {
-        opt = Optional.of(lookup.unreflect(om.get()));
+        opt = Optional.of(unreflect(lookup, om.get()));
       }
       return opt;
     }
     
-    public static Optional<MethodHandle> getComparableFieldHandle(Class cls, String name, MethodHandles.Lookup lookup) throws IllegalAccessException {
+    public static Optional<MethodHandle> getComparableFieldHandle(Class cls, String name, MethodHandles.Lookup lookup) {
       Optional<Field> of = Arrays.asList(cls.getDeclaredFields())
           .stream().filter(f->f.getName().equals(name) 
               && (f.getType().isPrimitive() 
@@ -153,7 +159,7 @@ public class MethodHandleUtils {
           .findAny();
       Optional<MethodHandle> opt = Optional.empty();
       if(of.isPresent()) {
-        opt = Optional.of(lookup.unreflectGetter(of.get()));
+        opt = Optional.of(unreflect(lookup, of.get()));
       }
       return opt;
     }

@@ -34,6 +34,7 @@ import us.pserver.dbone.index.Indexed;
  */
 public class AObj implements Serializable {
 
+  @Indexed
   private final String name;
   
   private final int age;

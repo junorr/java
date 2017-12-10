@@ -21,10 +21,10 @@
 
 package us.pserver.test.index;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import junit.framework.Assert;
 import org.junit.Test;
 import us.pserver.date.SimpleDate;
@@ -32,6 +32,8 @@ import us.pserver.dbone.index.Index;
 import us.pserver.dbone.index.IndexStore;
 import us.pserver.test.bean.AObj;
 import us.pserver.dbone.index.IndexStore.DefIndexStore;
+import us.pserver.dbone.index.Indexed;
+import us.pserver.dbone.index.MethodHandleUtils;
 import us.pserver.dbone.store.Region;
 import us.pserver.dbone.volume.Record;
 
@@ -81,13 +83,16 @@ public class IndexStoreTest {
   
   @Test
   public void annotatedNameIndex() {
-    store.appendAnnotatedIndexBuilder(AObj.class);
+    MethodHandleUtils.getAnnotatedMethodHandlesWithName(
+        AObj.class, Indexed.class, MethodHandles.lookup()
+    ).forEach(System.out::println);
+    store.appendAnnotatedIndexBuilder(AObj.class, MethodHandles.lookup());
     store.putIndex(a, Record.of("A1", Region.of(0, 512)));
-    Optional<Index<String>> opt = store.getIndex(AObj.class, "name", "AObj").findAny();
+    Optional<Index<String>> opt = store.getIndex(AObj.class, "name", "Aobj").findAny();
     Assert.assertTrue(opt.isPresent());
-    Assert.assertTrue(opt.get().test("AObj"));
+    Assert.assertTrue(opt.get().test("Aobj"));
     Assert.assertEquals(Region.of(0, 512), opt.get().record().region());
-    List<Index<String>> ls = store.removeIndex(AObj.class, "name", "AObj");
+    List<Index<String>> ls = store.removeIndex(AObj.class, "name", "Aobj");
     Assert.assertEquals(1, ls.size());
     Assert.assertEquals(opt.get(), ls.get(0));
   }

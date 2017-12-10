@@ -19,18 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.index;
+package us.pserver.dbone.store;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.IOException;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
+import java.nio.file.Path;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/12/2017
+ * @version 0.0 - 08/12/2017
  */
-@Target({ElementType.FIELD, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Indexed {}
+public interface RW<T> {
+
+  public T writeTo(Path path) throws IOException;
+  
+  public T readFrom(Path path) throws IOException;
+  
+  public T writeTo(WritableByteChannel ch) throws IOException;
+  
+  public T readFrom(ReadableByteChannel ch) throws IOException;
+  
+}

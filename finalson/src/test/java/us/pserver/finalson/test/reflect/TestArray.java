@@ -19,18 +19,36 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.index;
+package us.pserver.finalson.test.reflect;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import java.util.Arrays;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import us.pserver.finalson.internal.PrimitiveArray;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/12/2017
+ * @version 0.0 - 10/12/2017
  */
-@Target({ElementType.FIELD, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Indexed {}
+public class TestArray {
+
+  @Test
+  public void isPrimitiveArray() {
+    Class c = int[].class;
+    Assertions.assertTrue(c.isArray());
+    Assertions.assertTrue(c.getComponentType().isPrimitive());
+  }
+  
+  @Test
+  public void primitiveArray() {
+    Object[] array = Arrays.asList(1,2,3,4,5).toArray();
+    JsonElement elt = new PrimitiveArray().toJsonElement(array);
+    System.out.println(elt);
+    Assertions.assertTrue(JsonArray.class.isAssignableFrom(elt.getClass()));
+    Assertions.assertEquals(5, ((JsonArray)elt).size());
+  }
+  
+}

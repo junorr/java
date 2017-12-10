@@ -16,8 +16,6 @@ package us.pserver.dbone.index;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +28,6 @@ import java.util.stream.Stream;
 import us.pserver.dbone.volume.Record;
 import us.pserver.dbone.store.Region;
 import us.pserver.tools.NotNull;
-import us.pserver.tools.Tuple;
 
 /**
  *
@@ -39,7 +36,7 @@ import us.pserver.tools.Tuple;
  */
 public interface IndexStore {
   
-  public void putIndex( Class cls, Index idx );
+  public IndexStore putIndex( Class cls, Index idx );
   
   public IndexStore putIndex( Object obj, Record rec );
   
@@ -49,6 +46,8 @@ public interface IndexStore {
   public Stream<Index> getIndex( Class cls, Region reg );
   
   public Stream<Index> getIndex( Class cls, String name );
+  
+  public boolean containsIndex( Class cls, Index idx );
   
   
   public <V extends Comparable<V>> List<Index<V>> removeIndex( Class cls, String name, V value );
@@ -74,6 +73,8 @@ public interface IndexStore {
   public IndexStore appendReflectiveIndexBuilder( Class cls, String name, MethodHandles.Lookup lookup );
   
   
+  public boolean containsIndexBuilder( Class cls, String name );
+  
   public IndexBuilder removeIndexBuilder( Class cls, String name );
   
   
@@ -97,20 +98,46 @@ public interface IndexStore {
     }
     
     @Override
-    public void putIndex( Class cls, Index idx ) {
+    public IndexStore putIndex( Class cls, Index idx ) {
       NotNull.of(cls).failIfNull("Bad null Class");
       NotNull.of(idx).failIfNull("Bad null Index");
       String key = getKey(cls, idx.name());
       if(!indexes.containsKey(key)) {
         indexes.put(key, new CopyOnWriteArrayList<>());
       }
-      indexes.get(key).add(idx);
+      if(!containsIndex(cls, idx)) {
+        indexes.get(key).add(idx);
+      }
+      return this;
+    }
+    
+    @Override
+    public IndexStore putIndex(Object obj, Record rec) {
+      NotNull.of(obj).failIfNull("Bad null Object");
+      NotNull.of(rec).failIfNull("Bad null Record");
+      String cname = obj.getClass().getName();
+      if(!builders.containsKey(cname)
+          || builders.get(cname).isEmpty()) {
+        throw new IllegalStateException("IndexBuilder not found for: "+ cname);
+      }
+      builders.get(cname).stream()
+          .map(i->i.build(obj, rec))
+          .forEach(i->putIndex(obj.getClass(), i));
+      return this;
+    }
+    
+    @Override
+    public boolean containsIndex(Class cls, Index idx) {
+      String key = getKey(cls, idx.name());
+      return indexes.containsKey(key)
+          && indexes.get(key).contains(idx);
     }
     
     @Override
     public <V extends Comparable<V>> Stream<Index<V>> getIndex( Class cls, String name, V value ) {
       return indexes.get(getKey(cls, name))
-          .stream().filter(i->i.test(value)).map(i->(Index<V>)i);
+          .stream().filter(i->i.test(value))
+          .map(i->(Index<V>)i);
     }
     
     @Override
@@ -134,22 +161,6 @@ public interface IndexStore {
       return indexes.get(key).stream();
     }
 
-    @Override
-    public IndexStore putIndex(Object obj, Record rec) {
-      NotNull.of(obj).failIfNull("Bad null Object");
-      NotNull.of(rec).failIfNull("Bad null Record");
-      String cname = obj.getClass().getName();
-      if(!builders.containsKey(cname)
-          || builders.get(cname).isEmpty()) {
-        throw new IllegalStateException("IndexBuilder not found for: "+ cname);
-      }
-      builders.get(cname).stream()
-          .map(i->i.build(obj, rec))
-          .collect(Collectors.toList())
-          .forEach(i->putIndex(obj.getClass(), i));
-      return this;
-    }
-    
     @Override
     public <V extends Comparable<V>> List<Index<V>> removeIndex( Class cls, String name, V value ) {
       NotNull.of(name).failIfNull("Bad null name");
@@ -192,7 +203,9 @@ public interface IndexStore {
       if(!builders.containsKey(cls.getName())) {
         builders.put(cls.getName(), new CopyOnWriteArrayList<>());
       }
-      builders.get(cls.getName()).add(new AcessorIndexBuilder(name, acessor));
+      if(!containsIndexBuilder(cls, name)) {
+        builders.get(cls.getName()).add(new AcessorIndexBuilder(name, acessor));
+      }
       return this;
     }
     
@@ -206,21 +219,18 @@ public interface IndexStore {
     public IndexStore appendAnnotatedIndexBuilder(Class cls, MethodHandles.Lookup lookup) {
       NotNull.of(cls).failIfNull("Bad null Class");
       NotNull.of(lookup).failIfNull("Bad null Lookup");
-      try {
-        Optional<Tuple<String,MethodHandle>> opt = MethodHandleUtils.getAnnotatedMethodHandleWithName(cls, Indexed.class, lookup);
-        if(!opt.isPresent()) {
-          throw new IllegalArgumentException("Annotated (@Indexed) Field/Method not found");
-        }
-        return this.appendIndexBuilder(
-            cls, opt.get().getKey(), 
-            new MethodHandleAcessor(opt.get().getValue())
-        );
-      }
-      catch(IllegalAccessException e) {
-        throw new RuntimeException(e.toString(), e);
-      }
+      MethodHandleUtils.getAnnotatedMethodHandlesWithName(cls, Indexed.class, lookup)
+          .forEach(t->appendIndexBuilder(cls, t.getKey(), 
+              new MethodHandleAcessor(t.getValue())));
+      return this;
     }
     
+    @Override
+    public boolean containsIndexBuilder(Class cls, String name) {
+      return builders.containsKey(cls.getName())
+          && builders.get(cls.getName())
+              .stream().anyMatch(b->b.name().equals(name));
+    }
     
     @Override
     public IndexStore appendReflectiveIndexBuilder(Class cls, String name) {
@@ -232,22 +242,17 @@ public interface IndexStore {
       NotNull.of(name).failIfNull("Bad null name");
       NotNull.of(cls).failIfNull("Bad null Class");
       NotNull.of(lookup).failIfNull("Bad null Lookup");
-      try {
-        Optional<MethodHandle> opt = MethodHandleUtils.getComparableMethodHandle(cls, name, lookup);
-        if(!opt.isPresent()) {
-          opt = MethodHandleUtils.getComparableFieldHandle(cls, name, lookup);
-        }
-        if(!opt.isPresent()) {
-          throw new IllegalArgumentException(String.format(
-              "Field/Method (%s.%s) not found", 
-              cls.getSimpleName(), name)
-          );
-        }
-        return this.appendIndexBuilder(cls, name, new MethodHandleAcessor(opt.get()));
+      Optional<MethodHandle> opt = MethodHandleUtils.getComparableMethodHandle(cls, name, lookup);
+      if(!opt.isPresent()) {
+        opt = MethodHandleUtils.getComparableFieldHandle(cls, name, lookup);
       }
-      catch(IllegalAccessException e) {
-        throw new RuntimeException(e.toString(), e);
+      if(!opt.isPresent()) {
+        throw new IllegalArgumentException(String.format(
+            "Field/Method (%s.%s) not found", 
+            cls.getSimpleName(), name)
+        );
       }
+      return this.appendIndexBuilder(cls, name, new MethodHandleAcessor(opt.get()));
     }
     
     
