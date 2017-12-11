@@ -19,35 +19,41 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.internal;
+package us.pserver.finalson.json;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import java.lang.reflect.Array;
+import com.google.gson.JsonPrimitive;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/12/2017
+ * @version 0.0 - 11/12/2017
  */
-public class NativeArray implements Native {
+public class DateType implements JsonType<Date> {
+
+  public static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
   
   @Override
-  public boolean is(Class cls) {
-    return cls.isArray() && JavaNative.isJavaPrimitive(cls.getComponentType());
+  public JsonElement toJson(Date obj) {
+    return new JsonPrimitive(DEFAULT_DATE_FORMAT.format(obj));
   }
   
   @Override
-  public JsonElement toJsonElement(Object obj) {
-    if(!is(obj.getClass())) {
-      throw new IllegalArgumentException("Not a primitive array");
+  public Date fromJson(JsonElement elt) {
+    try {
+      return DEFAULT_DATE_FORMAT.parse(elt.getAsString());
+    } catch (ParseException ex) {
+      throw new RuntimeException(ex.toString(), ex);
     }
-    JsonArray array = new JsonArray();
-    int len = Array.getLength(obj);
-    for(int i = 0; i < len; i++) {
-      array.add(JavaNative.primitiveToJson(Array.get(obj, i)));
-    }
-    return array;
+  }
+  
+  @Override
+  public boolean is(Class cls) {
+    return Date.class.isAssignableFrom(cls);
   }
   
 }

@@ -19,29 +19,29 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson;
+package us.pserver.finalson.construct;
 
 import com.google.gson.JsonElement;
-import us.pserver.finalson.json.ToJson;
-import us.pserver.finalson.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 09/12/2017
+ * @version 0.0 - 11/12/2017
  */
-public class Finalson implements ToJson {
+public interface ConstructorParam<T> extends Comparable<ConstructorParam> {
 
-  private final FinalsonConfig conf;
+  public T fromJson(JsonElement elt);
   
-  public Finalson(FinalsonConfig cfg) {
-    this.conf = NotNull.of(cfg).getOrFail("Bad null FinalsonConfig");
-  }
+  public String getName();
+  
+  public int getIndex();
+  
+  public Class getType();
   
   
   @Override
-  public JsonElement toJson(Object obj) {
-    
+  public default int compareTo(ConstructorParam other) {
+    return Integer.compare(this.getIndex(), other.getIndex());
   }
   
 }

@@ -19,17 +19,43 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.internal;
+package us.pserver.finalson.construct;
 
 import com.google.gson.JsonElement;
+import us.pserver.finalson.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/12/2017
+ * @version 0.0 - 11/12/2017
  */
-public interface FromJson<T> {
-
-  public T fromJsonElement(JsonElement elt);
+public abstract class AbstractConstructorParam<T> implements ConstructorParam<T> {
+  
+  protected final Class type;
+  
+  protected final String name;
+  
+  protected final int index;
+  
+  protected AbstractConstructorParam(Class type, String name, int index) {
+    this.type = NotNull.of(type).getOrFail("Bad null type Class");
+    this.name = NotNull.of(name).getOrFail("Bad null name");
+    this.index = index;
+  }
+  
+  @Override
+  public String getName() {
+    return name;
+  }
+  
+  @Override
+  public int getIndex() {
+    return index;
+  }
+  
+  @Override
+  public Class getType() {
+    return type;
+  }
   
 }

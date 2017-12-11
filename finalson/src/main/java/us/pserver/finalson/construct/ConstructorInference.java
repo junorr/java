@@ -19,15 +19,20 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.internal;
+package us.pserver.finalson.construct;
+
+import com.google.gson.JsonObject;
+import java.lang.reflect.Constructor;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/12/2017
+ * @version 0.0 - 11/12/2017
  */
-public interface Native extends ToJson {
+public interface ConstructorInference {
 
-  public boolean is(Class cls);
+  public Constructor infer(JsonObject job);
+  
+  public Class getType();
   
 }

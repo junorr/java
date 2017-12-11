@@ -22,6 +22,16 @@
 package us.pserver.finalson;
 
 import com.google.gson.Gson;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
+import us.pserver.finalson.json.ClassType;
+import us.pserver.finalson.json.ColorType;
+import us.pserver.finalson.json.DateType;
+import us.pserver.finalson.json.JavaType;
+import us.pserver.finalson.json.JsonType;
+import us.pserver.finalson.json.PathType;
 import us.pserver.finalson.tools.NotNull;
 
 /**
@@ -39,40 +49,66 @@ public class FinalsonConfig {
   
   private final ClassLoader loader;
   
+  private final List<JsonType> types;
+  
   
   public FinalsonConfig() {
-    this(new Gson(), FinalsonConfig.class.getClassLoader(), true, false);
+    this(new Gson(), FinalsonConfig.class.getClassLoader(), true, false, new CopyOnWriteArrayList<>());
+    types.addAll(Arrays.asList(JavaType.values()));
+    types.add(new ClassType(loader));
+    types.add(new DateType());
+    types.add(new PathType());
+    types.add(new ColorType());
   }
   
   
-  public FinalsonConfig(Gson gson, ClassLoader ldr, boolean useGetters, boolean useMethodAnnotation) {
+  public FinalsonConfig(Gson gson, ClassLoader ldr, boolean useGetters, boolean useMethodAnnotation, List<JsonType> types) {
     this.gson = gson;
     this.useGetters = useGetters;
     this.useMethodAnnotation = useMethodAnnotation;
     this.loader = ldr;
+    this.types = types;
   }
   
   
   public FinalsonConfig withGson(Gson gson) {
-    return new FinalsonConfig(gson, loader, useGetters, useMethodAnnotation);
+    return new FinalsonConfig(gson, loader, useGetters, useMethodAnnotation, types);
   }
   
   
   public FinalsonConfig withClassLoader(ClassLoader ldr) {
     return new FinalsonConfig(gson, 
         NotNull.of(ldr).getOrFail("Bad null ClassLoader"), 
-        useGetters, useMethodAnnotation
+        useGetters, useMethodAnnotation, types
     );
   }
   
   
-  public FinalsonConfig useGetters(boolean use) {
-    return new FinalsonConfig(gson, loader, use, useMethodAnnotation);
+  public FinalsonConfig setUseGetters(boolean use) {
+    return new FinalsonConfig(gson, loader, use, useMethodAnnotation, types);
   }
   
   
-  public FinalsonConfig useMethodAnnotation(boolean use) {
-    return new FinalsonConfig(gson, loader, useGetters, use);
+  public FinalsonConfig setUseMethodAnnotation(boolean use) {
+    return new FinalsonConfig(gson, loader, useGetters, use, types);
+  }
+  
+  
+  public <T> FinalsonConfig appendJsonType(JsonType<T> type) {
+    if(type != null) {
+      types.add(type);
+    }
+    return this;
+  }
+  
+  
+  public boolean hasJsonType(Class cls) {
+    return types.stream().anyMatch(t->t.is(cls));
+  }
+  
+  
+  public Optional<JsonType> getJsonType(Class cls) {
+    return types.stream().filter(t->t.is(cls)).findAny();
   }
   
   
@@ -81,12 +117,12 @@ public class FinalsonConfig {
   }
   
   
-  public boolean isUseGetters() {
+  public boolean useGetters() {
     return useGetters;
   }
   
   
-  public boolean isUseMethodAnnotation() {
+  public boolean useMethodAnnotation() {
     return useMethodAnnotation;
   }
   

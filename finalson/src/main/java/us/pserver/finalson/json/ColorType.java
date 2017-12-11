@@ -19,29 +19,32 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson;
+package us.pserver.finalson.json;
 
 import com.google.gson.JsonElement;
-import us.pserver.finalson.json.ToJson;
-import us.pserver.finalson.tools.NotNull;
+import com.google.gson.JsonPrimitive;
+import java.awt.Color;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 09/12/2017
+ * @version 0.0 - 11/12/2017
  */
-public class Finalson implements ToJson {
+public class ColorType implements JsonType<Color> {
 
-  private final FinalsonConfig conf;
-  
-  public Finalson(FinalsonConfig cfg) {
-    this.conf = NotNull.of(cfg).getOrFail("Bad null FinalsonConfig");
+  @Override
+  public boolean is(Class cls) {
+    return Color.class.isAssignableFrom(cls);
   }
-  
   
   @Override
-  public JsonElement toJson(Object obj) {
-    
+  public JsonElement toJson(Color obj) {
+    return new JsonPrimitive(obj.getRGB());
   }
   
+  @Override
+  public Color fromJson(JsonElement elt) {
+    return new Color(elt.getAsInt(), true);
+  }
+
 }

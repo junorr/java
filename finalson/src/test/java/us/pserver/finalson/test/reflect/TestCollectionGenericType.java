@@ -19,17 +19,38 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.internal;
+package us.pserver.finalson.test.reflect;
 
-import com.google.gson.JsonElement;
+import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/12/2017
+ * @version 0.0 - 11/12/2017
  */
-public interface ToJson {
+public class TestCollectionGenericType {
 
-  public JsonElement toJsonElement(Object obj);
+  private final List<Integer> list = new ArrayList<>();
+  
+  @Test
+  public void getGenericListType() {
+    list.add(1);
+    list.add(2);
+    list.add(3);
+    list.add(4);
+    System.out.println(list.getClass().getGenericSuperclass());
+    System.out.println(Arrays.toString(list.getClass().getGenericInterfaces()));
+    TypeVariable[] tv = list.getClass().getTypeParameters();
+    System.out.println(Arrays.toString(tv));
+    for(int i = 0; i < tv.length; i++) {
+      System.out.println(tv[i].getGenericDeclaration());
+      System.out.println(Arrays.toString(tv[i].getBounds()));
+    }
+    list.clear();
+  }
   
 }

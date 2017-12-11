@@ -19,29 +19,22 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson;
-
-import com.google.gson.JsonElement;
-import us.pserver.finalson.json.ToJson;
-import us.pserver.finalson.tools.NotNull;
+package us.pserver.test.internal;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 09/12/2017
+ * @version 0.0 - 11/12/2017
  */
-public class Finalson implements ToJson {
+public class TestClassForName {
 
-  private final FinalsonConfig conf;
   
-  public Finalson(FinalsonConfig cfg) {
-    this.conf = NotNull.of(cfg).getOrFail("Bad null FinalsonConfig");
+  
+  public static void main(String[] args) throws ClassNotFoundException {
+    String name = "[I";
+    System.out.println("name='"+ name+ "'");
+    System.out.println("class='"+ Class.forName(name)+ "'");
   }
   
-  
-  @Override
-  public JsonElement toJson(Object obj) {
-    
-  }
   
 }

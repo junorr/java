@@ -23,10 +23,11 @@ package us.pserver.finalson.test.reflect;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.finalson.internal.NativeArray;
+import us.pserver.finalson.json.ArrayType;
 
 /**
  *
@@ -44,11 +45,14 @@ public class TestArray {
   
   @Test
   public void primitiveArray() {
-    Object[] array = Arrays.asList(1,2,3,4,5).toArray();
-    JsonElement elt = new NativeArray().toJsonElement(array);
+    int[] array = {1,2,3,4,5};
+    ArrayType atp = new ArrayType(this.getClass().getClassLoader());
+    JsonElement elt = atp.toJson(array);
     System.out.println(elt);
-    Assertions.assertTrue(JsonArray.class.isAssignableFrom(elt.getClass()));
-    Assertions.assertEquals(5, ((JsonArray)elt).size());
+    Assertions.assertTrue(JsonObject.class.isAssignableFrom(elt.getClass()));
+    Assertions.assertEquals(5, ((JsonObject)elt).getAsJsonArray("array").size());
+    Object o = atp.fromJson(elt);
+    System.out.println(o);
   }
   
 }
