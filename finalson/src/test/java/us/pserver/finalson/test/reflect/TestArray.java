@@ -26,7 +26,7 @@ import com.google.gson.JsonElement;
 import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.finalson.internal.PrimitiveArray;
+import us.pserver.finalson.internal.NativeArray;
 
 /**
  *
@@ -45,7 +45,7 @@ public class TestArray {
   @Test
   public void primitiveArray() {
     Object[] array = Arrays.asList(1,2,3,4,5).toArray();
-    JsonElement elt = new PrimitiveArray().toJsonElement(array);
+    JsonElement elt = new NativeArray().toJsonElement(array);
     System.out.println(elt);
     Assertions.assertTrue(JsonArray.class.isAssignableFrom(elt.getClass()));
     Assertions.assertEquals(5, ((JsonArray)elt).size());

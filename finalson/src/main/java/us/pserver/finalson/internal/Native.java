@@ -26,7 +26,7 @@ package us.pserver.finalson.internal;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 10/12/2017
  */
-public interface Primitive extends ToJson {
+public interface Native extends ToJson {
 
   public boolean is(Class cls);
   

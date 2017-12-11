@@ -30,11 +30,11 @@ import java.lang.reflect.Array;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 10/12/2017
  */
-public class PrimitiveArray implements Primitive {
+public class NativeArray implements Native {
   
   @Override
   public boolean is(Class cls) {
-    return cls.isArray() && JavaPrimitive.isJavaPrimitive(cls.getComponentType());
+    return cls.isArray() && JavaNative.isJavaPrimitive(cls.getComponentType());
   }
   
   @Override
@@ -45,7 +45,7 @@ public class PrimitiveArray implements Primitive {
     JsonArray array = new JsonArray();
     int len = Array.getLength(obj);
     for(int i = 0; i < len; i++) {
-      array.add(JavaPrimitive.primitiveToJson(Array.get(obj, i)));
+      array.add(JavaNative.primitiveToJson(Array.get(obj, i)));
     }
     return array;
   }

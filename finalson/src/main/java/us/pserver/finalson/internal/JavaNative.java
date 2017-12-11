@@ -36,7 +36,7 @@ import us.pserver.finalson.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 09/12/2017
  */
-public enum JavaPrimitive implements Primitive {
+public enum JavaNative implements Native {
 
   STRING(CharSequence.class::isAssignableFrom, o->new JsonPrimitive(o.toString())),
   
@@ -63,7 +63,7 @@ public enum JavaPrimitive implements Primitive {
   BIG_INTEGER(BigInteger.class::isAssignableFrom, o->new JsonPrimitive((Number)o));
   
   
-  private JavaPrimitive(Predicate<Class> prd, Function<Object,JsonElement> jfun) {
+  private JavaNative(Predicate<Class> prd, Function<Object,JsonElement> jfun) {
     this.is = prd;
     this.fun = jfun;
   }
@@ -89,9 +89,9 @@ public enum JavaPrimitive implements Primitive {
     return Arrays.asList(values()).stream().anyMatch(p->p.is(cls));
   }
   
-  public static JavaPrimitive of(Class cls) {
+  public static JavaNative of(Class cls) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    Optional<JavaPrimitive> opt = Arrays.asList(values()).stream().filter(p->p.is(cls)).findAny();
+    Optional<JavaNative> opt = Arrays.asList(values()).stream().filter(p->p.is(cls)).findAny();
     if(!opt.isPresent()) {
       throw new IllegalArgumentException(String.format("Class (%s) is not a Java primitive", cls.getName()));
     }
@@ -100,7 +100,7 @@ public enum JavaPrimitive implements Primitive {
   
   
   public static JsonElement primitiveToJson(Object obj) {
-    Optional<JavaPrimitive> opt = Arrays.asList(values()).stream()
+    Optional<JavaNative> opt = Arrays.asList(values()).stream()
         .filter(p->p.is(obj.getClass())).findAny();
     if(!opt.isPresent()) {
       throw new IllegalArgumentException(obj + " not a java primitive");
