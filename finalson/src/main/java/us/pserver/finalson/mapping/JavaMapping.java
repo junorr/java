@@ -19,33 +19,17 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.json;
+package us.pserver.finalson.mapping;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/12/2017
+ * @version 0.0 - 12/12/2017
  */
-public class PathType implements JsonType<Path> {
+public interface JavaMapping<T> extends AcceptableType {
 
-  @Override
-  public boolean is(Class cls) {
-    return Path.class.isAssignableFrom(cls);
-  }
+  public T fromJson(JsonElement elt);
   
-  @Override
-  public JsonElement toJson(Path obj) {
-    return new JsonPrimitive(obj.toAbsolutePath().toString());
-  }
-  
-  @Override
-  public Path fromJson(JsonElement elt) {
-    return Paths.get(elt.getAsString());
-  }
-
 }

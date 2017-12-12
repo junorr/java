@@ -19,40 +19,33 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.test.reflect;
+package us.pserver.test.mapping;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import java.util.Arrays;
+import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.finalson.mapping.ArrayMapping;
+import us.pserver.finalson.mapping.ZonedDateTimeMapping;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/12/2017
+ * @version 0.0 - 12/12/2017
  */
-public class TestArray {
+public class TestZonedDateTimeMapping {
 
-  @Test
-  public void isPrimitiveArray() {
-    Class c = int[].class;
-    Assertions.assertTrue(c.isArray());
-    Assertions.assertTrue(c.getComponentType().isPrimitive());
-  }
+  private final ZonedDateTime now = ZonedDateTime.now();
+  
   
   @Test
-  public void primitiveArray() {
-    int[] array = {1,2,3,4,5};
-    ArrayMapping atp = new ArrayMapping(this.getClass().getClassLoader());
-    JsonElement elt = atp.toJson(array);
+  public void testAllMethods() {
+    ZonedDateTimeMapping mp = new ZonedDateTimeMapping();
+    System.out.println(now);
+    JsonElement elt = mp.toJson(now);
     System.out.println(elt);
-    Assertions.assertTrue(JsonObject.class.isAssignableFrom(elt.getClass()));
-    Assertions.assertEquals(5, ((JsonObject)elt).getAsJsonArray("array").size());
-    Object o = atp.fromJson(elt);
-    System.out.println(o);
+    ZonedDateTime zdt = mp.fromJson(elt);
+    System.out.println(zdt);
+    Assertions.assertEquals(now, zdt);
   }
   
 }

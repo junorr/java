@@ -59,12 +59,12 @@ public interface DateTime {
   
   
   public static DateTime of(Date date) {
-    return new ImplDateTime(date);
+    return new DateTimeImpl(date);
   }
   
   
   public static DateTime of(long time) {
-    return new ImplDateTime(time);
+    return new DateTimeImpl(time);
   }
 	
 	
@@ -91,72 +91,72 @@ public interface DateTime {
   
   
   public static DateTime of(LocalDateTime ldt) {
-    return new ImplDateTime(ldt);
+    return new DateTimeImpl(ldt);
   }
   
   
   public static DateTime of(ZonedDateTime zdt) {
-    return new ImplDateTime(zdt);
+    return new DateTimeImpl(zdt);
   }
   
   
   public static DateTime of(Instant ist) {
-    return new ImplDateTime(ist);
+    return new DateTimeImpl(ist);
   }
   
   
   public static DateTime of(DateTime dtm) {
-    return new ImplDateTime(dtm);
+    return new DateTimeImpl(dtm);
   } 
   
   
   public static DateTime now() {
-    return new ImplDateTime(ZonedDateTime.now());
+    return new DateTimeImpl(ZonedDateTime.now());
   }
   
   
   
   
-  static class ImplDateTime implements DateTime {
+  static class DateTimeImpl implements DateTime {
     
     private Date date;
     
     
-    ImplDateTime() {
+    DateTimeImpl() {
       date = new Date();
     }
     
     
-    ImplDateTime(Date date) {
+    DateTimeImpl(Date date) {
       this.date = new Date(NotNull.of(date).getOrFail().getTime());
     }
     
     
-    ImplDateTime(ZonedDateTime zd) {
+    DateTimeImpl(ZonedDateTime zd) {
       this.date = Date.from(NotNull.of(zd).getOrFail()
           .toInstant()
       );
     }
     
     
-    ImplDateTime(LocalDateTime ld) {
+    DateTimeImpl(LocalDateTime ld) {
       this.date = Date.from(NotNull.of(ld).getOrFail()
           .atZone(ZoneId.systemDefault()).toInstant()
       );
     }
     
     
-    ImplDateTime(long millis) {
+    DateTimeImpl(long millis) {
       date = new Date(millis);
     }
     
     
-    ImplDateTime(Instant it) {
+    DateTimeImpl(Instant it) {
       this.date = Date.from(NotNull.of(it).getOrFail());
     }
     
     
-    ImplDateTime(DateTime dt) {
+    DateTimeImpl(DateTime dt) {
       this.date = new Date(NotNull.of(dt).getOrFail().toDate().getTime());
     }
     
@@ -168,14 +168,14 @@ public interface DateTime {
     
     
     @Override
-    public ImplDateTime plus(long amount, TemporalUnit tu) {
-      return new ImplDateTime(this.toZonedDT().plus(amount, tu));
+    public DateTimeImpl plus(long amount, TemporalUnit tu) {
+      return new DateTimeImpl(this.toZonedDT().plus(amount, tu));
     }
 
 
     @Override
-    public ImplDateTime minus(long amount, TemporalUnit tu) {
-      return new ImplDateTime(this.toZonedDT().minus(amount, tu));
+    public DateTimeImpl minus(long amount, TemporalUnit tu) {
+      return new DateTimeImpl(this.toZonedDT().minus(amount, tu));
     }
 
 
@@ -213,10 +213,10 @@ public interface DateTime {
   
   public static void main(String[] args) {
     DateTime now = DateTime.now();
-    ImplDateTime dt = new ImplDateTime(new Date());
-    ImplDateTime dtlo = new ImplDateTime(System.currentTimeMillis());
-    ImplDateTime dtzd = new ImplDateTime(ZonedDateTime.now());
-    ImplDateTime dtld = new ImplDateTime(LocalDateTime.now());
+    DateTimeImpl dt = new DateTimeImpl(new Date());
+    DateTimeImpl dtlo = new DateTimeImpl(System.currentTimeMillis());
+    DateTimeImpl dtzd = new DateTimeImpl(ZonedDateTime.now());
+    DateTimeImpl dtld = new DateTimeImpl(LocalDateTime.now());
     System.out.println("now().....: "+ now);
     System.out.println("fromDate(): "+ dt);
     System.out.println("fromLong(): "+ dtlo);

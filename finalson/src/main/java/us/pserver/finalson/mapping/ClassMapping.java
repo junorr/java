@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.json;
+package us.pserver.finalson.mapping;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
@@ -29,12 +29,12 @@ import com.google.gson.JsonPrimitive;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2017
  */
-public class ClassType implements JsonType<Class> {
+public class ClassMapping implements TypeMapping<Class> {
   
   private final ClassLoader loader;
   
-  public ClassType(ClassLoader ldr) {
-    this.loader = (ldr != null ? ldr : ClassType.class.getClassLoader());
+  public ClassMapping(ClassLoader ldr) {
+    this.loader = (ldr != null ? ldr : ClassMapping.class.getClassLoader());
   }
   
   @Override
@@ -91,7 +91,7 @@ public class ClassType implements JsonType<Class> {
   }
   
   @Override
-  public boolean is(Class cls) {
+  public boolean accept(Class cls) {
     return Class.class == cls;
   }
   

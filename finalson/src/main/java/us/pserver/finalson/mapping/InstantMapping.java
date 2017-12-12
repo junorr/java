@@ -19,40 +19,32 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.test.reflect;
+package us.pserver.finalson.mapping;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import java.util.Arrays;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import us.pserver.finalson.mapping.ArrayMapping;
+import com.google.gson.JsonPrimitive;
+import java.time.Instant;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/12/2017
+ * @version 0.0 - 12/12/2017
  */
-public class TestArray {
-
-  @Test
-  public void isPrimitiveArray() {
-    Class c = int[].class;
-    Assertions.assertTrue(c.isArray());
-    Assertions.assertTrue(c.getComponentType().isPrimitive());
+public class InstantMapping implements TypeMapping<Instant> {
+  
+  @Override
+  public JsonElement toJson(Instant obj) {
+    return new JsonPrimitive(obj.toString());
   }
   
-  @Test
-  public void primitiveArray() {
-    int[] array = {1,2,3,4,5};
-    ArrayMapping atp = new ArrayMapping(this.getClass().getClassLoader());
-    JsonElement elt = atp.toJson(array);
-    System.out.println(elt);
-    Assertions.assertTrue(JsonObject.class.isAssignableFrom(elt.getClass()));
-    Assertions.assertEquals(5, ((JsonObject)elt).getAsJsonArray("array").size());
-    Object o = atp.fromJson(elt);
-    System.out.println(o);
+  @Override
+  public boolean accept(Class type) {
+    return Instant.class.isAssignableFrom(type);
+  }
+  
+  @Override
+  public Instant fromJson(JsonElement elt) {
+    return Instant.parse(elt.getAsString());
   }
   
 }

@@ -19,40 +19,32 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.test.reflect;
+package us.pserver.finalson.mapping;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import java.util.Arrays;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import us.pserver.finalson.mapping.ArrayMapping;
+import com.google.gson.JsonPrimitive;
+import java.awt.Color;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/12/2017
+ * @version 0.0 - 11/12/2017
  */
-public class TestArray {
+public class ColorMapping implements TypeMapping<Color> {
 
-  @Test
-  public void isPrimitiveArray() {
-    Class c = int[].class;
-    Assertions.assertTrue(c.isArray());
-    Assertions.assertTrue(c.getComponentType().isPrimitive());
+  @Override
+  public boolean accept(Class cls) {
+    return Color.class.isAssignableFrom(cls);
   }
   
-  @Test
-  public void primitiveArray() {
-    int[] array = {1,2,3,4,5};
-    ArrayMapping atp = new ArrayMapping(this.getClass().getClassLoader());
-    JsonElement elt = atp.toJson(array);
-    System.out.println(elt);
-    Assertions.assertTrue(JsonObject.class.isAssignableFrom(elt.getClass()));
-    Assertions.assertEquals(5, ((JsonObject)elt).getAsJsonArray("array").size());
-    Object o = atp.fromJson(elt);
-    System.out.println(o);
+  @Override
+  public JsonElement toJson(Color obj) {
+    return new JsonPrimitive(obj.getRGB());
   }
   
+  @Override
+  public Color fromJson(JsonElement elt) {
+    return new Color(elt.getAsInt(), true);
+  }
+
 }

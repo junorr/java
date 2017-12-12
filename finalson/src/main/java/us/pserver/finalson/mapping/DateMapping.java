@@ -19,32 +19,41 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.json;
+package us.pserver.finalson.mapping;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import java.awt.Color;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2017
  */
-public class ColorType implements JsonType<Color> {
+public class DateMapping implements TypeMapping<Date> {
 
+  public static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+  
   @Override
-  public boolean is(Class cls) {
-    return Color.class.isAssignableFrom(cls);
+  public JsonElement toJson(Date obj) {
+    return new JsonPrimitive(DEFAULT_DATE_FORMAT.format(obj));
   }
   
   @Override
-  public JsonElement toJson(Color obj) {
-    return new JsonPrimitive(obj.getRGB());
+  public Date fromJson(JsonElement elt) {
+    try {
+      return DEFAULT_DATE_FORMAT.parse(elt.getAsString());
+    } catch (ParseException ex) {
+      throw new RuntimeException(ex.toString(), ex);
+    }
   }
   
   @Override
-  public Color fromJson(JsonElement elt) {
-    return new Color(elt.getAsInt(), true);
+  public boolean accept(Class cls) {
+    return Date.class.isAssignableFrom(cls);
   }
-
+  
 }

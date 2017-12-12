@@ -19,40 +19,15 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.test.reflect;
+package us.pserver.finalson.strategy;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import java.util.Arrays;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import us.pserver.finalson.mapping.ArrayMapping;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/12/2017
+ * @version 0.0 - 12/12/2017
  */
-public class TestArray {
-
-  @Test
-  public void isPrimitiveArray() {
-    Class c = int[].class;
-    Assertions.assertTrue(c.isArray());
-    Assertions.assertTrue(c.getComponentType().isPrimitive());
-  }
-  
-  @Test
-  public void primitiveArray() {
-    int[] array = {1,2,3,4,5};
-    ArrayMapping atp = new ArrayMapping(this.getClass().getClassLoader());
-    JsonElement elt = atp.toJson(array);
-    System.out.println(elt);
-    Assertions.assertTrue(JsonObject.class.isAssignableFrom(elt.getClass()));
-    Assertions.assertEquals(5, ((JsonObject)elt).getAsJsonArray("array").size());
-    Object o = atp.fromJson(elt);
-    System.out.println(o);
-  }
-  
-}
+public interface JsonMappingStrategy extends Function<Object,List<Method>> {}

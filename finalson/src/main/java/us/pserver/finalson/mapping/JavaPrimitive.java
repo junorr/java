@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.json;
+package us.pserver.finalson.mapping;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
@@ -36,7 +36,7 @@ import us.pserver.finalson.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 09/12/2017
  */
-public enum JavaType implements JsonType {
+public enum JavaPrimitive implements TypeMapping {
 
   STRING(CharSequence.class::isAssignableFrom, o->new JsonPrimitive(o.toString()), JsonElement::getAsString),
   
@@ -63,7 +63,7 @@ public enum JavaType implements JsonType {
   BIG_INTEGER(BigInteger.class::isAssignableFrom, o->new JsonPrimitive((Number)o), JsonElement::getAsBigInteger);
   
   
-  private JavaType(Predicate<Class> prd, Function<Object,JsonElement> to, Function<JsonElement,Object> from) {
+  private JavaPrimitive(Predicate<Class> prd, Function<Object,JsonElement> to, Function<JsonElement,Object> from) {
     this.is = prd;
     this.to = to;
     this.from = from;
@@ -76,13 +76,13 @@ public enum JavaType implements JsonType {
   private final Function<JsonElement,Object> from;
   
   @Override
-  public boolean is(Class cls) {
+  public boolean accept(Class cls) {
     return is.test(cls);
   }
   
   @Override
   public JsonElement toJson(Object obj) {
-    if(!this.is(obj.getClass())) {
+    if(!this.accept(obj.getClass())) {
       throw new IllegalArgumentException("Not a "+ this.name());
     }
     return to.apply(obj);
@@ -94,12 +94,12 @@ public enum JavaType implements JsonType {
   }
   
   public static boolean isJavaPrimitive(Class cls) {
-    return Arrays.asList(values()).stream().anyMatch(p->p.is(cls));
+    return Arrays.asList(values()).stream().anyMatch(p->p.accept(cls));
   }
   
-  public static JavaType of(Class cls) {
+  public static JavaPrimitive of(Class cls) {
     NotNull.of(cls).failIfNull("Bad null Class");
-    Optional<JavaType> opt = Arrays.asList(values()).stream().filter(p->p.is(cls)).findAny();
+    Optional<JavaPrimitive> opt = Arrays.asList(values()).stream().filter(p->p.accept(cls)).findAny();
     if(!opt.isPresent()) {
       throw new IllegalArgumentException(String.format("Class (%s) is not a Java primitive", cls.getName()));
     }
@@ -108,8 +108,8 @@ public enum JavaType implements JsonType {
   
   
   public static JsonElement javaToJson(Object obj) {
-    Optional<JavaType> opt = Arrays.asList(values()).stream()
-        .filter(p->p.is(obj.getClass())).findAny();
+    Optional<JavaPrimitive> opt = Arrays.asList(values()).stream()
+        .filter(p->p.accept(obj.getClass())).findAny();
     if(!opt.isPresent()) {
       throw new IllegalArgumentException(obj + " not a java primitive");
     }

@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.json;
+package us.pserver.finalson.mapping;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -31,26 +31,26 @@ import java.lang.reflect.Array;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 10/12/2017
  */
-public class ArrayType implements JsonType {
+public class ArrayMapping implements TypeMapping {
   
   public static final String PROP_TYPE = "type";
   
   public static final String PROP_ARRAY = "array";
   
-  private final ClassType classtp;
+  private final ClassMapping classtp;
   
-  public ArrayType(ClassLoader ldr) {
-    this.classtp = new ClassType(ldr);
+  public ArrayMapping(ClassLoader ldr) {
+    this.classtp = new ClassMapping(ldr);
   }
   
   @Override
-  public boolean is(Class cls) {
-    return cls.isArray() && JavaType.isJavaPrimitive(cls.getComponentType());
+  public boolean accept(Class cls) {
+    return cls.isArray() && JavaPrimitive.isJavaPrimitive(cls.getComponentType());
   }
   
   @Override
   public JsonElement toJson(Object obj) {
-    if(!is(obj.getClass())) {
+    if(!accept(obj.getClass())) {
       throw new IllegalArgumentException("Not a primitive array");
     }
     JsonObject job = new JsonObject();
@@ -58,7 +58,7 @@ public class ArrayType implements JsonType {
     JsonArray array = new JsonArray();
     int len = Array.getLength(obj);
     for(int i = 0; i < len; i++) {
-      array.add(JavaType.javaToJson(Array.get(obj, i)));
+      array.add(JavaPrimitive.javaToJson(Array.get(obj, i)));
     }
     job.add(PROP_ARRAY, array);
     return job;
@@ -74,7 +74,7 @@ public class ArrayType implements JsonType {
     Class cls = classtp.fromJson(job.get(PROP_TYPE));
     JsonArray jarray = job.getAsJsonArray(PROP_ARRAY);
     Object array = Array.newInstance(cls.getComponentType(), jarray.size());
-    JavaType jtype = JavaType.of(cls.getComponentType());
+    JavaPrimitive jtype = JavaPrimitive.of(cls.getComponentType());
     for(int i = 0; i < jarray.size(); i++) {
       Array.set(array, i, jtype.fromJson(jarray.get(i)));
     }

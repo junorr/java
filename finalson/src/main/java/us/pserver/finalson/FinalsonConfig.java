@@ -26,12 +26,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
-import us.pserver.finalson.json.ClassType;
-import us.pserver.finalson.json.ColorType;
-import us.pserver.finalson.json.DateType;
-import us.pserver.finalson.json.JavaType;
-import us.pserver.finalson.json.JsonType;
-import us.pserver.finalson.json.PathType;
+import us.pserver.finalson.mapping.ClassMapping;
+import us.pserver.finalson.mapping.ColorMapping;
+import us.pserver.finalson.mapping.DateMapping;
+import us.pserver.finalson.mapping.InstantMapping;
+import us.pserver.finalson.mapping.JavaPrimitive;
+import us.pserver.finalson.mapping.LocalDateTimeMapping;
+import us.pserver.finalson.mapping.PathMapping;
+import us.pserver.finalson.mapping.TypeMapping;
+import us.pserver.finalson.mapping.ZonedDateTimeMapping;
 import us.pserver.finalson.tools.NotNull;
 
 /**
@@ -49,20 +52,23 @@ public class FinalsonConfig {
   
   private final ClassLoader loader;
   
-  private final List<JsonType> types;
+  private final List<TypeMapping> types;
   
   
   public FinalsonConfig() {
     this(new Gson(), FinalsonConfig.class.getClassLoader(), true, false, new CopyOnWriteArrayList<>());
-    types.addAll(Arrays.asList(JavaType.values()));
-    types.add(new ClassType(loader));
-    types.add(new DateType());
-    types.add(new PathType());
-    types.add(new ColorType());
+    types.addAll(Arrays.asList(JavaPrimitive.values()));
+    types.add(new ClassMapping(loader));
+    types.add(new DateMapping());
+    types.add(new PathMapping());
+    types.add(new ColorMapping());
+    types.add(new InstantMapping());
+    types.add(new LocalDateTimeMapping());
+    types.add(new ZonedDateTimeMapping());
   }
   
   
-  public FinalsonConfig(Gson gson, ClassLoader ldr, boolean useGetters, boolean useMethodAnnotation, List<JsonType> types) {
+  public FinalsonConfig(Gson gson, ClassLoader ldr, boolean useGetters, boolean useMethodAnnotation, List<TypeMapping> types) {
     this.gson = gson;
     this.useGetters = useGetters;
     this.useMethodAnnotation = useMethodAnnotation;
@@ -94,21 +100,26 @@ public class FinalsonConfig {
   }
   
   
-  public <T> FinalsonConfig appendJsonType(JsonType<T> type) {
-    if(type != null) {
-      types.add(type);
+  public <T> FinalsonConfig appendTypeMapping(Class type, TypeMapping<T> mapping) {
+    if(type != null && mapping != null) {
+      Optional<TypeMapping> opt = getTypeMappingFor(type);
+      if(opt.isPresent()) types.remove(opt.get());
+      types.add(mapping);
     }
     return this;
   }
   
   
-  public boolean hasJsonType(Class cls) {
-    return types.stream().anyMatch(t->t.is(cls));
+  public boolean hasTypeMappingFor(Class cls) {
+    return types.stream().anyMatch(t->t.accept(cls));
   }
   
   
-  public Optional<JsonType> getJsonType(Class cls) {
-    return types.stream().filter(t->t.is(cls)).findAny();
+  public <T> Optional<TypeMapping<T>> getTypeMappingFor(Class<T> cls) {
+    return types.stream()
+        .filter(t->t.accept(cls))
+        .map(t->(TypeMapping<T>)t)
+        .findAny();
   }
   
   

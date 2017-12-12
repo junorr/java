@@ -19,41 +19,33 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.json;
+package us.pserver.finalson.mapping;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2017
  */
-public class DateType implements JsonType<Date> {
-
-  public static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+public class PathMapping implements TypeMapping<Path> {
   
   @Override
-  public JsonElement toJson(Date obj) {
-    return new JsonPrimitive(DEFAULT_DATE_FORMAT.format(obj));
+  public boolean accept(Class cls) {
+    return Path.class.isAssignableFrom(cls);
   }
   
   @Override
-  public Date fromJson(JsonElement elt) {
-    try {
-      return DEFAULT_DATE_FORMAT.parse(elt.getAsString());
-    } catch (ParseException ex) {
-      throw new RuntimeException(ex.toString(), ex);
-    }
+  public JsonElement toJson(Path obj) {
+    return new JsonPrimitive(obj.toAbsolutePath().toString());
   }
   
   @Override
-  public boolean is(Class cls) {
-    return Date.class.isAssignableFrom(cls);
+  public Path fromJson(JsonElement elt) {
+    return Paths.get(elt.getAsString());
   }
   
 }

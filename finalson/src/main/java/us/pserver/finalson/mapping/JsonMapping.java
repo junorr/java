@@ -19,21 +19,17 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.json;
+package us.pserver.finalson.mapping;
 
 import com.google.gson.JsonElement;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/12/2017
+ * @version 0.0 - 12/12/2017
  */
-public interface JsonType<T> {
+public interface JsonMapping<T> extends AcceptableType {
 
-  public boolean is(Class cls);
-  
   public JsonElement toJson(T obj);
-  
-  public T fromJson(JsonElement elt);
   
 }
