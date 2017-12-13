@@ -21,13 +21,15 @@
 
 package us.pserver.finalson.strategy;
 
-import java.lang.reflect.Method;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+import us.pserver.finalson.mapping.AcceptableType;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2017
  */
-public interface JsonMappingStrategy extends Function<Object,List<Method>> {}
+public interface MappingStrategy<T> extends AcceptableType, 
+    BiFunction< T, Predicate<MethodHandleInfo>, List<MethodHandleInfo> > {}

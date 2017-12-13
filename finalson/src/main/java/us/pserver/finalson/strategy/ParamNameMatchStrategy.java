@@ -21,14 +21,34 @@
 
 package us.pserver.finalson.strategy;
 
-import com.google.gson.JsonElement;
-import java.lang.reflect.Constructor;
-import java.util.function.Function;
-import us.pserver.finalson.mapping.AcceptableType;
+import java.lang.reflect.Parameter;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+import us.pserver.finalson.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2017
  */
-public interface JavaMappingStrategy extends Function<JsonElement,Constructor>, AcceptableType {}
+public class ParamNameMatchStrategy implements Predicate<MethodHandleInfo> {
+
+  private final List<String> names;
+  
+  public ParamNameMatchStrategy(List<String> names) {
+    this.names = NotNull.of(names).getOrFail("Bad null names List");
+  }
+  
+  @Override
+  public boolean test(MethodHandleInfo mhi) {
+    Stream<String> snames = (names.size() > 2 
+        ? names.parallelStream() : names.stream())
+        .sorted();
+    Stream<String> spars = (mhi.getParameters().size() > 2 
+        ? mhi.getParameters().parallelStream() : mhi.getParameters().stream())
+        .map(Parameter::getName).sorted();
+    return spars.allMatch(p->snames.anyMatch(n->p.equals(n)));
+  }
+  
+}

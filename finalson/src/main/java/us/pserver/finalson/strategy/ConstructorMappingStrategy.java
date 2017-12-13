@@ -23,10 +23,10 @@ package us.pserver.finalson.strategy;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
+import java.util.List;
+import java.util.function.Predicate;
 import us.pserver.finalson.FinalsonConfig;
 import us.pserver.finalson.mapping.TypeMapping;
 import static us.pserver.finalson.tools.JsonObjectProperties.PROP_CLASS;
@@ -37,36 +37,34 @@ import us.pserver.finalson.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2017
  */
-public class DefaultJavaMappingStrategy implements JavaMappingStrategy {
+public class ConstructorMappingStrategy implements MappingStrategy<JsonElement> {
   
   private final FinalsonConfig config;
   
-  public DefaultJavaMappingStrategy(FinalsonConfig conf) {
+  public ConstructorMappingStrategy(FinalsonConfig conf) {
     this.config = NotNull.of(conf).getOrFail("Bad null FinalsonConfig");
   }
 
   @Override
-  public Constructor apply(JsonElement elt) {
+  public List<MethodHandleInfo> apply(JsonElement elt, Predicate<MethodHandleInfo> accept) {
     TypeMapping<Class> cmap = config.getTypeMappingFor(Class.class).get();
     JsonObject job = elt.getAsJsonObject();
     if(!job.has(PROP_CLASS)) {
-      throw new IllegalArgumentException("Not a JsonObject type");
+      throw new IllegalArgumentException("Not a JsonObject");
     }
     Class type = cmap.fromJson(job.get(PROP_CLASS));
-    Set<String> names = job.keySet();
-  }
-  
-  
-  public Optional<Constructor> matchConstructor(Class cls, Set<String> props) {
-    try {
-      Constructor[] cts = cls.getConstructors();
-      for(Constructor c : cts) {
-        
-      }
-    }
-    catch(SecurityException e) {
-      throw new RuntimeException(e.toString(), e);
-    }
+    List<MethodHandleInfo> handles = new ArrayList<>();
+    Arrays.asList(type.getConstructors()).stream()
+        .map(MethodHandleInfo::of)
+        .filter(accept)
+        .forEach(handles::add);
+    return handles;
   }
 
+
+  @Override
+  public boolean accept(Class type) {
+    return Object.class.isAssignableFrom(type);
+  }
+  
 }
