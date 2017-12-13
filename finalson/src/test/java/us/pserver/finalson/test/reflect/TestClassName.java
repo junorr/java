@@ -68,7 +68,7 @@ public class TestClassName {
     String name = intArrayClass.getName();
     System.out.println("* intArrayClass='"+ name+ "'");
     System.out.println(Class.forName(name));
-    System.out.println(this.getClass().getClassLoader().loadClass(name));
+    //System.out.println(this.getClass().getClassLoader().loadClass(name));
   }
   
 }

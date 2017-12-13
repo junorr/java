@@ -19,17 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.strategy;
+package us.pserver.finalson.strategy.condition;
 
+import java.lang.reflect.Parameter;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
-import us.pserver.finalson.mapping.AcceptableType;
+import java.util.stream.Stream;
+import us.pserver.finalson.strategy.MethodHandleInfo;
+import us.pserver.finalson.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2017
  */
-public interface MappingStrategy<T> extends AcceptableType, 
-    BiFunction< T, Predicate<MethodHandleInfo>, List<MethodHandleInfo> > {}
+public class ParamNameCondition implements Predicate<MethodHandleInfo> {
+
+  private final List<String> names;
+  
+  public ParamNameCondition(List<String> names) {
+    this.names = NotNull.of(names).getOrFail("Bad null names List");
+  }
+  
+  @Override
+  public boolean test(MethodHandleInfo mhi) {
+    Stream<String> snames = (names.size() > 2 
+        ? names.parallelStream() : names.stream())
+        .sorted();
+    Stream<String> spars = (mhi.getParameters().size() > 2 
+        ? mhi.getParameters().parallelStream() : mhi.getParameters().stream())
+        .map(Parameter::getName).sorted();
+    return spars.allMatch(p->snames.anyMatch(n->p.equals(n)));
+  }
+  
+}

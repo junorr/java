@@ -21,32 +21,13 @@
 
 package us.pserver.finalson.strategy;
 
-import java.lang.reflect.Parameter;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-import us.pserver.finalson.mapping.AcceptableType;
-import us.pserver.finalson.tools.NotNull;
+import java.util.function.Function;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/12/2017
+ * @version 0.0 - 13/12/2017
  */
-public class ParamTypeCondition implements Predicate<MethodHandleInfo> {
-
-  private final List<AcceptableType> types;
-  
-  public ParamTypeCondition(List<AcceptableType> types) {
-    this.types = NotNull.of(types).getOrFail("Bad null names List");
-  }
-  
-  @Override
-  public boolean test(MethodHandleInfo mhi) {
-    Stream<Class<?>> spars = (mhi.getParameters().size() > 2 
-        ? mhi.getParameters().parallelStream() : mhi.getParameters().stream())
-        .map(Parameter::getType).sorted();
-    return spars.allMatch(p->types.stream().anyMatch(a->a.accept(p)));
-  }
-  
-}
+public interface MethodHandleStrategy<T> 
+    extends Function< T, List<MethodHandleInfo> > {}

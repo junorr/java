@@ -19,46 +19,21 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.strategy;
+package us.pserver.finalson.strategy.condition;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Predicate;
-import us.pserver.finalson.tools.NotNull;
+import us.pserver.finalson.strategy.MethodHandleInfo;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/12/2017
  */
-public class CombinedFallbackCondition implements Predicate<MethodHandleInfo> {
-  
-  private final List<Predicate<MethodHandleInfo>> conditions;
-  
-  public CombinedFallbackCondition(Predicate<MethodHandleInfo> ... conds) {
-    this.conditions = Arrays.asList(NotNull.of(conds).getOrFail("Bad null conditions List"));
-  }
-  
+public class GetterMethodCondition implements Predicate<MethodHandleInfo> {
+
   @Override
   public boolean test(MethodHandleInfo t) {
-    if(!matchAnd(t)) return matchOr(t);
-    return true;
+    return t.getName().startsWith("get");
   }
-  
-  public boolean matchAnd(MethodHandleInfo t) {
-    Predicate<MethodHandleInfo> cnd = conditions.get(0);
-    for(int i = 1; i < conditions.size(); i++) {
-      cnd = cnd.and(conditions.get(i));
-    }
-    return cnd.test(t);
-  }
-  
-  public boolean matchOr(MethodHandleInfo t) {
-    Predicate<MethodHandleInfo> cnd = conditions.get(0);
-    for(int i = 1; i < conditions.size(); i++) {
-      cnd = cnd.or(conditions.get(i));
-    }
-    return cnd.test(t);
-  }
-  
+
 }

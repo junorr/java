@@ -19,12 +19,14 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.strategy;
+package us.pserver.finalson.strategy.condition;
 
 import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import us.pserver.finalson.mapping.AcceptableType;
+import us.pserver.finalson.strategy.MethodHandleInfo;
 import us.pserver.finalson.tools.NotNull;
 
 /**
@@ -32,23 +34,20 @@ import us.pserver.finalson.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2017
  */
-public class ParamNameCondition implements Predicate<MethodHandleInfo> {
+public class ParamTypeCondition implements Predicate<MethodHandleInfo> {
 
-  private final List<String> names;
+  private final List<AcceptableType> types;
   
-  public ParamNameCondition(List<String> names) {
-    this.names = NotNull.of(names).getOrFail("Bad null names List");
+  public ParamTypeCondition(List<AcceptableType> types) {
+    this.types = NotNull.of(types).getOrFail("Bad null names List");
   }
   
   @Override
   public boolean test(MethodHandleInfo mhi) {
-    Stream<String> snames = (names.size() > 2 
-        ? names.parallelStream() : names.stream())
-        .sorted();
-    Stream<String> spars = (mhi.getParameters().size() > 2 
+    Stream<Class<?>> pars = (mhi.getParameters().size() > 2 
         ? mhi.getParameters().parallelStream() : mhi.getParameters().stream())
-        .map(Parameter::getName).sorted();
-    return spars.allMatch(p->snames.anyMatch(n->p.equals(n)));
+        .map(Parameter::getType).sorted();
+    return pars.allMatch(p->types.stream().anyMatch(a->a.accept(p)));
   }
   
 }

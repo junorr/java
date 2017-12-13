@@ -57,6 +57,16 @@ public class MethodHandleInfo {
     this.params = NotNull.of(params).getOrFail("Bad null parameters List");
     this.annots = NotNull.of(annots).getOrFail("Bad null annotations List");
   }
+  
+  
+  public MethodHandleInfo bindTo(Object obj) {
+    return new MethodHandleInfo(handle.bindTo(obj), name, retype, params, annots);
+  }
+  
+  
+  public MethodHandleInfo withName(String name) {
+    return new MethodHandleInfo(handle, name, retype, params, annots);
+  }
 
   
   public MethodHandle getMethodHandle() {

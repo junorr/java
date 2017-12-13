@@ -19,22 +19,21 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson;
+package us.pserver.finalson.strategy.condition;
 
-import us.pserver.finalson.tools.NotNull;
+import java.util.function.Predicate;
+import us.pserver.finalson.strategy.MethodHandleInfo;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 09/12/2017
+ * @version 0.0 - 13/12/2017
  */
-public class Finalson {
+public class NoArgsMethodCondition implements Predicate<MethodHandleInfo> {
 
-  private final FinalsonConfig conf;
-  
-  public Finalson(FinalsonConfig cfg) {
-    this.conf = NotNull.of(cfg).getOrFail("Bad null FinalsonConfig");
+  @Override
+  public boolean test(MethodHandleInfo t) {
+    return t.getParameters().isEmpty();
   }
-  
-  
+
 }

@@ -26,6 +26,7 @@ import com.google.gson.JsonPrimitive;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -38,9 +39,9 @@ import us.pserver.finalson.tools.NotNull;
  */
 public enum JavaPrimitive implements TypeMapping {
 
-  STRING(CharSequence.class::isAssignableFrom, o->new JsonPrimitive(o.toString()), JsonElement::getAsString),
+  STRING(CharSequence.class::isAssignableFrom, o->new JsonPrimitive(Objects.toString(o)), JsonElement::getAsString),
   
-  NUMBER(Number.class::isAssignableFrom, o->new JsonPrimitive((Number)o), JsonElement::getAsDouble),
+  NUMBER(Number.class::isAssignableFrom, o->new JsonPrimitive((Number)o), e->e.getAsString().contains(".") ? e.getAsDouble() : e.getAsLong()),
   
   INT(c->int.class == c || Integer.class.isAssignableFrom(c), o->new JsonPrimitive((Number)o), JsonElement::getAsInt),
   
@@ -48,9 +49,9 @@ public enum JavaPrimitive implements TypeMapping {
   
   BYTE(c->byte.class == c || Byte.class.isAssignableFrom(c), o->new JsonPrimitive((Number)o), JsonElement::getAsByte),
   
-  CHAR(c->char.class == c || Character.class.isAssignableFrom(c), o->new JsonPrimitive((Number)o), e->e.getAsString().charAt(0)),
+  CHAR(c->char.class == c || Character.class.isAssignableFrom(c), o->new JsonPrimitive(Objects.toString(o)), e->e.getAsString().charAt(0)),
   
-  BOOLEAN(c->boolean.class == c || Boolean.class.isAssignableFrom(c), o->new JsonPrimitive((Number)o), JsonElement::getAsBoolean),
+  BOOLEAN(c->boolean.class == c || Boolean.class.isAssignableFrom(c), o->new JsonPrimitive((Boolean)o), JsonElement::getAsBoolean),
   
   LONG(c->long.class == c || Long.class.isAssignableFrom(c), o->new JsonPrimitive((Number)o), JsonElement::getAsLong),
   
@@ -97,6 +98,12 @@ public enum JavaPrimitive implements TypeMapping {
     return Arrays.asList(values()).stream().anyMatch(p->p.accept(cls));
   }
   
+  public static boolean isAnyNumber(Class cls) {
+    return Arrays.asList(values()).stream()
+        .filter(p->p != STRING && p != BOOLEAN && p != CHAR)
+        .anyMatch(p->p.accept(cls));
+  }
+  
   public static JavaPrimitive of(Class cls) {
     NotNull.of(cls).failIfNull("Bad null Class");
     Optional<JavaPrimitive> opt = Arrays.asList(values()).stream().filter(p->p.accept(cls)).findAny();
@@ -114,6 +121,22 @@ public enum JavaPrimitive implements TypeMapping {
       throw new IllegalArgumentException(obj + " not a java primitive");
     }
     return opt.get().toJson(obj);
+  }
+  
+  public static Object jsonToJava(JsonPrimitive prim) {
+    Object val = null;
+    if(prim.isBoolean()) {
+      val = BOOLEAN.fromJson(prim);
+    }
+    else if(prim.isNumber()) {
+      val = NUMBER.fromJson(prim);
+    }
+    else if(prim.isString()) {
+      val = (prim.getAsString().length() == 1 
+          ? CHAR.fromJson(prim) 
+          : STRING.fromJson(prim));
+    }
+    return val;
   }
   
 }

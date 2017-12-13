@@ -19,30 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.strategy;
+package us.pserver.finalson.strategy.condition;
 
-import java.lang.annotation.Annotation;
 import java.util.function.Predicate;
 import us.pserver.finalson.Property;
-import us.pserver.finalson.tools.NotNull;
+import us.pserver.finalson.strategy.MethodHandleInfo;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/12/2017
  */
-public class AnnotatedMethodCondition implements Predicate<MethodHandleInfo> {
+public class PropertyAnnotatedCondition implements Predicate<MethodHandleInfo> {
   
-  private final Annotation annot;
-  
-  public AnnotatedMethodCondition(Annotation annot) {
-    this.annot = NotNull.of(annot).getOrFail("Bad null Annotation");
-  }
-
   @Override
   public boolean test(MethodHandleInfo t) {
     return t.getAnnotations().stream()
-        .anyMatch(a->annot.annotationType().isAssignableFrom(a.annotationType()));
+        .anyMatch(a->Property.class.isAssignableFrom(a.annotationType()));
   }
 
 }

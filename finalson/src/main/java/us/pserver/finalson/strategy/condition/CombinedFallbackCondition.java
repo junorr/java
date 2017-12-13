@@ -19,40 +19,47 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.strategy;
+package us.pserver.finalson.strategy.condition;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
-import us.pserver.finalson.FinalsonConfig;
+import us.pserver.finalson.strategy.MethodHandleInfo;
 import us.pserver.finalson.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/12/2017
+ * @version 0.0 - 13/12/2017
  */
-public class MethodMappingStrategy implements MappingStrategy<Object> {
+public class CombinedFallbackCondition implements Predicate<MethodHandleInfo> {
+  
+  private final List<Predicate<MethodHandleInfo>> conditions;
+  
+  public CombinedFallbackCondition(Predicate<MethodHandleInfo> ... conds) {
+    this.conditions = Arrays.asList(NotNull.of(conds).getOrFail("Bad null conditions List"));
+  }
   
   @Override
-  public List<MethodHandleInfo> apply(Object obj, Predicate<MethodHandleInfo> accept) {
-    Class type = obj.getClass();
-    List<MethodHandleInfo> handles = new ArrayList<>();
-    Arrays.asList(type.getConstructors()).stream()
-        .map(MethodHandleInfo::of)
-        .filter(accept)
-        .forEach(m->{
-          handles.add(m);
-          m.getMethodHandle().bindTo(obj);
-        });
-    return handles;
+  public boolean test(MethodHandleInfo t) {
+    if(!matchAnd(t)) return matchOr(t);
+    return true;
   }
-
-
-  @Override
-  public boolean accept(Class type) {
-    return Object.class.isAssignableFrom(type);
+  
+  public boolean matchAnd(MethodHandleInfo t) {
+    Predicate<MethodHandleInfo> cnd = conditions.get(0);
+    for(int i = 1; i < conditions.size(); i++) {
+      cnd = cnd.and(conditions.get(i));
+    }
+    return cnd.test(t);
+  }
+  
+  public boolean matchOr(MethodHandleInfo t) {
+    Predicate<MethodHandleInfo> cnd = conditions.get(0);
+    for(int i = 1; i < conditions.size(); i++) {
+      cnd = cnd.or(conditions.get(i));
+    }
+    return cnd.test(t);
   }
   
 }
