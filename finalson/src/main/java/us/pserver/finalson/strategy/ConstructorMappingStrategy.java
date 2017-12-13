@@ -28,6 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import us.pserver.finalson.FinalsonConfig;
+import us.pserver.finalson.mapping.AcceptableType;
+import us.pserver.finalson.mapping.JavaPrimitive;
 import us.pserver.finalson.mapping.TypeMapping;
 import static us.pserver.finalson.tools.JsonObjectProperties.PROP_CLASS;
 import us.pserver.finalson.tools.NotNull;
@@ -59,6 +61,23 @@ public class ConstructorMappingStrategy implements MappingStrategy<JsonElement> 
         .filter(accept)
         .forEach(handles::add);
     return handles;
+  }
+  
+  
+  private AcceptableType mapJsonAcceptableType(TypeMapping<Class> cmap, JsonElement elt) {
+    AcceptableType accept = c->false;
+    if(elt.isJsonObject() || elt.isJsonArray()) {
+      accept = c->c.isAssignableFrom(cmap.fromJson(
+          elt.getAsJsonObject().get(PROP_CLASS))
+      );
+    }
+    else if(elt.isJsonNull()) {
+      accept = c->!c.isPrimitive();
+    }
+    else if(elt.isJsonPrimitive()) {
+      accept = c->JavaPrimitive.of(c) != null;
+    }
+    return accept;
   }
 
 

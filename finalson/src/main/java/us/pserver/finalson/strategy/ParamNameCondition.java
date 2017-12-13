@@ -21,11 +21,10 @@
 
 package us.pserver.finalson.strategy;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.function.Predicate;
-import us.pserver.finalson.FinalsonConfig;
+import java.util.stream.Stream;
 import us.pserver.finalson.tools.NotNull;
 
 /**
@@ -33,26 +32,23 @@ import us.pserver.finalson.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2017
  */
-public class MethodMappingStrategy implements MappingStrategy<Object> {
+public class ParamNameCondition implements Predicate<MethodHandleInfo> {
+
+  private final List<String> names;
+  
+  public ParamNameCondition(List<String> names) {
+    this.names = NotNull.of(names).getOrFail("Bad null names List");
+  }
   
   @Override
-  public List<MethodHandleInfo> apply(Object obj, Predicate<MethodHandleInfo> accept) {
-    Class type = obj.getClass();
-    List<MethodHandleInfo> handles = new ArrayList<>();
-    Arrays.asList(type.getConstructors()).stream()
-        .map(MethodHandleInfo::of)
-        .filter(accept)
-        .forEach(m->{
-          handles.add(m);
-          m.getMethodHandle().bindTo(obj);
-        });
-    return handles;
-  }
-
-
-  @Override
-  public boolean accept(Class type) {
-    return Object.class.isAssignableFrom(type);
+  public boolean test(MethodHandleInfo mhi) {
+    Stream<String> snames = (names.size() > 2 
+        ? names.parallelStream() : names.stream())
+        .sorted();
+    Stream<String> spars = (mhi.getParameters().size() > 2 
+        ? mhi.getParameters().parallelStream() : mhi.getParameters().stream())
+        .map(Parameter::getName).sorted();
+    return spars.allMatch(p->snames.anyMatch(n->p.equals(n)));
   }
   
 }
