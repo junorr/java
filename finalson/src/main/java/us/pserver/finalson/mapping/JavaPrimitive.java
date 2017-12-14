@@ -41,7 +41,11 @@ public enum JavaPrimitive implements TypeMapping {
 
   STRING(CharSequence.class::isAssignableFrom, o->new JsonPrimitive(Objects.toString(o)), JsonElement::getAsString),
   
-  NUMBER(Number.class::isAssignableFrom, o->new JsonPrimitive((Number)o), e->e.getAsString().contains(".") ? e.getAsDouble() : e.getAsLong()),
+  //NUMBER(Number.class::isAssignableFrom, o->new JsonPrimitive((Number)o), e->{
+    //System.out.printf("'%s'.contains('.'): %s%n", e.getAsString(), e.getAsString().contains("."));
+    //if(e.getAsString().contains(".")) return e.getAsDouble();
+    //else return e.getAsLong();
+  //}),
   
   INT(c->int.class == c || Integer.class.isAssignableFrom(c), o->new JsonPrimitive((Number)o), JsonElement::getAsInt),
   
@@ -130,6 +134,7 @@ public enum JavaPrimitive implements TypeMapping {
     }
     else if(prim.isNumber()) {
       val = NUMBER.fromJson(prim);
+      System.out.println("* jsonToJava:isNumber: "+ prim+ " -> "+ val+ " - "+ val.getClass().getName());
     }
     else if(prim.isString()) {
       val = (prim.getAsString().length() == 1 
