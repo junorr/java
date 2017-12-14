@@ -25,6 +25,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.lang.reflect.Array;
+import us.pserver.finalson.FinalsonConfig;
 
 /**
  *
@@ -33,14 +34,10 @@ import java.lang.reflect.Array;
  */
 public class ArrayMapping implements TypeMapping {
   
-  public static final String PROP_TYPE = "type";
+  private final FinalsonConfig config;
   
-  public static final String PROP_ARRAY = "array";
-  
-  private final ClassMapping classtp;
-  
-  public ArrayMapping(ClassLoader ldr) {
-    this.classtp = new ClassMapping(ldr);
+  public ArrayMapping(FinalsonConfig conf) {
+    this.config = conf;
   }
   
   @Override
@@ -53,29 +50,24 @@ public class ArrayMapping implements TypeMapping {
     if(!accept(obj.getClass())) {
       throw new IllegalArgumentException("Not a primitive array");
     }
-    JsonObject job = new JsonObject();
-    job.add(PROP_TYPE, classtp.toJson(obj.getClass()));
+    TypeMapping<Class> cmap = config.getTypeMappingFor(Class.class).get();
     JsonArray array = new JsonArray();
+    array.add(cmap.toJson(obj.getClass()));
     int len = Array.getLength(obj);
     for(int i = 0; i < len; i++) {
       array.add(JavaPrimitive.javaToJson(Array.get(obj, i)));
     }
-    job.add(PROP_ARRAY, array);
-    return job;
+    return array;
   }
-
-
+  
   @Override
   public Object fromJson(JsonElement elt) {
-    JsonObject job = (JsonObject) elt;
-    if(!job.has(PROP_TYPE) || !job.has(PROP_ARRAY)) {
-      throw new IllegalArgumentException("Not a json array");
-    }
-    Class cls = classtp.fromJson(job.get(PROP_TYPE));
-    JsonArray jarray = job.getAsJsonArray(PROP_ARRAY);
+    JsonArray jarray = elt.getAsJsonArray();
+    TypeMapping<Class> cmap = config.getTypeMappingFor(Class.class).get();
+    Class cls = cmap.fromJson(jarray.get(0));
     Object array = Array.newInstance(cls.getComponentType(), jarray.size());
     JavaPrimitive jtype = JavaPrimitive.of(cls.getComponentType());
-    for(int i = 0; i < jarray.size(); i++) {
+    for(int i = 1; i < jarray.size(); i++) {
       Array.set(array, i, jtype.fromJson(jarray.get(i)));
     }
     return array;

@@ -133,8 +133,11 @@ public enum JavaPrimitive implements TypeMapping {
       val = BOOLEAN.fromJson(prim);
     }
     else if(prim.isNumber()) {
-      val = NUMBER.fromJson(prim);
-      System.out.println("* jsonToJava:isNumber: "+ prim+ " -> "+ val+ " - "+ val.getClass().getName());
+      if(prim.getAsString().contains(".")) {
+        val = prim.getAsDouble();
+      } else {
+        val = prim.getAsLong();
+      }
     }
     else if(prim.isString()) {
       val = (prim.getAsString().length() == 1 

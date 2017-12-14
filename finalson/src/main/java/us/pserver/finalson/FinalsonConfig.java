@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Predicate;
+import us.pserver.finalson.mapping.ArrayMapping;
 import us.pserver.finalson.mapping.ClassMapping;
 import us.pserver.finalson.mapping.ColorMapping;
 import us.pserver.finalson.mapping.DateMapping;
@@ -36,7 +36,6 @@ import us.pserver.finalson.mapping.LocalDateTimeMapping;
 import us.pserver.finalson.mapping.PathMapping;
 import us.pserver.finalson.mapping.TypeMapping;
 import us.pserver.finalson.mapping.ZonedDateTimeMapping;
-import us.pserver.finalson.strategy.MethodHandleInfo;
 import us.pserver.finalson.tools.NotNull;
 
 /**
@@ -67,6 +66,7 @@ public class FinalsonConfig {
     types.add(new InstantMapping());
     types.add(new LocalDateTimeMapping());
     types.add(new ZonedDateTimeMapping());
+    types.add(new ArrayMapping(this));
   }
   
   

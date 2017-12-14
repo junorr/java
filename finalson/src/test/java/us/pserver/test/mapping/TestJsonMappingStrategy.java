@@ -19,38 +19,41 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.test.reflect;
+package us.pserver.test.mapping;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import org.junit.jupiter.api.Assertions;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import us.pserver.finalson.FinalsonConfig;
-import us.pserver.finalson.mapping.ArrayMapping;
+import us.pserver.finalson.strategy.JsonMappingStrategy;
+import us.pserver.finalson.strategy.MethodHandleInfo;
+import us.pserver.finalson.test.bean.AObj;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/12/2017
+ * @version 0.0 - 14/12/2017
  */
-public class TestArray {
+public class TestJsonMappingStrategy {
+  
+  private final FinalsonConfig config = new FinalsonConfig().setUseGetters(true).setUseMethodAnnotation(true);
+  
+  private final JsonMappingStrategy jms = new JsonMappingStrategy(config);
+  
+  private final AObj a = new AObj("aobj", 55, new int[]{5,5}, new char[]{'a','b'}, new Date());
+  
+  private List<String> meths = Arrays.asList(
+      "name", "age", "magic", "chars", "date", "class"
+  );
+  
+  
+  @Test
+  public void mapAtoJson() {
+    List<MethodHandleInfo> lst = jms.apply(a);
+    lst.forEach(System.out::println);
+    assertTrue(lst.stream().map(MethodHandleInfo::getName).allMatch(n->meths.stream().anyMatch(s->s.equals(n))));
+  }
 
-  @Test
-  public void isPrimitiveArray() {
-    Class c = int[].class;
-    Assertions.assertTrue(c.isArray());
-    Assertions.assertTrue(c.getComponentType().isPrimitive());
-  }
-  
-  @Test
-  public void primitiveArray() {
-    int[] array = {1,2,3,4,5};
-    ArrayMapping atp = new ArrayMapping(new FinalsonConfig());
-    JsonElement elt = atp.toJson(array);
-    System.out.println(elt);
-    Assertions.assertEquals(6, elt.getAsJsonArray().size());
-    Object o = atp.fromJson(elt);
-    System.out.println(o);
-  }
-  
 }

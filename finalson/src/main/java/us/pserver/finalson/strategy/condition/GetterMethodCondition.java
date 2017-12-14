@@ -33,7 +33,7 @@ public class GetterMethodCondition implements Predicate<MethodHandleInfo> {
 
   @Override
   public boolean test(MethodHandleInfo t) {
-    return t.getName().startsWith("get");
+    return t.getName().startsWith("get") && !t.getName().endsWith("Class");
   }
 
 }

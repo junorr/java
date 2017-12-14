@@ -43,23 +43,30 @@ public class TestJavaPrimitive {
   }
 
   @Test
-  public void intMapping() {
-    Integer d = 1001;
-    JavaPrimitive java = JavaPrimitive.INT;
-    System.out.println(java);
-    JsonElement e = java.toJson(d);
-    System.out.println(e);
-    Number read = (Number) JavaPrimitive.jsonToJava(e.getAsJsonPrimitive());
-    assertEquals(d, read);
-  }
-
-  @Test
   public void booleanMapping() {
     Boolean d = true;
     JsonElement e = JavaPrimitive.javaToJson(d);
     System.out.println(e);
     Boolean read = (Boolean) JavaPrimitive.jsonToJava(e.getAsJsonPrimitive());
     assertEquals(d, read);
+  }
+
+  @Test
+  public void stringMapping() {
+    String s = "hEllO";
+    JsonElement e = JavaPrimitive.javaToJson(s);
+    System.out.println(e);
+    Object read = JavaPrimitive.jsonToJava(e.getAsJsonPrimitive());
+    assertEquals(s, read);
+  }
+
+  @Test
+  public void charMapping() {
+    char s = 'o';
+    JsonElement e = JavaPrimitive.javaToJson(s);
+    System.out.println(e);
+    Object read = JavaPrimitive.jsonToJava(e.getAsJsonPrimitive());
+    assertEquals(s, read);
   }
   
 }

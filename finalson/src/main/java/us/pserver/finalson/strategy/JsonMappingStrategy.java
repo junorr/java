@@ -77,7 +77,8 @@ public class JsonMappingStrategy implements MethodHandleStrategy<Object> {
   private MethodHandleInfo changeGetterName(MethodHandleInfo info) {
     MethodHandleInfo changed = info;
     if(config.useGetters() && info.getName().startsWith("get")) {
-      changed = changed.withName(changed.getName().substring(3));
+      changed = changed.withName(changed.getName().substring(3,4).toLowerCase() 
+          + changed.getName().substring(4));
     }
     return changed;
   }
