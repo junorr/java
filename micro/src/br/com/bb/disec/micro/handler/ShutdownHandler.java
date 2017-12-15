@@ -22,7 +22,6 @@
 package br.com.bb.disec.micro.handler;
 
 import br.com.bb.disec.micro.Server;
-import br.com.bb.disec.micro.util.Infinispan;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
@@ -56,7 +55,6 @@ public class ShutdownHandler implements HttpHandler {
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     hse.addExchangeCompleteListener((h,n)->{
-      Infinispan.stop();
       server.stop();
     });
     hse.getResponseSender().send(SHUTDOWN_MESSAGE+ "\n");

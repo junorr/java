@@ -45,7 +45,7 @@ public class AObj implements Serializable {
   private final Date date;
 
 
-  private AObj() {
+  public AObj() {
     System.out.println("--- AObj using empty constructor");
     this.name = null;
     this.age = 0;

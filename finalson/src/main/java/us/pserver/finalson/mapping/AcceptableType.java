@@ -26,6 +26,7 @@ package us.pserver.finalson.mapping;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2017
  */
+@FunctionalInterface
 public interface AcceptableType {
   
   public boolean accept(Class type);

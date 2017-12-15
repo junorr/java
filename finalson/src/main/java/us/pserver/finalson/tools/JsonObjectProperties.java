@@ -33,6 +33,8 @@ public class JsonObjectProperties {
 
   public static final String PROP_CLASS = "@class";
   
+  public static final String PROP_ARRAY = "array";
+  
   public static String getClassName(JsonElement elt) {
     JsonObject job = elt.getAsJsonObject();
     if(!job.has(PROP_CLASS)) {

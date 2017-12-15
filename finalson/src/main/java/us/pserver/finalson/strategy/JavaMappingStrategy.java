@@ -30,6 +30,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import us.pserver.finalson.FinalsonConfig;
 import us.pserver.finalson.mapping.AcceptableType;
+import us.pserver.finalson.mapping.DateMapping;
 import us.pserver.finalson.mapping.JavaPrimitive;
 import us.pserver.finalson.mapping.TypeMapping;
 import us.pserver.finalson.strategy.condition.CombinedFallbackCondition;
@@ -66,7 +67,8 @@ public class JavaMappingStrategy implements MethodHandleStrategy<JsonElement> {
           .filter(condition)
           .collect(Collectors.toList());
     }
-    catch(SecurityException e) {
+    catch(Exception e) {
+      e.printStackTrace();
       throw new RuntimeException(e.toString(), e);
     }
   }
@@ -93,6 +95,9 @@ public class JavaMappingStrategy implements MethodHandleStrategy<JsonElement> {
     }
     else if(prim.isBoolean()) {
       accept = JavaPrimitive.BOOLEAN::accept;
+    }
+    else if(DateMapping.isJsonDate(prim)) {
+      accept = DateMapping::isAnyDateType;
     }
     else {
       accept = c->JavaPrimitive.STRING.accept(c) 

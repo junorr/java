@@ -19,34 +19,42 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.strategy.condition;
+package us.pserver.test.mapping;
 
-import java.lang.reflect.Parameter;
+import com.google.gson.JsonElement;
+import java.util.Date;
 import java.util.List;
-import java.util.function.Predicate;
+import org.junit.jupiter.api.Test;
+import us.pserver.finalson.FinalsonConfig;
+import us.pserver.finalson.mapping.ObjectJsonMapping;
+import us.pserver.finalson.strategy.JavaMappingStrategy;
 import us.pserver.finalson.strategy.MethodHandleInfo;
-import us.pserver.finalson.tools.NotNull;
+import us.pserver.finalson.test.bean.AObj;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/12/2017
+ * @version 0.0 - 14/12/2017
  */
-public class ParamNameCondition implements Predicate<MethodHandleInfo> {
+public class TestJavaMappingStrategy {
+  
+  private final FinalsonConfig config = new FinalsonConfig().setUseGetters(true).setUseMethodAnnotation(true);
+  
+  private final ObjectJsonMapping omap = new ObjectJsonMapping(config);
+  
+  private final JavaMappingStrategy jas = new JavaMappingStrategy(config);
+  
+  private final AObj a = new AObj("aobj", 55, new int[]{5,5}, new char[]{'a','b'}, new Date());
+  
+  
+  @Test
+  public void mapAtoJson() {
+    JsonElement elt = omap.toJson(a);
+    System.out.println(elt);
+    List<MethodHandleInfo> infos = jas.apply(elt);
+    System.out.println("--------------------");
+    infos.forEach(System.out::println);
+    System.out.println("--------------------");
+  }
 
-  private final List<String> names;
-  
-  public ParamNameCondition(List<String> names) {
-    this.names = NotNull.of(names).getOrFail("Bad null names List");
-  }
-  
-  @Override
-  public boolean test(MethodHandleInfo mhi) {
-    boolean match = mhi.getParameters().stream()
-        .map(Parameter::getName)
-        .allMatch(p->names.stream().anyMatch(n->p.equals(n)));
-    System.out.println("** ParamNameCondition: "+ mhi+ ", match="+ match);
-    return match;
-  }
-  
 }

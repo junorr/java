@@ -26,6 +26,7 @@ import com.google.gson.JsonPrimitive;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 /**
@@ -35,7 +36,9 @@ import java.util.Date;
  */
 public class DateMapping implements TypeMapping<Date> {
 
-  public static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+  public static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+  
+  public static final String DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*";
   
   @Override
   public JsonElement toJson(Date obj) {
@@ -54,6 +57,17 @@ public class DateMapping implements TypeMapping<Date> {
   @Override
   public boolean accept(Class cls) {
     return Date.class.isAssignableFrom(cls);
+  }
+  
+  
+  public static boolean isJsonDate(JsonElement elt) {
+    return elt.getAsString().matches(DATE_PATTERN);
+  }
+  
+  
+  public static boolean isAnyDateType(Class cls) {
+    return Date.class.isAssignableFrom(cls)
+        || TemporalAccessor.class.isAssignableFrom(cls);
   }
   
 }

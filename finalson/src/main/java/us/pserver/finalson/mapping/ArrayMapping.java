@@ -25,7 +25,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.lang.reflect.Array;
+import java.util.Optional;
 import us.pserver.finalson.FinalsonConfig;
+import static us.pserver.finalson.tools.JsonObjectProperties.PROP_ARRAY;
+import static us.pserver.finalson.tools.JsonObjectProperties.PROP_CLASS;
 
 /**
  *
@@ -42,7 +45,7 @@ public class ArrayMapping implements TypeMapping {
   
   @Override
   public boolean accept(Class cls) {
-    return cls.isArray() && JavaPrimitive.isJavaPrimitive(cls.getComponentType());
+    return cls.isArray();
   }
   
   @Override
@@ -51,24 +54,45 @@ public class ArrayMapping implements TypeMapping {
       throw new IllegalArgumentException("Not a primitive array");
     }
     TypeMapping<Class> cmap = config.getTypeMappingFor(Class.class).get();
+    JsonObject job = new JsonObject();
+    job.add(PROP_CLASS, cmap.toJson(obj.getClass()));
+    job.add(PROP_ARRAY, toJsonArray(obj));
+    return job;
+  }
+  
+  private JsonArray toJsonArray(Object obj) {
     JsonArray array = new JsonArray();
-    array.add(cmap.toJson(obj.getClass()));
     int len = Array.getLength(obj);
     for(int i = 0; i < len; i++) {
-      array.add(JavaPrimitive.javaToJson(Array.get(obj, i)));
+      Object val = Array.get(obj, i);
+      Optional<TypeMapping> tmap = config.getTypeMappingFor((Class)val.getClass());
+      if(!tmap.isPresent()) {
+        throw new IllegalStateException("No TypeMapping found for "+ val.getClass().getName());
+      }
+      array.add(tmap.get().toJson(val));
     }
     return array;
   }
   
   @Override
   public Object fromJson(JsonElement elt) {
-    JsonArray jarray = elt.getAsJsonArray();
+    if(!elt.isJsonObject() || !elt.getAsJsonObject().has(PROP_ARRAY)) {
+      throw new IllegalArgumentException("Not a valid JsonObject");
+    }
+    JsonObject job = elt.getAsJsonObject();
     TypeMapping<Class> cmap = config.getTypeMappingFor(Class.class).get();
-    Class cls = cmap.fromJson(jarray.get(0));
-    Object array = Array.newInstance(cls.getComponentType(), jarray.size());
-    JavaPrimitive jtype = JavaPrimitive.of(cls.getComponentType());
-    for(int i = 1; i < jarray.size(); i++) {
-      Array.set(array, i, jtype.fromJson(jarray.get(i)));
+    Class cls = cmap.fromJson(job.get(PROP_CLASS));
+    return fromJsonArray(job.getAsJsonArray(PROP_ARRAY), cls.getComponentType());
+  }
+  
+  private Object fromJsonArray(JsonArray jarray, Class ctype) {
+    Optional<TypeMapping> tmap = config.getTypeMappingFor(ctype);
+    if(!tmap.isPresent()) {
+      throw new IllegalStateException("No TypeMapping found for "+ ctype.getName());
+    }
+    Object array = Array.newInstance(ctype, jarray.size());
+    for(int i = 0; i < jarray.size(); i++) {
+      Array.set(array, i, tmap.get().fromJson(jarray.get(i)));
     }
     return array;
   }

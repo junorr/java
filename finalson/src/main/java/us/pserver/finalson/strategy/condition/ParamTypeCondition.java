@@ -44,10 +44,13 @@ public class ParamTypeCondition implements Predicate<MethodHandleInfo> {
   
   @Override
   public boolean test(MethodHandleInfo mhi) {
-    Stream<Class<?>> pars = (mhi.getParameters().size() > 2 
-        ? mhi.getParameters().parallelStream() : mhi.getParameters().stream())
-        .map(Parameter::getType).sorted();
-    return pars.allMatch(p->types.stream().anyMatch(a->a.accept(p)));
+    System.out.printf("** ParamTypeCondition.test: %d%n", types.size());
+    mhi.getParameters().stream().map(Parameter::getType).forEach(t->{
+      System.out.printf("  . %s: %s%n", t, types.stream().anyMatch(a->a.accept(t)));
+    });
+    return mhi.getParameters().stream()
+        .map(Parameter::getType)
+        .allMatch(p->types.stream().anyMatch(a->a.accept(p)));
   }
   
 }

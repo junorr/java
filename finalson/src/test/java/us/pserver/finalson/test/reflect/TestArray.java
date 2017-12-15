@@ -23,6 +23,7 @@ package us.pserver.finalson.test.reflect;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.lang.reflect.Array;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import us.pserver.finalson.FinalsonConfig;
@@ -42,15 +43,28 @@ public class TestArray {
     Assertions.assertTrue(c.getComponentType().isPrimitive());
   }
   
+  private String arrayToString(Object array) {
+    int len = Array.getLength(array);
+    StringBuilder sb = new StringBuilder(array.getClass().getName())
+        .append("(")
+        .append(len)
+        .append("): [");
+    for(int i = 0; i < len; i++) {
+      sb.append(Array.get(array, i)).append(",");
+    }
+    sb.deleteCharAt(sb.length() -1).append("]");
+    return sb.toString();
+  }
+  
   @Test
   public void primitiveArray() {
     int[] array = {1,2,3,4,5};
     ArrayMapping atp = new ArrayMapping(new FinalsonConfig());
     JsonElement elt = atp.toJson(array);
     System.out.println(elt);
-    Assertions.assertEquals(6, elt.getAsJsonArray().size());
+    Assertions.assertEquals(5, elt.getAsJsonObject().getAsJsonArray("array").size());
     Object o = atp.fromJson(elt);
-    System.out.println(o);
+    System.out.println(arrayToString(o));
   }
   
 }
