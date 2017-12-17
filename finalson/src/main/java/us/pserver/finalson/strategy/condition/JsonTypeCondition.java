@@ -21,10 +21,11 @@
 
 package us.pserver.finalson.strategy.condition;
 
+import com.google.gson.JsonElement;
 import java.lang.reflect.Parameter;
-import java.util.List;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
-import us.pserver.finalson.strategy.MethodHandleInfo;
+import us.pserver.finalson.mapping.AcceptableType;
 import us.pserver.finalson.tools.NotNull;
 
 /**
@@ -32,20 +33,17 @@ import us.pserver.finalson.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2017
  */
-public class ParamNameCondition implements Predicate<MethodHandleInfo> {
+public class JsonTypeCondition implements Predicate<Entry<String,JsonElement>> {
 
-  private final List<String> names;
+  private final Parameter par;
   
-  public ParamNameCondition(List<String> names) {
-    this.names = NotNull.of(names).getOrFail("Bad null names List");
+  public JsonTypeCondition(Parameter par) {
+    this.par = NotNull.of(par).getOrFail("Bad null Parameter");
   }
   
   @Override
-  public boolean test(MethodHandleInfo mhi) {
-    return mhi.getParameters().stream()
-        .map(Parameter::getName)
-        .allMatch(p->names.stream().anyMatch(n->p.equals(n)));
-    //System.out.println("** ParamNameCondition: "+ mhi+ ", match="+ match);
+  public boolean test(Entry<String,JsonElement> entry) {
+    return AcceptableType.isCompatible(entry.getValue(), par.getType());
   }
   
 }

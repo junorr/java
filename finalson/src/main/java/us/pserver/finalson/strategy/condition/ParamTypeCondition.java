@@ -21,10 +21,10 @@
 
 package us.pserver.finalson.strategy.condition;
 
+import com.google.gson.JsonElement;
 import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 import us.pserver.finalson.mapping.AcceptableType;
 import us.pserver.finalson.strategy.MethodHandleInfo;
 import us.pserver.finalson.tools.NotNull;
@@ -36,21 +36,22 @@ import us.pserver.finalson.tools.NotNull;
  */
 public class ParamTypeCondition implements Predicate<MethodHandleInfo> {
 
-  private final List<AcceptableType> types;
+  private final List<JsonElement> elts;
   
-  public ParamTypeCondition(List<AcceptableType> types) {
-    this.types = NotNull.of(types).getOrFail("Bad null names List");
+  public ParamTypeCondition(List<JsonElement> elts) {
+    this.elts = NotNull.of(elts).getOrFail("Bad null elements List");
   }
   
   @Override
   public boolean test(MethodHandleInfo mhi) {
-    System.out.printf("** ParamTypeCondition.test: %d%n", types.size());
-    mhi.getParameters().stream().map(Parameter::getType).forEach(t->{
-      System.out.printf("  . %s: %s%n", t, types.stream().anyMatch(a->a.accept(t)));
-    });
+    //System.out.printf("** ParamTypeCondition.test: %d%n", elts.size());
+    //mhi.getParameters().stream().map(Parameter::getType).forEach(t->{
+      //System.out.printf("  . %s: %s%n", t, elts.stream().anyMatch(e->AcceptableType.isCompatible(e, t)));
+    //});
     return mhi.getParameters().stream()
         .map(Parameter::getType)
-        .allMatch(p->types.stream().anyMatch(a->a.accept(p)));
+        .allMatch(p->elts.stream()
+            .anyMatch(e->AcceptableType.isCompatible(e, p)));
   }
   
 }

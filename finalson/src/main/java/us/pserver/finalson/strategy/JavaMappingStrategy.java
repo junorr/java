@@ -23,17 +23,15 @@ package us.pserver.finalson.strategy;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import us.pserver.finalson.FinalsonConfig;
-import us.pserver.finalson.mapping.AcceptableType;
-import us.pserver.finalson.mapping.DateMapping;
-import us.pserver.finalson.mapping.JavaPrimitive;
 import us.pserver.finalson.mapping.TypeMapping;
 import us.pserver.finalson.strategy.condition.CombinedFallbackCondition;
+import us.pserver.finalson.strategy.condition.MaxParamCountCondition;
 import us.pserver.finalson.strategy.condition.ParamNameCondition;
 import us.pserver.finalson.strategy.condition.ParamTypeCondition;
 import static us.pserver.finalson.tools.JsonObjectProperties.PROP_CLASS;
@@ -67,56 +65,23 @@ public class JavaMappingStrategy implements MethodHandleStrategy<JsonElement> {
           .filter(condition)
           .collect(Collectors.toList());
     }
-    catch(Exception e) {
-      e.printStackTrace();
+    catch(SecurityException e) {
       throw new RuntimeException(e.toString(), e);
     }
-  }
-  
-  private AcceptableType acceptable(JsonElement elt, TypeMapping<Class> cmap) {
-    AcceptableType accept = c->false;
-    if(elt.isJsonObject()) {
-      Class eltype = cmap.fromJson(elt.getAsJsonObject().get(PROP_CLASS));
-      accept = c->c.isAssignableFrom(eltype);
-    }
-    else if(elt.isJsonPrimitive()) {
-      accept = acceptable(elt.getAsJsonPrimitive());
-    }
-    else if(elt.isJsonNull()) {
-      accept = c->!c.isPrimitive();
-    }
-    return accept;
-  }
-  
-  private AcceptableType acceptable(JsonPrimitive prim) {
-    AcceptableType accept;
-    if(prim.isNumber()) {
-      accept = JavaPrimitive::isAnyNumber;
-    }
-    else if(prim.isBoolean()) {
-      accept = JavaPrimitive.BOOLEAN::accept;
-    }
-    else if(DateMapping.isJsonDate(prim)) {
-      accept = DateMapping::isAnyDateType;
-    }
-    else {
-      accept = c->JavaPrimitive.STRING.accept(c) 
-          || JavaPrimitive.CHAR.accept(c);
-    }
-    return accept;
   }
   
   private Predicate<MethodHandleInfo> getConstructorConditionStrategy(JsonObject job, TypeMapping<Class> cmap) {
     List<String> names = job.keySet().stream()
         .filter(s->!s.equals(PROP_CLASS))
         .collect(Collectors.toList());
-    List<AcceptableType> accepts = job.entrySet().stream()
+    List<JsonElement> elts = job.entrySet().stream()
         .filter(e->!e.getKey().equals(PROP_CLASS))
-        .map(e->acceptable(e.getValue(), cmap))
+        .map(Entry::getValue)
         .collect(Collectors.toList());
-    return new CombinedFallbackCondition(
-        new ParamNameCondition(names), 
-        new ParamTypeCondition(accepts)
+    return new MaxParamCountCondition(names.size())
+        .and(new CombinedFallbackCondition(
+            new ParamNameCondition(names), 
+            new ParamTypeCondition(elts))
     );
   }
 

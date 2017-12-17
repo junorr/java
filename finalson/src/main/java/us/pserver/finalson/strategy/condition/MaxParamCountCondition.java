@@ -21,31 +21,25 @@
 
 package us.pserver.finalson.strategy.condition;
 
-import java.lang.reflect.Parameter;
-import java.util.List;
 import java.util.function.Predicate;
 import us.pserver.finalson.strategy.MethodHandleInfo;
-import us.pserver.finalson.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/12/2017
+ * @version 0.0 - 13/12/2017
  */
-public class ParamNameCondition implements Predicate<MethodHandleInfo> {
-
-  private final List<String> names;
+public class MaxParamCountCondition implements Predicate<MethodHandleInfo> {
   
-  public ParamNameCondition(List<String> names) {
-    this.names = NotNull.of(names).getOrFail("Bad null names List");
+  private final int count;
+  
+  public MaxParamCountCondition(int count) {
+    this.count = count;
   }
   
   @Override
-  public boolean test(MethodHandleInfo mhi) {
-    return mhi.getParameters().stream()
-        .map(Parameter::getName)
-        .allMatch(p->names.stream().anyMatch(n->p.equals(n)));
-    //System.out.println("** ParamNameCondition: "+ mhi+ ", match="+ match);
+  public boolean test(MethodHandleInfo t) {
+    return t.getParameters().size() <= count;
   }
   
 }

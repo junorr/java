@@ -21,31 +21,45 @@
 
 package us.pserver.finalson.strategy.condition;
 
-import java.lang.reflect.Parameter;
+import com.google.gson.JsonElement;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
-import us.pserver.finalson.strategy.MethodHandleInfo;
 import us.pserver.finalson.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/12/2017
+ * @version 0.0 - 13/12/2017
  */
-public class ParamNameCondition implements Predicate<MethodHandleInfo> {
-
-  private final List<String> names;
+public class JsonCombinedFallbackCondition implements Predicate<Entry<String,JsonElement>> {
   
-  public ParamNameCondition(List<String> names) {
-    this.names = NotNull.of(names).getOrFail("Bad null names List");
+  private final List<Predicate<Entry<String,JsonElement>>> conditions;
+  
+  public JsonCombinedFallbackCondition(Predicate<Entry<String,JsonElement>> ... conds) {
+    this.conditions = Arrays.asList(NotNull.of(conds).getOrFail("Bad null conditions List"));
   }
   
   @Override
-  public boolean test(MethodHandleInfo mhi) {
-    return mhi.getParameters().stream()
-        .map(Parameter::getName)
-        .allMatch(p->names.stream().anyMatch(n->p.equals(n)));
-    //System.out.println("** ParamNameCondition: "+ mhi+ ", match="+ match);
+  public boolean test(Entry<String,JsonElement> entry) {
+    return matchAnd(entry) || matchOr(entry);
+  }
+  
+  public boolean matchAnd(Entry<String,JsonElement> entry) {
+    Predicate<Entry<String,JsonElement>> cnd = conditions.get(0);
+    for(int i = 1; i < conditions.size(); i++) {
+      cnd = cnd.and(conditions.get(i));
+    }
+    return cnd.test(entry);
+  }
+  
+  public boolean matchOr(Entry<String,JsonElement> entry) {
+    Predicate<Entry<String,JsonElement>> cnd = conditions.get(0);
+    for(int i = 1; i < conditions.size(); i++) {
+      cnd = cnd.or(conditions.get(i));
+    }
+    return cnd.test(entry);
   }
   
 }

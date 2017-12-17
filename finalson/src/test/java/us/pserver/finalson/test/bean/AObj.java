@@ -46,7 +46,7 @@ public class AObj implements Serializable {
 
 
   public AObj() {
-    System.out.println("--- AObj using empty constructor");
+    //System.out.println("--- AObj using empty constructor");
     this.name = null;
     this.age = 0;
     this.magic = null;
@@ -64,18 +64,27 @@ public class AObj implements Serializable {
   }
 
 
+  public AObj(String name, int age, int[] magic, char[] chars, Date date, Object o) {
+    this.name = name;
+    this.age = age;
+    this.magic = magic;
+    this.chars = chars;
+    this.date = date;
+  }
+
+
   public AObj(String name, Date dt) {
     this(name, 0, null, null, dt);
   }
   
   public String getName() {
-    System.out.println("AObj.name():String method invoked!");
+    //System.out.println("AObj.name():String method invoked!");
     return name;
   }
 
   @Property
   public int age() {
-    System.out.println("AObj.age():int method invoked!");
+    //System.out.println("AObj.age():int method invoked!");
     return age;
   }
 
@@ -88,7 +97,7 @@ public class AObj implements Serializable {
   }
 
   public Date getDate() {
-    System.out.println("AObj.getDate():Date method invoked!");
+    //System.out.println("AObj.getDate():Date method invoked!");
     return date;
   }
 

@@ -21,6 +21,10 @@
 
 package us.pserver.finalson.mapping;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import static us.pserver.finalson.tools.JsonObjectProperties.PROP_CLASS;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -30,5 +34,37 @@ package us.pserver.finalson.mapping;
 public interface AcceptableType {
   
   public boolean accept(Class type);
-
+  
+  
+  public static boolean isCompatible(JsonElement elt, Class cls) {
+    if(elt.isJsonObject() && elt.getAsJsonObject().has(PROP_CLASS)) {
+      ClassMapping cmap = new ClassMapping(ClassLoader.getSystemClassLoader());
+      Class jcls = cmap.fromJson(elt.getAsJsonObject().get(PROP_CLASS));
+      return cls.isAssignableFrom(jcls);
+    }
+    else if(elt.isJsonPrimitive()) {
+      return isCompatible(elt.getAsJsonPrimitive(), cls);
+    }
+    else if(elt.isJsonNull()) {
+      return !cls.isPrimitive();
+    }
+    return false;
+  }
+  
+  public static boolean isCompatible(JsonPrimitive prim, Class cls) {
+    if(prim.isNumber()) {
+      return JavaPrimitive.isAnyNumber(cls);
+    }
+    else if(prim.isBoolean()) {
+      return JavaPrimitive.BOOLEAN.accept(cls);
+    }
+    else if(DateMapping.isJsonDate(prim)) {
+      return DateMapping.isAnyDateType(cls);
+    }
+    else {
+      return JavaPrimitive.STRING.accept(cls) 
+          || JavaPrimitive.CHAR.accept(cls);
+    }
+  }
+  
 }

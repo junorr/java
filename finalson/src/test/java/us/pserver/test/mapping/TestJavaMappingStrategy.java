@@ -24,12 +24,15 @@ package us.pserver.test.mapping;
 import com.google.gson.JsonElement;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import us.pserver.finalson.FinalsonConfig;
 import us.pserver.finalson.mapping.ObjectJsonMapping;
 import us.pserver.finalson.strategy.JavaMappingStrategy;
 import us.pserver.finalson.strategy.MethodHandleInfo;
 import us.pserver.finalson.test.bean.AObj;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -55,6 +58,12 @@ public class TestJavaMappingStrategy {
     System.out.println("--------------------");
     infos.forEach(System.out::println);
     System.out.println("--------------------");
+    assertEquals(3, infos.size());
+    Optional<MethodHandleInfo> allParams = infos.stream().max(
+        (x,y)->Integer.compare(x.getParameters().size(), y.getParameters().size())
+    );
+    assertTrue(allParams.isPresent());
+    assertEquals(5, allParams.get().getParameters().size());
   }
 
 }
