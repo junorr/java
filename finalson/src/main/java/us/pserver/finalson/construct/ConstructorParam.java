@@ -21,27 +21,107 @@
 
 package us.pserver.finalson.construct;
 
-import com.google.gson.JsonElement;
+import java.lang.reflect.Parameter;
+import java.util.Objects;
+import us.pserver.finalson.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2017
  */
-public interface ConstructorParam<T> extends Comparable<ConstructorParam> {
+public interface ConstructorParam extends Comparable<ConstructorParam> {
 
-  public T fromJson(JsonElement elt);
+  public JsonProperty getJsonProperty();
   
-  public String getName();
+  public Parameter getParameter();
   
-  public int getIndex();
-  
-  public Class getType();
+  public int index();
   
   
   @Override
   public default int compareTo(ConstructorParam other) {
-    return Integer.compare(this.getIndex(), other.getIndex());
+    return Integer.compare(this.index(), other.index());
+  }
+  
+  
+  
+  public static ConstructorParam of(int index, Parameter param, JsonProperty prop) {
+    return new DefaultConstructorParam(index, param, prop);
+  }
+  
+  
+  
+  
+  
+  public static class DefaultConstructorParam implements ConstructorParam {
+    
+    private final int index;
+    
+    private final Parameter param;
+    
+    private final JsonProperty prop;
+    
+    public DefaultConstructorParam(int index, Parameter param, JsonProperty prop) {
+      this.param = NotNull.of(param).getOrFail("Bad null Parameter");
+      this.prop = NotNull.of(prop).getOrFail("Bad null JsonProperty");
+      this.index = index;
+    }
+    
+    @Override
+    public JsonProperty getJsonProperty() {
+      return prop;
+    }
+    
+    @Override
+    public Parameter getParameter() {
+      return param;
+    }
+    
+    @Override
+    public int index() {
+      return index;
+    }
+    
+    @Override
+    public int hashCode() {
+      int hash = 3;
+      hash = 47 * hash + Objects.hashCode(this.param);
+      hash = 47 * hash + Objects.hashCode(this.prop);
+      hash = 47 * hash + this.index;
+      return hash;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      final ConstructorParam other = (ConstructorParam) obj;
+      if (this.index != other.index()) {
+        return false;
+      }
+      if (!Objects.equals(this.param, other.getParameter())) {
+        return false;
+      }
+      if (!Objects.equals(this.prop, other.getJsonProperty())) {
+        return false;
+      }
+      return true;
+    }
+
+
+    @Override
+    public String toString() {
+      return String.format("ConstructorParam{%d. %s -> %s}", index, param, prop);
+    }
+    
   }
   
 }

@@ -22,17 +22,23 @@
 package us.pserver.finalson.construct;
 
 import com.google.gson.JsonObject;
-import java.lang.reflect.Constructor;
+import java.util.List;
+import us.pserver.finalson.strategy.MethodHandleInfo;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2017
  */
-public interface ConstructorInference {
+public interface ConstructorInference extends JsonContainer {
 
-  public Constructor infer(JsonObject job);
+  public MethodHandleInfo infer();
   
   public Class getType();
+  
+  public List<ConstructorParam> getParameters();
+  
+  @Override
+  public JsonObject getJson();
   
 }

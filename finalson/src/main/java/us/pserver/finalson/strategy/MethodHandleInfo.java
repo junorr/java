@@ -21,6 +21,7 @@
 
 package us.pserver.finalson.strategy;
 
+import com.google.gson.JsonElement;
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -28,6 +29,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import us.pserver.finalson.tools.NotNull;
@@ -40,66 +42,75 @@ import us.pserver.finalson.tools.NotNull;
 public class MethodHandleInfo {
   
   private final MethodHandle handle;
-
-  private final Class retype;
-
-  private final List<Parameter> params;
-
-  private final List<Annotation> annots;
-
-  private final String name;
-
   
-  public MethodHandleInfo(MethodHandle mh, String name, Class returnType, List<Parameter> params, List<Annotation> annots) {
+  private final Class retype;
+  
+  private final List<Parameter> params;
+  
+  private final List<Annotation> annots;
+  
+  private final List<JsonElement> arguments;
+  
+  private final String name;
+  
+  
+  public MethodHandleInfo(MethodHandle mh, String name, Class returnType, List<Parameter> params, List<Annotation> annots, List<JsonElement> args) {
     this.handle = NotNull.of(mh).getOrFail("Bad null MethodHandle");
     this.name = NotNull.of(name).getOrFail("Bad null name");
     this.retype = NotNull.of(returnType).getOrFail("Bad null return Class");
     this.params = NotNull.of(params).getOrFail("Bad null parameters List");
     this.annots = NotNull.of(annots).getOrFail("Bad null annotations List");
+    this.arguments = NotNull.of(args).getOrFail("Bad null arguments List");
   }
   
   
   public MethodHandleInfo bindTo(Object obj) {
-    return new MethodHandleInfo(handle.bindTo(obj), name, retype, params, annots);
+    return new MethodHandleInfo(handle.bindTo(obj), name, retype, params, annots, arguments);
   }
   
   
   public MethodHandleInfo withName(String name) {
-    return new MethodHandleInfo(handle, name, retype, params, annots);
+    return new MethodHandleInfo(handle, name, retype, params, annots, arguments);
   }
-
+  
   
   public MethodHandle getMethodHandle() {
     return handle;
   }
-
+  
   
   public List<Parameter> getParameters() {
     return params;
   }
-
+  
   
   public List<Annotation> getAnnotations() {
     return annots;
   }
   
-
+  
+  public List<JsonElement> getArguments() {
+    return arguments;
+  }
+  
+  
   public Class getReturnType() {
     return retype;
   }
-
+  
   
   public boolean hasReturnType() {
     return retype != null 
         && retype != void.class 
         && retype != Void.class;
   }
-
+  
+  
   public String getName() {
     return name;
   }
-
-
+  
+  
   @Override
   public int hashCode() {
     int hash = 7;
@@ -108,8 +119,8 @@ public class MethodHandleInfo {
     hash = 37 * hash + Objects.hashCode(this.name);
     return hash;
   }
-
-
+  
+  
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -130,8 +141,8 @@ public class MethodHandleInfo {
     }
     return Objects.equals(this.params, other.params);
   }
-
-
+  
+  
   @Override
   public String toString() {
     return String.format("%s( %s ) : %s", name, params, retype);
@@ -145,7 +156,9 @@ public class MethodHandleInfo {
       return new MethodHandleInfo(mh, 
           meth.getName(), meth.getReturnType(), 
           Arrays.asList(meth.getParameters()), 
-          Arrays.asList(meth.getAnnotations()));
+          Arrays.asList(meth.getAnnotations()),
+          new LinkedList<>()
+      );
     } catch(IllegalAccessException e) {
       throw new RuntimeException(e.toString(), e);
     }
@@ -159,7 +172,9 @@ public class MethodHandleInfo {
       return new MethodHandleInfo(mh, 
           cct.getName(), void.class, 
           Arrays.asList(cct.getParameters()), 
-          Arrays.asList(cct.getAnnotations()));
+          Arrays.asList(cct.getAnnotations()),
+          new LinkedList<>()
+      );
     } catch(IllegalAccessException e) {
       throw new RuntimeException(e.toString(), e);
     }

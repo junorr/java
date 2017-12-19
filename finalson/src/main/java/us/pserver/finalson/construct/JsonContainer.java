@@ -26,17 +26,10 @@ import com.google.gson.JsonElement;
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/12/2017
+ * @version 0.0 - 18/12/2017
  */
-public class StringConstructorParam extends AbstractConstructorParam<String> {
+public interface JsonContainer {
 
-  public StringConstructorParam(Class type, String name, int index) {
-    super(type, name, index);
-  }
-
-  @Override
-  public String fromJson(JsonElement elt) {
-    return elt.getAsString();
-  }
-
+  public JsonElement getJson();
+  
 }
