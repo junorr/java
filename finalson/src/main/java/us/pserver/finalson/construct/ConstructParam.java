@@ -30,7 +30,7 @@ import us.pserver.finalson.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2017
  */
-public interface ConstructorParam extends Comparable<ConstructorParam> {
+public interface ConstructParam extends Comparable<ConstructParam> {
 
   public JsonProperty getJsonProperty();
   
@@ -40,21 +40,21 @@ public interface ConstructorParam extends Comparable<ConstructorParam> {
   
   
   @Override
-  public default int compareTo(ConstructorParam other) {
+  public default int compareTo(ConstructParam other) {
     return Integer.compare(this.index(), other.index());
   }
   
   
   
-  public static ConstructorParam of(int index, Parameter param, JsonProperty prop) {
-    return new DefaultConstructorParam(index, param, prop);
+  public static ConstructParam of(int index, Parameter param, JsonProperty prop) {
+    return new DefaultConstructParam(index, param, prop);
   }
   
   
   
   
   
-  public static class DefaultConstructorParam implements ConstructorParam {
+  public static class DefaultConstructParam implements ConstructParam {
     
     private final int index;
     
@@ -62,7 +62,7 @@ public interface ConstructorParam extends Comparable<ConstructorParam> {
     
     private final JsonProperty prop;
     
-    public DefaultConstructorParam(int index, Parameter param, JsonProperty prop) {
+    public DefaultConstructParam(int index, Parameter param, JsonProperty prop) {
       this.param = NotNull.of(param).getOrFail("Bad null Parameter");
       this.prop = NotNull.of(prop).getOrFail("Bad null JsonProperty");
       this.index = index;
@@ -103,7 +103,7 @@ public interface ConstructorParam extends Comparable<ConstructorParam> {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      final ConstructorParam other = (ConstructorParam) obj;
+      final ConstructParam other = (ConstructParam) obj;
       if (this.index != other.index()) {
         return false;
       }
@@ -119,7 +119,7 @@ public interface ConstructorParam extends Comparable<ConstructorParam> {
 
     @Override
     public String toString() {
-      return String.format("ConstructorParam{%d. %s -> %s}", index, param, prop);
+      return String.format("%s{%d. %s -> %s}", ConstructParam.class.getSimpleName(), index, param, prop);
     }
     
   }

@@ -21,41 +21,16 @@
 
 package us.pserver.finalson.construct;
 
-import com.google.gson.JsonElement;
-import us.pserver.finalson.tools.NotNull;
+import java.lang.reflect.Constructor;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/12/2017
+ * @version 0.0 - 20/12/2017
  */
-public abstract class AbstractConstructorParam<T> implements ConstructParam<T> {
-  
-  protected final Class type;
-  
-  protected final String name;
-  
-  protected final int index;
-  
-  protected AbstractConstructorParam(Class type, String name, int index) {
-    this.type = NotNull.of(type).getOrFail("Bad null type Class");
-    this.name = NotNull.of(name).getOrFail("Bad null name");
-    this.index = index;
-  }
-  
-  @Override
-  public String getName() {
-    return name;
-  }
-  
-  @Override
-  public int getIndex() {
-    return index;
-  }
-  
-  @Override
-  public Class getType() {
-    return type;
-  }
-  
+public interface ConstructLink extends BiFunction<Constructor,List<JsonProperty>,Optional<ConstructHandle>> {
+
 }

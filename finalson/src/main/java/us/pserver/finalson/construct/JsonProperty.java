@@ -22,6 +22,7 @@
 package us.pserver.finalson.construct;
 
 import com.google.gson.JsonElement;
+import java.util.Map;
 import java.util.Objects;
 import us.pserver.finalson.tools.NotNull;
 
@@ -38,6 +39,10 @@ public interface JsonProperty extends JsonContainer {
   
   public static JsonProperty of(String name, JsonElement elt) {
     return new DefaultJsonProperty(name, elt);
+  }
+  
+  public static JsonProperty of(Map.Entry<String,JsonElement> ent) {
+    return of(ent.getKey(), ent.getValue());
   }
   
   

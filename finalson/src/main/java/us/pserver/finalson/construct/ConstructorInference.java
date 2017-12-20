@@ -36,7 +36,7 @@ public interface ConstructorInference extends JsonContainer {
   
   public Class getType();
   
-  public List<ConstructorParam> getParameters();
+  public List<ConstructParam> getParameters();
   
   @Override
   public JsonObject getJson();
