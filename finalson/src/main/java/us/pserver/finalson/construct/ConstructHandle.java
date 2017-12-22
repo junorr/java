@@ -21,18 +21,44 @@
 
 package us.pserver.finalson.construct;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import us.pserver.finalson.FinalsonConfig;
+import us.pserver.finalson.mapping.TypeMapping;
+import us.pserver.finalson.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/12/2017
  */
-public interface ConstructHandle {
+public interface ConstructHandle extends Comparable<ConstructHandle> {
   
-  public Constructor getConstructor();
+  public List<ConstructParam> getParameters();
+  
+  public Class getType();
 
   public Object create();
+  
+  @Override
+  public default int compareTo(ConstructHandle other) {
+    return Integer.compare(getParameters().size(), other.getParameters().size());
+  }
+  
+  
+  public static ConstructHandle of(FinalsonConfig conf, Constructor cct, List<ConstructParam> pars, Lookup lkp) {
+    return new DefaultConstructHandle(conf, cct, pars, lkp);
+  }
+  
+  public static ConstructHandle of(FinalsonConfig conf, Constructor cct, List<ConstructParam> pars) {
+    return new DefaultConstructHandle(conf, cct, pars);
+  }
   
   
   
@@ -40,9 +66,65 @@ public interface ConstructHandle {
   
   public static class DefaultConstructHandle implements ConstructHandle {
     
-    private final Constructor contruct;
+    private final List<ConstructParam> params;
     
-    private final List<ConstructParam> 
+    private final MethodHandle handle;
+    
+    private final Class type;
+    
+    private final FinalsonConfig config;
+    
+    public DefaultConstructHandle(FinalsonConfig conf, Constructor cct, List<ConstructParam> pars) {
+      this(conf, cct, pars, MethodHandles.lookup());
+    }
+    
+    public DefaultConstructHandle(FinalsonConfig conf, Constructor cct, List<ConstructParam> pars, Lookup lookup) {
+      this.params = NotNull.of(pars).getOrFail("Bad null arguments list");
+      this.type = NotNull.of(cct).getOrFail("Bad null Constructor").getDeclaringClass();
+      this.config = NotNull.of(conf).getOrFail("Bad null FinalsonConfig");
+      this.handle = createMethodHandle(cct, NotNull.of(lookup).getOrFail("Bad null Lookup"));
+    }
+    
+    private MethodHandle createMethodHandle(Constructor cct, Lookup lookup) {
+      try {
+        return lookup.unreflectConstructor(cct);
+      } catch (IllegalAccessException ex) {
+        throw new RuntimeException(ex.toString(), ex);
+      }
+    }
+    
+    @Override
+    public List<ConstructParam> getParameters() {
+      return params;
+    }
+    
+    @Override
+    public Class getType() {
+      return type;
+    }
+    
+    @Override
+    public Object create() {
+      try {
+        return handle.invokeWithArguments(mapArgs());
+      } catch(Throwable th) {
+        throw new RuntimeException(th.toString(), th);
+      }
+    }
+    
+    private List mapArgs() {
+      List<ConstructParam> sorted = new ArrayList<>(params);
+      Collections.sort(sorted);
+      List args = new ArrayList<>();
+      for(ConstructParam p : sorted) {
+        Optional<TypeMapping> opt = config.getTypeMappingFor((Class) p.getParameter().getType());
+        if(!opt.isPresent()) {
+          throw new IllegalStateException("No TypeMapping found for "+ p.getParameter().getType().getName());
+        }
+        args.add(opt.get().fromJson(p.getJsonProperty().getJson()));
+      }
+      return args;
+    }
     
   }
   
