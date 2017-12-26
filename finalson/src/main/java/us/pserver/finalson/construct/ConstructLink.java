@@ -21,16 +21,55 @@
 
 package us.pserver.finalson.construct;
 
+import com.google.gson.JsonObject;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import us.pserver.finalson.tools.NotNull;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/12/2017
  */
-public interface ConstructLink extends BiFunction<Constructor,List<JsonProperty>,Optional<ConstructHandle>> {
-
+public interface ConstructLink extends BiFunction<Constructor,JsonObject,List<ConstructParam>> {
+  
+  public static ConstructLink of(ParameterMatch match) {
+    return new DefaultConstructLink(match);
+  }
+  
+  
+  
+  
+  
+  public static class DefaultConstructLink implements ConstructLink {
+    
+    private final ParameterMatch match;
+    
+    public DefaultConstructLink(ParameterMatch match) {
+      this.match = NotNull.of(match).getOrFail("Bad null ParameterMatch");
+    }
+    
+    @Override
+    public List<ConstructParam> apply(Constructor cct, JsonObject job) {
+      Parameter[] pars = cct.getParameters();
+      List<ConstructParam> params = new ArrayList<>();
+      for(int i = 0; i < pars.length; i++) {
+        Parameter par = pars[i];
+        Optional<JsonProperty> prop = job.entrySet().stream()
+            .map(JsonProperty::of)
+            .filter(p->match.apply(par, p))
+            .findAny();
+        if(prop.isPresent()) {
+          params.add(ConstructParam.of(i, pars[i], prop.get()));
+        }
+      }
+      return params;
+    }
+    
+  }
+  
 }
