@@ -25,6 +25,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
@@ -65,5 +68,14 @@ public class TestDateRegex {
     //System.out.println(str);
     //assertTrue(str.matches(pattern));
   //}
+  
+  @Test public void testSplit() {
+    String sa = "\"a123b456c\"";
+    String sb = "\"a123b456c\",\"d789e101112f\",\"g131415h161718i\"";
+    List<String> la = Arrays.asList(sa.split(",")).stream().map(String::trim).collect(Collectors.toList());
+    List<String> lb = Arrays.asList(sb.split(",")).stream().map(String::trim).collect(Collectors.toList());
+    System.out.printf("- la : %d : %s%n", la.size(), la);
+    System.out.printf("- lb : %d : %s%n", lb.size(), lb);
+  }
   
 }
