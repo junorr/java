@@ -41,8 +41,8 @@ public class CharsetString {
    * @param str the encapsulated String.
    */
   public CharsetString(String str, Charset cs) {
-    string = NotNull.of(str).getOrFail("Bad null String");
-    charset = NotNull.of(cs).getOrFail("Bad null Charset");
+    string = NotMatch.notEmpty(str).getOrFail();
+    charset = NotMatch.notNull(cs).getOrFail("Bad null Charset");
   }
   
   
@@ -52,7 +52,7 @@ public class CharsetString {
    * @param cs
    */
   public CharsetString(byte[] bs, Charset cs) {
-    charset = NotNull.of(cs).getOrFail("Bad null Charset");
+    charset = NotMatch.notNull(cs).getOrFail("Bad null Charset");
     string = new String(bs, cs);
   }
   
@@ -64,7 +64,7 @@ public class CharsetString {
    * @param len Length of bytes to be readed from the byte array.
    */
   public CharsetString(byte[] bs, int off, int len, Charset cs) {
-    charset = NotNull.of(cs).getOrFail("Bad null Charset");
+    charset = NotMatch.notNull(cs).getOrFail("Bad null Charset");
     string = new String(bs, off, len, cs);
   }
   

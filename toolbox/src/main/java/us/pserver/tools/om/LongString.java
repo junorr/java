@@ -19,32 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools;
+package us.pserver.tools.om;
 
-import java.util.Collection;
+import us.pserver.tools.NotMatch;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/12/2017
+ * @version 0.0 - 02/01/2018
  */
-public class NotEmptyCollection<T extends Collection> extends NotEmpty<T> {
+public class LongString extends AbstractTypedString<Long> {
+  
+  public LongString(String value) {
+    super(NotMatch.notEmpty(value).getOrFail(), long.class, Long.class);
+  }
 
-  public NotEmptyCollection(T t) {
-    super(t);
-  }
-  
   @Override
-  public void failIfEmpty() {
-    this.failIfEmpty("Bad empty Collection");
+  public Long get() {
+    return Long.parseLong(string);
   }
-  
-  @Override
-  public void failIfEmpty(String message) {
-    this.failIfNull("Bad null String");
-    if(this.get().isEmpty()) {
-      throw new IllegalArgumentException(message);
-    }
-  }
-  
+
 }

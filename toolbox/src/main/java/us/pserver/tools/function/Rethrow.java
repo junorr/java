@@ -25,7 +25,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Optional;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.NotMatch;
 import us.pserver.tools.rfl.Reflector;
 import us.pserver.tools.rfl.ReflectorException;
 
@@ -41,7 +41,7 @@ public class Rethrow<E extends Throwable> {
   
   
   public Rethrow(Class<E> eclass) {
-    this.eclass = NotNull.of(eclass).getOrFail("Bad null Class");
+    this.eclass = NotMatch.notNull(eclass).getOrFail("Bad null Class");
   }
   
   

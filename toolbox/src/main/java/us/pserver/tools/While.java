@@ -32,7 +32,7 @@ public class While<A> {
   
   public While(A attachment, Predicate<A> predicate) {
     this.attachment = attachment;
-    this.predicate = NotNull.of(predicate).getOrFail("Bad null Predicate");
+    this.predicate = NotMatch.notNull(predicate).getOrFail("Bad null Predicate");
   }
   
   

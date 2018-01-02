@@ -23,7 +23,7 @@ package us.pserver.tools.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.NotMatch;
 
 /**
  * <code>OutputStream</code> de descarte de dados.
@@ -40,7 +40,7 @@ public class ConsoleOutputStream extends OutputStream {
    * @param out Next OutputStream. Cannot be null.
    */
   private ConsoleOutputStream(OutputStream out) {
-    this.out = NotNull.of(out).getOrFail("Bad null OutputStream");
+    this.out = NotMatch.notNull(out).getOrFail("Bad null OutputStream");
   }
   
   

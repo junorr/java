@@ -43,7 +43,7 @@ public class SortedList<T> implements List<T> {
   
   public SortedList(List<T> lst, Comparator<T> cmp) {
     this.compare = cmp;
-    this.list = NotNull.of(lst).getOrFail("Bad null List");
+    this.list = NotMatch.notNull(lst).getOrFail("Bad null List");
   }
   
   
@@ -109,14 +109,14 @@ public class SortedList<T> implements List<T> {
   
   
   public SortedList<T> put(T e) {
-    list.add(NotNull.of(e).getOrFail("Bad null Element"));
+    list.add(NotMatch.notNull(e).getOrFail("Bad null Element"));
     return sort();
   }
 
 
   @Override
   public boolean add(T e) {
-    boolean b = list.add(NotNull.of(e).getOrFail("Bad null Element"));
+    boolean b = list.add(NotMatch.notNull(e).getOrFail("Bad null Element"));
     if(b) this.sort();
     return b;
   }
@@ -124,7 +124,7 @@ public class SortedList<T> implements List<T> {
 
   @Override
   public boolean remove(Object o) {
-    return list.remove(NotNull.of(o).getOrFail("Bad null Element"));
+    return list.remove(NotMatch.notNull(o).getOrFail("Bad null Element"));
   }
 
 

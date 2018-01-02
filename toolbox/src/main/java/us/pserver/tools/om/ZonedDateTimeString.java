@@ -19,45 +19,28 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools;
+package us.pserver.tools.om;
 
-import java.util.List;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import us.pserver.tools.NotMatch;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/12/2017
+ * @version 0.0 - 02/01/2018
  */
-public class AbstractTypedString<T> implements TypedString<T> {
+public class ZonedDateTimeString extends AbstractTypedString<ZonedDateTime> {
   
-  private final List<Class> types;
-  
-  private final String string;
-  
-  public AbstractTypedString(String str, Class ... typeFor) {
+  public ZonedDateTimeString(String value) {
+    super(NotMatch.notEmpty(value).getOrFail(), ZonedDateTime.class);
   }
-  
-  public AbstractTypedString(String str, List<Class> typeFor) {
-    this.string = NotNull.of(str).getOrFail("Bad null String");
-    this.typeFor = NotNull
-    
-  }
-  
-  @Override
-  public boolean isTypeFor(Class type) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
 
   @Override
-  public T getTyped() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-
-  @Override
-  public String get() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public ZonedDateTime get() {
+    return TypedStringException.rethrow(()->
+        ZonedDateTime.from(DateTimeFormatter.ISO_DATE_TIME.parse(string))
+    );
   }
 
 }

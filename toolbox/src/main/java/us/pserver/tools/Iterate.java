@@ -36,7 +36,7 @@ public class Iterate<T> {
   
   
   public Iterate(Iterator<T> it) {
-    this.iter = NotNull.of(it).getOrFail("Bad null Iterator");
+    this.iter = NotMatch.notNull(it).getOrFail("Bad null Iterator");
   }
   
   

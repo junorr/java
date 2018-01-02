@@ -19,31 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools;
+package us.pserver.tools.om;
+
+import us.pserver.tools.NotMatch;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/12/2017
- * @param <T>
+ * @version 0.0 - 02/01/2018
  */
-public class NotEquals<T> extends NotMatch<T> {
+public class BooleanString extends AbstractTypedString<Boolean> {
   
-  private final Object other;
+  public BooleanString(String value) {
+    super(NotMatch.notEmpty(value).getOrFail(), boolean.class, Boolean.class);
+  }
 
-  public NotEquals(T t, Object other) {
-    super(t, o->o.equals(other));
-    this.other = NotNull.of(other).getOrFail();
-  }
-  
   @Override
-  public void failIfNotMatch() {
-    this.failIfNotMatch(String.format("Not equals values (%s != %s)", this.get(), other));
+  public Boolean get() {
+    return Boolean.parseBoolean(string);
   }
-  
-  
-  public static <U> NotEquals<U> of(U val, Object other) {
-    return new NotEquals(val, other);
-  }
-  
+
 }

@@ -19,32 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools;
+package us.pserver.tools.om;
 
-import java.lang.reflect.Array;
+import us.pserver.tools.NotMatch;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/12/2017
+ * @version 0.0 - 02/01/2018
  */
-public class NotEmptyArray<T> extends NotEmpty<T> {
+public class IntegerString extends AbstractTypedString<Integer> {
+  
+  public IntegerString(String value) {
+    super(NotMatch.notEmpty(value).getOrFail(), int.class, Integer.class);
+  }
 
-  public NotEmptyArray(T t) {
-    super(t);
-  }
-  
   @Override
-  public void failIfEmpty() {
-    this.failIfEmpty("Bad null empty array");
+  public Integer get() {
+    return Integer.parseInt(string);
   }
-  
-  @Override
-  public void failIfEmpty(String message) {
-    this.failIfNull("Bad null String");
-    if(this.get().getClass().isArray() && Array.getLength(this.get()) == 0) {
-      throw new IllegalArgumentException(message);
-    }
-  }
-  
+
 }

@@ -19,30 +19,28 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools;
+package us.pserver.tools.om;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import us.pserver.tools.NotMatch;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/12/2017
+ * @version 0.0 - 02/01/2018
  */
-public class NotEmptyString extends NotEmpty<String> {
+public class LocalTimeString extends AbstractTypedString<LocalTime> {
+  
+  public LocalTimeString(String value) {
+    super(NotMatch.notEmpty(value).getOrFail(), LocalTime.class);
+  }
 
-  public NotEmptyString(String t) {
-    super(t);
-  }
-  
   @Override
-  public void failIfEmpty() {
-    this.failIfEmpty("Bad empty String");
+  public LocalTime get() {
+    return TypedStringException.rethrow(()->
+        LocalTime.from(DateTimeFormatter.ISO_TIME.parse(string))
+    );
   }
-  
-  @Override
-  public void failIfEmpty(String message) {
-    this.failIfNull("Bad null String");
-    if(this.get().isEmpty()) {
-      throw new IllegalArgumentException(message);
-    }
-  }
-  
+
 }

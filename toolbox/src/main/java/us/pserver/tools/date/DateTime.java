@@ -28,7 +28,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalUnit;
 import java.util.Date;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.NotMatch;
 
 /**
  *
@@ -128,19 +128,19 @@ public interface DateTime {
     
     
     DateTimeImpl(Date date) {
-      this.date = new Date(NotNull.of(date).getOrFail().getTime());
+      this.date = new Date(NotMatch.notNull(date).getOrFail().getTime());
     }
     
     
     DateTimeImpl(ZonedDateTime zd) {
-      this.date = Date.from(NotNull.of(zd).getOrFail()
+      this.date = Date.from(NotMatch.notNull(zd).getOrFail()
           .toInstant()
       );
     }
     
     
     DateTimeImpl(LocalDateTime ld) {
-      this.date = Date.from(NotNull.of(ld).getOrFail()
+      this.date = Date.from(NotMatch.notNull(ld).getOrFail()
           .atZone(ZoneId.systemDefault()).toInstant()
       );
     }
@@ -152,12 +152,12 @@ public interface DateTime {
     
     
     DateTimeImpl(Instant it) {
-      this.date = Date.from(NotNull.of(it).getOrFail());
+      this.date = Date.from(NotMatch.notNull(it).getOrFail());
     }
     
     
     DateTimeImpl(DateTime dt) {
-      this.date = new Date(NotNull.of(dt).getOrFail().toDate().getTime());
+      this.date = new Date(NotMatch.notNull(dt).getOrFail().toDate().getTime());
     }
     
 

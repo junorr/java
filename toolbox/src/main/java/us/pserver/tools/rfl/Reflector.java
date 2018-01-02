@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.NotMatch;
 
 /**
  * Reflection utils
@@ -366,7 +366,7 @@ public class Reflector {
 	 * @return Valor contido no campo.
 	 */
 	public Object get() {
-    NotNull.of(fld).failIfNull("Field not selected");
+    NotMatch.notNull(fld).failIfNotMatch("Field not selected");
 		try {
   		if(!fld.isAccessible())
     		fld.setAccessible(true);
@@ -374,7 +374,7 @@ public class Reflector {
         return fld.get(null);
       }
       else {
-        NotNull.of(obj).failIfNull("Object field owner not selected");
+        NotMatch.notNull(obj).failIfNotMatch("Object field owner not selected");
         return fld.get(obj);
       }
 		} catch(Exception ex) {

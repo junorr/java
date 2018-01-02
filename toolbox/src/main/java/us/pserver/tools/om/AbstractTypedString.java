@@ -19,19 +19,44 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools;
+package us.pserver.tools.om;
+
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.List;
+import us.pserver.tools.NotMatch;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 31/12/2017
  */
-public interface TypedString<T> {
+public abstract class AbstractTypedString<T> implements TypedString<T> {
+  
+  protected final List<Class> types;
+  
+  protected final String string;
+  
+  public AbstractTypedString(String str, Class ... types) {
+    this(str, Arrays.asList(NotMatch.notEmpty(types).getOrFail()));
+  }
+  
+  public AbstractTypedString(String str, List<Class> types) {
+    this.string = NotMatch.notEmpty(str).getOrFail();
+    this.types = NotMatch.notEmpty(types).getOrFail();
+  }
+  
+  @Override
+  public boolean isTypeOf(Class type) {
+    return types.stream().anyMatch(c->c.isAssignableFrom(type));
+  }
+  
+  @Override 
+  public abstract T get() throws TypedStringException;
+  
+  @Override
+  public String toString() {
+    return string;
+  }
 
-  public boolean isTypeFor(Class type);
-  
-  public T getTyped();
-  
-  public String get();
-  
 }

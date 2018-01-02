@@ -33,7 +33,7 @@ public class ThrowableWhile<A> {
   
   public ThrowableWhile(A attachment, ThrowablePredicate<A> predicate) {
     this.attachment = attachment;
-    this.predicate = NotNull.of(predicate).getOrFail("Bad null Predicate");
+    this.predicate = NotMatch.notNull(predicate).getOrFail("Bad null Predicate");
   }
   
   

@@ -68,7 +68,7 @@ public class RandomString {
   public RandomString(int size, StringCase scase) {
     if(size < 1) throw new IllegalArgumentException("Bad String size (< 1)");
     this.size = size;
-    this.scase = NotNull.of(scase).getOrFail("Bad null StringCase");
+    this.scase = NotMatch.notNull(scase).getOrFail("Bad null StringCase");
     this.rdm = new Random(System.currentTimeMillis());
   }
   

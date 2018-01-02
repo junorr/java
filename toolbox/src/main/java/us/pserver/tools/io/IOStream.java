@@ -13,7 +13,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.NotMatch;
 
 
 /**
@@ -39,8 +39,8 @@ public class IOStream implements Closeable {
   
   
   public IOStream(InputStream in, OutputStream out, int bufferSize) {
-    this.in = NotNull.of(in).getOrFail("Bad null InputStream");
-    this.out = NotNull.of(out).getOrFail("Bad null OutputStream");
+    this.in = NotMatch.notNull(in).getOrFail("Bad null InputStream");
+    this.out = NotMatch.notNull(out).getOrFail("Bad null OutputStream");
     bufsize = bufferSize;
   }
   

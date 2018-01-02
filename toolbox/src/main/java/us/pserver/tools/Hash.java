@@ -46,7 +46,7 @@ public class Hash {
   
   
   public Hash(MessageDigest md) {
-    digest = NotNull.of(md).getOrFail("Bad null MessageDigest");
+    digest = NotMatch.notNull(md).getOrFail("Bad null MessageDigest");
   }
   
   
@@ -71,21 +71,19 @@ public class Hash {
   
   
   public String of(String str) {
-    return bytesToHex(digest.digest(UTF8String.from(
-        NotNull.of(str).getOrFail("Bad null String")
-    ).getBytes()));
+    return bytesToHex(digest.digest(UTF8String.from(str).getBytes()));
   }
   
   
   public String of(byte[] bs) {
     return bytesToHex(digest.digest(
-        NotNull.of(bs).getOrFail("Bad null byte array"))
+        NotMatch.notNull(bs).getOrFail("Bad null byte array"))
     );
   }
   
   
   public String of(byte[] bs, int off, int len) {
-    digest.update(NotNull.of(bs).getOrFail("Bad null byte array"), off, len);
+    digest.update(NotMatch.notNull(bs).getOrFail("Bad null byte array"), off, len);
     return bytesToHex(digest.digest());
   }
   

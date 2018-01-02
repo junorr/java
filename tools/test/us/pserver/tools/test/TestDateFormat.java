@@ -22,6 +22,7 @@
 package us.pserver.tools.test;
 
 import java.time.Instant;
+import java.time.OffsetTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import us.pserver.date.DateTime;
@@ -43,6 +44,7 @@ public class TestDateFormat {
     System.out.println(DateTime.of(dt).toInstant());
     System.out.println(DateTime.of(dt).toZonedDT().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
     System.out.println(DateTime.of(DateTime.of(dt).toInstant()).format("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+    System.out.println(OffsetTime.parse("08:30-03:00"));
   }
   
 }
