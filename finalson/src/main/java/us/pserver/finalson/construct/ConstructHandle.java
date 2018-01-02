@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import us.pserver.finalson.FinalsonConfig;
 import us.pserver.finalson.mapping.TypeMapping;
-import us.pserver.finalson.tools.NotNull;
+import us.pserver.tools.NotNull;
 
 /**
  *

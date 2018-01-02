@@ -25,7 +25,7 @@ import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.function.Predicate;
 import us.pserver.finalson.strategy.MethodHandleInfo;
-import us.pserver.finalson.tools.NotNull;
+import us.pserver.tools.NotNull;
 
 /**
  *

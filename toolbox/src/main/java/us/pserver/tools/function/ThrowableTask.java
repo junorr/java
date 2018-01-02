@@ -19,67 +19,21 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.tools;
-
-import java.util.function.Consumer;
+package us.pserver.tools.function;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 28/11/2015
+ * @version 0.0 - 20/09/2017
  */
-public class NotNull<T> {
-
-  private T obj;
+@FunctionalInterface
+public interface ThrowableTask {
+  
+  public void run() throws Exception;
   
   
-  NotNull(T t) {
-    obj = t;
-  }
-  
-  
-  public static <T> NotNull<T> of(T obj) {
-    return new NotNull<T>(obj);
-  }
-  
-  public boolean isNull() {
-    return obj == null;
-  }
-  
-  
-  public T get() {
-    return obj;
-  }
-  
-  
-  public void ifNotNull(Consumer<T> cs) {
-    if(obj != null) cs.accept(obj);
-  }
-  
-  
-  public T getOrFail() throws NullPointerException {
-    failIfNull();
-    return obj;
-  }
-  
-  
-  public void failIfNull() throws NullPointerException {
-    if(obj == null) {
-      throw new NullPointerException("Bad Null Value");
-    }
-  }
-  
-  
-  public T getOrFail(String msg) throws NullPointerException {
-    NotNull.this.failIfNull(msg);
-    return obj;
-  }
-  
-  
-  public void failIfNull(String msg) throws NullPointerException {
-    if(obj == null) {
-      throw new NullPointerException(msg);
-    }
+  public static ThrowableTask of(Runnable r) {
+    return r::run;
   }
   
 }

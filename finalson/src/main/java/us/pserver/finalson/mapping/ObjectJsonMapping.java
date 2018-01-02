@@ -29,7 +29,7 @@ import us.pserver.finalson.FinalsonConfig;
 import us.pserver.finalson.strategy.JsonMappingStrategy;
 import us.pserver.finalson.strategy.MethodHandleInfo;
 import static us.pserver.finalson.tools.JsonObjectProperties.PROP_CLASS;
-import us.pserver.finalson.tools.NotNull;
+import us.pserver.tools.NotNull;
 
 /**
  *

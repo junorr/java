@@ -25,9 +25,7 @@ package us.pserver.kumuluzee.hello2;
 import java.io.IOException;
 import java.nio.file.Files;
 import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -40,21 +38,13 @@ import static us.pserver.kumuluzee.hello2.HeadResource.HEADER_IF_NONE_MATCH;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/12/2017
  */
-@Path("/{res:.*}")
-public class GetResource extends HeadResource {
+@javax.ws.rs.Path("/{res:.*}")
+public class StaticResource extends HeadResource {
  
-  public GetResource() {
+  public StaticResource() {
     super();
   }
 
-  @HEAD
-  public Response headResource(@Context UriInfo uri,
-      @HeaderParam(HEADER_IF_MATCH) String ifMatch,
-      @HeaderParam(HEADER_IF_NONE_MATCH) String ifNoneMatch) throws IOException {
-    return Response.status(checkResource(uri, ifMatch, ifNoneMatch)).build();
-  }
-
-  
   @GET
   public Response getResource(@Context UriInfo uri,
       @HeaderParam(HEADER_IF_MATCH) String ifMatch,

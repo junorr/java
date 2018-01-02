@@ -19,26 +19,32 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.construct;
+package us.pserver.tools;
 
-import com.google.gson.JsonObject;
-import java.util.List;
-import us.pserver.finalson.strategy.MethodHandleInfo;
+import java.util.Collection;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/12/2017
+ * @version 0.0 - 31/12/2017
  */
-public interface ConstructorInference extends JsonContainer {
+public class NotEmptyCollection<T extends Collection> extends NotEmpty<T> {
 
-  public MethodHandleInfo infer();
-  
-  public Class getType();
-  
-  public List<ConstructParam> getParameters();
+  public NotEmptyCollection(T t) {
+    super(t);
+  }
   
   @Override
-  public JsonObject getJson();
+  public void failIfEmpty() {
+    this.failIfEmpty("Bad empty Collection");
+  }
+  
+  @Override
+  public void failIfEmpty(String message) {
+    this.failIfNull("Bad null String");
+    if(this.get().isEmpty()) {
+      throw new IllegalArgumentException(message);
+    }
+  }
   
 }

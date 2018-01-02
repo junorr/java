@@ -23,16 +23,9 @@ package us.pserver.finalson.mapping;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import java.lang.reflect.Parameter;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.function.Predicate;
 import us.pserver.finalson.FinalsonConfig;
-import us.pserver.finalson.strategy.JavaMappingStrategy;
-import us.pserver.finalson.strategy.MethodHandleInfo;
-import us.pserver.finalson.strategy.condition.CombinedFallbackCondition;
+import us.pserver.finalson.construct.ConstructHandleInference;
+import us.pserver.finalson.construct.DefaultConstructInference;
 import static us.pserver.finalson.tools.JsonObjectProperties.PROP_CLASS;
 
 /**
@@ -44,11 +37,8 @@ public class ObjectJavaMapping implements JavaMapping {
   
   private final FinalsonConfig config;
   
-  private final JavaMappingStrategy strategy;
-  
   public ObjectJavaMapping(FinalsonConfig config) {
     this.config = config;
-    this.strategy = new JavaMappingStrategy(config);
   }
 
   @Override
@@ -56,37 +46,14 @@ public class ObjectJavaMapping implements JavaMapping {
     if(!elt.isJsonObject() || !elt.getAsJsonObject().has(PROP_CLASS)) {
       throw new IllegalArgumentException("Not a JsonObject");
     }
-    Optional<MethodHandleInfo> cct = strategy.apply(elt).stream().max(
-        (a,b)->Integer.compare(a.getParameters().size(), b.getParameters().size())
-    );
     JsonObject job = elt.getAsJsonObject();
-    if(!cct.isPresent()) {
-      throw new IllegalArgumentException("No valid Contructor found for "
-          + job.get(PROP_CLASS));
-    }
-    List args = new LinkedList();
-    for(Parameter p : cct.get().getParameters()) {
-      Optional<TypeMapping> tmap = config.getTypeMappingFor((Class)p.getType());
-      if(!tmap.isPresent()) {
-        throw new IllegalStateException("No TypeMapping found for "
-            + p.getType().getName());
-      }
-      Optional<JsonElement> arg = job.entrySet().stream()
-          .filter(match(p))
-          .map(Entry::getValue).findAny();
-      args.add(arg.get());
-    }
-    return null;
+    TypeMapping<Class> tmap = config.getTypeMappingFor(Class.class).get();
+    Class type = tmap.fromJson(job.get(PROP_CLASS));
+    ConstructHandleInference cif = new DefaultConstructInference(config, type, job);
+    return cif.infer().create();
   }
   
   
-  private Predicate<Entry<String,JsonElement>> match(Parameter par) {
-    return e->(par.getName().equals(e.getKey()) 
-        && AcceptableType.isCompatible(e.getValue(), par.getType())) 
-        || AcceptableType.isCompatible(e.getValue(), par.getType());
-  }
-
-
   @Override
   public boolean accept(Class type) {
     return Object.class.isAssignableFrom(type);

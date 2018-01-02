@@ -30,7 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import us.pserver.finalson.tools.NotNull;
+import us.pserver.tools.NotNull;
 
 /**
  *

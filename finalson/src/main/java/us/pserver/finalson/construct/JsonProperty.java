@@ -24,7 +24,7 @@ package us.pserver.finalson.construct;
 import com.google.gson.JsonElement;
 import java.util.Map;
 import java.util.Objects;
-import us.pserver.finalson.tools.NotNull;
+import us.pserver.tools.NotNull;
 
 /**
  *

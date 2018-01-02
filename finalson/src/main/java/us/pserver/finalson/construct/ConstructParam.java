@@ -23,7 +23,7 @@ package us.pserver.finalson.construct;
 
 import java.lang.reflect.Parameter;
 import java.util.Objects;
-import us.pserver.finalson.tools.NotNull;
+import us.pserver.tools.NotNull;
 
 /**
  *

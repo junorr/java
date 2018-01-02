@@ -21,7 +21,8 @@
 
 package us.pserver.finalson;
 
-import us.pserver.finalson.tools.NotNull;
+import us.pserver.tools.NotNull;
+
 
 /**
  *

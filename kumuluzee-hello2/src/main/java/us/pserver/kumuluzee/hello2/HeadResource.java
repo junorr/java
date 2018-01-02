@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -79,7 +80,6 @@ public class HeadResource {
  
   public HeadResource() {
     this.basePath = DEV_WEBAPP_PATH;
-    System.out.printf("* basePath=%s%n", basePath.toAbsolutePath());
     this.mimeType = new FileMimeType();
     this.resource = basePath;
     this.etag = "";
@@ -91,8 +91,8 @@ public class HeadResource {
   }
  
  
-  protected java.nio.file.Path getPath(UriInfo uri) {
-    java.nio.file.Path res = Paths.get("./");
+  protected Path getPath(UriInfo uri) {
+    Path res = Paths.get("./");
     List<PathSegment> paths = uri.getPathSegments();
     if(isEmpty(paths)) {
       res = basePath.resolve(res.resolve(DEFAULT_RESOURCE));
@@ -101,7 +101,7 @@ public class HeadResource {
       for(PathSegment p : paths) {
         res = res.resolve(p.getPath());
       }
-      res = basePath.resolve(resource);
+      res = basePath.resolve(res);
     }
     return res;
   }
@@ -109,7 +109,6 @@ public class HeadResource {
  
   public Status checkResource(UriInfo uri, String ifMatch, String ifNoneMatch) throws IOException {
     resource = getPath(uri);
-    System.out.printf("* resource=%s%n", resource);
     if(!isParent(basePath, resource)) {
       return Status.BAD_REQUEST;
     }
@@ -121,7 +120,7 @@ public class HeadResource {
   }
   
   
-  protected boolean isParent(java.nio.file.Path parent, java.nio.file.Path child) {
+  protected boolean isParent(Path parent, Path child) {
     try {
       return child.toRealPath(LinkOption.NOFOLLOW_LINKS).startsWith(
           parent.toRealPath(LinkOption.NOFOLLOW_LINKS)
@@ -159,7 +158,7 @@ public class HeadResource {
   }
  
  
-  protected String createETag(java.nio.file.Path path) throws IOException {
+  protected String createETag(Path path) throws IOException {
     sha1.reset();
     sha1.update(asBytes(path.toAbsolutePath().toString()));
     boolean exist = Files.exists(path);

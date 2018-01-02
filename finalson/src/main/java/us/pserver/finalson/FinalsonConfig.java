@@ -36,7 +36,7 @@ import us.pserver.finalson.mapping.LocalDateTimeMapping;
 import us.pserver.finalson.mapping.PathMapping;
 import us.pserver.finalson.mapping.TypeMapping;
 import us.pserver.finalson.mapping.ZonedDateTimeMapping;
-import us.pserver.finalson.tools.NotNull;
+import us.pserver.tools.NotNull;
 
 /**
  *
