@@ -21,27 +21,22 @@
 
 package us.pserver.tools.om;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import us.pserver.tools.NotMatch;
+import java.net.InetAddress;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class DateString extends AbstractTypedString<Date> {
+public class InetAddressString extends AbstractTypedString<InetAddress> {
   
-  public static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-  
-  public DateString(String value) {
-    super(NotMatch.notEmpty(value).getOrFail(), Date.class);
+  public InetAddressString() {
+    super(InetAddress.class);
   }
 
   @Override
-  public Date get() throws TypedStringException {
-    return TypedStringException.rethrow(()->DEFAULT_DATE_FORMAT.parse(string));
+  public InetAddress apply(String string) throws TypedStringException {
+    return TypedStringException.rethrow(()->InetAddress.getByName(string));
   }
 
 }

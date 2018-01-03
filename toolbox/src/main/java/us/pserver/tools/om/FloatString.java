@@ -21,25 +21,20 @@
 
 package us.pserver.tools.om;
 
-import java.time.OffsetTime;
-import java.time.format.DateTimeFormatter;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class OffsetTimeString extends AbstractTypedString<OffsetTime> {
+public class FloatString extends AbstractTypedString<Float> {
   
-  public OffsetTimeString() {
-    super(OffsetTime.class);
+  public FloatString() {
+    super(float.class, Float.class);
   }
 
   @Override
-  public OffsetTime apply(String string) {
-    return TypedStringException.rethrow(()->
-        OffsetTime.from(DateTimeFormatter.ISO_TIME.parse(string))
-    );
+  public Float apply(String string) {
+    return Float.parseFloat(string);
   }
 
 }

@@ -31,13 +31,17 @@ import java.util.List;
  */
 public class TypedStrings {
 
-  public static final String DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}";
+  public static final String LOCAL_DATE_TIME_PATTERN = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?";
   
-  public static final String DATE_TIME_PATTERN = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*";
+  public static final String LOCAL_DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}";
   
   public static final String LOCAL_TIME_PATTERN = "\\d{2}:\\d{2}(:\\d{2})?(\\.\\d+)?";
   
   public static final String OFFSET_TIME_PATTERN = "\\d{2}:\\d{2}(:\\d{2})?(\\.\\d+)?(-|\\+)\\d{2}:\\d{2}";
+  
+  public static final String ZONED_DATE_TIME_PATTERN = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(-|\\+)\\d{2}:\\d{2}(\\[[\\w|\\/|-]+\\])?";
+  
+  public static final String INSTANT_PATTERN = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z";
   
   public static final String CLASS_PATTERN = "\\w+\\..*\\.\\w+";
   
@@ -55,6 +59,19 @@ public class TypedStrings {
   
   public TypedStrings() {
     this.types = new ArrayList<>();
+    types.add(new BooleanString());
+    types.add(new ClassString());
+    types.add(new DoubleString());
+    types.add(new InetAddressString());
+    types.add(new InstantString());
+    types.add(new IntegerString());
+    types.add(new LocalDateString());
+    types.add(new LocalDateTimeString());
+    types.add(new LocalTimeString());
+    types.add(new LongString());
+    types.add(new OffsetTimeString());
+    types.add(new PathString());
+    types.add(new ZonedDateTimeString());
   }
   
 }

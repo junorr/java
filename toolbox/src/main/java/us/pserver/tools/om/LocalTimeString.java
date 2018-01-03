@@ -23,7 +23,6 @@ package us.pserver.tools.om;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import us.pserver.tools.NotMatch;
 
 /**
  *
@@ -32,12 +31,12 @@ import us.pserver.tools.NotMatch;
  */
 public class LocalTimeString extends AbstractTypedString<LocalTime> {
   
-  public LocalTimeString(String value) {
-    super(NotMatch.notEmpty(value).getOrFail(), LocalTime.class);
+  public LocalTimeString() {
+    super(LocalTime.class);
   }
 
   @Override
-  public LocalTime get() {
+  public LocalTime apply(String string) {
     return TypedStringException.rethrow(()->
         LocalTime.from(DateTimeFormatter.ISO_TIME.parse(string))
     );

@@ -21,8 +21,6 @@
 
 package us.pserver.tools.om;
 
-import us.pserver.tools.NotMatch;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -30,12 +28,12 @@ import us.pserver.tools.NotMatch;
  */
 public class BooleanString extends AbstractTypedString<Boolean> {
   
-  public BooleanString(String value) {
-    super(NotMatch.notEmpty(value).getOrFail(), boolean.class, Boolean.class);
+  public BooleanString() {
+    super(boolean.class, Boolean.class);
   }
 
   @Override
-  public Boolean get() {
+  public Boolean apply(String string) {
     return Boolean.parseBoolean(string);
   }
 

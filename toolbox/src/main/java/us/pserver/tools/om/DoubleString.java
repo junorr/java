@@ -21,8 +21,6 @@
 
 package us.pserver.tools.om;
 
-import us.pserver.tools.NotMatch;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -30,12 +28,12 @@ import us.pserver.tools.NotMatch;
  */
 public class DoubleString extends AbstractTypedString<Double> {
   
-  public DoubleString(String value) {
-    super(NotMatch.notEmpty(value).getOrFail(), double.class, Double.class);
+  public DoubleString() {
+    super(double.class, Double.class);
   }
 
   @Override
-  public Double get() {
+  public Double apply(String string) {
     return Double.parseDouble(string);
   }
 

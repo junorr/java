@@ -21,25 +21,22 @@
 
 package us.pserver.tools.om;
 
-import java.time.OffsetTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class OffsetTimeString extends AbstractTypedString<OffsetTime> {
+public class InstantString extends AbstractTypedString<Instant> {
   
-  public OffsetTimeString() {
-    super(OffsetTime.class);
+  public InstantString() {
+    super(Instant.class);
   }
 
   @Override
-  public OffsetTime apply(String string) {
-    return TypedStringException.rethrow(()->
-        OffsetTime.from(DateTimeFormatter.ISO_TIME.parse(string))
-    );
+  public Instant apply(String string) {
+    return Instant.parse(string);
   }
 
 }

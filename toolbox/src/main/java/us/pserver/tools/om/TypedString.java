@@ -21,16 +21,19 @@
 
 package us.pserver.tools.om;
 
+import java.util.function.Function;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 31/12/2017
  * @param <T>
  */
-public interface TypedString<T> {
+public interface TypedString<T> extends Function<String,T> {
 
   public boolean isTypeOf(Class type);
   
-  public T get() throws TypedStringException;
+  @Override
+  public T apply(String str) throws TypedStringException;
   
 }

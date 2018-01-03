@@ -21,25 +21,23 @@
 
 package us.pserver.tools.om;
 
-import java.time.OffsetTime;
-import java.time.format.DateTimeFormatter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class OffsetTimeString extends AbstractTypedString<OffsetTime> {
+public class PathString extends AbstractTypedString<Path> {
   
-  public OffsetTimeString() {
-    super(OffsetTime.class);
+  public PathString() {
+    super(Path.class);
   }
 
   @Override
-  public OffsetTime apply(String string) {
-    return TypedStringException.rethrow(()->
-        OffsetTime.from(DateTimeFormatter.ISO_TIME.parse(string))
-    );
+  public Path apply(String string) {
+    return Paths.get(string);
   }
 
 }

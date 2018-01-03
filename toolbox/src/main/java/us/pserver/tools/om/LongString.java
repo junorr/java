@@ -21,8 +21,6 @@
 
 package us.pserver.tools.om;
 
-import us.pserver.tools.NotMatch;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -30,12 +28,12 @@ import us.pserver.tools.NotMatch;
  */
 public class LongString extends AbstractTypedString<Long> {
   
-  public LongString(String value) {
-    super(NotMatch.notEmpty(value).getOrFail(), long.class, Long.class);
+  public LongString() {
+    super(long.class, Long.class);
   }
 
   @Override
-  public Long get() {
+  public Long apply(String string) {
     return Long.parseLong(string);
   }
 

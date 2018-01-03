@@ -22,8 +22,12 @@
 package us.pserver.tools.test;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import us.pserver.date.DateTime;
 
@@ -45,6 +49,13 @@ public class TestDateFormat {
     System.out.println(DateTime.of(dt).toZonedDT().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
     System.out.println(DateTime.of(DateTime.of(dt).toInstant()).format("yyyy-MM-dd'T'HH:mm:ss.SSS"));
     System.out.println(OffsetTime.parse("08:30-03:00"));
+    System.out.println(ZonedDateTime.parse("2017-01-03T15:00:27+02:00[America/Sao_Paulo]"));
+    long sinceEpoch = new Date().getTime();
+    System.out.println(LocalDateTime.now());
+    System.out.println("* sinceEpoch: "+ sinceEpoch);
+    System.out.println("* calcEpoch : "+ LocalDateTime.of(1970, 1, 1, 0, 0, 0).until(LocalDateTime.now(), ChronoUnit.SECONDS));
+    
+    System.out.println(new Date(LocalDateTime.of(1969, 12, 31, 22, 0, 0).until(LocalDateTime.now(), ChronoUnit.MILLIS)));
   }
   
 }

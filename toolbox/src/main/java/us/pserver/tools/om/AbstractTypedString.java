@@ -35,28 +35,20 @@ public abstract class AbstractTypedString<T> implements TypedString<T> {
   
   protected final List<Class> types;
   
-  protected final String string;
-  
-  public AbstractTypedString(String str, Class ... types) {
-    this(str, Arrays.asList(NotMatch.notEmpty(types).getOrFail()));
+  public AbstractTypedString(Class ... types) {
+    this(Arrays.asList(NotMatch.notEmpty(types).getOrFail()));
   }
   
-  public AbstractTypedString(String str, List<Class> types) {
-    this.string = NotMatch.notEmpty(str).getOrFail();
+  public AbstractTypedString(List<Class> types) {
     this.types = NotMatch.notEmpty(types).getOrFail();
   }
   
   @Override
   public boolean isTypeOf(Class type) {
-    return types.stream().anyMatch(c->c.isAssignableFrom(type));
+    return types.stream().anyMatch(c->type.isAssignableFrom(c));
   }
   
   @Override 
-  public abstract T get() throws TypedStringException;
+  public abstract T apply(String str) throws TypedStringException;
   
-  @Override
-  public String toString() {
-    return string;
-  }
-
 }

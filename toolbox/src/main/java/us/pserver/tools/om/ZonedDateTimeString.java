@@ -23,7 +23,6 @@ package us.pserver.tools.om;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import us.pserver.tools.NotMatch;
 
 /**
  *
@@ -32,12 +31,12 @@ import us.pserver.tools.NotMatch;
  */
 public class ZonedDateTimeString extends AbstractTypedString<ZonedDateTime> {
   
-  public ZonedDateTimeString(String value) {
-    super(NotMatch.notEmpty(value).getOrFail(), ZonedDateTime.class);
+  public ZonedDateTimeString() {
+    super(ZonedDateTime.class);
   }
 
   @Override
-  public ZonedDateTime get() {
+  public ZonedDateTime apply(String string) {
     return TypedStringException.rethrow(()->
         ZonedDateTime.from(DateTimeFormatter.ISO_DATE_TIME.parse(string))
     );

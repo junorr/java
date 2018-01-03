@@ -21,25 +21,34 @@
 
 package us.pserver.tools.om;
 
-import java.time.OffsetTime;
-import java.time.format.DateTimeFormatter;
+import us.pserver.tools.NotMatch;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class OffsetTimeString extends AbstractTypedString<OffsetTime> {
+public class ClassString extends AbstractTypedString<Class> {
   
-  public OffsetTimeString() {
-    super(OffsetTime.class);
+  private ClassLoader loader;
+  
+  public ClassString(ClassLoader ldr) {
+    super(Class.class);
+    this.loader = NotMatch.notNull(ldr).getOrFail("Bad null ClassLoader");
+  }
+  
+  public ClassString() {
+    this(ClassString.class.getClassLoader());
   }
 
   @Override
-  public OffsetTime apply(String string) {
-    return TypedStringException.rethrow(()->
-        OffsetTime.from(DateTimeFormatter.ISO_TIME.parse(string))
-    );
+  public Class apply(String string) throws TypedStringException {
+    try {
+      return loader.loadClass(string);
+    }
+    catch(ClassNotFoundException e) {
+      return TypedStringException.rethrow(()->Class.forName(string));
+    }
   }
 
 }

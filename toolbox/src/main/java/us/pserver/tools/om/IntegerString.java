@@ -21,8 +21,6 @@
 
 package us.pserver.tools.om;
 
-import us.pserver.tools.NotMatch;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -30,12 +28,12 @@ import us.pserver.tools.NotMatch;
  */
 public class IntegerString extends AbstractTypedString<Integer> {
   
-  public IntegerString(String value) {
-    super(NotMatch.notEmpty(value).getOrFail(), int.class, Integer.class);
+  public IntegerString() {
+    super(int.class, Integer.class);
   }
 
   @Override
-  public Integer get() {
+  public Integer apply(String string) {
     return Integer.parseInt(string);
   }
 
