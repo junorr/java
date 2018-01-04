@@ -32,38 +32,40 @@ import java.util.function.Function;
  */
 public class MappedObject implements InvocationHandler {
   
-  public static final Function<Method,String> GETTER_AS_DOT_KEY = new KeyMethodName('.', 3);
+  public static final Function<Method,String> GETTER_AS_DOTTED_KEY = new KeyMethodName('.', 3);
   
-  public static final Function<Method,String> NAME_AS_DOT_KEY = new KeyMethodName('.', 0);
+  public static final Function<Method,String> NAME_AS_DOTTED_KEY = new KeyMethodName('.', 0);
   
   public static final Function<Method,String> GETTER_AS_KEY = new KeyMethodName((char)0, 3);
   
   public static final Function<Method,String> NAME_AS_KEY = new KeyMethodName((char)0, 0);
   
-  public static final Function<Method,String> GETTER_AS_UNDERSCORE_KEY = new KeyMethodName('_', 3);
+  public static final Function<Method,String> GETTER_AS_UNDERSCORED_KEY = new KeyMethodName('_', 3);
   
-  public static final Function<Method,String> NAME_AS_UNDERSCORE_KEY = new KeyMethodName('_', 0);
+  public static final Function<Method,String> NAME_AS_UNDERSCORED_KEY = new KeyMethodName('_', 0);
   
   private final StringMap map;
   
   private final Function<Method,String> methodToKey;
   
   public MappedObject(StringMap map, Function<Method,String> methodToKey) {
-    this.map = NotNull.of(map).getOrFail("Bad null StringMap");
-    this.methodToKey = NotNull.of(methodToKey).getOrFail("Bad null method name Function");
+    this.map = NotMatch.notNull(map).getOrFail("Bad null StringMap");
+    this.methodToKey = NotMatch.notNull(methodToKey).getOrFail("Bad null method name Function");
   }
 
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-    
+    return null;
   }
   
   public Object getter(Object proxy, Method method) throws Throwable {
     
+    return null;
   }
   
   public Object setter(Object proxy, Method method, Object[] args) throws Throwable {
     
+    return null;
   }
   
   

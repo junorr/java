@@ -21,33 +21,20 @@
 
 package us.pserver.tools.om;
 
-import java.util.Arrays;
-import java.util.List;
-import us.pserver.tools.NotMatch;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/12/2017
+ * @version 0.0 - 04/01/2018
  */
-public abstract class AbstractTypedString<T> implements TypedString<T> {
+public class CharacterString extends AbstractTypedString<Character> {
   
-  protected final List<Class> types;
-  
-  public AbstractTypedString(Class ... types) {
-    this(Arrays.asList(NotMatch.notEmpty(types).getOrFail()));
+  public CharacterString() {
+    super(char.class, Character.class);
   }
-  
-  public AbstractTypedString(List<Class> types) {
-    this.types = NotMatch.notEmpty(types).getOrFail();
-  }
-  
+
   @Override
-  public boolean isTypeOf(Class type) {
-    return types.stream().anyMatch(c->type.isAssignableFrom(c));
+  public Character apply(String str) throws TypedStringException {
+    return str.charAt(0);
   }
-  
-  @Override 
-  public abstract T apply(String str) throws TypedStringException;
-  
+
 }
