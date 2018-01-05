@@ -133,9 +133,10 @@ public class TestTypedStrings {
   @Test
   public void zonedDateTimeTypedString() throws UnknownHostException {
     ZonedDateTime zdt = LocalDateTime.of(2017, 1, 4, 15, 44, 22).atZone(ZoneId.of("America/Sao_Paulo"));
-    System.out.println(zdt);
-    String sld = "2017-01-04T15:44:22-02:00[America/Sao_Paulo]";
-    Assertions.assertEquals(zdt, ts.asType(sld, ZonedDateTime.class));
+    ZonedDateTime dt = LocalDateTime.of(2017, 1, 4, 15, 44, 22).atZone(ZoneOffset.ofHours(-2).normalized());
+    System.out.println(dt);
+    String sld = "2017-01-04T15:44:22-02:00";
+    Assertions.assertEquals(dt, ts.asType(sld, ZonedDateTime.class));
   }
   
   @Test
@@ -163,6 +164,12 @@ public class TestTypedStrings {
   }
   
   @Test
+  public void guessCharacterFromPattern() {
+    String str = "/";
+    Assertions.assertEquals(Character.class, ts.guessTypeFromPattern(str));
+  }
+  
+  @Test
   public void guessDoubleFromPattern() {
     String str = "-5.5";
     Assertions.assertEquals(Double.class, ts.guessTypeFromPattern(str));
@@ -170,7 +177,7 @@ public class TestTypedStrings {
   
   @Test
   public void guessInstantFromPattern() {
-    String str = "-5.5";
+    String str = "+5.5";
     Assertions.assertEquals(Double.class, ts.guessTypeFromPattern(str));
   }
   

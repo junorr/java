@@ -29,9 +29,13 @@ import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import us.pserver.tools.ForEach;
+import us.pserver.tools.NotMatch;
 
 /**
  *
@@ -42,7 +46,9 @@ public class TypedStrings {
 
   public static final String BOOLEAN_PATTERN = "(?i)(true|false)";
   
-  public static final String CLASS_PATTERN = "\\w+\\..*\\.\\w+";
+  public static final String CHAR_PATTERN = "^.{1}";
+  
+  public static final String CLASS_PATTERN = "[^\\d\\s\\/]\\w+(\\.[^\\d\\s\\/]\\w+)+";
   
   public static final String DOUBLE_PATTERN = "(-|\\+)?\\d+\\.?\\d*";
   
@@ -65,9 +71,23 @@ public class TypedStrings {
   
   private final List<TypedString<?>> types;
   
+  private final Map<String,Class> patterns;
+  
+  private final ClassLoader ldr;
+  
+  public TypedStrings() {
+    this(ClassLoader.getSystemClassLoader());
+  }
   
   public TypedStrings(ClassLoader ldr) {
+    this.ldr = NotMatch.notNull(ldr).getOrFail("Bad null ClassLoader");
     this.types = new ArrayList<>();
+    this.patterns = new HashMap<>();
+    this.initTypes(ldr);
+    this.initPatterns();
+  }
+  
+  private void initTypes(ClassLoader ldr) {
     types.add(new BooleanString());
     types.add(new ByteString());
     types.add(new CharacterString());
@@ -88,12 +108,31 @@ public class TypedStrings {
     types.add(new ZonedDateTimeString());
   }
   
-  public TypedStrings() {
-    this(null);
+  private void initPatterns() {
+    patterns.put(BOOLEAN_PATTERN,         Boolean.class);
+    patterns.put(CHAR_PATTERN,            Character.class);
+    patterns.put(CLASS_PATTERN,           Class.class);
+    patterns.put(DOUBLE_PATTERN,          Double.class);
+    patterns.put(INSTANT_PATTERN,         Instant.class);
+    patterns.put(IPV4_PATTERN,            InetAddress.class);
+    patterns.put(LOCAL_DATE_PATTERN,      LocalDate.class);
+    patterns.put(LOCAL_DATE_TIME_PATTERN, LocalDateTime.class);
+    patterns.put(LOCAL_TIME_PATTERN,      LocalTime.class);
+    patterns.put(LONG_PATTERN,            Long.class);
+    patterns.put(OFFSET_TIME_PATTERN,     OffsetTime.class);
+    patterns.put(ZONED_DATE_TIME_PATTERN, ZonedDateTime.class);
+  }
+  
+  public ClassLoader getClassLoader() {
+    return ldr;
   }
   
   public List<TypedString<?>> getTypesList() {
     return types;
+  }
+  
+  public Map<String,Class> getPatternsMap() {
+    return patterns;
   }
   
   public boolean isTypedAvailable(Class cls) {
@@ -123,42 +162,20 @@ public class TypedStrings {
     return this;
   }
   
+  public TypedStrings put(String pattern, Class type, TypedString<?> typed) {
+    int idx = ForEach.of(types).indexOf(t->t.isTypeOf(type));
+    if(idx >= 0) types.remove(idx);
+    types.add(typed);
+    patterns.put(pattern, type);
+    return this;
+  }
+  
   public Class<?> guessTypeFromPattern(String str) {
-    Class<?> cls = String.class;
-    if(str.matches(BOOLEAN_PATTERN)) {
-      cls = Boolean.class;
-    }
-    else if(str.matches(CLASS_PATTERN)) {
-      cls = Class.class;
-    }
-    else if(str.matches(DOUBLE_PATTERN)) {
-      cls = Double.class;
-    }
-    else if(str.matches(INSTANT_PATTERN)) {
-      cls = Instant.class;
-    }
-    else if(str.matches(IPV4_PATTERN)) {
-      cls = InetAddress.class;
-    }
-    else if(str.matches(LOCAL_DATE_PATTERN)) {
-      cls = LocalDate.class;
-    }
-    else if(str.matches(LOCAL_DATE_TIME_PATTERN)) {
-      cls = LocalDateTime.class;
-    }
-    else if(str.matches(LOCAL_TIME_PATTERN)) {
-      cls = LocalTime.class;
-    }
-    else if(str.matches(LONG_PATTERN)) {
-      cls = Long.class;
-    }
-    else if(str.matches(OFFSET_TIME_PATTERN)) {
-      cls = OffsetTime.class;
-    }
-    else if(str.matches(ZONED_DATE_TIME_PATTERN)) {
-      cls = ZonedDateTime.class;
-    }
-    return cls;
+    Optional<Class> opt = patterns.entrySet().stream()
+        .filter(e->str.matches(e.getKey()))
+        .map(Entry::getValue)
+        .findFirst();
+    return opt.orElse(String.class);
   }
   
 }
