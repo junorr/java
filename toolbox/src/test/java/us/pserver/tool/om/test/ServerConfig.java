@@ -19,28 +19,43 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.om.test;
+package us.pserver.tool.om.test;
 
-import java.nio.file.Paths;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import us.pserver.tools.om.MappedObject;
+import java.net.InetAddress;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 05/01/2018
  */
-public class TestUnixEnvironment {
+public interface ServerConfig {
 
-  @Test
-  public void unixEnvConfig() {
-    UnixEnvConfig cfg = MappedObject.fromEnvironment(UnixEnvConfig.class);
-    System.out.println(cfg);
-    Assertions.assertEquals("juno", cfg.getUsername());
-    Assertions.assertEquals(Paths.get("/home/juno"), cfg.getHome());
-    Assertions.assertEquals(1888, cfg.getSshAgentPid());
-    Assertions.assertEquals(1, cfg.getQtAccessibility());
-  }
+  public String getServerFullAddress();
+  
+  public int getServerPort();
+  
+  public InetAddress getServerAddress();
+  
+  public String getUserName();
+  
+  public String getUserKey();
+  
+  public String getUserCredentials();
+  
+  public ServerConfig setServerFullAddress(String full);
+  
+  public ServerConfig setServerPort(int port);
+  
+  public ServerConfig setServerPort(String port);
+  
+  public ServerConfig setServerAddress(InetAddress addr);
+  
+  public ServerConfig setServerAddress(String addr);
+  
+  public ServerConfig setUserName(String name);
+  
+  public ServerConfig setUserKey(String key);
+  
+  public ServerConfig setUserCredentials(String cred);
   
 }

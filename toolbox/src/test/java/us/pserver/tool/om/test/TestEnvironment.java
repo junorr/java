@@ -19,46 +19,40 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.om.test;
+package us.pserver.tool.om.test;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import us.pserver.tools.om.MappedObject;
+import us.pserver.tools.om.MappedObjectFactory;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 05/01/2018
  */
-public class TestMappedObject {
+public class TestEnvironment {
 
+  @Disabled
   @Test
-  public void mappedServerConfig() throws UnknownHostException {
-    ServerConfig cfg = MappedObject.builder(ServerConfig.class, new HashMap<>())
-        .withMethodKeyFunction(MappedObject.GETTER_AS_ENVIRONMENT_KEY)
-        .build();
-    cfg.setServerAddress("127.0.0.1")
-        .setServerPort("8080")
-        .setUserName("juno")
-        .setUserKey("mykey");
+  public void unixEnvConfig() {
+    UnixEnvConfig cfg = MappedObjectFactory.factory().fromEnvironment(UnixEnvConfig.class);
     System.out.println(cfg);
-    Assertions.assertEquals(InetAddress.getByName("127.0.0.1"), cfg.getServerAddress());
-    Assertions.assertEquals(8080, cfg.getServerPort());
-    Assertions.assertEquals("juno", cfg.getUserName());
+    Assertions.assertEquals("juno", cfg.getUsername());
+    Assertions.assertEquals(Paths.get("/home/juno"), cfg.getHome());
+    Assertions.assertEquals(1888, cfg.getSshAgentPid());
+    Assertions.assertEquals(1, cfg.getQtAccessibility());
   }
   
   @Test
-  public void propertiesServerConfig() throws UnknownHostException, IOException {
-    ServerConfig cfg = MappedObject.fromProperties(ServerConfig.class, Paths.get("./test.properties"));
+  public void windowsEnvConfig() throws NoSuchMethodException {
+    WindowsEnvConfig cfg = MappedObjectFactory.factory().fromEnvironment(WindowsEnvConfig.class);
     System.out.println(cfg);
-    Assertions.assertEquals(InetAddress.getByName("127.0.0.1"), cfg.getServerAddress());
-    Assertions.assertEquals(8080, cfg.getServerPort());
-    Assertions.assertEquals("juno", cfg.getUserName());
+    Assertions.assertEquals(4, cfg.getNumberOfProcessors());
+    Assertions.assertEquals("Windows_NT", cfg.getOS());
+    Assertions.assertEquals("juno", cfg.getUsername());
+    Assertions.assertEquals(Paths.get("c:/windows"), cfg.getWindir());
   }
   
 }

@@ -46,7 +46,7 @@ public class MapSort<T> {
    * @param compare The comparator used for sorting.
    */
   public MapSort(Comparator<T> compare) {
-    comp = NotMatch.notNull(compare).getOrFail("Bad null Comparator");
+    comp = Match.notNull(compare).getOrFail("Bad null Comparator");
   }
   
   

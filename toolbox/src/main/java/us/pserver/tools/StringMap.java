@@ -66,7 +66,7 @@ public class StringMap implements Map<String,String> {
   private final Map<String,String> map;
   
   public StringMap(Map<String,String> map) {
-    this.map = NotMatch.notNull(map).getOrFail("Bad null Map");
+    this.map = Match.notNull(map).getOrFail("Bad null Map");
   }
   
   @Override

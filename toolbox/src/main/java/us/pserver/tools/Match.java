@@ -21,7 +21,10 @@
 
 package us.pserver.tools;
 
+import java.io.File;
 import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Date;
 import java.util.function.Predicate;
@@ -32,7 +35,7 @@ import java.util.function.Predicate;
  * @version 0.0 - 31/12/2017
  * @param <T>
  */
-public class NotMatch<T> {
+public class Match<T> implements Predicate<T> {
   
   public static final String DEFAULT_MESSAGE = "Condition not match";
   
@@ -43,7 +46,13 @@ public class NotMatch<T> {
   
   private final String defMessage;
   
-  protected NotMatch(T t, Predicate<T> match, String message) {
+  private final Match<T> parent;
+  
+  protected Match(T t, Predicate<T> match, String message) {
+    this(t, match, message, null);
+  }
+  
+  protected Match(T t, Predicate<T> match, String message, Match<T> parent) {
     if(match == null) {
       throw new IllegalArgumentException("Bad null Predicate");
     }
@@ -53,14 +62,11 @@ public class NotMatch<T> {
     this.match = match;
     this.obj = t;
     this.defMessage = message;
+    this.parent = parent;
   }
   
-  public NotMatch(T t, Predicate<T> match) {
+  public Match(T t, Predicate<T> match) {
     this(t, match, DEFAULT_MESSAGE);
-  }
-  
-  public boolean match() {
-    return match.test(obj);
   }
   
   public T get() {
@@ -82,46 +88,108 @@ public class NotMatch<T> {
   }
   
   public void failIfNotMatch(String message) {
-    if(!match()) {
+    if(parent != null) {
+      parent.failIfNotMatch();
+    }
+    if(!test(obj)) {
       throw new IllegalArgumentException(message);
     }
   }
   
-  
-  public static <U> NotMatch<U> of(U val, Predicate<U> match) {
-    return new NotMatch(val, match);
+  public Match<T> onFail(String msg) {
+    if(msg == null) {
+      throw new IllegalArgumentException("Bad null message");
+    }
+    return new Match(obj, match, msg, parent);
+  }
+
+  @Override
+  public boolean test(T t) {
+    return match.test(t);
+  }
+
+  @Override
+  public Match<T> and(Predicate<? super T> other) {
+    return new Match(obj, match.and(other), defMessage, this);
+  }
+
+  @Override
+  public Match<T> negate() {
+    return new Match(obj, match.negate(), defMessage);
+  }
+
+  @Override
+  public Match<T> or(Predicate<? super T> other) {
+    return new Match(obj, match.or(other), defMessage, this);
+  }
+
+
+  @Override
+  public String toString() {
+    return "Match{" + "match=" + match + ", obj=" + obj + ", defMessage=" + defMessage + ", parent=" + parent + '}';
   }
   
   
-  public static <U> NotMatch<U> notNull(U val) {
-    return new NotMatch(val, v->v!=null, "Bad null value");
+  
+  public static <U> Match<U> of(U val, Predicate<U> match) {
+    return new Match(val, match);
   }
   
   
-  public static NotMatch<String> notEmpty(String str) {
-    return new NotMatch<>(str, s->s != null && !s.isEmpty(), "Bad null/empty String");
+  public static <U> Match<U> notNull(U val) {
+    return new Match(val, v->v!=null, "Bad null value");
   }
   
   
-  public static <U extends Collection<?>> NotMatch<U> notEmpty(U col) {
-    return new NotMatch<>(col, c->c != null && !c.isEmpty(), "Bad null/empty Collection");
+  public static Match<String> notEmpty(String str) {
+    return notNull(str).onFail("Bad null String")
+        .and(s->!s.isEmpty()).onFail("Bad empty String");
   }
   
   
-  public static <U> NotMatch<U[]> notEmpty(U[] array) {
-    return new NotMatch<>(array, a->a != null 
-        && a.getClass().isArray() 
-        && Array.getLength(a) > 0,
-        "Bad null/empty array"
-    );
+  public static <U extends Collection<?>> Match<U> notEmpty(U col) {
+    return notNull(col).onFail("Bad null Collection")
+        .and(s->!s.isEmpty()).onFail("Bad empty Collection");
   }
   
   
-  public static <U extends Number> NotMatch<U> notBetween(U val, U min, U max) {
+  public static <U> Match<U[]> notEmpty(U[] array) {
+    return notNull(array).onFail("Bad null array")
+        .and(a->Array.getLength(a) > 0).onFail("Bad empty Collection");
+  }
+  
+  
+  public static Match<Path> exists(Path val) {
+    return notNull(val)
+        .onFail("Bad null Path")
+        .and(p->Files.exists(p))
+        .onFail("Path does not exists");
+  }
+  
+  
+  public static Match<Path> notExists(Path val) {
+    return exists(val).negate().onFail("Path already exists");
+  }
+  
+  
+  public static Match<File> exists(File val) {
+    return notNull(val)
+        .onFail("Bad null File")
+        .and(f->Files.exists(f.toPath()))
+        .onFail("File does not exists");
+  }
+  
+  
+  public static Match<File> notExists(File val) {
+    return exists(val).negate().onFail("File already exists");
+  }
+  
+  
+  public static <U extends Number> Match<U> notBetween(U val, U min, U max) {
     notNull(val).failIfNotMatch();
     notNull(min).failIfNotMatch();
     notNull(max).failIfNotMatch();
-    return new NotMatch<>(val, v->
+    return new Match<>(val, v->
         Double.compare(v.doubleValue(), min.doubleValue()) >= 0 
             && Double.compare(v.doubleValue(), max.doubleValue()) <= 0,
         String.format("Value not Between parameters !(%f.2 < %f.2 < %f.2)", min.doubleValue(), val.doubleValue(), max.doubleValue())
@@ -129,11 +197,11 @@ public class NotMatch<T> {
   }
   
   
-  public static <U extends Number> NotMatch<U> notBetweenExclusive(U val, U min, U max) {
+  public static <U extends Number> Match<U> notBetweenExclusive(U val, U min, U max) {
     notNull(val).failIfNotMatch();
     notNull(min).failIfNotMatch();
     notNull(max).failIfNotMatch();
-    return new NotMatch<>(val, v->
+    return new Match<>(val, v->
         Double.compare(v.doubleValue(), min.doubleValue()) > 0 
             && Double.compare(v.doubleValue(), max.doubleValue()) < 0,
         String.format("Value not Between parameters !(%f.2 < %f.2 < %f.2)", min.doubleValue(), val.doubleValue(), max.doubleValue())
@@ -141,25 +209,25 @@ public class NotMatch<T> {
   }
   
   
-  public static <U extends Date> NotMatch<U> notBetween(U val, U min, U max) {
+  public static <U extends Date> Match<U> notBetween(U val, U min, U max) {
     notNull(val).failIfNotMatch();
     notNull(min).failIfNotMatch();
     notNull(max).failIfNotMatch();
-    return new NotMatch<>(val, v->
+    return new Match<>(val, v->
         v.compareTo(min) >= 0 && v.compareTo(max) <= 0,
         String.format("Value not Between parameters !(%s < %s < %s)", min, val, max)
     );
   }
   
   
-  public static <U extends Date> NotMatch<U> notBetweenExclusive(U val, U min, U max) {
+  public static <U extends Date> Match<U> notBetweenExclusive(U val, U min, U max) {
     notNull(val).failIfNotMatch();
     notNull(min).failIfNotMatch();
     notNull(max).failIfNotMatch();
-    return new NotMatch<>(val, v->
+    return new Match<>(val, v->
         v.compareTo(min) > 0 && v.compareTo(max) < 0,
         String.format("Value not Between parameters !(%s < %s < %s)", min, val, max)
     );
   }
-  
+
 }

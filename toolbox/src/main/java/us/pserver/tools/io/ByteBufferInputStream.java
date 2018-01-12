@@ -23,7 +23,7 @@ package us.pserver.tools.io;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import us.pserver.tools.NotMatch;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -36,7 +36,7 @@ public class ByteBufferInputStream extends InputStream {
   
   
   public ByteBufferInputStream(ByteBuffer buf) {
-    this.buffer = NotMatch.notNull(buf).getOrFail("Bad null buffer");
+    this.buffer = Match.notNull(buf).getOrFail("Bad null buffer");
     if(buffer.remaining() < 1) {
       throw new IllegalArgumentException("No remaining bytes to read");
     }

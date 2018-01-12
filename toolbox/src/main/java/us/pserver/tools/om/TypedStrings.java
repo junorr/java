@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import us.pserver.tools.ForEach;
-import us.pserver.tools.NotMatch;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -80,7 +80,7 @@ public class TypedStrings {
   }
   
   public TypedStrings(ClassLoader ldr) {
-    this.ldr = NotMatch.notNull(ldr).getOrFail("Bad null ClassLoader");
+    this.ldr = Match.notNull(ldr).getOrFail("Bad null ClassLoader");
     this.types = new ArrayList<>();
     this.patterns = new HashMap<>();
     this.initTypes(ldr);

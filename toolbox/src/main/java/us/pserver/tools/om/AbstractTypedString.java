@@ -23,7 +23,7 @@ package us.pserver.tools.om;
 
 import java.util.Arrays;
 import java.util.List;
-import us.pserver.tools.NotMatch;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -35,11 +35,11 @@ public abstract class AbstractTypedString<T> implements TypedString<T> {
   protected final List<Class> types;
   
   public AbstractTypedString(Class ... types) {
-    this(Arrays.asList(NotMatch.notEmpty(types).getOrFail()));
+    this(Arrays.asList(Match.notEmpty(types).getOrFail()));
   }
   
   public AbstractTypedString(List<Class> types) {
-    this.types = NotMatch.notEmpty(types).getOrFail();
+    this.types = Match.notEmpty(types).getOrFail();
   }
   
   @Override

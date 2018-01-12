@@ -21,7 +21,7 @@
 
 package us.pserver.tools.om;
 
-import us.pserver.tools.NotMatch;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -34,7 +34,7 @@ public class ClassString extends AbstractTypedString<Class> {
   
   public ClassString(ClassLoader ldr) {
     super(Class.class);
-    this.loader = NotMatch.notNull(ldr).getOrFail("Bad null ClassLoader");
+    this.loader = Match.notNull(ldr).getOrFail("Bad null ClassLoader");
   }
   
   public ClassString() {

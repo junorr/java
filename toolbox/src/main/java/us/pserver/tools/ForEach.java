@@ -38,7 +38,7 @@ public class ForEach<T> {
   private final Collection<T> col;
   
   public ForEach(Collection<T> col) {
-    this.col = NotMatch.notNull(col).getOrFail("Bad null Collection");
+    this.col = Match.notNull(col).getOrFail("Bad null Collection");
   }
   
   public void perform(Consumer<T> cs) {

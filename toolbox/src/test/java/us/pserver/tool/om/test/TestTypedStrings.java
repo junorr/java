@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.om.test;
+package us.pserver.tool.om.test;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -36,7 +36,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.tools.NotMatch;
+import us.pserver.tools.Match;
 import us.pserver.tools.om.TypedStrings;
 
 /**
@@ -77,7 +77,7 @@ public class TestTypedStrings {
     String s1 = "java.lang.String";
     String s2 = "us.pserver.tools.NotMatch";
     Assertions.assertEquals(String.class, ts.asType(s1, Class.class));
-    Assertions.assertEquals(NotMatch.class, ts.asType(s2, Class.class));
+    Assertions.assertEquals(Match.class, ts.asType(s2, Class.class));
   }
   
   @Test
