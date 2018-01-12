@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tool.om.test;
+package us.pserver.tools.om.test;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

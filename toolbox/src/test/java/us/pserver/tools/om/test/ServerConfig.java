@@ -19,23 +19,43 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tool.om.test;
+package us.pserver.tools.om.test;
 
-import java.nio.file.Path;
+import java.net.InetAddress;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/01/2018
+ * @version 0.0 - 05/01/2018
  */
-public interface WindowsEnvConfig {
+public interface ServerConfig {
 
-  public int getNumberOfProcessors();
+  public String getServerFullAddress();
   
-  public String getOS();
+  public int getServerPort();
   
-  public String getUsername();
+  public InetAddress getServerAddress();
   
-  public Path getWindir();
+  public String getUserName();
+  
+  public String getUserKey();
+  
+  public String getUserCredentials();
+  
+  public ServerConfig setServerFullAddress(String full);
+  
+  public ServerConfig setServerPort(int port);
+  
+  public ServerConfig setServerPort(String port);
+  
+  public ServerConfig setServerAddress(InetAddress addr);
+  
+  public ServerConfig setServerAddress(String addr);
+  
+  public ServerConfig setUserName(String name);
+  
+  public ServerConfig setUserKey(String key);
+  
+  public ServerConfig setUserCredentials(String cred);
   
 }
