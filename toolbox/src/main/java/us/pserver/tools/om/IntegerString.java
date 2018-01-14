@@ -34,7 +34,7 @@ public class IntegerString extends AbstractTypedString<Integer> {
 
   @Override
   public Integer apply(String string) {
-    return Integer.parseInt(string);
+    return Double.valueOf(string).intValue();
   }
 
 }

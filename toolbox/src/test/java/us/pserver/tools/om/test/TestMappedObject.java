@@ -21,15 +21,19 @@
 
 package us.pserver.tools.om.test;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import us.pserver.tools.om.MappedObject;
 import us.pserver.tools.om.MappedObjectFactory;
+import static us.pserver.tools.om.MappedObjectFactory.GETTER_AS_ENVIRONMENT_KEY;
+import us.pserver.tools.om.test.ServerConfig.Host;
 
 /**
  *
@@ -41,25 +45,49 @@ public class TestMappedObject {
   @Test
   public void mappedServerConfig() throws UnknownHostException {
     ServerConfig cfg = MappedObjectFactory.factory()
-        .withMethodToKeyFunction(MappedObjectFactory.GETTER_AS_ENVIRONMENT_KEY)
+        .withMethodToKeyFunction(GETTER_AS_ENVIRONMENT_KEY)
         .newInstance(ServerConfig.class);
-    cfg.setServerAddress("127.0.0.1")
-        .setServerPort("8080")
+    Host host = MappedObjectFactory.factory()
+        .withMethodToKeyFunction(GETTER_AS_ENVIRONMENT_KEY)
+        .newInstance(Host.class);
+    host.setAddress("127.0.0.1").setPort(8080);
+    cfg.setHost(host)
         .setUserName("juno")
         .setUserKey("mykey");
     System.out.println(cfg);
-    Assertions.assertEquals(InetAddress.getByName("127.0.0.1"), cfg.getServerAddress());
-    Assertions.assertEquals(8080, cfg.getServerPort());
+    Assertions.assertEquals(InetAddress.getByName("127.0.0.1"), cfg.getHost().getAddress());
+    Assertions.assertEquals(8080, cfg.getHost().getPort());
     Assertions.assertEquals("juno", cfg.getUserName());
+    Assertions.assertEquals("mykey", cfg.getUserKey());
   }
   
+  @Disabled
   @Test
   public void propertiesServerConfig() throws UnknownHostException, IOException {
     ServerConfig cfg = MappedObjectFactory.factory().fromProperties(Paths.get("./test.properties"), ServerConfig.class);
     System.out.println(cfg);
-    Assertions.assertEquals(InetAddress.getByName("127.0.0.1"), cfg.getServerAddress());
-    Assertions.assertEquals(8080, cfg.getServerPort());
+    Assertions.assertEquals(InetAddress.getByName("127.0.0.1"), cfg.getHost().getAddress());
+    Assertions.assertEquals(8080, cfg.getHost().getPort());
     Assertions.assertEquals("juno", cfg.getUserName());
+  }
+  
+  @Test
+  public void jsonServerConfig() throws UnknownHostException, IOException {
+    Map<String,Object> map = new Gson().fromJson(
+        Files.newBufferedReader(
+            Paths.get("./test.json")
+        ), Map.class
+    );
+    System.out.printf("=> jsonServerConfig: %s%n", map);
+    ServerConfig cfg = MappedObjectFactory.factory()
+        .withMap(map)
+        .withMethodToKeyFunction(MappedObjectFactory.GETTER_AS_DOTTED_KEY)
+        .newInstance(ServerConfig.class);
+    System.out.println(cfg);
+    Assertions.assertEquals(InetAddress.getByName("127.0.0.1"), cfg.getHost().getAddress());
+    Assertions.assertEquals(8080, cfg.getHost().getPort());
+    Assertions.assertEquals("juno", cfg.getUserName());
+    Assertions.assertEquals("mykey", cfg.getUserKey());
   }
   
 }

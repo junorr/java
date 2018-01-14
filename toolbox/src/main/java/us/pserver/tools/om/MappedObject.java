@@ -39,13 +39,13 @@ public class MappedObject implements InvocationHandler {
   
   private final Function<Method,String> methodToKey;
   
-  private final TypedStrings typeds;
+  private final TypedStrings types;
   
   
   
   public MappedObject(Map<String,Object> map, TypedStrings typeds, Function<Method,String> methodToKey) {
     this.map = Match.notNull(map).getOrFail("Bad null StringMap");
-    this.typeds = Match.notNull(typeds).getOrFail("Bad null TypedStrings");
+    this.types = Match.notNull(typeds).getOrFail("Bad null TypedStrings");
     this.methodToKey = Match.notNull(methodToKey).getOrFail("Bad null method name Function");
   }
 
@@ -53,9 +53,11 @@ public class MappedObject implements InvocationHandler {
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     if(isToString(method)) return toString();
     String key = methodToKey.apply(method);
-    return args == null || args.length == 0
+    Object ret = args == null || args.length == 0
         ? getter(key, proxy, method)
         : setter(key, proxy, method, args);
+    //System.out.printf("* MappedObject.invoke( %s ): '%s' = %s%n", method.getName(), key, ret);
+    return ret;
   }
   
   private boolean isToString(Method meth) {
@@ -64,19 +66,39 @@ public class MappedObject implements InvocationHandler {
   
   public Object getter(String key, Object proxy, Method method) throws Throwable {
     Object val = map.get(key);
-    if(val != null
-        && (CharSequence.class.isAssignableFrom(val.getClass()) 
-        || !method.getReturnType().isAssignableFrom(val.getClass()))) {
-      val = typeds.asType(Objects.toString(val), method.getReturnType());
-    }
-    return val;
+    //System.out.printf("* MappedObject.getter[1]( %s => %s ): %s%n", method.getName(), key, val);
+    //System.out.println(map);
+    return getReturnValue(method.getReturnType(), val, proxy);
   }
   
   public Object setter(String key, Object proxy, Method method, Object[] args) throws Throwable {
     Object val = args.length == 1 ? args[0] : args;
     map.put(key, val);
-    return method.getReturnType()
-        .isAssignableFrom(proxy.getClass()) ? proxy : null;
+    return getReturnValue(method.getReturnType(), val, proxy);
+  }
+  
+  private Object getReturnValue(Class rtype, Object val, Object proxy) {
+    if(val == null) return val;
+    Object rval = val;
+    if(rtype.isInterface() && Map.class.isAssignableFrom(val.getClass())) {
+      rval = valueAsMappedObject(val, rtype);
+    }
+    else if(rtype.isAssignableFrom(proxy.getClass())) {
+      rval = proxy;
+    }
+    else if(CharSequence.class.isAssignableFrom(val.getClass()) 
+        || !rtype.isAssignableFrom(val.getClass())) {
+      rval = types.asType(Objects.toString(val), rtype);
+    }
+    return rval;
+  }
+  
+  private Object valueAsMappedObject(Object val, Class rtype) {
+    return MappedObjectFactory.factory()
+        .withMap((Map)val)
+        .withMethodToKeyFunction(methodToKey)
+        .withTypedStrings(types)
+        .newInstance(rtype);
   }
   
   @Override

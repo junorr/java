@@ -100,12 +100,12 @@ public class MappedObjectFactory {
   
   public <T> T newInstance(Class<T> cls) {
     Match.notNull(cls).failIfNotMatch("Bad null proxied Class");
-    return (T) Proxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, factory().create());
+    return (T) Proxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, create());
   }
   
   public Object newInstance(Class ... cls) {
     Match.notEmpty(cls).failIfNotMatch("Bad null proxied Class array");
-    return Proxy.newProxyInstance(cls[0].getClassLoader(), cls, factory().create());
+    return Proxy.newProxyInstance(cls[0].getClassLoader(), cls, create());
   }
   
   
@@ -113,7 +113,7 @@ public class MappedObjectFactory {
     Match.notNull(cls).failIfNotMatch("Bad null proxied Class");
     Map<String,Object> map = new TreeMap<>();
     System.getenv().entrySet().forEach(e->map.put(e.getKey(), e.getValue()));
-    MappedObject mapped = factory().withMap(map)
+    MappedObject mapped = this.withMap(map)
         .withMethodToKeyFunction(GETTER_AS_ENVIRONMENT_KEY)
         .create();
     return (T) Proxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, mapped);
@@ -124,7 +124,7 @@ public class MappedObjectFactory {
     Match.notEmpty(cls).failIfNotMatch("Bad null proxied Class array");
     Map<String,Object> map = new TreeMap<>();
     System.getenv().entrySet().forEach(e->map.put(e.getKey(), e.getValue()));
-    MappedObject mapped = factory().withMap(map)
+    MappedObject mapped = this.withMap(map)
         .withMethodToKeyFunction(GETTER_AS_ENVIRONMENT_KEY)
         .create();
     return Proxy.newProxyInstance(cls[0].getClassLoader(), cls, mapped);
@@ -136,8 +136,7 @@ public class MappedObjectFactory {
     Map<String,Object> map = new TreeMap<>();
     props.entrySet().forEach(e->map.put(e.getKey().toString(), e.getValue()));
     return (T) Proxy.newProxyInstance(cls.getClassLoader(), 
-        new Class[]{cls}, 
-        factory().withMap(map).create()
+        new Class[]{cls}, this.withMap(map).create()
     );
   }
   
@@ -146,8 +145,8 @@ public class MappedObjectFactory {
     Match.notEmpty(cls).failIfNotMatch("Bad null proxied Class array");
     Map<String,Object> map = new TreeMap<>();
     props.entrySet().forEach(e->map.put(e.getKey().toString(), e.getValue()));
-    return Proxy.newProxyInstance(cls[0].getClassLoader(), cls,
-        factory().withMap(map).create()
+    return Proxy.newProxyInstance(cls[0].getClassLoader(), cls, 
+        this.withMap(map).create()
     );
   }
   
@@ -160,8 +159,7 @@ public class MappedObjectFactory {
     Map<String,Object> map = new TreeMap<>();
     props.entrySet().forEach(e->map.put(e.getKey().toString(), e.getValue()));
     return (T) Proxy.newProxyInstance(cls.getClassLoader(), 
-        new Class[]{cls}, 
-        factory().withMap(map).create()
+        new Class[]{cls}, this.withMap(map).create()
     );
   }
   
@@ -173,8 +171,8 @@ public class MappedObjectFactory {
     props.load(Files.newBufferedReader(propsFile));
     Map<String,Object> map = new TreeMap<>();
     props.entrySet().forEach(e->map.put(e.getKey().toString(), e.getValue()));
-    return Proxy.newProxyInstance(cls[0].getClassLoader(), cls,
-        factory().withMap(map).create()
+    return Proxy.newProxyInstance(cls[0].getClassLoader(), cls, 
+        this.withMap(map).create()
     );
   }
   

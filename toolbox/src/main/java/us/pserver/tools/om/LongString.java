@@ -34,7 +34,7 @@ public class LongString extends AbstractTypedString<Long> {
 
   @Override
   public Long apply(String string) {
-    return Long.parseLong(string);
+    return Double.valueOf(string).longValue();
   }
 
 }

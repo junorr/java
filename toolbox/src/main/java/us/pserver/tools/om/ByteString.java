@@ -34,7 +34,7 @@ public class ByteString extends AbstractTypedString<Byte> {
 
   @Override
   public Byte apply(String string) {
-    return Byte.parseByte(string);
+    return Double.valueOf(string).byteValue();
   }
 
 }

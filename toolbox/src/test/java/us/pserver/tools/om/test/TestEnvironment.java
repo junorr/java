@@ -50,6 +50,7 @@ public class TestEnvironment {
     WindowsEnvConfig cfg = MappedObjectFactory.factory().fromEnvironment(WindowsEnvConfig.class);
     System.out.println(cfg);
     Assertions.assertEquals(4, cfg.getNumberOfProcessors());
+    Assertions.assertEquals(10, cfg.setNumberOfProcessors(10).getNumberOfProcessors());
     Assertions.assertEquals("Windows_NT", cfg.getOS());
     Assertions.assertEquals("juno", cfg.getUsername());
     Assertions.assertEquals(Paths.get("c:/windows"), cfg.getWindir());

@@ -29,33 +29,31 @@ import java.net.InetAddress;
  * @version 0.0 - 05/01/2018
  */
 public interface ServerConfig {
+  
+  public Host getHost();
 
-  public String getServerFullAddress();
-  
-  public int getServerPort();
-  
-  public InetAddress getServerAddress();
-  
   public String getUserName();
   
   public String getUserKey();
   
-  public String getUserCredentials();
-  
-  public ServerConfig setServerFullAddress(String full);
-  
-  public ServerConfig setServerPort(int port);
-  
-  public ServerConfig setServerPort(String port);
-  
-  public ServerConfig setServerAddress(InetAddress addr);
-  
-  public ServerConfig setServerAddress(String addr);
+  public ServerConfig setHost(Host host);
   
   public ServerConfig setUserName(String name);
   
   public ServerConfig setUserKey(String key);
   
-  public ServerConfig setUserCredentials(String cred);
+  
+  
+  public static interface Host {
+    
+    public InetAddress getAddress();
+    
+    public int getPort();
+    
+    public Host setAddress(String addr);
+    
+    public Host setPort(int port);
+    
+  }
   
 }

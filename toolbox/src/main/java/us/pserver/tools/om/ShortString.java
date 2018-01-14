@@ -34,7 +34,7 @@ public class ShortString extends AbstractTypedString<Short> {
 
   @Override
   public Short apply(String string) {
-    return Short.parseShort(string);
+    return Double.valueOf(string).shortValue();
   }
 
 }

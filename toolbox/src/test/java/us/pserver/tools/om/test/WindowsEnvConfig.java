@@ -29,8 +29,10 @@ import java.nio.file.Path;
  * @version 0.0 - 11/01/2018
  */
 public interface WindowsEnvConfig {
-
+  
   public int getNumberOfProcessors();
+
+  public WindowsEnvConfig setNumberOfProcessors(int num);
   
   public String getOS();
   
