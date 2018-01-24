@@ -26,7 +26,7 @@ import java.lang.reflect.Parameter;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
 import us.pserver.finalson.mapping.AcceptableType;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -38,7 +38,7 @@ public class JsonTypeCondition implements Predicate<Entry<String,JsonElement>> {
   private final Parameter par;
   
   public JsonTypeCondition(Parameter par) {
-    this.par = NotNull.of(par).getOrFail("Bad null Parameter");
+    this.par = Match.notNull(par).getOrFail("Bad null Parameter");
   }
   
   @Override

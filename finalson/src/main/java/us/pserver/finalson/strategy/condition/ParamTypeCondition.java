@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import us.pserver.finalson.mapping.AcceptableType;
 import us.pserver.finalson.strategy.MethodHandleInfo;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -39,7 +39,7 @@ public class ParamTypeCondition implements Predicate<MethodHandleInfo> {
   private final List<JsonElement> elts;
   
   public ParamTypeCondition(List<JsonElement> elts) {
-    this.elts = NotNull.of(elts).getOrFail("Bad null elements List");
+    this.elts = Match.notNull(elts).getOrFail("Bad null elements List");
   }
   
   @Override

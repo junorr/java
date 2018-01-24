@@ -25,7 +25,7 @@ import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.function.Predicate;
 import us.pserver.finalson.strategy.MethodHandleInfo;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -37,7 +37,7 @@ public class ParamNameCondition implements Predicate<MethodHandleInfo> {
   private final List<String> names;
   
   public ParamNameCondition(List<String> names) {
-    this.names = NotNull.of(names).getOrFail("Bad null names List");
+    this.names = Match.notNull(names).getOrFail("Bad null names List");
   }
   
   @Override

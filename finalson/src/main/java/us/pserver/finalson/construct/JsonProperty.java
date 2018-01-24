@@ -24,7 +24,7 @@ package us.pserver.finalson.construct;
 import com.google.gson.JsonElement;
 import java.util.Map;
 import java.util.Objects;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -56,8 +56,8 @@ public interface JsonProperty extends JsonContainer {
     private final JsonElement element;
     
     public DefaultJsonProperty(String name, JsonElement elt) {
-      this.name = NotNull.of(name).getOrFail("Bad null name");
-      this.element = NotNull.of(elt).getOrFail("Bad null JsonElement");
+      this.name = Match.notNull(name).getOrFail("Bad null name");
+      this.element = Match.notNull(elt).getOrFail("Bad null JsonElement");
     }
     
     @Override

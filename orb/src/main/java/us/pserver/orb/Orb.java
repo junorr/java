@@ -109,26 +109,6 @@ public class Orb {
   }
   
   
-  //public <T> Orb fromEnvironment(Class<T> cls) {
-    //Match.notNull(cls).failIfNotMatch("Bad null proxied Class");
-    //Map<String,Object> map = new TreeMap<>();
-    //System.getenv().entrySet().forEach(e->map.put(e.getKey(), e.getValue()));
-    //return this.withMap(map)
-        //.withMethodToKeyFunction(GETTER_AS_ENVIRONMENT_KEY);
-  //}
-  
-  
-  //public <T> T fromEnvironment(Class<T> cls) {
-    //Match.notNull(cls).failIfNotMatch("Bad null proxied Class");
-    //Map<String,Object> map = new TreeMap<>();
-    //System.getenv().entrySet().forEach(e->map.put(e.getKey(), e.getValue()));
-    //MappedInvocationHandler mapped = this.withMap(map)
-        //.withMethodToKeyFunction(GETTER_AS_ENVIRONMENT_KEY)
-        //.invocationHandler();
-    //return (T) Proxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, mapped);
-  //}
-  
-  
   public Orb fromEnvironment() {
     Map<String,Object> map = new TreeMap<>();
     System.getenv().entrySet().forEach(e->map.put(e.getKey(), e.getValue()));
@@ -137,38 +117,17 @@ public class Orb {
   }
   
   
-  public Orb fromSourceMapping(SourceMapping sm) {
-    return new Orb(sm.getValuesMap(), sm.getSupportedTypes(), sm.getMethodToKeyFunction());
+  public Orb fromConfiguration(OrbConfiguration sm) {
+    Map<String,Object> map = (sm.getValuesMap() != null 
+        ? sm.getValuesMap() : this.map);
+    TypedStrings types = (sm.getSupportedTypes() != null 
+        ? sm.getSupportedTypes() : this.types);
+    Function<Method,String> func = (sm.getMethodToKeyFunction() != null 
+        ? sm.getMethodToKeyFunction() 
+        : this.methodToKey
+    );
+    return new Orb(map, types, func);
   }
-  
-  
-  //public Object fromEnvironment(Class ... cls) {
-    //Match.notEmpty(cls).failIfNotMatch("Bad null proxied Class array");
-    //Map<String,Object> map = new TreeMap<>();
-    //System.getenv().entrySet().forEach(e->map.put(e.getKey(), e.getValue()));
-    //MappedInvocationHandler mapped = this.withMap(map)
-        //.withMethodToKeyFunction(GETTER_AS_ENVIRONMENT_KEY)
-        //.invocationHandler();
-    //return Proxy.newProxyInstance(cls[0].getClassLoader(), cls, mapped);
-  //}
-  
-  
-  //public <T> Orb fromProperties(Properties props, Class<T> cls) {
-    //Match.notNull(cls).failIfNotMatch("Bad null proxied Class");
-    //Map<String,Object> map = new TreeMap<>();
-    //props.entrySet().forEach(e->map.put(e.getKey().toString(), e.getValue()));
-    //return this.withMap(map);
-  //}
-  
-  
-  //public <T> T fromProperties(Properties props, Class<T> cls) {
-    //Match.notNull(cls).failIfNotMatch("Bad null proxied Class");
-    //Map<String,Object> map = new TreeMap<>();
-    //props.entrySet().forEach(e->map.put(e.getKey().toString(), e.getValue()));
-    //return (T) Proxy.newProxyInstance(cls.getClassLoader(), 
-        //new Class[]{cls}, this.withMap(map).invocationHandler()
-    //);
-  //}
   
   
   public Orb fromProperties(Properties props) {
@@ -176,40 +135,6 @@ public class Orb {
     props.entrySet().forEach(e->map.put(e.getKey().toString(), e.getValue()));
     return  this.withMap(map);
   }
-  
-  
-  //public Object fromProperties(Properties props, Class ... cls) {
-    //Match.notEmpty(cls).failIfNotMatch("Bad null proxied Class array");
-    //Map<String,Object> map = new TreeMap<>();
-    //props.entrySet().forEach(e->map.put(e.getKey().toString(), e.getValue()));
-    //return Proxy.newProxyInstance(cls[0].getClassLoader(), cls, 
-        //this.withMap(map).invocationHandler()
-    //);
-  //}
-  
-  
-  //public <T> Orb fromProperties(Path propsFile, Class<T> cls) throws IOException {
-    //Match.notNull(cls).failIfNotMatch("Bad null proxied Class");
-    //Match.exists(propsFile).failIfNotMatch();
-    //Properties props = new Properties();
-    //props.load(Files.newBufferedReader(propsFile));
-    //Map<String,Object> map = new TreeMap<>();
-    //props.entrySet().forEach(e->map.put(e.getKey().toString(), e.getValue()));
-    //return this.withMap(map);
-  //}
-  
-  
-  //public <T> T fromProperties(Path propsFile, Class<T> cls) throws IOException {
-    //Match.notNull(cls).failIfNotMatch("Bad null proxied Class");
-    //Match.exists(propsFile).failIfNotMatch();
-    //Properties props = new Properties();
-    //props.load(Files.newBufferedReader(propsFile));
-    //Map<String,Object> map = new TreeMap<>();
-    //props.entrySet().forEach(e->map.put(e.getKey().toString(), e.getValue()));
-    //return (T) Proxy.newProxyInstance(cls.getClassLoader(), 
-        //new Class[]{cls}, this.withMap(map).invocationHandler()
-    //);
-  //}
   
   
   public Orb fromProperties(Path propsFile) throws IOException {

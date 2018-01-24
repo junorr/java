@@ -103,7 +103,7 @@ public class MappedInvocationHandler implements InvocationHandler {
   
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("MappedObject {\n");
+    StringBuilder sb = new StringBuilder("{\n");
     map.entrySet().forEach(e->sb.append(" -> ").append(e).append("\n"));
     return sb.append("}").toString();
     //return map.toString();

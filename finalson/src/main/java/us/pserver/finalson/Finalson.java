@@ -21,7 +21,7 @@
 
 package us.pserver.finalson;
 
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 
 /**
@@ -34,7 +34,7 @@ public class Finalson {
   private final FinalsonConfig conf;
   
   public Finalson(FinalsonConfig cfg) {
-    this.conf = NotNull.of(cfg).getOrFail("Bad null FinalsonConfig");
+    this.conf = Match.notNull(cfg).getOrFail("Bad null FinalsonConfig");
   }
   
   

@@ -19,30 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.strategy.condition;
+package us.pserver.orb;
 
-import com.google.gson.JsonElement;
-import java.lang.reflect.Parameter;
-import java.util.Map.Entry;
-import java.util.function.Predicate;
-import us.pserver.tools.Match;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
- *
+ * Configuration class for Orb.
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/12/2017
+ * @version 0.0 - 15/01/2018
  */
-public class JsonNameCondition implements Predicate<Entry<String,JsonElement>> {
+public interface OrbConfiguration {
 
-  private final Parameter par;
+  /**
+   * Get supported types by orb (may be null).
+   * @return TypedStrings
+   */
+  public TypedStrings getSupportedTypes();
   
-  public JsonNameCondition(Parameter par) {
-    this.par = Match.notNull(par).getOrFail("Bad null Parameter");
-  }
+  /**
+   * Get values map for InvocationHandler (may be null).
+   * @return Map<String,Object>
+   */
+  public Map<String,Object> getValuesMap();
   
-  @Override
-  public boolean test(Entry<String,JsonElement> entry) {
-    return par.getName().equals(entry.getKey());
-  }
+  /**
+   * Get function for converting method names to map keys (may be null).
+   * @return Function<Method,String>
+   */
+  public Function<Method,String> getMethodToKeyFunction();
   
 }

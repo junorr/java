@@ -23,7 +23,7 @@ package us.pserver.finalson.construct;
 
 import java.lang.reflect.Parameter;
 import java.util.Objects;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -63,8 +63,8 @@ public interface ConstructParam extends Comparable<ConstructParam> {
     private final JsonProperty prop;
     
     public DefaultConstructParam(int index, Parameter param, JsonProperty prop) {
-      this.param = NotNull.of(param).getOrFail("Bad null Parameter");
-      this.prop = NotNull.of(prop).getOrFail("Bad null JsonProperty");
+      this.param = Match.notNull(param).getOrFail("Bad null Parameter");
+      this.prop = Match.notNull(prop).getOrFail("Bad null JsonProperty");
       this.index = index;
     }
     

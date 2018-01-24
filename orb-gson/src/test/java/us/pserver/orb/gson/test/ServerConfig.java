@@ -19,30 +19,41 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.strategy.condition;
+package us.pserver.orb.gson.test;
 
-import com.google.gson.JsonElement;
-import java.lang.reflect.Parameter;
-import java.util.Map.Entry;
-import java.util.function.Predicate;
-import us.pserver.tools.Match;
+import java.net.InetAddress;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/12/2017
+ * @version 0.0 - 05/01/2018
  */
-public class JsonNameCondition implements Predicate<Entry<String,JsonElement>> {
+public interface ServerConfig {
+  
+  public Host getHost();
 
-  private final Parameter par;
+  public String getUserName();
   
-  public JsonNameCondition(Parameter par) {
-    this.par = Match.notNull(par).getOrFail("Bad null Parameter");
-  }
+  public String getUserKey();
   
-  @Override
-  public boolean test(Entry<String,JsonElement> entry) {
-    return par.getName().equals(entry.getKey());
+  public ServerConfig setHost(Host host);
+  
+  public ServerConfig setUserName(String name);
+  
+  public ServerConfig setUserKey(String key);
+  
+  
+  
+  public static interface Host {
+    
+    public InetAddress getAddress();
+    
+    public int getPort();
+    
+    public Host setAddress(String addr);
+    
+    public Host setPort(int port);
+    
   }
   
 }

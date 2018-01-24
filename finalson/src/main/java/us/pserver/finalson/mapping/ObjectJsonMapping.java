@@ -29,7 +29,7 @@ import us.pserver.finalson.FinalsonConfig;
 import us.pserver.finalson.strategy.JsonMappingStrategy;
 import us.pserver.finalson.strategy.MethodHandleInfo;
 import static us.pserver.finalson.tools.JsonObjectProperties.PROP_CLASS;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -49,7 +49,7 @@ public class ObjectJsonMapping implements JsonMapping<Object> {
 
   @Override
   public JsonElement toJson(Object obj) {
-    NotNull.of(obj).failIfNull("Bad null Object");
+    Match.notNull(obj).failIfNotMatch("Bad null Object");
     List<MethodHandleInfo> meths = strategy.apply(obj);
     JsonObject job = new JsonObject();
     TypeMapping<Class> cmap = config.getTypeMappingFor(Class.class).get();

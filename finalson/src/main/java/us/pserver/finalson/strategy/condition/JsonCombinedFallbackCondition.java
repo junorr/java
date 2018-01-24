@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -38,7 +38,7 @@ public class JsonCombinedFallbackCondition implements Predicate<Entry<String,Jso
   private final List<Predicate<Entry<String,JsonElement>>> conditions;
   
   public JsonCombinedFallbackCondition(Predicate<Entry<String,JsonElement>> ... conds) {
-    this.conditions = Arrays.asList(NotNull.of(conds).getOrFail("Bad null conditions List"));
+    this.conditions = Arrays.asList(Match.notNull(conds).getOrFail("Bad null conditions List"));
   }
   
   @Override

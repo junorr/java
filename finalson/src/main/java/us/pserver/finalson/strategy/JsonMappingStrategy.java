@@ -31,7 +31,7 @@ import us.pserver.finalson.Property;
 import us.pserver.finalson.strategy.condition.GetterMethodCondition;
 import us.pserver.finalson.strategy.condition.NoArgsMethodCondition;
 import us.pserver.finalson.strategy.condition.PropertyAnnotatedCondition;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -43,7 +43,7 @@ public class JsonMappingStrategy implements MethodHandleStrategy<Object> {
   private final FinalsonConfig config;
   
   public JsonMappingStrategy(FinalsonConfig conf) {
-    this.config = NotNull.of(conf).getOrFail("Bad null FinalsonConfig");
+    this.config = Match.notNull(conf).getOrFail("Bad null FinalsonConfig");
   }
 
   @Override

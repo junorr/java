@@ -30,7 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -95,7 +95,7 @@ public enum JavaPrimitive implements TypeMapping {
   
   @Override
   public Object fromJson(JsonElement elt) {
-    return from.apply(NotNull.of(elt).getOrFail("Bad null JsonElement"));
+    return from.apply(Match.notNull(elt).getOrFail("Bad null JsonElement"));
   }
   
   public static boolean isJavaPrimitive(Class cls) {
@@ -109,7 +109,7 @@ public enum JavaPrimitive implements TypeMapping {
   }
   
   public static JavaPrimitive of(Class cls) {
-    NotNull.of(cls).failIfNull("Bad null Class");
+    Match.notNull(cls).failIfNotMatch("Bad null Class");
     Optional<JavaPrimitive> opt = Arrays.asList(values()).stream().filter(p->p.accept(cls)).findAny();
     if(!opt.isPresent()) {
       throw new IllegalArgumentException(String.format("Class (%s) is not a Java primitive", cls.getName()));

@@ -34,7 +34,6 @@ import us.pserver.orb.Orb;
  */
 public class TestEnvironment {
 
-  @Disabled
   @Test
   public void unixEnvConfig() {
     UnixEnvConfig cfg = Orb.get().fromEnvironment().create(UnixEnvConfig.class);
@@ -45,6 +44,7 @@ public class TestEnvironment {
     Assertions.assertEquals(1, cfg.getQtAccessibility());
   }
   
+  @Disabled
   @Test
   public void windowsEnvConfig() throws NoSuchMethodException {
     WindowsEnvConfig cfg = Orb.get().fromEnvironment().create(WindowsEnvConfig.class);

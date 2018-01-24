@@ -35,7 +35,7 @@ import us.pserver.finalson.strategy.condition.MaxParamCountCondition;
 import us.pserver.finalson.strategy.condition.ParamNameCondition;
 import us.pserver.finalson.strategy.condition.ParamTypeCondition;
 import static us.pserver.finalson.tools.JsonObjectProperties.PROP_CLASS;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -47,7 +47,7 @@ public class JavaMappingStrategy implements MethodHandleStrategy<JsonElement> {
   private final FinalsonConfig config;
   
   public JavaMappingStrategy(FinalsonConfig conf) {
-    this.config = NotNull.of(conf).getOrFail("Bad null FinalsonConfig");
+    this.config = Match.notNull(conf).getOrFail("Bad null FinalsonConfig");
   }
 
   @Override

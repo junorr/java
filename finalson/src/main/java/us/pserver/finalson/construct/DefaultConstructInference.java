@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import us.pserver.finalson.FinalsonConfig;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 import us.pserver.tools.Tuple;
 
 /**
@@ -46,9 +46,9 @@ public class DefaultConstructInference implements ConstructHandleInference {
   private final ConstructLink link;
   
   public DefaultConstructInference(FinalsonConfig conf, Class type, JsonObject obj) {
-    this.config = NotNull.of(conf).getOrFail("Bad null FinalsonConfig");
-    this.type = NotNull.of(type).getOrFail("Bad null object type");
-    this.object = NotNull.of(obj).getOrFail("Bad null JsonObject");
+    this.config = Match.notNull(conf).getOrFail("Bad null FinalsonConfig");
+    this.type = Match.notNull(type).getOrFail("Bad null object type");
+    this.object = Match.notNull(obj).getOrFail("Bad null JsonObject");
     ParameterMatch match = new CombinedFallbackMatch(new ParamNameMatch(), new ParamTypeMatch());
     this.link = ConstructLink.of(match);
   }

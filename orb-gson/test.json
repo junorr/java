@@ -1,0 +1,8 @@
+{
+	"host": {
+		"address": "127.0.0.1",
+		"port": 8080
+	},
+	"user.name": "juno",
+	"user.key": "mykey"
+}

@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import us.pserver.finalson.FinalsonConfig;
 import us.pserver.finalson.mapping.TypeMapping;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -79,10 +79,10 @@ public interface ConstructHandle extends Comparable<ConstructHandle> {
     }
     
     public DefaultConstructHandle(FinalsonConfig conf, Constructor cct, List<ConstructParam> pars, Lookup lookup) {
-      this.params = NotNull.of(pars).getOrFail("Bad null arguments list");
-      this.type = NotNull.of(cct).getOrFail("Bad null Constructor").getDeclaringClass();
-      this.config = NotNull.of(conf).getOrFail("Bad null FinalsonConfig");
-      this.handle = createMethodHandle(cct, NotNull.of(lookup).getOrFail("Bad null Lookup"));
+      this.params = Match.notNull(pars).getOrFail("Bad null arguments list");
+      this.type = Match.notNull(cct).getOrFail("Bad null Constructor").getDeclaringClass();
+      this.config = Match.notNull(conf).getOrFail("Bad null FinalsonConfig");
+      this.handle = createMethodHandle(cct, Match.notNull(lookup).getOrFail("Bad null Lookup"));
     }
     
     private MethodHandle createMethodHandle(Constructor cct, Lookup lookup) {

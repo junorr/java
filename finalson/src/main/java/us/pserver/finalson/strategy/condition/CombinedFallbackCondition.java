@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import us.pserver.finalson.strategy.MethodHandleInfo;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -37,7 +37,7 @@ public class CombinedFallbackCondition implements Predicate<MethodHandleInfo> {
   private final List<Predicate<MethodHandleInfo>> conditions;
   
   public CombinedFallbackCondition(Predicate<MethodHandleInfo> ... conds) {
-    this.conditions = Arrays.asList(NotNull.of(conds).getOrFail("Bad null conditions List"));
+    this.conditions = Arrays.asList(Match.notNull(conds).getOrFail("Bad null conditions List"));
   }
   
   @Override

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -50,7 +50,7 @@ public interface ConstructLink extends BiFunction<Constructor,JsonObject,List<Co
     private final ParameterMatch match;
     
     public DefaultConstructLink(ParameterMatch match) {
-      this.match = NotNull.of(match).getOrFail("Bad null ParameterMatch");
+      this.match = Match.notNull(match).getOrFail("Bad null ParameterMatch");
     }
     
     @Override

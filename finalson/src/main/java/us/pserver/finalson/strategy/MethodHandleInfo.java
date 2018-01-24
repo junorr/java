@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -55,12 +55,12 @@ public class MethodHandleInfo {
   
   
   public MethodHandleInfo(MethodHandle mh, String name, Class returnType, List<Parameter> params, List<Annotation> annots, List<JsonElement> args) {
-    this.handle = NotNull.of(mh).getOrFail("Bad null MethodHandle");
-    this.name = NotNull.of(name).getOrFail("Bad null name");
-    this.retype = NotNull.of(returnType).getOrFail("Bad null return Class");
-    this.params = NotNull.of(params).getOrFail("Bad null parameters List");
-    this.annots = NotNull.of(annots).getOrFail("Bad null annotations List");
-    this.arguments = NotNull.of(args).getOrFail("Bad null arguments List");
+    this.handle = Match.notNull(mh).getOrFail("Bad null MethodHandle");
+    this.name = Match.notNull(name).getOrFail("Bad null name");
+    this.retype = Match.notNull(returnType).getOrFail("Bad null return Class");
+    this.params = Match.notNull(params).getOrFail("Bad null parameters List");
+    this.annots = Match.notNull(annots).getOrFail("Bad null annotations List");
+    this.arguments = Match.notNull(args).getOrFail("Bad null arguments List");
   }
   
   
@@ -150,7 +150,7 @@ public class MethodHandleInfo {
   
   
   public static MethodHandleInfo of(Method meth) {
-    NotNull.of(meth).failIfNull("Bad null Method");
+    Match.notNull(meth).failIfNotMatch("Bad null Method");
     try {
       MethodHandle mh = MethodHandles.lookup().unreflect(meth);
       return new MethodHandleInfo(mh, 
@@ -166,7 +166,7 @@ public class MethodHandleInfo {
   
   
   public static MethodHandleInfo of(Constructor cct) {
-    NotNull.of(cct).failIfNull("Bad null Method");
+    Match.notNull(cct).failIfNotMatch("Bad null Method");
     try {
       MethodHandle mh = MethodHandles.lookup().unreflectConstructor(cct);
       return new MethodHandleInfo(mh, 
