@@ -94,6 +94,11 @@ public class MappedObjectFactory {
   }
   
   
+  public MappedObjectFactory withSourceMapping(SourceMapping sm) {
+    return new MappedObjectFactory(sm.getValuesMap(), sm.getSupportedTypes(), sm.getMethodToKeyFunction());
+  }
+  
+  
   public MappedObject create() {
     return new MappedObject(map, types, methodToKey);
   }
