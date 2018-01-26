@@ -22,10 +22,13 @@
 package us.pserver.finalson.construct;
 
 import com.google.gson.JsonObject;
+import static java.lang.System.out;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import us.pserver.finalson.FinalsonConfig;
 import us.pserver.tools.Match;
 import us.pserver.tools.Tuple;
@@ -57,24 +60,27 @@ public class DefaultConstructInference implements ConstructHandleInference {
   public ConstructHandle infer() {
     List<Constructor> ccts = Arrays.asList(type.getConstructors());
     List<List<ConstructParam>> cpars = new ArrayList<>();
-    ccts.forEach(c->cpars.add(link.apply(c, object)));
-    Tuple<Constructor,List<ConstructParam>> selected = maxMatchingParams(ccts, cpars);
-    if(selected == null) {
+    List<Tuple<Constructor,List<ConstructParam>>> ls = ccts.stream().map(c->new Tuple<>(c, link.apply(c, object))).filter(t->t.key().getParameterCount() == t.value().size()).collect(Collectors.toList());
+    Optional<Tuple<Constructor,List<ConstructParam>>> opt = maxMatchingParams(ls);
+    System.out.println("<<>> List<Tuple<Constructor,List<ConstructParam>>>: "+ ls);
+    System.out.println("<<>> Optional<Tuple<Constructor,List<ConstructParam>>>: "+ opt);
+    if(!opt.isPresent()) {
       throw new IllegalStateException("No properly constructor found for "+ type);
     }
-    return ConstructHandle.of(config, selected.key(), selected.value());
+    return ConstructHandle.of(config, opt.get().key(), opt.get().value());
   }
   
-  private Tuple<Constructor,List<ConstructParam>> maxMatchingParams(List<Constructor> ccts, List<List<ConstructParam>> cpars) {
+  private Optional<Tuple<Constructor,List<ConstructParam>>> maxMatchingParams(List<Tuple<Constructor,List<ConstructParam>>> tps) {
     int selected = -1;
     int max = -1;
-    for(int i = 0; i < cpars.size(); i++) {
-      if(cpars.get(i).size() > max) {
+    for(int i = 0; i < tps.size(); i++) {
+      if(tps.get(i).value().size() > max) {
+        max = tps.get(i).value().size();
         selected = i;
       }
+      System.out.printf("pars: %s x max: %s = %s%n", tps.get(i).value().size(), max, selected);
     }
-    if(selected < 0) return null;
-    return new Tuple<>(ccts.get(selected), cpars.get(selected));
+    return selected < 0 ? Optional.empty() : Optional.of(tps.get(selected));
   }
 
   @Override
