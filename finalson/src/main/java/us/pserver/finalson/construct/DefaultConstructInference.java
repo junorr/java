@@ -48,6 +48,7 @@ public class DefaultConstructInference implements ConstructHandleInference {
   
   private final ConstructLink link;
   
+  
   public DefaultConstructInference(FinalsonConfig conf, Class type, JsonObject obj) {
     this.config = Match.notNull(conf).getOrFail("Bad null FinalsonConfig");
     this.type = Match.notNull(type).getOrFail("Bad null object type");
@@ -55,20 +56,19 @@ public class DefaultConstructInference implements ConstructHandleInference {
     ParameterMatch match = new CombinedFallbackMatch(new ParamNameMatch(), new ParamTypeMatch());
     this.link = ConstructLink.of(match);
   }
-
+  
+  
   @Override
   public ConstructHandle infer() {
     List<Constructor> ccts = Arrays.asList(type.getConstructors());
-    List<List<ConstructParam>> cpars = new ArrayList<>();
     List<Tuple<Constructor,List<ConstructParam>>> ls = ccts.stream().map(c->new Tuple<>(c, link.apply(c, object))).filter(t->t.key().getParameterCount() == t.value().size()).collect(Collectors.toList());
     Optional<Tuple<Constructor,List<ConstructParam>>> opt = maxMatchingParams(ls);
-    System.out.println("<<>> List<Tuple<Constructor,List<ConstructParam>>>: "+ ls);
-    System.out.println("<<>> Optional<Tuple<Constructor,List<ConstructParam>>>: "+ opt);
     if(!opt.isPresent()) {
       throw new IllegalStateException("No properly constructor found for "+ type);
     }
     return ConstructHandle.of(config, opt.get().key(), opt.get().value());
   }
+  
   
   private Optional<Tuple<Constructor,List<ConstructParam>>> maxMatchingParams(List<Tuple<Constructor,List<ConstructParam>>> tps) {
     int selected = -1;
@@ -78,11 +78,11 @@ public class DefaultConstructInference implements ConstructHandleInference {
         max = tps.get(i).value().size();
         selected = i;
       }
-      System.out.printf("pars: %s x max: %s = %s%n", tps.get(i).value().size(), max, selected);
     }
     return selected < 0 ? Optional.empty() : Optional.of(tps.get(selected));
   }
-
+  
+  
   @Override
   public JsonObject getJson() {
     return object;
