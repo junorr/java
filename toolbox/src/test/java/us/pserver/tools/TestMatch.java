@@ -34,7 +34,7 @@ public class TestMatch {
   @Test
   public void matchNullOnStringNull() {
     String str = null;
-    Match<String> match = Match.of(str, s->s != null).onFail("Bad null String");
+    Match<String> match = Match.of(str, s->s != null).failWith("Bad null String");
     //System.out.println("* matchNullOnStringNull: "+ match);
     Assertions.assertThrows(IllegalArgumentException.class, ()->
         System.out.println(match.getOrFail()));
@@ -43,8 +43,8 @@ public class TestMatch {
   @Test
   public void matchEmptyOnStringNull() {
     String str = null;
-    Match<String> match = Match.of(str, s->s != null).onFail("Bad null String")
-        .and(s->!s.isEmpty()).onFail("Bad empty String");
+    Match<String> match = Match.of(str, s->s != null).failWith("Bad null String")
+        .and(s->!s.isEmpty()).failWith("Bad empty String");
     //System.out.println("* matchEmptyOnStringNull: "+ match);
     //System.out.println(match.getOrFail());
     Assertions.assertThrows(IllegalArgumentException.class, ()->
@@ -54,8 +54,8 @@ public class TestMatch {
   @Test
   public void matchEmptyOnStringEmpty() {
     String str = "";
-    Match<String> match = Match.of(str, s->s != null).onFail("Bad null String")
-        .and(s->!s.isEmpty()).onFail("Bad empty String");
+    Match<String> match = Match.of(str, s->s != null).failWith("Bad null String")
+        .and(s->!s.isEmpty()).failWith("Bad empty String");
     //System.out.println("* matchEmptyOnStringEmpty: "+ match);
     //System.out.println(match.getOrFail());
     Assertions.assertThrows(IllegalArgumentException.class, ()->

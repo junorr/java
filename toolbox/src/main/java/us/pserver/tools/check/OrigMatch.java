@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools;
+package us.pserver.tools.check;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -35,24 +35,24 @@ import java.util.function.Predicate;
  * @version 0.0 - 31/12/2017
  * @param <T>
  */
-public class Match<T> implements Predicate<T> {
+public class OrigMatch<T> implements Predicate<T> {
   
   public static final String DEFAULT_MESSAGE = "Condition not match";
   
   
-  protected final Predicate<T> match;
+  private final Predicate<T> match;
   
-  protected final T obj;
+  private final T obj;
   
-  protected final String defMessage;
+  private final String defMessage;
   
-  protected final Match<T> parent;
+  private final OrigMatch<T> parent;
   
-  protected Match(T t, Predicate<T> match, String message) {
+  protected OrigMatch(T t, Predicate<T> match, String message) {
     this(t, match, message, null);
   }
   
-  protected Match(T t, Predicate<T> match, String message, Match<T> parent) {
+  protected OrigMatch(T t, Predicate<T> match, String message, OrigMatch<T> parent) {
     if(match == null) {
       throw new IllegalArgumentException("Bad null Predicate");
     }
@@ -65,7 +65,7 @@ public class Match<T> implements Predicate<T> {
     this.parent = parent;
   }
   
-  public Match(T t, Predicate<T> match) {
+  public OrigMatch(T t, Predicate<T> match) {
     this(t, match, DEFAULT_MESSAGE);
   }
   
@@ -96,11 +96,11 @@ public class Match<T> implements Predicate<T> {
     }
   }
   
-  public Match<T> failWith(String msg) {
+  public OrigMatch<T> onFail(String msg) {
     if(msg == null) {
       throw new IllegalArgumentException("Bad null message");
     }
-    return new Match(obj, match, msg, parent);
+    return new OrigMatch(obj, match, msg, parent);
   }
 
   @Override
@@ -109,18 +109,18 @@ public class Match<T> implements Predicate<T> {
   }
 
   @Override
-  public Match<T> and(Predicate<? super T> other) {
-    return new Match(obj, match.and(other), defMessage, this);
+  public OrigMatch<T> and(Predicate<? super T> other) {
+    return new OrigMatch(obj, match.and(other), defMessage, this);
   }
 
   @Override
-  public Match<T> negate() {
-    return new Match(obj, match.negate(), defMessage);
+  public OrigMatch<T> negate() {
+    return new OrigMatch(obj, match.negate(), defMessage);
   }
 
   @Override
-  public Match<T> or(Predicate<? super T> other) {
-    return new Match(obj, match.or(other), defMessage, this);
+  public OrigMatch<T> or(Predicate<? super T> other) {
+    return new OrigMatch(obj, match.or(other), defMessage, this);
   }
 
 
@@ -131,65 +131,65 @@ public class Match<T> implements Predicate<T> {
   
   
   
-  public static <U> Match<U> of(U val, Predicate<U> match) {
-    return new Match(val, match);
+  public static <U> OrigMatch<U> of(U val, Predicate<U> match) {
+    return new OrigMatch(val, match);
   }
   
   
-  public static <U> Match<U> notNull(U val) {
-    return new Match(val, v->v!=null, "Bad null value");
+  public static <U> OrigMatch<U> notNull(U val) {
+    return new OrigMatch(val, v->v!=null, "Bad null value");
   }
   
   
-  public static Match<String> notEmpty(String str) {
-    return notNull(str).failWith("Bad null String")
-        .and(s->!s.isEmpty()).failWith("Bad empty String");
+  public static OrigMatch<String> notEmpty(String str) {
+    return notNull(str).onFail("Bad null String")
+        .and(s->!s.isEmpty()).onFail("Bad empty String");
   }
   
   
-  public static <U extends Collection<?>> Match<U> notEmpty(U col) {
-    return notNull(col).failWith("Bad null Collection")
-        .and(s->!s.isEmpty()).failWith("Bad empty Collection");
+  public static <U extends Collection<?>> OrigMatch<U> notEmpty(U col) {
+    return notNull(col).onFail("Bad null Collection")
+        .and(s->!s.isEmpty()).onFail("Bad empty Collection");
   }
   
   
-  public static <U> Match<U[]> notEmpty(U[] array) {
-    return notNull(array).failWith("Bad null array")
-        .and(a->Array.getLength(a) > 0).failWith("Bad empty Collection");
+  public static <U> OrigMatch<U[]> notEmpty(U[] array) {
+    return notNull(array).onFail("Bad null array")
+        .and(a->Array.getLength(a) > 0).onFail("Bad empty Collection");
   }
   
   
-  public static Match<Path> exists(Path val) {
+  public static OrigMatch<Path> exists(Path val) {
     return notNull(val)
-        .failWith("Bad null Path")
+        .onFail("Bad null Path")
         .and(p->Files.exists(p))
-        .failWith("Path does not exists");
+        .onFail("Path does not exists");
   }
   
   
-  public static Match<Path> notExists(Path val) {
-    return exists(val).negate().failWith("Path already exists");
+  public static OrigMatch<Path> notExists(Path val) {
+    return exists(val).negate().onFail("Path already exists");
   }
   
   
-  public static Match<File> exists(File val) {
+  public static OrigMatch<File> exists(File val) {
     return notNull(val)
-        .failWith("Bad null File")
+        .onFail("Bad null File")
         .and(f->Files.exists(f.toPath()))
-        .failWith("File does not exists");
+        .onFail("File does not exists");
   }
   
   
-  public static Match<File> notExists(File val) {
-    return exists(val).negate().failWith("File already exists");
+  public static OrigMatch<File> notExists(File val) {
+    return exists(val).negate().onFail("File already exists");
   }
   
   
-  public static <U extends Number> Match<U> notBetween(U val, U min, U max) {
+  public static <U extends Number> OrigMatch<U> notBetween(U val, U min, U max) {
     notNull(val).failIfNotMatch();
     notNull(min).failIfNotMatch();
     notNull(max).failIfNotMatch();
-    return new Match<>(val, v->
+    return new OrigMatch<>(val, v->
         Double.compare(v.doubleValue(), min.doubleValue()) >= 0 
             && Double.compare(v.doubleValue(), max.doubleValue()) <= 0,
         String.format("Value not Between parameters !(%f.2 < %f.2 < %f.2)", min.doubleValue(), val.doubleValue(), max.doubleValue())
@@ -197,11 +197,11 @@ public class Match<T> implements Predicate<T> {
   }
   
   
-  public static <U extends Number> Match<U> notBetweenExclusive(U val, U min, U max) {
+  public static <U extends Number> OrigMatch<U> notBetweenExclusive(U val, U min, U max) {
     notNull(val).failIfNotMatch();
     notNull(min).failIfNotMatch();
     notNull(max).failIfNotMatch();
-    return new Match<>(val, v->
+    return new OrigMatch<>(val, v->
         Double.compare(v.doubleValue(), min.doubleValue()) > 0 
             && Double.compare(v.doubleValue(), max.doubleValue()) < 0,
         String.format("Value not Between parameters !(%f.2 < %f.2 < %f.2)", min.doubleValue(), val.doubleValue(), max.doubleValue())
@@ -209,22 +209,22 @@ public class Match<T> implements Predicate<T> {
   }
   
   
-  public static <U extends Date> Match<U> notBetween(U val, U min, U max) {
+  public static <U extends Date> OrigMatch<U> notBetween(U val, U min, U max) {
     notNull(val).failIfNotMatch();
     notNull(min).failIfNotMatch();
     notNull(max).failIfNotMatch();
-    return new Match<>(val, v->
+    return new OrigMatch<>(val, v->
         v.compareTo(min) >= 0 && v.compareTo(max) <= 0,
         String.format("Value not Between parameters !(%s < %s < %s)", min, val, max)
     );
   }
   
   
-  public static <U extends Date> Match<U> notBetweenExclusive(U val, U min, U max) {
+  public static <U extends Date> OrigMatch<U> notBetweenExclusive(U val, U min, U max) {
     notNull(val).failIfNotMatch();
     notNull(min).failIfNotMatch();
     notNull(max).failIfNotMatch();
-    return new Match<>(val, v->
+    return new OrigMatch<>(val, v->
         v.compareTo(min) > 0 && v.compareTo(max) < 0,
         String.format("Value not Between parameters !(%s < %s < %s)", min, val, max)
     );
