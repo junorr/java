@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.tools.check.ICheck;
+import us.pserver.tools.check.Check;
 
 /**
  *
@@ -42,43 +42,43 @@ public class TestCheck {
   public void notNull() {
     String str = null;
     //System.out.println(ICheck.notNull(IOException.class, str).getOrFail());
-    Assertions.assertThrows(IOException.class, ()->ICheck.notNull(IOException.class, str).failIfNotMatch());
+    Assertions.assertThrows(IOException.class, ()->Check.of(IOException.class).onNotNull(str).failIfNotMatch());
   }
 
   @Test
   public void notEmptyString() {
     String str = null;
-    Assertions.assertThrows(IOException.class, ()->ICheck.notEmpty(IOException.class, str).failIfNotMatch());
+    Assertions.assertThrows(IOException.class, ()->Check.of(IOException.class).onNotEmpty(str).failIfNotMatch());
   }
   
   @Test
   public void notEmptyCollection() {
     List<Integer> ls = Collections.EMPTY_LIST;
-    Assertions.assertThrows(Exception.class, ()->ICheck.notEmpty(Exception.class, ls).failIfNotMatch());
+    Assertions.assertThrows(Exception.class, ()->Check.of(Exception.class).onNotEmpty(ls).failIfNotMatch());
   }
   
   @Test
   public void winPathExists() {
     Path path = Paths.get("D:/check.test");
-    Assertions.assertThrows(FileNotFoundException.class, ()->ICheck.exists(FileNotFoundException.class, path).failIfNotMatch());
+    Assertions.assertThrows(FileNotFoundException.class, ()->Check.of(FileNotFoundException.class).onExists(path).failIfNotMatch());
   }
   
   @Test
   public void winFileExists() {
     Path path = Paths.get("D:/check.test");
-    Assertions.assertThrows(FileNotFoundException.class, ()->ICheck.exists(FileNotFoundException.class, path.toFile()).failIfNotMatch());
+    Assertions.assertThrows(FileNotFoundException.class, ()->Check.of(FileNotFoundException.class).onExists(path.toFile()).failIfNotMatch());
   }
   
   @Test
   public void winPathNotExists() {
     Path path = Paths.get("D:/java");
-    Assertions.assertThrows(FileNotFoundException.class, ()->ICheck.notExists(FileNotFoundException.class, path).failIfNotMatch());
+    Assertions.assertThrows(FileNotFoundException.class, ()->Check.of(FileNotFoundException.class).onNotExists(path).failIfNotMatch());
   }
   
   @Test
   public void winFileNotExists() {
     Path path = Paths.get("D:/java");
-    Assertions.assertThrows(FileNotFoundException.class, ()->ICheck.notExists(FileNotFoundException.class, path.toFile()).failIfNotMatch());
+    Assertions.assertThrows(FileNotFoundException.class, ()->Check.of(FileNotFoundException.class).onNotExists(path.toFile()).failIfNotMatch());
   }
   
   @Test
@@ -86,7 +86,7 @@ public class TestCheck {
     int val = 10;
     int min = 0;
     int max = 5;
-    Assertions.assertThrows(IOException.class, ()->ICheck.notBetween(IOException.class, val, min, max).failIfNotMatch());
+    Assertions.assertThrows(IOException.class, ()->Check.of(IOException.class).onNotBetween(val, min, max).failIfNotMatch());
   }
   
   @Test
@@ -94,7 +94,7 @@ public class TestCheck {
     int val = 10;
     int min = 0;
     int max = 10;
-    Assertions.assertThrows(IOException.class, ()->ICheck.notBetweenExclusive(IOException.class, val, min, max).failIfNotMatch());
+    Assertions.assertThrows(IOException.class, ()->Check.of(IOException.class).onNotBetweenExclusive(val, min, max).failIfNotMatch());
   }
   
 }

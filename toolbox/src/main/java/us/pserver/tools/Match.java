@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Date;
 import java.util.function.Predicate;
+import us.pserver.tools.check.Check;
 
 /**
  *
@@ -35,79 +36,38 @@ import java.util.function.Predicate;
  * @version 0.0 - 31/12/2017
  * @param <T>
  */
-public class Match<T> implements Predicate<T> {
-  
-  public static final String DEFAULT_MESSAGE = "Condition not match";
-  
-  
-  protected final Predicate<T> match;
-  
-  protected final T obj;
-  
-  protected final String defMessage;
-  
-  protected final Match<T> parent;
+public class Match<T> extends Check<T,IllegalArgumentException> {
   
   protected Match(T t, Predicate<T> match, String message) {
     this(t, match, message, null);
   }
   
-  protected Match(T t, Predicate<T> match, String message, Match<T> parent) {
-    if(match == null) {
-      throw new IllegalArgumentException("Bad null Predicate");
-    }
-    if(message == null) {
-      throw new IllegalArgumentException("Bad null message");
-    }
-    this.match = match;
-    this.obj = t;
-    this.defMessage = message;
-    this.parent = parent;
+  protected Match(T t, Predicate<T> match, String message, Check<?,?> parent) {
+    super(IllegalArgumentException.class, t, match, message, parent);
   }
   
   public Match(T t, Predicate<T> match) {
     this(t, match, DEFAULT_MESSAGE);
   }
   
-  public T get() {
-    return obj;
+  @Override
+  public <U> Match<U> on(U val) {
+    return new Match(val, match, this.defMessage, parent);
   }
   
-  public T getOrFail() {
-    this.failIfNotMatch();
-    return this.get();
+  @Override
+  public Match<T> match(Predicate<T> match) {
+    return new Match<>(obj, match, this.defMessage, parent);
   }
   
-  public T getOrFail(String message) {
-    this.failIfNotMatch(message);
-    return this.get();
-  } 
-  
-  public void failIfNotMatch() {
-    this.failIfNotMatch(defMessage);
-  }
-  
-  public void failIfNotMatch(String message) {
-    if(parent != null) {
-      parent.failIfNotMatch();
-    }
-    if(!test(obj)) {
-      throw new IllegalArgumentException(message);
-    }
-  }
-  
+  @Override
   public Match<T> failWith(String msg) {
     if(msg == null) {
       throw new IllegalArgumentException("Bad null message");
     }
-    return new Match(obj, match, msg, parent);
+    return new Match<>(obj, match, msg, parent);
   }
-
-  @Override
-  public boolean test(T t) {
-    return match.test(t);
-  }
-
+  
   @Override
   public Match<T> and(Predicate<? super T> other) {
     return new Match(obj, match.and(other), defMessage, this);
@@ -126,7 +86,7 @@ public class Match<T> implements Predicate<T> {
 
   @Override
   public String toString() {
-    return "Match{" + "match=" + match + ", obj=" + obj + ", defMessage=" + defMessage + ", parent=" + parent + '}';
+    return "Match{" + "match=" + match + ", obj=" + obj + ", message=" + defMessage + ", parent=" + parent + '}';
   }
   
   
@@ -192,7 +152,7 @@ public class Match<T> implements Predicate<T> {
     return new Match<>(val, v->
         Double.compare(v.doubleValue(), min.doubleValue()) >= 0 
             && Double.compare(v.doubleValue(), max.doubleValue()) <= 0,
-        String.format("Value not Between parameters !(%f.2 < %f.2 < %f.2)", min.doubleValue(), val.doubleValue(), max.doubleValue())
+        String.format("Value not Between parameters !(%f.2 <= %f.2 <= %f.2)", min.doubleValue(), val.doubleValue(), max.doubleValue())
     );
   }
   
@@ -215,7 +175,7 @@ public class Match<T> implements Predicate<T> {
     notNull(max).failIfNotMatch();
     return new Match<>(val, v->
         v.compareTo(min) >= 0 && v.compareTo(max) <= 0,
-        String.format("Value not Between parameters !(%s < %s < %s)", min, val, max)
+        String.format("Value not Between parameters !(%s <= %s <= %s)", min, val, max)
     );
   }
   
