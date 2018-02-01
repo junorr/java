@@ -27,7 +27,6 @@ import br.com.bb.disec.micros.db.MongoConnectionPool;
 import br.com.bb.disec.micros.db.mongo.MongoCache;
 import br.com.bb.disec.micros.db.mongo.MongoMetaData;
 import br.com.bb.disec.micros.handler.response.CachedResponse;
-import br.com.bb.disec.micros.jiterator.MongoJsonIterator;
 import static br.com.bb.disec.micros.util.JsonConstants.CACHETTL;
 import static br.com.bb.disec.micros.util.JsonConstants.CREATED;
 import static br.com.bb.disec.micros.util.JsonConstants.DB_MICRO;

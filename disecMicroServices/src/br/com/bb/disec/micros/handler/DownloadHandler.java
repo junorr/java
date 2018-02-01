@@ -67,9 +67,16 @@ public class DownloadHandler extends HashDownloadHandler {
             json.get(GROUP).getAsString(), 
             json.get(NAME).getAsString()
         ).build();
-    new FileStreamHandler(
-        conf.getPath(), conf.getName()
-    ).handleRequest(hse);
+    try {
+      new FileStreamHandler(
+          conf.getPath(), conf.getName()
+      ).handleRequest(hse);
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      hse.setStatusCode(500);
+      hse.endExchange();
+    }
   }
 
   

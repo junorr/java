@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import us.pserver.tools.ForEach;
+import us.pserver.tools.exp.ForEach;
 import us.pserver.tools.Match;
 
 /**

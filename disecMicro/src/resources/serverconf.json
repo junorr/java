@@ -6,7 +6,7 @@
   "debugHeaders": false,
   "dispatcherEnabled": false,
   "shutdownHandlerEnabled": true,
-  "authenticationShield": false,
+  "authenticationShield": true,
   "jwtAuthKey": "F8BFDDC2130A81CDD33E63D63B1A39BE815EDB49272F442CB2E50090ABD40D88",
   "handlers": {
     "/jwt": "br.com.bb.disec.micro.handler.JWTAuthHandler",

@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import us.pserver.finalson.FinalsonConfig;
 import us.pserver.tools.Match;
-import us.pserver.tools.Tuple;
+import us.pserver.tools.misc.Tuple;
 
 /**
  *

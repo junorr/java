@@ -70,7 +70,7 @@ public class CorsHandler implements HttpHandler {
    */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    System.out.println(hse.getRequestURI());
+    //System.out.println(hse.getRequestURI());
     this.printRequest(hse);
     HeaderMap hds = hse.getRequestHeaders();
     if(hds.contains(HEADER_ORIGIN)) {

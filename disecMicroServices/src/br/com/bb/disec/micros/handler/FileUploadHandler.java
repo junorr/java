@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micros.handler;
 
+import br.com.bb.disec.micro.ServerSetup;
 import br.com.bb.disec.micros.conf.FileUploadConfig;
 import br.com.bb.disec.micros.util.FileSize;
 import br.com.bb.disec.micro.handler.JsonHandler;
@@ -35,6 +36,7 @@ import io.undertow.server.handlers.form.FormData;
 import io.undertow.server.handlers.form.FormData.FormValue;
 import io.undertow.server.handlers.form.FormDataParser;
 import io.undertow.server.handlers.form.FormParserFactory;
+import io.undertow.util.Methods;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -99,8 +101,8 @@ public class FileUploadHandler implements JsonHandler {
   
   
   private FileUploadConfig readConfig(URIParam pars) throws IOException {
-    if(pars.length() < 1) {
-      throw new IOException("Missing Aplication Context");
+    if(pars.length() < 2) {
+      throw new IOException("Missing upload Group/Name");
     }
     FileUploadConfig fuc = FileUploadConfig
         .builder()
@@ -116,32 +118,38 @@ public class FileUploadHandler implements JsonHandler {
       hse.dispatch(this);
       return;
     }
+    if(!Methods.POST.equals(hse.getRequestMethod())) {
+      hse.setStatusCode(400).endExchange();
+      return;
+    }
     hse.startBlocking();
     JsonArray resp = new JsonArray();
     URIParam pars = new URIParam(hse.getRequestURI());
     FileUploadConfig fuck = null;
     try {
       fuck = readConfig(pars);
+      System.out.println("[/upload] "+ fuck);
     } catch(IOException e) {
-      resp.add(buildJson(false, 
-          "Bad File Group: "+ pars.getParam(0), 
-          null, null, 0)
-      );
+      e.printStackTrace();
+      hse.setStatusCode(400);
+      hse.endExchange();
+      return;
     }
     if(fuck != null) {
-      FormParserFactory.Builder fdp = FormParserFactory.builder(true);
-      fdp.setDefaultCharset("UTF-8");
-      FormDataParser fp = fdp.build().createParser(hse);
-      FormData data = fp.parseBlocking();
+      FormParserFactory.Builder fact = FormParserFactory.builder(true);
+      fact.setDefaultCharset("UTF-8");
+      FormDataParser fdp = fact.build().createParser(hse);
+      FormData data = fdp.parseBlocking();
       for(String field : data) {
         resp.add(this.doUpload(
             fuck, data.getFirst(field), 
-            pars.getParam(0))
+            pars.getParam(0) + "-" + pars.getParam(1))
         );
       }//for
     }//fuck != null
     this.setStatus(hse, resp);
     this.putJsonHeader(hse);
+    System.out.println("[/upload] response: "+ gson.toJson(resp));
     hse.getResponseSender().send(gson.toJson(resp) + "\n");
     hse.endExchange();
   }
@@ -178,8 +186,9 @@ public class FileUploadHandler implements JsonHandler {
           );
         }
       } catch(IOException e) {
+        e.printStackTrace();
         elt = buildJson(false, 
-            "Bad Request. "+ e.getMessage(), 
+            e.getMessage(), 
             value.getFileName(), 
             value.getPath().toString(), 
             fsize

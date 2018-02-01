@@ -28,15 +28,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.codec.digest.DigestUtils;
 
 
 /**
  * Um objeto que pode ser usado para gerenciar um pool de SqlSource.
- * Map<String, String> sql é onde serão diretamente armazenados as SQLs que forem
+ * Map&lt;String, String&gt; sql é onde serão diretamente armazenados as SQLs que forem
  * sendo requisitadas.
- * List<SqlSource> srcs é onde estarão armazenado o pool de SqlSource que pode
+ * List&lt;SqlSource&gt; srcs é onde estarão armazenado o pool de SqlSource que pode
  * conter todas as SQL da aplicação.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 03/10/2016
@@ -45,23 +47,42 @@ public final class SqlSourcePool implements SqlSource {
 
   private static final SqlSourcePool instance = new SqlSourcePool();
   
+  private static final int MAX_CACHE_SIZE = 25;
   
-  private final Map<String,String> sqls;
+  private static final int MIN_CACHE_SIZE = 2;
+  
+  
+  private final Map<String,QueryEntry> sqls;
   
   private final List<SqlSource> srcs;
   
+  private final int maxCacheSize;
+  
   
   /**
-   * Construtor de inicialização da classe. Inicializa todas as propriedades da
-   * classe.
+   * Construtor que recebe o tamanho máximo do cache de queries SQL. 
+   * Quando este tamanho é excedido, as queries mais antigas são 
+   * descartadas.
+   * @param maxCacheSize int
    */
-  private SqlSourcePool() {
+  private SqlSourcePool(int maxCacheSize) {
     if(instance != null) {
       throw new IllegalStateException(getClass().getName()+ " is Already Created");
     }
+    this.maxCacheSize = (maxCacheSize < MIN_CACHE_SIZE 
+        ? MAX_CACHE_SIZE : maxCacheSize);
     sqls = new HashMap<>();
     srcs = new ArrayList<>();
     srcs.add(new DefaultFileSqlSource(ResourceLoader.caller()));
+  }
+  
+  
+  /**
+   * Construtor padrão e sem argumentos.
+   * SqlSourcePool é inicializado com MAX_CACHE_SIZE = 25.
+   */
+  public SqlSourcePool() {
+    this(MAX_CACHE_SIZE);
   }
   
   
@@ -71,6 +92,14 @@ public final class SqlSourcePool implements SqlSource {
    */
   public List<SqlSource> sources() {
     return srcs;
+  }
+  
+  
+  /**
+   * Limpa o cache de queries SQL.
+   */
+  public void clearPool() {
+    sqls.clear();
   }
   
   
@@ -112,12 +141,24 @@ public final class SqlSourcePool implements SqlSource {
     if(!sqls.containsKey(hash)) {
       for(SqlSource src : srcs) {
         if(src.containsSql(group, name)) {
-          sqls.put(hash, src.getSql(group, name));
+          putSql(hash, src.getSql(group, name));
           break;
         }
       }
     }
-    return sqls.get(hash);
+    return sqls.get(hash).getQuery();
+  }
+  
+  
+  private void putSql(String hash, String query) {
+    if(sqls.size() > maxCacheSize) {
+      Optional<String> min = sqls.entrySet().stream()
+          .min((a,b)->a.getValue().getTimestamp()
+              .compareTo(b.getValue().getTimestamp()))
+          .map(Entry::getKey);
+      sqls.remove(min.get());
+    }
+    sqls.put(hash, new QueryEntry(query));
   }
   
 

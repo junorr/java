@@ -46,8 +46,8 @@ public class ProcExecutorHandler implements HttpHandler {
       return;
     }
     ProcExecutorConfig cfg = ProcExecutorConfig.builder().load(par.getParam(0), par.getParam(1)).build();
-    System.out.println("* ProcExecutorHandler: command: "+ cfg.getCommand());
-    System.out.println("* ProcExecutorHandler: waitOutput: "+ cfg.isWaitOutput());
+    //System.out.println("* ProcExecutorHandler: command: "+ cfg.getCommand());
+    //System.out.println("* ProcExecutorHandler: waitOutput: "+ cfg.isWaitOutput());
     cfg.getProcExecutor().start();
     if(cfg.isWaitOutput()) {
       hse.startBlocking();

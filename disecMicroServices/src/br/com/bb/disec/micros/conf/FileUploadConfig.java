@@ -279,7 +279,7 @@ public class FileUploadConfig {
         );
         query.close();
         if(json.size() == 0) {
-          throw new IOException("Config Not Found For Aplic Name: "+ group);
+          throw new IOException("Config Not Found For Group: "+ group);
         }
         if(json.get("allowed_ext") != null) {
           this.allowedExtensions = Arrays.asList(
