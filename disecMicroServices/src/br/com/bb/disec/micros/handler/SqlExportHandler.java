@@ -21,6 +21,7 @@
 
 package br.com.bb.disec.micros.handler;
 
+import br.com.bb.disec.micro.util.URIParam;
 import br.com.bb.disec.micros.handler.response.DirectResponse;
 import br.com.bb.disec.micros.coder.EncodingFormat;
 import br.com.bb.disec.micros.db.MongoConnectionPool;
@@ -55,6 +56,12 @@ public class SqlExportHandler extends HashDownloadHandler {
       super.handleRequest(hse);
       if(Methods.GET.equals(hse.getRequestMethod())) {
         this.execute(hse, this.getJson());
+      }
+      else if(Methods.POST.equals(hse.getRequestMethod())) {
+        URIParam pars = new URIParam(hse.getRequestURI());
+        if(pars.length() < 2) {
+          hse.setStatusCode(404).endExchange();
+        }
       }
     } 
     catch(Exception e) {
