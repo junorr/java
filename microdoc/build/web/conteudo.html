@@ -1,0 +1,182 @@
+<link rel="stylesheet" href="css/conteudo.css">
+
+<script type="text/javascript" src="js/micro-core.js"></script>
+<script type="text/javascript" src="js/knockout-3.4.2.js"></script>
+
+<div id="endpoints" style="display: block;">
+  
+  <br/>
+  <p class="desc">
+    Cada link abaixo representa um <i>EndPoint</i>, ou seja, uma URI do microservi&ccedil;o que desempenha uma fun&ccedil;&atilde;o. <br/>
+    Clique no link para ver sua descri&ccedil;&atilde;o e como usar a API.<br/>
+    O microserviço pode ser acessado através da URL <span class="fmono fsize-14">http://disec5.intranet.bb.com.br:9088/&lt;<i>servico</i>&gt;</span>, onde <span class="fmono fsize-14">&lt;<i>servico</i>&gt;</span> representa uma das URIs abaixo.<br/>
+    Conexões criptografadas (certificado auto-assinado) podem ser efetuadas na URL <span class="fmono fsize-14">https://disec5.intranet.bb.com.br:9443/</span>.
+  </p>
+  <br/>
+  
+  <div data-bind="foreach: {data: edps, as: 'edp'}">
+    <div class="panel panel-default shadow mg-bottom-15">
+      <div class="panel-heading clickable" data-bind="attr: {'data-edp': edp.cd_endpoint}" onclick="getMethods(this);">
+        <h4 class="cnavy">
+          <i class="fa fa-link _2"></i>
+          <span data-bind="text: edp.uri"></span>
+        </h4>
+      </div>
+      <div class="panel-body" data-shown="false" style="display: none;">
+        <p class="desc" data-bind="text: edp.tx_dsc"></p>
+        <br/>
+
+        <h4 class="desc">
+          <i class="fa fa-sitemap _2"></i>
+          HTTP Methods
+        </h4>
+
+        <div data-bind="foreach: {data: edp.meths, as: 'mt'}">
+          <div data-bind="attr: {'data-meth': mt.cd_method}"
+               class="list-group-item" onclick="getParams(this);">
+            <span class="clickable fbold fsize-16 fmono" data-bind="text: mt.method"></span>
+            <p class="desc display-none" data-bind="html: mt.tx_dsc"></p>
+            <div data-bind="foreach: {data: mt.params, as: 'pr'}" style="padding-left: 15px;">
+              <div>
+                <i class="fsize-16 fa fa-code _2"></i>
+                <span class="fbold fsize-14" data-bind="text: pr.tx_tip_param"></span>:
+                &nbsp;
+                <span class="fbold fsize-14" data-bind="text: pr.nome"></span>
+                <p class="desc fsize-14" data-bind="html: pr.tx_dsc"></p>
+                <span class="desc fsize-14">&bullet; Exemplo</span>
+                <p class="desc fsize-14" data-bind="html: pr.tx_exemplo"></p>
+              </div>
+            </div>
+            <div data-bind="foreach: {data: mt.responses, as: 'rs'}" style="padding-left: 15px;">
+              <p>
+                <i class="fsize-16 fa fa-reply _2"></i>
+                <span class="fbold fsize-14">Response: </span>
+                <span class="fbold fsize-14" data-bind="text: rs.resp_code"></span> - 
+                <span class="fbold fsize-14" data-bind="text: rs.tx_resp"></span><br/>
+                <span class="fsize-14" data-bind="html: rs.tx_dsc"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+
+<!--div style="padding: 15px 1px 15px 20px; height: 130px; background-color: rgb(80,80,80); border-radius: 4px;"-->
+  <pre id="out-stream" style="padding: 10px 20px;
+       background-color: rgb(80,80,80); 
+       color: rgb(215, 250, 215); 
+       height: 100px; 
+       border-radius: 4px;
+       border: none;
+       overflow: auto;"
+       onclick="longProcessExecution();"></pre>
+<!--/div-->
+
+
+<script type="text/html" id="template-method">
+  <li class="list-group-item" data-bind="text: mt.method"></li>
+</script>
+
+
+<script type="text/javascript">
+  
+  //$.micro().auth("http://aceofspades.df.intrabb.bb.com.br:9088/jwt", ["http://aceofspades.intranet.bb.com.br:9088/sql/microdoc/endpoints"]);
+  
+  var MICRO_URL = "http://aceofspades.df.intrabb.bb.com.br:9088/";
+  //var MICRO_URL = "http://disec5.intranet.bb.com.br:9088/";
+  
+  function microctx(ctx) {
+    return MICRO_URL + ctx;
+  }
+  
+  function showBody(elt) {
+    var body = $(elt).next("div.panel-body");
+    var isShown = body.attr("data-shown") === "true";
+    if(isShown) {
+      body.hide('blind');
+    }
+    else {
+      body.show('blind');
+    }
+    body.attr("data-shown", !isShown);
+  }
+  
+  
+  function Endpoints() {
+    var ref = this;
+    ref.edps = ko.observableArray([]);
+  }
+  
+  
+  function getPropMatching(array, prop, value) {
+    for(var i = 0; i < array.length; i++) {
+      var obj = array[i];
+      for(var p in obj) {
+        //console.log(p + " = " + obj[p] + " == " + value + " ? " + (obj[p] == value));
+        if(p === prop && obj[p] == value) {
+          return obj;
+        }
+      }
+    }
+    return false;
+  }
+  
+  
+  var endpoints = new Endpoints();
+  
+  ko.applyBindings(endpoints);
+  
+  $.micro().post(microctx("sql/microdoc/endpoints"), {}, function(res) {
+    for(var i = 0; i < res.data.length; i++) {
+      res.data[i].meths = ko.observableArray([]);
+    }
+    endpoints.edps(res.data);
+  });
+  
+  
+  function getMethods(elt) {
+    var edp = $(elt).attr("data-edp");
+    $.micro().post(microctx("sql/microdoc/methods"), {args: [edp]}, function(res) {
+      for(var i = 0; i < res.data.length; i++) {
+        res.data[i].params = ko.observableArray([]);
+        res.data[i].responses = ko.observableArray([]);
+      }
+      showBody(elt);
+      getPropMatching(endpoints.edps(), "cd_endpoint", edp).meths(res.data);
+    });
+  }
+  
+  function getParams(elt) {
+    var edp = $(elt).closest("div.panel-body").prev().attr("data-edp");
+    var meth = $(elt).attr("data-meth");
+    getResponses(edp, meth);
+    $.micro().post(microctx("sql/microdoc/params"), {args: [meth]}, function(res) {
+      var json_edp = getPropMatching(endpoints.edps(), "cd_endpoint", edp);
+      getPropMatching(json_edp.meths(), "cd_method", meth).params(res.data);
+      $(elt).find("p.display-none").show();
+    });
+  }
+  
+  function getResponses(edp, meth) {
+    $.micro().post(microctx("sql/microdoc/response"), {args: [meth]}, function(res) {
+      var json_edp = getPropMatching(endpoints.edps(), "cd_endpoint", edp);
+      getPropMatching(json_edp.meths(), "cd_method", meth).responses(res.data);
+    });
+  }
+  
+  function longProcessExecution() {
+    var times = parseInt(Math.random() * 10 + 5);
+    $("#out-stream").empty();
+    $.micro().stream(microctx("execute/test/stream/"+ times), "#out-stream", 
+        function(data) {alert("Stream Completed: "+ data);}, 
+        function(data) {alert("Stream Error: "+ data);}
+    );
+  }
+  
+  
+</script>

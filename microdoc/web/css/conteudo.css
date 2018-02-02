@@ -1,0 +1,72 @@
+.display-none {
+  display: none;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.unclickable {
+  cursor: text;
+}
+
+._2:after {
+  content:"\00A0\00A0";
+}
+
+.desc {
+  color: rgb(60,60,60);
+  font-size: 16px;
+  margin-left: 20px;
+}
+
+.shadow {
+  box-shadow: 2px 2px 4px rgba(60,60,60,0.6);
+}
+
+.cnavy {
+  color: navy;
+}
+
+.fbold {
+  font-weight: bold;
+}
+
+.fsize-16 {
+  font-size: 16px;
+}
+
+.fsize-14 {
+  font-size: 14px;
+}
+
+.rounded {
+  border-radius: 3px;
+}
+
+.bordered {
+  border: solid thin rgb(150,150,150);
+}
+
+.fmono {
+  font-family: monospace;
+}
+
+.btn-style {
+  padding: 4px 6px;
+  color: white;
+}
+
+.mg-bottom-30 {
+  margin-bottom: 30px;
+}
+
+.mg-bottom-15 {
+  margin-bottom: 15px;
+}
+
+.div-li {
+  border: solid thin lightgray;
+  border-radius: 3px;
+  padding: 10px 15px;
+}
