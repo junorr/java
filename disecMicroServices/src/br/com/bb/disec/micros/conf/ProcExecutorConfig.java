@@ -25,6 +25,7 @@ import br.com.bb.disec.micro.ResourceLoader;
 import br.com.bb.disec.micro.db.DefaultFileSqlSource;
 import br.com.bb.disec.micro.db.PoolFactory;
 import br.com.bb.disec.micro.db.SqlQuery;
+import br.com.bb.disec.micro.util.URIParam;
 import br.com.bb.disec.micros.db.SqlObjectType;
 import br.com.bb.disec.micros.util.BashProcExecutor;
 import com.google.gson.JsonObject;
@@ -112,6 +113,8 @@ public class ProcExecutorConfig {
     
     private String command;
     
+    private String[] args;
+    
     private boolean waitOutput;
     
 
@@ -129,12 +132,25 @@ public class ProcExecutorConfig {
     }
     
     
+    public Builder arguments(String[] args) {
+      this.args = args;
+      return this;
+    }
+    
+    
     /**
      * Cria e retorna um objeto FileUploadConfig com 
      * as informações deste Builder.
      * @return Nova instância de FileUploadConfig.
      */
     public ProcExecutorConfig build() {
+      if(args != null && args.length > 0) {
+        StringBuilder sb = new StringBuilder(this.command);
+        for(String a : args) {
+          sb.append(" ").append(a);
+        }
+        this.command = sb.toString();
+      }
       return new ProcExecutorConfig(new BashProcExecutor(this.command), this.command, this.waitOutput);
     }
     
@@ -159,6 +175,25 @@ public class ProcExecutorConfig {
         }
       }
       return json;
+    }
+    
+    
+    public Builder load(URIParam pars) throws IOException {
+      if(pars == null) {
+        throw new IllegalArgumentException("Bad null URI parameters");
+      }
+      if(pars.length() < 2) {
+        throw new IllegalArgumentException("Missing command group/name in URI parameters");
+      }
+      this.load(pars.getParam(0), pars.getParam(1));
+      if(pars.length() > 2) {
+        String[] opts = new String[pars.length() - 2];
+        for(int i = 2; i < pars.length(); i++) {
+          opts[i-2] = pars.getParam(i);
+        }
+        this.arguments(opts);
+      }
+      return this;
     }
     
     

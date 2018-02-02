@@ -32,7 +32,7 @@ import io.undertow.server.HttpServerExchange;
  * @version 0.0 - 20/03/2017
  */
 public class ProcExecutorHandler implements HttpHandler {
-
+  
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
     if(hse.isInIoThread()) {
@@ -45,7 +45,7 @@ public class ProcExecutorHandler implements HttpHandler {
       hse.endExchange();
       return;
     }
-    ProcExecutorConfig cfg = ProcExecutorConfig.builder().load(par.getParam(0), par.getParam(1)).build();
+    ProcExecutorConfig cfg = ProcExecutorConfig.builder().load(par).build();
     //System.out.println("* ProcExecutorHandler: command: "+ cfg.getCommand());
     //System.out.println("* ProcExecutorHandler: waitOutput: "+ cfg.isWaitOutput());
     cfg.getProcExecutor().start();

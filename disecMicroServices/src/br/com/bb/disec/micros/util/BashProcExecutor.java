@@ -116,6 +116,7 @@ public class BashProcExecutor {
     byte[] bs = new byte[512];
     while((r = in.read(bs)) != -1) {
       os.write(bs, 0, r);
+      os.flush();
     }
     try { proc.waitFor(); }
     catch(InterruptedException e) {
