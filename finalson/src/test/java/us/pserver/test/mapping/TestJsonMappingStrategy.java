@@ -38,7 +38,7 @@ import us.pserver.finalson.test.bean.AObj;
  */
 public class TestJsonMappingStrategy {
   
-  private final FinalsonConfig config = new FinalsonConfig().setUseGetters(true).setUseMethodAnnotation(true);
+  private final FinalsonConfig config = new FinalsonConfig().usingGetters(true).setUseMethodAnnotation(true);
   
   private final JsonMappingStrategy jms = new JsonMappingStrategy(config);
   

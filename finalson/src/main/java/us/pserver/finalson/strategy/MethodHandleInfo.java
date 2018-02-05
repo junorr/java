@@ -41,7 +41,7 @@ import us.pserver.tools.Match;
  */
 public class MethodHandleInfo {
   
-  private final MethodHandle handle;
+  private final MethodHandleFactory handle;
   
   private final Class retype;
   
@@ -54,7 +54,7 @@ public class MethodHandleInfo {
   private final String name;
   
   
-  public MethodHandleInfo(MethodHandle mh, String name, Class returnType, List<Parameter> params, List<Annotation> annots, List<JsonElement> args) {
+  public MethodHandleInfo(MethodHandleFactory mh, String name, Class returnType, List<Parameter> params, List<Annotation> annots, List<JsonElement> args) {
     this.handle = Match.notNull(mh).getOrFail("Bad null MethodHandle");
     this.name = Match.notNull(name).getOrFail("Bad null name");
     this.retype = Match.notNull(returnType).getOrFail("Bad null return Class");
@@ -64,18 +64,13 @@ public class MethodHandleInfo {
   }
   
   
-  public MethodHandleInfo bindTo(Object obj) {
-    return new MethodHandleInfo(handle.bindTo(obj), name, retype, params, annots, arguments);
-  }
-  
-  
   public MethodHandleInfo withName(String name) {
     return new MethodHandleInfo(handle, name, retype, params, annots, arguments);
   }
   
   
   public MethodHandle getMethodHandle() {
-    return handle;
+    return handle.get();
   }
   
   
@@ -153,7 +148,7 @@ public class MethodHandleInfo {
     Match.notNull(meth).failIfNotMatch("Bad null Method");
     try {
       MethodHandle mh = MethodHandles.lookup().unreflect(meth);
-      return new MethodHandleInfo(mh, 
+      return new MethodHandleInfo(MethodHandleFactory.of(meth), 
           meth.getName(), meth.getReturnType(), 
           Arrays.asList(meth.getParameters()), 
           Arrays.asList(meth.getAnnotations()),
@@ -169,7 +164,7 @@ public class MethodHandleInfo {
     Match.notNull(cct).failIfNotMatch("Bad null Method");
     try {
       MethodHandle mh = MethodHandles.lookup().unreflectConstructor(cct);
-      return new MethodHandleInfo(mh, 
+      return new MethodHandleInfo(MethodHandleFactory.of(cct), 
           cct.getName(), void.class, 
           Arrays.asList(cct.getParameters()), 
           Arrays.asList(cct.getAnnotations()),

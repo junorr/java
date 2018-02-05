@@ -21,17 +21,19 @@
 
 package us.pserver.finalson.strategy;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import us.pserver.finalson.FinalsonConfig;
-import us.pserver.finalson.Property;
 import us.pserver.finalson.strategy.condition.GetterMethodCondition;
 import us.pserver.finalson.strategy.condition.NoArgsMethodCondition;
-import us.pserver.finalson.strategy.condition.PropertyAnnotatedCondition;
+import us.pserver.finalson.strategy.condition.AnnotatedMethodCondition;
 import us.pserver.tools.Match;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
@@ -55,7 +57,6 @@ public class JsonMappingStrategy implements MethodHandleStrategy<Object> {
           .filter(condition)
           .map(this::changeGetterName)
           .map(this::changePropertyName)
-          .map(m->m.bindTo(t))
           .collect(Collectors.toList());
     }
     catch(SecurityException e) {
@@ -64,19 +65,23 @@ public class JsonMappingStrategy implements MethodHandleStrategy<Object> {
   }
   
   private Predicate<MethodHandleInfo> getMethodConditionStrategy() {
-    Predicate<MethodHandleInfo> condition = new NoArgsMethodCondition();
-    if(config.useGetters()) {
-      condition = condition.and(new GetterMethodCondition());
+    Predicate<MethodHandleInfo> condition;
+    if(config.isUsingGetters() && config.isUsingMethodAnnotation()) {
+      condition = new GetterMethodCondition()
+          .or(new AnnotatedMethodCondition(config.getMethodAnnotation()));
     }
-    if(config.useMethodAnnotation()) {
-      condition = condition.or(new PropertyAnnotatedCondition());
+    else if(config.isUsingMethodAnnotation()) {
+      condition = new AnnotatedMethodCondition(config.getMethodAnnotation());
     }
-    return condition;
+    else {
+      condition = new GetterMethodCondition();
+    }
+    return new NoArgsMethodCondition().and(condition);
   }
 
   private MethodHandleInfo changeGetterName(MethodHandleInfo info) {
     MethodHandleInfo changed = info;
-    if(config.useGetters() && info.getName().startsWith("get")) {
+    if(config.isUsingGetters() && info.getName().startsWith("get")) {
       changed = changed.withName(changed.getName().substring(3,4).toLowerCase() 
           + changed.getName().substring(4));
     }
@@ -85,13 +90,15 @@ public class JsonMappingStrategy implements MethodHandleStrategy<Object> {
 
   private MethodHandleInfo changePropertyName(MethodHandleInfo info) {
     MethodHandleInfo changed = info;
-    if(config.useMethodAnnotation()) {
-      Optional<Property> opt = changed.getAnnotations().stream()
-          .filter(a->Property.class.isAssignableFrom(a.annotationType()))
-          .map(a->(Property)a)
+    if(config.isUsingMethodAnnotation()) {
+      Optional<Annotation> opt = changed.getAnnotations().stream()
+          .filter(a->config.getMethodAnnotation().isAssignableFrom(a.annotationType()))
           .findAny();
-      if(opt.isPresent() && !opt.get().value().isEmpty()) {
-        changed = changed.withName(opt.get().value());
+      if(opt.isPresent()) {
+        Reflector ref = Reflector.of(opt.get());
+        if(ref.selectMethod("value").isMethodPresent()) {
+          changed = changed.withName(Objects.toString(ref.invoke()));
+        }
       }
     }
     return changed;

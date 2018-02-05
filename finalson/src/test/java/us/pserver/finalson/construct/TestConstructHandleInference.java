@@ -36,7 +36,7 @@ import us.pserver.finalson.test.bean.AObj;
 public class TestConstructHandleInference {
   
   private final FinalsonConfig config = new FinalsonConfig()
-      .setUseGetters(true)
+      .usingGetters(true)
       .withClassLoader(AObj.class.getClassLoader());
 
   @Test

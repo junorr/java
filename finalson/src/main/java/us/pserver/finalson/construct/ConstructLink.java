@@ -59,14 +59,14 @@ public interface ConstructLink extends BiFunction<Constructor,JsonObject,List<Co
       List<ConstructParam> params = new ArrayList<>();
       for(int i = 0; i < pars.length; i++) {
         Parameter par = pars[i];
-        job.entrySet().stream()
-            .map(JsonProperty::of)
-            .forEach(p->System.out.printf("* ConstructLink: match( %s, %s ): %s%n", par, p, match.apply(par, p)));
+        //job.entrySet().stream()
+            //.map(JsonProperty::of)
+            //.forEach(p->System.out.printf("* ConstructLink: match( %s, %s ): %s%n", par, p, match.apply(par, p)));
         Optional<JsonProperty> prop = job.entrySet().stream()
             .map(JsonProperty::of)
             .filter(p->match.apply(par, p))
             .findAny();
-        System.out.printf(" - jsonProperty: %s%n", prop);
+        //System.out.printf(" - jsonProperty: %s%n", prop);
         if(prop.isPresent()) {
           params.add(ConstructParam.of(i, pars[i], prop.get()));
         }
@@ -74,7 +74,7 @@ public interface ConstructLink extends BiFunction<Constructor,JsonObject,List<Co
       if(cct.getParameterCount() != params.size()) {
         params.clear();
       }
-      System.out.println(params);
+      //System.out.println(params);
       return params;
     }
     

@@ -19,23 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.strategy.condition;
+package us.pserver.finalson.test.bean;
 
-import java.util.function.Predicate;
-import us.pserver.finalson.Property;
-import us.pserver.finalson.strategy.MethodHandleInfo;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 13/12/2017
+ * @version 0.0 - 02/02/2018
  */
-public class PropertyAnnotatedCondition implements Predicate<MethodHandleInfo> {
-  
-  @Override
-  public boolean test(MethodHandleInfo t) {
-    return t.getAnnotations().stream()
-        .anyMatch(a->Property.class.isAssignableFrom(a.annotationType()));
-  }
+public class TestAnnotationValue {
 
+  private final Class annotation = Property.class;
+  
+  @Test
+  public void testReflectionValue() {
+    Optional<Method> opt = Arrays.asList(AObj.class.getMethods())
+        .stream().filter(m->m.isAnnotationPresent(annotation))
+        .findAny();
+    if(!opt.isPresent()) {
+      throw new IllegalStateException("Should have an annotated (@Property) method here");
+    }
+    Annotation annot = opt.get().getAnnotation(annotation);
+    System.out.println("* annotation: "+ annot);
+    Reflector ref = new Reflector(annot);
+    Object value = ref.selectMethod("value").invoke();
+    System.out.println("* value: "+ value);
+  }
+  
 }

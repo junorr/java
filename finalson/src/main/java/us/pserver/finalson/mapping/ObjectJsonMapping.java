@@ -59,14 +59,14 @@ public class ObjectJsonMapping implements JsonMapping<Object> {
       if(!tmap.isPresent()) {
         throw new IllegalStateException("No TypeMapping found for "+ info.getReturnType().getName());
       }
-      putInvoke(job, tmap.get(), info);
+      putInvoke(job, tmap.get(), info, obj);
     }
     return job;
   }
   
-  private void putInvoke(JsonObject job, TypeMapping tmap, MethodHandleInfo info) {
+  private void putInvoke(JsonObject job, TypeMapping tmap, MethodHandleInfo info, Object obj) {
     try {
-      job.add(info.getName(), tmap.toJson(info.getMethodHandle().invoke()));
+      job.add(info.getName(), tmap.toJson(info.getMethodHandle().bindTo(obj).invoke()));
     } catch(Throwable e) {
       throw new RuntimeException(e.toString(), e);
     }

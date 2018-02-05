@@ -49,7 +49,7 @@ public class FinalsonConfig {
   
   private final boolean useGetters;
   
-  private final boolean useMethodAnnotation;
+  private final Class methodAnnotation;
   
   private final ClassLoader loader;
   
@@ -57,7 +57,7 @@ public class FinalsonConfig {
   
   
   public FinalsonConfig() {
-    this(new Gson(), FinalsonConfig.class.getClassLoader(), true, false, new CopyOnWriteArrayList<>());
+    this(new Gson(), FinalsonConfig.class.getClassLoader(), true, null, new CopyOnWriteArrayList<>());
     types.addAll(Arrays.asList(JavaPrimitive.values()));
     types.add(new ClassMapping(loader));
     types.add(new DateMapping());
@@ -70,35 +70,35 @@ public class FinalsonConfig {
   }
   
   
-  public FinalsonConfig(Gson gson, ClassLoader ldr, boolean useGetters, boolean useMethodAnnotation, List<TypeMapping> types) {
+  public FinalsonConfig(Gson gson, ClassLoader ldr, boolean useGetters, Class methodAnnotation, List<TypeMapping> types) {
     this.gson = gson;
     this.useGetters = useGetters;
-    this.useMethodAnnotation = useMethodAnnotation;
+    this.methodAnnotation = methodAnnotation;
     this.loader = ldr;
     this.types = types;
   }
   
   
   public FinalsonConfig withGson(Gson gson) {
-    return new FinalsonConfig(gson, loader, useGetters, useMethodAnnotation, types);
+    return new FinalsonConfig(gson, loader, useGetters, methodAnnotation, types);
   }
   
   
   public FinalsonConfig withClassLoader(ClassLoader ldr) {
     return new FinalsonConfig(gson, 
         Match.notNull(ldr).getOrFail("Bad null ClassLoader"), 
-        useGetters, useMethodAnnotation, types
+        useGetters, methodAnnotation, types
     );
   }
   
   
-  public FinalsonConfig setUseGetters(boolean use) {
-    return new FinalsonConfig(gson, loader, use, useMethodAnnotation, types);
+  public FinalsonConfig usingGetters(boolean use) {
+    return new FinalsonConfig(gson, loader, use, methodAnnotation, types);
   }
   
   
-  public FinalsonConfig setUseMethodAnnotation(boolean use) {
-    return new FinalsonConfig(gson, loader, useGetters, use, types);
+  public FinalsonConfig usingMethodAnnotation(Class methodAnnotation) {
+    return new FinalsonConfig(gson, loader, useGetters, methodAnnotation, types);
   }
   
   
@@ -130,13 +130,18 @@ public class FinalsonConfig {
   }
   
   
-  public boolean useGetters() {
+  public boolean isUsingGetters() {
     return useGetters;
   }
   
   
-  public boolean useMethodAnnotation() {
-    return useMethodAnnotation;
+  public boolean isUsingMethodAnnotation() {
+    return methodAnnotation != null;
+  }
+  
+  
+  public Class getMethodAnnotation() {
+    return methodAnnotation;
   }
   
 }

@@ -33,6 +33,7 @@ import us.pserver.finalson.strategy.MethodHandleInfo;
 import us.pserver.finalson.test.bean.AObj;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import us.pserver.finalson.test.bean.Property;
 
 /**
  *
@@ -41,7 +42,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class TestJavaMappingStrategy {
   
-  private final FinalsonConfig config = new FinalsonConfig().setUseGetters(true).setUseMethodAnnotation(true);
+  private final FinalsonConfig config = new FinalsonConfig()
+      .usingGetters(true)
+      .usingMethodAnnotation(Property.class);
   
   private final ObjectJsonMapping omap = new ObjectJsonMapping(config);
   
@@ -52,7 +55,13 @@ public class TestJavaMappingStrategy {
   
   @Test
   public void mapAtoJson() {
-    JsonElement elt = omap.toJson(a);
+    JsonElement elt;
+    try {
+      elt = omap.toJson(a);
+    } catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
     System.out.println(elt);
     List<MethodHandleInfo> infos = jas.apply(elt);
     System.out.println("--------------------");

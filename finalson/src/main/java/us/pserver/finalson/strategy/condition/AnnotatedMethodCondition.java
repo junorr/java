@@ -19,37 +19,29 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.test.mapping;
+package us.pserver.finalson.strategy.condition;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import us.pserver.finalson.FinalsonConfig;
-import us.pserver.finalson.mapping.ObjectJsonMapping;
-import us.pserver.finalson.test.bean.AObj;
+import java.util.function.Predicate;
+import us.pserver.finalson.strategy.MethodHandleInfo;
+import us.pserver.tools.Match;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/12/2017
+ * @version 0.0 - 13/12/2017
  */
-public class TestObjectJsonMapping {
+public class AnnotatedMethodCondition implements Predicate<MethodHandleInfo> {
   
-  private final FinalsonConfig config = new FinalsonConfig().usingGetters(true).setUseMethodAnnotation(true);
+  private final Class annotation;
   
-  private final ObjectJsonMapping omap = new ObjectJsonMapping(config);
+  public AnnotatedMethodCondition(Class annotation) {
+    this.annotation = Match.notNull(annotation).getOrFail("Bad null annotation Class");
+  }
   
-  private final AObj a = new AObj("aobj", 55, new int[]{5,5}, new char[]{'a','b'}, new Date());
-  
-  private List<String> meths = Arrays.asList(
-      "name", "age", "magic", "chars", "date", "class"
-  );
-  
-  
-  @Test
-  public void mapAtoJson() {
-    System.out.println(omap.toJson(a));
+  @Override
+  public boolean test(MethodHandleInfo t) {
+    return t.getAnnotations().stream()
+        .anyMatch(a->annotation.isAssignableFrom(a.annotationType()));
   }
 
 }

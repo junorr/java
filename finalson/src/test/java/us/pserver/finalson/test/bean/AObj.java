@@ -25,7 +25,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
-import us.pserver.finalson.Property;
 
 /**
  *
@@ -82,7 +81,7 @@ public class AObj implements Serializable {
     return name;
   }
 
-  @Property
+  @Property("age")
   public int age() {
     //System.out.println("AObj.age():int method invoked!");
     return age;
