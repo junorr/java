@@ -33,7 +33,7 @@ public class TestBashProcExecutor {
 
   
   public static void main(String[] args) throws IOException {
-    BashProcExecutor prc = new BashProcExecutor("ls -lh /storage");
+    BashProcExecutor prc = new BashProcExecutor("/dados/lng-process-emulation.sh 5");
     prc.start().transferOutput(System.out);
   }
   

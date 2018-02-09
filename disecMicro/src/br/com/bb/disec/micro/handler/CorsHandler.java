@@ -41,7 +41,7 @@ public class CorsHandler implements HttpHandler {
   
   public static final String AC_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
   
-  public static final String AC_ALLOW_METHOD = "Access-Control-Allow-Method";
+  public static final String AC_ALLOW_METHOD = "Access-Control-Allow-Methods";
   
   public static final String AC_ALLOW_HEADERS = "Access-Control-Allow-Headers";
   
