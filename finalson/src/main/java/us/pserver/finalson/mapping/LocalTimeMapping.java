@@ -19,46 +19,39 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.construct;
+package us.pserver.finalson.mapping;
 
-import java.lang.reflect.Parameter;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import us.pserver.tools.function.Rethrow;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 26/12/2017
+ * @version 0.0 - 02/01/2018
  */
-public class CombinedFallbackMatch implements ParameterMatch {
-  
-  private final ParameterMatch[] matches;
-  
-  public CombinedFallbackMatch(ParameterMatch ... matches) {
-    if(matches == null || matches.length < 1) {
-      throw new IllegalArgumentException("Bad null/empty ParameterMatch array");
-    }
-    this.matches = matches;
+public class LocalTimeMapping implements TypeMapping<LocalTime> {
+
+  @Override
+  public JsonElement toJson(LocalTime obj) {
+    return Rethrow.unchecked().apply(()->
+        new JsonPrimitive(DateTimeFormatter.ISO_TIME.format(obj))
+    );
   }
 
   @Override
-  public Boolean apply(Parameter t, JsonProperty u) {
-    if(!matchAnd(t, u)) return matchOr(t, u);
-    return true;
+  public boolean accept(Class type) {
+    return LocalTime.class.isAssignableFrom(type);
   }
-  
-  private boolean matchAnd(Parameter t, JsonProperty u) {
-    boolean match = true;
-    for(ParameterMatch m : matches) {
-      match = match && m.apply(t, u);
-    }
-    return match;
-  }
-  
-  private boolean matchOr(Parameter t, JsonProperty u) {
-    boolean match = false;
-    for(ParameterMatch m : matches) {
-      match = match || m.apply(t, u);
-    }
-    return match;
+
+  @Override
+  public LocalTime fromJson(JsonElement elt) {
+    return Rethrow.unchecked().apply(()->
+        LocalTime.from(DateTimeFormatter.ISO_TIME.parse(elt.getAsString()))
+    );
   }
   
 }

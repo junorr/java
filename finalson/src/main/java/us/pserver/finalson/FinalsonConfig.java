@@ -30,9 +30,13 @@ import us.pserver.finalson.mapping.ArrayMapping;
 import us.pserver.finalson.mapping.ClassMapping;
 import us.pserver.finalson.mapping.ColorMapping;
 import us.pserver.finalson.mapping.DateMapping;
+import us.pserver.finalson.mapping.InetAddressMapping;
 import us.pserver.finalson.mapping.InstantMapping;
 import us.pserver.finalson.mapping.JavaPrimitive;
+import us.pserver.finalson.mapping.LocalDateMapping;
 import us.pserver.finalson.mapping.LocalDateTimeMapping;
+import us.pserver.finalson.mapping.LocalTimeMapping;
+import us.pserver.finalson.mapping.OffsetTimeMapping;
 import us.pserver.finalson.mapping.PathMapping;
 import us.pserver.finalson.mapping.TypeMapping;
 import us.pserver.finalson.mapping.ZonedDateTimeMapping;
@@ -65,7 +69,11 @@ public class FinalsonConfig {
     types.add(new ColorMapping());
     types.add(new InstantMapping());
     types.add(new LocalDateTimeMapping());
+    types.add(new LocalDateMapping());
+    types.add(new LocalTimeMapping());
+    types.add(new OffsetTimeMapping());
     types.add(new ZonedDateTimeMapping());
+    types.add(new InetAddressMapping());
     types.add(new ArrayMapping(this));
   }
   

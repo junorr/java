@@ -58,7 +58,7 @@ public interface AcceptableType {
     else if(prim.isBoolean()) {
       return JavaPrimitive.BOOLEAN.accept(cls);
     }
-    else if(DateMapping.isJsonDate(prim)) {
+    else if(DateMapping.isJsonDate(prim) || DateMapping.isJsonTime(prim)) {
       return DateMapping.isAnyDateType(cls);
     }
     else {

@@ -29,6 +29,7 @@ import java.util.function.BiFunction;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/12/2017
  */
+@FunctionalInterface
 public interface ParameterMatch extends BiFunction<Parameter,JsonProperty,Boolean> {
 
 }

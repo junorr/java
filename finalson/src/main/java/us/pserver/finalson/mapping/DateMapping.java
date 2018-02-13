@@ -38,7 +38,11 @@ public class DateMapping implements TypeMapping<Date> {
 
   public static final DateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
   
-  public static final String DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*";
+  public static final String DATE_TIME_PATTERN = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*";
+  
+  public static final String TIME_PATTERN = "\\d{2}:\\d{2}:\\d{2}.*";
+  
+  public static final String DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}";
   
   @Override
   public JsonElement toJson(Date obj) {
@@ -61,7 +65,13 @@ public class DateMapping implements TypeMapping<Date> {
   
   
   public static boolean isJsonDate(JsonElement elt) {
-    return elt.getAsString().matches(DATE_PATTERN);
+    return elt.getAsString().matches(DATE_TIME_PATTERN)
+        || elt.getAsString().matches(DATE_PATTERN);
+  }
+  
+  
+  public static boolean isJsonTime(JsonElement elt) {
+    return elt.getAsString().matches(TIME_PATTERN);
   }
   
   

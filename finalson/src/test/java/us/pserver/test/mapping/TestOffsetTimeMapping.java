@@ -19,46 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.construct;
+package us.pserver.test.mapping;
 
-import java.lang.reflect.Parameter;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import us.pserver.finalson.mapping.OffsetTimeMapping;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 26/12/2017
+ * @version 0.0 - 11/02/2018
  */
-public class CombinedFallbackMatch implements ParameterMatch {
-  
-  private final ParameterMatch[] matches;
-  
-  public CombinedFallbackMatch(ParameterMatch ... matches) {
-    if(matches == null || matches.length < 1) {
-      throw new IllegalArgumentException("Bad null/empty ParameterMatch array");
-    }
-    this.matches = matches;
-  }
+public class TestOffsetTimeMapping {
 
-  @Override
-  public Boolean apply(Parameter t, JsonProperty u) {
-    if(!matchAnd(t, u)) return matchOr(t, u);
-    return true;
+  private final OffsetTime time = OffsetTime.of(16, 15, 14, 0, ZoneOffset.UTC);
+  
+  private final JsonElement jtime = new JsonPrimitive("16:15:14Z");
+  
+  private final OffsetTimeMapping map = new OffsetTimeMapping();
+  
+  @Test
+  public void timeToJson() {
+    Assertions.assertEquals(jtime, map.toJson(time));
   }
   
-  private boolean matchAnd(Parameter t, JsonProperty u) {
-    boolean match = true;
-    for(ParameterMatch m : matches) {
-      match = match && m.apply(t, u);
-    }
-    return match;
-  }
-  
-  private boolean matchOr(Parameter t, JsonProperty u) {
-    boolean match = false;
-    for(ParameterMatch m : matches) {
-      match = match || m.apply(t, u);
-    }
-    return match;
+  @Test
+  public void jsonToTime() {
+    Assertions.assertEquals(time, map.fromJson(jtime));
   }
   
 }

@@ -19,46 +19,46 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.construct;
+package us.pserver.finalson.handles;
 
 import java.lang.reflect.Parameter;
+import java.util.function.BiFunction;
+import us.pserver.finalson.mapping.AcceptableType;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 26/12/2017
+ * @version 0.0 - 11/02/2018
  */
-public class CombinedFallbackMatch implements ParameterMatch {
-  
-  private final ParameterMatch[] matches;
-  
-  public CombinedFallbackMatch(ParameterMatch ... matches) {
-    if(matches == null || matches.length < 1) {
-      throw new IllegalArgumentException("Bad null/empty ParameterMatch array");
-    }
-    this.matches = matches;
-  }
+@FunctionalInterface
+public interface ParameterMatch extends BiFunction<Parameter, JsonProperty, Boolean> {
 
-  @Override
-  public Boolean apply(Parameter t, JsonProperty u) {
-    if(!matchAnd(t, u)) return matchOr(t, u);
-    return true;
+  public static ParameterMatch matchByType() {
+    return (p,j)->AcceptableType.isCompatible(j.getJson(), p.getType());
   }
   
-  private boolean matchAnd(Parameter t, JsonProperty u) {
-    boolean match = true;
-    for(ParameterMatch m : matches) {
-      match = match && m.apply(t, u);
-    }
-    return match;
+  public static ParameterMatch matchByName() {
+    return (p,j)->p.getName().equals(j.getName());
   }
   
-  private boolean matchOr(Parameter t, JsonProperty u) {
-    boolean match = false;
-    for(ParameterMatch m : matches) {
-      match = match || m.apply(t, u);
-    }
-    return match;
+  public static ParameterMatch matchByNameAndType() {
+    return (p,j)->(matchByName().apply(p, j) && matchByType().apply(p, j));
+  }
+  
+  public static ParameterMatch matchByNameOrType() {
+    return (p,j)->(matchByName().apply(p, j) || matchByType().apply(p, j));
+  }
+  
+  public static ParameterMatch matchByNameTypeFallback() {
+    return (p,j)->(matchByNameAndType().apply(p, j) || matchByNameOrType().apply(p, j));
+  }
+  
+  public static ParameterMatch matchNone() {
+    return (p,j)->Boolean.FALSE;
+  }
+  
+  public static ParameterMatch matchAll() {
+    return (p,j)->Boolean.TRUE;
   }
   
 }

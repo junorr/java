@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.construct;
+package us.pserver.finalson.handles;
 
 import com.google.gson.JsonObject;
 import java.lang.reflect.Constructor;
@@ -44,7 +44,7 @@ public class DefaultConstructInference implements ConstructHandleInference {
   
   private final JsonObject object;
   
-  private final ConstructLink link;
+  private final InvokableLink link;
   
   
   public DefaultConstructInference(FinalsonConfig conf, Class type, JsonObject obj) {
@@ -52,27 +52,27 @@ public class DefaultConstructInference implements ConstructHandleInference {
     this.type = Match.notNull(type).getOrFail("Bad null object type");
     this.object = Match.notNull(obj).getOrFail("Bad null JsonObject");
     ParameterMatch match = new CombinedFallbackMatch(new ParamNameMatch(), new ParamTypeMatch());
-    this.link = ConstructLink.of(match);
+    this.link = InvokableLink.of(match);
   }
   
   
   @Override
-  public ConstructHandle infer() {
+  public InvokableHandle infer() {
     List<Constructor> ccts = Arrays.asList(type.getConstructors());
-    List<Tuple<Constructor,List<ConstructParam>>> ls = ccts.stream()
+    List<Tuple<Constructor,List<InvokableParam>>> ls = ccts.stream()
         .map(c->new Tuple<>(c, link.apply(c, object)))
         .filter(t->t.key().getParameterCount() == t.value().size())
         .collect(Collectors.toList());
-    Optional<Tuple<Constructor,List<ConstructParam>>> opt = maxMatchingParams(ls);
+    Optional<Tuple<Constructor,List<InvokableParam>>> opt = maxMatchingParams(ls);
     if(!opt.isPresent()) {
       throw new IllegalStateException("No properly constructor found for "+ type);
     }
-    return ConstructHandle.of(config, opt.get().key(), opt.get().value());
+    return InvokableHandle.of(config, opt.get().key(), opt.get().value());
   }
   
   
-  private Optional<Tuple<Constructor,List<ConstructParam>>> maxMatchingParams(
-      List<Tuple<Constructor,List<ConstructParam>>> tps
+  private Optional<Tuple<Constructor,List<InvokableParam>>> maxMatchingParams(
+      List<Tuple<Constructor,List<InvokableParam>>> tps
   ) {
     int selected = -1;
     int max = -1;

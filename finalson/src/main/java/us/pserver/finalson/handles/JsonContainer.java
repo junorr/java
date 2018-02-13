@@ -19,46 +19,17 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.construct;
+package us.pserver.finalson.handles;
 
-import java.lang.reflect.Parameter;
+import com.google.gson.JsonElement;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 26/12/2017
+ * @version 0.0 - 18/12/2017
  */
-public class CombinedFallbackMatch implements ParameterMatch {
-  
-  private final ParameterMatch[] matches;
-  
-  public CombinedFallbackMatch(ParameterMatch ... matches) {
-    if(matches == null || matches.length < 1) {
-      throw new IllegalArgumentException("Bad null/empty ParameterMatch array");
-    }
-    this.matches = matches;
-  }
+public interface JsonContainer {
 
-  @Override
-  public Boolean apply(Parameter t, JsonProperty u) {
-    if(!matchAnd(t, u)) return matchOr(t, u);
-    return true;
-  }
-  
-  private boolean matchAnd(Parameter t, JsonProperty u) {
-    boolean match = true;
-    for(ParameterMatch m : matches) {
-      match = match && m.apply(t, u);
-    }
-    return match;
-  }
-  
-  private boolean matchOr(Parameter t, JsonProperty u) {
-    boolean match = false;
-    for(ParameterMatch m : matches) {
-      match = match || m.apply(t, u);
-    }
-    return match;
-  }
+  public JsonElement getJson();
   
 }

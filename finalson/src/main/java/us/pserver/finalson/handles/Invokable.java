@@ -19,46 +19,47 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.construct;
+package us.pserver.finalson.handles;
 
+import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.List;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 26/12/2017
+ * @version 0.0 - 11/02/2018
  */
-public class CombinedFallbackMatch implements ParameterMatch {
+public interface Invokable {
   
-  private final ParameterMatch[] matches;
-  
-  public CombinedFallbackMatch(ParameterMatch ... matches) {
-    if(matches == null || matches.length < 1) {
-      throw new IllegalArgumentException("Bad null/empty ParameterMatch array");
-    }
-    this.matches = matches;
-  }
+  public
 
-  @Override
-  public Boolean apply(Parameter t, JsonProperty u) {
-    if(!matchAnd(t, u)) return matchOr(t, u);
-    return true;
+  public List<Parameter> getParameters();
+  
+  public List<Annotation> getAnnotations();
+  
+  public String getName();
+  
+  public Class getReturnType();
+  
+  public Class getDeclaringClass();
+  
+  public MethodHandle getMethodhandle(Lookup lookup);
+  
+  public MethodHandle getMethodhandle();
+  
+  
+  public static Invokable of(Constructor cct) {
+    return new InvokableConstructor(cct);
   }
   
-  private boolean matchAnd(Parameter t, JsonProperty u) {
-    boolean match = true;
-    for(ParameterMatch m : matches) {
-      match = match && m.apply(t, u);
-    }
-    return match;
-  }
   
-  private boolean matchOr(Parameter t, JsonProperty u) {
-    boolean match = false;
-    for(ParameterMatch m : matches) {
-      match = match || m.apply(t, u);
-    }
-    return match;
+  public static Invokable of(Method meth) {
+    return new InvokableMethod(meth);
   }
   
 }

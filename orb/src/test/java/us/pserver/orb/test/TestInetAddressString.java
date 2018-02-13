@@ -19,46 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.finalson.construct;
+package us.pserver.orb.test;
 
-import java.lang.reflect.Parameter;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import us.pserver.tools.function.Rethrow;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 26/12/2017
+ * @version 0.0 - 10/02/2018
  */
-public class CombinedFallbackMatch implements ParameterMatch {
+public class TestInetAddressString {
   
-  private final ParameterMatch[] matches;
+  private static final String IP_127_0_0_1 = "127.0.0.1";
   
-  public CombinedFallbackMatch(ParameterMatch ... matches) {
-    if(matches == null || matches.length < 1) {
-      throw new IllegalArgumentException("Bad null/empty ParameterMatch array");
-    }
-    this.matches = matches;
-  }
-
-  @Override
-  public Boolean apply(Parameter t, JsonProperty u) {
-    if(!matchAnd(t, u)) return matchOr(t, u);
-    return true;
+  private static final InetAddress addr = Rethrow.unchecked().apply(()->InetAddress.getByName(IP_127_0_0_1));
+  
+  @Test
+  public void addressToString() {
+    System.out.printf("{ %s }.getHostAddress() -> %s%n", addr, addr.getHostAddress());
+    Assertions.assertEquals(IP_127_0_0_1, addr.getHostAddress());
   }
   
-  private boolean matchAnd(Parameter t, JsonProperty u) {
-    boolean match = true;
-    for(ParameterMatch m : matches) {
-      match = match && m.apply(t, u);
-    }
-    return match;
-  }
-  
-  private boolean matchOr(Parameter t, JsonProperty u) {
-    boolean match = false;
-    for(ParameterMatch m : matches) {
-      match = match || m.apply(t, u);
-    }
-    return match;
+  @Test
+  public void stringToAddress() throws UnknownHostException {
+    Assertions.assertEquals(addr, InetAddress.getByName(IP_127_0_0_1));
   }
   
 }
