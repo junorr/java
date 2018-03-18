@@ -25,7 +25,6 @@ package us.pserver.kumuluzee.hello2;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -113,17 +112,16 @@ public class HeadResource {
       return Status.BAD_REQUEST;
     }
     etag = createETag(resource);
-    List<String> etags = getETags(ifMatch, ifNoneMatch);
     return ifMatch != null && !ifMatch.isEmpty() 
-        ? ifMatch(etags)
-        : ifNoneMatch(etags);
+        ? getStatusIfMatch(splitEtags(ifMatch))
+        : getStatusIfNoneMatch(splitEtags(ifNoneMatch));
   }
   
   
   protected boolean isParent(Path parent, Path child) {
     try {
-      return child.toRealPath(LinkOption.NOFOLLOW_LINKS).startsWith(
-          parent.toRealPath(LinkOption.NOFOLLOW_LINKS)
+      return child.toRealPath().startsWith(
+          parent.toRealPath()
       );
     }
     catch(IOException e) {
@@ -132,27 +130,24 @@ public class HeadResource {
   }
   
   
-  protected Status ifMatch(List<String> etags) {
+  protected Status getStatusIfMatch(List<String> etags) {
     return etags.contains(etag) 
         ? Status.OK
         : Status.PRECONDITION_FAILED;
   }
   
   
-  protected Status ifNoneMatch(List<String> etags) {
+  protected Status getStatusIfNoneMatch(List<String> etags) {
     return etags.contains(etag) 
         ? Status.NOT_MODIFIED
         : Status.OK;
   }
   
   
-  protected List<String> getETags(String ifMatch, String ifNoneMatch) {
+  protected List<String> splitEtags(String str) {
     Stream<String> etags = Stream.empty();
-    if(ifMatch != null && !ifMatch.isEmpty()) {
-      etags = Arrays.asList(ifMatch.split(",")).stream();
-    }
-    else if(ifNoneMatch != null) {
-      etags = Arrays.asList(ifNoneMatch.split(",")).stream();
+    if(str != null && !str.isEmpty()) {
+      etags = Arrays.asList(str.split(",")).stream();
     }
     return etags.map(String::trim).collect(Collectors.toList());
   }

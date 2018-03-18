@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import us.pserver.finalson.FinalsonConfig;
 import us.pserver.finalson.mapping.TypeMapping;
 import us.pserver.tools.Match;

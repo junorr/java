@@ -1,0 +1,16 @@
+{
+  "serverAddress": "0.0.0.0",
+  "serverPort": 9085,
+  "ioThreads": 4,
+  "maxWorkerThreads": 10,
+  "dispatcherEnabled": true,
+  "shutdownHandlerEnabled": true,
+  "handlers": {
+    "/time/{zoneid}": "br.com.bb.disec.micro.handler.TimeHandler",
+    "/time/{zoneid}": {
+      
+      "us.pserver.micro.handler.TimeHandler"
+    }
+  },
+  "classpathDir": "/storage/apps/classpath/"
+}
