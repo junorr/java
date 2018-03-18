@@ -43,6 +43,8 @@ public class HttpMethod {
   
   public static final HttpMethod OPTIONS = new HttpMethod("OPTIONS");
   
+  public static final HttpMethod PATCH = new HttpMethod("PATCH");
+  
 
   private final HttpString method;
   

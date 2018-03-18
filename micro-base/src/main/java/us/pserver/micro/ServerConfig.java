@@ -385,7 +385,7 @@ public class ServerConfig {
     
     /**
      * Adiciona uma URI e a respectiva classe
-     * HttpHandler que atenderá requisições.
+     * HttpHandler que atenderá requisições para qualquer método HTTP.
      * Esta URI suporta path parameters templates.
      * param meth Método HTTP sob o qual o handler irá responder.
      * @param path Caminho URI sob o qual o 
@@ -395,8 +395,14 @@ public class ServerConfig {
      * @return Esta instância modificada de Builder.
      */
     public Builder put(String path, Class cls) {
-      if(meth != null && path != null && cls != null) {
-        classMap.put(new HttpRoute(meth, path), cls);
+      if(path != null && cls != null) {
+        classMap.put(new HttpRoute(HttpMethod.DELETE, path), cls);
+        classMap.put(new HttpRoute(HttpMethod.GET, path), cls);
+        classMap.put(new HttpRoute(HttpMethod.HEAD, path), cls);
+        classMap.put(new HttpRoute(HttpMethod.OPTIONS, path), cls);
+        classMap.put(new HttpRoute(HttpMethod.PATCH, path), cls);
+        classMap.put(new HttpRoute(HttpMethod.POST, path), cls);
+        classMap.put(new HttpRoute(HttpMethod.PUT, path), cls);
       }
       return this;
     }
@@ -416,6 +422,30 @@ public class ServerConfig {
     public Builder put(HttpMethod meth, String path, HttpHandler handler) {
       if(meth != null && path != null && handler != null) {
         handlers.put(new HttpRoute(meth, path), handler);
+      }
+      return this;
+    }
+
+
+    /**
+     * Adiciona uma URI cujas requisições
+     * o HttpHandler irá atender para qualquer método HTTP.
+     * Esta URI suporta path parameters templates.
+     * @param path Caminho URI sob o qual o 
+     * handler irá responder.
+     * @param handler HttpHandler para 
+     * atender requisições.
+     * @return Esta instância modificada de Builder.
+     */
+    public Builder put(String path, HttpHandler handler) {
+      if(path != null && handler != null) {
+        handlers.put(new HttpRoute(HttpMethod.DELETE, path), handler);
+        handlers.put(new HttpRoute(HttpMethod.GET, path), handler);
+        handlers.put(new HttpRoute(HttpMethod.HEAD, path), handler);
+        handlers.put(new HttpRoute(HttpMethod.OPTIONS, path), handler);
+        handlers.put(new HttpRoute(HttpMethod.PATCH, path), handler);
+        handlers.put(new HttpRoute(HttpMethod.POST, path), handler);
+        handlers.put(new HttpRoute(HttpMethod.PUT, path), handler);
       }
       return this;
     }
@@ -557,28 +587,6 @@ public class ServerConfig {
       return this;
     }
     
-
-    /**
-     * Retorna o Mapa com as classes dos HttpHandler's e 
-     * respectivas URIs às quais estão associados.
-     * @return Map&lt;String, Class&gt;
-     */
-    public Map<String, Class> getHandlers() {
-      return classMap;
-    }
-
-
-    /**
-     * Define o Mapa com as classes dos HttpHandler's e 
-     * respectivas URIs às quais estão associados.
-     * @param handlers Map&lt;String, Class&gt;
-     * @return Esta instância modificada de Builder.
-     */
-    public Builder setHandlers(Map<String, Class> handlers) {
-      this.classMap = handlers;
-      return this;
-    }
-
 
     /**
      * Retorna a quantidade máxima de threads

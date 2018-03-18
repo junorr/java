@@ -52,7 +52,6 @@ public class StringPostParser {
   
 
   public String parseHttp(HttpServerExchange hse) throws IOException {
-    hse.
     this.resetPostData();
     hse.startBlocking();
     BufferedReader read = new BufferedReader(
