@@ -30,17 +30,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import org.jboss.logging.Logger;
+import java.util.stream.Collectors;
+import us.pserver.micro.handler.DispatcherHandler;
 import us.pserver.micro.http.HttpMethod;
 import us.pserver.micro.http.HttpRoute;
+import us.pserver.micro.util.HttpHandlerInstance;
 
 /**
  * Configurações do servidor de rede, encapsula 
@@ -350,9 +353,9 @@ public class ServerConfig {
     
     private boolean shutdownHandlerEnabled;
     
-    private Map<HttpRoute,Class> classMap;
+    private final Map<HttpRoute,Class> classMap;
     
-    private Map<HttpRoute,HttpHandler> handlers;
+    private final Map<HttpRoute,HttpHandler> handlers;
     
     
     /**
@@ -408,6 +411,26 @@ public class ServerConfig {
     }
     
     
+    public List<Class> rmClass(String path) {
+      List<HttpRoute> routes = classMap.keySet().stream()
+          .filter(r->r.getStringURI().equals(path))
+          .collect(Collectors.toList());
+      return routes.stream()
+          .map(r->classMap.remove(r))
+          .collect(Collectors.toList());
+    }
+    
+    
+    public Optional<Class> rmClass(HttpMethod meth, String path) {
+      Optional<HttpRoute> route = classMap.keySet().stream()
+          .filter(r->r.getHttpMethod().equals(meth) && r.getStringURI().equals(path))
+          .findFirst();
+      return route.isPresent() 
+          ? Optional.of(classMap.remove(route.get())) 
+          : Optional.empty();
+    }
+    
+    
     /**
      * Adiciona um método HTTP e URI cujas requisições
      * o HttpHandler irá atender.
@@ -449,8 +472,28 @@ public class ServerConfig {
       }
       return this;
     }
-
-
+    
+    
+    public List<HttpHandler> rmHandler(String path) {
+      List<HttpRoute> routes = handlers.keySet().stream()
+          .filter(r->r.getStringURI().equals(path))
+          .collect(Collectors.toList());
+      return routes.stream()
+          .map(r->handlers.remove(r))
+          .collect(Collectors.toList());
+    }
+    
+    
+    public Optional<HttpHandler> rmHandler(HttpMethod meth, String path) {
+      Optional<HttpRoute> route = handlers.keySet().stream()
+          .filter(r->r.getHttpMethod().equals(meth) && r.getStringURI().equals(path))
+          .findFirst();
+      return route.isPresent() 
+          ? Optional.of(handlers.remove(route.get())) 
+          : Optional.empty();
+    }
+    
+    
     /**
      * Retorna o endereço de rede no qual o 
      * servidor irá escutar.
@@ -640,30 +683,18 @@ public class ServerConfig {
     }
     
     
-    public Optional<HttpHandler> createHandler(String path) {
-      try {
-        Class<HttpHandler> cls = classMap.get(path);
-        Constructor<HttpHandler> cct = cls.getDeclaredConstructor(null);
-        if(!cct.isAccessible()) {
-          cct.setAccessible(true);
-        }
-        return Optional.of(cct.newInstance(null));
-      }
-      catch(Exception ex) {
-        Logger.getLogger(getClass()).error(
-            ex.getClass().getSimpleName()+ ": "+ ex.getMessage()
-        );
-        return Optional.empty();
-      }
-    }
-    
-    
     /**
      * Cria uma nova instância de ServerConfig a partir
      * da configuração deste Builder.
      * @return Nova instância de ServerConfig.
      */
     public ServerConfig build() {
+      classMap.entrySet().stream().map(e->{
+        HttpHandler hnd = this.isDispatcherEnabled() 
+            ? new DispatcherHandler(e.getValue()) 
+            : new HttpHandlerInstance(e.getValue()).getInstance();
+        return new SimpleEntry<HttpRoute,HttpHandler>(e.getKey(), hnd);
+      }).forEach(e->handlers.put(e.getKey(), e.getValue()));
       return new ServerConfig(
           serverAddress, 
           serverPort, 
@@ -673,7 +704,7 @@ public class ServerConfig {
           authenticationShield,
           ioThreads, 
           maxWorkerThreads, 
-          classMap
+          handlers
       );
     }
     

@@ -61,15 +61,17 @@ public class TestMappedObject {
     Assertions.assertEquals("mykey", cfg.getUserKey());
   }
   
-  @Disabled
   @Test
   public void propertiesServerConfig() throws UnknownHostException, IOException {
-    ServerConfig cfg = Orb.get()
+    ServerProperties cfg = Orb.get()
         .fromProperties(Paths.get("./test.properties"))
-        .create(ServerConfig.class);
+        .create(ServerProperties.class);
+    cfg.setServerPort(9000).setServerAddress("192.168.1.1");
     System.out.println(cfg);
-    Assertions.assertEquals(InetAddress.getByName("127.0.0.1"), cfg.getHost().getAddress());
-    Assertions.assertEquals(8080, cfg.getHost().getPort());
+    //Assertions.assertEquals(InetAddress.getByName("127.0.0.1"), cfg.getServerAddress());
+    Assertions.assertEquals(InetAddress.getByName("192.168.1.1"), cfg.getServerAddress());
+    //Assertions.assertEquals(8080, cfg.getServerPort());
+    Assertions.assertEquals(9000, cfg.getServerPort());
     Assertions.assertEquals("juno", cfg.getUserName());
   }
   

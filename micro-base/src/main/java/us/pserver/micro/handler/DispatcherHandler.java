@@ -21,9 +21,10 @@
 
 package us.pserver.micro.handler;
 
-import us.pserver.micro.ServerConfig;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import us.pserver.micro.util.HttpHandlerInstance;
+import us.pserver.tools.Match;
 
 /**
  * Um handler que pode ser usado para despachar requisições para um handler usando
@@ -33,38 +34,21 @@ import io.undertow.server.HttpServerExchange;
  */
 public class DispatcherHandler implements HttpHandler {
 
-  private final ServerConfig config;
-  
-  private final String path;
+  private final Class<HttpHandler> cls;
   
   /**
    * Construtor padrão com inicialização dos atributos da classe.
    */
-  public DispatcherHandler(String path, ServerConfig conf) {
-    if(path == null || path.trim().isEmpty()) {
-      throw new IllegalArgumentException("Bad URI Path: "+ path);
-    }
-    if(conf == null || conf.getHttpHandlers().isEmpty()) {
-      throw new IllegalArgumentException("Bad ServerConfig: "+ conf);
-    }
-    this.path = path;
-    this.config = conf;
+  public DispatcherHandler(Class<HttpHandler> cls) {
+    this.cls = Match.notNull(cls).getOrFail("Bad null Class<HttpHandler>");
   }
   
   /**
    * Pega o path armazenado.
    * @return path da instancia
    */
-  public String getPath() {
-    return path;
-  }
-  
-  /**
-   * Pega o ServerConfig armazenado.
-   * @return ServerConfig da instancia
-   */
-  public ServerConfig getServerConfig() {
-    return config;
+  public Class<HttpHandler> getHandlerClass() {
+    return cls;
   }
   
   /**
@@ -75,11 +59,7 @@ public class DispatcherHandler implements HttpHandler {
    */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    if(hse.isInIoThread()) {
-      hse.dispatch(this);
-      return;
-    }
-    config.createHandler(path).ifPresent(hnd->hse.dispatch(hnd));
+    hse.dispatch(new HttpHandlerInstance(cls).getInstance());
   }
   
 }

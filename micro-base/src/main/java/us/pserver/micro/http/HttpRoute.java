@@ -47,7 +47,7 @@ public class HttpRoute {
   }
   
   
-  public String getURI() {
+  public String getStringURI() {
     return uri;
   }
   
