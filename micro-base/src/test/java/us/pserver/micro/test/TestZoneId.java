@@ -19,43 +19,27 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro.util;
+package us.pserver.micro.test;
 
-import io.undertow.server.HttpHandler;
-import java.lang.reflect.Constructor;
-import us.pserver.tools.Match;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/03/2018
+ * @version 0.0 - 25/03/2018
  */
-public class HttpHandlerInstance {
+public class TestZoneId {
 
-  private final Class<HttpHandler> cls;
-  
-  
-  public HttpHandlerInstance(Class<HttpHandler> cls) {
-    this.cls = Match.notNull(cls).getOrFail("Bad null Class<HttpHandler>");
+  @Test
+  public void zoneId() {
+    System.out.println(ZoneId.of("America/Sao_Paulo"));
   }
   
-  
-  public Class<HttpHandler> getInstanceClass() {
-    return cls;
-  }
-  
-  
-  public HttpHandler create() {
-    try {
-      Constructor<HttpHandler> cct = cls.getDeclaredConstructor(null);
-      if(!cct.isAccessible()) {
-        cct.setAccessible(true);
-      }
-      return cct.newInstance(null);
-    }
-    catch(Exception ex) {
-      throw new RuntimeException(ex.toString(), ex);
-    }
+  @Test
+  public void zoneOffset() {
+    System.out.println(ZoneOffset.of("+02:00"));
   }
   
 }

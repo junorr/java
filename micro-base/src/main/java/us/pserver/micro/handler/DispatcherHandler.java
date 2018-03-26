@@ -59,7 +59,7 @@ public class DispatcherHandler implements HttpHandler {
    */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    hse.dispatch(new HttpHandlerInstance(cls).getInstance());
+    hse.dispatch(new HttpHandlerInstance(cls).create());
   }
   
 }

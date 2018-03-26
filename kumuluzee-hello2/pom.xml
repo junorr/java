@@ -4,48 +4,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>us.pserver</groupId>
-    <artifactId>kumuluzee-hello2</artifactId>
+    <artifactId>kumuluz-hello2</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>kumuluzee-hello2</name>
-    <description>kumuluzee-hello2</description>
+    <name>kumuluz-hello2</name>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kumuluz.version>2.5.0-SNAPSHOT</kumuluz.version>
+        <kumuluz.version>2.5.2</kumuluz.version>
     </properties>
 
 
-    <repositories>
-        <repository>
-            <id>sonatype-snapshots</id>
-            <name>Sonatype Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>sonatype-snapshots</id>
-            <name>Sonatype Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
     <dependencyManagement>
         <dependencies>
@@ -62,31 +34,24 @@
     <dependencies>
         <dependency>
             <groupId>com.kumuluz.ee</groupId>
-            <artifactId>kumuluzee-core</artifactId>
+            <artifactId>kumuluzee-microProfile-1.2</artifactId>
+            <version>2.5.2</version>
         </dependency>
         <dependency>
             <groupId>com.kumuluz.ee</groupId>
-            <artifactId>kumuluzee-servlet-jetty</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.kumuluz.ee</groupId>
-            <artifactId>kumuluzee-jax-rs-jersey</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>us.pserver.toolbox</groupId>
-            <artifactId>toolbox</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>kumuluzee-websocket-jetty</artifactId>
+            <version>2.5.2</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
-            <version>2.25.1</version>
+            <version>2.25</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
             <artifactId>jersey-guava</artifactId>
-            <version>2.25.1</version>
-        </dependency>
+            <version>2.25</version>
+        </dependency>        
     </dependencies>
 
     <build>

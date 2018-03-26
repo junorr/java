@@ -22,15 +22,13 @@
 package us.pserver.micro;
 
 import us.pserver.micro.handler.CorsHandler;
-import us.pserver.micro.handler.DispatcherHandler;
 import us.pserver.micro.handler.ShutdownHandler;
-import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.RoutingHandler;
-import io.undertow.server.handlers.PathHandler;
 import org.jboss.logging.Logger;
 import org.xnio.Options;
+import us.pserver.micro.http.HttpMethod;
 
 /**
  * Servidor de rede responsável por invocar os HttpHandler's 
@@ -69,14 +67,13 @@ public class Server {
    */
   private Undertow initServer() {
     Logger.getLogger(Server.class).info(config);
-    HttpHandler root = null;
     RoutingHandler rout = new RoutingHandler();
-    rout.
-    PathHandler ph = this.initPathHandler();
-    root = new CorsHandler(ph);
+    initRoutingHandler(rout);
     if(config.isShutdownHandlerEnabled()) {
-      ph.addExactPath("/shutdown", new ShutdownHandler(this));
+      rout.add(HttpMethod.GET.toHttpString(), "/shutdown", new ShutdownHandler(this));
     }
+    HttpHandler root = config.isCorsHandlerEnabled() 
+        ? new CorsHandler(rout) : rout;
     return Undertow.builder()
         .setIoThreads(config.getIoThreads())
         .setWorkerOption(Options.WORKER_TASK_MAX_THREADS, config.getMaxWorkerThreads())
@@ -87,22 +84,19 @@ public class Server {
   
   /**
    * Cria o HttpHandler responsável por rotear as requisições
- aos respectivos getHttpHandlers de acordo com a URI.
+   * aos respectivos getHttpHandlers de acordo com a URI.
    * @return PathHandler
    */
-  private PathHandler initPathHandler() {
-    PathHandler ph = Handlers.path();
-    if(config.isDispatcherEnabled()) {
-      config.getHttpHandlers().keySet().forEach(p->{
-        ph.addPrefixPath(p, new DispatcherHandler(p, config));
-      });
-    }
-    else {
-      config.getHttpHandlers().keySet().forEach(p->{
-        config.createHandler(p).ifPresent(h->ph.addPrefixPath(p, h));
-      });
-    }
-    return ph;
+  private void initRoutingHandler(RoutingHandler handler) {
+    config.getHttpHandlers().entrySet().forEach(e->{
+      e.getValue().getHttpMethods().forEach(m->
+          handler.add(
+              m.toHttpString(), 
+              e.getKey(), 
+              e.getValue().getHttpHandler()
+          )
+      );
+    });
   }
   
   

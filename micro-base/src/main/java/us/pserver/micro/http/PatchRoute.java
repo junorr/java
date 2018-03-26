@@ -19,43 +19,17 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro.util;
-
-import io.undertow.server.HttpHandler;
-import java.lang.reflect.Constructor;
-import us.pserver.tools.Match;
+package us.pserver.micro.http;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/03/2018
+ * @version 0.0 - 24/03/2018
  */
-public class HttpHandlerInstance {
+public class PatchRoute extends HttpRoute {
 
-  private final Class<HttpHandler> cls;
-  
-  
-  public HttpHandlerInstance(Class<HttpHandler> cls) {
-    this.cls = Match.notNull(cls).getOrFail("Bad null Class<HttpHandler>");
-  }
-  
-  
-  public Class<HttpHandler> getInstanceClass() {
-    return cls;
-  }
-  
-  
-  public HttpHandler create() {
-    try {
-      Constructor<HttpHandler> cct = cls.getDeclaredConstructor(null);
-      if(!cct.isAccessible()) {
-        cct.setAccessible(true);
-      }
-      return cct.newInstance(null);
-    }
-    catch(Exception ex) {
-      throw new RuntimeException(ex.toString(), ex);
-    }
+  public PatchRoute(String path) {
+    super(HttpMethod.PATCH, path);
   }
   
 }

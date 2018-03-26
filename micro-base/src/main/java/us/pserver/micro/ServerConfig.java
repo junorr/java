@@ -32,18 +32,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import us.pserver.micro.handler.DispatcherHandler;
 import us.pserver.micro.http.HttpMethod;
-import us.pserver.micro.http.HttpRoute;
-import us.pserver.micro.util.HttpHandlerInstance;
+import us.pserver.micro.http.HttpMethodHandler;
+import us.pserver.micro.util.HttpMethodHandlerSerializer;
 
 /**
  * Configurações do servidor de rede, encapsula 
@@ -75,9 +72,13 @@ public class ServerConfig {
   
   private final int port;
   
+  private final String classpath;
+  
   private final boolean dispatcherEnabled;
   
   private final boolean shutdownHandler;
+  
+  private final boolean corsHandler;
   
   private final boolean authenticationShield;
   
@@ -85,9 +86,7 @@ public class ServerConfig {
   
   private final int ioThreads;
   
-  private final Map<String,HttpHandler> handlers;
-  
-  private final String classpathDir;
+  private final Map<String,HttpMethodHandler> handlers;
   
   
   /**
@@ -95,13 +94,14 @@ public class ServerConfig {
    * informações necessárias para o servidor.
    * @param address Endereço de escuta do serviço de rede.
    * @param port Porta de escuta do serviço de rede.
-   * @param classpathDir Diretório de pacotes jar com as
-   * classes utilizadas por RMI.
+   * @param classpath
    * @param dispatcherEnabled Configura se os HttpHandler's 
    * serão criados sob demanda (true) ou apenas na 
    * inicialização do servidor (false).
    * @param shutdownHandler Configura se o servidor possuirá
    * uma URI configurada para parar o serviço de rede.
+   * @param corsHandler Configura se o servidor possuirá
+   * um handler default para Cross-Origin Resource Sharing.
    * @param authShield Configura se o servidor possuiŕa
    * controle de acesso aos serviços disponíveis.
    * @param ioThreads Quantidade de threads primárias para
@@ -114,13 +114,14 @@ public class ServerConfig {
   public ServerConfig(
       String address, 
       int port, 
-      String classpathDir,
+      String classpath,
       boolean dispatcherEnabled, 
       boolean shutdownHandler, 
+      boolean corsHandler, 
       boolean authShield,
       int ioThreads, 
       int maxWorkerThreads, 
-      Map<String,HttpHandler> map
+      Map<String,HttpMethodHandler> map
   ) {
     if(address == null || address.trim().isEmpty()) {
       throw new IllegalArgumentException("Invalid Address: "+ address);
@@ -130,9 +131,10 @@ public class ServerConfig {
     }
     this.address = address;
     this.port = port;
-    this.classpathDir = classpathDir;
+    this.classpath = classpath;
     this.dispatcherEnabled = dispatcherEnabled;
     this.shutdownHandler = shutdownHandler;
+    this.corsHandler = corsHandler;
     this.authenticationShield = authShield;
     this.ioThreads = (ioThreads > 0 
         ? ioThreads 
@@ -181,7 +183,7 @@ public class ServerConfig {
   
   
   public Path getClasspathDir() {
-    return Paths.get(classpathDir);
+    return Paths.get(classpath);
   }
   
   
@@ -207,6 +209,17 @@ public class ServerConfig {
    */
   public boolean isShutdownHandlerEnabled() {
     return shutdownHandler;
+  }
+
+
+  /**
+   * Verifica se um handler para Cross-Origin 
+   * Resource Sharing está habilitado.
+   * @return true se um CorsHandler está habilitado,
+   * false caso contrário.
+   */
+  public boolean isCorsHandlerEnabled() {
+    return corsHandler;
   }
 
 
@@ -251,7 +264,7 @@ public class ServerConfig {
    * respectivas URIs às quais estão associados.
    * @return Map&lt;String, Class&gt;
    */
-  public Map<String, HttpHandler> getHttpHandlers() {
+  public Map<String, HttpMethodHandler> getHttpHandlers() {
     return handlers;
   }
   
@@ -304,7 +317,7 @@ public class ServerConfig {
     new Builder()
         .setServerAddress(address)
         .setServerPort(port)
-        .setHandlers(handlers)
+        .setHttpHandlers(handlers)
         .save(path);
     return this;
   }
@@ -314,12 +327,13 @@ public class ServerConfig {
   public String toString() {
     return "ServerConfig{" 
         + "\n    address: " + address 
-        + "\n    classpath: " + classpathDir 
         + "\n    port: " + port 
+        + "\n    classpath: " + classpath
         + "\n    ioThreads: " + ioThreads 
         + "\n    maxWorkerThreads: " + maxWorkerThreads 
         + "\n    dispatcherEnabled: " + dispatcherEnabled 
         + "\n    shutdownHandlerEnabled: " + shutdownHandler
+        + "\n    corsHandlerEnabled: " + corsHandler
         + "\n    authenticationShield: " + authenticationShield
         + "\n    handlers: " + handlers.toString()
             .replace("{", "{\n      - ")
@@ -353,144 +367,60 @@ public class ServerConfig {
     
     private boolean shutdownHandlerEnabled;
     
-    private final Map<HttpRoute,Class> classMap;
+    private boolean corsHandlerEnabled;
     
-    private final Map<HttpRoute,HttpHandler> handlers;
+    private final Map<String, HttpMethodHandler> handlers;
+    
+    private transient final Gson gson;
     
     
     /**
      * Construtor padrão sem argumentos.
      */
     public Builder() {
-      classMap = new HashMap<>();
       handlers = new HashMap<>();
+      gson = new GsonBuilder()
+          .registerTypeAdapter(Class.class, new JsonClass())
+          .registerTypeAdapter(HttpMethodHandler.class, new HttpMethodHandlerSerializer())
+          .create();
+    }
+    
+    
+    public Map<String, HttpMethodHandler> getHttpHandlers() {
+      return handlers;
+    }
+    
+    
+    public Builder setHttpHandlers(Map<String, HttpMethodHandler> map) {
+      if(map != null && !map.isEmpty()) {
+        handlers.putAll(map);
+      }
+      return this;
     }
     
     
     /**
      * Adiciona um método HTTP e URI cujas requisições
-     * a classe HttpHandler irá atender.
-     * Esta URI suporta path parameters templates.
-     * @param meth Método HTTP sob o qual o handler irá responder.
-     * @param path Caminho URI sob o qual o 
-     * handler irá responder.
-     * @param cls Classe HttpHandler para 
-     * atender requisições.
-     * @return Esta instância modificada de Builder.
-     */
-    public Builder put(HttpMethod meth, String path, Class cls) {
-      if(meth != null && path != null && cls != null) {
-        classMap.put(new HttpRoute(meth, path), cls);
-      }
-      return this;
-    }
-    
-    
-    /**
-     * Adiciona uma URI e a respectiva classe
-     * HttpHandler que atenderá requisições para qualquer método HTTP.
-     * Esta URI suporta path parameters templates.
-     * param meth Método HTTP sob o qual o handler irá responder.
-     * @param path Caminho URI sob o qual o 
-     * handler irá responder.
-     * @param cls Classe HttpHandler para 
-     * atender requisições.
-     * @return Esta instância modificada de Builder.
-     */
-    public Builder put(String path, Class cls) {
-      if(path != null && cls != null) {
-        classMap.put(new HttpRoute(HttpMethod.DELETE, path), cls);
-        classMap.put(new HttpRoute(HttpMethod.GET, path), cls);
-        classMap.put(new HttpRoute(HttpMethod.HEAD, path), cls);
-        classMap.put(new HttpRoute(HttpMethod.OPTIONS, path), cls);
-        classMap.put(new HttpRoute(HttpMethod.PATCH, path), cls);
-        classMap.put(new HttpRoute(HttpMethod.POST, path), cls);
-        classMap.put(new HttpRoute(HttpMethod.PUT, path), cls);
-      }
-      return this;
-    }
-    
-    
-    public List<Class> rmClass(String path) {
-      List<HttpRoute> routes = classMap.keySet().stream()
-          .filter(r->r.getStringURI().equals(path))
-          .collect(Collectors.toList());
-      return routes.stream()
-          .map(r->classMap.remove(r))
-          .collect(Collectors.toList());
-    }
-    
-    
-    public Optional<Class> rmClass(HttpMethod meth, String path) {
-      Optional<HttpRoute> route = classMap.keySet().stream()
-          .filter(r->r.getHttpMethod().equals(meth) && r.getStringURI().equals(path))
-          .findFirst();
-      return route.isPresent() 
-          ? Optional.of(classMap.remove(route.get())) 
-          : Optional.empty();
-    }
-    
-    
-    /**
-     * Adiciona um método HTTP e URI cujas requisições
-     * o HttpHandler irá atender.
-     * Esta URI suporta path parameters templates.
-     * @param meth Método HTTP sob o qual o handler irá responder.
+     * o HttpHandler irá atender.Esta URI suporta path parameters templates.
      * @param path Caminho URI sob o qual o 
      * handler irá responder.
      * @param handler HttpHandler para 
      * atender requisições.
+     * @param methods HttpMethod's wich handler will respond.
      * @return Esta instância modificada de Builder.
      */
-    public Builder put(HttpMethod meth, String path, HttpHandler handler) {
-      if(meth != null && path != null && handler != null) {
-        handlers.put(new HttpRoute(meth, path), handler);
-      }
-      return this;
-    }
-
-
-    /**
-     * Adiciona uma URI cujas requisições
-     * o HttpHandler irá atender para qualquer método HTTP.
-     * Esta URI suporta path parameters templates.
-     * @param path Caminho URI sob o qual o 
-     * handler irá responder.
-     * @param handler HttpHandler para 
-     * atender requisições.
-     * @return Esta instância modificada de Builder.
-     */
-    public Builder put(String path, HttpHandler handler) {
+    public Builder put(String path, HttpHandler handler, HttpMethod ... methods) {
       if(path != null && handler != null) {
-        handlers.put(new HttpRoute(HttpMethod.DELETE, path), handler);
-        handlers.put(new HttpRoute(HttpMethod.GET, path), handler);
-        handlers.put(new HttpRoute(HttpMethod.HEAD, path), handler);
-        handlers.put(new HttpRoute(HttpMethod.OPTIONS, path), handler);
-        handlers.put(new HttpRoute(HttpMethod.PATCH, path), handler);
-        handlers.put(new HttpRoute(HttpMethod.POST, path), handler);
-        handlers.put(new HttpRoute(HttpMethod.PUT, path), handler);
+        List<HttpMethod> meths = (methods == null || methods.length < 1)
+            ? HttpMethod.listMethods() : Arrays.asList(methods);
+        handlers.put(path, new HttpMethodHandler(meths, handler));
       }
       return this;
     }
-    
-    
-    public List<HttpHandler> rmHandler(String path) {
-      List<HttpRoute> routes = handlers.keySet().stream()
-          .filter(r->r.getStringURI().equals(path))
-          .collect(Collectors.toList());
-      return routes.stream()
-          .map(r->handlers.remove(r))
-          .collect(Collectors.toList());
-    }
-    
-    
-    public Optional<HttpHandler> rmHandler(HttpMethod meth, String path) {
-      Optional<HttpRoute> route = handlers.keySet().stream()
-          .filter(r->r.getHttpMethod().equals(meth) && r.getStringURI().equals(path))
-          .findFirst();
-      return route.isPresent() 
-          ? Optional.of(handlers.remove(route.get())) 
-          : Optional.empty();
+
+
+    public HttpMethodHandler rm(String path) {
+      return handlers.remove(path);
     }
     
     
@@ -632,6 +562,29 @@ public class ServerConfig {
     
 
     /**
+     * Verifica se um handler para Cross-Origin
+     * Resource Sharing está habilitado.
+     * @return true se um CorsHandler está habilitado, 
+     * false caso contrário.
+     */
+    public boolean isCorsHandlerEnabled() {
+      return corsHandlerEnabled;
+    }
+
+
+    /**
+     * Define se um handler para Cross-Origin Resource Sharing será habilitado.
+     * @param enableCorsHandler true se um CorsHandler será habilitado, 
+     * false caso contrário.
+     * @return Esta instância modificada de Builder.
+     */
+    public Builder setCorsHandlerEnabled(boolean enableCorsHandler) {
+      this.corsHandlerEnabled = enableCorsHandler;
+      return this;
+    }
+    
+
+    /**
      * Retorna a quantidade máxima de threads
      * secundárias para executação de trabalhos 
      * "blocantes".
@@ -689,18 +642,13 @@ public class ServerConfig {
      * @return Nova instância de ServerConfig.
      */
     public ServerConfig build() {
-      classMap.entrySet().stream().map(e->{
-        HttpHandler hnd = this.isDispatcherEnabled() 
-            ? new DispatcherHandler(e.getValue()) 
-            : new HttpHandlerInstance(e.getValue()).getInstance();
-        return new SimpleEntry<HttpRoute,HttpHandler>(e.getKey(), hnd);
-      }).forEach(e->handlers.put(e.getKey(), e.getValue()));
       return new ServerConfig(
           serverAddress, 
           serverPort, 
           classpathDir,
           dispatcherEnabled, 
           shutdownHandlerEnabled, 
+          corsHandlerEnabled, 
           authenticationShield,
           ioThreads, 
           maxWorkerThreads, 
@@ -720,9 +668,6 @@ public class ServerConfig {
      */
     public Builder save(Path path) throws IOException {
       try (FileWriter fw = new FileWriter(path.toFile())) {
-        Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Class.class, new JsonClass())
-            .setPrettyPrinting().create();
         fw.write(gson.toJson(this));
       }
       return this;
@@ -740,19 +685,17 @@ public class ServerConfig {
      */
     public Builder load(Path path) throws IOException {
       try (FileReader fr = new FileReader(path.toFile())) {
-        Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Class.class, new JsonClass())
-            .create();
         Builder b = gson.fromJson(fr, Builder.class);
         return this.setAuthenticationShield(b.isAuthenticationShield())
             .setDispatcherEnabled(b.isDispatcherEnabled())
-            .setHandlers(b.getHandlers())
+            .setHttpHandlers(b.getHttpHandlers())
             .setIoThreads(b.getIoThreads())
             .setMaxWorkerThreads(b.getMaxWorkerThreads())
             .setServerAddress(b.getServerAddress())
             .setServerPort(b.getServerPort())
             .setClasspathDir(b.getClasspathDir())
-            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled());
+            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
+            .setCorsHandlerEnabled(b.isCorsHandlerEnabled());
       }
     }
 
@@ -768,19 +711,17 @@ public class ServerConfig {
      */
     public Builder load(InputStream input) throws IOException {
       try (InputStreamReader ir = new InputStreamReader(input)) {
-        Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Class.class, new JsonClass())
-            .create();
         Builder b = gson.fromJson(ir, Builder.class);
         return this.setAuthenticationShield(b.isAuthenticationShield())
             .setDispatcherEnabled(b.isDispatcherEnabled())
-            .setHandlers(b.getHandlers())
+            .setHttpHandlers(b.getHttpHandlers())
             .setIoThreads(b.getIoThreads())
             .setMaxWorkerThreads(b.getMaxWorkerThreads())
             .setServerAddress(b.getServerAddress())
             .setServerPort(b.getServerPort())
             .setClasspathDir(b.getClasspathDir())
-            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled());
+            .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
+            .setCorsHandlerEnabled(b.isCorsHandlerEnabled());
       }
     }
 
@@ -795,8 +736,9 @@ public class ServerConfig {
           + "\n    ioThreads: " + ioThreads 
           + "\n    maxWorkerThreads: " + maxWorkerThreads 
           + "\n    shutdownHandlerEnabled: " + shutdownHandlerEnabled
+          + "\n    corsHandlerEnabled: " + corsHandlerEnabled
           + "\n    authenticationShield: " + authenticationShield
-          + "\n    handlers: " + classMap.toString()
+          + "\n    handlers: " + handlers.toString()
               .replace("{", "{\n      - ")
               .replace(", ", "\n      - ")
               .replace("}", "\n    }") + "\n}";

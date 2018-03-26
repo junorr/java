@@ -21,47 +21,45 @@
 
 package us.pserver.micro.http;
 
-import io.undertow.server.RoutingHandler;
-import io.undertow.util.HttpString;
+import io.undertow.server.HttpHandler;
 import java.util.Objects;
 import us.pserver.tools.Match;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 18/03/2018
+ * @version 0.0 - 24/03/2018
  */
-public class HttpRoute {
+public class HttpRouteHandler {
 
-  private final HttpMethod method;
+  private final HttpRoute route;
   
-  private final String uri;
+  private final HttpHandler handler;
   
   
-  public HttpRoute(HttpMethod meth, String uri) {
-    this.method = Match.notNull(meth).getOrFail("Bad null HttpMethod");
-    this.uri = Match.notNull(uri).getOrFail("Bad null uri String");
+  public HttpRouteHandler(HttpRoute route, HttpHandler handler) {
+    this.route = Match.notNull(route).getOrFail("Bad null HttpRoute");
+    this.handler = Match.notNull(handler).getOrFail("Bad null HttpHandler");
   }
-  
-  
-  public HttpMethod getHttpMethod() {
-    return method;
+
+
+  public HttpRoute getHttpRoute() {
+    return route;
   }
-  
-  
-  public String getStringURI() {
-    return uri;
+
+
+  public HttpHandler getHttpHandler() {
+    return handler;
   }
-  
-  
+
+
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 13 * hash + Objects.hashCode(this.method);
-    hash = 13 * hash + Objects.hashCode(this.uri);
+    hash = 53 * hash + Objects.hashCode(this.route);
     return hash;
   }
-  
+
 
   @Override
   public boolean equals(Object obj) {
@@ -74,22 +72,17 @@ public class HttpRoute {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final HttpRoute other = (HttpRoute) obj;
-    if (!Objects.equals(this.uri, other.uri)) {
-      return false;
-    }
-    if (!Objects.equals(this.method, other.method)) {
+    final HttpRouteHandler other = (HttpRouteHandler) obj;
+    if (!Objects.equals(this.route, other.route)) {
       return false;
     }
     return true;
   }
-  
-  
+
+
   @Override
   public String toString() {
-    return method.toString() 
-        + (uri.startsWith("/") ? " " : " /") 
-        + uri;
+    return "HttpRouteHandler{" + "route=" + route + ", handler=" + handler + '}';
   }
   
 }

@@ -21,47 +21,53 @@
 
 package us.pserver.micro.http;
 
-import io.undertow.server.RoutingHandler;
-import io.undertow.util.HttpString;
+import io.undertow.server.HttpHandler;
+import java.util.List;
 import java.util.Objects;
 import us.pserver.tools.Match;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 18/03/2018
+ * @version 0.0 - 24/03/2018
  */
-public class HttpRoute {
+public class HttpMethodHandler {
 
-  private final HttpMethod method;
+  private final List<HttpMethod> methods;
   
-  private final String uri;
+  private final HttpHandler handler;
   
   
-  public HttpRoute(HttpMethod meth, String uri) {
-    this.method = Match.notNull(meth).getOrFail("Bad null HttpMethod");
-    this.uri = Match.notNull(uri).getOrFail("Bad null uri String");
+  private HttpMethodHandler() {
+    methods = null;
+    handler = null;
   }
   
   
-  public HttpMethod getHttpMethod() {
-    return method;
+  public HttpMethodHandler(List<HttpMethod> meth, HttpHandler hand) {
+    this.methods = Match.notNull(meth).getOrFail("Bad null HttpMethod list");
+    this.handler = Match.notNull(hand).getOrFail("Bad null HttpHandler");
   }
-  
-  
-  public String getStringURI() {
-    return uri;
+
+
+  public List<HttpMethod> getHttpMethods() {
+    return methods;
   }
-  
-  
+
+
+  public HttpHandler getHttpHandler() {
+    return handler;
+  }
+
+
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 13 * hash + Objects.hashCode(this.method);
-    hash = 13 * hash + Objects.hashCode(this.uri);
+    hash = 97 * hash + Objects.hashCode(this.methods);
+    hash = 97 * hash + Objects.hashCode(this.handler);
     return hash;
   }
-  
+
 
   @Override
   public boolean equals(Object obj) {
@@ -74,22 +80,20 @@ public class HttpRoute {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final HttpRoute other = (HttpRoute) obj;
-    if (!Objects.equals(this.uri, other.uri)) {
+    final HttpMethodHandler other = (HttpMethodHandler) obj;
+    if (!Objects.equals(this.methods, other.methods)) {
       return false;
     }
-    if (!Objects.equals(this.method, other.method)) {
+    if (!Objects.equals(this.handler, other.handler)) {
       return false;
     }
     return true;
   }
-  
-  
+
+
   @Override
   public String toString() {
-    return method.toString() 
-        + (uri.startsWith("/") ? " " : " /") 
-        + uri;
+    return "HttpMethodHandler{" + "methods=" + methods + ", handler=" + handler + '}';
   }
   
 }

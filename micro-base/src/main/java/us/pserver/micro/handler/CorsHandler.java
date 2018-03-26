@@ -39,13 +39,15 @@ public class CorsHandler implements HttpHandler {
   
   public static final String AC_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
   
-  public static final String AC_ALLOW_METHOD = "Access-Control-Allow-Method";
+  public static final String AC_ALLOW_METHOD = "Access-Control-Allow-Methods";
   
   public static final String AC_ALLOW_HEADERS = "Access-Control-Allow-Headers";
   
   public static final String AC_REQUEST_METHOD = "Access-Control-Request-Method";
   
   public static final String AC_REQUEST_HEADERS = "Access-Control-Request-Headers";
+  
+  public static final String AC_MAX_AGE = "Access-Control-Max-Age";
   
   public static final String HEADER_ORIGIN = "origin";
   
@@ -91,7 +93,7 @@ public class CorsHandler implements HttpHandler {
               : hds.getFirst(AC_REQUEST_HEADERS))
       );
     }
-    
+    hse.getResponseHeaders().put(new HttpString(AC_MAX_AGE), 86400);
     if(Methods.OPTIONS.equals(hse.getRequestMethod())) {
       hse.endExchange();
     }

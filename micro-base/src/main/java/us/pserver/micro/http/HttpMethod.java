@@ -22,6 +22,9 @@
 package us.pserver.micro.http;
 
 import io.undertow.util.HttpString;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import us.pserver.tools.Match;
 
 /**
@@ -31,19 +34,34 @@ import us.pserver.tools.Match;
  */
 public class HttpMethod {
   
-  public static final HttpMethod GET = new HttpMethod("GET");
+  public static final String DELETE_STRING = "DELETE";
   
-  public static final HttpMethod POST = new HttpMethod("POST");
+  public static final String GET_STRING = "GET";
   
-  public static final HttpMethod PUT = new HttpMethod("PUT");
+  public static final String HEAD_STRING = "HEAD";
   
-  public static final HttpMethod DELETE = new HttpMethod("DELETE");
+  public static final String OPTIONS_STRING = "OPTIONS";
   
-  public static final HttpMethod HEAD = new HttpMethod("HEAD");
+  public static final String PATCH_STRING = "PATCH";
   
-  public static final HttpMethod OPTIONS = new HttpMethod("OPTIONS");
+  public static final String POST_STRING = "POST";
   
-  public static final HttpMethod PATCH = new HttpMethod("PATCH");
+  public static final String PUT_STRING = "PUT";
+  
+  
+  public static final HttpMethod DELETE = new HttpMethod(DELETE_STRING);
+  
+  public static final HttpMethod GET = new HttpMethod(GET_STRING);
+  
+  public static final HttpMethod HEAD = new HttpMethod(HEAD_STRING);
+  
+  public static final HttpMethod OPTIONS = new HttpMethod(OPTIONS_STRING);
+  
+  public static final HttpMethod PATCH = new HttpMethod(PATCH_STRING);
+  
+  public static final HttpMethod POST = new HttpMethod(POST_STRING);
+  
+  public static final HttpMethod PUT = new HttpMethod(PUT_STRING);
   
 
   private final HttpString method;
@@ -58,8 +76,36 @@ public class HttpMethod {
     this.method = Match.notNull(method).getOrFail("Bad null HttpString");
   }
   
+  
   public HttpString toHttpString() {
     return method;
+  }
+
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 31 * hash + Objects.hashCode(this.method);
+    return hash;
+  }
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final HttpMethod other = (HttpMethod) obj;
+    if (!Objects.equals(this.method, other.method)) {
+      return false;
+    }
+    return true;
   }
   
   @Override
@@ -67,4 +113,34 @@ public class HttpMethod {
     return method.toString();
   }
   
+  
+  public static HttpMethod fromString(String meth) {
+    switch(Match.notEmpty(meth).getOrFail("Bad empty method string").toUpperCase()) {
+      case DELETE_STRING:
+        return DELETE;
+      case HEAD_STRING:
+        return HEAD;
+      case OPTIONS_STRING:
+        return OPTIONS;
+      case PATCH_STRING:
+        return PATCH;
+      case POST_STRING:
+        return POST;
+      case PUT_STRING:
+        return PUT;
+      default:
+        return GET;
+    }
+  }
+  
+  
+  public static List<HttpMethod> listMethods() {
+    return Arrays.asList(methodsArray());
+  }
+
+  
+  public static HttpMethod[] methodsArray() {
+    return new HttpMethod[] {DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT};
+  }
+
 }

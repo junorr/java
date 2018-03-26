@@ -39,7 +39,7 @@ public interface JsonHandler extends HttpHandler {
    * Adiciona header de JSON na resposta do Exchanger.
    * @param hse Exchanger de resquisição e resposta do servidor
    */
-  public default void putJsonHeader(HttpServerExchange hse) {
+  public default void setJsonContentType(HttpServerExchange hse) {
     hse.getResponseHeaders().put(
         Headers.CONTENT_TYPE, HEADER_VALUE_JSON
     );

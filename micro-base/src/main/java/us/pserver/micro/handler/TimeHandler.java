@@ -21,15 +21,18 @@
 
 package us.pserver.micro.handler;
 
+import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 /**
  * Retorna a hora local do servidor.
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/08/2016
  */
-public class TimeHandler implements JsonHandler {
+public class TimeHandler implements HttpHandler {
   
   /**
    * Envia a hora local do servidor.
@@ -38,7 +41,16 @@ public class TimeHandler implements JsonHandler {
    */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    hse.getResponseSender().send(Instant.now().toString());
+    String szone = hse.getQueryParameters().get("zoneid").getFirst();
+    if(szone.startsWith("+") || szone.startsWith("-")) {
+      ZoneOffset zof = ZoneOffset.of(szone);
+      szone = Instant.now().atOffset(zof).toString();
+    }
+    else {
+      ZoneId zid = ZoneId.of(szone.replace("-", "/"));
+      szone = Instant.now().atZone(zid).toString();
+    }
+    hse.getResponseSender().send(szone);
     hse.endExchange();
   }
   
