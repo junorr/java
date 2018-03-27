@@ -41,13 +41,19 @@ public class TimeHandler implements HttpHandler {
    */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    String szone = hse.getQueryParameters().get("zoneid").getFirst();
+    hse.getQueryParameters().entrySet().forEach(e->System.out.println("- "+ e.getKey() + "="+ e.getValue()));
+    String szone = hse.getQueryParameters().get("zoneOffset").getFirst();
     if(szone.startsWith("+") || szone.startsWith("-")) {
       ZoneOffset zof = ZoneOffset.of(szone);
       szone = Instant.now().atOffset(zof).toString();
     }
     else {
-      ZoneId zid = ZoneId.of(szone.replace("-", "/"));
+      if(hse.getQueryParameters().containsKey("zoneid")) {
+        szone += "/" + hse.getQueryParameters().get("zoneid").getFirst();
+      } else {
+        szone = szone.replace("-", "/");
+      }
+      ZoneId zid = ZoneId.of(szone);
       szone = Instant.now().atZone(zid).toString();
     }
     hse.getResponseSender().send(szone);
