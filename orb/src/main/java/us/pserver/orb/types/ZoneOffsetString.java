@@ -19,17 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro.http;
+package us.pserver.orb.types;
+
+import java.time.ZoneOffset;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 24/03/2018
+ * @version 0.0 - 02/01/2018
  */
-public class GetRoute extends HttpRoute {
-
-  public GetRoute(String path) {
-    super(HttpMethod.GET, path);
-  }
+public class ZoneOffsetString extends AbstractTypedString<ZoneOffset> {
   
+  public ZoneOffsetString() {
+    super(ZoneOffset.class);
+  }
+
+  @Override
+  public ZoneOffset apply(String string) {
+    return ZoneOffset.of(string);
+  }
+
 }

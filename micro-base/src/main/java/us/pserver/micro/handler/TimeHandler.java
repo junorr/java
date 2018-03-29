@@ -24,8 +24,10 @@ package us.pserver.micro.handler;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.temporal.TemporalAccessor;
+import us.pserver.micro.util.TemplateParam;
+import us.pserver.micro.util.URIParam;
+import us.pserver.orb.TypedMap;
 
 /**
  * Retorna a hora local do servidor.
@@ -41,22 +43,18 @@ public class TimeHandler implements HttpHandler {
    */
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    hse.getQueryParameters().entrySet().forEach(e->System.out.println("- "+ e.getKey() + "="+ e.getValue()));
-    String szone = hse.getQueryParameters().get("zoneOffset").getFirst();
-    if(szone.startsWith("+") || szone.startsWith("-")) {
-      ZoneOffset zof = ZoneOffset.of(szone);
-      szone = Instant.now().atOffset(zof).toString();
-    }
-    else {
-      if(hse.getQueryParameters().containsKey("zoneid")) {
-        szone += "/" + hse.getQueryParameters().get("zoneid").getFirst();
-      } else {
-        szone = szone.replace("-", "/");
+    String zone = "zone";
+    TypedMap map = TemplateParam.of(zone, hse).getAsTypedMap();
+    TemporalAccessor time = Instant.now();
+    if(map.containsKey(zone)) {
+      if(map.isZoneOffset(zone)) {
+        time = Instant.now().atOffset(map.getZoneOffset(zone));
       }
-      ZoneId zid = ZoneId.of(szone);
-      szone = Instant.now().atZone(zid).toString();
+      else if(map.isZoneId(zone)) {
+        time = Instant.now().atZone(map.getZoneId(zone));
+      }
     }
-    hse.getResponseSender().send(szone);
+    hse.getResponseSender().send(time.toString());
     hse.endExchange();
   }
   

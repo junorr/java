@@ -135,9 +135,14 @@ public class URIParam {
     List<String> ls = new ArrayList<>();
     ls.addAll(params);
     for(int i = 1; i <= pars && ls.size() > 0; i++) {
-      ls.remove(1);;
+      ls.remove(1);
     }
     return new URIParam(ls);
+  }
+  
+  
+  public TemplateParam getTemplateParam(String template) {
+    return new TemplateParam(this, template);
   }
   
 }

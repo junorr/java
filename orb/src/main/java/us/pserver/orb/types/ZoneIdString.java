@@ -19,17 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro.http;
+package us.pserver.orb.types;
+
+import java.time.ZoneId;
+import java.util.Objects;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 24/03/2018
+ * @version 0.0 - 02/01/2018
  */
-public class OptionsRoute extends HttpRoute {
-
-  public OptionsRoute(String path) {
-    super(HttpMethod.OPTIONS, path);
-  }
+public class ZoneIdString extends AbstractTypedString<ZoneId> {
   
+  public ZoneIdString() {
+    super(ZoneId.class);
+  }
+
+  @Override
+  public ZoneId apply(String string) {
+    String zoneid = string;
+    if(zoneid.startsWith("[") && zoneid.endsWith("]")) {
+      zoneid = zoneid.substring(1, zoneid.length() -1);
+    }
+    System.out.println("* ZoneIdString: '"+ zoneid+ "'");
+    return ZoneId.of(zoneid);
+  }
+
 }

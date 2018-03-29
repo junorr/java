@@ -39,19 +39,23 @@ import us.pserver.tools.Match;
  */
 public class Orb {
 
-  public static final Function<Method,String> GETTER_AS_DOTTED_KEY = new KeyMethodName('.', 3);
+  public static final Function<Method,String> GETTER_AS_DOTTED_KEY = new MethodNameTransform('.', 3);
   
-  public static final Function<Method,String> GETTER_AS_KEY = new KeyMethodName((char)0, 3);
+  public static final Function<Method,String> GETTER_AS_DASHED_KEY = new MethodNameTransform('-', 3);
   
-  public static final Function<Method,String> GETTER_AS_UNDERSCORED_KEY = new KeyMethodName('_', 3);
+  public static final Function<Method,String> GETTER_AS_KEY = new MethodNameTransform((char)0, 3);
+  
+  public static final Function<Method,String> GETTER_AS_UNDERSCORED_KEY = new MethodNameTransform('_', 3);
   
   public static final Function<Method,String> GETTER_AS_ENVIRONMENT_KEY = m->GETTER_AS_UNDERSCORED_KEY.apply(m).toUpperCase();
   
-  public static final Function<Method,String> NAME_AS_DOTTED_KEY = new KeyMethodName('.', 0);
+  public static final Function<Method,String> NAME_AS_DOTTED_KEY = new MethodNameTransform('.', 0);
   
-  public static final Function<Method,String> NAME_AS_KEY = new KeyMethodName((char)0, 0);
+  public static final Function<Method,String> NAME_AS_DASHED_KEY = new MethodNameTransform('-', 0);
   
-  public static final Function<Method,String> NAME_AS_UNDERSCORED_KEY = new KeyMethodName('_', 0);
+  public static final Function<Method,String> NAME_AS_KEY = new MethodNameTransform((char)0, 0);
+  
+  public static final Function<Method,String> NAME_AS_UNDERSCORED_KEY = new MethodNameTransform('_', 0);
   
   public static final Function<Method,String> NAME_AS_ENVIRONMENT_KEY = m->NAME_AS_UNDERSCORED_KEY.apply(m).toUpperCase();
   
@@ -150,13 +154,13 @@ public class Orb {
   
   
   
-  public static class KeyMethodName implements Function<Method,String> {
+  public static class MethodNameTransform implements Function<Method,String> {
     
     private final char separator;
     
     private final int startAt;
     
-    public KeyMethodName(char camelCaseSeparator, int startNameAt) {
+    public MethodNameTransform(char camelCaseSeparator, int startNameAt) {
       this.separator = camelCaseSeparator;
       this.startAt = startNameAt;
     }

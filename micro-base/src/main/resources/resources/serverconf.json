@@ -8,7 +8,7 @@
   "corsHandlerEnabled": true,
   "handlers": {
     "/time": "us.pserver.micro.handler.TimeHandler",
-    "/time/*": {
+    "/time/{zone}": {
       "http.method": "GET",
       "http.handler": "us.pserver.micro.handler.TimeHandler"
     }

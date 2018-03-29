@@ -21,50 +21,35 @@
 
 package us.pserver.micro.util;
 
-import io.undertow.server.HttpServerExchange;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import java.lang.reflect.Type;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 25/07/2016
+ * @version 0.0 - 19/07/2016
  */
-public class StringPostParser {
-  
-  private final StringBuilder data;
-  
-  
-  public StringPostParser() {
-    data = new StringBuilder();
-  }
-  
-  
-  public String getPostData() {
-    return data.toString();
-  }
-  
-  
-  private void resetPostData() {
-    data.delete(0, data.length());
-  }
-  
+public class JsonClassSerializer implements JsonDeserializer<Class>, JsonSerializer<Class> {
 
-  public String parseHttp(HttpServerExchange hse) throws IOException {
-    this.resetPostData();
-    hse.startBlocking();
-    BufferedReader read = new BufferedReader(
-        new InputStreamReader(hse.getInputStream())
-    );
-    String line = null;
-    while((line = read.readLine()) != null) {
-      if(!data.toString().isEmpty()) {
-        data.append("\n");
-      }
-      data.append(line);
+  @Override
+  public Class deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
+    try {
+      return Class.forName(je.getAsString());
     }
-    return data.toString();
+    catch(ClassNotFoundException e) {
+      throw new JsonParseException(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public JsonElement serialize(Class t, Type type, JsonSerializationContext jsc) {
+    return new JsonPrimitive(t.getName());
   }
 
 }

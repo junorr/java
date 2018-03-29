@@ -47,6 +47,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +56,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import us.pserver.orb.types.ZoneIdString;
+import us.pserver.orb.types.ZoneOffsetString;
 import us.pserver.tools.exp.ForEach;
 import us.pserver.tools.Match;
 
@@ -83,6 +87,10 @@ public class TypedStrings {
   public static final String LOCAL_TIME_PATTERN = "\\d{2}:\\d{2}(:\\d{2})?(\\.\\d+)?";
   
   public static final String LONG_PATTERN = "(-|\\+)?\\d+";
+  
+  public static final String ZONE_OFFSET_PATTERN = "(-|\\+)\\d{2}:\\d{2}";
+  
+  public static final String ZONE_ID_PATTERN = "^\\[[A-Z]{1}\\w*\\/?\\w*\\]$";
   
   public static final String OFFSET_TIME_PATTERN = "\\d{2}:\\d{2}(:\\d{2})?(\\.\\d+)?(-|\\+)\\d{2}:\\d{2}";
   
@@ -126,6 +134,8 @@ public class TypedStrings {
     types.add(new ShortString());
     types.add(new StringString());
     types.add(new ZonedDateTimeString());
+    types.add(new ZoneIdString());
+    types.add(new ZoneOffsetString());
   }
   
   private void initPatterns() {
@@ -141,6 +151,8 @@ public class TypedStrings {
     patterns.put(LONG_PATTERN,            Long.class);
     patterns.put(OFFSET_TIME_PATTERN,     OffsetTime.class);
     patterns.put(ZONED_DATE_TIME_PATTERN, ZonedDateTime.class);
+    patterns.put(ZONE_ID_PATTERN,         ZoneId.class);
+    patterns.put(ZONE_OFFSET_PATTERN,     ZoneOffset.class);
   }
   
   public ClassLoader getClassLoader() {

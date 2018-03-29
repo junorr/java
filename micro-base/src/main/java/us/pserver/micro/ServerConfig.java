@@ -21,7 +21,7 @@
 
 package us.pserver.micro;
 
-import us.pserver.micro.util.JsonClass;
+import us.pserver.micro.util.JsonClassSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpHandler;
@@ -380,7 +380,7 @@ public class ServerConfig {
     public Builder() {
       handlers = new HashMap<>();
       gson = new GsonBuilder()
-          .registerTypeAdapter(Class.class, new JsonClass())
+          .registerTypeAdapter(Class.class, new JsonClassSerializer())
           .registerTypeAdapter(HttpMethodHandler.class, new HttpMethodHandlerSerializer())
           .create();
     }
