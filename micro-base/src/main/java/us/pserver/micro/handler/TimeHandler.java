@@ -26,7 +26,6 @@ import io.undertow.server.HttpServerExchange;
 import java.time.Instant;
 import java.time.temporal.TemporalAccessor;
 import us.pserver.micro.util.TemplateParam;
-import us.pserver.micro.util.URIParam;
 import us.pserver.orb.TypedMap;
 
 /**

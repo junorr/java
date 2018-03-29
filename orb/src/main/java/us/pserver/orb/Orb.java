@@ -41,7 +41,7 @@ public class Orb {
 
   public static final Function<Method,String> GETTER_AS_DOTTED_KEY = new MethodNameTransform('.', 3);
   
-  public static final Function<Method,String> GETTER_AS_DASHED_KEY = new MethodNameTransform('-', 3);
+  public static final Function<Method,String> GETTER_AS_DASH_KEY = new MethodNameTransform('-', 3);
   
   public static final Function<Method,String> GETTER_AS_KEY = new MethodNameTransform((char)0, 3);
   
@@ -51,7 +51,7 @@ public class Orb {
   
   public static final Function<Method,String> NAME_AS_DOTTED_KEY = new MethodNameTransform('.', 0);
   
-  public static final Function<Method,String> NAME_AS_DASHED_KEY = new MethodNameTransform('-', 0);
+  public static final Function<Method,String> NAME_AS_DASH_KEY = new MethodNameTransform('-', 0);
   
   public static final Function<Method,String> NAME_AS_KEY = new MethodNameTransform((char)0, 0);
   

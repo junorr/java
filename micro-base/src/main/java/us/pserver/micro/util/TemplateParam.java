@@ -115,7 +115,7 @@ public class TemplateParam {
     for(int i = 0; i < template.size(); i++) {
       parMap.put(template.get(i), pars.getParam(i));
     }
-    return new Orb(getParamsMap(), new TypedStrings(), Orb.GETTER_AS_DASHED_KEY).create(cls);
+    return new Orb(getParamsMap(), new TypedStrings(), Orb.GETTER_AS_DASH_KEY).create(cls);
   }
   
   
