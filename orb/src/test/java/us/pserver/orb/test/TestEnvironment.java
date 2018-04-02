@@ -35,6 +35,7 @@ import us.pserver.orb.Orb;
 public class TestEnvironment {
 
   @Test
+  @Disabled
   public void unixEnvConfig() {
     UnixEnvConfig cfg = Orb.get().fromEnvironment().create(UnixEnvConfig.class);
     System.out.println(cfg);
@@ -44,11 +45,12 @@ public class TestEnvironment {
     Assertions.assertEquals(1, cfg.getQtAccessibility());
   }
   
-  @Disabled
+  //@Disabled
   @Test
   public void windowsEnvConfig() throws NoSuchMethodException {
     WindowsEnvConfig cfg = Orb.get().fromEnvironment().create(WindowsEnvConfig.class);
     System.out.println(cfg);
+    cfg.defmeth();
     Assertions.assertEquals(4, cfg.getNumberOfProcessors());
     Assertions.assertEquals(10, cfg.setNumberOfProcessors(10).getNumberOfProcessors());
     Assertions.assertEquals("Windows_NT", cfg.getOS());

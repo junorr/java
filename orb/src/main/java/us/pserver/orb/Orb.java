@@ -21,6 +21,7 @@
 
 package us.pserver.orb;
 
+import us.pserver.orb.invoke.MappedInvocable;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -98,8 +99,8 @@ public class Orb {
   }
   
   
-  public MappedInvocationHandler invocationHandler() {
-    return new MappedInvocationHandler(map, types, methodToKey);
+  public MappedInvocable invocationHandler() {
+    return new MappedInvocable(map, types, methodToKey);
   }
   
   public <T> T create(Class<T> cls) {

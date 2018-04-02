@@ -19,29 +19,27 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.test;
+package us.pserver.orb.invoke;
 
-import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/01/2018
+ * @version 0.0 - 01/04/2018
  */
-public interface WindowsEnvConfig {
+public class ProxyReturnTransform implements MethodTransform<Object> {
   
-  public int getNumberOfProcessors();
+  private final AtomicReference ref = new AtomicReference();
 
-  public WindowsEnvConfig setNumberOfProcessors(int num);
-  
-  public String getOS();
-  
-  public String getUsername();
-  
-  public Path getWindir();
-  
-  public default void defmeth() {
-    System.out.println("*** default method ***");
+  @Override
+  public boolean canHandle(InvocationContext ctx) {
+    return ctx.getMethod().getReturnType().isAssignableFrom(ctx.getProxyInstance().getClass());
   }
-  
+
+  @Override
+  public Object apply(InvocationContext ctx) {
+    return ctx.getProxyInstance();
+  }
+
 }

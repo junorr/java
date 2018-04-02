@@ -7,10 +7,13 @@
   "shutdownHandlerEnabled": true,
   "corsHandlerEnabled": true,
   "handlers": {
-    "/time": "us.pserver.micro.handler.TimeHandler",
-    "/time/{zone}": {
-      "http.method": "GET",
-      "http.handler": "us.pserver.micro.handler.TimeHandler"
-    }
+    "/time": "us.pserver.micro.handler.TimeHandler"
+  },
+  "db": {
+    "file": "./server.db",
+    "type": "MAPPED_FILE",
+    "concurrency": 4,
+    "user": "juno",
+    "pwd": "32132155"
   }
 }

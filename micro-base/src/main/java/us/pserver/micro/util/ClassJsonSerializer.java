@@ -35,7 +35,7 @@ import java.lang.reflect.Type;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/07/2016
  */
-public class JsonClassSerializer implements JsonDeserializer<Class>, JsonSerializer<Class> {
+public class ClassJsonSerializer implements JsonDeserializer<Class>, JsonSerializer<Class> {
 
   @Override
   public Class deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {

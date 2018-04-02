@@ -19,29 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.test;
-
-import java.nio.file.Path;
+package us.pserver.orb.invoke;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/01/2018
+ * @version 0.0 - 01/04/2018
  */
-public interface WindowsEnvConfig {
+public class EnumStringTransform implements MethodTransform<Object> {
   
-  public int getNumberOfProcessors();
-
-  public WindowsEnvConfig setNumberOfProcessors(int num);
+  @Override
+  public boolean canHandle(InvocationContext ctx) {
+    return ctx.getMethod().getReturnType().isEnum() && ctx.getValue() != null;
+  }
   
-  public String getOS();
-  
-  public String getUsername();
-  
-  public Path getWindir();
-  
-  public default void defmeth() {
-    System.out.println("*** default method ***");
+  @Override
+  public Object apply(InvocationContext ctx) {
+    Class<? extends Enum> cls = (Class<? extends Enum>) ctx.getMethod().getReturnType();
+    return Enum.valueOf(cls, ctx.getValue().toString());
   }
   
 }

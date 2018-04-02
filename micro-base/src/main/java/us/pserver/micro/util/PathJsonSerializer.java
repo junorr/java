@@ -19,29 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.test;
+package us.pserver.micro.util;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import java.lang.reflect.Type;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/01/2018
+ * @version 0.0 - 30/03/2018
  */
-public interface WindowsEnvConfig {
-  
-  public int getNumberOfProcessors();
+public class PathJsonSerializer implements JsonSerializer<Path>, JsonDeserializer<Path> {
 
-  public WindowsEnvConfig setNumberOfProcessors(int num);
-  
-  public String getOS();
-  
-  public String getUsername();
-  
-  public Path getWindir();
-  
-  public default void defmeth() {
-    System.out.println("*** default method ***");
+  @Override
+  public JsonElement serialize(Path src, Type typeOfSrc, JsonSerializationContext context) {
+    return new JsonPrimitive(src.toString());
   }
-  
+
+  @Override
+  public Path deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    return Paths.get(json.getAsString());
+  }
+
 }

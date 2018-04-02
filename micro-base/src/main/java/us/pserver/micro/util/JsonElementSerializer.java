@@ -19,29 +19,38 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.test;
+package us.pserver.micro.util;
 
-import java.nio.file.Path;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import java.io.IOException;
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
+import org.mapdb.Serializer;
+import us.pserver.tools.Match;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/01/2018
+ * @version 0.0 - 30/03/2018
  */
-public interface WindowsEnvConfig {
+public class JsonElementSerializer implements Serializer<JsonElement> {
   
-  public int getNumberOfProcessors();
-
-  public WindowsEnvConfig setNumberOfProcessors(int num);
+  private final Gson gson;
   
-  public String getOS();
-  
-  public String getUsername();
-  
-  public Path getWindir();
-  
-  public default void defmeth() {
-    System.out.println("*** default method ***");
+  public JsonElementSerializer(Gson gson) {
+    this.gson = Match.notNull(gson).getOrFail("Bad null Gson");
   }
-  
+
+  @Override
+  public void serialize(DataOutput2 out, JsonElement value) throws IOException {
+    out.writeUTF(value.toString());
+  }
+
+
+  @Override
+  public JsonElement deserialize(DataInput2 input, int available) throws IOException {
+    return gson.fromJson(input.readUTF(), JsonElement.class);
+  }
+
 }

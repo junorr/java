@@ -19,9 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro;
+package us.pserver.micro.config;
 
-import us.pserver.micro.util.JsonClassSerializer;
+import us.pserver.micro.util.ClassJsonSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.undertow.server.HttpHandler;
@@ -41,6 +41,7 @@ import java.util.Objects;
 import us.pserver.micro.http.HttpMethod;
 import us.pserver.micro.http.HttpMethodHandler;
 import us.pserver.micro.util.HttpMethodHandlerSerializer;
+import us.pserver.micro.util.PathJsonSerializer;
 
 /**
  * Configurações do servidor de rede, encapsula 
@@ -88,6 +89,10 @@ public class ServerConfig {
   
   private final Map<String,HttpMethodHandler> handlers;
   
+  private final Gson gson;
+  
+  private final _DBConfig dbconf;
+  
   
   /**
    * Construtor padrão, recebe todas as 
@@ -110,6 +115,7 @@ public class ServerConfig {
    * secundárias para executar trabalhos "blocantes".
    * @param map Mapa com as classes dos HttpHandler's e 
    * respectivas URIs às quais estão associados.
+   * @param gson
    */
   public ServerConfig(
       String address, 
@@ -121,7 +127,9 @@ public class ServerConfig {
       boolean authShield,
       int ioThreads, 
       int maxWorkerThreads, 
-      Map<String,HttpMethodHandler> map
+      Map<String,HttpMethodHandler> map,
+      Gson gson,
+      _DBConfig dbconf
   ) {
     if(address == null || address.trim().isEmpty()) {
       throw new IllegalArgumentException("Invalid Address: "+ address);
@@ -129,8 +137,10 @@ public class ServerConfig {
     if(port <= 0 || port > 65535) {
       throw new IllegalArgumentException("Invalid Port: "+ port);
     }
+    this.gson = gson;
     this.address = address;
     this.port = port;
+    this.dbconf = dbconf;
     this.classpath = classpath;
     this.dispatcherEnabled = dispatcherEnabled;
     this.shutdownHandler = shutdownHandler;
@@ -163,12 +173,26 @@ public class ServerConfig {
 
 
   /**
+   * Retorna uma instância da classe contrutora de ServerConfig.
+   * @return Nova instância da classe contrutora de ServerConfig.
+   */
+  public static Builder builder(GsonBuilder bld) {
+    return new Builder(bld);
+  }
+
+
+  /**
    * Retorna o endereço de rede no qual o 
    * servidor irá escutar.
    * @return String
    */
   public String getAddress() {
     return address;
+  }
+  
+  
+  public Gson gson() {
+    return gson;
   }
 
 
@@ -184,6 +208,11 @@ public class ServerConfig {
   
   public Path getClasspathDir() {
     return Paths.get(classpath);
+  }
+
+
+  public _DBConfig getDBConfig() {
+    return dbconf;
   }
   
   
@@ -335,6 +364,7 @@ public class ServerConfig {
         + "\n    shutdownHandlerEnabled: " + shutdownHandler
         + "\n    corsHandlerEnabled: " + corsHandler
         + "\n    authenticationShield: " + authenticationShield
+        + "\n    dbconf: " + dbconf
         + "\n    handlers: " + handlers.toString()
             .replace("{", "{\n      - ")
             .replace(", ", "\n      - ")
@@ -369,6 +399,8 @@ public class ServerConfig {
     
     private boolean corsHandlerEnabled;
     
+    private _DBConfig.Builder db;
+    
     private final Map<String, HttpMethodHandler> handlers;
     
     private transient final Gson gson;
@@ -378,9 +410,14 @@ public class ServerConfig {
      * Construtor padrão sem argumentos.
      */
     public Builder() {
+      this(new GsonBuilder());
+    }
+    
+    
+    public Builder(GsonBuilder bld) {
       handlers = new HashMap<>();
-      gson = new GsonBuilder()
-          .registerTypeAdapter(Class.class, new JsonClassSerializer())
+      gson = bld.registerTypeAdapter(Class.class, new ClassJsonSerializer())
+          .registerTypeAdapter(Path.class, new PathJsonSerializer())
           .registerTypeAdapter(HttpMethodHandler.class, new HttpMethodHandlerSerializer())
           .create();
     }
@@ -443,6 +480,17 @@ public class ServerConfig {
      */
     public Builder setServerAddress(String serverAddress) {
       this.serverAddress = serverAddress;
+      return this;
+    }
+
+
+    public _DBConfig.Builder getDBConfigBuilder() {
+      return db;
+    }
+
+
+    public Builder setDBConfigBuilder(_DBConfig.Builder db) {
+      this.db = db;
       return this;
     }
 
@@ -652,7 +700,9 @@ public class ServerConfig {
           authenticationShield,
           ioThreads, 
           maxWorkerThreads, 
-          handlers
+          handlers,
+          gson,
+          db.create()
       );
     }
     
@@ -695,6 +745,7 @@ public class ServerConfig {
             .setServerPort(b.getServerPort())
             .setClasspathDir(b.getClasspathDir())
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
+            .setDBConfigBuilder(b.getDBConfigBuilder())
             .setCorsHandlerEnabled(b.isCorsHandlerEnabled());
       }
     }
@@ -712,6 +763,7 @@ public class ServerConfig {
     public Builder load(InputStream input) throws IOException {
       try (InputStreamReader ir = new InputStreamReader(input)) {
         Builder b = gson.fromJson(ir, Builder.class);
+        System.out.println("*dbconf: "+ b.getDBConfigBuilder());
         return this.setAuthenticationShield(b.isAuthenticationShield())
             .setDispatcherEnabled(b.isDispatcherEnabled())
             .setHttpHandlers(b.getHttpHandlers())
@@ -721,6 +773,7 @@ public class ServerConfig {
             .setServerPort(b.getServerPort())
             .setClasspathDir(b.getClasspathDir())
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
+            .setDBConfigBuilder(b.getDBConfigBuilder())
             .setCorsHandlerEnabled(b.isCorsHandlerEnabled());
       }
     }
@@ -738,6 +791,7 @@ public class ServerConfig {
           + "\n    shutdownHandlerEnabled: " + shutdownHandlerEnabled
           + "\n    corsHandlerEnabled: " + corsHandlerEnabled
           + "\n    authenticationShield: " + authenticationShield
+          + "\n    dbconf: " + db
           + "\n    handlers: " + handlers.toString()
               .replace("{", "{\n      - ")
               .replace(", ", "\n      - ")

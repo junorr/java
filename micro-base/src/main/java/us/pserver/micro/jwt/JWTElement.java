@@ -19,37 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro.util;
-
-import io.undertow.server.HttpServerExchange;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+package us.pserver.micro.jwt;
 
 /**
- *
+ * Uma interface que pode ser usada para definir alguns métodos padrões de objetos
+ * JWT.
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 25/07/2016
+ * @version 0.0 - 06/10/2016
  */
-public class StringPostRequest implements PostRequest<String> {
-  
-  @Override
-  public String parse(HttpServerExchange hse) throws IOException {
-    try (
-      BufferedReader read = new BufferedReader(
-        new InputStreamReader(hse.startBlocking().getInputStream())
-      );  
-    ) {
-      StringBuilder data = new StringBuilder();
-      String line = null;
-      while((line = read.readLine()) != null) {
-        if(!data.toString().isEmpty()) {
-          data.append("\n");
-        }
-        data.append(line);
-      }
-      return data.toString();
-    }
-  }
+public interface JWTElement {
 
+  /**
+   * Codificar dados do objeto para base64.
+   * @return dados codificado
+   */
+  public String encodeBase64();
+  
+  /**
+   * Construir dados do objeto em formato JSON.
+   * @return json construído
+   */
+  public String toJson();
+  
 }

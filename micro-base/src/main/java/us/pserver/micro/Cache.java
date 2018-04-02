@@ -19,29 +19,44 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.test;
+package us.pserver.micro;
 
-import java.nio.file.Path;
+import com.google.gson.JsonElement;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import org.mapdb.HTreeMap;
+import us.pserver.micro.config.DBConfig;
+import us.pserver.tools.Match;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/01/2018
+ * @version 0.0 - 01/04/2018
  */
-public interface WindowsEnvConfig {
+public class Cache {
   
-  public int getNumberOfProcessors();
-
-  public WindowsEnvConfig setNumberOfProcessors(int num);
+  private static final Map<String,HTreeMap<String,String>> maps = new ConcurrentHashMap<>();
   
-  public String getOS();
   
-  public String getUsername();
+  private final DBConfig config;
   
-  public Path getWindir();
+  private final String name;
   
-  public default void defmeth() {
-    System.out.println("*** default method ***");
+  
+  public Cache(String name, DBConfig conf) {
+    this.name = Match.notEmpty(name).getOrFail("Bad empty name");
+    this.config = Match.notNull(conf).getOrFail("Bad null DBConfig");
+  }
+  
+  private HTreeMap<String,String> map() {
+    if(maps.containsKey(name)) {
+      return maps.get(name);
+    }
+    HTreeMap<String,String> 
+  }
+  
+  public Cache put(String key, JsonElement elt) {
+    
   }
   
 }

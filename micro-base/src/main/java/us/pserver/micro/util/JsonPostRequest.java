@@ -19,29 +19,42 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.test;
+package us.pserver.micro.util;
 
-import java.nio.file.Path;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import io.undertow.server.HttpServerExchange;
+import us.pserver.tools.Match;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/01/2018
+ * @version 0.0 - 30/03/2018
  */
-public interface WindowsEnvConfig {
+public class JsonPostRequest implements PostRequest<JsonElement> {
   
-  public int getNumberOfProcessors();
-
-  public WindowsEnvConfig setNumberOfProcessors(int num);
+  private final Gson gson;
   
-  public String getOS();
+  private final StringPostRequest str;
   
-  public String getUsername();
-  
-  public Path getWindir();
-  
-  public default void defmeth() {
-    System.out.println("*** default method ***");
+  public JsonPostRequest(Gson gson) {
+    this.gson = Match.notNull(gson).getOrFail("Bad null Gson");
+    this.str = new StringPostRequest();
   }
   
+  public JsonPostRequest() {
+    this(new GsonBuilder()
+        .registerTypeAdapter(Class.class, new ClassJsonSerializer())
+        .create()
+    );
+  }
+
+  @Override
+  public JsonElement parse(HttpServerExchange hse) throws Exception {
+    String sjson = str.parse(hse);
+    if(sjson == null) throw new IllegalArgumentException("No post data");
+    return gson.fromJson(sjson, JsonElement.class);
+  }
+
 }

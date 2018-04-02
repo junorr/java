@@ -21,8 +21,11 @@
 
 package us.pserver.micro;
 
+import us.pserver.micro.config.ServerConfig;
 import us.pserver.micro.ResourceLoader.ResourceLoadException;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
+import us.pserver.tools.Match;
 
 
 /**
@@ -38,7 +41,7 @@ public enum ServerSetup {
   
   private final ResourceLoader loader;
   
-  private final ServerConfig config;
+  private final AtomicReference<ServerConfig> config;
   
   
   /**
@@ -50,7 +53,7 @@ public enum ServerSetup {
    */
   private ServerSetup(ResourceLoader rld) throws ResourceLoadException {
     this.loader = rld;
-    this.config = getConfigurationBuilder().build();
+    this.config = new AtomicReference(getConfigurationBuilder().build());
   }
   
   public ServerConfig.Builder getConfigurationBuilder() {
@@ -69,7 +72,17 @@ public enum ServerSetup {
    * @return configuração existente
    */
   public ServerConfig config() {
-    return config;
+    return config.get();
+  }
+  
+  /**
+   * Define uma instancia de ServerConfig.
+   * @param cfg ServerConfig
+   * @return ServerSetup INSTANCE
+   */
+  public ServerSetup config(ServerConfig cfg) {
+    config.set(Match.notNull(cfg).getOrFail("Bad null ServerConfig"));
+    return this;
   }
   
   /**
@@ -85,7 +98,7 @@ public enum ServerSetup {
    * @return servidor criado
    */
   public Server createServer() {
-    return new Server(config);
+    return new Server(config.get());
   }
   
 }

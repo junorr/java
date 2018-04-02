@@ -19,29 +19,40 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.test;
+package us.pserver.orb.invoke;
 
-import java.nio.file.Path;
+import java.lang.reflect.Method;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import us.pserver.tools.Match;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/01/2018
+ * @version 0.0 - 01/04/2018
  */
-public interface WindowsEnvConfig {
-  
-  public int getNumberOfProcessors();
+public class InterceptSupplierTransform<T> implements MethodTransform<T> {
 
-  public WindowsEnvConfig setNumberOfProcessors(int num);
+  private final Supplier<T> sup;
   
-  public String getOS();
+  private final Predicate<Method> intercept;
   
-  public String getUsername();
   
-  public Path getWindir();
+  public InterceptSupplierTransform(Predicate<Method> intercept, Supplier<T> sup) {
+    this.intercept = Match.notNull(intercept).getOrFail("Bad null Method");
+    this.sup = Match.notNull(sup).getOrFail("Bad null Supplier");
+  }
   
-  public default void defmeth() {
-    System.out.println("*** default method ***");
+  
+  @Override
+  public T apply(InvocationContext ctx) {
+    return sup.get();
+  }
+  
+  
+  @Override
+  public boolean canHandle(InvocationContext ctx) {
+    return intercept.test(ctx.getMethod());
   }
   
 }

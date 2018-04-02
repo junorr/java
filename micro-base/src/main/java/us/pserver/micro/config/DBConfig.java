@@ -19,29 +19,51 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.test;
+package us.pserver.micro.config;
 
 import java.nio.file.Path;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
+import org.mapdb.HTreeMap;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/01/2018
+ * @version 0.0 - 01/04/2018
  */
-public interface WindowsEnvConfig {
-  
-  public int getNumberOfProcessors();
+public interface DBConfig {
 
-  public WindowsEnvConfig setNumberOfProcessors(int num);
+  public static enum DBType {
+    FILE, MEMORY, MAPPED_FILE
+  }
+
+  public int getMicrodbConcurrency();
   
-  public String getOS();
+  public Path getMicrodbFile();
   
-  public String getUsername();
+  public DBType getMicrodbType();
   
-  public Path getWindir();
+  public String getMicrodbUser();
   
-  public default void defmeth() {
-    System.out.println("*** default method ***");
+  public String getMicrodbPassword();
+  
+  
+  public default DB createDB() {
+    switch(getMicrodbType()) {
+      case FILE:
+        return DBMaker.fileDB(getMicrodbFile().toFile())
+            .concurrencyScale(getMicrodbConcurrency())
+            .make();
+      case MAPPED_FILE:
+        return DBMaker.fileDB(getMicrodbFile().toFile())
+            .concurrencyScale(getMicrodbConcurrency())
+            .fileMmapEnable()
+            .make();
+      default:
+        return DBMaker.memoryDirectDB()
+            .concurrencyScale(getMicrodbConcurrency())
+            .make();
+    }
   }
   
 }

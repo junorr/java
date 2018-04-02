@@ -55,6 +55,7 @@ public class TestMappedObject {
         .setUserName("juno")
         .setUserKey("mykey");
     System.out.println(cfg);
+    System.out.println("ServerConfig cfg.getHost(): "+ cfg.getHost());
     Assertions.assertEquals(InetAddress.getByName("127.0.0.1"), cfg.getHost().getAddress());
     Assertions.assertEquals(8080, cfg.getHost().getPort());
     Assertions.assertEquals("juno", cfg.getUserName());
@@ -87,6 +88,7 @@ public class TestMappedObject {
         .withMap(map)
         .withMethodToKeyFunction(Orb.GETTER_AS_DOTTED_KEY)
         .create(ServerConfig.class);
+    System.out.println((Object)null);
     System.out.println(cfg);
     Assertions.assertEquals(InetAddress.getByName("127.0.0.1"), cfg.getHost().getAddress());
     Assertions.assertEquals(8080, cfg.getHost().getPort());

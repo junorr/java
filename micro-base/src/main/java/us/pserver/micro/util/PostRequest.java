@@ -19,22 +19,18 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro.annotation;
+package us.pserver.micro.util;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import io.undertow.server.HttpServerExchange;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 18/03/2018
+ * @version 0.0 - 30/03/2018
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
-public @interface UriHandle {
+@FunctionalInterface
+public interface PostRequest<T> {
 
-  public String value() default "";
+  public T parse(HttpServerExchange hse) throws Exception;
   
 }
