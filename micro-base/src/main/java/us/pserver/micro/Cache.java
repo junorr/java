@@ -21,11 +21,10 @@
 
 package us.pserver.micro;
 
-import com.google.gson.JsonElement;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.mapdb.HTreeMap;
+import java.time.Duration;
+import us.pserver.dropmap.DMap;
 import us.pserver.micro.config.DBConfig;
+import us.pserver.micro.db.DBMap;
 import us.pserver.tools.Match;
 
 /**
@@ -35,28 +34,19 @@ import us.pserver.tools.Match;
  */
 public class Cache {
   
-  private static final Map<String,HTreeMap<String,String>> maps = new ConcurrentHashMap<>();
+  public static final Duration DEFAULT_TTL = Duration.ofMinutes(20);
+  
+  private static final DMap<String, DBMap> maps = DMap.newMap();
   
   
   private final DBConfig config;
   
-  private final String name;
   
-  
-  public Cache(String name, DBConfig conf) {
-    this.name = Match.notEmpty(name).getOrFail("Bad empty name");
+  public Cache(DBConfig conf) {
     this.config = Match.notNull(conf).getOrFail("Bad null DBConfig");
   }
   
-  private HTreeMap<String,String> map() {
-    if(maps.containsKey(name)) {
-      return maps.get(name);
-    }
-    HTreeMap<String,String> 
-  }
   
-  public Cache put(String key, JsonElement elt) {
-    
-  }
+  public HTreeMap<String,JsonElement>
   
 }

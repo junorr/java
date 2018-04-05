@@ -22,6 +22,8 @@
 package us.pserver.dropmap.test;
 
 import java.time.Duration;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import us.pserver.dropmap.DMap;
 import us.pserver.dropmap.DMap.DEntry;
 
@@ -32,9 +34,11 @@ import us.pserver.dropmap.DMap.DEntry;
  */
 public class TestDMap {
   
+  private static final double trash = 10.0;
+  
   private static double lastlap;
   
-  private static double elapsed;
+  private static double elapsedStart;
   
   
   public static void removed(DEntry<Integer,String> entry) {
@@ -51,20 +55,22 @@ public class TestDMap {
   
   public static void removedInfo(DEntry<Integer,String> entry) {
     double end = System.nanoTime();
+    double elapsed = ((end - elapsedStart) / 1_000_000.0);
     double ms = ((end - lastlap) / 1_000_000.0);
-    System.out.println("\n* Removed: "+ entry+ " (last-lap: "+ ms+ " ms, elapsed: "+ ((end - elapsed) / 1_000_000.0)+ " ms)");
+    System.out.println("\n* Removed: "+ entry+ " (last-lap: "+ ms+ " ms, elapsed: "+ elapsed+ " ms)");
     lastlap = end;
+    Assertions.assertTrue(elapsed < (entry.getDuration().toMillis() + trash));
   }
 
-  
-  public static void main(String[] args) throws InterruptedException {
+  @Test
+  public void testTTL() throws InterruptedException {
     DMap<Integer,String> map = DMap.newMap();
     long ttl = 250;
     for(int i = 0; i < 50; i++) {
       map.put(i, "string-"+String.valueOf(i), Duration.ofMillis(ttl), TestDMap::removedInfo);
       ttl += 250;
       if(i == 0) {
-        elapsed = System.nanoTime();
+        elapsedStart = System.nanoTime();
         lastlap = System.nanoTime();
       }
     }

@@ -24,7 +24,6 @@ package us.pserver.micro.config;
 import java.nio.file.Path;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
-import org.mapdb.HTreeMap;
 
 /**
  *
