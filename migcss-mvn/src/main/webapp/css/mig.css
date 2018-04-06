@@ -1,0 +1,925 @@
+/*
+  Main grid container
+*/
+.mig {
+  position: relative;
+  padding: 0px 5px 0px 5px;
+  border-radius: 2px;
+}
+
+.mig-row {
+  position: relative;
+  width: auto;
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px 5px 5px 5px;
+  min-height: 10px;
+  border-radius: 2px;
+  overflow: auto;
+}
+
+/*
+  Group alignment inside row
+*/
+.mig-group-left {
+  position: relative;
+  float: left;
+  display: inline-block;
+}
+
+/*
+  Group alignment inside row
+*/
+.mig-group-center {
+  position: relative;
+  display: inline-block;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+/*
+  Group alignment inside row
+*/
+.mig-group-right {
+  position: relative;
+  float: right;
+  display: inline-block;
+}
+
+.mig-col {
+  position: relative;
+  padding: 0px 0px 0px 0px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+  min-width: 5px;
+  min-height: 5px;
+  border-radius: 2px;
+}
+
+
+/*
+  Shadowed card
+*/
+.mig-card {
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.5); 
+  border-radius: 2px;
+}
+
+/*
+  Shadowed card with hover effect
+*/
+.mig-card-hover {
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.5); 
+  border-radius: 2px;
+}
+
+.mig-card-hover:hover {
+  box-shadow: 0px 3px 4px rgba(0,0,0,0.5); 
+  border-radius: 2px;
+}
+
+
+.mig-align-left {
+  text-align: left;
+}
+
+.mig-align-center {
+  text-align: center;
+}
+
+.mig-align-right {
+  text-align: right;
+}
+
+.mig-align-justify {
+  text-align: justify;
+}
+
+
+/*
+  Shadowed card with hover effect
+*/
+.mig-btn {
+  position: relative;
+  border: none;
+  text-decoration: none;
+  overflow: hidden;
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.5); 
+  padding: 10px 20px 10px 20px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.mig-btn:hover {
+  box-shadow: 0px 3px 4px rgba(0,0,0,0.5); 
+}
+
+
+.tip-balloon-left {
+  display: block;
+  overflow: auto;
+  padding-left: 10%;
+  clip-path: polygon(
+    0% 50%, 
+    10% 32%, 
+    10% 5%, 
+    11% 1%,
+    13% 0%, 
+    97% 0%, 
+    99% 1%,
+    100% 5%,
+    100% 95%,
+    99% 99%,
+    97% 100%,
+    13% 100%,
+    11% 99%,
+    10% 95%,
+    10% 68%
+  );
+}
+
+.tip-balloon-top {
+  display: block;
+  overflow: auto;
+  clip-path: polygon(
+    50% 0%,
+    62% 15%,
+    96% 15%,
+    99% 16%,
+    100% 19%,
+    100% 96%,
+    99% 99%,
+    97% 100%,
+    3% 100%,
+    1% 99%,
+    0% 96%,
+    0% 19%,
+    1% 16%,
+    3% 15%,
+    38% 15%
+  );
+}
+
+
+.ripple-light {
+  display: block;
+}
+
+.ripple-light:after {
+  content: "";
+  background-color: rgba(250,250,250,0.0);
+  transition: all 0.4s;
+}
+
+.ripple-light:active:after {
+  background-color: rgba(250,250,250,0.6);
+  transition: 0s;
+}
+
+
+.ripple-dark {
+  display: block;
+}
+
+.ripple-dark:after {
+  content: "";
+  background-color: rgba(5,5,5,0.0);
+  transition: all 0.4s;
+}
+
+.ripple-dark:active:after {
+  background-color: rgba(5,5,5,0.4);
+  transition: 0s;
+}
+
+
+.ripple-right {
+  display: block;
+}
+
+.ripple-right:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 150%;
+  height: 100%;
+  border-radius: 2px;
+  transition: all 0.4s;
+}
+
+.ripple-right:active:after {
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  border-radius: 2px;
+  transition: 0s;
+}
+
+
+.ripple-left {
+  display: block;
+}
+
+.ripple-left:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 150%;
+  height: 100%;
+  border-radius: 2px;
+  transition: all 0.4s;
+}
+
+.ripple-left:active:after {
+  top: 0;
+  left: 100%;
+  width: 0%;
+  height: 100%;
+  border-radius: 2px;
+  transition: 0s;
+}
+
+
+.ripple-down {
+  display: block;
+}
+
+.ripple-down:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 150%;
+  border-radius: 2px;
+  transition: all 0.4s;
+}
+
+.ripple-down:active:after {
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 0;
+  border-radius: 2px;
+  transition: 0s;
+}
+
+
+.ripple-up {
+  display: block;
+}
+
+.ripple-up:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -50%;
+  left: 0px;
+  width: 100%;
+  height: 150%;
+  border-radius: 2px;
+  transition: all 0.4s;
+}
+
+.ripple-up:active:after {
+  top: 100%;
+  left: 0px;
+  width: 100%;
+  height: 0;
+  border-radius: 2px;
+  transition: 0s;
+}
+
+
+.ripple-out {
+  display: block;
+}
+
+.ripple-out:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -25%;
+  left: -25%;
+  width: 150%;
+  height: 150%;
+  border-radius: 50%;
+  transition: all 0.5s;
+}
+
+.ripple-out:active:after {
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  transition: 0s;
+}
+
+
+.ripple-in {
+  display: block;
+}
+
+.ripple-in:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  transition: all 0.4s;
+}
+
+.ripple-in:active:after {
+  top: -25%;
+  left: -25%;
+  width: 150%;
+  height: 150%;
+  border-radius: 50%;
+  transition: 0s;
+}
+
+
+.mig-font-8 {
+  font-size: 8px;
+}
+
+.mig-font-10 {
+  font-size: 10px;
+}
+
+.mig-font-12 {
+  font-size: 12px;
+}
+
+.mig-font-14 {
+  font-size: 14px;
+}
+
+.mig-font-16 {
+  font-size: 16px;
+}
+
+.mig-font-18 {
+  font-size: 18px;
+}
+
+.mig-font-20 {
+  font-size: 20px;
+}
+
+.mig-font-22 {
+  font-size: 22px;
+}
+
+.mig-font-bold {
+  font-weight: bold;
+}
+
+.mig-font-italic {
+  font-style: italic;
+}
+
+.mig-font-underline {
+  text-decoration: underline;
+}
+
+.mig-font-normal {
+  text-decoration: none;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.mig-font-sans {
+  font-family: sans-serif;
+}
+
+.mig-font-mono {
+  font-family: monospace;
+}
+
+.mig-top-5 {
+  margin-top: 5px;
+}
+
+.mig-top-10 {
+  margin-top: 10px;
+}
+
+.mig-top-15 {
+  margin-top: 15px;
+}
+
+.mig-left-5 {
+  margin-left: 5px;
+}
+
+.mig-left-10 {
+  margin-left: 10px;
+}
+
+.mig-left-15 {
+  margin-left: 15px;
+}
+
+.mig-right-5 {
+  margin-right: 5px;
+}
+
+.mig-right-10 {
+  margin-right: 10px;
+}
+
+.mig-right-15 {
+  margin-right: 15px;
+}
+
+.mig-bottom-5 {
+  margin-bottom: 5px;
+}
+
+.mig-bottom-10 {
+  margin-bottom: 10px;
+}
+
+.mig-bottom-15 {
+  margin-bottom: 15px;
+}
+
+
+.mig-color-bluex {
+  color: #1A5E9B;
+}
+
+.mig-color-bluex-light {
+  color: #487EAF;
+}
+
+.mig-color-bluex-dark {
+  color: #1A5E9B;
+}
+
+
+.mig-color-blue {
+  color: #2196f3;
+}
+
+.mig-color-blue-accent {
+  color: #448aff;
+}
+
+.mig-color-blue-light {
+  color: #90caf9;
+}
+
+.mig-color-blue-dark {
+  color: #1565c0;
+}
+
+.mig-color-blue-darker {
+  color: #0d47a1;
+}
+
+
+.mig-color-red {
+  color: #f44336;
+}
+
+.mig-color-red-accent {
+  color: #ff5252;
+}
+
+.mig-color-red-light {
+  color: #ef9a9a;
+}
+
+.mig-color-red-dark {
+  color: #c62828;
+}
+
+.mig-color-red-darker {
+  color: #b71c1c;
+}
+
+
+.mig-color-green {
+  color: #b71c1c;
+}
+
+.mig-color-green-accent {
+  color: #69f0ae;
+}
+
+.mig-color-green-light {
+  color: #a5d6a7;
+}
+
+.mig-color-green-dark {
+  color: #2e7d32;
+}
+
+.mig-color-green-darker {
+  color: #1b5e20;
+}
+
+
+.mig-color-lime {
+  color: #cddc39;
+}
+
+.mig-color-lime-accent {
+  color: #eeff41;
+}
+
+.mig-color-lime-light {
+  color: #e6ee9c;
+}
+
+.mig-color-lime-dark {
+  color: #9e9d24;
+}
+
+.mig-color-lime-darker {
+  color: #827717;
+}
+
+
+.mig-color-yellow {
+  color: #ffeb3b;
+}
+
+.mig-color-yellow-accent {
+  color: #ffff00;
+}
+
+.mig-color-yellow-light {
+  color: #fff59d;
+}
+
+.mig-color-yellow-dark {
+  color: #f9a825;
+}
+
+.mig-color-yellow-darker {
+  color: #f57f17;
+}
+
+
+.mig-color-orange {
+  color: #ff9800;
+}
+
+.mig-color-orange-accent {
+  color: #ffab40;
+}
+
+.mig-color-orange-light {
+  color: #ffcc80;
+}
+
+.mig-color-orange-dark {
+  color: #ef6c00;
+}
+
+.mig-color-orange-darker {
+  color: #e65100;
+}
+
+
+.mig-color-gray {
+  color: #9e9e9e;
+}
+
+.mig-color-gray-accent {
+  color: #e0e0e0;
+}
+
+.mig-color-gray-light {
+  color: #eeeeee;
+}
+
+.mig-color-gray-dark {
+  color: #424242;
+}
+
+.mig-color-gray-darker {
+  color: #212121;
+}
+
+
+.mig-color-white {
+  color: #ffffff;
+}
+
+.mig-color-black {
+  color: #000000;
+}
+
+
+.mig-bg-bluex {
+  background-color: #1A5E9B;
+}
+
+.mig-bg-bluex-light {
+  background-color: #487EAF;
+}
+
+.mig-bg-bluex-dark {
+  background-color: #003658;
+}
+
+.mig-bg-grad-bluex {
+  background: linear-gradient(to bottom, #1A5E9B, #003658);
+}
+
+.mig-bg-grad-bluex-light {
+  background: linear-gradient(to bottom, #487eaf, #1a5e9b);
+}
+
+
+/*
+  Background color
+*/
+.mig-bg-blue {
+  background-color: #2196f3;
+}
+
+.mig-bg-blue-accent {
+  background-color: #448aff;
+}
+
+.mig-bg-blue-light {
+  background-color: #90caf9;
+}
+
+.mig-bg-blue-dark {
+  background-color: #1565c0;
+}
+
+.mig-bg-blue-darker {
+  background-color: #0d47a1;
+}
+
+.mig-bg-grad-blue {
+  background: linear-gradient(to bottom, #2196f3, #1565c0);
+}
+
+.mig-bg-grad-blue-accent {
+  background: linear-gradient(to bottom, #90caf9, #448aff);
+}
+
+.mig-bg-grad-blue-dark {
+  background: linear-gradient(to bottom, #1565c0, #0d47a1);
+}
+
+
+.mig-bg-red {
+  background-color: #f44336;
+}
+
+.mig-bg-red-accent {
+  background-color: #ff5252;
+}
+
+.mig-bg-red-light {
+  background-color: #ef9a9a;
+}
+
+.mig-bg-red-dark {
+  background-color: #c62828;
+}
+
+.mig-bg-red-darker {
+  background-color: #b71c1c;
+}
+
+.mig-bg-grad-red {
+  background: linear-gradient(to bottom, #f44336, #c62828);
+}
+
+.mig-bg-grad-red-accent {
+  background: linear-gradient(to bottom, #ef9a9a, #ff5252);
+}
+
+.mig-bg-grad-red-dark {
+  background: linear-gradient(to bottom, #c62828, #b71c1c);
+}
+
+
+.mig-bg-green {
+  background-color: #43a047;
+}
+
+.mig-bg-green-accent {
+  background-color: #69f0ae;
+}
+
+.mig-bg-green-light {
+  background-color: #a5d6a7;
+}
+
+.mig-bg-green-dark {
+  background-color: #2e7d32;
+}
+
+.mig-bg-green-darker {
+  background-color: #1b5e20;
+}
+
+.mig-bg-grad-green {
+  background: linear-gradient(to bottom, #43a047, #2e7d32);
+}
+
+.mig-bg-grad-green-accent {
+  background: linear-gradient(to bottom, #a5d6a7, #69f0ae);
+}
+
+.mig-bg-grad-green-dark {
+  background: linear-gradient(to bottom, #2e7d32, #1b5e20);
+}
+
+
+.mig-bg-lime {
+  background-color: #cddc39;
+}
+
+.mig-bg-lime-accent {
+  background-color: #eeff41;
+}
+
+.mig-bg-lime-light {
+  background-color: #e6ee9c;
+}
+
+.mig-bg-lime-dark {
+  background-color: #9e9d24;
+}
+
+.mig-bg-lime-darker {
+  background-color: #827717;
+}
+
+.mig-bg-grad-lime {
+  background: linear-gradient(to bottom, #cddc39, #9e9d24);
+}
+
+.mig-bg-grad-lime-accent {
+  background: linear-gradient(to bottom, #e6ee9c, #eeff41);
+}
+
+.mig-bg-grad-lime-dark {
+  background: linear-gradient(to bottom, #9e9d24, #827717);
+}
+
+
+.mig-bg-yellow {
+  background-color: #ffeb3b;
+}
+
+.mig-bg-yellow-accent {
+  background-color: #ffff00;
+}
+
+.mig-bg-yellow-light {
+  background-color: #fff59d;
+}
+
+.mig-bg-yellow-dark {
+  background-color: #f9a825;
+}
+
+.mig-bg-yellow-darker {
+  background-color: #f57f17;
+}
+
+.mig-bg-grad-yellow {
+  background: linear-gradient(to bottom, #ffeb3b, #f9a825);
+}
+
+.mig-bg-grad-yellow-accent {
+  background: linear-gradient(to bottom, #fff59d, #ffff00);
+}
+
+.mig-bg-grad-yellow-dark {
+  background: linear-gradient(to bottom, #f9a825, #f57f17);
+}
+
+
+.mig-bg-orange {
+  background-color: #ff9800;
+}
+
+.mig-bg-orange-accent {
+  background-color: #ffab40;
+}
+
+.mig-bg-orange-light {
+  background-color: #ffcc80;
+}
+
+.mig-bg-orange-dark {
+  background-color: #ef6c00;
+}
+
+.mig-bg-orange-darker {
+  background-color: #e65100;
+}
+
+.mig-bg-grad-orange {
+  background: linear-gradient(to bottom, #ff9800, #ef6c00);
+}
+
+.mig-bg-grad-orange-accent {
+  background: linear-gradient(to bottom, #ffcc80, #ffab40);
+}
+
+.mig-bg-grad-orange-dark {
+  background: linear-gradient(to bottom, #ef6c00, #e65100);
+}
+
+
+.mig-bg-gray {
+  background-color: #9e9e9e;
+}
+
+.mig-bg-gray-accent {
+  background-color: #e0e0e0;
+}
+
+.mig-bg-gray-light {
+  background-color: #eeeeee;
+}
+
+.mig-bg-gray-dark {
+  background-color: #424242;
+}
+
+.mig-bg-gray-darker {
+  background-color: #212121;
+}
+
+.mig-bg-grad-gray {
+  background: linear-gradient(to bottom, #9e9e9e, #424242);
+}
+
+.mig-bg-grad-gray-accent {
+  background: linear-gradient(to bottom, #eeeeee, #9e9e9e);
+}
+
+.mig-bg-grad-gray-dark {
+  background: linear-gradient(to bottom, #424242, #212121);
+}
+
+
+.mig-bg-white {
+  background-color: #ffffff;
+}
+
+.mig-bg-black {
+  background-color: #000000;
+}
+
+
+.mig-opacity-25 {
+  opacity: 0.25;
+}
+
+.mig-opacity-50 {
+  opacity: 0.50;
+}
+
+.mig-opacity-75 {
+  opacity: 0.75;
+}
+
+.mig-opacity-20 {
+  opacity: 0.20;
+}
+
+.mig-opacity-40 {
+  opacity: 0.40;
+}
+
+.mig-opacity-60 {
+  opacity: 0.60;
+}
+
+.mig-opacity-80 {
+  opacity: 0.80;
+}
+
+.mig-opaque {
+  opacity: 1.0;
+}
