@@ -39,7 +39,7 @@ public class UriApp {
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   public String checkUri(@Context UriInfo info) {
-    return String.format("UriApp.uri.paths: %s", info.getPathSegments());
+    return String.format("UriApp.uri.paths: %s%n", info.getPathSegments());
   }
   
 }

@@ -46,8 +46,10 @@ import javax.ws.rs.core.UriInfo;
 public class HeadResource {
  
   public static final java.nio.file.Path DEV_WEBAPP_PATH = Paths.get("./src/main/webapp");
+  //public static final java.nio.file.Path DEV_WEBAPP_PATH = Paths.get("D:/");
  
   public static final java.nio.file.Path WEBAPP_PATH = Paths.get("./webapp");
+  //public static final java.nio.file.Path WEBAPP_PATH = DEV_WEBAPP_PATH;
  
   public static final String DEFAULT_RESOURCE = "index.html";
  

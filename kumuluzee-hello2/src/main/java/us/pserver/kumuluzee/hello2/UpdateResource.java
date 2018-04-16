@@ -63,7 +63,8 @@ public class UpdateResource extends HeadResource {
       @HeaderParam(HEADER_IF_NONE_MATCH) String ifNoneMatch,
       @FormDataParam("file") InputStream uploadedInputStream,
       @FormDataParam("file") FormDataContentDisposition fileDetail) {
-    return null;
+    
+    return Response.ok().build();
   }
   
 }
