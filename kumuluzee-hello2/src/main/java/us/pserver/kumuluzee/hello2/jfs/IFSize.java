@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package oodb.tests.beans;
+package us.pserver.kumuluzee.hello2.jfs;
 
 import java.io.IOException;
 import java.nio.file.Files;

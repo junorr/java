@@ -1,15 +1,15 @@
 {
-  "serverAddress": "0.0.0.0",
-  "serverPort": 9085,
+  "address": "0.0.0.0",
+  "port": 9085,
   "ioThreads": 4,
   "maxWorkerThreads": 10,
-  "dispatcherEnabled": true,
+  "dispatcherEnabled": false,
   "shutdownHandlerEnabled": true,
   "corsHandlerEnabled": true,
   "handlers": {
     "/time": "us.pserver.micro.handler.TimeHandler"
   },
-  "db": {
+  "dbConfig": {
     "file": "./server.db",
     "type": "MAPPED_FILE",
     "concurrency": 4,

@@ -36,31 +36,31 @@ public interface DBConfig {
     FILE, MEMORY, MAPPED_FILE
   }
 
-  public int getMicrodbConcurrency();
+  public int getConcurrency();
   
-  public Path getMicrodbFile();
+  public Path getFile();
   
-  public DBType getMicrodbType();
+  public DBType getType();
   
-  public String getMicrodbUser();
+  public String getUser();
   
-  public String getMicrodbPassword();
+  public String getPassword();
   
   
   public default DB createDB() {
-    switch(getMicrodbType()) {
+    switch(getType()) {
       case FILE:
-        return DBMaker.fileDB(getMicrodbFile().toFile())
-            .concurrencyScale(getMicrodbConcurrency())
+        return DBMaker.fileDB(getFile().toFile())
+            .concurrencyScale(getConcurrency())
             .make();
       case MAPPED_FILE:
-        return DBMaker.fileDB(getMicrodbFile().toFile())
-            .concurrencyScale(getMicrodbConcurrency())
+        return DBMaker.fileDB(getFile().toFile())
+            .concurrencyScale(getConcurrency())
             .fileMmapEnable()
             .make();
       default:
         return DBMaker.memoryDirectDB()
-            .concurrencyScale(getMicrodbConcurrency())
+            .concurrencyScale(getConcurrency())
             .make();
     }
   }

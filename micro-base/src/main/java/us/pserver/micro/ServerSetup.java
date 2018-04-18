@@ -21,10 +21,12 @@
 
 package us.pserver.micro;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import us.pserver.micro.config.ServerConfig;
 import us.pserver.micro.ResourceLoader.ResourceLoadException;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
+import us.pserver.orb.Orb;
+import us.pserver.orb.gson.JsonOrbConfig;
 import us.pserver.tools.Match;
 
 
@@ -41,7 +43,7 @@ public enum ServerSetup {
   
   private final ResourceLoader loader;
   
-  private final AtomicReference<ServerConfig> config;
+  private final ServerConfig config;
   
   
   /**
@@ -53,18 +55,20 @@ public enum ServerSetup {
    */
   private ServerSetup(ResourceLoader rld) throws ResourceLoadException {
     this.loader = rld;
-    this.config = new AtomicReference(getConfigurationBuilder().build());
-  }
-  
-  public ServerConfig.Builder getConfigurationBuilder() {
     try {
-      return ServerConfig.builder().load(
-          loader.loadStream(DEFAULT_CONFIG)
-      );
+      ServerConfig
+      this.config = Orb.get().fromConfiguration(JsonOrbConfig.of(Paths.get(DEFAULT_CONFIG))).create(ServerConfig.class);
     }
     catch(IOException e) {
-      throw new ResourceLoadException(e);
+      throw new RuntimeException(e.toString(), e);
     }
+  }
+  
+  private boolean validate(ServerConfig cfg) {
+    return cfg.getAddress() != null
+        && cfg.getPort() > 0
+        && cfg.getHandlers() != null;
+        && cfg.getDbConfig() != null
   }
   
   /**

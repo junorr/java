@@ -35,22 +35,22 @@ public class TestISize {
 
   
   public static void main(String[] args) throws IOException {
-    //Path path = Paths.get("D:\\javadoc\\jdk-8-api\\api\\constant-values.html");
-    Path path = Paths.get("/home/juno/nb/disecLib/dist/disecLib.jar");
+    Path path = Paths.get("D:\\javadoc\\jdk-8-api\\api\\constant-values.html");
+    //Path path = Paths.get("/home/juno/nb/disecLib/dist/disecLib.jar");
     FSize size = FSize.of(path);
     System.out.println("bytes="+ size.bytes());
     System.out.println("unit="+ size.unit());
-    System.out.println(size.unit().prev() + " < " + size.unit() + " > " + size.unit().next());
+    System.out.println(size.unit().prev() + " < " + size.unit() + " < " + size.unit().next());
     System.out.println(size);
     
     System.out.println(" ----------------- ");
 
-    //path = Paths.get("D:\\javadoc\\jdk-8-api\\api");
-    path = Paths.get("/home/juno/nb/disecLib/dist");
+    path = Paths.get("D:\\javadoc\\jdk-8-api\\api");
+    //path = Paths.get("/home/juno/nb/disecLib/dist");
     size = FSize.of(path);
     System.out.println("bytes="+ size.bytes());
     System.out.println("unit="+ size.unit());
-    System.out.println(size.unit().prev() + " < " + size.unit() + " > " + size.unit().next());
+    System.out.println(size.unit().prev() + " < " + size.unit() + " < " + size.unit().next());
     System.out.println(size);
     
     System.out.println(" ----------------- ");

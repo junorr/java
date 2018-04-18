@@ -19,37 +19,31 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package tests.of.tests;
+package us.pserver.kumuluzee.hello2.jfs;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import oodb.tests.beans.IFPath;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Instant;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2016
  */
-public class TestFPath {
+public interface IFTime {
 
+  public Instant getCreationTime();
   
-  public static void main(String[] args) throws IOException {
-    //Path path = Paths.get("/home/juno/nb/disecLib/dist");
-    Path path = Paths.get("D:/videos");
-    IFPath fpath = IFPath.from(path);
-    System.out.println(fpath);
-    System.out.println("--- ls() ---");
-    fpath.ls().forEach(System.out::println);
-    
-    //String scd = "disecLib.jar";
-    //String scd = "iron";
-    String scd = "for.sh";
-    System.out.println("--- cd(\""+ scd+ "\") ---");
-    fpath = fpath.cd(scd);
-    System.out.println(fpath);
-    //System.out.println("--- ls() ---");
-    //fpath.ls().forEach(System.out::println);
+  public Instant getLastModifiedTime();
+  
+  public Instant getLastAccessTime();
+  
+  
+  public static IFTime from(BasicFileAttributes atts) {
+    return new FTime(
+        atts.creationTime(), 
+        atts.lastModifiedTime(), 
+        atts.lastAccessTime()
+    );
   }
   
 }

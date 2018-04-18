@@ -19,37 +19,15 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package tests.of.tests;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import oodb.tests.beans.IFPath;
+package us.pserver.kumuluzee.hello2.jfs;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/12/2016
+ * @version 0.0 - 06/12/2016
  */
-public class TestFPath {
+public interface ByteValue {
 
-  
-  public static void main(String[] args) throws IOException {
-    //Path path = Paths.get("/home/juno/nb/disecLib/dist");
-    Path path = Paths.get("D:/videos");
-    IFPath fpath = IFPath.from(path);
-    System.out.println(fpath);
-    System.out.println("--- ls() ---");
-    fpath.ls().forEach(System.out::println);
-    
-    //String scd = "disecLib.jar";
-    //String scd = "iron";
-    String scd = "for.sh";
-    System.out.println("--- cd(\""+ scd+ "\") ---");
-    fpath = fpath.cd(scd);
-    System.out.println(fpath);
-    //System.out.println("--- ls() ---");
-    //fpath.ls().forEach(System.out::println);
-  }
+  public long bytes();
   
 }

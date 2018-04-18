@@ -21,6 +21,8 @@
 
 package us.pserver.micro.config;
 
+import java.util.Map;
+
 /**
  * Configurações do servidor de rede, encapsula 
  * informações como endereço e porta de escuta 
@@ -30,7 +32,7 @@ package us.pserver.micro.config;
  * @author Juno Roesler - juno.roesler@bb.com.br
  * @version 1.0.201607
  */
-public class ServerConfig {
+public interface ServerConfig {
   
   /**
    * Quantidade padrão de threads primárias para 
@@ -47,6 +49,24 @@ public class ServerConfig {
   public static final int DEFAULT_MAX_WORKER_THREADS = 10;
   
   
+  public String getAddress();
   
+  public int getPort();
+  
+  public int getIoThreads();
+  
+  public int getMaxWorkerThreads();
+  
+  public boolean getDispatcherEnabled();
+  
+  public boolean getShutdownHandlerEnabled();
+  
+  public boolean getCorsHandlerEnabled();
+  
+  public Map<String,Class> getHandlers();
+  
+  public DBConfig getDbConfig();
+  
+  public ServerConfig setDbConfig(DBConfig dbc);
   
 }

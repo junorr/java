@@ -52,6 +52,22 @@ public class TestUnit {
     System.out.println(unit.name() + "=" + nf.format(unit.bytes()));
     unit = Unit.MAX;
     System.out.println(unit.name() + "=" + nf.format(unit.bytes()));
+    
+    System.out.println("----------------------------");
+    
+    Unit u = Unit.ZERO;
+    while(u.lt(Unit.MAX)) {
+      System.out.printf("%s  >>  %s%n", u, u.next());
+      u = u.next();
+    }
+    
+    System.out.println("----------------------------");
+    
+    u = Unit.MAX;
+    while(u.gt(Unit.MIN)) {
+      System.out.printf("%s  >>  %s%n", u, u.prev());
+      u = u.prev();
+    }
   }
   
 }

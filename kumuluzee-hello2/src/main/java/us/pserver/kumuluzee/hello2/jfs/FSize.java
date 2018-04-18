@@ -19,37 +19,68 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package tests.of.tests;
+package us.pserver.kumuluzee.hello2.jfs;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import oodb.tests.beans.IFPath;
+import java.text.DecimalFormat;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 12/12/2016
+ * @version 0.0 - 06/12/2016
  */
-public class TestFPath {
+public class FSize implements IFSize {
 
+  private final long bytes;
   
-  public static void main(String[] args) throws IOException {
-    //Path path = Paths.get("/home/juno/nb/disecLib/dist");
-    Path path = Paths.get("D:/videos");
-    IFPath fpath = IFPath.from(path);
-    System.out.println(fpath);
-    System.out.println("--- ls() ---");
-    fpath.ls().forEach(System.out::println);
-    
-    //String scd = "disecLib.jar";
-    //String scd = "iron";
-    String scd = "for.sh";
-    System.out.println("--- cd(\""+ scd+ "\") ---");
-    fpath = fpath.cd(scd);
-    System.out.println(fpath);
-    //System.out.println("--- ls() ---");
-    //fpath.ls().forEach(System.out::println);
+  
+  public FSize(long bytes) {
+    this.bytes = bytes;
+  }
+  
+  
+  public FSize(IFSize size) {
+    this.bytes = size.bytes();
+  }
+  
+  
+  @Override
+  public long bytes() {
+    return bytes;
+  }
+
+
+  @Override
+  public double value() {
+    Unit unit = Unit.from(bytes);
+    return Long.valueOf(bytes).doubleValue() / unit.bytes();
+  }
+
+
+  @Override
+  public Unit unit() {
+    return Unit.from(bytes);
+  }
+  
+  
+  @Override
+  public String toString() {
+    return new DecimalFormat("0.00").format(value())+ " "+ unit().name();
+  }
+  
+  
+  public static FSize of(long bytes) {
+    return new FSize(bytes);
+  }
+  
+  
+  public static FSize of(Path path) {
+    FSize size = of(Long.MIN_VALUE);
+    try { size = of(Files.size(path)); } 
+    catch(IOException e) {}
+    return size;
   }
   
 }

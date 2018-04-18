@@ -91,8 +91,6 @@ public class ServerConfig1 {
   
   private final Gson gson;
   
-  private final _DBConfig dbconf;
-  
   
   /**
    * Construtor padrão, recebe todas as 
@@ -128,8 +126,7 @@ public class ServerConfig1 {
       int ioThreads, 
       int maxWorkerThreads, 
       Map<String,HttpMethodHandler> map,
-      Gson gson,
-      _DBConfig dbconf
+      Gson gson
   ) {
     if(address == null || address.trim().isEmpty()) {
       throw new IllegalArgumentException("Invalid Address: "+ address);
@@ -140,7 +137,6 @@ public class ServerConfig1 {
     this.gson = gson;
     this.address = address;
     this.port = port;
-    this.dbconf = dbconf;
     this.classpath = classpath;
     this.dispatcherEnabled = dispatcherEnabled;
     this.shutdownHandler = shutdownHandler;
@@ -211,11 +207,6 @@ public class ServerConfig1 {
   }
 
 
-  public _DBConfig getDBConfig() {
-    return dbconf;
-  }
-  
-  
   /**
    * Verifica se os HttpHandler's serão criados 
    * sob demanda (true) ou apenas na inicialização 
@@ -364,7 +355,6 @@ public class ServerConfig1 {
         + "\n    shutdownHandlerEnabled: " + shutdownHandler
         + "\n    corsHandlerEnabled: " + corsHandler
         + "\n    authenticationShield: " + authenticationShield
-        + "\n    dbconf: " + dbconf
         + "\n    handlers: " + handlers.toString()
             .replace("{", "{\n      - ")
             .replace(", ", "\n      - ")
@@ -398,8 +388,6 @@ public class ServerConfig1 {
     private boolean shutdownHandlerEnabled;
     
     private boolean corsHandlerEnabled;
-    
-    private _DBConfig.Builder db;
     
     private final Map<String, HttpMethodHandler> handlers;
     
@@ -480,17 +468,6 @@ public class ServerConfig1 {
      */
     public Builder setServerAddress(String serverAddress) {
       this.serverAddress = serverAddress;
-      return this;
-    }
-
-
-    public _DBConfig.Builder getDBConfigBuilder() {
-      return db;
-    }
-
-
-    public Builder setDBConfigBuilder(_DBConfig.Builder db) {
-      this.db = db;
       return this;
     }
 
@@ -701,8 +678,7 @@ public class ServerConfig1 {
           ioThreads, 
           maxWorkerThreads, 
           handlers,
-          gson,
-          db.create()
+          gson
       );
     }
     
@@ -745,7 +721,6 @@ public class ServerConfig1 {
             .setServerPort(b.getServerPort())
             .setClasspathDir(b.getClasspathDir())
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
-            .setDBConfigBuilder(b.getDBConfigBuilder())
             .setCorsHandlerEnabled(b.isCorsHandlerEnabled());
       }
     }
@@ -763,7 +738,6 @@ public class ServerConfig1 {
     public Builder load(InputStream input) throws IOException {
       try (InputStreamReader ir = new InputStreamReader(input)) {
         Builder b = gson.fromJson(ir, Builder.class);
-        System.out.println("*dbconf: "+ b.getDBConfigBuilder());
         return this.setAuthenticationShield(b.isAuthenticationShield())
             .setDispatcherEnabled(b.isDispatcherEnabled())
             .setHttpHandlers(b.getHttpHandlers())
@@ -773,7 +747,6 @@ public class ServerConfig1 {
             .setServerPort(b.getServerPort())
             .setClasspathDir(b.getClasspathDir())
             .setShutdownHandlerEnabled(b.isShutdownHandlerEnabled())
-            .setDBConfigBuilder(b.getDBConfigBuilder())
             .setCorsHandlerEnabled(b.isCorsHandlerEnabled());
       }
     }
@@ -791,7 +764,6 @@ public class ServerConfig1 {
           + "\n    shutdownHandlerEnabled: " + shutdownHandlerEnabled
           + "\n    corsHandlerEnabled: " + corsHandlerEnabled
           + "\n    authenticationShield: " + authenticationShield
-          + "\n    dbconf: " + db
           + "\n    handlers: " + handlers.toString()
               .replace("{", "{\n      - ")
               .replace(", ", "\n      - ")
