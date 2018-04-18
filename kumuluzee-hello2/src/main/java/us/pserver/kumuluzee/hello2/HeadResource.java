@@ -32,6 +32,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.ws.rs.core.PathSegment;
@@ -80,9 +81,27 @@ public class HeadResource {
  
  
   public HeadResource() {
-    this.basePath = DEV_WEBAPP_PATH;
+    this(DEV_WEBAPP_PATH);
+  }
+ 
+ 
+  public HeadResource(Path basePath) {
+    this.basePath = Objects.requireNonNull(basePath, "Bad null basePath");
     this.mimeType = new FileMimeType();
     this.resource = basePath;
+    this.etag = "";
+    try {
+      sha1 = MessageDigest.getInstance(SHA1_HASH);
+    } catch(NoSuchAlgorithmException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
+ 
+ 
+  public HeadResource(String basePath) {
+    this.basePath = Paths.get(Objects.requireNonNull(basePath, "Bad null basePath"));
+    this.mimeType = new FileMimeType();
+    this.resource = this.basePath;
     this.etag = "";
     try {
       sha1 = MessageDigest.getInstance(SHA1_HASH);
