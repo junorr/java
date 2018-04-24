@@ -45,7 +45,7 @@ import static us.pserver.kumuluzee.hello2.HeadResource.HEADER_IF_NONE_MATCH;
 public class UpdateResource extends HeadResource {
 
   public UpdateResource() {
-    super();
+    super("/storage");
   }
   
   @HEAD
