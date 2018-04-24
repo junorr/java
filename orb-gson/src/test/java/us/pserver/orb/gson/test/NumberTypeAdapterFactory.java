@@ -22,30 +22,23 @@
 package us.pserver.orb.gson.test;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
+import com.google.gson.reflect.TypeToken;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 24/04/2018
  */
-public class TestNumberTypeAdapter {
+public class NumberTypeAdapterFactory implements TypeAdapterFactory {
 
-  private static final Gson gson = createGson();
-  
-  private static Gson createGson() {
-    return new GsonBuilder()
-        .registerTypeAdapterFactory(new NumberTypeAdapterFactory())
-        .create();
+  @Override
+  public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+    if(!Number.class.isAssignableFrom(type.getRawType())) {
+      return null;
+    }
+    return (TypeAdapter<T>) new NumberTypeAdapter();
   }
-  
-  @Test
-  public void testNumbersSerialization() {
-    String one = "1";
-    String json = gson.toJson(52.25);
-    Assertions.assertEquals(one, json);
-  }
-  
+
 }
