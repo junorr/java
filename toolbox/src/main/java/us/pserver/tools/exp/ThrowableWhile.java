@@ -15,10 +15,10 @@
 package us.pserver.tools.exp;
 
 import us.pserver.tools.Match;
-import us.pserver.tools.function.ThrowableConsumer;
-import us.pserver.tools.function.ThrowableFunction;
-import us.pserver.tools.function.ThrowablePredicate;
-import us.pserver.tools.function.ThrowableTask;
+import us.pserver.tools.fn.ThrowableConsumer;
+import us.pserver.tools.fn.ThrowableFunction;
+import us.pserver.tools.fn.ThrowablePredicate;
+import us.pserver.tools.fn.ThrowableTask;
 
 /**
  *

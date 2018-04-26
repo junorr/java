@@ -29,8 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.function.IntFunction;
-import static us.pserver.dbone.config.DBOneConfiguration.MIN_BLOCK_SIZE;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
+import us.pserver.tools.exp.ForEach;
 import us.pserver.tools.io.ByteBufferOutputStream;
 import us.pserver.tools.io.ByteableNumber;
 
@@ -41,6 +41,10 @@ import us.pserver.tools.io.ByteableNumber;
  * @version 0.0 - 27/10/2017
  */
 public class FileStorage implements Storage {
+  
+  public static final int DEFAULT_BLOCK_SIZE = 128;
+  
+  public static final int MIN_BLOCK_SIZE = Region.BYTES + Integer.BYTES + 1;
   
   public static final Path FILE_STORAGE = Paths.get("./storage.dat");
   
@@ -91,8 +95,8 @@ public class FileStorage implements Storage {
     this.storepath = directory.resolve(FILE_STORAGE);
     this.blksize = blockSize;
     this.writelength = blksize - Region.BYTES - Integer.BYTES;
-    this.allocPolicy = NotNull.of(allocPolicy).getOrFail("Bad null alloc policy");
-    this.regions = NotNull.of(rgc).getOrFail("Bad null RegionControl");
+    this.allocPolicy = Match.notNull(allocPolicy).getOrFail("Bad null alloc policy");
+    this.regions = Match.notNull(rgc).getOrFail("Bad null RegionControl");
     this.channel = openRW(storepath);
   }
   
@@ -124,22 +128,35 @@ public class FileStorage implements Storage {
   
   
   @Override
-  public Region put(ByteBuffer buf) throws IOException {
-    if(!buf.hasRemaining()) return Region.invalid();
+  public Region put(ByteBuffer ... buf) throws IOException {
+    if(buf == null || buf.length < 1) return Region.invalid();
+    int totalSize = ForEach.of(buf).reduce(0, (t,b)->t+=b.remaining());
+    int i = -1;
     Region reg = regions.allocate();
-    put(buf, reg);
+    Region next = Region.invalid();
+    while(totalSize > 0 && ++i < buf.length) {
+      Region reg = regions.allocate();
+      totalSize -= buf[i].remaining();
+      reg = put(buf[i], reg);
+      if(totalSize > 0) {
+        Region next = regions.allocate();
+        putNextRegion(reg, next);
+        reg = next;
+      }
+    }
     return reg;
   }
   
   
-  private void put(ByteBuffer buf, Region reg) throws IOException {
-    if(!buf.hasRemaining()) return;
+  private Region put(ByteBuffer buf, Region reg) throws IOException {
+    if(!buf.hasRemaining()) return Region.invalid();
     if(buf.remaining() > writelength) {
-      Region next = putLargestThanBlockSize(buf, reg);
-      put(buf, next);
+      Region next = putLargerThanBlockSize(buf, reg);
+      return put(buf, next);
     }
     else {
       putSmallerThanBlockSize(buf, reg);
+      return reg;
     }
   }
   
@@ -153,7 +170,7 @@ public class FileStorage implements Storage {
   }
   
   
-  private Region putLargestThanBlockSize(ByteBuffer buf, Region reg) throws IOException {
+  private Region putLargerThanBlockSize(ByteBuffer buf, Region reg) throws IOException {
     int lim = buf.limit();
     buf.limit(buf.position() + writelength);
     print(buf);

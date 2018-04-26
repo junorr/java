@@ -21,10 +21,10 @@
 
 package us.pserver.orb.types;
 
-import us.pserver.tools.function.ThrowableConsumer;
-import us.pserver.tools.function.ThrowableFunction;
-import us.pserver.tools.function.ThrowableSupplier;
-import us.pserver.tools.function.ThrowableTask;
+import us.pserver.tools.fn.ThrowableConsumer;
+import us.pserver.tools.fn.ThrowableFunction;
+import us.pserver.tools.fn.ThrowableSupplier;
+import us.pserver.tools.fn.ThrowableTask;
 
 /**
  *

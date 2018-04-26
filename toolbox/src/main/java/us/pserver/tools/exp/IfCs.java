@@ -22,6 +22,7 @@
 package us.pserver.tools.exp;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import us.pserver.tools.Match;
 import us.pserver.tools.check.Check;
@@ -31,7 +32,7 @@ import us.pserver.tools.check.Check;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/02/2018
  */
-public class IfConsumer<T> implements Predicate<T> {
+public class IfCs<T> implements If<T,Void> {
 
   private final Predicate<T> predicate;
   
@@ -40,29 +41,30 @@ public class IfConsumer<T> implements Predicate<T> {
   private final Consumer<T> elseState;
   
   
-  private IfConsumer(Predicate<T> prd, Consumer<T> ifs, Consumer<T> els) {
+  private IfCs(Predicate<T> prd, Consumer<T> ifs, Consumer<T> els) {
     this.predicate = prd;
     this.ifState = ifs;
     this.elseState = els;
   }
   
   
-  public IfConsumer(Predicate<T> prd) {
+  public IfCs(Predicate<T> prd) {
     this(Match.notNull(prd).getOrFail("Bad null Predicate"), null, null);
   }
   
   
-  public IfConsumer<T> then(Consumer<T> ifState) {
-    return new IfConsumer(predicate, ifState, elseState);
+  public IfCs<T> then(Consumer<T> ifState) {
+    return new IfCs(predicate, ifState, elseState);
   }
   
   
-  public IfConsumer<T> elseDo(Consumer<T> elseState) {
-    return new IfConsumer(predicate, ifState, elseState);
+  public IfCs<T> elseDo(Consumer<T> elseState) {
+    return new IfCs(predicate, ifState, elseState);
   }
   
   
-  public void eval(T obj) {
+  @Override
+  public Void eval(T obj) {
     if(predicate.test(obj)) {
       Check.of(IllegalStateException.class)
           .on(ifState).getOrFail("Default statement not defined")
@@ -73,6 +75,7 @@ public class IfConsumer<T> implements Predicate<T> {
           .on(elseState).getOrFail("Else statement not defined")
           .accept(obj);
     }
+    return null;
   }
 
 
@@ -83,26 +86,38 @@ public class IfConsumer<T> implements Predicate<T> {
 
 
   @Override
-  public IfConsumer<T> and(Predicate<? super T> other) {
-    return new IfConsumer(predicate.and(other), ifState, elseState);
+  public IfCs<T> and(Predicate<? super T> other) {
+    return new IfCs(predicate.and(other), ifState, elseState);
   }
 
 
   @Override
-  public IfConsumer<T> negate() {
-    return new IfConsumer(predicate.negate(), ifState, elseState);
+  public IfCs<T> negate() {
+    return new IfCs(predicate.negate(), ifState, elseState);
   }
 
 
   @Override
-  public IfConsumer<T> or(Predicate<? super T> other) {
-    return new IfConsumer(predicate.or(other), ifState, elseState);
+  public IfCs<T> or(Predicate<? super T> other) {
+    return new IfCs(predicate.or(other), ifState, elseState);
   }
   
   
   
-  public static <U> IfConsumer<U> of(Predicate<U> prd) {
-    return new IfConsumer<>(prd);
+  public static <U> IfCs<U> of(Predicate<U> prd) {
+    return new IfCs<>(prd);
+  }
+
+
+  @Override
+  public If<T, Void> then(Function<T, Void> ifState) {
+    return then((Consumer<T>)ifState::apply);
+  }
+
+
+  @Override
+  public If<T, Void> elseDo(Function<T, Void> elseState) {
+    return elseDo((Consumer<T>)elseState::apply);
   }
   
 }

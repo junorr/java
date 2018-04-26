@@ -19,7 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.function;
+package us.pserver.tools.fn;
+
+import java.util.function.Predicate;
 
 /**
  *
@@ -27,13 +29,12 @@ package us.pserver.tools.function;
  * @version 0.0 - 20/09/2017
  */
 @FunctionalInterface
-public interface ThrowableTask {
+public interface ThrowablePredicate<T> {
   
-  public void run() throws Exception;
+  public boolean test(T t) throws Exception;
   
   
-  public static ThrowableTask of(Runnable r) {
-    return r::run;
+  public static <U> ThrowablePredicate<U> of(Predicate<U> prd) {
+    return u->prd.test(u);
   }
-  
 }

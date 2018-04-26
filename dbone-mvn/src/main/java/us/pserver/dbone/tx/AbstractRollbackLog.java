@@ -19,23 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.function;
+package us.pserver.dbone.tx;
 
-import java.util.function.Supplier;
+import us.pserver.dbone.store.Region;
+import us.pserver.tools.Match;
+import us.pserver.dbone.store.RegionControl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2017
+ * @version 0.0 - 19/09/2017
  */
-@FunctionalInterface
-public interface ThrowableSupplier<T> {
+public abstract class AbstractRollbackLog implements RollbackLog {
   
-  public T supply() throws Exception;
+  protected final RegionControl regions;
   
+  protected final Region region;
   
-  public static <U> ThrowableSupplier<U> of(Supplier<U> fun) {
-    return fun::get;
+  protected AbstractRollbackLog(RegionControl rgs, Region reg) {
+    this.regions = Match.notNull(rgs).getOrFail("Bad null Regions");
+    this.region = Match.notNull(reg).getOrFail("Bad null Region");
   }
   
 }

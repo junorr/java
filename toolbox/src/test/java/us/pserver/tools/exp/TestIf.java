@@ -36,7 +36,7 @@ public class TestIf {
   
   @Test
   public void ifConsumerThen() {
-    IfConsumer.<Integer>of(n->n > 5)
+    IfCs.<Integer>of(n->n > 5)
         .then(n->System.out.println("* Number is greater than 5: "+ n))
         .elseDo(n->System.out.println("* Number is lesser than 5: "+ n))
         .eval(num);
@@ -47,7 +47,7 @@ public class TestIf {
   public void ifFunctionThen() {
     int num = 8;
     Assertions.assertEquals("* Number is greater than 5", 
-        If.<Integer,String>of(n->n > 5)
+        IfImpl.<Integer,String>of(n->n > 5)
             .then(n->"* Number is greater than 5")
             .elseDo(n->"* Number is lesser than 5")
             .eval(num)
@@ -57,7 +57,7 @@ public class TestIf {
   
   @Test
   public void ifConsumerElse() {
-    IfConsumer.<Integer>of(n->n > 5)
+    IfCs.<Integer>of(n->n > 5)
         .then(n->System.out.println("* Number is greater than 5: "+ n))
         .elseDo(n->System.out.println("* Number is lesser than 5: "+ n))
         .eval(num);
@@ -68,7 +68,7 @@ public class TestIf {
   public void ifFunctionElse() {
     int num = 3;
     Assertions.assertEquals("* Number is lesser than 5", 
-        If.<Integer,String>of(n->n > 5)
+        IfImpl.<Integer,String>of(n->n > 5)
             .then(n->"* Number is greater than 5")
             .elseDo(n->"* Number is lesser than 5")
             .eval(num)

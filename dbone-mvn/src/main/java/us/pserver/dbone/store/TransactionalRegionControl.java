@@ -29,7 +29,7 @@ import us.pserver.dbone.tx.RollbackDeallocationLog;
 import us.pserver.dbone.tx.RollbackLog;
 import us.pserver.dbone.tx.Transaction;
 import us.pserver.dbone.tx.TransactionException;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -44,14 +44,14 @@ public class TransactionalRegionControl implements RegionControl, Transaction {
   
   
   public TransactionalRegionControl(RegionControl rgs) {
-    this.regions = NotNull.of(rgs).getOrFail("Bad null Regions");
+    this.regions = Match.notNull(rgs).getOrFail("Bad null Regions");
     this.log = new CopyOnWriteArrayList<>();
   }
 
 
   @Override
   public boolean offer(Region reg) {
-    NotNull.of(reg).failIfNull("Bad null Region");
+    Match.notNull(reg).failIfNotMatch("Bad null Region");
     boolean success = regions.offer(reg);
     if(success) {
       log.add(new RollbackDeallocationLog(regions, reg));
@@ -62,7 +62,7 @@ public class TransactionalRegionControl implements RegionControl, Transaction {
 
   @Override
   public boolean discard(Region reg) {
-    NotNull.of(reg).failIfNull("Bad null Region");
+    Match.notNull(reg).failIfNotMatch("Bad null Region");
     boolean success = regions.discard(reg);
     if(success) {
       log.add(new RollbackAllocationLog(regions, reg));

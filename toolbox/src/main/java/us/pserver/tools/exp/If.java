@@ -23,86 +23,37 @@ package us.pserver.tools.exp;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
-import us.pserver.tools.Match;
-import us.pserver.tools.check.Check;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 01/02/2018
  */
-public class If<T,R> implements Predicate<T> {
+public interface If<T,R> extends Predicate<T> {
 
-  protected final Predicate<T> predicate;
+  public If<T,R> then(Function<T,R> ifState);
   
-  protected final Function<T,R> ifState;
+  public If<T,R> elseDo(Function<T,R> elseState);
   
-  protected final Function<T,R> elseState;
-  
-  
-  protected If(Predicate<T> prd, Function<T,R> ifs, Function<T,R> els) {
-    this.predicate = prd;
-    this.ifState = ifs;
-    this.elseState = els;
-  }
-  
-  
-  public If(Predicate<T> prd) {
-    this(Match.notNull(prd).getOrFail("Bad null Predicate"), null, null);
-  }
-  
-  
-  public If<T,R> then(Function<T,R> ifState) {
-    return new If(predicate, ifState, elseState);
-  }
-  
-  
-  public If<T,R> elseDo(Function<T,R> elseState) {
-    return new If(predicate, ifState, elseState);
-  }
-  
-  
-  public R eval(T obj) {
-    if(predicate.test(obj)) {
-      return Check.of(IllegalStateException.class)
-          .on(ifState).getOrFail("Default statement not defined")
-          .apply(obj);
-    }
-    else {
-      return Check.of(IllegalStateException.class)
-          .on(elseState).getOrFail("Else statement not defined")
-          .apply(obj);
-    }
-  }
-
+  public R eval(T obj);
 
   @Override
-  public boolean test(T t) {
-    return predicate.test(t);
-  }
-
+  public If<T,R> and(Predicate<? super T> other);
 
   @Override
-  public If<T,R> and(Predicate<? super T> other) {
-    return new If(predicate.and(other), ifState, elseState);
-  }
-
+  public If<T,R> negate();
 
   @Override
-  public If<T,R> negate() {
-    return new If(predicate.negate(), ifState, elseState);
-  }
-
-
-  @Override
-  public If<T,R> or(Predicate<? super T> other) {
-    return new If(predicate.or(other), ifState, elseState);
-  }
-  
+  public If<T,R> or(Predicate<? super T> other);
   
   
   public static <U,S> If<U,S> of(Predicate<U> prd) {
-    return new If<>(prd);
+    return new IfImpl<>(prd);
+  }
+  
+  
+  public static <U> If<U,Void> ofcs(Predicate<U> prd) {
+    return new IfCs<>(prd);
   }
   
 }

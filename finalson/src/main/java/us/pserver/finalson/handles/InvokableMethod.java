@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import us.pserver.tools.Match;
-import us.pserver.tools.function.Rethrow;
+import us.pserver.tools.fn.Rethrow;
 
 /**
  *

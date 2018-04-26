@@ -19,27 +19,22 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.tools.fn;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.util.function.Function;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/10/2017
+ * @version 0.0 - 20/09/2017
  */
-public interface Storage extends AutoCloseable {
-
-  public Region put(ByteBuffer buf) throws IOException;
+@FunctionalInterface
+public interface ThrowableFunction<T,R> {
   
-  public Region put(ByteBuffer ... buf) throws IOException;
+  public R apply(T t) throws Exception;
   
-  public ByteBuffer get(Region reg) throws IOException;
   
-  public long size() throws IOException;
-  
-  @Override
-  public void close() throws IOException;
-  
+  public static <I,O> ThrowableFunction<I,O> of(Function<I,O> fun) {
+    return i->fun.apply(i);
+  }
 }

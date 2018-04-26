@@ -46,6 +46,8 @@ public class TestNumberTypeAdapter {
     String one = "1";
     String json = gson.toJson(52.25);
     Assertions.assertEquals(one, json);
+    json = gson.toJson(525L);
+    Assertions.assertEquals(one, json);
   }
   
 }

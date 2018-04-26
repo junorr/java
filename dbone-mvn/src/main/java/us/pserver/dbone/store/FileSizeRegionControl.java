@@ -26,7 +26,7 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingDeque;
-import us.pserver.tools.NotNull;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -58,7 +58,7 @@ public class FileSizeRegionControl implements RegionControl {
     if(maxRegionCount < minRegionCount) {
       throw new IllegalArgumentException("Bad max region count (< minRegionCount)");
     }
-    this.file = NotNull.of(dbfile).getOrFail("Bad null file Path");
+    this.file = Match.notNull(dbfile).getOrFail("Bad null file Path");
     this.regions = new LinkedBlockingDeque<>();
     this.startPosition = startPosition;
     this.regionLength = regionLength;

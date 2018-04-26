@@ -19,27 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.tx;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import us.pserver.dbone.store.Region;
+import us.pserver.dbone.store.RegionControl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/10/2017
+ * @version 0.0 - 19/09/2017
  */
-public interface Storage extends AutoCloseable {
-
-  public Region put(ByteBuffer buf) throws IOException;
+public class RollbackDeallocationLog extends AbstractRollbackLog {
   
-  public Region put(ByteBuffer ... buf) throws IOException;
-  
-  public ByteBuffer get(Region reg) throws IOException;
-  
-  public long size() throws IOException;
+  public RollbackDeallocationLog(RegionControl rgs, Region reg) {
+    super(rgs, reg);
+  }
   
   @Override
-  public void close() throws IOException;
-  
+  public void rollback() throws TransactionException {
+    this.regions.discard(region);
+  }
+
 }

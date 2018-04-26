@@ -21,8 +21,6 @@
 
 package us.pserver.dbone.store;
 
-import us.pserver.dbone.store.Region;
-import us.pserver.dbone.store.RegionControl;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -40,7 +38,7 @@ import us.pserver.tools.NotNull;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 27/11/2017
  */
-public class ByteableRegionControl implements RegionControl {
+public class RWRegionControl implements RegionControl, RW<RWRegionControl> {
   
   public static final int BUFFER_SIZE = 4096;
   
@@ -48,7 +46,7 @@ public class ByteableRegionControl implements RegionControl {
   private final RegionControl control;
   
   
-  public ByteableRegionControl(RegionControl rgc) {
+  public RWRegionControl(RegionControl rgc) {
     this.control = NotNull.of(rgc).getOrFail("Bad null RegionControl");
   }
 
@@ -83,7 +81,8 @@ public class ByteableRegionControl implements RegionControl {
   }
   
 
-  public ByteableRegionControl readFrom(Path path) throws IOException {
+  @Override
+  public RWRegionControl readFrom(Path path) throws IOException {
     if(path == null || !Files.exists(path)) {
       throw new IllegalArgumentException("Bad file path: "+ path);
     }
@@ -91,7 +90,8 @@ public class ByteableRegionControl implements RegionControl {
   }
   
   
-  public ByteableRegionControl writeTo(Path path) throws IOException {
+  @Override
+  public RWRegionControl writeTo(Path path) throws IOException {
     if(path == null) {
       throw new IllegalArgumentException("Bad file path: "+ path);
     }
@@ -103,7 +103,8 @@ public class ByteableRegionControl implements RegionControl {
   }
   
   
-  public ByteableRegionControl writeTo(WritableByteChannel channel) throws IOException {
+  @Override
+  public RWRegionControl writeTo(WritableByteChannel channel) throws IOException {
     NotNull.of(channel).failIfNull("Bad null Channel");
     try {
       ByteBuffer bb = ByteBuffer.allocate(control.size() * Region.BYTES);
@@ -118,7 +119,8 @@ public class ByteableRegionControl implements RegionControl {
   }
   
 
-  public ByteableRegionControl readFrom(ReadableByteChannel channel) throws IOException {
+  @Override
+  public RWRegionControl readFrom(ReadableByteChannel channel) throws IOException {
     NotNull.of(channel).failIfNull("Bad null Channel");
     try {
       ByteBuffer bb = ByteBuffer.allocate(BUFFER_SIZE);

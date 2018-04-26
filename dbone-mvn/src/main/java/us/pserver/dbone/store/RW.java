@@ -19,37 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.test.mapping;
+package us.pserver.dbone.store;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import java.net.InetAddress;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import us.pserver.finalson.mapping.InetAddressMapping;
-import us.pserver.tools.fn.Rethrow;
+import java.io.IOException;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
+import java.nio.file.Path;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/02/2018
+ * @version 0.0 - 08/12/2017
  */
-public class TestInetAddressMapping {
+public interface RW<T> {
 
-  private final InetAddress addr = Rethrow.unchecked().apply(()->InetAddress.getByName("localhost"));
+  public T writeTo(Path path) throws IOException;
   
-  private final JsonElement jaddr = new JsonPrimitive("127.0.0.1");
+  public T readFrom(Path path) throws IOException;
   
-  private final InetAddressMapping map = new InetAddressMapping();
+  public T writeTo(WritableByteChannel ch) throws IOException;
   
-  @Test
-  public void addressToJson() {
-    Assertions.assertEquals(jaddr, map.toJson(addr));
-  }
-  
-  @Test
-  public void jsonToAddress() {
-    Assertions.assertEquals(addr, map.fromJson(jaddr));
-  }
+  public T readFrom(ReadableByteChannel ch) throws IOException;
   
 }

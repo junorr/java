@@ -25,7 +25,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.tools.function.Rethrow;
+import us.pserver.tools.fn.Rethrow;
 
 /**
  *

@@ -25,7 +25,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import java.net.InetAddress;
 import us.pserver.tools.Match;
-import us.pserver.tools.function.Rethrow;
+import us.pserver.tools.fn.Rethrow;
 
 /**
  *

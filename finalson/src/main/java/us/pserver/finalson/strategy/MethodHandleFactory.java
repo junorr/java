@@ -27,7 +27,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
 import us.pserver.tools.Match;
-import us.pserver.tools.function.Rethrow;
+import us.pserver.tools.fn.Rethrow;
 
 /**
  *

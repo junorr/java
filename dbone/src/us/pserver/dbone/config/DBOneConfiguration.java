@@ -31,11 +31,11 @@ import us.pserver.dbone.store.Region;
  */
 public class DBOneConfiguration {
   
-  public static final int DEFAULT_BLOCK_SIZE = 1024;
-  
   public static final BufferAllocPolicy DEFAULT_BUFFER_ALLOC_POLICY = BufferAllocPolicy.ALLOCATE_DIRECT;
   
   public static final String ENV_DBONE_CONFIGURATION = "DBONE_CONFIG";
+  
+  public static final int DEFAULT_BLOCK_SIZE = 1024;
   
   public static final int MIN_BLOCK_SIZE = Region.BYTES + Integer.BYTES + 1;
   

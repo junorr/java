@@ -19,22 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.function;
+package us.pserver.dbone.store;
 
-import java.util.function.Function;
+import java.util.Iterator;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 20/09/2017
+ * @version 0.0 - 10/10/2017
  */
-@FunctionalInterface
-public interface ThrowableFunction<T,R> {
+public interface RegionControl {
   
-  public R apply(T t) throws Exception;
+  public boolean offer(Region reg);
   
+  public boolean discard(Region reg);
   
-  public static <I,O> ThrowableFunction<I,O> of(Function<I,O> fun) {
-    return i->fun.apply(i);
-  }
+  public Region allocate();
+  
+  public Iterator<Region> freeRegions();
+  
+  public int size();
+  
 }

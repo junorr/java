@@ -19,9 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.function;
-
-import java.util.function.Consumer;
+package us.pserver.tools.fn;
 
 /**
  *
@@ -29,13 +27,13 @@ import java.util.function.Consumer;
  * @version 0.0 - 20/09/2017
  */
 @FunctionalInterface
-public interface ThrowableConsumer<T> {
+public interface ThrowableTask {
   
-  public void accept(T t) throws Exception;
+  public void run() throws Exception;
   
   
-  public static <U> ThrowableConsumer<U> of(Consumer<U> cs) {
-    return u->cs.accept(u);
+  public static ThrowableTask of(Runnable r) {
+    return r::run;
   }
   
 }

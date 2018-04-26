@@ -26,7 +26,7 @@ import com.google.gson.JsonPrimitive;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import us.pserver.tools.function.Rethrow;
+import us.pserver.tools.fn.Rethrow;
 
 /**
  *

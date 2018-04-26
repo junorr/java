@@ -31,8 +31,6 @@ import java.nio.ByteBuffer;
  */
 public interface Storage extends AutoCloseable {
 
-  public Region put(ByteBuffer buf) throws IOException;
-  
   public Region put(ByteBuffer ... buf) throws IOException;
   
   public ByteBuffer get(Region reg) throws IOException;
