@@ -31,6 +31,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.function.IntFunction;
 import us.pserver.tools.Match;
 import us.pserver.tools.exp.ForEach;
+import us.pserver.tools.exp.While;
 import us.pserver.tools.io.ByteBufferOutputStream;
 import us.pserver.tools.io.ByteableNumber;
 
@@ -132,19 +133,42 @@ public class FileStorage implements Storage {
     if(buf == null || buf.length < 1) return Region.invalid();
     int totalSize = ForEach.of(buf).reduce(0, (t,b)->t+=b.remaining());
     int i = -1;
-    Region reg = regions.allocate();
+    Region reg = Region.invalid();
     Region next = Region.invalid();
     while(totalSize > 0 && ++i < buf.length) {
-      Region reg = regions.allocate();
+      next = regions.allocate();
+      putNextRegion(reg, next);
+      reg = next;
       totalSize -= buf[i].remaining();
       reg = put(buf[i], reg);
-      if(totalSize > 0) {
-        Region next = regions.allocate();
-        putNextRegion(reg, next);
-        reg = next;
-      }
     }
     return reg;
+  }
+  
+  
+  public Region put2(ByteBuffer ... buf) throws IOException {
+    if(buf == null || buf.length < 1) return Region.invalid();
+    int size = ForEach.of(buf).reduce(0, (t,b)->t+=b.remaining());
+    Region reg = regions.allocate();
+    StorageException.rethrow(()->put(buf, 0, size, reg));
+    return reg;
+  }
+  
+  
+  private Region put(ByteBuffer[] buf, int idx, int size, Region reg) throws IOException {
+    if(idx >= buf.length || size <= 0 || !reg.isValid()) {
+      if(reg.isValid()) {
+        regions.offer(reg);
+        putNextRegion(reg, Region.invalid());
+      }
+      return Region.invalid();
+    }
+    reg = put(buf[idx], reg);
+    Region next = regions.allocate();
+    putNextRegion(reg, next);
+    reg = next;
+    size -= buf[idx].remaining();
+    return put(buf, ++idx, size - buf[idx].remaining(), put(buf[idx], reg));
   }
   
   
@@ -220,10 +244,12 @@ public class FileStorage implements Storage {
 
 
   private void putNextRegion(Region cur, Region next) {
-    StorageException.rethrow(()->{
-      channel.position(cur.end() - Region.BYTES);
-      channel.write(next.toByteBuffer());
-    });
+    if(cur.isValid()) {
+      StorageException.rethrow(()->{
+        channel.position(cur.end() - Region.BYTES);
+        channel.write(next.toByteBuffer());
+      });
+    }
   }
   
   
