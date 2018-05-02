@@ -166,9 +166,20 @@ public class FileStorage implements Storage {
     reg = put(buf[idx], reg);
     Region next = regions.allocate();
     putNextRegion(reg, next);
-    reg = next;
-    size -= buf[idx].remaining();
-    return put(buf, ++idx, size - buf[idx].remaining(), put(buf[idx], reg));
+    return put(buf, ++idx, size - buf[idx].remaining(), next);
+  }
+  
+  
+  private Region put2(ByteBuffer[] buf, int idx, int size) throws IOException {
+    if(idx >= buf.length || size <= 0) {
+      return Region.invalid();
+    }
+    Region reg = regions.allocate();
+    
+    reg = put(buf[idx], reg);
+    Region next = regions.allocate();
+    putNextRegion(reg, next);
+    return put(buf, ++idx, size - buf[idx].remaining(), next);
   }
   
   
