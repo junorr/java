@@ -21,15 +21,21 @@
 
 package us.pserver.dbone.store;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/05/2018
+ * @version 0.0 - 03/05/2018
  */
-public interface Byteable {
+public interface Writable {
 
+  public int writeTo(WritableByteChannel ch) throws IOException;
+  
+  public int writeTo(ByteBuffer wb);
+  
   public ByteBuffer toByteBuffer();
   
 }

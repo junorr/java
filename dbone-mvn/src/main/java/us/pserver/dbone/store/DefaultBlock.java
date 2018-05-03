@@ -25,14 +25,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.util.Objects;
-import us.pserver.tools.io.ByteableNumber;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/05/2018
  */
-public class AbstractBlock implements Block {
+public class DefaultBlock implements Block {
   
   protected final Region next;
   
@@ -43,11 +42,11 @@ public class AbstractBlock implements Block {
   protected final int length;
   
   
-  public AbstractBlock(Type type, Region reg, ByteBuffer buf) {
+  public DefaultBlock(Type type, ByteBuffer buf, Region reg) {
     this.type = Objects.requireNonNull(type, "Bad null Block Type");
-    this.next = Objects.requireNonNull(reg, "Bad null Region");
     this.buf = Objects.requireNonNull(buf, "Bad null ByteBuffer");
-    this.length = Math.min(buf.remaining(), reg.intLength()) + META_BYTES;
+    this.next = Objects.requireNonNull(reg, "Bad null Region");
+    this.length = buf.remaining() + META_BYTES;
   }
   
 
@@ -71,10 +70,24 @@ public class AbstractBlock implements Block {
 
   @Override
   public int writeTo(WritableByteChannel ch) throws IOException {
-    ch.write(type.toByteBuffer());
-    ch.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
-    ch.write(buf);
-    ch.write(next.toByteBuffer());
+    ByteBuffer wb = ByteBuffer.allocate(length);
+    wb.put(Integer.valueOf(type.ordinal()).byteValue());
+    wb.putInt(buf.remaining());
+    wb.put(buf);
+    next.writeTo(wb);
+    wb.flip();
+    ch.write(wb);
+    return length;
+  }
+
+
+  @Override
+  public int writeTo(ByteBuffer wb) {
+    wb.put(Integer.valueOf(type.ordinal()).byteValue());
+    wb.putInt(buf.remaining());
+    wb.put(buf);
+    next.writeTo(wb);
+    wb.flip();
     return length;
   }
 

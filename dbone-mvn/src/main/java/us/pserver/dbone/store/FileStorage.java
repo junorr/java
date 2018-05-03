@@ -95,7 +95,7 @@ public class FileStorage implements Storage {
     this.freepath = directory.resolve(FILE_FREE_BLOCKS);
     this.storepath = directory.resolve(FILE_STORAGE);
     this.blksize = blockSize;
-    this.writelength = blksize - Region.BYTES - Integer.BYTES;
+    this.writelength = blksize - Block.META_BYTES;
     this.allocPolicy = Match.notNull(allocPolicy).getOrFail("Bad null alloc policy");
     this.regions = Match.notNull(rgc).getOrFail("Bad null RegionControl");
     this.channel = openRW(storepath);
@@ -132,6 +132,18 @@ public class FileStorage implements Storage {
   public Region put(ByteBuffer ... buf) throws IOException {
     if(buf == null || buf.length < 1) return Region.invalid();
     int totalSize = ForEach.of(buf).reduce(0, (t,b)->t+=b.remaining());
+    for(int i = 0; i < buf.length; i++) {
+      ByteBuffer b = buf[i];
+      if(b.remaining() > writelength) {
+        
+      }
+      else {
+        Region reg = regions.allocate();
+        channel.position(reg.offset());
+        Block.root(b, Region.invalid()).writeTo(channel);
+        
+      }
+    }
     int i = -1;
     Region reg = Region.invalid();
     Region next = Region.invalid();
@@ -199,9 +211,7 @@ public class FileStorage implements Storage {
   private void putSmallerThanBlockSize(ByteBuffer buf, Region reg) throws IOException {
     print(buf);
     channel.position(reg.offset());
-    channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
-    channel.write(buf);
-    this.putNextRegion(reg, Region.of(-1, -1));
+    Block.node(buf, Region.invalid()).writeTo(channel);
   }
   
   
@@ -211,6 +221,7 @@ public class FileStorage implements Storage {
     print(buf);
     Region next = regions.allocate();
     channel.position(reg.offset());
+    Block.
     channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
     channel.write(buf);
     channel.write(next.toByteBuffer());
