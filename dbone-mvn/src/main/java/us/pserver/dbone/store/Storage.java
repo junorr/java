@@ -35,6 +35,8 @@ public interface Storage extends AutoCloseable {
   
   public ByteBuffer get(Region reg) throws IOException;
   
+  public ByteBuffer remove(Region reg) throws IOException;
+  
   public long size() throws IOException;
   
   @Override

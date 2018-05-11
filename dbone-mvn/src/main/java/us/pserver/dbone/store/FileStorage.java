@@ -221,8 +221,8 @@ public class FileStorage implements Storage {
     print(buf);
     Region next = regions.allocate();
     channel.position(reg.offset());
-    Block.
-    channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
+    //Block.
+    //channel.write(ByteableNumber.of(buf.remaining()).toByteBuffer());
     channel.write(buf);
     channel.write(next.toByteBuffer());
     buf.limit(lim);
@@ -285,6 +285,12 @@ public class FileStorage implements Storage {
   public void close() throws IOException {
     channel.close();
     regions.writeTo(freepath);
+  }
+
+
+  @Override
+  public ByteBuffer remove(Region reg) throws IOException {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
   
 }
