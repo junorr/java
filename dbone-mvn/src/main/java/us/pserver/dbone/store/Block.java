@@ -64,11 +64,23 @@ public interface Block extends Writable {
 
   public static final int META_BYTES = Region.BYTES + Integer.BYTES + Type.BYTES;
   
-  public Region getNextRegion();
+  public Region region();
   
-  public ByteBuffer getBuffer();
+  public Block withRegion(Region reg);
   
-  public int length();
+  public Region nextRegion();
+  
+  public Block withNext(Region next);
+  
+  public ByteBuffer buffer();
+  
+  public Block withBuffer(ByteBuffer buf);
+  
+  public Block asNode();
+  
+  public Block asRoot();
+  
+  public int size();
   
   public boolean isRoot();
   
@@ -76,12 +88,12 @@ public interface Block extends Writable {
   
   
   
-  public static Block root(ByteBuffer buf, Region reg) {
-    return new DefaultBlock(Type.ROOT, buf, reg);
+  public static Block root(Region reg, ByteBuffer buf, Region next) {
+    return new DefaultBlock(Type.ROOT, reg, buf, next);
   }
   
-  public static Block node(ByteBuffer buf, Region reg) {
-    return new DefaultBlock(Type.NODE, buf, reg);
+  public static Block node(Region reg, ByteBuffer buf, Region next) {
+    return new DefaultBlock(Type.NODE, reg, buf, next);
   }
   
   public static Block read(ByteBuffer br) {
@@ -93,7 +105,7 @@ public interface Block extends Writable {
     br.limit(lim);
     br.position(size);
     Region reg = Region.of(br);
-    return new DefaultBlock(t, buf, reg);
+    return new DefaultBlock(t, Region.invalid(), buf, reg);
   }
   
   public static Block read(ReadableByteChannel ch) throws IOException {
@@ -104,12 +116,12 @@ public interface Block extends Writable {
     int size = b1.getInt();
     ByteBuffer buf = ByteBuffer.allocate(size + Region.BYTES);
     ch.read(buf);
-    buf.flip();
     buf.position(size);
     Region reg = Region.of(buf);
+    buf.flip();
     buf.position(0);
     buf.limit(size);
-    return new DefaultBlock(t, buf, reg);
+    return new DefaultBlock(t, Region.invalid(), buf, reg);
   }
   
 }

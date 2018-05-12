@@ -21,17 +21,90 @@
 
 package us.pserver.dbone.store;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
+import java.util.Objects;
+import us.pserver.tools.Match;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/05/2018
  */
 public interface StorageHeader extends Writable {
+  
+  public static final int BYTES = Region.BYTES + Integer.BYTES;
+  
+  public static final int MIN_BLOCK_SIZE = Block.META_BYTES + StorageHeader.BYTES;
+  
 
   public Region getFreeRegion();
   
   public int getBlockSize();
   
-  public boolean isLocked();
+  
+  public static StorageHeader of(Region reg, int blockSize) {
+    return new Default(reg, blockSize);
+  }
+  
+  
+  
+  
+  
+  
+  static class Default implements StorageHeader {
+    
+    private final Region free;
+    
+    private final int blksize;
+    
+    public Default(Region reg, int blockSize) {
+      this.free = Objects.requireNonNull(reg, "Default(>> Region reg <<, int blockSize): Bad null Region");
+      this.blksize = Match.of(blockSize, n->n >= MIN_BLOCK_SIZE).getOrFail("Default(Region reg,>> int blockSize <<): Bad block size "+ blockSize+ " < 0");
+    }
+
+    @Override
+    public Region getFreeRegion() {
+      return free;
+    }
+
+
+    @Override
+    public int getBlockSize() {
+      return blksize;
+    }
+
+
+    @Override
+    public int writeTo(WritableByteChannel ch) throws IOException {
+      return ch.write(toByteBuffer());
+    }
+
+
+    @Override
+    public int writeTo(ByteBuffer wb) {
+      Objects.requireNonNull(wb, "Bad null ByteBuffer");
+      if(wb.remaining() < BYTES) {
+        throw new IllegalArgumentException(
+            "writeTo(>> ByteBuffer wb <<): Bad remaining size "
+                + wb.remaining()+ " < "+ BYTES
+        );
+      }
+      free.writeTo(wb);
+      wb.putInt(blksize);
+      return BYTES;
+    }
+
+
+    @Override
+    public ByteBuffer toByteBuffer() {
+      ByteBuffer buf = ByteBuffer.allocate(BYTES);
+      this.writeTo(buf);
+      buf.flip();
+      return buf;
+    }
+    
+  }
   
 }

@@ -33,51 +33,90 @@ import java.util.Objects;
  */
 public class DefaultBlock implements Block {
   
+  protected final Region region;
+  
   protected final Region next;
   
   protected final ByteBuffer buf;
   
   protected final Type type;
   
-  protected final int length;
+  protected final int size;
   
   
-  public DefaultBlock(Type type, ByteBuffer buf, Region reg) {
+  public DefaultBlock(Type type, Region reg, ByteBuffer buf, Region next) {
     this.type = Objects.requireNonNull(type, "Bad null Block Type");
+    this.region = Objects.requireNonNull(reg, "Bad null Region");
     this.buf = Objects.requireNonNull(buf, "Bad null ByteBuffer");
-    this.next = Objects.requireNonNull(reg, "Bad null Region");
-    this.length = buf.remaining() + META_BYTES;
+    this.next = Objects.requireNonNull(next, "Bad null next Region");
+    this.size = buf.remaining() + META_BYTES;
+  }
+  
+  
+  @Override
+  public Region region() {
+    return region;
+  }
+  
+  
+  @Override
+  public Block withRegion(Region reg) {
+    return new DefaultBlock(type, reg, buf, next);
   }
   
 
   @Override
-  public Region getNextRegion() {
+  public Region nextRegion() {
     return next;
   }
+  
+  
+  @Override
+  public Block withNext(Region next) {
+    return new DefaultBlock(type, region, buf, next);
+  }
 
 
   @Override
-  public ByteBuffer getBuffer() {
+  public ByteBuffer buffer() {
     return buf;
   }
-
-
+  
+  
   @Override
-  public int length() {
-    return length;
+  public Block withBuffer(ByteBuffer buf) {
+    return new DefaultBlock(type, region, buf, next);
   }
 
 
   @Override
+  public int size() {
+    return size;
+  }
+  
+  
+  @Override
+  public Block asRoot() {
+    return new DefaultBlock(Type.ROOT, region, buf, next);
+  }
+  
+  
+  @Override
+  public Block asNode() {
+    return new DefaultBlock(Type.NODE, region, buf, next);
+  }
+  
+  
+  @Override
   public int writeTo(WritableByteChannel ch) throws IOException {
-    ByteBuffer wb = ByteBuffer.allocate(length);
+    ByteBuffer wb = ByteBuffer.allocate(size);
     wb.put(Integer.valueOf(type.ordinal()).byteValue());
     wb.putInt(buf.remaining());
     wb.put(buf);
     next.writeTo(wb);
     wb.flip();
     ch.write(wb);
-    return length;
+    return size;
   }
 
 
@@ -88,13 +127,13 @@ public class DefaultBlock implements Block {
     wb.put(buf);
     next.writeTo(wb);
     wb.flip();
-    return length;
+    return size;
   }
 
 
   @Override
   public ByteBuffer toByteBuffer() {
-    ByteBuffer total = ByteBuffer.allocate(length);
+    ByteBuffer total = ByteBuffer.allocate(size);
     total.put(type.toByteBuffer());
     total.put(buf);
     total.put(next.toByteBuffer());

@@ -95,10 +95,9 @@ public class ByteBufferOutputStream extends OutputStream {
   private ByteBuffer getBuffer(int writeSize) {
     if(this.buffers.get(current).remaining() < writeSize) {
       //System.out.println("* bos.getbuffer.current="+ current+ ", buf.rem="+ this.buffers.get(current).remaining());
-      current++;
-      if(this.buffers.size() > current
-          && this.buffers.get(current).remaining() < writeSize) {
-        this.buffers.set(current, alloc.apply(
+      if(buffers.size() > current
+          && buffers.get(current).remaining() < writeSize) {
+        buffers.add(current, alloc.apply(
             Math.max(bufsize, writeSize))
         );
       }
@@ -107,6 +106,7 @@ public class ByteBufferOutputStream extends OutputStream {
             Math.max(bufsize, writeSize))
         );
       }
+      current = buffers.size() - 1;
     }
     return this.buffers.get(current);
   }

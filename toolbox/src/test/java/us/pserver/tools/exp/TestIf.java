@@ -21,6 +21,7 @@
 
 package us.pserver.tools.exp;
 
+import java.util.function.Consumer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -37,8 +38,8 @@ public class TestIf {
   @Test
   public void ifConsumerThen() {
     IfCs.<Integer>of(n->n > 5)
-        .then(n->System.out.println("* Number is greater than 5: "+ n))
-        .elseDo(n->System.out.println("* Number is lesser than 5: "+ n))
+        .then((Consumer<Integer>)n->System.out.println("* Number is greater than 5: "+ n))
+        .elseDo((Consumer<Integer>)n->System.out.println("* Number is lesser than 5: "+ n))
         .eval(num);
   }
   
@@ -46,10 +47,10 @@ public class TestIf {
   @Test
   public void ifFunctionThen() {
     int num = 8;
-    Assertions.assertEquals("* Number is greater than 5", 
+    Assertions.assertEquals("* Number is greater than 5: "+ num, 
         IfImpl.<Integer,String>of(n->n > 5)
-            .then(n->"* Number is greater than 5")
-            .elseDo(n->"* Number is lesser than 5")
+            .then(n->"* Number is greater than 5: "+ n)
+            .elseDo(n->"* Number is lesser than 5: "+ n)
             .eval(num)
     );
   }
@@ -58,8 +59,8 @@ public class TestIf {
   @Test
   public void ifConsumerElse() {
     IfCs.<Integer>of(n->n > 5)
-        .then(n->System.out.println("* Number is greater than 5: "+ n))
-        .elseDo(n->System.out.println("* Number is lesser than 5: "+ n))
+        .then((Consumer<Integer>)n->System.out.println("* Number is greater than 5: "+ n))
+        .elseDo((Consumer<Integer>)n->System.out.println("* Number is lesser than 5: "+ n))
         .eval(num);
   }
   
