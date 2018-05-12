@@ -62,6 +62,12 @@ public class FileChannelStorage implements Storage {
   
   @Override
   public Region put(ByteBuffer ... buf) throws IOException {
+    if(buf == null) {
+      throw new IllegalArgumentException("put(>> ByteBuffer ... buf <<): Bad null ByteBuffer array = "+ buf);
+    }
+    if(buf.length < 1) {
+      throw new IllegalArgumentException("put(>> ByteBuffer ... buf <<): Bad invalid ByteBuffer array.length = "+ buf.length);
+    }
     Region first = nextFree();
     Region cur = first;
     for(int i = 0; i < buf.length; i++) {
@@ -102,15 +108,17 @@ public class FileChannelStorage implements Storage {
     buf.limit(buf.position() + writable);
     Block blk = Block.root(reg, buf.slice(), Region.invalid());
     buf.limit(lim);
-    Region last = Region.invalid();
-    while(blk.region().isValid() && blk.buffer().remaining() > 0) {
+    int remaining = Math.min(lim, writable);
+    Region last = reg;
+    while(blk.region().isValid() && remaining > 0) {
       if(buf.remaining() > writable) {
         last = nextFree();
         blk = blk.withNext(last);
       }
       channel.position(blk.region().offset());
       channel.write(blk.toByteBuffer());
-      buf.limit(Math.min(lim, buf.position() + writable));
+      remaining = Math.min(lim, lim)
+      buf.limit(buf.position() + Math.min(lim, writable));
       blk = Block.node(last, buf.slice(), Region.invalid());
       buf.limit(lim);
     }
@@ -172,7 +180,7 @@ public class FileChannelStorage implements Storage {
       freeRegion = this.put(buf);
     }
     StorageHeader hd = StorageHeader.of(freeRegion, header.getBlockSize());
-    Block blk = Block.root(hd.toByteBuffer(), Region.invalid());
+    Block blk = Block.root(Region.invalid(), hd.toByteBuffer(), Region.invalid());
     channel.position(0);
     channel.write(blk.toByteBuffer());
   }
