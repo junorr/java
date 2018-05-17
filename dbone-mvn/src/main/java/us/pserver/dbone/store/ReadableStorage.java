@@ -23,16 +23,24 @@ package us.pserver.dbone.store;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.function.IntFunction;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 27/10/2017
  */
-public interface Storage extends ReadableStorage {
-
-  public Region put(ByteBuffer ... buf) throws IOException;
+public interface ReadableStorage extends AutoCloseable {
   
-  public ByteBuffer remove(Region reg) throws IOException;
+  public static final IntFunction<ByteBuffer> HEAP_ALLOC_POLICY = i->ByteBuffer.allocate(i);
+  
+  public static final IntFunction<ByteBuffer> DIRECT_ALLOC_POLICY = i->ByteBuffer.allocateDirect(i);
+  
+  
+  public ByteBuffer get(Region reg) throws IOException;
+  
+  public long size() throws IOException;
+  
+  public ByteBuffer allocBuffer(int size);
   
 }

@@ -153,4 +153,45 @@ public class DefaultBlock implements Block {
     return type == Type.NODE;
   }
 
+
+  @Override
+  public int hashCode() {
+    int hash = 5;
+    hash = 97 * hash + Objects.hashCode(this.region);
+    hash = 97 * hash + Objects.hashCode(this.next);
+    hash = 97 * hash + Objects.hashCode(this.type);
+    return hash;
+  }
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final DefaultBlock other = (DefaultBlock) obj;
+    if (!Objects.equals(this.region, other.region)) {
+      return false;
+    }
+    if (!Objects.equals(this.next, other.next)) {
+      return false;
+    }
+    if (this.type != other.type) {
+      return false;
+    }
+    return true;
+  }
+
+
+  @Override
+  public String toString() {
+    return "Block{type=" + type + ", region=" + region + ", next=" + next + '}';
+  }
+  
 }

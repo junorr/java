@@ -36,7 +36,7 @@ public interface StorageHeader extends Writable {
   
   public static final int BYTES = Region.BYTES + Integer.BYTES;
   
-  public static final int MIN_BLOCK_SIZE = Block.META_BYTES + StorageHeader.BYTES;
+  public static final int MIN_BLOCK_SIZE = Block.META_BYTES + Region.BYTES;
   
 
   public Region getFreeRegion();
@@ -44,8 +44,16 @@ public interface StorageHeader extends Writable {
   public int getBlockSize();
   
   
-  public static StorageHeader of(Region reg, int blockSize) {
-    return new Default(reg, blockSize);
+  public static StorageHeader of(int blockSize, Region reg) {
+    return new Default(blockSize, reg);
+  }
+  
+  
+  public static StorageHeader read(ByteBuffer buf) {
+    if(buf == null || buf.remaining() < BYTES) {
+      throw new IllegalArgumentException("Bad ByteBuffer = "+ (buf == null ? buf : buf.remaining()));
+    }
+    return new Default(buf.getInt(), Region.of(buf));
   }
   
   
@@ -59,9 +67,10 @@ public interface StorageHeader extends Writable {
     
     private final int blksize;
     
-    public Default(Region reg, int blockSize) {
-      this.free = Objects.requireNonNull(reg, "Default(>> Region reg <<, int blockSize): Bad null Region");
-      this.blksize = Match.of(blockSize, n->n >= MIN_BLOCK_SIZE).getOrFail("Default(Region reg,>> int blockSize <<): Bad block size "+ blockSize+ " < 0");
+    public Default(int blockSize, Region reg) {
+      this.free = Objects.requireNonNull(reg, "Bad null Region");
+      this.blksize = Match.of(blockSize, n->n >= MIN_BLOCK_SIZE)
+          .getOrFail("Bad block size "+ blockSize+ " (< " + MIN_BLOCK_SIZE + ")");
     }
 
     @Override
@@ -91,8 +100,8 @@ public interface StorageHeader extends Writable {
                 + wb.remaining()+ " < "+ BYTES
         );
       }
-      free.writeTo(wb);
       wb.putInt(blksize);
+      free.writeTo(wb);
       return BYTES;
     }
 

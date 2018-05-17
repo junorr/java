@@ -28,7 +28,7 @@ import java.util.Iterator;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 10/10/2017
  */
-public interface RegionControl {
+public interface RegionControl extends Writable {
   
   public boolean offer(Region reg);
   

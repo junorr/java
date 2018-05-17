@@ -21,6 +21,9 @@
 
 package us.pserver.dbone.store;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -38,13 +41,13 @@ import us.pserver.tools.Match;
  */
 public class TransactionalRegionControl implements RegionControl, Transaction {
 
-  private final RegionControl regions;
+  private final RegionControl rgc;
   
   private final List<RollbackLog> log;
   
   
-  public TransactionalRegionControl(RegionControl rgs) {
-    this.regions = Match.notNull(rgs).getOrFail("Bad null Regions");
+  public TransactionalRegionControl(RegionControl rgc) {
+    this.rgc = Match.notNull(rgc).getOrFail("Bad null RegionControl");
     this.log = new CopyOnWriteArrayList<>();
   }
 
@@ -52,9 +55,9 @@ public class TransactionalRegionControl implements RegionControl, Transaction {
   @Override
   public boolean offer(Region reg) {
     Match.notNull(reg).failIfNotMatch("Bad null Region");
-    boolean success = regions.offer(reg);
+    boolean success = rgc.offer(reg);
     if(success) {
-      log.add(new RollbackDeallocationLog(regions, reg));
+      log.add(new RollbackDeallocationLog(rgc, reg));
     }
     return success;
   }
@@ -63,9 +66,9 @@ public class TransactionalRegionControl implements RegionControl, Transaction {
   @Override
   public boolean discard(Region reg) {
     Match.notNull(reg).failIfNotMatch("Bad null Region");
-    boolean success = regions.discard(reg);
+    boolean success = rgc.discard(reg);
     if(success) {
-      log.add(new RollbackAllocationLog(regions, reg));
+      log.add(new RollbackAllocationLog(rgc, reg));
     }
     return success;
   }
@@ -73,33 +76,51 @@ public class TransactionalRegionControl implements RegionControl, Transaction {
 
   @Override
   public Region allocate() {
-    Region reg = regions.allocate();
-    log.add(new RollbackAllocationLog(regions, reg));
+    Region reg = rgc.allocate();
+    log.add(new RollbackAllocationLog(rgc, reg));
     return reg;
   }
 
 
   @Override
   public Iterator<Region> freeRegions() {
-    return regions.freeRegions();
+    return rgc.freeRegions();
   }
   
   
   @Override
   public int size() {
-    return regions.size();
+    return rgc.size();
   }
-
-
+  
+  
   @Override
   public void rollback() throws TransactionException {
     log.forEach(RollbackLog::rollback);
   }
-
-
+  
+  
   @Override
   public void commit() throws TransactionException {
     log.clear();
+  }
+  
+  
+  @Override
+  public int writeTo(WritableByteChannel ch) throws IOException {
+    return rgc.writeTo(ch);
+  }
+  
+  
+  @Override
+  public int writeTo(ByteBuffer wb) {
+    return rgc.writeTo(wb);
+  }
+  
+  
+  @Override
+  public ByteBuffer toByteBuffer() {
+    return rgc.toByteBuffer();
   }
   
 }
