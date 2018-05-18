@@ -134,9 +134,7 @@ public class DefaultBlock implements Block {
   @Override
   public ByteBuffer toByteBuffer() {
     ByteBuffer total = ByteBuffer.allocate(size);
-    total.put(type.toByteBuffer());
-    total.put(buf);
-    total.put(next.toByteBuffer());
+    writeTo(total);
     total.flip();
     return total;
   }

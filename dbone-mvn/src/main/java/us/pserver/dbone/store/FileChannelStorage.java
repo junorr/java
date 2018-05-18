@@ -27,6 +27,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.IntFunction;
 import us.pserver.dbone.store.Block.Type;
@@ -73,64 +74,71 @@ public class FileChannelStorage implements Storage {
     if(buf.length < 1) {
       throw new IllegalArgumentException("Bad invalid ByteBuffer array.length = "+ buf.length);
     }
-    return put(rgc.allocate(), buf);
+    Region reg = rgc.allocate();
+    put(reg, buf);
+    return reg;
   }
   
   
-  private Region put(Region reg, ByteBuffer ... buf) throws IOException {
+  private void put(Region reg, ByteBuffer ... buf) throws IOException {
     if(reg == null || !reg.isValid()) {
       throw new IllegalArgumentException("Bad Region = "+ reg);
     }
-    Region first = reg;
-    Block cur = Block.root(reg, ByteBuffer.wrap(new byte[]{}), Region.invalid());
+    Block cur = Block.root(reg, emptyBuffer(), Region.invalid());
     for(int i = 0; i < buf.length; i++) {
-      if(buf[i].remaining() > 0) {
-        cur = putOne(cur, buf[i]);
-      }
-      else {
-        rgc.offer(cur.region());
-      }
+      if(!buf[i].hasRemaining()) throw new IllegalStateException("Bad ByteBuffer = "+ buf[i]);
+      cur = put(cur.withBuffer(buf[i]));
       if(buf.length > (i + 1)) {
-        Block next = Block.node(rgc.allocate(), ByteBuffer.wrap(new byte[]{}), Region.invalid());
+        Block next = Block.node(rgc.allocate(), emptyBuffer(), Region.invalid());
         setNext(cur.region(), next.region());
         cur = next;
       }
     }
-    return first;
   }
   
   
-  private Block putOne(Block blk, ByteBuffer buf) throws IOException {
-    if(buf.remaining() > writelen) {
-      return putLarger(blk, buf);
+  private Block put(Block blk) throws IOException {
+    if(blk.buffer().remaining() > writelen) {
+      return putLarger(blk);
     }
     else {
-      return putSmaller(blk, buf);
+      return putSmaller(blk);
     }
   }
   
   
   private void setNext(Region reg, Region next) throws IOException {
-    long nextPosition = reg.offset() + Type.BYTES + Integer.BYTES + writelen;
-    channel.position(nextPosition);
-    channel.write(next.toByteBuffer());
+    long nextPosition = reg.offset() + Block.STARTING_BYTES + writelen;
+    if(channel.size() > nextPosition) {
+      channel.position(nextPosition);
+      channel.write(next.toByteBuffer());
+    }
   }
   
   
-  private Block putLarger(Block blk, ByteBuffer buf) throws IOException {
-    int lim = buf.limit();
-    buf.limit(buf.position() + writelen);
-    Block next = Block.node(rgc.allocate(), ByteBuffer.wrap(new byte[]{}), Region.invalid());
-    channel.position(blk.region().offset());
-    blk.withBuffer(buf).withNext(next.region()).writeTo(channel);
-    buf.limit(lim);
-    return putOne(next, buf);
+  private ByteBuffer emptyBuffer() {
+    return ByteBuffer.wrap(new byte[]{});
   }
   
   
-  private Block putSmaller(Block blk, ByteBuffer buf) throws IOException {
+  private Block putLarger(Block blk) throws IOException {
+    Block next = Block.node(rgc.allocate(), blk.buffer(), Region.invalid());
+    int lim = blk.buffer().limit();
+    blk.buffer().limit(
+        blk.buffer().position() + writelen
+    );
     channel.position(blk.region().offset());
-    blk.withBuffer(buf).writeTo(channel);
+    channel.write(
+        blk.withNext(next.region()).toByteBuffer()
+    );
+    blk.buffer().limit(lim);
+    return put(next);
+  }
+  
+  
+  private Block putSmaller(Block blk) throws IOException {
+    channel.position(blk.region().offset());
+    channel.write(blk.toByteBuffer());
     return blk;
   }
   
@@ -174,8 +182,10 @@ public class FileChannelStorage implements Storage {
     Region freeRegion = rgc.allocate();
     StorageHeader newHeader = StorageHeader.of(header.getBlockSize(), freeRegion);
     channel.position(0);
+    new BytePrinter(newHeader.toByteBuffer()).print(4, '-');
     channel.write(newHeader.toByteBuffer());
     put(freeRegion, rgc.toByteBuffer());
+    channel.close();
   }
   
   
@@ -225,8 +235,7 @@ public class FileChannelStorage implements Storage {
       FileChannel channel = FileChannel.open(path, 
           StandardOpenOption.READ, 
           StandardOpenOption.WRITE, 
-          StandardOpenOption.CREATE, 
-          StandardOpenOption.TRUNCATE_EXISTING
+          StandardOpenOption.CREATE 
       );
       return new Builder(path, channel, header, rgc, alloc);
     }

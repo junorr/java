@@ -62,7 +62,12 @@ public interface Block extends Writable {
   }
   
 
-  public static final int META_BYTES = Region.BYTES + Integer.BYTES + Type.BYTES;
+  public static final int STARTING_BYTES = Integer.BYTES + Type.BYTES;
+  
+  public static final int ENDING_BYTES = Region.BYTES;
+  
+  public static final int META_BYTES = STARTING_BYTES + ENDING_BYTES;
+  
   
   public Region region();
   

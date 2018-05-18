@@ -46,11 +46,13 @@ public class TestFileChannelStorage {
   public void testStoragePutString() throws Exception {
     try {
       FileChannelStorage fcs = FileChannelStorage.builder().create(storagePath, 40);
-      ByteBuffer buf = Charset.forName("UTF-8").encode("Hello Storage ........................ A");
+      ByteBuffer buf = Charset.forName("UTF-8").encode("Hello Storage ...................... A");
+      System.out.println(">>> Hello Storage ...................... A");
+      new BytePrinter(buf).print(4, '|');
       Region ra = fcs.put(buf);
-      buf = StandardCharsets.UTF_8.encode("Hello Storage ........................ B");
+      buf = StandardCharsets.UTF_8.encode("Hello Storage ...................... B");
       Region rb = fcs.put(buf);
-      buf = Charset.forName("UTF-8").encode("Hello Storage ........................ C");
+      buf = Charset.forName("UTF-8").encode("Hello Storage ...................... C");
       Region rc = fcs.put(buf);
       fcs.remove(rb);
       fcs.close();

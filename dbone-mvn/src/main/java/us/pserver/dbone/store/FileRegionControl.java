@@ -28,7 +28,9 @@ import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -64,9 +66,14 @@ public class FileRegionControl implements RegionControl {
   }
   
   
+  private long pathSize() {
+    return StorageException.rethrow(()->Files.size(path));
+  }
+  
+  
   @Override
   public boolean offer(Region reg) {
-    if(reg != null && reg.isValid()) {
+    if(reg != null && reg.isValid() && pathSize() > reg.offset()) {
       freebs.add(reg);
       return true;
     }
@@ -87,14 +94,14 @@ public class FileRegionControl implements RegionControl {
   public Region allocate() {
     Region reg;
     if(freebs.isEmpty()) {
-      reg = Region.of(Math.max(StorageHeader.BYTES, 
-          StorageException.rethrow(()->Files.size(path))), 
-          blksize
-      );
+      reg = Region.of(Math.max(StorageHeader.BYTES, pathSize()), blksize);
     }
     else {
       reg = freebs.poll();
     }
+    List<StackTraceElement> elts = Arrays.asList(Thread.currentThread().getStackTrace());
+    System.out.println(elts);
+    System.out.printf("* [%s] FileRegionControl.allocate(): %s%n", elts.get(2), reg);
     return reg;
   }
   
