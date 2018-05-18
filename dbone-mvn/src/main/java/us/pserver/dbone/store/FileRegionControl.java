@@ -21,6 +21,7 @@
 
 package us.pserver.dbone.store;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -33,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingDeque;
+import us.pserver.tools.Match;
 
 /**
  *
@@ -51,12 +53,8 @@ public class FileRegionControl implements RegionControl {
   public FileRegionControl(Path path, int blockSize, LinkedBlockingDeque<Region> freeRegions) {
     this.path = Objects.requireNonNull(path, "Bad null Path");
     this.freebs = Objects.requireNonNull(freeRegions, "Bad null free regions Deque");
-    if(blockSize < StorageHeader.MIN_BLOCK_SIZE) {
-      throw new IllegalArgumentException(
-          "Bad block size = "+ blockSize + " (< " + StorageHeader.MIN_BLOCK_SIZE + ")"
-      );
-    }
-    this.blksize = blockSize;
+    this.blksize = Match.of(blockSize, b->b > FileChannelStorage.MIN_BLOCK_SIZE)
+        .getOrFail("Bad block size = %d (< %d)", blockSize, FileChannelStorage.MIN_BLOCK_SIZE);
   }
   
   
@@ -94,7 +92,7 @@ public class FileRegionControl implements RegionControl {
   public Region allocate() {
     Region reg;
     if(freebs.isEmpty()) {
-      reg = Region.of(Math.max(StorageHeader.BYTES, pathSize()), blksize);
+      reg = Region.of(Math.max(Region.BYTES, pathSize()), blksize);
     }
     else {
       reg = freebs.poll();
@@ -197,16 +195,17 @@ public class FileRegionControl implements RegionControl {
         return this;
       }
       try (FileChannel ch = FileChannel.open(path, StandardOpenOption.READ)) {
-        ByteBuffer buf = ByteBuffer.allocate(StorageHeader.BYTES);
+        ByteBuffer buf = ByteBuffer.allocate(Region.BYTES);
+        ch.position(0);
         ch.read(buf);
         buf.flip();
-        StorageHeader hd = StorageHeader.read(buf);
-        ReadableFileStorage rfs = new ReadableFileStorage(path, ch, hd, ReadableStorage.HEAP_ALLOC_POLICY);
-        buf = rfs.get(hd.getFreeRegion());
+        Region freereg = Region.of(buf);
+        ReadableFileStorage rfs = new ReadableFileStorage(path, ch, freereg.intLength(), ReadableStorage.HEAP_ALLOC_POLICY);
+        buf = rfs.get(freereg);
         while(buf.remaining() >= Region.BYTES) {
           freebs.add(Region.of(buf));
         }
-        return new Builder(path, hd.getBlockSize(), freebs);
+        return new Builder(path, freereg.intLength(), freebs);
       }
     }
     

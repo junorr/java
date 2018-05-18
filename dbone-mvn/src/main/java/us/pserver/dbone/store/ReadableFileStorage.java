@@ -27,6 +27,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.function.IntFunction;
+import us.pserver.tools.Match;
 import us.pserver.tools.io.ByteBufferOutputStream;
 
 /**
@@ -40,15 +41,16 @@ public class ReadableFileStorage implements ReadableStorage {
   
   private final FileChannel channel;
   
-  private final StorageHeader header;
+  private final int blksize;
   
   private final IntFunction<ByteBuffer> alloc;
   
   
-  public ReadableFileStorage(Path path, FileChannel ch, StorageHeader shd, IntFunction<ByteBuffer> alloc) {
+  public ReadableFileStorage(Path path, FileChannel ch, int blockSize, IntFunction<ByteBuffer> alloc) {
     this.path = Objects.requireNonNull(path, "Bad null Path");
     this.channel = Objects.requireNonNull(ch, "Bad null FileChannel");
-    this.header = Objects.requireNonNull(shd, "Bad null StorageHeader");
+    this.blksize = Match.of(blockSize, b->b > FileChannelStorage.MIN_BLOCK_SIZE)
+        .getOrFail("Bad block size = %d (< %d)", blockSize, FileChannelStorage.MIN_BLOCK_SIZE);
     this.alloc = Objects.requireNonNull(alloc, "Bad null alloc policy IntFunction<ByteBuffer>");
   }
   

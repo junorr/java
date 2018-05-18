@@ -69,6 +69,14 @@ public class Match<T> extends Check<T,IllegalArgumentException> {
   }
   
   @Override
+  public Match<T> failWith(String msg, Object ... args) {
+    if(msg == null) {
+      throw new IllegalArgumentException("Bad null message");
+    }
+    return new Match<>(obj, match, String.format(msg, args), parent);
+  }
+  
+  @Override
   public Match<T> and(Predicate<? super T> other) {
     return new Match(obj, match.and(other), defMessage, this);
   }

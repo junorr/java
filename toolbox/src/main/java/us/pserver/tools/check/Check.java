@@ -84,6 +84,11 @@ public class Check<T, E extends Throwable> implements Predicate<T> {
     return this.get();
   } 
   
+  public T getOrFail(String message, Object ... args) {
+    this.failIfNotMatch(message, args);
+    return this.get();
+  } 
+  
   public void failIfNotMatch() {
     this.failIfNotMatch(defMessage);
   }
@@ -94,6 +99,15 @@ public class Check<T, E extends Throwable> implements Predicate<T> {
     }
     if(!test(obj)) {
       getHandle().doThrow(message);
+    }
+  }
+  
+  public void failIfNotMatch(String message, Object ... args) {
+    if(parent != null) {
+      parent.failIfNotMatch();
+    }
+    if(!test(obj)) {
+      getHandle().doThrow(String.format(message, args));
     }
   }
   
@@ -112,12 +126,23 @@ public class Check<T, E extends Throwable> implements Predicate<T> {
     return new Check<>(exclass, obj, match, msg, parent);
   }
   
+  public Check<T,E> failWith(String msg, Object ... args) {
+    if(msg == null) {
+      throw new IllegalArgumentException("Bad null message");
+    }
+    return new Check<>(exclass, obj, match, String.format(msg, args), parent);
+  }
+  
   public <F extends Throwable> Check<T,F> failWith(Class<F> ex) {
     return new Check<>(ex, obj, match, defMessage, parent);
   }
 
   public <F extends Throwable> Check<T,F> failWith(Class<F> ex, String message) {
     return new Check<>(ex, obj, match, message, parent);
+  }
+
+  public <F extends Throwable> Check<T,F> failWith(Class<F> ex, String message, Object ... args) {
+    return new Check<>(ex, obj, match, String.format(message, args), parent);
   }
 
   @Override

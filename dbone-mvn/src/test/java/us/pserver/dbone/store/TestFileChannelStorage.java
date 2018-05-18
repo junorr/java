@@ -37,9 +37,8 @@ import org.junit.jupiter.api.Test;
  */
 public class TestFileChannelStorage {
 
-  private final Path storagePath = Paths.get("D:/storage.bin");
-  
-  //private final Path storagePath = Paths.get("/storage/storage.bin");
+  //private final Path storagePath = Paths.get("D:/storage.bin");
+  private final Path storagePath = Paths.get("/storage/storage.bin");
   
   
   @Test
