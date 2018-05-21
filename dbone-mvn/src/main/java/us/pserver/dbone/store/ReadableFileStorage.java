@@ -24,7 +24,8 @@ package us.pserver.dbone.store;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.Path;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.IntFunction;
 import us.pserver.tools.Match;
@@ -37,8 +38,6 @@ import us.pserver.tools.io.ByteBufferOutputStream;
  */
 public class ReadableFileStorage implements ReadableStorage {
   
-  private final Path path;
-  
   private final FileChannel channel;
   
   private final int blksize;
@@ -46,10 +45,9 @@ public class ReadableFileStorage implements ReadableStorage {
   private final IntFunction<ByteBuffer> alloc;
   
   
-  public ReadableFileStorage(Path path, FileChannel ch, int blockSize, IntFunction<ByteBuffer> alloc) {
-    this.path = Objects.requireNonNull(path, "Bad null Path");
+  public ReadableFileStorage(FileChannel ch, int blockSize, IntFunction<ByteBuffer> alloc) {
     this.channel = Objects.requireNonNull(ch, "Bad null FileChannel");
-    this.blksize = Match.of(blockSize, b->b > FileChannelStorage.MIN_BLOCK_SIZE)
+    this.blksize = Match.of(blockSize, b->b >= FileChannelStorage.MIN_BLOCK_SIZE)
         .getOrFail("Bad block size = %d (< %d)", blockSize, FileChannelStorage.MIN_BLOCK_SIZE);
     this.alloc = Objects.requireNonNull(alloc, "Bad null alloc policy IntFunction<ByteBuffer>");
   }
@@ -58,17 +56,41 @@ public class ReadableFileStorage implements ReadableStorage {
   @Override
   public ByteBuffer get(Region reg) throws IOException {
     if(reg == null || !reg.isValid()) {
-      throw new IllegalArgumentException("get(>> Region reg <<): Bad invalid Region: "+ reg);
+      throw new IllegalArgumentException("Bad invalid Region: "+ reg);
     }
     ByteBufferOutputStream bbos = new ByteBufferOutputStream(alloc);
     Region cur = reg;
     while(cur.isValid()) {
+      ByteBuffer blb = alloc.apply(blksize);
       channel.position(cur.offset());
-      Block blk = Block.read(channel);
+      channel.read(blb);
+      blb.flip();
+      //Log.on("region = %s, blb.remaining = %d, blb = %s", cur, blb.remaining(), BytesToString.of(blb).toString(4, '|'));
+      Block blk = Block.read(blb);
+      //Log.on("blk.buffer.remaining = %d, blk.buffer = %s", blk.buffer().remaining(), BytesToString.of(blk.buffer()).toString(4, '|'));
       bbos.write(blk.buffer());
       cur = blk.nextRegion();
     }
     return bbos.toByteBuffer(alloc);
+  }
+  
+  
+  @Override
+  public List<Region> getRootRegions() throws IOException {
+    List<Region> blks = new LinkedList<>();
+    Region reg = Region.of(StorageHeader.BYTES, blksize);
+    while(reg.offset() < channel.size()) {
+      ByteBuffer buf = alloc.apply(blksize);
+      channel.position(reg.offset());
+      channel.read(buf);
+      buf.flip();
+      Block blk = Block.read(buf);
+      if(blk.isRoot()) {
+        blks.add(reg);
+      }
+      reg = Region.of(reg.end(), reg.length());
+    }
+    return blks;
   }
   
   

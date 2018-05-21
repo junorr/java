@@ -36,6 +36,8 @@ public interface RegionControl extends Writable {
   
   public Region allocate();
   
+  public Region allocateNew();
+  
   public Iterator<Region> freeRegions();
   
   public int size();

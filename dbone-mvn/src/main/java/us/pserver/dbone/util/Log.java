@@ -19,33 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.util;
 
-import us.pserver.dbone.util.BytesToString;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import us.pserver.tools.date.SimpleDate;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/05/2018
+ * @version 0.0 - 18/05/2018
  */
-public class TestBytePrinter {
-
-  private final byte[] bytes = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+public class Log {
   
-  @Test
-  public void testDefaultToString() {
-    BytesToString bp = new BytesToString(bytes);
-    bp.print();
-    Assertions.assertEquals("[1 2 3 4 5 6 7 8 | 9 10 11 12 13 14 15 16]", bp.toString());
+  public static void on(String str) {
+    StackTraceElement[] elts = Thread.currentThread().getStackTrace();
+    System.err.printf("[%s] %s >> %s%n", SimpleDate.now(), elts[2], str);
   }
   
-  @Test
-  public void testToStringWithBlock4AndDash() {
-    BytesToString bp = new BytesToString(bytes);
-    bp.print(4, '-');
-    Assertions.assertEquals("[1 2 3 4 - 5 6 7 8 - 9 10 11 12 - 13 14 15 16]", bp.toString(4, '-'));
+  public static void on(String str, Object ... args) {
+    StackTraceElement[] elts = Thread.currentThread().getStackTrace();
+    System.err.printf("[%s] %s >> %s%n", SimpleDate.now(), elts[2], String.format(str, args));
   }
   
 }

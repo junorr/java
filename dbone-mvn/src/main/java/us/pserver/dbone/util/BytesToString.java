@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.util;
 
 import java.nio.ByteBuffer;
 
@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 17/05/2018
  */
-public class BytePrinter {
+public class BytesToString {
   
   public static final int DEFAULT_BLOCK = 8;
   
@@ -37,7 +37,7 @@ public class BytePrinter {
 
   private final byte[] bytes;
   
-  public BytePrinter(ByteBuffer buf) {
+  public BytesToString(ByteBuffer buf) {
     if(buf.hasArray()) {
       bytes = buf.array();
     }
@@ -49,7 +49,7 @@ public class BytePrinter {
     }
   }
   
-  public BytePrinter(byte[] bs) {
+  public BytesToString(byte[] bs) {
     bytes = bs;
   }
   
@@ -80,6 +80,17 @@ public class BytePrinter {
       }
     }
     return sb.append("]").toString();
+  }
+  
+  
+  
+  public static BytesToString of(ByteBuffer buf) {
+    return new BytesToString(buf);
+  }
+  
+  
+  public static BytesToString of(byte[] bytes) {
+    return new BytesToString(bytes);
   }
   
 }

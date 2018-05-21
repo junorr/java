@@ -45,7 +45,7 @@ public interface Block extends Writable {
     
     @Override
     public int writeTo(ByteBuffer wb) {
-      wb.put(Integer.valueOf(this.ordinal()).byteValue());
+      wb.putInt(this.ordinal());
       return BYTES;
     }
     
@@ -57,7 +57,7 @@ public interface Block extends Writable {
       return wb;
     }
     
-    public static final int BYTES = 1;
+    public static final int BYTES = Integer.BYTES;
     
   }
   
@@ -102,30 +102,15 @@ public interface Block extends Writable {
   }
   
   public static Block read(ByteBuffer br) {
-    Type t = Type.values()[br.get()];
+    //Log.on("buffer = %s, content = %s", br, BytesToString.of(br).toString(4, '|'));
+    Type t = Type.values()[br.getInt()];
     int size = br.getInt();
     int lim = br.limit();
-    br.limit(size);
+    br.limit(br.position() + size);
     ByteBuffer buf = br.slice();
     br.limit(lim);
-    br.position(size);
+    br.position(lim - Region.BYTES);
     Region reg = Region.of(br);
-    return new DefaultBlock(t, Region.invalid(), buf, reg);
-  }
-  
-  public static Block read(ReadableByteChannel ch) throws IOException {
-    ByteBuffer b1 = ByteBuffer.allocate(Integer.BYTES + 1);
-    ch.read(b1);
-    b1.flip();
-    Type t = Type.values()[b1.get()];
-    int size = b1.getInt();
-    ByteBuffer buf = ByteBuffer.allocate(size + Region.BYTES);
-    ch.read(buf);
-    buf.position(size);
-    Region reg = Region.of(buf);
-    buf.flip();
-    buf.position(0);
-    buf.limit(size);
     return new DefaultBlock(t, Region.invalid(), buf, reg);
   }
   

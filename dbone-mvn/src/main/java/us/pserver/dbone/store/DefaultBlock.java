@@ -109,31 +109,27 @@ public class DefaultBlock implements Block {
   
   @Override
   public int writeTo(WritableByteChannel ch) throws IOException {
-    ByteBuffer wb = ByteBuffer.allocate(size);
-    wb.put(Integer.valueOf(type.ordinal()).byteValue());
-    wb.putInt(buf.remaining());
-    wb.put(buf);
-    next.writeTo(wb);
-    wb.flip();
-    ch.write(wb);
+    ch.write(toByteBuffer());
     return size;
   }
 
 
   @Override
   public int writeTo(ByteBuffer wb) {
-    wb.put(Integer.valueOf(type.ordinal()).byteValue());
+    type.writeTo(wb);
     wb.putInt(buf.remaining());
+    int pos = buf.position();
     wb.put(buf);
+    buf.position(pos);
+    wb.position(region.intLength() - Region.BYTES);
     next.writeTo(wb);
-    wb.flip();
     return size;
   }
 
 
   @Override
   public ByteBuffer toByteBuffer() {
-    ByteBuffer total = ByteBuffer.allocate(size);
+    ByteBuffer total = ByteBuffer.allocate(region.intLength());
     writeTo(total);
     total.flip();
     return total;

@@ -19,33 +19,18 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.index;
 
-import us.pserver.dbone.util.BytesToString;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/05/2018
+ * @version 0.0 - 06/12/2017
  */
-public class TestBytePrinter {
-
-  private final byte[] bytes = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-  
-  @Test
-  public void testDefaultToString() {
-    BytesToString bp = new BytesToString(bytes);
-    bp.print();
-    Assertions.assertEquals("[1 2 3 4 5 6 7 8 | 9 10 11 12 13 14 15 16]", bp.toString());
-  }
-  
-  @Test
-  public void testToStringWithBlock4AndDash() {
-    BytesToString bp = new BytesToString(bytes);
-    bp.print(4, '-');
-    Assertions.assertEquals("[1 2 3 4 - 5 6 7 8 - 9 10 11 12 - 13 14 15 16]", bp.toString(4, '-'));
-  }
-  
-}
+@Target({ElementType.FIELD, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Indexed {}

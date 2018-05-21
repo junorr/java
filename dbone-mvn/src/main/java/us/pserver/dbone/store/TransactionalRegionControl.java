@@ -83,6 +83,14 @@ public class TransactionalRegionControl implements RegionControl, Transaction {
 
 
   @Override
+  public Region allocateNew() {
+    Region reg = rgc.allocateNew();
+    log.add(new RollbackAllocationLog(rgc, reg));
+    return reg;
+  }
+
+
+  @Override
   public Iterator<Region> freeRegions() {
     return rgc.freeRegions();
   }

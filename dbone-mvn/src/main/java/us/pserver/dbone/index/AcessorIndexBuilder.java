@@ -19,33 +19,36 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.index;
 
-import us.pserver.dbone.util.BytesToString;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import java.util.function.Function;
+import us.pserver.dbone.store.Region;
+import us.pserver.tools.Match;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/05/2018
+ * @version 0.0 - 06/12/2017
  */
-public class TestBytePrinter {
+public class AcessorIndexBuilder<T, V extends Comparable<V>> implements IndexBuilder<T,V> {
+  
+  private final String name;
 
-  private final byte[] bytes = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
-  
-  @Test
-  public void testDefaultToString() {
-    BytesToString bp = new BytesToString(bytes);
-    bp.print();
-    Assertions.assertEquals("[1 2 3 4 5 6 7 8 | 9 10 11 12 13 14 15 16]", bp.toString());
+  private final Function<T, V> acessor;
+
+  public AcessorIndexBuilder(String name, Function<T, V> acessor) {
+    this.name = Match.notNull(name).getOrFail("Bad null name");
+    this.acessor = Match.notNull(acessor).getOrFail("Bad null acessor Function");
   }
-  
-  @Test
-  public void testToStringWithBlock4AndDash() {
-    BytesToString bp = new BytesToString(bytes);
-    bp.print(4, '-');
-    Assertions.assertEquals("[1 2 3 4 - 5 6 7 8 - 9 10 11 12 - 13 14 15 16]", bp.toString(4, '-'));
+
+  @Override
+  public Index<V> build(T object, Region rec) {
+    return Index.of(name, acessor.apply(object), rec);
   }
-  
+
+  @Override
+  public String name() {
+    return name;
+  }
+
 }

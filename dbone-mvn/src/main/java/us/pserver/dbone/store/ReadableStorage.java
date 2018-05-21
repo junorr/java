@@ -23,6 +23,7 @@ package us.pserver.dbone.store;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.function.IntFunction;
 
 /**
@@ -38,6 +39,8 @@ public interface ReadableStorage extends AutoCloseable {
   
   
   public ByteBuffer get(Region reg) throws IOException;
+  
+  public List<Region> getRootRegions() throws IOException;
   
   public long size() throws IOException;
   

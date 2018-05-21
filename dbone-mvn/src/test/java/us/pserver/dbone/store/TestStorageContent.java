@@ -21,6 +21,8 @@
 
 package us.pserver.dbone.store;
 
+import us.pserver.dbone.util.Log;
+import us.pserver.dbone.util.BytesToString;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -43,7 +45,13 @@ public class TestStorageContent {
     try (FileChannel ch = FileChannel.open(path, StandardOpenOption.READ)) {
       ByteBuffer buf = ByteBuffer.allocate(Long.valueOf(ch.size()).intValue());
       ch.read(buf);
-      new BytePrinter(buf).print(4, '|');
+      buf.flip();
+      int pos = buf.position();
+      Region free = Region.of(buf);
+      buf.position(pos);
+      Log.on("total.size = %d", buf.remaining());
+      Log.on("freeRegion = %s", free);
+      Log.on(BytesToString.of(buf).toString(4, '|'));
     }
   }
   

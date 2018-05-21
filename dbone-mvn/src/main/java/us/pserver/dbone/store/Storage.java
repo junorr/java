@@ -35,4 +35,8 @@ public interface Storage extends ReadableStorage {
   
   public ByteBuffer remove(Region reg) throws IOException;
   
+  public void putReservedData(ByteBuffer ... buf) throws IOException;
+  
+  public ByteBuffer getReservedData() throws IOException;
+  
 }

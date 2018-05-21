@@ -48,7 +48,17 @@ public class TestFileRegionControl {
   
   //private final Path rgcPath = Paths.get("/storage/rgc.bin");
   
-  private final RegionControl rgc = new FileRegionControl(storagePath, 1024, new LinkedBlockingDeque<>());
+  private final RegionControl rgc = new FileRegionControl(openStorageFileChannel(), 1024, new LinkedBlockingDeque<>());
+  
+  
+  private FileChannel openStorageFileChannel() {
+    try {
+      return FileChannel.open(storagePath, StandardOpenOption.READ);
+    }
+    catch(IOException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
   
   
   @Test
