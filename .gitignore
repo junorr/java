@@ -261,3 +261,5 @@
 /migcss-mvn/target/
 /jackson-test/target/
 /dbone-mvn/target/
+/filex/nbproject/private/
+/filex/build/
