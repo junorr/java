@@ -23,7 +23,6 @@ package us.pserver.dbone.store;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.Iterator;
 import java.util.Objects;
@@ -33,80 +32,51 @@ import us.pserver.tools.Match;
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/05/2018
+ * @version 0.0 - 21/05/2018
  */
-public class FileRegionControl implements RegionControl {
-  
-  private final FileChannel channel;
-  
-  private final int blksize;
+public class BufferRegionControl implements RegionControl {
   
   private final LinkedBlockingDeque<Region> freebs;
   
   
-  public FileRegionControl(FileChannel channel, int blockSize, LinkedBlockingDeque<Region> freeRegions) {
-    this.channel = Objects.requireNonNull(channel, "Bad null FileChannel");
-    this.freebs = Objects.requireNonNull(freeRegions, "Bad null free regions Deque");
-    Block.validateMinBlockSize(blockSize);
-    this.blksize = blockSize;
-  }
-  
-  
-  @Override
-  public int size() {
-    return freebs.size();
-  }
-  
-  
-  private long channelSize() {
-    return StorageException.rethrow(()->channel.size());
+  public BufferRegionControl(LinkedBlockingDeque<Region> freeRegions) {
+    this.freebs = Match.notNull(freeRegions).getOrFail("Bad null free regions Deque");
   }
   
   
   @Override
   public boolean offer(Region reg) {
-    if(reg != null && reg.isValid() && channelSize() > reg.offset()) {
+    if(reg != null && reg.isValid() && !freebs.contains(reg)) {
       freebs.add(reg);
       return true;
     }
     return false;
   }
   
-  
   @Override
   public boolean discard(Region reg) {
-    if(reg != null && reg.isValid() && reg.contains(reg)) {
-      return freebs.remove(reg);
-    }
-    return false;
+    return freebs.remove(reg);
   }
-  
   
   @Override
   public Region allocate() {
-    Region reg;
-    if(freebs.isEmpty()) {
-      reg = allocateNew();
-    }
-    else {
-      reg = freebs.poll();
-    }
-    //Log.on("allocate = %s", reg);
-    return reg;
+    return freebs.poll();
   }
-  
   
   @Override
   public Region allocateNew() {
-    return Region.of(Math.max(StorageHeader.BYTES, channelSize()), blksize);
+    return allocate();
   }
-  
   
   @Override
   public Iterator<Region> freeRegions() {
     return freebs.iterator();
   }
   
+  @Override
+  public int size() {
+    return freebs.size();
+  }
   
   @Override
   public int writeTo(WritableByteChannel ch) throws IOException {
@@ -115,7 +85,6 @@ public class FileRegionControl implements RegionControl {
     ch.write(toByteBuffer());
     return size;
   }
-  
   
   @Override
   public int writeTo(ByteBuffer wb) {
@@ -133,7 +102,6 @@ public class FileRegionControl implements RegionControl {
     }
     return size;
   }
-  
   
   @Override
   public ByteBuffer toByteBuffer() {
@@ -156,15 +124,15 @@ public class FileRegionControl implements RegionControl {
   
   public static class Builder {
     
-    private final FileChannel channel;
+    private final ByteBuffer buffer;
     
     private final int blksize;
 
     private final LinkedBlockingDeque<Region> freebs;
 
     
-    private Builder(FileChannel channel, int blockSize, LinkedBlockingDeque<Region> freeRegions) {
-      this.channel = channel;
+    private Builder(ByteBuffer buffer, int blockSize, LinkedBlockingDeque<Region> freeRegions) {
+      this.buffer = buffer;
       this.blksize = blockSize;
       this.freebs = freeRegions;
     }
@@ -173,45 +141,51 @@ public class FileRegionControl implements RegionControl {
       this(null, 0, new LinkedBlockingDeque<>());
     }
     
-    public Builder withFileChannel(FileChannel channel) {
-      return new Builder(channel, blksize, freebs);
+    public Builder withByteBuffer(ByteBuffer buffer) {
+      return new Builder(buffer, blksize, freebs);
     }
     
-    public FileChannel getFileChannel() {
-      return channel;
+    public ByteBuffer getByteBuffer() {
+      return buffer;
     }
     
     public Builder withBlockSize(int blockSize) {
-      return new Builder(channel, blockSize, freebs);
+      return new Builder(buffer, blockSize, freebs);
     }
     
     public int getBlockSize() {
       return blksize;
     }
     
-    public Builder readingStorage(FileChannel channel) throws IOException {
-      if(channel == null) {
+    public Builder readingStorage(ByteBuffer buffer) throws IOException {
+      if(buffer == null) {
         return this;
       }
-      ByteBuffer buf = ByteBuffer.allocate(Region.BYTES);
-      channel.position(0);
-      channel.read(buf);
-      buf.flip();
-      Region freereg = Region.of(buf);
+      buffer.position(0);
+      Region freereg = Region.of(buffer);
       if(freereg.offset() > 0) {
-        ReadableFileStorage rfs = new ReadableFileStorage(channel, freereg.intLength(), ReadableStorage.HEAP_ALLOC_POLICY);
-        buf = rfs.get(freereg);
+        ReadableBufferStorage rfs = new ReadableBufferStorage(buffer, freereg.intLength(), ReadableStorage.HEAP_ALLOC_POLICY);
+        ByteBuffer buf = rfs.get(freereg);
         while(buf.remaining() >= Region.BYTES) {
           freebs.add(Region.of(buf));
         }
         freebs.add(freereg);
         //Log.on("freebs.size = %d", freebs.size());
       }
-      return new Builder(channel, freereg.intLength(), freebs);
+      return new Builder(buffer, freereg.intLength(), freebs);
     }
     
-    public FileRegionControl create() {
-      return new FileRegionControl(channel, blksize, freebs);
+    public BufferRegionControl create() {
+      if(buffer == null) {
+        throw new IllegalStateException("Bad null ByteBuffer");
+      }
+      Block.validateMinBlockSize(blksize);
+      Region reg = Region.of(StorageHeader.BYTES, blksize);
+      while(reg.intEnd() < buffer.limit()) {
+        freebs.add(reg);
+        reg = Region.of(reg.end(), blksize);
+      }
+      return new BufferRegionControl(freebs);
     }
     
   }

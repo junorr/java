@@ -23,12 +23,10 @@ package us.pserver.dbone.store;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.IntFunction;
-import us.pserver.tools.Match;
 import us.pserver.tools.io.ByteBufferOutputStream;
 
 /**
@@ -36,17 +34,17 @@ import us.pserver.tools.io.ByteBufferOutputStream;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/05/2018
  */
-public class ReadableFileStorage implements ReadableStorage {
+public class ReadableBufferStorage implements ReadableStorage {
   
-  private final FileChannel channel;
+  private final ByteBuffer buffer;
   
   private final int blksize;
   
   private final IntFunction<ByteBuffer> alloc;
   
   
-  public ReadableFileStorage(FileChannel ch, int blockSize, IntFunction<ByteBuffer> alloc) {
-    this.channel = Objects.requireNonNull(ch, "Bad null FileChannel");
+  public ReadableBufferStorage(ByteBuffer buffer, int blockSize, IntFunction<ByteBuffer> alloc) {
+    this.buffer = Objects.requireNonNull(buffer, "Bad null MappedByteBuffer");
     Block.validateMinBlockSize(blockSize);
     this.blksize = blockSize;
     this.alloc = Objects.requireNonNull(alloc, "Bad null alloc policy IntFunction<ByteBuffer>");
@@ -54,21 +52,19 @@ public class ReadableFileStorage implements ReadableStorage {
   
   
   @Override
-  public ByteBuffer get(Region reg) throws IOException {
+  public ByteBuffer get(Region reg) {
     if(reg == null || !reg.isValid()) {
       throw new IllegalArgumentException("Bad invalid Region: "+ reg);
     }
     ByteBufferOutputStream bbos = new ByteBufferOutputStream(alloc);
     Region cur = reg;
     while(cur.isValid()) {
-      ByteBuffer blb = alloc.apply(blksize);
-      channel.position(cur.offset());
-      channel.read(blb);
-      blb.flip();
-      //Log.on("region = %s, blb.remaining = %d, blb = %s", cur, blb.remaining(), BytesToString.of(blb).toString(4, '|'));
-      Block blk = Block.read(blb);
-      //Log.on("blk.buffer.remaining = %d, blk.buffer = %s", blk.buffer().remaining(), BytesToString.of(blk.buffer()).toString(4, '|'));
+      int lim = buffer.limit();
+      buffer.position(cur.intOffset());
+      buffer.limit(buffer.position() + blksize);
+      Block blk = Block.read(buffer.slice());
       bbos.write(blk.buffer());
+      buffer.limit(lim);
       cur = blk.nextRegion();
     }
     return bbos.toByteBuffer(alloc);
@@ -76,15 +72,14 @@ public class ReadableFileStorage implements ReadableStorage {
   
   
   @Override
-  public List<Region> getRootRegions() throws IOException {
+  public List<Region> getRootRegions() {
     List<Region> blks = new LinkedList<>();
     Region reg = Region.of(StorageHeader.BYTES, blksize);
-    while(reg.offset() < channel.size()) {
-      ByteBuffer buf = alloc.apply(blksize);
-      channel.position(reg.offset());
-      channel.read(buf);
-      buf.flip();
-      Block blk = Block.read(buf);
+    while(reg.offset() < buffer.limit()) {
+      int lim = buffer.limit();
+      buffer.position(reg.intOffset());
+      buffer.limit(buffer.position() + blksize);
+      Block blk = Block.read(buffer.slice());
       if(blk.isRoot()) {
         blks.add(reg);
       }
@@ -95,15 +90,13 @@ public class ReadableFileStorage implements ReadableStorage {
   
   
   @Override
-  public long size() throws IOException {
-    return channel.size();
+  public long size() {
+    return buffer.limit();
   }
 
 
   @Override
-  public void close() throws IOException {
-    channel.close();
-  }
+  public void close() {}
   
   
   @Override

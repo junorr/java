@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.function.IntFunction;
+import us.pserver.dbone.util.Log;
 import us.pserver.tools.Match;
 
 /**
@@ -36,9 +37,9 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/05/2018
  */
-public class FileChannelStorage extends ReadableFileStorage implements Storage {
+public class ByteBufferStorage extends ReadableBufferStorage implements Storage {
   
-  private final FileChannel channel;
+  private final ByteBuffer buffer;
   
   private final StorageHeader header;
   
@@ -49,9 +50,9 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   private final int writelen;
   
   
-  public FileChannelStorage(FileChannel ch, StorageHeader header, RegionControl rgc, IntFunction<ByteBuffer> alloc) {
-    super(ch, header.getBlockSize(), alloc);
-    this.channel = Objects.requireNonNull(ch, "Bad null FileChannel");
+  public ByteBufferStorage(ByteBuffer buf, StorageHeader header, RegionControl rgc, IntFunction<ByteBuffer> alloc) {
+    super(buf, header.getBlockSize(), alloc);
+    this.buffer = Objects.requireNonNull(buf, "Bad null ByteBuffer");
     this.header = Match.notNull(header)
         .and(h->h.getBlockSize() >= Block.MIN_BLOCK_SIZE)
         .getOrFail("Bad null StorageHeader = %s", header);
@@ -62,7 +63,7 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   
   
   @Override
-  public Region put(ByteBuffer ... buf) throws IOException {
+  public Region put(ByteBuffer ... buf) {
     if(buf == null) {
       throw new IllegalArgumentException("Bad null ByteBuffer array = "+ buf);
     }
@@ -75,7 +76,7 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   }
   
   
-  private void put(Region reg, ByteBuffer ... buf) throws IOException {
+  private void put(Region reg, ByteBuffer ... buf) {
     if(reg == null || !reg.isValid()) {
       throw new IllegalArgumentException("Bad Region = "+ reg);
     }
@@ -93,7 +94,7 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   }
   
   
-  private Block putBlock(Block blk) throws IOException {
+  private Block putBlock(Block blk) {
     ByteBuffer blb = blk.toByteBuffer();
     //Log.on("block.remaining = %d, block = %s", blb.remaining(), BytesToString.of(blb).toString(4, '|'));
     if(blk.buffer().remaining() > writelen) {
@@ -105,28 +106,28 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   }
   
   
-  private void setNext(Region reg, Region next) throws IOException {
-    long nextPosition = reg.offset() + Block.STARTING_BYTES + writelen;
-    if(channel.size() > nextPosition) {
-      channel.position(nextPosition);
-      channel.write(next.toByteBuffer());
+  private void setNext(Region reg, Region next) {
+    int nextPosition = reg.intOffset() + Block.STARTING_BYTES + writelen;
+    if(buffer.limit() > nextPosition) {
+      buffer.position(nextPosition);
+      buffer.put(next.toByteBuffer());
     }
   }
   
   
-  private void setReserved(Region reg) throws IOException {
+  private void setReserved(Region reg) {
     if(reg != null) {
-      channel.position(Region.BYTES);
-      channel.write(reg.toByteBuffer());
+      buffer.position(Region.BYTES);
+      buffer.put(reg.toByteBuffer());
     }
   }
   
   
-  private Block putLarger(Block blk) throws IOException {
+  private Block putLarger(Block blk) {
     int lim = blk.buffer().limit();
     blk.buffer().limit(blk.buffer().position() + writelen);
-    channel.position(blk.region().offset());
-    channel.write(blk.toByteBuffer());
+    buffer.position(blk.region().intOffset());
+    buffer.put(blk.toByteBuffer());
     blk.buffer().limit(lim);
     blk.buffer().position(blk.buffer().position() + writelen);
     Block next = Block.node(rgc.allocate(), blk.buffer(), Region.invalid());
@@ -137,17 +138,17 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   }
   
   
-  private Block putSmaller(Block blk) throws IOException {
-    channel.position(blk.region().offset());
+  private Block putSmaller(Block blk) {
+    buffer.position(blk.region().intOffset());
     //Log.on("channel.position = %d", channel.position());
-    channel.write(blk.toByteBuffer());
+    buffer.put(blk.toByteBuffer());
     //Log.on("channel.size = %d", channel.size());
     return blk;
   }
   
   
   @Override
-  public void putReservedData(ByteBuffer ... buf) throws IOException {
+  public void putReservedData(ByteBuffer ... buf) {
     Region res = put(buf);
     //Log.on("reserved = %s", res);
     setReserved(res);
@@ -155,9 +156,9 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   
   
   @Override
-  public ByteBuffer getReservedData() throws IOException {
-    channel.position(0);
-    StorageHeader hd = StorageHeader.read(channel);
+  public ByteBuffer getReservedData() {
+    buffer.position(0);
+    StorageHeader hd = StorageHeader.read(buffer);
     //Log.on("StorageHeader = %s", hd);
     if(!hd.getReservedRegion().isValid()) {
       return ByteBuffer.allocate(0);
@@ -167,8 +168,8 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   
   
   @Override
-  public ByteBuffer remove(Region reg) throws IOException {
-    if(reg != null && reg.isValid() && channel.size() >= reg.end()) {
+  public ByteBuffer remove(Region reg) {
+    if(reg != null && reg.isValid() && buffer.limit() >= reg.end()) {
       ByteBuffer buf = get(reg);
       rgc.offer(reg);
       return buf;
@@ -178,13 +179,13 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   
   
   @Override
-  public long size() throws IOException {
-    return channel.size();
+  public long size() {
+    return buffer.limit();
   }
   
   
   @Override
-  public void close() throws IOException {
+  public void close() {
     Region freereg = Region.of(0, header.getBlockSize());
     if(rgc.size() > 1) {
       freereg = rgc.allocate();
@@ -194,9 +195,8 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
       freereg = rgc.allocateNew();
       put(freereg, rgc.toByteBuffer());
     }
-    channel.position(0);
-    channel.write(freereg.toByteBuffer());
-    channel.close();
+    buffer.position(0);
+    buffer.put(freereg.toByteBuffer());
   }
   
   
@@ -219,7 +219,7 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
     
     private final Path path;
     
-    private final FileChannel channel;
+    private final ByteBuffer buffer;
     
     private final StorageHeader header;
     
@@ -227,9 +227,9 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
     
     private final IntFunction<ByteBuffer> alloc;
     
-    private Builder(Path path, FileChannel ch, StorageHeader header, RegionControl rgc, IntFunction<ByteBuffer> alloc) {
+    private Builder(Path path, ByteBuffer buffer, StorageHeader header, RegionControl rgc, IntFunction<ByteBuffer> alloc) {
       this.path = path;
-      this.channel = ch;
+      this.buffer = buffer;
       this.header = header;
       this.rgc = rgc;
       this.alloc = alloc;
@@ -243,28 +243,34 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
       if(path == null) {
         return this;
       }
-      return new Builder(path, channel, header, rgc, alloc);
+      return new Builder(path, buffer, header, rgc, alloc);
     }
     
-    public Builder openRWFileChannel() throws IOException {
-      FileChannel channel = FileChannel.open(path, 
-          StandardOpenOption.READ, 
-          StandardOpenOption.WRITE, 
-          StandardOpenOption.CREATE 
-      );
-      return new Builder(path, channel, header, rgc, alloc);
+    public Builder openMappedByteBuffer(long size) throws IOException {
+      try (
+          FileChannel channel = FileChannel.open(path, 
+              StandardOpenOption.READ, 
+              StandardOpenOption.WRITE, 
+              StandardOpenOption.CREATE 
+          )
+      ) {
+        return new Builder(path, 
+            channel.map(FileChannel.MapMode.READ_WRITE, 0, size), 
+            header, rgc, alloc
+        );
+      }
     }
     
     public Path getPath() {
       return path;
     }
     
-    public FileChannel getFileChannel() {
-      return channel;
+    public ByteBuffer getByteBuffer() {
+      return buffer;
     }
     
     public Builder withHeader(StorageHeader header) {
-      return new Builder(path, channel, header, rgc, alloc);
+      return new Builder(path, buffer, header, rgc, alloc);
     }
     
     public StorageHeader getStorageHeader() {
@@ -275,7 +281,7 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
       if(rgc == null) {
         return this;
       }
-      return new Builder(path, channel, header, rgc, alloc);
+      return new Builder(path, buffer, header, rgc, alloc);
     }
     
     public RegionControl getRegionControl() {
@@ -286,49 +292,48 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
       if(rgc == null) {
         return this;
       }
-      return new Builder(path, channel, header, rgc, alloc);
+      return new Builder(path, buffer, header, rgc, alloc);
     }
     
     public IntFunction<ByteBuffer> getBufferAllocPolicy() {
       return alloc;
     }
     
-    public FileChannelStorage create() throws IOException {
-      FileChannel channel = this.channel;
-      if(this.path != null && channel == null) {
-        channel = openRWFileChannel().getFileChannel();
+    public ByteBufferStorage create() throws IOException {
+      ByteBuffer buffer = this.buffer;
+      if(this.path != null && buffer == null) {
+        buffer = openMappedByteBuffer(Integer.MAX_VALUE).getByteBuffer();
       }
-      return new FileChannelStorage(channel, header, rgc, alloc);
+      return new ByteBufferStorage(buffer, header, rgc, alloc);
     }
     
-    public FileChannelStorage open(Path path) throws IOException {
+    public ByteBufferStorage open(Path path) throws IOException {
       if(path == null || !Files.exists(path) || Files.size(path) < Region.BYTES) {
         throw new IllegalArgumentException("Bad Path = "+ path);
       }
-      FileChannel ch = withPath(path).openRWFileChannel().getFileChannel();
-      ByteBuffer buf = alloc.apply(StorageHeader.BYTES);
-      ch.read(buf);
-      buf.flip();
-      StorageHeader hd = StorageHeader.read(buf);
-      RegionControl rgc = FileRegionControl.builder().readingStorage(ch).create();
-      return new FileChannelStorage(ch, hd, rgc, alloc); 
+      ByteBuffer buffer = withPath(path).openMappedByteBuffer(8*1024*1024).getByteBuffer();
+      buffer.position(0);
+      StorageHeader hd = StorageHeader.read(buffer);
+      RegionControl rgc = BufferRegionControl.builder().readingStorage(buffer).create();
+      return new ByteBufferStorage(buffer, hd, rgc, alloc); 
     }
     
-    public FileChannelStorage create(Path path, int blockSize) throws IOException {
+    public ByteBufferStorage create(Path path, int blockSize) throws IOException {
       if(path == null) {
         throw new IllegalArgumentException("Bad Path = "+ path);
       }
-      FileChannel ch = withPath(path).openRWFileChannel().getFileChannel();
-      FileRegionControl frc = FileRegionControl.builder()
+      ByteBuffer buffer = withPath(path).openMappedByteBuffer(8*1024*1024).getByteBuffer();
+      Log.on("openMappedByteBuffer( %d ): %s", 8*1024*1024, buffer);
+      BufferRegionControl frc = BufferRegionControl.builder()
           .withBlockSize(blockSize)
-          .withFileChannel(ch)
+          .withByteBuffer(buffer)
           .create();
-      ch.truncate(Region.BYTES);
+      Log.on("BufferRegionControl = %s", frc);
       StorageHeader hd = StorageHeader.of(Region.of(0, blockSize), Region.invalid());
-      return new FileChannelStorage(ch, hd, frc, alloc);
+      return new ByteBufferStorage(buffer, hd, frc, alloc);
     }
     
-    public FileChannelStorage createOrOpen(Path path) throws IOException {
+    public ByteBufferStorage createOrOpen(Path path) throws IOException {
       if(path == null) {
         throw new IllegalArgumentException("Bad Path = "+ path);
       }

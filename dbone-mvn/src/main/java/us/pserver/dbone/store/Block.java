@@ -23,7 +23,6 @@ package us.pserver.dbone.store;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
 /**
@@ -32,6 +31,11 @@ import java.nio.channels.WritableByteChannel;
  * @version 0.0 - 02/05/2018
  */
 public interface Block extends Writable {
+  
+  public static final int MIN_BLOCK_SIZE = Block.META_BYTES + Region.BYTES;
+  
+  public static final int DEFAULT_BLOCK_SIZE = 1024;
+  
   
   public static enum Type implements Writable {
     
@@ -112,6 +116,20 @@ public interface Block extends Writable {
     br.position(lim - Region.BYTES);
     Region reg = Region.of(br);
     return new DefaultBlock(t, Region.invalid(), buf, reg);
+  }
+  
+  
+  public static void validateMinBlockSize(int size) {
+    if(!isValidBlockSize(size)) {
+      throw new IllegalArgumentException(
+          String.format("Bad block size: %d (< %d)", size, MIN_BLOCK_SIZE)
+      );
+    }
+  }
+  
+  
+  public static boolean isValidBlockSize(int size) {
+    return size >= MIN_BLOCK_SIZE;
   }
   
 }

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.util.Objects;
+import us.pserver.dbone.util.Log;
 
 /**
  *
@@ -116,6 +117,7 @@ public class DefaultBlock implements Block {
 
   @Override
   public int writeTo(ByteBuffer wb) {
+    Log.on("buffer = %s", wb);
     type.writeTo(wb);
     wb.putInt(buf.remaining());
     int pos = buf.position();
