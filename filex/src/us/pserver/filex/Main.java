@@ -76,23 +76,6 @@ public class Main {
   }
   
   
-  public void help() {
-    String help = "--------------------------"
-        + " Filex - Search & Extract"
-        + "--------------------------"
-        + " Usage: filex <options> <file>"
-        + "  -c / --ignore-case:               -> Disable case sensitivity"
-        + "  -g / --get: <pos> <len> [charset] -> Get the content specified"
-        + "  -h / --help:                      -> Prints this help text"
-        + "  -i / --index-of: [pos] <content>  -> Search the <content> index starting at [pos]"
-        + "  -l / --line-unix: [pos]           -> Get a line (unix ending) starting at [pos]"
-        + "  -w / --line-win: [pos]            -> Get a line (windows ending) starting at [pos]"
-        + "  -s / --buffer-size: <size>        -> Set the internal buffer size"
-        + "  -v / --verbose:                   -> Prints additional information on execution";
-    System.out.println(help);
-  }
-  
-  
   public void indexOf(Filex fx, OptionArg opa) throws IOException {
     long idx = -1;
     long pos = -1;
@@ -182,12 +165,41 @@ public class Main {
   }
   
   
+  public static void help() {
+    String help = "-------------------------------\n"
+        + " Filex - File Search & Extract\n"
+        + "-------------------------------\n"
+        + " Usage: filex <options> <file>\n"
+        + "   -c / --ignore-case:               -> Disable case sensitivity\n"
+        + "   -g / --get: <pos> <len> [charset] -> Get content starting at [pos=0] with\n"
+        + "                                        <len> and [charset=UTF-8]\n"
+        + "   -h / --help:                      -> Prints this help text\n"
+        + "   -i / --index-of: [pos] <content>  -> Search <content> index starting\n"
+        + "                                        at [pos=0]\n"
+        + "   -l / --line-unix: [pos]           -> Get a line (unix ending) starting\n"
+        + "                                        at [pos=0]\n"
+        + "   -w / --line-win: [pos]            -> Get a line (windows ending) starting\n"
+        + "                                        at [pos=0]\n"
+        + "   -s / --buffer-size: <size>        -> Set the internal buffer size\n"
+        + "   -v / --verbose:                   -> Prints additional information on\n"
+        + "                                        execution\n";
+    System.out.println(help);
+  }
+  
+  
   public static void main(String[] args) throws IOException {
-    args = new String[]{"-i", "microdoc", "-v", "/storage/java/filex/disecMicro.sql"};
+    //String file = "/storage/java/filex/disecMicro.sql";
+    String file = "d:/java/filex/disecMicro.sql";
+    args = new String[]{"-i", "EXISTS `sqls`", "-v", file};
+    //args = new String[]{"-i", "Grupo de comandos", "-v", file};
+    //args = new String[]{"-i", "EXISTS `log`;", file};
+    //args = new String[]{"-l", "2227", file};
+    //args = new String[]{"-g", "4356", "40", file};
+    //args = new String[]{"-h"};
     List<OptionArg> oar = new LinkedList<>();
     Option opt = null;
     List<String> larg = new LinkedList<>();
-    for(int i = 0; i < args.length; i++) {
+    for(int i = 0; i < args.length -1; i++) {
       if(args[i].startsWith("-")) {
         if(opt != null) {
           oar.add(new OptionArg(opt, new ArrayList<>(larg)));
@@ -199,7 +211,16 @@ public class Main {
         larg.add(args[i]);
       }
     }
-    new Main(Paths.get(args[args.length -1]), new Options(oar)).exec();
+    if(opt != null) {
+      oar.add(new OptionArg(opt, larg));
+    }
+    Options opts = new Options(oar);
+    if(opts.contains(Option.HELP)) {
+      help();
+    }
+    else {
+      new Main(Paths.get(args[args.length -1]), new Options(oar)).exec();
+    }
   }
   
 }

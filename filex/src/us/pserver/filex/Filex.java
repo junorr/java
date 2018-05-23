@@ -96,15 +96,122 @@ public class Filex {
       throw new IllegalArgumentException("Bad position: "+ pos+ "(0 >= pos < "+ channel.size()+ ")");
     }
     channel.position(pos);
+    while(channel.position() < channel.size()) {
+      buffer.clear();
+      channel.read(buffer);
+      buffer.flip();
+      int rem = buffer.remaining();
+      String content = StandardCharsets.UTF_8.decode(buffer).toString();
+      Log.on("buffer.remaining = %d", rem);
+      Log.on("content.length = %d", content.length());
+      int idx = content.indexOf(str);
+      double dif = Integer.valueOf(idx).doubleValue() 
+          / Integer.valueOf(content.length()).doubleValue();
+      
+      if(idx >= 0) {
+        Log.on("channel.position(%d) - rem(%d) + pos(%d) + Math.floor(rem * dif)(%d * %f) = %d", 
+            channel.position(), rem, pos, rem, dif, 
+            pos + channel.position() - rem + (rem - (content.length() - idx)) pos + Double.valueOf(Math.floor(rem * dif)).intValue());
+        return channel.position() - rem + pos + Double.valueOf(Math.floor(rem * dif)).intValue();
+      }
+    }
+    return -1;
+  }
+  
+  
+  public long indexOf1(long pos, String str) throws IOException {
+    Objects.requireNonNull(str, "Bad null search String");
+    if(pos < 0 || pos > channel.size()) {
+      throw new IllegalArgumentException("Bad position: "+ pos+ "(0 >= pos < "+ channel.size()+ ")");
+    }
+    channel.position(pos);
+    while(channel.position() < channel.size()) {
+      buffer.clear();
+      channel.read(buffer);
+      buffer.flip();
+      int rem = buffer.remaining();
+      String content = StandardCharsets.UTF_8.decode(buffer).toString();
+      Log.on("buffer.remaining = %d", rem);
+      Log.on("content.length = %d", content.length());
+      int idx = content.indexOf(str);
+      double dif = Integer.valueOf(idx).doubleValue() 
+          / Integer.valueOf(content.length()).doubleValue();
+      
+      if(idx >= 0) {
+        Log.on("channel.position(%d) - rem(%d) + pos(%d) + Math.floor(rem * dif)(%d * %f) = %d", 
+            channel.position(), rem, pos, rem, dif, 
+            channel.position() - rem + pos + Double.valueOf(Math.floor(rem * dif)).intValue());
+        return channel.position() - rem + pos + Double.valueOf(Math.floor(rem * dif)).intValue();
+      }
+    }
+    return -1;
+  }
+  
+  
+  public long indexOf2(long pos, String str) throws IOException {
+    Objects.requireNonNull(str, "Bad null search String");
+    if(pos < 0 || pos > channel.size()) {
+      throw new IllegalArgumentException("Bad position: "+ pos+ "(0 >= pos < "+ channel.size()+ ")");
+    }
+    channel.position(pos);
+    Log.on("channel.position(0) = %d", channel.position());
+    while(channel.position() < channel.size()) {
+      buffer.clear();
+      channel.read(buffer);
+      buffer.flip();
+      int rem = buffer.remaining();
+      String content = StandardCharsets.UTF_8.decode(buffer).toString();
+      Log.on("buffer.remaining = %d", rem);
+      Log.on("content.length = %d", content.length());
+      double dif = Integer.valueOf(rem).doubleValue() 
+          / Integer.valueOf(content.length()).doubleValue();
+      
+      int idx = content.indexOf(str);
+      if(idx >= 0) {
+        Log.on("channel.position(%d) - rem(%d) + pos(%d) + Math.floor(idx * dif)(%d * %f) = %d", 
+            channel.position(), rem, pos, idx, dif, 
+            channel.position() - rem + pos + Double.valueOf(Math.floor(idx * dif)).intValue());
+        return channel.position() - rem + pos + Double.valueOf(Math.floor(idx * dif)).intValue();
+      }
+    }
+    Log.on("channel.position(2) = %d", channel.position());
+    return -1;
+  }
+  
+  
+  public long _indexOf(long pos, String str) throws IOException {
+    Objects.requireNonNull(str, "Bad null search String");
+    if(pos < 0 || pos > channel.size()) {
+      throw new IllegalArgumentException("Bad position: "+ pos+ "(0 >= pos < "+ channel.size()+ ")");
+    }
     buffer.clear();
+    channel.position(pos);
     channel.read(buffer);
     buffer.flip();
-    String cont = StandardCharsets.UTF_8.decode(buffer).toString();
-    int idx = cont.indexOf(str);
-    if(!isCaseSensitive()) {
-      idx = cont.toLowerCase().indexOf(str.toLowerCase());
+    ByteBuffer search = StandardCharsets.UTF_8.encode(str);
+    int idx = indexOf(buffer, search);
+    return idx >= 0 ? idx + pos : -1;
+  }
+  
+  
+  public int indexOf(ByteBuffer content, ByteBuffer search) {
+    int spos = search.position();
+    int cpos = content.position();
+    int size = search.remaining();
+    int count = 0;
+    while(content.hasRemaining() && count != size) {
+      if(content.get() == search.get()) {
+        count++;
+      }
+      else if(count == size) {
+        return content.position() - size;
+      }
+      else {
+        count = 0;
+        search.position(spos);
+      }
     }
-    return pos + idx;
+    return -1;
   }
   
   
