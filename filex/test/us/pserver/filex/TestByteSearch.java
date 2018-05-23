@@ -21,25 +21,39 @@
 
 package us.pserver.filex;
 
-import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 22/05/2018
+ * @version 0.0 - 23/05/2018
  */
-public class TestFilex {
+public class TestByteSearch {
 
+  private static final ByteBuffer search = StandardCharsets.UTF_8.encode("is not");
   
-  public static void main(String[] args) throws IOException {
-    Filex fx = Filex.builder(Paths.get("/storage/java/filex/disecMicro.sql")).create();
-    long idx = fx.indexOf(0, "DROP TABLE IF EXISTS `log`;", StandardCharsets.UTF_8);
-    System.out.println("** fx.indexOf(\"DROP TABLE IF EXISTS `log`;\"): "+ idx);
-    String ln = fx.getUnixLine(idx + 1);
-    System.out.println("** fx.getUnixLine(idx): "+ ln);
-    System.out.printf("** ln.length = %d%n", ln.length());
+  private static final ByteBuffer content = StandardCharsets.UTF_8.encode("The i world is not enought");
+  
+  private static int find(ByteBuffer search, ByteBuffer content) {
+    int spos = search.position();
+    int size = search.remaining();
+    int count = 0;
+    while(content.hasRemaining() && count != size) {
+      if(content.get() == search.get()) {
+        count++;
+      }
+      else {
+        count = 0;
+        search.position(spos);
+      }
+    }
+    return count > 0 ? content.position() - count : -1;
+  }
+  
+  
+  public static void main(String[] args) {
+    System.out.printf("* find( %s, %s ): %d", search, content, find(search, content));
   }
   
 }

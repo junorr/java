@@ -69,4 +69,8 @@ public class OptionArg {
     }
   }
   
+  public String toString() {
+    return "OptionArg{ " + opt + ": " + args + " }";
+  }
+  
 }

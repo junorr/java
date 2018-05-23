@@ -55,9 +55,6 @@ public class Main {
       b = b.withBufferSize(opts.get(Option.BUFFER_SIZE).getInt(0));
     }
     Filex fx = b.create();
-    if(opts.contains(Option.IGNORE_CASE)) {
-      fx.caseSensitiveOff();
-    }
     if(opts.contains(Option.INDEXOF)) {
       indexOf(fx, opts.get(Option.INDEXOF));
     }
@@ -77,21 +74,25 @@ public class Main {
   
   
   public void indexOf(Filex fx, OptionArg opa) throws IOException {
-    long idx = -1;
-    long pos = -1;
+    long pos = 0;
     String term = null;
-    if(opa.getArgs().size() > 1) {
+    Charset cs = StandardCharsets.UTF_8;
+    if(opa.getArgs().size() > 2) {
       pos = opa.getInt(0);
       term = opa.get(1);
-      idx = fx.indexOf(opa.getLong(0), opa.get(1));
+      cs = Charset.forName(opa.get(2));
+    }
+    else if(opa.getArgs().size() > 1) {
+      pos = opa.getInt(0);
+      term = opa.get(1);
     }
     else if(opa.getArgs().size() == 1) {
       term = opa.get(0);
-      idx = fx.indexOf(opa.get(0));
     }
     else {
       throw new IllegalStateException("indexOf require 1+ args");
     }
+    long idx = fx.indexOf(pos, term, cs);
     if(opts.contains(Option.VERBOSE)) {
       if(pos >= 0) {
         System.out.printf("indexOf( %d, %s ): %d%n", pos, term, idx);
@@ -170,36 +171,40 @@ public class Main {
         + " Filex - File Search & Extract\n"
         + "-------------------------------\n"
         + " Usage: filex <options> <file>\n"
-        + "   -c / --ignore-case:               -> Disable case sensitivity\n"
-        + "   -g / --get: <pos> <len> [charset] -> Get content starting at [pos=0] with\n"
-        + "                                        <len> and [charset=UTF-8]\n"
-        + "   -h / --help:                      -> Prints this help text\n"
-        + "   -i / --index-of: [pos] <content>  -> Search <content> index starting\n"
-        + "                                        at [pos=0]\n"
-        + "   -l / --line-unix: [pos]           -> Get a line (unix ending) starting\n"
-        + "                                        at [pos=0]\n"
-        + "   -w / --line-win: [pos]            -> Get a line (windows ending) starting\n"
-        + "                                        at [pos=0]\n"
-        + "   -s / --buffer-size: <size>        -> Set the internal buffer size\n"
-        + "   -v / --verbose:                   -> Prints additional information on\n"
-        + "                                        execution\n";
+        + " Options:\n"
+        + "   -c / --ignore-case:\n"
+        + "      Disable case sensitivity\n"
+        + "   -g / --get: <pos> <len> [charset]\n"
+        + "      Get content starting at [pos=0] with <len> and [charset=UTF-8]\n"
+        + "   -h / --help:\n"
+        + "      Prints this help text\n"
+        + "   -i / --index-of: [pos] <content> [charset]\n"
+        + "      Search <content> index with [charset=UTF-8], starting at [pos=0]\n"
+        + "   -l / --line-unix: [pos]\n"
+        + "      Get a line (unix ending) starting at [pos=0]\n"
+        + "   -w / --line-win: [pos]\n"
+        + "      Get a line (windows ending) starting at [pos=0]\n"
+        + "   -s / --buffer-size: <size>\n"
+        + "      Set the internal buffer size\n"
+        + "   -v / --verbose:\n"
+        + "      Prints additional information on execution\n";
     System.out.println(help);
   }
   
   
   public static void main(String[] args) throws IOException {
-    //String file = "/storage/java/filex/disecMicro.sql";
-    String file = "d:/java/filex/disecMicro.sql";
-    args = new String[]{"-i", "EXISTS `sqls`", "-v", file};
+    String file = "/storage/java/filex/disecMicro.sql";
+    //String file = "d:/java/filex/disecMicro.sql";
+    //args = new String[]{"-i", "EXISTS `sqls`", "-v", file};
     //args = new String[]{"-i", "Grupo de comandos", "-v", file};
     //args = new String[]{"-i", "EXISTS `log`;", file};
     //args = new String[]{"-l", "2227", file};
-    //args = new String[]{"-g", "4356", "40", file};
-    //args = new String[]{"-h"};
+    //args = new String[]{"-g", "4262", "40", file};
+    args = new String[]{"-h"};
     List<OptionArg> oar = new LinkedList<>();
     Option opt = null;
     List<String> larg = new LinkedList<>();
-    for(int i = 0; i < args.length -1; i++) {
+    for(int i = 0; i < args.length; i++) {
       if(args[i].startsWith("-")) {
         if(opt != null) {
           oar.add(new OptionArg(opt, new ArrayList<>(larg)));
@@ -207,7 +212,7 @@ public class Main {
         }
         opt = Option.fromString(args[i]);
       }
-      else {
+      else if(i < args.length -1) {
         larg.add(args[i]);
       }
     }

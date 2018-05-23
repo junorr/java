@@ -38,8 +38,6 @@ public enum Option {
 
   LINE_WIN("-w", "--line-win"),
 
-  IGNORE_CASE("-c", "--ignore-case"),
-
   BUFFER_SIZE("-s", "--buffer-size"),
 
   VERBOSE("-v", "--verbose");
@@ -79,9 +77,6 @@ public enum Option {
       case "-w":
       case "--line-win":
         return LINE_WIN;
-      case "-c":
-      case "--ignore-case":
-        return IGNORE_CASE;
       case "-s":
       case "--buffer-size":
         return BUFFER_SIZE;

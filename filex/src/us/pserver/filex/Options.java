@@ -49,4 +49,9 @@ public class Options {
     return args.stream().filter(a->a.getOption() == opt).findAny().get();
   }
   
+  
+  public String toString() {
+    return "Options{ " + args + " }";
+  }
+  
 }
