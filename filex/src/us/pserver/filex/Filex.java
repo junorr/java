@@ -79,15 +79,19 @@ public class Filex {
     ByteBuffer search = cs.encode(str);
     long cpos = pos;
     int idx = -1;
+    int remaining = 0;
     while(channel.position() < channel.size() && idx < 0) {
       channel.position(cpos);
       buffer.clear();
       channel.read(buffer);
       buffer.flip();
+      remaining = buffer.remaining();
       idx = indexOf(search, buffer);
       cpos = cpos + (channel.position() - cpos) / 2;
     }
-    return idx;
+    Log.on("channel.position(%d) - buffer.remaining(%d) + indexOf(%d) = %d", 
+        channel.position(), remaining, idx, channel.position() - remaining + idx);
+    return channel.position() - remaining + idx;
   }
   
   
@@ -104,7 +108,7 @@ public class Filex {
         search.position(spos);
       }
     }
-    return count > 0 ? content.position() - count : -1;
+    return count == size ? content.position() - count : -1;
   }
   
   

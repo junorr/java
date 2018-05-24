@@ -52,7 +52,11 @@ public class Main {
   public void exec() throws IOException {
     Filex.Builder b = Filex.builder(path).withBufferAllocPolicy(ByteBuffer::allocate);
     if(opts.contains(Option.BUFFER_SIZE)) {
-      b = b.withBufferSize(opts.get(Option.BUFFER_SIZE).getInt(0));
+      int bs = opts.get(Option.BUFFER_SIZE).getInt(0);
+      if(opts.contains(Option.VERBOSE)) {
+        System.out.printf("withBufferSize( %d )%n", bs);
+      }
+      b = b.withBufferSize(bs);
     }
     Filex fx = b.create();
     if(opts.contains(Option.INDEXOF)) {
@@ -94,12 +98,7 @@ public class Main {
     }
     long idx = fx.indexOf(pos, term, cs);
     if(opts.contains(Option.VERBOSE)) {
-      if(pos >= 0) {
-        System.out.printf("indexOf( %d, %s ): %d%n", pos, term, idx);
-      }
-      else {
-        System.out.printf("indexOf( %s ): %d%n", term, idx);
-      }
+      System.out.printf("indexOf( %d, '%s', %s ): %d%n", pos, term, cs, idx);
     }
     else {
       System.out.println(idx);
@@ -172,14 +171,12 @@ public class Main {
         + "-------------------------------\n"
         + " Usage: filex <options> <file>\n"
         + " Options:\n"
-        + "   -c / --ignore-case:\n"
-        + "      Disable case sensitivity\n"
         + "   -g / --get: <pos> <len> [charset]\n"
         + "      Get content starting at [pos=0] with <len> and [charset=UTF-8]\n"
         + "   -h / --help:\n"
         + "      Prints this help text\n"
         + "   -i / --index-of: [pos] <content> [charset]\n"
-        + "      Search <content> index with [charset=UTF-8], starting at [pos=0]\n"
+        + "      Search index of <content> with [charset=UTF-8], starting at [pos=0]\n"
         + "   -l / --line-unix: [pos]\n"
         + "      Get a line (unix ending) starting at [pos=0]\n"
         + "   -w / --line-win: [pos]\n"
@@ -193,14 +190,16 @@ public class Main {
   
   
   public static void main(String[] args) throws IOException {
-    String file = "/storage/java/filex/disecMicro.sql";
-    //String file = "d:/java/filex/disecMicro.sql";
-    //args = new String[]{"-i", "EXISTS `sqls`", "-v", file};
+    //String file = "/storage/java/filex/disecMicro.sql";
+    String file = "d:/java/filex/disecMicro.sql";
+    args = new String[]{"-i", "0", "EXISTS `sqls`", "UTF-8", "-s", "1000", "-v", file};
+    //args = new String[]{"-i", "4359", "\n", "-v", file};
     //args = new String[]{"-i", "Grupo de comandos", "-v", file};
     //args = new String[]{"-i", "EXISTS `log`;", file};
-    //args = new String[]{"-l", "2227", file};
+    //args = new String[]{"-l", "4359", file};
+    //args = new String[]{"-g", "4359", "15", file};
     //args = new String[]{"-g", "4262", "40", file};
-    args = new String[]{"-h"};
+    //args = new String[]{"-h"};
     List<OptionArg> oar = new LinkedList<>();
     Option opt = null;
     List<String> larg = new LinkedList<>();
