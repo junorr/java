@@ -190,13 +190,14 @@ public class Main {
   
   
   public static void main(String[] args) throws IOException {
-    //String file = "/storage/java/filex/disecMicro.sql";
-    String file = "d:/java/filex/disecMicro.sql";
-    args = new String[]{"-i", "0", "EXISTS `sqls`", "UTF-8", "-s", "1000", "-v", file};
+    String file = "/storage/java/filex/disecMicro.sql";
+    //String file = "d:/java/filex/disecMicro.sql";
+    args = new String[]{"-i", "0", "EXISTS `sqls`", "UTF-8", "-s", "1333", "-v", file};
+    //args = new String[]{"-i", "0", "EXISTS `sqls`", "UTF-8", "-v", file};
     //args = new String[]{"-i", "4359", "\n", "-v", file};
     //args = new String[]{"-i", "Grupo de comandos", "-v", file};
     //args = new String[]{"-i", "EXISTS `log`;", file};
-    //args = new String[]{"-l", "4359", file};
+    //args = new String[]{"-l", "4263", "-s", "1333", "-v", file};
     //args = new String[]{"-g", "4359", "15", file};
     //args = new String[]{"-g", "4262", "40", file};
     //args = new String[]{"-h"};
