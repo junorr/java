@@ -27,10 +27,10 @@ package us.pserver.filex;
  * @version 0.0 - 22/05/2018
  */
 public enum Option {
-
+  
   HELP("-h", "--help"),
 
-  INDEXOF("-i", "--index-of"),
+  INDEX_OF("-i", "--index-of"),
 
   GET("-g", "--get"),
 
@@ -38,7 +38,9 @@ public enum Option {
 
   LINE_WIN("-w", "--line-win"),
 
-  BUFFER_SIZE("-s", "--buffer-size"),
+  BUFFER_SIZE("-b", "--buffer-size"),
+  
+  IGNORE_CASE("-c", "--ignore-case"),
 
   VERBOSE("-v", "--verbose");
 
@@ -67,7 +69,7 @@ public enum Option {
         return HELP;
       case "-i":
       case "--index-of":
-        return INDEXOF;
+        return INDEX_OF;
       case "-g":
       case "--get":
         return GET;
@@ -77,9 +79,12 @@ public enum Option {
       case "-w":
       case "--line-win":
         return LINE_WIN;
-      case "-s":
+      case "-b":
       case "--buffer-size":
         return BUFFER_SIZE;
+      case "-c":
+      case "--ignore-case":
+        return IGNORE_CASE;
       case "-v":
       case "--verbose":
         return VERBOSE;

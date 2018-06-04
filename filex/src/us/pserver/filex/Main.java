@@ -54,13 +54,13 @@ public class Main {
     if(opts.contains(Option.BUFFER_SIZE)) {
       int bs = opts.get(Option.BUFFER_SIZE).getInt(0);
       if(opts.contains(Option.VERBOSE)) {
-        System.out.printf("withBufferSize( %d )%n", bs);
+        System.out.printf("withBufferSizeTip( %d )%n", bs);
       }
-      b = b.withBufferSize(bs);
+      b = b.withBufferSizeTip(bs);
     }
     Filex fx = b.create();
-    if(opts.contains(Option.INDEXOF)) {
-      indexOf(fx, opts.get(Option.INDEXOF));
+    if(opts.contains(Option.INDEX_OF)) {
+      indexOf(fx, opts.get(Option.INDEX_OF));
     }
     else if(opts.contains(Option.GET)) {
       get(fx, opts.get(Option.GET));
@@ -96,7 +96,9 @@ public class Main {
     else {
       throw new IllegalStateException("indexOf require 1+ args");
     }
-    long idx = fx.indexOf(pos, term, cs);
+    long idx = opts.contains(Option.IGNORE_CASE)
+        ? fx.indexOfIgnoreCase(pos, term, cs)
+        : fx.indexOf(pos, term, cs);
     if(opts.contains(Option.VERBOSE)) {
       System.out.printf("indexOf( %d, '%s', %s ): %d%n", pos, term, cs, idx);
     }
@@ -171,17 +173,19 @@ public class Main {
         + "-------------------------------\n"
         + " Usage: filex <options> <file>\n"
         + " Options:\n"
+        + "   -c / --ignore-case:\n"
+        + "      Enable ignore case with  -i / --index-of  option\n"
         + "   -g / --get: <pos> <len> [charset]\n"
         + "      Get content starting at [pos=0] with <len> and [charset=UTF-8]\n"
         + "   -h / --help:\n"
         + "      Prints this help text\n"
         + "   -i / --index-of: [pos] <content> [charset]\n"
-        + "      Search index of <content> with [charset=UTF-8], starting at [pos=0]\n"
+        + "      Search index of <content> with [charset=UTF-8] starting at [pos=0]\n"
         + "   -l / --line-unix: [pos]\n"
         + "      Get a line (unix ending) starting at [pos=0]\n"
         + "   -w / --line-win: [pos]\n"
         + "      Get a line (windows ending) starting at [pos=0]\n"
-        + "   -s / --buffer-size: <size>\n"
+        + "   -b / --buffer-size: <size>\n"
         + "      Set the internal buffer size\n"
         + "   -v / --verbose:\n"
         + "      Prints additional information on execution\n";
@@ -190,16 +194,16 @@ public class Main {
   
   
   public static void main(String[] args) throws IOException {
-    String file = "/storage/java/filex/disecMicro.sql";
-    //String file = "d:/java/filex/disecMicro.sql";
-    args = new String[]{"-i", "0", "EXISTS `sqls`", "UTF-8", "-s", "1333", "-v", file};
-    //args = new String[]{"-i", "0", "EXISTS `sqls`", "UTF-8", "-v", file};
+    //String file = "/storage/java/filex/disecMicro.sql";
+    String file = "d:/java/filex/disecMicro.sql";
+    //args = new String[]{"-i", "0", "EXISTS `sqls`", "UTF-8", "-s", "500", "-v", file};
+    args = new String[]{"-i", "0", "exists `SQLS`", "UTF-8", "-c", "-b", "1000", "-v", file};
     //args = new String[]{"-i", "4359", "\n", "-v", file};
     //args = new String[]{"-i", "Grupo de comandos", "-v", file};
     //args = new String[]{"-i", "EXISTS `log`;", file};
-    //args = new String[]{"-l", "4263", "-s", "1333", "-v", file};
-    //args = new String[]{"-g", "4359", "15", file};
-    //args = new String[]{"-g", "4262", "40", file};
+    //args = new String[]{"-l", "4360", file};
+    //args = new String[]{"-g", "4360", "15", file};
+    //args = new String[]{"-g", "4360", "40", file};
     //args = new String[]{"-h"};
     List<OptionArg> oar = new LinkedList<>();
     Option opt = null;

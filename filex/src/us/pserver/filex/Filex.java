@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.IntFunction;
 
 
@@ -22,7 +21,7 @@ import java.util.function.IntFunction;
  * @author juno
  */
 public class Filex {
-
+  
   private final FileChannel channel;
   
   private final ByteBuffer buffer;
@@ -77,21 +76,51 @@ public class Filex {
       throw new IllegalArgumentException("Bad position: "+ pos+ "(0 >= pos < "+ channel.size()+ ")");
     }
     ByteBuffer search = cs.encode(str);
-    long cpos = pos;
+    long currentPosition = pos;
     int idx = -1;
-    int remaining = 0;
+    int read = 0;
     while(channel.position() < channel.size() && idx < 0) {
-      channel.position(cpos);
+      channel.position(currentPosition);
       buffer.clear();
-      channel.read(buffer);
+      read = channel.read(buffer);
+      Log.on("currentPosition(before)=%d", currentPosition);
+      currentPosition += read / 2;
+      Log.on("currentPosition(after)=%d", currentPosition);
       buffer.flip();
-      remaining = buffer.remaining();
+      Log.on("read=%d, remaining=%d", read, buffer.remaining());
       idx = indexOf(search, buffer);
-      cpos = cpos + (channel.position() - cpos) / 2;
     }
-    Log.on("channel.position(%d) - buffer.remaining(%d) + indexOf(%d) = %d", 
-        channel.position(), remaining, idx, channel.position() - remaining + idx);
-    return channel.position() - remaining + idx;
+    Log.on("(currentPosition[%d] - read[%d] / 2) + idx[%d] = %d",
+        currentPosition, read, idx, (currentPosition - read / 2) + idx);
+    return idx >= 0 ? (currentPosition - read / 2) + idx : -1;
+  }
+  
+  
+  public long indexOfIgnoreCase(long pos, String str, Charset cs) throws IOException {
+    Objects.requireNonNull(str, "Bad null search String");
+    Objects.requireNonNull(cs, "Bad null Charset");
+    if(pos < 0 || pos > channel.size()) {
+      throw new IllegalArgumentException("Bad position: "+ pos+ "(0 >= pos < "+ channel.size()+ ")");
+    }
+    ByteBuffer search = cs.encode(str.toLowerCase());
+    ByteBuffer bufcase = cs.encode(str.toUpperCase());
+    long currentPosition = pos;
+    int idx = -1;
+    int read = 0;
+    while(channel.position() < channel.size() && idx < 0) {
+      channel.position(currentPosition);
+      buffer.clear();
+      read = channel.read(buffer);
+      Log.on("currentPosition(before)=%d", currentPosition);
+      currentPosition += read / 2;
+      Log.on("currentPosition(after)=%d", currentPosition);
+      buffer.flip();
+      Log.on("read=%d, remaining=%d", read, buffer.remaining());
+      idx = indexOfIgnoreCase(search, bufcase, buffer);
+    }
+    Log.on("(currentPosition[%d] - read[%d] / 2) + idx[%d] = %d",
+        currentPosition, read, idx, (currentPosition - read / 2) + idx);
+    return idx >= 0 ? (currentPosition - read / 2) + idx : -1;
   }
   
   
@@ -112,11 +141,33 @@ public class Filex {
   }
   
   
+  private int indexOfIgnoreCase(ByteBuffer search, ByteBuffer bufcase, ByteBuffer content) {
+    int spos = search.position();
+    int cpos = bufcase.position();
+    int size = search.remaining();
+    int count = 0;
+    while(content.hasRemaining() && count != size) {
+      byte b = content.get();
+      if(b == search.get() || b == bufcase.get()) {
+        count++;
+      }
+      else {
+        count = 0;
+        search.position(spos);
+        bufcase.position(cpos);
+      }
+    }
+    return count == size ? content.position() - count : -1;
+  }
+  
+  
   public String getUnixLine(long pos) throws IOException {
     long idx = indexOf(pos, "\n", StandardCharsets.UTF_8);
     if(idx > pos) {
+      Log.on("get(pos[%d], (idx[%d] - pos[%d])[%d])", pos, idx, pos, (idx - pos));
       return get(pos, Long.valueOf(idx - pos).intValue());
     }
+    Log.on("get(pos[%d], Byte.MAX_VALUE[%d])", pos, Byte.MAX_VALUE);
     return get(pos, Byte.MAX_VALUE);
   }
   
@@ -143,6 +194,9 @@ public class Filex {
     
     public static final int DEFAULT_BUFFER_SIZE = 8*1024*1024;
     
+    public static final int MIN_BUFFER_SIZE = 128;
+    
+    
     public static final IntFunction<ByteBuffer> DEFAULT_ALLOC_POLICY = ByteBuffer::allocate;
     
     
@@ -167,7 +221,7 @@ public class Filex {
       return bufsize;
     }
     
-    public Builder withBufferSize(int bufsize) {
+    public Builder withBufferSizeTip(int bufsize) {
       return new Builder(path, bufsize, alloc);
     }
     
@@ -194,8 +248,10 @@ public class Filex {
       if(bufsize < 1) {
         throw new IllegalStateException("Bad buffer size: "+ bufsize);
       }
+      int bs = bufsize / MIN_BUFFER_SIZE;
+      if(bufsize % MIN_BUFFER_SIZE > 0) bs++;
       FileChannel ch = FileChannel.open(path, StandardOpenOption.READ);
-      return new Filex(ch, alloc.apply(bufsize));
+      return new Filex(ch, alloc.apply(bs * MIN_BUFFER_SIZE));
     }
     
   }
