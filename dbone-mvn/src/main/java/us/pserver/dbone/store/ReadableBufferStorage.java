@@ -21,7 +21,6 @@
 
 package us.pserver.dbone.store;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
@@ -75,11 +74,12 @@ public class ReadableBufferStorage implements ReadableStorage {
   public List<Region> getRootRegions() {
     List<Region> blks = new LinkedList<>();
     Region reg = Region.of(StorageHeader.BYTES, blksize);
-    while(reg.offset() < buffer.limit()) {
+    while(reg.end() <= buffer.limit()) {
       int lim = buffer.limit();
       buffer.position(reg.intOffset());
-      buffer.limit(buffer.position() + blksize);
+      buffer.limit(Math.min((buffer.position() + blksize), buffer.capacity()));
       Block blk = Block.read(buffer.slice());
+      buffer.limit(lim);
       if(blk.isRoot()) {
         blks.add(reg);
       }

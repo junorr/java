@@ -46,36 +46,38 @@ public class TestByteBufferStorage {
   @Test
   public void testStoragePutString() throws Exception {
     try {
-      ByteBufferStorage fcs = ByteBufferStorage.builder().create(storagePath, 40);
-      ByteBuffer buf = Charset.forName("UTF-8").encode("Hello Storage ............ A");
+      ByteBufferStorage fcs = ByteBufferStorage.builder().create(storagePath, 128);
+      String helloA = "Hello Storage .............. A";
+      String helloB = "Hello Storage ............... B";
+      String helloC = "Hello Storage ................ C";
+      String helloD = "Hello Storage ................. D";
+      String helloE = "Hello Storage .................. E";
+      ByteBuffer buf = Charset.forName("UTF-8").encode(helloA);
       //System.out.println(">>> Hello Storage ............ A");
       //new BytesToString(buf).print(4, '|');
       Log.on("Calling storage.put( %s )", buf);
       Region ra = fcs.put(buf);
       Log.on("storage.put(): %s", ra);
-      buf = StandardCharsets.UTF_8.encode("Hello Storage ............ B");
+      buf = StandardCharsets.UTF_8.encode(helloB);
       Region rb = fcs.put(buf);
-      buf = Charset.forName("UTF-8").encode("Hello Storage ............ C");
+      buf = Charset.forName("UTF-8").encode(helloC);
       Region rc = fcs.put(buf);
-      buf = StandardCharsets.UTF_8.encode("Hello Storage ............ D");
+      buf = StandardCharsets.UTF_8.encode(helloD);
       Region rd = fcs.put(buf);
-      buf = StandardCharsets.UTF_8.encode("Hello Storage ............ E");
+      buf = StandardCharsets.UTF_8.encode(helloE);
       Region re = fcs.put(buf);
       fcs.remove(rb);
       fcs.remove(rd);
       fcs.close();
 
       fcs = ByteBufferStorage.builder().open(storagePath);
-      Assertions.assertEquals(
-          "Hello Storage ............ A",
+      Assertions.assertEquals(helloA,
           StandardCharsets.UTF_8.decode(fcs.get(ra)).toString()
       );
-      Assertions.assertEquals(
-          "Hello Storage ............ C",
+      Assertions.assertEquals(helloC,
           StandardCharsets.UTF_8.decode(fcs.get(rc)).toString()
       );
-      Assertions.assertEquals(
-          "Hello Storage ............ E",
+      Assertions.assertEquals(helloE, 
           StandardCharsets.UTF_8.decode(fcs.get(re)).toString()
       );
       Log.on(BytesToString.of(fcs.get(rb)).toString(4, '-'));
@@ -83,20 +85,19 @@ public class TestByteBufferStorage {
       Log.on(BytesToString.of(fcs.get(rd)).toString(4, '-'));
       Log.on(StandardCharsets.UTF_8.decode(fcs.get(rd)).toString());
       
-      buf = StandardCharsets.UTF_8.encode("Hello Storage ............ B");
+      buf = StandardCharsets.UTF_8.encode(helloB);
       rb = fcs.put(buf);
       
-      buf = StandardCharsets.UTF_8.encode("Reserved data ............ 0");
+      String reserved = "Reserved data .............. 0";
+      buf = StandardCharsets.UTF_8.encode(reserved);
       fcs.putReservedData(buf);
       fcs.close();
 
       fcs = ByteBufferStorage.builder().open(storagePath);
-      Assertions.assertEquals(
-          "Hello Storage ............ B",
+      Assertions.assertEquals(helloB, 
           StandardCharsets.UTF_8.decode(fcs.get(rb)).toString()
       );
-      Assertions.assertEquals(
-          "Reserved data ............ 0",
+      Assertions.assertEquals(reserved, 
           StandardCharsets.UTF_8.decode(fcs.getReservedData()).toString()
       );
       

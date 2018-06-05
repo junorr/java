@@ -24,6 +24,8 @@ package us.pserver.dbone.store;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
+import us.pserver.dbone.util.BytesToString;
+import us.pserver.dbone.util.Log;
 
 /**
  *
@@ -106,10 +108,10 @@ public interface Block extends Writable {
   }
   
   public static Block read(ByteBuffer br) {
-    //Log.on("buffer = %s, content = %s", br, BytesToString.of(br).toString(4, '|'));
     Type t = Type.values()[br.getInt()];
     int size = br.getInt();
     int lim = br.limit();
+    //Log.on("buffer = %s, br.position() = %d, br.limit( %d ), content = %s", br, br.position(), (br.position() + size), BytesToString.of(br).toString(4, '-'));
     br.limit(br.position() + size);
     ByteBuffer buf = br.slice();
     br.limit(lim);

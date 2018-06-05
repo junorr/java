@@ -181,7 +181,7 @@ public class BufferRegionControl implements RegionControl {
       }
       Block.validateMinBlockSize(blksize);
       Region reg = Region.of(StorageHeader.BYTES, blksize);
-      while(reg.intEnd() < buffer.limit()) {
+      while(reg.end() <= buffer.limit()) {
         freebs.add(reg);
         reg = Region.of(reg.end(), blksize);
       }

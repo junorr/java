@@ -117,10 +117,10 @@ public class DefaultBlock implements Block {
 
   @Override
   public int writeTo(ByteBuffer wb) {
-    Log.on("buffer = %s", wb);
     type.writeTo(wb);
     wb.putInt(buf.remaining());
     int pos = buf.position();
+    //Log.on("buf = %s, wb = %s", buf, wb);
     wb.put(buf);
     buf.position(pos);
     wb.position(region.intLength() - Region.BYTES);

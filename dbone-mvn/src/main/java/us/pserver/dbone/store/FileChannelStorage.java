@@ -30,6 +30,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.function.IntFunction;
 import us.pserver.tools.Match;
+import us.pserver.tools.io.ByteBufferOutputStream;
 
 /**
  *
@@ -148,8 +149,12 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   
   @Override
   public void putReservedData(ByteBuffer ... buf) throws IOException {
+    channel.position(0);
+    StorageHeader hd = StorageHeader.read(channel);
+    if(hd.getReservedRegion().isValid()) {
+      remove(hd.getReservedRegion());
+    }
     Region res = put(buf);
-    //Log.on("reserved = %s", res);
     setReserved(res);
   }
   
@@ -168,12 +173,23 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   
   @Override
   public ByteBuffer remove(Region reg) throws IOException {
-    if(reg != null && reg.isValid() && channel.size() >= reg.end()) {
-      ByteBuffer buf = get(reg);
-      rgc.offer(reg);
-      return buf;
+    if(reg == null || !reg.isValid() || reg.end() > channel.size()) {
+      throw new IllegalArgumentException("Bad invalid Region: "+ reg);
     }
-    return ByteBuffer.wrap(new byte[]{});
+    ByteBufferOutputStream bbos = new ByteBufferOutputStream(alloc);
+    Region cur = reg;
+    ByteBuffer bb = alloc.apply(header.getBlockSize());
+    while(cur.isValid()) {
+      bb.clear();
+      channel.position(cur.intOffset());
+      channel.read(bb);
+      bb.flip();
+      Block blk = Block.read(bb);
+      bbos.write(blk.buffer());
+      rgc.offer(cur);
+      cur = blk.nextRegion();
+    }
+    return bbos.toByteBuffer(alloc);
   }
   
   

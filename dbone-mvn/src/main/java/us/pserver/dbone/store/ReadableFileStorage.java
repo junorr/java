@@ -28,7 +28,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.IntFunction;
-import us.pserver.tools.Match;
 import us.pserver.tools.io.ByteBufferOutputStream;
 
 /**
@@ -79,7 +78,7 @@ public class ReadableFileStorage implements ReadableStorage {
   public List<Region> getRootRegions() throws IOException {
     List<Region> blks = new LinkedList<>();
     Region reg = Region.of(StorageHeader.BYTES, blksize);
-    while(reg.offset() < channel.size()) {
+    while(reg.end() <= channel.size()) {
       ByteBuffer buf = alloc.apply(blksize);
       channel.position(reg.offset());
       channel.read(buf);

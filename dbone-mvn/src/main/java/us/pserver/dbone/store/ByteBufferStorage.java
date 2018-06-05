@@ -31,6 +31,7 @@ import java.util.Objects;
 import java.util.function.IntFunction;
 import us.pserver.dbone.util.Log;
 import us.pserver.tools.Match;
+import us.pserver.tools.io.ByteBufferOutputStream;
 
 /**
  *
@@ -95,7 +96,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
   
   
   private Block putBlock(Block blk) {
-    ByteBuffer blb = blk.toByteBuffer();
+    //ByteBuffer blb = blk.toByteBuffer();
     //Log.on("block.remaining = %d, block = %s", blb.remaining(), BytesToString.of(blb).toString(4, '|'));
     if(blk.buffer().remaining() > writelen) {
       return putLarger(blk);
@@ -124,12 +125,15 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
   
   
   private Block putLarger(Block blk) {
+    if(!blk.buffer().hasRemaining()) return blk;
     int lim = blk.buffer().limit();
+    int pos = blk.buffer().position();
     blk.buffer().limit(blk.buffer().position() + writelen);
     buffer.position(blk.region().intOffset());
+    Log.on("Block.buffer() = %s", blk.buffer());
     buffer.put(blk.toByteBuffer());
     blk.buffer().limit(lim);
-    blk.buffer().position(blk.buffer().position() + writelen);
+    blk.buffer().position(pos + writelen);
     Block next = Block.node(rgc.allocate(), blk.buffer(), Region.invalid());
     setNext(blk.region(), next.region());
     //Log.on("channel.size = %d", channel.size());
@@ -139,8 +143,10 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
   
   
   private Block putSmaller(Block blk) {
+    if(!blk.buffer().hasRemaining()) return blk;
     buffer.position(blk.region().intOffset());
     //Log.on("channel.position = %d", channel.position());
+    Log.on("Block.buffer() = %s", blk.buffer());
     buffer.put(blk.toByteBuffer());
     //Log.on("channel.size = %d", channel.size());
     return blk;
@@ -149,8 +155,12 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
   
   @Override
   public void putReservedData(ByteBuffer ... buf) {
+    buffer.position(0);
+    StorageHeader hd = StorageHeader.read(buffer);
+    if(hd.getReservedRegion().isValid()) {
+      remove(hd.getReservedRegion());
+    }
     Region res = put(buf);
-    //Log.on("reserved = %s", res);
     setReserved(res);
   }
   
@@ -169,12 +179,22 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
   
   @Override
   public ByteBuffer remove(Region reg) {
-    if(reg != null && reg.isValid() && buffer.limit() >= reg.end()) {
-      ByteBuffer buf = get(reg);
-      rgc.offer(reg);
-      return buf;
+    if(reg == null || !reg.isValid() || reg.end() > buffer.limit()) {
+      throw new IllegalArgumentException("Bad invalid Region: "+ reg);
     }
-    return ByteBuffer.wrap(new byte[]{});
+    ByteBufferOutputStream bbos = new ByteBufferOutputStream(alloc);
+    Region cur = reg;
+    while(cur.isValid()) {
+      int lim = buffer.limit();
+      buffer.position(cur.intOffset());
+      buffer.limit(buffer.position() + header.getBlockSize());
+      Block blk = Block.read(buffer.slice());
+      bbos.write(blk.buffer());
+      buffer.limit(lim);
+      rgc.offer(cur);
+      cur = blk.nextRegion();
+    }
+    return bbos.toByteBuffer(alloc);
   }
   
   
@@ -311,7 +331,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
       if(path == null || !Files.exists(path) || Files.size(path) < Region.BYTES) {
         throw new IllegalArgumentException("Bad Path = "+ path);
       }
-      ByteBuffer buffer = withPath(path).openMappedByteBuffer(8*1024*1024).getByteBuffer();
+      ByteBuffer buffer = withPath(path).openMappedByteBuffer(8*1024).getByteBuffer();
       buffer.position(0);
       StorageHeader hd = StorageHeader.read(buffer);
       RegionControl rgc = BufferRegionControl.builder().readingStorage(buffer).create();
@@ -322,7 +342,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
       if(path == null) {
         throw new IllegalArgumentException("Bad Path = "+ path);
       }
-      ByteBuffer buffer = withPath(path).openMappedByteBuffer(8*1024*1024).getByteBuffer();
+      ByteBuffer buffer = withPath(path).openMappedByteBuffer(8*1024).getByteBuffer();
       Log.on("openMappedByteBuffer( %d ): %s", 8*1024*1024, buffer);
       BufferRegionControl frc = BufferRegionControl.builder()
           .withBlockSize(blockSize)
