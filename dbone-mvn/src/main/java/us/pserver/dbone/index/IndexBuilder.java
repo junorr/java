@@ -14,7 +14,7 @@
 
 package us.pserver.dbone.index;
 
-import us.pserver.dbone.store.Region;
+import us.pserver.dbone.region.Region;
 
 
 /**

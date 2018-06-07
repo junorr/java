@@ -16,7 +16,7 @@ package us.pserver.dbone.index;
 
 import java.util.Objects;
 import java.util.function.Predicate;
-import us.pserver.dbone.store.Region;
+import us.pserver.dbone.region.Region;
 import us.pserver.tools.Match;
 
 /**

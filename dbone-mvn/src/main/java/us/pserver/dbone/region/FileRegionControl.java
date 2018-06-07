@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.region;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -29,6 +29,11 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.IntFunction;
+import us.pserver.dbone.store.Block;
+import us.pserver.dbone.store.ReadableFileStorage;
+import us.pserver.dbone.store.ReadableStorage;
+import us.pserver.dbone.store.StorageException;
+import us.pserver.dbone.store.StorageHeader;
 
 /**
  *

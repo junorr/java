@@ -21,6 +21,7 @@
 
 package us.pserver.dbone.store;
 
+import us.pserver.dbone.region.Region;
 import us.pserver.dbone.util.Log;
 import us.pserver.dbone.util.BytesToString;
 import java.nio.ByteBuffer;

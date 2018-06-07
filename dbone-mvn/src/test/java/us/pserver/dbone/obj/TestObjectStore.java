@@ -32,7 +32,7 @@ import us.pserver.dbone.bean.CargoShip;
 import us.pserver.dbone.bean.Container;
 import us.pserver.dbone.bean.Deck;
 import us.pserver.dbone.store.FileChannelStorage;
-import us.pserver.dbone.store.Region;
+import us.pserver.dbone.region.Region;
 import us.pserver.dbone.store.Storage;
 import us.pserver.tools.misc.RandomString;
 
@@ -43,16 +43,18 @@ import us.pserver.tools.misc.RandomString;
  */
 public class TestObjectStore {
   
-  private static final String[] shipNames = {"Short", "Heavy", "Black"};
+  private static final String[] shipNames = {"Short", "Heavy", "Black", "Ocean", "Blue", "Cruiser"};
   
-  private static final String[] contNames = {"Fruits", "Veggies", "Car Parts"};
+  private static final String[] contNames = {"Fruits", "Veggies", "Tractor Parts", "Explosives", "Cars"};
   
   private static final Path path = Paths.get("d:/objectStore.bin");
 
   
   private static ObjectStore createStore() {
     try {
-      Storage stg = FileChannelStorage.builder().withBufferAllocPolicy(ByteBuffer::allocate).create(path, 1024);
+      Storage stg = FileChannelStorage.builder()
+          .withBufferAllocPolicy(ByteBuffer::allocateDirect)
+          .create(path, 1024);
       return new DefaultObjectStore(stg);
     }
     catch(IOException e) {
@@ -62,7 +64,9 @@ public class TestObjectStore {
   
   private static ObjectStore openStore() {
     try {
-      Storage stg = FileChannelStorage.builder().open(path);
+      Storage stg = FileChannelStorage.builder()
+          .withBufferAllocPolicy(ByteBuffer::allocateDirect)
+          .open(path);
       return new DefaultObjectStore(stg);
     }
     catch(IOException e) {

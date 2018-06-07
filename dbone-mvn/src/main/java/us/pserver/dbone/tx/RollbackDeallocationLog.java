@@ -21,8 +21,8 @@
 
 package us.pserver.dbone.tx;
 
-import us.pserver.dbone.store.Region;
-import us.pserver.dbone.store.RegionControl;
+import us.pserver.dbone.region.Region;
+import us.pserver.dbone.region.RegionControl;
 
 /**
  *

@@ -28,7 +28,7 @@ import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.IntFunction;
-import us.pserver.dbone.store.Region;
+import us.pserver.dbone.region.Region;
 import us.pserver.dbone.store.Writable;
 import us.pserver.tools.misc.Final;
 
@@ -72,12 +72,12 @@ public interface Record<T> extends Writable {
     int classLength = buf.getInt();
     int lim = buf.limit();
     buf.limit(buf.position() + classLength);
-    String scl = StandardCharsets.UTF_8.decode(buf.slice()).toString();
+    String scl = StandardCharsets.UTF_8.decode(buf).toString();
     buf.limit(lim);
-    buf.position(buf.position() + classLength);
     Class<?> cls = Class.forName(scl);
     String json = StandardCharsets.UTF_8.decode(buf).toString();
-    U val = (U) ObjectMapperFactory.create().readValue(json, cls);
+    U val = (U) ObjectMapperConfig.MAPPER_INSTANCE.get()
+        .readerFor(cls).readValue(json);
     return Record.of(reg, val);
   }
   
@@ -165,7 +165,10 @@ public interface Record<T> extends Writable {
       if(buf.isDefined()) return buf.val();
       Objects.requireNonNull(val, "Bad null value");
       try {
-        ByteBuffer bval = ByteBuffer.wrap(ObjectMapperFactory.create().writeValueAsBytes(val));
+        ByteBuffer bval = ByteBuffer.wrap(
+            ObjectMapperConfig.MAPPER_INSTANCE.get()
+                .writer().writeValueAsBytes(val)
+        );
         ByteBuffer bcls = StandardCharsets.UTF_8.encode(val.getClass().getName());
         ByteBuffer bb = alloc.apply(Integer.BYTES + bcls.remaining() + bval.remaining());
         bb.putInt(bcls.remaining());

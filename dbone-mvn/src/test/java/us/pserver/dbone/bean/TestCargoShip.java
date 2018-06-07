@@ -27,7 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.dbone.obj.ObjectMapperFactory;
+import us.pserver.dbone.obj.ObjectMapperConfig;
 
 /**
  *
@@ -52,13 +52,13 @@ public class TestCargoShip {
   
   @Test
   public void cargoShipToJson() throws JsonProcessingException, IOException {
-    String js = ObjectMapperFactory.create().writeValueAsString(ship);
+    String js = ObjectMapperConfig.create().writeValueAsString(ship);
     Assertions.assertEquals(json, js);
   }
   
   @Test
   public void jsonTocargoShip() throws JsonProcessingException, IOException {
-    CargoShip cs = ObjectMapperFactory.create().readValue(json, CargoShip.class);
+    CargoShip cs = ObjectMapperConfig.create().readValue(json, CargoShip.class);
     Assertions.assertEquals(ship, cs);
   }
   

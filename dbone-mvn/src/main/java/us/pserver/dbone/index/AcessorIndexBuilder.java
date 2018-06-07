@@ -22,7 +22,7 @@
 package us.pserver.dbone.index;
 
 import java.util.function.Function;
-import us.pserver.dbone.store.Region;
+import us.pserver.dbone.region.Region;
 import us.pserver.tools.Match;
 
 /**

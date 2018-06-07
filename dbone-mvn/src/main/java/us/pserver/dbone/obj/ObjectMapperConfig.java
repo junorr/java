@@ -26,15 +26,18 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 06/06/2018
  */
-public class ObjectMapperFactory {
-
-  public static ObjectMapper create() {
+public class ObjectMapperConfig {
+  
+  public static final AtomicReference<ObjectMapper> MAPPER_INSTANCE = new AtomicReference<>(create());
+  
+  private static ObjectMapper create() {
     ObjectMapper mapper = new ObjectMapper()
         .registerModule(new ParameterNamesModule())
         .registerModule(new Jdk8Module())

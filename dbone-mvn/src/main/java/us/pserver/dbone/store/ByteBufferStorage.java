@@ -21,6 +21,9 @@
 
 package us.pserver.dbone.store;
 
+import us.pserver.dbone.region.Region;
+import us.pserver.dbone.region.BufferRegionControl;
+import us.pserver.dbone.region.RegionControl;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
