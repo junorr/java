@@ -50,8 +50,10 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
   
   private final int writelen;
   
+  private final boolean writergc;
   
-  public ByteBufferStorage(ByteBuffer buf, StorageHeader header, RegionControl rgc, IntFunction<ByteBuffer> alloc) {
+  
+  public ByteBufferStorage(ByteBuffer buf, StorageHeader header, RegionControl rgc, IntFunction<ByteBuffer> alloc, boolean writeRegionControl) {
     super(buf, header.getBlockSize(), alloc);
     this.buffer = Objects.requireNonNull(buf, "Bad null ByteBuffer");
     this.header = Match.notNull(header)
@@ -60,6 +62,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
     this.rgc = Objects.requireNonNull(rgc, "Bad null free regions Deque");
     this.alloc = Objects.requireNonNull(alloc, "Bad null alloc policy IntFunction<ByteBuffer>");
     this.writelen = header.getBlockSize() - Block.META_BYTES;
+    this.writergc = writeRegionControl;
   }
   
   
@@ -131,7 +134,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
     blk.buffer().limit(blk.buffer().position() + writelen);
     buffer.position(blk.region().intOffset());
     Log.on("Block.buffer() = %s", blk.buffer());
-    buffer.put(blk.toByteBuffer());
+    buffer.put(blk.toByteBuffer(alloc));
     blk.buffer().limit(lim);
     blk.buffer().position(pos + writelen);
     Block next = Block.node(rgc.allocate(), blk.buffer(), Region.invalid());
@@ -147,7 +150,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
     buffer.position(blk.region().intOffset());
     //Log.on("channel.position = %d", channel.position());
     Log.on("Block.buffer() = %s", blk.buffer());
-    buffer.put(blk.toByteBuffer());
+    buffer.put(blk.toByteBuffer(alloc));
     //Log.on("channel.size = %d", channel.size());
     return blk;
   }
@@ -206,14 +209,15 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
   
   @Override
   public void close() {
+    if(!writergc) return;
     Region freereg = Region.of(0, header.getBlockSize());
     if(rgc.size() > 1) {
       freereg = rgc.allocate();
-      put(freereg, rgc.toByteBuffer());
+      put(freereg, rgc.toByteBuffer(alloc));
     }
     else if(rgc.size() > 0) {
       freereg = rgc.allocateNew();
-      put(freereg, rgc.toByteBuffer());
+      put(freereg, rgc.toByteBuffer(alloc));
     }
     buffer.position(0);
     buffer.put(freereg.toByteBuffer());
@@ -221,8 +225,8 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
   
   
   @Override
-  public ByteBuffer allocBuffer(int size) {
-    return alloc.apply(size);
+  public IntFunction<ByteBuffer> allocBufferPolicy() {
+    return alloc;
   }
   
   
@@ -237,7 +241,9 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
   
   public static class Builder {
     
-    private final Path path;
+    public static final int MIN_BUFFER_SIZE = StorageHeader.BYTES + Block.META_BYTES + Region.BYTES;
+    
+    public static final int MIN_BLOCK_SIZE = Block.META_BYTES + Region.BYTES;
     
     private final ByteBuffer buffer;
     
@@ -247,8 +253,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
     
     private final IntFunction<ByteBuffer> alloc;
     
-    private Builder(Path path, ByteBuffer buffer, StorageHeader header, RegionControl rgc, IntFunction<ByteBuffer> alloc) {
-      this.path = path;
+    private Builder(ByteBuffer buffer, StorageHeader header, RegionControl rgc, IntFunction<ByteBuffer> alloc) {
       this.buffer = buffer;
       this.header = header;
       this.rgc = rgc;
@@ -256,17 +261,10 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
     }
     
     public Builder() {
-      this(null, null, null, null, HEAP_ALLOC_POLICY);
+      this(null, null, null, HEAP_ALLOC_POLICY);
     }
     
-    public Builder withPath(Path path) throws IOException {
-      if(path == null) {
-        return this;
-      }
-      return new Builder(path, buffer, header, rgc, alloc);
-    }
-    
-    public Builder openMappedByteBuffer(long size) throws IOException {
+    private ByteBuffer openMappedByteBuffer(Path path, long size) throws IOException {
       try (
           FileChannel channel = FileChannel.open(path, 
               StandardOpenOption.READ, 
@@ -274,15 +272,8 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
               StandardOpenOption.CREATE 
           )
       ) {
-        return new Builder(path, 
-            channel.map(FileChannel.MapMode.READ_WRITE, 0, size), 
-            header, rgc, alloc
-        );
+        return channel.map(FileChannel.MapMode.READ_WRITE, 0, size);
       }
-    }
-    
-    public Path getPath() {
-      return path;
     }
     
     public ByteBuffer getByteBuffer() {
@@ -290,7 +281,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
     }
     
     public Builder withHeader(StorageHeader header) {
-      return new Builder(path, buffer, header, rgc, alloc);
+      return new Builder(buffer, header, rgc, alloc);
     }
     
     public StorageHeader getStorageHeader() {
@@ -301,7 +292,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
       if(rgc == null) {
         return this;
       }
-      return new Builder(path, buffer, header, rgc, alloc);
+      return new Builder(buffer, header, rgc, alloc);
     }
     
     public RegionControl getRegionControl() {
@@ -312,57 +303,67 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
       if(rgc == null) {
         return this;
       }
-      return new Builder(path, buffer, header, rgc, alloc);
+      return new Builder(buffer, header, rgc, alloc);
     }
     
     public IntFunction<ByteBuffer> getBufferAllocPolicy() {
       return alloc;
     }
     
-    public ByteBufferStorage create() throws IOException {
-      ByteBuffer buffer = this.buffer;
-      if(this.path != null && buffer == null) {
-        buffer = openMappedByteBuffer(Integer.MAX_VALUE).getByteBuffer();
-      }
-      return new ByteBufferStorage(buffer, header, rgc, alloc);
-    }
-    
-    public ByteBufferStorage open(Path path) throws IOException {
-      if(path == null || !Files.exists(path) || Files.size(path) < Region.BYTES) {
+    public ByteBufferStorage openMappedStorage(Path path, int mapsize) throws IOException {
+      if(path == null || !Files.exists(path)) {
         throw new IllegalArgumentException("Bad Path = "+ path);
       }
-      ByteBuffer buffer = withPath(path).openMappedByteBuffer(8*1024).getByteBuffer();
+      if(mapsize < MIN_BUFFER_SIZE) {
+        String msg = String.format("Bad mapped file size: %d < %d", mapsize, MIN_BUFFER_SIZE);
+        throw new IllegalArgumentException(msg);
+      }
+      ByteBuffer buffer = openMappedByteBuffer(path, mapsize);
       buffer.position(0);
       StorageHeader hd = StorageHeader.read(buffer);
       RegionControl rgc = BufferRegionControl.builder().readingStorage(buffer).create();
-      return new ByteBufferStorage(buffer, hd, rgc, alloc); 
+      return new ByteBufferStorage(buffer, hd, rgc, alloc, true); 
     }
     
-    public ByteBufferStorage create(Path path, int blockSize) throws IOException {
+    public ByteBufferStorage createMappedStorage(Path path, int mapsize, int blockSize) throws IOException {
       if(path == null) {
         throw new IllegalArgumentException("Bad Path = "+ path);
       }
-      ByteBuffer buffer = withPath(path).openMappedByteBuffer(8*1024).getByteBuffer();
-      Log.on("openMappedByteBuffer( %d ): %s", 8*1024*1024, buffer);
+      if(blockSize < MIN_BLOCK_SIZE) {
+        String msg = String.format("Bad block size: %d < %d", blockSize, MIN_BLOCK_SIZE);
+        throw new IllegalArgumentException(msg);
+      }
+      if(mapsize < MIN_BUFFER_SIZE) {
+        String msg = String.format("Bad mapped file size: %d < %d", mapsize, MIN_BUFFER_SIZE);
+        throw new IllegalArgumentException(msg);
+      }
+      ByteBuffer buffer = openMappedByteBuffer(path, 8*1024);
       BufferRegionControl frc = BufferRegionControl.builder()
           .withBlockSize(blockSize)
           .withByteBuffer(buffer)
           .create();
-      Log.on("BufferRegionControl = %s", frc);
+      //Log.on("BufferRegionControl = %s", frc);
       StorageHeader hd = StorageHeader.of(Region.of(0, blockSize), Region.invalid());
-      return new ByteBufferStorage(buffer, hd, frc, alloc);
+      return new ByteBufferStorage(buffer, hd, frc, alloc, true);
     }
     
-    public ByteBufferStorage createOrOpen(Path path) throws IOException {
-      if(path == null) {
-        throw new IllegalArgumentException("Bad Path = "+ path);
+    public ByteBufferStorage createMemoryStorage(int bufsize, int blockSize) throws IOException {
+      if(bufsize < MIN_BUFFER_SIZE) {
+        String msg = String.format("Bad mapped file size: %d < %d", bufsize, MIN_BUFFER_SIZE);
+        throw new IllegalArgumentException(msg);
       }
-      if(Files.exists(path) && Files.size(path) >= Region.BYTES) {
-        return open(path);
+      if(blockSize < MIN_BLOCK_SIZE) {
+        String msg = String.format("Bad block size: %d < %d", blockSize, MIN_BLOCK_SIZE);
+        throw new IllegalArgumentException(msg);
       }
-      else {
-        return create(path, Block.DEFAULT_BLOCK_SIZE);
-      }
+      ByteBuffer buffer = alloc.apply(bufsize);
+      BufferRegionControl frc = BufferRegionControl.builder()
+          .withBlockSize(blockSize)
+          .withByteBuffer(buffer)
+          .create();
+      //Log.on("BufferRegionControl = %s", frc);
+      StorageHeader hd = StorageHeader.of(Region.of(0, blockSize), Region.invalid());
+      return new ByteBufferStorage(buffer, hd, frc, alloc, false);
     }
     
   }

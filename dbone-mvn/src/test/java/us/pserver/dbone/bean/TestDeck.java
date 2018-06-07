@@ -19,24 +19,31 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.bean;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
-import java.util.function.IntFunction;
+import java.util.LinkedList;
+import java.util.List;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 03/05/2018
+ * @version 0.0 - 06/06/2018
  */
-public interface Writable {
+public class TestDeck {
 
-  public int writeTo(WritableByteChannel ch, IntFunction<ByteBuffer> alloc) throws IOException;
-  
-  public int writeTo(ByteBuffer wb);
-  
-  public ByteBuffer toByteBuffer(IntFunction<ByteBuffer> alloc);
+  @Test
+  public void loadAndWeight() {
+    List<Container> cts = new LinkedList<>();
+    cts.add(new Container("Fruits", "Banana", 55.2));
+    cts.add(new Container("Fruits", "Orange", 48.6));
+    cts.add(new Container("Veggies", "Potato", 60.0));
+    double maxWeight = 55.2 + 48.6 + 60.0;
+    Deck deck = new Deck(cts);
+    System.out.println(deck);
+    System.out.println(deck.weight());
+    Assertions.assertEquals(maxWeight, deck.weight());
+  }
   
 }

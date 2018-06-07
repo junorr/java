@@ -100,8 +100,8 @@ public class ReadableBufferStorage implements ReadableStorage {
   
   
   @Override
-  public ByteBuffer allocBuffer(int size) {
-    return alloc.apply(size);
+  public IntFunction<ByteBuffer> allocBufferPolicy() {
+    return alloc;
   }
   
 }

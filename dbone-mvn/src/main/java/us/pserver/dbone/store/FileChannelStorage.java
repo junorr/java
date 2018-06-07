@@ -95,7 +95,7 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   
   
   private Block putBlock(Block blk) throws IOException {
-    ByteBuffer blb = blk.toByteBuffer();
+    ByteBuffer blb = blk.toByteBuffer(alloc);
     //Log.on("block.remaining = %d, block = %s", blb.remaining(), BytesToString.of(blb).toString(4, '|'));
     if(blk.buffer().remaining() > writelen) {
       return putLarger(blk);
@@ -127,7 +127,7 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
     int lim = blk.buffer().limit();
     blk.buffer().limit(blk.buffer().position() + writelen);
     channel.position(blk.region().offset());
-    channel.write(blk.toByteBuffer());
+    channel.write(blk.toByteBuffer(alloc));
     blk.buffer().limit(lim);
     blk.buffer().position(blk.buffer().position() + writelen);
     Block next = Block.node(rgc.allocate(), blk.buffer(), Region.invalid());
@@ -141,7 +141,7 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   private Block putSmaller(Block blk) throws IOException {
     channel.position(blk.region().offset());
     //Log.on("channel.position = %d", channel.position());
-    channel.write(blk.toByteBuffer());
+    channel.write(blk.toByteBuffer(alloc));
     //Log.on("channel.size = %d", channel.size());
     return blk;
   }
@@ -204,11 +204,11 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
     Region freereg = Region.of(0, header.getBlockSize());
     if(rgc.size() > 1) {
       freereg = rgc.allocate();
-      put(freereg, rgc.toByteBuffer());
+      put(freereg, rgc.toByteBuffer(alloc));
     }
     else if(rgc.size() > 0) {
       freereg = rgc.allocateNew();
-      put(freereg, rgc.toByteBuffer());
+      put(freereg, rgc.toByteBuffer(alloc));
     }
     channel.position(0);
     channel.write(freereg.toByteBuffer());
@@ -217,8 +217,8 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   
   
   @Override
-  public ByteBuffer allocBuffer(int size) {
-    return alloc.apply(size);
+  public IntFunction<ByteBuffer> allocBufferPolicy() {
+    return alloc;
   }
   
   

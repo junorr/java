@@ -24,8 +24,7 @@ package us.pserver.dbone.store;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
-import us.pserver.dbone.util.BytesToString;
-import us.pserver.dbone.util.Log;
+import java.util.function.IntFunction;
 
 /**
  *
@@ -44,8 +43,8 @@ public interface Block extends Writable {
     NODE, ROOT;
     
     @Override
-    public int writeTo(WritableByteChannel ch) throws IOException {
-      ch.write(toByteBuffer());
+    public int writeTo(WritableByteChannel ch, IntFunction<ByteBuffer> alloc) throws IOException {
+      ch.write(toByteBuffer(alloc));
       return BYTES;
     }
     
@@ -56,8 +55,8 @@ public interface Block extends Writable {
     }
     
     @Override
-    public ByteBuffer toByteBuffer() {
-      ByteBuffer wb = ByteBuffer.allocate(BYTES);
+    public ByteBuffer toByteBuffer(IntFunction<ByteBuffer> alloc) {
+      ByteBuffer wb = alloc.apply(BYTES);
       writeTo(wb);
       wb.flip();
       return wb;

@@ -19,24 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.obj;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
-import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+import us.pserver.dbone.store.Region;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 03/05/2018
+ * @version 0.0 - 05/06/2018
  */
-public interface Writable {
+public interface ObjectStore {
 
-  public int writeTo(WritableByteChannel ch, IntFunction<ByteBuffer> alloc) throws IOException;
+  public Region put(Object obj) throws IOException;
   
-  public int writeTo(ByteBuffer wb);
+  public <T> T get(Region reg) throws ClassNotFoundException, IOException;
   
-  public ByteBuffer toByteBuffer(IntFunction<ByteBuffer> alloc);
+  public void putReserved(Object obj) throws IOException;
+  
+  public <T> T getReserved() throws ClassNotFoundException, IOException;
+  
+  public <T> T remove(Region reg) throws ClassNotFoundException, IOException;
+  
+  public <T> Stream<Record<T>> streamOf(Class<T> cls) throws ClassNotFoundException, IOException;
+  
+  public Stream<Record> streamAll() throws ClassNotFoundException, IOException;
+  
+  public void close() throws IOException;
   
 }

@@ -44,6 +44,9 @@ public interface ReadableStorage extends AutoCloseable {
   
   public long size() throws IOException;
   
-  public ByteBuffer allocBuffer(int size);
+  @Override
+  public void close() throws IOException;
+  
+  public IntFunction<ByteBuffer> allocBufferPolicy();
   
 }

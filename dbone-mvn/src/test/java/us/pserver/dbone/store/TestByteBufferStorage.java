@@ -44,9 +44,9 @@ public class TestByteBufferStorage {
   
   
   @Test
-  public void testStoragePutString() throws Exception {
+  public void testMappedStorage() throws Exception {
     try {
-      ByteBufferStorage fcs = ByteBufferStorage.builder().create(storagePath, 128);
+      ByteBufferStorage fcs = ByteBufferStorage.builder().createMappedStorage(storagePath, 8*1024, 128);
       String helloA = "Hello Storage .............. A";
       String helloB = "Hello Storage ............... B";
       String helloC = "Hello Storage ................ C";
@@ -70,7 +70,7 @@ public class TestByteBufferStorage {
       fcs.remove(rd);
       fcs.close();
 
-      fcs = ByteBufferStorage.builder().open(storagePath);
+      fcs = ByteBufferStorage.builder().openMappedStorage(storagePath, 8*1024);
       Assertions.assertEquals(helloA,
           StandardCharsets.UTF_8.decode(fcs.get(ra)).toString()
       );
@@ -93,7 +93,61 @@ public class TestByteBufferStorage {
       fcs.putReservedData(buf);
       fcs.close();
 
-      fcs = ByteBufferStorage.builder().open(storagePath);
+      fcs = ByteBufferStorage.builder().openMappedStorage(storagePath, 8*1024);
+      Assertions.assertEquals(helloB, 
+          StandardCharsets.UTF_8.decode(fcs.get(rb)).toString()
+      );
+      Assertions.assertEquals(reserved, 
+          StandardCharsets.UTF_8.decode(fcs.getReservedData()).toString()
+      );
+      
+      Log.on("Getting All Root Blocks...");
+      List<Region> roots = fcs.getRootRegions();
+      for(Region r : roots) {
+        Log.on("root = %s, buf = %s", r, BytesToString.of(fcs.get(r)).toString(4, '|'));
+      }
+      fcs.close();
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  
+  @Test
+  public void testMemoryStorage() throws Exception {
+    try {
+      ByteBufferStorage fcs = ByteBufferStorage.builder().createMemoryStorage(8*1024, 128);
+      String helloA = "Hello Storage .............. A";
+      String helloB = "Hello Storage ............... B";
+      String helloC = "Hello Storage ................ C";
+      String helloD = "Hello Storage ................. D";
+      String helloE = "Hello Storage .................. E";
+      ByteBuffer buf = StandardCharsets.UTF_8.encode(helloA);
+      //System.out.println(">>> Hello Storage ............ A");
+      //new BytesToString(buf).print(4, '|');
+      Log.on("Calling storage.put( %s )", buf);
+      Region ra = fcs.put(buf);
+      Log.on("storage.put(): %s", ra);
+      buf = StandardCharsets.UTF_8.encode(helloB);
+      Region rb = fcs.put(buf);
+      buf = Charset.forName("UTF-8").encode(helloC);
+      Region rc = fcs.put(buf);
+      buf = StandardCharsets.UTF_8.encode(helloD);
+      Region rd = fcs.put(buf);
+      buf = StandardCharsets.UTF_8.encode(helloE);
+      Region re = fcs.put(buf);
+      fcs.remove(rb);
+      fcs.remove(rd);
+      
+      buf = StandardCharsets.UTF_8.encode(helloB);
+      rb = fcs.put(buf);
+      
+      String reserved = "Reserved data .............. 0";
+      buf = StandardCharsets.UTF_8.encode(reserved);
+      fcs.putReservedData(buf);
+
       Assertions.assertEquals(helloB, 
           StandardCharsets.UTF_8.decode(fcs.get(rb)).toString()
       );

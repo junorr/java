@@ -19,24 +19,27 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.store;
+package us.pserver.dbone.obj;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
-import java.util.function.IntFunction;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 03/05/2018
+ * @version 0.0 - 06/06/2018
  */
-public interface Writable {
+public class ObjectMapperFactory {
 
-  public int writeTo(WritableByteChannel ch, IntFunction<ByteBuffer> alloc) throws IOException;
-  
-  public int writeTo(ByteBuffer wb);
-  
-  public ByteBuffer toByteBuffer(IntFunction<ByteBuffer> alloc);
+  public static ObjectMapper create() {
+    ObjectMapper mapper = new ObjectMapper()
+        .registerModule(new ParameterNamesModule())
+        .registerModule(new Jdk8Module())
+        .registerModule(new JavaTimeModule());
+    return mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+  }
   
 }

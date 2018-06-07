@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.Objects;
+import java.util.function.IntFunction;
 import us.pserver.tools.Match;
 
 /**
@@ -95,8 +96,8 @@ public interface StorageHeader extends Writable {
     }
     
     @Override
-    public int writeTo(WritableByteChannel ch) throws IOException {
-      ch.write(toByteBuffer());
+    public int writeTo(WritableByteChannel ch, IntFunction<ByteBuffer> alloc) throws IOException {
+      ch.write(toByteBuffer(alloc));
       return BYTES;
     }
     
@@ -109,7 +110,7 @@ public interface StorageHeader extends Writable {
     }
     
     @Override
-    public ByteBuffer toByteBuffer() {
+    public ByteBuffer toByteBuffer(IntFunction<ByteBuffer> alloc) {
       ByteBuffer buf = ByteBuffer.allocate(BYTES);
       writeTo(buf);
       buf.flip();

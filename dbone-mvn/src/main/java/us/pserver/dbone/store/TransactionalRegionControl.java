@@ -27,6 +27,7 @@ import java.nio.channels.WritableByteChannel;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.IntFunction;
 import us.pserver.dbone.tx.RollbackAllocationLog;
 import us.pserver.dbone.tx.RollbackDeallocationLog;
 import us.pserver.dbone.tx.RollbackLog;
@@ -115,8 +116,8 @@ public class TransactionalRegionControl implements RegionControl, Transaction {
   
   
   @Override
-  public int writeTo(WritableByteChannel ch) throws IOException {
-    return rgc.writeTo(ch);
+  public int writeTo(WritableByteChannel ch, IntFunction<ByteBuffer> alloc) throws IOException {
+    return rgc.writeTo(ch, alloc);
   }
   
   
@@ -127,8 +128,8 @@ public class TransactionalRegionControl implements RegionControl, Transaction {
   
   
   @Override
-  public ByteBuffer toByteBuffer() {
-    return rgc.toByteBuffer();
+  public ByteBuffer toByteBuffer(IntFunction<ByteBuffer> alloc) {
+    return rgc.toByteBuffer(alloc);
   }
   
 }

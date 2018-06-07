@@ -28,7 +28,7 @@ import java.nio.channels.WritableByteChannel;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingDeque;
-import us.pserver.tools.Match;
+import java.util.function.IntFunction;
 
 /**
  *
@@ -109,10 +109,10 @@ public class FileRegionControl implements RegionControl {
   
   
   @Override
-  public int writeTo(WritableByteChannel ch) throws IOException {
-    ByteBuffer buf = toByteBuffer();
+  public int writeTo(WritableByteChannel ch, IntFunction<ByteBuffer> alloc) throws IOException {
+    ByteBuffer buf = toByteBuffer(alloc);
     int size = buf.remaining();
-    ch.write(toByteBuffer());
+    ch.write(toByteBuffer(alloc));
     return size;
   }
   
@@ -136,8 +136,8 @@ public class FileRegionControl implements RegionControl {
   
   
   @Override
-  public ByteBuffer toByteBuffer() {
-    ByteBuffer buf = ByteBuffer.allocate(freebs.size() * Region.BYTES);
+  public ByteBuffer toByteBuffer(IntFunction<ByteBuffer> alloc) {
+    ByteBuffer buf = alloc.apply(freebs.size() * Region.BYTES);
     writeTo(buf);
     buf.flip();
     return buf;

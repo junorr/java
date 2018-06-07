@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.util.Objects;
-import us.pserver.dbone.util.Log;
+import java.util.function.IntFunction;
 
 /**
  *
@@ -109,8 +109,8 @@ public class DefaultBlock implements Block {
   
   
   @Override
-  public int writeTo(WritableByteChannel ch) throws IOException {
-    ch.write(toByteBuffer());
+  public int writeTo(WritableByteChannel ch, IntFunction<ByteBuffer> alloc) throws IOException {
+    ch.write(toByteBuffer(alloc));
     return size;
   }
 
@@ -130,8 +130,8 @@ public class DefaultBlock implements Block {
 
 
   @Override
-  public ByteBuffer toByteBuffer() {
-    ByteBuffer total = ByteBuffer.allocate(region.intLength());
+  public ByteBuffer toByteBuffer(IntFunction<ByteBuffer> alloc) {
+    ByteBuffer total = alloc.apply(region.intLength());
     writeTo(total);
     total.flip();
     return total;

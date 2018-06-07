@@ -119,7 +119,7 @@ public class TestFileRegionControl {
             StandardOpenOption.TRUNCATE_EXISTING
         )
     ) {
-      rgc.writeTo(ch);
+      rgc.writeTo(ch, ByteBuffer::allocate);
     }
     ByteBuffer buf = readRgcPath();
     List<Region> lst = toRegionList(buf);
