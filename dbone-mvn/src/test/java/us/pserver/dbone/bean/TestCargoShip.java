@@ -52,13 +52,13 @@ public class TestCargoShip {
   
   @Test
   public void cargoShipToJson() throws JsonProcessingException, IOException {
-    String js = ObjectMapperConfig.create().writeValueAsString(ship);
+    String js = ObjectMapperConfig.MAPPER_INSTANCE.get().writer().writeValueAsString(ship);
     Assertions.assertEquals(json, js);
   }
   
   @Test
-  public void jsonTocargoShip() throws JsonProcessingException, IOException {
-    CargoShip cs = ObjectMapperConfig.create().readValue(json, CargoShip.class);
+  public void jsonToCargoShip() throws JsonProcessingException, IOException {
+    CargoShip cs = ObjectMapperConfig.MAPPER_INSTANCE.get().readerFor(CargoShip.class).readValue(json);
     Assertions.assertEquals(ship, cs);
   }
   

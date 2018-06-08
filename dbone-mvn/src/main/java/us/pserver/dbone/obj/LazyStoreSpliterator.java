@@ -30,13 +30,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import us.pserver.dbone.region.Region;
 import us.pserver.dbone.store.Storage;
+import us.pserver.dbone.util.Log;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 06/06/2018
  */
-public class LazyObjectStoreSpliterator<T> implements Spliterator<Record<T>> {
+public class LazyStoreSpliterator<T> implements Spliterator<Record<T>> {
   
   private final List<Region> roots;
   
@@ -47,7 +48,7 @@ public class LazyObjectStoreSpliterator<T> implements Spliterator<Record<T>> {
   private final AtomicInteger idx;
   
   
-  public LazyObjectStoreSpliterator(Class cls, Storage stg, List<Region> roots) {
+  public LazyStoreSpliterator(Class cls, Storage stg, List<Region> roots) {
     this.roots = Objects.requireNonNull(roots, "Bloody Roots");
     this.store = Objects.requireNonNull(stg, "Bad null Storage");
     this.cls = cls;
@@ -55,17 +56,17 @@ public class LazyObjectStoreSpliterator<T> implements Spliterator<Record<T>> {
   }
 
   
-  public LazyObjectStoreSpliterator(Storage stg, List<Region> roots) {
+  public LazyStoreSpliterator(Storage stg, List<Region> roots) {
     this(null, stg, roots);
   }
 
   
-  public LazyObjectStoreSpliterator(Class cls, Storage stg) throws IOException {
+  public LazyStoreSpliterator(Class cls, Storage stg) throws IOException {
     this(cls, Objects.requireNonNull(stg, "Bad null Storage"), stg.getRootRegions());
   }
 
   
-  public LazyObjectStoreSpliterator(Storage stg) throws IOException {
+  public LazyStoreSpliterator(Storage stg) throws IOException {
     this(Objects.requireNonNull(stg, "Bad null Storage"), stg.getRootRegions());
   }
 
@@ -75,9 +76,13 @@ public class LazyObjectStoreSpliterator<T> implements Spliterator<Record<T>> {
     try {
       if(idx.get() < roots.size()) {
         Region reg = roots.get(idx.getAndIncrement());
-        Record rec = Record.of(store.get(reg));
-        if(cls != null && cls.isAssignableFrom(rec.clazz())) {
-          action.accept(Record.of(store.get(reg)));
+        Record<T> rec = Record.of(store.get(reg));
+        Log.on("class = %s", rec.getValueClass());
+        if(cls == null) {
+          action.accept(rec.withRegion(reg));
+        }
+        else if(cls.isAssignableFrom(rec.getValueClass())) {
+          action.accept(rec.withRegion(reg));
         }
         return true;
       }
@@ -96,7 +101,7 @@ public class LazyObjectStoreSpliterator<T> implements Spliterator<Record<T>> {
   public Spliterator<Record<T>> trySplit() {
     int size = roots.size();
     if(size < 2) return Collections.EMPTY_LIST.spliterator();
-    return new LazyObjectStoreSpliterator<>(cls, store, roots.subList(size / 2, size));
+    return new LazyStoreSpliterator<>(cls, store, roots.subList(size / 2, size));
   }
 
 

@@ -52,7 +52,7 @@ public class DefaultObjectStore implements ObjectStore {
 
   @Override
   public <T> T get(Region reg) throws ClassNotFoundException, IOException {
-    return (T) Record.of(store.get(reg)).withRegion(reg).value();
+    return (T) Record.of(store.get(reg)).withRegion(reg).getValue();
   }
 
 
@@ -64,25 +64,25 @@ public class DefaultObjectStore implements ObjectStore {
 
   @Override
   public <T> T getReserved() throws ClassNotFoundException, IOException {
-    return (T) Record.of(store.getReservedData()).value();
+    return (T) Record.of(store.getReservedData()).getValue();
   }
 
 
   @Override
   public <T> T remove(Region reg) throws ClassNotFoundException, IOException {
-    return (T) Record.of(store.remove(reg)).value();
+    return (T) Record.of(store.remove(reg)).getValue();
   }
 
 
   @Override
   public <T> Stream<Record<T>> streamOf(Class<T> cls) throws ClassNotFoundException, IOException {
-    return StreamSupport.stream(new LazyObjectStoreSpliterator<>(cls, store), false);
+    return StreamSupport.stream(new LazyStoreSpliterator<>(cls, store), false);
   }
 
 
   @Override
   public Stream<Record> streamAll() throws ClassNotFoundException, IOException {
-    return StreamSupport.stream(new LazyObjectStoreSpliterator(store), false);
+    return StreamSupport.stream(new LazyStoreSpliterator(store), false);
   }
 
 

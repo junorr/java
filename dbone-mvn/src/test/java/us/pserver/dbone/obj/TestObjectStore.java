@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import us.pserver.dbone.bean.CargoShip;
 import us.pserver.dbone.bean.Container;
@@ -34,7 +35,9 @@ import us.pserver.dbone.bean.Deck;
 import us.pserver.dbone.store.FileChannelStorage;
 import us.pserver.dbone.region.Region;
 import us.pserver.dbone.store.Storage;
+import us.pserver.dbone.util.Log;
 import us.pserver.tools.misc.RandomString;
+import us.pserver.tools.misc.Sleeper;
 
 /**
  *
@@ -80,13 +83,24 @@ public class TestObjectStore {
   
   private static String randomShipName() {
     return shipNames[Double.valueOf(Math.random()*3).intValue()] 
-        + RandomString.of(5, RandomString.StringCase.FIRST_UPPER).generate();
+        + " " + RandomString.of(5, RandomString.StringCase.FIRST_UPPER).generate();
+  }
+  
+  private static CargoShip blackBobCargoShip() {
+    List<Container> cts = new LinkedList<>();
+    while(cts.stream().reduce(0.0, (w,c)->w + c.weight(), (w,t)->w + t) < 300) {
+      Sleeper.of(100).sleep();
+      cts.add(new Container(randomContainerName(), RandomString.of(5).generate(), Math.random()*150));
+    }
+    Deck deck = new Deck(cts);
+    return new CargoShip("Black Bob", deck);
   }
   
   private static CargoShip randomCargoShip() {
     List<Container> cts = new LinkedList<>();
     int max = Double.valueOf(Math.random() * 5 + 1).intValue();
     for(int i = 0; i < max; i++) {
+      Sleeper.of(100).sleep();
       cts.add(new Container(randomContainerName(), RandomString.of(5).generate(), Math.random()*100));
     }
     Deck deck = new Deck(cts);
@@ -95,39 +109,63 @@ public class TestObjectStore {
   
   @Test
   public void storeCargoShips() throws IOException, ClassNotFoundException {
-    ObjectStore store = createStore();
-    CargoShip ship = randomCargoShip();
-    Region ra = store.put(ship);
-    System.out.printf("* store.put( %s ): %s%n", ship, ra);
-    
-    ship = randomCargoShip();
-    Region rb = store.put(ship);
-    System.out.printf("* store.put( %s ): %s%n", ship, rb);
-    
-    ship = randomCargoShip();
-    Region rc = store.put(ship);
-    System.out.printf("* store.put( %s ): %s%n", ship, rc);
-    
-    ship = store.remove(rb);
-    System.out.printf("* store.remove( %s ): %s%n", rb, ship);
-    store.close();
-    
-    store = openStore();
-    ship = store.get(ra);
-    System.out.printf("* store.get( %s ): %s%n", ra, ship);
-    
-    ship = store.get(rc);
-    System.out.printf("* store.get( %s ): %s%n", rc, ship);
-    
-    ship = randomCargoShip();
-    Region r = store.put(ship);
-    System.out.printf("* store.put( %s ): %s%n", ship, r);
-    store.close();
-    
-    store = openStore();
-    ship = store.get(rb);
-    System.out.printf("* store.get( %s ): %s%n", rb, ship);
-    store.close();
+    try {
+      ObjectStore store = createStore();
+      CargoShip ship = randomCargoShip();
+      Region ra = store.put(ship);
+      System.out.printf("* store.put( %s ): %s%n", ship, ra);
+
+      Sleeper.of(100).sleep();
+      ship = randomCargoShip();
+      Region rb = store.put(ship);
+      System.out.printf("* store.put( %s ): %s%n", ship, rb);
+
+      Sleeper.of(100).sleep();
+      ship = blackBobCargoShip();
+      Region rc = store.put(ship);
+      System.out.printf("* store.put( %s ): %s%n", ship, rc);
+
+      ship = store.remove(rb);
+      System.out.printf("* store.remove( %s ): %s%n", rb, ship);
+      store.close();
+
+      Sleeper.of(100).sleep();
+      store = openStore();
+      ship = store.get(ra);
+      System.out.printf("* store.get( %s ): %s%n", ra, ship);
+
+      ship = store.get(rc);
+      System.out.printf("* store.get( %s ): %s%n", rc, ship);
+
+      Container<String> ctn = new Container(randomContainerName(), RandomString.of(5).generate(), Math.random()*100);
+      Region rbb = store.put(ctn);
+      System.out.printf("* store.put( %s ): %s%n", ctn, rbb);
+      store.close();
+
+      Sleeper.of(100).sleep();
+      store = openStore();
+      ctn = store.get(rb);
+      System.out.printf("* store.get( %s ): %s%n", rb, ctn);
+      store.close();
+
+      Sleeper.of(100).sleep();
+      store = openStore();
+      Optional<Record<CargoShip>> opt = store
+          .streamOf(CargoShip.class)
+          .filter(r->r.getValue().getName().equals("Black Bob"))
+          .findAny();
+      System.out.println(opt);
+      Record rec = (Record<Container>) store
+          .streamAll()
+          .filter(r->Container.class.isAssignableFrom(r.getValueClass()))
+          .findAny().get();
+      System.out.println(rec);
+      System.out.println(rec.getValue());
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
   }
   
 }

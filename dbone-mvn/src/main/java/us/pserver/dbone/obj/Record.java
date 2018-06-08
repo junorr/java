@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.function.IntFunction;
 import us.pserver.dbone.region.Region;
 import us.pserver.dbone.store.Writable;
+import us.pserver.dbone.util.Log;
 import us.pserver.tools.misc.Final;
 
 /**
@@ -39,13 +40,13 @@ import us.pserver.tools.misc.Final;
  */
 public interface Record<T> extends Writable {
 
-  public Region region();
+  public Region getRegion();
   
   public Record<T> withRegion(Region reg);
   
-  public Class<T> clazz();
+  public Class<T> getValueClass();
   
-  public T value();
+  public T getValue();
   
   public <U> Record<U> withValue(U val);
   
@@ -75,10 +76,8 @@ public interface Record<T> extends Writable {
     String scl = StandardCharsets.UTF_8.decode(buf).toString();
     buf.limit(lim);
     Class<?> cls = Class.forName(scl);
-    String json = StandardCharsets.UTF_8.decode(buf).toString();
-    U val = (U) ObjectMapperConfig.MAPPER_INSTANCE.get()
-        .readerFor(cls).readValue(json);
-    return Record.of(reg, val);
+    Log.on("%s -- %s", cls, buf);
+    return new Default(reg, cls, null, buf.slice());
   }
   
   
@@ -94,15 +93,22 @@ public interface Record<T> extends Writable {
     
     private final Region reg;
     
-    private final T val;
+    private final Final<T> value;
     
     private final Class<T> cls;
     
     private final Final<ByteBuffer> buf;
     
+    private Default(Region reg, Class<T> cls, T val, ByteBuffer buffer) {
+      this.reg = reg;
+      this.value = new Final<>(val);
+      this.cls = cls;
+      this.buf = new Final<>(buffer);
+    }
+    
     public Default(Region reg, T val) {
       this.reg = reg;
-      this.val = val;
+      this.value = new Final<>(val);
       this.cls = val != null ? (Class<T>) val.getClass() : null;
       this.buf = new Final<>();
     }
@@ -116,28 +122,39 @@ public interface Record<T> extends Writable {
     }
     
     @Override
-    public Region region() {
+    public Region getRegion() {
       return reg;
     }
     
     @Override
     public Record<T> withRegion(Region reg) {
-      return new Default<>(reg, val);
+      return new Default<>(reg, cls, value.get(), buf.get());
     }
     
     @Override
-    public Class<T> clazz() {
+    public Class<T> getValueClass() {
       return cls;
     }
     
     @Override
-    public T value() {
-      return val;
+    public T getValue() {
+      if(value.isDefined()) return value.get();
+      try {
+        Log.on("buf = %s", buf.get());
+        String json = StandardCharsets.UTF_8.decode(buf.get()).toString();
+        Log.on("json = %s", json);
+        value.tryDefine((T) ObjectMapperConfig.MAPPER_INSTANCE.get()
+            .readerFor(cls).readValue(json));
+        return value.get();
+      }
+      catch(IOException e) {
+        throw new IllegalStateException("Error reading value: "+ e.toString(), e);
+      }
     }
     
     @Override
     public <U> Record<U> withValue(U val) {
-      return new Default<>(reg, val);
+      return new Default<U>(reg, (Class<U>) val.getClass(), val, buf.get());
     }
     
     @Override
@@ -151,25 +168,25 @@ public interface Record<T> extends Writable {
       if(!buf.isDefined()) {
         toByteBuffer(ByteBuffer::allocate);
       }
-      if(wb.remaining() < buf.val().remaining()) {
-        String msg = String.format("ByteBuffer not large enough: %s < %d", wb, buf.val().remaining());
+      if(wb.remaining() < buf.get().remaining()) {
+        String msg = String.format("ByteBuffer not large enough: %s < %d", wb, buf.get().remaining());
         throw new IllegalArgumentException(msg);
       }
-      wb.put(buf.val());
-      buf.val().flip();
-      return buf.val().remaining();
+      wb.put(buf.get());
+      buf.get().flip();
+      return buf.get().remaining();
     }
     
     @Override
     public ByteBuffer toByteBuffer(IntFunction<ByteBuffer> alloc) {
-      if(buf.isDefined()) return buf.val();
-      Objects.requireNonNull(val, "Bad null value");
+      if(buf.isDefined()) return buf.get();
+      Objects.requireNonNull(value.get(), "Bad null value");
       try {
         ByteBuffer bval = ByteBuffer.wrap(
             ObjectMapperConfig.MAPPER_INSTANCE.get()
-                .writer().writeValueAsBytes(val)
+                .writer().writeValueAsBytes(value.get())
         );
-        ByteBuffer bcls = StandardCharsets.UTF_8.encode(val.getClass().getName());
+        ByteBuffer bcls = StandardCharsets.UTF_8.encode(value.get().getClass().getName());
         ByteBuffer bb = alloc.apply(Integer.BYTES + bcls.remaining() + bval.remaining());
         bb.putInt(bcls.remaining());
         bb.put(bcls);
@@ -187,7 +204,7 @@ public interface Record<T> extends Writable {
     public int hashCode() {
       int hash = 7;
       hash = 97 * hash + Objects.hashCode(this.reg);
-      hash = 97 * hash + Objects.hashCode(this.val);
+      hash = 97 * hash + Objects.hashCode(this.value.get());
       return hash;
     }
     
@@ -206,12 +223,12 @@ public interface Record<T> extends Writable {
       if (!Objects.equals(this.reg, other.reg)) {
         return false;
       }
-      return Objects.equals(this.val, other.val);
+      return Objects.equals(this.value.get(), other.value.get());
     }
     
     @Override
     public String toString() {
-      return "Record{" + "reg=" + reg + ", cls=" + cls.getSimpleName() + ", val=" + val + '}';
+      return "Record{" + "reg=" + reg + ", cls=" + cls.getSimpleName() + ", val=" + value.get() + '}';
     }
 
   } 

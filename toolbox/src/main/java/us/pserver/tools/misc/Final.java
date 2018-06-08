@@ -68,7 +68,7 @@ public class Final<T> {
     if(isDefined()) cs.accept(val);
   }
   
-  public T val() {
+  public T get() {
     return val;
   }
   
