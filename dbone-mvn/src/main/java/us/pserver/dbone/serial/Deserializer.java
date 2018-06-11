@@ -19,30 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.obj;
+package us.pserver.dbone.serial;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import java.util.concurrent.atomic.AtomicReference;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/06/2018
+ * @version 0.0 - 08/06/2018
  */
-public class ObjectMapperConfig {
-  
-  public static final AtomicReference<ObjectMapper> MAPPER_INSTANCE = new AtomicReference<>(create());
-  
-  private static ObjectMapper create() {
-    ObjectMapper mapper = new ObjectMapper()
-        .registerModule(new ParameterNamesModule())
-        .registerModule(new Jdk8Module())
-        .registerModule(new JavaTimeModule());
-    return mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-  }
+@FunctionalInterface
+public interface Deserializer {
+
+  public <T> T apply(Class<T> cls, ByteBuffer buf) throws IOException;
   
 }

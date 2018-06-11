@@ -14,6 +14,8 @@
 
 package us.pserver.dbone.index;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 import java.util.function.Predicate;
 import us.pserver.dbone.region.Region;
@@ -24,6 +26,7 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 02/12/2017
  */
+@JsonSerialize(using = IndexSerializer.class)
 public interface Index< T extends Comparable<T> > extends Comparable< Index<T> >, Predicate<T> {
   
   public String name();
@@ -39,7 +42,7 @@ public interface Index< T extends Comparable<T> > extends Comparable< Index<T> >
   
   @Override
   public default int compareTo( Index<T> other ) {
-    Match.notNull(other).failIfNotMatch("Bad null Index");
+    Objects.requireNonNull(other, "Bad null Index");
     int cmp = name().compareTo(other.name());
     if(cmp == 0) {
       cmp = value().compareTo(other.value());
@@ -56,6 +59,7 @@ public interface Index< T extends Comparable<T> > extends Comparable< Index<T> >
   
   
   
+  @JsonDeserialize(using = IndexDeserializer.class)
   public static class DefIndex< T extends Comparable<T> > implements Index<T> {
     
     private final String name;
@@ -64,10 +68,10 @@ public interface Index< T extends Comparable<T> > extends Comparable< Index<T> >
     
     private final Region record;
     
-    public DefIndex(String name, T value, Region rec) {
+    public DefIndex(String name, T value, Region region) {
       this.name = Match.notNull(name).getOrFail("Bad null name");
       this.value = Match.notNull(value).getOrFail("Bad null value");
-      this.record = Match.notNull(rec).getOrFail("Bad null Record");
+      this.record = Match.notNull(region).getOrFail("Bad null Record");
     }
     
     @Override

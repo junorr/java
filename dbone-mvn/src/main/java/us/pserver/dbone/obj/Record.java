@@ -28,6 +28,7 @@ import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.IntFunction;
+import us.pserver.dbone.serial.SerializationService;
 import us.pserver.dbone.region.Region;
 import us.pserver.dbone.store.Writable;
 import us.pserver.dbone.util.Log;
@@ -140,11 +141,10 @@ public interface Record<T> extends Writable {
     public T getValue() {
       if(value.isDefined()) return value.get();
       try {
-        Log.on("buf = %s", buf.get());
-        String json = StandardCharsets.UTF_8.decode(buf.get()).toString();
-        Log.on("json = %s", json);
-        value.tryDefine((T) ObjectMapperConfig.MAPPER_INSTANCE.get()
-            .readerFor(cls).readValue(json));
+        Log.on("class = %s", cls);
+        value.tryDefine(SerializationService.INSTANCE
+            .getDeserializer().apply(cls, buf.get())
+        );
         return value.get();
       }
       catch(IOException e) {
@@ -182,10 +182,7 @@ public interface Record<T> extends Writable {
       if(buf.isDefined()) return buf.get();
       Objects.requireNonNull(value.get(), "Bad null value");
       try {
-        ByteBuffer bval = ByteBuffer.wrap(
-            ObjectMapperConfig.MAPPER_INSTANCE.get()
-                .writer().writeValueAsBytes(value.get())
-        );
+        ByteBuffer bval = SerializationService.INSTANCE.getSerializer().apply(value.get());
         ByteBuffer bcls = StandardCharsets.UTF_8.encode(value.get().getClass().getName());
         ByteBuffer bb = alloc.apply(Integer.BYTES + bcls.remaining() + bval.remaining());
         bb.putInt(bcls.remaining());
@@ -195,7 +192,7 @@ public interface Record<T> extends Writable {
         buf.tryDefine(bb);
         return bb;
       }
-      catch(JsonProcessingException e) {
+      catch(IOException e) {
         throw new RuntimeException(e.toString(), e);
       }
     }

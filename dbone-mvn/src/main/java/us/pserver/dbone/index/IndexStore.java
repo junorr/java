@@ -19,15 +19,15 @@ import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import us.pserver.dbone.volume.Record;
+import us.pserver.dbone.obj.Record;
 import us.pserver.dbone.region.Region;
-import us.pserver.tools.NotNull;
 
 /**
  *
@@ -38,26 +38,24 @@ public interface IndexStore {
   
   public IndexStore putIndex( Class cls, Index idx );
   
-  public IndexStore putIndex( Object obj, Record rec );
+  public IndexStore putIndex( Record rec );
   
   
-  public <V extends Comparable<V>> Stream<Index<V>> getIndex( Class cls, String name, V value );
+  public <V extends Comparable<V>> Stream<Index<V>> streamIndexes( Class cls, String name, V value );
   
-  public Stream<Index> getIndex( Class cls, Region reg );
+  public Stream<Index> streamIndexes( Class cls, Region reg );
   
-  public Stream<Index> getIndex( Class cls, String name );
+  public Stream<Index> streamIndexes( Class cls, String name );
   
   public boolean containsIndex( Class cls, Index idx );
   
   
-  public <V extends Comparable<V>> List<Index<V>> removeIndex( Class cls, String name, V value );
+  public <V extends Comparable<V>> List<Index<V>> removeIndexes( Class cls, String name, V value );
   
-  public List<Index> removeIndex( Class cls, String name );
+  public List<Index> removeIndexes( Class cls, String name );
   
-  public List<Index> removeIndex( Class cls, Region reg );
+  public List<Index> removeIndexes( Class cls, Region reg );
   
-  
-  public Stream<Index<String>> getUIDIndexes( Class cls );
   
   
   public <T,R extends Comparable<R>> IndexStore appendIndexBuilder( Class cls, String name, Function<T,R> acessor );
@@ -99,8 +97,8 @@ public interface IndexStore {
     
     @Override
     public IndexStore putIndex( Class cls, Index idx ) {
-      NotNull.of(cls).failIfNull("Bad null Class");
-      NotNull.of(idx).failIfNull("Bad null Index");
+      Objects.requireNonNull(cls, "Bad null Class");
+      Objects.requireNonNull(idx, "Bad null Index");
       String key = getKey(cls, idx.name());
       if(!indexes.containsKey(key)) {
         indexes.put(key, new CopyOnWriteArrayList<>());
@@ -112,17 +110,16 @@ public interface IndexStore {
     }
     
     @Override
-    public IndexStore putIndex(Object obj, Record rec) {
-      NotNull.of(obj).failIfNull("Bad null Object");
-      NotNull.of(rec).failIfNull("Bad null Record");
-      String cname = obj.getClass().getName();
+    public IndexStore putIndex(Record rec) {
+      Objects.requireNonNull(rec, "Bad null Record");
+      String cname = rec.getValueClass().getName();
       if(!builders.containsKey(cname)
           || builders.get(cname).isEmpty()) {
         throw new IllegalStateException("IndexBuilder not found for: "+ cname);
       }
       builders.get(cname).stream()
-          .map(i->i.build(obj, rec))
-          .forEach(i->putIndex(obj.getClass(), i));
+          .map(i->i.build(rec.getValue(), rec.getRegion()))
+          .forEach(i->putIndex(rec.getValueClass(), i));
       return this;
     }
     
@@ -134,26 +131,26 @@ public interface IndexStore {
     }
     
     @Override
-    public <V extends Comparable<V>> Stream<Index<V>> getIndex( Class cls, String name, V value ) {
+    public <V extends Comparable<V>> Stream<Index<V>> streamIndexes( Class cls, String name, V value ) {
       return indexes.get(getKey(cls, name))
           .stream().filter(i->i.test(value))
           .map(i->(Index<V>)i);
     }
     
     @Override
-    public Stream<Index> getIndex(Class cls, Region reg) {
-      NotNull.of(cls).failIfNull("Bad null Class");
-      NotNull.of(reg).failIfNull("Bad null Region");
+    public Stream<Index> streamIndexes(Class cls, Region reg) {
+      Objects.requireNonNull(cls, "Bad null Class");
+      Objects.requireNonNull(reg, "Bad null Region");
       return indexes.keySet().stream()
           .filter(k->k.startsWith(cls.getName()))
           .flatMap(k->indexes.get(k).stream())
-          .filter(i->i.region().region().contains(reg));
+          .filter(i->i.region().contains(reg));
     }
 
     @Override
-    public Stream<Index> getIndex(Class cls, String name) {
-      NotNull.of(cls).failIfNull("Bad null Class");
-      NotNull.of(name).failIfNull("Bad null Name");
+    public Stream<Index> streamIndexes(Class cls, String name) {
+      Objects.requireNonNull(cls, "Bad null Class");
+      Objects.requireNonNull(name, "Bad null Name");
       String key = getKey(cls, name);
       if(!indexes.containsKey(key)) {
         return Stream.empty();
@@ -162,24 +159,24 @@ public interface IndexStore {
     }
 
     @Override
-    public <V extends Comparable<V>> List<Index<V>> removeIndex( Class cls, String name, V value ) {
-      NotNull.of(name).failIfNull("Bad null name");
-      NotNull.of(cls).failIfNull("Bad null Class");
-      NotNull.of(value).failIfNull("Bad null Object");
+    public <V extends Comparable<V>> List<Index<V>> removeIndexes( Class cls, String name, V value ) {
+      Objects.requireNonNull(cls, "Bad null Class");
+      Objects.requireNonNull(name, "Bad null Name");
+      Objects.requireNonNull(value, "Bad null Value");
       String key = getKey(cls, name);
       List<Index> ids = indexes.get(key);
       if(ids == null || ids.isEmpty()) {
         return Collections.EMPTY_LIST;
       }
-      List<Index<V>> rms = getIndex(cls, name, value)
+      List<Index<V>> rms = streamIndexes(cls, name, value)
           .collect(Collectors.toList());
       ids.removeAll(rms);
       return rms;
     }
 
     @Override
-    public List<Index> removeIndex(Class cls, String name) {
-      List<Index> rms = getIndex(cls, name).collect(Collectors.toList());
+    public List<Index> removeIndexes(Class cls, String name) {
+      List<Index> rms = streamIndexes(cls, name).collect(Collectors.toList());
       if(!rms.isEmpty()) {
         indexes.get(getKey(cls, name)).removeAll(rms);
       }
@@ -187,8 +184,8 @@ public interface IndexStore {
     }
 
     @Override
-    public List<Index> removeIndex(Class cls, Region reg) {
-      List<Index> rms = getIndex(cls, reg).collect(Collectors.toList());
+    public List<Index> removeIndexes(Class cls, Region reg) {
+      List<Index> rms = streamIndexes(cls, reg).collect(Collectors.toList());
       if(!rms.isEmpty()) {
         rms.forEach(i->indexes.get(getKey(cls, i.name())).remove(i));
       }
@@ -197,9 +194,9 @@ public interface IndexStore {
     
     @Override
     public <T,R extends Comparable<R>> IndexStore appendIndexBuilder(Class cls, String name, Function<T,R> acessor) {
-      NotNull.of(name).failIfNull("Bad null name");
-      NotNull.of(cls).failIfNull("Bad null Class");
-      NotNull.of(acessor).failIfNull("Bad null acessor Function");
+      Objects.requireNonNull(cls, "Bad null Class");
+      Objects.requireNonNull(name, "Bad null Name");
+      Objects.requireNonNull(acessor, "Bad null acessor Function");
       if(!builders.containsKey(cls.getName())) {
         builders.put(cls.getName(), new CopyOnWriteArrayList<>());
       }
@@ -217,11 +214,11 @@ public interface IndexStore {
     
     @Override
     public IndexStore appendAnnotatedIndexBuilder(Class cls, MethodHandles.Lookup lookup) {
-      NotNull.of(cls).failIfNull("Bad null Class");
-      NotNull.of(lookup).failIfNull("Bad null Lookup");
-      MethodHandleUtils.getAnnotatedMethodHandlesWithName(cls, Indexed.class, lookup)
-          .forEach(t->appendIndexBuilder(cls, t.getKey(), 
-              new MethodHandleAcessor(t.getValue())));
+      Objects.requireNonNull(cls, "Bad null Class");
+      Objects.requireNonNull(lookup, "Bad null Lookup");
+      MethodHandleUtils.streamAnnotatedMethodHandlesWithName(cls, Indexed.class, lookup)
+          .forEach(t->appendIndexBuilder(cls, t.key(), 
+              new MethodHandleAcessor(t.value())));
       return this;
     }
     
@@ -239,9 +236,9 @@ public interface IndexStore {
     
     @Override
     public IndexStore appendReflectiveIndexBuilder(Class cls, String name, MethodHandles.Lookup lookup) {
-      NotNull.of(name).failIfNull("Bad null name");
-      NotNull.of(cls).failIfNull("Bad null Class");
-      NotNull.of(lookup).failIfNull("Bad null Lookup");
+      Objects.requireNonNull(cls, "Bad null Class");
+      Objects.requireNonNull(name, "Bad null Name");
+      Objects.requireNonNull(lookup, "Bad null Lookup");
       Optional<MethodHandle> opt = MethodHandleUtils.getComparableMethodHandle(cls, name, lookup);
       if(!opt.isPresent()) {
         opt = MethodHandleUtils.getComparableFieldHandle(cls, name, lookup);
@@ -267,11 +264,6 @@ public interface IndexStore {
           .findFirst().orElse(null);
     }
     
-    @Override
-    public Stream<Index<String>> getUIDIndexes( Class cls ) {
-      return indexes.get(getKey(cls, "uid")).stream().map(i->(Index<String>)i);
-    }
-
   }
   
 }

@@ -44,9 +44,9 @@ public class DefaultObjectStore implements ObjectStore {
   
   
   @Override
-  public Region put(Object obj) throws IOException {
+  public Record put(Object obj) throws IOException {
     Record rec = Record.of(obj);
-    return store.put(rec.toByteBuffer(store.allocBufferPolicy()));
+    return rec.withRegion(store.put(rec.toByteBuffer(store.allocBufferPolicy())));
   }
 
 
@@ -54,41 +54,47 @@ public class DefaultObjectStore implements ObjectStore {
   public <T> T get(Region reg) throws ClassNotFoundException, IOException {
     return (T) Record.of(store.get(reg)).withRegion(reg).getValue();
   }
-
-
+  
+  
+  @Override
+  public <T> Record<T> getRecord(Region reg) throws ClassNotFoundException, IOException {
+    return (Record<T>) Record.of(reg, store.get(reg));
+  }
+  
+  
   @Override
   public void putReserved(Object obj) throws IOException {
     store.putReservedData(Record.of(obj).toByteBuffer(store.allocBufferPolicy()));
   }
-
-
+  
+  
   @Override
   public <T> T getReserved() throws ClassNotFoundException, IOException {
     return (T) Record.of(store.getReservedData()).getValue();
   }
-
-
+  
+  
   @Override
-  public <T> T remove(Region reg) throws ClassNotFoundException, IOException {
-    return (T) Record.of(store.remove(reg)).getValue();
+  public <T> Record<T> remove(Region reg) throws ClassNotFoundException, IOException {
+    return (Record<T>) Record.of(reg, store.remove(reg));
   }
-
-
+  
+  
   @Override
   public <T> Stream<Record<T>> streamOf(Class<T> cls) throws ClassNotFoundException, IOException {
     return StreamSupport.stream(new LazyStoreSpliterator<>(cls, store), false);
   }
-
-
+  
+  
   @Override
   public Stream<Record> streamAll() throws ClassNotFoundException, IOException {
     return StreamSupport.stream(new LazyStoreSpliterator(store), false);
   }
-
-
+  
+  
   @Override
   public void close() throws IOException {
     store.close();
   }
-
+  
 }

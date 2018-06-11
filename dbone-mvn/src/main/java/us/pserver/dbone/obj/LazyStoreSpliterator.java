@@ -30,7 +30,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import us.pserver.dbone.region.Region;
 import us.pserver.dbone.store.Storage;
-import us.pserver.dbone.util.Log;
 
 /**
  *
@@ -77,7 +76,7 @@ public class LazyStoreSpliterator<T> implements Spliterator<Record<T>> {
       if(idx.get() < roots.size()) {
         Region reg = roots.get(idx.getAndIncrement());
         Record<T> rec = Record.of(store.get(reg));
-        Log.on("class = %s", rec.getValueClass());
+        //Log.on("class = %s", rec.getValueClass());
         if(cls == null) {
           action.accept(rec.withRegion(reg));
         }

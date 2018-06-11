@@ -54,7 +54,7 @@ public class MethodHandleUtils {
           .findAny();
     }
     
-    public static Stream<Method> getAnnotatedComparableMethods(Class cls, Class annotation) {
+    public static Stream<Method> streamAnnotatedComparableGetters(Class cls, Class annotation) {
       return Arrays.asList(cls.getDeclaredMethods())
           .stream().filter(m->m.getAnnotation(annotation) != null 
               && m.getParameterCount() == 0 
@@ -62,24 +62,22 @@ public class MethodHandleUtils {
               || Comparable.class.isAssignableFrom(m.getReturnType())));
     }
     
-    public static Stream<Field> getAnnotatedComparableFields(Class cls, Class annotation) {
+    public static Stream<Field> streamAnnotatedComparableFields(Class cls, Class annotation) {
       return Arrays.asList(cls.getDeclaredFields())
           .stream().filter(f->f.getAnnotation(annotation) != null 
               && (f.getType().isPrimitive() 
               || Comparable.class.isAssignableFrom(f.getType())));
     }
     
-    public static Stream<MethodHandle> getAnnotatedMethodHandles(Class cls, Class annotation, MethodHandles.Lookup lookup) {
-      return Stream.concat(
-          getAnnotatedComparableMethods(cls, annotation).map(m->unreflect(lookup, m)),
-          getAnnotatedComparableFields(cls, annotation).map(m->unreflect(lookup, m))
+    public static Stream<MethodHandle> streamAnnotatedMethodHandles(Class cls, Class annotation, MethodHandles.Lookup lookup) {
+      return Stream.concat(streamAnnotatedComparableGetters(cls, annotation).map(m->unreflect(lookup, m)),
+          streamAnnotatedComparableFields(cls, annotation).map(m->unreflect(lookup, m))
       );
     }
     
-    public static Stream<Tuple<String,MethodHandle>> getAnnotatedMethodHandlesWithName(Class cls, Class annotation, MethodHandles.Lookup lookup) {
-      return Stream.concat(
-          getAnnotatedComparableMethods(cls, annotation).map(m->new Tuple<>(m.getName(), unreflect(lookup, m))),
-          getAnnotatedComparableFields(cls, annotation).map(f->new Tuple<>(f.getName(), unreflect(lookup, f)))
+    public static Stream<Tuple<String,MethodHandle>> streamAnnotatedMethodHandlesWithName(Class cls, Class annotation, MethodHandles.Lookup lookup) {
+      return Stream.concat(streamAnnotatedComparableGetters(cls, annotation).map(m->new Tuple<>(m.getName(), unreflect(lookup, m))),
+          streamAnnotatedComparableFields(cls, annotation).map(f->new Tuple<>(f.getName(), unreflect(lookup, f)))
       );
     }
     

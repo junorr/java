@@ -19,36 +19,33 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.obj;
+package us.pserver.dbone.index;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-import us.pserver.dbone.region.Region;
+import us.pserver.dbone.index.Index;
+import us.pserver.dbone.serial.JsonIndex;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 05/06/2018
+ * @version 0.0 - 10/06/2018
  */
-public interface ObjectStore {
+public class IndexSerializer extends JsonSerializer<Index> implements JsonIndex {
+  
+  @Override
+  public void serialize(Index idx, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    gen.writeStartObject();
+    gen.writeStringField(FNAME, idx.name());
+    gen.writeObjectField(FREGION, idx.region());
+    gen.writeFieldName(FVALUE);
+    gen.writeStartObject();
+    gen.writeStringField(FCLASS, idx.value().getClass().getName());
+    gen.writeObjectField(FCVALUE, idx.value());
+    gen.writeEndObject();
+    gen.writeEndObject();
+  }
 
-  public Record put(Object obj) throws IOException;
-  
-  public <T> T get(Region reg) throws ClassNotFoundException, IOException;
-  
-  public <T> Record<T> getRecord(Region reg) throws ClassNotFoundException, IOException;
-  
-  public void putReserved(Object obj) throws IOException;
-  
-  public <T> T getReserved() throws ClassNotFoundException, IOException;
-  
-  public <T> Record<T> remove(Region reg) throws ClassNotFoundException, IOException;
-  
-  public <T> Stream<Record<T>> streamOf(Class<T> cls) throws ClassNotFoundException, IOException;
-  
-  public Stream<Record> streamAll() throws ClassNotFoundException, IOException;
-  
-  public void close() throws IOException;
-  
 }

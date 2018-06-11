@@ -22,6 +22,9 @@
 
 package us.pserver.dbone.region;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import us.pserver.tools.Match;
@@ -35,8 +38,10 @@ public interface Region extends Comparable<Region>, Serializable {
   
   public static final int BYTES = Long.BYTES * 2;
   
+  @JsonProperty("offset")
   public long offset();
   
+  @JsonProperty("length")
   public long length();
   
   public long end();
@@ -47,6 +52,7 @@ public interface Region extends Comparable<Region>, Serializable {
   
   public int intEnd();
   
+  @JsonIgnore
   public boolean isValid();
   
   public boolean contains(Region r);
@@ -62,6 +68,7 @@ public interface Region extends Comparable<Region>, Serializable {
   }
   
   
+  @JsonCreator
   public static Region of(long offset, long length) {
     return new RegionImpl(offset, length);
   }
@@ -86,10 +93,9 @@ public interface Region extends Comparable<Region>, Serializable {
     
     private final long length;
     
-    
-    public RegionImpl(long ofs, long len) {
-      this.offset = ofs;
-      this.length = len;
+    public RegionImpl(long offset, long length) {
+      this.offset = offset;
+      this.length = length;
     }
     
     @Override

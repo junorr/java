@@ -112,39 +112,39 @@ public class TestObjectStore {
     try {
       ObjectStore store = createStore();
       CargoShip ship = randomCargoShip();
-      Region ra = store.put(ship);
+      Record<CargoShip> ra = store.put(ship);
       System.out.printf("* store.put( %s ): %s%n", ship, ra);
 
       Sleeper.of(100).sleep();
       ship = randomCargoShip();
-      Region rb = store.put(ship);
+      Record<CargoShip> rb = store.put(ship);
       System.out.printf("* store.put( %s ): %s%n", ship, rb);
 
       Sleeper.of(100).sleep();
       ship = blackBobCargoShip();
-      Region rc = store.put(ship);
+      Record<CargoShip> rc = store.put(ship);
       System.out.printf("* store.put( %s ): %s%n", ship, rc);
 
-      ship = store.remove(rb);
+      ship = (CargoShip) store.remove(rb.getRegion()).getValue();
       System.out.printf("* store.remove( %s ): %s%n", rb, ship);
       store.close();
 
       Sleeper.of(100).sleep();
       store = openStore();
-      ship = store.get(ra);
+      ship = store.get(ra.getRegion());
       System.out.printf("* store.get( %s ): %s%n", ra, ship);
 
-      ship = store.get(rc);
+      ship = store.get(rc.getRegion());
       System.out.printf("* store.get( %s ): %s%n", rc, ship);
 
       Container<String> ctn = new Container(randomContainerName(), RandomString.of(5).generate(), Math.random()*100);
-      Region rbb = store.put(ctn);
+      Record<Container> rbb = store.put(ctn);
       System.out.printf("* store.put( %s ): %s%n", ctn, rbb);
       store.close();
 
       Sleeper.of(100).sleep();
       store = openStore();
-      ctn = store.get(rb);
+      ctn = store.get(rb.getRegion());
       System.out.printf("* store.get( %s ): %s%n", rb, ctn);
       store.close();
 

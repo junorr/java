@@ -19,36 +19,39 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.obj;
+package us.pserver.dbone.index;
 
 import java.io.IOException;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import java.nio.ByteBuffer;
+import org.junit.jupiter.api.Test;
+import us.pserver.dbone.obj.Record;
 import us.pserver.dbone.region.Region;
+import us.pserver.dbone.util.Log;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 05/06/2018
+ * @version 0.0 - 10/06/2018
  */
-public interface ObjectStore {
+public class TestIndexJson {
 
-  public Record put(Object obj) throws IOException;
-  
-  public <T> T get(Region reg) throws ClassNotFoundException, IOException;
-  
-  public <T> Record<T> getRecord(Region reg) throws ClassNotFoundException, IOException;
-  
-  public void putReserved(Object obj) throws IOException;
-  
-  public <T> T getReserved() throws ClassNotFoundException, IOException;
-  
-  public <T> Record<T> remove(Region reg) throws ClassNotFoundException, IOException;
-  
-  public <T> Stream<Record<T>> streamOf(Class<T> cls) throws ClassNotFoundException, IOException;
-  
-  public Stream<Record> streamAll() throws ClassNotFoundException, IOException;
-  
-  public void close() throws IOException;
+  @Test
+  public void indexToJson() throws ClassNotFoundException, IOException {
+    try {
+      Index<Integer> idx = Index.of("magic", 43, Region.of(32, 1024));
+      Log.on("idx = %s", idx);
+      Record<Index<Integer>> rec = Record.of(idx.region(), idx);
+      Log.on("rec = %s", rec);
+      ByteBuffer buf = rec.toByteBuffer(ByteBuffer::allocate);
+      Log.on("rec.toByteBuffer() = %s", buf);
+      rec = Record.of(rec.getRegion(), buf);
+      Log.on("rec = %s", rec);
+      Log.on("rec.getValue() = %s", rec.getValue());
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
   
 }

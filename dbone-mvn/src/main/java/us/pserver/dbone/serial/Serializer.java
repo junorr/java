@@ -19,36 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.obj;
+package us.pserver.dbone.serial;
 
 import java.io.IOException;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-import us.pserver.dbone.region.Region;
+import java.nio.ByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 05/06/2018
+ * @version 0.0 - 08/06/2018
  */
-public interface ObjectStore {
+@FunctionalInterface
+public interface Serializer {
 
-  public Record put(Object obj) throws IOException;
-  
-  public <T> T get(Region reg) throws ClassNotFoundException, IOException;
-  
-  public <T> Record<T> getRecord(Region reg) throws ClassNotFoundException, IOException;
-  
-  public void putReserved(Object obj) throws IOException;
-  
-  public <T> T getReserved() throws ClassNotFoundException, IOException;
-  
-  public <T> Record<T> remove(Region reg) throws ClassNotFoundException, IOException;
-  
-  public <T> Stream<Record<T>> streamOf(Class<T> cls) throws ClassNotFoundException, IOException;
-  
-  public Stream<Record> streamAll() throws ClassNotFoundException, IOException;
-  
-  public void close() throws IOException;
+  public ByteBuffer apply(Object o) throws IOException;
   
 }
