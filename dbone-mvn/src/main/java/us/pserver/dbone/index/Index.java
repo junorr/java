@@ -14,6 +14,8 @@
 
 package us.pserver.dbone.index;
 
+import us.pserver.dbone.serial.jackson.IndexSerializer;
+import us.pserver.dbone.serial.jackson.IndexDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;

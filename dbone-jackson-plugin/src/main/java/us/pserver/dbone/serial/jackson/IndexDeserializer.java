@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.index;
+package us.pserver.dbone.serial.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,7 +30,6 @@ import java.io.IOException;
 import us.pserver.dbone.index.Index;
 import us.pserver.dbone.region.Region;
 import us.pserver.dbone.serial.JsonIndex;
-import us.pserver.dbone.util.Log;
 
 /**
  *
