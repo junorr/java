@@ -27,6 +27,7 @@ import us.pserver.dbone.util.BytesToString;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -77,10 +78,10 @@ public class TestFileChannelStorage {
           "Hello Storage ............ E",
           StandardCharsets.UTF_8.decode(fcs.get(re)).toString()
       );
-      Log.on(BytesToString.of(fcs.get(rb)).toString(4, '-'));
-      Log.on(StandardCharsets.UTF_8.decode(fcs.get(rb)).toString());
-      Log.on(BytesToString.of(fcs.get(rd)).toString(4, '-'));
-      Log.on(StandardCharsets.UTF_8.decode(fcs.get(rd)).toString());
+      //Log.on(BytesToString.of(fcs.get(rb)).toString(4, '-'));
+      //Log.on(StandardCharsets.UTF_8.decode(fcs.get(rb)).toString());
+      //Log.on(BytesToString.of(fcs.get(rd)).toString(4, '-'));
+      //Log.on(StandardCharsets.UTF_8.decode(fcs.get(rd)).toString());
       
       buf = StandardCharsets.UTF_8.encode("Hello Storage ............ B");
       rb = fcs.put(buf);
@@ -105,6 +106,7 @@ public class TestFileChannelStorage {
         Log.on("root = %s, buf = %s", r, BytesToString.of(fcs.get(r)).toString(4, '|'));
       }
       fcs.close();
+      storagePath.toFile().deleteOnExit();
     }
     catch(Exception e) {
       e.printStackTrace();

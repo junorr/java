@@ -19,27 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.serial;
+package us.pserver.dbone.store;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.function.IntFunction;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 17/06/2018
  */
-public interface SerializationService {
+public class TestSuperclass {
 
-  public <T> Serializer<T> getSerializer(Class<T> cls);
+  @Test
+  public void testStringSuperclass() {
+    Class cls = String.class;
+    while(cls.getSuperclass() != null) {
+      testSuperclass(cls);
+      cls = cls.getSuperclass();
+    }
+  }
   
-  public <T> Deserializer<T> getDeserializer(Class<T> cls);
-  
-  public <T> ByteBuffer serialize(T value) throws IOException;
-  
-  public <T> T deserialize(Class<T> cls, ByteBuffer buf) throws IOException;
-  
-  public IntFunction<ByteBuffer> getByteBufferAllocPolicy();
+  public void testSuperclass(Class cls) {
+    Class supr = cls.getSuperclass();
+    Class[] clss = cls.getInterfaces();
+    System.out.printf("----- %s -----%n", cls.getSimpleName());
+    System.out.printf("  \\- extends: %s%n", supr.getSimpleName());
+    System.out.printf("  \\- implements: [ %d ]\n", clss.length);
+    for(Class i : clss) {
+      System.out.printf("    \\- %s%n", i.getSimpleName());
+    }
+  }
   
 }

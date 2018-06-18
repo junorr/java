@@ -22,11 +22,13 @@
 package us.pserver.dbone.obj;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import us.pserver.dbone.region.Region;
 import us.pserver.dbone.store.Storage;
 import us.pserver.tools.Match;
+import us.pserver.dbone.serial.SerializationService;
 
 /**
  *
@@ -37,58 +39,61 @@ public class DefaultObjectStore implements ObjectStore {
   
   private final Storage store;
   
+  private final SerializationService sconf;
   
-  public DefaultObjectStore(Storage stg) {
+  
+  public DefaultObjectStore(Storage stg, SerializationService cfg) {
     this.store = Match.notNull(stg).getOrFail("Bad null Storage");
+    this.sconf = Objects.requireNonNull(cfg, "Bad null SerializationService");
   }
   
   
   @Override
   public Record put(Object obj) throws IOException {
-    Record rec = Record.of(obj);
+    Record rec = Record.of(obj, sconf);
     return rec.withRegion(store.put(rec.toByteBuffer(store.allocBufferPolicy())));
   }
 
 
   @Override
   public <T> T get(Region reg) throws ClassNotFoundException, IOException {
-    return (T) Record.of(store.get(reg)).withRegion(reg).getValue();
+    return (T) Record.of(store.get(reg), sconf).withRegion(reg).getValue();
   }
   
   
   @Override
   public <T> Record<T> getRecord(Region reg) throws ClassNotFoundException, IOException {
-    return (Record<T>) Record.of(reg, store.get(reg));
+    return (Record<T>) Record.of(reg, store.get(reg), sconf);
   }
   
   
   @Override
   public void putReserved(Object obj) throws IOException {
-    store.putReservedData(Record.of(obj).toByteBuffer(store.allocBufferPolicy()));
+    store.putReservedData(Record.of(obj, sconf).toByteBuffer(store.allocBufferPolicy()));
   }
   
   
   @Override
   public <T> T getReserved() throws ClassNotFoundException, IOException {
-    return (T) Record.of(store.getReservedData()).getValue();
+    return (T) Record.of(store.getReservedData(), sconf).getValue();
   }
   
   
   @Override
   public <T> Record<T> remove(Region reg) throws ClassNotFoundException, IOException {
-    return (Record<T>) Record.of(reg, store.remove(reg));
+    return (Record<T>) Record.of(reg, store.remove(reg), sconf);
   }
   
   
   @Override
   public <T> Stream<Record<T>> streamOf(Class<T> cls) throws ClassNotFoundException, IOException {
-    return StreamSupport.stream(new LazyStoreSpliterator<>(cls, store), false);
+    return StreamSupport.stream(new LazyStoreSpliterator<>(cls, store, sconf), false);
   }
   
   
   @Override
   public Stream<Record> streamAll() throws ClassNotFoundException, IOException {
-    return StreamSupport.stream(new LazyStoreSpliterator(store), false);
+    return StreamSupport.stream(new LazyStoreSpliterator(store, sconf), false);
   }
   
   

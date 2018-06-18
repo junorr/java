@@ -19,27 +19,57 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.serial;
+package us.pserver.tools.misc;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.function.IntFunction;
+import java.util.function.Consumer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 17/06/2018
+ * @version 0.0 - 06/06/2018
  */
-public interface SerializationService {
+public class Lazy<T> {
 
-  public <T> Serializer<T> getSerializer(Class<T> cls);
+  private volatile T val;
   
-  public <T> Deserializer<T> getDeserializer(Class<T> cls);
+  public Lazy(T val) {
+    this.val = val;
+  }
   
-  public <T> ByteBuffer serialize(T value) throws IOException;
+  public Lazy() {
+    this(null);
+  }
   
-  public <T> T deserialize(Class<T> cls, ByteBuffer buf) throws IOException;
+  public boolean isDefined() {
+    return val != null;
+  }
   
-  public IntFunction<ByteBuffer> getByteBufferAllocPolicy();
+  public Lazy define(T v) {
+    if(!tryDefine(v)) {
+      throw new IllegalStateException("Final value already defined");
+    }
+    return this;
+  }
+  
+  public boolean tryDefine(T v) {
+    if(val == null) {
+      synchronized(this) {
+        if(val == null) {
+          val = v;
+          return true;
+        }
+        return false;
+      }
+    }
+    return false;
+  }
+  
+  public void ifDefined(Consumer<T> cs) {
+    if(isDefined()) cs.accept(val);
+  }
+  
+  public T get() {
+    return val;
+  }
   
 }

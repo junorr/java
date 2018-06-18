@@ -19,27 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.serial;
+package us.pserver.dbone.serial.jackson;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.function.IntFunction;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import us.pserver.dbone.serial.Deserializer;
+import us.pserver.dbone.serial.SerializationService;
+import us.pserver.dbone.util.Log;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 17/06/2018
  */
-public interface SerializationService {
+public class JacksonDeserializer implements Deserializer<Object> {
+  
+  private final ObjectMapper omp;
+  
+  public JacksonDeserializer(ObjectMapper mpr) {
+    this.omp = Objects.requireNonNull(mpr, "Bad null ObjectMapper");
+  }
 
-  public <T> Serializer<T> getSerializer(Class<T> cls);
-  
-  public <T> Deserializer<T> getDeserializer(Class<T> cls);
-  
-  public <T> ByteBuffer serialize(T value) throws IOException;
-  
-  public <T> T deserialize(Class<T> cls, ByteBuffer buf) throws IOException;
-  
-  public IntFunction<ByteBuffer> getByteBufferAllocPolicy();
-  
+  @Override
+  public Object apply(Class cls, ByteBuffer buf, SerializationService cfg) throws IOException {
+      String json = StandardCharsets.UTF_8.decode(buf).toString();
+      Log.on("cls=%s, json=%s", cls, json);
+      return omp.readerFor(cls).readValue(json);
+  }
+
 }

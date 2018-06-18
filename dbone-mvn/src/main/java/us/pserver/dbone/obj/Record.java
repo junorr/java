@@ -21,18 +21,17 @@
 
 package us.pserver.dbone.obj;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.IntFunction;
-import us.pserver.dbone.serial.SerializationService;
 import us.pserver.dbone.region.Region;
 import us.pserver.dbone.store.Writable;
 import us.pserver.dbone.util.Log;
-import us.pserver.tools.misc.Final;
+import us.pserver.tools.misc.Lazy;
+import us.pserver.dbone.serial.SerializationService;
 
 /**
  *
@@ -54,22 +53,22 @@ public interface Record<T> extends Writable {
   
   
   
-  public static <U> Record<U> of(Region reg, U val) {
-    return new Default<>(reg, val);
+  public static <U> Record<U> of(Region reg, U val, SerializationService cfg) {
+    return new Default<>(reg, val, cfg);
   }
   
   
-  public static <U> Record<U> of(Region reg) {
-    return new Default<>(reg);
+  public static <U> Record<U> of(Region reg, SerializationService cfg) {
+    return new Default<>(reg, cfg);
   }
   
   
-  public static <U> Record<U> of(U val) {
-    return new Default<>(val);
+  public static <U> Record<U> of(U val, SerializationService cfg) {
+    return new Default<>(val, cfg);
   }
   
   
-  public static <U> Record<U> of(Region reg, ByteBuffer buf) throws ClassNotFoundException, IOException {
+  public static <U> Record<U> of(Region reg, ByteBuffer buf, SerializationService cfg) throws ClassNotFoundException, IOException {
     Objects.requireNonNull(buf, "Bad null ByteBuffer");
     int classLength = buf.getInt();
     int lim = buf.limit();
@@ -78,12 +77,12 @@ public interface Record<T> extends Writable {
     buf.limit(lim);
     Class<?> cls = Class.forName(scl);
     Log.on("%s -- %s", cls, buf);
-    return new Default(reg, cls, null, buf.slice());
+    return new Default(reg, cls, null, buf.slice(), cfg);
   }
   
   
-  public static <U> Record<U> of(ByteBuffer buf) throws ClassNotFoundException, IOException {
-    return Record.of(null, buf);
+  public static <U> Record<U> of(ByteBuffer buf, SerializationService cfg) throws ClassNotFoundException, IOException {
+    return Record.of(null, buf, cfg);
   }
   
   
@@ -94,32 +93,36 @@ public interface Record<T> extends Writable {
     
     private final Region reg;
     
-    private final Final<T> value;
+    private final Lazy<T> value;
     
     private final Class<T> cls;
     
-    private final Final<ByteBuffer> buf;
+    private final Lazy<ByteBuffer> buf;
     
-    private Default(Region reg, Class<T> cls, T val, ByteBuffer buffer) {
+    private final SerializationService sconf;
+    
+    private Default(Region reg, Class<T> cls, T val, ByteBuffer buffer, SerializationService cfg) {
       this.reg = reg;
-      this.value = new Final<>(val);
+      this.value = new Lazy<>(val);
       this.cls = cls;
-      this.buf = new Final<>(buffer);
+      this.buf = new Lazy<>(buffer);
+      this.sconf = Objects.requireNonNull(cfg, "Bad null SerializationService");
     }
     
-    public Default(Region reg, T val) {
+    public Default(Region reg, T val, SerializationService cfg) {
       this.reg = reg;
-      this.value = new Final<>(val);
+      this.value = new Lazy<>(val);
       this.cls = val != null ? (Class<T>) val.getClass() : null;
-      this.buf = new Final<>();
+      this.buf = new Lazy<>();
+      this.sconf = Objects.requireNonNull(cfg, "Bad null SerializationService");
     }
     
-    public Default(T val) {
-      this(null, val);
+    public Default(T val, SerializationService cfg) {
+      this(null, val, cfg);
     }
     
-    public Default(Region reg) {
-      this(reg, null);
+    public Default(Region reg, SerializationService cfg) {
+      this(reg, null, cfg);
     }
     
     @Override
@@ -129,7 +132,7 @@ public interface Record<T> extends Writable {
     
     @Override
     public Record<T> withRegion(Region reg) {
-      return new Default<>(reg, cls, value.get(), buf.get());
+      return new Default<>(reg, cls, value.get(), buf.get(), sconf);
     }
     
     @Override
@@ -142,9 +145,7 @@ public interface Record<T> extends Writable {
       if(value.isDefined()) return value.get();
       try {
         Log.on("class = %s", cls);
-        value.tryDefine(SerializationService.INSTANCE
-            .getDeserializer().apply(cls, buf.get())
-        );
+        value.tryDefine(sconf.deserialize(cls, buf.get()));
         return value.get();
       }
       catch(IOException e) {
@@ -154,7 +155,7 @@ public interface Record<T> extends Writable {
     
     @Override
     public <U> Record<U> withValue(U val) {
-      return new Default<U>(reg, (Class<U>) val.getClass(), val, buf.get());
+      return new Default<U>(reg, (Class<U>) val.getClass(), val, buf.get(), sconf);
     }
     
     @Override
@@ -182,7 +183,7 @@ public interface Record<T> extends Writable {
       if(buf.isDefined()) return buf.get();
       Objects.requireNonNull(value.get(), "Bad null value");
       try {
-        ByteBuffer bval = SerializationService.INSTANCE.getSerializer().apply(value.get());
+        ByteBuffer bval = sconf.serialize(value);
         ByteBuffer bcls = StandardCharsets.UTF_8.encode(value.get().getClass().getName());
         ByteBuffer bb = alloc.apply(Integer.BYTES + bcls.remaining() + bval.remaining());
         bb.putInt(bcls.remaining());

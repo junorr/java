@@ -19,39 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.index;
+package us.pserver.dbone.serial.jackson;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import org.junit.jupiter.api.Test;
-import us.pserver.dbone.obj.Record;
-import us.pserver.dbone.region.Region;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import us.pserver.dbone.serial.SerializationService;
+import us.pserver.dbone.serial.Serializer;
 import us.pserver.dbone.util.Log;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/06/2018
+ * @version 0.0 - 17/06/2018
  */
-public class TestIndexJson {
-
-  @Test
-  public void indexToJson() throws ClassNotFoundException, IOException {
-    try {
-      Index<Integer> idx = Index.of("magic", 43, Region.of(32, 1024));
-      Log.on("idx = %s", idx);
-      Record<Index<Integer>> rec = Record.of(idx.region(), idx);
-      Log.on("rec = %s", rec);
-      ByteBuffer buf = rec.toByteBuffer(ByteBuffer::allocate);
-      Log.on("rec.toByteBuffer() = %s", buf);
-      rec = Record.of(rec.getRegion(), buf);
-      Log.on("rec = %s", rec);
-      Log.on("rec.getValue() = %s", rec.getValue());
-    }
-    catch(Exception e) {
-      e.printStackTrace();
-      throw e;
-    }
-  }
+public class JacksonSerializer implements Serializer<Object> {
   
+  private final ObjectMapper omp;
+  
+  public JacksonSerializer(ObjectMapper mpr) {
+    this.omp = Objects.requireNonNull(mpr, "Bad null ObjectMapper");
+  }
+
+  @Override
+  public ByteBuffer apply(Object o, SerializationService cfg) throws IOException {
+    String json = omp.writerFor(o.getClass()).writeValueAsString(o);
+    Log.on("json = %s", json);
+    return StandardCharsets.UTF_8.encode(json);
+  }
+
 }

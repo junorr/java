@@ -27,6 +27,7 @@ import us.pserver.dbone.util.BytesToString;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -40,8 +41,8 @@ import org.junit.jupiter.api.Test;
  */
 public class TestByteBufferStorage {
 
-  private final Path storagePath = Paths.get("D:/storage.bin");
-  //private final Path storagePath = Paths.get("/storage/storage.bin");
+  private final Path storagePath = Paths.get("D:/mmap-storage.bin");
+  //private final Path storagePath = Paths.get("/storage/mmap-storage.bin");
   
   
   @Test
@@ -67,8 +68,10 @@ public class TestByteBufferStorage {
       Region rd = fcs.put(buf);
       buf = StandardCharsets.UTF_8.encode(helloE);
       Region re = fcs.put(buf);
-      fcs.remove(rb);
-      fcs.remove(rd);
+      buf = fcs.remove(rb);
+      Log.on("remove(rb): %s", StandardCharsets.UTF_8.decode(buf).toString());
+      buf = fcs.remove(rd);
+      Log.on("remove(rd): %s", StandardCharsets.UTF_8.decode(buf).toString());
       fcs.close();
 
       fcs = ByteBufferStorage.builder().openMappedStorage(storagePath, 8*1024);
@@ -81,10 +84,10 @@ public class TestByteBufferStorage {
       Assertions.assertEquals(helloE, 
           StandardCharsets.UTF_8.decode(fcs.get(re)).toString()
       );
-      Log.on(BytesToString.of(fcs.get(rb)).toString(4, '-'));
-      Log.on(StandardCharsets.UTF_8.decode(fcs.get(rb)).toString());
-      Log.on(BytesToString.of(fcs.get(rd)).toString(4, '-'));
-      Log.on(StandardCharsets.UTF_8.decode(fcs.get(rd)).toString());
+      //Log.on(BytesToString.of(fcs.get(rb)).toString(4, '-'));
+      //Log.on(StandardCharsets.UTF_8.decode(fcs.get(rb)).toString());
+      //Log.on(BytesToString.of(fcs.get(rd)).toString(4, '-'));
+      //Log.on(StandardCharsets.UTF_8.decode(fcs.get(rd)).toString());
       
       buf = StandardCharsets.UTF_8.encode(helloB);
       rb = fcs.put(buf);
@@ -108,6 +111,7 @@ public class TestByteBufferStorage {
         Log.on("root = %s, buf = %s", r, BytesToString.of(fcs.get(r)).toString(4, '|'));
       }
       fcs.close();
+      storagePath.toFile().deleteOnExit();
     }
     catch(Exception e) {
       e.printStackTrace();
@@ -139,8 +143,10 @@ public class TestByteBufferStorage {
       Region rd = fcs.put(buf);
       buf = StandardCharsets.UTF_8.encode(helloE);
       Region re = fcs.put(buf);
-      fcs.remove(rb);
-      fcs.remove(rd);
+      buf = fcs.remove(rb);
+      Log.on("remove(rb): %s", StandardCharsets.UTF_8.decode(buf).toString());
+      buf = fcs.remove(rd);
+      Log.on("remove(rd): %s", StandardCharsets.UTF_8.decode(buf).toString());
       
       buf = StandardCharsets.UTF_8.encode(helloB);
       rb = fcs.put(buf);
@@ -162,6 +168,7 @@ public class TestByteBufferStorage {
         Log.on("root = %s, buf = %s", r, BytesToString.of(fcs.get(r)).toString(4, '|'));
       }
       fcs.close();
+      storagePath.toFile().deleteOnExit();
     }
     catch(Exception e) {
       e.printStackTrace();

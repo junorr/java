@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.util.function.IntFunction;
+import us.pserver.dbone.util.Log;
 
 /**
  *
@@ -108,7 +109,9 @@ public interface Block extends Writable {
   }
   
   public static Block read(ByteBuffer br) {
-    Type t = Type.values()[br.getInt()];
+    int type = br.getInt();
+    Log.on("int type: %d", type);
+    Type t = Type.values()[type];
     int size = br.getInt();
     int lim = br.limit();
     //Log.on("buffer = %s, br.position() = %d, br.limit( %d ), content = %s", br, br.position(), (br.position() + size), BytesToString.of(br).toString(4, '-'));

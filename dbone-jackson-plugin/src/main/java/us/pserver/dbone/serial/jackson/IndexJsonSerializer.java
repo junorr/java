@@ -19,57 +19,33 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.misc;
+package us.pserver.dbone.serial.jackson;
 
-import java.util.function.Consumer;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import java.io.IOException;
+import us.pserver.dbone.index.Index;
+import us.pserver.dbone.serial.JsonIndex;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 06/06/2018
+ * @version 0.0 - 10/06/2018
  */
-public class Final<T> {
+public class IndexJsonSerializer extends JsonSerializer<Index> implements JsonIndex {
+  
+  @Override
+  public void serialize(Index idx, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    gen.writeStartObject();
+    gen.writeStringField(FNAME, idx.name());
+    gen.writeObjectField(FREGION, idx.region());
+    gen.writeFieldName(FVALUE);
+    gen.writeStartObject();
+    gen.writeStringField(FCLASS, idx.value().getClass().getName());
+    gen.writeObjectField(FCVALUE, idx.value());
+    gen.writeEndObject();
+    gen.writeEndObject();
+  }
 
-  private volatile T val;
-  
-  public Final(T val) {
-    this.val = val;
-  }
-  
-  public Final() {
-    this(null);
-  }
-  
-  public boolean isDefined() {
-    return val != null;
-  }
-  
-  public Final define(T v) {
-    if(!tryDefine(v)) {
-      throw new IllegalStateException("Final value already defined");
-    }
-    return this;
-  }
-  
-  public boolean tryDefine(T v) {
-    if(val == null) {
-      synchronized(this) {
-        if(val == null) {
-          val = v;
-          return true;
-        }
-        return false;
-      }
-    }
-    return false;
-  }
-  
-  public void ifDefined(Consumer<T> cs) {
-    if(isDefined()) cs.accept(val);
-  }
-  
-  public T get() {
-    return val;
-  }
-  
 }

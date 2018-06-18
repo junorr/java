@@ -36,7 +36,7 @@ import us.pserver.dbone.serial.JsonIndex;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 10/06/2018
  */
-public class IndexDeserializer extends JsonDeserializer<Index> implements JsonIndex {
+public class IndexJsonDeserializer extends JsonDeserializer<Index> implements JsonIndex {
   
   @Override
   public Index<?> deserialize(JsonParser psr, DeserializationContext ctx) throws IOException, JsonProcessingException {
@@ -44,26 +44,28 @@ public class IndexDeserializer extends JsonDeserializer<Index> implements JsonIn
     Region region = null;
     Class cls = null;
     Object val = null;
-    JsonToken tk = null;
+    JsonToken tk;
     while((tk = psr.nextToken()) != null) {
-      switch(tk) {
-        case FIELD_NAME:
-          if(FNAME.equals(psr.currentName())) {
+      if(JsonToken.FIELD_NAME == tk) {
+        switch(psr.currentName()) {
+          case FNAME:
             name = psr.nextTextValue();
-          }
-          else if(FREGION.equals(psr.currentName())) {
+            break;
+          case FREGION:
             psr.nextValue();
             region = psr.readValueAs(Region.class);
-          }
-          else if(FCLASS.equals(psr.currentName())) {
+            break;
+          case FCLASS:
             psr.nextValue();
             cls = getClass(psr);
-          }
-          else if(FCVALUE.equals(psr.currentName())) {
+            break;
+          case FCVALUE:
             psr.nextValue();
             val = psr.readValueAs(cls);
-          }
-          break;
+            break;
+          default:
+            throw new IllegalStateException("Unexpected FIELD_NAME: "+ psr.currentName());
+        }
       }
     }
     return Index.of(name, (Comparable) val, region);

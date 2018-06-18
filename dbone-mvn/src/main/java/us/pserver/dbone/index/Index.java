@@ -14,10 +14,6 @@
 
 package us.pserver.dbone.index;
 
-import us.pserver.dbone.serial.jackson.IndexSerializer;
-import us.pserver.dbone.serial.jackson.IndexDeserializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 import java.util.function.Predicate;
 import us.pserver.dbone.region.Region;
@@ -28,7 +24,6 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 0.0 - 02/12/2017
  */
-@JsonSerialize(using = IndexSerializer.class)
 public interface Index< T extends Comparable<T> > extends Comparable< Index<T> >, Predicate<T> {
   
   public String name();
@@ -61,7 +56,6 @@ public interface Index< T extends Comparable<T> > extends Comparable< Index<T> >
   
   
   
-  @JsonDeserialize(using = IndexDeserializer.class)
   public static class DefIndex< T extends Comparable<T> > implements Index<T> {
     
     private final String name;

@@ -30,8 +30,8 @@ import java.nio.ByteBuffer;
  * @version 0.0 - 08/06/2018
  */
 @FunctionalInterface
-public interface Serializer {
+public interface Serializer<T> {
 
-  public ByteBuffer apply(Object o) throws IOException;
+  public ByteBuffer apply(T o, SerializationService cfg) throws IOException;
   
 }

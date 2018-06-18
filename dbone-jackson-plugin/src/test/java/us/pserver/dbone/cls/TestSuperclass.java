@@ -19,33 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.serial.jackson;
+package us.pserver.dbone.cls;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import java.io.IOException;
-import us.pserver.dbone.index.Index;
-import us.pserver.dbone.serial.JsonIndex;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/06/2018
+ * @version 0.0 - 17/06/2018
  */
-public class IndexSerializer extends JsonSerializer<Index> implements JsonIndex {
-  
-  @Override
-  public void serialize(Index idx, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-    gen.writeStartObject();
-    gen.writeStringField(FNAME, idx.name());
-    gen.writeObjectField(FREGION, idx.region());
-    gen.writeFieldName(FVALUE);
-    gen.writeStartObject();
-    gen.writeStringField(FCLASS, idx.value().getClass().getName());
-    gen.writeObjectField(FCVALUE, idx.value());
-    gen.writeEndObject();
-    gen.writeEndObject();
-  }
+public class TestSuperclass {
 
+  @Test
+  public void testStringSuperclass() {
+    Class cls = String.class;
+    while(cls.getSuperclass() != null) {
+      testSuperclass(cls);
+      cls = cls.getSuperclass();
+    }
+  }
+  
+  public void testSuperclass(Class cls) {
+    Class supr = cls.getSuperclass();
+    Class[] clss = cls.getInterfaces();
+    System.out.printf("----- %s -----%n", cls.getSimpleName());
+    System.out.printf("  \\- extends: %s%n", supr.getSimpleName());
+    System.out.printf("  \\- implements: [ %d ]\n", clss.length);
+    for(Class i : clss) {
+      System.out.printf("    \\- %s%n", i.getSimpleName());
+    }
+  }
+  
 }

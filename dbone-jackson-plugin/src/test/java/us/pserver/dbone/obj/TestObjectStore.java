@@ -33,9 +33,9 @@ import us.pserver.dbone.bean.CargoShip;
 import us.pserver.dbone.bean.Container;
 import us.pserver.dbone.bean.Deck;
 import us.pserver.dbone.store.FileChannelStorage;
-import us.pserver.dbone.region.Region;
+import us.pserver.dbone.serial.SerializationService;
+import us.pserver.dbone.serial.jackson.JacksonSerializationService;
 import us.pserver.dbone.store.Storage;
-import us.pserver.dbone.util.Log;
 import us.pserver.tools.misc.RandomString;
 import us.pserver.tools.misc.Sleeper;
 
@@ -51,6 +51,8 @@ public class TestObjectStore {
   private static final String[] contNames = {"Fruits", "Veggies", "Tractor Parts", "Explosives", "Cars"};
   
   private static final Path path = Paths.get("d:/objectStore.bin");
+  
+  private static final SerializationService serial = new JacksonSerializationService();
 
   
   private static ObjectStore createStore() {
@@ -58,7 +60,7 @@ public class TestObjectStore {
       Storage stg = FileChannelStorage.builder()
           .withBufferAllocPolicy(ByteBuffer::allocateDirect)
           .create(path, 1024);
-      return new DefaultObjectStore(stg);
+      return new DefaultObjectStore(stg, serial);
     }
     catch(IOException e) {
       throw new RuntimeException(e.toString(), e);
@@ -70,7 +72,7 @@ public class TestObjectStore {
       Storage stg = FileChannelStorage.builder()
           .withBufferAllocPolicy(ByteBuffer::allocateDirect)
           .open(path);
-      return new DefaultObjectStore(stg);
+      return new DefaultObjectStore(stg, serial);
     }
     catch(IOException e) {
       throw new RuntimeException(e.toString(), e);

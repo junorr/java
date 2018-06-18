@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import us.pserver.dbone.util.Log;
 
 /**
  *
@@ -64,7 +65,7 @@ public class TestFileRegionControl {
   }
   
   
-  @Test
+  //@Test
   public void testAllocate() {
     Region r = rgc.allocate();
     System.out.println(r);
@@ -108,7 +109,7 @@ public class TestFileRegionControl {
   }
   
   
-  @Test
+  //@Test
   public void testWriteToFile() throws IOException {
     Region r1 = Region.of(87, 1024);
     Region r2 = Region.of(1111, 1024);
@@ -125,6 +126,7 @@ public class TestFileRegionControl {
       rgc.writeTo(ch, ByteBuffer::allocate);
     }
     ByteBuffer buf = readRgcPath();
+    Log.on("readRgcPath: %s", buf);
     List<Region> lst = toRegionList(buf);
     print(buf.array());
     System.out.println(lst);

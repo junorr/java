@@ -163,6 +163,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
   public void putReservedData(ByteBuffer ... buf) {
     buffer.position(0);
     StorageHeader hd = StorageHeader.read(buffer);
+    Log.on("%s", hd);
     if(hd.getReservedRegion().isValid()) {
       remove(hd.getReservedRegion());
     }

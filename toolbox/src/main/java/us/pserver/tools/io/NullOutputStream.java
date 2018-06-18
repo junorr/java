@@ -60,7 +60,6 @@ public abstract class NullOutputStream extends OutputStream {
    */
   @Override
   public void flush() throws IOException {
-    System.out.flush();
   }
   
 
@@ -71,7 +70,6 @@ public abstract class NullOutputStream extends OutputStream {
    */
   @Override
   public void write(int b) throws IOException {
-    System.out.write(b);
   }
   
 }

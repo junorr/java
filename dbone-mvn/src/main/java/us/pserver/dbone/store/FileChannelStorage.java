@@ -32,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.function.IntFunction;
+import us.pserver.dbone.util.Log;
 import us.pserver.tools.Match;
 import us.pserver.tools.io.ByteBufferOutputStream;
 
@@ -85,7 +86,7 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
     }
     Block cur = Block.root(reg, ByteBuffer.allocate(0), Region.invalid());
     for(int i = 0; i < buf.length; i++) {
-      //Log.on("buf.remaining = %d", buf[i].remaining());
+      Log.on("buf.remaining = %d", buf[i].remaining());
       if(!buf[i].hasRemaining()) throw new IllegalStateException("Bad ByteBuffer = "+ buf[i]);
       cur = putBlock(cur.withBuffer(buf[i]));
       if(buf.length > (i + 1)) {
@@ -98,7 +99,7 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
   
   
   private Block putBlock(Block blk) throws IOException {
-    ByteBuffer blb = blk.toByteBuffer(alloc);
+    //ByteBuffer blb = blk.toByteBuffer(alloc);
     //Log.on("block.remaining = %d, block = %s", blb.remaining(), BytesToString.of(blb).toString(4, '|'));
     if(blk.buffer().remaining() > writelen) {
       return putLarger(blk);

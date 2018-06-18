@@ -19,27 +19,63 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.serial;
+package us.pserver.tools.io;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.function.IntFunction;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 17/06/2018
  */
-public interface SerializationService {
+public class MultipleOutputStream extends OutputStream {
 
-  public <T> Serializer<T> getSerializer(Class<T> cls);
+  private final List<OutputStream> outs;
   
-  public <T> Deserializer<T> getDeserializer(Class<T> cls);
+  public MultipleOutputStream(OutputStream ... outs) {
+    this.outs = Arrays.asList(outs);
+  }
   
-  public <T> ByteBuffer serialize(T value) throws IOException;
+  public List<OutputStream> getOutputStreamList() {
+    return outs;
+  }
   
-  public <T> T deserialize(Class<T> cls, ByteBuffer buf) throws IOException;
+  @Override
+  public void flush() throws IOException {
+    for(OutputStream out : outs) {
+      out.flush();
+    }
+  }
+
+  @Override
+  public void close() throws IOException {
+    for(OutputStream out : outs) {
+      out.close();
+    }
+  }
+
+  @Override
+  public void write(int b) throws IOException {
+    for(OutputStream out : outs) {
+      out.write(b);
+    }
+  }
   
-  public IntFunction<ByteBuffer> getByteBufferAllocPolicy();
+  @Override
+  public void write(byte[] bs) throws IOException {
+    for(OutputStream out : outs) {
+      out.write(bs);
+    }
+  }
+  
+  @Override
+  public void write(byte[] bs, int off, int len) throws IOException {
+    for(OutputStream out : outs) {
+      out.write(bs, off, len);
+    }
+  }
   
 }

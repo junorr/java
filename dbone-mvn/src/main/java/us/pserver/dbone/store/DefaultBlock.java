@@ -27,6 +27,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.util.Objects;
 import java.util.function.IntFunction;
+import us.pserver.dbone.util.Log;
 
 /**
  *
@@ -121,7 +122,7 @@ public class DefaultBlock implements Block {
     type.writeTo(wb);
     wb.putInt(buf.remaining());
     int pos = buf.position();
-    //Log.on("buf = %s, wb = %s", buf, wb);
+    Log.on("buf = %s, wb = %s", buf, wb);
     wb.put(buf);
     buf.position(pos);
     wb.position(region.intLength() - Region.BYTES);
