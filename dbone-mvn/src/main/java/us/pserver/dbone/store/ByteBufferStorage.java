@@ -136,7 +136,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
     int pos = blk.buffer().position();
     blk.buffer().limit(blk.buffer().position() + writelen);
     buffer.position(blk.region().intOffset());
-    Log.on("Block.buffer() = %s", blk.buffer());
+    //Log.on("Block.buffer() = %s", blk.buffer());
     buffer.put(blk.toByteBuffer(alloc));
     blk.buffer().limit(lim);
     blk.buffer().position(pos + writelen);
@@ -152,7 +152,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
     if(!blk.buffer().hasRemaining()) return blk;
     buffer.position(blk.region().intOffset());
     //Log.on("channel.position = %d", channel.position());
-    Log.on("Block.buffer() = %s", blk.buffer());
+    //Log.on("Block.buffer() = %s", blk.buffer());
     buffer.put(blk.toByteBuffer(alloc));
     //Log.on("channel.size = %d", channel.size());
     return blk;
@@ -163,7 +163,7 @@ public class ByteBufferStorage extends ReadableBufferStorage implements Storage 
   public void putReservedData(ByteBuffer ... buf) {
     buffer.position(0);
     StorageHeader hd = StorageHeader.read(buffer);
-    Log.on("%s", hd);
+    //Log.on("%s", hd);
     if(hd.getReservedRegion().isValid()) {
       remove(hd.getReservedRegion());
     }

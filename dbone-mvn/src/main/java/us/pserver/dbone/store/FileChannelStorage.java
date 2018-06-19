@@ -86,7 +86,7 @@ public class FileChannelStorage extends ReadableFileStorage implements Storage {
     }
     Block cur = Block.root(reg, ByteBuffer.allocate(0), Region.invalid());
     for(int i = 0; i < buf.length; i++) {
-      Log.on("buf.remaining = %d", buf[i].remaining());
+      //Log.on("buf.remaining = %d", buf[i].remaining());
       if(!buf[i].hasRemaining()) throw new IllegalStateException("Bad ByteBuffer = "+ buf[i]);
       cur = putBlock(cur.withBuffer(buf[i]));
       if(buf.length > (i + 1)) {

@@ -76,7 +76,7 @@ public interface Record<T> extends Writable {
     String scl = StandardCharsets.UTF_8.decode(buf).toString();
     buf.limit(lim);
     Class<?> cls = Class.forName(scl);
-    Log.on("%s -- %s", cls, buf);
+    //Log.on("%s -- %s", cls, buf);
     return new Default(reg, cls, null, buf.slice(), cfg);
   }
   
@@ -144,7 +144,7 @@ public interface Record<T> extends Writable {
     public T getValue() {
       if(value.isDefined()) return value.get();
       try {
-        Log.on("class = %s", cls);
+        //Log.on("class = %s", cls);
         value.tryDefine(sconf.deserialize(cls, buf.get()));
         return value.get();
       }
@@ -183,7 +183,7 @@ public interface Record<T> extends Writable {
       if(buf.isDefined()) return buf.get();
       Objects.requireNonNull(value.get(), "Bad null value");
       try {
-        ByteBuffer bval = sconf.serialize(value);
+        ByteBuffer bval = sconf.serialize(value.get());
         ByteBuffer bcls = StandardCharsets.UTF_8.encode(value.get().getClass().getName());
         ByteBuffer bb = alloc.apply(Integer.BYTES + bcls.remaining() + bval.remaining());
         bb.putInt(bcls.remaining());

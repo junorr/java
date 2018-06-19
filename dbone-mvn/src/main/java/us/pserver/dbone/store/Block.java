@@ -110,7 +110,7 @@ public interface Block extends Writable {
   
   public static Block read(ByteBuffer br) {
     int type = br.getInt();
-    Log.on("int type: %d", type);
+    //Log.on("int type: %d", type);
     Type t = Type.values()[type];
     int size = br.getInt();
     int lim = br.limit();

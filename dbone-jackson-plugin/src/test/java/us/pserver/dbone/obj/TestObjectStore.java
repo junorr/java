@@ -50,7 +50,7 @@ public class TestObjectStore {
   
   private static final String[] contNames = {"Fruits", "Veggies", "Tractor Parts", "Explosives", "Cars"};
   
-  private static final Path path = Paths.get("d:/objectStore.bin");
+  private static final Path path = Paths.get("d:/obj-store.bin");
   
   private static final SerializationService serial = new JacksonSerializationService();
 

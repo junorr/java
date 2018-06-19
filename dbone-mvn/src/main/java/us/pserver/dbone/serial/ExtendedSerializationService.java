@@ -144,12 +144,12 @@ public class ExtendedSerializationService extends AbstractSerializationService {
       return alloc;
     }
     
-    public Builder setClassPredicate(BiFunction<Class,Class,Boolean> ctest) {
+    public Builder setClassComparator(BiFunction<Class,Class,Boolean> ctest) {
       this.ctest = Objects.requireNonNull(ctest, "Bad null Class Predicate");
       return this;
     }
     
-    public BiFunction<Class,Class,Boolean> getClassPredicate() {
+    public BiFunction<Class,Class,Boolean> getClassComparator() {
       return ctest;
     }
     
