@@ -1,0 +1,7 @@
+name: fnproj-test
+version: 0.0.8
+runtime: java
+cmd: com.example.fn.HelloFunction::handleRequest
+build_image: fnproject/fn-java-fdk-build:jdk9-1.0.62
+run_image: fnproject/fn-java-fdk:jdk9-1.0.62
+format: http
