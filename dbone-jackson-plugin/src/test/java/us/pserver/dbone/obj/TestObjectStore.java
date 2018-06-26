@@ -117,12 +117,12 @@ public class TestObjectStore {
       Record<CargoShip> ra = store.put(ship);
       System.out.printf("* store.put( %s ): %s%n", ship, ra);
 
-      Sleeper.of(100).sleep();
+      //Sleeper.of(100).sleep();
       ship = randomCargoShip();
       Record<CargoShip> rb = store.put(ship);
       System.out.printf("* store.put( %s ): %s%n", ship, rb);
 
-      Sleeper.of(100).sleep();
+      //Sleeper.of(100).sleep();
       ship = blackBobCargoShip();
       Record<CargoShip> rc = store.put(ship);
       System.out.printf("* store.put( %s ): %s%n", ship, rc);
@@ -131,7 +131,7 @@ public class TestObjectStore {
       System.out.printf("* store.remove( %s ): %s%n", rb, ship);
       store.close();
 
-      Sleeper.of(100).sleep();
+      //Sleeper.of(100).sleep();
       store = openStore();
       ship = store.get(ra.getRegion());
       System.out.printf("* store.get( %s ): %s%n", ra, ship);
@@ -144,13 +144,13 @@ public class TestObjectStore {
       System.out.printf("* store.put( %s ): %s%n", ctn, rbb);
       store.close();
 
-      Sleeper.of(100).sleep();
+      //Sleeper.of(100).sleep();
       store = openStore();
       ctn = store.get(rb.getRegion());
       System.out.printf("* store.get( %s ): %s%n", rb, ctn);
       store.close();
 
-      Sleeper.of(100).sleep();
+      //Sleeper.of(100).sleep();
       store = openStore();
       Optional<Record<CargoShip>> opt = store
           .streamOf(CargoShip.class)

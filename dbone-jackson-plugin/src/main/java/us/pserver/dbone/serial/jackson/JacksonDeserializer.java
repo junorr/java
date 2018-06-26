@@ -46,7 +46,7 @@ public class JacksonDeserializer implements Deserializer<Object> {
   @Override
   public Object apply(Class cls, ByteBuffer buf, SerializationService cfg) throws IOException {
       String json = StandardCharsets.UTF_8.decode(buf).toString();
-      Log.on("cls=%s, json=%s", cls, json);
+      //Log.on("cls=%s, json=%s", cls, json);
       return omp.readerFor(cls).readValue(json);
   }
 

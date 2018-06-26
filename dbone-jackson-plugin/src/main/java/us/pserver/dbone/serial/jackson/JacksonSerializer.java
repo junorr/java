@@ -46,7 +46,7 @@ public class JacksonSerializer implements Serializer<Object> {
   @Override
   public ByteBuffer apply(Object o, SerializationService cfg) throws IOException {
     String json = omp.writerFor(o.getClass()).writeValueAsString(o);
-    Log.on("obj=%s, json = %s", o, json);
+    //Log.on("obj=%s, json = %s", o, json);
     return StandardCharsets.UTF_8.encode(json);
   }
 

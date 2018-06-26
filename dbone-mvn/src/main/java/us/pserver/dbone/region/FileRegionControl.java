@@ -125,7 +125,7 @@ public class FileRegionControl implements RegionControl {
   @Override
   public int writeTo(ByteBuffer wb) {
     Objects.requireNonNull(wb, "Bad null ByteBuffer = "+ wb);
-    System.out.printf("* FileRegionControl.writeTo(): writing %d regions%n", freebs.size());
+    //System.out.printf("* FileRegionControl.writeTo(): writing %d regions%n", freebs.size());
     int size = freebs.size() * Region.BYTES;
     if(wb.remaining() < size) {
       throw new IllegalArgumentException(
