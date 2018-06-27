@@ -19,33 +19,27 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.dbone.serial.jackson;
+package us.pserver.dbone;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import java.io.IOException;
-import us.pserver.dbone.index.Index;
-import us.pserver.dbone.serial.JsonIndex;
+import java.nio.ByteBuffer;
+import java.util.function.IntFunction;
+import us.pserver.dbone.obj.ObjectStore;
+import us.pserver.dbone.serial.SerializationService;
+import us.pserver.dbone.store.Storage;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 10/06/2018
+ * @version 0.0 - 26/06/2018
  */
-public class IndexJsonSerializer extends JsonSerializer<Index> implements JsonIndex {
-  
-  @Override
-  public void serialize(Index idx, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-    gen.writeStartObject();
-    gen.writeStringField(FNAME, idx.name());
-    gen.writeObjectField(FREGION, idx.region());
-    gen.writeFieldName(FVALUE);
-    gen.writeStartObject();
-    gen.writeStringField(FCLASS, idx.value().getClass().getName());
-    gen.writeObjectField(FCVALUE, idx.value());
-    gen.writeEndObject();
-    gen.writeEndObject();
-  }
+public interface DBOneConfiguration {
 
+  public SerializationService getSerializationService();
+  
+  public IntFunction<ByteBuffer> getBufferAllocPolicy();
+  
+  public Storage getStorage();
+  
+  public ObjectStore getObjectStore();
+  
 }

@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import us.pserver.dbone.obj.Record;
@@ -43,6 +44,8 @@ public interface IndexStore {
   
   public <V extends Comparable<V>> Stream<Index<V>> streamIndexes( Class cls, String name, V value );
   
+  public <V extends Comparable<V>> Stream<Index<V>> streamIndexes( Class cls, String name, Predicate<V> tvl );
+  
   public Stream<Index> streamIndexes( Class cls, Region reg );
   
   public Stream<Index> streamIndexes( Class cls, String name );
@@ -51,6 +54,8 @@ public interface IndexStore {
   
   
   public <V extends Comparable<V>> List<Index<V>> removeIndexes( Class cls, String name, V value );
+  
+  public <V extends Comparable<V>> List<Index<V>> removeIndexes( Class cls, String name, Predicate<V> tvl );
   
   public List<Index> removeIndexes( Class cls, String name );
   
@@ -101,9 +106,11 @@ public interface IndexStore {
       Objects.requireNonNull(idx, "Bad null Index");
       String key = getKey(cls, idx.name());
       if(!indexes.containsKey(key)) {
-        indexes.put(key, new CopyOnWriteArrayList<>());
+        CopyOnWriteArrayList<Index> ids = new CopyOnWriteArrayList<>();
+        ids.add(idx);
+        indexes.put(key, ids);
       }
-      if(!containsIndex(cls, idx)) {
+      else if(!containsIndex(cls, idx)) {
         indexes.get(key).add(idx);
       }
       return this;
@@ -138,6 +145,13 @@ public interface IndexStore {
     }
     
     @Override
+    public <V extends Comparable<V>> Stream<Index<V>> streamIndexes( Class cls, String name, Predicate<V> tvl ) {
+      return indexes.get(getKey(cls, name))
+          .stream().filter(i->tvl.test((V)i.value()))
+          .map(i->(Index<V>)i);
+    }
+    
+    @Override
     public Stream<Index> streamIndexes(Class cls, Region reg) {
       Objects.requireNonNull(cls, "Bad null Class");
       Objects.requireNonNull(reg, "Bad null Region");
@@ -157,7 +171,7 @@ public interface IndexStore {
       }
       return indexes.get(key).stream();
     }
-
+    
     @Override
     public <V extends Comparable<V>> List<Index<V>> removeIndexes( Class cls, String name, V value ) {
       Objects.requireNonNull(cls, "Bad null Class");
@@ -173,7 +187,23 @@ public interface IndexStore {
       ids.removeAll(rms);
       return rms;
     }
-
+    
+    @Override
+    public <V extends Comparable<V>> List<Index<V>> removeIndexes( Class cls, String name, Predicate<V> tvl ) {
+      Objects.requireNonNull(cls, "Bad null Class");
+      Objects.requireNonNull(name, "Bad null Name");
+      Objects.requireNonNull(tvl, "Bad null Value");
+      String key = getKey(cls, name);
+      List<Index> ids = indexes.get(key);
+      if(ids == null || ids.isEmpty()) {
+        return Collections.EMPTY_LIST;
+      }
+      List<Index<V>> rms = streamIndexes(cls, name, tvl)
+          .collect(Collectors.toList());
+      ids.removeAll(rms);
+      return rms;
+    }
+    
     @Override
     public List<Index> removeIndexes(Class cls, String name) {
       List<Index> rms = streamIndexes(cls, name).collect(Collectors.toList());
@@ -198,9 +228,11 @@ public interface IndexStore {
       Objects.requireNonNull(name, "Bad null Name");
       Objects.requireNonNull(acessor, "Bad null acessor Function");
       if(!builders.containsKey(cls.getName())) {
-        builders.put(cls.getName(), new CopyOnWriteArrayList<>());
+        CopyOnWriteArrayList<IndexBuilder> bds = new CopyOnWriteArrayList<>();
+        bds.add(new AcessorIndexBuilder(name, acessor));
+        builders.put(cls.getName(), bds);
       }
-      if(!containsIndexBuilder(cls, name)) {
+      else if(!containsIndexBuilder(cls, name)) {
         builders.get(cls.getName()).add(new AcessorIndexBuilder(name, acessor));
       }
       return this;

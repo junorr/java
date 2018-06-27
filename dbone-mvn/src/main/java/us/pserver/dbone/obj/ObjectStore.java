@@ -22,7 +22,6 @@
 package us.pserver.dbone.obj;
 
 import java.io.IOException;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import us.pserver.dbone.region.Region;
 

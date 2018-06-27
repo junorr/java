@@ -41,7 +41,11 @@ public class IndexSerializer implements Serializer<Index> {
   public ByteBuffer apply(Index idx, SerializationService cfg) throws IOException {
     ByteBuffer bname = StandardCharsets.UTF_8.encode(idx.name());
     ByteBuffer bcls = StandardCharsets.UTF_8.encode(idx.value().getClass().getName());
-    ByteBuffer ba = cfg.getByteBufferAllocPolicy().apply(Region.BYTES + Integer.BYTES * 2 + bname.remaining() + bcls.remaining());
+    ByteBuffer ba = cfg.getByteBufferAllocPolicy().apply(Region.BYTES 
+        + Integer.BYTES * 2 
+        + bname.remaining() 
+        + bcls.remaining()
+    );
     ba.put(idx.region().toByteBuffer());
     ba.putInt(bname.remaining());
     ba.put(bname);
