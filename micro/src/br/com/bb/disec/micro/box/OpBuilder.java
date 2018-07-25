@@ -73,7 +73,12 @@ public class OpBuilder {
   }
   
   
-  public OpBuilder withTypes(Class ... cls) {
+  public OpBuilder onClass(Class cls) {
+    return new OpBuilder(ops, name, cls.getName(), types, args);
+  }
+  
+  
+  public OpBuilder withArgTypes(Class ... cls) {
     return new OpBuilder(ops, name, className, cls, args);
   }
   

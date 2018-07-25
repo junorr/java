@@ -67,8 +67,8 @@ public class TestIgnite {
       AccessRule acsAdmin = new AccessRule(admin, "rwx");
       AccessRule acsRead = new AccessRule(readOnly, "r--");
       cache1.put("system", new RuledResource("system", acsAdmin, acsRead));
-
       System.out.println(cache2.get("system"));
+      Sleeper.of(60000).sleep();
     }
     finally {
       cache1.close();

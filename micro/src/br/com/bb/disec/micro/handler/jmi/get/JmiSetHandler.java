@@ -61,7 +61,7 @@ public class JmiSetHandler extends JsonSendHandler {
       Field fld = Reflector.of(cls).selectField(pars.getParam(2)).field();
       Class[] types = new Class[] {fld.getType()};
       Object[] args = new JsonParam(types, pars.shift(3)).getParams();
-      bld = bld.withTypes(types).withArgs(args);
+      bld = bld.withArgTypes(types).withArgs(args);
       send(hse, ServerSetupEnum.INSTANCE.objectBox()
           .execute(bld.set().build())
       );

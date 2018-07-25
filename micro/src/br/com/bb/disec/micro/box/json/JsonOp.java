@@ -114,7 +114,7 @@ public class JsonOp implements Operation {
     switch(optype) {
       case CONSTRUCTOR:
         return new OpBuilder()
-            .withTypes(getTypes())
+            .withArgTypes(getTypes())
             .withArgs(arguments != null ? arguments.toArray() : null)
             .constructor()
             .build().execute(obj);
@@ -124,7 +124,7 @@ public class JsonOp implements Operation {
             .build().execute(obj);
       case METHOD:
         return new OpBuilder()
-            .withTypes(getTypes())
+            .withArgTypes(getTypes())
             .withArgs(arguments != null ? arguments.toArray() : null)
             .method(name)
             .build().execute(obj);

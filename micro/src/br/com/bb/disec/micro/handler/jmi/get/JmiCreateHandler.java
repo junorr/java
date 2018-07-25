@@ -79,7 +79,7 @@ public class JmiCreateHandler extends JsonSendHandler {
           args = new JsonParam(types, pars.shift(2)).getParams();
         }
       }
-      return bld.withTypes(types).withArgs(args);
+      return bld.withArgTypes(types).withArgs(args);
     }
     return bld;
   }
