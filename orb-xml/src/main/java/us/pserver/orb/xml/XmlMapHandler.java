@@ -24,6 +24,7 @@ package us.pserver.orb.xml;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -79,12 +80,19 @@ public class XmlMapHandler extends DefaultHandler {
     return cur;
   }
   
+  public List<Map<String,Object>> makeAsList(String element, Map<String,Object> map) {
+    
+  }
+  
   @Override
   public void startElement(String uri, String localName, String qName, Attributes attributes) {
     elements.add(qName);
     if(attributes.getLength() > 0) {
       Map<String,Object> cm = getCurrentMap(true);
       System.out.printf("* startEl<%s>.getCurrentMap(): %s%n", qName, cm);
+      if(cm.containsKey(qName)) {
+        
+      }
       for(int i = 0; i < attributes.getLength(); i++) {
         cm.put(attributes.getQName(i), attributes.getValue(i));
       }
