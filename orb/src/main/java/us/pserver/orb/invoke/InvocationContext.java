@@ -53,14 +53,14 @@ public interface InvocationContext {
   
   
   public static InvocationContext of(Object proxy, Method meth, List args, Object value) {
-    return new Default(proxy, meth, args, value);
+    return new DefaultInvocationContext(proxy, meth, args, value);
   }
   
   
   
   
   
-  public static class Default implements InvocationContext {
+  public static class DefaultInvocationContext implements InvocationContext {
     
     private final Method meth;
     
@@ -70,7 +70,7 @@ public interface InvocationContext {
     
     private final List args;
     
-    public Default(Object proxy, Method meth, List args, Object value) {
+    public DefaultInvocationContext(Object proxy, Method meth, List args, Object value) {
       this.proxy = Match.notNull(proxy).getOrFail("Bad null proxy Object");
       this.meth = Match.notNull(meth).getOrFail("Bad null Method");
       this.args = args != null ? args : Collections.EMPTY_LIST;
@@ -118,7 +118,7 @@ public interface InvocationContext {
       if (getClass() != obj.getClass()) {
         return false;
       }
-      final Default other = (Default) obj;
+      final DefaultInvocationContext other = (DefaultInvocationContext) obj;
       if (!Objects.equals(this.meth, other.meth)) {
         return false;
       }
@@ -138,22 +138,22 @@ public interface InvocationContext {
     
     @Override
     public InvocationContext method(Method meth) {
-      return new Default(proxy, meth, args, value);
+      return new DefaultInvocationContext(proxy, meth, args, value);
     }
     
     @Override
     public InvocationContext value(Object value) {
-      return new Default(proxy, meth, args, value);
+      return new DefaultInvocationContext(proxy, meth, args, value);
     }
     
     @Override
     public InvocationContext proxy(Object proxy) {
-      return new Default(proxy, meth, args, value);
+      return new DefaultInvocationContext(proxy, meth, args, value);
     }
     
     @Override
     public InvocationContext arguments(List args) {
-      return new Default(proxy, meth, args, value);
+      return new DefaultInvocationContext(proxy, meth, args, value);
     }
     
   }

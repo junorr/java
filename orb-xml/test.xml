@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orbxml user-key="mykey">
+  
+  <host port="8080">
+    <address>127.0.0.1</address>
+    
+    <security>
+      <resource name="hello">
+        <access-rule name="world">
+          <group name="guest">
+            <user name="guest" hash="ABC123DEF456"/>
+          </group>
+          <group name="admin">
+            <user name="root" hash="123ABCDEF456"/>
+            <user name="juno" hash="123ABC456DEF"/>
+          </group>
+        </access-rule>
+      </resource>
+    </security>
+    
+  </host>
+  
+  <user-name>juno</user-name>
+  
+</orbxml>

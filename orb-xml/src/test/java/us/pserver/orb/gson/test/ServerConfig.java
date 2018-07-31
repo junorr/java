@@ -19,50 +19,41 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro.config;
+package us.pserver.orb.gson.test;
 
-import java.nio.file.Path;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
+import java.net.InetAddress;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/04/2018
+ * @version 0.0 - 05/01/2018
  */
-public interface DBConfig {
+public interface ServerConfig {
+  
+  public Host getHost();
 
-  public static enum DBType {
-    FILE, MEMORY, MAPPED_FILE
-  }
-
-  public int getConcurrency();
+  public String getUserName();
   
-  public Path getFile();
+  public String getUserKey();
   
-  public DBType getType();
+  public ServerConfig setHost(Host host);
   
-  public String getUser();
+  public ServerConfig setUserName(String name);
   
-  public String getPassword();
+  public ServerConfig setUserKey(String key);
   
   
-  public default DB createDB() {
-    switch(getType()) {
-      case FILE:
-        return DBMaker.fileDB(getFile().toFile())
-            .concurrencyScale(getConcurrency())
-            .make();
-      case MAPPED_FILE:
-        return DBMaker.fileDB(getFile().toFile())
-            .concurrencyScale(getConcurrency())
-            .fileMmapEnable()
-            .make();
-      default:
-        return DBMaker.memoryDirectDB()
-            .concurrencyScale(getConcurrency())
-            .make();
-    }
+  
+  public static interface Host {
+    
+    public InetAddress getAddress();
+    
+    public int getPort();
+    
+    public Host setAddress(String addr);
+    
+    public Host setPort(int port);
+    
   }
   
 }
