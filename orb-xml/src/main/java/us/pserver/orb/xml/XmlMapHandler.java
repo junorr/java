@@ -21,15 +21,16 @@
 
 package us.pserver.orb.xml;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
+import static jdk.nashorn.internal.objects.NativeArray.map;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+import us.pserver.tools.misc.Tuple;
 
 /**
  *
@@ -38,22 +39,15 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class XmlMapHandler extends DefaultHandler {
 
-  private final Map<String,Object> map;
+  private final LinkedList<Tuple<String,Map<String,Object>>> elements;
   
-  private final Deque<String> elements;
-  
-  
-  public XmlMapHandler(Map<String,Object> map) {
-    this.map = Objects.requireNonNull(map);
-    this.elements = new ArrayDeque<>();
-  }
   
   public XmlMapHandler() {
-    this(new TreeMap<>());
+    this.elements = new LinkedList<>();
   }
   
   public Map<String,Object> getMap() {
-    return map;
+    return null;
   }
   
   private Map<String,Object> getCurrentMap(boolean create) {
@@ -86,16 +80,29 @@ public class XmlMapHandler extends DefaultHandler {
   
   @Override
   public void startElement(String uri, String localName, String qName, Attributes attributes) {
-    elements.add(qName);
-    if(attributes.getLength() > 0) {
-      Map<String,Object> cm = getCurrentMap(true);
-      System.out.printf("* startEl<%s>.getCurrentMap(): %s%n", qName, cm);
-      if(cm.containsKey(qName)) {
-        
-      }
-      for(int i = 0; i < attributes.getLength(); i++) {
-        cm.put(attributes.getQName(i), attributes.getValue(i));
-      }
+    if(elements.isEmpty()) {
+      elements.add(new Tuple<>(qName, new HashMap<>()));
+    }
+    setAttributes(qName, attributes);
+  }
+  
+  
+  private int reverseIndexOf(String elm) {
+    for(int i = (elements.size() -1); i >= 0; i--) {
+      Tuple<String,Map<String,Object>> t = elements.get(i);
+      if(t.key().equals(elm)) return i;
+    }
+    return -1;
+  }
+  
+  private void setAttributes(String elm, Attributes attrs) {
+    int ixe = reverseIndexOf(elm);
+    if(ixe < 0) {
+      
+    }
+    Tuple<String,Map<String,Object>> t = elements.get(ixe);
+    for(int i = 0; i < attrs.getLength(); i++) {
+      t.value().put(attrs.getQName(i), attrs.getValue(i));
     }
   }
   
