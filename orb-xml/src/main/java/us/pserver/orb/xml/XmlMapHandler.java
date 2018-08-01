@@ -27,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import static jdk.nashorn.internal.objects.NativeArray.map;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 import us.pserver.tools.misc.Tuple;
@@ -51,27 +50,7 @@ public class XmlMapHandler extends DefaultHandler {
   }
   
   private Map<String,Object> getCurrentMap(boolean create) {
-    Iterator<String> it = elements.iterator();
-    Map<String,Object> cur = null;
-    while(it.hasNext()) {
-      String el = it.next();
-      System.out.println("element = "+ el);
-      if(cur == null) {
-        System.out.println("map == null");
-        cur = map;
-      }
-      else if(cur.containsKey(el)) {
-        System.out.println("map.containsKey( "+ el+ " )");
-        cur = (Map<String,Object>) cur.get(el);
-      }
-      else if(!el.equals(elements.peekLast()) || create) {
-        System.out.println("map = new TreeMap()");
-        Map<String,Object> m = new TreeMap<>();
-        cur.put(el, m);
-        cur = m;
-      }
-    }
-    return cur;
+    return null;
   }
   
   public List<Map<String,Object>> makeAsList(String element, Map<String,Object> map) {
@@ -109,10 +88,6 @@ public class XmlMapHandler extends DefaultHandler {
   @Override
   public void characters(char[] ch, int start, int length) {
     String value = new String(ch, start, length);
-    if(value.trim().isEmpty()) return;
-    Map<String,Object> cm = getCurrentMap(false);
-    System.out.printf("* char<%s>.getCurrentMap(): %s%n", value, cm);
-    cm.put(elements.peekLast(), new String(ch, start, length));
   }
   
   @Override
