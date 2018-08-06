@@ -46,20 +46,60 @@ public class Logger {
     logger.get().log(lvl, str, args);
   }
   
+  public static void log(Log.Level lvl, Throwable th, String str, Object ... args) {
+    logger.get().log(lvl, th, str, args);
+  }
+  
+  public static void log(Log.Level lvl, Throwable th) {
+    logger.get().log(lvl, th);
+  }
+  
   public static void debug(String str, Object ... args) {
     logger.get().debug(str, args);
+  }
+  
+  public static void debug(Throwable th, String str, Object ... args) {
+    logger.get().debug(th, str, args);
+  }
+  
+  public static void debug(Throwable th) {
+    logger.get().debug(th);
   }
   
   public static void info(String str, Object ... args) {
     logger.get().info(str, args);
   }
   
+  public static void info(Throwable th, String str, Object ... args) {
+    logger.get().info(th, str, args);
+  }
+  
+  public static void info(Throwable th) {
+    logger.get().info(th);
+  }
+  
   public static void warn(String str, Object ... args) {
     logger.get().warn(str, args);
   }
   
+  public static void warn(Throwable th) {
+    logger.get().warn(th);
+  }
+  
+  public static void warn(Throwable th, String str, Object ... args) {
+    logger.get().warn(th, str, args);
+  }
+  
   public static void error(String str, Object ... args) {
     logger.get().error(str, args);
+  }
+  
+  public static void error(Throwable th, String str, Object ... args) {
+    logger.get().error(th, str, args);
+  }
+  
+  public static void error(Throwable th) {
+    logger.get().error(th);
   }
   
 }

@@ -36,14 +36,14 @@ import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 05/08/2018
  */
-public class ProxyClient {
+public class ProxyServer {
 
   
   public static void main(String[] args) {
-    int port = 11080;
+    int port = 11081;
     //Logger.setLog(new StdLog(StdLog.DEFAULT_LOG_FORMAT, System.out, Log.Level.INFO));
     ProxyAuthorization auth = ProxyAuthorization.of("f6036477", "96325896");
-    MyChainedProxy cpx = new MyChainedProxy("localhost", 40080, auth, false);
+    MyChainedProxy cpx = new MyChainedProxy("localhost", 40080, auth, true);
     Logger.info("Proxy listening on port: %d", port);
     Logger.info("  with chained proxy: %s", cpx);
     HttpProxyServer server = DefaultHttpProxyServer.bootstrap()

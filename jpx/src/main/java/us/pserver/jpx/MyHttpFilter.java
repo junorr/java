@@ -49,8 +49,8 @@ public class MyHttpFilter extends HttpFiltersAdapter {
   @Override
   public HttpResponse clientToProxyRequest(HttpObject obj) {
     //Logger.debug("----------------------------------------");
-    //Logger.debug("Request Received: %s", obj);
-    Logger.debug("obj.class = %s", obj.getClass());
+    Logger.debug("Request Received: %s", obj);
+    //Logger.debug("obj.class = %s", obj.getClass());
     DefaultHttpRequest req = (DefaultHttpRequest) obj;
     return null;
   }

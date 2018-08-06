@@ -85,6 +85,30 @@ public class StdLog implements Log {
     ));
   }
   
+  @Override
+  public void log(Level lvl, Throwable th, String str, Object ... args) {
+    if(stl != null && lvl.ordinal() < stl.ordinal()) return;
+    log(lvl, str, args);
+    log(lvl, th);
+  }
+  
+  @Override
+  public void log(Level lvl, Throwable th) {
+    if(stl != null && lvl.ordinal() < stl.ordinal()) return;
+    log(lvl, th.toString());
+    Throwable last = th;
+    Throwable cause = th.getCause();
+    while(cause != null) {
+      log(lvl, "Root Cause: ", cause.toString());
+      last = cause;
+      cause = cause.getCause();
+    }
+    StackTraceElement[] els = last.getStackTrace();
+    for(StackTraceElement e : els) {
+      log(lvl, "  - %s", e.toString());
+    }
+  }
+  
   private StackTraceElement findPreviousElement(StackTraceElement[] els) {
     int ic = -1;
     for(int i = 0; i < els.length; i++) {

@@ -25,6 +25,8 @@ import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
 import java.net.InetSocketAddress;
 import java.util.Objects;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
 import org.littleshoot.proxy.ChainedProxyAdapter;
 import us.pserver.jpx.log.Logger;
 
@@ -61,7 +63,6 @@ public class MyChainedProxy extends ChainedProxyAdapter {
   
   @Override
   public void filterRequest(HttpObject obj) {
-    Logger.debug("obj.class = %s", obj.getClass().getName());
     DefaultHttpRequest req = (DefaultHttpRequest) obj;
     if(auth != null) {
       req.headers().add(PROXY_AUTHORIZATION, auth.getProxyAuthorization());
@@ -80,6 +81,28 @@ public class MyChainedProxy extends ChainedProxyAdapter {
   @Override
   public boolean requiresEncryption() {
     return encrypt;
+  }
+  
+  @Override
+  public SSLEngine newSslEngine() {
+    try {
+      return SSLContext.getDefault().createSSLEngine();
+    }
+    catch(Exception e) {
+      Logger.debug(e);
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
+
+  @Override
+  public SSLEngine newSslEngine(String peerHost, int peerPort) {
+    try {
+      return SSLContext.getDefault().createSSLEngine(peerHost, peerPort);
+    }
+    catch(Exception e) {
+      Logger.debug(e);
+      throw new RuntimeException(e.toString(), e);
+    }
   }
 
 
