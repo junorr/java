@@ -266,3 +266,6 @@
 /dbone-jackson-plugin/target/
 /ignite-test/target/
 /orb-xml/target/
+/jpx/target/
+/jpx/nbproject/
+/toolbox/nbproject/

@@ -19,38 +19,42 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.gson.test;
-
-import java.io.File;
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
+package us.pserver.jpx.log;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 30/07/2018
+ * @version 0.0 - 05/08/2018
  */
-public class TestXmlMapHandler {
+public interface Log {
 
-  private SAXParser getParser() throws ParserConfigurationException, SAXException {
-    return SAXParserFactory.newInstance().newSAXParser();
+  public static enum Level {
+    DEBUG("DEBUG"), INFO("INFO "), WARN("WARN "), ERROR("ERROR");
+    private Level(String lvl) {
+      this.lvl = lvl;
+    }
+    private final String lvl;
+    public String toString() {
+      return lvl;
+    }
   }
   
-  @Test
-  public void testXml() throws ParserConfigurationException, SAXException, IOException {
-    try {
-      XmlMapHandler hnd = new XmlMapHandler();
-      getParser().parse(new File("./test.xml"), hnd);
-      System.out.println(hnd.getMap());
-    }
-    catch(Exception e) {
-      e.printStackTrace();
-      throw e;
-    }
+  public void log(Level lvl, String str, Object ... args);
+  
+  public default void debug(String str, Object ... args) {
+    log(Level.DEBUG, str, args);
+  }
+  
+  public default void info(String str, Object ... args) {
+    log(Level.INFO, str, args);
+  }
+  
+  public default void warn(String str, Object ... args) {
+    log(Level.WARN, str, args);
+  }
+  
+  public default void error(String str, Object ... args) {
+    log(Level.ERROR, str, args);
   }
   
 }

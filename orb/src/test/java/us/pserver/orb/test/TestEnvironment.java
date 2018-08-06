@@ -45,7 +45,7 @@ public class TestEnvironment {
     Assertions.assertEquals(1, cfg.getQtAccessibility());
   }
   
-  //@Disabled
+  @Disabled
   @Test
   public void windowsEnvConfig() throws NoSuchMethodException {
     WindowsEnvConfig cfg = Orb.get().fromEnvironment().create(WindowsEnvConfig.class);

@@ -19,38 +19,47 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.gson.test;
+package us.pserver.jpx.log;
 
-import java.io.File;
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 30/07/2018
+ * @version 0.0 - 05/08/2018
  */
-public class TestXmlMapHandler {
+public class Logger {
 
-  private SAXParser getParser() throws ParserConfigurationException, SAXException {
-    return SAXParserFactory.newInstance().newSAXParser();
+  private static AtomicReference<Log> logger = new AtomicReference<>(StdLog.STDOUT);
+  
+  
+  public static void setLog(Log log) {
+    logger.set(Objects.requireNonNull(log));
   }
   
-  @Test
-  public void testXml() throws ParserConfigurationException, SAXException, IOException {
-    try {
-      XmlMapHandler hnd = new XmlMapHandler();
-      getParser().parse(new File("./test.xml"), hnd);
-      System.out.println(hnd.getMap());
-    }
-    catch(Exception e) {
-      e.printStackTrace();
-      throw e;
-    }
+  public static Log getLog() {
+    return logger.get();
+  }
+  
+  public static void log(Log.Level lvl, String str, Object ... args) {
+    logger.get().log(lvl, str, args);
+  }
+  
+  public static void debug(String str, Object ... args) {
+    logger.get().debug(str, args);
+  }
+  
+  public static void info(String str, Object ... args) {
+    logger.get().info(str, args);
+  }
+  
+  public static void warn(String str, Object ... args) {
+    logger.get().warn(str, args);
+  }
+  
+  public static void error(String str, Object ... args) {
+    logger.get().error(str, args);
   }
   
 }
