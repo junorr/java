@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proxy name="default">
+
+  <address>0.0.0.0</address>
+  <port>11080</port>
+  
+  <remote.address>localhost</remote.address>
+  <remote.port>40080</remote.port>
+  
+</proxy>
