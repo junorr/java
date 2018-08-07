@@ -57,6 +57,13 @@ public class MyHttpFilter extends HttpFiltersAdapter {
   
   
   @Override
+  public HttpObject proxyToClientResponse(HttpObject obj) {
+    Logger.debug("P >> C: (%s) %s", obj.getClass().getSimpleName(), obj);
+    return obj;
+  }
+  
+  
+  @Override
   public HttpObject serverToProxyResponse(HttpObject obj) {
     //Logger.debug("----------------------------------------");
     //Logger.debug("Request Received: %s", obj);
