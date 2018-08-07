@@ -41,9 +41,12 @@ public interface Log {
   
   public void log(Level lvl, String str, Object ... args);
   
-  public void log(Level lvl, Throwable th, String str, Object ... args);
-  
   public void log(Level lvl, Throwable th);
+  
+  public default void log(Level lvl, Throwable th, String str, Object ... args) {
+    log(lvl, str, args);
+    log(lvl, th);
+  }
   
   public default void debug(String str, Object ... args) {
     log(Level.DEBUG, str, args);

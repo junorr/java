@@ -22,6 +22,10 @@
 package us.pserver.jpx.log;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -36,48 +40,52 @@ public class StdLog implements Log {
   public static final LogFormat DEFAULT_LOG_FORMAT = new LogFormat(DEFAULT_FORMAT);
   
   
-  public static final StdLog STDOUT = new StdLog(DEFAULT_LOG_FORMAT, System.out);
+  public static final StdLog STDOUT = new StdLog(DEFAULT_LOG_FORMAT, System.out, Level.DEBUG, Level.INFO, Level.WARN);
   
-  public static final StdLog STDERR = new StdLog(DEFAULT_LOG_FORMAT, System.out);
+  public static final StdLog STDERR = new StdLog(DEFAULT_LOG_FORMAT, System.out, Level.ERROR);
   
   
-  private final LogFormat lgf;
+  protected final LogFormat logFormat;
   
-  private final PrintStream std;
+  protected final PrintStream printStream;
   
-  private final Level stl;
+  protected final List<Level> levels;
   
-  public StdLog(LogFormat lf, PrintStream ps, Level startLevel) {
-    std = ps;
-    lgf = lf;
-    stl = startLevel;
+  public StdLog(LogFormat lf, PrintStream ps, Level ... levels) {
+    this(lf, ps, Arrays.asList(levels));
+  }
+  
+  public StdLog(LogFormat lf, PrintStream ps, Collection<Level> levels) {
+    printStream = ps;
+    logFormat = lf;
+    this.levels = new ArrayList<>(levels);
   }
   
   public StdLog(LogFormat lf, PrintStream ps) {
-    this(lf, ps, null);
+    this(lf, ps, Level.values());
   }
   
   public void print(String str, Object ... args) {
-    std.printf(Objects.requireNonNull(str), args);
+    printStream.printf(Objects.requireNonNull(str), args);
   }
   
   public void println(String str, Object ... args) {
-    std.printf(Objects.requireNonNull(str).concat("%n"), args);
+    printStream.printf(Objects.requireNonNull(str).concat("%n"), args);
   }
   
   public void print(Object obj) {
-    std.print(Objects.toString(obj));
+    printStream.print(Objects.toString(obj));
   }
   
   public void println(Object obj) {
-    std.println(Objects.toString(obj));
+    printStream.println(Objects.toString(obj));
   }
   
   @Override
   public void log(Level lvl, String str, Object ... args) {
-    if(stl != null && lvl.ordinal() < stl.ordinal()) return;
+    if(!levels.contains(lvl)) return;
     StackTraceElement elm = findPreviousElement(Thread.currentThread().getStackTrace());
-    println(lgf.format(lvl,
+    println(logFormat.format(lvl,
         elm.getClassName(), 
         elm.getMethodName(), 
         elm.getLineNumber(), 
@@ -86,15 +94,8 @@ public class StdLog implements Log {
   }
   
   @Override
-  public void log(Level lvl, Throwable th, String str, Object ... args) {
-    if(stl != null && lvl.ordinal() < stl.ordinal()) return;
-    log(lvl, str, args);
-    log(lvl, th);
-  }
-  
-  @Override
   public void log(Level lvl, Throwable th) {
-    if(stl != null && lvl.ordinal() < stl.ordinal()) return;
+    if(!levels.contains(lvl)) return;
     log(lvl, th.toString());
     Throwable last = th;
     Throwable cause = th.getCause();

@@ -21,8 +21,9 @@
 
 package us.pserver.jpx.log;
 
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -31,75 +32,66 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class Logger {
 
-  private static AtomicReference<Log> logger = new AtomicReference<>(StdLog.STDOUT);
-  
-  
-  public static void setLog(Log log) {
-    logger.set(Objects.requireNonNull(log));
-  }
-  
-  public static Log getLog() {
-    return logger.get();
-  }
+  public static final List<Log> LOGS = new CopyOnWriteArrayList<>(Arrays.asList(StdLog.STDOUT, StdLog.STDERR));
   
   public static void log(Log.Level lvl, String str, Object ... args) {
-    logger.get().log(lvl, str, args);
+    LOGS.forEach(l->l.log(lvl, str, args));
   }
   
   public static void log(Log.Level lvl, Throwable th, String str, Object ... args) {
-    logger.get().log(lvl, th, str, args);
+    LOGS.forEach(l->l.log(lvl, th, str, args));
   }
   
   public static void log(Log.Level lvl, Throwable th) {
-    logger.get().log(lvl, th);
+    LOGS.forEach(l->l.log(lvl, th));
   }
   
   public static void debug(String str, Object ... args) {
-    logger.get().debug(str, args);
+    LOGS.forEach(l->l.debug(str, args));
   }
   
   public static void debug(Throwable th, String str, Object ... args) {
-    logger.get().debug(th, str, args);
+    LOGS.forEach(l->l.debug(th, str, args));
   }
   
   public static void debug(Throwable th) {
-    logger.get().debug(th);
+    LOGS.forEach(l->l.debug(th));
   }
   
   public static void info(String str, Object ... args) {
-    logger.get().info(str, args);
+    LOGS.forEach(l->l.info(str, args));
   }
   
   public static void info(Throwable th, String str, Object ... args) {
-    logger.get().info(th, str, args);
+    LOGS.forEach(l->l.info(th, str, args));
   }
   
   public static void info(Throwable th) {
-    logger.get().info(th);
+    LOGS.forEach(l->l.info(th));
   }
   
   public static void warn(String str, Object ... args) {
-    logger.get().warn(str, args);
+    LOGS.forEach(l->l.warn(str, args));
   }
   
   public static void warn(Throwable th) {
-    logger.get().warn(th);
+    LOGS.forEach(l->l.warn(th));
   }
   
   public static void warn(Throwable th, String str, Object ... args) {
-    logger.get().warn(th, str, args);
+    LOGS.forEach(l->l.warn(th, str, args));
   }
   
   public static void error(String str, Object ... args) {
-    logger.get().error(str, args);
+    LOGS.forEach(l->l.error(str, args));
   }
   
   public static void error(Throwable th, String str, Object ... args) {
-    logger.get().error(th, str, args);
+    LOGS.forEach(l->l.error(th, str, args));
   }
   
   public static void error(Throwable th) {
-    logger.get().error(th);
+    LOGS.forEach(l->l.error(th));
   }
   
 }
