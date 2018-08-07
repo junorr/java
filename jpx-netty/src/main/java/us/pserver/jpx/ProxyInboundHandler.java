@@ -28,7 +28,12 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import java.util.Objects;
 import us.pserver.jpx.log.Logger;
 
@@ -56,91 +61,69 @@ public class ProxyInboundHandler extends ChannelInboundHandlerAdapter {
   public ProxyInboundHandler(String serverHost, int serverPort) {
     this(serverHost, serverPort, null);
   }
-
-  @Override
-  public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-
-  @Override
-  public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-
+  
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    Logger.debug("Client connected %s", ctx.channel().remoteAddress());
     final Channel clientChannel = ctx.channel();
     Bootstrap b = new Bootstrap();
     b.group(clientChannel.eventLoop())
         .channel(clientChannel.getClass())
-        .handler(null)
+        //.handler(new ServerInboundHandler(clientChannel))
+        .handler(new ChannelInitializer<SocketChannel>() {
+          public void initChannel(SocketChannel ch) {
+            ch.pipeline().addLast(
+                new HttpClientCodec(), 
+                //new HttpObjectAggregator(8192), 
+                new ServerInboundHandler(clientChannel)
+            );
+          }
+        })
         .option(ChannelOption.AUTO_READ, false);
     ChannelFuture future = b.connect(serverHost, serverPort);
     serverChannel = future.channel();
     ChannelFutureListener cfl = f -> {
+      Logger.debug("Server connection stablished %s", f.channel().remoteAddress());
       if(f.isSuccess()) clientChannel.read();
       else clientChannel.close();
     };
     future.addListener(cfl);
   }
-
-
+  
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    Logger.debug("Client connection closing");
     close(serverChannel);
   }
-
-
+  
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
     if(!serverChannel.isActive()) return;
+    Logger.debug("Reading from client: %s", msg.getClass().getName());
+    Logger.debug("client read: %s", msg.toString());
+    if(msg instanceof DefaultFullHttpRequest) {
+      DefaultFullHttpRequest req = (DefaultFullHttpRequest) msg;
+      if(req.decoderResult().isFailure()) Logger.debug(req.decoderResult().cause());
+    }
     ChannelFutureListener cfl = f -> {
       if(f.isSuccess()) ctx.channel().read();
       else f.channel().close();
     };
     serverChannel.writeAndFlush(msg).addListener(cfl);
   }
-
-
+  
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
   }
-
-
-  @Override
-  public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-
-  @Override
-  public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-
+  
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     Logger.error(cause);
     close(ctx.channel());
   }
-
-
-  @Override
-  public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-
-  @Override
-  public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
   
-  private void close(Channel ch) {
+  public static void close(Channel ch) {
     if(ch != null && ch.isActive()) {
       ch.writeAndFlush(Unpooled.EMPTY_BUFFER)
           .addListener(ChannelFutureListener.CLOSE);

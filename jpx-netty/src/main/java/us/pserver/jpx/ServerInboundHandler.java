@@ -21,58 +21,59 @@
 
 package us.pserver.jpx;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import java.util.Objects;
+import us.pserver.jpx.log.Logger;
+
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 07/08/2018
  */
-public class ServerInboundHandler {
-  /*
-  package io.netty.example.proxy;
-
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-
-public class HexDumpProxyBackendHandler extends ChannelInboundHandlerAdapter {
-
-    private final Channel inboundChannel;
-
-    public HexDumpProxyBackendHandler(Channel inboundChannel) {
-        this.inboundChannel = inboundChannel;
-    }
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) {
-        ctx.read();
-    }
-
-    @Override
-    public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        inboundChannel.writeAndFlush(msg).addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture future) {
-                if (future.isSuccess()) {
-                    ctx.channel().read();
-                } else {
-                    future.channel().close();
-                }
-            }
-        });
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
-        HexDumpProxyFrontendHandler.closeOnFlush(inboundChannel);
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
-        HexDumpProxyFrontendHandler.closeOnFlush(ctx.channel());
-    }
-}
-  */
+public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
+  
+  private final Channel clientChannel;
+  
+  public ServerInboundHandler(Channel clientChannel) {
+    this.clientChannel = Objects.requireNonNull(clientChannel);
+  }
+  
+  @Override
+  public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    ctx.read();
+  }
+  
+  @Override
+  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    Logger.debug("Server connection closing");
+    ProxyInboundHandler.close(clientChannel);
+  }
+  
+  @Override
+  public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    if(!clientChannel.isActive()) return;
+    Logger.debug("Reading from server: %s", msg.getClass().getName());
+    Logger.debug("server read: %s", msg.toString());
+    ChannelFutureListener cfl = f -> {
+      if(f.isSuccess()) ctx.channel().read();
+      else f.channel().close();
+    };
+    clientChannel.writeAndFlush(msg).addListener(cfl);
+  }
+  
+  @Override
+  public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+    
+  }
+  
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    Logger.error(cause);
+    ProxyInboundHandler.close(ctx.channel());
+  }
+  
 }
