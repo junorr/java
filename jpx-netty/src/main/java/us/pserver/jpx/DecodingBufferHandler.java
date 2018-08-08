@@ -23,6 +23,7 @@ package us.pserver.jpx;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import static io.netty.buffer.Unpooled.buffer;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,39 +32,38 @@ import io.netty.handler.codec.http.HttpContent;
 import io.netty.util.ReferenceCountUtil;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import us.pserver.cdr.crypt.CryptBufferCoder;
 import us.pserver.cdr.crypt.CryptKey;
 import us.pserver.jpx.log.Logger;
-
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 07/08/2018
  */
-public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
+public class DecodingBufferHandler extends ChannelInboundHandlerAdapter {
   
-  private final Channel clientChannel;
+  public static final int DEFAULT_BUFFER_SIZE = 16 * 1024;
   
-  public ServerInboundHandler(Channel clientChannel) {
-    this.clientChannel = Objects.requireNonNull(clientChannel);
+  public static final int MIN_BUFFER_SIZE = Integer.BYTES;
+  
+  private AtomicInteger curBufSize;
+  
+
+  public DecodingBufferHandler() {
+    curBufSize = new AtomicInteger(MIN_BUFFER_SIZE);
   }
   
-  @Override
-  public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    ctx.read();
-  }
+  @Override public void channelActive(ChannelHandlerContext ctx) throws Exception {}
   
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    Logger.debug("Server connection closing");
-    ProxyInboundHandler.close(clientChannel);
+    Logger.debug("Client connection closing");
   }
   
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-    if(!clientChannel.isActive()) return;
     try {
       if(msg instanceof HttpContent) {
         HttpContent cont = (HttpContent) msg;
@@ -78,11 +78,7 @@ public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
         buf.readBytes(encbuf);
         encbuf.flip();
         ByteBuffer decbuf = cdr.decode(encbuf);
-        ChannelFutureListener cfl = f -> {
-          if(f.isSuccess()) ctx.channel().read();
-          else f.channel().close();
-        };
-        clientChannel.writeAndFlush(Unpooled.wrappedBuffer(decbuf)).addListener(cfl);
+        ctx.write(Unpooled.wrappedBuffer(decbuf));
       }
     }
     finally {
@@ -92,13 +88,19 @@ public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
   
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    
   }
   
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     Logger.error(cause);
-    ProxyInboundHandler.close(ctx.channel());
+    close(ctx.channel());
   }
   
+  public static void close(Channel ch) {
+    if(ch != null && ch.isActive()) {
+      ch.writeAndFlush(Unpooled.EMPTY_BUFFER)
+          .addListener(ChannelFutureListener.CLOSE);
+    }
+  }
+
 }

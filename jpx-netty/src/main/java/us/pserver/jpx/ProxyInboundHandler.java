@@ -22,6 +22,7 @@
 package us.pserver.jpx;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -33,8 +34,16 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpVersion;
+import io.netty.util.ReferenceCountUtil;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import us.pserver.cdr.crypt.CryptBufferCoder;
 import us.pserver.jpx.log.Logger;
 
 /**
@@ -44,23 +53,67 @@ import us.pserver.jpx.log.Logger;
  */
 public class ProxyInboundHandler extends ChannelInboundHandlerAdapter {
   
-  private final String serverHost;
+  public static final String CONTENT_TYPE = "image/x-icon";
   
-  private final int serverPort;
+  private final ProxyConfiguration cfg;
   
-  private final ProxyAuthorization auth;
+  private final ByteBuffer buffer;
+  
+  private final CryptBufferCoder cdr;
+  
+  private final byte[] keyBytes;
   
   private Channel serverChannel;
   
-  public ProxyInboundHandler(String serverHost, int serverPort, ProxyAuthorization auth) {
-    this.serverHost = Objects.requireNonNull(serverHost);
-    this.serverPort = serverPort;
-    this.auth = auth;
+  
+  public ProxyInboundHandler(ProxyConfiguration cfg) {
+    this.cfg = Objects.requireNonNull(cfg)
+        .validateBufferSize()
+        .validateChainedProxyHost()
+        .validateChainedProxyPort()
+        .validateTargetUri()
+        .validateCryptAlgorithm();
+    buffer = ByteBuffer.allocateDirect(cfg.getBufferSize());
+    keyBytes = cfg.getCryptKey().toString().getBytes(StandardCharsets.UTF_8);
+    cdr = new CryptBufferCoder(cfg.getCryptKey());
   }
   
-  public ProxyInboundHandler(String serverHost, int serverPort) {
-    this(serverHost, serverPort, null);
+  
+  private void packAndSend(ChannelHandlerContext ctx) {
+    buffer.flip();
+    if(!buffer.hasRemaining()) {
+      Logger.debug("Nothing to send!");
+      buffer.clear();
+      return;
+    }
+    Logger.debug("PackAndSend");
+    ByteBuffer encbuf = cdr.encode(buffer);
+    ByteBuf sendbuf = ctx.alloc().directBuffer(encbuf.remaining() + Integer.BYTES * 2 + keyBytes.length);
+    sendbuf.writeInt(encbuf.remaining())
+        .writeInt(keyBytes.length)
+        .writeBytes(keyBytes)
+        .writeBytes(encbuf);
+    Logger.debug("Encoded buffer: %s", sendbuf);
+    buffer.clear();
+    DefaultFullHttpRequest req = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, cfg.getTargetUri(), sendbuf);
+    req.headers().add(HttpHeaderNames.CONTENT_TYPE, CONTENT_TYPE);
+    req.headers().add(HttpHeaderNames.CONTENT_LENGTH, sendbuf.readableBytes());
+    req.headers().add(HttpHeaderNames.ACCEPT, CONTENT_TYPE);
+    //req.headers().add(HttpHeaderNames.CONNECTION, "keep alive");
+    if(cfg.hasChainedProxyAuthorization()) {
+      req.headers().add(HttpHeaderNames.PROXY_AUTHORIZATION, cfg.getChainedProxyAuthorization().getProxyAuthorization());
+    }
+    if(cfg.hasUserAgent()) {
+      req.headers().add(HttpHeaderNames.USER_AGENT, cfg.getUserAgent());
+    }
+    ChannelFutureListener cfl = f -> {
+      if(f.isSuccess()) ctx.read();
+      else f.channel().close();
+    };
+    Logger.debug("writing request to server: %s", req);
+    serverChannel.writeAndFlush(req).addListener(cfl);
   }
+  
   
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -69,18 +122,17 @@ public class ProxyInboundHandler extends ChannelInboundHandlerAdapter {
     Bootstrap b = new Bootstrap();
     b.group(clientChannel.eventLoop())
         .channel(clientChannel.getClass())
-        //.handler(new ServerInboundHandler(clientChannel))
         .handler(new ChannelInitializer<SocketChannel>() {
           public void initChannel(SocketChannel ch) {
             ch.pipeline().addLast(
                 new HttpClientCodec(), 
-                //new HttpObjectAggregator(8192), 
+                new HttpObjectAggregator(8192), 
                 new ServerInboundHandler(clientChannel)
             );
           }
         })
         .option(ChannelOption.AUTO_READ, false);
-    ChannelFuture future = b.connect(serverHost, serverPort);
+    ChannelFuture future = b.connect(cfg.getChainedProxyHost(), cfg.getChainedProxyPort());
     serverChannel = future.channel();
     ChannelFutureListener cfl = f -> {
       Logger.debug("Server connection stablished %s", f.channel().remoteAddress());
@@ -101,20 +153,28 @@ public class ProxyInboundHandler extends ChannelInboundHandlerAdapter {
     if(!serverChannel.isActive()) return;
     Logger.debug("Reading from client: %s", msg.getClass().getName());
     Logger.debug("client read: %s", msg.toString());
-    if(msg instanceof DefaultFullHttpRequest) {
-      DefaultFullHttpRequest req = (DefaultFullHttpRequest) msg;
-      if(req.decoderResult().isFailure()) Logger.debug(req.decoderResult().cause());
+    Logger.debug("Encoding data...");
+    ByteBuf buf = (ByteBuf) msg;
+    try {
+      while(buf.isReadable()) {
+        if(!buffer.hasRemaining()) {
+          packAndSend(ctx);
+        }
+        int lim = buffer.limit();
+        Logger.debug("Bytes encoded: %d", Math.min(buffer.remaining(), buf.readableBytes()));
+        buffer.limit(buffer.position() + Math.min(buffer.remaining(), buf.readableBytes()));
+        buf.readBytes(buffer);
+        buffer.limit(lim);
+      }
     }
-    ChannelFutureListener cfl = f -> {
-      if(f.isSuccess()) ctx.channel().read();
-      else f.channel().close();
-    };
-    serverChannel.writeAndFlush(msg).addListener(cfl);
+    finally {
+      ReferenceCountUtil.release(msg);
+    }
   }
   
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    
+    packAndSend(ctx);
   }
   
   @Override

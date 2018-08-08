@@ -27,15 +27,11 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.util.SelfSignedCertificate;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Objects;
 import javax.net.ssl.SSLException;
+import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.jpx.log.Logger;
 
 /**
@@ -45,51 +41,37 @@ import us.pserver.jpx.log.Logger;
  */
 public class ProxySetup extends ChannelInitializer<SocketChannel> {
 
-  private final String serverHost;
-  
-  private final int serverPort;
-  
-  private final ProxyAuthorization auth;
-  
-  private final SslContext sslx;
+  private final ProxyConfiguration cfg;
   
   
-  public ProxySetup(String serverHost, int serverPort, SslContext sslContext, ProxyAuthorization auth) {
-    this.serverHost = Objects.requireNonNull(serverHost);
-    this.serverPort = serverPort;
-    this.sslx = sslContext;
-    this.auth = auth;
+  public ProxySetup(ProxyConfiguration cfg) {
+    this.cfg = Objects.requireNonNull(cfg);
   }
   
   @Override
   public void initChannel(SocketChannel ch) {
-    if(sslx != null) {
-      ch.pipeline().addLast(sslx.newHandler(ch.alloc()));
-    }
     ch.pipeline().addLast(
-        new HttpServerCodec(), 
-        //new HttpObjectAggregator(65536), 
-        new ProxyInboundHandler(serverHost, serverPort, auth)
+        new ProxyInboundHandler(cfg)
     );
   }
   
   
   public static void main(String[] args) throws InterruptedException, NoSuchAlgorithmException, CertificateException, SSLException {
-    int proxyPort = 11080;
-    String serverHost = "localhost";
-    int serverPort = 40080;
-    SelfSignedCertificate sscert = new SelfSignedCertificate();
-    SslContext sslx = SslContextBuilder.forServer(sscert.certificate(), sscert.privateKey()).build();
+    ProxyConfiguration cfg = new ProxyConfiguration()
+        .withChainedProxyHost("localhost")
+        .withChainedProxyPort(7777)
+        .withTargetUri("http://43.35.33.212/png-to-ico")
+        .withCryptAlgorithm(CryptAlgorithm.AES_CBC_256_PKCS5);
     ServerBootstrap b = new ServerBootstrap();
     NioEventLoopGroup proxyGroup = new NioEventLoopGroup(1);
     NioEventLoopGroup connGroup = new NioEventLoopGroup();
     try {
-      Logger.info("Starting proxy on port %d", proxyPort);
+      Logger.info("Starting proxy on port %d", cfg.getProxyPort());
       b.group(proxyGroup, connGroup)
           .channel(NioServerSocketChannel.class)
-          .childHandler(new ProxySetup(serverHost, serverPort, sslx, null))
+          .childHandler(new ProxySetup(cfg))
           .childOption(ChannelOption.AUTO_READ, false)
-          .bind(proxyPort).sync()
+          .bind(cfg.getProxyPort()).sync()
           .channel().closeFuture().sync();
     } finally {
       proxyGroup.shutdownGracefully();
