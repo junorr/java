@@ -19,14 +19,19 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx;
+package us.pserver.jpx.server;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.util.ReferenceCountUtil;
 import java.nio.ByteBuffer;
@@ -34,49 +39,76 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import us.pserver.cdr.crypt.CryptBufferCoder;
 import us.pserver.cdr.crypt.CryptKey;
+import us.pserver.jpx.ProxyConfiguration;
 import us.pserver.jpx.log.Logger;
-
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 07/08/2018
  */
-public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
+public class ProxyInboundHandler extends ChannelInboundHandlerAdapter {
   
-  private final Channel clientChannel;
+  public static final String CONTENT_TYPE = "image/x-icon";
   
-  public ServerInboundHandler(Channel clientChannel) {
-    this.clientChannel = Objects.requireNonNull(clientChannel);
+  private final ProxyConfiguration cfg;
+  
+  private Channel serverChannel;
+  
+  
+  public ProxyInboundHandler(ProxyConfiguration cfg) {
+    this.cfg = Objects.requireNonNull(cfg)
+        .validateBufferSize()
+        .validateChainedProxyHost()
+        .validateChainedProxyPort()
+        .validateCryptAlgorithm();
   }
+  
   
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    ctx.read();
+    Logger.debug("Client connected %s", ctx.channel().remoteAddress());
+    final Channel clientChannel = ctx.channel();
+    Bootstrap b = new Bootstrap();
+    b.group(clientChannel.eventLoop())
+        .channel(clientChannel.getClass())
+        .handler(new ChannelInitializer<SocketChannel>() {
+          public void initChannel(SocketChannel ch) {
+            ch.pipeline().addLast(
+                new ServerInboundHandler(clientChannel, cfg)
+            );
+          }
+        })
+        .option(ChannelOption.AUTO_READ, false);
+    ChannelFutureListener cfl = f -> {
+      Logger.debug("Server connection stablished %s", f.channel().remoteAddress());
+      if(f.isSuccess()) clientChannel.read();
+      else clientChannel.close();
+    };
+    ChannelFuture future = b.connect(cfg.getChainedProxyHost(), cfg.getChainedProxyPort());
+    serverChannel = future.channel();
+    future.addListener(cfl);
   }
   
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    Logger.debug("Server connection closing");
-    ProxySetup.close(clientChannel);
+    Logger.debug("Client connection closing");
+    ProxyServerSetup.close(serverChannel);
   }
   
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-    if(!clientChannel.isActive()) {
-      ProxySetup.close(clientChannel);
-      ProxySetup.close(ctx.channel());
+    if(!serverChannel.isActive()) {
+      ProxyServerSetup.close(serverChannel);
+      ProxyServerSetup.close(ctx.channel());
       return;
     }
     try {
       if(msg instanceof HttpContent) {
+        Logger.debug("Reading from client: %s", msg.getClass().getName());
+        Logger.debug("client read: %s", msg.toString());
         HttpContent cont = (HttpContent) msg;
-        Logger.debug("Reading from server: %s", cont);
         ByteBuf buf = cont.content();
-        if(!buf.isReadable(Integer.BYTES)) {
-          Logger.debug("No content!");
-          return;
-        }
         int size = buf.readInt();
         int ksize = buf.readInt();
         byte[] bkey = new byte[ksize];
@@ -91,7 +123,7 @@ public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
           if(f.isSuccess()) ctx.read();
           else f.channel().close();
         };
-        clientChannel.writeAndFlush(Unpooled.wrappedBuffer(decbuf)).addListener(cfl);
+        serverChannel.writeAndFlush(Unpooled.wrappedBuffer(decbuf)).addListener(cfl);
       }
     }
     finally {
@@ -101,13 +133,12 @@ public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
   
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    Logger.debug("Read complete!");
   }
   
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     Logger.error(cause);
-    ProxySetup.close(ctx.channel());
+    ProxyServerSetup.close(ctx.channel());
   }
   
 }

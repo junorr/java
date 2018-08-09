@@ -21,6 +21,8 @@
 
 package us.pserver.jpx;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import us.pserver.cdr.crypt.CryptAlgorithm;
 import us.pserver.cdr.crypt.CryptKey;
@@ -53,12 +55,14 @@ public class ProxyConfiguration {
   
   private final ProxyAuthorization auth;
   
+  private final Map<String,Object> headers;
+  
   
   public ProxyConfiguration() {
-    this(DEFAULT_BUFFER_SIZE, DEFAULT_PROXY_PORT, null, null, null, 0, null, null);
+    this(DEFAULT_BUFFER_SIZE, DEFAULT_PROXY_PORT, null, null, null, 0, null, null, new HashMap<>());
   }
   
-  public ProxyConfiguration(int bufferSize, int proxyPort, String targetUri, String userAgent, String chainedProxyHost, int chainedProxyPort, CryptKey key, ProxyAuthorization auth) {
+  public ProxyConfiguration(int bufferSize, int proxyPort, String targetUri, String userAgent, String chainedProxyHost, int chainedProxyPort, CryptKey key, ProxyAuthorization auth, Map<String,Object> headers) {
     this.bufferSize = bufferSize;
     this.proxyPort = proxyPort;
     this.targetUri = targetUri;
@@ -67,43 +71,57 @@ public class ProxyConfiguration {
     this.chainedProxyPort = chainedProxyPort;
     this.key = key;
     this.auth = auth;
+    this.headers = Objects.requireNonNull(headers);
   }
   
   
   public ProxyConfiguration withBufferSize(int bfs) {
     if(bfs < 1) throw new IllegalArgumentException("Bad buffer size: "+ bfs);
-    return new ProxyConfiguration(bfs, proxyPort, targetUri, userAgent, chainedProxyHost, chainedProxyPort, key, auth);
+    return new ProxyConfiguration(bfs, proxyPort, targetUri, userAgent, chainedProxyHost, chainedProxyPort, key, auth, headers);
   }
   
   public ProxyConfiguration withProxyPort(int port) {
     if(port < 1) throw new IllegalArgumentException("Bad proxy port: "+ port);
-    return new ProxyConfiguration(bufferSize, port, targetUri, userAgent, chainedProxyHost, chainedProxyPort, key, auth);
+    return new ProxyConfiguration(bufferSize, port, targetUri, userAgent, chainedProxyHost, chainedProxyPort, key, auth, headers);
   }
   
   public ProxyConfiguration withTargetUri(String target) {
-    return new ProxyConfiguration(bufferSize, proxyPort, Objects.requireNonNull(target), userAgent, chainedProxyHost, chainedProxyPort, key, auth);
+    return new ProxyConfiguration(bufferSize, proxyPort, Objects.requireNonNull(target), userAgent, chainedProxyHost, chainedProxyPort, key, auth, headers);
   }
   
   public ProxyConfiguration withChainedProxyHost(String host) {
-    return new ProxyConfiguration(bufferSize, proxyPort, targetUri, userAgent, Objects.requireNonNull(host), chainedProxyPort, key, auth);
+    return new ProxyConfiguration(bufferSize, proxyPort, targetUri, userAgent, Objects.requireNonNull(host), chainedProxyPort, key, auth, headers);
   }
   
   public ProxyConfiguration withChainedProxyPort(int port) {
     if(port < 1) throw new IllegalArgumentException("Bad server port: "+ port);
-    return new ProxyConfiguration(bufferSize, proxyPort, targetUri, userAgent, chainedProxyHost, port, key, auth);
+    return new ProxyConfiguration(bufferSize, proxyPort, targetUri, userAgent, chainedProxyHost, port, key, auth, headers);
   }
   
   public ProxyConfiguration withCryptAlgorithm(CryptAlgorithm algo) {
     CryptKey key = CryptKey.createRandomKey(Objects.requireNonNull(algo));
-    return new ProxyConfiguration(bufferSize, proxyPort, targetUri, userAgent, chainedProxyHost, chainedProxyPort, key, auth);
+    return new ProxyConfiguration(bufferSize, proxyPort, targetUri, userAgent, chainedProxyHost, chainedProxyPort, key, auth, headers);
   }
   
   public ProxyConfiguration withCryptKey(CryptKey key) {
-    return new ProxyConfiguration(bufferSize, proxyPort, targetUri, userAgent, chainedProxyHost, chainedProxyPort, Objects.requireNonNull(key), auth);
+    return new ProxyConfiguration(bufferSize, proxyPort, targetUri, userAgent, chainedProxyHost, chainedProxyPort, Objects.requireNonNull(key), auth, headers);
   }
   
   public ProxyConfiguration withChainedProxyAuthorization(ProxyAuthorization auth) {
-    return new ProxyConfiguration(bufferSize, proxyPort, targetUri, userAgent, chainedProxyHost, chainedProxyPort, key, auth);
+    return new ProxyConfiguration(bufferSize, proxyPort, targetUri, userAgent, chainedProxyHost, chainedProxyPort, key, auth, headers);
+  }
+  
+  public ProxyConfiguration withHttpHeaders(Map<String,Object> headers) {
+    return new ProxyConfiguration(bufferSize, proxyPort, targetUri, userAgent, chainedProxyHost, chainedProxyPort, key, auth, headers);
+  }
+  
+  public ProxyConfiguration putHttpHeader(String name, Object value) {
+    headers.put(Objects.requireNonNull(name), Objects.requireNonNull(value));
+    return this;
+  }
+  
+  public Object removeHttpHeader(String name) {
+    return headers.remove(name);
   }
   
   
@@ -137,6 +155,10 @@ public class ProxyConfiguration {
   
   public ProxyAuthorization getChainedProxyAuthorization() {
     return auth;
+  }
+  
+  public Map<String,Object> getHttpHeaders() {
+    return headers;
   }
   
   
@@ -180,10 +202,6 @@ public class ProxyConfiguration {
     return auth != null;
   }
   
-  public boolean hasUserAgent() {
-    return userAgent != null;
-  }
-  
   
   @Override
   public int hashCode() {
@@ -191,7 +209,6 @@ public class ProxyConfiguration {
     hash = 61 * hash + this.proxyPort;
     hash = 61 * hash + this.bufferSize;
     hash = 61 * hash + Objects.hashCode(this.targetUri);
-    hash = 61 * hash + Objects.hashCode(this.userAgent);
     hash = 61 * hash + Objects.hashCode(this.chainedProxyHost);
     hash = 61 * hash + this.chainedProxyPort;
     hash = 61 * hash + Objects.hashCode(this.key);
@@ -240,7 +257,7 @@ public class ProxyConfiguration {
   
   @Override
   public String toString() {
-    return "ProxyConfiguration{\n" + "  - proxyPort=" + proxyPort + "  - bufferSize=" + bufferSize + "\n  - targetUri=" + targetUri + "\n  - userAgent=" + userAgent + "\n  - chainedProxyHost=" + chainedProxyHost + "\n  - chainedProxyPort=" + chainedProxyPort + "\n  - algo=" + key + "\n  - auth=" + auth + "\n}";
+    return "ProxyConfiguration{\n" + "  - proxyPort=" + proxyPort + "  - bufferSize=" + bufferSize + "\n  - targetUri=" + targetUri + "\n  - userAgent=" + userAgent + "\n  - chainedProxyHost=" + chainedProxyHost + "\n  - chainedProxyPort=" + chainedProxyPort + "\n  - algo=" + key + "\n  - auth=" + auth + "\n  - headers=" + headers + "\n}";
   }
   
 }

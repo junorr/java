@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx;
+package us.pserver.jpx.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
@@ -30,11 +30,14 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Objects;
 import javax.net.ssl.SSLException;
 import us.pserver.cdr.crypt.CryptAlgorithm;
+import us.pserver.jpx.ProxyConfiguration;
 import us.pserver.jpx.log.Logger;
 
 /**
@@ -42,18 +45,20 @@ import us.pserver.jpx.log.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 07/08/2018
  */
-public class ProxySetup extends ChannelInitializer<SocketChannel> {
+public class ProxyServerSetup extends ChannelInitializer<SocketChannel> {
 
   private final ProxyConfiguration cfg;
   
   
-  public ProxySetup(ProxyConfiguration cfg) {
+  public ProxyServerSetup(ProxyConfiguration cfg) {
     this.cfg = Objects.requireNonNull(cfg);
   }
   
   @Override
   public void initChannel(SocketChannel ch) {
     ch.pipeline().addLast(
+        new HttpServerCodec(), 
+        new HttpObjectAggregator(cfg.getBufferSize()), 
         new ProxyInboundHandler(cfg)
     );
   }
@@ -69,18 +74,18 @@ public class ProxySetup extends ChannelInitializer<SocketChannel> {
   
   public static void main(String[] args) throws InterruptedException, NoSuchAlgorithmException, CertificateException, SSLException {
     ProxyConfiguration cfg = new ProxyConfiguration()
+        .withProxyPort(11081)
         .withChainedProxyHost("localhost")
-        .withChainedProxyPort(11081)
-        .withTargetUri("http://43.35.33.212/png-to-ico")
+        .withChainedProxyPort(6060)
         .withCryptAlgorithm(CryptAlgorithm.AES_CBC_256_PKCS5);
     ServerBootstrap b = new ServerBootstrap();
     NioEventLoopGroup proxyGroup = new NioEventLoopGroup(1);
     NioEventLoopGroup connGroup = new NioEventLoopGroup();
     try {
-      Logger.info("Starting proxy on port %d", cfg.getProxyPort());
+      Logger.info("Starting proxy server on port %d", cfg.getProxyPort());
       b.group(proxyGroup, connGroup)
           .channel(NioServerSocketChannel.class)
-          .childHandler(new ProxySetup(cfg))
+          .childHandler(new ProxyServerSetup(cfg))
           .childOption(ChannelOption.AUTO_READ, false)
           .bind(cfg.getProxyPort()).sync()
           .channel().closeFuture().sync();

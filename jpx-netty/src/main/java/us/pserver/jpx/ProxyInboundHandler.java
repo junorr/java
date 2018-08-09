@@ -35,7 +35,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpVersion;
@@ -100,11 +99,9 @@ public class ProxyInboundHandler extends ChannelInboundHandlerAdapter {
     req.headers().add(HttpHeaderNames.CONTENT_LENGTH, sendbuf.readableBytes());
     req.headers().add(HttpHeaderNames.ACCEPT, CONTENT_TYPE);
     //req.headers().add(HttpHeaderNames.CONNECTION, "keep alive");
+    cfg.getHttpHeaders().entrySet().forEach(e->req.headers().add(e.getKey(), e.getValue()));
     if(cfg.hasChainedProxyAuthorization()) {
       req.headers().add(HttpHeaderNames.PROXY_AUTHORIZATION, cfg.getChainedProxyAuthorization().getProxyAuthorization());
-    }
-    if(cfg.hasUserAgent()) {
-      req.headers().add(HttpHeaderNames.USER_AGENT, cfg.getUserAgent());
     }
     ChannelFutureListener cfl = f -> {
       if(f.isSuccess()) ctx.read();
@@ -126,26 +123,26 @@ public class ProxyInboundHandler extends ChannelInboundHandlerAdapter {
           public void initChannel(SocketChannel ch) {
             ch.pipeline().addLast(
                 new HttpClientCodec(), 
-                new HttpObjectAggregator(8192), 
+                new HttpObjectAggregator(cfg.getBufferSize()), 
                 new ServerInboundHandler(clientChannel)
             );
           }
         })
         .option(ChannelOption.AUTO_READ, false);
-    ChannelFuture future = b.connect(cfg.getChainedProxyHost(), cfg.getChainedProxyPort());
-    serverChannel = future.channel();
     ChannelFutureListener cfl = f -> {
       Logger.debug("Server connection stablished %s", f.channel().remoteAddress());
       if(f.isSuccess()) clientChannel.read();
       else clientChannel.close();
     };
+    ChannelFuture future = b.connect(cfg.getChainedProxyHost(), cfg.getChainedProxyPort());
+    serverChannel = future.channel();
     future.addListener(cfl);
   }
   
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     Logger.debug("Client connection closing");
-    close(serverChannel);
+    ProxySetup.close(serverChannel);
   }
   
   @Override
@@ -180,14 +177,7 @@ public class ProxyInboundHandler extends ChannelInboundHandlerAdapter {
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     Logger.error(cause);
-    close(ctx.channel());
+    ProxySetup.close(ctx.channel());
   }
   
-  public static void close(Channel ch) {
-    if(ch != null && ch.isActive()) {
-      ch.writeAndFlush(Unpooled.EMPTY_BUFFER)
-          .addListener(ChannelFutureListener.CLOSE);
-    }
-  }
-
 }
