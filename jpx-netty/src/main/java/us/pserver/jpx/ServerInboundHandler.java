@@ -64,13 +64,19 @@ public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
     if(!clientChannel.isActive()) {
-      ProxySetup.close(clientChannel);
-      ProxySetup.close(ctx.channel());
+      //ProxySetup.close(clientChannel);
+      //ProxySetup.close(ctx.channel());
       return;
     }
     try {
+      Logger.debug("message: "+ msg.getClass().getSimpleName());
       if(msg instanceof HttpContent) {
         HttpContent cont = (HttpContent) msg;
+        Logger.debug("dec.isFinished: %s", cont.decoderResult().isFinished());
+        Logger.debug("dec.isSuccess: %s", cont.decoderResult().isSuccess());
+        if(cont.decoderResult().isFailure()) {
+          Logger.debug(cont.decoderResult().cause(), "dec.cause: %s", cont.decoderResult().cause());
+        }
         Logger.debug("Reading from server: %s", cont);
         ByteBuf buf = cont.content();
         if(!buf.isReadable(Integer.BYTES)) {

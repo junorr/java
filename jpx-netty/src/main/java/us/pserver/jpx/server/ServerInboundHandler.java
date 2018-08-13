@@ -22,6 +22,7 @@
 package us.pserver.jpx.server;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -91,7 +92,7 @@ public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
         .writeInt(keyBytes.length)
         .writeBytes(keyBytes)
         .writeBytes(encbuf);
-    Logger.debug("Encoded buffer: %s", sendbuf);
+    Logger.debug("Encoded buffer: %d", sendbuf.readableBytes());
     buffer.clear();
     DefaultFullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, sendbuf);
     res.headers().add(HttpHeaderNames.CONTENT_TYPE, CONTENT_TYPE);
@@ -104,14 +105,15 @@ public class ServerInboundHandler extends ChannelInboundHandlerAdapter {
     };
     Logger.debug("writing response to client: %s", res);
     clientChannel.writeAndFlush(res).addListener(cfl);
+    clientChannel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(cfl);
   }
   
   
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
     if(!clientChannel.isActive()) {
-      ProxyServerSetup.close(clientChannel);
-      ProxyServerSetup.close(ctx.channel());
+      //ProxyServerSetup.close(clientChannel);
+      //ProxyServerSetup.close(ctx.channel());
       return;
     }
     ByteBuf buf = (ByteBuf) msg;
