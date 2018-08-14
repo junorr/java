@@ -29,7 +29,7 @@ import us.pserver.jpx.pool.PoolConfiguration;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/08/2018
  */
-public class ByteBufferPoolConfiguration implements PoolConfiguration {
+public class BufferPoolConfiguration implements PoolConfiguration {
   
   public static final long DEFAULT_MAX_MEM_ALLOCATION = 512 * 1024 * 1024;
   
@@ -44,7 +44,7 @@ public class ByteBufferPoolConfiguration implements PoolConfiguration {
   private final int unitBufSize;
   
   
-  public ByteBufferPoolConfiguration(PoolConfiguration innerCfg, long maxMemAlloc, int unitBufSize) {
+  public BufferPoolConfiguration(PoolConfiguration innerCfg, long maxMemAlloc, int unitBufSize) {
     if(maxMemAlloc < MIN_MEM_ALLOCATION) {
       throw new IllegalArgumentException(String.format("Bad max memory allocation: %d (< %d)", 
           maxMemAlloc, MIN_MEM_ALLOCATION
@@ -63,12 +63,12 @@ public class ByteBufferPoolConfiguration implements PoolConfiguration {
   }
   
   
-  public ByteBufferPoolConfiguration(PoolConfiguration innerCfg) {
+  public BufferPoolConfiguration(PoolConfiguration innerCfg) {
     this(innerCfg, DEFAULT_MAX_MEM_ALLOCATION, MIN_MEM_ALLOCATION);
   }
   
   
-  public ByteBufferPoolConfiguration() {
+  public BufferPoolConfiguration() {
     this(new DefaultPoolConfiguration().withInitialSize(2), DEFAULT_MAX_MEM_ALLOCATION, MIN_MEM_ALLOCATION);
   }
   
@@ -78,8 +78,8 @@ public class ByteBufferPoolConfiguration implements PoolConfiguration {
   }
   
   
-  public ByteBufferPoolConfiguration withMaxMemmoryAllocation(long maxMemAlloc) {
-    return new ByteBufferPoolConfiguration(cfg, maxMemAlloc, unitBufSize);
+  public BufferPoolConfiguration withMaxMemmoryAllocation(long maxMemAlloc) {
+    return new BufferPoolConfiguration(cfg, maxMemAlloc, unitBufSize);
   }
   
   
@@ -88,8 +88,8 @@ public class ByteBufferPoolConfiguration implements PoolConfiguration {
   }
   
   
-  public ByteBufferPoolConfiguration withUnitBufferSize(int unitBufSize) {
-    return new ByteBufferPoolConfiguration(cfg, maxMemAlloc, unitBufSize);
+  public BufferPoolConfiguration withUnitBufferSize(int unitBufSize) {
+    return new BufferPoolConfiguration(cfg, maxMemAlloc, unitBufSize);
   }
   
   
@@ -101,7 +101,7 @@ public class ByteBufferPoolConfiguration implements PoolConfiguration {
 
   @Override
   public PoolConfiguration withMaxReferenceCount(int max) {
-    return new ByteBufferPoolConfiguration(cfg.withMaxReferenceCount(max), maxMemAlloc, unitBufSize);
+    return new BufferPoolConfiguration(cfg.withMaxReferenceCount(max), maxMemAlloc, unitBufSize);
   }
 
 
@@ -113,7 +113,7 @@ public class ByteBufferPoolConfiguration implements PoolConfiguration {
 
   @Override
   public PoolConfiguration withMinAllocatedCount(int min) {
-    return new ByteBufferPoolConfiguration(cfg.withMinAllocatedCount(min), maxMemAlloc, unitBufSize);
+    return new BufferPoolConfiguration(cfg.withMinAllocatedCount(min), maxMemAlloc, unitBufSize);
   }
 
 
@@ -125,7 +125,7 @@ public class ByteBufferPoolConfiguration implements PoolConfiguration {
 
   @Override
   public PoolConfiguration withDeallocationPercentage(double prc) {
-    return new ByteBufferPoolConfiguration(cfg.withDeallocationPercentage(prc), maxMemAlloc, unitBufSize);
+    return new BufferPoolConfiguration(cfg.withDeallocationPercentage(prc), maxMemAlloc, unitBufSize);
   }
 
 
@@ -137,7 +137,7 @@ public class ByteBufferPoolConfiguration implements PoolConfiguration {
 
   @Override
   public PoolConfiguration withInitialSize(int init) {
-    return new ByteBufferPoolConfiguration(cfg.withInitialSize(init), maxMemAlloc, unitBufSize);
+    return new BufferPoolConfiguration(cfg.withInitialSize(init), maxMemAlloc, unitBufSize);
   }
 
 }

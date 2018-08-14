@@ -19,32 +19,32 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.pool.impl;
+package us.pserver.jpx.io;
 
-import java.nio.ByteBuffer;
-import java.util.function.IntFunction;
+import java.net.SocketAddress;
+import us.pserver.jpx.pool.impl.BufferPoolConfiguration;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/08/2018
  */
-public class ByteBufferPool extends DefaultPool<ByteBuffer> {
-  
-  public static final IntFunction<ByteBuffer> DEFAULT_ALLOC_FUNCTION = ByteBuffer::allocateDirect;
-  
-  
-  public ByteBufferPool(BufferPoolConfiguration cfg, IntFunction<ByteBuffer> allocfun) {
-    super(cfg, () -> allocfun.apply(cfg.getUnitBufferSize()));
-  }
-  
-  public ByteBufferPool(BufferPoolConfiguration cfg) {
-    this(cfg, DEFAULT_ALLOC_FUNCTION);
-  }
+public interface IOConfiguration {
 
-  @Override
-  public BufferPoolConfiguration getPoolConfiguration() {
-    return (BufferPoolConfiguration) super.getPoolConfiguration();
-  }
+  public int getThreadPoolSize();
+  
+  public IOConfiguration withThreadPoolSize();
+  
+  
+  public BufferPoolConfiguration getBufferPoolConfiguration();
+  
+  public IOConfiguration withBufferPoolConfiguration(BufferPoolConfiguration cfg);
+  
+  
+  public SocketAddress getSocketAddress();
+  
+  public IOConfiguration withSocketAddress(SocketAddress addr);
+  
+  public IOConfiguration withSocketAddress(String addr, int port);
   
 }

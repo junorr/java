@@ -21,7 +21,7 @@
 
 package us.pserver.jpx.core;
 
-import us.pserver.jpx.pool.impl.ByteBufferPoolConfiguration;
+import us.pserver.jpx.pool.impl.BufferPoolConfiguration;
 
 /**
  *
@@ -55,8 +55,8 @@ public interface JPXConfiguration {
   public JPXConfiguration withBufferSize(int bfsize);
   
   
-  public ByteBufferPoolConfiguration getByteBufferPoolConfiguration();
+  public BufferPoolConfiguration getByteBufferPoolConfiguration();
   
-  public JPXConfiguration withByteBufferPoolConfiguration(ByteBufferPoolConfiguration cfg);
+  public JPXConfiguration withByteBufferPoolConfiguration(BufferPoolConfiguration cfg);
   
 }
