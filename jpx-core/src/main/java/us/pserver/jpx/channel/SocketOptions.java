@@ -30,31 +30,31 @@ public interface SocketOptions {
 
   public boolean getTcpNoDelay();
   
-  public ChannelConfiguration withTcpNoDelay(boolean tnd);
+  public SocketOptions withTcpNoDelay(boolean tnd);
   
   
   public int getSoSndBuf();
   
-  public ChannelConfiguration withSoSndBuf(int snb);
+  public SocketOptions withSoSndBuf(int snb);
   
   
   public int getSoRcvBuf();
   
-  public ChannelConfiguration withSoRcvBuf(int rcb);
+  public SocketOptions withSoRcvBuf(int rcb);
   
   
   public boolean getSoKeepAlive();
   
-  public ChannelConfiguration withSoKeepAlive(boolean kal);
+  public SocketOptions withSoKeepAlive(boolean kal);
   
   
   public boolean getSoReuseAddr();
   
-  public ChannelConfiguration withSoReuseAddr(boolean rad);
+  public SocketOptions withSoReuseAddr(boolean rad);
   
   
   public int getSoLinger();
   
-  public ChannelConfiguration withSoLinger(int lng);
+  public SocketOptions withSoLinger(int lng);
   
 }

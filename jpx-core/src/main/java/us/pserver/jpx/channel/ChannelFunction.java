@@ -32,9 +32,9 @@ public interface ChannelFunction<I,O> extends BiFunction<Channel,I,O> {
 
   public Class<O> getResultClass();
   
-  public boolean isInIoExecutorService();
+  public boolean isInIoThreadPool();
   
-  public void applyInIoExecutorService(Channel chn, I in);
+  public void applyInIoThreadPool(Channel chn, I in);
   
   @Override public O apply(Channel chn, I in);
   
