@@ -19,37 +19,42 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.pool;
-
-import java.util.Optional;
-import java.util.function.Consumer;
-import us.pserver.jpx.event.EventListener;
+package us.pserver.jpx.channel;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/08/2018
+ * @version 0.0 - 16/08/2018
  */
-public interface Pool<T> {
+public interface SocketOptions {
 
-  public Pooled<T> alloc();
+  public boolean getTcpNoDelay();
   
-  public Pooled<T> allocAwait();
+  public ChannelConfiguration withTcpNoDelay(boolean tnd);
   
-  public void onAvailable(Consumer<Pooled<T>> cs);
   
-  public Optional<Pooled<T>> tryAlloc();
+  public int getSoSndBuf();
   
-  public void release(Pooled<T> pld);
+  public ChannelConfiguration withSoSndBuf(int snb);
   
-  public int allocatedCount();
   
-  public boolean isAvailable();
+  public int getSoRcvBuf();
   
-  public Pool<T> addListener(EventListener<Pool,PoolEvent> lst);
+  public ChannelConfiguration withSoRcvBuf(int rcb);
   
-  public boolean removeListener(EventListener<Pool,PoolEvent> lst);
   
-  public PoolConfiguration getConfiguration();
+  public boolean getSoKeepAlive();
+  
+  public ChannelConfiguration withSoKeepAlive(boolean kal);
+  
+  
+  public boolean getSoReuseAddr();
+  
+  public ChannelConfiguration withSoReuseAddr(boolean rad);
+  
+  
+  public int getSoLinger();
+  
+  public ChannelConfiguration withSoLinger(int lng);
   
 }

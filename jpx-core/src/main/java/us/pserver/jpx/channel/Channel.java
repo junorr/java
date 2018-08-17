@@ -19,37 +19,32 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.pool;
+package us.pserver.jpx.channel;
 
-import java.util.Optional;
-import java.util.function.Consumer;
+import java.net.InetSocketAddress;
 import us.pserver.jpx.event.EventListener;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/08/2018
+ * @version 0.0 - 16/08/2018
  */
-public interface Pool<T> {
+public interface Channel extends AutoCloseable {
 
-  public Pooled<T> alloc();
+  public ChannelConfiguration getConfiguration();
   
-  public Pooled<T> allocAwait();
+  public Channel open();
   
-  public void onAvailable(Consumer<Pooled<T>> cs);
+  public boolean isOpen();
   
-  public Optional<Pooled<T>> tryAlloc();
+  public ChannelStream getChannelStream();
   
-  public void release(Pooled<T> pld);
+  public InetSocketAddress getLocalAddress();
   
-  public int allocatedCount();
+  public InetSocketAddress getRemoteAddress();
   
-  public boolean isAvailable();
+  public Channel addListener(EventListener<Channel,ChannelEvent> lst);
   
-  public Pool<T> addListener(EventListener<Pool,PoolEvent> lst);
-  
-  public boolean removeListener(EventListener<Pool,PoolEvent> lst);
-  
-  public PoolConfiguration getConfiguration();
+  public boolean removeListener(EventListener<Channel,ChannelEvent> lst);
   
 }

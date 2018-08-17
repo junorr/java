@@ -19,9 +19,9 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.io;
+package us.pserver.jpx.channel;
 
-import java.net.SocketAddress;
+import java.net.InetSocketAddress;
 import us.pserver.jpx.pool.impl.BufferPoolConfiguration;
 
 /**
@@ -29,22 +29,45 @@ import us.pserver.jpx.pool.impl.BufferPoolConfiguration;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/08/2018
  */
-public interface IOConfiguration {
+public interface ChannelConfiguration {
 
-  public int getThreadPoolSize();
+  public int getIOThreadPoolSize();
   
-  public IOConfiguration withThreadPoolSize();
+  public ChannelConfiguration withIOThreadPoolSize(int size);
+  
+  
+  public int getSystemThreadPoolSize();
+  
+  public ChannelConfiguration withSystemThreadPoolSize(int size);
   
   
   public BufferPoolConfiguration getBufferPoolConfiguration();
   
-  public IOConfiguration withBufferPoolConfiguration(BufferPoolConfiguration cfg);
+  public ChannelConfiguration withBufferPoolConfiguration(BufferPoolConfiguration cfg);
   
   
-  public SocketAddress getSocketAddress();
+  public InetSocketAddress getSocketAddress();
   
-  public IOConfiguration withSocketAddress(SocketAddress addr);
+  public ChannelConfiguration withSocketAddress(InetSocketAddress addr);
   
-  public IOConfiguration withSocketAddress(String addr, int port);
+  public ChannelConfiguration withSocketAddress(String addr, int port);
+  
+  
+  public SocketOptions getSocketOptions();
+  
+  public ChannelConfiguration withSocketOptions(SocketOptions options);
+  
+  
+  public ChannelStream getChannelStream();
+  
+  
+  public boolean isAutoReadEnabled();
+  
+  public ChannelConfiguration withAutoReadEnabled(boolean auto);
+  
+  
+  public boolean isAutoWriteEnabled();
+  
+  public ChannelConfiguration withAutoWriteEnabled(boolean auto);
   
 }

@@ -22,9 +22,8 @@
 package us.pserver.jpx.pool;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
+import us.pserver.jpx.event.AbstractEvent;
 import us.pserver.jpx.event.Attribute;
 import us.pserver.jpx.event.Event;
 
@@ -33,9 +32,9 @@ import us.pserver.jpx.event.Event;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/08/2018
  */
-public class PoolEvent implements Event {
-  
-  public static enum Type implements us.pserver.jpx.event.Event.Type {
+public class PoolEvent extends AbstractEvent {
+
+  public static enum Type implements Event.Type {
     AVAILABLE_COUNT_DECREASE,
     AVAILABLE_COUNT_INCREASE,
     DEALLOCATION_PERCENTAGE_REACHED,
@@ -45,82 +44,14 @@ public class PoolEvent implements Event {
     REFERENCE_COUNT_DECREASE,
     REFERENCE_COUNT_INCREASE,
   }
-  
-  
-  private final Type type;
-  
-  private final Instant inst;
-  
-  private final Map<Attribute,Object> attrs;
-  
-  
-  public PoolEvent(Type type, Instant inst, Map<Attribute,Object> attrs) {
-    this.type = Objects.requireNonNull(type);
-    this.inst = Objects.requireNonNull(inst);
-    if(attrs != null && !attrs.isEmpty()) {
-      this.attrs = Collections.unmodifiableMap(attrs);
-    }
-    else {
-      this.attrs = Collections.EMPTY_MAP;
-    }
+
+
+  public PoolEvent(Type type, Instant inst, Map<Attribute, Object> attrs) {
+    super(type, inst, attrs);
   }
   
-  
-  public PoolEvent(Type type, Map<Attribute,Object> attrs) {
-    this(type, Instant.now(), attrs);
-  }
-  
-  
-  @Override
-  public Type getType() {
-    return type;
-  }
-
-  @Override
-  public Map<Attribute,Object> attributes() {
-    return attrs;
-  }
-
-  @Override
-  public Instant getInstant() {
-    return inst;
-  }
-
-
-  @Override
-  public int hashCode() {
-    int hash = 3;
-    hash = 19 * hash + Objects.hashCode(this.type);
-    hash = 19 * hash + Objects.hashCode(this.inst.toEpochMilli() / 10);
-    return hash;
-  }
-
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final PoolEvent other = (PoolEvent) obj;
-    if (this.type != other.type) {
-      return false;
-    }
-    if (!Objects.equals(this.inst.toEpochMilli() / 10, other.inst.toEpochMilli() / 10)) {
-      return false;
-    }
-    return true;
-  }
-
-
-  @Override
-  public String toString() {
-    return "PoolEvent{" + "type=" + type + ", inst=" + inst + ", attrs=" + attrs + '}';
+  public PoolEvent(Type type, Map<Attribute, Object> attrs) {
+    super(type, attrs);
   }
   
 }

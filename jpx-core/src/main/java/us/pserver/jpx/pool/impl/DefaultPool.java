@@ -96,7 +96,7 @@ public class DefaultPool<T> implements Pool<T> {
   
   
   @Override
-  public PoolConfiguration getPoolConfiguration() {
+  public PoolConfiguration getConfiguration() {
     return cfg;
   }
   

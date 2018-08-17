@@ -19,37 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.pool;
+package us.pserver.jpx.channel;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-import us.pserver.jpx.event.EventListener;
+import us.pserver.jpx.event.Attribute;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/08/2018
+ * @version 0.0 - 16/08/2018
  */
-public interface Pool<T> {
+public enum ChannelAttribute implements Attribute {
 
-  public Pooled<T> alloc();
-  
-  public Pooled<T> allocAwait();
-  
-  public void onAvailable(Consumer<Pooled<T>> cs);
-  
-  public Optional<Pooled<T>> tryAlloc();
-  
-  public void release(Pooled<T> pld);
-  
-  public int allocatedCount();
-  
-  public boolean isAvailable();
-  
-  public Pool<T> addListener(EventListener<Pool,PoolEvent> lst);
-  
-  public boolean removeListener(EventListener<Pool,PoolEvent> lst);
-  
-  public PoolConfiguration getConfiguration();
+  EXCEPTION,
+  UPTIME,
+  BYTES_WRITED,
+  BYTES_READED,
+  INCOMING_BYTES_PER_SECOND,
+  OUTGOING_BYTES_PER_SECOND,
+  CHANNEL_FUNCTION
   
 }

@@ -19,37 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.pool;
+package us.pserver.jpx.channel;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-import us.pserver.jpx.event.EventListener;
+import java.util.function.BiFunction;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/08/2018
+ * @version 0.0 - 16/08/2018
  */
-public interface Pool<T> {
+public interface ChannelFunction<I,O> extends BiFunction<Channel,I,O> {
 
-  public Pooled<T> alloc();
+  public Class<O> getResultClass();
   
-  public Pooled<T> allocAwait();
+  public boolean isInIoExecutorService();
   
-  public void onAvailable(Consumer<Pooled<T>> cs);
+  public void applyInIoExecutorService(Channel chn, I in);
   
-  public Optional<Pooled<T>> tryAlloc();
-  
-  public void release(Pooled<T> pld);
-  
-  public int allocatedCount();
-  
-  public boolean isAvailable();
-  
-  public Pool<T> addListener(EventListener<Pool,PoolEvent> lst);
-  
-  public boolean removeListener(EventListener<Pool,PoolEvent> lst);
-  
-  public PoolConfiguration getConfiguration();
+  @Override public O apply(Channel chn, I in);
   
 }

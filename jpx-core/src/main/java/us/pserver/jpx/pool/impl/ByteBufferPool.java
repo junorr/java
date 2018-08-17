@@ -43,8 +43,8 @@ public class ByteBufferPool extends DefaultPool<ByteBuffer> {
   }
 
   @Override
-  public BufferPoolConfiguration getPoolConfiguration() {
-    return (BufferPoolConfiguration) super.getPoolConfiguration();
+  public BufferPoolConfiguration getConfiguration() {
+    return (BufferPoolConfiguration) super.getConfiguration();
   }
   
 }

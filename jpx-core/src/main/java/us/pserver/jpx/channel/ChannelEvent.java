@@ -19,37 +19,39 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.pool;
+package us.pserver.jpx.channel;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-import us.pserver.jpx.event.EventListener;
+import java.time.Instant;
+import java.util.Map;
+import us.pserver.jpx.event.AbstractEvent;
+import us.pserver.jpx.event.Attribute;
+import us.pserver.jpx.event.Event;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/08/2018
+ * @version 0.0 - 16/08/2018
  */
-public interface Pool<T> {
-
-  public Pooled<T> alloc();
+public class ChannelEvent extends AbstractEvent {
   
-  public Pooled<T> allocAwait();
+  public static enum Type implements Event.Type {
+    CONNECTION_STABLISHED,
+    CONNECTION_CLOSING,
+    CONNECTION_CLOSED,
+    CHANNEL_READING,
+    CHANNEL_WRITING,
+    EXCEPTION_THROWED,
+    CHANNEL_FUNCTION_APPENDED,
+    CHANNEL_FUNCTION_REMOVED
+  }
   
-  public void onAvailable(Consumer<Pooled<T>> cs);
   
-  public Optional<Pooled<T>> tryAlloc();
+  public ChannelEvent(Type type, Instant inst, Map<Attribute, Object> attrs) {
+    super(type, inst, attrs);
+  }
   
-  public void release(Pooled<T> pld);
-  
-  public int allocatedCount();
-  
-  public boolean isAvailable();
-  
-  public Pool<T> addListener(EventListener<Pool,PoolEvent> lst);
-  
-  public boolean removeListener(EventListener<Pool,PoolEvent> lst);
-  
-  public PoolConfiguration getConfiguration();
+  public ChannelEvent(Type type, Map<Attribute, Object> attrs) {
+    super(type, attrs);
+  }
   
 }

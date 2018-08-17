@@ -19,15 +19,29 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.io;
+package us.pserver.jpx.channel;
+
+import java.nio.ByteBuffer;
+import java.util.Set;
+import java.util.function.BiFunction;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 13/08/2018
+ * @version 0.0 - 16/08/2018
  */
-public interface ServerChannel {
+public interface ChannelStream {
 
-  public IOConfiguration getIOConfiguration();
+  public <I,O> ChannelStream append(Class<O> result, BiFunction<Channel,I,O> fn);
+  
+  public <I,O> ChannelStream append(ChannelFunction<I,O> fn);
+  
+  public <I,O> boolean remove(Class<O> result, BiFunction<Channel,I,O> fn);
+  
+  public <I,O> boolean remove(ChannelFunction<I,O> fn);
+  
+  public Set<ChannelFunction<?,?>> getFunctions();
+  
+  public ByteBuffer apply(Channel chn, ByteBuffer buf);
   
 }
