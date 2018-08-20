@@ -57,4 +57,6 @@ public interface SocketOptions {
   
   public SocketOptions withSoLinger(int lng);
   
+  public String toString(int ident);
+  
 }

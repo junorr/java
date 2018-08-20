@@ -19,19 +19,40 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.channel;
+package us.pserver.jpx.channel.impl;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
+import us.pserver.jpx.channel.Channel;
+import us.pserver.jpx.channel.ChannelFunction;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 16/08/2018
+ * @version 0.0 - 18/08/2018
  */
-public interface ChannelFunction<I,O> extends BiFunction<Channel,I,O> {
+public class DefaultChannelFunction<I,O> implements ChannelFunction<I,O> {
+  
+  private final BiFunction<Channel,I,O> fn;
+  
+  private final Class<O> result;
+  
+  
+  public DefaultChannelFunction(Class<O> result, BiFunction<Channel,I,O> fn) {
+    this.result = Objects.requireNonNull(result);
+    this.fn = Objects.requireNonNull(fn);
+  }
 
-  public Class<O> getResultClass();
   
-  @Override public O apply(Channel chn, I in);
+  @Override
+  public Class<O> getResultClass() {
+    return result;
+  }
+
   
+  @Override
+  public O apply(Channel chn, I in) {
+    return fn.apply(chn, in);
+  }
+
 }

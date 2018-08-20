@@ -19,19 +19,48 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.channel;
+package us.pserver.jpx.channel.impl;
 
-import java.util.function.BiFunction;
+import java.util.Objects;
+import java.util.Optional;
+import us.pserver.jpx.channel.Channel;
+import us.pserver.tools.fn.ThrowableTask;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 16/08/2018
+ * @version 0.0 - 19/08/2018
  */
-public interface ChannelFunction<I,O> extends BiFunction<Channel,I,O> {
-
-  public Class<O> getResultClass();
+public class ChannelAsyncTask extends AbstractChannelAsync<Void> {
   
-  @Override public O apply(Channel chn, I in);
+  private final ThrowableTask task;
+  
+  
+  public ChannelAsyncTask(Channel channel, ThrowableTask task) {
+    super(channel);
+    this.task = Objects.requireNonNull(task);
+  }
+
+
+  @Override
+  public Optional get() {
+    return Optional.empty();
+  }
+
+
+  @Override
+  public void run() {
+    try {
+      task.run();
+      onSuccess();
+    }
+    catch(Exception e) {
+      onError(e);
+    }
+    finally {
+      onComplete();
+      signalAll();
+    }
+  }
   
 }

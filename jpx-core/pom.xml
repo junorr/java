@@ -28,6 +28,13 @@
             <groupId>us.pserver.toolbox</groupId>
             <artifactId>toolbox</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.21.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

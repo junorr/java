@@ -23,6 +23,7 @@ package us.pserver.jpx.pool.impl;
 
 import java.util.Objects;
 import us.pserver.jpx.pool.PoolConfiguration;
+import us.pserver.tools.StringPad;
 
 /**
  *
@@ -33,7 +34,7 @@ public class BufferPoolConfiguration implements PoolConfiguration {
   
   public static final long DEFAULT_MAX_MEM_ALLOCATION = 512 * 1024 * 1024;
   
-  public static final int MIN_MEM_ALLOCATION = 4096;
+  public static final int MIN_MEM_ALLOCATION = 8 * 1024;
   
   public static final int MIN_UNIT_BUFFER_SIZE = 128;
   
@@ -138,6 +139,23 @@ public class BufferPoolConfiguration implements PoolConfiguration {
   @Override
   public PoolConfiguration withInitialSize(int init) {
     return new BufferPoolConfiguration(cfg.withInitialSize(init), maxMemAlloc, unitBufSize);
+  }
+
+
+  @Override
+  public String toString(int ident) {
+    String sident = StringPad.of("").lpad(" ", ident);
+    return "BufferPoolConfiguration{\n" 
+        + sident + " - cfg=" + cfg.toString(ident + 2) + ",\n"
+        + sident + " - maxMemAlloc=" + maxMemAlloc + ",\n"
+        + sident + " - unitBufSize=" + unitBufSize + "\n"
+        + sident + "}";
+  }
+  
+  
+  @Override
+  public String toString() {
+    return toString(0);
   }
 
 }

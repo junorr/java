@@ -33,6 +33,8 @@ public class ByteBufferPool extends DefaultPool<ByteBuffer> {
   
   public static final IntFunction<ByteBuffer> DEFAULT_ALLOC_FUNCTION = ByteBuffer::allocateDirect;
   
+  public static final ByteBuffer EMPTY_BUFFER = ByteBuffer.wrap(new byte[0]);
+  
   
   public ByteBufferPool(BufferPoolConfiguration cfg, IntFunction<ByteBuffer> allocfun) {
     super(cfg, () -> allocfun.apply(cfg.getUnitBufferSize()));

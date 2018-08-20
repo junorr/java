@@ -19,19 +19,29 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.channel;
+package us.pserver.jpx.pool.test;
 
-import java.util.function.BiFunction;
+import java.util.concurrent.Executors;
+import org.junit.jupiter.api.Test;
+import us.pserver.tools.misc.Sleeper;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 16/08/2018
+ * @version 0.0 - 19/08/2018
  */
-public interface ChannelFunction<I,O> extends BiFunction<Channel,I,O> {
+public class TesteThreadFactory {
 
-  public Class<O> getResultClass();
-  
-  @Override public O apply(Channel chn, I in);
+  @Test
+  public void defaultThreadFactoryBuilder() {
+    Thread t = Executors.defaultThreadFactory().newThread(() -> System.out.println(" >> " + Thread.currentThread().getName()));
+    String name = t.getName();
+    System.out.println(name);
+    String[] sn = name.split("-");
+    name = "IOPool-thread-" + sn[3];
+    t.setName(name);
+    t.start();
+    Sleeper.of(100).sleep();
+  }
   
 }

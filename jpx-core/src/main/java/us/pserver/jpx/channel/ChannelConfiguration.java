@@ -58,9 +58,6 @@ public interface ChannelConfiguration {
   public ChannelConfiguration withSocketOptions(SocketOptions options);
   
   
-  public ChannelStream getChannelStream();
-  
-  
   public boolean isAutoReadEnabled();
   
   public ChannelConfiguration withAutoReadEnabled(boolean auto);
@@ -69,5 +66,7 @@ public interface ChannelConfiguration {
   public boolean isAutoWriteEnabled();
   
   public ChannelConfiguration withAutoWriteEnabled(boolean auto);
+  
+  public String toString(int ident);
   
 }

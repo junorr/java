@@ -22,7 +22,6 @@
 package us.pserver.jpx.channel;
 
 import java.nio.ByteBuffer;
-import java.util.Set;
 import java.util.function.BiFunction;
 
 /**
@@ -32,16 +31,24 @@ import java.util.function.BiFunction;
  */
 public interface ChannelStream {
 
-  public <I,O> ChannelStream append(Class<O> result, BiFunction<Channel,I,O> fn);
+  public <I,O> ChannelStream append(BiFunction<Channel,I,O> fn);
   
-  public <I,O> ChannelStream append(ChannelFunction<I,O> fn);
+  public <I,O> boolean remove(BiFunction<Channel,I,O> fn);
   
-  public <I,O> boolean remove(Class<O> result, BiFunction<Channel,I,O> fn);
+  public ChannelStream applyStart(ByteBuffer buf);
   
-  public <I,O> boolean remove(ChannelFunction<I,O> fn);
+  public ByteBuffer getFinal();
   
-  public Set<ChannelFunction<?,?>> getFunctions();
+  public boolean applyCurrent();
   
-  public ByteBuffer apply(Channel chn, ByteBuffer buf);
+  public ByteBuffer apply(ByteBuffer buf);
+  
+  public boolean isInIOContext();
+  
+  public <I> void switchToIOContext(I in);
+  
+  public boolean isInSytemContext();
+  
+  public <I> void switchToSystemContext(I in);
   
 }

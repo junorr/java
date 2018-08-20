@@ -22,6 +22,7 @@
 package us.pserver.jpx.pool.impl;
 
 import us.pserver.jpx.pool.PoolConfiguration;
+import us.pserver.tools.StringPad;
 
 /**
  *
@@ -147,8 +148,19 @@ public class DefaultPoolConfiguration implements PoolConfiguration {
 
 
   @Override
+  public String toString(int ident) {
+    String sident = StringPad.of("").lpad(" ", ident);
+    return "PoolConfiguration{\n" 
+        + sident + " - maxRefCount=" + maxRefCount + "\n"
+        + sident + " - minAvlCount=" + minAvlCount + "\n"
+        + sident + " - deallocPerc=" + deallocPerc + "\n"
+        + sident + " - initSize=" + initSize + "\n"
+        + sident + "}";
+  }
+  
+  @Override
   public String toString() {
-    return "PoolConfiguration{" + "\n  - maxRefCount=" + maxRefCount + "\n  - minAvlCount=" + minAvlCount + "\n  - deallocPerc=" + deallocPerc + "\n  - initSize=" + initSize + "\n}";
+    return toString(0);
   }
   
 }

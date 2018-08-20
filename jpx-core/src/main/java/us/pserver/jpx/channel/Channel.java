@@ -31,11 +31,17 @@ import us.pserver.jpx.event.EventListener;
  */
 public interface Channel extends AutoCloseable {
 
-  public ChannelConfiguration getConfiguration();
-  
   public Channel open();
   
   public boolean isOpen();
+  
+  public void read();
+  
+  public void write();
+  
+  public ChannelConfiguration getConfiguration();
+  
+  public ChannelEngine getChannelEngine();
   
   public ChannelStream getChannelStream();
   

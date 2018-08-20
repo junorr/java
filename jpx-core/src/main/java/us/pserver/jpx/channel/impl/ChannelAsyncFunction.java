@@ -19,19 +19,55 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.channel;
+package us.pserver.jpx.channel.impl;
 
-import java.util.function.BiFunction;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import us.pserver.jpx.channel.Channel;
+import us.pserver.tools.fn.ThrowableFunction;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 16/08/2018
+ * @version 0.0 - 19/08/2018
  */
-public interface ChannelFunction<I,O> extends BiFunction<Channel,I,O> {
-
-  public Class<O> getResultClass();
+public class ChannelAsyncFunction<I,O> extends AbstractChannelAsync<O> {
   
-  @Override public O apply(Channel chn, I in);
+  private final ThrowableFunction<I,O> fn;
+  
+  private final I input;
+  
+  private final AtomicReference<O> output;
+  
+  
+  public ChannelAsyncFunction(Channel channel, I input, ThrowableFunction<I,O> fn) {
+    super(channel);
+    this.fn = Objects.requireNonNull(fn);
+    this.input = input;
+    this.output = new AtomicReference<>();
+  }
+
+
+  @Override
+  public Optional<O> get() {
+    return Optional.ofNullable(output.get());
+  }
+  
+  
+  @Override
+  public void run() {
+    try {
+      output.compareAndSet(null, fn.apply(input));
+      onSuccess();
+    }
+    catch(Exception e) {
+      onError(e);
+    }
+    finally {
+      onComplete();
+      signalAll();
+    }
+  }
   
 }

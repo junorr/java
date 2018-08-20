@@ -21,17 +21,28 @@
 
 package us.pserver.jpx.channel;
 
-import java.util.function.BiFunction;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 16/08/2018
+ * @version 0.0 - 19/08/2018
  */
-public interface ChannelFunction<I,O> extends BiFunction<Channel,I,O> {
+public interface ChannelAsync<T> extends Runnable {
 
-  public Class<O> getResultClass();
+  public ChannelAsync<T> appendCompleteListener(Consumer<Channel> cs);
   
-  @Override public O apply(Channel chn, I in);
+  public ChannelAsync<T> appendSuccessListener(Consumer<Channel> cs);
+  
+  public ChannelAsync<T> appendErrorListener(BiConsumer<Channel,Throwable> cs);
+  
+  public ChannelAsync<T> sync();
+  
+  public ChannelAsync<T> sync(long time, TimeUnit unit);
+  
+  public Optional<T> get();
   
 }

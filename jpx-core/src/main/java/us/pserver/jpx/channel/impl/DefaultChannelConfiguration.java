@@ -23,9 +23,9 @@ package us.pserver.jpx.channel.impl;
 
 import java.net.InetSocketAddress;
 import us.pserver.jpx.channel.ChannelConfiguration;
-import us.pserver.jpx.channel.ChannelStream;
 import us.pserver.jpx.channel.SocketOptions;
 import us.pserver.jpx.pool.impl.BufferPoolConfiguration;
+import us.pserver.tools.StringPad;
 
 /**
  *
@@ -53,13 +53,10 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
   
   private final boolean autoWrite;
   
-  private final ChannelStream stream;
-
 
   public DefaultChannelConfiguration() {
     this(new BufferPoolConfiguration(), 
         new DefaultSocketOptions(),
-        null,
         DEFAULT_IO_THREAD_POOL_SIZE, 
         DEFAULT_SYSTEM_THREAD_POOL_SIZE, 
         null,
@@ -68,13 +65,12 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
     );
   }
 
-  public DefaultChannelConfiguration(BufferPoolConfiguration bufPoolConfig, SocketOptions options, ChannelStream stream, int ioThreadPoolSize, int systemThreadPoolSize, InetSocketAddress address, boolean autoRead, boolean autoWrite) {
+  public DefaultChannelConfiguration(BufferPoolConfiguration bufPoolConfig, SocketOptions options, int ioThreadPoolSize, int systemThreadPoolSize, InetSocketAddress address, boolean autoRead, boolean autoWrite) {
     this.bufPoolConfig = bufPoolConfig;
     this.options = options;
     this.ioThreadPoolSize = ioThreadPoolSize;
     this.systemThreadPoolSize = systemThreadPoolSize;
     this.address = address;
-    this.stream = stream;
     this.autoRead = autoRead;
     this.autoWrite = autoWrite;
   }
@@ -88,7 +84,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withIOThreadPoolSize(int ioThreadPoolSize) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, stream, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
   }
 
 
@@ -100,7 +96,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withSystemThreadPoolSize(int systemThreadPoolSize) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, stream, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
   }
 
 
@@ -112,7 +108,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withBufferPoolConfiguration(BufferPoolConfiguration bufPoolConfig) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, stream, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
   }
   
   
@@ -124,7 +120,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withSocketOptions(SocketOptions options) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, stream, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
   }
   
   
@@ -136,19 +132,13 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withSocketAddress(InetSocketAddress address) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, stream, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
   }
 
 
   @Override
   public ChannelConfiguration withSocketAddress(String addr, int port) {
     return withSocketAddress(new InetSocketAddress(addr, port));
-  }
-
-
-  @Override
-  public ChannelStream getChannelStream() {
-    return stream;
   }
 
 
@@ -160,7 +150,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withAutoReadEnabled(boolean autoRead) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, stream, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
   }
 
 
@@ -172,7 +162,28 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withAutoWriteEnabled(boolean autoWrite) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, stream, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
   }
-
+  
+  
+  @Override
+  public String toString(int ident) {
+    String sident = StringPad.of("").lpad(" ", ident);
+    return "DefaultChannelConfiguration{\n" 
+        + sident + " - bufPoolConfig=" + bufPoolConfig.toString(ident + 2) + ",\n"
+        + sident + " - options=" + options.toString(ident + 2) + ",\n"
+        + sident + " - ioThreadPoolSize=" + ioThreadPoolSize + ",\n"
+        + sident + " - systemThreadPoolSize=" + systemThreadPoolSize + ",\n"
+        + sident + " - address=" + address + ",\n"
+        + sident + " - autoRead=" + autoRead + ",\n"
+        + sident + " - autoWrite=" + autoWrite + "\n"
+        + sident + "}";
+  }
+  
+  
+  @Override
+  public String toString() {
+    return toString(0);
+  }
+  
 }

@@ -44,4 +44,6 @@ public interface PoolConfiguration {
   
   public PoolConfiguration withInitialSize(int init);
   
+  public String toString(int ident);
+  
 }

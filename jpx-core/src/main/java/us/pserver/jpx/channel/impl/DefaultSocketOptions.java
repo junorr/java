@@ -22,6 +22,7 @@
 package us.pserver.jpx.channel.impl;
 
 import us.pserver.jpx.channel.SocketOptions;
+import us.pserver.tools.StringPad;
 
 /**
  *
@@ -127,5 +128,25 @@ public class DefaultSocketOptions implements SocketOptions {
   public SocketOptions withSoLinger(int solinger) {
     return new DefaultSocketOptions(rcvbuf, sndbuf, solinger, tcpNoDelay, keepAlive, reuseAddr);
   }
-
+  
+  
+  @Override
+  public String toString(int ident) {
+    String sident = StringPad.of("").lpad(" ", ident);
+    return sident + "DefaultSocketOptions{\n" 
+        + sident + " - rcvbuf=" + rcvbuf + ",\n"
+        + sident + " - sndbuf=" + sndbuf + ",\n"
+        + sident + " - solinger=" + solinger + ",\n"
+        + sident + " - tcpNoDelay=" + tcpNoDelay + ",\n"
+        + sident + " - keepAlive=" + keepAlive + ",\n"
+        + sident + " - reuseAddr=" + reuseAddr + "\n"
+        + sident + "}";
+  }
+  
+  
+  @Override
+  public String toString() {
+    return toString(0);
+  }
+  
 }
