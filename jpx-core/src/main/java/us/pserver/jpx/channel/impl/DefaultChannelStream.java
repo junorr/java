@@ -24,14 +24,15 @@ package us.pserver.jpx.channel.impl;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.channel.ChannelAsync;
 import us.pserver.jpx.channel.ChannelStream;
+import us.pserver.jpx.channel.StreamPartial;
 import us.pserver.jpx.log.Logger;
 
 /**
@@ -41,7 +42,7 @@ import us.pserver.jpx.log.Logger;
  */
 public class DefaultChannelStream implements ChannelStream, Runnable {
   
-  private final LinkedBlockingDeque input;
+  private final LinkedBlockingDeque<StreamPartial> input;
   
   private final List<BiFunction> stream;
   
@@ -62,34 +63,42 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
 
   
   @Override
-  public <I, O> ChannelStream append(BiFunction<Channel, I, O> fn) {
+  public <I,O> ChannelStream append(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn) {
     if(fn != null) {
-      stream.add(fn);
+      stream.add(fn); 
     }
     return this;
   }
 
 
   @Override
-  public <I, O> boolean remove(BiFunction<Channel, I, O> fn) {
+  public <I,O> boolean remove(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn) {
     return stream.remove(fn);
   }
 
 
   @Override
-  public ChannelStream applyStart(ByteBuffer buf) {
-    if(buf != null) {
-      input.addLast(buf);
-    }
+  public ChannelStream run(ByteBuffer buf) {
+    input.addLast(StreamPartial.activeStream(buf));
+    channel.getChannelEngine().execute(channel, this);
     return this;
   }
   
   
-  private Object take() {
+  @Override
+  public StreamPartial<ByteBuffer> runSync(ByteBuffer buf) {
+    input.addLast(StreamPartial.activeStream(buf));
+    ChannelAsync async = channel.getChannelEngine().execute(channel, this);
+    async.sync();
+    return input.peekFirst();
+  }
+  
+  
+  private Optional take() {
     try {
-      Object obj = input.take();
-      Logger.info("input.size=%d, %s", input.size(), obj);
-      return obj;
+      StreamPartial part = input.take();
+      Logger.info("input.size=%d, %s", input.size(), part);
+      return part.get();
     } 
     catch(InterruptedException e) {
       throw new RuntimeException(e.toString(), e);
@@ -97,49 +106,27 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   }
 
 
-  @Override
-  public ByteBuffer getFinal() {
-    return (ByteBuffer) take();
-  }
-
-
-  @Override
   public boolean applyCurrent() {
     boolean apply = index < stream.size();
     if(apply) {
-      Object obj = stream.get(index++).apply(channel, take());
-      if(obj == null) return false;
-      System.out.println("* applyCurrent(): "+ obj);
-      input.addLast(obj);
+      BiFunction<Channel,Optional,StreamPartial> fn = stream.get(index++);
+      StreamPartial partial = fn.apply(channel, take());
+      if(!partial.isActive()) return false;
+      Logger.info("%s", partial);
+      input.addLast(partial);
     }
     return apply;
   }
   
   
   public void resume() {
+    Logger.info("Execution context: %s", (isInIOContext() ? "IOContext" : "SYSContext"));
     while(applyCurrent());
   }
 
 
   @Override
-  public ByteBuffer apply(ByteBuffer buf) {
-    ChannelAsync[] asyncs = new ChannelAsync[stream.size() + 1];
-    asyncs[0] = channel.getChannelEngine().execute(channel, () -> buf);
-    for(int i = 1; i < asyncs.length; i++) {
-      BiFunction bc = stream.get(i);
-      final int idx = i;
-      asyncs[i-1].appendSuccessListener(c -> {
-        asyncs[idx] = channel.getChannelEngine().execute(channel, asyncs[idx-1].get().get(), g -> {
-          return bc.apply(c, g);
-        });
-      });
-    }
-  }
-  
-  
-  @Override
   public void run() {
-    applyCurrent();
     resume();
   }
 
@@ -151,13 +138,12 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
 
 
   @Override
-  public <I> void switchToIOContext(I in) {
-    if(in != null) {
-      input.addLast(in);
-      index--;
-      inioctx.set(true);
-      channel.getChannelEngine().getIOExecutorService().execute(this);
-    }
+  public <I> void switchToIOContext(Optional<I> opt) {
+    Logger.info("%s", opt);
+    index--;
+    inioctx.set(true);
+    input.addLast(StreamPartial.activeStream(opt));
+    channel.getChannelEngine().executeIO(channel, this);
   }
 
 
@@ -168,13 +154,12 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
 
 
   @Override
-  public <I> void switchToSystemContext(I in) {
-    if(in != null) {
-      input.addLast(in);
-      index--;
-      inioctx.set(false);
-      channel.getChannelEngine().getSystemExecutorService().execute(this);
-    }
+  public <I> void switchToSystemContext(Optional<I> opt) {
+    Logger.info("%s", opt);
+    index--;
+    inioctx.set(false);
+    input.addLast(StreamPartial.activeStream(opt));
+    channel.getChannelEngine().execute(channel, this);
   }
 
 }

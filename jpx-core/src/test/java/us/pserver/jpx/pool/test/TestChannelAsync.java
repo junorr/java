@@ -46,7 +46,7 @@ public class TestChannelAsync {
   @Test
   public void testChannelAsyncTask() {
     System.out.println("* testChannelAsyncTask");
-    ChannelAsync task = engine.execute(channel, () -> {
+    ChannelAsync task = engine.execute(channel, (Runnable)() -> {
       Sleeper.of(3000).sleep();
       System.out.println("Task " + Thread.currentThread().getName() + " executed!");
     });

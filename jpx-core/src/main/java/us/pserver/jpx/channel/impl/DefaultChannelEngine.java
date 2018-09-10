@@ -98,31 +98,39 @@ public class DefaultChannelEngine implements ChannelEngine {
   public ByteBufferPool getByteBufferPool() {
     return pool;
   }
-
-
+  
+  
+  @Override
+  public ChannelAsync executeIO(Channel ch, Runnable rn) {
+    ChannelAsyncTask task = new ChannelAsyncTask(ch, rn::run);
+    ioexec.submit(task);
+    return task;
+  }
+  
+  
   @Override
   public ChannelAsync executeIO(Channel ch, ThrowableTask rn) {
     ChannelAsyncTask task = new ChannelAsyncTask(ch, rn);
     ioexec.submit(task);
     return task;
   }
-
-
+  
+  
   @Override
   public <I> ChannelAsync executeIO(Channel ch, I input, ThrowableConsumer<I> cs) {
     ChannelAsyncConsumer task = new ChannelAsyncConsumer(ch, input, cs);
     ioexec.submit(task);
     return task;
   }
-
-
+  
+  
   @Override
   public <I,O> ChannelAsync executeIO(Channel ch, I input, ThrowableFunction<I,O> fn) {
     ChannelAsyncFunction task = new ChannelAsyncFunction(ch, input, fn);
     ioexec.submit(task);
     return task;
   }
-
+  
   
   @Override
   public <O> ChannelAsync<O> executeIO(Channel ch, ThrowableSupplier<O> fn) {
@@ -131,23 +139,31 @@ public class DefaultChannelEngine implements ChannelEngine {
     return task;
   }
   
-
+  
+  @Override
+  public ChannelAsync execute(Channel ch, Runnable rn) {
+    ChannelAsyncTask task = new ChannelAsyncTask(ch, rn::run);
+    sysexec.submit(task);
+    return task;
+  }
+  
+  
   @Override
   public ChannelAsync execute(Channel ch, ThrowableTask rn) {
     ChannelAsyncTask task = new ChannelAsyncTask(ch, rn);
     sysexec.submit(task);
     return task;
   }
-
-
+  
+  
   @Override
   public <I> ChannelAsync execute(Channel ch, I input, ThrowableConsumer<I> cs) {
     ChannelAsyncConsumer task = new ChannelAsyncConsumer(ch, input, cs);
     sysexec.submit(task);
     return task;
   }
-
-
+  
+  
   @Override
   public <I,O> ChannelAsync<O> execute(Channel ch, I input, ThrowableFunction<I,O> fn) {
     ChannelAsyncFunction task = new ChannelAsyncFunction(ch, input, fn);

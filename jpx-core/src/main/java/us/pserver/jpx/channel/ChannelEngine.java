@@ -43,6 +43,8 @@ public interface ChannelEngine {
   
   public ByteBufferPool getByteBufferPool();
   
+  public ChannelAsync executeIO(Channel ch, Runnable rn);
+  
   public ChannelAsync executeIO(Channel ch, ThrowableTask rn);
   
   public <I> ChannelAsync executeIO(Channel ch, I input, ThrowableConsumer<I> cs);
@@ -50,6 +52,8 @@ public interface ChannelEngine {
   public <I,O> ChannelAsync<O> executeIO(Channel ch, I input, ThrowableFunction<I,O> fn);
   
   public <O> ChannelAsync<O> executeIO(Channel ch, ThrowableSupplier<O> fn);
+  
+  public ChannelAsync execute(Channel ch, Runnable rn);
   
   public ChannelAsync execute(Channel ch, ThrowableTask rn);
   
