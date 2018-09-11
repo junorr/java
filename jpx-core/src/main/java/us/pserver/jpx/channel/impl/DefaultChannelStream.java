@@ -31,10 +31,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.BiFunction;
 import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.channel.stream.ChannelStream;
+import us.pserver.jpx.channel.stream.ChannelStreamEvent;
+import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.channel.stream.StreamPartial;
+import us.pserver.jpx.event.EventListener;
 import us.pserver.jpx.log.Logger;
 
 /**
@@ -46,7 +48,9 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   
   private final LinkedBlockingDeque<StreamPartial> input;
   
-  private final List<BiFunction> stream;
+  private final List<StreamFunction> stream;
+  
+  private final List<EventListener<ChannelStream,ChannelStreamEvent>> listeners;
   
   private final Channel channel;
   
@@ -59,13 +63,34 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
     this.channel = Objects.requireNonNull(ch);
     input = new LinkedBlockingDeque();
     stream = new CopyOnWriteArrayList<>();
+    listeners = new CopyOnWriteArrayList<>();
     index = 0;
     inioctx = new AtomicBoolean(false);
   }
-
+  
   
   @Override
-  public <I,O> ChannelStream appendFunction(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn) {
+  public ChannelStream addListener(EventListener<ChannelStream,ChannelStreamEvent> lst) {
+    if(lst != null) {
+      listeners.add(lst);
+    }
+    return this;
+  }
+  
+  
+  @Override
+  public boolean removeListener(EventListener<ChannelStream,ChannelStreamEvent> lst) {
+    return listeners.remove(lst);
+  }
+  
+  
+  private void fireEvent(ChannelStreamEvent evt) {
+    listeners.forEach(l -> l.accept(this, evt));
+  }
+  
+  
+  @Override
+  public <I,O> ChannelStream appendFunction(StreamFunction<I,O> fn) {
     if(fn != null) {
       stream.add(fn); 
     }
@@ -74,7 +99,7 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
 
 
   @Override
-  public <I,O> boolean removeFunction(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn) {
+  public <I,O> boolean removeFunction(StreamFunction<I,O> fn) {
     return stream.remove(fn);
   }
 
@@ -91,8 +116,8 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   public ChannelStream runSync(ByteBuffer buf) {
     Lock lock = new ReentrantLock();
     Condition sync = lock.newCondition();
-    BiFunction<Channel,Optional,StreamPartial> last = stream.get(stream.size() -1);
-    BiFunction<Channel,Optional,StreamPartial> finish = (c,o)->{
+    StreamFunction last = stream.get(stream.size() -1);
+    StreamFunction finish = (c,o)->{
       StreamPartial part = last.apply(c, o);
       sync.signalAll();
       //lock.lock();
@@ -130,13 +155,19 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
       throw new RuntimeException(e.toString(), e);
     }
   }
-
-
+  
+  
   public boolean applyCurrent() {
     boolean apply = index < stream.size();
     if(apply) {
-      BiFunction<Channel,Optional,StreamPartial> fn = stream.get(index++);
-      StreamPartial partial = fn.apply(channel, take());
+      StreamFunction fn = stream.get(index++);
+      StreamPartial partial;
+      try {
+        partial = fn.apply(channel, take());
+      }
+      catch(Exception e) {
+        partial = StreamPartial.brokenStream();
+      }
       if(!partial.isActive()) return false;
       Logger.info("%s", partial);
       input.addLast(partial);
@@ -187,5 +218,11 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
     input.addLast(StreamPartial.activeStream(opt));
     channel.getChannelEngine().execute(channel, this);
   }
-
+  
+  
+  @Override
+  public boolean isStreamFinished() {
+    return index == stream.size();
+  }
+  
 }

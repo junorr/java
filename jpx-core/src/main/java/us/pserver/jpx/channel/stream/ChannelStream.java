@@ -23,8 +23,6 @@ package us.pserver.jpx.channel.stream;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
-import java.util.function.BiFunction;
-import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.event.EventListener;
 
 /**
@@ -38,9 +36,9 @@ public interface ChannelStream {
   
   public boolean removeListener(EventListener<ChannelStream,ChannelStreamEvent> lst);
   
-  public <I,O> ChannelStream appendFunction(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn);
+  public <I,O> ChannelStream appendFunction(StreamFunction<I,O> fn);
   
-  public <I,O> boolean removeFunction(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn);
+  public <I,O> boolean removeFunction(StreamFunction<I,O> fn);
   
   public boolean isStreamFinished();
   

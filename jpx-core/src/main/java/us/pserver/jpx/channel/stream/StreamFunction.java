@@ -21,21 +21,16 @@
 
 package us.pserver.jpx.channel.stream;
 
-import us.pserver.jpx.event.Attribute;
+import java.util.Optional;
+import us.pserver.jpx.channel.Channel;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 16/08/2018
+ * @version 0.0 - 11/09/2018
  */
-public enum ChannelStreamAttribute implements Attribute {
+public interface StreamFunction<I,O> {
 
-  EXCEPTION,
-  IS_STREAM_FINISHED,
-  STREAM_INDEX,
-  STREAM_FILTER_SIZE,
-  STREAM_FUNCTION,
-  STREAM_PARTIAL,
-  CHANNEL
+  public StreamPartial<O> apply(Channel ch, Optional<I> in) throws Exception;
   
 }
