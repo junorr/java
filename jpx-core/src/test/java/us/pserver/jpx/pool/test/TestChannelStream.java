@@ -29,8 +29,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.channel.ChannelEngine;
-import us.pserver.jpx.channel.ChannelStream;
-import us.pserver.jpx.channel.StreamPartial;
+import us.pserver.jpx.channel.stream.ChannelStream;
+import us.pserver.jpx.channel.stream.StreamPartial;
 import us.pserver.jpx.channel.impl.DefaultChannelConfiguration;
 import us.pserver.jpx.channel.impl.DefaultChannelEngine;
 import us.pserver.jpx.channel.impl.DefaultChannelStream;
@@ -64,7 +64,7 @@ public class TestChannelStream {
       }
       return StreamPartial.activeStream(StandardCharsets.UTF_8.decode(o.get()).toString());
     };
-    stream.append(f1);
+    stream.appendFunction(f1);
     BiFunction<Channel,Optional<String>,StreamPartial<Integer>> f2 = (c,o) -> {
       if(!c.getChannelStream().isInSytemContext()) {
         c.getChannelStream().switchToSystemContext(o);
@@ -72,7 +72,7 @@ public class TestChannelStream {
       }
       return StreamPartial.activeStream(o.get().length());
     };
-    stream.append(f2);
+    stream.appendFunction(f2);
     BiFunction<Channel,Optional<Integer>,StreamPartial<ByteBuffer>> f3 = (c,o) -> {
       if(!c.getChannelStream().isInIOContext()) {
         c.getChannelStream().switchToIOContext(o);
@@ -83,7 +83,7 @@ public class TestChannelStream {
       b.flip();
       return StreamPartial.activeStream(b);
     };
-    stream.append(f3);
+    stream.appendFunction(f3);
     BiFunction<Channel,Optional<ByteBuffer>,StreamPartial<Void>> f4 = (c,o) -> {
       if(!c.getChannelStream().isInIOContext()) {
         c.getChannelStream().switchToIOContext(o);
@@ -92,8 +92,9 @@ public class TestChannelStream {
       System.out.println("* f4: " + o);
       return StreamPartial.brokenStream();
     };
-    stream.append(f4);
-    System.out.println(stream.runSync(buf));
+    stream.appendFunction(f4);
+    stream.runSync(buf);
+    System.out.println("-- exited runSync() --");
     Sleeper.of(10000).sleep();
     //System.out.println(stream.runSync(buf));
     } catch(Throwable t) {

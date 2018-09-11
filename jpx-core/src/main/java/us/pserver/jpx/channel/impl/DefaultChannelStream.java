@@ -28,11 +28,13 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiFunction;
 import us.pserver.jpx.channel.Channel;
-import us.pserver.jpx.channel.ChannelAsync;
-import us.pserver.jpx.channel.ChannelStream;
-import us.pserver.jpx.channel.StreamPartial;
+import us.pserver.jpx.channel.stream.ChannelStream;
+import us.pserver.jpx.channel.stream.StreamPartial;
 import us.pserver.jpx.log.Logger;
 
 /**
@@ -63,7 +65,7 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
 
   
   @Override
-  public <I,O> ChannelStream append(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn) {
+  public <I,O> ChannelStream appendFunction(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn) {
     if(fn != null) {
       stream.add(fn); 
     }
@@ -72,7 +74,7 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
 
 
   @Override
-  public <I,O> boolean remove(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn) {
+  public <I,O> boolean removeFunction(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn) {
     return stream.remove(fn);
   }
 
@@ -86,18 +88,42 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   
   
   @Override
-  public StreamPartial<ByteBuffer> runSync(ByteBuffer buf) {
-    input.addLast(StreamPartial.activeStream(buf));
-    ChannelAsync async = channel.getChannelEngine().execute(channel, this);
-    async.sync();
-    return input.peekFirst();
+  public ChannelStream runSync(ByteBuffer buf) {
+    Lock lock = new ReentrantLock();
+    Condition sync = lock.newCondition();
+    BiFunction<Channel,Optional,StreamPartial> last = stream.get(stream.size() -1);
+    BiFunction<Channel,Optional,StreamPartial> finish = (c,o)->{
+      StreamPartial part = last.apply(c, o);
+      sync.signalAll();
+      //lock.lock();
+      //try {
+        //sync.signalAll();
+      //}
+      //finally {
+        //lock.unlock();
+      //}
+      return part;
+    };
+    stream.remove(last);
+    stream.add(finish);
+    resume();
+    lock.lock();
+    try {
+      sync.await();
+    }
+    catch(InterruptedException e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+    finally {
+      lock.unlock();
+    }
+    return this;
   }
   
   
   private Optional take() {
     try {
       StreamPartial part = input.take();
-      Logger.info("input.size=%d, %s", input.size(), part);
       return part.get();
     } 
     catch(InterruptedException e) {
@@ -120,7 +146,7 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   
   
   public void resume() {
-    Logger.info("Execution context: %s", (isInIOContext() ? "IOContext" : "SYSContext"));
+    Logger.info("Execution context=%s", (isInIOContext() ? "IOContext" : "SYSContext"));
     while(applyCurrent());
   }
 

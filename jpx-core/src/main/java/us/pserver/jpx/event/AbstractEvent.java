@@ -21,13 +21,10 @@
 
 package us.pserver.jpx.event;
 
-import us.pserver.jpx.pool.*;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-import us.pserver.jpx.event.Attribute;
-import us.pserver.jpx.event.Event;
 
 /**
  *

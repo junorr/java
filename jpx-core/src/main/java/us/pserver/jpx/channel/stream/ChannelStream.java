@@ -19,10 +19,12 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.channel;
+package us.pserver.jpx.channel.stream;
 
-import us.pserver.jpx.channel.stream.ChannelStream;
-import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.event.EventListener;
 
 /**
@@ -30,28 +32,28 @@ import us.pserver.jpx.event.EventListener;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/08/2018
  */
-public interface Channel extends AutoCloseable {
-
-  public Channel open();
+public interface ChannelStream {
   
-  public boolean isOpen();
+  public ChannelStream addListener(EventListener<ChannelStream,ChannelStreamEvent> lst);
   
-  public void read();
+  public boolean removeListener(EventListener<ChannelStream,ChannelStreamEvent> lst);
   
-  public void write();
+  public <I,O> ChannelStream appendFunction(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn);
   
-  public ChannelConfiguration getConfiguration();
+  public <I,O> boolean removeFunction(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn);
   
-  public ChannelEngine getChannelEngine();
+  public boolean isStreamFinished();
   
-  public ChannelStream getChannelStream();
+  public ChannelStream run(ByteBuffer buf);
   
-  public InetSocketAddress getLocalAddress();
+  public ChannelStream runSync(ByteBuffer buf);
   
-  public InetSocketAddress getRemoteAddress();
+  public boolean isInIOContext();
   
-  public Channel addListener(EventListener<Channel,ChannelEvent> lst);
+  public <I> void switchToIOContext(Optional<I> opt);
   
-  public boolean removeListener(EventListener<Channel,ChannelEvent> lst);
+  public boolean isInSytemContext();
+  
+  public <I> void switchToSystemContext(Optional<I> opt);
   
 }

@@ -19,39 +19,23 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.channel;
+package us.pserver.jpx.channel.stream;
 
-import us.pserver.jpx.channel.stream.ChannelStream;
-import java.net.InetSocketAddress;
-import us.pserver.jpx.event.EventListener;
+import us.pserver.jpx.event.Attribute;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/08/2018
  */
-public interface Channel extends AutoCloseable {
+public enum ChannelStreamAttribute implements Attribute {
 
-  public Channel open();
-  
-  public boolean isOpen();
-  
-  public void read();
-  
-  public void write();
-  
-  public ChannelConfiguration getConfiguration();
-  
-  public ChannelEngine getChannelEngine();
-  
-  public ChannelStream getChannelStream();
-  
-  public InetSocketAddress getLocalAddress();
-  
-  public InetSocketAddress getRemoteAddress();
-  
-  public Channel addListener(EventListener<Channel,ChannelEvent> lst);
-  
-  public boolean removeListener(EventListener<Channel,ChannelEvent> lst);
+  EXCEPTION,
+  HAS_MORE_FILTERS,
+  STREAM_INDEX,
+  STREAM_FILTER_SIZE,
+  STREAM_FUNCTION,
+  STREAM_PARTIAL,
+  CHANNEL
   
 }

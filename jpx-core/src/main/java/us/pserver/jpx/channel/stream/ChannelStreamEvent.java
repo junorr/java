@@ -19,33 +19,36 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.channel;
+package us.pserver.jpx.channel.stream;
 
-import java.nio.ByteBuffer;
-import java.util.Optional;
-import java.util.function.BiFunction;
+import us.pserver.jpx.pool.*;
+import java.time.Instant;
+import java.util.Map;
+import us.pserver.jpx.event.AbstractEvent;
+import us.pserver.jpx.event.Attribute;
+import us.pserver.jpx.event.Event;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 16/08/2018
+ * @version 0.0 - 11/08/2018
  */
-public interface ChannelStream {
+public class ChannelStreamEvent extends AbstractEvent {
 
-  public <I,O> ChannelStream append(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn);
+  public static enum Type implements Event.Type {
+    SWITCH_TO_IO_CONTEXT,
+    SWITCH_TO_SYSTEM_CONTEXT,
+    STREAM_FUNCTION_APPLIED,
+    EXCEPTION_THROWED;
+  }
+
+
+  public ChannelStreamEvent(Type type, Instant inst, Map<Attribute, Object> attrs) {
+    super(type, inst, attrs);
+  }
   
-  public <I,O> boolean remove(BiFunction<Channel,Optional<I>,StreamPartial<O>> fn);
-  
-  public ChannelStream run(ByteBuffer buf);
-  
-  public StreamPartial<ByteBuffer> runSync(ByteBuffer buf);
-  
-  public boolean isInIOContext();
-  
-  public <I> void switchToIOContext(Optional<I> opt);
-  
-  public boolean isInSytemContext();
-  
-  public <I> void switchToSystemContext(Optional<I> opt);
+  public ChannelStreamEvent(Type type, Map<Attribute, Object> attrs) {
+    super(type, attrs);
+  }
   
 }
