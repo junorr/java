@@ -29,6 +29,7 @@ import us.pserver.jpx.channel.Channel;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/09/2018
  */
+@FunctionalInterface
 public interface StreamFunction<I,O> {
 
   public StreamPartial<O> apply(Channel ch, Optional<I> in) throws Exception;

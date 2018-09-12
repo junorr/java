@@ -19,30 +19,28 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.jpx.event;
+package us.pserver.jpx.pool.test;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.function.BiConsumer;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import us.pserver.jpx.channel.stream.ChannelStreamEvent;
+import us.pserver.jpx.event.Event;
+import us.pserver.jpx.event.EventListener;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/08/2018
+ * @version 0.0 - 12/09/2018
  */
-@FunctionalInterface
-public interface EventListener<T, E extends Event> extends BiConsumer<T,E> {
-  
-  public default Collection<Event.Type> getInterests() {
-    return Collections.unmodifiableList(new LinkedList() {
-      public boolean contains(Object o) {
-        return true;
-      }
-      public boolean containsAll(Collection c) {
-        return true;
-      }
-    });
+public class TestGenericEventType {
+
+  @Test
+  public void testDefaultTypeEquals() {
+    Event.Type type = ChannelStreamEvent.Type.EXCEPTION_THROWED;
+    EventListener lst = (t,u) -> {};
+    boolean contains = lst.getInterests().contains(type);
+    System.out.printf("* lst.getInterests().contains( %s ): %s%n", type, contains);
+    Assertions.assertTrue(contains);
   }
   
 }

@@ -21,6 +21,7 @@
 
 package us.pserver.jpx.event;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,6 +55,10 @@ public interface Attribute {
     
     public Map<Attribute,Object> attrs() {
       return attrs;
+    }
+    
+    public Map<Attribute,Object> create() {
+      return Collections.unmodifiableMap(attrs);
     }
     
   }

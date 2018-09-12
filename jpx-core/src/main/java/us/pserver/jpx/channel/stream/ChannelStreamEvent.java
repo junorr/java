@@ -38,6 +38,7 @@ public class ChannelStreamEvent extends AbstractEvent {
     SWITCH_TO_IO_CONTEXT,
     SWITCH_TO_SYSTEM_CONTEXT,
     STREAM_FUNCTION_APPLIED,
+    STREAM_FINISHED,
     EXCEPTION_THROWED;
   }
 

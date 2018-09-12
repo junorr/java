@@ -22,7 +22,10 @@
 package us.pserver.jpx.channel.impl;
 
 import java.nio.ByteBuffer;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -33,9 +36,12 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.channel.stream.ChannelStream;
+import us.pserver.jpx.channel.stream.ChannelStreamAttribute;
 import us.pserver.jpx.channel.stream.ChannelStreamEvent;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.channel.stream.StreamPartial;
+import us.pserver.jpx.event.Attribute;
+import us.pserver.jpx.event.Attribute.AttributeMapBuilder;
 import us.pserver.jpx.event.EventListener;
 import us.pserver.jpx.log.Logger;
 
@@ -85,7 +91,9 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   
   
   private void fireEvent(ChannelStreamEvent evt) {
-    listeners.forEach(l -> l.accept(this, evt));
+    listeners.stream()
+        .filter(l -> l.getInterests().contains(evt.getType()))
+        .forEach(l -> l.accept(this, evt));
   }
   
   
@@ -201,9 +209,24 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
     inioctx.set(true);
     input.addLast(StreamPartial.activeStream(opt));
     channel.getChannelEngine().executeIO(channel, this);
+    this.fireEvent(createEvent(ChannelStreamEvent.Type.SWITCH_TO_IO_CONTEXT));
   }
-
-
+  
+  
+  private ChannelStreamEvent createEvent(ChannelStreamEvent.Type type) {
+    return createEvent(type, Attribute.mapBuilder());
+  }
+  
+  
+  private ChannelStreamEvent createEvent(ChannelStreamEvent.Type type, AttributeMapBuilder bld) {
+    bld.add(ChannelStreamAttribute.CHANNEL, channel)
+        .add(ChannelStreamAttribute.IS_STREAM_FINISHED, isStreamFinished())
+        .add(ChannelStreamAttribute.STREAM_FILTER_SIZE, stream.size())
+        .add(ChannelStreamAttribute.STREAM_INDEX, Integer.valueOf(index));
+    return new ChannelStreamEvent(type, bld.create());
+  }
+  
+  
   @Override
   public boolean isInSytemContext() {
     return !inioctx.get();
@@ -217,6 +240,7 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
     inioctx.set(false);
     input.addLast(StreamPartial.activeStream(opt));
     channel.getChannelEngine().execute(channel, this);
+    this.fireEvent(createEvent(ChannelStreamEvent.Type.SWITCH_TO_SYSTEM_CONTEXT));
   }
   
   
