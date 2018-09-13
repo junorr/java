@@ -34,64 +34,77 @@ public class Logger {
 
   public static final List<Log> LOGS = new CopyOnWriteArrayList<>(Arrays.asList(StdLog.STDOUT, StdLog.STDERR));
   
+  public static final List<Log.Level> LEVELS = new CopyOnWriteArrayList<>(Arrays.asList(
+      Log.Level.DEBUG, 
+      Log.Level.INFO, 
+      Log.Level.WARN, 
+      Log.Level.ERROR)
+  );
+  
   public static void log(Log.Level lvl, String str, Object ... args) {
-    LOGS.forEach(l->l.log(lvl, str, args));
+    if(LEVELS.contains(lvl)) {
+      LOGS.forEach(l->l.log(lvl, str, args));
+    }
   }
   
   public static void log(Log.Level lvl, Throwable th, String str, Object ... args) {
-    LOGS.forEach(l->l.log(lvl, th, str, args));
+    if(LEVELS.contains(lvl)) {
+      LOGS.forEach(l->l.log(lvl, th, str, args));
+    }
   }
   
   public static void log(Log.Level lvl, Throwable th) {
-    LOGS.forEach(l->l.log(lvl, th));
+    if(LEVELS.contains(lvl)) {
+      LOGS.forEach(l->l.log(lvl, th));
+    }
   }
   
   public static void debug(String str, Object ... args) {
-    LOGS.forEach(l->l.debug(str, args));
+    log(Log.Level.DEBUG,str, args);
   }
   
   public static void debug(Throwable th, String str, Object ... args) {
-    LOGS.forEach(l->l.debug(th, str, args));
+    log(Log.Level.DEBUG, th, str, args);
   }
   
   public static void debug(Throwable th) {
-    LOGS.forEach(l->l.debug(th));
+    log(Log.Level.DEBUG, th);
   }
   
   public static void info(String str, Object ... args) {
-    LOGS.forEach(l->l.info(str, args));
+    log(Log.Level.INFO, str, args);
   }
   
   public static void info(Throwable th, String str, Object ... args) {
-    LOGS.forEach(l->l.info(th, str, args));
+    log(Log.Level.INFO, th, str, args);
   }
   
   public static void info(Throwable th) {
-    LOGS.forEach(l->l.info(th));
+    log(Log.Level.INFO, th);
   }
   
   public static void warn(String str, Object ... args) {
-    LOGS.forEach(l->l.warn(str, args));
+    log(Log.Level.WARN, str, args);
   }
   
   public static void warn(Throwable th) {
-    LOGS.forEach(l->l.warn(th));
+    log(Log.Level.WARN, th);
   }
   
   public static void warn(Throwable th, String str, Object ... args) {
-    LOGS.forEach(l->l.warn(th, str, args));
+    log(Log.Level.WARN, th, str, args);
   }
   
   public static void error(String str, Object ... args) {
-    LOGS.forEach(l->l.error(str, args));
+    log(Log.Level.ERROR, str, args);
   }
   
   public static void error(Throwable th, String str, Object ... args) {
-    LOGS.forEach(l->l.error(th, str, args));
+    log(Log.Level.ERROR, th, str, args);
   }
   
   public static void error(Throwable th) {
-    LOGS.forEach(l->l.error(th));
+    log(Log.Level.ERROR, th);
   }
   
 }

@@ -60,16 +60,16 @@ public interface StreamPartial<T> {
     
     private final Optional<T> opt;
     
-    private final boolean isAlive;
+    private final boolean isActive;
     
     public DefaultPartial(boolean isAlive, Optional<T> opt) {
-      this.isAlive = isAlive;
+      this.isActive = isAlive;
       this.opt = Objects.requireNonNull(opt);
     }
     
     @Override
     public boolean isActive() {
-      return isAlive;
+      return isActive;
     }
 
     @Override
@@ -82,7 +82,7 @@ public interface StreamPartial<T> {
     public int hashCode() {
       int hash = 7;
       hash = 11 * hash + Objects.hashCode(this.opt);
-      hash = 11 * hash + (this.isAlive ? 1 : 0);
+      hash = 11 * hash + (this.isActive ? 1 : 0);
       return hash;
     }
 
@@ -99,7 +99,7 @@ public interface StreamPartial<T> {
         return false;
       }
       final DefaultPartial<?> other = (DefaultPartial<?>) obj;
-      if (this.isAlive != other.isAlive) {
+      if (this.isActive != other.isActive) {
         return false;
       }
       if (!Objects.equals(this.opt, other.opt)) {
@@ -111,7 +111,7 @@ public interface StreamPartial<T> {
 
     @Override
     public String toString() {
-      return "StreamPartial{" + "isAlive=" + isAlive + ", value=" + (opt.isPresent() ? opt.get() : null) + '}';
+      return "StreamPartial{" + "isAlive=" + isActive + ", value=" + opt + '}';
     }
     
   }

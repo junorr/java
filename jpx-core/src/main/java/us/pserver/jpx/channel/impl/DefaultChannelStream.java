@@ -22,10 +22,9 @@
 package us.pserver.jpx.channel.impl;
 
 import java.nio.ByteBuffer;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -38,10 +37,16 @@ import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.channel.stream.ChannelStream;
 import us.pserver.jpx.channel.stream.ChannelStreamAttribute;
 import us.pserver.jpx.channel.stream.ChannelStreamEvent;
+import static us.pserver.jpx.channel.stream.ChannelStreamEvent.Type.EXCEPTION_THROWED;
+import static us.pserver.jpx.channel.stream.ChannelStreamEvent.Type.STREAM_FINISHED;
+import static us.pserver.jpx.channel.stream.ChannelStreamEvent.Type.STREAM_FUNCTION_APPENDED;
+import static us.pserver.jpx.channel.stream.ChannelStreamEvent.Type.STREAM_FUNCTION_EXECUTED;
+import static us.pserver.jpx.channel.stream.ChannelStreamEvent.Type.STREAM_FUNCTION_REMOVED;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.channel.stream.StreamPartial;
 import us.pserver.jpx.event.Attribute;
 import us.pserver.jpx.event.Attribute.AttributeMapBuilder;
+import us.pserver.jpx.event.Event;
 import us.pserver.jpx.event.EventListener;
 import us.pserver.jpx.log.Logger;
 
@@ -101,6 +106,9 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   public <I,O> ChannelStream appendFunction(StreamFunction<I,O> fn) {
     if(fn != null) {
       stream.add(fn); 
+      fireEvent(createEvent(STREAM_FUNCTION_APPENDED, Attribute.mapBuilder()
+          .add(ChannelStreamAttribute.STREAM_FUNCTION, fn))
+      );
     }
     return this;
   }
@@ -108,6 +116,9 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
 
   @Override
   public <I,O> boolean removeFunction(StreamFunction<I,O> fn) {
+    fireEvent(createEvent(STREAM_FUNCTION_REMOVED, Attribute.mapBuilder()
+        .add(ChannelStreamAttribute.STREAM_FUNCTION, fn))
+    );
     return stream.remove(fn);
   }
 
@@ -124,31 +135,19 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   public ChannelStream runSync(ByteBuffer buf) {
     Lock lock = new ReentrantLock();
     Condition sync = lock.newCondition();
-    StreamFunction last = stream.get(stream.size() -1);
-    StreamFunction finish = (c,o)->{
-      StreamPartial part = last.apply(c, o);
-      sync.signalAll();
-      //lock.lock();
-      //try {
-        //sync.signalAll();
-      //}
-      //finally {
-        //lock.unlock();
-      //}
-      return part;
-    };
-    stream.remove(last);
-    stream.add(finish);
-    resume();
-    lock.lock();
-    try {
-      sync.await();
-    }
-    catch(InterruptedException e) {
-      throw new RuntimeException(e.toString(), e);
-    }
-    finally {
-      lock.unlock();
+    addListener(new SyncListener(lock, sync));
+    run(buf);
+    if(!isStreamFinished()) {
+      lock.lock();
+      try {
+        sync.await();
+      }
+      catch(InterruptedException e) {
+        throw new RuntimeException(e.toString(), e);
+      }
+      finally {
+        lock.unlock();
+      }
     }
     return this;
   }
@@ -166,18 +165,27 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   
   
   public boolean applyCurrent() {
-    boolean apply = index < stream.size();
+    boolean apply = !isStreamFinished();
     if(apply) {
       StreamFunction fn = stream.get(index++);
+      if(isStreamFinished()) fireEvent(createEvent(STREAM_FINISHED));
       StreamPartial partial;
       try {
         partial = fn.apply(channel, take());
+        fireEvent(createEvent(STREAM_FUNCTION_EXECUTED, Attribute.mapBuilder()
+            .add(ChannelStreamAttribute.STREAM_FUNCTION, fn)
+            .add(ChannelStreamAttribute.STREAM_PARTIAL, partial))
+        );
       }
       catch(Exception e) {
         partial = StreamPartial.brokenStream();
+        fireEvent(createEvent(EXCEPTION_THROWED, Attribute.mapBuilder()
+            .add(ChannelStreamAttribute.STREAM_FUNCTION, fn)
+            .add(ChannelStreamAttribute.EXCEPTION, e))
+        );
       }
       if(!partial.isActive()) return false;
-      Logger.info("%s", partial);
+      Logger.debug("%s", partial);
       input.addLast(partial);
     }
     return apply;
@@ -185,7 +193,7 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   
   
   public void resume() {
-    Logger.info("Execution context=%s", (isInIOContext() ? "IOContext" : "SYSContext"));
+    Logger.debug("Execution context=%s", (isInIOContext() ? "IOContext" : "SYSContext"));
     while(applyCurrent());
   }
 
@@ -204,12 +212,12 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
 
   @Override
   public <I> void switchToIOContext(Optional<I> opt) {
-    Logger.info("%s", opt);
+    Logger.debug("%s", opt);
     index--;
     inioctx.set(true);
     input.addLast(StreamPartial.activeStream(opt));
     channel.getChannelEngine().executeIO(channel, this);
-    this.fireEvent(createEvent(ChannelStreamEvent.Type.SWITCH_TO_IO_CONTEXT));
+    fireEvent(createEvent(ChannelStreamEvent.Type.SWITCH_TO_IO_CONTEXT));
   }
   
   
@@ -222,7 +230,7 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
     bld.add(ChannelStreamAttribute.CHANNEL, channel)
         .add(ChannelStreamAttribute.IS_STREAM_FINISHED, isStreamFinished())
         .add(ChannelStreamAttribute.STREAM_FILTER_SIZE, stream.size())
-        .add(ChannelStreamAttribute.STREAM_INDEX, Integer.valueOf(index));
+        .add(ChannelStreamAttribute.STREAM_INDEX, index);
     return new ChannelStreamEvent(type, bld.create());
   }
   
@@ -235,18 +243,54 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
 
   @Override
   public <I> void switchToSystemContext(Optional<I> opt) {
-    Logger.info("%s", opt);
+    Logger.debug("%s", opt);
     index--;
     inioctx.set(false);
     input.addLast(StreamPartial.activeStream(opt));
     channel.getChannelEngine().execute(channel, this);
-    this.fireEvent(createEvent(ChannelStreamEvent.Type.SWITCH_TO_SYSTEM_CONTEXT));
+    fireEvent(createEvent(ChannelStreamEvent.Type.SWITCH_TO_SYSTEM_CONTEXT));
   }
   
   
   @Override
   public boolean isStreamFinished() {
-    return index == stream.size();
+    return index >= stream.size();
+  }
+  
+  
+  
+  
+  
+  private static class SyncListener implements EventListener<ChannelStream,ChannelStreamEvent> {
+    
+    private final List<Event.Type> interests;
+    
+    private final Lock lock;
+    
+    private final Condition sync;
+    
+    public SyncListener(Lock l, Condition c) {
+      lock = l;
+      sync = c;
+      interests = Arrays.asList(EXCEPTION_THROWED, STREAM_FINISHED);
+    }
+    
+    @Override
+    public Collection<Event.Type> getInterests() {
+      return interests;
+    }
+    
+    @Override
+    public void accept(ChannelStream t, ChannelStreamEvent u) {
+      lock.lock();
+      try {
+        sync.signalAll();
+      }
+      finally {
+        lock.unlock();
+      }
+    }
+    
   }
   
 }
