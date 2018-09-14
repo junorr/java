@@ -23,9 +23,9 @@ package us.pserver.jpx.channel.impl;
 
 import java.net.InetSocketAddress;
 import us.pserver.jpx.channel.ChannelConfiguration;
-import us.pserver.jpx.channel.SocketOptions;
 import us.pserver.jpx.pool.impl.BufferPoolConfiguration;
 import us.pserver.tools.StringPad;
+import us.pserver.jpx.channel.ChannelSocketOptions;
 
 /**
  *
@@ -41,7 +41,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
   
   private final BufferPoolConfiguration bufPoolConfig;
   
-  private final SocketOptions options;
+  private final ChannelSocketOptions options;
   
   private final int ioThreadPoolSize;
   
@@ -65,7 +65,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
     );
   }
 
-  public DefaultChannelConfiguration(BufferPoolConfiguration bufPoolConfig, SocketOptions options, int ioThreadPoolSize, int systemThreadPoolSize, InetSocketAddress address, boolean autoRead, boolean autoWrite) {
+  public DefaultChannelConfiguration(BufferPoolConfiguration bufPoolConfig, ChannelSocketOptions options, int ioThreadPoolSize, int systemThreadPoolSize, InetSocketAddress address, boolean autoRead, boolean autoWrite) {
     this.bufPoolConfig = bufPoolConfig;
     this.options = options;
     this.ioThreadPoolSize = ioThreadPoolSize;
@@ -113,13 +113,13 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
   
   
   @Override
-  public SocketOptions getSocketOptions() {
+  public ChannelSocketOptions getSocketOptions() {
     return options;
   }
 
 
   @Override
-  public ChannelConfiguration withSocketOptions(SocketOptions options) {
+  public ChannelConfiguration withSocketOptions(ChannelSocketOptions options) {
     return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
   }
   

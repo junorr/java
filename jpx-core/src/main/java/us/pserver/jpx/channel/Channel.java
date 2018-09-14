@@ -22,6 +22,7 @@
 package us.pserver.jpx.channel;
 
 import java.net.InetSocketAddress;
+import java.time.Duration;
 import us.pserver.jpx.event.EventListener;
 
 /**
@@ -35,9 +36,7 @@ public interface Channel extends AutoCloseable {
   
   public boolean isOpen();
   
-  public void read();
-  
-  public void write();
+  public Duration getUptime();
   
   public ChannelConfiguration getConfiguration();
   

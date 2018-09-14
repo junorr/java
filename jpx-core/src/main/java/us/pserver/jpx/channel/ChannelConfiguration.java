@@ -53,9 +53,9 @@ public interface ChannelConfiguration {
   public ChannelConfiguration withSocketAddress(String addr, int port);
   
   
-  public SocketOptions getSocketOptions();
+  public ChannelSocketOptions getSocketOptions();
   
-  public ChannelConfiguration withSocketOptions(SocketOptions options);
+  public ChannelConfiguration withSocketOptions(ChannelSocketOptions options);
   
   
   public boolean isAutoReadEnabled();

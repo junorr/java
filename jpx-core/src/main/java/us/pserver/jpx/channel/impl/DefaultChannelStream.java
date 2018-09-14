@@ -49,6 +49,7 @@ import us.pserver.jpx.event.Attribute.AttributeMapBuilder;
 import us.pserver.jpx.event.Event;
 import us.pserver.jpx.event.EventListener;
 import us.pserver.jpx.log.Logger;
+import us.pserver.jpx.pool.Pooled;
 
 /**
  *
@@ -144,7 +145,7 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
 
 
   @Override
-  public ChannelStream run(ByteBuffer buf) {
+  public ChannelStream run(Pooled<ByteBuffer> buf) {
     input.addLast(StreamPartial.activeStream(buf));
     channel.getChannelEngine().execute(channel, this);
     return this;
@@ -152,7 +153,7 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   
   
   @Override
-  public ChannelStream runSync(ByteBuffer buf) {
+  public ChannelStream runSync(Pooled<ByteBuffer> buf) {
     Lock lock = new ReentrantLock();
     Condition sync = lock.newCondition();
     SyncListener lst = new SyncListener(lock, sync);

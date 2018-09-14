@@ -21,15 +21,15 @@
 
 package us.pserver.jpx.channel.impl;
 
-import us.pserver.jpx.channel.SocketOptions;
 import us.pserver.tools.StringPad;
+import us.pserver.jpx.channel.ChannelSocketOptions;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/08/2018
  */
-public class DefaultSocketOptions implements SocketOptions {
+public class DefaultSocketOptions implements ChannelSocketOptions {
   
   private final int rcvbuf;
   
@@ -65,7 +65,7 @@ public class DefaultSocketOptions implements SocketOptions {
 
 
   @Override
-  public SocketOptions withTcpNoDelay(boolean tcpNoDelay) {
+  public ChannelSocketOptions withTcpNoDelay(boolean tcpNoDelay) {
     return new DefaultSocketOptions(rcvbuf, sndbuf, solinger, tcpNoDelay, keepAlive, reuseAddr);
   }
 
@@ -77,7 +77,7 @@ public class DefaultSocketOptions implements SocketOptions {
 
 
   @Override
-  public SocketOptions withSoSndBuf(int sndbuf) {
+  public ChannelSocketOptions withSoSndBuf(int sndbuf) {
     return new DefaultSocketOptions(rcvbuf, sndbuf, solinger, tcpNoDelay, keepAlive, reuseAddr);
   }
 
@@ -89,7 +89,7 @@ public class DefaultSocketOptions implements SocketOptions {
 
 
   @Override
-  public SocketOptions withSoRcvBuf(int rcvbuf) {
+  public ChannelSocketOptions withSoRcvBuf(int rcvbuf) {
     return new DefaultSocketOptions(rcvbuf, sndbuf, solinger, tcpNoDelay, keepAlive, reuseAddr);
   }
 
@@ -101,7 +101,7 @@ public class DefaultSocketOptions implements SocketOptions {
 
 
   @Override
-  public SocketOptions withSoKeepAlive(boolean keepAlive) {
+  public ChannelSocketOptions withSoKeepAlive(boolean keepAlive) {
     return new DefaultSocketOptions(rcvbuf, sndbuf, solinger, tcpNoDelay, keepAlive, reuseAddr);
   }
 
@@ -113,7 +113,7 @@ public class DefaultSocketOptions implements SocketOptions {
 
 
   @Override
-  public SocketOptions withSoReuseAddr(boolean reuseAddr) {
+  public ChannelSocketOptions withSoReuseAddr(boolean reuseAddr) {
     return new DefaultSocketOptions(rcvbuf, sndbuf, solinger, tcpNoDelay, keepAlive, reuseAddr);
   }
 
@@ -125,7 +125,7 @@ public class DefaultSocketOptions implements SocketOptions {
 
 
   @Override
-  public SocketOptions withSoLinger(int solinger) {
+  public ChannelSocketOptions withSoLinger(int solinger) {
     return new DefaultSocketOptions(rcvbuf, sndbuf, solinger, tcpNoDelay, keepAlive, reuseAddr);
   }
   

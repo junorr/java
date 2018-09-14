@@ -26,36 +26,36 @@ package us.pserver.jpx.channel;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/08/2018
  */
-public interface SocketOptions {
+public interface ChannelSocketOptions {
 
   public boolean getTcpNoDelay();
   
-  public SocketOptions withTcpNoDelay(boolean tnd);
+  public ChannelSocketOptions withTcpNoDelay(boolean tnd);
   
   
   public int getSoSndBuf();
   
-  public SocketOptions withSoSndBuf(int snb);
+  public ChannelSocketOptions withSoSndBuf(int snb);
   
   
   public int getSoRcvBuf();
   
-  public SocketOptions withSoRcvBuf(int rcb);
+  public ChannelSocketOptions withSoRcvBuf(int rcb);
   
   
   public boolean getSoKeepAlive();
   
-  public SocketOptions withSoKeepAlive(boolean kal);
+  public ChannelSocketOptions withSoKeepAlive(boolean kal);
   
   
   public boolean getSoReuseAddr();
   
-  public SocketOptions withSoReuseAddr(boolean rad);
+  public ChannelSocketOptions withSoReuseAddr(boolean rad);
   
   
   public int getSoLinger();
   
-  public SocketOptions withSoLinger(int lng);
+  public ChannelSocketOptions withSoLinger(int lng);
   
   public String toString(int ident);
   

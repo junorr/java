@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.event.EventListener;
+import us.pserver.jpx.pool.Pooled;
 
 /**
  *
@@ -45,9 +46,9 @@ public interface ChannelStream extends Cloneable {
   
   public boolean isStreamFinished();
   
-  public ChannelStream run(ByteBuffer buf);
+  public ChannelStream run(Pooled<ByteBuffer> buf);
   
-  public ChannelStream runSync(ByteBuffer buf);
+  public ChannelStream runSync(Pooled<ByteBuffer> buf);
   
   public boolean isInIOContext();
   
