@@ -23,7 +23,6 @@ package us.pserver.jpx.pool.test;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import us.pserver.jpx.channel.Channel;
@@ -36,7 +35,6 @@ import us.pserver.jpx.channel.impl.DefaultChannelStream;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.log.Log;
 import us.pserver.jpx.log.Logger;
-import us.pserver.tools.misc.Sleeper;
 
 /**
  *
@@ -55,9 +53,7 @@ public class TestChannelStream {
   @Test
   public void test() {
     try {
-      Mockito.when(channel.getChannelStream()).thenReturn(stream);
       Mockito.when(channel.getChannelEngine()).thenReturn(engine);
-      System.out.println(channel.getChannelStream());
       Logger.LEVELS.remove(Log.Level.DEBUG);
       stream.addListener((s,e) -> {
         //String[] ss = e.toString().split(",");
@@ -67,24 +63,24 @@ public class TestChannelStream {
       });
       ByteBuffer buf = StandardCharsets.UTF_8.encode("Hello World!");
       StreamFunction<ByteBuffer,String> f1 = (c,o) -> {
-        if(!c.getChannelStream().isInIOContext()) {
-          c.getChannelStream().switchToIOContext(o);
+        if(!c.isInIOContext()) {
+          c.switchToIOContext(o);
           return StreamPartial.brokenStream();
         }
         return StreamPartial.activeStream(StandardCharsets.UTF_8.decode(o.get()).toString());
       };
       stream.appendFunction(f1);
       StreamFunction<String,Integer>  f2 = (c,o) -> {
-        if(!c.getChannelStream().isInSytemContext()) {
-          c.getChannelStream().switchToSystemContext(o);
+        if(!c.isInSytemContext()) {
+          c.switchToSystemContext(o);
           return StreamPartial.brokenStream();
         }
         return StreamPartial.activeStream(o.get().length());
       };
       stream.appendFunction(f2);
       StreamFunction<Integer,ByteBuffer>  f3 = (c,o) -> {
-        if(!c.getChannelStream().isInIOContext()) {
-          c.getChannelStream().switchToIOContext(o);
+        if(!c.isInIOContext()) {
+          c.switchToIOContext(o);
           return StreamPartial.brokenStream();
         }
         ByteBuffer b = ByteBuffer.allocate(Integer.BYTES);
@@ -94,8 +90,8 @@ public class TestChannelStream {
       };
       stream.appendFunction(f3);
       StreamFunction<ByteBuffer,Void>  f4 = (c,o) -> {
-        if(!c.getChannelStream().isInIOContext()) {
-          c.getChannelStream().switchToIOContext(o);
+        if(!c.isInIOContext()) {
+          c.switchToIOContext(o);
           return StreamPartial.brokenStream();
         }
         System.out.println("* f4: " + o);

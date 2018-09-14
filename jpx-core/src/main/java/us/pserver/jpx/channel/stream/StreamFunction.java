@@ -22,7 +22,6 @@
 package us.pserver.jpx.channel.stream;
 
 import java.util.Optional;
-import us.pserver.jpx.channel.Channel;
 
 /**
  *
@@ -32,6 +31,6 @@ import us.pserver.jpx.channel.Channel;
 @FunctionalInterface
 public interface StreamFunction<I,O> {
 
-  public StreamPartial<O> apply(Channel ch, Optional<I> in) throws Exception;
+  public StreamPartial<O> apply(ChannelStream cs, Optional<I> in) throws Exception;
   
 }

@@ -23,6 +23,7 @@ package us.pserver.jpx.channel.stream;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
+import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.event.EventListener;
 
 /**
@@ -30,7 +31,9 @@ import us.pserver.jpx.event.EventListener;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 16/08/2018
  */
-public interface ChannelStream {
+public interface ChannelStream extends Cloneable {
+  
+  public Channel getChannel();
   
   public ChannelStream addListener(EventListener<ChannelStream,ChannelStreamEvent> lst);
   

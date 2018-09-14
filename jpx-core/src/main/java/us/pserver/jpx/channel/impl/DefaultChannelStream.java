@@ -71,12 +71,32 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   
   
   public DefaultChannelStream(Channel ch) {
+    this(ch, false);
+  }
+  
+  
+  private DefaultChannelStream(Channel ch, boolean inIOCtx) {
     this.channel = Objects.requireNonNull(ch);
     input = new LinkedBlockingDeque();
     stream = new CopyOnWriteArrayList<>();
     listeners = new CopyOnWriteArrayList<>();
     index = 0;
-    inioctx = new AtomicBoolean(false);
+    inioctx = new AtomicBoolean(inIOCtx);
+  }
+  
+  
+  @Override
+  public Channel getChannel() {
+    return channel;
+  }
+  
+  
+  @Override
+  public ChannelStream clone() {
+    ChannelStream clone = new DefaultChannelStream(channel, inioctx.get());
+    stream.forEach(clone::appendFunction);
+    listeners.forEach(clone::addListener);
+    return clone;
   }
   
   
@@ -135,12 +155,15 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   public ChannelStream runSync(ByteBuffer buf) {
     Lock lock = new ReentrantLock();
     Condition sync = lock.newCondition();
-    addListener(new SyncListener(lock, sync));
+    SyncListener lst = new SyncListener(lock, sync);
+    addListener(lst);
     run(buf);
     if(!isStreamFinished()) {
       lock.lock();
       try {
         sync.await();
+        boolean removed = removeListener(lst);
+        Logger.debug("sync.await() exited! removeListener( lst ): %s", removed);
       }
       catch(InterruptedException e) {
         throw new RuntimeException(e.toString(), e);
@@ -171,7 +194,7 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
       if(isStreamFinished()) fireEvent(createEvent(STREAM_FINISHED));
       StreamPartial partial;
       try {
-        partial = fn.apply(channel, take());
+        partial = fn.apply(this, take());
         fireEvent(createEvent(STREAM_FUNCTION_EXECUTED, Attribute.mapBuilder()
             .add(ChannelStreamAttribute.STREAM_FUNCTION, fn)
             .add(ChannelStreamAttribute.STREAM_PARTIAL, partial))

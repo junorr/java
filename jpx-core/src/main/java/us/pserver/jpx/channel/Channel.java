@@ -21,7 +21,6 @@
 
 package us.pserver.jpx.channel;
 
-import us.pserver.jpx.channel.stream.ChannelStream;
 import java.net.InetSocketAddress;
 import us.pserver.jpx.event.EventListener;
 
@@ -43,8 +42,6 @@ public interface Channel extends AutoCloseable {
   public ChannelConfiguration getConfiguration();
   
   public ChannelEngine getChannelEngine();
-  
-  public ChannelStream getChannelStream();
   
   public InetSocketAddress getLocalAddress();
   
