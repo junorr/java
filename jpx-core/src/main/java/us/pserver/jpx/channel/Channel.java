@@ -21,9 +21,12 @@
 
 package us.pserver.jpx.channel;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.time.Duration;
 import us.pserver.jpx.event.EventListener;
+import us.pserver.jpx.pool.Pooled;
 
 /**
  *
@@ -32,19 +35,43 @@ import us.pserver.jpx.event.EventListener;
  */
 public interface Channel extends AutoCloseable {
 
-  public Channel open();
+  public Channel start();
   
-  public boolean isOpen();
+  public boolean isRunning();
   
   public Duration getUptime();
+  
+  public double getIncommingBytesPerSecond();
+  
+  public double getOutgoingBytesPerSecond();
+  
+  /**
+   * Signal Channel readiness to read data.
+   * @return this Channel instance.
+   */
+  public Channel read();
+  
+  /**
+   * Signal Channel readiness to write data.
+   * @return this Channel instance.
+   */
+  public Channel write();
+  
+  public Channel write(Pooled<ByteBuffer> buf);
+  
+  /**
+   * Signal to close this Channel after perform the next write operation.
+   * @return This Channel instance.
+   */
+  public Channel closeOnWrite();
   
   public ChannelConfiguration getConfiguration();
   
   public ChannelEngine getChannelEngine();
   
-  public InetSocketAddress getLocalAddress();
+  public InetSocketAddress getLocalAddress() throws IOException;
   
-  public InetSocketAddress getRemoteAddress();
+  public InetSocketAddress getRemoteAddress() throws IOException;
   
   public Channel addListener(EventListener<Channel,ChannelEvent> lst);
   

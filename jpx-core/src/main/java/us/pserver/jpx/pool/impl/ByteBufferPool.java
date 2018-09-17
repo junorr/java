@@ -23,6 +23,7 @@ package us.pserver.jpx.pool.impl;
 
 import java.nio.ByteBuffer;
 import java.util.function.IntFunction;
+import us.pserver.jpx.pool.Pooled;
 
 /**
  *
@@ -47,6 +48,20 @@ public class ByteBufferPool extends DefaultPool<ByteBuffer> {
   @Override
   public BufferPoolConfiguration getConfiguration() {
     return (BufferPoolConfiguration) super.getConfiguration();
+  }
+  
+  @Override
+  public Pooled<ByteBuffer> alloc() {
+    Pooled<ByteBuffer> pooled = super.alloc();
+    pooled.get().clear();
+    return pooled;
+  }
+  
+  @Override
+  public Pooled<ByteBuffer> allocAwait() {
+    Pooled<ByteBuffer> pooled = super.allocAwait();
+    pooled.get().clear();
+    return pooled;
   }
   
 }

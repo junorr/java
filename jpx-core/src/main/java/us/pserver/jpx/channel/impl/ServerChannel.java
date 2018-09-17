@@ -26,6 +26,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.Duration;
 import java.time.Instant;
@@ -37,6 +38,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.channel.ChannelAttribute;
 import us.pserver.jpx.channel.ChannelConfiguration;
@@ -55,13 +57,13 @@ import us.pserver.jpx.pool.Pooled;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2018
  */
-public class ClientChannel implements Channel, Runnable {
+public class ServerChannel implements Channel, Runnable {
   
   private final ChannelConfiguration config;
   
   private final ChannelEngine engine;
   
-  private final ChannelStream stream;
+  private final Function<Channel,ChannelStream> factory;
   
   private final AtomicBoolean running;
   
@@ -79,19 +81,19 @@ public class ClientChannel implements Channel, Runnable {
   
   private final LinkedBlockingDeque<Pooled<ByteBuffer>> writing;
   
-  private final SocketChannel socket;
+  private final ServerSocketChannel server;
   
   private final Selector selector;
   
   private final Instant start;
   
   
-  public ClientChannel(SocketChannel sock, Selector select, ChannelConfiguration cfg, ChannelEngine eng, ChannelStream stream) {
-    this.socket = Objects.requireNonNull(sock);
+  public ServerChannel(ServerSocketChannel sock, Selector select, ChannelConfiguration cfg, ChannelEngine eng, Function<Channel,ChannelStream> factory) {
+    this.server = Objects.requireNonNull(sock);
     this.selector = Objects.requireNonNull(select);
     this.config = Objects.requireNonNull(cfg);
     this.engine = Objects.requireNonNull(eng);
-    this.stream = Objects.requireNonNull(stream);
+    this.factory = Objects.requireNonNull(factory);
     this.listeners = new CopyOnWriteArrayList<>();
     this.writing = new LinkedBlockingDeque<>();
     this.start = Instant.now();
@@ -132,11 +134,7 @@ public class ClientChannel implements Channel, Runnable {
   public Channel start() {
     try {
       running.set(true);
-      socket.register(selector, 
-          SelectionKey.OP_CONNECT 
-              | SelectionKey.OP_READ 
-              | SelectionKey.OP_WRITE
-      );
+      server.register(selector, SelectionKey.OP_ACCEPT);
       engine.executeIO(this, this);
     }
     catch(Exception e) {
@@ -172,20 +170,36 @@ public class ClientChannel implements Channel, Runnable {
         while(it.hasNext()) {
           SelectionKey key = it.next();
           it.remove();
-          if(key.isConnectable()) {
-            while(socket.isConnectionPending()) {
-              socket.finishConnect();
-            }
+          if(key.isAcceptable()) {
+            ClientChannel channel = new ClientChannel(
+                server.accept(), 
+                Selector.open(), 
+                config, 
+                engine, 
+                factory.apply(this)
+            );
             fireEvent(createEvent(ChannelEvent.Type.CONNECTION_STABLISHED, Attribute.mapBuilder()
+                .add(ChannelAttribute.CHANNEL, channel)
                 .add(ChannelAttribute.UPTIME, getUptime())
-                .add(ChannelAttribute.LOCAL_ADDRESS, getLocalAddress())
-                .add(ChannelAttribute.REMOTE_ADDRESS, getRemoteAddress())
+                .add(ChannelAttribute.LOCAL_ADDRESS, channel.getLocalAddress())
+                .add(ChannelAttribute.REMOTE_ADDRESS, channel.getRemoteAddress())
             ));
+            if(!writing.isEmpty() && dowrite.get()) {
+              channel.write(writing.peekFirst());
+            }
+            if(!config.isAutoWriteEnabled()) {
+              dowrite.set(false);
+            }
+            channel.start();
+            
+            while(server.isConnectionPending()) {
+              server.finishConnect();
+            }
           }
           else if(key.isReadable() && doread.get()) {
             Pooled<ByteBuffer> buf = engine.getByteBufferPool().allocAwait();
-            stream.appendFunction(getWriteFunction(buf));
-            long read = socket.read(buf.get());
+            factory.appendFunction(getWriteFunction(buf));
+            long read = server.read(buf.get());
             readed.getAndAccumulate(read, Math::addExact);
             fireEvent(createEvent(ChannelEvent.Type.CHANNEL_READING, Attribute.mapBuilder()
                 .add(ChannelAttribute.UPTIME, getUptime())
@@ -195,12 +209,12 @@ public class ClientChannel implements Channel, Runnable {
             if(!config.isAutoReadEnabled()) {
               doread.set(false);
             }
-            stream.run(buf);
+            factory.run(buf);
           }
           else if(key.isWritable() && dowrite.get() && !writing.isEmpty()) {
             Pooled<ByteBuffer> buf = writing.peekFirst();
             int rem = buf.get().remaining();
-            long write = socket.write(buf.get());
+            long write = server.write(buf.get());
             if(write >= rem) {
               writing.pollFirst().release();
             }
@@ -210,16 +224,10 @@ public class ClientChannel implements Channel, Runnable {
                 .add(ChannelAttribute.BYTES_WRITED, write)
                 .add(ChannelAttribute.OUTGOING_BYTES_PER_SECOND, getOutgoingBytesPerSecond())
             ));
-            if(!config.isAutoWriteEnabled()) {
-              dowrite.set(false);
-            }
-            if(closeOnWrite.get()) {
-              running.set(false);
-            }
           }
         }
       }//while
-      socket.close();
+      server.close();
       fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
       ));
@@ -284,13 +292,13 @@ public class ClientChannel implements Channel, Runnable {
 
   @Override
   public InetSocketAddress getLocalAddress() throws IOException {
-    return (InetSocketAddress) socket.getLocalAddress();
+    return (InetSocketAddress) server.getLocalAddress();
   }
 
 
   @Override
   public InetSocketAddress getRemoteAddress() throws IOException {
-    return (InetSocketAddress) socket.getRemoteAddress();
+    return (InetSocketAddress) server.getRemoteAddress();
   }
 
 

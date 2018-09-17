@@ -36,6 +36,8 @@ public enum ChannelAttribute implements Attribute {
   BYTES_READED,
   INCOMING_BYTES_PER_SECOND,
   OUTGOING_BYTES_PER_SECOND,
-  CHANNEL_FUNCTION
+  LOCAL_ADDRESS,
+  REMOTE_ADDRESS,
+  CHANNEL
   
 }
