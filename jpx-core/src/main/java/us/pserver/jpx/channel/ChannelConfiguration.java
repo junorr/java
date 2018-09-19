@@ -36,9 +36,9 @@ public interface ChannelConfiguration {
   public ChannelConfiguration withIOThreadPoolSize(int size);
   
   
-  public int getSystemThreadPoolSize();
+  public int getComputeThreadPoolSize();
   
-  public ChannelConfiguration withSystemThreadPoolSize(int size);
+  public ChannelConfiguration withComputeThreadPoolSize(int size);
   
   
   public BufferPoolConfiguration getBufferPoolConfiguration();

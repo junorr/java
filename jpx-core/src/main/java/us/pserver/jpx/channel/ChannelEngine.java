@@ -39,7 +39,7 @@ public interface ChannelEngine {
   
   public ExecutorService getIOExecutorService();
   
-  public ExecutorService getSystemExecutorService();
+  public ExecutorService getComputeExecutorService();
   
   public ByteBufferPool getByteBufferPool();
   

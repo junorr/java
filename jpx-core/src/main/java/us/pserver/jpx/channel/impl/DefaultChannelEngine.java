@@ -54,7 +54,7 @@ public class DefaultChannelEngine implements ChannelEngine {
     this.cfg = Objects.requireNonNull(cfg);
     pool = new ByteBufferPool(cfg.getBufferPoolConfiguration());
     ioexec = Executors.newFixedThreadPool(cfg.getIOThreadPoolSize(), DefaultChannelEngine::newIOPoolThread);
-    sysexec = Executors.newFixedThreadPool(cfg.getSystemThreadPoolSize(), DefaultChannelEngine::newSystemPoolThread);
+    sysexec = Executors.newFixedThreadPool(cfg.getComputeThreadPoolSize(), DefaultChannelEngine::newSystemPoolThread);
   }
   
   
@@ -89,7 +89,7 @@ public class DefaultChannelEngine implements ChannelEngine {
 
 
   @Override
-  public ExecutorService getSystemExecutorService() {
+  public ExecutorService getComputeExecutorService() {
     return sysexec;
   }
 

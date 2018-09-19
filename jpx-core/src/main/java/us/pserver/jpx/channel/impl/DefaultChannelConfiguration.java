@@ -89,13 +89,13 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
 
   @Override
-  public int getSystemThreadPoolSize() {
+  public int getComputeThreadPoolSize() {
     return systemThreadPoolSize;
   }
 
 
   @Override
-  public ChannelConfiguration withSystemThreadPoolSize(int systemThreadPoolSize) {
+  public ChannelConfiguration withComputeThreadPoolSize(int systemThreadPoolSize) {
     return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
   }
 
