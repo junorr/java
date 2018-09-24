@@ -21,7 +21,10 @@
 
 package us.pserver.jpx.channel;
 
+import java.io.IOException;
+import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import us.pserver.jpx.channel.impl.ClientChannelGroup;
 import us.pserver.jpx.channel.stream.ChannelStream;
 
 /**
@@ -31,8 +34,16 @@ import us.pserver.jpx.channel.stream.ChannelStream;
  */
 public interface ChannelGroup extends Channel {
 
-  public void handle(SocketChannel channel, ChannelStream stream);
+  public boolean add(SocketChannel channel, ChannelStream stream) throws IOException;
   
   public int getGroupSize();
+  
+  public int getMaxGroupSize();
+  
+  
+  
+  public static ChannelGroup newChannelGroup(ChannelConfiguration cfg, ChannelEngine eng, int maxSize) throws IOException {
+    return new ClientChannelGroup(Selector.open(), cfg, eng, maxSize);
+  }
   
 }

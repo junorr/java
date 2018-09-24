@@ -26,7 +26,6 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.Duration;
 import java.time.Instant;
@@ -36,14 +35,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Function;
 import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.channel.ChannelAttribute;
 import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
 import us.pserver.jpx.channel.ChannelEvent;
+import us.pserver.jpx.channel.ChannelGroup;
 import us.pserver.jpx.channel.stream.ChannelStream;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.channel.stream.StreamPartial;
@@ -57,52 +54,54 @@ import us.pserver.jpx.pool.Pooled;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2018
  */
-public class ServerChannel implements Channel, Runnable {
+public class ClientChannelGroup implements ChannelGroup, Runnable {
   
   private final ChannelConfiguration config;
   
   private final ChannelEngine engine;
   
-  private final Function<Channel,ChannelStream> factory;
-  
-  private final AtomicBoolean running;
-  
-  private final AtomicBoolean closeOnWrite;
-  
-  private final AtomicBoolean dowrite;
-  
-  private final AtomicBoolean doread;
-  
-  private final AtomicLong readed;
-  
-  private final AtomicLong writed;
-  
   private final List<EventListener<Channel,ChannelEvent>> listeners;
   
   private final LinkedBlockingDeque<Pooled<ByteBuffer>> writing;
-  
-  private final ServerSocketChannel server;
   
   private final Selector selector;
   
   private final Instant start;
   
+  private final int maxSize;
   
-  public ServerChannel(ServerSocketChannel sock, Selector select, ChannelConfiguration cfg, ChannelEngine eng, Function<Channel,ChannelStream> factory) {
-    this.server = Objects.requireNonNull(sock);
+  private volatile int count;
+  
+  private volatile boolean running;
+  
+  private volatile boolean closeOnWrite;
+  
+  private volatile boolean dowrite;
+  
+  private volatile boolean doread;
+  
+  private volatile long readed;
+  
+  private volatile long writed;
+  
+  
+  public ClientChannelGroup(Selector select, ChannelConfiguration cfg, ChannelEngine eng, int maxSize) {
     this.selector = Objects.requireNonNull(select);
     this.config = Objects.requireNonNull(cfg);
     this.engine = Objects.requireNonNull(eng);
-    this.factory = Objects.requireNonNull(factory);
+    if(maxSize <= 0) {
+      throw new IllegalArgumentException("Bad max size: "+ maxSize);
+    }
+    this.maxSize = maxSize;
     this.listeners = new CopyOnWriteArrayList<>();
     this.writing = new LinkedBlockingDeque<>();
     this.start = Instant.now();
-    this.running = new AtomicBoolean(false);
-    this.closeOnWrite = new AtomicBoolean(false);
-    this.readed = new AtomicLong(0);
-    this.writed = new AtomicLong(0);
-    this.doread = new AtomicBoolean(config.isAutoReadEnabled());
-    this.dowrite = new AtomicBoolean(config.isAutoWriteEnabled());
+    this.doread = config.isAutoReadEnabled();
+    this.dowrite = config.isAutoWriteEnabled();
+    this.running = false;
+    this.closeOnWrite = false;
+    this.readed = 0;
+    this.writed = 0;
   }
   
   
@@ -117,7 +116,7 @@ public class ServerChannel implements Channel, Runnable {
     Duration dur = getUptime();
     if(Duration.ZERO == dur) return 0;
     double sec = dur.toMillis() / 1000.0;
-    return writed.get() / sec;
+    return writed / sec;
   }
   
   
@@ -126,15 +125,42 @@ public class ServerChannel implements Channel, Runnable {
     Duration dur = getUptime();
     if(Duration.ZERO == dur) return 0;
     double sec = dur.toMillis() / 1000.0;
-    return readed.get() / sec;
+    return readed / sec;
+  }
+  
+  
+  @Override
+  public boolean add(SocketChannel channel, ChannelStream stream) throws IOException {
+    boolean success = count <= maxSize;
+    if(success) {
+      count++;
+      Objects.requireNonNull(channel).configureBlocking(false);
+      channel.register(selector, SelectionKey.OP_CONNECT 
+          | SelectionKey.OP_READ 
+          | SelectionKey.OP_WRITE, 
+          Objects.requireNonNull(stream)
+      );
+    }
+    return success;
+  }
+  
+  
+  @Override
+  public int getGroupSize() {
+    return count;
+  }
+
+
+  @Override
+  public int getMaxGroupSize() {
+    return maxSize;
   }
   
   
   @Override
   public Channel start() {
     try {
-      running.set(true);
-      server.register(selector, SelectionKey.OP_ACCEPT);
+      running = true;
       engine.executeIO(this, this);
     }
     catch(Exception e) {
@@ -162,7 +188,7 @@ public class ServerChannel implements Channel, Runnable {
   @Override
   public void run() {
     try {
-      while(running.get()) {
+      while(running) {
         if(selector.select() <= 0) {
           continue;
         }
@@ -170,64 +196,57 @@ public class ServerChannel implements Channel, Runnable {
         while(it.hasNext()) {
           SelectionKey key = it.next();
           it.remove();
-          if(key.isAcceptable()) {
-            ClientChannel channel = new ClientChannel(
-                server.accept(), 
-                Selector.open(), 
-                config, 
-                engine, 
-                factory.apply(this)
-            );
+          SocketChannel socket = (SocketChannel) key.channel();
+          ChannelStream stream = (ChannelStream) key.attachment();
+          if(key.isConnectable()) {
+            while(socket.isConnectionPending()) {
+              socket.finishConnect();
+            }
             fireEvent(createEvent(ChannelEvent.Type.CONNECTION_STABLISHED, Attribute.mapBuilder()
-                .add(ChannelAttribute.CHANNEL, channel)
                 .add(ChannelAttribute.UPTIME, getUptime())
-                .add(ChannelAttribute.LOCAL_ADDRESS, channel.getLocalAddress())
-                .add(ChannelAttribute.REMOTE_ADDRESS, channel.getRemoteAddress())
+                .add(ChannelAttribute.LOCAL_ADDRESS, getLocalAddress())
+                .add(ChannelAttribute.REMOTE_ADDRESS, getRemoteAddress())
             ));
-            if(!writing.isEmpty() && dowrite.get()) {
-              channel.write(writing.peekFirst());
-            }
-            if(!config.isAutoWriteEnabled()) {
-              dowrite.set(false);
-            }
-            channel.start();
-            
-            while(server.isConnectionPending()) {
-              server.finishConnect();
-            }
           }
-          else if(key.isReadable() && doread.get()) {
+          else if(key.isReadable() && doread) {
             Pooled<ByteBuffer> buf = engine.getByteBufferPool().allocAwait();
-            factory.appendFunction(getWriteFunction(buf));
-            long read = server.read(buf.get());
-            readed.getAndAccumulate(read, Math::addExact);
+            stream.appendFunction(getWriteFunction(buf));
+            long read = socket.read(buf.get());
+            readed += read;
             fireEvent(createEvent(ChannelEvent.Type.CHANNEL_READING, Attribute.mapBuilder()
                 .add(ChannelAttribute.UPTIME, getUptime())
                 .add(ChannelAttribute.BYTES_READED, read)
                 .add(ChannelAttribute.INCOMING_BYTES_PER_SECOND, getIncommingBytesPerSecond())
             ));
             if(!config.isAutoReadEnabled()) {
-              doread.set(false);
+              doread = false;
             }
-            factory.run(buf);
+            buf.get().flip();
+            stream.run(buf);
           }
-          else if(key.isWritable() && dowrite.get() && !writing.isEmpty()) {
+          else if(key.isWritable() && dowrite && !writing.isEmpty()) {
             Pooled<ByteBuffer> buf = writing.peekFirst();
             int rem = buf.get().remaining();
-            long write = server.write(buf.get());
+            long write = socket.write(buf.get());
             if(write >= rem) {
               writing.pollFirst().release();
             }
-            writed.getAndAccumulate(write, Math::addExact);
+            writed += write;
             fireEvent(createEvent(ChannelEvent.Type.CHANNEL_WRITING, Attribute.mapBuilder()
                 .add(ChannelAttribute.UPTIME, getUptime())
                 .add(ChannelAttribute.BYTES_WRITED, write)
                 .add(ChannelAttribute.OUTGOING_BYTES_PER_SECOND, getOutgoingBytesPerSecond())
             ));
+            if(!config.isAutoWriteEnabled()) {
+              dowrite = false;
+            }
+            if(closeOnWrite) {
+              running = false;
+            }
           }
         }
       }//while
-      server.close();
+      selector.close();
       fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
       ));
@@ -264,7 +283,7 @@ public class ServerChannel implements Channel, Runnable {
    */
   @Override
   public Channel closeOnWrite() {
-    closeOnWrite.set(true);
+    closeOnWrite = true;
     fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
         .add(ChannelAttribute.UPTIME, getUptime())
     ));
@@ -274,7 +293,7 @@ public class ServerChannel implements Channel, Runnable {
   
   @Override
   public boolean isRunning() {
-    return running.get();
+    return running;
   }
 
 
@@ -292,13 +311,13 @@ public class ServerChannel implements Channel, Runnable {
 
   @Override
   public InetSocketAddress getLocalAddress() throws IOException {
-    return (InetSocketAddress) server.getLocalAddress();
+    throw new UnsupportedOperationException();
   }
 
 
   @Override
   public InetSocketAddress getRemoteAddress() throws IOException {
-    return (InetSocketAddress) server.getRemoteAddress();
+    throw new UnsupportedOperationException();
   }
 
 
@@ -319,7 +338,7 @@ public class ServerChannel implements Channel, Runnable {
 
   @Override
   public void close() throws Exception {
-    running.set(false);
+    running = false;
     fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
         .add(ChannelAttribute.UPTIME, getUptime())
     ));
@@ -328,18 +347,19 @@ public class ServerChannel implements Channel, Runnable {
 
   @Override
   public Channel read() {
-    this.doread.set(true);
+    this.doread = true;
     return this;
   }
 
 
   @Override
   public Channel write() {
-    this.dowrite.set(true);
+    this.dowrite = true;
     return this;
   }
   
   
+  @Override
   public Channel write(Pooled<ByteBuffer> buf) {
     if(buf != null) {
       writing.addLast(buf);
