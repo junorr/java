@@ -272,7 +272,7 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
     inioctx.set(false);
     input.addLast(StreamPartial.activeStream(opt));
     channel.getChannelEngine().execute(channel, this);
-    fireEvent(createEvent(ChannelStreamEvent.Type.SWITCH_TO_SYSTEM_CONTEXT));
+    fireEvent(createEvent(ChannelStreamEvent.Type.SWITCH_TO_COMPUTE_CONTEXT));
   }
   
   

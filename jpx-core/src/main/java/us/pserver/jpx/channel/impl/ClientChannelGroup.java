@@ -27,6 +27,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Iterator;
@@ -47,6 +48,7 @@ import us.pserver.jpx.channel.stream.StreamPartial;
 import us.pserver.jpx.event.Attribute;
 import us.pserver.jpx.event.Attribute.AttributeMapBuilder;
 import us.pserver.jpx.event.EventListener;
+import us.pserver.jpx.log.Logger;
 import us.pserver.jpx.pool.Pooled;
 
 /**
@@ -135,10 +137,10 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
     if(success) {
       count++;
       Objects.requireNonNull(channel).configureBlocking(false);
+      Objects.requireNonNull(stream).appendFunction(getWriteFunction());
       channel.register(selector, SelectionKey.OP_CONNECT 
           | SelectionKey.OP_READ 
-          | SelectionKey.OP_WRITE, 
-          Objects.requireNonNull(stream)
+          | SelectionKey.OP_WRITE, stream
       );
     }
     return success;
@@ -210,9 +212,10 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
           }
           else if(key.isReadable() && doread) {
             Pooled<ByteBuffer> buf = engine.getByteBufferPool().allocAwait();
-            stream.appendFunction(getWriteFunction(buf));
             long read = socket.read(buf.get());
             readed += read;
+            buf.get().flip();
+            Logger.debug("%s( %s ): %s", ChannelEvent.Type.CHANNEL_READING, buf.get(), StandardCharsets.UTF_8.decode(buf.get()));
             fireEvent(createEvent(ChannelEvent.Type.CHANNEL_READING, Attribute.mapBuilder()
                 .add(ChannelAttribute.UPTIME, getUptime())
                 .add(ChannelAttribute.BYTES_READED, read)
@@ -260,16 +263,14 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   }
   
   
-  public StreamFunction<Pooled<ByteBuffer>,Void> getWriteFunction(Pooled<ByteBuffer> readbuf) {
+  public StreamFunction<Pooled<ByteBuffer>,Void> getWriteFunction() {
     return new StreamFunction<Pooled<ByteBuffer>,Void>() {
       @Override
       public StreamPartial<Void> apply(ChannelStream cs, Optional<Pooled<ByteBuffer>> in) throws Exception {
         StreamPartial broken = StreamPartial.brokenStream();
         if(in.isPresent()) {
           writing.addLast(in.get());
-        }
-        if(readbuf != null) {
-          readbuf.release();
+          in.get().release();
         }
         return broken;
       }

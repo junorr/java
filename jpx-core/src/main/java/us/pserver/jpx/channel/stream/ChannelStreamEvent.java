@@ -36,7 +36,7 @@ public class ChannelStreamEvent extends AbstractEvent {
 
   public static enum Type implements Event.Type {
     SWITCH_TO_IO_CONTEXT,
-    SWITCH_TO_SYSTEM_CONTEXT,
+    SWITCH_TO_COMPUTE_CONTEXT,
     STREAM_FUNCTION_EXECUTED,
     STREAM_FUNCTION_APPENDED,
     STREAM_FUNCTION_REMOVED,

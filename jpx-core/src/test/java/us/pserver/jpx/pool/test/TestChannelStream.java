@@ -35,6 +35,7 @@ import us.pserver.jpx.channel.impl.DefaultChannelStream;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.log.Log;
 import us.pserver.jpx.log.Logger;
+import us.pserver.jpx.pool.Pooled;
 
 /**
  *
@@ -61,13 +62,21 @@ public class TestChannelStream {
         Logger.info("%s", e.toString());
         //Arrays.asList(ss).stream().skip(1).forEach(o -> System.out.printf("    - %s%n%n", o));
       });
+      Pooled<ByteBuffer> pbuf = engine.getByteBufferPool().allocAwait();
       ByteBuffer buf = StandardCharsets.UTF_8.encode("Hello World!");
-      StreamFunction<ByteBuffer,String> f1 = (c,o) -> {
+      pbuf.get().put(buf);
+      pbuf.get().flip();
+      StreamFunction<Pooled<ByteBuffer>,String> f1 = (c,o) -> {
         if(!c.isInIOContext()) {
           c.switchToIOContext(o);
           return StreamPartial.brokenStream();
         }
-        return StreamPartial.activeStream(StandardCharsets.UTF_8.decode(o.get()).toString());
+        try {
+          return StreamPartial.activeStream(StandardCharsets.UTF_8.decode(o.get().get()).toString());
+        }
+        finally {
+          o.get().release();
+        }
       };
       stream.appendFunction(f1);
       StreamFunction<String,Integer>  f2 = (c,o) -> {
@@ -99,7 +108,7 @@ public class TestChannelStream {
       };
       stream.appendFunction(f4);
       //stream.run(buf);
-      stream.runSync(buf);
+      stream.runSync(pbuf);
       System.out.println("-- runSync exited --");
       //Sleeper.of(1000).sleep();
     } catch(Throwable t) {

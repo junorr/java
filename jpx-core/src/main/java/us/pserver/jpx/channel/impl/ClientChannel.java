@@ -50,11 +50,21 @@ public class ClientChannel implements Channel, Runnable {
   private final ClientChannelGroup group;
   
   
-  public ClientChannel(Selector select, ChannelConfiguration cfg, ChannelEngine eng, SocketChannel sock, ChannelStream stream) throws IOException {
+  public ClientChannel(Selector select, ChannelConfiguration cfg, ChannelEngine eng, SocketChannel sock) throws IOException {
     this.socket = Objects.requireNonNull(sock);
-    this.stream = Objects.requireNonNull(stream);
     this.group = new ClientChannelGroup(select, cfg, eng, 1);
+    this.stream = this.createStream();
     group.add(socket, stream);
+  }
+  
+  
+  public ChannelStream getChannelStream() {
+    return stream;
+  }
+  
+  
+  private ChannelStream createStream() {
+    return new DefaultChannelStream(this);
   }
   
   
