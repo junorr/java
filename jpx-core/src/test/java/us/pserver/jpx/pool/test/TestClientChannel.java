@@ -55,8 +55,8 @@ public class TestClientChannel {
   public void connectToGoogle() {
     try {
       SocketChannel socket = SocketChannel.open();
-      //socket.connect(new InetSocketAddress("www.google.com", 80));
-      socket.connect(new InetSocketAddress("terra.com.br", 80));
+      socket.connect(new InetSocketAddress("www.google.com", 80));
+      //socket.connect(new InetSocketAddress("terra.com.br", 80));
       //socket.connect(new InetSocketAddress("br-linux.org", 80));
       Selector selector = Selector.open();
       ClientChannel channel = new ClientChannel(selector, config, engine, socket);

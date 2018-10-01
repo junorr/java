@@ -203,64 +203,9 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   public void run() {
     try {
       while(running.get()) {
-        if(selector.select() <= 0) {
-          continue;
-        }
-        Iterator<SelectionKey> it = selector.selectedKeys().iterator();
-        while(it.hasNext()) {
-          SelectionKey key = it.next();
-          it.remove();
-          SocketChannel socket = (SocketChannel) key.channel();
-          ChannelStream stream = (ChannelStream) key.attachment();
-          if(key.isConnectable()) {
-            while(socket.isConnectionPending()) {
-              socket.finishConnect();
-            }
-            fireEvent(createEvent(ChannelEvent.Type.CONNECTION_STABLISHED, Attribute.mapBuilder()
-                .add(ChannelAttribute.UPTIME, getUptime())
-                .add(ChannelAttribute.LOCAL_ADDRESS, getLocalAddress())
-                .add(ChannelAttribute.REMOTE_ADDRESS, getRemoteAddress())
-            ));
-          }
-          else if(key.isReadable() && doread) {
-            Pooled<ByteBuffer> buf = engine.getByteBufferPool().allocAwait();
-            long read = socket.read(buf.get());
-            if(read > 0) {
-              readed += read;
-              fireEvent(createEvent(ChannelEvent.Type.CHANNEL_READING, Attribute.mapBuilder()
-                  .add(ChannelAttribute.UPTIME, getUptime())
-                  .add(ChannelAttribute.BYTES_READED, read)
-                  .add(ChannelAttribute.TOTAL_BYTES_READED, readed)
-                  .add(ChannelAttribute.INCOMING_BYTES_PER_SECOND, getIncommingBytesPerSecond())
-              ));
-              if(!config.isAutoReadEnabled()) {
-                doread = false;
-              }
-              buf.get().flip();
-              stream.clone().run(buf);
-            }
-          }
-          else if(key.isWritable() && dowrite && !writing.isEmpty()) {
-            Pooled<ByteBuffer> buf = writing.peekFirst();
-            int rem = buf.get().remaining();
-            long write = socket.write(buf.get());
-            if(write >= rem) {
-              writing.pollFirst().release();
-            }
-            writed += write;
-            fireEvent(createEvent(ChannelEvent.Type.CHANNEL_WRITING, Attribute.mapBuilder()
-                .add(ChannelAttribute.UPTIME, getUptime())
-                .add(ChannelAttribute.BYTES_WRITED, write)
-                .add(ChannelAttribute.TOTAL_BYTES_WRITED, writed)
-                .add(ChannelAttribute.OUTGOING_BYTES_PER_SECOND, getOutgoingBytesPerSecond())
-            ));
-            if(!config.isAutoWriteEnabled()) {
-              dowrite = false;
-            }
-            if(closeOnWrite) {
-              running.set(false);
-            }
-          }
+        Optional<Iterator<SelectionKey>> opt = select();
+        if(opt.isPresent()) {
+          iterate(opt.get());
         }
       }//while
       doClose();
@@ -273,6 +218,93 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
           .add(ChannelAttribute.UPTIME, getUptime())
           .add(ChannelAttribute.EXCEPTION, e)
       ));
+    }
+  }
+  
+  
+  private Optional<Iterator<SelectionKey>> select() throws IOException {
+    return selector.select(100) > 0
+        ? Optional.of(selector.selectedKeys().iterator())
+        : Optional.empty();
+  }
+  
+  
+  private void iterate(Iterator<SelectionKey> it) throws IOException {
+    while(it.hasNext()) {
+      SelectionKey key = it.next();
+      it.remove();
+      selectKey(key);
+    }
+  }
+  
+  
+  private void selectKey(SelectionKey key) throws IOException {
+    SocketChannel socket = (SocketChannel) key.channel();
+    ChannelStream stream = (ChannelStream) key.attachment();
+    if(key.isConnectable()) {
+      connecting(socket);
+    }
+    else if(key.isReadable() && doread) {
+      reading(socket, stream);
+    }
+    else if(key.isWritable() && dowrite && !writing.isEmpty()) {
+      writing(socket);
+    }
+  }
+  
+  
+  private void connecting(SocketChannel socket) throws IOException {
+    while(socket.isConnectionPending()) {
+      socket.finishConnect();
+    }
+    fireEvent(createEvent(ChannelEvent.Type.CONNECTION_STABLISHED, Attribute.mapBuilder()
+        .add(ChannelAttribute.UPTIME, getUptime())
+        .add(ChannelAttribute.LOCAL_ADDRESS, getLocalAddress())
+        .add(ChannelAttribute.REMOTE_ADDRESS, getRemoteAddress())
+    ));
+  }
+  
+  
+  private void reading(SocketChannel socket, ChannelStream stream) throws IOException {
+    Pooled<ByteBuffer> buf = engine.getByteBufferPool().allocAwait();
+    long read = socket.read(buf.get());
+    Logger.debug("READ = %d", read);
+    if(read > 0) {
+      readed += read;
+      fireEvent(createEvent(ChannelEvent.Type.CHANNEL_READING, Attribute.mapBuilder()
+          .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.BYTES_READED, read)
+          .add(ChannelAttribute.TOTAL_BYTES_READED, readed)
+          .add(ChannelAttribute.INCOMING_BYTES_PER_SECOND, getIncommingBytesPerSecond())
+      ));
+      if(!config.isAutoReadEnabled()) {
+        doread = false;
+      }
+      buf.get().flip();
+      stream.clone().run(buf);
+    }
+  }
+  
+  
+  private void writing(SocketChannel socket) throws IOException {
+    Pooled<ByteBuffer> buf = writing.peekFirst();
+    int rem = buf.get().remaining();
+    long write = socket.write(buf.get());
+    if(write >= rem) {
+      writing.pollFirst().release();
+    }
+    writed += write;
+    fireEvent(createEvent(ChannelEvent.Type.CHANNEL_WRITING, Attribute.mapBuilder()
+        .add(ChannelAttribute.UPTIME, getUptime())
+        .add(ChannelAttribute.BYTES_WRITED, write)
+        .add(ChannelAttribute.TOTAL_BYTES_WRITED, writed)
+        .add(ChannelAttribute.OUTGOING_BYTES_PER_SECOND, getOutgoingBytesPerSecond())
+    ));
+    if(!config.isAutoWriteEnabled()) {
+      dowrite = false;
+    }
+    if(closeOnWrite) {
+      running.set(false);
     }
   }
   
