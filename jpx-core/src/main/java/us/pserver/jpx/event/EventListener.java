@@ -21,6 +21,7 @@
 
 package us.pserver.jpx.event;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -43,6 +44,18 @@ public interface EventListener<T, E extends Event> extends BiConsumer<T,E> {
         return true;
       }
     });
+  }
+  
+  
+  public static <U,F extends Event> EventListener<U,F> create(BiConsumer<U,F> cs, Event.Type ... interests) {
+    return new EventListener<U,F>() {
+      public void accept(U u, F f) {
+        cs.accept(u, f);
+      }
+      public Collection<Event.Type> getInterests() {
+        return Arrays.asList(interests);
+      }
+    };
   }
   
 }

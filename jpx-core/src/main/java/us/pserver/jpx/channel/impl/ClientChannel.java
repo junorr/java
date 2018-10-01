@@ -153,6 +153,12 @@ public class ClientChannel implements Channel, Runnable {
   public void close() throws Exception {
     group.close();
   }
+  
+  
+  @Override
+  public void closeAwait() throws Exception {
+    group.closeAwait();
+  }
 
 
   @Override

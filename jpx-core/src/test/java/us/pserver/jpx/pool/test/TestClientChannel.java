@@ -55,7 +55,9 @@ public class TestClientChannel {
   public void connectToGoogle() {
     try {
       SocketChannel socket = SocketChannel.open();
-      socket.connect(new InetSocketAddress("www.google.com", 80));
+      //socket.connect(new InetSocketAddress("www.google.com", 80));
+      socket.connect(new InetSocketAddress("terra.com.br", 80));
+      //socket.connect(new InetSocketAddress("br-linux.org", 80));
       Selector selector = Selector.open();
       ClientChannel channel = new ClientChannel(selector, config, engine, socket);
       Pooled<ByteBuffer> buf = engine.getByteBufferPool().alloc();
@@ -68,14 +70,17 @@ public class TestClientChannel {
       StreamFunction<Pooled<ByteBuffer>,Void> fn = (s,o) -> {
         Logger.info("o.isPresent(): %s", o.isPresent());
         if(o.isPresent()) {
-          System.out.println(StandardCharsets.UTF_8.decode(o.get().get()).toString());
+          System.err.println(StandardCharsets.UTF_8.decode(o.get().get()).toString());
         }
         return StreamPartial.brokenStream();
       };
+      Logger.info("function: %s", fn);
       channel.getChannelStream().appendFunction(fn);
       channel.write(buf);
       channel.start();
       Sleeper.of(10000).sleep();
+      channel.close();
+      channel.close();
     }
     catch(Exception e) {
       Logger.error(e);

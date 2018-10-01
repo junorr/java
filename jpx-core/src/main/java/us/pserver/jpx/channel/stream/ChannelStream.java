@@ -34,6 +34,8 @@ import us.pserver.jpx.pool.Pooled;
  */
 public interface ChannelStream extends Cloneable {
   
+  public ChannelStream clone();
+  
   public Channel getChannel();
   
   public ChannelStream addListener(EventListener<ChannelStream,ChannelStreamEvent> lst);

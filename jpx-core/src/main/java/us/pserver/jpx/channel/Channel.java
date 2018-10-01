@@ -77,4 +77,6 @@ public interface Channel extends AutoCloseable {
   
   public boolean removeListener(EventListener<Channel,ChannelEvent> lst);
   
+  public void closeAwait() throws Exception;
+  
 }

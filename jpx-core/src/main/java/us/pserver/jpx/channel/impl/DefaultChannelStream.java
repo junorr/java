@@ -209,7 +209,6 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
         );
       }
       if(!partial.isActive()) return false;
-      Logger.debug("%s", partial);
       input.addLast(partial);
     }
     return apply;
@@ -220,8 +219,8 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
     Logger.debug("Execution context=%s", (isInIOContext() ? "IOContext" : "SYSContext"));
     while(applyCurrent());
   }
-
-
+  
+  
   @Override
   public void run() {
     resume();

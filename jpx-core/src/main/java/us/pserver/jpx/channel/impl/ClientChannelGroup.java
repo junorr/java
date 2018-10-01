@@ -30,12 +30,18 @@ import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.channel.ChannelAttribute;
 import us.pserver.jpx.channel.ChannelConfiguration;
@@ -66,6 +72,8 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   
   private final LinkedBlockingDeque<Pooled<ByteBuffer>> writing;
   
+  private final ConcurrentHashMap<SocketChannel,ChannelStream> sockets;
+  
   private final Selector selector;
   
   private final Instant start;
@@ -74,7 +82,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   
   private volatile int count;
   
-  private volatile boolean running;
+  private final AtomicBoolean running;
   
   private volatile boolean closeOnWrite;
   
@@ -97,10 +105,11 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
     this.maxSize = maxSize;
     this.listeners = new CopyOnWriteArrayList<>();
     this.writing = new LinkedBlockingDeque<>();
+    this.sockets = new ConcurrentHashMap();
     this.start = Instant.now();
     this.doread = config.isAutoReadEnabled();
     this.dowrite = config.isAutoWriteEnabled();
-    this.running = false;
+    this.running = new AtomicBoolean(false);
     this.closeOnWrite = false;
     this.readed = 0;
     this.writed = 0;
@@ -114,7 +123,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   
   
   @Override
-  public double getIncommingBytesPerSecond() {
+  public double getOutgoingBytesPerSecond() {
     Duration dur = getUptime();
     if(Duration.ZERO == dur) return 0;
     double sec = dur.toMillis() / 1000.0;
@@ -123,7 +132,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   
   
   @Override
-  public double getOutgoingBytesPerSecond() {
+  public double getIncommingBytesPerSecond() {
     Duration dur = getUptime();
     if(Duration.ZERO == dur) return 0;
     double sec = dur.toMillis() / 1000.0;
@@ -137,10 +146,11 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
     if(success) {
       count++;
       Objects.requireNonNull(channel).configureBlocking(false);
-      Objects.requireNonNull(stream).appendFunction(getWriteFunction());
+      sockets.put(channel, stream);
       channel.register(selector, SelectionKey.OP_CONNECT 
           | SelectionKey.OP_READ 
-          | SelectionKey.OP_WRITE, stream
+          | SelectionKey.OP_WRITE, 
+          Objects.requireNonNull(stream)
       );
     }
     return success;
@@ -162,7 +172,9 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   @Override
   public Channel start() {
     try {
-      running = true;
+      running.set(true);
+      StreamFunction wf = getWriteFunction();
+      sockets.values().forEach(s -> s.appendFunction(wf));
       engine.executeIO(this, this);
     }
     catch(Exception e) {
@@ -190,7 +202,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   @Override
   public void run() {
     try {
-      while(running) {
+      while(running.get()) {
         if(selector.select() <= 0) {
           continue;
         }
@@ -213,19 +225,20 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
           else if(key.isReadable() && doread) {
             Pooled<ByteBuffer> buf = engine.getByteBufferPool().allocAwait();
             long read = socket.read(buf.get());
-            readed += read;
-            buf.get().flip();
-            Logger.debug("%s( %s ): %s", ChannelEvent.Type.CHANNEL_READING, buf.get(), StandardCharsets.UTF_8.decode(buf.get()));
-            fireEvent(createEvent(ChannelEvent.Type.CHANNEL_READING, Attribute.mapBuilder()
-                .add(ChannelAttribute.UPTIME, getUptime())
-                .add(ChannelAttribute.BYTES_READED, read)
-                .add(ChannelAttribute.INCOMING_BYTES_PER_SECOND, getIncommingBytesPerSecond())
-            ));
-            if(!config.isAutoReadEnabled()) {
-              doread = false;
+            if(read > 0) {
+              readed += read;
+              fireEvent(createEvent(ChannelEvent.Type.CHANNEL_READING, Attribute.mapBuilder()
+                  .add(ChannelAttribute.UPTIME, getUptime())
+                  .add(ChannelAttribute.BYTES_READED, read)
+                  .add(ChannelAttribute.TOTAL_BYTES_READED, readed)
+                  .add(ChannelAttribute.INCOMING_BYTES_PER_SECOND, getIncommingBytesPerSecond())
+              ));
+              if(!config.isAutoReadEnabled()) {
+                doread = false;
+              }
+              buf.get().flip();
+              stream.clone().run(buf);
             }
-            buf.get().flip();
-            stream.run(buf);
           }
           else if(key.isWritable() && dowrite && !writing.isEmpty()) {
             Pooled<ByteBuffer> buf = writing.peekFirst();
@@ -238,18 +251,19 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
             fireEvent(createEvent(ChannelEvent.Type.CHANNEL_WRITING, Attribute.mapBuilder()
                 .add(ChannelAttribute.UPTIME, getUptime())
                 .add(ChannelAttribute.BYTES_WRITED, write)
+                .add(ChannelAttribute.TOTAL_BYTES_WRITED, writed)
                 .add(ChannelAttribute.OUTGOING_BYTES_PER_SECOND, getOutgoingBytesPerSecond())
             ));
             if(!config.isAutoWriteEnabled()) {
               dowrite = false;
             }
             if(closeOnWrite) {
-              running = false;
+              running.set(false);
             }
           }
         }
       }//while
-      selector.close();
+      doClose();
       fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
       ));
@@ -294,7 +308,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   
   @Override
   public boolean isRunning() {
-    return running;
+    return running.get();
   }
 
 
@@ -335,14 +349,67 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   public boolean removeListener(EventListener<Channel, ChannelEvent> lst) {
     return listeners.remove(lst);
   }
+  
+  
+  private void awaitStop() throws Exception {
+    Lock lock = new ReentrantLock();
+    Condition cnd = lock.newCondition();
+    addListener(EventListener.create((c,e) -> {
+      lock.lock();
+      try {
+        cnd.signalAll();
+      }
+      finally {
+        lock.unlock();
+      }
+    }, ChannelEvent.Type.CONNECTION_CLOSED));
+    lock.lock();
+    try {
+      running.set(false);
+      selector.wakeup();
+      cnd.await();
+    }
+    finally {
+      lock.unlock();
+    }
+  }
+  
+  
+  public void closeAwait() throws Exception {
+    if(running.get()) {
+      fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
+          .add(ChannelAttribute.UPTIME, getUptime())
+      ));
+      awaitStop();
+    }
+    else {
+      doClose();
+    }
+  }
 
 
   @Override
   public void close() throws Exception {
-    running = false;
-    fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
-        .add(ChannelAttribute.UPTIME, getUptime())
-    ));
+    if(running.get()) {
+      running.set(false);
+      fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
+          .add(ChannelAttribute.UPTIME, getUptime())
+      ));
+    }
+    else {
+      doClose();
+    }
+  }
+  
+  
+  private void doClose() throws IOException {
+    Logger.info("DO CLOSE!!");
+    selector.close();
+    Enumeration<SocketChannel> en = sockets.keys();
+    while(en.hasMoreElements()) {
+      en.nextElement().close();
+    }
+    sockets.clear();
   }
 
 
