@@ -27,7 +27,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Enumeration;
@@ -82,7 +81,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   
   private volatile int count;
   
-  private final AtomicBoolean running;
+  private volatile boolean running;
   
   private volatile boolean closeOnWrite;
   
@@ -109,7 +108,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
     this.start = Instant.now();
     this.doread = config.isAutoReadEnabled();
     this.dowrite = config.isAutoWriteEnabled();
-    this.running = new AtomicBoolean(false);
+    this.running = false;
     this.closeOnWrite = false;
     this.readed = 0;
     this.writed = 0;
@@ -172,7 +171,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   @Override
   public Channel start() {
     try {
-      running.set(true);
+      running = true;
       StreamFunction wf = getWriteFunction();
       sockets.values().forEach(s -> s.appendFunction(wf));
       engine.executeIO(this, this);
@@ -202,7 +201,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   @Override
   public void run() {
     try {
-      while(running.get()) {
+      while(running) {
         Optional<Iterator<SelectionKey>> opt = select();
         if(opt.isPresent()) {
           iterate(opt.get());
@@ -268,8 +267,8 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   private void reading(SocketChannel socket, ChannelStream stream) throws IOException {
     Pooled<ByteBuffer> buf = engine.getByteBufferPool().allocAwait();
     long read = socket.read(buf.get());
-    Logger.debug("READ = %d", read);
     if(read > 0) {
+    Logger.debug("READ = %d", read);
       readed += read;
       fireEvent(createEvent(ChannelEvent.Type.CHANNEL_READING, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
@@ -282,6 +281,13 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
       }
       buf.get().flip();
       stream.clone().run(buf);
+    }
+    else if(read == -1) {
+      doread = false;
+      Logger.debug("READING FINISHED!");
+    }
+    else {
+      buf.release();
     }
   }
   
@@ -303,8 +309,11 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
     if(!config.isAutoWriteEnabled()) {
       dowrite = false;
     }
+    if(write > 0 && config.isAutoReadEnabled()) {
+      doread = true;
+    }
     if(closeOnWrite) {
-      running.set(false);
+      running = false;
     }
   }
   
@@ -340,7 +349,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   
   @Override
   public boolean isRunning() {
-    return running.get();
+    return running;
   }
 
 
@@ -397,7 +406,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
     }, ChannelEvent.Type.CONNECTION_CLOSED));
     lock.lock();
     try {
-      running.set(false);
+      running = false;
       selector.wakeup();
       cnd.await();
     }
@@ -408,7 +417,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
   
   
   public void closeAwait() throws Exception {
-    if(running.get()) {
+    if(running) {
       fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
       ));
@@ -422,8 +431,8 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
 
   @Override
   public void close() throws Exception {
-    if(running.get()) {
-      running.set(false);
+    if(running) {
+      running = false;
       fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
       ));
@@ -446,15 +455,15 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
 
 
   @Override
-  public Channel read() {
-    this.doread = true;
+  public Channel setReadingEnabled(boolean enabled) {
+    this.doread = enabled;
     return this;
   }
 
 
   @Override
-  public Channel write() {
-    this.dowrite = true;
+  public Channel setWritingEnabled(boolean enabled) {
+    this.dowrite = enabled;
     return this;
   }
   

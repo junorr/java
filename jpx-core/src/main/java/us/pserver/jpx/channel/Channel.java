@@ -45,17 +45,9 @@ public interface Channel extends AutoCloseable {
   
   public double getOutgoingBytesPerSecond();
   
-  /**
-   * Signal Channel readiness to read data.
-   * @return this Channel instance.
-   */
-  public Channel read();
+  public Channel setReadingEnabled(boolean enabled);
   
-  /**
-   * Signal Channel readiness to write data.
-   * @return this Channel instance.
-   */
-  public Channel write();
+  public Channel setWritingEnabled(boolean enabled);
   
   public Channel write(Pooled<ByteBuffer> buf);
   

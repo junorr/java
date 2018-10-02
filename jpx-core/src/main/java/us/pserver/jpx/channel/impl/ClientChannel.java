@@ -162,15 +162,15 @@ public class ClientChannel implements Channel, Runnable {
 
 
   @Override
-  public Channel read() {
-    group.read();
+  public Channel setReadingEnabled(boolean enabled) {
+    group.setReadingEnabled(enabled);
     return this;
   }
 
 
   @Override
-  public Channel write() {
-    group.write();
+  public Channel setWritingEnabled(boolean enabled) {
+    group.setWritingEnabled(enabled);
     return this;
   }
   

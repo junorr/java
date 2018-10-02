@@ -39,6 +39,7 @@ public class ChannelEvent extends AbstractEvent {
     CONNECTION_CLOSING,
     CONNECTION_CLOSED,
     CHANNEL_READING,
+    READING_FINISHED,
     CHANNEL_WRITING,
     EXCEPTION_THROWED
   }
