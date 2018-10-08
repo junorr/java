@@ -24,9 +24,12 @@ package us.pserver.jpx.channel.impl;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -149,6 +152,12 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
         .add(ChannelStreamAttribute.STREAM_FUNCTION, fn))
     );
     return stream.remove(fn);
+  }
+  
+  
+  @Override
+  public Set<StreamFunction> getFunctions() {
+    return Collections.unmodifiableSet(new HashSet<>(stream));
   }
 
 

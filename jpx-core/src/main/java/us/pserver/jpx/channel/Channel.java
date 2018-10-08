@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.time.Duration;
+import java.util.Set;
+import us.pserver.jpx.channel.stream.ChannelStream;
+import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.event.EventListener;
 import us.pserver.jpx.pool.Pooled;
 
@@ -35,7 +38,13 @@ import us.pserver.jpx.pool.Pooled;
  */
 public interface Channel extends AutoCloseable {
 
-  public Channel start();
+  public <I,O> Channel appendFunction(StreamFunction<I,O> fn);
+  
+  public <I,O> boolean removeFunction(StreamFunction<I,O> fn);
+  
+  public Set<StreamFunction> getFunctions();
+  
+  public Channel start() throws IOException;
   
   public boolean isRunning();
   

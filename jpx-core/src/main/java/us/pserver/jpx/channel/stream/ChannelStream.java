@@ -23,6 +23,7 @@ package us.pserver.jpx.channel.stream;
 
 import java.nio.ByteBuffer;
 import java.util.Optional;
+import java.util.Set;
 import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.event.EventListener;
 import us.pserver.jpx.pool.Pooled;
@@ -45,6 +46,8 @@ public interface ChannelStream extends Cloneable {
   public <I,O> ChannelStream appendFunction(StreamFunction<I,O> fn);
   
   public <I,O> boolean removeFunction(StreamFunction<I,O> fn);
+  
+  public Set<StreamFunction> getFunctions();
   
   public boolean isStreamFinished();
   

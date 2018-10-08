@@ -56,6 +56,7 @@ public class ServerChannel implements Channel, Runnable {
   
   private volatile boolean running;
   
+  
   public ServerChannel(ServerSocketChannel server, Selector selector, ChannelConfiguration config, ChannelEngine eng) {
     this.server = Objects.requireNonNull(server);
     this.selector = Objects.requireNonNull(selector);

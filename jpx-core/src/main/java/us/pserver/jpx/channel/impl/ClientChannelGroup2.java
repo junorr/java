@@ -26,29 +26,29 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.channel.ChannelAttribute;
 import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
 import us.pserver.jpx.channel.ChannelEvent;
 import us.pserver.jpx.channel.ChannelGroup;
-import us.pserver.jpx.channel.stream.ChannelStream;
+import us.pserver.jpx.channel.SelectableChannel;
 import us.pserver.jpx.channel.stream.StreamFunction;
-import us.pserver.jpx.channel.stream.StreamPartial;
 import us.pserver.jpx.event.Attribute;
 import us.pserver.jpx.event.Attribute.AttributeMapBuilder;
 import us.pserver.jpx.event.EventListener;
@@ -60,7 +60,7 @@ import us.pserver.jpx.pool.Pooled;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2018
  */
-public class ServerChannelGroup implements Channel, Runnable {
+public class ClientChannelGroup2 implements ChannelGroup, Runnable {
   
   private final ChannelConfiguration config;
   
@@ -68,9 +68,9 @@ public class ServerChannelGroup implements Channel, Runnable {
   
   private final List<EventListener<Channel,ChannelEvent>> listeners;
   
-  private final LinkedBlockingDeque<ClientChannelGroup2> groups;
+  private final CopyOnWriteArrayList<StreamFunction> functions;
   
-  private final ConcurrentHashMap<ServerSocketChannel,Supplier<ChannelStream>> sockets;
+  private final ConcurrentHashMap<SocketChannel,SelectableChannel> sockets;
   
   private final Selector selector;
   
@@ -81,7 +81,7 @@ public class ServerChannelGroup implements Channel, Runnable {
   private volatile boolean running;
   
   
-  public ServerChannelGroup(Selector select, ChannelConfiguration cfg, ChannelEngine eng, int maxSize) {
+  public ClientChannelGroup2(Selector select, ChannelConfiguration cfg, ChannelEngine eng, int maxSize) {
     this.selector = Objects.requireNonNull(select);
     this.config = Objects.requireNonNull(cfg);
     this.engine = Objects.requireNonNull(eng);
@@ -90,75 +90,99 @@ public class ServerChannelGroup implements Channel, Runnable {
     }
     this.maxSize = maxSize;
     this.listeners = new CopyOnWriteArrayList<>();
-    this.groups = new LinkedBlockingDeque<>();
     this.sockets = new ConcurrentHashMap();
+    this.functions = new CopyOnWriteArrayList<>();
     this.running = false;
   }
   
   
   @Override
   public Duration getUptime() {
-    return groups.stream()
-        .map(ChannelGroup::getUptime)
+    return sockets.values().stream()
+        .map(Channel::getUptime)
         .reduce(Duration.ZERO, (d,e) -> d.toMillis() > e.toMillis() ? d : e);
   }
   
   
   @Override
   public double getOutgoingBytesPerSecond() {
-    return groups.stream()
-        .mapToDouble(ChannelGroup::getOutgoingBytesPerSecond).sum();
+    return sockets.values().stream()
+        .mapToDouble(Channel::getOutgoingBytesPerSecond)
+        .sum();
   }
   
   
   @Override
   public double getIncommingBytesPerSecond() {
-    return groups.stream()
-        .mapToDouble(ChannelGroup::getIncommingBytesPerSecond)
-        .reduce(0.0, Double::sum);
+    return sockets.values().stream()
+        .mapToDouble(Channel::getIncommingBytesPerSecond)
+        .sum();
   }
   
   
-  public boolean add(ServerSocketChannel socket) throws IOException {
+  @Override
+  public <I,O> Channel appendFunction(StreamFunction<I,O> fn) {
+    if(fn != null) functions.add(fn);
+    return this;
+  }
+  
+  
+  @Override
+  public <I,O> boolean removeFunction(StreamFunction<I,O> fn) {
+    return functions.remove(fn);
+  }
+  
+  
+  @Override
+  public Set<StreamFunction> getFunctions() {
+    return Collections.unmodifiableSet(new HashSet<>(functions));
+  }
+  
+  
+  @Override
+  public boolean add(SocketChannel socket) throws IOException {
     Objects.requireNonNull(socket);
     boolean success = count <= maxSize;
     if(success) {
       count++;
+      SelectableChannel channel = new ClientChannel2(socket, selector, config, engine);
+      if(running) {
+        functions.forEach(channel::appendFunction);
+        listeners.forEach(channel::addListener);
+      }
       socket.configureBlocking(false);
-      sockets.put(socket, streamFactory);
-      socket.register(
-          selector, 
-          SelectionKey.OP_ACCEPT, 
-          Objects.requireNonNull(streamFactory)
+      sockets.put(socket, channel);
+      socket.register(selector, SelectionKey.OP_CONNECT 
+          | SelectionKey.OP_READ 
+          | SelectionKey.OP_WRITE, channel
       );
     }
     return success;
   }
   
   
+  @Override
   public int getGroupSize() {
     return count;
   }
 
 
+  @Override
   public int getMaxGroupSize() {
     return maxSize;
   }
   
   
   @Override
+  public boolean isFull() {
+    return getGroupSize() >= getMaxGroupSize();
+  }
+  
+  
+  @Override
   public Channel start() {
-    try {
-      running = true;
-      engine.executeIO(this, this);
-    }
-    catch(Exception e) {
-      fireEvent(createEvent(ChannelEvent.Type.EXCEPTION_THROWED, Attribute.mapBuilder()
-          .add(ChannelAttribute.UPTIME, getUptime())
-          .add(ChannelAttribute.CHANNEL, this)
-          .add(ChannelAttribute.EXCEPTION, e)
-      ));
-    }
+    running = true;
+    engine.executeIO(this, this);
     return this;
   }
   
@@ -178,10 +202,15 @@ public class ServerChannelGroup implements Channel, Runnable {
   @Override
   public void run() {
     try {
+      functions.forEach(f -> sockets.values().forEach(c -> c.appendFunction(f)));
+      listeners.forEach(l -> sockets.values().forEach(c -> c.addListener(l)));
       while(running) {
-        Optional<Iterator<SelectionKey>> opt = select();
+        Optional<Iterator<SelectionKey>> opt = selectKeys();
         if(opt.isPresent()) {
           iterate(opt.get());
+        }
+        else if(selector.isOpen() && selector.keys().isEmpty()) {
+          this.close();
         }
       }//while
       doClose();
@@ -200,7 +229,7 @@ public class ServerChannelGroup implements Channel, Runnable {
   }
   
   
-  private Optional<Iterator<SelectionKey>> select() throws IOException {
+  private Optional<Iterator<SelectionKey>> selectKeys() throws IOException {
     return selector.select(100) > 0
         ? Optional.of(selector.selectedKeys().iterator())
         : Optional.empty();
@@ -211,71 +240,22 @@ public class ServerChannelGroup implements Channel, Runnable {
     while(it.hasNext()) {
       SelectionKey key = it.next();
       it.remove();
-      selectKey(key);
+      SelectableChannel channel = (SelectableChannel) key.attachment();
+      channel.select(key);
     }
   }
   
   
-  private ClientChannelGroup getChannelGroup() throws IOException {
-    ClientChannelGroup group = groups.isEmpty() ? null : groups.peekLast();
-    if(group == null || group.isFull()) {
-      group = new ClientChannelGroup(Selector.open(), config, engine, maxSize);
-      groups.addLast(group);
-    }
-    this.listeners.forEach(group::addListener);
-    return group;
-  }
-  
-  
-  private void selectKey(SelectionKey key) throws IOException {
-    ServerSocketChannel socket = (ServerSocketChannel) key.channel();
-    ChannelStream stream = sockets.get(socket).get().appendFunction(getWriteFunction());
-    if(key.isAcceptable()) {
-      accept(socket, getChannelGroup(), stream);
-    }
-  }
-  
-  
-  private void accept(ServerSocketChannel server, ClientChannelGroup group, ChannelStream stream) throws IOException {
-    SocketChannel socket = server.accept();
-    group.add(socket, stream);
-    fireEvent(createEvent(ChannelEvent.Type.CONNECTION_STABLISHED, Attribute.mapBuilder()
-        .add(ChannelAttribute.CHANNEL, group)
-        .add(ChannelAttribute.LOCAL_ADDRESS, server.getLocalAddress())
-        .add(ChannelAttribute.REMOTE_ADDRESS, socket.getRemoteAddress())
-        .add(ChannelAttribute.UPTIME, getUptime())
-    ));
-    if(!group.isRunning()) {
-      group.start();
-    }
-  }
-  
-  
-  public StreamFunction<Pooled<ByteBuffer>,Void> getWriteFunction() {
-    return new StreamFunction<Pooled<ByteBuffer>,Void>() {
-      @Override
-      public StreamPartial<Void> apply(ChannelStream cs, Optional<Pooled<ByteBuffer>> in) throws Exception {
-        StreamPartial broken = StreamPartial.brokenStream();
-        if(in.isPresent()) {
-          write(in.get());
-          in.get().release();
-        }
-        return broken;
-      }
-    };
-  }
-
-
   /**
    * Signal to close this Channel after perform the next write operation.
    * @return This ChannelStream instance.
    */
   @Override
   public Channel closeOnWrite() {
-    groups.forEach(ChannelGroup::closeOnWrite);
+    sockets.values().forEach(Channel::closeOnWrite);
     fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
-        .add(ChannelAttribute.CHANNEL, this)
         .add(ChannelAttribute.UPTIME, getUptime())
+        .add(ChannelAttribute.CHANNEL, this)
     ));
     return this;
   }
@@ -359,7 +339,7 @@ public class ServerChannelGroup implements Channel, Runnable {
       awaitStop();
     }
     else {
-      doCloseAwait();
+      doClose();
     }
   }
 
@@ -379,36 +359,27 @@ public class ServerChannelGroup implements Channel, Runnable {
   }
   
   
-  private void doClose() throws Exception {
+  private void doClose() throws IOException {
     Logger.info("DO CLOSE!!");
     selector.close();
-    Iterator<ClientChannelGroup> it = groups.iterator();
-    while(it.hasNext()) {
-      it.next().close();
+    Enumeration<SocketChannel> en = sockets.keys();
+    while(en.hasMoreElements()) {
+      en.nextElement().close();
     }
+    sockets.clear();
   }
-  
-  
-  private void doCloseAwait() throws Exception {
-    Logger.info("DO CLOSE AWAIT!!");
-    selector.close();
-    Iterator<ClientChannelGroup> it = groups.iterator();
-    while(it.hasNext()) {
-      it.next().closeAwait();
-    }
-  }
-  
-  
+
+
   @Override
   public Channel setReadingEnabled(boolean enabled) {
-    groups.forEach(g -> g.setReadingEnabled(enabled));
+    sockets.values().forEach(c -> c.setReadingEnabled(enabled));
     return this;
   }
 
 
   @Override
   public Channel setWritingEnabled(boolean enabled) {
-    groups.forEach(g -> g.setWritingEnabled(enabled));
+    sockets.values().forEach(c -> c.setWritingEnabled(enabled));
     return this;
   }
   
@@ -416,7 +387,13 @@ public class ServerChannelGroup implements Channel, Runnable {
   @Override
   public Channel write(Pooled<ByteBuffer> buf) {
     if(buf != null) {
-      groups.forEach(c -> c.write(buf));
+      sockets.values().forEach(c -> {
+        Pooled<ByteBuffer> pb = engine.getByteBufferPool().allocAwait();
+        pb.get().put(buf.get());
+        pb.get().flip();
+        c.write(pb);
+      });
+      buf.release();
     }
     return this;
   }
