@@ -101,6 +101,14 @@ public class DefaultChannelStream implements ChannelStream, Runnable {
   }
   
   
+  public ChannelStream clone(boolean inIOCtx) {
+    ChannelStream clone = new DefaultChannelStream(channel, inIOCtx);
+    stream.forEach(clone::appendFunction);
+    listeners.forEach(clone::addListener);
+    return clone;
+  }
+  
+  
   @Override
   public ChannelStream addListener(EventListener<ChannelStream,ChannelStreamEvent> lst) {
     if(lst != null) {

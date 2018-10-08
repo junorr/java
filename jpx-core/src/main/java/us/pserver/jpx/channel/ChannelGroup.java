@@ -36,6 +36,8 @@ public interface ChannelGroup extends Channel {
 
   public boolean add(SocketChannel channel, ChannelStream stream) throws IOException;
   
+  public boolean isFull();
+  
   public int getGroupSize();
   
   public int getMaxGroupSize();

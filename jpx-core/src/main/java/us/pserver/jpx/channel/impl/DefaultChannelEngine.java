@@ -28,6 +28,7 @@ import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.channel.ChannelAsync;
 import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
+import us.pserver.jpx.log.Logger;
 import us.pserver.jpx.pool.impl.ByteBufferPool;
 import us.pserver.tools.fn.ThrowableConsumer;
 import us.pserver.tools.fn.ThrowableFunction;
@@ -53,25 +54,15 @@ public class DefaultChannelEngine implements ChannelEngine {
   public DefaultChannelEngine(ChannelConfiguration cfg) {
     this.cfg = Objects.requireNonNull(cfg);
     pool = new ByteBufferPool(cfg.getBufferPoolConfiguration());
-    ioexec = Executors.newFixedThreadPool(cfg.getIOThreadPoolSize(), DefaultChannelEngine::newIOPoolThread);
-    sysexec = Executors.newFixedThreadPool(cfg.getComputeThreadPoolSize(), DefaultChannelEngine::newSystemPoolThread);
+    ioexec = Executors.newWorkStealingPool(cfg.getIOThreadPoolSize());
+    sysexec = Executors.newFixedThreadPool(cfg.getComputeThreadPoolSize(), DefaultChannelEngine::newComputePoolThread);
   }
   
   
-  private static Thread newIOPoolThread(Runnable r) {
-    return newNamedThread("IOPool", r);
-  }
-  
-  
-  private static Thread newSystemPoolThread(Runnable r) {
-    return newNamedThread("SystemPool", r);
-  }
-  
-  
-  private static Thread newNamedThread(String prefix, Runnable r) {
+  private static Thread newComputePoolThread(Runnable r) {
     Thread t = Executors.defaultThreadFactory().newThread(r);
     String[] split = t.getName().split("-");
-    t.setName(String.format("%s-thread-%s", prefix, split[3]));
+    t.setName(String.format("ComputingPool-thread-%s", split[3]));
     return t;
   }
   

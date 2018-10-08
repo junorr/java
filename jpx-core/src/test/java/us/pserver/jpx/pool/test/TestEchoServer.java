@@ -24,66 +24,57 @@ package us.pserver.jpx.pool.test;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
-import us.pserver.jpx.channel.impl.ClientChannel;
 import us.pserver.jpx.channel.impl.DefaultChannelConfiguration;
+import static us.pserver.jpx.channel.impl.DefaultChannelConfiguration.DEFAULT_IO_THREAD_POOL_SIZE;
+import static us.pserver.jpx.channel.impl.DefaultChannelConfiguration.DEFAULT_SYSTEM_THREAD_POOL_SIZE;
 import us.pserver.jpx.channel.impl.DefaultChannelEngine;
+import us.pserver.jpx.channel.impl.DefaultChannelStream;
+import us.pserver.jpx.channel.impl.DefaultSocketOptions;
+import us.pserver.jpx.channel.impl.ServerChannelGroup;
+import us.pserver.jpx.channel.stream.ChannelStream;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.channel.stream.StreamPartial;
 import us.pserver.jpx.log.Logger;
 import us.pserver.jpx.pool.Pooled;
+import us.pserver.jpx.pool.impl.BufferPoolConfiguration;
 import us.pserver.tools.misc.Sleeper;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 25/09/2018
+ * @version 0.0 - 07/10/2018
  */
-public class TestClientChannel {
-  
-  private final ChannelConfiguration config = new DefaultChannelConfiguration();
-  
-  private final ChannelEngine engine = new DefaultChannelEngine(config);
+public class TestEchoServer {
 
+  private final ChannelConfiguration config = new DefaultChannelConfiguration(
+      new BufferPoolConfiguration(), 
+      new DefaultSocketOptions(),
+      DEFAULT_IO_THREAD_POOL_SIZE, 
+      DEFAULT_SYSTEM_THREAD_POOL_SIZE, 
+      new InetSocketAddress("127.0.0.1", 20202),
+      true,
+      true
+  );
+
+  private final ChannelEngine engine = new DefaultChannelEngine(config);
+  
   @Test
-  public void clientConnect() {
+  public void echoServer() {
     try {
-      SocketChannel socket = SocketChannel.open();
-      //String host = "disec3.intranet.bb.com.br";
-      //String host = "www.google.com";
-      //String host = "dzone.com";
-      //String host = "www.terra.com.br";
-      String host = "127.0.0.1";
-      //int port = 80;
-      //int port = 40080;
-      int port = 20202;
-      socket.connect(new InetSocketAddress(host, port));
-      Selector selector = Selector.open();
-      ClientChannel channel = new ClientChannel(selector, config, engine, socket);
-      Pooled<ByteBuffer> buf = engine.getByteBufferPool().alloc();
-      StringBuilder sreq = new StringBuilder();
-      sreq.append("GET http://").append(host).append("/ HTTP/1.0\r\n")
-          .append("Host: ").append(host).append("\r\n")
-          .append("User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0\r\n")
-          .append("Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n")
-          .append("Accept-Language: en-US,en;q=0.5\r\n")
-          .append("Accept-Encoding: gzip, deflate, br\r\n")
-          .append("Referer: http://").append(host).append("\r\n")
-          //.append("Proxy-Authorization: Basic ZjYwMzY0Nzc6OTYzMjU4OTY=\r\n")
-          .append("Connection: keep-alive\r\n")
-          .append("Upgrade-Insecure-Requests: 0\r\n")
-          .append("\r\n\r\n");
-      ByteBuffer req = StandardCharsets.UTF_8.encode(sreq.toString());
-      buf.get().put(req);
-      buf.get().flip();
-      channel.addListener((c,e) -> {
+      ServerSocketChannel socket = ServerSocketChannel.open();
+      socket.bind(config.getSocketAddress());
+      ServerChannelGroup server = new ServerChannelGroup(Selector.open(), config, engine, 10);
+      ChannelStream stream = new DefaultChannelStream(server);
+      server.add(socket, stream::clone);
+      server.addListener((c,e) -> {
         Logger.info("%s", e);
       });
-      StreamFunction<Pooled<ByteBuffer>,Void> fn = (s,o) -> {
+      StreamFunction<Pooled<ByteBuffer>,Pooled<ByteBuffer>> fn = (s,o) -> {
         Logger.debug("IOCTX = %s, THREAD = %s", s.isInIOContext(), Thread.currentThread().getName());
         if(!s.isInIOContext()) {
           s.switchToIOContext(o);
@@ -91,19 +82,19 @@ public class TestClientChannel {
         }
         if(o.isPresent()) {
           System.err.println(StandardCharsets.UTF_8.decode(o.get().get()).toString());
+          o.get().get().flip();
+          return StreamPartial.activeStream(o);
         }
         return StreamPartial.brokenStream();
       };
-      channel.getChannelStream().appendFunction(fn);
-      channel.write(buf);
-      channel.start();
-      Sleeper.of(5000).sleep();
-      channel.closeAwait();
-      //channel.close();
+      stream.appendFunction(fn);
+      server.start();
+      new TestClientChannel().connectToGoogle();
+      Sleeper.of(20000).sleep();
+      server.closeAwait();
     }
     catch(Exception e) {
       Logger.error(e);
     }
   }
-  
 }
