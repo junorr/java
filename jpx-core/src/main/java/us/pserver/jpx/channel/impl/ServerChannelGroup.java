@@ -120,13 +120,13 @@ public class ServerChannelGroup implements Channel, Runnable {
   }
   
   
-  public boolean add(ServerSocketChannel channel, Supplier<ChannelStream> streamFactory) throws IOException {
+  public boolean add(ServerSocketChannel socket, Supplier<ChannelStream> streamFactory) throws IOException {
     boolean success = count <= maxSize;
     if(success) {
       count++;
-      Objects.requireNonNull(channel).configureBlocking(false);
-      sockets.put(channel, streamFactory);
-      channel.register(
+      Objects.requireNonNull(socket).configureBlocking(false);
+      sockets.put(socket, streamFactory);
+      socket.register(
           selector, 
           SelectionKey.OP_ACCEPT, 
           Objects.requireNonNull(streamFactory)
@@ -155,6 +155,7 @@ public class ServerChannelGroup implements Channel, Runnable {
     catch(Exception e) {
       fireEvent(createEvent(ChannelEvent.Type.EXCEPTION_THROWED, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
           .add(ChannelAttribute.EXCEPTION, e)
       ));
     }
@@ -186,11 +187,13 @@ public class ServerChannelGroup implements Channel, Runnable {
       doClose();
       fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
       ));
     }
     catch(Exception e) {
       fireEvent(createEvent(ChannelEvent.Type.EXCEPTION_THROWED, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
           .add(ChannelAttribute.EXCEPTION, e)
       ));
     }
@@ -271,6 +274,7 @@ public class ServerChannelGroup implements Channel, Runnable {
   public Channel closeOnWrite() {
     groups.forEach(ChannelGroup::closeOnWrite);
     fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
+        .add(ChannelAttribute.CHANNEL, this)
         .add(ChannelAttribute.UPTIME, getUptime())
     ));
     return this;
@@ -350,6 +354,7 @@ public class ServerChannelGroup implements Channel, Runnable {
     if(running) {
       fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
       ));
       awaitStop();
     }
@@ -365,6 +370,7 @@ public class ServerChannelGroup implements Channel, Runnable {
       running = false;
       fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
       ));
     }
     else {

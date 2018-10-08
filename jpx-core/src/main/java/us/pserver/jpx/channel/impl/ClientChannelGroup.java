@@ -184,6 +184,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
     }
     catch(Exception e) {
       fireEvent(createEvent(ChannelEvent.Type.EXCEPTION_THROWED, Attribute.mapBuilder()
+          .add(ChannelAttribute.CHANNEL, this)
           .add(ChannelAttribute.UPTIME, getUptime())
           .add(ChannelAttribute.EXCEPTION, e)
       ));
@@ -216,11 +217,13 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
       doClose();
       fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
       ));
     }
     catch(IOException e) {
       fireEvent(createEvent(ChannelEvent.Type.EXCEPTION_THROWED, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
           .add(ChannelAttribute.EXCEPTION, e)
       ));
     }
@@ -264,6 +267,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
     }
     fireEvent(createEvent(ChannelEvent.Type.CONNECTION_STABLISHED, Attribute.mapBuilder()
         .add(ChannelAttribute.UPTIME, getUptime())
+        .add(ChannelAttribute.CHANNEL, this)
         .add(ChannelAttribute.LOCAL_ADDRESS, getLocalAddress())
         .add(ChannelAttribute.REMOTE_ADDRESS, getRemoteAddress())
     ));
@@ -279,6 +283,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
       readed += read;
       fireEvent(createEvent(ChannelEvent.Type.CHANNEL_READING, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
           .add(ChannelAttribute.BYTES_READED, read)
           .add(ChannelAttribute.TOTAL_BYTES_READED, readed)
           .add(ChannelAttribute.INCOMING_BYTES_PER_SECOND, getIncommingBytesPerSecond())
@@ -309,6 +314,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
     writed += write;
     fireEvent(createEvent(ChannelEvent.Type.CHANNEL_WRITING, Attribute.mapBuilder()
         .add(ChannelAttribute.UPTIME, getUptime())
+        .add(ChannelAttribute.CHANNEL, this)
         .add(ChannelAttribute.BYTES_WRITED, write)
         .add(ChannelAttribute.TOTAL_BYTES_WRITED, writed)
         .add(ChannelAttribute.OUTGOING_BYTES_PER_SECOND, getOutgoingBytesPerSecond())
@@ -349,6 +355,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
     closeOnWrite = true;
     fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
         .add(ChannelAttribute.UPTIME, getUptime())
+        .add(ChannelAttribute.CHANNEL, this)
     ));
     return this;
   }
@@ -427,6 +434,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
     if(running) {
       fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
       ));
       awaitStop();
     }
@@ -442,6 +450,7 @@ public class ClientChannelGroup implements ChannelGroup, Runnable {
       running = false;
       fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
       ));
     }
     else {

@@ -89,7 +89,7 @@ public class TestEchoServer {
       };
       stream.appendFunction(fn);
       server.start();
-      new TestClientChannel().connectToGoogle();
+      new TestClientChannel().clientConnect();
       Sleeper.of(20000).sleep();
       server.closeAwait();
     }
