@@ -47,12 +47,12 @@ import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
 import us.pserver.jpx.channel.ChannelEvent;
 import us.pserver.jpx.channel.ChannelGroup;
+import us.pserver.jpx.channel.Selectable;
 import us.pserver.jpx.channel.SelectableChannel;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.event.Attribute;
 import us.pserver.jpx.event.Attribute.AttributeMapBuilder;
 import us.pserver.jpx.event.EventListener;
-import us.pserver.jpx.log.Logger;
 import us.pserver.jpx.pool.Pooled;
 
 /**
@@ -60,7 +60,7 @@ import us.pserver.jpx.pool.Pooled;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2018
  */
-public class ClientChannelGroup2 implements ChannelGroup, Runnable {
+public class ClientChannelGroup2 implements ChannelGroup, Selectable, Runnable {
   
   private final ChannelConfiguration config;
   
@@ -240,9 +240,15 @@ public class ClientChannelGroup2 implements ChannelGroup, Runnable {
     while(it.hasNext()) {
       SelectionKey key = it.next();
       it.remove();
-      SelectableChannel channel = (SelectableChannel) key.attachment();
-      channel.select(key);
+      select(key);
     }
+  }
+  
+  
+  @Override
+  public void select(SelectionKey key) throws IOException {
+    SelectableChannel channel = (SelectableChannel) key.attachment();
+    channel.select(key);
   }
   
   

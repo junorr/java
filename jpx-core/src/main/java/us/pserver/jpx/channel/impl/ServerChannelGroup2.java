@@ -48,6 +48,7 @@ import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
 import us.pserver.jpx.channel.ChannelEvent;
 import us.pserver.jpx.channel.ChannelGroup;
+import us.pserver.jpx.channel.Selectable;
 import us.pserver.jpx.channel.SelectableChannel;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.event.Attribute;
@@ -61,7 +62,7 @@ import us.pserver.jpx.pool.Pooled;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2018
  */
-public class ServerChannelGroup2 implements ChannelGroup, Runnable {
+public class ServerChannelGroup2 implements ChannelGroup, Selectable, Runnable {
   
   private final ChannelConfiguration config;
   
@@ -357,12 +358,12 @@ public class ServerChannelGroup2 implements ChannelGroup, Runnable {
   }
   
   
-  private void doClose() throws IOException {
+  private void doClose() throws Exception {
     Logger.info("DO CLOSE!!");
     selector.close();
-    Enumeration<SocketChannel> en = sockets.keys();
-    while(en.hasMoreElements()) {
-      en.nextElement().close();
+    Iterator<SelectableChannel> it = sockets.values().iterator();
+    while(it.hasNext()) {
+      it.next().close();
     }
     sockets.clear();
   }
