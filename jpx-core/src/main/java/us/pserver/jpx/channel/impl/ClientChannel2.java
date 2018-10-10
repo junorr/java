@@ -27,6 +27,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Optional;
 import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.channel.ChannelAttribute;
@@ -37,7 +38,6 @@ import us.pserver.jpx.channel.stream.ChannelStream;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.channel.stream.StreamPartial;
 import us.pserver.jpx.event.Attribute;
-import us.pserver.jpx.log.Logger;
 import us.pserver.jpx.pool.Pooled;
 
 /**
@@ -45,17 +45,17 @@ import us.pserver.jpx.pool.Pooled;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2018
  */
-public class ClientChannel extends AbstractChannel<SocketChannel> {
+public class ClientChannel2 extends AbstractChannel<SocketChannel> {
   
   private final SocketChannel socket;
   
   
-  public ClientChannel(SocketChannel socket, Selector select, ChannelConfiguration cfg, ChannelEngine eng) {
+  public ClientChannel2(SocketChannel socket, Selector select, ChannelConfiguration cfg, ChannelEngine eng) {
     super(socket, select, cfg, eng);
-    this.socket = socket;
+    this.socket = Objects.requireNonNull(socket);
   }
   
-
+  
   @Override
   public Channel start() throws IOException {
     try {
@@ -110,20 +110,18 @@ public class ClientChannel extends AbstractChannel<SocketChannel> {
   }
   
   
-  private void iterate(Iterator<SelectionKey> it) throws IOException {
+  public void iterate(Iterator<SelectionKey> it) throws IOException {
     while(it.hasNext()) {
       SelectionKey key = it.next();
       it.remove();
       switchKey(key);
     }
   }
-
-
+  
+  
   @Override
   public void switchKey(SelectionKey key) throws IOException {
     if(key.isConnectable()) {
-      Logger.debug("key.isConnectable(): %s", key.isConnectable());
-      Logger.debug("socket.isConnectionPending(): %s", socket.isConnectionPending());
       connecting();
     }
     else if(key.isReadable() && doread) {
@@ -200,12 +198,13 @@ public class ClientChannel extends AbstractChannel<SocketChannel> {
       doread = true;
     }
     if(closeOnWrite) {
-      close();
+      socket.keyFor(selector).cancel();
+      socket.close();
     }
   }
   
   
-  private StreamFunction<Pooled<ByteBuffer>,Void> getWriteFunction() {
+  public StreamFunction<Pooled<ByteBuffer>,Void> getWriteFunction() {
     return new StreamFunction<Pooled<ByteBuffer>,Void>() {
       @Override
       public StreamPartial<Void> apply(ChannelStream cs, Optional<Pooled<ByteBuffer>> in) throws Exception {

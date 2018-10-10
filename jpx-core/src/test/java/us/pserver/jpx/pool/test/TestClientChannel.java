@@ -54,14 +54,15 @@ public class TestClientChannel {
     try {
       SocketChannel socket = SocketChannel.open();
       //String host = "disec3.intranet.bb.com.br";
-      String host = "www.google.com";
-      //String host = "dzone.com";
+      //String host = "www.google.com";
+      String host = "dzone.com";
       //String host = "www.terra.com.br";
       //String host = "127.0.0.1";
-      int port = 80;
-      //int port = 40080;
+      //int port = 80;
+      int port = 40080;
       //int port = 20202;
-      socket.connect(new InetSocketAddress(host, port));
+      //socket.connect(new InetSocketAddress(host, port));
+      socket.connect(new InetSocketAddress("localhost", port));
       Selector selector = Selector.open();
       ClientChannel channel = new ClientChannel(socket, selector, config, engine);
       Pooled<ByteBuffer> buf = engine.getByteBufferPool().alloc();

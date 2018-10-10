@@ -168,47 +168,6 @@ public abstract class AbstractChannel<C extends SelectableChannel> implements Sw
   }
   
   
-  @Override
-  public void run() {
-    try {
-      while(running) {
-        Optional<Iterator<SelectionKey>> opt = selectKeys();
-        if(opt.isPresent()) {
-          iterate(opt.get());
-        }
-      }//while
-      doClose();
-      fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
-          .add(ChannelAttribute.UPTIME, getUptime())
-          .add(ChannelAttribute.CHANNEL, this)
-      ));
-    }
-    catch(IOException e) {
-      fireEvent(createEvent(ChannelEvent.Type.EXCEPTION_THROWED, Attribute.mapBuilder()
-          .add(ChannelAttribute.UPTIME, getUptime())
-          .add(ChannelAttribute.CHANNEL, this)
-          .add(ChannelAttribute.EXCEPTION, e)
-      ));
-    }
-  }
-  
-  
-  private Optional<Iterator<SelectionKey>> selectKeys() throws IOException {
-    return selector.select(100) > 0
-        ? Optional.of(selector.selectedKeys().iterator())
-        : Optional.empty();
-  }
-  
-  
-  private void iterate(Iterator<SelectionKey> it) throws IOException {
-    while(it.hasNext()) {
-      SelectionKey key = it.next();
-      it.remove();
-      switchKey(key);
-    }
-  }
-  
-  
   /**
    * Signal to close this Channel after perform the next write operation.
    * @return This ChannelStream instance.

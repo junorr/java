@@ -142,14 +142,6 @@ public abstract class AbstractChannelGroup<C extends SelectableChannel> extends 
   
   
   @Override
-  public void run() {
-    functions.forEach(f -> sockets.values().forEach(c -> c.appendFunction(f)));
-    listeners.forEach(l -> sockets.values().forEach(c -> c.addListener(l)));
-    super.run();
-  }
-  
-  
-  @Override
   public void switchKey(SelectionKey key) throws IOException {
     SwitchableChannel channel = (SwitchableChannel) key.attachment();
     channel.switchKey(key);

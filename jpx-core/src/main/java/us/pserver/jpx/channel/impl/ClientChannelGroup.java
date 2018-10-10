@@ -25,10 +25,15 @@ import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.Optional;
+import us.pserver.jpx.channel.ChannelAttribute;
 import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
+import us.pserver.jpx.channel.ChannelEvent;
 import us.pserver.jpx.channel.SwitchableChannel;
+import us.pserver.jpx.event.Attribute;
 
 /**
  *
@@ -61,6 +66,49 @@ public class ClientChannelGroup extends AbstractChannelGroup<SocketChannel> {
       );
     }
     return success;
+  }
+  
+  
+  @Override
+  public void run() {
+    try {
+      functions.forEach(f -> sockets.values().forEach(c -> c.appendFunction(f)));
+      listeners.forEach(l -> sockets.values().forEach(c -> c.addListener(l)));
+      while(running) {
+        Optional<Iterator<SelectionKey>> opt = selectKeys();
+        if(opt.isPresent()) {
+          iterate(opt.get());
+        }
+      }//while
+      doClose();
+      fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
+          .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
+      ));
+    }
+    catch(IOException e) {
+      fireEvent(createEvent(ChannelEvent.Type.EXCEPTION_THROWED, Attribute.mapBuilder()
+          .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
+          .add(ChannelAttribute.EXCEPTION, e)
+      ));
+    }
+  }
+  
+  
+  private Optional<Iterator<SelectionKey>> selectKeys() throws IOException {
+    return selector.select(100) > 0
+        ? Optional.of(selector.selectedKeys().iterator())
+        : Optional.empty();
+  }
+  
+  
+  private void iterate(Iterator<SelectionKey> it) throws IOException {
+    while(it.hasNext()) {
+      SelectionKey key = it.next();
+      it.remove();
+      switchKey(key);
+    }
   }
   
 }
