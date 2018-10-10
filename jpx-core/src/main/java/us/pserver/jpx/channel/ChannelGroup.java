@@ -22,16 +22,16 @@
 package us.pserver.jpx.channel;
 
 import java.io.IOException;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.SelectableChannel;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 19/09/2018
  */
-public interface ChannelGroup extends Channel {
+public interface ChannelGroup<C extends SelectableChannel> extends Channel {
 
-  public boolean add(SocketChannel channel) throws IOException;
+  public boolean add(C channel) throws IOException;
   
   public boolean isFull();
   

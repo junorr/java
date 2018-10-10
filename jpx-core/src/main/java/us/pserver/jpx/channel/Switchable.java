@@ -21,11 +21,16 @@
 
 package us.pserver.jpx.channel;
 
+import java.io.IOException;
+import java.nio.channels.SelectionKey;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 08/10/2018
  */
-public interface SelectableChannel extends Channel, Selectable {
+public interface Switchable {
 
+  public void switchKey(SelectionKey key) throws IOException;
+  
 }

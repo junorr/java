@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
-import us.pserver.jpx.channel.impl.ClientChannel2;
+import us.pserver.jpx.channel.impl.ClientChannel;
 import us.pserver.jpx.channel.impl.DefaultChannelConfiguration;
 import us.pserver.jpx.channel.impl.DefaultChannelEngine;
 import us.pserver.jpx.channel.stream.StreamFunction;
@@ -63,7 +63,7 @@ public class TestClientChannel {
       //int port = 20202;
       socket.connect(new InetSocketAddress(host, port));
       Selector selector = Selector.open();
-      ClientChannel2 channel = new ClientChannel2(socket, selector, config, engine);
+      ClientChannel channel = new ClientChannel(socket, selector, config, engine);
       Pooled<ByteBuffer> buf = engine.getByteBufferPool().alloc();
       StringBuilder sreq = new StringBuilder();
       sreq.append("GET http://").append(host).append("/ HTTP/1.0\r\n")
@@ -73,7 +73,7 @@ public class TestClientChannel {
           .append("Accept-Language: en-US,en;q=0.5\r\n")
           .append("Accept-Encoding: gzip, deflate, br\r\n")
           .append("Referer: http://").append(host).append("\r\n")
-          //.append("Proxy-Authorization: Basic ZjYwMzY0Nzc6OTYzMjU4OTY=\r\n")
+          .append("Proxy-Authorization: Basic ZjYwMzY0Nzc6OTYzMjU4OTY=\r\n")
           .append("Connection: keep-alive\r\n")
           .append("Upgrade-Insecure-Requests: 0\r\n")
           .append("\r\n\r\n");

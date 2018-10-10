@@ -70,7 +70,7 @@ public class TestEchoServer {
       socket.bind(config.getSocketAddress());
       ServerChannelGroup server = new ServerChannelGroup(Selector.open(), config, engine, 10);
       ChannelStream stream = new DefaultChannelStream(server);
-      server.add(socket, stream::clone);
+      //server.add(socket, stream::clone);
       server.addListener((c,e) -> {
         Logger.info("%s", e);
       });

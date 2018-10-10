@@ -24,7 +24,7 @@ package us.pserver.jpx.channel.impl;
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.Objects;
 import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
@@ -35,27 +35,30 @@ import us.pserver.jpx.channel.SwitchableChannel;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2018
  */
-public class ServerChannelGroup extends AbstractChannelGroup<ServerSocketChannel> {
+public class ClientChannelGroup extends AbstractChannelGroup<SocketChannel> {
   
   
-  public ServerChannelGroup(Selector select, ChannelConfiguration cfg, ChannelEngine eng, int maxSize) {
+  public ClientChannelGroup(Selector select, ChannelConfiguration cfg, ChannelEngine eng, int maxSize) {
     super(select, cfg, eng, maxSize);
   }
   
   @Override
-  public boolean add(ServerSocketChannel socket) throws IOException {
+  public boolean add(SocketChannel socket) throws IOException {
     Objects.requireNonNull(socket);
     boolean success = count <= maxSize;
     if(success) {
       count++;
-      SwitchableChannel channel = new ServerChannel(socket, selector, config, engine);
+      SwitchableChannel channel = new ClientChannel_old(socket, selector, config, engine);
       if(running) {
         functions.forEach(channel::appendFunction);
         listeners.forEach(channel::addListener);
       }
       socket.configureBlocking(false);
-      socket.register(selector, SelectionKey.OP_ACCEPT, channel);
       sockets.put(socket, channel);
+      socket.register(selector, SelectionKey.OP_CONNECT 
+          | SelectionKey.OP_READ 
+          | SelectionKey.OP_WRITE, channel
+      );
     }
     return success;
   }
