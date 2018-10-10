@@ -67,7 +67,7 @@ public class ClientChannel2 implements SelectableChannel, Runnable {
   
   private final List<EventListener<Channel,ChannelEvent>> listeners;
   
-  private final LinkedBlockingDeque<Pooled<ByteBuffer>> writing;
+  private final LinkedBlockingDeque<Pooled<ByteBuffer>> writeQueue;
   
   private final SocketChannel socket;
   
@@ -97,7 +97,7 @@ public class ClientChannel2 implements SelectableChannel, Runnable {
     this.socket = Objects.requireNonNull(socket);
     this.stream = new DefaultChannelStream(this);
     this.listeners = new CopyOnWriteArrayList<>();
-    this.writing = new LinkedBlockingDeque<>();
+    this.writeQueue = new LinkedBlockingDeque<>();
     this.start = Instant.now();
     this.doread = config.isAutoReadEnabled();
     this.dowrite = config.isAutoWriteEnabled();
@@ -234,7 +234,7 @@ public class ClientChannel2 implements SelectableChannel, Runnable {
     else if(key.isReadable() && doread) {
       reading();
     }
-    else if(key.isWritable() && dowrite && !writing.isEmpty()) {
+    else if(key.isWritable() && dowrite && !writeQueue.isEmpty()) {
       writing();
     }
   }
@@ -256,9 +256,9 @@ public class ClientChannel2 implements SelectableChannel, Runnable {
   private void reading() throws IOException {
     Pooled<ByteBuffer> buf = engine.getByteBufferPool().allocAwait();
     long read = socket.read(buf.get());
-    Logger.debug("READING = %s, THREAD = %s", read, Thread.currentThread().getName());
+    //Logger.debug("READING = %s, THREAD = %s", read, Thread.currentThread().getName());
     if(read > 0) {
-    Logger.debug("READ = %d", read);
+    //Logger.debug("READ = %d", read);
       readed += read;
       fireEvent(createEvent(ChannelEvent.Type.CHANNEL_READING, Attribute.mapBuilder()
           .add(ChannelAttribute.UPTIME, getUptime())
@@ -275,7 +275,7 @@ public class ClientChannel2 implements SelectableChannel, Runnable {
     }
     else if(read == -1) {
       doread = false;
-      Logger.debug("READING FINISHED!");
+      //Logger.debug("READING FINISHED!");
     }
     else {
       buf.release();
@@ -284,11 +284,11 @@ public class ClientChannel2 implements SelectableChannel, Runnable {
   
   
   private void writing() throws IOException {
-    Pooled<ByteBuffer> buf = writing.peekFirst();
+    Pooled<ByteBuffer> buf = writeQueue.peekFirst();
     int rem = buf.get().remaining();
     long write = socket.write(buf.get());
     if(write >= rem) {
-      writing.pollFirst().release();
+      writeQueue.pollFirst().release();
     }
     writed += write;
     fireEvent(createEvent(ChannelEvent.Type.CHANNEL_WRITING, Attribute.mapBuilder()
@@ -317,7 +317,7 @@ public class ClientChannel2 implements SelectableChannel, Runnable {
       public StreamPartial<Void> apply(ChannelStream cs, Optional<Pooled<ByteBuffer>> in) throws Exception {
         StreamPartial broken = StreamPartial.brokenStream();
         if(in.isPresent()) {
-          writing.addLast(in.get());
+          writeQueue.addLast(in.get());
           in.get().release();
         }
         return broken;
@@ -441,7 +441,7 @@ public class ClientChannel2 implements SelectableChannel, Runnable {
   
   
   private void doClose() throws IOException {
-    Logger.info("DO CLOSE!!");
+    //Logger.info("DO CLOSE!!");
     socket.keyFor(selector).cancel();
     if(selector.isOpen() && selector.keys().isEmpty()) {
       selector.close();
@@ -467,7 +467,7 @@ public class ClientChannel2 implements SelectableChannel, Runnable {
   @Override
   public Channel write(Pooled<ByteBuffer> buf) {
     if(buf != null) {
-      writing.addLast(buf);
+      writeQueue.addLast(buf);
     }
     return this;
   }

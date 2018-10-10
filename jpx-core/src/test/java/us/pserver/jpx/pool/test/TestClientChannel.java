@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
-import us.pserver.jpx.channel.impl.ClientChannel;
+import us.pserver.jpx.channel.impl.ClientChannel2;
 import us.pserver.jpx.channel.impl.DefaultChannelConfiguration;
 import us.pserver.jpx.channel.impl.DefaultChannelEngine;
 import us.pserver.jpx.channel.stream.StreamFunction;
@@ -54,16 +54,16 @@ public class TestClientChannel {
     try {
       SocketChannel socket = SocketChannel.open();
       //String host = "disec3.intranet.bb.com.br";
-      //String host = "www.google.com";
+      String host = "www.google.com";
       //String host = "dzone.com";
       //String host = "www.terra.com.br";
-      String host = "127.0.0.1";
-      //int port = 80;
+      //String host = "127.0.0.1";
+      int port = 80;
       //int port = 40080;
-      int port = 20202;
+      //int port = 20202;
       socket.connect(new InetSocketAddress(host, port));
       Selector selector = Selector.open();
-      ClientChannel channel = new ClientChannel(selector, config, engine, socket);
+      ClientChannel2 channel = new ClientChannel2(socket, selector, config, engine);
       Pooled<ByteBuffer> buf = engine.getByteBufferPool().alloc();
       StringBuilder sreq = new StringBuilder();
       sreq.append("GET http://").append(host).append("/ HTTP/1.0\r\n")
@@ -94,7 +94,7 @@ public class TestClientChannel {
         }
         return StreamPartial.brokenStream();
       };
-      channel.getChannelStream().appendFunction(fn);
+      channel.appendFunction(fn);
       channel.write(buf);
       channel.start();
       Sleeper.of(5000).sleep();

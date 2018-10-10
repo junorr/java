@@ -360,7 +360,7 @@ public class ClientChannelGroup2 implements ChannelGroup, Runnable {
   
   
   private void doClose() throws IOException {
-    Logger.info("DO CLOSE!!");
+    //Logger.info("DO CLOSE!!");
     selector.close();
     Enumeration<SocketChannel> en = sockets.keys();
     while(en.hasMoreElements()) {

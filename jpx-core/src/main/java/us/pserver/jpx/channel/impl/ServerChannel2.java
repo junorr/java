@@ -49,11 +49,9 @@ import us.pserver.jpx.channel.ChannelGroup;
 import us.pserver.jpx.channel.SelectableChannel;
 import us.pserver.jpx.channel.stream.ChannelStream;
 import us.pserver.jpx.channel.stream.StreamFunction;
-import us.pserver.jpx.channel.stream.StreamPartial;
 import us.pserver.jpx.event.Attribute;
 import us.pserver.jpx.event.Attribute.AttributeMapBuilder;
 import us.pserver.jpx.event.EventListener;
-import us.pserver.jpx.log.Logger;
 import us.pserver.jpx.pool.Pooled;
 
 /**
@@ -69,7 +67,7 @@ public class ServerChannel2 implements SelectableChannel, Runnable {
   
   private final List<EventListener<Channel,ChannelEvent>> listeners;
   
-  private final LinkedBlockingDeque<Pooled<ByteBuffer>> writing;
+  private final LinkedBlockingDeque<Pooled<ByteBuffer>> writeQueue;
   
   private final LinkedBlockingDeque<ClientChannelGroup2> groups;
   
@@ -83,12 +81,6 @@ public class ServerChannel2 implements SelectableChannel, Runnable {
   
   private volatile boolean running;
   
-  private volatile boolean closeOnWrite;
-  
-  private volatile boolean dowrite;
-  
-  private volatile boolean doread;
-  
   
   public ServerChannel2(ServerSocketChannel socket, Selector select, ChannelConfiguration cfg, ChannelEngine eng) {
     this.selector = Objects.requireNonNull(select);
@@ -97,13 +89,10 @@ public class ServerChannel2 implements SelectableChannel, Runnable {
     this.socket = Objects.requireNonNull(socket);
     this.stream = new DefaultChannelStream(this);
     this.listeners = new CopyOnWriteArrayList<>();
-    this.writing = new LinkedBlockingDeque<>();
+    this.writeQueue = new LinkedBlockingDeque<>();
     this.groups = new LinkedBlockingDeque<>();
     this.start = Instant.now();
-    this.doread = config.isAutoReadEnabled();
-    this.dowrite = config.isAutoWriteEnabled();
     this.running = false;
-    this.closeOnWrite = false;
   }
   
   
@@ -259,7 +248,7 @@ public class ServerChannel2 implements SelectableChannel, Runnable {
    */
   @Override
   public Channel closeOnWrite() {
-    closeOnWrite = true;
+    groups.forEach(Channel::closeOnWrite);
     fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
         .add(ChannelAttribute.UPTIME, getUptime())
         .add(ChannelAttribute.CHANNEL, this)
@@ -294,7 +283,7 @@ public class ServerChannel2 implements SelectableChannel, Runnable {
 
   @Override
   public InetSocketAddress getRemoteAddress() throws IOException {
-    return (InetSocketAddress) socket.getRemoteAddress();
+    throw new UnsupportedOperationException();
   }
 
 
@@ -368,7 +357,7 @@ public class ServerChannel2 implements SelectableChannel, Runnable {
   
   
   private void doClose() throws IOException {
-    Logger.info("DO CLOSE!!");
+    //Logger.info("DO CLOSE!!");
     socket.keyFor(selector).cancel();
     if(selector.isOpen() && selector.keys().isEmpty()) {
       selector.close();
@@ -379,14 +368,14 @@ public class ServerChannel2 implements SelectableChannel, Runnable {
 
   @Override
   public Channel setReadingEnabled(boolean enabled) {
-    this.doread = enabled;
+    groups.forEach(c -> c.setReadingEnabled(enabled));
     return this;
   }
 
 
   @Override
   public Channel setWritingEnabled(boolean enabled) {
-    this.dowrite = enabled;
+    groups.forEach(c -> c.setWritingEnabled(enabled));
     return this;
   }
   
@@ -394,7 +383,13 @@ public class ServerChannel2 implements SelectableChannel, Runnable {
   @Override
   public Channel write(Pooled<ByteBuffer> buf) {
     if(buf != null) {
-      writing.addLast(buf);
+      groups.forEach(c -> {
+        Pooled<ByteBuffer> pb = engine.getByteBufferPool().allocAwait();
+        pb.get().put(buf.get());
+        pb.get().flip();
+        c.write(pb);
+      });
+      buf.release();
     }
     return this;
   }
