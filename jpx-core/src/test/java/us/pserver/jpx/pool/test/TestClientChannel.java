@@ -65,7 +65,7 @@ public class TestClientChannel {
       socket.connect(new InetSocketAddress("localhost", port));
       Selector selector = Selector.open();
       ClientChannel channel = new ClientChannel(socket, selector, config, engine);
-      Pooled<ByteBuffer> buf = engine.getByteBufferPool().alloc();
+      Pooled<ByteBuffer> buf = engine.getBufferPool().alloc();
       StringBuilder sreq = new StringBuilder();
       sreq.append("GET http://").append(host).append("/ HTTP/1.0\r\n")
           .append("Host: ").append(host).append("\r\n")

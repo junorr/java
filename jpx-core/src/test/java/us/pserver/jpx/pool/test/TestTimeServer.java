@@ -26,17 +26,18 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
+import us.pserver.jpx.channel.ChannelEvent;
 import us.pserver.jpx.channel.impl.DefaultChannelConfiguration;
 import static us.pserver.jpx.channel.impl.DefaultChannelConfiguration.DEFAULT_IO_THREAD_POOL_SIZE;
 import static us.pserver.jpx.channel.impl.DefaultChannelConfiguration.DEFAULT_SYSTEM_THREAD_POOL_SIZE;
 import us.pserver.jpx.channel.impl.DefaultChannelEngine;
 import us.pserver.jpx.channel.impl.DefaultSocketOptions;
 import us.pserver.jpx.channel.impl.ServerChannelGroup;
-import us.pserver.jpx.channel.stream.StreamFunction;
-import us.pserver.jpx.channel.stream.StreamPartial;
+import us.pserver.jpx.event.EventListener;
 import us.pserver.jpx.log.Logger;
 import us.pserver.jpx.pool.Pooled;
 import us.pserver.jpx.pool.impl.BufferPoolConfiguration;
@@ -47,7 +48,7 @@ import us.pserver.tools.misc.Sleeper;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 07/10/2018
  */
-public class TestEchoServer {
+public class TestTimeServer {
 
   private final ChannelConfiguration config = new DefaultChannelConfiguration(
       new BufferPoolConfiguration(), 
@@ -62,30 +63,22 @@ public class TestEchoServer {
   private final ChannelEngine engine = new DefaultChannelEngine(config);
   
   @Test
-  public void echoServer() {
+  public void timeServer() {
     try {
       ServerSocketChannel socket = ServerSocketChannel.open();
       socket.bind(config.getSocketAddress());
       ServerChannelGroup server = new ServerChannelGroup(Selector.open(), config, engine, 1);
       server.add(socket);
       server.addListener((c,e) -> Logger.info("%s", e));
-      StreamFunction<Pooled<ByteBuffer>,Pooled<ByteBuffer>> fn = (s,o) -> {
-        Logger.debug("IOCTX = %s, THREAD = %s", s.isInIOContext(), Thread.currentThread().getName());
-        if(!s.isInIOContext()) {
-          s.switchToIOContext(o);
-          return StreamPartial.brokenStream();
-        }
-        if(o.isPresent()) {
-          System.err.println(StandardCharsets.UTF_8.decode(o.get().get()).toString());
-          o.get().get().flip();
-          return StreamPartial.activeStream(o);
-        }
-        return StreamPartial.brokenStream();
-      };
-      server.appendFunction(fn);
+      server.addListener(EventListener.create((c,e) -> {
+        Pooled<ByteBuffer> buf = c.getChannelEngine().getBufferPool().allocAwait();
+        buf.get().put(StandardCharsets.UTF_8.encode(Instant.now().toString()));
+        buf.get().flip();
+        c.write(buf);
+      }, ChannelEvent.Type.CONNECTION_STABLISHED));
       server.start();
-      new TestClientEchoServer().clientConnect();
-      Sleeper.of(5000).sleep();
+      //new TestClientTimeServer().clientConnect();
+      Sleeper.of(10000).sleep();
       server.closeAwait();
     }
     catch(Exception e) {

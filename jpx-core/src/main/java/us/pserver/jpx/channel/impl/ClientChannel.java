@@ -23,6 +23,7 @@ package us.pserver.jpx.channel.impl;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -37,7 +38,6 @@ import us.pserver.jpx.channel.stream.ChannelStream;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.channel.stream.StreamPartial;
 import us.pserver.jpx.event.Attribute;
-import us.pserver.jpx.log.Logger;
 import us.pserver.jpx.pool.Pooled;
 
 /**
@@ -88,10 +88,6 @@ public class ClientChannel extends AbstractChannel<SocketChannel> {
         }
       }//while
       doClose();
-      fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
-          .add(ChannelAttribute.UPTIME, getUptime())
-          .add(ChannelAttribute.CHANNEL, this)
-      ));
     }
     catch(IOException e) {
       fireEvent(createEvent(ChannelEvent.Type.EXCEPTION_THROWED, Attribute.mapBuilder()
@@ -121,9 +117,11 @@ public class ClientChannel extends AbstractChannel<SocketChannel> {
 
   @Override
   public void switchKey(SelectionKey key) throws IOException {
-    if(key.isConnectable()) {
-      Logger.debug("key.isConnectable(): %s", key.isConnectable());
-      Logger.debug("socket.isConnectionPending(): %s", socket.isConnectionPending());
+    SelectableChannel sock = key.channel();
+    if(!sock.isOpen()) {
+      close();
+    }
+    else if(key.isConnectable()) {
       connecting();
     }
     else if(key.isReadable() && doread) {
@@ -149,7 +147,7 @@ public class ClientChannel extends AbstractChannel<SocketChannel> {
   
   
   private void reading() throws IOException {
-    Pooled<ByteBuffer> buf = engine.getByteBufferPool().allocAwait();
+    Pooled<ByteBuffer> buf = engine.getBufferPool().allocAwait();
     long read = socket.read(buf.get());
     //Logger.debug("READING = %s, THREAD = %s", read, Thread.currentThread().getName());
     if(read > 0) {

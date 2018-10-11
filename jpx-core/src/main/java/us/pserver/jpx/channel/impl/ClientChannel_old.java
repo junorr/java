@@ -253,7 +253,7 @@ public class ClientChannel_old implements SwitchableChannel, Runnable {
   
   
   private void reading() throws IOException {
-    Pooled<ByteBuffer> buf = engine.getByteBufferPool().allocAwait();
+    Pooled<ByteBuffer> buf = engine.getBufferPool().allocAwait();
     long read = socket.read(buf.get());
     //Logger.debug("READING = %s, THREAD = %s", read, Thread.currentThread().getName());
     if(read > 0) {

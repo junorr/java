@@ -62,7 +62,7 @@ public class TestChannelStream {
         Logger.info("%s", e.toString());
         //Arrays.asList(ss).stream().skip(1).forEach(o -> System.out.printf("    - %s%n%n", o));
       });
-      Pooled<ByteBuffer> pbuf = engine.getByteBufferPool().allocAwait();
+      Pooled<ByteBuffer> pbuf = engine.getBufferPool().allocAwait();
       ByteBuffer buf = StandardCharsets.UTF_8.encode("Hello World!");
       pbuf.get().put(buf);
       pbuf.get().flip();

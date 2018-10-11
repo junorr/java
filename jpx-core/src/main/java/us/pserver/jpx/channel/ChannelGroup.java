@@ -31,7 +31,7 @@ import java.nio.channels.SelectableChannel;
  */
 public interface ChannelGroup<C extends SelectableChannel> extends Channel {
 
-  public boolean add(C channel) throws IOException;
+  public Channel add(C channel) throws IOException;
   
   public boolean isFull();
   

@@ -86,7 +86,7 @@ public class DefaultChannelEngine implements ChannelEngine {
 
 
   @Override
-  public ByteBufferPool getByteBufferPool() {
+  public ByteBufferPool getBufferPool() {
     return pool;
   }
   

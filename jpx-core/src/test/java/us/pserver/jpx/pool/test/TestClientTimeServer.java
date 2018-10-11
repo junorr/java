@@ -24,52 +24,44 @@ package us.pserver.jpx.pool.test;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
+import us.pserver.jpx.channel.impl.ClientChannel;
 import us.pserver.jpx.channel.impl.DefaultChannelConfiguration;
-import static us.pserver.jpx.channel.impl.DefaultChannelConfiguration.DEFAULT_IO_THREAD_POOL_SIZE;
-import static us.pserver.jpx.channel.impl.DefaultChannelConfiguration.DEFAULT_SYSTEM_THREAD_POOL_SIZE;
 import us.pserver.jpx.channel.impl.DefaultChannelEngine;
-import us.pserver.jpx.channel.impl.DefaultSocketOptions;
-import us.pserver.jpx.channel.impl.ServerChannelGroup;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.channel.stream.StreamPartial;
 import us.pserver.jpx.log.Logger;
 import us.pserver.jpx.pool.Pooled;
-import us.pserver.jpx.pool.impl.BufferPoolConfiguration;
 import us.pserver.tools.misc.Sleeper;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 07/10/2018
+ * @version 0.0 - 25/09/2018
  */
-public class TestEchoServer {
-
-  private final ChannelConfiguration config = new DefaultChannelConfiguration(
-      new BufferPoolConfiguration(), 
-      new DefaultSocketOptions(),
-      DEFAULT_IO_THREAD_POOL_SIZE, 
-      DEFAULT_SYSTEM_THREAD_POOL_SIZE, 
-      new InetSocketAddress("127.0.0.1", 20202),
-      true,
-      true
-  );
-
-  private final ChannelEngine engine = new DefaultChannelEngine(config);
+public class TestClientTimeServer {
   
+  private final ChannelConfiguration config = new DefaultChannelConfiguration();
+  
+  private final ChannelEngine engine = new DefaultChannelEngine(config);
+
   @Test
-  public void echoServer() {
+  public void clientConnect() {
     try {
-      ServerSocketChannel socket = ServerSocketChannel.open();
-      socket.bind(config.getSocketAddress());
-      ServerChannelGroup server = new ServerChannelGroup(Selector.open(), config, engine, 1);
-      server.add(socket);
-      server.addListener((c,e) -> Logger.info("%s", e));
-      StreamFunction<Pooled<ByteBuffer>,Pooled<ByteBuffer>> fn = (s,o) -> {
+      SocketChannel socket = SocketChannel.open();
+      String host = "127.0.0.1";
+      int port = 20202;
+      socket.connect(new InetSocketAddress(host, port));
+      Selector selector = Selector.open();
+      ClientChannel channel = new ClientChannel(socket, selector, config, engine);
+      channel.addListener((c,e) -> {
+        Logger.info("%s", e);
+      });
+      StreamFunction<Pooled<ByteBuffer>,Void> fn = (s,o) -> {
         Logger.debug("IOCTX = %s, THREAD = %s", s.isInIOContext(), Thread.currentThread().getName());
         if(!s.isInIOContext()) {
           s.switchToIOContext(o);
@@ -77,19 +69,17 @@ public class TestEchoServer {
         }
         if(o.isPresent()) {
           System.err.println(StandardCharsets.UTF_8.decode(o.get().get()).toString());
-          o.get().get().flip();
-          return StreamPartial.activeStream(o);
         }
         return StreamPartial.brokenStream();
       };
-      server.appendFunction(fn);
-      server.start();
-      new TestClientEchoServer().clientConnect();
-      Sleeper.of(5000).sleep();
-      server.closeAwait();
+      channel.appendFunction(fn);
+      channel.start();
+      Sleeper.of(1000).sleep();
+      channel.closeAwait();
     }
     catch(Exception e) {
       Logger.error(e);
     }
   }
+  
 }

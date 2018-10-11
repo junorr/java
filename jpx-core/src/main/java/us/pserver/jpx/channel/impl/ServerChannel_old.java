@@ -24,14 +24,16 @@ package us.pserver.jpx.channel.impl;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -43,6 +45,7 @@ import us.pserver.jpx.channel.ChannelAttribute;
 import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
 import us.pserver.jpx.channel.ChannelEvent;
+import us.pserver.jpx.channel.ChannelGroup;
 import us.pserver.jpx.channel.stream.ChannelStream;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.event.Attribute;
@@ -50,64 +53,46 @@ import us.pserver.jpx.event.Attribute.AttributeMapBuilder;
 import us.pserver.jpx.event.EventListener;
 import us.pserver.jpx.pool.Pooled;
 import us.pserver.jpx.channel.SwitchableChannel;
-import us.pserver.jpx.log.Logger;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2018
  */
-public abstract class AbstractChannel<C extends SelectableChannel> implements SwitchableChannel, Runnable {
+public class ServerChannel_old implements SwitchableChannel, Runnable {
   
-  protected final ChannelConfiguration config;
+  private final ChannelConfiguration config;
   
-  protected final ChannelEngine engine;
+  private final ChannelEngine engine;
   
-  protected final List<EventListener<Channel,ChannelEvent>> listeners;
+  private final List<EventListener<Channel,ChannelEvent>> listeners;
   
-  protected final LinkedBlockingDeque<Pooled<ByteBuffer>> writeQueue;
+  private final LinkedBlockingDeque<Pooled<ByteBuffer>> writeQueue;
   
-  protected final C socket;
+  private final LinkedBlockingDeque<ClientChannelGroup> groups;
   
-  protected final ChannelStream stream;
+  private final ServerSocketChannel socket;
   
-  protected final Selector selector;
+  private final ChannelStream stream;
   
-  protected final Instant start;
+  private final Selector selector;
   
-  protected volatile boolean running;
+  private final Instant start;
   
-  protected volatile boolean closeOnWrite;
-  
-  protected volatile boolean dowrite;
-  
-  protected volatile boolean doread;
-  
-  protected volatile long readed;
-  
-  protected volatile long writed;
+  private volatile boolean running;
   
   
-  protected AbstractChannel(Selector select, ChannelConfiguration cfg, ChannelEngine eng) {
-    this(null, select, cfg, eng);
-  }
-  
-  
-  protected AbstractChannel(C socket, Selector select, ChannelConfiguration cfg, ChannelEngine eng) {
+  public ServerChannel_old(ServerSocketChannel socket, Selector select, ChannelConfiguration cfg, ChannelEngine eng) {
     this.selector = Objects.requireNonNull(select);
     this.config = Objects.requireNonNull(cfg);
     this.engine = Objects.requireNonNull(eng);
-    this.socket = socket;
+    this.socket = Objects.requireNonNull(socket);
     this.stream = new DefaultChannelStream(this);
     this.listeners = new CopyOnWriteArrayList<>();
     this.writeQueue = new LinkedBlockingDeque<>();
+    this.groups = new LinkedBlockingDeque<>();
     this.start = Instant.now();
-    this.doread = config.isAutoReadEnabled();
-    this.dowrite = config.isAutoWriteEnabled();
     this.running = false;
-    this.closeOnWrite = false;
-    this.readed = 0;
-    this.writed = 0;
   }
   
   
@@ -138,33 +123,122 @@ public abstract class AbstractChannel<C extends SelectableChannel> implements Sw
   
   @Override
   public double getOutgoingBytesPerSecond() {
-    Duration dur = getUptime();
-    if(Duration.ZERO == dur) return 0;
-    double sec = dur.toMillis() / 1000.0;
-    return writed / sec;
+    return groups.stream()
+        .mapToDouble(ChannelGroup::getOutgoingBytesPerSecond).sum();
   }
   
   
   @Override
   public double getIncommingBytesPerSecond() {
-    Duration dur = getUptime();
-    if(Duration.ZERO == dur) return 0;
-    double sec = dur.toMillis() / 1000.0;
-    return readed / sec;
+    return groups.stream()
+        .mapToDouble(ChannelGroup::getIncommingBytesPerSecond).sum();
   }
   
   
-  protected ChannelEvent createEvent(ChannelEvent.Type type, AttributeMapBuilder bld) {
+  @Override
+  public Channel start() throws IOException {
+    try {
+      socket.configureBlocking(false);
+      socket.register(selector, SelectionKey.OP_ACCEPT);
+      running = true;
+      engine.executeIO(this, this);
+    }
+    catch(Exception e) {
+      fireEvent(createEvent(ChannelEvent.Type.EXCEPTION_THROWED, Attribute.mapBuilder()
+          .add(ChannelAttribute.CHANNEL, this)
+          .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.EXCEPTION, e)
+      ));
+    }
+    return this;
+  }
+  
+  
+  private ChannelEvent createEvent(ChannelEvent.Type type, AttributeMapBuilder bld) {
     return new ChannelEvent(type, bld.create());
   }
   
   
-  protected void fireEvent(ChannelEvent evt) {
-    Channel ch = (Channel) (evt.attributes().containsKey(ChannelAttribute.CHANNEL) 
-        ? evt.attributes().get(ChannelAttribute.CHANNEL) : this);
+  private void fireEvent(ChannelEvent evt) {
     listeners.stream()
         .filter(l -> l.getInterests().contains(evt.getType()))
-        .forEach(l -> l.accept(ch, evt));
+        .forEach(l -> l.accept(this, evt));
+  }
+  
+  
+  @Override
+  public void run() {
+    try {
+      while(running) {
+        Optional<Iterator<SelectionKey>> opt = selectKeys();
+        if(opt.isPresent()) {
+          iterate(opt.get());
+        }
+      }//while
+      doClose();
+      fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
+          .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
+      ));
+    }
+    catch(IOException e) {
+      fireEvent(createEvent(ChannelEvent.Type.EXCEPTION_THROWED, Attribute.mapBuilder()
+          .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
+          .add(ChannelAttribute.EXCEPTION, e)
+      ));
+    }
+  }
+  
+  
+  private ClientChannelGroup getChannelGroup() throws IOException {
+    ClientChannelGroup group = groups.isEmpty() ? null : groups.peekLast();
+    if(group == null || group.isFull()) {
+      group = new ClientChannelGroup(Selector.open(), config, engine, 10);
+      listeners.forEach(group::addListener);
+      stream.getFunctions().forEach(group::appendFunction);
+      groups.addLast(group);
+    }
+    return group;
+  }
+  
+  
+  private Optional<Iterator<SelectionKey>> selectKeys() throws IOException {
+    return selector.select(100) > 0
+        ? Optional.of(selector.selectedKeys().iterator())
+        : Optional.empty();
+  }
+  
+  
+  public void iterate(Iterator<SelectionKey> it) throws IOException {
+    while(it.hasNext()) {
+      SelectionKey key = it.next();
+      it.remove();
+      switchKey(key);
+    }
+  }
+  
+  
+  @Override
+  public void switchKey(SelectionKey key) throws IOException {
+    if(key.isAcceptable()) {
+      accept(socket, getChannelGroup());
+    }
+  }
+  
+  
+  private void accept(ServerSocketChannel server, ClientChannelGroup group) throws IOException {
+    SocketChannel sock = server.accept();
+    group.add(sock);
+    fireEvent(createEvent(ChannelEvent.Type.CONNECTION_STABLISHED, Attribute.mapBuilder()
+        .add(ChannelAttribute.CHANNEL, group)
+        .add(ChannelAttribute.LOCAL_ADDRESS, server.getLocalAddress())
+        .add(ChannelAttribute.REMOTE_ADDRESS, sock.getRemoteAddress())
+        .add(ChannelAttribute.UPTIME, getUptime())
+    ));
+    if(!group.isRunning()) {
+      group.start();
+    }
   }
   
   
@@ -174,7 +248,7 @@ public abstract class AbstractChannel<C extends SelectableChannel> implements Sw
    */
   @Override
   public Channel closeOnWrite() {
-    closeOnWrite = true;
+    groups.forEach(Channel::closeOnWrite);
     fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
         .add(ChannelAttribute.UPTIME, getUptime())
         .add(ChannelAttribute.CHANNEL, this)
@@ -203,26 +277,13 @@ public abstract class AbstractChannel<C extends SelectableChannel> implements Sw
 
   @Override
   public InetSocketAddress getLocalAddress() throws IOException {
-    if(SocketChannel.class.isAssignableFrom(socket.getClass())) {
-      return (InetSocketAddress) ((SocketChannel) socket).getLocalAddress();
-    }
-    else if(ServerSocketChannel.class.isAssignableFrom(socket.getClass())) {
-      return (InetSocketAddress) ((ServerSocketChannel) socket).getLocalAddress();
-    }
-    else {
-      throw new UnsupportedOperationException();
-    }
+    return (InetSocketAddress) socket.getLocalAddress();
   }
 
 
   @Override
   public InetSocketAddress getRemoteAddress() throws IOException {
-    if(SocketChannel.class.isAssignableFrom(socket.getClass())) {
-      return (InetSocketAddress) ((SocketChannel) socket).getRemoteAddress();
-    }
-    else {
-      throw new UnsupportedOperationException();
-    }
+    throw new UnsupportedOperationException();
   }
 
 
@@ -241,7 +302,7 @@ public abstract class AbstractChannel<C extends SelectableChannel> implements Sw
   }
   
   
-  protected void awaitStop() throws Exception {
+  private void awaitStop() throws Exception {
     Lock lock = new ReentrantLock();
     Condition cnd = lock.newCondition();
     addListener(EventListener.create((c,e) -> {
@@ -281,7 +342,7 @@ public abstract class AbstractChannel<C extends SelectableChannel> implements Sw
 
 
   @Override
-  public void close() throws IOException {
+  public void close() throws Exception {
     if(running) {
       running = false;
       fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSING, Attribute.mapBuilder()
@@ -295,31 +356,26 @@ public abstract class AbstractChannel<C extends SelectableChannel> implements Sw
   }
   
   
-  protected void doClose() throws IOException {
+  private void doClose() throws IOException {
     //Logger.info("DO CLOSE!!");
     socket.keyFor(selector).cancel();
     if(selector.isOpen() && selector.keys().isEmpty()) {
       selector.close();
     }
     socket.close();
-    Logger.debug("socket.isOpen(): %s, socket = %s", socket.isOpen(), socket);
-    fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
-        .add(ChannelAttribute.UPTIME, getUptime())
-        .add(ChannelAttribute.CHANNEL, this)
-    ));
   }
 
 
   @Override
   public Channel setReadingEnabled(boolean enabled) {
-    this.doread = enabled;
+    groups.forEach(c -> c.setReadingEnabled(enabled));
     return this;
   }
 
 
   @Override
   public Channel setWritingEnabled(boolean enabled) {
-    this.dowrite = enabled;
+    groups.forEach(c -> c.setWritingEnabled(enabled));
     return this;
   }
   
@@ -327,7 +383,13 @@ public abstract class AbstractChannel<C extends SelectableChannel> implements Sw
   @Override
   public Channel write(Pooled<ByteBuffer> buf) {
     if(buf != null) {
-      writeQueue.addLast(buf);
+      groups.forEach(c -> {
+        Pooled<ByteBuffer> pb = engine.getBufferPool().allocAwait();
+        pb.get().put(buf.get());
+        pb.get().flip();
+        c.write(pb);
+      });
+      buf.release();
     }
     return this;
   }

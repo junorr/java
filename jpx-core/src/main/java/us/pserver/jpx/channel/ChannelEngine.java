@@ -41,23 +41,23 @@ public interface ChannelEngine {
   
   public ExecutorService getComputeExecutorService();
   
-  public ByteBufferPool getByteBufferPool();
+  public ByteBufferPool getBufferPool();
   
-  public ChannelAsync executeIO(Channel ch, Runnable rn);
+  public ChannelAsync<Void> executeIO(Channel ch, Runnable rn);
   
-  public ChannelAsync executeIO(Channel ch, ThrowableTask rn);
+  public ChannelAsync<Void> executeIO(Channel ch, ThrowableTask rn);
   
-  public <I> ChannelAsync executeIO(Channel ch, I input, ThrowableConsumer<I> cs);
+  public <I> ChannelAsync<Void> executeIO(Channel ch, I input, ThrowableConsumer<I> cs);
   
   public <I,O> ChannelAsync<O> executeIO(Channel ch, I input, ThrowableFunction<I,O> fn);
   
   public <O> ChannelAsync<O> executeIO(Channel ch, ThrowableSupplier<O> fn);
   
-  public ChannelAsync execute(Channel ch, Runnable rn);
+  public ChannelAsync<Void> execute(Channel ch, Runnable rn);
   
-  public ChannelAsync execute(Channel ch, ThrowableTask rn);
+  public ChannelAsync<Void> execute(Channel ch, ThrowableTask rn);
   
-  public <I> ChannelAsync execute(Channel ch, I input, ThrowableConsumer<I> cs);
+  public <I> ChannelAsync<Void> execute(Channel ch, I input, ThrowableConsumer<I> cs);
   
   public <I,O> ChannelAsync<O> execute(Channel ch, I input, ThrowableFunction<I,O> fn);
   

@@ -22,18 +22,16 @@
 package us.pserver.jpx.channel.impl;
 
 import java.io.IOException;
+import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
 import java.util.Objects;
-import java.util.Optional;
-import us.pserver.jpx.channel.ChannelAttribute;
+import us.pserver.jpx.channel.Channel;
 import us.pserver.jpx.channel.ChannelConfiguration;
 import us.pserver.jpx.channel.ChannelEngine;
-import us.pserver.jpx.channel.ChannelEvent;
 import us.pserver.jpx.channel.SwitchableChannel;
-import us.pserver.jpx.event.Attribute;
+import us.pserver.jpx.log.Logger;
 
 /**
  *
@@ -48,66 +46,36 @@ public class ClientChannelGroup extends AbstractChannelGroup<SocketChannel> {
   }
   
   @Override
-  public boolean add(SocketChannel socket) throws IOException {
-    Objects.requireNonNull(socket);
-    boolean success = count <= maxSize;
-    if(success) {
-      count++;
-      SwitchableChannel channel = new ClientChannel_old(socket, selector, config, engine);
-      if(running) {
-        functions.forEach(channel::appendFunction);
-        listeners.forEach(channel::addListener);
-      }
-      socket.configureBlocking(false);
-      sockets.put(socket, channel);
-      socket.register(selector, SelectionKey.OP_CONNECT 
-          | SelectionKey.OP_READ 
-          | SelectionKey.OP_WRITE, channel
-      );
+  public Channel add(SocketChannel socket) throws IOException {
+    if(this.isFull()) {
+      throw new IllegalStateException("ChannelGroup is full (count=" + count + ")");
     }
-    return success;
+    Objects.requireNonNull(socket);
+    count++;
+    SwitchableChannel channel = new ClientChannel(socket, selector, config, engine);
+    if(running) {
+      functions.forEach(channel::appendFunction);
+      listeners.forEach(channel::addListener);
+    }
+    socket.configureBlocking(false);
+    sockets.put(socket, channel);
+    socket.register(selector, SelectionKey.OP_CONNECT 
+        | SelectionKey.OP_READ 
+        | SelectionKey.OP_WRITE, channel
+    );
+    return channel;
   }
   
   
   @Override
-  public void run() {
-    try {
-      functions.forEach(f -> sockets.values().forEach(c -> c.appendFunction(f)));
-      listeners.forEach(l -> sockets.values().forEach(c -> c.addListener(l)));
-      while(running) {
-        Optional<Iterator<SelectionKey>> opt = selectKeys();
-        if(opt.isPresent()) {
-          iterate(opt.get());
-        }
-      }//while
-      doClose();
-      fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
-          .add(ChannelAttribute.UPTIME, getUptime())
-          .add(ChannelAttribute.CHANNEL, this)
-      ));
+  public void switchKey(SelectionKey key) throws IOException {
+    SwitchableChannel channel = (SwitchableChannel) key.attachment();
+    SocketChannel sock = (SocketChannel) key.channel();
+    if(sock.isConnected()) {
+      channel.switchKey(key);
     }
-    catch(IOException e) {
-      fireEvent(createEvent(ChannelEvent.Type.EXCEPTION_THROWED, Attribute.mapBuilder()
-          .add(ChannelAttribute.UPTIME, getUptime())
-          .add(ChannelAttribute.CHANNEL, this)
-          .add(ChannelAttribute.EXCEPTION, e)
-      ));
-    }
-  }
-  
-  
-  private Optional<Iterator<SelectionKey>> selectKeys() throws IOException {
-    return selector.select(100) > 0
-        ? Optional.of(selector.selectedKeys().iterator())
-        : Optional.empty();
-  }
-  
-  
-  private void iterate(Iterator<SelectionKey> it) throws IOException {
-    while(it.hasNext()) {
-      SelectionKey key = it.next();
-      it.remove();
-      switchKey(key);
+    else {
+      disconnect(sock);
     }
   }
   

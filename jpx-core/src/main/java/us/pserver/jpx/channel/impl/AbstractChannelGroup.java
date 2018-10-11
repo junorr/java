@@ -30,6 +30,8 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -44,6 +46,7 @@ import us.pserver.jpx.event.Attribute;
 import us.pserver.jpx.pool.Pooled;
 import us.pserver.jpx.channel.Switchable;
 import us.pserver.jpx.channel.SwitchableChannel;
+import us.pserver.jpx.log.Logger;
 
 /**
  *
@@ -142,9 +145,66 @@ public abstract class AbstractChannelGroup<C extends SelectableChannel> extends 
   
   
   @Override
+  public void run() {
+    try {
+      functions.forEach(f -> sockets.values().forEach(c -> c.appendFunction(f)));
+      listeners.forEach(l -> sockets.values().forEach(c -> c.addListener(l)));
+      while(running) {
+        Optional<Iterator<SelectionKey>> opt = selectKeys();
+        if(opt.isPresent()) {
+          iterate(opt.get());
+        }
+      }//while
+      doClose();
+    }
+    catch(IOException e) {
+      fireEvent(createEvent(ChannelEvent.Type.EXCEPTION_THROWED, Attribute.mapBuilder()
+          .add(ChannelAttribute.UPTIME, getUptime())
+          .add(ChannelAttribute.CHANNEL, this)
+          .add(ChannelAttribute.EXCEPTION, e)
+      ));
+    }
+  }
+  
+  
+  private Optional<Iterator<SelectionKey>> selectKeys() throws IOException {
+    return selector.select(100) > 0
+        ? Optional.of(selector.selectedKeys().iterator())
+        : Optional.empty();
+  }
+  
+  
+  private void iterate(Iterator<SelectionKey> it) throws IOException {
+    while(it.hasNext()) {
+      SelectionKey key = it.next();
+      it.remove();
+      switchKey(key);
+    }
+  }
+  
+  
+  @Override
   public void switchKey(SelectionKey key) throws IOException {
     SwitchableChannel channel = (SwitchableChannel) key.attachment();
-    channel.switchKey(key);
+    SelectableChannel sock = key.channel();
+    if(sock.isOpen()) {
+      channel.switchKey(key);
+    }
+    else {
+      disconnect(sock);
+    }
+  }
+  
+  
+  protected void disconnect(SelectableChannel sock) throws IOException {
+    sock.keyFor(selector).cancel();
+    sock.close();
+    Logger.debug("disconnected: %s", sock);
+    Channel channel = sockets.remove(sock);
+    fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
+        .add(ChannelAttribute.UPTIME, channel.getUptime())
+        .add(ChannelAttribute.CHANNEL, channel)
+    ));
   }
   
   
@@ -187,6 +247,10 @@ public abstract class AbstractChannelGroup<C extends SelectableChannel> extends 
       en.nextElement().close();
     }
     sockets.clear();
+    fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
+        .add(ChannelAttribute.UPTIME, getUptime())
+        .add(ChannelAttribute.CHANNEL, this)
+    ));
   }
 
 
@@ -208,7 +272,7 @@ public abstract class AbstractChannelGroup<C extends SelectableChannel> extends 
   public Channel write(Pooled<ByteBuffer> buf) {
     if(buf != null) {
       sockets.values().forEach(c -> {
-        Pooled<ByteBuffer> pb = engine.getByteBufferPool().allocAwait();
+        Pooled<ByteBuffer> pb = engine.getBufferPool().allocAwait();
         pb.get().put(buf.get());
         pb.get().flip();
         c.write(pb);
