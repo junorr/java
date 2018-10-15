@@ -21,45 +21,46 @@
 
 package us.pserver.jpx.channel.impl;
 
-import java.io.IOException;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
 import java.util.Objects;
+import java.util.Optional;
 import us.pserver.jpx.channel.Channel;
-import us.pserver.jpx.channel.ChannelConfiguration;
-import us.pserver.jpx.channel.ChannelEngine;
-import us.pserver.jpx.channel.SwitchableChannel;
+import us.pserver.tools.fn.ThrowableTask;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2018
+ * @version 0.0 - 19/08/2018
  */
-public class ServerChannelGroup extends AbstractChannelGroup<ServerSocketChannel> {
+public class ChannelAsyncTask extends AbstractChannelAsync<Void> {
+  
+  private final ThrowableTask task;
   
   
-  public ServerChannelGroup(Selector select, ChannelConfiguration cfg, ChannelEngine eng, int maxSize) {
-    super(select, cfg, eng, maxSize);
+  public ChannelAsyncTask(Channel channel, ThrowableTask task) {
+    super(channel);
+    this.task = Objects.requireNonNull(task);
   }
-  
-  
+
+
   @Override
-  public Channel add(ServerSocketChannel socket) throws IOException {
-    if(this.isFull()) {
-      throw new IllegalStateException("ChannelGroup is full (count=" + count + ")");
+  public Optional get() {
+    return Optional.empty();
+  }
+
+
+  @Override
+  public void run() {
+    try {
+      task.run();
+      onSuccess();
     }
-    Objects.requireNonNull(socket);
-    count++;
-    SwitchableChannel channel = new ServerChannel(socket, selector, config, engine);
-    if(running) {
-      functions.forEach(channel::appendFunction);
-      listeners.forEach(channel::addListener);
+    catch(Exception e) {
+      onError(e);
     }
-    socket.configureBlocking(false);
-    socket.register(selector, SelectionKey.OP_ACCEPT, channel);
-    sockets.put(socket, channel);
-    return channel;
+    finally {
+      onComplete();
+      signalAll();
+    }
   }
   
 }

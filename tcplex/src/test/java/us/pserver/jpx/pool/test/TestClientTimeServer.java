@@ -43,7 +43,7 @@ import us.pserver.tools.misc.Sleeper;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 25/09/2018
  */
-public class TestClientChannel {
+public class TestClientTimeServer {
   
   private final ChannelConfiguration config = new DefaultChannelConfiguration();
   
@@ -53,34 +53,11 @@ public class TestClientChannel {
   public void clientConnect() {
     try {
       SocketChannel socket = SocketChannel.open();
-      //String host = "disec3.intranet.bb.com.br";
-      String host = "www.google.com";
-      //String host = "dzone.com";
-      //String host = "www.terra.com.br";
-      //String host = "127.0.0.1";
-      int port = 80;
-      //int port = 40080;
-      //int port = 20202;
+      String host = "127.0.0.1";
+      int port = 20202;
       socket.connect(new InetSocketAddress(host, port));
-      //socket.connect(new InetSocketAddress("localhost", port));
       Selector selector = Selector.open();
       ClientChannel channel = new ClientChannel(socket, selector, config, engine);
-      Pooled<ByteBuffer> buf = engine.getBufferPool().alloc();
-      StringBuilder sreq = new StringBuilder();
-      sreq.append("GET http://").append(host).append("/ HTTP/1.0\r\n")
-          .append("Host: ").append(host).append("\r\n")
-          .append("User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0\r\n")
-          .append("Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n")
-          .append("Accept-Language: en-US,en;q=0.5\r\n")
-          .append("Accept-Encoding: gzip, deflate, br\r\n")
-          .append("Referer: http://").append(host).append("\r\n")
-          .append("Proxy-Authorization: Basic ZjYwMzY0Nzc6OTYzMjU4OTY=\r\n")
-          .append("Connection: keep-alive\r\n")
-          .append("Upgrade-Insecure-Requests: 0\r\n")
-          .append("\r\n\r\n");
-      ByteBuffer req = StandardCharsets.UTF_8.encode(sreq.toString());
-      buf.get().put(req);
-      buf.get().flip();
       channel.addListener((c,e) -> {
         Logger.info("%s", e);
       });
@@ -96,11 +73,9 @@ public class TestClientChannel {
         return StreamPartial.brokenStream();
       };
       channel.appendFunction(fn);
-      channel.write(buf);
       channel.start();
-      Sleeper.of(5000).sleep();
+      Sleeper.of(1000).sleep();
       channel.closeAwait();
-      //channel.close();
     }
     catch(Exception e) {
       Logger.error(e);

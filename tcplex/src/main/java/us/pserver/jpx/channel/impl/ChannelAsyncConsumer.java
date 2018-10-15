@@ -21,45 +21,49 @@
 
 package us.pserver.jpx.channel.impl;
 
-import java.io.IOException;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
 import java.util.Objects;
+import java.util.Optional;
 import us.pserver.jpx.channel.Channel;
-import us.pserver.jpx.channel.ChannelConfiguration;
-import us.pserver.jpx.channel.ChannelEngine;
-import us.pserver.jpx.channel.SwitchableChannel;
+import us.pserver.tools.fn.ThrowableConsumer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 14/09/2018
+ * @version 0.0 - 19/08/2018
  */
-public class ServerChannelGroup extends AbstractChannelGroup<ServerSocketChannel> {
+public class ChannelAsyncConsumer<T> extends AbstractChannelAsync<Void> {
+  
+  private final ThrowableConsumer cs;
+  
+  private final T input;
   
   
-  public ServerChannelGroup(Selector select, ChannelConfiguration cfg, ChannelEngine eng, int maxSize) {
-    super(select, cfg, eng, maxSize);
+  public ChannelAsyncConsumer(Channel channel, T input, ThrowableConsumer<T> cs) {
+    super(channel);
+    this.cs = Objects.requireNonNull(cs);
+    this.input = input;
+  }
+
+
+  @Override
+  public Optional get() {
+    return Optional.empty();
   }
   
   
   @Override
-  public Channel add(ServerSocketChannel socket) throws IOException {
-    if(this.isFull()) {
-      throw new IllegalStateException("ChannelGroup is full (count=" + count + ")");
+  public void run() {
+    try {
+      cs.accept(input);
+      onSuccess();
     }
-    Objects.requireNonNull(socket);
-    count++;
-    SwitchableChannel channel = new ServerChannel(socket, selector, config, engine);
-    if(running) {
-      functions.forEach(channel::appendFunction);
-      listeners.forEach(channel::addListener);
+    catch(Exception e) {
+      onError(e);
     }
-    socket.configureBlocking(false);
-    socket.register(selector, SelectionKey.OP_ACCEPT, channel);
-    sockets.put(socket, channel);
-    return channel;
+    finally {
+      onComplete();
+      signalAll();
+    }
   }
   
 }
