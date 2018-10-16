@@ -22,6 +22,7 @@
 package us.pserver.jpx.channel.impl;
 
 import java.io.IOException;
+import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -63,13 +64,13 @@ public class ClientChannelGroup extends AbstractChannelGroup<SocketChannel> {
     );
     return channel;
   }
-  
+
   
   @Override
   public void switchKey(SelectionKey key) throws IOException {
     SwitchableChannel channel = (SwitchableChannel) key.attachment();
     SocketChannel sock = (SocketChannel) key.channel();
-    if(sock.isConnected()) {
+    if(sock.isOpen() && sock.isConnected()) {
       channel.switchKey(key);
     }
     else {

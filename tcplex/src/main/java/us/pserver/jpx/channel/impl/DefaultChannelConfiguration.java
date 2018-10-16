@@ -49,6 +49,10 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
   
   private final InetSocketAddress address;
   
+  private final double readThrottle;
+  
+  private final double writeThrottle;
+  
   private final boolean autoRead;
   
   private final boolean autoWrite;
@@ -60,12 +64,14 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
         DEFAULT_IO_THREAD_POOL_SIZE, 
         DEFAULT_SYSTEM_THREAD_POOL_SIZE, 
         null,
+        0.0,
+        0.0,
         true,
         true
     );
   }
 
-  public DefaultChannelConfiguration(BufferPoolConfiguration bufPoolConfig, ChannelSocketOptions options, int ioThreadPoolSize, int systemThreadPoolSize, InetSocketAddress address, boolean autoRead, boolean autoWrite) {
+  public DefaultChannelConfiguration(BufferPoolConfiguration bufPoolConfig, ChannelSocketOptions options, int ioThreadPoolSize, int systemThreadPoolSize, InetSocketAddress address, double readThrottle, double writeThrottle, boolean autoRead, boolean autoWrite) {
     this.bufPoolConfig = bufPoolConfig;
     this.options = options;
     this.ioThreadPoolSize = ioThreadPoolSize;
@@ -73,6 +79,8 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
     this.address = address;
     this.autoRead = autoRead;
     this.autoWrite = autoWrite;
+    this.readThrottle = readThrottle;
+    this.writeThrottle = writeThrottle;
   }
   
   
@@ -84,7 +92,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withIOThreadPoolSize(int ioThreadPoolSize) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, readThrottle, writeThrottle, autoRead, autoWrite);
   }
 
 
@@ -96,7 +104,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withComputeThreadPoolSize(int systemThreadPoolSize) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, readThrottle, writeThrottle, autoRead, autoWrite);
   }
 
 
@@ -108,7 +116,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withBufferPoolConfiguration(BufferPoolConfiguration bufPoolConfig) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, readThrottle, writeThrottle, autoRead, autoWrite);
   }
   
   
@@ -120,7 +128,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withSocketOptions(ChannelSocketOptions options) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, readThrottle, writeThrottle, autoRead, autoWrite);
   }
   
   
@@ -132,7 +140,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withSocketAddress(InetSocketAddress address) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, readThrottle, writeThrottle, autoRead, autoWrite);
   }
 
 
@@ -150,7 +158,7 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withAutoReadEnabled(boolean autoRead) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, readThrottle, writeThrottle, autoRead, autoWrite);
   }
 
 
@@ -162,7 +170,29 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
 
   @Override
   public ChannelConfiguration withAutoWriteEnabled(boolean autoWrite) {
-    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, autoRead, autoWrite);
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, readThrottle, writeThrottle, autoRead, autoWrite);
+  }
+  
+  
+  @Override
+  public double getReadingThrottle() {
+    return this.readThrottle;
+  }
+  
+  @Override
+  public ChannelConfiguration withReadingThrottle(double readThrottle) {
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, readThrottle, writeThrottle, autoRead, autoWrite);
+  }
+  
+
+  @Override
+  public double getWritingThrottle() {
+    return this.writeThrottle;
+  }
+  
+  @Override
+  public ChannelConfiguration withWritingThrottle(double writeThrottle) {
+    return new DefaultChannelConfiguration(bufPoolConfig, options, ioThreadPoolSize, systemThreadPoolSize, address, readThrottle, writeThrottle, autoRead, autoWrite);
   }
   
   
@@ -175,6 +205,8 @@ public class DefaultChannelConfiguration implements ChannelConfiguration {
         + sident + " - ioThreadPoolSize=" + ioThreadPoolSize + ",\n"
         + sident + " - systemThreadPoolSize=" + systemThreadPoolSize + ",\n"
         + sident + " - address=" + address + ",\n"
+        + sident + " - readThrottle=" + readThrottle + ",\n"
+        + sident + " - writeThrottle=" + writeThrottle + ",\n"
         + sident + " - autoRead=" + autoRead + ",\n"
         + sident + " - autoWrite=" + autoWrite + "\n"
         + sident + "}";

@@ -22,12 +22,9 @@
 package us.pserver.jpx.channel.impl;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -50,14 +47,13 @@ import us.pserver.jpx.event.Attribute.AttributeMapBuilder;
 import us.pserver.jpx.event.EventListener;
 import us.pserver.jpx.pool.Pooled;
 import us.pserver.jpx.channel.SwitchableChannel;
-import us.pserver.jpx.log.Logger;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2018
  */
-public abstract class AbstractChannel<C extends SelectableChannel> implements SwitchableChannel, Runnable {
+public abstract class AbstractChannel implements SwitchableChannel, Runnable {
   
   protected final ChannelConfiguration config;
   
@@ -66,8 +62,6 @@ public abstract class AbstractChannel<C extends SelectableChannel> implements Sw
   protected final List<EventListener<Channel,ChannelEvent>> listeners;
   
   protected final LinkedBlockingDeque<Pooled<ByteBuffer>> writeQueue;
-  
-  protected final C socket;
   
   protected final ChannelStream stream;
   
@@ -89,15 +83,9 @@ public abstract class AbstractChannel<C extends SelectableChannel> implements Sw
   
   
   protected AbstractChannel(Selector select, ChannelConfiguration cfg, ChannelEngine eng) {
-    this(null, select, cfg, eng);
-  }
-  
-  
-  protected AbstractChannel(C socket, Selector select, ChannelConfiguration cfg, ChannelEngine eng) {
     this.selector = Objects.requireNonNull(select);
     this.config = Objects.requireNonNull(cfg);
     this.engine = Objects.requireNonNull(eng);
-    this.socket = socket;
     this.stream = new DefaultChannelStream(this);
     this.listeners = new CopyOnWriteArrayList<>();
     this.writeQueue = new LinkedBlockingDeque<>();
@@ -202,31 +190,6 @@ public abstract class AbstractChannel<C extends SelectableChannel> implements Sw
 
 
   @Override
-  public InetSocketAddress getLocalAddress() throws IOException {
-    if(SocketChannel.class.isAssignableFrom(socket.getClass())) {
-      return (InetSocketAddress) ((SocketChannel) socket).getLocalAddress();
-    }
-    else if(ServerSocketChannel.class.isAssignableFrom(socket.getClass())) {
-      return (InetSocketAddress) ((ServerSocketChannel) socket).getLocalAddress();
-    }
-    else {
-      throw new UnsupportedOperationException();
-    }
-  }
-
-
-  @Override
-  public InetSocketAddress getRemoteAddress() throws IOException {
-    if(SocketChannel.class.isAssignableFrom(socket.getClass())) {
-      return (InetSocketAddress) ((SocketChannel) socket).getRemoteAddress();
-    }
-    else {
-      throw new UnsupportedOperationException();
-    }
-  }
-
-
-  @Override
   public Channel addListener(EventListener<Channel, ChannelEvent> lst) {
     if(lst != null) {
       listeners.add(lst);
@@ -295,21 +258,9 @@ public abstract class AbstractChannel<C extends SelectableChannel> implements Sw
   }
   
   
-  protected void doClose() throws IOException {
-    //Logger.info("DO CLOSE!!");
-    socket.keyFor(selector).cancel();
-    if(selector.isOpen() && selector.keys().isEmpty()) {
-      selector.close();
-    }
-    socket.close();
-    Logger.debug("socket.isOpen(): %s, socket = %s", socket.isOpen(), socket);
-    fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
-        .add(ChannelAttribute.UPTIME, getUptime())
-        .add(ChannelAttribute.CHANNEL, this)
-    ));
-  }
-
-
+  protected abstract void doClose() throws IOException;
+  
+  
   @Override
   public Channel setReadingEnabled(boolean enabled) {
     this.doread = enabled;

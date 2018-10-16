@@ -79,4 +79,7 @@ public interface Channel extends AutoCloseable {
   
   public void closeAwait() throws Exception;
   
+  @Override
+  public void close() throws IOException;
+  
 }

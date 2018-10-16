@@ -22,6 +22,7 @@
 package us.pserver.jpx.channel.impl;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
@@ -47,7 +48,7 @@ import us.pserver.jpx.pool.Pooled;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2018
  */
-public class ServerChannel extends AbstractChannel<ServerSocketChannel> {
+public class ServerChannel extends AbstractChannel {
   
   private final LinkedBlockingDeque<ClientChannelGroup> groups;
   
@@ -55,7 +56,7 @@ public class ServerChannel extends AbstractChannel<ServerSocketChannel> {
   
   
   public ServerChannel(ServerSocketChannel socket, Selector select, ChannelConfiguration cfg, ChannelEngine eng) {
-    super(socket, select, cfg, eng);
+    super(select, cfg, eng);
     this.socket = Objects.requireNonNull(socket);
     this.groups = new LinkedBlockingDeque<>();
   }
@@ -213,4 +214,31 @@ public class ServerChannel extends AbstractChannel<ServerSocketChannel> {
     return this;
   }
   
+
+  @Override
+  protected void doClose() throws IOException {
+    socket.keyFor(selector).cancel();
+    if(selector.isOpen() && selector.keys().isEmpty()) {
+      selector.close();
+    }
+    socket.close();
+    Logger.debug("socket.isOpen(): %s, socket = %s", socket.isOpen(), socket);
+    fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
+        .add(ChannelAttribute.UPTIME, getUptime())
+        .add(ChannelAttribute.CHANNEL, this)
+    ));
+  }
+
+
+  @Override
+  public InetSocketAddress getLocalAddress() throws IOException {
+    return (InetSocketAddress) socket.getLocalAddress();
+  }
+
+
+  @Override
+  public InetSocketAddress getRemoteAddress() throws IOException {
+    throw new UnsupportedOperationException();
+  }
+
 }

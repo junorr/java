@@ -22,6 +22,7 @@
 package us.pserver.jpx.channel.impl;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
@@ -38,6 +39,7 @@ import us.pserver.jpx.channel.stream.ChannelStream;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.channel.stream.StreamPartial;
 import us.pserver.jpx.event.Attribute;
+import us.pserver.jpx.log.Logger;
 import us.pserver.jpx.pool.Pooled;
 
 /**
@@ -45,13 +47,13 @@ import us.pserver.jpx.pool.Pooled;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2018
  */
-public class ClientChannel extends AbstractChannel<SocketChannel> {
+public class ClientChannel extends AbstractChannel {
   
   private final SocketChannel socket;
   
   
   public ClientChannel(SocketChannel socket, Selector select, ChannelConfiguration cfg, ChannelEngine eng) {
-    super(socket, select, cfg, eng);
+    super(select, cfg, eng);
     this.socket = socket;
   }
   
@@ -117,8 +119,8 @@ public class ClientChannel extends AbstractChannel<SocketChannel> {
 
   @Override
   public void switchKey(SelectionKey key) throws IOException {
-    SelectableChannel sock = key.channel();
-    if(!sock.isOpen()) {
+    SocketChannel sock = (SocketChannel) key.channel();
+    if(!sock.isOpen() || !sock.isConnected()) {
       close();
     }
     else if(key.isConnectable()) {
@@ -147,6 +149,9 @@ public class ClientChannel extends AbstractChannel<SocketChannel> {
   
   
   private void reading() throws IOException {
+    if(getIncommingBytesPerSecond() >= config.getReadingThrottle()) {
+      
+    }
     Pooled<ByteBuffer> buf = engine.getBufferPool().allocAwait();
     long read = socket.read(buf.get());
     //Logger.debug("READING = %s, THREAD = %s", read, Thread.currentThread().getName());
@@ -215,6 +220,32 @@ public class ClientChannel extends AbstractChannel<SocketChannel> {
         return broken;
       }
     };
+  }
+
+
+  @Override
+  protected void doClose() throws IOException {
+    socket.keyFor(selector).cancel();
+    if(selector.isOpen() && selector.keys().isEmpty()) {
+      selector.close();
+    }
+    socket.close();
+    fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
+        .add(ChannelAttribute.UPTIME, getUptime())
+        .add(ChannelAttribute.CHANNEL, this)
+    ));
+  }
+
+
+  @Override
+  public InetSocketAddress getLocalAddress() throws IOException {
+    return (InetSocketAddress) socket.getLocalAddress();
+  }
+
+
+  @Override
+  public InetSocketAddress getRemoteAddress() throws IOException {
+    return (InetSocketAddress) socket.getRemoteAddress();
   }
 
 }

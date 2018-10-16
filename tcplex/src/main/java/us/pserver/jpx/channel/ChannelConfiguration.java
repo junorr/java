@@ -67,6 +67,17 @@ public interface ChannelConfiguration {
   
   public ChannelConfiguration withAutoWriteEnabled(boolean auto);
   
+  
+  public double getReadingThrottle();
+  
+  public ChannelConfiguration withReadingThrottle(double throttle);
+  
+  
+  public double getWritingThrottle();
+  
+  public ChannelConfiguration withWritingThrottle(double throttle);
+  
+  
   public String toString(int ident);
   
 }

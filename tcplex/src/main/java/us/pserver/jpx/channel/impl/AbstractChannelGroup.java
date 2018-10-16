@@ -22,6 +22,7 @@
 package us.pserver.jpx.channel.impl;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
@@ -53,7 +54,8 @@ import us.pserver.jpx.log.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2018
  */
-public abstract class AbstractChannelGroup<C extends SelectableChannel> extends AbstractChannel<C> implements ChannelGroup<C>, Switchable, Runnable {
+public abstract class AbstractChannelGroup<C extends SelectableChannel> 
+    extends AbstractChannel implements ChannelGroup<C>, Switchable, Runnable {
   
   protected final CopyOnWriteArrayList<StreamFunction> functions;
   
@@ -186,7 +188,7 @@ public abstract class AbstractChannelGroup<C extends SelectableChannel> extends 
   @Override
   public void switchKey(SelectionKey key) throws IOException {
     SwitchableChannel channel = (SwitchableChannel) key.attachment();
-    SelectableChannel sock = key.channel();
+    SelectableChannel sock = (SelectableChannel) key.channel();
     if(sock.isOpen()) {
       channel.switchKey(key);
     }
@@ -197,14 +199,9 @@ public abstract class AbstractChannelGroup<C extends SelectableChannel> extends 
   
   
   protected void disconnect(SelectableChannel sock) throws IOException {
+    Logger.debug("DISCONNECT - %s", sock);
     sock.keyFor(selector).cancel();
-    sock.close();
-    Logger.debug("disconnected: %s", sock);
-    Channel channel = sockets.remove(sock);
-    fireEvent(createEvent(ChannelEvent.Type.CONNECTION_CLOSED, Attribute.mapBuilder()
-        .add(ChannelAttribute.UPTIME, channel.getUptime())
-        .add(ChannelAttribute.CHANNEL, channel)
-    ));
+    sockets.remove(sock).close();
   }
   
   
@@ -251,6 +248,18 @@ public abstract class AbstractChannelGroup<C extends SelectableChannel> extends 
         .add(ChannelAttribute.UPTIME, getUptime())
         .add(ChannelAttribute.CHANNEL, this)
     ));
+  }
+
+
+  @Override
+  public InetSocketAddress getLocalAddress() throws IOException {
+    throw new UnsupportedOperationException();
+  }
+
+
+  @Override
+  public InetSocketAddress getRemoteAddress() throws IOException {
+    throw new UnsupportedOperationException();
   }
 
 

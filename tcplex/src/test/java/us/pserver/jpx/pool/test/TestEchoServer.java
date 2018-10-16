@@ -55,6 +55,8 @@ public class TestEchoServer {
       DEFAULT_IO_THREAD_POOL_SIZE, 
       DEFAULT_SYSTEM_THREAD_POOL_SIZE, 
       new InetSocketAddress("127.0.0.1", 20202),
+      0.0,
+      0.0,
       true,
       true
   );

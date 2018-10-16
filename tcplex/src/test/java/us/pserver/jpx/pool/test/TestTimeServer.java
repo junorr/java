@@ -56,6 +56,8 @@ public class TestTimeServer {
       DEFAULT_IO_THREAD_POOL_SIZE, 
       DEFAULT_SYSTEM_THREAD_POOL_SIZE, 
       new InetSocketAddress("127.0.0.1", 20202),
+      0.0,
+      0.0,
       true,
       true
   );
@@ -77,7 +79,7 @@ public class TestTimeServer {
         c.write(buf);
       }, ChannelEvent.Type.CONNECTION_STABLISHED));
       server.start();
-      //new TestClientTimeServer().clientConnect();
+      new TestClientTimeServer().clientConnect();
       Sleeper.of(10000).sleep();
       server.closeAwait();
     }
