@@ -38,7 +38,7 @@ public class ByteBufferOutputStream extends OutputStream {
   
   public static final IntFunction<ByteBuffer> ALLOC_POLICY_HEAP = ByteBuffer::allocate;
   
-  public static final int DEFAULT_INITIAL_SIZE = 16 * 1024;
+  public static final int DEFAULT_INITIAL_SIZE = 32 * 1024;
   
   
   private final List<ByteBuffer> buffers;
