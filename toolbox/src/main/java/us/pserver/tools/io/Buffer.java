@@ -162,6 +162,8 @@ public interface Buffer extends Cloneable {
   
   public static interface BufferFactory {
     
+    public BufferFactory concurrent();
+    
     public Buffer create(int size);
     
     public Buffer create(byte[] src);
@@ -182,58 +184,66 @@ public interface Buffer extends Cloneable {
   
   public static class HeapBufferFactory implements BufferFactory {
     
+    private boolean concurrent = false;
+    
     @Override
-    public HeapBuffer create(int size) {
-      if(size < 1) {
-        throw new IllegalArgumentException("Bad size: " + size);
-      }
-      return new HeapBuffer(size);
+    public BufferFactory concurrent() {
+      concurrent = true;
+      return this;
     }
     
     @Override
-    public HeapBuffer create(byte[] src) {
+    public Buffer create(int size) {
+      if(size < 1) {
+        throw new IllegalArgumentException("Bad size: " + size);
+      }
+      return concurrent ? new ConcurrentBuffer(new HeapBuffer(size)) : new HeapBuffer(size);
+    }
+    
+    @Override
+    public Buffer create(byte[] src) {
       return create(Objects.requireNonNull(src), 0, src.length);
     }
     
     @Override
-    public HeapBuffer create(byte[] src, int ofs, int length) {
+    public Buffer create(byte[] src, int ofs, int length) {
       if(src == null || src.length == 0) {
         throw new IllegalArgumentException(String.format("Bad source byte array: %s", (src == null ? src : src.length)));
       }
       if(ofs < 0 || length < 1 || ofs + length > src.length) {
         throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", ofs, length));
       }
-      HeapBuffer buf = new HeapBuffer(length);
+      Buffer buf = create(length);
       buf.fillBuffer(src, ofs, length);
       return buf;
     }
     
     @Override
-    public HeapBuffer create(ByteBuffer src) {
+    public Buffer create(ByteBuffer src) {
       return create(src, src.remaining());
     }
     
     @Override
-    public HeapBuffer create(ByteBuffer src, int length) {
+    public Buffer create(ByteBuffer src, int length) {
       if(length < 1) return HeapBuffer.EMPTY_BUFFER;
       Objects.requireNonNull(src);
-      HeapBuffer buf = new HeapBuffer(length);
+      Buffer buf = create(length);
       buf.fillBuffer(src, length);
       return buf;
     }
     
     @Override
-    public HeapBuffer create(String src) {
+    public Buffer create(String src) {
       return create(src, StandardCharsets.UTF_8);
     }
     
     @Override
-    public HeapBuffer create(String src, Charset cs) {
+    public Buffer create(String src, Charset cs) {
       Objects.requireNonNull(src);
       if(src.isEmpty()) return HeapBuffer.EMPTY_BUFFER;
       Objects.requireNonNull(cs);
       ByteBuffer bb = cs.encode(src);
-      HeapBuffer buf = new HeapBuffer(bb.remaining());
+      Buffer buf = create(bb.remaining());
       buf.fillBuffer(bb);
       return buf;
     }
@@ -244,62 +254,70 @@ public interface Buffer extends Cloneable {
   
   public static class DirectBufferFactory implements BufferFactory {
     
+    private boolean concurrent = false;
+    
     @Override
-    public DirectBuffer create(int size) {
-      if(size < 1) {
-        throw new IllegalArgumentException("Bad size: " + size);
-      }
-      return new DirectBuffer(size);
+    public BufferFactory concurrent() {
+      concurrent = true;
+      return this;
     }
     
     @Override
-    public DirectBuffer create(byte[] src) {
+    public Buffer create(int size) {
+      if(size < 1) {
+        throw new IllegalArgumentException("Bad size: " + size);
+      }
+      return concurrent ? new ConcurrentBuffer(new DirectBuffer(size)) : new DirectBuffer(size);
+    }
+    
+    @Override
+    public Buffer create(byte[] src) {
       return create(Objects.requireNonNull(src), 0, src.length);
     }
     
     @Override
-    public DirectBuffer create(byte[] src, int ofs, int length) {
+    public Buffer create(byte[] src, int ofs, int length) {
       if(src == null || src.length == 0) {
         throw new IllegalArgumentException(String.format("Bad source byte array: %s", (src == null ? src : src.length)));
       }
       if(ofs < 0 || length < 1 || ofs + length > src.length) {
         throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", ofs, length));
       }
-      DirectBuffer buf = new DirectBuffer(length);
+      Buffer buf = create(length);
       buf.fillBuffer(src, ofs, length);
       return buf;
     }
     
     @Override
-    public DirectBuffer create(ByteBuffer src) {
+    public Buffer create(ByteBuffer src) {
       return create(src, src.remaining());
     }
     
     @Override
-    public DirectBuffer create(ByteBuffer src, int length) {
+    public Buffer create(ByteBuffer src, int length) {
       if(length < 1) {
         throw new IllegalArgumentException("Bad length: " + length);
       }
       Objects.requireNonNull(src);
-      DirectBuffer buf = new DirectBuffer(length);
+      Buffer buf = create(length);
       buf.fillBuffer(src, length);
       return buf;
     }
     
     @Override
-    public DirectBuffer create(String src) {
+    public Buffer create(String src) {
       return create(src, StandardCharsets.UTF_8);
     }
     
     @Override
-    public DirectBuffer create(String src, Charset cs) {
+    public Buffer create(String src, Charset cs) {
       Objects.requireNonNull(src);
       if(src.isEmpty()) {
         throw new IllegalArgumentException(String.format("Bad source String: '%s'", src));
       }
       Objects.requireNonNull(cs);
       ByteBuffer bb = cs.encode(src);
-      DirectBuffer buf = new DirectBuffer(bb.remaining());
+      Buffer buf = create(bb.remaining());
       buf.fillBuffer(bb);
       return buf;
     }
@@ -312,66 +330,75 @@ public interface Buffer extends Cloneable {
     
     private final BufferFactory factory;
     
+    private boolean concurrent;
+    
     public ExpansibleBufferFactory(BufferFactory factory) {
       this.factory = Objects.requireNonNull(factory);
+      concurrent = false;
     }
     
     @Override
-    public ExpansibleBuffer create(int size) {
+    public BufferFactory concurrent() {
+      concurrent = true;
+      return this;
+    }
+    
+    @Override
+    public Buffer create(int size) {
       if(size < 1) {
         throw new IllegalArgumentException("Bad size: " + size);
       }
-      return new ExpansibleBuffer(factory, size);
+      return concurrent ? new ConcurrentBuffer(new ExpansibleBuffer(factory, size)) : new ExpansibleBuffer(factory, size);
     }
     
     @Override
-    public ExpansibleBuffer create(byte[] src) {
+    public Buffer create(byte[] src) {
       return create(Objects.requireNonNull(src), 0, src.length);
     }
     
     @Override
-    public ExpansibleBuffer create(byte[] src, int ofs, int length) {
+    public Buffer create(byte[] src, int ofs, int length) {
       if(src == null || src.length == 0) {
         throw new IllegalArgumentException(String.format("Bad source byte array: %s", (src == null ? src : src.length)));
       }
       if(ofs < 0 || length < 1 || ofs + length > src.length) {
         throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", ofs, length));
       }
-      ExpansibleBuffer buf = new ExpansibleBuffer(factory, length);
+      Buffer buf = create(length);
       buf.fillBuffer(src, ofs, length);
       return buf;
     }
     
     @Override
-    public ExpansibleBuffer create(ByteBuffer src) {
+    public Buffer create(ByteBuffer src) {
       return create(src, src.remaining());
     }
     
     @Override
-    public ExpansibleBuffer create(ByteBuffer src, int length) {
+    public Buffer create(ByteBuffer src, int length) {
       if(length < 1) {
         throw new IllegalArgumentException("Bad length: " + length);
       }
       Objects.requireNonNull(src);
-      ExpansibleBuffer buf = new ExpansibleBuffer(factory, length);
+      Buffer buf = create(length);
       buf.fillBuffer(src, length);
       return buf;
     }
     
     @Override
-    public ExpansibleBuffer create(String src) {
+    public Buffer create(String src) {
       return create(src, StandardCharsets.UTF_8);
     }
     
     @Override
-    public ExpansibleBuffer create(String src, Charset cs) {
+    public Buffer create(String src, Charset cs) {
       Objects.requireNonNull(src);
       if(src.isEmpty()) {
         throw new IllegalArgumentException(String.format("Bad source String: '%s'", src));
       }
       Objects.requireNonNull(cs);
       ByteBuffer bb = cs.encode(src);
-      ExpansibleBuffer buf = new ExpansibleBuffer(factory, bb.remaining());
+      Buffer buf = create(bb.remaining());
       buf.fillBuffer(bb);
       return buf;
     }

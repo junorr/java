@@ -41,13 +41,13 @@ public class DirectBuffer implements Buffer {
   
   private final ByteBuffer buffer;
   
-  private int rindex;
+  private volatile int rindex;
   
-  private int windex;
+  private volatile int windex;
   
-  private int rmark;
+  private volatile int rmark;
   
-  private int wmark;
+  private volatile int wmark;
   
   
   private DirectBuffer(ByteBuffer buf, int rindex, int windex, int rmark, int wmark) {

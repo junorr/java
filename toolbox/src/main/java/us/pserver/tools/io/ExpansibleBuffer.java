@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.IntFunction;
+import us.pserver.tools.log.Logger;
 
 /**
  *
@@ -45,16 +46,16 @@ public class ExpansibleBuffer implements Buffer {
   
   private final List<Buffer> buffers;
   
-  private int rindex;
+  private volatile int rindex;
   
-  private int windex;
+  private volatile int windex;
   
-  private int rmark;
+  private volatile int rmark;
   
-  private int wmark;
+  private volatile int wmark;
   
   
-  private ExpansibleBuffer(Buffer.BufferFactory factory, int growSize, CopyOnWriteArrayList<Buffer> buffers, int rindex, int windex, int rmark, int wmark) {
+  private ExpansibleBuffer(Buffer.BufferFactory factory, int growSize, List<Buffer> buffers, int rindex, int windex, int rmark, int wmark) {
     this.factory = factory;
     this.growSize = growSize;
     this.buffers = buffers;
@@ -111,21 +112,20 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public int readLength() {
-    int rlen = 0;
-    for(int i = rindex; i < windex; i++) {
-      rlen += buffers.get(i).readLength();
-    }
-    return rlen;
+    Logger.debug("readLength=%d", buffers.stream()
+        .mapToInt(Buffer::readLength)
+        .sum());
+    return buffers.stream()
+        .mapToInt(Buffer::readLength)
+        .sum();
   }
   
   
   @Override
   public int writeLength() {
-    int wlen = 0;
-    for(int i = windex; i < buffers.size(); i++) {
-      wlen += buffers.get(i).writeLength();
-    }
-    return wlen;
+    return buffers.stream()
+        .mapToInt(Buffer::writeLength)
+        .sum();
   }
   
   
@@ -234,7 +234,9 @@ public class ExpansibleBuffer implements Buffer {
   public int fillBuffer(InputStream in) throws IOException {
     int read = -1;
     int count = 0;
-    while((read = wget().fillBuffer(in)) != -1) {
+    byte[] bs = new byte[growSize];
+    while((read = in.read(bs)) != -1) {
+      this.fillBuffer(bs, 0, read);
       count += read;
     }
     return count;
@@ -246,7 +248,9 @@ public class ExpansibleBuffer implements Buffer {
     int read = -1;
     int count = 0;
     int len = length;
-    while(len > 0 && (read = wget().fillBuffer(in)) != -1) {
+    byte[] bs = new byte[growSize];
+    while(len > 0 && (read = in.read(bs)) != -1) {
+      this.fillBuffer(bs, 0, read);
       count += read;
       len -= read;
     }
@@ -284,7 +288,7 @@ public class ExpansibleBuffer implements Buffer {
     int read = -1;
     int count = 0;
     while(buf.isReadable()) {
-      read = wget().fillBuffer(buf);
+      read = buf.writeTo(this);
       count += read;
     }
     return count;
@@ -306,15 +310,7 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public int fillBuffer(byte[] src) {
-    int read = -1;
-    int count = 0;
-    int len = src.length;
-    while(len > 0) {
-      read = wget().fillBuffer(src);
-      count += read;
-      len -= read;
-    }
-    return count;
+    return fillBuffer(Objects.requireNonNull(src), 0, src.length);
   }
   
   
@@ -330,10 +326,12 @@ public class ExpansibleBuffer implements Buffer {
     int ofs = offset;
     while(len > 0) {
       read = wget().fillBuffer(src, ofs, len);
+      Logger.debug("wget: buffers.size=%d, windex=%d, get(windex)=%s", buffers.size(), windex, buffers.get(windex));
       count += read;
       len -= read;
       ofs += read;
     }
+    Logger.debug("count: %d", count);
     return count;
   }
   
@@ -342,13 +340,12 @@ public class ExpansibleBuffer implements Buffer {
   public int writeTo(OutputStream out) throws IOException {
     Objects.requireNonNull(out);
     int count = 0;
-    for(int i = rindex; i < windex; i++) {
+    for(int i = rindex; i < buffers.size(); i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         count += b.writeTo(out);
-      } else {
-        rindex++;
       }
+      rindex++;
     }
     return count;
   }
@@ -360,15 +357,14 @@ public class ExpansibleBuffer implements Buffer {
     Objects.requireNonNull(out);
     int count = 0;
     int len = length;
-    for(int i = rindex; i < windex && len > 0; i++) {
+    for(int i = rindex; i < buffers.size() && len > 0; i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         int w = b.writeTo(out, len);
         count += w;
         len -= w;
-      } else {
-        rindex++;
       }
+      rindex++;
     }
     return count;
   }
@@ -378,13 +374,12 @@ public class ExpansibleBuffer implements Buffer {
   public int writeTo(ByteBuffer out) {
     Objects.requireNonNull(out);
     int count = 0;
-    for(int i = rindex; i < windex && out.hasRemaining(); i++) {
+    for(int i = rindex; i < buffers.size() && out.hasRemaining(); i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         count += b.writeTo(out);
-      } else {
-        rindex++;
       }
+      rindex++;
     }
     return count;
   }
@@ -396,15 +391,14 @@ public class ExpansibleBuffer implements Buffer {
     Objects.requireNonNull(out);
     int count = 0;
     int len = length;
-    for(int i = rindex; i < windex && len > 0 && out.hasRemaining(); i++) {
+    for(int i = rindex; i < buffers.size() && len > 0 && out.hasRemaining(); i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         int w = b.writeTo(out, len);
         count += w;
         len -= w;
-      } else {
-        rindex++;
       }
+      rindex++;
     }
     return count;
   }
@@ -414,13 +408,12 @@ public class ExpansibleBuffer implements Buffer {
   public int writeTo(Buffer out) {
     Objects.requireNonNull(out);
     int count = 0;
-    for(int i = rindex; i < windex && out.isWritable(); i++) {
+    for(int i = rindex; i < buffers.size() && out.isWritable(); i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         count += b.writeTo(out);
-      } else {
-        rindex++;
       }
+      rindex++;
     }
     return count;
   }
@@ -432,15 +425,14 @@ public class ExpansibleBuffer implements Buffer {
     Objects.requireNonNull(out);
     int count = 0;
     int len = length;
-    for(int i = rindex; i < windex && len > 0 && out.isWritable(); i++) {
+    for(int i = rindex; i < buffers.size() && len > 0 && out.isWritable(); i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         int w = b.writeTo(out, len);
         count += w;
         len -= w;
-      } else {
-        rindex++;
       }
+      rindex++;
     }
     return count;
   }
@@ -461,16 +453,15 @@ public class ExpansibleBuffer implements Buffer {
     int count = 0;
     int len = length;
     int ofs = offset;
-    for(int i = rindex; i < windex && len > 0 && ofs + len < out.length; i++) {
+    for(int i = rindex; i < buffers.size() && len > 0; i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         int w = b.writeTo(out, ofs, len);
         count += w;
         len -= w;
         ofs += w;
-      } else {
-        rindex++;
       }
+      rindex++;
     }
     return count;
   }

@@ -44,13 +44,13 @@ public class HeapBuffer implements Buffer {
   
   private final byte[] buffer;
   
-  private int rindex;
+  private volatile int rindex;
   
-  private int windex;
+  private volatile int windex;
   
-  private int rmark;
+  private volatile int rmark;
   
-  private int wmark;
+  private volatile int wmark;
   
   
   private HeapBuffer(byte[] buffer, int rindex, int windex, int rmark, int wmark) {
@@ -193,7 +193,11 @@ public class HeapBuffer implements Buffer {
       for(int i = ofs; i < len; i++) {
         if(buffer[idx + i] == cont[i]) count++;
       }
-      if(count == len) return true;
+      if(count == len) {
+        rindex = idx;
+        Logger.debug("content found: %d", idx);
+        return true;
+      }
       idx++;
     }
     return false;
@@ -215,7 +219,11 @@ public class HeapBuffer implements Buffer {
         if(buffer[idx + i] == buf.get()) count++;
       }
       buf.readReset();
-      if(count == rlen) return true;
+      if(count == rlen) {
+        rindex = idx;
+        Logger.debug("content found: %d", idx);
+        return true;
+      }
       idx++;
     }
     return false;

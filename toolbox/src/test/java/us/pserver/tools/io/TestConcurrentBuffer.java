@@ -35,12 +35,12 @@ import us.pserver.tools.log.Logger;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 20/10/2018
  */
-public class TestHeapBuffer {
+public class TestConcurrentBuffer {
   
   /*                                     1...5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80...85...90...95..100..105..110..115..120..125..130..135..140..145..150..155..160..165.....173 */
   private static final byte[] content = "Voce deve ter recebido uma copia da Licença Publica Geral Menor do GNU junto \n com esta biblioteca; se nao, acesse \n http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html".getBytes(StandardCharsets.UTF_8);
   
-  private static final Buffer buffer = Buffer.heapFactory().create(content);
+  private static final Buffer buffer = Buffer.heapFactory().concurrent().create(content);
   
   private static void resetTestBuffer() {
     buffer.clear();
@@ -51,7 +51,7 @@ public class TestHeapBuffer {
 
   @Test
   public void testFillBufferWithByteArray() {
-    HeapBuffer buffer = new HeapBuffer(content.length);
+    Buffer buffer = Buffer.heapFactory().concurrent().create(content.length);
     buffer.writeMark();
     buffer.fillBuffer(content);
     Logger.debug("%s", buffer);
@@ -67,7 +67,7 @@ public class TestHeapBuffer {
   
   @Test
   public void testFillBufferWithInputStream() throws IOException {
-    HeapBuffer buffer = new HeapBuffer(content.length);
+    Buffer buffer = Buffer.heapFactory().concurrent().create(content.length);
     buffer.writeMark();
     ByteArrayInputStream bis = new ByteArrayInputStream(content);
     buffer.fillBuffer(bis);
@@ -84,7 +84,7 @@ public class TestHeapBuffer {
   
   @Test
   public void testFillBufferWithByteBuffer() throws IOException {
-    HeapBuffer buffer = new HeapBuffer(content.length);
+    Buffer buffer = Buffer.heapFactory().concurrent().create(content.length);
     buffer.writeMark();
     buffer.fillBuffer(ByteBuffer.wrap(content));
     Logger.debug("%s", buffer);
@@ -100,9 +100,9 @@ public class TestHeapBuffer {
   
   @Test
   public void testFillBufferWithBuffer() throws IOException {
-    HeapBuffer buffer = new HeapBuffer(content.length);
+    Buffer buffer = Buffer.heapFactory().concurrent().create(content.length);
     buffer.writeMark();
-    buffer.fillBuffer(TestHeapBuffer.buffer.clone());
+    buffer.fillBuffer(TestConcurrentBuffer.buffer.clone());
     Logger.debug("%s", buffer);
     Assertions.assertEquals(content.length, buffer.readLength());
     Assertions.assertEquals(0, buffer.writeLength());
@@ -241,7 +241,7 @@ public class TestHeapBuffer {
   
   @Test
   public void testPutGetByte() {
-    HeapBuffer buf = new HeapBuffer(1);
+    Buffer buf = Buffer.heapFactory().concurrent().create(1);
     buf.writeMark();
     byte b = '\r';
     buf.put(b);
@@ -259,7 +259,7 @@ public class TestHeapBuffer {
   
   @Test
   public void testPutGetShort() {
-    HeapBuffer buf = new HeapBuffer(Short.BYTES);
+    Buffer buf = Buffer.heapFactory().concurrent().create(Short.BYTES);
     buf.writeMark();
     short s = 5;
     buf.put(s);
@@ -279,7 +279,7 @@ public class TestHeapBuffer {
   
   @Test
   public void testPutGetInt() {
-    HeapBuffer buf = new HeapBuffer(Integer.BYTES);
+    Buffer buf = Buffer.heapFactory().concurrent().create(Integer.BYTES);
     buf.writeMark();
     int i = 5;
     buf.put(i);
@@ -299,7 +299,7 @@ public class TestHeapBuffer {
   
   @Test
   public void testPutGetFloat() {
-    HeapBuffer buf = new HeapBuffer(Integer.BYTES);
+    Buffer buf = Buffer.heapFactory().concurrent().create(Float.BYTES);
     buf.writeMark();
     float f = 5.005f;
     buf.put(f);
@@ -319,7 +319,7 @@ public class TestHeapBuffer {
   
   @Test
   public void testPutGetLong() {
-    HeapBuffer buf = new HeapBuffer(Long.BYTES);
+    Buffer buf = Buffer.heapFactory().concurrent().create(Long.BYTES);
     buf.writeMark();
     long l = 5L;
     buf.put(l);
@@ -339,7 +339,7 @@ public class TestHeapBuffer {
   
   @Test
   public void testPutGetDouble() {
-    HeapBuffer buf = new HeapBuffer(Long.BYTES);
+    Buffer buf = Buffer.heapFactory().concurrent().create(Long.BYTES);
     buf.writeMark();
     double d = 5.005;
     buf.put(d);
