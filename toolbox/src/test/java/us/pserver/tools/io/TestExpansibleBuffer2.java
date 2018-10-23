@@ -23,6 +23,7 @@ package us.pserver.tools.io;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import us.pserver.tools.log.Logger;
 
 /**
  *
@@ -33,10 +34,23 @@ public class TestExpansibleBuffer2 {
 
   @Test
   public void testReadLength() {
-    Buffer buffer = Buffer.expansibleHeapFactory().create("Hello World");
-    Assertions.assertEquals(11, buffer.readLength());
-    Assertions.assertTrue(buffer.isReadable());
-    Assertions.assertFalse(buffer.isWritable());
+    try {
+      Buffer buffer = Buffer.expansibleHeapFactory().create("Hello World");
+      Assertions.assertEquals(11, buffer.readLength());
+      Assertions.assertTrue(buffer.isReadable());
+      Assertions.assertFalse(buffer.isWritable());
+      buffer.clear();
+      Logger.debug("after clear: %s", buffer);
+      buffer.fillBuffer(Buffer.heapFactory().create("World Hello"));
+      Logger.debug("after fill : %s", buffer);
+      Assertions.assertEquals(11, buffer.readLength());
+      Assertions.assertTrue(buffer.isReadable());
+      Assertions.assertFalse(buffer.isWritable());
+    } 
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
   }
   
 }

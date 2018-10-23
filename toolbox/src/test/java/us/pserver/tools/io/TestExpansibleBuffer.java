@@ -40,13 +40,25 @@ public class TestExpansibleBuffer {
   /*                                     1...5...10...15...20...25...30...35...40...45...50...55...60...65...70...75...80...85...90...95..100..105..110..115..120..125..130..135..140..145..150..155..160..165.....173 */
   private static final byte[] content = "Voce deve ter recebido uma copia da Licença Publica Geral Menor do GNU junto \n com esta biblioteca; se nao, acesse \n http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html".getBytes(StandardCharsets.UTF_8);
   
-  private static final Buffer buffer = Buffer.expansibleHeapFactory().create(content);
+  private static final Buffer buffer = create();
+  
+  private static Buffer create() {
+    try {
+      return Buffer.expansibleHeapFactory().create(content);
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
   
   private static void resetTestBuffer() {
+    Logger.debug("BEFORE RESET: %s", buffer);
     buffer.clear();
     buffer.fillBuffer(content);
     buffer.readMark();
     buffer.writeMark();
+    Logger.debug("AFTER RESET: %s", buffer);
   }
 
   @Test
@@ -125,20 +137,22 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(false, buffer.isReadable());
     Assertions.assertEquals(false, buffer.isWritable());
     resetTestBuffer();
+    
   }
   
   @Test
   public void testWriteToOutputStream() throws IOException {
-    Logger.debug("%s", buffer);
+    Logger.debug("1. %s", buffer);
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     buffer.writeTo(bos);
-    Logger.debug("%s", buffer);
+    Logger.debug("2. %s", buffer);
     Assertions.assertEquals(0, buffer.readLength());
     Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(false, buffer.isReadable());
     Assertions.assertEquals(false, buffer.isWritable());
     Assertions.assertArrayEquals(content, bos.toByteArray());
     resetTestBuffer();
+    Logger.debug("3. %s", buffer);
   }
   
   @Test

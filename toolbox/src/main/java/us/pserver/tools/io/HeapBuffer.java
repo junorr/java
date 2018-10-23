@@ -353,7 +353,7 @@ public class HeapBuffer implements Buffer {
   /* Tested */
   @Override
   public int writeTo(Buffer out) {
-    return writeTo(out, readLength());
+    return writeTo(out, out.readLength());
   }
   
   

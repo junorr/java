@@ -89,6 +89,8 @@ public class ExpansibleBuffer implements Buffer {
   
   
   private Buffer wget() {
+    Buffer b = buffers.size() > windex && windex >= 0 ? buffers.get(windex) : null;
+    Logger.debug("buffers.get(windex): %s - isWritable=%s", b, b != null ? b.isWritable() : "null");
     if(buffers.isEmpty() || buffers.size() <= windex || !buffers.get(windex).isWritable()) {
       buffers.add(factory.create(growSize));
       windex++;
@@ -143,7 +145,10 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public Buffer clear() {
-    buffers.forEach(Buffer::clear);
+    buffers.forEach(b -> {
+      b.clear();
+      Logger.debug("clear: %s", b);
+    });
     rindex = 0;
     windex = 0;
     rmark = 0;
@@ -287,8 +292,10 @@ public class ExpansibleBuffer implements Buffer {
   public int fillBuffer(Buffer buf) {
     int read = -1;
     int count = 0;
+    byte[] bs = new byte[Math.min(buf.readLength(), growSize)];
     while(buf.isReadable()) {
-      read = buf.writeTo(this);
+      read = buf.writeTo(bs);
+      this.fillBuffer(bs, 0, read);
       count += read;
     }
     return count;
@@ -300,7 +307,10 @@ public class ExpansibleBuffer implements Buffer {
     int read = -1;
     int count = 0;
     int len = length;
+    byte[] bs = new byte[length];
     while(len > 0 && buf.isReadable()) {
+      read = buf.writeTo(bs);
+      this.fillBuffer(bs, 0, read);
       count += read;
       len -= read;
     }
