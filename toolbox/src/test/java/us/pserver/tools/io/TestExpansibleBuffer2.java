@@ -38,14 +38,21 @@ public class TestExpansibleBuffer2 {
       Buffer buffer = Buffer.expansibleHeapFactory().create("Hello World");
       Assertions.assertEquals(11, buffer.readLength());
       Assertions.assertTrue(buffer.isReadable());
-      Assertions.assertFalse(buffer.isWritable());
+      Assertions.assertTrue(buffer.isWritable());
       buffer.clear();
       Logger.debug("after clear: %s", buffer);
       buffer.fillBuffer(Buffer.heapFactory().create("World Hello"));
       Logger.debug("after fill : %s", buffer);
       Assertions.assertEquals(11, buffer.readLength());
       Assertions.assertTrue(buffer.isReadable());
-      Assertions.assertFalse(buffer.isWritable());
+      Assertions.assertTrue(buffer.isWritable());
+      buffer.clear();
+      Logger.debug("after clear: %s", buffer);
+      buffer.fillBuffer(Buffer.heapFactory().create("World Hello"));
+      Logger.debug("after fill : %s", buffer);
+      Assertions.assertEquals(11, buffer.readLength());
+      Assertions.assertTrue(buffer.isReadable());
+      Assertions.assertTrue(buffer.isWritable());
     } 
     catch(Exception e) {
       e.printStackTrace();

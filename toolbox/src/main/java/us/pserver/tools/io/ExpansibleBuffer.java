@@ -74,7 +74,7 @@ public class ExpansibleBuffer implements Buffer {
     this.growSize = growSize;
     buffers = new CopyOnWriteArrayList<>();
     rindex = 0;
-    windex = -1;
+    windex = 0;
     rmark = 0;
     wmark = 0;
   }
@@ -88,46 +88,23 @@ public class ExpansibleBuffer implements Buffer {
   }
   
   
-  private Buffer wget() {
-    Buffer b = buffers.size() > windex && windex >= 0 ? buffers.get(windex) : null;
-    Logger.debug("buffers.get(windex): %s - isWritable=%s", b, b != null ? b.isWritable() : "null");
-    if(buffers.isEmpty() || buffers.size() <= windex || !buffers.get(windex).isWritable()) {
-      buffers.add(factory.create(growSize));
-      windex++;
-    }
-    return buffers.get(windex);
-  }
-  
-  
-  private Buffer rget() {
-    if(!isReadable()) {
-      throw new BufferUnderflowException();
-    }
-    for(int i = rindex; i < windex; i++) {
-      Buffer b = buffers.get(i);
-      if(b.isReadable()) return b;
-      else rindex++;
-    }
-    return null;
-  }
-  
-  
   @Override
   public int readLength() {
-    Logger.debug("readLength=%d", buffers.stream()
-        .mapToInt(Buffer::readLength)
-        .sum());
-    return buffers.stream()
-        .mapToInt(Buffer::readLength)
-        .sum();
+    int len = 0;
+    for(int i = rindex; i <= windex; i++) {
+      len += buffers.get(i).readLength();
+    }
+    return len;
   }
   
   
   @Override
   public int writeLength() {
-    return buffers.stream()
-        .mapToInt(Buffer::writeLength)
-        .sum();
+    int len = 0;
+    for(int i = windex; i < buffers.size(); i++) {
+      len += buffers.get(i).writeLength();
+    }
+    return len;
   }
   
   
@@ -139,16 +116,13 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public boolean isWritable() {
-    return writeLength() > 0;
+    return true;
   }
   
   
   @Override
   public Buffer clear() {
-    buffers.forEach(b -> {
-      b.clear();
-      Logger.debug("clear: %s", b);
-    });
+    buffers.forEach(Buffer::clear);
     rindex = 0;
     windex = 0;
     rmark = 0;
@@ -159,7 +133,7 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public Buffer readMark() {
-    if(!buffers.isEmpty()) {
+    if(!buffers.isEmpty() && rindex <= windex) {
       buffers.get(rindex).readMark();
       rmark = rindex;
     }
@@ -169,24 +143,30 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public Buffer readReset() {
-    rindex = rmark;
-    buffers.get(rindex).readReset();
+    if(!buffers.isEmpty()) {
+      rindex = rmark;
+      buffers.get(rindex).readReset();
+    }
     return this;
   }
   
   
   @Override
   public Buffer writeMark() {
-    wget().writeMark();
-    wmark = windex;
+    if(!buffers.isEmpty() && windex < buffers.size()) {
+      buffers.get(windex).readMark();
+      rmark = rindex;
+    }
     return this;
   }
   
   
   @Override
   public Buffer writeReset() {
-    windex = wmark;
-    buffers.get(rindex).writeReset();
+    if(!buffers.isEmpty()) {
+      windex = wmark;
+      buffers.get(windex).writeReset();
+    }
     return this;
   }
   
@@ -219,7 +199,7 @@ public class ExpansibleBuffer implements Buffer {
     if(ofs < 0 || length < 1 || ofs + length > cont.length) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", ofs, length));
     }
-    for(int i = rindex; i < windex; i++) {
+    for(int i = rindex; i <= windex; i++) {
       if(buffers.get(i).find(cont, ofs, length)) return true;
     }
     return false;
@@ -228,10 +208,28 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public boolean find(Buffer buf) {
-    for(int i = rindex; i < windex; i++) {
+    for(int i = rindex; i <= windex; i++) {
       if(buffers.get(i).find(buf)) return true;
     }
     return false;
+  }
+  
+  
+  private Buffer getWriteBuffer() {
+    Buffer buf = null;
+    if(windex >= buffers.size()) {
+      buf = factory.create(growSize);
+      buffers.add(buf);
+    }
+    else if(!buffers.get(windex).isWritable()) {
+      buf = factory.create(growSize);
+      buffers.add(buf);
+      windex++;
+    }
+    else {
+      buf = buffers.get(windex);
+    }
+    return buf;
   }
   
   
@@ -265,22 +263,19 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public int fillBuffer(ByteBuffer buf) {
-    int read = -1;
-    int count = 0;
-    while(buf.hasRemaining()) {
-      read = wget().fillBuffer(buf);
-      count += read;
-    }
-    return count;
+    return fillBuffer(Objects.requireNonNull(buf), buf.remaining());
   }
   
   
   @Override
   public int fillBuffer(ByteBuffer buf, int length) {
+    if(length < 1) return length;
+    Objects.requireNonNull(buf);
     int read = -1;
     int count = 0;
     int len = length;
     while(len > 0 && buf.hasRemaining()) {
+      read = getWriteBuffer().fillBuffer(buf, len);
       count += read;
       len -= read;
     }
@@ -290,15 +285,7 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public int fillBuffer(Buffer buf) {
-    int read = -1;
-    int count = 0;
-    byte[] bs = new byte[Math.min(buf.readLength(), growSize)];
-    while(buf.isReadable()) {
-      read = buf.writeTo(bs);
-      this.fillBuffer(bs, 0, read);
-      count += read;
-    }
-    return count;
+    return fillBuffer(Objects.requireNonNull(buf), buf.readLength());
   }
   
   
@@ -307,10 +294,8 @@ public class ExpansibleBuffer implements Buffer {
     int read = -1;
     int count = 0;
     int len = length;
-    byte[] bs = new byte[length];
     while(len > 0 && buf.isReadable()) {
-      read = buf.writeTo(bs);
-      this.fillBuffer(bs, 0, read);
+      read = getWriteBuffer().fillBuffer(buf, len);
       count += read;
       len -= read;
     }
@@ -326,7 +311,9 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public int fillBuffer(byte[] src, int offset, int length) {
-    if(src == null || src.length == 0) return 0;
+    if(src == null || src.length == 0) {
+      throw new IllegalArgumentException("Bad byte array: "+ (src == null ? src : src.length));
+    }
     if(offset < 0 || length < 1 || offset + length > src.length) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", offset, length));
     }
@@ -335,13 +322,11 @@ public class ExpansibleBuffer implements Buffer {
     int len = length;
     int ofs = offset;
     while(len > 0) {
-      read = wget().fillBuffer(src, ofs, len);
-      Logger.debug("wget: buffers.size=%d, windex=%d, get(windex)=%s", buffers.size(), windex, buffers.get(windex));
+      read = getWriteBuffer().fillBuffer(src, ofs, len);
       count += read;
       len -= read;
       ofs += read;
     }
-    Logger.debug("count: %d", count);
     return count;
   }
   
@@ -349,8 +334,9 @@ public class ExpansibleBuffer implements Buffer {
   @Override
   public int writeTo(OutputStream out) throws IOException {
     Objects.requireNonNull(out);
+    if(!isReadable()) return 0;
     int count = 0;
-    for(int i = rindex; i < buffers.size(); i++) {
+    for(int i = rindex; i <= windex; i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         count += b.writeTo(out);
@@ -364,10 +350,11 @@ public class ExpansibleBuffer implements Buffer {
   @Override
   public int writeTo(OutputStream out, int length) throws IOException {
     if(length < 1) return length;
+    if(!isReadable()) return 0;
     Objects.requireNonNull(out);
     int count = 0;
     int len = length;
-    for(int i = rindex; i < buffers.size() && len > 0; i++) {
+    for(int i = rindex; i <= windex && len > 0; i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         int w = b.writeTo(out, len);
@@ -382,26 +369,18 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public int writeTo(ByteBuffer out) {
-    Objects.requireNonNull(out);
-    int count = 0;
-    for(int i = rindex; i < buffers.size() && out.hasRemaining(); i++) {
-      Buffer b = buffers.get(i);
-      if(b.isReadable()) {
-        count += b.writeTo(out);
-      }
-      rindex++;
-    }
-    return count;
+    return writeTo(Objects.requireNonNull(out), out.remaining());
   }
   
   
   @Override
   public int writeTo(ByteBuffer out, int length) {
     if(length < 1) return length;
-    Objects.requireNonNull(out);
+    if(length > readLength()) throw new BufferUnderflowException();
+    if(!Objects.requireNonNull(out).hasRemaining()) return 0;
     int count = 0;
-    int len = length;
-    for(int i = rindex; i < buffers.size() && len > 0 && out.hasRemaining(); i++) {
+    int len = Math.max(out.remaining(), length);
+    for(int i = rindex; i <= windex && len > 0; i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         int w = b.writeTo(out, len);
@@ -416,12 +395,14 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public int writeTo(Buffer out) {
-    Objects.requireNonNull(out);
+    if(!Objects.requireNonNull(out).isWritable()) return 0;
+    if(!isReadable()) throw new BufferUnderflowException();
     int count = 0;
-    for(int i = rindex; i < buffers.size() && out.isWritable(); i++) {
+    for(int i = rindex; i <= windex; i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
-        count += b.writeTo(out);
+        int w = b.writeTo(out);
+        count += w;
       }
       rindex++;
     }
@@ -431,11 +412,12 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public int writeTo(Buffer out, int length) {
+    if(!Objects.requireNonNull(out).isWritable()) return 0;
     if(length < 1) return length;
-    Objects.requireNonNull(out);
+    if(length > readLength()) throw new BufferUnderflowException();
     int count = 0;
     int len = length;
-    for(int i = rindex; i < buffers.size() && len > 0 && out.isWritable(); i++) {
+    for(int i = rindex; i <= windex && len > 0; i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         int w = b.writeTo(out, len);
@@ -456,14 +438,17 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public int writeTo(byte[] out, int offset, int length) {
-    if(out == null || out.length == 0) return 0;
+    if(out == null || out.length == 0) {
+      throw new IllegalArgumentException("Bad byte array: "+ (out == null ? out : out.length));
+    }
     if(offset < 0 || length < 1 || offset + length > out.length) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", offset, length));
     }
+    if(length > readLength()) throw new BufferUnderflowException();
     int count = 0;
     int len = length;
     int ofs = offset;
-    for(int i = rindex; i < buffers.size() && len > 0; i++) {
+    for(int i = rindex; i <= windex && len > 0; i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         int w = b.writeTo(out, ofs, len);
@@ -479,86 +464,92 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public Buffer put(byte b) {
-    wget().put(b);
+    getWriteBuffer().put(b);
     return this;
   }
   
   
   @Override
   public Buffer put(short number) {
-    wget().put(number);
+    getWriteBuffer().put(number);
     return this;
   }
   
   
   @Override
   public Buffer put(int number) {
-    wget().put(number);
+    getWriteBuffer().put(number);
     return this;
   }
   
   
   @Override
   public Buffer put(long number) {
-    wget().put(number);
+    getWriteBuffer().put(number);
     return this;
   }
   
   
   @Override
   public Buffer put(float number) {
-    wget().put(number);
+    getWriteBuffer().put(number);
     return this;
   }
   
   
   @Override
   public Buffer put(double number) {
-    wget().put(number);
+    getWriteBuffer().put(number);
     return this;
   }
   
   
   @Override
   public byte get() {
-    return rget().get();
+    if(readLength() < 1) throw new BufferUnderflowException();
+    return buffers.get(rindex).get();
   }
   
   
   @Override
   public int getInt() {
-    return rget().getInt();
+    if(readLength() < Integer.BYTES) throw new BufferUnderflowException();
+    return buffers.get(rindex).getInt();
   }
   
   
   @Override
   public short getShort() {
-    return rget().getShort();
+    if(readLength() < Short.BYTES) throw new BufferUnderflowException();
+    return buffers.get(rindex).getShort();
   }
   
   
   @Override
   public long getLong() {
-    return rget().getLong();
+    if(readLength() < Long.BYTES) throw new BufferUnderflowException();
+    return buffers.get(rindex).getLong();
   }
   
   
   @Override
   public float getFloat() {
-    return rget().getFloat();
+    if(readLength() < Float.BYTES) throw new BufferUnderflowException();
+    return buffers.get(rindex).getFloat();
   }
   
   
   @Override
   public double getDouble() {
-    return rget().getDouble();
+    if(readLength() < Double.BYTES) throw new BufferUnderflowException();
+    return buffers.get(rindex).getDouble();
   }
   
   
   @Override
   public ByteBuffer toByteBuffer(IntFunction<ByteBuffer> allocPolicy) {
     ByteBuffer buf = allocPolicy.apply(readLength());
-    for(int i = rindex; i < windex; i++) {
+    for(int i = rindex; i <= windex; i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         b.writeTo(buf);

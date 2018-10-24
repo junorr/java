@@ -55,7 +55,9 @@ public class TestExpansibleBuffer {
   private static void resetTestBuffer() {
     Logger.debug("BEFORE RESET: %s", buffer);
     buffer.clear();
+    Logger.debug("       CLEAR: %s", buffer);
     buffer.fillBuffer(content);
+    Logger.debug("        FILL: %s", buffer);
     buffer.readMark();
     buffer.writeMark();
     Logger.debug("AFTER RESET: %s", buffer);
@@ -68,13 +70,12 @@ public class TestExpansibleBuffer {
     buffer.fillBuffer(content);
     Logger.debug("%s", buffer);
     Assertions.assertEquals(content.length, buffer.readLength());
-    Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(true, buffer.isReadable());
-    Assertions.assertEquals(false, buffer.isWritable());
+    Assertions.assertEquals(true, buffer.isWritable());
     buffer.writeReset();
     Assertions.assertEquals(content.length, buffer.writeLength());
     Assertions.assertEquals(true, buffer.isWritable());
-    Assertions.assertEquals(false, buffer.isReadable());
+    Assertions.assertEquals(true, buffer.isReadable());
   }
   
   @Test
