@@ -188,26 +188,33 @@ public class ExpansibleBuffer implements Buffer {
   
   
   @Override
-  public boolean find(byte[] cont) {
+  public int find(byte[] cont) {
     return find(Objects.requireNonNull(cont), 0, cont.length);
   }
   
   
   @Override
-  public boolean find(byte[] cont, int ofs, int length) {
-    if(cont == null || cont.length == 0) return false;
+  public int find(byte[] cont, int ofs, int length) {
+    if(cont == null || cont.length == 0) return -1;
     if(ofs < 0 || length < 1 || ofs + length > cont.length) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", ofs, length));
     }
+    int len = 0;
     for(int i = rindex; i <= windex; i++) {
-      if(buffers.get(i).find(cont, ofs, length)) return true;
+      Buffer b = buffers.get(i);
+      int rlen = b.readLength();
+      int idx = buffers.get(i).find(cont, ofs, length);
+      len += (idx >= 0 ? idx : rlen);
+      if(idx >= 0) {
+        return len;
+      }
     }
-    return false;
+    return -1;
   }
   
   
   @Override
-  public boolean find(Buffer buf) {
+  public int find(Buffer buf) {
     for(int i = rindex; i <= windex; i++) {
       if(buffers.get(i).find(buf)) return true;
     }

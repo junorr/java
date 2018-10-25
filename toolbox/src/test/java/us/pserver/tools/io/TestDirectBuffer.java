@@ -159,18 +159,18 @@ public class TestDirectBuffer {
   @Test
   public void testWriteToBuffer() throws IOException {
     Logger.debug("%s", buffer);
-    Buffer buf = new HeapBuffer(content.length);
-    buffer.writeTo(buf);
-    Logger.debug("%s", buffer);
+    Buffer out = new HeapBuffer(content.length);
+    buffer.writeTo(out);
+    Logger.debug("%s - %s", buffer, out);
     Assertions.assertEquals(0, buffer.readLength());
     Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(false, buffer.isReadable());
     Assertions.assertEquals(false, buffer.isWritable());
-    Logger.debug("%s", buf);
-    Assertions.assertEquals(content.length, buf.readLength());
-    Assertions.assertEquals(0, buf.writeLength());
-    Assertions.assertEquals(true, buf.isReadable());
-    Assertions.assertEquals(false, buf.isWritable());
+    Logger.debug("%s", out);
+    Assertions.assertEquals(content.length, out.readLength());
+    Assertions.assertEquals(0, out.writeLength());
+    Assertions.assertEquals(true, out.isReadable());
+    Assertions.assertEquals(false, out.isWritable());
     resetTestBuffer();
   }
   

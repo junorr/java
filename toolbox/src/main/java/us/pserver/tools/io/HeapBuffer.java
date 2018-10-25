@@ -176,15 +176,15 @@ public class HeapBuffer implements Buffer {
   
   /* Tested */
   @Override
-  public boolean find(byte[] cont) {
+  public int find(byte[] cont) {
     return find(Objects.requireNonNull(cont), 0, cont.length);
   }
   
   
   /* Tested */
   @Override
-  public boolean find(byte[] cont, int ofs, int len) {
-    if(cont == null || cont.length == 0) return false;
+  public int find(byte[] cont, int ofs, int len) {
+    if(cont == null || cont.length == 0) return -1;
     if(ofs < 0 || len < 1 || ofs + len > cont.length) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", ofs, len));
     }
@@ -196,18 +196,17 @@ public class HeapBuffer implements Buffer {
       }
       if(count == len) {
         rindex = idx;
-        Logger.debug("content found: %d", idx);
-        return true;
+        return idx;
       }
       idx++;
     }
-    return false;
+    return -1;
   }
   
   
   /* Tested */
   @Override
-  public boolean find(Buffer buf) {
+  public int find(Buffer buf) {
     if(buf == null || !buf.isReadable()) {
       throw new IllegalArgumentException("Bad buffer: "+ buf);
     }
@@ -222,12 +221,11 @@ public class HeapBuffer implements Buffer {
       buf.readReset();
       if(count == rlen) {
         rindex = idx;
-        Logger.debug("content found: %d", idx);
-        return true;
+        return idx;
       }
       idx++;
     }
-    return false;
+    return -1;
   }
   
   

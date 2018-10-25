@@ -165,19 +165,19 @@ public class ConcurrentBuffer implements Buffer {
   
   
   @Override
-  public boolean find(byte[] cont) {
+  public int find(byte[] cont) {
     return readLock(() -> buffer.find(cont));
   }
   
   
   @Override
-  public boolean find(byte[] cont, int ofs, int len) {
+  public int find(byte[] cont, int ofs, int len) {
     return readLock(() -> buffer.find(cont, ofs, len));
   }
   
   
   @Override
-  public boolean find(Buffer buf) {
+  public int find(Buffer buf) {
     return readLock(() -> buffer.find(buf));
   }
   
