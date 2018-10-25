@@ -21,7 +21,9 @@
 
 package us.pserver.tools;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * A UTF-8 String representation.
@@ -67,6 +69,15 @@ public class UTF8String extends CharsetString {
   
   
   /**
+   * Constructor which receives the byte array to encode in a UTF-8 String.
+   * @param buf ByteBuffer to decode.
+   */
+  public UTF8String(ByteBuffer buf) {
+    super(buf, StandardCharsets.UTF_8);
+  }
+  
+  
+  /**
    * Format a string with the interpolated object values in a UTF8String.
    * @param str The string to format.
    * @param args The objects values to be interpolated into the string.
@@ -108,5 +119,14 @@ public class UTF8String extends CharsetString {
     return new UTF8String(bs);
   }
   
+  
+  /**
+   * Create a UTF8String object, encoding the byte array in a UTF-8 String.
+   * @param bs The byte array to be encoded into a UTF-8 String.
+   * @return a new UTF8String object.
+   */
+  public static UTF8String from(ByteBuffer buf) {
+    return new UTF8String(buf);
+  }
   
 }

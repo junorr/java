@@ -322,6 +322,7 @@ public class ExpansibleBuffer implements Buffer {
     int len = length;
     int ofs = offset;
     while(len > 0) {
+      Buffer b = getWriteBuffer();
       read = getWriteBuffer().fillBuffer(src, ofs, len);
       count += read;
       len -= read;
@@ -376,10 +377,9 @@ public class ExpansibleBuffer implements Buffer {
   @Override
   public int writeTo(ByteBuffer out, int length) {
     if(length < 1) return length;
-    if(length > readLength()) throw new BufferUnderflowException();
     if(!Objects.requireNonNull(out).hasRemaining()) return 0;
     int count = 0;
-    int len = Math.max(out.remaining(), length);
+    int len = Math.min(length, Math.min(out.remaining(), readLength()));
     for(int i = rindex; i <= windex && len > 0; i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
@@ -444,9 +444,8 @@ public class ExpansibleBuffer implements Buffer {
     if(offset < 0 || length < 1 || offset + length > out.length) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", offset, length));
     }
-    if(length > readLength()) throw new BufferUnderflowException();
     int count = 0;
-    int len = length;
+    int len = Math.min(out.length, Math.min(readLength(), length));;
     int ofs = offset;
     for(int i = rindex; i <= windex && len > 0; i++) {
       Buffer b = buffers.get(i);
@@ -552,9 +551,11 @@ public class ExpansibleBuffer implements Buffer {
     for(int i = rindex; i <= windex; i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
-        b.writeTo(buf);
+        b.readMark().writeTo(buf);
+        b.readReset();
       }
     }
+    buf.flip();
     return buf;
   }
   
@@ -574,7 +575,7 @@ public class ExpansibleBuffer implements Buffer {
   @Override
   public String getContentAsString(Charset cs) {
     StringBuilder sb = new StringBuilder();
-    for(int i = rindex; i < windex; i++) {
+    for(int i = rindex; i <= windex; i++) {
       Buffer b = buffers.get(i);
       if(b.isReadable()) {
         sb.append(b.getContentAsString(cs));
@@ -586,7 +587,7 @@ public class ExpansibleBuffer implements Buffer {
   
   @Override
   public String toString() {
-    return String.format("ExpansibleBuffer[bufferFactory=%s, capacity=%d, buffers.size=%d, rindex=%d, windex=%d, rmark=%d, wmark=%d]", factory.getClass().getSimpleName(), capacity(), buffers.size(), rindex, windex, rmark, wmark);
+    return String.format("ExpansibleBuffer[%s, capacity=%d, buffers.size=%d, readLenght=%d, writeLength=%d, rmark=%d, wmark=%d]", factory.getClass().getSimpleName(), capacity(), buffers.size(), readLength(), writeLength(), rmark, wmark);
   }
   
 }

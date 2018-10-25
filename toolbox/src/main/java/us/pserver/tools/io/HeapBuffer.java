@@ -30,6 +30,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.function.IntFunction;
+import us.pserver.tools.UTF8String;
 import us.pserver.tools.log.Logger;
 
 /**
@@ -305,7 +306,6 @@ public class HeapBuffer implements Buffer {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", ofs, length));
     }
     int len = Math.min(length, Math.min(writeLength(), src.length));
-    Logger.debug("length = min(%d, %d, %d): %d", length, writeLength(), src.length, len);
     System.arraycopy(src, ofs, buffer, windex, len);
     windex += len;
     return len;
@@ -353,7 +353,7 @@ public class HeapBuffer implements Buffer {
   /* Tested */
   @Override
   public int writeTo(Buffer out) {
-    return writeTo(out, out.readLength());
+    return writeTo(out, readLength());
   }
   
   

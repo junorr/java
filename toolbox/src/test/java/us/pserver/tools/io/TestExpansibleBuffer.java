@@ -53,14 +53,10 @@ public class TestExpansibleBuffer {
   }
   
   private static void resetTestBuffer() {
-    Logger.debug("BEFORE RESET: %s", buffer);
     buffer.clear();
-    Logger.debug("       CLEAR: %s", buffer);
     buffer.fillBuffer(content);
-    Logger.debug("        FILL: %s", buffer);
     buffer.readMark();
     buffer.writeMark();
-    Logger.debug("AFTER RESET: %s", buffer);
   }
 
   @Test
@@ -75,7 +71,7 @@ public class TestExpansibleBuffer {
     buffer.writeReset();
     Assertions.assertEquals(content.length, buffer.writeLength());
     Assertions.assertEquals(true, buffer.isWritable());
-    Assertions.assertEquals(true, buffer.isReadable());
+    Assertions.assertEquals(false, buffer.isReadable());
   }
   
   @Test
@@ -88,7 +84,7 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(content.length, buffer.readLength());
     Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(true, buffer.isReadable());
-    Assertions.assertEquals(false, buffer.isWritable());
+    Assertions.assertEquals(true, buffer.isWritable());
     buffer.writeReset();
     Assertions.assertEquals(content.length, buffer.writeLength());
     Assertions.assertEquals(true, buffer.isWritable());
@@ -104,7 +100,7 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(content.length, buffer.readLength());
     Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(true, buffer.isReadable());
-    Assertions.assertEquals(false, buffer.isWritable());
+    Assertions.assertEquals(true, buffer.isWritable());
     buffer.writeReset();
     Assertions.assertEquals(content.length, buffer.writeLength());
     Assertions.assertEquals(true, buffer.isWritable());
@@ -120,7 +116,7 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(content.length, buffer.readLength());
     Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(true, buffer.isReadable());
-    Assertions.assertEquals(false, buffer.isWritable());
+    Assertions.assertEquals(true, buffer.isWritable());
     buffer.writeReset();
     Assertions.assertEquals(content.length, buffer.writeLength());
     Assertions.assertEquals(true, buffer.isWritable());
@@ -136,7 +132,7 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(0, buffer.readLength());
     Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(false, buffer.isReadable());
-    Assertions.assertEquals(false, buffer.isWritable());
+    Assertions.assertEquals(true, buffer.isWritable());
     resetTestBuffer();
     
   }
@@ -150,7 +146,7 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(0, buffer.readLength());
     Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(false, buffer.isReadable());
-    Assertions.assertEquals(false, buffer.isWritable());
+    Assertions.assertEquals(true, buffer.isWritable());
     Assertions.assertArrayEquals(content, bos.toByteArray());
     resetTestBuffer();
     Logger.debug("3. %s", buffer);
@@ -165,7 +161,7 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(0, buffer.readLength());
     Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(false, buffer.isReadable());
-    Assertions.assertEquals(false, buffer.isWritable());
+    Assertions.assertEquals(true, buffer.isWritable());
     buf.flip();
     Assertions.assertEquals(new String(content, StandardCharsets.UTF_8), StandardCharsets.UTF_8.decode(buf).toString());
     resetTestBuffer();
@@ -177,10 +173,11 @@ public class TestExpansibleBuffer {
     Buffer buf = new HeapBuffer(content.length);
     buffer.writeTo(buf);
     Logger.debug("%s", buffer);
+    Logger.debug("%s", buf);
     Assertions.assertEquals(0, buffer.readLength());
     Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(false, buffer.isReadable());
-    Assertions.assertEquals(false, buffer.isWritable());
+    Assertions.assertEquals(true, buffer.isWritable());
     Logger.debug("%s", buf);
     Assertions.assertEquals(content.length, buf.readLength());
     Assertions.assertEquals(0, buf.writeLength());
@@ -189,7 +186,7 @@ public class TestExpansibleBuffer {
     resetTestBuffer();
   }
   
-  //@Test
+  @Test
   public void testClear() {
     Logger.debug("%s", buffer);
     buffer.clear();
@@ -200,25 +197,25 @@ public class TestExpansibleBuffer {
     resetTestBuffer();
   }
   
-  //@Test
+  @Test
   public void testClone() {
     Buffer buf = buffer.clone();
     Logger.debug("%s", buffer);
     Assertions.assertEquals(content.length, buf.readLength());
     Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
-    Assertions.assertEquals(false, buf.isWritable());
+    Assertions.assertEquals(true, buf.isWritable());
     resetTestBuffer();
   }
   
-  //@Test
+  @Test
   public void testCloneShared() {
     Buffer buf = buffer.cloneShared();
     Logger.debug("%s", buf);
     Assertions.assertEquals(content.length, buf.readLength());
     Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
-    Assertions.assertEquals(false, buf.isWritable());
+    Assertions.assertEquals(true, buf.isWritable());
     
     buf.clear();
     byte[] bs = "Eu  devo  ter recebido um leitao da Licença Publica Geral Menor do GNU junto \n com esta biblioteca; se nao, acesse \n http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html".getBytes(StandardCharsets.UTF_8);
@@ -228,7 +225,7 @@ public class TestExpansibleBuffer {
     resetTestBuffer();
   }
   
-  //@Test
+  @Test
   public void testFindByteArray() {
     byte[] search = "Menor".getBytes(StandardCharsets.UTF_8);
     boolean found = buffer.find(search);
@@ -236,11 +233,11 @@ public class TestExpansibleBuffer {
     Logger.debug("buffer.find('Menor'): %s", found);
     Assertions.assertEquals(true, found);
     Assertions.assertEquals(true, buffer.isReadable());
-    Assertions.assertEquals(false, buffer.isWritable());
+    Assertions.assertEquals(true, buffer.isWritable());
     resetTestBuffer();
   }
   
-  //@Test
+  @Test
   public void testFindBuffer() {
     byte[] bs = "Menor".getBytes(StandardCharsets.UTF_8);
     Buffer search = new HeapBuffer(bs.length);
@@ -250,11 +247,11 @@ public class TestExpansibleBuffer {
     Logger.debug("buffer.find('Menor'): %s", found);
     Assertions.assertEquals(true, found);
     Assertions.assertEquals(true, buffer.isReadable());
-    Assertions.assertEquals(false, buffer.isWritable());
+    Assertions.assertEquals(true, buffer.isWritable());
     resetTestBuffer();
   }
   
-  //@Test
+  @Test
   public void testPutGetByte() {
     Buffer buf = Buffer.expansibleHeapFactory().create(1);
     buf.writeMark();
@@ -264,7 +261,7 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(1, buf.readLength());
     Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
-    Assertions.assertEquals(false, buf.isWritable());
+    Assertions.assertEquals(true, buf.isWritable());
     
     Assertions.assertEquals(b, buf.get());
     Assertions.assertEquals(0, buf.readLength());
@@ -272,7 +269,7 @@ public class TestExpansibleBuffer {
     resetTestBuffer();
   }
   
-  //@Test
+  @Test
   public void testPutGetShort() {
     Buffer buf = Buffer.expansibleHeapFactory().create(Short.BYTES);
     buf.writeMark();
@@ -282,7 +279,7 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(Short.BYTES, buf.readLength());
     Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
-    Assertions.assertEquals(false, buf.isWritable());
+    Assertions.assertEquals(true, buf.isWritable());
     
     short get = buf.getShort();
     Logger.debug("getShort=%d", get);
@@ -292,7 +289,7 @@ public class TestExpansibleBuffer {
     resetTestBuffer();
   }
   
-  //@Test
+  @Test
   public void testPutGetInt() {
     Buffer buf = Buffer.expansibleHeapFactory().create(Integer.BYTES);
     buf.writeMark();
@@ -302,7 +299,7 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(Integer.BYTES, buf.readLength());
     Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
-    Assertions.assertEquals(false, buf.isWritable());
+    Assertions.assertEquals(true, buf.isWritable());
     
     int get = buf.getInt();
     Logger.debug("getInt=%d", get);
@@ -312,7 +309,7 @@ public class TestExpansibleBuffer {
     resetTestBuffer();
   }
   
-  //@Test
+  @Test
   public void testPutGetFloat() {
     Buffer buf = Buffer.expansibleHeapFactory().create(Float.BYTES);
     buf.writeMark();
@@ -322,7 +319,7 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(Integer.BYTES, buf.readLength());
     Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
-    Assertions.assertEquals(false, buf.isWritable());
+    Assertions.assertEquals(true, buf.isWritable());
     
     float get = buf.getFloat();
     Logger.debug("getFloat=%f", get);
@@ -332,7 +329,7 @@ public class TestExpansibleBuffer {
     resetTestBuffer();
   }
   
-  //@Test
+  @Test
   public void testPutGetLong() {
     Buffer buf = Buffer.expansibleHeapFactory().create(Long.BYTES);
     buf.writeMark();
@@ -342,7 +339,7 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(Long.BYTES, buf.readLength());
     Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
-    Assertions.assertEquals(false, buf.isWritable());
+    Assertions.assertEquals(true, buf.isWritable());
     
     long get = buf.getLong();
     Logger.debug("getLong=%d", get);
@@ -352,7 +349,7 @@ public class TestExpansibleBuffer {
     resetTestBuffer();
   }
   
-  //@Test
+  @Test
   public void testPutGetDouble() {
     Buffer buf = Buffer.expansibleHeapFactory().create(Long.BYTES);
     buf.writeMark();
@@ -362,7 +359,7 @@ public class TestExpansibleBuffer {
     Assertions.assertEquals(Long.BYTES, buf.readLength());
     Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
-    Assertions.assertEquals(false, buf.isWritable());
+    Assertions.assertEquals(true, buf.isWritable());
     
     double get = buf.getDouble();
     Logger.debug("getDouble=%f", get);
@@ -372,7 +369,7 @@ public class TestExpansibleBuffer {
     resetTestBuffer();
   }
   
-  //@Test 
+  @Test 
   public void testToDirectByteBuffer() {
     ByteBuffer direct = buffer.toByteBuffer(ByteBuffer::allocateDirect);
     Logger.debug("%s", direct);
@@ -382,7 +379,7 @@ public class TestExpansibleBuffer {
     resetTestBuffer();
   }
   
-  //@Test 
+  @Test 
   public void testToByteBuffer() {
     ByteBuffer heap = buffer.toByteBuffer();
     Logger.debug("%s", heap);
@@ -393,7 +390,7 @@ public class TestExpansibleBuffer {
     resetTestBuffer();
   }
   
-  //@Test 
+  @Test 
   public void testToByteArray() {
     byte[] heap = buffer.toByteArray();
     Assertions.assertEquals(content.length, heap.length);
