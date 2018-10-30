@@ -64,11 +64,11 @@ public interface Buffer extends Cloneable {
   
   public Buffer cloneShared();
   
-  public boolean find(byte[] cont);
+  public int find(byte[] cont);
   
-  public boolean find(byte[] cont, int ofs, int len);
+  public int find(byte[] cont, int ofs, int len);
   
-  public boolean find(Buffer buf);
+  public int find(Buffer buf);
   
   public int fillBuffer(InputStream in) throws IOException;
   

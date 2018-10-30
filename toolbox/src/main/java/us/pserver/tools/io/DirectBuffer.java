@@ -159,14 +159,14 @@ public class DirectBuffer implements Buffer {
   
   
   @Override
-  public boolean find(byte[] cont) {
+  public int find(byte[] cont) {
     return find(cont, 0, cont.length);
   }
   
   
   @Override
-  public boolean find(byte[] cont, int ofs, int len) {
-    if(cont == null || cont.length == 0) return false;
+  public int find(byte[] cont, int ofs, int len) {
+    if(cont == null || cont.length == 0) return -1;
     if(ofs < 0 || len < 1 || ofs + len > cont.length) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", ofs, len));
     }
@@ -177,15 +177,15 @@ public class DirectBuffer implements Buffer {
       for(int i = ofs; i < len; i++) {
         if(buffer.get() == cont[i]) count++;
       }
-      if(count == len) return true;
+      if(count == len) return idx;
       idx++;
     }
-    return false;
+    return -1;
   }
   
   
   @Override
-  public boolean find(Buffer buf) {
+  public int find(Buffer buf) {
     if(buf == null || !buf.isReadable()) {
       throw new IllegalArgumentException("Bad buffer: "+ buf);
     }
@@ -199,10 +199,10 @@ public class DirectBuffer implements Buffer {
         if(buffer.get() == buf.get()) count++;
       }
       buf.readReset();
-      if(count == rlen) return true;
+      if(count == rlen) return idx;
       idx++;
     }
-    return false;
+    return idx;
   }
   
   
