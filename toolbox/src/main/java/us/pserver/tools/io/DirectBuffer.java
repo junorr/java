@@ -332,7 +332,7 @@ public class DirectBuffer implements Buffer {
   
   @Override
   public int writeTo(Buffer out) {
-    return writeTo(out, out.readLength());
+    return writeTo(out, readLength());
   }
   
   

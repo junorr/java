@@ -28,6 +28,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
+import us.pserver.orb.xml.XmlMapHandler;
 
 /**
  *
