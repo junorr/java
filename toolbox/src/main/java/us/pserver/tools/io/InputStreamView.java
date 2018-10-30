@@ -37,103 +37,93 @@ public class InputStreamView {
   
   public static final int MIN_BUFFER_SIZE = 128;
   
-  //private final InputStream input;
+  private final InputStream input;
   
-  //private final IBuffer buffer;
+  private final Buffer buffer;
   
   private long total;
   
   
-  //public InputStreamView(InputStream in, int bufsize) {
-    //this.input = Objects.requireNonNull(in, "Bad null InputStream");
-    //if(bufsize < MIN_BUFFER_SIZE) {
-      //throw new IllegalArgumentException("Bad buffer size: "+ bufsize+ "(<"+ MIN_BUFFER_SIZE+ ")");
-    //}
-    //this.buffer = new Buffer(bufsize);
-    //total = 0;
-  //}
+  public InputStreamView(InputStream in, int bufsize) {
+    this.input = Objects.requireNonNull(in, "Bad null InputStream");
+    if(bufsize < MIN_BUFFER_SIZE) {
+      throw new IllegalArgumentException("Bad buffer size: "+ bufsize+ "(<"+ MIN_BUFFER_SIZE+ ")");
+    }
+    this.buffer = Buffer.directFactory().create(bufsize);
+    total = 0;
+  }
   
-  //public InputStreamView(InputStream in) {
-    //this(in, DEFAULT_BUFFER_SIZE);
-  //}
-  
-  
-  //public long find(IBuffer cont) throws IOException {
-    //if(cont == null || cont.size() < 1) {
-      //throw new IllegalArgumentException("Bad Buffer: "+ (cont == null ? cont : cont.size()));
-    //}
-    //int idx = -1;
-    //do {
-      ////System.out.printf("... find( %s ): buffer=%s - %s%n", cont, buffer, buffer.toUTF8String());
-      //if(!buffer.isEmpty()) {
-        //idx = buffer.indexOf(cont);
-        //if(idx >= 0) {
-          //buffer.fill(buffer.toByteArray(), idx, buffer.size() - idx);
-          //return idx;
-        //}
-      //}
-    //} while(buffer.fill(input) != -1);
-    //return -1;
-  //}
+  public InputStreamView(InputStream in) {
+    this(in, DEFAULT_BUFFER_SIZE);
+  }
   
   
-  //public long skip(long bytes) throws IOException {
-    //long count = 0;
-    //do {
-      //if(!buffer.isEmpty()) {
-        //if(bytes - count > buffer.size()) {
-          //count += buffer.size();
-        //}
-        //else {
-          //int len = (int)Math.min(bytes - count, buffer.size());
-          //buffer.fill(buffer.toByteArray(), len, buffer.size() - len);
-          //count += len;
-          //break;
-        //}
-      //}
-    //} while(buffer.fill(input) != -1);
-    //return count;
-  //}
+  public long find(Buffer cont) throws IOException {
+    if(cont == null || !cont.isReadable()) {
+      throw new IllegalArgumentException("Bad Buffer: "+ (cont == null ? cont : cont.readLength()));
+    }
+    int read = 0;
+    long count = 0;
+    do {
+      if(buffer.isReadable()) {
+        int idx = buffer.find(cont);
+        count += (idx >= 0 ? idx : read);
+        if(idx >= 0) {
+          return count;
+        }
+      }
+    } while((read = buffer.fillBuffer(input)) != -1);
+    return -1;
+  }
   
   
-  //public long flushUntil(OutputStream out, IBuffer cont) throws IOException {
-    //Objects.requireNonNull(out, "Bad null OutputStream");
-    //Objects.requireNonNull(cont, "Bad null Buffer");
-    //int idx = -1;
-    //long count = 0;
-    //do {
-      //if(!buffer.isEmpty()) {
-        //idx = buffer.indexOf(cont);
-        //int len = (idx >= 0 ? idx : buffer.size());
-        //if(len > 0) {
-          //count += len;
-          //buffer.writeTo(out, len);
-          //if(buffer.size() - len > 0) {
-            //buffer.fill(buffer.toByteArray(), len, buffer.size() - len);
-          //}
-        //}
-      //}
-    //} while(idx < 0 && buffer.fill(input) != -1);
-    //return count;
-  //}
+  public long skip(long n) throws IOException {
+    long count = 0;
+    do {
+      count += buffer.skip((int)(n - count));
+      if(!buffer.isReadable()) buffer.clear();
+    } while(count < n && buffer.fillBuffer(input) != -1);
+    return count;
+  }
   
   
-  //public IBuffer cacheUntil(IBuffer cont) throws IOException {
-    //Objects.requireNonNull(cont, "Bad null Buffer");
-    //ExpansibleBuffer cache = new ExpansibleBuffer(buffer.capacity());
-    //int idx = -1;
-    //do {
-      //if(!buffer.isEmpty()) {
-        //idx = buffer.indexOf(cont);
-        //int len = (idx >= 0 ? idx : buffer.size());
-        //if(len > 0) {
-          //cache.fill(buffer, len);
-          //buffer.fill(buffer.toByteArray(), len, buffer.size() - len);
-          ////System.out.printf("... cacheUntil( %s ): buffer=%s - %s", cont, buffer, buffer.toUTF8String());
-        //}
-      //}
-    //} while(idx < 0 && buffer.fill(input) != -1);
-    //return cache;
-  //}
+  public long flushUntil(OutputStream out, Buffer cont) throws IOException {
+    Objects.requireNonNull(out, "Bad null OutputStream");
+    Objects.requireNonNull(cont, "Bad null Buffer");
+    int idx = -1;
+    long count = 0;
+    do {
+      if(buffer.isReadable()) {
+        int readlen = buffer.readLength();
+        buffer.readMark();
+        idx = buffer.find(cont);
+        int len = readlen - buffer.readLength();
+        count += len;
+        buffer.readReset().writeTo(out, len);
+      }
+      else buffer.clear();
+    } while(idx < 0 && buffer.fillBuffer(input) != -1);
+    return count;
+  }
+  
+  
+  public Buffer cacheUntil(Buffer cont) throws IOException {
+    Objects.requireNonNull(cont, "Bad null Buffer");
+    Buffer cache = Buffer.expansibleHeapFactory().create(buffer.capacity());
+    int idx = -1;
+    long count = 0;
+    do {
+      if(buffer.isReadable()) {
+        int readlen = buffer.readLength();
+        buffer.readMark();
+        idx = buffer.find(cont);
+        int len = readlen - buffer.readLength();
+        count += len;
+        buffer.readReset().writeTo(cache, len);
+      }
+      else buffer.clear();
+    } while(idx < 0 && buffer.fillBuffer(input) != -1);
+    return cache;
+  }
   
 }
