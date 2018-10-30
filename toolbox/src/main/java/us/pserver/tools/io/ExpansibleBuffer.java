@@ -216,9 +216,10 @@ public class ExpansibleBuffer implements Buffer {
   @Override
   public int find(Buffer buf) {
     for(int i = rindex; i <= windex; i++) {
-      if(buffers.get(i).find(buf)) return true;
+      int idx = buffers.get(i).find(buf);
+      if(idx >= 0) return idx;
     }
-    return false;
+    return -1;
   }
   
   

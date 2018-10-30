@@ -228,10 +228,10 @@ public class TestExpansibleBuffer {
   @Test
   public void testFindByteArray() {
     byte[] search = "Menor".getBytes(StandardCharsets.UTF_8);
-    boolean found = buffer.find(search);
+    int idx = buffer.find(search);
     Logger.debug("%s", buffer);
-    Logger.debug("buffer.find('Menor'): %s", found);
-    Assertions.assertEquals(true, found);
+    Logger.debug("buffer.find('Menor'): %d", idx);
+    Assertions.assertEquals(59, idx);
     Assertions.assertEquals(true, buffer.isReadable());
     Assertions.assertEquals(true, buffer.isWritable());
     resetTestBuffer();
@@ -242,10 +242,10 @@ public class TestExpansibleBuffer {
     byte[] bs = "Menor".getBytes(StandardCharsets.UTF_8);
     Buffer search = new HeapBuffer(bs.length);
     search.fillBuffer(bs);
-    boolean found = buffer.find(search);
+    int idx = buffer.find(search);
     Logger.debug("%s", buffer);
-    Logger.debug("buffer.find('Menor'): %s", found);
-    Assertions.assertEquals(true, found);
+    Logger.debug("buffer.find('Menor'): %d", idx);
+    Assertions.assertEquals(59, idx);
     Assertions.assertEquals(true, buffer.isReadable());
     Assertions.assertEquals(true, buffer.isWritable());
     resetTestBuffer();
