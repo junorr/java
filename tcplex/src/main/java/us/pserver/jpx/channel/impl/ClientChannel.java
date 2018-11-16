@@ -24,7 +24,6 @@ package us.pserver.jpx.channel.impl;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -39,7 +38,6 @@ import us.pserver.jpx.channel.stream.ChannelStream;
 import us.pserver.jpx.channel.stream.StreamFunction;
 import us.pserver.jpx.channel.stream.StreamPartial;
 import us.pserver.jpx.event.Attribute;
-import us.pserver.jpx.log.Logger;
 import us.pserver.jpx.pool.Pooled;
 
 /**
