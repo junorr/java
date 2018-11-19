@@ -41,8 +41,6 @@ public class InputStreamView {
   
   private final Buffer buffer;
   
-  private long total;
-  
   
   public InputStreamView(InputStream in, int bufsize) {
     this.input = Objects.requireNonNull(in, "Bad null InputStream");
@@ -50,7 +48,6 @@ public class InputStreamView {
       throw new IllegalArgumentException("Bad buffer size: "+ bufsize+ "(<"+ MIN_BUFFER_SIZE+ ")");
     }
     this.buffer = Buffer.directFactory().create(bufsize);
-    total = 0;
   }
   
   public InputStreamView(InputStream in) {
@@ -58,21 +55,22 @@ public class InputStreamView {
   }
   
   
-  public long find(Buffer cont) throws IOException {
+  public long search(Buffer cont) throws IOException {
     if(cont == null || !cont.isReadable()) {
       throw new IllegalArgumentException("Bad Buffer: "+ (cont == null ? cont : cont.readLength()));
     }
-    int read = 0;
     long count = 0;
     do {
       if(buffer.isReadable()) {
-        int idx = buffer.find(cont);
-        count += (idx >= 0 ? idx : read);
+        int rlen = buffer.readLength();
+        int idx = buffer.search(cont);
+        count += (idx >= 0 ? idx : rlen - buffer.readLength());
         if(idx >= 0) {
           return count;
         }
       }
-    } while((read = buffer.fillBuffer(input)) != -1);
+      else buffer.clear();
+    } while(buffer.fillBuffer(input) != -1);
     return -1;
   }
   
@@ -96,7 +94,7 @@ public class InputStreamView {
       if(buffer.isReadable()) {
         int readlen = buffer.readLength();
         buffer.readMark();
-        idx = buffer.find(cont);
+        idx = buffer.search(cont);
         int len = readlen - buffer.readLength();
         count += len;
         buffer.readReset().writeTo(out, len);
@@ -111,19 +109,28 @@ public class InputStreamView {
     Objects.requireNonNull(cont, "Bad null Buffer");
     Buffer cache = Buffer.expansibleHeapFactory().create(buffer.capacity());
     int idx = -1;
-    long count = 0;
     do {
       if(buffer.isReadable()) {
         int readlen = buffer.readLength();
         buffer.readMark();
-        idx = buffer.find(cont);
+        idx = buffer.search(cont);
         int len = readlen - buffer.readLength();
-        count += len;
         buffer.readReset().writeTo(cache, len);
       }
       else buffer.clear();
     } while(idx < 0 && buffer.fillBuffer(input) != -1);
     return cache;
+  }
+  
+  
+  public Buffer extract(Buffer cont1, Buffer cont2) throws IOException {
+    Objects.requireNonNull(cont1);
+    Objects.requireNonNull(cont2);
+    int c1len = cont1.readLength();
+    long r = this.search(cont1);
+    if(r < 0) return Buffer.EMPTY_BUFFER;
+    this.skip(c1len);
+    return this.cacheUntil(cont2);
   }
   
 }

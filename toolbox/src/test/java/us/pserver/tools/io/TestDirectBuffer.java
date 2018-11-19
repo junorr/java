@@ -216,7 +216,7 @@ public class TestDirectBuffer {
   @Test
   public void testIndexOfByteArray() {
     byte[] search = "Menor".getBytes(StandardCharsets.UTF_8);
-    int idx = buffer.find(search);
+    int idx = buffer.search(search);
     Logger.debug("%s", buffer);
     Logger.debug("buffer.find('Menor'): %d", idx);
     Assertions.assertEquals(59, idx);
@@ -230,7 +230,7 @@ public class TestDirectBuffer {
     byte[] bs = "Menor".getBytes(StandardCharsets.UTF_8);
     Buffer search = new HeapBuffer(bs.length);
     search.fillBuffer(bs);
-    int idx = buffer.find(search);
+    int idx = buffer.search(search);
     Logger.debug("%s", buffer);
     Logger.debug("buffer.find('Menor'): %d", idx);
     Assertions.assertEquals(59, idx);

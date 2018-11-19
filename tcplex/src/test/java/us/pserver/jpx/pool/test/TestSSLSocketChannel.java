@@ -44,11 +44,12 @@ public class TestSSLSocketChannel {
   @Test
   public void testSSLSocketChannel() throws Exception {
     try {
-      String host = "www.bb.com.br";
+      String host = "www.google.com";
       int port = 443;
       SocketChannel sch = SocketChannel.open(new InetSocketAddress(host, port));
       sch.configureBlocking(false);
-      SSLContext ctx = SSLContext.getDefault();
+      //SSLContext ctx = SSLContext.getDefault();
+      SSLContext ctx = SSLContext.getInstance("TLS");
       System.out.printf("* SSLContext.protocol = '%s'%n", ctx.getProtocol());
       SSLEngine eng = ctx.createSSLEngine(host, port);
       eng.setUseClientMode(true);
@@ -77,7 +78,7 @@ public class TestSSLSocketChannel {
             channel.read(buffer);
             System.out.println("* CHANNEL WRITING...");
             StringBuilder sreq = new StringBuilder();
-            sreq.append("GET https://").append(host).append("/pbb/pagina-inicial#/").append("/ HTTP/1.0\r\n")
+            sreq.append("GET https://").append(host).append("/ HTTP/1.0\r\n")
                 .append("Host: ").append(host).append("\r\n")
                 .append("User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:62.0) Gecko/20100101 Firefox/62.0\r\n")
                 .append("Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n")

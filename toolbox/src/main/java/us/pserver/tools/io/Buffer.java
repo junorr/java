@@ -37,6 +37,8 @@ import java.util.function.IntFunction;
  */
 public interface Buffer extends Cloneable {
   
+  public static final Buffer EMPTY_BUFFER = HeapBuffer.EMPTY_HEAP_BUFFER;
+  
   public static final int DEFAULT_BUFFER_SIZE = 32*1024;
   
 
@@ -64,11 +66,45 @@ public interface Buffer extends Cloneable {
   
   public Buffer cloneShared();
   
-  public int find(byte[] cont);
+  public int skip(int n);
   
-  public int find(byte[] cont, int ofs, int len);
+  /**
+   * Search the content of byte array in this Buffer.
+   * The search starts in the current buffer position 
+   * and returns the total bytes readed until content position, 
+   * or -1 if not found. <b>In any case, buffer's read index 
+   * is increased.</b> 
+   * @param cont Byte array content to search in this buffer.
+   * @return Total bytes readed until content position, or
+   * -1 if not found.
+   */
+  public int search(byte[] cont);
   
-  public int find(Buffer buf);
+  /**
+   * Search the content of byte array in this Buffer.
+   * The search starts in the current buffer position 
+   * and returns the total bytes readed until content position, 
+   * or -1 if not found. <b>In any case, buffer's read index 
+   * is increased.</b> 
+   * @param cont Byte array content to search in this buffer.
+   * @param ofs Content offset in byte array.
+   * @param len Content length in byte array.
+   * @return Total bytes readed until content position, or
+   * -1 if not found.
+   */
+  public int search(byte[] cont, int ofs, int len);
+  
+  /**
+   * Search the content of byte array in this Buffer.
+   * The search starts in the current buffer position 
+   * and returns the total bytes readed until content position, 
+   * or -1 if not found. <b>In any case, buffer's read index 
+   * is increased.</b> 
+   * @param cont Content to search in this buffer.
+   * @return Total bytes readed until content position, or
+   * -1 if not found.
+   */
+  public int search(Buffer cont);
   
   public int fillBuffer(InputStream in) throws IOException;
   

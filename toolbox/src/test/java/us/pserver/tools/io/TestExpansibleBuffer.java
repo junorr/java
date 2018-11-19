@@ -82,7 +82,6 @@ public class TestExpansibleBuffer {
     buffer.fillBuffer(bis);
     Logger.debug("%s", buffer);
     Assertions.assertEquals(content.length, buffer.readLength());
-    Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(true, buffer.isReadable());
     Assertions.assertEquals(true, buffer.isWritable());
     buffer.writeReset();
@@ -98,7 +97,6 @@ public class TestExpansibleBuffer {
     buffer.fillBuffer(ByteBuffer.wrap(content));
     Logger.debug("%s", buffer);
     Assertions.assertEquals(content.length, buffer.readLength());
-    Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(true, buffer.isReadable());
     Assertions.assertEquals(true, buffer.isWritable());
     buffer.writeReset();
@@ -114,7 +112,6 @@ public class TestExpansibleBuffer {
     buffer.fillBuffer(TestExpansibleBuffer.buffer.clone());
     Logger.debug("%s", buffer);
     Assertions.assertEquals(content.length, buffer.readLength());
-    Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(true, buffer.isReadable());
     Assertions.assertEquals(true, buffer.isWritable());
     buffer.writeReset();
@@ -130,7 +127,6 @@ public class TestExpansibleBuffer {
     buffer.writeTo(buf);
     Logger.debug("%s", buffer);
     Assertions.assertEquals(0, buffer.readLength());
-    Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(false, buffer.isReadable());
     Assertions.assertEquals(true, buffer.isWritable());
     resetTestBuffer();
@@ -144,7 +140,6 @@ public class TestExpansibleBuffer {
     buffer.writeTo(bos);
     Logger.debug("2. %s", buffer);
     Assertions.assertEquals(0, buffer.readLength());
-    Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(false, buffer.isReadable());
     Assertions.assertEquals(true, buffer.isWritable());
     Assertions.assertArrayEquals(content, bos.toByteArray());
@@ -159,7 +154,6 @@ public class TestExpansibleBuffer {
     buffer.writeTo(buf);
     Logger.debug("%s", buffer);
     Assertions.assertEquals(0, buffer.readLength());
-    Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(false, buffer.isReadable());
     Assertions.assertEquals(true, buffer.isWritable());
     buf.flip();
@@ -175,12 +169,10 @@ public class TestExpansibleBuffer {
     Logger.debug("%s", buffer);
     Logger.debug("%s", buf);
     Assertions.assertEquals(0, buffer.readLength());
-    Assertions.assertEquals(0, buffer.writeLength());
     Assertions.assertEquals(false, buffer.isReadable());
     Assertions.assertEquals(true, buffer.isWritable());
     Logger.debug("%s", buf);
     Assertions.assertEquals(content.length, buf.readLength());
-    Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
     Assertions.assertEquals(false, buf.isWritable());
     resetTestBuffer();
@@ -202,7 +194,6 @@ public class TestExpansibleBuffer {
     Buffer buf = buffer.clone();
     Logger.debug("%s", buffer);
     Assertions.assertEquals(content.length, buf.readLength());
-    Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
     Assertions.assertEquals(true, buf.isWritable());
     resetTestBuffer();
@@ -213,7 +204,6 @@ public class TestExpansibleBuffer {
     Buffer buf = buffer.cloneShared();
     Logger.debug("%s", buf);
     Assertions.assertEquals(content.length, buf.readLength());
-    Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
     Assertions.assertEquals(true, buf.isWritable());
     
@@ -228,7 +218,7 @@ public class TestExpansibleBuffer {
   @Test
   public void testFindByteArray() {
     byte[] search = "Menor".getBytes(StandardCharsets.UTF_8);
-    int idx = buffer.find(search);
+    int idx = buffer.search(search);
     Logger.debug("%s", buffer);
     Logger.debug("buffer.find('Menor'): %d", idx);
     Assertions.assertEquals(59, idx);
@@ -242,7 +232,7 @@ public class TestExpansibleBuffer {
     byte[] bs = "Menor".getBytes(StandardCharsets.UTF_8);
     Buffer search = new HeapBuffer(bs.length);
     search.fillBuffer(bs);
-    int idx = buffer.find(search);
+    int idx = buffer.search(search);
     Logger.debug("%s", buffer);
     Logger.debug("buffer.find('Menor'): %d", idx);
     Assertions.assertEquals(59, idx);
@@ -259,7 +249,6 @@ public class TestExpansibleBuffer {
     buf.put(b);
     Logger.debug("%s", buf);
     Assertions.assertEquals(1, buf.readLength());
-    Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
     Assertions.assertEquals(true, buf.isWritable());
     
@@ -277,7 +266,6 @@ public class TestExpansibleBuffer {
     buf.put(s);
     Logger.debug("%s", buf);
     Assertions.assertEquals(Short.BYTES, buf.readLength());
-    Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
     Assertions.assertEquals(true, buf.isWritable());
     
@@ -297,7 +285,6 @@ public class TestExpansibleBuffer {
     buf.put(i);
     Logger.debug("%s", buf);
     Assertions.assertEquals(Integer.BYTES, buf.readLength());
-    Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
     Assertions.assertEquals(true, buf.isWritable());
     
@@ -317,7 +304,6 @@ public class TestExpansibleBuffer {
     buf.put(f);
     Logger.debug("%s", buf);
     Assertions.assertEquals(Integer.BYTES, buf.readLength());
-    Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
     Assertions.assertEquals(true, buf.isWritable());
     
@@ -337,7 +323,6 @@ public class TestExpansibleBuffer {
     buf.put(l);
     Logger.debug("%s", buf);
     Assertions.assertEquals(Long.BYTES, buf.readLength());
-    Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
     Assertions.assertEquals(true, buf.isWritable());
     
@@ -357,7 +342,6 @@ public class TestExpansibleBuffer {
     buf.put(d);
     Logger.debug("%s", buf);
     Assertions.assertEquals(Long.BYTES, buf.readLength());
-    Assertions.assertEquals(0, buf.writeLength());
     Assertions.assertEquals(true, buf.isReadable());
     Assertions.assertEquals(true, buf.isWritable());
     

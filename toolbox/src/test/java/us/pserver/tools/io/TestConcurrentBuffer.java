@@ -216,7 +216,7 @@ public class TestConcurrentBuffer {
   @Test
   public void testFindByteArray() {
     byte[] search = "Menor".getBytes(StandardCharsets.UTF_8);
-    int idx = buffer.find(search);
+    int idx = buffer.search(search);
     Logger.debug("%s", buffer);
     Logger.debug("buffer.find('Menor'): %d", idx);
     Assertions.assertEquals(59, idx);
@@ -230,7 +230,7 @@ public class TestConcurrentBuffer {
     byte[] bs = "Menor".getBytes(StandardCharsets.UTF_8);
     Buffer search = new HeapBuffer(bs.length);
     search.fillBuffer(bs);
-    int idx = buffer.find(search);
+    int idx = buffer.search(search);
     Logger.debug("%s", buffer);
     Logger.debug("buffer.find('Menor'): %d", idx);
     Assertions.assertEquals(59, idx);

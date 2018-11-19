@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.IntFunction;
-import us.pserver.tools.log.Logger;
 
 /**
  *
@@ -91,7 +90,7 @@ public class ExpansibleBuffer implements Buffer {
   @Override
   public int readLength() {
     int len = 0;
-    for(int i = rindex; i <= windex; i++) {
+    for(int i = rindex; i <= windex && i < buffers.size(); i++) {
       len += buffers.get(i).readLength();
     }
     return len;
@@ -104,7 +103,7 @@ public class ExpansibleBuffer implements Buffer {
     for(int i = windex; i < buffers.size(); i++) {
       len += buffers.get(i).writeLength();
     }
-    return len;
+    return len > 0 ? len : Integer.MAX_VALUE;
   }
   
   
@@ -188,38 +187,68 @@ public class ExpansibleBuffer implements Buffer {
   
   
   @Override
-  public int find(byte[] cont) {
-    return find(Objects.requireNonNull(cont), 0, cont.length);
+  public int skip(int n) {
+    if(n < 1) return n;
+    int skip = Math.min(n, readLength());
+    int len = skip;
+    while(len > 0 && rindex <= windex) {
+      Buffer b = buffers.get(rindex);
+      if(b.isReadable()) {
+        len -= b.skip(len);
+      } else rindex++;
+    }
+    return skip;
   }
   
   
   @Override
-  public int find(byte[] cont, int ofs, int length) {
+  public int search(byte[] cont) {
+    return search(Objects.requireNonNull(cont), 0, cont.length);
+  }
+  
+  
+  @Override
+  public int search(byte[] cont, int ofs, int length) {
     if(cont == null || cont.length == 0) return -1;
-    if(ofs < 0 || length < 1 || ofs + length > cont.length) {
+    if(ofs < 0 || length < 1 || ofs + length > cont.length || length > readLength()) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", ofs, length));
     }
-    int len = 0;
-    for(int i = rindex; i <= windex; i++) {
-      Buffer b = buffers.get(i);
-      int rlen = b.readLength();
-      int idx = buffers.get(i).find(cont, ofs, length);
-      len += (idx >= 0 ? idx : rlen);
-      if(idx >= 0) {
-        return len;
-      }
+    int len = length;
+    int readed = 0;
+    while(len > 0 && rindex <= windex) {
+      Buffer b = buffers.get(rindex);
+      if(b.isReadable()) {
+        int rlen = b.readLength();
+        int r = b.search(cont, ofs, Math.min(len, b.readLength()));
+        readed += r >= 0 ? r : rlen;
+        if(r >= 0) {
+          len -= r;
+        }
+      } else rindex++;
     }
-    return -1;
+    return len <= 0 ? readed : -1;
   }
   
   
   @Override
-  public int find(Buffer buf) {
-    for(int i = rindex; i <= windex; i++) {
-      int idx = buffers.get(i).find(buf);
-      if(idx >= 0) return idx;
+  public int search(Buffer buf) {
+    if(buf == null || buf.readLength() < 1 || readLength() < buf.readLength()) {
+      return -1;
     }
-    return -1;
+    int len = buf.readLength();
+    int readed = 0;
+    while(len > 0 && rindex <= windex) {
+      Buffer b = buffers.get(rindex);
+      if(b.isReadable()) {
+        int rlen = b.readLength();
+        int r = b.search(buf);
+        readed += r >= 0 ? r : rlen;
+        if(r >= 0) {
+          len -= r;
+        }
+      } else rindex++;
+    }
+    return len <= 0 ? readed : -1;
   }
   
   

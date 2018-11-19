@@ -120,7 +120,7 @@ public class DirectBuffer implements Buffer {
   
   @Override
   public Buffer readReset() {
-    buffer.position(rmark);
+    rindex = rmark;
     return this;
   }
   
@@ -134,7 +134,7 @@ public class DirectBuffer implements Buffer {
   
   @Override
   public Buffer writeReset() {
-    buffer.position(wmark);
+    windex = wmark;
     return this;
   }
 
@@ -159,50 +159,67 @@ public class DirectBuffer implements Buffer {
   
   
   @Override
-  public int find(byte[] cont) {
-    return find(cont, 0, cont.length);
+  public int skip(int n) {
+    if(n < 1) return n;
+    int skip = Math.min(n, readLength());
+    rindex += skip;
+    return skip;
   }
   
   
   @Override
-  public int find(byte[] cont, int ofs, int len) {
+  public int search(byte[] cont) {
+    return search(cont, 0, cont.length);
+  }
+  
+  
+  @Override
+  public int search(byte[] cont, int ofs, int len) {
     if(cont == null || cont.length == 0) return -1;
-    if(ofs < 0 || len < 1 || ofs + len > cont.length) {
+    if(ofs < 0 || len < 1 || ofs + len > cont.length || len > readLength()) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", ofs, len));
     }
-    int idx = rindex;
-    while((idx + len) < readLength()) {
-      buffer.position(idx);
+    int readed = 0;
+    int readlen = readLength();
+    while((readed + len) <= readlen) {
+      buffer.position(rindex + readed);
       int count = 0;
-      for(int i = ofs; i < len; i++) {
-        if(buffer.get() == cont[i]) count++;
+      for(int i = 0; i < len; i++) {
+        if(buffer.get() == cont[ofs + i]) count++;
       }
-      if(count == len) return idx;
-      idx++;
+      if(count == len) {
+        rindex += readed;
+        return readed;
+      }
+      readed++;
     }
     return -1;
   }
   
   
   @Override
-  public int find(Buffer buf) {
-    if(buf == null || !buf.isReadable()) {
-      throw new IllegalArgumentException("Bad buffer: "+ buf);
+  public int search(Buffer cont) {
+    if(cont == null || !cont.isReadable()) {
+      throw new IllegalArgumentException("Bad buffer: "+ cont);
     }
-    buf.readMark();
-    int rlen = buf.readLength();
-    int idx = rindex;
-    while((idx + rlen) < readLength()) {
-      buffer.position(idx);
+    cont.readMark();
+    int readed = 0;
+    int contlen = cont.readLength();
+    int readlen = this.readLength();
+    while((readed + contlen) <= readlen) {
+      buffer.position(rindex + readed);
       int count = 0;
-      for(int i = 0; i < rlen; i++) {
-        if(buffer.get() == buf.get()) count++;
+      for(int i = 0; i < contlen; i++) {
+        if(buffer.get() == cont.get()) count++;
       }
-      buf.readReset();
-      if(count == rlen) return idx;
-      idx++;
+      cont.readReset();
+      if(count == contlen) {
+        rindex += readed;
+        return readed;
+      }
+      readed++;
     }
-    return idx;
+    return -1;
   }
   
   

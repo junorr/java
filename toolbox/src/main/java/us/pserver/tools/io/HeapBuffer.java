@@ -30,8 +30,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.function.IntFunction;
-import us.pserver.tools.UTF8String;
-import us.pserver.tools.log.Logger;
 
 /**
  *
@@ -40,7 +38,7 @@ import us.pserver.tools.log.Logger;
  */
 public class HeapBuffer implements Buffer {
   
-  public static final HeapBuffer EMPTY_BUFFER = new HeapBuffer(new byte[0], -1, -1, -1, -1);
+  public static final HeapBuffer EMPTY_HEAP_BUFFER = new HeapBuffer(new byte[0], -1, -1, -1, -1);
   
   
   private final byte[] buffer;
@@ -174,31 +172,41 @@ public class HeapBuffer implements Buffer {
   }
   
   
-  /* Tested */
   @Override
-  public int find(byte[] cont) {
-    return find(Objects.requireNonNull(cont), 0, cont.length);
+  public int skip(int n) {
+    if(n < 1) return n;
+    int skip = Math.min(n, readLength());
+    rindex += skip;
+    return skip;
   }
   
   
   /* Tested */
   @Override
-  public int find(byte[] cont, int ofs, int len) {
+  public int search(byte[] cont) {
+    return search(Objects.requireNonNull(cont), 0, cont.length);
+  }
+  
+  
+  /* Tested */
+  @Override
+  public int search(byte[] cont, int ofs, int len) {
     if(cont == null || cont.length == 0) return -1;
-    if(ofs < 0 || len < 1 || ofs + len > cont.length) {
+    if(ofs < 0 || len < 1 || ofs + len > cont.length || len > readLength()) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d", ofs, len));
     }
-    int idx = rindex;
-    while((idx + len) < readLength()) {
+    int readed = 0;
+    int readlen = readLength();
+    while((readed + len) <= readlen) {
       int count = 0;
-      for(int i = ofs; i < len; i++) {
-        if(buffer[idx + i] == cont[i]) count++;
+      for(int i = 0; i < len; i++) {
+        if(buffer[rindex + readed + i] == cont[ofs + i]) count++;
       }
       if(count == len) {
-        rindex = idx;
-        return idx;
+        rindex += readed;
+        return readed;
       }
-      idx++;
+      readed++;
     }
     return -1;
   }
@@ -206,24 +214,25 @@ public class HeapBuffer implements Buffer {
   
   /* Tested */
   @Override
-  public int find(Buffer buf) {
-    if(buf == null || !buf.isReadable()) {
-      throw new IllegalArgumentException("Bad buffer: "+ buf);
+  public int search(Buffer cont) {
+    if(cont == null || !cont.isReadable()) {
+      throw new IllegalArgumentException("Bad buffer: "+ cont);
     }
-    buf.readMark();
-    int rlen = buf.readLength();
-    int idx = rindex;
-    while((idx + rlen) < readLength()) {
+    cont.readMark();
+    int readed = 0;
+    int contlen = cont.readLength();
+    int readlen = this.readLength();
+    while((readed + contlen) <= readlen) {
       int count = 0;
-      for(int i = 0; i < rlen; i++) {
-        if(buffer[idx + i] == buf.get()) count++;
+      for(int i = 0; i < contlen; i++) {
+        if(buffer[rindex + readed + i] == cont.get()) count++;
       }
-      buf.readReset();
-      if(count == rlen) {
-        rindex = idx;
-        return idx;
+      cont.readReset();
+      if(count == contlen) {
+        rindex += readed;
+        return readed;
       }
-      idx++;
+      readed++;
     }
     return -1;
   }
