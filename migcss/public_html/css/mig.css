@@ -142,7 +142,7 @@
 .mig-baloon-top {
   display: block;
   overflow: auto;
-  clip-path: polygon(
+  -webkit-clip-path: polygon(
     50% 0%,
     62% 15%,
     96% 15%,
@@ -920,4 +920,12 @@
 
 .mig-opaque {
   opacity: 1.0;
+}
+
+.mig-hidden {
+  display: none;
+}
+
+.mig-block {
+  display: block;
 }
