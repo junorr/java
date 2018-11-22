@@ -207,15 +207,6 @@
   );
 }
 
-.mig-baloon-bottom-fade {
-  opacity: 0;
-}
-
-.mig-baloon-bottom-fade:after {
-  opacity: 1;
-  transition: opacity 0.4s;
-}
-
 
 .mig-baloon-bottom-left {
   padding: 10px 20px 25px 20px;
@@ -478,11 +469,11 @@
 }
 
 .mig-fx-fadein {
-  animation: fadein 0.5s !important;
+  animation: fadein 0.4s !important;
 }
 
 .mig-fx-fadeout {
-  animation: fadeout 0.5s !important;
+  animation: fadeout 0.4s !important;
 }
 
 
