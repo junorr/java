@@ -52,7 +52,7 @@ function MigTooltip(elt, opts) {
       css: false,
       content: ''
     };
-    if(opts && typeof opts.postion === 'string' && opts.postion.length > 2) {
+    if(opts && typeof opts.position === 'string' && opts.position.length > 2) {
       o.position = opts.position;
     }
     if(opts && typeof opts.trigger === 'string' && triggers.hasOwnProperty(opts.trigger)) {
@@ -76,6 +76,7 @@ function MigTooltip(elt, opts) {
         o.content = tooltip;
       }
     }
+    console.log("* opts: "+ JSON.stringify(o));
     return o;
   };
   
@@ -93,7 +94,7 @@ function MigTooltip(elt, opts) {
    * @return {object} {width, height} needed for the informed content.
    */
   var getContentSize = function(text, css, classes) {
-    var span = document.createElement("span");
+    var span = document.createElement("div");
     if(css && typeof css === 'object') {
       for(var prop in css) {
         if(!css.hasOwnProperty(prop)) continue;
@@ -104,15 +105,16 @@ function MigTooltip(elt, opts) {
       classes = css;
     }
     if(classes) span.className = classes;
-    span.innerText = text;
+    span.innerHTML = text;
     span.style['visibility'] = 'hidden';
     span.style['float'] = 'left';
     span.style['position'] = 'absolute';
     span.style['top'] = '0px';
     span.style['left'] = '0px';
     span.style['display'] = 'block';
+    span.style['z-index'] = '9999';
     document.body.appendChild(span);
-    var size = {'width': span.offsetWidth, 'height': span.offsetHeight};
+    var size = {width: span.offsetWidth, height: span.offsetHeight};
     document.body.removeChild(span);
     return size;
   };
@@ -148,20 +150,55 @@ function MigTooltip(elt, opts) {
 	};
   
   
-  var getTooltipPosition = function() {
+  /**
+   * Return where tooltip should be positioned on screen (absolute), 
+   * according to opts.position (top, right, bottom or left).
+   * @param {string} html The tooltip html.
+   * @return {object} position {top, left}
+   */
+  var getTooltipPosition = function(html) {
     var ofs = offset(ref.elt);
-    var tsize = typeof ref.opts.css === 'object' 
-        ? getContentSize(ref.opts.content, ref.opts.css)
-        : getContentSize(ref.opts.content, "mig-font-14 mig-font-bold");
+    var size = getContentSize(html);
     var pos = {top: 0, left: 0};
     if(ref.opts.position === 'top') {
-      pos.top = ofs.top - tsize.height - 43;
-      pos.left = ofs.left + ref.elt.offsetWidth / 2 - (tsize.width + 40) / 2;
+      pos.top = ofs.top - size.height - 10;
+      pos.left = ofs.left + ref.elt.offsetWidth / 2 - size.width / 2;
+    }
+    else if(ref.opts.position === 'right') {
+      pos.top = ofs.top + ref.elt.offsetHeight / 2 - size.height / 2;
+      pos.left = ofs.left + ref.elt.offsetWidth + 10;
     }
     else if(ref.opts.position === 'bottom') {
-      
+      pos.top = ofs.top + ref.elt.offsetHeight + 10;
+      pos.left = ofs.left + ref.elt.offsetWidth / 2 - size.width / 2;
+    }
+    else {
+      pos.top = ofs.top + ref.elt.offsetHeight / 2 - size.height / 2;
+      pos.left = ofs.left - size.width - 10;
     }
     return pos;
+  };
+  
+  
+  /**
+   * Set tooltip classes according to opts.position (top, right, bottom or left).
+   * @param {type} elt Tooltip element.
+   * @return {unresolved}
+   */
+  var setTooltipClasses = function(elt) {
+    if(ref.opts.position === 'top') {
+      elt.className = "mig-baloon-bottom mig-bg-gray-darker mig-color-white mig-font-sans mig-font-14 mig-font-bold";
+    }
+    else if(ref.opts.position === 'right') {
+      elt.className = "mig-baloon-left mig-bg-gray-darker mig-color-white mig-font-sans mig-font-14 mig-font-bold";
+    }
+    else if(ref.opts.position === 'bottom') {
+      elt.className = "mig-baloon-top mig-bg-gray-darker mig-color-white mig-font-sans mig-font-14 mig-font-bold";
+    }
+    else {
+      elt.className = "mig-baloon-right mig-bg-gray-darker mig-color-white mig-font-sans mig-font-14 mig-font-bold";
+    }
+    return elt;
   };
 	
   
@@ -178,8 +215,7 @@ function MigTooltip(elt, opts) {
     }
     var el = ref.elt;
     if(!ref.opts.content || ref.opts.content.length < 1) return;
-    var div = document.createElement("div");
-    div.className = "mig-baloon-bottom mig-bg-gray-darker mig-color-white mig-font-sans mig-font-14 mig-font-bold";
+    var div = setTooltipClasses(document.createElement("div"));
     div.innerHTML = ref.opts.content;
     if(ref.opts.css) {
       for(var prop in ref.opts.css) {
@@ -193,12 +229,9 @@ function MigTooltip(elt, opts) {
     wrap.style['float'] = 'left';
     wrap.style["filter"] = "drop-shadow(3px 3px 3px rgba(0,0,0,0.5))";
     wrap.appendChild(div);
-    var ofs = offset(el);
-    var tsize = getContentSize(ref.opts.content, "mig-font-14 mig-font-bold");
-    var dtop = ofs.top - tsize.height - 43;
-    var dleft = ofs.left + el.offsetWidth / 2 - (tsize.width + 40) / 2;
-    wrap.style['top'] = dtop + "px";
-    wrap.style['left'] = dleft + "px";
+    var pos = getTooltipPosition(wrap.innerHTML);
+    wrap.style['top'] = pos.top + "px";
+    wrap.style['left'] = pos.left + "px";
     if(ref.opts.hideOnClick) {
       wrap.addEventListener("click", ref.hide);
     }
@@ -291,6 +324,6 @@ function MigTooltip(elt, opts) {
 }
 
 
-var btntip = migtip("#btn-baloon", {trigger: 'click'});
-var btntip = migtip("#input-baloon", {trigger: 'focus'});
-var btntip = migtip("#input-baloon2", false);
+var btntip = migtip("#btn-baloon", {trigger: 'click', position: 'left'});
+var btntip = migtip("#input-baloon", {trigger: 'focus', css: {'background-color': 'white', 'border': 'solid thin blue', 'color': 'black'}});
+var btntip = migtip("#input-baloon2", {position: 'right'});
