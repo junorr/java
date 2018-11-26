@@ -98,22 +98,151 @@ function MigTooltip(elt, opts) {
         }
       ]//animation
     }, {//effect
-      name: 'fold-v', 
+      name: 'slide-bottom', 
       animation: [
         {//show animation class and keyframes (creating)
-          className: 'mig-fx-foldin-v', 
+          className: 'mig-fx-slidein-bottom', 
           keyframes: {
-            '0%': { height: '1px', top: '${this.top + this.height / 2}', opacity: 1 },
-            '100%': { height: '${this.height}px', top: '${this.top}', opacity: 1 }
+            '0%': { top: '${document.height - this.height}px', opacity: 0 },
+            '80%': { top: '${this.top - 50}px', opacity: 0.8 },
+            '100%': { top: '${this.top}px', opacity: 1 }
           },
-          duration: 600
+          duration: 300
         }, {//hide animation class and keyframes (creating)
-          className: 'mig-fx-foldout-v', 
+          className: 'mig-fx-slideout-bottom', 
           keyframes: {
-            '0%': { height: '${this.height}px', top: '${this.top}', opacity: 1 },
-            '100%': { height: '1px', top: '${this.top + this.height / 2}', opacity: 1 }
+            '0%': { top: '${this.top}px', opacity: 1 },
+            '20%': { top: '${this.top - 50}px', opacity: 0.8 },
+            '100%': { top: '${document.height - this.height}px', opacity: 0 }
           },
-          duration: 600
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'shake-v', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-shakein-v', 
+          keyframes: {
+            '0%': { top: '${this.top}px', opacity: 0.2 },
+            '20%': { top: '${this.top + 25}px', opacity: 0.4 },
+            '40%': { top: '${this.top - 25}px', opacity: 0.6 },
+            '60%': { top: '${this.top + 25}px', opacity: 0.8 },
+            '80%': { top: '${this.top - 25}px', opacity: 0.9 },
+            '100%': { top: '${this.top}px', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-shakeout-v', 
+          keyframes: {
+            '0%': { top: '${this.top}px', opacity: 1 },
+            '20%': { top: '${this.top + 25}px', opacity: 0.9 },
+            '40%': { top: '${this.top - 25}px', opacity: 0.8 },
+            '60%': { top: '${this.top + 25}px', opacity: 0.6 },
+            '80%': { top: '${this.top - 25}px', opacity: 0.4 },
+            '100%': { top: '${this.top}px', opacity: 0.2 }
+          },
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'shake-h', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-shakein-h', 
+          keyframes: {
+            '0%': { left: '${this.left}px', opacity: 0.2 },
+            '20%': { left: '${this.left + 25}px', opacity: 0.4 },
+            '40%': { left: '${this.left - 25}px', opacity: 0.6 },
+            '60%': { left: '${this.left + 25}px', opacity: 0.8 },
+            '80%': { left: '${this.left - 25}px', opacity: 0.9 },
+            '100%': { left: '${this.left}px', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-shakeout-h', 
+          keyframes: {
+            '0%': { left: '${this.left}px', opacity: 1 },
+            '20%': { left: '${this.left + 25}px', opacity: 0.9 },
+            '40%': { left: '${this.left - 25}px', opacity: 0.8 },
+            '60%': { left: '${this.left + 25}px', opacity: 0.6 },
+            '80%': { left: '${this.left - 25}px', opacity: 0.4 },
+            '100%': { left: '${this.left}px', opacity: 0.2 }
+          },
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'shake-x', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-shakein-x', 
+          keyframes: {
+            '0%': { left: '${this.left}px', top: '${this.top}px', opacity: 0.2 },
+            '20%': { left: '${this.left + 25}px', top: '${this.top + 25}px', opacity: 0.4 },
+            '40%': { left: '${this.left + 25}px', top: '${this.top - 25}px', opacity: 0.6 },
+            '60%': { left: '${this.left - 25}px', top: '${this.top + 25}px', opacity: 0.8 },
+            '80%': { left: '${this.left - 25}px', top: '${this.top - 25}px', opacity: 0.9 },
+            '100%': { left: '${this.left}px', top: '${this.top}px', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-shakeout-x', 
+          keyframes: {
+            '0%': { left: '${this.left}px', top: '${this.top}px', opacity: 1 },
+            '20%': { left: '${this.left + 25}px', top: '${this.top + 25}px', opacity: 0.9 },
+            '40%': { left: '${this.left + 25}px', top: '${this.top - 25}px', opacity: 0.8 },
+            '60%': { left: '${this.left - 25}px', top: '${this.top + 25}px', opacity: 0.6 },
+            '80%': { left: '${this.left - 25}px', top: '${this.top - 25}px', opacity: 0.4 },
+            '100%': { left: '${this.left}px', top: '${this.top}px', opacity: 0.2 }
+          },
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'rotate', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-rotatein', 
+          keyframes: {
+            '0%': { transform: 'rotate(0deg)', opacity: 0 },
+            '100%': { transform: 'rotate(360deg)', opacity: 1 }
+          },
+          'animation-timing-function': 'linear',
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-rotateout', 
+          keyframes: {
+            '0%': { transform: 'rotate(0deg)', opacity: 1 },
+            '100%': { transform: 'rotate(-360deg)', opacity: 0 }
+          },
+          'animation-timing-function': 'linear',
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'scale', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-scalein', 
+          keyframes: {
+            '0%': { transform: 'scale(1,1)', opacity: 0.2 },
+            '25%': { transform: 'scale(1.5,1.5)', opacity: 0.4 },
+            '50%': { transform: 'scale(0.8,0.8)', opacity: 0.6 },
+            '75%': { transform: 'scale(1.2,1.2)', opacity: 0.8 },
+            '100%': { transform: 'scale(1,1)', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-scaleout', 
+          keyframes: {
+            '0%': { transform: 'scale(1,1)', opacity: 1 },
+            '25%': { transform: 'scale(1.5,1.5)', opacity: 0.8 },
+            '50%': { transform: 'scale(0.8,0.8)', opacity: 0.6 },
+            '75%': { transform: 'scale(1.2,1.2)', opacity: 0.4 },
+            '100%': { transform: 'scale(1,1)', opacity: 0.2 }
+          },
+          duration: 300
         }
       ]//animation
     }//effect
@@ -208,7 +337,17 @@ function MigTooltip(elt, opts) {
       style.innerHTML += "} ";
     }
     style.innerHTML += "} ";
-    style.innerHTML += "." + anim.className + " { animation: " + kfname + " " + anim.duration + "ms; }";
+    //style.innerHTML += "." + anim.className + " { animation: " + kfname + " " + anim.duration + "ms; }";
+    style.innerHTML += "." + anim.className + " { animation: " + kfname + " " + anim.duration + "ms; ";
+    for(var prop in anim) {
+      if(anim.hasOwnProperty(prop) 
+          && prop !== 'className' 
+          && prop !== 'keyframes' 
+          && prop !== 'duration') {
+        style.innerHTML += prop + ": " + anim[prop] + "; ";
+      }
+    }
+    style.innerHTML += "}";
     style.setAttribute('id', anim.className);
     document.querySelector('head').appendChild(style);
   };
@@ -574,6 +713,6 @@ function MigTooltip(elt, opts) {
 }
 
 
-var btntip = migtip("#btn-baloon", {trigger: 'click', position: 'top', effect: 'fold-v'});
+var btntip = migtip("#btn-baloon", {trigger: 'click', position: 'top', effect: 'scale'});
 var inputtip = migtip("#input-baloon", {trigger: 'focus', css: {'background-color': 'white', 'border': 'solid thin blue', 'color': 'black'}});
 var inputtip2 = migtip("#input-baloon2", {position: 'right', effect: 'slide-right'});
