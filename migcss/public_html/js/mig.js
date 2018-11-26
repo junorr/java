@@ -76,6 +76,46 @@ function MigTooltip(elt, opts) {
           duration: 300
         }
       ]//animation
+    }, {//effect
+      name: 'slide-top', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-slidein-top', 
+          keyframes: {
+            '0%': { top: '0px', opacity: 0 },
+            '80%': { top: '${this.top + 50}px', opacity: 0.8 },
+            '100%': { top: '${this.top}px', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-slideout-top', 
+          keyframes: {
+            '0%': { top: '${this.top}px', opacity: 1 },
+            '20%': { top: '${this.top + 50}px', opacity: 0.8 },
+            '100%': { top: '0px', opacity: 0 }
+          },
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'fold-v', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-foldin-v', 
+          keyframes: {
+            '0%': { height: '1px', top: '${this.top + this.height / 2}', opacity: 1 },
+            '100%': { height: '${this.height}px', top: '${this.top}', opacity: 1 }
+          },
+          duration: 600
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-foldout-v', 
+          keyframes: {
+            '0%': { height: '${this.height}px', top: '${this.top}', opacity: 1 },
+            '100%': { height: '1px', top: '${this.top + this.height / 2}', opacity: 1 }
+          },
+          duration: 600
+        }
+      ]//animation
     }//effect
   ];//effects
   
@@ -260,7 +300,7 @@ function MigTooltip(elt, opts) {
   /**
    * TEST METHOD. Not in use.
    * Return the offset position of the element.
-   * @param {HTMLElement} The element.
+   * @param {HTMLElement} el The element.
    * @return {object} {top, left} Offset position.
    */
   var getOffset = function(el) {
@@ -277,7 +317,7 @@ function MigTooltip(elt, opts) {
   
   /**
    * Return the offset position of the element.
-   * @param {HTMLElement} The element.
+   * @param {HTMLElement} el The element.
    * @return {object} {top, left} Offset position.
    */
   var offset = function(el) {
@@ -534,6 +574,6 @@ function MigTooltip(elt, opts) {
 }
 
 
-var btntip = migtip("#btn-baloon", {trigger: 'click', position: 'left', effect: 'slide-left'});
+var btntip = migtip("#btn-baloon", {trigger: 'click', position: 'top', effect: 'fold-v'});
 var inputtip = migtip("#input-baloon", {trigger: 'focus', css: {'background-color': 'white', 'border': 'solid thin blue', 'color': 'black'}});
 var inputtip2 = migtip("#input-baloon2", {position: 'right', effect: 'slide-right'});
