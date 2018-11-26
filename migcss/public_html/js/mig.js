@@ -14,6 +14,11 @@ function MigTooltip(elt, opts) {
   ref.elt = typeof elt === 'string' ? document.querySelector(elt) : elt;
   
   /**
+   * MigTooltip unique ID.
+   */
+  ref.uid = (new Date().getTime() + ref.elt.outerHTML.length + JSON.stringify(opts).length);
+  
+  /**
    * The tooltip element.
    */
   ref.tooltip = false;
@@ -22,9 +27,58 @@ function MigTooltip(elt, opts) {
    * Available tooltip effects names and classes.
    * @type {object} 
    */
-  var effects = {
-    'fade': ['mig-fx-fadein', 'mig-fx-fadeout']
-  };
+  var effects = [
+    {//effect
+      name: 'fade', 
+      animation: [
+        { className: 'mig-fx-fadein', duration: 400 }, //show animation classes (existing in css)
+        { className: 'mig-fx-fadeout', duration: 400} //hide animation classes (existing in css)
+      ]
+    }, {//effect
+      name: 'slide-left', 
+      animation: [ 
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-slidein-left', 
+          keyframes: {
+            '0%': { left: '0px', opacity: 0 },
+            '80%': { left: '${this.left + 50}px', opacity: 0.8 },
+            '100%': { left: '${this.left}px', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-slideout-left', 
+          keyframes: {
+            '0%': { left: '${this.left}px', opacity: 1 },
+            '20%': { left: '${this.left + 50}px', opacity: 0.8 },
+            '100%': { left: '0px', opacity: 0 }
+          },
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'slide-right', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-slidein-right', 
+          keyframes: {
+            '0%': { left: '${document.width - this.width}px', opacity: 0 },
+            '80%': { left: '${this.left - 50}px', opacity: 0.8 },
+            '100%': { left: '${this.left}px', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-slideout-right', 
+          keyframes: {
+            '0%': { left: '${this.left}px', opacity: 1 },
+            '20%': { left: '${this.left - 50}px', opacity: 0.8 },
+            '100%': { left: '${document.width - this.width}px', opacity: 0 }
+          },
+          duration: 300
+        }
+      ]//animation
+    }//effect
+  ];//effects
+  
   
   /**
    * Available triggers to show the tooltip.
@@ -61,8 +115,14 @@ function MigTooltip(elt, opts) {
     if(opts && typeof opts.hideOnClick === 'boolean') {
       o.hideOnClick = opts.hideOnClick;
     }
-    if(opts && typeof opts.effect === 'string' && effects.hasOwnProperty(opts.effect)) {
+    if(opts && typeof opts.effect === 'string') {
       o.effect = opts.effect;
+    } 
+    else if(opts && typeof opts.effect === 'object' 
+        && opts.effect.hasOwnProperty('name') 
+        && opts.effect.hasOwnProperty('animation')
+        && opts.effect.animation.length === 2) {
+      ref.addFx(opts.effect.name, opts.effect.animation[0], opts.effect.animation[1]);
     }
     if(opts && typeof opts.css === 'object') {
       o.css = opts.css;
@@ -84,6 +144,83 @@ function MigTooltip(elt, opts) {
    * Tooltip options.
    */
   ref.opts = normalOpts(opts);
+  
+  
+  var createCssAnimation = function(anim) {
+    console.log("* createCssAnimation( '" + JSON.stringify(anim) + "' )");
+    if(!anim 
+        || !anim.hasOwnProperty('className') 
+        || !anim.hasOwnProperty('keyframes') 
+        || !anim.hasOwnProperty('duration')) {
+      throw "Bad animation argument: Missing object properties (className/keyframes/duration)";
+    }
+    var style = document.createElement('style');
+    style.setAttribute('type', 'text/css');
+    var kfname = anim.className + "_keyframes";
+    style.innerHTML = "@keyframes " + kfname + " { ";
+    for(var kf in anim.keyframes) {
+      if(!anim.keyframes.hasOwnProperty(kf)) continue;
+      style.innerHTML += kf + " { ";
+      for(var prop in anim.keyframes[kf]) {
+        if(!anim.keyframes[kf].hasOwnProperty(prop)) continue;
+        style.innerHTML += prop + ": " + anim.keyframes[kf][prop] + "; ";
+      }
+      style.innerHTML += "} ";
+    }
+    style.innerHTML += "} ";
+    style.innerHTML += "." + anim.className + " { animation: " + kfname + " " + anim.duration + "ms; }";
+    style.setAttribute('id', anim.className);
+    document.querySelector('head').appendChild(style);
+  };
+  
+  
+  var evalAndReplace = function(keyframes, bounds) {
+    for(var kf in keyframes) {
+      if(!keyframes.hasOwnProperty(kf)) continue;
+      for(var prop in keyframes[kf]) {
+        if(!keyframes[kf].hasOwnProperty(prop) 
+            || typeof keyframes[kf][prop] !== 'string') continue;
+        var iex = keyframes[kf][prop].indexOf('${');
+        if(iex < 0) continue;
+        var eex = keyframes[kf][prop].indexOf('}');
+        var exp = keyframes[kf][prop].substring(iex + 2, eex);
+        exp = exp.replace(/this.top/g, bounds.top);
+        exp = exp.replace(/this.left/g, bounds.left);
+        exp = exp.replace(/document.width/g, document.body.offsetWidth);
+        exp = exp.replace(/document.height/g, document.body.offsetHeight);
+        exp = exp.replace(/this.width/g, bounds.width);
+        exp = exp.replace(/this.height/g, bounds.height);
+        console.log("* evalAndReplace(): " + keyframes[kf][prop] + " => " + exp + " => " + eval(exp));
+        keyframes[kf][prop] = keyframes[kf][prop].substring(0, iex) 
+            + eval(exp)
+            + keyframes[kf][prop].substring(eex + 1);
+      }
+    }
+    return keyframes;
+  };
+  
+  
+  var containsCssId = function(id) {
+    var css = document.querySelector("#"+id);
+    console.log("* containsCssId( '" + id + "' ): "+ css + " = " + (css !== null));
+    return css !== null;
+  };
+  
+
+  var processEffects = function(bounds) {
+    for(var ifx = 0; ifx < effects.length; ifx++) {
+      var fx = effects[ifx];
+      for(var i = 0; i < fx.animation.length; i++) {
+        if(!fx.animation[i].hasOwnProperty('keyframes')) continue;
+        var cname = fx.animation[i].className + "_" + ref.uid;
+        if(containsCssId(fx.animation[i].className) 
+            || containsCssId(cname)) continue;
+        fx.animation[i].className = cname;
+        fx.animation[i].keyframes = evalAndReplace(fx.animation[i].keyframes, bounds);
+        createCssAnimation(fx.animation[i]);
+      }
+    }
+  };
   
   
   /**
@@ -121,6 +258,7 @@ function MigTooltip(elt, opts) {
   
   
   /**
+   * TEST METHOD. Not in use.
    * Return the offset position of the element.
    * @param {HTMLElement} The element.
    * @return {object} {top, left} Offset position.
@@ -156,10 +294,10 @@ function MigTooltip(elt, opts) {
    * @param {string} html The tooltip html.
    * @return {object} position {top, left}
    */
-  var getTooltipPosition = function(html) {
+  var getTooltipBounds = function(html) {
     var ofs = offset(ref.elt);
     var size = getContentSize(html);
-    var pos = {top: 0, left: 0};
+    var pos = {top: 0, left: 0, width: size.width, height: size.height};
     if(ref.opts.position === 'top') {
       pos.top = ofs.top - size.height - 10;
       pos.left = ofs.left + ref.elt.offsetWidth / 2 - size.width / 2;
@@ -187,20 +325,43 @@ function MigTooltip(elt, opts) {
    */
   var setTooltipClasses = function(elt) {
     if(ref.opts.position === 'top') {
-      elt.className = "mig-baloon-bottom mig-bg-gray-darker mig-color-white mig-font-sans mig-font-14 mig-font-bold";
+      elt.className = "mig-baloon-bottom mig-bg-gray-darker mig-color-white mig-font-sans mig-font-12";
     }
     else if(ref.opts.position === 'right') {
-      elt.className = "mig-baloon-left mig-bg-gray-darker mig-color-white mig-font-sans mig-font-14 mig-font-bold";
+      elt.className = "mig-baloon-left mig-bg-gray-darker mig-color-white mig-font-sans mig-font-12";
     }
     else if(ref.opts.position === 'bottom') {
-      elt.className = "mig-baloon-top mig-bg-gray-darker mig-color-white mig-font-sans mig-font-14 mig-font-bold";
+      elt.className = "mig-baloon-top mig-bg-gray-darker mig-color-white mig-font-sans mig-font-12";
     }
     else {
-      elt.className = "mig-baloon-right mig-bg-gray-darker mig-color-white mig-font-sans mig-font-14 mig-font-bold";
+      elt.className = "mig-baloon-right mig-bg-gray-darker mig-color-white mig-font-sans mig-font-12";
     }
     return elt;
   };
 	
+  
+  ref.addFx = function(name, fxin, fxout) {
+    if(typeof name !== 'string') {
+      throw "Bad argument 'name': '" + name + "' is not a string";
+    }
+    if(!fxin 
+        || !fxin.hasOwnProperty('className') 
+        || !fxin.hasOwnProperty('keyframes') 
+        || !fxin.hasOwnProperty('duration')) {
+      throw "Bad argument 'fxin': Missing object properties (className/keyframes/duration)";
+    }
+    if(!fxout 
+        || !fxout.hasOwnProperty('className') 
+        || !fxout.hasOwnProperty('keyframes') 
+        || !fxout.hasOwnProperty('duration')) {
+      throw "Bad argument 'fxout': Missing object properties (className/keyframes/duration)";
+    }
+    effects.push({
+      name: name,
+      animation: [fxin, fxout]
+    });
+  };
+  
   
   /**
    * Create the tooltip element.
@@ -227,16 +388,31 @@ function MigTooltip(elt, opts) {
     wrap.style['position'] = 'absolute';
     wrap.style['z-index'] = '9999';
     wrap.style['float'] = 'left';
+    wrap.style['opacity'] = '0';
     wrap.style["filter"] = "drop-shadow(3px 3px 3px rgba(0,0,0,0.5))";
     wrap.appendChild(div);
-    var pos = getTooltipPosition(wrap.innerHTML);
-    wrap.style['top'] = pos.top + "px";
-    wrap.style['left'] = pos.left + "px";
+    var bounds = getTooltipBounds(wrap.innerHTML);
+    wrap.style['top'] = bounds.top + "px";
+    wrap.style['left'] = bounds.left + "px";
+    processEffects(bounds);
     if(ref.opts.hideOnClick) {
       wrap.addEventListener("click", ref.hide);
     }
     ref.tooltip = wrap;
-    if(show) document.body.appendChild(wrap);
+    if(!show) wrap.style["display"] = "none";;
+    document.body.appendChild(wrap);
+  };
+  
+  
+  var getConfiguredFx = function() {
+    var fxname = typeof ref.opts.effect === 'string' ? ref.opts.effect : ref.opts.effect.name;
+    var fx = false;
+    for(var i = 0; i < effects.length; i++) {
+      if(effects[i].name === fxname) {
+        return effects[i];
+      }
+    }
+    return false;
   };
   
   
@@ -248,8 +424,17 @@ function MigTooltip(elt, opts) {
     if(!ref.tooltip) {
       ref.create(true);
     }
+    var fx = getConfiguredFx();
     ref.tooltip.style["display"] = "block";
-    ref.tooltip.className = effects[ref.opts.effect][0];
+    if(!fx) {
+      ref.tooltip.style["opacity"] = "1";
+      return;
+    }
+    setTimeout(()=>{
+      ref.tooltip.style["opacity"] = "1";
+    }, fx.animation[0].duration);
+    console.log("* show(): className="+ fx.animation[0].className);
+    ref.tooltip.className = fx.animation[0].className;
   };
   
   
@@ -259,21 +444,46 @@ function MigTooltip(elt, opts) {
    */
   ref.hide = function() {
     if(ref.tooltip) {
-      setTimeout(()=>{ref.tooltip.style["display"] = "none";}, 400);
-      ref.tooltip.className = effects[ref.opts.effect][1];
+      var fx = getConfiguredFx();
+      if(!fx) {
+        ref.tooltip.style["opacity"] = "0";
+        ref.tooltip.style["display"] = "none";
+        return;
+      }
+      setTimeout(()=>{
+        ref.tooltip.style["opacity"] = "0";
+        ref.tooltip.style["display"] = "none";
+      }, fx.animation[1].duration);
+      console.log("* hide(): className="+ fx.animation[1].className);
+      ref.tooltip.className = fx.animation[1].className;
+    }
+  };
+  
+  
+   /**
+   * Hide and destroy the tooltip element.
+   * @return {undefined}
+   */
+  ref.destroy = function() {
+    if(ref.tooltip && document.body.contains(ref.tooltip)) {
+      document.body.removeChild(ref.tooltip);
+      ref.tooltip = false;
     }
   };
   
   
   /**
-   * Hide and destroy the tooltip element.
+   * Update tooltip content.
+   * @param {text/html} content The tooltip content.
    * @return {undefined}
    */
-  ref.destroy = function() {
-    if(ref.tooltip) {
-      ref.hide();
-      setTimeout(()=>{document.body.removeChild(ref.tooltip);}, 400);
+  ref.update = function(content) {
+    if(typeof content !== 'string' || content.length < 1) {
+      return;
     }
+    ref.destroy();
+    ref.opts.content = content;
+    ref.show();
   };
   
   
@@ -324,6 +534,6 @@ function MigTooltip(elt, opts) {
 }
 
 
-var btntip = migtip("#btn-baloon", {trigger: 'click', position: 'left'});
-var btntip = migtip("#input-baloon", {trigger: 'focus', css: {'background-color': 'white', 'border': 'solid thin blue', 'color': 'black'}});
-var btntip = migtip("#input-baloon2", {position: 'right'});
+var btntip = migtip("#btn-baloon", {trigger: 'click', position: 'left', effect: 'slide-left'});
+var inputtip = migtip("#input-baloon", {trigger: 'focus', css: {'background-color': 'white', 'border': 'solid thin blue', 'color': 'black'}});
+var inputtip2 = migtip("#input-baloon2", {position: 'right', effect: 'slide-right'});

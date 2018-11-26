@@ -469,11 +469,11 @@
 }
 
 .mig-fx-fadein {
-  animation: fadein 0.4s !important;
+  animation: fadein 0.4s;
 }
 
 .mig-fx-fadeout {
-  animation: fadeout 0.4s !important;
+  animation: fadeout 0.4s;
 }
 
 
