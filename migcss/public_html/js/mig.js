@@ -270,6 +270,7 @@ function MigTooltip(elt, opts) {
     var o = {
       position: 'top',
       trigger: 'mouseover',
+      delay: 300,
       hideOnClick: true,
       effect: 'fade',
       css: false,
@@ -280,6 +281,9 @@ function MigTooltip(elt, opts) {
     }
     if(opts && typeof opts.trigger === 'string' && triggers.hasOwnProperty(opts.trigger)) {
       o.trigger = opts.trigger;
+    }
+    if(opts && typeof opts.delay === 'number') {
+      o.delay = opts.delay;
     }
     if(opts && typeof opts.hideOnClick === 'boolean') {
       o.hideOnClick = opts.hideOnClick;
@@ -316,7 +320,7 @@ function MigTooltip(elt, opts) {
   
   
   var createCssAnimation = function(anim) {
-    console.log("* createCssAnimation( '" + JSON.stringify(anim) + "' )");
+    //console.log("* createCssAnimation( '" + JSON.stringify(anim) + "' )");
     if(!anim 
         || !anim.hasOwnProperty('className') 
         || !anim.hasOwnProperty('keyframes') 
@@ -369,7 +373,7 @@ function MigTooltip(elt, opts) {
         exp = exp.replace(/document.height/g, document.body.offsetHeight);
         exp = exp.replace(/this.width/g, bounds.width);
         exp = exp.replace(/this.height/g, bounds.height);
-        console.log("* evalAndReplace(): " + keyframes[kf][prop] + " => " + exp + " => " + eval(exp));
+        //console.log("* evalAndReplace(): " + keyframes[kf][prop] + " => " + exp + " => " + eval(exp));
         keyframes[kf][prop] = keyframes[kf][prop].substring(0, iex) 
             + eval(exp)
             + keyframes[kf][prop].substring(eex + 1);
@@ -381,7 +385,7 @@ function MigTooltip(elt, opts) {
   
   var containsCssId = function(id) {
     var css = document.querySelector("#"+id);
-    console.log("* containsCssId( '" + id + "' ): "+ css + " = " + (css !== null));
+    //console.log("* containsCssId( '" + id + "' ): "+ css + " = " + (css !== null));
     return css !== null;
   };
   
@@ -612,7 +616,7 @@ function MigTooltip(elt, opts) {
     setTimeout(()=>{
       ref.tooltip.style["opacity"] = "1";
     }, fx.animation[0].duration);
-    console.log("* show(): className="+ fx.animation[0].className);
+    //console.log("* show(): className="+ fx.animation[0].className);
     ref.tooltip.className = fx.animation[0].className;
   };
   
@@ -633,7 +637,7 @@ function MigTooltip(elt, opts) {
         ref.tooltip.style["opacity"] = "0";
         ref.tooltip.style["display"] = "none";
       }, fx.animation[1].duration);
-      console.log("* hide(): className="+ fx.animation[1].className);
+      //console.log("* hide(): className="+ fx.animation[1].className);
       ref.tooltip.className = fx.animation[1].className;
     }
   };
@@ -680,6 +684,23 @@ function MigTooltip(elt, opts) {
   };
   
   
+  ref.delayID = -1;
+  
+  var mouseOver = function() {
+    if(ref.delayID >= 0) return;
+    ref.delayID = setTimeout(()=>{
+      ref.show();
+    }, ref.opts.delay);
+  };
+  
+  var mouseOut = function() {
+    if(ref.delayID >= 0) {
+      clearTimeout(ref.delayID);
+      ref.delayID = -1;
+    }
+    ref.hide();
+  };
+  
   /**
    * Apply trigger event to show/hide the tooltip.
    * @return {undefined}
@@ -687,8 +708,8 @@ function MigTooltip(elt, opts) {
   var applyTrigger = function() {
     switch(ref.opts.trigger) {
       case "mouseover":
-        ref.elt.onmouseover = ref.show;
-        ref.elt.onmouseout = ref.hide;
+        ref.elt.onmouseover = mouseOver;
+        ref.elt.onmouseout = mouseOut;
         break;
       case "click":
         ref.elt.addEventListener("click", toggle);
