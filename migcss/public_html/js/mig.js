@@ -23,6 +23,8 @@ function MigTooltip(elt, opts) {
    */
   ref.tooltip = false;
   
+  ref.eventsEnabled = true;
+  
   /**
    * Available tooltip effects names and classes.
    * @type {object} 
@@ -470,7 +472,7 @@ function MigTooltip(elt, opts) {
         o.content = tooltip;
       }
     }
-    console.log("* opts: "+ JSON.stringify(o));
+    //console.log("* opts: "+ JSON.stringify(o));
     return o;
   };
   
@@ -478,6 +480,18 @@ function MigTooltip(elt, opts) {
    * Tooltip options.
    */
   ref.opts = normalOpts(opts);
+  
+  
+  var getConfiguredFx = function() {
+    var fxname = typeof ref.opts.effect === 'string' ? ref.opts.effect : ref.opts.effect.name;
+    var fx = false;
+    for(var i = 0; i < effects.length; i++) {
+      if(effects[i].name === fxname) {
+        return effects[i];
+      }
+    }
+    return false;
+  };
   
   
   var createCssAnimation = function(anim) {
@@ -541,7 +555,7 @@ function MigTooltip(elt, opts) {
           iex = keyframes[kf][prop].indexOf('${', iex + 1);
         }
         res += keyframes[kf][prop].substring(last);
-        console.log("* evalAndReplace(): " + keyframes[kf][prop] + " => " + res);
+        //console.log("* evalAndReplace(): " + keyframes[kf][prop] + " => " + res);
         keyframes[kf][prop] = res;
       }
     }
@@ -559,11 +573,17 @@ function MigTooltip(elt, opts) {
   var processEffects = function(bounds) {
     for(var ifx = 0; ifx < effects.length; ifx++) {
       var fx = effects[ifx];
+      var fxname = typeof ref.opts.effect === 'string' ? ref.opts.effect : ref.opts.effect.name;
+      if(fx.name !== fxname) continue;
       for(var i = 0; i < fx.animation.length; i++) {
         if(!fx.animation[i].hasOwnProperty('keyframes')) continue;
-        var cname = fx.animation[i].className + "_" + ref.uid;
+        var cname = fx.animation[i].className;
+        if(cname.indexOf(ref.uid) < 0) {
+          cname = fx.animation[i].className + "_" + ref.uid;
+        }
         if(containsCssId(fx.animation[i].className) 
             || containsCssId(cname)) continue;
+        //console.log("* processEffects(): " + cname);
         fx.animation[i].className = cname;
         fx.animation[i].keyframes = evalAndReplace(fx.animation[i].keyframes, bounds);
         createCssAnimation(fx.animation[i]);
@@ -687,6 +707,39 @@ function MigTooltip(elt, opts) {
     }
     return elt;
   };
+  
+  
+  ref.reposition = function(evt) {
+    var show = ref.tooltip && document.body.contains(ref.tooltip) && ref.tooltip.style.display !== 'none';
+    ref.destroy();
+    for(var i = 0; i < effects.length; i++) {
+      for(var j = 0; j < effects[i].animation.length; j++) {
+        var cname = effects[i].animation[j].className;
+        if(cname.indexOf(ref.uid) < 0) {
+          cname = effects[i].animation[j].className + "_" + ref.uid;
+        }
+        var head = document.querySelector('head');
+        if(containsCssId(cname)) {
+          //console.log("* reposition(): remove = " + cname);
+          document.querySelector('head').removeChild(
+              document.querySelector("#"+cname)
+          );
+        }
+      }
+    }
+    ref.eventsEnabled = true;
+    if(show) ref.show();
+  };
+  
+  
+  var applyScrollReposition = function() {
+    var el = ref.elt.parentNode;
+    while( el ) {
+      //console.log("* applyScrollReposition(): " + el + " [" + el.tagName + "]");
+      el.onscroll = ref.reposition;
+      el = el.parentNode;
+    }
+  };
 	
   
   /**
@@ -701,6 +754,7 @@ function MigTooltip(elt, opts) {
       throw "Bad argument type: " + eltype;
     }
     var el = ref.elt;
+    //console.log("* create(): ref.elt=" + el + " [" + el.tagName + "]");  
     if(!ref.opts.content || ref.opts.content.length < 1) return;
     var div = setTooltipClasses(document.createElement("div"));
     div.innerHTML = ref.opts.content;
@@ -718,6 +772,7 @@ function MigTooltip(elt, opts) {
     wrap.style["filter"] = "drop-shadow(3px 3px 3px rgba(0,0,0,0.5))";
     wrap.appendChild(div);
     var bounds = getTooltipBounds(wrap.innerHTML);
+    //console.log("* create(): bounds=" + JSON.stringify(bounds));  
     wrap.style['top'] = bounds.top + "px";
     wrap.style['left'] = bounds.left + "px";
     processEffects(bounds);
@@ -727,18 +782,7 @@ function MigTooltip(elt, opts) {
     ref.tooltip = wrap;
     if(!show) wrap.style["display"] = "none";;
     document.body.appendChild(wrap);
-  };
-  
-  
-  var getConfiguredFx = function() {
-    var fxname = typeof ref.opts.effect === 'string' ? ref.opts.effect : ref.opts.effect.name;
-    var fx = false;
-    for(var i = 0; i < effects.length; i++) {
-      if(effects[i].name === fxname) {
-        return effects[i];
-      }
-    }
-    return false;
+    applyScrollReposition();
   };
   
   
@@ -747,8 +791,17 @@ function MigTooltip(elt, opts) {
    * @return {undefined}
    */
   ref.show = function() {
+    if(!ref.eventsEnabled) return;
     if(!ref.tooltip) {
       ref.create(true);
+    }
+    else {
+      var bounds = getTooltipBounds(ref.tooltip.innerHTML);
+      ref.tooltip.style['top'] = bounds.top + "px";
+      ref.tooltip.style['left'] = bounds.left + "px";
+    }
+    if(!ref.tooltip) {
+      return;
     }
     var fx = getConfiguredFx();
     ref.tooltip.style["display"] = "block";
@@ -769,6 +822,7 @@ function MigTooltip(elt, opts) {
    * @return {undefined}
    */
   ref.hide = function() {
+    if(!ref.eventsEnabled) return;
     if(ref.tooltip) {
       var fx = getConfiguredFx();
       if(!fx) {
@@ -791,10 +845,17 @@ function MigTooltip(elt, opts) {
    * @return {undefined}
    */
   ref.destroy = function() {
+    //console.log("* destroy()");
     if(ref.tooltip && document.body.contains(ref.tooltip)) {
       document.body.removeChild(ref.tooltip);
       ref.tooltip = false;
+      ref.eventsEnabled = false;
     }
+  };
+  
+  
+  ref.disableEvents = function() {
+    ref.eventsEnabled = false;
   };
   
   
@@ -809,6 +870,7 @@ function MigTooltip(elt, opts) {
     }
     ref.destroy();
     ref.opts.content = content;
+    ref.eventsEnabled = true;
     ref.show();
   };
   
@@ -818,6 +880,7 @@ function MigTooltip(elt, opts) {
    * @return {undefined}
    */
   var toggle = function() {
+    if(!ref.eventsEnabled) return;
     if(!ref.tooltip || ref.tooltip.style['display'] === 'none') {
       ref.show();
     }
@@ -830,6 +893,7 @@ function MigTooltip(elt, opts) {
   ref.delayID = -1;
   
   var mouseOver = function() {
+    if(!ref.eventsEnabled) return;
     if(ref.delayID >= 0) return;
     ref.delayID = setTimeout(()=>{
       ref.show();
@@ -837,6 +901,7 @@ function MigTooltip(elt, opts) {
   };
   
   var mouseOut = function() {
+    if(!ref.eventsEnabled) return;
     if(ref.delayID >= 0) {
       clearTimeout(ref.delayID);
       ref.delayID = -1;
@@ -855,11 +920,11 @@ function MigTooltip(elt, opts) {
         ref.elt.onmouseout = mouseOut;
         break;
       case "click":
-        ref.elt.addEventListener("click", toggle);
+        ref.elt.onclick = toggle;
         break;
       case "focus":
-        ref.elt.addEventListener("focus", ref.show);
-        ref.elt.addEventListener("blur", ref.hide);
+        ref.elt.onfocus = ref.show;
+        ref.elt.onblur = ref.hide;
         break;
       case "none":
         break;
