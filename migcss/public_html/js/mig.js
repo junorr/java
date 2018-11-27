@@ -221,7 +221,7 @@ function MigTooltip(elt, opts) {
         }
       ]//animation
     }, {//effect
-      name: 'scale', 
+      name: 'bounce', 
       animation: [
         {//show animation class and keyframes (creating)
           className: 'mig-fx-scalein', 
@@ -245,6 +245,143 @@ function MigTooltip(elt, opts) {
           duration: 300
         }
       ]//animation
+    }, {//effect
+      name: 'fold-v', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-foldin-v', 
+          keyframes: {
+            '0%': { transform: 'scaleY(0.05) translateY(${this.height / 2}px)', opacity: 0.2 },
+            '100%': { transform: 'scaleY(1) translateY(0)', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-foldout-v', 
+          keyframes: {
+            '0%': { transform: 'scaleY(1) translateY(0)', opacity: 1 },
+            '100%': { transform: 'scaleY(0.05) translateY(${this.height / 2}px)', opacity: 0.2 }
+          },
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'fold-h', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-foldin-h', 
+          keyframes: {
+            '0%': { transform: 'scaleX(0.05) translateX(${this.width / 2}px)', opacity: 0.2 },
+            '100%': { transform: 'scaleX(1) translateX(0)', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-foldout-h', 
+          keyframes: {
+            '0%': { transform: 'scaleX(1) translateX(0)', opacity: 1 },
+            '100%': { transform: 'scaleX(0.05) translateX(${this.width / 2}px)', opacity: 0.2 }
+          },
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'fold', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-foldin', 
+          keyframes: {
+            '0%': { transform: 'scale(0.05,0.05) translate(${this.width / 2}px, ${this.height / 2}px)', opacity: 0.2 },
+            '33%': { transform: 'scale(0.05,0.25) translate(${this.width / 2}px, ${this.height / 4}px)', opacity: 0.5 },
+            '66%': { transform: 'scale(1,0.25) translate(0, ${this.height / 4}px)', opacity: 0.8 },
+            '100%': { transform: 'scale(1,1) translate(0, 0)', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-foldout', 
+          keyframes: {
+            '0%': { transform: 'scale(1,1) translate(0, 0)', opacity: 1 },
+            '33%': { transform: 'scale(1,0.25) translate(0, ${this.height / 4}px)', opacity: 0.8 },
+            '66%': { transform: 'scale(0.05,0.25) translate(${this.width / 2}px, ${this.height / 4}px)', opacity: 0.5 },
+            '100%': { transform: 'scale(0.05,0.05) translate(${this.width / 2}px, ${this.height / 2}px)', opacity: 0.2 }
+          },
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'running-left', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-runin-left', 
+          keyframes: {
+            '0%': { left: '0px', transform: 'rotate(0deg)', opacity: 0 },
+            '100%': { left: '${this.left}px', transform: 'rotate(720deg)', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-runout-left', 
+          keyframes: {
+            '0%': { left: '${this.left}px', transform: 'rotate(0deg)', opacity: 1 },
+            '100%': { left: '0px', transform: 'rotate(-720deg)', opacity: 0 }
+          },
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'running-right', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-runin-right', 
+          keyframes: {
+            '0%': { left: '${document.width - this.width}px', transform: 'rotate(0deg)', opacity: 0 },
+            '100%': { left: '${this.left}px', transform: 'rotate(-720deg)', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-runout-right', 
+          keyframes: {
+            '0%': { left: '${this.left}px', transform: 'rotate(0deg)', opacity: 1 },
+            '100%': { left: '${document.width - this.width}px', transform: 'rotate(720deg)', opacity: 0 }
+          },
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'running-top', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-runin-top', 
+          keyframes: {
+            '0%': { top: '0px', transform: 'rotate(0deg)', opacity: 0 },
+            '100%': { top: '${this.top}px', transform: 'rotate(720deg)', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-runout-top', 
+          keyframes: {
+            '0%': { top: '${this.top}px', transform: 'rotate(0deg)', opacity: 1 },
+            '100%': { top: '0px', transform: 'rotate(-720deg)', opacity: 0 }
+          },
+          duration: 300
+        }
+      ]//animation
+    }, {//effect
+      name: 'running-bottom', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'mig-fx-runin-bottom', 
+          keyframes: {
+            '0%': { top: '${document.height - this.height}px', transform: 'rotate(0deg)', opacity: 0 },
+            '100%': { top: '${this.top}px', transform: 'rotate(-720deg)', opacity: 1 }
+          },
+          duration: 300
+        }, {//hide animation class and keyframes (creating)
+          className: 'mig-fx-runout-bottom', 
+          keyframes: {
+            '0%': { top: '${this.top}px', transform: 'rotate(0deg)', opacity: 1 },
+            '100%': { top: '${document.height - this.height}px', transform: 'rotate(720deg)', opacity: 0 }
+          },
+          duration: 300
+        }
+      ]//animation
     }//effect
   ];//effects
   
@@ -258,6 +395,29 @@ function MigTooltip(elt, opts) {
     'click': true,
     'focus': true,
     'none': false
+  };
+  
+  
+  ref.addFx = function(name, fxin, fxout) {
+    if(typeof name !== 'string') {
+      throw "Bad argument 'name': '" + name + "' is not a string";
+    }
+    if(!fxin 
+        || !fxin.hasOwnProperty('className') 
+        || !fxin.hasOwnProperty('keyframes') 
+        || !fxin.hasOwnProperty('duration')) {
+      throw "Bad argument 'fxin': Missing object properties (className/keyframes/duration)";
+    }
+    if(!fxout 
+        || !fxout.hasOwnProperty('className') 
+        || !fxout.hasOwnProperty('keyframes') 
+        || !fxout.hasOwnProperty('duration')) {
+      throw "Bad argument 'fxout': Missing object properties (className/keyframes/duration)";
+    }
+    effects.push({
+      name: name,
+      animation: [fxin, fxout]
+    });
   };
   
   
@@ -295,6 +455,7 @@ function MigTooltip(elt, opts) {
         && opts.effect.hasOwnProperty('name') 
         && opts.effect.hasOwnProperty('animation')
         && opts.effect.animation.length === 2) {
+      o.effect = opts.effect.name;
       ref.addFx(opts.effect.name, opts.effect.animation[0], opts.effect.animation[1]);
     }
     if(opts && typeof opts.css === 'object') {
@@ -363,20 +524,25 @@ function MigTooltip(elt, opts) {
       for(var prop in keyframes[kf]) {
         if(!keyframes[kf].hasOwnProperty(prop) 
             || typeof keyframes[kf][prop] !== 'string') continue;
+        var last = 0;
         var iex = keyframes[kf][prop].indexOf('${');
-        if(iex < 0) continue;
-        var eex = keyframes[kf][prop].indexOf('}');
-        var exp = keyframes[kf][prop].substring(iex + 2, eex);
-        exp = exp.replace(/this.top/g, bounds.top);
-        exp = exp.replace(/this.left/g, bounds.left);
-        exp = exp.replace(/document.width/g, document.body.offsetWidth);
-        exp = exp.replace(/document.height/g, document.body.offsetHeight);
-        exp = exp.replace(/this.width/g, bounds.width);
-        exp = exp.replace(/this.height/g, bounds.height);
-        //console.log("* evalAndReplace(): " + keyframes[kf][prop] + " => " + exp + " => " + eval(exp));
-        keyframes[kf][prop] = keyframes[kf][prop].substring(0, iex) 
-            + eval(exp)
-            + keyframes[kf][prop].substring(eex + 1);
+        var res = '';
+        while(iex >= 0) {
+          var eex = keyframes[kf][prop].indexOf('}', iex);
+          var exp = keyframes[kf][prop].substring(iex + 2, eex);
+          exp = exp.replace(/this.top/g, bounds.top);
+          exp = exp.replace(/this.left/g, bounds.left);
+          exp = exp.replace(/document.width/g, document.body.offsetWidth);
+          exp = exp.replace(/document.height/g, document.body.offsetHeight);
+          exp = exp.replace(/this.width/g, bounds.width);
+          exp = exp.replace(/this.height/g, bounds.height);
+          res += keyframes[kf][prop].substring(last, iex) + eval(exp);
+          last = eex+1;
+          iex = keyframes[kf][prop].indexOf('${', iex + 1);
+        }
+        res += keyframes[kf][prop].substring(last);
+        console.log("* evalAndReplace(): " + keyframes[kf][prop] + " => " + res);
+        keyframes[kf][prop] = res;
       }
     }
     return keyframes;
@@ -522,29 +688,6 @@ function MigTooltip(elt, opts) {
     return elt;
   };
 	
-  
-  ref.addFx = function(name, fxin, fxout) {
-    if(typeof name !== 'string') {
-      throw "Bad argument 'name': '" + name + "' is not a string";
-    }
-    if(!fxin 
-        || !fxin.hasOwnProperty('className') 
-        || !fxin.hasOwnProperty('keyframes') 
-        || !fxin.hasOwnProperty('duration')) {
-      throw "Bad argument 'fxin': Missing object properties (className/keyframes/duration)";
-    }
-    if(!fxout 
-        || !fxout.hasOwnProperty('className') 
-        || !fxout.hasOwnProperty('keyframes') 
-        || !fxout.hasOwnProperty('duration')) {
-      throw "Bad argument 'fxout': Missing object properties (className/keyframes/duration)";
-    }
-    effects.push({
-      name: name,
-      animation: [fxin, fxout]
-    });
-  };
-  
   
   /**
    * Create the tooltip element.
@@ -734,6 +877,25 @@ function MigTooltip(elt, opts) {
 }
 
 
-var btntip = migtip("#btn-baloon", {trigger: 'click', position: 'top', effect: 'scale'});
-var inputtip = migtip("#input-baloon", {trigger: 'focus', css: {'background-color': 'white', 'border': 'solid thin blue', 'color': 'black'}});
+var btntip = migtip("#btn-baloon", {trigger: 'click', position: 'top', effect: {//effect
+      name: 'ffade', 
+      animation: [
+        {//show animation class and keyframes (creating)
+          className: 'ffadein', 
+          keyframes: {
+            '0%': { opacity: 0 },
+            '100%': { opacity: 1 }
+          },
+          duration: 1000
+        }, {//hide animation class and keyframes (creating)
+          className: 'ffadeout', 
+          keyframes: {
+            '0%': { opacity: 1 },
+            '100%': { opacity: 0 }
+          },
+          duration: 1000
+        }
+      ]//animation
+    }});
+var inputtip = migtip("#input-baloon", {trigger: 'focus', effect: 'fold-h', css: {'background-color': 'white', 'border': 'solid thin blue', 'color': 'black'}});
 var inputtip2 = migtip("#input-baloon2", {position: 'right', effect: 'slide-right'});
