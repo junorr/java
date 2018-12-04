@@ -559,7 +559,7 @@ function MigTooltip(elt, opts) {
         o.content = tooltip;
       }
     }
-    console.log("* opts: "+ JSON.stringify(o));
+    //console.log("* opts: "+ JSON.stringify(o));
     return o;
   };
   
@@ -1001,18 +1001,22 @@ function MigTooltip(elt, opts) {
     if(typeof content !== 'string' || content.length < 1) {
       return;
     }
-    ref.destroy();
-    var contype = (typeof content);
-    if(contype === 'string') {
+    if(typeof content === 'string' && content.length > 1) {
       ref.opts.content = content;
     }
-    else if(contype === 'object' && content.innerHTML) {
-      ref.opts.content = content.innerHTML;
+    else if(typeof opts.content === 'object'
+        && opts.content.hasOwnProperty('tagName')) {
+      ref.opts.content = opts.content.outerHTML;
     }
+    else {
+      throw "Bad content: " + content + " [" + (typeof content) + "]";
+    }
+    var show = ref.tooltip && document.body.contains(ref.tooltip) && ref.tooltip.style.display === 'none';
+    //console.log("* update( '" + ref.opts.content + "' ): show=" + show);
+    ref.destroy();
     ref.eventsEnabled = true;
-    ref.show();
-  };
-  
+    if(show) ref.show();
+  };  
   
   /**
    * Toggle display of tooltip element.

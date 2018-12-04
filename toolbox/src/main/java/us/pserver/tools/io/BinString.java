@@ -29,7 +29,7 @@ import java.nio.channels.WritableByteChannel;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/12/2018
  */
-public interface BinString extends Comparable<BinString>, Cloneable {
+public interface BinString extends BinaryForm {
 
   public BinString append(String str);
   
@@ -37,12 +37,8 @@ public interface BinString extends Comparable<BinString>, Cloneable {
   
   public boolean contains(String str);
   
-  public String sha256sum();
+  public int length();
   
-  public ByteBuffer toByteBuffer();
-  
-  public int writeTo(ByteBuffer buf);
-  
-  public int writeTo(WritableByteChannel chn);
+  public BinString slice(int offset, int length);
   
 }
