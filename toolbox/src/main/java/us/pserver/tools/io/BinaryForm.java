@@ -46,6 +46,6 @@ public interface BinaryForm extends Cloneable, Comparable<BinaryForm> {
   
   public BinaryForm readFrom(ByteBuffer buf);
   
-  public String toString();
+  @Override public String toString();
   
 }

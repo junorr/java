@@ -24,18 +24,8 @@ package us.pserver.tools.io;
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/12/2018
+ * @version 0.0 - 04/12/2018
  */
-public interface BinString extends BinaryForm {
+public class AbstractBinaryForm {
 
-  public BinString append(String str);
-  
-  public int indexOf(String str, int start);
-  
-  public boolean contains(String str);
-  
-  public int length();
-  
-  public BinString slice(int offset, int length);
-  
 }
