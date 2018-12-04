@@ -126,11 +126,6 @@ public class ExpansibleByteBuffer {
   }
   
   
-  public int[] internalState() {
-    return new int[] {index, position(), limit(), capacity()};
-  }
-  
-  
   public ExpansibleByteBuffer mark() {
     mark = position();
     return this;
@@ -166,6 +161,19 @@ public class ExpansibleByteBuffer {
   
   public int limit() {
     return buffers.stream().mapToInt(ByteBuffer::limit).sum();
+  }
+  
+  
+  public ExpansibleByteBuffer rewind() {
+    mark = 0;
+    return position(0);
+  }
+  
+  
+  public ExpansibleByteBuffer clear() {
+    mark = 0;
+    limit(capacity());
+    return position(0);
   }
   
   

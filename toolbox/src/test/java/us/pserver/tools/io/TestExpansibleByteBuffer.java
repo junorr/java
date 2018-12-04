@@ -21,6 +21,7 @@
 
 package us.pserver.tools.io;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -72,6 +73,12 @@ public class TestExpansibleByteBuffer {
       Assertions.assertEquals(0, buffer.remaining());
       Assertions.assertEquals(54, buffer.limit());
       Assertions.assertEquals(72, buffer.capacity());
+      ByteBuffer buf = ByteBuffer.allocate(16);
+      System.out.printf("* buffer.position(17)...%n");
+      buffer.position(17);
+      buffer.get(buf);
+      buf.flip();
+      System.out.printf("* buffer.get(): %s%n", StandardCharsets.UTF_8.decode(buf).toString());
     }
     catch(Exception e) {
       e.printStackTrace();
