@@ -21,21 +21,66 @@
 
 package us.pserver.tools.io;
 
+import java.nio.ByteBuffer;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/12/2018
  */
 public interface BinString extends BinaryForm {
-
+  
+  public ByteBuffer getContentBuffer();
+  
+  public byte[] getContentBytes();
+  
   public BinString append(String str);
   
+  public BinString append(BinString str);
+  
   public int indexOf(String str, int start);
+  
+  public int indexOf(BinString str, int start);
+  
+  public boolean contains(BinString str);
   
   public boolean contains(String str);
   
   public int length();
   
   public BinString slice(int offset, int length);
+  
+  public BinString slice(int offset);
+  
+  
+  
+  
+  public static BinString empty() {
+    return new UTFBinString();
+  }
+  
+  public static BinString of(String str) {
+    return new UTFBinString(str);
+  }
+  
+  public static BinString of(byte[] bs) {
+    return new UTFBinString(bs);
+  }
+  
+  public static BinString of(byte[] bs, int off, int len) {
+    return new UTFBinString(bs, off, len);
+  }
+  
+  public static BinString of(ByteBuffer buf) {
+    return new UTFBinString(buf);
+  }
+  
+  public static BinString of(DynamicByteBuffer buf) {
+    return new UTFBinString(buf);
+  }
+  
+  public static BinString ofContent(ByteBuffer buf) {
+    return new UTFBinString(buf.remaining(), buf);
+  }
   
 }

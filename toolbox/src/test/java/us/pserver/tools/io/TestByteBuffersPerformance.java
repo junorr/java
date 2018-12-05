@@ -22,6 +22,7 @@
 package us.pserver.tools.io;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +48,8 @@ public class TestByteBuffersPerformance {
   
   
   private static List<Long> createLongs() {
+    ByteBuffer bs = StandardCharsets.UTF_8.encode("Hello World!");
+    System.out.println("* encoded string buffer: " + bs);
     List<Long> longs = new ArrayList<>(MAX_LONGS);
     Random rd = new Random(System.currentTimeMillis());
     LongStream stream = rd.longs(MAX_LONGS);

@@ -21,11 +21,12 @@
 
 package us.pserver.tools.io;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
-import java.security.MessageDigest;
+import java.nio.charset.StandardCharsets;
 import us.pserver.tools.Hash;
 
 /**
@@ -165,7 +166,13 @@ public final class DynamicByteBuffer implements BinaryForm {
       buffer.put(src);
       return this;
   }
-
+  
+  public DynamicByteBuffer put(DynamicByteBuffer src) {
+      ensureSize(src.remaining());
+      buffer.put(src.toByteBuffer());
+      return this;
+  }
+  
   public DynamicByteBuffer putChar(int index, char value) {
       ensureSize(2);
       buffer.putChar(index, value);
@@ -203,42 +210,50 @@ public final class DynamicByteBuffer implements BinaryForm {
   }
 
   public DynamicByteBuffer putInt(int index, int value) {
-      ensureSize(4);
+      ensureSize(Integer.BYTES);
       buffer.putInt(index, value);
       return this;
   }
 
   public DynamicByteBuffer putInt(int value) {
-      ensureSize(4);
+      ensureSize(Integer.BYTES);
       buffer.putInt(value);
       return this;
   }
 
   public DynamicByteBuffer putLong(int index, long value) {
-      ensureSize(8);
+      ensureSize(Long.BYTES);
       buffer.putLong(index, value);
       return this;
   }
 
   public DynamicByteBuffer putLong(long value) {
-      ensureSize(8);
+      ensureSize(Long.BYTES);
       buffer.putLong(value);
       return this;
   }
 
   public DynamicByteBuffer putShort(int index, short value) {
-      ensureSize(2);
+      ensureSize(Short.BYTES);
       buffer.putShort(index, value);
       return this;
   }
 
   public DynamicByteBuffer putShort(short value) {
-      ensureSize(2);
+      ensureSize(Short.BYTES);
       buffer.putShort(value);
       return this;
   }
+  
+  
+  public DynamicByteBuffer putUTF8(String str) {
+    ensureSize(str.length());
+    buffer.put(StandardCharsets.UTF_8.encode(str));
+    return this;
+  }
+  
 
-  private void ensureSize(int i) {
+  public void ensureSize(int i) {
       check();
       if (buffer.remaining() < i) {
           int newCap = Math.max(buffer.limit() * 2, buffer.limit() + i);
@@ -407,7 +422,7 @@ public final class DynamicByteBuffer implements BinaryForm {
 
 
   @Override
-  public DynamicByteBuffer writeTo(ByteBuffer buf) {
+  public int writeTo(ByteBuffer buf) {
     int min = Math.min(buf.remaining(), remaining());
     int lim = limit();
     int pos = position();
@@ -415,30 +430,54 @@ public final class DynamicByteBuffer implements BinaryForm {
     buf.put(buffer);
     position(pos);
     limit(lim);
-    return this;
+    return min;
+  }
+  
+
+  @Override
+  public int writeTo(DynamicByteBuffer buf) {
+    int min = Math.min(buf.remaining(), remaining());
+    int lim = limit();
+    int pos = position();
+    limit(min);
+    buf.put(buffer);
+    position(pos);
+    limit(lim);
+    return min;
   }
 
 
   @Override
-  public DynamicByteBuffer writeTo(WritableByteChannel chl) {
-    
+  public int writeTo(WritableByteChannel chl) throws IOException {
+    return chl.write(buffer);
   }
 
 
   @Override
-  public BinaryForm readFrom(ReadableByteChannel chl) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public int readFrom(ReadableByteChannel chl) throws IOException {
+    return chl.read(buffer);
   }
 
 
   @Override
-  public BinaryForm readFrom(ByteBuffer buf) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public int readFrom(ByteBuffer buf) {
+    int min = Math.min(remaining(), buf.remaining());
+    put(buf);
+    return min;
   }
-
-
+  
+  
+  @Override
+  public int readFrom(DynamicByteBuffer buf) {
+    int min = Math.min(remaining(), buf.remaining());
+    put(buf);
+    return min;
+  }
+  
+  
   @Override
   public int compareTo(BinaryForm o) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return buffer.compareTo(o.toByteBuffer());
   }
+
 }

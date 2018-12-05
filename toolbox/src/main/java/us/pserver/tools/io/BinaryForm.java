@@ -21,6 +21,7 @@
 
 package us.pserver.tools.io;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
@@ -30,7 +31,7 @@ import java.nio.channels.WritableByteChannel;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/12/2018
  */
-public interface BinaryForm extends Cloneable, Comparable<BinaryForm> {
+public interface BinaryForm extends Cloneable {
 
   public String sha256sum();
   
@@ -38,14 +39,16 @@ public interface BinaryForm extends Cloneable, Comparable<BinaryForm> {
   
   public byte[] toByteArray();
   
-  public BinaryForm writeTo(ByteBuffer buf);
+  public int writeTo(ByteBuffer buf);
   
-  public BinaryForm writeTo(WritableByteChannel chl);
+  public int writeTo(DynamicByteBuffer buf);
   
-  public BinaryForm readFrom(ReadableByteChannel chl);
+  public int writeTo(WritableByteChannel chl) throws IOException;
   
-  public BinaryForm readFrom(ByteBuffer buf);
+  public int readFrom(ReadableByteChannel chl) throws IOException;
   
-  @Override public String toString();
+  public int readFrom(ByteBuffer buf);
+  
+  public int readFrom(DynamicByteBuffer buf);
   
 }
