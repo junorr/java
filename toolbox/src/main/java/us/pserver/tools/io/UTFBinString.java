@@ -33,7 +33,7 @@ import java.util.Objects;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 05/12/2018
  */
-public class UTFBinString implements BinString {
+public class UTFBinString implements BinString, Comparable<BinString> {
   
   private final DynamicByteBuffer buffer;
   
@@ -315,7 +315,7 @@ public class UTFBinString implements BinString {
   
   
   @Override
-  public int compareTo(BinaryForm o) {
+  public int compareTo(BinString o) {
     buffer.position(0).limit(Integer.BYTES + length);
     return buffer.toByteBuffer().compareTo(o.toByteBuffer());
   }

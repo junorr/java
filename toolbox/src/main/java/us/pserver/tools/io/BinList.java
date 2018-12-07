@@ -39,9 +39,14 @@ public class BinList implements BinaryForm, List<BinaryForm> {
   
   private final DynamicByteBuffer buffer;
   
+  private int size;
+  
+  
   public BinList() {
     buffer = new DynamicByteBuffer(Region.BYTES * 2, false);
+    size = 0;
   }
+  
 
   @Override
   public String sha256sum() {
@@ -98,20 +103,14 @@ public class BinList implements BinaryForm, List<BinaryForm> {
 
 
   @Override
-  public int compareTo(BinaryForm o) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-
-  @Override
   public int size() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return size;
   }
 
 
   @Override
   public boolean isEmpty() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return size < 1;
   }
 
 

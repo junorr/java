@@ -688,7 +688,7 @@ function MigTooltip(elt, opts) {
    */
   var processEffects = function(bounds) {
     var fx = getConfiguredFx();
-    console.log("* processEffects( "+ JSON.stringify(bounds) + " ): fx = " + JSON.stringify(fx));
+    //console.log("* processEffects( "+ JSON.stringify(bounds) + " ): fx = " + JSON.stringify(fx));
     if(!fx || !fx.animation 
         || !fx.animation.length 
         || !fx.animation[0].hasOwnProperty('keyframes')) {
@@ -719,28 +719,27 @@ function MigTooltip(elt, opts) {
    * @return {object} {width, height} needed for the informed content.
    */
   var getContentSize = function(text, css, classes) {
-    var span = document.createElement("div");
+    var div = document.createElement("div");
     if(css && typeof css === 'object') {
       for(var prop in css) {
         if(!css.hasOwnProperty(prop)) continue;
-        span.style[prop] = css[prop];
+        div.style[prop] = css[prop];
       }
     }
     else if(typeof css === 'string' && !classes) {
       classes = css;
     }
-    if(classes) span.className = classes;
-    span.innerHTML = text;
-    span.style['visibility'] = 'hidden';
-    span.style['float'] = 'left';
-    span.style['position'] = 'absolute';
-    span.style['top'] = '0px';
-    span.style['left'] = '0px';
-    span.style['display'] = 'block';
-    span.style['z-index'] = '9999';
-    document.body.appendChild(span);
-    var size = {width: span.offsetWidth, height: span.offsetHeight};
-    document.body.removeChild(span);
+    if(classes) div.className = classes;
+    div.innerHTML = text;
+    div.style['visibility'] = 'hidden';
+    div.style['float'] = 'left';
+    div.style['position'] = 'absolute';
+    div.style['top'] = '0px';
+    div.style['left'] = '0px';
+    div.style['display'] = 'block';
+    document.body.appendChild(div);
+    var size = {width: div.offsetWidth, height: div.offsetHeight};
+    document.body.removeChild(div);
     return size;
   };
   
@@ -756,6 +755,16 @@ function MigTooltip(elt, opts) {
     scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
 	};
+  
+  
+  /**
+   * Return true if the tooltip is visible on screen.
+   * @return {Boolean} true if the tooltip is visible 
+   * on screen, false otherwise.
+   */
+  ref.isVisible = function() {
+    return ref.tooltip && document.body.contains(ref.tooltip) && ref.tooltip.style.display !== 'none';
+  };
   
   
   /**
@@ -816,6 +825,30 @@ function MigTooltip(elt, opts) {
   };
   
   
+  var setPaddings = function(elt, bounds) {
+    if(ref.opts.position === 'top') {
+      //elt.style["padding-top"] = (bounds.height * 0.15);
+      //elt.style["padding-bottom"] = (bounds.height * 0.25);
+      elt.style["padding-top"] = (bounds.height * 0.15);
+      elt.style["padding-bottom"] = (bounds.height * 0.25);
+    }
+    else if(ref.opts.position === 'right') {
+      //elt.style["padding-left"] = (bounds.width * 0.25);
+      //elt.style["padding-right"] = (bounds.width * 0.15);
+      elt.style["padding-left"] = (20 + bounds.width * 0.1) + 'px';
+      elt.style["padding-right"] = "20px";
+    }
+    else if(ref.opts.position === 'bottom') {
+      elt.style["padding-top"] = (bounds.height * 0.25);
+      elt.style["padding-bottom"] = (bounds.height * 0.15);
+    }
+    else {
+      elt.style["padding-left"] = (bounds.width * 0.15);
+      elt.style["padding-right"] = (bounds.width * 0.25);
+    }
+  };
+	
+  
   /**
    * Reposition tooltip on screen, replacing css animations with new tooltip bounds.
    * @return {undefined}
@@ -825,6 +858,7 @@ function MigTooltip(elt, opts) {
       var bounds = getTooltipBounds();
       ref.tooltip.style['top'] = bounds.top + "px";
       ref.tooltip.style['left'] = bounds.left + "px";
+      setPaddings(ref.tooltip, bounds);
       processEffects(bounds);
       if(typeof ref.onreposition === 'function') {
         ref.onreposition(bounds);
@@ -926,16 +960,6 @@ function MigTooltip(elt, opts) {
   
   
   /**
-   * Show function called from 'show events';
-   * @return {undefined}
-   */
-  var showEvent = function() {
-    if(!ref.eventsEnabled) return;
-    ref.show();
-  };
-  
-  
-  /**
    * Hide the tooltip.
    * @return {undefined}
    */
@@ -957,16 +981,6 @@ function MigTooltip(elt, opts) {
       //console.log("* hide(): className="+ fx.animation[1].className);
       ref.tooltip.className = fx.animation[1].className;
     }
-  };
-  
-  
-  /**
-   * Hide function called from 'hide events';
-   * @return {undefined}
-   */
-  var hideEvent = function() {
-    if(!ref.eventsEnabled) return;
-    ref.hide();
   };
   
   
@@ -1011,7 +1025,7 @@ function MigTooltip(elt, opts) {
     else {
       throw "Bad content: " + content + " [" + (typeof content) + "]";
     }
-    var show = ref.tooltip && document.body.contains(ref.tooltip) && ref.tooltip.style.display === 'none';
+    var show = ref.isVisible();
     //console.log("* update( '" + ref.opts.content + "' ): show=" + show);
     ref.destroy();
     ref.eventsEnabled = true;
@@ -1024,7 +1038,7 @@ function MigTooltip(elt, opts) {
    */
   var toggle = function() {
     if(!ref.eventsEnabled) return;
-    if(!ref.tooltip || ref.tooltip.style['display'] === 'none') {
+    if(!ref.isVisible()) {
       ref.show();
     }
     else {
@@ -1066,8 +1080,12 @@ function MigTooltip(elt, opts) {
         ref.elt.onclick = toggle;
         break;
       case "focus":
-        ref.elt.onfocus = showEvent;
-        ref.elt.onblur = hideEvent;
+        ref.elt.onfocus = ()=>{
+          if(ref.eventsEnabled) ref.show();
+        };
+        ref.elt.onblur = ()=>{
+          if(ref.eventsEnabled) ref.hide();
+        };
         break;
       case "none":
         break;

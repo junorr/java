@@ -34,7 +34,7 @@ import us.pserver.tools.Hash;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 04/12/2018
  */
-public final class DynamicByteBuffer implements BinaryForm {
+public final class DynamicByteBuffer implements BinaryForm, Comparable<DynamicByteBuffer> {
 
   private ByteBuffer buffer;
 
@@ -476,8 +476,8 @@ public final class DynamicByteBuffer implements BinaryForm {
   
   
   @Override
-  public int compareTo(BinaryForm o) {
+  public int compareTo(DynamicByteBuffer o) {
     return buffer.compareTo(o.toByteBuffer());
   }
-
+  
 }
