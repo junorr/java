@@ -473,6 +473,7 @@ function MigTooltip(elt, opts) {
       default:
         throw "Unsupported event: '" + evtname + "'";
     }
+    return ref;
   };
   
   
@@ -827,24 +828,16 @@ function MigTooltip(elt, opts) {
   
   var setPaddings = function(elt, bounds) {
     if(ref.opts.position === 'top') {
-      //elt.style["padding-top"] = (bounds.height * 0.15);
-      //elt.style["padding-bottom"] = (bounds.height * 0.25);
-      elt.style["padding-top"] = (bounds.height * 0.15);
-      elt.style["padding-bottom"] = (bounds.height * 0.25);
+      elt.style["padding-bottom"] = (10 + bounds.height * 0.1) + 'px';
     }
     else if(ref.opts.position === 'right') {
-      //elt.style["padding-left"] = (bounds.width * 0.25);
-      //elt.style["padding-right"] = (bounds.width * 0.15);
       elt.style["padding-left"] = (20 + bounds.width * 0.1) + 'px';
-      elt.style["padding-right"] = "20px";
     }
     else if(ref.opts.position === 'bottom') {
-      elt.style["padding-top"] = (bounds.height * 0.25);
-      elt.style["padding-bottom"] = (bounds.height * 0.15);
+      elt.style["padding-top"] = (10 + bounds.height * 0.1) + 'px';
     }
     else {
-      elt.style["padding-left"] = (bounds.width * 0.15);
-      elt.style["padding-right"] = (bounds.width * 0.25);
+      elt.style["padding-right"] = (20 + bounds.width * 0.1) + 'px';
     }
   };
 	
@@ -858,12 +851,13 @@ function MigTooltip(elt, opts) {
       var bounds = getTooltipBounds();
       ref.tooltip.style['top'] = bounds.top + "px";
       ref.tooltip.style['left'] = bounds.left + "px";
-      setPaddings(ref.tooltip, bounds);
+      setPaddings(ref.tooltip.firstElementChild, bounds);
       processEffects(bounds);
       if(typeof ref.onreposition === 'function') {
         ref.onreposition(bounds);
       }
     }
+    return ref;
   };
   
   
@@ -886,6 +880,7 @@ function MigTooltip(elt, opts) {
    * @return {undefined}
    */
   var doShow = function() {
+    if(ref.isVisible()) return;
     ref.reposition();
     var fx = getConfiguredFx();
     ref.tooltip.style["display"] = "block";
@@ -942,6 +937,7 @@ function MigTooltip(elt, opts) {
     applyScrollReposition();
     ref.eventsEnabled = true;
     if(show) doShow();
+    return ref;
   };
   
   
@@ -956,6 +952,7 @@ function MigTooltip(elt, opts) {
     else {
       doShow();
     }
+    return ref;
   };
   
   
@@ -981,6 +978,7 @@ function MigTooltip(elt, opts) {
       //console.log("* hide(): className="+ fx.animation[1].className);
       ref.tooltip.className = fx.animation[1].className;
     }
+    return ref;
   };
   
   
@@ -998,6 +996,7 @@ function MigTooltip(elt, opts) {
         ref.ondestroy();
       }
     }
+    return ref;
   };
   
   
@@ -1030,6 +1029,7 @@ function MigTooltip(elt, opts) {
     ref.destroy();
     ref.eventsEnabled = true;
     if(show) ref.show();
+    return ref;
   };  
   
   /**
@@ -1098,7 +1098,7 @@ function MigTooltip(elt, opts) {
    * Create a property 'mig' on the element to 
    * enable access to this MigTooltip object.
    */
-  elt.migtip = ref;
+  elt.mig = ref;
   
 }
 

@@ -21,19 +21,11 @@
 
 package us.pserver.tools.io;
 
-import java.nio.ByteBuffer;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/12/2018
+ * @version 0.0 - 11/12/2018
  */
-public interface BinaryForm extends Cloneable {
+public interface RWBinaryForm extends BinaryForm, ReadableBinaryForm, WritableBinaryForm {
 
-  public String sha256sum();
-  
-  public ByteBuffer toByteBuffer();
-  
-  public byte[] toByteArray();
-  
 }

@@ -34,7 +34,7 @@ import us.pserver.tools.Hash;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 04/12/2018
  */
-public final class DynamicByteBuffer implements BinaryForm, Comparable<DynamicByteBuffer> {
+public final class DynamicByteBuffer implements RWBinaryForm, Comparable<DynamicByteBuffer> {
 
   private ByteBuffer buffer;
 

@@ -27,51 +27,23 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import us.pserver.tools.Hash;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 05/12/2018
  */
-public class UTFBinString implements BinString, Comparable<BinString> {
+public class UTFBinString implements BinaryString, Comparable<BinaryString> {
   
-  private final DynamicByteBuffer buffer;
+  private final ByteBuffer buffer;
   
-  private int length;
-  
-  
-  public UTFBinString(int initialSize) {
-    this.buffer = new DynamicByteBuffer(ByteBuffer.allocate(initialSize));
-    length = 0;
-  }
-  
-  
-  public UTFBinString() {
-    this(Long.BYTES * 2);
-  }
+  private final int length;
   
   
   public UTFBinString(ByteBuffer buf) {
-    length = buf.getInt();
-    ByteBuffer ibuf = buf.isDirect() 
-        ? ByteBuffer.allocateDirect(length) 
-        : ByteBuffer.allocate(length);
-    this.buffer = new DynamicByteBuffer(ibuf);
-    buffer.putInt(length);
-    buf.limit(buf.position() + length);
-    buffer.put(buf);
-  }
-  
-  
-  public UTFBinString(DynamicByteBuffer buf) {
-    length = buf.getInt();
-    ByteBuffer ibuf = buf.isDirect() 
-        ? ByteBuffer.allocateDirect(length) 
-        : ByteBuffer.allocate(length);
-    this.buffer = new DynamicByteBuffer(ibuf);
-    buffer.putInt(length);
-    buf.limit(buf.position() + length);
-    buffer.put(buf);
+    this.buffer = buf;
+    this.length = buf.getInt();
   }
   
   
@@ -80,7 +52,7 @@ public class UTFBinString implements BinString, Comparable<BinString> {
     ByteBuffer ibuf = content.isDirect() 
         ? ByteBuffer.allocateDirect(length + Integer.BYTES) 
         : ByteBuffer.allocate(length + Integer.BYTES);
-    this.buffer = new DynamicByteBuffer(ibuf);
+    this.buffer = ibuf;
     buffer.putInt(length);
     buffer.put(content);
   }
@@ -96,8 +68,8 @@ public class UTFBinString implements BinString, Comparable<BinString> {
     if(off < 0 || len < 1 || off + len > bs.length) {
       throw new IllegalArgumentException("Bad array offset/length: " + off + "/" + len);
     }
-    this.buffer = new DynamicByteBuffer(ByteBuffer.allocate(len + Integer.BYTES));
-    length = len;
+    this.buffer = ByteBuffer.allocate(len + Integer.BYTES);
+    this.length = len;
     buffer.putInt(length);
     buffer.put(bs, off, len);
   }
@@ -105,9 +77,9 @@ public class UTFBinString implements BinString, Comparable<BinString> {
   
   public UTFBinString(String str) {
     ByteBuffer bs = StandardCharsets.UTF_8.encode(str);
-    this.buffer = new DynamicByteBuffer(ByteBuffer.allocate(bs.remaining() + Integer.BYTES));
-    this.length = bs.remaining();
-    buffer.putInt(bs.remaining());
+    this.buffer = ByteBuffer.allocate(bs.remaining() + Integer.BYTES);
+    this.length = str.length();
+    buffer.putInt(length);
     buffer.put(bs);
   }
   
@@ -116,7 +88,7 @@ public class UTFBinString implements BinString, Comparable<BinString> {
   public ByteBuffer getContentBuffer() {
     buffer.position(Integer.BYTES);
     buffer.limit(Integer.BYTES + length);
-    return buffer.slice().toByteBuffer();
+    return buffer.slice();
   }
   
   
@@ -126,29 +98,6 @@ public class UTFBinString implements BinString, Comparable<BinString> {
     byte[] bs = new byte[buf.remaining()];
     buf.get(bs);
     return bs;
-  }
-  
-  
-  @Override
-  public BinString append(String str) {
-    ByteBuffer bs = StandardCharsets.UTF_8.encode(str);
-    int len = bs.remaining();
-    buffer.position(0)
-        .putInt(length + len)
-        .position(Integer.BYTES + length)
-        .put(bs);
-    length += len;
-    return this;
-  }
-  
-  
-  @Override
-  public BinString append(BinString str) {
-    buffer.position(0).putInt(length + str.length());
-    buffer.position(length + Integer.BYTES);
-    buffer.put(str.getContentBuffer());
-    length += str.length();
-    return this;
   }
   
   
@@ -175,7 +124,7 @@ public class UTFBinString implements BinString, Comparable<BinString> {
   
   
   @Override
-  public int indexOf(BinString str, int start) {
+  public int indexOf(BinaryString str, int start) {
     ByteBuffer bs = str.getContentBuffer();
     int pos = bs.position();
     int len = bs.remaining();
@@ -204,7 +153,7 @@ public class UTFBinString implements BinString, Comparable<BinString> {
   
   
   @Override
-  public boolean contains(BinString str) {
+  public boolean contains(BinaryString str) {
     return indexOf(str, 0) >= 0;
   }
   
@@ -216,108 +165,74 @@ public class UTFBinString implements BinString, Comparable<BinString> {
 
 
   @Override
-  public BinString slice(int offset, int length) {
+  public BinaryString slice(int offset, int length) {
     if(offset < 0 || length < 1 || offset + length > this.length) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d (maxLength=%d)", offset, length, this.length));
     }
     buffer.position(Integer.BYTES + offset).limit(Integer.BYTES + offset + length);
-    return new UTFBinString(length, buffer.slice().toByteBuffer());
+    return new UTFBinString(length, buffer.slice());
   }
   
   
   @Override
-  public BinString slice(int offset) {
+  public BinaryString slice(int offset) {
     if(offset < 0) {
       throw new IllegalArgumentException(String.format("Bad offset: %d", offset));
     }
     buffer.position(Integer.BYTES + offset).limit(Integer.BYTES + length);
-    return new UTFBinString(length - offset, buffer.slice().toByteBuffer());
+    return new UTFBinString(length - offset, buffer.slice());
   }
   
   
   @Override
   public String sha256sum() {
-    return buffer.position(0).limit(Integer.BYTES + length).sha256sum();
+    return Hash.sha256().of(toByteArray());
   }
 
 
   @Override
   public ByteBuffer toByteBuffer() {
-    return buffer.position(0).limit(Integer.BYTES + length).toByteBuffer();
+    return buffer;
   }
 
 
   @Override
   public byte[] toByteArray() {
-    return buffer.position(0).limit(Integer.BYTES + length).toByteArray();
+    if(length < 1) return new byte[0];
+    buffer.position(0).limit(length + Integer.BYTES);
+    byte[] bs = new byte[buffer.remaining()];
+    buffer.get(bs);
+    return bs;
   }
   
   
   @Override
   public int writeTo(ByteBuffer buf) {
-    buf.put(buffer.position(0).limit(Integer.BYTES + length).toByteBuffer());
-    return length;
+    buffer.position(0).limit(length + Integer.BYTES);
+    buf.put(buffer);
+    return length + Integer.BYTES;
   }
   
   
   @Override
   public int writeTo(DynamicByteBuffer buf) {
-    buf.put(buffer.position(0).limit(Integer.BYTES + length));
-    return length;
+    buffer.position(0).limit(length + Integer.BYTES);
+    buf.put(buffer);
+    return length + Integer.BYTES;
   }
   
   
   @Override
   public int writeTo(WritableByteChannel ch) throws IOException {
-    return ch.write(buffer.position(0).limit(Integer.BYTES + length).toByteBuffer());
+    buffer.position(0).limit(length + Integer.BYTES);
+    return ch.write(buffer);
   }
 
 
   @Override
-  public int readFrom(ReadableByteChannel ch) throws IOException {
-    ByteBuffer buf = buffer.toByteBuffer();
-    buf.position(0);
-    buf.limit(Integer.BYTES);
-    ch.read(buf);
-    buf.position(0);
-    length = buf.getInt();
-    if(length > 0) {
-      buffer.ensureSize(length + Integer.BYTES);
-      buf = buffer.toByteBuffer();
-      buf.position(Integer.BYTES);
-      buf.limit(length + Integer.BYTES);
-      return ch.read(buf);
-    }
-    return length;
-  }
-
-
-  @Override
-  public int readFrom(ByteBuffer buf) {
-    length = buf.getInt();
-    if(length > 0) {
-      buf.limit(buf.position() + length);
-      buffer.putInt(length).put(buf);
-    }
-    return length;
-  }
-  
-  
-  @Override
-  public int readFrom(DynamicByteBuffer buf) {
-    length = buf.getInt();
-    if(length > 0) {
-      buf.limit(buf.position() + length);
-      buffer.putInt(length).put(buf);
-    }
-    return length;
-  }
-  
-  
-  @Override
-  public int compareTo(BinString o) {
+  public int compareTo(BinaryString o) {
     buffer.position(0).limit(Integer.BYTES + length);
-    return buffer.toByteBuffer().compareTo(o.toByteBuffer());
+    return buffer.compareTo(o.toByteBuffer());
   }
 
 
@@ -335,10 +250,10 @@ public class UTFBinString implements BinString, Comparable<BinString> {
     if (obj == null) {
       return false;
     }
-    if (!BinString.class.isAssignableFrom(obj.getClass())) {
+    if (!BinaryString.class.isAssignableFrom(obj.getClass())) {
       return false;
     }
-    final BinString other = (BinString) obj;
+    final BinaryString other = (BinaryString) obj;
     if (this.length() != other.length()) {
       return false;
     }

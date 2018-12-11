@@ -21,19 +21,21 @@
 
 package us.pserver.tools.io;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/12/2018
  */
-public interface BinaryForm extends Cloneable {
+public interface WritableBinaryForm extends BinaryForm {
 
-  public String sha256sum();
+  public int writeTo(ByteBuffer buf);
   
-  public ByteBuffer toByteBuffer();
+  public int writeTo(DynamicByteBuffer buf);
   
-  public byte[] toByteArray();
+  public int writeTo(WritableByteChannel chl) throws IOException;
   
 }

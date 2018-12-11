@@ -37,14 +37,14 @@ public class TestBinString {
   @Test
   public void testLength() {
     String msg = "Hello World!";
-    BinString str = BinString.of(msg);
+    BinaryString str = BinaryString.of(msg);
     Assertions.assertEquals(msg.length(), str.length());
   }
   
   @Test
   public void testToByteBuffer() {
     String msg = "Hello World!";
-    BinString str = BinString.of(msg);
+    BinaryString str = BinaryString.of(msg);
     ByteBuffer buf = str.toByteBuffer();
     Assertions.assertEquals(msg.length() + Integer.BYTES, buf.remaining());
   }
@@ -52,7 +52,7 @@ public class TestBinString {
   @Test
   public void testToByteArray() {
     String msg = "Hello World!";
-    BinString str = BinString.of(msg);
+    BinaryString str = BinaryString.of(msg);
     byte[] bs = str.toByteArray();
     Assertions.assertEquals(msg.length() + Integer.BYTES, bs.length);
   }
@@ -60,7 +60,7 @@ public class TestBinString {
   @Test
   public void testGetContentBuffer() {
     String msg = "Hello World!";
-    BinString str = BinString.of(msg);
+    BinaryString str = BinaryString.of(msg);
     ByteBuffer buf = str.getContentBuffer();
     Assertions.assertEquals(msg.length(), buf.remaining());
   }
@@ -68,7 +68,7 @@ public class TestBinString {
   @Test
   public void testGetContentBytes() {
     String msg = "Hello World!";
-    BinString str = BinString.of(msg);
+    BinaryString str = BinaryString.of(msg);
     byte[] bs = str.getContentBytes();
     Assertions.assertEquals(msg.length(), bs.length);
   }
@@ -77,7 +77,7 @@ public class TestBinString {
   public void testAppendString() {
     String msg1 = "Hello ";
     String msg2 = "World!";
-    BinString str = BinString.of(msg1);
+    BinaryString str = BinaryString.of(msg1);
     str.append(msg2);
     Assertions.assertEquals(msg1.length() + msg2.length(), str.length());
     Assertions.assertEquals(msg1.length() + msg2.length(), str.getContentBuffer().remaining());
@@ -87,8 +87,8 @@ public class TestBinString {
   public void testAppendBinString() {
     String msg1 = "Hello ";
     String msg2 = "World!";
-    BinString str = BinString.of(msg1);
-    BinString str2 = BinString.of(msg2);
+    BinaryString str = BinaryString.of(msg1);
+    BinaryString str2 = BinaryString.of(msg2);
     str.append(str2);
     Assertions.assertEquals(msg1.length() + msg2.length(), str.length());
     Assertions.assertEquals(msg1.length() + msg2.length(), str.getContentBuffer().remaining());
@@ -98,7 +98,7 @@ public class TestBinString {
   public void testIndexOfString() {
     String msg1 = "Hello ";
     String msg2 = "World!";
-    BinString str = BinString.of(msg1);
+    BinaryString str = BinaryString.of(msg1);
     str.append(msg2);
     Assertions.assertEquals(msg1.length(), str.indexOf(msg2, 0));
   }
@@ -107,8 +107,8 @@ public class TestBinString {
   public void testIndexOfBinString() {
     String msg1 = "Hello ";
     String msg2 = "World!";
-    BinString str = BinString.of(msg1);
-    BinString str2 = BinString.of(msg2);
+    BinaryString str = BinaryString.of(msg1);
+    BinaryString str2 = BinaryString.of(msg2);
     str.append(str2);
     Assertions.assertEquals(msg1.length(), str.indexOf(str2, 0));
   }
@@ -117,7 +117,7 @@ public class TestBinString {
   public void testContainsString() {
     String msg1 = "Hello ";
     String msg2 = "World!";
-    BinString str = BinString.of(msg1);
+    BinaryString str = BinaryString.of(msg1);
     str.append(msg2);
     Assertions.assertTrue(str.contains(msg2));
   }
@@ -126,8 +126,8 @@ public class TestBinString {
   public void testContainsBinString() {
     String msg1 = "Hello ";
     String msg2 = "World!";
-    BinString str = BinString.of(msg1);
-    BinString str2 = BinString.of(msg2);
+    BinaryString str = BinaryString.of(msg1);
+    BinaryString str2 = BinaryString.of(msg2);
     str.append(str2);
     Assertions.assertTrue(str.contains(str2));
   }
@@ -136,7 +136,7 @@ public class TestBinString {
   public void testSliceOffset() {
     String msg1 = "Hello ";
     String msg2 = "World!";
-    BinString str = BinString.of(msg1);
+    BinaryString str = BinaryString.of(msg1);
     str.append(msg2);
     Assertions.assertEquals(msg2, str.slice(6).toString());
     Assertions.assertEquals(msg2.length(), str.slice(6).length());
@@ -146,7 +146,7 @@ public class TestBinString {
   public void testSliceOffsetLength() {
     String msg1 = "Hello ";
     String msg2 = "World!";
-    BinString str = BinString.of(msg1);
+    BinaryString str = BinaryString.of(msg1);
     str.append(msg2);
     Assertions.assertEquals(msg2, str.slice(6, 6).toString());
     Assertions.assertEquals(msg2.length(), str.slice(6, 6).length());
@@ -156,15 +156,15 @@ public class TestBinString {
   public void testCompareTo() {
     String msg1 = "Hello";
     String msg2 = "Hello";
-    BinString str = BinString.of(msg1);
-    BinString str2 = BinString.of(msg2);
+    BinaryString str = BinaryString.of(msg1);
+    BinaryString str2 = BinaryString.of(msg2);
     Assertions.assertEquals(0, str.compareTo(str2));
   }
   
   @Test
   public void testSha256Sum() {
     String msg = "Hello World!";
-    BinString str = BinString.of(msg);
+    BinaryString str = BinaryString.of(msg);
     DynamicByteBuffer buf = new DynamicByteBuffer(Integer.BYTES + msg.length(), false)
         .putInt(msg.length())
         .putUTF8(msg)
@@ -176,7 +176,7 @@ public class TestBinString {
   @Test
   public void testWriteToByteBuffer() {
     String msg = "Hello World!";
-    BinString str = BinString.of(msg);
+    BinaryString str = BinaryString.of(msg);
     ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES + msg.length());
     str.writeTo(buf);
     buf.flip();
@@ -188,7 +188,7 @@ public class TestBinString {
   @Test
   public void testWriteToDynamicByteBuffer() {
     String msg = "Hello World!";
-    BinString str = BinString.of(msg);
+    BinaryString str = BinaryString.of(msg);
     DynamicByteBuffer buf = new DynamicByteBuffer(Integer.BYTES + msg.length(), false);
     str.writeTo(buf);
     buf.flip();
@@ -207,7 +207,7 @@ public class TestBinString {
     System.out.printf("* hashCode full = %d%n", buf.hashCode());
     buf.flip();
     System.out.printf("* hashCode flip = %d%n", buf.hashCode());
-    BinString str = BinString.empty();
+    BinaryString str = BinaryString.empty();
     str.readFrom(buf);
     buf.flip();
     Assertions.assertEquals(str.length(), buf.remaining() - Integer.BYTES);
@@ -225,7 +225,7 @@ public class TestBinString {
     buf.flip();
     System.out.println(buf);
     Assertions.assertEquals(msg.length() + Integer.BYTES, buf.remaining());
-    BinString str = BinString.empty();
+    BinaryString str = BinaryString.empty();
     str.readFrom(buf);
     buf.position(0).limit(Integer.BYTES + msg.length());
     Assertions.assertEquals(str.length(), buf.remaining() - Integer.BYTES);

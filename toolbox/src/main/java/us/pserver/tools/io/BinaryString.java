@@ -28,58 +28,54 @@ import java.nio.ByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/12/2018
  */
-public interface BinString extends BinaryForm {
+public interface BinaryString extends WritableBinaryForm {
   
   public ByteBuffer getContentBuffer();
   
   public byte[] getContentBytes();
   
-  public BinString append(String str);
-  
-  public BinString append(BinString str);
-  
   public int indexOf(String str, int start);
   
-  public int indexOf(BinString str, int start);
+  public int indexOf(BinaryString str, int start);
   
-  public boolean contains(BinString str);
+  public boolean contains(BinaryString str);
   
   public boolean contains(String str);
   
   public int length();
   
-  public BinString slice(int offset, int length);
+  public BinaryString slice(int offset, int length);
   
-  public BinString slice(int offset);
-  
-  
+  public BinaryString slice(int offset);
   
   
-  public static BinString empty() {
-    return new UTFBinString();
+  
+  
+  public static BinaryString empty() {
+    return new UTFBinString("");
   }
   
-  public static BinString of(String str) {
+  public static BinaryString of(String str) {
     return new UTFBinString(str);
   }
   
-  public static BinString of(byte[] bs) {
+  public static BinaryString of(byte[] bs) {
     return new UTFBinString(bs);
   }
   
-  public static BinString of(byte[] bs, int off, int len) {
+  public static BinaryString of(byte[] bs, int off, int len) {
     return new UTFBinString(bs, off, len);
   }
   
-  public static BinString of(ByteBuffer buf) {
+  public static BinaryString of(ByteBuffer buf) {
     return new UTFBinString(buf);
   }
   
-  public static BinString of(DynamicByteBuffer buf) {
-    return new UTFBinString(buf);
+  public static BinaryString of(DynamicByteBuffer buf) {
+    return new UTFBinString(buf.toByteBuffer());
   }
   
-  public static BinString ofContent(ByteBuffer buf) {
+  public static BinaryString ofContent(ByteBuffer buf) {
     return new UTFBinString(buf.remaining(), buf);
   }
   
