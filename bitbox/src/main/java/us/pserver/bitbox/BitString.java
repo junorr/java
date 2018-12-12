@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.io;
+package us.pserver.bitbox;
 
 import java.nio.ByteBuffer;
 
@@ -28,12 +28,36 @@ import java.nio.ByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/12/2018
  */
-public interface BinaryForm extends Cloneable {
-
-  public String sha256sum();
+public interface BitString extends BitBox {
   
-  public ByteBuffer toByteBuffer();
+  public static final int ID = BitString.class.getName().hashCode();
   
-  public byte[] toByteArray();
+  public ByteBuffer getContentBuffer();
+  
+  public byte[] getContentBytes();
+  
+  public int indexOf(String str, int start);
+  
+  public int indexOf(BitString str, int start);
+  
+  public boolean contains(BitString str);
+  
+  public boolean contains(String str);
+  
+  public int length();
+  
+  public BitString slice(int offset, int length);
+  
+  public BitString slice(int offset);
+  
+  public BitString toUpperCase();
+  
+  public BitString toLowerCase();
+  
+  
+  
+  public static BitStringFactory factory() {
+    return BitStringFactory.get();
+  }
   
 }

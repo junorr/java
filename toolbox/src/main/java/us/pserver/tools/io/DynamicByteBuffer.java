@@ -34,7 +34,7 @@ import us.pserver.tools.Hash;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 04/12/2018
  */
-public final class DynamicByteBuffer implements RWBinaryForm, Comparable<DynamicByteBuffer> {
+public final class DynamicByteBuffer implements Comparable<DynamicByteBuffer> {
 
   private ByteBuffer buffer;
 
@@ -174,37 +174,37 @@ public final class DynamicByteBuffer implements RWBinaryForm, Comparable<Dynamic
   }
   
   public DynamicByteBuffer putChar(int index, char value) {
-      ensureSize(2);
+      ensureSize(Character.BYTES);
       buffer.putChar(index, value);
       return this;
   }
 
   public DynamicByteBuffer putChar(char value) {
-      ensureSize(2);
+      ensureSize(Character.BYTES);
       buffer.putChar(value);
       return this;
   }
 
   public DynamicByteBuffer putDouble(int index, double value) {
-      ensureSize(8);
+      ensureSize(Double.BYTES);
       buffer.putDouble(index, value);
       return this;
   }
 
   public DynamicByteBuffer putDouble(double value) {
-      ensureSize(8);
+      ensureSize(Double.BYTES);
       buffer.putDouble(value);
       return this;
   }
 
   public DynamicByteBuffer putFloat(int index, float value) {
-      ensureSize(4);
+      ensureSize(Float.BYTES);
       buffer.putFloat(index, value);
       return this;
   }
 
   public DynamicByteBuffer putFloat(float value) {
-      ensureSize(4);
+      ensureSize(Float.BYTES);
       buffer.putFloat(value);
       return this;
   }
@@ -398,7 +398,6 @@ public final class DynamicByteBuffer implements RWBinaryForm, Comparable<Dynamic
   }
   
   
-  @Override
   public byte[] toByteArray() {
     if(!hasRemaining()) return new byte[0];
     int pos = position();
@@ -409,19 +408,16 @@ public final class DynamicByteBuffer implements RWBinaryForm, Comparable<Dynamic
   }
 
 
-  @Override
   public String sha256sum() {
     return Hash.sha256().of(toByteArray());
   }
 
 
-  @Override
   public ByteBuffer toByteBuffer() {
     return buffer.duplicate();
   }
 
 
-  @Override
   public int writeTo(ByteBuffer buf) {
     int min = Math.min(buf.remaining(), remaining());
     int lim = limit();
@@ -434,7 +430,6 @@ public final class DynamicByteBuffer implements RWBinaryForm, Comparable<Dynamic
   }
   
 
-  @Override
   public int writeTo(DynamicByteBuffer buf) {
     int min = Math.min(buf.remaining(), remaining());
     int lim = limit();
@@ -447,19 +442,16 @@ public final class DynamicByteBuffer implements RWBinaryForm, Comparable<Dynamic
   }
 
 
-  @Override
   public int writeTo(WritableByteChannel chl) throws IOException {
     return chl.write(buffer);
   }
 
 
-  @Override
   public int readFrom(ReadableByteChannel chl) throws IOException {
     return chl.read(buffer);
   }
 
 
-  @Override
   public int readFrom(ByteBuffer buf) {
     int min = Math.min(remaining(), buf.remaining());
     put(buf);
@@ -467,7 +459,6 @@ public final class DynamicByteBuffer implements RWBinaryForm, Comparable<Dynamic
   }
   
   
-  @Override
   public int readFrom(DynamicByteBuffer buf) {
     int min = Math.min(remaining(), buf.remaining());
     put(buf);

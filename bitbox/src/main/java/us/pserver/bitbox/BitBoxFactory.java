@@ -19,23 +19,30 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.io;
+package us.pserver.bitbox;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
+import java.nio.channels.ReadableByteChannel;
+import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/12/2018
+ * @version 0.0 - 11/12/2018
  */
-public interface WritableBinaryForm extends BinaryForm {
-
-  public int writeTo(ByteBuffer buf);
+public interface BitBoxFactory<T extends BitBox> {
   
-  public int writeTo(DynamicByteBuffer buf);
+  public T createFrom(ByteBuffer buf);
   
-  public int writeTo(WritableByteChannel chl) throws IOException;
+  public T createFrom(ReadableByteChannel ch) throws IOException;
+  
+  public T createFrom(DynamicByteBuffer buf);
+  
+  
+  
+  public static BitBoxFactory get() {
+    return null;
+  }
   
 }

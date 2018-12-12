@@ -19,13 +19,32 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.io;
+package us.pserver.binbox.test;
+
+import org.junit.jupiter.api.Test;
+import us.pserver.bitbox.BitArray;
+import us.pserver.bitbox.BitNumber;
+import us.pserver.bitbox.BitRegion;
+import us.pserver.bitbox.BitString;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/12/2018
+ * @version 0.0 - 12/12/2018
  */
-public interface RWBinaryForm extends BinaryForm, ReadableBinaryForm, WritableBinaryForm {
+public class TestBitBoxIDs {
 
+  @Test
+  public void testBitBoxIDs() {
+    System.out.printf("* BitRegion.ID=%d%n", BitRegion.ID);
+    System.out.printf("* BitString.ID=%d%n", BitString.ID);
+    System.out.printf("* BitArray.ID=%d%n", BitArray.ID);
+    System.out.printf("* BitNumber.ID_BYTE=%d%n", BitNumber.ID_BYTE);
+    System.out.printf("* BitNumber.ID_SHORT=%d%n", BitNumber.ID_SHORT);
+    System.out.printf("* BitNumber.ID_INT=%d%n", BitNumber.ID_INT);
+    System.out.printf("* BitNumber.ID_FLOAT=%d%n", BitNumber.ID_FLOAT);
+    System.out.printf("* BitNumber.ID_LONG=%d%n", BitNumber.ID_LONG);
+    System.out.printf("* BitNumber.ID_DOUBLE=%d%n", BitNumber.ID_DOUBLE);
+  }
+  
 }

@@ -19,75 +19,61 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.io;
+package us.pserver.bitbox;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import us.pserver.tools.Hash;
+import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 05/12/2018
  */
-public class UTFBinString implements BinaryString, Comparable<BinaryString> {
-  
-  private final ByteBuffer buffer;
+public class UTF8BitString extends AbstractBitBox implements BitString {
   
   private final int length;
   
   
-  public UTFBinString(ByteBuffer buf) {
-    this.buffer = buf;
-    this.length = buf.getInt();
+  public UTF8BitString(ByteBuffer buf) {
+    super(buf);
+    int id = buffer.getInt();
+    if(id != BitString.ID) {
+      throw new IllegalArgumentException("Not a BitString content");
+    }
+    this.length = buf.getInt() - Integer.BYTES * 2;
   }
   
   
-  public UTFBinString(int length, ByteBuffer content) {
+  public UTF8BitString(int length, ByteBuffer content) {
+    super(content.isDirect() 
+        ? ByteBuffer.allocateDirect(length + Integer.BYTES * 2) 
+        : ByteBuffer.allocate(length + Integer.BYTES * 2));
     this.length = length;
-    ByteBuffer ibuf = content.isDirect() 
-        ? ByteBuffer.allocateDirect(length + Integer.BYTES) 
-        : ByteBuffer.allocate(length + Integer.BYTES);
-    this.buffer = ibuf;
-    buffer.putInt(length);
+    buffer.putInt(ID);
+    buffer.putInt(length + Integer.BYTES * 2);
     buffer.put(content);
   }
   
   
-  public UTFBinString(byte[] bs) {
-    this(Objects.requireNonNull(bs), 0, bs.length);
-  }
-  
-  
-  public UTFBinString(byte[] bs, int off, int len) {
-    Objects.requireNonNull(bs);
-    if(off < 0 || len < 1 || off + len > bs.length) {
-      throw new IllegalArgumentException("Bad array offset/length: " + off + "/" + len);
-    }
-    this.buffer = ByteBuffer.allocate(len + Integer.BYTES);
-    this.length = len;
-    buffer.putInt(length);
-    buffer.put(bs, off, len);
-  }
-  
-  
-  public UTFBinString(String str) {
+  public UTF8BitString(String str) {
+    super(ByteBuffer.allocate(str.length() + Integer.BYTES * 2));
     ByteBuffer bs = StandardCharsets.UTF_8.encode(str);
-    this.buffer = ByteBuffer.allocate(bs.remaining() + Integer.BYTES);
     this.length = str.length();
-    buffer.putInt(length);
+    buffer.putInt(ID);
+    buffer.putInt(length + Integer.BYTES * 2);
     buffer.put(bs);
   }
   
   
   @Override
   public ByteBuffer getContentBuffer() {
-    buffer.position(Integer.BYTES);
-    buffer.limit(Integer.BYTES + length);
+    buffer.position(Integer.BYTES * 2);
+    buffer.limit(Integer.BYTES * 2 + length);
     return buffer.slice();
   }
   
@@ -108,14 +94,14 @@ public class UTFBinString implements BinaryString, Comparable<BinaryString> {
     int readed = 0;
     int readlen = length;
     while((readed + len) <= readlen) {
-      buffer.position(Integer.BYTES + start + readed);
+      buffer.position(Integer.BYTES * 2 + start + readed);
       int count = 0;
       for(int i = 0; i < len; i++) {
         if(buffer.get() == bs.get()) count++;
       }
       bs.position(0);
       if(count == len) {
-        return buffer.position() - len - Integer.BYTES;
+        return buffer.position() - len - Integer.BYTES * 2;
       }
       readed++;
     }
@@ -124,21 +110,21 @@ public class UTFBinString implements BinaryString, Comparable<BinaryString> {
   
   
   @Override
-  public int indexOf(BinaryString str, int start) {
+  public int indexOf(BitString str, int start) {
     ByteBuffer bs = str.getContentBuffer();
     int pos = bs.position();
     int len = bs.remaining();
     int readed = 0;
     int readlen = length;
     while((readed + len) <= readlen) {
-      buffer.position(Integer.BYTES + start + readed);
+      buffer.position(Integer.BYTES * 2 + start + readed);
       int count = 0;
       for(int i = 0; i < len; i++) {
         if(buffer.get() == bs.get()) count++;
       }
       bs.position(pos);
       if(count == len) {
-        return buffer.position() - len - Integer.BYTES;
+        return buffer.position() - len - Integer.BYTES * 2;
       }
       readed++;
     }
@@ -153,7 +139,7 @@ public class UTFBinString implements BinaryString, Comparable<BinaryString> {
   
   
   @Override
-  public boolean contains(BinaryString str) {
+  public boolean contains(BitString str) {
     return indexOf(str, 0) >= 0;
   }
   
@@ -162,25 +148,39 @@ public class UTFBinString implements BinaryString, Comparable<BinaryString> {
   public int length() {
     return length;
   }
-
-
+  
+  
   @Override
-  public BinaryString slice(int offset, int length) {
+  public BitString slice(int offset, int length) {
     if(offset < 0 || length < 1 || offset + length > this.length) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d (maxLength=%d)", offset, length, this.length));
     }
-    buffer.position(Integer.BYTES + offset).limit(Integer.BYTES + offset + length);
-    return new UTFBinString(length, buffer.slice());
+    buffer.position(Integer.BYTES * 2 + offset)
+        .limit(Integer.BYTES * 2 + offset + length);
+    return new UTF8BitString(length, buffer.slice());
   }
   
   
   @Override
-  public BinaryString slice(int offset) {
+  public BitString slice(int offset) {
     if(offset < 0) {
       throw new IllegalArgumentException(String.format("Bad offset: %d", offset));
     }
-    buffer.position(Integer.BYTES + offset).limit(Integer.BYTES + length);
-    return new UTFBinString(length - offset, buffer.slice());
+    buffer.position(Integer.BYTES * 2 + offset)
+        .limit(Integer.BYTES * 2 + length);
+    return new UTF8BitString(length - offset, buffer.slice());
+  }
+  
+  
+  @Override
+  public UTF8BitString toUpperCase() {
+    return new UTF8BitString(length(), StandardCharsets.UTF_8.encode(toString().toUpperCase()));
+  }
+  
+  
+  @Override
+  public UTF8BitString toLowerCase() {
+    return new UTF8BitString(length(), StandardCharsets.UTF_8.encode(toString().toLowerCase()));
   }
   
   
@@ -199,7 +199,7 @@ public class UTFBinString implements BinaryString, Comparable<BinaryString> {
   @Override
   public byte[] toByteArray() {
     if(length < 1) return new byte[0];
-    buffer.position(0).limit(length + Integer.BYTES);
+    buffer.position(0).limit(length + Integer.BYTES * 2);
     byte[] bs = new byte[buffer.remaining()];
     buffer.get(bs);
     return bs;
@@ -208,31 +208,24 @@ public class UTFBinString implements BinaryString, Comparable<BinaryString> {
   
   @Override
   public int writeTo(ByteBuffer buf) {
-    buffer.position(0).limit(length + Integer.BYTES);
+    buffer.position(0).limit(length + Integer.BYTES * 2);
     buf.put(buffer);
-    return length + Integer.BYTES;
+    return length + Integer.BYTES * 2;
   }
   
   
   @Override
   public int writeTo(DynamicByteBuffer buf) {
-    buffer.position(0).limit(length + Integer.BYTES);
+    buffer.position(0).limit(length + Integer.BYTES * 2);
     buf.put(buffer);
-    return length + Integer.BYTES;
+    return length + Integer.BYTES * 2;
   }
   
   
   @Override
   public int writeTo(WritableByteChannel ch) throws IOException {
-    buffer.position(0).limit(length + Integer.BYTES);
+    buffer.position(0).limit(length + Integer.BYTES * 2);
     return ch.write(buffer);
-  }
-
-
-  @Override
-  public int compareTo(BinaryString o) {
-    buffer.position(0).limit(Integer.BYTES + length);
-    return buffer.compareTo(o.toByteBuffer());
   }
 
 
@@ -250,10 +243,10 @@ public class UTFBinString implements BinaryString, Comparable<BinaryString> {
     if (obj == null) {
       return false;
     }
-    if (!BinaryString.class.isAssignableFrom(obj.getClass())) {
+    if (!BitString.class.isAssignableFrom(obj.getClass())) {
       return false;
     }
-    final BinaryString other = (BinaryString) obj;
+    final BitString other = (BitString) obj;
     if (this.length() != other.length()) {
       return false;
     }

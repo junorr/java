@@ -19,55 +19,45 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.io;
+package us.pserver.bitbox;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.util.Set;
+import java.nio.channels.WritableByteChannel;
+import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/12/2018
+ * @version 0.0 - 02/12/2018
  */
-public interface BinObject {
+public interface BitBox extends Comparable<BitBox> {
+  
+  public int boxID();
+  
+  public int boxSize();
 
-  public String getClassName();
-  
-  public long getClassID();
-  
-  public int size();
-  
-  public <T> T get(String name);
-  
-  public byte getByte(String name);
-  
-  public char getChar(String name);
-  
-  public short getShort(String name);
-  
-  public int getInt(String name);
-  
-  public float getFloat(String name);
-  
-  public double getDouble(String name);
-  
-  public long getLong(String name);
-  
-  public String getString(String name);
-  
-  public String getString(String name, Charset cs);
-  
-  public Set<String> getProperties();
-  
-  public boolean contains(String name);
-  
-  public <T> T remove(String name);
-  
   public String sha256sum();
   
-  public <T> BinObject put(String name, T value);
-  
   public ByteBuffer toByteBuffer();
+  
+  public byte[] toByteArray();
+  
+  public int writeTo(ByteBuffer buf);
+  
+  public int writeTo(WritableByteChannel ch) throws IOException;
+  
+  public int writeTo(DynamicByteBuffer buf);
+  
+  @Override
+  public default int compareTo(BitBox bin) {
+    return toByteBuffer().compareTo(bin.toByteBuffer());
+  }
+  
+  
+  
+  public static BitBoxFactory factory() {
+    return BitBoxFactory.get();
+  }
   
 }

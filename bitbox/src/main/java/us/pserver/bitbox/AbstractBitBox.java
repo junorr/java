@@ -19,23 +19,38 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.tools.io;
+package us.pserver.bitbox;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ReadableByteChannel;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/12/2018
+ * @version 0.0 - 12/12/2018
  */
-public interface ReadableBinaryForm extends BinaryForm {
+public abstract class AbstractBitBox implements BitBox {
+  
+  protected final ByteBuffer buffer;
+  
+  public AbstractBitBox(ByteBuffer buf) {
+    this.buffer = buf;
+  }
 
-  public int readFrom(ReadableByteChannel chl) throws IOException;
+  @Override
+  public int boxID() {
+    buffer.position(0);
+    return buffer.getInt();
+  }
+
+  @Override
+  public int boxSize() {
+    buffer.position(Integer.BYTES);
+    return buffer.getInt();
+  }
   
-  public int readFrom(ByteBuffer buf);
-  
-  public int readFrom(DynamicByteBuffer buf);
-  
+  @Override
+  public String toString() {
+    return String.format("BitBox{id=%d, size=%d}", boxID(), boxSize());
+  }
+
 }
