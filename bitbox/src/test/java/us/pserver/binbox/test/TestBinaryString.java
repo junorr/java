@@ -23,6 +23,7 @@ package us.pserver.binbox.test;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.function.IntConsumer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import us.pserver.bitbox.BitStringFactory;

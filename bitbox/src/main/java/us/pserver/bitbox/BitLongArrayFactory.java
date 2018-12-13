@@ -31,65 +31,60 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public class BitStringFactory implements BitBoxFactory<BitString> {
+public class BitLongArrayFactory implements BitBoxFactory<BitLongArray> {
   
-  private static final BitStringFactory _instance = new BitStringFactory();
+  private static final BitLongArrayFactory _instance = new BitLongArrayFactory();
   
-  private BitStringFactory() {}
+  private BitLongArrayFactory() {}
   
-  public static BitStringFactory get() {
+  public static BitLongArrayFactory get() {
     return _instance;
   }
   
-  public BitString createFrom(String str) {
-    return new UTF8BitString(str);
+  public BitLongArray createFrom(long[] longs) {
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + Long.BYTES * longs.length);
+    buf.putInt(BitLongArray.ID);
+    buf.putInt(buf.capacity());
+    buf.putInt(longs.length);
+    for(long i : longs) {
+      buf.putLong(i);
+    }
+    buf.flip();
+    return new BitLongArray.LongArray(buf);
   }
-  
-  
-  public BitString createFrom(byte[] bs) {
-    return new UTF8BitString(bs.length, ByteBuffer.wrap(bs));
-  }
-  
-  
-  public BitString createFrom(byte[] bs, int off, int len) {
-    return new UTF8BitString(len, ByteBuffer.wrap(bs, off, len));
-  }
-  
-  
+
   @Override
-  public BitString createFrom(ByteBuffer buf) {
+  public BitLongArray createFrom(ByteBuffer buf) {
     int pos = buf.position();
     int lim = buf.limit();
     int id = buf.getInt();
-    if(id != BitString.ID) {
-      throw new IllegalArgumentException("Not a BitString content");
+    if(id != BitLongArray.ID) {
+      throw new IllegalArgumentException("Not a BitLongArray content");
     }
     int len = buf.getInt();
     buf.position(pos).limit(pos + len);
-    UTF8BitString bst = new UTF8BitString(buf.slice());
+    BitLongArray array = new BitLongArray.LongArray(buf.slice());
     buf.limit(lim);
-    return bst;
+    return array;
   }
 
-
   @Override
-  public BitString createFrom(ReadableByteChannel ch) throws IOException {
+  public BitLongArray createFrom(ReadableByteChannel ch) throws IOException {
     ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2);
     ch.read(buf);
     buf.flip();
     int id = buf.getInt();
     int len = buf.getInt();
-    buf = ByteBuffer.allocate(len - Integer.BYTES * 2);
+    buf = ByteBuffer.allocate(len);
     buf.putInt(id);
     buf.putInt(len);
     ch.read(buf);
     buf.flip();
-    return new UTF8BitString(buf);
+    return new BitLongArray.LongArray(buf);
   }
 
-
   @Override
-  public BitString createFrom(DynamicByteBuffer buf) {
+  public BitLongArray createFrom(DynamicByteBuffer buf) {
     return createFrom(buf.toByteBuffer());
   }
 

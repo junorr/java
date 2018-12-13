@@ -31,65 +31,60 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public class BitStringFactory implements BitBoxFactory<BitString> {
+public class BitDoubleArrayFactory implements BitBoxFactory<BitDoubleArray> {
   
-  private static final BitStringFactory _instance = new BitStringFactory();
+  private static final BitDoubleArrayFactory _instance = new BitDoubleArrayFactory();
   
-  private BitStringFactory() {}
+  private BitDoubleArrayFactory() {}
   
-  public static BitStringFactory get() {
+  public static BitDoubleArrayFactory get() {
     return _instance;
   }
   
-  public BitString createFrom(String str) {
-    return new UTF8BitString(str);
+  public BitDoubleArray createFrom(double[] doubles) {
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + Double.BYTES * doubles.length);
+    buf.putInt(BitDoubleArray.ID);
+    buf.putInt(buf.capacity());
+    buf.putInt(doubles.length);
+    for(double i : doubles) {
+      buf.putDouble(i);
+    }
+    buf.flip();
+    return new BitDoubleArray.DoubleArray(buf);
   }
-  
-  
-  public BitString createFrom(byte[] bs) {
-    return new UTF8BitString(bs.length, ByteBuffer.wrap(bs));
-  }
-  
-  
-  public BitString createFrom(byte[] bs, int off, int len) {
-    return new UTF8BitString(len, ByteBuffer.wrap(bs, off, len));
-  }
-  
-  
+
   @Override
-  public BitString createFrom(ByteBuffer buf) {
+  public BitDoubleArray createFrom(ByteBuffer buf) {
     int pos = buf.position();
     int lim = buf.limit();
     int id = buf.getInt();
-    if(id != BitString.ID) {
-      throw new IllegalArgumentException("Not a BitString content");
+    if(id != BitDoubleArray.ID) {
+      throw new IllegalArgumentException("Not a BitDoubleArray content");
     }
     int len = buf.getInt();
     buf.position(pos).limit(pos + len);
-    UTF8BitString bst = new UTF8BitString(buf.slice());
+    BitDoubleArray array = new BitDoubleArray.DoubleArray(buf.slice());
     buf.limit(lim);
-    return bst;
+    return array;
   }
 
-
   @Override
-  public BitString createFrom(ReadableByteChannel ch) throws IOException {
+  public BitDoubleArray createFrom(ReadableByteChannel ch) throws IOException {
     ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2);
     ch.read(buf);
     buf.flip();
     int id = buf.getInt();
     int len = buf.getInt();
-    buf = ByteBuffer.allocate(len - Integer.BYTES * 2);
+    buf = ByteBuffer.allocate(len);
     buf.putInt(id);
     buf.putInt(len);
     ch.read(buf);
     buf.flip();
-    return new UTF8BitString(buf);
+    return new BitDoubleArray.DoubleArray(buf);
   }
 
-
   @Override
-  public BitString createFrom(DynamicByteBuffer buf) {
+  public BitDoubleArray createFrom(DynamicByteBuffer buf) {
     return createFrom(buf.toByteBuffer());
   }
 

@@ -25,7 +25,6 @@ import java.nio.ByteBuffer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import us.pserver.bitbox.BitNumber;
-import us.pserver.bitbox.BitRegion;
 import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
