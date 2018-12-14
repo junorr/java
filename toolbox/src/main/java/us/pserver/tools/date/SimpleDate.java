@@ -1436,6 +1436,18 @@ public class SimpleDate extends Date {
   }
 	
 	
+  /**
+   * Retorna um container serializável <code>SerialDate</code>
+   * configurado com esta instância de <code>SimpleDate</code>.
+   * @return container serializável <code>SerialDate</code>
+   * configurado com esta instância de <code>SimpleDate</code>.
+   * @see us.pserver.tools.date.SerialDate
+   */
+  public DateTime toDateTime() {
+    return DateTime.of(this);
+  }
+	
+	
 	/**
 	 * Define o idioma utilizado por <code>SimpleDate</code>.
 	 * @param l Idioma <code>Locale</code>.

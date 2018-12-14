@@ -19,11 +19,12 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.array;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
+import us.pserver.bitbox.BitBoxFactory;
 import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
@@ -31,45 +32,45 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public class BitShortArrayFactory implements BitBoxFactory<BitShortArray> {
+public class BitIntArrayFactory implements BitBoxFactory<BitIntArray> {
   
-  private static final BitShortArrayFactory _instance = new BitShortArrayFactory();
+  private static final BitIntArrayFactory _instance = new BitIntArrayFactory();
   
-  private BitShortArrayFactory() {}
+  private BitIntArrayFactory() {}
   
-  public static BitShortArrayFactory get() {
+  public static BitIntArrayFactory get() {
     return _instance;
   }
   
-  public BitShortArray createFrom(short[] shorts) {
-    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + Short.BYTES * shorts.length);
-    buf.putInt(BitShortArray.ID);
+  public BitIntArray createFrom(int[] ints) {
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * (ints.length + 3));
+    buf.putInt(BitIntArray.ID);
     buf.putInt(buf.capacity());
-    buf.putInt(shorts.length);
-    for(short i : shorts) {
-      buf.putShort(i);
+    buf.putInt(ints.length);
+    for(int i : ints) {
+      buf.putInt(i);
     }
     buf.flip();
-    return new BitShortArray.ShortArray(buf);
+    return new BitIntArray.IntArray(buf);
   }
 
   @Override
-  public BitShortArray createFrom(ByteBuffer buf) {
+  public BitIntArray createFrom(ByteBuffer buf) {
     int pos = buf.position();
     int lim = buf.limit();
     int id = buf.getInt();
-    if(id != BitShortArray.ID) {
-      throw new IllegalArgumentException("Not a BitShortArray content");
+    if(id != BitIntArray.ID) {
+      throw new IllegalArgumentException("Not a BitIntArray content");
     }
     int len = buf.getInt();
     buf.position(pos).limit(pos + len);
-    BitShortArray array = new BitShortArray.ShortArray(buf.slice());
+    BitIntArray array = new BitIntArray.IntArray(buf.slice());
     buf.limit(lim);
     return array;
   }
 
   @Override
-  public BitShortArray createFrom(ReadableByteChannel ch) throws IOException {
+  public BitIntArray createFrom(ReadableByteChannel ch) throws IOException {
     ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2);
     ch.read(buf);
     buf.flip();
@@ -80,11 +81,11 @@ public class BitShortArrayFactory implements BitBoxFactory<BitShortArray> {
     buf.putInt(len);
     ch.read(buf);
     buf.flip();
-    return new BitShortArray.ShortArray(buf);
+    return new BitIntArray.IntArray(buf);
   }
 
   @Override
-  public BitShortArray createFrom(DynamicByteBuffer buf) {
+  public BitIntArray createFrom(DynamicByteBuffer buf) {
     return createFrom(buf.toByteBuffer());
   }
 

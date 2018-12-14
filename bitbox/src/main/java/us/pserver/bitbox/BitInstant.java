@@ -21,46 +21,27 @@
 
 package us.pserver.bitbox;
 
-import java.io.IOException;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
-import us.pserver.tools.io.DynamicByteBuffer;
+import java.time.Instant;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/12/2018
+ * @version 0.0 - 13/12/2018
  */
-public interface BitBox extends Comparable<BitBox>, Serializable {
+public class BitInstant extends UTF8BitString {
   
-  public <T> T get();
+  public static final int ID = BitInstant.class.getName().hashCode();
   
-  public int boxID();
-  
-  public int boxSize();
-
-  public String sha256sum();
-  
-  public ByteBuffer toByteBuffer();
-  
-  public byte[] toByteArray();
-  
-  public int writeTo(ByteBuffer buf);
-  
-  public int writeTo(WritableByteChannel ch) throws IOException;
-  
-  public int writeTo(DynamicByteBuffer buf);
-  
-  @Override
-  public default int compareTo(BitBox bin) {
-    return toByteBuffer().compareTo(bin.toByteBuffer());
+  public BitInstant(ByteBuffer buf) {
+    super(buf);
+    if(buffer.getInt() != ID) {
+      throw new IllegalArgumentException("Not a BitInstant content");
+    }
   }
-  
-  
-  
-  public static BitBoxFactory factory() {
-    return BitBoxFactory.get();
+
+  public Instant get() {
+    
   }
   
 }

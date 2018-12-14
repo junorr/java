@@ -94,6 +94,11 @@ public interface BitRegion extends BitBox {
     }
     
     @Override
+    public int[] get() {
+      return new int[] {offset(), length()};
+    }
+    
+    @Override
     public int offset() {
       buffer.position(Integer.BYTES * 2);
       return buffer.getInt();

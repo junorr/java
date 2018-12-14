@@ -21,46 +21,36 @@
 
 package us.pserver.bitbox;
 
-import java.io.IOException;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
-import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/12/2018
+ * @version 0.0 - 13/12/2018
  */
-public interface BitBox extends Comparable<BitBox>, Serializable {
+public interface BitBuffer extends BitBox {
   
-  public <T> T get();
-  
-  public int boxID();
-  
-  public int boxSize();
+  public static final int ID = BitBuffer.class.getName().hashCode();
 
-  public String sha256sum();
-  
-  public ByteBuffer toByteBuffer();
-  
-  public byte[] toByteArray();
-  
-  public int writeTo(ByteBuffer buf);
-  
-  public int writeTo(WritableByteChannel ch) throws IOException;
-  
-  public int writeTo(DynamicByteBuffer buf);
-  
   @Override
-  public default int compareTo(BitBox bin) {
-    return toByteBuffer().compareTo(bin.toByteBuffer());
-  }
+  public ByteBuffer get();
   
   
   
-  public static BitBoxFactory factory() {
-    return BitBoxFactory.get();
+  
+  
+  static class BBuffer extends AbstractBitBox implements BitBuffer {
+    
+    public BBuffer(ByteBuffer buf) {
+      super(buf);
+    }
+
+    @Override
+    public ByteBuffer get() {
+      buffer.position(Integer.BYTES * 2);
+      return buffer.slice();
+    }
+    
   }
   
 }

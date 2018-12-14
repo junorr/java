@@ -21,7 +21,11 @@
 
 package us.pserver.bitbox;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
+import us.pserver.tools.Hash;
+import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
  *
@@ -48,6 +52,49 @@ public abstract class AbstractBitBox implements BitBox {
     return buffer.getInt();
   }
   
+  @Override
+  public String sha256sum() {
+    return Hash.sha256().of(toByteArray());
+  }
+
+  @Override
+  public ByteBuffer toByteBuffer() {
+    buffer.position(0);
+    return buffer.duplicate();
+  }
+
+  @Override
+  public byte[] toByteArray() {
+    int size = boxSize();
+    if(buffer.hasArray() && buffer.array().length == size) {
+      return buffer.array();
+    }
+    byte[] bs = new byte[size];
+    buffer.position(0);
+    buffer.get(bs);
+    return bs;
+  }
+
+  @Override
+  public int writeTo(ByteBuffer buf) {
+    buffer.position(0);
+    buf.put(buffer);
+    return boxSize();
+  }
+
+  @Override
+  public int writeTo(WritableByteChannel ch) throws IOException {
+    buffer.position(0);
+    return ch.write(buffer);
+  }
+
+  @Override
+  public int writeTo(DynamicByteBuffer buf) {
+    buffer.position(0);
+    buf.put(buffer);
+    return boxSize();
+  }
+
   @Override
   public String toString() {
     return String.format("BitBox{id=%d, size=%d}", boxID(), boxSize());

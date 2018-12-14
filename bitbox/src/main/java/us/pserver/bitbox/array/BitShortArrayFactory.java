@@ -19,12 +19,12 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.array;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
-import static us.pserver.bitbox.BitArray.ID;
+import us.pserver.bitbox.BitBoxFactory;
 import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
@@ -32,54 +32,60 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public class BitArrayFactory implements BitBoxFactory<BitArray> {
+public class BitShortArrayFactory implements BitBoxFactory<BitShortArray> {
   
-  private static final BitArrayFactory _instance = new BitArrayFactory();
+  private static final BitShortArrayFactory _instance = new BitShortArrayFactory();
   
-  private BitArrayFactory() {}
+  private BitShortArrayFactory() {}
   
-  public static BitArrayFactory get() {
+  public static BitShortArrayFactory get() {
     return _instance;
   }
   
-  public BitRegion createFrom(int offset, int length) {
-    return new BitRegion.Region(offset, length);
+  public BitShortArray createFrom(short[] shorts) {
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + Short.BYTES * shorts.length);
+    buf.putInt(BitShortArray.ID);
+    buf.putInt(buf.capacity());
+    buf.putInt(shorts.length);
+    for(short i : shorts) {
+      buf.putShort(i);
+    }
+    buf.flip();
+    return new BitShortArray.ShortArray(buf);
   }
 
   @Override
-  public BitArray createFrom(ByteBuffer buf) {
+  public BitShortArray createFrom(ByteBuffer buf) {
     int pos = buf.position();
     int lim = buf.limit();
-    if(buf.getInt() != BitArray.ID) {
-      throw new IllegalArgumentException("Not a BinaryArray content");
+    int id = buf.getInt();
+    if(id != BitShortArray.ID) {
+      throw new IllegalArgumentException("Not a BitShortArray content");
     }
     int len = buf.getInt();
     buf.position(pos).limit(pos + len);
-    BitArray.BArray array = new BitArray.BArray(buf.slice());
+    BitShortArray array = new BitShortArray.ShortArray(buf.slice());
     buf.limit(lim);
     return array;
   }
 
   @Override
-  public BitArray createFrom(ReadableByteChannel ch) throws IOException {
-    ByteBuffer idlen = ByteBuffer.allocate(Integer.BYTES * 2);
-    ch.read(idlen);
-    idlen.flip();
-    int id = idlen.getInt();
-    if(id != ID) {
-      throw new IllegalArgumentException("Not a BinaryArray content");
-    }
-    int len = idlen.getInt();
-    ByteBuffer buf = ByteBuffer.allocate(len);
+  public BitShortArray createFrom(ReadableByteChannel ch) throws IOException {
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2);
+    ch.read(buf);
+    buf.flip();
+    int id = buf.getInt();
+    int len = buf.getInt();
+    buf = ByteBuffer.allocate(len);
     buf.putInt(id);
     buf.putInt(len);
     ch.read(buf);
     buf.flip();
-    return new BitArray.BArray(buf);
+    return new BitShortArray.ShortArray(buf);
   }
 
   @Override
-  public BitArray createFrom(DynamicByteBuffer buf) {
+  public BitShortArray createFrom(DynamicByteBuffer buf) {
     return createFrom(buf.toByteBuffer());
   }
 

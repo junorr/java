@@ -26,10 +26,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.TreeMap;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import us.pserver.tools.Hash;
 import us.pserver.tools.io.DynamicByteBuffer;
 
@@ -50,22 +48,27 @@ public interface BitMap<K extends BitBox, V extends BitBox> extends BitBox {
   
   public boolean contains(K key);
   
-  public Stream<BEntry<K,V>> stream();
+  public Stream<BitEntry<K,V>> stream();
   
-  public Stream<BEntry<K,V>> parallelStream();
+  public Stream<BitEntry<K,V>> parallelStream();
   
-  public Iterator<BEntry<K,V>> iterator();
-  
-  
+  public Iterator<BitEntry<K,V>> iterator();
   
   
   
-  static class BEntry<K extends BitBox, V extends BitBox> extends AbstractBitBox implements Map.Entry<K,V> {
+  
+  
+  static class BitEntry<K extends BitBox, V extends BitBox> extends AbstractBitBox implements Map.Entry<K,V> {
     
-    public static final int ID = BEntry.class.getName().hashCode();
+    public static final int ID = BitEntry.class.getName().hashCode();
     
-    public BEntry(ByteBuffer buf) {
+    public BitEntry(ByteBuffer buf) {
       super(buf);
+    }
+    
+    @Override
+    public Map.Entry<K,V> get() {
+      return this;
     }
     
     @Override
@@ -137,43 +140,68 @@ public interface BitMap<K extends BitBox, V extends BitBox> extends BitBox {
   
   static class BMap<K extends BitBox, V extends BitBox> extends AbstractBitBox implements BitMap<K,V> {
     
+    private final int length;
+    
     public BMap(ByteBuffer buf) {
       super(buf);
+      int id = buffer.getInt();
+      if(BitMap.ID != id) {
+        throw new IllegalArgumentException("Not a BitMap content");
+      }
+      buffer.getInt();//boxSize()
+      this.length = buffer.getInt();
+    }
+    
+    @Override
+    public Map<K,V> get() {
+      TreeMap<K,V> map = new TreeMap<>();
+      stream().forEach(e -> map.putIfAbsent(e.getKey(), e.getValue()));
+      return map;
     }
 
     @Override
     public String sha256sum() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return Hash.sha256().of(toByteArray());
     }
 
 
     @Override
     public ByteBuffer toByteBuffer() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      buffer.position(0);
+      return buffer.duplicate();
     }
 
 
     @Override
     public byte[] toByteArray() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      if(buffer.hasArray() && buffer.array().length == boxSize()) {
+        return buffer.array();
+      }
+      byte[] bs = new byte[boxSize()];
+      buffer.position(0);
+      buffer.get(bs);
+      return bs;
     }
 
 
     @Override
     public int writeTo(ByteBuffer buf) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      buffer.position(0);
+      buf.put(buffer);
+      return boxSize();
     }
 
 
     @Override
     public int writeTo(WritableByteChannel ch) throws IOException {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      buffer.position(0);
+      return ch.write(buffer);
     }
 
 
     @Override
     public int writeTo(DynamicByteBuffer buf) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      
     }
 
 
@@ -202,19 +230,19 @@ public interface BitMap<K extends BitBox, V extends BitBox> extends BitBox {
 
 
     @Override
-    public Stream<BEntry<K, V>> stream() {
+    public Stream<BitEntry<K, V>> stream() {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 
     @Override
-    public Stream<BEntry<K, V>> parallelStream() {
+    public Stream<BitEntry<K, V>> parallelStream() {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 
     @Override
-    public Iterator<BEntry<K, V>> iterator() {
+    public Iterator<BitEntry<K, V>> iterator() {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

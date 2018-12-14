@@ -46,9 +46,6 @@ public interface BitNumber extends BitBox {
   
   public static final int ID_DOUBLE = Double.class.getName().hashCode();
   
-  
-  public <T extends Number> T get();
-  
   public byte getByte();
   
   public short getShort();
@@ -90,49 +87,7 @@ public interface BitNumber extends BitBox {
     }
     
     @Override
-    public String sha256sum() {
-      return Hash.sha256().of(toByteArray());
-    }
-    
-    @Override
-    public ByteBuffer toByteBuffer() {
-      buffer.position(0);
-      return buffer.duplicate();
-    }
-    
-    @Override
-    public byte[] toByteArray() {
-      if(buffer.hasArray() && buffer.array().length == boxSize()) {
-        return buffer.array();
-      }
-      byte[] bs = new byte[boxSize()];
-      buffer.position(0);
-      buffer.get(bs);
-      return bs;
-    }
-    
-    @Override
-    public int writeTo(ByteBuffer buf) {
-      buffer.position(0);
-      buf.put(buffer);
-      return boxSize();
-    }
-    
-    @Override
-    public int writeTo(WritableByteChannel ch) throws IOException {
-      buffer.position(0);
-      return ch.write(buffer);
-    }
-    
-    @Override
-    public int writeTo(DynamicByteBuffer buf) {
-      buffer.position(0);
-      buf.put(buffer);
-      return boxSize();
-    }
-    
-    @Override
-    public <T extends Number> T get() {
+    public Number get() {
       Number num = 0;
       if(isByte()) {
         buffer.position(Integer.BYTES * 2);
@@ -158,7 +113,7 @@ public interface BitNumber extends BitBox {
         buffer.position(Integer.BYTES * 2);
         num = buffer.getDouble();
       }
-      return (T) num;
+      return num;
     }
     
     @Override

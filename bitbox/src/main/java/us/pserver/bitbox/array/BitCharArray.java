@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.array;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -29,6 +29,9 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
+import us.pserver.bitbox.AbstractBitBox;
+import us.pserver.bitbox.BitBox;
+import us.pserver.bitbox.util.CharIterator;
 import us.pserver.tools.Hash;
 import us.pserver.tools.io.DynamicByteBuffer;
 
@@ -37,46 +40,48 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public interface BitIntArray extends BitBox {
+public interface BitCharArray extends BitBox {
   
-  public static final int ID = BitIntArray.class.getName().hashCode();
+  public static final int ID = BitCharArray.class.getName().hashCode();
 
   public int length();
   
-  public int get(int idx);
+  public char get(int idx);
   
   public boolean isEmpty();
   
-  public int indexOf(int val);
+  public int indexOf(char val);
   
-  public boolean contains(int val);
+  public boolean contains(char val);
   
-  public int[] toArray();
+  public char[] toArray();
   
   public IntStream stream();
   
   public IntStream parallelStream();
   
-  public PrimitiveIterator.OfInt iterator();
+  public CharIterator iterator();
+  
+  public PrimitiveIterator.OfInt intIterator();
   
   
   
-  public static BitIntArrayFactory factory() {
-    return BitIntArrayFactory.get();
+  public static BitCharArrayFactory factory() {
+    return BitCharArrayFactory.get();
   }
   
   
   
   
   
-  static class IntArray extends AbstractBitBox implements BitIntArray {
+  static class CharArray extends AbstractBitBox implements BitCharArray {
     
     private final int length;
     
-    public IntArray(ByteBuffer buf) {
+    public CharArray(ByteBuffer buf) {
       super(buf);
       if(buffer.getInt() != ID) {
-        throw new IllegalArgumentException("Not a BitIntArray content");
+        throw new IllegalArgumentException("Not a BitCharArray content");
       }
       buffer.getInt();//bitbox size
       this.length = buf.getInt();//array length
@@ -90,12 +95,12 @@ public interface BitIntArray extends BitBox {
     
     
     @Override
-    public int get(int idx) {
+    public char get(int idx) {
       if(idx < 0 || idx >= length) {
         throw new IndexOutOfBoundsException(String.format("Bad index: 0 >= [%d] < %d", idx, length));
       }
-      buffer.position(Integer.BYTES * 3 + Integer.BYTES * idx);
-      return buffer.getInt();
+      buffer.position(Integer.BYTES * 3 + Character.BYTES * idx);
+      return buffer.getChar();
     }
     
     
@@ -106,11 +111,11 @@ public interface BitIntArray extends BitBox {
     
     
     @Override
-    public int indexOf(int val) {
+    public int indexOf(char val) {
       int idx = 0;
-      PrimitiveIterator.OfInt it = iterator();
+      CharIterator it = iterator();
       while(it.hasNext()) {
-        if(it.nextInt() == val) return idx;
+        if(it.nextChar() == val) return idx;
         idx++;
       }
       return -1;
@@ -118,18 +123,18 @@ public interface BitIntArray extends BitBox {
     
     
     @Override
-    public boolean contains(int val) {
+    public boolean contains(char val) {
       return indexOf(val) >= 0;
     }
     
     
     @Override
-    public int[] toArray() {
-      int[] bs = new int[length];
+    public char[] toArray() {
+      char[] bs = new char[length];
       int i = 0;
-      PrimitiveIterator.OfInt it = iterator();
+      CharIterator it = iterator();
       while(it.hasNext()) {
-        bs[i++] = it.nextInt();
+        bs[i++] = it.nextChar();
       }
       return bs;
     }
@@ -137,25 +142,42 @@ public interface BitIntArray extends BitBox {
     
     @Override
     public IntStream stream() {
-      return StreamSupport.intStream(Spliterators.spliterator(iterator(), length, Spliterator.NONNULL), false);
+      return StreamSupport.intStream(Spliterators.spliterator(intIterator(), length, Spliterator.NONNULL), false);
     }
     
     
     @Override
     public IntStream parallelStream() {
-      return StreamSupport.intStream(Spliterators.spliterator(iterator(), length, Spliterator.NONNULL), true);
+      return StreamSupport.intStream(Spliterators.spliterator(intIterator(), length, Spliterator.NONNULL), true);
     }
     
     
     @Override
-    public PrimitiveIterator.OfInt iterator() {
+    public CharIterator iterator() {
+      return new CharIterator() {
+        private int index = 0;
+        public boolean hasNext() {
+          return index < length;
+        }
+        public Character next() {
+          return get(index++);
+        }
+        public char nextChar() {
+          return get(index++);
+        }
+      };
+    }
+    
+    
+    @Override
+    public PrimitiveIterator.OfInt intIterator() {
       return new PrimitiveIterator.OfInt() {
         private int index = 0;
         public boolean hasNext() {
           return index < length;
         }
         public Integer next() {
-          return get(index++);
+          return (int) get(index++);
         }
         public int nextInt() {
           return get(index++);

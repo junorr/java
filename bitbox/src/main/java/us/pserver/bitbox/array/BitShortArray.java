@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.array;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -28,8 +28,10 @@ import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
+import us.pserver.bitbox.AbstractBitBox;
+import us.pserver.bitbox.BitBox;
+import us.pserver.bitbox.util.ShortIterator;
 import us.pserver.tools.Hash;
 import us.pserver.tools.io.DynamicByteBuffer;
 
@@ -38,46 +40,48 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public interface BitLongArray extends BitBox {
+public interface BitShortArray extends BitBox {
   
-  public static final int ID = BitLongArray.class.getName().hashCode();
+  public static final int ID = BitShortArray.class.getName().hashCode();
 
   public int length();
   
-  public long get(int idx);
+  public short get(int idx);
   
   public boolean isEmpty();
   
-  public int indexOf(long val);
+  public int indexOf(short val);
   
-  public boolean contains(long val);
+  public boolean contains(short val);
   
-  public long[] toArray();
+  public short[] toArray();
   
-  public LongStream stream();
+  public IntStream stream();
   
-  public LongStream parallelStream();
+  public IntStream parallelStream();
   
-  public PrimitiveIterator.OfLong iterator();
+  public ShortIterator iterator();
+  
+  public PrimitiveIterator.OfInt intIterator();
   
   
   
-  public static BitLongArrayFactory factory() {
-    return BitLongArrayFactory.get();
+  public static BitShortArrayFactory factory() {
+    return BitShortArrayFactory.get();
   }
   
   
   
   
   
-  static class LongArray extends AbstractBitBox implements BitLongArray {
+  static class ShortArray extends AbstractBitBox implements BitShortArray {
     
     private final int length;
     
-    public LongArray(ByteBuffer buf) {
+    public ShortArray(ByteBuffer buf) {
       super(buf);
       if(buffer.getInt() != ID) {
-        throw new IllegalArgumentException("Not a BitLongArray content");
+        throw new IllegalArgumentException("Not a BitShortArray content");
       }
       buffer.getInt();//bitbox size
       this.length = buf.getInt();//array length
@@ -91,12 +95,12 @@ public interface BitLongArray extends BitBox {
     
     
     @Override
-    public long get(int idx) {
+    public short get(int idx) {
       if(idx < 0 || idx >= length) {
         throw new IndexOutOfBoundsException(String.format("Bad index: 0 >= [%d] < %d", idx, length));
       }
-      buffer.position(Integer.BYTES * 3 + Long.BYTES * idx);
-      return buffer.getLong();
+      buffer.position(Integer.BYTES * 3 + Short.BYTES * idx);
+      return buffer.getShort();
     }
     
     
@@ -107,11 +111,11 @@ public interface BitLongArray extends BitBox {
     
     
     @Override
-    public int indexOf(long val) {
+    public int indexOf(short val) {
       int idx = 0;
-      PrimitiveIterator.OfLong it = iterator();
+      ShortIterator it = iterator();
       while(it.hasNext()) {
-        if(it.nextLong() == val) return idx;
+        if(it.nextShort() == val) return idx;
         idx++;
       }
       return -1;
@@ -119,46 +123,63 @@ public interface BitLongArray extends BitBox {
     
     
     @Override
-    public boolean contains(long val) {
+    public boolean contains(short val) {
       return indexOf(val) >= 0;
     }
     
     
     @Override
-    public long[] toArray() {
-      long[] bs = new long[length];
+    public short[] toArray() {
+      short[] bs = new short[length];
       int i = 0;
-      PrimitiveIterator.OfLong it = iterator();
+      ShortIterator it = iterator();
       while(it.hasNext()) {
-        bs[i++] = it.nextLong();
+        bs[i++] = it.nextShort();
       }
       return bs;
     }
     
     
     @Override
-    public LongStream stream() {
-      return StreamSupport.longStream(Spliterators.spliterator(iterator(), length, Spliterator.NONNULL), false);
+    public IntStream stream() {
+      return StreamSupport.intStream(Spliterators.spliterator(intIterator(), length, Spliterator.NONNULL), false);
     }
     
     
     @Override
-    public LongStream parallelStream() {
-      return StreamSupport.longStream(Spliterators.spliterator(iterator(), length, Spliterator.NONNULL), true);
+    public IntStream parallelStream() {
+      return StreamSupport.intStream(Spliterators.spliterator(intIterator(), length, Spliterator.NONNULL), true);
     }
     
     
     @Override
-    public PrimitiveIterator.OfLong iterator() {
-      return new PrimitiveIterator.OfLong() {
+    public ShortIterator iterator() {
+      return new ShortIterator() {
         private int index = 0;
         public boolean hasNext() {
           return index < length;
         }
-        public Long next() {
+        public Short next() {
           return get(index++);
         }
-        public long nextLong() {
+        public short nextShort() {
+          return get(index++);
+        }
+      };
+    }
+    
+    
+    @Override
+    public PrimitiveIterator.OfInt intIterator() {
+      return new PrimitiveIterator.OfInt() {
+        private int index = 0;
+        public boolean hasNext() {
+          return index < length;
+        }
+        public Integer next() {
+          return Short.valueOf(get(index++)).intValue();
+        }
+        public int nextInt() {
           return get(index++);
         }
       };

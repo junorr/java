@@ -25,7 +25,7 @@ import java.util.PrimitiveIterator;
 import java.util.Random;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.bitbox.BitFloatArray;
+import us.pserver.bitbox.array.BitFloatArray;
 import us.pserver.tools.timer.Timer;
 
 /**

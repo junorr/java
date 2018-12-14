@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.array;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -28,8 +28,10 @@ import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.DoubleStream;
+import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
-import us.pserver.bitbox.util.FloatIterator;
+import us.pserver.bitbox.AbstractBitBox;
+import us.pserver.bitbox.BitBox;
 import us.pserver.tools.Hash;
 import us.pserver.tools.io.DynamicByteBuffer;
 
@@ -38,48 +40,46 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public interface BitFloatArray extends BitBox {
+public interface BitDoubleArray extends BitBox {
   
-  public static final int ID = BitFloatArray.class.getName().hashCode();
+  public static final int ID = BitDoubleArray.class.getName().hashCode();
 
   public int length();
   
-  public float get(int idx);
+  public double get(int idx);
   
   public boolean isEmpty();
   
-  public int indexOf(float val);
+  public int indexOf(double val);
   
-  public boolean contains(float val);
+  public boolean contains(double val);
   
-  public float[] toArray();
+  public double[] toArray();
   
   public DoubleStream stream();
   
   public DoubleStream parallelStream();
   
-  public FloatIterator iterator();
-  
-  public PrimitiveIterator.OfDouble doubleIterator();
+  public PrimitiveIterator.OfDouble iterator();
   
   
   
-  public static BitFloatArrayFactory factory() {
-    return BitFloatArrayFactory.get();
+  public static BitDoubleArrayFactory factory() {
+    return BitDoubleArrayFactory.get();
   }
   
   
   
   
   
-  static class FloatArray extends AbstractBitBox implements BitFloatArray {
+  static class DoubleArray extends AbstractBitBox implements BitDoubleArray {
     
     private final int length;
     
-    public FloatArray(ByteBuffer buf) {
+    public DoubleArray(ByteBuffer buf) {
       super(buf);
       if(buffer.getInt() != ID) {
-        throw new IllegalArgumentException("Not a BitIntArray content");
+        throw new IllegalArgumentException("Not a BitDoubleArray content");
       }
       buffer.getInt();//bitbox size
       this.length = buf.getInt();//array length
@@ -93,12 +93,12 @@ public interface BitFloatArray extends BitBox {
     
     
     @Override
-    public float get(int idx) {
+    public double get(int idx) {
       if(idx < 0 || idx >= length) {
         throw new IndexOutOfBoundsException(String.format("Bad index: 0 >= [%d] < %d", idx, length));
       }
-      buffer.position(Integer.BYTES * 3 + Float.BYTES * idx);
-      return buffer.getFloat();
+      buffer.position(Integer.BYTES * 3 + Double.BYTES * idx);
+      return buffer.getDouble();
     }
     
     
@@ -109,11 +109,11 @@ public interface BitFloatArray extends BitBox {
     
     
     @Override
-    public int indexOf(float val) {
+    public int indexOf(double val) {
       int idx = 0;
-      FloatIterator it = iterator();
+      PrimitiveIterator.OfDouble it = iterator();
       while(it.hasNext()) {
-        if(it.nextFloat() == val) return idx;
+        if(it.nextDouble() == val) return idx;
         idx++;
       }
       return -1;
@@ -121,18 +121,18 @@ public interface BitFloatArray extends BitBox {
     
     
     @Override
-    public boolean contains(float val) {
+    public boolean contains(double val) {
       return indexOf(val) >= 0;
     }
     
     
     @Override
-    public float[] toArray() {
-      float[] bs = new float[length];
+    public double[] toArray() {
+      double[] bs = new double[length];
       int i = 0;
-      FloatIterator it = iterator();
+      PrimitiveIterator.OfDouble it = iterator();
       while(it.hasNext()) {
-        bs[i++] = it.nextFloat();
+        bs[i++] = it.nextDouble();
       }
       return bs;
     }
@@ -140,42 +140,25 @@ public interface BitFloatArray extends BitBox {
     
     @Override
     public DoubleStream stream() {
-      return StreamSupport.doubleStream(Spliterators.spliterator(doubleIterator(), length, Spliterator.NONNULL), false);
+      return StreamSupport.doubleStream(Spliterators.spliterator(iterator(), length, Spliterator.NONNULL), false);
     }
     
     
     @Override
     public DoubleStream parallelStream() {
-      return StreamSupport.doubleStream(Spliterators.spliterator(doubleIterator(), length, Spliterator.NONNULL), true);
+      return StreamSupport.doubleStream(Spliterators.spliterator(iterator(), length, Spliterator.NONNULL), true);
     }
     
     
     @Override
-    public FloatIterator iterator() {
-      return new FloatIterator() {
-        private int index = 0;
-        public boolean hasNext() {
-          return index < length;
-        }
-        public Float next() {
-          return get(index++);
-        }
-        public float nextFloat() {
-          return get(index++);
-        }
-      };
-    }
-    
-    
-    @Override
-    public PrimitiveIterator.OfDouble doubleIterator() {
+    public PrimitiveIterator.OfDouble iterator() {
       return new PrimitiveIterator.OfDouble() {
         private int index = 0;
         public boolean hasNext() {
           return index < length;
         }
         public Double next() {
-          return Float.valueOf(get(index++)).doubleValue();
+          return get(index++);
         }
         public double nextDouble() {
           return get(index++);

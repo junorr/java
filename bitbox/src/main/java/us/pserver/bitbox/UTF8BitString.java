@@ -21,13 +21,9 @@
 
 package us.pserver.bitbox;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import us.pserver.tools.Hash;
-import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
  *
@@ -67,6 +63,12 @@ public class UTF8BitString extends AbstractBitBox implements BitString {
     buffer.putInt(ID);
     buffer.putInt(length + Integer.BYTES * 2);
     buffer.put(bs);
+  }
+  
+  
+  @Override
+  public String get() {
+    return toString();
   }
   
   
@@ -184,51 +186,6 @@ public class UTF8BitString extends AbstractBitBox implements BitString {
   }
   
   
-  @Override
-  public String sha256sum() {
-    return Hash.sha256().of(toByteArray());
-  }
-
-
-  @Override
-  public ByteBuffer toByteBuffer() {
-    return buffer;
-  }
-
-
-  @Override
-  public byte[] toByteArray() {
-    if(length < 1) return new byte[0];
-    buffer.position(0).limit(length + Integer.BYTES * 2);
-    byte[] bs = new byte[buffer.remaining()];
-    buffer.get(bs);
-    return bs;
-  }
-  
-  
-  @Override
-  public int writeTo(ByteBuffer buf) {
-    buffer.position(0).limit(length + Integer.BYTES * 2);
-    buf.put(buffer);
-    return length + Integer.BYTES * 2;
-  }
-  
-  
-  @Override
-  public int writeTo(DynamicByteBuffer buf) {
-    buffer.position(0).limit(length + Integer.BYTES * 2);
-    buf.put(buffer);
-    return length + Integer.BYTES * 2;
-  }
-  
-  
-  @Override
-  public int writeTo(WritableByteChannel ch) throws IOException {
-    buffer.position(0).limit(length + Integer.BYTES * 2);
-    return ch.write(buffer);
-  }
-
-
   @Override
   public int hashCode() {
     return toString().hashCode();

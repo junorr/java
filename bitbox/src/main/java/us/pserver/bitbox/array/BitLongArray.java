@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.array;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -27,9 +27,11 @@ import java.nio.channels.WritableByteChannel;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
+import us.pserver.bitbox.AbstractBitBox;
+import us.pserver.bitbox.BitBox;
 import us.pserver.tools.Hash;
 import us.pserver.tools.io.DynamicByteBuffer;
 
@@ -38,46 +40,46 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public interface BitDoubleArray extends BitBox {
+public interface BitLongArray extends BitBox {
   
-  public static final int ID = BitDoubleArray.class.getName().hashCode();
+  public static final int ID = BitLongArray.class.getName().hashCode();
 
   public int length();
   
-  public double get(int idx);
+  public long get(int idx);
   
   public boolean isEmpty();
   
-  public int indexOf(double val);
+  public int indexOf(long val);
   
-  public boolean contains(double val);
+  public boolean contains(long val);
   
-  public double[] toArray();
+  public long[] toArray();
   
-  public DoubleStream stream();
+  public LongStream stream();
   
-  public DoubleStream parallelStream();
+  public LongStream parallelStream();
   
-  public PrimitiveIterator.OfDouble iterator();
+  public PrimitiveIterator.OfLong iterator();
   
   
   
-  public static BitDoubleArrayFactory factory() {
-    return BitDoubleArrayFactory.get();
+  public static BitLongArrayFactory factory() {
+    return BitLongArrayFactory.get();
   }
   
   
   
   
   
-  static class DoubleArray extends AbstractBitBox implements BitDoubleArray {
+  static class LongArray extends AbstractBitBox implements BitLongArray {
     
     private final int length;
     
-    public DoubleArray(ByteBuffer buf) {
+    public LongArray(ByteBuffer buf) {
       super(buf);
       if(buffer.getInt() != ID) {
-        throw new IllegalArgumentException("Not a BitDoubleArray content");
+        throw new IllegalArgumentException("Not a BitLongArray content");
       }
       buffer.getInt();//bitbox size
       this.length = buf.getInt();//array length
@@ -91,12 +93,12 @@ public interface BitDoubleArray extends BitBox {
     
     
     @Override
-    public double get(int idx) {
+    public long get(int idx) {
       if(idx < 0 || idx >= length) {
         throw new IndexOutOfBoundsException(String.format("Bad index: 0 >= [%d] < %d", idx, length));
       }
-      buffer.position(Integer.BYTES * 3 + Double.BYTES * idx);
-      return buffer.getDouble();
+      buffer.position(Integer.BYTES * 3 + Long.BYTES * idx);
+      return buffer.getLong();
     }
     
     
@@ -107,11 +109,11 @@ public interface BitDoubleArray extends BitBox {
     
     
     @Override
-    public int indexOf(double val) {
+    public int indexOf(long val) {
       int idx = 0;
-      PrimitiveIterator.OfDouble it = iterator();
+      PrimitiveIterator.OfLong it = iterator();
       while(it.hasNext()) {
-        if(it.nextDouble() == val) return idx;
+        if(it.nextLong() == val) return idx;
         idx++;
       }
       return -1;
@@ -119,46 +121,46 @@ public interface BitDoubleArray extends BitBox {
     
     
     @Override
-    public boolean contains(double val) {
+    public boolean contains(long val) {
       return indexOf(val) >= 0;
     }
     
     
     @Override
-    public double[] toArray() {
-      double[] bs = new double[length];
+    public long[] toArray() {
+      long[] bs = new long[length];
       int i = 0;
-      PrimitiveIterator.OfDouble it = iterator();
+      PrimitiveIterator.OfLong it = iterator();
       while(it.hasNext()) {
-        bs[i++] = it.nextDouble();
+        bs[i++] = it.nextLong();
       }
       return bs;
     }
     
     
     @Override
-    public DoubleStream stream() {
-      return StreamSupport.doubleStream(Spliterators.spliterator(iterator(), length, Spliterator.NONNULL), false);
+    public LongStream stream() {
+      return StreamSupport.longStream(Spliterators.spliterator(iterator(), length, Spliterator.NONNULL), false);
     }
     
     
     @Override
-    public DoubleStream parallelStream() {
-      return StreamSupport.doubleStream(Spliterators.spliterator(iterator(), length, Spliterator.NONNULL), true);
+    public LongStream parallelStream() {
+      return StreamSupport.longStream(Spliterators.spliterator(iterator(), length, Spliterator.NONNULL), true);
     }
     
     
     @Override
-    public PrimitiveIterator.OfDouble iterator() {
-      return new PrimitiveIterator.OfDouble() {
+    public PrimitiveIterator.OfLong iterator() {
+      return new PrimitiveIterator.OfLong() {
         private int index = 0;
         public boolean hasNext() {
           return index < length;
         }
-        public Double next() {
+        public Long next() {
           return get(index++);
         }
-        public double nextDouble() {
+        public long nextLong() {
           return get(index++);
         }
       };

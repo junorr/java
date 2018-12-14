@@ -19,16 +19,20 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.array;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
-import java.util.Iterator;
+import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import us.pserver.bitbox.AbstractBitBox;
+import us.pserver.bitbox.BitArray;
+import us.pserver.bitbox.util.ByteIterator;
 import us.pserver.tools.Hash;
 import us.pserver.tools.io.DynamicByteBuffer;
 
@@ -37,40 +41,43 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public interface BitByteArray<T extends BitBox> extends BitBox {
+public interface BitByteArray extends BitArray<Byte> {
   
   public static final int ID = BitByteArray.class.getName().hashCode();
 
-  public int length();
+  public byte getByte(int idx);
   
-  public T get(int idx);
+  public int indexOfByte(byte val);
   
-  public boolean isEmpty();
+  public boolean containsByte(byte val);
   
-  public int indexOf(T bin);
+  public IntStream intStream();
   
-  public boolean contains(T bin);
+  public IntStream intParallelStream();
   
-  public BitBox[] toArray();
+  @Override
+  public ByteIterator iterator();
   
-  public Stream<T> stream();
-  
-  public Stream<T> parallelStream();
-  
-  public Iterator<T> iterator();
+  public PrimitiveIterator.OfInt intIterator();
   
   
   
+  public static BitByteArrayFactory factory() {
+    return BitByteArrayFactory.get();
+  }
   
   
-  static class Array<T extends BitBox> extends AbstractBitBox implements BitByteArray<T> {
+  
+  
+  
+  static class ByteArray extends AbstractBitBox implements BitByteArray {
     
     private final int length;
     
-    public Array(ByteBuffer buf) {
+    public ByteArray(ByteBuffer buf) {
       super(buf);
       if(buffer.getInt() != ID) {
-        throw new IllegalArgumentException("Not a BinaryArray content");
+        throw new IllegalArgumentException("Not a BitByteArray content");
       }
       buffer.getInt();//bitbox size
       this.length = buf.getInt();//array length
@@ -83,30 +90,19 @@ public interface BitByteArray<T extends BitBox> extends BitBox {
     }
     
     
-    private BitRegion getRegion(int idx) {
-      if(idx < 0 || idx >= length) {
-        throw new IndexOutOfBoundsException(String.format("Bad index: 0 >= [%d] < %d", idx, length));
-      }
-      int lim = buffer.limit();
-      int pos = Integer.BYTES * 3 + BitRegion.BYTES * idx;
-      buffer.position(pos).limit(pos + BitRegion.BYTES);
-      BitRegion reg = BitRegion.of(buffer.slice());
-      buffer.limit(lim);
-      return reg;
+    @Override
+    public Byte get(int idx) {
+      return getByte(idx);
     }
     
     
     @Override
-    public T get(int idx) {
+    public byte getByte(int idx) {
       if(idx < 0 || idx >= length) {
         throw new IndexOutOfBoundsException(String.format("Bad index: 0 >= [%d] < %d", idx, length));
       }
-      BitRegion reg = getRegion(idx);
-      int lim = buffer.limit();
-      buffer.position(reg.offset()).limit(reg.end());
-      T bin = (T) BitBoxFactory.get().createFrom(buffer.slice());
-      buffer.limit(lim);
-      return bin;
+      buffer.position(Integer.BYTES * 3 + Byte.BYTES * idx);
+      return buffer.get();
     }
     
     
@@ -117,11 +113,17 @@ public interface BitByteArray<T extends BitBox> extends BitBox {
     
     
     @Override
-    public int indexOf(T bin) {
+    public int indexOf(Byte val) {
+      return indexOfByte(val);
+    }
+    
+    
+    @Override
+    public int indexOfByte(byte val) {
       int idx = 0;
-      Iterator<T> it = iterator();
+      ByteIterator it = iterator();
       while(it.hasNext()) {
-        if(bin.equals(it.next())) return idx;
+        if(it.nextByte() == val) return idx;
         idx++;
       }
       return -1;
@@ -129,46 +131,70 @@ public interface BitByteArray<T extends BitBox> extends BitBox {
     
     
     @Override
-    public boolean contains(T bin) {
-      return indexOf(bin) >= 0;
+    public boolean contains(Byte val) {
+      return containsByte(val);
     }
     
     
     @Override
-    public BitBox[] toArray() {
-      BitBox[] bs = new BitBox[length];
+    public boolean containsByte(byte val) {
+      return indexOf(val) >= 0;
+    }
+    
+    
+    @Override
+    public byte[] toArray() {
+      byte[] bs = new byte[length];
       int i = 0;
-      Iterator<T> it = iterator();
+      ByteIterator it = iterator();
       while(it.hasNext()) {
-        bs[i++] = it.next();
+        bs[i++] = it.nextByte();
       }
       return bs;
     }
     
     
     @Override
-    public Stream<T> stream() {
-      Spliterator<T> spi = Spliterators.spliterator(iterator(), length, Spliterator.NONNULL);
-      return StreamSupport.stream(spi, false);
+    public IntStream stream() {
+      return StreamSupport.intStream(Spliterators.spliterator(intIterator(), length, Spliterator.NONNULL), false);
     }
     
     
     @Override
-    public Stream<T> parallelStream() {
-      Spliterator<T> spi = Spliterators.spliterator(iterator(), length, Spliterator.NONNULL);
-      return StreamSupport.stream(spi, true);
+    public IntStream parallelStream() {
+      return StreamSupport.intStream(Spliterators.spliterator(intIterator(), length, Spliterator.NONNULL), true);
     }
     
     
     @Override
-    public Iterator<T> iterator() {
-      return new Iterator<T>() {
+    public ByteIterator iterator() {
+      return new ByteIterator() {
         private int index = 0;
         public boolean hasNext() {
           return index < length;
         }
-        public T next() {
-          return Array.this.get(index++);
+        public Byte next() {
+          return get(index++);
+        }
+        public byte nextByte() {
+          return get(index++);
+        }
+      };
+    }
+    
+    
+    @Override
+    public PrimitiveIterator.OfInt intIterator() {
+      return new PrimitiveIterator.OfInt() {
+        private int index = 0;
+        public boolean hasNext() {
+          return index < length;
+        }
+        public Integer next() {
+          return (int) get(index++);
+        }
+        public int nextInt() {
+          return get(index++);
         }
       };
     }
@@ -176,17 +202,14 @@ public interface BitByteArray<T extends BitBox> extends BitBox {
     
     @Override
     public String sha256sum() {
-      BitRegion reg = getRegion(length - 1);
-      if(buffer.hasArray()) {
-        return Hash.sha256().of(buffer.array(), buffer.arrayOffset(), reg.end());
-      }
       return Hash.sha256().of(toByteArray());
     }
     
     
     @Override
     public ByteBuffer toByteBuffer() {
-      return buffer;
+      buffer.position(0);
+      return buffer.duplicate();
     }
     
     
@@ -195,8 +218,7 @@ public interface BitByteArray<T extends BitBox> extends BitBox {
       if(buffer.hasArray() && buffer.array().length == boxSize()) {
         return buffer.array();
       }
-      BitRegion reg = getRegion(length - 1);
-      byte[] bs = new byte[reg.end()];
+      byte[] bs = new byte[boxSize()];
       buffer.position(0);
       buffer.get(bs);
       return bs;
@@ -205,42 +227,25 @@ public interface BitByteArray<T extends BitBox> extends BitBox {
     
     @Override
     public int writeTo(ByteBuffer buf) {
-      Iterator<T> it = iterator();
-      int len = Integer.BYTES * 2 * BitRegion.BYTES * length;
-      buf.putInt(ID);
-      buf.putInt(length);
-      while(it.hasNext()) {
-        len += it.next().writeTo(buf);
-      }
-      return len;
+      buffer.position(0);
+      buf.put(buffer);
+      return buffer.limit();
     }
     
     
     @Override
     public int writeTo(WritableByteChannel ch) throws IOException {
-      int len = Integer.BYTES * 2 * BitRegion.BYTES * length;
-      int lim = buffer.limit();
-      buffer.position(0).limit(len);
+      buffer.position(0);
       ch.write(buffer);
-      buffer.limit(lim);
-      Iterator<T> it = iterator();
-      while(it.hasNext()) {
-        len += it.next().writeTo(ch);
-      }
-      return len;
+      return buffer.limit();
     }
     
     
     @Override
     public int writeTo(DynamicByteBuffer buf) {
-      Iterator<T> it = iterator();
-      int len = Integer.BYTES * 2 * BitRegion.BYTES * length;
-      buf.putInt(ID);
-      buf.putInt(length);
-      while(it.hasNext()) {
-        len += it.next().writeTo(buf);
-      }
-      return len;
+      buffer.position(0);
+      buf.put(buffer);
+      return buffer.limit();
     }
     
   }

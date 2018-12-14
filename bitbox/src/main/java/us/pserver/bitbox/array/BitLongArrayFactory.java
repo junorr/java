@@ -19,11 +19,12 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.array;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
+import us.pserver.bitbox.BitBoxFactory;
 import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
@@ -31,45 +32,45 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public class BitDoubleArrayFactory implements BitBoxFactory<BitDoubleArray> {
+public class BitLongArrayFactory implements BitBoxFactory<BitLongArray> {
   
-  private static final BitDoubleArrayFactory _instance = new BitDoubleArrayFactory();
+  private static final BitLongArrayFactory _instance = new BitLongArrayFactory();
   
-  private BitDoubleArrayFactory() {}
+  private BitLongArrayFactory() {}
   
-  public static BitDoubleArrayFactory get() {
+  public static BitLongArrayFactory get() {
     return _instance;
   }
   
-  public BitDoubleArray createFrom(double[] doubles) {
-    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + Double.BYTES * doubles.length);
-    buf.putInt(BitDoubleArray.ID);
+  public BitLongArray createFrom(long[] longs) {
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + Long.BYTES * longs.length);
+    buf.putInt(BitLongArray.ID);
     buf.putInt(buf.capacity());
-    buf.putInt(doubles.length);
-    for(double i : doubles) {
-      buf.putDouble(i);
+    buf.putInt(longs.length);
+    for(long i : longs) {
+      buf.putLong(i);
     }
     buf.flip();
-    return new BitDoubleArray.DoubleArray(buf);
+    return new BitLongArray.LongArray(buf);
   }
 
   @Override
-  public BitDoubleArray createFrom(ByteBuffer buf) {
+  public BitLongArray createFrom(ByteBuffer buf) {
     int pos = buf.position();
     int lim = buf.limit();
     int id = buf.getInt();
-    if(id != BitDoubleArray.ID) {
-      throw new IllegalArgumentException("Not a BitDoubleArray content");
+    if(id != BitLongArray.ID) {
+      throw new IllegalArgumentException("Not a BitLongArray content");
     }
     int len = buf.getInt();
     buf.position(pos).limit(pos + len);
-    BitDoubleArray array = new BitDoubleArray.DoubleArray(buf.slice());
+    BitLongArray array = new BitLongArray.LongArray(buf.slice());
     buf.limit(lim);
     return array;
   }
 
   @Override
-  public BitDoubleArray createFrom(ReadableByteChannel ch) throws IOException {
+  public BitLongArray createFrom(ReadableByteChannel ch) throws IOException {
     ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2);
     ch.read(buf);
     buf.flip();
@@ -80,11 +81,11 @@ public class BitDoubleArrayFactory implements BitBoxFactory<BitDoubleArray> {
     buf.putInt(len);
     ch.read(buf);
     buf.flip();
-    return new BitDoubleArray.DoubleArray(buf);
+    return new BitLongArray.LongArray(buf);
   }
 
   @Override
-  public BitDoubleArray createFrom(DynamicByteBuffer buf) {
+  public BitLongArray createFrom(DynamicByteBuffer buf) {
     return createFrom(buf.toByteBuffer());
   }
 

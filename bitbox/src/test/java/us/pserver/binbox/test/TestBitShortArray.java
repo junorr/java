@@ -26,7 +26,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.bitbox.BitShortArray;
+import us.pserver.bitbox.array.BitShortArray;
 import us.pserver.tools.timer.Timer;
 
 /**

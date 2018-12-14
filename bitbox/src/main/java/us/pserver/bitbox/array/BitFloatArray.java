@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.array;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -27,9 +27,11 @@ import java.nio.channels.WritableByteChannel;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.stream.IntStream;
+import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
-import us.pserver.bitbox.util.ShortIterator;
+import us.pserver.bitbox.AbstractBitBox;
+import us.pserver.bitbox.BitBox;
+import us.pserver.bitbox.util.FloatIterator;
 import us.pserver.tools.Hash;
 import us.pserver.tools.io.DynamicByteBuffer;
 
@@ -38,48 +40,48 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public interface BitShortArray extends BitBox {
+public interface BitFloatArray extends BitBox {
   
-  public static final int ID = BitShortArray.class.getName().hashCode();
+  public static final int ID = BitFloatArray.class.getName().hashCode();
 
   public int length();
   
-  public short get(int idx);
+  public float get(int idx);
   
   public boolean isEmpty();
   
-  public int indexOf(short val);
+  public int indexOf(float val);
   
-  public boolean contains(short val);
+  public boolean contains(float val);
   
-  public short[] toArray();
+  public float[] toArray();
   
-  public IntStream stream();
+  public DoubleStream stream();
   
-  public IntStream parallelStream();
+  public DoubleStream parallelStream();
   
-  public ShortIterator iterator();
+  public FloatIterator iterator();
   
-  public PrimitiveIterator.OfInt intIterator();
+  public PrimitiveIterator.OfDouble doubleIterator();
   
   
   
-  public static BitShortArrayFactory factory() {
-    return BitShortArrayFactory.get();
+  public static BitFloatArrayFactory factory() {
+    return BitFloatArrayFactory.get();
   }
   
   
   
   
   
-  static class ShortArray extends AbstractBitBox implements BitShortArray {
+  static class FloatArray extends AbstractBitBox implements BitFloatArray {
     
     private final int length;
     
-    public ShortArray(ByteBuffer buf) {
+    public FloatArray(ByteBuffer buf) {
       super(buf);
       if(buffer.getInt() != ID) {
-        throw new IllegalArgumentException("Not a BitShortArray content");
+        throw new IllegalArgumentException("Not a BitIntArray content");
       }
       buffer.getInt();//bitbox size
       this.length = buf.getInt();//array length
@@ -93,12 +95,12 @@ public interface BitShortArray extends BitBox {
     
     
     @Override
-    public short get(int idx) {
+    public float get(int idx) {
       if(idx < 0 || idx >= length) {
         throw new IndexOutOfBoundsException(String.format("Bad index: 0 >= [%d] < %d", idx, length));
       }
-      buffer.position(Integer.BYTES * 3 + Short.BYTES * idx);
-      return buffer.getShort();
+      buffer.position(Integer.BYTES * 3 + Float.BYTES * idx);
+      return buffer.getFloat();
     }
     
     
@@ -109,11 +111,11 @@ public interface BitShortArray extends BitBox {
     
     
     @Override
-    public int indexOf(short val) {
+    public int indexOf(float val) {
       int idx = 0;
-      ShortIterator it = iterator();
+      FloatIterator it = iterator();
       while(it.hasNext()) {
-        if(it.nextShort() == val) return idx;
+        if(it.nextFloat() == val) return idx;
         idx++;
       }
       return -1;
@@ -121,46 +123,46 @@ public interface BitShortArray extends BitBox {
     
     
     @Override
-    public boolean contains(short val) {
+    public boolean contains(float val) {
       return indexOf(val) >= 0;
     }
     
     
     @Override
-    public short[] toArray() {
-      short[] bs = new short[length];
+    public float[] toArray() {
+      float[] bs = new float[length];
       int i = 0;
-      ShortIterator it = iterator();
+      FloatIterator it = iterator();
       while(it.hasNext()) {
-        bs[i++] = it.nextShort();
+        bs[i++] = it.nextFloat();
       }
       return bs;
     }
     
     
     @Override
-    public IntStream stream() {
-      return StreamSupport.intStream(Spliterators.spliterator(intIterator(), length, Spliterator.NONNULL), false);
+    public DoubleStream stream() {
+      return StreamSupport.doubleStream(Spliterators.spliterator(doubleIterator(), length, Spliterator.NONNULL), false);
     }
     
     
     @Override
-    public IntStream parallelStream() {
-      return StreamSupport.intStream(Spliterators.spliterator(intIterator(), length, Spliterator.NONNULL), true);
+    public DoubleStream parallelStream() {
+      return StreamSupport.doubleStream(Spliterators.spliterator(doubleIterator(), length, Spliterator.NONNULL), true);
     }
     
     
     @Override
-    public ShortIterator iterator() {
-      return new ShortIterator() {
+    public FloatIterator iterator() {
+      return new FloatIterator() {
         private int index = 0;
         public boolean hasNext() {
           return index < length;
         }
-        public Short next() {
+        public Float next() {
           return get(index++);
         }
-        public short nextShort() {
+        public float nextFloat() {
           return get(index++);
         }
       };
@@ -168,16 +170,16 @@ public interface BitShortArray extends BitBox {
     
     
     @Override
-    public PrimitiveIterator.OfInt intIterator() {
-      return new PrimitiveIterator.OfInt() {
+    public PrimitiveIterator.OfDouble doubleIterator() {
+      return new PrimitiveIterator.OfDouble() {
         private int index = 0;
         public boolean hasNext() {
           return index < length;
         }
-        public Integer next() {
-          return Short.valueOf(get(index++)).intValue();
+        public Double next() {
+          return Float.valueOf(get(index++)).doubleValue();
         }
-        public int nextInt() {
+        public double nextDouble() {
           return get(index++);
         }
       };
