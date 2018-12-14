@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/12/2018
  */
-public interface BitBuffer extends BitBox {
+public interface BitBuffer extends BitBox<ByteBuffer> {
   
   public static final int ID = BitBuffer.class.getName().hashCode();
 
@@ -39,7 +39,7 @@ public interface BitBuffer extends BitBox {
   
   
   
-  static class BBuffer extends AbstractBitBox implements BitBuffer {
+  static class BBuffer extends AbstractBitBox<ByteBuffer> implements BitBuffer {
     
     public BBuffer(ByteBuffer buf) {
       super(buf);

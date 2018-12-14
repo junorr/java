@@ -21,24 +21,20 @@
 
 package us.pserver.bitbox;
 
-import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import us.pserver.tools.Hash;
-import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public interface BitArray<T extends BitBox> extends BitBox {
+public interface BitArray<T extends BitBox> extends BitBox<T[]> {
   
   public static final int ID = BitArray.class.getName().hashCode();
 
@@ -52,9 +48,7 @@ public interface BitArray<T extends BitBox> extends BitBox {
   
   public boolean contains(T bin);
   
-  public Stream<T> stream();
-  
-  public Stream<T> parallelStream();
+  public Stream<T> stream(boolean parallel);
   
   public Iterator<T> iterator();
   
@@ -62,7 +56,7 @@ public interface BitArray<T extends BitBox> extends BitBox {
   
   
   
-  static class BArray<T extends BitBox> extends AbstractBitBox implements BitArray<T> {
+  static class BArray<T extends BitBox> extends AbstractBitBox<T[]> implements BitArray<T> {
     
     private final int length;
     
@@ -80,7 +74,7 @@ public interface BitArray<T extends BitBox> extends BitBox {
       return length;
     }
     
-    private BitRegion getRegion(int idx) {
+    protected BitRegion getRegion(int idx) {
       int lim = buffer.limit();
       int pos = Integer.BYTES * 3 + BitRegion.BYTES * idx;
       buffer.position(pos).limit(pos + BitRegion.BYTES);
@@ -136,15 +130,9 @@ public interface BitArray<T extends BitBox> extends BitBox {
     }
     
     @Override
-    public Stream<T> stream() {
+    public Stream<T> stream(boolean parallel) {
       Spliterator<T> spi = Spliterators.spliterator(iterator(), length, Spliterator.NONNULL);
-      return StreamSupport.stream(spi, false);
-    }
-    
-    @Override
-    public Stream<T> parallelStream() {
-      Spliterator<T> spi = Spliterators.spliterator(iterator(), length, Spliterator.NONNULL);
-      return StreamSupport.stream(spi, true);
+      return StreamSupport.stream(spi, parallel);
     }
     
     @Override

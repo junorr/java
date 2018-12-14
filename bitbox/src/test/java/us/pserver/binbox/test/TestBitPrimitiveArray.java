@@ -26,8 +26,9 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.bitbox.array.BitDoubleArray;
-import us.pserver.bitbox.array.BitLongArray;
+import us.pserver.bitbox.BitArray;
+import us.pserver.bitbox.BitPrimitive;
+import us.pserver.bitbox.BitPrimitiveArray;
 import us.pserver.tools.timer.Timer;
 
 /**
@@ -35,36 +36,37 @@ import us.pserver.tools.timer.Timer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2018
  */
-public class TestBitDoubleArray {
+public class TestBitPrimitiveArray {
 
   @Test
-  public void testCreateFromByteBuffer() {
-    double[] doubles = new double[100_000];
+  public void testCreateIntsFromByteBuffer() {
+    int size = 100_000;
+    int[] ints = new int[size];
     int idx = 0;
     Random rdm = new Random();
     Timer tm = new Timer.Nanos().start();
-    PrimitiveIterator.OfDouble it = rdm.doubles(100_000).iterator();
+    PrimitiveIterator.OfInt it = rdm.ints(size).iterator();
     while(it.hasNext()) {
-      doubles[idx++] = it.nextDouble();
+      ints[idx++] = it.nextInt();
     }
     tm.stop();
-    System.out.printf("* Create random double array: %s%n", tm);
-    doubles[99] = 99.1;
-    doubles[107] = 107.1;
+    System.out.printf("* Create random int array: %s%n", tm);
+    ints[99] = 99;
+    ints[107] = 107;
     tm.clear().start();
-    BitDoubleArray array = BitDoubleArray.factory().createFrom(doubles);
+    BitPrimitiveArray array = BitPrimitiveArray.factory().createFrom(ints);
     tm.stop();
-    System.out.printf("* Create BitDoubleArray: %s%n", tm);
-    Assertions.assertEquals(Integer.BYTES * 3 + Double.BYTES * 100_000, array.toByteBuffer().limit());
-    Assertions.assertEquals(Integer.BYTES * 3 + Double.BYTES * 100_000, array.boxSize());
-    Assertions.assertEquals(100_000, array.length());
-    Assertions.assertEquals(BitDoubleArray.ID, array.boxID());
-    Assertions.assertArrayEquals(doubles, array.toArray());
-    Assertions.assertEquals(99.1, array.get(99));
-    Assertions.assertEquals(107.1, array.get(107));
-    Assertions.assertEquals(107, array.indexOf(107.1));
+    System.out.printf("* Create int BitPrimitiveArray: %s%n", tm);
+    Assertions.assertEquals(Integer.BYTES * 2 + BitPrimitive.BYTES_INT * size, array.toByteBuffer().limit());
+    Assertions.assertEquals(Integer.BYTES * 2 + BitPrimitive.BYTES_INT * size, array.boxSize());
+    Assertions.assertEquals(size, array.length());
+    Assertions.assertEquals(BitArray.ID, array.boxID());
+    Assertions.assertArrayEquals(ints, array.toIntArray());
+    Assertions.assertEquals(99, array.get(99));
+    Assertions.assertEquals(107, array.get(107));
+    Assertions.assertEquals(107, array.indexOf(107));
     AtomicInteger ix = new AtomicInteger(0);
-    array.stream().forEach(i -> Assertions.assertEquals(doubles[ix.getAndIncrement()], i));
+    array.stream(false).forEach(i -> Assertions.assertEquals(ints[ix.getAndIncrement()], i));
   }
   
 }

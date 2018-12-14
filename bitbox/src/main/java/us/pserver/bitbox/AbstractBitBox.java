@@ -24,6 +24,7 @@ package us.pserver.bitbox;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
+import java.util.Objects;
 import us.pserver.tools.Hash;
 import us.pserver.tools.io.DynamicByteBuffer;
 
@@ -32,7 +33,7 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12/12/2018
  */
-public abstract class AbstractBitBox implements BitBox {
+public abstract class AbstractBitBox<T> implements BitBox<T> {
   
   protected final ByteBuffer buffer;
   
@@ -94,10 +95,34 @@ public abstract class AbstractBitBox implements BitBox {
     buf.put(buffer);
     return boxSize();
   }
-
+  
+  @Override
+  public int compareTo(BitBox box) {
+    return toByteBuffer().compareTo(box.toByteBuffer());
+  }
+  
+  @Override
+  public int hashCode() {
+    int hash = 3;
+    hash = 47 * hash + Objects.hashCode(this.buffer);
+    return hash;
+  }
+  
+  @Override
+  public boolean equals(Object obj) {
+    if(this == obj) {
+      return true;
+    }
+    if(obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    final AbstractBitBox other = (AbstractBitBox) obj;
+    return buffer.compareTo(other.buffer) == 0;
+  }
+  
   @Override
   public String toString() {
     return String.format("BitBox{id=%d, size=%d}", boxID(), boxSize());
   }
-
+  
 }

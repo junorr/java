@@ -29,7 +29,7 @@ import java.time.Instant;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 13/12/2018
  */
-public class BitInstant extends UTF8BitString {
+public class BitInstant extends AbstractBitBox<Instant> {
   
   public static final int ID = BitInstant.class.getName().hashCode();
   
@@ -40,8 +40,10 @@ public class BitInstant extends UTF8BitString {
     }
   }
 
+  @Override
   public Instant get() {
-    
+    buffer.position(Integer.BYTES * 2);
+    return Instant.ofEpochMilli(buffer.getLong());
   }
   
 }

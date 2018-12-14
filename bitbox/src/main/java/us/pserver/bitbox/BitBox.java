@@ -32,9 +32,9 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/12/2018
  */
-public interface BitBox extends Comparable<BitBox>, Serializable {
+public interface BitBox<T> extends Comparable<BitBox>, Serializable {
   
-  public <T> T get();
+  public T get();
   
   public int boxID();
   
@@ -51,11 +51,6 @@ public interface BitBox extends Comparable<BitBox>, Serializable {
   public int writeTo(WritableByteChannel ch) throws IOException;
   
   public int writeTo(DynamicByteBuffer buf);
-  
-  @Override
-  public default int compareTo(BitBox bin) {
-    return toByteBuffer().compareTo(bin.toByteBuffer());
-  }
   
   
   

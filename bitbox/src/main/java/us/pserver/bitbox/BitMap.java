@@ -21,38 +21,25 @@
 
 package us.pserver.bitbox;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
-import java.util.stream.Stream;
-import us.pserver.tools.Hash;
-import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public interface BitMap<K extends BitBox, V extends BitBox> extends BitBox {
+public interface BitMap<K extends BitBox, V extends BitBox> extends BitArray<BitMap.BitEntry<K,V>> {
   
   public static final int ID = BitMap.class.getName().hashCode();
 
-  public int length();
+  public Optional<V> get(K key);
   
-  public V get(K key);
+  public Map<K,V> getMap();
   
-  public boolean isEmpty();
-  
-  public boolean contains(K key);
-  
-  public Stream<BitEntry<K,V>> stream();
-  
-  public Stream<BitEntry<K,V>> parallelStream();
-  
-  public Iterator<BitEntry<K,V>> iterator();
+  public boolean containsKey(K key);
   
   
   
@@ -67,50 +54,8 @@ public interface BitMap<K extends BitBox, V extends BitBox> extends BitBox {
     }
     
     @Override
-    public Map.Entry<K,V> get() {
-      return this;
-    }
-    
-    @Override
-    public String sha256sum() {
-      return Hash.sha256().of(toByteArray());
-    }
-    
-    @Override
-    public ByteBuffer toByteBuffer() {
-      buffer.position(0);
-      return buffer.duplicate();
-    }
-    
-    @Override
-    public byte[] toByteArray() {
-      if(buffer.hasArray() && buffer.array().length == boxSize()) {
-        return buffer.array();
-      }
-      byte[] bs = new byte[boxSize()];
-      buffer.position(0);
-      buffer.get(bs);
-      return bs;
-    }
-    
-    @Override
-    public int writeTo(ByteBuffer buf) {
-      buffer.position(0);
-      buf.put(buffer);
-      return boxSize();
-    }
-    
-    @Override
-    public int writeTo(WritableByteChannel ch) throws IOException {
-      buffer.position(0);
-      return ch.write(buffer);
-    }
-    
-    @Override
-    public int writeTo(DynamicByteBuffer buf) {
-      buffer.position(0);
-      buf.put(buffer);
-      return boxSize();
+    public V get() {
+      return getValue();
     }
     
     @Override
@@ -138,112 +83,28 @@ public interface BitMap<K extends BitBox, V extends BitBox> extends BitBox {
   
   
   
-  static class BMap<K extends BitBox, V extends BitBox> extends AbstractBitBox implements BitMap<K,V> {
-    
-    private final int length;
+
+  static class BMap<K extends BitBox, V extends BitBox> extends BitArray.BArray<BitMap.BitEntry<K,V>> implements BitMap<K,V> {
     
     public BMap(ByteBuffer buf) {
       super(buf);
-      int id = buffer.getInt();
-      if(BitMap.ID != id) {
-        throw new IllegalArgumentException("Not a BitMap content");
-      }
-      buffer.getInt();//boxSize()
-      this.length = buffer.getInt();
     }
     
     @Override
-    public Map<K,V> get() {
+    public Map<K,V> getMap() {
       TreeMap<K,V> map = new TreeMap<>();
-      stream().forEach(e -> map.putIfAbsent(e.getKey(), e.getValue()));
+      stream(false).forEach(e -> map.putIfAbsent(e.getKey(), e.getValue()));
       return map;
     }
-
+    
     @Override
-    public String sha256sum() {
-      return Hash.sha256().of(toByteArray());
+    public Optional<V> get(K key) {
+      return stream(false).filter(e -> e.getKey().equals(key)).map(e -> e.getValue()).findAny();
     }
-
-
+    
     @Override
-    public ByteBuffer toByteBuffer() {
-      buffer.position(0);
-      return buffer.duplicate();
-    }
-
-
-    @Override
-    public byte[] toByteArray() {
-      if(buffer.hasArray() && buffer.array().length == boxSize()) {
-        return buffer.array();
-      }
-      byte[] bs = new byte[boxSize()];
-      buffer.position(0);
-      buffer.get(bs);
-      return bs;
-    }
-
-
-    @Override
-    public int writeTo(ByteBuffer buf) {
-      buffer.position(0);
-      buf.put(buffer);
-      return boxSize();
-    }
-
-
-    @Override
-    public int writeTo(WritableByteChannel ch) throws IOException {
-      buffer.position(0);
-      return ch.write(buffer);
-    }
-
-
-    @Override
-    public int writeTo(DynamicByteBuffer buf) {
-      
-    }
-
-
-    @Override
-    public int length() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
-    @Override
-    public V get(K key) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
-    @Override
-    public boolean isEmpty() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
-    @Override
-    public boolean contains(K key) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
-    @Override
-    public Stream<BitEntry<K, V>> stream() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
-    @Override
-    public Stream<BitEntry<K, V>> parallelStream() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
-    @Override
-    public Iterator<BitEntry<K, V>> iterator() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean containsKey(K key) {
+      return stream(false).anyMatch(e -> e.getKey().equals(key));
     }
     
   }
