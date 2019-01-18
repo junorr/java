@@ -154,10 +154,10 @@ public class DefaultObjectBox implements ObjectBox {
       }
       else {
         OpResult res = op.execute(watcher.getDynaLoader().load(target));
-        if(res.getReturnValue().isPresent()) {
+        if(res.getValue().isPresent()) {
           cache(
-              res.getReturnValue().get().getClass().getName(), 
-              res.getReturnValue().get()
+              res.getValue().get().getClass().getName(), 
+              res.getValue().get()
           );
         }
         return res;

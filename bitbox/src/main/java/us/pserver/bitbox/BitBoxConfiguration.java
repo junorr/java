@@ -21,44 +21,52 @@
 
 package us.pserver.bitbox;
 
-import java.io.IOException;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
-import us.pserver.tools.io.DynamicByteBuffer;
+import java.nio.charset.Charset;
+import java.util.Optional;
+import java.util.function.IntFunction;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/12/2018
+ * @version 0.0 - 15/12/2018
  */
-public interface BitBox<T> extends Serializable {
-  
-  public static final int HEADER_BYTES = Integer.BYTES * 2;
-  
-  
-  public T get();
-  
-  public int boxID();
-  
-  public int boxSize();
+public interface BitBoxConfiguration {
 
-  public String sha256sum();
   
-  public ByteBuffer toByteBuffer();
-  
-  public byte[] toByteArray();
-  
-  public int writeTo(ByteBuffer buf);
-  
-  public int writeTo(WritableByteChannel ch) throws IOException;
-  
-  public int writeTo(DynamicByteBuffer buf);
-  
-  
-  
-  public static BitBoxFactory factory() {
-    return BitBoxFactory.get();
+  public static enum BufferAlloc {
+    
+    DIRECT_ALLOC(ByteBuffer::allocateDirect),
+    
+    HEAP_ALLOC(ByteBuffer::allocate);
+    
+    private BufferAlloc(IntFunction<ByteBuffer> alloc) {
+      this.alloc = alloc;
+    }
+    
+    public ByteBuffer alloc(int size) {
+      return alloc.apply(size);
+    }
+    
+    private final IntFunction<ByteBuffer> alloc;
+    
   }
+  
+  
+  public ByteBuffer alloc(int size);
+  
+  public BitBoxConfiguration addTypeSupport(TypeSupport support);
+  
+  public Optional<TypeSupport> getTypeSupport(Class cls);
+  
+  public Optional<TypeSupport> removeTypeSupport(Class cls);
+  
+  public BitBoxConfiguration setBufferAlloc(BufferAlloc alloc);
+  
+  public BufferAlloc getBufferAlloc();
+  
+  public BitBoxConfiguration setUseGetters(boolean use);
+  
+  public boolean isUseGetters();
   
 }

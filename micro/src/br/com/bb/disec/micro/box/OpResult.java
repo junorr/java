@@ -33,9 +33,9 @@ public interface OpResult {
   
   public boolean isSuccessful();
   
-  public Optional<Object> getReturnValue();
+  public Optional<Object> getValue();
   
-  public Optional<Throwable> getThrownException();
+  public Optional<Throwable> getError();
   
   
   public static OpResult of(Throwable th) {

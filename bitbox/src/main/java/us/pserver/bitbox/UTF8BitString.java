@@ -41,28 +41,18 @@ public class UTF8BitString extends AbstractBitBox implements BitString {
     if(id != BitString.ID) {
       throw new IllegalArgumentException("Not a BitString content");
     }
-    this.length = buf.getInt() - Integer.BYTES * 2;
+    this.length = buf.getInt() - BitBox.HEADER_BYTES;
   }
   
   
   public UTF8BitString(int length, ByteBuffer content) {
     super(content.isDirect() 
-        ? ByteBuffer.allocateDirect(length + Integer.BYTES * 2) 
-        : ByteBuffer.allocate(length + Integer.BYTES * 2));
+        ? ByteBuffer.allocateDirect(length + BitBox.HEADER_BYTES) 
+        : ByteBuffer.allocate(length + BitBox.HEADER_BYTES));
     this.length = length;
     buffer.putInt(ID);
-    buffer.putInt(length + Integer.BYTES * 2);
+    buffer.putInt(length + BitBox.HEADER_BYTES);
     buffer.put(content);
-  }
-  
-  
-  public UTF8BitString(String str) {
-    super(ByteBuffer.allocate(str.length() + Integer.BYTES * 2));
-    ByteBuffer bs = StandardCharsets.UTF_8.encode(str);
-    this.length = str.length();
-    buffer.putInt(ID);
-    buffer.putInt(length + Integer.BYTES * 2);
-    buffer.put(bs);
   }
   
   
@@ -74,8 +64,8 @@ public class UTF8BitString extends AbstractBitBox implements BitString {
   
   @Override
   public ByteBuffer getContentBuffer() {
-    buffer.position(Integer.BYTES * 2);
-    buffer.limit(Integer.BYTES * 2 + length);
+    buffer.position(BitBox.HEADER_BYTES);
+    buffer.limit(BitBox.HEADER_BYTES + length);
     return buffer.slice();
   }
   
@@ -96,14 +86,14 @@ public class UTF8BitString extends AbstractBitBox implements BitString {
     int readed = 0;
     int readlen = length;
     while((readed + len) <= readlen) {
-      buffer.position(Integer.BYTES * 2 + start + readed);
+      buffer.position(BitBox.HEADER_BYTES + start + readed);
       int count = 0;
       for(int i = 0; i < len; i++) {
         if(buffer.get() == bs.get()) count++;
       }
       bs.position(0);
       if(count == len) {
-        return buffer.position() - len - Integer.BYTES * 2;
+        return buffer.position() - len - BitBox.HEADER_BYTES;
       }
       readed++;
     }
@@ -119,14 +109,14 @@ public class UTF8BitString extends AbstractBitBox implements BitString {
     int readed = 0;
     int readlen = length;
     while((readed + len) <= readlen) {
-      buffer.position(Integer.BYTES * 2 + start + readed);
+      buffer.position(BitBox.HEADER_BYTES + start + readed);
       int count = 0;
       for(int i = 0; i < len; i++) {
         if(buffer.get() == bs.get()) count++;
       }
       bs.position(pos);
       if(count == len) {
-        return buffer.position() - len - Integer.BYTES * 2;
+        return buffer.position() - len - BitBox.HEADER_BYTES;
       }
       readed++;
     }
@@ -157,8 +147,8 @@ public class UTF8BitString extends AbstractBitBox implements BitString {
     if(offset < 0 || length < 1 || offset + length > this.length) {
       throw new IllegalArgumentException(String.format("Bad offset/length: %d/%d (maxLength=%d)", offset, length, this.length));
     }
-    buffer.position(Integer.BYTES * 2 + offset)
-        .limit(Integer.BYTES * 2 + offset + length);
+    buffer.position(BitBox.HEADER_BYTES + offset)
+        .limit(BitBox.HEADER_BYTES + offset + length);
     return new UTF8BitString(length, buffer.slice());
   }
   
@@ -168,8 +158,8 @@ public class UTF8BitString extends AbstractBitBox implements BitString {
     if(offset < 0) {
       throw new IllegalArgumentException(String.format("Bad offset: %d", offset));
     }
-    buffer.position(Integer.BYTES * 2 + offset)
-        .limit(Integer.BYTES * 2 + length);
+    buffer.position(BitBox.HEADER_BYTES + offset)
+        .limit(BitBox.HEADER_BYTES + length);
     return new UTF8BitString(length - offset, buffer.slice());
   }
   

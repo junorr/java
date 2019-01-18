@@ -21,11 +21,19 @@
 
 package us.pserver.binbox.test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import us.pserver.bitbox.BitArray;
-import us.pserver.bitbox.BitNumber;
+import us.pserver.bitbox.BitBuffer;
+import us.pserver.bitbox.BitInstant;
+import us.pserver.bitbox.BitPrimitive;
+import us.pserver.bitbox.BitPrimitiveArray;
 import us.pserver.bitbox.BitRegion;
 import us.pserver.bitbox.BitString;
+import us.pserver.tools.StringPad;
 
 /**
  *
@@ -36,15 +44,27 @@ public class TestBitBoxIDs {
 
   @Test
   public void testBitBoxIDs() {
-    System.out.printf("* BitRegion.ID=%d%n", BitRegion.ID);
-    System.out.printf("* BitString.ID=%d%n", BitString.ID);
-    System.out.printf("* BitArray.ID=%d%n", BitArray.ID);
-    System.out.printf("* BitNumber.ID_BYTE=%d%n", BitNumber.ID_BYTE);
-    System.out.printf("* BitNumber.ID_SHORT=%d%n", BitNumber.ID_SHORT);
-    System.out.printf("* BitNumber.ID_INT=%d%n", BitNumber.ID_INT);
-    System.out.printf("* BitNumber.ID_FLOAT=%d%n", BitNumber.ID_FLOAT);
-    System.out.printf("* BitNumber.ID_LONG=%d%n", BitNumber.ID_LONG);
-    System.out.printf("* BitNumber.ID_DOUBLE=%d%n", BitNumber.ID_DOUBLE);
+    List<Integer> ids = new ArrayList<>();
+    ids.add(BitRegion.ID);
+    Assertions.assertFalse(ids.contains(BitString.ID));
+    ids.add(BitString.ID);
+    Assertions.assertFalse(ids.contains(BitArray.ID));
+    ids.add(BitArray.ID);
+    Assertions.assertFalse(ids.contains(BitPrimitive.ID_BOOLEAN));
+    ids.add(BitPrimitive.ID_BOOLEAN);
+    Assertions.assertFalse(ids.contains(BitPrimitive.ID_CHAR));
+    ids.add(BitPrimitive.ID_CHAR);
+    Assertions.assertFalse(ids.contains(BitPrimitive.ID_DOUBLE));
+    ids.add(BitPrimitive.ID_DOUBLE);
+    Assertions.assertFalse(ids.contains(BitPrimitive.ID_FLOAT));
+    ids.add(BitPrimitive.ID_FLOAT);
+    Assertions.assertFalse(ids.contains(BitPrimitive.ID_INT));
+    ids.add(BitPrimitive.ID_INT);
+    Assertions.assertFalse(ids.contains(BitPrimitive.ID_LONG));
+    ids.add(BitPrimitive.ID_LONG);
+    Assertions.assertFalse(ids.contains(BitPrimitive.ID_SHORT));
+    ids.add(BitPrimitive.ID_SHORT);
+    ids.stream().map(i -> StringPad.of(Objects.toString(i)).lpad(".", 15)).forEach(System.out::println);
   }
   
 }

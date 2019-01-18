@@ -25,6 +25,8 @@ import java.nio.ByteBuffer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import us.pserver.bitbox.BitRegion;
+import us.pserver.bitbox.BitRegionFactory;
+import us.pserver.bitbox.DefaultBitBoxConfiguration;
 import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
@@ -33,6 +35,8 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @version 0.0 - 12/12/2018
  */
 public class TestBitRegion {
+  
+  public static final BitRegionFactory factory = new BitRegionFactory(new DefaultBitBoxConfiguration());
 
   @Test
   public void testCreateFromByteBuffer() {
@@ -42,7 +46,7 @@ public class TestBitRegion {
     buf.putInt(1024);
     buf.putInt(2048);
     buf.flip();
-    BitRegion reg = BitRegion.factory().createFrom(buf);
+    BitRegion reg = factory.createFrom(buf);
     Assertions.assertEquals(BitRegion.ID, reg.boxID());
     Assertions.assertEquals(Integer.BYTES * 4, reg.boxSize());
     Assertions.assertEquals(1024, reg.offset());
@@ -58,7 +62,7 @@ public class TestBitRegion {
     buf.putInt(1024);
     buf.putInt(2048);
     buf.flip();
-    BitRegion reg = BitRegion.factory().createFrom(buf);
+    BitRegion reg = factory.createFrom(buf);
     Assertions.assertEquals(BitRegion.ID, reg.boxID());
     Assertions.assertEquals(Integer.BYTES * 4, reg.boxSize());
     Assertions.assertEquals(1024, reg.offset());

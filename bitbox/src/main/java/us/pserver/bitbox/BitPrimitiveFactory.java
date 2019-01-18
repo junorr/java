@@ -31,14 +31,15 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public class BitPrimitiveFactory implements BitBoxFactory<BitPrimitive> {
+public class BitPrimitiveFactory extends AbstractBitBoxFactory<BitPrimitive,Integer> {
   
-  private static final BitPrimitiveFactory _instance = new BitPrimitiveFactory();
+  public BitPrimitiveFactory(BitBoxConfiguration conf) {
+    super(conf);
+  }
   
-  private BitPrimitiveFactory() {}
-  
-  public static BitPrimitiveFactory get() {
-    return _instance;
+  @Override
+  public BitPrimitive createFrom(Integer val) {
+    return createFrom(val.intValue());
   }
   
   public BitPrimitive createFrom(boolean val) {

@@ -96,7 +96,6 @@ public abstract class AbstractBitBox<T> implements BitBox<T> {
     return boxSize();
   }
   
-  @Override
   public int compareTo(BitBox box) {
     return toByteBuffer().compareTo(box.toByteBuffer());
   }

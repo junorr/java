@@ -24,35 +24,37 @@ package us.pserver.bitbox;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.StandardCharsets;
 import us.pserver.tools.io.DynamicByteBuffer;
+import us.pserver.tools.log.Logger;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public class BitStringFactory implements BitBoxFactory<BitString> {
+public class BitStringFactory extends AbstractBitBoxFactory<BitString,String> {
   
-  private static final BitStringFactory _instance = new BitStringFactory();
   
-  private BitStringFactory() {}
-  
-  public static BitStringFactory get() {
-    return _instance;
+  public BitStringFactory(BitBoxConfiguration conf) {
+    super(conf);
   }
   
+  
+  @Override
   public BitString createFrom(String str) {
-    return new UTF8BitString(str);
+    return new UTF8BitString(str.length(), StandardCharsets.UTF_8.encode(str));
   }
   
   
   public BitString createFrom(byte[] bs) {
-    return new UTF8BitString(bs.length, ByteBuffer.wrap(bs));
+    return createFrom(bs, 0, bs.length);
   }
   
   
   public BitString createFrom(byte[] bs, int off, int len) {
-    return new UTF8BitString(len, ByteBuffer.wrap(bs, off, len));
+    ByteBuffer content = ByteBuffer.wrap(bs, off, len);
+    return new UTF8BitString(content.remaining(), content);
   }
   
   
@@ -66,20 +68,20 @@ public class BitStringFactory implements BitBoxFactory<BitString> {
     }
     int len = buf.getInt();
     buf.position(pos).limit(pos + len);
-    UTF8BitString bst = new UTF8BitString(buf.slice());
+    UTF8BitString str = new UTF8BitString(buf.slice());
     buf.limit(lim);
-    return bst;
+    return str;
   }
 
 
   @Override
   public BitString createFrom(ReadableByteChannel ch) throws IOException {
-    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2);
+    ByteBuffer buf = ByteBuffer.allocate(BitBox.HEADER_BYTES);
     ch.read(buf);
     buf.flip();
     int id = buf.getInt();
     int len = buf.getInt();
-    buf = ByteBuffer.allocate(len - Integer.BYTES * 2);
+    buf = ByteBuffer.allocate(len - BitBox.HEADER_BYTES);
     buf.putInt(id);
     buf.putInt(len);
     ch.read(buf);

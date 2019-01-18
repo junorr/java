@@ -31,7 +31,11 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public interface BitBoxFactory<T extends BitBox> {
+public interface BitBoxFactory<T extends BitBox, V> {
+  
+  public BitBoxConfiguration configure();
+  
+  public T createFrom(V val);
   
   public T createFrom(ByteBuffer buf);
   

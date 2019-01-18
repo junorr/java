@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import static us.pserver.bitbox.BitArray.ID;
+import us.pserver.bitbox.BitBoxConfiguration.BufferAlloc;
 import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
@@ -32,26 +33,38 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public class BitArrayFactory implements BitBoxFactory<BitArray> {
+public class BitArrayFactory<T extends BitBox, V> extends AbstractBitBoxFactory<BitArray<T>,V[]> {
   
-  private static final BitArrayFactory _instance = new BitArrayFactory();
+  private final BitBoxFactory factory;
   
-  private BitArrayFactory() {}
-  
-  public static BitArrayFactory get() {
-    return _instance;
+  public BitArrayFactory(BitBoxFactory factory) {
+    super(factory.configure());
+    this.factory = factory;
   }
   
-  public BitRegion createFrom(int offset, int length) {
-    return new BitRegion.Region(offset, length);
-  }
-
   @Override
-  public BitArray createFrom(ByteBuffer buf) {
+  public BitArray<T> createFrom(V[] vals) {
+    DynamicByteBuffer buf = new DynamicByteBuffer(1024, config.getBufferAlloc() == BufferAlloc.DIRECT_ALLOC);
+    buf.putInt(BitArray.ID);
+    buf.putInt(BitArray.HEADER_BYTES);
+    buf.putInt(vals.length);
+    for(V val : vals) {
+      factory.createFrom(val).writeTo(buf);
+    }
+    buf.flip();
+    int len = buf.remaining();
+    buf.position(Integer.BYTES)
+        .putInt(len)
+        .position(0);
+    return new BitArray.BArray(buf.slice().toByteBuffer());
+  }
+  
+  @Override
+  public BitArray<T> createFrom(ByteBuffer buf) {
     int pos = buf.position();
     int lim = buf.limit();
     if(buf.getInt() != BitArray.ID) {
-      throw new IllegalArgumentException("Not a BinaryArray content");
+      throw new IllegalArgumentException("Not a BitArray content");
     }
     int len = buf.getInt();
     buf.position(pos).limit(pos + len);
@@ -61,7 +74,7 @@ public class BitArrayFactory implements BitBoxFactory<BitArray> {
   }
 
   @Override
-  public BitArray createFrom(ReadableByteChannel ch) throws IOException {
+  public BitArray<T> createFrom(ReadableByteChannel ch) throws IOException {
     ByteBuffer idlen = ByteBuffer.allocate(Integer.BYTES * 2);
     ch.read(idlen);
     idlen.flip();
@@ -79,7 +92,7 @@ public class BitArrayFactory implements BitBoxFactory<BitArray> {
   }
 
   @Override
-  public BitArray createFrom(DynamicByteBuffer buf) {
+  public BitArray<T> createFrom(DynamicByteBuffer buf) {
     return createFrom(buf.toByteBuffer());
   }
 

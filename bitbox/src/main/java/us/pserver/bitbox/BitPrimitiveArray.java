@@ -66,6 +66,21 @@ public interface BitPrimitiveArray extends BitArray<BitPrimitive> {
   public boolean contains(double val);
   
   
+  public boolean getBoolean(int idx);
+  
+  public char getChar(int idx);
+  
+  public short getShort(int idx);
+  
+  public int getInt(int idx);
+  
+  public float getFloat(int idx);
+  
+  public long getLong(int idx);
+  
+  public double getDouble(int idx);
+  
+  
   public char[] toCharArray();
   
   public boolean[] toBooleanArray();
@@ -120,12 +135,6 @@ public interface BitPrimitiveArray extends BitArray<BitPrimitive> {
   
   public default boolean isDoubleArray() {
     return BitPrimitive.ID_DOUBLE == get(0).boxID();
-  }
-  
-  
-  
-  public static BitPrimitiveArrayFactory factory() {
-    return BitPrimitiveArrayFactory.get();
   }
   
   
@@ -447,6 +456,41 @@ public interface BitPrimitiveArray extends BitArray<BitPrimitive> {
     @Override
     public boolean contains(double val) {
       return indexOf(val) >= 0;
+    }
+    
+    @Override
+    public boolean getBoolean(int idx) {
+      return this.get(idx).getBoolean();
+    }
+    
+    @Override
+    public char getChar(int idx) {
+      return this.get(idx).getChar();
+    }
+    
+    @Override
+    public short getShort(int idx) {
+      return this.get(idx).getShort();
+    }
+    
+    @Override
+    public int getInt(int idx) {
+      return this.get(idx).getInt();
+    }
+    
+    @Override
+    public float getFloat(int idx) {
+      return this.get(idx).getFloat();
+    }
+    
+    @Override
+    public long getLong(int idx) {
+      return this.get(idx).getLong();
+    }
+    
+    @Override
+    public double getDouble(int idx) {
+      return this.get(idx).getDouble();
     }
     
   }

@@ -50,8 +50,8 @@ public class ChainOp extends BaseOp {
   public OpResult execute(Object obj) {
     OpResult res = OpResult.of(obj);
     Optional<Operation> opr = Optional.of(op);
-    while(opr.isPresent() && res.getReturnValue().isPresent()) {
-      res = opr.get().execute(res.getReturnValue().get());
+    while(opr.isPresent() && res.getValue().isPresent()) {
+      res = opr.get().execute(res.getValue().get());
       opr = opr.get().next();
     }
     return res;

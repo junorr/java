@@ -24,55 +24,48 @@ package us.pserver.bitbox;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
-import us.pserver.bitbox.util.Region;
+import java.util.Objects;
 import us.pserver.tools.io.DynamicByteBuffer;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/12/2018
+ * @version 0.0 - 15/12/2018
  */
-public class BitRegionFactory extends AbstractBitBoxFactory<BitRegion,Region> {
+public class DefaultBitBoxFactory implements BitBoxFactory {
   
-  public BitRegionFactory(BitBoxConfiguration conf) {
-    super(conf);
+  private final BitBoxConfiguration config;
+  
+  public DefaultBitBoxFactory(BitBoxConfiguration conf) {
+    this.config = Objects.requireNonNull(conf);
   }
   
   @Override
-  public BitRegion createFrom(Region reg) {
-    return createFrom(reg.offset(), reg.length());
-  }
-  
-  public BitRegion createFrom(int offset, int length) {
-    ByteBuffer buf = ByteBuffer.allocate(BitRegion.BYTES);
-    buf.putInt(BitRegion.ID);
-    buf.putInt(BitRegion.BYTES);
-    buf.putInt(offset);
-    buf.putInt(length);
-    buf.flip();
-    return new BitRegion(buf);
+  public BitBoxConfiguration configure() {
+    return config;
   }
 
   @Override
-  public BitRegion createFrom(ByteBuffer buf) {
-    int lim = buf.limit();
-    buf.limit(buf.position() + BitRegion.BYTES);
-    BitRegion reg = new BitRegion(buf.slice());
-    buf.limit(lim);
-    return reg;
+  public BitBox createFrom(Object val) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
-  @Override
-  public BitRegion createFrom(ReadableByteChannel ch) throws IOException {
-    ByteBuffer buf = ByteBuffer.allocate(BitRegion.BYTES);
-    ch.read(buf);
-    buf.flip();
-    return new BitRegion(buf);
-  }
 
   @Override
-  public BitRegion createFrom(DynamicByteBuffer buf) {
-    return createFrom(buf.toByteBuffer());
+  public BitBox createFrom(ByteBuffer buf) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+
+  @Override
+  public BitBox createFrom(ReadableByteChannel ch) throws IOException {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+
+  @Override
+  public BitBox createFrom(DynamicByteBuffer buf) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
 }

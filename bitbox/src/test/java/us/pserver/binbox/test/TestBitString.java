@@ -21,54 +21,38 @@
 
 package us.pserver.binbox.test;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.function.IntConsumer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.bitbox.BitStringFactory;
+import us.pserver.bitbox.BitBox;
 import us.pserver.bitbox.BitString;
+import us.pserver.bitbox.BitStringFactory;
+import us.pserver.bitbox.DefaultBitBoxConfiguration;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public class TestBinaryString {
+public class TestBitString {
+  
+  public static final BitStringFactory factory = new BitStringFactory(new DefaultBitBoxConfiguration());
 
   @Test
   public void testCreateFromString() {
     //            1....6....12
     String str = "Hello World!";
-    BitString bin = BitStringFactory.get().createFrom(str);
+    BitString bin = factory.createFrom(str);
     Assertions.assertEquals(str.length(), bin.length());
     Assertions.assertEquals(str, bin.toString());
-  }
-  
-  @Test
-  public void testCreateFromByteBuffer() {
-    try {
-    //            1....6....12
-    String str = "Hello World!";
-    ByteBuffer buf = ByteBuffer.allocate(str.length() + Integer.BYTES * 2);
-    buf.putInt(BitString.ID);
-    buf.putInt(str.length() + Integer.BYTES * 2);
-    buf.put(StandardCharsets.UTF_8.encode(str));
-    buf.flip();
-    BitString bin = BitString.factory().createFrom(buf);
-    Assertions.assertEquals(str.length(), bin.length());
-    Assertions.assertEquals(str, bin.toString());
-    } catch(Exception e) {
-      e.printStackTrace();
-      throw e;
-    }
+    Assertions.assertEquals(str.length(), bin.boxSize() - BitBox.HEADER_BYTES);
   }
   
   @Test
   public void testGetContentBuffer() {
     //            1....6....12
     String str = "Hello World!";
-    BitString bin = BitStringFactory.get().createFrom(str);
+    BitString bin = factory.createFrom(str);
     Assertions.assertEquals(str.length(), bin.length());
     Assertions.assertEquals(str, bin.toString());
     Assertions.assertEquals(StandardCharsets.UTF_8.encode(str), bin.getContentBuffer());
@@ -78,7 +62,7 @@ public class TestBinaryString {
   public void testGetContentBytes() {
     //            1....6....12
     String str = "Hello World!";
-    BitString bin = BitStringFactory.get().createFrom(str);
+    BitString bin = factory.createFrom(str);
     Assertions.assertEquals(str.length(), bin.length());
     Assertions.assertEquals(str, bin.toString());
     Assertions.assertArrayEquals(str.getBytes(StandardCharsets.UTF_8), bin.getContentBytes());
@@ -88,7 +72,9 @@ public class TestBinaryString {
   public void testIndexOfString() {
     //            1...5...10...15...20...25...30...35...40......48
     String str = "Hello ABC World Hello CDE World Hello FGH World!";
-    BitString bin = BitStringFactory.get().createFrom(str);
+    System.out.println("===========> " + int[].class.getName());
+    System.out.println("===========> " + Integer[].class.getName());
+    BitString bin = factory.createFrom(str);
     Assertions.assertEquals(str.length(), bin.length());
     Assertions.assertEquals(str, bin.toString());
     String world = "World";
@@ -104,10 +90,10 @@ public class TestBinaryString {
   public void testIndexOfBinaryString() {
     //            1...5...10...15...20...25...30...35...40......48
     String str = "Hello ABC World Hello CDE World Hello FGH World!";
-    BitString bin = BitStringFactory.get().createFrom(str);
+    BitString bin = factory.createFrom(str);
     Assertions.assertEquals(str.length(), bin.length());
     Assertions.assertEquals(str, bin.toString());
-    BitString world = BitStringFactory.get().createFrom("World");
+    BitString world = factory.createFrom("World");
     int idx = bin.indexOf(world, 0);
     Assertions.assertEquals(10, idx);
     idx = bin.indexOf(world, idx + 1);
@@ -120,7 +106,7 @@ public class TestBinaryString {
   public void testSliceOneParameter() {
     //            1...5...10...15...20...25...30...35...40......48
     String str = "Hello ABC World Hello CDE World Hello FGH World!";
-    BitString bin = BitStringFactory.get().createFrom(str);
+    BitString bin = factory.createFrom(str);
     Assertions.assertEquals(str.length(), bin.length());
     Assertions.assertEquals(str, bin.toString());
     Assertions.assertEquals(str.substring(32), bin.slice(32).toString());
@@ -130,7 +116,7 @@ public class TestBinaryString {
   public void testSliceTwoParameters() {
     //            1...5...10...15...20...25...30...35...40......48
     String str = "Hello ABC World Hello CDE World Hello FGH World!";
-    BitString bin = BitStringFactory.get().createFrom(str);
+    BitString bin = factory.createFrom(str);
     Assertions.assertEquals(str.length(), bin.length());
     Assertions.assertEquals(str, bin.toString());
     Assertions.assertEquals(str.substring(6, 25), bin.slice(6, 19).toString());
@@ -140,7 +126,7 @@ public class TestBinaryString {
   public void testToUpperCase() {
     //            1....6....12
     String str = "Hello World!";
-    BitString bin = BitStringFactory.get().createFrom(str);
+    BitString bin = factory.createFrom(str);
     Assertions.assertEquals(str.length(), bin.length());
     Assertions.assertEquals(str.toUpperCase(), bin.toUpperCase().toString());
   }
@@ -149,7 +135,7 @@ public class TestBinaryString {
   public void testToLowerCase() {
     //            1....6....12
     String str = "Hello World!";
-    BitString bin = BitStringFactory.get().createFrom(str);
+    BitString bin = factory.createFrom(str);
     Assertions.assertEquals(str.length(), bin.length());
     Assertions.assertEquals(str.toLowerCase(), bin.toLowerCase().toString());
   }

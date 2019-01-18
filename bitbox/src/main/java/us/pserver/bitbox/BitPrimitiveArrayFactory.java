@@ -31,18 +31,29 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11/12/2018
  */
-public class BitPrimitiveArrayFactory implements BitBoxFactory<BitPrimitiveArray> {
+public class BitPrimitiveArrayFactory extends AbstractBitBoxFactory<BitPrimitiveArray,Integer[]> {
   
-  private static final BitPrimitiveArrayFactory _instance = new BitPrimitiveArrayFactory();
+  public BitPrimitiveArrayFactory(BitBoxConfiguration conf) {
+    super(conf);
+  }
   
-  private BitPrimitiveArrayFactory() {}
-  
-  public static BitPrimitiveArrayFactory get() {
-    return _instance;
+  @Override
+  public BitPrimitiveArray createFrom(Integer[] vals) {
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + BitPrimitive.BYTES_INT * vals.length);
+    buf.putInt(BitArray.ID);
+    buf.putInt(buf.capacity());
+    buf.putInt(vals.length);
+    for(int i = 0; i < vals.length; i++) {
+      buf.putInt(BitPrimitive.ID_INT);
+      buf.putInt(BitPrimitive.BYTES_INT);
+      buf.putInt(vals[i]);
+    }
+    buf.flip();
+    return new BitPrimitiveArray.PrimitiveArray(buf);
   }
   
   public BitPrimitiveArray createFrom(boolean[] vals) {
-    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2 + BitPrimitive.BYTES_BOOLEAN * vals.length);
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + BitPrimitive.BYTES_BOOLEAN * vals.length);
     buf.putInt(BitArray.ID);
     buf.putInt(buf.capacity());
     for(int i = 0; i < vals.length; i++) {
@@ -55,7 +66,7 @@ public class BitPrimitiveArrayFactory implements BitBoxFactory<BitPrimitiveArray
   }
 
   public BitPrimitiveArray createFrom(char[] vals) {
-    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2 + BitPrimitive.BYTES_CHAR * vals.length);
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + BitPrimitive.BYTES_CHAR * vals.length);
     buf.putInt(BitArray.ID);
     buf.putInt(buf.capacity());
     for(int i = 0; i < vals.length; i++) {
@@ -68,7 +79,7 @@ public class BitPrimitiveArrayFactory implements BitBoxFactory<BitPrimitiveArray
   }
 
   public BitPrimitiveArray createFrom(short[] vals) {
-    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2 + BitPrimitive.BYTES_SHORT * vals.length);
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + BitPrimitive.BYTES_SHORT * vals.length);
     buf.putInt(BitArray.ID);
     buf.putInt(buf.capacity());
     for(int i = 0; i < vals.length; i++) {
@@ -81,9 +92,10 @@ public class BitPrimitiveArrayFactory implements BitBoxFactory<BitPrimitiveArray
   }
 
   public BitPrimitiveArray createFrom(int[] vals) {
-    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2 + BitPrimitive.BYTES_INT * vals.length);
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + BitPrimitive.BYTES_INT * vals.length);
     buf.putInt(BitArray.ID);
     buf.putInt(buf.capacity());
+    buf.putInt(vals.length);
     for(int i = 0; i < vals.length; i++) {
       buf.putInt(BitPrimitive.ID_INT);
       buf.putInt(BitPrimitive.BYTES_INT);
@@ -94,7 +106,7 @@ public class BitPrimitiveArrayFactory implements BitBoxFactory<BitPrimitiveArray
   }
 
   public BitPrimitiveArray createFrom(float[] vals) {
-    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2 + BitPrimitive.BYTES_FLOAT * vals.length);
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + BitPrimitive.BYTES_FLOAT * vals.length);
     buf.putInt(BitArray.ID);
     buf.putInt(buf.capacity());
     for(int i = 0; i < vals.length; i++) {
@@ -107,7 +119,7 @@ public class BitPrimitiveArrayFactory implements BitBoxFactory<BitPrimitiveArray
   }
 
   public BitPrimitiveArray createFrom(long[] vals) {
-    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2 + BitPrimitive.BYTES_LONG * vals.length);
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + BitPrimitive.BYTES_LONG * vals.length);
     buf.putInt(BitArray.ID);
     buf.putInt(buf.capacity());
     for(int i = 0; i < vals.length; i++) {
@@ -120,7 +132,7 @@ public class BitPrimitiveArrayFactory implements BitBoxFactory<BitPrimitiveArray
   }
 
   public BitPrimitiveArray createFrom(double[] vals) {
-    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 2 + BitPrimitive.BYTES_DOUBLE * vals.length);
+    ByteBuffer buf = ByteBuffer.allocate(Integer.BYTES * 3 + BitPrimitive.BYTES_DOUBLE * vals.length);
     buf.putInt(BitArray.ID);
     buf.putInt(buf.capacity());
     for(int i = 0; i < vals.length; i++) {
@@ -137,7 +149,7 @@ public class BitPrimitiveArrayFactory implements BitBoxFactory<BitPrimitiveArray
     int lim = buf.limit();
     int pos = buf.position();
     buf.position(pos + Integer.BYTES);
-    buf.limit(pos + buf.getInt() - Integer.BYTES * 2).position(pos);
+    buf.limit(pos + buf.getInt()).position(pos);
     BitPrimitiveArray reg = new BitPrimitiveArray.PrimitiveArray(buf.slice());
     buf.limit(lim);
     return reg;

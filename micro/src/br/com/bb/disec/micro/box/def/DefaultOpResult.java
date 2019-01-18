@@ -60,13 +60,13 @@ public class DefaultOpResult implements OpResult {
 
 
   @Override
-  public Optional<Object> getReturnValue() {
+  public Optional<Object> getValue() {
     return Optional.ofNullable(retval);
   }
 
 
   @Override
-  public Optional<Throwable> getThrownException() {
+  public Optional<Throwable> getError() {
     return Optional.ofNullable(thrown);
   }
 

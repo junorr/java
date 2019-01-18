@@ -21,44 +21,13 @@
 
 package us.pserver.bitbox;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
-import us.pserver.tools.io.DynamicByteBuffer;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/12/2018
+ * @version 0.0 - 16/12/2018
  */
-public interface BitBox<T> extends Serializable {
-  
-  public static final int HEADER_BYTES = Integer.BYTES * 2;
-  
-  
-  public T get();
-  
-  public int boxID();
-  
-  public int boxSize();
+public interface SerializeContext {
 
-  public String sha256sum();
-  
-  public ByteBuffer toByteBuffer();
-  
-  public byte[] toByteArray();
-  
-  public int writeTo(ByteBuffer buf);
-  
-  public int writeTo(WritableByteChannel ch) throws IOException;
-  
-  public int writeTo(DynamicByteBuffer buf);
-  
-  
-  
-  public static BitBoxFactory factory() {
-    return BitBoxFactory.get();
-  }
+  public BitBoxFactory factory();  
   
 }

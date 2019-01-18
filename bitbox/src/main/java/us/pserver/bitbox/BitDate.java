@@ -21,44 +21,29 @@
 
 package us.pserver.bitbox;
 
-import java.io.IOException;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
-import us.pserver.tools.io.DynamicByteBuffer;
+import java.util.Date;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/12/2018
+ * @version 0.0 - 13/12/2018
  */
-public interface BitBox<T> extends Serializable {
+public class BitDate extends AbstractBitBox<Date> {
   
-  public static final int HEADER_BYTES = Integer.BYTES * 2;
+  public static final int ID = BitDate.class.getName().hashCode();
   
-  
-  public T get();
-  
-  public int boxID();
-  
-  public int boxSize();
+  public BitDate(ByteBuffer buf) {
+    super(buf);
+    if(buffer.getInt() != ID) {
+      throw new IllegalArgumentException("Not a BitDate content");
+    }
+  }
 
-  public String sha256sum();
-  
-  public ByteBuffer toByteBuffer();
-  
-  public byte[] toByteArray();
-  
-  public int writeTo(ByteBuffer buf);
-  
-  public int writeTo(WritableByteChannel ch) throws IOException;
-  
-  public int writeTo(DynamicByteBuffer buf);
-  
-  
-  
-  public static BitBoxFactory factory() {
-    return BitBoxFactory.get();
+  @Override
+  public Date get() {
+    buffer.position(Integer.BYTES * 2);
+    return new Date(buffer.getLong());
   }
   
 }

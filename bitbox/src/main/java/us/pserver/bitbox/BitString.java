@@ -22,6 +22,7 @@
 package us.pserver.bitbox;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 /**
  *
@@ -53,11 +54,5 @@ public interface BitString extends BitBox {
   public BitString toUpperCase();
   
   public BitString toLowerCase();
-  
-  
-  
-  public static BitStringFactory factory() {
-    return BitStringFactory.get();
-  }
   
 }

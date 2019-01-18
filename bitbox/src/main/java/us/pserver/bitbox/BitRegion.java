@@ -23,9 +23,9 @@
 package us.pserver.bitbox;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
+import us.pserver.bitbox.util.Region;
 import us.pserver.tools.Hash;
 import us.pserver.tools.io.DynamicByteBuffer;
 
@@ -34,152 +34,100 @@ import us.pserver.tools.io.DynamicByteBuffer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 14/09/2017
  */
-public interface BitRegion extends BitBox {
+public class BitRegion extends AbstractBitBox<Region> implements Region {
   
   public static final int BYTES = Integer.BYTES * 4;
   
   public static final int ID = BitRegion.class.getName().hashCode();
   
-  public int offset();
   
-  public int length();
-  
-  public int end();
-  
-  public boolean isValid();
-  
-  public boolean contains(BitRegion r);
-  
-  
-  
-  public static BitRegionFactory factory() {
-    return BitRegionFactory.get();
+  public BitRegion(ByteBuffer buf) {
+    super(buf);
+    if(buffer.getInt() != ID) {
+      throw new IllegalArgumentException("Not a BitRegion content");
+    }
   }
-  
-  
-  
-  public static BitRegion of(int offset, int length) {
-    return new Region(offset, length);
+
+  @Override
+  public Region get() {
+    return Region.of(offset(), length());
   }
-  
-  
-  public static BitRegion of(ByteBuffer buf) {
-    return new Region(buf);
+
+  @Override
+  public int offset() {
+    buffer.position(Integer.BYTES * 2);
+    return buffer.getInt();
   }
-  
-  
-  public static BitRegion invalid() {
-    return of(-1, -1);
+
+  @Override
+  public int length() {
+    buffer.position(Integer.BYTES * 3);
+    return buffer.getInt();
   }
-  
-  
-  
-  
-  
-  static class Region extends AbstractBitBox implements BitRegion {
-    
-    public Region(ByteBuffer buf) {
-      super(buf);
-      if(buffer.getInt() != ID) {
-        throw new IllegalArgumentException("Not a BinaryArray content");
-      }
-    }
-    
-    public Region(int ofs, int len) {
-      super(ByteBuffer.allocate(BYTES));
-      buffer.putInt(ID);
-      buffer.putInt(BYTES);
-      buffer.putInt(ofs);
-      buffer.putInt(len);
-    }
-    
-    @Override
-    public int[] get() {
-      return new int[] {offset(), length()};
-    }
-    
-    @Override
-    public int offset() {
-      buffer.position(Integer.BYTES * 2);
-      return buffer.getInt();
-    }
-    
-    @Override
-    public int length() {
-      buffer.position(Integer.BYTES * 3);
-      return buffer.getInt();
-    }
-    
-    @Override
-    public int end() {
-      return offset() + length();
-    }
-    
-    @Override
-    public boolean isValid() {
-      return offset() >= 0 && length() >= 1;
-    }
-    
-    @Override
-    public boolean contains(BitRegion r) {
-      return offset() <= r.offset() && end() >= r.end();
-    }
-    
-    @Override
-    public ByteBuffer toByteBuffer() {
-      return buffer;
-    }
 
-    @Override
-    public String toString() {
-      return String.format("BinaryRegion{offset=%d, length=%d}", offset(), length());
+  @Override
+  public int end() {
+    return offset() + length();
+  }
+
+  @Override
+  public boolean isValid() {
+    return offset() >= 0 && length() >= 1;
+  }
+
+  @Override
+  public boolean contains(Region r) {
+    return offset() <= r.offset() && end() >= r.end();
+  }
+
+  @Override
+  public ByteBuffer toByteBuffer() {
+    return buffer;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("BinaryRegion{offset=%d, length=%d}", offset(), length());
+  }
+
+  @Override
+  public String sha256sum() {
+    if(buffer.hasArray()) {
+      return Hash.sha256().of(buffer.array(), buffer.arrayOffset(), BYTES);
     }
-    
+    return Hash.sha256().of(toByteArray());
+  }
 
-    @Override
-    public String sha256sum() {
-      if(buffer.hasArray()) {
-        return Hash.sha256().of(buffer.array(), buffer.arrayOffset(), BYTES);
-      }
-      return Hash.sha256().of(toByteArray());
+  @Override
+  public byte[] toByteArray() {
+    if(buffer.hasArray() && buffer.array().length == BYTES) {
+      return buffer.array();
     }
+    byte[] bs = new byte[BYTES];
+    buffer.position(0);
+    buffer.get(bs);
+    return bs;
+  }
 
+  @Override
+  public int writeTo(ByteBuffer buf) {
+    buffer.position(0);
+    buf.put(buf);
+    return BYTES;
+  }
 
-    @Override
-    public byte[] toByteArray() {
-      if(buffer.hasArray() && buffer.array().length == BYTES) {
-        return buffer.array();
-      }
-      byte[] bs = new byte[BYTES];
-      buffer.position(0);
-      buffer.get(bs);
-      return bs;
-    }
+  @Override
+  public int writeTo(WritableByteChannel ch) throws IOException {
+    buffer.position(0);
+    ch.write(buffer);
+    return BYTES;
+  }
 
-
-    @Override
-    public int writeTo(ByteBuffer buf) {
-      buffer.position(0);
-      buf.put(buf);
-      return BYTES;
-    }
-
-
-    @Override
-    public int writeTo(WritableByteChannel ch) throws IOException {
-      buffer.position(0);
-      ch.write(buffer);
-      return BYTES;
-    }
-
-
-    @Override
-    public int writeTo(DynamicByteBuffer buf) {
-      buffer.position(0);
-      buf.put(buf);
-      return BYTES;
-    }
-
+  @Override
+  public int writeTo(DynamicByteBuffer buf) {
+    buffer.position(0);
+    buf.put(buf);
+    return BYTES;
   }
   
 }

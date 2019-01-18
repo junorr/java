@@ -28,6 +28,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import us.pserver.bitbox.util.Region;
 
 /**
  *
@@ -36,8 +37,11 @@ import java.util.stream.StreamSupport;
  */
 public interface BitArray<T extends BitBox> extends BitBox<T[]> {
   
+  public static final int HEADER_BYTES = BitBox.HEADER_BYTES + Integer.BYTES;
+  
   public static final int ID = BitArray.class.getName().hashCode();
-
+  
+  
   public int length();
   
   public T get(int idx);
@@ -74,12 +78,13 @@ public interface BitArray<T extends BitBox> extends BitBox<T[]> {
       return length;
     }
     
-    protected BitRegion getRegion(int idx) {
-      int lim = buffer.limit();
-      int pos = Integer.BYTES * 3 + BitRegion.BYTES * idx;
-      buffer.position(pos).limit(pos + BitRegion.BYTES);
-      BitRegion reg = BitRegion.of(buffer.slice());
-      buffer.limit(lim);
+    protected Region getRegion(int idx) {
+      int i = 0;
+      Region reg = Region.of(BitArray.HEADER_BYTES, 0);
+      while(i++ <= idx) {
+        buffer.position(reg.end() + Integer.BYTES);
+        reg = Region.of(reg.offset(), buffer.getInt());
+      }
       return reg;
     }
     
@@ -100,7 +105,7 @@ public interface BitArray<T extends BitBox> extends BitBox<T[]> {
       if(idx < 0 || idx >= length) {
         throw new IndexOutOfBoundsException(String.format("Bad index: 0 >= [%d] < %d", idx, length));
       }
-      BitRegion reg = getRegion(idx);
+      Region reg = getRegion(idx);
       int lim = buffer.limit();
       buffer.position(reg.offset()).limit(reg.end());
       T bin = (T) BitBoxFactory.get().createFrom(buffer.slice());
