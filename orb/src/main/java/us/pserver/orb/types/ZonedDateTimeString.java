@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class ZonedDateTimeString extends AbstractTypedString<ZonedDateTime> {
+public class ZonedDateTimeString extends AbstractTypeString<ZonedDateTime> {
   
   public ZonedDateTimeString() {
     super(ZonedDateTime.class);

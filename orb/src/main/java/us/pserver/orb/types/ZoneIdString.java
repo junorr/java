@@ -29,7 +29,7 @@ import java.util.Objects;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class ZoneIdString extends AbstractTypedString<ZoneId> {
+public class ZoneIdString extends AbstractTypeString<ZoneId> {
   
   public ZoneIdString() {
     super(ZoneId.class);

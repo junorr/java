@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class OffsetTimeString extends AbstractTypedString<OffsetTime> {
+public class OffsetTimeString extends AbstractTypeString<OffsetTime> {
   
   public OffsetTimeString() {
     super(OffsetTime.class);

@@ -28,7 +28,7 @@ import java.net.InetAddress;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class InetAddressString extends AbstractTypedString<InetAddress> {
+public class InetAddressString extends AbstractTypeString<InetAddress> {
   
   public InetAddressString() {
     super(InetAddress.class);

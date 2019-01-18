@@ -26,7 +26,7 @@ package us.pserver.orb.types;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class IntegerString extends AbstractTypedString<Integer> {
+public class IntegerString extends AbstractTypeString<Integer> {
   
   public IntegerString() {
     super(int.class, Integer.class);

@@ -26,7 +26,7 @@ package us.pserver.orb.types;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 04/01/2018
  */
-public class CharacterString extends AbstractTypedString<Character> {
+public class CharacterString extends AbstractTypeString<Character> {
   
   public CharacterString() {
     super(char.class, Character.class);

@@ -34,9 +34,9 @@ public interface OrbConfiguration {
 
   /**
    * Get supported types by orb (may be null).
-   * @return TypedStrings
+   * @return TypeStrings
    */
-  public TypedStrings getSupportedTypes();
+  public TypeStrings getSupportedTypes();
   
   /**
    * Get values map for InvocationHandler (may be null).

@@ -28,7 +28,7 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class ClassString extends AbstractTypedString<Class> {
+public class ClassString extends AbstractTypeString<Class> {
   
   private ClassLoader loader;
   

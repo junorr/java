@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import us.pserver.orb.TypedStrings;
+import us.pserver.orb.TypeStrings;
 import us.pserver.tools.Match;
 
 /**
@@ -46,13 +46,13 @@ public class MappedInvocable implements InvocationHandler {
   
   private final Function<Method,String> methodToKey;
   
-  private final TypedStrings types;
+  private final TypeStrings types;
   
   private final Set<MethodTransform> trans;
   
   
   
-  public MappedInvocable(Map<String,Object> map, TypedStrings typeds, Function<Method,String> methodToKey) {
+  public MappedInvocable(Map<String,Object> map, TypeStrings typeds, Function<Method,String> methodToKey) {
     this.map = Match.notNull(map).getOrFail("Bad null StringMap");
     this.types = Match.notNull(typeds).getOrFail("Bad null TypedStrings");
     this.methodToKey = Match.notNull(methodToKey).getOrFail("Bad null method name Function");
@@ -71,7 +71,7 @@ public class MappedInvocable implements InvocationHandler {
     trans.add(new MappedObjectTransform(types, methodToKey));
     trans.add(new ProxyReturnTransform());
     trans.add(new EnumStringTransform());
-    trans.add(new TypedStringTransform(types));
+    trans.add(new TypeStringTransform(types));
   }
   
   public Set<MethodTransform> getMethodTransforms() {

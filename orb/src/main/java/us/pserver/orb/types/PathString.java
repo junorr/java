@@ -29,7 +29,7 @@ import java.nio.file.Paths;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class PathString extends AbstractTypedString<Path> {
+public class PathString extends AbstractTypeString<Path> {
   
   public PathString() {
     super(Path.class);

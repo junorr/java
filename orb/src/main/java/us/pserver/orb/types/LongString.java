@@ -26,7 +26,7 @@ package us.pserver.orb.types;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class LongString extends AbstractTypedString<Long> {
+public class LongString extends AbstractTypeString<Long> {
   
   public LongString() {
     super(long.class, Long.class);

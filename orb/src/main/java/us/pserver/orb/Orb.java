@@ -61,7 +61,7 @@ public class Orb {
   public static final Function<Method,String> NAME_AS_ENVIRONMENT_KEY = m->NAME_AS_UNDERSCORED_KEY.apply(m).toUpperCase();
   
   
-  private final TypedStrings types;
+  private final TypeStrings types;
   
   private final Map<String,Object> map;
   
@@ -69,7 +69,7 @@ public class Orb {
   
   
   
-  public Orb(Map<String,Object> map, TypedStrings types, Function<Method,String> methodToKey) {
+  public Orb(Map<String,Object> map, TypeStrings types, Function<Method,String> methodToKey) {
     this.map = Match.notNull(map).getOrFail("Bad null Map");
     this.types = Match.notNull(types)
         .and(t->!t.getTypesList().isEmpty())
@@ -79,8 +79,8 @@ public class Orb {
   }
   
   
-  public static Orb get() {
-    return new Orb(new TreeMap<>(), new TypedStrings(), GETTER_AS_DOTTED_KEY);
+  public static Orb create() {
+    return new Orb(new TreeMap<>(), new TypeStrings(), GETTER_AS_DOTTED_KEY);
   }
   
   
@@ -89,7 +89,7 @@ public class Orb {
   }
   
   
-  public Orb withTypedStrings(TypedStrings types) {
+  public Orb withTypedStrings(TypeStrings types) {
     return new Orb(map, types, methodToKey);
   }
   
@@ -125,7 +125,7 @@ public class Orb {
   public Orb fromConfiguration(OrbConfiguration sm) {
     Map<String,Object> map = (sm.getValuesMap() != null 
         ? sm.getValuesMap() : this.map);
-    TypedStrings types = (sm.getSupportedTypes() != null 
+    TypeStrings types = (sm.getSupportedTypes() != null 
         ? sm.getSupportedTypes() : this.types);
     Function<Method,String> func = (sm.getMethodToKeyFunction() != null 
         ? sm.getMethodToKeyFunction() 

@@ -26,7 +26,7 @@ package us.pserver.orb.types;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class BooleanString extends AbstractTypedString<Boolean> {
+public class BooleanString extends AbstractTypeString<Boolean> {
   
   public BooleanString() {
     super(boolean.class, Boolean.class);

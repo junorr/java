@@ -44,10 +44,10 @@ public class TestMappedObject {
 
   @Test
   public void mappedServerConfig() throws UnknownHostException {
-    ServerConfig cfg = Orb.get()
+    ServerConfig cfg = Orb.create()
         .withMethodToKeyFunction(GETTER_AS_ENVIRONMENT_KEY)
         .create(ServerConfig.class);
-    Host host = Orb.get()
+    Host host = Orb.create()
         .withMethodToKeyFunction(GETTER_AS_ENVIRONMENT_KEY)
         .create(Host.class);
     host.setAddress("127.0.0.1").setPort(8080);
@@ -64,7 +64,7 @@ public class TestMappedObject {
   
   @Test
   public void propertiesServerConfig() throws UnknownHostException, IOException {
-    ServerProperties cfg = Orb.get()
+    ServerProperties cfg = Orb.create()
         .fromProperties(Paths.get("./test.properties"))
         .create(ServerProperties.class);
     cfg.setServerPort(9000).setServerAddress("192.168.1.1");
@@ -84,7 +84,7 @@ public class TestMappedObject {
         ), Map.class
     );
     System.out.printf("=> jsonServerConfig: %s%n", map);
-    ServerConfig cfg = Orb.get()
+    ServerConfig cfg = Orb.create()
         .withMap(map)
         .withMethodToKeyFunction(Orb.GETTER_AS_DOTTED_KEY)
         .create(ServerConfig.class);

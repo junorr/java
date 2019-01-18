@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import us.pserver.tools.Match;
-import us.pserver.orb.TypedStrings;
+import us.pserver.orb.TypeStrings;
 
 /**
  *
@@ -47,7 +47,7 @@ import us.pserver.orb.TypedStrings;
  */
 public class TestTypedStrings {
   
-  private final TypedStrings ts = new TypedStrings();
+  private final TypeStrings ts = new TypeStrings();
   
   @Test
   public void booleanTypedString() {

@@ -26,7 +26,7 @@ package us.pserver.orb.types;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class ByteString extends AbstractTypedString<Byte> {
+public class ByteString extends AbstractTypeString<Byte> {
   
   public ByteString() {
     super(byte.class, Byte.class);

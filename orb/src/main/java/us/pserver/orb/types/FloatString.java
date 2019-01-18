@@ -26,7 +26,7 @@ package us.pserver.orb.types;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class FloatString extends AbstractTypedString<Float> {
+public class FloatString extends AbstractTypeString<Float> {
   
   public FloatString() {
     super(float.class, Float.class);

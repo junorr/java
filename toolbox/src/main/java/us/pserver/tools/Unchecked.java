@@ -55,7 +55,7 @@ public class Unchecked {
         try {
             return function.call();
         } catch (Exception e) {
-            throw unchecked(e);
+            throw Unchecked.<RuntimeException>unchecked(e);
         }
     }
 
@@ -75,7 +75,7 @@ public class Unchecked {
         try {
             method.call();
         } catch (Exception e) {
-            throw unchecked(e);
+            throw Unchecked.<RuntimeException>unchecked(e);
         }
     }
 

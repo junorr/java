@@ -28,7 +28,7 @@ import java.time.Instant;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class InstantString extends AbstractTypedString<Instant> {
+public class InstantString extends AbstractTypeString<Instant> {
   
   public InstantString() {
     super(Instant.class);

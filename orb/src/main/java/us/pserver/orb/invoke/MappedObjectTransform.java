@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.function.Function;
 import us.pserver.orb.Orb;
-import us.pserver.orb.TypedStrings;
+import us.pserver.orb.TypeStrings;
 import us.pserver.tools.Match;
 
 /**
@@ -35,11 +35,11 @@ import us.pserver.tools.Match;
  */
 public class MappedObjectTransform implements MethodTransform<Object> {
   
-  private final TypedStrings types;
+  private final TypeStrings types;
   
   private final Function<Method,String> methodToKey;
   
-  public MappedObjectTransform(TypedStrings types, Function<Method,String> methToKey) {
+  public MappedObjectTransform(TypeStrings types, Function<Method,String> methToKey) {
     this.types = Match.notNull(types).getOrFail("Bad null TypedStrings");
     this.methodToKey = Match.notNull(methToKey).getOrFail("Bad null Function");
   }
@@ -53,7 +53,7 @@ public class MappedObjectTransform implements MethodTransform<Object> {
   
   @Override
   public Object apply(InvocationContext ctx) {
-    return Orb.get()
+    return Orb.create()
         .withMap((Map)ctx.getValue())
         .withMethodToKeyFunction(methodToKey)
         .withTypedStrings(types)

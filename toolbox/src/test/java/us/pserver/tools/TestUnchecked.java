@@ -34,7 +34,7 @@ public class TestUnchecked {
 
   @Test
   public void testThrow() {
-    Arrays.asList("www.google.com", "www.amazon com", "www.apple.com").stream()
+    Arrays.asList("www.google.com", "www.amazon.com", "www.apple.com").stream()
         .map(s -> Unchecked.call(() -> new URI(s)))
         .forEach(System.out::println);
   }

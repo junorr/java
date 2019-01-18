@@ -35,20 +35,20 @@ import us.pserver.orb.Orb;
 public class TestEnvironment {
 
   @Test
-  @Disabled
+  //@Disabled
   public void unixEnvConfig() {
-    UnixEnvConfig cfg = Orb.get().fromEnvironment().create(UnixEnvConfig.class);
+    UnixEnvConfig cfg = Orb.create().fromEnvironment().create(UnixEnvConfig.class);
     System.out.println(cfg);
-    Assertions.assertEquals("juno", cfg.getUsername());
+    Assertions.assertEquals("juno", cfg.getUser());
     Assertions.assertEquals(Paths.get("/home/juno"), cfg.getHome());
-    Assertions.assertEquals(2219, cfg.getSshAgentPid());
+    Assertions.assertEquals(1543, cfg.getSshAgentPid());
     Assertions.assertEquals(1, cfg.getQtAccessibility());
   }
   
   @Disabled
   @Test
   public void windowsEnvConfig() throws NoSuchMethodException {
-    WindowsEnvConfig cfg = Orb.get().fromEnvironment().create(WindowsEnvConfig.class);
+    WindowsEnvConfig cfg = Orb.create().fromEnvironment().create(WindowsEnvConfig.class);
     System.out.println(cfg);
     cfg.defmeth();
     Assertions.assertEquals(4, cfg.getNumberOfProcessors());

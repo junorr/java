@@ -30,7 +30,7 @@ import java.nio.file.Path;
  */
 public interface UnixEnvConfig {
 
-  public String getUsername();
+  public String getUser();
   
   public int getSshAgentPid();
   

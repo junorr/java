@@ -26,7 +26,7 @@ package us.pserver.orb.types;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class DoubleString extends AbstractTypedString<Double> {
+public class DoubleString extends AbstractTypeString<Double> {
   
   public DoubleString() {
     super(double.class, Double.class);

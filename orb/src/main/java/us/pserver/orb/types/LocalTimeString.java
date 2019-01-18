@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class LocalTimeString extends AbstractTypedString<LocalTime> {
+public class LocalTimeString extends AbstractTypeString<LocalTime> {
   
   public LocalTimeString() {
     super(LocalTime.class);
