@@ -36,7 +36,7 @@ public class DefaultExceptionHandle<T extends Throwable> implements ExceptionHan
   
   private final Throwable root;
   
-  private Reflector mirror;
+  private Reflector reflect;
   
 
   public DefaultExceptionHandle(Class<T> exClass, String message, Throwable root) {
@@ -46,7 +46,7 @@ public class DefaultExceptionHandle<T extends Throwable> implements ExceptionHan
     this.exClass = exClass;
     this.message = message;
     this.root = root;
-    this.mirror = Reflector.of(exClass);
+    this.reflect = Reflector.of(exClass);
   }
   
   public DefaultExceptionHandle(Class<T> exClass, String message) {
@@ -74,24 +74,24 @@ public class DefaultExceptionHandle<T extends Throwable> implements ExceptionHan
   
   
   private T create() {
-    return (T) mirror.create();
+    return (T) reflect.create();
   }
 
   
   private T create(String message) {
-    return (T) mirror.selectConstructor(String.class)
+    return (T) reflect.selectConstructor(String.class)
         .create(message);
   }
 
   
   private T create(Throwable root) {
-    return (T) mirror.selectConstructor(Throwable.class)
+    return (T) reflect.selectConstructor(Throwable.class)
         .create(root);
   }
 
   
   private T create(String message, Throwable root) {
-    return (T) mirror.selectConstructor(String.class, Throwable.class)
+    return (T) reflect.selectConstructor(String.class, Throwable.class)
         .create(message, root);
   }
 

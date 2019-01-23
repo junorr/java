@@ -110,28 +110,22 @@ public class Match<T> extends Check<T,IllegalArgumentException> {
   
   
   public static Match<String> notEmpty(String str) {
-    return notNull(str).failWith("Bad null String")
-        .and(s->!s.isEmpty()).failWith("Bad empty String");
+    return of(str, s -> s != null && !s.isEmpty());
   }
   
   
   public static <U extends Collection<?>> Match<U> notEmpty(U col) {
-    return notNull(col).failWith("Bad null Collection")
-        .and(s->!s.isEmpty()).failWith("Bad empty Collection");
+    return of(col, c -> c != null && !c.isEmpty());
   }
   
   
   public static <U> Match<U[]> notEmpty(U[] array) {
-    return notNull(array).failWith("Bad null array")
-        .and(a->Array.getLength(a) > 0).failWith("Bad empty Collection");
+    return of(array, a -> array != null && Array.getLength(a) > 0).failWith("Bad null/empty Collection");
   }
   
   
-  public static Match<Path> exists(Path val) {
-    return notNull(val)
-        .failWith("Bad null Path")
-        .and(p->Files.exists(p))
-        .failWith("Path does not exists");
+  public static Match<Path> exists(Path path) {
+    return of(path, p -> p != null && Files.exists(path)).failWith("Path [%s] does not exists", path);
   }
   
   
@@ -141,10 +135,7 @@ public class Match<T> extends Check<T,IllegalArgumentException> {
   
   
   public static Match<File> exists(File val) {
-    return notNull(val)
-        .failWith("Bad null File")
-        .and(f->Files.exists(f.toPath()))
-        .failWith("File does not exists");
+    return of(val, f -> f != null && Files.exists(f.toPath())).failWith("File [%s] does not exists", val);
   }
   
   
@@ -154,9 +145,9 @@ public class Match<T> extends Check<T,IllegalArgumentException> {
   
   
   public static <U extends Number> Match<U> notBetween(U val, U min, U max) {
-    notNull(val).failIfNotMatch();
-    notNull(min).failIfNotMatch();
-    notNull(max).failIfNotMatch();
+    notNull(val).failIfNotMatch("Match: Bad null val");
+    notNull(min).failIfNotMatch("Match: Bad null min");
+    notNull(max).failIfNotMatch("Match: Bad null max");
     return new Match<>(val, v->
         Double.compare(v.doubleValue(), min.doubleValue()) >= 0 
             && Double.compare(v.doubleValue(), max.doubleValue()) <= 0,
@@ -166,9 +157,9 @@ public class Match<T> extends Check<T,IllegalArgumentException> {
   
   
   public static <U extends Number> Match<U> notBetweenExclusive(U val, U min, U max) {
-    notNull(val).failIfNotMatch();
-    notNull(min).failIfNotMatch();
-    notNull(max).failIfNotMatch();
+    notNull(val).failIfNotMatch("Match: Bad null val");
+    notNull(min).failIfNotMatch("Match: Bad null min");
+    notNull(max).failIfNotMatch("Match: Bad null max");
     return new Match<>(val, v->
         Double.compare(v.doubleValue(), min.doubleValue()) > 0 
             && Double.compare(v.doubleValue(), max.doubleValue()) < 0,
@@ -178,9 +169,9 @@ public class Match<T> extends Check<T,IllegalArgumentException> {
   
   
   public static <U extends Date> Match<U> notBetween(U val, U min, U max) {
-    notNull(val).failIfNotMatch();
-    notNull(min).failIfNotMatch();
-    notNull(max).failIfNotMatch();
+    notNull(val).failIfNotMatch("Match: Bad null val");
+    notNull(min).failIfNotMatch("Match: Bad null min");
+    notNull(max).failIfNotMatch("Match: Bad null max");
     return new Match<>(val, v->
         v.compareTo(min) >= 0 && v.compareTo(max) <= 0,
         String.format("Value not Between parameters !(%s <= %s <= %s)", min, val, max)
@@ -189,9 +180,9 @@ public class Match<T> extends Check<T,IllegalArgumentException> {
   
   
   public static <U extends Date> Match<U> notBetweenExclusive(U val, U min, U max) {
-    notNull(val).failIfNotMatch();
-    notNull(min).failIfNotMatch();
-    notNull(max).failIfNotMatch();
+    notNull(val).failIfNotMatch("Match: Bad null val");
+    notNull(min).failIfNotMatch("Match: Bad null min");
+    notNull(max).failIfNotMatch("Match: Bad null max");
     return new Match<>(val, v->
         v.compareTo(min) > 0 && v.compareTo(max) < 0,
         String.format("Value not Between parameters !(%s < %s < %s)", min, val, max)

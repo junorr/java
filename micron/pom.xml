@@ -35,6 +35,11 @@
             <artifactId>ignite-core</artifactId>
             <version>2.6.0</version>
         </dependency>
+        <dependency>
+            <groupId>us.pserver</groupId>
+            <artifactId>toolbox</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     
     <properties>
@@ -87,5 +92,5 @@
         </plugin>
       </plugins>
     </build>
-    
+    <name>micron</name>
 </project>
