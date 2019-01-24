@@ -24,9 +24,8 @@ package us.pserver.micron.security;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-import us.pserver.micron.security.api.IGroup;
-import us.pserver.micron.security.api.IUser;
 import us.pserver.tools.Match;
 
 /**
@@ -34,7 +33,7 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/01/2019
  */
-public class Group implements IGroup {
+public class Group {
   
   private final String name;
   
@@ -56,45 +55,77 @@ public class Group implements IGroup {
   }
   
   
-  @Override
   public String getName() {
     return name;
   }
   
-  @Override
   public Instant getCreated() {
     return created;
   }
   
-  @Override
   public Set<String> getUsernames() {
     return usernames;
   }
   
-  @Override
-  public boolean contains(IUser user) {
+  public boolean contains(User user) {
     return usernames.contains(user.getName());
   }
   
-  @Override
-  public Builder edit() {
+  public GroupBuilder edit() {
     return builder()
         .setName(name)
         .setCreated(created)
         .setUsernames(usernames);
   }
+
+
+  @Override
+  public int hashCode() {
+    int hash = 3;
+    hash = 47 * hash + Objects.hashCode(this.name);
+    hash = 47 * hash + Objects.hashCode(this.usernames);
+    return hash;
+  }
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final Group other = (Group) obj;
+    if (!Objects.equals(this.name, other.name)) {
+      return false;
+    }
+    if (!Objects.equals(this.usernames, other.usernames)) {
+      return false;
+    }
+    return true;
+  }
+
+
+  @Override
+  public String toString() {
+    return "Group{" + "name=" + name + ", usernames=" + usernames + ", created=" + created + '}';
+  }
   
   
   
-  public static Builder builder() {
-    return new Builder();
+  public static GroupBuilder builder() {
+    return new GroupBuilder();
   }
   
   
   
   
   
-  public static class Builder implements IBuilder {
+  public static class GroupBuilder {
 
     private String name;
     
@@ -103,61 +134,51 @@ public class Group implements IGroup {
     private Set<String> usernames = new HashSet<>();
     
     
-    @Override
     public String getName() {
       return name;
     }
     
-    @Override
-    public Builder setName(String name) {
+    public GroupBuilder setName(String name) {
       this.name = name;
       return this;
     }
     
     
-    @Override
     public Instant getCreated() {
       return created;
     }
     
-    @Override
-    public Builder setCreated(Instant created) {
+    public GroupBuilder setCreated(Instant created) {
       this.created = created;
       return this;
     }
     
     
-    @Override
     public Set<String> getUsernames() {
       return usernames;
     }
     
-    @Override
-    public Builder setUsernames(Set<String> usernames) {
+    public GroupBuilder setUsernames(Set<String> usernames) {
       this.usernames = new HashSet(usernames);
       return this;
     }
     
-    @Override
-    public Builder clearUsernames() {
+    public GroupBuilder clearUsernames() {
       this.usernames.clear();
       return this;
     }
     
-    @Override
-    public Builder addUsername(String username) {
+    public GroupBuilder addUsername(String username) {
       usernames.add(Match.notEmpty(username).getOrFail("Bad null/empty username"));
       return this;
     }
     
-    @Override
-    public Builder addUser(IUser user) {
+    public GroupBuilder addUser(User user) {
       usernames.add(Match.notNull(user).getOrFail("Bad null user").getName());
       return this;
     }
     
     
-    @Override
     public Group build() {
       return new Group(name, usernames, created);
     }

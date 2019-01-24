@@ -24,9 +24,8 @@ package us.pserver.micron.security;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-import us.pserver.micron.security.api.IGroup;
-import us.pserver.micron.security.api.IRole;
 import us.pserver.tools.Match;
 
 /**
@@ -34,132 +33,177 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/01/2019
  */
-public class Role implements IRole {
+public class Role {
   
   private final String name;
+  
+  private final boolean allowed;
   
   private final Set<String> groups;
   
   private final Instant created;
   
   
-  public Role(String name, Set<String> groups, Instant created) {
+  public Role(String name, boolean allowed, Set<String> groups, Instant created) {
     this.name = Match.notEmpty(name).getOrFail("Bad null/empty name");
+    this.allowed = allowed;
     this.groups = Collections.unmodifiableSet(
         Match.notNull(groups).getOrFail("Bad null/empty groups")
     );
     this.created = Match.notNull(created).getOrFail("Bad null created");
   }
   
-  public Role(String name, Set<String> groups) {
-    this(name, groups, Instant.now());
+  public Role(String name, boolean allowed, Set<String> groups) {
+    this(name, allowed, groups, Instant.now());
   }
   
   
-  @Override
   public String getName() {
     return name;
   }
   
-  @Override
+  public boolean isAllowed() {
+    return allowed;
+  }
+  
   public Instant getCreated() {
     return created;
   }
   
-  @Override
   public Set<String> getGroups() {
     return groups;
   }
   
-  @Override
-  public boolean contains(IGroup group) {
+  public boolean contains(Group group) {
     return groups.contains(group.getName());
   }
   
-  @Override
-  public Builder edit() {
+  public RoleBuilder edit() {
     return builder()
         .setName(name)
         .setCreated(created)
         .setGroups(groups);
   }
+
+
+  @Override
+  public int hashCode() {
+    int hash = 3;
+    hash = 71 * hash + Objects.hashCode(this.name);
+    hash = 71 * hash + (this.allowed ? 1 : 0);
+    hash = 71 * hash + Objects.hashCode(this.groups);
+    return hash;
+  }
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final Role other = (Role) obj;
+    if (this.allowed != other.allowed) {
+      return false;
+    }
+    if (!Objects.equals(this.name, other.name)) {
+      return false;
+    }
+    if (!Objects.equals(this.groups, other.groups)) {
+      return false;
+    }
+    return true;
+  }
+
+
+  @Override
+  public String toString() {
+    return "Role{" + "name=" + name + ", allowed=" + allowed + ", groups=" + groups + ", created=" + created + '}';
+  }
   
   
   
-  public static Builder builder() {
-    return new Builder();
+  public static RoleBuilder builder() {
+    return new RoleBuilder();
   }
   
   
   
   
   
-  public static class Builder implements IBuilder {
+  public static class RoleBuilder {
 
     private String name;
+    
+    private boolean allowed;
     
     private Instant created = Instant.now();
     
     private Set<String> groups = new HashSet<>();
     
     
-    @Override
     public String getName() {
       return name;
     }
     
-    @Override
-    public Builder setName(String name) {
+    public RoleBuilder setName(String name) {
       this.name = name;
       return this;
     }
     
     
-    @Override
+    public boolean isAllowed() {
+      return allowed;
+    }
+    
+    public RoleBuilder setAllowed(boolean allowed) {
+      this.allowed = allowed;
+      return this;
+    }
+    
+    
     public Instant getCreated() {
       return created;
     }
     
-    @Override
-    public Builder setCreated(Instant created) {
+    public RoleBuilder setCreated(Instant created) {
       this.created = created;
       return this;
     }
     
     
-    @Override
     public Set<String> getGroups() {
       return groups;
     }
     
-    @Override
-    public Builder setGroups(Set<String> usernames) {
+    public RoleBuilder setGroups(Set<String> usernames) {
       this.groups = new HashSet(usernames);
       return this;
     }
     
-    @Override
-    public Builder clearGroups() {
+    public RoleBuilder clearGroups() {
       this.groups.clear();
       return this;
     }
     
-    @Override
-    public Builder addGroupName(String groupName) {
+    public RoleBuilder addGroupName(String groupName) {
       groups.add(Match.notEmpty(groupName).getOrFail("Bad null/empty group name"));
       return this;
     }
     
-    @Override
-    public Builder addGroup(IGroup group) {
+    public RoleBuilder addGroup(Group group) {
       groups.add(Match.notNull(group).getOrFail("Bad null user").getName());
       return this;
     }
     
     
-    @Override
     public Role build() {
-      return new Role(name, groups, created);
+      return new Role(name, allowed, groups, created);
     }
     
   }

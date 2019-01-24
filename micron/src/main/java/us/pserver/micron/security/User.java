@@ -26,7 +26,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Objects;
-import us.pserver.micron.security.api.IUser;
 import us.pserver.tools.Hash;
 import us.pserver.tools.Match;
 
@@ -35,7 +34,7 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/01/2019
  */
-public class User implements IUser {
+public class User {
 
   private final String name;
   
@@ -64,38 +63,31 @@ public class User implements IUser {
   }
   
   
-  @Override
   public String getName() {
     return name;
   }
   
-  @Override
   public String getFullName() {
     return fullName;
   }
   
-  @Override
   public String getEmail() {
     return email;
   }
   
-  @Override
   public String getHash() {
     return hash;
   }
   
-  @Override
   public LocalDate getBirth() {
     return birth;
   }
   
-  @Override
   public Instant getCreated() {
     return created;
   }
   
   
-  @Override
   public boolean authenticate(String name, String hash) {
     return authenticate(User.builder()
         .setName(name)
@@ -105,7 +97,6 @@ public class User implements IUser {
     );
   }
   
-  @Override
   public boolean authenticate(String name, char[] password) {
     return authenticate(User.builder()
         .setName(name)
@@ -115,14 +106,14 @@ public class User implements IUser {
     );
   }
   
-  public boolean authenticate(IUser user) {
+  public boolean authenticate(User user) {
     return user != null
         && this.name.equals(user.getName())
         && this.hash.equals(user.getHash());
   }
   
   
-  public Builder edit() {
+  public UserBuilder edit() {
     return builder()
         .setName(name)
         .setEmail(email)
@@ -150,10 +141,10 @@ public class User implements IUser {
     if(obj == null) {
       return false;
     }
-    if(!IUser.class.isAssignableFrom(obj.getClass())) {
+    if(!User.class.isAssignableFrom(obj.getClass())) {
       return false;
     }
-    final IUser other = (IUser) obj;
+    final User other = (User) obj;
     if(!Objects.equals(this.name, other.getName())) {
       return false;
     }
@@ -174,15 +165,15 @@ public class User implements IUser {
   
   
   
-  public static Builder builder() {
-    return new Builder();
+  public static UserBuilder builder() {
+    return new UserBuilder();
   }
   
   
   
   
   
-  public static class Builder implements IBuilder {
+  public static class UserBuilder {
     
     private String name;
     
@@ -196,60 +187,51 @@ public class User implements IUser {
     
     private Instant created;
     
-    public Builder() {
+    public UserBuilder() {
       created = Instant.now();
     }
     
     
-    @Override
     public String getName() {
       return name;
     }
     
-    @Override
-    public Builder setName(String name) {
+    public UserBuilder setName(String name) {
       this.name = name;
       return this;
     }
     
     
-    @Override
     public String getFullName() {
       return fullName;
     }
     
-    @Override
-    public Builder setFullName(String fullName) {
+    public UserBuilder setFullName(String fullName) {
       this.fullName = fullName;
       return this;
     }
     
     
-    @Override
     public String getEmail() {
       return email;
     }
     
-    @Override
-    public Builder setEmail(String email) {
+    public UserBuilder setEmail(String email) {
       this.email = email;
       return this;
     }
     
     
-    @Override
     public String getHash() {
       return hash;
     }
     
-    @Override
-    public Builder setHash(String hash) {
+    public UserBuilder setHash(String hash) {
       this.hash = hash;
       return this;
     }
     
-    @Override
-    public Builder setPassword(char[] password) {
+    public UserBuilder setPassword(char[] password) {
       byte[] bpass = StandardCharsets.UTF_8.encode(
         CharBuffer.wrap(
             Match.notNull(password).getOrFail("Bad null password"))
@@ -259,31 +241,26 @@ public class User implements IUser {
     }
     
     
-    @Override
     public LocalDate getBirth() {
       return birth;
     }
     
-    @Override
-    public Builder setBirth(LocalDate birth) {
+    public UserBuilder setBirth(LocalDate birth) {
       this.birth = birth;
       return this;
     }
     
     
-    @Override
     public Instant getCreated() {
       return created;
     }
     
-    @Override
-    public Builder setCreated(Instant created) {
+    public UserBuilder setCreated(Instant created) {
       this.created = created;
       return this;
     }
     
     
-    @Override
     public User build() {
       return new User(name, fullName, email, hash, birth, created);
     }

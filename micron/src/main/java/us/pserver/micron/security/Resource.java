@@ -24,9 +24,8 @@ package us.pserver.micron.security;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-import us.pserver.micron.security.api.IResource;
-import us.pserver.micron.security.api.IRole;
 import us.pserver.tools.Match;
 
 /**
@@ -34,7 +33,7 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/01/2019
  */
-public class Resource implements IResource {
+public class Resource {
   
   private final String name;
   
@@ -56,110 +55,139 @@ public class Resource implements IResource {
   }
   
   
-  @Override
   public String getName() {
     return name;
   }
   
-  @Override
   public Instant getCreated() {
     return created;
   }
   
-  @Override
   public Set<String> getRoles() {
     return roles;
   }
   
-  @Override
-  public boolean contains(IRole role) {
+  public boolean contains(Role role) {
     return roles.contains(role.getName());
   }
   
-  @Override
-  public Builder edit() {
+  public ResourceBuilder edit() {
     return builder()
         .setName(name)
         .setCreated(created)
         .setRoles(roles);
   }
+
+
+  @Override
+  public int hashCode() {
+    int hash = 3;
+    hash = 71 * hash + Objects.hashCode(this.name);
+    hash = 71 * hash + Objects.hashCode(this.roles);
+    return hash;
+  }
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final Resource other = (Resource) obj;
+    if (!Objects.equals(this.name, other.name)) {
+      return false;
+    }
+    if (!Objects.equals(this.roles, other.roles)) {
+      return false;
+    }
+    return true;
+  }
+
+
+  @Override
+  public String toString() {
+    return "Resource{" + "name=" + name + ", roles=" + roles + ", created=" + created + '}';
+  }
   
   
   
-  public static Builder builder() {
-    return new Builder();
+  public static ResourceBuilder builder() {
+    return new ResourceBuilder();
   }
   
   
   
   
   
-  public static class Builder implements IBuilder {
+  public static class ResourceBuilder {
 
     private String name;
     
-    private Instant created = Instant.now();
+    private Instant created;
     
-    private Set<String> groups = new HashSet<>();
+    private Set<String> roles;
     
     
-    @Override
+    public ResourceBuilder() {
+      this.name = null;
+      this.created = Instant.now();
+      this.roles = new HashSet<>();
+    }
+    
+    
     public String getName() {
       return name;
     }
     
-    @Override
-    public Builder setName(String name) {
+    public ResourceBuilder setName(String name) {
       this.name = name;
       return this;
     }
     
     
-    @Override
     public Instant getCreated() {
       return created;
     }
     
-    @Override
-    public Builder setCreated(Instant created) {
+    public ResourceBuilder setCreated(Instant created) {
       this.created = created;
       return this;
     }
     
     
-    @Override
     public Set<String> getRoles() {
-      return groups;
+      return roles;
     }
     
-    @Override
-    public Builder setRoles(Set<String> usernames) {
-      this.groups = new HashSet(usernames);
+    public ResourceBuilder setRoles(Set<String> usernames) {
+      this.roles = new HashSet(usernames);
       return this;
     }
     
-    @Override
-    public Builder clearRoles() {
-      this.groups.clear();
+    public ResourceBuilder clearRoles() {
+      this.roles.clear();
       return this;
     }
     
-    @Override
-    public Builder addRole(String roleName) {
-      groups.add(Match.notEmpty(roleName).getOrFail("Bad null/empty role name"));
+    public ResourceBuilder addRole(String roleName) {
+      roles.add(Match.notEmpty(roleName).getOrFail("Bad null/empty role name"));
       return this;
     }
     
-    @Override
-    public Builder addRole(IRole role) {
-      groups.add(Match.notNull(role).getOrFail("Bad null role").getName());
+    public ResourceBuilder addRole(Role role) {
+      roles.add(Match.notNull(role).getOrFail("Bad null role").getName());
       return this;
     }
     
     
-    @Override
     public Resource build() {
-      return new Resource(name, groups, created);
+      return new Resource(name, roles, created);
     }
     
   }
