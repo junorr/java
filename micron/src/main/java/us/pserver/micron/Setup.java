@@ -21,6 +21,15 @@
 
 package us.pserver.micron;
 
+import org.apache.ignite.Ignite;
+import org.apache.ignite.Ignition;
+import org.apache.ignite.cache.CacheMode;
+import org.apache.ignite.configuration.CacheConfiguration;
+import org.apache.ignite.configuration.DataStorageConfiguration;
+import org.apache.ignite.configuration.IgniteConfiguration;
+import us.pserver.micron.security.User;
+import us.pserver.tools.Match;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -28,4 +37,29 @@ package us.pserver.micron;
  */
 public class Setup {
 
+  private final Ignite ignite;
+  
+  
+  public Setup(IgniteConfiguration config) {
+    this.ignite = Ignition.start(Match.notNull(config).getOrFail("Bad null IgniteConfiguration"));
+  }
+  
+  
+  public Ignite ignite() {
+    return ignite;
+  }
+  
+  
+  public static Setup create(int ... portRange) {
+    IgniteConfiguration cfg = new IgniteConfiguration();
+    CacheConfiguration ccf = new CacheConfiguration();
+    ccf.setCacheMode(CacheMode.REPLICATED);
+    cfg.setCacheConfiguration(ccf);
+    cfg.setClassLoader(User.class.getClassLoader());
+    DataStorageConfiguration scf = new DataStorageConfiguration();
+    scf.getDefaultDataRegionConfiguration().setPersistenceEnabled(true);
+    cfg.setDataStorageConfiguration(scf);
+    
+  }
+  
 }

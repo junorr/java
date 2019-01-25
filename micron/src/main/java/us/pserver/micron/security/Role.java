@@ -22,9 +22,7 @@
 package us.pserver.micron.security;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.Collection;
 import java.util.Set;
 import us.pserver.tools.Match;
 
@@ -33,24 +31,14 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/01/2019
  */
-public class Role {
-  
-  private final String name;
+public class Role extends AbstractGroup {
   
   private final boolean allowed;
   
-  private final Set<String> groups;
-  
-  private final Instant created;
-  
   
   public Role(String name, boolean allowed, Set<String> groups, Instant created) {
-    this.name = Match.notEmpty(name).getOrFail("Bad null/empty name");
+    super(name, groups, created);
     this.allowed = allowed;
-    this.groups = Collections.unmodifiableSet(
-        Match.notNull(groups).getOrFail("Bad null/empty groups")
-    );
-    this.created = Match.notNull(created).getOrFail("Bad null created");
   }
   
   public Role(String name, boolean allowed, Set<String> groups) {
@@ -58,74 +46,26 @@ public class Role {
   }
   
   
-  public String getName() {
-    return name;
-  }
-  
   public boolean isAllowed() {
     return allowed;
   }
   
-  public Instant getCreated() {
-    return created;
-  }
-  
   public Set<String> getGroups() {
-    return groups;
+    return items;
   }
   
-  public boolean contains(Group group) {
-    return groups.contains(group.getName());
+  public boolean containsGroup(Group group) {
+    return items.contains(group.getName());
   }
   
+  @Override
   public RoleBuilder edit() {
-    return builder()
+    return (RoleBuilder) builder()
         .setName(name)
         .setCreated(created)
-        .setGroups(groups);
+        .setItems(items);
   }
 
-
-  @Override
-  public int hashCode() {
-    int hash = 3;
-    hash = 71 * hash + Objects.hashCode(this.name);
-    hash = 71 * hash + (this.allowed ? 1 : 0);
-    hash = 71 * hash + Objects.hashCode(this.groups);
-    return hash;
-  }
-
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final Role other = (Role) obj;
-    if (this.allowed != other.allowed) {
-      return false;
-    }
-    if (!Objects.equals(this.name, other.name)) {
-      return false;
-    }
-    if (!Objects.equals(this.groups, other.groups)) {
-      return false;
-    }
-    return true;
-  }
-
-
-  @Override
-  public String toString() {
-    return "Role{" + "name=" + name + ", allowed=" + allowed + ", groups=" + groups + ", created=" + created + '}';
-  }
-  
   
   
   public static RoleBuilder builder() {
@@ -136,24 +76,13 @@ public class Role {
   
   
   
-  public static class RoleBuilder {
+  public static class RoleBuilder extends AbstractGroupBuilder<Role> {
 
-    private String name;
-    
     private boolean allowed;
     
-    private Instant created = Instant.now();
     
-    private Set<String> groups = new HashSet<>();
-    
-    
-    public String getName() {
-      return name;
-    }
-    
-    public RoleBuilder setName(String name) {
-      this.name = name;
-      return this;
+    public RoleBuilder() {
+      super();
     }
     
     
@@ -166,44 +95,24 @@ public class Role {
       return this;
     }
     
-    
-    public Instant getCreated() {
-      return created;
-    }
-    
-    public RoleBuilder setCreated(Instant created) {
-      this.created = created;
-      return this;
-    }
-    
-    
-    public Set<String> getGroups() {
-      return groups;
-    }
-    
-    public RoleBuilder setGroups(Set<String> usernames) {
-      this.groups = new HashSet(usernames);
-      return this;
-    }
-    
-    public RoleBuilder clearGroups() {
-      this.groups.clear();
-      return this;
-    }
-    
-    public RoleBuilder addGroupName(String groupName) {
-      groups.add(Match.notEmpty(groupName).getOrFail("Bad null/empty group name"));
+    public RoleBuilder addGroups(Collection<Group> groups) {
+      Match.notNull(groups).getOrFail("Bad null users Collection").forEach(this::addGroup);
       return this;
     }
     
     public RoleBuilder addGroup(Group group) {
-      groups.add(Match.notNull(group).getOrFail("Bad null user").getName());
+      this.items.add(Match.notNull(group).getOrFail("Bad null User").getName());
       return this;
     }
     
+    public RoleBuilder clearGroups() {
+      this.items.clear();
+      return this;
+    }
     
+    @Override
     public Role build() {
-      return new Role(name, allowed, groups, created);
+      return new Role(name, allowed, items, created);
     }
     
   }

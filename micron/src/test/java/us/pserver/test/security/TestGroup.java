@@ -29,7 +29,7 @@ import java.util.Set;
 import static org.apache.ignite.internal.processors.authentication.User.password;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.micron.security.Group;
+import us.pserver.micron.security.AbstractGroup;
 import us.pserver.micron.security.User;
 
 /**
@@ -49,7 +49,7 @@ public class TestGroup {
       usernames.add("foo");
       usernames.add("bar");
       
-      Group group = Group.builder()
+      AbstractGroup group = AbstractGroup.builder()
           .setName(name)
           .setCreated(created)
           .addUsername("juno")
@@ -80,7 +80,7 @@ public class TestGroup {
   @Test
   public void testEditGroup() {
     try {
-      Group group = Group.builder()
+      AbstractGroup group = AbstractGroup.builder()
           .setName("admin")
           .addUsername("john")
           .addUsername("fo")
