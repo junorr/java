@@ -26,6 +26,10 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Objects;
+import us.pserver.micron.security.api.NamedBean;
+import us.pserver.micron.security.api.NamedBeanBuilder;
+import us.pserver.micron.security.api.UserApi;
+import us.pserver.micron.security.api.UserBuilderApi;
 import us.pserver.tools.Hash;
 import us.pserver.tools.Match;
 
@@ -34,7 +38,7 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/01/2019
  */
-public class User {
+public class User implements UserApi {
 
   private final String name;
   
@@ -63,31 +67,38 @@ public class User {
   }
   
   
+  @Override
   public String getName() {
     return name;
   }
   
+  @Override
   public String getFullName() {
     return fullName;
   }
   
+  @Override
   public String getEmail() {
     return email;
   }
   
+  @Override
   public String getHash() {
     return hash;
   }
   
+  @Override
   public LocalDate getBirth() {
     return birth;
   }
   
+  @Override
   public Instant getCreated() {
     return created;
   }
   
   
+  @Override
   public boolean authenticate(String name, String hash) {
     return authenticate(User.builder()
         .setName(name)
@@ -97,6 +108,7 @@ public class User {
     );
   }
   
+  @Override
   public boolean authenticate(String name, char[] password) {
     return authenticate(User.builder()
         .setName(name)
@@ -106,14 +118,16 @@ public class User {
     );
   }
   
-  public boolean authenticate(User user) {
+  @Override
+  public boolean authenticate(UserApi user) {
     return user != null
         && this.name.equals(user.getName())
         && this.hash.equals(user.getHash());
   }
   
   
-  public UserBuilder edit() {
+  @Override
+  public UserBuilderApi edit() {
     return builder()
         .setName(name)
         .setEmail(email)
@@ -165,7 +179,7 @@ public class User {
   
   
   
-  public static UserBuilder builder() {
+  public static UserBuilderApi builder() {
     return new UserBuilder();
   }
   
@@ -173,7 +187,7 @@ public class User {
   
   
   
-  public static class UserBuilder {
+  public static class UserBuilder implements UserBuilderApi {
     
     private String name;
     
@@ -191,47 +205,52 @@ public class User {
       created = Instant.now();
     }
     
-    
+    @Override
     public String getName() {
       return name;
     }
     
-    public UserBuilder setName(String name) {
+    @Override
+    public UserBuilderApi setName(String name) {
       this.name = name;
       return this;
     }
     
-    
+    @Override
     public String getFullName() {
       return fullName;
     }
     
-    public UserBuilder setFullName(String fullName) {
+    @Override
+    public UserBuilderApi setFullName(String fullName) {
       this.fullName = fullName;
       return this;
     }
     
-    
+    @Override
     public String getEmail() {
       return email;
     }
     
-    public UserBuilder setEmail(String email) {
+    @Override
+    public UserBuilderApi setEmail(String email) {
       this.email = email;
       return this;
     }
     
-    
+    @Override
     public String getHash() {
       return hash;
     }
     
-    public UserBuilder setHash(String hash) {
+    @Override
+    public UserBuilderApi setHash(String hash) {
       this.hash = hash;
       return this;
     }
     
-    public UserBuilder setPassword(char[] password) {
+    @Override
+    public UserBuilderApi setPassword(char[] password) {
       byte[] bpass = StandardCharsets.UTF_8.encode(
         CharBuffer.wrap(
             Match.notNull(password).getOrFail("Bad null password"))
@@ -240,35 +259,36 @@ public class User {
       return this;
     }
     
-    
+    @Override
     public LocalDate getBirth() {
       return birth;
     }
     
-    public UserBuilder setBirth(LocalDate birth) {
+    @Override
+    public UserBuilderApi setBirth(LocalDate birth) {
       this.birth = birth;
       return this;
     }
     
-    
+    @Override
     public Instant getCreated() {
       return created;
     }
     
-    public UserBuilder setCreated(Instant created) {
+    @Override
+    public UserBuilderApi setCreated(Instant created) {
       this.created = created;
       return this;
     }
     
-    
-    public User build() {
+    @Override
+    public UserApi build() {
       return new User(name, fullName, email, hash, birth, created);
     }
     
-    
     @Override
-    public String toString() {
-      return "User.Builder{" + "name=" + name + ", fullName=" + fullName + ", email=" + email + ", hash=" + hash + ", birth=" + birth + ", created=" + created + '}';
+    public UserBuilderApi edit() {
+      return this;
     }
     
   }

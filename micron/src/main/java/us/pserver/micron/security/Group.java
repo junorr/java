@@ -22,16 +22,16 @@
 package us.pserver.micron.security;
 
 import java.time.Instant;
-import java.util.Collection;
 import java.util.Set;
-import us.pserver.tools.Match;
+import us.pserver.micron.security.api.GroupApi;
+import us.pserver.micron.security.api.GroupBuilderApi;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 25/01/2019
  */
-public class Group extends AbstractGroup {
+public class Group extends AbstractNamedSet implements GroupApi {
 
   public Group(String name, Set<String> members, Instant created) {
     super(name, members, created);
@@ -41,19 +41,11 @@ public class Group extends AbstractGroup {
     super(name, members);
   }
   
-  public Set<String> getMembers() {
-    return items;
-  }
-  
-  public boolean containsUser(User user) {
-    return contains(user.getName());
-  }
-  
   @Override
   public GroupBuilder edit() {
     return (GroupBuilder) new GroupBuilder()
         .setCreated(created)
-        .setItems(items)
+        .addItems(items)
         .setName(name);
   }
   
@@ -67,29 +59,43 @@ public class Group extends AbstractGroup {
   
   
   
-  public static class GroupBuilder extends AbstractGroupBuilder<Group> {
+  public static class GroupBuilder extends AbstractNamedSetBuilder implements GroupBuilderApi {
     
     public GroupBuilder() {
       super();
     }
     
-    public GroupBuilder addUsers(Collection<User> users) {
-      Match.notNull(users).getOrFail("Bad null users Collection").forEach(this::addUser);
-      return this;
-    }
-    
-    public GroupBuilder addUser(User user) {
-      this.items.add(Match.notNull(user).getOrFail("Bad null User").getName());
-      return this;
-    }
-    
-    public GroupBuilder clearUsers() {
-      this.items.clear();
+    @Override
+    public GroupBuilder setName(String name) {
+      super.setName(name);
       return this;
     }
     
     @Override
-    public Group build() {
+    public GroupBuilder setCreated(Instant created) {
+      super.setCreated(created);
+      return this;
+    }
+    
+    @Override
+    public GroupBuilder addItem(String item) {
+      super.addItem(item);
+      return this;
+    }
+    
+    @Override
+    public GroupBuilder clearItems() {
+      super.clearItems();
+      return this;
+    }
+    
+    @Override
+    public GroupBuilderApi edit() {
+      return this;
+    }
+    
+    @Override
+    public GroupApi build() {
       return new Group(name, items, created);
     }
     

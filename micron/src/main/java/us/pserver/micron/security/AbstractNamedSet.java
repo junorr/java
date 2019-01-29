@@ -22,11 +22,11 @@
 package us.pserver.micron.security;
 
 import java.time.Instant;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import us.pserver.micron.security.api.NamedSet;
 import us.pserver.tools.Match;
 
 /**
@@ -34,7 +34,7 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 22/01/2019
  */
-public abstract class AbstractGroup {
+public abstract class AbstractNamedSet implements NamedSet {
   
   protected final String name;
   
@@ -43,7 +43,7 @@ public abstract class AbstractGroup {
   protected final Instant created;
   
   
-  protected AbstractGroup(String name, Set<String> items, Instant created) {
+  protected AbstractNamedSet(String name, Set<String> items, Instant created) {
     this.name = Match.notEmpty(name).getOrFail("Bad null/empty name");
     this.items = Collections.unmodifiableSet(
         Match.notNull(items).getOrFail("Bad null/empty items Set")
@@ -51,30 +51,26 @@ public abstract class AbstractGroup {
     this.created = Match.notNull(created).getOrFail("Bad null created Instant");
   }
   
-  protected AbstractGroup(String name, Set<String> members) {
+  protected AbstractNamedSet(String name, Set<String> members) {
     this(name, members, Instant.now());
   }
   
   
+  @Override
   public String getName() {
     return name;
   }
   
+  @Override
   public Instant getCreated() {
     return created;
   }
   
-  protected Set<String> getItems() {
+  @Override
+  public Set<String> getItems() {
     return items;
   }
   
-  public boolean contains(String item) {
-    return items.contains(item);
-  }
-  
-  public abstract <B extends AbstractGroupBuilder> B edit();
-
-
   @Override
   public int hashCode() {
     int hash = 3;
@@ -82,8 +78,7 @@ public abstract class AbstractGroup {
     hash = 47 * hash + Objects.hashCode(this.items);
     return hash;
   }
-
-
+  
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -95,7 +90,7 @@ public abstract class AbstractGroup {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final AbstractGroup other = (AbstractGroup) obj;
+    final AbstractNamedSet other = (AbstractNamedSet) obj;
     if (!Objects.equals(this.name, other.name)) {
       return false;
     }
@@ -104,8 +99,7 @@ public abstract class AbstractGroup {
     }
     return true;
   }
-
-
+  
   @Override
   public String toString() {
     return name + "{ items=" + items + ", created=" + created + " }";
@@ -115,7 +109,7 @@ public abstract class AbstractGroup {
   
   
   
-  public static abstract class AbstractGroupBuilder<T extends AbstractGroup> {
+  public static abstract class AbstractNamedSetBuilder {
 
     protected String name;
     
@@ -124,7 +118,7 @@ public abstract class AbstractGroup {
     protected Instant created;
     
     
-    public AbstractGroupBuilder() {
+    public AbstractNamedSetBuilder() {
       this.name = null;
       this.created = Instant.now();
       this.items = new HashSet<>();
@@ -135,7 +129,7 @@ public abstract class AbstractGroup {
       return name;
     }
     
-    public AbstractGroupBuilder setName(String name) {
+    public AbstractNamedSetBuilder setName(String name) {
       this.name = name;
       return this;
     }
@@ -145,27 +139,25 @@ public abstract class AbstractGroup {
       return created;
     }
     
-    public AbstractGroupBuilder setCreated(Instant created) {
+    public AbstractNamedSetBuilder setCreated(Instant created) {
       this.created = created;
       return this;
     }
     
     
-    protected Set<String> getItems() {
+    public Set<String> getItems() {
       return items;
     }
     
-    protected AbstractGroupBuilder setItems(Collection<String> items) {
-      this.items.addAll(Match.notNull(items).getOrFail("Bad null items Set"));
-      return this;
-    }
-    
-    public AbstractGroupBuilder add(String item) {
+    public AbstractNamedSetBuilder addItem(String item) {
       this.items.add(Match.notEmpty(item).getOrFail("Bad null/empty item"));
       return this;
     }
     
-    public abstract T build();
+    public AbstractNamedSetBuilder clearItems() {
+      this.items.clear();
+      return this;
+    }
     
   }
 

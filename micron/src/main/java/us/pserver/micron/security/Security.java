@@ -26,6 +26,10 @@ import java.util.Optional;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.IgniteCache;
 import org.apache.ignite.cache.query.ScanQuery;
+import us.pserver.micron.security.api.GroupApi;
+import us.pserver.micron.security.api.ResourceApi;
+import us.pserver.micron.security.api.RoleApi;
+import us.pserver.micron.security.api.UserApi;
 import us.pserver.tools.Match;
 
 /**
@@ -57,19 +61,19 @@ public class Security {
   }
   
   
-  public IgniteCache<String,User> getUserCache() {
+  public IgniteCache<String,UserApi> getUserCache() {
     return ignite.getOrCreateCache(CACHE_USER);
   }
   
-  public IgniteCache<String,Group> getGroupCache() {
+  public IgniteCache<String,GroupApi> getGroupCache() {
     return ignite.getOrCreateCache(CACHE_GROUP);
   }
   
-  public IgniteCache<String,Role> getRoleCache() {
+  public IgniteCache<String,RoleApi> getRoleCache() {
     return ignite.getOrCreateCache(CACHE_ROLE);
   }
   
-  public IgniteCache<String,Resource> getResourceCache() {
+  public IgniteCache<String,ResourceApi> getResourceCache() {
     return ignite.getOrCreateCache(CACHE_RESOURCE);
   }
   
@@ -82,17 +86,17 @@ public class Security {
   }
   
   
-  public Optional<User> authenticateUser(String name, char[] password) {
-    Optional<User> opt = Optional.ofNullable(getUserCache().get(name));
+  public Optional<UserApi> authenticateUser(String name, char[] password) {
+    Optional<UserApi> opt = Optional.ofNullable(getUserCache().get(name));
     return opt.isPresent() && opt.get().authenticate(name, password) ? opt : Optional.empty();
   }
   
   
-  public boolean authorize(String resource, User user) {
+  public boolean authorize(String resource, UserApi user) {
     return authorize(getResourceCache().get(resource), user);
   }
   
-  public boolean authorize(Resource res, User user) {
+  public boolean authorize(ResourceApi res, UserApi user) {
     //list roles from resource
     List<Role> roles = getRoleCache().query(
         new ScanQuery<String,Role>((s,r) -> res.containsRole(r)),

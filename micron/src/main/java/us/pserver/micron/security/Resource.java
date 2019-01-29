@@ -22,16 +22,16 @@
 package us.pserver.micron.security;
 
 import java.time.Instant;
-import java.util.Collection;
 import java.util.Set;
-import us.pserver.tools.Match;
+import us.pserver.micron.security.api.ResourceApi;
+import us.pserver.micron.security.api.ResourceBuilderApi;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 25/01/2019
  */
-public class Resource extends AbstractGroup {
+public class Resource extends AbstractNamedSet implements ResourceApi {
 
   public Resource(String name, Set<String> roles, Instant created) {
     super(name, roles, created);
@@ -41,19 +41,11 @@ public class Resource extends AbstractGroup {
     super(name, roles);
   }
   
-  public Set<String> getRoles() {
-    return items;
-  }
-  
-  public boolean containsRole(Role role) {
-    return contains(role.getName());
-  }
-  
   @Override
   public ResourceBuilder edit() {
     return (ResourceBuilder) new ResourceBuilder()
         .setCreated(created)
-        .setItems(items)
+        .addItems(items)
         .setName(name);
   }
   
@@ -67,24 +59,37 @@ public class Resource extends AbstractGroup {
   
   
   
-  public static class ResourceBuilder extends AbstractGroupBuilder<Resource> {
+  public static class ResourceBuilder extends AbstractNamedSetBuilder implements ResourceBuilderApi {
     
     public ResourceBuilder() {
       super();
     }
     
-    public ResourceBuilder addRoles(Collection<Role> roles) {
-      Match.notNull(roles).getOrFail("Bad null roles Collection").forEach(this::addRole);
+    @Override
+    public ResourceBuilder setName(String name) {
+      super.setName(name);
       return this;
     }
     
-    public ResourceBuilder addRole(Role role) {
-      this.items.add(Match.notNull(role).getOrFail("Bad null Role").getName());
+    @Override
+    public ResourceBuilder setCreated(Instant created) {
+      super.setCreated(created);
       return this;
     }
     
-    public ResourceBuilder clearRoles() {
-      this.items.clear();
+    @Override
+    public ResourceBuilder addItem(String item) {
+      super.addItem(item);
+      return this;
+    }
+    
+    public ResourceBuilder clearItems() {
+      super.clearItems();
+      return this;
+    }
+    
+    @Override
+    public ResourceBuilderApi edit() {
       return this;
     }
     

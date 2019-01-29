@@ -1,0 +1,63 @@
+ignite:
+  address: "0.0.0.0"
+  port: 5555
+  storage: "d:/ignite/db"
+  #join_timeout: time (millis) that ignite will wait for other nodes to join cluster
+  join_timeout: 5000
+  public_cache:
+    #[LOCAL|PARTITIONED|REPLICATED]
+    mode: REPLICATED 
+    expiry:
+      #[CREATED|ACCESSED|MODIDIED|TOUCHED|ETERNAL]
+      policy: ACCESSED 
+      #duration in seconds
+      duration: 600
+
+server:
+  address: "0.0.0.0"
+  port: 6666
+
+security:
+  users:
+    - name: "juno"
+      fullName: "Juno Roesler"
+      email: "juno.rr@gmail.com"
+      password: "32132155"
+      birth: 1980-7-7
+      created: 2019-01-27 01:15:00
+    - name: "john"
+      fullName: "John Doe"
+      email: "john.doe.13@gmail.com"
+      password: "131313"
+      birth: 1982-4-1
+      created: 2019-01-27 01:17:00
+  groups:
+    - name: "root"
+      users: ["juno"]
+    - name: "other"
+      users: ["juno", "john"]
+    - name: "johns"
+      users: ["john"]
+    - name: "guest"
+      users: []
+  roles:
+    - name: "admin"
+      allowed: true
+      groups: ["root"]
+    - name: "noJohns"
+      allowed: false
+      groups: ["johns"]
+    - name: "look"
+      allowed: true
+      groups: ["other"]
+    - name: "guest"
+      allowed: true
+      groups: ["guest"]
+  resources:
+    - name: "/manage"
+      roles: ["admin", "look", "noJohns"]
+    - name: "/look"
+      roles: ["look", "guest"]
+      
+      
+      
