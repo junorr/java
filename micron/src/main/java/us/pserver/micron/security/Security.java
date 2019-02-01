@@ -23,9 +23,7 @@ package us.pserver.micron.security;
 
 import java.util.List;
 import java.util.Optional;
-import org.apache.ignite.Ignite;
-import org.apache.ignite.IgniteCache;
-import us.pserver.micron.security.impl.SecurityImpl;
+import us.pserver.micron.config.SecurityConfig;
 
 /**
  *
@@ -34,17 +32,9 @@ import us.pserver.micron.security.impl.SecurityImpl;
  */
 public interface Security {
   
-  public Ignite ignite();
+  public SecurityConfig getConfig();
   
-  public IgniteCache<String,User> getUserCache();
-  
-  public IgniteCache<String,Group> getGroupCache();
-  
-  public IgniteCache<String,Role> getRoleCache();
-  
-  public IgniteCache<String,Resource> getResourceCache();
-  
-  public List<User> getUserByEmail(String email);
+  public List<User> findUserByEmail(String email);
   
   public Optional<User> authenticateUser(String name, char[] password);
   
@@ -54,8 +44,8 @@ public interface Security {
   
   
   
-  public static Security create(Ignite ignite) {
-    return new SecurityImpl(ignite);
+  public static Security create(SecurityConfig cfg) {
+    return null;
   }
   
 }

@@ -93,10 +93,7 @@ public abstract class AbstractNamedSet implements NamedSet {
     if (!Objects.equals(this.name, other.name)) {
       return false;
     }
-    if (!Objects.equals(this.items, other.items)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(this.items, other.items);
   }
   
   @Override

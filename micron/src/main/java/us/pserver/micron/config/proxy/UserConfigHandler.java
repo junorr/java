@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micron.config;
+package us.pserver.micron.config.proxy;
 
 import io.helidon.config.Config;
 import java.lang.reflect.InvocationHandler;
@@ -29,7 +29,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 import us.pserver.tools.Match;
 import us.pserver.micron.security.User;
-import us.pserver.micron.security.impl.UserImpl;
 
 /**
  *
@@ -200,10 +199,10 @@ public class UserConfigHandler implements InvocationHandler, User {
     if(obj == null) {
       return false;
     }
-    if(!UserImpl.class.isAssignableFrom(obj.getClass())) {
+    if(!User.class.isAssignableFrom(obj.getClass())) {
       return false;
     }
-    final UserImpl other = (UserImpl) obj;
+    final User other = (User) obj;
     if(!Objects.equals(getName(), other.getName())) {
       return false;
     }
@@ -215,7 +214,7 @@ public class UserConfigHandler implements InvocationHandler, User {
   
   @Override
   public String toString() {
-    return "User{" + "name=" + getName() + ", fullName=" + getFullName() + ", email=" + getEmail() + ", birth=" + getBirth() + ", hash=" + getHash() + ", created=" + getCreated() + '}';
+    return "User{ name=" + getName() + ", fullName=" + getFullName() + ", email=" + getEmail() + ", birth=" + getBirth() + ", hash=" + getHash() + ", created=" + getCreated() + " }";
   }
   
 }

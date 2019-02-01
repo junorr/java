@@ -34,6 +34,7 @@ import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.spi.communication.tcp.TcpCommunicationSpi;
 import us.pserver.micron.security.Security;
 import us.pserver.micron.security.User;
+import us.pserver.micron.security.impl.SecurityImpl;
 import us.pserver.tools.Match;
 import us.pserver.tools.misc.Sleeper;
 
@@ -76,7 +77,7 @@ public class IgniteSetup {
   
   
   public Security security() {
-    return new Security(ignite());
+    return Security.create(ignite());
   }
   
   
@@ -89,16 +90,16 @@ public class IgniteSetup {
     IgniteConfiguration cfg = new IgniteConfiguration();
     
     CacheConfiguration[] caches = new CacheConfiguration[5];
-    caches[0] = new CacheConfiguration(Security.CACHE_GROUP)
+    caches[0] = new CacheConfiguration(SecurityImpl.CACHE_GROUP)
         .setCacheMode(CacheMode.REPLICATED)
         .setBackups(1);
-    caches[1] = new CacheConfiguration(Security.CACHE_RESOURCE)
+    caches[1] = new CacheConfiguration(SecurityImpl.CACHE_RESOURCE)
         .setCacheMode(CacheMode.REPLICATED)
         .setBackups(1);
-    caches[2] = new CacheConfiguration(Security.CACHE_ROLE)
+    caches[2] = new CacheConfiguration(SecurityImpl.CACHE_ROLE)
         .setCacheMode(CacheMode.REPLICATED)
         .setBackups(1);
-    caches[3] = new CacheConfiguration(Security.CACHE_USER)
+    caches[3] = new CacheConfiguration(SecurityImpl.CACHE_USER)
         .setCacheMode(CacheMode.REPLICATED)
         .setBackups(1);
     caches[4] = new CacheConfiguration(CACHE_PUBLIC)

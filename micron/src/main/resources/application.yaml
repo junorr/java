@@ -4,14 +4,31 @@ ignite:
   storage: "d:/ignite/db"
   #join_timeout: time (millis) that ignite will wait for other nodes to join cluster
   join_timeout: 5000
-  public_cache:
-    #[LOCAL|PARTITIONED|REPLICATED]
-    mode: REPLICATED 
-    expiry:
+  caches:
+    - name: "public"
+      #[LOCAL|PARTITIONED|REPLICATED]
+      mode: REPLICATED 
       #[CREATED|ACCESSED|MODIDIED|TOUCHED|ETERNAL]
-      policy: ACCESSED 
+      expiry_policy: ACCESSED 
       #duration in seconds
-      duration: 600
+      expiry_duration: 600
+      backups: 1
+    - name: "security_group"
+      #[LOCAL|PARTITIONED|REPLICATED]
+      mode: REPLICATED 
+      backups: 1
+    - name: "security_user"
+      #[LOCAL|PARTITIONED|REPLICATED]
+      mode: REPLICATED 
+      backups: 1
+    - name: "security_role"
+      #[LOCAL|PARTITIONED|REPLICATED]
+      mode: REPLICATED 
+      backups: 1
+    - name: "security_resource"
+      #[LOCAL|PARTITIONED|REPLICATED]
+      mode: REPLICATED 
+      backups: 1
 
 server:
   address: "0.0.0.0"

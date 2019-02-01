@@ -76,14 +76,11 @@ public class RoleImpl extends AbstractNamedSet implements Role {
     if(!super.equals(obj)) {
       return false;
     }
-    if(getClass() != obj.getClass()) {
+    if(!Role.class.isAssignableFrom(obj.getClass())) {
       return false;
     }
-    final RoleImpl other = (RoleImpl) obj;
-    if(this.allowed != other.allowed) {
-      return false;
-    }
-    return true;
+    final Role other = (Role) obj;
+    return this.isAllowed() == other.isAllowed();
   }
   
   @Override

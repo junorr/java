@@ -21,44 +21,52 @@
 
 package us.pserver.micron.config;
 
-import java.util.List;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
-import us.pserver.micron.security.Group;
-import us.pserver.micron.security.Resource;
-import us.pserver.micron.security.Role;
-import us.pserver.micron.security.User;
+import javax.cache.expiry.ExpiryPolicy;
+import org.apache.ignite.cache.CacheMode;
+
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/01/2019
+ * @version 0.0 - 01/02/2019
  */
-public interface SecurityConfig {
+public interface IgniteConfig {
 
-  public Set<User> getUsers();
+  public String getAddress();
   
-  public List<User> findUser(Predicate<User> prd);
+  public int getPort();
   
-  public Optional<User> getUser(String name);
+  public Optional<Path> getStorage();
   
-  public Set<Group> getGroups();
+  public long getJoinTimeout();
   
-  public List<Group> findGroup(Predicate<Group> prd);
+  public Set<CacheConfig> getCacheConfigSet();
   
-  public Optional<Group> getGroup(String name);
   
-  public Set<Role> getRoles();
   
-  public List<Role> findRole(Predicate<Role> prd);
+  public static enum CacheExpiryPolicy {
+    CREATED, ACCESSED, MODIFIED, TOUCHED, ETERNAL
+  }
+
   
-  public Optional<Role> getRole(String name);
   
-  public Set<Resource> getResources();
-  
-  public List<Resource> findResource(Predicate<Resource> prd);
-  
-  public Optional<Resource> getResource(String name);
+  public interface CacheConfig {
+    
+    public String getName();
+    
+    public int getBackups();
+    
+    public CacheMode getCacheMode();
+    
+    public Optional<CacheExpiryPolicy> getCacheExpiryPolicy();
+    
+    public int getExpiryDuration();
+    
+    public Optional<javax.cache.configuration.Factory<ExpiryPolicy>> getExpiryPolicyFactory();
+    
+  }
   
 }

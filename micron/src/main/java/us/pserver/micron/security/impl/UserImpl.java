@@ -147,10 +147,10 @@ public class UserImpl implements User {
     if(obj == null) {
       return false;
     }
-    if(!UserImpl.class.isAssignableFrom(obj.getClass())) {
+    if(!User.class.isAssignableFrom(obj.getClass())) {
       return false;
     }
-    final UserImpl other = (UserImpl) obj;
+    final User other = (User) obj;
     if(!Objects.equals(this.name, other.getName())) {
       return false;
     }

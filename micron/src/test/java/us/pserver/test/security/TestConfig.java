@@ -23,10 +23,26 @@ package us.pserver.test.security;
 
 import io.helidon.config.Config;
 import java.lang.reflect.Proxy;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.micron.config.UserConfigHandler;
+import us.pserver.micron.config.IgniteConfig;
+import us.pserver.micron.config.SecurityConfig;
+import us.pserver.micron.config.proxy.IgniteConfigHandler;
+import us.pserver.micron.config.proxy.GroupConfigHandler;
+import us.pserver.micron.config.proxy.ResourceConfigHandler;
+import us.pserver.micron.config.proxy.RoleConfigHandler;
+import us.pserver.micron.config.proxy.SecurityConfigHandler;
+import us.pserver.micron.config.proxy.UserConfigHandler;
+import us.pserver.micron.security.Group;
+import us.pserver.micron.security.Resource;
+import us.pserver.micron.security.Role;
 import us.pserver.micron.security.User;
 
 /**
@@ -36,7 +52,36 @@ import us.pserver.micron.security.User;
  */
 public class TestConfig {
   
-  private static final Config cfg = Config.create();
+  private static final Config cfg = Config.builder()
+      .addMapper(LocalDate.class, TestConfig::toLocalDate)
+      .addMapper(Instant.class, TestConfig::toInstant)
+      .build();
+      
+  private static LocalDate toLocalDate(Config c) {
+    System.out.println("..toLocalDate( " + c + " )");
+    try {
+      DateTimeFormatter fmt = DateTimeFormatter.ofPattern( "EEE MMM d HH:mm:ss zzz uuuu" , Locale.US);
+      ZonedDateTime zdt = ZonedDateTime.parse(c.asString().get(), fmt);
+      return LocalDateTime.ofInstant(zdt.toInstant(), ZoneId.of("GMT")).toLocalDate();
+    } catch(Exception e) {
+      System.out.println("# ERROR toLocalDate: " + e.toString());
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  private static Instant toInstant(Config c) {
+    System.out.println("..toInstant( " + c + " )");
+    try {
+      DateTimeFormatter fmt = DateTimeFormatter.ofPattern( "EEE MMM d HH:mm:ss zzz uuuu" , Locale.US);
+      ZonedDateTime zdt = ZonedDateTime.parse(c.asString().get(), fmt);
+      return zdt.toInstant();
+    } catch(Exception e) {
+      System.out.println("# ERROR toInstant: " + e.toString());
+      e.printStackTrace();
+      throw e;
+    }
+  }
   
   @Test
   public void testHelidonConfig() {
@@ -57,14 +102,69 @@ public class TestConfig {
   @Test
   public void testUserConfigHandler() {
     try {
-      Config s = cfg.get("security");
-      printConfig(s, "security");
-      Config c = s.get("users");
-      printConfig(c, "security.users");
-      System.out.printf("* security.users.0.birth: %s%n", c.get("0.birth").as(ZonedDateTime.class).get());
-      c.traverse().forEach(o -> printConfig(o, "security.users[i]"));
       User user = (User) Proxy.newProxyInstance(User.class.getClassLoader(), new Class[]{User.class}, new UserConfigHandler(cfg.get("security.users.0")));
       System.out.println(user);
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  @Test
+  public void testGroupConfigHandler() {
+    try {
+      Group group = (Group) Proxy.newProxyInstance(Group.class.getClassLoader(), new Class[]{Group.class}, new GroupConfigHandler(cfg.get("security.groups.0")));
+      System.out.println(group);
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  @Test
+  public void testRoleConfigHandler() {
+    try {
+      Role role = (Role) Proxy.newProxyInstance(Role.class.getClassLoader(), new Class[]{Role.class}, new RoleConfigHandler(cfg.get("security.roles.0")));
+      System.out.println(role);
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  @Test
+  public void testResourceConfigHandler() {
+    try {
+      Resource resource = (Resource) Proxy.newProxyInstance(Resource.class.getClassLoader(), new Class[]{Resource.class}, new ResourceConfigHandler(cfg.get("security.resources.0")));
+      System.out.println(resource);
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  @Test
+  public void testIgniteConfigHandler() {
+    try {
+      IgniteConfig config = (IgniteConfig) Proxy.newProxyInstance(IgniteConfig.class.getClassLoader(), new Class[]{IgniteConfig.class}, new IgniteConfigHandler(cfg.get("ignite")));
+      System.out.println(config);
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  @Test
+  public void testSecurityConfigHandler() {
+    try {
+      System.out.println("SECURITY CONFIG");
+      SecurityConfig config = (SecurityConfig) Proxy.newProxyInstance(SecurityConfig.class.getClassLoader(), new Class[]{SecurityConfig.class}, new SecurityConfigHandler(cfg.get("security")));
+      System.out.println(config);
     }
     catch(Exception e) {
       e.printStackTrace();
