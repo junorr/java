@@ -23,6 +23,7 @@ package us.pserver.test.security;
 
 import io.helidon.config.Config;
 import java.lang.reflect.Proxy;
+import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import us.pserver.micron.config.UserConfigHandler;
@@ -45,12 +46,24 @@ public class TestConfig {
     Assertions.assertEquals(Integer.valueOf(6666), cfg.get("server.port").asInt().get());
   }
   
+  public static void printConfig(Config c, String prefix) {
+    System.out.printf("* %s: %s%n", prefix, c);
+    System.out.printf("* %s.name: %s%n", prefix, c.name());
+    System.out.printf("* %s.key: %s%n", prefix, c.key());
+    System.out.printf("* %s.isLeaf: %s%n", prefix, c.isLeaf());
+    System.out.printf("* %s.hasValue: %s%n", prefix, c.hasValue());
+  }
+  
   @Test
   public void testUserConfigHandler() {
     try {
-      System.out.println(cfg.get("security.users").asNodeList().get());
-      System.out.println(cfg.get("security.users[0]").type());
-      User user = (User) Proxy.newProxyInstance(User.class.getClassLoader(), new Class[]{User.class}, new UserConfigHandler(cfg.get("security.users[0]")));
+      Config s = cfg.get("security");
+      printConfig(s, "security");
+      Config c = s.get("users");
+      printConfig(c, "security.users");
+      System.out.printf("* security.users.0.birth: %s%n", c.get("0.birth").as(ZonedDateTime.class).get());
+      c.traverse().forEach(o -> printConfig(o, "security.users[i]"));
+      User user = (User) Proxy.newProxyInstance(User.class.getClassLoader(), new Class[]{User.class}, new UserConfigHandler(cfg.get("security.users.0")));
       System.out.println(user);
     }
     catch(Exception e) {
