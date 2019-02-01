@@ -26,9 +26,9 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import org.junit.jupiter.api.Test;
 import us.pserver.micron.IgniteSetup;
-import us.pserver.micron.security.api.UserApi;
 import us.pserver.tools.Unchecked;
 import us.pserver.tools.misc.Sleeper;
+import us.pserver.micron.security.User;
 
 /**
  *
@@ -40,21 +40,21 @@ public class TestIgniteSerialSupport2 {
   @Test
   public void testCustomBeanSerializationOnDistributedCache() {
     try {
-      System.out.println("===|||===|||=== IGNITE SERIAL SUPPORT 222 ===|||===|||===");
+      System.out.println("====== IGNITE SERIAL SUPPORT 222 ======");
       IgniteSetup setup = IgniteSetup.create();
       Sleeper.of(5000).sleep();
-      System.out.println("====== users ======");
+      System.out.println("=== users ===");
       setup.security().getUserCache().forEach(System.out::println);
-      System.out.println("====== groups ======");
+      System.out.println("=== groups ===");
       setup.security().getGroupCache().forEach(System.out::println);
-      System.out.println("====== roles ======");
+      System.out.println("=== roles ===");
       setup.security().getRoleCache().forEach(System.out::println);
-      System.out.println("====== resources ======");
+      System.out.println("=== resources ===");
       setup.security().getResourceCache().forEach(System.out::println);
       String rmanage = "manage";
       String rlook = "look";
-      UserApi juno = setup.security().authenticateUser("juno", "32132155".toCharArray()).get();
-      UserApi john = setup.security().authenticateUser("john", "131313".toCharArray()).get();
+      User juno = setup.security().authenticateUser("juno", "32132155".toCharArray()).get();
+      User john = setup.security().authenticateUser("john", "131313".toCharArray()).get();
       System.out.printf("* authorize( %s, %s ): %s%n", rmanage, juno.getName(), setup.security().authorize(rmanage, juno));
       System.out.printf("* authorize( %s, %s ): %s%n", rmanage, john.getName(), setup.security().authorize(rmanage, john));
       System.out.printf("* authorize( %s, %s ): %s%n", rlook, juno.getName(), setup.security().authorize(rlook, juno));

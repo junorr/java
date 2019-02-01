@@ -19,32 +19,33 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micron.security.api;
+package us.pserver.micron.security.impl;
 
-import java.time.LocalDate;
+import java.time.Instant;
+import java.util.Set;
+import us.pserver.micron.security.Resource;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/01/2019
+ * @version 0.0 - 25/01/2019
  */
-public interface UserApi extends NamedBean {
+public class ResourceImpl extends AbstractNamedSet implements Resource {
 
-  public String getFullName();
+  public ResourceImpl(String name, Set<String> roles, Instant created) {
+    super(name, roles, created);
+  }
   
-  public String getEmail();
-  
-  public LocalDate getBirth();
-  
-  public String getHash();
-  
-  public boolean authenticate(String name, String hash);
-  
-  public boolean authenticate(String name, char[] password);
-  
-  public boolean authenticate(UserApi user);
+  public ResourceImpl(String name, Set<String> roles) {
+    super(name, roles);
+  }
   
   @Override
-  public UserBuilderApi edit();
+  public ResourceBuilder edit() {
+    return new ResourceBuilderImpl()
+        .setCreated(created)
+        .addItems(items)
+        .setName(name);
+  }
   
 }

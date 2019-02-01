@@ -21,276 +21,64 @@
 
 package us.pserver.micron.security;
 
-import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Objects;
-import us.pserver.micron.security.api.NamedBean;
-import us.pserver.micron.security.api.NamedBeanBuilder;
-import us.pserver.micron.security.api.UserApi;
-import us.pserver.micron.security.api.UserBuilderApi;
-import us.pserver.tools.Hash;
-import us.pserver.tools.Match;
+import us.pserver.micron.security.impl.UserBuilderImpl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 22/01/2019
+ * @version 0.0 - 27/01/2019
  */
-public class User implements UserApi {
+public interface User extends NamedBean {
 
-  private final String name;
+  public String getFullName();
   
-  private final String fullName;
+  public String getEmail();
   
-  private final String email;
+  public LocalDate getBirth();
   
-  private final String hash;
+  public String getHash();
   
-  private final LocalDate birth;
+  public boolean authenticate(String name, String hash);
   
-  private final Instant created;
+  public boolean authenticate(String name, char[] password);
   
-  
-  public User(String name, String fullName, String email, String hash, LocalDate birth, Instant created) {
-    this.name = Match.notEmpty(name).getOrFail("Bad null/empty name");
-    this.fullName = fullName;
-    this.email = Match.notEmpty(email).getOrFail("Bad null/empty email");
-    this.hash = Match.notEmpty(hash).getOrFail("Bad null/empty hash");
-    this.birth = birth;
-    this.created = created;
-  }
-  
-  public User(String name, String fullName, String email, String hash, LocalDate birth) {
-    this(name, fullName, email, hash, birth, Instant.now());
-  }
-  
+  public boolean authenticate(User user);
   
   @Override
-  public String getName() {
-    return name;
-  }
-  
-  @Override
-  public String getFullName() {
-    return fullName;
-  }
-  
-  @Override
-  public String getEmail() {
-    return email;
-  }
-  
-  @Override
-  public String getHash() {
-    return hash;
-  }
-  
-  @Override
-  public LocalDate getBirth() {
-    return birth;
-  }
-  
-  @Override
-  public Instant getCreated() {
-    return created;
-  }
-  
-  
-  @Override
-  public boolean authenticate(String name, String hash) {
-    return authenticate(User.builder()
-        .setName(name)
-        .setEmail(email)
-        .setHash(hash)
-        .build()
-    );
-  }
-  
-  @Override
-  public boolean authenticate(String name, char[] password) {
-    return authenticate(User.builder()
-        .setName(name)
-        .setEmail(email)
-        .setPassword(password)
-        .build()
-    );
-  }
-  
-  @Override
-  public boolean authenticate(UserApi user) {
-    return user != null
-        && this.name.equals(user.getName())
-        && this.hash.equals(user.getHash());
-  }
-  
-  
-  @Override
-  public UserBuilderApi edit() {
-    return builder()
-        .setName(name)
-        .setEmail(email)
-        .setFullName(fullName)
-        .setHash(hash)
-        .setBirth(birth)
-        .setCreated(created);
-  }
-  
-  
-  @Override
-  public int hashCode() {
-    int hash = 7;
-    hash = 41 * hash + Objects.hashCode(this.name);
-    hash = 41 * hash + Objects.hashCode(this.email);
-    hash = 41 * hash + Objects.hashCode(this.hash);
-    return hash;
-  }
-  
-  @Override
-  public boolean equals(Object obj) {
-    if(this == obj) {
-      return true;
-    }
-    if(obj == null) {
-      return false;
-    }
-    if(!User.class.isAssignableFrom(obj.getClass())) {
-      return false;
-    }
-    final User other = (User) obj;
-    if(!Objects.equals(this.name, other.getName())) {
-      return false;
-    }
-    if(!Objects.equals(this.email, other.getEmail())) {
-      return false;
-    }
-    if(!Objects.equals(this.hash, other.getHash())) {
-      return false;
-    }
-    return true;
-  }
-  
-  
-  @Override
-  public String toString() {
-    return "User{" + "name=" + name + ", fullName=" + fullName + ", email=" + email + ", birth=" + birth + ", hash=" + hash + ", created=" + created + '}';
-  }
+  public UserBuilder edit();
   
   
   
-  public static UserBuilderApi builder() {
-    return new UserBuilder();
+  public static UserBuilder builder() {
+    return new UserBuilderImpl();
   }
   
   
   
   
   
-  public static class UserBuilder implements UserBuilderApi {
-    
-    private String name;
-    
-    private String fullName;
-    
-    private String email;
-    
-    private String hash;
-    
-    private LocalDate birth;
-    
-    private Instant created;
-    
-    public UserBuilder() {
-      created = Instant.now();
-    }
-    
-    @Override
-    public String getName() {
-      return name;
-    }
-    
-    @Override
-    public UserBuilderApi setName(String name) {
-      this.name = name;
-      return this;
-    }
-    
-    @Override
-    public String getFullName() {
-      return fullName;
-    }
-    
-    @Override
-    public UserBuilderApi setFullName(String fullName) {
-      this.fullName = fullName;
-      return this;
-    }
-    
-    @Override
-    public String getEmail() {
-      return email;
-    }
-    
-    @Override
-    public UserBuilderApi setEmail(String email) {
-      this.email = email;
-      return this;
-    }
-    
-    @Override
-    public String getHash() {
-      return hash;
-    }
-    
-    @Override
-    public UserBuilderApi setHash(String hash) {
-      this.hash = hash;
-      return this;
-    }
-    
-    @Override
-    public UserBuilderApi setPassword(char[] password) {
-      byte[] bpass = StandardCharsets.UTF_8.encode(
-        CharBuffer.wrap(
-            Match.notNull(password).getOrFail("Bad null password"))
-      ).array();
-      hash = Hash.sha256().of(bpass);
-      return this;
-    }
-    
-    @Override
-    public LocalDate getBirth() {
-      return birth;
-    }
-    
-    @Override
-    public UserBuilderApi setBirth(LocalDate birth) {
-      this.birth = birth;
-      return this;
-    }
-    
-    @Override
-    public Instant getCreated() {
-      return created;
-    }
-    
-    @Override
-    public UserBuilderApi setCreated(Instant created) {
-      this.created = created;
-      return this;
-    }
-    
-    @Override
-    public UserApi build() {
-      return new User(name, fullName, email, hash, birth, created);
-    }
-    
-    @Override
-    public UserBuilderApi edit() {
-      return this;
-    }
-    
+  
+  public interface UserBuilder extends NamedBean.NamedBeanBuilder<User, UserBuilder> {
+
+    public String getFullName();
+
+    public UserBuilder setFullName(String fullName);
+
+    public String getEmail();
+
+    public UserBuilder setEmail(String email);
+
+    public String getHash();
+
+    public UserBuilder setHash(String hash);
+
+    public UserBuilder setPassword(char[] password);
+
+    public LocalDate getBirth();
+
+    public UserBuilder setBirth(LocalDate birth);
+
   }
   
 }

@@ -19,27 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micron.security.api;
+package us.pserver.micron.security.impl;
 
-import java.util.Set;
+import us.pserver.micron.security.Resource;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/01/2019
+ * @version 0.0 - 31/01/2019
  */
-public interface RoleApi extends NamedSet {
+public class ResourceBuilderImpl extends AbstractNamedSetBuilder<Resource, Resource.ResourceBuilder> implements Resource.ResourceBuilder {
+    
+  public ResourceBuilderImpl() {
+    super();
+  }
+  
+  @Override
+  public ResourceImpl build() {
+    return new ResourceImpl(name, items, created);
+  }
 
-  public default Set<String> getGroups() {
-    return getItems();
-  }
-  
-  public default boolean containsGroup(GroupApi group) {
-    return getItems().contains(group.getName());
-  }
-  
-  public boolean isAllowed();
-  
-  public RoleBuilderApi edit();
-  
 }

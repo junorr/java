@@ -19,48 +19,33 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micron.security.api;
+package us.pserver.micron.security.impl;
 
 import java.time.Instant;
-import java.util.Collection;
+import java.util.Set;
+import us.pserver.micron.security.Group;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 27/01/2019
+ * @version 0.0 - 25/01/2019
  */
-public interface ResourceBuilderApi extends NamedSetBuilder<ResourceApi>, ResourceApi {
+public class GroupImpl extends AbstractNamedSet implements Group {
 
-  @Override
-  public ResourceBuilderApi setName(String name);
-  
-  @Override
-  public ResourceBuilderApi setCreated(Instant created);
-  
-  @Override
-  public ResourceBuilderApi addItem(String item);
-  
-  @Override
-  public ResourceBuilderApi clearItems();
-  
-  @Override
-  public default ResourceBuilderApi addItems(Collection<String> items) {
-    items.forEach(this::addItem);
-    return this;
+  public GroupImpl(String name, Set<String> members, Instant created) {
+    super(name, members, created);
   }
   
-  public default ResourceBuilderApi addRoles(Collection<RoleApi> roles) {
-    roles.forEach(this::addRole);
-    return this;
+  public GroupImpl(String name, Set<String> members) {
+    super(name, members);
   }
   
-  public default ResourceBuilderApi addRole(RoleApi role) {
-    addItem(role.getName());
-    return this;
-  }
-  
-  public default ResourceBuilderApi clearRoles() {
-    return clearItems();
+  @Override
+  public GroupBuilder edit() {
+    return (GroupBuilder) new GroupBuilderImpl()
+        .setCreated(created)
+        .addItems(items)
+        .setName(name);
   }
   
 }

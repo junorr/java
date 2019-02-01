@@ -25,9 +25,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import us.pserver.micron.security.User;
-import us.pserver.micron.security.api.UserApi;
 import us.pserver.tools.Hash;
+import us.pserver.micron.security.User;
 
 /**
  *
@@ -47,7 +46,7 @@ public class TestUser {
       String hash = Hash.sha256().of(new String(password));
       Instant created = Instant.now();
       
-      UserApi user = User.builder()
+      User user = User.builder()
           .setName(name)
           .setFullName(fullName)
           .setEmail(email)
@@ -74,7 +73,7 @@ public class TestUser {
   @Test
   public void testEditUser() {
     try {
-      UserApi user = User.builder()
+      User user = User.builder()
           .setName("juno")
           .setEmail("juno@pserver.us")
           .setFullName("Juno Dani")

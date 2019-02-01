@@ -21,143 +21,59 @@
 
 package us.pserver.micron.security;
 
-import java.time.Instant;
+import java.util.Collection;
 import java.util.Set;
-import us.pserver.micron.security.api.RoleApi;
-import us.pserver.micron.security.api.RoleBuilderApi;
+import us.pserver.micron.security.impl.RoleBuilderImpl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 22/01/2019
+ * @version 0.0 - 27/01/2019
  */
-public class Role extends AbstractNamedSet implements RoleApi {
-  
-  private final boolean allowed;
-  
-  
-  public Role(String name, boolean allowed, Set<String> groups, Instant created) {
-    super(name, groups, created);
-    this.allowed = allowed;
-  }
-  
-  public Role(String name, boolean allowed, Set<String> groups) {
-    this(name, allowed, groups, Instant.now());
-  }
-  
-  
-  @Override
-  public boolean isAllowed() {
-    return allowed;
-  }
-  
-  @Override
-  public RoleBuilder edit() {
-    return (RoleBuilder) builder()
-        .setName(name)
-        .setCreated(created)
-        .addItems(items);
-  }
-  
-  @Override
-  public int hashCode() {
-    int hash = super.hashCode();
-    hash = 71 * hash + (this.allowed ? 1 : 0);
-    return hash;
-  }
-  
-  @Override
-  public boolean equals(Object obj) {
-    if(this == obj) {
-      return true;
-    }
-    if(obj == null) {
-      return false;
-    }
-    if(!super.equals(obj)) {
-      return false;
-    }
-    if(getClass() != obj.getClass()) {
-      return false;
-    }
-    final Role other = (Role) obj;
-    if(this.allowed != other.allowed) {
-      return false;
-    }
-    return true;
-  }
-  
-  @Override
-  public String toString() {
-    return name + "{ items=" + items + ", allowed=" + allowed + ", created=" + created + " }";
-  }
+public interface Role extends NamedSet {
 
+  public default Set<String> getGroups() {
+    return getItems();
+  }
+  
+  public default boolean containsGroup(Group group) {
+    return getItems().contains(group.getName());
+  }
+  
+  public boolean isAllowed();
+  
+  public RoleBuilder edit();
+  
   
   
   public static RoleBuilder builder() {
-    return new RoleBuilder();
+    return new RoleBuilderImpl();
   }
   
   
   
   
   
-  public static class RoleBuilder extends AbstractNamedSetBuilder implements RoleBuilderApi {
+  public interface RoleBuilder extends NamedSetBuilder<Role,RoleBuilder> {
+    
+    public boolean isAllowed();
 
-    private boolean allowed;
-    
-    
-    public RoleBuilder() {
-      super();
-      allowed = false;
-    }
-    
-    
-    @Override
-    public RoleBuilder setName(String name) {
-      super.setName(name);
+    public RoleBuilder setAllowed(boolean allowed);
+
+    public default RoleBuilder addGroups(Collection<Group> groups) {
+      groups.forEach(this::addGroup);
       return this;
     }
-    
-    @Override
-    public RoleBuilder setCreated(Instant created) {
-      super.setCreated(created);
+
+    public default RoleBuilder addGroup(Group group) {
+      addItem(group.getName());
       return this;
     }
-    
-    @Override
-    public boolean isAllowed() {
-      return allowed;
+
+    public default RoleBuilder clearGroups() {
+      return clearItems();
     }
-    
-    @Override
-    public RoleBuilder setAllowed(boolean allowed) {
-      this.allowed = allowed;
-      return this;
-    }
-    
-    @Override
-    public RoleBuilder addItem(String item) {
-      super.addItem(item);
-      return this;
-    }
-    
-    @Override
-    public RoleBuilder clearItems() {
-      super.clearItems();
-      return this;
-    }
-    
-    @Override
-    public RoleBuilderApi edit() {
-      return this;
-    }
-    
-    @Override
-    public RoleApi build() {
-      return new Role(name, allowed, items, created);
-    }
-    
+
   }
-
+  
 }

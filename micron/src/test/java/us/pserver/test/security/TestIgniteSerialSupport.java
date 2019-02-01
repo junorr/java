@@ -28,11 +28,11 @@ import us.pserver.micron.security.Group;
 import us.pserver.micron.security.Resource;
 import us.pserver.micron.security.Role;
 import us.pserver.micron.security.User;
-import us.pserver.micron.security.api.GroupApi;
-import us.pserver.micron.security.api.ResourceApi;
-import us.pserver.micron.security.api.RoleApi;
-import us.pserver.micron.security.api.UserApi;
 import us.pserver.tools.misc.Sleeper;
+import us.pserver.micron.security.User;
+import us.pserver.micron.security.Group;
+import us.pserver.micron.security.Resource;
+import us.pserver.micron.security.Role;
 
 /**
  *
@@ -43,60 +43,60 @@ public class TestIgniteSerialSupport {
 
   @Test
   public void testCustomBeanSerializationOnDistributedCache() {
-    System.out.println("===|||===|||=== IGNITE SERIAL SUPPORT 111 ===|||===|||===");
+    System.out.println("====== IGNITE SERIAL SUPPORT 111 ======");
     IgniteSetup setup = IgniteSetup.create();
     System.out.printf("- getStoragePath: %s%n", setup.ignite().configuration().getDataStorageConfiguration().getStoragePath());
     System.out.printf("- getWalArchivePath: %s%n", setup.ignite().configuration().getDataStorageConfiguration().getWalArchivePath());
     System.out.printf("- getWalPath: %s%n", setup.ignite().configuration().getDataStorageConfiguration().getWalPath());
-    UserApi juno = User.builder()
+    User juno = User.builder()
         .setName("juno")
         .setFullName("Juno Roesler")
         .setBirth(LocalDate.of(1980, 7, 7))
         .setEmail("juno.rr@gmail.com")
         .setPassword("32132155".toCharArray())
         .build();
-    UserApi john = User.builder()
+    User john = User.builder()
         .setName("john")
         .setFullName("John Doe")
         .setBirth(LocalDate.of(1982, 4, 13))
         .setEmail("john.doe.13@gmail.com")
         .setPassword("131313".toCharArray())
         .build();
-    GroupApi root = Group.builder()
+    Group root = Group.builder()
         .setName("root")
         .addUser(juno)
         .build();
-    GroupApi other = Group.builder()
+    Group other = Group.builder()
         .setName("other")
         .addUser(juno)
         .addUser(john)
         .build();
-    GroupApi johns = Group.builder()
+    Group johns = Group.builder()
         .setName("johns")
         .addUser(john)
         .build();
-    RoleApi manage = Role.builder()
+    Role manage = Role.builder()
         .setName("manage")
         .setAllowed(true)
         .addGroup(root)
         .build();
-    RoleApi noJohns = Role.builder()
+    Role noJohns = Role.builder()
         .setName("noJohns")
         .setAllowed(false)
         .addGroup(johns)
         .build();
-    RoleApi look = Role.builder()
+    Role look = Role.builder()
         .setName("look")
         .setAllowed(true)
         .addGroup(other)
         .build();
-    ResourceApi rmanage = Resource.builder()
+    Resource rmanage = Resource.builder()
         .setName("manage")
         .addRole(manage)
         .addRole(look)
         .addRole(noJohns)
         .build();
-    ResourceApi rlook = Resource.builder()
+    Resource rlook = Resource.builder()
         .setName("look")
         .addRole(look)
         .build();

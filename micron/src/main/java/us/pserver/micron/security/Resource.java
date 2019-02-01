@@ -21,83 +21,58 @@
 
 package us.pserver.micron.security;
 
-import java.time.Instant;
+import java.util.Collection;
 import java.util.Set;
-import us.pserver.micron.security.api.ResourceApi;
-import us.pserver.micron.security.api.ResourceBuilderApi;
+import us.pserver.micron.security.impl.ResourceBuilderImpl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 25/01/2019
+ * @version 0.0 - 27/01/2019
  */
-public class Resource extends AbstractNamedSet implements ResourceApi {
+public interface Resource extends NamedSet {
 
-  public Resource(String name, Set<String> roles, Instant created) {
-    super(name, roles, created);
+  public default boolean containsRole(Role role) {
+    return getItems().contains(role.getName());
   }
   
-  public Resource(String name, Set<String> roles) {
-    super(name, roles);
+  public default Set<String> getRoles() {
+    return getItems();
   }
   
   @Override
-  public ResourceBuilder edit() {
-    return (ResourceBuilder) new ResourceBuilder()
-        .setCreated(created)
-        .addItems(items)
-        .setName(name);
-  }
+  public ResourceBuilder edit();
   
   
   
   public static ResourceBuilder builder() {
-    return new ResourceBuilder();
+    return new ResourceBuilderImpl();
   }
   
   
   
   
   
-  public static class ResourceBuilder extends AbstractNamedSetBuilder implements ResourceBuilderApi {
+  public interface ResourceBuilder extends NamedSetBuilder<Resource,ResourceBuilder> {
     
-    public ResourceBuilder() {
-      super();
+    public default Set<String> getRoles() {
+      return getItems();
     }
-    
-    @Override
-    public ResourceBuilder setName(String name) {
-      super.setName(name);
+
+    public default ResourceBuilder addRoles(Collection<Role> roles) {
+      roles.forEach(this::addRole);
       return this;
     }
-    
-    @Override
-    public ResourceBuilder setCreated(Instant created) {
-      super.setCreated(created);
+
+    public default ResourceBuilder addRole(Role role) {
+      addItem(role.getName());
       return this;
     }
-    
-    @Override
-    public ResourceBuilder addItem(String item) {
-      super.addItem(item);
-      return this;
+
+    public default ResourceBuilder clearRoles() {
+      return clearItems();
     }
-    
-    public ResourceBuilder clearItems() {
-      super.clearItems();
-      return this;
-    }
-    
-    @Override
-    public ResourceBuilderApi edit() {
-      return this;
-    }
-    
-    @Override
-    public Resource build() {
-      return new Resource(name, items, created);
-    }
-    
+
   }
   
 }

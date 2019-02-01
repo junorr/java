@@ -19,14 +19,13 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micron.security;
+package us.pserver.micron.security.impl;
 
 import java.time.Instant;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import us.pserver.micron.security.api.NamedSet;
+import us.pserver.micron.security.NamedSet;
 import us.pserver.tools.Match;
 
 /**
@@ -105,60 +104,4 @@ public abstract class AbstractNamedSet implements NamedSet {
     return name + "{ items=" + items + ", created=" + created + " }";
   }
   
-  
-  
-  
-  
-  public static abstract class AbstractNamedSetBuilder {
-
-    protected String name;
-    
-    protected Set<String> items;
-    
-    protected Instant created;
-    
-    
-    public AbstractNamedSetBuilder() {
-      this.name = null;
-      this.created = Instant.now();
-      this.items = new HashSet<>();
-    }
-    
-    
-    public String getName() {
-      return name;
-    }
-    
-    public AbstractNamedSetBuilder setName(String name) {
-      this.name = name;
-      return this;
-    }
-    
-    
-    public Instant getCreated() {
-      return created;
-    }
-    
-    public AbstractNamedSetBuilder setCreated(Instant created) {
-      this.created = created;
-      return this;
-    }
-    
-    
-    public Set<String> getItems() {
-      return items;
-    }
-    
-    public AbstractNamedSetBuilder addItem(String item) {
-      this.items.add(Match.notEmpty(item).getOrFail("Bad null/empty item"));
-      return this;
-    }
-    
-    public AbstractNamedSetBuilder clearItems() {
-      this.items.clear();
-      return this;
-    }
-    
-  }
-
 }

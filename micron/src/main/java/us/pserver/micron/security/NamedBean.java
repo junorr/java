@@ -19,26 +19,39 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micron.security.api;
+package us.pserver.micron.security;
 
-import java.util.Set;
+import java.time.Instant;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 27/01/2019
  */
-public interface ResourceApi extends NamedSet {
+public interface NamedBean {
 
-  public default boolean containsRole(RoleApi role) {
-    return getItems().contains(role.getName());
-  }
+  public String getName();
   
-  public default Set<String> getRoles() {
-    return getItems();
-  }
+  public Instant getCreated();
   
-  @Override
-  public ResourceBuilderApi edit();
+  public <T extends NamedBean, B extends NamedBeanBuilder<T,B>> B edit();
+  
+  
+  
+  
+  
+  public interface NamedBeanBuilder<T extends NamedBean, B extends NamedBeanBuilder<T,B>> {
+
+    public T build();
+
+    public String getName();
+
+    public B setName(String name);
+
+    public Instant getCreated();
+
+    public B setCreated(Instant created);
+
+  }
   
 }

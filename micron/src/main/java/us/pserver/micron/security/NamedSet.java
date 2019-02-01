@@ -19,21 +19,38 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micron.security.api;
+package us.pserver.micron.security;
 
-import java.time.Instant;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 27/01/2019
  */
-public interface NamedBeanBuilder<T extends NamedBean> extends NamedBean {
+public interface NamedSet extends NamedBean {
 
-  public T build();
+  public Set<String> getItems();
   
-  public NamedBeanBuilder<T> setName(String name);
   
-  public NamedBeanBuilder<T> setCreated(Instant created);
+  
+  
+  
+  
+  public interface NamedSetBuilder<T extends NamedSet, B extends NamedSetBuilder<T,B>> extends NamedBean.NamedBeanBuilder<T,B> {
+    
+    public Set<String> getItems();
+
+    public B addItem(String item);
+
+    public default B addItems(Collection<String> items) {
+      items.forEach(this::addItem);
+      return (B) this;
+    }
+
+    public B clearItems();
+
+  }
   
 }
