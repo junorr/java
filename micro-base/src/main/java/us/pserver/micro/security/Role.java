@@ -19,43 +19,61 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro.util;
+package us.pserver.micro.security;
 
-import io.undertow.server.HttpHandler;
-import java.lang.reflect.Constructor;
-import us.pserver.tools.Match;
+import java.util.Collection;
+import java.util.Set;
+import us.pserver.micro.security.impl.RoleBuilderImpl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/03/2018
+ * @version 0.0 - 27/01/2019
  */
-public class HttpHandlerInstance {
+public interface Role extends NamedSet {
 
-  private final Class<HttpHandler> cls;
+  public default Set<String> getGroups() {
+    return getItems();
+  }
+  
+  public default boolean containsGroup(Group group) {
+    return getItems().contains(group.getName());
+  }
+  
+  public boolean isAllowed();
+  
+  public RoleBuilder edit();
   
   
-  public HttpHandlerInstance(Class<HttpHandler> cls) {
-    this.cls = Match.notNull(cls).getOrFail("Bad null Class<HttpHandler>");
+  
+  public static RoleBuilder builder() {
+    return new RoleBuilderImpl();
   }
   
   
-  public Class<HttpHandler> getInstanceClass() {
-    return cls;
-  }
   
   
-  public HttpHandler create() {
-    try {
-      Constructor<HttpHandler> cct = cls.getDeclaredConstructor(null);
-      if(!cct.isAccessible()) {
-        cct.setAccessible(true);
-      }
-      return cct.newInstance(null);
+  
+  public interface RoleBuilder extends NamedSetBuilder<Role,RoleBuilder> {
+    
+    public boolean isAllowed();
+
+    public RoleBuilder setAllowed(boolean allowed);
+
+    public default RoleBuilder addGroups(Collection<Group> groups) {
+      groups.forEach(this::addGroup);
+      return this;
     }
-    catch(Exception ex) {
-      throw new RuntimeException(ex.toString(), ex);
+
+    public default RoleBuilder addGroup(Group group) {
+      addItem(group.getName());
+      return this;
     }
+
+    public default RoleBuilder clearGroups() {
+      return clearItems();
+    }
+
   }
   
 }

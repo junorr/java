@@ -21,15 +21,18 @@
 
 package us.pserver.micro;
 
-import us.pserver.micro.config.ServerConfig;
-import us.pserver.micro.handler.CorsHandler;
-import us.pserver.micro.handler.ShutdownHandler;
+import br.com.bb.disec.micro.handler.CorsHandler;
+import br.com.bb.disec.micro.handler.DispatcherHandler;
+import br.com.bb.disec.micro.handler.JWTShieldHandler;
+import br.com.bb.disec.micro.handler.ShutdownHandler;
+import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
-import io.undertow.server.RoutingHandler;
+import io.undertow.server.handlers.PathHandler;
+import java.util.LinkedList;
+import java.util.List;
 import org.jboss.logging.Logger;
 import org.xnio.Options;
-import us.pserver.micro.http.HttpMethod;
 
 /**
  * Servidor de rede responsável por invocar os HttpHandler's 
@@ -47,6 +50,8 @@ public class Server {
   
   private final ServerConfig config;
   
+  private final List<Runnable> stopHooks;
+  
   
   /**
    * Construtor padrão, recebe um objeto ServerConfig.
@@ -57,6 +62,7 @@ public class Server {
       throw new IllegalArgumentException("Invalid ServerConfig: "+ conf);
     }
     this.config = conf;
+    this.stopHooks = new LinkedList<>();
     this.server = this.initServer();
   }
   
@@ -68,36 +74,63 @@ public class Server {
    */
   private Undertow initServer() {
     Logger.getLogger(Server.class).info(config);
-    RoutingHandler rout = new RoutingHandler();
-    initRoutingHandler(rout);
-    if(config.isShutdownHandlerEnabled()) {
-      rout.add(HttpMethod.GET.toHttpString(), "/shutdown", new ShutdownHandler(this));
+    HttpHandler root = null;
+    PathHandler ph = this.initPathHandler();
+    if(config.isAuthenticationShield()) {
+      root = new CorsHandler(new JWTShieldHandler(ph));
+    } else {
+      root = new CorsHandler(ph);
     }
-    HttpHandler root = config.isCorsHandlerEnabled() 
-        ? new CorsHandler(rout) : rout;
-    return Undertow.builder()
+    if(config.isShutdownHandlerEnabled()) {
+      ph.addExactPath("/shutdown", new ShutdownHandler(this));
+    }
+    Undertow.Builder bld = Undertow.builder()
         .setIoThreads(config.getIoThreads())
         .setWorkerOption(Options.WORKER_TASK_MAX_THREADS, config.getMaxWorkerThreads())
-        .addHttpListener(config.getPort(), config.getAddress(), root)
-        .build();
+        .addHttpListener(config.getPort(), config.getAddress(), root);
+    if(config.getSSLConfig().isEnabled()) {
+      bld.addHttpsListener(
+          config.getSSLConfig().getPort(), 
+          config.getSSLConfig().getAddress(), 
+          config.getSSLConfig().createSSLContext(), 
+          root
+      );
+    }
+    return bld.build();
   }
   
   
   /**
    * Cria o HttpHandler responsável por rotear as requisições
-   * aos respectivos getHttpHandlers de acordo com a URI.
+   * aos respectivos handlers de acordo com a URI.
    * @return PathHandler
    */
-  private void initRoutingHandler(RoutingHandler handler) {
-    config.getHttpHandlers().entrySet().forEach(e->{
-      e.getValue().getHttpMethods().forEach(m->
-          handler.add(
-              m.toHttpString(), 
-              e.getKey(), 
-              e.getValue().getHttpHandler()
-          )
-      );
-    });
+  private PathHandler initPathHandler() {
+    PathHandler ph = Handlers.path();
+    if(config.isDispatcherEnabled()) {
+      config.handlers().keySet().forEach(p->{
+        ph.addPrefixPath(p, new DispatcherHandler(p, config));
+      });
+    }
+    else {
+      config.handlers().keySet().forEach(p->{
+        config.createHandler(p).ifPresent(h->ph.addPrefixPath(p, h));
+      });
+    }
+    return ph;
+  }
+  
+  
+  public List<Runnable> stopHooks() {
+    return stopHooks;
+  }
+  
+  
+  public Server addStopHook(Runnable r) {
+    if(r != null) {
+      stopHooks.add(r);
+    }
+    return this;
   }
   
   
@@ -133,6 +166,7 @@ public class Server {
    * do endereço e portas alocados previamente.
    */
   public void stop() {
+    stopHooks.forEach(Runnable::run);
     server.stop();
   }
   

@@ -21,11 +21,10 @@
 
 package us.pserver.micro;
 
+import br.com.bb.disec.micro.ResourceLoader.ResourceLoadException;
+import br.com.bb.disec.micro.db.PoolFactory;
 import java.io.IOException;
-import java.nio.file.Paths;
-import us.pserver.micro.config.ServerConfig;
-import us.pserver.micro.ResourceLoader.ResourceLoadException;
-import us.pserver.tools.Match;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 /**
@@ -33,16 +32,19 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno.roesler@bb.com.br
  * @version 1.0.201609
  */
-public enum ServerSetup {
-  
-  INSTANCE(ResourceLoader.self());
+public class ServerSetup {
   
   public static final String DEFAULT_CONFIG = "/resources/serverconf.json";
+  
+  private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+  
+
+  private static ServerSetup instance;
+  
   
   private final ResourceLoader loader;
   
   private final ServerConfig config;
-  
   
   /**
    * Construtor para a configuração do servidor. O servidor é configurado com
@@ -52,21 +54,106 @@ public enum ServerSetup {
    * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
    */
   private ServerSetup(ResourceLoader rld) throws ResourceLoadException {
-    this.loader = rld;
+    this(rld, DEFAULT_CONFIG);
+  }
+  
+  /**
+   * Construtor para a configuração do servidor. O servidor é configurado com
+   * as configurações customizadas definidas pelo usuário.
+   * @param rld
+   * @param configPath
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
+  private ServerSetup(ResourceLoader rld, String configPath) throws ResourceLoadException {
+    if(isInstantiated()) {
+      throw new IllegalStateException("ServerSetup is Already Instantiated");
+    }
+    this.loader = (rld != null ? rld : ResourceLoader.self());
     try {
-      ServerConfig
-      this.config = Orb.get().fromConfiguration(JsonOrbConfig.of(Paths.get(DEFAULT_CONFIG))).create(ServerConfig.class);
+      config = ServerConfig.builder().load(
+          loader.loadStream(configPath)
+      ).build();
     }
     catch(IOException e) {
-      throw new RuntimeException(e.toString(), e);
+      throw new ResourceLoadException(e);
+    } 
+  }
+  
+  /**
+   * Verifica se a classe já está instânciada.
+   * @return true se tive instânciado, false caso contrário
+   */
+  private static boolean isInstantiated() {
+    lock.readLock().lock();
+    try {
+      return instance != null;
+    } finally {
+      lock.readLock().unlock();
     }
   }
   
-  private boolean validate(ServerConfig cfg) {
-    return cfg.getAddress() != null
-        && cfg.getPort() > 0
-        && cfg.getHandlers() != null;
-        && cfg.getDbConfig() != null
+  /**
+   * Cria a instância de forma segura usando um ReentrantReadWriteLock.
+   * @param rld ResourceLoader
+   * @param configPath Caminho de localização do arquivo de configuração do servidor
+   */
+  public static void createInstance(ResourceLoader rld, String configPath) {
+    if(isInstantiated()) return;
+    lock.writeLock().lock();
+    try {
+      instance = new ServerSetup(rld, configPath);
+    } finally {
+      lock.writeLock().unlock();
+    }
+  }
+  
+  /**
+   * Cria uma instância da classe com as configurações padrões e um recurso definido
+   * pelo usuário.
+   * @param rld ResourceLoader 
+   * @return Instância criada
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
+  public static ServerSetup autoSetup(ResourceLoader rld) throws ResourceLoadException {
+    if(!isInstantiated()) {
+      createInstance(rld, DEFAULT_CONFIG);
+    }
+    return instance;
+  }
+  
+  /**
+   * Configura a instancia usando uma configuração totalmente padrão e pré-definida.
+   * @return instancia configurada
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
+  public static ServerSetup autoSetup() throws ResourceLoadException {
+    return autoSetup(null);
+  }
+  
+  /**
+   * Configura a instancia com as configurações e recurso definidas pelo usuário.
+   * @param rld Recurso
+   * @param configPath Caminha do arquivo de configuração
+   * @return instancia configurada
+   * @throws br.com.bb.disec.micro.ResourceLoader.ResourceLoadException 
+   * Se nenhum recurso for encontrado ou se ocorrer um erro na busca.
+   */
+  public static ServerSetup setup(ResourceLoader rld, String configPath) throws ResourceLoadException {
+    if(!isInstantiated()) {
+      createInstance(rld, configPath);
+    }
+    return instance;
+  }
+  
+  /**
+   * Pega a instancia existente na classe.
+   * @return instancia existente
+   */
+  public static ServerSetup instance() {
+    return instance;
   }
   
   /**
@@ -74,17 +161,7 @@ public enum ServerSetup {
    * @return configuração existente
    */
   public ServerConfig config() {
-    return config.get();
-  }
-  
-  /**
-   * Define uma instancia de ServerConfig.
-   * @param cfg ServerConfig
-   * @return ServerSetup INSTANCE
-   */
-  public ServerSetup config(ServerConfig cfg) {
-    config.set(Match.notNull(cfg).getOrFail("Bad null ServerConfig"));
-    return this;
+    return config;
   }
   
   /**
@@ -100,7 +177,8 @@ public enum ServerSetup {
    * @return servidor criado
    */
   public Server createServer() {
-    return new Server(config.get());
+    return new Server(config)
+        .addStopHook(PoolFactory::closePools);
   }
   
 }

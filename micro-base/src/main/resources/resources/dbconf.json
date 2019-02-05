@@ -1,7 +1,0 @@
-{
-  "microdb.file": "./server.db",
-  "microdb.type": "MAPPED_FILE",
-  "microdb.concurrency": 4,
-  "microdb.user": "juno",
-  "microdb.password": "32132155"
-}

@@ -30,7 +30,7 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 31/12/2017
  */
-public abstract class AbstractTypeString<T> implements TypedString<T> {
+public abstract class AbstractTypeString<T> implements TypeString<T> {
   
   protected final List<Class> types;
   

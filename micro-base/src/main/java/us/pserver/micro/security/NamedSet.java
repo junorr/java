@@ -19,43 +19,38 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro.util;
+package us.pserver.micro.security;
 
-import io.undertow.server.HttpHandler;
-import java.lang.reflect.Constructor;
-import us.pserver.tools.Match;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/03/2018
+ * @version 0.0 - 27/01/2019
  */
-public class HttpHandlerInstance {
+public interface NamedSet extends NamedBean {
 
-  private final Class<HttpHandler> cls;
+  public Set<String> getItems();
   
   
-  public HttpHandlerInstance(Class<HttpHandler> cls) {
-    this.cls = Match.notNull(cls).getOrFail("Bad null Class<HttpHandler>");
-  }
   
   
-  public Class<HttpHandler> getInstanceClass() {
-    return cls;
-  }
   
   
-  public HttpHandler create() {
-    try {
-      Constructor<HttpHandler> cct = cls.getDeclaredConstructor(null);
-      if(!cct.isAccessible()) {
-        cct.setAccessible(true);
-      }
-      return cct.newInstance(null);
+  public interface NamedSetBuilder<T extends NamedSet, B extends NamedSetBuilder<T,B>> extends NamedBean.NamedBeanBuilder<T,B> {
+    
+    public Set<String> getItems();
+
+    public B addItem(String item);
+
+    public default B addItems(Collection<String> items) {
+      items.forEach(this::addItem);
+      return (B) this;
     }
-    catch(Exception ex) {
-      throw new RuntimeException(ex.toString(), ex);
-    }
+
+    public B clearItems();
+
   }
   
 }

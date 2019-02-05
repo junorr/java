@@ -19,21 +19,21 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.types;
-
-import java.util.function.Function;
+package us.pserver.orb;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/12/2017
- * @param <T>
+ * @version 0.0 - 05/02/2019
  */
-public interface TypedString<T> extends Function<String,T> {
+public interface Orb2 {
+  
+  public OrbConfiguration getConfiguration();
+  
+  public Object implementMultiple(Class ... cls);
+  
+  public <T> T implement(Class<T> cls);
+  
+  public <T> T bind(Class<T> cls);
 
-  public boolean isTypeOf(Class type);
-  
-  @Override
-  public T apply(String str) throws TypedStringException;
-  
 }

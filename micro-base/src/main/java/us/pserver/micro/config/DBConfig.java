@@ -19,42 +19,49 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro.util;
+package us.pserver.micro.config;
 
-import io.undertow.server.HttpHandler;
-import java.lang.reflect.Constructor;
-import us.pserver.tools.Match;
+import java.nio.file.Path;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/03/2018
+ * @version 0.0 - 01/04/2018
  */
-public class HttpHandlerInstance {
+public interface DBConfig {
 
-  private final Class<HttpHandler> cls;
-  
-  
-  public HttpHandlerInstance(Class<HttpHandler> cls) {
-    this.cls = Match.notNull(cls).getOrFail("Bad null Class<HttpHandler>");
+  public static enum DBType {
+    FILE, MEMORY, MAPPED_FILE
   }
+
+  public int getConcurrency();
+  
+  public Path getFile();
+  
+  public DBType getType();
+  
+  public String getUser();
+  
+  public String getPassword();
   
   
-  public Class<HttpHandler> getInstanceClass() {
-    return cls;
-  }
-  
-  
-  public HttpHandler create() {
-    try {
-      Constructor<HttpHandler> cct = cls.getDeclaredConstructor(null);
-      if(!cct.isAccessible()) {
-        cct.setAccessible(true);
-      }
-      return cct.newInstance(null);
-    }
-    catch(Exception ex) {
-      throw new RuntimeException(ex.toString(), ex);
+  public default DB createDB() {
+    switch(getType()) {
+      case FILE:
+        return DBMaker.fileDB(getFile().toFile())
+            .concurrencyScale(getConcurrency())
+            .make();
+      case MAPPED_FILE:
+        return DBMaker.fileDB(getFile().toFile())
+            .concurrencyScale(getConcurrency())
+            .fileMmapEnable()
+            .make();
+      default:
+        return DBMaker.memoryDirectDB()
+            .concurrencyScale(getConcurrency())
+            .make();
     }
   }
   

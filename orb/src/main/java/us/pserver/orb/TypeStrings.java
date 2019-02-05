@@ -32,7 +32,6 @@ import us.pserver.orb.types.InstantString;
 import us.pserver.orb.types.ShortString;
 import us.pserver.orb.types.LocalTimeString;
 import us.pserver.orb.types.ZonedDateTimeString;
-import us.pserver.orb.types.TypedString;
 import us.pserver.orb.types.InetAddressString;
 import us.pserver.orb.types.OffsetTimeString;
 import us.pserver.orb.types.FloatString;
@@ -60,6 +59,7 @@ import us.pserver.orb.types.ZoneIdString;
 import us.pserver.orb.types.ZoneOffsetString;
 import us.pserver.tools.exp.ForEach;
 import us.pserver.tools.Match;
+import us.pserver.orb.types.TypeString;
 
 /**
  *
@@ -97,7 +97,7 @@ public class TypeStrings {
   public static final String ZONED_DATE_TIME_PATTERN = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(-|\\+)\\d{2}:\\d{2}(\\[[\\w|\\/|-]+\\])?";
   
   
-  private final List<TypedString<?>> types;
+  private final List<TypeString<?>> types;
   
   private final Map<String,Class> patterns;
   
@@ -159,7 +159,7 @@ public class TypeStrings {
     return ldr;
   }
   
-  public List<TypedString<?>> getTypesList() {
+  public List<TypeString<?>> getTypesList() {
     return types;
   }
   
@@ -171,30 +171,30 @@ public class TypeStrings {
     return types.stream().anyMatch(t->t.isTypeOf(cls));
   }
   
-  public <T> Optional<TypedString<T>> getTypedString(Class<T> cls) {
+  public <T> Optional<TypeString<T>> getTypedString(Class<T> cls) {
     if(cls == null) return Optional.empty();
     return types.stream()
         .filter(t->t.isTypeOf(cls))
-        .map(t->(TypedString<T>)t)
+        .map(t->(TypeString<T>)t)
         .findAny();
   }
   
   public <T> T asType(String str, Class<T> cls) throws TypedStringException {
-    Optional<TypedString<T>> opt = this.getTypedString(cls);
+    Optional<TypeString<T>> opt = this.getTypedString(cls);
     if(opt.isPresent()) {
       return opt.get().apply(str);
     }
     throw new TypedStringException("Unsupported type "+ cls);
   }
   
-  public TypeStrings put(Class cls, TypedString<?> typed) {
+  public TypeStrings put(Class cls, TypeString<?> typed) {
     int idx = ForEach.of(types).indexOf(t->t.isTypeOf(cls));
     if(idx >= 0) types.remove(idx);
     types.add(typed);
     return this;
   }
   
-  public TypeStrings put(String pattern, Class type, TypedString<?> typed) {
+  public TypeStrings put(String pattern, Class type, TypeString<?> typed) {
     int idx = ForEach.of(types).indexOf(t->t.isTypeOf(type));
     if(idx >= 0) types.remove(idx);
     types.add(typed);

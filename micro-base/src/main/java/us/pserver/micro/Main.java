@@ -27,11 +27,11 @@ package us.pserver.micro;
  * @version 0.0 - 20/09/2016
  */
 public class Main {
-  
-  public static final long serialVersionUID = 1000;
+
   
   public static void main(String[] args) {
-    ServerSetup.INSTANCE.createServer().start();
+    ServerSetup.autoSetup(ResourceLoader.self())
+        .createServer().start();
   }
   
 }

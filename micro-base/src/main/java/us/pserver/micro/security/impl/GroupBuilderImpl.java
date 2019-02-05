@@ -19,43 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro.util;
+package us.pserver.micro.security.impl;
 
-import io.undertow.server.HttpHandler;
-import java.lang.reflect.Constructor;
-import us.pserver.tools.Match;
+import us.pserver.micro.security.Group;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/03/2018
+ * @version 0.0 - 31/01/2019
  */
-public class HttpHandlerInstance {
+public class GroupBuilderImpl extends AbstractNamedSetBuilder<Group,Group.GroupBuilder> implements Group.GroupBuilder {
 
-  private final Class<HttpHandler> cls;
-  
-  
-  public HttpHandlerInstance(Class<HttpHandler> cls) {
-    this.cls = Match.notNull(cls).getOrFail("Bad null Class<HttpHandler>");
+  public GroupBuilderImpl() {
+    super();
   }
-  
-  
-  public Class<HttpHandler> getInstanceClass() {
-    return cls;
+
+  @Override
+  public Group build() {
+    return new GroupImpl(name, items, created);
   }
-  
-  
-  public HttpHandler create() {
-    try {
-      Constructor<HttpHandler> cct = cls.getDeclaredConstructor(null);
-      if(!cct.isAccessible()) {
-        cct.setAccessible(true);
-      }
-      return cct.newInstance(null);
-    }
-    catch(Exception ex) {
-      throw new RuntimeException(ex.toString(), ex);
-    }
-  }
-  
+
 }
+

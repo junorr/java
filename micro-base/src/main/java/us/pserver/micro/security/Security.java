@@ -19,34 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro;
+package us.pserver.micro.security;
 
-import java.time.Duration;
-import us.pserver.dropmap.DMap;
-import us.pserver.micro.config.DBConfig;
-import us.pserver.micro.db.DBMap;
-import us.pserver.tools.Match;
+import java.util.List;
+import java.util.Optional;
+import us.pserver.micro.config.SecurityConfig;
+import us.pserver.micro.security.impl.SecurityImpl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 01/04/2018
+ * @version 0.0 - 31/01/2019
  */
-public class Cache {
+public interface Security {
   
-  public static final Duration DEFAULT_TTL = Duration.ofMinutes(20);
+  public SecurityConfig getConfig();
   
-  private static final DMap<String, DBMap> maps = DMap.newMap();
+  public List<User> findUserByEmail(String email);
+  
+  public Optional<User> authenticateUser(String name, char[] password);
+  
+  public boolean authorize(String resource, User user);
+  
+  public boolean authorize(Resource res, User user);
   
   
-  private final DBConfig config;
   
-  
-  public Cache(DBConfig conf) {
-    this.config = Match.notNull(conf).getOrFail("Bad null DBConfig");
+  public static Security create(SecurityConfig cfg) {
+    return new SecurityImpl(cfg);
   }
-  
-  
-  public HTreeMap<String,JsonElement>
   
 }

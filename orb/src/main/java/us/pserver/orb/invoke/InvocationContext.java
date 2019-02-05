@@ -43,13 +43,13 @@ public interface InvocationContext {
   public List getArguments();
   
   
-  public InvocationContext method(Method meth);
+  public InvocationContext withMethod(Method meth);
   
-  public InvocationContext value(Object value);
+  public InvocationContext withValue(Object value);
   
-  public InvocationContext proxy(Object proxy);
+  public InvocationContext withProxyInstance(Object proxy);
   
-  public InvocationContext arguments(List args);
+  public InvocationContext withArguments(List args);
   
   
   public static InvocationContext of(Object proxy, Method meth, List args, Object value) {
@@ -137,22 +137,22 @@ public interface InvocationContext {
     }
     
     @Override
-    public InvocationContext method(Method meth) {
+    public InvocationContext withMethod(Method meth) {
       return new DefaultInvocationContext(proxy, meth, args, value);
     }
     
     @Override
-    public InvocationContext value(Object value) {
+    public InvocationContext withValue(Object value) {
       return new DefaultInvocationContext(proxy, meth, args, value);
     }
     
     @Override
-    public InvocationContext proxy(Object proxy) {
+    public InvocationContext withProxyInstance(Object proxy) {
       return new DefaultInvocationContext(proxy, meth, args, value);
     }
     
     @Override
-    public InvocationContext arguments(List args) {
+    public InvocationContext withArguments(List args) {
       return new DefaultInvocationContext(proxy, meth, args, value);
     }
     

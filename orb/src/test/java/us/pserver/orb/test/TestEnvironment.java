@@ -41,7 +41,7 @@ public class TestEnvironment {
     System.out.println(cfg);
     Assertions.assertEquals("juno", cfg.getUser());
     Assertions.assertEquals(Paths.get("/home/juno"), cfg.getHome());
-    Assertions.assertEquals(1543, cfg.getSshAgentPid());
+    Assertions.assertEquals(1721, cfg.getSshAgentPid());
     Assertions.assertEquals(1, cfg.getQtAccessibility());
   }
   

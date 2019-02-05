@@ -19,43 +19,60 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micro.util;
+package us.pserver.micro.security;
 
-import io.undertow.server.HttpHandler;
-import java.lang.reflect.Constructor;
-import us.pserver.tools.Match;
+import java.util.Collection;
+import java.util.Set;
+import us.pserver.micro.security.impl.ResourceBuilderImpl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 19/03/2018
+ * @version 0.0 - 27/01/2019
  */
-public class HttpHandlerInstance {
+public interface Resource extends NamedSet {
 
-  private final Class<HttpHandler> cls;
+  public default boolean containsRole(Role role) {
+    return getItems().contains(role.getName());
+  }
+  
+  public default Set<String> getRoles() {
+    return getItems();
+  }
+  
+  @Override
+  public ResourceBuilder edit();
   
   
-  public HttpHandlerInstance(Class<HttpHandler> cls) {
-    this.cls = Match.notNull(cls).getOrFail("Bad null Class<HttpHandler>");
+  
+  public static ResourceBuilder builder() {
+    return new ResourceBuilderImpl();
   }
   
   
-  public Class<HttpHandler> getInstanceClass() {
-    return cls;
-  }
   
   
-  public HttpHandler create() {
-    try {
-      Constructor<HttpHandler> cct = cls.getDeclaredConstructor(null);
-      if(!cct.isAccessible()) {
-        cct.setAccessible(true);
-      }
-      return cct.newInstance(null);
+  
+  public interface ResourceBuilder extends NamedSetBuilder<Resource,ResourceBuilder> {
+    
+    public default Set<String> getRoles() {
+      return getItems();
     }
-    catch(Exception ex) {
-      throw new RuntimeException(ex.toString(), ex);
+
+    public default ResourceBuilder addRoles(Collection<Role> roles) {
+      roles.forEach(this::addRole);
+      return this;
     }
+
+    public default ResourceBuilder addRole(Role role) {
+      addItem(role.getName());
+      return this;
+    }
+
+    public default ResourceBuilder clearRoles() {
+      return clearItems();
+    }
+
   }
   
 }
