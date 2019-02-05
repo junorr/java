@@ -21,18 +21,18 @@
 
 package us.pserver.test.security;
 
-import java.time.LocalDate;
+import org.apache.ignite.Ignite;
+import org.apache.ignite.IgniteCache;
 import org.junit.jupiter.api.Test;
 import us.pserver.micron.IgniteSetup;
-import us.pserver.micron.security.Group;
-import us.pserver.micron.security.Resource;
-import us.pserver.micron.security.Role;
-import us.pserver.micron.security.User;
+import us.pserver.micron.config.MicronConfig;
+import us.pserver.micron.config.SecurityConfig;
 import us.pserver.tools.misc.Sleeper;
 import us.pserver.micron.security.User;
 import us.pserver.micron.security.Group;
 import us.pserver.micron.security.Resource;
 import us.pserver.micron.security.Role;
+import us.pserver.micron.security.Security;
 
 /**
  *
@@ -41,95 +41,70 @@ import us.pserver.micron.security.Role;
  */
 public class TestIgniteSerialSupport {
 
+  public static final String SECURITY_CACHE_USER = "security_user";
+  
+  public static final String SECURITY_CACHE_GROUP = "security_group";
+  
+  public static final String SECURITY_CACHE_ROLE = "security_role";
+  
+  public static final String SECURITY_CACHE_RESOURCE = "security_resource";
+  
   @Test
   public void testCustomBeanSerializationOnDistributedCache() {
-    System.out.println("====== IGNITE SERIAL SUPPORT 111 ======");
-    IgniteSetup setup = IgniteSetup.create();
-    System.out.printf("- getStoragePath: %s%n", setup.ignite().configuration().getDataStorageConfiguration().getStoragePath());
-    System.out.printf("- getWalArchivePath: %s%n", setup.ignite().configuration().getDataStorageConfiguration().getWalArchivePath());
-    System.out.printf("- getWalPath: %s%n", setup.ignite().configuration().getDataStorageConfiguration().getWalPath());
-    User juno = User.builder()
-        .setName("juno")
-        .setFullName("Juno Roesler")
-        .setBirth(LocalDate.of(1980, 7, 7))
-        .setEmail("juno.rr@gmail.com")
-        .setPassword("32132155".toCharArray())
-        .build();
-    User john = User.builder()
-        .setName("john")
-        .setFullName("John Doe")
-        .setBirth(LocalDate.of(1982, 4, 13))
-        .setEmail("john.doe.13@gmail.com")
-        .setPassword("131313".toCharArray())
-        .build();
-    Group root = Group.builder()
-        .setName("root")
-        .addUser(juno)
-        .build();
-    Group other = Group.builder()
-        .setName("other")
-        .addUser(juno)
-        .addUser(john)
-        .build();
-    Group johns = Group.builder()
-        .setName("johns")
-        .addUser(john)
-        .build();
-    Role manage = Role.builder()
-        .setName("manage")
-        .setAllowed(true)
-        .addGroup(root)
-        .build();
-    Role noJohns = Role.builder()
-        .setName("noJohns")
-        .setAllowed(false)
-        .addGroup(johns)
-        .build();
-    Role look = Role.builder()
-        .setName("look")
-        .setAllowed(true)
-        .addGroup(other)
-        .build();
-    Resource rmanage = Resource.builder()
-        .setName("manage")
-        .addRole(manage)
-        .addRole(look)
-        .addRole(noJohns)
-        .build();
-    Resource rlook = Resource.builder()
-        .setName("look")
-        .addRole(look)
-        .build();
-    setup.security().getUserCache().put(juno.getName(), juno);
-    setup.security().getUserCache().put(john.getName(), john);
-    setup.security().getGroupCache().put(root.getName(), root);
-    setup.security().getGroupCache().put(other.getName(), other);
-    setup.security().getGroupCache().put(johns.getName(), johns);
-    setup.security().getRoleCache().put(noJohns.getName(), noJohns);
-    setup.security().getRoleCache().put(manage.getName(), manage);
-    setup.security().getRoleCache().put(look.getName(), look);
-    setup.security().getResourceCache().put(rmanage.getName(), rmanage);
-    setup.security().getResourceCache().put(rlook.getName(), rlook);
-    System.out.println("====== users ======");
-    System.out.println(juno);
-    System.out.println(john);
-    System.out.println("====== groups ======");
-    System.out.println(root);
-    System.out.println(other);
-    System.out.println(johns);
-    System.out.println("====== roles ======");
-    System.out.println(manage);
-    System.out.println(look);
-    System.out.println(noJohns);
-    System.out.println("====== resources ======");
-    System.out.println(rmanage);
-    System.out.println(rlook);
-    System.out.printf("* authorize( %s, %s ): %s%n", rmanage.getName(), juno.getName(), setup.security().authorize(rmanage, juno));
-    System.out.printf("* authorize( %s, %s ): %s%n", rmanage.getName(), john.getName(), setup.security().authorize(rmanage, john));
-    System.out.printf("* authorize( %s, %s ): %s%n", rlook.getName(), juno.getName(), setup.security().authorize(rlook, juno));
-    System.out.printf("* authorize( %s, %s ): %s%n", rlook.getName(), john.getName(), setup.security().authorize(rlook, john));
-    Sleeper.of(5000).sleep();
-    setup.ignite().close();
+    MicronConfig mcf = MicronConfig.builder().buildFromAppYaml();
+    try (Ignite ignite = IgniteSetup.start(mcf.getIgniteConfig())) {
+      System.out.println("====== IGNITE SERIAL SUPPORT 111 ======");
+      System.out.printf("- getStoragePath: %s%n", ignite.configuration().getDataStorageConfiguration().getStoragePath());
+      System.out.printf("- getWalArchivePath: %s%n", ignite.configuration().getDataStorageConfiguration().getWalArchivePath());
+      System.out.printf("- getWalPath: %s%n", ignite.configuration().getDataStorageConfiguration().getWalPath());
+
+      IgniteCache<String,User> users = ignite.getOrCreateCache(SECURITY_CACHE_USER);
+      mcf.getSecurityConfig().getUsers().forEach(u -> users.put(u.getName(), u.edit().build()));
+      IgniteCache<String,Group> groups = ignite.getOrCreateCache(SECURITY_CACHE_GROUP);
+      mcf.getSecurityConfig().getGroups().forEach(g -> groups.put(g.getName(), g.edit().build()));
+      IgniteCache<String,Role> roles = ignite.getOrCreateCache(SECURITY_CACHE_ROLE);
+      mcf.getSecurityConfig().getRoles().forEach(r -> roles.put(r.getName(), r.edit().build()));
+      IgniteCache<String,Resource> resources = ignite.getOrCreateCache(SECURITY_CACHE_RESOURCE);
+      mcf.getSecurityConfig().getResources().forEach(r -> resources.put(r.getName(), r.edit().build()));
+
+      Security security = Security.create(SecurityConfig.of(ignite));
+
+      System.out.println("====== users ======");
+      System.out.println(security.getConfig().getUser("juno"));
+      System.out.println(security.getConfig().getUser("john"));
+      System.out.println("====== groups ======");
+      System.out.println(security.getConfig().getGroup("root"));
+      System.out.println(security.getConfig().getGroup("other"));
+      System.out.println(security.getConfig().getGroup("johns"));
+      System.out.println("====== roles ======");
+      System.out.println(security.getConfig().getRole("admin"));
+      System.out.println(security.getConfig().getRole("look"));
+      System.out.println(security.getConfig().getRole("noJohns"));
+      System.out.println("====== resources ======");
+      System.out.println(security.getConfig().getResource("/manage"));
+      System.out.println(security.getConfig().getResource("/look"));
+      System.out.printf("* authorize( %s, %s ): %s%n", "/manage", "juno", security.authorize(
+          security.getConfig().getResource("/manage").get(), 
+          security.getConfig().getUser("juno").get())
+      );
+      System.out.printf("* authorize( %s, %s ): %s%n", "/manage", "john", security.authorize(
+          security.getConfig().getResource("/manage").get(), 
+          security.getConfig().getUser("john").get())
+      );
+      System.out.printf("* authorize( %s, %s ): %s%n", "/look", "juno", security.authorize(
+          security.getConfig().getResource("/look").get(), 
+          security.getConfig().getUser("juno").get())
+      );
+      System.out.printf("* authorize( %s, %s ): %s%n", "/look", "john", security.authorize(
+          security.getConfig().getResource("/look").get(), 
+          security.getConfig().getUser("john").get())
+      );
+      Sleeper.of(10000).sleep();
+    }
+    catch(Exception ex) {
+      ex.printStackTrace();
+      throw ex;
+    }
   }
   
 }

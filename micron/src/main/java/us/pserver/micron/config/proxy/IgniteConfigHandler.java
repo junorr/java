@@ -32,8 +32,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import us.pserver.micron.config.CacheConfig;
 import us.pserver.micron.config.IgniteConfig;
-import us.pserver.micron.config.proxy.CacheConfigHandler;
+import us.pserver.micron.config.ServerConfig;
+import us.pserver.micron.config.impl.ServerConfigImpl;
 import us.pserver.tools.Match;
 
 /**
@@ -52,10 +54,8 @@ public class IgniteConfigHandler implements InvocationHandler, IgniteConfig {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     switch(method.getName()) {
-      case "getAddress":
-        return getAddress();
-      case "getPort":
-        return getPort();
+      case "getIgniteServerConfig":
+        return getIgniteServerConfig();
       case "getStorage":
         return getStorage();
       case "getJoinTimeout":
@@ -88,15 +88,12 @@ public class IgniteConfigHandler implements InvocationHandler, IgniteConfig {
   
   
   @Override
-  public String getAddress() {
-    return cfg.get("address").asString().orElse("localhost");
+  public ServerConfig getIgniteServerConfig() {
+    return new ServerConfigImpl(
+        cfg.get("address").asString().get(), 
+        cfg.get("port").asInt().get()
+    );
   }
-  
-  @Override
-  public int getPort() {
-    return cfg.get("port").asInt().orElse(0);
-  }
-  
   
   @Override
   public Optional<Path> getStorage() {
@@ -111,14 +108,14 @@ public class IgniteConfigHandler implements InvocationHandler, IgniteConfig {
   
   
   @Override
-  public Set<IgniteConfig.CacheConfig> getCacheConfigSet() {
+  public Set<CacheConfig> getCacheConfigSet() {
     List<Config> lst = cfg.get("caches").asNodeList().orElse(Collections.EMPTY_LIST);
     if(lst.isEmpty()) return Collections.EMPTY_SET;
-    Set<IgniteConfig.CacheConfig> set = new HashSet();
+    Set<CacheConfig> set = new HashSet();
     for(Config c : lst) {
-      set.add((IgniteConfig.CacheConfig) Proxy.newProxyInstance(
+      set.add((CacheConfig) Proxy.newProxyInstance(
           IgniteConfig.class.getClassLoader(), 
-          new Class[]{IgniteConfig.CacheConfig.class}, 
+          new Class[]{CacheConfig.class}, 
           new CacheConfigHandler(c))
       );
     }
@@ -129,8 +126,7 @@ public class IgniteConfigHandler implements InvocationHandler, IgniteConfig {
   @Override
   public int hashCode() {
     int hash = 3;
-    hash = 47 * hash + Objects.hashCode(getAddress());
-    hash = 47 * hash + Objects.hashCode(getPort());
+    hash = 47 * hash + Objects.hashCode(getIgniteServerConfig());
     hash = 47 * hash + Objects.hashCode(getJoinTimeout());
     hash = 47 * hash + Objects.hashCode(getStorage());
     hash = 47 * hash + Objects.hashCode(getCacheConfigSet());
@@ -149,10 +145,7 @@ public class IgniteConfigHandler implements InvocationHandler, IgniteConfig {
       return false;
     }
     final IgniteConfig other = (IgniteConfig) obj;
-    if (!Objects.equals(this.getAddress(), other.getAddress())) {
-      return false;
-    }
-    if (!Objects.equals(this.getPort(), other.getPort())) {
+    if (!Objects.equals(this.getIgniteServerConfig(), other.getIgniteServerConfig())) {
       return false;
     }
     if (!Objects.equals(this.getJoinTimeout(), other.getJoinTimeout())) {
@@ -166,7 +159,7 @@ public class IgniteConfigHandler implements InvocationHandler, IgniteConfig {
   
   @Override
   public String toString() {
-    return "IgniteConfig{ address=" + getAddress() + ", port=" + getPort() + ", joinTimeout=" + getJoinTimeout() + ", storage=" + getStorage() + ", caches=" + getCacheConfigSet() + " }";
+    return "IgniteConfig{ server=" + getIgniteServerConfig() + ", joinTimeout=" + getJoinTimeout() + ", storage=" + getStorage() + ", caches=" + getCacheConfigSet() + " }";
   }
   
 }

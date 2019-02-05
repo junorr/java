@@ -19,34 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micron.security;
+package us.pserver.micron.config;
 
-import java.util.List;
-import java.util.Optional;
-import us.pserver.micron.config.SecurityConfig;
-import us.pserver.micron.security.impl.SecurityImpl;
+import us.pserver.micron.config.impl.ServerConfigImpl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/01/2019
+ * @version 0.0 - 02/02/2019
  */
-public interface Security {
+public interface ServerConfig {
+
+  public String getAddress();
   
-  public SecurityConfig getConfig();
-  
-  public List<User> findUserByEmail(String email);
-  
-  public Optional<User> authenticateUser(String name, char[] password);
-  
-  public boolean authorize(String resource, User user);
-  
-  public boolean authorize(Resource res, User user);
+  public int getPort(); 
   
   
   
-  public static Security create(SecurityConfig cfg) {
-    return new SecurityImpl(cfg);
+  public static ServerConfig create(String addr, int port) {
+    return new ServerConfigImpl(addr, port);
   }
   
 }

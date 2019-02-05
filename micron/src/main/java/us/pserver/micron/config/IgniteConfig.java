@@ -22,10 +22,10 @@
 package us.pserver.micron.config;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
-import javax.cache.expiry.ExpiryPolicy;
-import org.apache.ignite.cache.CacheMode;
+import us.pserver.micron.config.impl.IgniteConfigBuilderImpl;
 
 
 /**
@@ -35,9 +35,7 @@ import org.apache.ignite.cache.CacheMode;
  */
 public interface IgniteConfig {
 
-  public String getAddress();
-  
-  public int getPort();
+  public ServerConfig getIgniteServerConfig();
   
   public Optional<Path> getStorage();
   
@@ -47,25 +45,43 @@ public interface IgniteConfig {
   
   
   
-  public static enum CacheExpiryPolicy {
-    CREATED, ACCESSED, MODIFIED, TOUCHED, ETERNAL
+  public static IgniteConfigBuilder builder() {
+    return new IgniteConfigBuilderImpl();
   }
+  
+  
+  
+  
+  
+  public interface IgniteConfigBuilder {
+    
+    public ServerConfig getIgniteServerConfig();
 
-  
-  
-  public interface CacheConfig {
+    public Optional<Path> getStorage();
+
+    public long getJoinTimeout();
+
+    public Set<CacheConfig> getCacheConfigSet();
     
-    public String getName();
+    public IgniteConfigBuilder setIgniteServerConfig(String addr, int port);
     
-    public int getBackups();
+    public IgniteConfigBuilder setIgniteServerConfig(ServerConfig cfg);
     
-    public CacheMode getCacheMode();
+    public IgniteConfigBuilder setStorage(Optional<Path> storage);
     
-    public Optional<CacheExpiryPolicy> getCacheExpiryPolicy();
+    public IgniteConfigBuilder setJoinTimeout(long timeout);
     
-    public int getExpiryDuration();
+    public IgniteConfigBuilder clearCacheConfigSet();
     
-    public Optional<javax.cache.configuration.Factory<ExpiryPolicy>> getExpiryPolicyFactory();
+    public IgniteConfigBuilder add(CacheConfig cfg);
+    
+    public IgniteConfigBuilder addAll(Collection<CacheConfig> cfg);
+    
+    public CacheConfig.CacheConfigBuilder buildCacheConfig();
+    
+    public IgniteConfig build();
+    
+    public MicronConfig.MicronConfigBuilder setBuild();
     
   }
   

@@ -21,10 +21,14 @@
 
 package us.pserver.micron.config;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
+import org.apache.ignite.Ignite;
+import org.apache.ignite.lang.IgniteBiPredicate;
+import us.pserver.micron.config.impl.IgniteSecurityConfig;
+import us.pserver.micron.config.impl.SecurityConfigBuilderImpl;
 import us.pserver.micron.security.Group;
 import us.pserver.micron.security.Resource;
 import us.pserver.micron.security.Role;
@@ -39,26 +43,81 @@ public interface SecurityConfig {
 
   public Set<User> getUsers();
   
-  public List<User> findUser(Predicate<User> prd);
+  public List<User> findUser(IgniteBiPredicate<String,User> prd);
   
   public Optional<User> getUser(String name);
   
   public Set<Group> getGroups();
   
-  public List<Group> findGroup(Predicate<Group> prd);
+  public List<Group> findGroup(IgniteBiPredicate<String,Group> prd);
   
   public Optional<Group> getGroup(String name);
   
   public Set<Role> getRoles();
   
-  public List<Role> findRole(Predicate<Role> prd);
+  public List<Role> findRole(IgniteBiPredicate<String,Role> prd);
   
   public Optional<Role> getRole(String name);
   
   public Set<Resource> getResources();
   
-  public List<Resource> findResource(Predicate<Resource> prd);
+  public List<Resource> findResource(IgniteBiPredicate<String,Resource> prd);
   
   public Optional<Resource> getResource(String name);
+  
+  
+  
+  public static SecurityConfigBuilder builder() {
+    return new SecurityConfigBuilderImpl();
+  }
+  
+  
+  public static SecurityConfig of(Ignite ignite) {
+    return new IgniteSecurityConfig(ignite);
+  }
+  
+  
+  
+  
+  
+  public interface SecurityConfigBuilder {
+    
+    public Set<User> getUsers();
+    
+    public Set<Group> getGroups();
+    
+    public Set<Role> getRoles();
+    
+    public Set<Resource> getResources();
+    
+    public SecurityConfigBuilder addUser(User ... user);
+    
+    public SecurityConfigBuilder addGroup(Group ... group);
+    
+    public SecurityConfigBuilder addRole(Role ... role);
+    
+    public SecurityConfigBuilder addResource(Resource ... resource);
+    
+    public SecurityConfigBuilder addUsers(Collection<User> users);
+    
+    public SecurityConfigBuilder addGroups(Collection<Group> groups);
+    
+    public SecurityConfigBuilder addRoles(Collection<Role> roles);
+    
+    public SecurityConfigBuilder addResources(Collection<Resource> resources);
+    
+    public SecurityConfigBuilder clearUsers();
+    
+    public SecurityConfigBuilder clearGroups();
+    
+    public SecurityConfigBuilder clearRoles();
+    
+    public SecurityConfigBuilder clearResources();
+    
+    public SecurityConfig build();
+    
+    public MicronConfig.MicronConfigBuilder setBuild();
+    
+  }
   
 }

@@ -64,23 +64,24 @@ public class SecurityImpl implements Security {
   
   @Override
   public Optional<User> authenticateUser(String name, char[] password) {
-    Optional<User> opt = cfg.getUsers().stream().filter(u -> u.getName().equals(name)).findAny();
+    Optional<User> opt = cfg.getUser(name);
     return opt.isPresent() && opt.get().authenticate(name, password) ? opt : Optional.empty();
   }
   
   
   @Override
   public boolean authorize(String resource, User user) {
-    Optional<Resource> opt = cfg.getResources().stream().filter(r -> r.getName().equals(resource)).findAny();
+    Optional<Resource> opt = cfg.getResource(resource);
     return opt.isPresent() ? authorize(opt.get(), user) : false;
   }
   
   @Override
   public boolean authorize(Resource res, User user) {
-    List<Role> roles = cfg.getRoles().stream().filter(r -> res.containsRole(r)).collect(Collectors.toList());
-    List<Group> groups = cfg.getGroups().stream().filter(g -> g.containsUser(user)).collect(Collectors.toList());
+    List<Role> roles = cfg.findRole((s,r) -> res.containsRole(r));
+    List<Group> groups = cfg.findGroup((s,g) -> g.containsUser(user));
+    //contains at least one allowed role with user's groups
     return roles.stream().anyMatch(r -> groups.stream().anyMatch(g -> r.containsGroup(g)) && r.isAllowed())
-        //and do not contains NOT allowed roles with any user's group
+        //and do not contains NOT allowed roles with any user's groups
         && roles.stream().noneMatch(r -> groups.stream().anyMatch(g -> r.containsGroup(g)) && !r.isAllowed());
   }
   

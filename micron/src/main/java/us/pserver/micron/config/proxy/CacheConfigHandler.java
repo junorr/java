@@ -35,7 +35,13 @@ import javax.cache.expiry.ExpiryPolicy;
 import javax.cache.expiry.ModifiedExpiryPolicy;
 import javax.cache.expiry.TouchedExpiryPolicy;
 import org.apache.ignite.cache.CacheMode;
-import us.pserver.micron.config.IgniteConfig;
+import org.apache.ignite.cache.CacheRebalanceMode;
+import us.pserver.micron.config.CacheConfig;
+import static us.pserver.micron.config.CacheConfig.CacheExpiryPolicy.ACCESSED;
+import static us.pserver.micron.config.CacheConfig.CacheExpiryPolicy.CREATED;
+import static us.pserver.micron.config.CacheConfig.CacheExpiryPolicy.ETERNAL;
+import static us.pserver.micron.config.CacheConfig.CacheExpiryPolicy.MODIFIED;
+import static us.pserver.micron.config.CacheConfig.CacheExpiryPolicy.TOUCHED;
 import us.pserver.micron.security.Group;
 import us.pserver.tools.Match;
 
@@ -44,7 +50,7 @@ import us.pserver.tools.Match;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 27/01/2019
  */
-public class CacheConfigHandler implements InvocationHandler, IgniteConfig.CacheConfig {
+public class CacheConfigHandler implements InvocationHandler, CacheConfig {
   
   private final Config cfg;
   
@@ -61,6 +67,8 @@ public class CacheConfigHandler implements InvocationHandler, IgniteConfig.Cache
         return getBackups();
       case "getCacheMode":
         return getCacheMode();
+      case "getCacheRebalanceMode":
+        return getCacheRebalanceMode();
       case "getCacheExpiryPolicy":
         return getCacheExpiryPolicy();
       case "getExpiryDuration":
@@ -111,8 +119,14 @@ public class CacheConfigHandler implements InvocationHandler, IgniteConfig.Cache
   
   
   @Override
-  public Optional<IgniteConfig.CacheExpiryPolicy> getCacheExpiryPolicy() {
-    return cfg.get("expiry_policy").asString().map(IgniteConfig.CacheExpiryPolicy::valueOf);
+  public CacheRebalanceMode getCacheRebalanceMode() {
+    return CacheRebalanceMode.valueOf(cfg.get("rebalance").asString().get());
+  }
+  
+  
+  @Override
+  public Optional<CacheExpiryPolicy> getCacheExpiryPolicy() {
+    return cfg.get("expiry_policy").asString().map(CacheExpiryPolicy::valueOf);
   }
   
   
@@ -124,7 +138,7 @@ public class CacheConfigHandler implements InvocationHandler, IgniteConfig.Cache
   
   @Override
   public Optional<javax.cache.configuration.Factory<ExpiryPolicy>> getExpiryPolicyFactory() {
-    Optional<IgniteConfig.CacheExpiryPolicy> opt = getCacheExpiryPolicy();
+    Optional<CacheExpiryPolicy> opt = getCacheExpiryPolicy();
     if(!opt.isPresent()) return Optional.empty();
     switch(opt.get()) {
       case ACCESSED:
@@ -163,7 +177,7 @@ public class CacheConfigHandler implements InvocationHandler, IgniteConfig.Cache
     if (!Group.class.isAssignableFrom(obj.getClass())) {
       return false;
     }
-    final IgniteConfig.CacheConfig other = (IgniteConfig.CacheConfig) obj;
+    final CacheConfig other = (CacheConfig) obj;
     if (!Objects.equals(this.getName(), other.getName())) {
       return false;
     }

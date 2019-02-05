@@ -56,6 +56,8 @@ public class RoleConfigHandler implements InvocationHandler, Role {
         return getItems();
       case "containsGroup":
         return containsGroup((Group) args[0]);
+      case "edit":
+        return edit();
       case "hashCode":
         return hashCode();
       case "equals":

@@ -19,16 +19,18 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micron.security.impl;
+package us.pserver.micron.config.impl;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.IgniteCache;
 import org.apache.ignite.cache.query.ScanQuery;
+import org.apache.ignite.lang.IgniteBiPredicate;
 import us.pserver.micron.config.SecurityConfig;
 import us.pserver.micron.security.Group;
 import us.pserver.micron.security.Resource;
@@ -70,9 +72,9 @@ public class IgniteSecurityConfig implements SecurityConfig {
   
   
   @Override
-  public List<User> findUser(Predicate<User> prd) {
+  public List<User> findUser(IgniteBiPredicate<String,User> prd) {
     IgniteCache<String,User> cache = ignite.getOrCreateCache(SECURITY_CACHE_USER);
-    ScanQuery<String,User> qry = new ScanQuery<>((s,u) -> prd.test(u));
+    ScanQuery<String,User> qry = new ScanQuery<>(prd);
     return cache.query(qry, e -> e.getValue()).getAll();
   }
 
@@ -94,9 +96,9 @@ public class IgniteSecurityConfig implements SecurityConfig {
 
 
   @Override
-  public List<Group> findGroup(Predicate<Group> prd) {
+  public List<Group> findGroup(IgniteBiPredicate<String,Group> prd) {
     IgniteCache<String,Group> cache = ignite.getOrCreateCache(SECURITY_CACHE_GROUP);
-    ScanQuery<String,Group> qry = new ScanQuery<>((s,g) -> prd.test(g));
+    ScanQuery<String,Group> qry = new ScanQuery<>(prd);
     return cache.query(qry, e -> e.getValue()).getAll();
   }
 
@@ -118,9 +120,9 @@ public class IgniteSecurityConfig implements SecurityConfig {
 
 
   @Override
-  public List<Role> findRole(Predicate<Role> prd) {
-    IgniteCache<String,Role> cache = ignite.getOrCreateCache(SECURITY_CACHE_USER);
-    ScanQuery<String,Role> qry = new ScanQuery<>((s,r) -> prd.test(r));
+  public List<Role> findRole(IgniteBiPredicate<String,Role> prd) {
+    IgniteCache<String,Role> cache = ignite.getOrCreateCache(SECURITY_CACHE_ROLE);
+    ScanQuery<String,Role> qry = new ScanQuery<>(prd);
     return cache.query(qry, e -> e.getValue()).getAll();
   }
 
@@ -142,9 +144,9 @@ public class IgniteSecurityConfig implements SecurityConfig {
   
 
   @Override
-  public List<Resource> findResource(Predicate<Resource> prd) {
+  public List<Resource> findResource(IgniteBiPredicate<String,Resource> prd) {
     IgniteCache<String,Resource> cache = ignite.getOrCreateCache(SECURITY_CACHE_RESOURCE);
-    ScanQuery<String,Resource> qry = new ScanQuery<>((s,r) -> prd.test(r));
+    ScanQuery<String,Resource> qry = new ScanQuery<>(prd);
     return cache.query(qry, e -> e.getValue()).getAll();
   }
 

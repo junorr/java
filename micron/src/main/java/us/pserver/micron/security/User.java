@@ -78,6 +78,8 @@ public interface User extends NamedBean {
     public LocalDate getBirth();
 
     public UserBuilder setBirth(LocalDate birth);
+    
+    public User clone(User user);
 
   }
   

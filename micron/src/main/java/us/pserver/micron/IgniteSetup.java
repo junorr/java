@@ -22,20 +22,18 @@
 package us.pserver.micron;
 
 import java.util.Collection;
-import javax.cache.expiry.AccessedExpiryPolicy;
-import javax.cache.expiry.Duration;
+import java.util.Set;
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
-import org.apache.ignite.cache.CacheMode;
+import org.apache.ignite.cache.CacheRebalanceMode;
 import org.apache.ignite.cluster.ClusterNode;
 import org.apache.ignite.configuration.CacheConfiguration;
 import org.apache.ignite.configuration.DataStorageConfiguration;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.spi.communication.tcp.TcpCommunicationSpi;
-import us.pserver.micron.security.Security;
+import us.pserver.micron.config.CacheConfig;
+import us.pserver.micron.config.IgniteConfig;
 import us.pserver.micron.security.User;
-import us.pserver.micron.security.impl.SecurityImpl;
-import us.pserver.tools.Match;
 import us.pserver.tools.misc.Sleeper;
 
 /**
@@ -45,82 +43,45 @@ import us.pserver.tools.misc.Sleeper;
  */
 public class IgniteSetup {
   
-  public static final String CACHE_PUBLIC = "cache.public";
-  
-  public static final String DEFAULT_LOCAL_ADDRESS = "0.0.0.0";
-  
-  public static final int DEFAULT_LOCAL_PORT = 5555;
-  
-  private final Ignite ignite;
-  
-  
-  public IgniteSetup(IgniteConfiguration config) {
-    //System.out.println(">>>=== Micron Setup ======");
-    //System.out.println(">>>  ignite.start()...");
-    this.ignite = Ignition.start(Match.notNull(config).getOrFail("Bad null IgniteConfiguration"));
-    //System.out.println(">>>  ignite.start()...[Ok]");
-    //System.out.println(">>>  witing 5s for join nodes...");
-    Sleeper.of(5000).sleep();
-    //System.out.println(">>>  witing 5s for join nodes...[Ok]");
+  public static Ignite start(IgniteConfig ic) {
+    IgniteConfiguration cfg = new IgniteConfiguration();
+    cfg.setClassLoader(User.class.getClassLoader());
+    if(ic.getStorage().isPresent()) {
+      String path = ic.getStorage().get().toString();
+      DataStorageConfiguration scf = new DataStorageConfiguration();
+      scf.getDefaultDataRegionConfiguration().setPersistenceEnabled(true);
+      scf.setStoragePath(path)
+          .setWalPath(path + "/wal")
+          .setWalArchivePath(path + "/wal/archive")
+          .getDefaultDataRegionConfiguration()
+          .setPersistenceEnabled(true);
+      cfg.setDataStorageConfiguration(scf);
+    }
+    if(!ic.getCacheConfigSet().isEmpty()) {
+      Set<CacheConfig> caches = ic.getCacheConfigSet();
+      CacheConfiguration[] array = new CacheConfiguration[caches.size()];
+      int i = 0;
+      for(CacheConfig c : caches) {
+        array[i] = new CacheConfiguration(c.getName())
+            .setCacheMode(c.getCacheMode())
+            .setRebalanceMode(c.getCacheRebalanceMode())
+            .setBackups(c.getBackups());
+        c.getExpiryPolicyFactory()
+            .ifPresent(f -> array[i].setEvictionPolicyFactory(f));
+      }
+    }
+    TcpCommunicationSpi tcp = new TcpCommunicationSpi();
+    tcp.setLocalAddress(ic.getIgniteServerConfig().getAddress())
+        .setLocalPort(ic.getIgniteServerConfig().getPort());
+    cfg.setCommunicationSpi(tcp);
+    Ignite ignite = Ignition.start(cfg);
+    //if(ic.getJoinTimeout() > 0) {
+      //Sleeper.of(ic.getJoinTimeout()).sleep();
+    //}
     ignite.cluster().active(true);
     Collection<ClusterNode> nodes = ignite.cluster().forServers().nodes();
-    //System.out.println(">>>  Baseline Topology:");
-    //nodes.forEach(n -> System.out.printf(">>>   - %s%n", n));
     ignite.cluster().setBaselineTopology(nodes);
-    //System.out.println("<<<=== Micron Setup ======");
-  }
-  
-  
-  public Ignite ignite() {
     return ignite;
-  }
-  
-  
-  public Security security() {
-    return Security.create(ignite());
-  }
-  
-  
-  public static IgniteSetup create() {
-    return create(DEFAULT_LOCAL_ADDRESS, DEFAULT_LOCAL_PORT);
-  }
-  
-  
-  public static IgniteSetup create(String address, int port) {
-    IgniteConfiguration cfg = new IgniteConfiguration();
-    
-    CacheConfiguration[] caches = new CacheConfiguration[5];
-    caches[0] = new CacheConfiguration(SecurityImpl.CACHE_GROUP)
-        .setCacheMode(CacheMode.REPLICATED)
-        .setBackups(1);
-    caches[1] = new CacheConfiguration(SecurityImpl.CACHE_RESOURCE)
-        .setCacheMode(CacheMode.REPLICATED)
-        .setBackups(1);
-    caches[2] = new CacheConfiguration(SecurityImpl.CACHE_ROLE)
-        .setCacheMode(CacheMode.REPLICATED)
-        .setBackups(1);
-    caches[3] = new CacheConfiguration(SecurityImpl.CACHE_USER)
-        .setCacheMode(CacheMode.REPLICATED)
-        .setBackups(1);
-    caches[4] = new CacheConfiguration(CACHE_PUBLIC)
-        .setCacheMode(CacheMode.REPLICATED)
-        .setExpiryPolicyFactory(AccessedExpiryPolicy.factoryOf(Duration.TEN_MINUTES));
-    cfg.setCacheConfiguration(caches);
-    
-    cfg.setClassLoader(User.class.getClassLoader());
-    DataStorageConfiguration scf = new DataStorageConfiguration();
-    scf.getDefaultDataRegionConfiguration().setPersistenceEnabled(true);
-    scf.setStoragePath("d:/ignite/db")
-        .setWalPath("d:/ignite/db/wal")
-        .setWalArchivePath("d:/ignite/db/wal/archive")
-        .getDefaultDataRegionConfiguration()
-        .setPersistenceEnabled(true);
-    cfg.setDataStorageConfiguration(scf);
-    TcpCommunicationSpi tcp = new TcpCommunicationSpi();
-    tcp.setLocalAddress("0.0.0.0")
-        .setLocalPort(port);
-    cfg.setCommunicationSpi(tcp);
-    return new IgniteSetup(cfg);
   }
   
 }

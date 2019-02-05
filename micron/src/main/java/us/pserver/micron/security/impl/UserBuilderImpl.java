@@ -128,6 +128,17 @@ public class UserBuilderImpl implements User.UserBuilder {
     this.created = created;
     return this;
   }
+  
+  @Override
+  public User clone(User user) {
+    return this.setBirth(user.getBirth())
+        .setCreated(user.getCreated())
+        .setEmail(user.getEmail())
+        .setFullName(user.getFullName())
+        .setHash(user.getHash())
+        .setName(user.getName())
+        .build();
+  }
 
   @Override
   public User build() {

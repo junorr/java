@@ -165,6 +165,8 @@ public class TestConfig {
       System.out.println("SECURITY CONFIG");
       SecurityConfig config = (SecurityConfig) Proxy.newProxyInstance(SecurityConfig.class.getClassLoader(), new Class[]{SecurityConfig.class}, new SecurityConfigHandler(cfg.get("security")));
       System.out.println(config);
+      System.out.println("config.findRole(r -> r.getGroups().contains('johns')): " + config.findRole((s,r) -> r.getGroups().contains("johns")));
+      System.out.println("config.findUser(u -> u.getEmail().contains('john')): " + config.findUser((s,u) -> u.getEmail().contains("john")));
     }
     catch(Exception e) {
       e.printStackTrace();

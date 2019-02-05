@@ -8,6 +8,8 @@ ignite:
     - name: "public"
       #[LOCAL|PARTITIONED|REPLICATED]
       mode: REPLICATED 
+      #[SYNC|ASYNC|NONE]
+      rebalance: SYNC
       #[CREATED|ACCESSED|MODIDIED|TOUCHED|ETERNAL]
       expiry_policy: ACCESSED 
       #duration in seconds
@@ -16,23 +18,31 @@ ignite:
     - name: "security_group"
       #[LOCAL|PARTITIONED|REPLICATED]
       mode: REPLICATED 
+      #[SYNC|ASYNC|NONE]
+      rebalance: SYNC
       backups: 1
     - name: "security_user"
       #[LOCAL|PARTITIONED|REPLICATED]
       mode: REPLICATED 
+      #[SYNC|ASYNC|NONE]
+      rebalance: SYNC
       backups: 1
     - name: "security_role"
       #[LOCAL|PARTITIONED|REPLICATED]
       mode: REPLICATED 
+      #[SYNC|ASYNC|NONE]
+      rebalance: SYNC
       backups: 1
     - name: "security_resource"
       #[LOCAL|PARTITIONED|REPLICATED]
       mode: REPLICATED 
+      #[SYNC|ASYNC|NONE]
+      rebalance: SYNC
       backups: 1
 
 server:
   address: "0.0.0.0"
-  port: 6666
+  port: 8080
 
 security:
   users:

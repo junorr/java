@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.apache.ignite.lang.IgniteBiPredicate;
 import us.pserver.micron.config.SecurityConfig;
 import us.pserver.micron.security.Group;
 import us.pserver.micron.security.Resource;
@@ -58,12 +59,28 @@ public class SecurityConfigHandler implements InvocationHandler, SecurityConfig 
     switch(method.getName()) {
       case "getUsers":
         return getUsers();
+      case "findUser":
+        return findUser((IgniteBiPredicate<String,User>) args[0]);
+      case "getUser":
+        return getUser((String) args[0]);
       case "getGroups":
         return getGroups();
+      case "findGroup":
+        return findGroup((IgniteBiPredicate<String,Group>) args[0]);
+      case "getGroup":
+        return getGroup((String) args[0]);
       case "getRoles":
         return getRoles();
+      case "findRole":
+        return findRole((IgniteBiPredicate<String,Role>) args[0]);
+      case "getRole":
+        return getRole((String) args[0]);
       case "getResources":
         return getResources();
+      case "findResource":
+        return findResource((IgniteBiPredicate<String,Resource>) args[0]);
+      case "getResource":
+        return getResource((String) args[0]);
       case "hashCode":
         return hashCode();
       case "equals":
@@ -106,8 +123,8 @@ public class SecurityConfigHandler implements InvocationHandler, SecurityConfig 
   
   
   @Override
-  public List<User> findUser(Predicate<User> prd) {
-    return getUsers().stream().filter(prd).collect(Collectors.toList());
+  public List<User> findUser(IgniteBiPredicate<String,User> prd) {
+    return getUsers().stream().filter(u -> prd.apply(u.getName(), u)).collect(Collectors.toList());
   }
   
   
@@ -134,8 +151,8 @@ public class SecurityConfigHandler implements InvocationHandler, SecurityConfig 
   
   
   @Override
-  public List<Group> findGroup(Predicate<Group> prd) {
-    return getGroups().stream().filter(prd).collect(Collectors.toList());
+  public List<Group> findGroup(IgniteBiPredicate<String,Group> prd) {
+    return getGroups().stream().filter(g -> prd.apply(g.getName(), g)).collect(Collectors.toList());
   }
   
   
@@ -162,8 +179,8 @@ public class SecurityConfigHandler implements InvocationHandler, SecurityConfig 
   
   
   @Override
-  public List<Role> findRole(Predicate<Role> prd) {
-    return getRoles().stream().filter(prd).collect(Collectors.toList());
+  public List<Role> findRole(IgniteBiPredicate<String,Role> prd) {
+    return getRoles().stream().filter(r -> prd.apply(r.getName(), r)).collect(Collectors.toList());
   }
   
   
@@ -190,8 +207,8 @@ public class SecurityConfigHandler implements InvocationHandler, SecurityConfig 
   
   
   @Override
-  public List<Resource> findResource(Predicate<Resource> prd) {
-    return getResources().stream().filter(prd).collect(Collectors.toList());
+  public List<Resource> findResource(IgniteBiPredicate<String,Resource> prd) {
+    return getResources().stream().filter(r -> prd.apply(r.getName(), r)).collect(Collectors.toList());
   }
   
   

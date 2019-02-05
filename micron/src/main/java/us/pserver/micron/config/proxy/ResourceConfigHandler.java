@@ -55,6 +55,8 @@ public class ResourceConfigHandler implements InvocationHandler, Resource {
         return getItems();
       case "containsUser":
         return containsRole((Role) args[0]);
+      case "edit":
+        return edit();
       case "hashCode":
         return hashCode();
       case "equals":

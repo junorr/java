@@ -19,34 +19,25 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.micron.security;
+package us.pserver.micron.handler;
 
-import java.util.List;
+import com.google.gson.JsonObject;
+import io.helidon.webserver.ServerRequest;
+import io.helidon.webserver.ServerResponse;
 import java.util.Optional;
-import us.pserver.micron.config.SecurityConfig;
-import us.pserver.micron.security.impl.SecurityImpl;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 31/01/2019
+ * @version 0.0 - 04/02/2019
  */
-public interface Security {
-  
-  public SecurityConfig getConfig();
-  
-  public List<User> findUserByEmail(String email);
-  
-  public Optional<User> authenticateUser(String name, char[] password);
-  
-  public boolean authorize(String resource, User user);
-  
-  public boolean authorize(Resource res, User user);
-  
-  
-  
-  public static Security create(SecurityConfig cfg) {
-    return new SecurityImpl(cfg);
+public class ContentHandler {
+
+  public void handle(ServerRequest req, ServerResponse res) {
+    System.out.printf("* Request received [%s]: %s:%d%n", req.uri(), req.remoteAddress(), req.remotePort());
+    Optional<JsonObject> opt = req.context().get(JsonObject.class);
+    System.out.println("=>> JsonObject: " + opt);
+    res.send();
   }
   
 }

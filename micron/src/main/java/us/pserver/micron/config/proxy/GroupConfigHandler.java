@@ -55,6 +55,8 @@ public class GroupConfigHandler implements InvocationHandler, Group {
         return getItems();
       case "containsUser":
         return containsUser((User) args[0]);
+      case "edit":
+        return edit();
       case "hashCode":
         return hashCode();
       case "equals":
