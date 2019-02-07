@@ -21,30 +21,13 @@
 
 package us.pserver.orb;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 05/02/2019
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE, ElementType.CONSTRUCTOR})
-@interface ConfigSource {
+public interface OrbBuilder {
 
-  public static enum SourceType {
-    FILE,
-    CLASSPATH,
-    ENV_VARIABLE,
-    SYSTEM_PROPERTY,
-    INHERIT
-  }
   
-  String value();
-  
-  SourceType type() default SourceType.INHERIT;
   
 }
