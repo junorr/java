@@ -41,7 +41,7 @@ public class AnnotatedMKFunction implements MKFunction {
     ConfigSource cs = meth.getDeclaredAnnotation(ConfigSource.class);
     if(cs == null) return Optional.empty();
     List<SourceType> types = Arrays.asList(cs.type());
-    List
+    List<String> values = Arrays.asList(cs.value());
   }
   
 }
