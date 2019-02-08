@@ -21,16 +21,17 @@
 
 package us.pserver.orb;
 
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 07/02/2019
+ * @version 0.0 - 08/02/2019
  */
 @FunctionalInterface
-public interface ConfigParser {
+public interface MKFunction {
 
-  public Map<String,Object> parse(DataSource src) throws Exception;
+  public Optional<String> apply(Method meth) throws Exception;
   
 }

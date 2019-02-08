@@ -22,7 +22,6 @@
 package us.pserver.orb;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -32,22 +31,12 @@ import java.util.function.Function;
  */
 public interface OrbConfiguration {
 
-  /**
-   * Get supported types by orb (may be null).
-   * @return TypeStrings
-   */
   public TypeStrings getSupportedTypes();
   
-  /**
-   * Get values map for InvocationHandler (may be null).
-   * @return Map<String,Object>
-   */
-  public Map<String,Object> getValuesMap();
+  public DataSource<?> getDataSource();
   
-  /**
-   * Get function for converting method names to map keys (may be null).
-   * @return Function<Method,String>
-   */
-  public Function<Method,String> getMethodToKeyFunction();
+  public OrbParser<DataSource<?>> getParser();
+  
+  public Function<Method,String> getMethodKeyFunction();
   
 }

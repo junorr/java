@@ -22,71 +22,49 @@
 package us.pserver.orb;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 07/02/2019
  */
-public interface DataSource {
+@FunctionalInterface
+public interface DataSource<T> {
 
-  public InputStream asInputStream() throws IOException;
+  public T getSource() throws Exception;
   
-  public default Reader asReader() throws IOException {
-    return new BufferedReader(new InputStreamReader(asInputStream()));
+  
+  
+  public static DataSource<Reader> ofInputStream(InputStream input) {
+    return () -> new BufferedReader(new InputStreamReader(input));
   }
   
-  public default ReadableByteChannel asByteChannel() throws IOException {
-    return Channels.newChannel(asInputStream());
+  public static DataSource<Reader> ofFile(Path path) {
+    return () -> Files.newBufferedReader(path, StandardCharsets.UTF_8);
   }
   
-  public default ByteBuffer readAsByteBuffer(boolean direct) throws IOException {
-    ByteBuffer buf = direct ? ByteBuffer.allocateDirect(4096) : ByteBuffer.allocate(4096);
-    ByteBuffer content = direct ? ByteBuffer.allocateDirect(4096) : ByteBuffer.allocate(4096);
-    try (ReadableByteChannel ch = asByteChannel()) {
-      while(ch.read(buf) != -1) {
-        buf.flip();
-        if(content.remaining() < buf.remaining()) {
-          content.flip();
-          int size = Math.round(content.remaining() * 1.25f + buf.remaining());
-          ByteBuffer ncont = direct ? ByteBuffer.allocateDirect(size) : ByteBuffer.allocate(size);
-          ncont.put(content);
-          content = ncont;
-        }
-        content.put(buf);
-        buf.compact();
-      }
-      content.flip();
-      return content;
-    }
+  public static DataSource<Reader> ofClassPath(String resource) {
+    return ofClassPath(resource, Orb.class.getClassLoader());
   }
   
-  public default String readAsString() throws IOException {
-    ByteBuffer buf = readAsByteBuffer(false);
-    return StandardCharsets.UTF_8.decode(buf).toString();
+  public static DataSource<Reader> ofClassPath(String resource, ClassLoader loader) {
+    return ofInputStream(loader.getResourceAsStream(resource));
   }
   
-  
-  
-  public static DataSource of(Path path) throws IOException {
-    return () -> Files.newInputStream(path, StandardOpenOption.READ);
+  public static DataSource<Map<String,String>> ofEnv() {
+    return () -> System.getenv();
   }
   
-  
-  public static DataSource ofEnvironment(String name) {
-    return () -> new ByteArrayInputStream(System.getenv(name).getBytes(StandardCharsets.UTF_8));
+  public static DataSource<Properties> ofSystemProps() {
+    return () -> System.getProperties();
   }
   
 }

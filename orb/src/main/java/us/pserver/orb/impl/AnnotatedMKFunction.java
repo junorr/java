@@ -19,32 +19,29 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb;
+package us.pserver.orb.impl;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import us.pserver.orb.MKFunction;
+import us.pserver.orb.ConfigSource;
+import us.pserver.orb.ConfigSource.SourceType;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 05/02/2019
+ * @version 0.0 - 08/02/2019
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE, ElementType.CONSTRUCTOR})
-public @interface ConfigSource {
+public class AnnotatedMKFunction implements MKFunction {
 
-  public static enum SourceType {
-    FILE,
-    CLASSPATH,
-    ENV_VARIABLE,
-    SYSTEM_PROPERTY,
-    INHERIT
+  @Override
+  public Optional<String> apply(Method meth) throws Exception {
+    ConfigSource cs = meth.getDeclaredAnnotation(ConfigSource.class);
+    if(cs == null) return Optional.empty();
+    List<SourceType> types = Arrays.asList(cs.type());
+    List
   }
-  
-  String[] value();
-  
-  SourceType[] type() default {SourceType.INHERIT};
   
 }
