@@ -19,27 +19,27 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb;
+package us.pserver.orb.bind;
 
-import us.pserver.orb.ds.DataSource;
-import us.pserver.orb.parse.OrbParser;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Optional;
 
 /**
- * Configuration class for Orb.
+ *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 15/01/2018
+ * @version 0.0 - 25/02/2019
  */
-public interface OrbConfiguration {
+public class PropertyMethodBind implements MethodBind {
 
-  public TypeStrings getSupportedTypes();
-  
-  public List<DataSource<?>> getDataSources();
-  
-  public List<OrbParser<DataSource<?>>> getParsers();
-  
-  public Function<Method,String> getMethodKeyFunction();
-  
+  @Override
+  public String apply(Method meth) throws MethodBindException {
+    Optional<String> annotation = MethodBind.getConfigPropertyAnnotationValue(meth);
+    List<String> splitcc = MethodBind.splitCamelCase(annotation.orElse(meth.getName()));
+    if(splitcc.get(0).equals("get")) splitcc.remove(0);
+    StringBuilder key = new StringBuilder();
+    splitcc.forEach(s -> key.append(s.toLowerCase()).append("."));
+    return key.deleteCharAt(key.length() -1).toString();
+  }
+
 }

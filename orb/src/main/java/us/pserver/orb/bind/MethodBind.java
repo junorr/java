@@ -19,27 +19,46 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb;
+package us.pserver.orb.bind;
 
-import us.pserver.orb.ds.DataSource;
-import us.pserver.orb.parse.OrbParser;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
+import us.pserver.orb.annotation.ConfigProperty;
 
 /**
- * Configuration class for Orb.
+ *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 15/01/2018
+ * @version 0.0 - 25/02/2019
  */
-public interface OrbConfiguration {
+@FunctionalInterface
+public interface MethodBind extends Function<Method,String> {
 
-  public TypeStrings getSupportedTypes();
+  @Override
+  public String apply(Method meth) throws MethodBindException;
   
-  public List<DataSource<?>> getDataSources();
   
-  public List<OrbParser<DataSource<?>>> getParsers();
+  public static boolean isConfigPropertyAnnotationPresent(Method meth) throws MethodBindException {
+    return meth.getAnnotation(ConfigProperty.class) != null;
+  }
   
-  public Function<Method,String> getMethodKeyFunction();
+  public static Optional<String> getConfigPropertyAnnotationValue(Method meth) throws MethodBindException {
+    return Optional.ofNullable(meth.getAnnotation(ConfigProperty.class))
+        .map(c -> c.value());
+  }
+  
+  public static List<String> splitCamelCase(String str) {
+    List<String> lst = new ArrayList<>();
+    int lastcc = 0;
+    for(int i = 0; i < str.length(); i++) {
+      if(Character.isUpperCase(str.charAt(i)) && i > lastcc && i < str.length() -1) {
+        lst.add(str.substring(lastcc, i));
+        lastcc = i;
+      }
+    }
+    return lst;
+  }
   
 }

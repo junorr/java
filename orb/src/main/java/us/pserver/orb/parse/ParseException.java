@@ -19,17 +19,15 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb;
+package us.pserver.orb.parse;
 
-import java.util.Map;
+import us.pserver.orb.OrbException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 08/02/2019
+ * @version 0.0 - 25/02/2019
  */
-public interface OrbParser<T> {
+public class ParseException extends OrbException {
 
-  public Map<String,Object> parse(DataSource<T> ds) throws Exception;
-  
 }

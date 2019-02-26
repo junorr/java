@@ -19,27 +19,20 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb;
+package us.pserver.orb.ds;
 
-import us.pserver.orb.ds.DataSource;
-import us.pserver.orb.parse.OrbParser;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.function.Function;
+import java.util.function.Supplier;
+import us.pserver.orb.OrbException;
 
 /**
- * Configuration class for Orb.
+ *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 15/01/2018
+ * @version 0.0 - 07/02/2019
  */
-public interface OrbConfiguration {
+@FunctionalInterface
+public interface DataSource<T> extends Supplier<T> {
 
-  public TypeStrings getSupportedTypes();
-  
-  public List<DataSource<?>> getDataSources();
-  
-  public List<OrbParser<DataSource<?>>> getParsers();
-  
-  public Function<Method,String> getMethodKeyFunction();
+  @Override
+  public T get() throws OrbException;
   
 }

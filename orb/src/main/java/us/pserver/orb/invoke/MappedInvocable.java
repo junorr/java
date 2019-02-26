@@ -24,15 +24,16 @@ package us.pserver.orb.invoke;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import us.pserver.orb.TypeStrings;
+import us.pserver.orb.bind.MethodBind;
 import us.pserver.tools.Match;
 
 /**
@@ -42,9 +43,9 @@ import us.pserver.tools.Match;
  */
 public class MappedInvocable implements InvocationHandler {
   
-  private final Map<String,Object> map;
+  private final Map<String,String> map;
   
-  private final Function<Method,String> methodToKey;
+  private final MethodBind bind;
   
   private final TypeStrings types;
   
@@ -52,12 +53,16 @@ public class MappedInvocable implements InvocationHandler {
   
   
   
-  public MappedInvocable(Map<String,Object> map, TypeStrings typeds, Function<Method,String> methodToKey) {
+  public MappedInvocable(Map<String,String> map, TypeStrings types, MethodBind bind, Collection<MethodTransform> transforms) {
     this.map = Match.notNull(map).getOrFail("Bad null StringMap");
-    this.types = Match.notNull(typeds).getOrFail("Bad null TypedStrings");
-    this.methodToKey = Match.notNull(methodToKey).getOrFail("Bad null method name Function");
-    this.trans = new CopyOnWriteArraySet<>();
+    this.types = Match.notNull(types).getOrFail("Bad null TypedStrings");
+    this.bind = Match.notNull(bind).getOrFail("Bad null MethodBind");
+    this.trans = new HashSet<>(transforms);
     this.initTransforms();
+  }
+  
+  public MappedInvocable(Map<String,String> map, TypeStrings types, MethodBind bind) {
+    this(map, types, bind, Collections.EMPTY_SET);
   }
   
   private void initTransforms() {
@@ -68,20 +73,20 @@ public class MappedInvocable implements InvocationHandler {
     prd = m->"toString".equals(m.getName()) && m.getParameterCount() == 0;
     trans.add(new InterceptSupplierTransform(prd, this::toString));
     trans.add(new DefaultMethodTransform());
-    trans.add(new MappedObjectTransform(types, methodToKey));
+    trans.add(new MappedObjectTransform(types, bind));
     trans.add(new ProxyReturnTransform());
     trans.add(new EnumStringTransform());
     trans.add(new TypeStringTransform(types));
   }
   
   public Set<MethodTransform> getMethodTransforms() {
-    return trans;
+    return Collections.unmodifiableSet(trans);
   }
   
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-    String key = methodToKey.apply(method);
-    Object value = map.get(key);
+    String key = bind.apply(method);
+    String value = map.get(key);
     List list = args != null ? Arrays.asList(args) : Collections.EMPTY_LIST;
     InvocationContext ctx = InvocationContext.of(proxy, method, list, value);
     if(!list.isEmpty()) {
@@ -99,7 +104,6 @@ public class MappedInvocable implements InvocationHandler {
     StringBuilder sb = new StringBuilder("{\n");
     map.entrySet().forEach(e->sb.append(" -> ").append(e).append("\n"));
     return sb.append("}").toString();
-    //return map.toString();
   }
   
 }

@@ -19,32 +19,29 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb;
+package us.pserver.orb.parse;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
+import us.pserver.orb.ds.DataSource;
+import us.pserver.orb.OrbException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 05/02/2019
+ * @version 0.0 - 25/02/2019
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE, ElementType.CONSTRUCTOR})
-public @interface ConfigSource {
+public class MapParser implements OrbParser<Map> {
 
-  public static enum SourceType {
-    FILE,
-    CLASSPATH,
-    ENV_VARIABLE,
-    SYSTEM_PROPERTY,
-    INHERIT
+  @Override
+  public Map<String, String> apply(DataSource<Map> ds) throws OrbException {
+    Map<String,String> map = new TreeMap();
+    Map<Object,Object> obj = (Map<Object,Object>) ds.get();
+    obj.entrySet().forEach(e -> 
+        map.put(Objects.toString(e.getKey()), Objects.toString(e.getValue()))
+    );
+    return map;
   }
-  
-  String[] value();
-  
-  SourceType[] type() default {SourceType.INHERIT};
-  
+
 }

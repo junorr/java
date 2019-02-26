@@ -19,27 +19,39 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb;
+package us.pserver.orb.annotation;
 
-import us.pserver.orb.ds.DataSource;
-import us.pserver.orb.parse.OrbParser;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.function.Function;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import us.pserver.orb.parse.InputStreamPropertyParser;
 
 /**
- * Configuration class for Orb.
+ *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 15/01/2018
+ * @version 0.0 - 24/02/2019
  */
-public interface OrbConfiguration {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface UrlSource {
 
-  public TypeStrings getSupportedTypes();
+  /**
+   * URL resource
+   * @return resource name
+   */
+  String value();
   
-  public List<DataSource<?>> getDataSources();
+  /**
+   * ConfigSource priority
+   * @return resource priority
+   */
+  int priority() default 0;
   
-  public List<OrbParser<DataSource<?>>> getParsers();
-  
-  public Function<Method,String> getMethodKeyFunction();
+  /**
+   * Data parser
+   * @return resource parser
+   */
+  Class parser() default InputStreamPropertyParser.class;
   
 }

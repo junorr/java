@@ -19,29 +19,37 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.impl;
+package us.pserver.orb.ds;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import us.pserver.orb.MKFunction;
-import us.pserver.orb.ConfigSource;
-import us.pserver.orb.ConfigSource.SourceType;
+import java.io.InputStream;
+import java.util.Objects;
+import us.pserver.orb.OrbException;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 08/02/2019
+ * @version 0.0 - 25/02/2019
  */
-public class AnnotatedMKFunction implements MKFunction {
+public class ClassPathDataSource implements DataSource<InputStream> {
+  
+  private final ClassLoader cl;
+  
+  private final String name;
+  
+  public ClassPathDataSource(String name, ClassLoader cl) {
+    this.name = Objects.requireNonNull(name);
+    this.cl = Objects.requireNonNull(cl);
+  }
 
   @Override
-  public Optional<String> apply(Method meth) throws Exception {
-    ConfigSource cs = meth.getDeclaredAnnotation(ConfigSource.class);
-    if(cs == null) return Optional.empty();
-    List<SourceType> types = Arrays.asList(cs.type());
-    List<String> values = Arrays.asList(cs.value());
+  public InputStream get() throws OrbException {
+    return OrbException.compute(() -> cl.getResourceAsStream(name));
   }
   
+  
+  
+  public static DataSource<InputStream> of(String resource, ClassLoader ldr) {
+    return new ClassPathDataSource(resource, ldr);
+  }
+
 }
