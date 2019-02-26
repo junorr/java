@@ -21,11 +21,8 @@
 
 package us.pserver.orb;
 
-import us.pserver.orb.ds.DataSource;
-import us.pserver.orb.parse.OrbParser;
-import java.lang.reflect.Method;
 import java.util.List;
-import java.util.function.Function;
+import us.pserver.orb.invoke.MethodTransform;
 
 /**
  * Configuration class for Orb.
@@ -36,8 +33,8 @@ public interface OrbConfiguration {
 
   public TypeStrings getSupportedTypes();
   
-  public OrbConfigSource<?> getConfigSource();
+  public List<OrbSource<?>> getOrbSources();
   
-  public Function<Method,String> getMethodBind();
+  public List<MethodTransform<?>> getMethodTransforms();
   
 }

@@ -22,17 +22,17 @@
 package us.pserver.orb.impl;
 
 import java.util.Objects;
-import us.pserver.orb.OrbConfigSource;
 import us.pserver.orb.bind.MethodBind;
 import us.pserver.orb.ds.DataSource;
 import us.pserver.orb.parse.OrbParser;
+import us.pserver.orb.OrbSource;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/02/2019
  */
-public class OrbConfigSourceImpl<T> implements OrbConfigSource<T> {
+public class OrbSourceImpl<T> implements OrbSource<T> {
 
   private final OrbParser<T> parser;
   
@@ -43,14 +43,14 @@ public class OrbConfigSourceImpl<T> implements OrbConfigSource<T> {
   private final int priority;
   
   
-  public OrbConfigSourceImpl(DataSource<T> ds, OrbParser<T> ps, MethodBind mb, int priority) {
+  public OrbSourceImpl(DataSource<T> ds, OrbParser<T> ps, MethodBind mb, int priority) {
     this.ds = Objects.requireNonNull(ds);
     this.parser = Objects.requireNonNull(ps);
     this.bind = Objects.requireNonNull(mb);
     this.priority = priority;
   }
   
-  public OrbConfigSourceImpl(DataSource<T> ds, OrbParser<T> ps, MethodBind mb) {
+  public OrbSourceImpl(DataSource<T> ds, OrbParser<T> ps, MethodBind mb) {
     this(ds, ps, mb, 0);
   }
 
@@ -67,6 +67,7 @@ public class OrbConfigSourceImpl<T> implements OrbConfigSource<T> {
   }
   
   
+  @Override
   public MethodBind methodBind() {
     return bind;
   }
@@ -79,7 +80,7 @@ public class OrbConfigSourceImpl<T> implements OrbConfigSource<T> {
 
 
   @Override
-  public int compareTo(OrbConfigSource o) {
+  public int compareTo(OrbSource o) {
     return Integer.compare(priority, o.priority());
   }
 
@@ -106,7 +107,7 @@ public class OrbConfigSourceImpl<T> implements OrbConfigSource<T> {
     if(getClass() != obj.getClass()) {
       return false;
     }
-    final OrbConfigSource<?> other = (OrbConfigSource<?>) obj;
+    final OrbSource<?> other = (OrbSource<?>) obj;
     if(this.priority != other.priority()) {
       return false;
     }

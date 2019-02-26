@@ -23,7 +23,7 @@ package us.pserver.orb;
 
 import us.pserver.orb.bind.MethodBind;
 import us.pserver.orb.ds.DataSource;
-import us.pserver.orb.impl.OrbConfigSourceImpl;
+import us.pserver.orb.impl.OrbSourceImpl;
 import us.pserver.orb.parse.OrbParser;
 
 /**
@@ -31,7 +31,7 @@ import us.pserver.orb.parse.OrbParser;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 26/02/2019
  */
-public interface OrbConfigSource<T> extends Comparable<OrbConfigSource> {
+public interface OrbSource<T> extends Comparable<OrbSource> {
 
   public DataSource<T> dataSource();
   
@@ -43,12 +43,12 @@ public interface OrbConfigSource<T> extends Comparable<OrbConfigSource> {
   
   
   
-  public static <U> OrbConfigSource<U> create(DataSource<U> ds, OrbParser<U> ps, MethodBind bind, int priority) {
-    return new OrbConfigSourceImpl(ds, ps, bind, priority);
+  public static <U> OrbSource<U> create(DataSource<U> ds, OrbParser<U> ps, MethodBind bind, int priority) {
+    return new OrbSourceImpl(ds, ps, bind, priority);
   }
   
-  public static <U> OrbConfigSource<U> create(DataSource<U> ds, OrbParser<U> ps, MethodBind bind) {
-    return new OrbConfigSourceImpl(ds, ps, bind);
+  public static <U> OrbSource<U> create(DataSource<U> ds, OrbParser<U> ps, MethodBind bind) {
+    return new OrbSourceImpl(ds, ps, bind);
   }
   
 }
