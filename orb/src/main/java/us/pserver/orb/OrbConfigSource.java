@@ -19,22 +19,36 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.parse;
+package us.pserver.orb;
 
-import java.util.Map;
-import java.util.function.Function;
+import us.pserver.orb.bind.MethodBind;
 import us.pserver.orb.ds.DataSource;
-import us.pserver.orb.OrbException;
+import us.pserver.orb.impl.OrbConfigSourceImpl;
+import us.pserver.orb.parse.OrbParser;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 08/02/2019
+ * @version 0.0 - 26/02/2019
  */
-@FunctionalInterface
-public interface OrbParser<T> extends Function<DataSource<T>, Map<String,String>> {
+public interface OrbConfigSource<T> extends Comparable<OrbConfigSource> {
 
-  @Override
-  public Map<String,String> apply(DataSource<T> ds) throws OrbException;
+  public DataSource<T> dataSource();
+  
+  public OrbParser<T> parser();
+  
+  public MethodBind methodBind();
+  
+  public int priority();
+  
+  
+  
+  public static <U> OrbConfigSource<U> create(DataSource<U> ds, OrbParser<U> ps, MethodBind bind, int priority) {
+    return new OrbConfigSourceImpl(ds, ps, bind, priority);
+  }
+  
+  public static <U> OrbConfigSource<U> create(DataSource<U> ds, OrbParser<U> ps, MethodBind bind) {
+    return new OrbConfigSourceImpl(ds, ps, bind);
+  }
   
 }

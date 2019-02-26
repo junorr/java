@@ -36,10 +36,8 @@ public interface OrbConfiguration {
 
   public TypeStrings getSupportedTypes();
   
-  public List<DataSource<?>> getDataSources();
+  public OrbConfigSource<?> getConfigSource();
   
-  public List<OrbParser<DataSource<?>>> getParsers();
-  
-  public Function<Method,String> getMethodKeyFunction();
+  public Function<Method,String> getMethodBind();
   
 }
