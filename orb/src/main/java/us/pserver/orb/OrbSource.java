@@ -23,7 +23,7 @@ package us.pserver.orb;
 
 import us.pserver.orb.bind.MethodBind;
 import us.pserver.orb.ds.DataSource;
-import us.pserver.orb.impl.OrbSourceImpl;
+import us.pserver.orb.impl.OrbSourceBuilder;
 import us.pserver.orb.parse.OrbParser;
 
 /**
@@ -41,14 +41,15 @@ public interface OrbSource<T> extends Comparable<OrbSource> {
   
   public int priority();
   
-  
-  
-  public static <U> OrbSource<U> create(DataSource<U> ds, OrbParser<U> ps, MethodBind bind, int priority) {
-    return new OrbSourceImpl(ds, ps, bind, priority);
+  @Override
+  public default int compareTo(OrbSource o) {
+    return Integer.compare(priority(), o.priority());
   }
   
-  public static <U> OrbSource<U> create(DataSource<U> ds, OrbParser<U> ps, MethodBind bind) {
-    return new OrbSourceImpl(ds, ps, bind);
+  
+  
+  public static OrbSourceBuilder builder() {
+    return new OrbSourceBuilder();
   }
   
 }

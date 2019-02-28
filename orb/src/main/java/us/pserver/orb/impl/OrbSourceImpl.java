@@ -80,12 +80,6 @@ public class OrbSourceImpl<T> implements OrbSource<T> {
 
 
   @Override
-  public int compareTo(OrbSource o) {
-    return Integer.compare(priority, o.priority());
-  }
-
-
-  @Override
   public int hashCode() {
     int hash = 7;
     hash = 97 * hash + Objects.hashCode(this.ds);

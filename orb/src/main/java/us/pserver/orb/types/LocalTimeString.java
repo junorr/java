@@ -37,7 +37,7 @@ public class LocalTimeString extends AbstractTypeString<LocalTime> {
 
   @Override
   public LocalTime apply(String string) {
-    return TypedStringException.rethrow(()->
+    return TypeStringException.rethrow(()->
         LocalTime.from(DateTimeFormatter.ISO_TIME.parse(string))
     );
   }

@@ -48,6 +48,6 @@ public abstract class AbstractTypeString<T> implements TypeString<T> {
   }
   
   @Override 
-  public abstract T apply(String str) throws TypedStringException;
+  public abstract T apply(String str) throws TypeStringException;
   
 }

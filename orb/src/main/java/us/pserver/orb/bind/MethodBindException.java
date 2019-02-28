@@ -29,5 +29,50 @@ import us.pserver.orb.OrbException;
  * @version 0.0 - 25/02/2019
  */
 public class MethodBindException extends OrbException {
-
+  
+  public MethodBindException() {
+    super();
+  }
+  
+  public MethodBindException(String msg) {
+    super(msg);
+  }
+  
+  public MethodBindException(Throwable root) {
+    super(root.toString(), root);
+  }
+  
+  public MethodBindException(String msg, Throwable root) {
+    super(msg, root);
+  }
+  
+  public MethodBindException(String msg, Object... args) {
+    super(String.format(msg, args));
+  }
+  
+  public MethodBindException(String msg, Throwable root, Object... args) {
+    super(String.format(msg, args), root);
+  }
+  
+  
+  
+  public static void call(Call c) throws MethodBindException {
+    try {
+      c.call();
+    }
+    catch(Exception e) {
+      throw new MethodBindException(e);
+    }
+  }
+  
+  
+  public static <T> T compute(Compute<T> c) throws MethodBindException {
+    try {
+      return c.call();
+    }
+    catch(Exception e) {
+      throw new MethodBindException(e);
+    }
+  }
+  
 }

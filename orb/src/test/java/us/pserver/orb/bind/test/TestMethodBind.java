@@ -19,21 +19,31 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb;
+package us.pserver.orb.bind.test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import us.pserver.orb.bind.EnvironmentMethodBind;
+import us.pserver.orb.bind.PropertyMethodBind;
+import us.pserver.tools.rfl.Reflector;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 05/02/2019
+ * @version 0.0 - 26/02/2019
  */
-public interface Orb2 {
-  
-  public OrbConfiguration getConfiguration();
-  
-  public Object implementMultiple(Class ... cls);
-  
-  public <T> T implement(Class<T> cls);
-  
-  public <T> T bind(Class<T> cls);
+public class TestMethodBind {
 
+  @Test
+  public void propertyMethodBind() {
+    Assertions.assertEquals("property.method.bind", new PropertyMethodBind()
+        .apply(Reflector.of(this).selectMethod("propertyMethodBind").method()));
+  }
+  
+  @Test
+  public void environmentMethodBind() {
+    Assertions.assertEquals("ENVIRONMENT_METHOD_BIND", new EnvironmentMethodBind()
+        .apply(Reflector.of(this).selectMethod("environmentMethodBind").method()));
+  }
+  
 }

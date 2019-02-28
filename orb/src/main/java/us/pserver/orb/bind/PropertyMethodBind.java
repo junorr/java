@@ -23,7 +23,6 @@ package us.pserver.orb.bind;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Optional;
 
 /**
  *
@@ -33,10 +32,8 @@ import java.util.Optional;
 public class PropertyMethodBind implements MethodBind {
 
   @Override
-  public String apply(Method meth) throws MethodBindException {
-    Optional<String> annotation = MethodBind.getConfigPropertyAnnotationValue(meth);
-    List<String> splitcc = MethodBind.splitCamelCase(annotation.orElse(meth.getName()));
-    if(splitcc.get(0).equals("get")) splitcc.remove(0);
+  public String apply(List<String> prefix, Method meth) throws MethodBindException {
+    List<String> splitcc = MethodBind.createNameList(prefix, meth);
     StringBuilder key = new StringBuilder();
     splitcc.forEach(s -> key.append(s.toLowerCase()).append("."));
     return key.deleteCharAt(key.length() -1).toString();

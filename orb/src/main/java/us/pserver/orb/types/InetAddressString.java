@@ -35,8 +35,8 @@ public class InetAddressString extends AbstractTypeString<InetAddress> {
   }
 
   @Override
-  public InetAddress apply(String string) throws TypedStringException {
-    return TypedStringException.rethrow(()->InetAddress.getByName(string));
+  public InetAddress apply(String string) throws TypeStringException {
+    return TypeStringException.rethrow(()->InetAddress.getByName(string));
   }
 
 }

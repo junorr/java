@@ -42,12 +42,12 @@ public class ClassString extends AbstractTypeString<Class> {
   }
 
   @Override
-  public Class apply(String string) throws TypedStringException {
+  public Class apply(String string) throws TypeStringException {
     try {
       return loader.loadClass(string);
     }
     catch(ClassNotFoundException e) {
-      return TypedStringException.rethrow(()->Class.forName(string));
+      return TypeStringException.rethrow(()->Class.forName(string));
     }
   }
 

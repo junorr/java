@@ -75,7 +75,6 @@ public class OrbException extends RuntimeException {
   
   
   
-  
   @FunctionalInterface
   public static interface Call {
     public void call() throws Exception;

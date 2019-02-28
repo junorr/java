@@ -23,17 +23,20 @@ package us.pserver.orb.invoke;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import us.pserver.orb.TypeStrings;
-import us.pserver.orb.bind.MethodBind;
+import us.pserver.orb.OrbConfiguration;
+import us.pserver.orb.OrbSource;
+import us.pserver.orb.annotation.Annotations;
+import us.pserver.orb.annotation.DefaultValue;
 import us.pserver.tools.Match;
 
 /**
@@ -43,26 +46,22 @@ import us.pserver.tools.Match;
  */
 public class MappedInvocable implements InvocationHandler {
   
+  private final List<String> prefix;
+  
   private final Map<String,String> map;
   
-  private final MethodBind bind;
-  
-  private final TypeStrings types;
+  private final OrbConfiguration config;
   
   private final Set<MethodTransform> trans;
   
   
   
-  public MappedInvocable(Map<String,String> map, TypeStrings types, MethodBind bind, Collection<MethodTransform> transforms) {
+  public MappedInvocable(List<String> prefix, Map<String,String> map, OrbConfiguration config) {
+    this.prefix = new ArrayList<>(prefix);
     this.map = Match.notNull(map).getOrFail("Bad null StringMap");
-    this.types = Match.notNull(types).getOrFail("Bad null TypedStrings");
-    this.bind = Match.notNull(bind).getOrFail("Bad null MethodBind");
-    this.trans = new HashSet<>(transforms);
+    this.config = Match.notNull(config).getOrFail("Bad null OrbConfiguration");
+    this.trans = new HashSet<>(config.getMethodTransforms());
     this.initTransforms();
-  }
-  
-  public MappedInvocable(Map<String,String> map, TypeStrings types, MethodBind bind) {
-    this(map, types, bind, Collections.EMPTY_SET);
   }
   
   private void initTransforms() {
@@ -72,11 +71,7 @@ public class MappedInvocable implements InvocationHandler {
     trans.add(new InterceptFunctionTransform(prd, map::equals));
     prd = m->"toString".equals(m.getName()) && m.getParameterCount() == 0;
     trans.add(new InterceptSupplierTransform(prd, this::toString));
-    trans.add(new DefaultMethodTransform());
-    trans.add(new MappedObjectTransform(types, bind));
-    trans.add(new ProxyReturnTransform());
-    trans.add(new EnumStringTransform());
-    trans.add(new TypeStringTransform(types));
+    trans.add(new MappedObjectTransform(config));
   }
   
   public Set<MethodTransform> getMethodTransforms() {
@@ -85,16 +80,30 @@ public class MappedInvocable implements InvocationHandler {
   
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-    String key = bind.apply(method);
-    String value = map.get(key);
-    List list = args != null ? Arrays.asList(args) : Collections.EMPTY_LIST;
-    InvocationContext ctx = InvocationContext.of(proxy, method, list, value);
-    if(!list.isEmpty()) {
-      map.put(key, list.size() == 1 ? list.get(0) : list);
+    Optional<String> key = map.keySet().stream()
+        .filter(k -> config.getOrbSources().stream()
+            .sorted(Collections.reverseOrder(OrbSource::compareTo))
+            .map(OrbSource::methodBind)
+            .anyMatch(b -> b.apply(prefix, method).equals(k)))
+        .findFirst();
+    Object value = key.isPresent() ? map.get(key.get()) : null;
+    if(value == null) {
+      Optional<String> defval = Annotations.getAnnotationValue(DefaultValue.class, method);
+      if(defval.isPresent()) value = defval.get();
     }
-    Optional<MethodTransform> opt = trans.stream().filter(m->m.canHandle(ctx)).findFirst();
-    if(opt.isPresent()) {
-      return opt.get().apply(ctx);
+    List list = args != null ? Arrays.asList(args) : Collections.EMPTY_LIST;
+    return transform(InvocationContext.of(proxy, method, list, value));
+  }
+  
+  private Object transform(InvocationContext ctx) {
+    Object value = ctx.getValue();
+    Iterator<MethodTransform> it = trans.iterator();
+    while(it.hasNext()) {
+      MethodTransform t = it.next();
+      if(t.canHandle(ctx)) {
+        value = t.apply(ctx);
+        ctx = ctx.withValue(value);
+      }
     }
     return value;
   }

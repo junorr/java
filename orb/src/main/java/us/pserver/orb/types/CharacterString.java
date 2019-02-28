@@ -33,7 +33,7 @@ public class CharacterString extends AbstractTypeString<Character> {
   }
 
   @Override
-  public Character apply(String str) throws TypedStringException {
+  public Character apply(String str) throws TypeStringException {
     return str.charAt(0);
   }
 

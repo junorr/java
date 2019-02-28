@@ -37,7 +37,7 @@ public class OffsetTimeString extends AbstractTypeString<OffsetTime> {
 
   @Override
   public OffsetTime apply(String string) {
-    return TypedStringException.rethrow(()->
+    return TypeStringException.rethrow(()->
         OffsetTime.from(DateTimeFormatter.ISO_TIME.parse(string))
     );
   }

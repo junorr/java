@@ -23,7 +23,9 @@ package us.pserver.orb.parse;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 import us.pserver.orb.ds.DataSource;
 import us.pserver.orb.OrbException;
 
@@ -33,12 +35,26 @@ import us.pserver.orb.OrbException;
  * @version 0.0 - 25/02/2019
  */
 public class MapParser implements OrbParser<Map> {
+  
+  private final Optional<String> prefix;
+  
+  public MapParser(String prefix) {
+    this.prefix = Optional.ofNullable(prefix);
+  }
+  
+  public MapParser() {
+    this(null);
+  }
 
   @Override
   public Map<String, String> apply(DataSource<Map> ds) throws OrbException {
     Map<String,String> map = new TreeMap();
     Map<Object,Object> obj = (Map<Object,Object>) ds.get();
-    obj.entrySet().forEach(e -> 
+    Stream<Map.Entry<Object,Object>> stream = obj.entrySet().stream();
+    if(prefix.isPresent()) {
+      stream = stream.filter(e -> e.getKey().toString().toLowerCase().startsWith(prefix.get()));
+    }
+    stream.forEach(e -> 
         map.put(Objects.toString(e.getKey()), Objects.toString(e.getValue()))
     );
     return map;

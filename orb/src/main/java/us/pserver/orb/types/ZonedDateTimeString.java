@@ -37,7 +37,7 @@ public class ZonedDateTimeString extends AbstractTypeString<ZonedDateTime> {
 
   @Override
   public ZonedDateTime apply(String string) {
-    return TypedStringException.rethrow(()->
+    return TypeStringException.rethrow(()->
         ZonedDateTime.from(DateTimeFormatter.ISO_DATE_TIME.parse(string))
     );
   }

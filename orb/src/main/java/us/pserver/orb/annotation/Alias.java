@@ -19,19 +19,26 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb;
+package us.pserver.orb.annotation;
 
-import java.lang.reflect.Method;
-import java.util.Optional;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 08/02/2019
+ * @version 0.0 - 24/02/2019
  */
-@FunctionalInterface
-public interface MKFunction {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface Alias {
 
-  public Optional<String> apply(Method meth) throws Exception;
+  /**
+   * Method/Class alias
+   * @return Method/Class alias
+   */
+  String value();
   
 }

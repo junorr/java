@@ -19,32 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.orb.annotation;
+package us.pserver.orb.bind;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 24/02/2019
+ * @version 0.0 - 25/02/2019
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface ConfigProperty {
+public class EnvironmentMethodBind implements MethodBind {
 
-  /**
-   * Config property name
-   * @return resource name
-   */
-  String value();
-  
-  /**
-   * Default value on missing property
-   * @return Default value
-   */
-  String defaultValue() default "";
-  
+  @Override
+  public String apply(List<String> prefix, Method meth) throws MethodBindException {
+    List<String> splitcc = MethodBind.createNameList(prefix, meth);
+    StringBuilder key = new StringBuilder();
+    splitcc.forEach(s -> key.append(s.toUpperCase()).append("_"));
+    return key.deleteCharAt(key.length() -1).toString();
+  }
+
 }

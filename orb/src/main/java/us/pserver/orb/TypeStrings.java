@@ -22,7 +22,7 @@
 package us.pserver.orb;
 
 import us.pserver.orb.types.LocalDateString;
-import us.pserver.orb.types.TypedStringException;
+import us.pserver.orb.types.TypeStringException;
 import us.pserver.orb.types.StringString;
 import us.pserver.orb.types.LongString;
 import us.pserver.orb.types.LocalDateTimeString;
@@ -180,12 +180,12 @@ public class TypeStrings {
         .findAny();
   }
   
-  public <T> T asType(String str, Class<T> cls) throws TypedStringException {
+  public <T> T asType(String str, Class<T> cls) throws TypeStringException {
     Optional<TypeString<T>> opt = this.getTypedString(cls);
     if(opt.isPresent()) {
       return opt.get().apply(str);
     }
-    throw new TypedStringException("Unsupported type "+ cls);
+    throw new TypeStringException("Unsupported type "+ cls);
   }
   
   public TypeStrings put(Class cls, TypeString<?> typed) {

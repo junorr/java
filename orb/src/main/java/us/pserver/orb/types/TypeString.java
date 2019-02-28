@@ -34,6 +34,6 @@ public interface TypeString<T> extends Function<String,T> {
   public boolean isTypeOf(Class type);
   
   @Override
-  public T apply(String str) throws TypedStringException;
+  public T apply(String str) throws TypeStringException;
   
 }

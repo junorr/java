@@ -31,20 +31,20 @@ import us.pserver.tools.fn.ThrowableTask;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 02/01/2018
  */
-public class TypedStringException extends RuntimeException {
+public class TypeStringException extends RuntimeException {
 
-  public TypedStringException() {
+  public TypeStringException() {
   }
 
-  public TypedStringException(String message) {
+  public TypeStringException(String message) {
     super(message);
   }
 
-  public TypedStringException(String message, Throwable cause) {
+  public TypeStringException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public TypedStringException(Throwable cause) {
+  public TypeStringException(Throwable cause) {
     super(cause);
   }
   
@@ -54,7 +54,7 @@ public class TypedStringException extends RuntimeException {
       return fn.apply(t);
     }
     catch(Exception e) {
-      throw new TypedStringException(e.toString(), e);
+      throw new TypeStringException(e.toString(), e);
     }
   }
   
@@ -64,7 +64,7 @@ public class TypedStringException extends RuntimeException {
       fn.accept(t);
     }
     catch(Exception e) {
-      throw new TypedStringException(e.toString(), e);
+      throw new TypeStringException(e.toString(), e);
     }
   }
   
@@ -74,7 +74,7 @@ public class TypedStringException extends RuntimeException {
       return fn.supply();
     }
     catch(Exception e) {
-      throw new TypedStringException(e.toString(), e);
+      throw new TypeStringException(e.toString(), e);
     }
   }
   
@@ -84,7 +84,7 @@ public class TypedStringException extends RuntimeException {
       fn.run();
     }
     catch(Exception e) {
-      throw new TypedStringException(e.toString(), e);
+      throw new TypeStringException(e.toString(), e);
     }
   }
   

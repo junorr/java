@@ -22,6 +22,7 @@
 package us.pserver.orb;
 
 import java.util.List;
+import us.pserver.orb.impl.OrbConfigurationBuilder;
 import us.pserver.orb.invoke.MethodTransform;
 
 /**
@@ -36,5 +37,11 @@ public interface OrbConfiguration {
   public List<OrbSource<?>> getOrbSources();
   
   public List<MethodTransform<?>> getMethodTransforms();
+  
+  
+  
+  public static OrbConfigurationBuilder builder() {
+    return new OrbConfigurationBuilder();
+  }
   
 }

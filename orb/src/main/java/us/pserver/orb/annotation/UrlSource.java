@@ -25,6 +25,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import us.pserver.orb.bind.PropertyMethodBind;
 import us.pserver.orb.parse.InputStreamPropertyParser;
 
 /**
@@ -43,6 +44,12 @@ public @interface UrlSource {
   String value();
   
   /**
+   * Class alias
+   * @return Class alias
+   */
+  String alias() default "";
+  
+  /**
    * ConfigSource priority
    * @return resource priority
    */
@@ -53,5 +60,11 @@ public @interface UrlSource {
    * @return resource parser
    */
   Class parser() default InputStreamPropertyParser.class;
-  
+    
+  /**
+   * MethodBind class
+   * @return MethodBind
+   */
+  Class methodBind() default PropertyMethodBind.class;
+
 }

@@ -33,7 +33,7 @@ public class StringString extends AbstractTypeString<String> {
   }
 
   @Override
-  public String apply(String str) throws TypedStringException {
+  public String apply(String str) throws TypeStringException {
     return str;
   }
 

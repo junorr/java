@@ -25,6 +25,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import us.pserver.orb.bind.PropertyMethodBind;
 import us.pserver.orb.parse.InputStreamPropertyParser;
 
 /**
@@ -53,5 +54,11 @@ public @interface ClasspathSource {
    * @return resource parser
    */
   Class parser() default InputStreamPropertyParser.class;
+  
+  /**
+   * MethodBind class
+   * @return MethodBind
+   */
+  Class methodBind() default PropertyMethodBind.class;
   
 }

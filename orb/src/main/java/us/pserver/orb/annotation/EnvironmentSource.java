@@ -25,6 +25,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import us.pserver.orb.bind.EnvironmentMethodBind;
 import us.pserver.orb.parse.MapParser;
 
 /**
@@ -40,7 +41,7 @@ public @interface EnvironmentSource {
    * Environment variable name prefix
    * @return variable name prefix
    */
-  String value();
+  //String value();
   
   /**
    * ConfigSource priority
@@ -53,5 +54,11 @@ public @interface EnvironmentSource {
    * @return resource parser
    */
   Class parser() default MapParser.class;
-  
+    
+  /**
+   * MethodBind class
+   * @return MethodBind
+   */
+  Class methodBind() default EnvironmentMethodBind.class;
+
 }

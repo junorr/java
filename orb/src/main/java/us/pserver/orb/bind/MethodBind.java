@@ -25,8 +25,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import us.pserver.orb.annotation.ConfigProperty;
+import java.util.function.BiFunction;
+import us.pserver.orb.annotation.Alias;
+import us.pserver.orb.annotation.Annotations;
 
 /**
  *
@@ -34,30 +35,43 @@ import us.pserver.orb.annotation.ConfigProperty;
  * @version 0.0 - 25/02/2019
  */
 @FunctionalInterface
-public interface MethodBind extends Function<Method,String> {
+public interface MethodBind extends BiFunction<List<String>,Method,String> {
 
   @Override
-  public String apply(Method meth) throws MethodBindException;
+  public String apply(List<String> prefix, Method meth) throws MethodBindException;
   
   
-  public static boolean isConfigPropertyAnnotationPresent(Method meth) throws MethodBindException {
-    return meth.getAnnotation(ConfigProperty.class) != null;
+  
+  public static List<String> createNameList(List<String> prefix, Method meth) {
+    List<String> splitcc = new ArrayList<>(prefix);
+    int start = splitcc.size();
+    Optional<String> annotation = Annotations.getAnnotationValue(Alias.class, meth);
+    splitcc.addAll(splitCamelCase(annotation.orElse(meth.getName())));
+    if(splitcc.get(start).equals("get")) splitcc.remove(start);
+    return splitcc;
   }
   
-  public static Optional<String> getConfigPropertyAnnotationValue(Method meth) throws MethodBindException {
-    return Optional.ofNullable(meth.getAnnotation(ConfigProperty.class))
-        .map(c -> c.value());
+  
+  public static List<String> createNameList(List<String> prefix, Class cls) {
+    List<String> splitcc = new ArrayList<>(prefix);
+    Optional<String> annotation = Annotations.getAnnotationValue(Alias.class, cls);
+    splitcc.addAll(splitCamelCase(annotation.orElse(cls.getSimpleName())));
+    return splitcc;
   }
+  
   
   public static List<String> splitCamelCase(String str) {
     List<String> lst = new ArrayList<>();
     int lastcc = 0;
     for(int i = 0; i < str.length(); i++) {
-      if(Character.isUpperCase(str.charAt(i)) && i > lastcc && i < str.length() -1) {
+      if(Character.isUpperCase(str.charAt(i)) && i > lastcc && i < str.length()) {
         lst.add(str.substring(lastcc, i));
         lastcc = i;
       }
+      else if(i == str.length() -1) {
+      }
     }
+    lst.add(str.substring(lastcc, str.length()));
     return lst;
   }
   

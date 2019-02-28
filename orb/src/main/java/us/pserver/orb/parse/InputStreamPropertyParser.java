@@ -34,13 +34,21 @@ import us.pserver.orb.OrbException;
  */
 public class InputStreamPropertyParser implements OrbParser<InputStream> {
   
-  private MapParser pparser = new MapParser();
+  private final MapParser mpar;
+  
+  public InputStreamPropertyParser(String prefix) {
+    mpar = new MapParser(prefix);
+  }
+
+  public InputStreamPropertyParser() {
+    this(null);
+  }
 
   @Override
   public Map<String, String> apply(DataSource<InputStream> ds) throws OrbException {
     Properties props = new Properties();
     OrbException.call(() -> props.load(ds.get()));
-    return pparser.apply(() -> props);
+    return mpar.apply(() -> props);
   }
 
 }
