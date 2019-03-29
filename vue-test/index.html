@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+    <title>VueJS Test</title>
+
+    <style type="text/css">
+        #app {
+            margin-top: 50px;
+            margin-left: 50%;
+            transform: translateX(-50%);
+            padding: 20px 20px 20px 20px;
+            width: 15%;
+        }
+
+        ._2 {
+            margin-right: 8px;
+        }
+
+        .vue-button-enable {
+            background-color: #ffff8d !important;
+            border: solid thin #999999 !important;
+            color: #424242 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app">
+        <vue-button :btn="btn666" class="_2"></vue-button>
+        <vue-button :btn="btn555"></vue-button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery"></script>
+
+    <script>
+        var btn666 = {
+            id: 666,
+            icon: "fas fa-times",
+            text: "Cancel",
+            active: true,
+            action: function (evt, arg) {
+                alert("Hello " + arg + "!! From button " + this.id + " - [" + evt + "]");
+            },
+            args: 'Juno'
+        };
+        var btn555 = {
+            id: 555,
+            icon: "fas fa-check",
+            text: "Cancel",
+            active: true,
+            action: function (evt, arg) {
+                alert("Hello " + arg + "!! From button " + this.id + " - [" + evt + "]");
+            },
+            args: 'World'
+        };
+        $.get('components/Button.html', function (data) {
+            $(document.body).append(data);
+            new Vue({
+                el: "#app",
+                data: {
+                    btn666: btn666,
+                    btn555: btn555
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

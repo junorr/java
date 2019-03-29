@@ -1,0 +1,61 @@
+<style type="text/css">
+  .button {
+    border-radius: 3px;
+    padding: 10px 20px 10px 20px;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .vue-button-enabled {
+    background-color: #1565c0;
+    cursor: pointer;
+    color: white;
+  }
+
+  .vue-button-enabled:hover {
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.7);
+  }
+
+  .vue-button-enabled:active {
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.7);
+  }
+
+  .vue-button-disabled {
+    background-color: #bdbdbd;
+    cursor: default;
+    color: #424242;
+  }
+</style>
+
+<script type="text/x-template" id="vue-button-template">
+  <span :id="btn.id" class="button" :class="stateClass" @click="doAction">
+    <i v-if="btn.icon" class="_2" :class="btn.icon"></i>
+    {{btn.text}}
+  </span>
+</script>
+
+<script>
+  Vue.component('vue-button', {
+    props: ["btn"],
+    template: '#vue-button-template',
+    computed: {
+      stateClass: function () {
+        return this.btn.active ? "vue-button-enabled" : "vue-button-disabled";
+      }
+    },
+    methods: {
+      doAction: function (evt) {
+        if (this.btn.active) {
+          if (this.btn.args) {
+            this.btn.action(evt, this.btn.args);
+          }
+          else {
+            this.btn.action(evt);
+          }
+        }
+      }
+    }
+  });
+</script>
