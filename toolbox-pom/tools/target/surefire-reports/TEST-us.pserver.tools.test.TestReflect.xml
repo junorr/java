@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="us.pserver.tools.test.TestReflect" time="71.83" tests="18" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="us.pserver.tools.test.TestReflect" time="77.508" tests="21" errors="0" skipped="0" failures="0">
   <properties>
     <property name="sun.desktop" value="gnome"/>
     <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
@@ -16,7 +16,7 @@
     <property name="user.country" value="BR"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="/opt/jdk-11/lib"/>
-    <property name="sun.java.command" value="org.apache.maven.surefire.booter.ForkedBooter /media/storage/java/toolbox-pom/tools/target/surefire 2019-04-03T00-29-24_426-jvmRun1 surefire18403368401514282929tmp surefire_010966911314500965251tmp"/>
+    <property name="sun.java.command" value="org.apache.maven.surefire.booter.ForkedBooter /media/storage/java/toolbox-pom/tools/target/surefire 2019-04-08T10-44-22_734-jvmRun1 surefire17081162744410743146tmp surefire_014528092884511338438tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="test" value="us.pserver.tools.test.TestReflect"/>
     <property name="surefire.test.class.path" value="/media/storage/java/toolbox-pom/tools/target/test-classes:/home/juno/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.4.1/junit-jupiter-api-5.4.1.jar:/home/juno/.m2/repository/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar:/home/juno/.m2/repository/org/opentest4j/opentest4j/1.1.1/opentest4j-1.1.1.jar:/home/juno/.m2/repository/org/junit/platform/junit-platform-commons/1.4.1/junit-platform-commons-1.4.1.jar:/home/juno/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.4.1/junit-jupiter-engine-5.4.1.jar:/home/juno/.m2/repository/org/junit/platform/junit-platform-engine/1.4.1/junit-platform-engine-1.4.1.jar:"/>
@@ -60,22 +60,25 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="55.0"/>
   </properties>
-  <testcase name="test_methodConsumer" classname="us.pserver.tools.test.TestReflect" time="0.001"/>
-  <testcase name="test_methodRunnable" classname="us.pserver.tools.test.TestReflect" time="0"/>
-  <testcase name="test_methodBiFunction" classname="us.pserver.tools.test.TestReflect" time="0.002"/>
+  <testcase name="test_methodConsumer" classname="us.pserver.tools.test.TestReflect" time="0.017"/>
+  <testcase name="test_methodRunnable" classname="us.pserver.tools.test.TestReflect" time="0.003"/>
+  <testcase name="test_methodBiFunction" classname="us.pserver.tools.test.TestReflect" time="0.014"/>
   <testcase name="test_methodLambda" classname="us.pserver.tools.test.TestReflect" time="0.003"/>
-  <testcase name="test_methodFunction" classname="us.pserver.tools.test.TestReflect" time="0.002"/>
-  <testcase name="test_default_constructor" classname="us.pserver.tools.test.TestReflect" time="0.001"/>
-  <testcase name="test_methodFunction_performance[1]" classname="us.pserver.tools.test.TestReflect" time="12.368"/>
-  <testcase name="test_methodFunction_performance[2]" classname="us.pserver.tools.test.TestReflect" time="11.73"/>
-  <testcase name="test_methodFunction_performance[3]" classname="us.pserver.tools.test.TestReflect" time="11.726"/>
-  <testcase name="test_greet_string_method" classname="us.pserver.tools.test.TestReflect" time="0.001"/>
-  <testcase name="test_methodSupplier" classname="us.pserver.tools.test.TestReflect" time="0.002"/>
-  <testcase name="test_string_constructor" classname="us.pserver.tools.test.TestReflect" time="0.001"/>
-  <testcase name="test_withHello_method" classname="us.pserver.tools.test.TestReflect" time="0.003"/>
+  <testcase name="test_methodFunction" classname="us.pserver.tools.test.TestReflect" time="0.001"/>
+  <testcase name="test_default_constructor" classname="us.pserver.tools.test.TestReflect" time="0.002"/>
+  <testcase name="test_lambda_autobxing_performance[1]" classname="us.pserver.tools.test.TestReflect" time="1.121"/>
+  <testcase name="test_lambda_autobxing_performance[2]" classname="us.pserver.tools.test.TestReflect" time="1.273"/>
+  <testcase name="test_lambda_autobxing_performance[3]" classname="us.pserver.tools.test.TestReflect" time="1.528"/>
+  <testcase name="test_methodFunction_performance[1]" classname="us.pserver.tools.test.TestReflect" time="12.792"/>
+  <testcase name="test_methodFunction_performance[2]" classname="us.pserver.tools.test.TestReflect" time="12.706"/>
+  <testcase name="test_methodFunction_performance[3]" classname="us.pserver.tools.test.TestReflect" time="12.942"/>
+  <testcase name="test_greet_string_method" classname="us.pserver.tools.test.TestReflect" time="0.002"/>
+  <testcase name="test_methodSupplier" classname="us.pserver.tools.test.TestReflect" time="0.001"/>
+  <testcase name="test_string_constructor" classname="us.pserver.tools.test.TestReflect" time="0.002"/>
+  <testcase name="test_withHello_method" classname="us.pserver.tools.test.TestReflect" time="0.002"/>
   <testcase name="test_magic_field" classname="us.pserver.tools.test.TestReflect" time="0.003"/>
-  <testcase name="test_methodSupplier_performance[1]" classname="us.pserver.tools.test.TestReflect" time="12.123"/>
-  <testcase name="test_methodSupplier_performance[2]" classname="us.pserver.tools.test.TestReflect" time="11.778"/>
-  <testcase name="test_methodSupplier_performance[3]" classname="us.pserver.tools.test.TestReflect" time="12.058"/>
-  <testcase name="test_greet_method" classname="us.pserver.tools.test.TestReflect" time="0"/>
+  <testcase name="test_methodSupplier_performance[1]" classname="us.pserver.tools.test.TestReflect" time="11.799"/>
+  <testcase name="test_methodSupplier_performance[2]" classname="us.pserver.tools.test.TestReflect" time="11.544"/>
+  <testcase name="test_methodSupplier_performance[3]" classname="us.pserver.tools.test.TestReflect" time="11.719"/>
+  <testcase name="test_greet_method" classname="us.pserver.tools.test.TestReflect" time="0.003"/>
 </testsuite>

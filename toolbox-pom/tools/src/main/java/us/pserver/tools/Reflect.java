@@ -588,9 +588,9 @@ public class Reflect {
 	
   
   /**
-   * Create and return a lambda to invoke the selected method.
-   * The method signature must be compatible with <code>lambda</code> signature.
+   * Create and return a lambda to invoke the selected method.The method signature must be compatible with <code>lambda</code> signature.
    * @param <T> Lambda type
+   * @param lambda Lambda class
    * @return A lambda referencing the selected method.
    * @throws IllegalStateException if the selected method signature is not 
    * compatible with <code>lambda</code> signature.
@@ -602,8 +602,7 @@ public class Reflect {
     boolean isStatic = Modifier.isStatic(mth.getModifiers());
     if(!isStatic && obj == null) throw new IllegalStateException("Target object not found");
     if(mth == null) throw new IllegalStateException("Method not found");
-    Reflect r = Reflect.of(lambda);
-    Optional<Method> lmth = Arrays.asList(r.methods()).stream()
+    Optional<Method> lmth = Arrays.asList(Reflect.of(lambda).methods()).stream()
         .filter(m -> m.getParameterCount() == mth.getParameterCount())
         .filter(m -> Modifier.isPublic(m.getModifiers()))
         .filter(m -> Modifier.isAbstract(m.getModifiers()))

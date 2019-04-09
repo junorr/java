@@ -9,7 +9,6 @@
         <module>tools</module>
         <module>tools-io</module>
         <module>tools-match</module>
-        <module>tools-lambda</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

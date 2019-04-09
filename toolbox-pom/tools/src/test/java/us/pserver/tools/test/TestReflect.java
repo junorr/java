@@ -8,6 +8,7 @@ package us.pserver.tools.test;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
@@ -256,6 +257,58 @@ public class TestReflect {
       Assertions.assertEquals(TIMES, count);
       tm.stop();
       System.out.println(" * reflect invoke: " + tm);
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  
+  private boolean assertInt(int a, Integer b) {
+    return a == b;
+  }
+  
+  
+  @RepeatedTest(3)
+  public void test_lambda_autobxing_performance() {
+    System.out.println("=================================================");
+    System.out.println("  public void test_lambda_autobxing_performance()");
+    System.out.println("-------------------------------------------------");
+    try {
+      Reflect r = Reflect.of(ReflectTarget.class).reflectCreate().selectMethod("hashCode");
+      ReflectTarget target = (ReflectTarget) r.getTarget();
+      Supplier<Integer> IHashCode = r.methodAsLambda(Supplier.class);
+      IntSupplier iHashCode = r.methodAsLambda(IntSupplier.class);
+      int hashCode = target.hashCode();
+      int TIMES = 100_000_000;
+      Timer tm = new Timer.Nanos().start();
+      int count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals(hashCode, target.hashCode());
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * direct invoke: " + tm);
+      tm = new Timer.Nanos().start();
+      count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        assertInt(hashCode, IHashCode.get());
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * auto-boxing invoke: " + tm);
+      tm = new Timer.Nanos().start();
+      count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals(hashCode, iHashCode.getAsInt());
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * int invoke: " + tm);
     }
     catch(Exception e) {
       e.printStackTrace();
