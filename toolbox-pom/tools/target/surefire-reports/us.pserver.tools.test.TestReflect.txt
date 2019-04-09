@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: us.pserver.tools.test.TestReflect
 -------------------------------------------------------------------------------
-Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 77.508 s - in us.pserver.tools.test.TestReflect
+Tests run: 33, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 98.36 s - in us.pserver.tools.test.TestReflect

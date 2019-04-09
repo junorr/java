@@ -451,6 +451,87 @@ public class Reflect {
     }
   }
   
+  
+  /**
+   * Create and return a lambda to invoke the selected constructor.
+   * The constructor signature must be compatible with <code>Supplier</code> signature.
+   * @param <T> Supplier return type
+   * @return A lambda referencing the selected constructor.
+   * @throws IllegalStateException if the selected constructor signature is not 
+   * compatible with <code>Supplier</code> signature.
+   */
+  public <T> Supplier<T> constructorAsSupplier() {
+    if(cct == null) throw new IllegalStateException("Constructor not found");
+    if(cct.getParameterCount() > 0) {
+      throw new IllegalStateException("Bad constructor cast: " + cct + " >> " + Supplier.class.getName());
+    }
+    MethodHandles.Lookup lookup = MethodHandles.lookup();
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflectConstructor(cct));
+    MethodType methodType = MethodType.methodType(Object.class);
+    MethodType actualMethType = MethodType.methodType(cls);
+    MethodType lambdaType = MethodType.methodType(Supplier.class);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "get", lambdaType, methodType, handle, actualMethType));
+    return (Supplier<T>) invokeHandle(cs.getTarget(), null);
+  }
+	
+  
+  /**
+   * Create and return a lambda to invoke the selected constructor.
+   * The constructor signature must be compatible with <code>Function</code> signature.
+   * @param <T> Function parameter type
+   * @param <R> Function return type
+   * @return A lambda referencing the selected constructor.
+   * @throws IllegalStateException if the selected constructor signature is not 
+   * compatible with <code>Function</code> signature.
+   */
+  public <T,R> Function<T,R> constructorAsFunction() {
+    if(cct == null) throw new IllegalStateException("Constructor not found");
+    if(cct.getParameterCount() != 1) {
+      throw new IllegalStateException("Bad constructor cast: " + cct + " >> " + Function.class.getName());
+    }
+    MethodHandles.Lookup lookup = MethodHandles.lookup();
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflectConstructor(cct));
+    MethodType methodType = MethodType.methodType(Object.class, Object.class);
+    MethodType actualMethType = MethodType.methodType(cls, cct.getParameterTypes()[0]);
+    MethodType lambdaType = MethodType.methodType(Function.class);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "apply", lambdaType, methodType, handle, actualMethType));
+    return (Function<T,R>) invokeHandle(cs.getTarget(), null);
+  }
+	
+  
+  /**
+   * Create and return a lambda to invoke the selected constructor.
+   * The constructor signature must be compatible with <code>lambda</code> signature.
+   * @param lambda Lambda Class
+   * @param <T> Lambda type
+   * @return A lambda referencing the selected constructor.
+   * @throws IllegalStateException if the selected constructor signature is not 
+   * compatible with <code>lambda</code> signature.
+   */
+  public <T> T constructorAsLambda(Class<T> lambda) {
+    if(cct == null) throw new IllegalStateException("Constructor not found");
+    Optional<Method> lmth = Arrays.asList(Reflect.of(lambda).methods()).stream()
+        .filter(m -> m.getParameterCount() == cct.getParameterCount())
+        .filter(m -> Modifier.isPublic(m.getModifiers()))
+        .filter(m -> Modifier.isAbstract(m.getModifiers()))
+        .filter(m -> m.getReturnType() != void.class)
+        .filter(m -> !m.isDefault())
+        .findAny();
+    if(!lmth.isPresent()) throw new IllegalArgumentException("Bad lambda type: " + lambda);
+    if(cct.getParameterCount() != lmth.get().getParameterCount() 
+        || lmth.get().getReturnType() == void.class) {
+      throw new IllegalStateException("Bad constructor cast: " + cct + " >> " + lmth.get());
+    }
+    MethodHandles.Lookup lookup = MethodHandles.lookup();
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflectConstructor(cct));
+    MethodType methodType = MethodType.methodType(lmth.get().getReturnType(), lmth.get().getParameterTypes());
+    MethodType actualMethType = MethodType.methodType(cls, cct.getParameterTypes());
+    MethodType lambdaType = MethodType.methodType(lambda);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, lmth.get().getName(), lambdaType, methodType, handle, actualMethType));
+    return (T) invokeHandle(cs.getTarget(), null);
+  }
+	
+  
   /**
    * Create and return a lambda to invoke the selected method.
    * The method signature must be compatible with <code>Supplier</code> signature.

@@ -265,6 +265,105 @@ public class TestReflect {
   }
   
   
+  @RepeatedTest(3)
+  public void test_constructor_supplier_performance() {
+    System.out.println("=======================================================");
+    System.out.println("  public void test_constructor_supplier_performance()");
+    System.out.println("-------------------------------------------------------");
+    try {
+      Reflect r = Reflect.of(ReflectTarget.class).selectConstructor();
+      ReflectTarget rt = new ReflectTarget();
+      Supplier<ReflectTarget> cct = r.constructorAsSupplier();
+      int TIMES = 100_000_000;
+      Timer tm = new Timer.Nanos().start();
+      int count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals(rt, new ReflectTarget());
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * direct invoke: " + tm);
+      tm = new Timer.Nanos().start();
+      count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals(rt, cct.get());
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * lambda invoke: " + tm);
+      tm = new Timer.Nanos().start();
+      count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals(rt, r.create());
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * reflect invoke: " + tm);
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  
+  private ReflectTarget createReflect(String str) {
+    return new ReflectTarget(str);
+  }
+  
+  private ReflectTarget passtrought(ReflectTarget rt) {
+    return rt;
+  }
+  
+  
+  @RepeatedTest(9)
+  public void test_constructor_function_performance() {
+    System.out.println("=======================================================");
+    System.out.println("  public void test_constructor_function_performance()");
+    System.out.println("-------------------------------------------------------");
+    try {
+      Reflect r = Reflect.of(ReflectTarget.class).selectConstructor(String.class);
+      ReflectTarget rt = new ReflectTarget("Juno");
+      Function<String,ReflectTarget> cct = r.constructorAsLambda(Function.class);
+      int TIMES = 100_000_000;
+      Timer tm = new Timer.Nanos().start();
+      int count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals(rt, passtrought(createReflect("Juno")));
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * direct invoke: " + tm);
+      tm = new Timer.Nanos().start();
+      count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals(rt, cct.apply("Juno"));
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * lambda invoke: " + tm);
+      tm = new Timer.Nanos().start();
+      count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals(rt, r.create("Juno"));
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * reflect invoke: " + tm);
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  
   private boolean assertInt(int a, Integer b) {
     return a == b;
   }
