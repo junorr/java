@@ -21,13 +21,26 @@
 
 package us.pserver.bitbox;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public interface BitBox {
+public interface MapBox<K,V> extends DataBox<Map<K,V>> {
 
-  public <T> DataBox<T> toBox(T obj);
+  public int size();
+  
+  public List<K> keys();
+  
+  public List<V> values();
+  
+  public List<Map.Entry<K,V>> entries();
+  
+  public V get(K key);
+  
+  public boolean contains(K key);
   
 }

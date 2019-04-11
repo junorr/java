@@ -19,26 +19,51 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.type;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import us.pserver.bitbox.DataBox;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 15/12/2018
+ * @version 0.0 - 11 de abr de 2019
  */
-public abstract class AbstractBitBoxFactory<T extends BitBox, V> implements BitBoxFactory<T,V> {
+public class StringBox implements DataBox<String> {
   
-  protected final BitBoxConfiguration config;
+  private final ByteBuffer buffer;
   
-  public AbstractBitBoxFactory(BitBoxConfiguration conf) {
-    this.config = Objects.requireNonNull(conf);
+  public StringBox(ByteBuffer buffer) {
+    this.buffer = Objects.requireNonNull(buffer);
   }
 
   @Override
-  public BitBoxConfiguration configure() {
-    return this.config;
+  public ByteBuffer getData() {
+    return buffer;
   }
   
+  
+  public int length() {
+    return buffer.position(0).getInt();
+  }
+  
+  
+  @Override
+  public String getValue() {
+    int len = length();
+    int lim = buffer.limit();
+    buffer.limit(buffer.position() + len);
+    String str = StandardCharsets.UTF_8.decode(buffer).toString();
+    buffer.limit(lim);
+    return str;
+  }
+
+
+  @Override
+  public boolean match(Class c) {
+    return c == String.class || c == Character.class || c == char.class;
+  }
+
 }

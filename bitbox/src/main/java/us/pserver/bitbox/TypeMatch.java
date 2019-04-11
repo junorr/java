@@ -26,8 +26,9 @@ package us.pserver.bitbox;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public interface BitBox {
+@FunctionalInterface
+public interface TypeMatch {
 
-  public <T> DataBox<T> toBox(T obj);
+  public boolean match(Class c);
   
 }

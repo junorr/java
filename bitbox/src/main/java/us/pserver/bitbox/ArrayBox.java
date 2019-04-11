@@ -21,38 +21,22 @@
 
 package us.pserver.bitbox;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 02/12/2018
+ * @version 0.0 - 11 de abr de 2019
  */
-public interface BitString extends BitBox {
+public interface ArrayBox<T> extends DataBox<List<T>> {
+
+  public int size();
   
-  public static final int ID = BitString.class.getName().hashCode();
+  public Class<T> type();
   
-  public ByteBuffer getContentBuffer();
+  public T get(int idx);
   
-  public byte[] getContentBytes();
-  
-  public int indexOf(String str, int start);
-  
-  public int indexOf(BitString str, int start);
-  
-  public boolean contains(BitString str);
-  
-  public boolean contains(String str);
-  
-  public int length();
-  
-  public BitString slice(int offset, int length);
-  
-  public BitString slice(int offset);
-  
-  public BitString toUpperCase();
-  
-  public BitString toLowerCase();
+  @Override
+  public List<T> getValue();
   
 }

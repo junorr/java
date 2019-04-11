@@ -19,34 +19,50 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.type;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ReadableByteChannel;
-import us.pserver.tools.io.DynamicByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.time.ZonedDateTime;
+import java.util.Objects;
+import us.pserver.bitbox.DataBox;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11/12/2018
+ * @version 0.0 - 11 de abr de 2019
  */
-public interface BitBoxFactory<T extends BitBox, V> {
+public class ZonedDateTimeBox implements DataBox<ZonedDateTime> {
   
-  public BitBoxConfiguration configure();
+  private final ByteBuffer buffer;
   
-  public T createFrom(V val);
-  
-  public T createFrom(ByteBuffer buf);
-  
-  public T createFrom(ReadableByteChannel ch) throws IOException;
-  
-  public T createFrom(DynamicByteBuffer buf);
-  
-  
-  
-  public static BitBoxFactory get() {
-    return null;
+  public ZonedDateTimeBox(ByteBuffer buffer) {
+    this.buffer = Objects.requireNonNull(buffer);
+  }
+
+  @Override
+  public ByteBuffer getData() {
+    return buffer;
   }
   
+  
+  @Override
+  public ZonedDateTime getValue() {
+    long time = buffer.position(0).getLong();
+    int zofs = buffer.getShort();
+    ZonedDateTime.
+    int len = length();
+    int lim = buffer.limit();
+    buffer.limit(buffer.position() + len);
+    String str = StandardCharsets.UTF_8.decode(buffer).toString();
+    buffer.limit(lim);
+    return ZonedDateTime.parse(str);
+  }
+  
+  
+  @Override
+  public boolean match(Class c) {
+    return c == ZonedDateTime.class;
+  }
+
 }

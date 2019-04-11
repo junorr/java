@@ -21,13 +21,21 @@
 
 package us.pserver.bitbox;
 
+import java.nio.ByteBuffer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public interface BitBox {
+public interface BoxRegistry {
 
-  public <T> DataBox<T> toBox(T obj);
+  public <T> DataBox<T> boxFor(Class cls);
+  
+  public <T> DataBoxFactory<T> factoryFor(Class cls);
+  
+  public <T> BoxRegistry register(Predicate<Class> match, Function<ByteBuffer,T> fn1, Function<T,DataBox<T>> fn2);
   
 }

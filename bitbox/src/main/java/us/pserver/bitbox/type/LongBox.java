@@ -19,31 +19,45 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.type;
 
 import java.nio.ByteBuffer;
-import java.time.Instant;
+import java.util.Objects;
+import us.pserver.bitbox.DataBox;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 13/12/2018
+ * @version 0.0 - 11 de abr de 2019
  */
-public class BitInstant extends AbstractBitBox<Instant> {
+public class LongBox implements DataBox<Long> {
   
-  public static final int ID = BitInstant.class.getName().hashCode();
+  private final ByteBuffer buffer;
   
-  public BitInstant(ByteBuffer buf) {
-    super(buf);
-    if(buffer.getInt() != ID) {
-      throw new IllegalArgumentException("Not a BitInstant content");
-    }
+  public LongBox(ByteBuffer buffer) {
+    this.buffer = Objects.requireNonNull(buffer);
   }
 
   @Override
-  public Instant get() {
-    buffer.position(Integer.BYTES * 2);
-    return Instant.ofEpochMilli(buffer.getLong());
+  public ByteBuffer getData() {
+    return buffer;
   }
   
+  
+  public long value() {
+    return buffer.position(0).getLong();
+  }
+
+
+  @Override
+  public Long getValue() {
+    return value();
+  }
+
+
+  @Override
+  public boolean match(Class c) {
+    return c == long.class || c == Long.class;
+  }
+
 }

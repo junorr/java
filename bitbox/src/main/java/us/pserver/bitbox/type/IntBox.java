@@ -19,54 +19,45 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.type;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.util.Optional;
-import java.util.function.IntFunction;
+import java.util.Objects;
+import us.pserver.bitbox.DataBox;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 15/12/2018
+ * @version 0.0 - 11 de abr de 2019
  */
-public interface BitBoxConfiguration {
-
+public class IntBox implements DataBox<Integer> {
   
-  public static enum BufferAlloc {
-    
-    DIRECT_ALLOC(ByteBuffer::allocateDirect),
-    
-    HEAP_ALLOC(ByteBuffer::allocate);
-    
-    private BufferAlloc(IntFunction<ByteBuffer> alloc) {
-      this.alloc = alloc;
-    }
-    
-    public ByteBuffer alloc(int size) {
-      return alloc.apply(size);
-    }
-    
-    private final IntFunction<ByteBuffer> alloc;
-    
+  private final ByteBuffer buffer;
+  
+  public IntBox(ByteBuffer buffer) {
+    this.buffer = Objects.requireNonNull(buffer);
+  }
+
+  @Override
+  public ByteBuffer getData() {
+    return buffer;
   }
   
   
-  public ByteBuffer alloc(int size);
-  
-  public BitBoxConfiguration addTypeSupport(TypeSupport support);
-  
-  public Optional<TypeSupport> getTypeSupport(Class cls);
-  
-  public Optional<TypeSupport> removeTypeSupport(Class cls);
-  
-  public BitBoxConfiguration setBufferAlloc(BufferAlloc alloc);
-  
-  public BufferAlloc getBufferAlloc();
-  
-  public BitBoxConfiguration setUseGetters(boolean use);
-  
-  public boolean isUseGetters();
-  
+  public int value() {
+    return buffer.position(0).getInt();
+  }
+
+
+  @Override
+  public Integer getValue() {
+    return value();
+  }
+
+
+  @Override
+  public boolean match(Class c) {
+    return c == int.class || c == Integer.class;
+  }
+
 }

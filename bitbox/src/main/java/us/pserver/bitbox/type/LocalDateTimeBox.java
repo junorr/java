@@ -19,31 +19,52 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.type;
 
 import java.nio.ByteBuffer;
-import java.util.Date;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import us.pserver.bitbox.DataBox;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 13/12/2018
+ * @version 0.0 - 11 de abr de 2019
  */
-public class BitDate extends AbstractBitBox<Date> {
+public class LocalDateTimeBox implements DataBox<LocalDateTime> {
   
-  public static final int ID = BitDate.class.getName().hashCode();
+  private final ByteBuffer buffer;
   
-  public BitDate(ByteBuffer buf) {
-    super(buf);
-    if(buffer.getInt() != ID) {
-      throw new IllegalArgumentException("Not a BitDate content");
-    }
+  public LocalDateTimeBox(ByteBuffer buffer) {
+    this.buffer = Objects.requireNonNull(buffer);
   }
 
   @Override
-  public Date get() {
-    buffer.position(Integer.BYTES * 2);
-    return new Date(buffer.getLong());
+  public ByteBuffer getData() {
+    return buffer;
   }
   
+  
+  public int length() {
+    return buffer.position(0).getInt();
+  }
+  
+  
+  @Override
+  public LocalDateTime getValue() {
+    int len = length();
+    int lim = buffer.limit();
+    buffer.limit(buffer.position() + len);
+    String str = StandardCharsets.UTF_8.decode(buffer).toString();
+    buffer.limit(lim);
+    return LocalDateTime.parse(str);
+  }
+  
+  
+  @Override
+  public boolean match(Class c) {
+    return c == LocalDateTime.class;
+  }
+
 }

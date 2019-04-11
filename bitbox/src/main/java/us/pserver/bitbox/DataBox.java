@@ -21,13 +21,37 @@
 
 package us.pserver.bitbox;
 
+import java.nio.ByteBuffer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public interface BitBox {
+public interface DataBox<T> extends TypeMatch {
 
-  public <T> DataBox<T> toBox(T obj);
+  public ByteBuffer getData();
+  
+  public T getValue();
+  
+  
+  public static <U> DataBox<U> of(ByteBuffer buffer, Predicate<Class> match, Function<ByteBuffer,U> fn) {
+    return new DataBox<>() {
+      @Override
+      public ByteBuffer getData() {
+        return buffer;
+      }
+      @Override
+      public U getValue() {
+        return fn.apply(buffer);
+      }
+      @Override
+      public boolean match(Class c) {
+        return match.test(c);
+      }
+    };
+  }
   
 }

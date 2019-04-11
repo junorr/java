@@ -19,38 +19,45 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.type;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
+import us.pserver.bitbox.DataBox;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 13/12/2018
+ * @version 0.0 - 11 de abr de 2019
  */
-public interface BitBuffer extends BitBox<ByteBuffer> {
+public class ShortBox implements DataBox<Short> {
   
-  public static final int ID = BitBuffer.class.getName().hashCode();
+  private final ByteBuffer buffer;
+  
+  public ShortBox(ByteBuffer buffer) {
+    this.buffer = Objects.requireNonNull(buffer);
+  }
 
   @Override
-  public ByteBuffer get();
-  
-  
-  
-  
-  
-  static class BBuffer extends AbstractBitBox<ByteBuffer> implements BitBuffer {
-    
-    public BBuffer(ByteBuffer buf) {
-      super(buf);
-    }
-
-    @Override
-    public ByteBuffer get() {
-      buffer.position(Integer.BYTES * 2);
-      return buffer.slice();
-    }
-    
+  public ByteBuffer getData() {
+    return buffer;
   }
   
+  
+  public short value() {
+    return buffer.position(0).getShort();
+  }
+
+
+  @Override
+  public Short getValue() {
+    return value();
+  }
+
+
+  @Override
+  public boolean match(Class c) {
+    return c == short.class || c == Short.class;
+  }
+
 }

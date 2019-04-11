@@ -21,13 +21,30 @@
 
 package us.pserver.bitbox;
 
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public interface BitBox {
+public interface DataBoxFactory<T> extends TypeMatch {
 
-  public <T> DataBox<T> toBox(T obj);
+  public DataBox<T> create(T object) throws Exception;
+  
+  
+  public static <U> DataBoxFactory<U> of(Predicate<Class> match, Function<U,DataBox<U>> fn) {
+    return new DataBoxFactory<>() {
+      @Override
+      public DataBox<U> create(U object) throws Exception {
+        return fn.apply(object);
+      }
+      @Override
+      public boolean match(Class c) {
+        return match.test(c);
+      }
+    };
+  }
   
 }

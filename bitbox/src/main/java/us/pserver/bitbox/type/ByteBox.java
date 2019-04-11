@@ -19,15 +19,45 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.type;
+
+import java.nio.ByteBuffer;
+import java.util.Objects;
+import us.pserver.bitbox.DataBox;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public interface BitBox {
-
-  public <T> DataBox<T> toBox(T obj);
+public class ByteBox implements DataBox<Byte> {
   
+  private final ByteBuffer buffer;
+  
+  public ByteBox(ByteBuffer buffer) {
+    this.buffer = Objects.requireNonNull(buffer);
+  }
+
+  @Override
+  public ByteBuffer getData() {
+    return buffer;
+  }
+  
+  
+  public byte value() {
+    return buffer.position(0).get();
+  }
+
+
+  @Override
+  public Byte getValue() {
+    return value();
+  }
+
+
+  @Override
+  public boolean match(Class c) {
+    return c == byte.class || c == Byte.class;
+  }
+
 }

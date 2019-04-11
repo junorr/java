@@ -19,15 +19,46 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.type;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.Objects;
+import us.pserver.bitbox.DataBox;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 16/12/2018
+ * @version 0.0 - 11 de abr de 2019
  */
-public interface SerializeContext {
-
-  public BitBoxFactory factory();  
+public class LocalDateBox implements DataBox<LocalDate> {
   
+  private final ByteBuffer buffer;
+  
+  public LocalDateBox(ByteBuffer buffer) {
+    this.buffer = Objects.requireNonNull(buffer);
+  }
+
+  @Override
+  public ByteBuffer getData() {
+    return buffer;
+  }
+  
+  
+  @Override
+  public LocalDate getValue() {
+    int lim = buffer.limit();
+    buffer.position(0).limit(10);
+    String str = StandardCharsets.UTF_8.decode(buffer).toString();
+    buffer.limit(lim);
+    return LocalDate.parse(str);
+  }
+
+
+  @Override
+  public boolean match(Class c) {
+    return c == LocalDate.class;
+  }
+
 }
