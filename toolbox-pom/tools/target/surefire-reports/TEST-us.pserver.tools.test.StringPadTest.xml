@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="us.pserver.tools.test.StringPadTest" time="0.013" tests="1" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="us.pserver.tools.test.StringPadTest" time="0.007" tests="1" errors="0" skipped="0" failures="0">
   <properties>
     <property name="sun.desktop" value="gnome"/>
     <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
@@ -15,8 +15,8 @@
     <property name="os.name" value="Linux"/>
     <property name="user.country" value="BR"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
-    <property name="sun.boot.library.path" value="/opt/jdk-11.0.2/lib"/>
-    <property name="sun.java.command" value="org.apache.maven.surefire.booter.ForkedBooter /media/storage/java/toolbox-pom/tools/target/surefire 2019-04-02T14-38-59_121-jvmRun1 surefire15958734371960139631tmp surefire_015211651953917632193tmp"/>
+    <property name="sun.boot.library.path" value="/opt/jdk-11/lib"/>
+    <property name="sun.java.command" value="org.apache.maven.surefire.booter.ForkedBooter /media/storage/java/toolbox-pom/tools/target/surefire 2019-04-11T10-54-57_897-jvmRun1 surefire6334001358709529679tmp surefire_05605718305146045518tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/media/storage/java/toolbox-pom/tools/target/test-classes:/home/juno/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.4.1/junit-jupiter-api-5.4.1.jar:/home/juno/.m2/repository/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar:/home/juno/.m2/repository/org/opentest4j/opentest4j/1.1.1/opentest4j-1.1.1.jar:/home/juno/.m2/repository/org/junit/platform/junit-platform-commons/1.4.1/junit-platform-commons-1.4.1.jar:/home/juno/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.4.1/junit-jupiter-engine-5.4.1.jar:/home/juno/.m2/repository/org/junit/platform/junit-platform-engine/1.4.1/junit-platform-engine-1.4.1.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -24,8 +24,8 @@
     <property name="user.language" value="pt"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="jdk.module.path" value="/media/storage/java/toolbox-pom/tools/target/classes"/>
-    <property name="java.version.date" value="2019-01-15"/>
-    <property name="java.home" value="/opt/jdk-11.0.2"/>
+    <property name="java.version.date" value="2018-09-25"/>
+    <property name="java.home" value="/opt/jdk-11"/>
     <property name="file.separator" value="/"/>
     <property name="basedir" value="/media/storage/java/toolbox-pom/tools"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
@@ -34,19 +34,19 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
-    <property name="java.runtime.version" value="11.0.2+9"/>
+    <property name="java.runtime.version" value="11+28"/>
     <property name="user.name" value="juno"/>
     <property name="path.separator" value=":"/>
-    <property name="os.version" value="4.15.0-20-generic"/>
+    <property name="os.version" value="4.15.0-47-generic"/>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="file.encoding" value="UTF-8"/>
     <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
     <property name="java.vendor.version" value="18.9"/>
-    <property name="maven.ext.class.path" value="/opt/netbeans-10/java/maven-nblib/netbeans-eventspy.jar"/>
+    <property name="maven.ext.class.path" value="/opt/netbeans/java/maven-nblib/netbeans-eventspy.jar"/>
     <property name="localRepository" value="/home/juno/.m2/repository"/>
     <property name="java.vendor.url.bug" value="http://bugreport.java.com/bugreport/"/>
     <property name="java.io.tmpdir" value="/tmp"/>
-    <property name="java.version" value="11.0.2"/>
+    <property name="java.version" value="11"/>
     <property name="user.dir" value="/media/storage/java/toolbox-pom/tools"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
@@ -55,9 +55,9 @@
     <property name="java.library.path" value="/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib"/>
     <property name="java.vendor" value="Oracle Corporation"/>
     <property name="java.vm.info" value="mixed mode"/>
-    <property name="java.vm.version" value="11.0.2+9"/>
+    <property name="java.vm.version" value="11+28"/>
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="55.0"/>
   </properties>
-  <testcase name="testLpad" classname="us.pserver.tools.test.StringPadTest" time="0.01"/>
+  <testcase name="testLpad" classname="us.pserver.tools.test.StringPadTest" time="0.002"/>
 </testsuite>

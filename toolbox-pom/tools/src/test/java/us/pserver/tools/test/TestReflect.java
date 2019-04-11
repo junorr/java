@@ -79,9 +79,9 @@ public class TestReflect {
   }
   
   @Test
-  public void test_methodSupplier() {
+  public void test_method_supplier() {
     System.out.println("=====================================");
-    System.out.println("  public void test_methodSupplier()");
+    System.out.println("  public void test_method_supplier()");
     System.out.println("-------------------------------------");
     try {
       Reflect r = Reflect.of(ReflectTarget.class).reflectCreate("Juno");
@@ -95,9 +95,9 @@ public class TestReflect {
   }
   
   @Test
-  public void test_methodConsumer() {
+  public void test_method_consumer() {
     System.out.println("=====================================");
-    System.out.println("  public void test_methodConsumer()");
+    System.out.println("  public void test_method_consumer()");
     System.out.println("-------------------------------------");
     try {
       Reflect r = Reflect.of(ReflectTarget.class).reflectCreate();
@@ -111,9 +111,9 @@ public class TestReflect {
   }
   
   @Test
-  public void test_methodFunction() {
+  public void test_method_function() {
     System.out.println("=====================================");
-    System.out.println("  public void test_methodFunction()");
+    System.out.println("  public void test_method_function()");
     System.out.println("-------------------------------------");
     try {
       Reflect r = Reflect.of(ReflectTarget.class).reflectCreate();
@@ -127,12 +127,12 @@ public class TestReflect {
   }
   
   @Test
-  public void test_methodLambda() {
+  public void test_method_lambda() {
     System.out.println("===================================");
-    System.out.println("  public void test_methodLambda()");
+    System.out.println("  public void test_method_lambda()");
     System.out.println("-----------------------------------");
     try {
-      Reflect r = Reflect.of(ReflectTarget.class).reflectCreate();
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate();
       Function<String,String> greet = r.selectMethod("greet", String.class).methodAsLambda(Function.class);
       Assertions.assertEquals("Hello Juno!", greet.apply("Juno"));
     }
@@ -143,12 +143,12 @@ public class TestReflect {
   }
   
   @Test
-  public void test_methodBiFunction() {
+  public void test_method_bi_function() {
     System.out.println("=====================================");
-    System.out.println("  public void test_methodBiFunction()");
+    System.out.println("  public void test_method_bi_function()");
     System.out.println("-------------------------------------");
     try {
-      Reflect r = Reflect.of(ReflectTarget.class).reflectCreate();
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate();
       BiFunction<String,String,String> greet = r.selectMethod("greet", String.class, String.class).methodAsBiFunction();
       Assertions.assertEquals("Hello Juno Roesler!", greet.apply("Juno", "Roesler"));
     }
@@ -159,12 +159,12 @@ public class TestReflect {
   }
   
   @Test
-  public void test_methodRunnable() {
+  public void test_method_runnable() {
     System.out.println("=====================================");
-    System.out.println("  public void test_methodRunnable()");
+    System.out.println("  public void test_method_runnable()");
     System.out.println("-------------------------------------");
     try {
-      Reflect r = Reflect.of(ReflectTarget.class).reflectCreate("Juno");
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate("Juno");
       Runnable print = r.selectMethod("printGreet").methodAsRunnable();
       print.run();
     }
@@ -176,12 +176,12 @@ public class TestReflect {
   
   
   @RepeatedTest(3)
-  public void test_methodFunction_performance() {
+  public void test_method_function_performance() {
     System.out.println("=================================================");
-    System.out.println("  public void test_methodFunction_performance()");
+    System.out.println("  public void test_method_function_performance()");
     System.out.println("-------------------------------------------------");
     try {
-      Reflect r = Reflect.of(ReflectTarget.class).reflectCreate().selectMethod("greet", String.class);
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate().selectMethod("greet", String.class);
       ReflectTarget target = (ReflectTarget) r.getTarget();
       Function<String,String> greet = r.methodAsFunction();
       int TIMES = 100_000_000;
@@ -221,14 +221,14 @@ public class TestReflect {
   
   
   @RepeatedTest(3)
-  public void test_methodSupplier_performance() {
+  public void test_method_supplier_performance() {
     System.out.println("=================================================");
-    System.out.println("  public void test_methodSupplier_performance()");
+    System.out.println("  public void test_method_supplier_performance()");
     System.out.println("-------------------------------------------------");
     try {
-      Reflect r = Reflect.of(ReflectTarget.class).reflectCreate("Juno").selectMethod("greet");
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate("Juno").selectMethod("greet");
       ReflectTarget target = (ReflectTarget) r.getTarget();
-      Supplier<String> greet = r.methodAsLambda(Supplier.class);
+      Supplier<String> greet = r.methodAsSupplier();
       int TIMES = 100_000_000;
       Timer tm = new Timer.Nanos().start();
       int count = 0;
@@ -271,7 +271,7 @@ public class TestReflect {
     System.out.println("  public void test_constructor_supplier_performance()");
     System.out.println("-------------------------------------------------------");
     try {
-      Reflect r = Reflect.of(ReflectTarget.class).selectConstructor();
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).selectConstructor();
       ReflectTarget rt = new ReflectTarget();
       Supplier<ReflectTarget> cct = r.constructorAsSupplier();
       int TIMES = 100_000_000;
@@ -319,13 +319,58 @@ public class TestReflect {
   }
   
   
-  @RepeatedTest(9)
+  @RepeatedTest(3)
   public void test_constructor_function_performance() {
     System.out.println("=======================================================");
     System.out.println("  public void test_constructor_function_performance()");
     System.out.println("-------------------------------------------------------");
     try {
-      Reflect r = Reflect.of(ReflectTarget.class).selectConstructor(String.class);
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).selectConstructor(String.class);
+      ReflectTarget rt = new ReflectTarget("Juno");
+      Function<String,ReflectTarget> cct = r.constructorAsFunction();
+      int TIMES = 100_000_000;
+      Timer tm = new Timer.Nanos().start();
+      int count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals(rt, passtrought(createReflect("Juno")));
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * direct invoke: " + tm);
+      tm = new Timer.Nanos().start();
+      count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals(rt, cct.apply("Juno"));
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * lambda invoke: " + tm);
+      tm = new Timer.Nanos().start();
+      count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals(rt, r.create("Juno"));
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * reflect invoke: " + tm);
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  
+  @RepeatedTest(3)
+  public void test_constructor_lambda_performance() {
+    System.out.println("=======================================================");
+    System.out.println("  public void test_constructor_lambda_performance()");
+    System.out.println("-------------------------------------------------------");
+    try {
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).selectConstructor(String.class);
       ReflectTarget rt = new ReflectTarget("Juno");
       Function<String,ReflectTarget> cct = r.constructorAsLambda(Function.class);
       int TIMES = 100_000_000;
@@ -375,7 +420,7 @@ public class TestReflect {
     System.out.println("  public void test_lambda_autobxing_performance()");
     System.out.println("-------------------------------------------------");
     try {
-      Reflect r = Reflect.of(ReflectTarget.class).reflectCreate().selectMethod("hashCode");
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate().selectMethod("hashCode");
       ReflectTarget target = (ReflectTarget) r.getTarget();
       Supplier<Integer> IHashCode = r.methodAsLambda(Supplier.class);
       IntSupplier iHashCode = r.methodAsLambda(IntSupplier.class);

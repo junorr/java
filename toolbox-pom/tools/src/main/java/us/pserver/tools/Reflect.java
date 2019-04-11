@@ -24,11 +24,13 @@ import java.util.stream.Collectors;
  * @author Juno Roesler - juno.rr@gmail.com
  * @version 1.0 - 2011.04.01
  */
-public class Reflect {
+public class Reflect<T> {
   
-	private final Class cls;
+  public static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
+  
+	private final Class<T> cls;
 	
-	private final Object obj;
+	private final T obj;
 	
 	private final Method mth;
 	
@@ -37,7 +39,7 @@ public class Reflect {
 	private final Constructor cct;
 
 
-  public Reflect(Class cls, Object obj, Method mth, Field fld, Constructor cct) {
+  public Reflect(Class<T> cls, T obj, Method mth, Field fld, Constructor cct) {
     this.cls = cls;
     this.obj = obj;
     this.mth = mth;
@@ -46,7 +48,7 @@ public class Reflect {
   }
 	
 	
-	public Reflect(Object obj) {
+	public Reflect(T obj) {
 		if(obj == null) {
 			throw new IllegalArgumentException(
 					"Object must be not null"
@@ -57,7 +59,7 @@ public class Reflect {
       this.obj = null;
     }
     else {
-      this.cls = obj.getClass();
+      this.cls = (Class<T>) obj.getClass();
       this.obj = obj;
     }
     this.mth = null;
@@ -66,12 +68,12 @@ public class Reflect {
 	}
 	
 	
-	public static Reflect of(Class cls) {
+	public static <U> Reflect<U> of(Class<U> cls) {
 		return new Reflect(cls);
 	}
 	
 	
-	public static Reflect of(Object obj) {
+	public static <U> Reflect<U> of(U obj) {
 		return new Reflect(obj);
 	}
   
@@ -89,7 +91,7 @@ public class Reflect {
 	 * (<code>null</code> quando sem argumentos).
 	 * @return A instância de Reflector modificada.
 	 */
-	public Reflect selectConstructor(Class ... args) {
+	public Reflect<T> selectConstructor(Class ... args) {
     Constructor cct = Unchecked.call(() -> cls.getDeclaredConstructor(args));
     if(cct == null) {
       cct = Unchecked.call(() -> cls.getConstructor(args));
@@ -102,7 +104,7 @@ public class Reflect {
 	 * Procura pelo construtor sem argumentos.
 	 * @return A instância de Reflector modificada.
 	 */
-	public Reflect selectConstructor() {
+	public Reflect<T> selectConstructor() {
     return Reflect.this.selectConstructor((Class[])null);
 	}
 	
@@ -156,7 +158,7 @@ public class Reflect {
 	 * (<code>null</code> quando sem argumentos).
 	 * @return A nova instância criada da classe.
 	 */
-	public <T> T create(Object ... args) {
+	public T create(Object ... args) {
     if(args == null) return create();
     Optional<Constructor> opt = Optional.ofNullable(this.cct);
     Constructor cct =  opt.or(() -> guessConstructor(args))
@@ -165,7 +167,7 @@ public class Reflect {
 	}
 	
 	
-  public Reflect reflectCreate(Object ... args) {
+  public Reflect<T> reflectCreate(Object ... args) {
     return new Reflect(create(args));
   }
 	
@@ -177,15 +179,15 @@ public class Reflect {
    * retorna <code>null</code>;
 	 * @return A nova instância criada da classe.
 	 */
-	public <T> T create() {
+	public T create() {
     if(cct == null) {
-      return this.selectConstructor().create();
+      return (T) this.selectConstructor().create();
     }
     return (T) Unchecked.call(() -> cct.newInstance((Object[])null));
 	}
   
   
-  public Reflect createReflect() {
+  public Reflect<T> createReflect() {
     return new Reflect(create());
   }
 	
@@ -248,7 +250,7 @@ public class Reflect {
 	 * (<code>null</code> quando sem argumentos).
 	 * @return A instância de Reflector modificada.
 	 */
-	public Reflect selectMethod(String method, Class ... args) {
+	public Reflect<T> selectMethod(String method, Class ... args) {
     if(args == null) return selectMethod(method);
     Optional<Method> opt = Optional.ofNullable(Unchecked.call(() -> cls.getDeclaredMethod(method, args)));
     Method mth = opt.or(() -> Optional.ofNullable(Unchecked.call(() -> cls.getMethod(method, args))))
@@ -262,7 +264,7 @@ public class Reflect {
 	 * @param meth M�todo a ser selecionado.
 	 * @return Esta inst�ncia modificada de Reflector.
 	 */
-	public Reflect selectMethod(Method meth) {
+	public Reflect<T> selectMethod(Method meth) {
     if(meth == null || meth.getDeclaringClass() != cls) {
       throw new IllegalArgumentException("Bad method: " + meth);
     }
@@ -278,7 +280,7 @@ public class Reflect {
 	 * @param method Nome do método.
 	 * @return A instância de Reflector modificada.
 	 */
-	public Reflect selectMethod(String method) {
+	public Reflect<T> selectMethod(String method) {
     if(method == null || method.isEmpty()) {
       throw new IllegalArgumentException("Bad Method name: " + method);
     }
@@ -340,7 +342,7 @@ public class Reflect {
 	 * @param field Nome do campo.
 	 * @return A instância de Reflector modificada.
 	 */
-	public Reflect selectField(String field) {
+	public Reflect<T> selectField(String field) {
     if(field == null || field.isEmpty()) {
       throw new IllegalArgumentException("Bad empty Field name");
     }
@@ -370,7 +372,7 @@ public class Reflect {
 	 * @param value Novo a ser definido para o campo.
    * @return 
 	 */
-	public Reflect set(Object value) {
+	public Reflect<T> set(Object value) {
 		if(fld == null) throw new IllegalStateException("Field not selected");
     if(obj == null) throw new IllegalStateException("Object owner not found");
     Unchecked.call(() -> fld.set(obj, value));
@@ -442,9 +444,39 @@ public class Reflect {
   }
   
   
-  private Object invokeHandle(MethodHandle handle, Object target) {
+  private Object invokeHandle(MethodHandle handle) {
     try {
-      return (target == null) ? handle.invoke() : handle.invoke(target);
+      return handle.invoke();
+    }
+    catch(Throwable e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
+  
+  
+  private Object invokeHandle(MethodHandle handle, T target) {
+    try {
+      return handle.invoke(target);
+    }
+    catch(Throwable e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
+  
+  
+  private Supplier invokeSupplierHandle(MethodHandle handle) {
+    try {
+      return (Supplier) handle.invokeExact();
+    }
+    catch(Throwable e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
+  
+  
+  private Function invokeFunctionHandle(MethodHandle handle) {
+    try {
+      return (Function) handle.invokeExact();
     }
     catch(Throwable e) {
       throw new RuntimeException(e.toString(), e);
@@ -460,55 +492,55 @@ public class Reflect {
    * @throws IllegalStateException if the selected constructor signature is not 
    * compatible with <code>Supplier</code> signature.
    */
-  public <T> Supplier<T> constructorAsSupplier() {
+  public Supplier<T> constructorAsSupplier() {
     if(cct == null) throw new IllegalStateException("Constructor not found");
     if(cct.getParameterCount() > 0) {
       throw new IllegalStateException("Bad constructor cast: " + cct + " >> " + Supplier.class.getName());
     }
-    MethodHandles.Lookup lookup = MethodHandles.lookup();
-    MethodHandle handle = Unchecked.call(() -> lookup.unreflectConstructor(cct));
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflectConstructor(cct));
     MethodType methodType = MethodType.methodType(Object.class);
     MethodType actualMethType = MethodType.methodType(cls);
     MethodType lambdaType = MethodType.methodType(Supplier.class);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "get", lambdaType, methodType, handle, actualMethType));
-    return (Supplier<T>) invokeHandle(cs.getTarget(), null);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "get", lambdaType, methodType, handle, actualMethType));
+    return (Supplier<T>) invokeSupplierHandle(cs.getTarget());
   }
 	
   
   /**
    * Create and return a lambda to invoke the selected constructor.
    * The constructor signature must be compatible with <code>Function</code> signature.
-   * @param <T> Function parameter type
-   * @param <R> Function return type
+   * @param <P> Function parameter type
    * @return A lambda referencing the selected constructor.
    * @throws IllegalStateException if the selected constructor signature is not 
    * compatible with <code>Function</code> signature.
    */
-  public <T,R> Function<T,R> constructorAsFunction() {
+  public <P> Function<P,T> constructorAsFunction() {
     if(cct == null) throw new IllegalStateException("Constructor not found");
     if(cct.getParameterCount() != 1) {
       throw new IllegalStateException("Bad constructor cast: " + cct + " >> " + Function.class.getName());
     }
-    MethodHandles.Lookup lookup = MethodHandles.lookup();
-    MethodHandle handle = Unchecked.call(() -> lookup.unreflectConstructor(cct));
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflectConstructor(cct));
     MethodType methodType = MethodType.methodType(Object.class, Object.class);
     MethodType actualMethType = MethodType.methodType(cls, cct.getParameterTypes()[0]);
     MethodType lambdaType = MethodType.methodType(Function.class);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "apply", lambdaType, methodType, handle, actualMethType));
-    return (Function<T,R>) invokeHandle(cs.getTarget(), null);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "apply", lambdaType, methodType, handle, actualMethType));
+    return (Function<P,T>) invokeFunctionHandle(cs.getTarget());
   }
+  
+  
+  
 	
   
   /**
    * Create and return a lambda to invoke the selected constructor.
    * The constructor signature must be compatible with <code>lambda</code> signature.
    * @param lambda Lambda Class
-   * @param <T> Lambda type
+   * @param <L> Lambda type
    * @return A lambda referencing the selected constructor.
    * @throws IllegalStateException if the selected constructor signature is not 
    * compatible with <code>lambda</code> signature.
    */
-  public <T> T constructorAsLambda(Class<T> lambda) {
+  public <L> L constructorAsLambda(Class<L> lambda) {
     if(cct == null) throw new IllegalStateException("Constructor not found");
     Optional<Method> lmth = Arrays.asList(Reflect.of(lambda).methods()).stream()
         .filter(m -> m.getParameterCount() == cct.getParameterCount())
@@ -522,40 +554,38 @@ public class Reflect {
         || lmth.get().getReturnType() == void.class) {
       throw new IllegalStateException("Bad constructor cast: " + cct + " >> " + lmth.get());
     }
-    MethodHandles.Lookup lookup = MethodHandles.lookup();
-    MethodHandle handle = Unchecked.call(() -> lookup.unreflectConstructor(cct));
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflectConstructor(cct));
     MethodType methodType = MethodType.methodType(lmth.get().getReturnType(), lmth.get().getParameterTypes());
     MethodType actualMethType = MethodType.methodType(cls, cct.getParameterTypes());
     MethodType lambdaType = MethodType.methodType(lambda);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, lmth.get().getName(), lambdaType, methodType, handle, actualMethType));
-    return (T) invokeHandle(cs.getTarget(), null);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, lmth.get().getName(), lambdaType, methodType, handle, actualMethType));
+    return lambda.cast(invokeHandle(cs.getTarget()));
   }
 	
   
   /**
    * Create and return a lambda to invoke the selected method.
    * The method signature must be compatible with <code>Supplier</code> signature.
-   * @param <T> Supplier return type
+   * @param <S> Supplier return type
    * @return A lambda referencing the selected method.
    * @throws IllegalStateException if the selected method signature is not 
    * compatible with <code>Supplier</code> signature.
    */
-  public <T> Supplier<T> methodAsSupplier() {
+  public <S> Supplier<S> methodAsSupplier() {
     boolean isStatic = Modifier.isStatic(mth.getModifiers());
     if(!isStatic && obj == null) throw new IllegalStateException("Target object not found");
     if(mth == null) throw new IllegalStateException("Method not found");
     if(mth.getParameterCount() > 0) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + Supplier.class.getName());
     }
-    MethodHandles.Lookup lookup = MethodHandles.lookup();
-    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
     MethodType methodType = MethodType.methodType(Object.class);
     MethodType actualMethType = MethodType.methodType(mth.getReturnType());
     MethodType lambdaType = isStatic
         ? MethodType.methodType(Supplier.class)
         : MethodType.methodType(Supplier.class, cls);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "get", lambdaType, methodType, handle, actualMethType));
-    return (Supplier<T>) invokeHandle(cs.getTarget(), obj);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "get", lambdaType, methodType, handle, actualMethType));
+    return (Supplier<S>) invokeHandle(cs.getTarget(), obj);
   }
 	
   
@@ -573,13 +603,12 @@ public class Reflect {
     if(mth.getParameterCount() > 0 || mth.getReturnType() != void.class) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + Runnable.class.getName());
     }
-    MethodHandles.Lookup lookup = MethodHandles.lookup();
-    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
     MethodType methodType = MethodType.methodType(void.class);
     MethodType lambdaType = isStatic
         ? MethodType.methodType(Runnable.class)
         : MethodType.methodType(Runnable.class, cls);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "run", lambdaType, methodType, handle, methodType));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "run", lambdaType, methodType, handle, methodType));
     return (Runnable) invokeHandle(cs.getTarget(), obj);
   }
 	
@@ -587,55 +616,53 @@ public class Reflect {
   /**
    * Create and return a lambda to invoke the selected method.
    * The method signature must be compatible with <code>Consumer</code> signature.
-   * @param <T> Consumer parameter type
+   * @param <C> Consumer parameter type
    * @return A lambda referencing the selected method.
    * @throws IllegalStateException if the selected method signature is not 
    * compatible with <code>Consumer</code> signature.
    */
-  public <T> Consumer<T> methodAsConsumer() {
+  public <C> Consumer<C> methodAsConsumer() {
     boolean isStatic = Modifier.isStatic(mth.getModifiers());
     if(!isStatic && obj == null) throw new IllegalStateException("Target object not found");
     if(mth == null) throw new IllegalStateException("Method not found");
     if(mth.getParameterCount() != 1 || mth.getReturnType() != void.class) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + Consumer.class.getName());
     }
-    MethodHandles.Lookup lookup = MethodHandles.lookup();
-    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
     MethodType methodType = MethodType.methodType(void.class, Object.class);
     MethodType actualMethType = MethodType.methodType(mth.getReturnType(), mth.getParameterTypes()[0]);
     MethodType lambdaType = isStatic
         ? MethodType.methodType(Consumer.class)
         : MethodType.methodType(Consumer.class, cls);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "accept", lambdaType, methodType, handle, actualMethType));
-    return (Consumer<T>) invokeHandle(cs.getTarget(), obj);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "accept", lambdaType, methodType, handle, actualMethType));
+    return (Consumer<C>) invokeHandle(cs.getTarget(), obj);
   }
 	
   
   /**
    * Create and return a lambda to invoke the selected method.
    * The method signature must be compatible with <code>Function</code> signature.
-   * @param <T> Function parameter type
+   * @param <P> Function parameter type
    * @param <R> Function return type
    * @return A lambda referencing the selected method.
    * @throws IllegalStateException if the selected method signature is not 
    * compatible with <code>Function</code> signature.
    */
-  public <T,R> Function<T,R> methodAsFunction() {
+  public <P,R> Function<P,R> methodAsFunction() {
     boolean isStatic = Modifier.isStatic(mth.getModifiers());
     if(!isStatic && obj == null) throw new IllegalStateException("Target object not found");
     if(mth == null) throw new IllegalStateException("Method not found");
     if(mth.getParameterCount() != 1 || mth.getReturnType() == void.class) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + Function.class.getName());
     }
-    MethodHandles.Lookup lookup = MethodHandles.lookup();
-    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
     MethodType methodType = MethodType.methodType(Object.class, Object.class);
     MethodType actualMethType = MethodType.methodType(mth.getReturnType(), mth.getParameterTypes()[0]);
     MethodType lambdaType = isStatic
         ? MethodType.methodType(Function.class)
         : MethodType.methodType(Function.class, cls);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "apply", lambdaType, methodType, handle, actualMethType));
-    return (Function<T,R>) invokeHandle(cs.getTarget(), obj);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "apply", lambdaType, methodType, handle, actualMethType));
+    return (Function<P,R>) invokeHandle(cs.getTarget(), obj);
   }
 	
   
@@ -656,27 +683,26 @@ public class Reflect {
     if(mth.getParameterCount() != 2 || mth.getReturnType() == void.class) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + BiFunction.class.getName());
     }
-    MethodHandles.Lookup lookup = MethodHandles.lookup();
-    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
     MethodType methodType = MethodType.methodType(Object.class, Object.class, Object.class);
     MethodType actualMethType = MethodType.methodType(mth.getReturnType(), mth.getParameterTypes()[0], mth.getParameterTypes()[1]);
     MethodType lambdaType = isStatic
         ? MethodType.methodType(BiFunction.class)
         : MethodType.methodType(BiFunction.class, cls);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "apply", lambdaType, methodType, handle, actualMethType));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "apply", lambdaType, methodType, handle, actualMethType));
     return (BiFunction<A,B,C>) invokeHandle(cs.getTarget(), obj);
   }
 	
   
   /**
    * Create and return a lambda to invoke the selected method.The method signature must be compatible with <code>lambda</code> signature.
-   * @param <T> Lambda type
+   * @param <L> Lambda type
    * @param lambda Lambda class
    * @return A lambda referencing the selected method.
    * @throws IllegalStateException if the selected method signature is not 
    * compatible with <code>lambda</code> signature.
    */
-  public <T> T methodAsLambda(Class<T> lambda) {
+  public <L> L methodAsLambda(Class<L> lambda) {
     if(lambda == null || !Modifier.isInterface(lambda.getModifiers())) {
       throw new IllegalArgumentException("Bad lambda type: " + lambda);
     }
@@ -697,15 +723,14 @@ public class Reflect {
         : lmth.get().getReturnType() == void.class)) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + lmth.get());
     }
-    MethodHandles.Lookup lookup = MethodHandles.lookup();
-    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
     MethodType methodType = MethodType.methodType(lmth.get().getReturnType(), lmth.get().getParameterTypes());
     MethodType actualMethType = MethodType.methodType(mth.getReturnType(), mth.getParameterTypes());
     MethodType lambdaType = isStatic
         ? MethodType.methodType(lambda)
         : MethodType.methodType(lambda, cls);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, lmth.get().getName(), lambdaType, methodType, handle, actualMethType));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, lmth.get().getName(), lambdaType, methodType, handle, actualMethType));
     return lambda.cast(invokeHandle(cs.getTarget(), obj));
   }
-	
+
 }
