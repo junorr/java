@@ -184,6 +184,8 @@ public class TestReflect {
       Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate().selectMethod("greet", String.class);
       ReflectTarget target = (ReflectTarget) r.getTarget();
       Function<String,String> greet = r.methodAsFunction();
+      BiFunction<ReflectTarget,String,String> dynamicGreet = r.dynamicFunctionMethod();
+      BiFunction<ReflectTarget,String,String> dynamicLambda = r.dynamicLambdaMethod(BiFunction.class);
       int TIMES = 100_000_000;
       Timer tm = new Timer.Nanos().start();
       int count = 0;
@@ -203,6 +205,24 @@ public class TestReflect {
       Assertions.assertEquals(TIMES, count);
       tm.stop();
       System.out.println(" * lambda invoke: " + tm);
+      tm = new Timer.Nanos().start();
+      count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals("Hello Juno!", dynamicGreet.apply(target, "Juno"));
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * dynamic invoke: " + tm);
+      tm = new Timer.Nanos().start();
+      count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals("Hello Juno!", dynamicLambda.apply(target, "Juno"));
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * dynamic lambda: " + tm);
       tm = new Timer.Nanos().start();
       count = 0;
       for(int i = 0; i < TIMES; i++) {
@@ -229,6 +249,7 @@ public class TestReflect {
       Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate("Juno").selectMethod("greet");
       ReflectTarget target = (ReflectTarget) r.getTarget();
       Supplier<String> greet = r.methodAsSupplier();
+      Function<ReflectTarget,String> dynamicGreet = r.dynamicSupplierMethod();
       int TIMES = 100_000_000;
       Timer tm = new Timer.Nanos().start();
       int count = 0;
@@ -248,6 +269,15 @@ public class TestReflect {
       Assertions.assertEquals(TIMES, count);
       tm.stop();
       System.out.println(" * lambda invoke: " + tm);
+      tm = new Timer.Nanos().start();
+      count = 0;
+      for(int i = 0; i < TIMES; i++) {
+        count++;
+        Assertions.assertEquals("Hello Juno!", dynamicGreet.apply(target));
+      }
+      Assertions.assertEquals(TIMES, count);
+      tm.stop();
+      System.out.println(" * dynamic invoke: " + tm);
       tm = new Timer.Nanos().start();
       count = 0;
       for(int i = 0; i < TIMES; i++) {

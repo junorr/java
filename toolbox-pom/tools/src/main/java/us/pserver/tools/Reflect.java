@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -474,9 +475,29 @@ public class Reflect<T> {
   }
   
   
+  private BiConsumer invokeBiConsumerHandle(MethodHandle handle) {
+    try {
+      return (BiConsumer) handle.invokeExact();
+    }
+    catch(Throwable e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
+  
+  
   private Function invokeFunctionHandle(MethodHandle handle) {
     try {
       return (Function) handle.invokeExact();
+    }
+    catch(Throwable e) {
+      throw new RuntimeException(e.toString(), e);
+    }
+  }
+  
+  
+  private BiFunction invokeBiFunctionHandle(MethodHandle handle) {
+    try {
+      return (BiFunction) handle.invokeExact();
     }
     catch(Throwable e) {
       throw new RuntimeException(e.toString(), e);
@@ -590,6 +611,27 @@ public class Reflect<T> {
 	
   
   /**
+   * Create and return a lambda to dynamic invoke the selected method on the informed object.
+   * The method signature must be compatible with <code>Supplier</code> signature.
+   * @param <S> Supplier return type
+   * @return A function lambda referencing the dynamic method invokation.
+   * @throws IllegalStateException if the selected method signature is not 
+   * compatible with <code>Supplier</code> signature.
+   */
+  public <S> Function<T,S> dynamicSupplierMethod() {
+    if(mth == null) throw new IllegalStateException("Method not found");
+    if(mth.getParameterCount() > 0) {
+      throw new IllegalStateException("Bad method cast: " + mth + " >> " + Supplier.class.getName());
+    }
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodType methodType = MethodType.methodType(Object.class, Object.class);
+    MethodType lambdaType = MethodType.methodType(Function.class);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "apply", lambdaType, methodType, handle, handle.type()));
+    return (Function<T,S>) invokeFunctionHandle(cs.getTarget());
+  }
+	
+  
+  /**
    * Create and return a lambda to invoke the selected method.
    * The method signature must be compatible with <code>Runnable</code> signature.
    * @throws IllegalStateException if the selected method signature is not 
@@ -640,6 +682,27 @@ public class Reflect<T> {
 	
   
   /**
+   * Create and return a <code>BiConsumer</code> lambda to dynamic invoke the selected method.
+   * The method signature must be compatible with <code>Consumer</code> signature.
+   * @param <C> Consumer parameter type
+   * @return A <code>BiConsumer</code> lambda referencing the dynamic method invokation.
+   * @throws IllegalStateException if the selected method signature is not 
+   * compatible with <code>Consumer</code> signature.
+   */
+  public <C> BiConsumer<T,C> dynamicConsumerMethod() {
+    if(mth == null) throw new IllegalStateException("Method not found");
+    if(mth.getParameterCount() != 1 || mth.getReturnType() != void.class) {
+      throw new IllegalStateException("Bad method cast: " + mth + " >> " + Consumer.class.getName());
+    }
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodType methodType = MethodType.methodType(void.class, Object.class, Object.class);
+    MethodType lambdaType = MethodType.methodType(BiConsumer.class);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "accept", lambdaType, methodType, handle, handle.type()));
+    return (BiConsumer<T,C>) invokeBiConsumerHandle(cs.getTarget());
+  }
+	
+  
+  /**
    * Create and return a lambda to invoke the selected method.
    * The method signature must be compatible with <code>Function</code> signature.
    * @param <P> Function parameter type
@@ -663,6 +726,28 @@ public class Reflect<T> {
         : MethodType.methodType(Function.class, cls);
     CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "apply", lambdaType, methodType, handle, actualMethType));
     return (Function<P,R>) invokeHandle(cs.getTarget(), obj);
+  }
+	
+  
+  /**
+   * Create and return a BiFunction lambda to dynamic invoke the selected method.
+   * The method signature must be compatible with <code>Function</code> signature.
+   * @param <P> Function parameter type
+   * @param <R> Function return type
+   * @return A BiFunction lambda referencing the dynamic method invokation.
+   * @throws IllegalStateException if the selected method signature is not 
+   * compatible with <code>Function</code> signature.
+   */
+  public <P,R> BiFunction<T,P,R> dynamicFunctionMethod() {
+    if(mth == null) throw new IllegalStateException("Method not found");
+    if(mth.getParameterCount() != 1) {
+      throw new IllegalStateException("Bad method cast: " + mth + " >> " + Function.class.getName());
+    }
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodType methodType = MethodType.methodType(Object.class, Object.class, Object.class);
+    MethodType lambdaType = MethodType.methodType(BiFunction.class);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "apply", lambdaType, methodType, handle, handle.type()));
+    return (BiFunction<T,P,R>) invokeBiFunctionHandle(cs.getTarget());
   }
 	
   
@@ -731,6 +816,42 @@ public class Reflect<T> {
         : MethodType.methodType(lambda, cls);
     CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, lmth.get().getName(), lambdaType, methodType, handle, actualMethType));
     return lambda.cast(invokeHandle(cs.getTarget(), obj));
+  }
+	
+  
+  /**
+   * Create and return a lambda to dynamic invoke the selected method.
+   * The method signature must be compatible with the <code>lambda</code> signature.
+   * @param <L> Lambda type
+   * @param lambda Lambda class
+   * @return A lambda referencing the selected method.
+   * @throws IllegalStateException if the selected method signature is not 
+   * compatible with the <code>lambda</code> signature.
+   */
+  public <L> L dynamicLambdaMethod(Class<L> lambda) {
+    if(lambda == null || !Modifier.isInterface(lambda.getModifiers())) {
+      throw new IllegalArgumentException("Bad lambda type: " + lambda);
+    }
+    if(mth == null) throw new IllegalStateException("Method not found");
+    Optional<Method> lmth = Arrays.asList(Reflect.of(lambda).methods()).stream()
+        .filter(m -> m.getParameterCount() -1 == mth.getParameterCount())
+        .filter(m -> Modifier.isPublic(m.getModifiers()))
+        .filter(m -> Modifier.isAbstract(m.getModifiers()))
+        .filter(m -> mth.getReturnType() == void.class ? m.getReturnType() == void.class : m.getReturnType() != void.class)
+        .filter(m -> !m.isDefault())
+        .findAny();
+    if(!lmth.isPresent()) throw new IllegalArgumentException("Bad lambda type: " + lambda);
+    if(mth.getParameterCount() != lmth.get().getParameterCount() -1 
+        || (mth.getReturnType() == void.class 
+        ? lmth.get().getReturnType() != void.class 
+        : lmth.get().getReturnType() == void.class)) {
+      throw new IllegalStateException("Bad method cast: " + mth + " >> " + lmth.get());
+    }
+    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodType methodType = MethodType.methodType(lmth.get().getReturnType(), lmth.get().getParameterTypes());
+    MethodType lambdaType = MethodType.methodType(lambda);
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, lmth.get().getName(), lambdaType, methodType, handle, handle.type()));
+    return lambda.cast(invokeHandle(cs.getTarget()));
   }
 
 }
