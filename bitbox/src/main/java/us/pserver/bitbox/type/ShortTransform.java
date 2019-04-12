@@ -22,42 +22,42 @@
 package us.pserver.bitbox.type;
 
 import java.nio.ByteBuffer;
-import java.util.Objects;
-import us.pserver.bitbox.DataBox;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
+import us.pserver.bitbox.BitTransform;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public class DoubleBox implements DataBox<Double> {
+public class ShortTransform implements BitTransform<Short> {
   
-  private final ByteBuffer buffer;
-  
-  public DoubleBox(ByteBuffer buffer) {
-    this.buffer = Objects.requireNonNull(buffer);
-  }
-
   @Override
-  public ByteBuffer getData() {
-    return buffer;
+  public Predicate<Class> matching() {
+    return c -> c == short.class || c == Short.class;
   }
   
+  public IntBiConsumer<ByteBuffer> intBoxing() {
+    return (i,b) -> b.position(0).putShort((short)i);
+  }
   
-  public double value() {
-    return buffer.position(0).getDouble();
-  }
-
-
   @Override
-  public Double getValue() {
-    return value();
+  public BiConsumer<Short,ByteBuffer> boxing() {
+    return (b,buf) -> {
+      buf.position(0).putShort(b);
+    };
   }
-
-
+  
   @Override
-  public boolean match(Class c) {
-    return c == double.class || c == Double.class;
+  public Function<ByteBuffer,Short> unboxing() {
+    return b -> b.position(0).getShort();
   }
-
+  
+  public ToIntFunction<ByteBuffer> intUnboxing() {
+    return b -> b.position(0).getShort();
+  }
+  
 }

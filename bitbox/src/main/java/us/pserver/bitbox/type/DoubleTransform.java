@@ -19,16 +19,45 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.type;
+
+import java.nio.ByteBuffer;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
+import us.pserver.bitbox.BitTransform;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-@FunctionalInterface
-public interface TypeMatch {
-
-  public boolean match(Class c);
+public class DoubleTransform implements BitTransform<Double> {
+  
+  @Override
+  public Predicate<Class> matching() {
+    return c -> c == double.class || c == Double.class;
+  }
+  
+  public DoubleBiConsumer<ByteBuffer> doubleBoxing() {
+    return (i,b) -> b.position(0).putDouble(i);
+  }
+  
+  @Override
+  public BiConsumer<Double,ByteBuffer> boxing() {
+    return (i,b) -> {
+      b.position(0).putDouble(i);
+    };
+  }
+  
+  @Override
+  public Function<ByteBuffer,Double> unboxing() {
+    return b -> b.position(0).getDouble();
+  }
+  
+  public ToDoubleFunction<ByteBuffer> doubleUnboxing() {
+    return b -> b.position(0).getDouble();
+  }
   
 }

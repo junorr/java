@@ -24,41 +24,42 @@ package us.pserver.bitbox.type;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Objects;
-import us.pserver.bitbox.DataBox;
+import java.time.ZonedDateTime;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import us.pserver.bitbox.BitTransform;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public class LocalDateBox implements DataBox<LocalDate> {
-  
-  private final ByteBuffer buffer;
-  
-  public LocalDateBox(ByteBuffer buffer) {
-    this.buffer = Objects.requireNonNull(buffer);
-  }
-
-  @Override
-  public ByteBuffer getData() {
-    return buffer;
-  }
-  
+public class ZonedDateTimeTransform implements BitTransform<ZonedDateTime> {
   
   @Override
-  public LocalDate getValue() {
-    int lim = buffer.limit();
-    buffer.position(0).limit(10);
-    String str = StandardCharsets.UTF_8.decode(buffer).toString();
-    buffer.limit(lim);
-    return LocalDate.parse(str);
+  public Predicate<Class> matching() {
+    return c -> LocalDate.class.isAssignableFrom(c);
   }
-
-
+  
   @Override
-  public boolean match(Class c) {
-    return c == LocalDate.class;
+  public BiConsumer<ZonedDateTime,ByteBuffer> boxing() {
+    return (z,b) -> {
+      ByteBuffer lb = StandardCharsets.UTF_8.encode(z.toString());
+      b.position(0).putInt(lb.remaining()).put(lb);
+    };
   }
-
+  
+  @Override
+  public Function<ByteBuffer,ZonedDateTime> unboxing() {
+    return b -> {
+      int len = b.position(0).getInt();
+      int lim = b.limit();
+      b.limit(b.position() + len);
+      ZonedDateTime z = ZonedDateTime.parse(StandardCharsets.UTF_8.decode(b).toString());
+      b.limit(lim);
+      return z;
+    };
+  }
+  
 }

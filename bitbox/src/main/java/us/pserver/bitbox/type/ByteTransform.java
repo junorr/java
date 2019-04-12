@@ -22,42 +22,33 @@
 package us.pserver.bitbox.type;
 
 import java.nio.ByteBuffer;
-import java.util.Objects;
-import us.pserver.bitbox.DataBox;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import us.pserver.bitbox.BitTransform;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public class ShortBox implements DataBox<Short> {
+public class ByteTransform implements BitTransform<Byte> {
   
-  private final ByteBuffer buffer;
-  
-  public ShortBox(ByteBuffer buffer) {
-    this.buffer = Objects.requireNonNull(buffer);
-  }
-
   @Override
-  public ByteBuffer getData() {
-    return buffer;
+  public Predicate<Class> matching() {
+    return c -> c == byte.class || c == Byte.class;
   }
   
+  @Override
+  public BiConsumer<Byte,ByteBuffer> boxing() {
+    return (b,buf) -> {
+      buf.position(0).put(b);
+    };
+  }
   
-  public short value() {
-    return buffer.position(0).getShort();
-  }
-
-
   @Override
-  public Short getValue() {
-    return value();
+  public Function<ByteBuffer,Byte> unboxing() {
+    return b -> b.position(0).get();
   }
-
-
-  @Override
-  public boolean match(Class c) {
-    return c == short.class || c == Short.class;
-  }
-
+  
 }

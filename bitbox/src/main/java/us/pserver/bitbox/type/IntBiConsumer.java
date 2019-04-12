@@ -21,50 +21,21 @@
 
 package us.pserver.bitbox.type;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.Objects;
-import us.pserver.bitbox.DataBox;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11 de abr de 2019
+ * @version 0.0 - 12 de abr de 2019
  */
-public class LocalDateTimeBox implements DataBox<LocalDateTime> {
-  
-  private final ByteBuffer buffer;
-  
-  public LocalDateTimeBox(ByteBuffer buffer) {
-    this.buffer = Objects.requireNonNull(buffer);
-  }
+@FunctionalInterface
+public interface IntBiConsumer<T> {
 
-  @Override
-  public ByteBuffer getData() {
-    return buffer;
+  public void accept(int i, T obj);
+  
+  public default IntBiConsumer<T> andThen(IntBiConsumer<? super T> cs) {
+    return (i,t) -> {
+      accept(i,t);
+      cs.accept(i, t);
+    };
   }
   
-  
-  public int length() {
-    return buffer.position(0).getInt();
-  }
-  
-  
-  @Override
-  public LocalDateTime getValue() {
-    int len = length();
-    int lim = buffer.limit();
-    buffer.limit(buffer.position() + len);
-    String str = StandardCharsets.UTF_8.decode(buffer).toString();
-    buffer.limit(lim);
-    return LocalDateTime.parse(str);
-  }
-  
-  
-  @Override
-  public boolean match(Class c) {
-    return c == LocalDateTime.class;
-  }
-
 }

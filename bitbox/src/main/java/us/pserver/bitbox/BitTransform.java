@@ -19,51 +19,53 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox.type;
+package us.pserver.bitbox;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import us.pserver.bitbox.DataBox;
+import java.nio.channels.WritableByteChannel;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11 de abr de 2019
+ * @version 0.0 - 12 de abr de 2019
  */
-public class StringBox implements DataBox<String> {
-  
-  private final ByteBuffer buffer;
-  
-  public StringBox(ByteBuffer buffer) {
-    this.buffer = Objects.requireNonNull(buffer);
-  }
+public interface BitTransform<T> {
 
-  @Override
-  public ByteBuffer getData() {
-    return buffer;
+  public Predicate<Class> matching();
+  
+  public BiConsumer<T,ByteBuffer> boxing();
+  
+  public Function<ByteBuffer,T> unboxing();
+  
+  
+  public default DataBox<T> createBox(ByteBuffer buffer) {
+    return DataBox.of(buffer, unboxing());
+  }
+  
+  public default DataBox<T> createBox(T obj, ByteBuffer buffer) {
+    boxing().accept(obj, buffer);
+    return createBox(buffer);
   }
   
   
-  public int length() {
-    return buffer.position(0).getInt();
+  public static <U> BitTransform of(Predicate<Class> prd, BiConsumer<U,ByteBuffer> box, Function<ByteBuffer,U> unbox) {
+    return new BitTransform() {
+      @Override
+      public Predicate<Class> matching() {
+        return prd;
+      }
+      @Override
+      public BiConsumer<U,ByteBuffer> boxing() {
+        return box;
+      }
+      @Override
+      public Function<ByteBuffer,U> unboxing() {
+        return unbox;
+      }
+    };
   }
   
-  
-  @Override
-  public String getValue() {
-    int len = length();
-    int lim = buffer.limit();
-    buffer.limit(buffer.position() + len);
-    String str = StandardCharsets.UTF_8.decode(buffer).toString();
-    buffer.limit(lim);
-    return str;
-  }
-
-
-  @Override
-  public boolean match(Class c) {
-    return c == String.class || c == Character.class || c == char.class;
-  }
-
 }

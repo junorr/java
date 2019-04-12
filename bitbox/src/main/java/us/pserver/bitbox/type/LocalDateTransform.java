@@ -19,32 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.type;
 
+import java.nio.ByteBuffer;
+import java.time.LocalDate;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import us.pserver.bitbox.BitTransform;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public interface DataBoxFactory<T> extends TypeMatch {
-
-  public DataBox<T> create(T object) throws Exception;
+public class LocalDateTransform implements BitTransform<LocalDate> {
   
+  @Override
+  public Predicate<Class> matching() {
+    return c -> LocalDate.class.isAssignableFrom(c);
+  }
   
-  public static <U> DataBoxFactory<U> of(Predicate<Class> match, Function<U,DataBox<U>> fn) {
-    return new DataBoxFactory<>() {
-      @Override
-      public DataBox<U> create(U object) throws Exception {
-        return fn.apply(object);
-      }
-      @Override
-      public boolean match(Class c) {
-        return match.test(c);
-      }
-    };
+  @Override
+  public BiConsumer<LocalDate,ByteBuffer> boxing() {
+    return (l,b) -> b.position(0).putLong(l.toEpochDay());
+  }
+  
+  @Override
+  public Function<ByteBuffer,LocalDate> unboxing() {
+    return b -> LocalDate.ofEpochDay(b.position(0).getLong());
   }
   
 }

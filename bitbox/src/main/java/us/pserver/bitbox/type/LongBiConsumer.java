@@ -21,43 +21,21 @@
 
 package us.pserver.bitbox.type;
 
-import java.nio.ByteBuffer;
-import java.util.Objects;
-import us.pserver.bitbox.DataBox;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11 de abr de 2019
+ * @version 0.0 - 12 de abr de 2019
  */
-public class BooleanBox implements DataBox<Boolean> {
+@FunctionalInterface
+public interface LongBiConsumer<T> {
+
+  public void accept(long i, T obj);
   
-  private final ByteBuffer buffer;
-  
-  public BooleanBox(ByteBuffer buffer) {
-    this.buffer = Objects.requireNonNull(buffer);
-  }
-
-  @Override
-  public ByteBuffer getData() {
-    return buffer;
+  public default LongBiConsumer<T> andThen(LongBiConsumer<? super T> cs) {
+    return (i,t) -> {
+      accept(i,t);
+      cs.accept(i, t);
+    };
   }
   
-  
-  public boolean value() {
-    return buffer.position(0).get() == 1;
-  }
-
-
-  @Override
-  public Boolean getValue() {
-    return value();
-  }
-
-
-  @Override
-  public boolean match(Class c) {
-    return c == boolean.class || c == Boolean.class;
-  }
-
 }

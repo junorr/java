@@ -22,42 +22,42 @@
 package us.pserver.bitbox.type;
 
 import java.nio.ByteBuffer;
-import java.util.Objects;
-import us.pserver.bitbox.DataBox;
+import java.nio.charset.StandardCharsets;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import us.pserver.bitbox.BitTransform;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public class IntBox implements DataBox<Integer> {
+public class CharSequenceTransform implements BitTransform<CharSequence> {
   
-  private final ByteBuffer buffer;
-  
-  public IntBox(ByteBuffer buffer) {
-    this.buffer = Objects.requireNonNull(buffer);
-  }
-
   @Override
-  public ByteBuffer getData() {
-    return buffer;
+  public Predicate<Class> matching() {
+    return c -> CharSequence.class.isAssignableFrom(c);
   }
   
+  @Override
+  public BiConsumer<CharSequence,ByteBuffer> boxing() {
+    return (s,b) -> {
+      ByteBuffer bs = StandardCharsets.UTF_8.encode(s.toString());
+      b.position(0).putInt(bs.remaining()).put(bs);
+    };
+  }
   
-  public int value() {
-    return buffer.position(0).getInt();
-  }
-
-
   @Override
-  public Integer getValue() {
-    return value();
+  public Function<ByteBuffer,CharSequence> unboxing() {
+    return b -> {
+      int len = b.position(0).getInt();
+      int lim = b.limit();
+      b.limit(b.position() + len);
+      String str = StandardCharsets.UTF_8.decode(b).toString();
+      b.limit(lim);
+      return str;
+    };
   }
-
-
-  @Override
-  public boolean match(Class c) {
-    return c == int.class || c == Integer.class;
-  }
-
+  
 }

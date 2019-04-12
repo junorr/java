@@ -22,47 +22,42 @@
 package us.pserver.bitbox.type;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.time.ZonedDateTime;
-import java.util.Objects;
-import us.pserver.bitbox.DataBox;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToLongFunction;
+import us.pserver.bitbox.BitTransform;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public class ZonedDateTimeBox implements DataBox<ZonedDateTime> {
-  
-  private final ByteBuffer buffer;
-  
-  public ZonedDateTimeBox(ByteBuffer buffer) {
-    this.buffer = Objects.requireNonNull(buffer);
-  }
-
-  @Override
-  public ByteBuffer getData() {
-    return buffer;
-  }
-  
+public class LongTransform implements BitTransform<Long> {
   
   @Override
-  public ZonedDateTime getValue() {
-    long time = buffer.position(0).getLong();
-    int zofs = buffer.getShort();
-    ZonedDateTime.
-    int len = length();
-    int lim = buffer.limit();
-    buffer.limit(buffer.position() + len);
-    String str = StandardCharsets.UTF_8.decode(buffer).toString();
-    buffer.limit(lim);
-    return ZonedDateTime.parse(str);
+  public Predicate<Class> matching() {
+    return c -> c == long.class || c == Long.class;
   }
   
+  public LongBiConsumer<ByteBuffer> longBoxing() {
+    return (i,b) -> b.position(0).putLong(i);
+  }
   
   @Override
-  public boolean match(Class c) {
-    return c == ZonedDateTime.class;
+  public BiConsumer<Long,ByteBuffer> boxing() {
+    return (i,b) -> {
+      b.position(0).putLong(i);
+    };
   }
-
+  
+  @Override
+  public Function<ByteBuffer,Long> unboxing() {
+    return b -> b.position(0).getLong();
+  }
+  
+  public ToLongFunction<ByteBuffer> longUnboxing() {
+    return b -> b.position(0).getLong();
+  }
+  
 }

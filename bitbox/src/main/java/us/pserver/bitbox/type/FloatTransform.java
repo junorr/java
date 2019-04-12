@@ -22,42 +22,42 @@
 package us.pserver.bitbox.type;
 
 import java.nio.ByteBuffer;
-import java.util.Objects;
-import us.pserver.bitbox.DataBox;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
+import us.pserver.bitbox.BitTransform;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public class LongBox implements DataBox<Long> {
+public class FloatTransform implements BitTransform<Float> {
   
-  private final ByteBuffer buffer;
-  
-  public LongBox(ByteBuffer buffer) {
-    this.buffer = Objects.requireNonNull(buffer);
-  }
-
   @Override
-  public ByteBuffer getData() {
-    return buffer;
+  public Predicate<Class> matching() {
+    return c -> c == float.class || c == Float.class;
   }
   
+  public DoubleBiConsumer<ByteBuffer> floatBoxing() {
+    return (i,b) -> b.position(0).putFloat((float)i);
+  }
   
-  public long value() {
-    return buffer.position(0).getLong();
-  }
-
-
   @Override
-  public Long getValue() {
-    return value();
+  public BiConsumer<Float,ByteBuffer> boxing() {
+    return (i,b) -> {
+      b.position(0).putFloat(i);
+    };
   }
-
-
+  
   @Override
-  public boolean match(Class c) {
-    return c == long.class || c == Long.class;
+  public Function<ByteBuffer,Float> unboxing() {
+    return b -> b.position(0).getFloat();
   }
-
+  
+  public ToDoubleFunction<ByteBuffer> floatUnboxing() {
+    return b -> b.position(0).getFloat();
+  }
+  
 }

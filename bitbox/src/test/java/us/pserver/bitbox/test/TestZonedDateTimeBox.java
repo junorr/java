@@ -19,45 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox.type;
+package us.pserver.bitbox.test;
 
-import java.nio.ByteBuffer;
-import java.util.Objects;
-import us.pserver.bitbox.DataBox;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11 de abr de 2019
+ * @version 0.0 - 12 de abr de 2019
  */
-public class ByteBox implements DataBox<Byte> {
-  
-  private final ByteBuffer buffer;
-  
-  public ByteBox(ByteBuffer buffer) {
-    this.buffer = Objects.requireNonNull(buffer);
-  }
+public class TestZonedDateTimeBox {
 
-  @Override
-  public ByteBuffer getData() {
-    return buffer;
+  @Test
+  public void test() {
+    ZoneId.SHORT_IDS.entrySet().forEach(System.out::println);
+    System.out.println("--------------------");
+    ZoneOffset.getAvailableZoneIds().forEach(System.out::println);
   }
   
-  
-  public byte value() {
-    return buffer.position(0).get();
-  }
-
-
-  @Override
-  public Byte getValue() {
-    return value();
-  }
-
-
-  @Override
-  public boolean match(Class c) {
-    return c == byte.class || c == Byte.class;
-  }
-
 }

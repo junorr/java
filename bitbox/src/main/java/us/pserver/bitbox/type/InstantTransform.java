@@ -19,34 +19,35 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.type;
 
 import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import us.pserver.bitbox.BitTransform;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public interface DataBox<T> {
-
-  public ByteBuffer getData();
+public class InstantTransform implements BitTransform<Instant> {
   
-  public T getValue();
+  @Override
+  public Predicate<Class> matching() {
+    return c -> Instant.class.isAssignableFrom(c);
+  }
   
+  @Override
+  public BiConsumer<Instant,ByteBuffer> boxing() {
+    return (i,b) -> b.position(0).putLong(i.toEpochMilli());
+  }
   
-  public static <U> DataBox<U> of(ByteBuffer buffer, Function<ByteBuffer,U> fn) {
-    return new DataBox<>() {
-      @Override
-      public ByteBuffer getData() {
-        return buffer;
-      }
-      @Override
-      public U getValue() {
-        return fn.apply(buffer);
-      }
-    };
+  @Override
+  public Function<ByteBuffer,Instant> unboxing() {
+    return b -> Instant.ofEpochMilli(b.position(0).getLong());
   }
   
 }

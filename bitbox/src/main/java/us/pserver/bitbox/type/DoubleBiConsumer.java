@@ -21,39 +21,21 @@
 
 package us.pserver.bitbox.type;
 
-import java.nio.ByteBuffer;
-import java.time.Instant;
-import java.util.Objects;
-import us.pserver.bitbox.DataBox;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11 de abr de 2019
+ * @version 0.0 - 12 de abr de 2019
  */
-public class InstantBox implements DataBox<Instant> {
-  
-  private final ByteBuffer buffer;
-  
-  public InstantBox(ByteBuffer buffer) {
-    this.buffer = Objects.requireNonNull(buffer);
-  }
+@FunctionalInterface
+public interface DoubleBiConsumer<T> {
 
-  @Override
-  public ByteBuffer getData() {
-    return buffer;
+  public void accept(double i, T obj);
+  
+  public default DoubleBiConsumer<T> andThen(DoubleBiConsumer<? super T> cs) {
+    return (i,t) -> {
+      accept(i,t);
+      cs.accept(i, t);
+    };
   }
   
-  
-  @Override
-  public Instant getValue() {
-    return Instant.ofEpochMilli(buffer.position(0).getLong());
-  }
-  
-  
-  @Override
-  public boolean match(Class c) {
-    return c == Instant.class;
-  }
-
 }
