@@ -21,6 +21,8 @@
 
 package us.pserver.bitbox;
 
+import java.util.stream.Stream;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -33,6 +35,8 @@ public interface ArrayBox<T> extends DataBox<T[]> {
   public Class<T> type();
   
   public T get(int idx);
+  
+  public Stream<T> stream();
   
   @Override
   public T[] getValue();

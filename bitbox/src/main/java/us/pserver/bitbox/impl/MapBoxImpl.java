@@ -30,8 +30,8 @@ public class MapBoxImpl<K,V> implements MapBox<K,V> {
     this.buffer = Objects.requireNonNull(buffer);
     this.startPos = buffer.position();
     int vpos = buffer.getInt();
-    this.keys = new ArrayBoxImpl<>(buffer.slice());
-    this.vals = new ArrayBoxImpl<>(buffer.position(vpos).slice());
+    this.keys = new ArrayBoxImpl<>(buffer.duplicate());
+    this.vals = new ArrayBoxImpl<>(buffer.position(vpos).duplicate());
   }
   
   @Override

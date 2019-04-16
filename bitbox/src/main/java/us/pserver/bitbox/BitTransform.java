@@ -32,7 +32,7 @@ import java.util.function.Predicate;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12 de abr de 2019
  */
-public interface BitTransform<T> extends MatchingType {
+public interface BitTransform<T> extends TypeMatching {
 
   public Predicate<Class> matching();
   

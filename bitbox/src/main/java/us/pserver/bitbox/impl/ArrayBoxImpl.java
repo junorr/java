@@ -6,6 +6,9 @@ import us.pserver.bitbox.BoxRegistry;
 import us.pserver.bitbox.transform.ArrayTransform;
 
 import java.util.Objects;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 
 public class ArrayBoxImpl<T> implements ArrayBox<T> {
   
@@ -50,6 +53,10 @@ public class ArrayBoxImpl<T> implements ArrayBox<T> {
   @Override
   public BitBuffer getData() {
     return buffer;
+  }
+  
+  public Stream<T> stream() {
+    return IntStream.range(0, size).mapToObj(this::get);
   }
   
   @Override

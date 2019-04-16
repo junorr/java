@@ -24,10 +24,8 @@ package us.pserver.bitbox.test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import us.pserver.bitbox.ArrayBox;
-import us.pserver.bitbox.MapBox;
 import us.pserver.bitbox.impl.ArrayBoxImpl;
 import us.pserver.bitbox.impl.BitBuffer;
-import us.pserver.bitbox.impl.MapBoxImpl;
 import us.pserver.bitbox.transform.*;
 
 import java.net.InetAddress;
@@ -36,6 +34,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
+import us.pserver.bitbox.MapBox;
+import us.pserver.bitbox.impl.BitBufferImpl;
+import us.pserver.bitbox.impl.MapBoxImpl;
 
 /**
  *
@@ -218,6 +219,25 @@ public class TestTransform {
     MapBox box = new MapBoxImpl(out.position(0));
     Assertions.assertEquals(m.get(0), box.get(0));
     Assertions.assertEquals(m.get(4), box.get(4));
+  }
+  
+  public void read_list_with_array_box() {
+    List<String> ls = new LinkedList<>();
+    ls.add("Hello");
+    ls.add("World");
+    ls.add("java");
+    ls.add("11");
+    CollectionTransform<String> tran = new CollectionTransform<>();
+    BitBuffer buf = new BitBufferImpl(256, true);
+    tran.boxing().accept(ls, buf);
+    ArrayTransform<String> at = new ArrayTransform();
+    String[] arr = at.unboxing().apply(buf.position(0));
+    for(int i = 0; i < ls.size(); i++) {
+      Assertions.assertEquals(ls.get(i), arr[i]);
+    }
+    ArrayBox<String> box = new ArrayBoxImpl<>(buf.position(0));
+    Assertions.assertEquals(ls.get(0), box.get(0));
+    Assertions.assertEquals(ls.get(2), box.get(2));
   }
   
 }

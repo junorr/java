@@ -5,6 +5,7 @@
  */
 package us.pserver.bitbox.transform;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -15,15 +16,17 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import us.pserver.bitbox.BitProperty;
-import us.pserver.bitbox.MatchingType;
+import us.pserver.bitbox.BoxRegistry;
 import us.pserver.tools.Reflect;
+import us.pserver.bitbox.TypeMatching;
+import us.pserver.tools.Unchecked;
 
 
 /**
  *
  * @author juno
  */
-public interface ObjectSchema<T> extends MatchingType {
+public interface ObjectSpec<T> extends TypeMatching {
   
   public Function<Object[],T> constructor();
   
@@ -31,7 +34,7 @@ public interface ObjectSchema<T> extends MatchingType {
   
   
   
-  public static <U> ObjectSchema<U> createSchema(Class<U> cls) {
+  public static <U> ObjectSpec<U> createSchema(Class<U> cls) {
     return new ObjectSchemaBuilder<>(cls).build();
   }
   
@@ -81,8 +84,18 @@ public interface ObjectSchema<T> extends MatchingType {
           .collect(Collectors.toSet());
     }
     
+    private T invoke(MethodHandle mh, Object[] os) {
+      try {
+        return (T) mh.invoke(os);
+      } 
+      catch(Throwable e) {
+        throw new RuntimeException(e.toString(), e);
+      }
+    }
+    
     private Function<Object[],T> toConstructorFunction(Constructor c) {
-      return os -> Reflect.of(cls).selectConstructor(c).create(os);
+      final MethodHandle cct = Unchecked.call(() -> BoxRegistry.INSTANCE.lookup().unreflectConstructor(c));
+      return os -> invoke(cct, os);
     }
     
     private Optional<Function<Object[],T>> scanConstructor(Set<GetterTarget<T,?>> getters) {
@@ -102,11 +115,11 @@ public interface ObjectSchema<T> extends MatchingType {
           .findFirst();
     }
     
-    public ObjectSchema<T> build() {
+    public ObjectSpec<T> build() {
       Set<GetterTarget<T,?>> getters = this.scanGetters();
       Function<Object[],T> fct = this.scanConstructor(getters)
           .orElseThrow(() -> new IllegalStateException("Compatible constructor not found"));
-      return new ObjectSchema<>() {
+      return new ObjectSpec<>() {
         public Predicate<Class> matching() { return Predicate.isEqual(cls); }
         public Function<Object[],T> constructor() { return fct; }
         public Set<GetterTarget<T,?>> getters() { return getters; }

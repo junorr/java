@@ -11,7 +11,6 @@ import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.tools.Indexed;
 import us.pserver.tools.IndexedInt;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

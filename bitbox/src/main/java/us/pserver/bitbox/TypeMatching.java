@@ -13,7 +13,7 @@ import java.util.function.Predicate;
  * @author juno
  */
 @FunctionalInterface
-public interface MatchingType {
+public interface TypeMatching {
   
   public Predicate<Class> matching();
   

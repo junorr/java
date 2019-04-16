@@ -28,10 +28,10 @@ public class MapTransform<K,V> implements BitTransform<Map<K,V>> {
   @Override
   public BiConsumer<Map<K, V>, BitBuffer> boxing() {
     return (m,b) -> {
+      int startPos = b.position();
       List<K> lk = new ArrayList<>(m.keySet());
       List<V> lv = new ArrayList<>();
       lk.forEach(k -> lv.add(m.get(k)));
-      int startPos = b.position();
       b.position(startPos + Integer.BYTES);
       trans.boxing().accept(lk, b);
       int vpos = b.position();

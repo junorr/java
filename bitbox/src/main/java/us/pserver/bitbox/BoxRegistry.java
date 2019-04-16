@@ -49,7 +49,7 @@ public enum BoxRegistry {
   
   private final Set<BitTransform> transforms;
   
-  private final Set<ObjectSchema> schemas;
+  private final Set<ObjectSpec> schemas;
   
   private final AtomicReference<BitTransform> global;
   
@@ -91,22 +91,22 @@ public enum BoxRegistry {
   }
   
   
-  public <T> Optional<ObjectSchema<T>> schemaFor(Class<T> cls) {
+  public <T> Optional<ObjectSpec<T>> schemaFor(Class<T> cls) {
     return schemas.stream()
         .filter(s -> s.matching().test(cls))
-        .map(s -> (ObjectSchema<T>)s)
+        .map(s -> (ObjectSpec<T>)s)
         .findAny();
   }
   
   
-  public BoxRegistry addSchema(ObjectSchema o) {
+  public BoxRegistry addSchema(ObjectSpec o) {
     schemas.add(Objects.requireNonNull(o));
     return this;
   }
   
   
-  public BoxRegistry replaceSchema(Class c, ObjectSchema o) {
-    Optional<ObjectSchema> opt = schemas.stream().filter(s -> s.matching().test(c)).findAny();
+  public BoxRegistry replaceSchema(Class c, ObjectSpec o) {
+    Optional<ObjectSpec> opt = schemas.stream().filter(s -> s.matching().test(c)).findAny();
     opt.ifPresent(schemas::remove);
     schemas.add(Objects.requireNonNull(o));
     return this;
@@ -114,13 +114,13 @@ public enum BoxRegistry {
   
   
   public BoxRegistry removeSchema(Class c) {
-    Optional<ObjectSchema> opt = schemas.stream().filter(s -> s.matching().test(c)).findAny();
+    Optional<ObjectSpec> opt = schemas.stream().filter(s -> s.matching().test(c)).findAny();
     opt.ifPresent(schemas::remove);
     return this;
   }
   
   
-  public BoxRegistry removeSchema(ObjectSchema os) {
+  public BoxRegistry removeSchema(ObjectSpec os) {
     schemas.remove(os);
     return this;
   }

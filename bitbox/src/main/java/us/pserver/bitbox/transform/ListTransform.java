@@ -8,6 +8,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+
 public class ListTransform<T> implements BitTransform<List<T>> {
   
   private final CollectionTransform<T> trans = new CollectionTransform<>();
