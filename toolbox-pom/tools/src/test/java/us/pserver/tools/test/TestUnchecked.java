@@ -21,10 +21,11 @@
 
 package us.pserver.tools.test;
 
-import java.net.URI;
-import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import us.pserver.tools.Unchecked;
+
+import java.net.URI;
+import java.util.Arrays;
 
 /**
  *

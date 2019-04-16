@@ -35,11 +35,15 @@ public class ReflectTarget {
   public String greet() {
     StringBuilder sb = new StringBuilder("Hello");
     if(hello != null) sb.append(" ").append(hello);
-    return sb.append("!").toString();
+    return sb.append("! ").toString();
   }
   
   public ReflectTarget withHello(String hello) {
     return new ReflectTarget(hello, magic);
+  }
+  
+  public String repeating(int times, String hello) {
+    return withHello(hello).greet().repeat(times);
   }
   
   public String greet(String hello) {

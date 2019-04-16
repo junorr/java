@@ -21,14 +21,12 @@
 
 package us.pserver.bitbox;
 
-import java.util.List;
-
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public interface ArrayBox<T> extends DataBox<List<T>> {
+public interface ArrayBox<T> extends DataBox<T[]> {
 
   public int size();
   
@@ -37,6 +35,6 @@ public interface ArrayBox<T> extends DataBox<List<T>> {
   public T get(int idx);
   
   @Override
-  public List<T> getValue();
+  public T[] getValue();
   
 }

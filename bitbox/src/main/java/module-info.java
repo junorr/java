@@ -4,8 +4,10 @@
  * and open the template in the editor.
  */
 
-module us.pserver.bitbox {
+module bitbox {
   requires java.base;
-  requires toolbox.tools;
+  requires transitive toolbox.tools;
   exports us.pserver.bitbox;
+  exports us.pserver.bitbox.impl;
+  exports us.pserver.bitbox.transform;
 }

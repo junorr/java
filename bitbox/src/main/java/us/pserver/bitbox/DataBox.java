@@ -21,7 +21,8 @@
 
 package us.pserver.bitbox;
 
-import java.nio.ByteBuffer;
+import us.pserver.bitbox.impl.BitBuffer;
+
 import java.util.function.Function;
 
 /**
@@ -31,15 +32,15 @@ import java.util.function.Function;
  */
 public interface DataBox<T> {
 
-  public ByteBuffer getData();
+  public BitBuffer getData();
   
   public T getValue();
   
   
-  public static <U> DataBox<U> of(ByteBuffer buffer, Function<ByteBuffer,U> fn) {
+  public static <U> DataBox<U> of(BitBuffer buffer, Function<BitBuffer,U> fn) {
     return new DataBox<>() {
       @Override
-      public ByteBuffer getData() {
+      public BitBuffer getData() {
         return buffer;
       }
       @Override

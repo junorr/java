@@ -21,8 +21,8 @@
 
 package us.pserver.bitbox;
 
-import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
+import us.pserver.bitbox.impl.BitBuffer;
+
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -32,39 +32,28 @@ import java.util.function.Predicate;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12 de abr de 2019
  */
-public interface BitTransform<T> {
+public interface BitTransform<T> extends MatchingType {
 
   public Predicate<Class> matching();
   
-  public BiConsumer<T,ByteBuffer> boxing();
+  public BiConsumer<T, BitBuffer> boxing();
   
-  public Function<ByteBuffer,T> unboxing();
-  
-  
-  public default DataBox<T> createBox(ByteBuffer buffer) {
-    return DataBox.of(buffer, unboxing());
-  }
-  
-  public default DataBox<T> createBox(T obj, ByteBuffer buffer) {
-    boxing().accept(obj, buffer);
-    return createBox(buffer);
-  }
+  public Function<BitBuffer,T> unboxing();
   
   
-  public static <U> BitTransform of(Predicate<Class> prd, BiConsumer<U,ByteBuffer> box, Function<ByteBuffer,U> unbox) {
+  
+  public static <U> BitTransform of(Predicate<Class> prd, BiConsumer<U, BitBuffer> box, Function<BitBuffer,U> unbox) {
     return new BitTransform() {
       @Override
       public Predicate<Class> matching() {
         return prd;
       }
       @Override
-      public BiConsumer<U,ByteBuffer> boxing() {
+      public BiConsumer<U, BitBuffer> boxing() {
         return box;
       }
       @Override
-      public Function<ByteBuffer,U> unboxing() {
-        return unbox;
-      }
+      public Function<BitBuffer,U> unboxing() { return unbox; }
     };
   }
   

@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="toolbox-pom:jar">
+    <output-path>$PROJECT_DIR$/classes/artifacts/toolbox_pom_jar</output-path>
+    <root id="archive" name="toolbox-pom.jar">
+      <element id="module-output" name="tools-match" />
+      <element id="module-output" name="tools" />
+      <element id="module-output" name="tools-io" />
+    </root>
+  </artifact>
+</component>

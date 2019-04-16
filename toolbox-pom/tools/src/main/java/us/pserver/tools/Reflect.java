@@ -1,10 +1,6 @@
 package us.pserver.tools;
 
-import java.lang.invoke.CallSite;
-import java.lang.invoke.LambdaMetafactory;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import java.lang.invoke.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -13,12 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Reflection utils
@@ -107,6 +100,18 @@ public class Reflect<T> {
 	 */
 	public Reflect<T> selectConstructor() {
     return Reflect.this.selectConstructor((Class[])null);
+	}
+	
+	
+	/**
+	 * Seleciona o construtor informado.
+	 * @return Reflector com o construtor selecionado.
+	 */
+	public Reflect<T> selectConstructor(Constructor c) {
+    if(c == null || c.getDeclaringClass() != cls) {
+      throw new IllegalArgumentException("Bad Constructor: " + c);
+    }
+    return new Reflect(cls, obj, mth, fld, c);
 	}
 	
 	
@@ -307,6 +312,21 @@ public class Reflect<T> {
         m->!all.contains(m)).forEach(all::add);
     Method[] mts = new Method[all.size()];
     return all.toArray(mts);
+  }
+  
+  
+  public Stream<Method> streamMethods() {
+    return Arrays.asList(methods()).stream();
+  }
+	
+	
+  public Stream<Constructor> streamConstructors() {
+    return Arrays.asList(constructors()).stream();
+  }
+	
+	
+  public Stream<Field> streamFields() {
+    return Arrays.asList(fields()).stream();
   }
 	
 	
@@ -852,6 +872,11 @@ public class Reflect<T> {
     MethodType lambdaType = MethodType.methodType(lambda);
     CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, lmth.get().getName(), lambdaType, methodType, handle, handle.type()));
     return lambda.cast(invokeHandle(cs.getTarget()));
+  }
+  
+  
+  public static ClassDefinition defineClass(String cname) {
+    return new ClassDefinition(cname);
   }
 
 }

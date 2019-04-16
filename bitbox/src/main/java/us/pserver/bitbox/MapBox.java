@@ -21,8 +21,8 @@
 
 package us.pserver.bitbox;
 
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  *
@@ -33,11 +33,11 @@ public interface MapBox<K,V> extends DataBox<Map<K,V>> {
 
   public int size();
   
-  public List<K> keys();
+  public Stream<K> keys();
   
-  public List<V> values();
+  public Stream<V> values();
   
-  public List<Map.Entry<K,V>> entries();
+  public Stream<Map.Entry<K,V>> entries();
   
   public V get(K key);
   

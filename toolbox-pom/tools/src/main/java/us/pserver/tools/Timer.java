@@ -21,13 +21,14 @@
 
 package us.pserver.tools;
 
+import us.pserver.tools.date.DateDiff;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-import us.pserver.tools.date.DateDiff;
 
 /**
  * A Timer object for measuring time intervals.

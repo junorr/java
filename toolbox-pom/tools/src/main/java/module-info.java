@@ -6,6 +6,7 @@
 
 module toolbox.tools {
   requires java.base;
+  requires java.compiler;
   exports us.pserver.tools;
   exports us.pserver.tools.date;
 }
