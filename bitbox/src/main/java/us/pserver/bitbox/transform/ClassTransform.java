@@ -20,7 +20,9 @@ public class ClassTransform implements BitTransform<Class> {
   
   @Override
   public BiConsumer<Class, BitBuffer> boxing() {
-    return (c,b) -> strans.boxing().accept(c.getName(), b);
+    return (c,b) -> strans.boxing().accept(
+        BoxRegistry.INSTANCE.typeAdapting(c).get().getName(), b
+    );
   }
   
   @Override

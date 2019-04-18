@@ -5,8 +5,6 @@
  */
 package us.pserver.bitbox.transform;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
@@ -19,7 +17,6 @@ import us.pserver.bitbox.BitProperty;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.tools.Reflect;
 import us.pserver.bitbox.TypeMatching;
-import us.pserver.tools.Unchecked;
 
 
 /**
@@ -28,39 +25,40 @@ import us.pserver.tools.Unchecked;
  */
 public interface ObjectSpec<T> extends TypeMatching {
   
-  public Function<Object[],T> constructor();
+  public ConstructorTarget<T> constructor();
   
-  public Set<GetterTarget<T,?>> getters();
+  public Set<GetterTarget<T,Object>> getters();
   
   
   
-  public static <U> ObjectSpec<U> createSchema(Class<U> cls) {
-    return new ObjectSchemaBuilder<>(cls).build();
+  public static <U> ObjectSpec<U> createSpec(Class<U> cls) {
+    return new ObjectSpecBuilder<>(cls).build();
   }
   
   
   
   
   
-  public static class ObjectSchemaBuilder<T> {
+  public static class ObjectSpecBuilder<T> {
     
     public static final String GET = "get";
     
     private final Class<T> cls;
     
-    public ObjectSchemaBuilder(Class<T> cls) {
+    public ObjectSpecBuilder(Class<T> cls) {
       this.cls = Objects.requireNonNull(cls);
     }
     
     private boolean isGetter(Method m) {
-      return m.getName().startsWith(GET)
+      return (m.getName().startsWith(GET)
+          && !m.getName().endsWith("Class"))
           || m.getAnnotation(BitProperty.class) != null;
     }
     
     private String getPropertyName(Method m) {
       String name = m.getName();
       if(name.startsWith(GET)) {
-        return name.substring(3);
+        return name.substring(3, 4).toLowerCase() + name.substring(4);
       }
       else {
         BitProperty bp = m.getAnnotation(BitProperty.class);
@@ -68,15 +66,15 @@ public interface ObjectSpec<T> extends TypeMatching {
       }
     }
     
-    private GetterTarget<T,?> toGetterTarget(Method m) {
-      return GetterTarget.of(
+    private GetterTarget<T,Object> toGetterTarget(Method m) {
+      return (GetterTarget<T,Object>) GetterTarget.of(
           getPropertyName(m), m.getReturnType(),
-          Reflect.of(cls).selectMethod(m).dynamicSupplierMethod()
+          Reflect.of(cls, BoxRegistry.INSTANCE.lookup()).selectMethod(m).dynamicSupplierMethod()
       );
     }
     
-    private Set<GetterTarget<T,?>> scanGetters() {
-      return Reflect.of(cls).streamMethods()
+    private Set<GetterTarget<T,Object>> scanGetters() {
+      return Reflect.of(cls, BoxRegistry.INSTANCE.lookup()).streamMethods()
           .filter(m -> m.getParameterCount() == 0)
           .filter(m -> m.getReturnType() != void.class)
           .filter(this::isGetter)
@@ -84,22 +82,8 @@ public interface ObjectSpec<T> extends TypeMatching {
           .collect(Collectors.toSet());
     }
     
-    private T invoke(MethodHandle mh, Object[] os) {
-      try {
-        return (T) mh.invoke(os);
-      } 
-      catch(Throwable e) {
-        throw new RuntimeException(e.toString(), e);
-      }
-    }
-    
-    private Function<Object[],T> toConstructorFunction(Constructor c) {
-      final MethodHandle cct = Unchecked.call(() -> BoxRegistry.INSTANCE.lookup().unreflectConstructor(c));
-      return os -> invoke(cct, os);
-    }
-    
-    private Optional<Function<Object[],T>> scanConstructor(Set<GetterTarget<T,?>> getters) {
-      return Reflect.of(cls).streamConstructors()
+    private Optional<ConstructorTarget<T>> scanConstructor(Set<GetterTarget<T,Object>> getters) {
+      return Reflect.of(cls, BoxRegistry.INSTANCE.lookup()).streamConstructors()
           .filter(c -> c.getParameterCount() <= getters.size())
           //filter by parameter types
           .filter(c -> Arrays.asList(c.getParameterTypes()).stream()
@@ -111,18 +95,18 @@ public interface ObjectSpec<T> extends TypeMatching {
                   .anyMatch(g -> g.getName().equalsIgnoreCase(p.getName()))))
           //sort by parameter count descending
           .sorted((c,d) -> (-1) * Integer.compare(c.getParameterCount(), d.getParameterCount()))
-          .map(this::toConstructorFunction)
+          .map(c -> (ConstructorTarget<T>) ConstructorTarget.of(c))
           .findFirst();
     }
     
     public ObjectSpec<T> build() {
-      Set<GetterTarget<T,?>> getters = this.scanGetters();
-      Function<Object[],T> fct = this.scanConstructor(getters)
+      Set<GetterTarget<T,Object>> getters = this.scanGetters();
+      ConstructorTarget<T> fct = this.scanConstructor(getters)
           .orElseThrow(() -> new IllegalStateException("Compatible constructor not found"));
       return new ObjectSpec<>() {
         public Predicate<Class> matching() { return Predicate.isEqual(cls); }
-        public Function<Object[],T> constructor() { return fct; }
-        public Set<GetterTarget<T,?>> getters() { return getters; }
+        public ConstructorTarget<T> constructor() { return fct; }
+        public Set<GetterTarget<T,Object>> getters() { return getters; }
       };
     }
     

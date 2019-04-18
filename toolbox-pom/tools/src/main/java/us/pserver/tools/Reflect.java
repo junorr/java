@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.*;
 import java.util.stream.Collectors;
@@ -31,18 +32,21 @@ public class Reflect<T> {
 	private final Field fld;
 	
 	private final Constructor cct;
+  
+  private final MethodHandles.Lookup lookup;
 
 
-  public Reflect(Class<T> cls, T obj, Method mth, Field fld, Constructor cct) {
+  public Reflect(Class<T> cls, T obj, Method mth, Field fld, Constructor cct, MethodHandles.Lookup lookup) {
     this.cls = cls;
     this.obj = obj;
     this.mth = mth;
     this.fld = fld;
     this.cct = cct;
+    this.lookup = Objects.requireNonNull(lookup);
   }
 	
 	
-	public Reflect(T obj) {
+	public Reflect(T obj, MethodHandles.Lookup lookup) {
 		if(obj == null) {
 			throw new IllegalArgumentException(
 					"Object must be not null"
@@ -59,16 +63,27 @@ public class Reflect<T> {
     this.mth = null;
     this.fld = null;
     this.cct = null;
+    this.lookup = Objects.requireNonNull(lookup);
 	}
 	
 	
 	public static <U> Reflect<U> of(Class<U> cls) {
-		return new Reflect(cls);
+		return new Reflect(cls, LOOKUP);
 	}
 	
 	
 	public static <U> Reflect<U> of(U obj) {
-		return new Reflect(obj);
+		return new Reflect(obj, LOOKUP);
+	}
+  
+  
+	public static <U> Reflect<U> of(Class<U> cls, MethodHandles.Lookup lookup) {
+		return new Reflect(cls, lookup);
+	}
+	
+	
+	public static <U> Reflect<U> of(U obj, MethodHandles.Lookup lookup) {
+		return new Reflect(obj, lookup);
 	}
   
   
@@ -90,7 +105,7 @@ public class Reflect<T> {
     if(cct == null) {
       cct = Unchecked.call(() -> cls.getConstructor(args));
     }
-    return new Reflect(cls, obj, mth, fld, cct);
+    return new Reflect(cls, obj, mth, fld, cct, lookup);
 	}
 	
 	
@@ -111,7 +126,7 @@ public class Reflect<T> {
     if(c == null || c.getDeclaringClass() != cls) {
       throw new IllegalArgumentException("Bad Constructor: " + c);
     }
-    return new Reflect(cls, obj, mth, fld, c);
+    return new Reflect(cls, obj, mth, fld, c, lookup);
 	}
 	
 	
@@ -174,7 +189,7 @@ public class Reflect<T> {
 	
 	
   public Reflect<T> reflectCreate(Object ... args) {
-    return new Reflect(create(args));
+    return new Reflect(create(args), lookup);
   }
 	
 	
@@ -194,7 +209,7 @@ public class Reflect<T> {
   
   
   public Reflect<T> createReflect() {
-    return new Reflect(create());
+    return new Reflect(create(), lookup);
   }
 	
 	
@@ -261,7 +276,7 @@ public class Reflect<T> {
     Optional<Method> opt = Optional.ofNullable(Unchecked.call(() -> cls.getDeclaredMethod(method, args)));
     Method mth = opt.or(() -> Optional.ofNullable(Unchecked.call(() -> cls.getMethod(method, args))))
         .orElseThrow(() -> new IllegalStateException("Method not found: " + method2string(method, args)));
-    return new Reflect(cls, obj, mth, fld, cct);
+    return new Reflect(cls, obj, mth, fld, cct, lookup);
 	}
 	
 	
@@ -274,7 +289,7 @@ public class Reflect<T> {
     if(meth == null || meth.getDeclaringClass() != cls) {
       throw new IllegalArgumentException("Bad method: " + meth);
     }
-    return new Reflect(cls, obj, meth, fld, cct);
+    return new Reflect(cls, obj, meth, fld, cct, lookup);
 	}
 	
 	
@@ -298,7 +313,7 @@ public class Reflect<T> {
         .filter(m -> m.getName().equals(method))
         .findAny())
         .orElseThrow(() -> new IllegalStateException("Method not found: " + method));
-    return new Reflect(cls, obj, mth, fld, cct);
+    return new Reflect(cls, obj, mth, fld, cct, lookup);
 	}
   
   
@@ -370,7 +385,7 @@ public class Reflect<T> {
     Optional<Field> opt = Optional.ofNullable(Unchecked.call(() -> cls.getDeclaredField(field)));
     Field fld = opt.or(() -> Optional.ofNullable(Unchecked.call(() -> cls.getField(field))))
         .orElseThrow(() -> new IllegalStateException("Field not found: " + field));
-    return new Reflect(cls, obj, mth, fld, cct);
+    return new Reflect(cls, obj, mth, fld, cct, lookup);
 	}
   
   
@@ -538,11 +553,11 @@ public class Reflect<T> {
     if(cct.getParameterCount() > 0) {
       throw new IllegalStateException("Bad constructor cast: " + cct + " >> " + Supplier.class.getName());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflectConstructor(cct));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflectConstructor(cct));
     MethodType methodType = MethodType.methodType(Object.class);
     MethodType actualMethType = MethodType.methodType(cls);
     MethodType lambdaType = MethodType.methodType(Supplier.class);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "get", lambdaType, methodType, handle, actualMethType));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "get", lambdaType, methodType, handle, actualMethType));
     return (Supplier<T>) invokeSupplierHandle(cs.getTarget());
   }
 	
@@ -560,11 +575,11 @@ public class Reflect<T> {
     if(cct.getParameterCount() != 1) {
       throw new IllegalStateException("Bad constructor cast: " + cct + " >> " + Function.class.getName());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflectConstructor(cct));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflectConstructor(cct));
     MethodType methodType = MethodType.methodType(Object.class, Object.class);
     MethodType actualMethType = MethodType.methodType(cls, cct.getParameterTypes()[0]);
     MethodType lambdaType = MethodType.methodType(Function.class);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "apply", lambdaType, methodType, handle, actualMethType));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "apply", lambdaType, methodType, handle, actualMethType));
     return (Function<P,T>) invokeFunctionHandle(cs.getTarget());
   }
   
@@ -595,11 +610,11 @@ public class Reflect<T> {
         || lmth.get().getReturnType() == void.class) {
       throw new IllegalStateException("Bad constructor cast: " + cct + " >> " + lmth.get());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflectConstructor(cct));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflectConstructor(cct));
     MethodType methodType = MethodType.methodType(lmth.get().getReturnType(), lmth.get().getParameterTypes());
     MethodType actualMethType = MethodType.methodType(cls, cct.getParameterTypes());
     MethodType lambdaType = MethodType.methodType(lambda);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, lmth.get().getName(), lambdaType, methodType, handle, actualMethType));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, lmth.get().getName(), lambdaType, methodType, handle, actualMethType));
     return lambda.cast(invokeHandle(cs.getTarget()));
   }
 	
@@ -619,13 +634,13 @@ public class Reflect<T> {
     if(mth.getParameterCount() > 0) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + Supplier.class.getName());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
     MethodType methodType = MethodType.methodType(Object.class);
     MethodType actualMethType = MethodType.methodType(mth.getReturnType());
     MethodType lambdaType = isStatic
         ? MethodType.methodType(Supplier.class)
         : MethodType.methodType(Supplier.class, cls);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "get", lambdaType, methodType, handle, actualMethType));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "get", lambdaType, methodType, handle, actualMethType));
     return (Supplier<S>) invokeHandle(cs.getTarget(), obj);
   }
 	
@@ -643,10 +658,10 @@ public class Reflect<T> {
     if(mth.getParameterCount() > 0) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + Supplier.class.getName());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
     MethodType methodType = MethodType.methodType(Object.class, Object.class);
     MethodType lambdaType = MethodType.methodType(Function.class);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "apply", lambdaType, methodType, handle, handle.type()));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "apply", lambdaType, methodType, handle, handle.type()));
     return (Function<T,S>) invokeFunctionHandle(cs.getTarget());
   }
 	
@@ -665,12 +680,12 @@ public class Reflect<T> {
     if(mth.getParameterCount() > 0 || mth.getReturnType() != void.class) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + Runnable.class.getName());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
     MethodType methodType = MethodType.methodType(void.class);
     MethodType lambdaType = isStatic
         ? MethodType.methodType(Runnable.class)
         : MethodType.methodType(Runnable.class, cls);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "run", lambdaType, methodType, handle, methodType));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "run", lambdaType, methodType, handle, methodType));
     return (Runnable) invokeHandle(cs.getTarget(), obj);
   }
 	
@@ -690,13 +705,13 @@ public class Reflect<T> {
     if(mth.getParameterCount() != 1 || mth.getReturnType() != void.class) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + Consumer.class.getName());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
     MethodType methodType = MethodType.methodType(void.class, Object.class);
     MethodType actualMethType = MethodType.methodType(mth.getReturnType(), mth.getParameterTypes()[0]);
     MethodType lambdaType = isStatic
         ? MethodType.methodType(Consumer.class)
         : MethodType.methodType(Consumer.class, cls);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "accept", lambdaType, methodType, handle, actualMethType));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "accept", lambdaType, methodType, handle, actualMethType));
     return (Consumer<C>) invokeHandle(cs.getTarget(), obj);
   }
 	
@@ -714,10 +729,10 @@ public class Reflect<T> {
     if(mth.getParameterCount() != 1 || mth.getReturnType() != void.class) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + Consumer.class.getName());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
     MethodType methodType = MethodType.methodType(void.class, Object.class, Object.class);
     MethodType lambdaType = MethodType.methodType(BiConsumer.class);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "accept", lambdaType, methodType, handle, handle.type()));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "accept", lambdaType, methodType, handle, handle.type()));
     return (BiConsumer<T,C>) invokeBiConsumerHandle(cs.getTarget());
   }
 	
@@ -738,13 +753,13 @@ public class Reflect<T> {
     if(mth.getParameterCount() != 1 || mth.getReturnType() == void.class) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + Function.class.getName());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
     MethodType methodType = MethodType.methodType(Object.class, Object.class);
     MethodType actualMethType = MethodType.methodType(mth.getReturnType(), mth.getParameterTypes()[0]);
     MethodType lambdaType = isStatic
         ? MethodType.methodType(Function.class)
         : MethodType.methodType(Function.class, cls);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "apply", lambdaType, methodType, handle, actualMethType));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "apply", lambdaType, methodType, handle, actualMethType));
     return (Function<P,R>) invokeHandle(cs.getTarget(), obj);
   }
 	
@@ -763,10 +778,10 @@ public class Reflect<T> {
     if(mth.getParameterCount() != 1) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + Function.class.getName());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
     MethodType methodType = MethodType.methodType(Object.class, Object.class, Object.class);
     MethodType lambdaType = MethodType.methodType(BiFunction.class);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "apply", lambdaType, methodType, handle, handle.type()));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "apply", lambdaType, methodType, handle, handle.type()));
     return (BiFunction<T,P,R>) invokeBiFunctionHandle(cs.getTarget());
   }
 	
@@ -788,13 +803,13 @@ public class Reflect<T> {
     if(mth.getParameterCount() != 2 || mth.getReturnType() == void.class) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + BiFunction.class.getName());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
     MethodType methodType = MethodType.methodType(Object.class, Object.class, Object.class);
     MethodType actualMethType = MethodType.methodType(mth.getReturnType(), mth.getParameterTypes()[0], mth.getParameterTypes()[1]);
     MethodType lambdaType = isStatic
         ? MethodType.methodType(BiFunction.class)
         : MethodType.methodType(BiFunction.class, cls);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, "apply", lambdaType, methodType, handle, actualMethType));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, "apply", lambdaType, methodType, handle, actualMethType));
     return (BiFunction<A,B,C>) invokeHandle(cs.getTarget(), obj);
   }
 	
@@ -828,13 +843,13 @@ public class Reflect<T> {
         : lmth.get().getReturnType() == void.class)) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + lmth.get());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
     MethodType methodType = MethodType.methodType(lmth.get().getReturnType(), lmth.get().getParameterTypes());
     MethodType actualMethType = MethodType.methodType(mth.getReturnType(), mth.getParameterTypes());
     MethodType lambdaType = isStatic
         ? MethodType.methodType(lambda)
         : MethodType.methodType(lambda, cls);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, lmth.get().getName(), lambdaType, methodType, handle, actualMethType));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, lmth.get().getName(), lambdaType, methodType, handle, actualMethType));
     return lambda.cast(invokeHandle(cs.getTarget(), obj));
   }
 	
@@ -867,10 +882,10 @@ public class Reflect<T> {
         : lmth.get().getReturnType() == void.class)) {
       throw new IllegalStateException("Bad method cast: " + mth + " >> " + lmth.get());
     }
-    MethodHandle handle = Unchecked.call(() -> LOOKUP.unreflect(mth));
+    MethodHandle handle = Unchecked.call(() -> lookup.unreflect(mth));
     MethodType methodType = MethodType.methodType(lmth.get().getReturnType(), lmth.get().getParameterTypes());
     MethodType lambdaType = MethodType.methodType(lambda);
-    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(LOOKUP, lmth.get().getName(), lambdaType, methodType, handle, handle.type()));
+    CallSite cs = Unchecked.call(() -> LambdaMetafactory.metafactory(lookup, lmth.get().getName(), lambdaType, methodType, handle, handle.type()));
     return lambda.cast(invokeHandle(cs.getTarget()));
   }
   

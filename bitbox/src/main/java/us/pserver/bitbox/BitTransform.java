@@ -26,6 +26,8 @@ import us.pserver.bitbox.impl.BitBuffer;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 /**
  *
@@ -33,7 +35,7 @@ import java.util.function.Predicate;
  * @version 0.0 - 12 de abr de 2019
  */
 public interface BitTransform<T> extends TypeMatching {
-
+  
   public Predicate<Class> matching();
   
   public BiConsumer<T, BitBuffer> boxing();

@@ -48,7 +48,7 @@ public class CollectionTransform<T> implements BitTransform<Collection<T>> {
       b.position(startPos + (c.size() + 2) * Integer.BYTES);
       int[] idxs = new int[c.size()];
       c.stream()
-          .map(fid::apply)
+          .map(fid)
           .peek(x -> idxs[x.index()] = b.position())
           .forEach(x -> trans.boxing().accept(x.value(), b));
       int cpos = b.position();
@@ -58,20 +58,6 @@ public class CollectionTransform<T> implements BitTransform<Collection<T>> {
       IntStream.of(idxs).forEach(b::putInt);
       b.position(end);
     };
-  }
-  
-  public void debugBoxingOutput(BitBuffer out) {
-    int size = out.getInt();
-    int classPos = out.getInt();
-    System.out.printf("* size=%d%n", size);
-    System.out.printf("* classPos=%d%n", classPos);
-    int[] idxs = new int[size];
-    IntFunction<IndexedInt> fid = IndexedInt.builder();
-    IntStream.generate(out::getInt)
-        .mapToObj(fid::apply)
-        .takeWhile(x -> x.index() < size)
-        .forEach(x -> idxs[x.index()] = x.value());
-    System.out.printf("* value indexes: %s%n", Arrays.toString(idxs));
   }
   
   @Override
@@ -87,12 +73,11 @@ public class CollectionTransform<T> implements BitTransform<Collection<T>> {
       b.position(ipos);
       int[] idxs = new int[size];
       IntStream.generate(b::getInt)
-          .mapToObj(fid::apply)
+          .mapToObj(fid)
           .takeWhile(x -> x.index() < size)
           .forEach(x -> idxs[x.index()] = x.value());
       List<T> ls = new ArrayList<>(size);
       BitTransform<T> trans = BoxRegistry.INSTANCE.getAnyTransform(cls);
-      fid = IndexedInt.builder();
       IntStream.of(idxs)
           .mapToObj(i -> trans.unboxing().apply(b.position(i)))
           .forEach(ls::add);

@@ -36,6 +36,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import us.pserver.bitbox.MapBox;
 import us.pserver.bitbox.impl.BitBufferImpl;
+import us.pserver.bitbox.impl.DynamicMapBox;
 import us.pserver.bitbox.impl.MapBoxImpl;
 
 /**
@@ -238,6 +239,41 @@ public class TestTransform {
     ArrayBox<String> box = new ArrayBoxImpl<>(buf.position(0));
     Assertions.assertEquals(ls.get(0), box.get(0));
     Assertions.assertEquals(ls.get(2), box.get(2));
+  }
+  
+  public static enum Weather {
+    SUN, CLOUDS, RAIN, RAINBOW
+  }
+  
+  @Test
+  public void enum_transform() {
+    BitBuffer buf = new BitBufferImpl(256, true);
+    EnumTransform<Weather> tran = new EnumTransform<>();
+    tran.boxing().accept(Weather.RAIN, buf);
+    Assertions.assertEquals(Weather.RAIN, tran.unboxing().apply(buf.position(0)));
+    buf.position(0).putInt(10, 10);
+    System.out.println("buf.position(0).putInt(10, 10).position() = " + buf.position());
+  }
+  
+  @Test
+  public void dynamic_map_entry_transform() {
+    Map<String,Integer> m = new TreeMap<>();
+    m.put("Integer.MIN_VALUE", Integer.MIN_VALUE);
+    m.put("Integer.ZERO", 0);
+    m.put("Integer.MAX_VALUE", Integer.MAX_VALUE);
+    System.out.println(m);
+    DynamicMapTransform tran = new DynamicMapTransform();
+    BitBuffer b = BitBuffer.of(256, true);
+    tran.boxing().accept(m, b);
+    Map<String,Integer> f = tran.unboxing().apply(b.position(0));
+    System.out.println(f);
+    Assertions.assertEquals(m.get("Integer.MIN_VALUE"), f.get("Integer.MIN_VALUE"));
+    Assertions.assertEquals(m.get("Integer.ZERO"), f.get("Integer.ZERO"));
+    Assertions.assertEquals(m.get("Integer.MAX_VALUE"), f.get("Integer.MAX_VALUE"));
+    MapBox box = new DynamicMapBox(b.position(0));
+    Assertions.assertEquals(m.get("Integer.MIN_VALUE"), box.get("Integer.MIN_VALUE"));
+    Assertions.assertEquals(m.get("Integer.ZERO"), box.get("Integer.ZERO"));
+    Assertions.assertEquals(m.get("Integer.MAX_VALUE"), box.get("Integer.MAX_VALUE"));
   }
   
 }

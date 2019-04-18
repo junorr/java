@@ -25,6 +25,9 @@ public interface GetterTarget<T,R> extends Function<T,R> {
       public String getName() { return name; }
       public Class<S> getReturnType() { return ret; }
       public S apply(U arg) { return fn.apply(arg); }
+      public String toString() {
+        return String.format("%s() : %s", getName(), getReturnType().getSimpleName());
+      }
     };
   }
   
