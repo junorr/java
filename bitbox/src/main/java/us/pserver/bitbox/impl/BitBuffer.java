@@ -35,6 +35,10 @@ import java.nio.channels.WritableByteChannel;
 public interface BitBuffer {
 
   public BitBuffer compact();
+  
+  public int maxPosition();
+  
+  public BitBuffer resetMaxPosition();
 
   public byte get();
 

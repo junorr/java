@@ -10,20 +10,21 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import us.pserver.bitbox.BitCreate;
 import us.pserver.bitbox.BitProperty;
+import us.pserver.bitbox.BitType;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.tools.Reflect;
 import us.pserver.bitbox.TypeMatching;
+import us.pserver.bitbox.SerializedType;
 
 
 /**
  *
  * @author juno
  */
-public interface ObjectSpec<T> extends TypeMatching {
+public interface ObjectSpec<T> extends TypeMatching, SerializedType {
   
   public ConstructorTarget<T> constructor();
   
@@ -82,8 +83,28 @@ public interface ObjectSpec<T> extends TypeMatching {
           .collect(Collectors.toSet());
     }
     
-    private Optional<ConstructorTarget<T>> scanConstructor(Set<GetterTarget<T,Object>> getters) {
-      return Reflect.of(cls, BoxRegistry.INSTANCE.lookup()).streamConstructors()
+    private Optional<ConstructorTarget<T>> scanBitCreateConstructor(Reflect<T> ref, Set<GetterTarget<T,Object>> getters) {
+      return ref.streamConstructors()
+          //.peek(c -> System.out.println("scanBitCreateConstructor: " + c))
+          .filter(c -> c.isAnnotationPresent(BitCreate.class))
+          .filter(c -> c.getParameterCount() <= getters.size())
+          .sorted((m,n) -> (-1) * Integer.compare(m.getParameterCount(), n.getParameterCount()))
+          .map(c -> (ConstructorTarget<T>)ConstructorTarget.of(c))
+          .findAny();
+    }
+    
+    private Optional<ConstructorTarget<T>> scanBitCreateMethod(Reflect<T> ref, Set<GetterTarget<T,Object>> getters) {
+      return ref.streamMethods()
+          //.peek(m -> System.out.println("scanBitCreateMethod: " + m))
+          .filter(m -> m.isAnnotationPresent(BitCreate.class))
+          .filter(c -> c.getParameterCount() <= getters.size())
+          .sorted((m,n) -> (-1) * Integer.compare(m.getParameterCount(), n.getParameterCount()))
+          .map(m -> (ConstructorTarget<T>)ConstructorTarget.of(m))
+          .findFirst();
+    }
+    
+    private Optional<ConstructorTarget<T>> guessConstructor(Reflect<T> ref, Set<GetterTarget<T,Object>> getters) {
+      return ref.streamConstructors()
           .filter(c -> c.getParameterCount() <= getters.size())
           //filter by parameter types
           .filter(c -> Arrays.asList(c.getParameterTypes()).stream()
@@ -91,20 +112,31 @@ public interface ObjectSpec<T> extends TypeMatching {
                   .anyMatch(g -> t.isAssignableFrom(g.getReturnType()))))
           //filter by parameter names
           .filter(c -> Arrays.asList(c.getParameters()).stream()
-              .allMatch(p -> getters.stream()
-                  .anyMatch(g -> g.getName().equalsIgnoreCase(p.getName()))))
+              .map(p -> p.getName())
+              .allMatch(n -> getters.stream()
+                  .anyMatch(g -> g.getName().equalsIgnoreCase(n))))
           //sort by parameter count descending
           .sorted((c,d) -> (-1) * Integer.compare(c.getParameterCount(), d.getParameterCount()))
           .map(c -> (ConstructorTarget<T>) ConstructorTarget.of(c))
           .findFirst();
     }
     
+    private Optional<ConstructorTarget<T>> scanConstructor(Set<GetterTarget<T,Object>> getters) {
+      Reflect<T> ref = Reflect.of(cls, BoxRegistry.INSTANCE.lookup());
+      return scanBitCreateConstructor(ref, getters)
+          .or(() -> scanBitCreateMethod(ref, getters))
+          .or(() -> guessConstructor(ref, getters));
+    }
+    
     public ObjectSpec<T> build() {
+      BitType bt = cls.getAnnotation(BitType.class);
+      Optional<Class> opt = Optional.ofNullable(bt != null ? bt.value() : null);
       Set<GetterTarget<T,Object>> getters = this.scanGetters();
       ConstructorTarget<T> fct = this.scanConstructor(getters)
           .orElseThrow(() -> new IllegalStateException("Compatible constructor not found"));
       return new ObjectSpec<>() {
-        public Predicate<Class> matching() { return Predicate.isEqual(cls); }
+        public Optional<Class> serialType() { return opt; }
+        public boolean match(Class c) { return Objects.equals(c, cls); }
         public ConstructorTarget<T> constructor() { return fct; }
         public Set<GetterTarget<T,Object>> getters() { return getters; }
       };

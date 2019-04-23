@@ -6,6 +6,7 @@
 package us.pserver.bitbox.transform;
 
 import java.lang.reflect.Parameter;
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -14,12 +15,10 @@ import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 
-import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
-
 import us.pserver.tools.Attached;
+
 import us.pserver.tools.Indexed;
 
 
@@ -28,10 +27,19 @@ import us.pserver.tools.Indexed;
  * @author juno
  */
 public class GlobalObjectTransform implements BitTransform<Object> {
-
+  
+  private final ClassTransform ctran = new ClassTransform();
+  
+  private final DynamicMapTransform dtran = new DynamicMapTransform();
+  
   @Override
-  public Predicate<Class> matching() {
-    return c -> !BoxRegistry.INSTANCE.containsTransform(c);
+  public boolean match(Class c) {
+    return !BoxRegistry.INSTANCE.containsTransform(c);
+  }
+  
+  @Override
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   private ObjectSpec getOrCreateSpec(Class c) {
@@ -45,40 +53,46 @@ public class GlobalObjectTransform implements BitTransform<Object> {
   }
   
   @Override
-  public BiConsumer<Object, BitBuffer> boxing() {
-    return (o,b) -> {
-      Class c = o.getClass();
-      ObjectSpec spec = getOrCreateSpec(c);
-      Map<String,Object> m = new TreeMap<>();
-      Set<GetterTarget> getters = spec.getters();
-      getters.stream()
-          .forEach(g -> m.put(g.getName(), g.apply(o)));
-      DynamicMapTransform dmt = new DynamicMapTransform();
-      BitTransform<Class> ctran = BoxRegistry.INSTANCE.getAnyTransform(Class.class);
-      int startPos = b.position();
-      b.position(startPos + Integer.BYTES);
-      ctran.boxing().accept(c, b);
-      b.putInt(startPos, b.position());
-      dmt.boxing().accept(m, b);
-    };
+  public int box(Object o, BitBuffer b) {
+    if(o == null) {
+      b.putInt(0);
+      return Integer.BYTES;
+    }
+    Class c = o.getClass();
+    ObjectSpec spec = getOrCreateSpec(c);
+    Map<String,Object> m = new TreeMap<>();
+    Set<GetterTarget> getters = spec.getters();
+    getters.stream()
+        .map(g -> new AbstractMap.SimpleEntry<>(g.getName(), g.apply(o)))
+        .filter(e -> e.getKey() != null && e.getValue() != null)
+        .forEach(e -> m.put(e.getKey(), e.getValue()));
+    int startPos = b.position();
+    int len = Integer.BYTES;
+    b.position(startPos + Integer.BYTES);
+    len += ctran.box(spec.serialType().orElse(c), b);
+    int mpos = b.position();
+    len += dtran.box(m, b);
+    b.putInt(startPos, mpos);
+    b.position(startPos + len);
+    return len;
   }
   
   @Override
-  public Function<BitBuffer, Object> unboxing() {
-    return b -> {
-      BitTransform<Class> ctran = BoxRegistry.INSTANCE.getAnyTransform(Class.class);
-      Class c = ctran.unboxing().apply(b.position(b.position() + Integer.BYTES));
-      DynamicMapTransform dmt = new DynamicMapTransform();
-      Map m = dmt.unboxing().apply(b);
-      ObjectSpec spec = getOrCreateSpec(c);
-      Object[] args = new Object[spec.constructor().getParameters().size()];
-      Function<String,Indexed<String>> fid = Indexed.builder();
-      Stream<Parameter> pars = spec.constructor().getParameters().stream();
-      pars.map(Parameter::getName)
-          .map(fid)
-          .forEach(x -> args[x.index()] = m.get(x.value()));
-      return spec.constructor().apply(args);
-    };
+  public Object unbox(BitBuffer b) {
+    int pos = b.position();
+    int mpos = b.getInt();
+    if(mpos == 0) return null;
+    b.position(pos + Integer.BYTES);
+    Class c = ctran.unbox(b);
+    Map m = dtran.unbox(b);
+    ObjectSpec spec = getOrCreateSpec(c);
+    Object[] args = new Object[spec.constructor().getParameters().size()];
+    Function<String,Indexed<String>> indexed = Indexed.builder();
+    Stream<Parameter> pars = spec.constructor().getParameters().stream();
+    pars.map(Parameter::getName)
+        .map(indexed)
+        .forEach(x -> args[x.index()] = m.get(x.value()));
+    return spec.constructor().apply(args);
   }
   
 }

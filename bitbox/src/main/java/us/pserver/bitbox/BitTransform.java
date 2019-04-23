@@ -21,41 +21,68 @@
 
 package us.pserver.bitbox;
 
+import java.util.Optional;
 import us.pserver.bitbox.impl.BitBuffer;
 
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
+import java.util.function.ToIntBiFunction;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 12 de abr de 2019
  */
-public interface BitTransform<T> extends TypeMatching {
+public interface BitTransform<T> extends TypeMatching, SerializedType {
   
-  public Predicate<Class> matching();
+  public boolean match(Class c);
   
-  public BiConsumer<T, BitBuffer> boxing();
+  public int box(T obj, BitBuffer buf);
   
-  public Function<BitBuffer,T> unboxing();
+  public T unbox(BitBuffer buf);
   
   
   
-  public static <U> BitTransform of(Predicate<Class> prd, BiConsumer<U, BitBuffer> box, Function<BitBuffer,U> unbox) {
-    return new BitTransform() {
+  public static <U> BitTransform of(Predicate<Class> prd, ToIntBiFunction<U, BitBuffer> box, Function<BitBuffer,U> unbox) {
+    return new BitTransform<U>() {
       @Override
-      public Predicate<Class> matching() {
-        return prd;
+      public boolean match(Class c) {
+        return prd.test(c);
       }
       @Override
-      public BiConsumer<U, BitBuffer> boxing() {
-        return box;
+      public Optional<Class> serialType() {
+        return Optional.empty();
       }
       @Override
-      public Function<BitBuffer,U> unboxing() { return unbox; }
+      public int box(U obj, BitBuffer buf) {
+        return box.applyAsInt(obj, buf);
+      }
+      @Override
+      public U unbox(BitBuffer buf) { 
+        return unbox.apply(buf); 
+      }
+    };
+  }
+  
+  
+  public static <U> BitTransform of(Predicate<Class> prd, Class serialClass, ToIntBiFunction<U, BitBuffer> box, Function<BitBuffer,U> unbox) {
+    return new BitTransform<U>() {
+      @Override
+      public boolean match(Class c) {
+        return prd.test(c);
+      }
+      @Override
+      public Optional<Class> serialType() {
+        return Optional.of(serialClass);
+      }
+      @Override
+      public int box(U obj, BitBuffer buf) {
+        return box.applyAsInt(obj, buf);
+      }
+      @Override
+      public U unbox(BitBuffer buf) { 
+        return unbox.apply(buf); 
+      }
     };
   }
   

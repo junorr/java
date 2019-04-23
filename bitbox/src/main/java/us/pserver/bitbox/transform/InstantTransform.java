@@ -25,9 +25,7 @@ import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 
 import java.time.Instant;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.Optional;
 
 /**
  *
@@ -37,18 +35,24 @@ import java.util.function.Predicate;
 public class InstantTransform implements BitTransform<Instant> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> Instant.class.isAssignableFrom(c);
+  public boolean match(Class c) {
+    return Instant.class.isAssignableFrom(c);
   }
   
   @Override
-  public BiConsumer<Instant, BitBuffer> boxing() {
-    return (i,b) -> b.putLong(i.toEpochMilli());
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer,Instant> unboxing() {
-    return b -> Instant.ofEpochMilli(b.getLong());
+  public int box(Instant i, BitBuffer buf) {
+    buf.putLong(i.toEpochMilli());
+    return Long.BYTES;
+  }
+  
+  @Override
+  public Instant unbox(BitBuffer buf) {
+    return Instant.ofEpochMilli(buf.getLong());
   }
   
 }

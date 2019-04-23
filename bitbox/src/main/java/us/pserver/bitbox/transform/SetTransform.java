@@ -4,28 +4,31 @@ import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class SetTransform<T> implements BitTransform<Set<T>> {
   
   private final CollectionTransform<T> trans = new CollectionTransform<>();
   
   @Override
-  public Predicate<Class> matching() {
-    return Set.class::isAssignableFrom;
+  public boolean match(Class c) {
+    return Set.class.isAssignableFrom(c);
   }
   
   @Override
-  public BiConsumer<Set<T>, BitBuffer> boxing() {
-    return trans.boxing()::accept;
+  public Optional<Class> serialType() {
+    return Optional.of(Set.class);
   }
   
   @Override
-  public Function<BitBuffer, Set<T>> unboxing() {
-    return b -> new HashSet<>(trans.unboxing().apply(b));
+  public int box(Set<T> s, BitBuffer buf) {
+    return trans.box(s, buf);
+  }
+  
+  @Override
+  public Set<T> unbox(BitBuffer buf) {
+    return new HashSet<>(trans.unbox(buf));
   }
   
 }

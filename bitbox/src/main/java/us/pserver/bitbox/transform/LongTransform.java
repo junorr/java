@@ -21,13 +21,10 @@
 
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToLongFunction;
 
 /**
  *
@@ -37,28 +34,33 @@ import java.util.function.ToLongFunction;
 public class LongTransform implements BitTransform<Long> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> c == long.class || c == Long.class;
-  }
-  
-  public LongBiConsumer<BitBuffer> longBoxing() {
-    return (i,b) -> b.putLong(i);
+  public boolean match(Class c) {
+    return c == long.class || c == Long.class;
   }
   
   @Override
-  public BiConsumer<Long, BitBuffer> boxing() {
-    return (i,b) -> {
-      b.putLong(i);
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
+  }
+  
+  public int longBox(long l, BitBuffer buf) {
+    buf.putLong(l);
+    return Long.BYTES;
   }
   
   @Override
-  public Function<BitBuffer,Long> unboxing() {
-    return b -> b.getLong();
+  public int box(Long l, BitBuffer buf) {
+    buf.putLong(l);
+    return Long.BYTES;
   }
   
-  public ToLongFunction<BitBuffer> longUnboxing() {
-    return b -> b.getLong();
+  @Override
+  public Long unbox(BitBuffer buf) {
+    return buf.getLong();
+  }
+  
+  public long longUnbox(BitBuffer buf) {
+    return buf.getLong();
   }
   
 }

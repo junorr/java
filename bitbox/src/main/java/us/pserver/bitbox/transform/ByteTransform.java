@@ -21,6 +21,7 @@
 
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 
@@ -36,20 +37,24 @@ import java.util.function.Predicate;
 public class ByteTransform implements BitTransform<Byte> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> c == byte.class || c == Byte.class;
+  public boolean match(Class c) {
+    return c == byte.class || c == Byte.class;
   }
   
   @Override
-  public BiConsumer<Byte, BitBuffer> boxing() {
-    return (b,buf) -> {
-      buf.put(b);
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer,Byte> unboxing() {
-    return b -> b.get();
+  public int box(Byte b, BitBuffer buf) {
+    buf.put(b);
+    return 1;
+  }
+  
+  @Override
+  public Byte unbox(BitBuffer buf) {
+    return buf.get();
   }
   
 }

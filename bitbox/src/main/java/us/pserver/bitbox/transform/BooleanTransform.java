@@ -21,12 +21,10 @@
 
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 
 import us.pserver.bitbox.impl.BitBuffer;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  *
@@ -36,20 +34,24 @@ import java.util.function.Predicate;
 public class BooleanTransform implements BitTransform<Boolean> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> c == boolean.class || c == Boolean.class;
+  public boolean match(Class c) {
+    return c == boolean.class || c == Boolean.class;
   }
   
   @Override
-  public BiConsumer<Boolean, BitBuffer> boxing() {
-    return (b,buf) -> {
-      buf.put((byte) (b ? 1 : 0));
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer, Boolean> unboxing() {
-    return b -> b.get() == 1;
+  public int box(Boolean b, BitBuffer buf) {
+    buf.put((byte) (b ? 1 : 0));
+    return 1;
+  }
+  
+  @Override
+  public Boolean unbox(BitBuffer b) {
+    return b.get() == 1;
   }
   
 }

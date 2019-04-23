@@ -24,15 +24,11 @@ package us.pserver.bitbox;
 import us.pserver.bitbox.transform.*;
 
 import java.lang.invoke.MethodHandles;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
 /**
  *
@@ -46,7 +42,6 @@ public enum BoxRegistry {
   private BoxRegistry() {
     this.transforms = new CopyOnWriteArraySet<>();
     this.specs = new CopyOnWriteArraySet<>();
-    this.adapts = new CopyOnWriteArraySet<>();
     this.global = new AtomicReference<>(new GlobalObjectTransform());
     this.lookup = new AtomicReference<>(MethodHandles.lookup());
     this.initTransforms();
@@ -55,8 +50,6 @@ public enum BoxRegistry {
   private final Set<BitTransform> transforms;
   
   private final Set<ObjectSpec> specs;
-  
-  private final Set<TypeAdapting> adapts;
   
   private final AtomicReference<BitTransform> global;
   
@@ -90,11 +83,8 @@ public enum BoxRegistry {
     transforms.add(new SetTransform());
     transforms.add(new ShortArrayTransform());
     transforms.add(new ShortTransform());
+    transforms.add(new VoidTransform());
     transforms.add(new ZonedDateTimeTransform());
-    adapts.add(TypeAdapting.of(List.class::isAssignableFrom, List.class));
-    adapts.add(TypeAdapting.of(Set.class::isAssignableFrom, Set.class));
-    adapts.add(TypeAdapting.of(Map.class::isAssignableFrom, Map.class));
-    adapts.add(TypeAdapting.of(Collection.class::isAssignableFrom, Collection.class));
   }
   
   
@@ -111,13 +101,13 @@ public enum BoxRegistry {
   
   public boolean containsSpec(Class cls) {
     return specs.stream()
-        .anyMatch(s -> s.matching().test(cls));
+        .anyMatch(s -> s.match(cls));
   }
   
   
   public <T> Optional<ObjectSpec<T>> specFor(Class<T> cls) {
     return specs.stream()
-        .filter(s -> s.matching().test(cls))
+        .filter(s -> s.match(cls))
         .map(s -> (ObjectSpec<T>)s)
         .findAny();
   }
@@ -130,7 +120,7 @@ public enum BoxRegistry {
   
   
   public BoxRegistry replaceSpec(Class c, ObjectSpec o) {
-    Optional<ObjectSpec> opt = specs.stream().filter(s -> s.matching().test(c)).findAny();
+    Optional<ObjectSpec> opt = specs.stream().filter(s -> s.match(c)).findAny();
     opt.ifPresent(specs::remove);
     specs.add(Objects.requireNonNull(o));
     return this;
@@ -138,7 +128,7 @@ public enum BoxRegistry {
   
   
   public BoxRegistry removeSpec(Class c) {
-    Optional<ObjectSpec> opt = specs.stream().filter(s -> s.matching().test(c)).findAny();
+    Optional<ObjectSpec> opt = specs.stream().filter(s -> s.match(c)).findAny();
     opt.ifPresent(specs::remove);
     return this;
   }
@@ -156,63 +146,9 @@ public enum BoxRegistry {
   }
   
   
-  public Supplier<Class> typeAdapting(Class c) {
-    return adaptingFor(c)
-        .orElse(TypeAdapting.identity(c))
-        .adapting();
-  }
-  
-  
-  public boolean containsTypeAdapting(Class cls) {
-    return specs.stream()
-        .anyMatch(s -> s.matching().test(cls));
-  }
-  
-  
-  public Optional<TypeAdapting> adaptingFor(Class cls) {
-    return adapts.stream()
-        .filter(s -> s.matching().test(cls))
-        .map(s -> (TypeAdapting)s)
-        .findAny();
-  }
-  
-  
-  public BoxRegistry addTypeAdapting(TypeAdapting t) {
-    adapts.add(Objects.requireNonNull(t));
-    return this;
-  }
-  
-  
-  public BoxRegistry replaceTypeAdapting(Class c, TypeAdapting o) {
-    Optional<ObjectSpec> opt = specs.stream().filter(s -> s.matching().test(c)).findAny();
-    opt.ifPresent(specs::remove);
-    adapts.add(Objects.requireNonNull(o));
-    return this;
-  }
-  
-  
-  public BoxRegistry removeTypeAdapting(Class c) {
-    Optional<TypeAdapting> opt = adapts.stream().filter(s -> s.matching().test(c)).findAny();
-    opt.ifPresent(adapts::remove);
-    return this;
-  }
-  
-  
-  public BoxRegistry removeTypeAdapting(TypeAdapting t) {
-    adapts.remove(t);
-    return this;
-  }
-  
-  
-  public BoxRegistry clearTypeAdapting() {
-    adapts.clear();
-    return this;
-  }
-  
-  
   public boolean containsTransform(Class cls) {
     return transforms.stream()
-        .anyMatch(t -> t.matching().test(cls));
+        .anyMatch(t -> t.match(cls));
   }
   
   
@@ -223,7 +159,7 @@ public enum BoxRegistry {
 
   public <T> Optional<BitTransform<T>> transformFor(Class<T> cls) {
     return transforms.stream()
-        .filter(t -> t.matching().test(cls))
+        .filter(t -> t.match(cls))
         .map(t -> (BitTransform<T>)t)
         .findAny();
   }
@@ -261,7 +197,7 @@ public enum BoxRegistry {
   
   public Optional<BitTransform> removeTransform(Class<?> cls) {
     Optional<BitTransform> opt = transforms.stream()
-        .filter(t -> t.matching().test(cls))
+        .filter(t -> t.match(cls))
         .findAny();
     opt.ifPresent(transforms::remove);
     return opt;

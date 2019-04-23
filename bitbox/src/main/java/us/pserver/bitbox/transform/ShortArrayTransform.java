@@ -5,14 +5,9 @@
  */
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
-import us.pserver.tools.IndexedInt;
-
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 
@@ -23,33 +18,29 @@ import java.util.stream.IntStream;
 public class ShortArrayTransform implements BitTransform<short[]> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> c.isArray() && c.getComponentType() == short.class;
+  public boolean match(Class c) {
+    return c.isArray() && c.getComponentType() == short.class;
   }
 
 
   @Override
-  public BiConsumer<short[], BitBuffer> boxing() {
-    return (a,b) -> {
-      b.putInt(a.length);
-      for(int i = 0; i < a.length; i++) {
-        b.putShort(a[i]);
-      }
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer, short[]> unboxing() {
-    return b -> {
-      int size = b.getInt();
-      short[] a = new short[size];
-      IntFunction<IndexedInt> fid = IndexedInt.builder();
-      IntStream.generate(b::getShort)
-          .mapToObj(fid::apply)
-          .takeWhile(x -> x.index() < size)
-          .forEach(x -> a[x.index()] = (short) x.value());
-      return a;
-    };
+  public int box(short[] ss, BitBuffer buf) {
+    buf.putInt(ss.length);
+    IntStream.range(0, ss.length).forEach(i -> buf.putShort(ss[i]));
+    return Integer.BYTES + ss.length * Short.BYTES;
+  }
+  
+  @Override
+  public short[] unbox(BitBuffer buf) {
+    int len = buf.getInt();
+    short[] ss = new short[len];
+    IntStream.range(0, len).forEach(i -> ss[i] = buf.getShort());
+    return ss;
   }
   
 }

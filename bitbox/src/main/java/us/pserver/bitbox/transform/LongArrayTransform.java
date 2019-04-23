@@ -5,14 +5,10 @@
  */
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
-import us.pserver.tools.IndexedLong;
-
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.LongFunction;
-import java.util.function.Predicate;
+import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 
@@ -23,31 +19,29 @@ import java.util.stream.LongStream;
 public class LongArrayTransform implements BitTransform<long[]> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> c.isArray() && c.getComponentType() == long.class;
+  public boolean match(Class c) {
+    return c.isArray() && c.getComponentType() == long.class;
   }
 
 
   @Override
-  public BiConsumer<long[], BitBuffer> boxing() {
-    return (a,b) -> {
-      b.putInt(a.length);
-      LongStream.of(a).forEach(b::putLong);
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer, long[]> unboxing() {
-    return b -> {
-      int size = b.getInt();
-      long[] a = new long[size];
-      LongFunction<IndexedLong> fid = IndexedLong.builder();
-      LongStream.generate(b::getLong)
-          .mapToObj(fid::apply)
-          .takeWhile(x -> x.index() < size)
-          .forEach(x -> a[x.index()] = x.value());
-      return a;
-    };
+  public int box(long[] ls, BitBuffer buf) {
+    buf.putInt(ls.length);
+    LongStream.of(ls).forEach(buf::putLong);
+    return Integer.BYTES + Long.BYTES * ls.length;
+  }
+  
+  @Override
+  public long[] unbox(BitBuffer buf) {
+    int len = buf.getInt();
+    long[] ls = new long[len];
+    IntStream.range(0, len).forEach(i -> ls[i] = buf.getLong());
+    return ls;
   }
   
 }

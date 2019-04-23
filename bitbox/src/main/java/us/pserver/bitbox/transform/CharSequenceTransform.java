@@ -26,9 +26,7 @@ import us.pserver.bitbox.impl.BitBuffer;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.Optional;
 
 /**
  *
@@ -38,28 +36,31 @@ import java.util.function.Predicate;
 public class CharSequenceTransform implements BitTransform<CharSequence> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> CharSequence.class.isAssignableFrom(c);
+  public boolean match(Class c) {
+    return CharSequence.class.isAssignableFrom(c);
   }
   
   @Override
-  public BiConsumer<CharSequence, BitBuffer> boxing() {
-    return (s,b) -> {
-      ByteBuffer bs = StandardCharsets.UTF_8.encode(s.toString());
-      b.putInt(bs.remaining()).put(bs);
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer,CharSequence> unboxing() {
-    return b -> {
-      int len = b.getInt();
-      int lim = b.limit();
-      b.limit(b.position() + len);
-      String str = StandardCharsets.UTF_8.decode(b.toByteBuffer()).toString();
-      b.limit(lim);
-      return str;
-    };
+  public int box(CharSequence s, BitBuffer buf) {
+    ByteBuffer bs = StandardCharsets.UTF_8.encode(s.toString());
+    int len = bs.remaining() + Integer.BYTES;
+    buf.putInt(bs.remaining()).put(bs);
+    return len;
+  }
+  
+  @Override
+  public CharSequence unbox(BitBuffer buf) {
+    int lim = buf.limit();
+    int len = buf.getInt();
+    buf.limit(buf.position() + len);
+    String str = StandardCharsets.UTF_8.decode(buf.toByteBuffer()).toString();
+    buf.limit(lim);
+    return str;
   }
   
 }

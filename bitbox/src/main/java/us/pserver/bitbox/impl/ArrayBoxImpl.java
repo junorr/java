@@ -27,9 +27,9 @@ public class ArrayBoxImpl<T> implements ArrayBox<T> {
     this.buffer = Objects.requireNonNull(buf);
     this.startPos = buffer.position();
     this.size = buffer.getInt();
-    int cpos = buffer.getInt();
+    buffer.position(startPos + Integer.BYTES * (size + 1));
     BitTransform<Class> ct = BoxRegistry.INSTANCE.getAnyTransform(Class.class);
-    this.type = (Class<T>) ct.unboxing().apply(buffer.position(cpos));
+    this.type = (Class<T>) ct.unbox(buffer);
     this.transform = BoxRegistry.INSTANCE.getAnyTransform(type);
   }
   
@@ -45,9 +45,9 @@ public class ArrayBoxImpl<T> implements ArrayBox<T> {
   
   @Override
   public T get(int idx) {
-    buffer.position(startPos + Integer.BYTES * (2 + idx));
+    buffer.position(startPos + Integer.BYTES * (1 + idx));
     int pos = buffer.getInt();
-    return transform.unboxing().apply(buffer.position(pos));
+    return transform.unbox(buffer.position(pos));
   }
   
   @Override
@@ -55,13 +55,14 @@ public class ArrayBoxImpl<T> implements ArrayBox<T> {
     return buffer;
   }
   
+  @Override
   public Stream<T> stream() {
     return IntStream.range(0, size).mapToObj(this::get);
   }
   
   @Override
   public T[] getValue() {
-    return new ArrayTransform<T>().unboxing().apply(buffer.position(startPos));
+    return new ArrayTransform<T>().unbox(buffer.position(startPos));
   }
   
 }

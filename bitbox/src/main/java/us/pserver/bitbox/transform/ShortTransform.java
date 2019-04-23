@@ -21,13 +21,10 @@
 
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
 
 /**
  *
@@ -37,28 +34,33 @@ import java.util.function.ToIntFunction;
 public class ShortTransform implements BitTransform<Short> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> c == short.class || c == Short.class;
-  }
-  
-  public IntBiConsumer<BitBuffer> intBoxing() {
-    return (i,b) -> b.putShort((short)i);
+  public boolean match(Class c) {
+    return c == short.class || c == Short.class;
   }
   
   @Override
-  public BiConsumer<Short, BitBuffer> boxing() {
-    return (b,buf) -> {
-      buf.putShort(b);
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
+  }
+  
+  public int shortBox(short s, BitBuffer buf) {
+    buf.putShort(s);
+    return Short.BYTES;
   }
   
   @Override
-  public Function<BitBuffer,Short> unboxing() {
-    return b -> b.getShort();
+  public int box(Short s, BitBuffer buf) {
+    buf.putShort(s);
+    return Short.BYTES;
   }
   
-  public ToIntFunction<BitBuffer> intUnboxing() {
-    return b -> b.getShort();
+  @Override
+  public Short unbox(BitBuffer buf) {
+    return buf.getShort();
+  }
+  
+  public short shortUnbox(BitBuffer buf) {
+    return buf.getShort();
   }
   
 }

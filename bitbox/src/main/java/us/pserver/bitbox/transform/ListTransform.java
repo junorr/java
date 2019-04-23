@@ -4,9 +4,7 @@ import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.Optional;
 
 
 public class ListTransform<T> implements BitTransform<List<T>> {
@@ -14,18 +12,23 @@ public class ListTransform<T> implements BitTransform<List<T>> {
   private final CollectionTransform<T> trans = new CollectionTransform<>();
   
   @Override
-  public Predicate<Class> matching() {
-    return List.class::isAssignableFrom;
+  public boolean match(Class c) {
+    return List.class.isAssignableFrom(c);
   }
   
   @Override
-  public BiConsumer<List<T>, BitBuffer> boxing() {
-    return trans.boxing()::accept;
+  public Optional<Class> serialType() {
+    return Optional.of(List.class);
   }
   
   @Override
-  public Function<BitBuffer, List<T>> unboxing() {
-    return b -> (List<T>) trans.unboxing().apply(b);
+  public int box(List<T> l, BitBuffer buf) {
+    return trans.box(l, buf);
+  }
+  
+  @Override
+  public List<T> unbox(BitBuffer buf) {
+    return (List<T>) trans.unbox(buf);
   }
   
 }

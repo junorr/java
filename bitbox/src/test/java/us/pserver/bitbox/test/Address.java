@@ -5,6 +5,7 @@
  */
 package us.pserver.bitbox.test;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 
@@ -20,7 +21,7 @@ public class Address {
 
   private final String street;
 
-  private final int number;
+  private final int[] numbers;
 
   private final String neighborhood;
 
@@ -32,9 +33,9 @@ public class Address {
 
   private final long zip;
 
-  public Address(String street, int number, String neighborhood, String complement, String city, UF uf, long zip) {
+  public Address(String street, int[] numbers, String neighborhood, String complement, String city, UF uf, long zip) {
     this.street = street;
-    this.number = number;
+    this.numbers = numbers;
     this.neighborhood = neighborhood;
     this.complement = complement;
     this.city = city;
@@ -46,8 +47,8 @@ public class Address {
     return street;
   }
 
-  public int getNumber() {
-    return number;
+  public int[] getNumbers() {
+    return numbers;
   }
 
   public String getNeighborhood() {
@@ -74,7 +75,7 @@ public class Address {
   public int hashCode() {
     int hash = 7;
     hash = 17 * hash + Objects.hashCode(this.street);
-    hash = 17 * hash + this.number;
+    hash = 17 * hash + Objects.hashCode(this.numbers);
     hash = 17 * hash + Objects.hashCode(this.neighborhood);
     hash = 17 * hash + Objects.hashCode(this.complement);
     hash = 17 * hash + Objects.hashCode(this.city);
@@ -95,7 +96,7 @@ public class Address {
       return false;
     }
     final Address other = (Address) obj;
-    if (this.number != other.number) {
+    if (this.numbers != other.numbers) {
       return false;
     }
     if (this.zip != other.zip) {
@@ -118,7 +119,7 @@ public class Address {
 
   @Override
   public String toString() {
-    return "Address{" + "street=" + street + ", number=" + number + ", neighborhood=" + neighborhood + ", complement=" + complement + ", city=" + city + ", uf=" + uf + ", zip=" + zip + '}';
+    return "Address{" + "street=" + street + ", numbers=" + Arrays.toString(numbers) + ", neighborhood=" + neighborhood + ", complement=" + complement + ", city=" + city + ", uf=" + uf + ", zip=" + zip + '}';
   }
 
 }

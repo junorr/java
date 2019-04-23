@@ -5,6 +5,7 @@
  */
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.tools.IndexedInt;
@@ -23,27 +24,29 @@ import java.util.stream.IntStream;
 public class ByteArrayTransform implements BitTransform<byte[]> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> c.isArray() && c.getComponentType() == int.class;
+  public boolean match(Class c) {
+    return c.isArray() && c.getComponentType() == byte.class;
   }
 
 
   @Override
-  public BiConsumer<byte[], BitBuffer> boxing() {
-    return (a,b) -> {
-      b.putInt(a.length);
-      b.put(a);
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer, byte[]> unboxing() {
-    return b -> {
-      int size = b.getInt();
-      byte[] a = new byte[size];
-      b.get(a);
-      return a;
-    };
+  public int box(byte[] bs, BitBuffer buf) {
+    buf.putInt(bs.length);
+    buf.put(bs);
+    return bs.length + Integer.BYTES;
+  }
+  
+  @Override
+  public byte[] unbox(BitBuffer buf) {
+    int len = buf.getInt();
+    byte[] bs = new byte[len];
+    buf.get(bs);
+    return bs;
   }
   
 }

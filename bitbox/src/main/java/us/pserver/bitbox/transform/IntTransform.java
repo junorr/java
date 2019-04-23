@@ -21,6 +21,7 @@
 
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 
@@ -37,28 +38,33 @@ import java.util.function.ToIntFunction;
 public class IntTransform implements BitTransform<Integer> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> c == int.class || c == Integer.class;
-  }
-  
-  public IntBiConsumer<BitBuffer> intBoxing() {
-    return (i,b) -> b.putInt(i);
+  public boolean match(Class c) {
+    return c == int.class || c == Integer.class;
   }
   
   @Override
-  public BiConsumer<Integer, BitBuffer> boxing() {
-    return (b,buf) -> {
-      buf.putInt(b);
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
+  }
+  
+  public int intBox(int i, BitBuffer buf) {
+    buf.putInt(i);
+    return Integer.BYTES;
   }
   
   @Override
-  public Function<BitBuffer,Integer> unboxing() {
-    return b -> b.getInt();
+  public int box(Integer i, BitBuffer buf) {
+    buf.putInt(i);
+    return Integer.BYTES;
   }
   
-  public ToIntFunction<BitBuffer> intUnboxing() {
-    return b -> b.getInt();
+  @Override
+  public Integer unbox(BitBuffer buf) {
+    return buf.getInt();
+  }
+  
+  public int intUnbox(BitBuffer buf) {
+    return buf.getInt();
   }
   
 }

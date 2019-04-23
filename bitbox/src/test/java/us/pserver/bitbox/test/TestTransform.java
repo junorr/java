@@ -51,8 +51,9 @@ public class TestTransform {
     boolean b = true;
     BitBuffer buffer = BitBuffer.of(2, false);
     BooleanTransform bt = new BooleanTransform();
-    bt.boxing().accept(b, buffer);
-    Assertions.assertTrue(bt.unboxing().apply(buffer.position(0)));
+    int len = bt.box(b, buffer);
+    Assertions.assertEquals(len, buffer.position());
+    Assertions.assertTrue(bt.unbox(buffer.position(0)));
   }
   
   @Test
@@ -60,8 +61,9 @@ public class TestTransform {
     byte b = 55;
     BitBuffer buffer = BitBuffer.of(2, false);
     ByteTransform bt = new ByteTransform();
-    bt.boxing().accept(b, buffer);
-    Assertions.assertEquals(b, bt.unboxing().apply(buffer.position(0)));
+    int len = bt.box(b, buffer);
+    Assertions.assertEquals(len, buffer.position());
+    Assertions.assertEquals(b, bt.unbox(buffer.position(0)));
   }
   
   @Test
@@ -69,8 +71,9 @@ public class TestTransform {
     String str = "Hello World!!";
     CharSequenceTransform ct = new CharSequenceTransform();
     BitBuffer buffer = BitBuffer.of(30, false);
-    ct.boxing().accept(str, buffer);
-    Assertions.assertEquals(str, ct.unboxing().apply(buffer.position(0)));
+    int len = ct.box(str, buffer);
+    Assertions.assertEquals(len, buffer.position());
+    Assertions.assertEquals(str, ct.unbox(buffer.position(0)));
   }
   
   @Test
@@ -78,8 +81,9 @@ public class TestTransform {
     double d = 55.6789;
     DoubleTransform dt = new DoubleTransform();
     BitBuffer buffer = BitBuffer.of(30, false);
-    dt.doubleBoxing().accept(d, buffer);
-    Assertions.assertEquals(d, dt.doubleUnboxing().applyAsDouble(buffer.position(0)));
+    int len = dt.doubleBox(d, buffer);
+    Assertions.assertEquals(len, buffer.position());
+    Assertions.assertEquals(d, dt.doubleUnbox(buffer.position(0)));
   }
   
   @Test
@@ -87,8 +91,9 @@ public class TestTransform {
     int i = 55;
     IntTransform dt = new IntTransform();
     BitBuffer buffer = BitBuffer.of(30, false);
-    dt.intBoxing().accept(i, buffer);
-    Assertions.assertEquals(i, dt.intUnboxing().applyAsInt(buffer.position(0)));
+    int len = dt.intBox(i, buffer);
+    Assertions.assertEquals(len, buffer.position());
+    Assertions.assertEquals(i, dt.intUnbox(buffer.position(0)));
   }
   
   @Test
@@ -96,8 +101,9 @@ public class TestTransform {
     long l = Long.MAX_VALUE;
     LongTransform dt = new LongTransform();
     BitBuffer buffer = BitBuffer.of(30, false);
-    dt.longBoxing().accept(l, buffer);
-    Assertions.assertEquals(l, dt.longUnboxing().applyAsLong(buffer.position(0)));
+    int len = dt.longBox(l, buffer);
+    Assertions.assertEquals(len, buffer.position());
+    Assertions.assertEquals(l, dt.longUnbox(buffer.position(0)));
   }
   
   @Test
@@ -106,8 +112,9 @@ public class TestTransform {
     long time = now.toEpochMilli();
     InstantTransform dt = new InstantTransform();
     BitBuffer buffer = BitBuffer.of(100, false);
-    dt.boxing().accept(now, buffer);
-    Assertions.assertEquals(Instant.ofEpochMilli(time), dt.unboxing().apply(buffer.position(0)));
+    int len = dt.box(now, buffer);
+    Assertions.assertEquals(len, buffer.position());
+    Assertions.assertEquals(Instant.ofEpochMilli(time), dt.unbox(buffer.position(0)));
   }
   
   @Test
@@ -115,8 +122,9 @@ public class TestTransform {
     ZonedDateTime now = ZonedDateTime.now();
     ZonedDateTimeTransform zt = new ZonedDateTimeTransform();
     BitBuffer buffer = BitBuffer.of(100, false);
-    zt.boxing().accept(now, buffer);
-    Assertions.assertEquals(now, zt.unboxing().apply(buffer.position(0)));
+    int len = zt.box(now, buffer);
+    Assertions.assertEquals(len, buffer.position());
+    Assertions.assertEquals(now, zt.unbox(buffer.position(0)));
   }
   
   @Test
@@ -124,8 +132,9 @@ public class TestTransform {
     LocalDateTime now = LocalDateTime.now();
     LocalDateTimeTransform lt = new LocalDateTimeTransform();
     BitBuffer buffer = BitBuffer.of(100, false);
-    lt.boxing().accept(now, buffer);
-    Assertions.assertEquals(now, lt.unboxing().apply(buffer.position(0)));
+    int len = lt.box(now, buffer);
+    Assertions.assertEquals(len, buffer.position());
+    Assertions.assertEquals(now, lt.unbox(buffer.position(0)));
   }
   
   @Test
@@ -139,8 +148,9 @@ public class TestTransform {
     System.out.println(Arrays.toString(dbs));
     DoubleArrayTransform trans = new DoubleArrayTransform();
     BitBuffer out = BitBuffer.of(100, false);
-    trans.boxing().accept(dbs, out);
-    Assertions.assertArrayEquals(dbs, trans.unboxing().apply(out.position(0)));
+    int len = trans.box(dbs, out);
+    Assertions.assertEquals(len, out.position());
+    Assertions.assertArrayEquals(dbs, trans.unbox(out.position(0)));
   }
   
   @Test
@@ -154,8 +164,9 @@ public class TestTransform {
     System.out.println(Arrays.toString(dbs));
     FloatArrayTransform trans = new FloatArrayTransform();
     BitBuffer out = BitBuffer.of(100, false);
-    trans.boxing().accept(dbs, out);
-    Assertions.assertArrayEquals(dbs, trans.unboxing().apply(out.position(0)));
+    int len = trans.box(dbs, out);
+    Assertions.assertEquals(len, out.position());
+    Assertions.assertArrayEquals(dbs, trans.unbox(out.position(0)));
   }
   
   @Test
@@ -169,8 +180,9 @@ public class TestTransform {
     System.out.println(Arrays.toString(dbs));
     CharArrayTransform trans = new CharArrayTransform();
     BitBuffer out = BitBuffer.of(100, false);
-    trans.boxing().accept(dbs, out);
-    Assertions.assertArrayEquals(dbs, trans.unboxing().apply(out.position(0)));
+    int len = trans.box(dbs, out);
+    Assertions.assertEquals(len, out.position());
+    Assertions.assertArrayEquals(dbs, trans.unbox(out.position(0)));
   }
   
   @Test
@@ -184,8 +196,9 @@ public class TestTransform {
     System.out.println(Arrays.toString(ss));
     ArrayTransform<String> trans = new ArrayTransform<>();
     BitBuffer out = BitBuffer.of(100, false);
-    trans.boxing().accept(ss, out);
-    Assertions.assertArrayEquals(ss, trans.unboxing().apply(out.position(0)));
+    int len = trans.box(ss, out);
+    Assertions.assertEquals(len, out.position());
+    Assertions.assertArrayEquals(ss, trans.unbox(out.position(0)));
   }
   
   @Test
@@ -198,8 +211,9 @@ public class TestTransform {
     ins.add(InetAddress.getByName("172.16.12.170"));
     CollectionTransform<InetAddress> trans = new CollectionTransform<>();
     BitBuffer out = BitBuffer.of(100, false);
-    trans.boxing().accept(ins, out);
-    Assertions.assertEquals(ins, trans.unboxing().apply(out.position(0)));
+    int len = trans.box(ins, out);
+    Assertions.assertEquals(len, out.position());
+    Assertions.assertEquals(ins, trans.unbox(out.position(0)));
     ArrayBox<InetAddress> box = new ArrayBoxImpl<>(out.position(0));
     Assertions.assertEquals(ins.get(0), box.get(0));
     Assertions.assertEquals(ins.get(4), box.get(4));
@@ -215,13 +229,15 @@ public class TestTransform {
     m.put(4, LocalDateTime.now());
     MapTransform<Integer,LocalDateTime> trans = new MapTransform<>();
     BitBuffer out = BitBuffer.of(200, false);
-    trans.boxing().accept(m,out);
-    Assertions.assertEquals(m, trans.unboxing().apply(out.position(0)));
+    int len = trans.box(m,out);
+    Assertions.assertEquals(len, out.position());
+    Assertions.assertEquals(m, trans.unbox(out.position(0)));
     MapBox box = new MapBoxImpl(out.position(0));
     Assertions.assertEquals(m.get(0), box.get(0));
     Assertions.assertEquals(m.get(4), box.get(4));
   }
   
+  @Test
   public void read_list_with_array_box() {
     List<String> ls = new LinkedList<>();
     ls.add("Hello");
@@ -230,9 +246,11 @@ public class TestTransform {
     ls.add("11");
     CollectionTransform<String> tran = new CollectionTransform<>();
     BitBuffer buf = new BitBufferImpl(256, true);
-    tran.boxing().accept(ls, buf);
+    int len = tran.box(ls, buf);
+    Assertions.assertEquals(32 + Integer.BYTES * 10, len);
+    Assertions.assertEquals(len, buf.position());
     ArrayTransform<String> at = new ArrayTransform();
-    String[] arr = at.unboxing().apply(buf.position(0));
+    String[] arr = at.unbox(buf.position(0));
     for(int i = 0; i < ls.size(); i++) {
       Assertions.assertEquals(ls.get(i), arr[i]);
     }
@@ -249,8 +267,9 @@ public class TestTransform {
   public void enum_transform() {
     BitBuffer buf = new BitBufferImpl(256, true);
     EnumTransform<Weather> tran = new EnumTransform<>();
-    tran.boxing().accept(Weather.RAIN, buf);
-    Assertions.assertEquals(Weather.RAIN, tran.unboxing().apply(buf.position(0)));
+    int len = tran.box(Weather.RAIN, buf);
+    Assertions.assertEquals(len, buf.position());
+    Assertions.assertEquals(Weather.RAIN, tran.unbox(buf.position(0)));
     buf.position(0).putInt(10, 10);
     System.out.println("buf.position(0).putInt(10, 10).position() = " + buf.position());
   }
@@ -264,8 +283,9 @@ public class TestTransform {
     System.out.println(m);
     DynamicMapTransform tran = new DynamicMapTransform();
     BitBuffer b = BitBuffer.of(256, true);
-    tran.boxing().accept(m, b);
-    Map<String,Integer> f = tran.unboxing().apply(b.position(0));
+    int len = tran.box(m, b);
+    Assertions.assertEquals(len, b.position());
+    Map<String,Integer> f = tran.unbox(b.position(0));
     System.out.println(f);
     Assertions.assertEquals(m.get("Integer.MIN_VALUE"), f.get("Integer.MIN_VALUE"));
     Assertions.assertEquals(m.get("Integer.ZERO"), f.get("Integer.ZERO"));

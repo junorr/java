@@ -44,7 +44,7 @@ public class DynamicMapBox implements MapBox<Object,Object> {
   public Stream<Object> keys() {
     buffer.position(startPos + Integer.BYTES);
     return IntStream.range(0, size)
-        .mapToObj(i -> etran.unboxing().apply(buffer))
+        .mapToObj(i -> etran.unbox(buffer))
         .map(Map.Entry::getKey);
   }
 
@@ -53,7 +53,7 @@ public class DynamicMapBox implements MapBox<Object,Object> {
   public Stream<Object> values() {
     buffer.position(startPos + Integer.BYTES);
     return IntStream.range(0, size)
-        .mapToObj(i -> etran.unboxing().apply(buffer))
+        .mapToObj(i -> etran.unbox(buffer))
         .map(Map.Entry::getValue);
   }
 
@@ -62,7 +62,7 @@ public class DynamicMapBox implements MapBox<Object,Object> {
   public Stream<Map.Entry<Object,Object>> entries() {
     buffer.position(startPos + Integer.BYTES);
     return IntStream.range(0, size)
-        .mapToObj(i -> etran.unboxing().apply(buffer));
+        .mapToObj(i -> etran.unbox(buffer));
   }
 
 

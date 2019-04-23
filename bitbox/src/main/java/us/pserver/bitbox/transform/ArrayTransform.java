@@ -13,10 +13,11 @@ import us.pserver.tools.IndexedInt;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
@@ -26,61 +27,50 @@ import java.util.stream.IntStream;
  */
 public class ArrayTransform<T> implements BitTransform<T[]> {
   
+  private final ClassTransform ctran = new ClassTransform();
+  
   @Override
-  public Predicate<Class> matching() {
-    return c -> c.isArray() && !c.getComponentType().isPrimitive();
+  public boolean match(Class c) {
+    return c.isArray() && !c.getComponentType().isPrimitive();
   }
 
 
   @Override
-  public BiConsumer<T[], BitBuffer> boxing() {
-    return (a,b) -> {
-      int startPos = b.position();
-      Class<T> cls = (Class<T>) a[0].getClass();
-      Function<T,Indexed<T>> fid = Indexed.builder();
-      BitTransform<T> trans = BoxRegistry.INSTANCE.getAnyTransform(cls);
-      BitTransform<Class> ct = BoxRegistry.INSTANCE.getAnyTransform(Class.class);
-      b.position(startPos + (a.length + 2) * Integer.BYTES);
-      int[] idxs = new int[a.length];
-      Arrays.asList(a).stream()
-          .map(fid::apply)
-          .peek(x -> idxs[x.index()] = b.position())
-          .forEach(x -> trans.boxing().accept(x.value(), b));
-      System.out.println(Arrays.toString(idxs));
-      int cpos = b.position();
-      ct.boxing().accept(cls, b);
-      b.position(startPos).putInt(a.length).putInt(cpos);
-      IntStream.of(idxs).forEach(b::putInt);
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer, T[]> unboxing() {
-    return b -> {
-      int startPos = b.position();
-      int size = b.getInt();
-      int cpos = b.getInt();
-      int ipos = b.position();
-      BitTransform<Class> ct = BoxRegistry.INSTANCE.getAnyTransform(Class.class);
-      Class<T> cls = ct.unboxing().apply(b.position(cpos));
-      IntFunction<IndexedInt> fid = IndexedInt.builder();
-      b.position(ipos);
-      int[] idxs = new int[size];
-      IntStream.generate(b::getInt)
-          .mapToObj(fid::apply)
-          .takeWhile(x -> x.index() < size)
-          .forEach(x -> idxs[x.index()] = x.value());
-      Object array = Array.newInstance(cls, size);
-      BitTransform<T> trans = BoxRegistry.INSTANCE.getAnyTransform(cls);
-      fid = IndexedInt.builder();
-      IntStream.of(idxs)
-          .mapToObj(fid::apply)
-          .forEach(x -> Array.set(array, x.index(),
-              trans.unboxing().apply(
-                  b.position(x.value())))
-          );
-      return (T[]) array;
-    };
+  public int box(T[] ts, BitBuffer buf) {
+    Class<T> cls = (Class<T>) ts.getClass().getComponentType();
+    BitTransform<T> trans = BoxRegistry.INSTANCE.getAnyTransform(cls);
+    int pos = buf.position();
+    int len = Integer.BYTES * (ts.length + 1);
+    buf.position(pos + len);
+    len += ctran.box(trans.serialType().orElse(cls), buf);
+    int[] idx = new int[ts.length];
+    int i = 0;
+    for(T o : ts) {
+      idx[i++] = buf.position();
+      len += trans.box(o, buf);
+    }
+    buf.position(pos).putInt(ts.length);
+    IntStream.of(idx).forEach(buf::putInt);
+    buf.position(pos + len);
+    return len;
+  }
+  
+  @Override
+  public T[] unbox(BitBuffer buf) {
+    int pos = buf.position();
+    int size = buf.getInt();
+    buf.position(pos + Integer.BYTES * (size + 1));
+    Class<T> cls = ctran.unbox(buf);
+    BitTransform<T> trans = BoxRegistry.INSTANCE.getAnyTransform(cls);
+    T[] ts = (T[]) Array.newInstance(cls, size);
+    IntStream.range(0, size)
+        .forEach(i -> ts[i] = trans.unbox(buf));
+    return ts;
   }
   
 }

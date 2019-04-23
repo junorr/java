@@ -25,9 +25,7 @@ import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 
 import java.time.LocalDate;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.Optional;
 
 /**
  *
@@ -37,18 +35,24 @@ import java.util.function.Predicate;
 public class LocalDateTransform implements BitTransform<LocalDate> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> LocalDate.class.isAssignableFrom(c);
+  public boolean match(Class c) {
+    return LocalDate.class.isAssignableFrom(c);
   }
   
   @Override
-  public BiConsumer<LocalDate, BitBuffer> boxing() {
-    return (l,b) -> b.putLong(l.toEpochDay());
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer,LocalDate> unboxing() {
-    return b -> LocalDate.ofEpochDay(b.getLong());
+  public int box(LocalDate l, BitBuffer buf) {
+    buf.putLong(l.toEpochDay());
+    return Long.BYTES;
+  }
+  
+  @Override
+  public LocalDate unbox(BitBuffer buf) {
+    return LocalDate.ofEpochDay(buf.getLong());
   }
   
 }

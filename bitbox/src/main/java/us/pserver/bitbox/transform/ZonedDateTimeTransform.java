@@ -28,6 +28,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -39,31 +40,26 @@ import java.util.function.Predicate;
  */
 public class ZonedDateTimeTransform implements BitTransform<ZonedDateTime> {
   
+  private final CharSequenceTransform stran = new CharSequenceTransform();
+  
   @Override
-  public Predicate<Class> matching() {
-    return c -> LocalDate.class.isAssignableFrom(c);
+  public boolean match(Class c) {
+    return LocalDate.class.isAssignableFrom(c);
   }
   
   @Override
-  public BiConsumer<ZonedDateTime, BitBuffer> boxing() {
-    return (z,b) -> {
-      ByteBuffer lb = StandardCharsets.UTF_8.encode(z.toString());
-      b.putInt(lb.remaining()).put(lb);
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer,ZonedDateTime> unboxing() {
-    return b -> {
-      int len = b.getInt();
-      int lim = b.limit();
-      b.limit(b.position() + len);
-      ZonedDateTime z = ZonedDateTime.parse(
-          StandardCharsets.UTF_8.decode(b.toByteBuffer()).toString()
-      );
-      b.limit(lim);
-      return z;
-    };
+  public int box(ZonedDateTime z, BitBuffer buf) {
+    return stran.box(z.toString(), buf);
+  }
+  
+  @Override
+  public ZonedDateTime unbox(BitBuffer buf) {
+    return ZonedDateTime.parse(stran.unbox(buf));
   }
   
 }

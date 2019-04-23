@@ -7,16 +7,20 @@ package us.pserver.bitbox.test;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import us.pserver.bitbox.BitCreate;
 import us.pserver.bitbox.BitProperty;
+import us.pserver.bitbox.BitType;
 
 
 /**
  *
  * @author juno
  */
-public class Person {
+@BitType(IPerson.class)
+public class Person implements IPerson {
 
   private final String name;
 
@@ -25,6 +29,14 @@ public class Person {
   private final LocalDate birth;
 
   private final List<Address> address;
+  
+
+  public Person(String name, String lastName) {
+    this.name = name;
+    this.lastName = lastName;
+    this.birth = LocalDate.now();
+    this.address = Collections.EMPTY_LIST;
+  }
 
   public Person(String name, String lastName, LocalDate birth, List<Address> address) {
     this.name = name;
@@ -38,7 +50,7 @@ public class Person {
   }
 
   public String getFullName() {
-    return String.format("%s, %s", lastName, name);
+    return String.format("%s %s", name, lastName);
   }
 
   public String getName() {

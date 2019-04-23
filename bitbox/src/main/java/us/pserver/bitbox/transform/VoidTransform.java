@@ -21,39 +21,36 @@
 
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 11 de abr de 2019
  */
-public class LocalDateTimeTransform implements BitTransform<LocalDateTime> {
-  
-  private CharSequenceTransform stran = new CharSequenceTransform();
+public class VoidTransform implements BitTransform<Void> {
   
   @Override
   public boolean match(Class c) {
-    return LocalDateTime.class.isAssignableFrom(c);
+    return c == void.class || c == Void.class;
   }
   
   @Override
   public Optional<Class> serialType() {
-    return Optional.empty();
+    return Optional.of(void.class);
   }
   
   @Override
-  public int box(LocalDateTime l, BitBuffer buf) {
-    return stran.box(l.toString(), buf);
+  public int box(Void v, BitBuffer buf) {
+    return 0;
   }
   
   @Override
-  public LocalDateTime unbox(BitBuffer buf) {
-    return LocalDateTime.parse(stran.unbox(buf));
+  public Void unbox(BitBuffer buf) {
+    return null;
   }
   
 }

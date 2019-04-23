@@ -5,15 +5,9 @@
  */
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
-import us.pserver.tools.IndexedInt;
-
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.stream.IntStream;
 
 
 /**
@@ -22,35 +16,26 @@ import java.util.stream.IntStream;
  */
 public class CharArrayTransform implements BitTransform<char[]> {
   
+  private final CharSequenceTransform stran = new CharSequenceTransform();
+  
   @Override
-  public Predicate<Class> matching() {
-    return c -> c.isArray() && c.getComponentType() == char.class;
-  }
-
-
-  @Override
-  public BiConsumer<char[], BitBuffer> boxing() {
-    return (a,b) -> {
-      b.putInt(a.length);
-      for(int i = 0; i < a.length; i++) {
-        b.putChar(a[i]);
-      }
-    };
+  public boolean match(Class c) {
+    return c.isArray() && c.getComponentType() == char.class;
   }
   
   @Override
-  public Function<BitBuffer, char[]> unboxing() {
-    return b -> {
-      int startPos = b.position();
-      int size = b.getInt();
-      char[] a = new char[size];
-      IntFunction<IndexedInt> fid = IndexedInt.builder();
-      IntStream.generate(b::getChar)
-          .mapToObj(fid::apply)
-          .takeWhile(x -> x.index() < size)
-          .forEach(x -> a[x.index()] = (char) x.value());
-      return a;
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
+  }
+  
+  @Override
+  public int box(char[] cs, BitBuffer buf) {
+    return stran.box(new String(cs), buf);
+  }
+  
+  @Override
+  public char[] unbox(BitBuffer buf) {
+    return stran.unbox(buf).toString().toCharArray();
   }
   
 }

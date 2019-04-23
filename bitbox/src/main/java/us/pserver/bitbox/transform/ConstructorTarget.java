@@ -7,6 +7,7 @@ package us.pserver.bitbox.transform;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +37,22 @@ public interface ConstructorTarget<T> extends Function<Object[],T> {
       }
       public String toString() {
         return String.format("%s( %s )", cct.getName(), Arrays.toString(cct.getParameters()));
+      }
+    };
+  }
+  
+  
+  public static <U> ConstructorTarget<U> of(Method mth) {
+    final MethodHandle cmh = Unchecked.call(() -> BoxRegistry.INSTANCE.lookup().unreflect(mth));
+    return new ConstructorTarget<>() {
+      public List<Parameter> getParameters() {
+        return Arrays.asList(mth.getParameters());
+      }
+      public U apply(Object[] args) { 
+        return (U) Unchecked.call(() -> cmh.invokeWithArguments(Arrays.asList(args)));
+      }
+      public String toString() {
+        return String.format("%s( %s )", mth.getName(), Arrays.toString(mth.getParameters()));
       }
     };
   }

@@ -21,6 +21,7 @@
 
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 
@@ -37,28 +38,33 @@ import java.util.function.ToDoubleFunction;
 public class FloatTransform implements BitTransform<Float> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> c == float.class || c == Float.class;
-  }
-  
-  public DoubleBiConsumer<BitBuffer> floatBoxing() {
-    return (i,b) -> b.putFloat((float)i);
+  public boolean match(Class c) {
+    return c == float.class || c == Float.class;
   }
   
   @Override
-  public BiConsumer<Float, BitBuffer> boxing() {
-    return (i,b) -> {
-      b.putFloat(i);
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
+  }
+  
+  public int floatBox(float f, BitBuffer buf) {
+    buf.putFloat(f);
+    return Float.BYTES;
   }
   
   @Override
-  public Function<BitBuffer,Float> unboxing() {
-    return b -> b.getFloat();
+  public int box(Float f, BitBuffer buf) {
+    buf.putFloat(f);
+    return Float.BYTES;
   }
   
-  public ToDoubleFunction<BitBuffer> floatUnboxing() {
-    return b -> b.getFloat();
+  @Override
+  public Float unbox(BitBuffer buf) {
+    return buf.getFloat();
+  }
+  
+  public float floatUnbox(BitBuffer buf) {
+    return buf.getFloat();
   }
   
 }

@@ -1,34 +1,35 @@
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.tools.Unchecked;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class ClassTransform implements BitTransform<Class> {
   
   private final CharSequenceTransform strans = new CharSequenceTransform();
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> c == Class.class;
+  public boolean match(Class c) {
+    return c == Class.class;
   }
   
   @Override
-  public BiConsumer<Class, BitBuffer> boxing() {
-    return (c,b) -> strans.boxing().accept(
-        BoxRegistry.INSTANCE.typeAdapting(c).get().getName(), b
-    );
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer, Class> unboxing() {
-    return b -> Unchecked.call(() ->
-        BoxRegistry.INSTANCE.lookup().findClass(strans.unboxing().apply(b).toString())
+  public int box(Class c, BitBuffer buf) {
+    return strans.box(c.getName(), buf);
+  }
+  
+  @Override
+  public Class unbox(BitBuffer buf) {
+    return Unchecked.call(() ->
+        BoxRegistry.INSTANCE.lookup().findClass(strans.unbox(buf).toString())
     );
   }
   

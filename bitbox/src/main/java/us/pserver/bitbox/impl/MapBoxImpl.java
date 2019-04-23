@@ -65,7 +65,7 @@ public class MapBoxImpl<K,V> implements MapBox<K,V> {
   @Override
   public V get(K key) {
     Function<K, Indexed<K>> fid = Indexed.builder();
-    int idx = keys().map(fid::apply)
+    int idx = keys().map(fid)
         .filter(x -> key.equals(x.value()))
         .mapToInt(Indexed::index)
         .findAny().orElseThrow(IllegalArgumentException::new);
@@ -84,7 +84,7 @@ public class MapBoxImpl<K,V> implements MapBox<K,V> {
   
   @Override
   public Map<K, V> getValue() {
-    return new MapTransform<K,V>().unboxing().apply(buffer.position(startPos));
+    return new MapTransform<K,V>().unbox(buffer.position(startPos));
   }
   
 }

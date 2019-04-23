@@ -7,14 +7,14 @@ package us.pserver.bitbox.test;
 
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Set;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.bitbox.transform.GetterTarget;
-import us.pserver.bitbox.transform.GlobalObjectTransform;
 import us.pserver.bitbox.transform.ObjectSpec;
 
 
@@ -42,17 +42,22 @@ public class TestObjectSpec {
   @Test
   public void test_object_transform() {
     try {
-      BitBuffer buf = BitBuffer.of(512, true);
+      BitBuffer buf = BitBuffer.of(2048, true);
       Address adr = new Address(
-          "Cond. Mini Chacaras do Lago Sul", 21, 
+          "Cond. Mini Chacaras do Lago Sul", new int[]{21}, 
           "Altiplano Leste", "7-4-21", 
           "Brasilia", Address.UF.DF, 71680621
       );
-      Person per = new Person("Juno", "Roesler", LocalDate.of(1980, 7, 7), Arrays.asList(adr));
+      LinkedList<Address> addrs = new LinkedList<>();
+      addrs.add(adr);
+      addrs.add(null);
+      Person per = new Person("Juno", null, LocalDate.of(1980, 7, 7), addrs);
       System.out.println(per);
       BitTransform<Person> trans = BoxRegistry.INSTANCE.getAnyTransform(Person.class);
-      trans.boxing().accept(per, buf);
-      System.out.println(trans.unboxing().apply(buf.position(0)));
+      int len = trans.box(per, buf);
+      System.out.println("* serialized Person size = " + len);
+      Assertions.assertEquals(len, buf.position());
+      System.out.println(trans.unbox(buf.position(0)));
     }
     catch(Throwable e) {
       e.printStackTrace();

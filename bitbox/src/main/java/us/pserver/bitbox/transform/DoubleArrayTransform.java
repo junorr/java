@@ -5,15 +5,12 @@
  */
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 
-import java.util.function.BiConsumer;
-import java.util.function.DoubleFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.DoubleStream;
-import us.pserver.tools.IndexedDouble;
+import java.util.stream.IntStream;
 
 
 /**
@@ -23,31 +20,29 @@ import us.pserver.tools.IndexedDouble;
 public class DoubleArrayTransform implements BitTransform<double[]> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> c.isArray() && c.getComponentType() == long.class;
+  public boolean match(Class c) {
+    return c.isArray() && c.getComponentType() == double.class;
   }
 
 
   @Override
-  public BiConsumer<double[], BitBuffer> boxing() {
-    return (a,b) -> {
-      b.putInt(a.length);
-      DoubleStream.of(a).forEach(b::putDouble);
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer, double[]> unboxing() {
-    return b -> {
-      int size = b.getInt();
-      double[] a = new double[size];
-      DoubleFunction<IndexedDouble> fid = IndexedDouble.builder();
-      DoubleStream.generate(b::getDouble)
-          .mapToObj(fid::apply)
-          .takeWhile(x -> x.index() < size)
-          .forEach(x -> a[x.index()] = x.value());
-      return a;
-    };
+  public int box(double[] ds, BitBuffer buf) {
+    buf.putInt(ds.length);
+    DoubleStream.of(ds).forEach(buf::putDouble);
+    return Integer.BYTES + ds.length * Double.BYTES;
+  }
+  
+  @Override
+  public double[] unbox(BitBuffer buf) {
+    int len = buf.getInt();
+    double[] ds = new double[len];
+    IntStream.range(0, len).forEach(i -> ds[i] = buf.getDouble());
+    return ds;
   }
   
 }

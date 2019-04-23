@@ -8,17 +8,10 @@ package us.pserver.bitbox.transform;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
-import us.pserver.tools.Indexed;
-import us.pserver.tools.IndexedInt;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
@@ -28,61 +21,57 @@ import java.util.stream.IntStream;
  */
 public class CollectionTransform<T> implements BitTransform<Collection<T>> {
   
+  private final ClassTransform ctran = new ClassTransform();
+  
   @Override
-  public Predicate<Class> matching() {
-    return Collection.class::isAssignableFrom;
-  }
-
-
-  @Override
-  public BiConsumer<Collection<T>, BitBuffer> boxing() {
-    return (c,b) -> {
-      int startPos = b.position();
-      Class<T> cls = (Class<T>) c.stream()
-          .map(Object::getClass)
-          .findAny()
-          .orElseThrow(IllegalStateException::new);
-      Function<T,Indexed<T>> fid = Indexed.builder();
-      BitTransform<T> trans = BoxRegistry.INSTANCE.getAnyTransform(cls);
-      BitTransform<Class> ct = BoxRegistry.INSTANCE.getAnyTransform(Class.class);
-      b.position(startPos + (c.size() + 2) * Integer.BYTES);
-      int[] idxs = new int[c.size()];
-      c.stream()
-          .map(fid)
-          .peek(x -> idxs[x.index()] = b.position())
-          .forEach(x -> trans.boxing().accept(x.value(), b));
-      int cpos = b.position();
-      ct.boxing().accept(cls, b);
-      int end = b.position();
-      b.position(startPos).putInt(c.size()).putInt(cpos);
-      IntStream.of(idxs).forEach(b::putInt);
-      b.position(end);
-    };
+  public boolean match(Class c) {
+    return Collection.class.isAssignableFrom(c);
   }
   
   @Override
-  public Function<BitBuffer, Collection<T>> unboxing() {
-    return b -> {
-      int startPos = b.position();
-      int size = b.getInt();
-      int cpos = b.getInt();
-      int ipos = b.position();
-      BitTransform<Class> ct = BoxRegistry.INSTANCE.getAnyTransform(Class.class);
-      Class<T> cls = ct.unboxing().apply(b.position(cpos));
-      IntFunction<IndexedInt> fid = IndexedInt.builder();
-      b.position(ipos);
-      int[] idxs = new int[size];
-      IntStream.generate(b::getInt)
-          .mapToObj(fid)
-          .takeWhile(x -> x.index() < size)
-          .forEach(x -> idxs[x.index()] = x.value());
-      List<T> ls = new ArrayList<>(size);
-      BitTransform<T> trans = BoxRegistry.INSTANCE.getAnyTransform(cls);
-      IntStream.of(idxs)
-          .mapToObj(i -> trans.unboxing().apply(b.position(i)))
-          .forEach(ls::add);
-      return ls;
-    };
+  public Optional<Class> serialType() {
+    return Optional.of(Collection.class);
+  }
+  
+  @Override
+  public int box(Collection<T> c, BitBuffer buf) {
+    if(c == null || c.isEmpty()) {
+      buf.putInt(0);
+      return Integer.BYTES;
+    }
+    Class<T> cls = (Class<T>) c.stream()
+        .map(Object::getClass)
+        .findAny().get();
+    BitTransform<T> trans = BoxRegistry.INSTANCE.getAnyTransform(cls);
+    int pos = buf.position();
+    int len = Integer.BYTES * (c.size() + 1);
+    buf.position(pos + len);
+    len += ctran.box(trans.serialType().orElse(cls), buf);
+    int[] idx = new int[c.size()];
+    int i = 0;
+    for(T o : c) {
+      idx[i++] = buf.position();
+      len += trans.box(o, buf);
+    }
+    buf.position(pos).putInt(c.size());
+    IntStream.of(idx).forEach(buf::putInt);
+    buf.position(pos + len);
+    return len;
+  }
+  
+  @Override
+  public Collection<T> unbox(BitBuffer buf) {
+    int pos = buf.position();
+    int size = buf.getInt();
+    if(size == 0) {
+      return Collections.EMPTY_LIST;
+    }
+    buf.position(pos + Integer.BYTES * (size + 1));
+    Class<T> cls = ctran.unbox(buf);
+    BitTransform<T> trans = BoxRegistry.INSTANCE.getAnyTransform(cls);
+    return IntStream.range(0, size)
+        .mapToObj(i -> trans.unbox(buf))
+        .collect(Collectors.toList());
   }
   
 }

@@ -5,7 +5,7 @@
  */
 package us.pserver.bitbox;
 
-import java.util.function.Predicate;
+import java.util.Optional;
 
 
 /**
@@ -13,13 +13,8 @@ import java.util.function.Predicate;
  * @author juno
  */
 @FunctionalInterface
-public interface TypeMatching {
+public interface SerializedType {
   
-  public boolean match(Class c);
-  
-  
-  public static TypeMatching of(Predicate<Class> p) {
-    return c -> p.test(c);
-  }
+  public Optional<Class> serialType();
   
 }

@@ -5,6 +5,7 @@
  */
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -18,34 +19,34 @@ import us.pserver.bitbox.impl.BitBuffer;
  * @author juno
  */
 public class EnumTransform<T extends Enum> implements BitTransform<T>{
-
+  
+  private final CharSequenceTransform stran = new CharSequenceTransform();
+  
+  private final ClassTransform ctran = new ClassTransform();
+  
   @Override
-  public Predicate<Class> matching() {
-    return c -> c.isEnum();
+  public boolean match(Class c) {
+    return c.isEnum();
   }
 
 
   @Override
-  public BiConsumer<T, BitBuffer> boxing() {
-    return (e,b) -> {
-      Class<T> c = (Class<T>) e.getClass();
-      BitTransform<String> stran = BoxRegistry.INSTANCE.getAnyTransform(String.class);
-      BitTransform<Class> ctran = BoxRegistry.INSTANCE.getAnyTransform(Class.class);
-      stran.boxing().accept(e.name(), b);
-      ctran.boxing().accept(c, b);
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
+  }
+  
+  @Override
+  public int box(T e, BitBuffer buf) {
+    Class<T> c = (Class<T>) e.getClass();
+    return stran.box(e.name(), buf) + ctran.box(c, buf);
   }
 
 
   @Override
-  public Function<BitBuffer, T> unboxing() {
-    return b -> {
-      BitTransform<String> stran = BoxRegistry.INSTANCE.getAnyTransform(String.class);
-      BitTransform<Class> ctran = BoxRegistry.INSTANCE.getAnyTransform(Class.class);
-      String name = stran.unboxing().apply(b);
-      Class<T> c = (Class<T>) ctran.unboxing().apply(b);
-      return (T) Enum.valueOf(c, name);
-    };
+  public T unbox(BitBuffer buf) {
+    String name = stran.unbox(buf).toString();
+    Class<T> c = (Class<T>) ctran.unbox(buf);
+    return (T) Enum.valueOf(c, name);
   }
   
 }

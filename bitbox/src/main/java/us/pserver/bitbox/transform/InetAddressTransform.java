@@ -1,34 +1,35 @@
 package us.pserver.bitbox.transform;
 
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.tools.Unchecked;
 
 import java.net.InetAddress;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.Optional;
 
 public class InetAddressTransform implements BitTransform<InetAddress> {
   
+  private CharSequenceTransform stran = new CharSequenceTransform();
+  
   @Override
-  public Predicate<Class> matching() {
-    return c -> InetAddress.class.isAssignableFrom(c);
+  public boolean match(Class c) {
+    return InetAddress.class.isAssignableFrom(c);
   }
   
   @Override
-  public BiConsumer<InetAddress, BitBuffer> boxing() {
-    return (i,b) -> BoxRegistry.INSTANCE.getAnyTransform(String.class)
-        .boxing().accept(i.getHostAddress(), b);
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer, InetAddress> unboxing() {
-    return b -> Unchecked.call(() ->
-        InetAddress.getByName(BoxRegistry.INSTANCE
-            .getAnyTransform(String.class)
-            .unboxing().apply(b))
+  public int box(InetAddress a, BitBuffer buf) {
+    return stran.box(a.getHostAddress(), buf);
+  }
+  
+  @Override
+  public InetAddress unbox(BitBuffer buf) {
+    return Unchecked.call(() ->
+        InetAddress.getByName(stran.unbox(buf).toString())
     );
   }
   

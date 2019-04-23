@@ -5,15 +5,12 @@
  */
 package us.pserver.bitbox.transform;
 
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 
-import java.util.function.BiConsumer;
-import java.util.function.DoubleFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.DoubleStream;
-import us.pserver.tools.IndexedDouble;
+import java.util.stream.IntStream;
 
 
 /**
@@ -23,33 +20,29 @@ import us.pserver.tools.IndexedDouble;
 public class FloatArrayTransform implements BitTransform<float[]> {
   
   @Override
-  public Predicate<Class> matching() {
-    return c -> c.isArray() && c.getComponentType() == long.class;
+  public boolean match(Class c) {
+    return c.isArray() && c.getComponentType() == float.class;
   }
 
 
   @Override
-  public BiConsumer<float[], BitBuffer> boxing() {
-    return (a,b) -> {
-      b.putInt(a.length);
-      for(int i = 0; i < a.length; i++) {
-        b.putFloat(a[i]);
-      }
-    };
+  public Optional<Class> serialType() {
+    return Optional.empty();
   }
   
   @Override
-  public Function<BitBuffer, float[]> unboxing() {
-    return b -> {
-      int size = b.getInt();
-      float[] a = new float[size];
-      DoubleFunction<IndexedDouble> fid = IndexedDouble.builder();
-      DoubleStream.generate(b::getFloat)
-          .mapToObj(fid::apply)
-          .takeWhile(x -> x.index() < size)
-          .forEach(x -> a[x.index()] = (float) x.value());
-      return a;
-    };
+  public int box(float[] ds, BitBuffer buf) {
+    buf.putInt(ds.length);
+    IntStream.range(0, ds.length).forEach(i -> buf.putFloat(ds[i]));
+    return Integer.BYTES + ds.length * Float.BYTES;
+  }
+  
+  @Override
+  public float[] unbox(BitBuffer buf) {
+    int len = buf.getInt();
+    float[] ds = new float[len];
+    IntStream.range(0, len).forEach(i -> ds[i] = buf.getFloat());
+    return ds;
   }
   
 }
