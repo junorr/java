@@ -1,14 +1,10 @@
 package us.pserver.bitbox.transform;
 
-import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.impl.BitBuffer;
-
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import us.pserver.bitbox.BitTransform;
+import us.pserver.bitbox.impl.BitBuffer;
 
 public class MapTransform<K,V> implements BitTransform<Map<K,V>> {
   

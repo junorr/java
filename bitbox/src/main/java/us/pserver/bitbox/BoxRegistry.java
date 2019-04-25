@@ -21,14 +21,13 @@
 
 package us.pserver.bitbox;
 
-import us.pserver.bitbox.transform.*;
-
 import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReference;
+import us.pserver.bitbox.transform.*;
 
 /**
  *

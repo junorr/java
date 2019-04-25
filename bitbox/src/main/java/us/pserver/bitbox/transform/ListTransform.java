@@ -1,10 +1,9 @@
 package us.pserver.bitbox.transform;
 
-import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.impl.BitBuffer;
-
 import java.util.List;
 import java.util.Optional;
+import us.pserver.bitbox.BitTransform;
+import us.pserver.bitbox.impl.BitBuffer;
 
 
 public class ListTransform<T> implements BitTransform<List<T>> {

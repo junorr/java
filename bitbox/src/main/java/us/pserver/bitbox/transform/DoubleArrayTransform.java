@@ -6,11 +6,10 @@
 package us.pserver.bitbox.transform;
 
 import java.util.Optional;
-import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.impl.BitBuffer;
-
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import us.pserver.bitbox.BitTransform;
+import us.pserver.bitbox.impl.BitBuffer;
 
 
 /**

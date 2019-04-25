@@ -5,10 +5,10 @@
  */
 package us.pserver.bitbox.transform;
 
-import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.impl.BitBuffer;
 import java.util.Optional;
 import java.util.stream.IntStream;
+import us.pserver.bitbox.BitTransform;
+import us.pserver.bitbox.impl.BitBuffer;
 
 
 /**
@@ -32,7 +32,7 @@ public class IntArrayTransform implements BitTransform<int[]> {
   public int box(int[] is, BitBuffer buf) {
     buf.putInt(is.length);
     IntStream.of(is).forEach(buf::putInt);
-    return Integer.BYTES + Integer.BYTES + is.length;
+    return Integer.BYTES + Integer.BYTES * is.length;
   }
   
   @Override

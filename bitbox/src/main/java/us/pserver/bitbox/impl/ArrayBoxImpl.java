@@ -1,13 +1,12 @@
 package us.pserver.bitbox.impl;
 
+import java.util.Objects;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import us.pserver.bitbox.ArrayBox;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.bitbox.transform.ArrayTransform;
-
-import java.util.Objects;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 
 public class ArrayBoxImpl<T> implements ArrayBox<T> {
@@ -47,7 +46,7 @@ public class ArrayBoxImpl<T> implements ArrayBox<T> {
   public T get(int idx) {
     buffer.position(startPos + Integer.BYTES * (1 + idx));
     int pos = buffer.getInt();
-    return transform.unbox(buffer.position(pos));
+    return pos < 0 ? null : transform.unbox(buffer.position(pos));
   }
   
   @Override

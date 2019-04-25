@@ -21,9 +21,8 @@
 
 package us.pserver.bitbox;
 
-import us.pserver.bitbox.impl.BitBuffer;
-
 import java.util.function.Function;
+import us.pserver.bitbox.impl.BitBuffer;
 
 /**
  *

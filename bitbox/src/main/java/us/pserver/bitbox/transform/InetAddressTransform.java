@@ -1,11 +1,10 @@
 package us.pserver.bitbox.transform;
 
+import java.net.InetAddress;
+import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.tools.Unchecked;
-
-import java.net.InetAddress;
-import java.util.Optional;
 
 public class InetAddressTransform implements BitTransform<InetAddress> {
   

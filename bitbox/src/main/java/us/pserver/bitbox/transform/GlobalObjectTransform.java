@@ -11,14 +11,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
-
-import java.util.function.Function;
-import java.util.stream.Stream;
-import us.pserver.tools.Attached;
-
 import us.pserver.tools.Indexed;
 
 

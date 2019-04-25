@@ -23,14 +23,17 @@ public class ClassTransform implements BitTransform<Class> {
   
   @Override
   public int box(Class c, BitBuffer buf) {
+    //Logger.debug(c);
     return strans.box(c.getName(), buf);
   }
   
   @Override
   public Class unbox(BitBuffer buf) {
-    return Unchecked.call(() ->
+    Class c = Unchecked.call(() ->
         BoxRegistry.INSTANCE.lookup().findClass(strans.unbox(buf).toString())
     );
+    //Logger.debug(c);
+    return c;
   }
   
 }

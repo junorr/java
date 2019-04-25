@@ -5,10 +5,12 @@
  */
 package us.pserver.bitbox.transform;
 
+import java.lang.reflect.Array;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.tinylog.Logger;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
@@ -41,7 +43,7 @@ public class DynamicEntryTransform implements BitTransform<Map.Entry>{
     int len = Integer.BYTES;
     Class kclass = e.getKey().getClass();
     Class vclass = e.getValue() != null ? e.getValue().getClass() : Void.class;
-    System.out.printf("!!  box< %s, %s > !!%n", kclass, vclass);
+    //System.out.printf("!!  box< %s, %s > !!%n", kclass, vclass);
     BitTransform ktran = BoxRegistry.INSTANCE.getAnyTransform(kclass);
     BitTransform vtran = BoxRegistry.INSTANCE.getAnyTransform(vclass);
     b.position(startPos + Integer.BYTES);
@@ -59,17 +61,34 @@ public class DynamicEntryTransform implements BitTransform<Map.Entry>{
   @Override
   public Map.Entry unbox(BitBuffer b) {
     int vpos = b.getInt();
+    //Logger.debug("vpos = {}", vpos);
     Class kclass = ctran.unbox(b);
+    //Logger.debug("Entry< {}, Y >", kclass);
     int kpos = b.position();
     Class vclass = ctran.unbox(b.position(vpos));
-    System.out.printf("!!  unbox< %s, %s > !!%n", kclass, vclass);
-    System.getLogger(getClass().getName()).log(System.Logger.Level.DEBUG, "unbox< %s, %s >", kclass, vclass);
+    //Logger.debug("Entry< {}, {} >", kclass, vclass);
     vpos = b.position();
     BitTransform ktran = BoxRegistry.INSTANCE.getAnyTransform(kclass);
     BitTransform vtran = BoxRegistry.INSTANCE.getAnyTransform(vclass);
+    //Logger.debug("ktran = {}, vtran = {}", ktran.getClass().getSimpleName(), vtran.getClass().getSimpleName());
     Object k = ktran.unbox(b.position(kpos));
     Object v = vtran.unbox(b.position(vpos));
+    //Logger.debug("key = {}, value = {}", k, tostr(v));
     return new AbstractMap.SimpleImmutableEntry<>(k, v);
+  }
+  
+  
+  private Object tostr(Object o) {
+    if(!o.getClass().isArray()) return o;
+    int len = Array.getLength(o);
+    StringBuilder sb = new StringBuilder("[");
+    for(int i = 0; i < len; i++) {
+      sb.append(Array.get(o, i)).append(", ");
+    }
+    if(sb.indexOf(",") >= 0) {
+      sb.delete(sb.length() -2, sb.length());
+    }
+    return sb.append("]");
   }
   
 }

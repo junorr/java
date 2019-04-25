@@ -5,14 +5,14 @@
  */
 package us.pserver.bitbox.transform;
 
-import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BoxRegistry;
-import us.pserver.bitbox.impl.BitBuffer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import us.pserver.bitbox.BitTransform;
+import us.pserver.bitbox.BoxRegistry;
+import us.pserver.bitbox.impl.BitBuffer;
 
 
 /**
@@ -50,8 +50,13 @@ public class CollectionTransform<T> implements BitTransform<Collection<T>> {
     int[] idx = new int[c.size()];
     int i = 0;
     for(T o : c) {
-      idx[i++] = buf.position();
-      len += trans.box(o, buf);
+      if(o == null) {
+        idx[i++] = -1;
+      }
+      else {
+        idx[i++] = buf.position();
+        len += trans.box(o, buf);
+      }
     }
     buf.position(pos).putInt(c.size());
     IntStream.of(idx).forEach(buf::putInt);
@@ -66,11 +71,14 @@ public class CollectionTransform<T> implements BitTransform<Collection<T>> {
     if(size == 0) {
       return Collections.EMPTY_LIST;
     }
-    buf.position(pos + Integer.BYTES * (size + 1));
+    int[] idx = new int[size];
+    IntStream.range(0, size)
+        .forEach(i -> idx[i] = buf.getInt());
     Class<T> cls = ctran.unbox(buf);
     BitTransform<T> trans = BoxRegistry.INSTANCE.getAnyTransform(cls);
-    return IntStream.range(0, size)
-        .mapToObj(i -> trans.unbox(buf))
+    return IntStream.of(idx)
+        .filter(i -> i >= 0)
+        .mapToObj(i -> trans.unbox(buf.position(i)))
         .collect(Collectors.toList());
   }
   

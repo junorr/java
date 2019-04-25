@@ -21,23 +21,22 @@
 
 package us.pserver.bitbox.test;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import us.pserver.bitbox.ArrayBox;
-import us.pserver.bitbox.impl.ArrayBoxImpl;
-import us.pserver.bitbox.impl.BitBuffer;
-import us.pserver.bitbox.transform.*;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import us.pserver.bitbox.ArrayBox;
 import us.pserver.bitbox.MapBox;
+import us.pserver.bitbox.impl.ArrayBoxImpl;
+import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.bitbox.impl.BitBufferImpl;
 import us.pserver.bitbox.impl.DynamicMapBox;
 import us.pserver.bitbox.impl.MapBoxImpl;
+import us.pserver.bitbox.transform.*;
 
 /**
  *
@@ -208,12 +207,13 @@ public class TestTransform {
     ins.add(InetAddress.getByName("172.16.12.167"));
     ins.add(InetAddress.getByName("172.16.12.168"));
     ins.add(InetAddress.getByName("172.16.12.169"));
+    ins.add(null);
     ins.add(InetAddress.getByName("172.16.12.170"));
     CollectionTransform<InetAddress> trans = new CollectionTransform<>();
     BitBuffer out = BitBuffer.of(100, false);
     int len = trans.box(ins, out);
     Assertions.assertEquals(len, out.position());
-    Assertions.assertEquals(ins, trans.unbox(out.position(0)));
+    Assertions.assertEquals(ins.size() -1, trans.unbox(out.position(0)).size());
     ArrayBox<InetAddress> box = new ArrayBoxImpl<>(out.position(0));
     Assertions.assertEquals(ins.get(0), box.get(0));
     Assertions.assertEquals(ins.get(4), box.get(4));

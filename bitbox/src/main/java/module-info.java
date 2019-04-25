@@ -6,6 +6,9 @@
 
 module bitbox {
   requires java.base;
+  requires java.compiler;
+  requires tinylog.api;
+  requires tinylog.impl;
   requires transitive toolbox.tools;
   exports us.pserver.bitbox;
   exports us.pserver.bitbox.impl;

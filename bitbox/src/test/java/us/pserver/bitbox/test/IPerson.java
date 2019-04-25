@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import us.pserver.bitbox.BitCreate;
+import us.pserver.bitbox.BitIgnore;
 
 
 /**
@@ -25,6 +26,7 @@ public interface IPerson {
 
   public String getLastName();
 
+  //@BitIgnore
   public LocalDate getBirth();
   
   public String stringBirth();

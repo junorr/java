@@ -21,12 +21,11 @@
 
 package us.pserver.bitbox.transform;
 
-import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.impl.BitBuffer;
-
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import us.pserver.bitbox.BitTransform;
+import us.pserver.bitbox.impl.BitBuffer;
 
 /**
  *
@@ -48,6 +47,7 @@ public class CharSequenceTransform implements BitTransform<CharSequence> {
   @Override
   public int box(CharSequence s, BitBuffer buf) {
     ByteBuffer bs = StandardCharsets.UTF_8.encode(s.toString());
+    //Logger.debug("[{}][{}]", bs.remaining(), s);
     int len = bs.remaining() + Integer.BYTES;
     buf.putInt(bs.remaining()).put(bs);
     return len;
@@ -57,6 +57,7 @@ public class CharSequenceTransform implements BitTransform<CharSequence> {
   public CharSequence unbox(BitBuffer buf) {
     int lim = buf.limit();
     int len = buf.getInt();
+    //Logger.debug("[{}]", len);
     buf.limit(buf.position() + len);
     String str = StandardCharsets.UTF_8.decode(buf.toByteBuffer()).toString();
     buf.limit(lim);

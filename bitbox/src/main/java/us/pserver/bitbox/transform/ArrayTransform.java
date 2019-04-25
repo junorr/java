@@ -5,20 +5,12 @@
  */
 package us.pserver.bitbox.transform;
 
+import java.lang.reflect.Array;
+import java.util.Optional;
+import java.util.stream.IntStream;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
-import us.pserver.tools.Indexed;
-import us.pserver.tools.IndexedInt;
-
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 
 /**

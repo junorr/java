@@ -22,15 +22,15 @@
 package us.pserver.bitbox;
 
 import java.util.Optional;
-import us.pserver.bitbox.impl.BitBuffer;
-
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntBiFunction;
+import us.pserver.bitbox.impl.BitBuffer;
 
 /**
  *
- * @author Juno Roesler - juno@pserver.us
+ * @author Juno Roesler - juno@pseimport us.pserver.bitbox.impl.BitBuffer;
+rver.us
  * @version 0.0 - 12 de abr de 2019
  */
 public interface BitTransform<T> extends TypeMatching, SerializedType {

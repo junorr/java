@@ -1,10 +1,5 @@
 package us.pserver.bitbox.impl;
 
-import us.pserver.bitbox.ArrayBox;
-import us.pserver.bitbox.MapBox;
-import us.pserver.bitbox.transform.MapTransform;
-import us.pserver.tools.Indexed;
-
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +9,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import us.pserver.bitbox.ArrayBox;
+import us.pserver.bitbox.MapBox;
+import us.pserver.bitbox.transform.MapTransform;
+import us.pserver.tools.Indexed;
 
 public class MapBoxImpl<K,V> implements MapBox<K,V> {
   

@@ -12,6 +12,7 @@ import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import org.tinylog.Logger;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.tools.Unchecked;
 
@@ -33,6 +34,7 @@ public interface ConstructorTarget<T> extends Function<Object[],T> {
         return Arrays.asList(cct.getParameters());
       }
       public U apply(Object[] args) { 
+        Logger.debug("args: {}", () -> Arrays.toString(args));
         return (U) Unchecked.call(() -> cmh.invokeWithArguments(Arrays.asList(args)));
       }
       public String toString() {
@@ -49,6 +51,7 @@ public interface ConstructorTarget<T> extends Function<Object[],T> {
         return Arrays.asList(mth.getParameters());
       }
       public U apply(Object[] args) { 
+        Logger.debug("args: {}", () -> Arrays.toString(args));
         return (U) Unchecked.call(() -> cmh.invokeWithArguments(Arrays.asList(args)));
       }
       public String toString() {

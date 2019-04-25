@@ -8,13 +8,6 @@ package us.pserver.bitbox.transform;
 import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
-import us.pserver.tools.IndexedInt;
-
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.stream.IntStream;
 
 
 /**
