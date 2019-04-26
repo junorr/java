@@ -32,6 +32,7 @@ public class Address {
   private final UF uf;
 
   private final long zip;
+  
 
   public Address(String street, int[] numbers, String neighborhood, String complement, String city, UF uf, long zip) {
     this.street = street;

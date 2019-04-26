@@ -8,7 +8,7 @@ package us.pserver.bitbox.test;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
-import us.pserver.bitbox.transform.ObjectSpec;
+import us.pserver.bitbox.inspect.ObjectSpec;
 import us.pserver.tools.Reflect;
 
 

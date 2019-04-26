@@ -17,4 +17,8 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
-public @interface BitCreate {}
+public @interface BitCreate {
+
+  String[] value() default {};
+
+}

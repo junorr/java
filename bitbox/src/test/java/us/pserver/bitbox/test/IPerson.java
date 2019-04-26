@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import us.pserver.bitbox.BitCreate;
-import us.pserver.bitbox.BitIgnore;
 
 
 /**
@@ -35,13 +34,13 @@ public interface IPerson {
   
   
   @BitCreate
-  public static IPerson of(String name, String lastName, LocalDate birth) {
-    return new Person(name, lastName, birth, Collections.EMPTY_LIST);
+  public static IPerson of(LocalDate birth, String lastName, String name) {
+    return new Person(Collections.EMPTY_LIST, birth, lastName, name);
   }
 
   @BitCreate
-  public static IPerson of(String name, String lastName, LocalDate birth, List<Address> address) {
-    return new Person(name, lastName, birth, address);
+  public static IPerson of(List<Address> address, LocalDate birth, String lastName, String name) {
+    return new Person(address, birth, lastName, name);
   }
 
 }

@@ -10,7 +10,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import us.pserver.bitbox.BitIgnore;
 import us.pserver.bitbox.BitProperty;
 import us.pserver.bitbox.BitType;
 
@@ -19,7 +18,7 @@ import us.pserver.bitbox.BitType;
  *
  * @author juno
  */
-@BitType(IPerson.class)
+//@BitType(IPerson.class)
 public class Person implements IPerson {
 
   private final String name;
@@ -31,14 +30,14 @@ public class Person implements IPerson {
   private final List<Address> address;
   
 
-  public Person(String name, String lastName) {
+  public Person(String lastName, String name) {
     this.name = name;
     this.lastName = lastName;
     this.birth = LocalDate.now();
     this.address = Collections.EMPTY_LIST;
   }
 
-  public Person(String name, String lastName, LocalDate birth, List<Address> address) {
+  public Person(List<Address> address, LocalDate birth, String lastName, String name) {
     this.name = name;
     this.lastName = lastName;
     this.birth = birth;

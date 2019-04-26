@@ -3,16 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package us.pserver.bitbox.transform;
+package us.pserver.bitbox.inspect;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import org.tinylog.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import us.pserver.bitbox.BitCreate;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.tools.Unchecked;
 
@@ -23,18 +26,24 @@ import us.pserver.tools.Unchecked;
  */
 public interface ConstructorTarget<T> extends Function<Object[],T> {
   
-  public List<Parameter> getParameters();
+  public List<Class> getParameterTypes();
+  
+  public List<String> getParameterNames();
   
   
   
   public static <U> ConstructorTarget<U> of(Constructor<U> cct) {
     final MethodHandle cmh = Unchecked.call(() -> BoxRegistry.INSTANCE.lookup().unreflectConstructor(cct));
+    final List<String> names = getParameterNames(cct);
     return new ConstructorTarget<>() {
-      public List<Parameter> getParameters() {
-        return Arrays.asList(cct.getParameters());
+      public List<Class> getParameterTypes() {
+        return Arrays.asList(cct.getParameterTypes());
+      }
+      public List<String> getParameterNames() {
+        return names;
       }
       public U apply(Object[] args) { 
-        Logger.debug("args: {}", () -> Arrays.toString(args));
+        //Logger.debug("args: {}", () -> Arrays.toString(args));
         return (U) Unchecked.call(() -> cmh.invokeWithArguments(Arrays.asList(args)));
       }
       public String toString() {
@@ -43,15 +52,33 @@ public interface ConstructorTarget<T> extends Function<Object[],T> {
     };
   }
   
+  private static List<String> getParameterNames(Executable exc) {
+    List<String> names;
+    BitCreate abc = (BitCreate) exc.getAnnotation(BitCreate.class);
+    if(abc != null && abc.value().length == exc.getParameterCount()) {
+      names = Arrays.asList(abc.value());
+    }
+    else {
+      names = Arrays.asList(exc.getParameters())
+          .stream()
+          .map(Parameter::getName)
+          .collect(Collectors.toList());
+    }
+    return names;
+  }
   
   public static <U> ConstructorTarget<U> of(Method mth) {
     final MethodHandle cmh = Unchecked.call(() -> BoxRegistry.INSTANCE.lookup().unreflect(mth));
+    final List<String> names = getParameterNames(mth);
     return new ConstructorTarget<>() {
-      public List<Parameter> getParameters() {
-        return Arrays.asList(mth.getParameters());
+      public List<Class> getParameterTypes() {
+        return Arrays.asList(mth.getParameterTypes());
+      }
+      public List<String> getParameterNames() {
+        return names;
       }
       public U apply(Object[] args) { 
-        Logger.debug("args: {}", () -> Arrays.toString(args));
+        //Logger.debug("args: {}", () -> Arrays.toString(args));
         return (U) Unchecked.call(() -> cmh.invokeWithArguments(Arrays.asList(args)));
       }
       public String toString() {

@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
+import us.pserver.bitbox.inspect.GetterTarget;
+import us.pserver.bitbox.inspect.ObjectSpec;
 import us.pserver.tools.Indexed;
 
 
@@ -83,7 +85,7 @@ public class GlobalObjectTransform implements BitTransform<Object> {
     Class c = ctran.unbox(b);
     Map m = dtran.unbox(b);
     ObjectSpec spec = getOrCreateSpec(c);
-    Object[] args = new Object[spec.constructor().getParameters().size()];
+    Object[] args = new Object[spec.constructor().getParameterTypes().count()];
     Function<String,Indexed<String>> indexed = Indexed.builder();
     Stream<Parameter> pars = spec.constructor().getParameters().stream();
     pars.map(Parameter::getName)

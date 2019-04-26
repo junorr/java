@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package us.pserver.bitbox.transform;
+package us.pserver.bitbox.inspect;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -132,6 +132,7 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
           .peek(c -> Logger.debug("Types match: {}", c))
           //filter by parameter names
           .filter(c -> Arrays.asList(c.getParameters()).stream()
+              .peek(Logger::debug)
               .map(p -> p.getName())
               .allMatch(n -> getters.stream()
                   .peek(g -> Logger.debug("{} == {}: {}", n, g.getName(), g.getName().equalsIgnoreCase(n)))

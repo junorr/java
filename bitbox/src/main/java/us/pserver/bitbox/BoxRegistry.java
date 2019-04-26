@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReference;
+import us.pserver.bitbox.inspect.ObjectSpec;
 import us.pserver.bitbox.transform.*;
 
 /**

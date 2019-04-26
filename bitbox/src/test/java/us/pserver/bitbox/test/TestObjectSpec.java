@@ -8,14 +8,13 @@ package us.pserver.bitbox.test;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.LinkedList;
-import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.tinylog.Logger;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.BoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
-import us.pserver.bitbox.transform.GetterTarget;
-import us.pserver.bitbox.transform.ObjectSpec;
+import us.pserver.bitbox.inspect.ObjectSpec;
 
 
 /**
@@ -25,12 +24,25 @@ import us.pserver.bitbox.transform.ObjectSpec;
 public class TestObjectSpec {
   
   @Test
-  public void test_getter_scan() {
+  public void test_person_object_spec() {
     try {
       BoxRegistry.INSTANCE.lookup(MethodHandles.lookup());
       ObjectSpec<Person> spec = ObjectSpec.createSpec(Person.class);
-      Set<GetterTarget<Person,Object>> getters = spec.getters();
-      getters.forEach(System.out::println);
+      spec.getters().forEach(System.out::println);
+      Logger.debug("* contructor: {}", spec.constructor());
+    }
+    catch(Throwable e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  @Test
+  public void test_address_object_spec() {
+    try {
+      BoxRegistry.INSTANCE.lookup(MethodHandles.lookup());
+      ObjectSpec<Address> spec = ObjectSpec.createSpec(Address.class);
+      spec.getters().forEach(System.out::println);
       System.out.printf("* contructor: %s%n", spec.constructor());
     }
     catch(Throwable e) {
@@ -51,7 +63,7 @@ public class TestObjectSpec {
       LinkedList<Address> addrs = new LinkedList<>();
       addrs.add(adr);
       addrs.add(null);
-      Person per = new Person("Juno", null, LocalDate.of(1980, 7, 7), addrs);
+      Person per = new Person(addrs, LocalDate.of(1980, 7, 7), null, "Juno");
       System.out.println(per);
       BitTransform<Person> trans = BoxRegistry.INSTANCE.getAnyTransform(Person.class);
       int len = trans.box(per, buf);

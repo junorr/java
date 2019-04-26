@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package us.pserver.bitbox.transform;
+package us.pserver.bitbox.inspect;
 
 import java.util.function.Function;
 
