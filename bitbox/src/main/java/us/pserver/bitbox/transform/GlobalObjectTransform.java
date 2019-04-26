@@ -29,7 +29,7 @@ public class GlobalObjectTransform implements BitTransform<Object> {
   
   private final ClassTransform ctran = new ClassTransform();
   
-  private final DynamicMapTransform dtran = new DynamicMapTransform();
+  private final PolymorphMapTransform dtran = new PolymorphMapTransform();
   
   @Override
   public boolean match(Class c) {
@@ -85,11 +85,10 @@ public class GlobalObjectTransform implements BitTransform<Object> {
     Class c = ctran.unbox(b);
     Map m = dtran.unbox(b);
     ObjectSpec spec = getOrCreateSpec(c);
-    Object[] args = new Object[spec.constructor().getParameterTypes().count()];
+    Object[] args = new Object[spec.constructor().getParameterTypes().size()];
     Function<String,Indexed<String>> indexed = Indexed.builder();
-    Stream<Parameter> pars = spec.constructor().getParameters().stream();
-    pars.map(Parameter::getName)
-        .map(indexed)
+    Stream<String> pars = spec.constructor().getParameterNames().stream();
+    pars.map(indexed)
         .forEach(x -> args[x.index()] = m.get(x.value()));
     return spec.constructor().apply(args);
   }

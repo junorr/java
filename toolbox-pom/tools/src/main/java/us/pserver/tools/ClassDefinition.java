@@ -8,9 +8,12 @@ package us.pserver.tools;
 import javax.tools.*;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -19,16 +22,23 @@ import java.util.Objects;
  */
 public class ClassDefinition {
   
+  public static final String LOOKUP_CODE = "public static MethodHandles.Lookup _lookup_() { return MethodHandles.lookup(); }";
+  
+  public static final String IMPORT_LOOKUP_CODE = "import java.lang.invoke.MethodHandles;";
+  
   private final String LN = "\n";
   
   private final String name;
   
   private final StringBuilder code;
   
+  private final AtomicReference<Class> clazz;
+  
   
   public ClassDefinition(String name) {
     this.name = Objects.requireNonNull(name);
     this.code = new StringBuilder();
+    this.clazz = new AtomicReference();
   }
   
   
@@ -67,7 +77,37 @@ public class ClassDefinition {
   }
   
   
+  private void insertLookupCode() {
+    if(code.indexOf(LOOKUP_CODE) < 0) {
+      int ipkg = code.indexOf("package");
+      int afterpkg = code.indexOf(";", ipkg);
+      code.insert(afterpkg + 1, IMPORT_LOOKUP_CODE);
+      code.insert(code.length() -1, LOOKUP_CODE);
+    }
+  }
+  
+  
+  public MethodHandles.Lookup definedClassLookup() {
+    if(clazz.get() == null) throw new IllegalStateException("Class not compiled");
+    return (MethodHandles.Lookup) Reflect.of(clazz.get())
+        .selectMethod("_lookup_")
+        .invoke();
+  }
+  
+  
+  public <T> Class<T> recompile() {
+    clazz.set(null);
+    return compile();
+  }
+  
+  
   public <T> Class<T> compile() {
+    if(clazz.get() != null) {
+      return clazz.get();
+    }
+    if(code.indexOf(LOOKUP_CODE) < 0) {
+      this.insertLookupCode();
+    }
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     ClassFileManager manager = new ClassFileManager(compiler.getStandardFileManager(null, null, null));
     compiler.getTask(null, manager, null, null, null, 
@@ -80,12 +120,14 @@ public class ClassDefinition {
         return defineClass(name, b, 0, b.length);
       }
     };
-    return (Class<T>) Unchecked.call(() -> loader.loadClass(name));
+    clazz.compareAndSet(null, Unchecked.call(() -> loader.loadClass(name)));
+    return clazz.get();
   }
   
   
   public <T> Reflect<T> reflectCompiled() {
-    return Reflect.of(compile());
+    if(clazz.get() == null) compile();
+    return Reflect.of(clazz.get(), definedClassLookup());
   }
   
   

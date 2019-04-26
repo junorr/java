@@ -29,13 +29,15 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.tinylog.Logger;
 import us.pserver.bitbox.ArrayBox;
 import us.pserver.bitbox.MapBox;
 import us.pserver.bitbox.impl.ArrayBoxImpl;
 import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.bitbox.impl.BitBufferImpl;
-import us.pserver.bitbox.impl.DynamicMapBox;
+import us.pserver.bitbox.impl.PolymorphMapBox;
 import us.pserver.bitbox.impl.MapBoxImpl;
+import us.pserver.bitbox.impl.PolymorphArrayBoxImpl;
 import us.pserver.bitbox.transform.*;
 
 /**
@@ -275,13 +277,13 @@ public class TestTransform {
   }
   
   @Test
-  public void dynamic_map_entry_transform() {
+  public void polymorph_map_entry_transform() {
     Map<String,Integer> m = new TreeMap<>();
     m.put("Integer.MIN_VALUE", Integer.MIN_VALUE);
     m.put("Integer.ZERO", 0);
     m.put("Integer.MAX_VALUE", Integer.MAX_VALUE);
     System.out.println(m);
-    DynamicMapTransform tran = new DynamicMapTransform();
+    PolymorphMapTransform tran = new PolymorphMapTransform();
     BitBuffer b = BitBuffer.of(256, true);
     int len = tran.box(m, b);
     Assertions.assertEquals(len, b.position());
@@ -290,10 +292,34 @@ public class TestTransform {
     Assertions.assertEquals(m.get("Integer.MIN_VALUE"), f.get("Integer.MIN_VALUE"));
     Assertions.assertEquals(m.get("Integer.ZERO"), f.get("Integer.ZERO"));
     Assertions.assertEquals(m.get("Integer.MAX_VALUE"), f.get("Integer.MAX_VALUE"));
-    MapBox box = new DynamicMapBox(b.position(0));
+    MapBox box = new PolymorphMapBox(b.position(0));
     Assertions.assertEquals(m.get("Integer.MIN_VALUE"), box.get("Integer.MIN_VALUE"));
     Assertions.assertEquals(m.get("Integer.ZERO"), box.get("Integer.ZERO"));
     Assertions.assertEquals(m.get("Integer.MAX_VALUE"), box.get("Integer.MAX_VALUE"));
+  }
+
+  @Test
+  public void polymorph_collection_transform() throws UnknownHostException {
+    List ls = new LinkedList();
+    ls.add(5);
+    ls.add(0.559);
+    ls.add(InetAddress.getLocalHost());
+    ls.add(Instant.now());
+    ls.add(null);
+    ls.add("Hello");
+    ls.add(new Address("Cond Mini Chacaras", new int[]{21}, "Altiplano Leste", "7-4-21", "Brasilia", Address.UF.DF, 71680621));
+    Logger.debug(ls);
+    PolymorphCollectionTransform ptran = new PolymorphCollectionTransform();
+    BitBuffer buf = BitBuffer.of(512, true);
+    int len = ptran.box(ls, buf);
+    Logger.debug("Serialized list length = {}", len);
+    Assertions.assertEquals(len, buf.position());
+    ls = (List) ptran.unbox(buf.position(0));
+    Logger.debug(ls);
+    PolymorphArrayBoxImpl box = new PolymorphArrayBoxImpl(buf.position(0));
+    Assertions.assertEquals(ls.get(4), box.get(4));
+    Assertions.assertEquals(ls.get(5), box.get(5));
+    Assertions.assertEquals(ls.get(6), box.get(6));
   }
   
 }

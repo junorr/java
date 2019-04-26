@@ -33,12 +33,11 @@ public interface IPerson {
   public List<Address> getAddress();
   
   
-  @BitCreate
   public static IPerson of(LocalDate birth, String lastName, String name) {
     return new Person(Collections.EMPTY_LIST, birth, lastName, name);
   }
 
-  @BitCreate
+  @BitCreate({"address", "birth", "lastName", "name"})
   public static IPerson of(List<Address> address, LocalDate birth, String lastName, String name) {
     return new Person(address, birth, lastName, name);
   }

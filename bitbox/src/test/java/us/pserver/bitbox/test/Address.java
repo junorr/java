@@ -7,6 +7,8 @@ package us.pserver.bitbox.test;
 
 import java.util.Arrays;
 import java.util.Objects;
+import org.tinylog.Logger;
+import us.pserver.bitbox.BitCreate;
 
 
 /**
@@ -33,7 +35,7 @@ public class Address {
 
   private final long zip;
   
-
+  @BitCreate({"street", "numbers", "neighborhood", "complement", "city", "uf", "zip"})
   public Address(String street, int[] numbers, String neighborhood, String complement, String city, UF uf, long zip) {
     this.street = street;
     this.numbers = numbers;
@@ -97,7 +99,7 @@ public class Address {
       return false;
     }
     final Address other = (Address) obj;
-    if (this.numbers != other.numbers) {
+    if (!Arrays.equals(numbers, other.getNumbers())) {
       return false;
     }
     if (this.zip != other.zip) {

@@ -90,6 +90,11 @@ public class Reflect<T> {
   public Object getTarget() {
     return (obj == null ? cls : obj);
   }
+  
+  
+  public MethodHandles.Lookup lookup() {
+    return lookup;
+  }
 	
 	
 	/**
@@ -222,8 +227,10 @@ public class Reflect<T> {
 	 * @return O objeto de retorno do método invocado.
 	 */
 	public Object invoke(Object ... args) {
- 		if(obj == null) throw new IllegalStateException("Object target not found");
  		if(mth == null) throw new IllegalStateException("Method not selected");
+ 		if(!Modifier.isStatic(mth.getModifiers()) && obj == null) {
+      throw new IllegalStateException("Object target not found");
+    }
     return Unchecked.call(() -> mth.invoke(obj, (args == null ? new Object[0] : args)));
 	}
 	

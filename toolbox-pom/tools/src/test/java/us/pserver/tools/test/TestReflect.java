@@ -51,7 +51,7 @@ public class TestReflect {
     System.out.println("==========================================");
     System.out.println("  public void test_greet_string_method()");
     System.out.println("------------------------------------------");
-    Reflect rfl = Reflect.of(ReflectTarget.class).createReflect();
+    Reflect rfl = Reflect.of(ReflectTarget.class).reflectCreate();
     Assertions.assertEquals("Hello Juno! ", rfl.selectMethod("greet", String.class).invoke("Juno"));
   }
   
@@ -60,7 +60,7 @@ public class TestReflect {
     System.out.println("=======================================");
     System.out.println("  public void test_withHello_method()");
     System.out.println("---------------------------------------");
-    Reflect rfl = Reflect.of(ReflectTarget.class).createReflect();
+    Reflect rfl = Reflect.of(ReflectTarget.class).reflectCreate();
     Assertions.assertEquals("Hello Juno! ", Reflect.of(rfl.selectMethod("withHello").invoke("Juno")).selectMethod("greet").invoke());
     Assertions.assertEquals("Hello Juno! ", Reflect.of(rfl.invokeMethod("withHello", "Juno")).invokeMethod("greet"));
   }
@@ -70,7 +70,7 @@ public class TestReflect {
     System.out.println("==================================");
     System.out.println("  public void test_magic_field()");
     System.out.println("----------------------------------");
-    Reflect rfl = Reflect.of(ReflectTarget.class).createReflect().selectField("magic").set(43);
+    Reflect rfl = Reflect.of(ReflectTarget.class).reflectCreate().selectField("magic").set(43);
     Assertions.assertEquals(43, rfl.get());
   }
   

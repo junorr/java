@@ -20,7 +20,7 @@ import us.pserver.bitbox.impl.BitBuffer;
  *
  * @author juno
  */
-public class DynamicEntryTransform implements BitTransform<Map.Entry>{
+public class PolymorphEntryTransform implements BitTransform<Map.Entry>{
   
   private final ClassTransform ctran = new ClassTransform();
 

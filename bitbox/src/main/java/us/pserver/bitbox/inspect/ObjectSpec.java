@@ -97,8 +97,11 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
       return ref.streamConstructors()
           //.peek(c -> System.out.println("scanBitCreateConstructor: " + c))
           .filter(c -> c.isAnnotationPresent(BitCreate.class))
+          //.peek(c -> Logger.debug("@BitCreate present!  {}", c))
           .filter(c -> !c.isAnnotationPresent(BitIgnore.class))
+          //.peek(c -> Logger.debug("@BitIgnore NOT present!  {}", c))
           .filter(c -> c.getParameterCount() <= getters.size())
+          //.peek(c -> Logger.debug("Parameter count match  {}", c))
           .sorted((m,n) -> (-1) * Integer.compare(m.getParameterCount(), n.getParameterCount()))
           .map(c -> (ConstructorTarget<T>)ConstructorTarget.of(c))
           .findAny();
@@ -108,12 +111,11 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
       return ref.streamMethods()
           //.peek(m -> System.out.println("scanBitCreateMethod: " + m))
           .filter(m -> m.isAnnotationPresent(BitCreate.class))
+          //.peek(m -> Logger.debug("@BitCreate present!  {}", m))
+          .filter(m -> !m.isAnnotationPresent(BitIgnore.class))
+          //.peek(m -> Logger.debug("@BitIgnore NOT present!  {}", m))
           .filter(m -> m.getParameterCount() <= getters.size())
-          //filter by parameter names
-          .filter(m -> Arrays.asList(m.getParameters()).stream()
-              .map(p -> p.getName())
-              .allMatch(n -> getters.stream()
-                  .anyMatch(g -> g.getName().equalsIgnoreCase(n))))
+          //.peek(m -> Logger.debug("Parameter count match  {}", m))
           .sorted((m,n) -> (-1) * Integer.compare(m.getParameterCount(), n.getParameterCount()))
           .map(m -> (ConstructorTarget<T>)ConstructorTarget.of(m))
           .findFirst();
@@ -122,22 +124,14 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
     private Optional<ConstructorTarget<T>> guessConstructor(Reflect<T> ref, Set<GetterTarget<T,Object>> getters) {
       return ref.streamConstructors()
           .filter(c -> !c.isAnnotationPresent(BitIgnore.class))
-          .peek(c -> Logger.debug("No BitIgnore: {}", c))
+          //.peek(c -> Logger.debug("No BitIgnore: {}", c))
           .filter(c -> c.getParameterCount() <= getters.size())
           //filter by parameter types
-          .peek(c -> Logger.debug("Param count match: {}", c))
+          //.peek(c -> Logger.debug("Param count match: {}", c))
           .filter(c -> Arrays.asList(c.getParameterTypes()).stream()
               .allMatch(t -> getters.stream()
                   .anyMatch(g -> t.isAssignableFrom(g.getReturnType()))))
-          .peek(c -> Logger.debug("Types match: {}", c))
-          //filter by parameter names
-          .filter(c -> Arrays.asList(c.getParameters()).stream()
-              .peek(Logger::debug)
-              .map(p -> p.getName())
-              .allMatch(n -> getters.stream()
-                  .peek(g -> Logger.debug("{} == {}: {}", n, g.getName(), g.getName().equalsIgnoreCase(n)))
-                  .anyMatch(g -> g.getName().equalsIgnoreCase(n))))
-          .peek(c -> Logger.debug("Names match: {}", c))
+          //.peek(c -> Logger.debug("Types match: {}", c))
           //sort by parameter count descending
           .sorted((c,d) -> (-1) * Integer.compare(c.getParameterCount(), d.getParameterCount()))
           .map(c -> (ConstructorTarget<T>) ConstructorTarget.of(c))
@@ -153,10 +147,10 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
     
     public ObjectSpec<T> build() {
       Set<GetterTarget<T,Object>> getters = this.scanGetters();
-      Logger.debug("getters: {}", getters);
+      //Logger.debug("getters: {}", getters);
       ConstructorTarget<T> fct = this.scanConstructor(getters)
           .orElseThrow(() -> new IllegalStateException("No compatible constructor found"));
-      Logger.debug("construct: {}, getters: {}", fct, getters);
+      //Logger.debug("construct: {}, getters: {}", fct, getters);
       return new ObjectSpec<>() {
         public Optional<Class> serialType() { return Optional.of(cls); }
         public boolean match(Class c) { return Objects.equals(c, cls); }

@@ -52,7 +52,7 @@
                 <configuration>
                     <release>11</release>
                     <debug>true</debug>
-                    <debuglevel>vars</debuglevel>
+                    <debuglevel>source,vars,lines</debuglevel>
                 </configuration>
             </plugin>
             <plugin>

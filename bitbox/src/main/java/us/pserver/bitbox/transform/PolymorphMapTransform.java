@@ -18,9 +18,9 @@ import us.pserver.bitbox.impl.BitBuffer;
  *
  * @author juno
  */
-public class DynamicMapTransform implements BitTransform<Map>{
+public class PolymorphMapTransform implements BitTransform<Map>{
   
-  private final DynamicEntryTransform etran = new DynamicEntryTransform();
+  private final PolymorphEntryTransform etran = new PolymorphEntryTransform();
 
   @Override
   public boolean match(Class c) {

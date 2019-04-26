@@ -11,16 +11,16 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import us.pserver.bitbox.MapBox;
-import us.pserver.bitbox.transform.DynamicEntryTransform;
+import us.pserver.bitbox.transform.PolymorphEntryTransform;
 
 
 /**
  *
  * @author juno
  */
-public class DynamicMapBox implements MapBox<Object,Object> {
+public class PolymorphMapBox implements MapBox<Object,Object> {
   
-  private final DynamicEntryTransform etran = new DynamicEntryTransform();
+  private final PolymorphEntryTransform etran = new PolymorphEntryTransform();
   
   private final BitBuffer buffer;
   
@@ -28,7 +28,7 @@ public class DynamicMapBox implements MapBox<Object,Object> {
   
   private final int size;
   
-  public DynamicMapBox(BitBuffer buf) {
+  public PolymorphMapBox(BitBuffer buf) {
     this.buffer = Objects.requireNonNull(buf);
     this.startPos = buffer.position();
     this.size = buffer.getInt(startPos);
