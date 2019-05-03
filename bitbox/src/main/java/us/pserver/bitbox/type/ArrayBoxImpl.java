@@ -1,11 +1,12 @@
-package us.pserver.bitbox.impl;
+package us.pserver.bitbox.type;
 
 import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import us.pserver.bitbox.ArrayBox;
+import us.pserver.bitbox.BitBoxConfiguration;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BitBoxRegistry;
+import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.bitbox.transform.ArrayTransform;
 
 
@@ -19,13 +20,16 @@ public class ArrayBoxImpl<T> implements ArrayBox<T> {
   
   private final Class<T> type;
   
+  private final BitBoxConfiguration cfg;
   
-  public ArrayBoxImpl(BitBuffer buf) {
+  
+  public ArrayBoxImpl(BitBuffer buf, BitBoxConfiguration cfg) {
     this.buffer = Objects.requireNonNull(buf);
+    this.cfg = Objects.requireNonNull(cfg);
     this.startPos = buffer.position();
     this.size = buffer.getInt();
     buffer.position(startPos + Integer.BYTES * (size + 1));
-    BitTransform<Class> ct = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
+    BitTransform<Class> ct = cfg.getTransform(Class.class);
     this.type = (Class<T>) ct.unbox(buffer);
   }
   
@@ -43,7 +47,7 @@ public class ArrayBoxImpl<T> implements ArrayBox<T> {
   public T get(int idx) {
     buffer.position(startPos + Integer.BYTES * (1 + idx));
     int pos = buffer.getInt();
-    BitTransform<T> transform = BitBoxRegistry.INSTANCE.getAnyTransform(type);
+    BitTransform<T> transform = cfg.getTransform(type);
     return pos < 0 ? null : transform.unbox(buffer.position(pos));
   }
   
@@ -59,7 +63,7 @@ public class ArrayBoxImpl<T> implements ArrayBox<T> {
   
   @Override
   public T[] getValue() {
-    return new ArrayTransform<T>().unbox(buffer.position(startPos));
+    return new ArrayTransform<T>(cfg).unbox(buffer.position(startPos));
   }
   
 }

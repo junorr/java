@@ -1,15 +1,21 @@
 package us.pserver.bitbox.transform;
 
+import java.util.Objects;
 import java.util.Optional;
+import org.tinylog.Logger;
+import us.pserver.bitbox.BitBoxConfiguration;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.tools.Unchecked;
 
 
 public class ClassTransform implements BitTransform<Class> {
   
-  private final CharSequenceTransform strans = new CharSequenceTransform();
+  private final BitBoxConfiguration cfg;
+  
+  public ClassTransform(BitBoxConfiguration cfg) {
+    this.cfg = Objects.requireNonNull(cfg);
+  }
   
   @Override
   public boolean match(Class c) {
@@ -24,14 +30,14 @@ public class ClassTransform implements BitTransform<Class> {
   @Override
   public int box(Class c, BitBuffer buf) {
     //Logger.debug(c);
-    return strans.box(c.getName(), buf);
+    return cfg.getTransform(String.class).box(c.getName(), buf);
   }
   
   @Override
   public Class unbox(BitBuffer buf) {
-    Class c = Unchecked.call(() ->
-        BitBoxRegistry.INSTANCE.lookup().findClass(strans.unbox(buf).toString())
-    );
+    String sc = cfg.getTransform(String.class).unbox(buf);
+    //Logger.debug(sc);
+    Class c = Unchecked.call(() -> cfg.lookup().findClass(sc));
     //Logger.debug(c);
     return c;
   }

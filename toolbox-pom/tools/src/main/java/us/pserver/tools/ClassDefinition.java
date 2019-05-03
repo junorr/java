@@ -12,7 +12,6 @@ import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -26,7 +25,8 @@ public class ClassDefinition {
   
   public static final String IMPORT_LOOKUP_CODE = "import java.lang.invoke.MethodHandles;";
   
-  private final String LN = "\n";
+  public static final String LN = "\n";
+  
   
   private final String name;
   

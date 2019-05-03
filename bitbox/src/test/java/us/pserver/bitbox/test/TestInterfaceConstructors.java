@@ -8,6 +8,7 @@ package us.pserver.bitbox.test;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
+import us.pserver.bitbox.BitBoxConfiguration;
 import us.pserver.bitbox.spec.ObjectSpec;
 import us.pserver.tools.Reflect;
 
@@ -27,7 +28,7 @@ public class TestInterfaceConstructors {
   @Test
   public void spec_interface() {
     try {
-      ObjectSpec spec = ObjectSpec.createSpec(IPerson.class);
+      ObjectSpec spec = ObjectSpec.createSpec(IPerson.class, new BitBoxConfiguration());
       System.out.println(spec.constructor());
     }
     catch(Throwable t) {

@@ -19,13 +19,41 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox.test;
+package us.pserver.bitbox.impl;
+
+import us.pserver.bitbox.BitBox;
+import us.pserver.bitbox.BitBoxConfiguration;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 26 de abr de 2019
+ * @version 0.0 - 3 de mai de 2019
  */
-public interface Test extends IPerson {
-
+public class BitBoxImpl implements BitBox {
+  
+  private final BitBoxConfiguration cfg;
+  
+  public BitBoxImpl(BitBoxConfiguration cfg) {
+    this.cfg = new BitBoxConfiguration();
+  }
+  
+  public BitBoxImpl() {
+    this(new BitBoxConfiguration());
+  }
+  
+  @Override
+  public void box(Object obj, BitBuffer buf) {
+    cfg.getGlobalTransform().box(obj, buf);
+  }
+  
+  @Override
+  public <T> T unbox(BitBuffer buf) {
+    return (T) cfg.getGlobalTransform().unbox(buf);
+  }
+  
+  @Override
+  public BitBoxConfiguration configure() {
+    return cfg;
+  }
+  
 }

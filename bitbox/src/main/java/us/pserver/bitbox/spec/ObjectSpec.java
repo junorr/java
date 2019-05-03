@@ -5,18 +5,19 @@
  */
 package us.pserver.bitbox.spec;
 
+import java.lang.invoke.MethodHandles;
+import static java.lang.invoke.MethodHandles.lookup;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.tinylog.Logger;
+import us.pserver.bitbox.BitBoxConfiguration;
 import us.pserver.bitbox.BitCreate;
 import us.pserver.bitbox.BitIgnore;
 import us.pserver.bitbox.BitProperty;
 import us.pserver.bitbox.BitType;
-import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.SerializedType;
 import us.pserver.bitbox.TypeMatching;
 import us.pserver.tools.Reflect;
@@ -34,8 +35,8 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
   
   
   
-  public static <U> ObjectSpec<U> createSpec(Class<U> cls) {
-    return new ObjectSpecBuilder<>(cls).build();
+  public static <U> ObjectSpec<U> createSpec(Class<U> cls, BitBoxConfiguration cfg) {
+    return new ObjectSpecBuilder<>(cls, cfg).build();
   }
   
   
@@ -48,7 +49,10 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
     
     private final Class<T> cls;
     
-    public ObjectSpecBuilder(Class<T> cls) {
+    private final BitBoxConfiguration cfg;
+    
+    public ObjectSpecBuilder(Class<T> cls, BitBoxConfiguration cfg) {
+      this.cfg = Objects.requireNonNull(cfg);
       Objects.requireNonNull(cls);
       if(cls.isAnnotationPresent(BitType.class)) {
         BitType type = cls.getAnnotation(BitType.class);
@@ -79,12 +83,12 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
     
     private GetterTarget<T,Object> toGetterTarget(Method m) {
       return (GetterTarget<T,Object>) GetterTarget.of(getPropertyName(m), m.getReturnType(),
-          Reflect.of(cls, BitBoxRegistry.INSTANCE.lookup()).selectMethod(m).dynamicSupplierMethod()
+          Reflect.of(cls, cfg.lookup()).selectMethod(m).dynamicSupplierMethod()
       );
     }
     
     private Set<GetterTarget<T,Object>> scanGetters() {
-      return Reflect.of(cls, BitBoxRegistry.INSTANCE.lookup()).streamMethods()
+      return Reflect.of(cls, cfg.lookup()).streamMethods()
           .filter(m -> m.getParameterCount() == 0)
           .filter(m -> m.getReturnType() != void.class)
           .filter(this::isGetter)
@@ -102,7 +106,7 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
           .filter(c -> c.getParameterCount() <= getters.size())
           //.peek(c -> Logger.debug("Parameter count match  {}", c))
           .sorted((m,n) -> (-1) * Integer.compare(m.getParameterCount(), n.getParameterCount()))
-          .map(c -> (ConstructorTarget<T>)ConstructorTarget.of(c))
+          .map(c -> (ConstructorTarget<T>)ConstructorTarget.of(c, cfg.lookup()))
           .findAny();
     }
     
@@ -116,7 +120,7 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
           .filter(m -> m.getParameterCount() <= getters.size())
           //.peek(m -> Logger.debug("Parameter count match  {}", m))
           .sorted((m,n) -> (-1) * Integer.compare(m.getParameterCount(), n.getParameterCount()))
-          .map(m -> (ConstructorTarget<T>)ConstructorTarget.of(m))
+          .map(m -> (ConstructorTarget<T>)ConstructorTarget.of(m, cfg.lookup()))
           .findFirst();
     }
     
@@ -133,12 +137,12 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
           //.peek(c -> Logger.debug("Types match: {}", c))
           //sort by parameter count descending
           .sorted((c,d) -> (-1) * Integer.compare(c.getParameterCount(), d.getParameterCount()))
-          .map(c -> (ConstructorTarget<T>) ConstructorTarget.of(c))
+          .map(c -> (ConstructorTarget<T>) ConstructorTarget.of(c, cfg.lookup()))
           .findFirst();
     }
     
     private Optional<ConstructorTarget<T>> scanConstructor(Set<GetterTarget<T,Object>> getters) {
-      Reflect<T> ref = Reflect.of(cls, BitBoxRegistry.INSTANCE.lookup());
+      Reflect<T> ref = Reflect.of(cls, cfg.lookup());
       return scanBitCreateConstructor(ref, getters)
           .or(() -> scanBitCreateMethod(ref, getters))
           .or(() -> guessConstructor(ref, getters));

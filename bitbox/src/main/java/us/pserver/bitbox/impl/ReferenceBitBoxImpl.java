@@ -6,8 +6,9 @@
 package us.pserver.bitbox.impl;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import us.pserver.bitbox.BitBoxRegistry;
+import us.pserver.bitbox.BitBoxConfiguration;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.Reference;
 import us.pserver.bitbox.ReferenceBitBox;
@@ -24,47 +25,61 @@ public class ReferenceBitBoxImpl implements ReferenceBitBox {
   
   private final ReferenceService service;
   
+  private final BitBoxConfiguration cfg;
+  
   
   public ReferenceBitBoxImpl(ReferenceService service) {
+    this(service, new BitBoxConfiguration());
+  }
+  
+  
+  public ReferenceBitBoxImpl(ReferenceService service, BitBoxConfiguration cfg) {
     this.service = Objects.requireNonNull(service);
-    BitBoxRegistry.INSTANCE.addTransform(new ReferenceTransform(service));
-    BitBoxRegistry.INSTANCE.setGlobal(new ReferenceObjectTransform(service));
+    this.cfg = Objects.requireNonNull(cfg);
+    this.cfg.addTransform(new ReferenceTransform(service, cfg));
+    this.cfg.setGlobalTransform(new ReferenceObjectTransform(service, cfg));
+  }
+  
+  
+  public BitBoxConfiguration configure() {
+    return cfg;
   }
   
 
   @Override
   public Reference box(Object obj) {
-    Reference ref = service.allocate(obj.getClass());
-    BitTransform tran = BitBoxRegistry.INSTANCE.getAnyTransform(obj.getClass());
-    tran.box(obj, ref.getBuffer());
-    return ref;
+    BitBuffer buf = BitBuffer.of(128, false);
+    BitTransform tran = cfg.getGlobalTransform();
+    tran.box(obj, buf);
+    BitTransform<Reference> rtran = cfg.getTransform(Reference.class);
+    return rtran.unbox(buf.position(0));
   }
 
 
   @Override
   public void box(Object obj, Consumer<Reference> cs) {
-    Class cls = obj.getClass();
-    Consumer<Reference> notify = r -> {
-      if(r.getType() == cls) cs.accept(r);
-    };
-    service.addAllocationListener(notify);
+    service.addAllocationListener(cs);
     box(obj);
-    service.removeAllocationListener(notify);
+    service.removeAllocationListener(cs);
   }
 
 
   @Override
   public <T> T unbox(BitBuffer buf) {
-    BitTransform<Reference> rtran = BitBoxRegistry.INSTANCE.getAnyTransform(Reference.class);
+    BitTransform<Reference> rtran = cfg.getTransform(Reference.class);
     Reference ref = rtran.unbox(buf);
-    BitTransform tran = BitBoxRegistry.INSTANCE.getAnyTransform(ref.getType());
+    BitTransform tran = cfg.getTransform(ref.getType());
     return (T) tran.unbox(ref.getBuffer());
   }
   
 
   @Override
   public <T> T unbox(Reference ref) {
-    return unbox(ref.getBuffer());
+    BitTransform<Reference> rtran = cfg.getTransform(Reference.class);
+    BitTransform tran = cfg.getGlobalTransform();
+    BitBuffer buf = BitBuffer.of(128, false);
+    rtran.box(ref, buf);
+    return (T) tran.unbox(buf.position(0));
   }
   
 }

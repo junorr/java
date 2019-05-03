@@ -5,7 +5,6 @@
  */
 package us.pserver.bitbox.impl;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;

@@ -7,7 +7,7 @@ package us.pserver.bitbox.transform;
 
 import java.util.Objects;
 import java.util.Optional;
-import us.pserver.bitbox.BitBoxRegistry;
+import us.pserver.bitbox.BitBoxConfiguration;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.Reference;
 import us.pserver.bitbox.ReferenceService;
@@ -22,8 +22,11 @@ public class ReferenceTransform implements BitTransform<Reference> {
   
   private final ReferenceService service;
   
-  public ReferenceTransform(ReferenceService service) {
+  private final BitBoxConfiguration cfg;
+  
+  public ReferenceTransform(ReferenceService service, BitBoxConfiguration cfg) {
     this.service = Objects.requireNonNull(service);
+    this.cfg = Objects.requireNonNull(cfg);
   }
   
   @Override
@@ -39,7 +42,7 @@ public class ReferenceTransform implements BitTransform<Reference> {
     }
     int len = Long.BYTES;
     buf.putLong(obj.getId());
-    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
+    BitTransform<Class> ctran = cfg.getTransform(Class.class);
     len += ctran.box(obj.getType(), buf);
     return len;
   }
@@ -50,7 +53,7 @@ public class ReferenceTransform implements BitTransform<Reference> {
     if(Long.MIN_VALUE == id) {
       return Reference.BAD_REFERENCE;
     }
-    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
+    BitTransform<Class> ctran = cfg.getTransform(Class.class);
     return service.getFor(id, ctran.unbox(buf));
   }
   

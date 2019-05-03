@@ -3,11 +3,17 @@ package us.pserver.bitbox.transform;
 import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import us.pserver.bitbox.BitBoxConfiguration;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 
 public class MapTransform<K,V> implements BitTransform<Map<K,V>> {
+  
+  private final BitBoxConfiguration cfg;
+  
+  public MapTransform(BitBoxConfiguration cfg) {
+    this.cfg = Objects.requireNonNull(cfg);
+  }
   
   @Override
   public boolean match(Class c) {
@@ -32,7 +38,7 @@ public class MapTransform<K,V> implements BitTransform<Map<K,V>> {
     List<K> lk = new ArrayList<>(m.keySet());
     List<V> lv = new ArrayList<>();
     lk.forEach(k -> lv.add(m.get(k)));
-    BitTransform<List> trans = BitBoxRegistry.INSTANCE.getAnyTransform(List.class);
+    BitTransform<List> trans = cfg.getTransform(List.class);
     buf.position(startPos + Integer.BYTES);
     len += trans.box(lk, buf);
     int vpos = buf.position();
@@ -45,7 +51,7 @@ public class MapTransform<K,V> implements BitTransform<Map<K,V>> {
   @Override
   public Map<K, V> unbox(BitBuffer buf) {
     int vpos = buf.getInt();
-    BitTransform<List> trans = BitBoxRegistry.INSTANCE.getAnyTransform(List.class);
+    BitTransform<List> trans = cfg.getTransform(List.class);
     List<K> lk = (List<K>) trans.unbox(buf);
     List<V> lv = (List<V>) trans.unbox(buf.position(vpos));
     Map<K,V> m = new HashMap<>();

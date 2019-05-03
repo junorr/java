@@ -33,14 +33,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tinylog.Logger;
 import us.pserver.bitbox.ArrayBox;
+import us.pserver.bitbox.BitBoxConfiguration;
 import us.pserver.bitbox.MapBox;
-import us.pserver.bitbox.impl.ArrayBoxImpl;
 import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.bitbox.impl.BitBufferImpl;
-import us.pserver.bitbox.impl.PolymorphMapBox;
-import us.pserver.bitbox.impl.MapBoxImpl;
-import us.pserver.bitbox.impl.PolymorphArrayBoxImpl;
 import us.pserver.bitbox.transform.*;
+import us.pserver.bitbox.type.ArrayBoxImpl;
+import us.pserver.bitbox.type.MapBoxImpl;
+import us.pserver.bitbox.type.PolymorphArrayBoxImpl;
+import us.pserver.bitbox.type.PolymorphMapBox;
 
 /**
  *
@@ -48,6 +49,8 @@ import us.pserver.bitbox.transform.*;
  * @version 0.0 - 12 de abr de 2019
  */
 public class TestTransform {
+  
+  private final BitBoxConfiguration cfg = new BitBoxConfiguration();
   
   @Test
   public void boolean_transform() {
@@ -197,7 +200,7 @@ public class TestTransform {
     ss[3] = "def";
     ss[4] = "ghi";
     System.out.println(Arrays.toString(ss));
-    ArrayTransform<String> trans = new ArrayTransform<>();
+    ArrayTransform<String> trans = new ArrayTransform<>(cfg);
     BitBuffer out = BitBuffer.of(100, false);
     int len = trans.box(ss, out);
     Assertions.assertEquals(len, out.position());
@@ -213,12 +216,12 @@ public class TestTransform {
     ins.add(InetAddress.getByName("172.16.12.169"));
     ins.add(null);
     ins.add(InetAddress.getByName("172.16.12.170"));
-    CollectionTransform<InetAddress> trans = new CollectionTransform<>();
+    CollectionTransform<InetAddress> trans = new CollectionTransform<>(cfg);
     BitBuffer out = BitBuffer.of(100, false);
     int len = trans.box(ins, out);
     Assertions.assertEquals(len, out.position());
     Assertions.assertEquals(ins.size() -1, trans.unbox(out.position(0)).size());
-    ArrayBox<InetAddress> box = new ArrayBoxImpl<>(out.position(0));
+    ArrayBox<InetAddress> box = new ArrayBoxImpl<>(out.position(0), cfg);
     Assertions.assertEquals(ins.get(0), box.get(0));
     Assertions.assertEquals(ins.get(4), box.get(4));
   }
@@ -238,12 +241,12 @@ public class TestTransform {
     m.put(2, currentTimeMillis());
     m.put(3, currentTimeMillis());
     m.put(4, currentTimeMillis());
-    MapTransform<Integer,LocalDateTime> trans = new MapTransform<>();
+    MapTransform<Integer,LocalDateTime> trans = new MapTransform<>(cfg);
     BitBuffer out = BitBuffer.of(200, false);
     int len = trans.box(m,out);
     Assertions.assertEquals(len, out.position());
     Assertions.assertEquals(m, trans.unbox(out.position(0)));
-    MapBox box = new MapBoxImpl(out.position(0));
+    MapBox box = new MapBoxImpl(out.position(0), cfg);
     Assertions.assertEquals(m.get(0), box.get(0));
     Assertions.assertEquals(m.get(4), box.get(4));
   }
@@ -255,17 +258,17 @@ public class TestTransform {
     ls.add("World");
     ls.add("java");
     ls.add("11");
-    CollectionTransform<String> tran = new CollectionTransform<>();
+    CollectionTransform<String> tran = new CollectionTransform<>(cfg);
     BitBuffer buf = new BitBufferImpl(256, true);
     int len = tran.box(ls, buf);
     Assertions.assertEquals(32 + Integer.BYTES * 10, len);
     Assertions.assertEquals(len, buf.position());
-    ArrayTransform<String> at = new ArrayTransform();
+    ArrayTransform<String> at = new ArrayTransform(cfg);
     String[] arr = at.unbox(buf.position(0));
     for(int i = 0; i < ls.size(); i++) {
       Assertions.assertEquals(ls.get(i), arr[i]);
     }
-    ArrayBox<String> box = new ArrayBoxImpl<>(buf.position(0));
+    ArrayBox<String> box = new ArrayBoxImpl<>(buf.position(0), cfg);
     Assertions.assertEquals(ls.get(0), box.get(0));
     Assertions.assertEquals(ls.get(2), box.get(2));
   }
@@ -277,7 +280,7 @@ public class TestTransform {
   @Test
   public void enum_transform() {
     BitBuffer buf = new BitBufferImpl(256, true);
-    EnumTransform<Weather> tran = new EnumTransform<>();
+    EnumTransform<Weather> tran = new EnumTransform<>(cfg);
     int len = tran.box(Weather.RAIN, buf);
     Assertions.assertEquals(len, buf.position());
     Assertions.assertEquals(Weather.RAIN, tran.unbox(buf.position(0)));
@@ -292,7 +295,7 @@ public class TestTransform {
     m.put("Integer.ZERO", 0);
     m.put("Integer.MAX_VALUE", Integer.MAX_VALUE);
     System.out.println(m);
-    PolymorphMapTransform tran = new PolymorphMapTransform();
+    PolymorphMapTransform tran = new PolymorphMapTransform(cfg);
     BitBuffer b = BitBuffer.of(256, true);
     int len = tran.box(m, b);
     Assertions.assertEquals(len, b.position());
@@ -301,7 +304,7 @@ public class TestTransform {
     Assertions.assertEquals(m.get("Integer.MIN_VALUE"), f.get("Integer.MIN_VALUE"));
     Assertions.assertEquals(m.get("Integer.ZERO"), f.get("Integer.ZERO"));
     Assertions.assertEquals(m.get("Integer.MAX_VALUE"), f.get("Integer.MAX_VALUE"));
-    MapBox box = new PolymorphMapBox(b.position(0));
+    MapBox box = new PolymorphMapBox(b.position(0), cfg);
     Assertions.assertEquals(m.get("Integer.MIN_VALUE"), box.get("Integer.MIN_VALUE"));
     Assertions.assertEquals(m.get("Integer.ZERO"), box.get("Integer.ZERO"));
     Assertions.assertEquals(m.get("Integer.MAX_VALUE"), box.get("Integer.MAX_VALUE"));
@@ -318,14 +321,13 @@ public class TestTransform {
     ls.add("Hello");
     ls.add(new Address("Cond Mini Chacaras", new int[]{21}, "Altiplano Leste", "7-4-21", "Brasilia", Address.UF.DF, 71680621));
     Logger.debug(ls);
-    PolymorphCollectionTransform ptran = new PolymorphCollectionTransform();
+    PolymorphCollectionTransform ptran = new PolymorphCollectionTransform(cfg);
     BitBuffer buf = BitBuffer.of(512, true);
     int len = ptran.box(ls, buf);
     Logger.debug("Serialized list length = {}", len);
     Assertions.assertEquals(len, buf.position());
-    ls = (List) ptran.unbox(buf.position(0));
-    Logger.debug(ls);
-    PolymorphArrayBoxImpl box = new PolymorphArrayBoxImpl(buf.position(0));
+    Logger.debug(ptran.unbox(buf.position(0)));
+    PolymorphArrayBoxImpl box = new PolymorphArrayBoxImpl(buf.position(0), cfg);
     Assertions.assertEquals(ls.get(4), box.get(4));
     Assertions.assertEquals(ls.get(5), box.get(5));
     Assertions.assertEquals(ls.get(6), box.get(6));

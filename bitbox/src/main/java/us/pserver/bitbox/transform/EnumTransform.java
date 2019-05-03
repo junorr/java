@@ -5,9 +5,10 @@
  */
 package us.pserver.bitbox.transform;
 
+import java.util.Objects;
 import java.util.Optional;
+import us.pserver.bitbox.BitBoxConfiguration;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 
 
@@ -16,6 +17,12 @@ import us.pserver.bitbox.impl.BitBuffer;
  * @author juno
  */
 public class EnumTransform<T extends Enum> implements BitTransform<T>{
+  
+  private final BitBoxConfiguration cfg;
+  
+  public EnumTransform(BitBoxConfiguration cfg) {
+    this.cfg = Objects.requireNonNull(cfg);
+  }
   
   @Override
   public boolean match(Class c) {
@@ -29,8 +36,8 @@ public class EnumTransform<T extends Enum> implements BitTransform<T>{
   
   @Override
   public int box(T e, BitBuffer buf) {
-    BitTransform<String> stran = BitBoxRegistry.INSTANCE.getAnyTransform(String.class);
-    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
+    BitTransform<String> stran = cfg.getTransform(String.class);
+    BitTransform<Class> ctran = cfg.getTransform(Class.class);
     Class<T> c = (Class<T>) e.getClass();
     return stran.box(e.name(), buf) + ctran.box(c, buf);
   }
@@ -38,8 +45,8 @@ public class EnumTransform<T extends Enum> implements BitTransform<T>{
 
   @Override
   public T unbox(BitBuffer buf) {
-    BitTransform<String> stran = BitBoxRegistry.INSTANCE.getAnyTransform(String.class);
-    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
+    BitTransform<String> stran = cfg.getTransform(String.class);
+    BitTransform<Class> ctran = cfg.getTransform(Class.class);
     String name = stran.unbox(buf);
     Class<T> c = (Class<T>) ctran.unbox(buf);
     return (T) Enum.valueOf(c, name);

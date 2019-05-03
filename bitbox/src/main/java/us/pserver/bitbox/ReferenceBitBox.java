@@ -5,9 +5,9 @@
  */
 package us.pserver.bitbox;
 
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import us.pserver.bitbox.impl.BitBuffer;
+import us.pserver.bitbox.impl.ReferenceBitBoxImpl;
 
 
 /**
@@ -15,6 +15,8 @@ import us.pserver.bitbox.impl.BitBuffer;
  * @author juno
  */
 public interface ReferenceBitBox {
+  
+  public BitBoxConfiguration configure();
   
   public Reference box(Object obj);
   
@@ -26,21 +28,12 @@ public interface ReferenceBitBox {
   
   
   public static ReferenceBitBox of(ReferenceService service) {
-    return new ReferenceBitBox() {
-      @Override
-      public Reference box(Object obj) {
-        Reference
-        
-      }
-      @Override
-      public void box(Object obj, Consumer<Reference> cs) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-      }
-      @Override
-      public <T> T unbox(BitBuffer buf) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-      }
-    };
+    return new ReferenceBitBoxImpl(service);
+  }
+  
+  
+  public static ReferenceBitBox of(ReferenceService service, BitBoxConfiguration cfg) {
+    return new ReferenceBitBoxImpl(service, cfg);
   }
   
 }

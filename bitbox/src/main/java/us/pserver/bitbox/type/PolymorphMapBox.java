@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package us.pserver.bitbox.impl;
+package us.pserver.bitbox.type;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import us.pserver.bitbox.BitBoxConfiguration;
 import us.pserver.bitbox.MapBox;
+import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.bitbox.transform.PolymorphEntryTransform;
 
 
@@ -20,7 +22,9 @@ import us.pserver.bitbox.transform.PolymorphEntryTransform;
  */
 public class PolymorphMapBox implements MapBox<Object,Object> {
   
-  private final PolymorphEntryTransform etran = new PolymorphEntryTransform();
+  private final BitBoxConfiguration cfg;
+  
+  private final PolymorphEntryTransform etran;
   
   private final BitBuffer buffer;
   
@@ -28,8 +32,10 @@ public class PolymorphMapBox implements MapBox<Object,Object> {
   
   private final int size;
   
-  public PolymorphMapBox(BitBuffer buf) {
+  public PolymorphMapBox(BitBuffer buf, BitBoxConfiguration cfg) {
     this.buffer = Objects.requireNonNull(buf);
+    this.cfg = Objects.requireNonNull(cfg);
+    this.etran = new PolymorphEntryTransform(cfg);
     this.startPos = buffer.position();
     this.size = buffer.getInt(startPos);
   }

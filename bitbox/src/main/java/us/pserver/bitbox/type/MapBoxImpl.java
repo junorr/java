@@ -1,4 +1,4 @@
-package us.pserver.bitbox.impl;
+package us.pserver.bitbox.type;
 
 import java.util.AbstractMap;
 import java.util.List;
@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import us.pserver.bitbox.ArrayBox;
+import us.pserver.bitbox.BitBoxConfiguration;
 import us.pserver.bitbox.MapBox;
+import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.bitbox.transform.MapTransform;
 import us.pserver.tools.Indexed;
 
@@ -24,13 +26,16 @@ public class MapBoxImpl<K,V> implements MapBox<K,V> {
   
   private final ArrayBox<V> vals;
   
+  private final BitBoxConfiguration cfg;
   
-  public MapBoxImpl(BitBuffer buffer) {
+  
+  public MapBoxImpl(BitBuffer buffer, BitBoxConfiguration cfg) {
     this.buffer = Objects.requireNonNull(buffer);
+    this.cfg = Objects.requireNonNull(cfg);
     this.startPos = buffer.position();
     int vpos = buffer.getInt();
-    this.keys = new ArrayBoxImpl<>(buffer.duplicate());
-    this.vals = new ArrayBoxImpl<>(buffer.position(vpos).duplicate());
+    this.keys = new ArrayBoxImpl<>(buffer.duplicate(), cfg);
+    this.vals = new ArrayBoxImpl<>(buffer.position(vpos).duplicate(), cfg);
   }
   
   @Override
@@ -83,7 +88,7 @@ public class MapBoxImpl<K,V> implements MapBox<K,V> {
   
   @Override
   public Map<K, V> getValue() {
-    return new MapTransform<K,V>().unbox(buffer.position(startPos));
+    return new MapTransform<K,V>(cfg).unbox(buffer.position(startPos));
   }
   
 }

@@ -21,6 +21,7 @@
 
 package us.pserver.bitbox;
 
+import us.pserver.bitbox.impl.BitBoxImpl;
 import us.pserver.bitbox.impl.BitBuffer;
 
 /**
@@ -33,5 +34,17 @@ public interface BitBox {
   public void box(Object obj, BitBuffer buf);
   
   public <T> T unbox(BitBuffer buf);
+  
+  public BitBoxConfiguration configure();
+  
+  
+  public static BitBox create() {
+    return new BitBoxImpl();
+  }
+  
+  
+  public static BitBox create(BitBoxConfiguration cfg) {
+    return new BitBoxImpl(cfg);
+  }
   
 }

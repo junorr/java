@@ -1,9 +1,11 @@
-package us.pserver.bitbox.impl;
+package us.pserver.bitbox.type;
 
 import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import us.pserver.bitbox.ArrayBox;
+import us.pserver.bitbox.BitBoxConfiguration;
+import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.bitbox.transform.PolymorphNodeTransform;
 
 
@@ -17,12 +19,15 @@ public class PolymorphArrayBoxImpl implements ArrayBox<Object> {
   
   private final PolymorphNodeTransform transform;
   
+  private final BitBoxConfiguration cfg;
   
-  public PolymorphArrayBoxImpl(BitBuffer buf) {
+  
+  public PolymorphArrayBoxImpl(BitBuffer buf, BitBoxConfiguration cfg) {
     this.buffer = Objects.requireNonNull(buf);
+    this.cfg = Objects.requireNonNull(cfg);
     this.startPos = buffer.position();
     this.size = buffer.getInt();
-    this.transform = new PolymorphNodeTransform();
+    this.transform = new PolymorphNodeTransform(cfg);
   }
   
   @Override

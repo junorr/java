@@ -7,13 +7,14 @@ package us.pserver.bitbox.transform;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import us.pserver.bitbox.BitBoxConfiguration;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.tools.Indexed;
 
@@ -24,7 +25,11 @@ import us.pserver.tools.Indexed;
  */
 public class PolymorphCollectionTransform implements BitTransform<Collection> {
   
-  private final PolymorphNodeTransform ptran = new PolymorphNodeTransform();
+  private final PolymorphNodeTransform ptran;
+  
+  public PolymorphCollectionTransform(BitBoxConfiguration cfg) {
+    this.ptran = new PolymorphNodeTransform(Objects.requireNonNull(cfg));
+  }
   
   @Override
   public boolean match(Class c) {
