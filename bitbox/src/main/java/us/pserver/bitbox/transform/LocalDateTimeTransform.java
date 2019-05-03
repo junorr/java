@@ -21,7 +21,10 @@
 
 package us.pserver.bitbox.transform;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.impl.BitBuffer;
@@ -33,7 +36,7 @@ import us.pserver.bitbox.impl.BitBuffer;
  */
 public class LocalDateTimeTransform implements BitTransform<LocalDateTime> {
   
-  private CharSequenceTransform stran = new CharSequenceTransform();
+  public static final ZoneId ZID = ZoneId.of("Z");
   
   @Override
   public boolean match(Class c) {
@@ -47,12 +50,13 @@ public class LocalDateTimeTransform implements BitTransform<LocalDateTime> {
   
   @Override
   public int box(LocalDateTime l, BitBuffer buf) {
-    return stran.box(l.toString(), buf);
+    buf.putLong(l.toInstant(ZoneOffset.UTC).toEpochMilli());
+    return Long.BYTES;
   }
   
   @Override
   public LocalDateTime unbox(BitBuffer buf) {
-    return LocalDateTime.parse(stran.unbox(buf));
+    return LocalDateTime.ofInstant(Instant.ofEpochMilli(buf.getLong()), ZID);
   }
   
 }

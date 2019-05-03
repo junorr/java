@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package us.pserver.bitbox.inspect;
+package us.pserver.bitbox.spec;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import us.pserver.bitbox.BitCreate;
 import us.pserver.bitbox.BitIgnore;
 import us.pserver.bitbox.BitProperty;
 import us.pserver.bitbox.BitType;
-import us.pserver.bitbox.BoxRegistry;
+import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.SerializedType;
 import us.pserver.bitbox.TypeMatching;
 import us.pserver.tools.Reflect;
@@ -78,14 +78,13 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
     }
     
     private GetterTarget<T,Object> toGetterTarget(Method m) {
-      return (GetterTarget<T,Object>) GetterTarget.of(
-          getPropertyName(m), m.getReturnType(),
-          Reflect.of(cls, BoxRegistry.INSTANCE.lookup()).selectMethod(m).dynamicSupplierMethod()
+      return (GetterTarget<T,Object>) GetterTarget.of(getPropertyName(m), m.getReturnType(),
+          Reflect.of(cls, BitBoxRegistry.INSTANCE.lookup()).selectMethod(m).dynamicSupplierMethod()
       );
     }
     
     private Set<GetterTarget<T,Object>> scanGetters() {
-      return Reflect.of(cls, BoxRegistry.INSTANCE.lookup()).streamMethods()
+      return Reflect.of(cls, BitBoxRegistry.INSTANCE.lookup()).streamMethods()
           .filter(m -> m.getParameterCount() == 0)
           .filter(m -> m.getReturnType() != void.class)
           .filter(this::isGetter)
@@ -139,7 +138,7 @@ public interface ObjectSpec<T> extends TypeMatching, SerializedType {
     }
     
     private Optional<ConstructorTarget<T>> scanConstructor(Set<GetterTarget<T,Object>> getters) {
-      Reflect<T> ref = Reflect.of(cls, BoxRegistry.INSTANCE.lookup());
+      Reflect<T> ref = Reflect.of(cls, BitBoxRegistry.INSTANCE.lookup());
       return scanBitCreateConstructor(ref, getters)
           .or(() -> scanBitCreateMethod(ref, getters))
           .or(() -> guessConstructor(ref, getters));

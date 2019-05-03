@@ -21,7 +21,6 @@
 
 package us.pserver.bitbox.test;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -52,7 +51,7 @@ public class TestRuntimeTypes {
           .reflectCompiled();
       Supplier<String> sup = ref
           .selectConstructor(String.class)
-          .reflectCreate("Juno")
+          .createReflected("Juno")
           .selectMethod("greet")
           .methodAsSupplier();
       Assertions.assertEquals("Hello, Juno", sup.get());

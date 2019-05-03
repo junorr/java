@@ -193,7 +193,7 @@ public class Reflect<T> {
 	}
 	
 	
-  public Reflect<T> reflectCreate(Object ... args) {
+  public Reflect<T> createReflected(Object ... args) {
     return new Reflect(create(args), lookup);
   }
 	
@@ -213,7 +213,7 @@ public class Reflect<T> {
 	}
   
   
-  public Reflect<T> createReflect() {
+  public Reflect<T> createReflected() {
     return new Reflect(create(), lookup);
   }
 	

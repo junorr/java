@@ -21,6 +21,8 @@
 
 package us.pserver.bitbox;
 
+import us.pserver.bitbox.impl.BitBuffer;
+
 /**
  *
  * @author Juno Roesler - juno@pserver.us
@@ -28,6 +30,8 @@ package us.pserver.bitbox;
  */
 public interface BitBox {
 
-  public <T> DataBox<T> toBox(T obj);
+  public void box(Object obj, BitBuffer buf);
+  
+  public <T> T unbox(BitBuffer buf);
   
 }

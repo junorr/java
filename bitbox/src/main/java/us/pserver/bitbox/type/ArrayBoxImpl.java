@@ -5,7 +5,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import us.pserver.bitbox.ArrayBox;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BoxRegistry;
+import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.transform.ArrayTransform;
 
 
@@ -19,17 +19,14 @@ public class ArrayBoxImpl<T> implements ArrayBox<T> {
   
   private final Class<T> type;
   
-  private final BitTransform<T> transform;
-  
   
   public ArrayBoxImpl(BitBuffer buf) {
     this.buffer = Objects.requireNonNull(buf);
     this.startPos = buffer.position();
     this.size = buffer.getInt();
     buffer.position(startPos + Integer.BYTES * (size + 1));
-    BitTransform<Class> ct = BoxRegistry.INSTANCE.getAnyTransform(Class.class);
+    BitTransform<Class> ct = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
     this.type = (Class<T>) ct.unbox(buffer);
-    this.transform = BoxRegistry.INSTANCE.getAnyTransform(type);
   }
   
   @Override
@@ -46,6 +43,7 @@ public class ArrayBoxImpl<T> implements ArrayBox<T> {
   public T get(int idx) {
     buffer.position(startPos + Integer.BYTES * (1 + idx));
     int pos = buffer.getInt();
+    BitTransform<T> transform = BitBoxRegistry.INSTANCE.getAnyTransform(type);
     return pos < 0 ? null : transform.unbox(buffer.position(pos));
   }
   

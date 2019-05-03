@@ -14,10 +14,10 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BoxRegistry;
+import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
-import us.pserver.bitbox.inspect.GetterTarget;
-import us.pserver.bitbox.inspect.ObjectSpec;
+import us.pserver.bitbox.spec.GetterTarget;
+import us.pserver.bitbox.spec.ObjectSpec;
 import us.pserver.tools.Indexed;
 
 
@@ -27,13 +27,11 @@ import us.pserver.tools.Indexed;
  */
 public class GlobalObjectTransform implements BitTransform<Object> {
   
-  private final ClassTransform ctran = new ClassTransform();
-  
   private final PolymorphMapTransform dtran = new PolymorphMapTransform();
   
   @Override
   public boolean match(Class c) {
-    return !BoxRegistry.INSTANCE.containsTransform(c);
+    return !BitBoxRegistry.INSTANCE.containsTransform(c);
   }
   
   @Override
@@ -42,10 +40,10 @@ public class GlobalObjectTransform implements BitTransform<Object> {
   }
   
   private ObjectSpec getOrCreateSpec(Class c) {
-    Optional<ObjectSpec> opt = BoxRegistry.INSTANCE.specFor(c);
+    Optional<ObjectSpec> opt = BitBoxRegistry.INSTANCE.specFor(c);
     if(opt.isEmpty()) {
       ObjectSpec spec = ObjectSpec.createSpec(c);
-      BoxRegistry.INSTANCE.addSpec(spec);
+      BitBoxRegistry.INSTANCE.addSpec(spec);
       return spec;
     }
     return opt.get();
@@ -58,6 +56,7 @@ public class GlobalObjectTransform implements BitTransform<Object> {
       return Integer.BYTES;
     }
     Class c = o.getClass();
+    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
     ObjectSpec spec = getOrCreateSpec(c);
     Map<String,Object> m = new TreeMap<>();
     Set<GetterTarget> getters = spec.getters();
@@ -82,6 +81,7 @@ public class GlobalObjectTransform implements BitTransform<Object> {
     int mpos = b.getInt();
     if(mpos == 0) return null;
     b.position(pos + Integer.BYTES);
+    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
     Class c = ctran.unbox(b);
     Map m = dtran.unbox(b);
     ObjectSpec spec = getOrCreateSpec(c);

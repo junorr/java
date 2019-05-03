@@ -25,6 +25,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
 import org.junit.jupiter.api.Assertions;
@@ -135,7 +137,7 @@ public class TestTransform {
     BitBuffer buffer = BitBuffer.of(100, false);
     int len = lt.box(now, buffer);
     Assertions.assertEquals(len, buffer.position());
-    Assertions.assertEquals(now, lt.unbox(buffer.position(0)));
+    Assertions.assertEquals(now.toInstant(ZoneOffset.UTC).toEpochMilli(), lt.unbox(buffer.position(0)).toInstant(ZoneOffset.UTC).toEpochMilli());
   }
   
   @Test
@@ -221,14 +223,21 @@ public class TestTransform {
     Assertions.assertEquals(ins.get(4), box.get(4));
   }
   
+  private LocalDateTime currentTimeMillis() {
+    return LocalDateTime.ofInstant(
+        Instant.ofEpochMilli(System.currentTimeMillis()), 
+        ZoneId.of("Z")
+    );
+  }
+  
   @Test
   public void map_transform() throws UnknownHostException {
     Map<Integer,LocalDateTime> m = new HashMap<>();
-    m.put(0, LocalDateTime.now());
-    m.put(1, LocalDateTime.now());
-    m.put(2, LocalDateTime.now());
-    m.put(3, LocalDateTime.now());
-    m.put(4, LocalDateTime.now());
+    m.put(0, currentTimeMillis());
+    m.put(1, currentTimeMillis());
+    m.put(2, currentTimeMillis());
+    m.put(3, currentTimeMillis());
+    m.put(4, currentTimeMillis());
     MapTransform<Integer,LocalDateTime> trans = new MapTransform<>();
     BitBuffer out = BitBuffer.of(200, false);
     int len = trans.box(m,out);

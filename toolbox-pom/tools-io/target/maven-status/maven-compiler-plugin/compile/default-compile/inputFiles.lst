@@ -1,7 +1,7 @@
-/media/storage/java/toolbox-pom/tools-io/src/main/java/us/pserver/tools/io/ResourceLoader.java
-/media/storage/java/toolbox-pom/tools-io/src/main/java/us/pserver/tools/io/IOStream.java
-/media/storage/java/toolbox-pom/tools-io/src/main/java/us/pserver/tools/io/FixedInputStream.java
-/media/storage/java/toolbox-pom/tools-io/src/main/java/us/pserver/tools/io/DynamicByteBuffer.java
-/media/storage/java/toolbox-pom/tools-io/src/main/java/us/pserver/tools/io/NullOutputStream.java
-/media/storage/java/toolbox-pom/tools-io/src/main/java/us/pserver/tools/io/MultipleOutputStream.java
-/media/storage/java/toolbox-pom/tools-io/src/main/java/module-info.java
+D:\java\toolbox-pom\tools-io\src\main\java\us\pserver\tools\io\ResourceLoader.java
+D:\java\toolbox-pom\tools-io\src\main\java\us\pserver\tools\io\FixedInputStream.java
+D:\java\toolbox-pom\tools-io\src\main\java\module-info.java
+D:\java\toolbox-pom\tools-io\src\main\java\us\pserver\tools\io\DynamicByteBuffer.java
+D:\java\toolbox-pom\tools-io\src\main\java\us\pserver\tools\io\NullOutputStream.java
+D:\java\toolbox-pom\tools-io\src\main\java\us\pserver\tools\io\IOStream.java
+D:\java\toolbox-pom\tools-io\src\main\java\us\pserver\tools\io\MultipleOutputStream.java

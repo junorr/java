@@ -7,6 +7,7 @@ package us.pserver.bitbox.transform;
 
 import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
+import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 
 
@@ -16,16 +17,11 @@ import us.pserver.bitbox.impl.BitBuffer;
  */
 public class EnumTransform<T extends Enum> implements BitTransform<T>{
   
-  private final CharSequenceTransform stran = new CharSequenceTransform();
-  
-  private final ClassTransform ctran = new ClassTransform();
-  
   @Override
   public boolean match(Class c) {
     return c.isEnum();
   }
-
-
+  
   @Override
   public Optional<Class> serialType() {
     return Optional.empty();
@@ -33,6 +29,8 @@ public class EnumTransform<T extends Enum> implements BitTransform<T>{
   
   @Override
   public int box(T e, BitBuffer buf) {
+    BitTransform<String> stran = BitBoxRegistry.INSTANCE.getAnyTransform(String.class);
+    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
     Class<T> c = (Class<T>) e.getClass();
     return stran.box(e.name(), buf) + ctran.box(c, buf);
   }
@@ -40,7 +38,9 @@ public class EnumTransform<T extends Enum> implements BitTransform<T>{
 
   @Override
   public T unbox(BitBuffer buf) {
-    String name = stran.unbox(buf).toString();
+    BitTransform<String> stran = BitBoxRegistry.INSTANCE.getAnyTransform(String.class);
+    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
+    String name = stran.unbox(buf);
     Class<T> c = (Class<T>) ctran.unbox(buf);
     return (T) Enum.valueOf(c, name);
   }

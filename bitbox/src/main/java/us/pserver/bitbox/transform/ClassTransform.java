@@ -2,7 +2,7 @@ package us.pserver.bitbox.transform;
 
 import java.util.Optional;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BoxRegistry;
+import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.tools.Unchecked;
 
@@ -30,7 +30,7 @@ public class ClassTransform implements BitTransform<Class> {
   @Override
   public Class unbox(BitBuffer buf) {
     Class c = Unchecked.call(() ->
-        BoxRegistry.INSTANCE.lookup().findClass(strans.unbox(buf).toString())
+        BitBoxRegistry.INSTANCE.lookup().findClass(strans.unbox(buf).toString())
     );
     //Logger.debug(c);
     return c;

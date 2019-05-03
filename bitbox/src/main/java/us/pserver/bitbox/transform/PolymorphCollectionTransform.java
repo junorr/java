@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BoxRegistry;
+import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.tools.Indexed;
 

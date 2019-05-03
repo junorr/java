@@ -42,7 +42,7 @@ public class TestReflect {
     System.out.println("===================================");
     System.out.println("  public void test_greet_method()");
     System.out.println("-----------------------------------");
-    Reflect rfl = Reflect.of(ReflectTarget.class).reflectCreate("Juno");
+    Reflect rfl = Reflect.of(ReflectTarget.class).createReflected("Juno");
     Assertions.assertEquals("Hello Juno! ", rfl.selectMethod("greet").invoke());
   }
   
@@ -51,7 +51,7 @@ public class TestReflect {
     System.out.println("==========================================");
     System.out.println("  public void test_greet_string_method()");
     System.out.println("------------------------------------------");
-    Reflect rfl = Reflect.of(ReflectTarget.class).reflectCreate();
+    Reflect rfl = Reflect.of(ReflectTarget.class).createReflected();
     Assertions.assertEquals("Hello Juno! ", rfl.selectMethod("greet", String.class).invoke("Juno"));
   }
   
@@ -60,7 +60,7 @@ public class TestReflect {
     System.out.println("=======================================");
     System.out.println("  public void test_withHello_method()");
     System.out.println("---------------------------------------");
-    Reflect rfl = Reflect.of(ReflectTarget.class).reflectCreate();
+    Reflect rfl = Reflect.of(ReflectTarget.class).createReflected();
     Assertions.assertEquals("Hello Juno! ", Reflect.of(rfl.selectMethod("withHello").invoke("Juno")).selectMethod("greet").invoke());
     Assertions.assertEquals("Hello Juno! ", Reflect.of(rfl.invokeMethod("withHello", "Juno")).invokeMethod("greet"));
   }
@@ -70,7 +70,7 @@ public class TestReflect {
     System.out.println("==================================");
     System.out.println("  public void test_magic_field()");
     System.out.println("----------------------------------");
-    Reflect rfl = Reflect.of(ReflectTarget.class).reflectCreate().selectField("magic").set(43);
+    Reflect rfl = Reflect.of(ReflectTarget.class).createReflected().selectField("magic").set(43);
     Assertions.assertEquals(43, rfl.get());
   }
   
@@ -80,7 +80,7 @@ public class TestReflect {
     System.out.println("  public void test_method_supplier()");
     System.out.println("-------------------------------------");
     try {
-      Reflect r = Reflect.of(ReflectTarget.class).reflectCreate("Juno");
+      Reflect r = Reflect.of(ReflectTarget.class).createReflected("Juno");
       Supplier<String> greet = r.selectMethod("greet").methodAsSupplier();
       Assertions.assertEquals("Hello Juno! ", greet.get());
     }
@@ -96,7 +96,7 @@ public class TestReflect {
     System.out.println("  public void test_method_consumer()");
     System.out.println("-------------------------------------");
     try {
-      Reflect r = Reflect.of(ReflectTarget.class).reflectCreate();
+      Reflect r = Reflect.of(ReflectTarget.class).createReflected();
       Consumer<String> greet = r.selectMethod("printGreet", String.class).methodAsConsumer();
       greet.accept("Juno");
     }
@@ -112,7 +112,7 @@ public class TestReflect {
     System.out.println("  public void test_method_function()");
     System.out.println("-------------------------------------");
     try {
-      Reflect r = Reflect.of(ReflectTarget.class).reflectCreate();
+      Reflect r = Reflect.of(ReflectTarget.class).createReflected();
       Function<String,String> greet = r.selectMethod("greet", String.class).methodAsFunction();
       Assertions.assertEquals("Hello Juno! ", greet.apply("Juno"));
     }
@@ -128,7 +128,7 @@ public class TestReflect {
     System.out.println("  public void test_method_lambda()");
     System.out.println("-----------------------------------");
     try {
-      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate();
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).createReflected();
       Function<String,String> greet = r.selectMethod("greet", String.class).methodAsLambda(Function.class);
       Assertions.assertEquals("Hello Juno! ", greet.apply("Juno"));
     }
@@ -144,7 +144,7 @@ public class TestReflect {
     System.out.println("  public void test_method_bi_function()");
     System.out.println("-------------------------------------");
     try {
-      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate();
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).createReflected();
       BiFunction<String,String,String> greet = r.selectMethod("greet", String.class, String.class).methodAsBiFunction();
       Assertions.assertEquals("Hello Juno Roesler! ", greet.apply("Juno", "Roesler"));
     }
@@ -160,7 +160,7 @@ public class TestReflect {
     System.out.println("  public void test_method_runnable()");
     System.out.println("-------------------------------------");
     try {
-      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate("Juno");
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).createReflected("Juno");
       Runnable print = r.selectMethod("printGreet").methodAsRunnable();
       print.run();
     }
@@ -177,7 +177,7 @@ public class TestReflect {
     System.out.println("  public void test_method_function_performance()");
     System.out.println("-------------------------------------------------");
     try {
-      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate().selectMethod("greet", String.class);
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).createReflected().selectMethod("greet", String.class);
       ReflectTarget target = (ReflectTarget) r.getTarget();
       Function<String,String> greet = r.methodAsFunction();
       BiFunction<ReflectTarget,String,String> dynamicGreet = r.dynamicFunctionMethod();
@@ -242,7 +242,7 @@ public class TestReflect {
     System.out.println("  public void test_method_supplier_performance()");
     System.out.println("-------------------------------------------------");
     try {
-      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate("Juno").selectMethod("greet");
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).createReflected("Juno").selectMethod("greet");
       ReflectTarget target = (ReflectTarget) r.getTarget();
       Supplier<String> greet = r.methodAsSupplier();
       Function<ReflectTarget,String> dynamicGreet = r.dynamicSupplierMethod();
@@ -446,7 +446,7 @@ public class TestReflect {
     System.out.println("  public void test_lambda_autobxing_performance()");
     System.out.println("-------------------------------------------------");
     try {
-      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).reflectCreate().selectMethod("hashCode");
+      Reflect<ReflectTarget> r = Reflect.of(ReflectTarget.class).createReflected().selectMethod("hashCode");
       ReflectTarget target = (ReflectTarget) r.getTarget();
       Supplier<Integer> IHashCode = r.methodAsLambda(Supplier.class);
       IntSupplier iHashCode = r.methodAsLambda(IntSupplier.class);

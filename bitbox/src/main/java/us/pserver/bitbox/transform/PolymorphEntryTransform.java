@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.tinylog.Logger;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BoxRegistry;
+import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 
 
@@ -22,8 +22,6 @@ import us.pserver.bitbox.impl.BitBuffer;
  */
 public class PolymorphEntryTransform implements BitTransform<Map.Entry>{
   
-  private final ClassTransform ctran = new ClassTransform();
-
   @Override
   public boolean match(Class c) {
     return Map.Entry.class.isAssignableFrom(c);
@@ -44,8 +42,9 @@ public class PolymorphEntryTransform implements BitTransform<Map.Entry>{
     Class kclass = e.getKey().getClass();
     Class vclass = e.getValue() != null ? e.getValue().getClass() : Void.class;
     //System.out.printf("!!  box< %s, %s > !!%n", kclass, vclass);
-    BitTransform ktran = BoxRegistry.INSTANCE.getAnyTransform(kclass);
-    BitTransform vtran = BoxRegistry.INSTANCE.getAnyTransform(vclass);
+    BitTransform ktran = BitBoxRegistry.INSTANCE.getAnyTransform(kclass);
+    BitTransform vtran = BitBoxRegistry.INSTANCE.getAnyTransform(vclass);
+    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
     b.position(startPos + Integer.BYTES);
     len += ctran.box((Class)ktran.serialType().orElse(kclass), b);
     len += ktran.box(e.getKey(), b);
@@ -62,14 +61,15 @@ public class PolymorphEntryTransform implements BitTransform<Map.Entry>{
   public Map.Entry unbox(BitBuffer b) {
     int vpos = b.getInt();
     //Logger.debug("vpos = {}", vpos);
+    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
     Class kclass = ctran.unbox(b);
     //Logger.debug("Entry< {}, Y >", kclass);
     int kpos = b.position();
     Class vclass = ctran.unbox(b.position(vpos));
     //Logger.debug("Entry< {}, {} >", kclass, vclass);
     vpos = b.position();
-    BitTransform ktran = BoxRegistry.INSTANCE.getAnyTransform(kclass);
-    BitTransform vtran = BoxRegistry.INSTANCE.getAnyTransform(vclass);
+    BitTransform ktran = BitBoxRegistry.INSTANCE.getAnyTransform(kclass);
+    BitTransform vtran = BitBoxRegistry.INSTANCE.getAnyTransform(vclass);
     //Logger.debug("ktran = {}, vtran = {}", ktran.getClass().getSimpleName(), vtran.getClass().getSimpleName());
     Object k = ktran.unbox(b.position(kpos));
     Object v = vtran.unbox(b.position(vpos));

@@ -1,7 +1,7 @@
-us/pserver/tools/test/TestReflect.class
-us/pserver/tools/test/ReflectTarget.class
+us\pserver\tools\test\StringPadTest.class
+us\pserver\tools\test\ReflectTarget.class
+us\pserver\tools\test\TestReflect.class
 module-info.class
-us/pserver/tools/test/StringPadTest.class
-us/pserver/tools/test/TestStringEncode.class
-us/pserver/tools/test/TestIndexed.class
-us/pserver/tools/test/TestUnchecked.class
+us\pserver\tools\test\TestStringEncode.class
+us\pserver\tools\test\TestIndexed.class
+us\pserver\tools\test\TestUnchecked.class

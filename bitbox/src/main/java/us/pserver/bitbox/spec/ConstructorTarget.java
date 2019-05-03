@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package us.pserver.bitbox.inspect;
+package us.pserver.bitbox.spec;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;
@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import us.pserver.bitbox.BitCreate;
-import us.pserver.bitbox.BoxRegistry;
+import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.tools.Unchecked;
 
 
@@ -33,7 +33,7 @@ public interface ConstructorTarget<T> extends Function<Object[],T> {
   
   
   public static <U> ConstructorTarget<U> of(Constructor<U> cct) {
-    final MethodHandle cmh = Unchecked.call(() -> BoxRegistry.INSTANCE.lookup().unreflectConstructor(cct));
+    final MethodHandle cmh = Unchecked.call(() -> BitBoxRegistry.INSTANCE.lookup().unreflectConstructor(cct));
     final List<String> names = getParameterNames(cct);
     return new ConstructorTarget<>() {
       public List<Class> getParameterTypes() {
@@ -68,7 +68,7 @@ public interface ConstructorTarget<T> extends Function<Object[],T> {
   }
   
   public static <U> ConstructorTarget<U> of(Method mth) {
-    final MethodHandle cmh = Unchecked.call(() -> BoxRegistry.INSTANCE.lookup().unreflect(mth));
+    final MethodHandle cmh = Unchecked.call(() -> BitBoxRegistry.INSTANCE.lookup().unreflect(mth));
     final List<String> names = getParameterNames(mth);
     return new ConstructorTarget<>() {
       public List<Class> getParameterTypes() {

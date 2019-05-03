@@ -24,7 +24,7 @@ package us.pserver.bitbox.transform;
 import java.util.Optional;
 import org.tinylog.Logger;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BoxRegistry;
+import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 
 /**
@@ -34,15 +34,11 @@ import us.pserver.bitbox.impl.BitBuffer;
  */
 public class PolymorphNodeTransform implements BitTransform<Object> {
 
-  private final ClassTransform ctran = new ClassTransform();
-
-
   @Override
   public boolean match(Class c) {
     return false;
   }
-
-
+  
   @Override
   public int box(Object obj, BitBuffer buf) {
     if(obj == null) {
@@ -52,7 +48,8 @@ public class PolymorphNodeTransform implements BitTransform<Object> {
     int pos = buf.position();
     Class c = obj.getClass();
     //Logger.debug("Node({}: {})", c.getSimpleName(), obj);
-    BitTransform trans = BoxRegistry.INSTANCE.getAnyTransform(c);
+    BitTransform trans = BitBoxRegistry.INSTANCE.getAnyTransform(c);
+    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
     int len = Integer.BYTES;
     buf.position(pos + len);
     len += ctran.box(trans.serialType().orElse(c), buf);
@@ -62,25 +59,22 @@ public class PolymorphNodeTransform implements BitTransform<Object> {
     buf.position(pos + len);
     return len;
   }
-
-
+  
   @Override
   public Object unbox(BitBuffer buf) {
     int vpos = buf.getInt();
     if(vpos < 0) return null;
+    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
     Class c = ctran.unbox(buf);
-    BitTransform trans = BoxRegistry.INSTANCE.getAnyTransform(c);
+    BitTransform trans = BitBoxRegistry.INSTANCE.getAnyTransform(c);
     Object o = trans.unbox(buf);
     //Logger.debug("Node({}: {})", c.getSimpleName(), o);
     return o;
   }
-
-
+  
   @Override
   public Optional<Class> serialType() {
     return Optional.empty();
   }
-  
-  
   
 }

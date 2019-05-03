@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tinylog.Logger;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BoxRegistry;
+import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
-import us.pserver.bitbox.inspect.ObjectSpec;
+import us.pserver.bitbox.spec.ObjectSpec;
 
 
 /**
@@ -26,7 +26,7 @@ public class TestObjectSpec {
   @Test
   public void test_person_object_spec() {
     try {
-      BoxRegistry.INSTANCE.lookup(MethodHandles.lookup());
+      BitBoxRegistry.INSTANCE.lookup(MethodHandles.lookup());
       ObjectSpec<Person> spec = ObjectSpec.createSpec(Person.class);
       spec.getters().forEach(System.out::println);
       Logger.debug("* contructor: {}", spec.constructor());
@@ -40,7 +40,7 @@ public class TestObjectSpec {
   @Test
   public void test_address_object_spec() {
     try {
-      BoxRegistry.INSTANCE.lookup(MethodHandles.lookup());
+      BitBoxRegistry.INSTANCE.lookup(MethodHandles.lookup());
       ObjectSpec<Address> spec = ObjectSpec.createSpec(Address.class);
       spec.getters().forEach(System.out::println);
       System.out.printf("* contructor: %s%n", spec.constructor());
@@ -65,7 +65,7 @@ public class TestObjectSpec {
       addrs.add(null);
       Person per = new Person(addrs, LocalDate.of(1980, 7, 7), null, "Juno");
       System.out.println(per);
-      BitTransform<Person> trans = BoxRegistry.INSTANCE.getAnyTransform(Person.class);
+      BitTransform<Person> trans = BitBoxRegistry.INSTANCE.getAnyTransform(Person.class);
       int len = trans.box(per, buf);
       System.out.println("* serialized Person size = " + len);
       Assertions.assertEquals(len, buf.position());

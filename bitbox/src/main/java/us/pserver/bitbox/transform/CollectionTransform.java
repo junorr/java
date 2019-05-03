@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.BoxRegistry;
+import us.pserver.bitbox.BitBoxRegistry;
 import us.pserver.bitbox.impl.BitBuffer;
 
 
@@ -20,8 +20,6 @@ import us.pserver.bitbox.impl.BitBuffer;
  * @author juno
  */
 public class CollectionTransform<T> implements BitTransform<Collection<T>> {
-  
-  private final ClassTransform ctran = new ClassTransform();
   
   @Override
   public boolean match(Class c) {
@@ -42,7 +40,8 @@ public class CollectionTransform<T> implements BitTransform<Collection<T>> {
     Class<T> cls = (Class<T>) c.stream()
         .map(Object::getClass)
         .findAny().get();
-    BitTransform<T> trans = BoxRegistry.INSTANCE.getAnyTransform(cls);
+    BitTransform<T> trans = BitBoxRegistry.INSTANCE.getAnyTransform(cls);
+    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
     int pos = buf.position();
     int len = Integer.BYTES * (c.size() + 1);
     buf.position(pos + len);
@@ -71,11 +70,12 @@ public class CollectionTransform<T> implements BitTransform<Collection<T>> {
     if(size == 0) {
       return Collections.EMPTY_LIST;
     }
+    BitTransform<Class> ctran = BitBoxRegistry.INSTANCE.getAnyTransform(Class.class);
     int[] idx = new int[size];
     IntStream.range(0, size)
         .forEach(i -> idx[i] = buf.getInt());
     Class<T> cls = ctran.unbox(buf);
-    BitTransform<T> trans = BoxRegistry.INSTANCE.getAnyTransform(cls);
+    BitTransform<T> trans = BitBoxRegistry.INSTANCE.getAnyTransform(cls);
     return IntStream.of(idx)
         .filter(i -> i >= 0)
         .mapToObj(i -> trans.unbox(buf.position(i)))
