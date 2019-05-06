@@ -38,7 +38,7 @@ public class Person implements IPerson {
     this.address = Collections.EMPTY_LIST;
   }
 
-  @BitCreate({"address", "birth", "lastName", "name"})
+  //@BitCreate({"address", "birth", "lastName", "name"})
   public Person(List<Address> address, LocalDate birth, String lastName, String name) {
     this.name = name;
     this.lastName = lastName;

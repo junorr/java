@@ -26,6 +26,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntBiFunction;
 import us.pserver.bitbox.impl.BitBuffer;
+import us.pserver.bitbox.type.SerializedType;
+import us.pserver.bitbox.type.TypeMatching;
 
 /**
  *

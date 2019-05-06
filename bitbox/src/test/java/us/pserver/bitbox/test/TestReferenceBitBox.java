@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tinylog.Logger;
@@ -55,9 +57,15 @@ public class TestReferenceBitBox extends AbstractReferenceService {
       Address a = new Address("Cond Mini Chacaras", new int[]{21}, "Altiplano Leste", "7-4-21", "Brasilia", Address.UF.DF, 71680621);
       Person p = new Person(Arrays.asList(a), LocalDate.of(1980, 7, 7), "Roesler", "Juno");
       Logger.debug(p);
-      Reference r = bitb.box(p);
-      Logger.debug(r);
-      Person q = bitb.unbox(r);
+      AtomicReference<Reference> ref = new AtomicReference<>();
+      Consumer<Reference> cs = r -> {
+        if(r.getType().isAssignableFrom(p.getClass())) {
+          ref.compareAndSet(null, r);
+        }
+        Logger.debug(r);
+      };
+      bitb.box(p, cs);
+      Person q = bitb.unbox(ref.get());
       Logger.debug(q);
       Assertions.assertEquals(p, q);
     }

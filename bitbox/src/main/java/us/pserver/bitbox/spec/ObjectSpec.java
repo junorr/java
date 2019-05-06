@@ -5,8 +5,6 @@
  */
 package us.pserver.bitbox.spec;
 
-import java.lang.invoke.MethodHandles;
-import static java.lang.invoke.MethodHandles.lookup;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
@@ -18,8 +16,8 @@ import us.pserver.bitbox.BitCreate;
 import us.pserver.bitbox.BitIgnore;
 import us.pserver.bitbox.BitProperty;
 import us.pserver.bitbox.BitType;
-import us.pserver.bitbox.SerializedType;
-import us.pserver.bitbox.TypeMatching;
+import us.pserver.bitbox.type.SerializedType;
+import us.pserver.bitbox.type.TypeMatching;
 import us.pserver.tools.Reflect;
 
 
