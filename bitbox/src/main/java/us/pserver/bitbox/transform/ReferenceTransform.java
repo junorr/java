@@ -8,10 +8,10 @@ package us.pserver.bitbox.transform;
 import java.util.Objects;
 import java.util.Optional;
 import us.pserver.bitbox.BitBoxConfiguration;
+import us.pserver.bitbox.BitBuffer;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.Reference;
 import us.pserver.bitbox.ReferenceService;
-import us.pserver.bitbox.impl.BitBuffer;
 
 
 /**

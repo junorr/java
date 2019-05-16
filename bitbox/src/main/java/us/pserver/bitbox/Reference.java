@@ -6,7 +6,6 @@
 package us.pserver.bitbox;
 
 import java.util.Objects;
-import us.pserver.bitbox.impl.BitBuffer;
 
 
 /**

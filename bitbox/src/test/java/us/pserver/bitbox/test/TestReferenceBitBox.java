@@ -16,10 +16,10 @@ import java.util.function.Consumer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tinylog.Logger;
+import us.pserver.bitbox.BitBuffer;
 import us.pserver.bitbox.Reference;
 import us.pserver.bitbox.ReferenceBitBox;
 import us.pserver.bitbox.impl.AbstractReferenceService;
-import us.pserver.bitbox.impl.BitBuffer;
 
 
 /**

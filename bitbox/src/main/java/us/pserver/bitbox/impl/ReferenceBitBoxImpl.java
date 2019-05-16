@@ -6,9 +6,9 @@
 package us.pserver.bitbox.impl;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import us.pserver.bitbox.BitBoxConfiguration;
+import us.pserver.bitbox.BitBuffer;
 import us.pserver.bitbox.BitTransform;
 import us.pserver.bitbox.Reference;
 import us.pserver.bitbox.ReferenceBitBox;

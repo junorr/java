@@ -19,10 +19,10 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox;
+package us.pserver.bitbox.type;
 
 import java.util.function.Function;
-import us.pserver.bitbox.impl.BitBuffer;
+import us.pserver.bitbox.BitBuffer;
 
 /**
  *

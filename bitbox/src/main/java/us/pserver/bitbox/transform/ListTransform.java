@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import us.pserver.bitbox.BitBoxConfiguration;
+import us.pserver.bitbox.BitBuffer;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.impl.BitBuffer;
 
 
 public class ListTransform<T> implements BitTransform<List<T>> {

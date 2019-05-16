@@ -26,8 +26,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Optional;
+import us.pserver.bitbox.BitBuffer;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.impl.BitBuffer;
 
 /**
  *

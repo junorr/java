@@ -2,10 +2,9 @@ package us.pserver.bitbox.transform;
 
 import java.util.Objects;
 import java.util.Optional;
-import org.tinylog.Logger;
 import us.pserver.bitbox.BitBoxConfiguration;
+import us.pserver.bitbox.BitBuffer;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.tools.Unchecked;
 
 

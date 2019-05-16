@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import us.pserver.bitbox.BitBoxConfiguration;
+import us.pserver.bitbox.BitBuffer;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.tools.Indexed;
 
 

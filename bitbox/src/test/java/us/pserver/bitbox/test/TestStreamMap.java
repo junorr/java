@@ -19,41 +19,24 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.bitbox.transform;
+package us.pserver.bitbox.test;
 
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.Optional;
-import us.pserver.bitbox.BitBuffer;
-import us.pserver.bitbox.BitTransform;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
+import us.pserver.tools.Indexed;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
- * @version 0.0 - 11 de abr de 2019
+ * @version 0.0 - 16 de mai de 2019
  */
-public class ZonedDateTimeTransform implements BitTransform<ZonedDateTime> {
-  
-  private final CharSequenceTransform stran = new CharSequenceTransform();
-  
-  @Override
-  public boolean match(Class c) {
-    return LocalDate.class.isAssignableFrom(c);
-  }
-  
-  @Override
-  public Optional<Class> serialType() {
-    return Optional.empty();
-  }
-  
-  @Override
-  public int box(ZonedDateTime z, BitBuffer buf) {
-    return stran.box(z.toString(), buf);
-  }
-  
-  @Override
-  public ZonedDateTime unbox(BitBuffer buf) {
-    return ZonedDateTime.parse(stran.unbox(buf));
+public class TestStreamMap {
+
+  @Test
+  public void test_indexed_map_function() {
+    Stream.of("a", "b", "c", "d", "e")
+        .map(Indexed.builder())
+        .forEach(System.out::println);
   }
   
 }

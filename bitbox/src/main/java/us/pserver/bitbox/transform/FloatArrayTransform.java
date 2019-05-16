@@ -7,8 +7,8 @@ package us.pserver.bitbox.transform;
 
 import java.util.Optional;
 import java.util.stream.IntStream;
+import us.pserver.bitbox.BitBuffer;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.impl.BitBuffer;
 
 
 /**

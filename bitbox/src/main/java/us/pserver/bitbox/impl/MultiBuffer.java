@@ -22,45 +22,66 @@
 package us.pserver.bitbox.impl;
 
 import java.io.IOException;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import us.pserver.bitbox.BitBuffer;
+import us.pserver.tools.Indexed;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 04/12/2018
  */
-public final class BitBufferImpl implements BitBuffer {
-
-  private ByteBuffer buffer;
+public final class MultiBuffer {}/*implements BitBuffer {
+  
+  private final List<ByteBuffer> buffers;
+  
+  private final Supplier<ByteBuffer> bufferSource;
+  
+  private int idx;
   
   private int maxPosition;
   
-  public BitBufferImpl(int cap, boolean useDirectBuffer) {
-    buffer = useDirectBuffer ? ByteBuffer.allocateDirect(cap) : ByteBuffer.allocate(cap);
-  }
 
-  public BitBufferImpl(byte[] array) {
-    buffer = array != null ? ByteBuffer.wrap(array) : ByteBuffer.allocate(0);
-  }
-
-  public BitBufferImpl(byte[] array, int offset, int length) {
-    buffer = ByteBuffer.wrap(array, offset, length);
-  }
-
-  public BitBufferImpl(ByteBuffer buffer) {
-    this.buffer = buffer;
-  }
-
-  private BitBufferImpl(ByteBuffer buffer, int maxPosition) {
-    this.buffer = buffer;
-    this.maxPosition = maxPosition;
+  public MultiBuffer(Supplier<ByteBuffer> bufferSource) {
+    this.bufferSource = Objects.requireNonNull(bufferSource);
+    this.buffers = new ArrayList<>();
+    buffers.add(bufferSource.get());
+    idx = 0;
+    maxPosition = 0;
   }
   
+  public ByteBuffer current() {
+    return buffers.get(idx);
+  }
+  
+  private int getBufferPosition() {
+    Function<ByteBuffer,Indexed<ByteBuffer>> fix = Indexed.builder();
+    return buffers.stream()
+        .map(fix)
+        .takeWhile(i -> i.index() <= idx)
+        .map(Indexed::value)
+        .mapToInt(ByteBuffer::position)
+        .sum();
+  }
+  
+  private int getIndexForBufferPos(int pos) {
+    
+  }
+  
+  public boolean hasNextBuffer() {
+    return buffers.size() > idx + 1;
+  }
+
   public int maxPosition() {
     return maxPosition;
   }
@@ -71,22 +92,35 @@ public final class BitBufferImpl implements BitBuffer {
   }
 
   public BitBuffer compact() {
-    buffer.compact();
+    idx = 0;
+    buffers.forEach(ByteBuffer::compact);
     resetMaxPosition();
     return this;
   }
   
   private void updateMax() {
-    maxPosition = Math.max(maxPosition, buffer.position());
+    maxPosition = Math.max(maxPosition, current().position());
   }
 
   public byte get() {
-    byte b = buffer.get();
+    if(!current().hasRemaining()) {
+      if(idx + 1 == buffers.size()) {
+        throw new BufferUnderflowException();
+      }
+      idx++;
+    }
+    byte b = current().get();
     updateMax();
     return b;
   }
 
   public byte get(int index) {
+    if(!current().hasRemaining()) {
+      if(idx + 1 == buffers.size()) {
+        throw new BufferUnderflowException();
+      }
+      idx++;
+    }
     byte b = buffer.get(index);
     updateMax();
     return b;
@@ -335,12 +369,12 @@ public final class BitBufferImpl implements BitBuffer {
 
   public BitBuffer duplicate() {
     check();
-    return new BitBufferImpl(buffer.duplicate(), maxPosition);
+    return new MultiBuffer(buffer.duplicate(), maxPosition);
   }
 
   public BitBuffer slice() {
     check();
-    return new BitBufferImpl(buffer.slice());
+    return new MultiBuffer(buffer.slice());
   }
 
   public BitBuffer clear() {
@@ -524,4 +558,4 @@ public final class BitBufferImpl implements BitBuffer {
     return min;
   }
   
-}
+}*/

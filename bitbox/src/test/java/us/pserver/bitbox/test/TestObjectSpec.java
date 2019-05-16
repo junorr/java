@@ -5,15 +5,14 @@
  */
 package us.pserver.bitbox.test;
 
-import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tinylog.Logger;
 import us.pserver.bitbox.BitBoxConfiguration;
+import us.pserver.bitbox.BitBuffer;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.bitbox.spec.ObjectSpec;
 
 

@@ -4,8 +4,8 @@ import java.net.InetAddress;
 import java.util.Objects;
 import java.util.Optional;
 import us.pserver.bitbox.BitBoxConfiguration;
+import us.pserver.bitbox.BitBuffer;
 import us.pserver.bitbox.BitTransform;
-import us.pserver.bitbox.impl.BitBuffer;
 import us.pserver.tools.Unchecked;
 
 public class InetAddressTransform implements BitTransform<InetAddress> {
