@@ -60,11 +60,8 @@ public class XParser
     return nl;
   }
 
-  public Expression parse()
-      throws TypeNotPresentException, IllegalStateException
-  {
+  public Expression parse() throws TypeNotPresentException, IllegalStateException {
     String sig = this.trim();
-
     List l = new LinkedList();
     NumberExpression ne = null;
     MathOperation oper = null;
@@ -73,30 +70,25 @@ public class XParser
     int count = 0;
     int bracket = 0;
     char c = 0;
-
     while(count < sig.length()) {
       c = sig.charAt(count);
-
       //NumberExpression
       while(count < sig.length() &&
           Character.isDigit(c) || c == '.') {
 
         if(ne == null) ne = new NumberExpression();
         ne.append(c);
-
+        
         if(count + 1 < sig.length())
           c = sig.charAt(++count);
         else count++;
       }//NumberExpression
-
       if(ne != null) {
         ne.init();
         l.add(ne);
         ne = null;
       }
-
       if(count >= sig.length()) break;
-
       //parênteses
       if(c == '(') {
         l.add(c);
@@ -106,7 +98,7 @@ public class XParser
         bracket--;
       } else if(MathOperation.isOperator(c)) {//operador
         isvar = false;
-        if(!isvar && !var.equals("")) {
+        if(!var.equals("")) {
           this.checkVar(var, l, '0');
           var = "";
         }
@@ -114,56 +106,45 @@ public class XParser
       } else if(Character.isLetter(c)) {//variável
         var += String.valueOf(c);
         isvar = true;
-      } else
-        throw new TypeNotPresentException("\n" +
-            "    char: "+ c+ ", index: "+ count + "\n" +
-            "    #XParser.parse(): 118#", null);
-
+      } else {
+        throw new TypeNotPresentException("char: "+ c+ ", index: "+ count, null);
+      }
       count++;
     }//while
-    if(isvar)
+    if(isvar) {
       this.checkVar(var, l, '0');
-
-    if(bracket != 0)
-      throw new IndexOutOfBoundsException("\n" +
-          "    Illegal bracket number: "+ bracket + "\n" +
-          "    #XParser.parse(): 128#");
-
+    }
+    if(bracket != 0) {
+      throw new IndexOutOfBoundsException("Bad bracket count: "+ bracket);
+    }
     this.analiseSintatica(l);
-
     Expression e = new Expression(this.deleteCharacters(l));
-
     cmem.expressions.add(e);
-
     return e;
   }
-
-  private void analiseSintatica(List objs)
-  {
+  
+  
+  private void analiseSintatica(List objs) {
     boolean isnum = false;
     boolean isoper = false;
     boolean antoper = false;
     int priority = 0;
-
     for(int i = 0; i < objs.size(); i++) {
       Object o = objs.get(i);
-
       antoper = isoper;
-
       if(o instanceof Character
-          && ((Character) o).charValue() == '(')
+          && ((Character) o).charValue() == '(') {
         priority++;
-
+      }
       if(o instanceof Character
-          && ((Character) o).charValue() == ')')
+          && ((Character) o).charValue() == ')') {
         priority--;
-      
+      }
       isoper = this.checkOperation(o, priority);
 
       if(isoper && (i == 0 || String.valueOf(objs.get(i-1)).equals("(")) && ((MathOperation) o).getOperator() == '-') {
         ((MathOperation) o).setPriority(100);
       }
-
       //análise sintática de operadores
       if(antoper && isoper) {
         MathOperation aoper = (MathOperation) objs.get(i-1);
@@ -172,37 +153,31 @@ public class XParser
             && aoper.getOperator() != '%'
             && oper.getOperator() != '-'
             && oper.getOperator() != 'L')
-          throw new IllegalStateException(
-              "\n    Illegal sequence expression: Number missing!\n" +
-              "    [ " + aoper.getOperator() + " ? " + objs.get(i) + " ]\n" +
-              "    #XParser.analiseSintatica(): 167#");
+          throw new IllegalStateException("Bad sequence expression: Number missing!" +
+              "    [ " + aoper.getOperator() + " ? " + objs.get(i) + " ]");
         antoper = false;
         isoper = false;
       }
-
       //substitue String por VarExpression
       if(o instanceof String) {
         o = new VarExpression(o.toString());
         objs.set(i, o);
       }
-
       //análise sintática de números
       if(o instanceof NumberExpression
           || o instanceof VarExpression) {
         if(isnum)
-          throw new IllegalStateException("\n" +
-              "    Invalid sequence expression: Operator missing!\n" +
-              "    [ " + objs.get(i-1) + " ? " + o + " ]\n" +
-              "    #Expression.analiseSintatica(): 187#");
+          throw new IllegalStateException("Bad sequence expression: Operator missing!" +
+              "    [ " + objs.get(i-1) + " ? " + o + " ]");
         isnum = true;
-
-      } else
+      } else {
         isnum = false;
+      }
     }//for
   }
-
-  private boolean checkOperation(Object o, int priority)
-  {
+  
+  
+  private boolean checkOperation(Object o, int priority) {
     boolean isoper = false;
     //se for (, muda prioridade
     if(o instanceof MathOperation) {
@@ -211,7 +186,6 @@ public class XParser
       oper.setPriority(priority);
       isoper = true;
     }//if
-    
     return isoper;
   }
 
