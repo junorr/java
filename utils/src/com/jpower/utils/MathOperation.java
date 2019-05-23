@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author Juno
  */
-public class Operation
+public class MathOperation
 {
 
   public static final List<Character> OPERATORS =
@@ -30,13 +30,13 @@ public class Operation
   private char operator;
 
 
-  public Operation(char operator)
+  public MathOperation(char operator)
   {
     this();
     this.setOperator(operator);
   }
 
-  public Operation()
+  public MathOperation()
   {
     priority = 0;
     operator = 0;
@@ -98,7 +98,7 @@ public class Operation
     if(operator != '#' && operator != '%' && operator != '-'
             && operator != 'L' && exp2 == null)
       throw new IllegalArgumentException(
-          "Expression exp2 must be NOT NULL for this operator: " + operator + "\n" +
+          "Bad expression exp2 for binary operator: " + operator + "\n" +
           "#Operation.calc( Expression, Expression )#");
 
     int i = OPERATORS.indexOf(operator);
@@ -139,9 +139,9 @@ public class Operation
   }
 
   @Override
-  public Operation clone()
+  public MathOperation clone()
   {
-    Operation clone = new Operation();
+    MathOperation clone = new MathOperation();
     clone.setOperator(operator);
     clone.setPriority(priority);
     return clone;

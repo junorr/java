@@ -12,7 +12,7 @@ public class Expression
 
   private Expression exp1, exp2;
 
-  private Operation op;
+  private MathOperation op;
 
   private List objs;
 
@@ -107,12 +107,12 @@ public class Expression
     return this;
   }
 
-  public Operation operation()
+  public MathOperation operation()
   {
     return op;
   }
 
-  public Expression operation(Operation op)
+  public Expression operation(MathOperation op)
   {
     this.op = op;
     return this;
@@ -177,10 +177,10 @@ public class Expression
     else if(objs.size() == 2) {
       if(objs.get(0) instanceof Expression) {
         exp1 = (Expression) objs.get(0);
-        op = (Operation) objs.get(1);
+        op = (MathOperation) objs.get(1);
       } else {
         exp1 = (Expression) objs.get(1);
-        op = (Operation) objs.get(0);
+        op = (MathOperation) objs.get(0);
       }
     } else if(objs.size() == 3) {
       for(int i = 0; i < objs.size(); i++) {
@@ -189,14 +189,14 @@ public class Expression
             exp1 = (Expression) objs.get(i);
           else
             exp2 = (Expression) objs.get(i);
-        } else if(objs.get(i) instanceof Operation)
-          op = (Operation) objs.get(i);
+        } else if(objs.get(i) instanceof MathOperation)
+          op = (MathOperation) objs.get(i);
       }//for
     } else {
 
       int imaior = this.findMaxOperator(objs);
 
-      op = (Operation) objs.get(imaior);
+      op = (MathOperation) objs.get(imaior);
       System.out.println("* max op: "+ op);
       List[] ls = Expression.split(objs, imaior);
       
@@ -228,8 +228,8 @@ public class Expression
       amx = max;
       andex = index;
 
-      if(o instanceof Operation) {
-        Operation oper = (Operation) o;
+      if(o instanceof MathOperation) {
+        MathOperation oper = (MathOperation) o;
         max = oper.getLevel();
         index = i;
       }

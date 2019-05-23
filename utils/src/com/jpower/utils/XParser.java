@@ -67,7 +67,7 @@ public class XParser
 
     List l = new LinkedList();
     NumberExpression ne = null;
-    Operation oper = null;
+    MathOperation oper = null;
     boolean isvar = false;
     String var = "";
     int count = 0;
@@ -104,13 +104,13 @@ public class XParser
       } else if(c == ')') {
         l.add(c);
         bracket--;
-      } else if(Operation.isOperator(c)) {//operador
+      } else if(MathOperation.isOperator(c)) {//operador
         isvar = false;
         if(!isvar && !var.equals("")) {
           this.checkVar(var, l, '0');
           var = "";
         }
-        l.add(new Operation(c));
+        l.add(new MathOperation(c));
       } else if(Character.isLetter(c)) {//variável
         var += String.valueOf(c);
         isvar = true;
@@ -160,14 +160,14 @@ public class XParser
       
       isoper = this.checkOperation(o, priority);
 
-      if(isoper && (i == 0 || String.valueOf(objs.get(i-1)).equals("(")) && ((Operation) o).getOperator() == '-') {
-        ((Operation) o).setPriority(100);
+      if(isoper && (i == 0 || String.valueOf(objs.get(i-1)).equals("(")) && ((MathOperation) o).getOperator() == '-') {
+        ((MathOperation) o).setPriority(100);
       }
 
       //análise sintática de operadores
       if(antoper && isoper) {
-        Operation aoper = (Operation) objs.get(i-1);
-        Operation oper = (Operation) objs.get(i);
+        MathOperation aoper = (MathOperation) objs.get(i-1);
+        MathOperation oper = (MathOperation) objs.get(i);
         if(aoper.getOperator() != '#'
             && aoper.getOperator() != '%'
             && oper.getOperator() != '-'
@@ -205,8 +205,8 @@ public class XParser
   {
     boolean isoper = false;
     //se for (, muda prioridade
-    if(o instanceof Operation) {
-      Operation oper = (Operation) o;
+    if(o instanceof MathOperation) {
+      MathOperation oper = (MathOperation) o;
       //System.out.println( oper.getOperator() + " | " + priority );
       oper.setPriority(priority);
       isoper = true;
@@ -234,8 +234,8 @@ public class XParser
     CalcMemory cm = CalcMemory.getInstance();
     
     //String s = "2.0 * b / (3 - 1.0) + 1.2";
-    //String s = "b = 2.0 * c / (3 - 1.0) + 16#^2";
-    String s = "b=4^2+(-16)";
+    String s = "b = 2.0 * c / (3 - 1.0) + 16#^2";
+    //String s = "b=4^2+(-16)";
     System.out.println(s);
     xp.setSignature(s);
     Expression e = xp.parse();
@@ -248,7 +248,7 @@ public class XParser
     System.out.println(e.resolve());
     System.out.println(cm.get("b"));
    
-    /*
+    
     String vol    = " V = Pi * R^2 * h";
     String raio   = " R = (i/2 + j/2 + k/2) / 3";
     String vgrao  = "Vg = l ^ 3";
@@ -295,43 +295,6 @@ public class XParser
     System.out.println(cm.get("G"));
     System.out.println(cm.get("T"));
     
-    
-    
-    File fmem = new File("CalcMemory.xml");
-    CalcMemory mem = null;
-
-    if(!fmem.exists()) {
-
-      String vel = "V = d / t";
-      System.out.println(vel);
-
-      mem = CalcMemory.getInstance();
-      mem.putVar("d", 60);
-      mem.putVar("t", 2);
-
-      xp.setSignature(vel);
-      Expression v = xp.parse();
-      v.setName("Velocidade");
-      mem.expressions.add(v);
-
-      System.out.println(v);
-      v.resolve();
-    
-      System.out.println(mem.get("V"));
-
-      mem.save(new File("CalcMemory.xml"));
-
-    } else {
-
-      CalcMemory.load(fmem);
-      mem = CalcMemory.getInstance();
-      Expression e = mem.findExpression("Velocidade");
-      System.out.println(e);
-      e.resolve();
-      System.out.println(mem.get("V"));
-
-    }
-    */
   }
 
 }

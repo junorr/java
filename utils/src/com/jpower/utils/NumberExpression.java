@@ -9,12 +9,12 @@ public class NumberExpression extends Expression
 
   private double value;
 
-  private StringBuffer buf;
+  private StringBuilder buf;
 
   public NumberExpression()
   {
     value = 0;
-    buf = new StringBuffer();
+    buf = new StringBuilder();
   }
 
   public NumberExpression(double value)
