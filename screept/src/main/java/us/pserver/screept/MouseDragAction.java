@@ -21,7 +21,9 @@
 
 package us.pserver.screept;
 
+import java.awt.Point;
 import java.awt.Robot;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -29,19 +31,26 @@ import java.util.function.Consumer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 23 de mai de 2019
  */
-public class KeyTypeAction implements Consumer<Robot> {
+public class MouseDragAction implements Consumer<Robot> {
   
-  private final int key;
+  private final int button;
   
-  public KeyTypeAction(int key) {
-    this.key = key;
+  private final Point from;
+  
+  private final Point to;
+  
+  public MouseDragAction(int button, Point from, Point to) {
+    this.button = button;
+    this.from = Objects.requireNonNull(from);
+    this.to = Objects.requireNonNull(to);
   }
   
   @Override
   public void accept(Robot r) {
-    r.keyPress(key);
-    r.delay(20);
-    r.keyRelease(key);
+    r.mouseMove(from.x, from.y);
+    r.mousePress(button);
+    r.mouseMove(to.x, to.y);
+    r.mouseRelease(button);
   }
 
 }

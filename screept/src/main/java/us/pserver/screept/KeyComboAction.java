@@ -41,7 +41,7 @@ public class KeyComboAction implements Consumer<Robot> {
   @Override
   public void accept(Robot r) {
     IntStream.of(keys).forEach(k -> r.keyPress(k));
-    r.delay(10);
+    r.delay(20);
     IntStream.of(keys).forEach(k -> r.keyRelease(k));
   }
 

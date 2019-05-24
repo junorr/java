@@ -44,7 +44,7 @@ public class TestRobotAction {
     this.r = Unchecked.call(() -> new Robot());
   }
 
-  @Test
+  //@Test
   public void teste_key_type_action() {
     KeyTypeAction a = new KeyTypeAction(0xA1);
     a.accept(r);
@@ -56,17 +56,21 @@ public class TestRobotAction {
     a.accept(r);
   }
   
-  //@Test
+  @Test
   public void test_string_type_action() {
-    StringTypeAction a = new StringTypeAction("Hello World!");
+    StringTypeAction a = new StringTypeAction("aAàÀáÁãÃâÂäÄ bB cC dD eEèÈéÉẽẼêÊëË fF gG hH iIìÌíÍĩĨîÎïÏ jJ kK lL mM nN oOòÒóÓõÕôÔöÖ pP qQ rR sS tT uUùÙúÚũŨûÛüÜ vV wW xX yYỳỲýÝỹỸŷŶÿŸ zZ 0123456789 ¹²³ ªº° !@#$%&*()-_=+ {[ }] ?/ :; >. <, |\\ '\" çÇ «»←↓→↑ ×÷½¾¼⅜⅞™±©®");
     a.accept(r);
   }
   
-  //@Test 
+  @Test 
   public void test_key_char_code() {
-    char c = '0';
+    char c = (char) -2;
     int d = (int) c;
     System.out.printf("char = %s, code = %d%n", c, d);
+    
+    d = 0x2191;
+    c = Character.toString((char)d).charAt(0);
+    System.out.printf("unicode = %d, char = %s%n", d, c);
   }
   
 }

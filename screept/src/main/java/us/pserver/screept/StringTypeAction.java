@@ -22,10 +22,9 @@
 package us.pserver.screept;
 
 import java.awt.Robot;
-import java.awt.event.KeyEvent;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -36,17 +35,19 @@ public class StringTypeAction implements Consumer<Robot> {
   
   private final String str;
   
-  private final List<Consumer<Robot>> actions;
+  private final List<KeyboardAction> actions;
   
   public StringTypeAction(String str) {
     if(str == null || str.isBlank()) {
       throw new IllegalArgumentException("Bad null/empty string");
     }
     this.str = str;
-    this.actions = str.chars()
-        .peek(c -> System.out.printf("* key: %d%n", c))
-        .mapToObj(c -> Character.isUpperCase(c) ? new KeyComboAction(KeyEvent.VK_SHIFT, c) : new KeyTypeAction(c-32))
-        .collect(Collectors.toList());
+    this.actions = new LinkedList<>();
+    char[] cs = str.toCharArray();
+    for(int i = 0; i < cs.length; i++) {
+      KeyboardAction.getActionFor(cs[i]).ifPresent(actions::add);
+    }
+    actions.forEach(System.out::println);
   }
   
   @Override
