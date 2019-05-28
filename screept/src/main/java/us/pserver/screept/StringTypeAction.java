@@ -25,6 +25,7 @@ import java.awt.Robot;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -42,12 +43,11 @@ public class StringTypeAction implements Consumer<Robot> {
       throw new IllegalArgumentException("Bad null/empty string");
     }
     this.str = str;
-    this.actions = new LinkedList<>();
-    char[] cs = str.toCharArray();
-    for(int i = 0; i < cs.length; i++) {
-      KeyboardAction.getActionFor(cs[i]).ifPresent(actions::add);
-    }
-    actions.forEach(System.out::println);
+    this.actions = str.chars()
+        .mapToObj(c -> KeyboardAction.getKeyboardAction((char)c))
+        .map(o -> o.orElse(KeyboardAction.QUESTION))
+        .peek(System.out::println)
+        .collect(Collectors.toList());
   }
   
   @Override

@@ -4,8 +4,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/media/storage/java/utils/src/com/jpower/utils/CalcMemory.java</file>
-            <file>file:/media/storage/java/utils/src/com/jpower/utils/XParser.java</file>
+            <file>file:/D:/java/utils/src/com/jpower/utils/XParser.java</file>
+            <file>file:/D:/java/utils/src/com/jpower/utils/Expression.java</file>
+            <file>file:/D:/java/utils/src/com/jpower/utils/NumberSet.java</file>
+            <file>file:/D:/java/utils/src/com/jpower/utils/NetProxy.java</file>
+            <file>file:/D:/java/utils/src/com/jpower/utils/CalcMemory.java</file>
+            <file>file:/D:/java/utils/src/com/jpower/utils/PowerImage.java</file>
+            <file>file:/D:/java/utils/src/com/jpower/utils/VarExpression.java</file>
+            <file>file:/D:/java/utils/src/com/jpower/utils/MathOperation.java</file>
+            <file>file:/D:/java/utils/src/com/jpower/utils/NumberExpression.java</file>
         </group>
     </open-files>
 </project-private>

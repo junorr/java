@@ -29,18 +29,16 @@ import java.util.function.Consumer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 23 de mai de 2019
  */
-public class KeyTypeAction implements Consumer<Robot> {
+public class KeyReleaseAction implements Consumer<Robot> {
   
   private final int key;
   
-  public KeyTypeAction(int key) {
+  public KeyReleaseAction(int key) {
     this.key = key;
   }
   
   @Override
   public void accept(Robot r) {
-    r.keyPress(key);
-    r.delay(15);
     r.keyRelease(key);
   }
 

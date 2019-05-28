@@ -22,10 +22,11 @@
 package us.pserver.screept.test;
 
 import java.awt.Robot;
-import java.awt.event.KeyEvent;
+import java.util.Objects;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
-import us.pserver.screept.KeyComboAction;
-import us.pserver.screept.KeyTypeAction;
+import us.pserver.screept.KeyboardAction;
+import us.pserver.screept.OS;
 import us.pserver.screept.StringTypeAction;
 import us.pserver.tools.Unchecked;
 
@@ -38,39 +39,21 @@ public class TestRobotAction {
   
   private final Robot r;
   
-  //
-  
   public TestRobotAction() {
     this.r = Unchecked.call(() -> new Robot());
   }
 
-  //@Test
-  public void teste_key_type_action() {
-    KeyTypeAction a = new KeyTypeAction(0xA1);
-    a.accept(r);
-  }
-  
-  //@Test
-  public void test_key_combo_action() {
-    KeyComboAction a = new KeyComboAction(KeyEvent.VK_SHIFT, KeyEvent.VK_Z);
-    a.accept(r);
+  @Test
+  public void test_alt_combo_action() {
+    new StringTypeAction(OS.OS_NAME).accept(r);
+    KeyboardAction.C_CEDIL_LOWER.accept(r);
+    KeyboardAction.C_CEDIL_UPPER.accept(r);
   }
   
   @Test
   public void test_string_type_action() {
-    StringTypeAction a = new StringTypeAction("aAàÀáÁãÃâÂäÄ bB cC dD eEèÈéÉẽẼêÊëË fF gG hH iIìÌíÍĩĨîÎïÏ jJ kK lL mM nN oOòÒóÓõÕôÔöÖ pP qQ rR sS tT uUùÙúÚũŨûÛüÜ vV wW xX yYỳỲýÝỹỸŷŶÿŸ zZ 0123456789 ¹²³ ªº° !@#$%&*()-_=+ {[ }] ?/ :; >. <, |\\ '\" çÇ «»←↓→↑ ×÷½¾¼⅜⅞™±©®");
+    StringTypeAction a = new StringTypeAction("aAàÀáÁãÃâÂäÄ bB cC dD eEèÈéÉẽẼêÊëË fF gG hH iIìÌíÍĩĨîÎïÏ jJ kK lL mM nN oOòÒóÓõÕôÔöÖ pP qQ rR sS tT uUùÙúÚũŨûÛüÜ vV wW xX yYỳỲýÝỹỸŷŶÿŸ zZ çÇ 0123456789 !@#$%&*()-_=+ {[ }] ?/ :; >. <, |\\ '\" ¹²³ ªº° «»←↓→↑ ×÷½¾¼™±©®");
     a.accept(r);
-  }
-  
-  @Test 
-  public void test_key_char_code() {
-    char c = (char) -2;
-    int d = (int) c;
-    System.out.printf("char = %s, code = %d%n", c, d);
-    
-    d = 0x2191;
-    c = Character.toString((char)d).charAt(0);
-    System.out.printf("unicode = %d, char = %s%n", d, c);
   }
   
 }
