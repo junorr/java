@@ -7,6 +7,7 @@ package us.pserver.screept.parse;
 
 import java.util.List;
 import java.util.stream.Stream;
+import us.pserver.screept.Memory;
 import us.pserver.screept.Statement;
 
 
@@ -25,5 +26,7 @@ public interface ParsingStack {
   public List<Statement> getArgs(Statement s);
   
   public void clear();
+  
+  public Memory memory();
   
 }

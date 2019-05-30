@@ -5,32 +5,60 @@
  */
 package us.pserver.screept.parse;
 
-import java.util.stream.Stream;
-import us.pserver.screept.Statement;
+import us.pserver.screept.NumberStatement;
+import us.pserver.screept.Operations;
+import us.pserver.screept.VarStatement;
 
 
 /**
  *
  * @author juno
  */
-public interface Parser {
+public class Parser {
   
-  public Parser append(char c) throws UnexpectedTokenException;
+  public void parse(String source, ParsingStack stack) throws ParseException {
+    StringBuilder word = new StringBuilder();
+    int priority = 0;
+    char[] cs = source.toCharArray();
+    for(int i = 0; i < cs.length; i++) {
+      char c = cs[i];
+      if(Chars.isDelimiter(c) && word.length() > 0) {
+        String str = word.toString();
+        if(Chars.isNumber(str)) {
+          stack.put(parseNumber(str));
+        }
+        if(Chars.isOperation(c)) {
+          stack.put(Operations.getOperation(c));
+        }
+        else if(Chars.EQUALS == c) {
+          stack.put(new VarStatement(str));
+        }
+        word.delete(0, word.length());
+      }
+      else {
+        word.append(c);
+      }
+    }
+  }
   
-  public boolean accept(char c);
+  private NumberStatement parseNumber(String str) throws ParseException {
+    try {
+      Number n;
+      if(str.contains(".")) {
+        n = Double.parseDouble(str);
+      }
+      else try {
+        n = Integer.parseInt(str);
+      }
+      catch(Exception e) {
+        n = Long.parseLong(str);
+      }
+      return new NumberStatement(n);
+    }
+    catch(Exception e) {
+      throw new ParseException(e.toString(), e);
+    }
+  }
   
-  public Parser clear();
-  
-  public boolean acceptArgs();
-  
-  public boolean isOperation();
-  
-  public Parser addArg(Parser p);
-  
-  public Parser clearArgs();
-  
-  public Stream<Statement> arguments();
-  
-  public Statement parse(ParsingStack s) throws ParseException;
-  
+
 }

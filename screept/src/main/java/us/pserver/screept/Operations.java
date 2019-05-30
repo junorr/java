@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import static us.pserver.screept.parse.Chars.OP_DIV;
+import static us.pserver.screept.parse.Chars.OP_MULT;
+import static us.pserver.screept.parse.Chars.OP_POW;
+import static us.pserver.screept.parse.Chars.OP_SUB;
+import static us.pserver.screept.parse.Chars.OP_SUM;
 
 
 /**
@@ -30,6 +35,26 @@ public abstract class Operations {
       args.add((Boolean)o);
     }
     return args;
+  }
+  
+  
+  public static Statement getOperation(int c) {
+    switch(c) {
+      case OP_SUM:
+        return SUM;
+      case OP_SUB:
+        return SUBTRACT;
+      case OP_MULT:
+        return MULTIPLY;
+      case OP_DIV:
+        return DIVIDE;
+      case OP_POW:
+        return POWER;
+      default: 
+        throw new IllegalArgumentException(String.format(
+            "Unknown operation \"%s\"", Character.toString(c))
+        );
+    }
   }
   
   
