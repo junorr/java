@@ -5,9 +5,9 @@
  */
 package us.pserver.screept.parse;
 
-import us.pserver.screept.*;
-import java.util.Map;
+import java.util.List;
 import java.util.stream.Stream;
+import us.pserver.screept.Statement;
 
 
 /**
@@ -16,16 +16,14 @@ import java.util.stream.Stream;
  */
 public interface ParsingStack {
   
-  public Parser peek();
+  public ParsingStack put(Statement s);
   
-  public Parser pop();
+  public Stream<Statement> statements();
   
-  public ParsingStack put(Parser p);
+  public Statement nextMaxPriority();
   
-  public Stream<Parser> parsers();
+  public List<Statement> getArgs(Statement s);
   
   public void clear();
-  
-  public Map<String,Statement> memory();
   
 }

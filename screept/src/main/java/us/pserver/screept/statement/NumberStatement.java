@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package us.pserver.screept;
+package us.pserver.screept.statement;
 
 import java.util.List;
 import java.util.Objects;

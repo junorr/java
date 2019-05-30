@@ -5,7 +5,8 @@
  */
 package us.pserver.screept.parse;
 
-import us.pserver.screept.AbstractStatement;
+import java.util.stream.Stream;
+import us.pserver.screept.Statement;
 
 
 /**
@@ -20,6 +21,16 @@ public interface Parser {
   
   public Parser clear();
   
-  public AbstractStatement parse(ParsingStack s) throws ParseException;
+  public boolean acceptArgs();
+  
+  public boolean isOperation();
+  
+  public Parser addArg(Parser p);
+  
+  public Parser clearArgs();
+  
+  public Stream<Statement> arguments();
+  
+  public Statement parse(ParsingStack s) throws ParseException;
   
 }
