@@ -14,7 +14,17 @@ import java.util.Optional;
  */
 public interface Attributes {
   
+  public static enum ValueType {
+    NUMBER, BOOLEAN, STRING
+  }
+  
   public String getName();
+  
+  public ValueType getValueType();
+  
+  public boolean isValue();
+  
+  public boolean isFunction();
   
   public boolean isOperation();
   

@@ -15,9 +15,9 @@ import us.pserver.screept.Statement;
  *
  * @author juno
  */
-public interface ParsingStack {
+public interface Stack {
   
-  public ParsingStack put(Statement s);
+  public Stack put(Statement s);
   
   public Stream<Statement> statements();
   

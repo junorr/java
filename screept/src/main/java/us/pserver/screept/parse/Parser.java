@@ -7,6 +7,7 @@ package us.pserver.screept.parse;
 
 import us.pserver.screept.NumberStatement;
 import us.pserver.screept.Operations;
+import us.pserver.screept.Statement;
 import us.pserver.screept.VarStatement;
 
 
@@ -16,22 +17,34 @@ import us.pserver.screept.VarStatement;
  */
 public class Parser {
   
-  public void parse(String source, ParsingStack stack) throws ParseException {
+  public void parse(String source, Stack stack) throws ParseException {
     StringBuilder word = new StringBuilder();
+    boolean readArgs = false;
     int priority = 0;
     char[] cs = source.toCharArray();
     for(int i = 0; i < cs.length; i++) {
       char c = cs[i];
       if(Chars.isDelimiter(c) && word.length() > 0) {
         String str = word.toString();
+        Statement st = null;
         if(Chars.isNumber(str)) {
-          stack.put(parseNumber(str));
+          st = parseNumber(str);
         }
         if(Chars.isOperation(c)) {
-          stack.put(Operations.getOperation(c));
+          st = Operations.getOperation(c);
         }
         else if(Chars.EQUALS == c) {
-          stack.put(new VarStatement(str));
+          st = new VarStatement(str);
+        }
+        else if(Chars.OPEN_PAR == c) {
+          priority += 100;
+        }
+        else if(Chars.CLOSE_PAR == c) {
+          priority -= 100;
+        }
+        if(st != null) {
+          st.attributes().priority(++priority);
+          stack.put(st);
         }
         word.delete(0, word.length());
       }

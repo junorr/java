@@ -30,21 +30,21 @@ import java.util.stream.IntStream;
  */
 public class Chars {
 
-  public static final int SP = ' ';
+  public static final int SPACE = ' ';
   
-  public static final int QT = '"';
+  public static final int QUOTEDBL = '"';
   
   public static final int LN = '\n';
   
-  public static final int OP = '(';
+  public static final int OPEN_PAR = '(';
   
-  public static final int CP = ')';
+  public static final int CLOSE_PAR = ')';
   
-  public static final int OB = '{';
+  public static final int OPEN_CURLY = '{';
   
-  public static final int CB = '}';
+  public static final int CLOSE_CURLY = '}';
   
-  public static final int CM = ',';
+  public static final int COMMA = ',';
   
   public static final int EQUALS = '=';
   
@@ -62,7 +62,7 @@ public class Chars {
   
   public static final int OP_OR = '|';
   
-  public static int[] DELIMITER_CHARS = {SP, QT, LN, OP, CP, OB, CB, CM, EQUALS, OP_SUM, OP_SUB, OP_MULT, OP_DIV, OP_POW, OP_AND, OP_OR};
+  public static int[] DELIMITER_CHARS = {SPACE, QUOTEDBL, LN, OPEN_PAR, CLOSE_PAR, OPEN_CURLY, CLOSE_CURLY, COMMA, EQUALS, OP_SUM, OP_SUB, OP_MULT, OP_DIV, OP_POW, OP_AND, OP_OR};
   
   public static int[] OP_CHARS = {OP_SUM, OP_SUB, OP_MULT, OP_DIV, OP_POW, OP_AND, OP_OR};
   
