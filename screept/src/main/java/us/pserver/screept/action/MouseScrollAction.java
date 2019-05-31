@@ -19,7 +19,7 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.screept;
+package us.pserver.screept.action;
 
 import java.awt.Robot;
 import java.util.function.Consumer;
@@ -29,19 +29,17 @@ import java.util.function.Consumer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 23 de mai de 2019
  */
-public class KeyTypeAction implements Consumer<Robot> {
+public class MouseScrollAction implements Consumer<Robot> {
   
-  private final int key;
+  private final int amount;
   
-  public KeyTypeAction(int key) {
-    this.key = key;
+  public MouseScrollAction(int amount) {
+    this.amount = amount;
   }
   
   @Override
   public void accept(Robot r) {
-    r.keyPress(key);
-    r.delay(15);
-    r.keyRelease(key);
+    r.mouseWheel(amount);
   }
 
 }

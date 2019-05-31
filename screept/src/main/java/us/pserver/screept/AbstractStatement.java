@@ -5,8 +5,6 @@
  */
 package us.pserver.screept;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,15 +15,10 @@ import java.util.Optional;
  */
 public abstract class AbstractStatement<T> implements Statement<T> {
   
-  protected final Attributes attrs;
+  protected volatile int priority;
   
-  public AbstractStatement(Attributes attrs) {
-    this.attrs = attrs;
-  }
-  
-  @Override
-  public Attributes attributes() {
-    return attrs;
+  public AbstractStatement(int priority) {
+    this.priority = priority;
   }
   
   protected void validateOneArg(List<Statement> sts) {
@@ -47,11 +40,21 @@ public abstract class AbstractStatement<T> implements Statement<T> {
   }
   
   @Override
-  public abstract Optional<T> resolve(Memory m, List<Statement> sts);
+  public int priority() {
+    return priority;
+  }
+  
+  @Override
+  public void priority(int p) {
+    this.priority = p;
+  }
+  
+  @Override
+  public abstract Optional<T> resolve(Memory m, Stack s);
   
   @Override
   public String toString() {
-    return String.format("Statement{ %s }", attrs);
+    return String.format("%s{ priority=%d }", getClass().getSimpleName(), priority);
   }
-  
+
 }

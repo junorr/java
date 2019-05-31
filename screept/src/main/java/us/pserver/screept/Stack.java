@@ -5,8 +5,9 @@
  */
 package us.pserver.screept;
 
-import java.util.Map;
+import java.util.List;
 import java.util.stream.Stream;
+import us.pserver.screept.Statement;
 
 
 /**
@@ -15,16 +16,14 @@ import java.util.stream.Stream;
  */
 public interface Stack {
   
-  public AbstractStatement peek();
+  public Stack put(Statement s);
   
-  public AbstractStatement pop();
+  public Stream<Statement> statements();
   
-  public Stack put(AbstractStatement stm);
+  public Statement nextMaxPriority();
   
-  public Stream<AbstractStatement> statements();
+  public List<Statement> getArgs(Statement st);
   
   public void clear();
-  
-  public Map<String,Statement> memory();
   
 }

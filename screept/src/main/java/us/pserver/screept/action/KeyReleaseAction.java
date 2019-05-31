@@ -19,30 +19,27 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.screept;
+package us.pserver.screept.action;
 
 import java.awt.Robot;
 import java.util.function.Consumer;
-import java.util.stream.IntStream;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 23 de mai de 2019
  */
-public class KeyTypeComboAction implements Consumer<Robot> {
+public class KeyReleaseAction implements Consumer<Robot> {
   
-  private final int[] keys;
+  private final int key;
   
-  public KeyTypeComboAction(int... keys) {
-    this.keys = keys;
+  public KeyReleaseAction(int key) {
+    this.key = key;
   }
   
   @Override
   public void accept(Robot r) {
-    IntStream.of(keys)
-        .mapToObj(k -> new KeyTypeAction(k))
-        .forEach(k -> k.accept(r));
+    r.keyRelease(key);
   }
 
 }

@@ -15,14 +15,26 @@ import java.util.Optional;
  */
 public interface Statement<T> {
   
-  public Attributes attributes();
+  public int priority();
   
-  public Optional<T> resolve(Memory m, List<Statement> args);
+  public void priority(int p);
   
+  public Optional<T> resolve(Memory m, Stack s);
   
+  public default void increment(int amount) {
+    priority(priority() + amount);
+  }
+
+  public default void increment() {
+    increment(1);
+  }
   
-  public static final Statement END_STATEMENT = new AbstractStatement(new AttributesImpl("END", Integer.MIN_VALUE)) {
-    @Override public Optional resolve(Memory m, List args) { return Optional.empty(); }
-  };
+  public default void decrement(int amount) {
+    priority(priority() - amount);
+  }
+
+  public default void decrement() {
+    increment(1);
+  }
   
 }

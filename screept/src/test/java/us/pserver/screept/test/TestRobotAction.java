@@ -25,9 +25,9 @@ import java.awt.Robot;
 import java.util.Objects;
 import java.util.function.Function;
 import org.junit.jupiter.api.Test;
-import us.pserver.screept.KeyboardAction;
+import us.pserver.screept.action.KeyboardAction;
 import us.pserver.screept.OS;
-import us.pserver.screept.StringTypeAction;
+import us.pserver.screept.action.StringTypeAction;
 import us.pserver.tools.Unchecked;
 
 /**

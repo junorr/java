@@ -19,38 +19,34 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.screept;
+package us.pserver.screept.action;
 
-import java.awt.Point;
 import java.awt.Robot;
-import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
+import us.pserver.screept.OS;
 
 /**
  *
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 23 de mai de 2019
  */
-public class MouseDragAction implements Consumer<Robot> {
+public class NumpadComboAction implements Consumer<Robot> {
   
-  private final int button;
+  private final int[] keys;
   
-  private final Point from;
-  
-  private final Point to;
-  
-  public MouseDragAction(int button, Point from, Point to) {
-    this.button = button;
-    this.from = Objects.requireNonNull(from);
-    this.to = Objects.requireNonNull(to);
+  public NumpadComboAction(int... keys) {
+    this.keys = keys;
   }
   
   @Override
   public void accept(Robot r) {
-    r.mouseMove(from.x, from.y);
-    r.mousePress(button);
-    r.mouseMove(to.x, to.y);
-    r.mouseRelease(button);
+    boolean state = OS.isNumLockEnabled();
+    OS.setNumLockEnabled(true);
+    IntStream.of(keys)
+        .mapToObj(k -> new KeyTypeAction(k))
+        .forEach(k -> k.accept(r));
+    OS.setNumLockEnabled(state);
   }
 
 }

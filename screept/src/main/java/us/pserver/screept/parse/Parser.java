@@ -5,6 +5,7 @@
  */
 package us.pserver.screept.parse;
 
+import us.pserver.screept.Stack;
 import us.pserver.screept.NumberStatement;
 import us.pserver.screept.Operations;
 import us.pserver.screept.Statement;

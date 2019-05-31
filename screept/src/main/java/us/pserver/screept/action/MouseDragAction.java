@@ -19,9 +19,11 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.screept;
+package us.pserver.screept.action;
 
+import java.awt.Point;
 import java.awt.Robot;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -29,22 +31,25 @@ import java.util.function.Consumer;
  * @author Juno Roesler - juno@pserver.us
  * @version 0.0 - 23 de mai de 2019
  */
-public class MouseClickAction implements Consumer<Robot> {
-  
-  public static final int BUTTON1 = 1;
-  public static final int BUTTON2 = 2;
-  public static final int BUTTON3 = 3;
+public class MouseDragAction implements Consumer<Robot> {
   
   private final int button;
   
-  public MouseClickAction(int button) {
+  private final Point from;
+  
+  private final Point to;
+  
+  public MouseDragAction(int button, Point from, Point to) {
     this.button = button;
+    this.from = Objects.requireNonNull(from);
+    this.to = Objects.requireNonNull(to);
   }
   
   @Override
   public void accept(Robot r) {
+    r.mouseMove(from.x, from.y);
     r.mousePress(button);
-    r.delay(20);
+    r.mouseMove(to.x, to.y);
     r.mouseRelease(button);
   }
 

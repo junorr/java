@@ -19,12 +19,13 @@
  * endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-package us.pserver.screept;
+package us.pserver.screept.action;
 
 import java.awt.Robot;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Consumer;
+import us.pserver.screept.OS;
 
 /**
  *

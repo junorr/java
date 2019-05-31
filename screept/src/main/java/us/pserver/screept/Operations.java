@@ -38,6 +38,19 @@ public abstract class Operations {
   }
   
   
+  private List<Number> resolveAsNumber(Memory m, List<Statement> sts) {
+    List<Number> args = new ArrayList<>(sts.size());
+    for(Statement s : sts) {
+      Object o = s.resolve(m, Collections.EMPTY_LIST);
+      if(!Number.class.isAssignableFrom(o.getClass())) {
+        throw new IllegalArgumentException("Numeric argument expected");
+      }
+      args.add((Number)o);
+    }
+    return args;
+  }
+  
+  
   public static Statement getOperation(int c) {
     switch(c) {
       case OP_SUM:
@@ -118,7 +131,7 @@ public abstract class Operations {
   };
   
   
-  public static final Statement<Boolean> AND = new AbstractStatement<Boolean>(new AttributesImpl("and", 100, true, true, true)) {
+  public static final Statement<Boolean> AND = new AbstractStatement<Boolean>(new AttributesImpl("and", 50, true, true, true)) {
     @Override
     public Optional<Boolean> resolve(Memory m, List<Statement> args) {
       this.validateTwoArgs(args);
@@ -128,7 +141,7 @@ public abstract class Operations {
   };
   
   
-  public static final Statement<Boolean> OR = new AbstractStatement<Boolean>(new AttributesImpl("or", 100, true, true, true)) {
+  public static final Statement<Boolean> OR = new AbstractStatement<Boolean>(new AttributesImpl("or", 50, true, true, true)) {
     @Override
     public Optional<Boolean> resolve(Memory m, List<Statement> args) {
       this.validateTwoArgs(args);
@@ -138,12 +151,22 @@ public abstract class Operations {
   };
   
   
-  public static final Statement<Boolean> NOT = new AbstractStatement<Boolean>(new AttributesImpl("not", 100, true, true, false)) {
+  public static final Statement<Boolean> NOT = new AbstractStatement<Boolean>(new AttributesImpl("not", 50, true, true, false)) {
     @Override
     public Optional<Boolean> resolve(Memory m, List<Statement> args) {
       this.validateOneArg(args);
       List<Boolean> bls = resolveAsBoolean(m, args);
       return Optional.of(!bls.get(0));
+    }
+  };
+  
+  
+  public static final Statement<Boolean> GT = new AbstractStatement<Boolean>(new AttributesImpl("greater", 50, true, true, true)) {
+    @Override
+    public Optional<Boolean> resolve(Memory m, List<Statement> args) {
+      this.validateTwoArgs(args);
+      List<Number> bls = resolveAsNumber(m, args);
+      return Optional.of(bls.get(0) && bls.get(1));
     }
   };
   
