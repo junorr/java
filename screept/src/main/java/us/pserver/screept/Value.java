@@ -5,12 +5,15 @@
  */
 package us.pserver.screept;
 
+import java.util.Objects;
+import us.pserver.screept.impl.ValueImpl;
+
 
 /**
  *
  * @author juno
  */
-public interface Value {
+public interface Value<T> extends Statement<T> {
   
   public static enum ValueType {
     NUMBER, BOOLEAN, STRING
@@ -23,5 +26,20 @@ public interface Value {
   public Boolean getAsBoolean();
   
   public Number getAsNumber();
+  
+  
+  public static Value of(String s) {
+    return new ValueImpl(s);
+  }
+  
+  
+  public static Value of(Boolean b) {
+    return new ValueImpl(Objects.toString(b));
+  }
+  
+  
+  public static Value of(Number n) {
+    return new ValueImpl(Objects.toString(n));
+  }
   
 }

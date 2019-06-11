@@ -28,14 +28,14 @@ public interface Delimiter extends Statement<Void> {
     public void priority(int p) { priority = p; }
   };
   
-  public static final Delimiter ARGS_START = new Delimiter() {
+  public static final Delimiter BRACKET_OPEN = new Delimiter() {
     int priority = Integer.MIN_VALUE + 2;
     public Optional<Void> resolve(Memory m, Stack s) { return Optional.empty(); }
     public int priority() { return priority; }
     public void priority(int p) { priority = p; }
   };
   
-  public static final Delimiter ARGS_END = new Delimiter() {
+  public static final Delimiter BRACKET_CLOSE = new Delimiter() {
     int priority = Integer.MIN_VALUE + 3;
     public Optional<Void> resolve(Memory m, Stack s) { return Optional.empty(); }
     public int priority() { return priority; }

@@ -10,7 +10,7 @@ package us.pserver.screept;
  *
  * @author juno
  */
-public interface Operation extends Statement {
+public interface Operation<T> extends Statement<T> {
   
   public boolean isBinaryOperation();
   

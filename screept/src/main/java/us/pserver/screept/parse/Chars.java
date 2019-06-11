@@ -62,6 +62,10 @@ public class Chars {
   
   public static final int OP_OR = '|';
   
+  public static final int OP_GT = '>';
+  
+  public static final int OP_LT = '<';
+  
   public static int[] DELIMITER_CHARS = {SPACE, QUOTEDBL, LN, OPEN_PAR, CLOSE_PAR, OPEN_CURLY, CLOSE_CURLY, COMMA, EQUALS, OP_SUM, OP_SUB, OP_MULT, OP_DIV, OP_POW, OP_AND, OP_OR};
   
   public static int[] OP_CHARS = {OP_SUM, OP_SUB, OP_MULT, OP_DIV, OP_POW, OP_AND, OP_OR};

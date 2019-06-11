@@ -5,74 +5,109 @@
  */
 package us.pserver.screept.parse;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import us.pserver.screept.Operation;
 import us.pserver.screept.Stack;
-import us.pserver.screept.NumberStatement;
 import us.pserver.screept.Operations;
 import us.pserver.screept.Statement;
-import us.pserver.screept.VarStatement;
+import us.pserver.screept.Value;
 
 
 /**
  *
  * @author juno
  */
-public class Parser {
+public class Parser implements ParseListener {
+  
+  private final List<ParseListener> listeners;
+  
+  public Parser() {
+    this.listeners = new CopyOnWriteArrayList<>();
+  }
+  
+  public Parser addListener(ParseListener pl) {
+    if(pl != null) {
+      this.listeners.add(pl);
+    }
+    return this;
+  }
   
   public void parse(String source, Stack stack) throws ParseException {
     StringBuilder word = new StringBuilder();
-    boolean readArgs = false;
     int priority = 0;
+    boolean string = false;
     char[] cs = source.toCharArray();
     for(int i = 0; i < cs.length; i++) {
       char c = cs[i];
-      if(Chars.isDelimiter(c) && word.length() > 0) {
+      if(Chars.QUOTEDBL == c) {
+        string = !string;
+      }
+      else if(Chars.isDelimiter(c)) {
         String str = word.toString();
-        Statement st = null;
-        if(Chars.isNumber(str)) {
-          st = parseNumber(str);
-        }
-        if(Chars.isOperation(c)) {
-          st = Operations.getOperation(c);
-        }
-        else if(Chars.EQUALS == c) {
-          st = new VarStatement(str);
-        }
-        else if(Chars.OPEN_PAR == c) {
-          priority += 100;
-        }
-        else if(Chars.CLOSE_PAR == c) {
-          priority -= 100;
-        }
-        if(st != null) {
-          st.attributes().priority(++priority);
-          stack.put(st);
-        }
         word.delete(0, word.length());
-      }
-      else {
-        word.append(c);
+        if(Chars.isNumber(str) || Chars.isBoolean(str)) {
+          value(Value.of(str));
+        }
+        else {
+          word(str);
+        }
+        switch(c) {
+          case Chars.OPEN_PAR:
+            bracketOpen();
+            break;
+          case Chars.CLOSE_PAR:
+            bracketClose();
+            break;
+          case Chars.OPEN_CURLY:
+            blockStart();
+            break;
+          case Chars.CLOSE_CURLY:
+            blockEnd();
+            break;
+          default:
+            if(Chars.isOperation(c)) {
+              operation(Operations.getOperation(c));
+            }
+            break;
+        }
       }
     }
   }
   
-  private NumberStatement parseNumber(String str) throws ParseException {
-    try {
-      Number n;
-      if(str.contains(".")) {
-        n = Double.parseDouble(str);
-      }
-      else try {
-        n = Integer.parseInt(str);
-      }
-      catch(Exception e) {
-        n = Long.parseLong(str);
-      }
-      return new NumberStatement(n);
-    }
-    catch(Exception e) {
-      throw new ParseException(e.toString(), e);
-    }
+  @Override
+  public void word(String wd) throws ParseException {
+    listeners.forEach(l -> l.word(wd));
   }
   
-
+  @Override
+  public void operation(Operation op) throws ParseException {
+    listeners.forEach(l -> l.operation(op));
+  }
+  
+  @Override
+  public void value(Value vl) throws ParseException {
+    listeners.forEach(l -> l.value(vl));
+  }
+  
+  @Override
+  public void blockStart() throws ParseException {
+    listeners.forEach(l -> l.blockStart());
+  }
+  
+  @Override
+  public void blockEnd() throws ParseException {
+    listeners.forEach(l -> l.blockStart());
+  }
+  
+  @Override
+  public void bracketOpen() throws ParseException {
+    listeners.forEach(l -> l.bracketOpen());
+  }
+  
+  @Override
+  public void bracketClose() throws ParseException {
+    listeners.forEach(l -> l.bracketClose());
+  }
+  
 }

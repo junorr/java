@@ -7,7 +7,6 @@ package us.pserver.screept;
 
 import java.util.List;
 import java.util.stream.Stream;
-import us.pserver.screept.Statement;
 
 
 /**
@@ -20,7 +19,11 @@ public interface Stack {
   
   public Stream<Statement> statements();
   
-  public Statement nextMaxPriority();
+  public Statement next();
+  
+  public Statement prev();
+  
+  public Statement current();
   
   public List<Statement> getArgs(Statement st);
   

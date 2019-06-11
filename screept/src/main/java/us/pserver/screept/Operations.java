@@ -25,33 +25,7 @@ public abstract class Operations {
   private Operations() {}
   
   
-  private static List<Boolean> resolveAsBoolean(Memory m, List<Statement> sts) {
-    List<Boolean> args = new ArrayList<>(sts.size());
-    for(Statement s : sts) {
-      Object o = s.resolve(m, Collections.EMPTY_LIST);
-      if(!Boolean.class.isAssignableFrom(o.getClass())) {
-        throw new IllegalArgumentException("Boolean argument expected");
-      }
-      args.add((Boolean)o);
-    }
-    return args;
-  }
-  
-  
-  private List<Number> resolveAsNumber(Memory m, List<Statement> sts) {
-    List<Number> args = new ArrayList<>(sts.size());
-    for(Statement s : sts) {
-      Object o = s.resolve(m, Collections.EMPTY_LIST);
-      if(!Number.class.isAssignableFrom(o.getClass())) {
-        throw new IllegalArgumentException("Numeric argument expected");
-      }
-      args.add((Number)o);
-    }
-    return args;
-  }
-  
-  
-  public static Statement getOperation(int c) {
+  public static Operation getOperation(int c) {
     switch(c) {
       case OP_SUM:
         return SUM;
@@ -71,7 +45,7 @@ public abstract class Operations {
   }
   
   
-  public static final Statement<Number> SUM = new NumberBinaryOperation("sum", 100) {
+  public static final Operation<Number> SUM = new NumberBinaryOperation("sum", 100) {
     @Override
     public Optional<Number> resolve(Memory m, List<Statement> args) {
       this.validateTwoArgs(args);
@@ -83,7 +57,7 @@ public abstract class Operations {
   };
   
   
-  public static final Statement<Number> SUBTRACT = new NumberBinaryOperation("subtract", 100) {
+  public static final Operation<Number> SUBTRACT = new NumberBinaryOperation("subtract", 100) {
     @Override
     public Optional resolve(Memory m, List<Statement> args) {
       this.validateTwoArgs(args);

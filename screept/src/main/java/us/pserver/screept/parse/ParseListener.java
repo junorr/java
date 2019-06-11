@@ -5,6 +5,9 @@
  */
 package us.pserver.screept.parse;
 
+import us.pserver.screept.Operation;
+import us.pserver.screept.Value;
+
 
 /**
  *
@@ -12,6 +15,18 @@ package us.pserver.screept.parse;
  */
 public interface ParseListener {
   
-  public void 
+  public void word(String wd) throws ParseException;
+  
+  public void operation(Operation op) throws ParseException;
+  
+  public void value(Value vl) throws ParseException;
+  
+  public void blockStart() throws ParseException;
+  
+  public void blockEnd() throws ParseException;
+  
+  public void bracketOpen() throws ParseException;
+  
+  public void bracketClose() throws ParseException;
   
 }
