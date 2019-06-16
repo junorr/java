@@ -33,8 +33,12 @@ public class TestCycle {
 
   
   public static void main(String[] args) throws InterruptedException {
-    Duplex<String,Object> da = Core.cycle(s->{return String.format("%s: >>> %s <<<", Thread.currentThread().getName(), s);}).start();
-    Duplex<String,Object> db = Core.cycle(s->{return String.format("%s: >>> %s <<<", Thread.currentThread().getName(), s);}).start();
+    Duplex<String,Object> da = Core.cycle(s->{
+      return String.format("%s: >>> %s <<<", Thread.currentThread().getName(), s);
+    }).start();
+    Duplex<String,Object> db = Core.cycle(s->{
+      return String.format("%s: >>> %s <<<", Thread.currentThread().getName(), s);
+    }).start();
     
     da.cycle().suspend();
     da.input().onAvailable(System.out::println);
@@ -44,7 +48,7 @@ public class TestCycle {
     for(int i = 1; i <= 20; i++) {
       System.out.println("- pushing: "+ i+ "  -  ("+ da.output().push(i)+ ","+ db.output().push(i)+ ")");
     }
-    Thread.sleep(2000);
+    Thread.sleep(4000);
     da.cycle().resume();
     da.closeOnEmpty();
     db.closeOnEmpty();
