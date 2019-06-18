@@ -44,7 +44,11 @@ public class ClientMain {
     
     ByteBufferPool pool = createByteBufferPool();
     Config config = Config.loadClasspath("config.yml");
-    AcceptingChannel<StreamConnection> server = worker.createStreamConnectionServer(new InetSocketAddress(config.getClient().getBind().getAddress(), config.getClient().getBind().getPort()), new AcceptChannelListener(pool), socketOptions);
+    AcceptingChannel<StreamConnection> server = worker.createStreamConnectionServer(
+        new InetSocketAddress(config.getClient().getBind().getAddress(), config.getClient().getBind().getPort()), 
+        new AcceptChannelListener(config, pool), 
+        socketOptions
+    );
     Logger.getLogger(ClientMain.class).infof("Client started: %s", config.getClient().getBind());
     server.resumeAccepts();
   }

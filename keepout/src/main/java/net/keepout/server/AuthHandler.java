@@ -9,16 +9,16 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.Cookie;
 import java.util.Objects;
+import net.keepout.KeepoutConstants;
 import net.keepout.config.Config;
 import org.jboss.logging.Logger;
-import net.keepout.KeepoutHandler;
 
 
 /**
  *
  * @author juno
  */
-public class AuthHandler implements KeepoutHandler {
+public class AuthHandler implements HttpHandler {
   
   private final Config config;
   
@@ -35,7 +35,7 @@ public class AuthHandler implements KeepoutHandler {
 
   @Override
   public void handleRequest(HttpServerExchange hse) throws Exception {
-    Cookie ck = hse.getRequestCookies().get(AUTH_COOKIE);
+    Cookie ck = hse.getRequestCookies().get(KeepoutConstants.AUTH_COOKIE);
     Logger lg = Logger.getLogger(getClass().getName());
     lg.infof("Connection received: %s >> %s %s", hse.getSourceAddress(), hse.getRequestMethod(), hse.getRequestURI());
     if(ck == null || !isAuthorized(ck)) {

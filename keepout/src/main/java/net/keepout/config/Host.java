@@ -6,7 +6,6 @@
 package net.keepout.config;
 
 import java.util.Objects;
-import net.keepout.KeepoutHandler;
 
 
 /**

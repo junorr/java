@@ -1,5 +1,7 @@
 net/keepout/test/TestServer.class
+net/keepout/test/TestJava11HttpClient$ByteBufferBodyPublisher$1.class
 net/keepout/test/TestJava11HttpClient.class
-net/keepout/test/TestClient.class
 net/keepout/test/TestJava11HttpClient$BodyToStringSubscriber.class
+net/keepout/test/TestClient.class
+net/keepout/test/TestJava11HttpClient$ByteBufferBodyPublisher.class
 net/keepout/test/TestConfig.class

@@ -32,9 +32,9 @@ public class TestJava11HttpClient {
         .followRedirects(HttpClient.Redirect.ALWAYS)
         .build();
   
-  @Test
+  //@Test
   public void send_and_read_webhook_request() {
-    ByteBuffer body = StandardCharsets.UTF_8.encode("--->> Hello World from java.net.http 11!! <<---");
+    ByteBuffer body = StandardCharsets.UTF_8.encode("***--->> Hello World from java.net.http 11!! <<---***");
     ByteBufferBodyPublisher pub = new ByteBufferBodyPublisher(body);
     HttpRequest req = HttpRequest.newBuilder()
         .uri(Unchecked.call(()->new URI("https://webhook.site/318ea209-1d5d-4a3f-81eb-fcf9b17b133d?issued_by=keepout")))
@@ -52,7 +52,7 @@ public class TestJava11HttpClient {
   }
   
   
-  @Test
+  //@Test
   public void get_from_google() {
     HttpRequest req = HttpRequest.newBuilder()
         .uri(Unchecked.call(()->new URI("https://google.com")))
@@ -73,14 +73,11 @@ public class TestJava11HttpClient {
   
   public static class BodyToStringSubscriber implements Flow.Subscriber<List<ByteBuffer>> {
     
-    private final List<ByteBuffer> buffers;
-    
     private Flow.Subscription subs;
     
     private final StringBuilder content;
     
     public BodyToStringSubscriber() {
-      this.buffers = new LinkedList<>();
       this.content = new StringBuilder();
       subs = null;
     }
@@ -94,7 +91,9 @@ public class TestJava11HttpClient {
     @Override
     public void onNext(List<ByteBuffer> items) {
       System.out.printf("[%s] onNext: %s%n", getClass().getSimpleName(), items);
-      buffers.addAll(items);
+      items.stream()
+          .map(b -> StandardCharsets.UTF_8.decode(b).toString())
+          .forEach(content::append);
       subs.request(1);
     }
     
@@ -108,12 +107,7 @@ public class TestJava11HttpClient {
       return content.toString();
     }
     
-    @Override
-    public void onComplete() {
-      buffers.stream()
-          .map(b -> StandardCharsets.UTF_8.decode(b).toString())
-          .forEach(content::append);
-    }
+    @Override public void onComplete() {}
     
   }
   

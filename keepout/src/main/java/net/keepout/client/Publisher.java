@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.keepout.server;
+package net.keepout.client;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Flow;
@@ -25,7 +26,7 @@ public class Publisher<T> implements Flow.Publisher<T> {
   private final UnaryOperator<T> oper;
   
   public Publisher(Collection<T> items, UnaryOperator<T> op) {
-    this.items = new ArrayList<>(items);
+    this.items = Collections.unmodifiableList(new ArrayList<>(items));
     this.oper = op != null ? op : UnaryOperator.identity();
   }
 

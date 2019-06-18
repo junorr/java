@@ -7,6 +7,7 @@ package net.keepout.client;
 
 import io.undertow.connector.ByteBufferPool;
 import java.util.Objects;
+import net.keepout.config.Config;
 import org.jboss.logging.Logger;
 import org.xnio.ChannelListener;
 import org.xnio.StreamConnection;
@@ -22,8 +23,11 @@ public class AcceptChannelListener implements ChannelListener<AcceptingChannel<S
   
   private final ByteBufferPool pool;
   
-  public AcceptChannelListener(ByteBufferPool pool) {
+  private final Config config;
+  
+  public AcceptChannelListener(Config cfg, ByteBufferPool pool) {
     this.pool = Objects.requireNonNull(pool);
+    this.config = Objects.requireNonNull(cfg);
   }
   
   @Override
@@ -32,7 +36,7 @@ public class AcceptChannelListener implements ChannelListener<AcceptingChannel<S
     while((con = Unchecked.call(()->channel.accept())) != null) {
       Logger.getLogger(getClass()).infof("Connection accepted: %s", con.getPeerAddress());
       StreamSourceChannel sch = con.getSourceChannel();
-      sch.getReadSetter().set(new ReadChannelListener(con, pool));
+      sch.getReadSetter().set(new ReadChannelListener(config, con, pool));
       sch.resumeReads();
     }
   }

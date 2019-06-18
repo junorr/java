@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.keepout.server;
+package net.keepout.client;
 
 import java.util.Objects;
 import java.util.concurrent.Flow;
@@ -26,15 +26,15 @@ public class ConsumerSubscriber<T> implements Flow.Subscriber<T> {
   private Flow.Subscription subs;
   
   
-  public ConsumerSubscriber(Consumer<T> cs, Consumer<Throwable> error, Runnable complete) {
+  public ConsumerSubscriber(Consumer<T> cs, Runnable complete, Consumer<Throwable> error) {
     this.consumer = Objects.requireNonNull(cs);
     this.error = error;
     this.complete = complete;
     subs = null;
   }
 
-  public ConsumerSubscriber(Consumer<T> cs, Consumer<Throwable> error) {
-    this(cs, error, null);
+  public ConsumerSubscriber(Consumer<T> cs, Runnable complete) {
+    this(cs, complete, null);
   }
 
   public ConsumerSubscriber(Consumer<T> cs) {
@@ -67,6 +67,7 @@ public class ConsumerSubscriber<T> implements Flow.Subscriber<T> {
 
   @Override
   public void onComplete() {
+    System.out.printf("[%s] onComplete: %s%n", getClass().getSimpleName(), complete);
     if(complete != null) complete.run();
   }
 
