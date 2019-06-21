@@ -11,7 +11,7 @@ client:
     port: 9000
   target:
     address: 127.0.0.1
-    port: 10080
+    port: 6060
 authTokens:
     - 891120A65372DE766BEDFEC4726C8E01EF9A9A038FC1026A8380A6B420CEE510
      

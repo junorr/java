@@ -5,6 +5,7 @@
  */
 package net.keepout.client;
 
+import net.keepout.Unchecked;
 import io.undertow.connector.ByteBufferPool;
 import io.undertow.connector.PooledByteBuffer;
 import io.undertow.util.Headers;

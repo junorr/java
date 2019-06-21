@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="net.keepout.test.TestConfig" time="0.149" tests="3" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="net.keepout.test.TestConfig" time="0.23" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="sun.desktop" value="gnome"/>
     <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
@@ -16,7 +16,7 @@
     <property name="user.country" value="BR"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="/opt/jdk-11/lib"/>
-    <property name="sun.java.command" value="org.apache.maven.surefire.booter.ForkedBooter /media/storage/java/keepout/target/surefire 2019-06-17T20-51-36_954-jvmRun1 surefire13428739392096901214tmp surefire_013478205804439726446tmp"/>
+    <property name="sun.java.command" value="org.apache.maven.surefire.booter.ForkedBooter /media/storage/java/keepout/target/surefire 2019-06-20T17-08-03_312-jvmRun1 surefire14912587687810290231tmp surefire_018293720476961028021tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/media/storage/java/keepout/target/test-classes:/media/storage/java/keepout/target/classes:/home/juno/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.4.1/junit-jupiter-api-5.4.1.jar:/home/juno/.m2/repository/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar:/home/juno/.m2/repository/org/opentest4j/opentest4j/1.1.1/opentest4j-1.1.1.jar:/home/juno/.m2/repository/org/junit/platform/junit-platform-commons/1.4.1/junit-platform-commons-1.4.1.jar:/home/juno/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.4.1/junit-jupiter-engine-5.4.1.jar:/home/juno/.m2/repository/org/junit/platform/junit-platform-engine/1.4.1/junit-platform-engine-1.4.1.jar:/home/juno/.m2/repository/net/powercoder/powercoder/0.1/powercoder-0.1.jar:/home/juno/.m2/repository/io/undertow/undertow-core/2.0.21.Final/undertow-core-2.0.21.Final.jar:/home/juno/.m2/repository/org/jboss/logging/jboss-logging/3.4.0.Final/jboss-logging-3.4.0.Final.jar:/home/juno/.m2/repository/org/jboss/xnio/xnio-api/3.3.8.Final/xnio-api-3.3.8.Final.jar:/home/juno/.m2/repository/org/jboss/xnio/xnio-nio/3.3.8.Final/xnio-nio-3.3.8.Final.jar:/home/juno/.m2/repository/org/apache/httpcomponents/httpclient/4.5.8/httpclient-4.5.8.jar:/home/juno/.m2/repository/org/apache/httpcomponents/httpcore/4.4.11/httpcore-4.4.11.jar:/home/juno/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar:/home/juno/.m2/repository/commons-codec/commons-codec/1.11/commons-codec-1.11.jar:/home/juno/.m2/repository/org/cfg4j/cfg4j-core/4.4.1/cfg4j-core-4.4.1.jar:/home/juno/.m2/repository/org/json/json/20160212/json-20160212.jar:/home/juno/.m2/repository/io/dropwizard/metrics/metrics-core/3.1.2/metrics-core-3.1.2.jar:/home/juno/.m2/repository/com/github/drapostolos/type-parser/0.5.0/type-parser-0.5.0.jar:/home/juno/.m2/repository/org/slf4j/slf4j-api/1.7.21/slf4j-api-1.7.21.jar:/home/juno/.m2/repository/org/yaml/snakeyaml/1.17/snakeyaml-1.17.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -58,7 +58,7 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="55.0"/>
   </properties>
-  <testcase name="str_to_hex" classname="net.keepout.test.TestConfig" time="0.001"/>
+  <testcase name="str_to_hex" classname="net.keepout.test.TestConfig" time="0"/>
   <testcase name="test_decode_bytebuffer" classname="net.keepout.test.TestConfig" time="0"/>
-  <testcase name="test_classpath_config" classname="net.keepout.test.TestConfig" time="0.144"/>
+  <testcase name="test_classpath_config" classname="net.keepout.test.TestConfig" time="0.216"/>
 </testsuite>

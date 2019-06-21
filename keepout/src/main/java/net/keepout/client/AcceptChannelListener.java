@@ -5,6 +5,7 @@
  */
 package net.keepout.client;
 
+import net.keepout.Unchecked;
 import io.undertow.connector.ByteBufferPool;
 import java.util.Objects;
 import net.keepout.config.Config;

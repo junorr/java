@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Flow;
-import net.keepout.client.Unchecked;
+import net.keepout.Unchecked;
 import org.junit.jupiter.api.Test;
 
 

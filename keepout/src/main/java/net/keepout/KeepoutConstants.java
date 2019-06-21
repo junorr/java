@@ -21,9 +21,13 @@ public abstract class KeepoutConstants {
   
   public static final String HEADER_CLIENT_ID = "x-client-id";
   
+  public static final String HEADER_REMOTE_CLOSE = "x-remote-close";
+  
   public static final String AUTH_COOKIE = "keepout";
   
   public static final String CONTENT_TYPE_OCTET_STREAM = "application/octet-stream";
+  
+  public static final String CONTENT_TYPE_TEXT_HTML = "text/html; charset=utf-8";
   
   public static final AttachmentKey<SocketChannel> ATTACHMENT_SOCKET = AttachmentKey.create(SocketChannel.class);
   

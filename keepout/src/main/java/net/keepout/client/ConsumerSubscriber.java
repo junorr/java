@@ -8,7 +8,7 @@ package net.keepout.client;
 import java.util.Objects;
 import java.util.concurrent.Flow;
 import java.util.function.Consumer;
-import net.keepout.client.Unchecked;
+import net.keepout.Unchecked;
 
 
 /**

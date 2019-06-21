@@ -7,10 +7,12 @@
 /media/storage/java/keepout/src/main/java/net/keepout/config/NetService.java
 /media/storage/java/keepout/src/main/java/net/keepout/config/Config.java
 /media/storage/java/keepout/src/main/java/net/keepout/client/AcceptChannelListener.java
+/media/storage/java/keepout/src/main/java/net/keepout/client2/ClientMain2.java
 /media/storage/java/keepout/src/main/java/net/keepout/client/Publisher.java
 /media/storage/java/keepout/src/main/java/net/keepout/Keepout.java
 /media/storage/java/keepout/src/main/java/net/keepout/server/AuthHandler.java
 /media/storage/java/keepout/src/main/java/net/keepout/client/Unchecked.java
+/media/storage/java/keepout/src/main/java/net/keepout/client2/ProxyChannel.java
 /media/storage/java/keepout/src/main/java/net/keepout/KeepoutConstants.java
 /media/storage/java/keepout/src/main/java/net/keepout/client/ClientMain.java
 /media/storage/java/keepout/src/main/java/net/keepout/client/ConsumerSubscriber.java
