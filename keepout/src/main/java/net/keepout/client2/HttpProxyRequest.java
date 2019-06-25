@@ -17,6 +17,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.Objects;
 import net.keepout.KeepoutConstants;
+import static net.keepout.Unchecked.unchecked;
 import net.keepout.config.Host;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.http.client.entity.EntityBuilder;
@@ -49,26 +50,38 @@ public class HttpProxyRequest implements Closeable {
     this.http = HttpClients.createDefault();
   }
   
-  public boolean execute(String clientID, ReadableByteChannel input, WritableByteChannel output) throws IOException {
+  public void execute(String clientID, ReadableByteChannel input, WritableByteChannel output) throws IOException {
     try (
         PooledByteBuffer pb = pool.allocate();
         CloseableHttpResponse res = http.execute(createPost(clientID, Channels.newInputStream(input)));
         ) {
-      boolean xclose = res.containsHeader(KeepoutConstants.HEADER_REMOTE_CLOSE);
       writeBack(Channels.newChannel(new Base64InputStream(res.getEntity().getContent(), false)), output, pb.getBuffer());
-      return xclose;
     }
   }
   
-  public boolean execute(String clientID, ByteBuffer input, WritableByteChannel output) throws IOException {
+  public void execute(String clientID, PooledByteBuffer input, WritableByteChannel output) throws IOException {
     try (
+        input;
         PooledByteBuffer pb = pool.allocate();
-        CloseableHttpResponse res = http.execute(createPost(clientID, input));
+        CloseableHttpResponse res = http.execute(createPost(clientID, input.getBuffer()));
         ) {
-      boolean xclose = res.containsHeader(KeepoutConstants.HEADER_REMOTE_CLOSE);
       writeBack(Channels.newChannel(new Base64InputStream(res.getEntity().getContent(), false)), output, pb.getBuffer());
-      return xclose;
     }
+  }
+  
+  public Runnable executor(String clientID, PooledByteBuffer input, WritableByteChannel output) throws IOException {
+    return () -> {
+      try (
+          input;
+          PooledByteBuffer pb = pool.allocate();
+          CloseableHttpResponse res = http.execute(createPost(clientID, input.getBuffer()));
+          ) {
+        writeBack(Channels.newChannel(new Base64InputStream(res.getEntity().getContent(), false)), output, pb.getBuffer());
+      }
+      catch(IOException ex) {
+        throw unchecked(ex);
+      }
+    };
   }
   
   public void executeDelete(String clientID) throws IOException {
@@ -100,6 +113,10 @@ public class HttpProxyRequest implements Closeable {
   private HttpPost createPost(String clientID, ByteBuffer data) {
     InputStream input = new InputStream() {
       @Override
+      public int available() {
+        return data.remaining();
+      }
+      @Override
       public int read() throws IOException {
         return data.hasRemaining() ? data.get() : -1;
       }
@@ -108,8 +125,8 @@ public class HttpProxyRequest implements Closeable {
   }
   
   private HttpPost createPost(String clientID, InputStream data) {
-    //String uri = "http://" + target.toString();
-    String uri = "https://webhook.site/318ea209-1d5d-4a3f-81eb-fcf9b17b133d";
+    String uri = "http://" + target.toString();
+    //String uri = "https://webhook.site/318ea209-1d5d-4a3f-81eb-fcf9b17b133d";
     String authCookie = KeepoutConstants.AUTH_COOKIE + "=" + authToken;
     HttpPost post = new HttpPost(uri);
     post.addHeader(Headers.CONTENT_TYPE_STRING, KeepoutConstants.CONTENT_TYPE_TEXT_HTML);
@@ -121,8 +138,8 @@ public class HttpProxyRequest implements Closeable {
   }
 
   private HttpDelete createDelete(String clientID) {
-    //String uri = "http://" + target.toString();
-    String uri = "https://webhook.site/318ea209-1d5d-4a3f-81eb-fcf9b17b133d";
+    String uri = "http://" + target.toString();
+    //String uri = "https://webhook.site/318ea209-1d5d-4a3f-81eb-fcf9b17b133d";
     String authCookie = KeepoutConstants.AUTH_COOKIE + "=" + authToken;
     HttpDelete delete = new HttpDelete(uri);
     delete.addHeader(KeepoutConstants.HEADER_CLIENT_ID, clientID);

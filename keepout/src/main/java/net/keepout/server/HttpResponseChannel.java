@@ -10,6 +10,7 @@ import io.undertow.util.Headers;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.WritableByteChannel;
 import java.util.Objects;
 import net.keepout.KeepoutConstants;
@@ -31,8 +32,9 @@ public class HttpResponseChannel implements WritableByteChannel {
   public HttpResponseChannel(HttpServerExchange hse) {
     this.exchange = Objects.requireNonNull(hse);
     this.exchange.getResponseHeaders().add(
-        Headers.CONTENT_TYPE, KeepoutConstants.CONTENT_TYPE_OCTET_STREAM
+        Headers.CONTENT_TYPE, KeepoutConstants.CONTENT_TYPE_TEXT_HTML
     );
+    //this.response = exchange.getResponseChannel();
     this.response = Channels.newChannel(new Base64OutputStream(
         Channels.newOutputStream(exchange.getResponseChannel()), true)
     );
@@ -41,7 +43,13 @@ public class HttpResponseChannel implements WritableByteChannel {
 
   @Override
   public int write(ByteBuffer src) throws IOException {
-    return response.write(src);
+    try {
+      return response.write(src);
+    }
+    catch(ClosedChannelException ex) {
+      this.close();
+      return 0;
+    }
   }
   
   @Override
@@ -52,7 +60,10 @@ public class HttpResponseChannel implements WritableByteChannel {
   @Override
   public void close() throws IOException {
     this.closed = true;
-    this.response.close();
+    try {
+      this.response.close();
+    }
+    catch(ClosedChannelException ex) {}
     exchange.endExchange();
   }
   

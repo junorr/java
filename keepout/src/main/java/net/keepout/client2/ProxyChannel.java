@@ -51,7 +51,7 @@ public class ProxyChannel implements Runnable {
   private void accept(ServerSocketChannel server, Logger log) throws IOException {
     try {
       SocketChannel client = server.socket().accept().getChannel();
-      log.infof("ACCEPT Channel: [%s]", client.getRemoteAddress());
+      //log.infof("ACCEPT Channel: [%s]", client.getRemoteAddress());
       exec.execute(new AcceptChannelHandler(client));
     }
     catch(SocketTimeoutException ex) {}
@@ -130,20 +130,24 @@ public class ProxyChannel implements Runnable {
     }
     
     private boolean isValid(SocketChannel ch) {
+      //Logger.getLogger(getClass()).infof("VALID Channel (%s): { isOpen=%s, isConnected=%s }", call(()->ch.getRemoteAddress()), ch.isOpen(), ch.isConnected());
       return ch.isOpen() && ch.isConnected();
     }
     
     @Override
     public void run() {
-      String inputaddr = call(()->input.getRemoteAddress()).toString();
-      String outputaddr = call(()->output.getRemoteAddress()).toString();
+      String inputaddr = null;
+      String outputaddr = null;
       Logger log = Logger.getLogger(getClass());
-      log.infof("OPEN Flow (%s)==>(%s)...", inputaddr, outputaddr);
       long total = 0;
       try (input; output; buffer) {
+        inputaddr = input.getRemoteAddress().toString();
+        outputaddr = output.getRemoteAddress().toString();
+        log.infof("OPEN Flow (%s)==>(%s)...", inputaddr, outputaddr);
         int read;
         while(isValid(input) && (read = input.read(buffer())) != -1) {
           if(!isValid(output)) break;
+          log.infof("READ Flow (%s)==>(%s): %d bytes", inputaddr, outputaddr, read);
           if(read > 0) {
             total += read;
             buffer().flip();

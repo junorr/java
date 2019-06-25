@@ -16,11 +16,11 @@ import org.junit.jupiter.api.Test;
  */
 public class TestServer {
   
-  //@Test
+  @Test
   public void start_server() {
     try {
       ServerMain.main(null);
-      Thread.sleep(15000);
+      Thread.sleep(60000);
     }
     catch(Exception e) {
       e.printStackTrace();

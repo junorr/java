@@ -93,12 +93,12 @@ public class HttpProxyChannel implements Runnable {
         String clientid = String.format("(%s)==>(%s)", client.getRemoteAddress(), config.getClient().getTarget());
         String hex_clid = Hex.encodeHexString(StandardCharsets.UTF_8.encode(clientid), false);
         String targetid = String.format("(%s)==>(%s)", config.getClient().getTarget(), client.getRemoteAddress());
-        Pipe clientInbound = Pipe.open();
-        Pipe clientOutbound = Pipe.open();
+        Pipe clientIn = Pipe.open();
+        Pipe clientOut = Pipe.open();
         HttpProxyRequest request = new HttpProxyRequest(config.getClient().getTarget(), config.getTokens().get(0), pool);
-        exec.execute(new ChannelFlow(clientid, client, clientInbound.sink(), pool.allocate()));
-        exec.execute(new HttpRequestFlow(hex_clid, request, pool, clientInbound.source(), clientOutbound.sink()));
-        exec.execute(new ChannelFlow(targetid, clientOutbound.source(), client, pool.allocate()));
+        exec.execute(new ChannelFlow(clientid, client, clientIn.sink(), pool.allocate()));
+        exec.execute(new HttpRequestFlow(hex_clid, request, exec, pool, clientIn.source(), clientOut.sink()));
+        exec.execute(new ChannelFlow(targetid, clientOut.source(), client, pool.allocate()));
       }
       catch(IOException ex) {
         throw unchecked(ex);

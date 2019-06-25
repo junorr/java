@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
  */
 public class TestClient {
   
-  //@Test
+  @Test
   public void start_server() {
     try {
       ClientMain.main(null);
