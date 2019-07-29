@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import us.pserver.bitbox.BitCreate;
+import us.pserver.bitbox.annotation.BitCreate;
 import us.pserver.tools.Unchecked;
 
 

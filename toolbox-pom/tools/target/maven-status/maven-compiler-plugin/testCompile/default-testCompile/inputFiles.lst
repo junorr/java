@@ -1,7 +1,7 @@
-D:\java\toolbox-pom\tools\src\test\java\us\pserver\tools\test\TestStringEncode.java
-D:\java\toolbox-pom\tools\src\test\java\us\pserver\tools\test\TestReflect.java
-D:\java\toolbox-pom\tools\src\test\java\module-info.java
-D:\java\toolbox-pom\tools\src\test\java\us\pserver\tools\test\ReflectTarget.java
-D:\java\toolbox-pom\tools\src\test\java\us\pserver\tools\test\TestIndexed.java
-D:\java\toolbox-pom\tools\src\test\java\us\pserver\tools\test\StringPadTest.java
-D:\java\toolbox-pom\tools\src\test\java\us\pserver\tools\test\TestUnchecked.java
+/home/juno/java/toolbox-pom/tools/src/test/java/module-info.java
+/home/juno/java/toolbox-pom/tools/src/test/java/us/pserver/tools/test/TestUnchecked.java
+/home/juno/java/toolbox-pom/tools/src/test/java/us/pserver/tools/test/StringPadTest.java
+/home/juno/java/toolbox-pom/tools/src/test/java/us/pserver/tools/test/TestIndexed.java
+/home/juno/java/toolbox-pom/tools/src/test/java/us/pserver/tools/test/TestStringEncode.java
+/home/juno/java/toolbox-pom/tools/src/test/java/us/pserver/tools/test/ReflectTarget.java
+/home/juno/java/toolbox-pom/tools/src/test/java/us/pserver/tools/test/TestReflect.java

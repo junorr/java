@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.tinylog.Logger;
-import us.pserver.bitbox.BitIgnore;
+import us.pserver.bitbox.annotation.BitIgnore;
 
 
 /**
@@ -20,7 +20,7 @@ public class TestAnnotations {
   
   @Test
   public void test_annotations() throws Exception {
-    Method m = Person.class.getMethod("getBirth");
+    Method m = IPerson.class.getMethod("getBirth");
     Logger.debug("{}() : {} .isAnnotationPresent( {} ): {}", 
         m.getName(), 
         m.getReturnType().getSimpleName(), 

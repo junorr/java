@@ -8,7 +8,8 @@ package us.pserver.bitbox.test;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import us.pserver.bitbox.BitCreate;
+import us.pserver.bitbox.annotation.BitCreate;
+import us.pserver.bitbox.annotation.BitIgnore;
 
 
 /**
@@ -25,7 +26,7 @@ public interface IPerson {
 
   public String getLastName();
 
-  //@BitIgnore
+  @BitIgnore
   public LocalDate getBirth();
   
   public String stringBirth();

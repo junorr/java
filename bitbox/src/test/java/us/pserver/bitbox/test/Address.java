@@ -8,7 +8,7 @@ package us.pserver.bitbox.test;
 import java.util.Arrays;
 import java.util.Objects;
 import org.tinylog.Logger;
-import us.pserver.bitbox.BitCreate;
+import us.pserver.bitbox.annotation.BitCreate;
 
 
 /**

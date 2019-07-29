@@ -10,9 +10,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import us.pserver.bitbox.BitCreate;
-import us.pserver.bitbox.BitProperty;
-import us.pserver.bitbox.BitType;
+import us.pserver.bitbox.annotation.BitIgnore;
+import us.pserver.bitbox.annotation.BitProperty;
+import us.pserver.bitbox.annotation.BitType;
 
 
 /**
@@ -62,7 +62,7 @@ public class Person implements IPerson {
     return lastName;
   }
 
-  //@BitIgnore
+  @BitIgnore
   public LocalDate getBirth() {
     return birth;
   }
